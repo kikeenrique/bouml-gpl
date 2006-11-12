@@ -1,0 +1,75 @@
+class UmlValueSpecificationAction
+!!!199682.cpp!!!	sKind() : string
+  return "value specification activity action";
+!!!199682.java!!!	sKind() : string
+  return "value specification activity action";
+!!!201986.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  UmlActivityAction::html();
+
+  fw.write("<p>Value :</p><ul>");
+  
+  QCString s = value();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppValue();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaValue();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  write_children(pfix, rank, level);
+
+  unload(FALSE, FALSE);
+!!!201986.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  super.html();
+
+  String s;
+  
+    fw.write("<p>Value :</p><ul>");
+  
+  s = value();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppValue();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaValue();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  write_children(pfix, rank, level);
+
+  unload(false, false);

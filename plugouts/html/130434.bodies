@@ -1,0 +1,5 @@
+class UmlEntryPointPseudoState
+!!!146050.cpp!!!	sKind() : string
+  return "entry point pseudo state";
+!!!146050.java!!!	sKind() : string
+  return "entry point pseudo state";

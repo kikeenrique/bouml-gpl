@@ -1,0 +1,1266 @@
+// *************************************************************************
+//
+// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+//
+// This file is part of the BOUML Uml Toolkit.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+//
+// e-mail : bouml@free.fr
+// home   : http://bouml.free.fr
+//
+// *************************************************************************
+
+#ifdef WIN32
+#pragma warning (disable: 4150)
+#endif
+
+#include <qcursor.h>
+#include <math.h>
+#include <qpopupmenu.h>
+#include <qmessagebox.h>
+
+#include "RelationCanvas.h"
+#include "ArrowPointCanvas.h"
+#include "CdClassCanvas.h"
+#include "UmlCanvas.h"
+#include "LabelCanvas.h"
+#include "BrowserDiagram.h"
+#include "DiagramView.h"
+#include "BrowserRelation.h"
+#include "BrowserClass.h"
+#include "RelationData.h"
+#include "UmlWindow.h"
+#include "UmlGlobal.h"
+#include "myio.h"
+#include "ToolCom.h"
+#include "Tool.h"
+#include "MenuTitle.h"
+#include "strutil.h"
+
+RelationCanvas::RelationCanvas(UmlCanvas * canvas, DiagramItem * b,
+			       DiagramItem * e, BrowserClass * bb,
+			       UmlCode t, int id, RelationData * d)
+      : ArrowCanvas(canvas, b, e, t, id, TRUE), br_begin(bb),
+        data(d), role_a(0), role_b(0), multiplicity_a(0), multiplicity_b(0) {
+  if ((e->type() != UmlArrowPoint) && (bb == 0)) {
+    // end of line construction, update all the line bb & be
+    // adds browser relation 2 times
+    update_begin(e);
+  }
+  else if (d != 0) {
+    connect(d, SIGNAL(changed()), this, SLOT(modified()));
+    connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
+  }
+  
+  // manages the case start == end
+  if (b == e)
+    cut_self();
+  
+  if (d != 0)
+    update(TRUE);
+}
+
+RelationCanvas::~RelationCanvas() {
+}
+
+void RelationCanvas::delete_it() {
+  disconnect(data, 0, this, 0);
+  
+  ArrowCanvas::delete_it();
+}
+
+void RelationCanvas::deleted() {
+  delete_it();
+  canvas()->update();
+  package_modified();
+}
+
+void RelationCanvas::delete_available(bool & in_model, bool & out_model) const {
+  out_model |= TRUE;
+  in_model |= (data->get_end())
+    ? data->is_writable(data->get_end())
+    : data->is_writable(data->get_start());
+}
+
+void RelationCanvas::remove(bool from_model) {
+  if (! from_model)
+    delete_it();
+  else
+    data->delete_it();	// will remove canvas
+}
+
+
+// Updates br_begin going back, Returns the start browser node
+
+BrowserClass * RelationCanvas::update_begin(DiagramItem * cnend) {
+  // static to be updated in all the cases
+  static RelationData * d = 0;
+  
+  if (begin->type() == UmlArrowPoint) {
+    RelationCanvas * other =
+      ((RelationCanvas *) ((ArrowPointCanvas *) begin)->get_other(this));
+    
+    br_begin = other->update_begin(cnend);	// update d
+  }
+  else {
+    // the relation start here
+    br_begin = ((BrowserClass *) begin->get_bn());
+    d = (RelationData *) begin->add_relation(type(), cnend);
+  }
+  
+  connect(d, SIGNAL(changed()), this, SLOT(modified()));
+  connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
+  data = d;
+  
+  return br_begin;
+}
+
+void RelationCanvas::update_pos() {
+  ArrowCanvas::update_pos();
+
+  if (auto_pos) {
+    if ((role_a != 0) && !role_a->selected())
+      role_a_default_position();
+    
+    if ((role_b != 0) && !role_b->selected())
+      role_b_default_position();
+    
+    if ((multiplicity_a != 0) && !multiplicity_a->selected())
+      multiplicity_a_default_position();
+    
+    if ((multiplicity_b != 0) && !multiplicity_b->selected())
+      multiplicity_b_default_position();
+  }
+  
+  update_show_lines();
+}
+
+void RelationCanvas::setVisible(bool yes) {
+  ArrowCanvas::setVisible(yes);
+
+  if (role_a != 0)
+    role_a->setVisible(yes);
+  if (role_b != 0)
+    role_b->setVisible(yes);
+  if (multiplicity_a != 0)
+    multiplicity_a->setVisible(yes);
+  if (multiplicity_b != 0)
+    multiplicity_b->setVisible(yes);
+}
+
+void RelationCanvas::moveBy(double dx, double dy) {
+  ArrowCanvas::moveBy(dx, dy);
+  
+  if ((role_a != 0) && !role_a->selected())
+    role_a->moveBy(dx, dy);
+  if ((role_b != 0) && !role_b->selected())
+    role_b->moveBy(dx, dy);
+  if ((multiplicity_a != 0) && !multiplicity_a->selected())
+    multiplicity_a->moveBy(dx, dy);
+  if ((multiplicity_b != 0) && !multiplicity_b->selected())
+    multiplicity_b->moveBy(dx, dy);
+}
+
+void RelationCanvas::set_z(double z) {
+  ArrowCanvas::set_z(z);
+  
+  if (role_a != 0)
+    role_a->setZ(z);
+  if (role_b != 0)
+    role_b->setZ(z);
+  if (multiplicity_a != 0)
+    multiplicity_a->setZ(z);
+  if (multiplicity_b != 0)
+    multiplicity_b->setZ(z);
+}
+
+void RelationCanvas::setSelected(bool yes) {
+  UmlWindow::set_commented((yes) ? data->get_start() : 0);
+
+  QCanvasPolygon::setSelected(yes);
+}
+
+void RelationCanvas::select_associated() {
+  // special case to move a class with its self relations goes
+  // throw all the relation (even the already selected sections)
+  // and does not check that this is or not already selected
+  
+  RelationCanvas * rel = this;
+  
+  // goes to the beginning of the (broken) line
+  while (rel->begin->type() == UmlArrowPoint)
+    rel = ((RelationCanvas *) ((ArrowPointCanvas *) rel->begin)->get_other(rel));
+  
+  rel->begin->select_associated();
+  
+  for (;;) {
+    // select labels
+    if ((rel->role_a != 0) && !rel->role_a->selected())
+      the_canvas()->select(rel->role_a);
+    if ((rel->role_b != 0) && !rel->role_b->selected())
+      the_canvas()->select(rel->role_b);
+    if ((rel->multiplicity_a != 0) && !rel->multiplicity_a->selected())
+      the_canvas()->select(rel->multiplicity_a);
+    if ((rel->multiplicity_b != 0) && !rel->multiplicity_b->selected())
+      the_canvas()->select(rel->multiplicity_b);
+    if ((rel->label != 0) && !rel->label->selected())
+      the_canvas()->select(rel->label);
+    if ((rel->stereotype != 0) && !rel->stereotype->selected())
+      the_canvas()->select(rel->stereotype);
+    
+    if (! rel->selected())
+      the_canvas()->select(rel);
+    
+    // goes forward
+    if (rel->end->type() != UmlArrowPoint)
+      break;
+    
+    if (!((ArrowPointCanvas *) rel->end)->selected())
+      the_canvas()->select((ArrowPointCanvas *) rel->end);
+    rel = (RelationCanvas *) ((ArrowPointCanvas *) rel->end)->get_other(rel);
+  }
+  
+  rel->end->select_associated();
+}
+
+bool RelationCanvas::reflexive() const {
+  return (get_start() == get_end());
+}
+
+void RelationCanvas::open() {
+  if (data &&
+      !data->get_start()->in_edition())	// for dble click on diagram
+    data->edit();
+}
+
+void RelationCanvas::menu(const QPoint & lpos) {
+  if (!data->get_start()->in_edition()) {
+    RelationCanvas * plabel;
+    RelationCanvas * pstereotype;
+    
+    {
+      ArrowCanvas * aplabel;
+      ArrowCanvas * apstereotype;
+      
+      search_supports(aplabel, apstereotype);
+      plabel = (RelationCanvas *) aplabel;
+      pstereotype = (RelationCanvas *) apstereotype;
+    }
+    
+    const RelationCanvas * first = this;
+    const RelationCanvas * last = this;
+    
+    while (first->begin->type() == UmlArrowPoint)
+      first = ((RelationCanvas *) ((ArrowPointCanvas *) first->begin)->get_other(first));
+    
+    while (last->end->type() == UmlArrowPoint)
+      last = (RelationCanvas *) ((ArrowPointCanvas *) last->end)->get_other(last);
+    
+    bool prefer_start = 
+      (lpos - first->beginp).manhattanLength() >
+	(lpos - last->endp).manhattanLength();
+    QPopupMenu m(0);
+    QPopupMenu geo(0);
+    QPopupMenu toolm(0);
+    
+    m.insertItem(new MenuTitle(((plabel == 0) || plabel->label->get_name().isEmpty())
+			       ? QString("relation") : plabel->label->get_name(),
+			       m.font()),
+		 -1);
+    m.insertSeparator();
+    if (data) {
+      m.insertItem("edit", 0);
+      m.insertSeparator();
+    }
+    
+    m.insertItem("select in browser", 2);
+    if (plabel || pstereotype ||
+	first->role_b || first->multiplicity_b ||
+	last->role_a || last->multiplicity_a) {
+      m.insertSeparator();
+      m.insertItem("select labels", 3);
+      m.insertItem("labels default position", 4);
+      if (plabel && (label == 0))
+	m.insertItem("attach relation's name to this segment", 5);
+      if (pstereotype && (stereotype == 0))
+	m.insertItem("attach relation's stereotype to this segment", 6);
+    }
+  
+    if (get_start() != get_end()) {
+      m.insertSeparator();
+      init_geometry_menu(geo, 10);
+      m.insertItem("geometry (Ctrl+l)", &geo);
+    }
+    
+    m.insertSeparator();
+    m.insertItem("remove from view",7);
+    if ((data->get_end()) ? data->is_writable(data->get_end())
+			  : data->is_writable(data->get_start()))
+      m.insertItem("delete from model", 8);
+    
+    m.insertSeparator();
+    if (Tool::menu_insert(&toolm, itstype, 20))
+      m.insertItem("tool", &toolm);
+    
+    int rank = m.exec(QCursor::pos());
+    
+    switch (rank) {
+    case 0:
+      data->edit();
+      return;
+    case 2:
+      data->select_in_browser(prefer_start);
+      return;
+    case 3:
+      the_canvas()->unselect_all();
+      if (plabel)
+	the_canvas()->select(plabel->label);
+      if (last->role_a)
+	the_canvas()->select(last->role_a);
+      if (first->role_b)
+	the_canvas()->select(first->role_b);
+      if (last->multiplicity_a)
+	the_canvas()->select(last->multiplicity_a);
+      if (first->multiplicity_b)
+	the_canvas()->select(first->multiplicity_b);
+      if (pstereotype)
+	the_canvas()->select(pstereotype->stereotype);
+      return;
+    case 4:
+      if (plabel)
+	plabel->label_default_position();
+      if (last->role_a != 0)
+	last->role_a_default_position();
+      if (first->role_b != 0)
+	first->role_b_default_position();
+      if (last->multiplicity_a != 0)
+	last->multiplicity_a_default_position();
+      if (first->multiplicity_b != 0)
+	first->multiplicity_b_default_position();
+      if (pstereotype)
+	pstereotype->stereotype_default_position();
+      break;
+    case 5:
+      label = plabel->label;
+      plabel->label = 0;
+      label_default_position();
+      return;
+    case 6:
+      stereotype = pstereotype->stereotype;
+      pstereotype->stereotype = 0;
+      stereotype_default_position();
+      return;
+    case 7:
+      // not removed from the browser : just hide it
+      delete_it();
+      break;
+    case 8:
+      data->delete_it();	// will delete the canvas
+      break;
+    default:
+      if (rank >= 20) {
+	ToolCom::run(Tool::command(rank - 20),
+		     ((prefer_start || RelationData::uni_directional(itstype))
+		      ? data->get_start()
+		      : data->get_end()));
+	return;
+      }
+      else if (rank >= 10) {
+	rank -= 10;
+	if (rank != (int) geometry)
+	  set_geometry((LineGeometry) rank, TRUE);
+	else
+	  return;
+      }
+      else
+	return;
+    }
+    
+    package_modified();
+  }
+}
+
+
+ArrowPointCanvas * RelationCanvas::brk(const QPoint & p) {
+  ArrowPointCanvas * ap =
+    new ArrowPointCanvas(the_canvas(), p.x(), p.y());
+  
+  ap->setZ(z() + 1);	// + 1 else point can't be selected
+  
+  RelationCanvas * other =
+    // do not give data to not call update()
+    new RelationCanvas(the_canvas(), ap, end, br_begin, itstype, 0);
+  
+  other->data = data;
+  connect(data, SIGNAL(changed()), other, SLOT(modified()));
+  connect(data, SIGNAL(deleted()), other, SLOT(deleted()));
+
+  ap->add_line(this);
+  end->remove_line(this);
+  end = ap;
+  
+  if ((p - beginp).manhattanLength() < (p - endp).manhattanLength()) {
+    if (label != 0) {
+      other->label = label;
+      label = 0;
+    }
+    if (stereotype != 0) {
+      other->stereotype = stereotype;
+      stereotype = 0;
+    }
+  }
+  
+  ap->show();
+  other->show();
+  
+  modified();		// to set/unset name, role_b and multiplicity_b
+  other->modified();	// to set/unset role_a and multiplicity_a
+  
+  return ap;
+}
+
+
+ArrowCanvas * RelationCanvas::join(ArrowCanvas * other, ArrowPointCanvas * ap) {
+  // has already check is join is possible (self relation must have two points)
+  ArrowCanvas * result = ArrowCanvas::join(other, ap);
+
+  ((RelationCanvas *) result)->modified();
+  
+  return result;
+}
+
+void RelationCanvas::modified() {
+  if (visible()) {
+    hide();
+    update(TRUE);
+    show();
+    canvas()->update();
+    if (begin->type() != UmlArrowPoint) {
+      if (data->get_association().type != 0)
+	show_assoc_class(0);
+      else
+	hide_assoc_class();
+    }
+    package_modified();
+  }
+}
+
+void RelationCanvas::update(bool updatepos) {
+  if (data) {
+    itstype = data->get_type();
+    
+    bool unamed = !RelationData::isa_association(itstype);
+    QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
+    int h = fm.height();
+    RelationCanvas * plabel;
+    RelationCanvas * pstereotype;
+    
+    {
+      ArrowCanvas * aplabel;
+      ArrowCanvas * apstereotype;
+      
+      search_supports(aplabel, apstereotype);
+      plabel = (RelationCanvas *) aplabel;
+      pstereotype = (RelationCanvas *) apstereotype;
+    }
+    
+    // manages relation's name
+    
+    QString s = data->get_name();
+    QPoint c = center();
+    
+    if (unamed || s.isEmpty() || (s == RelationData::default_name(itstype))) {
+      // relation does not have name or 'true' name
+      if (plabel != 0) {
+	// removes it
+	the_canvas()->del(plabel->label);
+	plabel->label = 0;
+      }
+    }
+    else if ((plabel == 0) && (begin->type() != UmlArrowPoint)) {
+      // adds relation's name
+      label =
+	new LabelCanvas(s, the_canvas(), c.x() - fm.width(s)/2,
+			c.y() - h, FALSE, TRUE, FALSE);
+    }
+    else if ((plabel != 0) && (plabel->label->get_name() != s)) {
+      // update name
+      plabel->label->set_name(s);
+      plabel->label_default_position();
+    }
+    
+    // manages relation's stereotype
+    
+    s = data->get_stereotype();
+    
+    if (s.isEmpty()) {
+      // relation does not have stereotype
+      if (pstereotype != 0) {
+	// removes it
+	the_canvas()->del(pstereotype->stereotype);
+	pstereotype->stereotype = 0;
+      }
+    }
+    else {
+      s = toUnicode(s);
+
+      if (s[0] != '{')
+	s = QString("<<") + s + ">>";
+      
+      if ((pstereotype == 0) && (begin->type() != UmlArrowPoint)) {
+	// adds relation's stereotype
+	stereotype = new LabelCanvas(s, the_canvas(), 0, 0);
+	stereotype_default_position();
+      }
+      else if ((pstereotype != 0) && 
+	       (pstereotype->stereotype->get_name() != s)) {
+	// update name
+	pstereotype->stereotype->set_name(s);
+	pstereotype->stereotype_default_position();
+      }
+    }
+    
+    // manages role_a
+    
+    s = data->get_role_a();
+    
+    if (unamed || s.isEmpty() || (end->type() == UmlArrowPoint)) {
+      // relation does not have role_a name or it must be hidden
+      if (role_a != 0) {
+	the_canvas()->del(role_a);
+	role_a = 0;
+      }
+    }
+    else if (role_a == 0) {
+      // adds role_a
+      role_a = new LabelCanvas(s, the_canvas(), 0, 0);
+      role_a_default_position();
+    }
+    else if (role_a->get_name() != s) {
+      role_a->set_name(s);
+      role_a_default_position();
+    }
+    
+    // manages role_b
+    
+    s = data->get_role_b();
+    
+    if (unamed || s.isEmpty() || RelationData::uni_directional(itstype)) {
+      // relation does not have role_b name
+      if (role_b != 0) {
+	the_canvas()->del(role_b);
+	role_b = 0;
+      }
+    }
+    else if ((role_b == 0) && (begin->type() != UmlArrowPoint)) {
+      // adds role_b
+      role_b = new LabelCanvas(s, the_canvas(), 0, 0);
+      role_b_default_position();
+    }
+    else if ((role_b != 0) && (role_b->get_name() != s)) {
+      role_b->set_name(s);
+      role_b_default_position();
+    }
+    
+    // manages multiplicity_a
+    
+    s = data->get_multiplicity_a();
+    
+    if (unamed || s.isEmpty() || (end->type() == UmlArrowPoint)) {
+      // relation does not have multiplicity_a or it must be hidden
+      if (multiplicity_a != 0) {
+	the_canvas()->del(multiplicity_a);
+	multiplicity_a = 0;
+      }
+    }
+    else if (multiplicity_a == 0) {
+      // adds multiplicity_a
+      
+      multiplicity_a = new LabelCanvas(s, the_canvas(), 0, 0);
+      multiplicity_a_default_position();
+    }
+    else if (multiplicity_a->get_name() != s) {
+      multiplicity_a->set_name(s);
+      multiplicity_a_default_position();
+    }
+    
+    // manages multiplicity_b
+    
+    s = data->get_multiplicity_b();
+    
+    if (unamed || s.isEmpty() || RelationData::uni_directional(itstype)) {
+      // relation does not have multiplicity_b
+      if (multiplicity_b != 0) {
+	the_canvas()->del(multiplicity_b);
+	multiplicity_b = 0;
+      }
+    }
+    else if ((multiplicity_b == 0) && (begin->type() != UmlArrowPoint)) {
+      // adds multiplicity_b
+      
+      multiplicity_b = new LabelCanvas(s, the_canvas(), 0, 0);
+      multiplicity_b_default_position();
+    }
+    else if ((multiplicity_b != 0) && (multiplicity_b->get_name() != s)) {
+      multiplicity_b->set_name(s);
+      multiplicity_b_default_position();
+    }
+  }
+  
+  if (updatepos)
+    update_pos();
+}
+
+void RelationCanvas::label_default_position() const {
+  default_label_position();
+  package_modified();
+}
+
+void RelationCanvas::stereotype_default_position() const {
+  default_stereotype_position();
+  package_modified();
+}
+
+void RelationCanvas::role_a_default_position() const {
+  QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
+  int h = fm.height();
+  int dx = endp.x() - beginp.x();
+  int dy = endp.y() - beginp.y();
+  
+  if (fabs(dx) >= fabs(dy)) {
+    // horizontal line
+    if (dx == 0) dx = 1;
+  
+    if (dx > 0) {
+      int w = fm.width(data->get_role_a());
+      
+      role_a->move(endp.x() - w - ARROW_LENGTH,
+		   endp.y() - 4*h/3 + (dy * ARROW_LENGTH) / dx);
+    }
+    else
+      role_a->move(endp.x() + ARROW_LENGTH,
+		   endp.y() - 4*h/3 + (dy * ARROW_LENGTH) / dx);
+  }
+  else {
+    // vertical line
+    if (dy == 0) dy = 1;
+    
+    if (dy > 0)
+      role_a->move(endp.x() + ARROW_LENGTH - (dx * h/2) / dy,
+		   endp.y() - 4*h/3);
+    else
+      role_a->move(endp.x() + ARROW_LENGTH + (dx * h/2) / dy,
+		   endp.y() + h/2);
+  }
+  package_modified();
+}
+
+void RelationCanvas::role_b_default_position() const {
+  QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
+  int h = fm.height();
+  int dx = endp.x() - beginp.x();
+  int dy = endp.y() - beginp.y();
+  
+  if (fabs(dx) >= fabs(dy)) {
+    // horizontal line
+    if (dx == 0) dx = 1;
+  
+    if (dx > 0)
+      role_b->move(beginp.x() + ARROW_LENGTH,
+		   beginp.y() - 4*h/3 + (dy * ARROW_LENGTH) / dx);
+    else {
+      int w = fm.width(data->get_role_b());
+      
+      role_b->move(beginp.x() - w - ARROW_LENGTH,
+		   beginp.y() - 4*h/3 + (dy * ARROW_LENGTH) / dx);
+    }
+  }
+  else {
+    // vertical line
+    if (dy == 0) dy = 1;
+    
+    if (dy > 0)
+      role_b->move(beginp.x() + ARROW_LENGTH + (dx * h/2) / dy,
+		   beginp.y() + h/2);
+    else
+      role_b->move(beginp.x() + ARROW_LENGTH - (dx * h/2) / dy,
+		   beginp.y() - 4*h/3);
+  }
+  package_modified();
+}
+
+void RelationCanvas::multiplicity_a_default_position() const {
+  QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
+  int h = fm.height();
+  int w = fm.width(data->get_multiplicity_a());
+  int dx = endp.x() - beginp.x();
+  int dy = endp.y() - beginp.y();
+  
+  if (fabs(dx) >= fabs(dy)) {
+    // horizontal line
+    if (dx == 0) dx = 1;
+  
+    if (dx > 0)
+      multiplicity_a->move(endp.x() - w - ARROW_LENGTH,
+			   endp.y() + h/2 + (dy * ARROW_LENGTH) / dx);
+    else
+      multiplicity_a->move(endp.x() + ARROW_LENGTH,
+			   endp.y() + h/2 + (dy * ARROW_LENGTH) / dx);
+  }
+  else {
+    // vertical line
+    if (dy == 0) dy = 1;
+    
+    if (dy > 0)
+      multiplicity_a->move(endp.x() - w - ARROW_LENGTH - (dx * h/2) / dy,
+			   endp.y() - 4*h/3);
+    else
+      multiplicity_a->move(endp.x() - w - ARROW_LENGTH + (dx * h/2) / dy,
+			   endp.y() + h/2);
+  }
+  package_modified();
+}
+
+void RelationCanvas::multiplicity_b_default_position() const {
+  QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
+  int h = fm.height();
+  int dx = endp.x() - beginp.x();
+  int dy = endp.y() - beginp.y();
+  int w = fm.width(data->get_multiplicity_b());
+  
+  if (fabs(dx) >= fabs(dy)) {
+    // horizontal line
+    if (dx == 0) dx = 1;
+  
+    if (dx > 0)
+      multiplicity_b->move(beginp.x() + ARROW_LENGTH,
+			   beginp.y() + h/2 + (dy * ARROW_LENGTH) / dx);
+    else
+      multiplicity_b->move(beginp.x() - w - ARROW_LENGTH,
+			   beginp.y() + h/2 + (dy * ARROW_LENGTH) / dx);
+  }
+  else {
+    // vertical line
+    if (dy == 0) dy = 1;
+    
+    if (dy > 0)
+      multiplicity_b->move(beginp.x() - w - ARROW_LENGTH + (dx * h/2) / dy,
+			   beginp.y() + h/2);
+    else
+      multiplicity_b->move(beginp.x() - w - ARROW_LENGTH - (dx * h/2) / dy,
+			   beginp.y() - 4*h/3);
+  }
+  package_modified();
+}
+
+BasicData * RelationCanvas::get_data() const {
+  return data;
+}
+
+void RelationCanvas::drop(BrowserNode * bn, UmlCanvas * canvas)
+{
+  RelationData * def = (RelationData *) bn->get_data();
+  BrowserClass * from = def->get_start_class();
+  BrowserClass * to = def->get_end_class();
+  DiagramItem * ccfrom = 0;
+  DiagramItem * ccto = 0;
+  QCanvasItemList all = canvas->allItems();
+  QCanvasItemList::Iterator cit;
+
+  // the two classes are drawed ?
+  for (cit = all.begin(); cit != all.end(); ++cit) {
+    if ((*cit)->visible()) {
+      DiagramItem * adi = QCanvasItemToDiagramItem(*cit);
+    
+      if ((adi != 0) &&		// an uml canvas item
+	  (adi->type() == UmlClass)) {
+	if (adi->get_bn() == from) {
+	  ccfrom = adi;
+	  if (ccto != 0)
+	    break;
+	}
+	if (adi->get_bn() == to) {
+	  ccto = adi;
+	  if (ccfrom != 0)
+	    break;
+	}
+      }
+    }
+  }
+  
+  if ((ccfrom != 0) && (ccto != 0)) {
+    if (ccfrom->has_relation(def))
+      QMessageBox::information(0, "Bouml", "relation already drawn");
+    else {
+      RelationCanvas * rel = 
+	new RelationCanvas(canvas, ccfrom, ccto, from, bn->get_type(), 0, def);
+      
+      rel->hide();	// else self rel not fully shown
+      rel->show();
+      
+      if (rel->begin->type() != UmlArrowPoint) {
+	if (rel->data->get_association().type != 0)
+	  rel->show_assoc_class(0);
+	else
+	  rel->hide_assoc_class();
+      }
+      
+      rel->package_modified();
+    }
+  }
+}
+
+// the relation has association class
+// this assoc class is c or c is 0
+
+void RelationCanvas::show_assoc_class(CdClassCanvas * cc) {
+  if (cc == 0) {
+    // search for the assoc class drawing
+    BrowserNode * assoc = data->get_association().type;
+    
+    QCanvasItemList all = canvas()->allItems();
+    QCanvasItemList::Iterator cit;
+    
+    for (cit = all.begin(); cit != all.end(); ++cit) {
+      DiagramItem * di = QCanvasItemToDiagramItem(*cit);
+      
+      if ((di != 0) &&
+	  (di->type() == UmlClass) && 
+	  (((CdClassCanvas *) di)->get_bn() == assoc)) {
+	cc = (CdClassCanvas *) di;
+	break;
+      }
+    }
+    
+    if (cc == 0)
+      return;
+    
+    // check if draw_all_relations is desired
+    ClassDiagramSettings d = cc->get_settings();
+    
+    the_canvas()->browser_diagram()->get_classdiagramsettings(d);
+    
+    if (d.draw_all_relations != UmlYes)
+      return;
+  }
+  
+  // assoc already drawn ?
+  RelationCanvas * rc = this;
+  
+  while (rc->begin->type() == UmlArrowPoint)
+    // go to beginning of line
+    rc = (RelationCanvas *)
+      ((ArrowPointCanvas *) rc->begin)->get_other(rc);
+
+  RelationCanvas * first = rc;
+  
+  for (;;) {
+    // goes throw the line and check / search assoc
+    QList<ArrowCanvas> l = rc->lines;
+    QListIterator<ArrowCanvas> it(l);
+    
+    for (; it.current(); ++it) {
+      ArrowCanvas * a = it.current();
+      
+      if (a->type() == UmlAnchor) {
+	DiagramItem * di = a->get_start();
+	
+	if (di == this) {
+	  if (a->get_end() == cc)
+	    // already drawn
+	    return;
+	  else
+	    // not the good one
+	    a->delete_it();
+	}
+	else if (di == cc)
+	  // already drawn
+	  return;
+	else
+	  // not the good one
+	  a->delete_it();
+      }
+    }
+    
+    // goes to the next line part
+    if (rc->end->type() == UmlArrowPoint)
+      rc = (RelationCanvas *)
+	((ArrowPointCanvas *) rc->end)->get_other(rc);
+    else
+      break;
+  }
+  
+  // not drawn, add it
+  (new ArrowCanvas(the_canvas(), first, cc, UmlAnchor, 0, FALSE))->show();
+}
+
+// the relation doesn't have association class
+
+void RelationCanvas::hide_assoc_class() {
+  // assoc drawn ?
+  RelationCanvas * rc = this;
+  
+  while (rc->begin->type() == UmlArrowPoint)
+    // go to beginning of line
+    rc = (RelationCanvas *)
+      ((ArrowPointCanvas *) rc->begin)->get_other(rc);
+
+  for (;;) {
+    // goes through the line to remove existing assoc
+    QListIterator<ArrowCanvas> it(rc->lines);
+    
+    for (; it.current(); ++it) {
+      ArrowCanvas * a = it.current();
+      
+      if ((a->type() == UmlAnchor) &&
+	  ((a->get_start()->type() == UmlClass) ||
+	   (a->get_end()->type() == UmlClass))) {
+	a->delete_it();
+	
+	the_canvas()->get_view()->protect_history(FALSE);
+	the_canvas()->get_view()->update_history();
+      }
+    }
+    
+    // goes to the next line part
+    if (rc->end->type() == UmlArrowPoint)
+      rc = (RelationCanvas *)
+	((ArrowPointCanvas *) rc->end)->get_other(rc);
+    else
+      break;
+  }
+}
+
+const char * RelationCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  if ((l == UmlAnchor) && (dest->type() == UmlClass)) {
+    if (data->get_association().type != dest->get_bn())
+      return ((data->get_end())
+	      ? data->is_writable(data->get_end())
+	      : data->is_writable(data->get_start()))
+	? 0 // ok
+	: "read-only relation";
+    else
+      // ok
+      return 0;
+  }
+  else
+    return ArrowCanvas::may_connect(l, dest);
+}
+
+void RelationCanvas::post_connexion(UmlCode l, DiagramItem * dest) {
+  if ((l == UmlAnchor) && (dest->type() == UmlClass)) {
+    BrowserClass * cl = data->get_association().type;
+    
+    if (cl != dest->get_bn()) {
+      if (cl != 0)
+	hide_assoc_class();
+      
+      AType t;
+      
+      t.type = (BrowserClass *) dest->get_bn();
+      data->set_association(t);
+    }
+  }
+}
+
+void RelationCanvas::save(QTextStream & st, bool ref, QString & warning) const {
+  if (ref)
+    st << "relationcanvas_ref " << get_ident()
+       << " // " << data->get_name();
+  else if (begin->type() != UmlArrowPoint) {
+    // relation canvas start
+    nl_indent(st);
+    st << "relationcanvas " << get_ident() << ' ';
+    data->save(st, TRUE, warning);
+    indent(+1);
+    
+    if (geometry != NoGeometry) {
+      nl_indent(st);
+      st << "geometry " << stringify(geometry);
+      if (!fixed_geometry)
+	st << " unfixed";
+    }
+    
+    const RelationCanvas * last = 
+      (const RelationCanvas *) ArrowCanvas::save_lines(st, TRUE, TRUE, warning);
+    
+    nl_indent(st);
+    if (last->role_a)
+      save_xyz(st, last->role_a, "role_a_pos");
+    else
+      st << "no_role_a";
+    if (role_b)
+      save_xyz(st, role_b, " role_b_pos");
+    else
+      st << " no_role_b";
+    nl_indent(st);
+    if (last->multiplicity_a)
+      save_xyz(st, last->multiplicity_a, "multiplicity_a_pos");
+    else
+      st << "no_multiplicity_a";
+    if (multiplicity_b)
+      save_xyz(st, multiplicity_b, " multiplicity_b_pos");
+    else
+      st << " no_multiplicity_b";
+    indent(-1);
+  }
+}
+
+RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
+{
+  if (!strcmp(k, "relationcanvas_ref"))
+    return ((RelationCanvas *) dict_get(read_id(st), "relationcanvas", canvas));
+  else if (!strcmp(k, "relationcanvas")) {    
+    int id = read_id(st);
+    RelationData * rd = RelationData::read_ref(st, TRUE);
+    LineGeometry geo;
+    bool fixed;
+    
+    k = read_keyword(st);
+    if (! strcmp(k, "geometry")) {
+      geo = line_geometry(read_keyword(st));
+      k = read_keyword(st);
+      if (! strcmp(k, "unfixed"))
+	fixed = FALSE;
+      else {
+	fixed = TRUE;
+	unread_keyword(k, st);
+      }
+    }
+    else {
+      unread_keyword(k, st);
+      geo = NoGeometry;
+      fixed = FALSE;
+    }
+
+    read_keyword(st, "from");
+    read_keyword(st, "ref");
+    
+    DiagramItem * bi = dict_get(read_id(st), "classcanvas", canvas);
+    BrowserClass * b = rd->get_start_class();
+    UmlCode t = rd->get_type();
+    bool unamed = !RelationData::isa_association(t);
+    QString s = rd->get_name();
+    RelationCanvas * first = 0;
+    RelationCanvas * result;
+    LabelCanvas * label;
+    LabelCanvas * stereotype;
+    double z;
+              
+    for (;;) {
+      if (read_file_format() < 5)
+	z = OLD_ARROW_Z;
+      else {
+	read_keyword(st, "z");
+	z = read_double(st);
+      }
+      
+      k = read_keyword(st);
+      
+      if ((label = LabelCanvas::read(st, canvas, k)) != 0) {
+	if (unamed || s.isEmpty() || (s == RelationData::default_name(t))) {
+	  // relation does not have name or 'true' name
+	  canvas->del(label);
+	  label = 0;
+	}
+	else
+	  label->setZ(z);
+	
+	k = read_keyword(st);
+      }
+      
+      if (!strcmp(k, "stereotype")) {
+	(void) read_string(st);
+	if (read_file_format() < 5)
+	  read_keyword(st, "xy");
+	else
+	  read_keyword(st, "xyz");
+	
+	int x = (int) read_double(st);
+	int y = (int) read_double(st);
+	
+	if (*(rd->get_stereotype()) == 0) {
+	  stereotype = 0;
+	  if (read_file_format() >= 5)
+	    read_double(st);	// z
+	}
+	else {
+	  QString s = toUnicode(rd->get_stereotype());
+	  
+	  if (s[0] != '{')
+	    s = QString("<<") + s + ">>";
+
+	  stereotype = new LabelCanvas(s, canvas, x, y);
+	  stereotype->setZ((read_file_format() < 5) ? OLD_ARROW_Z 
+						    : read_double(st));
+	}
+	k = read_keyword(st);
+      }
+      else
+	stereotype = 0;
+
+      if (strcmp(k, "to"))
+	wrong_keyword(k, "to");
+
+      DiagramItem * di;
+      
+      if (strcmp(k = read_keyword(st), "ref")) {
+	di = ArrowPointCanvas::read(st, canvas, k);
+	
+	if (di == 0)
+	  unknown_keyword(k);
+      }
+      else
+	di = dict_get(read_id(st), "classcanvas", canvas);
+
+      // do not give rd to not call update()
+      result = new RelationCanvas(canvas, bi, di, b, t, id);
+      result->geometry = geo;
+      result->fixed_geometry = fixed;
+      result->setZ(z);
+      result->data = rd;
+      connect(rd, SIGNAL(changed()), result, SLOT(modified()));
+      connect(rd, SIGNAL(deleted()), result, SLOT(deleted()));
+
+      if (first == 0)
+	first = result;
+      if (label != 0)
+	result->label = label;
+      if (stereotype != 0)
+	(result->stereotype = stereotype)->show();
+      result->show();
+      
+      if (di->type() != UmlArrowPoint)
+	break;
+      
+      bi = di;
+      
+      read_keyword(st, "line");
+      id = read_id(st);
+    }
+    
+    // roles & multiplicity
+    
+    int x, y;
+    
+    k = read_keyword(st);
+    if (!strcmp(k, "role_a_pos")) {
+      x = (int) read_double(st);
+      y = (int) read_double(st);
+      z = (read_file_format() < 5) ? /*OLD_*/LABEL_Z : read_double(st);
+      
+      s = rd->get_role_a();
+      
+      if (!unamed && !s.isEmpty()) {
+	result->role_a = new LabelCanvas(s, canvas, x, y);
+	result->role_a->setZ(z);
+	result->role_a->show();
+      }
+    }
+    else if (strcmp(k, "no_role_a"))
+      wrong_keyword(k, "no_role_a");
+    
+    k = read_keyword(st);
+    if (!strcmp(k, "role_b_pos")) {
+      x = (int) read_double(st);
+      y = (int) read_double(st);
+      z = (read_file_format() < 5) ? /*OLD_*/LABEL_Z : read_double(st);
+      
+      s = rd->get_role_b();
+      
+      if (!unamed && !s.isEmpty()) {
+	first->role_b = new LabelCanvas(s, canvas, x, y);
+	first->role_b->setZ(z);
+	first->role_b->show();
+      }
+    }
+    else if (strcmp(k, "no_role_b"))
+      wrong_keyword(k, "no_role_b");
+    
+    k = read_keyword(st);
+    if (!strcmp(k, "multiplicity_a_pos")) {
+      x = (int) read_double(st);
+      y = (int) read_double(st);
+      z = (read_file_format() < 5) ? /*OLD_*/LABEL_Z : read_double(st);
+      
+      s = rd->get_multiplicity_a();
+      
+      if (!unamed && !s.isEmpty()) {
+	result->multiplicity_a = new LabelCanvas(s, canvas, x, y);
+	result->multiplicity_a->setZ(z);
+	result->multiplicity_a->show();
+      }
+    }
+    else if (strcmp(k, "no_multiplicity_a"))
+      wrong_keyword(k, "no_multiplicity_a");
+    
+    k = read_keyword(st);
+    if (!strcmp(k, "multiplicity_b_pos")) {
+      x = (int) read_double(st);
+      y = (int) read_double(st);
+      z = (read_file_format() < 5) ? /*OLD_*/LABEL_Z : read_double(st);
+      
+      s = rd->get_multiplicity_b();
+      
+      if (!unamed && !s.isEmpty()) {
+	first->multiplicity_b = new LabelCanvas(s, canvas, x, y);
+	first->multiplicity_b->setZ(z);
+	first->multiplicity_b->show();
+      }
+    }
+    else if (strcmp(k, "no_multiplicity_b"))
+      wrong_keyword(k, "no_multiplicity_b");
+   
+    // to add label, stereotype ... if needed
+    
+    first->update(FALSE);
+    if (first != result)
+      result->update(FALSE);
+    
+    // manage case where the relation is deleted but present in the browser
+    if (result->data->get_start()->deletedp())
+      result->delete_it();
+    
+    return result;
+  }
+  else
+    return 0;
+}
+
+void RelationCanvas::history_save(QBuffer & b) const {
+  ArrowCanvas::history_save(b);
+  // save labels because they may change
+  // when an arrow point is added/removed
+  ::save(role_a, b);
+  ::save(role_b, b);
+  ::save(multiplicity_a, b);
+  ::save(multiplicity_b, b);
+}
+
+void RelationCanvas::history_load(QBuffer & b) {
+  ArrowCanvas::history_load(b);
+  role_a = (LabelCanvas *) load_item(b);
+  role_b = (LabelCanvas *) load_item(b);
+  multiplicity_a = (LabelCanvas *) load_item(b);
+  multiplicity_b = (LabelCanvas *) load_item(b);
+  connect(data, SIGNAL(changed()), this, SLOT(modified()));
+  connect(data, SIGNAL(deleted()), this, SLOT(deleted()));
+}
+
+void RelationCanvas::history_hide() {
+  QCanvasItem::setVisible(FALSE);
+  disconnect(data, 0, this, 0);
+}

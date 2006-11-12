@@ -1,0 +1,248 @@
+class UmlState
+!!!144898.cpp!!!	sKind() : string
+  return (parent()->kind() == aClassView)
+    ? "state machine" : "state";
+!!!144898.java!!!	sKind() : string
+  return (parent().kind() == anItemKind.aClassView)
+    ? "state machine" : "state";
+!!!145026.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  define();
+
+  chapter((parent()->kind() == aClassView)
+	  ? "StateMachine" : "State",
+	  pfix, rank, "state", level);
+
+  fw.write("<p>Entry Behavior :</p><ul>");
+  
+  QCString s = entryBehavior();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppEntryBehavior();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaEntryBehavior();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Exit Behavior :</p><ul>");
+  
+  s = exitBehavior();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppExitBehavior();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaExitBehavior();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Do activity :</p><ul>");
+  
+  s = doActivity();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppDoActivity();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaDoActivity();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+ 
+  s = description();
+  
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(description());
+    fw.write("<br /></p>");
+  }
+
+  UmlStateDiagram * d = associatedDiagram();
+  
+  if (d != 0) {
+    fw.write("<p>Diagram : ");
+    d->write();
+    fw.write("</p>");
+  }
+
+  write_children(pfix, rank, level);
+
+  unload(FALSE, FALSE);
+!!!145026.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  define();
+
+  chapter((parent().kind() == anItemKind.aClassView)
+	  ? "StateMachine" : "State",
+	  pfix, rank, "state", level);
+
+  fw.write("<p>Entry Behavior :</p><ul>");
+  
+  String s = entryBehavior();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppEntryBehavior();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaEntryBehavior();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Exit Behavior :</p><ul>");
+  
+  s = exitBehavior();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppExitBehavior();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaExitBehavior();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Do activity :</p><ul>");
+  
+  s = doActivity();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppDoActivity();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaDoActivity();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+ 
+  s = description();
+  
+  if (s.length() != 0) {
+    fw.write("<p>");
+    writeq(description());
+    fw.write("<br /></p>");
+  }
+
+  UmlStateDiagram d = associatedDiagram();
+  
+  if (d != null) {
+    fw.write("<p>Diagram : ");
+    d.write();
+    fw.write("</p>");
+  }
+
+  write_children(pfix, rank, level);
+
+  unload(false, false);
+!!!151298.cpp!!!	memo_ref() : void
+  states.addElement(this);
+  UmlItem::memo_ref();
+!!!151298.java!!!	memo_ref() : void
+  states.addElement(this);
+  super.memo_ref();
+
+!!!151170.cpp!!!	ref_index() : void
+  if (!states.isEmpty())
+    fw.write("<a href=\"states.html\" target = \"projectFrame\"><b> -States- </b></a>");
+!!!151170.java!!!	ref_index() : void
+  if (!states.isEmpty())
+    fw.write("<a href=\"states.html\" target = \"projectFrame\"><b> -States- </b></a>");
+!!!151042.cpp!!!	generate_index() : void
+  UmlItem::generate_index(states, "States", "states");
+!!!151042.java!!!	generate_index() : void
+  generate_index(states, "States", "states");
+!!!149762.cpp!!!	chapterp() : bool
+  return TRUE;
+!!!149762.java!!!	chapterp() : bool
+  return true;

@@ -1,0 +1,28 @@
+class UmlClass
+!!!144642.cpp!!!	deploy(inout view : UmlDeploymentView) : void
+if (associatedArtifact() == 0) {
+  UmlCom::trace("Create <i>artifact</i> " + name());
+  
+  UmlArtifact * a = UmlArtifact::create(view, name());
+    
+  if (a == 0)
+    UmlCom::trace("cannot create <i>artifact</i> named " + name());
+  else{
+    a->set_Stereotype("source");
+    a->addAssociatedClass(this);
+  }
+}
+!!!144642.java!!!	deploy(inout view : UmlDeploymentView) : void
+if (associatedArtifact() == null) {
+  UmlCom.trace("Create <i>artifact</i> " + name());
+  
+  try {
+    UmlArtifact a = UmlArtifact.create(view, name());
+    
+    a.set_Stereotype("source");
+    a.addAssociatedClass(this);
+  }
+  catch (Exception e) {
+    UmlCom.trace("cannot create <i>artifact</i> named " + name());
+  }
+}

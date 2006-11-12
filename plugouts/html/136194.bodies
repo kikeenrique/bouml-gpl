@@ -1,0 +1,71 @@
+class UmlOnSignalAction
+!!!200706.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  UmlActivityAction::html();
+
+  fw.write("<p>Signal :</p><ul>");
+  
+  QCString s = signal();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppSignal();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaSignal();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  write_children(pfix, rank, level);
+
+  unload(FALSE, FALSE);
+!!!200706.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  super.html();
+
+  String s;
+  
+    fw.write("<p>Signal :</p><ul>");
+  
+  s = signal();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppSignal();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaSignal();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  write_children(pfix, rank, level);
+
+  unload(false, false);

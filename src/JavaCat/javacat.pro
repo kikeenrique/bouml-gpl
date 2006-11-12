@@ -1,0 +1,57 @@
+TEMPLATE      = app
+CONFIG	      += qt warn_on release
+HEADERS	      = JavaCatWindow.h BrowserView.h BrowserSearchDialog.h ShowFileDialog.h \
+		CommentView.h
+SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp UmlArtifact.cpp \
+		UmlClass.cpp UmlClassDiagram.cpp UmlClassMember.cpp \
+		UmlExtraClassMember.cpp \
+		UmlClassView.cpp UmlCollaborationDiagram.cpp UmlComponent.cpp \
+		UmlComponentDiagram.cpp UmlComponentView.cpp \
+		UmlDeploymentDiagram.cpp UmlDeploymentView.cpp UmlDiagram.cpp \
+		UmlItem.cpp UmlNode.cpp UmlOperation.cpp UmlPackage.cpp \
+		UmlRelation.cpp UmlNcRelation.cpp UmlSequenceDiagram.cpp UmlUseCase.cpp \
+		UmlUseCaseDiagram.cpp UmlUseCaseView.cpp main.cpp \
+		Lex.cpp ClassContainer.cpp \
+		Package.cpp Class.cpp BrowserNode.cpp JavaCatWindow.cpp \
+		BrowserSearchDialog.cpp ShowFileDialog.cpp \
+		BrowserView.cpp Pixmap.cpp CommentView.cpp \
+		UmlChoicePseudoState.cpp UmlDeepHistoryPseudoState.cpp \
+		UmlEntryPointPseudoState.cpp UmlExitPointPseudoState.cpp \
+		UmlFinalState.cpp UmlForkPseudoState.cpp \
+		UmlInitialPseudoState.cpp UmlJoinPseudoState.cpp \
+		UmlJunctionPseudoState.cpp UmlShallowHistoryPseudoState.cpp \
+		UmlStateAction.cpp UmlState.cpp \
+		UmlStateDiagram.cpp UmlTerminatePseudoState.cpp \
+		UmlRegion.cpp Progress.cpp \
+		../Tools/UmlBaseClassItem.cpp ../Tools/UmlBaseClassMember.cpp \
+		../Tools/CppSettings.cpp \
+		../Tools/IdlSettings.cpp ../Tools/JavaSettings.cpp \
+		../Tools/UmlTypeSpec.cpp \
+		../Tools/UmlBaseAttribute.cpp ../Tools/UmlBaseClass.cpp \
+		../Tools/UmlBaseExtraClassMember.cpp ../Tools/UmlBaseArtifact.cpp \
+		../Tools/UmlBaseClassDiagram.cpp ../Tools/UmlBaseClassView.cpp \
+		../Tools/UmlBaseCollaborationDiagram.cpp ../Tools/UmlBaseComponent.cpp \
+		../Tools/UmlBaseComponentDiagram.cpp ../Tools/UmlBaseComponentView.cpp \
+		../Tools/UmlBaseDeploymentDiagram.cpp ../Tools/UmlBaseDeploymentView.cpp \
+		../Tools/UmlBaseDiagram.cpp ../Tools/UmlBaseItem.cpp \
+		../Tools/UmlBaseNode.cpp ../Tools/UmlBaseOperation.cpp \
+		../Tools/UmlBasePackage.cpp ../Tools/UmlBaseRelation.cpp \
+		../Tools/UmlBaseNcRelation.cpp \
+		../Tools/UmlBaseSequenceDiagram.cpp ../Tools/UmlBaseUseCase.cpp \
+		../Tools/UmlBaseUseCaseDiagram.cpp ../Tools/UmlBaseUseCaseView.cpp \
+		../Tools/UmlCom.cpp ../Tools/UmlSettings.cpp \
+		../Tools/UmlBaseChoicePseudoState.cpp ../Tools/UmlBaseDeepHistoryPseudoState.cpp \
+		../Tools/UmlBaseEntryPointPseudoState.cpp ../Tools/UmlBaseExitPointPseudoState.cpp \
+		../Tools/UmlBaseFinalState.cpp ../Tools/UmlBaseForkPseudoState.cpp \
+		../Tools/UmlBaseInitialPseudoState.cpp ../Tools/UmlBaseJoinPseudoState.cpp \
+		../Tools/UmlBaseJunctionPseudoState.cpp ../Tools/UmlBaseShallowHistoryPseudoState.cpp \
+		../Tools/UmlBaseStateAction.cpp ../Tools/UmlBaseState.cpp \
+		../Tools/UmlBaseStateDiagram.cpp ../Tools/UmlBaseTerminatePseudoState.cpp \
+		../Tools/UmlBaseRegion.cpp ../Tools/StateBehavior.cpp ../Tools/UmlBaseTransition.cpp \
+		../Tools/TransitionBehavior.cpp 
+
+
+TARGET	      = java_catalog
+DEFINES	      = WITHJAVA
+INCLUDEPATH   = ../Tools ../JavaCat
+

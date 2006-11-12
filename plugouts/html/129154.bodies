@@ -1,0 +1,214 @@
+class UmlTransition
+!!!145154.cpp!!!	sKind() : string
+  return "transition";
+!!!145154.java!!!	sKind() : string
+  return "transition";
+!!!145282.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  fw.write("<table><tr><td><div class=\"element\">Transition  <b>");
+  writeq(name());
+  fw.write("</div></td></tr></table>");
+  
+  fw.write("<p>From ");
+  parent()->write();
+  fw.write(" To ");
+  target()->write();
+  fw.write("</p>");
+
+  fw.write("<p>Trigger :</p><ul>");
+  
+  QCString s = trigger();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppTrigger();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaTrigger();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Guard :</p><ul>");
+  
+  s = guard();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppGuard();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaGuard();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Activity :</p><ul>");
+  
+  s = activity();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppActivity();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaActivity();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+ 
+  s = description();
+
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(s);
+    fw.write("<br /></p>");
+  }
+
+  unload(FALSE, FALSE);
+!!!145282.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  fw.write("<table><tr><td><div class=\"element\">Transition <b>");
+  writeq(name());
+  fw.write("</div></td></tr></table>");
+  
+  fw.write("<p>From ");
+  parent().write();
+  fw.write(" To ");
+  target().write();
+  fw.write("</p>");
+
+  fw.write("<p>Trigger :</p><ul>");
+  
+  String s = trigger();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppTrigger();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaTrigger();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Guard :</p><ul>");
+  
+  s = cppGuard();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = guard();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaGuard();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Activity :</p><ul>");
+  
+  s = cppActivity();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = activity();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaActivity();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+ 
+  s = description();
+  
+  if (s.length() != 0) {
+    fw.write("<p>");
+    writeq(description());
+    fw.write("<br /></p>");
+  }
+
+  unload(false, false);
+

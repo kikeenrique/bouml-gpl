@@ -1,0 +1,323 @@
+// *************************************************************************
+//
+// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+//
+// This file is part of the BOUML Uml Toolkit.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+//
+// e-mail : bouml@free.fr
+// home   : http://bouml.free.fr
+//
+// *************************************************************************
+
+#ifdef WIN32
+#pragma warning (disable: 4150)
+#endif
+
+#include "UmlCanvas.h"
+#include "UmlGlobal.h"
+#include "DiagramView.h"
+#include "CodDirsCanvas.h"
+#include "BrowserDiagram.h"
+
+static QList<UmlCanvas> All;
+
+static const struct {
+  int w;
+  int h;
+} formatSize[] = {
+  {841 * 4, 1189 * 4},	// IsoA0
+  {594 * 4, 841 * 4},	// IsoA1
+  {420 * 4, 594 * 4},	// IsoA2
+  {297 * 4, 420 * 4},	// IsoA3
+  {210 * 4, 297 * 4},	// IsoA4
+  {148 * 4, 210 * 4},	// IsoA5
+  {216 * 4, 279 * 4},	// UsA
+  {279 * 4, 432 * 4},	// UsB
+  {432 * 4, 559 * 4},	// UsC
+  {559 * 4, 864 * 4},	// UsD
+  {864 * 4, 1118 * 4},	// UsE
+  
+  {1189 * 4, 841 * 4},	// landscape IsoA0
+  {841 * 4, 594 * 4},	// landscape IsoA1
+  {594 * 4, 420 * 4},	// landscape IsoA2
+  {420 * 4, 297 * 4},	// landscape IsoA3
+  {297 * 4, 210 * 4},	// landscape IsoA4
+  {210 * 4, 148 * 4},	// landscape IsoA5
+  {279 * 4, 216 * 4},	// landscape UsA
+  {432 * 4, 279 * 4},	// landscape UsB
+  {559 * 4, 432 * 4},	// landscape UsC
+  {864 * 4, 559 * 4},	// landscape UsD
+  {1118 * 4, 864 * 4}	// landscape UsE
+};
+
+UmlCanvas::UmlCanvas(CanvasFormat f, BrowserDiagram * br_diag)
+    : QCanvas(formatSize[f].w, formatSize[f].h),
+      br_diagram(br_diag), view(0) {
+  width100percent = width();
+  height100percent = height();
+  do_paste = FALSE;
+  hlimit = 0;
+  vlimit = 0;
+  set_zoom(1);	// set do_scale
+  do_scale = FALSE;
+  show_shadow = br_diag->get_shadow();
+  
+  All.append(this);
+}
+
+UmlCanvas::~UmlCanvas() {
+  All.removeRef(this);
+}
+
+void UmlCanvas::set_view(DiagramView * v) {
+  view = v;
+  
+  // add limits
+  vlimit = new QCanvasLine(this);
+  hlimit = new QCanvasLine(this);
+  vlimit->setZ(TOP_Z);	// alien
+  hlimit->setZ(TOP_Z);	// alien
+  vlimit->setPen(QObject::DotLine);
+  hlimit->setPen(QObject::DotLine);
+  update_limits();
+  vlimit->show();
+  hlimit->show();
+}
+
+void UmlCanvas::update_limits() {
+  if (vlimit) {
+    vlimit->setPoints(width()-1, 0, width()-1, height()-1);
+    hlimit->setPoints(0, height()-1, width()-1, height()-1);
+  }
+}
+
+void UmlCanvas::resize(CanvasFormat f) {
+  QCanvas::resize((int) (formatSize[f].w * zoom_value),
+		  (int) (formatSize[f].h * zoom_value));
+  width100percent = formatSize[f].w;
+  height100percent = formatSize[f].h;
+  update_limits();
+  
+  // force redisplay else phantoms may appears
+  setBackgroundColor(QObject::lightGray);
+  update();
+  setBackgroundColor(QObject::white);
+  update();
+}
+
+QCanvasItem * UmlCanvas::collision(const QPoint & p) const {
+  QCanvasItemList l = collisions(p);
+  QCanvasItemList::ConstIterator it;
+  QCanvasItemList::ConstIterator end = l.end();
+  
+  for (it = l.begin(); it != end; ++it)
+    if (((*it)->visible()) && // at least not deleted
+	!isa_alien(*it) &&
+	!isa_col_msg_dirs(*it))
+      return *it;
+  
+  return 0;
+}
+
+QCanvasItem * UmlCanvas::collision(const QPoint & p, int except) const {
+  QCanvasItemList l = collisions(p);
+  QCanvasItemList::ConstIterator it;
+  QCanvasItemList::ConstIterator end = l.end();
+  
+  for (it = l.begin(); it != end; ++it)
+    if (((*it)->visible()) && // at least not deleted
+	!isa_alien(*it) &&
+	!isa_col_msg_dirs(*it) &&
+	((*it)->rtti() != except))
+      return *it;
+  
+  return 0;
+}
+
+void UmlCanvas::del(QCanvasItem * i) {
+  // do not delete, just hide because of a Qt's bug (?)
+  i->hide();
+  selected.remove(i);
+  
+  DiagramItem * it = QCanvasItemToDiagramItem(i);
+  
+  if (it != 0)
+    all_items.remove(it->get_ident());
+}
+
+void UmlCanvas::select(QCanvasItem * i) {
+  i->setSelected(TRUE);
+  selected.append(i);
+}
+
+void UmlCanvas::unselect(QCanvasItem * i) {
+  i->setSelected(FALSE);
+  selected.remove(i);
+}
+
+void UmlCanvas::unselect_all() {
+  QCanvasItemList::Iterator it;
+  
+  for (it = selected.begin(); it != selected.end(); ++it)
+    (*it)->setSelected(FALSE);
+  selected.clear();
+}
+
+#if 1
+void UmlCanvas::set_zoom(double zm) {
+  do_scale = TRUE;
+  zoom_value = zm;
+  
+  float ps = (float) (NormalFont.pointSize() * zm);
+  float ps_small = 2 * ps / 3;
+  float ps_large = 2 * ps;
+  
+  the_fonts[UmlNormalFont] = NormalFont;
+  the_fonts[UmlNormalFont].setPointSizeFloat(ps);
+  the_fonts[UmlNormalBoldFont] = BoldFont;
+  the_fonts[UmlNormalBoldFont].setPointSizeFloat(ps);
+  the_fonts[UmlNormalItalicFont] = ItalicFont;
+  the_fonts[UmlNormalItalicFont].setPointSizeFloat(ps);
+  the_fonts[UmlNormalBoldItalicFont] = BoldItalicFont;
+  the_fonts[UmlNormalBoldItalicFont].setPointSizeFloat(ps);
+  the_fonts[UmlNormalUnderlinedFont] = UnderlineFont;
+  the_fonts[UmlNormalUnderlinedFont].setPointSizeFloat(ps);
+  the_fonts[UmlNormalStrikeOutFont] = StrikeOutFont;
+  the_fonts[UmlNormalStrikeOutFont].setPointSizeFloat(ps);
+  
+  the_fonts[UmlSmallFont] = NormalFont;
+  the_fonts[UmlSmallFont].setPointSizeFloat(ps_small);
+  the_fonts[UmlSmallBoldFont] = BoldFont;
+  the_fonts[UmlSmallBoldFont].setPointSizeFloat(ps_small);
+  the_fonts[UmlSmallItalicFont] = ItalicFont;
+  the_fonts[UmlSmallItalicFont].setPointSizeFloat(ps_small);
+  the_fonts[UmlSmallBoldItalicFont] = BoldItalicFont;
+  the_fonts[UmlSmallBoldItalicFont].setPointSizeFloat(ps_small);
+  
+  the_fonts[UmlLargeFont] = NormalFont;
+  the_fonts[UmlLargeFont].setPointSizeFloat(ps_large);
+  the_fonts[UmlLargeBoldFont] = BoldFont;
+  the_fonts[UmlLargeBoldFont].setPointSizeFloat(ps_large);
+  the_fonts[UmlLargeItalicFont] = ItalicFont;
+  the_fonts[UmlLargeItalicFont].setPointSizeFloat(ps_large);
+  the_fonts[UmlLargeBoldItalicFont] = BoldItalicFont;
+  the_fonts[UmlLargeBoldItalicFont].setPointSizeFloat(ps_large);
+  
+  QCanvas::resize((int) (width100percent * zm),
+		  (int) (height100percent * zm));
+  
+  update_limits();
+}
+#else
+void UmlCanvas::set_zoom(double zm) {
+  do_scale = TRUE;
+  zoom_value = zm;
+  
+  int ps = (int) (NormalFont.pointSize() * zm);
+  int ps_small = 2 * ps / 3;
+  int ps_large = 2 * ps;
+  
+  if (ps <= 0) ps = 1;
+  if (ps_small <= 0) ps_small = 1;
+  
+  the_fonts[UmlNormalFont] = NormalFont;
+  the_fonts[UmlNormalFont].setPointSize(ps);
+  the_fonts[UmlNormalBoldFont] = BoldFont;
+  the_fonts[UmlNormalBoldFont].setPointSize(ps);
+  the_fonts[UmlNormalItalicFont] = ItalicFont;
+  the_fonts[UmlNormalItalicFont].setPointSize(ps);
+  the_fonts[UmlNormalBoldItalicFont] = BoldItalicFont;
+  the_fonts[UmlNormalBoldItalicFont].setPointSize(ps);
+  the_fonts[UmlNormalUnderlinedFont] = UnderlineFont;
+  the_fonts[UmlNormalUnderlinedFont].setPointSize(ps);
+  the_fonts[UmlNormalStrikeOutFont] = StrikeOutFont;
+  the_fonts[UmlNormalStrikeOutFont].setPointSize(ps);
+  
+  the_fonts[UmlSmallFont] = NormalFont;
+  the_fonts[UmlSmallFont].setPointSize(ps_small);
+  the_fonts[UmlSmallBoldFont] = BoldFont;
+  the_fonts[UmlSmallBoldFont].setPointSize(ps_small);
+  the_fonts[UmlSmallItalicFont] = ItalicFont;
+  the_fonts[UmlSmallItalicFont].setPointSize(ps_small);
+  the_fonts[UmlSmallBoldItalicFont] = BoldItalicFont;
+  the_fonts[UmlSmallBoldItalicFont].setPointSize(ps_small);
+  
+  the_fonts[UmlLargeFont] = NormalFont;
+  the_fonts[UmlLargeFont].setPointSize(ps_large);
+  the_fonts[UmlLargeBoldFont] = BoldFont;
+  the_fonts[UmlLargeBoldFont].setPointSize(ps_large);
+  the_fonts[UmlLargeItalicFont] = ItalicFont;
+  the_fonts[UmlLargeItalicFont].setPointSize(ps_large);
+  the_fonts[UmlLargeBoldItalicFont] = BoldItalicFont;
+  the_fonts[UmlLargeBoldItalicFont].setPointSize(ps_large);
+  
+  QCanvas::resize((int) (width100percent * zm),
+		  (int) (height100percent * zm));
+  
+  update_limits();
+}
+#endif
+
+void UmlCanvas::show_limits(bool y) {
+  vlimit->setVisible(y);
+  hlimit->setVisible(y);
+}
+
+void UmlCanvas::update_all_shadow()
+{
+  UmlCanvas * c;
+  
+  for (c = All.first(); c != 0; c = All.next())
+    c->show_shadow = c->br_diagram->get_shadow();
+}
+
+int UmlCanvas::shadow() const {
+  if (! show_shadow)
+    return 0;
+  
+  int w = (int) (4 * zoom_value);
+  
+  if (w < 3)
+    return 3;
+  else if (w > 6)
+    return 6;
+  else
+    return w;
+}
+
+void UmlCanvas::update() {
+  if (view != 0)
+    view->update_history();
+  QCanvas::update();
+}
+
+bool UmlCanvas::already_drawn(BrowserNode * bn) {
+  QCanvasItemList all = allItems();
+  QCanvasItemList::Iterator cit;
+  UmlCode k = bn->get_type();
+
+  for (cit = all.begin(); cit != all.end(); ++cit) {
+    if ((*cit)->visible()) {
+      DiagramItem * di = QCanvasItemToDiagramItem(*cit);
+    
+      if ((di != 0) && (di->type() == k) && (di->get_bn() == bn))
+	return TRUE;
+    }
+  }
+
+  return FALSE;
+}

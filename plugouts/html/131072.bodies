@@ -1,0 +1,9 @@
+class UmlBaseExitPointPseudoState
+!!!141184.cpp!!!	create(inout parent : UmlItem, inout s : str) : UmlExitPointPseudoState
+  return (UmlExitPointPseudoState *) parent->create_(anExitPointPseudoState, s);
+!!!141184.java!!!	create(inout parent : UmlItem, inout s : str) : UmlExitPointPseudoState
+  return (UmlExitPointPseudoState) parent.create_(anItemKind.anExitPointPseudoState, s);
+!!!141312.cpp!!!	kind() : anItemKind
+  return anExitPointPseudoState;
+!!!141312.java!!!	kind() : anItemKind
+  return anItemKind.anExitPointPseudoState;

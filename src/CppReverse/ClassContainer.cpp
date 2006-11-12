@@ -1,0 +1,354 @@
+// *************************************************************************
+//
+// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+//
+// This file is part of the BOUML Uml Toolkit.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+//
+// e-mail : bouml@free.fr
+// home   : http://bouml.free.fr
+//
+// *************************************************************************
+
+#ifdef DEBUG_BOUML
+#include <iostream>
+
+using namespace std;
+#endif
+
+#include "Class.h"
+#include "CppSettings.h"
+#include "Lex.h"
+#include "UmlOperation.h"
+#include "UmlBaseRelation.h"
+#include "Package.h"
+
+QValueList<FormalParameterList> ClassContainer::empty;
+
+Class * ClassContainer::declare_if_needed(const QCString & name,
+					  const QCString & stereotype,
+					  const FormalParameterList & formals,
+					  NDict<Class> & declared, 
+					  NDict<Class> & defined) {
+  if (name.find(' ') != -1)
+    // anonymous struct/union/enum
+    return 0;
+  
+  if (name.find('$') != -1)
+    // pointer to function/operation
+    return 0;
+  
+  if (! formals.isEmpty()) {
+    FormalParameterList::ConstIterator it;
+    QCString st = stereotype;
+    
+    if (st.isEmpty())
+      st = "class";
+    
+    for (it = formals.begin(); it != formals.end(); ++it)
+      if (((*it).name() == name) && ((*it).type() == st))
+	// template formal
+	return 0;
+  }
+  
+  Class * result = 0;
+  
+  if (((result = declared[name]) == 0) &&
+      ((result = defined[name]) == 0) &&
+      CppSettings::umlType(name).isEmpty() &&	// not int ...
+      CppSettings::include(name).isEmpty() &&	// not external type
+      (name != "void") && (name != "unsigned") && (name != "signed")) {
+    return new_class(name, stereotype, TRUE);
+  }
+  
+  return ((result != 0) && result->set_stereotype(stereotype))
+    ? result : 0;
+}
+
+Class * ClassContainer::define(const QCString & name,
+			       const QCString & stereotype,
+			       NDict<Class> & declared, 
+			       NDict<Class> & defined) {
+  if (! name.isEmpty()) {
+    Class * cl = declared[name];
+    
+    if (cl != 0) {
+      if (! cl->set_stereotype(stereotype))
+	return 0;
+      defined.insert(name, cl);
+      declared.remove(name);
+      return cl;
+    }
+    
+    cl = defined[name];
+    
+    if (!Package::scanning())
+      return cl;
+    
+    if (cl != 0) {
+      Lex::warn("<font color =\"red\"> " + Lex::quote(name) +
+		"</font> multiply defined");  
+      return 0;    
+    }
+  }
+  
+  return new_class(name, stereotype, FALSE);
+}
+
+void ClassContainer::compute_type(QCString type, UmlTypeSpec & typespec,
+				  QCString & typeform,
+				  bool get_first_template_actual,
+				  const QValueList<FormalParameterList> & tmplts) {
+  if (!strncmp((const char *) type, "struct ", 7) ||
+      !strncmp((const char *) type, "union ", 6) ||
+      !strncmp((const char *) type, "enum ", 5)) {
+    typespec.type = 0;
+    typespec.explicit_type = "<complex type>";
+    typeform = type;
+    return;
+  }
+    
+  int index;
+  
+  if (get_first_template_actual && ((index = type.find('<')) != -1)) {
+    type = Lex::normalize(type);
+    index = type.find('<');
+    
+    const char * p = type;
+    
+    if (strncmp(p + index + 1, "const ", 6) == 0)
+      index += 6;
+    
+    typeform = type.left(index + 1) + typeform;
+    
+    // search the end of the first type in <>
+    unsigned level = 1;
+    int index2;
+    
+    for (index2 = index + 1; p[index2]; index2 += 1) {
+      char c = p[index2];
+      
+      if ((c == ',') || (c == '*') || (c == '[')) {
+	if (level == 1)
+	  break;
+      }
+      else if (c == '<')
+	level += 1;
+      else if ((c == '>') && (--level == 0))
+	break;
+    }
+    
+    if (p[index2]) {
+      typeform += type.mid(index2);
+      type = type.mid(index + 1, index2 - index - 1).stripWhiteSpace();
+#ifdef DEBUG_BOUML
+      cout << "typeform '" << typeform << "' type '" << type << "'\n";
+#endif
+    }
+    else {
+      typespec.explicit_type = type;
+      typespec.type = 0;
+      return;
+    }
+  }
+
+  if (! tmplts.isEmpty()) {
+    QValueList<FormalParameterList>::ConstIterator it1;
+    
+    for (it1 = tmplts.begin(); it1 != tmplts.end(); ++it1) {
+      FormalParameterList::ConstIterator it2;
+    
+      for (it2 = (*it1).begin(); it2 != (*it1).end(); ++it2) {
+	if ((*it2).name() == type) {
+	  typespec.type = 0;
+	  typespec.explicit_type = type;
+	  return;
+	}
+      }
+    }
+  }
+
+  if (! find_type(Lex::normalize(type), typespec)) {
+    typespec.explicit_type = CppSettings::umlType(type);
+    if (typespec.explicit_type.isEmpty()) {
+      // search for equivalent forms
+      if (type == "long int")
+	typespec.explicit_type = CppSettings::umlType("long");
+      else if (type == "long")
+	typespec.explicit_type = CppSettings::umlType("long int");
+      else if (type == "unsigned long int")
+	typespec.explicit_type = CppSettings::umlType("unsigned long");
+      else if (type == "unsigned long")
+	typespec.explicit_type = CppSettings::umlType("unsigned long int");
+      else if (type == "unsigned")
+	typespec.explicit_type = CppSettings::umlType("unsigned int");
+      else if (type == "unsigned int")
+	typespec.explicit_type = CppSettings::umlType("unsigned");
+      else if ((type == "signed") || (type == "signed int"))
+	typespec.explicit_type = CppSettings::umlType("int");
+    }
+    
+    if (typespec.explicit_type.isEmpty()) {
+      typespec.explicit_type = type; /*
+      if (!Lex::identifierp(type, TRUE))
+	typespec.explicit_type = type;
+      else {
+	QCString t = type;
+
+	while ((index = t.find(':')) == 0)
+	  t = t.mid(1);
+
+	ClassContainer * cc = Package::unknown();
+
+	while (index != -1) {
+	  if ((cc = cc->declare_if_needed(t.left(index))) == 0) {
+	    typespec.explicit_type = type;
+	    return;
+	  }
+
+	  while (t[index] == ':')
+	    index += 1;
+	  t = t.mid(index);
+	  index = t.find(':');
+	}
+
+	if (((cc = cc->declare_if_needed(t)) == 0) ||
+	    ((typespec.type = ((Class *) cc)->get_uml()) == 0))
+	  typespec.explicit_type = type;
+      }*/
+    }
+    typespec.type = 0;
+  }
+  else if ((typespec.type != 0) &&
+	   !typespec.type->formals().isEmpty() &&
+	   (type.at(type.length() - 1) == '>') &&
+	   !typespec.type->inside_its_definition()) {
+    typespec.type = 0;
+    typespec.explicit_type = type;
+  }
+}
+
+bool ClassContainer::find_type(QCString type, UmlTypeSpec & typespec,
+			       NDict<Class> & defined) {
+  typespec.explicit_type = 0;
+  
+  if ((typespec.type = UmlClass::used(type)) != 0)
+    return TRUE;
+  
+  Class * cl = defined[type];
+  
+  if (cl == 0) {
+    int index = 0;
+    
+    while ((index = type.find('<', index)) != -1) {
+      // goes after <...>
+      int index2 = index + 1;
+      unsigned level = 1;
+    
+      for (;;) {
+	int c = type[index2++];
+      
+	if (c == '<')
+	  level += 1;
+	else if (c == 0)
+	  // wrong template spec
+	  return FALSE;
+	else if ((c == '>') && (--level == 0)) {
+	  break;
+	}
+      }
+      
+      if ((type[index2] != 0) && (defined[type.left(index2)] != 0))
+	// explicit template
+	index = index2;
+      else if (defined[type.left(index)] != 0)
+	// non explicit template, remove <>
+	type.remove(index, index2 - index);
+      else
+	// unknown type
+	return FALSE;
+
+      typespec.type = 0;
+      
+      if ((cl = defined[type]) != 0)
+	break;
+    }
+  }
+  
+  return ((cl != 0) && ((typespec.type = cl->get_uml()) != 0));
+}
+      
+bool ClassContainer::get_template(FormalParameterList & tmplt)
+{
+  tmplt.clear();
+  
+  QCString t = Lex::read_word(TRUE);
+  
+  if (t != "<") {
+    if (!Package::scanning() && (t != "class"))
+      Lex::syntax_error("&lt; expected after <font color =\"red\"> template</font>");
+    UmlOperation::skip_body();
+    return FALSE;
+  }
+  else {
+    bool ok = TRUE;
+    
+    for (;;) {
+      t = Lex::read_word();
+      
+      if (t == ">")
+	break;
+      
+      if (!Lex::identifierp(t, TRUE)) {
+	if (! Package::scanning())
+	  Lex::error_near(t);
+	ok = FALSE;
+	break;
+      }
+      
+      QCString x = Lex::read_word();
+      QCString v;
+      
+      if (x.isEmpty()) {
+	if (! Package::scanning())
+	  Lex::syntax_error("template formal expected");
+	ok = FALSE;
+	break;
+      }
+      
+      QCString s = Lex::read_word(TRUE);
+      
+      if (s == "=") {
+	v = Lex::read_list_elt();
+	s = Lex::read_word(TRUE);
+      }
+      
+      tmplt.append(UmlFormalParameter(t, x, v));
+      
+      if (s == ">")
+	break;
+      if (s != ",") {
+	if (! Package::scanning())
+	  Lex::error_near(s);
+	ok = FALSE;
+	break;
+      }
+    }
+    
+    return ok;
+  }
+}
+

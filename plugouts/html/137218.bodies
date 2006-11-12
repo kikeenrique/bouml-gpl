@@ -1,0 +1,75 @@
+class UmlOpaqueAction
+!!!198530.cpp!!!	sKind() : string
+  return "opaque activity action";
+!!!198530.java!!!	sKind() : string
+  return "opaque activity action";
+!!!202114.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  UmlActivityAction::html();
+
+  fw.write("<p>Behavior :</p><ul>");
+  
+  QCString s = behavior();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppBehavior();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaBehavior();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  write_children(pfix, rank, level);
+
+  unload(FALSE, FALSE);
+!!!202114.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  super.html();
+
+  String s;
+  
+    fw.write("<p>Behavior :</p><ul>");
+  
+  s = behavior();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppBehavior();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaBehavior();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  write_children(pfix, rank, level);
+
+  unload(false, false);

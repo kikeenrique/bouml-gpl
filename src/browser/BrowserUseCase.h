@@ -1,0 +1,123 @@
+// *************************************************************************
+//
+// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+//
+// This file is part of the BOUML Uml Toolkit.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+//
+// e-mail : bouml@free.fr
+// home   : http://bouml.free.fr
+//
+// *************************************************************************
+
+#ifndef BROWSER_USECASE_H
+#define BROWSER_USECASE_H
+
+class QPixmap;
+class StereotypesDialog;
+class BrowserUseCaseDiagram;
+class SimpleData;
+
+#include "BrowserNode.h"
+#include "Labeled.h"
+#include "Settings.h"
+
+class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
+  friend class StereotypesDialog;
+  
+  protected:
+    static IdDict<BrowserUseCase> all;
+    static QStringList its_default_stereotypes;
+    static QStringList relations_default_stereotypes[UmlRelations];
+    
+    SimpleData * def;
+    BrowserUseCaseDiagram * associated_diagram;
+    UseCaseDiagramSettings usecasediagram_settings;
+    SequenceDiagramSettings sequencediagram_settings;
+    CollaborationDiagramSettings collaborationdiagram_settings;
+    ObjectDiagramSettings objectdiagram_settings;
+    // note : does not have class settings because classes defined under
+    //	      a use case cannot be generated
+    UmlColor note_color;
+    UmlColor fragment_color;
+    UmlColor subject_color;
+    UmlColor duration_color;
+    UmlColor continuation_color;
+    UmlColor usecase_color;
+    UmlColor package_color;
+  
+    BrowserUseCase(int id);
+    void make();
+    
+  public:
+    BrowserUseCase(QString s, BrowserNode * p, int id = 0);
+    BrowserUseCase(const BrowserUseCase * model, BrowserNode * p);
+    virtual ~BrowserUseCase();
+    
+    void add_sequence_diagram();
+    void add_collaboration_diagram();
+    void add_use_case_diagram();
+    void add_object_diagram();
+    
+    virtual BrowserNode * get_associated() const;
+    void set_associated_diagram(BrowserUseCaseDiagram *, bool on_read = FALSE);
+    
+    virtual BrowserNode * duplicate(BrowserNode * p,
+				    QString name = QString::null);
+    virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
+    virtual void menu();
+    virtual void open(bool force_edit);
+    virtual UmlCode get_type() const;
+    virtual bool may_contains_them(const QList<BrowserNode> &,
+				   bool & duplicable) const;
+    virtual BasicData * get_data() const;
+    virtual void get_usecasediagramsettings(UseCaseDiagramSettings &) const;
+    virtual void get_sequencediagramsettings(SequenceDiagramSettings &) const;
+    virtual void get_collaborationdiagramsettings(CollaborationDiagramSettings &) const;
+    virtual void get_objectdiagramsettings(ObjectDiagramSettings &) const;
+    virtual UmlColor get_color(UmlCode) const;
+    virtual bool get_auto_label_position(UmlCode who) const;
+    virtual const QStringList & default_stereotypes(UmlCode arrow);
+    virtual void on_delete();
+    virtual bool tool_cmd(ToolCom * com, const char * args);
+    virtual void save(QTextStream &, bool ref, QString & warning);
+    static BrowserUseCase * read_ref(char * &);
+    static BrowserUseCase * read(char * &, char *, BrowserNode *);
+    static BrowserNode * get_it(const char * k, int id);
+
+    static BrowserNodeList & instances(BrowserNodeList &);
+    static BrowserUseCase * add_use_case(BrowserNode * future_parent);
+    static BrowserNode * get_use_case(BrowserNode * future_parent);
+    
+    static void init();
+    static const QStringList & default_stereotypes();
+    static void read_stereotypes(char * &, char * & k);
+    static void save_stereotypes(QTextStream &);
+    
+    static void clear(bool old);
+    static void update_idmax_for_root();
+    virtual void renumber(int phase);
+    
+    virtual const QPixmap* pixmap (int) const;
+    
+    virtual void DragMoveEvent(QDragMoveEvent * e);
+    virtual void DropEvent(QDropEvent * e);
+    virtual void DragMoveInsideEvent(QDragMoveEvent * e);
+    virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
+};
+
+#endif
+

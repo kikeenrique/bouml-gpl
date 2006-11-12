@@ -1,0 +1,5 @@
+class UmlExitPointPseudoState
+!!!146434.cpp!!!	sKind() : string
+  return "exit point pseudo state";
+!!!146434.java!!!	sKind() : string
+  return "exit point pseudo state";

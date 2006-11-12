@@ -1,0 +1,270 @@
+class UmlFlow
+!!!194434.cpp!!!	sKind() : string
+  return "transition";
+!!!194434.java!!!	sKind() : string
+  return "transition";
+!!!194306.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  fw.write("<table><tr><td><div class=\"element\">Flow  <b>");
+  writeq(name());
+  fw.write("</div></td></tr></table>");
+  
+  fw.write("<p>From ");
+  parent()->write();
+  fw.write(" To ");
+  target()->write();
+  fw.write("</p>");
+
+  fw.write("<p>Weight :</p><ul>");
+  
+  QCString s = weight();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppWeight();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaWeight();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Guard :</p><ul>");
+  
+  s = guard();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppGuard();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaGuard();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Selection :</p><ul>");
+  
+  s = selection();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppSelection();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaSelection();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Transformation :</p><ul>");
+  
+  s = transformation();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppTransformation();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaTransformation();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  s = description();
+
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(s);
+    fw.write("<br /></p>");
+  }
+
+  unload(FALSE, FALSE);
+!!!194306.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  fw.write("<table><tr><td><div class=\"element\">Flow <b>");
+  writeq(name());
+  fw.write("</div></td></tr></table>");
+  
+  fw.write("<p>From ");
+  parent().write();
+  fw.write(" To ");
+  target().write();
+  fw.write("</p>");
+
+  fw.write("<p>Weight :</p><ul>");
+  
+  String s = weight();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppWeight();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaWeight();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Guard :</p><ul>");
+  
+  s = cppGuard();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = guard();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaGuard();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Selection :</p><ul>");
+  
+  s = selection();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppSelection();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaSelection();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Transformation :</p><ul>");
+  
+  s = transformation();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppTransformation();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaTransformation();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  s = description();
+  
+  if (s.length() != 0) {
+    fw.write("<p>");
+    writeq(description());
+    fw.write("<br /></p>");
+  }
+
+  unload(false, false);
+

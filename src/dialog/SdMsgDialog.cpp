@@ -1,0 +1,162 @@
+// *************************************************************************
+//
+// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+//
+// This file is part of the BOUML Uml Toolkit.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+//
+// e-mail : bouml@free.fr
+// home   : http://bouml.free.fr
+//
+// *************************************************************************
+
+#ifdef WIN32
+#pragma warning (disable: 4150)
+#endif
+
+#include <stdio.h>
+
+#include <qlayout.h>
+#include <qlabel.h>
+#include <qcombobox.h> 
+#include <qhbox.h>
+#include <qpushbutton.h>
+#include <qbuttongroup.h>
+#include <qradiobutton.h> 
+
+#include "SdMsgDialog.h"
+#include "SdMsgBaseCanvas.h"
+#include "BrowserClass.h"
+#include "OperationData.h"
+#include "SdDurationCanvas.h"
+#include "SdLifeLineCanvas.h"
+#include "SdObjCanvas.h"
+#include "DialogUtil.h"
+#include "UmlDesktop.h"
+
+QSize SdMsgDialog::previous_size;
+
+SdMsgDialog::SdMsgDialog(SdMsgBaseCanvas * a)
+    : QDialog(0, "Message editor", TRUE), mc(a) {
+  setCaption("Message dialog");
+  
+  QVBoxLayout * vbox = new QVBoxLayout(this);  
+  QHBoxLayout * hbox;
+  
+  vbox->setMargin(5);
+  
+  hbox = new QHBoxLayout(vbox); 
+  hbox->setMargin(5);
+  hbox->addWidget(new QLabel("message : ", this));
+  edoper = new QComboBox(TRUE, this);
+  if (a->msg == 0)
+    edoper->insertItem(a->explicit_msg);
+  else
+    edoper->insertItem(a->msg->definition(TRUE));
+  edoper->setAutoCompletion(TRUE);
+
+  // gets operations
+  BrowserClass * cl = a->get_dest()->get_line()->get_obj()->get_type();
+  
+  if (cl != 0) {
+    cl->get_opers(opers, list);
+    edoper->insertStringList(list);
+  }
+
+  edoper->setCurrentItem(0);
+  
+  QSizePolicy sp = edoper->sizePolicy();
+  
+  sp.setHorData(QSizePolicy::Expanding);
+  edoper->setSizePolicy(sp);
+  
+  hbox->addWidget(edoper);
+  
+  hbox = new QHBoxLayout(vbox); 
+  hbox->setMargin(5);
+  
+  QHBox * htab = new QHBox(this);
+  
+  htab->setMargin(5);
+  
+  QButtonGroup * bg = new QButtonGroup(2, QGroupBox::Horizontal, "Message type", htab);
+  
+  bg->setExclusive(TRUE);
+  synchronous_rb = new QRadioButton("synchronous", bg);
+  asynchronous_rb = new QRadioButton("asynchronous", bg);
+  
+  if (a->is_synchronous())
+    synchronous_rb->setChecked(TRUE);
+  else
+    asynchronous_rb->setChecked(TRUE);
+
+  hbox->addWidget(htab);
+  
+  vbox->addWidget(new QLabel("\n\nWhen the arguments are specified they replace the \
+operation's parameter(s) without any check",
+			     this));
+  
+  hbox = new QHBoxLayout(vbox); 
+  hbox->setMargin(5);
+  hbox->addWidget(new QLabel("arguments : ", this));
+  edargs = new MultiLineEdit(this);
+  edargs->setText(a->get_args());
+  hbox->addWidget(edargs);  
+  
+  hbox = new QHBoxLayout(vbox); 
+  hbox->setMargin(5);
+  QPushButton * ok = new QPushButton("&OK", this);
+  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QSize bs(cancel->sizeHint());
+  
+  ok->setDefault(TRUE);
+  ok->setFixedSize(bs);
+  cancel->setFixedSize(bs);
+  
+  hbox->addWidget(ok);
+  hbox->addWidget(cancel);
+    
+  connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+}
+
+void SdMsgDialog::polish() {
+  QDialog::polish();
+  UmlDesktop::limitsize_move(this, previous_size, 0.8, 0.8);
+}
+
+SdMsgDialog::~SdMsgDialog() {
+  previous_size = size();
+}
+
+void SdMsgDialog::accept() {
+  QString s = edoper->currentText().stripWhiteSpace();
+  
+  if (!s.isEmpty()) {
+    int index = list.findIndex(s);
+    
+    if (index >= 0)
+      mc->set_msg(opers[index], QString::null, edargs->text().stripWhiteSpace());
+    else
+      mc->set_msg(0, s, edargs->text().stripWhiteSpace());
+  }
+  else
+    mc->set_msg(0, QString::null, QString::null);
+  
+  mc->set_synchronous(synchronous_rb->isChecked());
+
+  QDialog::accept();
+}

@@ -1,0 +1,139 @@
+// *************************************************************************
+//
+// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+//
+// This file is part of the BOUML Uml Toolkit.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+//
+// e-mail : bouml@free.fr
+// home   : http://bouml.free.fr
+//
+// *************************************************************************
+
+#ifndef MYIO_H
+#define MYIO_H
+
+#include "UmlEnum.h"
+
+#define FILEFORMAT 27
+
+class QDir;
+class QFile;
+class QFileInfo;
+class QStringList;
+class QCanvasItem;
+class QTextStream;
+class QCanvasRectangle;
+class QBuffer;
+class QPoint;
+class QPointArray;
+class DiagramItem;
+
+typedef struct {
+  QString filename;
+  unsigned linenum;
+  char * previous_word;	// Q[C]String too expensive
+  bool read_only;
+  bool previous_word_allocated;
+  char removed_char;
+  unsigned read_file_format;
+} ReadContext;
+
+extern ReadContext current_context();
+extern void restore_context(ReadContext &);
+
+extern bool read_only_file();
+
+extern void backup(QDir & d, QString fn);
+extern void delete_backup(QDir & d);
+
+extern int open_file(QFile & fp, int mode, bool silent = FALSE);
+extern void read_in(const QString &);
+extern bool copy_file(QFileInfo * src, const QDir & dest);
+extern void save_if_needed(const char * filename, const char * newdef);
+
+extern char * read_file(QString filename);
+extern char * read_file(QString filename, int offset, int len);
+
+extern void set_read_file_format(unsigned);
+extern unsigned read_file_format();
+
+extern QString abs_file_path(int id, const char * ext);
+extern char * read_definition(int id, const char * ext);
+char * read_definition(int id, const char * ext, int offset, int len);
+extern void save_definition(int id, const char * ext, const char * def, bool & is_new);
+extern void delete_definition(int id, const char * ext);
+
+extern void save_string(const char *, QTextStream & st);
+extern void save_string_list(QStringList & list, QTextStream & st);
+extern void save_unicode_string_list(QStringList & list, QTextStream & st);
+extern void nl_indent(QTextStream & st);
+extern void indent(int);
+extern int indent();
+extern void indent0();
+
+extern bool at_end(char * & st);
+extern char * read_string(char * & st);
+extern char * read_keyword(char * & st);
+extern char * read_keyword(char * & st, const char * expected);
+extern char * read_keyword(char * & st, const char * expected1,
+			   const char * expected2);
+extern void unread_keyword(char * keyword, char * & st);
+extern int read_id(char * & st);
+extern unsigned read_unsigned(char * & st);
+extern double read_double(char * & st);
+extern void read_string_list(QStringList & list, char * & st);
+extern void read_unicode_string_list(QStringList & list, char * & st);
+extern char * skip_until(char * & st, const char * expected);
+
+extern void unknown_keyword(const char * k);
+extern void wrong_keyword(const char * k, const char * expected);
+extern void unknown_ref(const char * kind, int id);
+
+extern void save_xy(QTextStream & st, const QCanvasItem * c, const char * s);
+extern void save_xyz(QTextStream & st, const QCanvasItem * c, const char * s);
+extern void save_xyzwh(QTextStream & st, const QCanvasRectangle * c, const char * s);
+extern void read_xy(char * & st, QCanvasItem * c);
+extern void read_xyz(char * & st, QCanvasItem * c);
+extern void read_xyzwh(char * & st, QCanvasRectangle * c);
+extern void read_zwh(char * & st, QCanvasRectangle * c);
+extern void bypass_xy(char * & st);
+extern void save_color(QTextStream & st, const char *, UmlColor, bool &);
+extern void read_color(char *& st, const char *, UmlColor &, char * &);
+
+extern void read_font(char *& st, const char *, UmlFont &, char * &);
+
+extern void warn(const QString &);
+
+// history
+
+extern void save(const DiagramItem *, QBuffer &);
+extern DiagramItem * load_item(QBuffer &);
+
+extern void save(const QPoint & p, QBuffer &);
+extern void load(QPoint & p, QBuffer &);
+
+extern void save(const QPointArray & a, QBuffer &);
+extern void load(QPointArray & a, QBuffer &);
+
+extern void save(double, QBuffer &);
+extern void load(double &, QBuffer &);
+extern double load_double(QBuffer &);
+
+extern void save(int, QBuffer &);
+extern void load(int &, QBuffer &);
+
+#endif

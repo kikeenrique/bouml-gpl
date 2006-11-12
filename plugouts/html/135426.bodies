@@ -1,0 +1,137 @@
+class UmlActivityAction
+!!!200322.cpp!!!	html() : void
+  UmlCom::message(name());
+
+  QCString s = sKind();
+  
+  s.replace(0, 1, s.left(1).upper());
+    
+  UmlItem::html(s, (UmlDiagram *) associatedDiagram());
+  
+  fw.write("<p>Defined in ");
+  parent()->write();
+  fw.write("</p>");
+
+  fw.write("<p>Pre Condition :</p><ul>");
+  
+  s = preCondition();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppPreCondition();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaPreCondition();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Post Condition :</p><ul>");
+  
+  s = postCondition();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppPostCondition();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaPostCondition();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+!!!200322.java!!!	html() : void
+  UmlCom.message(name());
+
+  String s = sKind();
+  
+  s = s.substring(0, 1).toUpperCase() + s.substring(1);
+    
+  html(s, (UmlDiagram) associatedDiagram());
+  
+  fw.write("<p>Defined in ");
+  parent().write();
+  fw.write("</p>");
+
+  fw.write("<p>Pre Condition :</p><ul>");
+  
+  s = preCondition();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppPreCondition();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaPreCondition();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  fw.write("<p>Post Condition :</p><ul>");
+  
+  s = postCondition();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppPostCondition();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaPostCondition();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");

@@ -1,0 +1,71 @@
+format 8
+"Diagrams" // API USER::Diagrams
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributs default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default drawing_language default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default
+  //deployment diagram settings
+  write_horizontally default auto_label_position default
+  
+  classview 641 "Diagrams"
+    //class diagram settings
+    draw_all_relations default hide_attributs default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+    //col diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+    //seq diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default
+    //class settings
+    classdiagram 129 "Inheritance Diagram of classes for Package and Views"
+      draw_all_relations no hide_attributs yes hide_operations yes show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+      size A4
+    end
+
+    classdiagram 257 "Inheritance Diagram of classes for Classes"
+      draw_all_relations no hide_attributs yes hide_operations yes show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+      size A4
+    end
+
+    classdiagram 385 "Inheritance Diagram of classes for Diagrams"
+      draw_all_relations no hide_attributs yes hide_operations yes show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+      size A4
+    end
+
+    sequencediagram 513 "Typical Execution"
+      show_full_operations_definition no write_horizontally default drawing_language default
+      size A4
+    end
+
+    class 6529 "bouml"
+      stereotype "actor"
+      
+      cpp_decl ""
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 6657 "plug_out"
+      stereotype "actor"
+      
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+  end
+end

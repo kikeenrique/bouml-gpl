@@ -1,0 +1,56 @@
+class UmlDiagram
+!!!128852.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  UmlCom::message(name());
+
+  define();
+
+  QCString s;
+  
+  s.setNum(++fig_rank);
+  s = "fig" + s + ".png"; 
+  saveIn(directory + s);
+  
+  fw.write("<p align=\"center\"><img src=\"");
+  fw.write(s);
+  fw.write("\" alt=\"\" /></p>\n");
+  
+  fw.write(" <p align=\"center\"><b>");
+  writeq(name());
+  fw.write("</b></p><p><br /></p><p><br /></p>\n");
+
+  s = description();
+  
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(description());
+    fw.write("<br /></p>");
+  }
+
+  unload(FALSE, FALSE);
+!!!128852.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  UmlCom.message(name());
+
+  define();
+
+  String s = "fig" + String.valueOf(++fig_rank) + ".png";
+  
+  saveIn(directory + "/" + s);
+  
+  fw.write("<p align=\"center\"><img src=\"");
+  fw.write(s);
+  fw.write("\" alt=\"\" /></p>\n");
+  
+  fw.write(" <p align=\"center\"><b>");
+  writeq(name());
+  fw.write("</b></p><p><br /></p><p><br /></p>\n");
+
+  s = description();
+  
+  if (s.length() != 0) {
+    fw.write("<p>");
+    writeq(description());
+    fw.write("<br /></p>");
+  }
+
+  unload(false, false);
+

@@ -1,0 +1,256 @@
+// *************************************************************************
+//
+// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+//
+// This file is part of the BOUML Uml Toolkit.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+//
+// e-mail : bouml@free.fr
+// home   : http://bouml.free.fr
+//
+// *************************************************************************
+
+#ifdef WIN32
+#pragma warning (disable: 4150)
+#endif
+
+#include <qpainter.h>
+#include <qcursor.h>
+#include <qpopupmenu.h> 
+
+#include "SdSelfMsgCanvas.h"
+#include "SdDurationCanvas.h"
+#include "OperationData.h"
+#include "UmlCanvas.h"
+#include "LabelCanvas.h"
+#include "Settings.h"
+#include "SettingsDialog.h"
+#include "BrowserNode.h"
+#include "myio.h"
+#include "MenuTitle.h"
+
+#define SELF_MSG_WIDTH  20
+#define SELF_MSG_HEIGHT 14
+
+SdSelfMsgCanvas::SdSelfMsgCanvas(UmlCanvas * canvas, SdDurationCanvas * d,
+				 UmlCode l, int v, int id)
+    : SdMsgBaseCanvas(canvas, d, l, v + 1, id) {
+  dest->add(this);
+  update_hpos();
+  setSize(SELF_MSG_WIDTH, SELF_MSG_HEIGHT);
+  set_center100();
+  show();
+}
+
+SdSelfMsgCanvas::~SdSelfMsgCanvas() {
+}
+
+void SdSelfMsgCanvas::update_hpos() {
+  LabelCanvas * lbl = label;
+  int cy = center_y_scale100;
+
+  if (the_canvas()->do_zoom())
+    // the label is moved independently
+    label = 0;
+  
+  DiagramCanvas::moveBy(dest->rect().right() + 1 - x(), 0);
+  
+  label = lbl;
+  center_y_scale100 = cy;	// updated later
+}
+
+double SdSelfMsgCanvas::min_y() const {
+  return dest->min_y();
+}
+
+void SdSelfMsgCanvas::draw(QPainter & p) {
+  const QRect r = rect();
+  int ah = (r.height() - 1 - 1 - 2 - 1 - 1)/2;
+  int he = r.top() + 1 + 2 + ah + 1;
+  
+  p.drawLine(r.left() + 1, r.top() + 1, r.right() - 1, r.top() + 1);
+  p.lineTo(r.right() - 1, he);
+  p.lineTo(r.left() + 1, he);
+  
+  if (itsType == UmlSyncSelfMsg) {
+    QPointArray poly(3);
+    QBrush brsh = p.brush();
+    
+    p.setBrush(black);
+    poly.setPoint(0, r.left() + 1, he);
+    poly.setPoint(1, r.left() + 1 + ah, he + ah);
+    poly.setPoint(2, r.left() + 1 + ah, he - ah);
+    p.drawPolygon(poly/*, TRUE*/);
+    p.setBrush(brsh);
+  }
+  else {
+    p.lineTo(r.left() + 1 + ah, he + ah);
+    p.drawLine(r.left() + 1, he, r.left() + 1 + ah, he - ah);
+  }
+  
+  if (selected())
+    show_mark(p, r);
+}
+
+void SdSelfMsgCanvas::update() {
+  SdMsgBaseCanvas::update_after_move(dest);
+}
+
+void SdSelfMsgCanvas::change_duration(SdDurationCanvas *,
+				      SdDurationCanvas * newone) {
+  dest = newone;
+}
+
+void SdSelfMsgCanvas::menu(const QPoint&) {
+  QPopupMenu m(0);
+  
+  m.insertItem(new MenuTitle("Message", m.font()), -1);
+  m.insertSeparator();
+  m.insertItem("upper", 0);
+  m.insertItem("lower", 1);
+  m.insertSeparator();
+  m.insertItem("edit", 2);
+  m.insertSeparator();
+  m.insertItem("edit drawing settings", 3);
+  m.insertSeparator();
+  if (msg != 0)
+    m.insertItem("select operation in browser", 8);
+  m.insertItem("select linked items", 4);
+  if (label) {
+    m.insertSeparator();
+    m.insertItem("select label", 5);
+    m.insertItem("label default position", 6);
+  }
+  m.insertSeparator();
+  m.insertItem("remove from view", 7);
+
+  switch (m.exec(QCursor::pos())) {
+  case 0:
+    upper();
+    // force son reaffichage
+    hide();
+    show();
+    break;
+  case 1:
+    lower();
+    // force son reaffichage
+    hide();
+    show();
+    break;
+  case 2:
+    open();
+    break;
+  case 3:
+    {
+      QArray<StateSpec> st(2);
+      
+      st[0].set("operation drawing language", &drawing_language);
+      st[1].set("show full operation definition", &show_full_oper);
+
+      SettingsDialog dialog(&st, 0, FALSE, TRUE);
+      
+      if (dialog.exec() == QDialog::Accepted)
+	modified();
+      return;
+    }
+    break;
+  case 4:
+    select_associated();
+    break;
+  case 5:
+    the_canvas()->unselect_all();
+    the_canvas()->select(label);
+    break;
+  case 6:
+    default_label_position();
+    break;
+  case 7:
+    delete_it();
+    return;
+  case 8:
+    msg->get_browser_node()->select_in_browser();
+    return;
+  default:
+    return;
+  }
+
+  package_modified();  
+  canvas()->update();
+}
+
+void SdSelfMsgCanvas::select_associated() {
+  the_canvas()->select(this);
+  
+  if (!dest->selected())
+    dest->select_associated();
+}
+
+void SdSelfMsgCanvas::save(QTextStream & st, bool ref, QString & warning) const {
+  if (ref) {
+    st << "reflexivemsg_ref " << get_ident()
+      << " // " << get_msg(FALSE);
+  }
+  else {
+    nl_indent(st);
+    st << "reflexivemsg " << get_ident()
+      << ((itsType == UmlSyncSelfMsg) ? " synchronous" : " asynchronous");
+    indent(+1);
+    SdMsgBaseCanvas::save(st, warning);
+    indent(-1);
+  }
+}
+
+SdSelfMsgCanvas * SdSelfMsgCanvas::read(char * & st, UmlCanvas * canvas, char * k)
+{
+  if (!strcmp(k, "reflexivemsg_ref"))
+    return ((SdSelfMsgCanvas *) dict_get(read_id(st), "reflexivemsg", canvas));
+  else if (!strcmp(k, "reflexivemsg")) {
+    int id = read_id(st);
+    UmlCode c;
+    
+    k = read_keyword(st);
+    
+    if (!strcmp(k, "synchronous"))
+      c = UmlSyncSelfMsg;
+    else if (!strcmp(k, "asynchronous"))
+      c = UmlAsyncSelfMsg;
+    else {
+      wrong_keyword(k, "synchronous/asynchronous");
+      return 0; 	// to avoid warning
+    }
+    
+    read_keyword(st, "to");
+
+    SdDurationCanvas * d = SdDurationCanvas::read(st, canvas, TRUE);
+    
+    k = read_keyword(st);
+
+    SdSelfMsgCanvas * result = 
+      new SdSelfMsgCanvas(canvas, d, c, (int) read_double(st) - 1, id);
+
+    if (!strcmp(k, "yz"))
+      // new version
+      result->setZ(read_double(st));
+    else if (strcmp(k, "y"))
+      wrong_keyword(k, "y/yz");
+    
+    result->SdMsgBaseCanvas::read(st);
+    
+    return result;
+  }
+  else
+    return 0;
+}

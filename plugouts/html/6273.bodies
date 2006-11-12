@@ -1,0 +1,15 @@
+class UmlClassMember
+!!!148098.cpp!!!	annotation() : void
+if (! javaAnnotations().isEmpty()) {
+  fw.write("<p> Java annotation(s) :<ul>");
+  writeq(javaAnnotations());
+  fw.write("</ul>");
+}
+!!!148098.java!!!	annotation() : void
+String s = javaAnnotations();
+  
+if (s.length() != 0) {
+  fw.write("<p> Java annotation(s) :<ul>");
+  writeq(s);
+  fw.write("</ul>");
+}
