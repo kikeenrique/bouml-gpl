@@ -75,7 +75,7 @@ compile:
 	for i in $(PLUGOUT_DIRS); do if [ -d $$i ]; then ( cd $$i; $(QMAKE); ) || exit 1 ; $(MAKE) -C $$i || exit 1 ; fi; done
 
 clean:
-	for i in $(SRC_DIRS) $(PLUGOUT_DIRS); do if [ -d $$i ]; then cd $$i ; $(MAKE) clean || exit 1 ; fi; done
+	for i in $(SRC_DIRS) $(PLUGOUT_DIRS); do if [ -d $$i ]; then (cd $$i ; $(MAKE) clean; ) || exit 1 ; fi; done
 
 install:
 	mkdir -p "$(DESTDIR)$(BOUML_LIB)"

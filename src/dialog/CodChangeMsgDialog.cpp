@@ -32,6 +32,8 @@
 #include <qcombobox.h> 
 #include <qhbox.h>
 #include <qpushbutton.h>
+#include <qpopupmenu.h>
+#include <qcursor.h>
 
 #include "CodChangeMsgDialog.h"
 #include "ColMsg.h"
@@ -40,7 +42,8 @@
 #include "BrowserClass.h"
 #include "OperationData.h"
 #include "UmlDesktop.h"
-//#include "DialogUtil.h"
+#include "DialogUtil.h"
+#include "BrowserView.h"
 
 QSize CodChangeMsgDialog::previous_size;
 
@@ -55,7 +58,12 @@ CodChangeMsgDialog::CodChangeMsgDialog(ColMsg * m)
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  hbox->addWidget(new QLabel("message : ", this));
+  
+  SmallPushButton * b = new SmallPushButton("message :", this);
+  
+  hbox->addWidget(b);
+  connect(b, SIGNAL(clicked()), this, SLOT(menu_op()));
+
   edoper = new QComboBox(TRUE, this);
   edoper->setAutoCompletion(TRUE);
   if (msg->operation == 0)
@@ -109,6 +117,36 @@ CodChangeMsgDialog::~CodChangeMsgDialog() {
   previous_size = size();
 }
 
+void CodChangeMsgDialog::menu_op() {
+  QPopupMenu m(0);
+
+  m.insertItem("Choose", -1);
+  m.insertSeparator();
+  
+  int index = list.findIndex(edoper->currentText().stripWhiteSpace());
+  
+  if (index != -1)
+    m.insertItem("Select in browser", 0);
+  
+  BrowserNode * bn = BrowserView::selected_item();
+  
+  if ((bn->get_type() == UmlOperation) &&
+      !bn->deletedp() &&
+      (opers.findIndex((OperationData *) bn->get_data()) != -1))
+    m.insertItem("Choose operation selected in browser", 1);
+  else
+    bn = 0;
+  
+  if ((index != -1) || (bn != 0)) {
+    switch (m.exec(QCursor::pos())) {
+    case 0:
+      opers[index]->get_browser_node()->select_in_browser();
+      break;
+    case 1:
+      edoper->setCurrentItem(opers.findIndex((OperationData *) bn->get_data()) + 1);
+    }
+  }
+}
 
 void CodChangeMsgDialog::accept() {
   QString s = edoper->currentText().stripWhiteSpace();

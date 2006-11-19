@@ -358,34 +358,34 @@ void ObjectLinkCanvas::menu(const QPoint & lpos) {
   
   m.insertItem(new MenuTitle("Object link", m.font()), -1);
   m.insertSeparator();
-  m.insertItem("edit", 0);
+  m.insertItem("Edit", 0);
   m.insertSeparator();
   
   if (data != 0)
-    m.insertItem("select relation in browser", 2);
+    m.insertItem("Select relation in browser", 2);
   if (plabel || pstereotype || first->role_b || last->role_a) {
     m.insertSeparator();
-    m.insertItem("select labels", 3);
-    m.insertItem("labels default position", 4);
+    m.insertItem("Select labels", 3);
+    m.insertItem("Labels default position", 4);
     if (plabel && (label == 0))
-      m.insertItem("attach relation's name to this segment", 5);
+      m.insertItem("Attach relation's name to this segment", 5);
     if (pstereotype && (stereotype == 0))
-      m.insertItem("attach relation's stereotype to this segment", 6);
+      m.insertItem("Attach relation's stereotype to this segment", 6);
   }
   
   if (get_start() != get_end()) {
     m.insertSeparator();
     init_geometry_menu(geo, 10);
-    m.insertItem("geometry (Ctrl+l)", &geo);
+    m.insertItem("Geometry (Ctrl+l)", &geo);
   }
   
   m.insertSeparator();
-  m.insertItem("remove from view",7);
+  m.insertItem("Remove from view",7);
   
   m.insertSeparator();
   /*
   if (Tool::menu_insert(&toolm, itstype, 20))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
   */
   
   int rank = m.exec(QCursor::pos());
@@ -623,6 +623,23 @@ void ObjectLinkCanvas::update(bool updatepos) {
       }
     }    
   }
+  else {
+    ArrowCanvas * aplabel;
+    ArrowCanvas * apstereotype;
+    
+    search_supports(aplabel, apstereotype);
+    
+    if (aplabel != 0) {
+      // removes it
+      the_canvas()->del(((ObjectLinkCanvas *) aplabel)->label);
+      ((ObjectLinkCanvas *) aplabel)->label = 0;
+    }
+    if (apstereotype != 0) {
+      // removes it
+      the_canvas()->del(((ObjectLinkCanvas *) apstereotype)->stereotype);
+      ((ObjectLinkCanvas *) apstereotype)->stereotype = 0;
+    }
+  }
   
   if (updatepos)
     update_pos();
@@ -803,15 +820,21 @@ ObjectLinkCanvas * ObjectLinkCanvas::read(char * & st, UmlCanvas * canvas, char 
     read_keyword(st, "ref");
     
     DiagramItem * bi = dict_get(read_id(st), "classinstance", canvas);
-    UmlCode t = rd->get_type();
-    bool unamed = ((rd == 0) || !RelationData::isa_association(t));
-    QString s = rd->get_name();
+    UmlCode t;
+    bool unamed = TRUE;
+    QString s;
     ObjectLinkCanvas * first = 0;
     ObjectLinkCanvas * result;
     LabelCanvas * label;
     LabelCanvas * stereotype;
     double z;
               
+    if (rd != 0) {
+      t = rd->get_type();
+      unamed = !RelationData::isa_association(t);
+      s = rd->get_name();
+    }
+    
     for (;;) {
       read_keyword(st, "z");
       z = read_double(st);
@@ -819,7 +842,7 @@ ObjectLinkCanvas * ObjectLinkCanvas::read(char * & st, UmlCanvas * canvas, char 
       k = read_keyword(st);
       
       if ((label = LabelCanvas::read(st, canvas, k)) != 0) {
-	if (unamed || s.isEmpty() || (s == RelationData::default_name(t))) {
+	if ((rd == 0) || unamed || s.isEmpty() || (s == RelationData::default_name(t))) {
 	  // relation does not have name or 'true' name
 	  canvas->del(label);
 	  label = 0;
@@ -837,7 +860,7 @@ ObjectLinkCanvas * ObjectLinkCanvas::read(char * & st, UmlCanvas * canvas, char 
 	int x = (int) read_double(st);
 	int y = (int) read_double(st);
 	
-	if (*(rd->get_stereotype()) == 0) {
+	if ((rd == 0) || (*(rd->get_stereotype()) == 0)) {
 	  stereotype = 0;
 	  read_double(st);	// z
 	}
@@ -908,12 +931,14 @@ ObjectLinkCanvas * ObjectLinkCanvas::read(char * & st, UmlCanvas * canvas, char 
       y = (int) read_double(st);
       z = (read_file_format() < 5) ? /*OLD_*/LABEL_Z : read_double(st);
       
-      s = rd->get_role_a();
-      
-      if (!unamed && !s.isEmpty()) {
-	result->role_a = new LabelCanvas(s, canvas, x, y);
-	result->role_a->setZ(z);
-	result->role_a->show();
+      if (rd != 0) {
+	s = rd->get_role_a();
+	
+	if (!unamed && !s.isEmpty()) {
+	  result->role_a = new LabelCanvas(s, canvas, x, y);
+	  result->role_a->setZ(z);
+	  result->role_a->show();
+	}
       }
     }
     else if (strcmp(k, "no_role_a"))
@@ -925,12 +950,14 @@ ObjectLinkCanvas * ObjectLinkCanvas::read(char * & st, UmlCanvas * canvas, char 
       y = (int) read_double(st);
       z = (read_file_format() < 5) ? /*OLD_*/LABEL_Z : read_double(st);
       
-      s = rd->get_role_b();
-      
-      if (!unamed && !s.isEmpty()) {
-	first->role_b = new LabelCanvas(s, canvas, x, y);
-	first->role_b->setZ(z);
-	first->role_b->show();
+      if (rd != 0) {
+	s = rd->get_role_b();
+	
+	if (!unamed && !s.isEmpty()) {
+	  first->role_b = new LabelCanvas(s, canvas, x, y);
+	  first->role_b->setZ(z);
+	  first->role_b->show();
+	}
       }
     }
     else if (strcmp(k, "no_role_b"))

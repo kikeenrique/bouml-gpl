@@ -1,0 +1,1410 @@
+}***Shell Cmd Window***}(echo "";cd /home/bruno/uml/browser;grep -n insertItem\(\" */*.cpp /dev/null;echo Done)
+bruno@linux:~/uml/browser> 
+grep: */*.cpp: Aucun fichier ou répertoire de ce type
+Done
+bruno@linux:~/uml/browser> (echo "";cd /home/bruno/uml/browser;grep -n insertItem\(\" *.cpp /dev/null;echo Done)
+
+BrowserActivityAction.cpp:511:	m.setWhatsThis(m.insertItem("Add pin", 0),
+BrowserActivityAction.cpp:513:      m.setWhatsThis(m.insertItem("Add parameter set", 7),
+BrowserActivityAction.cpp:517:    m.setWhatsThis(m.insertItem("Edit", 1),
+BrowserActivityAction.cpp:521:      m.setWhatsThis(m.insertItem("Duplicate", 2),
+BrowserActivityAction.cpp:529:      m.insertItem("Select " + QString(what), 8);
+BrowserActivityAction.cpp:535:	m.setWhatsThis(m.insertItem("Delete", 3),
+BrowserActivityAction.cpp:539:    m.setWhatsThis(m.insertItem("Referenced by", 4),
+BrowserActivityAction.cpp:546:      m.insertItem("Tool", &toolm);
+BrowserActivityAction.cpp:550:    m.setWhatsThis(m.insertItem("Undelete", 5),
+BrowserActivityAction.cpp:557:	m.setWhatsThis(m.insertItem("Undelete recursively", 6),
+BrowserActivity.cpp:207:      m.setWhatsThis(m.insertItem("New activity diagram", 0),
+BrowserActivity.cpp:209:      m.setWhatsThis(m.insertItem("Add parameter", 1),
+BrowserActivity.cpp:211:      m.setWhatsThis(m.insertItem("Add interruptible activity region", 2),
+BrowserActivity.cpp:213:      m.setWhatsThis(m.insertItem("New expansion region", 3),
+BrowserActivity.cpp:216:      m.setWhatsThis(m.insertItem("Add partition", 4),
+BrowserActivity.cpp:219:      m.setWhatsThis(m.insertItem("Add activity action", 7),
+BrowserActivity.cpp:221:      m.setWhatsThis(m.insertItem("Add object node", 8),
+BrowserActivity.cpp:225:    m.setWhatsThis(m.insertItem("Edit", 5),
+BrowserActivity.cpp:229:      m.setWhatsThis(m.insertItem("Duplicate", 6),
+BrowserActivity.cpp:233:	m.setWhatsThis(m.insertItem("Delete", 9),
+BrowserActivity.cpp:238:    m.setWhatsThis(m.insertItem("Referenced by", 12),
+BrowserActivity.cpp:244:      m.insertItem("Tool", &toolm);
+BrowserActivity.cpp:248:    m.setWhatsThis(m.insertItem("Undelete", 10),
+BrowserActivity.cpp:255:	m.setWhatsThis(m.insertItem("Undelete recursively", 11),
+BrowserActivityDiagram.cpp:184:    m.setWhatsThis(m.insertItem("Show", 0),
+BrowserActivityDiagram.cpp:187:      m.setWhatsThis(m.insertItem("Edit", 1),
+BrowserActivityDiagram.cpp:190:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+BrowserActivityDiagram.cpp:193:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+BrowserActivityDiagram.cpp:197:	  m.setWhatsThis(m.insertItem("Delete", 4),
+BrowserActivityDiagram.cpp:207:      m.insertItem("Tool", &toolm);
+BrowserActivityDiagram.cpp:211:    m.setWhatsThis(m.insertItem("Undelete", 5),
+BrowserActivityNode.cpp:273:    m.setWhatsThis(m.insertItem("Edit", 1),
+BrowserActivityNode.cpp:277:      m.setWhatsThis(m.insertItem("Duplicate", 2),
+BrowserActivityNode.cpp:281:	m.setWhatsThis(m.insertItem("Delete", 3),
+BrowserActivityNode.cpp:285:    m.setWhatsThis(m.insertItem("Referenced by", 5),
+BrowserActivityNode.cpp:292:      m.insertItem("Tool", &toolm);
+BrowserActivityNode.cpp:296:    m.setWhatsThis(m.insertItem("Undelete", 4),
+BrowserActivityObject.cpp:298:    m.setWhatsThis(m.insertItem("Edit", 1),
+BrowserActivityObject.cpp:302:      m.setWhatsThis(m.insertItem("Duplicate", 2),
+BrowserActivityObject.cpp:306:	m.setWhatsThis(m.insertItem("Delete", 3),
+BrowserActivityObject.cpp:310:    m.setWhatsThis(m.insertItem("Referenced by", 4),
+BrowserActivityObject.cpp:317:      m.insertItem("Tool", &toolm);
+BrowserActivityObject.cpp:321:    m.setWhatsThis(m.insertItem("Undelete", 5),
+BrowserActivityObject.cpp:328:	m.setWhatsThis(m.insertItem("Undelete recursively", 6),
+BrowserArtifact.cpp:253:      m.setWhatsThis(m.insertItem("Edit", 0),
+BrowserArtifact.cpp:258:	m.setWhatsThis(m.insertItem("Delete", 1),
+BrowserArtifact.cpp:265:      m.insertItem("Generate", &gensubm);
+BrowserArtifact.cpp:266:      gensubm.insertItem("C++", 10);
+BrowserArtifact.cpp:267:      gensubm.insertItem("Java", 11);
+BrowserArtifact.cpp:268:      gensubm.insertItem("Idl", 12);
+BrowserArtifact.cpp:273:	  //roundtripsubm.insertItem("C++ header & source files", 13);
+BrowserArtifact.cpp:274:	editsubm.insertItem("C++ header file", 14);
+BrowserArtifact.cpp:275:	//roundtripsubm.insertItem("C++ header file", 15);
+BrowserArtifact.cpp:278:	editsubm.insertItem("C++ source file", 16);
+BrowserArtifact.cpp:279:	//roundtripsubm.insertItem("C++ source file", 17);
+BrowserArtifact.cpp:282:	editsubm.insertItem("Java source file", 18);
+BrowserArtifact.cpp:283:	//roundtripsubm.insertItem("Java source file", 19);
+BrowserArtifact.cpp:286:	editsubm.insertItem("Idl source file", 20);
+BrowserArtifact.cpp:287:	//roundtripsubm.insertItem("Idl source file", 21);
+BrowserArtifact.cpp:290:	m.insertItem("See file", &editsubm);
+BrowserArtifact.cpp:292:	//m.insertItem("Roundtrip", &roundtripsubm);
+BrowserArtifact.cpp:295:    m.setWhatsThis(m.insertItem("Referenced by", 3),
+BrowserArtifact.cpp:302:      m.insertItem("Tool", &toolm);
+BrowserArtifact.cpp:306:    m.setWhatsThis(m.insertItem("Undelete", 2),
+BrowserArtifact.cpp:319:    m.setWhatsThis(m.insertItem("Select the associated class", 10000),
+BrowserArtifact.cpp:324:    m.setWhatsThis(m.insertItem("Select an associated class", 9999),
+BrowserArtifact.cpp:336:    m.setWhatsThis(m.insertItem("Select an associated class", &clsubm),
+BrowserAttribute.cpp:212:    m.setWhatsThis(m.insertItem("Edit", 0),
+BrowserAttribute.cpp:220:	m.setWhatsThis(m.insertItem("Add get operation", 3),
+BrowserAttribute.cpp:223:	m.setWhatsThis(m.insertItem("Add set operation", 4),
+BrowserAttribute.cpp:226:	m.setWhatsThis(m.insertItem("Add get and set operation", 5),
+BrowserAttribute.cpp:228:      m.setWhatsThis(m.insertItem("Duplicate", 6),
+BrowserAttribute.cpp:233:    m.setWhatsThis(m.insertItem("Referenced by", 7),
+BrowserAttribute.cpp:238:      m.setWhatsThis(m.insertItem("Delete", 1),
+BrowserAttribute.cpp:248:      m.insertItem("Tool", &toolm);
+BrowserAttribute.cpp:252:    m.setWhatsThis(m.insertItem("Undelete", 2),
+BrowserClass.cpp:295:	  m.setWhatsThis(m.insertItem("Add item", 8),
+BrowserClass.cpp:299:	  m.setWhatsThis(m.insertItem("Add attribute", 0),
+BrowserClass.cpp:302:	  m.setWhatsThis(m.insertItem("Add operation", 1),
+BrowserClass.cpp:306:	      m.setWhatsThis(m.insertItem("Add inherited operation", 9999),
+BrowserClass.cpp:328:	      m.setWhatsThis(m.insertItem("Add inherited operation", &inhopersubm),
+BrowserClass.cpp:333:	    m.setWhatsThis(m.insertItem("Add nested class", 14),
+BrowserClass.cpp:336:	  m.setWhatsThis(m.insertItem("Add extra member", 2),
+BrowserClass.cpp:340:	m.setWhatsThis(m.insertItem("Edit", 3),
+BrowserClass.cpp:343:	m.setWhatsThis(m.insertItem("Duplicate", 13),
+BrowserClass.cpp:346:	m.setWhatsThis(m.insertItem("Delete", 4),
+BrowserClass.cpp:366:	      m.setWhatsThis(m.insertItem("Create source artifact", 5),
+BrowserClass.cpp:375:      m.setWhatsThis(m.insertItem("Edit", 3),
+BrowserClass.cpp:384:      m.setWhatsThis(m.insertItem("Select associated artifact", 5),
+BrowserClass.cpp:394:	m.setWhatsThis(m.insertItem("Select associated component", 100000),
+BrowserClass.cpp:400:	m.setWhatsThis(m.insertItem("Select an associated component", &compsubm),
+BrowserClass.cpp:415:    m.setWhatsThis(m.insertItem("Referenced by", 15),
+BrowserClass.cpp:420:      m.insertItem("Generate", &gensubm);    
+BrowserClass.cpp:421:      gensubm.insertItem("C++", 10);
+BrowserClass.cpp:422:      gensubm.insertItem("Java", 11);
+BrowserClass.cpp:423:      gensubm.insertItem("Idl", 12);
+BrowserClass.cpp:428:      m.insertItem("Tool", &toolm);
+BrowserClass.cpp:432:    m.setWhatsThis(m.insertItem("Undelete", 6),
+BrowserClass.cpp:440:	m.setWhatsThis(m.insertItem("Undelete recursively", 7),
+BrowserClass.cpp:1068:	m.insertItem("In " + QString(get_name()), 1);
+BrowserClass.cpp:1069:	m.insertItem("After " + QString(get_name()), 2);
+BrowserClassDiagram.cpp:174:    m.setWhatsThis(m.insertItem("Show", 0),
+BrowserClassDiagram.cpp:177:      m.setWhatsThis(m.insertItem("Edit", 1),
+BrowserClassDiagram.cpp:180:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+BrowserClassDiagram.cpp:183:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+BrowserClassDiagram.cpp:187:	  m.setWhatsThis(m.insertItem("Delete", 4),
+BrowserClassDiagram.cpp:197:      m.insertItem("Tool", &toolm);
+BrowserClassDiagram.cpp:201:    m.setWhatsThis(m.insertItem("Undelete", 5),
+BrowserClassView.cpp:163:      m.setWhatsThis(m.insertItem("New class diagram", 0),
+BrowserClassView.cpp:165:      m.setWhatsThis(m.insertItem("New sequence diagram", 1),
+BrowserClassView.cpp:167:      m.setWhatsThis(m.insertItem("New collaboration diagram", 2),
+BrowserClassView.cpp:169:      m.setWhatsThis(m.insertItem("New object diagram", 15),
+BrowserClassView.cpp:171:      m.setWhatsThis(m.insertItem("New class", 3),
+BrowserClassView.cpp:173:      m.setWhatsThis(m.insertItem("New state machine", 4),
+BrowserClassView.cpp:175:      m.setWhatsThis(m.insertItem("New activity", 16),
+BrowserClassView.cpp:180:      m.setWhatsThis(m.insertItem("Edit", 5),
+BrowserClassView.cpp:184:	m.setWhatsThis(m.insertItem("Edit class settings", 6),
+BrowserClassView.cpp:186:	m.setWhatsThis(m.insertItem("Edit drawing settings", 7),
+BrowserClassView.cpp:190:	  m.setWhatsThis(m.insertItem("Delete", 8),
+BrowserClassView.cpp:198:    m.insertItem("Generate", &subm);
+BrowserClassView.cpp:199:    subm.insertItem("C++", 11);
+BrowserClassView.cpp:200:    subm.insertItem("Java", 12);
+BrowserClassView.cpp:201:    subm.insertItem("Idl", 13);
+BrowserClassView.cpp:206:      m.insertItem("Tool", &toolm);
+BrowserClassView.cpp:210:    m.setWhatsThis(m.insertItem("Undelete", 9),
+BrowserClassView.cpp:213:    m.setWhatsThis(m.insertItem("Undelete recursively", 10),
+BrowserClassView.cpp:219:    m.setWhatsThis(m.insertItem("Select associated deployment view", 14),
+BrowserColDiagram.cpp:175:    m.setWhatsThis(m.insertItem("Show", 0),
+BrowserColDiagram.cpp:178:      m.setWhatsThis(m.insertItem("Edit", 1), 
+BrowserColDiagram.cpp:181:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+BrowserColDiagram.cpp:184:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+BrowserColDiagram.cpp:217:	  m.setWhatsThis(m.insertItem("Delete", 4),
+BrowserColDiagram.cpp:227:      m.insertItem("Tool", &toolm);
+BrowserColDiagram.cpp:231:    m.setWhatsThis(m.insertItem("Undelete", 5),
+BrowserComponent.cpp:179:    m.setWhatsThis(m.insertItem("Select the " + s + " class", bias+1),
+BrowserComponent.cpp:187:    m.setWhatsThis(m.insertItem("Select a " + s + " class", bias),
+BrowserComponent.cpp:202:    m.setWhatsThis(m.insertItem("Select a " + s + " class", &sm),
+BrowserComponent.cpp:248:      m.setWhatsThis(m.insertItem("Add nested component", 4),
+BrowserComponent.cpp:251:      m.setWhatsThis(m.insertItem("Edit", 0),
+BrowserComponent.cpp:284:	m.setWhatsThis(m.insertItem("Delete", 1),
+BrowserComponent.cpp:290:    m.setWhatsThis(m.insertItem("Referenced by", 3),
+BrowserComponent.cpp:297:      m.insertItem("Tool", &toolm);
+BrowserComponent.cpp:301:    m.setWhatsThis(m.insertItem("Undelete", 2),
+BrowserComponent.cpp:308:	m.setWhatsThis(m.insertItem("Undelete recursively", 22),
+BrowserComponentDiagram.cpp:175:    m.setWhatsThis(m.insertItem("Show", 0),
+BrowserComponentDiagram.cpp:178:      m.setWhatsThis(m.insertItem("Edit", 1),
+BrowserComponentDiagram.cpp:181:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+BrowserComponentDiagram.cpp:184:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+BrowserComponentDiagram.cpp:188:	  m.setWhatsThis(m.insertItem("Delete", 4),
+BrowserComponentDiagram.cpp:198:      m.insertItem("Tool", &toolm);
+BrowserComponentDiagram.cpp:202:    m.setWhatsThis(m.insertItem("Undelete", 5),
+BrowserComponentView.cpp:143:      m.setWhatsThis(m.insertItem("New component diagram", 0),
+BrowserComponentView.cpp:145:      m.setWhatsThis(m.insertItem("New component", 1),
+BrowserComponentView.cpp:150:      m.setWhatsThis(m.insertItem("Edit", 3),
+BrowserComponentView.cpp:154:	/*m.setWhatsThis(m.insertItem("Edit component settings", 4),
+BrowserComponentView.cpp:156:	m.setWhatsThis(m.insertItem("Edit drawing settings", 5),
+BrowserComponentView.cpp:160:	  m.setWhatsThis(m.insertItem("Delete", 6),
+BrowserComponentView.cpp:171:      m.insertItem("Tool", &toolm);
+BrowserComponentView.cpp:175:    m.setWhatsThis(m.insertItem("Undelete", 7),
+BrowserComponentView.cpp:178:    m.setWhatsThis(m.insertItem("Undelete recursively", 8),
+BrowserDeploymentDiagram.cpp:179:    m.setWhatsThis(m.insertItem("Show", 0),
+BrowserDeploymentDiagram.cpp:182:      m.setWhatsThis(m.insertItem("Edit", 1),
+BrowserDeploymentDiagram.cpp:185:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+BrowserDeploymentDiagram.cpp:188:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+BrowserDeploymentDiagram.cpp:192:	  m.setWhatsThis(m.insertItem("Delete", 4),
+BrowserDeploymentDiagram.cpp:202:      m.insertItem("Tool", &toolm);
+BrowserDeploymentDiagram.cpp:206:    m.setWhatsThis(m.insertItem("Undelete", 5),
+BrowserDeploymentNode.cpp:127:      m.setWhatsThis(m.insertItem("Edit", 0),
+BrowserDeploymentNode.cpp:132:	m.setWhatsThis(m.insertItem("Delete", 1),
+BrowserDeploymentNode.cpp:138:    m.setWhatsThis(m.insertItem("Referenced by", 3),
+BrowserDeploymentNode.cpp:145:      m.insertItem("Tool", &toolm);
+BrowserDeploymentNode.cpp:149:    m.setWhatsThis(m.insertItem("Undelete", 2),
+BrowserDeploymentView.cpp:149:      m.setWhatsThis(m.insertItem("New deployment diagram", 0),
+BrowserDeploymentView.cpp:151:      m.setWhatsThis(m.insertItem("New node", 1),
+BrowserDeploymentView.cpp:153:      m.setWhatsThis(m.insertItem("New artifact", 2),
+BrowserDeploymentView.cpp:158:      m.setWhatsThis(m.insertItem("Edit", 3),
+BrowserDeploymentView.cpp:162:	//m.setWhatsThis(m.insertItem("Edit node settings", 4),
+BrowserDeploymentView.cpp:164:	m.setWhatsThis(m.insertItem("Edit drawing settings", 5),
+BrowserDeploymentView.cpp:168:	  m.setWhatsThis(m.insertItem("Delete", 6),
+BrowserDeploymentView.cpp:176:    m.insertItem("Generate", &subm);
+BrowserDeploymentView.cpp:177:    subm.insertItem("C++", 10);
+BrowserDeploymentView.cpp:178:    subm.insertItem("Java", 11);
+BrowserDeploymentView.cpp:179:    subm.insertItem("Idl", 12);
+BrowserDeploymentView.cpp:184:      m.insertItem("Tool", &toolm);
+BrowserDeploymentView.cpp:188:    m.setWhatsThis(m.insertItem("Undelete", 7),
+BrowserDeploymentView.cpp:191:    m.setWhatsThis(m.insertItem("Undelete recursively", 8),
+BrowserExpansionNode.cpp:199:    m.setWhatsThis(m.insertItem("Edit", 0),
+BrowserExpansionNode.cpp:203:      m.setWhatsThis(m.insertItem("Duplicate", 1),
+BrowserExpansionNode.cpp:206:      m.setWhatsThis(m.insertItem("Delete", 2),
+BrowserExpansionNode.cpp:210:    m.setWhatsThis(m.insertItem("Referenced by", 4),
+BrowserExpansionNode.cpp:217:      m.insertItem("Tool", &toolm);
+BrowserExpansionNode.cpp:221:    m.setWhatsThis(m.insertItem("Undelete", 3),
+BrowserExpansionRegion.cpp:183:      m.setWhatsThis(m.insertItem("Add expansion node", 0),
+BrowserExpansionRegion.cpp:185:      m.setWhatsThis(m.insertItem("Add nested expansion region", 1),
+BrowserExpansionRegion.cpp:187:      m.setWhatsThis(m.insertItem("Add interruptible activity region", 2),
+BrowserExpansionRegion.cpp:193:      m.setWhatsThis(m.insertItem("Add partition", 3),
+BrowserExpansionRegion.cpp:196:      m.setWhatsThis(m.insertItem("Add activity action", 6),
+BrowserExpansionRegion.cpp:198:      m.setWhatsThis(m.insertItem("Add object node", 7),
+BrowserExpansionRegion.cpp:202:    m.setWhatsThis(m.insertItem("Edit", 4),
+BrowserExpansionRegion.cpp:206:      m.setWhatsThis(m.insertItem("Duplicate", 5),
+BrowserExpansionRegion.cpp:226:	m.setWhatsThis(m.insertItem("Set it nested in region above", 12),
+BrowserExpansionRegion.cpp:231:	m.setWhatsThis(m.insertItem("Extract it from current parent region", 13),
+BrowserExpansionRegion.cpp:236:	m.setWhatsThis(m.insertItem("Delete", 8),
+BrowserExpansionRegion.cpp:244:      m.insertItem("Tool", &toolm);
+BrowserExpansionRegion.cpp:248:    m.setWhatsThis(m.insertItem("Undelete", 10),
+BrowserExpansionRegion.cpp:255:	m.setWhatsThis(m.insertItem("Undelete recursively", 11),
+BrowserExtraMember.cpp:121:      m.setWhatsThis(m.insertItem("Edit", 0),
+BrowserExtraMember.cpp:125:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+BrowserExtraMember.cpp:129:	  m.setWhatsThis(m.insertItem("Delete", 1),
+BrowserExtraMember.cpp:138:      m.insertItem("Tool", &toolm);
+BrowserExtraMember.cpp:142:    m.setWhatsThis(m.insertItem("Undelete", 2),
+BrowserFlow.cpp:178:      m.setWhatsThis(m.insertItem("Edit", 0),
+BrowserFlow.cpp:182:	m.setWhatsThis(m.insertItem("Delete", 2),
+BrowserFlow.cpp:194:    m.setWhatsThis(m.insertItem("Select " + s, 7),
+BrowserFlow.cpp:200:      m.insertItem("Tool", &toolm);
+BrowserFlow.cpp:204:    m.setWhatsThis(m.insertItem("Undelete", 3),
+BrowserInterruptibleActivityRegion.cpp:190:      m.setWhatsThis(m.insertItem("Add nested interruptible activity region", 0),
+BrowserInterruptibleActivityRegion.cpp:192:      m.setWhatsThis(m.insertItem("Add expansion region", 1),
+BrowserInterruptibleActivityRegion.cpp:198:      m.setWhatsThis(m.insertItem("Add partition", 3),
+BrowserInterruptibleActivityRegion.cpp:201:      m.setWhatsThis(m.insertItem("Add activity action", 6),
+BrowserInterruptibleActivityRegion.cpp:203:      m.setWhatsThis(m.insertItem("Add object node", 7),
+BrowserInterruptibleActivityRegion.cpp:207:    m.setWhatsThis(m.insertItem("Edit", 4),
+BrowserInterruptibleActivityRegion.cpp:211:      m.setWhatsThis(m.insertItem("Duplicate", 5),
+BrowserInterruptibleActivityRegion.cpp:230:	m.setWhatsThis(m.insertItem("Set it nested in region above", 11),
+BrowserInterruptibleActivityRegion.cpp:235:	m.setWhatsThis(m.insertItem("Extract it from current parent region", 12),
+BrowserInterruptibleActivityRegion.cpp:240:	m.setWhatsThis(m.insertItem("Delete", 8),
+BrowserInterruptibleActivityRegion.cpp:248:      m.insertItem("Tool", &toolm);
+BrowserInterruptibleActivityRegion.cpp:252:    m.setWhatsThis(m.insertItem("Undelete", 9),
+BrowserInterruptibleActivityRegion.cpp:259:	m.setWhatsThis(m.insertItem("Undelete recursively", 10),
+BrowserNode.cpp:681:    m.setWhatsThis(m.insertItem("Mark", bias),
+BrowserNode.cpp:727:	    m.setWhatsThis(m.insertItem("Move marked into", bias + 3),
+BrowserNode.cpp:730:	    m.setWhatsThis(m.insertItem("Move marked after", bias + 4),
+BrowserNode.cpp:735:	m.setWhatsThis(m.insertItem("Duplicate marked into", bias + 5),
+BrowserNode.cpp:739:	  m.setWhatsThis(m.insertItem("Duplicate recursivelly marked into", bias + 6),
+BrowserNode.cpp:744:	m.setWhatsThis(m.insertItem("Duplicate marked after", bias + 7),
+BrowserNode.cpp:748:	  m.setWhatsThis(m.insertItem("Duplicate marked recursivelly after", bias + 8),
+BrowserNode.cpp:756:    m.setWhatsThis(m.insertItem("Unmark", bias + 1),
+BrowserNode.cpp:759:      m.setWhatsThis(m.insertItem("Unmark all", bias + 2),
+BrowserObjectDiagram.cpp:175:    m.setWhatsThis(m.insertItem("Show", 0),
+BrowserObjectDiagram.cpp:178:      m.setWhatsThis(m.insertItem("Edit", 1), 
+BrowserObjectDiagram.cpp:181:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+BrowserObjectDiagram.cpp:184:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+BrowserObjectDiagram.cpp:217:	  m.setWhatsThis(m.insertItem("Delete", 4),
+BrowserObjectDiagram.cpp:227:      m.insertItem("Tool", &toolm);
+BrowserObjectDiagram.cpp:231:    m.setWhatsThis(m.insertItem("Undelete", 5),
+BrowserOperation.cpp:346:      m.setWhatsThis(m.insertItem("Edit", 0),
+BrowserOperation.cpp:349:      m.setWhatsThis(m.insertItem("Duplicate", 1),
+BrowserOperation.cpp:352:	m.setWhatsThis(m.insertItem("Edit C++ body", 4),
+BrowserOperation.cpp:355:	m.setWhatsThis(m.insertItem("Edit Java body", 5),
+BrowserOperation.cpp:357:      m.setWhatsThis(m.insertItem("Duplicate", 1),
+BrowserOperation.cpp:361:	m.setWhatsThis(m.insertItem("Delete", 2),
+BrowserOperation.cpp:370:      m.insertItem("Tool", &toolm);
+BrowserOperation.cpp:374:    m.setWhatsThis(m.insertItem("Undelete", 3),
+BrowserPackage.cpp:368:      m.setWhatsThis(m.insertItem("New package", 0),
+BrowserPackage.cpp:370:      m.setWhatsThis(m.insertItem("New use case view", 1),
+BrowserPackage.cpp:372:      m.setWhatsThis(m.insertItem("New class view", 2),
+BrowserPackage.cpp:374:      m.setWhatsThis(m.insertItem("New component view", 3),
+BrowserPackage.cpp:376:      m.setWhatsThis(m.insertItem("New deployment view", 4),
+BrowserPackage.cpp:378:      m.setWhatsThis(m.insertItem("Import project", 14),
+BrowserPackage.cpp:385:      m.setWhatsThis(m.insertItem("Edit", 5),
+BrowserPackage.cpp:390:	  m.setWhatsThis(m.insertItem("Edit generation settings", 8),
+BrowserPackage.cpp:394:	  m.setWhatsThis(m.insertItem("Edit default stereotypes", 6),
+BrowserPackage.cpp:397:	m.setWhatsThis(m.insertItem("Edit class settings", 7),
+BrowserPackage.cpp:399:	m.setWhatsThis(m.insertItem("Edit drawing settings", 9),
+BrowserPackage.cpp:402:	  m.insertItem("Import", &importm);
+BrowserPackage.cpp:403:	  m.setWhatsThis(importm.insertItem("Generation settings", 28),
+BrowserPackage.cpp:406:	  m.setWhatsThis(importm.insertItem("Default stereotypes", 29),
+BrowserPackage.cpp:411:	  m.setWhatsThis(m.insertItem("Delete", 10),
+BrowserPackage.cpp:418:    m.setWhatsThis(m.insertItem("Referenced by", 13),
+BrowserPackage.cpp:423:    m.insertItem("Generate", &genm);
+BrowserPackage.cpp:424:    genm.insertItem("C++", 20);
+BrowserPackage.cpp:425:    genm.insertItem("Java", 21);
+BrowserPackage.cpp:426:    genm.insertItem("Idl", 22);
+BrowserPackage.cpp:430:	m.insertItem("Reverse", &revm);
+BrowserPackage.cpp:432:	revm.insertItem("C++", 24);
+BrowserPackage.cpp:433:	revm.insertItem("Java", 25);
+BrowserPackage.cpp:434:	revm.insertItem("Java Catalog", 26);
+BrowserPackage.cpp:441:	m.insertItem("Tool", &toolm);
+BrowserPackage.cpp:446:    m.setWhatsThis(m.insertItem("Undelete", 11),
+BrowserPackage.cpp:448:    m.setWhatsThis(m.insertItem("Undelete recursively", 12),
+BrowserPackage.cpp:464:	m.insertItem("PREPARE la renumerotation", 27);
+BrowserPackage.cpp:467:      m.insertItem("Renumerotation BASE", 27);
+BrowserPackage.cpp:470:      m.insertItem("Renumerotation USER", 27);
+BrowserPackage.cpp:1421:	m.insertItem("In " + QString(get_name()), 1);
+BrowserPackage.cpp:1422:	m.insertItem("After " + QString(get_name()), 2);
+BrowserParameter.cpp:204:    m.setWhatsThis(m.insertItem("Edit", 0),
+BrowserParameter.cpp:208:      m.setWhatsThis(m.insertItem("Duplicate", 1),
+BrowserParameter.cpp:211:      m.setWhatsThis(m.insertItem("Delete", 2),
+BrowserParameter.cpp:215:    m.setWhatsThis(m.insertItem("Referenced by", 4),
+BrowserParameter.cpp:222:      m.insertItem("Tool", &toolm);
+BrowserParameter.cpp:226:    m.setWhatsThis(m.insertItem("Undelete", 3),
+BrowserParameterSet.cpp:128:    m.setWhatsThis(m.insertItem("Edit", 0),
+BrowserParameterSet.cpp:132:      m.setWhatsThis(m.insertItem("Duplicate", 1),
+BrowserParameterSet.cpp:135:      m.setWhatsThis(m.insertItem("Delete", 2),
+BrowserParameterSet.cpp:143:      m.insertItem("Tool", &toolm);
+BrowserParameterSet.cpp:147:    m.setWhatsThis(m.insertItem("Undelete", 3),
+BrowserPin.cpp:255:    m.setWhatsThis(m.insertItem("Edit", 0),
+BrowserPin.cpp:260:	m.setWhatsThis(m.insertItem("Duplicate", 1),
+BrowserPin.cpp:264:      m.setWhatsThis(m.insertItem("Delete", 2),
+BrowserPin.cpp:272:      m.insertItem("Tool", &toolm);
+BrowserPin.cpp:278:    m.setWhatsThis(m.insertItem("Undelete", 3),
+BrowserPseudoState.cpp:348:    m.setWhatsThis(m.insertItem("Edit", 1),
+BrowserPseudoState.cpp:352:      m.setWhatsThis(m.insertItem("Duplicate", 2),
+BrowserPseudoState.cpp:356:	m.setWhatsThis(m.insertItem("Delete", 3),
+BrowserPseudoState.cpp:360:    m.setWhatsThis(m.insertItem("Referenced by", 5),
+BrowserPseudoState.cpp:367:      m.insertItem("Tool", &toolm);
+BrowserPseudoState.cpp:371:    m.setWhatsThis(m.insertItem("Undelete", 4),
+BrowserRegion.cpp:132:      m.setWhatsThis(m.insertItem("Add state", 1),
+BrowserRegion.cpp:136:    m.setWhatsThis(m.insertItem("Edit", 3),
+BrowserRegion.cpp:141:      m.setWhatsThis(m.insertItem("Delete", 7),
+BrowserRegion.cpp:149:      m.insertItem("Tool", &toolm);
+BrowserRegion.cpp:153:    m.setWhatsThis(m.insertItem("Undelete", 8),
+BrowserRegion.cpp:160:	m.setWhatsThis(m.insertItem("Undelete recursively", 9),
+BrowserRelation.cpp:351:      m.setWhatsThis(m.insertItem("Edit", 0),
+BrowserRelation.cpp:356:	  m.setWhatsThis(m.insertItem("Duplicate", 1),
+BrowserRelation.cpp:359:	    m.setWhatsThis(m.insertItem("Add get operation", 4),
+BrowserRelation.cpp:362:	    m.setWhatsThis(m.insertItem("Add set operation", 5),
+BrowserRelation.cpp:365:	    m.setWhatsThis(m.insertItem("Add get and set operation", 6),
+BrowserRelation.cpp:369:	m.setWhatsThis(m.insertItem("Delete", 2),
+BrowserRelation.cpp:385:      m.insertItem("Tool", &toolm);
+BrowserRelation.cpp:389:    m.setWhatsThis(m.insertItem("Undelete", 3),
+BrowserSeqDiagram.cpp:178:    m.setWhatsThis(m.insertItem("Show", 0), 
+BrowserSeqDiagram.cpp:181:      m.setWhatsThis(m.insertItem("Edit", 1),
+BrowserSeqDiagram.cpp:183:      m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+BrowserSeqDiagram.cpp:187:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+BrowserSeqDiagram.cpp:219:	  m.setWhatsThis(m.insertItem("Delete", 4),
+BrowserSeqDiagram.cpp:229:      m.insertItem("Tool", &toolm);
+BrowserSeqDiagram.cpp:233:    m.setWhatsThis(m.insertItem("Undelete", 5),
+BrowserSimpleRelation.cpp:182:      m.setWhatsThis(m.insertItem("Edit", 0),
+BrowserSimpleRelation.cpp:186:	m.setWhatsThis(m.insertItem("Delete", 2),
+BrowserSimpleRelation.cpp:199:      m.insertItem("Tool", &toolm);
+BrowserSimpleRelation.cpp:203:    m.setWhatsThis(m.insertItem("Undelete", 3),
+BrowserStateAction.cpp:171:    m.setWhatsThis(m.insertItem("Edit", 1),
+BrowserStateAction.cpp:175:      m.setWhatsThis(m.insertItem("Duplicate", 2),
+BrowserStateAction.cpp:179:	m.setWhatsThis(m.insertItem("Delete", 3),
+BrowserStateAction.cpp:183:    m.setWhatsThis(m.insertItem("Referenced by", 5),
+BrowserStateAction.cpp:190:      m.insertItem("Tool", &toolm);
+BrowserStateAction.cpp:194:    m.setWhatsThis(m.insertItem("Undelete", 4),
+BrowserState.cpp:206:      m.setWhatsThis(m.insertItem("New state diagram", 0),
+BrowserState.cpp:209:	m.setWhatsThis(m.insertItem("Add submachine", 1),
+BrowserState.cpp:211:	m.setWhatsThis(m.insertItem("Add state", 2),
+BrowserState.cpp:215:	m.setWhatsThis(m.insertItem("Add nested state", 2),
+BrowserState.cpp:218:	m.setWhatsThis(m.insertItem("Add state", 2),
+BrowserState.cpp:220:      m.setWhatsThis(m.insertItem("Add region", 11),
+BrowserState.cpp:224:    m.setWhatsThis(m.insertItem("Edit", 3),
+BrowserState.cpp:228:      m.setWhatsThis(m.insertItem("Duplicate", 4),
+BrowserState.cpp:262:	m.setWhatsThis(m.insertItem("Delete", 7),
+BrowserState.cpp:266:    m.setWhatsThis(m.insertItem("Referenced by", 10),
+BrowserState.cpp:273:      m.insertItem("Tool", &toolm);
+BrowserState.cpp:277:    m.setWhatsThis(m.insertItem("Undelete", 8),
+BrowserState.cpp:284:	m.setWhatsThis(m.insertItem("Undelete recursively", 9),
+BrowserStateDiagram.cpp:176:    m.setWhatsThis(m.insertItem("Show", 0),
+BrowserStateDiagram.cpp:179:      m.setWhatsThis(m.insertItem("Edit", 1),
+BrowserStateDiagram.cpp:182:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+BrowserStateDiagram.cpp:185:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+BrowserStateDiagram.cpp:189:	  m.setWhatsThis(m.insertItem("Delete", 4),
+BrowserStateDiagram.cpp:199:      m.insertItem("Tool", &toolm);
+BrowserStateDiagram.cpp:203:    m.setWhatsThis(m.insertItem("Undelete", 5),
+BrowserTransition.cpp:181:      m.setWhatsThis(m.insertItem("Edit", 0),
+BrowserTransition.cpp:185:	m.setWhatsThis(m.insertItem("Delete", 2),
+BrowserTransition.cpp:197:    m.setWhatsThis(m.insertItem("Select " + s, 7),
+BrowserTransition.cpp:203:      m.insertItem("Tool", &toolm);
+BrowserTransition.cpp:207:    m.setWhatsThis(m.insertItem("Undelete", 3),
+BrowserUseCase.cpp:162:      m.setWhatsThis(m.insertItem("New use case diagram", 0),
+BrowserUseCase.cpp:164:      m.setWhatsThis(m.insertItem("New sequence diagram", 1),
+BrowserUseCase.cpp:166:      m.setWhatsThis(m.insertItem("New collaboration diagram", 2),
+BrowserUseCase.cpp:168:      m.setWhatsThis(m.insertItem("New object diagram", 13),
+BrowserUseCase.cpp:171:      m.setWhatsThis(m.insertItem("New use case", 3),
+BrowserUseCase.cpp:173:      m.setWhatsThis(m.insertItem("New actor", 4),
+BrowserUseCase.cpp:175:      m.setWhatsThis(m.insertItem("New class", 5),
+BrowserUseCase.cpp:180:      m.setWhatsThis(m.insertItem("Edit", 6),
+BrowserUseCase.cpp:184:	m.setWhatsThis(m.insertItem("Edit drawing settings", 7),
+BrowserUseCase.cpp:216:	  m.setWhatsThis(m.insertItem("Delete", 8),
+BrowserUseCase.cpp:223:    m.setWhatsThis(m.insertItem("Referenced by", 12),
+BrowserUseCase.cpp:230:      m.insertItem("Tool", &toolm);
+BrowserUseCase.cpp:234:    m.setWhatsThis(m.insertItem("Undelete", 9),
+BrowserUseCase.cpp:237:    m.setWhatsThis(m.insertItem("Undelete recursively", 10),
+BrowserUseCase.cpp:699:	m.insertItem("In " + QString(get_name()), 1);
+BrowserUseCase.cpp:700:	m.insertItem("After " + QString(get_name()), 2);
+BrowserUseCaseDiagram.cpp:178:    m.setWhatsThis(m.insertItem("Show", 0),
+BrowserUseCaseDiagram.cpp:181:      m.setWhatsThis(m.insertItem("Edit", 1),
+BrowserUseCaseDiagram.cpp:184:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+BrowserUseCaseDiagram.cpp:187:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+BrowserUseCaseDiagram.cpp:219:	  m.setWhatsThis(m.insertItem("Delete", 4),
+BrowserUseCaseDiagram.cpp:229:      m.insertItem("Tool", &toolm);
+BrowserUseCaseDiagram.cpp:233:    m.setWhatsThis(m.insertItem("Undelete", 5),
+BrowserUseCaseView.cpp:132:      m.setWhatsThis(m.insertItem("New use case diagram", 0),
+BrowserUseCaseView.cpp:134:      m.setWhatsThis(m.insertItem("New sequence diagram", 1),
+BrowserUseCaseView.cpp:136:      m.setWhatsThis(m.insertItem("New collaboration diagram", 2),
+BrowserUseCaseView.cpp:138:      m.setWhatsThis(m.insertItem("New object diagram", 13),
+BrowserUseCaseView.cpp:140:      m.setWhatsThis(m.insertItem("New use case", 3),
+BrowserUseCaseView.cpp:142:      m.setWhatsThis(m.insertItem("New actor", 4),
+BrowserUseCaseView.cpp:144:      m.setWhatsThis(m.insertItem("New class", 5),
+BrowserUseCaseView.cpp:147:      m.setWhatsThis(m.insertItem("New sub use case view", 6),
+BrowserUseCaseView.cpp:152:      m.setWhatsThis(m.insertItem("Edit", 8),
+BrowserUseCaseView.cpp:156:	m.setWhatsThis(m.insertItem("Edit drawing settings", 9),
+BrowserUseCaseView.cpp:160:	  m.setWhatsThis(m.insertItem("Delete", 10),
+BrowserUseCaseView.cpp:170:      m.insertItem("Tool", &toolm);
+BrowserUseCaseView.cpp:174:    m.setWhatsThis(m.insertItem("Undelete", 11),
+BrowserUseCaseView.cpp:177:    m.setWhatsThis(m.insertItem("Undelete recursively", 12),
+BrowserUseCaseView.cpp:588:	m.insertItem("In " + QString(get_name()), 1);
+BrowserUseCaseView.cpp:589:	m.insertItem("After " + QString(get_name()), 2);
+Done
+bruno@linux:~/uml/browser> (echo "";cd /home/bruno/uml/browser;grep -n insertItem\(\" ../*/*.cpp /dev/null;echo Done)
+
+../browser/BrowserActivityAction.cpp:511:	m.setWhatsThis(m.insertItem("Add pin", 0),
+../browser/BrowserActivityAction.cpp:513:      m.setWhatsThis(m.insertItem("Add parameter set", 7),
+../browser/BrowserActivityAction.cpp:517:    m.setWhatsThis(m.insertItem("Edit", 1),
+../browser/BrowserActivityAction.cpp:521:      m.setWhatsThis(m.insertItem("Duplicate", 2),
+../browser/BrowserActivityAction.cpp:529:      m.insertItem("Select " + QString(what), 8);
+../browser/BrowserActivityAction.cpp:535:	m.setWhatsThis(m.insertItem("Delete", 3),
+../browser/BrowserActivityAction.cpp:539:    m.setWhatsThis(m.insertItem("Referenced by", 4),
+../browser/BrowserActivityAction.cpp:546:      m.insertItem("Tool", &toolm);
+../browser/BrowserActivityAction.cpp:550:    m.setWhatsThis(m.insertItem("Undelete", 5),
+../browser/BrowserActivityAction.cpp:557:	m.setWhatsThis(m.insertItem("Undelete recursively", 6),
+../browser/BrowserActivity.cpp:207:      m.setWhatsThis(m.insertItem("New activity diagram", 0),
+../browser/BrowserActivity.cpp:209:      m.setWhatsThis(m.insertItem("Add parameter", 1),
+../browser/BrowserActivity.cpp:211:      m.setWhatsThis(m.insertItem("Add interruptible activity region", 2),
+../browser/BrowserActivity.cpp:213:      m.setWhatsThis(m.insertItem("New expansion region", 3),
+../browser/BrowserActivity.cpp:216:      m.setWhatsThis(m.insertItem("Add partition", 4),
+../browser/BrowserActivity.cpp:219:      m.setWhatsThis(m.insertItem("Add activity action", 7),
+../browser/BrowserActivity.cpp:221:      m.setWhatsThis(m.insertItem("Add object node", 8),
+../browser/BrowserActivity.cpp:225:    m.setWhatsThis(m.insertItem("Edit", 5),
+../browser/BrowserActivity.cpp:229:      m.setWhatsThis(m.insertItem("Duplicate", 6),
+../browser/BrowserActivity.cpp:233:	m.setWhatsThis(m.insertItem("Delete", 9),
+../browser/BrowserActivity.cpp:238:    m.setWhatsThis(m.insertItem("Referenced by", 12),
+../browser/BrowserActivity.cpp:244:      m.insertItem("Tool", &toolm);
+../browser/BrowserActivity.cpp:248:    m.setWhatsThis(m.insertItem("Undelete", 10),
+../browser/BrowserActivity.cpp:255:	m.setWhatsThis(m.insertItem("Undelete recursively", 11),
+../browser/BrowserActivityDiagram.cpp:184:    m.setWhatsThis(m.insertItem("Show", 0),
+../browser/BrowserActivityDiagram.cpp:187:      m.setWhatsThis(m.insertItem("Edit", 1),
+../browser/BrowserActivityDiagram.cpp:190:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+../browser/BrowserActivityDiagram.cpp:193:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+../browser/BrowserActivityDiagram.cpp:197:	  m.setWhatsThis(m.insertItem("Delete", 4),
+../browser/BrowserActivityDiagram.cpp:207:      m.insertItem("Tool", &toolm);
+../browser/BrowserActivityDiagram.cpp:211:    m.setWhatsThis(m.insertItem("Undelete", 5),
+../browser/BrowserActivityNode.cpp:273:    m.setWhatsThis(m.insertItem("Edit", 1),
+../browser/BrowserActivityNode.cpp:277:      m.setWhatsThis(m.insertItem("Duplicate", 2),
+../browser/BrowserActivityNode.cpp:281:	m.setWhatsThis(m.insertItem("Delete", 3),
+../browser/BrowserActivityNode.cpp:285:    m.setWhatsThis(m.insertItem("Referenced by", 5),
+../browser/BrowserActivityNode.cpp:292:      m.insertItem("Tool", &toolm);
+../browser/BrowserActivityNode.cpp:296:    m.setWhatsThis(m.insertItem("Undelete", 4),
+../browser/BrowserActivityObject.cpp:298:    m.setWhatsThis(m.insertItem("Edit", 1),
+../browser/BrowserActivityObject.cpp:302:      m.setWhatsThis(m.insertItem("Duplicate", 2),
+../browser/BrowserActivityObject.cpp:306:	m.setWhatsThis(m.insertItem("Delete", 3),
+../browser/BrowserActivityObject.cpp:310:    m.setWhatsThis(m.insertItem("Referenced by", 4),
+../browser/BrowserActivityObject.cpp:317:      m.insertItem("Tool", &toolm);
+../browser/BrowserActivityObject.cpp:321:    m.setWhatsThis(m.insertItem("Undelete", 5),
+../browser/BrowserActivityObject.cpp:328:	m.setWhatsThis(m.insertItem("Undelete recursively", 6),
+../browser/BrowserArtifact.cpp:253:      m.setWhatsThis(m.insertItem("Edit", 0),
+../browser/BrowserArtifact.cpp:258:	m.setWhatsThis(m.insertItem("Delete", 1),
+../browser/BrowserArtifact.cpp:265:      m.insertItem("Generate", &gensubm);
+../browser/BrowserArtifact.cpp:266:      gensubm.insertItem("C++", 10);
+../browser/BrowserArtifact.cpp:267:      gensubm.insertItem("Java", 11);
+../browser/BrowserArtifact.cpp:268:      gensubm.insertItem("Idl", 12);
+../browser/BrowserArtifact.cpp:273:	  //roundtripsubm.insertItem("C++ header & source files", 13);
+../browser/BrowserArtifact.cpp:274:	editsubm.insertItem("C++ header file", 14);
+../browser/BrowserArtifact.cpp:275:	//roundtripsubm.insertItem("C++ header file", 15);
+../browser/BrowserArtifact.cpp:278:	editsubm.insertItem("C++ source file", 16);
+../browser/BrowserArtifact.cpp:279:	//roundtripsubm.insertItem("C++ source file", 17);
+../browser/BrowserArtifact.cpp:282:	editsubm.insertItem("Java source file", 18);
+../browser/BrowserArtifact.cpp:283:	//roundtripsubm.insertItem("Java source file", 19);
+../browser/BrowserArtifact.cpp:286:	editsubm.insertItem("Idl source file", 20);
+../browser/BrowserArtifact.cpp:287:	//roundtripsubm.insertItem("Idl source file", 21);
+../browser/BrowserArtifact.cpp:290:	m.insertItem("See file", &editsubm);
+../browser/BrowserArtifact.cpp:292:	//m.insertItem("Roundtrip", &roundtripsubm);
+../browser/BrowserArtifact.cpp:295:    m.setWhatsThis(m.insertItem("Referenced by", 3),
+../browser/BrowserArtifact.cpp:302:      m.insertItem("Tool", &toolm);
+../browser/BrowserArtifact.cpp:306:    m.setWhatsThis(m.insertItem("Undelete", 2),
+../browser/BrowserArtifact.cpp:319:    m.setWhatsThis(m.insertItem("Select the associated class", 10000),
+../browser/BrowserArtifact.cpp:324:    m.setWhatsThis(m.insertItem("Select an associated class", 9999),
+../browser/BrowserArtifact.cpp:336:    m.setWhatsThis(m.insertItem("Select an associated class", &clsubm),
+../browser/BrowserAttribute.cpp:212:    m.setWhatsThis(m.insertItem("Edit", 0),
+../browser/BrowserAttribute.cpp:220:	m.setWhatsThis(m.insertItem("Add get operation", 3),
+../browser/BrowserAttribute.cpp:223:	m.setWhatsThis(m.insertItem("Add set operation", 4),
+../browser/BrowserAttribute.cpp:226:	m.setWhatsThis(m.insertItem("Add get and set operation", 5),
+../browser/BrowserAttribute.cpp:228:      m.setWhatsThis(m.insertItem("Duplicate", 6),
+../browser/BrowserAttribute.cpp:233:    m.setWhatsThis(m.insertItem("Referenced by", 7),
+../browser/BrowserAttribute.cpp:238:      m.setWhatsThis(m.insertItem("Delete", 1),
+../browser/BrowserAttribute.cpp:248:      m.insertItem("Tool", &toolm);
+../browser/BrowserAttribute.cpp:252:    m.setWhatsThis(m.insertItem("Undelete", 2),
+../browser/BrowserClass.cpp:295:	  m.setWhatsThis(m.insertItem("Add item", 8),
+../browser/BrowserClass.cpp:299:	  m.setWhatsThis(m.insertItem("Add attribute", 0),
+../browser/BrowserClass.cpp:302:	  m.setWhatsThis(m.insertItem("Add operation", 1),
+../browser/BrowserClass.cpp:306:	      m.setWhatsThis(m.insertItem("Add inherited operation", 9999),
+../browser/BrowserClass.cpp:328:	      m.setWhatsThis(m.insertItem("Add inherited operation", &inhopersubm),
+../browser/BrowserClass.cpp:333:	    m.setWhatsThis(m.insertItem("Add nested class", 14),
+../browser/BrowserClass.cpp:336:	  m.setWhatsThis(m.insertItem("Add extra member", 2),
+../browser/BrowserClass.cpp:340:	m.setWhatsThis(m.insertItem("Edit", 3),
+../browser/BrowserClass.cpp:343:	m.setWhatsThis(m.insertItem("Duplicate", 13),
+../browser/BrowserClass.cpp:346:	m.setWhatsThis(m.insertItem("Delete", 4),
+../browser/BrowserClass.cpp:366:	      m.setWhatsThis(m.insertItem("Create source artifact", 5),
+../browser/BrowserClass.cpp:375:      m.setWhatsThis(m.insertItem("Edit", 3),
+../browser/BrowserClass.cpp:384:      m.setWhatsThis(m.insertItem("Select associated artifact", 5),
+../browser/BrowserClass.cpp:394:	m.setWhatsThis(m.insertItem("Select associated component", 100000),
+../browser/BrowserClass.cpp:400:	m.setWhatsThis(m.insertItem("Select an associated component", &compsubm),
+../browser/BrowserClass.cpp:415:    m.setWhatsThis(m.insertItem("Referenced by", 15),
+../browser/BrowserClass.cpp:420:      m.insertItem("Generate", &gensubm);    
+../browser/BrowserClass.cpp:421:      gensubm.insertItem("C++", 10);
+../browser/BrowserClass.cpp:422:      gensubm.insertItem("Java", 11);
+../browser/BrowserClass.cpp:423:      gensubm.insertItem("Idl", 12);
+../browser/BrowserClass.cpp:428:      m.insertItem("Tool", &toolm);
+../browser/BrowserClass.cpp:432:    m.setWhatsThis(m.insertItem("Undelete", 6),
+../browser/BrowserClass.cpp:440:	m.setWhatsThis(m.insertItem("Undelete recursively", 7),
+../browser/BrowserClass.cpp:1068:	m.insertItem("In " + QString(get_name()), 1);
+../browser/BrowserClass.cpp:1069:	m.insertItem("After " + QString(get_name()), 2);
+../browser/BrowserClassDiagram.cpp:174:    m.setWhatsThis(m.insertItem("Show", 0),
+../browser/BrowserClassDiagram.cpp:177:      m.setWhatsThis(m.insertItem("Edit", 1),
+../browser/BrowserClassDiagram.cpp:180:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+../browser/BrowserClassDiagram.cpp:183:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+../browser/BrowserClassDiagram.cpp:187:	  m.setWhatsThis(m.insertItem("Delete", 4),
+../browser/BrowserClassDiagram.cpp:197:      m.insertItem("Tool", &toolm);
+../browser/BrowserClassDiagram.cpp:201:    m.setWhatsThis(m.insertItem("Undelete", 5),
+../browser/BrowserClassView.cpp:163:      m.setWhatsThis(m.insertItem("New class diagram", 0),
+../browser/BrowserClassView.cpp:165:      m.setWhatsThis(m.insertItem("New sequence diagram", 1),
+../browser/BrowserClassView.cpp:167:      m.setWhatsThis(m.insertItem("New collaboration diagram", 2),
+../browser/BrowserClassView.cpp:169:      m.setWhatsThis(m.insertItem("New object diagram", 15),
+../browser/BrowserClassView.cpp:171:      m.setWhatsThis(m.insertItem("New class", 3),
+../browser/BrowserClassView.cpp:173:      m.setWhatsThis(m.insertItem("New state machine", 4),
+../browser/BrowserClassView.cpp:175:      m.setWhatsThis(m.insertItem("New activity", 16),
+../browser/BrowserClassView.cpp:180:      m.setWhatsThis(m.insertItem("Edit", 5),
+../browser/BrowserClassView.cpp:184:	m.setWhatsThis(m.insertItem("Edit class settings", 6),
+../browser/BrowserClassView.cpp:186:	m.setWhatsThis(m.insertItem("Edit drawing settings", 7),
+../browser/BrowserClassView.cpp:190:	  m.setWhatsThis(m.insertItem("Delete", 8),
+../browser/BrowserClassView.cpp:198:    m.insertItem("Generate", &subm);
+../browser/BrowserClassView.cpp:199:    subm.insertItem("C++", 11);
+../browser/BrowserClassView.cpp:200:    subm.insertItem("Java", 12);
+../browser/BrowserClassView.cpp:201:    subm.insertItem("Idl", 13);
+../browser/BrowserClassView.cpp:206:      m.insertItem("Tool", &toolm);
+../browser/BrowserClassView.cpp:210:    m.setWhatsThis(m.insertItem("Undelete", 9),
+../browser/BrowserClassView.cpp:213:    m.setWhatsThis(m.insertItem("Undelete recursively", 10),
+../browser/BrowserClassView.cpp:219:    m.setWhatsThis(m.insertItem("Select associated deployment view", 14),
+../browser/BrowserColDiagram.cpp:175:    m.setWhatsThis(m.insertItem("Show", 0),
+../browser/BrowserColDiagram.cpp:178:      m.setWhatsThis(m.insertItem("Edit", 1), 
+../browser/BrowserColDiagram.cpp:181:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+../browser/BrowserColDiagram.cpp:184:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+../browser/BrowserColDiagram.cpp:217:	  m.setWhatsThis(m.insertItem("Delete", 4),
+../browser/BrowserColDiagram.cpp:227:      m.insertItem("Tool", &toolm);
+../browser/BrowserColDiagram.cpp:231:    m.setWhatsThis(m.insertItem("Undelete", 5),
+../browser/BrowserComponent.cpp:179:    m.setWhatsThis(m.insertItem("Select the " + s + " class", bias+1),
+../browser/BrowserComponent.cpp:187:    m.setWhatsThis(m.insertItem("Select a " + s + " class", bias),
+../browser/BrowserComponent.cpp:202:    m.setWhatsThis(m.insertItem("Select a " + s + " class", &sm),
+../browser/BrowserComponent.cpp:248:      m.setWhatsThis(m.insertItem("Add nested component", 4),
+../browser/BrowserComponent.cpp:251:      m.setWhatsThis(m.insertItem("Edit", 0),
+../browser/BrowserComponent.cpp:284:	m.setWhatsThis(m.insertItem("Delete", 1),
+../browser/BrowserComponent.cpp:290:    m.setWhatsThis(m.insertItem("Referenced by", 3),
+../browser/BrowserComponent.cpp:297:      m.insertItem("Tool", &toolm);
+../browser/BrowserComponent.cpp:301:    m.setWhatsThis(m.insertItem("Undelete", 2),
+../browser/BrowserComponent.cpp:308:	m.setWhatsThis(m.insertItem("Undelete recursively", 22),
+../browser/BrowserComponentDiagram.cpp:175:    m.setWhatsThis(m.insertItem("Show", 0),
+../browser/BrowserComponentDiagram.cpp:178:      m.setWhatsThis(m.insertItem("Edit", 1),
+../browser/BrowserComponentDiagram.cpp:181:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+../browser/BrowserComponentDiagram.cpp:184:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+../browser/BrowserComponentDiagram.cpp:188:	  m.setWhatsThis(m.insertItem("Delete", 4),
+../browser/BrowserComponentDiagram.cpp:198:      m.insertItem("Tool", &toolm);
+../browser/BrowserComponentDiagram.cpp:202:    m.setWhatsThis(m.insertItem("Undelete", 5),
+../browser/BrowserComponentView.cpp:143:      m.setWhatsThis(m.insertItem("New component diagram", 0),
+../browser/BrowserComponentView.cpp:145:      m.setWhatsThis(m.insertItem("New component", 1),
+../browser/BrowserComponentView.cpp:150:      m.setWhatsThis(m.insertItem("Edit", 3),
+../browser/BrowserComponentView.cpp:154:	/*m.setWhatsThis(m.insertItem("Edit component settings", 4),
+../browser/BrowserComponentView.cpp:156:	m.setWhatsThis(m.insertItem("Edit drawing settings", 5),
+../browser/BrowserComponentView.cpp:160:	  m.setWhatsThis(m.insertItem("Delete", 6),
+../browser/BrowserComponentView.cpp:171:      m.insertItem("Tool", &toolm);
+../browser/BrowserComponentView.cpp:175:    m.setWhatsThis(m.insertItem("Undelete", 7),
+../browser/BrowserComponentView.cpp:178:    m.setWhatsThis(m.insertItem("Undelete recursively", 8),
+../browser/BrowserDeploymentDiagram.cpp:179:    m.setWhatsThis(m.insertItem("Show", 0),
+../browser/BrowserDeploymentDiagram.cpp:182:      m.setWhatsThis(m.insertItem("Edit", 1),
+../browser/BrowserDeploymentDiagram.cpp:185:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+../browser/BrowserDeploymentDiagram.cpp:188:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+../browser/BrowserDeploymentDiagram.cpp:192:	  m.setWhatsThis(m.insertItem("Delete", 4),
+../browser/BrowserDeploymentDiagram.cpp:202:      m.insertItem("Tool", &toolm);
+../browser/BrowserDeploymentDiagram.cpp:206:    m.setWhatsThis(m.insertItem("Undelete", 5),
+../browser/BrowserDeploymentNode.cpp:127:      m.setWhatsThis(m.insertItem("Edit", 0),
+../browser/BrowserDeploymentNode.cpp:132:	m.setWhatsThis(m.insertItem("Delete", 1),
+../browser/BrowserDeploymentNode.cpp:138:    m.setWhatsThis(m.insertItem("Referenced by", 3),
+../browser/BrowserDeploymentNode.cpp:145:      m.insertItem("Tool", &toolm);
+../browser/BrowserDeploymentNode.cpp:149:    m.setWhatsThis(m.insertItem("Undelete", 2),
+../browser/BrowserDeploymentView.cpp:149:      m.setWhatsThis(m.insertItem("New deployment diagram", 0),
+../browser/BrowserDeploymentView.cpp:151:      m.setWhatsThis(m.insertItem("New node", 1),
+../browser/BrowserDeploymentView.cpp:153:      m.setWhatsThis(m.insertItem("New artifact", 2),
+../browser/BrowserDeploymentView.cpp:158:      m.setWhatsThis(m.insertItem("Edit", 3),
+../browser/BrowserDeploymentView.cpp:162:	//m.setWhatsThis(m.insertItem("Edit node settings", 4),
+../browser/BrowserDeploymentView.cpp:164:	m.setWhatsThis(m.insertItem("Edit drawing settings", 5),
+../browser/BrowserDeploymentView.cpp:168:	  m.setWhatsThis(m.insertItem("Delete", 6),
+../browser/BrowserDeploymentView.cpp:176:    m.insertItem("Generate", &subm);
+../browser/BrowserDeploymentView.cpp:177:    subm.insertItem("C++", 10);
+../browser/BrowserDeploymentView.cpp:178:    subm.insertItem("Java", 11);
+../browser/BrowserDeploymentView.cpp:179:    subm.insertItem("Idl", 12);
+../browser/BrowserDeploymentView.cpp:184:      m.insertItem("Tool", &toolm);
+../browser/BrowserDeploymentView.cpp:188:    m.setWhatsThis(m.insertItem("Undelete", 7),
+../browser/BrowserDeploymentView.cpp:191:    m.setWhatsThis(m.insertItem("Undelete recursively", 8),
+../browser/BrowserExpansionNode.cpp:199:    m.setWhatsThis(m.insertItem("Edit", 0),
+../browser/BrowserExpansionNode.cpp:203:      m.setWhatsThis(m.insertItem("Duplicate", 1),
+../browser/BrowserExpansionNode.cpp:206:      m.setWhatsThis(m.insertItem("Delete", 2),
+../browser/BrowserExpansionNode.cpp:210:    m.setWhatsThis(m.insertItem("Referenced by", 4),
+../browser/BrowserExpansionNode.cpp:217:      m.insertItem("Tool", &toolm);
+../browser/BrowserExpansionNode.cpp:221:    m.setWhatsThis(m.insertItem("Undelete", 3),
+../browser/BrowserExpansionRegion.cpp:183:      m.setWhatsThis(m.insertItem("Add expansion node", 0),
+../browser/BrowserExpansionRegion.cpp:185:      m.setWhatsThis(m.insertItem("Add nested expansion region", 1),
+../browser/BrowserExpansionRegion.cpp:187:      m.setWhatsThis(m.insertItem("Add interruptible activity region", 2),
+../browser/BrowserExpansionRegion.cpp:193:      m.setWhatsThis(m.insertItem("Add partition", 3),
+../browser/BrowserExpansionRegion.cpp:196:      m.setWhatsThis(m.insertItem("Add activity action", 6),
+../browser/BrowserExpansionRegion.cpp:198:      m.setWhatsThis(m.insertItem("Add object node", 7),
+../browser/BrowserExpansionRegion.cpp:202:    m.setWhatsThis(m.insertItem("Edit", 4),
+../browser/BrowserExpansionRegion.cpp:206:      m.setWhatsThis(m.insertItem("Duplicate", 5),
+../browser/BrowserExpansionRegion.cpp:226:	m.setWhatsThis(m.insertItem("Set it nested in region above", 12),
+../browser/BrowserExpansionRegion.cpp:231:	m.setWhatsThis(m.insertItem("Extract it from current parent region", 13),
+../browser/BrowserExpansionRegion.cpp:236:	m.setWhatsThis(m.insertItem("Delete", 8),
+../browser/BrowserExpansionRegion.cpp:244:      m.insertItem("Tool", &toolm);
+../browser/BrowserExpansionRegion.cpp:248:    m.setWhatsThis(m.insertItem("Undelete", 10),
+../browser/BrowserExpansionRegion.cpp:255:	m.setWhatsThis(m.insertItem("Undelete recursively", 11),
+../browser/BrowserExtraMember.cpp:121:      m.setWhatsThis(m.insertItem("Edit", 0),
+../browser/BrowserExtraMember.cpp:125:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+../browser/BrowserExtraMember.cpp:129:	  m.setWhatsThis(m.insertItem("Delete", 1),
+../browser/BrowserExtraMember.cpp:138:      m.insertItem("Tool", &toolm);
+../browser/BrowserExtraMember.cpp:142:    m.setWhatsThis(m.insertItem("Undelete", 2),
+../browser/BrowserFlow.cpp:178:      m.setWhatsThis(m.insertItem("Edit", 0),
+../browser/BrowserFlow.cpp:182:	m.setWhatsThis(m.insertItem("Delete", 2),
+../browser/BrowserFlow.cpp:194:    m.setWhatsThis(m.insertItem("Select " + s, 7),
+../browser/BrowserFlow.cpp:200:      m.insertItem("Tool", &toolm);
+../browser/BrowserFlow.cpp:204:    m.setWhatsThis(m.insertItem("Undelete", 3),
+../browser/BrowserInterruptibleActivityRegion.cpp:190:      m.setWhatsThis(m.insertItem("Add nested interruptible activity region", 0),
+../browser/BrowserInterruptibleActivityRegion.cpp:192:      m.setWhatsThis(m.insertItem("Add expansion region", 1),
+../browser/BrowserInterruptibleActivityRegion.cpp:198:      m.setWhatsThis(m.insertItem("Add partition", 3),
+../browser/BrowserInterruptibleActivityRegion.cpp:201:      m.setWhatsThis(m.insertItem("Add activity action", 6),
+../browser/BrowserInterruptibleActivityRegion.cpp:203:      m.setWhatsThis(m.insertItem("Add object node", 7),
+../browser/BrowserInterruptibleActivityRegion.cpp:207:    m.setWhatsThis(m.insertItem("Edit", 4),
+../browser/BrowserInterruptibleActivityRegion.cpp:211:      m.setWhatsThis(m.insertItem("Duplicate", 5),
+../browser/BrowserInterruptibleActivityRegion.cpp:230:	m.setWhatsThis(m.insertItem("Set it nested in region above", 11),
+../browser/BrowserInterruptibleActivityRegion.cpp:235:	m.setWhatsThis(m.insertItem("Extract it from current parent region", 12),
+../browser/BrowserInterruptibleActivityRegion.cpp:240:	m.setWhatsThis(m.insertItem("Delete", 8),
+../browser/BrowserInterruptibleActivityRegion.cpp:248:      m.insertItem("Tool", &toolm);
+../browser/BrowserInterruptibleActivityRegion.cpp:252:    m.setWhatsThis(m.insertItem("Undelete", 9),
+../browser/BrowserInterruptibleActivityRegion.cpp:259:	m.setWhatsThis(m.insertItem("Undelete recursively", 10),
+../browser/BrowserNode.cpp:681:    m.setWhatsThis(m.insertItem("Mark", bias),
+../browser/BrowserNode.cpp:727:	    m.setWhatsThis(m.insertItem("Move marked into", bias + 3),
+../browser/BrowserNode.cpp:730:	    m.setWhatsThis(m.insertItem("Move marked after", bias + 4),
+../browser/BrowserNode.cpp:735:	m.setWhatsThis(m.insertItem("Duplicate marked into", bias + 5),
+../browser/BrowserNode.cpp:739:	  m.setWhatsThis(m.insertItem("Duplicate recursivelly marked into", bias + 6),
+../browser/BrowserNode.cpp:744:	m.setWhatsThis(m.insertItem("Duplicate marked after", bias + 7),
+../browser/BrowserNode.cpp:748:	  m.setWhatsThis(m.insertItem("Duplicate marked recursivelly after", bias + 8),
+../browser/BrowserNode.cpp:756:    m.setWhatsThis(m.insertItem("Unmark", bias + 1),
+../browser/BrowserNode.cpp:759:      m.setWhatsThis(m.insertItem("Unmark all", bias + 2),
+../browser/BrowserObjectDiagram.cpp:175:    m.setWhatsThis(m.insertItem("Show", 0),
+../browser/BrowserObjectDiagram.cpp:178:      m.setWhatsThis(m.insertItem("Edit", 1), 
+../browser/BrowserObjectDiagram.cpp:181:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+../browser/BrowserObjectDiagram.cpp:184:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+../browser/BrowserObjectDiagram.cpp:217:	  m.setWhatsThis(m.insertItem("Delete", 4),
+../browser/BrowserObjectDiagram.cpp:227:      m.insertItem("Tool", &toolm);
+../browser/BrowserObjectDiagram.cpp:231:    m.setWhatsThis(m.insertItem("Undelete", 5),
+../browser/BrowserOperation.cpp:346:      m.setWhatsThis(m.insertItem("Edit", 0),
+../browser/BrowserOperation.cpp:349:      m.setWhatsThis(m.insertItem("Duplicate", 1),
+../browser/BrowserOperation.cpp:352:	m.setWhatsThis(m.insertItem("Edit C++ body", 4),
+../browser/BrowserOperation.cpp:355:	m.setWhatsThis(m.insertItem("Edit Java body", 5),
+../browser/BrowserOperation.cpp:357:      m.setWhatsThis(m.insertItem("Duplicate", 1),
+../browser/BrowserOperation.cpp:361:	m.setWhatsThis(m.insertItem("Delete", 2),
+../browser/BrowserOperation.cpp:370:      m.insertItem("Tool", &toolm);
+../browser/BrowserOperation.cpp:374:    m.setWhatsThis(m.insertItem("Undelete", 3),
+../browser/BrowserPackage.cpp:368:      m.setWhatsThis(m.insertItem("New package", 0),
+../browser/BrowserPackage.cpp:370:      m.setWhatsThis(m.insertItem("New use case view", 1),
+../browser/BrowserPackage.cpp:372:      m.setWhatsThis(m.insertItem("New class view", 2),
+../browser/BrowserPackage.cpp:374:      m.setWhatsThis(m.insertItem("New component view", 3),
+../browser/BrowserPackage.cpp:376:      m.setWhatsThis(m.insertItem("New deployment view", 4),
+../browser/BrowserPackage.cpp:378:      m.setWhatsThis(m.insertItem("Import project", 14),
+../browser/BrowserPackage.cpp:385:      m.setWhatsThis(m.insertItem("Edit", 5),
+../browser/BrowserPackage.cpp:390:	  m.setWhatsThis(m.insertItem("Edit generation settings", 8),
+../browser/BrowserPackage.cpp:394:	  m.setWhatsThis(m.insertItem("Edit default stereotypes", 6),
+../browser/BrowserPackage.cpp:397:	m.setWhatsThis(m.insertItem("Edit class settings", 7),
+../browser/BrowserPackage.cpp:399:	m.setWhatsThis(m.insertItem("Edit drawing settings", 9),
+../browser/BrowserPackage.cpp:402:	  m.insertItem("Import", &importm);
+../browser/BrowserPackage.cpp:403:	  m.setWhatsThis(importm.insertItem("Generation settings", 28),
+../browser/BrowserPackage.cpp:406:	  m.setWhatsThis(importm.insertItem("Default stereotypes", 29),
+../browser/BrowserPackage.cpp:411:	  m.setWhatsThis(m.insertItem("Delete", 10),
+../browser/BrowserPackage.cpp:418:    m.setWhatsThis(m.insertItem("Referenced by", 13),
+../browser/BrowserPackage.cpp:423:    m.insertItem("Generate", &genm);
+../browser/BrowserPackage.cpp:424:    genm.insertItem("C++", 20);
+../browser/BrowserPackage.cpp:425:    genm.insertItem("Java", 21);
+../browser/BrowserPackage.cpp:426:    genm.insertItem("Idl", 22);
+../browser/BrowserPackage.cpp:430:	m.insertItem("Reverse", &revm);
+../browser/BrowserPackage.cpp:432:	revm.insertItem("C++", 24);
+../browser/BrowserPackage.cpp:433:	revm.insertItem("Java", 25);
+../browser/BrowserPackage.cpp:434:	revm.insertItem("Java Catalog", 26);
+../browser/BrowserPackage.cpp:441:	m.insertItem("Tool", &toolm);
+../browser/BrowserPackage.cpp:446:    m.setWhatsThis(m.insertItem("Undelete", 11),
+../browser/BrowserPackage.cpp:448:    m.setWhatsThis(m.insertItem("Undelete recursively", 12),
+../browser/BrowserPackage.cpp:464:	m.insertItem("PREPARE la renumerotation", 27);
+../browser/BrowserPackage.cpp:467:      m.insertItem("Renumerotation BASE", 27);
+../browser/BrowserPackage.cpp:470:      m.insertItem("Renumerotation USER", 27);
+../browser/BrowserPackage.cpp:1421:	m.insertItem("In " + QString(get_name()), 1);
+../browser/BrowserPackage.cpp:1422:	m.insertItem("After " + QString(get_name()), 2);
+../browser/BrowserParameter.cpp:204:    m.setWhatsThis(m.insertItem("Edit", 0),
+../browser/BrowserParameter.cpp:208:      m.setWhatsThis(m.insertItem("Duplicate", 1),
+../browser/BrowserParameter.cpp:211:      m.setWhatsThis(m.insertItem("Delete", 2),
+../browser/BrowserParameter.cpp:215:    m.setWhatsThis(m.insertItem("Referenced by", 4),
+../browser/BrowserParameter.cpp:222:      m.insertItem("Tool", &toolm);
+../browser/BrowserParameter.cpp:226:    m.setWhatsThis(m.insertItem("Undelete", 3),
+../browser/BrowserParameterSet.cpp:128:    m.setWhatsThis(m.insertItem("Edit", 0),
+../browser/BrowserParameterSet.cpp:132:      m.setWhatsThis(m.insertItem("Duplicate", 1),
+../browser/BrowserParameterSet.cpp:135:      m.setWhatsThis(m.insertItem("Delete", 2),
+../browser/BrowserParameterSet.cpp:143:      m.insertItem("Tool", &toolm);
+../browser/BrowserParameterSet.cpp:147:    m.setWhatsThis(m.insertItem("Undelete", 3),
+../browser/BrowserPin.cpp:255:    m.setWhatsThis(m.insertItem("Edit", 0),
+../browser/BrowserPin.cpp:260:	m.setWhatsThis(m.insertItem("Duplicate", 1),
+../browser/BrowserPin.cpp:264:      m.setWhatsThis(m.insertItem("Delete", 2),
+../browser/BrowserPin.cpp:272:      m.insertItem("Tool", &toolm);
+../browser/BrowserPin.cpp:278:    m.setWhatsThis(m.insertItem("Undelete", 3),
+../browser/BrowserPseudoState.cpp:348:    m.setWhatsThis(m.insertItem("Edit", 1),
+../browser/BrowserPseudoState.cpp:352:      m.setWhatsThis(m.insertItem("Duplicate", 2),
+../browser/BrowserPseudoState.cpp:356:	m.setWhatsThis(m.insertItem("Delete", 3),
+../browser/BrowserPseudoState.cpp:360:    m.setWhatsThis(m.insertItem("Referenced by", 5),
+../browser/BrowserPseudoState.cpp:367:      m.insertItem("Tool", &toolm);
+../browser/BrowserPseudoState.cpp:371:    m.setWhatsThis(m.insertItem("Undelete", 4),
+../browser/BrowserRegion.cpp:132:      m.setWhatsThis(m.insertItem("Add state", 1),
+../browser/BrowserRegion.cpp:136:    m.setWhatsThis(m.insertItem("Edit", 3),
+../browser/BrowserRegion.cpp:141:      m.setWhatsThis(m.insertItem("Delete", 7),
+../browser/BrowserRegion.cpp:149:      m.insertItem("Tool", &toolm);
+../browser/BrowserRegion.cpp:153:    m.setWhatsThis(m.insertItem("Undelete", 8),
+../browser/BrowserRegion.cpp:160:	m.setWhatsThis(m.insertItem("Undelete recursively", 9),
+../browser/BrowserRelation.cpp:351:      m.setWhatsThis(m.insertItem("Edit", 0),
+../browser/BrowserRelation.cpp:356:	  m.setWhatsThis(m.insertItem("Duplicate", 1),
+../browser/BrowserRelation.cpp:359:	    m.setWhatsThis(m.insertItem("Add get operation", 4),
+../browser/BrowserRelation.cpp:362:	    m.setWhatsThis(m.insertItem("Add set operation", 5),
+../browser/BrowserRelation.cpp:365:	    m.setWhatsThis(m.insertItem("Add get and set operation", 6),
+../browser/BrowserRelation.cpp:369:	m.setWhatsThis(m.insertItem("Delete", 2),
+../browser/BrowserRelation.cpp:385:      m.insertItem("Tool", &toolm);
+../browser/BrowserRelation.cpp:389:    m.setWhatsThis(m.insertItem("Undelete", 3),
+../browser/BrowserSeqDiagram.cpp:178:    m.setWhatsThis(m.insertItem("Show", 0), 
+../browser/BrowserSeqDiagram.cpp:181:      m.setWhatsThis(m.insertItem("Edit", 1),
+../browser/BrowserSeqDiagram.cpp:183:      m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+../browser/BrowserSeqDiagram.cpp:187:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+../browser/BrowserSeqDiagram.cpp:219:	  m.setWhatsThis(m.insertItem("Delete", 4),
+../browser/BrowserSeqDiagram.cpp:229:      m.insertItem("Tool", &toolm);
+../browser/BrowserSeqDiagram.cpp:233:    m.setWhatsThis(m.insertItem("Undelete", 5),
+../browser/BrowserSimpleRelation.cpp:182:      m.setWhatsThis(m.insertItem("Edit", 0),
+../browser/BrowserSimpleRelation.cpp:186:	m.setWhatsThis(m.insertItem("Delete", 2),
+../browser/BrowserSimpleRelation.cpp:199:      m.insertItem("Tool", &toolm);
+../browser/BrowserSimpleRelation.cpp:203:    m.setWhatsThis(m.insertItem("Undelete", 3),
+../browser/BrowserStateAction.cpp:171:    m.setWhatsThis(m.insertItem("Edit", 1),
+../browser/BrowserStateAction.cpp:175:      m.setWhatsThis(m.insertItem("Duplicate", 2),
+../browser/BrowserStateAction.cpp:179:	m.setWhatsThis(m.insertItem("Delete", 3),
+../browser/BrowserStateAction.cpp:183:    m.setWhatsThis(m.insertItem("Referenced by", 5),
+../browser/BrowserStateAction.cpp:190:      m.insertItem("Tool", &toolm);
+../browser/BrowserStateAction.cpp:194:    m.setWhatsThis(m.insertItem("Undelete", 4),
+../browser/BrowserState.cpp:206:      m.setWhatsThis(m.insertItem("New state diagram", 0),
+../browser/BrowserState.cpp:209:	m.setWhatsThis(m.insertItem("Add submachine", 1),
+../browser/BrowserState.cpp:211:	m.setWhatsThis(m.insertItem("Add state", 2),
+../browser/BrowserState.cpp:215:	m.setWhatsThis(m.insertItem("Add nested state", 2),
+../browser/BrowserState.cpp:218:	m.setWhatsThis(m.insertItem("Add state", 2),
+../browser/BrowserState.cpp:220:      m.setWhatsThis(m.insertItem("Add region", 11),
+../browser/BrowserState.cpp:224:    m.setWhatsThis(m.insertItem("Edit", 3),
+../browser/BrowserState.cpp:228:      m.setWhatsThis(m.insertItem("Duplicate", 4),
+../browser/BrowserState.cpp:262:	m.setWhatsThis(m.insertItem("Delete", 7),
+../browser/BrowserState.cpp:266:    m.setWhatsThis(m.insertItem("Referenced by", 10),
+../browser/BrowserState.cpp:273:      m.insertItem("Tool", &toolm);
+../browser/BrowserState.cpp:277:    m.setWhatsThis(m.insertItem("Undelete", 8),
+../browser/BrowserState.cpp:284:	m.setWhatsThis(m.insertItem("Undelete recursively", 9),
+../browser/BrowserStateDiagram.cpp:176:    m.setWhatsThis(m.insertItem("Show", 0),
+../browser/BrowserStateDiagram.cpp:179:      m.setWhatsThis(m.insertItem("Edit", 1),
+../browser/BrowserStateDiagram.cpp:182:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+../browser/BrowserStateDiagram.cpp:185:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+../browser/BrowserStateDiagram.cpp:189:	  m.setWhatsThis(m.insertItem("Delete", 4),
+../browser/BrowserStateDiagram.cpp:199:      m.insertItem("Tool", &toolm);
+../browser/BrowserStateDiagram.cpp:203:    m.setWhatsThis(m.insertItem("Undelete", 5),
+../browser/BrowserTransition.cpp:181:      m.setWhatsThis(m.insertItem("Edit", 0),
+../browser/BrowserTransition.cpp:185:	m.setWhatsThis(m.insertItem("Delete", 2),
+../browser/BrowserTransition.cpp:197:    m.setWhatsThis(m.insertItem("Select " + s, 7),
+../browser/BrowserTransition.cpp:203:      m.insertItem("Tool", &toolm);
+../browser/BrowserTransition.cpp:207:    m.setWhatsThis(m.insertItem("Undelete", 3),
+../browser/BrowserUseCase.cpp:162:      m.setWhatsThis(m.insertItem("New use case diagram", 0),
+../browser/BrowserUseCase.cpp:164:      m.setWhatsThis(m.insertItem("New sequence diagram", 1),
+../browser/BrowserUseCase.cpp:166:      m.setWhatsThis(m.insertItem("New collaboration diagram", 2),
+../browser/BrowserUseCase.cpp:168:      m.setWhatsThis(m.insertItem("New object diagram", 13),
+../browser/BrowserUseCase.cpp:171:      m.setWhatsThis(m.insertItem("New use case", 3),
+../browser/BrowserUseCase.cpp:173:      m.setWhatsThis(m.insertItem("New actor", 4),
+../browser/BrowserUseCase.cpp:175:      m.setWhatsThis(m.insertItem("New class", 5),
+../browser/BrowserUseCase.cpp:180:      m.setWhatsThis(m.insertItem("Edit", 6),
+../browser/BrowserUseCase.cpp:184:	m.setWhatsThis(m.insertItem("Edit drawing settings", 7),
+../browser/BrowserUseCase.cpp:216:	  m.setWhatsThis(m.insertItem("Delete", 8),
+../browser/BrowserUseCase.cpp:223:    m.setWhatsThis(m.insertItem("Referenced by", 12),
+../browser/BrowserUseCase.cpp:230:      m.insertItem("Tool", &toolm);
+../browser/BrowserUseCase.cpp:234:    m.setWhatsThis(m.insertItem("Undelete", 9),
+../browser/BrowserUseCase.cpp:237:    m.setWhatsThis(m.insertItem("Undelete recursively", 10),
+../browser/BrowserUseCase.cpp:699:	m.insertItem("In " + QString(get_name()), 1);
+../browser/BrowserUseCase.cpp:700:	m.insertItem("After " + QString(get_name()), 2);
+../browser/BrowserUseCaseDiagram.cpp:178:    m.setWhatsThis(m.insertItem("Show", 0),
+../browser/BrowserUseCaseDiagram.cpp:181:      m.setWhatsThis(m.insertItem("Edit", 1),
+../browser/BrowserUseCaseDiagram.cpp:184:	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+../browser/BrowserUseCaseDiagram.cpp:187:	m.setWhatsThis(m.insertItem("Duplicate", 3),
+../browser/BrowserUseCaseDiagram.cpp:219:	  m.setWhatsThis(m.insertItem("Delete", 4),
+../browser/BrowserUseCaseDiagram.cpp:229:      m.insertItem("Tool", &toolm);
+../browser/BrowserUseCaseDiagram.cpp:233:    m.setWhatsThis(m.insertItem("Undelete", 5),
+../browser/BrowserUseCaseView.cpp:132:      m.setWhatsThis(m.insertItem("New use case diagram", 0),
+../browser/BrowserUseCaseView.cpp:134:      m.setWhatsThis(m.insertItem("New sequence diagram", 1),
+../browser/BrowserUseCaseView.cpp:136:      m.setWhatsThis(m.insertItem("New collaboration diagram", 2),
+../browser/BrowserUseCaseView.cpp:138:      m.setWhatsThis(m.insertItem("New object diagram", 13),
+../browser/BrowserUseCaseView.cpp:140:      m.setWhatsThis(m.insertItem("New use case", 3),
+../browser/BrowserUseCaseView.cpp:142:      m.setWhatsThis(m.insertItem("New actor", 4),
+../browser/BrowserUseCaseView.cpp:144:      m.setWhatsThis(m.insertItem("New class", 5),
+../browser/BrowserUseCaseView.cpp:147:      m.setWhatsThis(m.insertItem("New sub use case view", 6),
+../browser/BrowserUseCaseView.cpp:152:      m.setWhatsThis(m.insertItem("Edit", 8),
+../browser/BrowserUseCaseView.cpp:156:	m.setWhatsThis(m.insertItem("Edit drawing settings", 9),
+../browser/BrowserUseCaseView.cpp:160:	  m.setWhatsThis(m.insertItem("Delete", 10),
+../browser/BrowserUseCaseView.cpp:170:      m.insertItem("Tool", &toolm);
+../browser/BrowserUseCaseView.cpp:174:    m.setWhatsThis(m.insertItem("Undelete", 11),
+../browser/BrowserUseCaseView.cpp:177:    m.setWhatsThis(m.insertItem("Undelete recursively", 12),
+../browser/BrowserUseCaseView.cpp:588:	m.insertItem("In " + QString(get_name()), 1);
+../browser/BrowserUseCaseView.cpp:589:	m.insertItem("After " + QString(get_name()), 2);
+../diagram/ActivityActionCanvas.cpp:650:    m.insertItem("Add pin", 7);
+../diagram/ActivityActionCanvas.cpp:653:  m.insertItem("Upper", 0);
+../diagram/ActivityActionCanvas.cpp:654:  m.insertItem("Lower", 1);
+../diagram/ActivityActionCanvas.cpp:656:  m.insertItem("Edit drawing settings", 2);
+../diagram/ActivityActionCanvas.cpp:658:  m.insertItem("Edit activity action", 3);
+../diagram/ActivityActionCanvas.cpp:660:  m.insertItem("Select in browser", 4);
+../diagram/ActivityActionCanvas.cpp:667:    m.insertItem("Select " + QString(what) + " in browser", 10);
+../diagram/ActivityActionCanvas.cpp:670:    m.insertItem("Select linked items", 5);
+../diagram/ActivityActionCanvas.cpp:673:    m.insertItem("Set associated diagram",6);
+../diagram/ActivityActionCanvas.cpp:681:	  m.insertItem("Set associated diagram from behavior", 11);
+../diagram/ActivityActionCanvas.cpp:686:  m.insertItem("Remove from view", 8);
+../diagram/ActivityActionCanvas.cpp:688:    m.insertItem("Delete from model", 9);
+../diagram/ActivityActionCanvas.cpp:691:    m.insertItem("Tool", &toolm);
+../diagram/ActivityCanvas.cpp:464:    m.insertItem("Add parameter", 9);
+../diagram/ActivityCanvas.cpp:467:  m.insertItem("Upper", 0);
+../diagram/ActivityCanvas.cpp:468:  m.insertItem("Lower", 1);
+../diagram/ActivityCanvas.cpp:470:  m.insertItem("Edit drawing settings", 2);
+../diagram/ActivityCanvas.cpp:472:  m.insertItem("Edit activity", 3);
+../diagram/ActivityCanvas.cpp:474:  m.insertItem("Select in browser", 4);
+../diagram/ActivityCanvas.cpp:476:    m.insertItem("Select linked items", 5);
+../diagram/ActivityCanvas.cpp:479:    m.insertItem("Set associated diagram",6);
+../diagram/ActivityCanvas.cpp:481:  m.insertItem("Remove from view", 7);
+../diagram/ActivityCanvas.cpp:483:    m.insertItem("Delete from model", 8);
+../diagram/ActivityCanvas.cpp:486:    m.insertItem("Tool", &toolm);
+../diagram/ActivityDiagramView.cpp:357:      m.insertItem("Draw activity", 0);
+../diagram/ActivityDiagramView.cpp:358:    m.insertItem("Add a call behavior", 1);
+../diagram/ActivityDiagramView.cpp:593:    m.insertItem("Add a read variable value action", 0);
+../diagram/ActivityDiagramView.cpp:594:    m.insertItem("Add a clear variable value action", 1);
+../diagram/ActivityDiagramView.cpp:595:    m.insertItem("Add a write variable value action", 2);
+../diagram/ActivityDiagramView.cpp:596:    m.insertItem("Add a add variable value action", 3);
+../diagram/ActivityDiagramView.cpp:597:    m.insertItem("Add a remove variable value action", 4);
+../diagram/ActivityNodeCanvas.cpp:236:  m.insertItem("Upper", 0);
+../diagram/ActivityNodeCanvas.cpp:237:  m.insertItem("Lower", 1);
+../diagram/ActivityNodeCanvas.cpp:248:  /*m.insertItem("Edit drawing settings", 2);
+../diagram/ActivityNodeCanvas.cpp:250:  m.insertItem("Edit activity node", 3);
+../diagram/ActivityNodeCanvas.cpp:252:  m.insertItem("Select in browser", 4);
+../diagram/ActivityNodeCanvas.cpp:254:    m.insertItem("Select linked items", 5);
+../diagram/ActivityNodeCanvas.cpp:257:    m.insertItem("Set associated diagram",6);
+../diagram/ActivityNodeCanvas.cpp:259:  m.insertItem("Remove from view", 7);
+../diagram/ActivityNodeCanvas.cpp:261:    m.insertItem("Delete from model", 8);
+../diagram/ActivityNodeCanvas.cpp:264:    m.insertItem("Tool", &toolm);
+../diagram/ActivityObjectCanvas.cpp:352:  m.insertItem("Upper", 0);
+../diagram/ActivityObjectCanvas.cpp:353:  m.insertItem("Lower", 1);
+../diagram/ActivityObjectCanvas.cpp:355:  m.insertItem("Edit drawing settings", 2);
+../diagram/ActivityObjectCanvas.cpp:357:  m.insertItem("Edit activity object", 3);
+../diagram/ActivityObjectCanvas.cpp:359:  m.insertItem("Select in browser", 4);
+../diagram/ActivityObjectCanvas.cpp:361:    m.insertItem("Select class in browser", 9);
+../diagram/ActivityObjectCanvas.cpp:363:    m.insertItem("Select linked items", 5);
+../diagram/ActivityObjectCanvas.cpp:366:    m.insertItem("Set associated diagram",6);
+../diagram/ActivityObjectCanvas.cpp:368:  m.insertItem("Remove from view", 7);
+../diagram/ActivityObjectCanvas.cpp:370:    m.insertItem("Delete from model", 8);
+../diagram/ActivityObjectCanvas.cpp:373:    m.insertItem("Tool", &toolm);
+../diagram/ArrowCanvas.cpp:601:    m.insertItem("Edit",1);
+../diagram/ArrowCanvas.cpp:606:    m.insertItem("Select stereotype and label", 2);
+../diagram/ArrowCanvas.cpp:607:    m.insertItem("Default stereotype and label position", 3);
+../diagram/ArrowCanvas.cpp:609:      m.insertItem("Attach label to this segment", 4);
+../diagram/ArrowCanvas.cpp:611:      m.insertItem("Attach stereotype to this segment", 5);
+../diagram/ArrowCanvas.cpp:617:    m.insertItem("Geometry (Ctrl+l)", &geo);
+../diagram/ArrowCanvas.cpp:621:  m.insertItem("Remove from view", 6);
+../diagram/ArrowCanvas.cpp:679:  m.insertItem("None", first);
+../diagram/ArrowJunctionCanvas.cpp:137:    m.insertItem("Remove from view", 0);
+../diagram/ArrowPointCanvas.cpp:178:  m.insertItem("Remove from view", 0);
+../diagram/ArtifactCanvas.cpp:436:  m.insertItem("Upper", 0);
+../diagram/ArtifactCanvas.cpp:437:  m.insertItem("Lower", 1);
+../diagram/ArtifactCanvas.cpp:439:  m.insertItem("Edit drawing settings", 2);
+../diagram/ArtifactCanvas.cpp:441:  m.insertItem("Edit artifact", 3);
+../diagram/ArtifactCanvas.cpp:443:  m.insertItem("Select in browser", 4);
+../diagram/ArtifactCanvas.cpp:445:    m.insertItem("Select linked items", 5);
+../diagram/ArtifactCanvas.cpp:448:    m.insertItem("Set associated diagram",6);
+../diagram/ArtifactCanvas.cpp:450:  m.insertItem("Remove from view", 7);
+../diagram/ArtifactCanvas.cpp:452:    m.insertItem("Delete from model", 8);
+../diagram/ArtifactCanvas.cpp:454:  m.insertItem("Generate", &gensubm);
+../diagram/ArtifactCanvas.cpp:456:    m.insertItem("Tool", &toolm);
+../diagram/ArtifactCanvas.cpp:458:  gensubm.insertItem("C++", 9);
+../diagram/ArtifactCanvas.cpp:459:  gensubm.insertItem("Java", 10);
+../diagram/ArtifactCanvas.cpp:460:  gensubm.insertItem("Idl", 11);
+../diagram/AssocContainCanvas.cpp:79:  m.insertItem("Edit",1);
+../diagram/AssocContainCanvas.cpp:83:    m.insertItem("Select stereotype and label", 2);
+../diagram/AssocContainCanvas.cpp:84:    m.insertItem("Default stereotype and label position", 3);
+../diagram/AssocContainCanvas.cpp:86:      m.insertItem("Attach label to this segment", 4);
+../diagram/AssocContainCanvas.cpp:88:      m.insertItem("Attach stereotype to this segment", 5);
+../diagram/AssocContainCanvas.cpp:94:    m.insertItem("Geometry (Ctrl+l)", &geo);
+../diagram/AssocContainCanvas.cpp:98:  m.insertItem("Delete from model",6);
+../diagram/CdClassCanvas.cpp:779:  m.insertItem("Upper", 0);
+../diagram/CdClassCanvas.cpp:780:  m.insertItem("Lower", 1);
+../diagram/CdClassCanvas.cpp:782:  m.insertItem("Edit drawing settings", 2);
+../diagram/CdClassCanvas.cpp:784:    m.insertItem("Individual attribute visibility", 3);
+../diagram/CdClassCanvas.cpp:786:    m.insertItem("Individual operation visibility", 4);
+../diagram/CdClassCanvas.cpp:788:  m.insertItem("Edit class", 6);
+../diagram/CdClassCanvas.cpp:791:      m.insertItem("Add item", 7);
+../diagram/CdClassCanvas.cpp:792:      m.insertItem("Add attribute", 9);
+../diagram/CdClassCanvas.cpp:795:      m.insertItem("Edit item or attribute", &attrsubm);
+../diagram/CdClassCanvas.cpp:799:      m.insertItem("Add item", 7);
+../diagram/CdClassCanvas.cpp:802:      m.insertItem("Edit item", &attrsubm);
+../diagram/CdClassCanvas.cpp:806:      m.insertItem("Add attribute", 9);
+../diagram/CdClassCanvas.cpp:808:      m.insertItem("Edit attribute", &attrsubm);
+../diagram/CdClassCanvas.cpp:810:      m.insertItem("Add operation", 8);
+../diagram/CdClassCanvas.cpp:815:	m.insertItem("Add inherited operation", 2999);
+../diagram/CdClassCanvas.cpp:836:	m.insertItem("Add inherited operation", &inhopersubm);
+../diagram/CdClassCanvas.cpp:842:	m.insertItem("Edit operation", &opersubm);
+../diagram/CdClassCanvas.cpp:844:	m.insertItem("Edit operation", 1999);
+../diagram/CdClassCanvas.cpp:848:  m.insertItem("Select in browser",10);
+../diagram/CdClassCanvas.cpp:850:    m.insertItem("Select linked items",17);
+../diagram/CdClassCanvas.cpp:853:    m.insertItem("Set associated diagram",11);
+../diagram/CdClassCanvas.cpp:855:  m.insertItem("Remove from view",12);
+../diagram/CdClassCanvas.cpp:857:    m.insertItem("Delete from model", 13);
+../diagram/CdClassCanvas.cpp:859:  m.insertItem("Generate", &gensubm);
+../diagram/CdClassCanvas.cpp:861:    m.insertItem("Tool", &toolm);
+../diagram/CdClassCanvas.cpp:863:  gensubm.insertItem("C++", 14);
+../diagram/CdClassCanvas.cpp:864:  gensubm.insertItem("Java", 15);
+../diagram/CdClassCanvas.cpp:865:  gensubm.insertItem("Idl", 16);
+../diagram/ClassDiagramView.cpp:84:	m.insertItem("Add classes of the selected class view", 19);
+../diagram/CodClassInstCanvas.cpp:127:  m.insertItem("Upper", 0);
+../diagram/CodClassInstCanvas.cpp:128:  m.insertItem("Lower", 1);
+../diagram/CodClassInstCanvas.cpp:130:  m.insertItem("Edit drawing settings", 2);
+../diagram/CodClassInstCanvas.cpp:132:  m.insertItem("Edit", 3);
+../diagram/CodClassInstCanvas.cpp:134:  m.insertItem("Select class in browser", 4);
+../diagram/CodClassInstCanvas.cpp:136:    m.insertItem("Select linked items", 5);
+../diagram/CodClassInstCanvas.cpp:138:  m.insertItem("Remove from view", 6);
+../diagram/CodLinkCanvas.cpp:112:  m.insertItem("Edit its messages", 3);
+../diagram/CodLinkCanvas.cpp:113:  m.insertItem("Edit all the messages", 4);
+../diagram/CodLinkCanvas.cpp:115:  m.insertItem("Select linked items", 7);
+../diagram/CodLinkCanvas.cpp:118:    m.insertItem("Edit drawing settings", 5);
+../diagram/CodLinkCanvas.cpp:121:  m.insertItem("Remove from view", 6);
+../diagram/CodSelfLinkCanvas.cpp:238:  m.insertItem("Add messages", 1);
+../diagram/CodSelfLinkCanvas.cpp:240:  m.insertItem("Edit its messages", 2);
+../diagram/CodSelfLinkCanvas.cpp:241:  m.insertItem("Edit all the messages", 3);
+../diagram/CodSelfLinkCanvas.cpp:243:  m.insertItem("Edit drawing settings", 4);
+../diagram/CodSelfLinkCanvas.cpp:245:  m.insertItem("Remove from view",5);
+../diagram/ColDiagramView.cpp:94:  m.insertItem("Edit all the messages", 19);
+../diagram/ComponentCanvas.cpp:584:  m.insertItem("Upper", 0);
+../diagram/ComponentCanvas.cpp:585:  m.insertItem("Lower", 1);
+../diagram/ComponentCanvas.cpp:587:  m.insertItem("Edit drawing settings", 2);
+../diagram/ComponentCanvas.cpp:589:  m.insertItem("Edit component", 3);
+../diagram/ComponentCanvas.cpp:591:  m.insertItem("Select in browser", 4);
+../diagram/ComponentCanvas.cpp:593:    m.insertItem("Select linked items", 5);
+../diagram/ComponentCanvas.cpp:596:    m.insertItem("Set associated diagram",6);
+../diagram/ComponentCanvas.cpp:598:  m.insertItem("Remove from view", 7);
+../diagram/ComponentCanvas.cpp:600:    m.insertItem("Delete from model", 8);
+../diagram/ComponentCanvas.cpp:603:    m.insertItem("Tool", &toolm);
+../diagram/CpdContainCanvas.cpp:89:  m.insertItem("Edit",1);
+../diagram/CpdContainCanvas.cpp:92:    m.insertItem("Select stereotype and label", 2);
+../diagram/CpdContainCanvas.cpp:93:    m.insertItem("Default stereotype and label position", 3);
+../diagram/CpdContainCanvas.cpp:95:      m.insertItem("Attach label to this segment", 4);
+../diagram/CpdContainCanvas.cpp:97:      m.insertItem("Attach stereotype to this segment", 5);
+../diagram/CpdContainCanvas.cpp:100:  m.insertItem("Delete from model",6);
+../diagram/DeploymentNodeCanvas.cpp:305:  m.insertItem("Upper", 0);
+../diagram/DeploymentNodeCanvas.cpp:306:  m.insertItem("Lower", 1);
+../diagram/DeploymentNodeCanvas.cpp:308:  m.insertItem("Edit", 2);
+../diagram/DeploymentNodeCanvas.cpp:310:  m.insertItem("Edit drawing settings", 3);
+../diagram/DeploymentNodeCanvas.cpp:312:  m.insertItem("Select node in browser", 4);
+../diagram/DeploymentNodeCanvas.cpp:314:    m.insertItem("Select linked items", 5);
+../diagram/DeploymentNodeCanvas.cpp:316:  m.insertItem("Set node associated diagram", 6);
+../diagram/DeploymentNodeCanvas.cpp:318:  m.insertItem("Remove from view", 7);
+../diagram/DeploymentNodeCanvas.cpp:321:    m.insertItem("Tool", &toolm);
+../diagram/DiagramView.cpp:766:      m.insertItem("Select linked items", 1);
+../diagram/DiagramView.cpp:792:    m.insertItem("Align", &al);
+../diagram/DiagramView.cpp:796:  m.insertItem("Copy selected (Ctrl+c)", 11);
+../diagram/DiagramView.cpp:797:  m.insertItem("Cut selected (Ctrl+x, remove from view)", 12);
+../diagram/DiagramView.cpp:800:    m.insertItem("Remove selected from view (Suppr)", 2);
+../diagram/DiagramView.cpp:802:    m.insertItem("Delete selected (Control+d)", 3);
+../diagram/DiagramView.cpp:1146:  m.insertItem("Edit drawing settings", EDIT_DRAWING_SETTING_CMD);
+../diagram/DiagramView.cpp:1148:  m.insertItem("Select diagram in browser", 1);
+../diagram/DiagramView.cpp:1149:  m.insertItem("Select all (Ctrl+a)", 2);
+../diagram/DiagramView.cpp:1151:  m.insertItem("Optimal scale", 7);
+../diagram/DiagramView.cpp:1152:  m.insertItem("Optimal window size", 8);
+../diagram/DiagramView.cpp:1154:  m.insertItem("Copy optimal picture part", 13);
+../diagram/DiagramView.cpp:1155:  m.insertItem("Copy visible picture part", 3);
+../diagram/DiagramView.cpp:1156:  m.insertItem("Save optimal picture part", 14);
+../diagram/DiagramView.cpp:1157:  m.insertItem("Save visible picture part", 10);
+../diagram/DiagramView.cpp:1160:    m.insertItem("Paste copied items (Ctrl+v)", 9);
+../diagram/DiagramView.cpp:1162:  m.insertItem("Set preferred size and scale", 4);
+../diagram/DiagramView.cpp:1164:    m.insertItem("Restore preferred size and scale", 5);
+../diagram/DiagramView.cpp:1166:  m.insertItem("Format", &formatm);
+../diagram/DiagramView.cpp:1168:  m.insertItem("Undo all changes", RELOAD_CMD);
+../diagram/DiagramView.cpp:1170:    m.insertItem("Undo (Ctrl+z or Ctrl+u)", 11);
+../diagram/DiagramView.cpp:1172:    m.insertItem("Redo (Ctrl+y or Ctrl+r)", 12);
+../diagram/ExpansionNodeCanvas.cpp:264:  m.insertItem("Upper", 0);
+../diagram/ExpansionNodeCanvas.cpp:265:  m.insertItem("Lower", 1);
+../diagram/ExpansionNodeCanvas.cpp:267:  m.insertItem("Edit drawing settings", 2);
+../diagram/ExpansionNodeCanvas.cpp:269:  m.insertItem("Edit expansion node", 3);
+../diagram/ExpansionNodeCanvas.cpp:271:  m.insertItem("Select in browser", 4);
+../diagram/ExpansionNodeCanvas.cpp:273:    m.insertItem("Select linked items", 5);
+../diagram/ExpansionNodeCanvas.cpp:276:    m.insertItem("Delete from model", 8);
+../diagram/ExpansionNodeCanvas.cpp:279:    m.insertItem("Tool", &toolm);
+../diagram/ExpansionRegionCanvas.cpp:404:    m.insertItem("Add expansion node", 9);
+../diagram/ExpansionRegionCanvas.cpp:407:  m.insertItem("Upper", 0);
+../diagram/ExpansionRegionCanvas.cpp:408:  m.insertItem("Lower", 1);
+../diagram/ExpansionRegionCanvas.cpp:410:  m.insertItem("Edit drawing settings", 2);
+../diagram/ExpansionRegionCanvas.cpp:412:  m.insertItem("Edit expansion region", 3);
+../diagram/ExpansionRegionCanvas.cpp:414:  m.insertItem("Select in browser", 4);
+../diagram/ExpansionRegionCanvas.cpp:416:    m.insertItem("Select linked items", 5);
+../diagram/ExpansionRegionCanvas.cpp:419:    m.insertItem("Set associated diagram",6);
+../diagram/ExpansionRegionCanvas.cpp:421:  m.insertItem("Remove from view", 7);
+../diagram/ExpansionRegionCanvas.cpp:423:    m.insertItem("Delete from model", 8);
+../diagram/ExpansionRegionCanvas.cpp:426:    m.insertItem("Tool", &toolm);
+../diagram/FlowCanvas.cpp:190:      m.insertItem("Edit", 0);
+../diagram/FlowCanvas.cpp:194:    m.insertItem("Select in browser", 2);
+../diagram/FlowCanvas.cpp:197:      m.insertItem("Edit drawing settings", 1);
+../diagram/FlowCanvas.cpp:198:      m.insertItem("Select labels", 3);
+../diagram/FlowCanvas.cpp:199:      m.insertItem("Labels default position", 4);
+../diagram/FlowCanvas.cpp:201:	m.insertItem("Attach flow label to this segment", 5);
+../diagram/FlowCanvas.cpp:203:	m.insertItem("Attach stereotype to this segment", 6);
+../diagram/FlowCanvas.cpp:209:      m.insertItem("Geometry (Ctrl+l)", &geo);
+../diagram/FlowCanvas.cpp:213:    m.insertItem("Remove from view",7);
+../diagram/FlowCanvas.cpp:215:      m.insertItem("Delete from model", 8);
+../diagram/FlowCanvas.cpp:219:      m.insertItem("Tool", &toolm);
+../diagram/FragmentCanvas.cpp:198:  m.insertItem("Upper", 0);
+../diagram/FragmentCanvas.cpp:199:  m.insertItem("Lower", 1);
+../diagram/FragmentCanvas.cpp:201:  m.insertItem("Edit", 2);
+../diagram/FragmentCanvas.cpp:203:  m.insertItem("Edit drawing settings", 3);
+../diagram/FragmentCanvas.cpp:206:    m.insertItem("Select linked items", 4);
+../diagram/FragmentCanvas.cpp:209:  m.insertItem("Remove from view",5);
+../diagram/HubCanvas.cpp:89:  m.insertItem("Remove from view", 0);
+../diagram/IconCanvas.cpp:109:  m.insertItem("Upper", 0);
+../diagram/IconCanvas.cpp:110:  m.insertItem("Lower", 1);
+../diagram/IconCanvas.cpp:113:    m.insertItem("Open", 2);
+../diagram/IconCanvas.cpp:116:  m.insertItem("Select diagram in browser", 3);
+../diagram/IconCanvas.cpp:117:  m.insertItem("Select linked items", 4);
+../diagram/IconCanvas.cpp:119:  m.insertItem("Remove from view",5);
+../diagram/InfoCanvas.cpp:111:  m.insertItem("Upper", 0);
+../diagram/InfoCanvas.cpp:112:  m.insertItem("Lower", 1);
+../diagram/InfoCanvas.cpp:114:  m.insertItem("Edit", 2);
+../diagram/InfoCanvas.cpp:116:  m.insertItem("Font", &fontsubm);  
+../diagram/InfoCanvas.cpp:118:  m.insertItem("Edit drawing settings", 3);
+../diagram/InfoCanvas.cpp:121:    m.insertItem("Select linked items", 4);
+../diagram/InterruptibleActivityRegionCanvas.cpp:225:  m.insertItem("Upper", 0);
+../diagram/InterruptibleActivityRegionCanvas.cpp:226:  m.insertItem("Lower", 1);
+../diagram/InterruptibleActivityRegionCanvas.cpp:228:  m.insertItem("Edit drawing settings", 2);
+../diagram/InterruptibleActivityRegionCanvas.cpp:230:  m.insertItem("Edit interruptible activity region", 3);
+../diagram/InterruptibleActivityRegionCanvas.cpp:232:  m.insertItem("Select in browser", 4);
+../diagram/InterruptibleActivityRegionCanvas.cpp:234:    m.insertItem("Select linked items", 5);
+../diagram/InterruptibleActivityRegionCanvas.cpp:237:    m.insertItem("Set associated diagram",6);
+../diagram/InterruptibleActivityRegionCanvas.cpp:239:  m.insertItem("Remove from view", 7);
+../diagram/InterruptibleActivityRegionCanvas.cpp:241:    m.insertItem("Delete from model", 8);
+../diagram/InterruptibleActivityRegionCanvas.cpp:244:    m.insertItem("Tool", &toolm);
+../diagram/NoteCanvas.cpp:165:  m.insertItem("Upper", 0);
+../diagram/NoteCanvas.cpp:166:  m.insertItem("Lower", 1);
+../diagram/NoteCanvas.cpp:168:  m.insertItem("Edit", 2);
+../diagram/NoteCanvas.cpp:170:  m.insertItem("Font", &fontsubm);  
+../diagram/NoteCanvas.cpp:172:  m.insertItem("Edit drawing settings", 3);
+../diagram/NoteCanvas.cpp:175:    m.insertItem("Select linked items", 4);
+../diagram/NoteCanvas.cpp:178:  m.insertItem("Remove from view",5);
+../diagram/ObjectLinkCanvas.cpp:361:  m.insertItem("Edit", 0);
+../diagram/ObjectLinkCanvas.cpp:365:    m.insertItem("Select relation in browser", 2);
+../diagram/ObjectLinkCanvas.cpp:368:    m.insertItem("Select labels", 3);
+../diagram/ObjectLinkCanvas.cpp:369:    m.insertItem("Labels default position", 4);
+../diagram/ObjectLinkCanvas.cpp:371:      m.insertItem("Attach relation's name to this segment", 5);
+../diagram/ObjectLinkCanvas.cpp:373:      m.insertItem("Attach relation's stereotype to this segment", 6);
+../diagram/ObjectLinkCanvas.cpp:379:    m.insertItem("Geometry (Ctrl+l)", &geo);
+../diagram/ObjectLinkCanvas.cpp:383:  m.insertItem("Remove from view",7);
+../diagram/ObjectLinkCanvas.cpp:388:    m.insertItem("Tool", &toolm);
+../diagram/OdClassInstCanvas.cpp:331:  m.insertItem("Upper", 0);
+../diagram/OdClassInstCanvas.cpp:332:  m.insertItem("Lower", 1);
+../diagram/OdClassInstCanvas.cpp:334:  m.insertItem("Edit drawing settings", 2);
+../diagram/OdClassInstCanvas.cpp:336:  m.insertItem("Edit", 3);
+../diagram/OdClassInstCanvas.cpp:338:  m.insertItem("Select class in browser", 4);
+../diagram/OdClassInstCanvas.cpp:340:    m.insertItem("Select linked items", 5);
+../diagram/OdClassInstCanvas.cpp:342:  m.insertItem("Remove from view", 6);
+../diagram/PackageCanvas.cpp:309:  m.insertItem("Upper", 0);
+../diagram/PackageCanvas.cpp:310:  m.insertItem("Lower", 1);
+../diagram/PackageCanvas.cpp:312:  m.insertItem("Edit", 2);
+../diagram/PackageCanvas.cpp:314:  m.insertItem("Edit drawing settings", 3);
+../diagram/PackageCanvas.cpp:316:  m.insertItem("Select in browser", 4);
+../diagram/PackageCanvas.cpp:318:    m.insertItem("Select linked items", 5);
+../diagram/PackageCanvas.cpp:321:    m.insertItem("Set associated diagram", 6);
+../diagram/PackageCanvas.cpp:323:  m.insertItem("Remove from view", 7);
+../diagram/PackageCanvas.cpp:325:    m.insertItem("Delete from model", 8);
+../diagram/PackageCanvas.cpp:328:    m.insertItem("Tool", &toolm);
+../diagram/ParameterCanvas.cpp:283:  m.insertItem("Upper", 0);
+../diagram/ParameterCanvas.cpp:284:  m.insertItem("Lower", 1);
+../diagram/ParameterCanvas.cpp:286:  m.insertItem("Edit drawing settings", 2);
+../diagram/ParameterCanvas.cpp:288:    m.insertItem("Resize other like it", 6);
+../diagram/ParameterCanvas.cpp:290:  m.insertItem("Edit parameter", 3);
+../diagram/ParameterCanvas.cpp:292:  m.insertItem("Select in browser", 4);
+../diagram/ParameterCanvas.cpp:294:    m.insertItem("Select class in browser", 9);
+../diagram/ParameterCanvas.cpp:296:    m.insertItem("Select linked items", 5);
+../diagram/ParameterCanvas.cpp:299:    m.insertItem("Delete from model", 8);
+../diagram/ParameterCanvas.cpp:302:    m.insertItem("Tool", &toolm);
+../diagram/ParameterSetCanvas.cpp:257:  m.insertItem("Upper", 0);
+../diagram/ParameterSetCanvas.cpp:258:  m.insertItem("Lower", 1);
+../diagram/ParameterSetCanvas.cpp:260:  m.insertItem("Edit drawing settings", 2);
+../diagram/ParameterSetCanvas.cpp:262:  m.insertItem("Edit parameter set", 3);
+../diagram/ParameterSetCanvas.cpp:264:  m.insertItem("Select in browser", 4);
+../diagram/ParameterSetCanvas.cpp:266:    m.insertItem("Select linked items", 5);
+../diagram/ParameterSetCanvas.cpp:269:    m.insertItem("Delete from model", 8);
+../diagram/ParameterSetCanvas.cpp:273:    m.insertItem("Tool", &toolm);
+../diagram/PinCanvas.cpp:328:  m.insertItem("Upper", 0);
+../diagram/PinCanvas.cpp:329:  m.insertItem("Lower", 1);
+../diagram/PinCanvas.cpp:331:  m.insertItem("Edit drawing settings", 2);
+../diagram/PinCanvas.cpp:333:  m.insertItem("Edit pin", 3);
+../diagram/PinCanvas.cpp:335:  m.insertItem("Select in browser", 4);
+../diagram/PinCanvas.cpp:337:    m.insertItem("Select class in browser", 9);
+../diagram/PinCanvas.cpp:339:    m.insertItem("Select linked items", 5);
+../diagram/PinCanvas.cpp:342:    m.insertItem("Delete from model", 8);
+../diagram/PinCanvas.cpp:346:    m.insertItem("Tool", &toolm);
+../diagram/PseudoStateCanvas.cpp:233:  m.insertItem("Upper", 0);
+../diagram/PseudoStateCanvas.cpp:234:  m.insertItem("Lower", 1);
+../diagram/PseudoStateCanvas.cpp:245:  /*m.insertItem("Edit drawing settings", 2);
+../diagram/PseudoStateCanvas.cpp:247:  m.insertItem("Edit pseudo state", 3);
+../diagram/PseudoStateCanvas.cpp:249:  m.insertItem("Select in browser", 4);
+../diagram/PseudoStateCanvas.cpp:251:    m.insertItem("Select linked items", 5);
+../diagram/PseudoStateCanvas.cpp:254:    m.insertItem("Set associated diagram",6);
+../diagram/PseudoStateCanvas.cpp:256:  m.insertItem("Remove from view", 7);
+../diagram/PseudoStateCanvas.cpp:258:    m.insertItem("Delete from model", 8);
+../diagram/PseudoStateCanvas.cpp:261:    m.insertItem("Tool", &toolm);
+../diagram/RelationCanvas.cpp:285:      m.insertItem("Edit", 0);
+../diagram/RelationCanvas.cpp:289:    m.insertItem("Select in browser", 2);
+../diagram/RelationCanvas.cpp:294:      m.insertItem("Select labels", 3);
+../diagram/RelationCanvas.cpp:295:      m.insertItem("Labels default position", 4);
+../diagram/RelationCanvas.cpp:297:	m.insertItem("Attach relation's name to this segment", 5);
+../diagram/RelationCanvas.cpp:299:	m.insertItem("Attach relation's stereotype to this segment", 6);
+../diagram/RelationCanvas.cpp:305:      m.insertItem("Geometry (Ctrl+l)", &geo);
+../diagram/RelationCanvas.cpp:309:    m.insertItem("Remove from view",7);
+../diagram/RelationCanvas.cpp:312:      m.insertItem("Delete from model", 8);
+../diagram/RelationCanvas.cpp:316:      m.insertItem("Tool", &toolm);
+../diagram/SdClassInstCanvas.cpp:169:  m.insertItem("Upper", 0);
+../diagram/SdClassInstCanvas.cpp:170:  m.insertItem("Lower", 1);
+../diagram/SdClassInstCanvas.cpp:172:  m.insertItem("Edit", 2);
+../diagram/SdClassInstCanvas.cpp:174:    m.insertItem("Become immortal", 5);
+../diagram/SdClassInstCanvas.cpp:176:    m.insertItem("Become mortal", 6);
+../diagram/SdClassInstCanvas.cpp:178:  m.insertItem("Edit drawing settings", 3);
+../diagram/SdClassInstCanvas.cpp:180:  m.insertItem("Select class in browser", 7);
+../diagram/SdClassInstCanvas.cpp:182:  m.insertItem("Remove from view", 4);
+../diagram/SdContinuationCanvas.cpp:161:  m.insertItem("Upper", 0);
+../diagram/SdContinuationCanvas.cpp:162:  m.insertItem("Lower", 1);
+../diagram/SdContinuationCanvas.cpp:164:  m.insertItem("Edit", 2);
+../diagram/SdContinuationCanvas.cpp:166:  m.insertItem("Edit drawing settings", 3);
+../diagram/SdContinuationCanvas.cpp:169:    m.insertItem("Select linked items", 4);
+../diagram/SdContinuationCanvas.cpp:172:  m.insertItem("Remove from view",5);
+../diagram/SdDurationCanvas.cpp:328:  m.insertItem("Upper", 0);
+../diagram/SdDurationCanvas.cpp:329:  m.insertItem("Lower", 1);
+../diagram/SdDurationCanvas.cpp:331:  m.insertItem("Edit drawing settings", 2);
+../diagram/SdDurationCanvas.cpp:333:  m.insertItem("Select linked items", 3);
+../diagram/SdDurationCanvas.cpp:335:  m.insertItem("Remove from view", 4);
+../diagram/SdDurationCanvas.cpp:337:  m.insertItem("Cut here", 5);
+../diagram/SdDurationCanvas.cpp:339:    m.insertItem("Merge juxtaposed activity bars", 6);
+../diagram/SdLifeLineCanvas.cpp:200:  m.insertItem("Upper", 0);
+../diagram/SdLifeLineCanvas.cpp:201:  m.insertItem("Lower", 1);
+../diagram/SdMsgCanvas.cpp:156:  m.insertItem("Upper", 0);
+../diagram/SdMsgCanvas.cpp:157:  m.insertItem("Lower", 1);
+../diagram/SdMsgCanvas.cpp:159:  m.insertItem("Edit", 2);
+../diagram/SdMsgCanvas.cpp:161:  m.insertItem("Edit drawing settings", 3);
+../diagram/SdMsgCanvas.cpp:164:    m.insertItem("Select operation in browser", 8);
+../diagram/SdMsgCanvas.cpp:165:  m.insertItem("Select linked items", 4);
+../diagram/SdMsgCanvas.cpp:168:    m.insertItem("Select label", 5);
+../diagram/SdMsgCanvas.cpp:169:    m.insertItem("Label default position", 6);
+../diagram/SdMsgCanvas.cpp:172:  m.insertItem("Remove from view", 7);
+../diagram/SdSelfMsgCanvas.cpp:122:  m.insertItem("Upper", 0);
+../diagram/SdSelfMsgCanvas.cpp:123:  m.insertItem("Lower", 1);
+../diagram/SdSelfMsgCanvas.cpp:125:  m.insertItem("Edit", 2);
+../diagram/SdSelfMsgCanvas.cpp:127:  m.insertItem("Edit drawing settings", 3);
+../diagram/SdSelfMsgCanvas.cpp:130:    m.insertItem("Select operation in browser", 8);
+../diagram/SdSelfMsgCanvas.cpp:131:  m.insertItem("Select linked items", 4);
+../diagram/SdSelfMsgCanvas.cpp:134:    m.insertItem("Select label", 5);
+../diagram/SdSelfMsgCanvas.cpp:135:    m.insertItem("Label default position", 6);
+../diagram/SdSelfMsgCanvas.cpp:138:  m.insertItem("Remove from view", 7);
+../diagram/SimpleRelationCanvas.cpp:152:      m.insertItem("Edit", 0);
+../diagram/SimpleRelationCanvas.cpp:156:    m.insertItem("Select in browser", 2);
+../diagram/SimpleRelationCanvas.cpp:159:      m.insertItem("Select stereotype", 3);
+../diagram/SimpleRelationCanvas.cpp:160:      m.insertItem("Stereotype default position", 4);
+../diagram/SimpleRelationCanvas.cpp:162:	m.insertItem("Attach stereotype to this segment", 6);
+../diagram/SimpleRelationCanvas.cpp:168:      m.insertItem("Geometry (Ctrl+l)", &geo);
+../diagram/SimpleRelationCanvas.cpp:172:    m.insertItem("Remove from view",7);
+../diagram/SimpleRelationCanvas.cpp:174:      m.insertItem("Delete from model", 8);
+../diagram/SimpleRelationCanvas.cpp:178:      m.insertItem("Tool", &toolm);
+../diagram/StateActionCanvas.cpp:384:  m.insertItem("Upper", 0);
+../diagram/StateActionCanvas.cpp:385:  m.insertItem("Lower", 1);
+../diagram/StateActionCanvas.cpp:387:  m.insertItem("Edit drawing settings", 2);
+../diagram/StateActionCanvas.cpp:389:  m.insertItem("Edit state action", 3);
+../diagram/StateActionCanvas.cpp:391:  m.insertItem("Select in browser", 4);
+../diagram/StateActionCanvas.cpp:393:    m.insertItem("Select linked items", 5);
+../diagram/StateActionCanvas.cpp:395:  m.insertItem("Remove from view", 7);
+../diagram/StateActionCanvas.cpp:397:    m.insertItem("Delete from model", 8);
+../diagram/StateActionCanvas.cpp:400:    m.insertItem("Tool", &toolm);
+../diagram/StateCanvas.cpp:489:  m.insertItem("Upper", 0);
+../diagram/StateCanvas.cpp:490:  m.insertItem("Lower", 1);
+../diagram/StateCanvas.cpp:492:  m.insertItem("Edit drawing settings", 2);
+../diagram/StateCanvas.cpp:494:  m.insertItem("Edit state", 3);
+../diagram/StateCanvas.cpp:496:  m.insertItem("Select in browser", 4);
+../diagram/StateCanvas.cpp:498:    m.insertItem("Select linked items", 5);
+../diagram/StateCanvas.cpp:501:    m.insertItem("Set associated diagram",6);
+../diagram/StateCanvas.cpp:503:  m.insertItem("Remove from view", 7);
+../diagram/StateCanvas.cpp:505:    m.insertItem("Delete from model", 8);
+../diagram/StateCanvas.cpp:508:    m.insertItem("Tool", &toolm);
+../diagram/SubjectCanvas.cpp:166:  m.insertItem("Upper", 0);
+../diagram/SubjectCanvas.cpp:167:  m.insertItem("Lower", 1);
+../diagram/SubjectCanvas.cpp:169:  m.insertItem("Edit", 2);
+../diagram/SubjectCanvas.cpp:171:  m.insertItem("Edit drawing settings", 3);
+../diagram/SubjectCanvas.cpp:174:    m.insertItem("Select linked items", 4);
+../diagram/SubjectCanvas.cpp:177:  m.insertItem("Remove from view",5);
+../diagram/TextCanvas.cpp:111:  m.insertItem("Upper", 0);
+../diagram/TextCanvas.cpp:112:  m.insertItem("Lower", 1);
+../diagram/TextCanvas.cpp:114:  m.insertItem("Edit", 2);
+../diagram/TextCanvas.cpp:116:  m.insertItem("Font", &fontsubm);  
+../diagram/TextCanvas.cpp:120:    m.insertItem("Select linked items", 3);
+../diagram/TextCanvas.cpp:123:  m.insertItem("Remove from view",4);
+../diagram/TransitionCanvas.cpp:187:      m.insertItem("Edit", 0);
+../diagram/TransitionCanvas.cpp:191:    m.insertItem("Select in browser", 2);
+../diagram/TransitionCanvas.cpp:194:      m.insertItem("Edit drawing settings", 1);
+../diagram/TransitionCanvas.cpp:195:      m.insertItem("Select labels", 3);
+../diagram/TransitionCanvas.cpp:196:      m.insertItem("Labels default position", 4);
+../diagram/TransitionCanvas.cpp:198:	m.insertItem("Attach transition's name to this segment", 5);
+../diagram/TransitionCanvas.cpp:200:	m.insertItem("Attach stereotype to this segment", 6);
+../diagram/TransitionCanvas.cpp:206:      m.insertItem("Geometry (Ctrl+l)", &geo);
+../diagram/TransitionCanvas.cpp:210:    m.insertItem("Remove from view",7);
+../diagram/TransitionCanvas.cpp:212:      m.insertItem("Delete from model", 8);
+../diagram/TransitionCanvas.cpp:216:      m.insertItem("Tool", &toolm);
+../diagram/UcClassCanvas.cpp:122:  m.insertItem("Upper", 0);
+../diagram/UcClassCanvas.cpp:123:  m.insertItem("Lower", 1);
+../diagram/UcClassCanvas.cpp:126:    m.insertItem("Edit", 7);
+../diagram/UcClassCanvas.cpp:129:  m.insertItem("Select in browser",2);
+../diagram/UcClassCanvas.cpp:131:    m.insertItem("Select linked items", 3);
+../diagram/UcClassCanvas.cpp:133:  m.insertItem("Remove from view",5);
+../diagram/UcClassCanvas.cpp:135:    m.insertItem("Delete from model", 6);
+../diagram/UcClassCanvas.cpp:138:    m.insertItem("Tool", &toolm);
+../diagram/UcUseCaseCanvas.cpp:166:  m.insertItem("Upper", 0);
+../diagram/UcUseCaseCanvas.cpp:167:  m.insertItem("Lower", 1);
+../diagram/UcUseCaseCanvas.cpp:169:  m.insertItem("Edit", 2);
+../diagram/UcUseCaseCanvas.cpp:171:  m.insertItem("Edit drawing settings", 3);
+../diagram/UcUseCaseCanvas.cpp:173:  m.insertItem("Select in browser",4);
+../diagram/UcUseCaseCanvas.cpp:175:    m.insertItem("Select linked items", 5);
+../diagram/UcUseCaseCanvas.cpp:178:    m.insertItem("Set associated diagram",6);
+../diagram/UcUseCaseCanvas.cpp:180:  m.insertItem("Remove from view",7);
+../diagram/UcUseCaseCanvas.cpp:182:    m.insertItem("Delete from model", 8);
+../diagram/UcUseCaseCanvas.cpp:185:    m.insertItem("Tool", &toolm);
+../diagram/UmlWindow.cpp:170:  menuBar()->insertItem("&Project", projectMenu);
+../diagram/UmlWindow.cpp:178:  menuBar()->insertItem("&Windows", windowsMenu);
+../diagram/UmlWindow.cpp:182:  menuBar()->insertItem("&Tools", toolMenu);
+../diagram/UmlWindow.cpp:185:  menuBar()->insertItem("&Miscellaneous", miscMenu);
+../diagram/UmlWindow.cpp:191:    miscMenu->insertItem("Show s&tereotypes in browser", this,
+../diagram/UmlWindow.cpp:200:  pmstyle->insertItem("Motif", this, SLOT(motif_style()));
+../diagram/UmlWindow.cpp:204:  pmstyle->insertItem("MotifPlus", this, SLOT(motifplus_style()));
+../diagram/UmlWindow.cpp:207:  //pmstyle->insertItem("Sgi", this, SLOT(sgi_style()));
+../diagram/UmlWindow.cpp:208:  //pmstyle->insertItem("Cde", this, SLOT(cde_style()));
+../diagram/UmlWindow.cpp:210:  pmstyle->insertItem("Windows", this, SLOT(windows_style()));
+../diagram/UmlWindow.cpp:215:    miscMenu->insertItem("Style", pmstyle);
+../diagram/UmlWindow.cpp:230:  int id = miscMenu->insertItem("Font size", fontSizeMenu);
+../diagram/UmlWindow.cpp:241:  id = miscMenu->insertItem("Diagram default format", formatMenu);
+../diagram/UmlWindow.cpp:246:    miscMenu->insertItem("C++ default declaration/definition", this, SLOT(use_cpp()));
+../diagram/UmlWindow.cpp:250:    miscMenu->insertItem("Java default definition", this, SLOT(use_java()));
+../diagram/UmlWindow.cpp:254:    miscMenu->insertItem("Idl default declaration", this, SLOT(use_idl()));
+../diagram/UmlWindow.cpp:260:    miscMenu->insertItem("Verbose code generation", this, SLOT(verbose()));
+../diagram/UmlWindow.cpp:263:    miscMenu->insertItem("Preserve operations's body", this, SLOT(preserve()));
+../diagram/UmlWindow.cpp:268:  menuBar()->insertItem("&Help", help);
+../diagram/UmlWindow.cpp:270:  help->insertItem("&About", this, SLOT(about()), Key_F1);
+../diagram/UmlWindow.cpp:271:  help->insertItem("About&Qt", this, SLOT(aboutQt()));
+../diagram/UmlWindow.cpp:273:  help->insertItem("What's This", this, SLOT(whatsThis()), SHIFT+Key_F1);
+../diagram/UmlWindow.cpp:357:    id = projectMenu->insertItem("&New", this, SLOT(newProject()), CTRL+Key_N);
+../diagram/UmlWindow.cpp:369:    id = projectMenu->insertItem("Save &as...", this, SLOT(saveAs()));
+../diagram/UmlWindow.cpp:374:    projectMenu->insertItem("&Close", this, SLOT(close()), CTRL+Key_W);
+../diagram/UmlWindow.cpp:376:    projectMenu->insertItem("&Quit", this, SLOT(quit()), CTRL+Key_Q);
+../diagram/UmlWindow.cpp:385:      projectMenu->insertItem("Edit", ed);
+../diagram/UmlWindow.cpp:387:      id = ed->insertItem("Edit generation settings", this, SLOT(edit_gen_settings()));
+../diagram/UmlWindow.cpp:393:      id = ed->insertItem("Edit default stereotypes", this, SLOT(edit_stereotypes()));
+../diagram/UmlWindow.cpp:399:      id = ed->insertItem("Edit class settings", this, SLOT(edit_class_settings()));
+../diagram/UmlWindow.cpp:403:      id = ed->insertItem("Edit drawing settings", this, SLOT(edit_drawing_settings()));
+../diagram/UmlWindow.cpp:453:  toolMenu->insertItem("Show &Trace Window", this, SLOT(show_trace()), CTRL+Key_T);
+../diagram/UmlWindow.cpp:456:    toolMenu->insertItem("Generate &C++", this, SLOT(cpp_generate()), CTRL+Key_C);
+../diagram/UmlWindow.cpp:457:    toolMenu->insertItem("Generate &Java", this, SLOT(java_generate()), CTRL+Key_J);
+../diagram/UmlWindow.cpp:458:    toolMenu->insertItem("Generate &Idl", this, SLOT(idl_generate()), CTRL+Key_I);
+../diagram/UmlWindow.cpp:461:      toolMenu->insertItem("Reverse C++", this, SLOT(cpp_reverse()));
+../diagram/UmlWindow.cpp:462:      toolMenu->insertItem("Reverse Java", this, SLOT(java_reverse()));
+../diagram/UmlWindow.cpp:464:      toolMenu->insertItem("Java Catalog", this, SLOT(java_catalog()));
+../diagram/UmlWindow.cpp:467:	toolMenu->insertItem("Plug-out upgrade", this, SLOT(plug_out_upgrade()));
+../diagram/UmlWindow.cpp:473:      toolMenu->insertItem("Tools settings", this, SLOT(tool_settings()));
+../diagram/UmlWindow.cpp:474:      toolMenu->insertItem("Import settings", this, SLOT(import_tool_settings()));
+../diagram/UmlWindow.cpp:1293:  int cascadeId = windowsMenu->insertItem("&Cascade", ws, SLOT(cascade()));
+../diagram/UmlWindow.cpp:1294:  int tileId = windowsMenu->insertItem("&Tile", ws, SLOT(tile()));
+../diagram/UmlWindow.cpp:1295:  int preferredId = windowsMenu->insertItem("&Preferred geometry", this, SLOT(preferred_geometry()));
+../dialog/ActivityActionDialog.cpp:935:    class_co->insertItem("");
+../dialog/ActivityActionDialog.cpp:936:    var_co->insertItem("");
+../dialog/ActivityActionDialog.cpp:971:  var_co->insertItem("");
+../dialog/ActivityActionDialog.cpp:1021:  m.insertItem("Choose", -1);
+../dialog/ActivityActionDialog.cpp:1027:    m.insertItem("Select in browser", 0);
+../dialog/ActivityActionDialog.cpp:1043:	m.insertItem("Choose variable selected in browser", 1);
+../dialog/ActivityActionDialog.cpp:1059:      var_co->insertItem("");
+../dialog/ActivityActionDialog.cpp:1144:    class_co->insertItem("");
+../dialog/ActivityActionDialog.cpp:1145:    oper_co->insertItem("");
+../dialog/ActivityActionDialog.cpp:1182:  oper_co->insertItem("");
+../dialog/ActivityActionDialog.cpp:1232:  m.insertItem("Choose", -1);
+../dialog/ActivityActionDialog.cpp:1238:    m.insertItem("Select in browser", 0);
+../dialog/ActivityActionDialog.cpp:1246:      m.insertItem("Choose operation selected in browser", 1);
+../dialog/ActivityActionDialog.cpp:1258:      oper_co->insertItem("");
+../dialog/ActivityActionDialog.cpp:1292:    behavior_co->insertItem("");
+../dialog/ActivityActionDialog.cpp:1346:  m.insertItem("Choose", -1);
+../dialog/ActivityActionDialog.cpp:1352:    m.insertItem("Select in browser", 0);
+../dialog/ActivityActionDialog.cpp:1363:	m.insertItem("Choose behavior selected in browser", 1);
+../dialog/ActivityObjectDialog.cpp:128:    edmultiplicity->insertItem("1");
+../dialog/ActivityObjectDialog.cpp:129:    edmultiplicity->insertItem("0..1");
+../dialog/ActivityObjectDialog.cpp:130:    edmultiplicity->insertItem("*");
+../dialog/ActivityObjectDialog.cpp:131:    edmultiplicity->insertItem("1..*");
+../dialog/ActivityObjectDialog.cpp:241:  m.insertItem("Choose", -1);
+../dialog/ActivityObjectDialog.cpp:247:    m.insertItem("Select in browser", 0);
+../dialog/ActivityObjectDialog.cpp:255:      m.insertItem("Choose class selected in browser", 1);
+../dialog/ArtifactDialog.cpp:460:    stereotypefilter->insertItem("");
+../dialog/AttributeDialog.cpp:132:	  edstereotype->insertItem("Attribute");
+../dialog/AttributeDialog.cpp:141:	  edstereotype->insertItem("");
+../dialog/AttributeDialog.cpp:435:  m.insertItem("Choose", -1);
+../dialog/AttributeDialog.cpp:441:    m.insertItem("Select in browser", 0);
+../dialog/AttributeDialog.cpp:449:      m.insertItem("Choose class selected in browser", 1);
+../dialog/ClassDialog.cpp:189:	artifact->insertItem("");
+../dialog/ClassDialog.cpp:1743:    m.insertItem("Insert param before", 0);
+../dialog/ClassDialog.cpp:1744:    m.insertItem("Insert param after", 1);
+../dialog/ClassDialog.cpp:1746:    m.insertItem("Delete param", 2);
+../dialog/ClassDialog.cpp:1748:    m.insertItem("Copy param", 3);
+../dialog/ClassDialog.cpp:1749:    m.insertItem("Cut param", 4);
+../dialog/ClassDialog.cpp:1750:    m.insertItem("Paste param", 5);
+../dialog/ClassDialog.cpp:1760:    m.insertItem("Move param", &mv);
+../dialog/ClassInstanceDialog.cpp:120:  m.insertItem("Choose", -1);
+../dialog/ClassInstanceDialog.cpp:126:    m.insertItem("Select in browser", 0);
+../dialog/ClassInstanceDialog.cpp:131:    m.insertItem("Choose class selected in browser", 1);
+../dialog/ClassViewDialog.cpp:111:      deploymentview->insertItem("");
+../dialog/ColMsgTable.cpp:156:    m.insertItem("Edit message", 1);
+../dialog/ColMsgTable.cpp:157:    m.insertItem("Change ranks", 2);
+../dialog/ColMsgTable.cpp:159:    m.insertItem("Delete it", 3);
+../dialog/ColMsgTable.cpp:161:      m.insertItem("Delete recursively", 4);
+../dialog/ComponentDialog.cpp:167:    rq_stereotypefilter->insertItem("");
+../dialog/ComponentDialog.cpp:234:    pr_rz_stereotypefilter->insertItem("");
+../dialog/GenerationSettingsDialog.cpp:150:  edcpp_h_extension->insertItem("H");
+../dialog/GenerationSettingsDialog.cpp:151:  edcpp_h_extension->insertItem("Hh");
+../dialog/GenerationSettingsDialog.cpp:157:  edcpp_src_extension->insertItem("Cpp");
+../dialog/GenerationSettingsDialog.cpp:158:  edcpp_src_extension->insertItem("Cc");
+../dialog/GenerationSettingsDialog.cpp:446:  edjava_extension->insertItem("Java");
+../dialog/GenerationSettingsDialog.cpp:614:  edidl_extension->insertItem("Idl");
+../dialog/OperationDialog.cpp:572:  m.insertItem("Choose", -1);
+../dialog/OperationDialog.cpp:578:    m.insertItem("Select in browser", 0);
+../dialog/OperationDialog.cpp:586:      m.insertItem("Choose class selected in browser", 1);
+../dialog/OperationDialog.cpp:2378:    m.insertItem("Insert param before", 0);
+../dialog/OperationDialog.cpp:2379:    m.insertItem("Insert param after", 1);
+../dialog/OperationDialog.cpp:2381:    m.insertItem("Delete param", 2);
+../dialog/OperationDialog.cpp:2383:    m.insertItem("Copy param", 3);
+../dialog/OperationDialog.cpp:2384:    m.insertItem("Cut param", 4);
+../dialog/OperationDialog.cpp:2385:    m.insertItem("Paste param", 5);
+../dialog/OperationDialog.cpp:2395:    m.insertItem("Move param", &mv);
+../dialog/OperationDialog.cpp:2681:    m.insertItem("Insert exception before", 0);
+../dialog/OperationDialog.cpp:2682:    m.insertItem("Insert exception after", 1);
+../dialog/OperationDialog.cpp:2684:    m.insertItem("Delete exception", 2);
+../dialog/OperationDialog.cpp:2686:    m.insertItem("Copy exception", 3);
+../dialog/OperationDialog.cpp:2687:    m.insertItem("Cut exception", 4);
+../dialog/OperationDialog.cpp:2688:    m.insertItem("Paste exception", 5);
+../dialog/OperationDialog.cpp:2698:    m.insertItem("Move exception", &mv);
+../dialog/OperationDialog.cpp:3220:    m.insertItem("Insert param before", 0);
+../dialog/OperationDialog.cpp:3221:    m.insertItem("Insert param after", 1);
+../dialog/OperationDialog.cpp:3223:    m.insertItem("Delete param", 2);
+../dialog/OperationDialog.cpp:3225:    m.insertItem("Copy param", 3);
+../dialog/OperationDialog.cpp:3226:    m.insertItem("Cut param", 4);
+../dialog/OperationDialog.cpp:3227:    m.insertItem("Paste param", 5);
+../dialog/OperationDialog.cpp:3237:    m.insertItem("Move param", &mv);
+../dialog/OperationDialog.cpp:3256:    m.insertItem("Set rank <i>", &rk);
+../dialog/OperationListDialog.cpp:61:      cb->insertItem("[a] " + s);
+../dialog/ParameterDialog.cpp:144:    edmultiplicity->insertItem("1");
+../dialog/ParameterDialog.cpp:145:    edmultiplicity->insertItem("0..1");
+../dialog/ParameterDialog.cpp:146:    edmultiplicity->insertItem("*");
+../dialog/ParameterDialog.cpp:147:    edmultiplicity->insertItem("1..*");
+../dialog/ParameterDialog.cpp:307:  m.insertItem("Choose", -1);
+../dialog/ParameterDialog.cpp:313:    m.insertItem("Select in browser", 0);
+../dialog/ParameterDialog.cpp:321:      m.insertItem("Choose class selected in browser", 1);
+../dialog/PinDialog.cpp:143:    edmultiplicity->insertItem("1");
+../dialog/PinDialog.cpp:144:    edmultiplicity->insertItem("0..1");
+../dialog/PinDialog.cpp:145:    edmultiplicity->insertItem("*");
+../dialog/PinDialog.cpp:146:    edmultiplicity->insertItem("1..*");
+../dialog/PinDialog.cpp:297:  m.insertItem("Choose", -1);
+../dialog/PinDialog.cpp:303:    m.insertItem("Select in browser", 0);
+../dialog/PinDialog.cpp:311:      m.insertItem("Choose class selected in browser", 1);
+../dialog/RelationDialog.cpp:369:    role.multiplicity->insertItem("1");
+../dialog/RelationDialog.cpp:370:    role.multiplicity->insertItem("0..1");
+../dialog/RelationDialog.cpp:371:    role.multiplicity->insertItem("*");
+../dialog/RelationDialog.cpp:372:    role.multiplicity->insertItem("1..*");
+../dialog/RelationDialog.cpp:712:      edstereotype->insertItem("");
+../dialog/SettingsDialog.cpp:108:      insertItem("Transparent");
+../dialog/SettingsDialog.cpp:189:      insertItem("Unknown color");
+../dialog/StringTable.cpp:87:    m.insertItem("Insert line before", 0);
+../dialog/StringTable.cpp:88:    m.insertItem("Insert line after", 1);
+../dialog/StringTable.cpp:90:    m.insertItem("Delete line", 2);
+../dialog/StringTable.cpp:92:    m.insertItem("Copy line", 3);
+../dialog/StringTable.cpp:93:    m.insertItem("Cut line", 4);
+../dialog/StringTable.cpp:94:    m.insertItem("Paste line", 5);
+../dialog/StringTable.cpp:104:    m.insertItem("Move line", &mv);
+../JavaCat/Class.cpp:1115:    m.insertItem("Send it", 0);
+../JavaCat/Class.cpp:1116:  m.insertItem("Show file", 1);
+../JavaCat/JavaCatWindow.cpp:82:  menuBar()->insertItem("&File", menu);
+../JavaCat/JavaCatWindow.cpp:110:  menu->insertItem("&Quit", this, SLOT(quit()), CTRL+Key_Q);
+../JavaCat/JavaCatWindow.cpp:113:  menuBar()->insertItem("&Browse", menu);
+../JavaCat/JavaCatWindow.cpp:140:  menuBar()->insertItem("&Style", menu);
+../JavaCat/JavaCatWindow.cpp:143:  menu->insertItem("Motif", this, SLOT(motif_style()));
+../JavaCat/JavaCatWindow.cpp:146:  menu->insertItem("MotifPlus", this, SLOT(motifplus_style()));
+../JavaCat/JavaCatWindow.cpp:148:  menu->insertItem("Windows", this, SLOT(windows_style()));
+../JavaCat/JavaCatWindow.cpp:154:  menuBar()->insertItem("&Help", menu);
+../JavaCat/JavaCatWindow.cpp:156:  menu->insertItem("&About", this, SLOT(about()), Key_F1);
+../JavaCat/JavaCatWindow.cpp:157:  menu->insertItem("About&Qt", this, SLOT(aboutQt()));
+../JavaCat/JavaCatWindow.cpp:159:  menu->insertItem("What's This", this, SLOT(whatsThis()), SHIFT+Key_F1);
+../JavaCat/Package.cpp:851:    m.insertItem("Rename", 2);
+../JavaCat/Package.cpp:864:	m.insertItem("Send its classes", 0);
+../JavaCat/Package.cpp:871:      m.insertItem("Send its classes and classes of sub-packages", 1);
+Done
+bruno@linux:~/uml/browser> 

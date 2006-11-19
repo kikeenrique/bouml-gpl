@@ -304,38 +304,85 @@ bool ClassContainer::get_template(FormalParameterList & tmplt)
     return FALSE;
   }
   else {
-    bool ok = TRUE;
-    
     for (;;) {
+      Lex::mark();
+      
       t = Lex::read_word();
       
       if (t == ">")
 	break;
       
-      if (!Lex::identifierp(t, TRUE)) {
-	if (! Package::scanning())
-	  Lex::error_near(t);
-	ok = FALSE;
-	break;
+      QCString x;
+      QCString s;
+      
+      if ((t == "class") || (t == "typename")) {
+	x = Lex::read_word();
+	if (x.isEmpty()) {
+	  if (! Package::scanning())
+	    Lex::syntax_error("template formal expected");
+	  return FALSE;
+	}
+
+	s = Lex::read_word(TRUE);
+      }
+      else if (!Lex::identifierp(t, FALSE)) {
+	if (! Package::scanning()) {
+	  if (t.isEmpty())
+	    Lex::premature_eof();
+	  else
+	    Lex::error_near(t);
+	}
+	return FALSE;
+      }
+      else {
+	QCString pre_pre_region;
+	QCString pre_region = Lex::region();
+	QCString pre_pre_word;
+	QCString pre_word = t;
+	int level = 0;
+	
+	for (;;) {
+	  s = Lex::read_word(TRUE);
+	  if (s.isEmpty()) {
+	    if (! Package::scanning())
+	      Lex::premature_eof();
+	    return FALSE;
+	  }
+	  if ((level == 0) && ((s == "=") || (s == ",") || (s == ">"))) {
+	    if (pre_pre_word.isEmpty()) {
+	      // only one form
+	      if (! Package::scanning())
+		Lex::error_near(s);
+	      return FALSE;
+	    }
+	    if ((pre_pre_word == "class") && Lex::identifierp(pre_word, TRUE)) {
+	      t = pre_pre_region;
+	      x = pre_word;
+	    }
+	    else {
+	      t = "";
+	      x = pre_region;
+	    }
+	    break;
+	  }
+	  pre_pre_region = pre_region;
+	  pre_region = Lex::region();
+	  pre_pre_word = pre_word;
+	  pre_word = s;
+	  if ((s == "(") || (s == "[") || (s == "<"))
+	    level += 1;
+	  else if ((s == ")") || (s == "]") || (s == ">"))
+	    level -= 1;
+	}	
       }
       
-      QCString x = Lex::read_word();
       QCString v;
-      
-      if (x.isEmpty()) {
-	if (! Package::scanning())
-	  Lex::syntax_error("template formal expected");
-	ok = FALSE;
-	break;
-      }
-      
-      QCString s = Lex::read_word(TRUE);
-      
+		
       if (s == "=") {
 	v = Lex::read_list_elt();
 	s = Lex::read_word(TRUE);
       }
-      
+	
       tmplt.append(UmlFormalParameter(t, x, v));
       
       if (s == ">")
@@ -343,12 +390,11 @@ bool ClassContainer::get_template(FormalParameterList & tmplt)
       if (s != ",") {
 	if (! Package::scanning())
 	  Lex::error_near(s);
-	ok = FALSE;
-	break;
+	return FALSE;
       }
     }
     
-    return ok;
+    return TRUE;
   }
 }
 

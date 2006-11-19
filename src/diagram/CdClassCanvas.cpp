@@ -431,6 +431,9 @@ bool CdClassCanvas::has_relation(BasicData * def) const {
 }
 
 void CdClassCanvas::draw_all_relations(CdClassCanvas * end) {
+  if (used_settings.draw_all_relations == UmlNo)
+    return;
+
   QListViewItem * child;
   QCanvasItemList all = canvas()->allItems();
   QCanvasItemList::Iterator cit;
@@ -459,10 +462,10 @@ void CdClassCanvas::draw_all_relations(CdClassCanvas * end) {
 	    if ((adi != 0) &&		// an uml canvas item
 		(adi->type() == UmlClass) &&
 		(((CdClassCanvas *) adi)->browser_node == end_class) &&
-		((((CdClassCanvas *) adi) == end) ||
-		 (*cit)->visible())) {
+		((((CdClassCanvas *) adi) == end) || (*cit)->visible())) {
 	      // other class canvas find
-	      di = adi;
+	      if (((CdClassCanvas *) adi)->used_settings.draw_all_relations == UmlYes)
+		di = adi;
 	      break;
 	    }
 	  }
@@ -776,47 +779,47 @@ void CdClassCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 2);
+  m.insertItem("Edit drawing settings", 2);
   if (attributes.count() != 0)
-    m.insertItem("individual attribute visibility", 3);
+    m.insertItem("Individual attribute visibility", 3);
   if (operations.count() != 0)
-    m.insertItem("individual operation visibility", 4);
+    m.insertItem("Individual operation visibility", 4);
   m.insertSeparator();
-  m.insertItem("edit class", 6);
+  m.insertItem("Edit class", 6);
   if (!strcmp(stereotype, "enum")) {
     if (browser_node->is_writable()) {
-      m.insertItem("add item", 7);
-      m.insertItem("add attribute", 9);
+      m.insertItem("Add item", 7);
+      m.insertItem("Add attribute", 9);
     }
     if (attributes.count() != 0)
-      m.insertItem("edit item or attribute", &attrsubm);
+      m.insertItem("Edit item or attribute", &attrsubm);
   }
   else if (!strcmp(stereotype, "enum_pattern")) {
     if (browser_node->is_writable()) {
-      m.insertItem("add item", 7);
+      m.insertItem("Add item", 7);
     }
     if (attributes.count() != 0)
-      m.insertItem("edit item", &attrsubm);
+      m.insertItem("Edit item", &attrsubm);
   }
   else if (strcmp(stereotype, "typedef")) {
     if (browser_node->is_writable())
-      m.insertItem("add attribute", 9);
+      m.insertItem("Add attribute", 9);
     if (attributes.count() != 0)
-      m.insertItem("edit attribute", &attrsubm);
+      m.insertItem("Edit attribute", &attrsubm);
     if (browser_node->is_writable())
-      m.insertItem("add operation", 8);
+      m.insertItem("Add operation", 8);
     if (browser_node->is_writable() &&
 	strcmp(stereotype, "union") &&
 	(l.count() != 0)) {
       if (l.count() > 20)
-	m.insertItem("add inherited operation", 2999);
+	m.insertItem("Add inherited operation", 2999);
       else {
 	BrowserOperation * oper;
 	
-	inhopersubm.insertItem(new MenuTitle("choose operation", m.font()), -1);
+	inhopersubm.insertItem(new MenuTitle("Choose operation", m.font()), -1);
 	inhopersubm.insertSeparator();
 	
 	for (oper = l.first(), index = 3000;
@@ -833,32 +836,32 @@ void CdClassCanvas::menu(const QPoint&) {
 				   index);
 	}
 	
-	m.insertItem("add inherited operation", &inhopersubm);
+	m.insertItem("Add inherited operation", &inhopersubm);
       }
     }
     
     if (operations.count() != 0) {
       if (operations.count() <= 20)
-	m.insertItem("edit operation", &opersubm);
+	m.insertItem("Edit operation", &opersubm);
       else
-	m.insertItem("edit operation", 1999);
+	m.insertItem("Edit operation", 1999);
     }
   }
   m.insertSeparator();
-  m.insertItem("select in browser",10);
+  m.insertItem("Select in browser",10);
   if (linked())
-    m.insertItem("select linked items",17);
+    m.insertItem("Select linked items",17);
   m.insertSeparator();
   if (browser_node->is_writable())
-    m.insertItem("set associated diagram",11);
+    m.insertItem("Set associated diagram",11);
   m.insertSeparator();
-  m.insertItem("remove from view",12);
+  m.insertItem("Remove from view",12);
   if (browser_node->is_writable())
-    m.insertItem("delete from model", 13);
+    m.insertItem("Delete from model", 13);
   m.insertSeparator();
-  m.insertItem("generate", &gensubm);
+  m.insertItem("Generate", &gensubm);
   if (Tool::menu_insert(&toolm, UmlClass, 20))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
   
   gensubm.insertItem("C++", 14);
   gensubm.insertItem("Java", 15);
@@ -1024,6 +1027,36 @@ void CdClassCanvas::menu(const QPoint&) {
   
   modified();
   package_modified();
+}
+
+bool CdClassCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void CdClassCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<StateSpec> st;
+  QArray<ColorSpec> co(1);
+  UmlColor itscolor;
+  ClassDiagramSettings settings;
+  
+  settings.complete(st, UmlClass);
+  
+  co[0].set("class color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      if (co[0].name != 0)
+	((CdClassCanvas *) it.current())->itscolor = itscolor;
+      ((CdClassCanvas *) it.current())->settings.set(st, 0);
+      ((CdClassCanvas *) it.current())->modified();
+      ((CdClassCanvas *) it.current())->package_modified();
+    }
+  }  
 }
 
 const char * CdClassCanvas::may_start(UmlCode & l) const {

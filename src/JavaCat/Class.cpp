@@ -1112,8 +1112,8 @@ void Class::menu() {
   m.insertSeparator();
   
   if (! reversed())
-    m.insertItem("send it", 0);
-  m.insertItem("show file", 1);
+    m.insertItem("Send it", 0);
+  m.insertItem("Show file", 1);
   
   switch (m.exec(QCursor::pos())) {
   case 0:

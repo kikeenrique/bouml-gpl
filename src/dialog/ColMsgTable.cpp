@@ -153,12 +153,12 @@ void ColMsgTable::button_pressed(int row, int col, int, const QPoint &) {
 			       m.font()),
 		 -1);
     m.insertSeparator();
-    m.insertItem("edit message", 1);
-    m.insertItem("change ranks", 2);
+    m.insertItem("Edit message", 1);
+    m.insertItem("Change ranks", 2);
     m.insertSeparator();
-    m.insertItem("delete it", 3);
+    m.insertItem("Delete it", 3);
     if (!flat_msg_list[row]->msgs.isEmpty())
-      m.insertItem("delete recursively", 4);
+      m.insertItem("Delete recursively", 4);
     
     switch (m.exec(QCursor::pos())) {
     case 1:

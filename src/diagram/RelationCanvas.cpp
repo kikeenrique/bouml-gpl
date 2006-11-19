@@ -282,38 +282,38 @@ void RelationCanvas::menu(const QPoint & lpos) {
 		 -1);
     m.insertSeparator();
     if (data) {
-      m.insertItem("edit", 0);
+      m.insertItem("Edit", 0);
       m.insertSeparator();
     }
     
-    m.insertItem("select in browser", 2);
+    m.insertItem("Select in browser", 2);
     if (plabel || pstereotype ||
 	first->role_b || first->multiplicity_b ||
 	last->role_a || last->multiplicity_a) {
       m.insertSeparator();
-      m.insertItem("select labels", 3);
-      m.insertItem("labels default position", 4);
+      m.insertItem("Select labels", 3);
+      m.insertItem("Labels default position", 4);
       if (plabel && (label == 0))
-	m.insertItem("attach relation's name to this segment", 5);
+	m.insertItem("Attach relation's name to this segment", 5);
       if (pstereotype && (stereotype == 0))
-	m.insertItem("attach relation's stereotype to this segment", 6);
+	m.insertItem("Attach relation's stereotype to this segment", 6);
     }
   
     if (get_start() != get_end()) {
       m.insertSeparator();
       init_geometry_menu(geo, 10);
-      m.insertItem("geometry (Ctrl+l)", &geo);
+      m.insertItem("Geometry (Ctrl+l)", &geo);
     }
     
     m.insertSeparator();
-    m.insertItem("remove from view",7);
+    m.insertItem("Remove from view",7);
     if ((data->get_end()) ? data->is_writable(data->get_end())
 			  : data->is_writable(data->get_start()))
-      m.insertItem("delete from model", 8);
+      m.insertItem("Delete from model", 8);
     
     m.insertSeparator();
     if (Tool::menu_insert(&toolm, itstype, 20))
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     
     int rank = m.exec(QCursor::pos());
     

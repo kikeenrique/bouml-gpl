@@ -158,18 +158,18 @@ void SdContinuationCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle("Continuation", m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit", 2);
+  m.insertItem("Edit", 2);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 3);
+  m.insertItem("Edit drawing settings", 3);
   if (linked()) {
     m.insertSeparator();
-    m.insertItem("select linked items", 4);
+    m.insertItem("Select linked items", 4);
   }
   m.insertSeparator();
-  m.insertItem("remove from view",5);
+  m.insertItem("Remove from view",5);
 
   int index = m.exec(QCursor::pos());
   
@@ -194,6 +194,7 @@ void SdContinuationCanvas::menu(const QPoint&) {
 
       SettingsDialog dialog(0, &co, FALSE, TRUE);
       
+      dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();
       return;
@@ -211,6 +212,29 @@ void SdContinuationCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+bool SdContinuationCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void SdContinuationCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<ColorSpec> co(1);
+  UmlColor itscolor;
+  
+  co[0].set("continuation color", &itscolor);
+  
+  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      ((SdContinuationCanvas *) it.current())->itscolor = itscolor;
+      ((SdContinuationCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }
 }
 
 const char * SdContinuationCanvas::may_start(UmlCode & l) const {

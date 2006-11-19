@@ -381,23 +381,23 @@ void StateActionCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(s, m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 2);
+  m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
-  m.insertItem("edit state action", 3);
+  m.insertItem("Edit state action", 3);
   m.insertSeparator();
-  m.insertItem("select in browser", 4);
+  m.insertItem("Select in browser", 4);
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
-  m.insertItem("remove from view", 7);
+  m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
-    m.insertItem("delete from model", 8);
+    m.insertItem("Delete from model", 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlStateAction, 10))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -419,6 +419,7 @@ void StateActionCanvas::menu(const QPoint&) {
 
       SettingsDialog dialog(&st, &co, FALSE, TRUE);
       
+      dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();	// call package_modified()
     }
@@ -448,6 +449,36 @@ void StateActionCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+bool StateActionCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void StateActionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<StateSpec> st(1);
+  QArray<ColorSpec> co(1);
+  DrawingLanguage language;
+  UmlColor itscolor;
+  
+  st[0].set("drawing language", &language);
+  
+  co[0].set("state action color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      if (st[0].name != 0)
+	((StateActionCanvas *) it.current())->language = language;
+      if (co[0].name != 0)
+	((StateActionCanvas *) it.current())->itscolor = itscolor;
+      ((StateActionCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }
 }
 
 const char * StateActionCanvas::may_start(UmlCode & l) const {

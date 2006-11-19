@@ -188,7 +188,7 @@ UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
 	  this, SLOT(miscMenuAboutToShow()));
   
   show_browser_stereotypes_id =
-    miscMenu->insertItem("show s&tereotypes in browser", this,
+    miscMenu->insertItem("Show s&tereotypes in browser", this,
 			 SLOT(show_stereotypes()));
   miscMenu->setItemChecked(show_browser_stereotypes_id, TRUE);
   miscMenu->setWhatsThis(show_browser_stereotypes_id, viewBrowserStereotypeText);
@@ -257,10 +257,10 @@ UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
   
   miscMenu->insertSeparator();
   verbose_gen_id =
-    miscMenu->insertItem("verbose code generation", this, SLOT(verbose()));
+    miscMenu->insertItem("Verbose code generation", this, SLOT(verbose()));
   miscMenu->setWhatsThis(verbose_gen_id, verboseText);
   preserve_bodies_id =
-    miscMenu->insertItem("preserve operations's body", this, SLOT(preserve()));
+    miscMenu->insertItem("Preserve operations's body", this, SLOT(preserve()));
   miscMenu->setWhatsThis(preserve_bodies_id, preserve_bodiesText);
   
   menuBar()->insertSeparator();
@@ -384,23 +384,23 @@ void UmlWindow::projectMenuAboutToShow() {
       projectMenu->insertSeparator();
       projectMenu->insertItem("Edit", ed);
       
-      id = ed->insertItem("edit generation settings", this, SLOT(edit_gen_settings()));
+      id = ed->insertItem("Edit generation settings", this, SLOT(edit_gen_settings()));
       ed->setWhatsThis(id, "to set how an Uml type is compiled in C++ etc..., \
 to set the default parameter passing, to set the default code \
 produced for an attribute etc..., and to set the root directories");
       ed->setItemEnabled(id, writable);
       
-      id = ed->insertItem("edit default stereotypes", this, SLOT(edit_stereotypes()));
+      id = ed->insertItem("Edit default stereotypes", this, SLOT(edit_stereotypes()));
       ed->setWhatsThis(id, "to set the default stereotypes list");
       ed->setItemEnabled(id, writable);
       
       ed->insertSeparator();
       
-      id = ed->insertItem("edit class settings", this, SLOT(edit_class_settings()));
+      id = ed->insertItem("Edit class settings", this, SLOT(edit_class_settings()));
       ed->setWhatsThis(id, "to set the sub classes settings");
       ed->setItemEnabled(id, writable);
       
-      id = ed->insertItem("edit drawing settings", this, SLOT(edit_drawing_settings()));
+      id = ed->insertItem("Edit drawing settings", this, SLOT(edit_drawing_settings()));
       ed->setWhatsThis(id, "to set how the sub <em>diagrams</em>'s items must be drawed");
       ed->setItemEnabled(id, writable);
     }

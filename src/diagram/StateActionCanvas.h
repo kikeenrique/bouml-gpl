@@ -77,6 +77,9 @@ class StateActionCanvas : public QObject, public DiagramCanvas {
     virtual aCorner on_resize_point(const QPoint & p);
     virtual void resize(aCorner c, int dx, int dy);
     
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &);
+    
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;
     static StateActionCanvas * read(char * &, UmlCanvas *, char *);
     virtual void history_save(QBuffer &) const;

@@ -123,12 +123,12 @@ void ClassInstanceDialog::menu_class() {
   int index = list.findIndex(edtype->currentText().stripWhiteSpace());
   
   if (index != -1)
-    m.insertItem("select in browser", 0);
+    m.insertItem("Select in browser", 0);
   
   BrowserNode * bn = BrowserView::selected_item();
   
   if ((bn->get_type() == UmlClass) && !bn->deletedp())
-    m.insertItem("choose class selected in browser", 1);
+    m.insertItem("Choose class selected in browser", 1);
   else
     bn = 0;
   

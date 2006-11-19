@@ -81,7 +81,7 @@ void ClassDiagramView::menu(const QPoint& p) {
 	  (((BrowserNode *) child)->get_type() == UmlClass) &&
 	  (drawn[(BrowserNode *) child] == 0)) {
 	// not already shown
-	m.insertItem("add classes of the selected class view", 19);
+	m.insertItem("Add classes of the selected class view", 19);
 	m.insertSeparator();
 	break;
       }

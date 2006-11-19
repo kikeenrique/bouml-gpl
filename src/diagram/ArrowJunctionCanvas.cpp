@@ -132,9 +132,9 @@ void ArrowJunctionCanvas::menu(const QPoint&) {
   if (lines.at(0)->may_join()) {
     QPopupMenu m;
     
-    m.insertItem(new MenuTitle("line break", m.font()), -1);
+    m.insertItem(new MenuTitle("Line break", m.font()), -1);
     m.insertSeparator();
-    m.insertItem("remove from view", 0);
+    m.insertItem("Remove from view", 0);
     
     switch (m.exec(QCursor::pos())) {
     case 0:

@@ -581,26 +581,26 @@ void ComponentCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 2);
+  m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
-  m.insertItem("edit component", 3);
+  m.insertItem("Edit component", 3);
   m.insertSeparator();
-  m.insertItem("select in browser", 4);
+  m.insertItem("Select in browser", 4);
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable())
-    m.insertItem("set associated diagram",6);
+    m.insertItem("Set associated diagram",6);
   m.insertSeparator();
-  m.insertItem("remove from view", 7);
+  m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
-    m.insertItem("delete from model", 8);
+    m.insertItem("Delete from model", 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlComponent, 10))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -657,6 +657,42 @@ void ComponentCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+bool ComponentCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void ComponentCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<StateSpec> st(3);
+  QArray<ColorSpec> co(1);
+  Uml3States draw_component_as_icon;
+  Uml3States show_component_req_prov;
+  Uml3States show_component_rea;
+  UmlColor itscolor;
+  
+  st[0].set("drawn as icon", &draw_component_as_icon);
+  st[1].set("show required and provided interfaces", &show_component_req_prov);
+  st[2].set("show realizations", &show_component_rea);
+  co[0].set("component color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  
+  if (dialog.exec() == QDialog::Accepted) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      if (st[0].name != 0)
+	((ComponentCanvas *) it.current())->settings.draw_component_as_icon = draw_component_as_icon;
+      if (st[1].name != 0)
+	((ComponentCanvas *) it.current())->settings.show_component_req_prov = show_component_req_prov;
+      if (st[2].name != 0)
+	((ComponentCanvas *) it.current())->settings.show_component_rea = show_component_rea;
+      if (co[0].name != 0)
+	((ComponentCanvas *) it.current())->itscolor = itscolor;
+      ((ComponentCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }
 }
 
 const char * ComponentCanvas::may_start(UmlCode & l) const {

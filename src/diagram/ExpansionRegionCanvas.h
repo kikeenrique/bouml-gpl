@@ -96,6 +96,9 @@ class ExpansionRegionCanvas : public QObject, public ActivityContainerCanvas {
     virtual void history_load(QBuffer &);
     virtual void history_hide();
     
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &);
+    
   private slots:
     void modified();	// canvas must be updated
     void deleted();

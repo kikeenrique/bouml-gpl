@@ -261,22 +261,22 @@ void ExpansionNodeCanvas::menu(const QPoint &) {
   
   m.insertItem(new MenuTitle(s, m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 2);
+  m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
-  m.insertItem("edit expansion node", 3);
+  m.insertItem("Edit expansion node", 3);
   m.insertSeparator();
-  m.insertItem("select in browser", 4);
+  m.insertItem("Select in browser", 4);
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable())
-    m.insertItem("delete from model", 8);
+    m.insertItem("Delete from model", 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlExpansionNode, 10))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -295,6 +295,7 @@ void ExpansionNodeCanvas::menu(const QPoint &) {
 
       SettingsDialog dialog(0, &co, FALSE, TRUE);
       
+      dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();	// call package_modified()
     }
@@ -320,6 +321,29 @@ void ExpansionNodeCanvas::menu(const QPoint &) {
   }
   
   package_modified();
+}
+
+bool ExpansionNodeCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void ExpansionNodeCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<ColorSpec> co(1);
+  UmlColor itscolor;
+  
+  co[0].set("expansion node color", &itscolor);
+  
+  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      ((ExpansionNodeCanvas *) it.current())->itscolor = itscolor;
+      ((ExpansionNodeCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }
 }
 
 const char * ExpansionNodeCanvas::may_start(UmlCode & l) const {

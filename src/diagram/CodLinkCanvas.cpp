@@ -104,21 +104,21 @@ void CodLinkCanvas::menu(const QPoint&) {
   
   QPopupMenu m;
   
-  m.insertItem(new MenuTitle("link", m.font()), -1);
+  m.insertItem(new MenuTitle("Link", m.font()), -1);
   m.insertSeparator();
   m.insertItem(QString("add messages to ") + from->get_full_name(), 1);
   m.insertItem(QString("add messages to ") + to->get_full_name(), 2);
   m.insertSeparator();
-  m.insertItem("edit its messages", 3);
-  m.insertItem("edit all the messages", 4);
+  m.insertItem("Edit its messages", 3);
+  m.insertItem("Edit all the messages", 4);
   m.insertSeparator();
-  m.insertItem("select linked items", 7);
+  m.insertItem("Select linked items", 7);
   m.insertSeparator();
   if (!new_dirs) {
-    m.insertItem("edit drawing settings", 5);
+    m.insertItem("Edit drawing settings", 5);
     m.insertSeparator();
   }
-  m.insertItem("remove from view", 6);
+  m.insertItem("Remove from view", 6);
   
   switch (m.exec(QCursor::pos())) {
   case 1:

@@ -31,11 +31,15 @@
 #include <qlabel.h>
 #include <qcombobox.h> 
 #include <qpushbutton.h>
+#include <qpopupmenu.h>
+#include <qgrid.h>
+#include <qcursor.h>
 
 #include "InstanceDialog.h"
 #include "Instance.h"
 #include "DialogUtil.h"
 #include "UmlDesktop.h"
+#include "BrowserView.h"
 
 QSize InstanceDialog::previous_size;
 
@@ -45,31 +49,33 @@ InstanceDialog::InstanceDialog(Instance * i, const char * kind,
   setCaption(caption);
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
-  QHBoxLayout * hbox;
-  QLabel * lbl1;
-  QLabel * lbl2;
   
   vbox->setMargin(5);
   
-  hbox = new QHBoxLayout(vbox); 
-  hbox->setMargin(5);
-  hbox->addWidget(lbl1 = new QLabel("name : ", this));
-  edname = new LineEdit(inst->get_name(), this);
-  hbox->addWidget(edname);
+  QGrid * grid = new QGrid(2, this);
   
-  hbox = new QHBoxLayout(vbox); 
-  hbox->setMargin(5);
-  hbox->addWidget(lbl2 = new QLabel(kind, this));
-  edtype = new QComboBox(FALSE, this);
+  vbox->addWidget(grid);
+  new QLabel("name : ", grid);
+  edname = new LineEdit(inst->get_name(), grid);
+  
+  new QLabel("", grid);
+  new QLabel("", grid);
+  
+  SmallPushButton * b = new SmallPushButton(kind, grid);
+  
+  connect(b, SIGNAL(clicked()), this, SLOT(menu_type()));
+  
+  edtype = new QComboBox(FALSE, grid);
   inst->get_types(nodes);
   nodes.full_names(list);
   edtype->insertStringList(list);
   edtype->setCurrentItem(nodes.find(inst->get_type()));
-  hbox->addWidget(edtype);
   
-  same_width(lbl1, lbl2);
+  new QLabel("", grid);
+  new QLabel("", grid);
   
-  hbox = new QHBoxLayout(vbox); 
+  QHBoxLayout * hbox = new QHBoxLayout(vbox); 
+  
   hbox->setMargin(5);
   QPushButton * accept = new QPushButton("&OK", this);
   QPushButton * cancel = new QPushButton("&Cancel", this);
@@ -93,6 +99,35 @@ void InstanceDialog::polish() {
 
 InstanceDialog::~InstanceDialog() {
   previous_size = size();
+}
+
+void InstanceDialog::menu_type() {
+  QPopupMenu m(0);
+
+  m.insertItem("Choose", -1);
+  m.insertSeparator();
+  
+  int index = list.findIndex(edtype->currentText().stripWhiteSpace());
+  
+  if (index != -1)
+    m.insertItem("Select in browser", 0);
+  
+  BrowserNode * bn = BrowserView::selected_item();
+    
+  if ((bn->get_type() == UmlClass) && !bn->deletedp())
+    m.insertItem("Choose class selected in browser", 1);
+  else
+    bn = 0;
+  
+  if ((index != -1) || (bn != 0)) {
+    switch (m.exec(QCursor::pos())) {
+    case 0:
+      nodes.at(index)->select_in_browser();
+      break;
+    case 1:
+      edtype->setCurrentItem(list.findIndex(bn->full_name(TRUE)));
+    }
+  }
 }
 
 void InstanceDialog::accept() {

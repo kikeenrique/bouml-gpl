@@ -187,28 +187,28 @@ void BrowserInterruptibleActivityRegion::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("add nested interruptible activity region", 0),
+      m.setWhatsThis(m.insertItem("Add nested interruptible activity region", 0),
 		     "to add a nested <em>interruptible activity region</em>");
-      m.setWhatsThis(m.insertItem("add expansion region", 1),
+      m.setWhatsThis(m.insertItem("Add expansion region", 1),
 		     "to add a nested <em>expansion region</em>");
 #ifndef WIN32
 #warning partition
 #endif
       /*
-      m.setWhatsThis(m.insertItem("add partition", 3),
+      m.setWhatsThis(m.insertItem("Add partition", 3),
 		     "to add a <em>Partition</em>");
 		     */
-      m.setWhatsThis(m.insertItem("add activity action", 6),
+      m.setWhatsThis(m.insertItem("Add activity action", 6),
 		     "to add an <em>activity action</em> to the <em>region</em>");
-      m.setWhatsThis(m.insertItem("add object node", 7),
+      m.setWhatsThis(m.insertItem("Add object node", 7),
 		     "to add an <em>activity object node</em> to the <em>region</em>");
       m.insertSeparator();
     }
-    m.setWhatsThis(m.insertItem("edit", 4),
+    m.setWhatsThis(m.insertItem("Edit", 4),
 		   "to edit the <em>interruptible activity region</em>, \
 a double click with the left mouse button does the same thing");
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("duplicate", 5),
+      m.setWhatsThis(m.insertItem("Duplicate", 5),
 		     "to copy the <em>interruptible activity region</em> in a new one");
       
       item_above = (BrowserNode *) parent()->firstChild();
@@ -227,17 +227,17 @@ a double click with the left mouse button does the same thing");
       if ((item_above != 0) &&
 	  ((item_above->get_type() == UmlInterruptibleActivityRegion) ||
 	  (item_above->get_type() == UmlExpansionRegion)))
-	m.setWhatsThis(m.insertItem("set it nested in region above", 11),
+	m.setWhatsThis(m.insertItem("Set it nested in region above", 11),
 		       "to set it a <em>sub region</em> of the <em>region</em> above");
       
       if ((((BrowserNode *) parent())->get_type() == UmlInterruptibleActivityRegion) ||
 	  (((BrowserNode *) parent())->get_type() == UmlExpansionRegion))
-	m.setWhatsThis(m.insertItem("extract it from current parent region", 12),
+	m.setWhatsThis(m.insertItem("Extract it from current parent region", 12),
 		       "to stop to be nested in current parent region");
       m.insertSeparator();
 
       if (edition_number == 0)
-	m.setWhatsThis(m.insertItem("delete", 8),
+	m.setWhatsThis(m.insertItem("Delete", 8),
 		       "to delete the <em>interruptible activity region</em>. \
 Note that you can undelete it after");
     }
@@ -245,18 +245,18 @@ Note that you can undelete it after");
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("undelete", 9),
+    m.setWhatsThis(m.insertItem("Undelete", 9),
 		   "to undelete the <em>interruptible activity region</em>");
  
     QListViewItem * child;
   
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("undelete recursively", 10),
+	m.setWhatsThis(m.insertItem("Undelete recursively", 10),
 		       "undelete the interruptible activity region and its children");
 	break;
       }

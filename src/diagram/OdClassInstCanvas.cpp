@@ -328,18 +328,18 @@ void OdClassInstCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(full_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 2);
+  m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
-  m.insertItem("edit", 3);
+  m.insertItem("Edit", 3);
   m.insertSeparator();
-  m.insertItem("select class in browser", 4);
+  m.insertItem("Select class in browser", 4);
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
-  m.insertItem("remove from view", 6);
+  m.insertItem("Remove from view", 6);
   
   switch (m.exec(QCursor::pos())) {
   case 0:
@@ -360,6 +360,7 @@ void OdClassInstCanvas::menu(const QPoint&) {
 
       SettingsDialog dialog(&st, &co, FALSE, TRUE);
       
+      dialog.raise();
       if (dialog.exec() != QDialog::Accepted)
 	return;
       modified();	// call package_modified
@@ -380,6 +381,36 @@ void OdClassInstCanvas::menu(const QPoint&) {
     package_modified();
   default:
     return;
+  }
+}
+
+bool OdClassInstCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void OdClassInstCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<StateSpec> st(1);
+  QArray<ColorSpec> co(1);
+  Uml3States write_horizontally;
+  UmlColor itscolor;
+  
+  st[0].set("write name:type \nhorizontally", &write_horizontally);
+  co[0].set("class instance color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      if (st[0].name != 0)
+	((OdClassInstCanvas *) it.current())->write_horizontally =
+	  write_horizontally;
+      if (co[0].name != 0)
+	((OdClassInstCanvas *) it.current())->itscolor = itscolor;
+      ((OdClassInstCanvas *) it.current())->modified();	// call package_modified()
+    }
   }
 }
 

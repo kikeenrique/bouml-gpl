@@ -60,6 +60,9 @@ class CodClassInstCanvas : public QObject, public CodObjCanvas, public ClassInst
     virtual bool copyable() const;
     virtual void history_load(QBuffer &);
     virtual void history_hide();
+    
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &);
 
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static CodClassInstCanvas * read(char * &, UmlCanvas * canvas, char *);

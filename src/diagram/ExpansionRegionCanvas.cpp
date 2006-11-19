@@ -401,29 +401,29 @@ void ExpansionRegionCanvas::menu(const QPoint&) {
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("add expansion node", 9);
+    m.insertItem("Add expansion node", 9);
     m.insertSeparator();
   }
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 2);
+  m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
-  m.insertItem("edit expansion region", 3);
+  m.insertItem("Edit expansion region", 3);
   m.insertSeparator();
-  m.insertItem("select in browser", 4);
+  m.insertItem("Select in browser", 4);
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable())
-    m.insertItem("set associated diagram",6);
+    m.insertItem("Set associated diagram",6);
   m.insertSeparator();
-  m.insertItem("remove from view", 7);
+  m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
-    m.insertItem("delete from model", 8);
+    m.insertItem("Delete from model", 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlExpansionRegion, 10))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -442,6 +442,7 @@ void ExpansionRegionCanvas::menu(const QPoint&) {
 
       SettingsDialog dialog(0, &co, FALSE, TRUE);
       
+      dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();	// call package_modified()
     }
@@ -480,6 +481,29 @@ void ExpansionRegionCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+bool ExpansionRegionCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void ExpansionRegionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<ColorSpec> co(1);
+  UmlColor itscolor;
+  
+  co[0].set("expansion region color", &itscolor);
+  
+  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      ((ExpansionRegionCanvas *) it.current())->itscolor = itscolor;
+      ((ExpansionRegionCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }
 }
 
 const char * ExpansionRegionCanvas::may_start(UmlCode & l) const {

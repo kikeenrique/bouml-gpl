@@ -69,6 +69,9 @@ class ParameterCanvas : public QObject, public DiagramCanvas {
     void do_change_scale();
     
     bool activity_selected() const;
+    
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &);
    
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static ParameterCanvas * read(char * &, UmlCanvas *, char *, ActivityCanvas *);

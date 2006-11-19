@@ -56,6 +56,10 @@ class SdClassInstCanvas : public QObject, public SdObjCanvas, public ClassInstCa
     virtual void menu(const QPoint&);
     virtual void history_load(QBuffer &);
     virtual void history_hide();
+    
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &);
+    
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static SdClassInstCanvas * read(char * &, UmlCanvas * canvas, char *);
     

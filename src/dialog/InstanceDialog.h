@@ -53,6 +53,7 @@ class InstanceDialog : public QDialog {
     virtual ~InstanceDialog();
   
   protected slots:
+    void menu_type();
     virtual void polish();
     void accept();
 };

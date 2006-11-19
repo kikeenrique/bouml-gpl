@@ -84,9 +84,9 @@ void HubCanvas::open() {
 void HubCanvas::menu(const QPoint&) {
   QPopupMenu m;
   
-  m.insertItem(new MenuTitle("network connexion", m.font()), -1);
+  m.insertItem(new MenuTitle("Network connexion", m.font()), -1);
   m.insertSeparator();
-  m.insertItem("remove from view", 0);
+  m.insertItem("Remove from view", 0);
   
   switch (m.exec(QCursor::pos())) {
   case 0:

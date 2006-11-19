@@ -176,7 +176,7 @@ static void make_clsubm(QPopupMenu & m, QPopupMenu & sm,
       m.insertSeparator();
       need_sep = FALSE;
     }
-    m.setWhatsThis(m.insertItem("select the " + s + " class", bias+1),
+    m.setWhatsThis(m.insertItem("Select the " + s + " class", bias+1),
 		   "to select the " + s + " <em>class</em>");
   }
   else if (n > 20) {
@@ -184,7 +184,7 @@ static void make_clsubm(QPopupMenu & m, QPopupMenu & sm,
       m.insertSeparator();
       need_sep = FALSE;
     }
-    m.setWhatsThis(m.insertItem("select a " + s + " class", bias),
+    m.setWhatsThis(m.insertItem("Select a " + s + " class", bias),
 		   "to select a " + s + " <em>class</em>");
   }
   else if (n != 0) {
@@ -192,14 +192,14 @@ static void make_clsubm(QPopupMenu & m, QPopupMenu & sm,
       m.insertSeparator();
       need_sep = FALSE;
     }
-    sm.insertItem(new MenuTitle("choose class", m.font()), -1);
+    sm.insertItem(new MenuTitle("Choose class", m.font()), -1);
     sm.insertSeparator();
 
     for (it = l.begin(), n = bias+1; it != l.end(); ++it)
       if (!(*it)->deletedp())
 	sm.insertItem((*it)->full_name(TRUE), n++);
 	    
-    m.setWhatsThis(m.insertItem("select a " + s + " class", &sm),
+    m.setWhatsThis(m.insertItem("Select a " + s + " class", &sm),
 		   "to select a " + s + " <em>class</em>");
   }
 }
@@ -245,10 +245,10 @@ void BrowserComponent::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("add nested component", 4),
+      m.setWhatsThis(m.insertItem("Add nested component", 4),
 		     "to add an <em>nested component</em> to the <em>component</em>");
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("edit", 0),
+      m.setWhatsThis(m.insertItem("Edit", 0),
 		     "to edit the <em>component</em>, \
 a double click with the left mouse button does the same thing");
       
@@ -268,44 +268,44 @@ a double click with the left mouse button does the same thing");
       if ((item_above != 0) && 
 	  (item_above->get_type() == UmlComponent) &&
 	  !((BrowserNode *) item_above)->wrong_child_name(get_name(), UmlClass, TRUE, FALSE))
-	m.setWhatsThis(m.insertItem(QString("set it nested in ")
+	m.setWhatsThis(m.insertItem(QString("Set it nested in ")
 				    + item_above->get_name(),
 				    5),
 		       "to set it a <em>sub component</em> of the <em>component</em> above");
       if (nestedp() &&
 	  !((BrowserNode *) parent()->parent())->wrong_child_name(get_name(), UmlClass, TRUE, FALSE))
-	m.setWhatsThis(m.insertItem(QString("extract it from ")
+	m.setWhatsThis(m.insertItem(QString("Extract it from ")
 				    + ((BrowserNode *) parent())->get_name(),
 				    6),
 		       "to stop to be a <em>sub component</em> of its <em>super component</em>");
 
       if (!is_read_only && (edition_number == 0)) {
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("delete", 1),
+	m.setWhatsThis(m.insertItem("Delete", 1),
 		       "to delete the <em>component</em>. \
 Note that you can undelete it after");
       }
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("referenced by", 3),
+    m.setWhatsThis(m.insertItem("Referenced by", 3),
 		   "to know who reference the <i>component</i> \
 through a relation");
     mark_menu(m, "component", 90);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("undelete", 2),
+    m.setWhatsThis(m.insertItem("Undelete", 2),
 		   "to undelete the <em>component</em>");
    
     QListViewItem * child;
     
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("undelete recursively", 22),
+	m.setWhatsThis(m.insertItem("Undelete recursively", 22),
 		       "undelete the <em>component</em> and its \
 nexted <em>components</em> and <em>relations</em> \
 (except if the component at the other side is also deleted)");

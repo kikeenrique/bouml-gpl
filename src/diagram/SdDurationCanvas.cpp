@@ -325,18 +325,18 @@ void SdDurationCanvas::menu(const QPoint & p) {
   
   m.insertItem(new MenuTitle("Activity bar", m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 2);
+  m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
-  m.insertItem("select linked items", 3);
+  m.insertItem("Select linked items", 3);
   m.insertSeparator();
-  m.insertItem("remove from view", 4);
+  m.insertItem("Remove from view", 4);
   m.insertSeparator();
-  m.insertItem("cut here", 5);
+  m.insertItem("Cut here", 5);
   if (!l.isEmpty())
-    m.insertItem("merge juxtaposed activity bars", 6);
+    m.insertItem("Merge juxtaposed activity bars", 6);
 
   switch (m.exec(QCursor::pos())) {
   case 0:
@@ -355,6 +355,7 @@ void SdDurationCanvas::menu(const QPoint & p) {
 
       SettingsDialog dialog(0, &co, FALSE, TRUE);
       
+      dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();
       return;
@@ -380,6 +381,29 @@ void SdDurationCanvas::menu(const QPoint & p) {
   }
   
   canvas()->update();
+}
+
+bool SdDurationCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void SdDurationCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<ColorSpec> co(1);
+  UmlColor itscolor;
+  
+  co[0].set("duration color", &itscolor);
+  
+  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      ((SdDurationCanvas *) it.current())->itscolor = itscolor;
+      ((SdDurationCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }
 }
 
 aCorner SdDurationCanvas::on_resize_point(const QPoint & p) {

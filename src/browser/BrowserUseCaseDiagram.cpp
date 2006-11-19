@@ -175,16 +175,16 @@ void BrowserUseCaseDiagram::menu() {
   m.insertItem(new MenuTitle(name, m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
-    m.setWhatsThis(m.insertItem("show", 0),
+    m.setWhatsThis(m.insertItem("Show", 0),
 		   "to show and edit the <em>use case diagram</em>");
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("edit", 1),
+      m.setWhatsThis(m.insertItem("Edit", 1),
 		     "to edit the <em>use case diagram</em>");
       if (!is_read_only) {
-	m.setWhatsThis(m.insertItem("edit drawing settings", 2),
+	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
 		       "to set how the <em>use case diagram</em>'s items must be drawed");
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("duplicate", 3),
+	m.setWhatsThis(m.insertItem("Duplicate", 3),
 		       "to duplicate the <em>use case diagram</em>");
 	if (edition_number == 0) {
 	  item_above = (BrowserNode *) parent()->firstChild();
@@ -216,7 +216,7 @@ void BrowserUseCaseDiagram::menu() {
 	    }
 	  }
 	  m.insertSeparator();
-	  m.setWhatsThis(m.insertItem("delete", 4),
+	  m.setWhatsThis(m.insertItem("Delete", 4),
 			 "to delete the <em>use case diagram</em>. \
 Note that you can undelete it after");
 	}
@@ -226,11 +226,11 @@ Note that you can undelete it after");
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("undelete", 5),
+    m.setWhatsThis(m.insertItem("Undelete", 5),
 		   "to undelete the <em>use case diagram</em>");
   
   int rank = m.exec(QCursor::pos());

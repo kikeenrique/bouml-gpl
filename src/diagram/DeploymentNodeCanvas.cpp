@@ -302,23 +302,23 @@ void DeploymentNodeCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit", 2);
+  m.insertItem("Edit", 2);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 3);
+  m.insertItem("Edit drawing settings", 3);
   m.insertSeparator();
-  m.insertItem("select node in browser", 4);
+  m.insertItem("Select node in browser", 4);
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
-  m.insertItem("set node associated diagram", 6);
+  m.insertItem("Set node associated diagram", 6);
   m.insertSeparator();
-  m.insertItem("remove from view", 7);
+  m.insertItem("Remove from view", 7);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlDeploymentNode, 10))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
 
   int rank = m.exec(QCursor::pos());
   
@@ -344,6 +344,7 @@ void DeploymentNodeCanvas::menu(const QPoint&) {
 
       SettingsDialog dialog(&st, &co, FALSE, TRUE);
       
+      dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();
       return;
@@ -372,6 +373,36 @@ void DeploymentNodeCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+bool DeploymentNodeCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void DeploymentNodeCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<StateSpec> st(1);
+  QArray<ColorSpec> co(1);
+  Uml3States write_horizontally;
+  UmlColor itscolor;
+  
+  st[0].set("write node instance \nhorizontally", &write_horizontally);
+  co[0].set("Node color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      if (st[0].name != 0)
+	((DeploymentNodeCanvas *) it.current())->write_horizontally =
+	  write_horizontally;
+      if (co[0].name != 0)
+	((DeploymentNodeCanvas *) it.current())->itscolor = itscolor;
+      ((DeploymentNodeCanvas *) it.current())->modified();	// call package_modified()
+    }
+  } 
 }
 
 const char * DeploymentNodeCanvas::may_start(UmlCode & l) const {

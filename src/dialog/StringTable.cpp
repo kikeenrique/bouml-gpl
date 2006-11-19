@@ -84,14 +84,14 @@ void StringTable::button_pressed(int row, int col, int, const QPoint &) {
     QPopupMenu m;
     m.insertItem(line, -1);
     m.insertSeparator();
-    m.insertItem("insert line before", 0);
-    m.insertItem("insert line after", 1);
+    m.insertItem("Insert line before", 0);
+    m.insertItem("Insert line after", 1);
     m.insertSeparator();
-    m.insertItem("delete line", 2);
+    m.insertItem("Delete line", 2);
     m.insertSeparator();
-    m.insertItem("copy line", 3);
-    m.insertItem("cut line", 4);
-    m.insertItem("paste line", 5);
+    m.insertItem("Copy line", 3);
+    m.insertItem("Cut line", 4);
+    m.insertItem("Paste line", 5);
     m.insertSeparator();
 
     QPopupMenu mv;
@@ -101,7 +101,7 @@ void StringTable::button_pressed(int row, int col, int, const QPoint &) {
       if (rank != row)
 	mv.insertItem(QString::number(rank + 1), 10 + rank);
     
-    m.insertItem("move line", &mv);
+    m.insertItem("Move line", &mv);
     
     switch (rank = m.exec(QCursor::pos())) {
     case 0:

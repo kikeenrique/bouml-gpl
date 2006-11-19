@@ -140,24 +140,24 @@ void BrowserComponentView::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
-      m.setWhatsThis(m.insertItem("new component diagram", 0),
+      m.setWhatsThis(m.insertItem("New component diagram", 0),
 		     "to add a <em>component diagram</em>");
-      m.setWhatsThis(m.insertItem("new component", 1),
+      m.setWhatsThis(m.insertItem("New component", 1),
 		     "to add a <em>component</em>");
       m.insertSeparator();
     }
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("edit", 3),
+      m.setWhatsThis(m.insertItem("Edit", 3),
 		     "to edit the <em>component view</em>");
       m.insertSeparator();
       if (!is_read_only) {
-	/*m.setWhatsThis(m.insertItem("edit component settings", 4),
+	/*m.setWhatsThis(m.insertItem("Edit component settings", 4),
 		       "to set the sub components's settings");*/
-	m.setWhatsThis(m.insertItem("edit drawing settings", 5),
+	m.setWhatsThis(m.insertItem("Edit drawing settings", 5),
 		       "to set how the sub <em>component diagrams</em>'s items must be drawed");
 	if (edition_number == 0) {
 	  m.insertSeparator();
-	  m.setWhatsThis(m.insertItem("delete", 6),
+	  m.setWhatsThis(m.insertItem("Delete", 6),
 			 "to delete the <em>component view</em> and its sub items. \
 Note that you can undelete them after");
 	}
@@ -168,14 +168,14 @@ Note that you can undelete them after");
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("undelete", 7),
+    m.setWhatsThis(m.insertItem("Undelete", 7),
 		   "undelete the <em>component view</em>. \
 Do not undelete its sub items");
-    m.setWhatsThis(m.insertItem("undelete recursively", 8),
+    m.setWhatsThis(m.insertItem("Undelete recursively", 8),
 		   "undelete the <em>component view</em> and its sub items");
   }
   

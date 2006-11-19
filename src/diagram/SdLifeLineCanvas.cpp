@@ -197,8 +197,8 @@ void SdLifeLineCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle("Message", m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
 
   int index = m.exec(QCursor::pos());
   

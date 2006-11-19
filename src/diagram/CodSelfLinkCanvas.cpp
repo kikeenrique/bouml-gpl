@@ -233,16 +233,16 @@ void CodSelfLinkCanvas::open() {
 void CodSelfLinkCanvas::menu(const QPoint&) {
   QPopupMenu m;
   
-  m.insertItem(new MenuTitle("self link", m.font()), -1);
+  m.insertItem(new MenuTitle("Self link", m.font()), -1);
   m.insertSeparator();
-  m.insertItem("add messages", 1);
+  m.insertItem("Add messages", 1);
   m.insertSeparator();
-  m.insertItem("edit its messages", 2);
-  m.insertItem("edit all the messages", 3);
+  m.insertItem("Edit its messages", 2);
+  m.insertItem("Edit all the messages", 3);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 4);
+  m.insertItem("Edit drawing settings", 4);
   m.insertSeparator();
-  m.insertItem("remove from view",5);
+  m.insertItem("Remove from view",5);
   
   switch (m.exec(QCursor::pos())) {
   case 1:

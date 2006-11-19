@@ -129,7 +129,7 @@ AttributeDialog::AttributeDialog(AttributeData * a)
 	    break;
 	     
 	if (attribute_st_rank == n) {
-	  edstereotype->insertItem("attribute");
+	  edstereotype->insertItem("Attribute");
 	  n += 1;
 	}
 	
@@ -438,7 +438,7 @@ void AttributeDialog::menu_type() {
   int index = list.findIndex(edtype->currentText().stripWhiteSpace());
   
   if (index != -1)
-    m.insertItem("select in browser", 0);
+    m.insertItem("Select in browser", 0);
   
   BrowserNode * bn = 0;
   
@@ -446,7 +446,7 @@ void AttributeDialog::menu_type() {
     bn = BrowserView::selected_item();
     
     if ((bn->get_type() == UmlClass) && !bn->deletedp())
-      m.insertItem("choose class selected in browser", 1);
+      m.insertItem("Choose class selected in browser", 1);
     else
       bn = 0;
   }

@@ -175,11 +175,11 @@ void BrowserFlow::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!in_edition()) {
-      m.setWhatsThis(m.insertItem("edit", 0),
+      m.setWhatsThis(m.insertItem("Edit", 0),
 		     "to edit the <em>flow</em>, \
 a double click with the left mouse button does the same thing");
       if (!is_read_only && (edition_number == 0)) {
-	m.setWhatsThis(m.insertItem("delete", 2),
+	m.setWhatsThis(m.insertItem("Delete", 2),
 		       "to delete the <em>flow</em>. \
 Note that you can undelete it after");
       }
@@ -191,17 +191,17 @@ Note that you can undelete it after");
     if (s.isEmpty())
       s = stringify(def->get_end_node()->get_type());
     
-    m.setWhatsThis(m.insertItem("select " + s, 7),
+    m.setWhatsThis(m.insertItem("Select " + s, 7),
 		   "to select the destination");
     mark_menu(m, "flow", 90);
     if ((edition_number == 0) 
 	&& Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("undelete", 3),
+    m.setWhatsThis(m.insertItem("Undelete", 3),
 		   "undelete the <em>flow</em> \
 (except if the other side is also deleted)");
   

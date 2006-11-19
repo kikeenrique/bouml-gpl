@@ -83,6 +83,9 @@ class DeploymentNodeCanvas
     virtual BrowserNodeList & get_types(BrowserNodeList & r) const;
     virtual void set_type(BrowserNode * t);
     
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &);
+    
   private slots:
     void modified();	// canvas must be updated
     void deleted();	// the node/package is deleted

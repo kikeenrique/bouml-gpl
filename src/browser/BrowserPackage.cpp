@@ -365,69 +365,69 @@ void BrowserPackage::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
-      m.setWhatsThis(m.insertItem("new package", 0),
+      m.setWhatsThis(m.insertItem("New package", 0),
 		     "to add a new sub <em>package</em>");
-      m.setWhatsThis(m.insertItem("new use case view", 1),
+      m.setWhatsThis(m.insertItem("New use case view", 1),
 		     "to add a new <em>use case view</em>");
-      m.setWhatsThis(m.insertItem("new class view", 2),
+      m.setWhatsThis(m.insertItem("New class view", 2),
 		     "to add a new <em>class view</em>");
-      m.setWhatsThis(m.insertItem("new component view", 3),
+      m.setWhatsThis(m.insertItem("New component view", 3),
 		     "to add a new <em>class view</em>");
-      m.setWhatsThis(m.insertItem("new deployment view", 4),
+      m.setWhatsThis(m.insertItem("New deployment view", 4),
 		     "to add a new <em>deployment view</em>");
-      m.setWhatsThis(m.insertItem("import project", 14),
+      m.setWhatsThis(m.insertItem("Import project", 14),
 		     "to import the contents of a <em>project</em> under \
 the current <em>package</em>");
       m.insertSeparator();
       m.insertSeparator();
     }
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("edit", 5),
+      m.setWhatsThis(m.insertItem("Edit", 5),
 		     "to edit the package");
       if (!is_read_only) {
 	m.insertSeparator();
 	if (this == BrowserView::get_project()) {
-	  m.setWhatsThis(m.insertItem("edit generation settings", 8),
+	  m.setWhatsThis(m.insertItem("Edit generation settings", 8),
 			 "to set how an Uml type is compiled in C++ etc..., \
 to set the default parameter passing, to set the default code \
 produced for an attribute etc..., and to set the root directories");
-	  m.setWhatsThis(m.insertItem("edit default stereotypes", 6),
+	  m.setWhatsThis(m.insertItem("Edit default stereotypes", 6),
 			 "to set the default stereotypes list");
 	}
-	m.setWhatsThis(m.insertItem("edit class settings", 7),
+	m.setWhatsThis(m.insertItem("Edit class settings", 7),
 		       "to set the sub classes's settings");
-	m.setWhatsThis(m.insertItem("edit drawing settings", 9),
+	m.setWhatsThis(m.insertItem("Edit drawing settings", 9),
 		       "to set how the sub <em>diagrams</em>'s items must be drawed");
 	if (this == BrowserView::get_project()) {
-	  m.insertItem("import", &importm);
-	  m.setWhatsThis(importm.insertItem("generation settings", 28),
+	  m.insertItem("Import", &importm);
+	  m.setWhatsThis(importm.insertItem("Generation settings", 28),
 			 "to import the generation settings from an other project, \
 note that the root directories are not imported");
-	  m.setWhatsThis(importm.insertItem("default stereotypes", 29),
+	  m.setWhatsThis(importm.insertItem("Default stereotypes", 29),
 			 "to import the default stereotypes from an other project");
 	}
 	if ((edition_number == 0) && (this != BrowserView::get_project())) {
 	  m.insertSeparator();
-	  m.setWhatsThis(m.insertItem("delete", 10),
+	  m.setWhatsThis(m.insertItem("Delete", 10),
 			 "to delete the <em>package</em> and its sub items. \
 Note that you can undelete it after");
 	}
       }
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("referenced by", 13),
+    m.setWhatsThis(m.insertItem("Referenced by", 13),
 		   "to know who reference the <i>package</i> \
 through a relation");
     mark_menu(m, "package", 90);
     m.insertSeparator();
-    m.insertItem("generate", &genm);
+    m.insertItem("Generate", &genm);
     genm.insertItem("C++", 20);
     genm.insertItem("Java", 21);
     genm.insertItem("Idl", 22);
     
     if (edition_number == 0) {
       if (!is_read_only) {
-	m.insertItem("reverse", &revm);
+	m.insertItem("Reverse", &revm);
 	
 	revm.insertItem("C++", 24);
 	revm.insertItem("Java", 25);
@@ -438,14 +438,14 @@ through a relation");
 			    (this == BrowserView::get_project()) ? UmlProject : UmlPackage,
 			    100)) {
 	m.insertSeparator();
-	m.insertItem("tool", &toolm);
+	m.insertItem("Tool", &toolm);
       }
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("undelete", 11),
+    m.setWhatsThis(m.insertItem("Undelete", 11),
 		   "undelete the <em>package</em>. Do not undelete its sub items");
-    m.setWhatsThis(m.insertItem("undelete recursively", 12),
+    m.setWhatsThis(m.insertItem("Undelete recursively", 12),
 		   "undelete the <em>package</em> and its sub items");
   }
   
@@ -1418,8 +1418,8 @@ void BrowserPackage::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	m.insertItem(new MenuTitle(bn->get_name() + QString(" moving"),
 				   m.font()), -1);
 	m.insertSeparator();
-	m.insertItem("in " + QString(get_name()), 1);
-	m.insertItem("after " + QString(get_name()), 2);
+	m.insertItem("In " + QString(get_name()), 1);
+	m.insertItem("After " + QString(get_name()), 2);
 	
 	switch (m.exec(QCursor::pos())) {
 	case 1:

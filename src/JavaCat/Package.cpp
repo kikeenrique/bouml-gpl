@@ -848,7 +848,7 @@ void Package::menu() {
   m.insertSeparator();
   
   if (parent() == root) {
-    m.insertItem("rename", 2);
+    m.insertItem("Rename", 2);
     m.insertSeparator();
   }
   
@@ -861,14 +861,14 @@ void Package::menu() {
     if (!((BrowserNode *) child)->isa_package()) {
       if (! have_classe) {
 	have_classe = TRUE;
-	m.insertItem("send its classes", 0);
+	m.insertItem("Send its classes", 0);
 	if (have_package)
 	  break;
       }
     }
     else if (! have_package) {
       have_package = TRUE;
-      m.insertItem("send its classes and classes of sub-packages", 1);
+      m.insertItem("Send its classes and classes of sub-packages", 1);
       if (have_classe)
 	break;
     }

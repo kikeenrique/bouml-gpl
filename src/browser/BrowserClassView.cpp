@@ -160,34 +160,34 @@ void BrowserClassView::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
-      m.setWhatsThis(m.insertItem("new class diagram", 0),
+      m.setWhatsThis(m.insertItem("New class diagram", 0),
 		     "to add a <em>class diagram</em>");
-      m.setWhatsThis(m.insertItem("new sequence diagram", 1),
+      m.setWhatsThis(m.insertItem("New sequence diagram", 1),
 		     "to add a <em>sequence diagram</em>");
-      m.setWhatsThis(m.insertItem("new collaboration diagram", 2),
+      m.setWhatsThis(m.insertItem("New collaboration diagram", 2),
 		     "to add a <em>collaboration diagram</em>");
-      m.setWhatsThis(m.insertItem("new object diagram", 15),
+      m.setWhatsThis(m.insertItem("New object diagram", 15),
 		     "to add a <em>object diagram</em>");
-      m.setWhatsThis(m.insertItem("new class", 3),
+      m.setWhatsThis(m.insertItem("New class", 3),
 		     "to add a <em>class</em>");
-      m.setWhatsThis(m.insertItem("new state machine", 4),
+      m.setWhatsThis(m.insertItem("New state machine", 4),
 		     "to add a <em>state machine</em>");
-      m.setWhatsThis(m.insertItem("new activity", 16),
+      m.setWhatsThis(m.insertItem("New activity", 16),
 		     "to add an <em>activity</em>");
       m.insertSeparator();
     }
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("edit", 5),
+      m.setWhatsThis(m.insertItem("Edit", 5),
 		     "to edit the <em>class view</em>");
       if (!is_read_only) {
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("edit class settings", 6),
+	m.setWhatsThis(m.insertItem("Edit class settings", 6),
 		       "to set the sub classes's settings");
-	m.setWhatsThis(m.insertItem("edit drawing settings", 7),
+	m.setWhatsThis(m.insertItem("Edit drawing settings", 7),
 		       "to set how the sub <em>class diagrams</em>'s items must be drawed");
 	if (edition_number == 0) {
 	  m.insertSeparator();
-	  m.setWhatsThis(m.insertItem("delete", 8),
+	  m.setWhatsThis(m.insertItem("Delete", 8),
 			 "to delete the <em>class view</em> and its sub items. \
 Note that you can undelete them after");
 	}
@@ -195,7 +195,7 @@ Note that you can undelete them after");
     }
     mark_menu(m, "use case view", 90);
     m.insertSeparator();
-    m.insertItem("generate", &subm);
+    m.insertItem("Generate", &subm);
     subm.insertItem("C++", 11);
     subm.insertItem("Java", 12);
     subm.insertItem("Idl", 13);
@@ -203,20 +203,20 @@ Note that you can undelete them after");
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("undelete", 9),
+    m.setWhatsThis(m.insertItem("Undelete", 9),
 		   "undelete the <em>class view</em>. \
 Do not undelete its sub items");
-    m.setWhatsThis(m.insertItem("undelete recursively", 10),
+    m.setWhatsThis(m.insertItem("Undelete recursively", 10),
 		   "undelete the <em>class view</em> and its sub items");
   }
   
   if (associated_deployment_view != 0) {
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("select associated deployment view", 14),
+    m.setWhatsThis(m.insertItem("Select associated deployment view", 14),
 		   "to select the associated <em>deployment view</em>");
   }
   

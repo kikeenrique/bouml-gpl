@@ -180,30 +180,30 @@ void BrowserExpansionRegion::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("add expansion node", 0),
+      m.setWhatsThis(m.insertItem("Add expansion node", 0),
 		     "to add an <em>expansion node</em> to the <em>expansion region</em>");
-      m.setWhatsThis(m.insertItem("add nested expansion region", 1),
+      m.setWhatsThis(m.insertItem("Add nested expansion region", 1),
 		     "to add a nested <em>expansion region</em>");
-      m.setWhatsThis(m.insertItem("add interruptible activity region", 2),
+      m.setWhatsThis(m.insertItem("Add interruptible activity region", 2),
 		     "to add an <em>interruptible expansion region Region</em>");
 #ifndef WIN32
 #warning partition
 #endif
       /*
-      m.setWhatsThis(m.insertItem("add partition", 3),
+      m.setWhatsThis(m.insertItem("Add partition", 3),
 		     "to add a <em>Partition</em> to the <em>region</em>");
 		     */
-      m.setWhatsThis(m.insertItem("add activity action", 6),
+      m.setWhatsThis(m.insertItem("Add activity action", 6),
 		     "to add an <em>activity action</em> to the <em>region</em>");
-      m.setWhatsThis(m.insertItem("add object node", 7),
+      m.setWhatsThis(m.insertItem("Add object node", 7),
 		     "to add an <em>activity object node</em> to the <em>region</em>");
       m.insertSeparator();
     }
-    m.setWhatsThis(m.insertItem("edit", 4),
+    m.setWhatsThis(m.insertItem("Edit", 4),
 		   "to edit the <em>expansion region</em>, \
 a double click with the left mouse button does the same thing");
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("duplicate", 5),
+      m.setWhatsThis(m.insertItem("Duplicate", 5),
 		     "to copy the <em>expansion region</em> in a new one");
       
       
@@ -223,17 +223,17 @@ a double click with the left mouse button does the same thing");
       if ((item_above != 0) &&
 	  ((item_above->get_type() == UmlInterruptibleActivityRegion) ||
 	  (item_above->get_type() == UmlExpansionRegion)))
-	m.setWhatsThis(m.insertItem("set it nested in region above", 12),
+	m.setWhatsThis(m.insertItem("Set it nested in region above", 12),
 		       "to set it a <em>sub region</em> of the <em>region</em> above");
       
       if ((((BrowserNode *) parent())->get_type() == UmlInterruptibleActivityRegion) ||
 	  (((BrowserNode *) parent())->get_type() == UmlExpansionRegion))
-	m.setWhatsThis(m.insertItem("extract it from current parent region", 13),
+	m.setWhatsThis(m.insertItem("Extract it from current parent region", 13),
 		       "to stop to be nested in current parent region");
       m.insertSeparator();
 
       if (edition_number == 0)
-	m.setWhatsThis(m.insertItem("delete", 8),
+	m.setWhatsThis(m.insertItem("Delete", 8),
 		       "to delete the <em>expansion region</em>. \
 Note that you can undelete it after");
     }
@@ -241,18 +241,18 @@ Note that you can undelete it after");
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("undelete", 10),
+    m.setWhatsThis(m.insertItem("Undelete", 10),
 		   "to undelete the <em>expansion region</em>");
  
     QListViewItem * child;
   
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("undelete recursively", 11),
+	m.setWhatsThis(m.insertItem("Undelete recursively", 11),
 		       "undelete the expansion region and its children");
 	break;
       }

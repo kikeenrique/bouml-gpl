@@ -147,15 +147,15 @@ void GenerationSettingsDialog::init_cpp1() {
   edcpp_h_extension = new QComboBox(TRUE, htab);
   edcpp_h_extension->insertItem(GenerationSettings::cpp_h_extension);
   edcpp_h_extension->setCurrentItem(0);
-  edcpp_h_extension->insertItem("h");
-  edcpp_h_extension->insertItem("hh");
+  edcpp_h_extension->insertItem("H");
+  edcpp_h_extension->insertItem("Hh");
   
   new QLabel("    generated/reversed \n    source file extension : ", htab);
   edcpp_src_extension = new QComboBox(TRUE, htab);
   edcpp_src_extension->insertItem(GenerationSettings::cpp_src_extension);
   edcpp_src_extension->setCurrentItem(0);
-  edcpp_src_extension->insertItem("cpp");
-  edcpp_src_extension->insertItem("cc");
+  edcpp_src_extension->insertItem("Cpp");
+  edcpp_src_extension->insertItem("Cc");
 
   new QLabel("    #include with pathname : ", htab);
   cpp_include_with_path_cb = new QCheckBox(htab);
@@ -443,7 +443,7 @@ void GenerationSettingsDialog::init_java1() {
   edjava_extension = new QComboBox(TRUE, htab);
   edjava_extension->insertItem(GenerationSettings::java_extension);
   edjava_extension->setCurrentItem(0);
-  edjava_extension->insertItem("java");
+  edjava_extension->insertItem("Java");
 
   new QLabel("Class default \ndeclaration :", grid);
   edjava_class_decl = new MultiLineEdit(grid);
@@ -611,7 +611,7 @@ void GenerationSettingsDialog::init_idl1() {
   edidl_extension = new QComboBox(TRUE, htab);
   edidl_extension->insertItem(GenerationSettings::idl_extension);
   edidl_extension->setCurrentItem(0);
-  edidl_extension->insertItem("idl");
+  edidl_extension->insertItem("Idl");
 
   QGrid * grid = new QGrid(2, split);
   

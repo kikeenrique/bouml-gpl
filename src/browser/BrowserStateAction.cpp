@@ -168,30 +168,30 @@ void BrowserStateAction::menu() {
   m.insertItem(new MenuTitle(s, m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
-    m.setWhatsThis(m.insertItem("edit", 1),
+    m.setWhatsThis(m.insertItem("Edit", 1),
 		   "to edit the <em>" + s + "</em>, \
 a double click with the left mouse button does the same thing");
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("duplicate", 2),
+      m.setWhatsThis(m.insertItem("Duplicate", 2),
 		     "to copy the <em>" + s + "</em> in a new one");
       m.insertSeparator();
       if (edition_number == 0)
-	m.setWhatsThis(m.insertItem("delete", 3),
+	m.setWhatsThis(m.insertItem("Delete", 3),
 		       "to delete the <em>" + s + "</em>. \
 Note that you can undelete it after");
     }
-    m.setWhatsThis(m.insertItem("referenced by", 5),
+    m.setWhatsThis(m.insertItem("Referenced by", 5),
 		   "to know who reference the <i>" + s + "</i> \
 through a transition");
     mark_menu(m, s, 90);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("undelete", 4),
+    m.setWhatsThis(m.insertItem("Undelete", 4),
 		   "to undelete the <em>" + s + "</em>");
   }
   

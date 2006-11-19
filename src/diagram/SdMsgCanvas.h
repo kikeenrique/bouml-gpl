@@ -49,6 +49,10 @@ class SdMsgCanvas : public SdMsgBaseCanvas {
     virtual void menu(const QPoint&);
     virtual void select_associated();
     virtual bool copyable() const;
+    
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &);
+    
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static SdMsgCanvas * read(char * &, UmlCanvas *, char *);
 };

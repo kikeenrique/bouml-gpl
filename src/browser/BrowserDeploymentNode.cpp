@@ -124,29 +124,29 @@ void BrowserDeploymentNode::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("edit", 0),
+      m.setWhatsThis(m.insertItem("Edit", 0),
 		     "to edit the <em>node</em>, \
 a double click with the left mouse button does the same thing");
       if (!is_read_only && (edition_number == 0)) {
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("delete", 1),
+	m.setWhatsThis(m.insertItem("Delete", 1),
 		       "to delete the <em>node</em>. \
 Note that you can undelete it after");
       }
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("referenced by", 3),
+    m.setWhatsThis(m.insertItem("Referenced by", 3),
 		   "to know who reference the <i>node</i> \
 through a relation");
     mark_menu(m, "node", 90);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("undelete", 2),
+    m.setWhatsThis(m.insertItem("Undelete", 2),
 		   "to undelete the <em>node</em>");
   
   int rank = m.exec(QCursor::pos());

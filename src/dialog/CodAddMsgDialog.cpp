@@ -32,6 +32,9 @@
 #include <qcombobox.h> 
 #include <qhbox.h>
 #include <qpushbutton.h>
+#include <qgrid.h>
+#include <qpopupmenu.h>
+#include <qcursor.h>
 
 #include "CodAddMsgDialog.h"
 #include "ColDiagramView.h"
@@ -42,6 +45,7 @@
 #include "OperationData.h"
 #include "DialogUtil.h"
 #include "UmlDesktop.h"
+#include "BrowserView.h"
 
 QSize CodAddMsgDialog::previous_size;
 
@@ -53,21 +57,20 @@ CodAddMsgDialog::CodAddMsgDialog(CodObjCanvas * from, CodObjCanvas * to,
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
   QHBoxLayout * hbox;
-  QLabel * label1;
-  QLabel * label2;
   
   vbox->setMargin(5);
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(10);
-  label1 = new QLabel(QString("Add message to ") + to->get_full_name(), this);
+  QLabel * label1 = new QLabel(QString("Add message to ") + to->get_full_name(), this);
   label1->setAlignment(AlignCenter);
   hbox->addWidget(label1);
   
-  hbox = new QHBoxLayout(vbox); 
-  hbox->setMargin(5);
-  hbox->addWidget(label1 = new QLabel("rank : ", this));
-  cbrank = new QComboBox(FALSE, this);
+  QGrid * grid = new QGrid(2, this);
+  
+  vbox->addWidget(grid);
+  new QLabel("rank : ", grid);
+  cbrank = new QComboBox(FALSE, grid);
   
   ColMsgList all_in;
   ColMsgList all_out;
@@ -111,15 +114,16 @@ CodAddMsgDialog::CodAddMsgDialog(CodObjCanvas * from, CodObjCanvas * to,
   sp.setHorData(QSizePolicy::Expanding);
   cbrank->setSizePolicy(sp);
   
-  hbox->addWidget(cbrank);
+  new QLabel("", grid);
+  new QLabel("", grid);
   
   // the operations
   
-  hbox = new QHBoxLayout(vbox); 
-  hbox->setMargin(5);
-  hbox->addWidget(label2 = new QLabel("message : ", this));
-  same_width(label1, label2);
-  edoper = new QComboBox(TRUE, this);
+  SmallPushButton * b = new SmallPushButton("message :", grid);
+  
+  connect(b, SIGNAL(clicked()), this, SLOT(menu_op()));
+  
+  edoper = new QComboBox(TRUE, grid);
   edoper->setAutoCompletion(TRUE);
   
   if (to->get_type() != 0) {
@@ -129,7 +133,8 @@ CodAddMsgDialog::CodAddMsgDialog(CodObjCanvas * from, CodObjCanvas * to,
     
   edoper->setSizePolicy(sp);
   
-  hbox->addWidget(edoper);
+  new QLabel("", grid);
+  new QLabel("", grid);
   
   // ok & cancel
   
@@ -157,6 +162,37 @@ void CodAddMsgDialog::polish() {
 
 CodAddMsgDialog::~CodAddMsgDialog() {
   previous_size = size();
+}
+
+void CodAddMsgDialog::menu_op() {
+  QPopupMenu m(0);
+
+  m.insertItem("Choose", -1);
+  m.insertSeparator();
+  
+  int index = list.findIndex(edoper->currentText().stripWhiteSpace());
+  
+  if (index != -1)
+    m.insertItem("Select in browser", 0);
+  
+  BrowserNode * bn = BrowserView::selected_item();
+  
+  if ((bn->get_type() == UmlOperation) &&
+      !bn->deletedp() &&
+      (opers.findIndex((OperationData *) bn->get_data()) != -1))
+    m.insertItem("Choose operation selected in browser", 1);
+  else
+    bn = 0;
+  
+  if ((index != -1) || (bn != 0)) {
+    switch (m.exec(QCursor::pos())) {
+    case 0:
+      opers[index]->get_browser_node()->select_in_browser();
+      break;
+    case 1:
+      edoper->setCurrentItem(opers.findIndex((OperationData *) bn->get_data()));
+    }
+  }
 }
 
 void CodAddMsgDialog::accept() {

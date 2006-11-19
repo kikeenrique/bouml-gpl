@@ -598,27 +598,27 @@ void ArrowCanvas::menu(const QPoint&) {
 			     m.font()), -1);
   if (IsaRelation(itstype)) {
     m.insertSeparator();
-    m.insertItem("edit",1);
+    m.insertItem("Edit",1);
   }
   
   if (pstereotype || plabel) {
     m.insertSeparator();
-    m.insertItem("select stereotype and label", 2);
-    m.insertItem("default stereotype and label position", 3);
+    m.insertItem("Select stereotype and label", 2);
+    m.insertItem("Default stereotype and label position", 3);
     if (plabel && (label == 0))
-      m.insertItem("attach label to this segment", 4);
+      m.insertItem("Attach label to this segment", 4);
     if (pstereotype && (stereotype == 0))
-      m.insertItem("attach stereotype to this segment", 5);
+      m.insertItem("Attach stereotype to this segment", 5);
   }
   
   if (get_start() != get_end()) {
     m.insertSeparator();
     init_geometry_menu(geo, 10);
-    m.insertItem("geometry (Ctrl+l)", &geo);
+    m.insertItem("Geometry (Ctrl+l)", &geo);
   }
   
   m.insertSeparator();
-  m.insertItem("remove from view", 6);
+  m.insertItem("Remove from view", 6);
   
   int choice = m.exec(QCursor::pos());
   
@@ -676,7 +676,7 @@ void ArrowCanvas::init_geometry_menu(QPopupMenu & m, int first) {
 
   m.setCheckable(TRUE);
   
-  m.insertItem("none", first);
+  m.insertItem("None", first);
   m.insertItem(hv, first + HVGeometry);
   m.insertItem(vh, first + VHGeometry);
   m.insertItem(hvh, first + HVHGeometry);

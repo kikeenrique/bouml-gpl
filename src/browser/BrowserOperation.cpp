@@ -343,22 +343,22 @@ void BrowserOperation::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("edit", 0),
+      m.setWhatsThis(m.insertItem("Edit", 0),
 		     "to edit the <em>operation</em>, \
 a double click with the left mouse button does the same thing");
-      m.setWhatsThis(m.insertItem("duplicate", 1),
+      m.setWhatsThis(m.insertItem("Duplicate", 1),
 		     "to copy the <em>operation</em> in a new one");
       if (strstr(def->get_cppdef(), "${body}") != 0)
-	m.setWhatsThis(m.insertItem("edit C++ body", 4),
+	m.setWhatsThis(m.insertItem("Edit C++ body", 4),
 		       "to edit the <em>operation</em> and its C++ body");
       if (strstr(def->get_javadef(), "${body}") != 0)
-	m.setWhatsThis(m.insertItem("edit Java body", 5),
+	m.setWhatsThis(m.insertItem("Edit Java body", 5),
 		       "to edit the <em>operation</em> and its Java body");
-      m.setWhatsThis(m.insertItem("duplicate", 1),
+      m.setWhatsThis(m.insertItem("Duplicate", 1),
 		     "to copy the <em>operation</em> in a new one");
       if (!is_read_only && (edition_number == 0)) {
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("delete", 2),
+	m.setWhatsThis(m.insertItem("Delete", 2),
 		       "to delete the <em>operation</em>. \
 Note that you can undelete it after");
       }
@@ -367,11 +367,11 @@ Note that you can undelete it after");
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("undelete", 3),
+    m.setWhatsThis(m.insertItem("Undelete", 3),
 		   "to undelete the <em>operation</em>");
   
   int rank = m.exec(QCursor::pos());

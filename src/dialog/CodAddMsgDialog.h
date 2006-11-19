@@ -55,6 +55,7 @@ class CodAddMsgDialog : public QDialog {
     virtual ~CodAddMsgDialog();
   
   protected slots:
+    void menu_op();
     virtual void polish();
     void accept();
 };

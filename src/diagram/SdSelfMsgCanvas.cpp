@@ -119,23 +119,23 @@ void SdSelfMsgCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle("Message", m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit", 2);
+  m.insertItem("Edit", 2);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 3);
+  m.insertItem("Edit drawing settings", 3);
   m.insertSeparator();
   if (msg != 0)
-    m.insertItem("select operation in browser", 8);
-  m.insertItem("select linked items", 4);
+    m.insertItem("Select operation in browser", 8);
+  m.insertItem("Select linked items", 4);
   if (label) {
     m.insertSeparator();
-    m.insertItem("select label", 5);
-    m.insertItem("label default position", 6);
+    m.insertItem("Select label", 5);
+    m.insertItem("Label default position", 6);
   }
   m.insertSeparator();
-  m.insertItem("remove from view", 7);
+  m.insertItem("Remove from view", 7);
 
   switch (m.exec(QCursor::pos())) {
   case 0:
@@ -162,6 +162,7 @@ void SdSelfMsgCanvas::menu(const QPoint&) {
 
       SettingsDialog dialog(&st, 0, FALSE, TRUE);
       
+      dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();
       return;
@@ -189,6 +190,36 @@ void SdSelfMsgCanvas::menu(const QPoint&) {
 
   package_modified();  
   canvas()->update();
+}
+
+bool SdSelfMsgCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void SdSelfMsgCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<StateSpec> st(2);
+  DrawingLanguage drawing_language;
+  Uml3States show_full_oper;
+  
+  st[0].set("operation drawing language", &drawing_language);
+  st[1].set("show full operation definition", &show_full_oper);
+  
+  SettingsDialog dialog(&st, 0, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      if (st[0].name != 0)
+	((SdSelfMsgCanvas *) it.current())->drawing_language =
+	  drawing_language;
+      if (st[1].name != 0)
+	((SdSelfMsgCanvas *) it.current())->show_full_oper =
+	  show_full_oper;
+      ((SdSelfMsgCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }  
 }
 
 void SdSelfMsgCanvas::select_associated() {

@@ -306,26 +306,26 @@ void PackageCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit", 2);
+  m.insertItem("Edit", 2);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 3);
+  m.insertItem("Edit drawing settings", 3);
   m.insertSeparator();
-  m.insertItem("select in browser", 4);
+  m.insertItem("Select in browser", 4);
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable())
-    m.insertItem("set associated diagram", 6);
+    m.insertItem("Set associated diagram", 6);
   m.insertSeparator();
-  m.insertItem("remove from view", 7);
+  m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
-    m.insertItem("delete from model", 8);
+    m.insertItem("Delete from model", 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlPackage, 10))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
 
   int rank = m.exec(QCursor::pos());
   
@@ -352,6 +352,7 @@ void PackageCanvas::menu(const QPoint&) {
 
       SettingsDialog dialog(&st, &co, FALSE, TRUE);
       
+      dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();
       return;
@@ -384,6 +385,39 @@ void PackageCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+bool PackageCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void PackageCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<StateSpec> st(2);
+  QArray<ColorSpec> co(1);
+  Uml3States name_in_tab;
+  ShowContextMode show_context_mode;
+  UmlColor itscolor;
+  
+  st[0].set("name in tab", &name_in_tab);
+  st[1].set("show context", &show_context_mode);
+  co[0].set("Package color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      if (st[0].name != 0)
+	((PackageCanvas *) it.current())->name_in_tab = name_in_tab;
+      if (st[1].name != 0)
+	((PackageCanvas *) it.current())->show_context_mode = show_context_mode;
+      if (co[0].name != 0)
+	((PackageCanvas *) it.current())->itscolor = itscolor;
+      ((PackageCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }
 }
 
 const char * PackageCanvas::may_start(UmlCode & l) const {

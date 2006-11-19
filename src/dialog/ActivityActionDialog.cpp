@@ -1024,7 +1024,7 @@ void AccessVariableValueDialog::menu_var() {
   int index = var_names.findIndex(var_co->currentText());
   
   if (index != -1)
-    m.insertItem("select in browser", 0);
+    m.insertItem("Select in browser", 0);
   
   BrowserNode * bn = 0;
   
@@ -1040,7 +1040,7 @@ void AccessVariableValueDialog::menu_var() {
     case UmlDirectionalAggregationByValue:
     case UmlAttribute:
       if (!bn->deletedp()) {
-	m.insertItem("choose variable selected in browser", 1);
+	m.insertItem("Choose variable selected in browser", 1);
 	break;
       }
       // no break
@@ -1235,7 +1235,7 @@ void CallOperationDialog::menu_oper() {
   int index = oper_names.findIndex(oper_co->currentText());
   
   if (index != -1)
-    m.insertItem("select in browser", 0);
+    m.insertItem("Select in browser", 0);
   
   BrowserNode * bn = 0;
   
@@ -1243,7 +1243,7 @@ void CallOperationDialog::menu_oper() {
     bn = BrowserView::selected_item();
     
     if ((bn->get_type() == UmlOperation) && !bn->deletedp())
-      m.insertItem("choose operation selected in browser", 1);
+      m.insertItem("Choose operation selected in browser", 1);
     else
       bn = 0;
   }
@@ -1349,7 +1349,7 @@ void CallBehaviorDialog::menu_beh() {
   int index = node_names->findIndex(behavior_co->currentText());
   
   if (index != -1)
-    m.insertItem("select in browser", 0);
+    m.insertItem("Select in browser", 0);
   
   BrowserNode * bn = 0;
   
@@ -1360,7 +1360,7 @@ void CallBehaviorDialog::menu_beh() {
     case UmlState:
     case UmlActivity:
       if (!bn->deletedp()) {
-	m.insertItem("choose behavior selected in browser", 1);
+	m.insertItem("Choose behavior selected in browser", 1);
 	break;
       }
       // no break

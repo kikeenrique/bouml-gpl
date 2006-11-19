@@ -129,16 +129,16 @@ void BrowserRegion::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("add state", 1),
+      m.setWhatsThis(m.insertItem("Add state", 1),
 		     "to add a <em>state</em> to the <em>region</em>");
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("edit", 3),
+    m.setWhatsThis(m.insertItem("Edit", 3),
 		   "to edit the <em>region</em>, \
 a double click with the left mouse button does the same thing");
     if (!is_read_only && (edition_number == 0)) {
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("delete", 7),
+      m.setWhatsThis(m.insertItem("Delete", 7),
 		     "to delete the <em>region</em>. \
 Note that you can undelete it after");
     }
@@ -146,18 +146,18 @@ Note that you can undelete it after");
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("undelete", 8),
+    m.setWhatsThis(m.insertItem("Undelete", 8),
 		   "to undelete the <em>region</em>");
  
     QListViewItem * child;
   
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("undelete recursively", 9),
+	m.setWhatsThis(m.insertItem("Undelete recursively", 9),
 		       "undelete the region and its children");
 	break;
       }

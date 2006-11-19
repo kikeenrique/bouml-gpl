@@ -250,19 +250,19 @@ void BrowserArtifact::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("edit", 0),
+      m.setWhatsThis(m.insertItem("Edit", 0),
 		     "to edit the <em>artifact</em>, \
 a double click with the left mouse button does the same thing");
       if (!is_read_only && (edition_number == 0)) {
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("delete", 1),
+	m.setWhatsThis(m.insertItem("Delete", 1),
 		       "to delete the <em>artifact</em>. \
 Note that you can undelete it after");
       }
     }
     if (!strcmp(def->get_stereotype(), "source")) {
       m.insertSeparator();
-      m.insertItem("generate", &gensubm);
+      m.insertItem("Generate", &gensubm);
       gensubm.insertItem("C++", 10);
       gensubm.insertItem("Java", 11);
       gensubm.insertItem("Idl", 12);
@@ -287,23 +287,23 @@ Note that you can undelete it after");
 	//roundtripsubm.insertItem("Idl source file", 21);
       }
       if (editsubm.count() != 0)
-	m.insertItem("see file", &editsubm);
+	m.insertItem("See file", &editsubm);
       //if (roundtripsubm.count() != 0)
-	//m.insertItem("roundtrip", &roundtripsubm);
+	//m.insertItem("Roundtrip", &roundtripsubm);
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("referenced by", 3),
+    m.setWhatsThis(m.insertItem("Referenced by", 3),
 		   "to know who reference the <i>artifact</i> \
 through a relation");
     mark_menu(m, "artifact", 90);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("undelete", 2),
+    m.setWhatsThis(m.insertItem("Undelete", 2),
 		   "to undelete the <em>artifact</em>");
   
   int n = 0;
@@ -316,24 +316,24 @@ through a relation");
   
   if (n == 1) {
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("select the associated class", 10000),
+    m.setWhatsThis(m.insertItem("Select the associated class", 10000),
 		   "to select the associated <em>class</em>");
   }
   else if (n > 20) {
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("select an associated class", 9999),
+    m.setWhatsThis(m.insertItem("Select an associated class", 9999),
 		   "to select an associated <em>class</em>");
   }
   else if (n != 0) {
     m.insertSeparator();    
-    clsubm.insertItem(new MenuTitle("choose class", m.font()), -1);
+    clsubm.insertItem(new MenuTitle("Choose class", m.font()), -1);
     clsubm.insertSeparator();
 	    
     for (it = associated_classes.begin(), n = 10000; it != end; ++it)
       if (!(*it)->deletedp())
 	clsubm.insertItem((*it)->full_name(TRUE), n++);
 	    
-    m.setWhatsThis(m.insertItem("select an associated class", &clsubm),
+    m.setWhatsThis(m.insertItem("Select an associated class", &clsubm),
 		   "to select an associated <em>class</em>");
   }
   

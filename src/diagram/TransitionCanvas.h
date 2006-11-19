@@ -63,6 +63,9 @@ class TransitionCanvas : public ArrowCanvas {
     virtual void history_load(QBuffer &);
     virtual void history_hide();
     
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &);
+    
     static TransitionCanvas * read(char * & st, UmlCanvas * canvas, char *);
     virtual BasicData * get_data() const;
     

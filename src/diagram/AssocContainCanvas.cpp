@@ -76,26 +76,26 @@ void AssocContainCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle("Association", m.font()), -1);
   m.insertSeparator();
-  m.insertItem("edit",1);
+  m.insertItem("Edit",1);
   
   if (pstereotype || plabel) {
     m.insertSeparator();
-    m.insertItem("select stereotype and label", 2);
-    m.insertItem("default stereotype and label position", 3);
+    m.insertItem("Select stereotype and label", 2);
+    m.insertItem("Default stereotype and label position", 3);
     if (plabel && (label == 0))
-      m.insertItem("attach label to this segment", 4);
+      m.insertItem("Attach label to this segment", 4);
     if (pstereotype && (stereotype == 0))
-      m.insertItem("attach stereotype to this segment", 5);
+      m.insertItem("Attach stereotype to this segment", 5);
   }
   
   if (get_start() != get_end()) {
     m.insertSeparator();
     init_geometry_menu(geo, 10);
-    m.insertItem("geometry (Ctrl+l)", &geo);
+    m.insertItem("Geometry (Ctrl+l)", &geo);
   }
   
   m.insertSeparator();
-  m.insertItem("delete from model",6);
+  m.insertItem("Delete from model",6);
 
   int rank = m.exec(QCursor::pos());
   

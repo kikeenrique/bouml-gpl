@@ -647,30 +647,30 @@ void ActivityActionCanvas::menu(const QPoint&) {
   m.insertItem(new MenuTitle(s, m.font()), -1);
   m.insertSeparator();
   if (browser_node->is_writable() && data->may_add_pin()) {
-    m.insertItem("add pin", 7);
+    m.insertItem("Add pin", 7);
     m.insertSeparator();
   }
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 2);
+  m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
-  m.insertItem("edit activity action", 3);
+  m.insertItem("Edit activity action", 3);
   m.insertSeparator();
-  m.insertItem("select in browser", 4);
+  m.insertItem("Select in browser", 4);
   
   const char * what;
   BrowserNode * who = data->get_action()->referenced(what);
   BrowserNode * diag = 0;
   
   if (who != 0)
-    m.insertItem("select " + QString(what) + " in browser", 10);
+    m.insertItem("Select " + QString(what) + " in browser", 10);
   
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("set associated diagram",6);
+    m.insertItem("Set associated diagram",6);
 
     if (data->get_action_kind() == UmlCallBehaviorAction) {
       BasicData * d = data->get_action()->depend_on();
@@ -678,17 +678,17 @@ void ActivityActionCanvas::menu(const QPoint&) {
       if (d != 0) {
 	diag = d->get_browser_node()->get_associated();
 	if (diag != 0)
-	  m.insertItem("set associated diagram from behavior", 11);
+	  m.insertItem("Set associated diagram from behavior", 11);
       }
     }
   }
   m.insertSeparator();
-  m.insertItem("remove from view", 8);
+  m.insertItem("Remove from view", 8);
   if (browser_node->is_writable())
-    m.insertItem("delete from model", 9);
+    m.insertItem("Delete from model", 9);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlActivityAction, 20))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -752,6 +752,40 @@ void ActivityActionCanvas::menu(const QPoint&) {
     if (index >= 20)
       ToolCom::run(Tool::command(index - 20), browser_node);
     return;
+  }
+}
+
+bool ActivityActionCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void ActivityActionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<StateSpec> st(1);
+  QArray<ColorSpec> co(1);
+  Uml3States show_opaque_action_definition;
+  UmlColor itscolor;
+  ActivityDrawingSettings settings;
+  
+  st[0].set("show opaque definition", &show_opaque_action_definition);
+  settings.complete(st, TRUE);
+  
+  co[0].set("action color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      if (st[0].name != 0)
+	((ActivityActionCanvas *) it.current())->show_opaque_action_definition =
+	  show_opaque_action_definition;
+      if (co[0].name != 0)
+	((ActivityActionCanvas *) it.current())->itscolor = itscolor;
+      ((ActivityActionCanvas *) it.current())->settings.set(st, 1);
+      ((ActivityActionCanvas *) it.current())->modified();	// call package_modified()
+    }
   }
 }
 

@@ -61,6 +61,10 @@ class SdContinuationCanvas : public QObject, public DiagramCanvas {
     virtual aCorner on_resize_point(const QPoint &);
     virtual void resize(aCorner c, int dx, int dy);
     virtual void change_scale();
+    
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &);
+    
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;
     static SdContinuationCanvas * read(char * &, UmlCanvas *, char *);
     virtual void history_save(QBuffer &) const;

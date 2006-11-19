@@ -59,6 +59,10 @@ class UcUseCaseCanvas : public QObject, public DiagramCanvas {
     virtual aCorner on_resize_point(const QPoint & p);
     virtual bool move_with_its_package() const;
     virtual void resize(aCorner c, int dx, int dy);
+    
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &);
+    
     virtual void history_save(QBuffer &) const;
     virtual void history_load(QBuffer &);
     virtual void history_hide();

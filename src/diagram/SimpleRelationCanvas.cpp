@@ -149,33 +149,33 @@ void SimpleRelationCanvas::menu(const QPoint &) {
     m.insertItem(new MenuTitle(data->definition(FALSE), m.font()), -1);
     m.insertSeparator();
     if (data) {
-      m.insertItem("edit", 0);
+      m.insertItem("Edit", 0);
       m.insertSeparator();
     }
     
-    m.insertItem("select in browser", 2);
+    m.insertItem("Select in browser", 2);
     if (pstereotype) {
       m.insertSeparator();
-      m.insertItem("select stereotype", 3);
-      m.insertItem("stereotype default position", 4);
+      m.insertItem("Select stereotype", 3);
+      m.insertItem("Stereotype default position", 4);
       if (stereotype == 0)
-	m.insertItem("attach stereotype to this segment", 6);
+	m.insertItem("Attach stereotype to this segment", 6);
     }
   
     if (get_start() != get_end()) {
       m.insertSeparator();
       init_geometry_menu(geo, 10);
-      m.insertItem("geometry (Ctrl+l)", &geo);
+      m.insertItem("Geometry (Ctrl+l)", &geo);
     }
     
     m.insertSeparator();
-    m.insertItem("remove from view",7);
+    m.insertItem("Remove from view",7);
     if (data->get_start()->is_writable())
-      m.insertItem("delete from model", 8);
+      m.insertItem("Delete from model", 8);
     
     m.insertSeparator();
     if (Tool::menu_insert(&toolm, itstype, 20))
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     
     int rank = m.exec(QCursor::pos());
     

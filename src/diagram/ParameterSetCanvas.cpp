@@ -254,23 +254,23 @@ void ParameterSetCanvas::menu(const QPoint &) {
     
   m.insertItem(new MenuTitle((s.isEmpty()) ? "parameter set" : s, m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 2);
+  m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
-  m.insertItem("edit parameter set", 3);
+  m.insertItem("Edit parameter set", 3);
   m.insertSeparator();
-  m.insertItem("select in browser", 4);
+  m.insertItem("Select in browser", 4);
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("delete from model", 8);
+    m.insertItem("Delete from model", 8);
     m.insertSeparator();
   }
   if (Tool::menu_insert(&toolm, UmlParameterSet, 10))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -289,6 +289,7 @@ void ParameterSetCanvas::menu(const QPoint &) {
 
       SettingsDialog dialog(0, &co, FALSE, TRUE);
       
+      dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();	// call package_modified()
     }
@@ -314,6 +315,29 @@ void ParameterSetCanvas::menu(const QPoint &) {
   }
   
   package_modified();
+}
+
+bool ParameterSetCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void ParameterSetCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<ColorSpec> co(1);
+  UmlColor itscolor;
+  
+  co[0].set("parameter set color", &itscolor);
+  
+  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      ((ParameterSetCanvas *) it.current())->itscolor = itscolor;
+      ((ParameterSetCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }
 }
 
 const char * ParameterSetCanvas::may_start(UmlCode &) const {

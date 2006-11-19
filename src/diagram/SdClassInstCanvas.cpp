@@ -166,20 +166,20 @@ void SdClassInstCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(full_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit", 2);
+  m.insertItem("Edit", 2);
   if (is_mortal())
-    m.insertItem("become immortal", 5);
+    m.insertItem("Become immortal", 5);
   else
-    m.insertItem("become mortal", 6);
+    m.insertItem("Become mortal", 6);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 3);
+  m.insertItem("Edit drawing settings", 3);
   m.insertSeparator();
-  m.insertItem("select class in browser", 7);
+  m.insertItem("Select class in browser", 7);
   m.insertSeparator();
-  m.insertItem("remove from view", 4);
+  m.insertItem("Remove from view", 4);
   
   switch (m.exec(QCursor::pos())) {
   case 0:
@@ -203,6 +203,7 @@ void SdClassInstCanvas::menu(const QPoint&) {
 
       SettingsDialog dialog(&st, &co, FALSE, TRUE);
       
+      dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();
       return;
@@ -225,6 +226,36 @@ void SdClassInstCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+bool SdClassInstCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void SdClassInstCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<StateSpec> st(1);
+  QArray<ColorSpec> co(1);
+  Uml3States write_horizontally;
+  UmlColor itscolor;
+  
+  st[0].set("write name:type \nhorizontally", &write_horizontally);
+  co[0].set("class instance color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      if (st[0].name != 0)
+	((SdClassInstCanvas *) it.current())->write_horizontally =
+	  write_horizontally;
+      if (co[0].name != 0)
+	((SdClassInstCanvas *) it.current())->itscolor = itscolor;
+      ((SdClassInstCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }
 }
 
 void SdClassInstCanvas::set_type(BrowserClass * t) {

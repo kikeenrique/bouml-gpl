@@ -508,17 +508,17 @@ void BrowserActivityAction::menu() {
   if (!deletedp()) {
     if (!is_read_only) {
       if (def->may_add_pin())
-	m.setWhatsThis(m.insertItem("add pin", 0),
+	m.setWhatsThis(m.insertItem("Add pin", 0),
 		       "to add a <em>pin</em>");
-      m.setWhatsThis(m.insertItem("add parameter set", 7),
+      m.setWhatsThis(m.insertItem("Add parameter set", 7),
 		     "to add a <em>Parameter Set</em>");
       m.insertSeparator();
     }
-    m.setWhatsThis(m.insertItem("edit", 1),
+    m.setWhatsThis(m.insertItem("Edit", 1),
 		   "to edit the <em>" + s + "</em>, \
 a double click with the left mouse button does the same thing");
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("duplicate", 2),
+      m.setWhatsThis(m.insertItem("Duplicate", 2),
 		     "to copy the <em>" + s + "</em> in a new one");
     }
   
@@ -526,35 +526,35 @@ a double click with the left mouse button does the same thing");
     
     if ((who = def->get_action()->referenced(what)) != 0) {
       m.insertSeparator();
-      m.insertItem("select " + QString(what), 8);
+      m.insertItem("Select " + QString(what), 8);
     }
   
     if (!is_read_only) {
       m.insertSeparator();
       if (edition_number == 0)
-	m.setWhatsThis(m.insertItem("delete", 3),
+	m.setWhatsThis(m.insertItem("Delete", 3),
 		       "to delete the <em>" + s + "</em>. \
 Note that you can undelete it after");
     }
-    m.setWhatsThis(m.insertItem("referenced by", 4),
+    m.setWhatsThis(m.insertItem("Referenced by", 4),
 		   "to know who reference the <i>" + s + "</i> \
 through a flow or dependency");
     mark_menu(m, s, 90);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("undelete", 5),
+    m.setWhatsThis(m.insertItem("Undelete", 5),
 		   "to undelete the <em>" + s + "</em>");
    
     QListViewItem * child;
   
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("undelete recursively", 6),
+	m.setWhatsThis(m.insertItem("Undelete recursively", 6),
 		       "undelete the <em>s</em> and its pins and \
 <em>flows</em> or <em>dependencies</em> (except if the class at the other side is also deleted)");
 	break;

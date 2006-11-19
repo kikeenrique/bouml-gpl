@@ -678,7 +678,7 @@ const char * BrowserNode::check_inherit(const BrowserNode * new_parent) const {
 void BrowserNode::mark_menu(QPopupMenu & m, const char * s, int bias) const {
   if (! is_marked) {
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("mark", bias),
+    m.setWhatsThis(m.insertItem("Mark", bias),
 		   QString("to mark the <em>") + s + "</em>");
 
     if (!marked_list.isEmpty()) {
@@ -724,28 +724,28 @@ void BrowserNode::mark_menu(QPopupMenu & m, const char * s, int bias) const {
       if (!parents_marked) {
 	if (moveable) {
 	  if (into)
-	    m.setWhatsThis(m.insertItem("move marked into", bias + 3),
+	    m.setWhatsThis(m.insertItem("Move marked into", bias + 3),
 			   QString("to move the marked items into <em>") + s + "</em>");
 	  if (after)
-	    m.setWhatsThis(m.insertItem("move marked after", bias + 4),
+	    m.setWhatsThis(m.insertItem("Move marked after", bias + 4),
 			   QString("to move the marked items after <em>") + s + "</em>");
 	}
       }
       if (into && duplicable_into) {
-	m.setWhatsThis(m.insertItem("duplicate marked into", bias + 5),
+	m.setWhatsThis(m.insertItem("Duplicate marked into", bias + 5),
 		       QString("to duplicate the marked items into <em>") + s + "</em>");
 #ifndef SIMPLE_DUPLICATION
 	if (rec && !parents_marked)
-	  m.setWhatsThis(m.insertItem("duplicate recursivelly marked into", bias + 6),
+	  m.setWhatsThis(m.insertItem("Duplicate recursivelly marked into", bias + 6),
 			 QString("to recurcivelly duplicate the marked items into <em>") + s + "</em>");
 #endif
       }
       if (after && duplicable_after) {
-	m.setWhatsThis(m.insertItem("duplicate marked after", bias + 7),
+	m.setWhatsThis(m.insertItem("Duplicate marked after", bias + 7),
 		       QString("to duplicate the marked items after <em>") + s + "</em>");
 #ifndef SIMPLE_DUPLICATION
 	if (rec && !parents_marked)
-	  m.setWhatsThis(m.insertItem("duplicate marked recursivelly after", bias + 8),
+	  m.setWhatsThis(m.insertItem("Duplicate marked recursivelly after", bias + 8),
 			 QString("to recurcivelly duplicate the marked items after <em>") + s + "</em>");
 #endif
       }
@@ -753,10 +753,10 @@ void BrowserNode::mark_menu(QPopupMenu & m, const char * s, int bias) const {
   }
   else {
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("unmark", bias + 1),
+    m.setWhatsThis(m.insertItem("Unmark", bias + 1),
 		   QString("to unmark the <em>") + s + "</em>");
     if (!marked_list.isEmpty())
-      m.setWhatsThis(m.insertItem("unmark all", bias + 2),
+      m.setWhatsThis(m.insertItem("Unmark all", bias + 2),
 		     QString("to unmark all the marked items"));
   }
 }

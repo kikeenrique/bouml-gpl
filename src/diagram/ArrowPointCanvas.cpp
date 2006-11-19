@@ -173,9 +173,9 @@ void ArrowPointCanvas::open() {
 void ArrowPointCanvas::menu(const QPoint&) {
   QPopupMenu m;
   
-  m.insertItem(new MenuTitle("line break", m.font()), -1);
+  m.insertItem(new MenuTitle("Line break", m.font()), -1);
   m.insertSeparator();
-  m.insertItem("remove from view", 0);
+  m.insertItem("Remove from view", 0);
   m.setItemEnabled(0, lines.at(0)->may_join());
   
   switch (m.exec(QCursor::pos())) {

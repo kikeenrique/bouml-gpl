@@ -209,7 +209,7 @@ void BrowserAttribute::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited)
-    m.setWhatsThis(m.insertItem("edit", 0),
+    m.setWhatsThis(m.insertItem("Edit", 0),
 		   (item)
 		   ? "to edit the <em>item</em>, \
 a double click with the left mouse button does the same thing"
@@ -217,25 +217,25 @@ a double click with the left mouse button does the same thing"
 a double click with the left mouse button does the same thing");
     if (!is_read_only && (edition_number == 0)) {
       if (!item && (get_oper == 0))
-	m.setWhatsThis(m.insertItem("add get operation", 3),
+	m.setWhatsThis(m.insertItem("Add get operation", 3),
 		       "to auto define the <em>get operation</em>");
       if (!item && (set_oper == 0))
-	m.setWhatsThis(m.insertItem("add set operation", 4),
+	m.setWhatsThis(m.insertItem("Add set operation", 4),
 		       "to auto define the <em>set operation</em>");
       if (!item && (get_oper == 0) && (set_oper == 0))
-	m.setWhatsThis(m.insertItem("add get and set operation", 5),
+	m.setWhatsThis(m.insertItem("Add get and set operation", 5),
 		       "to auto define the <em>get</em> and <em>set operation</em>s");
-      m.setWhatsThis(m.insertItem("duplicate", 6),
+      m.setWhatsThis(m.insertItem("Duplicate", 6),
 		     "to copy the <em>attribute</em> in a new one");
     }
   
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("referenced by", 7),
+    m.setWhatsThis(m.insertItem("Referenced by", 7),
 		   "to know who reference the <i>class</i>");
 
     if (!is_read_only && (edition_number == 0)) {
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("delete", 1),
+      m.setWhatsThis(m.insertItem("Delete", 1),
 		     (item) ? "to delete the <em>item</em>. \
 Note that you can undelete it after"
 			       : "to delete the <em>attribute</em>. \
@@ -245,11 +245,11 @@ Note that you can undelete it after");
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("undelete", 2),
+    m.setWhatsThis(m.insertItem("Undelete", 2),
 		   (item) ? "to undelete the <em>item</em>"
 				     : "to undelete the <em>attribute</em>");
   

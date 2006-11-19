@@ -179,11 +179,11 @@ void BrowserSimpleRelation::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!in_edition()) {
-      m.setWhatsThis(m.insertItem("edit", 0),
+      m.setWhatsThis(m.insertItem("Edit", 0),
 		     "to edit the <em>relation</em>, \
 a double click with the left mouse button does the same thing");
       if (!is_read_only && (edition_number == 0)) {
-	m.setWhatsThis(m.insertItem("delete", 2),
+	m.setWhatsThis(m.insertItem("Delete", 2),
 		       "to delete the <em>relation</em>. \
 Note that you can undelete it after");
       }
@@ -196,11 +196,11 @@ Note that you can undelete it after");
     if ((edition_number == 0) 
 	&& Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("undelete", 3),
+    m.setWhatsThis(m.insertItem("Undelete", 3),
 		   "undelete the <em>relation</em> \
 (except if the other side is also deleted)");
   

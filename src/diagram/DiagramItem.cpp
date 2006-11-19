@@ -259,6 +259,18 @@ void DiagramItem::shift(QPoint & p, QPoint other) const {
   }
 }
 
+
+//
+
+bool DiagramItem::has_drawing_settings() const {
+  return false;
+}
+
+void DiagramItem::edit_drawing_settings(QList<DiagramItem> &) {
+  // never called
+}
+
+
 //
 
 DiagramItemList::DiagramItemList(QCanvasItemList l) {
@@ -284,4 +296,3 @@ int DiagramItemList::compareItems(QCollection::Item i1,
 	  ((DiagramItem *) i2)->get_ident())
     ? 1 : -1;
 }
-

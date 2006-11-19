@@ -55,6 +55,7 @@ class SdMsgDialog : public QDialog {
     virtual ~SdMsgDialog();
   
   protected slots:
+    void menu_op();
     virtual void polish();
     void accept();
 };

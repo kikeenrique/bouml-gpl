@@ -54,12 +54,13 @@ class SettingsDialog : public QTabDialog {
     QArray<ColorSpec> * colors;
     QVector<ComboStates> * cbstates;
     QVector<ComboColor> * cbcolors;
+    bool several;
  
     static QSize previous_size;
   
   public:
     SettingsDialog(QArray<StateSpec> * st, QArray<ColorSpec> * co,
-		   bool nodefault, bool own);
+		   bool nodefault, bool own, bool unchanged = false);
     virtual ~SettingsDialog();
     
   protected slots:

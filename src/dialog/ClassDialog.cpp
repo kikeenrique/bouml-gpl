@@ -1740,14 +1740,14 @@ void FormalParamsTable::button_pressed(int row, int col, int, const QPoint &) {
     QPopupMenu m;
     m.insertItem(s, -1);
     m.insertSeparator();
-    m.insertItem("insert param before", 0);
-    m.insertItem("insert param after", 1);
+    m.insertItem("Insert param before", 0);
+    m.insertItem("Insert param after", 1);
     m.insertSeparator();
-    m.insertItem("delete param", 2);
+    m.insertItem("Delete param", 2);
     m.insertSeparator();
-    m.insertItem("copy param", 3);
-    m.insertItem("cut param", 4);
-    m.insertItem("paste param", 5);
+    m.insertItem("Copy param", 3);
+    m.insertItem("Cut param", 4);
+    m.insertItem("Paste param", 5);
     m.insertSeparator();
 
     QPopupMenu mv;
@@ -1757,7 +1757,7 @@ void FormalParamsTable::button_pressed(int row, int col, int, const QPoint &) {
       if (rank != row)
 	mv.insertItem(QString::number(rank + 1), 10 + rank);
     
-    m.insertItem("move param", &mv);
+    m.insertItem("Move param", &mv);
     
     switch (rank = m.exec(QCursor::pos())) {
     case 0:

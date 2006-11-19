@@ -125,14 +125,14 @@ void BrowserParameterSet::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited)
-    m.setWhatsThis(m.insertItem("edit", 0),
+    m.setWhatsThis(m.insertItem("Edit", 0),
 		   "to edit the <em>parameter set</em>, \
 a double click with the left mouse button does the same thing");
     if (!is_read_only && (edition_number == 0)) {
-      m.setWhatsThis(m.insertItem("duplicate", 1),
+      m.setWhatsThis(m.insertItem("Duplicate", 1),
 		     "to copy the <em>parameter set</em> in a new one");
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("delete", 2),
+      m.setWhatsThis(m.insertItem("Delete", 2),
 		     "to delete the <em>parameter set</em>. \
 Note that you can undelete it after");
     }
@@ -140,11 +140,11 @@ Note that you can undelete it after");
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("undelete", 3),
+    m.setWhatsThis(m.insertItem("Undelete", 3),
 		   "to undelete the <em>parameter set</em>");
   
   int rank = m.exec(QCursor::pos());

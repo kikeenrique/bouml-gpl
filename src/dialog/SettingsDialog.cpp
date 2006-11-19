@@ -41,23 +41,30 @@
 
 class ComboStates : public QComboBox {
   public:
-    ComboStates(QWidget * parent, Uml3States v, bool nodefault);
-    ComboStates(QWidget * parent, ClassDrawingMode v, bool nodefault);
-    ComboStates(QWidget * parent, DrawingLanguage v, bool nodefault);
-    ComboStates(QWidget * parent, ShowContextMode v, bool nodefault);
+    ComboStates(QWidget * parent, Uml3States v, bool nodefault, bool unchanged);
+    ComboStates(QWidget * parent, ClassDrawingMode v, bool nodefault, bool unchanged);
+    ComboStates(QWidget * parent, DrawingLanguage v, bool nodefault, bool unchanged);
+    ComboStates(QWidget * parent, ShowContextMode v, bool nodefault, bool unchanged);
 };
 
-ComboStates::ComboStates(QWidget * parent, Uml3States v, bool nodefault) 
+ComboStates::ComboStates(QWidget * parent, Uml3States v,
+			 bool nodefault, bool unchanged) 
     : QComboBox(FALSE, parent) {
   insertItem(stringify((Uml3States) 0));
   insertItem(stringify((Uml3States) 1));
   // the last value MUST be default
   if (!nodefault)
     insertItem(stringify((Uml3States) 2));
-  setCurrentItem(v);
+  if (unchanged) {
+    insertItem("<unchanged>");
+    setCurrentItem(count() - 1); 
+  }
+  else
+    setCurrentItem(v);
 }
 
-ComboStates::ComboStates(QWidget * parent, ClassDrawingMode v, bool nodefault) 
+ComboStates::ComboStates(QWidget * parent, ClassDrawingMode v,
+			 bool nodefault, bool unchanged) 
     : QComboBox(FALSE, parent) {
   int i;
   
@@ -66,10 +73,16 @@ ComboStates::ComboStates(QWidget * parent, ClassDrawingMode v, bool nodefault)
   // the last value MUST be default
   if (!nodefault)
     insertItem(stringify((ClassDrawingMode) i));
-  setCurrentItem(v);
+  if (unchanged) {
+    insertItem("<unchanged>");
+    setCurrentItem(count() - 1); 
+  }
+  else
+    setCurrentItem(v);
 }
 
-ComboStates::ComboStates(QWidget * parent, DrawingLanguage v, bool nodefault) 
+ComboStates::ComboStates(QWidget * parent, DrawingLanguage v,
+			 bool nodefault, bool unchanged) 
     : QComboBox(FALSE, parent) {
   int i;
   
@@ -78,10 +91,16 @@ ComboStates::ComboStates(QWidget * parent, DrawingLanguage v, bool nodefault)
   // the last value MUST be default
   if (!nodefault)
     insertItem(stringify((DrawingLanguage) i));
-  setCurrentItem(v);
+  if (unchanged) {
+    insertItem("<unchanged>");
+    setCurrentItem(count() - 1); 
+  }
+  else
+    setCurrentItem(v);
 }
 
-ComboStates::ComboStates(QWidget * parent, ShowContextMode v, bool nodefault) 
+ComboStates::ComboStates(QWidget * parent, ShowContextMode v,
+			 bool nodefault, bool unchanged) 
     : QComboBox(FALSE, parent) {
   int i;
   
@@ -90,22 +109,29 @@ ComboStates::ComboStates(QWidget * parent, ShowContextMode v, bool nodefault)
   // the last value MUST be default
   if (!nodefault)
     insertItem(stringify((ShowContextMode) i));
-  setCurrentItem(v);
+  if (unchanged) {
+    insertItem("<unchanged>");
+    setCurrentItem(count() - 1); 
+  }
+  else
+    setCurrentItem(v);
 }
 
 class ComboColor : public QComboBox {
   public:
-    ComboColor(QWidget * parent, UmlColor v, bool nodefault);
+    ComboColor(QWidget * parent, UmlColor v,
+	       bool nodefault, bool unchanged);
 };
 
-ComboColor::ComboColor(QWidget * parent, UmlColor v, bool nodefault) 
+ComboColor::ComboColor(QWidget * parent, UmlColor v,
+		       bool nodefault, bool unchanged) 
     : QComboBox(FALSE, parent) {
   // the last value MUST be default
   for (int i = 0; i != (int) UmlDefaultColor; i += 1) {
     // use switch to not be dependant on the colors items order and number
     switch (i) {
     case UmlTransparent:
-      insertItem("transparent");
+      insertItem("Transparent");
       break;
     case UmlWhite:
       insertItem(* WhitePixmap);
@@ -186,24 +212,31 @@ ComboColor::ComboColor(QWidget * parent, UmlColor v, bool nodefault)
       insertItem(* GrayPixmap);
       break;
     default:
-      insertItem("unknown color");
+      insertItem("Unknown color");
     }
   }
   if (!nodefault)
     insertItem(stringify(UmlDefaultColor));
+  if (unchanged) {
+    insertItem("<unchanged>");
+    setCurrentItem(count() - 1); 
+  }
+  else
+    setCurrentItem(v);    
+  
 #ifdef WIN32
   setSizeLimit(34);	// yes !, don't set it to count() !
 #else
   setSizeLimit(20);	// yes !, don't set it to count() !
 #endif
-  setCurrentItem(v);
 }
 
 QSize SettingsDialog::previous_size;
 
 SettingsDialog::SettingsDialog(QArray<StateSpec> * st, QArray<ColorSpec> * co,
-			       bool nodefault, bool own)
-    : QTabDialog(0, "Diagram Drawing Settings dialog", TRUE), states(st), colors(co) {
+			       bool nodefault, bool own, bool unchanged)
+    : QTabDialog(0, "Diagram Drawing Settings dialog", TRUE),
+      states(st), colors(co), several(unchanged) {
   setCaption("Diagram Drawing Settings dialog");
   
   QGrid * grid = 0;
@@ -243,16 +276,20 @@ SettingsDialog::SettingsDialog(QArray<StateSpec> * st, QArray<ColorSpec> * co,
             
       switch (st.who) {
       case StateSpec::is3states:
-	cbstates->insert(i, new ComboStates(hb, *((Uml3States *) st.state), nodefault));
+	cbstates->insert(i, new ComboStates(hb, *((Uml3States *) st.state),
+					    nodefault, unchanged));
 	break;
       case StateSpec::isClassDrawingMode:
-	cbstates->insert(i, new ComboStates(hb, *((ClassDrawingMode *) st.state), nodefault));
+	cbstates->insert(i, new ComboStates(hb, *((ClassDrawingMode *) st.state),
+					    nodefault, unchanged));
 	break;
       case StateSpec::isDrawingLanguage:
-	cbstates->insert(i, new ComboStates(hb, *((DrawingLanguage *) st.state), nodefault));
+	cbstates->insert(i, new ComboStates(hb, *((DrawingLanguage *) st.state),
+					    nodefault, unchanged));
 	break;
       default:
-	cbstates->insert(i, new ComboStates(hb, *((ShowContextMode *) st.state), nodefault));
+	cbstates->insert(i, new ComboStates(hb, *((ShowContextMode *) st.state),
+					    nodefault, unchanged));
       }
       new QLabel("", hb);
       new QLabel("", grid);
@@ -284,7 +321,8 @@ SettingsDialog::SettingsDialog(QArray<StateSpec> * st, QArray<ColorSpec> * co,
       s += colors->at(i).name;
       s += " : ";
       new QLabel(s, grid);
-      cbcolors->insert(i, new ComboColor(grid, *(colors->at(i).color), nodefault));
+      cbcolors->insert(i, new ComboColor(grid, *(colors->at(i).color),
+					 nodefault, unchanged));
       new QLabel("", grid);
       new QLabel("", grid);
     }
@@ -314,15 +352,23 @@ void SettingsDialog::accept() {
   if (states != 0) {
     n = states->count();
     
-    for (i = 0; i != n; i += 1)
-      states->at(i).set_state(cbstates->at(i)->currentItem());
+    for (i = 0; i != n; i += 1) {
+      if (cbstates->at(i)->currentText() == "<unchanged>")
+	states->at(i).name = 0;
+      else
+	states->at(i).set_state(cbstates->at(i)->currentItem());
+    }
   }
   
   if (colors != 0) {
     n = colors->count();
     
-    for (i = 0; i != n; i += 1)
-      *(colors->at(i).color) = (UmlColor) cbcolors->at(i)->currentItem();
+    for (i = 0; i != n; i += 1) {
+      if (cbcolors->at(i)->currentText() == "<unchanged>")
+	colors->at(i).name = 0;
+      else
+	*(colors->at(i).color) = (UmlColor) cbcolors->at(i)->currentItem();
+    }
   }
 
   QDialog::accept();

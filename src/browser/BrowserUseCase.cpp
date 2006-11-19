@@ -159,29 +159,29 @@ void BrowserUseCase::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
-      m.setWhatsThis(m.insertItem("new use case diagram", 0),
+      m.setWhatsThis(m.insertItem("New use case diagram", 0),
 		     "to add a <em>use case diagram</em>");
-      m.setWhatsThis(m.insertItem("new sequence diagram", 1),
+      m.setWhatsThis(m.insertItem("New sequence diagram", 1),
 		     "to add a <em>sequence diagram</em>");
-      m.setWhatsThis(m.insertItem("new collaboration diagram", 2),
+      m.setWhatsThis(m.insertItem("New collaboration diagram", 2),
 		     "to add a <em>collaboration diagram</em>");
-      m.setWhatsThis(m.insertItem("new object diagram", 13),
+      m.setWhatsThis(m.insertItem("New object diagram", 13),
 		     "to add a <em>object diagram</em>");
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("new use case", 3),
+      m.setWhatsThis(m.insertItem("New use case", 3),
 		     "to add a <em>use case</em>");
-      m.setWhatsThis(m.insertItem("new actor", 4),
+      m.setWhatsThis(m.insertItem("New actor", 4),
 		     "to add an <em>actor</em>");
-      m.setWhatsThis(m.insertItem("new class", 5),
+      m.setWhatsThis(m.insertItem("New class", 5),
 		     "to add a <em>class</em>");
       m.insertSeparator();
     }
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("edit", 6),
+      m.setWhatsThis(m.insertItem("Edit", 6),
 		     "to edit the <em>use case</em>");
       if (!is_read_only) {
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("edit drawing settings", 7),
+	m.setWhatsThis(m.insertItem("Edit drawing settings", 7),
 		       "to set how the sub <em>diagrams</em>'s items must be drawed");
 	if (edition_number == 0) {
 	  item_above = (BrowserNode *) parent()->firstChild();
@@ -213,28 +213,28 @@ void BrowserUseCase::menu() {
 	    }
 	  }
 	  m.insertSeparator();
-	  m.setWhatsThis(m.insertItem("delete", 8),
+	  m.setWhatsThis(m.insertItem("Delete", 8),
 			 "to delete the <em>use case and its sub items</em>. \
 Note that you can undelete them after");
 	}
       }
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("referenced by", 12),
+    m.setWhatsThis(m.insertItem("Referenced by", 12),
 		   "to know who reference the <i>use case</i> \
 through a relation");
     mark_menu(m, "use case", 90);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("undelete", 9),
+    m.setWhatsThis(m.insertItem("Undelete", 9),
 		   "undelete the <em>use case</em>. \
 Do not undelete its sub items");
-    m.setWhatsThis(m.insertItem("undelete recursively", 10),
+    m.setWhatsThis(m.insertItem("Undelete recursively", 10),
 		   "undelete the <em>use case</em> and its sub items");
   }
   
@@ -696,8 +696,8 @@ void BrowserUseCase::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	m.insertItem(new MenuTitle(bn->get_name() + QString(" moving"),
 				   m.font()), -1);
 	m.insertSeparator();
-	m.insertItem("in " + QString(get_name()), 1);
-	m.insertItem("after " + QString(get_name()), 2);
+	m.insertItem("In " + QString(get_name()), 1);
+	m.insertItem("After " + QString(get_name()), 2);
 	
 	switch (m.exec(QCursor::pos())) {
 	case 1:

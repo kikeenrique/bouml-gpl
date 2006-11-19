@@ -184,36 +184,36 @@ void TransitionCanvas::menu(const QPoint &) {
 		 -1);
     m.insertSeparator();
     if (data) {
-      m.insertItem("edit", 0);
+      m.insertItem("Edit", 0);
       m.insertSeparator();
     }
     
-    m.insertItem("select in browser", 2);
+    m.insertItem("Select in browser", 2);
     if (plabel || pstereotype) {
       m.insertSeparator();
-      m.insertItem("edit drawing settings", 1);
-      m.insertItem("select labels", 3);
-      m.insertItem("labels default position", 4);
+      m.insertItem("Edit drawing settings", 1);
+      m.insertItem("Select labels", 3);
+      m.insertItem("Labels default position", 4);
       if (plabel && (label == 0))
-	m.insertItem("attach transition's name to this segment", 5);
+	m.insertItem("Attach transition's name to this segment", 5);
       if (stereotype == 0)
-	m.insertItem("attach stereotype to this segment", 6);
+	m.insertItem("Attach stereotype to this segment", 6);
     }
   
     if (get_start() != get_end()) {
       m.insertSeparator();
       init_geometry_menu(geo, 10);
-      m.insertItem("geometry (Ctrl+l)", &geo);
+      m.insertItem("Geometry (Ctrl+l)", &geo);
     }
     
     m.insertSeparator();
-    m.insertItem("remove from view",7);
+    m.insertItem("Remove from view",7);
     if (data->get_start()->is_writable())
-      m.insertItem("delete from model", 8);
+      m.insertItem("Delete from model", 8);
     
     m.insertSeparator();
     if (Tool::menu_insert(&toolm, itstype, 20))
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     
     int rank = m.exec(QCursor::pos());
     
@@ -232,6 +232,7 @@ void TransitionCanvas::menu(const QPoint &) {
 	SettingsDialog dialog(&st, 0, FALSE, TRUE);
 	
 	dialog.setCaption("Transition Drawing Settings dialog");
+	dialog.raise();
 	if (dialog.exec() == QDialog::Accepted) {
 	  propagate_drawing_settings();
 	  modified();
@@ -291,6 +292,43 @@ void TransitionCanvas::menu(const QPoint &) {
     }
     
     package_modified();
+  }
+}
+
+bool TransitionCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void TransitionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<StateSpec> st(3);
+  DrawingLanguage drawing_language;
+  Uml3States write_horizontally;
+  Uml3States show_definition;
+  
+  st[0].set("language", &drawing_language);
+  st[1].set("write horizontally", &write_horizontally);
+  st[2].set("show definition", &show_definition);
+  
+  SettingsDialog dialog(&st, 0, FALSE, TRUE, TRUE);
+  
+  dialog.setCaption("Transition Drawing Settings dialog");
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      if (st[0].name != 0)
+	((TransitionCanvas *) it.current())->drawing_language =
+	  drawing_language;
+      if (st[1].name != 0)
+	((TransitionCanvas *) it.current())->write_horizontally =
+	  write_horizontally;
+      if (st[2].name != 0)
+	((TransitionCanvas *) it.current())->show_definition =
+	  show_definition;
+      ((TransitionCanvas *) it.current())->propagate_drawing_settings();
+      ((TransitionCanvas *) it.current())->modified();	// call package_modified()
+    }
   }
 }
 

@@ -118,15 +118,15 @@ void BrowserExtraMember::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("edit", 0),
+      m.setWhatsThis(m.insertItem("Edit", 0),
 		     "to edit the <em>extra member</em>, \
 a double click with the left mouse button does the same thing");
       if (!is_read_only) {
-	m.setWhatsThis(m.insertItem("duplicate", 3),
+	m.setWhatsThis(m.insertItem("Duplicate", 3),
 		       "to copy the <em>extra member</em> in a new one");
 	m.insertSeparator();
 	if (edition_number == 0)
-	  m.setWhatsThis(m.insertItem("delete", 1),
+	  m.setWhatsThis(m.insertItem("Delete", 1),
 			 "to delete the <em>extra member</em>. \
 Note that you can undelete it after");
       }
@@ -135,11 +135,11 @@ Note that you can undelete it after");
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("undelete", 2),
+    m.setWhatsThis(m.insertItem("Undelete", 2),
 		   "to undelete the <em>extra member</em>");
   
   int rank = m.exec(QCursor::pos());

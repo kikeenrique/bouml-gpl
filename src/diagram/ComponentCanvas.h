@@ -88,7 +88,10 @@ class ComponentCanvas : public QObject, public DiagramCanvas,
     static ComponentCanvas * read(char * &, UmlCanvas *, char *);
     virtual void history_save(QBuffer &) const;    
     virtual void history_load(QBuffer &);
-    virtual void history_hide();    
+    virtual void history_hide();   
+    
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &); 
     
   private slots:
     void modified();	// canvas must be updated

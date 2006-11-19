@@ -108,17 +108,17 @@ void InfoCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle("Information", m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit", 2);
+  m.insertItem("Edit", 2);
   m.insertSeparator();
-  m.insertItem("font", &fontsubm);  
+  m.insertItem("Font", &fontsubm);  
   init_font_menu(fontsubm, the_canvas(), 10);
-  m.insertItem("edit drawing settings", 3);
+  m.insertItem("Edit drawing settings", 3);
   if (linked()) {
     m.insertSeparator();
-    m.insertItem("select linked items", 4);
+    m.insertItem("Select linked items", 4);
   }
   m.insertSeparator();
 
@@ -144,6 +144,7 @@ void InfoCanvas::menu(const QPoint&) {
 
       SettingsDialog dialog(0, &co, FALSE, TRUE);
       
+      dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();
       return;
@@ -162,6 +163,29 @@ void InfoCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+bool InfoCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void InfoCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<ColorSpec> co(1);
+  UmlColor itscolor;
+  
+  co[0].set("note color", &itscolor);
+  
+  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      ((InfoCanvas *) it.current())->itscolor = itscolor;
+      ((InfoCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }
 }
 
 void InfoCanvas::save(QTextStream & st, bool ref, QString &) const {

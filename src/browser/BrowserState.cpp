@@ -203,29 +203,29 @@ void BrowserState::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("new state diagram", 0),
+      m.setWhatsThis(m.insertItem("New state diagram", 0),
 		     "to add a <em>state diagram</em>");
       if (((BrowserNode *) parent())->get_type() == UmlClassView) {
-	m.setWhatsThis(m.insertItem("add submachine", 1),
+	m.setWhatsThis(m.insertItem("Add submachine", 1),
 		       "to add a <em>submachine</em> to the <em>machine</em>");
-	m.setWhatsThis(m.insertItem("add state", 2),
+	m.setWhatsThis(m.insertItem("Add state", 2),
 		       "to add a <em>state</em> to the <em>machine</em>");
       }
       else if (what == "state")
-	m.setWhatsThis(m.insertItem("add nested state", 2),
+	m.setWhatsThis(m.insertItem("Add nested state", 2),
 		       "to add a <em>nested state</em> to the <em>state</em>");
       else
-	m.setWhatsThis(m.insertItem("add state", 2),
+	m.setWhatsThis(m.insertItem("Add state", 2),
 		       "to add a <em>state</em> to the <em>submachine</em>");
-      m.setWhatsThis(m.insertItem("add region", 11),
+      m.setWhatsThis(m.insertItem("Add region", 11),
 		     "to add a <em>region</em>");
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("edit", 3),
+    m.setWhatsThis(m.insertItem("Edit", 3),
 		   "to edit the <em>" + what + "</em>, \
 a double click with the left mouse button does the same thing");
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("duplicate", 4),
+      m.setWhatsThis(m.insertItem("Duplicate", 4),
 		     "to copy the <em>" + what + "</em> in a new one");
       
       item_above = (BrowserNode *) parent()->firstChild();
@@ -259,29 +259,29 @@ a double click with the left mouse button does the same thing");
 		       ((BrowserNode *) parent())->get_name());
       m.insertSeparator();
       if (edition_number == 0)
-	m.setWhatsThis(m.insertItem("delete", 7),
+	m.setWhatsThis(m.insertItem("Delete", 7),
 		       "to delete the <em>" + what + "</em>. \
 Note that you can undelete it after");
     }
-    m.setWhatsThis(m.insertItem("referenced by", 10),
+    m.setWhatsThis(m.insertItem("Referenced by", 10),
 		   "to know who reference the <i>state</i> \
 through a transition");
     mark_menu(m, what, 90);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("undelete", 8),
+    m.setWhatsThis(m.insertItem("Undelete", 8),
 		   "to undelete the <em>" + what + "</em>");
  
     QListViewItem * child;
   
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("undelete recursively", 9),
+	m.setWhatsThis(m.insertItem("Undelete recursively", 9),
 		       "undelete the " + what + " and its children");
 	break;
       }

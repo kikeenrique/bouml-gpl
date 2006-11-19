@@ -292,23 +292,23 @@ void BrowserClass::menu() {
 	const char * stereotype = def->get_stereotype();
 	
 	if (!strcmp(stereotype, "enum") || !strcmp(stereotype, "enum_pattern"))
-	  m.setWhatsThis(m.insertItem("add item", 8),
+	  m.setWhatsThis(m.insertItem("Add item", 8),
 			 "to add an <em>item</em> to the <em>enum</em>");
 	
 	if (strcmp(stereotype, "typedef") && strcmp(stereotype, "enum_pattern")) {
-	  m.setWhatsThis(m.insertItem("add attribute", 0),
+	  m.setWhatsThis(m.insertItem("Add attribute", 0),
 			 "to add an <em>attribute</em> to the <em>class</em>");
 
-	  m.setWhatsThis(m.insertItem("add operation", 1),
+	  m.setWhatsThis(m.insertItem("Add operation", 1),
 			 "to add an <em>operation</em> to the <em>class</em>");
 	  if ((l.count() != 0) && strcmp(stereotype, "union")) {
 	    if (l.count() > 20)
-	      m.setWhatsThis(m.insertItem("add inherited operation", 9999),
+	      m.setWhatsThis(m.insertItem("Add inherited operation", 9999),
 			     "to redefine an inherited <em>operation</em> in the <em>class</em>");
 	    else {
 	      BrowserOperation * oper;
 	      
-	      inhopersubm.insertItem(new MenuTitle("choose operation to add it", m.font()), -1);
+	      inhopersubm.insertItem(new MenuTitle("Choose operation to add it", m.font()), -1);
 	      inhopersubm.insertSeparator();
 	      
 	      for (oper = l.first(), index = 10000;
@@ -325,25 +325,25 @@ void BrowserClass::menu() {
 					 index);
 	      }
 	      
-	      m.setWhatsThis(m.insertItem("add inherited operation", &inhopersubm),
+	      m.setWhatsThis(m.insertItem("Add inherited operation", &inhopersubm),
 			     "to redefine an inherited <em>operation</em> in the <em>class</em>");
 	    }
 	  }
 	  if (strcmp(stereotype, "enum") && strcmp(stereotype, "enum_pattern")) {
-	    m.setWhatsThis(m.insertItem("add nested class", 14),
+	    m.setWhatsThis(m.insertItem("Add nested class", 14),
 			   "to add an <em>nested class</em> to the <em>class</em>");
 	  }
-	  m.setWhatsThis(m.insertItem("add extra member", 2),
+	  m.setWhatsThis(m.insertItem("Add extra member", 2),
 			 "to add an <em>extra member</em> to the <em>class</em>");
 	}
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("edit", 3),
+	m.setWhatsThis(m.insertItem("Edit", 3),
 		       "to edit the <em>class</em>, \
 a double click with the left mouse button does the same thing");
-	m.setWhatsThis(m.insertItem("duplicate", 13),
+	m.setWhatsThis(m.insertItem("Duplicate", 13),
 		       "to duplicate the <em>class</em>");
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("delete", 4),
+	m.setWhatsThis(m.insertItem("Delete", 4),
 		       "to delete the <em>class</em>. \
 Note that you can undelete it after");
 	
@@ -363,7 +363,7 @@ Note that you can undelete it after");
 	    if (child == 0) {
 	      // no artifact having the same name, propose to create it
 	      m.insertSeparator();
-	      m.setWhatsThis(m.insertItem("create source artifact", 5),
+	      m.setWhatsThis(m.insertItem("Create source artifact", 5),
 			     "to add a <em>&lt;&lt;source&gt;&gt; artifact</em> in the <em>deployment view</em> associated to \
 the <em>class view</em>, this artifact will contain the generated code of the class");
 	    }
@@ -372,7 +372,7 @@ the <em>class view</em>, this artifact will contain the generated code of the cl
       }
     }
     else
-      m.setWhatsThis(m.insertItem("edit", 3),
+      m.setWhatsThis(m.insertItem("Edit", 3),
 		     "to edit the <em>class</em>, \
 a double click with the left mouse button does the same thing");
     
@@ -381,7 +381,7 @@ a double click with the left mouse button does the same thing");
     if ((associated_artifact != 0) && !associated_artifact->deletedp()) {
       m.insertSeparator();
       have_sep = TRUE;
-      m.setWhatsThis(m.insertItem("select associated artifact", 5),
+      m.setWhatsThis(m.insertItem("Select associated artifact", 5),
 		     "to select the associated <em>&lt;&lt;source&gt;&gt; artifact</em>");
     }
     
@@ -391,13 +391,13 @@ a double click with the left mouse button does the same thing");
       
       if (associated_components.first() == associated_components.last())
 	// only one component
-	m.setWhatsThis(m.insertItem("select associated component", 100000),
+	m.setWhatsThis(m.insertItem("Select associated component", 100000),
 		       "to select a <em>component</em> realizing or providing the <em>class</em>");
       else {
 	compsubm.insertItem(new MenuTitle("Choose component", m.font()), -1);
 	compsubm.insertSeparator();
 	
-	m.setWhatsThis(m.insertItem("select an associated component", &compsubm),
+	m.setWhatsThis(m.insertItem("Select an associated component", &compsubm),
 		       "to select a <em>component</em> realizing or providing the <em>class</em>");
 	
 	index = 100000;
@@ -412,12 +412,12 @@ a double click with the left mouse button does the same thing");
     }
     
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("referenced by", 15),
+    m.setWhatsThis(m.insertItem("Referenced by", 15),
 		   "to know who reference the <i>class</i>");
     mark_menu(m, "class", 90);
     if (! nestedp()) {
       m.insertSeparator();
-      m.insertItem("generate", &gensubm);    
+      m.insertItem("Generate", &gensubm);    
       gensubm.insertItem("C++", 10);
       gensubm.insertItem("Java", 11);
       gensubm.insertItem("Idl", 12);
@@ -425,11 +425,11 @@ a double click with the left mouse button does the same thing");
     if ((edition_number == 0) && 
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("undelete", 6),
+    m.setWhatsThis(m.insertItem("Undelete", 6),
 		   "undelete the <em>class</em>. \
 Do not undelete its <em>attributes</em>, <em>operations</em> and <em>relations</em>");
  
@@ -437,7 +437,7 @@ Do not undelete its <em>attributes</em>, <em>operations</em> and <em>relations</
   
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("undelete recursively", 7),
+	m.setWhatsThis(m.insertItem("Undelete recursively", 7),
 		       "undelete the <em>class</em> and its \
 nested <em>classes</em>, <em>attributes</em>, <em>operations</em> and \
 <em>relations</em> (except if the class at the other side is also deleted)");
@@ -1065,8 +1065,8 @@ void BrowserClass::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	m.insertItem(new MenuTitle(bn->get_name() + QString(" moving"),
 				   m.font()), -1);
 	m.insertSeparator();
-	m.insertItem("in " + QString(get_name()), 1);
-	m.insertItem("after " + QString(get_name()), 2);
+	m.insertItem("In " + QString(get_name()), 1);
+	m.insertItem("After " + QString(get_name()), 2);
 	
 	switch (m.exec(QCursor::pos())) {
 	case 1:

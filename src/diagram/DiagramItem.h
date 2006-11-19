@@ -114,6 +114,9 @@ class DiagramItem : public Labeled<DiagramItem> {
     bool linked() { return !lines.isEmpty(); }
     void post_history_hide() { lines.clear(); }
     
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &);
+    
     static void post_load();
 };
 

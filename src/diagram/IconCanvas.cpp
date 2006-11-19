@@ -106,17 +106,17 @@ void IconCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name() + QString("\nshort cut"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
   if (! browser_node->deletedp()) {
-    m.insertItem("open", 2);
+    m.insertItem("Open", 2);
     m.insertSeparator();
   }
-  m.insertItem("select diagram in browser", 3);
-  m.insertItem("select linked items", 4);
+  m.insertItem("Select diagram in browser", 3);
+  m.insertItem("Select linked items", 4);
   m.insertSeparator();
-  m.insertItem("remove from view",5);
+  m.insertItem("Remove from view",5);
 
   switch (m.exec(QCursor::pos())) {
   case 0:

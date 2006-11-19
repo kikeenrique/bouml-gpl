@@ -138,6 +138,8 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	bool in_model = FALSE;
 	bool out_model = FALSE;
 	bool alignable = FALSE;
+	UmlCode k = UmlCodeSup;
+	QList<DiagramItem> l;
 	
 	for (it = selected.begin(); it != selected.end(); ++it) {
 	  if (! isa_label(*it)) {
@@ -147,12 +149,34 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	    
 	    item->delete_available(in_model, out_model);
 	    alignable |= item->alignable();
+	    
+	    if (item->has_drawing_settings()) {
+	      // note : relations doesn't have drawing setting, transition and flow have
+	      switch (k) {
+	      case UmlCodeSup:
+		// first case
+		k = item->type();
+		l.append(item);
+		break;
+	      case UmlArrowPoint:
+		// mark for several types
+		break;
+	      default:
+		if (item->type() == k)
+		  l.append(item);
+		else {
+		  // several types
+		  l.clear();
+		  k = UmlArrowPoint;	// mark for several types
+		}
+	      }
+	    }
 	  }	  
 	}
 	
 	if (n_targets > 1) {
 	  history_protected = TRUE;
-	  multiple_selection_menu(in_model, out_model, alignable);
+	  multiple_selection_menu(in_model, out_model, alignable, l);
 	  history_protected = FALSE;
 	  return;
 	}
@@ -753,7 +777,8 @@ void DiagramView::alignCenter() {
 
 
 void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
-					  bool alignable) {
+					  bool alignable,
+					  QList<DiagramItem> & l) {
   const QCanvasItemList selected = selection();
   QCanvasItemList::ConstIterator it;
   QPopupMenu m(0);
@@ -763,7 +788,7 @@ void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
   m.insertSeparator();
   for (it = selected.begin(); it != selected.end(); ++it) {
     if (QCanvasItemToDiagramItem(*it)->linked()) {
-      m.insertItem("select linked items", 1);
+      m.insertItem("Select linked items", 1);
       used = TRUE;
       m.insertSeparator();
       break;
@@ -789,18 +814,23 @@ void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
     al.insertItem(vcenter, "align center verticaly", 9);
     al.insertItem(hcenter, "align center horizontaly", 10);
 
-    m.insertItem("align", &al);
+    m.insertItem("Align", &al);
     m.insertSeparator();
   }
   
-  m.insertItem("copy selected (Ctrl+c)", 11);
-  m.insertItem("cut selected (Ctrl+x, remove from view)", 12);
+  m.insertItem("Copy selected (Ctrl+c)", 11);
+  m.insertItem("Cut selected (Ctrl+x, remove from view)", 12);
   
   if (out_model)
-    m.insertItem("remove selected from view (Suppr)", 2);
+    m.insertItem("Remove selected from view (Suppr)", 2);
   if (in_model)
-    m.insertItem("delete selected (Control+d)", 3);
+    m.insertItem("Delete selected (Control+d)", 3);
 
+  if (l.count() > 1) {
+    m.insertSeparator();
+    m.insertItem("Edit drawing settings", 13);
+  }
+  
   if (used || out_model || in_model || alignable) {
     history_protected = TRUE;
     
@@ -852,6 +882,10 @@ void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
       clipboard = window()->copy_selected();
       copied_from = window()->browser_diagram()->get_type();
       return;
+    case 13:
+      history_protected = FALSE;
+      l.first()->edit_drawing_settings(l);
+      break;
     default:
       return;
     }
@@ -1143,33 +1177,33 @@ void DiagramView::set_format(int f) {
 int DiagramView::default_menu(QPopupMenu & m, int f) {
   QPopupMenu formatm(0);
   
-  m.insertItem("edit drawing settings", EDIT_DRAWING_SETTING_CMD);
+  m.insertItem("Edit drawing settings", EDIT_DRAWING_SETTING_CMD);
   m.insertSeparator();
-  m.insertItem("select diagram in browser", 1);
-  m.insertItem("select all (Ctrl+a)", 2);
+  m.insertItem("Select diagram in browser", 1);
+  m.insertItem("Select all (Ctrl+a)", 2);
   m.insertSeparator();
-  m.insertItem("optimal scale", 7);
-  m.insertItem("optimal window size", 8);
+  m.insertItem("Optimal scale", 7);
+  m.insertItem("Optimal window size", 8);
   m.insertSeparator();
-  m.insertItem("copy optimal picture part", 13);
-  m.insertItem("copy visible picture part", 3);
-  m.insertItem("save optimal picture part", 14);
-  m.insertItem("save visible picture part", 10);
+  m.insertItem("Copy optimal picture part", 13);
+  m.insertItem("Copy visible picture part", 3);
+  m.insertItem("Save optimal picture part", 14);
+  m.insertItem("Save visible picture part", 10);
   if (!clipboard.isEmpty() &&
       (copied_from == window()->browser_diagram()->get_type()))
-    m.insertItem("paste copied items (Ctrl+v)", 9);
+    m.insertItem("Paste copied items (Ctrl+v)", 9);
   m.insertSeparator();
-  m.insertItem("set preferred size and scale", 4);
+  m.insertItem("Set preferred size and scale", 4);
   if (preferred_zoom != 0)
-    m.insertItem("restore preferred size and scale", 5);
+    m.insertItem("Restore preferred size and scale", 5);
   init_format_menu(formatm, f);
-  m.insertItem("format", &formatm);
+  m.insertItem("Format", &formatm);
   m.insertSeparator();
-  m.insertItem("undo all changes", RELOAD_CMD);
+  m.insertItem("Undo all changes", RELOAD_CMD);
   if (available_undo())
-    m.insertItem("undo (Ctrl+z or Ctrl+u)", 11);
+    m.insertItem("Undo (Ctrl+z or Ctrl+u)", 11);
   if (available_redo())
-    m.insertItem("redo (Ctrl+y or Ctrl+r)", 12);
+    m.insertItem("Redo (Ctrl+y or Ctrl+r)", 12);
 
   int choice = m.exec(QCursor::pos());
   

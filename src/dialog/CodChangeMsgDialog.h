@@ -49,6 +49,7 @@ class CodChangeMsgDialog : public QDialog {
     virtual ~CodChangeMsgDialog();
   
   protected slots:
+    void menu_op();
     virtual void polish();
     void accept();
 };

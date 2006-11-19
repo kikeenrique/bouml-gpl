@@ -119,23 +119,23 @@ void UcClassCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("edit", 7);
+    m.insertItem("Edit", 7);
     m.insertSeparator();
   }
-  m.insertItem("select in browser",2);
+  m.insertItem("Select in browser",2);
   if (linked())
-    m.insertItem("select linked items", 3);
+    m.insertItem("Select linked items", 3);
   m.insertSeparator();
-  m.insertItem("remove from view",5);
+  m.insertItem("Remove from view",5);
   if (browser_node->is_writable())
-    m.insertItem("delete from model", 6);
+    m.insertItem("Delete from model", 6);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlClass, 10))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
 
   int rank = m.exec(QCursor::pos());
   

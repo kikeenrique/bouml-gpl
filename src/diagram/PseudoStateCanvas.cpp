@@ -230,8 +230,8 @@ void PseudoStateCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(s, m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
   switch (browser_node->get_type()) {
   case ForkPS:
@@ -242,23 +242,23 @@ void PseudoStateCanvas::menu(const QPoint&) {
   default:
     break;
   }
-  /*m.insertItem("edit drawing settings", 2);
+  /*m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();*/
-  m.insertItem("edit pseudo state", 3);
+  m.insertItem("Edit pseudo state", 3);
   m.insertSeparator();
-  m.insertItem("select in browser", 4);
+  m.insertItem("Select in browser", 4);
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
   /*if (browser_node->is_writable())
-    m.insertItem("set associated diagram",6);
+    m.insertItem("Set associated diagram",6);
   m.insertSeparator();*/
-  m.insertItem("remove from view", 7);
+  m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
-    m.insertItem("delete from model", 8);
+    m.insertItem("Delete from model", 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, browser_node->get_type(), 10))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:

@@ -91,7 +91,7 @@ void ColDiagramView::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle("Collaboration diagram menu", m.font()), -1);
   m.insertSeparator();
-  m.insertItem("edit all the messages", 19);
+  m.insertItem("Edit all the messages", 19);
  
   switch (default_menu(m, 20)) {
   case EDIT_DRAWING_SETTING_CMD:

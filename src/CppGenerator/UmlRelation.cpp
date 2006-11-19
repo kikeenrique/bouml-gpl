@@ -426,6 +426,10 @@ void UmlRelation::generate_def(QTextOStream & f, QCString indent, bool h,
 	}
 	else if (!strncmp(p, "${h_value}", 10))
 	  p += 10;
+	else if (!strncmp(p, "${association}", 14)) {
+	  p += 14;
+	  UmlClass::write(f, association());
+	}
 	else
 	  // strange
 	  f << *p++;

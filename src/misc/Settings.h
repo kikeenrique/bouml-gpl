@@ -78,6 +78,7 @@ class ClassDiagramSettings {
     
     bool complete(ClassDiagramSettings & result) const;
     void complete(QArray<StateSpec> & a, UmlCode who);
+    void set(QArray<StateSpec> & a, int index);
     void save(QTextStream &) const;
     void read(char * &, char * &);
 };
@@ -234,6 +235,7 @@ class ActivityDrawingSettings {
     
     bool complete(ActivityDrawingSettings & result) const;
     void complete(QArray<StateSpec> & a, bool local);
+    void set(QArray<StateSpec> & a, int index);
     void save(QTextStream &) const;
     void read(char * &, char * &);
 };

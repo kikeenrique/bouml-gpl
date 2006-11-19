@@ -461,29 +461,29 @@ void ActivityCanvas::menu(const QPoint&) {
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("add parameter", 9);
+    m.insertItem("Add parameter", 9);
     m.insertSeparator();
   }
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 2);
+  m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
-  m.insertItem("edit activity", 3);
+  m.insertItem("Edit activity", 3);
   m.insertSeparator();
-  m.insertItem("select in browser", 4);
+  m.insertItem("Select in browser", 4);
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable())
-    m.insertItem("set associated diagram",6);
+    m.insertItem("Set associated diagram",6);
   m.insertSeparator();
-  m.insertItem("remove from view", 7);
+  m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
-    m.insertItem("delete from model", 8);
+    m.insertItem("Delete from model", 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlActivity, 10))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -544,6 +544,40 @@ void ActivityCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+bool ActivityCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void ActivityCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<StateSpec> st(2);
+  QArray<ColorSpec> co(1);
+  Uml3States show_infonote;
+  DrawingLanguage drawing_language;
+  UmlColor itscolor;
+  
+  st[0].set("show conditions", &show_infonote);
+  st[1].set("drawing language", &drawing_language);
+  
+  co[0].set("activity color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      if (st[0].name != 0)
+	((ActivityCanvas *) it.current())->settings.show_infonote = show_infonote;
+      if (st[1].name != 0)
+	((ActivityCanvas *) it.current())->settings.drawing_language = drawing_language;
+      if (co[0].name != 0)
+	((ActivityCanvas *) it.current())->itscolor = itscolor;
+      ((ActivityCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }
 }
 
 const char * ActivityCanvas::may_start(UmlCode & l) const {

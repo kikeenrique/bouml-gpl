@@ -64,6 +64,9 @@ class NoteCanvas : public QObject, public DiagramCanvas {
     virtual void history_save(QBuffer &) const;
     virtual void history_load(QBuffer &);
     virtual void history_hide();
+    
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &);
 
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;
     static NoteCanvas * read(char * &, UmlCanvas *, char *);

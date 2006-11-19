@@ -108,19 +108,19 @@ void TextCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle("Text", m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit", 2);
+  m.insertItem("Edit", 2);
   m.insertSeparator();
-  m.insertItem("font", &fontsubm);  
+  m.insertItem("Font", &fontsubm);  
   init_font_menu(fontsubm, the_canvas(), 10);
   if (linked()) {
     m.insertSeparator();
-    m.insertItem("select linked items", 3);
+    m.insertItem("Select linked items", 3);
   }
   m.insertSeparator();
-  m.insertItem("remove from view",4);
+  m.insertItem("Remove from view",4);
 
   int index = m.exec(QCursor::pos());
   

@@ -349,28 +349,28 @@ void ActivityObjectCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(s, m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 2);
+  m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
-  m.insertItem("edit activity object", 3);
+  m.insertItem("Edit activity object", 3);
   m.insertSeparator();
-  m.insertItem("select in browser", 4);
+  m.insertItem("Select in browser", 4);
   if (cl != 0)
-    m.insertItem("select class in browser", 9);
+    m.insertItem("Select class in browser", 9);
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable())
-    m.insertItem("set associated diagram",6);
+    m.insertItem("Set associated diagram",6);
   m.insertSeparator();
-  m.insertItem("remove from view", 7);
+  m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
-    m.insertItem("delete from model", 8);
+    m.insertItem("Delete from model", 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlActivityObject, 10))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
   
   int index;
 
@@ -431,6 +431,40 @@ void ActivityObjectCanvas::menu(const QPoint&) {
     if (index >= 10)
       ToolCom::run(Tool::command(index - 10), browser_node);
     return;
+  }
+}
+
+bool ActivityObjectCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void ActivityObjectCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<StateSpec> st(1);
+  QArray<ColorSpec> co(1);
+  Uml3States write_horizontally;
+  UmlColor itscolor;
+  ActivityDrawingSettings settings;
+  
+  st[0].set("write name:type \nhorizontally", &write_horizontally);
+  settings.complete(st, TRUE);
+  
+  co[0].set("class instance color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      if (st[0].name != 0)
+	((ActivityObjectCanvas *) it.current())->write_horizontally =
+	  write_horizontally;
+      if (co[0].name != 0)
+	((ActivityObjectCanvas *) it.current())->itscolor = itscolor;
+      ((ActivityObjectCanvas *) it.current())->settings.set(st, 1);
+      ((ActivityObjectCanvas *) it.current())->modified();	// call package_modified()
+    }
   }
 }
 

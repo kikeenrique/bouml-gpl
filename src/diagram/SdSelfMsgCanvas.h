@@ -43,6 +43,10 @@ class SdSelfMsgCanvas : public SdMsgBaseCanvas {
 				 SdDurationCanvas * newone);
     virtual void menu(const QPoint&);
     virtual void select_associated();
+    
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &);
+    
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static SdSelfMsgCanvas * read(char * &, UmlCanvas *, char *);
 };

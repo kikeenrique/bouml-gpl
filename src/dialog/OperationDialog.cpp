@@ -575,7 +575,7 @@ void OperationDialog::menu_returntype() {
   int index = list.findIndex(edreturn_type->currentText().stripWhiteSpace());
   
   if (index != -1)
-    m.insertItem("select in browser", 0);
+    m.insertItem("Select in browser", 0);
   
   BrowserNode * bn = 0;
   
@@ -583,7 +583,7 @@ void OperationDialog::menu_returntype() {
     bn = BrowserView::selected_item();
     
     if ((bn->get_type() == UmlClass) && !bn->deletedp())
-      m.insertItem("choose class selected in browser", 1);
+      m.insertItem("Choose class selected in browser", 1);
     else
       bn = 0;
   }
@@ -2375,14 +2375,14 @@ void ParamsTable::button_pressed(int row, int col, int, const QPoint &) {
     QPopupMenu m;
     m.insertItem(s, -1);
     m.insertSeparator();
-    m.insertItem("insert param before", 0);
-    m.insertItem("insert param after", 1);
+    m.insertItem("Insert param before", 0);
+    m.insertItem("Insert param after", 1);
     m.insertSeparator();
-    m.insertItem("delete param", 2);
+    m.insertItem("Delete param", 2);
     m.insertSeparator();
-    m.insertItem("copy param", 3);
-    m.insertItem("cut param", 4);
-    m.insertItem("paste param", 5);
+    m.insertItem("Copy param", 3);
+    m.insertItem("Cut param", 4);
+    m.insertItem("Paste param", 5);
     m.insertSeparator();
 
     QPopupMenu mv;
@@ -2392,7 +2392,7 @@ void ParamsTable::button_pressed(int row, int col, int, const QPoint &) {
       if (rank != row)
 	mv.insertItem(QString::number(rank + 1), 10 + rank);
     
-    m.insertItem("move param", &mv);
+    m.insertItem("Move param", &mv);
     
     switch (rank = m.exec(QCursor::pos())) {
     case 0:
@@ -2678,14 +2678,14 @@ void ExceptionsTable::button_pressed(int row, int col, int, const QPoint &) {
     QPopupMenu m;
     m.insertItem(s, -1);
     m.insertSeparator();
-    m.insertItem("insert exception before", 0);
-    m.insertItem("insert exception after", 1);
+    m.insertItem("Insert exception before", 0);
+    m.insertItem("Insert exception after", 1);
     m.insertSeparator();
-    m.insertItem("delete exception", 2);
+    m.insertItem("Delete exception", 2);
     m.insertSeparator();
-    m.insertItem("copy exception", 3);
-    m.insertItem("cut exception", 4);
-    m.insertItem("paste exception", 5);
+    m.insertItem("Copy exception", 3);
+    m.insertItem("Cut exception", 4);
+    m.insertItem("Paste exception", 5);
     m.insertSeparator();
 
     QPopupMenu mv;
@@ -2695,7 +2695,7 @@ void ExceptionsTable::button_pressed(int row, int col, int, const QPoint &) {
       if (rank != row)
 	mv.insertItem(QString::number(rank + 1), 10 + rank);
     
-    m.insertItem("move exception", &mv);
+    m.insertItem("Move exception", &mv);
     
     switch (rank = m.exec(QCursor::pos())) {
     case 0:
@@ -3217,14 +3217,14 @@ void CppParamsTable::button_pressed(int row, int col, int, const QPoint &) {
     QPopupMenu m;
     m.insertItem(s, -1);
     m.insertSeparator();
-    m.insertItem("insert param before", 0);
-    m.insertItem("insert param after", 1);
+    m.insertItem("Insert param before", 0);
+    m.insertItem("Insert param after", 1);
     m.insertSeparator();
-    m.insertItem("delete param", 2);
+    m.insertItem("Delete param", 2);
     m.insertSeparator();
-    m.insertItem("copy param", 3);
-    m.insertItem("cut param", 4);
-    m.insertItem("paste param", 5);
+    m.insertItem("Copy param", 3);
+    m.insertItem("Cut param", 4);
+    m.insertItem("Paste param", 5);
     m.insertSeparator();
     
     QPopupMenu mv;
@@ -3234,7 +3234,7 @@ void CppParamsTable::button_pressed(int row, int col, int, const QPoint &) {
       if (rank != row)
 	mv.insertItem(QString::number(rank + 1), 10 + rank);
     
-    m.insertItem("move param", &mv);
+    m.insertItem("Move param", &mv);
     m.insertSeparator();
     
     QPopupMenu rk;
@@ -3253,7 +3253,7 @@ void CppParamsTable::button_pressed(int row, int col, int, const QPoint &) {
 	  ((rank != t_i) || (rank != p_i)))
 	rk.insertItem(QString::number(rank), 100 + rank);
     
-    m.insertItem("set rank <i>", &rk);
+    m.insertItem("Set rank <i>", &rk);
     
     switch (rank = m.exec(QCursor::pos())) {
     case 0:

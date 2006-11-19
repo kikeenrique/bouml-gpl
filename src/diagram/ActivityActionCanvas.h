@@ -103,6 +103,9 @@ class ActivityActionCanvas : public QObject, public DiagramCanvas {
     virtual bool move_with_its_package() const;
     virtual void moveBy(double dx, double dy);
     
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &);
+    
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;
     static ActivityActionCanvas * read(char * &, UmlCanvas *, char *);
     

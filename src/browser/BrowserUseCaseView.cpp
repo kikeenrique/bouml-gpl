@@ -129,35 +129,35 @@ void BrowserUseCaseView::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
-      m.setWhatsThis(m.insertItem("new use case diagram", 0),
+      m.setWhatsThis(m.insertItem("New use case diagram", 0),
 		     "to add a <em>use case diagram</em>");
-      m.setWhatsThis(m.insertItem("new sequence diagram", 1),
+      m.setWhatsThis(m.insertItem("New sequence diagram", 1),
 		     "to add a <em>sequence diagram</em>");
-      m.setWhatsThis(m.insertItem("new collaboration diagram", 2),
+      m.setWhatsThis(m.insertItem("New collaboration diagram", 2),
 		     "to add a <em>collaboration diagram</em>");
-      m.setWhatsThis(m.insertItem("new object diagram", 13),
+      m.setWhatsThis(m.insertItem("New object diagram", 13),
 		     "to add a <em>object diagram</em>");
-      m.setWhatsThis(m.insertItem("new use case", 3),
+      m.setWhatsThis(m.insertItem("New use case", 3),
 		     "to add a <em>use case</em>");
-      m.setWhatsThis(m.insertItem("new actor", 4),
+      m.setWhatsThis(m.insertItem("New actor", 4),
 		     "to add an <em>actor</em>");
-      m.setWhatsThis(m.insertItem("new class", 5),
+      m.setWhatsThis(m.insertItem("New class", 5),
 		     "to add a <em>class</em>");
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("new sub use case view", 6),
+      m.setWhatsThis(m.insertItem("New sub use case view", 6),
 		     "to add a sub <em>use case view</em>");
       m.insertSeparator();
     }
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("edit", 8),
+      m.setWhatsThis(m.insertItem("Edit", 8),
 		     "to edit the <em>use case view</em>");
       if (!is_read_only) {
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("edit drawing settings", 9),
+	m.setWhatsThis(m.insertItem("Edit drawing settings", 9),
 		       "to set how the sub <em>diagrams</em>'s items must be drawed");
 	if (edition_number == 0) {
 	  m.insertSeparator();
-	  m.setWhatsThis(m.insertItem("delete", 10),
+	  m.setWhatsThis(m.insertItem("Delete", 10),
 			 "to delete the <em>use case view</em> and its sub items. \
 Note that you can undelete them after");
 	}
@@ -167,14 +167,14 @@ Note that you can undelete them after");
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("undelete", 11),
+    m.setWhatsThis(m.insertItem("Undelete", 11),
 		   "undelete the <em>use case view</em>. \
 Do not undelete its sub items");
-    m.setWhatsThis(m.insertItem("undelete recursively", 12),
+    m.setWhatsThis(m.insertItem("Undelete recursively", 12),
 		   "undelete the <em>use case view</em> and its sub items");
   }
   
@@ -585,8 +585,8 @@ void BrowserUseCaseView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	m.insertItem(new MenuTitle(bn->get_name() + QString(" moving"),
 				   m.font()), -1);
 	m.insertSeparator();
-	m.insertItem("in " + QString(get_name()), 1);
-	m.insertItem("after " + QString(get_name()), 2);
+	m.insertItem("In " + QString(get_name()), 1);
+	m.insertItem("After " + QString(get_name()), 2);
 	
 	switch (m.exec(QCursor::pos())) {
 	case 1:

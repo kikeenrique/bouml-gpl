@@ -36,6 +36,8 @@
 #include <qpushbutton.h>
 #include <qbuttongroup.h>
 #include <qradiobutton.h> 
+#include <qpopupmenu.h>
+#include <qcursor.h>
 
 #include "SdMsgDialog.h"
 #include "SdMsgBaseCanvas.h"
@@ -46,6 +48,7 @@
 #include "SdObjCanvas.h"
 #include "DialogUtil.h"
 #include "UmlDesktop.h"
+#include "BrowserView.h"
 
 QSize SdMsgDialog::previous_size;
 
@@ -60,7 +63,12 @@ SdMsgDialog::SdMsgDialog(SdMsgBaseCanvas * a)
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  hbox->addWidget(new QLabel("message : ", this));
+  
+  SmallPushButton * b = new SmallPushButton("message :", this);
+  
+  hbox->addWidget(b);
+  connect(b, SIGNAL(clicked()), this, SLOT(menu_op()));
+  
   edoper = new QComboBox(TRUE, this);
   if (a->msg == 0)
     edoper->insertItem(a->explicit_msg);
@@ -140,6 +148,37 @@ void SdMsgDialog::polish() {
 
 SdMsgDialog::~SdMsgDialog() {
   previous_size = size();
+}
+
+void SdMsgDialog::menu_op() {
+  QPopupMenu m(0);
+
+  m.insertItem("Choose", -1);
+  m.insertSeparator();
+  
+  int index = list.findIndex(edoper->currentText().stripWhiteSpace());
+  
+  if (index != -1)
+    m.insertItem("Select in browser", 0);
+  
+  BrowserNode * bn = BrowserView::selected_item();
+  
+  if ((bn->get_type() == UmlOperation) &&
+      !bn->deletedp() &&
+      (opers.findIndex((OperationData *) bn->get_data()) != -1))
+    m.insertItem("Choose operation selected in browser", 1);
+  else
+    bn = 0;
+  
+  if ((index != -1) || (bn != 0)) {
+    switch (m.exec(QCursor::pos())) {
+    case 0:
+      opers[index]->get_browser_node()->select_in_browser();
+      break;
+    case 1:
+      edoper->setCurrentItem(opers.findIndex((OperationData *) bn->get_data()) + 1);
+    }
+  }
 }
 
 void SdMsgDialog::accept() {

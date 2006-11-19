@@ -289,6 +289,25 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
   }
 }
 
+void ClassDiagramSettings::set(QArray<StateSpec> & a, int index) {
+  if (a[index].name != 0)
+    drawing_language = (DrawingLanguage) *((DrawingLanguage *) a[index].state);
+  if (a[index + 1].name != 0)
+    class_drawing_mode = (ClassDrawingMode) *((ClassDrawingMode *) a[index + 1].state);
+  if (a[index + 2].name != 0)
+    show_context_mode = (ShowContextMode) *((ShowContextMode *) a[index + 2].state);
+  if (a[index + 3].name != 0)
+    hide_attributes = (Uml3States) *((Uml3States *) a[index + 3].state);
+  if (a[index + 4].name != 0)
+    hide_operations = (Uml3States) *((Uml3States *) a[index + 4].state);
+  if (a[index + 5].name != 0)
+    show_full_members_definition = (Uml3States) *((Uml3States *) a[index + 5].state);
+  if (a[index + 6].name != 0)
+    show_members_visibility = (Uml3States) *((Uml3States *) a[index + 6].state);
+  if (a[index + 7].name != 0)
+    draw_all_relations = (Uml3States) *((Uml3States *) a[index + 7].state);
+}
+
 //
 
 SequenceDiagramSettings::SequenceDiagramSettings() {
@@ -1087,4 +1106,11 @@ void ActivityDrawingSettings::complete(QArray<StateSpec> & a, bool local) {
   a[i + 1].set((local) ? "drawing language"
 		       : "activity#drawing language", 
 	       &drawing_language);
+}
+
+void ActivityDrawingSettings::set(QArray<StateSpec> & a, int index) {
+  if (a[index].name != 0)
+    show_infonote = (Uml3States) *((Uml3States *) a[index].state);
+  if (a[index + 1].name != 0)
+    drawing_language = (DrawingLanguage) *((DrawingLanguage *) a[index + 1].state);
 }

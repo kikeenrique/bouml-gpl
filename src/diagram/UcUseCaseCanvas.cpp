@@ -163,26 +163,26 @@ void UcUseCaseCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit", 2);
+  m.insertItem("Edit", 2);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 3);
+  m.insertItem("Edit drawing settings", 3);
   m.insertSeparator();
-  m.insertItem("select in browser",4);
+  m.insertItem("Select in browser",4);
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable())
-    m.insertItem("set associated diagram",6);
+    m.insertItem("Set associated diagram",6);
   m.insertSeparator();
-  m.insertItem("remove from view",7);
+  m.insertItem("Remove from view",7);
   if (browser_node->is_writable())
-    m.insertItem("delete from model", 8);
+    m.insertItem("Delete from model", 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlUseCase, 10))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
 
   int rank = m.exec(QCursor::pos());
   
@@ -206,6 +206,7 @@ void UcUseCaseCanvas::menu(const QPoint&) {
 
       SettingsDialog dialog(0, &co, FALSE, TRUE);
       
+      dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();
       return;
@@ -237,6 +238,29 @@ void UcUseCaseCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+bool UcUseCaseCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void UcUseCaseCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<ColorSpec> co(1);
+  UmlColor itscolor;
+  
+  co[0].set("use case color", &itscolor);
+  
+  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      ((UcUseCaseCanvas *) it.current())->itscolor = itscolor;
+      ((UcUseCaseCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }
 }
 
 const char * UcUseCaseCanvas::may_start(UmlCode & l) const {

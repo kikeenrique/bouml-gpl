@@ -92,6 +92,9 @@ class CdClassCanvas : public QObject, public DiagramCanvas,
     virtual void set_z(double z);	// only called by upper() & lower()
     virtual void history_load(QBuffer &);
     virtual void history_hide();
+    
+    virtual bool has_drawing_settings() const;
+    virtual void edit_drawing_settings(QList<DiagramItem> &);
   
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;
     static CdClassCanvas * read(char * &, UmlCanvas *, char *);

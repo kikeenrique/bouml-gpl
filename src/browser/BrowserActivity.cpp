@@ -204,55 +204,55 @@ void BrowserActivity::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("new activity diagram", 0),
+      m.setWhatsThis(m.insertItem("New activity diagram", 0),
 		     "to add a <em>activity diagram</em>");
-      m.setWhatsThis(m.insertItem("add parameter", 1),
+      m.setWhatsThis(m.insertItem("Add parameter", 1),
 		     "to add a <em>Parameter</em> to the <em>activity</em>");
-      m.setWhatsThis(m.insertItem("add interruptible activity region", 2),
+      m.setWhatsThis(m.insertItem("Add interruptible activity region", 2),
 		     "to add an <em>Interruptible Activity Region</em> to the <em>activity</em>");
-      m.setWhatsThis(m.insertItem("new expansion region", 3),
+      m.setWhatsThis(m.insertItem("New expansion region", 3),
 		     "to add a nested <em>expansion region</em>");
 #if 0
-      m.setWhatsThis(m.insertItem("add partition", 4),
+      m.setWhatsThis(m.insertItem("Add partition", 4),
 		     "to add a <em>Partition</em> to the <em>activity</em>");
 #endif
-      m.setWhatsThis(m.insertItem("add activity action", 7),
+      m.setWhatsThis(m.insertItem("Add activity action", 7),
 		     "to add an <em>activity action</em> to the <em>activity</em>");
-      m.setWhatsThis(m.insertItem("add object node", 8),
+      m.setWhatsThis(m.insertItem("Add object node", 8),
 		     "to add an <em>activity object node</em> to the <em>activity</em>");
       m.insertSeparator();
     }
-    m.setWhatsThis(m.insertItem("edit", 5),
+    m.setWhatsThis(m.insertItem("Edit", 5),
 		   "to edit the <em>artivity</em>, \
 a double click with the left mouse button does the same thing");
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("duplicate", 6),
+      m.setWhatsThis(m.insertItem("Duplicate", 6),
 		     "to copy the <em>activity</em> in a new one");
       m.insertSeparator();
       if (edition_number == 0)
-	m.setWhatsThis(m.insertItem("delete", 9),
+	m.setWhatsThis(m.insertItem("Delete", 9),
 		       "to delete the <em>activity</em>. \
 Note that you can undelete it after");
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("referenced by", 12),
+    m.setWhatsThis(m.insertItem("Referenced by", 12),
 		   "to know who reference the <i>activity</i>");
     mark_menu(m, "activity", 90);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("tool", &toolm);
+      m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("undelete", 10),
+    m.setWhatsThis(m.insertItem("Undelete", 10),
 		   "to undelete the <em>activity</em>");
  
     QListViewItem * child;
   
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("undelete recursively", 11),
+	m.setWhatsThis(m.insertItem("Undelete recursively", 11),
 		       "undelete the activity and its children");
 	break;
       }

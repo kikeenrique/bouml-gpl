@@ -433,27 +433,27 @@ void ArtifactCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 2);
+  m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
-  m.insertItem("edit artifact", 3);
+  m.insertItem("Edit artifact", 3);
   m.insertSeparator();
-  m.insertItem("select in browser", 4);
+  m.insertItem("Select in browser", 4);
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable())
-    m.insertItem("set associated diagram",6);
+    m.insertItem("Set associated diagram",6);
   m.insertSeparator();
-  m.insertItem("remove from view", 7);
+  m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
-    m.insertItem("delete from model", 8);
+    m.insertItem("Delete from model", 8);
   m.insertSeparator();
-  m.insertItem("generate", &gensubm);
+  m.insertItem("Generate", &gensubm);
   if (Tool::menu_insert(&toolm, UmlArtifact, 20))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
   
   gensubm.insertItem("C++", 9);
   gensubm.insertItem("Java", 10);
@@ -534,6 +534,29 @@ void ArtifactCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+bool ArtifactCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void ArtifactCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<ColorSpec> co(1);
+  UmlColor itscolor;
+  
+  co[0].set("artifact color", &itscolor);
+  
+  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      ((ArtifactCanvas *) it.current())->itscolor = itscolor;
+      ((ArtifactCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }
 }
 
 const char * ArtifactCanvas::may_start(UmlCode & l) const {

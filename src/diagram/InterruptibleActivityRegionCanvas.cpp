@@ -222,26 +222,26 @@ void InterruptibleActivityRegionCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 2);
+  m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
-  m.insertItem("edit interruptible activity region", 3);
+  m.insertItem("Edit interruptible activity region", 3);
   m.insertSeparator();
-  m.insertItem("select in browser", 4);
+  m.insertItem("Select in browser", 4);
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable())
-    m.insertItem("set associated diagram",6);
+    m.insertItem("Set associated diagram",6);
   m.insertSeparator();
-  m.insertItem("remove from view", 7);
+  m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
-    m.insertItem("delete from model", 8);
+    m.insertItem("Delete from model", 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlInterruptibleActivityRegion, 10))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -260,6 +260,7 @@ void InterruptibleActivityRegionCanvas::menu(const QPoint&) {
 
       SettingsDialog dialog(0, &co, FALSE, TRUE);
       
+      dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();	// call package_modified()
     }
@@ -294,6 +295,29 @@ void InterruptibleActivityRegionCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+bool InterruptibleActivityRegionCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void InterruptibleActivityRegionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<ColorSpec> co(1);
+  UmlColor itscolor;
+  
+  co[0].set("interruptible activity region color", &itscolor);
+  
+  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      ((InterruptibleActivityRegionCanvas *) it.current())->itscolor = itscolor;
+      ((InterruptibleActivityRegionCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }
 }
 
 const char * InterruptibleActivityRegionCanvas::may_start(UmlCode & l) const {

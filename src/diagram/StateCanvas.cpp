@@ -486,26 +486,26 @@ void StateCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("upper", 0);
-  m.insertItem("lower", 1);
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
   m.insertSeparator();
-  m.insertItem("edit drawing settings", 2);
+  m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
-  m.insertItem("edit state", 3);
+  m.insertItem("Edit state", 3);
   m.insertSeparator();
-  m.insertItem("select in browser", 4);
+  m.insertItem("Select in browser", 4);
   if (linked())
-    m.insertItem("select linked items", 5);
+    m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable())
-    m.insertItem("set associated diagram",6);
+    m.insertItem("Set associated diagram",6);
   m.insertSeparator();
-  m.insertItem("remove from view", 7);
+  m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
-    m.insertItem("delete from model", 8);
+    m.insertItem("Delete from model", 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlState, 10))
-    m.insertItem("tool", &toolm);
+    m.insertItem("Tool", &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -529,6 +529,7 @@ void StateCanvas::menu(const QPoint&) {
 
       SettingsDialog dialog(&st, &co, FALSE, TRUE);
       
+      dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
 	modified();	// call package_modified()
     }
@@ -563,6 +564,47 @@ void StateCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+bool StateCanvas::has_drawing_settings() const {
+  return TRUE;
+}
+
+void StateCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
+  QArray<StateSpec> st(3);
+  QArray<ColorSpec> co(1);
+  Uml3States show_activities;
+  Uml3States region_horizontally;
+  UmlColor itscolor;
+  DrawingLanguage language;
+  
+  st[0].set("show activities", &show_activities);
+  st[1].set("draw regions horizontally", &region_horizontally);
+  st[2].set("drawing language", &language);
+  
+  co[0].set("state color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted) {
+    QListIterator<DiagramItem> it(l);
+    
+    for (; it.current(); ++it) {
+      if (st[0].name != 0)
+	((StateCanvas *) it.current())->settings.show_activities =
+	  show_activities;
+      if (st[1].name != 0)
+	((StateCanvas *) it.current())->settings.region_horizontally =
+	  region_horizontally;
+      if (st[2].name != 0)
+	((StateCanvas *) it.current())->settings.drawing_language =
+	  language;
+      if (co[0].name != 0)
+	((StateCanvas *) it.current())->itscolor = itscolor;
+      ((StateCanvas *) it.current())->modified();	// call package_modified()
+    }
+  }
 }
 
 const char * StateCanvas::may_start(UmlCode & l) const {

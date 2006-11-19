@@ -354,8 +354,8 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
     m.insertItem(new MenuTitle("Choose", m.font()), -1);
     m.insertSeparator();
     if (!the_canvas()->already_drawn(bn))
-      m.insertItem("draw activity", 0);
-    m.insertItem("add a call behavior", 1);
+      m.insertItem("Draw activity", 0);
+    m.insertItem("Add a call behavior", 1);
 
     switch (m.exec(QCursor::pos())) {
     case 0:
@@ -590,11 +590,11 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
   
     m.insertItem(new MenuTitle("Choose", m.font()), -1);
     m.insertSeparator();
-    m.insertItem("add a read variable value action", 0);
-    m.insertItem("add a clear variable value action", 1);
-    m.insertItem("add a write variable value action", 2);
-    m.insertItem("add a add variable value action", 3);
-    m.insertItem("add a remove variable value action", 4);
+    m.insertItem("Add a read variable value action", 0);
+    m.insertItem("Add a clear variable value action", 1);
+    m.insertItem("Add a write variable value action", 2);
+    m.insertItem("Add a add variable value action", 3);
+    m.insertItem("Add a remove variable value action", 4);
 
     switch (m.exec(QCursor::pos())) {
     case 0:

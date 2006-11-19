@@ -84,7 +84,8 @@ class DiagramView : public QCanvasView {
     void fit_scale();
     void preferred_size_zoom();
     bool has_preferred_size_zoom() { return preferred_zoom != 0; }
-    void multiple_selection_menu(bool in_model, bool out_model, bool alignable);
+    void multiple_selection_menu(bool in_model, bool out_model, bool alignable,
+				 QList<DiagramItem> &);
     
     virtual UmlCanvas * the_canvas() const;
 
