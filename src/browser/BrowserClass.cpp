@@ -445,18 +445,37 @@ nested <em>classes</em>, <em>attributes</em>, <em>operations</em> and \
       }
     }
   }
-    
-  switch (index = m.exec(QCursor::pos())) {
+
+  exec_menu_choice(m.exec(QCursor::pos()), l);
+}
+
+void BrowserClass::exec_menu_choice(int index,
+				    QList<BrowserOperation> & l) {
+  switch (index) {
   case 0:
   case 8:
-    add_attribute(0, index == 8);
+    {
+      BrowserNode * bn = add_attribute(0, index == 8);
+      
+      if (bn != 0)
+	bn->open(TRUE);
+    }
     return;
   case 1:
-    add_operation();
+    {
+      BrowserNode * bn = add_operation();
+      
+      if (bn != 0)
+	bn->open(TRUE);
+    }
     return;
   case 2:
-    add_extra_member();
-    setOpen(TRUE);
+    {
+      BrowserNode * bn = add_extra_member();
+      
+      if (bn != 0)
+	bn->open(TRUE);
+    }
     return;
   case 3:
     // modal edition
@@ -566,6 +585,103 @@ nested <em>classes</em>, <em>attributes</em>, <em>operations</em> and \
   package_modified();
 }
 
+void BrowserClass::apply_shortcut(QString s) {
+  int choice = -1;
+
+  if (!deletedp()) {
+    if (!is_read_only) {
+      if (edition_number == 0) {
+	
+	const char * stereotype = def->get_stereotype();
+	
+	if (!strcmp(stereotype, "enum") || !strcmp(stereotype, "enum_pattern"))
+	  if (s == "New item")
+	    choice = 8;
+	
+	if (strcmp(stereotype, "typedef") && strcmp(stereotype, "enum_pattern")) {
+	  if (s == "New attribute")
+	    choice = 0;
+	  else if (s == "New operation")
+	    choice = 1;
+	  if (strcmp(stereotype, "enum") && strcmp(stereotype, "enum_pattern")) {
+	    if (s == "New class")
+	      choice = 14;
+	  }
+	  if (s == "New extra member")
+	    choice = 2;
+	}
+	if (s == "Edit")
+	  choice = 3;
+	else if (s == "Duplicate")
+	  choice = 13;
+	else if (s == "Delete")
+	  choice = 4;
+	
+	if ((associated_artifact == 0) &&
+	    (((BrowserNode *) parent())->get_type() == UmlClassView)) {
+	  BrowserNode * bcv = ((BrowserClassView *) parent())->get_associated();
+	  
+	  if ((bcv != 0) && !bcv->deletedp()) {
+	    QListViewItem * child;
+	    
+	    for (child = bcv->firstChild(); child; child = child->nextSibling())
+	      if (!((BrowserNode *) child)->deletedp() &&
+		  (((BrowserNode *) child)->get_type() == UmlArtifact) &&
+		  (((BrowserNode *) child)->get_name() == name))
+		break;
+	    
+	    if (child == 0) {
+	      // no artifact having the same name, propose to create it
+	      if (s == "Create source artifact")
+		choice = 5;
+	    }
+	  }
+	}
+      }
+    }
+    else
+      if (s == "Edit")
+	choice = 3;
+    
+    if ((associated_artifact != 0) && !associated_artifact->deletedp()) {
+      if (s == "Select associated artifact")
+	choice = 5;
+    }
+    
+    if (s == "Referenced by")
+      choice = 15;
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+    if (! nestedp()) {
+      if (s == "Generate C++")
+	choice = 10;
+      else if (s == "Generate Java")
+	choice = 11;
+      else if (s == "Generate Idl")
+	choice = 12;
+    }
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    if (s == "Undelete")
+      choice = 6;
+ 
+    QListViewItem * child;
+  
+    for (child = firstChild(); child != 0; child = child->nextSibling()) {
+      if (((BrowserNode *) child)->deletedp()) {
+	if (s == "Undelete recursively")
+	  choice = 7;
+	break;
+      }
+    }
+  }
+    
+  QList<BrowserOperation> l;
+  
+  exec_menu_choice(choice, l);
+}
+
 BrowserNode * BrowserClass::duplicate(BrowserNode * p, QString name) {
   BrowserClass * result = new BrowserClass(this, p);
   
@@ -669,6 +785,7 @@ BrowserNode * BrowserClass::add_extra_member(BrowserExtraMember * em) {
   em = (em == 0) ? BrowserExtraMember::new_one(QString::null, this)
 		 : (BrowserExtraMember *) em->duplicate(this, name);
   
+  setOpen(TRUE);
   def->modified();
   package_modified();
   em->select_in_browser();

@@ -38,6 +38,9 @@ class BrowserSimpleRelation : public BrowserNode, public Labeled<BrowserSimpleRe
   
     SimpleRelationData * def;
     
+  protected:
+    void exec_menu_choice(int rank);
+    
   public:
     BrowserSimpleRelation(BrowserNode * p, SimpleRelationData * d, int id = 0);
     BrowserSimpleRelation(const BrowserSimpleRelation * model, BrowserNode * p);
@@ -51,6 +54,7 @@ class BrowserSimpleRelation : public BrowserNode, public Labeled<BrowserSimpleRe
     virtual const QPixmap* pixmap (int) const;
 
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual bool in_edition() const;
     virtual UmlCode get_type() const;

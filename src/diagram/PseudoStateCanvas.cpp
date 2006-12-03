@@ -301,6 +301,24 @@ void PseudoStateCanvas::menu(const QPoint&) {
   package_modified();
 }
 
+void PseudoStateCanvas::apply_shortcut(QString s) {
+  if (s == "Select in browser") {
+    browser_node->select_in_browser();
+    return;
+  }
+  else if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else {
+    browser_node->apply_shortcut(s);
+    return;
+  }
+
+  modified();
+  package_modified();
+}
+
 const char * PseudoStateCanvas::may_start(UmlCode & l) const {
   switch (l) {
   case UmlAnchor:

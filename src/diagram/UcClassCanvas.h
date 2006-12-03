@@ -53,6 +53,8 @@ class UcClassCanvas : public QObject, public DiagramCanvas {
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     virtual bool has_relation(BasicData *) const; 
     virtual bool move_with_its_package() const;
+    virtual void apply_shortcut(QString s);
+    
     virtual void history_load(QBuffer &);
     virtual void history_hide();
     virtual void save(QTextStream &, bool ref, QString & warning) const;

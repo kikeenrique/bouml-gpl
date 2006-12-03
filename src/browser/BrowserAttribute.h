@@ -47,6 +47,8 @@ class BrowserAttribute : public BrowserNode, public Labeled<BrowserAttribute> {
     
   protected:
     BrowserAttribute(int id);
+  
+   void exec_menu_choice(int rank);
     
   public:
     BrowserAttribute(QString s, BrowserNode * p, AttributeData * d, int id = 0);
@@ -70,6 +72,7 @@ class BrowserAttribute : public BrowserNode, public Labeled<BrowserAttribute> {
     virtual void paintCell(QPainter *, const QColorGroup &, int, int, int);
 
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual void modified();

@@ -612,20 +612,7 @@ void ComponentCanvas::menu(const QPoint&) {
     modified();	// call package_modified()
     return;
   case 2:
-    {
-      QArray<StateSpec> st(3);
-      QArray<ColorSpec> co(1);
-      
-      st[0].set("drawn as icon", &settings.draw_component_as_icon);
-      st[1].set("show required and provided interfaces", &settings.show_component_req_prov);
-      st[2].set("show realizations", &settings.show_component_rea);
-      co[0].set("component color", &itscolor);
-
-      SettingsDialog dialog(&st, &co, FALSE, TRUE);
-      
-      if (dialog.exec() == QDialog::Accepted)
-	modified();	// call package_modified()
-    }
+    edit_drawing_settings();
     return;
   case 3:
     browser_node->open(TRUE);
@@ -657,6 +644,43 @@ void ComponentCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+void ComponentCanvas::apply_shortcut(QString s) {
+  if (s == "Select in browser") {
+    browser_node->select_in_browser();
+    return;
+  }
+  else if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else if (s == "Edit drawing settings") {
+    edit_drawing_settings();
+    return;
+  }
+  else {
+    browser_node->apply_shortcut(s);
+    return;
+  }
+
+  modified();
+  package_modified();
+}
+
+void ComponentCanvas::edit_drawing_settings() {
+  QArray<StateSpec> st(3);
+  QArray<ColorSpec> co(1);
+  
+  st[0].set("drawn as icon", &settings.draw_component_as_icon);
+  st[1].set("show required and provided interfaces", &settings.show_component_req_prov);
+  st[2].set("show realizations", &settings.show_component_rea);
+  co[0].set("component color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  
+  if (dialog.exec() == QDialog::Accepted)
+    modified();	// call package_modified()
 }
 
 bool ComponentCanvas::has_drawing_settings() const {

@@ -47,6 +47,8 @@ class BrowserState : public BrowserNode, public Labeled<BrowserState> {
     
   protected:
     BrowserState(int id);
+  
+    void exec_menu_choice(int rank, BrowserNode * item_above);
     
   public:
     BrowserState(QString s, BrowserNode * p, StateData * d, int id = 0);
@@ -68,6 +70,7 @@ class BrowserState : public BrowserNode, public Labeled<BrowserState> {
     virtual const QPixmap* pixmap (int) const;
 
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual void modified();

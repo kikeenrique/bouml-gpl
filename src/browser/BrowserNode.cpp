@@ -761,6 +761,19 @@ void BrowserNode::mark_menu(QPopupMenu & m, const char * s, int bias) const {
   }
 }
 
+void BrowserNode::mark_shortcut(QString s, int & index, int bias) {
+  if (! is_marked) {
+    if (s == "Mark")
+      index = bias;
+  }
+  else {
+    if (s == "Unmark")
+      index = bias + 1;
+  }
+  if (s == "Unmark all")
+    index = bias + 2;
+}
+
 bool BrowserNode::may_contains_them(const QList<BrowserNode> &,
 				    bool &) const {
   return FALSE;

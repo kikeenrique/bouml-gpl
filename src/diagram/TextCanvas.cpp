@@ -165,6 +165,26 @@ void TextCanvas::menu(const QPoint&) {
   package_modified();
 }
 
+void TextCanvas::apply_shortcut(QString s) {
+  if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else if (s == "Edit") {
+    open();  // call package_modified
+    return;
+  }
+  else 
+    return;
+
+  // force son reaffichage
+  hide();
+  show();
+  canvas()->update();
+  
+  package_modified();
+}
+
 const char * TextCanvas::may_start(UmlCode & l) const {
   return (l == UmlAnchor) ? 0 : "illegal";
 }

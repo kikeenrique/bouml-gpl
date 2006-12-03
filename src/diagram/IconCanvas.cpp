@@ -154,6 +154,26 @@ void IconCanvas::menu(const QPoint&) {
   package_modified();
 }
 
+void IconCanvas::apply_shortcut(QString s) {
+  if (s == "Select in browser") {
+    browser_node->select_in_browser();
+    return;
+  }
+  else if (s == "Edit") {
+    browser_node->open(FALSE);
+    return;
+  }
+  else if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  
+  // force son reaffichage
+  hide();
+  show();
+  canvas()->update();
+}
+
 const char * IconCanvas::may_start(UmlCode & l) const {
   return (l == UmlAnchor) ? 0 : "illegal";
 }

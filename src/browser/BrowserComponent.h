@@ -49,6 +49,7 @@ class BrowserComponent : public BrowserNode, public Labeled<BrowserComponent> {
     QValueList<BrowserClass *> required_classes;
     
     void associate_class(BrowserClass * c);
+    void exec_menu_choice(int rank, BrowserNode * item_above);
   
   public:
     BrowserComponent(QString s, BrowserNode * p, int id = 0);
@@ -81,6 +82,7 @@ class BrowserComponent : public BrowserNode, public Labeled<BrowserComponent> {
 				    QString name = QString::null);
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool force_edit);
     virtual UmlCode get_type() const;
     virtual BasicData * get_data() const;

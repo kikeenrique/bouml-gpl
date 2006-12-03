@@ -58,6 +58,7 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
   
   protected:
     BrowserClass(int id);
+    void exec_menu_choice(int index, QList<BrowserOperation> & l);
   
   public:
     BrowserClass(QString s, BrowserNode * p, ClassData * d, int id = 0);
@@ -96,6 +97,7 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
     virtual void set_name(const char * s);
     virtual void member_cpp_def(const QString &, const QString &, QString & s, bool) const;
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool force_edit);
     virtual UmlCode get_type() const;
     virtual void modified();

@@ -58,6 +58,8 @@ class SimpleRelationCanvas : public ArrowCanvas {
     
     virtual void history_load(QBuffer &);
     virtual void history_hide();
+
+    virtual void apply_shortcut(QString s);
     
     virtual void save(QTextStream & st, bool ref, QString & warning) const;
     static SimpleRelationCanvas * read(char * & st, UmlCanvas * canvas, char *);

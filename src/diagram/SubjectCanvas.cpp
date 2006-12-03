@@ -192,19 +192,8 @@ void SubjectCanvas::menu(const QPoint&) {
     // modified then package_modified already called
     return;
   case 3:
-    {
-      QArray<ColorSpec> co(1);
-      
-      co[0].set("subject color", &itscolor);
-
-      SettingsDialog dialog(0, &co, FALSE, TRUE);
-      
-      dialog.raise();
-      if (dialog.exec() == QDialog::Accepted)
-	modified();
-      return;
-    }
-    break;
+    edit_drawing_settings();
+    return;
   case 4:
     the_canvas()->unselect_all();
     select_associated();
@@ -217,6 +206,38 @@ void SubjectCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+void SubjectCanvas::apply_shortcut(QString s) {
+  if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else if (s == "Edit drawing settings") {
+    edit_drawing_settings();
+    return;
+  }
+  else if (s == "Edit") {
+    open();  // call modified then package_modified
+    return;
+  }
+  else 
+    return;
+
+  modified();
+  package_modified();
+}
+
+void SubjectCanvas::edit_drawing_settings() {
+  QArray<ColorSpec> co(1);
+  
+  co[0].set("subject color", &itscolor);
+  
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted)
+    modified();
 }
 
 bool SubjectCanvas::has_drawing_settings() const {

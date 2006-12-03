@@ -43,6 +43,8 @@ class BrowserExpansionNode : public BrowserNode, public Labeled<BrowserExpansion
     
   protected:
     BrowserExpansionNode(int id);
+  
+    void exec_menu_choice(int rank);
     
   public:
     BrowserExpansionNode(QString s, BrowserNode * p, int id = 0);
@@ -55,6 +57,7 @@ class BrowserExpansionNode : public BrowserNode, public Labeled<BrowserExpansion
     virtual const QPixmap* pixmap (int) const;
 
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual void modified();

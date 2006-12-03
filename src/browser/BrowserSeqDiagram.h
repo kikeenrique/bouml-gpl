@@ -53,6 +53,7 @@ class BrowserSeqDiagram : public BrowserDiagram {
     BrowserSeqDiagram(BrowserSeqDiagram * model, BrowserNode * p);
     BrowserSeqDiagram(int id);
     void make();
+    void exec_menu_choice(int rank, BrowserNode * item_above);
     
   public:
     BrowserSeqDiagram(QString s, BrowserNode * p, int id = 0);
@@ -65,6 +66,7 @@ class BrowserSeqDiagram : public BrowserDiagram {
     virtual const QPixmap* pixmap (int) const;
   
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual void on_close();
     virtual void read_session(char * & st);

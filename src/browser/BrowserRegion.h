@@ -45,6 +45,8 @@ class BrowserRegion : public BrowserNode, public Labeled<BrowserRegion> {
     
   protected:
     BrowserRegion(int id);
+  
+    void exec_menu_choice(int rank);
     
   public:
     BrowserRegion(QString s, BrowserNode * p, BasicData * d, int id = 0);
@@ -60,6 +62,7 @@ class BrowserRegion : public BrowserNode, public Labeled<BrowserRegion> {
 
     virtual void delete_it();
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual void modified();

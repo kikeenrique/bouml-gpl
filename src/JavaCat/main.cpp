@@ -44,7 +44,8 @@ int main(int argc, char ** argv)
       //UmlCom::with_ack(FALSE);
 		       
       // warning : release is also in JavaCatWindow
-      UmlCom::trace("<b>Java catalog</b> release 2.5.3<br><hr>");
+      UmlCom::trace("<b>Java catalog</b> release 2.5.4<br><hr>");
+      UmlCom::traceAutoRaise(FALSE);
       
       UmlItem * item = UmlCom::targetItem();
       
@@ -73,7 +74,7 @@ int main(int argc, char ** argv)
     }
     catch (...) {
     }
-
+    UmlCom::showTrace();
     UmlCom::bye();	// application must not be deleted
   }
   

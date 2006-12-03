@@ -354,6 +354,8 @@ const char * BrowserPackage::check_inherit(const BrowserNode * new_parent) const
   return (new_parent != this) ? 0 : "circular inheritance";
 }
 
+static int phase_renumerotation = -1;
+  
 void BrowserPackage::menu() {
   QPopupMenu m(0);
   QPopupMenu genm(0);
@@ -378,7 +380,6 @@ void BrowserPackage::menu() {
       m.setWhatsThis(m.insertItem("Import project", 14),
 		     "to import the contents of a <em>project</em> under \
 the current <em>package</em>");
-      m.insertSeparator();
       m.insertSeparator();
     }
     if (!is_edited) {
@@ -449,8 +450,6 @@ through a relation");
 		   "undelete the <em>package</em> and its sub items");
   }
   
-  static int phase_renumerotation = -1;
-  
   if (user_id() == 0) {
     m.insertSeparator();
     m.insertSeparator();
@@ -472,8 +471,10 @@ through a relation");
     }
   }
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()));
+}
+
+void BrowserPackage::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
     add_package();
@@ -583,6 +584,65 @@ through a relation");
   }
   
   package_modified();
+}
+
+void BrowserPackage::apply_shortcut(QString s) {
+  int choice = -1;
+
+  if (!deletedp()) {
+    if (!is_read_only && (edition_number == 0)) {
+      if (s == "New package")
+	choice = 0;
+      else if (s == "New use case view")
+	choice = 1;
+      else if (s == "New class view")
+	choice = 2;
+      else if (s == "New component view")
+	choice = 3;
+      else if (s == "New deployment view")
+	choice = 4;
+    }
+    if (!is_edited) {
+      if (s == "Edit")
+	choice = 5;
+      if (!is_read_only) {
+	if (this == BrowserView::get_project()) {
+	  if (s == "Edit generation settings")
+	    choice = 8;
+	  else if (s == "Edit default stereotypes")
+	    choice = 6;
+	}
+	if (s == "Edit class settings")
+	  choice = 7;
+	else if (s == "Edit drawing settings")
+	  choice = 9;
+	if ((edition_number == 0) && (this != BrowserView::get_project())) {
+	  if (s == "Delete")
+	    choice = 10;
+	}
+      }
+    }
+    if (s == "Referenced by")
+      choice = 13;
+    mark_shortcut(s, choice, 90);
+    if (s == "Generate C++")
+      choice = 20;
+    else if (s == "Generate Java")
+      choice = 21;
+    else if (s == "Generate Idl")
+      choice = 22;
+    
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    if (s == "Undelete")
+      choice = 11;
+    else if (s == "Undelete recursively")
+      choice = 12;
+  }
+  
+  exec_menu_choice(choice);
 }
 
 void BrowserPackage::edit_gen_settings() {

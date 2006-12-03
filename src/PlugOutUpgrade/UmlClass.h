@@ -111,6 +111,7 @@ class UmlClass : public UmlBaseClass {
 			       aVisibility v, UmlClass * type,
 			       const char * if_def, const char * end_if);
     UmlOperation * get_operation(const char *);
+    UmlAttribute * get_attribute(const char *);
 };
 
 #endif

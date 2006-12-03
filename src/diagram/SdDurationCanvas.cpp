@@ -348,19 +348,8 @@ void SdDurationCanvas::menu(const QPoint & p) {
     modified();
     return;
   case 2:
-    {
-      QArray<ColorSpec> co(1);
-      
-      co[0].set("duration color", &itscolor);
-
-      SettingsDialog dialog(0, &co, FALSE, TRUE);
-      
-      dialog.raise();
-      if (dialog.exec() == QDialog::Accepted)
-	modified();
-      return;
-    }
-    break;
+    edit_drawing_settings();
+    return;
   case 3:
     select_associated();
     break;
@@ -381,6 +370,33 @@ void SdDurationCanvas::menu(const QPoint & p) {
   }
   
   canvas()->update();
+}
+
+void SdDurationCanvas::apply_shortcut(QString s) {
+  if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else if (s == "Edit drawing settings") {
+    edit_drawing_settings();
+    return;
+  }
+  else 
+    return;
+
+  modified();
+}
+
+void SdDurationCanvas::edit_drawing_settings() {
+  QArray<ColorSpec> co(1);
+  
+  co[0].set("duration color", &itscolor);
+  
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted)
+    modified();
 }
 
 bool SdDurationCanvas::has_drawing_settings() const {

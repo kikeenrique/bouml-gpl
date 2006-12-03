@@ -61,6 +61,7 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
   
     BrowserUseCase(int id);
     void make();
+    void exec_menu_choice(int rank, BrowserNode * item_above);
     
   public:
     BrowserUseCase(QString s, BrowserNode * p, int id = 0);
@@ -79,6 +80,7 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
 				    QString name = QString::null);
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool force_edit);
     virtual UmlCode get_type() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,

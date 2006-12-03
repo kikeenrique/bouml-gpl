@@ -225,24 +225,8 @@ void FlowCanvas::menu(const QPoint &) {
       data->edit();
       return;
     case 1:
-      {
-	QArray<StateSpec> st(1);
-	
-	st[0].set("write horizontally", &write_horizontally);
-	settings.complete(st, TRUE);
-	
-	SettingsDialog dialog(&st, 0, FALSE, TRUE);
-	
-	dialog.setCaption("Flow Drawing Settings dialog");
-	dialog.raise();
-	
-	if (dialog.exec() == QDialog::Accepted) {
-	  propagate_drawing_settings();
-	  modified();
-	}
-	return;
-      }
-      break;
+      edit_drawing_settings();
+      return;
     case 2:
       data->get_start()->select_in_browser();
       return;
@@ -298,8 +282,52 @@ void FlowCanvas::menu(const QPoint &) {
   }
 }
 
+void FlowCanvas::apply_shortcut(QString s) {
+  if (s == "Select in browser") {
+    data->get_start()->select_in_browser();
+    return;
+  }
+  else if (s == "Edit drawing settings") {
+    ArrowCanvas * aplabel;
+    ArrowCanvas * apstereotype;
+    
+    search_supports(aplabel, apstereotype);
+    if ((aplabel != 0) || (apstereotype != 0))
+      edit_drawing_settings();
+    return;
+  }
+  else {
+    data->get_start()->apply_shortcut(s);
+    return;
+  }
+
+  modified();
+  package_modified();
+}
+
+void FlowCanvas::edit_drawing_settings() {
+  QArray<StateSpec> st(1);
+  
+  st[0].set("write horizontally", &write_horizontally);
+  settings.complete(st, TRUE);
+  
+  SettingsDialog dialog(&st, 0, FALSE, TRUE);
+  
+  dialog.setCaption("Flow Drawing Settings dialog");
+  dialog.raise();
+  
+  if (dialog.exec() == QDialog::Accepted) {
+    propagate_drawing_settings();
+    modified();
+  }
+}
+
 bool FlowCanvas::has_drawing_settings() const {
-  return TRUE;
+  ArrowCanvas * aplabel;
+  ArrowCanvas * apstereotype;
+  
+  search_supports(aplabel, apstereotype);
+  return ((aplabel != 0) || (apstereotype != 0));
 }
 
 void FlowCanvas::edit_drawing_settings(QList<DiagramItem> & l) {

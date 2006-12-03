@@ -206,18 +206,18 @@ void BrowserState::menu() {
       m.setWhatsThis(m.insertItem("New state diagram", 0),
 		     "to add a <em>state diagram</em>");
       if (((BrowserNode *) parent())->get_type() == UmlClassView) {
-	m.setWhatsThis(m.insertItem("Add submachine", 1),
+	m.setWhatsThis(m.insertItem("New submachine", 1),
 		       "to add a <em>submachine</em> to the <em>machine</em>");
-	m.setWhatsThis(m.insertItem("Add state", 2),
+	m.setWhatsThis(m.insertItem("New state", 2),
 		       "to add a <em>state</em> to the <em>machine</em>");
       }
       else if (what == "state")
-	m.setWhatsThis(m.insertItem("Add nested state", 2),
+	m.setWhatsThis(m.insertItem("New nested state", 2),
 		       "to add a <em>nested state</em> to the <em>state</em>");
       else
-	m.setWhatsThis(m.insertItem("Add state", 2),
+	m.setWhatsThis(m.insertItem("New state", 2),
 		       "to add a <em>state</em> to the <em>submachine</em>");
-      m.setWhatsThis(m.insertItem("Add region", 11),
+      m.setWhatsThis(m.insertItem("New region", 11),
 		     "to add a <em>region</em>");
     }
     m.insertSeparator();
@@ -252,7 +252,7 @@ a double click with the left mouse button does the same thing");
       
       if ((nestedp() || (((BrowserNode *) parent())->get_type() == UmlRegion)) &&
 	  !((BrowserNode *) parent()->parent())->wrong_child_name(get_name(), UmlState, TRUE, FALSE))
-	m.setWhatsThis(m.insertItem(QString("extract it from ")
+	m.setWhatsThis(m.insertItem(QString("Extract it from ")
 				    + ((BrowserNode *) parent())->get_name(),
 				    6),
 		       QString("to stop to be nested in ") +
@@ -288,8 +288,11 @@ through a transition");
     }
   }
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()), item_above);
+}
+
+void BrowserState::exec_menu_choice(int rank,
+				    BrowserNode * item_above) {
   switch (rank) {
   case 0:
     add_state_diagram();
@@ -306,6 +309,14 @@ through a transition");
   case 4:
     {
       QString name;
+      QString what;
+      
+      if (((BrowserNode *) parent())->get_type() == UmlClassView)
+	what = "state machine";
+      else
+	what = (!strcmp(get_stereotype(), "submachine"))
+	  ? "state submachine"
+	  : "state";
       
       if (((BrowserNode *) parent())->enter_child_name(name, "enter " + what + "'s name : ",
 						       UmlState, TRUE, FALSE))
@@ -349,6 +360,56 @@ through a transition");
   }
   ((BrowserNode *) parent())->modified();
   package_modified();
+}
+
+void BrowserState::apply_shortcut(QString s) {
+  int choice = -1;
+
+  if (!deletedp()) {
+    if (!is_read_only) {
+      if (s == "New state diagram")
+	choice = 0;
+      if (((BrowserNode *) parent())->get_type() == UmlClassView) {
+	if (s == "New submachine")
+	  choice = 1;
+      }
+      if (s == "New state")
+	choice = 2;
+      else if (s == "New region")
+	choice = 11;
+    }
+    if (s == "Edit")
+      choice = 3;
+    if (!is_read_only) {
+      if (s == "Duplicate")
+	choice = 4;
+
+      if (edition_number == 0)
+	if (s == "Delete")
+	  choice = 7;
+    }
+    if (s == "Referenced by")
+      choice = 10;
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    if (s == "Undelete")
+      choice = 8;
+ 
+    QListViewItem * child;
+  
+    for (child = firstChild(); child != 0; child = child->nextSibling()) {
+      if (((BrowserNode *) child)->deletedp()) {
+	if (s == "Undelete recursively")
+	  choice = 9;
+	break;
+      }
+    }
+  }
+  
+  exec_menu_choice(choice, 0);
 }
 
 void BrowserState::open(bool force_edit) {

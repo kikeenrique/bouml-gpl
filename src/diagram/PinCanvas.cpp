@@ -355,17 +355,7 @@ void PinCanvas::menu(const QPoint &) {
     modified();	// call package_modified()
     return;
   case 2:
-    {
-      QArray<ColorSpec> co(1);
-      
-      co[0].set("pin color", &itscolor);
-
-      SettingsDialog dialog(0, &co, FALSE, TRUE);
-      
-      dialog.raise();
-      if (dialog.exec() == QDialog::Accepted)
-	modified();	// call package_modified()
-    }
+    edit_drawing_settings();
     return;
   case 3:
     browser_node->open(TRUE);
@@ -391,6 +381,40 @@ void PinCanvas::menu(const QPoint &) {
   }
   
   package_modified();
+}
+
+void PinCanvas::apply_shortcut(QString s) {
+  if (s == "Select in browser") {
+    browser_node->select_in_browser();
+    return;
+  }
+  else if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else if (s == "Edit drawing settings") {
+    edit_drawing_settings();
+    return;
+  }
+  else {
+    browser_node->apply_shortcut(s);
+    return;
+  }
+
+  modified();
+  package_modified();
+}
+
+void PinCanvas::edit_drawing_settings() {
+  QArray<ColorSpec> co(1);
+  
+  co[0].set("pin color", &itscolor);
+  
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted)
+    modified();	// call package_modified()
 }
 
 bool PinCanvas::has_drawing_settings() const {

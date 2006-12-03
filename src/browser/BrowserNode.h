@@ -102,6 +102,7 @@ class BrowserNode : public QListViewItem,
     virtual bool in_edition() const;
     
     void mark_menu(QPopupMenu & m, const char *, int bias) const;
+    void mark_shortcut(QString s, int & index, int bias);
     void mark_management(int choice);
     void toggle_mark();
     bool markedp() const { return is_marked; }
@@ -144,6 +145,7 @@ class BrowserNode : public QListViewItem,
     
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
     virtual void menu() = 0;
+    virtual void apply_shortcut(QString s) = 0;
     virtual void open(bool force_edit);
     virtual void on_close();
     virtual UmlCode get_type() const = 0;

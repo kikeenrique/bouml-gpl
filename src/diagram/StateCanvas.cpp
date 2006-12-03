@@ -517,22 +517,7 @@ void StateCanvas::menu(const QPoint&) {
     modified();	// call package_modified()
     return;
   case 2:
-    {
-      QArray<StateSpec> st(3);
-      QArray<ColorSpec> co(1);
-      
-      st[0].set("show activities", &settings.show_activities);
-      st[1].set("draw regions horizontally", &settings.region_horizontally);
-      st[2].set("drawing language", &settings.drawing_language);
-      
-      co[0].set("state color", &itscolor);
-
-      SettingsDialog dialog(&st, &co, FALSE, TRUE);
-      
-      dialog.raise();
-      if (dialog.exec() == QDialog::Accepted)
-	modified();	// call package_modified()
-    }
+    edit_drawing_settings();
     return;
   case 3:
     browser_node->open(TRUE);
@@ -564,6 +549,45 @@ void StateCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+void StateCanvas::apply_shortcut(QString s) {
+  if (s == "Select in browser") {
+    browser_node->select_in_browser();
+    return;
+  }
+  else if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else if (s == "Edit drawing settings") {
+    edit_drawing_settings();
+    return;
+  }
+  else {
+    browser_node->apply_shortcut(s);
+    return;
+  }
+
+  modified();
+  package_modified();
+}
+
+void StateCanvas::edit_drawing_settings() {
+  QArray<StateSpec> st(3);
+  QArray<ColorSpec> co(1);
+  
+  st[0].set("show activities", &settings.show_activities);
+  st[1].set("draw regions horizontally", &settings.region_horizontally);
+  st[2].set("drawing language", &settings.drawing_language);
+  
+  co[0].set("state color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted)
+    modified();	// call package_modified()
 }
 
 bool StateCanvas::has_drawing_settings() const {

@@ -58,6 +58,9 @@ class BrowserUseCaseView : public BrowserNode, public Labeled<BrowserUseCaseView
     UmlColor package_color;
     UmlColor classinstance_color;
     
+  protected:
+    void exec_menu_choice(int rank);
+    
   public:
     BrowserUseCaseView(QString s, BrowserNode * p, int id = 0);
     BrowserUseCaseView(const BrowserUseCaseView * model, BrowserNode * p);
@@ -68,6 +71,7 @@ class BrowserUseCaseView : public BrowserNode, public Labeled<BrowserUseCaseView
     virtual BrowserNode * duplicate(BrowserNode * p,
 				    QString name = QString::null);
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual UmlCode get_type() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,
 				   bool & duplicable) const;

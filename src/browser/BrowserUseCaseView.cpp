@@ -178,8 +178,10 @@ Do not undelete its sub items");
 		   "undelete the <em>use case view</em> and its sub items");
   }
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()));
+}
+
+void BrowserUseCaseView::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
     add_use_case_diagram();
@@ -269,6 +271,54 @@ Do not undelete its sub items");
   }
   
   package_modified();
+}
+
+void BrowserUseCaseView::apply_shortcut(QString s) {
+  int choice = -1;
+
+  if (!deletedp()) {
+    if (!is_read_only && (edition_number == 0)) {
+      if (s == "New use case diagram")
+	choice = 0;
+      else if (s == "New sequence diagram")
+	choice = 1;
+      else if (s == "New collaboration diagram")
+	choice = 2;
+      else if (s == "New object diagram")
+	choice = 13;
+      else if (s == "New use case")
+	choice = 3;
+      else if (s == "New actor")
+	choice = 4;
+      else if (s == "New class")
+	choice = 5;
+      else if (s == "New use case view")
+	choice = 6;
+    }
+    if (!is_edited) {
+      if (s == "Edit")
+	choice = 8;
+      if (!is_read_only) {
+	if (s == "Edit drawing settings")
+	  choice = 9;
+	if (edition_number == 0) {
+	  if (s == "Delete")
+	    choice = 10;
+	}
+      }
+    }
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    if (s == "Undelete")
+      choice = 11;
+    else if (s == "Undelete recursively")
+      choice = 12;
+  }
+  
+  exec_menu_choice(choice);
 }
 
 void BrowserUseCaseView::add_sequence_diagram() {

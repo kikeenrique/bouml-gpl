@@ -192,8 +192,10 @@ Do not undelete its sub items");
 		   "undelete the <em>deployment view</em> and its sub items");
   }
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()));
+}
+
+void BrowserDeploymentView::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
     add_deployment_diagram();
@@ -284,6 +286,52 @@ Do not undelete its sub items");
   }
   
   package_modified();
+}
+
+void BrowserDeploymentView::apply_shortcut(QString s) {
+  int choice = -1;
+  
+  if (!deletedp()) {
+    if (!is_read_only && (edition_number == 0)) {
+      if (s == "New deployment diagram")
+	choice = 0;
+      else if (s == "New node")
+	choice = 1;
+      else if (s == "New artifact")
+	choice = 2;
+    }
+    if (!is_edited) {
+      if (s == "Edit")
+	choice = 3;
+      if (!is_read_only) {
+	//m.setWhatsThis(m.insertItem("Edit node settings", 4),
+	//		   "to set the sub node's settings");
+	if (s == "Edit drawing settings")
+	  choice = 5;
+	if (edition_number == 0) {
+	  if (s == "Delete")
+	    choice = 6;
+	}
+      }
+    }
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+    if (s == "Generate C++")
+      choice = 10;
+    else if (s == "Generate Java")
+      choice = 11;
+    else if (s == "Generate Idl")
+      choice = 12;
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    if (s == "Undelete")
+      choice = 7;
+    else if (s == "Undelete recursively")
+      choice = 8;
+  }
+  
+  exec_menu_choice(choice);
 }
 
 void BrowserDeploymentView::open(bool) {

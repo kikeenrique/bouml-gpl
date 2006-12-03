@@ -199,19 +199,8 @@ void UcUseCaseCanvas::menu(const QPoint&) {
     browser_node->open(TRUE);
     break;
   case 3:
-    {
-      QArray<ColorSpec> co(1);
-      
-      co[0].set("use case color", &itscolor);
-
-      SettingsDialog dialog(0, &co, FALSE, TRUE);
-      
-      dialog.raise();
-      if (dialog.exec() == QDialog::Accepted)
-	modified();
-      return;
-    }
-    break;
+    edit_drawing_settings();
+    return;
   case 4:
     browser_node->select_in_browser();
     return;
@@ -238,6 +227,40 @@ void UcUseCaseCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+void UcUseCaseCanvas::apply_shortcut(QString s) {
+  if (s == "Select in browser") {
+    browser_node->select_in_browser();
+    return;
+  }
+  else if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else if (s == "Edit drawing settings") {
+    edit_drawing_settings();
+    return;
+  }
+  else {
+    browser_node->apply_shortcut(s);
+    return;
+  }
+
+  modified();
+  package_modified();
+}
+
+void UcUseCaseCanvas::edit_drawing_settings() {
+  QArray<ColorSpec> co(1);
+  
+  co[0].set("use case color", &itscolor);
+  
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted)
+    modified();
 }
 
 bool UcUseCaseCanvas::has_drawing_settings() const {

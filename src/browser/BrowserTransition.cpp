@@ -208,8 +208,10 @@ Note that you can undelete it after");
 		   "undelete the <em>transition</em> \
 (except if the other side is also deleted)");
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()));
+}
+
+void BrowserTransition::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
     open(FALSE);
@@ -232,6 +234,31 @@ Note that you can undelete it after");
   }
   ((BrowserNode *) parent())->modified();
   package_modified();
+}
+
+void BrowserTransition::apply_shortcut(QString s) {
+  int choice = -1;
+
+  if (!deletedp()) {
+    if (!in_edition()) {
+      if (s == "Edit")
+	choice = 0;
+      if (!is_read_only && (edition_number == 0)) {
+	if (s == "Delete")
+	  choice = 2;
+      }
+    }
+    if (s == "Select target")
+      choice = 7;
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0))
+    if (s == "Undelete")
+    choice = 3;
+  
+  exec_menu_choice(choice);
 }
 
 bool BrowserTransition::in_edition() const {

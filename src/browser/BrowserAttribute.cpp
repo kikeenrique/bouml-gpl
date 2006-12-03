@@ -209,21 +209,21 @@ void BrowserAttribute::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited)
-    m.setWhatsThis(m.insertItem("Edit", 0),
-		   (item)
-		   ? "to edit the <em>item</em>, \
+      m.setWhatsThis(m.insertItem("Edit", 0),
+		     (item)
+		     ? "to edit the <em>item</em>, \
 a double click with the left mouse button does the same thing"
-		   : "to edit the <em>attribute</em>, \
+		     : "to edit the <em>attribute</em>, \
 a double click with the left mouse button does the same thing");
     if (!is_read_only && (edition_number == 0)) {
       if (!item && (get_oper == 0))
-	m.setWhatsThis(m.insertItem("Add get operation", 3),
+	m.setWhatsThis(m.insertItem("New get operation", 3),
 		       "to auto define the <em>get operation</em>");
       if (!item && (set_oper == 0))
-	m.setWhatsThis(m.insertItem("Add set operation", 4),
+	m.setWhatsThis(m.insertItem("New set operation", 4),
 		       "to auto define the <em>set operation</em>");
       if (!item && (get_oper == 0) && (set_oper == 0))
-	m.setWhatsThis(m.insertItem("Add get and set operation", 5),
+	m.setWhatsThis(m.insertItem("New get and set operation", 5),
 		       "to auto define the <em>get</em> and <em>set operation</em>s");
       m.setWhatsThis(m.insertItem("Duplicate", 6),
 		     "to copy the <em>attribute</em> in a new one");
@@ -252,9 +252,10 @@ Note that you can undelete it after");
     m.setWhatsThis(m.insertItem("Undelete", 2),
 		   (item) ? "to undelete the <em>item</em>"
 				     : "to undelete the <em>attribute</em>");
-  
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()));
+}
+
+void BrowserAttribute::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
     open(FALSE);
@@ -289,6 +290,46 @@ Note that you can undelete it after");
   }
   ((BrowserNode *) parent())->modified();
   package_modified();
+}
+
+void BrowserAttribute::apply_shortcut(QString s) {
+  int choice = -1;
+  const char * st = ((BrowserClass *) parent())->get_stereotype();
+  bool item = !strcmp(st, "enum_pattern") ||
+    !strcmp(st, "enum") && strcmp(get_stereotype(), "attribute");
+  
+  if (!deletedp()) {
+    if (!is_edited)
+      if (s == "Edit")
+	choice = 0;
+    if (!is_read_only && (edition_number == 0)) {
+      if (!item && (get_oper == 0))
+	if (s == "New get operation")
+	  choice = 3;
+      if (!item && (set_oper == 0))
+	if (s == "New set operation")
+	  choice = 4;
+      if (!item && (get_oper == 0) && (set_oper == 0))
+	if (s == "New get and set operation")
+	  choice = 5;
+    }
+  
+    if (s == "Referenced by")
+      choice = 7;
+
+    if (!is_read_only && (edition_number == 0)) {
+      if (s == "Delete")
+	choice = 1;
+    }
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0))
+    if (s == "Undelete")
+      choice = 2;
+  
+  exec_menu_choice(choice);
 }
 
 void BrowserAttribute::open(bool) {

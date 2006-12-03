@@ -43,6 +43,9 @@ class BrowserDeploymentNode : public BrowserNode, public Labeled<BrowserDeployme
     
     SimpleData * def;
     BrowserDeploymentDiagram * associated_diagram;
+    
+  protected:
+    void exec_menu_choice(int rank);
   
   public:
     BrowserDeploymentNode(QString s, BrowserNode * p, int id = 0);
@@ -57,6 +60,7 @@ class BrowserDeploymentNode : public BrowserNode, public Labeled<BrowserDeployme
 				    QString name = QString::null);
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool force_edit);
     virtual UmlCode get_type() const;
     virtual BasicData * get_data() const;

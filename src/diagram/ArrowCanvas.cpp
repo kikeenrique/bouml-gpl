@@ -727,31 +727,31 @@ void ArrowCanvas::extremities(DiagramItem *& b, DiagramItem *& e) const {
 }
 // search label & stereotype supports
 void ArrowCanvas::search_supports(ArrowCanvas *& plabel, 
-				  ArrowCanvas *& pstereotype) {
+				  ArrowCanvas *& pstereotype) const {
   plabel = 0;
   pstereotype = 0;
   
-  ArrowCanvas * p;
+  const ArrowCanvas * p;
   
   p = this;
   while (p->end->type() == UmlArrowPoint) {
-    if (p->label != 0) plabel = p;
-    if (p->stereotype != 0) pstereotype = p;
+    if (p->label != 0) plabel = (ArrowCanvas *) p;
+    if (p->stereotype != 0) pstereotype = (ArrowCanvas *) p;
     p = ((ArrowPointCanvas *) p->end)->get_other(p);
   }
 
-  if (p->label != 0) plabel = p;
-  if (p->stereotype != 0) pstereotype = p;
+  if (p->label != 0) plabel = (ArrowCanvas *) p;
+  if (p->stereotype != 0) pstereotype = (ArrowCanvas *) p;
 
   p = this;
   while (p->begin->type() == UmlArrowPoint) {
-    if (p->label != 0) plabel = p;
-    if (p->stereotype != 0) pstereotype = p;
+    if (p->label != 0) plabel = (ArrowCanvas *) p;
+    if (p->stereotype != 0) pstereotype = (ArrowCanvas *) p;
     p = ((ArrowPointCanvas *) p->begin)->get_other(p);
   }
   
-  if (p->label != 0) plabel = p;
-  if (p->stereotype != 0) pstereotype = p;
+  if (p->label != 0) plabel = (ArrowCanvas *) p;
+  if (p->stereotype != 0) pstereotype = (ArrowCanvas *) p;
 }
 
 ArrowPointCanvas * ArrowCanvas::brk(const QPoint & p) {

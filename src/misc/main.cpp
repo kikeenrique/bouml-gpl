@@ -37,6 +37,7 @@
 #include "ToolCom.h"
 #include "BrowserView.h"
 #include "BrowserPackage.h"
+#include "Shortcut.h"
 #include "strutil.h"
 #include "mu.h"
 
@@ -49,6 +50,7 @@ int main(int argc, char **argv)
   initCodec();
   init_pixmaps();
   init_font();
+  Shortcut::init();
   UmlDesktop::init();
   
   UmlWindow * uw = new UmlWindow();
@@ -78,7 +80,7 @@ int main(int argc, char **argv)
   }
   
   theApp->connect(theApp, SIGNAL(lastWindowClosed()), theApp, SLOT(quit()) );
-  
+    
   try {
     if (argc > 2) {
       if ((argc > 3) && !strcmp(argv[2], "-exec")) {

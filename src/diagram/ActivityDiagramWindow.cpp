@@ -87,26 +87,26 @@ ActivityDiagramWindow::ActivityDiagramWindow(const QString & s, BrowserActivityD
   current_button = UmlSelect;
   
   addPackage
-    = new QToolButton(*packageButton, "Add Package", QString::null,
+    = new QToolButton(*packageButton, "New Package", QString::null,
 		      this, SLOT(hit_package()), toolbar, "add package");
   addPackage->setToggleButton(TRUE);
   QWhatsThis::add(addPackage, addpackageText);
   
   addFragment
-    = new QToolButton(*fragmentButton, "Add Fragment", QString::null,
+    = new QToolButton(*fragmentButton, "New Fragment", QString::null,
 		      this, SLOT(hit_fragment()), toolbar, "add fragment");
   addFragment->setToggleButton(TRUE);
   QWhatsThis::add(addFragment, addfragmentText);
   
   addActivity =
-    new QToolButton(*activityButton, "Add Activity", QString::null,
+    new QToolButton(*activityButton, "New Activity", QString::null,
 		    this, SLOT(hit_activity()), toolbar, "add activity");
   addActivity->setToggleButton(TRUE);
   QWhatsThis::add(addActivity, addactivityText);
   
   addInterruptibleActivityRegion =
     new QToolButton(*interruptibleactivityregionButton,
-		    "Add Interruptible Activity Region", QString::null,
+		    "New Interruptible Activity Region", QString::null,
 		    this, SLOT(hit_interruptibleactivityregion()),
 		    toolbar, "add interruptible activity region");
   addInterruptibleActivityRegion->setToggleButton(TRUE);
@@ -115,7 +115,7 @@ ActivityDiagramWindow::ActivityDiagramWindow(const QString & s, BrowserActivityD
   
   addExpansionRegion =
     new QToolButton(*expansionregionButton,
-		    "Add Expansion Region", QString::null,
+		    "New Expansion Region", QString::null,
 		    this, SLOT(hit_expansionregion()),
 		    toolbar, "add expansion region");
   addExpansionRegion->setToggleButton(TRUE);
@@ -123,61 +123,61 @@ ActivityDiagramWindow::ActivityDiagramWindow(const QString & s, BrowserActivityD
 		  addexpansionregionText);
     
   addAction =
-    new QToolButton(*activityactionButton, "Add Action", QString::null,
+    new QToolButton(*activityactionButton, "New Action", QString::null,
 		    this, SLOT(hit_action()), toolbar, "add action");
   addAction->setToggleButton(TRUE);
   QWhatsThis::add(addAction, addactionText);
 
   addObject =
-    new QToolButton(*actionButton, "Add Object Node", QString::null,
+    new QToolButton(*actionButton, "New Object Node", QString::null,
 		    this, SLOT(hit_object()), toolbar, "add object node");
   addObject->setToggleButton(TRUE);
   QWhatsThis::add(addObject, addobjectText);
 
   addInitial =
-    new QToolButton(*initialButton, "Add Initial node", QString::null,
+    new QToolButton(*initialButton, "New Initial node", QString::null,
 		    this, SLOT(hit_initial()), toolbar, "add initial");
   addInitial->setToggleButton(TRUE);
   QWhatsThis::add(addInitial, addinitialText);
 
   addActivityFinal =
-    new QToolButton(*finalButton, "Add Activity Final", QString::null,
+    new QToolButton(*finalButton, "New Activity Final", QString::null,
 		    this, SLOT(hit_activityfinal()), toolbar, "add activity final");
   addActivityFinal->setToggleButton(TRUE);
   QWhatsThis::add(addActivityFinal, addactivityfinalText);
 
   addFlowFinal =
-    new QToolButton(*exitpointButton, "Add Flow Final", QString::null,
+    new QToolButton(*exitpointButton, "New Flow Final", QString::null,
 		    this, SLOT(hit_flowfinal()), toolbar, "add flow final");
   addFlowFinal->setToggleButton(TRUE);
   QWhatsThis::add(addFlowFinal, addflowfinalText);
 
   addMerge =
-    new QToolButton(*mergeButton, "Add Merge", QString::null,
+    new QToolButton(*mergeButton, "New Merge", QString::null,
 		    this, SLOT(hit_merge()), toolbar, "add merge");
   addMerge->setToggleButton(TRUE);
   QWhatsThis::add(addMerge, addmergeText);
 
   addDecision =
-    new QToolButton(*decisionButton, "Add Decision", QString::null,
+    new QToolButton(*decisionButton, "New Decision", QString::null,
 		    this, SLOT(hit_decision()), toolbar, "add decision");
   addDecision->setToggleButton(TRUE);
   QWhatsThis::add(addDecision, adddecisionText);
 
   addFork =
-    new QToolButton(*forkButton, "Add Fork", QString::null,
+    new QToolButton(*forkButton, "New Fork", QString::null,
 		    this, SLOT(hit_fork()), toolbar, "add fork");
   addFork->setToggleButton(TRUE);
   QWhatsThis::add(addFork, addforkText);
 
   addJoin =
-    new QToolButton(*joinButton, "Add Join", QString::null,
+    new QToolButton(*joinButton, "New Join", QString::null,
 		    this, SLOT(hit_join()), toolbar, "add join");
   addJoin->setToggleButton(TRUE);
   QWhatsThis::add(addJoin, addjoinText);
 
   addFlow =
-    new QToolButton(*directionalAssociationButton, "Add Flow", QString::null,
+    new QToolButton(*directionalAssociationButton, "New Flow", QString::null,
 		    this, SLOT(hit_flow()), toolbar, "add flow");
   addFlow->setToggleButton(TRUE);
   QWhatsThis::add(addFlow, addflowText);

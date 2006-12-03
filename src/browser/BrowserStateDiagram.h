@@ -53,6 +53,7 @@ class BrowserStateDiagram : public BrowserDiagram {
     BrowserStateDiagram(BrowserStateDiagram * model, BrowserNode * p);
     BrowserStateDiagram(int id);
     void make();
+    void exec_menu_choice(int rank);
     
   public:
     BrowserStateDiagram(QString s, BrowserNode * p, int id = 0);
@@ -65,6 +66,7 @@ class BrowserStateDiagram : public BrowserDiagram {
     virtual const QPixmap* pixmap (int) const;
   
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual void on_close();
     virtual void read_session(char * & st);

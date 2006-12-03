@@ -64,6 +64,9 @@ class CodClassInstCanvas : public QObject, public CodObjCanvas, public ClassInst
     virtual bool has_drawing_settings() const;
     virtual void edit_drawing_settings(QList<DiagramItem> &);
 
+    virtual void apply_shortcut(QString s);
+    void edit_drawing_settings();
+  
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static CodClassInstCanvas * read(char * &, UmlCanvas * canvas, char *);
     

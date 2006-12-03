@@ -374,8 +374,10 @@ Note that you can undelete it after");
     m.setWhatsThis(m.insertItem("Undelete", 3),
 		   "to undelete the <em>operation</em>");
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()));
+}
+
+void BrowserOperation::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
     open(FALSE);
@@ -404,6 +406,39 @@ Note that you can undelete it after");
   }
   ((BrowserNode *) parent())->modified();
   package_modified();
+}
+
+void BrowserOperation::apply_shortcut(QString s) {
+  int choice = -1;
+
+  if (!deletedp()) {
+    if (!is_edited) {
+      if (s == "Edit")
+	choice = 0;
+      else if (s == "Duplicate")
+	choice = 1;
+      if (strstr(def->get_cppdef(), "${body}") != 0)
+	if (s == "Edit C++ body")
+	  choice = 4;
+      if (strstr(def->get_javadef(), "${body}") != 0)
+	if (s == "Edit Java body")
+	  choice = 5;
+      if (s == "Duplicate")
+	choice = 1;
+      if (!is_read_only && (edition_number == 0)) {
+	if (s == "Delete")
+	  choice = 2;
+      }
+    }
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0))
+    if (s == "Undelete")
+      choice = 3;
+  
+  exec_menu_choice(choice);
 }
 
 void BrowserOperation::open(bool) {

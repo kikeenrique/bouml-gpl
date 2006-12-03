@@ -44,6 +44,8 @@ class BrowserPin : public BrowserNode, public Labeled<BrowserPin> {
     
   protected:
     BrowserPin(int id);
+  
+    void exec_menu_choice(int rank);
     
   public:
     BrowserPin(QString s, BrowserNode * p, PinData * d, int id = 0);
@@ -56,6 +58,7 @@ class BrowserPin : public BrowserNode, public Labeled<BrowserPin> {
     virtual const QPixmap* pixmap (int) const;
 
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual void modified();

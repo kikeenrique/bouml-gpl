@@ -71,6 +71,9 @@ class FlowCanvas : public ArrowCanvas {
     virtual bool has_drawing_settings() const;
     virtual void edit_drawing_settings(QList<DiagramItem> &);
     
+    virtual void apply_shortcut(QString s);
+    void edit_drawing_settings();
+  
     static FlowCanvas * read(char * & st, UmlCanvas * canvas, char *);
     virtual BasicData * get_data() const;
     

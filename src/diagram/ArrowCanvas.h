@@ -133,7 +133,7 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     
   protected:
     void search_supports(ArrowCanvas *& plabel, 
-			 ArrowCanvas *& pstereotype);
+			 ArrowCanvas *& pstereotype) const;
     void propag_geometry(LineGeometry geo, bool fixed);
     ArrowCanvas * set_geometry(LineGeometry geo, bool fixed);
     void init_geometry_menu(QPopupMenu & m, int first);

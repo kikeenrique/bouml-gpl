@@ -58,6 +58,8 @@ class Tool {
     static bool menu_insert(QPopupMenu * tool, UmlCode target, 
 			    const QObject * receiver, const char * member);
     static bool menu_insert(QPopupMenu * tool, UmlCode target, int first_id);
+    static void shortcut(QString s, int & choice, UmlCode target, int first_id);
+    static QStringList all_display();
     static const char * command(int param);
     
     static void save();

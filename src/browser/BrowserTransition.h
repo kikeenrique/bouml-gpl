@@ -40,6 +40,8 @@ class BrowserTransition : public BrowserNode, public Labeled<BrowserTransition> 
     
     BrowserTransition(BrowserNode * p, TransitionData * d, int id);
     BrowserTransition(int id);
+    
+    void exec_menu_choice(int rank);
 
   public:
     BrowserTransition(BrowserNode * p, BrowserNode * end);
@@ -56,6 +58,7 @@ class BrowserTransition : public BrowserNode, public Labeled<BrowserTransition> 
     virtual bool same_name(const QString & s, UmlCode type) const;
 
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual bool in_edition() const;
     virtual UmlCode get_type() const;

@@ -342,22 +342,8 @@ void PackageCanvas::menu(const QPoint&) {
     browser_node->open(TRUE);
     return;
   case 3:
-    {
-      QArray<StateSpec> st(2);
-      QArray<ColorSpec> co(1);
-      
-      st[0].set("name in tab", &name_in_tab);
-      st[1].set("show context", &show_context_mode);
-      co[0].set("Package color", &itscolor);
-
-      SettingsDialog dialog(&st, &co, FALSE, TRUE);
-      
-      dialog.raise();
-      if (dialog.exec() == QDialog::Accepted)
-	modified();
-      return;
-    }
-    break;
+    edit_drawing_settings();
+    return;
   case 4:
     browser_node->select_in_browser();
     return;
@@ -385,6 +371,43 @@ void PackageCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+void PackageCanvas::apply_shortcut(QString s) {
+  if (s == "Select in browser") {
+    browser_node->select_in_browser();
+    return;
+  }
+  else if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else if (s == "Edit drawing settings") {
+    edit_drawing_settings();
+    return;
+  }
+  else {
+    browser_node->apply_shortcut(s);
+    return;
+  }
+
+  modified();
+  package_modified();
+}
+
+void PackageCanvas::edit_drawing_settings() {
+  QArray<StateSpec> st(2);
+  QArray<ColorSpec> co(1);
+  
+  st[0].set("name in tab", &name_in_tab);
+  st[1].set("show context", &show_context_mode);
+  co[0].set("Package color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted)
+    modified();
 }
 
 bool PackageCanvas::has_drawing_settings() const {

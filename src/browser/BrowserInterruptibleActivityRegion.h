@@ -46,6 +46,8 @@ class BrowserInterruptibleActivityRegion : public BrowserNode, public Labeled<Br
     
   protected:
     BrowserInterruptibleActivityRegion(int id);
+  
+    void exec_menu_choice(int rank, BrowserNode * item_above);
     
   public:
     BrowserInterruptibleActivityRegion(QString s, BrowserNode * p, int id = 0);
@@ -63,6 +65,7 @@ class BrowserInterruptibleActivityRegion : public BrowserNode, public Labeled<Br
     virtual const QPixmap* pixmap (int) const;
 
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual void modified();

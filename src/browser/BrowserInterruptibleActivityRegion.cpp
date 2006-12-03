@@ -187,9 +187,9 @@ void BrowserInterruptibleActivityRegion::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("Add nested interruptible activity region", 0),
+      m.setWhatsThis(m.insertItem("New nested interruptible activity region", 0),
 		     "to add a nested <em>interruptible activity region</em>");
-      m.setWhatsThis(m.insertItem("Add expansion region", 1),
+      m.setWhatsThis(m.insertItem("New expansion region", 1),
 		     "to add a nested <em>expansion region</em>");
 #ifndef WIN32
 #warning partition
@@ -263,8 +263,11 @@ Note that you can undelete it after");
     }
   }
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()), item_above);
+}
+
+void BrowserInterruptibleActivityRegion::exec_menu_choice(int rank,
+							  BrowserNode * item_above) {
   switch (rank) {
   case 0:
     add_interruptibleactivityregion(this);
@@ -339,6 +342,59 @@ Note that you can undelete it after");
   }
   ((BrowserNode *) parent())->modified();
   package_modified();
+}
+
+void BrowserInterruptibleActivityRegion::apply_shortcut(QString s) {
+  int choice = -1;
+
+  if (!deletedp()) {
+    if (!is_read_only) {
+      if (s == "New interruptible activity region")
+	choice = 0;
+      else if (s == "New expansion region")
+	choice = 1;
+#ifndef WIN32
+#warning partition
+#endif
+      /*
+      m.setWhatsThis(m.insertItem("Add partition", 3),
+		     "to add a <em>Partition</em>");
+		     */
+      else if (s == "Add activity action")
+	choice = 6;
+      else if (s == "Add object node")
+	choice = 7;
+    }
+    if (s == "Edit")
+      choice = 4;
+    if (!is_read_only) {
+      if (s == "Duplicate")
+	choice = 5;
+      
+      if (edition_number == 0)
+	if (s == "Delete")
+	  choice = 8;
+    }
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    if (s == "Undelete")
+      choice = 9;
+ 
+    QListViewItem * child;
+  
+    for (child = firstChild(); child != 0; child = child->nextSibling()) {
+      if (((BrowserNode *) child)->deletedp()) {
+	if (s == "Undelete recursively")
+	  choice = 10;
+	break;
+      }
+    }
+  }
+  
+  exec_menu_choice(choice, 0);
 }
 
 void BrowserInterruptibleActivityRegion::open(bool force_edit) {

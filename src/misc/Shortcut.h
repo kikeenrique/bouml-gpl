@@ -23,36 +23,31 @@
 //
 // *************************************************************************
 
-#include <qapplication.h>
-#include <qmessagebox.h>
+#ifndef SHORTCUT_H
+#define SHORTCUT_H
 
-#include "UmlCom.h"
-#include "UmlPackage.h"
+#include <qstringlist.h>
+#include <qmap.h>
 
-// the program is called with the socket port number in argument
+class Shortcut {
+  public:
+    static void init();
+    static const QStringList & cmds();
+    static const QStringList & keys();
 
-int main(int argc, char ** argv)
-{
-  if (argc != 2)
-    return 0;
+    static const QMap<QString, QString> & shortcuts();
+    static QString extract(QString, bool & shift, bool & ctrl, bool & alt);
+    
+    static QString shortcut(int key, int buttons);
+    
+    static void raz();
+    static void add(QString k, bool shift, bool ctrl, bool alt, QString s);
+    
+    static void save();
+    
+  private:
+    static void load();
+};
 
-  QApplication a(argc, argv);
-  
-  if (UmlCom::connect(QString(argv[1]).toUInt())) {
-    try {
-      UmlCom::trace("<b>Plug-out Upgrade</b> release 1.3.3<br><hr>");
-      if (UmlPackage::getProject()->upgrade())
-	UmlCom::trace("<br><hr>Done<br>");
-    }
-    catch (...) {
-      QMessageBox::critical(0, "Upgrade", 
-			    "Error, close the project WITHOUT saving it");
-    }
 
-    UmlCom::message("");
-    UmlCom::bye();
-  }
-  
-  UmlCom::close();
-  return 0;
-}
+#endif

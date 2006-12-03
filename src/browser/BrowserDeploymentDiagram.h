@@ -54,6 +54,7 @@ class BrowserDeploymentDiagram : public BrowserDiagram {
     BrowserDeploymentDiagram(BrowserDeploymentDiagram * model, BrowserNode * p);
     BrowserDeploymentDiagram(int id);
     void make();
+    void exec_menu_choice(int rank);
   
   public:
     BrowserDeploymentDiagram(QString s, BrowserNode * p, int id = 0);
@@ -66,6 +67,7 @@ class BrowserDeploymentDiagram : public BrowserDiagram {
     virtual const QPixmap* pixmap (int) const;
   
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual void on_close();
     virtual void read_session(char * & st);

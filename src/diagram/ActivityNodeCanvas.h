@@ -65,6 +65,8 @@ class ActivityNodeCanvas : public QObject, public DiagramCanvas {
     virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     
+    virtual void apply_shortcut(QString s);
+  
     virtual void history_load(QBuffer &);
     virtual void history_hide();
     

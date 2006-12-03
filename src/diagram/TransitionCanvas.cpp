@@ -222,24 +222,8 @@ void TransitionCanvas::menu(const QPoint &) {
       data->edit();
       return;
     case 1:
-      {
-	QArray<StateSpec> st(3);
-	
-	st[0].set("language", &drawing_language);
-	st[1].set("write horizontally", &write_horizontally);
-	st[2].set("show definition", &show_definition);
-	
-	SettingsDialog dialog(&st, 0, FALSE, TRUE);
-	
-	dialog.setCaption("Transition Drawing Settings dialog");
-	dialog.raise();
-	if (dialog.exec() == QDialog::Accepted) {
-	  propagate_drawing_settings();
-	  modified();
-	}
-	return;
-      }
-      break;
+      edit_drawing_settings();
+      return;
     case 2:
       data->get_start()->select_in_browser();
       return;
@@ -292,6 +276,40 @@ void TransitionCanvas::menu(const QPoint &) {
     }
     
     package_modified();
+  }
+}
+
+void TransitionCanvas::apply_shortcut(QString s) {
+  if (s == "Select in browser") {
+    data->get_start()->select_in_browser();
+    return;
+  }
+  else if (s == "Edit drawing settings") {
+    edit_drawing_settings();
+    return;
+  }
+  else {
+    data->get_start()->apply_shortcut(s);
+    return;
+  }
+
+  modified(); // call package_modified()
+}
+
+void TransitionCanvas::edit_drawing_settings() {
+  QArray<StateSpec> st(3);
+  
+  st[0].set("language", &drawing_language);
+  st[1].set("write horizontally", &write_horizontally);
+  st[2].set("show definition", &show_definition);
+  
+  SettingsDialog dialog(&st, 0, FALSE, TRUE);
+  
+  dialog.setCaption("Transition Drawing Settings dialog");
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted) {
+    propagate_drawing_settings();
+    modified();
   }
 }
 

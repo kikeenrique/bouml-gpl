@@ -86,6 +86,9 @@ class DeploymentNodeCanvas
     virtual bool has_drawing_settings() const;
     virtual void edit_drawing_settings(QList<DiagramItem> &);
     
+    virtual void apply_shortcut(QString s);
+    void edit_drawing_settings();
+  
   private slots:
     void modified();	// canvas must be updated
     void deleted();	// the node/package is deleted

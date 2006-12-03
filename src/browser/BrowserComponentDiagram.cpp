@@ -202,8 +202,10 @@ Note that you can undelete it after");
     m.setWhatsThis(m.insertItem("Undelete", 5),
 		   "to undelete the <em>component diagram</em>");
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()));
+}
+
+void BrowserComponentDiagram::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
     open(FALSE);
@@ -237,6 +239,37 @@ Note that you can undelete it after");
     return;
   }
   package_modified();
+}
+
+void BrowserComponentDiagram::apply_shortcut(QString s) {
+  int choice = -1;
+
+  if (!deletedp()) {
+    if (s == "Show")
+      choice = 0;
+    if (!is_edited) {
+      if (s == "Edit")
+	choice = 1;
+      if (!is_read_only) {
+	if (s == "Edit drawing settings")
+	  choice = 2;
+	else if (s == "Duplicate")
+	  choice = 3;
+	if (edition_number == 0) {
+	  if (s == "Delete")
+	    choice = 4;
+	}
+      }
+    }
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0))
+    if (s == "Undelete")
+      choice = 5;
+  
+  exec_menu_choice(choice);
 }
 
 void BrowserComponentDiagram::open(bool) {

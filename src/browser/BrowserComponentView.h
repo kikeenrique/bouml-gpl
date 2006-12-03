@@ -52,6 +52,7 @@ class BrowserComponentView : public BrowserNode, public Labeled<BrowserComponent
     
     BrowserComponentView(int id);
     void make();
+    void exec_menu_choice(int rank);
     
   public:
     BrowserComponentView(QString s, BrowserNode * p, int id = 0);
@@ -66,6 +67,7 @@ class BrowserComponentView : public BrowserNode, public Labeled<BrowserComponent
 				    QString name = QString::null);
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,

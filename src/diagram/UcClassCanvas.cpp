@@ -113,7 +113,6 @@ void UcClassCanvas::open() {
 }
 
 void UcClassCanvas::menu(const QPoint&) {
-
   QPopupMenu m(0);
   QPopupMenu toolm(0);
   
@@ -174,6 +173,24 @@ void UcClassCanvas::menu(const QPoint&) {
     return;
   }
   
+  package_modified();
+}
+
+void UcClassCanvas::apply_shortcut(QString s) {
+  if (s == "Select in browser") {
+    browser_node->select_in_browser();
+    return;
+  }
+  else if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else {
+    browser_node->apply_shortcut(s);
+    return;
+  }
+
+  modified();
   package_modified();
 }
 

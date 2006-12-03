@@ -356,13 +356,13 @@ a double click with the left mouse button does the same thing");
 	  m.setWhatsThis(m.insertItem("Duplicate", 1),
 			 "to copy the <em>relation</em> in a new one");
 	  if (get_oper == 0)
-	    m.setWhatsThis(m.insertItem("Add get operation", 4),
+	    m.setWhatsThis(m.insertItem("New get operation", 4),
 			   "to auto define the <em>get operation</em>");
 	  if (set_oper == 0)
-	    m.setWhatsThis(m.insertItem("Add set operation", 5),
+	    m.setWhatsThis(m.insertItem("New set operation", 5),
 			   "to auto define the <em>set operation</em>");
 	  if ((get_oper == 0) && (set_oper == 0))
-	    m.setWhatsThis(m.insertItem("Add get and set operation", 6),
+	    m.setWhatsThis(m.insertItem("New get and set operation", 6),
 			   "to auto define the <em>get</em> and <em>set operation</em>s");
 	  m.insertSeparator();
 	}
@@ -390,8 +390,10 @@ Note that you can undelete it after");
 		   "undelete the <em>relation</em> \
 (except if the class at the other side is also deleted)");
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()));
+}
+
+void BrowserRelation::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
     open(FALSE);
@@ -427,6 +429,44 @@ Note that you can undelete it after");
   }
   ((BrowserNode *) parent())->modified();
   package_modified();
+}
+
+void BrowserRelation::apply_shortcut(QString s) {
+  int choice = -1;
+
+  if (!deletedp()) {
+    if (!in_edition()) {
+      if (s == "Edit")
+	choice = 0;
+      if (!is_read_only && (edition_number == 0)) {
+	if (RelationData::isa_association(def->get_type())) {
+	  if (s == "Duplicate")
+	    choice = 1;
+	  if (get_oper == 0)
+	    if (s == "New get operation")
+	      choice = 4;
+	  if (set_oper == 0)
+	    if (s == "New set operation")
+	      choice = 5;
+	  if ((get_oper == 0) && (set_oper == 0))
+	    if (s == "New get and set operation")
+	      choice = 6;
+	}
+	if (s == "Delete")
+	  choice = 2;
+      }
+    }
+    if (s == "Select target")
+      choice = 7;
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0))
+    if (s == "Undelete")
+      choice = 3;
+  
+  exec_menu_choice(choice);
 }
 
 bool BrowserRelation::in_edition() const {

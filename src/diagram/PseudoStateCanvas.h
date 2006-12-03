@@ -66,7 +66,9 @@ class PseudoStateCanvas : public QObject, public DiagramCanvas {
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     virtual void history_load(QBuffer &);
     virtual void history_hide();
-    
+        
+    virtual void apply_shortcut(QString s);
+
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;
     static PseudoStateCanvas * read(char * &, UmlCanvas *, char *);
     

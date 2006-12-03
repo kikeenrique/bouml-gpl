@@ -225,6 +225,13 @@ void SimpleRelationCanvas::menu(const QPoint &) {
   }
 }
 
+void SimpleRelationCanvas::apply_shortcut(QString s) {
+  if (s == "Select in browser")
+    data->get_start()->select_in_browser();
+  else
+    data->get_start()->apply_shortcut(s);
+}
+
 ArrowPointCanvas * SimpleRelationCanvas::brk(const QPoint & p) {
   ArrowPointCanvas * ap =
     new ArrowPointCanvas(the_canvas(), p.x(), p.y());

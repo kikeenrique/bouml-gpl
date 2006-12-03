@@ -180,11 +180,11 @@ void BrowserExpansionRegion::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("Add expansion node", 0),
+      m.setWhatsThis(m.insertItem("New expansion node", 0),
 		     "to add an <em>expansion node</em> to the <em>expansion region</em>");
-      m.setWhatsThis(m.insertItem("Add nested expansion region", 1),
+      m.setWhatsThis(m.insertItem("New nested expansion region", 1),
 		     "to add a nested <em>expansion region</em>");
-      m.setWhatsThis(m.insertItem("Add interruptible activity region", 2),
+      m.setWhatsThis(m.insertItem("New interruptible activity region", 2),
 		     "to add an <em>interruptible expansion region Region</em>");
 #ifndef WIN32
 #warning partition
@@ -259,8 +259,11 @@ Note that you can undelete it after");
     }
   }
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()), item_above);
+}
+
+void BrowserExpansionRegion::exec_menu_choice(int rank,
+					      BrowserNode * item_above) {
   switch (rank) {
   case 0:
     add_expansionnode(0, 0);
@@ -343,6 +346,60 @@ Note that you can undelete it after");
   }
   ((BrowserNode *) parent())->modified();
   package_modified();
+}
+
+void BrowserExpansionRegion::apply_shortcut(QString s) {
+  int choice = -1;
+
+  if (!deletedp()) {
+    if (!is_read_only) {
+      if (s == "New expansion node")
+	choice = 0;
+      else if (s == "New expansion region")
+	choice = 1;
+      else if (s == "New interruptible activity region")
+	choice = 2;
+#ifndef WIN32
+#warning partition
+#endif
+      /*
+      m.setWhatsThis(m.insertItem("Add partition", 3),
+		     "to add a <em>Partition</em> to the <em>region</em>");
+		     */
+      else if (s == "Add activity action")
+	choice = 6;
+      else if (s == "Add object node")
+	choice = 7;
+    }
+    if (s == "Edit")
+      choice = 4;
+    if (!is_read_only) {
+      if (s == "Duplicate")
+	choice = 5;
+      if (edition_number == 0)
+	if (s == "Delete")
+	  choice = 8;
+    }
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    if (s == "Undelete")
+      choice = 10;
+ 
+    QListViewItem * child;
+  
+    for (child = firstChild(); child != 0; child = child->nextSibling()) {
+      if (((BrowserNode *) child)->deletedp()) {
+	if (s == "Undelete recursively")
+	  choice = 11;
+	break;
+      }
+    }
+  }
+  
+  exec_menu_choice(choice, 0);
 }
 
 BrowserNode *

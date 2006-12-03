@@ -199,6 +199,7 @@ bool UmlClassMember::compute_dependency(QList<CppRefType> & dependencies,
       // search word end
       const char * p2 = p;
       
+      ts.type = 0;
       ts.explicit_type = p2;
       p += 1;
       

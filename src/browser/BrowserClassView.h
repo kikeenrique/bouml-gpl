@@ -65,6 +65,8 @@ class BrowserClassView : public BrowserNode, public Labeled<BrowserClassView> {
     UmlColor parameterpin_color;
     BrowserDeploymentView * associated_deployment_view;
     
+    void exec_menu_choice(int rank);
+
   public:
     BrowserClassView(QString s, BrowserNode * p, int id = 0);
     BrowserClassView(const BrowserClassView * model, BrowserNode * p);
@@ -84,6 +86,7 @@ class BrowserClassView : public BrowserNode, public Labeled<BrowserClassView> {
 				    QString name = QString::null);
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,

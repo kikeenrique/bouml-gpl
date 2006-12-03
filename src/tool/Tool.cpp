@@ -151,6 +151,36 @@ bool Tool::menu_insert(QPopupMenu * tool, UmlCode target, int first_id)
   return have;
 }
 
+void Tool::shortcut(QString s, int & choice, UmlCode target,
+		    int first_id)
+{
+  unsigned index;
+  
+  for (index = 0; index != ntools; index += 1) {
+    if (tools[index].applicable[target] &&
+	(tools[index].display == s)) {
+      choice = first_id + index;
+      return;
+    }
+  }
+}
+
+QStringList Tool::all_display()
+{
+  QStringList r;
+  unsigned index;
+  
+  for (index = 0; index != ntools; index += 1) {
+    QString s = tools[index].display;
+    
+    if (r.findIndex(s) == -1)
+      r.append(s);
+  }
+  
+  r.sort();
+  return r;
+}
+
 const char * Tool::command(int param)
 {
   return tools[param].cmd;

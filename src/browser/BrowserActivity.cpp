@@ -206,19 +206,19 @@ void BrowserActivity::menu() {
     if (!is_read_only) {
       m.setWhatsThis(m.insertItem("New activity diagram", 0),
 		     "to add a <em>activity diagram</em>");
-      m.setWhatsThis(m.insertItem("Add parameter", 1),
+      m.setWhatsThis(m.insertItem("New parameter", 1),
 		     "to add a <em>Parameter</em> to the <em>activity</em>");
-      m.setWhatsThis(m.insertItem("Add interruptible activity region", 2),
+      m.setWhatsThis(m.insertItem("New interruptible activity region", 2),
 		     "to add an <em>Interruptible Activity Region</em> to the <em>activity</em>");
       m.setWhatsThis(m.insertItem("New expansion region", 3),
 		     "to add a nested <em>expansion region</em>");
 #if 0
-      m.setWhatsThis(m.insertItem("Add partition", 4),
+      m.setWhatsThis(m.insertItem("New partition", 4),
 		     "to add a <em>Partition</em> to the <em>activity</em>");
 #endif
-      m.setWhatsThis(m.insertItem("Add activity action", 7),
+      m.setWhatsThis(m.insertItem("New activity action", 7),
 		     "to add an <em>activity action</em> to the <em>activity</em>");
-      m.setWhatsThis(m.insertItem("Add object node", 8),
+      m.setWhatsThis(m.insertItem("New object node", 8),
 		     "to add an <em>activity object node</em> to the <em>activity</em>");
       m.insertSeparator();
     }
@@ -259,8 +259,10 @@ Note that you can undelete it after");
     }
   }
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()));
+}
+    
+void BrowserActivity::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
     add_activity_diagram();
@@ -331,6 +333,61 @@ Note that you can undelete it after");
   }
   ((BrowserNode *) parent())->modified();
   package_modified();
+}
+
+void BrowserActivity::apply_shortcut(QString s) {
+  int choice = -1;
+  
+  if (!deletedp()) {
+    if (!is_read_only) {
+      if (s == "New activity diagram")
+	choice = 0;
+      else if (s == "New parameter")
+	choice = 1;
+      else if (s == "New interruptible activity region")
+	choice = 2;
+      else if (s == "New expansion region")
+	choice = 3;
+#if 0
+      else if (s == "New partition")
+	choice = 4;
+#endif
+      else if (s == "New activity action")
+	choice = 7;
+      else if (s == "New object node")
+	choice = 8;
+    }
+    if (s == "Edit")
+      choice = 5;
+    if (!is_read_only) {
+      if (s == "Duplicate")
+	choice = 6;
+      if (edition_number == 0)
+	if (s == "Delete")
+	  choice = 9;
+    }
+    if (s == "Referenced by")
+      choice = 12;
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    if (s == "Undelete")
+      choice = 10;
+ 
+    QListViewItem * child;
+  
+    for (child = firstChild(); child != 0; child = child->nextSibling()) {
+      if (((BrowserNode *) child)->deletedp()) {
+	if (s == "Undelete recursively")
+	  choice = 11;
+	break;
+      }
+    }
+  }
+  
+  exec_menu_choice(choice);
 }
 
 void BrowserActivity::open(bool force_edit) {

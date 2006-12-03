@@ -245,7 +245,7 @@ void BrowserComponent::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("Add nested component", 4),
+      m.setWhatsThis(m.insertItem("New nested component", 4),
 		     "to add an <em>nested component</em> to the <em>component</em>");
       m.insertSeparator();
       m.setWhatsThis(m.insertItem("Edit", 0),
@@ -320,8 +320,11 @@ nexted <em>components</em> and <em>relations</em> \
   make_clsubm(m, prsubm, provided_classes, 19999, need_sep, "provided");
   make_clsubm(m, rzsubm, realized_classes, 29999, need_sep, "realized");
     
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()), item_above);
+}
+
+void BrowserComponent::exec_menu_choice(int rank,
+					BrowserNode * item_above) { 
   switch (rank) {
   case 0:
     open(TRUE);
@@ -372,6 +375,45 @@ nexted <em>components</em> and <em>relations</em> \
   }
   
   package_modified();
+}
+
+void BrowserComponent::apply_shortcut(QString s) {
+  int choice = -1;
+  
+  if (!deletedp()) {
+    if (!is_edited) {
+      if (s == "New nested component")
+	choice = 4;
+      else if (s == "Edit")
+	choice = 0;
+      
+      if (!is_read_only && (edition_number == 0)) {
+	if (s == "Delete")
+	  choice = 1;
+      }
+    }
+    if (s == "Referenced by")
+      choice = 3;
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    if (s == "Undelete")
+      choice = 2;
+   
+    QListViewItem * child;
+    
+    for (child = firstChild(); child != 0; child = child->nextSibling()) {
+      if (((BrowserNode *) child)->deletedp()) {
+	if (s == "Undelete recursively")
+	  choice = 22;
+	break;
+      }
+    }
+  }
+
+  exec_menu_choice(choice, 0);
 }
 
 void BrowserComponent::open(bool force_edit) {

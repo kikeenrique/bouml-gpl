@@ -50,6 +50,11 @@ class BrowserArtifact : public BrowserNode, public Labeled<BrowserArtifact> {
     ArtifactData * def;
     BrowserDeploymentDiagram * associated_diagram;
     QValueList<BrowserClass *> associated_classes;
+    
+  protected:
+    void exec_menu_choice(int rank,
+			  QString cpp_h_path, QString cpp_src_path,
+			  QString java_path, QString idl_path);
   
   public:
     BrowserArtifact(QString s, BrowserNode * p, int id = 0);
@@ -72,6 +77,7 @@ class BrowserArtifact : public BrowserNode, public Labeled<BrowserArtifact> {
 				    QString name = QString::null);
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool force_edit);
     virtual UmlCode get_type() const;
     virtual BasicData * get_data() const;

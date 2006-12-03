@@ -49,6 +49,8 @@ class UmlClass;
 // - connect()
 // - read_item_list()
 // - trace()
+// - traceAutoRaise()
+// - showTrace()
 // - message()
 // - bye()
 // - close()
@@ -66,6 +68,13 @@ class UmlCom {
     // to write messages in the tool window,
     // use Qt rich text : allows HTML like formatting
     static void trace(const char * s);
+    
+    // to show the trace window
+    static void showTrace();
+    
+    // to automatically raise the trace window
+    // each time trace() is called, even with ""
+    static void traceAutoRaise(bool y);
     
     // to write a message in the status bar line
     // does not use Qt rich text

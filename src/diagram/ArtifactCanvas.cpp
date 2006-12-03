@@ -469,18 +469,7 @@ void ArtifactCanvas::menu(const QPoint&) {
     modified();	// call package_modified()
     return;
   case 2:
-    {
-      QArray<StateSpec> st;
-      QArray<ColorSpec> co(1);
-      
-      co[0].set("artifact color", &itscolor);
-
-      SettingsDialog dialog(0, &co, FALSE, TRUE);
-      
-      dialog.raise();
-      if (dialog.exec() == QDialog::Accepted)
-	modified();	// call package_modified()
-    }
+    edit_drawing_settings();
     return;
   case 3:
     browser_node->open(TRUE);
@@ -506,26 +495,13 @@ void ArtifactCanvas::menu(const QPoint&) {
     browser_node->delete_it();	// will delete the canvas
     break;
   case 9:
-    {
-      bool preserve = preserve_bodies();
-      
-      ToolCom::run((verbose_generation()) 
-		   ? ((preserve) ? "cpp_generator -v -p" : "cpp_generator -v")
-		   : ((preserve) ? "cpp_generator -p" : "cpp_generator"),
-		   browser_node);
-    }
+    browser_node->apply_shortcut("Generate C++");
     return;
   case 10:
-    {
-      bool preserve = preserve_bodies();
-      
-      ToolCom::run((verbose_generation()) 
-		   ? ((preserve) ? "java_generator -v -p" : "java_generator -v")
-		   : ((preserve) ? "java_generator -p" : "java_generator"), browser_node);
-    }
+    browser_node->apply_shortcut("Generate Java");
     return;
   case 11:
-    ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", browser_node);
+    browser_node->apply_shortcut("Generate Idl");
     return;
   default:
     if (index >= 20)
@@ -534,6 +510,41 @@ void ArtifactCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+void ArtifactCanvas::apply_shortcut(QString s) {
+  if (s == "Select in browser") {
+    browser_node->select_in_browser();
+    return;
+  }
+  else if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else if (s == "Edit drawing settings") {
+    edit_drawing_settings();
+    return;
+  }
+  else {
+    browser_node->apply_shortcut(s);
+    return;
+  }
+
+  modified();
+  package_modified();
+}
+
+void ArtifactCanvas::edit_drawing_settings() {
+  QArray<StateSpec> st;
+  QArray<ColorSpec> co(1);
+  
+  co[0].set("artifact color", &itscolor);
+  
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted)
+    modified();	// call package_modified()
 }
 
 bool ArtifactCanvas::has_drawing_settings() const {

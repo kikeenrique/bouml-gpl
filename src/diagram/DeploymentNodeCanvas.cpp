@@ -335,21 +335,8 @@ void DeploymentNodeCanvas::menu(const QPoint&) {
     open();
     return;
   case 3:
-    {
-      QArray<StateSpec> st(1);
-      QArray<ColorSpec> co(1);
-      
-      st[0].set("write node instance \nhorizontally", &write_horizontally);
-      co[0].set("Node color", &itscolor);
-
-      SettingsDialog dialog(&st, &co, FALSE, TRUE);
-      
-      dialog.raise();
-      if (dialog.exec() == QDialog::Accepted)
-	modified();
-      return;
-    }
-    break;
+    edit_drawing_settings();
+    return;
   case 4:
     browser_node->select_in_browser();
     return;
@@ -373,6 +360,41 @@ void DeploymentNodeCanvas::menu(const QPoint&) {
   }
   
   package_modified();
+}
+
+void DeploymentNodeCanvas::apply_shortcut(QString s) {
+  if (s == "Select in browser") {
+    browser_node->select_in_browser();
+    return;
+  }
+  else if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else if (s == "Edit drawing settings") {
+    edit_drawing_settings();
+    return;
+  }
+  else {
+    browser_node->apply_shortcut(s);
+    return;
+  }
+
+  modified();
+}
+
+void DeploymentNodeCanvas::edit_drawing_settings() {
+  QArray<StateSpec> st(1);
+  QArray<ColorSpec> co(1);
+  
+  st[0].set("write node instance \nhorizontally", &write_horizontally);
+  co[0].set("Node color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted)
+    modified();
 }
 
 bool DeploymentNodeCanvas::has_drawing_settings() const {

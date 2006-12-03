@@ -49,7 +49,8 @@ int main(int argc, char ** argv)
     try {
       //UmlCom::with_ack(FALSE);
       
-      UmlCom::trace("<b>Java reverse</b> release 2.5.2<br><hr>");
+      UmlCom::trace("<b>Java reverse</b> release 2.5.3<br><hr>");
+      UmlCom::traceAutoRaise(FALSE);
       
       UmlItem * item = UmlCom::targetItem();
       
@@ -111,6 +112,7 @@ int main(int argc, char ** argv)
     catch (...) {
     }
 
+    UmlCom::showTrace();
     UmlCom::bye();	// application must not be deleted
   }
   

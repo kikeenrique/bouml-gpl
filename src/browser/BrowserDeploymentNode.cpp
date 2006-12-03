@@ -149,8 +149,10 @@ through a relation");
     m.setWhatsThis(m.insertItem("Undelete", 2),
 		   "to undelete the <em>node</em>");
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()));
+}
+
+void BrowserDeploymentNode::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
     edit("Node", its_default_stereotypes);
@@ -173,6 +175,31 @@ through a relation");
   }
   
   package_modified();
+}
+
+void BrowserDeploymentNode::apply_shortcut(QString s) {
+  int choice = -1;
+
+  if (!deletedp()) {
+    if (!is_edited) {
+      if (s == "Edit")
+	choice = 0;
+      if (!is_read_only && (edition_number == 0)) {
+	if (s == "Delete")
+	  choice = 1;
+      }
+    }
+    if (s == "Referenced by")
+      choice = 3;
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0))
+    if (s == "Undelete")
+      choice = 2;
+  
+  exec_menu_choice(choice);
 }
 
 void BrowserDeploymentNode::open(bool force_edit) {

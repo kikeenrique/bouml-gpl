@@ -36,15 +36,18 @@
 
 TraceDialog * TraceDialog::the;
 QTextView * TraceDialog::txt;
+bool TraceDialog::AutoRaise;
+QString TraceDialog::content;
 
 QSize TraceDialog::previous_size;
 
-TraceDialog::TraceDialog() : QDialog(0, "", FALSE) {
+TraceDialog::TraceDialog() : QDialog(0, "", FALSE, WDestructiveClose) {
   setCaption("Trace");
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
 
   txt = new QTextView(this);
+  txt->setText(content);
   vbox->add(txt);
   
   QHBoxLayout * hbox = new QHBoxLayout(vbox); 
@@ -74,27 +77,45 @@ TraceDialog::~TraceDialog() {
 }
 
 void TraceDialog::clr() {
-  if (txt)
-    txt->setText("");
+  clear();
 }
 
 void TraceDialog::clear()
 {
-  if (txt)
+  content = "";
+  
+  if (AutoRaise && (txt == 0))
+    show_it();
+  
+  if (txt != 0)
     txt->setText("");
 }
 
 void TraceDialog::add(const char * s) {
-  if (txt == 0)
-    the = new TraceDialog();
-  the->show();
-  txt->append(s);
-  txt->update();
+  if (AutoRaise && (txt == 0))
+    show_it();
+  
+  if (txt != 0) {
+    the->show();
+    the->raise();
+    txt->append(s);
+    txt->update();
+  }
+  content.append(s);
 }
 
 void TraceDialog::show_it()
 {
-  if (the)
+  if (txt == 0) {
+    the = new TraceDialog();
+  }
+  else
     the->hide();
-  add("");
+  the->show();
+  the->raise();
+}
+
+void TraceDialog::trace_auto_raise(bool y)
+{
+  AutoRaise = y;
 }

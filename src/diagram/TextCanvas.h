@@ -51,6 +51,7 @@ class TextCanvas : public DiagramCanvas {
     virtual bool copyable() const;
     virtual aCorner on_resize_point(const QPoint &);
     virtual void resize(aCorner c, int dx, int dy);
+    virtual void apply_shortcut(QString s);
     virtual void history_save(QBuffer &) const;
     virtual void history_load(QBuffer &);
     virtual void save(QTextStream &, bool ref, QString & warning) const;

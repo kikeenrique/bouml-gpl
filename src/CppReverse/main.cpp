@@ -41,7 +41,8 @@ int main(int argc, char ** argv)
   if (UmlCom::connect(QCString(argv[1]).toUInt())) {
     try {
       //UmlCom::with_ack(FALSE);
-      UmlCom::trace("<b>C++ reverse</b> release 2.2.2<br><hr>");
+      UmlCom::trace("<b>C++ reverse</b> release 2.2.3<br><hr>");
+      UmlCom::traceAutoRaise(FALSE);
       
       UmlItem * item = UmlCom::targetItem();
       
@@ -76,6 +77,7 @@ int main(int argc, char ** argv)
     catch (...) {
     }
 
+    UmlCom::showTrace();
     UmlCom::bye();
   }
   

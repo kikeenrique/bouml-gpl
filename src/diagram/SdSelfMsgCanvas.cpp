@@ -154,20 +154,8 @@ void SdSelfMsgCanvas::menu(const QPoint&) {
     open();
     break;
   case 3:
-    {
-      QArray<StateSpec> st(2);
-      
-      st[0].set("operation drawing language", &drawing_language);
-      st[1].set("show full operation definition", &show_full_oper);
-
-      SettingsDialog dialog(&st, 0, FALSE, TRUE);
-      
-      dialog.raise();
-      if (dialog.exec() == QDialog::Accepted)
-	modified();
-      return;
-    }
-    break;
+    edit_drawing_settings();
+    return;
   case 4:
     select_associated();
     break;
@@ -190,6 +178,40 @@ void SdSelfMsgCanvas::menu(const QPoint&) {
 
   package_modified();  
   canvas()->update();
+}
+
+void SdSelfMsgCanvas::apply_shortcut(QString s) {
+  if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else if (s == "Edit drawing settings") {
+    edit_drawing_settings();
+    return;
+  }
+  else if (s == "Edit")
+    open();
+  else 
+    return;
+
+  // force son reaffichage
+  hide();
+  show();
+  package_modified();
+  canvas()->update();
+}
+
+void SdSelfMsgCanvas::edit_drawing_settings() {
+  QArray<StateSpec> st(2);
+  
+  st[0].set("operation drawing language", &drawing_language);
+  st[1].set("show full operation definition", &show_full_oper);
+  
+  SettingsDialog dialog(&st, 0, FALSE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted)
+    modified();
 }
 
 bool SdSelfMsgCanvas::has_drawing_settings() const {

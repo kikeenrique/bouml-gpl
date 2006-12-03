@@ -81,6 +81,7 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     BrowserPackage(int id);
     BrowserPackage * find_it(const char * s, const MyStr & (PackageData::* pf)() const);
     void make();
+    void exec_menu_choice(int rank);
       
   public:
     BrowserPackage(QString s, BrowserNode * parent, int id = 0);
@@ -95,6 +96,7 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
 				    QString name = QString::null);
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool force_edit);
     virtual void on_close();
     virtual UmlCode get_type() const;

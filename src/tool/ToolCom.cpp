@@ -128,6 +128,7 @@ ToolCom::ToolCom() {
 
 int ToolCom::run(const char * cmd, BrowserNode * bn, bool exit)
 {
+  TraceDialog::trace_auto_raise(TRUE);
   TraceDialog::clear();
   
   ToolCom * com = (unused.isEmpty())
@@ -538,16 +539,19 @@ void ToolCom::data_received(Socket * who) {
 	
 	if (api_version < 11) {
 	  TraceDialog::add("<font color =\"red\"><b>the plug-out was written for a BOUML release less or equal to 1.5<b></font>");
+	  TraceDialog::show_it();
 	  close();
 	  return;
 	}
 	/*else if (api_version < ??) {
 	   TraceDialog::add("<font color =\"red\"><b>the plug-out is too old, update the SYSTEM part and re-compile it<b></font>");
+	   TraceDialog::show_it();
 	   close();
 	   return;
 	   }*/
 	else if (api_version > 25) {
 	  TraceDialog::add("<font color =\"red\"><b>the plug-out is incompatible with this too old version of BOUML<b></font>");
+	  TraceDialog::show_it();
 	  close();
 	  return;
 	}
@@ -614,10 +618,15 @@ void ToolCom::data_received(Socket * who) {
 	    throw 0;
 	  case traceCmd:
 	    TraceDialog::add(p+1);
-			 break;
+	    break;
+	  case showTraceCmd:
+	    TraceDialog::show_it();
+	  case traceAutoRaiseCmd:
+	    TraceDialog::trace_auto_raise(p[1]);
+	    break;
 	  case messageCmd:
 	    UmlWindow::set_message(p+1);
-		       break;
+	    break;
 	  case toolRunningCmd:
 	    p += 1;
 	    write_bool(is_running((int) get_unsigned(p)));

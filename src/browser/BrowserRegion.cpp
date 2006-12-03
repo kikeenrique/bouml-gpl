@@ -129,7 +129,7 @@ void BrowserRegion::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("Add state", 1),
+      m.setWhatsThis(m.insertItem("New state", 1),
 		     "to add a <em>state</em> to the <em>region</em>");
     }
     m.insertSeparator();
@@ -164,8 +164,10 @@ Note that you can undelete it after");
     }
   }
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()));
+}
+
+void BrowserRegion::exec_menu_choice(int rank) {
   switch (rank) {
   case 1:
     BrowserState::add_state(this, (bool) FALSE);
@@ -191,6 +193,42 @@ Note that you can undelete it after");
   }
   ((BrowserNode *) parent())->modified();
   package_modified();
+}
+
+void BrowserRegion::apply_shortcut(QString s) {
+  int choice = -1;
+
+  if (!deletedp()) {
+    if (!is_read_only) {
+      if (s == "New state")
+	choice = 1;
+    }
+    if (s == "Edit")
+      choice = 3;
+    if (!is_read_only && (edition_number == 0)) {
+      if (s == "Delete")
+	choice = 7;
+    }
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    if (s == "Undelete")
+      choice = 8;
+ 
+    QListViewItem * child;
+  
+    for (child = firstChild(); child != 0; child = child->nextSibling()) {
+      if (((BrowserNode *) child)->deletedp()) {
+	if (s == "Undelete recursively")
+	  choice = 9;
+	break;
+      }
+    }
+  }
+  
+  exec_menu_choice(choice);
 }
 
 void BrowserRegion::open(bool) {

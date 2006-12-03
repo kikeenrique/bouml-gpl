@@ -337,8 +337,15 @@ through a relation");
 		   "to select an associated <em>class</em>");
   }
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()),
+		   cpp_h_path, cpp_src_path, java_path, idl_path);
+}
+
+void BrowserArtifact::exec_menu_choice(int rank,
+				       QString cpp_h_path,
+				       QString cpp_src_path,
+				       QString java_path,
+				       QString idl_path) {
   switch (rank) {
   case 0:
     def->edit();
@@ -414,6 +421,9 @@ through a relation");
     // no break
   default:
     if (rank >= 10000) {
+      int n;
+      QValueList<BrowserClass *>::ConstIterator it;
+      
       for (it = associated_classes.begin(), n = 10000;
 	   (*it)->deletedp() || (n++ != rank);
 	   ++it)
@@ -428,6 +438,68 @@ through a relation");
   }
   
   package_modified();
+}
+
+void BrowserArtifact::apply_shortcut(QString s) {
+  int choice = -1;
+  QString cpp_h_path;
+  QString cpp_src_path;
+  QString java_path;
+  QString idl_path;
+  
+  if (!deletedp()) {
+    if (!is_edited) {
+      if (s == "Edit")
+	choice = 0;
+      if (!is_read_only && (edition_number == 0)) {
+	if (s == "Delete")
+	  choice = 1;
+      }
+    }
+    if (!strcmp(def->get_stereotype(), "source")) {
+      if (s == "Generate C++")
+	choice = 10;
+      else if (s == "Generate Java")
+	choice = 11;
+      else if (s == "Generate Idl")
+	choice = 12;
+      
+      get_paths(cpp_h_path, cpp_src_path, java_path, idl_path);
+      if (!cpp_h_edited && !cpp_h_path.isEmpty()) {
+	//if (! cpp_src_path.isEmpty())
+	  //roundtripsubm.insertItem("C++ header & source files", 13);
+	if (s == "See C++ header file")
+	  choice = 14;
+	//roundtripsubm.insertItem("C++ header file", 15);
+      }
+      if (!cpp_src_edited && !cpp_src_path.isEmpty()) {
+	if (s == "See C++ source file")
+	  choice = 16;
+	//roundtripsubm.insertItem("C++ source file", 17);
+      }
+      if (!java_edited && !java_path.isEmpty()) {
+	if (s == "Java source file")
+	  choice = 18;
+	//roundtripsubm.insertItem("Java source file", 19);
+      }
+      if (!idl_edited && !idl_path.isEmpty()) {
+	if (s == "Idl source file")
+	  choice = 20;
+	//roundtripsubm.insertItem("Idl source file", 21);
+      }
+    }
+    if (s == "Referenced by")
+      choice = 3;
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0))
+    if (s == "Undelete")
+      choice = 2;
+  
+  exec_menu_choice(choice,
+		   cpp_h_path, cpp_src_path, java_path, idl_path);
 }
 
 void BrowserArtifact::open(bool force_edit) {

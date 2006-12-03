@@ -488,3 +488,14 @@ UmlOperation * UmlClass::get_operation(const char * who) {
     
   return 0;
 }
+
+UmlAttribute * UmlClass::get_attribute(const char * who) {
+  const QVector<UmlItem> ch = children();
+  
+  for (unsigned i = 0; i != ch.size(); i += 1)
+    if ((ch[i]->kind() == anAttribute) &&
+	(ch[i]->name() == who))
+      return (UmlAttribute *) ch[i];
+    
+  return 0;
+}

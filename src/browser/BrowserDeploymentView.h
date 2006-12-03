@@ -53,6 +53,7 @@ class BrowserDeploymentView : public BrowserNode, public Labeled<BrowserDeployme
     
     BrowserDeploymentView(int id);
     void make();
+    void exec_menu_choice(int rank);
     
   public:
     BrowserDeploymentView(QString s, BrowserNode * p, int id = 0);
@@ -67,6 +68,7 @@ class BrowserDeploymentView : public BrowserNode, public Labeled<BrowserDeployme
 				    QString name = QString::null);
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,

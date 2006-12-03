@@ -44,6 +44,8 @@ class BrowserRelation : public BrowserNode, public Labeled<BrowserRelation> {
     
     BrowserRelation(int id);
     
+    void exec_menu_choice(int rank);
+    
   public:
     BrowserRelation(BrowserNode * p, RelationData * d, int id = 0);
     BrowserRelation(const BrowserRelation * model, BrowserNode * p);
@@ -72,6 +74,7 @@ class BrowserRelation : public BrowserNode, public Labeled<BrowserRelation> {
     static BrowserRelation * reinsert(BrowserNode * p, RelationData * d);
 
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual bool in_edition() const;
     virtual UmlCode get_type() const;

@@ -60,6 +60,7 @@
 #include "SelectAreaCanvas.h"
 #include "BrowserDiagram.h"
 #include "UmlWindow.h"
+#include "Shortcut.h"
 #include "MenuTitle.h"
 #include "myio.h"
 
@@ -175,9 +176,7 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	}
 	
 	if (n_targets > 1) {
-	  history_protected = TRUE;
 	  multiple_selection_menu(in_model, out_model, alignable, l);
-	  history_protected = FALSE;
 	  return;
 	}
       }
@@ -782,14 +781,12 @@ void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
   const QCanvasItemList selected = selection();
   QCanvasItemList::ConstIterator it;
   QPopupMenu m(0);
-  bool used = FALSE;
   
   m.insertItem(new MenuTitle("Multiple selection menu", m.font()), -1);
   m.insertSeparator();
   for (it = selected.begin(); it != selected.end(); ++it) {
     if (QCanvasItemToDiagramItem(*it)->linked()) {
       m.insertItem("Select linked items", 1);
-      used = TRUE;
       m.insertSeparator();
       break;
     }
@@ -819,10 +816,11 @@ void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
   }
   
   m.insertItem("Copy selected (Ctrl+c)", 11);
-  m.insertItem("Cut selected (Ctrl+x, remove from view)", 12);
   
-  if (out_model)
+  if (out_model) {
+    m.insertItem("Cut selected (Ctrl+x, remove from view)", 12);
     m.insertItem("Remove selected from view (Suppr)", 2);
+  }
   if (in_model)
     m.insertItem("Delete selected (Control+d)", 3);
 
@@ -831,68 +829,66 @@ void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
     m.insertItem("Edit drawing settings", 13);
   }
   
-  if (used || out_model || in_model || alignable) {
-    history_protected = TRUE;
-    
-    switch (m.exec(QCursor::pos())) {
-    case 1:
-      unselect_all();
-      for (it = selected.begin(); it != selected.end(); ++it)
-	QCanvasItemToDiagramItem(*it)->select_associated();
-      break;
-    case 12:
-      clipboard = window()->copy_selected();
-      copied_from = window()->browser_diagram()->get_type();
-      // no break !
-    case 2:
-      delete_them(FALSE);
-      break;
-    case 3:
-      delete_them(TRUE);
-      break;
-    case 4:
-      history_save();
-      alignTop();
-      break;
-    case 5:
-      history_save();
-      alignBottom();
-      break;
-    case 6:
-      history_save();
-      alignLeft();
-      break;
-    case 7:
-      history_save();
-      alignRight();
-      break;
-    case 8:
-      history_save();
-      alignCenter();
-      break;
-    case 9:
-      history_save();
-      alignVerticaly();
-      break;
-    case 10:
-      history_save();
-      alignHorizontaly();
-      break;
-    case 11:
-      clipboard = window()->copy_selected();
-      copied_from = window()->browser_diagram()->get_type();
-      return;
-    case 13:
-      history_protected = FALSE;
-      l.first()->edit_drawing_settings(l);
-      break;
-    default:
-      return;
-    }
-    
-    canvas()->update();
+  history_protected = TRUE;
+  
+  switch (m.exec(QCursor::pos())) {
+  case 1:
+    unselect_all();
+    for (it = selected.begin(); it != selected.end(); ++it)
+      QCanvasItemToDiagramItem(*it)->select_associated();
+    break;
+  case 12:
+    clipboard = window()->copy_selected();
+    copied_from = window()->browser_diagram()->get_type();
+    // no break !
+  case 2:
+    delete_them(FALSE);
+    break;
+  case 3:
+    delete_them(TRUE);
+    break;
+  case 4:
+    history_save();
+    alignTop();
+    break;
+  case 5:
+    history_save();
+    alignBottom();
+    break;
+  case 6:
+    history_save();
+    alignLeft();
+    break;
+  case 7:
+    history_save();
+    alignRight();
+    break;
+  case 8:
+    history_save();
+    alignCenter();
+    break;
+  case 9:
+    history_save();
+    alignVerticaly();
+    break;
+  case 10:
+    history_save();
+    alignHorizontaly();
+    break;
+  case 11:
+    clipboard = window()->copy_selected();
+    copied_from = window()->browser_diagram()->get_type();
+    return;
+  case 13:
     history_protected = FALSE;
+    l.first()->edit_drawing_settings(l);
+    break;
+  default:
+    return;
   }
+  
+  canvas()->update();
+  history_protected = FALSE;
 }
 
 void DiagramView::moveSelected(int dx, int dy, bool first) {
@@ -924,73 +920,11 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
     abort_line_construction();
   }
   else if (!window()->frozen()) {
-    history_protected = TRUE;
-    
-    if (e->state() == QObject::ControlButton) {
-      switch (e->key()) {
-      case QObject::Key_A:
-	select_all();	// clear history_protected
-	return;
-      case QObject::Key_C: 
-	clipboard = window()->copy_selected();
-	copied_from = window()->browser_diagram()->get_type();
-	break;
-      case QObject::Key_D:
-	history_protected = FALSE;
-	delete_them(TRUE);
-	break;
-      case QObject::Key_L:
-	{
-	  const QCanvasItemList selected = selection();
-	  QCanvasItemList::ConstIterator it;
-	  
-	  for (it = selected.begin(); it != selected.end(); ++it) {
-	    if (isa_arrow(*it)) {
-	      unselect_all();
-	      // warning : the selected arrow may disapear =>
-	      // select the returned arrow still present
-	      // this allows to do several control-L
-	      select(((ArrowCanvas *) *it)->next_geometry());
-	      break;
-	    }
-	  }
-	}
-	break;
-      case QObject::Key_S:
-	UmlWindow::save_it();
-	break;
-      case QObject::Key_V:
-	if (!clipboard.isEmpty() &&
-	    (copied_from == window()->browser_diagram()->get_type()))
-	  paste();
-	break;
-      case QObject::Key_X:
-	clipboard = window()->copy_selected();
-	copied_from = window()->browser_diagram()->get_type();
-	delete_them(FALSE);
-	break;
-      case QObject::Key_U:
-      case QObject::Key_Z:
-	if (available_undo())
-	  undo();
-	else
-	  QApplication::beep();
-	return;
-      case QObject::Key_R:
-      case QObject::Key_Y:
-	if (available_redo())
-	  redo();
-	else
-	  QApplication::beep();
-	return;
-      }
-    }
-    else {
-      switch (e->key()) {
-      case QObject::Key_Delete:
-	delete_them(FALSE);
-	break;
-      case QObject::Key_Left:
+    QString s = Shortcut::shortcut(e->key(), e->state());
+  
+    if (!s.isEmpty()) {
+      if (s == "Move left") {
+	history_protected = TRUE;
 	if (first_move) {
 	  history_save();
 	  first_move = FALSE;
@@ -998,17 +932,9 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 	}
 	else
 	  moveSelected(-1, 0, FALSE);
-	break;
-      case QObject::Key_Up:
-	if (first_move) {
-	  history_save();
-	  first_move = FALSE;
-	  moveSelected(0, -1, TRUE);
-	}
-	else
-	  moveSelected(0, -1, FALSE);
-	break;
-      case QObject::Key_Right:
+      }
+      else if (s == "Move right") {
+	history_protected = TRUE;
 	if (first_move) {
 	  history_save();
 	  first_move = FALSE;
@@ -1016,8 +942,19 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 	}
 	else
 	  moveSelected(1, 0, FALSE);
-	break;
-      case QObject::Key_Down:
+      }
+      else if (s == "Move up") {
+	history_protected = TRUE;
+	if (first_move) {
+	  history_save();
+	  first_move = FALSE;
+	  moveSelected(0, -1, TRUE);
+	}
+	else
+	  moveSelected(0, -1, FALSE);
+      }
+      else if (s == "Move down") {
+	history_protected = TRUE;
 	if (first_move) {
 	  history_save();
 	  first_move = FALSE;
@@ -1025,14 +962,192 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 	}
 	else
 	  moveSelected(0, 1, FALSE);
-	break;
       }
+      else if (s == "Delete") {
+	history_protected = FALSE;
+	delete_them(TRUE);
+      }
+      else if (s == "Remove from view") {
+	history_protected = TRUE;
+	delete_them(FALSE);
+      }
+      else if (s == "Select all") {
+	history_protected = TRUE;
+	select_all();	// clear history_protected
+	e->ignore();
+	return;
+      }
+      else if (s == "Copy") {
+	history_protected = TRUE;
+	clipboard = window()->copy_selected();
+	copied_from = window()->browser_diagram()->get_type();
+      }
+      else if (s == "Paste") {
+	history_protected = TRUE;
+	if (!clipboard.isEmpty() &&
+	    (copied_from == window()->browser_diagram()->get_type()))
+	  paste();	
+      }
+      else if (s == "Cut") {
+	history_protected = TRUE;
+	clipboard = window()->copy_selected();
+	copied_from = window()->browser_diagram()->get_type();
+	delete_them(FALSE);
+      }
+      else if (s == "Undo") {
+	history_protected = TRUE;
+	if (available_undo())
+	  undo();
+	else
+	  QApplication::beep();
+	e->ignore();
+	return;
+      }
+      else if (s == "Redo") {
+	history_protected = TRUE;
+	if (available_redo())
+	  redo();
+	else
+	  QApplication::beep();
+	e->ignore();
+	return;
+      }
+      else if (s == "Save") {
+	history_protected = TRUE;
+	UmlWindow::save_it();
+      }
+      else if (s == "Arrow geometry") {
+	history_protected = TRUE;
+
+	const QCanvasItemList selected = selection();
+	QCanvasItemList::ConstIterator it;
+	
+	for (it = selected.begin(); it != selected.end(); ++it) {
+	  if (isa_arrow(*it)) {
+	    unselect_all();
+	    // warning : the selected arrow may disapear =>
+	    // select the returned arrow still present
+	    // this allows to do several control-L
+	    select(((ArrowCanvas *) *it)->next_geometry());
+	    break;
+	  }
+	}
+      }
+      else {
+	const QCanvasItemList selected = selection();
+
+	if (selected.count() > 1) {
+	  if (s == "Select linked items") {
+	    history_protected = TRUE;
+	    unselect_all();
+	    
+	    QCanvasItemList::ConstIterator it;
+	    
+	    for (it = selected.begin(); it != selected.end(); ++it)
+	      QCanvasItemToDiagramItem(*it)->select_associated();
+	  }
+	  else if (s == "Edit drawing settings") {
+	    QCanvasItemList::ConstIterator it;
+	    UmlCode k = UmlCodeSup;
+	    QList<DiagramItem> l;
+	
+	    for (it = selected.begin(); it != selected.end(); ++it) {
+	      if (! isa_label(*it)) {
+		DiagramItem * item = QCanvasItemToDiagramItem(*it);
+		
+		if (item->has_drawing_settings()) {
+		  // note : relations doesn't have drawing setting, transition and flow have
+		  switch (k) {
+		  case UmlCodeSup:
+		    // first case
+		    k = item->type();
+		    l.append(item);
+		    break;
+		  case UmlArrowPoint:
+		    // mark for several types
+		    break;
+		  default:
+		    if (item->type() == k)
+		      l.append(item);
+		    else {
+		      // several types
+		      l.clear();
+		      k = UmlArrowPoint;	// mark for several types
+		    }
+		  }
+		}
+	      }
+	    }
+	    
+	    switch (l.count()) {
+	    case 0:
+	      break;
+	    case 1:
+	      history_protected = FALSE;
+	      l.first()->apply_shortcut(s);
+	      break;
+	    default:
+	      history_protected = FALSE;
+	      l.first()->edit_drawing_settings(l);
+	    }
+	  }
+	  else if (s == "Align bottom") {
+	    history_protected = TRUE;
+	    history_save();
+	    alignBottom();
+	  }
+	  else if (s == "Align center") {
+	    history_protected = TRUE;
+	    history_save();
+	    alignCenter();
+	  }
+	  else if (s == "Align center horizontaly") {
+	    history_protected = TRUE;
+	    history_save();
+	    alignHorizontaly();
+	  }
+	  else if (s == "Align center verticaly") {
+	    history_protected = TRUE;
+	    history_save();
+	    alignVerticaly();
+	  }
+	  else if (s == "Align left") {
+	    history_protected = TRUE;
+	    history_save();
+	    alignLeft();
+	  }
+	  else if (s == "Align right") {
+	    history_protected = TRUE;
+	    history_save();
+	    alignRight();
+	  }
+	  else if (s == "Align top") {
+	    history_protected = TRUE;
+	    history_save();
+	    alignTop();
+	  }
+	}
+	else if (selected .count() == 1) {
+	  DiagramItem * item = 
+	    QCanvasItemToDiagramItem(selected.first());
+	  
+	  if (item != 0) {
+	    if (s == "Select linked items") {
+	      history_protected = TRUE;
+	      unselect_all();
+	      item->select_associated();
+	    }
+	    else {
+	      history_protected = FALSE;
+	      item->apply_shortcut(s);
+	    }
+	  }
+	}
+      }
+      canvas()->update();
+      history_protected = FALSE;
     }
-    
-    canvas()->update();
-    history_protected = FALSE;
-  }
-  
+  }  
   e->ignore();
 }
 

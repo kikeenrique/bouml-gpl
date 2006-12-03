@@ -39,6 +39,8 @@ enum MiscGlobalCmd {
   targetCmd,
   allMarkedCmd,
   loadCmd,
+  showTraceCmd,
+  traceAutoRaiseCmd,
   
   withAckCmd = 124,
   setRootPermissionCmd = 125,

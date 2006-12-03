@@ -796,6 +796,8 @@ void CdClassCanvas::menu(const QPoint&) {
     }
     if (attributes.count() != 0)
       m.insertItem("Edit item or attribute", &attrsubm);
+    if (browser_node->is_writable())
+      m.insertItem("Add operation", 8);
   }
   else if (!strcmp(stereotype, "enum_pattern")) {
     if (browser_node->is_writable()) {
@@ -848,7 +850,7 @@ void CdClassCanvas::menu(const QPoint&) {
     }
   }
   m.insertSeparator();
-  m.insertItem("Select in browser",10);
+  m.insertItem("Select in browser", 10);
   if (linked())
     m.insertItem("Select linked items",17);
   m.insertSeparator();
@@ -893,21 +895,8 @@ void CdClassCanvas::menu(const QPoint&) {
     lower();
     break;
   case 2:
-    {
-      QArray<StateSpec> st;
-      QArray<ColorSpec> co(1);
-      
-      settings.complete(st, UmlClass);
-      
-      co[0].set("class color", &itscolor);
-
-      SettingsDialog dialog(&st, &co, FALSE, TRUE);
-      
-      dialog.raise();
-      if (dialog.exec() != QDialog::Accepted)
-	return;
-    }
-    break;
+    edit_drawing_settings();
+    return;
   case 3:
     {
       HideShowDialog dialog(attributes, hidden_attributes);
@@ -930,23 +919,14 @@ void CdClassCanvas::menu(const QPoint&) {
     browser_node->open(TRUE);
     return;
   case 7:
+    browser_node->apply_shortcut("New item");
+    return;
   case 9:
-    {
-      BrowserNode * ba =
-	((BrowserClass *) browser_node)->add_attribute(0, index == 7);
-      
-      if (ba != 0)
-	ba->open(TRUE);
-    }
-    break;
+    browser_node->apply_shortcut("New attribute");
+    return;
   case 8:
-    {
-      BrowserNode * bo = ((BrowserClass *) browser_node)->add_operation();
-      
-      if (bo != 0)
-	bo->open(TRUE);
-    }
-    break;
+    browser_node->apply_shortcut("New operation");
+    return;
   case 10:
     browser_node->select_in_browser();
     return;
@@ -963,27 +943,13 @@ void CdClassCanvas::menu(const QPoint&) {
     browser_node->delete_it();	// will delete the canvas
     break;
   case 14:
-    {
-      bool preserve = preserve_bodies();
-      
-      ToolCom::run((verbose_generation()) 
-		   ? ((preserve) ? "cpp_generator -v -p" : "cpp_generator -v")
-		   : ((preserve) ? "cpp_generator -p" : "cpp_generator"),
-		   browser_node);
-    }
+    browser_node->apply_shortcut("Generate C++");
     return;
   case 15:
-    {
-      bool preserve = preserve_bodies();
-      
-      ToolCom::run((verbose_generation()) 
-		   ? ((preserve) ? "java_generator -v -p" : "java_generator -v")
-		   : ((preserve) ? "java_generator -p" : "java_generator"), 
-		   browser_node);
-    }
+    browser_node->apply_shortcut("Generate Java");
     return;
   case 16:
-    ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", browser_node);
+    browser_node->apply_shortcut("Generate Idl");
     return;
   case 17:
     the_canvas()->unselect_all();
@@ -1027,6 +993,45 @@ void CdClassCanvas::menu(const QPoint&) {
   
   modified();
   package_modified();
+}
+
+void CdClassCanvas::apply_shortcut(QString s) {
+  if (s == "Select in browser") {
+    browser_node->select_in_browser();
+    return;
+  }
+  else if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else if (s == "Edit drawing settings") {
+    edit_drawing_settings();
+    return;
+  }
+  else {
+    browser_node->apply_shortcut(s);
+    return;
+  }
+
+  modified();
+  package_modified();
+}
+
+void CdClassCanvas::edit_drawing_settings()  {
+  QArray<StateSpec> st;
+  QArray<ColorSpec> co(1);
+  
+  settings.complete(st, UmlClass);
+  
+  co[0].set("class color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() == QDialog::Accepted) {
+    modified();
+    package_modified();
+  }
 }
 
 bool CdClassCanvas::has_drawing_settings() const {

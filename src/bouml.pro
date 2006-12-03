@@ -215,6 +215,7 @@ HEADERS		= browser/BrowserAttribute.h \
 		  dialog/ExpansionRegionDialog.h \
 		  dialog/ActivityObjectDialog.h \
 		  dialog/FlowDialog.h \
+		  dialog/ShortcutDialog.h \
 		  misc/Settings.h \
 		  misc/UmlDrag.h \
 		  misc/UmlEnum.h \
@@ -446,6 +447,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  dialog/ExpansionRegionDialog.cpp \
 		  dialog/ActivityObjectDialog.cpp \
 		  dialog/FlowDialog.cpp \
+		  dialog/ShortcutDialog.cpp \
 		  misc/Settings.cpp \
 		  misc/UmlDrag.cpp \
 		  misc/UmlGlobal.cpp \
@@ -456,6 +458,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  misc/Labeled.cpp \
 		  misc/mystr.cpp \
 		  misc/strutil.cpp \
+		  misc/Shortcut.cpp \
 		  tool/Tool.cpp \
 		  tool/ToolCom.cpp \
 		  xpm/UmlPixmap.cpp

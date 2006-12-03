@@ -5288,10 +5288,136 @@ void add_activity(UmlClass * base_item, UmlClass * user_item)
 }
 
 //
+// add void UmlCom::showTrace() and
+// void UmlCom::traceAutoRaise(bool y)
+//
+// fixe write_bool definition in java
+//
+
+void add_new_trace_operations(UmlClass * uml_com)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("update UmlCom");
+  
+  UmlOperation * op1 =
+    uml_com->add_op("showTrace", PublicVisibility, "void", FALSE);
+  
+  op1->set_Description("to show the trace window\n");
+  op1->set_isClassMember(TRUE);
+  
+  op1->set_cpp("${type}", "",
+	      "  send_cmd(miscGlobalCmd, showTraceCmd);\n",
+	      FALSE, 0, 0);
+
+  op1->set_java("${type}", "",
+	       "  send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._showTraceCmd);\n",
+	       FALSE);
+  op1->moveAfter(uml_com->get_operation("trace"));
+  
+  //
+  
+  UmlOperation * op2 =
+    uml_com->add_op("traceAutoRaise", PublicVisibility, "void", FALSE);
+  
+  op2->add_param(0, InputDirection, "y", "bool");
+
+  op2->set_Description("to automatically raise the trace window\n"
+		      "each time trace() is called\n");
+  op2->set_isClassMember(TRUE);
+  
+  op2->set_cpp("${type}", "${t0} ${p0}",
+	      "  send_cmd(miscGlobalCmd, traceAutoRaiseCmd, (y == 0) ? 0 : 1);\n",
+	      FALSE, 0, 0);
+
+  op2->set_java("${type}", "${t0} ${p0}",
+	       "  send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._traceAutoRaiseCmd, (y) ? (byte) 1 : (byte) 0);\n",
+	       FALSE);
+  op2->moveAfter(op1);
+  
+  //
+  
+  UmlOperation * op3 = uml_com->get_operation("write_bool");
+    
+  if (op3 != 0)
+    op3->set_JavaBody("  check_size_out(1);\n"
+		      "\n"
+		      "  buffer_out[p_buffer_out++] = (b) ? (byte) 1 : (byte) 0;\n");
+  
+  // add new global cmd
+
+  UmlClass * cl = UmlClass::get("MiscGlobalCmd");
+  QCString cpp = CppSettings::enumItemDecl();
+  QCString java = JavaSettings::enumPatternItemDecl();
+  UmlAttribute * at1;
+  UmlAttribute * at2;
+  
+  if ((at1 = UmlBaseAttribute::create(cl, "showTraceCmd")) == 0) {
+    UmlCom::trace("Cannot add 'showTraceCmd' in 'MiscGlobalCmd'");
+    throw 0;
+  }
+  else {
+    at1->set_Visibility(PublicVisibility);
+    at1->set_CppDecl(cpp);
+    at1->set_JavaDecl(java);
+    
+    if ((at2 = uml_com->get_attribute("loadCmd")) != 0)
+      at1->moveAfter(at2);
+  }
+  
+  if ((at2 = UmlBaseAttribute::create(cl, "traceAutoRaiseCmd")) == 0) {
+    UmlCom::trace("Cannot add 'traceAutoRaiseCmd' in 'MiscGlobalCmd'");
+    throw 0;
+  }
+  else {
+    at2->set_Visibility(PublicVisibility);
+    at2->set_CppDecl(cpp);
+    at2->set_JavaDecl(java);
+    
+    at2->moveAfter(at1);
+  }
+  
+  // update UmlCom description
+  uml_com->set_Description(
+			   " This class manages the communications\n"
+			   "\n"
+			   " This class may be defined as a 'singleton', but I prefer to use static \n"
+			   " members allowing to just write 'UmlCom::member' rather than\n"
+			   " 'UmlCom::instance()->member' or other long sentence like this.\n"
+			   "\n"
+			   " The operation you can use yourself are :\n"
+			   "\n"
+			   " - connect()\n"
+			   "\n"
+			   " - targetItem()\n"
+			   "\n"
+			   " - trace()\n"
+			   "\n"
+			   " - showTrace()\n"
+			   "\n"
+			   " - traceAutoRaise()\n"
+			   "\n"
+			   " - message()\n"
+			   "\n"
+			   " - bye()\n"
+			   "\n"
+			   " - close()\n"
+			   " \n"
+			   " you must NOT call the others\n"
+			   );
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+     
+//
 //
 //
 
-bool ask_for_upgrade() {
+bool ask_for_upgrade()
+{
   if (QMessageBox::warning(0, "Upgrade",
 			   "VERY IMPORTANT : in case you valid the upgrade and\n"
 			   "the message indicating that all is done never appears,\n"
@@ -5436,6 +5562,15 @@ bool UmlPackage::upgrade() {
 	return FALSE;
       add_activity(uml_base_item, uml_item);
       base_state_include_umlcom();
+      work = TRUE;
+    }
+    
+    UmlClass * uml_com = UmlClass::get("UmlCom");
+    
+    if (uml_com->get_operation("showTrace") == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      add_new_trace_operations(uml_com);
       work = TRUE;
     }
     

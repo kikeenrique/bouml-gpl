@@ -147,20 +147,7 @@ void CodClassInstCanvas::menu(const QPoint&) {
     modified();	// call package_modified
     return;
   case 2:
-    {
-      QArray<StateSpec> st(1);
-      QArray<ColorSpec> co(1);
-      
-      st[0].set("write name:type \nhorizontally", &write_horizontally);
-      co[0].set("class instance color", &itscolor);
-
-      SettingsDialog dialog(&st, &co, FALSE, TRUE);
-      
-      dialog.raise();
-      if (dialog.exec() != QDialog::Accepted)
-	return;
-      modified();	// call package_modified
-    }
+    edit_drawing_settings();
     return;
   case 3:
     open();	// call package_modified
@@ -179,6 +166,44 @@ void CodClassInstCanvas::menu(const QPoint&) {
   default:
     return;
   }
+}
+
+void CodClassInstCanvas::apply_shortcut(QString s) {
+  if (s == "Select in browser") { 
+    cl->select_in_browser();
+    return;
+  }
+  else if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else if (s == "Edit drawing settings") {
+    edit_drawing_settings();
+    return;
+  }
+  else if (s == "Edit") {
+    open();  // call modified then package_modified
+    return;
+  }
+  else 
+    return;
+
+  modified();
+}
+
+void CodClassInstCanvas::edit_drawing_settings() {
+  QArray<StateSpec> st(1);
+  QArray<ColorSpec> co(1);
+  
+  st[0].set("write name:type \nhorizontally", &write_horizontally);
+  co[0].set("class instance color", &itscolor);
+  
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  
+  dialog.raise();
+  if (dialog.exec() != QDialog::Accepted)
+    return;
+  modified();	// call package_modified
 }
 
 bool CodClassInstCanvas::has_drawing_settings() const {

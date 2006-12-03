@@ -83,6 +83,9 @@ class SdDurationCanvas : public QObject, public DiagramCanvas {
     virtual bool has_drawing_settings() const;
     virtual void edit_drawing_settings(QList<DiagramItem> &);
   
+    virtual void apply_shortcut(QString s);
+    void edit_drawing_settings();
+  
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static SdDurationCanvas * read(char * & st, UmlCanvas * canvas, char *);
     static SdDurationCanvas * read(char * & st, UmlCanvas * canvas, bool ref);

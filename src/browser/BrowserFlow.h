@@ -44,6 +44,8 @@ class BrowserFlow : public BrowserNode, public Labeled<BrowserFlow> {
     BrowserFlow(BrowserNode * p, FlowData * d, int id);
     BrowserFlow(int id);
     
+    void exec_menu_choice(int rank);
+    
   public:
     BrowserFlow(BrowserNode * p, BrowserNode * end);
     BrowserFlow(const BrowserFlow * model, BrowserNode * p);
@@ -59,6 +61,7 @@ class BrowserFlow : public BrowserNode, public Labeled<BrowserFlow> {
     virtual bool same_name(const QString & s, UmlCode type) const;
 
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual bool in_edition() const;
     virtual UmlCode get_type() const;

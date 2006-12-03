@@ -43,6 +43,8 @@ class BrowserParameterSet : public BrowserNode, public Labeled<BrowserParameterS
     
   protected:
     BrowserParameterSet(int id);
+  
+    void exec_menu_choice(int rank);
     
   public:
     BrowserParameterSet(QString s, BrowserNode * p, ParameterSetData * d, int id = 0);
@@ -55,6 +57,7 @@ class BrowserParameterSet : public BrowserNode, public Labeled<BrowserParameterS
     virtual const QPixmap* pixmap (int) const;
 
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual void modified();

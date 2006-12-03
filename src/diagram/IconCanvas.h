@@ -49,6 +49,7 @@ class IconCanvas : public QObject, public DiagramCanvas {
     virtual void delete_available(bool & in_model, bool & out_model) const;
     virtual bool alignable() const;
     virtual bool copyable() const;
+    virtual void apply_shortcut(QString s);
     virtual void history_load(QBuffer &);
     virtual void history_hide();
     virtual void save(QTextStream &, bool ref, QString & warning) const;

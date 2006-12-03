@@ -54,6 +54,14 @@ class UmlCom
   send_cmd(miscGlobalCmd, traceCmd, s);
 !!!71424.java!!!	trace(in s : str) : void
   send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._traceCmd, s);
+!!!189056.cpp!!!	showTrace() : void
+  send_cmd(miscGlobalCmd, showTraceCmd);
+!!!189056.java!!!	showTrace() : void
+  send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._showTraceCmd);
+!!!189184.cpp!!!	traceAutoRaise(in y : bool) : void
+  send_cmd(miscGlobalCmd, traceAutoRaiseCmd, (y == 0) ? 0 : 1);
+!!!189184.java!!!	traceAutoRaise(in y : bool) : void
+  send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._traceAutoRaiseCmd, (y) ? (byte) 1 : (byte) 0);
 !!!71552.cpp!!!	message(in s : str) : void
   send_cmd(miscGlobalCmd, messageCmd, s);
 !!!71552.java!!!	message(in s : str) : void
@@ -206,8 +214,8 @@ class UmlCom
   *p_buffer_out++ = (b == 0) ? 0 : 1;
 !!!72320.java!!!	write_bool(in b : bool) : void
   check_size_out(1);
-  
-  buffer_out[p_buffer_out++] = (b) ? (byte) 0 : (byte) 1;
+
+  buffer_out[p_buffer_out++] = (b) ? (byte) 1 : (byte) 0;
 !!!72448.cpp!!!	write_char(in c : sbyte) : void
   check_size_out(1);
   

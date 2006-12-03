@@ -39,6 +39,7 @@
 #include "BrowserPackage.h"
 #include "UmlDrag.h"
 #include "BrowserSearchDialog.h"
+#include "Shortcut.h"
 #include "myio.h"
 #include "mu.h"
 
@@ -219,19 +220,27 @@ void BrowserView::contentsMousePressEvent(QMouseEvent * e) {
   
   QListView::contentsMousePressEvent(e);
   
-  if (e->button() == QObject::LeftButton) {
-    QPoint p(contentsToViewport(e->pos()));
-    QListViewItem * i = itemAt(p);
+  QPoint p(contentsToViewport(e->pos()));
+  QListViewItem * i = itemAt(p);
+  
+  if (i != 0) {
+    // to force update of comment else nothing done
+    // when the click is made on the already selected item
+    // (but the comment is one of an other element selected
+    // in a diagram)
+    selected(i);
     
-    if (i && !((BrowserNode *) i)->deletedp() && (i != project)) {
-      if (e->state() & ControlButton)
-	((BrowserNode *) i)->toggle_mark();
-      else if (e->pos().x() > header()->cellPos(header()->mapToActual(0)) +
-	       treeStepSize() * (i->depth() + (rootIsDecorated() ? 1 : 0)) + itemMargin()/* ||
-	       p.x() < header()->cellPos(header()->mapToActual(0))*/) {
-	// if the user clicked into the root decoration of the item, don't try to start a drag!
-	presspos = e->pos();
-	mousePressed = TRUE;
+    if (e->button() == QObject::LeftButton) {
+      if (!((BrowserNode *) i)->deletedp() && (i != project)) {
+	if (e->state() & ControlButton)
+	  ((BrowserNode *) i)->toggle_mark();
+	else if (e->pos().x() > header()->cellPos(header()->mapToActual(0)) +
+		 treeStepSize() * (i->depth() + (rootIsDecorated() ? 1 : 0)) + itemMargin()/* ||
+											      p.x() < header()->cellPos(header()->mapToActual(0))*/) {
+	  // if the user clicked into the root decoration of the item, don't try to start a drag!
+	  presspos = e->pos();
+	  mousePressed = TRUE;
+	}
       }
     }
   }
@@ -260,23 +269,39 @@ void BrowserView::contentsMouseReleaseEvent(QMouseEvent *) {
 void BrowserView::keyPressEvent(QKeyEvent * e) {
   UmlWindow::abort_line_construction();
   
-  if ((e->key() == QObject::Key_Delete) || 
-      ((e->key() == QObject::Key_D) &&
-       (e->state() == QObject::ControlButton))) {
-    BrowserNode * bn = (BrowserNode *) selectedItem();
-    
-    QApplication::setOverrideCursor(Qt::waitCursor);
-    bn->delete_it();
-    QApplication::restoreOverrideCursor();
-    ((BrowserNode *) bn->parent())->modified();
-    bn->package_modified();
-    e->ignore();
+  QString s = Shortcut::shortcut(e->key(), e->state());
+  
+  if (!s.isEmpty()) {
+    if (s == "Save") {
+      UmlWindow::save_it();
+      e->ignore();
+      return;
+    }
+    else if (s == "Menu") {
+      rightPressed(selectedItem());
+      e->ignore();
+      return;
+    }
+    else if (s == "Delete") {
+      BrowserNode * bn = (BrowserNode *) selectedItem();
+      
+      QApplication::setOverrideCursor(Qt::waitCursor);
+      bn->delete_it();
+      QApplication::restoreOverrideCursor();
+      ((BrowserNode *) bn->parent())->modified();
+      bn->package_modified();
+      e->ignore();
+    }
+    else if ((s != "Move left") && (s != "Move right") &&
+	     (s != "Move up") && (s != "Move down")) {
+      ((BrowserNode *) selectedItem())->apply_shortcut(s);
+      e->ignore();
+      return;
+    }
   }
-  else if ((e->key() == QObject::Key_S) &&
-	   (e->state() == QObject::ControlButton))
-    UmlWindow::save_it();
-  else
-    QListView::keyPressEvent(e);
+  
+  // no shortcut
+  QListView::keyPressEvent(e);
 }
 
 void BrowserView::menu() {

@@ -47,13 +47,13 @@ AboutDialog::AboutDialog() : QDialog(0, "About BOUML", TRUE) {
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
 
-  QPixmap bp((const char **) bp_256);
+  QPixmap bp((const char **) bp_xpm);
   QLabel * lbp = new QLabel(this);
   
   lbp->setPixmap(bp);
   hbox->addWidget(lbp);
   hbox->addWidget(new QLabel("  ", this));
-  hbox->addWidget(new QLabel("BOUML release 2.19.3\n\ne-mail : bouml@free.fr\nhome : http://bouml.free.fr",
+  hbox->addWidget(new QLabel("BOUML release 2.19.5\n\ne-mail : bouml@free.fr\nhome : http://bouml.free.fr",
 			     this));
   
   hbox = new QHBoxLayout(vbox); 

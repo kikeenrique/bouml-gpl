@@ -331,10 +331,12 @@ through a flow or dependency");
 	break;
       }
     }
+  }
+  
+  exec_menu_choice(m.exec(QCursor::pos()));
 }
-  
-  int rank = m.exec(QCursor::pos());
-  
+
+void BrowserActivityObject::exec_menu_choice(int rank) {
   switch (rank) {
   case 1:
     open(TRUE);
@@ -369,6 +371,43 @@ through a flow or dependency");
   }
   ((BrowserNode *) parent())->modified();
   package_modified();
+}
+
+void BrowserActivityObject::apply_shortcut(QString s) {
+  int choice = -1;
+  
+  if (!deletedp()) {
+    if (s == "Edit")
+      choice = 1;
+    if (!is_read_only) {
+      if (s == "Duplicate")
+	choice = 2;
+      else if (edition_number == 0)
+	if (s == "Delete")
+	  choice = 3;
+    }
+    if (s == "Referenced by")
+      choice = 4;
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    if (s == "Undelete")
+      choice = 5;
+   
+    QListViewItem * child;
+  
+    for (child = firstChild(); child != 0; child = child->nextSibling()) {
+      if (((BrowserNode *) child)->deletedp()) {
+	if (s == "Undelete recursively")
+	  choice = 6;
+	break;
+      }
+    }
+  }
+  
+  exec_menu_choice(choice);
 }
 
 void BrowserActivityObject::open(bool force_edit) {

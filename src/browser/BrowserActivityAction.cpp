@@ -486,7 +486,6 @@ BrowserActivityAction::add_remove_variable_value(BrowserNode * future_parent,
   return r;
 }
 
-
 void BrowserActivityAction::menu() {
   QString s = name;
   int index;
@@ -508,9 +507,9 @@ void BrowserActivityAction::menu() {
   if (!deletedp()) {
     if (!is_read_only) {
       if (def->may_add_pin())
-	m.setWhatsThis(m.insertItem("Add pin", 0),
+	m.setWhatsThis(m.insertItem("New pin", 0),
 		       "to add a <em>pin</em>");
-      m.setWhatsThis(m.insertItem("Add parameter set", 7),
+      m.setWhatsThis(m.insertItem("New parameter set", 7),
 		     "to add a <em>Parameter Set</em>");
       m.insertSeparator();
     }
@@ -560,10 +559,13 @@ through a flow or dependency");
 	break;
       }
     }
+  }
+  
+  exec_menu_choice(m.exec(QCursor::pos()), who);
 }
-  
-  int rank = m.exec(QCursor::pos());
-  
+
+void BrowserActivityAction::exec_menu_choice(int rank,
+					     BrowserNode * who) {
   switch (rank) {
   case 0:
     if (BrowserPin::add_pin(0, this) != 0)
@@ -608,6 +610,50 @@ through a flow or dependency");
   }
   ((BrowserNode *) parent())->modified();
   package_modified();
+}
+
+void BrowserActivityAction::apply_shortcut(QString s) {
+  int choice = -1;
+  
+  if (!deletedp()) {
+    if (!is_read_only) {
+      if (def->may_add_pin())
+	if (s == "New pin")
+	  choice = 0;
+      if (s == "New parameter set")
+	choice = 7;
+    }
+    if (s == "Edit")
+      choice = 1;
+    if (!is_read_only) {
+      if (s == "Duplicate")
+	choice = 2;
+      else if (edition_number == 0)
+	if (s == "Delete")
+	  choice = 3;
+    }
+    if (s == "Referenced by")
+      choice = 4;
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    if (s == "Undelete")
+      choice = 5;
+  
+    QListViewItem * child;
+  
+    for (child = firstChild(); child != 0; child = child->nextSibling()) {
+      if (((BrowserNode *) child)->deletedp()) {
+	if (s == "Undelete recursively")
+	  choice = 6;
+	break;
+      }
+    }
+  }
+  
+  exec_menu_choice(choice, 0);
 }
 
 void BrowserActivityAction::open(bool force_edit) {

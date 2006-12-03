@@ -48,6 +48,8 @@ class BrowserOperation : public BrowserNode, public Labeled<BrowserOperation> {
   protected:
     BrowserOperation(int id);
   
+    void exec_menu_choice(int rank);
+  
   public:
     BrowserOperation(QString s, BrowserNode * p, OperationData * d, int id = 0);
     BrowserOperation(const BrowserOperation * model, BrowserNode * p);
@@ -79,6 +81,7 @@ class BrowserOperation : public BrowserNode, public Labeled<BrowserOperation> {
     virtual void paintCell(QPainter *, const QColorGroup &, int, int, int);
 
     virtual void menu();
+    virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual void modified();

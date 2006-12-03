@@ -74,6 +74,7 @@
 #include "Tool.h"
 #include "ToolDialog.h"
 #include "BrowserSearchDialog.h"
+#include "ShortcutDialog.h"
 #include "BasicData.h"
 #include "ToolCom.h"
 #include "About.h"
@@ -263,6 +264,10 @@ UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
     miscMenu->insertItem("Preserve operations's body", this, SLOT(preserve()));
   miscMenu->setWhatsThis(preserve_bodies_id, preserve_bodiesText);
   
+  miscMenu->insertSeparator();
+  shortcut_id =
+    miscMenu->insertItem("Edit shortcuts", this, SLOT(edit_shortcuts()));
+  
   menuBar()->insertSeparator();
   QPopupMenu * help = new QPopupMenu(this);
   menuBar()->insertItem("&Help", help);
@@ -354,11 +359,11 @@ void UmlWindow::projectMenuAboutToShow() {
     QPixmap openIcon = QPixmap(fileopen);
     QPixmap saveIcon = QPixmap(filesave);
     
-    id = projectMenu->insertItem("&New", this, SLOT(newProject()), CTRL+Key_N);
+    id = projectMenu->insertItem("&New", this, SLOT(newProject()));
     projectMenu->setWhatsThis(id, projectNewText);
     
     id = projectMenu->insertItem(openIcon, "&Open",
-				 this, SLOT(load()), CTRL+Key_O);
+				 this, SLOT(load()));
     projectMenu->setWhatsThis(id, projectOpenText);
     
     id = projectMenu->insertItem(saveIcon, "&Save",
@@ -371,9 +376,9 @@ void UmlWindow::projectMenuAboutToShow() {
     projectMenu->setItemEnabled(id, enabled);
     
     projectMenu->insertSeparator();
-    projectMenu->insertItem("&Close", this, SLOT(close()), CTRL+Key_W);
+    projectMenu->insertItem("&Close", this, SLOT(close()));
     projectMenu->setItemEnabled(id, enabled);
-    projectMenu->insertItem("&Quit", this, SLOT(quit()), CTRL+Key_Q);
+    projectMenu->insertItem("&Quit", this, SLOT(quit()));
     
     // edit
     
@@ -450,12 +455,12 @@ void UmlWindow::toolMenuAboutToShow() {
   abort_line_construction();
   
   toolMenu->clear();
-  toolMenu->insertItem("Show &Trace Window", this, SLOT(show_trace()), CTRL+Key_T);
+  toolMenu->insertItem("Show &Trace Window", this, SLOT(show_trace()));
   if (browser->get_project() != 0) {
     toolMenu->insertSeparator();
-    toolMenu->insertItem("Generate &C++", this, SLOT(cpp_generate()), CTRL+Key_C);
-    toolMenu->insertItem("Generate &Java", this, SLOT(java_generate()), CTRL+Key_J);
-    toolMenu->insertItem("Generate &Idl", this, SLOT(idl_generate()), CTRL+Key_I);
+    toolMenu->insertItem("Generate C++", this, SLOT(cpp_generate()), CTRL+Key_G);
+    toolMenu->insertItem("Generate Java", this, SLOT(java_generate()), CTRL+Key_J);
+    toolMenu->insertItem("Generate Idl", this, SLOT(idl_generate()), CTRL+Key_I);
     if (!BrowserNode::edition_active()) {
       toolMenu->insertSeparator();
       toolMenu->insertItem("Reverse C++", this, SLOT(cpp_reverse()));
@@ -485,8 +490,9 @@ void UmlWindow::set_commented(BrowserNode * bn)
     the = 0;	// to do nothing in comment_changed() which is called
     
     him->commented = bn;
+    
     if (bn != 0) {
-      him->comment->setText(him->commented->get_comment());
+      him->comment->setText(bn->get_comment());
       him->comment->setReadOnly(!bn->is_writable());
       him->statusBar()->message(bn->get_data()->definition(TRUE));
     }
@@ -1032,6 +1038,12 @@ void UmlWindow::preserve() {
   }
 }
 
+void UmlWindow::edit_shortcuts() {
+  ShortcutDialog d;
+  
+  d.exec();
+}
+
 void UmlWindow::miscMenuAboutToShow() {
   abort_line_construction();
   
@@ -1053,6 +1065,7 @@ void UmlWindow::miscMenuAboutToShow() {
   if (enabled)
     miscMenu->setItemChecked(preserve_bodies_id, preserve_bodies());
   miscMenu->setItemEnabled(preserve_bodies_id, enabled && prj->is_writable());
+  miscMenu->setItemEnabled(shortcut_id, enabled);
   miscMenu->setItemEnabled(show_browser_stereotypes_id, enabled);
 }
 

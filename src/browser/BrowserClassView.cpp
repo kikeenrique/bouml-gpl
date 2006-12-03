@@ -220,8 +220,10 @@ Do not undelete its sub items");
 		   "to select the associated <em>deployment view</em>");
   }
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()));
+}
+
+void BrowserClassView::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
     add_class_diagram();
@@ -344,6 +346,65 @@ Do not undelete its sub items");
   }
   
   package_modified();
+}
+
+void BrowserClassView::apply_shortcut(QString s) {
+  int choice = -1;
+
+  if (!deletedp()) {
+    if (!is_read_only && (edition_number == 0)) {
+      if (s == "New class diagram")
+	choice = 0;
+      else if (s == "New sequence diagram")
+	choice = 1;
+      else if (s == "New collaboration diagram")
+	choice = 2;
+      else if (s == "New object diagram")
+	choice = 15;
+      else if (s == "New class")
+	choice = 3;
+      else if (s == "New state machine")
+	choice = 4;
+      else if (s == "New activity")
+	choice = 16;
+    }
+    if (!is_edited) {
+      if (s == "Edit")
+	choice = 5;
+      if (!is_read_only) {
+	if (s == "Edit class settings")
+	  choice = 6;
+	else if (s == "Edit drawing settings")
+	  choice = 7;
+	if (edition_number == 0) {
+	  if (s == "Delete")
+	    choice = 8;
+	}
+      }
+    }
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+    if (s == "Generate C++")
+      choice = 11;
+    else if (s == "Generate Java")
+      choice = 12;
+    else if (s == "Generate Idl")
+      choice = 13;
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    if (s == "Undelete")
+      choice = 9;
+    else if (s == "Undelete recursively")
+      choice = 10;
+  }
+  
+  if (associated_deployment_view != 0) {
+    if (s == "Select associated deployment view")
+      choice = 14;
+  }
+  
+  exec_menu_choice(choice);
 }
 
 void BrowserClassView::open(bool) {

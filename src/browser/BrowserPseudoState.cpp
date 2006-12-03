@@ -372,8 +372,10 @@ through a transition");
 		   "to undelete the <em>" + s + "</em>");
   }
   
-  int rank = m.exec(QCursor::pos());
-  
+  exec_menu_choice(m.exec(QCursor::pos()));
+}
+
+void BrowserPseudoState::exec_menu_choice(int rank) {
   switch (rank) {
   case 1:
     open(TRUE);
@@ -381,6 +383,11 @@ through a transition");
   case 2:
     {
       QString name;
+      QString s = stringify(kind);
+      int index = s.find("_");
+      
+      if (index != -1)
+	s.replace(index, 1, " ");
       
       if (allow_empty() ||
 	  ((BrowserNode *) parent())->enter_child_name(name, "enter " + s + "'s name : ",
@@ -407,6 +414,33 @@ through a transition");
   }
   ((BrowserNode *) parent())->modified();
   package_modified();
+}
+
+void BrowserPseudoState::apply_shortcut(QString s) {
+  int choice = -1;
+
+  if (!deletedp()) {
+    if (s == "Edit")
+      choice = 1;
+    if (!is_read_only) {
+      if (s == "Duplicate")
+	choice = 2;
+      if (edition_number == 0)
+	if (s == "Delete")
+	  choice = 3;
+    }
+    if (s == "Referenced by")
+      choice = 5;
+    mark_shortcut(s, choice, 90);
+    if (edition_number == 0)
+      Tool::shortcut(s, choice, get_type(), 100);
+  }
+  else if (!is_read_only && (edition_number == 0)) {
+    if (s == "Undelete")
+      choice = 4;
+  }
+  
+  exec_menu_choice(choice);
 }
 
 void BrowserPseudoState::open(bool) {

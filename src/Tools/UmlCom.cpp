@@ -688,6 +688,16 @@ void UmlCom::trace(const char * s)
   send_cmd(miscGlobalCmd, traceCmd, s);
 }
 
+void UmlCom::showTrace()
+{
+  send_cmd(miscGlobalCmd, showTraceCmd);
+}
+
+void UmlCom::traceAutoRaise(bool y)
+{
+  send_cmd(miscGlobalCmd, traceAutoRaiseCmd, (y == 0) ? 0 : 1);
+}
+
 void UmlCom::message(const char * s)
 {
   send_cmd(miscGlobalCmd, messageCmd, s);
