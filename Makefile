@@ -30,7 +30,9 @@ SRC_DIRS = src \
 	src/JavaReverse \
 	src/JavaCat \
 	src/IdlGenerator \
-	src/PlugOutUpgrade
+	src/PlugOutUpgrade \
+	src/ProjectControl \
+	src/ProjectSynchro
 
 PLUGOUT_DIRS = genplugouts/html/cpp \
 	genplugouts/gpro \
@@ -38,6 +40,7 @@ PLUGOUT_DIRS = genplugouts/html/cpp \
 	genplugouts/singleton/cpp \
 	genplugouts/cpp_utilities \
 	genplugouts/xmi \
+	genplugouts/xmi2 \
 	genplugouts/sm/cpp \
 	genplugouts/usecasewizard/cpp \
 	genplugouts/sort/cpp \
@@ -53,11 +56,14 @@ PROGS = src/bouml \
 	src/JavaCat/java_catalog \
 	src/IdlGenerator/idl_generator \
 	src/PlugOutUpgrade/plug_out_upgrade \
+	src/ProjectControl/projectControl \
+	src/ProjectSynchro/projectSynchro \
 	genplugouts/html/cpp/ghtml \
 	genplugouts/gpro/gpro \
 	genplugouts/import_rose/irose \
 	genplugouts/cpp_utilities/cpp_util \
 	genplugouts/xmi/gxmi \
+	genplugouts/xmi2/gxmi2 \
 	genplugouts/sm/cpp/stmgen \
 	genplugouts/usecasewizard/cpp/usecasewizard \
 	genplugouts/sort/cpp/browsersort \
@@ -85,14 +91,18 @@ install:
 		for i in 16 32 48 64; do \
 			mkdir -p "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps"; \
 			cp bouml.$$i.png "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/bouml.png"; \
+			cp projectControl.$$i.png "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/projectControl.png"; \
+			cp projectSynchro.$$i.png "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/projectSynchro.png"; \
 		done \
 	fi
 	for i in $(PROGS); do cp -p $$i "$(DESTDIR)$(BOUML_LIB)" ; done
-	cd plugouts ; tar cf - empty genpro html rose singleton cpp_utilities xmi sm_generator usecase_wizard sort FileControl deploy GlobalChange | (cd $(DESTDIR)$(BOUML_LIB); tar xf -)
+	cd plugouts ; tar cf - empty genpro html rose singleton cpp_utilities xmi xmi2 sm_generator usecase_wizard sort FileControl deploy GlobalChange | (cd $(DESTDIR)$(BOUML_LIB); tar xf -)
 	echo "#!/bin/sh" >$(DESTDIR)$(BOUML_DIR)/bouml
 	echo "PATH=$(BOUML_LIB):$$"PATH >>$(DESTDIR)$(BOUML_DIR)/bouml
 	echo "$(BOUML_LIB)/bouml \"$$"@"\"" >>$(DESTDIR)$(BOUML_DIR)/bouml
 	chmod +x "$(DESTDIR)$(BOUML_DIR)/bouml"
+	cd $(DESTDIR)$(BOUML_DIR) ; rm -f projectControl ; ln -s $(BOUML_LIB)/projectControl
+	cd $(DESTDIR)$(BOUML_DIR) ; rm -f projectSynchro ; ln -s $(BOUML_LIB)/projectSynchro
 	if test -n "$(BOUML_DESKTOP_DIR)" ; \
 	then \
 		mkdir -p "$(DESTDIR)$(BOUML_DESKTOP_DIR)" ; \
@@ -106,6 +116,26 @@ install:
 		echo "Path=$(BOUML_LIB)" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/bouml.desktop" ; \
 		echo "Icon=bouml" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/bouml.desktop" ; \
 		echo "Categories=Application;Development;" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/bouml.desktop" ; \
+		echo "[Desktop Entry]" > "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
+		echo "Encoding=UTF-8" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
+		echo "Name=Project Control" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
+		echo "Type=Application" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
+		echo "Comment=Bouml project's files control" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
+		echo "Exec=projectControl" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
+		echo "TryExec=projectControl" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
+		echo "Path=$(BOUML_LIB)" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
+		echo "Icon=projectControl" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
+		echo "Categories=Application;Development;" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
+		echo "[Desktop Entry]" > "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
+		echo "Encoding=UTF-8" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
+		echo "Name=Project Synchro" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
+		echo "Type=Application" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
+		echo "Comment=Bouml project's files synchronization" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
+		echo "Exec=projectSynchro" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
+		echo "TryExec=projectSynchro" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
+		echo "Path=$(BOUML_LIB)" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
+		echo "Icon=projectSynchro" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
+		echo "Categories=Application;Development;" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
 	fi
 
 uninstall:

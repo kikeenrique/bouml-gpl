@@ -139,3 +139,6 @@ void UmlUseCase::import(File & f, UmlItem * parent)
   x->Uc::import(f);
 }
 
+UmlUseCase::~UmlUseCase() {
+}
+

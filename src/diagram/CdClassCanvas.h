@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -52,9 +52,11 @@ class CdClassCanvas : public QObject, public DiagramCanvas,
     UmlColor itscolor;
     UmlColor used_color;
     ClassDrawingMode used_view_mode;
+    bool indicate_visible_attr : 2;
+    bool indicate_visible_oper : 2;
     QString full_name;
-    QValueList<BrowserNode *> hidden_attributes;
-    QValueList<BrowserNode *> hidden_operations;
+    QValueList<BrowserNode *> hidden_visible_attributes;
+    QValueList<BrowserNode *> hidden_visible_operations;
 
     
   protected:

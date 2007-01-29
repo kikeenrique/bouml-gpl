@@ -121,12 +121,9 @@ class Dialog
       ed->setText(s);
   }
 !!!147458.cpp!!!	accept_cpp() : void
-  _path = ed->text();
-  _encoding = encoding_cb->currentText();
-  _genview = (gen_cb->isChecked()) ? "yes" : "no";
   _lang = Cpp;
   
-  QDialog::accept();
+  accept();
 !!!148098.cpp!!!	accept_uml() : void
   _lang = Uml;
   accept();

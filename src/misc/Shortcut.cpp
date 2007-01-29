@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -216,7 +216,11 @@ int indexToCode(int i)
 
 QString codeToName(int c)
 {
-  return CodeToName[codeToIndex(c)];
+  c = codeToIndex(c);
+
+  return ((c >= 0) && (c < 256))
+    ? CodeToName[c]
+    : QString::null;	// unexpected char code
 }
 
 int nameToCode(QString s)

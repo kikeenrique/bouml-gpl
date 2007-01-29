@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -53,6 +53,7 @@
 #include "mu.h"
 
 static ReadContext Context;
+static bool ReadOnlyForced;
 
 static int Indent;
 
@@ -69,6 +70,16 @@ void restore_context(ReadContext & c)
 bool read_only_file()
 {
   return Context.read_only;
+}
+
+void set_read_only_file()
+{
+  Context.read_only = TRUE;
+}
+
+void force_read_only(bool y)
+{
+  ReadOnlyForced = y;
 }
 
 const char * stringify(UmlVisibility v) {
@@ -1075,7 +1086,7 @@ int open_file(QFile & fp, int mode, bool silent)
   
   QFileInfo fi(fp);
   
-  Context.read_only = !fi.isWritable();
+  Context.read_only = !fi.isWritable() || ReadOnlyForced;
   return fi.size();
 }
 

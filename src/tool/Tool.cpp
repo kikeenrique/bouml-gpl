@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -55,7 +55,7 @@ void Tool::defaults()
   unsigned index;
   
   already_read = FALSE;
-  set_ntools(12);
+  set_ntools(13);
   
   tools[0].display = "HTML documentation";
   tools[0].cmd = "ghtml";
@@ -80,39 +80,43 @@ void Tool::defaults()
   tools[4].cmd = "cpp_util";
   tools[4].applicable[UmlClass] = TRUE;
   
-  tools[5].display = "Generate XMI";
+  tools[5].display = "Generate XMI 1.2";
   tools[5].cmd = "gxmi";
   tools[5].applicable[UmlProject] = TRUE;
   
-  tools[6].display = "C++ state machine";
-  tools[6].cmd = "stmgen";
-  tools[6].applicable[UmlState] = TRUE;
+  tools[6].display = "Generate XMI 2.1";
+  tools[6].cmd = "gxmi2";
+  tools[6].applicable[UmlProject] = TRUE;
   
-  tools[7].display = "Use case wizard";
-  tools[7].cmd = "usecasewizard";
-  tools[7].applicable[UmlUseCase] = TRUE;
+  tools[7].display = "C++ state machine";
+  tools[7].cmd = "stmgen";
+  tools[7].applicable[UmlState] = TRUE;
   
-  tools[8].display = "Check-in";
-  tools[8].cmd = "file_control ci";
-  tools[8].applicable[UmlProject] = TRUE;
-  tools[8].applicable[UmlPackage] = TRUE;
+  tools[8].display = "Use case wizard";
+  tools[8].cmd = "usecasewizard";
+  tools[8].applicable[UmlUseCase] = TRUE;
   
-  tools[9].display = "Check-out";
-  tools[9].cmd = "file_control co";
+  tools[9].display = "Check-in";
+  tools[9].cmd = "file_control ci";
   tools[9].applicable[UmlProject] = TRUE;
   tools[9].applicable[UmlPackage] = TRUE;
   
-  tools[10].display = "Deploy classes";
-  tools[10].cmd = "deplcl";
-  tools[10].applicable[UmlClassView] = TRUE;
+  tools[10].display = "Check-out";
+  tools[10].cmd = "file_control co";
+  tools[10].applicable[UmlProject] = TRUE;
+  tools[10].applicable[UmlPackage] = TRUE;
   
-  tools[11].display = "Global Change";
-  tools[11].cmd = "global_change";
-  tools[11].applicable[UmlProject] = TRUE;
-  tools[11].applicable[UmlPackage] = TRUE;
+  tools[11].display = "Deploy classes";
+  tools[11].cmd = "deplcl";
   tools[11].applicable[UmlClassView] = TRUE;
-  tools[11].applicable[UmlDeploymentView] = TRUE;
-  tools[11].applicable[UmlClass] = TRUE;
+  
+  tools[12].display = "Global Change";
+  tools[12].cmd = "global_change";
+  tools[12].applicable[UmlProject] = TRUE;
+  tools[12].applicable[UmlPackage] = TRUE;
+  tools[12].applicable[UmlClassView] = TRUE;
+  tools[12].applicable[UmlDeploymentView] = TRUE;
+  tools[12].applicable[UmlClass] = TRUE;
 }
 
 bool Tool::menu_insert(QPopupMenu * tool, UmlCode target, 

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -5416,6 +5416,89 @@ void add_new_trace_operations(UmlClass * uml_com)
 //
 //
 
+void fixe_activity(UmlClass * base_pinparam)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("update UmlBasePinParameter");
+  
+  UmlOperation * op;
+  
+  defGetBool(base_pinparam, _stream, isStream, 0, 0,
+	     "isStream attribute");
+  op->moveAfter(base_pinparam->get_operation("set_IsException"));
+  
+  UmlOperation * op1 = op;
+  
+  
+  defSetBoolBitField(base_pinparam, _stream, set_IsStream, 
+		     bool, setStreamCmd, 0, 0, "isStream attribute");
+  op->moveAfter(op1);
+ 
+  // dummy must have 5 bits rather than 4
+  UmlAttribute * dummy = base_pinparam->get_attribute("_dummy");
+  QCString cppdecl = dummy->cppDecl();
+  int index = cppdecl.find(": 4");
+  
+  if (index != -1) {
+    cppdecl[index + 2] = '5';
+    dummy->set_CppDecl(cppdecl);
+  }
+  
+  //
+  
+  UmlCom::trace("fixe UmlBaseAddVariableValueAction::read_uml_()");
+  
+  op = UmlClass::get("UmlBaseAddVariableValueAction")->get_operation("read_uml_");
+  
+  op->set_CppBody("  UmlBaseAccessVariableValueAction::read_uml_();\n"
+		  "  _replace_all = UmlCom::read_bool();\n");
+  
+  op->set_JavaBody("  super.read_uml_();\n"
+		   "  _replace_all = UmlCom.read_bool();\n");
+  
+  //
+  
+  UmlCom::trace("fixe UmlBaseRemoveVariableValueAction::read_uml_()");
+  
+  op = UmlClass::get("UmlBaseRemoveVariableValueAction")->get_operation("read_uml_");
+  
+  op->set_CppBody("  UmlBaseAccessVariableValueAction::read_uml_();\n"
+		  "  _remove_duplicates = UmlCom::read_bool();\n");
+  
+  op->set_JavaBody("  super.read_uml_();\n"
+		   "  _remove_duplicates = UmlCom.read_bool();\n");
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+  
+  //
+  
+  UmlRelation * rel = 
+    UmlBaseRelation::create(aGeneralisation, 
+			    UmlClass::get("UmlParameterSet"),
+			    UmlClass::get("UmlActivityItem"));
+  
+  if (rel == 0) {
+    QCString msg = "UmlParameterSet can't inherit UmlActivityItem";
+    
+    UmlCom::trace(msg);
+    throw 0;
+  }
+  else {
+    rel->set_CppDecl("${type}");
+    rel->set_JavaDecl("${type}");
+  }
+}
+
+//
+//
+//
+
+
 bool ask_for_upgrade()
 {
   if (QMessageBox::warning(0, "Upgrade",
@@ -5571,6 +5654,15 @@ bool UmlPackage::upgrade() {
       if (!work && !ask_for_upgrade())
 	return FALSE;
       add_new_trace_operations(uml_com);
+      work = TRUE;
+    }
+    
+    UmlClass * basepinparam = UmlClass::get("UmlBasePinParameter");
+    
+    if (uml_com->get_operation("isStream") == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      fixe_activity(basepinparam);
       work = TRUE;
     }
     

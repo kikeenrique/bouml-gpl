@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -30,6 +30,8 @@
 
 #define FRAGMENT_CANVAS_MIN_SIZE 30
 
+class FragmentSeparatorCanvas;
+
 class FragmentCanvas : public QObject, public DiagramCanvas {
   Q_OBJECT
     
@@ -39,6 +41,7 @@ class FragmentCanvas : public QObject, public DiagramCanvas {
     QString name;
     int min_width;
     int min_height;
+    QList<FragmentSeparatorCanvas> separators;
   
     void check_size();
     
@@ -47,6 +50,8 @@ class FragmentCanvas : public QObject, public DiagramCanvas {
     virtual ~FragmentCanvas();
     
     virtual void delete_it();
+    
+    void remove_it(FragmentSeparatorCanvas *);
 
     virtual void draw(QPainter & p);
     
@@ -61,6 +66,9 @@ class FragmentCanvas : public QObject, public DiagramCanvas {
     virtual aCorner on_resize_point(const QPoint &);
     virtual void resize(aCorner c, int dx, int dy);
     virtual void change_scale();
+    virtual void moveBy(double dx, double dy);
+    virtual void set_z(double z);	// only called by upper() & lower()
+    
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;
     static FragmentCanvas * read(char * &, UmlCanvas *, char *);
     virtual void history_save(QBuffer &) const;

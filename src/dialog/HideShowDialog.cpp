@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -31,6 +31,7 @@
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qlistbox.h>
+#include <qcheckbox.h>
 
 #include "HideShowDialog.h"
 #include "BrowserNode.h"
@@ -42,8 +43,10 @@
 QSize HideShowDialog::previous_size;
 
 HideShowDialog::HideShowDialog(const BrowserNodeList & a,
-			       QValueList<BrowserNode *> & h)
-    : QDialog(0, "hide/show dialog", TRUE), all(a), hidden(h) {
+			       QValueList<BrowserNode *> & hv,
+			       bool & visible)
+    : QDialog(0, "hide/show dialog", TRUE), all(a),
+      hidden_visible(hv), on_visible(visible) {
   setCaption("Settings dialog");
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
@@ -65,10 +68,10 @@ HideShowDialog::HideShowDialog(const BrowserNodeList & a,
   subvbox->setMargin(5);
   //subvbox->addWidget(new QLabel("", this));
   subvbox->addStretch(100);
-  subvbox->addWidget(button = new QPushButton("->", this));
+  subvbox->addWidget(button = new SmallPushButton(" -> ", this));
   connect(button, SIGNAL(clicked()), this, SLOT(hide_them()));
   subvbox->addStretch(100);
-  subvbox->addWidget(button = new QPushButton("<-", this));
+  subvbox->addWidget(button = new SmallPushButton(" <- ", this));
   connect(button, SIGNAL(clicked()), this, SLOT(show_them()));
   subvbox->addStretch(100);
   
@@ -81,9 +84,11 @@ HideShowDialog::HideShowDialog(const BrowserNodeList & a,
   QListIterator<BrowserNode> it(all);
   
   while (it.current() != 0) {
-    ((hidden.findIndex(it.current()) == -1) ? lb_visible : lb_hidden)
-      ->insertItem(new ListBoxBrowserNode(it.current(),
-					  it.current()->get_data()->definition(TRUE)));
+    QString def = it.current()->get_data()->definition(TRUE);
+    
+    (((hidden_visible.findIndex(it.current()) == -1) ^ on_visible)
+     ? lb_visible : lb_hidden)
+      ->insertItem(new ListBoxBrowserNode(it.current(), def));
     
     ++it;
   }
@@ -114,6 +119,15 @@ HideShowDialog::HideShowDialog(const BrowserNodeList & a,
   connect(hi_priv, SIGNAL(clicked()), this, SLOT(hide_private()));  
   connect(hi_priv_prot, SIGNAL(clicked()), this, SLOT(hide_private_protected()));  
   
+  //
+  
+  hbox = new QHBoxLayout(vbox); 
+  hbox->setMargin(5);
+
+  cb_visible = new QCheckBox("Specify visible members rather than hidden ones", this);
+  cb_visible->setChecked(on_visible);
+  hbox->addWidget(cb_visible);
+    
   //
   
   hbox = new QHBoxLayout(vbox); 
@@ -198,11 +212,11 @@ void HideShowDialog::hide_private() {
   
   while (it.current() != 0) {
     BasicData * m = it.current()->get_data();
+    QString def = m->definition(TRUE);
     
     ((((ClassMemberData *) m)->get_visibility(m->get_browser_node()) != UmlPrivate)
      ? lb_visible : lb_hidden)
-      ->insertItem(new ListBoxBrowserNode(it.current(),
-					  it.current()->get_data()->definition(TRUE)));
+      ->insertItem(new ListBoxBrowserNode(it.current(), def));
     
     ++it;
   }
@@ -219,13 +233,13 @@ void HideShowDialog::hide_private_protected() {
   
   while (it.current() != 0) {
     BasicData * m = it.current()->get_data();
+    QString def = m->definition(TRUE);    
     UmlVisibility visi =
       ((ClassMemberData *) m)->get_visibility(m->get_browser_node());
     
     (((visi == UmlPublic) || (visi == UmlPackageVisibility))
      ? lb_visible : lb_hidden)
-      ->insertItem(new ListBoxBrowserNode(it.current(),
-					  it.current()->get_data()->definition(TRUE)));
+      ->insertItem(new ListBoxBrowserNode(it.current(), def));
     
     ++it;
   }
@@ -235,10 +249,13 @@ void HideShowDialog::hide_private_protected() {
 }
 
 void HideShowDialog::accept() {
-  hidden.clear();
+  hidden_visible.clear();
+  on_visible = cb_visible->isChecked();
   
-  for (unsigned int i = 0; i != lb_hidden->count(); i += 1)
-    hidden.append(((ListBoxBrowserNode *) lb_hidden->item(i))->browser_node);
+  QListBox * lb = (on_visible) ? lb_visible : lb_hidden;
+  
+  for (unsigned int i = 0; i != lb->count(); i += 1)
+    hidden_visible.append(((ListBoxBrowserNode *) lb->item(i))->browser_node);
   
   QDialog::accept();
 }

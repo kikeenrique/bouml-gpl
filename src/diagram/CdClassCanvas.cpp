@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -66,6 +66,8 @@ CdClassCanvas::CdClassCanvas(BrowserNode * bn, UmlCanvas * canvas,
   browser_node = bn;
   templ = 0;	// may be updated by compute_size()
   itscolor = UmlDefaultColor;
+  indicate_visible_attr = FALSE;
+  indicate_visible_oper = FALSE;
   
   compute_size();	// update used_settings
   set_center100();
@@ -87,6 +89,8 @@ CdClassCanvas::CdClassCanvas(UmlCanvas * canvas, int id)
   browser_node = 0;
   templ = 0;	// may be updated by compute_size()
   itscolor = UmlDefaultColor;
+  indicate_visible_attr = FALSE;
+  indicate_visible_oper = FALSE;
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
 
@@ -222,7 +226,9 @@ void CdClassCanvas::compute_size() {
 	case UmlAttribute:
 	  
 	  if (hide_attrs ||
-	      (hidden_attributes.findIndex((BrowserNode *) child) != -1))
+	      ((indicate_visible_attr)
+	       ? (hidden_visible_attributes.findIndex((BrowserNode *) child) == -1)
+	       : (hidden_visible_attributes.findIndex((BrowserNode *) child) != -1)))
 	    continue;
 	  
 	  s = ((AttributeData *) child_data)
@@ -244,7 +250,9 @@ void CdClassCanvas::compute_size() {
 	  break;
 	case UmlOperation:
 	  if (hide_opers ||
-	      (hidden_operations.findIndex((BrowserNode *) child) != -1))
+	      ((indicate_visible_oper)
+	       ? (hidden_visible_operations.findIndex((BrowserNode *) child) == -1)
+	       : (hidden_visible_operations.findIndex((BrowserNode *) child) != -1)))
 	    continue;
 	  
 	  s = ((OperationData *) child_data)
@@ -652,8 +660,10 @@ void CdClassCanvas::draw(QPainter & p) {
     r.setLeft(left1);
     for (child = browser_node->firstChild(); child; child = child->nextSibling()) {
       if (!((BrowserNode *) child)->deletedp() &&
-	  (hidden_attributes.findIndex((BrowserNode *) child) == -1) &&
-	  (((BrowserNode *) child)->get_type() == UmlAttribute)) {
+	  (((BrowserNode *) child)->get_type() == UmlAttribute) &&
+	  ((indicate_visible_attr)
+	   ? (hidden_visible_attributes.findIndex((BrowserNode *) child) != -1)
+	   : (hidden_visible_attributes.findIndex((BrowserNode *) child) == -1))) {
 	AttributeData * data =
 	  ((AttributeData *) ((BrowserNode *) child)->get_data());
 	QString s = data->definition(full_members, used_settings.drawing_language);
@@ -697,8 +707,10 @@ void CdClassCanvas::draw(QPainter & p) {
   if (used_settings.hide_operations != UmlYes) {
     for (child = browser_node->firstChild(); child; child = child->nextSibling()) {
       if (!((BrowserNode *) child)->deletedp() &&
-	  (hidden_operations.findIndex((BrowserNode *) child) == -1) &&
-	  (((BrowserNode *) child)->get_type() == UmlOperation)) {
+	  (((BrowserNode *) child)->get_type() == UmlOperation) &&
+	  ((indicate_visible_oper)
+	   ? (hidden_visible_operations.findIndex((BrowserNode *) child) != -1)
+	   : (hidden_visible_operations.findIndex((BrowserNode *) child) == -1))) {
 	OperationData * data =
 	  ((OperationData *) ((BrowserNode *) child)->get_data());
 	QString s = data->definition(full_members, used_settings.drawing_language);
@@ -899,20 +911,24 @@ void CdClassCanvas::menu(const QPoint&) {
     return;
   case 3:
     {
-      HideShowDialog dialog(attributes, hidden_attributes);
+      bool visible = indicate_visible_attr;
+      HideShowDialog dialog(attributes, hidden_visible_attributes, visible);
       
       dialog.raise();
       if (dialog.exec() != QDialog::Accepted)
 	return;
+      indicate_visible_attr = visible;
     }
     break;
   case 4:
     {
-      HideShowDialog dialog(operations, hidden_operations);
+      bool visible = indicate_visible_oper;
+      HideShowDialog dialog(operations, hidden_visible_operations, visible);
       
       dialog.raise();
       if (dialog.exec() != QDialog::Accepted)
 	return;
+      indicate_visible_oper = visible;
     }
     break;
   case 6:
@@ -1117,7 +1133,7 @@ void CdClassCanvas::connexion(UmlCode action, DiagramItem * dest,
 
 static void save_hidden_list(BrowserNode * bn, UmlCode c, QTextStream & st,
 			     const char * s,
-			     const QValueList<BrowserNode *> & hidden)
+			     const QValueList<BrowserNode *> & hidden_visible)
 {
   BrowserNodeList l;
   
@@ -1128,7 +1144,7 @@ static void save_hidden_list(BrowserNode * bn, UmlCode c, QTextStream & st,
   while (it.current() != 0) {
     QString dummy;
   
-    if (hidden.findIndex(it.current()) != -1) {
+    if (hidden_visible.findIndex(it.current()) != -1) {
       if (s != 0) {
 	nl_indent(st);
 	st << s;
@@ -1159,9 +1175,13 @@ void CdClassCanvas::save(QTextStream & st, bool ref, QString & warning) const {
       st << "color " << stringify(itscolor);
     }
     save_hidden_list(browser_node, UmlAttribute, st,
-		     "hidden_attributes", hidden_attributes);
+		     (indicate_visible_attr) ? "visible_attributes"
+					     : "hidden_attributes",
+		     hidden_visible_attributes);
     save_hidden_list(browser_node, UmlOperation, st,
-		     "hidden_operations", hidden_operations);
+		     (indicate_visible_oper) ? "visible_operations"
+					     : "hidden_operations",
+		     hidden_visible_operations);
     nl_indent(st);
     save_xyz(st, this, "xyz");
     indent(-1);
@@ -1188,21 +1208,26 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
     result->settings.read(st, k);	// updates k
     read_color(st, "color", result->itscolor, k);	// updates k
     
-    if (!strcmp(k, "hidden_attributes")) {
+    if (!strcmp(k, "hidden_attributes") || !strcmp(k, "visible_attributes")) {
+      result->indicate_visible_attr = (*k == 'v');
+	
       BrowserNodeList l;
     
       br->children(l, UmlAttribute);
       
       while ((strcmp(k = read_keyword(st), "hidden_operations")) &&
+	     (strcmp(k, "visible_operations")) &&
 	     (strcmp(k, "xyz"))) {
 	BrowserNode * b = BrowserAttribute::read(st, k, 0);
 	
 	if ((b != 0) && (l.find(b) != -1))
-	  result->hidden_attributes.append(b);
+	  result->hidden_visible_attributes.append(b);
       }
     }
     
-    if (!strcmp(k, "hidden_operations")) {
+    if (!strcmp(k, "hidden_operations") || !strcmp(k, "visible_operations")) {
+      result->indicate_visible_oper = (*k == 'v');
+      
       BrowserNodeList l;
     
       br->children(l, UmlOperation);
@@ -1211,7 +1236,7 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
 	BrowserNode * b = BrowserOperation::read(st, k, 0);
 	
 	if ((b != 0) && (l.find(b) != -1))
-	  result->hidden_operations.append(b);
+	  result->hidden_visible_operations.append(b);
       }
     }
     

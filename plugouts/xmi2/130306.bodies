@@ -1,0 +1,3 @@
+class UmlEntryPointPseudoState
+!!!206722.cpp!!!	sKind() : str
+  return "entryPoint";

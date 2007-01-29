@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -192,11 +192,9 @@ void edit(const QString & s, QString name, void * id, EditType k,
       f.sprintf("%s_%lx_%d.txt", (const char *) name, (unsigned long) id, user_id());
     }
 
-#ifdef WIN32
     for (int index = 0; index != (int) name.length(); index += 1)
       if (!f[index].isLetterOrNumber())
 	f.replace(index, 1, "_");
-#endif
     
     QString path = BrowserView::get_dir().absFilePath(f);
     

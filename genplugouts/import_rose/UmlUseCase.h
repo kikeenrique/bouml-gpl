@@ -24,6 +24,9 @@ class UmlUseCase : public UmlBaseUseCase, public Uc {
 
     static void import(File & f, UmlItem * parent);
 
+    //Just to not have warning
+    virtual ~UmlUseCase();
+
 };
 
 #endif

@@ -1,0 +1,3 @@
+class UmlActivityFinalActivityNode
+!!!208386.cpp!!!	sKind() : str
+  return "FinalNode";

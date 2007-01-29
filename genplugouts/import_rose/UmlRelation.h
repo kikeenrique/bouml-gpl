@@ -7,7 +7,6 @@
 #include "aVisibility.h"
 #include "aRelationKind.h"
 #include "UmlBaseRelation.h"
-#include "UmlRelation.h"
 
 class UmlClass;
 class File;

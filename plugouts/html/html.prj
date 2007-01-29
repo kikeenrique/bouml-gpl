@@ -1,5 +1,6 @@
 format 26
 "html"
+  revision 1
   cpp_root_dir "/tmp/html/cpp/"
   java_root_dir "/tmp/html/java/"
   idl_root_dir "/tmp/pr/idl/"

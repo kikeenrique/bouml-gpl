@@ -1,0 +1,3 @@
+class UmlJoinActivityNode
+!!!208898.cpp!!!	sKind() : str
+  return "JoinNode";

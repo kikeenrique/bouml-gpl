@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -62,6 +62,10 @@ Class::Class(BrowserNode * parent, const char * name, const QCString & st)
   }
   else
     stereotype_declared = FALSE;
+}
+
+// to not have warning
+Class::~Class() {
 }
 
 Class * Class::reverse(ClassContainer * container, QCString stereotype, 
@@ -941,6 +945,7 @@ Class * Class::reverse_enum(ClassContainer * container,
       break;
     
     if (s == "=") {
+      Lex::unread_word();
       Lex::mark();
       UmlOperation::skip_expr("},");
       Lex::unread_word();	// '}' or ','

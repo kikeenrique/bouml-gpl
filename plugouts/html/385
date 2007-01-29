@@ -1,7 +1,6 @@
 format 26
-"API USER" // API USER
-  // class settings
-  //class diagram settings
+"API USER"
+  revision 1
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
   package_name_in_tab default show_context default auto_label_position default shadow default

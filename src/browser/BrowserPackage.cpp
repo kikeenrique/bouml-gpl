@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -90,6 +90,8 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   // creates the project package
   is_modified = (id == 0);
   def->set_browser_node(this);
+  revision = 1;
+  owner = -1;
   
   classdiagram_settings.draw_all_relations = UmlYes;
   classdiagram_settings.hide_attributes = UmlNo;
@@ -191,6 +193,8 @@ BrowserPackage::BrowserPackage(QString s, BrowserNode * parent, int id)
       def(new PackageData), associated_diagram(0), is_imported(FALSE) {
   make();
   is_modified = (id == 0);
+  revision = 1;
+  owner = -1;
 }
 
 BrowserPackage::BrowserPackage(const BrowserPackage * model,
@@ -228,6 +232,8 @@ BrowserPackage::BrowserPackage(const BrowserPackage * model,
   parameterpin_color = model->parameterpin_color;
   
   is_modified = true;
+  revision = 1;
+  owner = -1;
 }
 
 BrowserPackage::BrowserPackage(int id)
@@ -235,6 +241,8 @@ BrowserPackage::BrowserPackage(int id)
       def(new PackageData), associated_diagram(0), is_imported(FALSE) {
   make();
   is_modified = (id == 0);
+  revision = 1;
+  owner = -1;
 }
 
 BrowserPackage::~BrowserPackage() {
@@ -738,8 +746,17 @@ BrowserPackage * BrowserPackage::get_package()
 }
 
 void BrowserPackage::add_package() {
-  (new BrowserPackage(child_random_name("Package"), this))
-    ->select_in_browser();
+  BrowserPackage * p =
+    new BrowserPackage(child_random_name("Package"), this);
+  
+  p->select_in_browser();
+  if ((owner != -1) &&
+      (QMessageBox::warning(0, "Bouml",
+			    "Do you want to be the owner of this new package ?\n"
+			    "(other users can't modify it while you are the owner)",
+			    "Yes", "no", 0,
+			    0, 1 ) == 0))
+    p->owner = owner;
 }
 
 void BrowserPackage::add_use_case_view() {
@@ -1738,6 +1755,20 @@ void BrowserPackage::save_all(bool modified_only)
 
 	indent(+1);
 	
+	nl_indent(st);
+	st << "revision " << pack->revision;
+	nl_indent(st);
+	st << "modified_by " << user_id()
+	  << " \"" << (const char *) user_name() << '"';
+	
+	if (pack->owner != -1) {
+	  // owner specified, the save is done => owner is current user !
+	  nl_indent(st);
+	  st << "owner " << pack->owner << ' ';
+	  if (pack->owner > 1)
+	    save_string(user_name(), st);
+	}
+	
 	if (prj) {
 	  GenerationSettings::save_dirs(st);
 	  GenerationSettings::save_descriptions(st);
@@ -2103,6 +2134,30 @@ To change its format : load this project and save it.");
 	set_name(read_string(st));
 	
 	k = read_keyword(st);
+	
+	if (!strcmp(k, "revision")) {
+	  revision = read_unsigned(st) + 1;
+	  k = read_keyword(st);
+	  
+	  if (!strcmp(k, "modified_by")) {
+	    read_keyword(st);
+	    read_string(st);
+	    k = read_keyword(st);
+	  }
+	  
+	  if (! strcmp(k, "owner")) {
+	    owner = read_unsigned(st);
+	    if (owner != user_id()) {
+	      is_read_only = TRUE;
+	      is_saveable = FALSE;
+	      set_read_only_file();
+	    }
+	    if (owner > 1)
+	      read_string(st);	// owner's name
+	    
+	    k = read_keyword(st);
+	  }
+	}
 	
 	if (prj) {
 	  result = read_file_format();

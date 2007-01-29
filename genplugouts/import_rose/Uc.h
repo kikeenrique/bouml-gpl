@@ -19,6 +19,9 @@ class Uc {
 
     void readObjects(File & f);
 
+    //Just to not have warning
+    virtual ~Uc();
+
 };
 
 #endif

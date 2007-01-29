@@ -83,3 +83,6 @@ void Uc::readObjects(File & f) {
   }
 }
 
+Uc::~Uc() {
+}
+

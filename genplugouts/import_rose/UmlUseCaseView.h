@@ -26,6 +26,9 @@ class UmlUseCaseView : public UmlBaseUseCaseView, public Uc {
     
     static void import(UmlItem * parent, File & f);
 
+    //Just to not have warning
+    virtual ~UmlUseCaseView();
+
 };
 
 #endif

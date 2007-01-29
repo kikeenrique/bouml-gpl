@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,6 +34,7 @@
 #include <qapplication.h>
 
 #include "mu.h"
+#include "myio.h"
 #include "BrowserView.h"
 
 static int Uid = -1;
@@ -54,6 +55,17 @@ int user_id()
 {
   if (Uid == -1) {
     QDir dir = BrowserView::get_dir();
+    
+    if (dir.exists("all.lock")) {
+      QMessageBox::critical(0, "Bouml", 
+			    "\
+The project is open in read-only mode because it is\n\
+under the control of 'Project control' or 'Project merge'\n\
+(the directory 'all.lock' exists)");
+      force_read_only(TRUE);
+    }
+    else
+      force_read_only(FALSE);
     
     char * v = getenv("BOUML_ID");
     
@@ -101,4 +113,19 @@ void set_root_permission(bool y)
 int root_permission()
 {
   return RootPermission;
+}
+
+//
+
+const char * user_name()
+{
+  static bool done = FALSE;
+  static QCString name;
+  
+  if (! done) {
+    name = QDir::home().dirName();
+    done = TRUE;
+  }
+  
+  return name;
 }

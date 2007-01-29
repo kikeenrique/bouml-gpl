@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -28,7 +28,8 @@
 #endif
 
 #include <qpainter.h>
-#include <qintdict.h> 
+#include <qintdict.h>
+#include <qmessagebox.h> 
 
 #include "DiagramItem.h"
 #include "DiagramCanvas.h"
@@ -117,6 +118,24 @@ bool DiagramItem::may_connect(UmlCode) const {
 
 void DiagramItem::post_connexion(UmlCode, DiagramItem *) {
   // does nothing
+}
+
+void DiagramItem::remove_if_already_present() {
+  const UmlCode k = type();
+  const BrowserNode * bn = get_bn();
+  IdIterator<DiagramItem> it(the_canvas()->get_all_items());
+  DiagramItem * di;
+  
+  while ((di = it.current()) != 0) {
+    if ((di->type() == k) && (di->get_bn() == bn) && (di != this)) {
+      // already present
+      if (Undefined.isEmpty())
+	QMessageBox::warning(0, "Bouml", "some elements already present in the diagram are NOT paste");
+      Undefined.append(this);
+      return;
+    }
+    ++it;
+  }
 }
 
 void DiagramItem::post_load()

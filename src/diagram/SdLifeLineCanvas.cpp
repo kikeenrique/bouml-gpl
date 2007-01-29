@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -130,7 +130,7 @@ double SdLifeLineCanvas::instance_max_y() const {
 }
 
 DiagramItem::LineDirection SdLifeLineCanvas::allowed_direction(UmlCode) {
-  return DiagramItem::Horizontal;
+  return DiagramItem::Vertical;
 }
 
 const char * SdLifeLineCanvas::may_start(UmlCode & l) const {

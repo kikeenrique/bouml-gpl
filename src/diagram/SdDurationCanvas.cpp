@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -158,7 +158,7 @@ UmlCode SdDurationCanvas::type() const {
 }
 
 DiagramItem::LineDirection SdDurationCanvas::allowed_direction(UmlCode c) {
-  return (c == UmlAnchor) ? DiagramItem::All : DiagramItem::Horizontal;
+  return (c == UmlAnchor) ? DiagramItem::All : DiagramItem::Vertical;
 }
 
 void SdDurationCanvas::update_v_to_contain(const QRect re) {

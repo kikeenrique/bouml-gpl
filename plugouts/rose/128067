@@ -1,44 +1,54 @@
-format 22
+format 27
 "Aux" // Aux
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position yes
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position yes shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position yes
+  package_name_in_tab default show_context default auto_label_position yes shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position yes
+  package_name_in_tab default show_context default auto_label_position yes shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position yes
+  package_name_in_tab default show_context default write_horizontally default auto_label_position yes shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
   show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  show_infonote default drawing_language default
   
   classview 128067 "Aux"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
-    //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
-    //seq diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    show_infonote default drawing_language default
+    
     associated_deployment_view deploymentview_ref 128067 // Aux
     classdiagram 128129 "Diagram"
-      draw_all_relations default hide_attributes yes hide_operations yes show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+      draw_all_relations default hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
       size A4
     end
 
     class 128129 "Uc"
       abstract 
-      
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -95,11 +105,23 @@ ${body}}
 	
 	
       end
+
+      operation 131458 "~Uc"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}${)}${volatile} {
+${body}}
+"
+	
+	
+	comment "Just to not have warning"
+      end
     end
 
     class 128063 "Language"
        stereotype "enum_pattern"
-      
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -176,10 +198,7 @@ ${items}};
       end
     end
 
-    class 128067 "File"
-      
-      
-      cpp_decl "${comment}${template}class ${name} : public QFile {
+    class 128067 "File"cpp_decl "${comment}${template}class ${name} : public QFile {
 ${members}};
 
 ${inlines}
@@ -480,10 +499,7 @@ ${body}}
       end
     end
 
-    class 128002 "Artifact"
-      
-      
-      cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 128002 "Artifact"cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -709,7 +725,7 @@ ${body}}
 
   deploymentview 128067 "Aux"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     artifact 128129 "Uc"
       stereotype "source"

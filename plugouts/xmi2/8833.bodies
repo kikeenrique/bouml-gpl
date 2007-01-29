@@ -1,0 +1,120 @@
+class UmlItem
+!!!145026.cpp!!!	xmi(in argc : int, in argv : char **) : void
+  UmlCom::trace("Error : must be applied on the project<br>");
+!!!144130.cpp!!!	write(inout out : FileOut) : void
+  const QVector<UmlItem> ch = children();
+  unsigned n = ch.size();
+  
+  for (unsigned i = 0; i != n; i += 1)
+    ch[i]->write(out);
+
+!!!147074.cpp!!!	write_description_properties(inout out : FileOut) : void
+  if (! description().isEmpty()) {
+    static int rank = 0;
+    
+    out.indent();
+    out << "<ownedComment xmi:type=\"uml:Comment\" xmi:id=\"COMMENT_"
+      << ++rank << "\" body=\"";
+    out.quote(description());
+    out << "\"/>\n";
+  }
+
+  if (_gen_extension) {
+    QCString ste = stereotype();
+    const QDict<QCString> up = properties();    
+    QDictIterator<QCString> it(up);
+    
+    if (it.current()) {
+      out.indent();
+      out << "<xmi:Extension extender=\"Bouml\">\n";
+      
+      if (! ste.isEmpty()) {
+	_stereotypes[ste].append(this);
+	out.indent();
+	out << "\t<stereotype name=\"";
+	out.quote(ste);
+	out << "\"/>\n";
+      }
+      
+      do {
+	out.indent();
+	out << "\t<taggedValue tag=\"";
+	out.quote(it.currentKey());
+	out << "\" value=\"";
+	out.quote(*(it.current()));
+	out << "\"/>\n";
+	++it;
+      } while (it.current());
+      
+      out.indent();
+      out << "</xmi:Extension>\n";
+    }
+    else if (! ste.isEmpty()) {
+      _stereotypes[ste].append(this);
+      out.indent();
+      out << "<xmi:Extension extender=\"Bouml\">\n";
+      out.indent();
+      out << "\t<stereotype name=\"";
+      out.quote(ste);
+      out << "\"/>\n";
+      out.indent();
+      out << "</xmi:Extension>\n";
+    }
+  }
+!!!130051.cpp!!!	memo_relation(inout r : UmlItem) : void
+  parent()->memo_relation(r);
+!!!202114.cpp!!!	write_multiplicity(inout out : FileOut, in s : string) : void
+  if (!s.isEmpty()) {
+    static UmlItem * rank = 0;
+    
+    QCString min;
+    QCString max;
+    int index = s.find("..");
+    
+    if (index != -1) {
+      min = s.left(index).stripWhiteSpace();
+      max = s.mid(index+2).stripWhiteSpace();
+    }
+    else
+      min = max = s.stripWhiteSpace();
+    
+    out.indent();
+    out << "<lowerValue xmi:type=\"uml:LiteralString\"";
+    out.id_prefix(++rank, "MULTIPLICITY_");
+    out << " value=\"" << min << "\"/>\n";
+    
+    out.indent();
+    out << "<upperValue xmi:type=\"uml:LiteralString\"";
+    out.id_prefix(++rank, "MULTIPLICITY_");
+    out << " value=\"" << max << "\"/>\n";
+  }
+!!!202242.cpp!!!	write_type(inout out : FileOut, in t : UmlTypeSpec) : void
+  if (t.type != 0) {
+    out.indent();
+    out << "<type";
+    out.idref(t.type);
+    out << "/>\n";
+  }
+  else if (!t.explicit_type.isEmpty()) {
+    out.indent();
+    out << "<type";
+    out.idref_datatype(t.explicit_type);
+    out << "/>\n";
+  }
+!!!129923.cpp!!!	write_default_value(inout out : FileOut, in v : string) : void
+  if (! v.isEmpty()) {
+    if (v[0] == '=') {
+      v = v.mid(1);
+      if (v.isEmpty())
+	return;
+    }
+
+    static UmlItem * rank = 0;
+
+    out.indent();
+    out << "<defaultValue xmi:type=\"uml:LiteralString\"";
+    out.id_prefix(rank, "VALUE_");
+    out << " value=\"";
+    out.quote(v);
+    out << "\"/>\n";
+  }

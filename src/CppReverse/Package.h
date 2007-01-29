@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -43,6 +43,7 @@ class Package : public BrowserNode, public ClassContainer {
     Package(BrowserView * parent, UmlPackage * u);
 #endif
     Package(Package * parent, const char * p, const char * n);
+    virtual ~Package();	// just to not have warning
     
     void send_dir(bool rec);
     void reverse_file(QCString f);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -28,7 +28,7 @@
 
 #include "UmlEnum.h"
 
-#define FILEFORMAT 27
+#define FILEFORMAT 29
 
 class QDir;
 class QFile;
@@ -56,6 +56,9 @@ extern ReadContext current_context();
 extern void restore_context(ReadContext &);
 
 extern bool read_only_file();
+extern void set_read_only_file();
+extern void force_read_only(bool y);
+
 
 extern void backup(QDir & d, QString fn);
 extern void delete_backup(QDir & d);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -315,6 +315,7 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
   unsigned rank = 0;
   UmlParameter param;
   bool on_error;
+  QValueList<QCString> defaultvalues;
   
   while (read_param(cl, rank, param, decl, tmplts, on_error)) {
     if ((op != 0) && !op->addParameter(rank++, param)) {
@@ -323,6 +324,7 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
 #endif
       return FALSE;
     }
+    defaultvalues.append(param.default_value);
   }
   
   QCString s;
@@ -533,6 +535,19 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
 			       decl.find("${const}", start + 4) - start + 4));
 	}
 	
+	// remove params default value
+	QValueList<QCString>::Iterator iter;
+	int index2 = 0;
+	
+	for (iter = defaultvalues.begin(); iter != defaultvalues.end(); ++iter) {
+	  QCString & v = *iter;
+	  
+	  if (! v.isEmpty()) {
+	    index2 = def.find(" =" + v, index2);   
+	    def.remove(index2, v.length() + 2);
+	  }
+	}
+	
 	if (typenamep) {
 	  def.insert(index, "typename ");
 	  index += 9;
@@ -705,6 +720,9 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
 	param.type.explicit_type.remove(param.type.explicit_type.find(pn), 
 					pn.length());
       }
+	
+      if (!param.default_value.isEmpty())
+	s2 += " =" + param.default_value;
       
       if (s == "...")
 	s2 += " ...";
@@ -1073,7 +1091,7 @@ void UmlOperation::reverse_definition(Package * pack, QCString name,
       (((index = name.findRev("::")) > 0) &&
        pack->find_type(normalized = Lex::normalize(name.left(index)), tcl))) {
     if (! operations(candidates, tcl.type, tmplts, oper_tmplt, name))
-      // a variable
+      // a variable, already managed inside operations
       return;
   }
   else {

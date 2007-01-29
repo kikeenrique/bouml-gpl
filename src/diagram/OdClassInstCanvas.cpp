@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -521,9 +521,10 @@ void OdClassInstCanvas::save(QTextStream & st, bool ref, QString & warning) cons
       
       indent(-1);
     }
-    nl_indent(st);
-    save_xyz(st, this, "xyz");
+    
     indent(-1);
+    nl_indent(st);
+    st << "end";
   }
 }
 
@@ -571,7 +572,8 @@ OdClassInstCanvas * OdClassInstCanvas::read(char * & st, UmlCanvas * canvas,
     QStringList values;
     
     if (!strcmp(k, "values")) {
-      while (strcmp(k = read_keyword(st), "xyz")) {
+      while (strcmp(k = read_keyword(st), "end") &&
+	     strcmp(k, "xyz")) {	// old version
 	BrowserAttribute * a = BrowserAttribute::read(st, k, 0);
 	QString s = read_string(st);
 	
@@ -581,10 +583,12 @@ OdClassInstCanvas * OdClassInstCanvas::read(char * & st, UmlCanvas * canvas,
 	}
       }
     }
-    else if (strcmp(k, "xyz"))
-      wrong_keyword(k, "xyz");
+    else if (strcmp(k, "end") && 
+	     strcmp(k, "xyz"))
+      wrong_keyword(k, "end or xyz");
     
-    read_xyz(st, result);
+    if (*k == 'x')
+      read_xyz(st, result);
     result->attributes = attributes;
     result->values = values;
     result->check_attributes();

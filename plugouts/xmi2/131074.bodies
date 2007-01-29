@@ -1,0 +1,3 @@
+class UmlExitPointPseudoState
+!!!207106.cpp!!!	sKind() : str
+  return "exitPoint";

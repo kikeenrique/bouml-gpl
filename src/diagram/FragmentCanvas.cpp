@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,7 +33,7 @@
 
 #include "FragmentCanvas.h"
 #include "FragmentDialog.h"
-#include "MLEDialog.h"
+#include "FragmentSeparatorCanvas.h"
 #include "UmlGlobal.h"
 #include "UmlCanvas.h"
 #include "BrowserDiagram.h"
@@ -56,10 +56,16 @@ FragmentCanvas::~FragmentCanvas() {
 }
 
 void FragmentCanvas::delete_it() {
+  while (! separators.isEmpty())
+    separators.first()->delete_it();	// call remove_it
+  
   disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
   DiagramCanvas::delete_it();
 }
 
+void FragmentCanvas::remove_it(FragmentSeparatorCanvas * sp) {
+  separators.remove(sp);
+}
 
 void FragmentCanvas::draw(QPainter & p) {
   if (! visible()) return;
@@ -114,6 +120,24 @@ bool FragmentCanvas::alignable() const {
 
 bool FragmentCanvas::copyable() const {
   return selected();
+}
+
+void FragmentCanvas::moveBy(double dx, double dy) {
+  DiagramCanvas::moveBy(dx, dy);
+  
+  QListIterator<FragmentSeparatorCanvas> it(separators);
+  
+  for (; it.current(); ++it)
+    it.current()->update();
+}
+
+void FragmentCanvas::set_z(double z) {
+  setZ(z);
+  
+  QListIterator<FragmentSeparatorCanvas> it(separators);
+  
+  for (; it.current(); ++it)
+    it.current()->update();
 }
 
 void FragmentCanvas::open() {
@@ -179,6 +203,11 @@ void FragmentCanvas::change_scale() {
   check_size();
   recenter();
   QCanvasRectangle::setVisible(TRUE);  
+  
+  QListIterator<FragmentSeparatorCanvas> it(separators);
+  
+  for (; it.current(); ++it)
+    it.current()->update();
 }
 
 void FragmentCanvas::modified() {
@@ -199,6 +228,7 @@ void FragmentCanvas::menu(const QPoint&) {
   m.insertItem("Lower", 1);
   m.insertSeparator();
   m.insertItem("Edit", 2);
+  m.insertItem("Add separator", 6);
   m.insertSeparator();
   m.insertItem("Edit drawing settings", 3);
   if (linked()) {
@@ -232,6 +262,16 @@ void FragmentCanvas::menu(const QPoint&) {
     return;
   case 5:
     delete_it();
+    break;
+  case 6:
+    {
+      FragmentSeparatorCanvas * sp =
+	new FragmentSeparatorCanvas(the_canvas(), this);
+      
+      separators.append(sp);
+      the_canvas()->unselect_all();
+      the_canvas()->select(sp);
+    }
     break;
   default:
     return;
@@ -317,9 +357,14 @@ aCorner FragmentCanvas::on_resize_point(const QPoint & p) {
 
 void FragmentCanvas::resize(aCorner c, int dx, int dy) {
   DiagramCanvas::resize(c, dx, dy, min_width, min_height);
+  
+  QListIterator<FragmentSeparatorCanvas> it(separators);
+  
+  for (; it.current(); ++it)
+    it.current()->update();
 }
 
-void FragmentCanvas::save(QTextStream & st, bool ref, QString &) const {
+void FragmentCanvas::save(QTextStream & st, bool ref, QString & warning) const {
   if (ref) {
     st << "fragment_ref " << get_ident();
   }
@@ -328,10 +373,20 @@ void FragmentCanvas::save(QTextStream & st, bool ref, QString &) const {
     
     st << "fragment " << get_ident() << ' ';
     save_string(name, st);
+    indent(+1);
     nl_indent(st);
     if (itscolor != UmlDefaultColor)
-      st << "  color " << stringify(itscolor);
-    save_xyzwh(st, this, "  xyzwh");
+      st << "color " << stringify(itscolor) << ' ';
+    save_xyzwh(st, this, "xyzwh");
+    
+    QListIterator<FragmentSeparatorCanvas> it(separators);
+    
+    for (; it.current(); ++it)
+      it.current()->save(st, FALSE, warning);
+    
+    indent(-1);
+    nl_indent(st);
+    st << "end";
   }
 }
 
@@ -357,6 +412,12 @@ FragmentCanvas * FragmentCanvas::read(char * & st, UmlCanvas * canvas, char * k)
     result->height_scale100 = result->height();
     result->set_center100();
     result->show();
+    
+    if (read_file_format() >= 28) {
+      while (strcmp(k = read_keyword(st), "end"))
+	result->separators.append(FragmentSeparatorCanvas::read(st, canvas, k, result));
+    }
+    
     return result;
   }
   else
@@ -372,6 +433,13 @@ void FragmentCanvas::history_save(QBuffer & b) const {
   ::save(height_scale100, b);
   ::save(width(), b);
   ::save(height(), b);
+
+  ::save((int) separators.count(), b);
+  
+  QListIterator<FragmentSeparatorCanvas> it(separators);
+  
+  for (; it.current(); ++it)
+    ::save(it.current(), b);
 }
 
 void FragmentCanvas::history_load(QBuffer & b) {
@@ -386,6 +454,14 @@ void FragmentCanvas::history_load(QBuffer & b) {
   ::load(w, b);
   ::load(h, b);
   QCanvasRectangle::setSize(w, h);
+  
+  int l;
+  
+  ::load(l, b);
+  
+  separators.clear();
+  while (l--)
+    separators.append((FragmentSeparatorCanvas *) ::load_item(b));
   
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }

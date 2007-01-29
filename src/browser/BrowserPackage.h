@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -76,6 +76,8 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     UmlColor activityaction_color;
     UmlColor parameterpin_color;
     bool is_imported;
+    unsigned revision;
+    int owner;
     
   protected:
     BrowserPackage(int id);

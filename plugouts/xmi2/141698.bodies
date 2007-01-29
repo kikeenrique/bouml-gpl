@@ -1,0 +1,3 @@
+class UmlForkActivityNode
+!!!208770.cpp!!!	sKind() : str
+  return "ForkNode";

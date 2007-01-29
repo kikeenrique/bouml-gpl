@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -30,6 +30,7 @@
 #include <qvaluelist.h>
 
 class QListBox;
+class QCheckBox;
 class BrowserNode;
 class BrowserNodeList;
 
@@ -38,15 +39,17 @@ class HideShowDialog : public QDialog {
  
   protected:
     const BrowserNodeList & all;
-    QValueList<BrowserNode *> & hidden;
+    QValueList<BrowserNode *> & hidden_visible;
+    bool & on_visible;
     QListBox * lb_visible;
     QListBox * lb_hidden;
+    QCheckBox * cb_visible;
  
     static QSize previous_size;
   
   public:
     HideShowDialog(const BrowserNodeList & a,
-		   QValueList<BrowserNode *> & h);
+		   QValueList<BrowserNode *> & h, bool & visible);
     virtual ~HideShowDialog();
     
   protected slots:

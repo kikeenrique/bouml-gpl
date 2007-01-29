@@ -1,0 +1,3 @@
+class UmlFlowFinalActivityNode
+!!!208258.cpp!!!	sKind() : str
+  return "FlowFinalNode";

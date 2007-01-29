@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,12 +29,15 @@
 #include <qdialog.h>
 
 class MultiLineEdit;
+class QPushButton;
 
 class MLEDialog : public QDialog {
   Q_OBJECT
     
   protected:
     MultiLineEdit * e;
+    QPushButton * ok;
+    QPushButton * cancel;
     
   public:
     MLEDialog(QString t);

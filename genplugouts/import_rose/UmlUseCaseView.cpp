@@ -92,3 +92,6 @@ void UmlUseCaseView::import(UmlItem * parent, File & f)
 
 }
 
+UmlUseCaseView::~UmlUseCaseView() {
+}
+

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -77,6 +77,10 @@ ShortcutDialog::ShortcutDialog() : QTabDialog(0, 0, TRUE) {
   (new QLabel("Here are the shortcuts to do a command (menu entry)", vtab))
     ->setAlignment(QObject::AlignHCenter);
 
+#ifdef __APPLE__
+  (new QLabel("Note : sometimes the key 'Alt' is named 'Option'", vtab))
+    ->setAlignment(QObject::AlignHCenter);
+#endif  
   
   cmd_table = new ShortcutTable(vtab, FALSE, ncmds);
   
@@ -91,6 +95,11 @@ ShortcutDialog::ShortcutDialog() : QTabDialog(0, 0, TRUE) {
   (new QLabel("Here are the shortcuts to call a tool (plug-out)", vtab))
     ->setAlignment(QObject::AlignHCenter);
 
+#ifdef __APPLE__
+  (new QLabel("Note : sometimes the key 'Alt' is named 'Option'", vtab))
+    ->setAlignment(QObject::AlignHCenter);
+  
+#endif  
   tool_table = new ShortcutTable(vtab, TRUE, ntools);
   
   addTab(vtab, "Tool");
@@ -129,7 +138,14 @@ ShortcutTable::ShortcutTable(QWidget * parent, bool tool, int n)
   setSelectionMode(NoSelection);	// single does not work
   setRowMovingEnabled(TRUE);
   horizontalHeader()->setLabel(0, "Shift");
+#ifdef __APPLE__
+#include "../xpm/pomme_xpm.xpm"
+  QPixmap pomme_xpm((const char **) pomme);
+  QIconSet ic(pomme_xpm);
+  horizontalHeader()->setLabel(1, ic, "");
+#else
   horizontalHeader()->setLabel(1, "Ctrl");
+#endif
   horizontalHeader()->setLabel(2, "Alt");
   horizontalHeader()->setLabel(3, "Key");
   horizontalHeader()->setLabel(4, (tool) ? "tool display" : "command");
@@ -360,7 +376,11 @@ bool ShortcutTable::check(QStringList & bindings) {
       if (!text(row, 0).isEmpty())
 	s = "Shift ";
       if (!text(row, 1).isEmpty())
+#ifdef __APPLE__
+	s = "Apple ";
+#else
 	s = "Ctrl ";
+#endif
       if (!text(row, 2).isEmpty())
 	s = "Alt ";
       s += text(row, 3);

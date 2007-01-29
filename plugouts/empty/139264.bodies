@@ -21,8 +21,8 @@ class UmlBaseRemoveVariableValueAction
 
   _remove_duplicates = v;
 !!!177280.cpp!!!	read_uml_() : void
-  _remove_duplicates = UmlCom::read_bool();
   UmlBaseAccessVariableValueAction::read_uml_();
+  _remove_duplicates = UmlCom::read_bool();
 !!!177280.java!!!	read_uml_() : void
-  _remove_duplicates = UmlCom.read_bool();
   super.read_uml_();
+  _remove_duplicates = UmlCom.read_bool();

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -28,6 +28,8 @@
 #endif
 
 #include <qlayout.h> 
+#include <qhbox.h>
+#include <qlabel.h>
 
 #include "MLEDialog.h"
 #include "DialogUtil.h"
@@ -38,6 +40,20 @@ MLEDialog::MLEDialog(QString t) : QDialog(0, "Uml", TRUE, 0) {
   e = new MultiLineEdit(this);
   vbox->addWidget(e);
   
+  QHBox * hbox = new QHBox(this);
+  
+  vbox->addWidget(hbox);
+  hbox->setMargin(5);
+
+  new QLabel(hbox);
+  ok = new QPushButton("OK", hbox);
+  new QLabel(hbox);
+  cancel = new QPushButton("Cancel", hbox);
+  new QLabel(hbox);
+  
+  connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+    
   e->setText(t);
 }
 
@@ -49,8 +65,8 @@ void MLEDialog::get(QString & t, const QPoint & p)
   MLEDialog d(t);
   
   d.move(p);
-  d.exec();
-  t = d.e->text();
+  if (d.exec() == QDialog::Accepted)
+    t = d.e->text();
 }
 
 QString MLEDialog::text() {

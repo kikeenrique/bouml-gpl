@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -718,6 +718,9 @@ ActivityCanvas * ActivityCanvas::read(char * & st, UmlCanvas * canvas,
     result->check_params();
     
     // result->force_sub_inside() useless : may only grow
+    
+    if (canvas->paste())
+      result->remove_if_already_present();
     
     return result;
   }

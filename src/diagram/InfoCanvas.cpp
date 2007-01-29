@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,7 +33,6 @@
 
 #include "InfoCanvas.h"
 #include "DiagramCanvas.h"
-#include "MLEDialog.h"
 #include "UmlGlobal.h"
 #include "UmlCanvas.h"
 #include "BrowserDiagram.h"

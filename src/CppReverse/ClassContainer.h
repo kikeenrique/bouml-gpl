@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,6 +34,8 @@ class UmlTypeSpec;
 
 class ClassContainer {
   public:
+    virtual ~ClassContainer();	// just to not have warning
+  
     virtual Class * declare_if_needed(const QCString & name,
 				      QCString stereotype = 0) = 0;
     virtual Class * define(const QCString & name, QCString stereotype = 0) = 0;

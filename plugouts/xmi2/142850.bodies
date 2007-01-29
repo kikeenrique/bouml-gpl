@@ -1,0 +1,17 @@
+class UmlPinParameter
+!!!201602.cpp!!!	write_dir(inout out : FileOut) : void
+  out << " direction =\"";
+  if (_pk_prefix)
+    out << "pk_";
+  switch (direction()) {
+  case InputOutputDirection: out << "inout\""; break;
+  case OutputDirection: out << "out\""; break;
+  default: out << "in\"";
+  }
+!!!201858.cpp!!!	write_flags(inout out : FileOut) : void
+  if (isUnique())
+    out << " isUnique=\"true\"";
+  if (isException())
+    out << " isException=\"true\"";
+  if (isStream())
+    out << " isStream=\"true\"";

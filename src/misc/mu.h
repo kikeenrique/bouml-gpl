@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -30,5 +30,7 @@ extern void set_user_id(int);
 extern int user_id();
 extern void set_root_permission(bool y);
 extern int root_permission();	// return previous uid or 0
+
+extern const char * user_name();
 
 #endif

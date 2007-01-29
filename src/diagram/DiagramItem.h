@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -87,7 +87,7 @@ class DiagramItem : public Labeled<DiagramItem> {
     virtual BasicData * add_relation(UmlCode, DiagramItem *); 
     virtual bool has_relation(BasicData *) const; 
     virtual bool has_relation(UmlCode, BasicData *) const; 
-    enum LineDirection { Horizontal, All };
+    enum LineDirection { Horizontal, Vertical, All };
     virtual LineDirection allowed_direction(UmlCode);
     virtual bool alignable() const;
     virtual aCorner on_resize_point(const QPoint &);
@@ -120,6 +120,7 @@ class DiagramItem : public Labeled<DiagramItem> {
     virtual void apply_shortcut(QString);
     
     static void post_load();
+    void remove_if_already_present();
 };
 
 class DiagramItemList : public QList<DiagramItem> {

@@ -144,12 +144,9 @@ void Dialog::browse() {
 }
 
 void Dialog::accept_cpp() {
-  _path = ed->text();
-  _encoding = encoding_cb->currentText();
-  _genview = (gen_cb->isChecked()) ? "yes" : "no";
   _lang = Cpp;
   
-  QDialog::accept();
+  accept();
 }
 
 void Dialog::accept_uml() {

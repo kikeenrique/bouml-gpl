@@ -1,0 +1,3 @@
+class UmlMergeActivityNode
+!!!208642.cpp!!!	sKind() : str
+  return "MergeNode";

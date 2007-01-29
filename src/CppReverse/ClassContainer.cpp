@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,6 +37,10 @@ using namespace std;
 #include "Package.h"
 
 QValueList<FormalParameterList> ClassContainer::empty;
+
+// to not have warning
+ClassContainer::~ClassContainer() {
+}
 
 Class * ClassContainer::declare_if_needed(const QCString & name,
 					  const QCString & stereotype,

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -86,6 +86,10 @@ Package::Package(Package * parent, const char * p, const char * n)
     : BrowserNode(parent, n) {
   path = p;
   uml = 0;
+}
+
+// to not have warning
+Package::~Package() {
 }
 
 bool Package::isa_package() const {
@@ -558,7 +562,7 @@ void Package::reverse_toplevel_form(QCString f, QCString s) {
 }
 
 void Package::reverse_variable(const QCString & name) {
-  // '=' read
+  // '=' or '(' read
   QCString init;
   
   Lex::mark();

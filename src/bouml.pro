@@ -154,6 +154,7 @@ HEADERS		= browser/BrowserAttribute.h \
 		  diagram/ActivityObjectCanvas.h \
 		  diagram/ExpansionNodeCanvas.h \
 		  diagram/FlowCanvas.h \
+		  diagram/FragmentSeparatorCanvas.h \
 		  dialog/AttributeDialog.h \
 		  dialog/ExtraMemberDialog.h \
 		  dialog/BasicDialog.h \
@@ -384,6 +385,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  diagram/ActivityObjectCanvas.cpp \
 		  diagram/ExpansionNodeCanvas.cpp \
 		  diagram/FlowCanvas.cpp \
+		  diagram/FragmentSeparatorCanvas.cpp \
 		  dialog/AttributeDialog.cpp \
 		  dialog/ExtraMemberDialog.cpp \
 		  dialog/BasicDialog.cpp \

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2006 Bruno PAGES  All rights reserved.
+// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -773,11 +773,11 @@ void ChangeVariableValueAction::read(char * & st, char * & k,
   AccessVariableValueAction::read(st, k);
 }
 
-void ChangeVariableValueAction::send_def(ToolCom * com, DrawingLanguage lang) {
+void ChangeVariableValueAction::send_def(ToolCom * com, DrawingLanguage lang) {  
+  AccessVariableValueAction::send_def(com, lang);
+  
   if (lang == UmlView)
     com->write_bool(flag);
-  
-  AccessVariableValueAction::send_def(com, lang);
 }
 
 bool ChangeVariableValueAction::tool_cmd(ToolCom * com, const char * args) {
@@ -1332,7 +1332,7 @@ void SendSignalAction::save(QTextStream & st, QString &) const {
 }
 
 void SendSignalAction::read(char * & st, char * & k) {
-  if (! strcmp(k, "ocl")) {
+  if (! strcmp(k, "uml")) {
     ocl_signal = read_string(st);
     k = read_keyword(st);
   }

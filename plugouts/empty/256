@@ -1,5 +1,7 @@
-format 27
+format 29
 "API BASE" // API BASE
+  revision 3
+  modified_by 2 "bruno"
   // class settings
   //class diagram settings
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
@@ -19112,6 +19114,41 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 189312 "isStream"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the isStream attribute"
+      end
+
+      operation 189440 "set_IsStream"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the isStream attribute
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 185856 "direction"
 	public return_type class_ref 384 // aDirection
 	nparams 0
@@ -19211,7 +19248,7 @@ ${body}}
 
       attribute 71168 "_dummy"
 	private explicit_type "int"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 4${value};
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 5${value};
 "
 	java_decl ""
 	idl_decl ""
