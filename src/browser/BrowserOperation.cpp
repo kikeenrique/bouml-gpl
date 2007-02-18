@@ -91,6 +91,8 @@ BrowserNode * BrowserOperation::duplicate(BrowserNode * p, QString n) {
       n = p->get_name();
     else
       n = get_name();
+    
+    result->def->replace((BrowserClass *) parent(), (BrowserClass *) p);
   }
 
   result->set_name(n);
@@ -575,9 +577,7 @@ void BrowserOperation::save(QTextStream & st, bool ref, QString & warning) {
     st << "operation " << get_ident() << ' ';
     save_string(name, st);
     indent(+1);
-    def->save(st, FALSE, warning,
-	      ((BrowserNode *) parent())->full_name() +
-	      "'s operation " + get_name());
+    def->save(st, FALSE, warning);
     
     if ((get_of != 0) && !get_of->deletedp()) {
       nl_indent(st);

@@ -82,9 +82,14 @@ BrowserAttribute * BrowserAttribute::new_one(QString s, BrowserNode * p,
 }
 
 BrowserNode * BrowserAttribute::duplicate(BrowserNode * p, QString name) {
-  BrowserNode * result = new BrowserAttribute(this, p);
+  BrowserAttribute * result = new BrowserAttribute(this, p);
   
-  result->set_name((name.isEmpty()) ? get_name() : (const char *) name);
+  if (name.isEmpty()) {
+    result->set_name(get_name());
+    result->def->replace((BrowserClass *) parent(), (BrowserClass *) p);
+  }
+  else
+    result->set_name(name);
   result->update_stereotype();
   
   return result;
@@ -473,7 +478,7 @@ void BrowserAttribute::save(QTextStream & st, bool ref, QString & warning) {
     st << "attribute " << get_ident() << ' ';
     save_string(name, st);
     indent(+1);
-    def->save(st, warning, ((BrowserNode *) parent())->full_name());
+    def->save(st, warning);
     if (get_oper != 0) {
       nl_indent(st);
       st << "get_oper ";

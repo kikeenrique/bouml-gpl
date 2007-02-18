@@ -7,7 +7,12 @@ void UmlTransition::memo_incoming_trans() {
 }
 
 void UmlTransition::write(FileOut & out) {
-  (dynamic_cast<UmlStateItem *>(parent()->parent()))->memo_trans(this);
+  UmlStateItem * x = dynamic_cast<UmlStateItem *>(parent()->parent());
+  
+  if (x == 0)
+    x = dynamic_cast<UmlStateItem *>(parent());
+    
+  x->memo_trans(this);
   
   out.indent();
   out << "<outgoing";

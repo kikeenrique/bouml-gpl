@@ -11,7 +11,7 @@ void UmlActualParameter::write(FileOut & out, const UmlClass * cl, int actualran
   sprintf(tp, "TEMPLPARAM%d_", rank());
 
   out.indent();
-  out << "<parameterSubstitution xmi:type=\"TemplateParameterSubstitution\"";
+  out << "<parameterSubstitution xmi:type=\"uml:TemplateParameterSubstitution\"";
   out.id_prefix(cl, ps);
   out << ">\n";
   out.indent();

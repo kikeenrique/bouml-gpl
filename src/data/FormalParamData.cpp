@@ -28,18 +28,63 @@
 #endif
 
 #include "BrowserClass.h"
+#include "ClassData.h"
 #include "FormalParamData.h"
 #include "myio.h"
 #include "ToolCom.h"
 
+FormalParamData::FormalParamData(const FormalParamData& f)
+    : QObject(0) {
+  *this = f;
+}
+
+FormalParamData& FormalParamData::operator=(const FormalParamData& f) {
+  name = f.name;
+  type = f.type;
+  set_default_value(f.default_value.type, f.default_value.explicit_type);
+  set_extends(f.extends.type, f.extends.explicit_type);
+
+  return *this;
+}
+
 void FormalParamData::set_default_value(BrowserClass * t, const QString & e) {
-  default_value.type = t;
+  if (default_value.type != t) {
+    if (default_value.type != 0)
+      disconnect(default_value.type->get_data(), SIGNAL(deleted()),
+		 this, SLOT(on_delete_default()));
+    if ((default_value.type = t) != 0)
+      connect(default_value.type->get_data(), SIGNAL(deleted()),
+	      this, SLOT(on_delete_default()));
+  }
+  
   default_value.explicit_type = e;
 }
 
 void FormalParamData::set_extends(BrowserClass * t, const QString & e) {
-  extends.type = t;
+  if (extends.type != t) {
+    if (extends.type != 0)
+      disconnect(extends.type->get_data(), SIGNAL(deleted()),
+		 this, SLOT(on_delete_extends()));
+    if ((extends.type = t) != 0)
+      connect(extends.type->get_data(), SIGNAL(deleted()),
+	      this, SLOT(on_delete_extends()));
+  }
+  
   extends.explicit_type = e;
+}
+
+void FormalParamData::on_delete_default() {
+  if (default_value.type && default_value.type->deletedp()) {
+    default_value.explicit_type = default_value.type->get_name();
+    default_value.type = 0;
+  }
+}
+
+void FormalParamData::on_delete_extends() {
+  if (extends.type && extends.type->deletedp()) {
+    extends.explicit_type = extends.type->get_name();
+    extends.type = 0;
+  }
 }
 
 void FormalParamData::send_uml_def(ToolCom * com) {
@@ -53,9 +98,18 @@ void FormalParamData::send_uml_def(ToolCom * com) {
 void FormalParamData::read(ToolCom * com, const char *& args) {
   name = com->get_string(args);
   type = com->get_string(args);
-  com->get_type(default_value, args);
-  if (com->api_format() >= 20)
-    com->get_type(extends, args);
+  
+  AType t1;
+  
+  com->get_type(t1, args);
+  set_default_value(t1.type, t1.explicit_type);
+  
+  if (com->api_format() >= 20) {
+    AType t2;
+    
+    com->get_type(t2, args);
+    set_extends(t2.type, t2.explicit_type);
+  }
 }
 
 void FormalParamData::skip(ToolCom * com, const char *& args)
@@ -67,22 +121,15 @@ void FormalParamData::skip(ToolCom * com, const char *& args)
     com->skip_type(args);
 }
 
-void FormalParamData::save(QTextStream & st, QString & warning,
-			   const QString & cl_name) const {
+void FormalParamData::save(QTextStream & st, QString & warning) const {
   nl_indent(st);
   st << "formal name ";
   save_string(name, st);
   st << " type ";
   save_string(type, st);
-  if (!default_value.save(st, warning, " default_value ", " explicit_default_value "))
-    warning += QString("<p><b>") + cl_name + "</b>'s formal <b>" + name +
-      "</b> default values the deleted class <b>" +
-	default_value.type->full_name() + "</b>\n";
+  default_value.save(st, warning, " default_value ", " explicit_default_value ");
   nl_indent(st);	// default_value may produce a comment
-  if (!extends.save(st, warning, "  extends ", "  explicit_extends "))
-    warning += QString("<p><b>") + cl_name + "</b>'s formal <b>" + name +
-      "</b> extends values the deleted class <b>" +
-	extends.type->full_name() + "</b>\n";
+  extends.save(st, warning, "  extends ", "  explicit_extends ");
 }
 
 void FormalParamData::read(char * & st) {
@@ -91,7 +138,16 @@ void FormalParamData::read(char * & st) {
   name = read_string(st);
   read_keyword(st, "type");
   type = read_string(st);
-  default_value.read(st, "default_value", "explicit_default_value");
-  if (read_file_format() >= 24)
-    extends.read(st, "extends", "explicit_extends");
+  
+  AType t1;
+  
+  t1.read(st, "default_value", "explicit_default_value");
+  set_default_value(t1.type, t1.explicit_type);
+  
+  if (read_file_format() >= 24) {
+    AType t2;
+    
+    t2.read(st, "extends", "explicit_extends");
+    set_extends(t2.type, t2.explicit_type);
+  }
 }

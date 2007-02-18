@@ -50,6 +50,21 @@ void ParameterData::edit() {
   (new ParameterDialog(this))->show();
 }
 
+void ParameterData::do_connect(BrowserClass * c) {
+  connect(c->get_data(), SIGNAL(deleted()), this, SLOT(on_delete()));
+}
+
+void ParameterData::do_disconnect(BrowserClass * c) {
+  disconnect(c->get_data(), 0, this, 0);
+}
+
+void ParameterData::on_delete() {
+  BrowserClass * cl = get_type().type;
+  
+  if ((cl != 0) && cl->deletedp())
+    set_type((BrowserClass *) 0);
+}
+
 void ParameterData::send_uml_def(ToolCom * com, BrowserNode * bn,
 				 const QString & comment) {
   BasicData::send_uml_def(com, bn, comment);
@@ -97,10 +112,9 @@ bool ParameterData::tool_cmd(ToolCom * com, const char * args,
   return TRUE;
 }
 
-void ParameterData::save(QTextStream & st, QString & warning, 
-		     QString what) const {
+void ParameterData::save(QTextStream & st, QString & warning) const {
   BasicData::save(st, warning);
-  PinParamData::save(st, warning, what);
+  PinParamData::save(st, warning);
 
   if (!default_value.isEmpty()) {
     st << " defaultvalue ";

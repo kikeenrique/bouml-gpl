@@ -167,7 +167,7 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     const char * get_idldecl_a() const { return a.idl_decl; };
     const char * get_idldecl_b() const { return b.idl_decl; };
     static const char * get_idlcase(const RoleData & role);
-    static void set_idlcase(RoleData & role, BrowserAttribute * a, const char * e);
+    void set_idlcase(RoleData & role, BrowserAttribute * a, const char * e);
     bool get_idl_truncatable() const { return a.idl_truncatable_inheritance; };
     
     void select_in_browser(bool prefer_start) const;

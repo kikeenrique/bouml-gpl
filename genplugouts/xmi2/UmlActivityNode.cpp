@@ -7,8 +7,12 @@ void UmlActivityNode::memo_incoming_flow() {
   unsigned n = ch.size();
   unsigned i;
      
-  for (i = 0; i != n; i += 1)
-    (dynamic_cast<UmlActivityItem *>(ch[i]))->memo_incoming_flow();
+  for (i = 0; i != n; i += 1) {
+    UmlActivityItem * x = dynamic_cast<UmlActivityItem *>(ch[i]);
+								
+    if (x != 0)
+      x->memo_incoming_flow();
+  }
 }
 
 void UmlActivityNode::add_incoming_flow(UmlFlow * flow) {

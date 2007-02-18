@@ -401,7 +401,7 @@ void ParameterDialog::accept() {
 	else
 	  t.explicit_type = s;
       }
-      param->type = t;
+      param->set_type(t);
       param->dir = dir;
       param->multiplicity =
 	edmultiplicity->currentText().stripWhiteSpace();

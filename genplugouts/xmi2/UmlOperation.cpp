@@ -95,7 +95,7 @@ void UmlOperation::write_return_type(FileOut & out, QCString decl) {
   
   if ((t.type != 0) || !t.explicit_type.isEmpty()) {
     out.indent();
-    out << "<ownedParameter name=\"return\" xmi.id=\"BOUML_return_"
+    out << "<ownedParameter name=\"return\" xmi:id=\"BOUML_return_"
         << ++return_rank << "\" direction=\"";
     if (_pk_prefix)
       out << "pk_";
@@ -193,8 +193,8 @@ void UmlOperation::write_uml_params(FileOut & out) {
   for (it = p.begin(); it != p.end(); ++it) {
     out.indent();
     out << "<ownedParameter xmi:type=\"uml:Parameter\" name=\"" << (*it).name
-      << "\" xmi.id=\"BOUML_op_param_"
-	<< ++param_id << "\" direction =\"";
+      << "\" xmi:id=\"BOUML_op_param_"
+	<< ++param_id << "\" direction=\"";
     if (_pk_prefix)
       out << "pk_";
     switch ((*it).dir) {
@@ -239,7 +239,7 @@ void UmlOperation::write_cpp_java_params(FileOut & out, QCString decl) {
       
       out.indent();
       out << "<ownedParameter xmi:type=\"uml:Parameter\" name=\"" << pa.name
-	<< "\" xmi.id=\"BOUML_op_param_"
+	<< "\" xmi:id=\"BOUML_op_param_"
 	  << ++param_id << "\" direction =\"";
       if (_pk_prefix)
 	out << "pk_";

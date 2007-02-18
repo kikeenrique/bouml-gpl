@@ -29,12 +29,8 @@ void UmlFormalParameter::write(FileOut & out, const UmlClass * cl, int rank) con
   out.ref(cl, "templateParameter", tp);
   out << "/>\n";
 
-  if (defaultValue().type != 0) {
-    out.indent();
-    out << "<defaultValue";
-    out.idref(defaultValue().type);
-    out << "/>\n";
-  }
+  if (defaultValue().type != 0)
+    UmlItem::write_default_value(out, defaultValue().type->name());
   else
     UmlItem::write_default_value(out, defaultValue().explicit_type);
 

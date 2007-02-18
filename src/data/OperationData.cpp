@@ -1189,6 +1189,27 @@ bool OperationData::reference(BrowserClass * target) const {
 
 //
 
+void OperationData::replace(BrowserClass * old, BrowserClass * nw) {
+  AType t;
+  
+  t.type = nw;
+  
+  if (return_type.type == old)
+    set_return_type(t);
+  
+  unsigned i;
+  for (i = 0; i != nparams; i += 1)
+    if (params[i].get_type().type == old)
+      params[i].set_type(t);
+  
+  for (i = 0; i != nexceptions; i += 1)
+    if (exceptions[i].get_type().type == old)
+      // almost no chance to be true ...
+      exceptions[i].set_type(t);
+}
+
+//
+
 void OperationData::send_uml_def(ToolCom * com, BrowserNode * bn, 
 				 const QString & comment) {
   BasicData::send_uml_def(com, bn, comment);
@@ -1879,8 +1900,7 @@ void OperationData::import(BrowserClass * cl, int id)
   delete [] s;  
 }
 
-void OperationData::save(QTextStream & st, bool ref, QString & warning,
-			 const QString & cl_oper_name) const {
+void OperationData::save(QTextStream & st, bool ref, QString & warning) const {
   if (ref) {
     st << "operation_ref " << get_ident() << " // ";
     save_string(definition(TRUE), st);
@@ -1907,21 +1927,18 @@ void OperationData::save(QTextStream & st, bool ref, QString & warning,
     
     st << stringify(uml_visibility);
     
-    if (!return_type.save(st, warning, " return_type ", " explicit_return_type "))
-      warning += QString("<p><b>") + cl_oper_name +
-	"</b> value type is the deleted class <b>" +
-	  return_type.type->full_name() + "</b>\n";
+    return_type.save(st, warning, " return_type ", " explicit_return_type ");
     nl_indent(st);
     
     st << "nparams " << nparams;
     for (unsigned i = 0; i != nparams; i += 1)
-      params[i].save(st, warning, cl_oper_name, i);
+      params[i].save(st, warning);
     
     if (nexceptions != 0) {
       nl_indent(st);
       st << "nexceptions " << nexceptions;
       for (unsigned i = 0; i != nexceptions; i += 1)
-	exceptions[i].save(st, warning, cl_oper_name, i);
+	exceptions[i].save(st, warning);
     }
     
     nl_indent(st);

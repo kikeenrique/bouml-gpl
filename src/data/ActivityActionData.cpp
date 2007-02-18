@@ -49,6 +49,14 @@
 #include "ToolCom.h"
 #include "mu.h"
 
+void PinDescr::do_connect(BrowserClass *) {
+  // do nothing
+}
+
+void PinDescr::do_disconnect(BrowserClass *) {
+  // do nothing
+}
+
 ActivityActionData::ActivityActionData()
     : action(new OpaqueAction) {
 }
@@ -624,17 +632,17 @@ QValueList<PinDescr> AccessVariableValueAction::pins(UmlParamDirection dir,
     p.dir = dir;
     p.name = str;
     if (variable->get_type() == UmlAttribute)
-      p.type = ((AttributeData *) variable->get_data())->get_type();
+      p.set_type(((AttributeData *) variable->get_data())->get_type());
     else {
       RelationData * rd = (RelationData *) variable->get_data();
       bool role_a = rd->is_a((BrowserRelation *) variable);
 
       if (role_a) {
-	p.type.type = rd->get_end_class();
+	p.set_type(rd->get_end_class());
 	p.multiplicity = rd->get_multiplicity_a();
       }
       else {
-	p.type.type = rd->get_start_class();
+	p.set_type(rd->get_start_class());
 	p.multiplicity = rd->get_multiplicity_b();
       }
     }
@@ -745,8 +753,11 @@ QValueList<PinDescr> ChangeVariableValueAction::pins(const char * str) const {
     PinDescr p;
 
     p.name = str;
-    p.type.type = 0;
-    p.type.explicit_type = "";
+    
+    AType t;
+    
+    p.set_type(t);
+    
     r.append(p);
   }
 
@@ -946,7 +957,7 @@ QValueList<PinDescr> CallBehaviorAction::pins() const {
       PinDescr p;
       
       p.name = (*iter)->get_name();
-      p.type = model->type;
+      p.set_type(model->get_type());
       p.multiplicity = model->multiplicity;
       p.in_state = model->in_state;
       p.ordering = model->ordering;
@@ -1096,7 +1107,7 @@ QValueList<PinDescr> CallOperationAction::pins() const {
 
     target.dir = UmlIn;
     target.name = "target";
-    target.type.type = (BrowserClass *) operation->parent();
+    target.set_type((BrowserClass *) operation->parent());
     r.append(target);
 
     const AType & rt = d->get_return_type();
@@ -1106,7 +1117,7 @@ QValueList<PinDescr> CallOperationAction::pins() const {
       PinDescr p;
 
       p.dir = UmlReturn;
-      p.type = rt;
+      p.set_type(rt);
       r.append(p);
     }
 
@@ -1118,7 +1129,7 @@ QValueList<PinDescr> CallOperationAction::pins() const {
       PinDescr p;
 
       p.name = d->get_param_name(i);
-      p.type = d->get_param_type(i);
+      p.set_type(d->get_param_type(i));
       p.dir = d->get_param_dir(i);
 
       if (p.dir == UmlInOut) {
@@ -1133,7 +1144,7 @@ QValueList<PinDescr> CallOperationAction::pins() const {
     for (i = 0; i != n; i += 1) {
       PinDescr p;
 
-      p.type = d->get_exception(i);
+      p.set_type(d->get_exception(i));
       p.dir = UmlOut;
       p.exception = TRUE;
       r.append(p);

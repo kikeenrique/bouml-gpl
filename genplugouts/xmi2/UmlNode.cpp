@@ -7,7 +7,7 @@ void UmlNode::write(FileOut & out) {
 
   out.indent(); 
   out << "<" << k << " xmi:type=\"" 
-    << ((stereotype() == "device\"") ? "Device" : "Node\"");
+    << ((stereotype() == "device\"") ? "uml:Device" : "uml:Node\"");
   out.id(this); 
   out << " name=\"";
   out.quote(name());

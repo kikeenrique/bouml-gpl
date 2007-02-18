@@ -990,7 +990,7 @@ bool Class::reverse_typedef(ClassContainer *  container, const QCString & path,
     return FALSE;
   }
 
-  if ((s == "enum") || (s == "struct") || (s == "union")) {
+  if ((s == "enum") || (s == "struct") || (s == "union") || (s == "class")) {
     Lex::mark();
   
     QCString name1 = Lex::read_word();
@@ -1001,7 +1001,7 @@ bool Class::reverse_typedef(ClassContainer *  container, const QCString & path,
     if ((name1 != "{") && (Lex::region().find('{') == -1)) {
       // form like 'typedef struct X Y;'
       Lex::come_back();
-      prefix = Lex::read_word(TRUE);
+      prefix = s;
       s = Lex::read_word(TRUE);
     }
     else {
@@ -1111,11 +1111,6 @@ bool Class::reverse_typedef(ClassContainer *  container, const QCString & path,
       
       return TRUE;
     }
-  }
-  else if (s == "class") {
-    // form like 'typedef class X Y;'
-    prefix = s;
-    s = Lex::read_word(TRUE);
   }
   
   QCString comment = Lex::get_comments();

@@ -51,7 +51,7 @@ struct PinParamData : public ObjectData {
   void send_uml_def(ToolCom * com);
   bool tool_cmd(ToolCom * com, const char * args, bool & ack);
   
-  void save(QTextStream &, QString & warning, QString what) const;
+  void save(QTextStream &, QString & warning) const;
   void read(char * &, char * &);
 };
 

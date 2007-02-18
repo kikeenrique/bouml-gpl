@@ -521,7 +521,7 @@ void ActivityCanvas::menu(const QPoint&) {
     browser_node->delete_it();	// will delete the canvas
     break;
   case 9:
-    ((BrowserActivity *) browser_node)->add_parameter(0, 0);
+    ((BrowserActivity *) browser_node)->add_parameter(0);
     modified();
   default:
     if (index >= 10)

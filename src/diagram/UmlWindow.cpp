@@ -79,6 +79,7 @@
 #include "ToolCom.h"
 #include "About.h"
 #include "UmlGlobal.h"
+#include "UmlPixmap.h"
 #include "DialogUtil.h"
 #include "myio.h"
 #include "mu.h"
@@ -115,6 +116,8 @@ const char * browserSearchText = "To search an item in the <em>browser</em>.";
 const char * fontSizeMenuText = "To set the point size of the base font used in the "
   "<em>browser</em> and the diagrams.";
 const char * formatMenuText = "To set the default format of the diagrams.";
+static const char * prevText = "To select the previously selected element in the <em>browser</em>.";
+static const char * nextText = "To select the next selected element in the <em>browser</em>.";
 
 UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
   setCaption("Bouml");
@@ -152,15 +155,19 @@ UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
   QWhatsThis::add(diagramPrint, diagramPrintText);
 #endif
   
-  //projectTools->addSeparator();
-  
   QPixmap searchIcon = QPixmap(browsersearch);
   QToolButton * browserSearch
     = new QToolButton(searchIcon, "Browser search", QString::null,
 		      this, SLOT(browser_search()), projectTools, "browser search");
   QWhatsThis::add(browserSearch, browserSearchText);
   
-  //projectTools->addSeparator();
+  prev = new QToolButton(*leftPixmap, "previous selected", QString::null,
+			 this, SLOT(prev_select()), projectTools, "previous selected");
+  QWhatsThis::add(prev, prevText);
+  
+  next = new QToolButton(*rightPixmap, "next selected", QString::null,
+			 this, SLOT(next_select()), projectTools, "next selected");
+  QWhatsThis::add(next, nextText);
   
   (void)QWhatsThis::whatsThisButton(projectTools);
 
@@ -486,6 +493,7 @@ void UmlWindow::set_commented(BrowserNode * bn)
   if (the != 0) {
     // not on exit
     UmlWindow * him = the;
+    bool same = (him->commented == bn);
     
     the = 0;	// to do nothing in comment_changed() which is called
     
@@ -495,6 +503,8 @@ void UmlWindow::set_commented(BrowserNode * bn)
       him->comment->setText(bn->get_comment());
       him->comment->setReadOnly(!bn->is_writable());
       him->statusBar()->message(bn->get_data()->definition(TRUE));
+      if (! same)
+	him->is_selected(bn);
     }
     else {
       him->comment->clear();
@@ -611,6 +621,8 @@ void UmlWindow::load_it(QString fn) {
 }
 
 void UmlWindow::load(QString fn) {
+  clear_select_historic();
+  
   QFileInfo fi(fn);
   
   if (!fi.exists()) {
@@ -618,6 +630,16 @@ void UmlWindow::load(QString fn) {
   }
   
   QDir di(fi.dirPath(TRUE));
+  
+  if (di.dirName() != fi.baseName()) {
+    QMessageBox::critical(0, "Uml",
+			  "The name of the project and the name of\n"
+			  "the directory containing it must be the same\n\n"
+			  "Project name : " + fi.baseName() + "\n"
+			  "Directory name : " + di.dirName());
+    close_it();
+    return;
+  }
    
   historic_add(fi.absFilePath());
   
@@ -634,6 +656,8 @@ void UmlWindow::load(QString fn) {
   catch (int) {
     QApplication::restoreOverrideCursor();
     close_it();
+    clear_select_historic(); // in case selection are done by error
+  
     return;
   }
   
@@ -690,6 +714,8 @@ void UmlWindow::load(QString fn) {
     BrowserView::remove_temporary_files();
     read_session();
   }
+  
+  clear_select_historic(); // in case selection are done by error
 }
 
 void UmlWindow::save() {
@@ -806,6 +832,8 @@ void UmlWindow::closeEvent(QCloseEvent * e) {
 
 void UmlWindow::close_it()
 {
+  clear_select_historic();
+  
   ToolCom::close_all();
   
   the->save_session();
@@ -1348,4 +1376,65 @@ void UmlWindow::abort_line_construction() {
   
   for (w = l.first(); w != 0; w = l.next())
     ((DiagramWindow *) w)->get_view()->abort_line_construction();
+}
+
+//
+
+static bool OnHistoric = FALSE;
+static QValueList<BrowserNode *>::Iterator HistoricIterator;
+
+void UmlWindow::clear_select_historic()
+{
+  the->select_historic.clear();
+  HistoricIterator = the->select_historic.end();
+  
+  the->prev->setPixmap(*leftUnavailablePixmap);
+  the->next->setPixmap(*rightUnavailablePixmap);
+}
+
+void UmlWindow::is_selected(BrowserNode * bn) {
+  if (OnHistoric)
+    OnHistoric = FALSE;
+  else if ((HistoricIterator == select_historic.end()) ||
+	   (*HistoricIterator != bn)) {
+    ++HistoricIterator;
+    while (HistoricIterator != select_historic.end())
+      HistoricIterator = select_historic.remove(HistoricIterator);
+    
+    if (select_historic.count() == 50)
+      select_historic.remove(select_historic.first());
+    
+    select_historic.append(bn);
+    HistoricIterator = select_historic.end();
+    --HistoricIterator;
+    
+    prev->setPixmap((HistoricIterator != select_historic.begin())
+		    ? *leftPixmap : *leftUnavailablePixmap);
+    next->setPixmap(*rightUnavailablePixmap);
+  }
+}
+
+void UmlWindow::next_select() {
+  if (++HistoricIterator != select_historic.end()) {
+    OnHistoric = TRUE;
+    browser->select(*HistoricIterator);
+    
+    the->prev->setPixmap(*leftPixmap);
+    ++HistoricIterator;
+    the->next->setPixmap((HistoricIterator != select_historic.end())
+			 ? *rightPixmap : *rightUnavailablePixmap);
+  }
+  
+  --HistoricIterator; 
+}
+
+void UmlWindow::prev_select() {
+  if (HistoricIterator != select_historic.begin()) {
+    OnHistoric = TRUE;
+    browser->select(*--HistoricIterator);
+    
+    the->prev->setPixmap((HistoricIterator != select_historic.begin())
+			 ? *leftPixmap : *leftUnavailablePixmap);
+    the->next->setPixmap(*rightPixmap);  
+  }
 }

@@ -258,6 +258,9 @@ extern QPixmap * rightPixmap;
 extern QPixmap * upPixmap;
 extern QPixmap * downPixmap;
 
+extern QPixmap * leftUnavailablePixmap;
+extern QPixmap * rightUnavailablePixmap;
+
 // diagram pixmap
 
 extern QPixmap * providedPixmap;

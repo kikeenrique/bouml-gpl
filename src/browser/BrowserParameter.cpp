@@ -235,7 +235,7 @@ void BrowserParameter::exec_menu_choice(int rank) {
     open(FALSE);
     return;
   case 1:
-    ((BrowserActivity *) parent())->add_parameter(this, 0);
+    ((BrowserActivity *) parent())->add_parameter(this);
     return;
   case 2:
     delete_it();
@@ -459,7 +459,7 @@ void BrowserParameter::save(QTextStream & st, bool ref, QString & warning) {
     st << "parameter " << get_ident() << ' ';
     save_string(name, st);
     indent(+1);
-    def->save(st, warning, "parameter");
+    def->save(st, warning);
     BrowserNode::save(st);
 
     // saves the sub elts

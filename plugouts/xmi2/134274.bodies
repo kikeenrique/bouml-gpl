@@ -4,8 +4,12 @@ class UmlActivityNode
   unsigned n = ch.size();
   unsigned i;
      
-  for (i = 0; i != n; i += 1)
-    (dynamic_cast<UmlActivityItem *>(ch[i]))->memo_incoming_flow();
+  for (i = 0; i != n; i += 1) {
+    UmlActivityItem * x = dynamic_cast<UmlActivityItem *>(ch[i]);
+								
+    if (x != 0)
+      x->memo_incoming_flow();
+  }
 !!!199554.cpp!!!	add_incoming_flow(inout flow : UmlFlow) : void
   _incoming_flows.append(flow);
 !!!202882.cpp!!!	write_incoming_flows(inout out : FileOut) : void

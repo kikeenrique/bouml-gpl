@@ -4,13 +4,15 @@ class UmlActivityItem
   unsigned n = ch.size();
   unsigned i;
      
-  for (i = 0; i != n; i += 1)
-    (dynamic_cast<UmlActivityItem *>(ch[i]))->memo_incoming_flow();
+  for (i = 0; i != n; i += 1) {
+    UmlActivityItem * x = dynamic_cast<UmlActivityItem *>(ch[i]);
+
+    if (x != 0)
+      x->memo_incoming_flow();
+  }
 !!!203266.cpp!!!	write_selection(inout out : FileOut, in s : string) : void
   if (! s.isEmpty())
     out.ref(activity()->add_opaque_behavior(s), "selection", "OPAQUE_BEHAVIOR_");
-
-
 !!!209154.cpp!!!	activity() : UmlActivity
   UmlItem * r = dynamic_cast<UmlItem *>(this);
   

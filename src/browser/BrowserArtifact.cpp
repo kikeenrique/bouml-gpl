@@ -944,16 +944,9 @@ void BrowserArtifact::save(QTextStream & st, bool ref, QString & warning) {
     def->save(st, warning);
     
     if (associated_diagram != 0) {
-      if (associated_diagram->deletedp()) {
-	warning += QString("<p>artifact <b>") + full_name() +
-	  "</b>'s associated diagram <b>" +
-	    associated_diagram->full_name() + "</b> is deleted\n";
-      }
-      else {
-	nl_indent(st);
-	st << "associated_diagram ";
-	associated_diagram->save(st, TRUE, warning);
-      }
+      nl_indent(st);
+      st << "associated_diagram ";
+      associated_diagram->save(st, TRUE, warning);
     }
     
     if (!strcmp(def->get_stereotype(), "source")) {
@@ -965,14 +958,8 @@ void BrowserArtifact::save(QTextStream & st, bool ref, QString & warning) {
       QValueList<BrowserClass *>::ConstIterator end = associated_classes.end();
       
       for (it = associated_classes.begin(); it != end; ++it) {
-	if ((*it)->deletedp())
-	  warning += QString("<p>artifact <b>") + full_name() +
-	    "</b>'s associated class <b>" +
-	      (*it)->full_name() + "</b> is deleted\n";
-	else {
-	  nl_indent(st);
-	  (*it)->save(st, TRUE, warning);
-	}
+	nl_indent(st);
+	(*it)->save(st, TRUE, warning);
       }
       indent(-1);
       nl_indent(st);

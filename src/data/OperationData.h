@@ -199,8 +199,7 @@ class OperationData : public ClassMemberData,
     char * get_body(bool cpp);
     void create_modified_body_file();
     void save_body(QFile & qf, char * modified_bodies, bool cpp);
-    void save(QTextStream &, bool ref, QString & warning,
-	      const QString & cl_oper_name) const;
+    void save(QTextStream &, bool ref, QString & warning) const;
     static OperationData * read_ref(char * &);
     void read(char * &, char * &);
     static void import(BrowserClass * cl, int id);
@@ -211,6 +210,8 @@ class OperationData : public ClassMemberData,
     
     bool is_template_operation() const;
     bool is_template_operation(QString) const;
+    
+    void replace(BrowserClass * old, BrowserClass * nw);
     
     static void convert(OperationData * comp, OperationData * art);
     static void update_cpp_get_of(QCString & decl, QCString & def,

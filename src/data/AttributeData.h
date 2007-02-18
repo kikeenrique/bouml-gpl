@@ -107,11 +107,14 @@ class AttributeData : public ClassMemberData {
     virtual bool tool_cmd(ToolCom * com, const char * args,
 			  BrowserNode * bn, const QString & comment);
     
-    void save(QTextStream &, QString & warning, const QString & cl_name) const;
+    void save(QTextStream &, QString & warning) const;
     void read(char * & st, char * & k);
+    
+    void replace(BrowserClass * old, BrowserClass * nw);
     
   protected slots:
     void on_delete();
+    void on_delete_idlcase();
 };
 
 #endif

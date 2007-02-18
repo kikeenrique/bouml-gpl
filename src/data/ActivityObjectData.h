@@ -40,9 +40,10 @@ class ActivityObjectData : public SimpleData, public ObjectData {
     ActivityObjectData();
     ActivityObjectData(ActivityObjectData * model, BrowserNode * bn);
   
+    virtual void do_connect(BrowserClass * c);
+    virtual void do_disconnect(BrowserClass * c);
+  
     void edit(const char * what, QStringList & st);
-    void set_type(BrowserClass * c);
-    void set_type(const AType & t);
     
     virtual void send_uml_def(ToolCom * com, BrowserNode * bn,
 			      const QString & comment);
@@ -51,8 +52,11 @@ class ActivityObjectData : public SimpleData, public ObjectData {
     virtual bool tool_cmd(ToolCom * com, const char * args,
 			  BrowserNode * bn, const QString & comment);
     
-    void save(QTextStream &, QString & warning, QString what) const;
+    void save(QTextStream &, QString & warning) const;
     void read(char * &, char * &);
+    
+  protected slots:
+    void on_delete();
 };
 
 #endif

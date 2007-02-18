@@ -1,3 +1,4 @@
+#error not used
 // *************************************************************************
 //
 // Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.

@@ -329,6 +329,16 @@ void RelationData::on_delete() {
     association.type = 0;
   }
   
+  if ((a.idl_case != 0) && a.idl_case->deletedp()) {
+    a.idl_explicit_case = a.idl_case->get_name();
+    a.idl_case = 0;
+  }
+  
+  if ((b.idl_case != 0) && b.idl_case->deletedp()) {
+    b.idl_explicit_case = b.idl_case->get_name();
+    b.idl_case = 0;
+  }
+  
   modified();
 }
 						     
@@ -507,9 +517,16 @@ const char * RelationData::get_idlcase(const RoleData & role)
   return (role.idl_case != 0) ? role.idl_case->get_name() : role.idl_explicit_case;
 }
 
-void RelationData::set_idlcase(RoleData & role, BrowserAttribute * at, const char * e)
-{
-  role.idl_case = at;    
+void RelationData::set_idlcase(RoleData & role, BrowserAttribute * at,
+			       const char * e) {
+  if (role.idl_case != at) {
+    // do not disconnect because don't check the other side
+    role.idl_case = at;
+    if (at != 0)
+      connect(at->get_data(), SIGNAL(deleted()),
+	      this, SLOT(on_delete()));
+  }
+  
   role.idl_explicit_case = e;
 }
 
@@ -849,7 +866,7 @@ bool RelationData::is_writable(const BrowserRelation * br) const {
 //
 
 static void save_role(const RoleData & role, bool assoc, QTextStream & st,
-		      QString & warning, const QString & cl_name)
+		      QString & warning)
 {
   if (assoc) {
     st << "role_name ";
@@ -902,17 +919,8 @@ static void save_role(const RoleData & role, bool assoc, QTextStream & st,
   
   if (role.idl_case != 0) {
     nl_indent(st);
-    if (role.idl_case->deletedp()) {
-      warning += QString("<p><b>") + cl_name + "</b>'s relation <b>" +
-	((const char *) role.role) + "</b> idl case is the deleted attribute <b>" +
-	  role.idl_case->full_name() + "</b>\n";
-      st << "idl_explicit_case ";
-      save_string(role.idl_case->get_name(), st); 
-    }
-    else {
-      st << "idl_case ";
-      role.idl_case->save(st, TRUE, warning);
-    }
+    st << "idl_case ";
+    role.idl_case->save(st, TRUE, warning);
   }
   else if (! role.idl_explicit_case.isEmpty()) {
     nl_indent(st);
@@ -953,7 +961,7 @@ void RelationData::save(QTextStream & st, bool ref, QString & warning) const {
     nl_indent(st);
     indent(+1);
     st << "a ";
-    save_role(a, assoc, st, warning, get_start_class()->get_name());
+    save_role(a, assoc, st, warning);
     start->save(st, TRUE, warning);
     indent(-1);
     
@@ -961,7 +969,7 @@ void RelationData::save(QTextStream & st, bool ref, QString & warning) const {
     indent(+1);
     st << "b ";
     if (!RelationData::uni_directional(type)) {
-      save_role(b, assoc, st, warning, get_end_class()->get_name());
+      save_role(b, assoc, st, warning);
       end->save(st, TRUE, warning);
     }
     else {
@@ -972,11 +980,7 @@ void RelationData::save(QTextStream & st, bool ref, QString & warning) const {
     
     if ((association.type != 0) || !association.explicit_type.isEmpty()) {
       nl_indent(st);
-      if (!association.save(st, warning, "association_type ", "association_explicit_type "))
-	warning += QString("<p><b>") + ((BrowserNode *) browser_node->parent())->get_name() +
-	  "</b>'s association <b>" + browser_node->get_name() +
-	    "</b> class is the deleted class <b>" +
-	      association.type->full_name() + "</b>\n";
+      association.save(st, warning, "association_type ", "association_explicit_type ");
     }
     indent(-1);
   }
@@ -1002,7 +1006,8 @@ RelationData * RelationData::read_ref(char * & st, bool complete)
 }
 
 static void read_role(RoleData & role, bool assoc,
-		      char * & st, char * & k)    
+		      char * & st, char * & k,
+		      RelationData * rd)    
 {
   if (assoc) {
     read_keyword(st, "role_name");
@@ -1093,15 +1098,15 @@ static void read_role(RoleData & role, bool assoc,
     role.java_annotation = QString::null;
   
   if (!strcmp(k, "idl_case")) {
-    RelationData::set_idlcase(role, BrowserAttribute::read_ref(st), "");
+    rd->set_idlcase(role, BrowserAttribute::read_ref(st), "");
     k = read_keyword(st);
   }
   else if (!strcmp(k, "idl_explicit_case")) {
-    RelationData::set_idlcase(role, 0, read_string(st));
+    rd->set_idlcase(role, 0, read_string(st));
     k = read_keyword(st);
   }
   else
-    RelationData::set_idlcase(role, 0, "");
+    rd->set_idlcase(role, 0, "");
   
   if (!strcmp(k, "idl")) {
     role.idl_decl = read_string(st);
@@ -1149,12 +1154,12 @@ RelationData * RelationData::read(char * & st, char * & k)
     
     if (strcmp(k, "a"))
       wrong_keyword(k, "a");
-    read_role(result->a, assoc, st, k);		// updates k
+    read_role(result->a, assoc, st, k, result);		// updates k
     result->start = BrowserRelation::read_ref(st, k);
     
     read_keyword(st, "b");
     if (!RelationData::uni_directional(result->type)) {
-      read_role(result->b, assoc, st, k);	// updates k
+      read_role(result->b, assoc, st, k, result);	// updates k
       result->end = BrowserRelation::read_ref(st, k);
       // 'end' may be read before 'start' : relation's type was unknown
       result->end->set_name(0);
@@ -1179,6 +1184,15 @@ RelationData * RelationData::read(char * & st, char * & k)
 	  result->a.java_decl = "${type}";
 	if (result->a.idl_decl == "Generated")
 	  result->a.idl_decl = "${type}";
+	break;
+      case UmlDependency:
+	if (!result->a.cpp_decl.isEmpty()) {
+	  if (result->stereotype == "friend")
+	    result->a.cpp_decl = "${type}";
+	  else if ((result->a.cpp_decl == "Generated") ||
+		   (result->a.cpp_decl == "${type}"))
+	    result->a.cpp_decl = "#include in header";
+	}
 	break;
       default:
 	break;

@@ -42,6 +42,9 @@ struct PinDescr :public PinParamData {
   const char * name;
 
   PinDescr() : name(0) {}
+  
+  virtual void do_connect(BrowserClass *);
+  virtual void do_disconnect(BrowserClass *);
 };
 
 struct AnyAction {

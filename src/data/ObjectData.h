@@ -31,8 +31,13 @@
 #include "AType.h"
 #include "UmlEnum.h"
 
-struct ObjectData {
+class BrowserClass;
+
+class ObjectData {
+private:
   AType type;
+
+public:
   SharedStr multiplicity;
   MyStr in_state;
   MyStr uml_selection;
@@ -45,7 +50,12 @@ struct ObjectData {
   ObjectData(ObjectData * model);
   virtual ~ObjectData();
   
+  virtual void do_connect(BrowserClass * c) = 0;
+  virtual void do_disconnect(BrowserClass * c) = 0;
+  
   const AType & get_type() const { return type; };
+  void set_type(BrowserClass * c);
+  void set_type(const AType & t);
   const char * get_multiplicity() const { return multiplicity; };
   const char * get_in_state() const { return in_state; };
   const char * get_selection(DrawingLanguage) const;
@@ -57,7 +67,7 @@ struct ObjectData {
   virtual void send_java_def(ToolCom * com);
   bool tool_cmd(ToolCom * com, const char * args);
   
-  void save(QTextStream &, QString & warning, QString who) const;
+  void save(QTextStream &, QString & warning) const;
   void read(char * &, char * &);
 };
 

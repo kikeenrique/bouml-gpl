@@ -6,7 +6,7 @@ void UmlArtifact::write(FileOut & out) {
   const char * k = (_uml_20) ? "ownedMember" : "packagedElement";
 
   out.indent(); 
-  out << "<" << k << " xmi:type=\"Artifact\"";
+  out << "<" << k << " xmi:type=\"uml:Artifact\"";
   out.id(this); 
   out << " name=\"";
   out.quote(name());

@@ -86,9 +86,8 @@ bool PinParamData::tool_cmd(ToolCom * com, const char * args, bool & ack) {
   return TRUE;
 }
 
-void PinParamData::save(QTextStream & st, QString & warning, 
-			QString what) const {
-  ObjectData::save(st, warning, what);
+void PinParamData::save(QTextStream & st, QString & warning) const {
+  ObjectData::save(st, warning);
   
   nl_indent(st);
   

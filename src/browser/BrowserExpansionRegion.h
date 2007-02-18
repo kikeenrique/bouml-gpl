@@ -62,7 +62,7 @@ class BrowserExpansionRegion : public BrowserNode, public Labeled<BrowserExpansi
     static BrowserExpansionRegion * add_expansionregion(BrowserNode * future_parent, const char * name);
     static BrowserExpansionRegion * get_expansionregion(BrowserNode * parent);
     QValueList<BrowserExpansionNode *> get_nodes() const;
-    BrowserNode * add_expansionnode(BrowserExpansionNode *, const char *);
+    BrowserNode * add_expansionnode();
     
     virtual const QPixmap* pixmap (int) const;
 
@@ -71,6 +71,7 @@ class BrowserExpansionRegion : public BrowserNode, public Labeled<BrowserExpansi
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual void modified();
+    virtual void on_delete();
     virtual BasicData * get_data() const;
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
     virtual bool allow_empty() const;

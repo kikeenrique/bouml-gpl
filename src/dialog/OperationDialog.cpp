@@ -1068,6 +1068,11 @@ void OperationDialog::cpp_update_decl() {
       p += 7;
       s += compute_name(edcppnamespec);
     }
+    else if (!strncmp(p, "${class}", 8)) {
+      // to be placed in the description
+      p += 8;
+      s += cl->get_browser_node()->get_name();
+    }
     else if (!strncmp(p, "${(}", 4)) {
       p += 4;
       s += '(';

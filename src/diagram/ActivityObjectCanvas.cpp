@@ -339,7 +339,8 @@ void ActivityObjectCanvas::open() {
 
 void ActivityObjectCanvas::menu(const QPoint&) {
   QString s = browser_node->get_name();
-  BrowserClass * cl = ((ActivityObjectData *) browser_node->get_data())->type.type;
+  BrowserClass * cl = 
+    ((ActivityObjectData *) browser_node->get_data())->get_type().type;
 
   if (s.isEmpty())
     s = "activity object";

@@ -63,32 +63,26 @@ void ActivityObjectData::send_java_def(ToolCom * com) {
   ObjectData::send_java_def(com);
 }
 
-void ActivityObjectData::set_type(BrowserClass * c) {
-  if (type.type != c) {
-    if (type.type != 0)
-      disconnect(type.type->get_data(), SIGNAL(changed()), this, SLOT(modified()));
-    connect(c->get_data(), SIGNAL(changed()), this, SLOT(modified()));
-    type.explicit_type = 0;
-    type.type = c;
-  }
+void ActivityObjectData::do_connect(BrowserClass * c) {
+  connect(c->get_data(), SIGNAL(changed()), this, SLOT(modified()));
+  connect(c->get_data(), SIGNAL(deleted()), this, SLOT(on_delete()));
 }
 
-void ActivityObjectData::set_type(const AType & t) {
-  if (t.type != 0)
-    set_type(t.type);
-  else {
-    if (type.type != 0) {
-      disconnect(type.type->get_data(), SIGNAL(changed()), this, SLOT(modified()));
-      type.type = 0;
-    }
-    type.explicit_type = t.explicit_type;
-  }
+void ActivityObjectData::do_disconnect(BrowserClass * c) {
+  disconnect(c->get_data(), 0, this, 0);
+}
+
+void ActivityObjectData::on_delete() {
+  BrowserClass * cl = get_type().type;
+  
+  if ((cl != 0) && cl->deletedp())
+    set_type((BrowserClass *) 0);
 }
 
 bool ActivityObjectData::tool_cmd(ToolCom * com, const char * args,
 				  BrowserNode * bn,
 				  const QString & comment) {
-  if (((unsigned char) args[-1]) >= firstSetCmd) {
+  if ((unsigned char) args[-1] >= firstSetCmd) {
     if (!bn->is_writable() && !root_permission())
       com->write_ack(FALSE);
     else if (! ObjectData::tool_cmd(com, args))
@@ -105,17 +99,13 @@ bool ActivityObjectData::tool_cmd(ToolCom * com, const char * args,
   return TRUE;
 }
 
-void ActivityObjectData::save(QTextStream & st, QString & warning, QString what) const {
+void ActivityObjectData::save(QTextStream & st, QString & warning) const {
   BasicData::save(st, warning);
   nl_indent(st);
-  ObjectData::save(st, warning,
-		   what + " <b>" + browser_node->full_name() + "</b>");
+  ObjectData::save(st, warning);
 }
 
 void ActivityObjectData::read(char * & st, char * & k) {
   BasicData::read(st, k);	// updates k
   ObjectData::read(st, k);	// updates k
-  
-  if (type.type != 0)
-    connect(type.type->get_data(), SIGNAL(changed()), this, SLOT(modified()));
 }

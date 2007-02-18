@@ -73,15 +73,11 @@ void ParamData::send_uml_def(ToolCom * com) {
   com->write_string(default_value);
 }
 
-void ParamData::save(QTextStream & st, QString & warning, 
-		     const QString & cl_oper_name, unsigned rank) const {
+void ParamData::save(QTextStream & st, QString & warning) const {
   nl_indent(st);
   st << "  param " << stringify(dir) << " name ";
   save_string(name, st);
-  if (!type.save(st, warning, " type ", " explicit_type "))
-    warning += QString("<p><b>") + cl_oper_name + "</b> parameter <b>" + name +
-      "</b> (rank " + QString::number(rank) + ") type is the deleted class <b>" +
-	type.type->full_name() + "</b>\n";
+  type.save(st, warning, " type ", " explicit_type ");
   if (!default_value.isEmpty()) {
     nl_indent(st);
     st << "    defaultvalue ";

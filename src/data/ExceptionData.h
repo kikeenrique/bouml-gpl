@@ -41,8 +41,7 @@ class ExceptionData {
 
     void send_uml_def(ToolCom * com);
     
-    void save(QTextStream &, QString & warning, 
-	      const QString & cl_oper_name, unsigned rank) const;
+    void save(QTextStream &, QString & warning) const;
     void read(char * &, char * &);
 };
 

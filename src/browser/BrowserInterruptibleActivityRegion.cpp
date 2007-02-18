@@ -677,16 +677,9 @@ void BrowserInterruptibleActivityRegion::save(QTextStream & st, bool ref, QStrin
     def->save(st, warning);
 
     if (associated_diagram != 0) {
-      if (associated_diagram->deletedp()) {
-        warning += QString("<p>interruptible activity region<b>") + full_name() +
-	  "</b>'s associated diagram <b>" +
-	  associated_diagram->full_name() + "</b> is deleted\n";
-      }
-      else {
-	nl_indent(st);
-	st << "associated_diagram ";
-	associated_diagram->save(st, TRUE, warning);
-      }
+      nl_indent(st);
+      st << "associated_diagram ";
+      associated_diagram->save(st, TRUE, warning);
     }
     
     BrowserNode::save(st);
@@ -719,6 +712,11 @@ void BrowserInterruptibleActivityRegion::save(QTextStream & st, bool ref, QStrin
     if (! is_api_base())
       is_read_only = FALSE;
   }
+}
+
+void BrowserInterruptibleActivityRegion::on_delete() {
+  if (associated_diagram && associated_diagram->deletedp())
+    associated_diagram = 0;
 }
 
 BrowserInterruptibleActivityRegion *

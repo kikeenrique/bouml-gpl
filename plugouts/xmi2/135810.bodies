@@ -2,7 +2,7 @@ class UmlActivityAction
 !!!203778.cpp!!!	write_begin(inout out : FileOut, in k : string) : void
   out.indent();
   out << ((parent()->kind() == anActivity) ? "<node" : "<containedNode")
-    << " xmi:type=\"" << k << '"';
+    << " xmi:type=\"uml:" << k << '"';
   out.id(this);
   if (!name().isEmpty()){
     out << " name=\"";

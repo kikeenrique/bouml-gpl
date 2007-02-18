@@ -36,7 +36,7 @@ ObjectData::ObjectData()
 }
 
 ObjectData::ObjectData(ObjectData * model) {
-  type = model->type;
+  set_type(model->type);
   multiplicity = model->multiplicity;
   in_state = model->in_state;
   uml_selection = model->uml_selection;
@@ -61,6 +61,29 @@ const char * ObjectData::get_selection(DrawingLanguage lang) const {
   }
 }
 
+void ObjectData::set_type(BrowserClass * c) {
+  if (type.type != c) {
+    if (type.type != 0)
+      do_disconnect(type.type);
+    if (c != 0)
+      do_connect(c);
+    type.explicit_type = 0;
+    type.type = c;
+  }
+}
+
+void ObjectData::set_type(const AType & t) {
+  if (t.type != 0)
+    set_type(t.type);
+  else {
+    if (type.type != 0) {
+      do_disconnect(type.type);
+      type.type = 0;
+    }
+    type.explicit_type = t.explicit_type;
+  }
+}
+
 void ObjectData::send_uml_def(ToolCom * com) {
   type.send_def(com);
   com->write_string(multiplicity);
@@ -80,9 +103,15 @@ void ObjectData::send_java_def(ToolCom * com) {
 
 bool ObjectData::tool_cmd(ToolCom * com, const char * args) {
   // note : write access already check
+  // warning : setTypeCmd already managed
   switch ((unsigned char) args[-1]) {
-  case setTypeCmd:      
-    com->get_type(type, args);
+  case setTypeCmd:
+    {
+      AType t;
+      
+      com->get_type(t, args);
+      set_type(t);
+    }
     break;
   case setMultiplicityCmd:
     multiplicity = args;
@@ -112,13 +141,8 @@ bool ObjectData::tool_cmd(ToolCom * com, const char * args) {
   return TRUE;
 }
 
-void ObjectData::save(QTextStream & st, QString & warning, 
-		      QString who) const {
-  if (!type.save(st, warning, " type ", " explicit_type "))
-    warning += QString("<p>") + who +
-      " type is the deleted class <b>" +
-	type.type->full_name() + "</b>\n";
-  
+void ObjectData::save(QTextStream & st, QString & warning) const {
+  type.save(st, warning, " type ", " explicit_type ");
   nl_indent(st);
   
   if (!multiplicity.isEmpty()) {
@@ -157,8 +181,11 @@ void ObjectData::save(QTextStream & st, QString & warning,
   }
 }
 
-void ObjectData::read(char * & st, char * & k) {  
-  type.read(st, "type", "explicit_type", k);	// k unchanged
+void ObjectData::read(char * & st, char * & k) { 
+  AType t;
+  
+  t.read(st, "type", "explicit_type", k);	// k unchanged
+  set_type(t);
   
   k = read_keyword(st);
   

@@ -714,6 +714,11 @@ void BrowserActivityAction::set_associated_diagram(BrowserNode * dg,
   }
 }
 
+void BrowserActivityAction::on_delete() {
+  if (associated_diagram && associated_diagram->deletedp())
+    associated_diagram = 0;
+}
+
 void BrowserActivityAction::init()
 {
   its_default_stereotypes.clear();
@@ -828,11 +833,14 @@ bool BrowserActivityAction::tool_cmd(ToolCom * com, const char * args) {
 	      BrowserNode * end = (BrowserNode *) com->get_id(args);
 	      
 	      if (may_connect(c, end))
-		  add_relation(c, end)->get_browser_node()->write_id(com);
+		add_relation(c, end)->get_browser_node()->write_id(com);
 	      else
 		ok = FALSE;
 	    }
 	  }
+	  break;
+	case UmlActivityPin:
+	  BrowserPin::new_one(this, args)->write_id(com);
 	  break;
 	default:
 	  ok = FALSE;
@@ -974,16 +982,9 @@ void BrowserActivityAction::save(QTextStream & st, bool ref, QString & warning) 
     def->save(st, warning);
 
     if (associated_diagram != 0) {
-      if (associated_diagram->deletedp()) {
-        warning += QString("<p>activity action <b>") + full_name() +
-	  "</b>'s associated diagram <b>" +
-	  associated_diagram->full_name() + "</b> is deleted\n";
-      }
-      else {
-	nl_indent(st);
-	st << "associated_diagram ";
-	associated_diagram->save(st, TRUE, warning);
-      }
+      nl_indent(st);
+      st << "associated_diagram ";
+      associated_diagram->save(st, TRUE, warning);
     }
 
     BrowserNode::save(st);

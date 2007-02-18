@@ -719,6 +719,7 @@ static void generate_members(BrowserNode * cl, QString & s,
       // no break !
     case UmlGeneralisation:
     case UmlRealize:
+    case UmlDependOn:
       continue;
     case UmlAttribute:
       {
@@ -870,9 +871,11 @@ static void cpp_generate_inlines(BrowserNode * cl, const QString & cl_name,
 	  }
 	}
       }
+      break;
     case UmlDependency:
     case UmlGeneralisation:
     case UmlRealize:
+    case UmlDependOn:
       break;
     case UmlOperation:
       {
@@ -1572,8 +1575,8 @@ void ClassDialog::accept() {
   cl->set_stereotype(s);
   
   if (s == "typedef")
-    cl->base_type = the_type(edbasetype->currentText().stripWhiteSpace(),
-			     node_names, nodes);
+    cl->set_base_type(the_type(edbasetype->currentText().stripWhiteSpace(),
+			       node_names, nodes));
   
   cl->is_abstract = abstract_cb->isChecked();
   

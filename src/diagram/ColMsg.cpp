@@ -379,7 +379,7 @@ void ColMsg::save(QTextStream & st, const ColMsgList & l, bool copy,
 	      "</b><br><br>\n";
 	if (warning[0] == '!') {
 	  st << "msg ";
-	  msg->operation->save(st, TRUE, warning, "");
+	  msg->operation->save(st, TRUE, warning);
 	}
 	else {
 	  st << "explicitmsg ";
@@ -388,7 +388,7 @@ void ColMsg::save(QTextStream & st, const ColMsgList & l, bool copy,
       }
       else {
 	st << "msg ";
-	msg->operation->save(st, TRUE, warning, "");
+	msg->operation->save(st, TRUE, warning);
       }
     }
     else {

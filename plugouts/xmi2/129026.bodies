@@ -2,7 +2,12 @@ class UmlTransition
 !!!197762.cpp!!!	memo_incoming_trans() : void
   (dynamic_cast<UmlStateItem *>(target()))->add_incoming_trans(this);
 !!!198018.cpp!!!	write(inout out : FileOut) : void
-  (dynamic_cast<UmlStateItem *>(parent()->parent()))->memo_trans(this);
+  UmlStateItem * x = dynamic_cast<UmlStateItem *>(parent()->parent());
+  
+  if (x == 0)
+    x = dynamic_cast<UmlStateItem *>(parent());
+    
+  x->memo_trans(this);
   
   out.indent();
   out << "<outgoing";

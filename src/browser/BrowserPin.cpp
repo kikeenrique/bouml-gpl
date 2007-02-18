@@ -124,7 +124,7 @@ void BrowserPin::compute_referenced_by(QList<BrowserNode> & l,
 }
 
 void BrowserPin::new_one(BrowserNode * future_parent, 
-			 const char * name, const PinParamData & pd)
+				 const char * name, const PinParamData & pd)
 {
   PinData * d = new PinData(pd);
   BrowserPin * r = new BrowserPin(name, future_parent, d);
@@ -132,6 +132,15 @@ void BrowserPin::new_one(BrowserNode * future_parent,
   d->set_browser_node(r);
 }
 
+BrowserPin * BrowserPin::new_one(BrowserNode * future_parent, 
+				 const char * name)
+{
+  PinData * d = new PinData;
+  BrowserPin * r = new BrowserPin(name, future_parent, d);
+  
+  d->set_browser_node(r);
+  return r;
+}
 
 BrowserPin * BrowserPin::add_pin(BrowserPin * pin, BrowserNode * future_parent)
 {

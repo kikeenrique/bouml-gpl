@@ -468,6 +468,11 @@ void BrowserActivityObject::set_associated_diagram(BrowserActivityDiagram * dg,
   }
 }
 
+void BrowserActivityObject::on_delete() {
+  if (associated_diagram && associated_diagram->deletedp())
+    associated_diagram = 0;
+}
+
 void BrowserActivityObject::init()
 {
   its_default_stereotypes.clear();
@@ -654,19 +659,12 @@ void BrowserActivityObject::save(QTextStream & st, bool ref, QString & warning) 
     st << "activityobject " << get_ident() << ' ';
     save_string(name, st);
     indent(+1);
-    def->save(st, warning, "activity object");
+    def->save(st, warning);
 
     if (associated_diagram != 0) {
-      if (associated_diagram->deletedp()) {
-        warning += QString("<p>activity object <b>") + full_name() +
-	  "</b>'s associated diagram <b>" +
-	  associated_diagram->full_name() + "</b> is deleted\n";
-      }
-      else {
-	nl_indent(st);
-	st << "associated_diagram ";
-	associated_diagram->save(st, TRUE, warning);
-      }
+      nl_indent(st);
+      st << "associated_diagram ";
+      associated_diagram->save(st, TRUE, warning);
     }
     
     BrowserNode::save(st);

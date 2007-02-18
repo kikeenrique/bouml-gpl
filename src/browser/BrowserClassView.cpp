@@ -978,16 +978,9 @@ void BrowserClassView::save(QTextStream & st, bool ref, QString & warning) {
     save_color(st, "parameterpin_color", parameterpin_color, nl);
     
     if (associated_deployment_view != 0) {
-      if (associated_deployment_view->deletedp()) {
-	warning += QString("<p>class view <b>") + full_name() +
-	  "</b>'s associated deployment view <b>" +
-	    associated_deployment_view->full_name() + "</b> is deleted\n";
-      }
-      else {
-	nl_indent(st);
-	st << "associated_deployment_view ";
-	associated_deployment_view->save(st, TRUE, warning);
-      }
+      nl_indent(st);
+      st << "associated_deployment_view ";
+      associated_deployment_view->save(st, TRUE, warning);
     }
     
     BrowserNode::save(st);

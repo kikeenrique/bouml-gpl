@@ -171,16 +171,14 @@ BrowserActivity * BrowserActivity::get_activity(BrowserNode * parent)
   return r;
 }
 
-BrowserNode * BrowserActivity::add_parameter(BrowserParameter * param,
-					     const char * s) {
-  QString name = s;
+BrowserNode * BrowserActivity::add_parameter(BrowserParameter * param) {
+  QString name;
   
-  if ((s != 0) ||
-      enter_child_name(name, "enter parameter's name : ",
+  if (enter_child_name(name, "enter parameter's name : ",
 		       UmlParameter, TRUE, FALSE)) {
     param = (param == 0) ? new BrowserParameter(name, this)
 			 : (BrowserParameter *) param->duplicate(this, name);
-    
+
     setOpen(TRUE);
     def->modified();
     package_modified();
@@ -268,7 +266,7 @@ void BrowserActivity::exec_menu_choice(int rank) {
     add_activity_diagram();
     break;
   case 1:
-    add_parameter(0, 0);
+    add_parameter(0);
     return;
   case 2:
     BrowserInterruptibleActivityRegion::add_interruptibleactivityregion(this);
@@ -457,6 +455,11 @@ void BrowserActivity::set_associated_diagram(BrowserActivityDiagram * dg,
   }
 }
 
+void BrowserActivity::on_delete() {
+  if (associated_diagram && associated_diagram->deletedp())
+    associated_diagram = 0;
+}
+
 void BrowserActivity::init()
 {
   its_default_stereotypes.clear();
@@ -517,7 +520,7 @@ bool BrowserActivity::tool_cmd(ToolCom * com, const char * args) {
 	  if (wrong_child_name(args, UmlParameter, TRUE, FALSE))
 	    ok = FALSE;
 	  else
-	    add_parameter(0, args)->write_id(com);
+	    (new BrowserParameter(args, this))->write_id(com);
 	  break;
 	case UmlInterruptibleActivityRegion:
 	  (new BrowserInterruptibleActivityRegion(args, this))->write_id(com);
@@ -721,16 +724,9 @@ void BrowserActivity::save(QTextStream & st, bool ref, QString & warning) {
     def->save(st, warning);
 
     if (associated_diagram != 0) {
-      if (associated_diagram->deletedp()) {
-        warning += QString("<p>activity <b>") + full_name() +
-	  "</b>'s associated diagram <b>" +
-	  associated_diagram->full_name() + "</b> is deleted\n";
-      }
-      else {
-	nl_indent(st);
-	st << "associated_diagram ";
-	associated_diagram->save(st, TRUE, warning);
-      }
+      nl_indent(st);
+      st << "associated_diagram ";
+      associated_diagram->save(st, TRUE, warning);
     }
     
     BrowserNode::save(st);

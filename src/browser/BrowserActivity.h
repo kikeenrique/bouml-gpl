@@ -64,7 +64,7 @@ class BrowserActivity : public BrowserNode, public Labeled<BrowserActivity> {
     static BrowserActivity * get_activity(BrowserNode * parent);
     QValueList<BrowserParameter *> get_params() const;
     void add_activity_diagram();
-    BrowserNode * add_parameter(BrowserParameter *, const char *);
+    BrowserNode * add_parameter(BrowserParameter * p);
     const char * may_connect(const BrowserNode * dest) const;
     
     virtual const QPixmap* pixmap (int) const;
@@ -74,6 +74,7 @@ class BrowserActivity : public BrowserNode, public Labeled<BrowserActivity> {
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual void modified();
+    virtual void on_delete();
     virtual BasicData * get_data() const;
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
 

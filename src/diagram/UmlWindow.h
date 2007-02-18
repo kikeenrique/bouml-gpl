@@ -34,6 +34,7 @@ class QWorkspace;
 class QToolBar;
 class QPopupMenu;
 class QSplitter;
+class QToolButton;
 
 class BrowserView;
 class BrowserNode;
@@ -72,6 +73,9 @@ class UmlWindow : public QMainWindow {
     QSplitter * spl1;
     QSplitter * spl2;
     char style;	// '?' unknown, 'm' = motif, '+' = motif+, 'w' = windows
+    QToolButton * prev;
+    QToolButton * next;
+    QValueList<BrowserNode *> select_historic;
 
   public:
     UmlWindow();
@@ -92,8 +96,10 @@ class UmlWindow : public QMainWindow {
     static CanvasFormat default_format();
     static void set_default_format(CanvasFormat);
     static void abort_line_construction();
-
+    static void clear_select_historic();
+    
   protected:
+    void is_selected(BrowserNode *);
     virtual void closeEvent(QCloseEvent *);
     void save_session();
     void read_session();
@@ -107,6 +113,8 @@ class UmlWindow : public QMainWindow {
     void close();
     void quit();
     void browser_search();
+    void next_select();
+    void prev_select();
     
     void edit_gen_settings();
     void edit_stereotypes();

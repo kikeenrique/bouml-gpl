@@ -87,12 +87,14 @@ ClassData::ClassData(const ClassData * model, BrowserNode * bn)
       cl = actual->get_class();
       connect(cl->get_data(), SIGNAL(changed()),
 	      this, SLOT(update_actuals()));
+      connect(cl->get_data(), SIGNAL(deleted()),
+	      this, SLOT(update_actuals()));
     }
 
     actuals.append(actual);
   }
   
-  base_type = model->base_type;
+  set_base_type(model->base_type);
   is_deleted = FALSE;
   bodies_read = FALSE;
   bodies_modified = FALSE;
@@ -319,10 +321,28 @@ void ClassData::set_switch_type(const AType & t) {
   switch_type.explicit_type = t.explicit_type;
 }
 
+void ClassData::set_base_type(const AType & t) {
+  if (base_type.type != t.type) {
+    if (base_type.type != 0)
+      disconnect(base_type.type->get_data(), SIGNAL(deleted()),
+		 this, SLOT(on_delete()));
+    if ((base_type.type = t.type) != 0)
+      connect(base_type.type->get_data(), SIGNAL(deleted()),
+	      this, SLOT(on_delete()));
+  }
+
+  base_type.explicit_type = t.explicit_type;
+}
+
 void ClassData::on_delete() {
   if (switch_type.type && switch_type.type->deletedp()) {
     switch_type.explicit_type = switch_type.type->get_name();
     switch_type.type = 0;
+  }
+  
+  if (base_type.type && base_type.type->deletedp()) {
+    base_type.explicit_type = base_type.type->get_name();
+    base_type.type = 0;
   }
   
   ((BrowserClass *) browser_node)->on_delete();
@@ -399,8 +419,12 @@ bool ClassData::tool_cmd(ToolCom * com, const char * args,
 	  com->write_ack(FALSE);
 	  return TRUE;
 	}
-	else
-	  com->get_type(base_type, args);
+	else {
+	  AType t;
+	  
+	  com->get_type(t, args);
+	  set_base_type(t);	  
+	}
 	break;
       case setIsCppExternalCmd:
 	cpp_external = (*args != 0);
@@ -702,22 +726,17 @@ void ClassData::save(QTextStream & st, QString & warning) const {
     nl_indent(st);
     
     if (stereotype == "typedef") {
-      if (!base_type.save(st, warning, " base_type ", " explicit_base_type "))
-	warning += QString("<p><b>") + browser_node->get_name() +
-	  "</b> base type is the deleted class <b>" +
-	    base_type.type->full_name() + "</b>\n";
+      base_type.save(st, warning, " base_type ", " explicit_base_type ");
       nl_indent(st);
     }
   }
   else if (nl)
     nl_indent(st);
 
-  const QString cl_name = browser_node->full_name();
-  
   if (nformals != 0) {
     st << "nformals " << nformals;
     for (int i = 0; i!= nformals; i += 1)
-      formals[i].save(st, warning, cl_name);
+      formals[i].save(st, warning);
     nl_indent(st);  
   }
   
@@ -725,7 +744,7 @@ void ClassData::save(QTextStream & st, QString & warning) const {
     st << "nactuals " << actuals.count();
     QListIterator<ActualParamData> ita(actuals);
     for (; ita.current(); ++ita)
-      ita.current()->save(st, warning, cl_name);
+      ita.current()->save(st, warning);
     nl_indent(st);  
   }
   
@@ -762,10 +781,7 @@ void ClassData::save(QTextStream & st, QString & warning) const {
   st << "idl_decl ";
   save_string(idl_decl, st);
   nl_indent(st);
-  if (!switch_type.save(st, warning, "switch_type ", "explicit_switch_type "))
-    warning += QString("<p><b>") + browser_node->get_name() +
-      QString(" Idl switch type is the deleted class <b>") +
-	switch_type.type->full_name() + "</b>\n";
+  switch_type.save(st, warning, "switch_type ", "explicit_switch_type ");
   nl_indent(st);
 }
 
@@ -785,8 +801,12 @@ void ClassData::read(char * & st, char * & k) {
   if (!strcmp(k, "stereotype")) {
     set_stereotype(read_string(st));
     
-    if (!strcmp(stereotype, "typedef"))
-      base_type.read(st, "base_type", "explicit_base_type");
+    if (!strcmp(stereotype, "typedef")) {
+      AType t;
+      
+      t.read(st, "base_type", "explicit_base_type");
+      set_base_type(t);
+    }
     
     k = read_keyword(st);
   }

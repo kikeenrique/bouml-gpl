@@ -40,13 +40,9 @@ void ExceptionData::send_uml_def(ToolCom * com) {
   type.send_def(com);
 }
 
-void ExceptionData::save(QTextStream & st, QString & warning, 
-			 const QString & cl_oper_name, unsigned rank) const {
+void ExceptionData::save(QTextStream & st, QString & warning) const {
   nl_indent(st);
-  if (!type.save(st, warning, "  exception ", "  explicit_exception "))
-    warning += QString("<p><b>") + cl_oper_name + "</b> exception rank " +
-      QString::number(rank) + " is the deleted class <b>" +
-	type.type->full_name() + "</b>\n";
+  type.save(st, warning, "  exception ", "  explicit_exception ");
 }
 
 void ExceptionData::read(char * & st, char * & k) {

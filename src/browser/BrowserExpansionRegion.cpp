@@ -266,7 +266,7 @@ void BrowserExpansionRegion::exec_menu_choice(int rank,
 					      BrowserNode * item_above) {
   switch (rank) {
   case 0:
-    add_expansionnode(0, 0);
+    add_expansionnode();
     return;
   case 1:
     add_expansionregion(this);
@@ -403,15 +403,12 @@ void BrowserExpansionRegion::apply_shortcut(QString s) {
 }
 
 BrowserNode *
-  BrowserExpansionRegion::add_expansionnode(BrowserExpansionNode * node,
-					    const char * s) {
-  QString name = s;
+  BrowserExpansionRegion::add_expansionnode() {
+  QString name;
   
-  if ((s != 0) ||
-      enter_child_name(name, "enter expansion node's \nname (may be empty) : ",
+  if (enter_child_name(name, "enter expansion node's \nname (may be empty) : ",
 		       UmlExpansionNode, TRUE, TRUE)) {
-    node = (node == 0) ? new BrowserExpansionNode(name, this)
-		       : (BrowserExpansionNode *) node->duplicate(this, name);
+    BrowserExpansionNode * node = new BrowserExpansionNode(name, this);
     
     setOpen(TRUE);
     def->modified();
@@ -482,6 +479,11 @@ void BrowserExpansionRegion::set_associated_diagram(BrowserActivityDiagram * dg,
   }
 }
 
+void BrowserExpansionRegion::on_delete() {
+  if (associated_diagram && associated_diagram->deletedp())
+    associated_diagram = 0;
+}
+
 void BrowserExpansionRegion::init()
 {
   its_default_stereotypes.clear();
@@ -530,7 +532,7 @@ bool BrowserExpansionRegion::tool_cmd(ToolCom * com, const char * args) {
 	  if (wrong_child_name(args, UmlExpansionNode, TRUE, TRUE))
 	    ok = FALSE;
 	  else
-	    add_expansionnode(0, args)->write_id(com);
+	    (new BrowserExpansionNode(args, this))->write_id(com);
 	  break;
 	case UmlInterruptibleActivityRegion:
 	  (new BrowserInterruptibleActivityRegion(args, this))->write_id(com);
@@ -726,16 +728,9 @@ void BrowserExpansionRegion::save(QTextStream & st, bool ref, QString & warning)
     def->save(st, warning);
 
     if (associated_diagram != 0) {
-      if (associated_diagram->deletedp()) {
-        warning += QString("<p>expansionregion <b>") + full_name() +
-	  "</b>'s associated diagram <b>" +
-	  associated_diagram->full_name() + "</b> is deleted\n";
-      }
-      else {
-	nl_indent(st);
-	st << "associated_diagram ";
-	associated_diagram->save(st, TRUE, warning);
-      }
+      nl_indent(st);
+      st << "associated_diagram ";
+      associated_diagram->save(st, TRUE, warning);
     }
     
     BrowserNode::save(st);

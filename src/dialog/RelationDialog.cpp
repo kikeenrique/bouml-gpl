@@ -71,6 +71,29 @@ static const struct {
   {UmlRealize, "realization", &realizeButton}
 };
 
+static const struct {
+  UmlCode type;
+  const char * lbl;
+  QPixmap ** pix;
+} UniRelTypes[] = {
+  {UmlGeneralisation, "generalisation", &generalisationButton },
+  {UmlDependency, "dependency", &dependencyButton},
+  {UmlDirectionalAssociation, "unidirectional association", &directionalAssociationButton},
+  {UmlDirectionalAggregation, "directional aggregation", &directionalAggregationButton},
+  {UmlDirectionalAggregationByValue, "directional aggregation by value", &directionalAggregationByValueButton},
+  {UmlRealize, "realization", &realizeButton}
+};
+
+static const struct {
+  UmlCode type;
+  const char * lbl;
+  QPixmap ** pix;
+} BiRelTypes[] = {
+  {UmlAssociation, "association", &associationButton},
+  {UmlAggregation, "aggregation", &aggregationButton},
+  {UmlAggregationByValue, "aggregation by value", &aggregationByValueButton},
+};
+
 RelationDialog::RelationDialog(RelationData * r)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), rel(r) {
   setCaption("Relation dialog");
@@ -131,12 +154,19 @@ RelationDialog::RelationDialog(RelationData * r)
   else {
     if (b.visit) {
       // bi/uni dir cannot be changed
-      bool uni_dir = (r->end == 0);
-      
-      for (index = 0; index != sizeof(RelTypes) / sizeof(*RelTypes); index += 1) {
-	if (RelationData::uni_directional(RelTypes[index].type) == uni_dir) {
-	  edtype->insertItem(**RelTypes[index].pix, RelTypes[index].lbl);
-	  if (RelTypes[index].type == type)
+      if (r->end == 0) {
+	// unidir
+	for (index = 0; index != sizeof(UniRelTypes) / sizeof(*UniRelTypes); index += 1) {
+	  edtype->insertItem(**UniRelTypes[index].pix, UniRelTypes[index].lbl);
+	  if (UniRelTypes[index].type == type)
+	    edtype->setCurrentItem(index);
+	}
+      }
+      else {
+	// bidir
+	for (index = 0; index != sizeof(BiRelTypes) / sizeof(*BiRelTypes); index += 1) {
+	  edtype->insertItem(**BiRelTypes[index].pix, BiRelTypes[index].lbl);
+	  if (BiRelTypes[index].type == type)
 	    edtype->setCurrentItem(index);
 	}
       }
@@ -215,7 +245,8 @@ RelationDialog::RelationDialog(RelationData * r)
   else
     connect(a.cpp_virtual_inheritance_cb, SIGNAL(toggled(bool)), this, SLOT(cpp_update_a()));
   init_cpp_role(a, rel->a, bg, SLOT(cpp_update_a()),
-		SLOT(cpp_default_a()),SLOT(cpp_unmapped_a()));
+		SLOT(cpp_default_a()),SLOT(cpp_unmapped_a()),
+		SLOT(cpp_include_in_header()));
 
   // B
   htab = new QHBox(vtab);	// to have a vertical margin
@@ -224,7 +255,7 @@ RelationDialog::RelationDialog(RelationData * r)
   cpp_b = new QGroupBox(2, QGroupBox::Horizontal, "ROLE 2", vtab);  
   b.cpp_virtual_inheritance_cb = 0;
   init_cpp_role(b, rel->b, cpp_b, SLOT(cpp_update_b()),
-		SLOT(cpp_default_b()), SLOT(cpp_unmapped_b()));
+		SLOT(cpp_default_b()), SLOT(cpp_unmapped_b()), 0);
 
   addTab(vtab, "C++");
   
@@ -458,7 +489,8 @@ void RelationDialog::init_cpp_role(RoleDialog & role, const RoleData & rel,
 				   QGroupBox * bg,
 				   const char * cpp_update_slot, 
 				   const char * cpp_default_slot,
-				   const char * cpp_unmapped_slot) {
+				   const char * cpp_unmapped_slot,
+				   const char * cpp_include_in_header_slot) {
   QHBox * htab;
   
   new QLabel("Visibility : ", bg);
@@ -501,9 +533,15 @@ void RelationDialog::init_cpp_role(RoleDialog & role, const RoleData & rel,
     new QLabel("", bg);
     htab = new QHBox(bg);
     htab->setMargin(5);
+    
     role.cpp_default_decl_bt = new QPushButton("Default declaration", htab);
     connect(role.cpp_default_decl_bt, SIGNAL(pressed()),
 	    this, cpp_default_slot);
+    if (cpp_include_in_header_slot != 0) {
+      role.cpp_include_in_header = new QPushButton("#include in header", htab);
+      connect(role.cpp_include_in_header , SIGNAL(pressed()),
+	      this, cpp_include_in_header_slot);
+    }
     role.cpp_unmapped_decl_bt = new QPushButton("Not generated in C++", htab);
     connect(role.cpp_unmapped_decl_bt, SIGNAL(pressed()),
 	    this, cpp_unmapped_slot);
@@ -669,7 +707,14 @@ void RelationDialog::set_inherit_or_dependency(UmlCode type)
 
 void RelationDialog::edTypeActivated(int r)
 {
-  UmlCode type = (a.visit) ? current_type : RelTypes[r].type;
+  UmlCode type;
+  
+  if (a.visit)
+    type = current_type;
+  else if (b.visit)
+    type = (rel->end == 0) ? UniRelTypes[r].type : BiRelTypes[r].type;
+  else
+    type = RelTypes[r].type;
   
   if ((edname->text() == RelationData::default_name(current_type)) ||
       !RelationData::isa_association(type))
@@ -679,6 +724,9 @@ void RelationDialog::edTypeActivated(int r)
     edname->setEnabled(FALSE);
     edassociation->setEnabled(FALSE);
     ::set_enabled(a, type != UmlDependency);
+    // note : management of dependency for buttons presence
+    // and text done in update_all_tabs() to take into account
+    // stereotype change
     uml_bgroup_b->setEnabled(FALSE);
     cpp_b->setEnabled(FALSE);
     java_b->setEnabled(FALSE);
@@ -733,9 +781,40 @@ void RelationDialog::edTypeActivated(int r)
   set_inherit_or_dependency(type);
 }
 
-void RelationDialog::update_all_tabs() {
+void RelationDialog::update_all_tabs() {  
+  if (current_type == UmlDependency) {
+    QString s = a.edcppdecl->text().stripWhiteSpace();
+    
+    if (GenerationSettings::cpp_relation_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()))
+	!= "friend") {
+      if (! a.visit) {
+	a.cpp_include_in_header->show();
+	a.cpp_default_decl_bt->setText("#include in source");
+      }
+      if (!s.isEmpty() &&
+	  (s != "#include in source") &&
+	  (s != "#include in header"))
+	s = "#include in source";
+    }
+    else {
+      if (! a.visit) {
+	a.cpp_include_in_header->hide();
+	a.cpp_default_decl_bt->setText("Default declaration");
+      }
+      if ((s == "#include in source") ||
+	  (s == "#include in header"))
+	s = "${type}";
+    }
+    a.edcppdecl->setText(s);
+  }
+  else if (! a.visit) {
+    a.cpp_include_in_header->hide();
+    a.cpp_default_decl_bt->setText("Default declaration");
+  }
+  
   a.edrole->setText(a.edrole->text().stripWhiteSpace());
   b.edrole->setText(b.edrole->text().stripWhiteSpace());
+  
   cpp_update_a();
   cpp_update_b();
   java_update_a();
@@ -917,9 +996,20 @@ void RelationDialog::cpp_default_a() {
     a.edcppdecl->setText(GenerationSettings::cpp_default_rel_decl(current_type,
 								  a.multiplicity->currentText().stripWhiteSpace()));
   else {
-    a.edcppdecl->setText("${type}");
-    a.cpp_unmapped_decl_bt->setOn(FALSE);
+    a.edcppdecl->setText(((current_type == UmlDependency) &&
+			  (GenerationSettings::cpp_relation_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()))
+			   != "friend"))
+			 ? "#include in source" : "${type}");
+    if (! a.visit)
+      a.cpp_unmapped_decl_bt->setOn(FALSE);
   }
+  cpp_update_a();
+}
+
+void RelationDialog::cpp_include_in_header() {
+  a.edcppdecl->setText("#include in header");
+  if (! a.visit)
+    a.cpp_unmapped_decl_bt->setOn(FALSE);
   cpp_update_a();
 }
 
@@ -927,7 +1017,7 @@ void RelationDialog::cpp_unmapped_a() {
   a.edcppdecl->setText(QString::null);
   a.showcppdecl->setText(QString::null);
   
-  if (!RelationData::isa_association(current_type))
+  if (!RelationData::isa_association(current_type) && !a.visit)
     a.cpp_default_decl_bt->setOn(FALSE);
 }
 
@@ -1350,7 +1440,8 @@ void RelationDialog::idl_unmapped_b() {
 
 //
 
-static void accept_role(RoleDialog & role, RoleData & rel, bool assoc)
+static void accept_role(RoleDialog & role, RoleData & rel,
+			bool assoc, RelationData * r)
 {
   rel.uml_visibility = role.uml_visibility.value();
   
@@ -1381,9 +1472,9 @@ static void accept_role(RoleDialog & role, RoleData & rel, bool assoc)
     QString s = role.edcase->currentText().stripWhiteSpace();
     
     if (!s.isEmpty() && ((index = role.enum_names.findIndex(s)) != -1))
-      RelationData::set_idlcase(rel, ((BrowserAttribute *) role.enums.at(index)), "");
+      r->set_idlcase(rel, ((BrowserAttribute *) role.enums.at(index)), "");
     else
-      RelationData::set_idlcase(rel, 0, s);
+      r->set_idlcase(rel, 0, s);
   }
   
   rel.cpp_decl = role.edcppdecl->text();
@@ -1439,8 +1530,8 @@ void RelationDialog::accept() {
        (a.idl_truncatable_inheritance_cb != 0) &&
        a.idl_truncatable_inheritance_cb->isChecked());
     
-    accept_role(a, rel->a, assoc);
-    accept_role(b, rel->b, assoc);
+    accept_role(a, rel->a, assoc, rel);
+    accept_role(b, rel->b, assoc, rel);
     
     a.kvtable->update(rel->start);    
     if (rel->end)

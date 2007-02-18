@@ -163,7 +163,8 @@ bool UmlClassMember::compute_dependency(QList<CppRefType> & dependencies,
       else if (dontsubstituteuntil != 0) {
 	if (p >= dontsubstituteuntil)
 	  dontsubstituteuntil = 0;
-	p += 1;
+	else
+	  p += 1;
       }
       else if (c == '=')
 	// init, all is done

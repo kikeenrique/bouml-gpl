@@ -38,6 +38,9 @@ class PinData : public SimpleData, public PinParamData {
     PinData(const PinParamData & pd);
     PinData(PinData * model, BrowserNode * bn);
   
+    virtual void do_connect(BrowserClass *);
+    virtual void do_disconnect(BrowserClass *);
+  
     void edit();
     
     virtual void send_uml_def(ToolCom * com, BrowserNode * bn,
@@ -49,6 +52,9 @@ class PinData : public SimpleData, public PinParamData {
     
     void save(QTextStream &, QString & warning) const;
     void read(char * &, char * &);
+    
+  protected slots:
+    void on_delete();
 };
 
 #endif

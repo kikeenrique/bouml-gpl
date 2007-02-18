@@ -276,7 +276,8 @@ void ParameterCanvas::menu(const QPoint &) {
   QPopupMenu toolm(0);
   int index;
   QValueList<ParameterCanvas *> params = act->get_params();
-  BrowserClass * cl = ((ParameterData *) browser_node->get_data())->type.type;
+  BrowserClass * cl =
+    ((ParameterData *) browser_node->get_data())->get_type().type;
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();

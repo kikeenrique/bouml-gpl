@@ -5,7 +5,7 @@
 void UmlActivityControlNode::write(FileOut & out) {
     out.indent();
   out << ((parent()->kind() == anActivity) ? "<node" : "<containedNode")
-    << " xmi:type=\"" << sKind() << '"';
+    << " xmi:type=\"uml:" << sKind() << '"';
   out.id(this);
   if (!name().isEmpty()){
     out << " name=\"";

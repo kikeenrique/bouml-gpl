@@ -36,14 +36,33 @@
 ActualParamData::ActualParamData(BrowserClass * p, unsigned r)
     : super(p), rank(r) {
 }
-  
+
+ActualParamData::ActualParamData(const ActualParamData& p)
+    : QObject(0), super(p.super),  rank(p.rank) {
+  set_value(p.value);
+}
+
 QString ActualParamData::get_name() const {
   return super->full_name() + " : " +
     ((ClassData *) super->get_data())->get_formalparam_name(rank);
 }
 
 void ActualParamData::set_value(const AType & t) {
-  value = t;
+  if (value.type != t.type) {
+    if (value.type != 0)
+      disconnect(value.type->get_data(), 0, this, 0);
+    if ((value.type = t.type) != 0)
+      connect(value.type->get_data(), SIGNAL(deleted()), this, SLOT(on_delete()));
+  }
+    
+  value.explicit_type = t.explicit_type;
+}
+
+void ActualParamData::on_delete() {
+  if (value.type && value.type->deletedp()) {
+    value.explicit_type = value.type->get_name();
+    value.type = 0;
+  }
 }
 
 void ActualParamData::send_uml_def(ToolCom * com) {
@@ -52,17 +71,13 @@ void ActualParamData::send_uml_def(ToolCom * com) {
   value.send_def(com);
 }
 
-void ActualParamData::save(QTextStream & st, QString & warning,
-			   const QString & cl_name) const {
+void ActualParamData::save(QTextStream & st, QString & warning) const {
   nl_indent(st);
   st << "actual class ";
   super->save(st, TRUE, warning);
   nl_indent(st);
   st << "  rank " << rank << ' ';
-  if (! value.save(st, warning, "value ", "explicit_value "))
-    warning += QString("<p><b>") + cl_name + "</b>'s actual for <b>" +
-      ((ClassData *) super->get_data())->get_formalparam_name(rank) +
-	"<b> values the deleted class <b>" + value.type->full_name() + "</b>\n";
+  value.save(st, warning, "value ", "explicit_value ");
 }
 
 ActualParamData * ActualParamData::read(char * & st)
@@ -76,7 +91,11 @@ ActualParamData * ActualParamData::read(char * & st)
   
   ActualParamData * result = new ActualParamData(p, read_unsigned(st));
   
-  result->value.read(st, "value", "explicit_value");
+  AType t;
+  
+  t.read(st, "value", "explicit_value");
+  
+  result->set_value(t);
   
   return result;
 }

@@ -26,11 +26,15 @@
 #ifndef FORMALPARAMDATA_H
 #define FORMALPARAMDATA_H
 
+#include <qobject.h>
+
 #include "mystr.h"
 
 #include "AType.h"
 
-class FormalParamData {
+class FormalParamData : public QObject {
+  Q_OBJECT
+    
   protected:
     MyStr name;
     SharedStr type;		// "class" ..., C++
@@ -39,6 +43,8 @@ class FormalParamData {
 
   public:
     FormalParamData() {};
+    FormalParamData(const FormalParamData& p);
+    FormalParamData& FormalParamData::operator=(const FormalParamData&);
   
     const char * get_name() const { return name; };
     void set_name(const QString & s) { name = s; };
@@ -58,8 +64,12 @@ class FormalParamData {
     void read(ToolCom * com, const char *& args);
     static void skip(ToolCom * com, const char *& args);
     
-    void save(QTextStream &, QString & warning, const QString & cl_name) const;
+    void save(QTextStream &, QString & warning) const;
     void read(char * &);
+    
+  protected slots:
+    void on_delete_default();
+    void on_delete_extends();
 };
 
 #endif

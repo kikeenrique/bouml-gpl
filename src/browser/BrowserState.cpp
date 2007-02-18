@@ -491,6 +491,11 @@ void BrowserState::set_associated_diagram(BrowserStateDiagram * dg,
   }
 }
 
+void BrowserState::on_delete() {
+  if (associated_diagram && associated_diagram->deletedp())
+    associated_diagram = 0;
+}
+
 void BrowserState::init()
 {
   its_default_stereotypes.clear();
@@ -717,16 +722,9 @@ void BrowserState::save(QTextStream & st, bool ref, QString & warning) {
     def->save(st, warning);
 
     if (associated_diagram != 0) {
-      if (associated_diagram->deletedp()) {
-        warning += QString("<p>state <b>") + full_name() +
-	  "</b>'s associated diagram <b>" +
-	  associated_diagram->full_name() + "</b> is deleted\n";
-      }
-      else {
-	nl_indent(st);
-	st << "associated_diagram ";
-	associated_diagram->save(st, TRUE, warning);
-      }
+      nl_indent(st);
+      st << "associated_diagram ";
+      associated_diagram->save(st, TRUE, warning);
     }
     
     BrowserNode::save(st);

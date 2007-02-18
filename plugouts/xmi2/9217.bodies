@@ -128,12 +128,12 @@ class UmlPackage
 
 	out << "\
 <?xml version=\"1.0\" encoding=\"" << encoding << "\"?>\n\
-<xmi:XMI xmi.version=\"2.1\" xmlns:uml=\"http://schema.omg.org/spec/UML/2." << ((_uml_20) ? "0" : "1")
+<xmi:XMI xmi:version=\"2.1\" xmlns:uml=\"http://schema.omg.org/spec/UML/2." << ((_uml_20) ? "0" : "1")
   << "\" xmlns:xmi=\"http://schema.omg.org/spec/XMI/2.1\"";
 	if (_use_profile)
 	  out << " xmlns:boumlprofile=\"http://bouml.free.fr/profiles/boumlprofile/1.0\"";
 	out << ">\n\
-	<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.0\"/>\n\
+	<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.1\"/>\n\
 	<uml:Model xmi:type=\"uml:Model\" name=\"" << name() << "\">\n";
 	out.indent(+2);
 	write(out);

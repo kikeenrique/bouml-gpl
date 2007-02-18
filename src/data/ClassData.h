@@ -96,6 +96,7 @@ class ClassData : public BasicData {
     
     const AType & get_base_type() const { return base_type; };
     QString get_full_base_type_def() const;
+    void set_base_type(const AType & t);
     
     void inherit_or_instantiate(BrowserClass * other);
     

@@ -26,11 +26,15 @@
 #ifndef ACTUALPARAMDATA_H
 #define ACTUALPARAMDATA_H
 
+#include <qobject.h>
+
 #include "AType.h"
 
 class ToolCom;
 
-class ActualParamData {
+class ActualParamData : public QObject {
+  Q_OBJECT
+    
   protected:
     BrowserClass * super;
     unsigned rank;
@@ -38,7 +42,7 @@ class ActualParamData {
     
   public:
     ActualParamData(BrowserClass * p, unsigned r);
-  
+    ActualParamData(const ActualParamData& p);  
     BrowserClass * get_class() const { return super; };
     
     QString get_name() const;
@@ -48,8 +52,11 @@ class ActualParamData {
     
     void send_uml_def(ToolCom * com);
     
-    void save(QTextStream &, QString & warning, const QString & cl_name) const;
+    void save(QTextStream &, QString & warning) const;
     static ActualParamData * read(char * &);
+    
+  protected slots:
+    void on_delete();
 };
 
 

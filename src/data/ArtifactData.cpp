@@ -347,14 +347,8 @@ void ArtifactData::save(QTextStream & st, QString & warning) const {
     QPtrDictIterator<BrowserArtifact> it(*associated);
 
     while (it.current()) {
-      if (it.current()->deletedp())
-	warning += QString("<p><b>") + browser_node->get_name() + 
-	  "</b>'s associated artifact <b>" + it.current()->get_name() +
-	    "</b> is deleted\n";
-      else {
-	nl_indent(st);
-	it.current()->save(st, TRUE, warning);
-      }
+      nl_indent(st);
+      it.current()->save(st, TRUE, warning);
       ++it;
     }
     

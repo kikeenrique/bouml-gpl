@@ -252,6 +252,9 @@ QPixmap * rightPixmap;
 QPixmap * upPixmap;
 QPixmap * downPixmap;
 
+QPixmap * leftUnavailablePixmap;
+QPixmap * rightUnavailablePixmap;
+
 // diagram pixmap
 
 QPixmap * providedPixmap;
@@ -769,11 +772,16 @@ void init_pixmaps()
 #include "right_xpm.xpm"
 #include "up_xpm.xpm"
 #include "down_xpm.xpm"
+#include "left_un_xpm.xpm"
+#include "right_un_xpm.xpm"
   
   leftPixmap = new QPixmap((const char **) left_xpm);
   rightPixmap = new QPixmap((const char **) right_xpm);
   upPixmap = new QPixmap((const char **) up_xpm);
   downPixmap = new QPixmap((const char **) down_xpm);
+  
+  leftUnavailablePixmap = new QPixmap((const char **) left_un_xpm);
+  rightUnavailablePixmap = new QPixmap((const char **) right_un_xpm);
   
   // diagram pixmap
   

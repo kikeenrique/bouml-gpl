@@ -321,7 +321,8 @@ void PinCanvas::menu(const QPoint &) {
   QPopupMenu toolm(0);
   int index;
   QString s = browser_node->get_name();
-  BrowserClass * cl = ((PinData *) browser_node->get_data())->type.type;
+  BrowserClass * cl = 
+    ((PinData *) browser_node->get_data())->get_type().type;
     
   m.insertItem(new MenuTitle((s.isEmpty()) ? "pin" : s, m.font()), -1);
   m.insertSeparator();

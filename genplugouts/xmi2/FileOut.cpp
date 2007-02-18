@@ -15,16 +15,16 @@ void FileOut::indent() {
 }
 
 void FileOut::id(const UmlItem * x) {
-  ((QTextStream &) *this) << " xmi.id=\"BOUML_" << ((void *) x) << '"';
+  ((QTextStream &) *this) << " xmi:id=\"BOUML_" << ((void *) x) << '"';
 
 }
 
 void FileOut::id_prefix(const UmlItem * x, const char * pfix) {
-  ((QTextStream &) *this) << " xmi.id=\"" << pfix << "BOUML_" << ((void *) x) << '"';
+  ((QTextStream &) *this) << " xmi:id=\"" << pfix << "BOUML_" << ((void *) x) << '"';
 }
 
 void FileOut::idref(const UmlItem * x) {
-  ((QTextStream &) *this) << " xmi.idref=\"BOUML_" << ((void *) x) << '"';
+  ((QTextStream &) *this) << " xmi:idref=\"BOUML_" << ((void *) x) << '"';
 
 }
 
@@ -42,13 +42,13 @@ void FileOut::idref(QCString s, const UmlItem * x) {
   if (it == _modifiedtypes.end())
     it = _modifiedtypes.insert((const char *) keys, _modifiedtypes.count());
     
-  ((QTextStream &) *this) << " xmi.idref=\"BOUML_basedontype_"
+  ((QTextStream &) *this) << " xmi:idref=\"BOUML_basedontype_"
     << it.data() << '"';
 
 }
 
 void FileOut::idref_prefix(const UmlItem * x, const char * pfix) {
-  ((QTextStream &) *this) << " xmi.idref=\""
+  ((QTextStream &) *this) << " xmi:idref=\""
 	  << pfix << "BOUML_" << ((void *) x) << '"';
 
 }
@@ -62,7 +62,7 @@ void FileOut::idref_datatype(const QCString & t) {
   if (it == _datatypes.end())
     it = _datatypes.insert(t, _datatypes.count());
     
-  ((QTextStream &) *this) << " xmi.idref=\"BOUML_datatype_"
+  ((QTextStream &) *this) << " xmi:idref=\"BOUML_datatype_"
     << it.data() << '"';
 
 }
@@ -85,7 +85,7 @@ void FileOut::define_datatypes(bool uml_20, bool primitive_type, bool gen_extens
        it != _datatypes.end();
        ++it) {
     indent();
-    (*this) << pfix << " xmi.id=\"BOUML_datatype_"
+    (*this) << pfix << " xmi:id=\"BOUML_datatype_"
       << it.data() << "\" name = \"";
     quote(it.key());
     (*this) << "\"/>\n";
@@ -101,7 +101,7 @@ void FileOut::define_datatypes(bool uml_20, bool primitive_type, bool gen_extens
     int index = k.find('_');
     
     indent();
-    (*this) << pfix << " xmi.id=\"BOUML_basedontype_"
+    (*this) << pfix << " xmi:id=\"BOUML_basedontype_"
       << it.data() << "\" name = \"";
     quote(k.mid(index + 1));
     (*this) << '"';

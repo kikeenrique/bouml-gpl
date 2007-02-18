@@ -62,10 +62,11 @@ AttributeData::AttributeData(const AttributeData * model, BrowserNode * bn)
       uml_visibility(model->uml_visibility),
       cpp_visibility(model->cpp_visibility), cpp_decl(model->cpp_decl), 
       java_decl(model->java_decl), java_annotation(model->java_annotation),
-      idl_case(model->idl_case), idl_explicit_case(model->idl_explicit_case),
       idl_decl(model->idl_decl) {
   browser_node = bn;
+  idl_case = 0;	// set_idlcase look at current value
   set_type(model->type);
+  set_idlcase(model->idl_case, model->idl_explicit_case);
 }
 
 AttributeData::~AttributeData() {
@@ -174,9 +175,11 @@ void AttributeData::set_visibility(UmlVisibility v) {
 void AttributeData::set_type(const AType & t) {
   if (type.type != t.type) {
     if (type.type != 0)
-      disconnect(type.type->get_data(), 0, this, 0);
+      disconnect(type.type->get_data(), SIGNAL(deleted()),
+		 this, SLOT(on_delete()));
     if ((type.type = t.type) != 0) {
-      connect(type.type->get_data(), SIGNAL(deleted()), this, SLOT(on_delete()));
+      connect(type.type->get_data(), SIGNAL(deleted()),
+	      this, SLOT(on_delete()));
     }
   }
     
@@ -199,14 +202,42 @@ const char * AttributeData::get_idlcase() const {
 }
 
 void AttributeData::set_idlcase(BrowserAttribute * a, const char * e) {
-  idl_case = a;
+  if (idl_case != a) {
+    if (idl_case != 0)
+      disconnect(idl_case->get_data(), SIGNAL(deleted()),
+		 this, SLOT(on_delete_idlcase()));
+    if ((idl_case = a) != 0)
+      connect(idl_case->get_data(), SIGNAL(deleted()),
+	      this, SLOT(on_delete_idlcase()));
+  }
+  
   idl_explicit_case = e;
+}
+
+void AttributeData::on_delete_idlcase() {
+  if (idl_case && idl_case->deletedp()) {
+    idl_explicit_case = idl_case->get_name();
+    idl_case = 0;
+  }
+  
+  modified();
 }
 
 void AttributeData::edit() {
   setName(browser_node->get_name());
   
   (new AttributeDialog(this))->show();
+}
+
+//
+
+void AttributeData::replace(BrowserClass * old, BrowserClass * nw) {
+  if (type.type == old) {
+    AType t;
+    
+    t.type = nw;
+    set_type(t);
+  }
 }
 
 //
@@ -378,8 +409,7 @@ bool AttributeData::tool_cmd(ToolCom * com, const char * args,
 
 //
 
-void AttributeData::save(QTextStream & st, QString & warning,
-			const QString & cl_name) const {
+void AttributeData::save(QTextStream & st, QString & warning) const {
   nl_indent(st);
   if (isa_class_attribute)
     st << "class_attribute ";
@@ -388,10 +418,7 @@ void AttributeData::save(QTextStream & st, QString & warning,
   if (isa_const_attribute)
     st << "const_attribute ";
   st << stringify(uml_visibility);
-  if (!type.save(st, warning, " type ", " explicit_type "))
-    warning += QString("<p><b>") + cl_name + "</b>'s attribute <b>" +
-      browser_node->get_name() + "</b> type is the deleted class <b>" +
-	type.type->full_name() + "</b>\n";
+  type.save(st, warning, " type ", " explicit_type ");
   if (!init_value.isEmpty()) {
     nl_indent(st);
     st << "init_value ";
@@ -421,17 +448,8 @@ void AttributeData::save(QTextStream & st, QString & warning,
   
   nl_indent(st);
   if (idl_case != 0) {
-    if (idl_case->deletedp()) {
-      warning += QString("<p><b>") + cl_name + "</b>'s attribute <b>" +
-	browser_node->get_name() + "</b> idl case is the deleted attribute <b>" +
-	  idl_case->full_name() + "</b>\n";
-      st << "idl_explicit_case ";
-      save_string(idl_case->get_name(), st); 
-    }
-    else {
-      st << "idl_case ";
-      idl_case->save(st, TRUE, warning);
-    }
+    st << "idl_case ";
+    idl_case->save(st, TRUE, warning);
     nl_indent(st);
   }
   else if (! idl_explicit_case.isEmpty()) {

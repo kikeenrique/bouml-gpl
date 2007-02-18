@@ -73,6 +73,7 @@ struct RoleDialog {
   MultiLineEdit * edcppdecl;
   MultiLineEdit * showcppdecl;
   QPushButton * cpp_default_decl_bt;
+  QPushButton * cpp_include_in_header; // role a only
   QPushButton * cpp_unmapped_decl_bt;
   
   // Java
@@ -132,7 +133,8 @@ class RelationDialog : public QTabDialog {
     void init_cpp_role(RoleDialog & role, const RoleData & rel,
 		       QGroupBox * bg, const char * cpp_update_slot, 
 		       const char * cpp_default_slot,
-		       const char * cpp_unmapped_slot);
+		       const char * cpp_unmapped_slot,
+		       const char * cpp_include_in_header_slot);
     void init_java_role(RoleDialog & role, const RoleData & rel,
 			QGroupBox * bg, const char * java_update_slot, 
 			const char * java_default_slot,
@@ -169,6 +171,7 @@ class RelationDialog : public QTabDialog {
     void cpp_update_a();
     void cpp_update_b();
     void cpp_default_a();
+    void cpp_include_in_header();
     void cpp_unmapped_a();
     void cpp_default_b();
     void cpp_unmapped_b();

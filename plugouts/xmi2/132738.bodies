@@ -5,12 +5,12 @@ class FileOut
   for (int n = _indent; n > 0; n -= 1)
     ts << '\t';
 !!!145410.cpp!!!	id(in x : UmlItem) : void
-  ((QTextStream &) *this) << " xmi.id=\"BOUML_" << ((void *) x) << '"';
+  ((QTextStream &) *this) << " xmi:id=\"BOUML_" << ((void *) x) << '"';
 
 !!!129667.cpp!!!	id_prefix(in x : UmlItem, in pfix : str) : void
-  ((QTextStream &) *this) << " xmi.id=\"" << pfix << "BOUML_" << ((void *) x) << '"';
+  ((QTextStream &) *this) << " xmi:id=\"" << pfix << "BOUML_" << ((void *) x) << '"';
 !!!144514.cpp!!!	idref(in x : UmlItem) : void
-  ((QTextStream &) *this) << " xmi.idref=\"BOUML_" << ((void *) x) << '"';
+  ((QTextStream &) *this) << " xmi:idref=\"BOUML_" << ((void *) x) << '"';
 
 !!!149250.cpp!!!	idref(in s : string, in x : UmlItem) : void
   QString keys;
@@ -26,11 +26,11 @@ class FileOut
   if (it == _modifiedtypes.end())
     it = _modifiedtypes.insert((const char *) keys, _modifiedtypes.count());
     
-  ((QTextStream &) *this) << " xmi.idref=\"BOUML_basedontype_"
+  ((QTextStream &) *this) << " xmi:idref=\"BOUML_basedontype_"
     << it.data() << '"';
 
 !!!132099.cpp!!!	idref_prefix(in x : UmlItem, in pfix : str) : void
-  ((QTextStream &) *this) << " xmi.idref=\""
+  ((QTextStream &) *this) << " xmi:idref=\""
 	  << pfix << "BOUML_" << ((void *) x) << '"';
 
 !!!146434.cpp!!!	idref_datatype(in t : string) : void
@@ -42,7 +42,7 @@ class FileOut
   if (it == _datatypes.end())
     it = _datatypes.insert(t, _datatypes.count());
     
-  ((QTextStream &) *this) << " xmi.idref=\"BOUML_datatype_"
+  ((QTextStream &) *this) << " xmi:idref=\"BOUML_datatype_"
     << it.data() << '"';
 
 !!!129795.cpp!!!	ref(in x : UmlItem, in pfix1 : str, in pfix2 : str = "") : void
@@ -61,7 +61,7 @@ class FileOut
        it != _datatypes.end();
        ++it) {
     indent();
-    (*this) << pfix << " xmi.id=\"BOUML_datatype_"
+    (*this) << pfix << " xmi:id=\"BOUML_datatype_"
       << it.data() << "\" name = \"";
     quote(it.key());
     (*this) << "\"/>\n";
@@ -77,7 +77,7 @@ class FileOut
     int index = k.find('_');
     
     indent();
-    (*this) << pfix << " xmi.id=\"BOUML_basedontype_"
+    (*this) << pfix << " xmi:id=\"BOUML_basedontype_"
       << it.data() << "\" name = \"";
     quote(k.mid(index + 1));
     (*this) << '"';

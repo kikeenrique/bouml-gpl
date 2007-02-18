@@ -142,7 +142,8 @@ void UmlOperation::compute_dependency(QList<CppRefType> & dependencies,
       else if (dontsubstituteuntil != 0) {
 	if (p >= dontsubstituteuntil)
 	  dontsubstituteuntil = 0;
-	p += 1;
+	else
+	  p += 1;
       }
       else if (!strncmp(p, "${type}", 7)) {
 	p += 7;
@@ -416,6 +417,11 @@ void UmlOperation::generate_decl(aVisibility & current_visibility, QTextOStream 
       else if (!strncmp(p, "${name}", 7)) {
 	p += 7;
 	f_h << compute_name();
+      }
+      else if (!strncmp(p, "${class}", 8)) {
+	// to be placed in the description
+	p += 8;
+	f_h << parent()->name();
       }
       else if (!strncmp(p, "${(}", 4)) {
 	p += 4;

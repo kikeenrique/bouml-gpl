@@ -915,8 +915,8 @@ bool BrowserComponent::tool_cmd(ToolCom * com, const char * args) {
 	    while (it != rz.end()) {
 	      BrowserClass * cl = *it;
 	      
-	      if ((pr.find(it, cl) != pr.end()) ||
-		  (rq.find(it, cl) != rq.end()) ||
+	      if ((pr.find(cl) != pr.end()) ||
+		  (rq.find(cl) != rq.end()) ||
 		  (rz.find(++it, cl) != rz.end())) {
 		com->write_ack(FALSE);
 		return TRUE;
@@ -927,8 +927,8 @@ bool BrowserComponent::tool_cmd(ToolCom * com, const char * args) {
 	    while (it != pr.end()) {
 	      BrowserClass * cl = *it;
 	      
-	      if ((rz.find(it, cl) != rz.end()) ||
-		  (rq.find(it, cl) != rq.end()) ||
+	      if ((rz.find(cl) != rz.end()) ||
+		  (rq.find(cl) != rq.end()) ||
 		  (pr.find(++it, cl) != pr.end())) {
 		com->write_ack(FALSE);
 		return TRUE;
@@ -939,8 +939,8 @@ bool BrowserComponent::tool_cmd(ToolCom * com, const char * args) {
 	    while (it != rq.end()) {
 	      BrowserClass * cl = *it;
 	      
-	      if ((rz.find(it, cl) != rz.end()) ||
-		  (pr.find(it, cl) != pr.end()) ||
+	      if ((rz.find(cl) != rz.end()) ||
+		  (pr.find(cl) != pr.end()) ||
 		  (rq.find(++it, cl) != rq.end())) {
 		com->write_ack(FALSE);
 		return TRUE;
@@ -993,16 +993,9 @@ void BrowserComponent::save(QTextStream & st, bool ref, QString & warning) {
     def->save(st, warning);
     
     if (associated_diagram != 0) {
-      if (associated_diagram->deletedp()) {
-	warning += QString("<p>component <b>") + full_name() +
-	  "</b>'s associated diagram <b>" +
-	    associated_diagram->full_name() + "</b> is deleted\n";
-      }
-      else {
-	nl_indent(st);
-	st << "associated_diagram ";
-	associated_diagram->save(st, TRUE, warning);
-      }
+      nl_indent(st);
+      st << "associated_diagram ";
+      associated_diagram->save(st, TRUE, warning);
     }
     
     QValueList<BrowserClass *>::ConstIterator it;
@@ -1013,14 +1006,8 @@ void BrowserComponent::save(QTextStream & st, bool ref, QString & warning) {
       indent(+1);
       
       for (it = realized_classes.begin(); it != realized_classes.end(); ++it) {
-	if ((*it)->deletedp())
-	  warning += QString("<p>component <b>") + full_name() +
-	    "</b>'s realized class <b>" +
-	      (*it)->full_name() + "</b> is deleted\n";
-	else {
-	  nl_indent(st);
-	  (*it)->save(st, TRUE, warning);
-	}
+	nl_indent(st);
+	(*it)->save(st, TRUE, warning);
       }
       indent(-1);
       nl_indent(st);
@@ -1033,14 +1020,8 @@ void BrowserComponent::save(QTextStream & st, bool ref, QString & warning) {
       indent(+1);
       
       for (it = provided_classes.begin(); it != provided_classes.end(); ++it) {
-	if ((*it)->deletedp())
-	  warning += QString("<p>component <b>") + full_name() +
-	    "</b>'s provided class <b>" +
-	      (*it)->full_name() + "</b> is deleted\n";
-	else {
-	  nl_indent(st);
-	  (*it)->save(st, TRUE, warning);
-	}
+	nl_indent(st);
+	(*it)->save(st, TRUE, warning);
       }
       indent(-1);
       nl_indent(st);
@@ -1053,14 +1034,8 @@ void BrowserComponent::save(QTextStream & st, bool ref, QString & warning) {
       indent(+1);
       
       for (it = required_classes.begin(); it != required_classes.end(); ++it) {
-	if ((*it)->deletedp())
-	  warning += QString("<p>component <b>") + full_name() +
-	    "</b>'s required class <b>" +
-	      (*it)->full_name() + "</b> is deleted\n";
-	else {
-	  nl_indent(st);
-	  (*it)->save(st, TRUE, warning);
-	}
+	nl_indent(st);
+	(*it)->save(st, TRUE, warning);
       }
       indent(-1);
       nl_indent(st);

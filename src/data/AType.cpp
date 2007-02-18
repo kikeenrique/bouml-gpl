@@ -54,13 +54,13 @@ void AType::send_def(ToolCom * com) const {
 
 // returns FALSE on error
 
-bool AType::save(QTextStream & st, QString & warning,
+void AType::save(QTextStream & st, QString & warning,
 		 const char * t, const char * ex) const {
   if (type != 0) {
     if (type->deletedp()) {
+      // theo not possible
       st << ex;
       save_string(type->get_name(), st);
-      return FALSE;
     }
     else{
       st << t;
@@ -71,8 +71,6 @@ bool AType::save(QTextStream & st, QString & warning,
     st << ex;
     save_string(explicit_type, st);
   }
-  
-  return TRUE;
 }
 
 void AType::read(char * & st, const char * t, const char * ex) {

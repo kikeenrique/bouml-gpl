@@ -1467,19 +1467,11 @@ void BrowserClass::set_associated_artifact(BrowserArtifact * a,
       associated_artifact = 0;	// to not loop until end of days
       if (! old->deletedp())
 	old->remove_associated_class(this, on_read);
-      /*
-      QObject::disconnect(old->get_data(), SIGNAL(deleted()),
-			  def, SLOT(on_delete()));
-			  */
     }
   
-    if ((associated_artifact = a) != 0) {
+    if ((associated_artifact = a) != 0)
       a->add_associated_class(this, on_read);
-      /*
-      QObject::connect(associated_artifact->get_data(), SIGNAL(deleted()),
-		       def, SLOT(on_delete()));
-		       */
-    }
+
     def->modified();	// to upgrade drawing context
   }
 }
@@ -1509,11 +1501,6 @@ void BrowserClass::remove_associated_component(BrowserComponent * c) {
 void BrowserClass::on_delete() {
   if (associated_diagram && associated_diagram->deletedp())
     associated_diagram = 0;
-
-  /*
-  if (associated_artifact && associated_artifact->deletedp())
-    associated_artifact = 0;
-    */
 
   QValueList<BrowserComponent *>::Iterator it = associated_components.begin();
   
@@ -1781,31 +1768,11 @@ void BrowserClass::save(QTextStream & st, bool ref, QString & warning) {
     def->save(st, warning);
     
     if (associated_diagram != 0) {
-      if (associated_diagram->deletedp()) {
-	warning += QString("<p>class <b>") + full_name() +
-	  "</b>'s associated diagram <b>" +
-	    associated_diagram->full_name() + "</b> is deleted\n";
-      }
-      else {
-	nl_indent(st);
-	st << "associated_diagram ";
-	associated_diagram->save(st, TRUE, warning);
-      }
+      nl_indent(st);
+      st << "associated_diagram ";
+      associated_diagram->save(st, TRUE, warning);
     }
     
-    /*
-    if (associated_artifact != 0) {
-      if (associated_artifact->deletedp()) {
-	warning += QString("<p>class <b>") + full_name() +
-	  "</b>'s associated source artifact <b>" +
-	    associated_artifact->full_name() + "</b> is deleted\n";
-      }
-      else {
-	nl_indent(st);
-	st << "associated_artifact ";
-	associated_artifact->save(st, TRUE, warning);
-      }
-    }*/
     BrowserNode::save(st);
     
     // bodies file

@@ -69,6 +69,7 @@ class BrowserInterruptibleActivityRegion : public BrowserNode, public Labeled<Br
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual void modified();
+    virtual void on_delete();
     virtual BasicData * get_data() const;
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
     virtual bool allow_empty() const;

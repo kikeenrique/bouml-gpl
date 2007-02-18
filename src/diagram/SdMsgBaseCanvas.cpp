@@ -297,7 +297,7 @@ void SdMsgBaseCanvas::save(QTextStream & st, QString & warning) const {
 	    "</b> deleted operation <b>" + msg->definition(TRUE) + "</b><br>\n<br>\n";
       if (warning[0] == '!') {
 	st << " msg ";
-	msg->save(st, TRUE, warning, "");
+	msg->save(st, TRUE, warning);
       }
       else {
 	st << " explicitmsg ";
@@ -306,7 +306,7 @@ void SdMsgBaseCanvas::save(QTextStream & st, QString & warning) const {
     }
     else {
       st << " msg ";
-      msg->save(st, TRUE, warning, "");
+      msg->save(st, TRUE, warning);
     }
   }
   else if (! explicit_msg.isEmpty()) {

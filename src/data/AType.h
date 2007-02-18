@@ -43,7 +43,7 @@ class AType {
     QString get_full_type() const;
     
     void send_def(ToolCom * com) const;
-    bool save(QTextStream & st, QString & warning,
+    void save(QTextStream & st, QString & warning,
 	      const char * t, const char * ex) const;
     void read(char * & st, const char * t, const char * ex);
     void read(char * & st, const char * t, const char * ex, const char * k);

@@ -2,7 +2,7 @@ class UmlActivityControlNode
 !!!206338.cpp!!!	write(inout out : FileOut) : void
     out.indent();
   out << ((parent()->kind() == anActivity) ? "<node" : "<containedNode")
-    << " xmi:type=\"" << sKind() << '"';
+    << " xmi:type=\"uml:" << sKind() << '"';
   out.id(this);
   if (!name().isEmpty()){
     out << " name=\"";

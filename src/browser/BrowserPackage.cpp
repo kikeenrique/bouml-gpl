@@ -1844,16 +1844,9 @@ void BrowserPackage::save_all(bool modified_only)
 	pack->def->save(st, warning);
 	
 	if (pack->associated_diagram != 0) {
-	  if (pack->associated_diagram->deletedp()) {
-	    warning += QString("<p>package <b>") + pack->full_name() +
-	      "</b>'s associated diagram <b>" +
-		pack->associated_diagram->full_name() + "</b> is deleted\n";
-	  }
-	  else {
-	    nl_indent(st);
-	    st << "associated_diagram ";
-	    pack->associated_diagram->save(st, TRUE, warning);
-	  }
+	  nl_indent(st);
+	  st << "associated_diagram ";
+	  pack->associated_diagram->save(st, TRUE, warning);
 	}
 
 	pack->BrowserNode::save(st);

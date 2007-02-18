@@ -75,14 +75,14 @@ int BrowserNode::already_saved;
 
 BrowserNode::BrowserNode(QString s, BrowserView * parent)
     : QListViewItem(parent, s),
-      name(s), is_deleted(FALSE), is_new(TRUE), is_read_only(FALSE),
-      is_edited(FALSE), is_marked(FALSE), is_saveable(TRUE) {
+      name(s), is_deleted(FALSE), is_modified(FALSE), is_new(TRUE),
+      is_read_only(FALSE), is_edited(FALSE), is_marked(FALSE), is_saveable(TRUE) {
 }
 
 BrowserNode::BrowserNode(QString s, BrowserNode * parent)
     : QListViewItem(parent, s),
-      name(s), is_deleted(FALSE), is_new(TRUE), is_read_only(FALSE),
-      is_edited(FALSE), is_marked(FALSE), is_saveable(TRUE) {
+      name(s), is_deleted(FALSE), is_modified(FALSE), is_new(TRUE),
+      is_read_only(FALSE), is_edited(FALSE), is_marked(FALSE), is_saveable(TRUE) {
   
   // move it at end
   QListViewItem * child = parent->firstChild();
@@ -96,8 +96,8 @@ BrowserNode::BrowserNode(QString s, BrowserNode * parent)
 
 BrowserNode::BrowserNode()
     : QListViewItem(UndefinedNodePackage, "<not yet read>"),
-      is_deleted(FALSE), is_new(TRUE), is_read_only(FALSE),
-      is_edited(FALSE), is_marked(FALSE), is_saveable(TRUE) {
+      is_deleted(FALSE), is_modified(FALSE), is_new(TRUE),
+      is_read_only(FALSE), is_edited(FALSE), is_marked(FALSE), is_saveable(TRUE) {
 }
 
 BrowserNode::~BrowserNode() {

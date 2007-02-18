@@ -34,6 +34,8 @@
 
 #include "BrowserRegion.h"
 #include "BrowserState.h"
+#include "BrowserPseudoState.h"
+#include "BrowserStateAction.h"
 #include "SimpleData.h"
 #include "UmlDrag.h"
 #include "UmlPixmap.h"
@@ -305,8 +307,16 @@ bool BrowserRegion::tool_cmd(ToolCom * com, const char * args) {
 	  else
 	    (BrowserState::add_state(this, args))->write_id(com);
 	  break;
+	case UmlStateAction:
+	  BrowserStateAction::add_stateaction(this)->write_id(com);
+	  break;
 	default:
-	  ok = FALSE;
+	  if (IsaPseudoState(k) &&
+	      !wrong_child_name(args, k, TRUE,
+				BrowserPseudoState::allow_empty(k)))
+	    BrowserPseudoState::add_pseudostate(this, k, args)->write_id(com);
+	  else
+	    ok = FALSE;
 	  break;
 	}
       }

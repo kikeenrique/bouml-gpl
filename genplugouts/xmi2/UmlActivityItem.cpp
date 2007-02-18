@@ -6,8 +6,6 @@
 void UmlActivityItem::write_selection(FileOut & out, QCString s) {
   if (! s.isEmpty())
     out.ref(activity()->add_opaque_behavior(s), "selection", "OPAQUE_BEHAVIOR_");
-
-
 }
 
 UmlActivity * UmlActivityItem::activity() {

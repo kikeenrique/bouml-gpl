@@ -407,7 +407,7 @@ void BrowserExpansionNode::save(QTextStream & st, bool ref, QString & warning) {
     st << "expansionnode " << get_ident() << ' ';
     save_string(name, st);
     indent(+1);
-    def->save(st, warning, "expansion node");
+    def->save(st, warning);
     BrowserNode::save(st);
     
     // saves the sub elts

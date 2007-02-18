@@ -391,7 +391,7 @@ void PinDialog::accept() {
 	else
 	  t.explicit_type = s;
       }
-      pin->type = t;
+      pin->set_type(t);
       pin->dir = dir;
       pin->multiplicity =
 	edmultiplicity->currentText().stripWhiteSpace();

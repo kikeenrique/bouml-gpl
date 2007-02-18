@@ -72,6 +72,7 @@ class BrowserPin : public BrowserNode, public Labeled<BrowserPin> {
     static BrowserNode * get_it(const char * k, int id);
 
     static void new_one(BrowserNode * future_parent, const char * name, const PinParamData & pd);
+    static BrowserPin * new_one(BrowserNode * future_parent, const char * name);
     static BrowserPin * add_pin(BrowserPin * pin, BrowserNode * future_parent);
     virtual BasicData * add_relation(UmlCode, BrowserNode * end);
     const char * may_start() const;

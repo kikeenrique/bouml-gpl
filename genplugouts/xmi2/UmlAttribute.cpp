@@ -81,7 +81,7 @@ void UmlAttribute::write_cpp_type(FileOut & out) {
   
   // replace keywords linked to the type
   if ((index = s.find("${const}")) != -1)
-    s.replace(index, 8, isReadOnly() ? "const" : "");
+    s.replace(index, 8, isReadOnly() ? "const " : "");
   
   UmlTypeSpec t = type();
   

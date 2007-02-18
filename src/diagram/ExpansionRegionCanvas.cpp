@@ -461,7 +461,7 @@ void ExpansionRegionCanvas::menu(const QPoint&) {
     browser_node->delete_it();	// will delete the canvas
     break;
   case 9:
-    if (((BrowserExpansionRegion *) browser_node)->add_expansionnode(0, 0) != 0)
+    if (((BrowserExpansionRegion *) browser_node)->add_expansionnode() != 0)
       modified();
     break;
   default:
