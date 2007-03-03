@@ -30,12 +30,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <qdatetime.h>
-#include <qmessagebox.h>
 #include <qapplication.h>
 
 #include "mu.h"
 #include "myio.h"
 #include "BrowserView.h"
+#include "DialogUtil.h"
 
 static int Uid = -1;
 static int RootPermission;	// old Uid or 0
@@ -57,7 +57,7 @@ int user_id()
     QDir dir = BrowserView::get_dir();
     
     if (dir.exists("all.lock")) {
-      QMessageBox::critical(0, "Bouml", 
+      msg_critical("Bouml", 
 			    "\
 The project is open in read-only mode because it is\n\
 under the control of 'Project control' or 'Project merge'\n\
@@ -79,7 +79,7 @@ under the control of 'Project control' or 'Project merge'\n\
 	Uid = Uid % 125 + 2;
       } while (!dir.mkdir(QString::number(Uid) + ".lock"));
       
-      QMessageBox::critical(0, "BOUML_ID", 
+      msg_critical("BOUML_ID", 
 			    "The BOUML_ID environment variable is not or wrong defined.\n\
 \n\
 This one allows several users to work on the same project, this time your\n\
@@ -90,13 +90,13 @@ You must to define the environment variable BOUML_ID valuing between 2 up to 127
 not used by an other person working at the same time on a project with you.");
     }
     else if (! dir.mkdir(QString::number(Uid) + ".lock")) {
-      QMessageBox::critical(0, "BOUML_ID", 
-			    "\
+      msg_critical("BOUML_ID", 
+		   "\
 It seems that you are already editing the project.\n\
 If you're SURE that this is not the case\n\
 and another user does not have an identifier\n\
 equal to yours, remove the directory "
-			    + QString::number(Uid) + ".lock\n\
+		   + QString::number(Uid) + ".lock\n\
 an restart BOUML");
       exit(1);
     }

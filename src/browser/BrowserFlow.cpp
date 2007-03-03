@@ -28,7 +28,6 @@
 #endif
 
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 #include <qcursor.h>
 #include <qpainter.h>
 #include <qptrdict.h>

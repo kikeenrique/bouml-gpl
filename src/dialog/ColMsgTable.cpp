@@ -27,7 +27,6 @@
 #pragma warning (disable: 4150)
 #endif
 
-#include <qmessagebox.h> 
 #include <qpopupmenu.h>
 #include <qvalidator.h>
 #include <qcursor.h>
@@ -39,6 +38,7 @@
 #include "MenuTitle.h"
 #include "CodChangeMsgDialog.h"
 #include "MyInputDialog.h"
+#include "DialogUtil.h"
 
 #define ABS_RANK_COL	0
 #define HI_RANK_COL	1
@@ -279,7 +279,7 @@ void ColMsgTable::change_ranks(int row, int col) {
 	}
       }
       if (msg->hierarchical_rank != new_hr) {
-	QMessageBox::warning(view, "Warning", "Invalid hierarchical rank");
+	msg_warning("Warning", "Invalid hierarchical rank");
 	new_hr = old_hr;
       }
       else

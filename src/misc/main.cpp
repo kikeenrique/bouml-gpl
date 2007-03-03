@@ -28,7 +28,6 @@
 #endif
 
 #include <qapplication.h>
-#include <qmessagebox.h>
 
 #include "UmlWindow.h"
 #include "UmlPixmap.h"
@@ -39,6 +38,7 @@
 #include "BrowserPackage.h"
 #include "Shortcut.h"
 #include "strutil.h"
+#include "DialogUtil.h"
 #include "mu.h"
 
 QApplication * theApp;
@@ -61,12 +61,13 @@ int main(int argc, char **argv)
     try {
       if ((argc == 3) &&
 	  !strcmp(argv[2], "-root") &&
-	  (QMessageBox::critical(0, "DO NOT CONFIRM",
-				 "Root mode protection\n\n"
-				 "This mode allows me to develop BOUML\n\n"
-				 "do NOT confirm to avoid a disaster !!!",
-				 "Confirm", "Standard user mode", QString::null,
-				 1, 1) == 0)) {
+	  (msg_critical("DO NOT CONFIRM",
+			"Root mode protection\n\n"
+			"This mode allows me to develop BOUML\n\n"
+			"do NOT confirm to avoid a disaster !!!\n\n"
+			"confirm ?",
+			QMessageBox::Yes, QMessageBox::No)
+	   == QMessageBox::Yes)) {
 	set_user_id(0);
 	argc = 1;
       }
@@ -101,7 +102,7 @@ int main(int argc, char **argv)
 	ToolCom::run((const char *) cmd, BrowserView::get_project(), with_exit);
       }
       else
-	QMessageBox::warning(0, "Error", "Bouml was called with wrong parameters, ignore them");
+	msg_warning("Error", "Bouml was called with wrong parameters, ignore them");
     }
     
     theApp->exec();

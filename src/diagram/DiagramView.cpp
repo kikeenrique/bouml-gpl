@@ -34,7 +34,6 @@
 #include <qclipboard.h>
 #include <qpaintdevicemetrics.h>
 #include <qfiledialog.h>
-#include <qmessagebox.h>
 #include <qbuffer.h>
 #ifdef WIN32
 #include <qtimer.h>
@@ -62,6 +61,7 @@
 #include "UmlWindow.h"
 #include "Shortcut.h"
 #include "MenuTitle.h"
+#include "DialogUtil.h"
 #include "myio.h"
 
 #include "align_top.xpm"
@@ -321,7 +321,7 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	    const char * err = i->may_start(action);
 	    
 	    if (err != 0) {
-	      QMessageBox::critical(0, "Bouml" , err);
+	      msg_critical("Bouml" , err);
 	      window()->selectOn();
 	    }
 	    else {
@@ -375,7 +375,7 @@ void DiagramView::contentsMouseReleaseEvent(QMouseEvent * e) {
 	    arrowBeginning->post_connexion(action, i);
 	  }
 	  else if (strcmp(err, "illegal")) {
-	    QMessageBox::critical(0, "Bouml", err);
+	    msg_critical("Bouml", err);
 	    abort_line_construction();
 	  }
 	  else if (arrowBeginning->allowed_direction(action) == DiagramItem::All) {

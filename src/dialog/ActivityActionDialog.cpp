@@ -33,7 +33,6 @@
 #include <qcombobox.h> 
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
-#include <qmessagebox.h>
 #include <qpushbutton.h> 
 #include <qpopupmenu.h> 
 #include <qcursor.h> 
@@ -299,7 +298,7 @@ void ActivityActionDialog::accept() {
       ((BrowserNode *) bn->parent())->wrong_child_name(s, UmlActivityAction,
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
-    QMessageBox::critical(0, "Error", s + "\n\nillegal name or already used");
+    msg_critical("Error", s + "\n\nillegal name or already used");
   else {  
     act->undepend();
     bn->set_name(s);

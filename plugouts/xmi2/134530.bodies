@@ -18,7 +18,7 @@ class UmlFlow
 !!!200322.cpp!!!	write_it(inout out : FileOut) : void
   const char * k;
     
-  switch (parent()->kind()) {
+  switch (parent()->parent()->kind()) {
   case anActivity:
     k = "edge";
     break;
@@ -61,6 +61,7 @@ class UmlFlow
     g = cppGuard();
     s = cppSelection();
     t = cppTransformation();
+    break;
   default:
     // java
     w = javaWeight();

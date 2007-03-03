@@ -28,7 +28,6 @@
 #endif
 
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 #include <qcursor.h>
 
 #include "BrowserComponentView.h"
@@ -42,6 +41,7 @@
 #include "ToolCom.h"
 #include "Tool.h"
 #include "MenuTitle.h"
+#include "DialogUtil.h"
 #include "mu.h"
 
 IdDict<BrowserComponentView> BrowserComponentView::all;
@@ -482,7 +482,7 @@ void BrowserComponentView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	old_parent->package_modified();
     }
     else {
-      QMessageBox::critical(0, "Error", "Forbiden");
+      msg_critical("Error", "Forbiden");
       e->ignore();
     }
   }

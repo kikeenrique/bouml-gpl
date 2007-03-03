@@ -32,7 +32,6 @@
 #include <qdir.h>
 #include <qfile.h>
 #include <qstring.h>
-#include <qmessagebox.h>
 #include <qcanvas.h>
 #include <qmultilineedit.h>
 #include <qtextview.h> 
@@ -50,6 +49,7 @@
 #include "BrowserView.h"
 #include "Labeled.h"
 #include "strutil.h"
+#include "DialogUtil.h"
 #include "mu.h"
 
 static ReadContext Context;
@@ -542,8 +542,8 @@ UmlCode arrow_type(const char * s)
   if (!strcmp(s, "---O"))
     return UmlProvided;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not a line kind");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not a line kind");
   throw 0;
 }
 
@@ -572,8 +572,8 @@ UmlCode relation_type(const char * s, bool simple_relation)
   if (!strcmp(s, "-_-|>"))
     return UmlRealize;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not a relation kind");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not a relation kind");
   throw 0;
 }
 
@@ -601,8 +601,8 @@ UmlVisibility visibility(const char * s)
   else if (!strcmp(s, "default"))
     return UmlDefaultVisibility;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not a visibility");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not a visibility");
   throw 0;
 }
 
@@ -617,8 +617,8 @@ UmlParamDirection direction(const char * s)
   if (!strcmp(s, "return"))
     return UmlReturn;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not a direction");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not a direction");
   throw 0;
 }
 
@@ -635,8 +635,8 @@ UmlParamEffect effect(const char * s)
   if (!strcmp(s, "delete"))
     return UmlDelete;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not a parameter effect");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not a parameter effect");
   throw 0;
 }
 
@@ -671,8 +671,8 @@ UmlActionKind activity_action_kind(const char * s)
   if (!strcmp(s, "value_specification_action"))
     return UmlValueSpecificationAction;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not an activity action kind");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not an activity action kind");
   throw 0;
 }
 
@@ -685,8 +685,8 @@ UmlExpansionKind expansion_mode_kind(const char * s)
   if (! strcmp(s, "stream"))
     return UmlStream;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not an expansion node kind");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not an expansion node kind");
   throw 0;
 }
 
@@ -701,8 +701,8 @@ UmlOrderingKind ordering(const char * s)
   if (! strcmp(s, "fifo"))
     return UmlFifo;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not an ordering");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not an ordering");
   throw 0;
 }
 
@@ -715,8 +715,8 @@ Uml3States state(const char * s)
   if (!strcmp(s, "default"))
     return UmlDefaultState;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not a state");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not a state");
   throw 0;
 }
 
@@ -737,8 +737,8 @@ ClassDrawingMode drawing_mode(const char * s)
   if (!strcmp(s, "default"))
     return DefaultClassDrawingMode;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not a class drawing mode");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not a class drawing mode");
   throw 0;
 }
 
@@ -755,8 +755,8 @@ DrawingLanguage drawing_language(const char * s)
   if (!strcmp(s, "default"))
     return DefaultDrawingLanguage;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not a drawing language");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not a drawing language");
   throw 0;
 }
 
@@ -775,8 +775,8 @@ ShowContextMode context_mode(const char * s)
   if (!strcmp(s, "default"))
     return DefaultShowContextMode;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not a context mode");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not a context mode");
   throw 0;
 }
 
@@ -838,8 +838,8 @@ UmlColor color(const char * s)
   if (! strcmp(s, "darkmagenta"))
     return UmlDarkMagenta;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not a color");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not a color");
   throw 0;
 }
 
@@ -874,8 +874,8 @@ UmlFont font(const char * s)
   if (!strcmp(s, "strikeout"))
     return UmlNormalStrikeOutFont;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not a font");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not a font");
   throw 0;
 }
 
@@ -927,8 +927,8 @@ CanvasFormat canvas_format(const char * s)
   if (! strcmp(s, "E-Landscape"))
     return UsELandscape;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not a canvas format");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not a canvas format");
   throw 0;
 }
 
@@ -957,8 +957,8 @@ UmlCode pseudo_state_kind(const char * s)
   if (! strcmp(s, "join"))
     return JoinPS;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not a pseudo state kind");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not a pseudo state kind");
   throw 0;
 }
 
@@ -979,8 +979,8 @@ UmlCode activity_node_kind(const char * s)
   if (! strcmp(s, "join"))
     return JoinAN;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not an activity node kind");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not an activity node kind");
   throw 0;
 }
 
@@ -999,8 +999,8 @@ LineGeometry line_geometry(const char * s)
   if (! strcmp(s, "VHV"))
     return VHVGeometry;
   
-  QMessageBox::critical(0, "Error",
-			Context.filename + " : " + s + " is not a line geometry");
+  msg_critical("Error",
+	       Context.filename + " : " + s + " is not a line geometry");
   throw 0;
 }
 
@@ -1036,11 +1036,12 @@ void backup(QDir & d, QString fn)
 
   while (d.exists(fn) &&
 	 !d.rename(fn, fn + s) &&
-	 (QMessageBox::warning(0, "Uml",
-			       d.absFilePath(fn) + 
-			       "\ncannot be renamed " + fn + s + 
-			       ", retry ?\n",
-			       "yes", "no", 0, 0, 0) == 0))
+	 (msg_warning("Uml",
+		      d.absFilePath(fn) + 
+		      "\ncannot be renamed " + fn + s + 
+		      ", retry ?\n",
+		      QMessageBox::Yes, QMessageBox::No)
+	  == QMessageBox::Yes))
     ;
 }
 
@@ -1069,12 +1070,13 @@ int open_file(QFile & fp, int mode, bool silent)
   
   while (! fp.open(mode)) {
     if (silent ||
-	(QMessageBox::critical(0, "Uml",
-			       Context.filename +
-			       ((mode != IO_ReadOnly)
-				? "\ncannot be openned for write, retry ?\n"
-				: "\ncannot be openned for read, retry ?\n"),
-			       "yes", "no", 0, 0, 0) != 0))
+	(msg_critical("Uml",
+		      Context.filename +
+		      ((mode != IO_ReadOnly)
+		       ? "\ncannot be openned for write, retry ?\n"
+		       : "\ncannot be openned for read, retry ?\n"),
+		      QMessageBox::Yes, QMessageBox::No)
+	 != QMessageBox::Yes))
       return -1;
   }
   
@@ -1100,7 +1102,7 @@ bool copy_file(QFileInfo * src, const QDir & dest)
     
     err.sprintf("cannot open %s to read it", (const char *) src_path);
     
-    QMessageBox::critical(0, "Error", err);
+    msg_critical("Error", err);
     return FALSE;
   }
 
@@ -1112,7 +1114,7 @@ bool copy_file(QFileInfo * src, const QDir & dest)
     
     err.sprintf("cannot create %s", (const char *) dest_path);
     
-    QMessageBox::critical(0, "Error", err);
+    msg_critical("Error", err);
     fclose(fp_src);
     return FALSE;
   }
@@ -1126,7 +1128,7 @@ bool copy_file(QFileInfo * src, const QDir & dest)
       
       err.sprintf("error when writting %s", (const char *) dest_path);
       
-      QMessageBox::critical(0, "Error", err);
+      msg_critical("Error", err);
       fclose(fp_src);
       fclose(fp_dest);
       return FALSE;
@@ -1138,7 +1140,7 @@ bool copy_file(QFileInfo * src, const QDir & dest)
     
     err.sprintf("error when reading %s", (const char *) src_path);
     
-    QMessageBox::critical(0, "Error", err);
+    msg_critical("Error", err);
     fclose(fp_src);
     fclose(fp_dest);
     return FALSE;
@@ -1180,7 +1182,7 @@ void save_if_needed(const char * filename, const char * newdef)
     backup(d, filename);
     
     if ((fp = fopen((const char *) path, "wb")) == 0)
-      QMessageBox::warning(0, "Uml",
+      msg_warning("Uml",
 			   path + " can't be modified");
     else {
       fputs(newdef, fp);
@@ -1202,7 +1204,7 @@ char * read_file(QString filename)
     char * s = new char[size + 1];
     
     if (fp.readBlock(s, size) == -1) {
-      QMessageBox::critical(0, "Error", filename + "cannot be read");
+      msg_critical("Error", filename + "cannot be read");
       delete [] s;
       return 0;
     }
@@ -1264,7 +1266,7 @@ char * read_file(QString filename, int offset, int len)
     
     fp.at(offset);
     if (fp.readBlock(s, len) == -1) {
-      QMessageBox::critical(0, "Error", filename + "cannot be read");
+      msg_critical("Error", filename + "cannot be read");
       delete [] s;
       return 0;
     }
@@ -1328,8 +1330,8 @@ void save_definition(int id, const char * ext, const char * def,
   s = d.absFilePath(s);
   
   while ((fp = fopen((const char *) s, "wb")) == 0)
-    if (QMessageBox::critical(0, "Error", QString("Cannot save definition in\n") + s,
-			      QMessageBox::Retry, QMessageBox::Abort)
+    if (msg_critical("Error", QString("Cannot save definition in\n") + s,
+		     QMessageBox::Retry, QMessageBox::Abort)
 	== QMessageBox::Abort) {
     if (ext[1] != 0)
       exit(1);
@@ -1502,13 +1504,13 @@ char * read_string(char * & st)
   skip_whitespace_comment(st);
 
   if (*st == 0) {
-    QMessageBox::critical(0, "Error", 
+    msg_critical("Error", 
 			  where() + "premature end of file, string expected");
     throw 0;
   }
     
   if (*st != '"') {
-    QMessageBox::critical(0, "Error", 
+    msg_critical("Error", 
 			  where() + "string expected after '"
 			  + Context.previous_word + "'");
     throw 0;
@@ -1519,7 +1521,7 @@ char * read_string(char * & st)
   for (;;) {
     switch (*++st) {
     case 0:
-      QMessageBox::critical(0, "Error",
+      msg_critical("Error",
 			    where() + "premature end of file reading a string");
       throw 0;
     case '"':
@@ -1550,7 +1552,7 @@ char * read_string(char * & st)
       return r;
     case '\\':
       if (*++st  == 0) {
-	QMessageBox::critical(0, "Error",
+	msg_critical("Error",
 			      where() + "premature end of file reading a string");
 	throw 0;
       }
@@ -1566,13 +1568,13 @@ char * read_keyword(char * & st)
   skip_whitespace_comment(st);
 
   if (*st == 0) {
-    QMessageBox::critical(0, "Error",
+    msg_critical("Error",
 			  where() + "premature end of file, keyword expected");
     throw 0;
   }
   
   if (*st == '"') {
-    QMessageBox::critical(0, "Error",
+    msg_critical("Error",
 			  where() + "keyword expected after '"
 			  + Context.previous_word + "'");
     throw 0;
@@ -1596,14 +1598,14 @@ char * read_keyword(char * & st, const char * expected)
   skip_whitespace_comment(st);
 
   if (*st == 0) {
-    QMessageBox::critical(0, "Error",
+    msg_critical("Error",
 			  where() + "premature end of file, '" 
 			  + expected + "' expected");
     throw 0;
   }
   
   if (*st == '"') {
-    QMessageBox::critical(0, "Error",
+    msg_critical("Error",
 			  where() + "'" + expected + 
 			  "' expected rather than a string after '"
 			  + Context.previous_word + "'");
@@ -1620,7 +1622,7 @@ char * read_keyword(char * & st, const char * expected)
   *st++ = 0;
 
   if (strcmp(r, expected)) {
-    QMessageBox::critical(0, "Error",
+    msg_critical("Error",
 			  where() + "'" + expected + "' expected rather than '"
 			  + r + "' after '" + Context.previous_word + "'");
     throw 0;
@@ -1639,14 +1641,14 @@ char * read_keyword(char * & st, const char * expected1,
   skip_whitespace_comment(st);
 
   if (*st == 0) {
-    QMessageBox::critical(0, "Error",
+    msg_critical("Error",
 			  where() + "premature end of file, '" 
 			  + expected1 + "' expected");
     throw 0;
   }
   
   if (*st == '"') {
-    QMessageBox::critical(0, "Error",
+    msg_critical("Error",
 			  where() + "'" + expected1 + 
 			  "' expected rather than a string after '"
 			  + Context.previous_word + "'");
@@ -1663,7 +1665,7 @@ char * read_keyword(char * & st, const char * expected1,
   *st++ = 0;
 
   if (strcmp(r, expected1) && strcmp(r, expected2)) {
-    QMessageBox::critical(0, "Error",
+    msg_critical("Error",
 			  where() + "'" + expected1 + "' expected rather than '"
 			  + r + "' after '" + Context.previous_word + "'");
     throw 0;
@@ -1691,13 +1693,13 @@ int read_id(char * & st)
   skip_whitespace_comment(st);
 
   if (*st == 0) {
-    QMessageBox::critical(0, "Error",
+    msg_critical("Error",
 			  where() + "premature end of file, id expected");
     throw 0;
   }
   
   if (*st == '"') {
-    QMessageBox::critical(0, "Error",
+    msg_critical("Error",
 			  where() + "id expected after '" + Context.previous_word + "'");
     throw 0;
   }
@@ -1710,7 +1712,7 @@ int read_id(char * & st)
     result = result*10 + c - '0';
   
   if (st == r+1) {
-    QMessageBox::critical(0, "Error", 
+    msg_critical("Error", 
 			  where() + "id expected after '" + Context.previous_word + "'");
     throw 0;
   }
@@ -1727,13 +1729,13 @@ unsigned read_unsigned(char * & st)
   skip_whitespace_comment(st);
 
   if (*st == 0) {
-    QMessageBox::critical(0, "Error",
+    msg_critical("Error",
 			  where() + "premature end of file, unsigned expected");
     throw 0;
   }
   
   if (*st == '"') {
-    QMessageBox::critical(0, "Error",
+    msg_critical("Error",
 			  where() + "unsigned expected after '" + Context.previous_word + "'");
     throw 0;
   }
@@ -1746,7 +1748,7 @@ unsigned read_unsigned(char * & st)
     result = result*10 + c - '0';
   
   if (st == r+1) {
-    QMessageBox::critical(0, "Error", 
+    msg_critical("Error", 
 			  where() + "unsigned expected after '" + Context.previous_word + "'");
     throw 0;
   }
@@ -1763,13 +1765,13 @@ double read_double(char * & st)
   skip_whitespace_comment(st);
 
   if (*st == 0) {
-    QMessageBox::critical(0, "Error",
+    msg_critical("Error",
 			  where() + "premature end of file, float expected");
     throw 0;
   }
   
   if (*st == '"') {
-    QMessageBox::critical(0, "Error",
+    msg_critical("Error",
 			  where() + "float expected after '" + Context.previous_word + "'");
     throw 0;
   }
@@ -1799,7 +1801,7 @@ double read_double(char * & st)
     
     if (!ok) {
       // '.' or ',' problem ?
-      QMessageBox::critical(0, "Error", 
+      msg_critical("Error", 
 			    where() + "float expected rather than '"
 			    + s + "' after '" + Context.previous_word + "'");
       throw 0;
@@ -1841,7 +1843,7 @@ char * skip_until(char * & st, const char * expected)
     skip_whitespace_comment(st);
     
     if (*st == 0) {
-      QMessageBox::critical(0, "Error",
+      msg_critical("Error",
 			    where() + "premature end of file");
       throw 0;
     }
@@ -1855,7 +1857,7 @@ char * skip_until(char * & st, const char * expected)
 
 void wrong_keyword(const char * k, const char * expected)
 {
-  QMessageBox::critical(0, "Error",
+  msg_critical("Error",
 			where() + "'" + expected
 			+ "' expected rather than '" + k + "'");
   throw 0;
@@ -1863,14 +1865,14 @@ void wrong_keyword(const char * k, const char * expected)
 
 void unknown_keyword(const char * k)
 {
-  QMessageBox::critical(0, "Error",
+  msg_critical("Error",
 			where() + "unknown or unexpected keyword '" + k + "'");
   throw 0;
 }
 
 void unknown_ref(const char * kind, int id)
 {
-  QMessageBox::critical(0, "Error", 
+  msg_critical("Error", 
 			where() + QString::number(id) +
 			" unknown " + kind + " identifier");
   throw 0;

@@ -31,7 +31,6 @@
 #include <qvbox.h>
 #include <qlabel.h>
 #include <qcombobox.h> 
-#include <qmessagebox.h>
 #include <qpushbutton.h> 
 
 #include "TransitionDialog.h"
@@ -233,7 +232,7 @@ void TransitionDialog::accept() {
       ((BrowserNode *) bn->parent())->wrong_child_name(s, UmlTransition,
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
-    QMessageBox::critical(0, "Error", s + "\n\nillegal name or already used");
+    msg_critical("Error", s + "\n\nillegal name or already used");
   else {  
     bn->set_name(s);
     rel->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));

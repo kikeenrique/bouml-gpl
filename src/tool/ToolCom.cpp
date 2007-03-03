@@ -27,7 +27,6 @@
 
 #ifdef WIN32
 # include <process.h>
-# include <qmessagebox.h>
 #endif
 
 #ifdef WIN32
@@ -52,6 +51,7 @@ using namespace std;
 #include "BrowserView.h"
 #include "BrowserClass.h"
 #include "BrowserPackage.h"
+#include "DialogUtil.h"
 #include "mu.h"
 
 Socket::Socket(ToolCom * c)
@@ -156,10 +156,10 @@ int ToolCom::run(const char * cmd, BrowserNode * bn, bool exit)
   v[i + 1] = 0;
 
   if (_spawnvp(_P_DETACH, v[0], v) == -1)
-    QMessageBox::critical(0, "Bouml",
-			  "can't start the plug-out '" +l[0] +"'\n"
-			  "perhaps you must specify its absolute path"
-			  "or set the environment variable PATH ?");
+    msg_critical("Bouml",
+		 "can't start the plug-out '" +l[0] +"'\n"
+		 "perhaps you must specify its absolute path"
+		 "or set the environment variable PATH ?");
   
   delete v;
 #else

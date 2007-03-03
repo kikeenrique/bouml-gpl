@@ -27,6 +27,8 @@
 #pragma warning (disable: 4150)
 #endif
 
+#include <stdio.h>
+
 #include <qlayout.h> 
 #include <qpushbutton.h>
 #include <qfile.h>
@@ -36,8 +38,6 @@
 #include "SourceDialog.h"
 #include "UmlDesktop.h"
 #include "strutil.h"
-
-#include <stdio.h>
 
 bool NumberedMultiLineEdit::event(QEvent * e) {
   static int old_l = 0;

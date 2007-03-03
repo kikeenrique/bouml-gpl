@@ -31,7 +31,6 @@
 #include <qvbox.h>
 #include <qlabel.h>
 #include <qcombobox.h> 
-#include <qmessagebox.h>
 #include <qpushbutton.h> 
 
 #include "StateDialog.h"
@@ -226,7 +225,7 @@ void StateDialog::accept() {
       ((BrowserNode *) bn->parent())->wrong_child_name(s, UmlState,
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
-    QMessageBox::critical(0, "Error", s + "\n\nillegal name or already used");
+    msg_critical("Error", s + "\n\nillegal name or already used");
   else {  
     bn->set_name(s);
     state->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));

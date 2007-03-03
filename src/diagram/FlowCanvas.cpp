@@ -30,7 +30,6 @@
 #include <qcursor.h>
 #include <math.h>
 #include <qpopupmenu.h>
-#include <qmessagebox.h>
 
 #include "FlowCanvas.h"
 #include "ArrowPointCanvas.h"
@@ -47,6 +46,7 @@
 #include "MenuTitle.h"
 #include "Settings.h"
 #include "SettingsDialog.h"
+#include "DialogUtil.h"
 #include "strutil.h"
 
 FlowCanvas::FlowCanvas(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
@@ -636,7 +636,7 @@ void FlowCanvas::drop(BrowserNode * bn, UmlCanvas * canvas)
   
   if ((difrom != 0) && (dito != 0)) {
     if (difrom->has_relation(UmlFlow, def))
-      QMessageBox::information(0, "Bouml", "flow already drawn");
+      msg_information("Bouml", "flow already drawn");
     else {
       FlowCanvas * tr = 
 	new FlowCanvas(canvas, difrom, dito, from, 0, def);

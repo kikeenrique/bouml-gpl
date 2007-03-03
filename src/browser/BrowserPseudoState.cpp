@@ -28,7 +28,6 @@
 #endif
 
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 #include <qpainter.h>
 #include <qcursor.h>
 
@@ -44,6 +43,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "strutil.h"
+#include "DialogUtil.h"
 #include "mu.h"
 
 IdDict<BrowserPseudoState> BrowserPseudoState::all(257);
@@ -275,14 +275,7 @@ BrowserPseudoState *
 BrowserPseudoState::add_pseudostate(BrowserNode * future_parent,
 				    UmlCode c, const char * name)
 {
-  SimpleData * d = new SimpleData();
-  BrowserPseudoState * r =
-    new BrowserPseudoState(c, name, future_parent, d);
-  
-  future_parent->setOpen(TRUE);
-  future_parent->package_modified();
-  
-  return r;
+  return new BrowserPseudoState(c, name, future_parent, new SimpleData());
 }
 
 BrowserPseudoState * BrowserPseudoState::get_pseudostate(BrowserNode * future_parent, UmlCode c) {
@@ -308,13 +301,13 @@ BrowserPseudoState * BrowserPseudoState::get_pseudostate(BrowserNode * future_pa
   switch (c) {
   case DeepHistoryPS:
     if (! l.isEmpty()) {
-      QMessageBox::critical(0, "Bouml", "already have a deep history");
+      msg_critical("Bouml", "already have a deep history");
       return 0;
     }
     break;
   case ShallowHistoryPS:
     if (! l.isEmpty()) {
-      QMessageBox::critical(0, "Bouml",  "already have a shallow history");
+      msg_critical("Bouml",  "already have a shallow history");
       return 0;
     }
     break;
@@ -564,7 +557,7 @@ void BrowserPseudoState::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     if (may_contains(bn, FALSE)) 
       move(bn, after);
     else {
-      QMessageBox::critical(0, "Error", "Forbiden");
+      msg_critical("Error", "Forbiden");
       e->ignore();
     }
   }

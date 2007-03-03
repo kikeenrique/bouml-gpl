@@ -145,7 +145,6 @@ bool FlowData::tool_cmd(ToolCom * com, const char * args,
       case setUmlGuardCmd:
 	uml.guard = args;
 	break;
-	break;
       case setCppGuardCmd:
 	cpp.guard = args;
 	break;
@@ -157,7 +156,6 @@ bool FlowData::tool_cmd(ToolCom * com, const char * args,
 	break;
       case setCppActivityCmd:
 	cpp.weight = args;
-	break;
 	break;
       case setJavaActivityCmd:
 	java.weight = args;

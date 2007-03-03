@@ -27,7 +27,6 @@
 #pragma warning (disable: 4150)
 #endif
 
-#include <qmessagebox.h>
 #include <qdragobject.h>
 #include <qcursor.h>
 #include <qptrdict.h>
@@ -51,6 +50,7 @@
 #include "ToolCom.h"
 #include "SaveProgress.h"
 #include "strutil.h"
+#include "DialogUtil.h"
 #include "mu.h"
 
 #ifdef WIN32
@@ -586,7 +586,7 @@ void BrowserNode::DragMoveInsideEvent(QDragMoveEvent * e) {
 
 void BrowserNode::DropAfterEvent(QDropEvent * e, BrowserNode *) {
   e->ignore();
-  QMessageBox::critical(0, "Error", "Forbiden");
+  msg_critical("Error", "Forbiden");
 }
 
 //
@@ -945,7 +945,7 @@ bool BrowserNode::enter_child_name(QString & r, const QString & msg, UmlCode typ
     
     if (ok) {
       if (wrong_child_name(r, type, allow_spaces, allow_empty))
-	QMessageBox::critical(0, "Error", r + "\n\nillegal name or already used");
+	msg_critical("Error", r + "\n\nillegal name or already used");
       else
 	return TRUE;
     }
@@ -960,7 +960,7 @@ bool BrowserNode::enter_child_name(QString & r, const QString & msg, UmlCode typ
 				   bool allow_empty, bool existing) {
   
   if (existing && nodes.isEmpty()) {
-    QMessageBox::warning(0, "Error", "nothing available");
+    msg_warning("Error", "nothing available");
     return FALSE;
   }
   
@@ -989,7 +989,7 @@ bool BrowserNode::enter_child_name(QString & r, const QString & msg, UmlCode typ
       }
     }
     if (wrong_child_name(r, type, allow_spaces, allow_empty))
-      QMessageBox::critical(0, "Error", r + "\n\nillegal name or already used");
+      msg_critical("Error", r + "\n\nillegal name or already used");
     else
       return TRUE;
   }

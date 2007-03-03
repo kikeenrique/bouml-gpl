@@ -28,7 +28,6 @@
 #endif
 
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 #include <qpainter.h>
 #include <qcursor.h>
 
@@ -58,6 +57,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "strutil.h"
+#include "DialogUtil.h"
 #include "mu.h"
 
 IdDict<BrowserActivity> BrowserActivity::all;
@@ -686,7 +686,7 @@ void BrowserActivity::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     if (may_contains(bn, FALSE)) 
       move(bn, after);
     else {
-      QMessageBox::critical(0, "Error", "Forbiden");
+      msg_critical("Error", "Forbiden");
       e->ignore();
     }
   }

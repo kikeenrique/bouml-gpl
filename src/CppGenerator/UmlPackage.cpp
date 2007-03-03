@@ -55,7 +55,7 @@ static void create_directory(QCString s)
     
     if (!sd.exists()) {
       if (!sd.mkdir(s2)) {
-	UmlCom::trace(QCString("<font face=helvetica><b> cannot create directory <i>")
+	UmlCom::trace(QCString("<font color=\"red\"><b> cannot create directory <i>")
 		      + s2 + "</i></b></font><br>");
 	UmlCom::bye();
 	UmlCom::fatal_error("UmlPackage::file_path");
@@ -84,7 +84,7 @@ QCString UmlPackage::source_path(const QCString & f) {
       dir.h = d_root.filePath(dir.h);
    
     if (dir.src.isEmpty()) {
-      UmlCom::trace(QCString("<font face=helvetica><b><b> The generation directory "
+      UmlCom::trace(QCString("<font color=\"red\"><b><b> The generation directory "
 			    "must be specified for the package<i> ") + name()
 		    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 		    "or edit the package (tab 'C++')</b></font><br>");
@@ -93,7 +93,7 @@ QCString UmlPackage::source_path(const QCString & f) {
     }
     
     if (QDir::isRelativePath(dir.src)) {
-      UmlCom::trace(QCString("<font face=helvetica><b><i>")
+      UmlCom::trace(QCString("<font color=\"red\"><b><i>")
 		    + name() + "</i>'s source path <i>(" + dir.src
 		    + "</i>) is not absolute, edit the <i> generation settings</i> "
 		    "(tab 'directory'), or edit the package (tab 'C++')</b></font><br>");
@@ -118,7 +118,7 @@ QCString UmlPackage::header_path(const QCString & f) {
     source_path(f);
    
     if (dir.h.isEmpty()) {
-      UmlCom::trace(QCString("<font face=helvetica><b><b> The generation directory "
+      UmlCom::trace(QCString("<font color=\"red\"><b><b> The generation directory "
 			    "must be specified for the package<i> ") + name()
 		    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 			    "or edit the package (tab 'C++')</b></font><br>");
@@ -127,7 +127,7 @@ QCString UmlPackage::header_path(const QCString & f) {
     }
     
     if (QDir::isRelativePath(dir.h)) {
-      UmlCom::trace(QCString("<font face=helvetica><b><i>")
+      UmlCom::trace(QCString("<font color=\"red\"><b><i>")
 		    + name() + "</i>'s header path <i>(" + dir.h
 		    + "</i>) is not absolute, edit the <i> generation settings</i> "
 		    "(tab 'directory'), or edit the package (tab 'C++')</b></font><br>");

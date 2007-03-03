@@ -30,7 +30,6 @@
 #include <qcursor.h>
 #include <math.h>
 #include <qpopupmenu.h>
-#include <qmessagebox.h>
 
 #include "RelationCanvas.h"
 #include "ArrowPointCanvas.h"
@@ -48,6 +47,7 @@
 #include "ToolCom.h"
 #include "Tool.h"
 #include "MenuTitle.h"
+#include "DialogUtil.h"
 #include "strutil.h"
 
 RelationCanvas::RelationCanvas(UmlCanvas * canvas, DiagramItem * b,
@@ -803,7 +803,7 @@ void RelationCanvas::drop(BrowserNode * bn, UmlCanvas * canvas)
   
   if ((ccfrom != 0) && (ccto != 0)) {
     if (ccfrom->has_relation(def))
-      QMessageBox::information(0, "Bouml", "relation already drawn");
+      msg_information("Bouml", "relation already drawn");
     else {
       RelationCanvas * rel = 
 	new RelationCanvas(canvas, ccfrom, ccto, from, bn->get_type(), 0, def);

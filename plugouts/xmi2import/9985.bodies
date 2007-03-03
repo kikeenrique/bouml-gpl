@@ -1,0 +1,9 @@
+class UmlUseCaseView
+!!!193410.cpp!!!	container(in kind : anItemKind, in token : Token, inout in : FileIn) : UmlItem
+  switch (kind) {
+  case aClass:
+  case anUseCase:
+    return this;
+  default:
+    return parent()->container(kind, token, in);
+  }

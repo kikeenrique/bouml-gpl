@@ -29,13 +29,13 @@
 
 #include <qpainter.h>
 #include <qintdict.h>
-#include <qmessagebox.h> 
 
 #include "DiagramItem.h"
 #include "DiagramCanvas.h"
 #include "ArrowCanvas.h"
 #include "LabelCanvas.h"
 #include "BrowserNode.h"
+#include "DialogUtil.h"
 #include "myio.h"
 
 QList<DiagramItem> DiagramItem::Undefined;
@@ -130,7 +130,7 @@ void DiagramItem::remove_if_already_present() {
     if ((di->type() == k) && (di->get_bn() == bn) && (di != this)) {
       // already present
       if (Undefined.isEmpty())
-	QMessageBox::warning(0, "Bouml", "some elements already present in the diagram are NOT paste");
+	msg_warning("Bouml", "some elements already present in the diagram are NOT paste");
       Undefined.append(this);
       return;
     }

@@ -67,7 +67,7 @@ static bool generate_var(const QValueList<UmlParameter> & params,
 static void param_error(const QCString & parent, const QCString & name, unsigned rank)
 {
   write_trace_header();
-  UmlCom::trace(QCString("<tt>        </tt><font face=helvetica><b>while compiling <i>")
+  UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>while compiling <i>")
 		+ parent + "::" + name + "</i> parameter rank " + QCString().setNum(rank)
 		+ " does not exist</font></b><br>");
 }
@@ -344,7 +344,7 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
 void UmlOperation::generate_enum_pattern_item(QTextOStream &, int &,
 					      const QCString &, QCString) {
   write_trace_header();
-  UmlCom::trace("<tt>        </tt><font face=helvetica><b>an <i>enum</i> cannot have operation</b></font><br>");
+  UmlCom::trace("<tt>        </tt><font color=\"red\"><b>an <i>enum</i> cannot have operation</b></font><br>");
 }
 
 void UmlOperation::generate_enum_pattern_case(QTextOStream &, QCString) {

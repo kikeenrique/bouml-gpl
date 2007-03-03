@@ -29,7 +29,7 @@
 
 #include <qfont.h>
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
+
 
 #include "ColDiagramWindow.h"
 #include "ColDiagramView.h"
@@ -50,6 +50,7 @@
 #include "UmlDrag.h"
 #include "myio.h"
 #include "MenuTitle.h"
+#include "DialogUtil.h"
 #include "CodEditMsgDialog.h"
 
 ColDiagramView::ColDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
@@ -156,7 +157,7 @@ void ColDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	      const char * err = i->may_start(c);
 	      
 	      if (err != 0)
-		QMessageBox::critical(0, "Bouml", err);
+		msg_critical("Bouml", err);
 	      else {
 		i->connexion(c, i, e->pos(), e->pos());
 		window()->package_modified();

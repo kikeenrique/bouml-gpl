@@ -28,7 +28,6 @@
 #endif
 
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 #include <qcursor.h>
 
 #include "BrowserUseCase.h"
@@ -48,6 +47,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "ReferenceDialog.h"
+#include "DialogUtil.h"
 #include "mu.h"
 
 IdDict<BrowserUseCase> BrowserUseCase::all(257);
@@ -776,7 +776,7 @@ void BrowserUseCase::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     else if (after == 0)
       ((BrowserNode *) parent())->DropAfterEvent(e, this);
     else {
-      QMessageBox::critical(0, "Error", "Forbiden");
+      msg_critical("Error", "Forbiden");
       e->ignore();
     }
   }

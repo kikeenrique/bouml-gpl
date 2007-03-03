@@ -154,6 +154,28 @@ void UmlRelation::write_relation(FileOut & out) {
   
   out.indent();
   out << "</" << k << ">\n";
+
+  UmlTypeSpec assoc = association();
+  
+  if (assoc.type != 0) {
+    out.indent();
+    out << '<' << k << " xmi:type=\"uml:AssociationClass\"";
+    out.id_prefix(this, "ASSOC_CLASS_");
+    out << ">\n";
+    
+    out.indent();
+    out << "\t<memberEnd ";
+    out.idref_prefix(this, "ASSOC_");
+    out << "/>\n";
+    
+    out.indent();
+    out << "\t<memberEnd ";
+    out.idref(assoc.type);
+    out << "/>\n";
+    
+    out.indent();
+    out << "</" << k << ">\n";
+  }
 }
 
 void UmlRelation::write_relation_as_attribute(FileOut & out) {

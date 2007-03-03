@@ -16,52 +16,16 @@ void UmlUnmarshallAction::write(FileOut & out) {
 
 void UmlSendSignalAction::write(FileOut & out) {
   write_begin(out, "SendSignalAction");
-  
-  QCString sig;
-  
-  switch (_lang) {
-  case Uml:
-    sig = signal();
-    break;
-  case Cpp:
-    sig = cppSignal();
-    break;
-  default:
-    // java
-    sig = javaSignal();
-  }
-  if (! sig.isEmpty()) {
-    out << " signal=\"";
-    out.quote(sig);
-    out << '"';
-  }
-
-  write_end(out);
+  write_end(out, TRUE);
+  write_signal(out);
+  write_close(out);
 }
 
 void UmlBroadcastSignalAction::write(FileOut & out) {
   write_begin(out, "BroadcastSignalAction");
-  
-  QCString sig;
-  
-  switch (_lang) {
-  case Uml:
-    sig = signal();
-    break;
-  case Cpp:
-    sig = cppSignal();
-    break;
-  default:
-    // java
-    sig = javaSignal();
-  }
-  if (! sig.isEmpty()) {
-    out << " signal=\"";
-    out.quote(sig);
-    out << '"';
-  }
-
-  write_end(out);
+  write_end(out, TRUE);
+  write_signal(out);
+  write_close(out);
 }
 
 void UmlValueSpecificationAction::write(FileOut & out) {
@@ -134,13 +98,16 @@ void UmlAcceptEventAction::write(FileOut & out) {
     trig = javaTrigger();
   }
 
-  if (! trig.isEmpty()) {
-    out << " trigger=\"";
-    out .quote(trig);
-    out << '"';
-  }
-
   write_end(out);
+
+  if (! trig.isEmpty()) {
+    out.indent();
+    out << "<trigger xmi:type=\"uml:Trigger\"";
+    out.id_prefix(this, "TRIGGER_");
+    out << " name=\"";
+    out.quote(trig);
+    out << "\"/>\n";
+  }
 }
 
 void UmlCallOperationAction::write(FileOut & out) {

@@ -33,7 +33,6 @@
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
 #include <qradiobutton.h> 
-#include <qmessagebox.h>
 #include <qpushbutton.h> 
 #include <qsplitter.h> 
 
@@ -1491,9 +1490,9 @@ void RelationDialog::accept() {
   QString rb = b.edrole->text().stripWhiteSpace();
   
   if (rel->wrong_role_a_name(ra))
-    QMessageBox::critical(0, "Error", ra + "\n\nillegal name or already used");
+    msg_critical("Error", ra + "\n\nillegal name or already used");
   else if (rel->wrong_role_b_name(rb))
-    QMessageBox::critical(0, "Error", rb + "\n\nillegal name or already used");
+    msg_critical("Error", rb + "\n\nillegal name or already used");
   else {
     rel->name = edname->text().stripWhiteSpace();
 

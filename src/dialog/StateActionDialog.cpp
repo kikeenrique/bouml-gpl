@@ -31,7 +31,6 @@
 #include <qvbox.h>
 #include <qlabel.h>
 #include <qcombobox.h> 
-#include <qmessagebox.h>
 #include <qpushbutton.h> 
 
 #include "StateActionDialog.h"

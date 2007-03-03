@@ -200,7 +200,7 @@ void UmlClass::generate(QTextOStream & f) {
 
 void UmlClass::generate_decl(QTextOStream &, const QCString &) {
   write_trace_header();
-  UmlCom::trace(QCString("<font face=helvetica><b>Embedded class <it>")
+  UmlCom::trace(QCString("<font color=\"red\"><b>Embedded class <it>")
 		+ name() + "</it> not generated</b></font><br>");
 }
 

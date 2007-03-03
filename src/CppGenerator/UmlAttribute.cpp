@@ -60,7 +60,7 @@ void UmlAttribute::compute_dependency(QList<CppRefType> & dependency,
 
   if (!UmlClassMember::compute_dependency(dependency, decl, type(), all_in_h)) {
     write_trace_header();
-    UmlCom::trace(QCString("<tt>        </tt><font face=helvetica><b>type missing for attribute <i>")
+    UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>type missing for attribute <i>")
 		  + name() + "</i></b></font><br>");
   }
 }
@@ -70,7 +70,7 @@ void UmlAttribute::generate_decl(aVisibility & current_visibility, QTextOStream 
 				 bool & first, bool last) {
   if (cl_stereotype == "typedef") {
     write_trace_header();
-    UmlCom::trace("<tt>        </tt><font face=helvetica><b>a <i>typedef</i> cannot have attribute</b></font><br>");
+    UmlCom::trace("<tt>        </tt><font color=\"red\"><b>a <i>typedef</i> cannot have attribute</b></font><br>");
     return;
   }
   const char * p = cppDecl();

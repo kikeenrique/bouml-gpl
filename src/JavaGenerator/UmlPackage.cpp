@@ -47,7 +47,7 @@ QCString UmlPackage::file_path(const QCString & f) {
       dir.file = d_root.filePath(dir.file);
    
     if (dir.file.isEmpty()) {
-      UmlCom::trace(QCString("<font face=helvetica><b><b> The generation directory "
+      UmlCom::trace(QCString("<font color=\"red\"><b><b> The generation directory "
 			    "must be specified for the package<i> ") + name()
 			    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
 			    "or edit the package (tab 'Java')</b></font><br>");
@@ -56,7 +56,7 @@ QCString UmlPackage::file_path(const QCString & f) {
     }
     
     if (QDir::isRelativePath(dir.file)) {
-      UmlCom::trace(QCString("<font face=helvetica><b><i>")
+      UmlCom::trace(QCString("<font color=\"red\"><b><i>")
 		    + name() + "</i>'s source path <i>(" + dir.file
 		    + "</i>) is not absolute, edit the <i> generation settings</i> "
 		    "(tab 'directory'), or edit the package (tab 'Java')</b></font><br>");
@@ -91,7 +91,7 @@ QCString UmlPackage::file_path(const QCString & f) {
       
       if (!sd.exists()) {
 	if (!sd.mkdir(s2)) {
-	  UmlCom::trace(QCString("<font face=helvetica><b> cannot create directory <i>")
+	  UmlCom::trace(QCString("<font color=\"red\"><b> cannot create directory <i>")
 			+ s2 + "</i></b></font><br>");
 	  UmlCom::bye();
 	  UmlCom::fatal_error("UmlPackage::file_path");

@@ -33,7 +33,6 @@
 #include <qlabel.h>
 #include <qpopupmenu.h> 
 #include <qpushbutton.h> 
-#include <qmessagebox.h>
 #include <qfiledialog.h>
 #include <qcombobox.h>
 #include <qcheckbox.h>
@@ -922,19 +921,19 @@ void GenerationSettingsDialog::accept() {
     QString enum_return = cpp_enum_return->text().stripWhiteSpace();
     
     if (enum_in.find("${type}") == -1) {
-      QMessageBox::critical(0, "Error", "C++ 'in' enum argument default passing must contains ${type}");
+      msg_critical("Error", "C++ 'in' enum argument default passing must contains ${type}");
       return;
     }
     if (enum_out.find("${type}") == -1) {
-      QMessageBox::critical(0, "Error", "C++ 'out' enum argument default passing must contains ${type}");
+      msg_critical("Error", "C++ 'out' enum argument default passing must contains ${type}");
       return;
     }
     if (enum_inout.find("${type}") == -1) {
-      QMessageBox::critical(0, "Error", "C++ 'inout' enum argument default passing must contains ${type}");
+      msg_critical("Error", "C++ 'inout' enum argument default passing must contains ${type}");
       return;
     }
     if (enum_return.find("${type}") == -1) {
-      QMessageBox::critical(0, "Error", "C++ 'return' enum argument default passing must contains ${type}");
+      msg_critical("Error", "C++ 'return' enum argument default passing must contains ${type}");
       return;
     }
 
@@ -944,19 +943,19 @@ void GenerationSettingsDialog::accept() {
     QString opreturn = cpp_return->text().stripWhiteSpace();
     
     if (in.find("${type}") == -1) {
-      QMessageBox::critical(0, "Error", "C++ 'in' argument default passing must contains ${type}");
+      msg_critical("Error", "C++ 'in' argument default passing must contains ${type}");
       return;
     }
     if (out.find("${type}") == -1) {
-      QMessageBox::critical(0, "Error", "C++ 'out' argument default passing must contains ${type}");
+      msg_critical("Error", "C++ 'out' argument default passing must contains ${type}");
       return;
     }
     if (inout.find("${type}") == -1) {
-      QMessageBox::critical(0, "Error", "C++ 'inout' argument default passing must contains ${type}");
+      msg_critical("Error", "C++ 'inout' argument default passing must contains ${type}");
       return;
     }
     if (opreturn.find("${type}") == -1) {
-      QMessageBox::critical(0, "Error", "C++ 'return' argument default passing must contains ${type}");
+      msg_critical("Error", "C++ 'return' argument default passing must contains ${type}");
       return;
     }
 
@@ -1220,7 +1219,7 @@ bool TypesTable::check() {
 
 	err.sprintf("line %d : %s specification is mandatory", 
 		    index + 1, (const char *) horizontalHeader()->label(col));
-	QMessageBox::critical(0, "Error", err);
+	msg_critical("Error", err);
 	return FALSE;
       }
     }
@@ -1232,7 +1231,7 @@ bool TypesTable::check() {
 	err.sprintf("line %d : %s '%s' argument default passing does not contains ${type}", 
 		    index + 1, (const char *) text(index, 0),
 		    (const char *) horizontalHeader()->label(col));
-	QMessageBox::critical(0, "Error", err);
+	msg_critical("Error", err);
 
 	return FALSE;
       }

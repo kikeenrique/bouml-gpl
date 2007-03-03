@@ -34,14 +34,13 @@
 #include <qlabel.h>
 #include <qcombobox.h> 
 #include <qpushbutton.h> 
-#include <qmessagebox.h>
 #include <qlayout.h>
 #include <qpopupmenu.h>
 
 #include "ShortcutDialog.h"
 #include "Shortcut.h"
 #include "Tool.h"
-//#include "DialogUtil.h"
+#include "DialogUtil.h"
 #include "UmlDesktop.h"
 #include "ComboItem.h"
 
@@ -388,7 +387,7 @@ bool ShortcutTable::check(QStringList & bindings) {
       if (bindings.findIndex(s) == -1)
 	bindings.append(s);
       else {
-	QMessageBox::warning(0, "Shortcut", "Several use of the shortcut '" + s + "'");
+	msg_warning("Shortcut", "Several use of the shortcut '" + s + "'");
 	return FALSE;
       }
     }

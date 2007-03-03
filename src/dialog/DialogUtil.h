@@ -29,6 +29,7 @@
 #include <qpushbutton.h>
 #include <qlineedit.h>
 #include <qmultilineedit.h>
+#include <qmessagebox.h>
 
 #include "AType.h"
 
@@ -110,5 +111,15 @@ extern QString type(const QString & t, const QStringList & types,
 
 extern void manage_alias(const BrowserNode * node, const char *& p,
 			 QString & s, KeyValuesTable *);
+
+extern int msg_warning(QString caption, QString text,
+		       int button0=QMessageBox::Ok,
+		       int button1=0, int button2=0);
+extern int msg_critical(QString caption, QString text, 
+			int button0=QMessageBox::Ok,
+			int button1=0, int button2=0);
+extern int msg_information(QString caption, QString text,
+			   int button0=QMessageBox::Ok,
+			   int button1=0, int button2=0);
 
 #endif

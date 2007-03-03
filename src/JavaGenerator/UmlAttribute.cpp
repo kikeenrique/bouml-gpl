@@ -176,7 +176,7 @@ void UmlAttribute::generate_enum_pattern_item(QTextOStream & f, int & current_va
 	  
 	  v = d.toInt(&ok);
 	  if (! ok) 
-	    UmlCom::trace(QCString("<tt>        </tt><font face=helvetica><b><i>") +
+	    UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b><i>") +
 			  defaultValue() + "</i> wrong value for <i> "
 			  + name() + "</i></b></font><br>");
 	  else

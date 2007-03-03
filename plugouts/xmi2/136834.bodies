@@ -1,24 +1,6 @@
 class UmlSendSignalAction
 !!!204034.cpp!!!	write(inout out : FileOut) : void
   write_begin(out, "SendSignalAction");
-  
-  QCString sig;
-  
-  switch (_lang) {
-  case Uml:
-    sig = signal();
-    break;
-  case Cpp:
-    sig = cppSignal();
-    break;
-  default:
-    // java
-    sig = javaSignal();
-  }
-  if (! sig.isEmpty()) {
-    out << " signal=\"";
-    out.quote(sig);
-    out << '"';
-  }
-
-  write_end(out);
+  write_end(out, TRUE);
+  write_signal(out);
+  write_close(out);

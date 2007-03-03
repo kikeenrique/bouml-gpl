@@ -24,6 +24,11 @@ void UmlTransition::write_it(FileOut & out) {
   out.indent();
   out << "<transition xmi:type=\"uml:Transition\"";
   out.id(this);
+  if (!name().isEmpty() && (name() != "<transition>")) {
+    out << " name=\"";
+    out.quote(name());
+    out << '"';
+  }
   out.ref(parent(), "source");
   out.ref(target(), "target");
   out << ">\n";

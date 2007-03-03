@@ -30,7 +30,6 @@
 #include <qcursor.h>
 #include <qfont.h>
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 
 #include "ActivityDiagramWindow.h"
 #include "ActivityDiagramView.h"
@@ -62,6 +61,7 @@
 #include "BrowserPin.h"
 #include "PinCanvas.h"
 #include "MenuTitle.h"
+#include "DialogUtil.h"
 #include "myio.h"
 
 ActivityDiagramView::ActivityDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
@@ -118,7 +118,7 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	
 	if (b != 0) {
 	  if (the_canvas()->already_drawn(b)) {
-	    QMessageBox::information(0, "Bouml", "already drawn");
+	    msg_information("Bouml", "already drawn");
 	    history_protected = FALSE;
 	    return;
 	  }
@@ -148,7 +148,7 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	
 	if (b != 0) {
 	  if (the_canvas()->already_drawn(b)) {
-	    QMessageBox::information(0, "Bouml", "already drawn");
+	    msg_information("Bouml", "already drawn");
 	    history_protected = FALSE;
 	    return;
 	  }
@@ -180,7 +180,7 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	
 	if (b != 0) {
 	  if (the_canvas()->already_drawn(b)) {
-	    QMessageBox::information(0, "Bouml", "already drawn");
+	    msg_information("Bouml", "already drawn");
 	    history_protected = FALSE;
 	    return;
 	  }
@@ -241,7 +241,7 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	  history_protected = TRUE;
 
 	  if (the_canvas()->already_drawn(b)) {
-	    QMessageBox::information(0, "Bouml", "already drawn");
+	    msg_information("Bouml", "already drawn");
 	    history_protected = FALSE;
 	    return;
 	  }
@@ -269,7 +269,7 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	
 	if (b != 0) {
 	  if (the_canvas()->already_drawn(b)) {
-	    QMessageBox::information(0, "Bouml", "already drawn");
+	    msg_information("Bouml", "already drawn");
 	    history_protected = FALSE;
 	    return;
 	  }
@@ -419,7 +419,7 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
   }
   else if ((bn = UmlDrag::decode(e, UmlActivityNode, TRUE)) != 0) {
     if (the_canvas()->already_drawn(bn))
-      QMessageBox::information(0, "Bouml", "already drawn");
+      msg_information("Bouml", "already drawn");
     else {
       history_save();
       
@@ -439,7 +439,7 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
   }
   else if ((bn = UmlDrag::decode(e, UmlInterruptibleActivityRegion, TRUE)) != 0) {
     if (the_canvas()->already_drawn(bn))
-      QMessageBox::information(0, "Bouml", "already drawn");
+      msg_information("Bouml", "already drawn");
     else {
       history_save();
       
@@ -463,7 +463,7 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
   }
   else if ((bn = UmlDrag::decode(e, UmlExpansionRegion, TRUE)) != 0) {
     if (the_canvas()->already_drawn(bn))
-      QMessageBox::information(0, "Bouml", "already drawn");
+      msg_information("Bouml", "already drawn");
     else {
       history_save();
       
@@ -487,7 +487,7 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
   }
   else if ((bn = UmlDrag::decode(e, UmlActivityAction, TRUE)) != 0) {
     if (the_canvas()->already_drawn(bn))
-      QMessageBox::information(0, "Bouml", "already drawn");
+      msg_information("Bouml", "already drawn");
     else {
       history_save();
       history_protected = TRUE;
@@ -508,7 +508,7 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
   }
   else if ((bn = UmlDrag::decode(e, UmlActivityObject, TRUE)) != 0) {
     if (the_canvas()->already_drawn(bn))
-      QMessageBox::information(0, "Bouml", "already drawn");
+      msg_information("Bouml", "already drawn");
     else {
       history_save();
       history_protected = TRUE;

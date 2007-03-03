@@ -35,7 +35,6 @@
 #include <qcheckbox.h>
 #include <qradiobutton.h> 
 #include <qpushbutton.h> 
-#include <qmessagebox.h>
 #include <qpopupmenu.h> 
 #include <qcursor.h> 
 
@@ -361,7 +360,7 @@ void ParameterDialog::accept() {
       ((BrowserNode *) bn->parent())->wrong_child_name(s, UmlParameter,
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
-    QMessageBox::critical(0, "Error", s + "\n\nillegal name or already used");
+    msg_critical("Error", s + "\n\nillegal name or already used");
   else {
     // check consistency
     UmlParamDirection dir = direction(eddir->currentText());
@@ -385,7 +384,7 @@ void ParameterDialog::accept() {
     }
     
     if (!err.isEmpty())
-      QMessageBox::critical(0, "Error", err);
+      msg_critical("Error", err);
     else {
       bn->set_name(s);
       param->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));

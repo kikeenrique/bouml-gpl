@@ -35,7 +35,6 @@
 #include <stdio.h>
 
 #include <qlabel.h>
-#include <qmessagebox.h>
 #include <qtextstream.h> 
 #include <qfontmetrics.h>
 #include <qpopupmenu.h>
@@ -53,6 +52,7 @@
 #include "KeyValueTable.h"
 #include "GenerationSettings.h"
 #include "strutil.h"
+#include "UmlDesktop.h"
 
 QSize SmallPushButton::sizeHint() const {
   QFontMetrics fm = fontMetrics();
@@ -210,10 +210,10 @@ void edit(const QString & s, QString name, void * id, EditType k,
 	"\"" + QDir::convertSeparators(path) + "\"";
       
       if (_spawnlp(_P_DETACH, ed, arg0, (const char *) arg, 0) == -1) {
-	QMessageBox::critical(0, "Bouml",
-			      "can't start the editor '" + ed +"'\n"
-			      "perhaps you have to redefine BOUML_EDITOR\n"
-			      "to give the absolute path ?");
+	msg_critical("Bouml",
+		     "can't start the editor '" + ed +"'\n"
+		     "perhaps you have to redefine BOUML_EDITOR\n"
+		     "to give the absolute path ?");
 	return;
       }
 #else
@@ -225,7 +225,7 @@ void edit(const QString & s, QString name, void * id, EditType k,
       return;
     }
     else
-      QMessageBox::critical(0, "Error", QString("Cannot open ") + path);
+      msg_critical("Error", QString("Cannot open ") + path);
   }
   else if (d->isModal()) {
     BodyDialog * bd = new BodyDialog(s, d, pf, k, name, edits);
@@ -241,11 +241,11 @@ bool check_edits(QList<BodyDialog> & edits)
   if (edits.isEmpty())
     return TRUE;
   
-  return (QMessageBox::critical(0, "Bouml",
-				"Sub dialog(s) still opened\n"
-				"If you choose 'Ok' the dialog will be closed\n"
-				"without taking into account their content",
-				QMessageBox::Ok, QMessageBox::Abort)
+  return (msg_critical("Bouml",
+		       "Sub dialog(s) still opened\n"
+		       "If you choose 'Ok' the dialog will be closed\n"
+		       "without taking into account it content",
+		       QMessageBox::Ok, QMessageBox::Abort)
 	  == QMessageBox::Ok);
 }
 
@@ -325,3 +325,36 @@ void manage_alias(const BrowserNode * node,
     // bypass '@'
     s += *p++;
 }
+
+//
+
+static int msg_msg(QMessageBox::Icon icon,
+		   QString caption, QString text,
+		   int button0, int button1, int button2)
+{
+  QMessageBox mb(caption, text, icon, button0, button1, button2);
+  
+  if (UmlDesktop::fixed())
+    UmlDesktop::tocenter(&mb);
+  
+  return mb.exec();
+}
+
+int msg_warning(QString caption, QString text,
+		int button0, int button1, int button2)
+{
+  return msg_msg(QMessageBox::Warning, caption, text, button0, button1, button2);
+}
+
+int msg_critical(QString caption, QString text, 
+		 int button0, int button1, int button2)
+{
+  return msg_msg(QMessageBox::Critical, caption, text, button0, button1, button2);
+}
+
+int msg_information(QString caption, QString text,
+		    int button0, int button1, int button2)
+{
+  return msg_msg(QMessageBox::Information, caption, text, button0, button1, button2);
+}
+

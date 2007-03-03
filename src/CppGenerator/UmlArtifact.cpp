@@ -229,7 +229,7 @@ void UmlArtifact::generate() {
 	FILE * fp_h;
       
 	if ((fp_h = fopen((const char *) h_path, "wb")) == 0) {
-	  UmlCom::trace(QCString("<font face=helvetica><b><i> ")
+	  UmlCom::trace(QCString("<font color=\"red\"><b><i> ")
 			+ name + "</i> : cannot open <i> "
 			+ h_path + "</i>, edit the <i> generation settings</i> (tab directory) or the <i>"
 			+ pack->name() + "</i> C++ directory specification</b></font><br>");
@@ -333,7 +333,7 @@ void UmlArtifact::generate() {
 	
 	if ((fp_src = fopen((const char *) src_path, "wb")) == 0) {
 	  write_trace_header();
-	  UmlCom::trace(QCString("<font face=helvetica><b><i> ")
+	  UmlCom::trace(QCString("<font color=\"red\"><b><i> ")
 			+ name + " : </i> cannot open <i> " 
 			+ src_path + "</i>, edit the <i> generation settings</i> (tab directory) or the <i>"
 			+ pack->name() + "</i> C++ directory specification</b></font><br>");
@@ -365,7 +365,7 @@ bool UmlArtifact::must_be_saved(const char * path, const char * new_contains)
   int c;
   
   while ((c = fgetc(fp)) != EOF) {
-    if (c != *new_contains++) {
+    if (((char ) c) != *new_contains++) {
       fclose(fp);
       return TRUE;
     }

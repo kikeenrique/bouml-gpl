@@ -28,7 +28,6 @@
 #endif
 
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 #include <qcursor.h>
 
 #include "BrowserDeploymentNode.h"
@@ -42,6 +41,7 @@
 #include "MenuTitle.h"
 #include "UmlDrag.h"
 #include "ReferenceDialog.h"
+#include "DialogUtil.h"
 #include "mu.h"
 
 IdDict<BrowserDeploymentNode> BrowserDeploymentNode::all;
@@ -253,7 +253,7 @@ void BrowserDeploymentNode::DropAfterEvent(QDropEvent * e, BrowserNode * after) 
       package_modified();
     }
     else {
-      QMessageBox::critical(0, "Error", "Forbiden");
+      msg_critical("Error", "Forbiden");
       e->ignore();
     }
   }

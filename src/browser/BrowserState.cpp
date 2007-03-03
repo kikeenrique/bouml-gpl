@@ -28,7 +28,6 @@
 #endif
 
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 #include <qpainter.h>
 #include <qcursor.h>
 
@@ -49,6 +48,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "strutil.h"
+#include "DialogUtil.h"
 #include "mu.h"
 
 IdDict<BrowserState> BrowserState::all(257);
@@ -142,13 +142,7 @@ BrowserState * BrowserState::add_state(BrowserNode * future_parent,
 BrowserState * BrowserState::add_state(BrowserNode * future_parent,
 				       const char * name)
 {
-  StateData * st = new StateData();
-  BrowserState * r = new BrowserState(name, future_parent, st);
-  
-  future_parent->setOpen(TRUE);
-  future_parent->package_modified();
-  
-  return r;
+  return new BrowserState(name, future_parent, new StateData());
 }
 
 BrowserState * BrowserState::get_state(BrowserNode * parent)
@@ -665,7 +659,7 @@ void BrowserState::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     if (may_contains(bn, FALSE)) 
       move(bn, after);
     else {
-      QMessageBox::critical(0, "Error", "Forbiden");
+      msg_critical("Error", "Forbiden");
       e->ignore();
     }
   }

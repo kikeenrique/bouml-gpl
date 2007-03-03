@@ -28,7 +28,6 @@
 #endif
 
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 #include <qcursor.h>
 #include <qdir.h>
 
@@ -50,6 +49,7 @@
 #include "SourceDialog.h"
 #include "ReferenceDialog.h"
 #include "UmlDrag.h"
+#include "DialogUtil.h"
 #include "mu.h"
 
 IdDict<BrowserArtifact> BrowserArtifact::all(257);
@@ -557,7 +557,7 @@ void BrowserArtifact::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
       package_modified();
     }
     else {
-      QMessageBox::critical(0, "Error", "Forbiden");
+      msg_critical("Error", "Forbiden");
       e->ignore();
     }
   }

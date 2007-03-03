@@ -35,7 +35,7 @@ void UmlAttribute::generate_decl(QTextOStream & f, const QCString & cl_stereotyp
   if (!idlDecl().isEmpty()) {
     if (cl_stereotype == "typedef") {
       write_trace_header();
-      UmlCom::trace("<tt>        </tt><font face=helvetica><b>a <i>typedef</i> cannot have attribute</b></font><br>");
+      UmlCom::trace("<tt>        </tt><font color=\"red\"><b>a <i>typedef</i> cannot have attribute</b></font><br>");
       return;
     }
     const char * p = idlDecl();
@@ -119,7 +119,7 @@ void UmlAttribute::generate_decl(QTextOStream & f, const QCString & cl_stereotyp
 	
 	if (idl_case.isEmpty()) {
 	  write_trace_header();
-	  UmlCom::trace(QCString("<tt>        </tt><font face=helvetica><b>unspecified <i>case</i> for <i>")
+	  UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>unspecified <i>case</i> for <i>")
 			+ name() + "</b></font><br>");
 	}
 	else

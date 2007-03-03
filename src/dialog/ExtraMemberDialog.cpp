@@ -35,7 +35,6 @@
 #include <qcheckbox.h>
 #include <qradiobutton.h> 
 #include <qpushbutton.h> 
-#include <qmessagebox.h>
 
 #include "ExtraMemberDialog.h"
 #include "ExtraMemberData.h"

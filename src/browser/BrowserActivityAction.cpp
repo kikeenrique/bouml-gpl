@@ -28,7 +28,6 @@
 #endif
 
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 #include <qpainter.h>
 #include <qcursor.h>
 
@@ -52,6 +51,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "strutil.h"
+#include "DialogUtil.h"
 #include "mu.h"
 
 IdDict<BrowserActivityAction> BrowserActivityAction::all(257);
@@ -817,7 +817,7 @@ bool BrowserActivityAction::tool_cmd(ToolCom * com, const char * args) {
 	  {
 	    BrowserNode * end = (BrowserNode *) com->get_id(args);
 
-	    if (may_connect(k, end))
+	    if (may_connect(k, end) == 0)
 	      (new BrowserFlow(this, end))->write_id(com);
 	    else
 	      ok = FALSE;
@@ -832,7 +832,7 @@ bool BrowserActivityAction::tool_cmd(ToolCom * com, const char * args) {
 	    else {
 	      BrowserNode * end = (BrowserNode *) com->get_id(args);
 	      
-	      if (may_connect(c, end))
+	      if (may_connect(c, end) == 0)
 		add_relation(c, end)->get_browser_node()->write_id(com);
 	      else
 		ok = FALSE;
@@ -927,7 +927,7 @@ void BrowserActivityAction::DropAfterEvent(QDropEvent * e, BrowserNode * after) 
     if (may_contains(bn, FALSE)) 
       move(bn, after);
     else {
-      QMessageBox::critical(0, "Error", "Forbiden");
+      msg_critical("Error", "Forbiden");
       e->ignore();
     }
   }

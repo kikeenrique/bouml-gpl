@@ -29,7 +29,6 @@
 
 #include <qfont.h>
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 
 #include "SeqDiagramWindow.h"
 #include "SeqDiagramView.h"
@@ -50,6 +49,7 @@
 #include "UmlDrag.h"
 #include "myio.h"
 #include "MenuTitle.h"
+#include "DialogUtil.h"
 
 SeqDiagramView::SeqDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
     : DiagramView(parent, canvas, id) {
@@ -123,7 +123,7 @@ void SeqDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	      const char * err = i->may_start(c);
 	      
 	      if (err != 0)
-		QMessageBox::critical(0, "Bouml" , err);
+		msg_critical("Bouml" , err);
 	      else {
 		i->connexion(c, i, e->pos(), e->pos());
 		window()->package_modified();

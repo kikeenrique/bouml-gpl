@@ -29,7 +29,7 @@ void UmlFlow::memo_incoming_flow() {
 void UmlFlow::write_it(FileOut & out) {
   const char * k;
     
-  switch (parent()->kind()) {
+  switch (parent()->parent()->kind()) {
   case anActivity:
     k = "edge";
     break;
@@ -72,6 +72,7 @@ void UmlFlow::write_it(FileOut & out) {
     g = cppGuard();
     s = cppSelection();
     t = cppTransformation();
+    break;
   default:
     // java
     w = javaWeight();

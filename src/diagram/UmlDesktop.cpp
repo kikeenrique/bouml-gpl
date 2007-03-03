@@ -31,10 +31,10 @@
 #include <stdio.h>
 
 #include <qapplication.h>
-#include <qmessagebox.h>
 #include <qcursor.h>
 
 #include "UmlDesktop.h"
+#include "DialogUtil.h"
 
 int UmlDesktop::w;
 int UmlDesktop::h;
@@ -132,9 +132,9 @@ void UmlDesktop::init()
     if (sscanf((const char *) limits, "%d,%d,%d,%d",
 	       &left, &top, &right, &bottom)
 	!= 4)
-      QMessageBox::warning(0, "Bouml",
-			   "BOUML_LIMIT_DESKTOP wrong defined\n\n"
-			   "must be '{left},{top},{right},{bottom}'");
+      msg_warning("Bouml",
+		  "BOUML_LIMIT_DESKTOP wrong defined\n\n"
+		  "must be '{left},{top},{right},{bottom}'");
     else {
       w = right - left + 1;
       h = bottom - top + 1;

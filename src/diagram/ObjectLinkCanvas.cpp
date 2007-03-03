@@ -30,7 +30,6 @@
 #include <qcursor.h>
 #include <math.h>
 #include <qpopupmenu.h>
-#include <qmessagebox.h>
 
 #include "ObjectLinkCanvas.h"
 #include "ArrowPointCanvas.h"

@@ -292,7 +292,7 @@ void UmlClass::write(QTextOStream & f) {
 void UmlClass::generate_enum_pattern_item(QTextOStream &, int &,
 					  const QCString &, QCString) {
   write_trace_header();
-  UmlCom::trace("<tt>        </tt><font face=helvetica><b>an <i>enum pattern</i> cannot have sub-class</b></font><br>");
+  UmlCom::trace("<tt>        </tt><font color=\"red\"><b>an <i>enum pattern</i> cannot have sub-class</b></font><br>");
 }
 
 void UmlClass::generate_enum_pattern_case(QTextOStream &, QCString) {

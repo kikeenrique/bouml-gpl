@@ -40,7 +40,6 @@
 #include <qgroupbox.h> 
 #include <qbuttongroup.h>
 #include <qpushbutton.h> 
-#include <qmessagebox.h>
 
 #include "ClassDialog.h"
 #include "ClassData.h"
@@ -1564,7 +1563,7 @@ void ClassDialog::accept() {
     if (((BrowserNode *) bn->parent())->wrong_child_name(s, UmlClass,
 							 bn->allow_spaces(),
 							 bn->allow_empty())) {
-      QMessageBox::critical(0, "Error", s + "\n\nillegal name or already used");
+      msg_critical("Error", s + "\n\nillegal name or already used");
       return;
     }
     

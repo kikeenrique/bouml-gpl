@@ -221,7 +221,7 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
       }
       else if (cl->parent()->kind() != aClass) {
 	write_trace_header();
-	UmlCom::trace(QCString("<font face=helvetica><b> class<i> ") + cl->name() +
+	UmlCom::trace(QCString("<font color=\"red\"><b> class<i> ") + cl->name() +
 		      "</i> referenced but does not have associated <i>artifact</i></b></font><br>");
 	continue;
       }
@@ -249,7 +249,7 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
       if ((cl->associatedArtifact() == 0) &&
 	  (cl->parent()->kind() != aClass)) {
 	write_trace_header();
-      	UmlCom::trace(QCString("<font face=helvetica><b> class<i> ") + cl->name() +
+      	UmlCom::trace(QCString("<font color=\"red\"><b> class<i> ") + cl->name() +
 		      "</i> referenced but does not have associated <i>artifact</i></b></font><br>");
       }
     }

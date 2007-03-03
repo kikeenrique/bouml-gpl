@@ -31,7 +31,6 @@
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qcombobox.h> 
-#include <qmessagebox.h>
 #include <qvbox.h> 
 
 #include "SimpleRelationDialog.h"

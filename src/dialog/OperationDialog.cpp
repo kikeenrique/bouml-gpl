@@ -39,7 +39,6 @@
 #include <qradiobutton.h> 
 #include <qpopupmenu.h> 
 #include <qpushbutton.h> 
-#include <qmessagebox.h>
 #include <qlayout.h>
 #include <qtimer.h>
 
@@ -625,7 +624,7 @@ void OperationDialog::accept() {
       ((BrowserNode *) bn->parent())->wrong_child_name(s, UmlOperation,
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
-    QMessageBox::critical(0, "Error", s + "\n\nillegal name or already used");
+    msg_critical("Error", s + "\n\nillegal name or already used");
   else {  
     bn->set_name(s);
     
@@ -943,7 +942,7 @@ void OperationDialog::cpp_edit_param_decl() {
       cpp_update_decl();
   }
   else
-    QMessageBox::warning(0, "Bouml", "wrong specification");
+    msg_warning("Bouml", "wrong specification");
 }
 
 void OperationDialog::manage_cpp_type(unsigned rank, QString & s)
@@ -1384,7 +1383,7 @@ void OperationDialog::cpp_edit_param_def() {
       cpp_update_def();
   }
   else
-    QMessageBox::warning(0, "Bouml", "wrong specification");
+    msg_warning("Bouml", "wrong specification");
 }
 
 static void insert_template(const QString & tm, const char *& p, 

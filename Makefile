@@ -41,6 +41,7 @@ PLUGOUT_DIRS = genplugouts/html/cpp \
 	genplugouts/cpp_utilities \
 	genplugouts/xmi \
 	genplugouts/xmi2 \
+	genplugouts/xmi2import \
 	genplugouts/sm/cpp \
 	genplugouts/usecasewizard/cpp \
 	genplugouts/sort/cpp \
@@ -64,6 +65,7 @@ PROGS = src/bouml \
 	genplugouts/cpp_utilities/cpp_util \
 	genplugouts/xmi/gxmi \
 	genplugouts/xmi2/gxmi2 \
+	genplugouts/xmi2import/ixmi2 \
 	genplugouts/sm/cpp/stmgen \
 	genplugouts/usecasewizard/cpp/usecasewizard \
 	genplugouts/sort/cpp/browsersort \
@@ -96,7 +98,7 @@ install:
 		done \
 	fi
 	for i in $(PROGS); do cp -p $$i "$(DESTDIR)$(BOUML_LIB)" ; done
-	cd plugouts ; tar cf - empty genpro html rose singleton cpp_utilities xmi xmi2 sm_generator usecase_wizard sort FileControl deploy GlobalChange | (cd $(DESTDIR)$(BOUML_LIB); tar xf -)
+	cd plugouts ; tar cf - empty genpro html rose singleton cpp_utilities xmi xmi2 xmi2import sm_generator usecase_wizard sort FileControl deploy GlobalChange | (cd $(DESTDIR)$(BOUML_LIB); tar xf -)
 	echo "#!/bin/sh" >$(DESTDIR)$(BOUML_DIR)/bouml
 	echo "PATH=$(BOUML_LIB):$$"PATH >>$(DESTDIR)$(BOUML_DIR)/bouml
 	echo "$(BOUML_LIB)/bouml \"$$"@"\"" >>$(DESTDIR)$(BOUML_DIR)/bouml

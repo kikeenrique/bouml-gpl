@@ -28,7 +28,6 @@
 #endif
 
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 #include <qcursor.h>
 
 #include "BrowserClassView.h"
@@ -51,6 +50,7 @@
 #include "ToolCom.h"
 #include "Tool.h"
 #include "MenuTitle.h"
+#include "DialogUtil.h"
 #include "mu.h"
 
 IdDict<BrowserClassView> BrowserClassView::all;
@@ -898,7 +898,7 @@ void BrowserClassView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	old_parent->package_modified();
     }
     else {
-      QMessageBox::critical(0, "Error", "Forbiden");
+      msg_critical("Error", "Forbiden");
       e->ignore();
     }
   }
@@ -1029,7 +1029,7 @@ BrowserClassView * BrowserClassView::read(char * & st, char * k,
     BrowserClassView * r = all[id];
     
     if (r != 0) {
-      QMessageBox::critical(0, "Error", "reload not yet implemented");
+      msg_critical("Error", "reload not yet implemented");
       
       throw 0;
     }

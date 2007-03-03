@@ -1,0 +1,13 @@
+class Role
+!!!215042.cpp!!!	setMultiplicity(in v : string, in upper : bool) : void
+  if (!v.isEmpty() && 
+      (v != "Unspecified")) {	// VP
+    if (multiplicity.isEmpty())
+      multiplicity = v;
+    else if (multiplicity != v) {
+      if (upper)
+	multiplicity += ".." + v;
+      else
+	multiplicity = v + ".." + multiplicity;
+    }
+  }

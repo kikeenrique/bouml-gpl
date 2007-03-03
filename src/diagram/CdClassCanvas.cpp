@@ -978,7 +978,7 @@ void CdClassCanvas::menu(const QPoint&) {
       
       dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
-	((BrowserClass *) browser_node)->open(FALSE);
+	operations.at(dialog.choosen())->open(FALSE);
     }
     return;
   case 2999:

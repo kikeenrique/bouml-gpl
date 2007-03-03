@@ -28,7 +28,6 @@
 #endif
 
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 #include <qcursor.h>
 #include <qdir.h>
 
@@ -50,6 +49,7 @@
 #include "UmlDrag.h"
 #include "mu.h"
 #include "ComponentDialog.h"
+#include "DialogUtil.h"
 
 IdDict<BrowserComponent> BrowserComponent::all(257);
 QStringList BrowserComponent::its_default_stereotypes;	// unicode
@@ -473,7 +473,7 @@ void BrowserComponent::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
       package_modified();
     }
     else {
-      QMessageBox::critical(0, "Error", "Forbiden");
+      msg_critical("Error", "Forbiden");
       e->ignore();
     }
   }

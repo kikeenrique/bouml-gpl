@@ -35,7 +35,6 @@
 #include <qhbox.h>
 #include <qmultilineedit.h>
 #include <qstatusbar.h>
-#include <qmessagebox.h>
 #include <qpixmap.h>
 #include <qtoolbar.h>
 #include <qtoolbutton.h>
@@ -346,6 +345,10 @@ UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
   
   //
   
+  clear_select_historic();
+  
+  //
+  
   statusBar()->message("Ready", 2000);
 }
 
@@ -431,8 +434,8 @@ produced for an attribute etc..., and to set the root directories");
     }
   }
   else
-    QMessageBox::warning(this, "Bouml",
-			 "Nothing available while a dialog is openned");
+    msg_warning("Bouml",
+		"Nothing available while a dialog is openned");
 }
 
 void UmlWindow::historicActivated(int id) {
@@ -558,15 +561,15 @@ void UmlWindow::newProject() {
 	  Tool::defaults();
 	  browser->get_project()->BrowserPackage::save_all(FALSE);
 	  
-	  QMessageBox::warning(0, "New project",
-			       "Do not forget to set the default target language(s)\n"
-			       "through the 'Miscellaneous' menu\n"
-			       "\n"
-			       "If you program in Java, the Java Catalog plug-out\n"
-			       "will help you, use it !");
+	  msg_warning("New project",
+		      "Do not forget to set the default target language(s)\n"
+		      "through the 'Miscellaneous' menu\n"
+		      "\n"
+		      "If you program in Java, the Java Catalog plug-out\n"
+		      "will help you, use it !");
 	}
 	else
-	  QMessageBox::critical(0, "New project", "Cannot create directory " + f);
+	  msg_critical("New project", "Cannot create directory " + f);
       }
     }
   }
@@ -630,13 +633,16 @@ void UmlWindow::load(QString fn) {
   }
   
   QDir di(fi.dirPath(TRUE));
+  QString s = fi.fileName();
   
-  if (di.dirName() != fi.baseName()) {
-    QMessageBox::critical(0, "Uml",
-			  "The name of the project and the name of\n"
-			  "the directory containing it must be the same\n\n"
-			  "Project name : " + fi.baseName() + "\n"
-			  "Directory name : " + di.dirName());
+  s.truncate(s.length() - 4);	// QFileInfo::baseName remove all after first dot
+  
+  if (di.dirName() != s) {
+    msg_critical("Uml",
+		 "The name of the project and the name of\n"
+		 "the directory containing it must be the same\n\n"
+		 "Project name : " + s + "\n"
+		 "Directory name : " + di.dirName());
     close_it();
     return;
   }
@@ -674,10 +680,10 @@ void UmlWindow::load(QString fn) {
     BrowserClass::new_java_enums(new_st);
     
     browser->get_project()->package_modified();
-    QMessageBox::warning(0, "BOUML",
-			 "Project conversion done.<br><br>"
-			 "A <i>save-as</i> is forced now to save the result "
-			 "in a new project, then the project will be closed");
+    msg_warning("BOUML",
+		"Project conversion done.<br><br>"
+		"A <i>save-as</i> is forced now to save the result "
+		"in a new project, then the project will be closed");
     saveAs();
     close_it();		// write access of added items not ok
   }
@@ -697,7 +703,7 @@ void UmlWindow::load(QString fn) {
     if (must_save_as)
       m += "A <i>save-as</i> is forced now to save the result in a new project";
     
-    QMessageBox::warning(0, "Bouml", m);
+    msg_warning("Bouml", m);
     
     if (must_save_as) {
       if (! saveas_it())
@@ -732,8 +738,8 @@ void UmlWindow::save() {
       QApplication::restoreOverrideCursor();
     }
     else
-      QMessageBox::warning(this, "Bouml",
-			   "Saving can't be done while a dialog is openned");
+      msg_warning("Bouml",
+		  "Saving can't be done while a dialog is openned");
   }
 }
 
@@ -758,14 +764,14 @@ bool UmlWindow::saveas_it()
 	QDir d(f);
 	
 	if (d.dirName() == "empty")
-	  QMessageBox::critical(0, "Error", "'empty' is reserved to the empty plug-out");
+	  msg_critical("Error", "'empty' is reserved to the empty plug-out");
 	else {
 	  QDir di;
 	  
 	  while (!di.mkdir(f)) {
-	    if (QMessageBox::critical(0, "Error", QString("Cannot create directory\n") + f,
-				      QMessageBox::Retry, QMessageBox::Abort)
-		== QMessageBox::Abort) {
+	    if (msg_critical("Error", QString("Cannot create directory\n") + f,
+			     QMessageBox::Retry, QMessageBox::Abort)
+		!= QMessageBox::Retry) {
 	      if (!strcmp(the->browser->get_project()->get_name(), "empty"))
 		exit(0);
 	      return FALSE;
@@ -797,17 +803,16 @@ bool UmlWindow::saveas_it()
 bool UmlWindow::can_close() {
   if (browser->get_project()) {
     if (BrowserPackage::must_be_saved()) {
-      switch (QMessageBox::warning(this, "Bouml",
-				   "The project is modified, save it ?\n",
-				   "yes", "no", "cancel", 0, 0)) {
-      case 0:
-	// yes
+      switch (msg_warning("Bouml",
+			  "The project is modified, save it ?\n",
+			  QMessageBox::Yes, QMessageBox::No,
+			  QMessageBox::Cancel)) {
+      case QMessageBox::Yes:
 	ws->hide();
 	BrowserPackage::save_all(TRUE);
 	ws->show();
 	break;
-      case 2:
-	// cancel
+      case QMessageBox::Cancel:
 	statusBar()->message("Close aborted", 2000);
 	return FALSE;
       }
@@ -1058,7 +1063,7 @@ void UmlWindow::preserve() {
   
   if (prj != 0) {
     if (!prj->is_writable())
-      QMessageBox::critical(this, "Bouml", "Unchanged : project is read-only");
+      msg_critical("Bouml", "Unchanged : project is read-only");
     else {
       toggle_preserve_bodies();
       prj->modified();
@@ -1116,10 +1121,11 @@ void UmlWindow::setFontSize(int i) {
   
   if (prj != 0) {
     if (!prj->is_writable() &&
-	(QMessageBox::warning(0, "Bouml",
-			      "Project file is read-only, new font "
-			      "size will not be saved, continue ?\n",
-			      "yes", "no", 0, 0, 0) != 0))
+	(msg_warning("Bouml",
+		     "Project file is read-only, new font "
+		     "size will not be saved, continue ?\n",
+		     QMessageBox::Yes, QMessageBox::No)
+	 != QMessageBox::Yes))
       return;
     
     prj->package_modified();
@@ -1163,10 +1169,11 @@ void UmlWindow::setFormat(int i) {
   
   if (prj != 0) {
     if (!prj->is_writable() &&
-	(QMessageBox::warning(0, "Bouml",
-			      "Project file is read-only, default "
-			      "format will not be saved, continue ?\n",
-			      "yes", "no", 0, 0, 0) != 0))
+	(msg_warning("Bouml",
+		     "Project file is read-only, default "
+		     "format will not be saved, continue ?\n",
+		     QMessageBox::Yes, QMessageBox::No)
+	 != QMessageBox::Yes))
       return;
     
     format = (CanvasFormat) i;

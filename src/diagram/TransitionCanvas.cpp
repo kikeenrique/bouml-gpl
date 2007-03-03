@@ -30,7 +30,6 @@
 #include <qcursor.h>
 #include <math.h>
 #include <qpopupmenu.h>
-#include <qmessagebox.h>
 
 #include "TransitionCanvas.h"
 #include "ArrowPointCanvas.h"
@@ -46,6 +45,7 @@
 #include "MenuTitle.h"
 #include "Settings.h"
 #include "SettingsDialog.h"
+#include "DialogUtil.h"
 #include "strutil.h"
 
 TransitionCanvas::TransitionCanvas(UmlCanvas * canvas,
@@ -548,7 +548,7 @@ void TransitionCanvas::drop(BrowserNode * bn, UmlCanvas * canvas)
   
   if ((difrom != 0) && (dito != 0)){
     if (difrom->has_relation(UmlTransition, def))
-      QMessageBox::information(0, "Bouml", "transition already drawn");
+      msg_information("Bouml", "transition already drawn");
     else {
       TransitionCanvas * tr = 
 	new TransitionCanvas(canvas, difrom, dito, from, 0, def);

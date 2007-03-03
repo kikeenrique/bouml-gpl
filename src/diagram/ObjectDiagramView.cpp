@@ -29,7 +29,6 @@
 
 #include <qfont.h>
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 
 #include "ObjectDiagramWindow.h"
 #include "ObjectDiagramView.h"

@@ -28,7 +28,6 @@
 #endif
 
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 #include <qcursor.h>
 
 #include "BrowserUseCaseView.h"
@@ -46,6 +45,7 @@
 #include "ToolCom.h"
 #include "Tool.h"
 #include "MenuTitle.h"
+#include "DialogUtil.h"
 #include "mu.h"
 
 IdDict<BrowserUseCaseView> BrowserUseCaseView::all;
@@ -665,7 +665,7 @@ void BrowserUseCaseView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     else if (after == 0)
       ((BrowserNode *) parent())->DropAfterEvent(e, this);
     else {
-      QMessageBox::critical(0, "Error", "Forbiden");
+      msg_critical("Error", "Forbiden");
       e->ignore();
     }
   }
@@ -768,7 +768,7 @@ BrowserUseCaseView * BrowserUseCaseView::read(char * & st, char * k,
     BrowserUseCaseView * result = all[id];
     
     if (result != 0) {
-      QMessageBox::critical(0, "Error", "reload not yet implemented");
+      msg_critical("Error", "reload not yet implemented");
       
       throw 0;
     }

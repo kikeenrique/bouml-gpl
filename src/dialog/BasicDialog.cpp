@@ -31,7 +31,6 @@
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qcombobox.h> 
-#include <qmessagebox.h>
 #include <qvbox.h> 
 
 #include "BasicDialog.h"
@@ -151,7 +150,7 @@ void BasicDialog::accept() {
 	((BrowserNode *) bn->parent())->wrong_child_name(s, bn->get_type(),
 							 bn->allow_spaces(),
 							 bn->allow_empty())) {
-      QMessageBox::critical(0, "Error", edname->text() + "\n\nillegal name or already used");
+      msg_critical("Error", edname->text() + "\n\nillegal name or already used");
       return;
     }
     else

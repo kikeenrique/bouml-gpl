@@ -99,11 +99,11 @@ void UmlClass::compute_dependency(QList<CppRefType> & dependencies,
   
   if (an_enum && (!formals.isEmpty() || !actuals.isEmpty())) {
     write_trace_header();
-    UmlCom::trace("<tt>        </tt><font face=helvetica><b><i>template enum</i></b></font><br>");
+    UmlCom::trace("<tt>        </tt><font color=\"red\"><b><i>template enum</i></b></font><br>");
   }
   else if (a_typedef && !formals.isEmpty()) {
     write_trace_header();
-    UmlCom::trace("<tt>        </tt><font face=helvetica><b><i>template typedef</i></b></font><br>");
+    UmlCom::trace("<tt>        </tt><font color=\"red\"><b><i>template typedef</i></b></font><br>");
   }
   else {
     QValueList<UmlFormalParameter>::ConstIterator itf;

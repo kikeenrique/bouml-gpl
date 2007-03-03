@@ -32,7 +32,6 @@
 #include <qdragobject.h>
 #include <qheader.h>
 #include <qcursor.h>
-#include <qmessagebox.h>
 
 #include "BrowserView.h"
 #include "UmlWindow.h"

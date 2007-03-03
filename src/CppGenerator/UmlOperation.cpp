@@ -294,7 +294,7 @@ static void param_error(const QCString & parent, const QCString & name,
 			unsigned rank, const char * where)
 {
   write_trace_header();
-  UmlCom::trace(QCString("<tt>        </tt><font face=helvetica><b>while compiling <i>")
+  UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>while compiling <i>")
 		+ parent + "::" + name + "</i> " + where
 		+ ", parameter rank " + QCString().setNum(rank)
 		+ " does not exist</font></b><br>");
@@ -335,12 +335,12 @@ void UmlOperation::generate_decl(aVisibility & current_visibility, QTextOStream 
   if (!cppDecl().isEmpty()) {
     if (cl_stereotype == "enum") {
       write_trace_header();
-      UmlCom::trace("<tt>        </tt><font face=helvetica><b>an <i>enum</i> cannot have operation</b></font><br>");
+      UmlCom::trace("<tt>        </tt><font color=\"red\"><b>an <i>enum</i> cannot have operation</b></font><br>");
       return;
     }
     if (cl_stereotype == "typedef") {
       write_trace_header();
-      UmlCom::trace("<tt>        </tt><font face=helvetica><b>a <i>typedef</i> cannot have operation</b></font><br>");
+      UmlCom::trace("<tt>        </tt><font color=\"red\"><b>a <i>typedef</i> cannot have operation</b></font><br>");
       return;
     }
     

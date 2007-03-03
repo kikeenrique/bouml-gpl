@@ -28,7 +28,6 @@
 #endif
 
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 #include <qfile.h> 
 #include <qcursor.h>
 #include <qapplication.h>
@@ -77,6 +76,7 @@
 #include "UmlGlobal.h"
 #include "mu.h"
 #include "SaveProgress.h"
+#include "DialogUtil.h"
 
 IdDict<BrowserPackage> BrowserPackage::all;
 QList<BrowserPackage> BrowserPackage::removed;
@@ -751,11 +751,11 @@ void BrowserPackage::add_package() {
   
   p->select_in_browser();
   if ((owner != -1) &&
-      (QMessageBox::warning(0, "Bouml",
-			    "Do you want to be the owner of this new package ?\n"
-			    "(other users can't modify it while you are the owner)",
-			    "Yes", "no", 0,
-			    0, 1 ) == 0))
+      (msg_warning("Bouml",
+		   "Do you want to be the owner of this new package ?\n"
+		   "(other users can't modify it while you are the owner)",
+		   QMessageBox::Yes, QMessageBox::No )
+       == QMessageBox::Yes))
     p->owner = owner;
 }
 
@@ -789,7 +789,7 @@ void BrowserPackage::import_project() {
       return;
 
     if (wrong_child_name(fi.baseName(), UmlPackage, TRUE, FALSE)) {
-      QMessageBox::critical(0, "Error", "illegal name or already used");
+      msg_critical("Error", "illegal name or already used");
       return;
     }
   
@@ -1289,7 +1289,7 @@ bool BrowserPackage::tool_cmd(ToolCom * com, const char * args) {
 	    else {
 	      BrowserNode * end = (BrowserNode *) com->get_id(args);
 	      
-	      if (may_connect(c, end))
+	      if (may_connect(c, end) == 0)
 		add_relation(c, end)->get_browser_node()->write_id(com);
 	      else
 		ok = FALSE;
@@ -1525,7 +1525,7 @@ void BrowserPackage::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     else if ((parent() != 0) && (after == 0))
       ((BrowserNode *) parent())->DropAfterEvent(e, this);
     else {
-      QMessageBox::critical(0, "Error", "Forbiden");
+      msg_critical("Error", "Forbiden");
       e->ignore();
     }
   }
@@ -2086,9 +2086,9 @@ unsigned BrowserPackage::load(bool recursive, int id) {
       
     do {
       if ((nread = fp.readBlock(s + offset, sz - offset)) == -1) {
-	QMessageBox::critical(0, "Error", 
-			      BrowserView::get_dir().absFilePath(fn)
-			      + "cannot be read");
+	msg_critical("Error", 
+		     BrowserView::get_dir().absFilePath(fn)
+		     + "cannot be read");
 	delete [] s;
 	throw 0;
       }
@@ -2107,14 +2107,14 @@ unsigned BrowserPackage::load(bool recursive, int id) {
       set_read_file_format(read_unsigned(st));
       
       if (read_file_format() > FILEFORMAT) {
-	QMessageBox::critical(0, "Error", 
-			      "Your version of BOUML is too old to read this project");
+	msg_critical("Error", 
+		     "Your version of BOUML is too old to read this project");
 	throw 0;
       }
       
       if (in_import() && prj) {
 	if (read_file_format() <= 21) {
-	  QMessageBox::critical(0, "Error", 
+	  msg_critical("Error", 
 				"\
 Sorry, the imported project has a too old format.\n\
 To change its format : load this project and save it.");

@@ -18,10 +18,13 @@ class UmlAcceptEventAction
     trig = javaTrigger();
   }
 
-  if (! trig.isEmpty()) {
-    out << " trigger=\"";
-    out .quote(trig);
-    out << '"';
-  }
-
   write_end(out);
+
+  if (! trig.isEmpty()) {
+    out.indent();
+    out << "<trigger xmi:type=\"uml:Trigger\"";
+    out.id_prefix(this, "TRIGGER_");
+    out << " name=\"";
+    out.quote(trig);
+    out << "\"/>\n";
+  }

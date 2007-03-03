@@ -35,7 +35,6 @@
 #include <qcheckbox.h>
 #include <qradiobutton.h> 
 #include <qpushbutton.h> 
-#include <qmessagebox.h>
 #include <qpopupmenu.h> 
 #include <qcursor.h> 
 
@@ -351,7 +350,7 @@ void PinDialog::accept() {
       ((BrowserNode *) bn->parent())->wrong_child_name(s, UmlActivityPin,
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
-    QMessageBox::critical(0, "Error", s + "\n\nillegal name or already used");
+    msg_critical("Error", s + "\n\nillegal name or already used");
   else {
     // check consistency
     UmlParamDirection dir = direction(eddir->currentText());
@@ -375,7 +374,7 @@ void PinDialog::accept() {
     }
     
     if (!err.isEmpty())
-      QMessageBox::critical(0, "Error", err);
+      msg_critical("Error", err);
     else {
       bn->set_name(s);
       pin->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));

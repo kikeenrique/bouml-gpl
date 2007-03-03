@@ -1,0 +1,165 @@
+class UmlPackage
+!!!188674.cpp!!!	import() : void
+  QString path = QFileDialog::getOpenFileName(QString::null, QString::null, 0, 0, "open xmi/xml file");
+  
+  if (! path.isEmpty()) {
+    // note : QTextStream(FILE *) bugged under windows
+    FILE * fp = fopen(path, "rb");
+    
+    if (fp == 0)
+      UmlCom::trace("cannot open " + path);
+    else {
+      FileIn in(path, fp);
+      
+      getProject()->set_childrenVisible(FALSE);
+      
+      init();
+      importHeader(in);
+      
+      UmlCom::trace("<br><font face=helvetica>solve references<br>");
+      
+      UnresolvedWithContext::solveThem();
+      Unresolved::solveThem();
+      UnresolvedRelation::solveThem();
+      Association::solveThem();	// must be done after UnresolvedRelation::solveThem();
+      UmlFlow::solveThem();
+      UmlTransition::solveThem();
+      
+      UmlCom::trace(QCString("<br><font face=helvetica>xmi import done<br><br>") +
+		    QCString("<font face=helvetica> ") +
+		    QCString().setNum(numberOf() - 1) + QCString(" packages </font><br>") +
+		    QCString("<font face=helvetica> ") +
+		    QCString().setNum(UmlUseCase::numberOf()) + QCString(" use cases </font><br>") +
+		    QCString("<font face=helvetica> ") +
+		    QCString().setNum(UmlClass::numberOf()) + QCString(" classes </font><br>") +
+		    QCString("<font face=helvetica> ") +
+		    QCString().setNum(UmlActivity::numberOf()) + QCString(" activities </font><br>") +
+		    QCString("<font face=helvetica> ") +
+		    QCString().setNum(UmlState::numberOf()) + " states </font><br>" +
+		    QCString("<font face=helvetica> ") +
+		    QCString().setNum(UmlComponent::numberOf()) + QCString(" components </font><br>") +
+		    QCString("<font face=helvetica> ") +
+		    QCString().setNum(UmlArtifact::numberOf()) + QCString(" artifacts </font><br>") +
+		    QCString("<font face=helvetica> ") +
+		    QCString().setNum(UmlNode::numberOf()) + QCString(" deployment nodes </font><br>"));
+      
+      getProject()->set_childrenVisible(TRUE);
+    }
+  }
+!!!188930.cpp!!!	importHeader(inout in : FileIn) : void
+  Token & tk = in.read();
+  
+  if (tk.what() != "xml")
+    in.error("xml version expected");
+    
+  if (tk.valueOf("version") != "1.0") {
+    UmlCom::trace("Only import xml 1.0");
+    return;
+  }
+
+  (void) in.read();	// update tk
+  
+  if (tk.what() != "xmi:xmi")
+    in.error("xmi:XMI expected");
+    
+  if (tk.valueOf("xmi:version") != "2.1") {
+    UmlCom::trace("Only import xmi 2.1");
+    return;
+  }
+
+  while ((void) in.read(), !tk.close("xmi:xmi")) {
+    if (tk.what() == "xmi:documentation") {
+      QCString who = tk.valueOf("exporter");
+
+      if (who.isNull())
+	who = tk.valueOf("xmi:exporter");
+      
+      if (! who.isNull()) {
+	UmlCom::trace("xmi file produced by <b>" + who + "</b><br><br>");
+	FromBouml = (who == "Bouml");
+      }
+      
+      if (! tk.closed())
+	in.finish(tk.what());
+    }
+    else
+      UmlCom::targetItem()->import(in, tk);
+  }
+
+!!!193538.cpp!!!	container(in kind : anItemKind, in token : Token, inout in : FileIn) : UmlItem
+  switch (kind) {
+  case aClass:
+  case aState:
+  case anActivity:
+    if (_classview == 0)
+      _classview = UmlClassView::create(this, "Class View");
+    return _classview;
+  case anUseCase:
+    if (_usecaseview == 0)
+      _usecaseview = UmlUseCaseView::create(this, "Use Case View");
+    return _usecaseview;
+  case aComponent:
+    if (_compview == 0)
+      _compview = UmlComponentView::create(this, "Component View");
+    return _compview;
+  case aNode:
+  case anArtifact:
+    if (_deplview == 0)
+      _deplview = UmlDeploymentView::create(this, "Deployment View");
+    return _deplview;
+  default:
+    in.warning("bypass &lt;" + token.what() + 
+	       " xmi:type=\"" + token.xmiType() + "\"...&gt;");
+    
+    if (! token.closed())
+      in.finish(token.what());
+    
+    return 0;
+  }
+!!!189058.cpp!!!	importIt(inout in : FileIn, inout token : Token, inout where : UmlItem) : void
+  while (where->kind() != aPackage)
+    where = where->parent();
+    
+  QCString s = token.valueOf("name");
+  
+  if (s.isEmpty()) {
+    static unsigned n = 0;
+    
+    s.sprintf("anonymous %u", ++n);
+  }
+    
+  UmlPackage * pack = create((UmlPackage *) where, s);
+  
+  if (pack == 0)
+    in.error("cannot create package '" + s + "' in '" + where->name() + "'");
+  
+  pack->addItem(token.xmiId(), in);
+
+  if (! token.closed()) {
+    QCString k = token.what();
+    const char * kstr = k;
+    
+    while (in.read(), !token.close(kstr))
+      pack->UmlItem::import(in, token);
+  }
+
+  pack->unload(TRUE, FALSE);
+!!!191746.cpp!!!	init() : void
+  declareFct("uml:model", "uml:Model", &importIt);
+  declareFct("packagedelement", "uml:Package", &importIt);
+  declareFct("ownedmember", "uml:Package", &importIt);
+  
+  declareFct("uml:package", "", &importIt);
+  
+  declareFct("uml:model", "", &importIt);
+
+  //
+  
+  UmlItem::init();
+  UmlUseCase::init();
+  UmlClass::init();
+  UmlState::init();
+  UmlActivity::init();
+  UmlComponent::init();
+  UmlNode::init();
+  UmlArtifact::init();

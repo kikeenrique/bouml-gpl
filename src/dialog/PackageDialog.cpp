@@ -35,7 +35,6 @@
 #include <qcombobox.h> 
 #include <qpushbutton.h> 
 #include <qfiledialog.h> 
-#include <qmessagebox.h>
 
 #include "PackageDialog.h"
 #include "PackageData.h"
@@ -328,7 +327,7 @@ void PackageDialog::accept() {
       ((BrowserNode *) bn->parent())->wrong_child_name(s, UmlPackage,
 								     bn->allow_spaces(),
 								     bn->allow_empty()))
-    QMessageBox::critical(0, "Error", s + "\n\nillegal name or already used");
+    msg_critical("Error", s + "\n\nillegal name or already used");
   else {  
     bn->set_name(s);
     pa->set_stereotype(fromUnicode(edstereotype->currentText().simplifyWhiteSpace()));

@@ -29,7 +29,6 @@
 
 #include <qfont.h>
 #include <qpopupmenu.h> 
-#include <qmessagebox.h>
 
 #include "StateDiagramWindow.h"
 #include "StateDiagramView.h"
@@ -51,6 +50,7 @@
 #include "BrowserStateAction.h"
 #include "StateActionData.h"
 #include "MenuTitle.h"
+#include "DialogUtil.h"
 #include "myio.h"
 
 StateDiagramView::StateDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
@@ -108,7 +108,7 @@ void StateDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	
 	if (b != 0) {
 	  if (the_canvas()->already_drawn(b)) {
-	    QMessageBox::information(0, "Bouml", "already drawn");
+	    msg_information("Bouml", "already drawn");
 	    history_protected = FALSE;
 	    return;
 	  }
@@ -253,7 +253,7 @@ void StateDiagramView::dropEvent(QDropEvent * e) {
   
   if ((bn = UmlDrag::decode(e, UmlState, TRUE)) != 0) {
     if (the_canvas()->already_drawn(bn))
-      QMessageBox::information(0, "Bouml", "already drawn");
+      msg_information("Bouml", "already drawn");
     else {
       history_save();
       
@@ -284,7 +284,7 @@ void StateDiagramView::dropEvent(QDropEvent * e) {
   }
   else if ((bn = UmlDrag::decode(e, UmlPseudoState, TRUE)) != 0) {
     if (the_canvas()->already_drawn(bn))
-      QMessageBox::information(0, "Bouml", "already drawn");
+      msg_information("Bouml", "already drawn");
     else {
       history_save();
       
@@ -303,7 +303,7 @@ void StateDiagramView::dropEvent(QDropEvent * e) {
   }
   else if ((bn = UmlDrag::decode(e, UmlStateAction, TRUE)) != 0) {
     if (the_canvas()->already_drawn(bn))
-      QMessageBox::information(0, "Bouml", "already drawn");
+      msg_information("Bouml", "already drawn");
     else {
       history_save();
       
