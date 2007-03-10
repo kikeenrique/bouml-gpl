@@ -77,6 +77,7 @@ UmlVisibility GenerationSettings::cpp_set_visibility;
 SharedStr GenerationSettings::cpp_set_name;
 bool GenerationSettings::cpp_set_inline;
 bool GenerationSettings::cpp_set_param_const;
+bool GenerationSettings::cpp_set_param_ref;
 
 bool GenerationSettings::java_default_defs;
 SharedStr GenerationSettings::java_src_content;
@@ -299,6 +300,7 @@ ${module_end}\n\
   cpp_set_name = "set_${name}";
   cpp_set_inline = FALSE;
   cpp_set_param_const = FALSE;
+  cpp_set_param_ref = FALSE;
   cpp_include_with_path = FALSE;
   
   java_class_decl = "${comment}${@}${public}${final}${abstract}class ${name}${extends}${implements} {\n${members}}\n";
@@ -747,6 +749,8 @@ void GenerationSettings::send_cpp_def(ToolCom * com)
   com->write_string(cpp_set_name);
   com->write_bool(cpp_set_inline);
   com->write_bool(cpp_set_param_const);
+  if (api_version >= 26)
+    com->write_bool(cpp_set_param_ref);
 }
 
 void GenerationSettings::send_java_def(ToolCom * com)
@@ -1181,6 +1185,9 @@ bool GenerationSettings::tool_global_cpp_cmd(ToolCom * com,
 	break;
       case setCppIsSetParamConstCmd:
 	cpp_set_param_const = (*args != 0);
+	break;
+      case setCppIsSetParamRefCmd:
+	cpp_set_param_ref = (*args != 0);
 	break;
       default:
 	return FALSE;
@@ -1728,6 +1735,7 @@ void GenerationSettings::save()
   save_string(cpp_set_name, st);
   if (cpp_set_inline) st << " inline";
   if (cpp_set_param_const) st << " param_const";
+  if (cpp_set_param_ref) st << " param_ref";
   st << ' ' << stringify(cpp_set_visibility);
   nl_indent(st);
   st << "cpp_default_operation_declaration ";
@@ -2193,6 +2201,12 @@ void GenerationSettings::read(char * & st, char * & k)
     }
     else
       cpp_set_param_const = FALSE;
+    if (!strcmp(k, "param_ref")) {
+      cpp_set_param_ref = TRUE;
+      k = read_keyword(st);
+    }
+    else
+      cpp_set_param_ref = FALSE;
     cpp_set_visibility = ::visibility(k);
     
     read_keyword(st, "cpp_default_operation_declaration");

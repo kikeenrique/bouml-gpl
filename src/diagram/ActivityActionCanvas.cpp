@@ -74,6 +74,11 @@ ActivityActionCanvas::ActivityActionCanvas(BrowserNode * bn, UmlCanvas * canvas,
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
+
+  if (canvas->must_draw_all_relations()) {
+    draw_all_flows();
+    draw_all_simple_relations();
+  }
 }
 
 ActivityActionCanvas::ActivityActionCanvas(UmlCanvas * canvas, int id)
@@ -240,6 +245,10 @@ void ActivityActionCanvas::modified() {
   force_pins_arround();
   check_pins();
   check_parametersets();
+  if (the_canvas()->must_draw_all_relations()) {
+    draw_all_flows();
+    draw_all_simple_relations();
+  }
   check_conditions();
   canvas()->update();
   package_modified();

@@ -47,7 +47,7 @@ class UmlClassMember : public UmlBaseClassMember {
     void generate_visibility(aVisibility & current_visibility,
 			     QTextOStream & f_h, bool ahead,
 			     const QCString & indent);
-    void insert_template(const char *& p, QTextOStream & fs,
+    bool insert_template(const char *& p, QTextOStream & fs,
 			 const QCString & indent, const QCString & templ);
 };
 

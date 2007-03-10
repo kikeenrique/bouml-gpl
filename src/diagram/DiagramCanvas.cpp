@@ -34,7 +34,14 @@
 #include "BrowserDiagram.h"
 #include "ArrowCanvas.h"
 #include "LabelCanvas.h"
+#include "SimpleRelationCanvas.h"
+#include "SimpleRelationData.h"
+#include "FlowCanvas.h"
+#include "FlowData.h"
+#include "TransitionCanvas.h"
+#include "TransitionData.h"
 #include "UmlWindow.h"
+#include "Settings.h"
 #include "myio.h"
 
 DiagramCanvas::DiagramCanvas(BrowserNode * bn, UmlCanvas * canvas,
@@ -460,6 +467,217 @@ double DiagramCanvas::compute_angle(double delta_x, double delta_y)
     return angle;
   }
 }
+
+bool DiagramCanvas::has_simple_relation(BasicData * def) const {
+  QListIterator<ArrowCanvas> it(lines);
+	
+  while (it.current()) {
+    if (IsaSimpleRelation(it.current()->type()) &&
+	(((SimpleRelationCanvas *) it.current())->get_data() == def))
+      return TRUE;
+    ++it;
+  }
+  
+  return FALSE;
+}
+
+void DiagramCanvas::draw_all_simple_relations(DiagramCanvas * end) {
+  QListViewItem * child;
+  QCanvasItemList all = canvas()->allItems();
+  QCanvasItemList::Iterator cit;
+  
+  for (child = browser_node->firstChild(); child; child = child->nextSibling()) {
+    if (IsaSimpleRelation(((BrowserNode *) child)->get_type()) &&
+	!((BrowserNode *) child)->deletedp()) {
+      SimpleRelationData * def =
+	((SimpleRelationData *) ((BrowserNode *) child)->get_data());
+
+      if ((def->get_start_node() == browser_node) && 	// rel begins by this
+	  ((end == 0) || (def->get_end_node() == end->browser_node)) &&
+	  !has_simple_relation(def)) {
+	// adds it in case the target is drawed
+	BrowserNode * end_node = def->get_end_node();
+	DiagramItem * di;
+	
+	if (end_node == browser_node)
+	  di = this;
+	else {	
+	  di = 0;
+	  for (cit = all.begin(); cit != all.end(); ++cit) {
+	    DiagramCanvas * dc = QCanvasItemToDiagramCanvas(*cit);
+
+	    if ((dc != 0) &&
+		(dc->browser_node == end_node) &&
+		((dc == end) || (*cit)->visible())) {
+	      // other diagram canvas find
+	      di = dc;
+	      break;
+	    }
+	  }
+	}
+	
+	if (di != 0)
+	  (new SimpleRelationCanvas(the_canvas(), this, di,
+				    (BrowserNode *) child, 
+				    def->get_type(), 0, def))->show();
+      }
+    }
+  }
+  
+  if ((end == 0) && !DrawingSettings::just_modified()) {
+    for (cit = all.begin(); cit != all.end(); ++cit) {
+      DiagramCanvas * dc = QCanvasItemToDiagramCanvas(*cit);
+      
+      if ((dc != 0) &&
+	  (dc != this) &&
+	  (dc->browser_node != 0) &&
+	  !dc->browser_node->deletedp() &&
+	  dc->visible())
+	dc->draw_all_simple_relations(this);
+    }
+  }
+}
+
+bool DiagramCanvas::has_flow(BasicData * def) const {
+  QListIterator<ArrowCanvas> it(lines);
+	
+  while (it.current()) {
+    if ((it.current()->type() == UmlFlow) &&
+	(((FlowCanvas *) it.current())->get_data() == def))
+      return TRUE;
+    ++it;
+  }
+  
+  return FALSE;
+}
+
+void DiagramCanvas::draw_all_flows(DiagramCanvas * end) {
+  QListViewItem * child;
+  QCanvasItemList all = canvas()->allItems();
+  QCanvasItemList::Iterator cit;
+  
+  for (child = browser_node->firstChild(); child; child = child->nextSibling()) {
+    if ((((BrowserNode *) child)->get_type() == UmlFlow) &&
+	!((BrowserNode *) child)->deletedp()) {
+      FlowData * def =
+	((FlowData *) ((BrowserNode *) child)->get_data());
+
+      if ((def->get_start_node() == browser_node) && 	// rel begins by this
+	  ((end == 0) || (def->get_end_node() == end->browser_node)) &&
+	  !has_flow(def)) {
+	// adds it in case the target is drawed
+	BrowserNode * end_node = def->get_end_node();
+	DiagramItem * di;
+	
+	if (end_node == browser_node)
+	  di = this;
+	else {	
+	  di = 0;
+	  for (cit = all.begin(); cit != all.end(); ++cit) {
+	    DiagramCanvas * dc = QCanvasItemToDiagramCanvas(*cit);
+
+	    if ((dc != 0) &&
+		(dc->browser_node == end_node) &&
+		((dc == end) || (*cit)->visible())) {
+	      // other diagram canvas find
+	      di = dc;
+	      break;
+	    }
+	  }
+	}
+	
+	if (di != 0)
+	  (new FlowCanvas(the_canvas(), this, di,
+			  (BrowserNode *) child, 
+			  0, def))->show();
+      }
+    }
+  }
+  
+  if ((end == 0) && !DrawingSettings::just_modified()) {
+    for (cit = all.begin(); cit != all.end(); ++cit) {
+      DiagramCanvas * dc = QCanvasItemToDiagramCanvas(*cit);
+      
+      if ((dc != 0) &&
+	  (dc != this) &&
+	  (dc->browser_node != 0) &&
+	  !dc->browser_node->deletedp() &&
+	  dc->visible())
+	dc->draw_all_flows(this);
+    }
+  }
+}
+
+bool DiagramCanvas::has_transition(BasicData * def) const {
+  QListIterator<ArrowCanvas> it(lines);
+	
+  while (it.current()) {
+    if ((it.current()->type() == UmlTransition) &&
+	(((TransitionCanvas *) it.current())->get_data() == def))
+      return TRUE;
+    ++it;
+  }
+  
+  return FALSE;
+}
+
+void DiagramCanvas::draw_all_transitions(DiagramCanvas * end) {
+  QListViewItem * child;
+  QCanvasItemList all = canvas()->allItems();
+  QCanvasItemList::Iterator cit;
+  
+  for (child = browser_node->firstChild(); child; child = child->nextSibling()) {
+    if ((((BrowserNode *) child)->get_type() == UmlTransition) &&
+	!((BrowserNode *) child)->deletedp()) {
+      TransitionData * def =
+	((TransitionData *) ((BrowserNode *) child)->get_data());
+
+      if ((def->get_start_node() == browser_node) && 	// rel begins by this
+	  ((end == 0) || (def->get_end_node() == end->browser_node)) &&
+	  !has_transition(def)) {
+	// adds it in case the target is drawed
+	BrowserNode * end_node = def->get_end_node();
+	DiagramItem * di;
+	
+	if (end_node == browser_node)
+	  di = this;
+	else {	
+	  di = 0;
+	  for (cit = all.begin(); cit != all.end(); ++cit) {
+	    DiagramCanvas * dc = QCanvasItemToDiagramCanvas(*cit);
+
+	    if ((dc != 0) &&
+		(dc->browser_node == end_node) &&
+		((dc == end) || (*cit)->visible())) {
+	      // other diagram canvas find
+	      di = dc;
+	      break;
+	    }
+	  }
+	}
+	
+	if (di != 0)
+	  (new TransitionCanvas(the_canvas(), this, di,
+				(BrowserNode *) child, 
+				0, def))->show();
+      }
+    }
+  }
+  
+  if ((end == 0) && !DrawingSettings::just_modified()) {
+    for (cit = all.begin(); cit != all.end(); ++cit) {
+      DiagramCanvas * dc = QCanvasItemToDiagramCanvas(*cit);
+      
+      if ((dc != 0) &&
+	  (dc != this) &&
+	  (dc->browser_node != 0) &&
+	  !dc->browser_node->deletedp() &&
+	  dc->visible())
+	dc->draw_all_transitions(this);
+    }
+  }
+}
+
 
 void DiagramCanvas::history_save(QBuffer & b) const {
   ::save(this, b);

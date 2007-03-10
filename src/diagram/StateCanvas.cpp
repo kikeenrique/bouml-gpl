@@ -59,6 +59,11 @@ StateCanvas::StateCanvas(BrowserNode * bn, UmlCanvas * canvas,
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
+
+  if (canvas->must_draw_all_relations()) {
+    //draw_all_simple_relations();
+    draw_all_transitions();
+  }
 }
 
 StateCanvas::StateCanvas(UmlCanvas * canvas, int id)
@@ -207,6 +212,10 @@ void StateCanvas::modified() {
   show();
   update_show_lines();
   force_self_rel_visible();
+  if (the_canvas()->must_draw_all_relations()) {
+    //draw_all_simple_relations();
+    draw_all_transitions();
+  }
   canvas()->update();
   force_sub_states_inside();
   package_modified();

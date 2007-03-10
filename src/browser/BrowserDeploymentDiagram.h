@@ -79,6 +79,8 @@ class BrowserDeploymentDiagram : public BrowserDiagram {
     virtual void get_deploymentdiagramsettings(DeploymentDiagramSettings & r) const;
     virtual bool get_auto_label_position(UmlCode who) const ;
     virtual bool get_shadow() const;
+    virtual bool get_draw_all_relations() const;
+    virtual void dont_draw_all_relations();
     virtual void get_componentdrawingsettings(bool depl, ComponentDrawingSettings & r) const;
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual void save(QTextStream &, bool ref, QString & warning);

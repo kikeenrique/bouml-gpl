@@ -75,9 +75,12 @@ class BrowserClassDiagram : public BrowserDiagram {
     virtual void get_classdiagramsettings(ClassDiagramSettings &) const;
     virtual bool get_auto_label_position(UmlCode who) const ;
     virtual bool get_shadow() const;
+    virtual bool get_draw_all_relations() const;
+    virtual void dont_draw_all_relations();
     virtual UmlColor get_color(UmlCode) const;
     virtual void package_settings(bool & name_in_tab, ShowContextMode & show_context) const;
     virtual bool tool_cmd(ToolCom * com, const char * args);
+
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserClassDiagram * read(char * &, char *, BrowserNode *);
     static BrowserClassDiagram * read_ref(char * &, char *);

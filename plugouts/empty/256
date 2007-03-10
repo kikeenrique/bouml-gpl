@@ -1,29 +1,29 @@
-format 29
+format 30
 "API BASE" // API BASE
-  revision 3
+  revision 5
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default shadow default
+  show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
   //object diagram settings
-   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
   show_activities default region_horizontally default drawing_language default
   //activity diagram settings
-  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
   show_infonote default drawing_language default
   
   comment "The API system classes and components
@@ -32,19 +32,19 @@ DO NOT MODIFY THEM !!!
 "
   classview 256 "API BASE class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
     //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
-     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default shadow default
+    show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
     //activity diagram settings
-    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
     
     associated_deployment_view deploymentview_ref 256 // API BASE Deployment view
@@ -1102,7 +1102,7 @@ ${members}}
 	relation 512 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 512 // <dependency>
 	  b parent class_ref 1408 // UmlBaseClass
       end
@@ -1224,7 +1224,7 @@ ${members}};
 	relation 896 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 896 // <dependency>
 	  b parent class_ref 1408 // UmlBaseClass
@@ -2618,7 +2618,7 @@ ${body}}
 	relation 2048 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 2048 // <dependency>
 	  b parent class_ref 3712 // UmlBaseRelation
@@ -2628,7 +2628,7 @@ ${body}}
 	relation 2176 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 2176 // <dependency>
 	  b parent class_ref 2048 // UmlBaseArtifact
@@ -3034,7 +3034,7 @@ ${body}}
 	relation 2816 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 2816 // <dependency>
 	  b parent class_ref 1280 // UmlBaseAttribute
       end
@@ -3043,7 +3043,7 @@ ${body}}
 	relation 2944 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 2944 // <dependency>
 	  b parent class_ref 3456 // UmlBaseOperation
       end
@@ -3052,7 +3052,7 @@ ${body}}
 	relation 3072 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 3072 // <dependency>
 	  b parent class_ref 3712 // UmlBaseRelation
       end
@@ -3163,7 +3163,7 @@ ${body}}
 	relation 3200 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 3200 // <dependency>
 	  b parent class_ref 1792 // UmlBaseClassMember
@@ -3173,7 +3173,7 @@ ${body}}
 	relation 3328 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 3328 // <dependency>
 	  b parent class_ref 3072 // UmlBaseExtraClassMember
@@ -3183,7 +3183,7 @@ ${body}}
 	relation 3456 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 3456 // <dependency>
 	  b parent class_ref 1408 // UmlBaseClass
@@ -3680,7 +3680,7 @@ ${body}}
       classrelation 4096 // <dependency>
 	relation 4096 -_->
 	  a protected
-	    cpp default "Generated"
+	    cpp default "#include in header"
 	    java "Generated"
 	    classrelation_ref 4096 // <dependency>
 	  b parent class_ref 1536 // UmlBaseClassItem
@@ -3690,7 +3690,7 @@ ${body}}
 	relation 4224 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 4224 // <dependency>
 	  b parent class_ref 3456 // UmlBaseOperation
@@ -3700,7 +3700,7 @@ ${body}}
 	relation 4352 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 4352 // <dependency>
 	  b parent class_ref 1280 // UmlBaseAttribute
@@ -3710,7 +3710,7 @@ ${body}}
 	relation 4480 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 4480 // <dependency>
 	  b parent class_ref 3712 // UmlBaseRelation
@@ -3720,7 +3720,7 @@ ${body}}
 	relation 4608 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 4608 // <dependency>
 	  b parent class_ref 1408 // UmlBaseClass
@@ -4293,7 +4293,7 @@ ${body}}
 	relation 5120 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 5120 // <dependency>
 	  b parent class_ref 1408 // UmlBaseClass
@@ -5890,7 +5890,7 @@ ${body}}
 	relation 6656 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 6656 // <dependency>
 	  b parent class_ref 1536 // UmlBaseClassItem
@@ -5900,7 +5900,7 @@ ${body}}
 	relation 6784 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 6784 // <dependency>
 	  b parent class_ref 1280 // UmlBaseAttribute
@@ -5910,7 +5910,7 @@ ${body}}
 	relation 6912 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 6912 // <dependency>
 	  b parent class_ref 1408 // UmlBaseClass
@@ -5920,7 +5920,7 @@ ${body}}
 	relation 7040 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7040 // <dependency>
 	  b parent class_ref 1664 // UmlBaseClassDiagram
@@ -5930,7 +5930,7 @@ ${body}}
 	relation 7168 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7168 // <dependency>
 	  b parent class_ref 1920 // UmlBaseClassView
@@ -5940,7 +5940,7 @@ ${body}}
 	relation 7296 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7296 // <dependency>
 	  b parent class_ref 2176 // UmlBaseCollaborationDiagram
@@ -5950,7 +5950,7 @@ ${body}}
 	relation 7424 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7424 // <dependency>
 	  b parent class_ref 2048 // UmlBaseArtifact
@@ -5960,7 +5960,7 @@ ${body}}
 	relation 7552 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7552 // <dependency>
 	  b parent class_ref 2304 // UmlBaseComponentDiagram
@@ -5970,7 +5970,7 @@ ${body}}
 	relation 7680 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7680 // <dependency>
 	  b parent class_ref 2432 // UmlBaseComponentView
@@ -5980,7 +5980,7 @@ ${body}}
 	relation 7808 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7808 // <dependency>
 	  b parent class_ref 2816 // UmlBaseDeployment
@@ -5990,7 +5990,7 @@ ${body}}
 	relation 7936 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7936 // <dependency>
 	  b parent class_ref 2560 // UmlBaseDeploymentDiagram
@@ -6000,7 +6000,7 @@ ${body}}
 	relation 8064 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8064 // <dependency>
 	  b parent class_ref 2688 // UmlBaseDeploymentView
@@ -6010,7 +6010,7 @@ ${body}}
 	relation 8192 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8192 // <dependency>
 	  b parent class_ref 3328 // UmlBaseNode
@@ -6020,7 +6020,7 @@ ${body}}
 	relation 8320 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8320 // <dependency>
 	  b parent class_ref 3456 // UmlBaseOperation
@@ -6030,7 +6030,7 @@ ${body}}
 	relation 8448 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8448 // <dependency>
 	  b parent class_ref 3584 // UmlBasePackage
@@ -6040,7 +6040,7 @@ ${body}}
 	relation 8576 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8576 // <dependency>
 	  b parent class_ref 3712 // UmlBaseRelation
@@ -6050,7 +6050,7 @@ ${body}}
 	relation 8704 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8704 // <dependency>
 	  b parent class_ref 3840 // UmlBaseNcRelation
@@ -6060,7 +6060,7 @@ ${body}}
 	relation 8832 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8832 // <dependency>
 	  b parent class_ref 3968 // UmlBaseSequenceDiagram
@@ -6070,7 +6070,7 @@ ${body}}
 	relation 8960 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8960 // <dependency>
 	  b parent class_ref 4096 // UmlBaseUseCase
@@ -6080,7 +6080,7 @@ ${body}}
 	relation 9088 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9088 // <dependency>
 	  b parent class_ref 4224 // UmlBaseUseCaseDiagram
@@ -6090,7 +6090,7 @@ ${body}}
 	relation 9216 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9216 // <dependency>
 	  b parent class_ref 4352 // UmlBaseUseCaseView
@@ -6100,7 +6100,7 @@ ${body}}
 	relation 9344 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9344 // <dependency>
 	  b parent class_ref 2944 // UmlBaseDiagram
@@ -6110,7 +6110,7 @@ ${body}}
 	relation 9472 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9472 // <dependency>
 	  b parent class_ref 1024 // UmlBaseFormalParameter
@@ -6120,7 +6120,7 @@ ${body}}
 	relation 9600 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9600 // <dependency>
 	  b parent class_ref 896 // UmlBaseActualParameter
@@ -6130,7 +6130,7 @@ ${body}}
 	relation 9728 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9728 // <dependency>
 	  b parent class_ref 5248 // UmlCom
@@ -6140,7 +6140,7 @@ ${body}}
 	relation 9856 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9856 // <dependency>
 	  b parent class_ref 1792 // UmlBaseClassMember
@@ -6150,7 +6150,7 @@ ${body}}
 	relation 9984 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9984 // <dependency>
 	  b parent class_ref 3072 // UmlBaseExtraClassMember
@@ -6160,8 +6160,7 @@ ${body}}
 	relation 15488 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
+	    cpp default "${type}"
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 15488 // <dependency>
@@ -6563,7 +6562,7 @@ ${body}}
 	relation 128384 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128384 // <dependency>
 	  b parent class_ref 128256 // UmlBaseState
       end
@@ -6572,7 +6571,7 @@ ${body}}
 	relation 128896 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128896 // <dependency>
 	  b parent class_ref 128512 // UmlBaseStateDiagram
       end
@@ -6581,7 +6580,7 @@ ${body}}
 	relation 129920 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 129920 // <dependency>
 	  b parent class_ref 128896 // UmlBaseTransition
       end
@@ -6590,7 +6589,7 @@ ${body}}
 	relation 130944 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 130944 // <dependency>
 	  b parent class_ref 129280 // UmlBaseRegion
       end
@@ -6599,7 +6598,7 @@ ${body}}
 	relation 131456 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 131456 // <dependency>
 	  b parent class_ref 129536 // UmlBaseStateAction
       end
@@ -6608,7 +6607,7 @@ ${body}}
 	relation 132224 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 132224 // <dependency>
 	  b parent class_ref 129920 // UmlBaseInitialPseudoState
       end
@@ -6617,7 +6616,7 @@ ${body}}
 	relation 132608 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 132608 // <dependency>
 	  b parent class_ref 130176 // UmlBaseEntryPointPseudoState
       end
@@ -6626,7 +6625,7 @@ ${body}}
 	relation 132992 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 132992 // <dependency>
 	  b parent class_ref 130432 // UmlBaseFinalState
       end
@@ -6635,7 +6634,7 @@ ${body}}
 	relation 133376 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 133376 // <dependency>
 	  b parent class_ref 130688 // UmlBaseTerminatePseudoState
       end
@@ -6644,7 +6643,7 @@ ${body}}
 	relation 133760 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 133760 // <dependency>
 	  b parent class_ref 130944 // UmlBaseExitPointPseudoState
       end
@@ -6653,7 +6652,7 @@ ${body}}
 	relation 134144 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 134144 // <dependency>
 	  b parent class_ref 131200 // UmlBaseDeepHistoryPseudoState
       end
@@ -6662,7 +6661,7 @@ ${body}}
 	relation 134528 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 134528 // <dependency>
 	  b parent class_ref 131456 // UmlBaseShallowHistoryPseudoState
       end
@@ -6671,7 +6670,7 @@ ${body}}
 	relation 134912 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 134912 // <dependency>
 	  b parent class_ref 131712 // UmlBaseJunctionPseudoState
       end
@@ -6680,7 +6679,7 @@ ${body}}
 	relation 135296 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 135296 // <dependency>
 	  b parent class_ref 131968 // UmlBaseChoicePseudoState
       end
@@ -6689,7 +6688,7 @@ ${body}}
 	relation 135680 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 135680 // <dependency>
 	  b parent class_ref 132224 // UmlBaseForkPseudoState
       end
@@ -6698,7 +6697,7 @@ ${body}}
 	relation 136064 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 136064 // <dependency>
 	  b parent class_ref 132480 // UmlBaseJoinPseudoState
       end
@@ -6707,7 +6706,7 @@ ${body}}
 	relation 136960 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 136960 // <dependency>
 	  b parent class_ref 132736 // UmlBaseObjectDiagram
       end
@@ -6716,7 +6715,7 @@ ${body}}
 	relation 137344 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 137344 // <dependency>
 	  b parent class_ref 133120 // UmlBaseActivity
       end
@@ -6725,7 +6724,7 @@ ${body}}
 	relation 137728 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 137728 // <dependency>
 	  b parent class_ref 133376 // UmlBaseActivityDiagram
       end
@@ -6734,7 +6733,7 @@ ${body}}
 	relation 138368 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 138368 // <dependency>
 	  b parent class_ref 133632 // UmlBaseActivityNode
       end
@@ -6743,7 +6742,7 @@ ${body}}
 	relation 138880 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 138880 // <dependency>
 	  b parent class_ref 133888 // UmlBaseFlow
       end
@@ -6752,7 +6751,7 @@ ${body}}
 	relation 139904 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 139904 // <dependency>
 	  b parent class_ref 134272 // UmlBaseActivityRegion
       end
@@ -6761,7 +6760,7 @@ ${body}}
 	relation 140544 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 140544 // <dependency>
 	  b parent class_ref 134528 // UmlBaseExpansionRegion
       end
@@ -6770,7 +6769,7 @@ ${body}}
 	relation 141056 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 141056 // <dependency>
 	  b parent class_ref 134912 // UmlBaseInterruptibleActivityRegion
       end
@@ -6779,7 +6778,7 @@ ${body}}
 	relation 141440 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 141440 // <dependency>
 	  b parent class_ref 135168 // UmlBaseActivityAction
       end
@@ -6788,7 +6787,7 @@ ${body}}
 	relation 141952 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 141952 // <dependency>
 	  b parent class_ref 135424 // UmlBaseSendObjectAction
       end
@@ -6797,7 +6796,7 @@ ${body}}
 	relation 142336 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 142336 // <dependency>
 	  b parent class_ref 135680 // UmlBaseUnmarshallAction
       end
@@ -6806,7 +6805,7 @@ ${body}}
 	relation 142720 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 142720 // <dependency>
 	  b parent class_ref 135936 // UmlBaseOnSignalAction
       end
@@ -6815,7 +6814,7 @@ ${body}}
 	relation 143104 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 143104 // <dependency>
 	  b parent class_ref 136192 // UmlBaseSendSignalAction
       end
@@ -6824,7 +6823,7 @@ ${body}}
 	relation 143488 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 143488 // <dependency>
 	  b parent class_ref 136448 // UmlBaseBroadcastSignalAction
       end
@@ -6833,7 +6832,7 @@ ${body}}
 	relation 143872 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 143872 // <dependency>
 	  b parent class_ref 136704 // UmlBaseValueSpecificationAction
       end
@@ -6842,7 +6841,7 @@ ${body}}
 	relation 144256 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 144256 // <dependency>
 	  b parent class_ref 136960 // UmlBaseOpaqueAction
       end
@@ -6851,7 +6850,7 @@ ${body}}
 	relation 144640 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 144640 // <dependency>
 	  b parent class_ref 137216 // UmlBaseAcceptEventAction
       end
@@ -6860,7 +6859,7 @@ ${body}}
 	relation 145024 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 145024 // <dependency>
 	  b parent class_ref 137472 // UmlBaseCallOperationAction
       end
@@ -6869,7 +6868,7 @@ ${body}}
 	relation 145536 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 145536 // <dependency>
 	  b parent class_ref 137728 // UmlBaseCallBehaviorAction
       end
@@ -6878,7 +6877,7 @@ ${body}}
 	relation 146048 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 146048 // <dependency>
 	  b parent class_ref 137984 // UmlBaseAccessVariableValueAction
       end
@@ -6887,7 +6886,7 @@ ${body}}
 	relation 146560 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 146560 // <dependency>
 	  b parent class_ref 138240 // UmlBaseClearVariableValueAction
       end
@@ -6896,7 +6895,7 @@ ${body}}
 	relation 146944 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 146944 // <dependency>
 	  b parent class_ref 138496 // UmlBaseReadVariableValueAction
       end
@@ -6905,7 +6904,7 @@ ${body}}
 	relation 147328 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 147328 // <dependency>
 	  b parent class_ref 138752 // UmlBaseWriteVariableValueAction
       end
@@ -6914,7 +6913,7 @@ ${body}}
 	relation 147712 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 147712 // <dependency>
 	  b parent class_ref 139008 // UmlBaseAddVariableValueAction
       end
@@ -6923,7 +6922,7 @@ ${body}}
 	relation 148096 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 148096 // <dependency>
 	  b parent class_ref 139264 // UmlBaseRemoveVariableValueAction
       end
@@ -6932,7 +6931,7 @@ ${body}}
 	relation 148480 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 148480 // <dependency>
 	  b parent class_ref 139520 // UmlBaseActivityControlNode
       end
@@ -6941,7 +6940,7 @@ ${body}}
 	relation 148864 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 148864 // <dependency>
 	  b parent class_ref 139776 // UmlBaseInitialActivityNode
       end
@@ -6950,7 +6949,7 @@ ${body}}
 	relation 149248 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 149248 // <dependency>
 	  b parent class_ref 140032 // UmlBaseFlowFinalActivityNode
       end
@@ -6959,7 +6958,7 @@ ${body}}
 	relation 149632 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 149632 // <dependency>
 	  b parent class_ref 140288 // UmlBaseActivityFinalActivityNode
       end
@@ -6968,7 +6967,7 @@ ${body}}
 	relation 150016 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 150016 // <dependency>
 	  b parent class_ref 140544 // UmlBaseDecisionActivityNode
       end
@@ -6977,7 +6976,7 @@ ${body}}
 	relation 150400 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 150400 // <dependency>
 	  b parent class_ref 140800 // UmlBaseMergeActivityNode
       end
@@ -6986,7 +6985,7 @@ ${body}}
 	relation 150784 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 150784 // <dependency>
 	  b parent class_ref 141056 // UmlBaseForkActivityNode
       end
@@ -6995,7 +6994,7 @@ ${body}}
 	relation 151168 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 151168 // <dependency>
 	  b parent class_ref 141312 // UmlBaseJoinActivityNode
       end
@@ -7004,7 +7003,7 @@ ${body}}
 	relation 151552 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 151552 // <dependency>
 	  b parent class_ref 141568 // UmlBaseActivityObject
       end
@@ -7013,7 +7012,7 @@ ${body}}
 	relation 152320 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 152320 // <dependency>
 	  b parent class_ref 141952 // UmlBaseExpansionNode
       end
@@ -7022,7 +7021,7 @@ ${body}}
 	relation 152704 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 152704 // <dependency>
 	  b parent class_ref 142208 // UmlBasePinParameter
       end
@@ -7031,7 +7030,7 @@ ${body}}
 	relation 153344 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 153344 // <dependency>
 	  b parent class_ref 142592 // UmlBaseActivityPin
       end
@@ -7040,7 +7039,7 @@ ${body}}
 	relation 153728 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 153728 // <dependency>
 	  b parent class_ref 142848 // UmlBaseActivityParameter
       end
@@ -7049,7 +7048,7 @@ ${body}}
 	relation 154112 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 154112 // <dependency>
 	  b parent class_ref 143104 // UmlBaseParameterSet
       end
@@ -7764,6 +7763,45 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 189696 "cppGetSetFrozen"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHCPP
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the if the C++ definition is frozen, only for getter/setter operation"
+      end
+
+      operation 189824 "set_CppGetSetFrozen"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the if the C++ definition is frozen, only for getter/setter operation
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 30976 "isJavaFinal"
 	public explicit_return_type "bool"
 	nparams 0
@@ -7950,6 +7988,45 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 189952 "javaGetSetFrozen"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    #ifdef WITHJAVA
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHJAVA
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the if the Java definition is frozen, only for getter/setter operation"
+      end
+
+      operation 190080 "set_JavaGetSetFrozen"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the if the Java definition is frozen, only for getter/setter operation
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 32256 "isIdlOneway"
 	public explicit_return_type "bool"
 	nparams 0
@@ -8023,6 +8100,45 @@ ${body}}
 	comment " in case the operation is a 'get' or 'set' operation, returns how
  the operation's IDL name must be generated
  
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 190208 "idlGetSetFrozen"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    #ifdef WITHIDL
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHIDL
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the if the IDL definition is frozen, only for getter/setter operation"
+      end
+
+      operation 190336 "set_IdlGetSetFrozen"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the if the IDL definition is frozen, only for getter/setter operation
+
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
@@ -8113,6 +8229,39 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 #endif
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	idl_decl ""
+      end
+
+      attribute 77568 "_cpp_get_set_frozen"
+	private explicit_type "bool"
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      attribute 77696 "_java_get_set_frozen"
+	private explicit_type "bool"
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      attribute 77824 "_idl_get_set_frozen"
+	private explicit_type "bool"
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
 	idl_decl ""
       end
 
@@ -19756,7 +19905,7 @@ ${body}}
 
   deploymentview 256 "API BASE Deployment view"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     comment "The API system artifacts
 

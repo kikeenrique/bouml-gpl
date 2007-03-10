@@ -35,6 +35,8 @@
 #include "UmlCanvas.h"
 #include "myio.h"
 
+bool DrawingSettings::just_changed;
+
 DrawingSettings * DrawingSettings::instance() {
   static DrawingSettings * the;
   
@@ -45,12 +47,19 @@ DrawingSettings * DrawingSettings::instance() {
 }
 
 void DrawingSettings::modified() {
-  UmlCanvas::update_all_shadow();
+  UmlCanvas::update_global_settings();
   instance()->is_modified();
 }
 
 void DrawingSettings::is_modified() {
+  just_changed = TRUE;  // to optimize 'draw all relations'
   emit changed();
+  just_changed = FALSE;
+}
+
+bool DrawingSettings::just_modified()
+{
+  return just_changed;
 }
 
 //
@@ -123,16 +132,17 @@ bool ClassSettings::edit(UmlCode who) {
 //
 
 ClassDiagramSettings::ClassDiagramSettings() {
-  draw_all_relations = UmlDefaultState;
   hide_attributes = UmlDefaultState;
   hide_operations = UmlDefaultState;
   show_full_members_definition = UmlDefaultState;
   show_members_visibility = UmlDefaultState;
+  show_parameter_dir = UmlDefaultState;
   package_name_in_tab = UmlDefaultState;
   class_drawing_mode = DefaultClassDrawingMode;
   drawing_language = DefaultDrawingLanguage;
   show_context_mode = DefaultShowContextMode;
   auto_label_position = UmlDefaultState;
+  draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
 }
 
@@ -143,12 +153,13 @@ void ClassDiagramSettings::save(QTextStream & st) const {
       << " hide_operations " << stringify(hide_operations)
 	<< " show_members_full_definition " << stringify(show_full_members_definition)
 	  << " show_members_visibility " << stringify(show_members_visibility)
-	    << " package_name_in_tab " << stringify(package_name_in_tab)
-	      << " class_drawing_mode " << stringify(class_drawing_mode)
-	        << " drawing_language " << stringify(drawing_language)
-		  << " show_context_mode " << stringify(show_context_mode)
-		    << " auto_label_position " << stringify(auto_label_position)
-		      << " shadow " << stringify(shadow);
+	    << " show_parameter_dir " << stringify(show_parameter_dir)
+	      << " package_name_in_tab " << stringify(package_name_in_tab)
+		<< " class_drawing_mode " << stringify(class_drawing_mode)
+		  << " drawing_language " << stringify(drawing_language)
+		    << " show_context_mode " << stringify(show_context_mode)
+		      << " auto_label_position " << stringify(auto_label_position)
+			<< " shadow " << stringify(shadow);
 }
 
 void ClassDiagramSettings::read(char * & st, char * & k) {
@@ -169,6 +180,7 @@ void ClassDiagramSettings::read(char * & st, char * & k) {
     // old version
     show_full_members_definition = state(read_keyword(st));
     show_members_visibility = show_full_members_definition;
+    show_parameter_dir = UmlYes;
     k = read_keyword(st);
   }
   else {
@@ -180,6 +192,11 @@ void ClassDiagramSettings::read(char * & st, char * & k) {
     if (!strcmp(k, "show_members_visibility")) {
       // new version
       show_members_visibility = state(read_keyword(st));
+      k = read_keyword(st);
+    }
+    if (!strcmp(k, "show_parameter_dir")) {
+      // new version
+      show_parameter_dir = state(read_keyword(st));
       k = read_keyword(st);
     }
   }
@@ -219,6 +236,7 @@ bool ClassDiagramSettings::complete(ClassDiagramSettings & result) const {
   check_default(hide_operations, UmlDefaultState);
   check_default(show_full_members_definition, UmlDefaultState);
   check_default(show_members_visibility, UmlDefaultState);
+  check_default(show_parameter_dir, UmlDefaultState);
   check_default(package_name_in_tab, UmlDefaultState);
   check_default(class_drawing_mode, DefaultClassDrawingMode);
   check_default(drawing_language, DefaultDrawingLanguage);
@@ -226,7 +244,7 @@ bool ClassDiagramSettings::complete(ClassDiagramSettings & result) const {
   check_default(auto_label_position, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
   
-  return done == 11;
+  return done == 12;
 }
 
 void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
@@ -234,6 +252,7 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
   
   switch (who) {
   case UmlClass:
+    // order known by ClassDiagramSettings::set
     a.resize(i + 8);
   
     a[i].set("drawing language", &drawing_language);
@@ -245,7 +264,8 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
 		 &show_full_members_definition);
     a[i + 6].set("show members visibility",
 		 &show_members_visibility);
-    a[i + 7].set("draw all relations", &draw_all_relations);
+    a[i + 7].set("show parameter direction",
+		 &show_parameter_dir);
     break;
   case UmlPackage:
     a.resize(i + 2);
@@ -254,7 +274,7 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
     a[i + 1].set("show context", &show_context_mode);
     break;
   case UmlClassDiagram:
-    a.resize(i + 11);
+    a.resize(i + 12);
   
     a[i].set("drawing language", &drawing_language);
     a[i + 1].set("classes drawing mode", &class_drawing_mode);
@@ -264,14 +284,16 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
 		 &show_full_members_definition);
     a[i + 5].set("show members visibility",
 		 &show_members_visibility);
-    a[i + 6].set("draw all classes relations", &draw_all_relations);
-    a[i + 7].set("show packages name in tab", &package_name_in_tab);
-    a[i + 8].set("show classes and packages context", &show_context_mode);
-    a[i + 9].set("automatic labels position", &auto_label_position);
-    a[i + 10].set("draw shadow", &shadow);
+    a[i + 6].set("show parameter direction",
+		 &show_parameter_dir);
+    a[i + 7].set("draw all relations", &draw_all_relations);
+    a[i + 8].set("show packages name in tab", &package_name_in_tab);
+    a[i + 9].set("show classes and packages context", &show_context_mode);
+    a[i + 10].set("automatic labels position", &auto_label_position);
+    a[i + 11].set("draw shadow", &shadow);
     break;
   default:
-    a.resize(i + 11);
+    a.resize(i + 12);
   
     a[i].set("class#drawing language", &drawing_language);
     a[i + 1].set("class#classes drawing mode", &class_drawing_mode);
@@ -281,14 +303,17 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
 		 &show_full_members_definition);
     a[i + 5].set("class#show classes members visibility",
 		 &show_members_visibility);
-    a[i + 6].set("class#draw all classes relations", &draw_all_relations);
-    a[i + 7].set("class#show packages name in tab", &package_name_in_tab);
-    a[i + 8].set("class#show classes and packages context", &show_context_mode);
-    a[i + 9].set("class#automatic labels position", &auto_label_position);
-    a[i + 10].set("class#draw shadow", &shadow);
+    a[i + 6].set("class#show operation parameter direction",
+		 &show_parameter_dir);
+    a[i + 7].set("class#draw all relations", &draw_all_relations);
+    a[i + 8].set("class#show packages name in tab", &package_name_in_tab);
+    a[i + 9].set("class#show classes and packages context", &show_context_mode);
+    a[i + 10].set("class#automatic labels position", &auto_label_position);
+    a[i + 11].set("class#draw shadow", &shadow);
   }
 }
 
+// to update class canvas settings
 void ClassDiagramSettings::set(QArray<StateSpec> & a, int index) {
   if (a[index].name != 0)
     drawing_language = (DrawingLanguage) *((DrawingLanguage *) a[index].state);
@@ -305,8 +330,9 @@ void ClassDiagramSettings::set(QArray<StateSpec> & a, int index) {
   if (a[index + 6].name != 0)
     show_members_visibility = (Uml3States) *((Uml3States *) a[index + 6].state);
   if (a[index + 7].name != 0)
-    draw_all_relations = (Uml3States) *((Uml3States *) a[index + 7].state);
+    show_parameter_dir = (Uml3States) *((Uml3States *) a[index + 6].state);
 }
+
 
 //
 
@@ -314,6 +340,7 @@ SequenceDiagramSettings::SequenceDiagramSettings() {
   show_full_operations_definition = UmlDefaultState;
   write_horizontally = UmlDefaultState;
   drawing_language = DefaultDrawingLanguage;
+  draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
 }
 
@@ -322,7 +349,8 @@ void SequenceDiagramSettings::save(QTextStream & st) const {
   st << "show_full_operations_definition " << stringify(show_full_operations_definition)
     << " write_horizontally " << stringify(write_horizontally)
       << " drawing_language " << stringify(drawing_language)
-	<< " shadow " << stringify(shadow);
+	<< " draw_all_relations " << stringify(draw_all_relations)
+	  << " shadow " << stringify(shadow);
 }
 
 void SequenceDiagramSettings::read(char * & st, char * & k) {
@@ -339,6 +367,10 @@ void SequenceDiagramSettings::read(char * & st, char * & k) {
     drawing_language = ::drawing_language(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "draw_all_relations")) {
+    draw_all_relations = state(read_keyword(st));
+    k = read_keyword(st);
+  }
   if (!strcmp(k, "shadow")) {
     shadow = state(read_keyword(st));
     k = read_keyword(st);
@@ -351,26 +383,31 @@ bool SequenceDiagramSettings::complete(SequenceDiagramSettings & result) const {
   check_default(show_full_operations_definition, UmlDefaultState);
   check_default(write_horizontally, UmlDefaultState);
   check_default(drawing_language, DefaultDrawingLanguage);
+  check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
   
-  return done == 4;
+  return done == 5;
 }
 
 void SequenceDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 4);
-  a[i].set((local) ? "drawing language"
-		   : "sequence#drawing language",
-	   &drawing_language);
-  a[i + 1].set((local) ? "show operations full definition"
-		       : "sequence#show operations full definition",
-	       &show_full_operations_definition);
-  a[i + 2].set((local) ? "write name:type horizontally"
-		       : "sequence#write name:type horizontally",
-	       &write_horizontally);
-  a[i + 3].set((local) ? "draw shadow" : "sequence#draw shadow",
-	       &shadow);
+  a.resize(i + 5);
+
+  if (local) {
+    a[i].set("drawing language", &drawing_language);
+    a[i + 1].set("show operations full definition", &show_full_operations_definition);
+    a[i + 2].set("write name:type horizontally", &write_horizontally);
+    a[i + 3].set("draw all relations", &draw_all_relations);
+    a[i + 4].set("draw shadow", &shadow);
+  }
+  else {
+    a[i].set("sequence#drawing language", &drawing_language);
+    a[i + 1].set("sequence#show operations full definition", &show_full_operations_definition);
+    a[i + 2].set("sequence#write name:type horizontally", &write_horizontally);
+    a[i + 3].set("sequence#draw all relations", &draw_all_relations);
+    a[i + 4].set("sequence#draw shadow", &shadow);
+  }
 }
 
 //
@@ -382,6 +419,7 @@ CollaborationDiagramSettings::CollaborationDiagramSettings() {
   drawing_language = DefaultDrawingLanguage;
   package_name_in_tab = UmlDefaultState;
   show_context_mode = DefaultShowContextMode;
+  draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
 }
 
@@ -393,7 +431,8 @@ void CollaborationDiagramSettings::save(QTextStream & st) const {
 	  << " drawing_language " << stringify(drawing_language)
 	    << " package_name_in_tab " << stringify(package_name_in_tab)
 	      << " show_context " << stringify(show_context_mode)
-		<< " shadow " << stringify(shadow);
+		<< " draw_all_relations " << stringify(draw_all_relations)
+		  << " shadow " << stringify(shadow);
 }
 
 void CollaborationDiagramSettings::read(char * & st, char * & k) {
@@ -422,6 +461,10 @@ void CollaborationDiagramSettings::read(char * & st, char * & k) {
     show_context_mode = context_mode(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "draw_all_relations")) {
+    draw_all_relations = state(read_keyword(st));
+    k = read_keyword(st);
+  }
   if (!strcmp(k, "shadow")) {
     shadow = state(read_keyword(st));
     k = read_keyword(st);
@@ -437,15 +480,16 @@ bool CollaborationDiagramSettings::complete(CollaborationDiagramSettings & resul
   check_default(drawing_language, DefaultDrawingLanguage);
   check_default(package_name_in_tab, UmlDefaultState);
   check_default(show_context_mode, DefaultShowContextMode);
+  check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
   
-  return done == 7;
+  return done == 8;
 }
 
 void CollaborationDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 7);
+  a.resize(i + 8);
   if (local) {
     a[i].set("drawing language", &drawing_language);
     a[i+1].set("show operations full definition",
@@ -456,7 +500,8 @@ void CollaborationDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
 	       &write_horizontally);
     a[i+4].set("packages name in tab", &package_name_in_tab);
     a[i+5].set("show package context", &show_context_mode);
-    a[i+6].set("draw shadow", &shadow);
+    a[i+6].set("draw all relations", &draw_all_relations);
+    a[i+7].set("draw shadow", &shadow);
   }
   else {
     a[i].set("collaboration#drawing language",
@@ -469,7 +514,8 @@ void CollaborationDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
 	       &write_horizontally);
     a[i+4].set("collaboration#show packages name in tab", &package_name_in_tab);
     a[i+5].set("collaboration#show packages context", &show_context_mode);
-    a[i+6].set("collaboration#draw shadow", &shadow);
+    a[i+6].set("collaboration#draw all relations", &draw_all_relations);
+    a[i+7].set("collaboration#draw shadow", &shadow);
   }
 }
 
@@ -480,6 +526,7 @@ ObjectDiagramSettings::ObjectDiagramSettings() {
   package_name_in_tab = UmlDefaultState;
   show_context_mode = DefaultShowContextMode;
   auto_label_position = UmlDefaultState;
+  draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
 }
 
@@ -489,7 +536,8 @@ void ObjectDiagramSettings::save(QTextStream & st) const {
       << " package_name_in_tab " << stringify(package_name_in_tab)
 	<< " show_context " << stringify(show_context_mode)
 	  << " auto_label_position " << stringify(auto_label_position)
-	    << " shadow " << stringify(shadow);
+	    << " draw_all_relations " << stringify(draw_all_relations)
+	      << " shadow " << stringify(shadow);
 }
 
 void ObjectDiagramSettings::read(char * & st, char * & k) {
@@ -510,6 +558,10 @@ void ObjectDiagramSettings::read(char * & st, char * & k) {
     auto_label_position = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "draw_all_relations")) {
+    draw_all_relations = state(read_keyword(st));
+    k = read_keyword(st);
+  }
   if (!strcmp(k, "shadow")) {
     shadow = state(read_keyword(st));
     k = read_keyword(st);
@@ -523,30 +575,31 @@ bool ObjectDiagramSettings::complete(ObjectDiagramSettings & result) const {
   check_default(package_name_in_tab, UmlDefaultState);
   check_default(show_context_mode, DefaultShowContextMode);
   check_default(auto_label_position, UmlDefaultState);
+  check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
   
-  return done == 5;
+  return done == 6;
 }
 
 void ObjectDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 5);
+  a.resize(i + 6);
   if (local) {
-    a[i].set("write name:type horizontally",
-	       &write_horizontally);
+    a[i].set("write name:type horizontally", &write_horizontally);
     a[i+1].set("packages name in tab", &package_name_in_tab);
     a[i+2].set("show package context", &show_context_mode);
     a[i+3].set("automatic labels position", &auto_label_position);
-    a[i+4].set("draw shadow", &shadow);
+    a[i+4].set("draw all relations", &draw_all_relations);
+    a[i+5].set("draw shadow", &shadow);
   }
   else {
-    a[i].set("object#write name:type horizontally",
-	       &write_horizontally);
+    a[i].set("object#write name:type horizontally", &write_horizontally);
     a[i+1].set("object#show packages name in tab", &package_name_in_tab);
     a[i+2].set("object#show packages context", &show_context_mode);
-    a[i+4].set("object#automatic labels position", &auto_label_position);
-    a[i+3].set("object#draw shadow", &shadow);
+    a[i+3].set("object#automatic labels position", &auto_label_position);
+    a[i+4].set("object#draw all relations", &draw_all_relations);
+    a[i+5].set("object#draw shadow", &shadow);
   }
 }
 
@@ -556,6 +609,7 @@ UseCaseDiagramSettings::UseCaseDiagramSettings() {
   package_name_in_tab = UmlDefaultState;
   show_context_mode = DefaultShowContextMode;
   auto_label_position = UmlDefaultState;
+  draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
 }
 
@@ -564,7 +618,8 @@ void UseCaseDiagramSettings::save(QTextStream & st) const {
   st << "package_name_in_tab " << stringify(package_name_in_tab)
     << " show_context " << stringify(show_context_mode)
       << " auto_label_position " << stringify(auto_label_position)
-	<< " shadow " << stringify(shadow);
+	<< " draw_all_relations " << stringify(draw_all_relations)
+	  << " shadow " << stringify(shadow);
 }
 
 void UseCaseDiagramSettings::read(char * & st, char * & k) {
@@ -580,6 +635,10 @@ void UseCaseDiagramSettings::read(char * & st, char * & k) {
     auto_label_position = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "draw_all_relations")) {
+    draw_all_relations = state(read_keyword(st));
+    k = read_keyword(st);
+  }
   if (!strcmp(k, "shadow")) {
     shadow = state(read_keyword(st));
     k = read_keyword(st);
@@ -592,26 +651,29 @@ bool UseCaseDiagramSettings::complete(UseCaseDiagramSettings & result) const {
   check_default(package_name_in_tab, UmlDefaultState);
   check_default(show_context_mode, DefaultShowContextMode);
   check_default(auto_label_position, UmlDefaultState);
+  check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
   
-  return done == 4;
+  return done == 5;
 }
 
 void UseCaseDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 4);
+  a.resize(i + 5);
   if (local) {
     a[i].set("packages name in tab", &package_name_in_tab);
     a[i + 1].set("show package context", &show_context_mode);
     a[i + 2].set("automatic labels position", &auto_label_position);
-    a[i + 3].set("draw shadow", &shadow);
+    a[i + 3].set("draw all relations", &draw_all_relations);
+    a[i + 4].set("draw shadow", &shadow);
   }
   else {
     a[i].set("use case#show packages name in tab", &package_name_in_tab);
     a[i + 1].set("use case#show packages context", &show_context_mode);
     a[i + 2].set("use case#automatic labels position", &auto_label_position);
-    a[i + 3].set("use case#draw shadow", &shadow);
+    a[i + 3].set("use case#draw all relations", &draw_all_relations);
+    a[i + 4].set("use case#draw shadow", &shadow);
   }
 }
 
@@ -621,6 +683,7 @@ ComponentDiagramSettings::ComponentDiagramSettings() {
   package_name_in_tab = UmlDefaultState;
   show_context_mode = DefaultShowContextMode;
   auto_label_position = UmlDefaultState;
+  draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
 }
 
@@ -629,7 +692,8 @@ void ComponentDiagramSettings::save(QTextStream & st) const {
   st << "package_name_in_tab " << stringify(package_name_in_tab)
     << " show_context " << stringify(show_context_mode)
       << " auto_label_position " << stringify(auto_label_position)
-	<< " shadow " << stringify(shadow);
+	<< " draw_all_relations " << stringify(draw_all_relations)
+	  << " shadow " << stringify(shadow);
   componentdrawingsettings.save(st);
 }
 
@@ -646,6 +710,10 @@ void ComponentDiagramSettings::read(char * & st, char * & k) {
     auto_label_position = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "draw_all_relations")) {
+    draw_all_relations = state(read_keyword(st));
+    k = read_keyword(st);
+  }
   if (!strcmp(k, "shadow")) {
     shadow = state(read_keyword(st));
     k = read_keyword(st);
@@ -659,27 +727,30 @@ bool ComponentDiagramSettings::complete(ComponentDiagramSettings & result) const
   check_default(package_name_in_tab, UmlDefaultState);
   check_default(show_context_mode, DefaultShowContextMode);
   check_default(auto_label_position, UmlDefaultState);
+  check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
   
   return componentdrawingsettings.complete(result.componentdrawingsettings)
-    && (done == 4);
+    && (done == 5);
 }
 
 void ComponentDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 4);
+  a.resize(i + 5);
   if (local) {
     a[i].set("packages name in tab", &package_name_in_tab);
     a[i + 1].set("show package context", &show_context_mode);
     a[i + 2].set("automatic labels position", &auto_label_position);
-    a[i + 3].set("draw shadow", &shadow);
+    a[i + 3].set("draw all relations", &draw_all_relations);
+    a[i + 4].set("draw shadow", &shadow);
   }
   else {
     a[i].set("component#show packages name in tab", &package_name_in_tab);
     a[i + 1].set("component#show packages context", &show_context_mode);
     a[i + 2].set("component#automatic labels position", &auto_label_position);
-    a[i + 3].set("component#draw shadow", &shadow);
+    a[i + 3].set("component#draw all relations", &draw_all_relations);
+    a[i + 4].set("component#draw shadow", &shadow);
   }
   componentdrawingsettings.complete(a, local, FALSE);
 }
@@ -691,6 +762,7 @@ DeploymentDiagramSettings::DeploymentDiagramSettings() {
   show_context_mode = DefaultShowContextMode;
   write_horizontally = UmlDefaultState;
   auto_label_position = UmlDefaultState;
+  draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
 }
 
@@ -700,7 +772,8 @@ void DeploymentDiagramSettings::save(QTextStream & st) const {
     << " show_context " << stringify(show_context_mode)
       << " write_horizontally " << stringify(write_horizontally)
 	<< " auto_label_position " << stringify(auto_label_position)
-	  << " shadow " << stringify(shadow);
+	  << " draw_all_relations " << stringify(draw_all_relations)
+	    << " shadow " << stringify(shadow);
   componentdrawingsettings.save(st);
 }
 
@@ -722,6 +795,10 @@ void DeploymentDiagramSettings::read(char * & st, char * & k) {
     auto_label_position = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "draw_all_relations")) {
+    draw_all_relations = state(read_keyword(st));
+    k = read_keyword(st);
+  }
   if (!strcmp(k, "shadow")) {
     shadow = state(read_keyword(st));
     k = read_keyword(st);
@@ -736,33 +813,32 @@ bool DeploymentDiagramSettings::complete(DeploymentDiagramSettings & result) con
   check_default(show_context_mode, DefaultShowContextMode);
   check_default(write_horizontally, UmlDefaultState);
   check_default(auto_label_position, UmlDefaultState);
+  check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
   
   return componentdrawingsettings.complete(result.componentdrawingsettings)
-    && (done == 5);
+    && (done == 6);
 }
 
 void DeploymentDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 5);
+  a.resize(i + 6);
   if (local) {
     a[i].set("packages name in tab", &package_name_in_tab);
     a[i + 1].set("show package context", &show_context_mode);
     a[i + 2].set("write node instance horizontally", &write_horizontally);
     a[i + 3].set("automatic labels position", &auto_label_position);
-    a[i + 4].set("draw shadow", &shadow);
+    a[i + 4].set("draw all relations", &draw_all_relations);
+    a[i + 5].set("draw shadow", &shadow);
   }
   else  {
-    a[i].set("deployment#show packages name in tab",
-	     &package_name_in_tab);
-    a[i + 1].set("deployment#show packages context",
-		 &show_context_mode);
-    a[i + 2].set("deployment#write node instances horizontally",
-		 &write_horizontally);
-    a[i + 3].set("deployment#automatic labels position",
-		 &auto_label_position);
-    a[i + 4].set("deployment#draw shadow", &shadow);
+    a[i].set("deployment#show packages name in tab", &package_name_in_tab);
+    a[i + 1].set("deployment#show packages context", &show_context_mode);
+    a[i + 2].set("deployment#write node instances horizontally", &write_horizontally);
+    a[i + 3].set("deployment#automatic labels position", &auto_label_position);
+    a[i + 4].set("deployment#draw all relations", &draw_all_relations);
+    a[i + 5].set("deployment#draw shadow", &shadow);
   }
   
   componentdrawingsettings.complete(a, local, TRUE);
@@ -836,6 +912,7 @@ StateDiagramSettings::StateDiagramSettings() {
   auto_label_position = UmlDefaultState;
   write_label_horizontally = UmlDefaultState;
   show_trans_definition = UmlDefaultState;
+  draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
 }
 
@@ -846,7 +923,8 @@ void StateDiagramSettings::save(QTextStream & st) const {
       << " auto_label_position " << stringify(auto_label_position)
 	<< " write_trans_label_horizontally " << stringify(write_label_horizontally)
 	  << " show_trans_definition " << stringify(show_trans_definition)
-	    << " shadow " << stringify(shadow);
+	    << " draw_all_relations " << stringify(draw_all_relations)
+	      << " shadow " << stringify(shadow);
   statedrawingsettings.save(st);
 }
 
@@ -871,6 +949,10 @@ void StateDiagramSettings::read(char * & st, char * & k) {
     show_trans_definition = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "draw_all_relations")) {
+    draw_all_relations = state(read_keyword(st));
+    k = read_keyword(st);
+  }
   if (!strcmp(k, "shadow")) {
     shadow = state(read_keyword(st));
     k = read_keyword(st);
@@ -886,34 +968,34 @@ bool StateDiagramSettings::complete(StateDiagramSettings & result) const {
   check_default(auto_label_position, UmlDefaultState);
   check_default(write_label_horizontally, UmlDefaultState);
   check_default(show_trans_definition, UmlDefaultState);
+  check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
   
   return statedrawingsettings.complete(result.statedrawingsettings)
-    && (done == 6);
+    && (done == 7);
 }
 
 void StateDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 6);
+  a.resize(i + 7);
   if (local) {
     a[i].set("packages name in tab", &package_name_in_tab);
     a[i + 1].set("show package context", &show_context_mode);
     a[i + 2].set("automatic labels position", &auto_label_position);
     a[i + 3].set("write transition horizontally", &write_label_horizontally);
     a[i + 4].set("show transition definition", &show_trans_definition);
-    a[i + 5].set("draw shadow", &shadow);
+    a[i + 5].set("draw all relations", &draw_all_relations);
+    a[i + 6].set("draw shadow", &shadow);
   }
   else {
     a[i].set("state#show packages name in tab", &package_name_in_tab);
     a[i + 1].set("state#show packages context", &show_context_mode);
-    a[i + 2].set("state#automatic labels position",
-		 &auto_label_position);
-    a[i + 3].set("state#write transition horizontally",
-		 &write_label_horizontally);
-    a[i + 4].set("state#show transition definition",
-		 &show_trans_definition);
-    a[i + 5].set("state#draw shadow", &shadow);
+    a[i + 2].set("state#automatic labels position", &auto_label_position);
+    a[i + 3].set("state#write transition horizontally", &write_label_horizontally);
+    a[i + 4].set("state#show transition definition", &show_trans_definition);
+    a[i + 5].set("state#draw all relations", &draw_all_relations);
+    a[i + 6].set("state#draw shadow", &shadow);
   }
   statedrawingsettings.complete(a, local);
 }
@@ -962,15 +1044,17 @@ void StateDrawingSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
   a.resize(i + 3);
-  a[i].set((local) ? "show state activities"
-		   : "state#show state activities",
-	   &show_activities);
-  a[i + 1].set((local) ? "draw state's regions horizontally"
-		       : "state#draw state's regions horizontally",
-	       &region_horizontally);
-  a[i + 2].set((local) ? "drawing language"
-		       : "state#drawing language", 
-	       &drawing_language);
+
+  if (local) {
+    a[i].set("show state activities", &show_activities);
+    a[i + 1].set("draw state's regions horizontally", &region_horizontally);
+    a[i + 2].set("drawing language", &drawing_language);
+    }
+  else {
+    a[i].set("state#show state activities", &show_activities);
+    a[i + 1].set("state#draw state's regions horizontally", &region_horizontally);
+    a[i + 2].set("state#drawing language", &drawing_language);
+  }
 }
 
 //
@@ -981,6 +1065,7 @@ ActivityDiagramSettings::ActivityDiagramSettings() {
   show_opaque_action_definition = UmlDefaultState;
   auto_label_position = UmlDefaultState;
   write_label_horizontally = UmlDefaultState;
+  draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
 }
 
@@ -991,7 +1076,8 @@ void ActivityDiagramSettings::save(QTextStream & st) const {
       << " show_opaque_action_definition " << stringify(show_opaque_action_definition)
         << " auto_label_position " << stringify(auto_label_position)
 	  << " write_flow_label_horizontally " << stringify(write_label_horizontally)
-	    << " shadow " << stringify(shadow);
+	    << " draw_all_relations " << stringify(draw_all_relations)
+	      << " shadow " << stringify(shadow);
   activitydrawingsettings.save(st);
 }
 
@@ -1016,6 +1102,10 @@ void ActivityDiagramSettings::read(char * & st, char * & k) {
     write_label_horizontally = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "draw_all_relations")) {
+    draw_all_relations = state(read_keyword(st));
+    k = read_keyword(st);
+  }
   if (!strcmp(k, "shadow")) {
     shadow = state(read_keyword(st));
     k = read_keyword(st);
@@ -1031,34 +1121,34 @@ bool ActivityDiagramSettings::complete(ActivityDiagramSettings & result) const {
   check_default(show_opaque_action_definition, UmlDefaultState);
   check_default(auto_label_position, UmlDefaultState);
   check_default(write_label_horizontally, UmlDefaultState);
+  check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
   
   return activitydrawingsettings.complete(result.activitydrawingsettings)
-    && (done == 6);
+    && (done == 7);
 }
 
 void ActivityDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 6);
+  a.resize(i + 7);
   if (local) {
     a[i].set("packages name in tab", &package_name_in_tab);
     a[i + 1].set("show package context", &show_context_mode);
     a[i + 2].set("automatic labels position", &auto_label_position);
     a[i + 3].set("write flow label horizontally", &write_label_horizontally);
     a[i + 4].set("show opaque action definition", &show_opaque_action_definition);
-    a[i + 5].set("draw shadow", &shadow);
+    a[i + 5].set("draw all relations", &draw_all_relations);
+    a[i + 6].set("draw shadow", &shadow);
   }
   else {
     a[i].set("activity#show packages name in tab", &package_name_in_tab);
     a[i + 1].set("activity#show packages context", &show_context_mode);
-    a[i + 2].set("activity#automatic labels position",
-		 &auto_label_position);
-    a[i + 3].set("activity#write flow label horizontally",
-		 &write_label_horizontally);
-    a[i + 4].set("activity#show opaque action definition",
-		 &show_opaque_action_definition);
-    a[i + 5].set("activity#draw shadow", &shadow);
+    a[i + 2].set("activity#automatic labels position", &auto_label_position);
+    a[i + 3].set("activity#write flow label horizontally", &write_label_horizontally);
+    a[i + 4].set("activity#show opaque action definition", &show_opaque_action_definition);
+    a[i + 5].set("activity#draw all relations", &draw_all_relations);
+    a[i + 6].set("activity#draw shadow", &shadow);
   }
   activitydrawingsettings.complete(a, local);
 }
@@ -1100,15 +1190,20 @@ void ActivityDrawingSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
   a.resize(i + 2);
-  a[i].set((local) ? "show information note"
-		   : "activity#show information note",
-	   &show_infonote);
-  a[i + 1].set((local) ? "drawing language"
-		       : "activity#drawing language", 
-	       &drawing_language);
+
+  if (local) {
+    a[i].set("show information note", &show_infonote);
+    a[i + 1].set("drawing language", &drawing_language);
+  }
+  else {
+    a[i].set("activity#show information note", &show_infonote);
+    a[i + 1].set("activity#drawing language", &drawing_language);
+  }
 }
 
+// to update activity element settings
 void ActivityDrawingSettings::set(QArray<StateSpec> & a, int index) {
+  // follow order of previous operation
   if (a[index].name != 0)
     show_infonote = (Uml3States) *((Uml3States *) a[index].state);
   if (a[index + 1].name != 0)

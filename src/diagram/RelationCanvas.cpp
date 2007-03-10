@@ -96,8 +96,33 @@ void RelationCanvas::delete_available(bool & in_model, bool & out_model) const {
 }
 
 void RelationCanvas::remove(bool from_model) {
-  if (! from_model)
+  if (! from_model) {
+    if (the_canvas()->must_draw_all_relations()) {
+      const RelationCanvas * a = this;
+  
+      while (a->begin->type() == UmlArrowPoint) {
+	a = (RelationCanvas *) ((ArrowPointCanvas *) a->begin)->get_other(a);
+	if (a == 0)
+	  break;
+      }
+
+      if (a && !a->begin->isSelected() && !a->begin->get_bn()->deletedp()) {
+	a = this;
+  
+	while (a->end->type() == UmlArrowPoint) {
+	  a = (RelationCanvas *) ((ArrowPointCanvas *) a->end)->get_other(a);
+	  if (a == 0)
+	    break;
+	}
+  
+	if (a && !a->end->isSelected() && !a->end->get_bn()->deletedp()) {
+	  msg_warning("Bouml", "<i>Draw all relations</i> forced to <i>no</i>");
+	  the_canvas()->dont_draw_all_relations();
+	}
+      }
+    }
     delete_it();
+  }
   else
     data->delete_it();	// will remove canvas
 }
@@ -365,7 +390,7 @@ void RelationCanvas::menu(const QPoint & lpos) {
       return;
     case 7:
       // not removed from the browser : just hide it
-      delete_it();
+      remove(FALSE);
       break;
     case 8:
       data->delete_it();	// will delete the canvas

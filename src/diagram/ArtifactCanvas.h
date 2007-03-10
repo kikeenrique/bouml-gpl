@@ -60,8 +60,6 @@ class ArtifactCanvas : public QObject, public DiagramCanvas {
     void draw_all_relations();
     virtual void unassociate(DiagramItem * other);
     
-    static void draw_all_the_relations(UmlCanvas * canvas);
-
     virtual void draw(QPainter & p);
     virtual void change_scale();
     

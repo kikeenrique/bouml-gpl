@@ -49,29 +49,31 @@
 IdDict<OperationData> OperationData::all(1023);
 
 OperationData::OperationData(int id)
-    : Labeled<OperationData>(all, id), is_deleted(FALSE), is_get_or_set(FALSE),
-      isa_class_operation(FALSE), is_abstract(FALSE), is_volatile(FALSE), 
-      cpp_const(FALSE), cpp_friend(FALSE), cpp_virtual(FALSE),
-      cpp_inline(FALSE),
-      java_final(FALSE), java_synchronized(FALSE),
-      idl_oneway(FALSE),
+    : Labeled<OperationData>(all, id),
       uml_visibility(UmlDefaultVisibility),
       cpp_visibility(UmlDefaultVisibility),
+      is_deleted(FALSE), is_get_or_set(FALSE),
+      isa_class_operation(FALSE), is_abstract(FALSE), is_volatile(FALSE), 
+      cpp_const(FALSE), cpp_friend(FALSE), cpp_virtual(FALSE),
+      cpp_inline(FALSE), cpp_get_set_frozen(FALSE),
+      java_final(FALSE), java_synchronized(FALSE), java_get_set_frozen(FALSE),
+      idl_oneway(FALSE), idl_get_set_frozen(FALSE),
       nparams(0), nexceptions(0), params(0), exceptions(0) {
 }
 
 OperationData::OperationData(OperationData * model, BrowserNode * bn)
     : ClassMemberData(model), Labeled<OperationData>(all, 0),
+      uml_visibility(model->uml_visibility),
+      cpp_visibility(UmlDefaultVisibility),
       is_deleted(FALSE), is_get_or_set(FALSE),
       isa_class_operation(model->isa_class_operation),
       is_abstract(model->is_abstract), is_volatile(model->is_volatile),
       cpp_const(model->cpp_const),
       cpp_friend(model->cpp_friend), cpp_virtual(model->cpp_virtual),
-      cpp_inline(model->cpp_inline),
+      cpp_inline(model->cpp_inline), cpp_get_set_frozen(model->cpp_get_set_frozen),
       java_final(model->java_final), java_synchronized(model->java_synchronized),
-      idl_oneway(model->idl_oneway), 
-      uml_visibility(model->uml_visibility),
-      cpp_visibility(UmlDefaultVisibility),
+      java_get_set_frozen(model->java_get_set_frozen),
+      idl_oneway(model->idl_oneway), idl_get_set_frozen(model->idl_get_set_frozen), 
       nparams(model->nparams),
       nexceptions(model->nexceptions),
       cpp_decl(model->cpp_decl),
@@ -349,6 +351,10 @@ void OperationData::set_browser_node(BrowserOperation * o, bool update) {
 }
 
 QString OperationData::definition(bool full) const {
+  return definition(full, TRUE);
+}
+
+QString OperationData::definition(bool full, bool withdir) const {
   QString result;
   
   if (full) {
@@ -361,7 +367,7 @@ QString OperationData::definition(bool full) const {
       
       for (index = 0; index != nparams; index += 1) {
 	result += sep;
-	result += params[index].definition();
+	result += params[index].definition(withdir);
 	sep = ", ";
       }
       result += ")";
@@ -375,10 +381,11 @@ QString OperationData::definition(bool full) const {
     return browser_node->get_name() + QString("()");
 }
 
-QString OperationData::definition(bool full, DrawingLanguage language) const {
+QString OperationData::definition(bool full, DrawingLanguage language,
+				  bool withdir) const {
   switch (language) {
   case UmlView:
-    return definition(full);
+    return definition(full, withdir);
   case CppView:
     if (full)
       return OperationDialog::cpp_decl((BrowserOperation *) browser_node);
@@ -784,7 +791,7 @@ void OperationData::update_get_of(const QString & attr_name,
 				  QString attidl_decl,
 				  bool attis_const, bool attis_class_member,
 				  const AType & cl, QString multiplicity,
-				  QString relstereotype, bool create) {
+				  QString relstereotype, bool create, bool update) {
   set_return_type(cl);
   isa_class_operation = attis_class_member;
   stereotype = relstereotype.stripWhiteSpace();
@@ -796,56 +803,60 @@ void OperationData::update_get_of(const QString & attr_name,
   
   // C++
   
-  if (ClassDialog::cpp_stereotype(st) != "enum") {
-    if (create) {
-      if (cpp_name_spec.isEmpty())
-	cpp_name_spec = GenerationSettings::cpp_default_get_name();
-      cpp_const = GenerationSettings::cpp_default_get_const();
-      cpp_inline = GenerationSettings::cpp_default_get_inline();
-      if (GenerationSettings::cpp_default_get_visibility() !=
-	  GenerationSettings::java_default_get_visibility())
-	cpp_visibility = GenerationSettings::cpp_default_get_visibility();
-    }
+  if (!update || !cpp_get_set_frozen) {
+    if (ClassDialog::cpp_stereotype(st) != "enum") {
+      if (create) {
+	if (cpp_name_spec.isEmpty())
+	  cpp_name_spec = GenerationSettings::cpp_default_get_name();
+	cpp_const = GenerationSettings::cpp_default_get_const();
+	cpp_inline = GenerationSettings::cpp_default_get_inline();
+	if (GenerationSettings::cpp_default_get_visibility() !=
+	    GenerationSettings::java_default_get_visibility())
+	  cpp_visibility = GenerationSettings::cpp_default_get_visibility();
+      }
     
-    update_cpp_get_of(decl, def, attr_name, attcpp_decl,
-		      attis_const, multiplicity);
-    cpp_decl = decl;
-    if (def.isEmpty())
+      update_cpp_get_of(decl, def, attr_name, attcpp_decl,
+			attis_const, multiplicity);
+      cpp_decl = decl;
+      if (def.isEmpty())
+	cpp_def.assign(0, TRUE);
+      else
+	cpp_def.assign(def, FALSE);
+    }
+    else {
+      cpp_decl = "";
       cpp_def.assign(0, TRUE);
-    else
-      cpp_def.assign(def, FALSE);
-  }
-  else {
-    cpp_decl = "";
-    cpp_def.assign(0, TRUE);
+    }
   }
   
   // Java
-  
   if (create) {
     if (java_name_spec.isEmpty())
       java_name_spec = GenerationSettings::java_default_get_name();
     java_final = GenerationSettings::java_default_get_final();  
     uml_visibility = GenerationSettings::java_default_get_visibility();
   }
-  
-  update_java_get_of(def, attr_name, attjava_decl);
-  if (def.isEmpty())
-    java_def.assign(QString::null, TRUE);
-  else
-    java_def.assign(def, FALSE);
+
+  if (!update || !java_get_set_frozen) {
+    update_java_get_of(def, attr_name, attjava_decl);
+    if (def.isEmpty())
+      java_def.assign(QString::null, TRUE);
+    else
+      java_def.assign(def, FALSE);
+  }
   
   // Idl
+  if (!update || !idl_get_set_frozen) {
+    if (ClassDialog::idl_stereotype(st) != "enum") {
+      if (create && idl_name_spec.isEmpty())
+	idl_name_spec = GenerationSettings::idl_default_get_name();
   
-  if (ClassDialog::idl_stereotype(st) != "enum") {
-    if (create && idl_name_spec.isEmpty())
-      idl_name_spec = GenerationSettings::idl_default_get_name();
-  
-    update_idl_get_of(decl, attidl_decl, multiplicity);
-    idl_decl = decl;
-  }
-  else {
-    idl_decl = "";
+      update_idl_get_of(decl, attidl_decl, multiplicity);
+      idl_decl = decl;
+    }
+    else {
+      idl_decl = "";
+    }
   }
 }
 
@@ -883,6 +894,7 @@ void OperationData::update_cpp_set_of(QCString & decl, QCString & def,
   }
   else {  
     bool has_stereotype = (attcpp_decl.find("${stereotype}") != -1);
+    bool byref = GenerationSettings::cpp_default_set_param_ref();
     QString arg_spec = attcpp_decl;
     bool has_multiplicity;
     
@@ -893,9 +905,20 @@ void OperationData::update_cpp_set_of(QCString & decl, QCString & def,
     else
       has_multiplicity = FALSE;
     
+    if (byref && ((index = arg_spec.find("${type}")) != -1)) {
+      // don't add ref for a pointer or a ref
+      int index2 = arg_spec.find("${name}", index + 7);
+
+      if (index2 != -1) {
+	QString modifiers = arg_spec.mid(index + 7, index2 - index - 7);
+
+	byref = (modifiers.find("*") == -1) && (modifiers.find("&") == -1);
+      }
+    }
+
     arg_spec.replace(arg_spec.find(attr_name_spec),
 		     attr_name_spec.length(),
-		     (has_stereotype) ? "& ${p0}" : "${p0}");
+		     (has_stereotype || byref) ? "& ${p0}" : "${p0}");
     
     if ((index = arg_spec.find("${type}")) != -1)
       arg_spec.replace(index, 7, "${t0}");
@@ -1093,7 +1116,7 @@ void OperationData::update_set_of(const QString & attr_name,
 				  QString attidl_decl,
 				  bool attis_const, bool attis_class_member,
 				  const AType & cl, QString multiplicity,
-				  QString relstereotype, bool create) {
+				  QString relstereotype, bool create, bool update) {
 //#warning warning si attis_const;
   
   stereotype = relstereotype.stripWhiteSpace();
@@ -1113,32 +1136,32 @@ void OperationData::update_set_of(const QString & attr_name,
   QCString def;
   
   // C++
-  
-  if (ClassDialog::cpp_stereotype(st) != "enum") {
-    if (create) {
-      if (cpp_name_spec.isEmpty())
-	cpp_name_spec = GenerationSettings::cpp_default_set_name();
-      cpp_inline = GenerationSettings::cpp_default_set_inline();
-      if (GenerationSettings::cpp_default_set_visibility() !=
-	  GenerationSettings::java_default_set_visibility())
-	cpp_visibility = GenerationSettings::cpp_default_set_visibility(); 
-    }
+  if (!update || !cpp_get_set_frozen) {
+    if (ClassDialog::cpp_stereotype(st) != "enum") {
+      if (create) {
+	if (cpp_name_spec.isEmpty())
+	  cpp_name_spec = GenerationSettings::cpp_default_set_name();
+	cpp_inline = GenerationSettings::cpp_default_set_inline();
+	if (GenerationSettings::cpp_default_set_visibility() !=
+	    GenerationSettings::java_default_set_visibility())
+	  cpp_visibility = GenerationSettings::cpp_default_set_visibility(); 
+      }
     
-    update_cpp_set_of(decl, def, attr_name, attcpp_decl,
-		      attis_const, multiplicity);
-    cpp_decl = decl;
-    if (def.isEmpty())
-      cpp_def.assign(QString::null, TRUE);
-    else
-      cpp_def.assign(def, FALSE);
-  }
-  else {
-    cpp_decl = "";
-    cpp_def.assign(0, TRUE);
+      update_cpp_set_of(decl, def, attr_name, attcpp_decl,
+			attis_const, multiplicity);
+      cpp_decl = decl;
+      if (def.isEmpty())
+	cpp_def.assign(QString::null, TRUE);
+      else
+	cpp_def.assign(def, FALSE);
+    }
+    else {
+      cpp_decl = "";
+      cpp_def.assign(0, TRUE);
+    }
   }
   
   // Java
-  
   if (create) {
     if (java_name_spec.isEmpty())
       java_name_spec = GenerationSettings::java_default_set_name();
@@ -1146,25 +1169,28 @@ void OperationData::update_set_of(const QString & attr_name,
     uml_visibility = GenerationSettings::java_default_set_visibility();
   }
   
-  update_java_set_of(def, attr_name, attjava_decl);
-  if (def.isEmpty())
-    java_def.assign(QString::null, TRUE);
-  else
-    java_def.assign(def, FALSE);
+  if (!update || !java_get_set_frozen) {
+    update_java_set_of(def, attr_name, attjava_decl);
+    if (def.isEmpty())
+      java_def.assign(QString::null, TRUE);
+    else
+      java_def.assign(def, FALSE);
+  }
   
   // Idl
-  
-  if (ClassDialog::idl_stereotype(st) != "enum") {
-    if (create) {
-      if (idl_name_spec.isEmpty())
-	idl_name_spec = GenerationSettings::idl_default_set_name();
-      idl_oneway = GenerationSettings::idl_default_set_oneway();
+  if (!update || !idl_get_set_frozen) {
+    if (ClassDialog::idl_stereotype(st) != "enum") {
+      if (create) {
+	if (idl_name_spec.isEmpty())
+	  idl_name_spec = GenerationSettings::idl_default_set_name();
+	idl_oneway = GenerationSettings::idl_default_set_oneway();
+      }
+      update_idl_set_of(decl, attidl_decl, multiplicity);
+      idl_decl = decl;
     }
-    update_idl_set_of(decl, attidl_decl, multiplicity);
-    idl_decl = decl;
-  }
-  else {
-    idl_decl = "";
+    else {
+      idl_decl = "";
+    }
   }
 }
 
@@ -1270,12 +1296,8 @@ void OperationData::send_cpp_def(ToolCom * com) {
   com->write_bool(cpp_inline);
   com->write_string(cpp_def);
   com->write_string(cpp_name_spec);
-}
-    
-void OperationData::send_idl_def(ToolCom * com) {
-  com->write_string(idl_decl);
-  com->write_bool(idl_oneway);
-  com->write_string(idl_name_spec);
+  if (com->api_format() >= 26)
+    com->write_bool(cpp_get_set_frozen);
 }
     
 void OperationData::send_java_def(ToolCom * com) {
@@ -1287,8 +1309,18 @@ void OperationData::send_java_def(ToolCom * com) {
   com->write_string(java_name_spec);
   if ((com->api_format() >= 19) && (com->api_format() < 21))
     com->write_string(java_annotation);
+  if (com->api_format() >= 26)
+    com->write_bool(java_get_set_frozen);
 }
 
+void OperationData::send_idl_def(ToolCom * com) {
+  com->write_string(idl_decl);
+  com->write_bool(idl_oneway);
+  com->write_string(idl_name_spec);
+  if (com->api_format() >= 26)
+    com->write_bool(idl_get_set_frozen);
+}
+    
 //
 
 // translate plug out release < 2.0
@@ -1416,6 +1448,9 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
       case setCppNameSpecCmd:
 	cpp_name_spec = args;
 	break;
+      case setCppFrozenCmd:
+	cpp_get_set_frozen = (*args != 0);
+	break;
       case setJavaDeclCmd:
 	{
 	  QString ste = GenerationSettings::java_class_stereotype(stereotype);
@@ -1459,6 +1494,9 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
       case setJavaNameSpecCmd:
 	java_name_spec = args;
 	break;
+      case setJavaFrozenCmd:
+	java_get_set_frozen = (*args != 0);
+	break;
       case setIsIdlOnewayCmd:
 	idl_oneway = (*args != 0);
 	break;
@@ -1467,6 +1505,9 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
 	break;
       case setIdlNameSpecCmd:
 	idl_name_spec = args;
+	break;
+      case setIdlFrozenCmd:
+	idl_get_set_frozen = (*args != 0);
 	break;
       case addParameterCmd:
 	{
@@ -1916,6 +1957,8 @@ void OperationData::save(QTextStream & st, bool ref, QString & warning) const {
     if (is_volatile)
       st << "volatile ";
     
+    if (cpp_get_set_frozen)
+      st << "cpp_frozen ";   
     if (cpp_const)
       st << "const ";
     if (cpp_friend)
@@ -1960,8 +2003,10 @@ void OperationData::save(QTextStream & st, bool ref, QString & warning) const {
       st << "cpp_name_spec ";
       save_string(cpp_name_spec, st);
     }
-    
+
     nl_indent(st);
+    if (java_get_set_frozen)
+      st << "java_frozen ";   
     if (java_final)
       st << "final ";
     if (java_synchronized)
@@ -1983,6 +2028,8 @@ void OperationData::save(QTextStream & st, bool ref, QString & warning) const {
     }
     
     nl_indent(st);
+    if (idl_get_set_frozen)
+      st << "idl_frozen ";   
     if (idl_oneway)
       st << "oneway ";
     if (! idl_decl.isEmpty()) {
@@ -2027,6 +2074,13 @@ void OperationData::read(char * & st, char * & k) {
   }
   else
     is_volatile = FALSE;
+  
+  if (!strcmp(k, "cpp_frozen")) {
+    cpp_get_set_frozen = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    cpp_get_set_frozen = FALSE;
   
   if (!strcmp(k, "const")) {
     cpp_const = TRUE;
@@ -2128,6 +2182,13 @@ void OperationData::read(char * & st, char * & k) {
     cpp_name_spec = QString::null;
   }
   
+  if (!strcmp(k, "java_frozen")) {
+    java_get_set_frozen = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    java_get_set_frozen = FALSE;
+  
   if (!strcmp(k, "final")) {
     java_final = TRUE;
     k = read_keyword(st);
@@ -2172,6 +2233,13 @@ void OperationData::read(char * & st, char * & k) {
     is_get_or_set = FALSE;
     java_name_spec = QString::null;
   }
+  
+  if (!strcmp(k, "idl_frozen")) {
+    idl_get_set_frozen = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    idl_get_set_frozen = FALSE;
   
   if (!strcmp(k, "oneway")) {
     idl_oneway = TRUE;

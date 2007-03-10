@@ -58,6 +58,7 @@ class StateDiagramWindow : public DiagramWindow {
     QToolButton * addAction;
     QToolButton * addSignalIn;
     QToolButton * addSignalOut;
+    //QToolButton * dependency;
     QToolButton * note;
     QToolButton * anchor;
     QToolButton * text;
@@ -90,6 +91,7 @@ class StateDiagramWindow : public DiagramWindow {
     void hit_signalin();
     void hit_signalout();
     void hit_transition();
+    //void hit_dependency();
     void hit_note();
     void hit_anchor();
     void hit_text();

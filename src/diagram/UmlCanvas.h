@@ -54,6 +54,8 @@ class UmlCanvas : public QCanvas {
     bool do_scale;
     bool do_paste;
     bool show_shadow;
+    bool draw_all_relations;
+    bool saved_draw_all_relations;
     double zoom_value;
     int width100percent;
     int height100percent;
@@ -85,7 +87,11 @@ class UmlCanvas : public QCanvas {
     void resize(CanvasFormat);
     
     int shadow() const;
-    static void update_all_shadow();
+    bool must_draw_all_relations() const { return draw_all_relations; }
+    void dont_draw_all_relations();
+    void freeze_draw_all_relations() { saved_draw_all_relations = draw_all_relations; }
+    void unfreeze_draw_all_relations() { draw_all_relations = saved_draw_all_relations; }
+    static void update_global_settings();
   
     QFont get_font(UmlFont f) const { return the_fonts[f]; };
     

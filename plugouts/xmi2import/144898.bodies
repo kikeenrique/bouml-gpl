@@ -4,6 +4,7 @@ class Trigger
   UmlItem::declareFct("packagedelement", "uml:Trigger", &importIt);
   UmlItem::declareFct("trigger", "uml:Trigger", &importIt);
 
+  UmlItem::declareFct("ownedtrigger", "uml:AnyTrigger", &importIt); // Borland Together 2006 for Eclipse
 !!!220546.cpp!!!	importIt(inout in : FileIn, inout token : Token, inout where : UmlItem) : void
   All.insert(token.xmiId(), token.valueOf("name"));
       

@@ -489,3 +489,16 @@ bool preserve_bodies()
   return (PreserveBodies != 0);
 }
 
+//
+
+static int AddOperationProfile;
+
+void toggle_add_operation_profile()
+{
+	AddOperationProfile ^= 1;
+}
+
+bool add_operation_profile()
+{
+	return (AddOperationProfile != 0);
+}

@@ -591,6 +591,41 @@ bool BrowserClassView::get_shadow(UmlCode who) const {
   }
 }
 
+bool BrowserClassView::get_draw_all_relations(UmlCode who) const {
+  Uml3States v;
+  
+  switch (who) {
+  case UmlClassDiagram:
+    v = classdiagram_settings.draw_all_relations;
+    break;
+  case UmlSeqDiagram:
+    v = sequencediagram_settings.draw_all_relations;
+    break;
+  case UmlColDiagram:
+    v = collaborationdiagram_settings.draw_all_relations;
+    break;
+  case UmlObjectDiagram:
+    v = objectdiagram_settings.draw_all_relations;
+    break;
+  case UmlStateDiagram:
+    v = statediagram_settings.draw_all_relations;
+    break;
+  default:
+    //UmlActivityDiagram
+    v = activitydiagram_settings.draw_all_relations;
+    break;
+  }
+  
+  switch (v) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_draw_all_relations(who);
+  }
+}
+
 UmlVisibility BrowserClassView::get_visibility(UmlCode who) const {
   UmlVisibility v;
   

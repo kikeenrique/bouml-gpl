@@ -965,6 +965,20 @@ class CppSettings
   
   _is_set_param_const = v;
 
+!!!189568.cpp!!!	set_IsSetParamRef(in v : bool) : bool
+  UmlCom::send_cmd(cppSettingsCmd, setCppIsSetParamRefCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_set_param_ref = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!189568.java!!!	set_IsSetParamRef(in v : bool) : bool
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppIsSetParamRefCmd,
+		  (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+  
+  _is_set_param_ref = v;
 !!!54784.cpp!!!	read_() : void
   _root = UmlCom::read_string();
   
@@ -1042,6 +1056,7 @@ class CppSettings
   _is_set_inline = UmlCom::read_bool();
   _is_set_param_const = UmlCom::read_bool();
 
+  _is_set_param_ref = UmlCom::read_bool();
 !!!54784.java!!!	read_() : void
   _root = UmlCom.read_string();
   
@@ -1117,6 +1132,7 @@ class CppSettings
   _set_name = UmlCom.read_string();
   _is_set_inline = UmlCom.read_bool();
   _is_set_param_const = UmlCom.read_bool();
+  _is_set_param_ref = UmlCom.read_bool();
 !!!54912.cpp!!!	read_if_needed_() : void
   UmlSettings::read_if_needed_();
   if (!_defined) {

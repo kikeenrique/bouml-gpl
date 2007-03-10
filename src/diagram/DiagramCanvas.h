@@ -82,6 +82,15 @@ class DiagramCanvas : public QCanvasRectangle, public DiagramItem {
     void resize(int w, int h);
     virtual UmlCanvas * the_canvas() const;
     void package_modified() const;
+
+    bool has_simple_relation(BasicData * def) const;
+    void draw_all_simple_relations(DiagramCanvas * end = 0);
+    
+    bool has_flow(BasicData * def) const;
+    void draw_all_flows(DiagramCanvas * end = 0);
+    
+    bool has_transition(BasicData * def) const;
+    void draw_all_transitions(DiagramCanvas * end = 0);
     
     virtual void history_save(QBuffer &) const;
     virtual void history_load(QBuffer &);

@@ -108,6 +108,7 @@ const char * idlText = "To set or not the IDL definition/declaration "
   "to the default value when a class/operation/attribute/relation is created";
 const char * verboseText = "To ask or not for a verbose code generation";
 const char * preserve_bodiesText = "To preserve or not the operations's body";
+const char * add_operation_profileText = "To write the operation profile at the beginning of the temporary file when you edit an operation's body";
 const char * viewBrowserStereotypeText = "To show or hide the <em>stereotypes</em> "
   "in the <b>Browser</b>.";
 const char * browserUpText = "To select the <em>browser</em> current item's parent.";
@@ -266,9 +267,15 @@ UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
   verbose_gen_id =
     miscMenu->insertItem("Verbose code generation", this, SLOT(verbose()));
   miscMenu->setWhatsThis(verbose_gen_id, verboseText);
+
   preserve_bodies_id =
     miscMenu->insertItem("Preserve operations's body", this, SLOT(preserve()));
   miscMenu->setWhatsThis(preserve_bodies_id, preserve_bodiesText);
+
+  add_operation_profile_id =
+    miscMenu->insertItem("Add operation profile on body edition", this,
+			 SLOT(addoperationprofile()));
+  miscMenu->setWhatsThis(add_operation_profile_id, add_operation_profileText);
   
   miscMenu->insertSeparator();
   shortcut_id =
@@ -1066,6 +1073,28 @@ void UmlWindow::preserve() {
       msg_critical("Bouml", "Unchanged : project is read-only");
     else {
       toggle_preserve_bodies();
+      if (preserve_bodies() && add_operation_profile())
+	toggle_add_operation_profile();
+      prj->modified();
+    }
+  }
+}
+
+void UmlWindow::addoperationprofile() {
+  BrowserPackage * prj = browser->get_project();
+  
+  if (prj != 0) {
+    if (!prj->is_writable())
+      msg_critical("Bouml", "Unchanged : project is read-only");
+    else {
+      toggle_add_operation_profile();
+      if (add_operation_profile() && preserve_bodies()) {
+	toggle_preserve_bodies();
+	msg_critical("Bouml",
+		     "Warning : <i>Preserve operations's body</i> toggle is cleared !"
+		     "<br><br>"
+		     "Next code generations will replace operations's body");
+      }
       prj->modified();
     }
   }
@@ -1095,9 +1124,12 @@ void UmlWindow::miscMenuAboutToShow() {
   miscMenu->setItemEnabled(use_java_id, enabled);
   miscMenu->setItemEnabled(use_idl_id, enabled);
   miscMenu->setItemEnabled(verbose_gen_id, enabled);
-  if (enabled)
+  if (enabled) {
     miscMenu->setItemChecked(preserve_bodies_id, preserve_bodies());
+    miscMenu->setItemChecked(add_operation_profile_id, add_operation_profile());
+  }
   miscMenu->setItemEnabled(preserve_bodies_id, enabled && prj->is_writable());
+  miscMenu->setItemEnabled(add_operation_profile_id, enabled && prj->is_writable());
   miscMenu->setItemEnabled(shortcut_id, enabled);
   miscMenu->setItemEnabled(show_browser_stereotypes_id, enabled);
 }

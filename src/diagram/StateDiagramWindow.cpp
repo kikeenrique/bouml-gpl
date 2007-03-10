@@ -48,6 +48,7 @@ extern const char * addpackageText;
 extern const char * addfragmentText;
 extern const char * noteText;
 extern const char * anchorText;
+//extern const char * dependencyText;
 extern const char * textText;
 const char * addentrypointText = "Click this button to add a <em>entry point</em> in the diagram. <br><br>"
 "You can also drop the <em>entry point</em> from the <b>browser</b>.";
@@ -207,6 +208,14 @@ StateDiagramWindow::StateDiagramWindow(const QString & s, BrowserStateDiagram * 
   addTransition->setToggleButton(TRUE);
   QWhatsThis::add(addTransition, addtransitionText);
   
+  /*
+  dependency =
+    new QToolButton(*dependencyButton, "Dependency", QString::null,
+		    this, SLOT(hit_dependency()), toolbar, "dependency");
+  dependency->setToggleButton(TRUE);
+  QWhatsThis::add(dependency, dependencyText);
+  */
+  
   note =
     new QToolButton(*noteButton, "Note", QString::null,
 		    this, SLOT(hit_note()), toolbar, "note");
@@ -294,6 +303,7 @@ void StateDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   addSignalIn->setOn(FALSE);
   addSignalOut->setOn(FALSE);
   addTransition->setOn(FALSE);
+  //dependency->setOn(FALSE);
   note->setOn(FALSE);
   anchor->setOn(FALSE);
   text->setOn(FALSE);
@@ -377,6 +387,12 @@ void StateDiagramWindow::hit_signalout() {
 void StateDiagramWindow::hit_transition() {
   hit_button(UmlTransition, addTransition);
 }
+
+/*
+void StateDiagramWindow::hit_dependency() {
+  hit_button(UmlDependOn, dependency);
+}
+*/
 
 void StateDiagramWindow::hit_note() {
   hit_button(UmlNote, note);

@@ -75,6 +75,8 @@ class BrowserUseCaseDiagram : public BrowserDiagram {
     virtual void set_name(const char * s);
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_shadow() const;
+    virtual bool get_draw_all_relations() const;
+    virtual void dont_draw_all_relations();
     virtual void get_usecasediagramsettings(UseCaseDiagramSettings & r) const;
     virtual bool get_auto_label_position(UmlCode who) const ;    
     virtual void package_settings(bool & name_in_tab, ShowContextMode & show_context) const;

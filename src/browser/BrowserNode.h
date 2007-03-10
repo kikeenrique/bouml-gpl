@@ -170,6 +170,7 @@ class BrowserNode : public QListViewItem,
     virtual void get_activitydiagramsettings(ActivityDiagramSettings &) const;
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_shadow(UmlCode) const;
+    virtual bool get_draw_all_relations(UmlCode) const;
     virtual bool get_classinstwritehorizontally(UmlCode k) const;
     virtual void get_componentdrawingsettings(bool depl, ComponentDrawingSettings & r) const;
     virtual void get_statedrawingsettings(StateDrawingSettings &) const;

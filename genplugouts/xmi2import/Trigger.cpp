@@ -10,6 +10,7 @@ void Trigger::init()
   UmlItem::declareFct("packagedelement", "uml:Trigger", &importIt);
   UmlItem::declareFct("trigger", "uml:Trigger", &importIt);
 
+  UmlItem::declareFct("ownedtrigger", "uml:AnyTrigger", &importIt); // Borland Together 2006 for Eclipse
 }
 
 void Trigger::importIt(FileIn & in, Token & token, UmlItem *)

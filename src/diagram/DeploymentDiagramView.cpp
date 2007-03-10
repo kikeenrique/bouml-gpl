@@ -140,7 +140,6 @@ void DeploymentDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	  
 	  c->show();
 	  c->upper();
-	  c->draw_all_relations();
 	  window()->package_modified();
 	}
       }
@@ -230,7 +229,6 @@ void DeploymentDiagramView::dropEvent(QDropEvent * e) {
     history_protected = TRUE;
     c->show();
     c->upper();
-    c->draw_all_relations();
     
     canvas()->update();
     history_protected = FALSE;

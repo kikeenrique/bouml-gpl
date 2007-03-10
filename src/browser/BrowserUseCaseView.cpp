@@ -437,6 +437,35 @@ bool BrowserUseCaseView::get_shadow(UmlCode who) const {
   }
 }
 
+bool BrowserUseCaseView::get_draw_all_relations(UmlCode who) const {
+  Uml3States v;
+  
+  switch (who) {
+  case UmlUseCaseDiagram:
+    v = usecasediagram_settings.draw_all_relations;
+    break;
+  case UmlSeqDiagram:
+    v = sequencediagram_settings.draw_all_relations;
+    break;
+  case UmlColDiagram:
+    v = collaborationdiagram_settings.draw_all_relations;
+    break;
+  default:
+    // UmlObjectDiagram
+    v = objectdiagram_settings.draw_all_relations;
+    break;
+  }
+  
+  switch (v) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_draw_all_relations(who);
+  }
+}
+
 bool BrowserUseCaseView::get_classinstwritehorizontally(UmlCode k) const {
   Uml3States h;
   

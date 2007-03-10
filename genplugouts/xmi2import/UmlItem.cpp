@@ -89,6 +89,7 @@ void UmlItem::addItem(QCString id, FileIn & in) {
     in.error("xmi:id '" + id + "' used twice");
     
   All.insert(id, this);
+  _xmi_id = id;
 }
 
 void UmlItem::import(FileIn & in, Token & tk) {
@@ -376,7 +377,7 @@ void UmlItem::importGeneralization(FileIn & in, Token & token, UmlItem * where)
   }
 }
 
-void UmlItem::importDependency(FileIn & in, Token & token, UmlItem *)
+void UmlItem::importDependency(FileIn & in, Token & token, UmlItem * where)
 {
   QCString client = token.valueOf("client");
   QCString supplier = token.valueOf("supplier");
@@ -401,9 +402,11 @@ void UmlItem::importDependency(FileIn & in, Token & token, UmlItem *)
 
   if (client.isEmpty())
     in.warning("'client' is missing");
-  else if (supplier.isEmpty())
-    in.warning("'supplier' is missing");
   else {
+    if (supplier.isEmpty())
+      // Borland Together 2006 for Eclipse
+      supplier = where->id();
+
     QMap<QCString, UmlItem *>::ConstIterator from = All.find(client);
     QMap<QCString, UmlItem *>::ConstIterator to = All.find(supplier);
   
@@ -414,7 +417,7 @@ void UmlItem::importDependency(FileIn & in, Token & token, UmlItem *)
   }
 }
 
-void UmlItem::importRealization(FileIn & in, Token & token, UmlItem *)
+void UmlItem::importRealization(FileIn & in, Token & token, UmlItem * where)
 {
   QCString client = token.valueOf("client");
   QCString supplier = token.valueOf("supplier");
@@ -439,9 +442,11 @@ void UmlItem::importRealization(FileIn & in, Token & token, UmlItem *)
 
   if (client.isEmpty())
     in.warning("'client' is missing");
-  else if (supplier.isEmpty())
-    in.warning("'supplier' is missing");
   else {
+    if (supplier.isEmpty())
+      // Borland Together 2006 for Eclipse
+      supplier = where->id();
+
     QMap<QCString, UmlItem *>::ConstIterator from = All.find(client);
     QMap<QCString, UmlItem *>::ConstIterator to = All.find(supplier);
   

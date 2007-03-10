@@ -266,14 +266,15 @@ bool UmlClassMember::compute_dependency(QList<CppRefType> & dependencies,
   return have_type;
 }
 
-void UmlClassMember::insert_template(const char *& p, QTextOStream & fs,
+// return TRUE if stop on comment/description
+bool UmlClassMember::insert_template(const char *& p, QTextOStream & fs,
 				     const QCString & indent,
 				     const QCString & templ)
 {
   // search the beginning of the definition/declaration in p;
   for (;;) {
     if (*p == 0)
-      return;
+      return FALSE;
     
     if (*p == '\n') {
       fs << *p++;
@@ -315,9 +316,13 @@ void UmlClassMember::insert_template(const char *& p, QTextOStream & fs,
 	}
       } while (*p && (*p != '\n'));
     }
+    else if ((strncmp(p, "${comment}", 10) == 0) ||
+	     (strncmp(p, "${description}", 14) == 0))
+      return TRUE;
     else
       break;
   }
   
   fs << templ;
+  return FALSE;
 }

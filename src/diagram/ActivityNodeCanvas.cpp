@@ -53,15 +53,10 @@ ActivityNodeCanvas::ActivityNodeCanvas(BrowserNode * bn, UmlCanvas * canvas,
    
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
-  
-  switch (browser_node->get_type()) {
-  case DecisionAN:
-  case MergeAN:
-    connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
-    break;
-  default:
-    break;
-  }
+  connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
+
+  if (canvas->must_draw_all_relations())
+    draw_all_flows();
 }
 
 ActivityNodeCanvas::ActivityNodeCanvas(UmlCanvas * canvas, int id)
@@ -76,15 +71,7 @@ ActivityNodeCanvas::~ActivityNodeCanvas() {
 
 void ActivityNodeCanvas::delete_it() {
   disconnect(browser_node->get_data(), 0, this, 0);
-  
-  switch (browser_node->get_type()) {
-  case DecisionAN:
-  case MergeAN:
-    disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
-    break;
-  default:
-    break;
-  }
+  disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
   
   DiagramCanvas::delete_it();
 }
@@ -177,6 +164,8 @@ void ActivityNodeCanvas::modified() {
   show();
   update_show_lines();
   force_self_rel_visible();
+  if (the_canvas()->must_draw_all_relations())
+    draw_all_flows();
   canvas()->update();
   if (label != 0)
     label->set_name(browser_node->get_name());

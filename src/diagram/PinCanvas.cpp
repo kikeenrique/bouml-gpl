@@ -56,16 +56,19 @@ PinCanvas::PinCanvas(BrowserNode * bn, UmlCanvas * canvas,
     : DiagramCanvas(0, canvas, x, y, PIN_SIZE, PIN_SIZE, id), act(a) {
   browser_node = bn;
   itscolor = UmlDefaultColor;
+  
+  connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
+  connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
+  connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 
   if (id == 0) {
     // not on read
     update();
     setZ(a->z() + 2);  // z+2 to be upper the parameter sets with their lines
+    
+    if (canvas->must_draw_all_relations())
+      draw_all_flows();
   }
-  
-  connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
-  connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
-  connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
 
 PinCanvas::~PinCanvas() {
@@ -474,6 +477,8 @@ void PinCanvas::modified() {
   update();
   show();
   update_show_lines();
+  if (the_canvas()->must_draw_all_relations())
+    draw_all_flows();
   canvas()->update();
   package_modified();
 }

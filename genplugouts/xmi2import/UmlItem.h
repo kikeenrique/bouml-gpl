@@ -105,6 +105,10 @@ class UmlItem : public UmlBaseItem {
 
     virtual ~UmlItem();
 
+    QCString id() const {
+      return _xmi_id;
+    }
+
     //Import an xmi file, only allowed in a package
     virtual void import();
 
@@ -193,6 +197,10 @@ class UmlItem : public UmlBaseItem {
     static QMap<QCString,UmlItem*> Incomings;
 
     static QMap<QCString, UmlItem*> Outgoings;
+
+
+  private:
+    QCString _xmi_id;
 
 };
 

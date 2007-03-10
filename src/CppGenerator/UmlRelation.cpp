@@ -340,7 +340,7 @@ void UmlRelation::generate_def(QTextOStream & f, QCString indent, bool h,
       while ((*p == ' ') || (*p == '\t'))
 	p += 1;
       
-      if (! templates.isEmpty())
+      bool re_template = !templates.isEmpty() &&
 	insert_template(p, f, indent, templates);
       
       if (*p != '#')
@@ -356,8 +356,13 @@ void UmlRelation::generate_def(QTextOStream & f, QCString indent, bool h,
 	  // comment management done
 	  p = pp;
 	  pp = 0;
+
+	  if (re_template)
+	    f << templates;
+
 	  if (*p == 0)
 	    break;
+
 	  if (*p != '#')
 	    f << indent;
 	}

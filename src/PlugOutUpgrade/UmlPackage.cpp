@@ -208,14 +208,14 @@
   "#where" = v;\n", \
 	      FALSE)
 
-#define defSetBoolBitField(base, where, oper, typename, cmd, if_def, end_if, descr) \
+#define defSetBoolBitField(base, where, oper, cmd, if_def, end_if, descr) \
   op = base->add_op(#oper, PublicVisibility, "bool", TRUE); \
   op->set_Description(" set the " descr "\n" \
 		      "\n" \
 		      " On error return FALSE in C++, produce a RuntimeException in Java"); \
   op->add_param(0, InputDirection, "v", "bool"); \
   op->set_cpp("${type}", "${t0} ${p0}", \
-	      "  "#typename" vv;\n" \
+	      "  bool vv;\n" \
 	      "\n" \
 	      "  if (set_it_(vv, v, "#cmd")) {\n" \
 	      "    "#where" = v;\n" \
@@ -4435,7 +4435,7 @@ UmlClass * add_activityobject(UmlClassView * base_class_view, UmlClassView * use
   defGetBool(base_activityobject, _is_control, isControlType, 0, 0,
 	     "isControlType attribute, tells whether the type of the object node is to be treated as control");
   defSetBoolBitField(base_activityobject, _is_control, set_IsControlType,
-		     bool, setFlagCmd, 0, 0, "isControlType attribute");
+		     setFlagCmd, 0, 0, "isControlType attribute");
   
   add_assoc_diag_ops(base_activityobject, user_activitydiagram);
 
@@ -4624,13 +4624,13 @@ void add_pinparam(UmlClassView * base_class_view, UmlClassView * user_class_view
   defGetBool(base_pinparam, _unique, isUnique, 0, 0,
 	     "isUnique attribute");
   defSetBoolBitField(base_pinparam, _unique, set_IsUnique, 
-		 bool, setUniqueCmd, 0, 0, "isUnique attribute");
+		     setUniqueCmd, 0, 0, "isUnique attribute");
 
   defGetBool(base_pinparam, _exception, isException, 0, 0,
 	     "isException attribute, exclusive with isStream");
   defSetBoolBitField(base_pinparam, _exception, set_IsException,
-		 bool, replaceExceptionCmd, 0, 0,
-		 "isException attribute, exclusive with isStream");
+		     replaceExceptionCmd, 0, 0,
+		     "isException attribute, exclusive with isStream");
 
   UmlClass * dir = UmlClass::get("aDirection");
   
@@ -5434,7 +5434,7 @@ void fixe_activity(UmlClass * base_pinparam)
   
   
   defSetBoolBitField(base_pinparam, _stream, set_IsStream, 
-		     bool, setStreamCmd, 0, 0, "isStream attribute");
+		     setStreamCmd, 0, 0, "isStream attribute");
   op->moveAfter(op1);
  
   // dummy must have 5 bits rather than 4
@@ -5498,6 +5498,195 @@ void fixe_activity(UmlClass * base_pinparam)
 //
 //
 
+void add_cpp_set_param_ref(UmlClass * cppsetting)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("update CppSettings");
+
+  UmlAttribute * att = 
+    cppsetting->add_attribute("_is_set_param_ref", PrivateVisibility, "bool", 0, 0);
+
+  att->set_isClassMember(TRUE);
+  att->moveAfter(cppsetting->get_attribute("_is_set_param_const"));
+
+  //
+
+  UmlOperation * op = cppsetting->get_operation("read_");
+
+  op->set_CppBody(op->cppBody() + "  _is_set_param_ref = UmlCom::read_bool();\n");
+  op->set_JavaBody(op->javaBody() + "  _is_set_param_ref = UmlCom.read_bool();\n");
+  
+  //
+
+  UmlOperation * op2 = cppsetting->get_operation("set_IsSetParamConst");
+
+  op = cppsetting->add_op("set_IsSetParamRef", PublicVisibility, "bool", TRUE);
+  op->set_isClassMember(TRUE);
+  
+  op->add_param(0, InputDirection, "v", "bool");
+  op->set_Description(" set if the parameter of a 'set' operation generated through the\n"
+		      " attribute and relation 'add set operation' menu is a reference by default\n"
+		      "\n"
+		      " On error : return FALSE in C++, produce a RuntimeException in Java");
+  
+  op->set_CppDecl(op2->cppDecl());
+  op->set_CppDef(op2->cppDef());
+  op->set_CppBody("\
+  UmlCom::send_cmd(cppSettingsCmd, setCppIsSetParamRefCmd, v);\n\
+  if (UmlCom::read_bool()) {\n\
+    _is_set_param_ref = v;\n\
+    return TRUE;\n\
+  }\n\
+  else\n\
+    return FALSE;\n");
+
+  op->set_JavaDecl(op2->javaDecl());
+  op->set_JavaBody("\
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppIsSetParamRefCmd,\n\
+		  (v) ? (byte) 1 : (byte) 0);\n\
+  UmlCom.check();\n\
+  \n\
+  _is_set_param_ref = v;\n");
+  
+  op->moveAfter(op2);
+
+  //
+
+  UmlClass::get("CppSettingsCmd")->add_enum_item("setCppIsSetParamRefCmd");
+
+  //
+
+  UmlCom::set_user_id(uid);
+}
+
+void add_getter_setter_on_instance_cmd()
+{
+  // already root
+  static const char * const cmds[] = {
+    "setCppFrozenCmd",
+    "setJavaFrozenCmd",
+    "setIdlFrozenCmd"
+  };
+  UmlClass * itcmd = UmlClass::get("OnInstanceCmd");
+  QCString cpp = CppSettings::enumItemDecl();
+  QCString java = JavaSettings::enumPatternItemDecl();
+  QCString m = "add enum item OnInstanceCmd::";
+  
+  for (int i = 0; i != sizeof(cmds)/sizeof(cmds[0]); i += 1) {
+    UmlAttribute * at;
+    
+    if ((at = UmlBaseAttribute::create(itcmd, cmds[i])) == 0) {
+      // setMarkedCmd may alreadu exist
+      if (i != 0) {
+	QCString msg = "cannot add enum item '" + QCString(cmds[i]) +
+	  "' in 'OnInstanceCmd'";
+	
+	UmlCom::trace(msg);
+	throw 0;
+      }
+    }
+    else {
+      UmlCom::trace(m + cmds[i]);
+      at->set_CppDecl(cpp);
+      at->set_JavaDecl(java);
+    }
+  }
+}    
+
+void upgrade_setter_getter()
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("update UmlBaseOperation setter and getter");
+
+  //
+
+  add_getter_setter_on_instance_cmd();
+
+  //
+
+  UmlClass * baseoper = UmlClass::get("UmlBaseOperation");
+  UmlAttribute * att;
+  UmlAttribute * att2;
+  QCString s;
+  int index;
+  
+  att = baseoper->add_attribute("_cpp_get_set_frozen", PrivateVisibility, "bool", "WITHCPP", "endif");  
+  s = att->cppDecl();
+  index = s.find("${type} ${name}");
+  if (index != -1) {
+    s.insert(index + 15, " : 1");
+    att->set_CppDecl(s);
+  }
+  att->moveAfter(baseoper->get_attribute("_idl_oneway"));
+
+  att2 = baseoper->add_attribute("_java_get_set_frozen", PrivateVisibility, "bool", "WITHJAVA", "endif");  
+  att2->set_CppDecl(s);
+  att2->moveAfter(att);
+
+  att = baseoper->add_attribute("_idl_get_set_frozen", PrivateVisibility, "bool", "WITHIDL", "endif");  
+  att->set_CppDecl(s);
+  att->moveAfter(att2);
+
+  //
+
+  UmlOperation * op;
+  UmlOperation * pos;
+  
+  pos = baseoper->get_operation("set_CppNameSpec");
+  defGetBool(baseoper, _cpp_get_set_frozen, cppGetSetFrozen, "WITHCPP", 0,
+	     "if the C++ definition is frozen, only for getter/setter operation");
+  op->moveAfter(pos);
+  pos = op;
+  defSetBoolBitField(baseoper, _cpp_get_set_frozen, set_CppGetSetFrozen, setCppFrozenCmd, 0, "endif",
+		     "if the C++ definition is frozen, only for getter/setter operation");
+  op->moveAfter(pos);
+
+  pos = baseoper->get_operation("set_JavaNameSpec");
+  defGetBool(baseoper, _java_get_set_frozen, javaGetSetFrozen, "WITHJAVA", 0,
+	     "if the Java definition is frozen, only for getter/setter operation");
+  op->moveAfter(pos);
+  pos = op;
+  defSetBoolBitField(baseoper, _java_get_set_frozen, set_JavaGetSetFrozen, setJavaFrozenCmd, 0, "endif",
+		     "if the Java definition is frozen, only for getter/setter operation");
+  op->moveAfter(pos);
+
+  pos = baseoper->get_operation("set_IdlNameSpec");
+  defGetBool(baseoper, _idl_get_set_frozen, idlGetSetFrozen, "WITHIDL", 0,
+	     "if the IDL definition is frozen, only for getter/setter operation");
+  op->moveAfter(pos);
+  pos = op;
+  defSetBoolBitField(baseoper, _idl_get_set_frozen, set_IdlGetSetFrozen, setIdlFrozenCmd, 0, "endif",
+		     "if the IDL definition is frozen, only for getter/setter operation");
+  op->moveAfter(pos);
+
+  //
+
+  op = baseoper->get_operation("read_cpp_");
+  op->set_CppBody(op->cppBody() + "  _cpp_get_set_frozen = UmlCom::read_bool();\n");
+  op->set_JavaBody(op->javaBody() + "  _cpp_get_set_frozen = UmlCom.read_bool();\n");
+
+  op = baseoper->get_operation("read_java_");
+  op->set_CppBody(op->cppBody() + "  _java_get_set_frozen = UmlCom::read_bool();\n");
+  op->set_JavaBody(op->javaBody() + "  _java_get_set_frozen = UmlCom.read_bool();\n");
+
+  op = baseoper->get_operation("read_idl_");
+  op->set_CppBody(op->cppBody() + "  _idl_get_set_frozen = UmlCom::read_bool();\n");
+  op->set_JavaBody(op->javaBody() + "  _idl_get_set_frozen = UmlCom.read_bool();\n");
+
+  //
+
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
 
 bool ask_for_upgrade()
 {
@@ -5659,16 +5848,27 @@ bool UmlPackage::upgrade() {
     
     UmlClass * basepinparam = UmlClass::get("UmlBasePinParameter");
     
-    if (uml_com->get_operation("isStream") == 0) {
+    if (basepinparam->get_operation("isStream") == 0) {
       if (!work && !ask_for_upgrade())
 	return FALSE;
       fixe_activity(basepinparam);
       work = TRUE;
     }
+
+    UmlClass * cppsetting = UmlClass::get("CppSettings");
+
+    if (cppsetting->get_attribute("_is_set_param_ref") == 0)  {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      add_cpp_set_param_ref(cppsetting);
+      upgrade_setter_getter();
+
+      work = TRUE;
+    }
     
     if (work) {
       UmlCom::trace("update api version");
-      update_api_version("25");
+      update_api_version("26");
       UmlCom::message("ask for save-as");
       QMessageBox::information(0, "Upgrade", 
 			       "Upgrade done\n\n"

@@ -63,6 +63,9 @@ ParameterCanvas::ParameterCanvas(BrowserNode * bn, UmlCanvas * canvas,
     // not on read
     update();
     setZ(a->z() + 2);	// 2 to have lines upper activity's z
+    
+    if (canvas->must_draw_all_relations())
+      draw_all_flows();
   }
 
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
@@ -459,6 +462,8 @@ void ParameterCanvas::modified() {
   update();
   show();
   update_show_lines();
+  if (the_canvas()->must_draw_all_relations())
+    draw_all_flows();
   canvas()->update();
   package_modified();
 }

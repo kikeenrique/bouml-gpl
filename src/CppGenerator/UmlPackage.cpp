@@ -65,21 +65,36 @@ static void create_directory(QCString s)
   }
 }
 
+static bool RootDirRead;
+static QCString RootDir;
+
 QCString UmlPackage::source_path(const QCString & f) {
   if (!dir.read) {
     dir.src = cppSrcDir();
     dir.h = cppHDir();
     
-    QCString root = CppSettings::rootDir();
-    QDir d_root(root);
+    if (! RootDirRead) {
+      RootDirRead = TRUE;
+      RootDir = CppSettings::rootDir();
+
+      if (!RootDir.isEmpty() && // empty -> error
+	  QDir::isRelativePath(RootDir)) {
+	QFileInfo f(getProject()->supportFile());
+	QDir d(f.dirPath());
+
+	RootDir = d.filePath(RootDir);
+      }
+    }
+
+    QDir d_root(RootDir);
     
     if (dir.src.isEmpty())
-      dir.src = root;
+      dir.src = RootDir;
     else if (QDir::isRelativePath(dir.src))
       dir.src = d_root.filePath(dir.src);
 
     if (dir.h.isEmpty())
-      dir.h = root;
+      dir.h = RootDir;
     else if (QDir::isRelativePath(dir.h))
       dir.h = d_root.filePath(dir.h);
    
@@ -91,16 +106,7 @@ QCString UmlPackage::source_path(const QCString & f) {
       UmlCom::bye();
       UmlCom::fatal_error("UmlPackage::source_path");
     }
-    
-    if (QDir::isRelativePath(dir.src)) {
-      UmlCom::trace(QCString("<font color=\"red\"><b><i>")
-		    + name() + "</i>'s source path <i>(" + dir.src
-		    + "</i>) is not absolute, edit the <i> generation settings</i> "
-		    "(tab 'directory'), or edit the package (tab 'C++')</b></font><br>");
-      UmlCom::bye();
-      UmlCom::fatal_error("UmlPackage::source_path");
-    }
-    
+        
     dir.read = TRUE;
   }
   

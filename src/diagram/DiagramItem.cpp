@@ -145,7 +145,15 @@ void DiagramItem::post_load()
 }
 
 BasicData * DiagramItem::add_relation(UmlCode t, DiagramItem * end) {
-  return get_bn()->add_relation(t, end->get_bn());
+  UmlCanvas * canvas = the_canvas();
+
+  canvas->freeze_draw_all_relations();
+
+  BasicData * result = get_bn()->add_relation(t, end->get_bn());
+
+  canvas->unfreeze_draw_all_relations();
+  
+  return result;
 }
 
 bool DiagramItem::has_relation(BasicData * def) const {
@@ -232,6 +240,13 @@ DiagramItem * QCanvasItemToDiagramItem(QCanvasItem * ci)
     return (isa_alien(ci)) 
       ? 0
       : ((DiagramCanvas *) ci);
+}
+
+DiagramCanvas * QCanvasItemToDiagramCanvas(QCanvasItem * ci)
+{
+  return (isa_arrow(ci) || isa_label(ci) || isa_alien(ci))
+    ? 0
+    : ((DiagramCanvas *) ci);
 }
 
 //

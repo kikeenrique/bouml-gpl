@@ -108,6 +108,7 @@ class GenerationSettings {
     static SharedStr cpp_set_name;
     static bool cpp_set_inline;
     static bool cpp_set_param_const;
+    static bool cpp_set_param_ref;
     
     static bool java_default_defs;
     static SharedStr java_src_content;
@@ -224,6 +225,7 @@ class GenerationSettings {
     static const char * cpp_default_set_name() { return cpp_set_name; };
     static bool cpp_default_set_inline() { return cpp_set_inline; };
     static bool cpp_default_set_param_const() { return cpp_set_param_const; };
+    static bool cpp_default_set_param_ref() { return cpp_set_param_ref; };
 
     static bool java_get_default_defs() { return java_default_defs; };
     static bool java_set_default_defs(bool y);

@@ -229,7 +229,7 @@ void BrowserOperation::update_get_of(const QString & attr_name,
   set_name(QString("get_") + attr_name);
   
   def->update_get_of(attr_name, cpp_decl, java_decl, idl_decl, is_const,
-		     is_class_member, cl, multiplicity, ste, create);
+		     is_class_member, cl, multiplicity, ste, create, TRUE);
   
   update_stereotype();
 }
@@ -247,7 +247,7 @@ void BrowserOperation::update_set_of(const QString & attr_name,
   set_name(QString("set_") + attr_name);
 
   def->update_set_of(attr_name, cpp_decl, java_decl, idl_decl, is_const,
-		     is_class_member, cl, multiplicity, ste, create);
+		     is_class_member, cl, multiplicity, ste, create, TRUE);
   
   update_stereotype();
 }

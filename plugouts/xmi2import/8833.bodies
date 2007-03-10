@@ -8,6 +8,7 @@ class UmlItem
     in.error("xmi:id '" + id + "' used twice");
     
   All.insert(id, this);
+  _xmi_id = id;
 !!!191490.cpp!!!	import(inout in : FileIn, inout tk : Token) : void
   QCString key = tk.what() + " " + tk.xmiType();
     
@@ -278,9 +279,11 @@ class UmlItem
 
   if (client.isEmpty())
     in.warning("'client' is missing");
-  else if (supplier.isEmpty())
-    in.warning("'supplier' is missing");
   else {
+    if (supplier.isEmpty())
+      // Borland Together 2006 for Eclipse
+      supplier = where->id();
+
     QMap<QCString, UmlItem *>::ConstIterator from = All.find(client);
     QMap<QCString, UmlItem *>::ConstIterator to = All.find(supplier);
   
@@ -313,9 +316,11 @@ class UmlItem
 
   if (client.isEmpty())
     in.warning("'client' is missing");
-  else if (supplier.isEmpty())
-    in.warning("'supplier' is missing");
   else {
+    if (supplier.isEmpty())
+      // Borland Together 2006 for Eclipse
+      supplier = where->id();
+
     QMap<QCString, UmlItem *>::ConstIterator from = All.find(client);
     QMap<QCString, UmlItem *>::ConstIterator to = All.find(supplier);
   

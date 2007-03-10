@@ -191,7 +191,7 @@ void UmlAttribute::generate_def(QTextOStream & f, QCString indent, bool h,
       while ((*p == ' ') || (*p == '\t'))
 	p += 1;
       
-      if (! templates.isEmpty())
+      bool re_template = !templates.isEmpty() && 
 	insert_template(p, f, indent, templates);
       
       if (*p != '#')
@@ -207,8 +207,13 @@ void UmlAttribute::generate_def(QTextOStream & f, QCString indent, bool h,
 	  // comment management done
 	  p = pp;
 	  pp = 0;
+
+	  if (re_template)
+	    f << templates;
+
 	  if (*p == 0)
 	    break;
+
 	  f << indent;
 	}
 
@@ -224,16 +229,10 @@ void UmlAttribute::generate_def(QTextOStream & f, QCString indent, bool h,
 	    f << cl_names << "::";
 	  f << *p++;
 	}
-	else if (!strncmp(p, "${comment}", 10)) {
-	  p += 10;
-	  if (*p == '\n')
-	    p += 1;
-	}
-	else if (!strncmp(p, "${description}", 14)) {
-	  p += 14;
-	  if (*p == '\n')
-	    p += 1;
-	}
+	else if (!strncmp(p, "${comment}", 10))
+	  manage_comment(p, pp);
+	else if (!strncmp(p, "${description}", 14))
+	  manage_description(p, pp);
 	else if (!strncmp(p, "${name}", 7)) {
 	  if (*pname == '$')
 	    f << cl_names << "::";

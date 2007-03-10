@@ -55,7 +55,7 @@
 #include "MenuTitle.h"
 #include "MenuItalic.h"
 #include "OperationListDialog.h"
-#include "BrowserDiagram.h"
+#include "BrowserClassDiagram.h"
 #include "AttributeDialog.h"
 #include "strutil.h"
 
@@ -77,9 +77,10 @@ CdClassCanvas::CdClassCanvas(BrowserNode * bn, UmlCanvas * canvas,
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
   
-  if (used_settings.draw_all_relations == UmlYes) {
+  if (canvas->must_draw_all_relations()) {
     draw_all_relations();
     draw_all_class_assoc();
+    draw_all_simple_relations();
   }
 }
 
@@ -194,6 +195,7 @@ void CdClassCanvas::compute_size() {
   int noper = 0;
   bool full_members = (used_settings.show_full_members_definition == UmlYes);
   bool show_visibility = (used_settings.show_members_visibility == UmlYes);
+  bool show_dir = (used_settings.show_parameter_dir == UmlYes);
   bool hide_attrs = (used_settings.hide_attributes == UmlYes);
   bool hide_opers = (used_settings.hide_operations == UmlYes);
 
@@ -256,8 +258,8 @@ void CdClassCanvas::compute_size() {
 	    continue;
 	  
 	  s = ((OperationData *) child_data)
-	    ->definition(full_members, used_settings.drawing_language);
-	  
+	    ->definition(full_members, used_settings.drawing_language, show_dir);
+
 	  if (s.isEmpty())
 	    continue;
 	  
@@ -397,32 +399,13 @@ void CdClassCanvas::modified() {
     show();
     update_show_lines();
     force_self_rel_visible();
-    if (used_settings.draw_all_relations == UmlYes)
+    if (the_canvas()->must_draw_all_relations()) {
       draw_all_relations();    
+      draw_all_simple_relations();
+    }
     canvas()->update();
     package_modified();
   }
-}
-
-BasicData * CdClassCanvas::add_relation(UmlCode t, DiagramItem * nd) {
-  if (IsaRelation(t)) {
-    CdClassCanvas * end = (CdClassCanvas *) nd;
-    // force draw_all_relation to no else the relation will be drawed two times
-    // and hidden relations of the start/end classes may appears
-    Uml3States start_draw_all_rel = settings.draw_all_relations;
-    Uml3States end_draw_all_rel = end->settings.draw_all_relations;
-    
-    settings.draw_all_relations = end->settings.draw_all_relations = UmlNo;
-    
-    BasicData * result = get_bn()->add_relation(t, end->get_bn());
-    
-    settings.draw_all_relations = start_draw_all_rel;
-    end->settings.draw_all_relations = end_draw_all_rel;
-    
-    return result;
-  }
-  else
-    return get_bn()->add_relation(t, nd->get_bn());
 }
 
 bool CdClassCanvas::has_relation(BasicData * def) const {
@@ -439,9 +422,6 @@ bool CdClassCanvas::has_relation(BasicData * def) const {
 }
 
 void CdClassCanvas::draw_all_relations(CdClassCanvas * end) {
-  if (used_settings.draw_all_relations == UmlNo)
-    return;
-
   QListViewItem * child;
   QCanvasItemList all = canvas()->allItems();
   QCanvasItemList::Iterator cit;
@@ -472,8 +452,7 @@ void CdClassCanvas::draw_all_relations(CdClassCanvas * end) {
 		(((CdClassCanvas *) adi)->browser_node == end_class) &&
 		((((CdClassCanvas *) adi) == end) || (*cit)->visible())) {
 	      // other class canvas find
-	      if (((CdClassCanvas *) adi)->used_settings.draw_all_relations == UmlYes)
-		di = adi;
+	      di = adi;
 	      break;
 	    }
 	  }
@@ -487,7 +466,7 @@ void CdClassCanvas::draw_all_relations(CdClassCanvas * end) {
     }
   }
   
-  if (end == 0) {
+  if ((end == 0) && !DrawingSettings::just_modified()) {
     for (cit = all.begin(); cit != all.end(); ++cit) {
       DiagramItem * di = QCanvasItemToDiagramItem(*cit);
       
@@ -653,6 +632,7 @@ void CdClassCanvas::draw(QPainter & p) {
   QListViewItem * child;
   bool full_members = (used_settings.show_full_members_definition == UmlYes);
   bool show_visibility = (used_settings.show_members_visibility == UmlYes);
+  bool show_dir = (used_settings.show_parameter_dir == UmlYes);
   
   r.setTop(r.top() + two);
   
@@ -713,7 +693,7 @@ void CdClassCanvas::draw(QPainter & p) {
 	   : (hidden_visible_operations.findIndex((BrowserNode *) child) == -1))) {
 	OperationData * data =
 	  ((OperationData *) ((BrowserNode *) child)->get_data());
-	QString s = data->definition(full_members, used_settings.drawing_language);
+	QString s = data->definition(full_members, used_settings.drawing_language, show_dir);
 	
 	if (!s.isEmpty()) {
 	  r.setLeft(left1);
@@ -1206,6 +1186,11 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
     k = read_keyword(st);
     
     result->settings.read(st, k);	// updates k
+    if (result->settings.draw_all_relations == UmlNo)
+      // old release
+      canvas->dont_draw_all_relations();
+    result->settings.draw_all_relations = UmlDefaultState;
+
     read_color(st, "color", result->itscolor, k);	// updates k
     
     if (!strcmp(k, "hidden_attributes") || !strcmp(k, "visible_attributes")) {

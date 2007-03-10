@@ -77,4 +77,7 @@ bool verbose_generation();
 void toggle_preserve_bodies();
 bool preserve_bodies();
 
+void toggle_add_operation_profile();
+bool add_operation_profile();
+
 #endif

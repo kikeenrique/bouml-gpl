@@ -48,14 +48,23 @@ UcClassCanvas::UcClassCanvas(BrowserNode * bn, UmlCanvas * canvas,
 			     int x, int y, int id)
     : DiagramCanvas(bn, canvas, x, y, ACTOR_CANVAS_SIZE,
 		    ACTOR_CANVAS_SIZE, id) {
+  connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
+
+  
+  if ((id == 0) && // not from read
+      canvas->must_draw_all_relations()) {
+    draw_all_depend_gene();
+    draw_all_simple_relations();
+  }
 }
 
 UcClassCanvas::~UcClassCanvas() {
 }
 
 void UcClassCanvas::delete_it() {
+  disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
   disconnect(browser_node->get_data(), 0, this, 0);
   DiagramCanvas::delete_it();
 }
@@ -88,6 +97,11 @@ void UcClassCanvas::draw(QPainter & p) {
 void UcClassCanvas::modified() {
   label->set_name(browser_node->get_name());
   force_self_rel_visible();
+  if (the_canvas()->must_draw_all_relations()) {
+    draw_all_depend_gene();    
+    draw_all_simple_relations();
+  }
+  canvas()->update();
   package_modified();
 }
 
@@ -237,6 +251,77 @@ bool UcClassCanvas::has_relation(BasicData * def) const {
   }
   
   return FALSE;
+}
+
+static bool dependencyOrGeneralization(UmlCode t)
+{
+  switch (t) {
+  case UmlGeneralisation:
+  case UmlDependency:
+  case UmlRealize:
+    return TRUE;
+  default:
+    return FALSE;
+  }
+}
+
+void UcClassCanvas::draw_all_depend_gene(UcClassCanvas * end) {
+  QListViewItem * child;
+  QCanvasItemList all = canvas()->allItems();
+  QCanvasItemList::Iterator cit;
+  
+  for (child = browser_node->firstChild(); child; child = child->nextSibling()) {
+    if (dependencyOrGeneralization(((BrowserNode *) child)->get_type()) &&
+	!((BrowserNode *) child)->deletedp()) {
+      RelationData * def =
+	((RelationData *) ((BrowserNode *) child)->get_data());
+
+      if ((def->get_start_class() == browser_node) && 	// rel begins by this
+	  ((end == 0) || (def->get_end_class() == end->browser_node)) &&
+	  !has_relation(def)) {
+	// adds it in case the other class is drawed
+	BrowserClass * end_class = 
+	  ((BrowserClass *) def->get_end_class());
+	DiagramItem * di;
+	
+	if (end_class == browser_node)
+	  di = this;
+	else {	
+	  di = 0;
+	  for (cit = all.begin(); cit != all.end(); ++cit) {
+	    DiagramItem * adi = QCanvasItemToDiagramItem(*cit);
+	    
+	    if ((adi != 0) &&		// an uml canvas item
+		(adi->type() == UmlClass) &&
+		(((UcClassCanvas *) adi)->browser_node == end_class) &&
+		((((UcClassCanvas *) adi) == end) || (*cit)->visible())) {
+	      // other class canvas find
+	      di = adi;
+	      break;
+	    }
+	  }
+	}
+	
+	if (di != 0)
+	  (new RelationCanvas(the_canvas(), this, di,
+			      ((BrowserClass *) browser_node), 
+			      def->get_type(), 0, def))->show();
+      }
+    }
+  }
+  
+  if ((end == 0) && !DrawingSettings::just_modified()) {
+    for (cit = all.begin(); cit != all.end(); ++cit) {
+      DiagramItem * di = QCanvasItemToDiagramItem(*cit);
+      
+      if ((di != 0) &&	// an uml canvas item
+	  (di->type() == UmlClass) &&
+	  (((UcClassCanvas *) di) != this) &&
+	  !((UcClassCanvas *) di)->browser_node->deletedp() &&
+	  ((UcClassCanvas *) di)->visible())
+	((UcClassCanvas *) di)->draw_all_depend_gene(this);
+    }
+  }
 }
 
 void UcClassCanvas::connexion(UmlCode action, DiagramItem * dest,

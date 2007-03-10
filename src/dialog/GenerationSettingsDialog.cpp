@@ -41,6 +41,7 @@
 #include <qsplitter.h> 
 
 #include "GenerationSettingsDialog.h"
+#include "BrowserView.h"
 #include "MLinesItem.h"
 #include "DialogUtil.h"
 #include "UmlPixmap.h"
@@ -284,7 +285,7 @@ void GenerationSettingsDialog::init_cpp4() {
   cpp_get_visibility.init(htab, GenerationSettings::cpp_get_visibility,
 			       FALSE, "Visibility");
 
-  bg = new QButtonGroup(3, QGroupBox::Horizontal, " ", htab);
+  bg = new QButtonGroup(3, QGroupBox::Horizontal, "Modifiers", htab);
   bg->setExclusive(FALSE);
   cpp_get_inline_cb = new QCheckBox("inline", bg);
   cpp_get_value_const_cb = new QCheckBox("const value", bg);
@@ -310,12 +311,14 @@ void GenerationSettingsDialog::init_cpp4() {
   cpp_set_visibility.init(htab, GenerationSettings::cpp_get_visibility,
 			  FALSE, "Visibility");
   
-  bg = new QButtonGroup(4, QGroupBox::Horizontal, " ", htab);
+  bg = new QButtonGroup(4, QGroupBox::Horizontal, "Modifiers", htab);
   bg->setExclusive(FALSE);
   cpp_set_inline_cb = new QCheckBox("inline", bg);
   cpp_set_param_const_cb = new QCheckBox("const parameter", bg);
+  cpp_set_param_ref_cb = new QCheckBox("by reference", bg);
   cpp_set_inline_cb->setChecked(GenerationSettings::cpp_set_inline);
   cpp_set_param_const_cb->setChecked(GenerationSettings::cpp_set_param_const);
+  cpp_set_param_ref_cb->setChecked(GenerationSettings::cpp_set_param_ref);
   
   new QLabel("   name : ", htab);
   edcpp_set_name = new LineEdit(htab);
@@ -522,7 +525,7 @@ void GenerationSettingsDialog::init_java2() {
   java_get_visibility.init(htab, GenerationSettings::java_get_visibility,
 			   TRUE, "Visibility");
   
-  bg = new QButtonGroup(1, QGroupBox::Horizontal, " ", htab);
+  bg = new QButtonGroup(1, QGroupBox::Horizontal, "Modifiers", htab);
   bg->setExclusive(FALSE);
   java_get_final_cb = new QCheckBox("final", bg);
   java_get_final_cb->setChecked(GenerationSettings::java_get_final);
@@ -538,7 +541,7 @@ void GenerationSettingsDialog::init_java2() {
   java_set_visibility.init(htab, GenerationSettings::java_set_visibility,
 			   TRUE, "Visibility");
   
-  bg = new QButtonGroup(2, QGroupBox::Horizontal, " ", htab);
+  bg = new QButtonGroup(2, QGroupBox::Horizontal, "Modifiers", htab);
   bg->setExclusive(FALSE);
   java_set_final_cb = new QCheckBox("final", bg);
   java_set_param_final_cb = new QCheckBox("final parameter", bg);
@@ -844,7 +847,11 @@ void GenerationSettingsDialog::init_descriptions() {
   addTab(split, "Description");
 }
 
+static const char * Relative = "Set it relative";
+static const char * Absolute = "Set it absolute";
+
 void GenerationSettingsDialog::init_dirs() {
+
   QPushButton * button;
   QVBox * vtab = new QVBox(this);
   QHBox * htab;
@@ -855,7 +862,7 @@ void GenerationSettingsDialog::init_dirs() {
   htab->setMargin(5);
   new QLabel("Defining a project root directory allows to specify \
 packages's generation directory relative to the root directory rather \
-than absolute.", htab);
+than absolute. A root directory may itself be relative to the project path", htab);
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
@@ -864,6 +871,12 @@ than absolute.", htab);
   new QLabel(" ", htab);
   button = new QPushButton("Browse", htab);
   connect(button, SIGNAL(clicked ()), this, SLOT(cpproot_browse()));
+  new QLabel("", htab);
+  cpprelbutton = new QPushButton((GenerationSettings::cpp_root_dir.isEmpty() || 
+				  QDir::isRelativePath(GenerationSettings::cpp_root_dir))
+				 ? Absolute : Relative, htab);
+  connect(cpprelbutton, SIGNAL(clicked ()), this, SLOT(cpp_relative()));
+  new QLabel("", htab);
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
@@ -876,6 +889,12 @@ than absolute.", htab);
   new QLabel(" ", htab);
   button = new QPushButton("Browse", htab);
   connect(button, SIGNAL(clicked ()), this, SLOT(javaroot_browse()));
+  new QLabel("", htab);
+  javarelbutton = new QPushButton((GenerationSettings::java_root_dir.isEmpty() || 
+				   QDir::isRelativePath(GenerationSettings::java_root_dir))
+				  ? Absolute : Relative, htab);
+  connect(javarelbutton, SIGNAL(clicked ()), this, SLOT(java_relative()));
+  new QLabel("", htab);
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
@@ -888,6 +907,12 @@ than absolute.", htab);
   new QLabel(" ", htab);
   button = new QPushButton("Browse", htab);
   connect(button, SIGNAL(clicked ()), this, SLOT(idlroot_browse()));
+  new QLabel("", htab);
+  idlrelbutton = new QPushButton((GenerationSettings::idl_root_dir.isEmpty() || 
+				  QDir::isRelativePath(GenerationSettings::idl_root_dir))
+				 ? Absolute : Relative, htab);
+  connect(idlrelbutton, SIGNAL(clicked ()), this, SLOT(idl_relative()));
+  new QLabel("", htab);
   
   same_width(lbl1, lbl2, lbl3);
   
@@ -1060,6 +1085,7 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::cpp_set_name = edcpp_set_name->text();
     GenerationSettings::cpp_set_inline = cpp_set_inline_cb->isChecked();
     GenerationSettings::cpp_set_param_const = cpp_set_param_const_cb->isChecked();
+    GenerationSettings::cpp_set_param_ref = cpp_set_param_ref_cb->isChecked();
     
     GenerationSettings::java_get_visibility = java_get_visibility.value();
     GenerationSettings::java_get_name = edjava_get_name->text();
@@ -1126,6 +1152,46 @@ void GenerationSettingsDialog::idlroot_browse() {
   if (! dir.isNull())
     edidlroot->setText(dir);
 }
+
+void GenerationSettingsDialog::relative(LineEdit * ed, QPushButton * button) {
+  QString root = BrowserView::get_dir().absPath();
+  const QString s = ed->text();
+
+  if (root.at(root.length() - 1) != QChar('/'))
+    root += '/';
+    
+  if (button->text() == Relative) {
+    unsigned len = root.length();
+      
+    if (
+#ifdef WIN32
+	(s.lower().find(root.lower()) == 0) &&
+#else
+	(s.find(root) == 0) &&
+#endif
+	(s.length() >= len)) {
+      ed->setText(s.mid(len));
+      button->setText(Absolute);
+    }
+  }
+  else {
+    ed->setText(root + s);
+    button->setText(Relative);
+  }
+}
+
+void GenerationSettingsDialog::cpp_relative() {
+  relative(edcpproot, cpprelbutton);
+}
+
+void GenerationSettingsDialog::java_relative() {
+  relative(edjavaroot, javarelbutton);
+}
+
+void GenerationSettingsDialog::idl_relative() {
+  relative(edidlroot, idlrelbutton);
+}
+
 
 // TypesTable
 

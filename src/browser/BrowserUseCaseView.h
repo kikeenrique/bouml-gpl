@@ -82,6 +82,7 @@ class BrowserUseCaseView : public BrowserNode, public Labeled<BrowserUseCaseView
     virtual void get_objectdiagramsettings(ObjectDiagramSettings &) const;
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_shadow(UmlCode) const;
+    virtual bool get_draw_all_relations(UmlCode) const;
     virtual bool get_classinstwritehorizontally(UmlCode k) const;
     virtual bool get_auto_label_position(UmlCode who) const;
     virtual bool tool_cmd(ToolCom * com, const char * args);

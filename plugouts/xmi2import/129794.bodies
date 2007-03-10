@@ -2,6 +2,8 @@ class UmlPseudoState
 !!!197890.cpp!!!	init() : void
   declareFct("connectionpoint", "uml:Pseudostate", &importIt);
   declareFct("subvertex", "uml:Pseudostate", &importIt);
+
+  declareFct("connectionpoint", "", &importIt);// Borland Together 2006 for Eclipse
 !!!197762.cpp!!!	importIt(inout in : FileIn, inout token : Token, inout where : UmlItem) : void
   // search a container for any pseudo state
   where = where->container(anInitialPseudoState, token, in);

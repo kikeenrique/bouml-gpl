@@ -40,6 +40,7 @@
 #include "ToolCom.h"
 #include "Tool.h"
 #include "MenuTitle.h"
+#include "DialogUtil.h"
 
 AssocContainCanvas::AssocContainCanvas(UmlCanvas * canvas, DiagramItem * b,
 				   DiagramItem * e, int id)
@@ -95,7 +96,8 @@ void AssocContainCanvas::menu(const QPoint&) {
   }
   
   m.insertSeparator();
-  m.insertItem("Delete from model",6);
+  m.insertItem("Remove from view", 6);
+  m.insertItem("Delete from model", 7);
 
   int rank = m.exec(QCursor::pos());
   
@@ -123,6 +125,10 @@ void AssocContainCanvas::menu(const QPoint&) {
     default_stereotype_position();
     break;
   case 6:
+    // not removed from the model : just hide it
+    remove(FALSE);
+    break;
+  case 7:
     get_start()->unassociate(get_end());	// line will be deleted
     break;
   default:
@@ -141,11 +147,39 @@ void AssocContainCanvas::menu(const QPoint&) {
 }
 
 void AssocContainCanvas::remove(bool from_model) {
-  if (from_model)
+  if (!from_model) {
+    if (the_canvas()->must_draw_all_relations()) {
+      const AssocContainCanvas * a = this;
+  
+      while (a->begin->type() == UmlArrowPoint) {
+	a = (AssocContainCanvas *) ((ArrowPointCanvas *) a->begin)->get_other(a);
+	if (a == 0)
+	  break;
+      }
+
+      if (a && !a->begin->isSelected() && !a->begin->get_bn()->deletedp()) {
+	a = this;
+  
+	while (a->end->type() == UmlArrowPoint) {
+	  a = (AssocContainCanvas *) ((ArrowPointCanvas *) a->end)->get_other(a);
+	  if (a == 0)
+	    break;
+	}
+  
+	if (a && !a->end->isSelected() && !a->end->get_bn()->deletedp()) {
+	  msg_warning("Bouml", "<i>Draw all relations</i> forced to <i>no</i>");
+	  the_canvas()->dont_draw_all_relations();
+	}
+      }
+    }
+    delete_it();
+  }
+  else
     get_start()->unassociate(get_end());	// line will be deleted
 }
 
-void AssocContainCanvas::delete_available(bool & in_model, bool &) const {
+void AssocContainCanvas::delete_available(bool & in_model, bool & out_model) const {
+  out_model |= TRUE;
   in_model |= TRUE;
 }
 

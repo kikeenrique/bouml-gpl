@@ -103,6 +103,7 @@ class BrowserClassView : public BrowserNode, public Labeled<BrowserClassView> {
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_shadow(UmlCode) const;
+    virtual bool get_draw_all_relations(UmlCode) const;
     virtual UmlVisibility get_visibility(UmlCode) const;
     virtual bool get_auto_label_position(UmlCode who) const;
     virtual bool get_write_label_horizontally(UmlCode who) const;

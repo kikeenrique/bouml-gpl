@@ -403,11 +403,18 @@ void PackageDialog::idl_browse() {
 void PackageDialog::relative(LineEdit * ed, QPushButton * button,
 			     QString root) {
   const QString s = ed->text();
+  if (QDir::isRelativePath(root))
+    root = BrowserView::get_dir().filePath(root);
   
   if (button->text() == Relative) {
     unsigned len = root.length();
       
-    if ((s.find(root) == 0) &&
+    if (
+#ifdef WIN32
+	(s.lower().find(root.lower()) == 0) &&
+#else
+	(s.find(root) == 0) &&
+#endif
 	(s.length() >= len)) {
       ed->setText(s.mid(len));
       button->setText(Absolute);

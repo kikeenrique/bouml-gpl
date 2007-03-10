@@ -63,6 +63,9 @@ ExpansionNodeCanvas::ExpansionNodeCanvas(BrowserNode * bn, UmlCanvas * canvas,
     // not on read
     update();
     setZ(r->z() + 2);	// 2 to have lines upper region's z
+      
+    if (canvas->must_draw_all_relations())
+      draw_all_flows();
   }
 
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
@@ -404,6 +407,8 @@ void ExpansionNodeCanvas::modified() {
   update();
   show();
   update_show_lines();
+  if (the_canvas()->must_draw_all_relations())
+    draw_all_flows();
   canvas()->update();
   package_modified();
 }

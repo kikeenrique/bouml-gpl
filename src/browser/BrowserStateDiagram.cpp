@@ -420,6 +420,21 @@ bool BrowserStateDiagram::get_shadow() const {
   }  
 }
 
+bool BrowserStateDiagram::get_draw_all_relations() const {
+  switch (settings.draw_all_relations) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_draw_all_relations(UmlStateDiagram);
+  }  
+}
+
+void BrowserStateDiagram::dont_draw_all_relations() {
+  settings.draw_all_relations = UmlNo;
+}
+
 BasicData * BrowserStateDiagram::get_data() const {
   return def;
 }
@@ -595,6 +610,8 @@ BrowserStateDiagram * BrowserStateDiagram::read(char * & st, char * k,
     
     r->def->read(st, k);					// updates k
     r->settings.read(st, k);					// updates k
+    if (read_file_format() < 30)
+      r->settings.draw_all_relations = UmlNo;
     read_color(st, "state_color", r->state_color, k);		// updates k
     read_color(st, "stateaction_color", r->stateaction_color, k);		// updates k
     read_color(st, "note_color", r->note_color, k);		// updates k

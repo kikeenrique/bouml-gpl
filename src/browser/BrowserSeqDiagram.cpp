@@ -394,6 +394,21 @@ bool BrowserSeqDiagram::get_shadow() const {
   }  
 }
 
+bool BrowserSeqDiagram::get_draw_all_relations() const {
+  switch (settings.draw_all_relations) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_draw_all_relations(UmlSeqDiagram);
+  }  
+}
+
+void BrowserSeqDiagram::dont_draw_all_relations() {
+  settings.draw_all_relations = UmlNo;
+}
+
 bool BrowserSeqDiagram::get_classinstwritehorizontally(UmlCode) const {
   Uml3States h = settings.write_horizontally;
   

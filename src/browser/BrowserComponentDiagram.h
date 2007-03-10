@@ -74,6 +74,8 @@ class BrowserComponentDiagram : public BrowserDiagram {
     virtual void set_name(const char * s);
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_shadow() const;
+    virtual bool get_draw_all_relations() const;
+    virtual void dont_draw_all_relations();
     virtual void get_componentdiagramsettings(ComponentDiagramSettings & r) const;
     virtual bool get_auto_label_position(UmlCode who) const ;
     virtual void get_componentdrawingsettings(bool depl, ComponentDrawingSettings & r) const;

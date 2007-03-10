@@ -60,6 +60,8 @@ class OperationData : public ClassMemberData,
     static IdDict<OperationData> all;
   
     // uml
+    UmlVisibility uml_visibility : 8;	// faster that 3 ? (2 not enough!)
+    UmlVisibility cpp_visibility : 8;	// faster that 3 ? (2 not enough!)
     bool is_deleted : 1;
     bool is_get_or_set : 1;
     bool isa_class_operation : 1;
@@ -69,11 +71,12 @@ class OperationData : public ClassMemberData,
     bool cpp_friend : 1;		// C++
     bool cpp_virtual : 1;		// C++
     bool cpp_inline : 1;		// C++
+    bool cpp_get_set_frozen : 1;	// C++
     bool java_final : 1;		// Java
     bool java_synchronized : 1;		// java
+    bool java_get_set_frozen : 1;	// java
     bool idl_oneway : 1;		// Idl
-    UmlVisibility uml_visibility : 8;	// faster that 3 ? (2 not enough!)
-    UmlVisibility cpp_visibility : 8;	// faster that 3 ? (2 not enough!)
+    bool idl_get_set_frozen : 1;	// Idl
     unsigned short nparams;
     unsigned short nexceptions;
     AType return_type;
@@ -118,7 +121,8 @@ class OperationData : public ClassMemberData,
     void set_browser_node(BrowserOperation *, bool update);
 
     virtual QString definition(bool full) const;
-    QString definition(bool full, DrawingLanguage language) const;
+    QString definition(bool full, bool withdir) const;
+    QString definition(bool full, DrawingLanguage language, bool withdir) const;
     
     bool get_isa_class_operation() const { return isa_class_operation; };
     
@@ -183,12 +187,12 @@ class OperationData : public ClassMemberData,
 		       QString cpp_decl, QString java_decl,
 		       QString idl_decl, bool cpp_const, bool is_class_member,
 		       const AType & cl, QString multiplicity,
-		       QString stereotype, bool create);
+		       QString stereotype, bool create, bool update);
     void update_set_of(const QString & attr_name,
 		       QString cpp_decl, QString java_decl,
 		       QString idl_decl, bool cpp_const, bool is_class_member,
 		       const AType & cl, QString multiplicity,
-		       QString stereotype, bool create);
+		       QString stereotype, bool create, bool update);
     
     virtual bool tool_cmd(ToolCom * com, const char * args,
 			  BrowserNode * bn, const QString & comment);

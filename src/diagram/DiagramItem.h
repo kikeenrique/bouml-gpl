@@ -38,8 +38,9 @@
 
 class QCanvasItem;
 class QCanvasItemList;
-class QBuffer;
+class DiagramCanvas;
 
+class QBuffer;
 class LabelCanvas;
 class ArrowCanvas;
 class BrowserNode;
@@ -84,7 +85,7 @@ class DiagramItem : public Labeled<DiagramItem> {
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &) = 0;
     virtual bool connexion(UmlCode, const QPoint &, const QPoint &);
     virtual void post_connexion(UmlCode, DiagramItem *);
-    virtual BasicData * add_relation(UmlCode, DiagramItem *); 
+    BasicData * add_relation(UmlCode, DiagramItem *); 
     virtual bool has_relation(BasicData *) const; 
     virtual bool has_relation(UmlCode, BasicData *) const; 
     enum LineDirection { Horizontal, Vertical, All };
@@ -139,6 +140,7 @@ extern aCorner on_resize_point(const QPoint & p, const QRect & r);
 #define isa_alien(x) ((x)->z() == TOP_Z)
 
 extern DiagramItem * QCanvasItemToDiagramItem(QCanvasItem * ci);
+extern DiagramCanvas * QCanvasItemToDiagramCanvas(QCanvasItem * ci);
 	
 #endif
 

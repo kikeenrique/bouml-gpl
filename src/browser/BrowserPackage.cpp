@@ -98,6 +98,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   classdiagram_settings.hide_operations = UmlNo;
   classdiagram_settings.show_full_members_definition = UmlNo;
   classdiagram_settings.show_members_visibility = UmlNo;
+  classdiagram_settings.show_parameter_dir = UmlYes;
   classdiagram_settings.package_name_in_tab = UmlNo;
   classdiagram_settings.class_drawing_mode = Natural;
   classdiagram_settings.drawing_language = UmlView;
@@ -112,11 +113,13 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   usecasediagram_settings.package_name_in_tab = UmlNo;
   usecasediagram_settings.show_context_mode = noContext;
   usecasediagram_settings.auto_label_position = UmlYes;
+  usecasediagram_settings.draw_all_relations = UmlYes;
   usecasediagram_settings.shadow = UmlYes;
   
   sequencediagram_settings.show_full_operations_definition = UmlNo;
   sequencediagram_settings.write_horizontally = UmlYes;
   sequencediagram_settings.drawing_language = UmlView;
+  sequencediagram_settings.draw_all_relations = UmlYes;
   sequencediagram_settings.shadow = UmlYes;
   
   collaborationdiagram_settings.show_full_operations_definition = UmlNo;
@@ -125,17 +128,20 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   collaborationdiagram_settings.drawing_language = UmlView;
   collaborationdiagram_settings.package_name_in_tab = UmlNo;
   collaborationdiagram_settings.show_context_mode = noContext;
+  collaborationdiagram_settings.draw_all_relations = UmlYes;
   collaborationdiagram_settings.shadow = UmlYes;
   
   objectdiagram_settings.write_horizontally = UmlYes;
   objectdiagram_settings.package_name_in_tab = UmlNo;
   objectdiagram_settings.show_context_mode = noContext;
   objectdiagram_settings.auto_label_position = UmlYes;
+  objectdiagram_settings.draw_all_relations = UmlYes;
   objectdiagram_settings.shadow = UmlYes;
   
   componentdiagram_settings.package_name_in_tab = UmlNo;
   componentdiagram_settings.show_context_mode = noContext;
   componentdiagram_settings.auto_label_position = UmlYes;
+  componentdiagram_settings.draw_all_relations = UmlYes;
   componentdiagram_settings.shadow = UmlYes;
   componentdiagram_settings.componentdrawingsettings.draw_component_as_icon = UmlNo;
   componentdiagram_settings.componentdrawingsettings.show_component_req_prov = UmlNo;
@@ -145,6 +151,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   deploymentdiagram_settings.show_context_mode = noContext;
   deploymentdiagram_settings.write_horizontally = UmlYes;
   deploymentdiagram_settings.auto_label_position = UmlYes;
+  deploymentdiagram_settings.draw_all_relations = UmlYes;
   deploymentdiagram_settings.shadow = UmlYes;
   deploymentdiagram_settings.componentdrawingsettings.draw_component_as_icon = UmlNo;
   deploymentdiagram_settings.componentdrawingsettings.show_component_req_prov = UmlNo;
@@ -155,6 +162,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   statediagram_settings.auto_label_position = UmlYes;
   statediagram_settings.write_label_horizontally = UmlYes;
   statediagram_settings.show_trans_definition = UmlNo;
+  statediagram_settings.draw_all_relations = UmlYes;
   statediagram_settings.shadow = UmlYes;
   statediagram_settings.statedrawingsettings.show_activities = UmlYes;
   statediagram_settings.statedrawingsettings.region_horizontally = UmlYes;
@@ -165,6 +173,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   activitydiagram_settings.show_opaque_action_definition = UmlNo;
   activitydiagram_settings.auto_label_position = UmlYes;
   activitydiagram_settings.write_label_horizontally = UmlNo;
+  activitydiagram_settings.draw_all_relations = UmlYes;
   activitydiagram_settings.shadow = UmlYes;
   activitydiagram_settings.activitydrawingsettings.show_infonote = UmlYes;
   activitydiagram_settings.activitydrawingsettings.drawing_language = UmlView;
@@ -981,6 +990,50 @@ bool BrowserPackage::get_shadow(UmlCode who) const {
     return FALSE;
   default:
     return ((BrowserNode *) parent())->get_shadow(who);
+  }
+}
+
+bool BrowserPackage::get_draw_all_relations(UmlCode who) const {
+  Uml3States v;
+  
+  switch (who) {
+  case UmlClassDiagram:
+    v = classdiagram_settings.draw_all_relations;
+    break;
+  case UmlUseCaseDiagram:
+    v = usecasediagram_settings.draw_all_relations;
+    break;
+  case UmlSeqDiagram:
+    v = sequencediagram_settings.draw_all_relations;
+    break;
+  case UmlColDiagram:
+    v = collaborationdiagram_settings.draw_all_relations;
+    break;
+  case UmlObjectDiagram:
+    v = objectdiagram_settings.draw_all_relations;
+    break;
+  case UmlComponentDiagram:
+    v = componentdiagram_settings.draw_all_relations;
+    break;
+  case UmlDeploymentDiagram:
+    v = deploymentdiagram_settings.draw_all_relations;
+    break;
+  case UmlStateDiagram:
+    v = statediagram_settings.draw_all_relations;
+    break;
+  default:
+    //UmlActivityDiagram
+    v = activitydiagram_settings.draw_all_relations;
+    break;
+  }
+  
+  switch (v) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_draw_all_relations(who);
   }
 }
 
@@ -1870,8 +1923,12 @@ void BrowserPackage::save_all(bool modified_only)
 	  }
 	}
 
-	if (prj && preserve_bodies())
-	  st << "\npreserve_bodies\n";
+	if (prj) {
+	  if (preserve_bodies())
+	    st << "\npreserve_bodies\n";
+	  else if (add_operation_profile())
+	    st << "\nadd_operation_profile\n";
+	}
 
 	st << "\nend\n";
 	
@@ -2275,10 +2332,22 @@ To change its format : load this project and save it.");
 	if (!strcmp(k, "preserve_bodies")) {
 	  if (!in_import() && !preserve_bodies())
 	    toggle_preserve_bodies();
+	  if (add_operation_profile())
+	    toggle_add_operation_profile();
 	  k = read_keyword(st);
 	}
-	else if (preserve_bodies())
-	  toggle_preserve_bodies();
+	else {
+	  if (preserve_bodies())
+	    toggle_preserve_bodies();
+	
+	  if (!strcmp(k, "add_operation_profile")) {
+	    if (!in_import() && !add_operation_profile())
+	      toggle_add_operation_profile();
+	    k = read_keyword(st);
+	  }
+	  else if (add_operation_profile())
+	    toggle_add_operation_profile();
+	}
 	
 	if (strcmp(k, "end"))
 	  wrong_keyword(k, "end");

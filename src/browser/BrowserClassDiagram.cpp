@@ -371,6 +371,21 @@ bool BrowserClassDiagram::get_shadow() const {
   }  
 }
 
+bool BrowserClassDiagram::get_draw_all_relations() const {
+  switch (settings.draw_all_relations) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_draw_all_relations(UmlClassDiagram);
+  }  
+}
+
+void BrowserClassDiagram::dont_draw_all_relations() {
+  settings.draw_all_relations = UmlNo;
+}
+
 BasicData * BrowserClassDiagram::get_data() const {
   return def;
 }

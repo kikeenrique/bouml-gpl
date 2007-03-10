@@ -36,12 +36,15 @@ class DrawingSettings : public QObject {
   Q_OBJECT
     
   private:
+    static bool just_changed;
+
     DrawingSettings(){};
     void is_modified();
   
   public:
     static DrawingSettings * instance();
     static void modified();
+    static bool just_modified();
   
   signals:
     void changed();
@@ -66,12 +69,13 @@ class ClassDiagramSettings {
     Uml3States hide_operations;
     Uml3States show_full_members_definition;
     Uml3States show_members_visibility;
-    Uml3States draw_all_relations;
+    Uml3States show_parameter_dir;
     Uml3States package_name_in_tab;
     ClassDrawingMode class_drawing_mode;
     DrawingLanguage drawing_language;
     ShowContextMode show_context_mode;
     Uml3States auto_label_position;
+    Uml3States draw_all_relations;
     Uml3States shadow;
     
     ClassDiagramSettings();
@@ -88,6 +92,7 @@ class SequenceDiagramSettings {
     Uml3States show_full_operations_definition;
     Uml3States write_horizontally;
     DrawingLanguage drawing_language;
+    Uml3States draw_all_relations;
     Uml3States shadow;
   
     SequenceDiagramSettings();
@@ -106,6 +111,7 @@ class CollaborationDiagramSettings {
     DrawingLanguage drawing_language;
     Uml3States package_name_in_tab;
     ShowContextMode show_context_mode;
+    Uml3States draw_all_relations;
     Uml3States shadow;
   
     CollaborationDiagramSettings();
@@ -122,6 +128,7 @@ class ObjectDiagramSettings {
     Uml3States package_name_in_tab;
     ShowContextMode show_context_mode;
     Uml3States auto_label_position;
+    Uml3States draw_all_relations;
     Uml3States shadow;
   
     ObjectDiagramSettings();
@@ -137,6 +144,7 @@ class UseCaseDiagramSettings {
     Uml3States package_name_in_tab;
     ShowContextMode show_context_mode;
     Uml3States auto_label_position;
+    Uml3States draw_all_relations;
     Uml3States shadow;
   
     UseCaseDiagramSettings();
@@ -166,6 +174,7 @@ class ComponentDiagramSettings {
     Uml3States package_name_in_tab;
     ShowContextMode show_context_mode;
     Uml3States auto_label_position;
+    Uml3States draw_all_relations;
     Uml3States shadow;
     ComponentDrawingSettings componentdrawingsettings;
   
@@ -183,6 +192,7 @@ class DeploymentDiagramSettings {
     ShowContextMode show_context_mode;
     Uml3States write_horizontally;
     Uml3States auto_label_position;
+    Uml3States draw_all_relations;
     Uml3States shadow;
     ComponentDrawingSettings componentdrawingsettings;
   
@@ -215,6 +225,7 @@ class StateDiagramSettings {
     Uml3States auto_label_position;
     Uml3States write_label_horizontally;
     Uml3States show_trans_definition;
+    Uml3States draw_all_relations;
     Uml3States shadow;
     StateDrawingSettings statedrawingsettings;
   
@@ -247,6 +258,7 @@ class ActivityDiagramSettings {
     Uml3States auto_label_position;
     Uml3States write_label_horizontally;
     Uml3States show_opaque_action_definition;
+    Uml3States draw_all_relations;
     Uml3States shadow;
     ActivityDrawingSettings activitydrawingsettings;
   

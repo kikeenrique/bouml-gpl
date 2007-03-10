@@ -17,6 +17,8 @@ void UmlPseudoState::init()
 {
   declareFct("connectionpoint", "uml:Pseudostate", &importIt);
   declareFct("subvertex", "uml:Pseudostate", &importIt);
+
+  declareFct("connectionpoint", "", &importIt);// Borland Together 2006 for Eclipse
 }
 
 void UmlPseudoState::importIt(FileIn & in, Token & token, UmlItem * where)

@@ -58,6 +58,9 @@ ArtifactCanvas::ArtifactCanvas(BrowserNode * bn, UmlCanvas * canvas,
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
+
+  if (canvas->must_draw_all_relations())
+    draw_all_relations();
 }
 
 ArtifactCanvas::ArtifactCanvas(UmlCanvas * canvas, int id)
@@ -143,7 +146,8 @@ void ArtifactCanvas::modified() {
   compute_size();
   show();
   update_show_lines();
-  draw_all_relations();
+  if (the_canvas()->must_draw_all_relations())
+    draw_all_relations();
   canvas()->update();
   package_modified();
 }
@@ -164,10 +168,17 @@ void ArtifactCanvas::connexion(UmlCode action, DiagramItem * dest,
 }
 
 void ArtifactCanvas::post_connexion(UmlCode action, DiagramItem * dest) {
-  if (action == UmlContain)
+  if (action == UmlContain) {
+    UmlCanvas * canvas = the_canvas();
+
+    canvas->freeze_draw_all_relations();
+
     ((ArtifactData *) browser_node->get_data())
       ->associate((BrowserArtifact *)
 		  ((ArtifactCanvas *) dest)->browser_node);
+    
+    canvas->unfreeze_draw_all_relations();
+  }
 }
 
 void ArtifactCanvas::unassociate(DiagramItem * other) {
@@ -177,7 +188,10 @@ void ArtifactCanvas::unassociate(DiagramItem * other) {
 }
 
 void ArtifactCanvas::draw_all_relations() {
-  if (!strcmp(browser_node->get_stereotype(), "source")) {
+  if (strcmp(browser_node->get_stereotype(), "source") != 0)
+    // may start association
+    update_relations();
+  else if (!DrawingSettings::just_modified()) {
     // remove all association starting from 'this'
     QListIterator<ArrowCanvas> it(lines);
     
@@ -204,8 +218,6 @@ void ArtifactCanvas::draw_all_relations() {
       }
     }
   }
-  else
-    update_relations();
 }
 
 void ArtifactCanvas::update_relations(ArtifactCanvas * other) {
@@ -290,35 +302,6 @@ void ArtifactCanvas::update_relations() {
 	}
       }
       ++it;
-    }
-  }
-}
-
-void ArtifactCanvas::draw_all_the_relations(UmlCanvas * canvas) {
-  QCanvasItemList all = canvas->allItems();
-  QCanvasItemList::Iterator cit;
-  
-  for (cit = all.begin(); cit != all.end(); ++cit) {
-    if ((*cit)->visible()) {
-      DiagramItem * adi = QCanvasItemToDiagramItem(*cit);
-      
-      if ((adi != 0) &&		// an uml canvas item
-	  (adi->type() == UmlArtifact))
-	if (!strcmp(((ArtifactCanvas *) adi)->browser_node->get_stereotype(),
-		    "source")) {
-	// remove all association starting from adi
-	QListIterator<ArrowCanvas> it(((ArtifactCanvas *) adi)->lines);
-	
-	while (it.current()) {
-	  if ((it.current()->type() == UmlContain) &&
-	      (((AssocContainCanvas *) it.current())->get_start() == adi))
-	    it.current()->delete_it();
-	  else
-	    ++it;
-	}
-      }
-      else
-	((ArtifactCanvas *) adi)->update_relations();
     }
   }
 }
@@ -575,8 +558,8 @@ const char * ArtifactCanvas::may_start(UmlCode & l) const {
   case UmlContain:
     if (!browser_node->is_writable())
       return "read only";
-    else if (strcmp(browser_node->get_stereotype(), "source"))
-      return "illlegal for a non source artifact";
+    else if (strcmp(browser_node->get_stereotype(), "source") == 0)
+      return "illegal for a source artifact";
     else
       return 0;
   case UmlDependency:

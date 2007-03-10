@@ -34,15 +34,30 @@ UmlPackage::UmlPackage(void * id, const QCString & n)
   dir.read = FALSE;
 }
 
+static bool RootDirRead;
+static QCString RootDir;
+
 QCString UmlPackage::file_path(const QCString & f) {
   if (!dir.read) {
     dir.file = javaDir();
     
-    QCString root = JavaSettings::rootDir();
-    QDir d_root(root);
+    if (! RootDirRead) {
+      RootDirRead = TRUE;
+      RootDir = JavaSettings::rootDir();
+
+      if (!RootDir.isEmpty() && // empty -> error
+	  QDir::isRelativePath(RootDir)) {
+	QFileInfo f(getProject()->supportFile());
+	QDir d(f.dirPath());
+
+	RootDir = d.filePath(RootDir);
+      }
+    }
+
+    QDir d_root(RootDir);
     
     if (dir.file.isEmpty())
-      dir.file = root;
+      dir.file = RootDir;
     else if (QDir::isRelativePath(dir.file))
       dir.file = d_root.filePath(dir.file);
    
@@ -55,15 +70,6 @@ QCString UmlPackage::file_path(const QCString & f) {
       UmlCom::fatal_error("UmlPackage::file_path");
     }
     
-    if (QDir::isRelativePath(dir.file)) {
-      UmlCom::trace(QCString("<font color=\"red\"><b><i>")
-		    + name() + "</i>'s source path <i>(" + dir.file
-		    + "</i>) is not absolute, edit the <i> generation settings</i> "
-		    "(tab 'directory'), or edit the package (tab 'Java')</b></font><br>");
-      UmlCom::bye();
-      UmlCom::fatal_error("UmlPackage::file_path");
-    }
-
     dir.read = TRUE;
   }
   

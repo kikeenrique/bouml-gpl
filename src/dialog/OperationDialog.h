@@ -88,6 +88,7 @@ class OperationDialog : public QTabDialog {
     QCheckBox * virtual_cb;
     QCheckBox * inline_cb;
     LineEdit * edcppnamespec;	// get/set
+    QCheckBox * cppfrozen_cb;	// get/set
     MultiLineEdit * edcppdecl;
     CppParamsTable * paramcppdecltable;
     MultiLineEdit * showcppdecl;
@@ -107,6 +108,7 @@ class OperationDialog : public QTabDialog {
     QCheckBox * final_cb;
     QCheckBox * synchronized_cb;
     LineEdit * edjavanamespec;	// get/set
+    QCheckBox * javafrozen_cb;	// get/set
     MultiLineEdit * edjavadef;
     MultiLineEdit * showjavadef;
     QPushButton * editjavabody;
@@ -119,6 +121,7 @@ class OperationDialog : public QTabDialog {
     bool idl_undef;
     QCheckBox * oneway_cb;
     LineEdit * edidlnamespec;	// get/set
+    QCheckBox * idlfrozen_cb;	// get/set
     MultiLineEdit * edidldecl;
     MultiLineEdit * showidldecl;
     

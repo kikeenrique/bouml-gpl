@@ -59,33 +59,46 @@ class UmlPackage
 
   (void) in.read();	// update tk
   
-  if (tk.what() != "xmi:xmi")
-    in.error("xmi:XMI expected");
-    
-  if (tk.valueOf("xmi:version") != "2.1") {
-    UmlCom::trace("Only import xmi 2.1");
-    return;
-  }
+  if (tk.what() == "xmi:xmi") {
+    QCString ver = tk.valueOf("xmi:version");
 
-  while ((void) in.read(), !tk.close("xmi:xmi")) {
-    if (tk.what() == "xmi:documentation") {
-      QCString who = tk.valueOf("exporter");
+    if (ver.isEmpty())
+      UmlCom::trace("warning : unknown xmi version<br><br>");
+    else if (ver != "2.1")
+      UmlCom::trace("warning : imported file is not xmi 2.1<br><br>");
 
-      if (who.isNull())
-	who = tk.valueOf("xmi:exporter");
+    while ((void) in.read(), !tk.close("xmi:xmi")) {
+      if (tk.what() == "xmi:documentation") {
+	QCString who = tk.valueOf("exporter");
+
+	if (who.isNull())
+	  who = tk.valueOf("xmi:exporter");
       
-      if (! who.isNull()) {
-	UmlCom::trace("xmi file produced by <b>" + who + "</b><br><br>");
-	FromBouml = (who == "Bouml");
+	if (! who.isNull()) {
+	  UmlCom::trace("xmi file produced by <b>" + who + "</b><br><br>");
+	  FromBouml = (who == "Bouml");
+	}
+      
+	if (! tk.closed())
+	  in.finish(tk.what());
       }
-      
-      if (! tk.closed())
-	in.finish(tk.what());
+      else
+	UmlCom::targetItem()->import(in, tk);
     }
-    else
-      UmlCom::targetItem()->import(in, tk);
   }
+  else if (tk.what() == "uml:model") {
+    // Borland Together 2006 for Eclipse
+    QCString ver = tk.valueOf("xmi:version");
 
+    if (ver.isEmpty())
+      UmlCom::trace("warning : unknown xmi version<br><br>");
+    else if (ver != "2.1")
+      UmlCom::trace("warning : imported file is not xmi 2.1<br><br>");
+
+    UmlCom::targetItem()->import(in, tk);
+  }
+  else
+    in.error("uml:model or xmi:xmi expected, nothing imported");
 !!!193538.cpp!!!	container(in kind : anItemKind, in token : Token, inout in : FileIn) : UmlItem
   switch (kind) {
   case aClass:

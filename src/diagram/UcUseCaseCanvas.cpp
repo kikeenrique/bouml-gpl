@@ -53,6 +53,10 @@ UcUseCaseCanvas::UcUseCaseCanvas(BrowserNode * bn, UmlCanvas * canvas,
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
+  
+  if ((id == 0) && // not on read
+      canvas->must_draw_all_relations())
+    draw_all_simple_relations();
 }
 
 UcUseCaseCanvas::~UcUseCaseCanvas() {
@@ -153,6 +157,8 @@ void UcUseCaseCanvas::modified() {
   hide();
   show();
   force_self_rel_visible();
+  if (the_canvas()->must_draw_all_relations())
+    draw_all_simple_relations();
   canvas()->update();
   package_modified();
 }

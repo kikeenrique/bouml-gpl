@@ -66,6 +66,7 @@ class UmlWindow : public QMainWindow {
     int use_idl_id;
     int verbose_gen_id;
     int preserve_bodies_id;
+    int add_operation_profile_id;
     int shortcut_id;
     int show_browser_stereotypes_id;
     QStringList historic;
@@ -126,6 +127,7 @@ class UmlWindow : public QMainWindow {
     void use_idl();
     void verbose();
     void preserve();
+    void addoperationprofile();
     void edit_shortcuts();
     
     void motif_style();

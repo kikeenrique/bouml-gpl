@@ -64,6 +64,7 @@
 #include "strutil.h"
 #include "BodyDialog.h"
 #include "AnnotationDialog.h"
+#include "Tool.h"
 
 QSize OperationDialog::previous_size;
 
@@ -257,8 +258,15 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     grid = new QGrid(2, this);
     grid->setMargin(5);
     grid->setSpacing(5);
-    
-    new QLabel(grid);
+
+    if (visit || !o->is_get_or_set)
+      new QLabel(grid);
+    else {
+      cppfrozen_cb = new QCheckBox("frozen", grid);
+      if (o->cpp_get_set_frozen)
+	cppfrozen_cb->setChecked(TRUE);
+    }
+
     htab = new QHBox(grid);
     
     bg = cpp_visibility.init(htab, o->get_cpp_visibility(), FALSE, 0, "follow uml");
@@ -394,7 +402,14 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     grid->setMargin(5);
     grid->setSpacing(5);
     
-    new QLabel(grid);
+    if (visit || !o->is_get_or_set)
+      new QLabel(grid);
+    else {
+      javafrozen_cb = new QCheckBox("frozen", grid);
+      if (o->java_get_set_frozen)
+	javafrozen_cb->setChecked(TRUE);
+    }
+
     bg = new QButtonGroup(2, QGroupBox::Horizontal, QString::null, grid);
     final_cb = new QCheckBox("final", bg);
     if (o->get_java_final())
@@ -416,12 +431,14 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     
     if (o->is_get_or_set) {
       new QLabel("Name form : ", grid);
-      edjavanamespec = new LineEdit(grid);
+      htab = new QHBox(grid);
+      edjavanamespec = new LineEdit(htab);
       edjavanamespec->setText(o->java_name_spec);
       if (visit)
 	edjavanamespec->setDisabled(TRUE);
-      else
+      else {
 	connect(edjavanamespec, SIGNAL(textChanged(const QString &)), this, SLOT(java_update_def()));
+      }
     }
     else
       edjavanamespec = 0;
@@ -477,7 +494,14 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     grid->setMargin(5);
     grid->setSpacing(5);
     
-    new QLabel(grid);
+    if (visit || !o->is_get_or_set)
+      new QLabel(grid);
+    else {
+      idlfrozen_cb = new QCheckBox("frozen", grid);
+      if (o->idl_get_set_frozen)
+	idlfrozen_cb->setChecked(TRUE);
+    }
+
     bg = new QButtonGroup(1, QGroupBox::Horizontal, QString::null, grid);
     oneway_cb = new QCheckBox("oneway", bg);
     if (o->get_idl_oneway())
@@ -490,12 +514,14 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     
     if (o->is_get_or_set) {
       new QLabel("Name form : ", grid);
-      edidlnamespec = new LineEdit(grid);
+      htab = new QHBox(grid);
+      edidlnamespec = new LineEdit(htab);
       edidlnamespec->setText(o->idl_name_spec);
       if (visit)
 	edidlnamespec->setReadOnly(TRUE);
-      else
+      else {
 	connect(edidlnamespec, SIGNAL(textChanged(const QString &)), this, SLOT(idl_update_decl()));
+      }
     }
     else
       edidlnamespec = 0;
@@ -669,6 +695,7 @@ void OperationDialog::accept() {
       if (oper->is_get_or_set) {
 	oper->cpp_name_spec = edcppnamespec->text().stripWhiteSpace();
 	oper->cpp_body.length = 0;
+	oper->cpp_get_set_frozen = cppfrozen_cb->isChecked();
       }
       if (!abstract_cb->isChecked() && 
 	  (edcppdef->text().find("${body}") != -1)) {
@@ -698,8 +725,10 @@ void OperationDialog::accept() {
 	oper->new_body(QString::null, FALSE);
     }
     else {
-      if (oper->is_get_or_set)
+      if (oper->is_get_or_set) {
 	oper->java_name_spec = edjavanamespec->text().stripWhiteSpace();
+	oper->java_get_set_frozen = javafrozen_cb->isChecked();
+      }
       
       QString ste = GenerationSettings::java_class_stereotype(cl->get_stereotype());
       bool interf = (ste == "interface") || (ste == "@interface");
@@ -725,8 +754,10 @@ void OperationDialog::accept() {
     if (idl_undef)
       oper->idl_decl = QString::null;
     else {
-      if (oper->is_get_or_set)
+      if (oper->is_get_or_set) {
 	oper->idl_name_spec = edidlnamespec->text().stripWhiteSpace();
+	oper->idl_get_set_frozen = idlfrozen_cb->isChecked();
+      }
       oper->idl_oneway = oneway_cb->isChecked();
       oper->idl_decl = edidldecl->text();
     }
@@ -1386,13 +1417,14 @@ void OperationDialog::cpp_edit_param_def() {
     msg_warning("Bouml", "wrong specification");
 }
 
-static void insert_template(const QString & tm, const char *& p, 
-			    QString & s, const QString & indent)
+// return TRUE if stop on ${commnt} or ${description}
+bool insert_template(const QString & tm, const char *& p, 
+		     QString & s, const QString & indent)
 {
   // search the beginning of the definition/declaration in p;
   for (;;) {
     if (*p == 0)
-      return;
+      return FALSE;
     
     if (*p == '\n') {
       s += *p++;
@@ -1436,11 +1468,15 @@ static void insert_template(const QString & tm, const char *& p,
 	}
       } while (*p && (*p != '\n'));
     }
+    else if ((strncmp(p, "${comment}", 10) == 0) ||
+	     (strncmp(p, "${description}", 14) == 0))
+      return TRUE;
     else
       break;
   }
   
   s += tm;
+  return FALSE;
 }
 
 void OperationDialog::cpp_update_def() {
@@ -1461,8 +1497,8 @@ void OperationDialog::cpp_update_def() {
     while ((*p == ' ') || (*p == '\t'))
       indent += *p++;
     
-    if (! templates.isEmpty())
-      insert_template((template_oper) ? templates_tmplop : templates,
+    bool re_template = !templates.isEmpty() &&
+      insert_template((template_oper) ? templates_tmplop : templates, 
 		      p, s, indent);
     
     if (*p != '#')
@@ -1476,6 +1512,10 @@ void OperationDialog::cpp_update_def() {
 	// comment management done
 	p = pp;
 	pp = 0;
+
+	if (re_template)
+	  s += templates;
+
 	if (*p == 0)
 	  break;
 	if (*p != '#')
@@ -1576,14 +1616,52 @@ void OperationDialog::cpp_update_def() {
   showcppdef->setText(s);
 }
 
+static QString add_profile(QString b)
+{
+  b.insert(0, "##\t");
+
+  int index = 3;
+  int index2;
+
+  while ((index2 = b.find('\n', index)) != -1) {
+    b.insert(index2 + 1, "##\t");
+    index = index2 + 4;
+  }
+
+  b += "\n##\t---- these lines will be automatically removed ----\n";
+
+  return b;
+}
+
+static QString remove_profile(QString b)
+{
+  while ((b.length() > 3) && (b.mid(0, 3) == "##\t")) {
+    int index = b.find('\n', 3);
+
+    if (index == -1)
+      return QString::null;
+
+    b.remove(0, index + 1);
+  }
+
+  return b;
+}
+
 void OperationDialog::cpp_edit_body() {
-  edit(cppbody, edname->text().stripWhiteSpace() + "_body",
+  QString b;
+
+  if (add_operation_profile())
+    b = add_profile(showcppdef->text()) + cppbody;
+  else
+    b = cppbody;
+
+  edit(b, edname->text().stripWhiteSpace() + "_body",
        oper, CppEdit, this, (post_edit) post_cpp_edit_body, edits);
 }
 
 void OperationDialog::post_cpp_edit_body(OperationDialog * d, QString s)
 {
-  d->cppbody = s;
+  d->cppbody = (add_operation_profile()) ? remove_profile(s) : s;
 }
 
 // Java
@@ -1918,13 +1996,20 @@ QString OperationDialog::java_decl(const BrowserOperation * op)
 }
 
 void OperationDialog::java_edit_body() {
-  edit(javabody, edname->text().stripWhiteSpace() + "_body",
+  QString b;
+
+  if (add_operation_profile())
+    b = add_profile(showjavadef->text()) + javabody;
+  else
+    b = javabody;
+
+  edit(b, edname->text().stripWhiteSpace() + "_body",
        oper, JavaEdit, this, (post_edit) post_java_edit_body, edits);
 }
 
 void OperationDialog::post_java_edit_body(OperationDialog * d, QString s)
 {
-  d->javabody = s;
+  d->javabody = (add_operation_profile()) ? remove_profile(s) : s;
 }
 
 void OperationDialog::java_edit_annotation() {

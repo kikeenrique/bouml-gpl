@@ -50,6 +50,7 @@
 #include "ReferenceDialog.h"
 #include "UmlDrag.h"
 #include "DialogUtil.h"
+#include "BrowserView.h"
 #include "mu.h"
 
 IdDict<BrowserArtifact> BrowserArtifact::all(257);
@@ -174,10 +175,13 @@ QString BrowserArtifact::full_name(bool rev, bool) const {
     return p + "::" + name;
 }
 
-QString BrowserArtifact::get_path(QString path, const QString & root,
+QString BrowserArtifact::get_path(QString path, QString root,
 				   const char * ext) const {
-  QDir d_root(root);
+  if (QDir::isRelativePath(root))
+    root = BrowserView::get_dir().filePath(root);
   
+  QDir d_root(root);
+
   if (path.isEmpty())
     path = root;
   else if (QDir::isRelativePath(path))

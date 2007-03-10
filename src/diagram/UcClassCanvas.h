@@ -52,6 +52,7 @@ class UcClassCanvas : public QObject, public DiagramCanvas {
     virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     virtual bool has_relation(BasicData *) const; 
+    void draw_all_depend_gene(UcClassCanvas * end = 0);
     virtual bool move_with_its_package() const;
     virtual void apply_shortcut(QString s);
     

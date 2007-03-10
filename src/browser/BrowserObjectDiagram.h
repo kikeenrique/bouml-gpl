@@ -77,6 +77,8 @@ class BrowserObjectDiagram : public BrowserDiagram {
     virtual void package_settings(bool & name_in_tab, ShowContextMode & show_context) const;
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_shadow() const;
+    virtual bool get_draw_all_relations() const;
+    virtual void dont_draw_all_relations();
     virtual bool get_classinstwritehorizontally(UmlCode k) const;
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual bool api_compatible(unsigned v) const;

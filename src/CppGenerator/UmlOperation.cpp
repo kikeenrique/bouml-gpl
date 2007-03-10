@@ -497,7 +497,6 @@ void UmlOperation::generate_throw(QTextOStream & f) {
     f << " throw()";
 }
 
-// p0 is the beginning of the operation's def
 // p point to {space/tab}*${body}
 // indent is the one of the operation
 const char * UmlOperation::generate_body(QTextOStream & fs,
@@ -624,7 +623,7 @@ void UmlOperation::generate_def(QTextOStream & fs, QCString indent, bool h,
       while ((*p == ' ') || (*p == '\t'))
 	indent += *p++;
       
-      if (! templates.isEmpty())
+      bool re_template = !templates.isEmpty() &&
 	insert_template(p, fs, indent, 
 			(template_oper) ? templates_tmplop : templates);
       
@@ -639,8 +638,13 @@ void UmlOperation::generate_def(QTextOStream & fs, QCString indent, bool h,
 	  // comment management done
 	  p = pp;
 	  pp = 0;
+
+	  if (re_template)
+	    fs << ((template_oper) ? templates_tmplop : templates);
+
 	  if (*p == 0)
 	    break;
+
 	  if (*p != '#')
 	    fs << indent;
 	}

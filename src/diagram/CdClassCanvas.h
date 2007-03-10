@@ -69,7 +69,6 @@ class CdClassCanvas : public QObject, public DiagramCanvas,
     virtual void delete_it();
     
     void compute_size();
-    virtual BasicData * add_relation(UmlCode, DiagramItem *);
     virtual bool has_relation(BasicData *) const;
     void draw_all_relations(CdClassCanvas * end = 0);
     void draw_all_class_assoc();

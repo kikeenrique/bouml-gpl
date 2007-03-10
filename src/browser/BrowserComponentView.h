@@ -78,6 +78,7 @@ class BrowserComponentView : public BrowserNode, public Labeled<BrowserComponent
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_shadow(UmlCode) const;
+    virtual bool get_draw_all_relations(UmlCode) const;
     virtual bool get_auto_label_position(UmlCode who) const;
     virtual void save(QTextStream &, bool ref, QString & warning);
     

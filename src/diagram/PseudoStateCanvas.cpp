@@ -53,8 +53,12 @@ PseudoStateCanvas::PseudoStateCanvas(BrowserNode * bn, UmlCanvas * canvas,
    
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
-  if (browser_node->get_type() == ChoicePS)
-    connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
+  connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
+
+  if (canvas->must_draw_all_relations()) {
+    //draw_all_simple_relations();
+    draw_all_transitions();
+  }
 
   if (!bn->allow_empty()) {
     double zoom = canvas->zoom();
@@ -78,8 +82,7 @@ PseudoStateCanvas::~PseudoStateCanvas() {
 
 void PseudoStateCanvas::delete_it() {
   disconnect(browser_node->get_data(), 0, this, 0);
-  if (browser_node->get_type() == ChoicePS)
-    disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
+  disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
   
   DiagramCanvas::delete_it();
 }
@@ -159,6 +162,10 @@ void PseudoStateCanvas::modified() {
   show();
   update_show_lines();
   force_self_rel_visible();
+  if (the_canvas()->must_draw_all_relations()) {
+    //draw_all_simple_relations();
+    draw_all_transitions();
+  }
   canvas()->update();
   if (label != 0)
     label->set_name(browser_node->get_name());

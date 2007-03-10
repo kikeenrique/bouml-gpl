@@ -518,6 +518,10 @@ bool BrowserNode::get_shadow(UmlCode who) const {
   return ((BrowserNode *) parent())->get_shadow(who);
 }
 
+bool BrowserNode::get_draw_all_relations(UmlCode who) const {
+  return ((BrowserNode *) parent())->get_draw_all_relations(who);
+}
+
 UmlVisibility BrowserNode::get_visibility(UmlCode who) const {
   return ((BrowserNode *) parent())->get_visibility(who);
 }

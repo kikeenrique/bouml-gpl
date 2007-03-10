@@ -177,7 +177,6 @@ void UmlCanvas::unselect_all() {
   selected.clear();
 }
 
-#if 1
 void UmlCanvas::set_zoom(double zm) {
   do_scale = TRUE;
   zoom_value = zm;
@@ -222,67 +221,20 @@ void UmlCanvas::set_zoom(double zm) {
   
   update_limits();
 }
-#else
-void UmlCanvas::set_zoom(double zm) {
-  do_scale = TRUE;
-  zoom_value = zm;
-  
-  int ps = (int) (NormalFont.pointSize() * zm);
-  int ps_small = 2 * ps / 3;
-  int ps_large = 2 * ps;
-  
-  if (ps <= 0) ps = 1;
-  if (ps_small <= 0) ps_small = 1;
-  
-  the_fonts[UmlNormalFont] = NormalFont;
-  the_fonts[UmlNormalFont].setPointSize(ps);
-  the_fonts[UmlNormalBoldFont] = BoldFont;
-  the_fonts[UmlNormalBoldFont].setPointSize(ps);
-  the_fonts[UmlNormalItalicFont] = ItalicFont;
-  the_fonts[UmlNormalItalicFont].setPointSize(ps);
-  the_fonts[UmlNormalBoldItalicFont] = BoldItalicFont;
-  the_fonts[UmlNormalBoldItalicFont].setPointSize(ps);
-  the_fonts[UmlNormalUnderlinedFont] = UnderlineFont;
-  the_fonts[UmlNormalUnderlinedFont].setPointSize(ps);
-  the_fonts[UmlNormalStrikeOutFont] = StrikeOutFont;
-  the_fonts[UmlNormalStrikeOutFont].setPointSize(ps);
-  
-  the_fonts[UmlSmallFont] = NormalFont;
-  the_fonts[UmlSmallFont].setPointSize(ps_small);
-  the_fonts[UmlSmallBoldFont] = BoldFont;
-  the_fonts[UmlSmallBoldFont].setPointSize(ps_small);
-  the_fonts[UmlSmallItalicFont] = ItalicFont;
-  the_fonts[UmlSmallItalicFont].setPointSize(ps_small);
-  the_fonts[UmlSmallBoldItalicFont] = BoldItalicFont;
-  the_fonts[UmlSmallBoldItalicFont].setPointSize(ps_small);
-  
-  the_fonts[UmlLargeFont] = NormalFont;
-  the_fonts[UmlLargeFont].setPointSize(ps_large);
-  the_fonts[UmlLargeBoldFont] = BoldFont;
-  the_fonts[UmlLargeBoldFont].setPointSize(ps_large);
-  the_fonts[UmlLargeItalicFont] = ItalicFont;
-  the_fonts[UmlLargeItalicFont].setPointSize(ps_large);
-  the_fonts[UmlLargeBoldItalicFont] = BoldItalicFont;
-  the_fonts[UmlLargeBoldItalicFont].setPointSize(ps_large);
-  
-  QCanvas::resize((int) (width100percent * zm),
-		  (int) (height100percent * zm));
-  
-  update_limits();
-}
-#endif
 
 void UmlCanvas::show_limits(bool y) {
   vlimit->setVisible(y);
   hlimit->setVisible(y);
 }
 
-void UmlCanvas::update_all_shadow()
+void UmlCanvas::update_global_settings()
 {
   UmlCanvas * c;
   
-  for (c = All.first(); c != 0; c = All.next())
+  for (c = All.first(); c != 0; c = All.next()) {
     c->show_shadow = c->br_diagram->get_shadow();
+    c->draw_all_relations = c->br_diagram->get_draw_all_relations();
+  }
 }
 
 int UmlCanvas::shadow() const {
@@ -320,4 +272,10 @@ bool UmlCanvas::already_drawn(BrowserNode * bn) {
   }
 
   return FALSE;
+}
+
+
+void UmlCanvas::dont_draw_all_relations() {
+  draw_all_relations = FALSE;
+  browser_diagram()->dont_draw_all_relations();
 }

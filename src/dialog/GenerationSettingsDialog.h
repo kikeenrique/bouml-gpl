@@ -86,6 +86,7 @@ class GenerationSettingsDialog : public QTabDialog {
     LineEdit * edcpp_set_name;
     QCheckBox * cpp_set_inline_cb;
     QCheckBox * cpp_set_param_const_cb;
+    QCheckBox * cpp_set_param_ref_cb;
     MultiLineEdit * edcpp_oper_decl;
     MultiLineEdit * edcpp_oper_def;
     QCheckBox * cpp_force_throw_cb;
@@ -149,7 +150,10 @@ class GenerationSettingsDialog : public QTabDialog {
     // directories
     LineEdit * edcpproot;
     LineEdit * edjavaroot;  
-    LineEdit * edidlroot;    
+    LineEdit * edidlroot;
+    QPushButton * cpprelbutton;
+    QPushButton * javarelbutton;
+    QPushButton * idlrelbutton;
     
     static QSize previous_size;
   
@@ -174,6 +178,7 @@ class GenerationSettingsDialog : public QTabDialog {
     void init_idl4();
     void init_descriptions();
     void init_dirs();
+    void relative(LineEdit * ed, QPushButton * button);
     
   protected slots:
     virtual void polish();
@@ -181,6 +186,9 @@ class GenerationSettingsDialog : public QTabDialog {
     void cpproot_browse();
     void javaroot_browse();
     void idlroot_browse();
+    void cpp_relative();
+    void java_relative();
+    void idl_relative();
 };
 
 class TypesTable : public StringTable {

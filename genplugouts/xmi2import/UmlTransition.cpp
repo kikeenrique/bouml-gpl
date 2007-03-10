@@ -9,6 +9,7 @@
 void UmlTransition::init()
 {
   declareFct("transition", "uml:Transition", &importIt);
+  declareFct("transition", "", &importIt);  // Borland Together 2006 for Eclipse
 
   Trigger::init();
 }

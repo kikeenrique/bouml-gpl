@@ -65,15 +65,30 @@ static void create_directory(QCString s)
   }
 }
 
+static bool RootDirRead;
+static QCString RootDir;
+
 QCString UmlPackage::path(const QCString & f) {
   if (!read) {
     dir = idlDir();
     
-    QCString root = IdlSettings::rootDir();
-    QDir d_root(root);
+    if (! RootDirRead) {
+      RootDirRead = TRUE;
+      RootDir = IdlSettings::rootDir();
+
+      if (!RootDir.isEmpty() && // empty -> error
+	  QDir::isRelativePath(RootDir)) {
+	QFileInfo f(getProject()->supportFile());
+	QDir d(f.dirPath());
+
+	RootDir = d.filePath(RootDir);
+      }
+    }
+
+    QDir d_root(RootDir);
     
     if (dir.isEmpty())
-      dir = root;
+      dir = RootDir;
     else if (QDir::isRelativePath(dir))
       dir = d_root.filePath(dir);
 

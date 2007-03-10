@@ -199,6 +199,11 @@ enum OnInstanceCmd {
   setStreamCmd,
   setInStateCmd,
   setOrderingCmd,
+
+  // api 26
+  setCppFrozenCmd,
+  setJavaFrozenCmd,
+  setIdlFrozenCmd,
     
   getIdCmd = 254, // not in plug-outs managed through bouml
     
@@ -275,7 +280,9 @@ enum CppSettingsCmd {
   setCppIsSetParamConstCmd,
   // api 16
   setCppEnumReturnCmd,
-  setCppReturnCmd
+  setCppReturnCmd,
+  // api 26
+  setCppIsSetParamRefCmd
 };
 
 enum JavaSettingsCmd {

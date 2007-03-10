@@ -402,6 +402,21 @@ bool BrowserUseCaseDiagram::get_shadow() const {
   }  
 }
 
+bool BrowserUseCaseDiagram::get_draw_all_relations() const {
+  switch (settings.draw_all_relations) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_draw_all_relations(UmlUseCaseDiagram);
+  }  
+}
+
+void BrowserUseCaseDiagram::dont_draw_all_relations() {
+  settings.draw_all_relations = UmlNo;
+}
+
 bool BrowserUseCaseDiagram::get_auto_label_position(UmlCode who) const {
   switch (settings.auto_label_position) {
   case UmlYes:
@@ -564,6 +579,8 @@ BrowserUseCaseDiagram * BrowserUseCaseDiagram::read(char * & st, char * k,
     
     r->def->read(st, k);					// updates k
     r->settings.read(st, k);					// updates k
+    if (read_file_format() < 30)
+      r->settings.draw_all_relations = UmlNo;
     read_color(st, "note_color", r->note_color, k);		// updates k
     read_color(st, "usecase_color", r->usecase_color, k);	// updates k
     read_color(st, "package_color", r->package_color, k);	// updates k
