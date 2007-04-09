@@ -65,6 +65,8 @@ ExpansionRegionDialog::ExpansionRegionDialog(ExpansionRegionData * nd)
   
   BrowserNode * bn = data->get_browser_node();
   QGrid * grid = new QGrid(2, this);
+
+  umltab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
 
@@ -133,6 +135,11 @@ ExpansionRegionDialog::ExpansionRegionDialog(ExpansionRegionData * nd)
   
   kvtable = new KeyValuesTable(bn, grid, visit);
   addTab(grid, "Properties");
+  
+  //
+    
+  connect(this, SIGNAL(currentChanged(QWidget *)),
+	  this, SLOT(change_tabs(QWidget *)));
 }
 
 void ExpansionRegionDialog::polish() {
@@ -146,6 +153,11 @@ ExpansionRegionDialog::~ExpansionRegionDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+}
+    
+void ExpansionRegionDialog::change_tabs(QWidget * w) {
+  if (hasOkButton() && (w == umltab))
+    edname->setFocus();
 }
 
 void ExpansionRegionDialog::edit_description() {

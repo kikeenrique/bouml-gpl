@@ -542,6 +542,10 @@ void CdClassCanvas::draw(QPainter & p) {
   QFontMetrics fbim(the_canvas()->get_font(UmlNormalBoldItalicFont));
   QColor bckgrnd = p.backgroundColor();
   double zoom = the_canvas()->zoom();
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fputs("<g>\n", fp);
 
   p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
 
@@ -561,12 +565,37 @@ void CdClassCanvas::draw(QPainter & p) {
 	p.fillRect (r.left() + shadow, r.bottom(),
 		    r.width() - 1, shadow,
 		    QObject::darkGray);
+
+	if (fp != 0) {
+	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		  QObject::darkGray.rgb()&0xffffff,
+		  r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
+
+	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		  QObject::darkGray.rgb()&0xffffff,
+		  r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
+	}
       }
     }
     
     p.setBackgroundColor(co);
   
-    if (used_color != UmlTransparent) p.fillRect(r, co);
+    if (used_color != UmlTransparent) {
+      p.fillRect(r, co);
+
+      if (fp != 0)
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		co.rgb()&0xffffff, 
+		r.x(), r.y(), r.width() - 1, r.height() - 1);
+    }
+    else if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+
     p.drawRect(r);
   }
   
@@ -579,15 +608,15 @@ void CdClassCanvas::draw(QPainter & p) {
   
   switch (used_view_mode) {
   case asControl:
-    draw_control_icon(p, r, co, zoom);
+    draw_control_icon(p, r, used_color, zoom);
     r.setTop(r.top() + (int) (CONTROL_HEIGHT * zoom) + two);
     break;
   case asBoundary:
-    draw_boundary_icon(p, r, co, zoom);
+    draw_boundary_icon(p, r, used_color, zoom);
     r.setTop(r.top() + (int) (BOUNDARY_HEIGHT * zoom) + two);
     break;
   case asEntity:
-    draw_entity_icon(p, r, co, zoom);
+    draw_entity_icon(p, r, used_color, zoom);
     r.setTop(r.top() + (int) (ENTITY_SIZE * zoom) + two);
     break;
   case asActor:
@@ -608,6 +637,10 @@ void CdClassCanvas::draw(QPainter & p) {
       p.setFont(the_canvas()->get_font(UmlNormalFont));
       p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, 
 		 QString("<<") + toUnicode(data->get_stereotype()) + ">>");
+      if (fp != 0)
+	draw_text(r, QObject::AlignHCenter + QObject::AlignTop, 
+		  QString("<<") + toUnicode(data->get_stereotype()) + ">>",
+		  p.font(), fp);
       r.setTop(r.top() + he + two);
     }
   }
@@ -617,11 +650,20 @@ void CdClassCanvas::draw(QPainter & p) {
 	    ? the_canvas()->get_font(UmlNormalBoldItalicFont)
 	    : the_canvas()->get_font(UmlNormalBoldFont));
   p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, full_name);
+  if (fp != 0)
+    draw_text(r, QObject::AlignHCenter + QObject::AlignTop, full_name, p.font(), fp);
+
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   
   r.setTop(r.top() + he);
-  if (used_settings.hide_attributes != UmlYes)
+  if (used_settings.hide_attributes != UmlYes) {
     p.drawLine(r.topLeft(), r.topRight());
+
+    if (fp != 0)
+      fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	      r.left(), r.top(), r.right(), r.top());
+  }
   
   static const QString v[] = { "+", "#", "-", "~" };
   
@@ -663,11 +705,15 @@ void CdClassCanvas::draw(QPainter & p) {
 	  
 	  p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
 	  p.drawText(r, QObject::AlignLeft + QObject::AlignTop, v[vi]);
+	  if (fp != 0)
+	    draw_text(r, QObject::AlignLeft + QObject::AlignTop, v[vi], p.font(), fp);
 	  r.setLeft(left2);
 	}
 	p.setFont((data->get_isa_class_attribute()) ? the_canvas()->get_font(UmlNormalUnderlinedFont)
 						    : the_canvas()->get_font(UmlNormalFont));
 	p.drawText(r, QObject::AlignLeft + QObject::AlignTop, s);
+	if (fp != 0)
+	  draw_text(r, QObject::AlignLeft + QObject::AlignTop, s, p.font(), fp);
 	r.setTop(r.top() + he);
 	have = TRUE;
       }
@@ -678,8 +724,14 @@ void CdClassCanvas::draw(QPainter & p) {
   if (! have)
     r.setTop(r.top() + (int) (6 * zoom));
   
-  if (used_settings.hide_operations != UmlYes) 
+  if (used_settings.hide_operations != UmlYes) {
     p.drawLine(r.topLeft(), r.topRight());
+
+    if (fp != 0)
+      fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	      r.left(), r.top(), r.right(), r.top());
+  }
   
   r.setLeft(left1);
   r.setTop(r.top() + two);
@@ -708,6 +760,8 @@ void CdClassCanvas::draw(QPainter & p) {
 	    
 	    p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
 	    p.drawText(r, QObject::AlignLeft + QObject::AlignTop, v[vi]);
+	    if (fp != 0)
+	      draw_text(r, QObject::AlignLeft + QObject::AlignTop, v[vi], p.font(), fp);
 	    r.setLeft(left2);
 	  }
 	  if (data->get_isa_class_operation())
@@ -717,12 +771,17 @@ void CdClassCanvas::draw(QPainter & p) {
 	  else
 	    p.setFont(the_canvas()->get_font(UmlNormalFont));
 	  p.drawText(r, QObject::AlignLeft + QObject::AlignTop, s);
+	  if (fp != 0)
+	    draw_text(r, QObject::AlignLeft + QObject::AlignTop, s, p.font(), fp);
 	  r.setTop(r.top() + he);
 	}
       }
     }
   }
       
+  if (fp != 0)
+    fputs("</g>\n", fp);
+    
   p.setBackgroundColor(bckgrnd);
   
   if (selected())
@@ -846,8 +905,12 @@ void CdClassCanvas::menu(const QPoint&) {
   if (linked())
     m.insertItem("Select linked items",17);
   m.insertSeparator();
-  if (browser_node->is_writable())
+  if (browser_node->is_writable()) {
     m.insertItem("Set associated diagram",11);
+    
+    if (browser_node->get_associated())
+      m.insertItem("Remove diagram association",18);
+  }
   m.insertSeparator();
   m.insertItem("Remove from view",12);
   if (browser_node->is_writable())
@@ -929,6 +992,10 @@ void CdClassCanvas::menu(const QPoint&) {
   case 11:
     ((BrowserClass *) browser_node)->set_associated_diagram((BrowserClassDiagram *)
 							    the_canvas()->browser_diagram());
+    return;
+  case 18:
+    ((BrowserClass *) browser_node)
+      ->set_associated_diagram(0);
     return;
   case 12:
     //remove from view

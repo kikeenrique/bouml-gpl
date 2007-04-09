@@ -131,6 +131,11 @@ ActivityDialog::ActivityDialog(ActivityData * d)
   
   kvtable = new KeyValuesTable(bn, grid, visit);
   addTab(grid, "Properties");
+  
+  //
+    
+  connect(this, SIGNAL(currentChanged(QWidget *)),
+	  this, SLOT(change_tabs(QWidget *)));
 }
 
 void ActivityDialog::polish() {
@@ -144,6 +149,11 @@ ActivityDialog::~ActivityDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+}
+
+void ActivityDialog::change_tabs(QWidget *) {
+  if (!visit)
+    edname->setFocus();
 }
 
 void ActivityDialog::init_tab(CondDialog & d, InfoData & cd, const char * lbl) {

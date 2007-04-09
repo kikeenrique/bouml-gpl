@@ -166,6 +166,23 @@ const QPixmap* BrowserStateDiagram::pixmap(int) const {
   return (deletedp()) ? DeletedStateDiagramIcon : StateDiagramIcon;
 }
 
+void BrowserStateDiagram::draw_svg() const {
+  fputs("\t<rect fill=\"white\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" x=\"0\" y=\"0\" width=\"15\" height=\"15\" />\n"
+	"\t<path fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" "
+	"d=\"M 6 1 L 8 1 L 8 2 L 6 2 L 6 1 "
+	"M 7 2 L 7 7 "
+	"M 4 8 L 10 8 "
+	"M 2 10 L 4 8 "
+	"M 2 11 L 4 13 "
+	"M 12 10 L 10 8 "
+	"M 12 11 L 10 13 "
+	"M 4 13 L 10 13 "
+	"M 2 10 L 2 11 "
+	"M 12 10 L 12 11 "
+	"M 5 5 L 7 7 L 9 5\" />\n",
+	svg());
+}
+
 void BrowserStateDiagram::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
@@ -454,13 +471,13 @@ bool BrowserStateDiagram::tool_cmd(ToolCom * com, const char * args) {
     return TRUE;
   case saveInCmd:
     if (window != 0)
-      com->write_ack(window->get_view()->save_in(args, TRUE, FALSE));
+      com->write_ack(window->get_view()->save_pict(args, TRUE, FALSE));
     else {
       StateDiagramWindow * w = new StateDiagramWindow(full_name(), this);
       
-      com->write_ack(w->get_view()->save_in(args, 
-					    !w->get_view()->has_preferred_size_zoom(),
-					    TRUE));
+      com->write_ack(w->get_view()->save_pict(args, 
+					      !w->get_view()->has_preferred_size_zoom(),
+					      TRUE));
       w->dont_save();
       w->close(TRUE);
     }

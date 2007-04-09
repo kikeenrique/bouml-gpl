@@ -26,9 +26,10 @@
 #ifndef MYIO_H
 #define MYIO_H
 
+#include <stdio.h>
 #include "UmlEnum.h"
 
-#define FILEFORMAT 30
+#define FILEFORMAT 32
 
 class QDir;
 class QFile;
@@ -40,6 +41,10 @@ class QCanvasRectangle;
 class QBuffer;
 class QPoint;
 class QPointArray;
+class QColor;
+class QRect;
+class QFont;
+
 class DiagramItem;
 
 typedef struct {
@@ -58,7 +63,6 @@ extern void restore_context(ReadContext &);
 extern bool read_only_file();
 extern void set_read_only_file();
 extern void force_read_only(bool y);
-
 
 extern void backup(QDir & d, QString fn);
 extern void delete_backup(QDir & d);
@@ -138,5 +142,20 @@ extern double load_double(QBuffer &);
 
 extern void save(int, QBuffer &);
 extern void load(int &, QBuffer &);
+
+
+// svg
+
+extern bool start_svg(const char * f, int w, int h);
+extern void end_svg();
+extern FILE * svg();
+extern int svg_height();
+extern void draw_poly(FILE * fp, QPointArray & poly,
+		      const char * color, bool stroke = TRUE);
+extern void draw_poly(FILE * fp, QPointArray & poly,
+		      const QColor & color, bool stroke = TRUE);
+extern void draw_text(const QRect & r, int align, QString s, const QFont &, FILE *);
+extern void draw_text(int x, int y, int w, int h, int align, QString s, const QFont &, FILE *);
+
 
 #endif

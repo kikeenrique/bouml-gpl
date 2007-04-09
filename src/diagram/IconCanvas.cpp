@@ -83,6 +83,15 @@ void IconCanvas::draw(QPainter & p) {
     
   if (selected())
     show_mark(p, r);
+
+  FILE * fp = svg();
+  
+  if (fp != 0) {
+    fprintf(fp, "<g transform=\"translate(%d,%d)\">\n", 
+	    r.left(), r.top());
+    ((BrowserDiagram *) browser_node)->draw_svg();
+    fputs("</g>\n", fp);
+  }
 }
 
 void IconCanvas::change_scale() {

@@ -67,6 +67,7 @@ FlowDialog::FlowDialog(FlowData * d)
   //
   
   grid = new QGrid(2, this);
+  umltab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
   
@@ -117,6 +118,11 @@ FlowDialog::FlowDialog(FlowData * d)
   
   kvtable = new KeyValuesTable(bn, grid, visit);
   addTab(grid, "Properties");
+  
+  //
+    
+  connect(this, SIGNAL(currentChanged(QWidget *)),
+	  this, SLOT(change_tabs(QWidget *)));
 }
 
 void FlowDialog::polish() {
@@ -130,6 +136,11 @@ FlowDialog::~FlowDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+}
+    
+void FlowDialog::change_tabs(QWidget * w) {
+  if (hasOkButton() && (w == umltab))
+    edname->setFocus();
 }
 
 void FlowDialog::init_tab(FlDialog & d, FlowDef & st, const char * lbl,

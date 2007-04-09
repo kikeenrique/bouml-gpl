@@ -192,8 +192,14 @@ CpdContainCanvas * CpdContainCanvas::read(char * & st, UmlCanvas * canvas, char 
   else if (!strcmp(k, "containcanvas")) {
     int id = read_id(st);
     
-    return (CpdContainCanvas *)
+    CpdContainCanvas * result = (CpdContainCanvas *)
       read_list(st, canvas, UmlContain, id, &make);
+    
+    if (read_file_format() == 30)
+      // to remove redondant transitions made by release 2.22
+      RelsToCheck.append(result);
+    
+    return result;
   }
   else
     return 0;

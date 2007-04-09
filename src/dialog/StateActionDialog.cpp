@@ -95,10 +95,12 @@ StateActionDialog::StateActionDialog(StateActionData * d)
   addTab(grid, "Uml");
 
   // OCL
-  grid = new QGrid(1, this);	// !!
+  grid = new QGrid(2, this);
+  umltab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
   
+  new QLabel("behavior", grid);
   uml = new MultiLineEdit(grid);
   uml->setText(action->uml);
   if (visit)
@@ -107,10 +109,12 @@ StateActionDialog::StateActionDialog(StateActionData * d)
   addTab(grid, "Ocl");
 
   // CPP
-  grid = new QGrid(1, this);	// !!
+  grid = new QGrid(2, this);
+  cpptab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
   
+  new QLabel("behavior", grid);
   cpp = new MultiLineEdit(grid);
   cpp->setText(action->cpp);
   if (visit)
@@ -119,10 +123,12 @@ StateActionDialog::StateActionDialog(StateActionData * d)
   addTab(grid, "C++");
   
   // Java
-  grid = new QGrid(1, this);	// !!
+  grid = new QGrid(2, this);
+  javatab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
   
+  new QLabel("behavior", grid);
   java = new MultiLineEdit(grid);
   java->setText(action->java);
   if (visit)
@@ -138,7 +144,12 @@ StateActionDialog::StateActionDialog(StateActionData * d)
   
   kvtable = new KeyValuesTable(bn, grid, visit);
   addTab(grid, "Properties");
-				    }
+  
+  //
+    
+  connect(this, SIGNAL(currentChanged(QWidget *)),
+	  this, SLOT(change_tabs(QWidget *)));
+}
 
 StateActionDialog::~StateActionDialog() {
   action->browser_node->edit_end();
@@ -146,6 +157,17 @@ StateActionDialog::~StateActionDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+}
+
+void StateActionDialog::change_tabs(QWidget * w) {
+  if (!visit) {
+    if (w == umltab)
+      uml->setFocus();
+    else if (w == cpptab)
+      cpp->setFocus();
+    else if (w == javatab)
+      java->setFocus();
+  }
 }
 
 void StateActionDialog::polish() {

@@ -99,6 +99,15 @@ void FragmentSeparatorCanvas::drawShape(QPainter & p) {
 	     (int) fragment->x() + fragment->width() - 1, m);
   
   p.setPen(QObject::SolidLine);
+
+
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fprintf(fp, "<g>\n\t<line stroke=\"black\" stroke-dasharray=\"20,4\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n</g>\n",
+	    (int) fragment->x(), m,
+	    (int) fragment->x() + fragment->width() - 1, m);
   
   if (selected())
     show_mark(p, rect());

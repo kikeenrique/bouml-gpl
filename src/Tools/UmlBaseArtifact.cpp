@@ -1,35 +1,11 @@
-// *************************************************************************
-//
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
-//
-// This file is part of the BOUML Uml Toolkit.
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//
-// e-mail : bouml@free.fr
-// home   : http://bouml.free.fr
-//
-// *************************************************************************
 
-/* !!!!!!!!!! Do not modify this file !!!!!!!!!! */
-
+#include "UmlBaseArtifact.h"
 #include "UmlArtifact.h"
 #include "UmlDeploymentView.h"
+#include "UmlDeploymentDiagram.h"
 #include "UmlClass.h"
-#include "UmlCom.h"
 
+#include "UmlCom.h"
 UmlArtifact * UmlBaseArtifact::create(UmlDeploymentView * parent, const char * s)
 {
   return (UmlArtifact *) parent->create_(anArtifact, s);
@@ -46,9 +22,8 @@ UmlDeploymentDiagram * UmlBaseArtifact::associatedDiagram() {
 }
 
 bool UmlBaseArtifact::set_AssociatedDiagram(UmlDeploymentDiagram * d) {
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd,
-		   ((UmlBaseItem *) d)->_identifier);
-  if (UmlCom::read_ack()) {
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
   }
@@ -65,7 +40,7 @@ const QVector<UmlClass> & UmlBaseArtifact::associatedClasses() {
 bool UmlBaseArtifact::addAssociatedClass(UmlClass * cl) {
   UmlCom::send_cmd(_identifier, addAssocClassCmd,
 		   ((UmlBaseClass *) cl)->_identifier);
-  if (UmlCom::read_ack()) {
+  if (UmlCom::read_bool()) {
     if (_defined) {
       _assoc_classes.resize(_assoc_classes.size() + 1);
       _assoc_classes.insert(_assoc_classes.size() - 1, cl);
@@ -79,7 +54,7 @@ bool UmlBaseArtifact::addAssociatedClass(UmlClass * cl) {
 bool UmlBaseArtifact::removeAssociatedClass(UmlClass * cl) {
   UmlCom::send_cmd(_identifier, removeAssocClassCmd,
 		   ((UmlBaseClass *) cl)->_identifier);
-  if (UmlCom::read_ack()) {
+  if (UmlCom::read_bool()) {
     if (_defined) {
       unsigned index = (unsigned) _assoc_classes.findRef(cl);
       
@@ -101,8 +76,8 @@ bool UmlBaseArtifact::removeAssociatedClass(UmlClass * cl) {
 }
 
 bool UmlBaseArtifact::set_AssociatedClasses(const QVector<UmlClass> & l) {
-  UmlCom::send_cmd(_identifier, setAssocClassesCmd, l);
-  if (UmlCom::read_ack()) {
+  UmlCom::send_cmd(_identifier, setAssocClassesCmd, (const QVector<UmlItem> &) l);
+  if (UmlCom::read_bool()) {
     if (_defined)
       _assoc_classes = l;
     return TRUE;
@@ -120,7 +95,7 @@ const QVector<UmlArtifact> & UmlBaseArtifact::associatedArtifacts() {
 bool UmlBaseArtifact::addAssociatedArtifact(UmlArtifact * cp) {
   UmlCom::send_cmd(_identifier, addAssocArtifactCmd, 
 		   ((UmlBaseArtifact *) cp)->_identifier);
-  if (UmlCom::read_ack()) {
+  if (UmlCom::read_bool()) {
     if (_defined) {
       _associated.resize(_associated.size() + 1);
       _associated.insert(_associated.size() - 1, cp);
@@ -134,7 +109,7 @@ bool UmlBaseArtifact::addAssociatedArtifact(UmlArtifact * cp) {
 bool UmlBaseArtifact::removeAssociatedArtifact(UmlArtifact * cp) {
   UmlCom::send_cmd(_identifier, removeAssocArtifactCmd, 
 		   ((UmlBaseArtifact *) cp)->_identifier);
-  if (UmlCom::read_ack()) {
+  if (UmlCom::read_bool()) {
     if (_defined) {
       unsigned index = (unsigned) _associated.findRef(cp);
       
@@ -157,7 +132,7 @@ bool UmlBaseArtifact::removeAssociatedArtifact(UmlArtifact * cp) {
 
 bool UmlBaseArtifact::removeAllAssociatedArtifacts() {
   UmlCom::send_cmd(_identifier, removeAllAssocArtifactsCmd);
-  if (UmlCom::read_ack()) {  
+  if (UmlCom::read_bool()) {  
     _associated.clear();
     return TRUE;
   }
@@ -211,7 +186,6 @@ bool UmlBaseArtifact::set_IdlSource(const QCString & s) {
 }
 #endif
 
-
 void UmlBaseArtifact::unload(bool rec, bool del) {
   _assoc_classes.clear();
   _associated.clear();
@@ -228,9 +202,6 @@ void UmlBaseArtifact::unload(bool rec, bool del) {
   UmlBaseItem::unload(rec, del);
 }
 
-UmlBaseArtifact::UmlBaseArtifact(void * id, const QCString & n) : UmlItem(id, n) {
-}
-
 void UmlBaseArtifact::read_uml_() {
   _assoc_diagram = (UmlDeploymentDiagram *) UmlBaseItem::read_();
   UmlBaseItem::read_uml_();
@@ -240,7 +211,7 @@ void UmlBaseArtifact::read_uml_() {
   
   n = UmlCom::read_unsigned();
   _assoc_classes.resize(n);
-  
+    
   for (index = 0; index != n; index += 1)
     _assoc_classes.insert(index, (UmlClass *) UmlBaseItem::read_());
   

@@ -1,38 +1,14 @@
-// *************************************************************************
-//
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
-//
-// This file is part of the BOUML Uml Toolkit.
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//
-// e-mail : bouml@free.fr
-// home   : http://bouml.free.fr
-//
-// *************************************************************************
 
-/* !!!!!!!!!! Do not modify this file !!!!!!!!!! */
-
+#include "UmlBaseClass.h"
 #include "UmlClass.h"
-#include "UmlCom.h"
-#include "UmlPackage.h"
-#include "UmlRelation.h"
-#include "UmlSettings.h"
-#include "UmlArtifact.h"
+#include "UmlItem.h"
 #include "UmlClassDiagram.h"
+#include "UmlArtifact.h"
+#include "UmlComponent.h"
+#include "UmlPackage.h"
 
+#include "UmlCom.h"
+#include "ClassGlobalCmd.h"
 UmlClass * UmlBaseClass::create(UmlItem * parent, const char * s)
 {
   return (UmlClass *) parent->create_(aClass, s);
@@ -77,21 +53,21 @@ QValueList<UmlFormalParameter> UmlBaseClass::formals() {
   return formals;
 }
 
-bool UmlBaseClass::removeFormal(unsigned rank) {
+bool UmlBaseClass::removeFormal(unsigned int rank) {
   UmlCom::send_cmd(_identifier, removeFormalCmd, rank);
-  return UmlCom::read_ack();
+  return UmlCom::read_bool();
 }
 
-bool UmlBaseClass::addFormal(unsigned rank, const UmlFormalParameter & formal) {
+bool UmlBaseClass::addFormal(unsigned int rank, const UmlFormalParameter & formal) {
   UmlCom::send_cmd(_identifier, addFormalCmd, rank, formal._name, 
 		   formal._type, formal._default_value, formal._extends);
-  return UmlCom::read_ack();
+  return UmlCom::read_bool();
 }
 
-bool UmlBaseClass::replaceFormal(unsigned rank, const UmlFormalParameter & formal) {
+bool UmlBaseClass::replaceFormal(unsigned int rank, const UmlFormalParameter & formal) {
   UmlCom::send_cmd(_identifier, replaceFormalCmd, rank, formal._name, 
 		   formal._type, formal._default_value, formal._extends);
-  return UmlCom::read_ack();
+  return UmlCom::read_bool();
 }
 
 QValueList<UmlActualParameter> UmlBaseClass::actuals() {
@@ -109,9 +85,9 @@ QValueList<UmlActualParameter> UmlBaseClass::actuals() {
   return actuals;
 }
 
-bool UmlBaseClass::replaceActual(unsigned rank, const UmlTypeSpec & type) {
+bool UmlBaseClass::replaceActual(unsigned int rank, const UmlTypeSpec & type) {
   UmlCom::send_cmd(_identifier, replaceActualCmd, rank, type);
-  return UmlCom::read_ack();
+  return UmlCom::read_bool();
 }
 
 UmlClassDiagram * UmlBaseClass::associatedDiagram() {
@@ -122,12 +98,13 @@ UmlClassDiagram * UmlBaseClass::associatedDiagram() {
 
 bool UmlBaseClass::set_AssociatedDiagram(UmlClassDiagram * d) {
   UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
-  if (UmlCom::read_ack()) {
+  if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
   }
   else
     return FALSE;
+
 }
 
 UmlArtifact * UmlBaseClass::associatedArtifact() {
@@ -136,13 +113,27 @@ UmlArtifact * UmlBaseClass::associatedArtifact() {
   return (UmlArtifact *) UmlBaseItem::read_();
 }
 
+const QVector<UmlComponent> UmlBaseClass::associatedComponents() {
+  UmlCom::send_cmd(_identifier, assocComponentCmd);
+
+  QVector<UmlComponent> result;
+  unsigned n = UmlCom::read_unsigned();
+
+  result.resize(n);
+
+  for (unsigned index = 0; index != n; index += 1)
+    result.insert(index, (UmlComponent *) UmlBaseItem::read_());
+
+  return result;
+}
+
 #ifdef WITHCPP
 bool UmlBaseClass::isCppExternal() {
   read_if_needed_();
   
   return _cpp_external;
 }
-    
+
 bool UmlBaseClass::set_isCppExternal(bool y) {
   bool r;
   
@@ -161,7 +152,7 @@ bool UmlBaseClass::isJavaExternal() {
   
   return _java_external;
 }
-    
+
 bool UmlBaseClass::set_isJavaExternal(bool y) {
   bool r;
   
@@ -188,6 +179,7 @@ bool UmlBaseClass::set_isJavaPublic(bool y) {
   }
   else
     return FALSE;
+
 }
 
 bool UmlBaseClass::isJavaFinal() {
@@ -205,9 +197,10 @@ bool UmlBaseClass::set_isJavaFinal(bool y) {
   }
   else
     return FALSE;
+
 }
 #endif
-    
+
 #ifdef WITHIDL
 const UmlTypeSpec & UmlBaseClass::switchType() {
   read_if_needed_();
@@ -224,7 +217,7 @@ bool UmlBaseClass::isIdlExternal() {
   
   return _idl_external;
 }
-    
+
 bool UmlBaseClass::set_isIdlExternal(bool y) {
   bool r;
   
@@ -269,19 +262,18 @@ bool UmlBaseClass::set_isIdlCustom(bool y) {
   else
     return FALSE;
 }
-
 #endif
 
 UmlClass * UmlBaseClass::get(const QCString & n, const UmlPackage * p)
 {
   if (p == 0) {
-    UmlClass * x = classes[n];
+    UmlClass * x = _classes[n];
     
     if (x != 0)
       return x;
   }
   
-  UmlCom::send_cmd(classGlobalCmd, findClassCmd, 
+  UmlCom::send_cmd(classGlobalCmd, findClassCmd,
 		   (p) ? p->_identifier : 0, n);
   
   return (UmlClass *) UmlBaseItem::read_();
@@ -297,16 +289,35 @@ void UmlBaseClass::unload(bool rec, bool del) {
   UmlBaseClassItem::unload(rec, del);
 }
 
-QDict<UmlClass> UmlBaseClass::classes(1001);
+bool UmlBaseClass::set_Name(const QCString & s) {
+  if (!UmlBaseItem::set_Name(s))
+    return FALSE;
 
-UmlBaseClass::UmlBaseClass(void * id, const QCString & n)
+  const QVector<UmlItem> ch = children();
+  QCString destr = "~" + name();
+
+  for (unsigned i = 0; i != ch.size(); i += 1) {
+    if (ch[i]->kind() == anOperation) {
+      if (ch[i]->name() == name())
+	ch[i]->set_Name(s);
+      else if (ch[i]->name() == destr)
+	ch[i]->set_Name("~" + s);
+    }
+  }
+
+  return TRUE;
+}
+
+QDict<UmlClass> UmlBaseClass::_classes(1001);
+
+ UmlBaseClass::UmlBaseClass(void * id, const QCString & n) 
     : UmlClassMember(id, n) {
   _assoc_diagram = 0;
   
-  classes.insert(n, (UmlClass *) this);
+  _classes.insert(n, (UmlClass *) this);
   
-  if ((classes.count() / 2) >= classes.size())
-    classes.resize(classes.size() * 2 - 1);
+  if ((_classes.count() / 2) >= _classes.size())
+    _classes.resize(_classes.size() * 2 - 1);
 }
 
 void UmlBaseClass::read_uml_() {
@@ -330,7 +341,7 @@ void UmlBaseClass::read_cpp_() {
 
 #ifdef WITHJAVA
 void UmlBaseClass::read_java_() {
-  UmlBaseClassMember::read_java_();  
+  UmlBaseClassMember::read_java_();
   _java_public = UmlCom::read_bool();
   _java_final = UmlCom::read_bool();
   _java_external = UmlCom::read_bool();
@@ -349,7 +360,6 @@ void UmlBaseClass::read_idl_() {
 }
 #endif
 
-
 void UmlBaseClass::reread_if_needed_() {
   if (_defined) {
     UmlCom::send_cmd(_identifier, getUmlDefCmd);
@@ -357,21 +367,3 @@ void UmlBaseClass::reread_if_needed_() {
   }
 }
 
-void UmlBaseFormalParameter::read_() {
-  _name = UmlCom::read_string();
-  _type = UmlCom::read_string();
-  _default_value.type = (UmlClass *) UmlBaseItem::read_();
-  if (_default_value.type == 0)
-    _default_value.explicit_type = UmlCom::read_string();
-  _extends.type = (UmlClass *) UmlBaseItem::read_();
-  if (_extends.type == 0)
-    _extends.explicit_type = UmlCom::read_string();
-}
-
-void UmlBaseActualParameter::read_() {
-  _super = (UmlClass *) UmlBaseItem::read_();	// cannot be 0
-  _rank = UmlCom::read_unsigned();
-  _value.type = (UmlClass *) UmlBaseItem::read_();
-  if (_value.type == 0)
-    _value.explicit_type = UmlCom::read_string();
-}

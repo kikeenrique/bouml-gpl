@@ -227,18 +227,20 @@ void StateActionCanvas::draw(QPainter & p) {
 		      : QObject::OpaqueMode);
 
   QColor co = color(used_color);
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fputs("<g>\n", fp);
   
   p.setBackgroundColor(co);
   
-  if (used_color != UmlTransparent)
-    p.setBackgroundMode(QObject::OpaqueMode);
-  else
-    p.setBackgroundMode(QObject::TransparentMode);
+  p.setBackgroundMode((used_color != UmlTransparent)
+		      ? QObject::OpaqueMode
+		      : QObject::TransparentMode);
   
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   
   if (!strcmp(st, "send-signal")) {
-    const int hh = r.height()/2;
     QPointArray a(6);
   
     if ((used_color != UmlTransparent) && (shadow != 0)) {
@@ -246,6 +248,8 @@ void StateActionCanvas::draw(QPainter & p) {
       r.setBottom(r.bottom() - shadow);
     }
   
+    const int hh = r.height()/2;
+
     a.setPoint(0, r.left(), r.top());
     a.setPoint(1, r.right() - hh, r.top());
     a.setPoint(2, r.right(), r.top() + hh);
@@ -253,8 +257,11 @@ void StateActionCanvas::draw(QPainter & p) {
     a.setPoint(4, r.left(), r.bottom());
     a.setPoint(5, r.left(), r.top());
     
-    if (used_color == UmlTransparent)
+    if (used_color == UmlTransparent) {
       p.drawPolyline(a);
+      if (fp != 0)
+	draw_poly(fp, a, "none");
+    }
     else {
       if (shadow != 0) {
 	QPointArray b(6);
@@ -269,17 +276,22 @@ void StateActionCanvas::draw(QPainter & p) {
 	p.setPen(QObject::NoPen);
 	p.drawPolygon(b, TRUE, 0, 5);
 	p.setPen(QObject::SolidLine);
+
+	if (fp != 0)
+	  draw_poly(fp, b, QObject::darkGray, FALSE);
       }
       
       p.setBrush(co);
       p.drawPolygon(a, TRUE, 0, 5);
+
+      if (fp != 0)
+	draw_poly(fp, a, co);
     }
 
     r.setRight(r.right() - hh);
     mw -= hh;
   }
   else if (!strcmp(st, "receive-signal")) {
-    const int hh = r.height()/2;
     QPointArray a(6);
   
     if ((used_color != UmlTransparent) && (shadow != 0)) {
@@ -287,6 +299,8 @@ void StateActionCanvas::draw(QPainter & p) {
       r.setBottom(r.bottom() - shadow);
     }
   
+    const int hh = r.height()/2;
+
     a.setPoint(0, r.left(), r.top());
     a.setPoint(1, r.right(), r.top());
     a.setPoint(2, r.right() - hh, r.top() + hh);
@@ -294,8 +308,12 @@ void StateActionCanvas::draw(QPainter & p) {
     a.setPoint(4, r.left(), r.bottom());
     a.setPoint(5, r.left(), r.top());
     
-    if (used_color == UmlTransparent)
+    if (used_color == UmlTransparent) {
       p.drawPolyline(a);
+
+      if (fp != 0)
+	draw_poly(fp, a, "none");
+    }
     else {
       if (shadow != 0) {
 	QPointArray b(6);
@@ -310,34 +328,69 @@ void StateActionCanvas::draw(QPainter & p) {
 	p.setPen(QObject::NoPen);
 	p.drawPolygon(b, TRUE, 0, 5);
 	p.setPen(QObject::SolidLine);
+
+	if (fp != 0)
+	  draw_poly(fp, b, QObject::darkGray, FALSE);
       }
       
       p.setBrush(co);
       p.drawPolygon(a, TRUE, 0, 5);
+
+      if (fp != 0)
+	draw_poly(fp, a, co);
     }
 
     r.setRight(r.right() - hh);
     mw -= hh;
   }
   else {
-    if (shadow != 0) {
-      r.setRight(r.right() - shadow);
-      r.setBottom(r.bottom() - shadow);
+    if (used_color != UmlTransparent) {
+      if (shadow != 0) {
+	r.setRight(r.right() - shadow);
+	r.setBottom(r.bottom() - shadow);
       
-      p.fillRect (r.right(), r.top() + shadow,
-		  shadow, r.height() - 1,
-		  QObject::darkGray);
-      p.fillRect (r.left() + shadow, r.bottom(),
-		  r.width() - 1, shadow,
-		  QObject::darkGray);
+	p.fillRect (r.right(), r.top() + shadow,
+		    shadow, r.height() - 1,
+		    QObject::darkGray);
+	p.fillRect (r.left() + shadow, r.bottom(),
+		    r.width() - 1, shadow,
+		    QObject::darkGray);
+
+	if (fp != 0) {
+	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		  QObject::darkGray.rgb()&0xffffff,
+		  r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
+
+	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		  QObject::darkGray.rgb()&0xffffff,
+		  r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
+	}
+      }
     }
     
     p.setBrush(co);
     p.drawRect(r);
     
+    if (fp != 0) {
+      if (used_color != UmlTransparent)
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		co.rgb()&0xffffff, 
+		r.x(), r.y(), r.width() - 1, r.height() - 1);
+      else if (fp != 0)
+	fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		r.x(), r.y(), r.width() - 1, r.height() - 1);
+    }
+
     if (st[0] != 0) {
       r.setTop(r.top() + fm.height() / 2);
       p.drawText(r, QObject::AlignHCenter, QString("<<") + toUnicode(st) + ">>");
+      if (fp != 0)
+	draw_text(r, QObject::AlignHCenter, QString("<<") + toUnicode(st) + ">>",
+		  p.font(), fp);
       r.setTop(r.top() + 3*fm.height()/2);
     }
   }
@@ -346,7 +399,12 @@ void StateActionCanvas::draw(QPainter & p) {
 			+ (int) (8 * the_canvas()->zoom())
 			- mw)/2 + 1);
   p.drawText(r, QObject::AlignVCenter, s);
-  
+  if (fp != 0) {
+    draw_text(r, QObject::AlignVCenter, s,
+	      p.font(), fp);
+    fputs("</g>\n", fp);
+  }
+    
   p.setBackgroundColor(bckgrnd);
   p.setBrush(brsh);
   

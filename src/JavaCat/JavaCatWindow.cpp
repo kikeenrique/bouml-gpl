@@ -287,7 +287,7 @@ void JavaCatWindow::windows_style() {
 }
 
 void JavaCatWindow::about() {
-  QMessageBox::about(this, "Java Catalog", "<p>Version <b>2.1</b></p>" );
+  QMessageBox::about(this, "Java Catalog", "<p>Version <b>2.6</b></p>" );
 }
 
 void JavaCatWindow::aboutQt() {

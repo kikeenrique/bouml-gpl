@@ -40,8 +40,8 @@ class UmlItem : public UmlBaseItem {
     
     virtual void generate();
     virtual UmlPackage * package();
-    void manage_comment(const char *& p, const char *& pp);
-    void manage_description(const char *& p, const char *& pp);    
+    bool manage_comment(const char *& p, const char *& pp);
+    bool manage_description(const char *& p, const char *& pp);    
     void replace_alias(QCString & s);
     void manage_alias(const char *& p, QTextOStream & ts);
 };

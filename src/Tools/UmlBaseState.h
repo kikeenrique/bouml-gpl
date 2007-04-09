@@ -3,6 +3,7 @@
 
 
 #include "UmlItem.h"
+#include "anItemKind.h"
 #include <qcstring.h>
 #include "StateBehavior.h"
 
@@ -107,6 +108,11 @@ class UmlBaseState : public UmlItem {
 
     // returns the optional associated diagram
     UmlStateDiagram * associatedDiagram();
+
+    // sets the associated diagram, arg may be null to unset it
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_AssociatedDiagram(UmlStateDiagram * d);
 
     // to unload the object to free memory, it will be reloaded automatically
     // if needed. Recursively done for the sub items if 'rec' is TRUE. 

@@ -28,9 +28,9 @@
 
 #include "qstring.h"
 
-extern void manage_comment(QString comment, const char *& p,
+extern bool manage_comment(QString comment, const char *& p,
 			   const char *& pp);
-extern void manage_description(QString comment, const char *& p,
+extern bool manage_description(QString comment, const char *& p,
 			       const char *& pp);
 extern QString capitalize(const QString & s);
 extern QString true_name(const QString & name, const QString & decl);

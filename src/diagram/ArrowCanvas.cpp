@@ -188,8 +188,6 @@ void ArrowCanvas::update_pos() {
 		    : ((((int) (atan(float(dy)/dx)*(180/3.1415927*16)))+
 			((dx > 0) ? 90*16 : 270*16))
 		       % (360*16)));
-      // arc len*16
-      arrow[1].setY(180*16);
     }
     else {
       // end of line
@@ -315,6 +313,12 @@ void ArrowCanvas::drawShape(QPainter & p) {
   if (! visible()) return;
   
   p.setBackgroundMode(QObject::OpaqueMode);
+
+  FILE * fp = svg();
+  const char * dash = "";
+
+  if (fp != 0)
+    fputs("<g>\n", fp);
   
   switch (itstype) {
   case UmlDirectionalAggregation:
@@ -326,6 +330,15 @@ void ArrowCanvas::drawShape(QPainter & p) {
     if (end->type() != UmlArrowPoint) {
       p.drawLine(endp, arrow[0]);
       p.drawLine(endp, arrow[1]);
+
+      if (fp != 0) {
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		endp.x(), endp.y(), arrow[0].x(), arrow[0].y());
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		endp.x(), endp.y(), arrow[1].x(), arrow[1].y());
+      }
     }
     // no break
   case UmlAssociation:
@@ -334,6 +347,11 @@ void ArrowCanvas::drawShape(QPainter & p) {
   case UmlLink:
   case UmlObjectLink:
     p.drawLine(beginp, endp);
+    if (fp != 0)
+      fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	      beginp.x(), beginp.y(), endp.x(), endp.y());
+
     if (begin->type() != UmlArrowPoint) {
       switch (itstype) {
       case UmlAggregation:
@@ -344,6 +362,9 @@ void ArrowCanvas::drawShape(QPainter & p) {
 	  p.setBrush(white);
 	  p.drawPolygon(poly/*, TRUE*/);
 	  p.setBrush(brsh);
+
+	  if (fp != 0)
+	    draw_poly(fp, poly, "white");
 	}
 	break;
       case UmlAggregationByValue:
@@ -354,6 +375,9 @@ void ArrowCanvas::drawShape(QPainter & p) {
 	  p.setBrush(black);
 	  p.drawPolygon(poly/*, TRUE*/);
 	  p.setBrush(brsh);
+
+	  if (fp != 0)
+	    draw_poly(fp, poly, "black");
 	}      
 	break;
       default:	// to avoid compiler warning
@@ -366,13 +390,28 @@ void ArrowCanvas::drawShape(QPainter & p) {
     if (end->type() != UmlArrowPoint) {
       p.drawLine(endp, arrow[0]);
       p.drawLine(endp, arrow[1]);
+
+      if (fp != 0) {
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		endp.x(), endp.y(), arrow[0].x(), arrow[0].y());
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		endp.x(), endp.y(), arrow[1].x(), arrow[1].y());
+      }
     }
     p.setPen(QObject::DotLine);
     p.drawLine(beginp, endp);
     p.setPen(QObject::SolidLine);
+
+    if (fp != 0)
+      fprintf(fp, "\t<line stroke-dasharray=\"4,4\" stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	      beginp.x(), beginp.y(), endp.x(), endp.y());
     break;
   case UmlRealize:
     p.setPen(QObject::DotLine);
+    dash = "stroke-dasharray=\"4,4\" ";
     // no break
   case UmlGeneralisation:
   case UmlInherit:
@@ -382,27 +421,65 @@ void ArrowCanvas::drawShape(QPainter & p) {
       p.drawLine(endp, arrow[0]);
       p.drawLine(endp, arrow[1]);
       p.drawLine(arrow[0], arrow[1]);
+      if (fp != 0) {
+	fprintf(fp, "\t<line %sstroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		dash, beginp.x(), beginp.y(), arrow[2].x(), arrow[2].y());
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		endp.x(), endp.y(), arrow[0].x(), arrow[0].y());
+      	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		endp.x(), endp.y(), arrow[1].x(), arrow[1].y());
+      	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		arrow[0].x(), arrow[0].y(), arrow[1].x(), arrow[1].y());
+      }
     }
     else {
       p.drawLine(beginp, endp);
       p.setPen(QObject::SolidLine);
+      if (fp != 0)
+	fprintf(fp, "\t<line %sstroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		dash, beginp.x(), beginp.y(), endp.x(), endp.y());
     }
     break;
   case UmlAnchor:
     p.setPen(QObject::DotLine);
     p.drawLine(beginp, endp);
     p.setPen(QObject::SolidLine);
+
+    if (fp != 0)
+      fprintf(fp, "\t<line stroke-dasharray=\"4,4\" stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	      beginp.x(), beginp.y(), endp.x(), endp.y());
     break;
   case UmlRequired:
   case UmlProvided:
-    if (end->type() != UmlArrowPoint)
+    if (end->type() != UmlArrowPoint) {
       p.drawLine(beginp, arrow[0]);
-    else
+
+      if (fp != 0)
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		beginp.x(), beginp.y(), arrow[0].x(), arrow[0].y());
+    }
+    else {
       p.drawLine(beginp, endp);
+
+      if (fp != 0)
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		beginp.x(), beginp.y(),endp.x(), endp.y());
+    }
     break;
   default:	// to avoid compiler warning
     break;
   }
+
+  if (fp != 0)
+    fputs("</g>\n", fp);
   
   if (selected()) {
     p.fillRect(beginp.x() - SELECT_SQUARE_SIZE/2,
@@ -1447,4 +1524,39 @@ void ArrowCanvas::history_hide() {
   QCanvasPolygon::setVisible(FALSE);
   disconnect(DrawingSettings::instance(), SIGNAL(changed()),
 	     this, SLOT(drawing_settings_modified()));
+}
+
+//
+
+// to remove redondant relation made by release 2.22
+QList<ArrowCanvas> ArrowCanvas::RelsToCheck;
+
+void ArrowCanvas::remove_redondant_rels()
+{
+  QListIterator<ArrowCanvas> liter(RelsToCheck);
+  // the key is <source address>_<browser node address>_<target address>
+  QMap<QCString, ArrowCanvas *> arrows;
+  char s[128];
+  
+  for (;;) {
+    ArrowCanvas * r = liter.current();
+    
+    if (r == 0)
+      break;
+    
+    if (r->visible()) {
+      sprintf(s, "%lx_%lx_%lx", 
+	      (long) r->get_start(),
+	      (long) r->get_bn(),
+	      (long) r->get_end());
+      if (arrows.find(s) != arrows.end())
+	r->delete_it();
+      else
+	arrows.insert(s, r);
+    }
+    
+    ++liter;
+  }
+  
+  RelsToCheck.clear();
 }

@@ -286,13 +286,28 @@ void PinCanvas::draw(QPainter & p) {
 		      : QObject::OpaqueMode);
 
   QColor co = color(used_color);
+  QRect r = rect();
+  FILE * fp = svg();
   
   p.setBackgroundColor(co);
   
-  if (used_color != UmlTransparent) 
+  if (used_color != UmlTransparent) {
     p.setBrush(co);
-  
-  QRect r = rect();
+
+    if (fp != 0)
+      fprintf(fp, "<g>\n"
+	      "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n"
+	      "</g>\n",
+	      co.rgb()&0xffffff, 
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+  }
+  else if (fp != 0)
+    fprintf(fp, "<g>\n"
+	    "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n"
+	    "</g>\n",
+	    r.x(), r.y(), r.width() - 1, r.height() - 1);  
   
   p.drawRect(r);
       

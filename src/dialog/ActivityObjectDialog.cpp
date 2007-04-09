@@ -75,6 +75,7 @@ ActivityObjectDialog::ActivityObjectDialog(ActivityObjectData * d, const char * 
   // general tab
   
   grid = new QGrid(2, this);
+  umltab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
   
@@ -172,15 +173,15 @@ ActivityObjectDialog::ActivityObjectDialog(ActivityObjectData * d, const char * 
   addTab(grid, "Uml");
   
   // UML / OCL
-  init_tab(eduml_selection, data->uml_selection, "Ocl",
+  init_tab(ocltab, eduml_selection, data->uml_selection, "Ocl",
 	   SLOT(edit_uml_selection()));
 
   // C++
-  init_tab(edcpp_selection, data->cpp_selection, "C++",
+  init_tab(cpptab, edcpp_selection, data->cpp_selection, "C++",
 	   SLOT(edit_cpp_selection()));
 
   // Java
-  init_tab(edjava_selection, data->java_selection, "Java",
+  init_tab(javatab, edjava_selection, data->java_selection, "Java",
 	   SLOT(edit_java_selection()));
   
   // USER : list key - value
@@ -191,6 +192,11 @@ ActivityObjectDialog::ActivityObjectDialog(ActivityObjectData * d, const char * 
   
   kvtable = new KeyValuesTable(data->browser_node, grid, visit);
   addTab(grid, "Properties");
+  
+  //
+    
+  connect(this, SIGNAL(currentChanged(QWidget *)),
+	  this, SLOT(change_tabs(QWidget *)));
 }
 
 void ActivityObjectDialog::polish() {
@@ -206,11 +212,26 @@ ActivityObjectDialog::~ActivityObjectDialog() {
     edits.take(0)->close();
 }
 
-void ActivityObjectDialog::init_tab(MultiLineEdit *& ed, const char * v,
-				    const char * lbl, const char * sl) {
+void ActivityObjectDialog::change_tabs(QWidget * w) {
+  if (! visit) {
+    if (w == umltab)
+      edname->setFocus();
+    else if (w == ocltab)
+      eduml_selection->setFocus();
+    else if (w == cpptab)
+      edcpp_selection->setFocus();
+    else if (w == javatab)
+      edjava_selection->setFocus();
+  }
+}
+
+void ActivityObjectDialog::init_tab(QWidget *& w, MultiLineEdit *& ed, 
+				    const char * v, const char * lbl,
+				    const char * sl) {
   bool visit = !hasOkButton();
   QGrid * grid = new QGrid(2, this);
 
+  w = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
   

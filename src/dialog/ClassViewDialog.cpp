@@ -65,6 +65,8 @@ ClassViewDialog::ClassViewDialog(BasicData * nd)
   
   BrowserClassView * bn = (BrowserClassView *) data->get_browser_node();
   QGrid * grid = new QGrid(2, this);
+
+  umltab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
 
@@ -152,7 +154,12 @@ ClassViewDialog::ClassViewDialog(BasicData * nd)
   
   kvtable = new KeyValuesTable(bn, grid, visit);
   addTab(grid, "Properties");
-					   }
+  
+  //
+    
+  connect(this, SIGNAL(currentChanged(QWidget *)),
+	  this, SLOT(change_tabs(QWidget *)));
+}
 
 void ClassViewDialog::polish() {
   QTabDialog::polish();
@@ -165,6 +172,11 @@ ClassViewDialog::~ClassViewDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+}
+
+void ClassViewDialog::change_tabs(QWidget * w) {
+  if (hasOkButton() && (w == umltab))
+    edname->setFocus();
 }
 
 void ClassViewDialog::edit_description() {

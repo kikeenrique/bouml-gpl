@@ -61,6 +61,7 @@ class LabelCanvas : public QCanvasText, public DiagramItem {
     void set_name(const QString &);
     
     void set_strikeout(bool yes);
+    void set_underlined(bool yes);
     
     void move_outside(QRect r, double angle);
     

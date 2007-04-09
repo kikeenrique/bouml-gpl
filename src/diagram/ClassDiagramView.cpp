@@ -197,7 +197,11 @@ void ClassDiagramView::dragEnterEvent(QDragEnterEvent * e) {
        UmlDrag::canDecode(e, UmlColDiagram, FALSE, TRUE) ||
        UmlDrag::canDecode(e, UmlObjectDiagram, FALSE, TRUE) ||
        UmlDrag::canDecode(e, UmlComponentDiagram, FALSE, TRUE) ||
-       UmlDrag::canDecode(e, UmlDeploymentDiagram, FALSE, TRUE)))
+       UmlDrag::canDecode(e, UmlDeploymentDiagram, FALSE, TRUE) ||
+       UmlDrag::canDecode(e, UmlActivityDiagram, TRUE, TRUE) ||
+       UmlDrag::canDecode(e, UmlStateDiagram, TRUE, TRUE) ||
+       UmlDrag::canDecode(e, UmlActivityDiagram, TRUE, TRUE) ||
+       UmlDrag::canDecode(e, UmlStateDiagram, TRUE, TRUE)))
     e->accept();
   else
     e->ignore();
@@ -255,7 +259,9 @@ void ClassDiagramView::dropEvent(QDropEvent * e) {
 	   ((bn = UmlDrag::decode(e, UmlColDiagram)) != 0) ||
 	   ((bn = UmlDrag::decode(e, UmlObjectDiagram)) != 0) ||
 	   ((bn = UmlDrag::decode(e, UmlComponentDiagram)) != 0) ||
-	   ((bn = UmlDrag::decode(e, UmlDeploymentDiagram)) != 0)) {
+	   ((bn = UmlDrag::decode(e, UmlDeploymentDiagram)) != 0) ||
+	   ((bn = UmlDrag::decode(e, UmlStateDiagram, TRUE)) != 0) ||
+	   ((bn = UmlDrag::decode(e, UmlActivityDiagram, TRUE)) != 0)) {
     history_save();
     
     IconCanvas * ic = new IconCanvas(bn, the_canvas(), p.x(), p.y(), 0);

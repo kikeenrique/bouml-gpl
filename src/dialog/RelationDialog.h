@@ -109,6 +109,10 @@ class RelationDialog : public QTabDialog {
     
   protected:
     // Uml
+    QWidget * umltab;
+    QWidget * cpptab;
+    QWidget * javatab;
+    QWidget * idltab;
     RelationData * rel;
     LineEdit * edname;
     QComboBox * edtype;
@@ -189,7 +193,7 @@ class RelationDialog : public QTabDialog {
     void idl_unmapped_a();
     void idl_default_b();
     void idl_unmapped_b();
-    void update_all_tabs();
+    void update_all_tabs(QWidget *);
 };
 
 #endif

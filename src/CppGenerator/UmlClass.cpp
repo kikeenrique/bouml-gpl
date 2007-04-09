@@ -354,23 +354,6 @@ void UmlClass::generate_decl(aVisibility & current_visibility, QTextOStream & f_
   f_h << '\n';
 }
 
-void UmlFormalParameter::generate(QTextOStream & f_h, const char *& sep1,
-				  const char *& sep2) const {
-  f_h << sep1 << type() << ' ' << name();
-      
-  if (! defaultValue().toString().isEmpty()) {
-    f_h << " = ";
-    UmlClass::write(f_h, defaultValue());
-  }
-  
-  sep2 = sep1 = ", ";
-}
-
-void UmlActualParameter::generate(QTextOStream & f_h) const {
-  f_h << ((rank() == 0) ? "<" : ", ");
-  UmlClass::write(f_h, value());
-}
-
 void UmlClass::generate_def(QTextOStream & f, QCString indent, bool h) {
   if (! cppDecl().isEmpty()) {
     QVector<UmlItem> ch = children();
@@ -543,7 +526,8 @@ void UmlClass::write(QTextOStream & f, bool with_formals) {
 		       ((cp != 0) ? (UmlItem *) cp : (UmlItem *) this)->package())
 	->cppNamespace();
       
-      if (nasp != UmlArtifact::generation_package()->cppNamespace())
+      if (CppSettings::isForceNamespacePrefixGeneration() ||
+	  (nasp != UmlArtifact::generation_package()->cppNamespace()))
 	f << nasp << "::";
     }
     

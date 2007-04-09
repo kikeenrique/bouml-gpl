@@ -87,9 +87,16 @@ void UcClassCanvas::draw(QPainter & p) {
   p.setBackgroundMode(QObject::OpaqueMode);
   
   QRect r = rect();
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fputs("<g>\n", fp);
   
   draw_actor(&p, r);
   
+  if (fp != 0)
+    fputs("</g>\n", fp);
+
   if (selected())
     show_mark(p, r);
 }

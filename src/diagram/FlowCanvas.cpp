@@ -810,8 +810,12 @@ FlowCanvas * FlowCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       connect(tr, SIGNAL(changed()), result, SLOT(modified()));
       connect(tr, SIGNAL(deleted()), result, SLOT(deleted()));
 
-      if (first == 0)
+      if (first == 0) {
 	first = result;
+	if (read_file_format() == 30)
+	  // to remove redondant relation made by release 2.22
+	  RelsToCheck.append(result);
+      }
       if (label != 0)
 	result->label = label;
       if (stereotype != 0)

@@ -1,59 +1,63 @@
-format 26
-"API USER"
-  revision 1
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+format 30
+"API USER" // API USER
+  revision 4
+  modified_by 2 "bruno"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default shadow default
+  show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
   //object diagram settings
-   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
   show_activities default region_horizontally default drawing_language default
   //activity diagram settings
-  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
   show_infonote default drawing_language default
   
   comment " 'your' API classes and components, modify them !"
   classview 385 "API USER class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
     //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
-     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default shadow default
+    show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
     show_activities default region_horizontally default drawing_language default
-    //class settings//activity diagram settings
-    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
     
     associated_deployment_view deploymentview_ref 385 // API USER Deployment view
     comment " 'your' API classes, modify them !"
     classdiagram 129 "Inheritance Diagram of classes for Package and Views"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
       size A2
     end
 
     classdiagram 257 "Inheritance Diagram of classes for Diagrams"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
       size A2
     end
 
     classdiagram 513 "Inheritance Diagram of classes for Classes"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
       size A4
     end
 
@@ -1711,10 +1715,7 @@ ${members}};
       idl_decl ""
       explicit_switch_type ""
       
-      comment " This class allows to manage extra class member, mainly defined fot C++
- it allows to insert C++ pre-processor directive (even they may be placed
- in the other member definition/declaration), to declare friend
- operation/function etc...
+      comment " This class allows to manage diagram
 
  You can modify it as you want (except the constructor)"
       classrelation 16385 // <generalisation>
@@ -2509,6 +2510,16 @@ ${body}}
       end
 
       attribute 128514 "flat"
+	class_attribute protected explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+	comment "true => use SVG picture rather than PNG"
+      end
+
+      attribute 129410 "svg"
 	class_attribute protected explicit_type "bool"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -7379,7 +7390,7 @@ path, rank in the mother and level in the browser tree"
 
   deploymentview 385 "API USER Deployment view"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     comment "'your' API artifacts modify them !
 
@@ -7387,167 +7398,167 @@ Do not forget to modify Main !"
     artifact 4737 "executable"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 131458 // UmlDeepHistoryPseudoState
-	artifact_ref 132352 // UmlBaseForkPseudoState
-	artifact_ref 130304 // UmlBaseEntryPointPseudoState
-	artifact_ref 132096 // UmlBaseChoicePseudoState
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 7169 // UmlItem
-	artifact_ref 129408 // UmlBaseRegion
-	artifact_ref 138242 // UmlActivityParameter
-	artifact_ref 130560 // UmlBaseFinalState
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 136706 // UmlActivityControlNodeClasses
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 135040 // UmlBaseInterruptibleActivityRegion
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 131840 // UmlBaseJunctionPseudoState
-	artifact_ref 137986 // UmlActivityPin
-	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 130434 // UmlEntryPointPseudoState
-	artifact_ref 132482 // UmlForkPseudoState
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 136064 // UmlBaseAccessVariableValueAction
-	artifact_ref 129794 // UmlStateAction
-	artifact_ref 768 // CppSettings
-	artifact_ref 4865 // Main
-	artifact_ref 135296 // UmlBaseActivityAction
-	artifact_ref 131970 // UmlJunctionPseudoState
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 128384 // UmlBaseState
-	artifact_ref 137856 // UmlBaseActivityPin
-	artifact_ref 128896 // StateBehavior
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 137346 // UmlExpansionNode
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 133504 // UmlBaseActivityDiagram
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 136832 // UmlBaseActivityObject
-	artifact_ref 134400 // UmlBaseActivityRegion
-	artifact_ref 130178 // UmlInitialPseudoState
-	artifact_ref 132226 // UmlChoicePseudoState
-	artifact_ref 133378 // UmlActivity
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 138368 // UmlBaseParameterSet
-	artifact_ref 132738 // UmlJoinPseudoState
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 129664 // UmlBaseStateAction
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 128770 // UmlStateDiagram
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 129922 // UmlPseudoState
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 134530 // UmlActivityRegion
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 128640 // UmlBaseStateDiagram
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 132864 // UmlBaseObjectDiagram
-	artifact_ref 137216 // UmlBaseExpansionNode
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 134912 // anExpansionKind
-	artifact_ref 134016 // UmlBaseFlow
-	artifact_ref 134146 // UmlFlow
 	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 138498 // UmlParameterSet
+	artifact_ref 3456 // UmlBaseNode
 	artifact_ref 136194 // UmlAccessVariableValueAction
-	artifact_ref 128036 // Vector
-	artifact_ref 132608 // UmlBaseJoinPseudoState
-	artifact_ref 137602 // UmlPinParameter
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 135682 // UmlActivityActionClasses
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 137088 // anOrdering
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 136576 // UmlBaseActivityControlNodeClasses
-	artifact_ref 134272 // FlowBehavior
-	artifact_ref 135426 // UmlActivityAction
-	artifact_ref 128180 // UmlNcRelation
-	artifact_ref 136320 // UmlBaseActivityControlNode
-	artifact_ref 129154 // UmlTransition
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 135552 // UmlBaseActivityActionClasses
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 4992 // aVisibility
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 129538 // UmlRegion
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 128258 // UmlStateItem
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 135170 // UmlInterruptibleActivityRegion
-	artifact_ref 137472 // UmlBasePinParameter
-	artifact_ref 4480 // UmlCom
-	artifact_ref 136450 // UmlActivityControlNode
-	artifact_ref 4864 // aDirection
-	artifact_ref 5633 // UmlClass
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 131584 // UmlBaseShallowHistoryPseudoState
-	artifact_ref 136962 // UmlActivityObject
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 133122 // UmlActivityItem
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 128164 // FileWriter
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 130816 // UmlBaseTerminatePseudoState
-	artifact_ref 131072 // UmlBaseExitPointPseudoState
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 130946 // UmlTerminatePseudoState
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 134786 // UmlExpansionRegion
-	artifact_ref 135808 // UmlBaseOnSignalAction
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 129024 // UmlBaseTransition
-	artifact_ref 131714 // UmlShallowHistoryPseudoState
-	artifact_ref 135938 // UmlOnSignalAction
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 134656 // UmlBaseExpansionRegion
-	artifact_ref 130690 // UmlFinalState
-	artifact_ref 131328 // UmlBaseDeepHistoryPseudoState
-	artifact_ref 131202 // UmlExitPointPseudoState
-	artifact_ref 128514 // UmlState
-	artifact_ref 128130 // ConfirmBox
-	artifact_ref 133248 // UmlBaseActivity
-	artifact_ref 6529 // UmlComponentView
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 137728 // aParameterEffectKind
-	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 133378 // UmlActivity
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 4993 // UmlActualParameter
 	artifact_ref 138112 // UmlBaseActivityParameter
-	artifact_ref 133760 // UmlBaseActivityNode
-	artifact_ref 133634 // UmlActivityDiagram
-	artifact_ref 7297 // UmlNode
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 132994 // UmlObjectDiagram
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 131584 // UmlBaseShallowHistoryPseudoState
+	artifact_ref 130560 // UmlBaseFinalState
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 130434 // UmlEntryPointPseudoState
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 129024 // UmlBaseTransition
+	artifact_ref 137088 // anOrdering
+	artifact_ref 133504 // UmlBaseActivityDiagram
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 5633 // UmlClass
+	artifact_ref 4608 // UmlSettings
 	artifact_ref 5120 // anItemKind
-	artifact_ref 130048 // UmlBaseInitialPseudoState
+	artifact_ref 138368 // UmlBaseParameterSet
+	artifact_ref 128896 // StateBehavior
+	artifact_ref 135296 // UmlBaseActivityAction
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 131202 // UmlExitPointPseudoState
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 131970 // UmlJunctionPseudoState
+	artifact_ref 128770 // UmlStateDiagram
+	artifact_ref 133760 // UmlBaseActivityNode
+	artifact_ref 135808 // UmlBaseOnSignalAction
+	artifact_ref 137216 // UmlBaseExpansionNode
+	artifact_ref 132864 // UmlBaseObjectDiagram
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 128384 // UmlBaseState
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 135682 // UmlActivityActionClasses
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 137346 // UmlExpansionNode
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 7553 // UmlPackage
 	artifact_ref 129280 // TransitionBehavior
-	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 132738 // UmlJoinPseudoState
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 130178 // UmlInitialPseudoState
+	artifact_ref 132994 // UmlObjectDiagram
+	artifact_ref 129922 // UmlPseudoState
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 4865 // Main
+	artifact_ref 131328 // UmlBaseDeepHistoryPseudoState
+	artifact_ref 132608 // UmlBaseJoinPseudoState
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 134786 // UmlExpansionRegion
+	artifact_ref 136706 // UmlActivityControlNodeClasses
+	artifact_ref 128180 // UmlNcRelation
+	artifact_ref 130048 // UmlBaseInitialPseudoState
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 6528 // UmlBuiltin
 	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 128514 // UmlState
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 133634 // UmlActivityDiagram
+	artifact_ref 136450 // UmlActivityControlNode
+	artifact_ref 129154 // UmlTransition
+	artifact_ref 134656 // UmlBaseExpansionRegion
+	artifact_ref 131072 // UmlBaseExitPointPseudoState
+	artifact_ref 130816 // UmlBaseTerminatePseudoState
+	artifact_ref 132352 // UmlBaseForkPseudoState
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 131714 // UmlShallowHistoryPseudoState
+	artifact_ref 136962 // UmlActivityObject
+	artifact_ref 4992 // aVisibility
+	artifact_ref 134272 // FlowBehavior
+	artifact_ref 136576 // UmlBaseActivityControlNodeClasses
+	artifact_ref 131840 // UmlBaseJunctionPseudoState
+	artifact_ref 135040 // UmlBaseInterruptibleActivityRegion
+	artifact_ref 138498 // UmlParameterSet
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 137728 // aParameterEffectKind
+	artifact_ref 136832 // UmlBaseActivityObject
+	artifact_ref 129794 // UmlStateAction
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 137602 // UmlPinParameter
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 135426 // UmlActivityAction
+	artifact_ref 4480 // UmlCom
+	artifact_ref 132226 // UmlChoicePseudoState
+	artifact_ref 136320 // UmlBaseActivityControlNode
+	artifact_ref 132482 // UmlForkPseudoState
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 133248 // UmlBaseActivity
+	artifact_ref 134912 // anExpansionKind
+	artifact_ref 134400 // UmlBaseActivityRegion
+	artifact_ref 137856 // UmlBaseActivityPin
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 128164 // FileWriter
+	artifact_ref 130690 // UmlFinalState
+	artifact_ref 128640 // UmlBaseStateDiagram
+	artifact_ref 131458 // UmlDeepHistoryPseudoState
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 7297 // UmlNode
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 135552 // UmlBaseActivityActionClasses
+	artifact_ref 136064 // UmlBaseAccessVariableValueAction
+	artifact_ref 132096 // UmlBaseChoicePseudoState
+	artifact_ref 130304 // UmlBaseEntryPointPseudoState
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 135938 // UmlOnSignalAction
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 129538 // UmlRegion
+	artifact_ref 137986 // UmlActivityPin
+	artifact_ref 4864 // aDirection
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 129408 // UmlBaseRegion
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 128258 // UmlStateItem
+	artifact_ref 128130 // ConfirmBox
+	artifact_ref 138242 // UmlActivityParameter
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 135170 // UmlInterruptibleActivityRegion
+	artifact_ref 128036 // Vector
 	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 137472 // UmlBasePinParameter
+	artifact_ref 134016 // UmlBaseFlow
+	artifact_ref 133122 // UmlActivityItem
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 130946 // UmlTerminatePseudoState
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 134530 // UmlActivityRegion
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 129664 // UmlBaseStateAction
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 7169 // UmlItem
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 768 // CppSettings
+	artifact_ref 134146 // UmlFlow
 	artifact_ref 133890 // UmlActivityNode
       end
       ncouples 9
@@ -7585,7 +7596,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[argc - 1]).toUInt())) {
     try {
-      UmlCom::trace(\"<b>Html generator</b> release 2.6.2 (C++ version)<br />\");
+      UmlCom::trace(\"<b>Html generator</b> release 2.6.3 (C++ version)<br />\");
 
       UmlItem * target = UmlCom::targetItem();
 
@@ -7626,7 +7637,7 @@ class Main {
       UmlCom.connect(Integer.valueOf(argv[argv.length - 1]).intValue());
 
       try {
-        UmlCom.trace(\"<b>Html generator</b> release 2.6.2 (Java version)<br />\");
+        UmlCom.trace(\"<b>Html generator</b> release 2.6.3 (Java version)<br />\");
 
         UmlItem target = UmlCom.targetItem();
  try {

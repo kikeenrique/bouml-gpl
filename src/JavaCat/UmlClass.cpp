@@ -33,11 +33,6 @@
 #include "Class.h"
 #endif
 
-UmlFormalParameter::UmlFormalParameter(QCString n, const UmlTypeSpec & e) {
-  _name = n;
-  _extends = e;
-}
-
 UmlClass::UmlClass(void * id, const QCString & n) 
     : UmlBaseClass(id, n) {
 }

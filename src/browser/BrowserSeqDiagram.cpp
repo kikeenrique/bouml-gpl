@@ -167,6 +167,24 @@ const QPixmap* BrowserSeqDiagram::pixmap(int) const {
   return (deletedp()) ? DeletedSeqDiagramIcon : SeqDiagramIcon;
 }
 
+void BrowserSeqDiagram::draw_svg() const {
+  fputs("\t<rect fill=\"white\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" x=\"0\" y=\"0\" width=\"15\" height=\"15\" />\n"
+	"\t<path fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" "
+	"d=\"M 1 1 L 5 1 L 5 4 L 1 4 L 1 1 "
+	"M 9 1 L 13 1 L 13 4 L 9 4 L 9 1 "
+	"M 2 6 L 4 6 L 4 12 L 2 12 L 2 6 "
+	"M 10 6 L 12 6 L 12 9 L 10 9 L 10 6 "
+	"M 3 4 L 3 6 "
+	"M 11 4 L 11 6 "
+	"M 11 9 L 11 12 "
+	"M 7 5 L 9 7 L 7 9 "
+	"M 3 14 L 3 15 "
+	"M 11 14 L 11 15 "
+	"M 4 7 L 9 7 "
+	"M 4 11 L 15 11\" />\n",
+	svg());
+}
+
 void BrowserSeqDiagram::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
@@ -436,13 +454,13 @@ bool BrowserSeqDiagram::tool_cmd(ToolCom * com, const char * args) {
     return TRUE;
   case saveInCmd:
     if (window != 0)
-      com->write_ack(window->get_view()->save_in(args, TRUE, FALSE));
+      com->write_ack(window->get_view()->save_pict(args, TRUE, FALSE));
     else {
       SeqDiagramWindow * w = new SeqDiagramWindow(full_name(), this);
       
-      com->write_ack(w->get_view()->save_in(args, 
-					    !w->get_view()->has_preferred_size_zoom(),
-					    TRUE));
+      com->write_ack(w->get_view()->save_pict(args, 
+					     !w->get_view()->has_preferred_size_zoom(),
+					     TRUE));
       w->dont_save();
       w->close(TRUE);
     }

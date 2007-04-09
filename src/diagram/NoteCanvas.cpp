@@ -90,10 +90,18 @@ void NoteCanvas::draw(QPainter & p) {
   a.setPoint(5, r.left(), r.bottom());
   a.setPoint(6, r.left(), r.top());
   
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fputs("<g>\n", fp);
+
   if (c == UmlTransparent) {
     p.setBackgroundMode(QObject::TransparentMode);
     p.setBackgroundColor(co);
     p.drawPolyline(a);
+
+    if (fp != 0)
+      draw_poly(fp, a, "none");
   }
   else {
     p.setBackgroundMode(QObject::OpaqueMode);
@@ -101,16 +109,33 @@ void NoteCanvas::draw(QPainter & p) {
     p.drawPolygon(a, TRUE, 0, 6);
     p.setBrush(brsh);
     p.setBackgroundColor(co);
+
+    if (fp != 0)
+      draw_poly(fp, a, co);
   }
   
   p.moveTo(r.right() - corner_size, r.top());
   p.lineTo(r.right(), r.top() + corner_size);
+
+  if (fp != 0)
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    r.right() - corner_size, r.top(), r.right(), r.top() + corner_size);
   
   p.setFont(the_canvas()->get_font(itsfont));
   p.drawText (r.left() + corner_size, r.top() + corner_size,
 	      r.width() - 2*corner_size, r.height() - 2*corner_size, 
 	      QObject::AlignLeft + QObject::AlignTop + QObject::WordBreak,
 	      note);
+
+  if (fp != 0) {
+    draw_text(r.left() + corner_size, r.top() + corner_size,
+	      r.width() - 2*corner_size, r.height() - 2*corner_size, 
+	      QObject::AlignLeft + QObject::AlignTop + QObject::WordBreak,
+	      note, p.font(), fp);
+    fputs("</g>\n", fp);
+  }
+
   p.setFont(the_canvas()->get_font(UmlNormalFont));
     
   p.setBackgroundColor(bckgrnd);

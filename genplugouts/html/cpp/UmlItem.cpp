@@ -48,6 +48,14 @@ void UmlItem::set_dir(int argc, char ** argv) {
   else
     flat = FALSE;
 
+  if ((argc != 0) && !strcmp(argv[0], "-svg")) {
+    svg = TRUE;
+    argc -= 1;
+    argv += 1;
+  }
+  else
+    svg = FALSE;
+
   if (argc == 0) {
     if (!UmlBasePackage::getProject()->propertyValue("html dir", directory))
       directory = "/tmp/" + name() + "_html";
@@ -211,9 +219,10 @@ void UmlItem::start_file(QCString f, QCString s, bool withrefs)
     throw 0;
   
   fw.write("<!-- Documentation produced by the Html generator of Bouml (http://bouml.free.fr) -->\n");
-  fw.write("<?xml version=\"1.0\"?>\n");
+  fw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
   fw.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
-  fw.write("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
+  fw.write((svg) ? "<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:svg=\"http://www.w3.org/2000/svg\">\n"
+		 : "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
   fw.write("\n");
   fw.write("<head>\n");
   
@@ -859,5 +868,9 @@ unsigned int UmlItem::nrefs = 0;
 
 QCString UmlItem::letters;
 
+//true => use SVG picture rather than PNG
 bool UmlItem::flat;
+
+//true => classes and tables are generated in index.html, else an own files are generated
+bool UmlItem::svg;
 

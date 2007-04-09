@@ -49,6 +49,7 @@ class ParameterSetDialog : public QTabDialog {
   Q_OBJECT
     
   protected:
+    QWidget * umltab;
     ParameterSetData * data;
     LineEdit * edname;
     QComboBox * edstereotype;
@@ -79,6 +80,8 @@ class ParameterSetDialog : public QTabDialog {
     void edit_description();
     void associate_cls();
     void unassociate_cls();
+
+    void change_tabs(QWidget *);
 };
 
 #endif

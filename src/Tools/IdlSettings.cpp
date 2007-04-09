@@ -1,136 +1,13 @@
-// *************************************************************************
-//
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
-//
-// This file is part of the BOUML Uml Toolkit.
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//
-// e-mail : bouml@free.fr
-// home   : http://bouml.free.fr
-//
-// *************************************************************************
-
-/* !!!!!!!!!! Do not modify this file !!!!!!!!!! */
-
 #ifdef WITHIDL
 
+
 #include "IdlSettings.h"
-#include "UmlSettings.h"
+
 #include "UmlCom.h"
-
-bool IdlSettings::_defined;
-    
-QDict<QCString> IdlSettings::_map_includes;
-
-QCString IdlSettings::_root;
-QCString IdlSettings::_src_content;
-QCString IdlSettings::_ext;
-
-QCString IdlSettings::_interface_decl;
-QCString IdlSettings::_valuetype_decl;
-QCString IdlSettings::_struct_decl;
-QCString IdlSettings::_typedef_decl;
-QCString IdlSettings::_exception_decl;
-QCString IdlSettings::_union_decl;
-QCString IdlSettings::_enum_decl;
-QCString IdlSettings::_external_class_decl;
-QCString IdlSettings::_attr_decl;
-QCString IdlSettings::_valuetype_attr_decl;
-QCString IdlSettings::_union_item_decl;
-QCString IdlSettings::_enum_item_decl;
-QCString IdlSettings::_const_decl;
-QCString IdlSettings::_rel_decl[3/*multiplicity*/];
-QCString IdlSettings::_valuetype_rel_decl[3/*multiplicity*/];
-QCString IdlSettings::_union_rel_decl[3/*multiplicity*/];
-QCString IdlSettings::_oper_decl;
-QCString IdlSettings::_get_name;
-QCString IdlSettings::_set_name;
-bool IdlSettings::_is_set_oneway;
-
-void IdlSettings::read_()
-{
-  _root = UmlCom::read_string();
-  
-  unsigned n;
-  unsigned index;
-  
-  n = UmlCom::read_unsigned();
-  
-  for (index = 0; index != n; index += 1) {
-    UmlSettings::_builtins[index].idl = UmlCom::read_string();
-  }
-  
-  n = UmlCom::read_unsigned();
-  
-  for (index = 0; index != n; index += 1)
-    UmlSettings::_relation_stereotypes[index].idl = UmlCom::read_string();
-  
-  n = UmlCom::read_unsigned();
-  
-  for (index = 0; index != n; index += 1)
-    UmlSettings::_class_stereotypes[index].idl = UmlCom::read_string();
-  
-  n = UmlCom::read_unsigned();
-  _map_includes.clear();
-  if (n > _map_includes.size())
-    _map_includes.resize(n);
-  
-  for (index = 0; index != n; index += 1) {
-    QCString t = UmlCom::read_string();
-    QCString i = UmlCom::read_string();
-    
-    _map_includes.insert(t, new QCString(i));
-  }
-  
-  _src_content = UmlCom::read_string();
-  _ext = UmlCom::read_string();
-
-  _interface_decl = UmlCom::read_string();
-  _valuetype_decl = UmlCom::read_string();
-  _struct_decl = UmlCom::read_string();
-  _typedef_decl = UmlCom::read_string();
-  _exception_decl = UmlCom::read_string();
-  _union_decl = UmlCom::read_string();
-  _enum_decl = UmlCom::read_string();
-  _external_class_decl = UmlCom::read_string();
-  _attr_decl = UmlCom::read_string();
-  _valuetype_attr_decl = UmlCom::read_string();
-  _union_item_decl = UmlCom::read_string();
-  _enum_item_decl = UmlCom::read_string();
-  _const_decl = UmlCom::read_string();
-  for (index = 0; index != 3; index += 1) {
-    _rel_decl[index] = UmlCom::read_string();
-    _valuetype_rel_decl[index] = UmlCom::read_string();
-    _union_rel_decl[index] = UmlCom::read_string();
-  }
-  _oper_decl = UmlCom::read_string();
-  _get_name = UmlCom::read_string();
-  _set_name = UmlCom::read_string();
-  _is_set_oneway = UmlCom::read_bool();
-}
-
-void IdlSettings::read_if_needed_() {
-  UmlSettings::read_if_needed_();
-  if (!_defined) {
-    UmlCom::send_cmd(idlSettingsCmd, getIdlSettingsCmd);
-    read_();
-    _defined = TRUE;
-  }
-}
-
+#include "UmlSettings.h"
+#include "IdlSettingsCmd.h"
+#include "UmlBuiltin.h"
+#include "UmlStereotype.h"
 bool IdlSettings::useDefaults()
 {
   UmlCom::send_cmd(idlSettingsCmd, getIdlUseDefaultsCmd);
@@ -354,7 +231,8 @@ bool IdlSettings::set_ValuetypeDecl(QCString v)
     return FALSE;
 }
 
-const QCString & IdlSettings::externalClassDecl() {
+const QCString & IdlSettings::externalClassDecl()
+{
   read_if_needed_();
   
   return _external_class_decl;
@@ -677,4 +555,127 @@ bool IdlSettings::set_IsSetOneway(bool v)
     return FALSE;
 }
 
-#endif // WITHIDL
+bool IdlSettings::_defined;
+
+QCString IdlSettings::_root;
+
+QCString IdlSettings::_interface_decl;
+
+QCString IdlSettings::_valuetype_decl;
+
+QCString IdlSettings::_struct_decl;
+
+QCString IdlSettings::_typedef_decl;
+
+QCString IdlSettings::_exception_decl;
+
+QCString IdlSettings::_union_decl;
+
+QCString IdlSettings::_enum_decl;
+
+QCString IdlSettings::_external_class_decl;
+
+QCString IdlSettings::_attr_decl;
+
+QCString IdlSettings::_valuetype_attr_decl;
+
+QCString IdlSettings::_union_item_decl;
+
+QCString IdlSettings::_enum_item_decl;
+
+QCString IdlSettings::_const_decl;
+
+QCString IdlSettings::_rel_decl[3/*multiplicity*/];
+
+QCString IdlSettings::_valuetype_rel_decl[3/*multiplicity*/];
+
+QCString IdlSettings::_union_rel_decl[3/*multiplicity*/];
+
+QCString IdlSettings::_oper_decl;
+
+QCString IdlSettings::_get_name;
+
+QCString IdlSettings::_set_name;
+
+bool IdlSettings::_is_set_oneway;
+
+QCString IdlSettings::_src_content;
+
+QCString IdlSettings::_ext;
+
+QDict<QCString> IdlSettings::_map_includes;
+
+void IdlSettings::read_()
+{
+  _root = UmlCom::read_string();
+  
+  unsigned n;
+  unsigned index;
+  
+  n = UmlCom::read_unsigned();
+  
+  for (index = 0; index != n; index += 1) {
+    UmlSettings::_builtins[index].idl = UmlCom::read_string();
+  }
+  
+  n = UmlCom::read_unsigned();
+  
+  for (index = 0; index != n; index += 1)
+    UmlSettings::_relation_stereotypes[index].idl = UmlCom::read_string();
+  
+  n = UmlCom::read_unsigned();
+  
+  for (index = 0; index != n; index += 1)
+    UmlSettings::_class_stereotypes[index].idl = UmlCom::read_string();
+  
+  n = UmlCom::read_unsigned();
+  _map_includes.clear();
+  if (n > _map_includes.size())
+    _map_includes.resize(n);
+  
+  for (index = 0; index != n; index += 1) {
+    QCString t = UmlCom::read_string();
+    QCString i = UmlCom::read_string();
+    
+    _map_includes.insert(t, new QCString(i));
+  }
+  
+  _src_content = UmlCom::read_string();
+  _ext = UmlCom::read_string();
+
+  _interface_decl = UmlCom::read_string();
+  _valuetype_decl = UmlCom::read_string();
+  _struct_decl = UmlCom::read_string();
+  _typedef_decl = UmlCom::read_string();
+  _exception_decl = UmlCom::read_string();
+  _union_decl = UmlCom::read_string();
+  _enum_decl = UmlCom::read_string();
+  _external_class_decl = UmlCom::read_string();
+  _attr_decl = UmlCom::read_string();
+  _valuetype_attr_decl = UmlCom::read_string();
+  _union_item_decl = UmlCom::read_string();
+  _enum_item_decl = UmlCom::read_string();
+  _const_decl = UmlCom::read_string();
+  for (index = 0; index != 3; index += 1) {
+    _rel_decl[index] = UmlCom::read_string();
+    _valuetype_rel_decl[index] = UmlCom::read_string();
+    _union_rel_decl[index] = UmlCom::read_string();
+  }
+  _oper_decl = UmlCom::read_string();
+  _get_name = UmlCom::read_string();
+  _set_name = UmlCom::read_string();
+  _is_set_oneway = UmlCom::read_bool();
+}
+
+void IdlSettings::read_if_needed_()
+{
+  UmlSettings::read_if_needed_();
+  if (!_defined) {
+    UmlCom::send_cmd(idlSettingsCmd, getIdlSettingsCmd);
+    read_();
+    _defined = TRUE;
+  }
+}
+
+
+#endif

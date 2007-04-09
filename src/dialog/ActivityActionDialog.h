@@ -267,6 +267,7 @@ class ActivityActionDialog : public QTabDialog {
   protected:
     // Uml
     bool visit;
+    QWidget * umltab;
     ActivityActionData * act;
     LineEdit * edname;
     QComboBox * edstereotype;
@@ -319,6 +320,8 @@ class ActivityActionDialog : public QTabDialog {
   
     void edTypeActivated(int);  
     void edit_description();
+
+    void change_tabs(QWidget *);
 };
 
 #endif

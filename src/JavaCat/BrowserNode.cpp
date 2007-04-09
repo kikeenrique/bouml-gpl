@@ -26,7 +26,10 @@
 #include "BrowserNode.h"
 #include "UmlClass.h"
 #include "Class.h"
-#include "api.h"
+#include "aRelationKind.h"
+#include "aDirection.h"
+#include "aVisibility.h"
+#include "anItemKind.h"
 #include "BrowserView.h"
 
 BrowserNode::BrowserNode(BrowserView * parent, const char * n)

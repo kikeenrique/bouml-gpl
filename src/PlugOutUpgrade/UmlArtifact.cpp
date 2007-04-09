@@ -38,13 +38,13 @@ UmlArtifact * UmlArtifact::made(UmlDeploymentView * depl_view,
   UmlArtifact * art = UmlBaseArtifact::create(depl_view, s);
   
   if (art == 0) {
-    QCString msg = "can't create artifact " + s + " in " + depl_view->name();
+    QCString msg = "can't create artifact " + s + " in " + depl_view->name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
   }
   
-  UmlCom::trace("add artifact " + s);
+  UmlCom::trace("add artifact " + s + "<br>\n");
   art->set_Stereotype("source");
   art->set_CppHeader(CppSettings::headerContent());
   art->set_CppSource(CppSettings::sourceContent());

@@ -75,30 +75,47 @@ under the control of 'Project control' or 'Project merge'\n\
 	(Uid > 127)) {
       Uid = QTime::currentTime().msec();
       
-      do {
+      for (;;) {
 	Uid = Uid % 125 + 2;
-      } while (!dir.mkdir(QString::number(Uid) + ".lock"));
+	if (dir.mkdir(QString::number(Uid) + ".lock"))
+	  break;
+	if (!dir.exists(QString::number(Uid) + ".lock")) {
+	  msg_critical("BOUML_ID", "Can't create directory "
+		       + QString::number(Uid) +
+		       ".lock,\nthe project is open in read-only mode");
+	  force_read_only(TRUE);
+	  break;
+	}
+      }
       
       msg_critical("BOUML_ID", 
-			    "The BOUML_ID environment variable is not or wrong defined.\n\
+		   "The BOUML_ID environment variable is not or wrong defined.\n\
 \n\
 This one allows several users to work on the same project, this time your\n\
 identifier is " + QString::number(Uid) +
-			    " but BOUML declines all the responsabilies of this random choice.\n\
+		   " but BOUML declines all the responsabilies of this random choice.\n\
 \n\
 You must to define the environment variable BOUML_ID valuing between 2 up to 127\n\
 not used by an other person working at the same time on a project with you.");
     }
     else if (! dir.mkdir(QString::number(Uid) + ".lock")) {
-      msg_critical("BOUML_ID", 
-		   "\
+      if (!dir.exists(QString::number(Uid) + ".lock")) {
+	msg_critical("BOUML_ID", "Can't create directory "
+		     + QString::number(Uid) +
+		     ".lock,\nthe project is open in read-only mode");
+	force_read_only(TRUE);
+      }
+      else {
+	msg_critical("BOUML_ID", 
+		     "\
 It seems that you are already editing the project.\n\
 If you're SURE that this is not the case\n\
 and another user does not have an identifier\n\
 equal to yours, remove the directory "
-		   + QString::number(Uid) + ".lock\n\
+		     + QString::number(Uid) + ".lock\n\
 an restart BOUML");
-      exit(1);
+	exit(1);
+      }
     }
   }
   

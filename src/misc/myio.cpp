@@ -2087,3 +2087,257 @@ void load(int & i, QBuffer & b)
 {
   b.readBlock((char *) &i, sizeof(i));
 }
+
+// svg
+
+static FILE * svg_fp;
+static int pict_height;
+
+bool start_svg(const char * f, int w, int h)
+{
+  svg_fp = fopen(f, "w");
+
+  if (svg_fp == 0)
+    return FALSE;
+
+  fprintf(svg_fp, 
+	  "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+	  "<!-- Created with Bouml (http://bouml.free.fr/) -->\n"
+	  "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n"
+	  "<svg width=\"%d\" height=\"%d\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n",
+	  w, h);
+
+  pict_height = h;
+
+  return TRUE;
+}
+
+void end_svg()
+{
+  fputs("</svg>\n", svg_fp);
+
+  fclose(svg_fp);
+  svg_fp = 0;
+}
+
+FILE * svg()
+{
+  return svg_fp;
+}
+
+int svg_height()
+{
+  return pict_height;
+}
+
+void draw_poly(FILE * fp, QPointArray & poly, const char * color, bool stroke)
+{
+  fprintf(fp, (stroke) ? "\t<polygon fill=\"%s\" stroke=\"black\" stroke-opacity=\"1\""
+		       : "\t<polygon fill=\"%s\" stroke=\"none\"",
+	  color);
+
+  const char * sep = " points=\"";
+  int n = poly.size();
+  int i;
+
+  for (i = 0; i != n; i += 1) {
+    fprintf(fp, "%s%d,%d", sep, poly.point(i).x(), poly.point(i).y());
+    sep = " ";
+  }
+
+  fputs("\" />\n", fp);
+}
+
+void draw_poly(FILE * fp, QPointArray & poly, const QColor & color, bool stroke)
+{
+  fprintf(fp, (stroke) ? "\t<polygon fill=\"#%06x\" stroke=\"black\" stroke-opacity=\"1\""
+		       : "\t<polygon fill=\"#%06x\" stroke=\"none\"",
+	  color.rgb()&0xffffff);
+
+  const char * sep = " points=\"";
+  int n = poly.size();
+  int i;
+
+  for (i = 0; i != n; i += 1) {
+    fprintf(fp, "%s%d,%d", sep, poly.point(i).x(), poly.point(i).y());
+    sep = " ";
+  }
+
+  fputs("\" />\n", fp);
+}
+
+void draw_text(const QRect & r, int align, QString s, const QFont & fn, FILE * fp)
+{
+  draw_text(r.left(), r.top(), r.width(), r.height(),
+	    align, s, fn, fp);
+}
+
+static void xml_text(FILE * fp, QString s)
+{
+  QCString cs = s.utf8();
+  const char * p = cs;
+  
+  for (;;) {
+    char c = *p;
+    
+    switch (c) {
+    case 0: return;
+    case '<':
+      fputs("&lt;", fp);
+      break;
+    case '>':
+      fputs("&gt;", fp);
+      break;
+    case '"':
+      fputs("&quot;", fp);
+      break;
+    case '&':
+      fputs("&amp;", fp);
+      break;
+    default:
+      fputc(c, fp);
+    }
+    
+    p += 1;
+  }
+}
+
+void draw_text(int x, int y, int w, int h, int align,
+	       QString s, const QFont & fn, FILE * fp)
+{
+  if (s.isEmpty())
+    return;
+
+  int ps = fn.pixelSize();
+  char header[256];
+
+  sprintf(header, "\t<text font-family=\"%s\" font-size=\"%d\" fill=\"black\"",
+	  (const char *) fn.family(),
+	  // decrease size to help to have enough area
+	  ps - 1);
+
+  if (fn.bold())
+    strcat(header, " font-weight=\"bold\"");
+  if (fn.italic())
+    strcat(header, " font-style=\"italic\"");
+  if (fn.underline())
+    strcat(header, " text-decoration=\"underline\"");
+
+  bool wb = align & QObject::WordBreak;
+  
+  if ((s.find('\r') == -1) && !wb) {
+    // one line
+    fputs(header, fp);
+    
+    if ((align & QObject::AlignHCenter) != 0) {
+      fputs(" text-anchor=\"middle\"", fp);
+      x += w/2;
+    }
+    if ((align & QObject::AlignVCenter) != 0)
+      y += (h + ps)/2;
+    else
+      y += ps;
+
+    fprintf(fp, " x=\"%d\" y=\"%d\">", x, y);
+    xml_text(fp, s);
+    fputs("</text>\n", fp);
+  }
+  else {
+    // several lines
+    // remove all \r, remove last \n and extract lines
+    int index = s.length();
+    QChar lf('\n'); 
+
+    while ((index = s.find('\r')) != -1)
+      s.remove(index, 1);
+    
+    index = s.length();
+    
+    while ((index != 0) && s.at(index - 1) == lf)
+      index -= 1;
+
+    if (index == 0)
+      return;
+
+    s.truncate(index);
+    
+    QStringList l = QStringList::split(lf, s, TRUE);
+
+    // cut lines too large
+    QFontMetrics fm(fn);
+    QStringList::Iterator iter = l.begin();
+    QChar space(' ');
+    QChar tab('\t');
+    
+    while (iter != l.end()) {
+      s = *iter;
+      
+      if (fm.width(s) <= w)
+	++iter;
+      else {
+	QString left;
+	int lastsep = 0;
+	
+	index = 0;
+	
+	do {
+	  QChar c = s.at(index);
+	  
+	  if ((c == space) || (c == tab))
+	    lastsep = index;
+	  left += c;
+	  index += 1;
+	} while (fm.width(left) <= w);
+	
+	if ((lastsep == 0) || !wb)
+	  // must cut word
+	  lastsep = index - 1;
+	else
+	  s.remove(lastsep, 1);
+	
+	left.truncate(lastsep);
+	*iter = left;
+	++iter;
+	s = s.mid(lastsep);
+	if (! s.isEmpty())
+	  // last char is != a space/tab
+	  iter = l.insert(iter, s);
+      }
+    }
+    
+    // write lines
+    ps = fm.lineSpacing();
+    
+    if ((align & QObject::AlignVCenter) != 0) {
+      int dy = h - l.count() * ps;
+      
+      if (dy > 0)
+	y += dy/2;
+    }
+    
+    y -= fm.leading();
+    
+    if ((align & QObject::AlignHCenter) != 0) {
+      x += w/2;
+
+      for (iter = l.begin(); iter != l.end(); ++iter) {
+	y += ps;
+	fputs(header, fp);
+	fputs(" text-anchor=\"middle\"", fp);
+	fprintf(fp, " x=\"%d\" y=\"%d\">", x, y);
+	xml_text(fp, *iter);
+	fputs("</text>\n", fp);
+      }	
+    }
+    else {
+      for (iter = l.begin(); iter != l.end(); ++iter) {
+	y += ps;
+	fputs(header, fp);
+	fprintf(fp, " x=\"%d\" y=\"%d\">", x, y);
+	xml_text(fp, *iter);
+	fputs("</text>\n", fp);
+      }	
+    }
+  }
+}
+

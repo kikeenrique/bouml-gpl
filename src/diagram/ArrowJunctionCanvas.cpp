@@ -27,6 +27,7 @@
 #pragma warning (disable: 4150)
 #endif
 
+#include <math.h>
 #include <qpopupmenu.h> 
 #include <qcursor.h>
 #include <qpainter.h>
@@ -89,20 +90,39 @@ void ArrowJunctionCanvas::draw(QPainter & p) {
     return;
   
   ArrowCanvas * a;
+  FILE * fp = svg();
   
   for (a = lines.first(); a != 0; a = lines.next()) {
     switch (a->type()) {
     case UmlRequired:
       {
 	QRect r = rect();
+	int wh = r.width() - 2;
+	int startangle = a->get_point(1).x(); // degree * 16
 	
 	p.drawArc(r.x()+1, r.y()+1,
-		  r.width() - 2, r.height() - 2,
-		  a->get_point(1).x(), a->get_point(1).y());
+		  wh, wh,
+		  startangle, 180*16);
+	if (fp != 0) {
+	  int radius = r.width()/2;
+
+	  QPoint ce = r.center();
+	  double r_startangle = startangle*3.1415927/180/16;
+	  double dx = cos(r_startangle) * radius;
+	  double dy = sin(r_startangle) * radius;
+
+	  fprintf(fp, "<path fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" d=\"M%lg,%lg a%d,%d 0 0,1 %lg,%lg\" />\n",
+		  ce.x() - dx, ce.y() + dy,
+		  radius, radius,
+		  dx+dx, -dy-dy);
+	}
       }
       break;
     case UmlProvided:
       p.drawPixmap(QPoint((int) x(), (int) y()), *providedPixmap);
+      if (fp != 0)
+	fprintf(fp, "<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" cx=\"%d\" cy=\"%d\" rx=\"5.5\" ry=\"5.5\" />\n",
+		(int) x() + 9, (int) y() + 9);
       break;
     default:
       // to avoid compiler warning

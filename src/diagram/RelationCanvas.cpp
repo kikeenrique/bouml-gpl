@@ -571,33 +571,45 @@ void RelationCanvas::update(bool updatepos) {
     }
     else if (role_a == 0) {
       // adds role_a
-      role_a = new LabelCanvas(s, the_canvas(), 0, 0);
+      role_a = new LabelCanvas(s, the_canvas(), 0, 0, FALSE, FALSE, 
+			       data->get_isa_class_relation_a());
       role_a_default_position();
     }
-    else if (role_a->get_name() != s) {
-      role_a->set_name(s);
-      role_a_default_position();
+    else {
+      if (role_a->get_name() != s) {
+	role_a->set_name(s);
+	role_a_default_position();
+      }
+      role_a->set_underlined(data->get_isa_class_relation_a());
     }
+    
     
     // manages role_b
     
     s = data->get_role_b();
     
-    if (unamed || s.isEmpty() || RelationData::uni_directional(itstype)) {
+    if (unamed ||
+	s.isEmpty() ||
+	RelationData::uni_directional(itstype) ||
+	(begin->type() == UmlArrowPoint)) {
       // relation does not have role_b name
       if (role_b != 0) {
 	the_canvas()->del(role_b);
 	role_b = 0;
       }
     }
-    else if ((role_b == 0) && (begin->type() != UmlArrowPoint)) {
+    else if (role_b == 0) {
       // adds role_b
-      role_b = new LabelCanvas(s, the_canvas(), 0, 0);
+      role_b = new LabelCanvas(s, the_canvas(), 0, 0, FALSE, FALSE, 
+			       data->get_isa_class_relation_b());
       role_b_default_position();
     }
-    else if ((role_b != 0) && (role_b->get_name() != s)) {
-      role_b->set_name(s);
-      role_b_default_position();
+    else {
+      if (role_b->get_name() != s) {
+	role_b->set_name(s);
+	role_b_default_position();
+      }
+      role_b->set_underlined(data->get_isa_class_relation_b());
     }
     
     // manages multiplicity_a
@@ -1160,8 +1172,12 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       connect(rd, SIGNAL(changed()), result, SLOT(modified()));
       connect(rd, SIGNAL(deleted()), result, SLOT(deleted()));
 
-      if (first == 0)
+      if (first == 0) {
 	first = result;
+	if (read_file_format() == 30)
+	  // to remove redondant relation made by release 2.22
+	  RelsToCheck.append(result);
+      }
       if (label != 0)
 	result->label = label;
       if (stereotype != 0)
@@ -1190,7 +1206,8 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       s = rd->get_role_a();
       
       if (!unamed && !s.isEmpty()) {
-	result->role_a = new LabelCanvas(s, canvas, x, y);
+	result->role_a = new LabelCanvas(s, canvas, x, y, FALSE, FALSE,
+					rd->get_isa_class_relation_a());
 	result->role_a->setZ(z);
 	result->role_a->show();
       }
@@ -1207,7 +1224,8 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       s = rd->get_role_b();
       
       if (!unamed && !s.isEmpty()) {
-	first->role_b = new LabelCanvas(s, canvas, x, y);
+	first->role_b = new LabelCanvas(s, canvas, x, y, FALSE, FALSE,
+					rd->get_isa_class_relation_b());
 	first->role_b->setZ(z);
 	first->role_b->show();
       }

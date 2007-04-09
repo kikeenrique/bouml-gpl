@@ -60,6 +60,13 @@ void TextCanvas::draw(QPainter & p) {
   p.setFont(the_canvas()->get_font(itsfont));
   p.drawText (r.left(), r.top(), r.width(), r.height(), 
 	      QObject::AlignLeft + QObject::AlignTop + QObject::WordBreak, text);
+  
+  FILE * fp = svg();
+  
+  if (fp != 0)
+    draw_text (r.left(), r.top(), r.width(), r.height(), 
+	       QObject::AlignLeft + QObject::AlignTop + QObject::WordBreak, text,
+	       p.font(), fp);
   p.setFont(the_canvas()->get_font(UmlNormalFont));
     
   if (selected())

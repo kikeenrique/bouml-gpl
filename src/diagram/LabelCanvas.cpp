@@ -87,6 +87,15 @@ void LabelCanvas::set_strikeout(bool yes) {
     setFont(((UmlCanvas *) canvas())->get_font(UmlNormalFont));
 }
 
+void LabelCanvas::set_underlined(bool yes) {
+  if (yes) {
+    if (!font().underline())
+      setFont(((UmlCanvas *) canvas())->get_font(UmlNormalUnderlinedFont));
+  }
+  else if (font().underline())
+    setFont(((UmlCanvas *) canvas())->get_font(UmlNormalFont));
+}
+
 void LabelCanvas::change_scale() {
   hide();
 
@@ -159,7 +168,11 @@ void LabelCanvas::draw(QPainter & p) {
   p.setBackgroundMode(QObject::TransparentMode);
   
   QRect r = boundingRect();
+  FILE * fp = svg();
   int index = text().find(Triangle);
+
+  if (fp != 0)
+    fputs("<g>\n", fp);
   
   if (index == 0) {
     // triangle only
@@ -170,11 +183,19 @@ void LabelCanvas::draw(QPainter & p) {
     p.drawLine(cx - w, b, cx + w, b);
     p.lineTo(cx, (int) y());
     p.lineTo(cx - w, b);
+
+    if (fp != 0)
+      fprintf(fp, "\t<polygon fill=\"none\" stroke=\"black\" stroke-opacity=\"1\""
+	      " points=\"%d,%d %d,%d %d,%d\" />\n",
+	      cx - w, b, cx + w, b, cx, (int) y());
   }
   else if (index != -1) {
     // label then triangle under
     p.setFont(font());
     p.drawText(rect(), QObject::AlignHCenter, text().mid(0, index - 1));
+    if (fp != 0)
+      draw_text(rect(), QObject::AlignHCenter, text().mid(0, index - 1),
+		p.font(), fp);
 
     QFontMetrics fm(font());
     int w = fm.width(Triangle) / 2 - 1;
@@ -185,15 +206,26 @@ void LabelCanvas::draw(QPainter & p) {
     p.drawLine(cx - w, b, cx + w, b);
     p.lineTo(cx, cy);
     p.lineTo(cx - w, b);
+
+    if (fp != 0)
+      fprintf(fp, "\t<polygon fill=\"none\" stroke=\"black\" stroke-opacity=\"1\""
+	      " points=\"%d,%d %d,%d %d,%d\" />\n",
+	      cx - w, b, cx + w, b, cx, cy);
   }
   else if (text() != Zigzag) {
     // no triangle nor zigzag
     if (text().find('\n') != -1) {
       p.setFont(font());
       p.drawText(rect(), QObject::AlignHCenter, text().mid(0, index - 1));
+      if (fp != 0)
+	draw_text(rect(), QObject::AlignHCenter, text().mid(0, index - 1),
+		  p.font(), fp);
     }
-    else
+    else {
       QCanvasText::draw(p);
+      if (fp != 0)
+	draw_text(rect(), 0, text(), p.font(), fp);
+    }
   }
   else {
     // zigzag (only used as stereotype)
@@ -207,8 +239,20 @@ void LabelCanvas::draw(QPainter & p) {
     p.lineTo(r.right(), yb);
     p.lineTo(xr, r.bottom() - h / 2);
     p.drawLine(r.right(), yb, xr, r.bottom());
+
+    if (fp != 0) {
+      fprintf(fp, "\t<polyline fill=\"none\" stroke=\"black\" stroke-opacity=\"1\""
+	      " points=\"%d,%d %d,%d %d,%d %d,%d %d,%d\" />\n",
+	      r.left(), t, r.right(), t, r.left(), yb, r.right(), yb, xr, r.bottom() - h / 2);
+      fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	      r.right(), yb, xr, r.bottom());
+    }
   }
   
+  if (fp != 0)
+    fputs("</g>\n", fp);
+
   if (selected())
     show_mark(p, r);
 }

@@ -53,6 +53,7 @@ class ArtifactDialog : public QTabDialog {
     
   protected:
     ArtifactData * data;
+    QWidget * uml_page;
     LineEdit * edname;
     QComboBox * edstereotype;
     MultiLineEdit * comment;
@@ -106,9 +107,9 @@ class ArtifactDialog : public QTabDialog {
     void init_assoc_classes_tab();
     void init_assoc_artifacts_tab();
   
-    void compute_cpp_namespace(QString & nasp_start, QString & nasp_end);
+    void compute_cpp_namespace(QString & nasp, QString & nasp_start, QString & nasp_end);
     QString compute_java_package();
-    void compute_idl_module(QString & mod_start, QString & mod_end);
+    void compute_idl_module(QString & mod, QString & mod_start, QString & mod_end);
     
     static void post_edit_description(ArtifactDialog * d, QString s);
     static void post_cpp_edit_h(ArtifactDialog * d, QString s);

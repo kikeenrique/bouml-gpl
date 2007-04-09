@@ -98,11 +98,11 @@ class DiagramCanvas : public QCanvasRectangle, public DiagramItem {
     
     static void draw_actor(QPainter * p, QRect r);
     static void draw_entity_icon(QPainter & p, QRect & r,
-				 const QColor & co, double zoom);
+				 UmlColor used_color, double zoom);
     static void draw_boundary_icon(QPainter & p, QRect & r,
-				   const QColor & co, double zoom);
+				   UmlColor used_color, double zoom);
     static void draw_control_icon(QPainter & p, QRect & r,
-				  const QColor & co, double zoom);
+				  UmlColor used_color, double zoom);
     static double compute_angle(double delta_x, double delta_y);
 };
 

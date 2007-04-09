@@ -63,6 +63,7 @@ class BrowserComponentDiagram : public BrowserDiagram {
 				    QString name = QString::null);
   
     virtual const QPixmap* pixmap (int) const;
+    virtual void draw_svg() const;
   
     virtual void menu();
     virtual void apply_shortcut(QString s);
@@ -87,7 +88,7 @@ class BrowserComponentDiagram : public BrowserDiagram {
     static BrowserNode * get_it(const char * k, int id);
     
     void edit_settings();
-    
+
     static const QStringList & default_stereotypes();
     static void read_stereotypes(char * &, char * & k);
     static void save_stereotypes(QTextStream &);

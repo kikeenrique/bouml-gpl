@@ -69,12 +69,18 @@ ParameterSetDialog::ParameterSetDialog(ParameterSetData * nd)
   // USER : list key - value
   
   QGrid * grid = new QGrid(2, this);
+
   grid->setMargin(5);
   grid->setSpacing(5);
   
   kvtable = new KeyValuesTable((BrowserParameterSet *) data->get_browser_node(),
 			       grid, !hasOkButton());
   addTab(grid, "Properties");
+  
+  //
+    
+  connect(this, SIGNAL(currentChanged(QWidget *)),
+	  this, SLOT(change_tabs(QWidget *)));
 }
 
 ParameterSetDialog::~ParameterSetDialog() {
@@ -83,6 +89,11 @@ ParameterSetDialog::~ParameterSetDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+}
+
+void ParameterSetDialog::change_tabs(QWidget * w) {
+  if (hasOkButton() && (w == umltab))
+    edname->setFocus();
 }
 
 void ParameterSetDialog::polish() {
@@ -98,6 +109,7 @@ void ParameterSetDialog::init_uml_tab() {
   QVBox * vbox;
   QGrid * grid = new QGrid(2, this);
   
+  umltab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
 

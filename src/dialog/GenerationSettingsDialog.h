@@ -59,7 +59,8 @@ class GenerationSettingsDialog : public QTabDialog {
     MultiLineEdit * edcpp_src_content;
     QComboBox * edcpp_h_extension;
     QComboBox * edcpp_src_extension;
-    QCheckBox * cpp_include_with_path_cb;
+    QComboBox * cpp_include_with_path_cb;
+    QCheckBox * cpp_force_namespace_gen_cb;
     LineEdit * cpp_enum_in;
     LineEdit * cpp_enum_out;
     LineEdit * cpp_enum_inout;

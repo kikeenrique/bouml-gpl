@@ -461,6 +461,10 @@ void ActivityActionCanvas::draw(QPainter & p) {
     (ActivityActionData *) browser_node->get_data();
   const int shadow = the_canvas()->shadow();
   int margin;
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fputs("<g>\n", fp);  
   
   switch (data->get_action_kind()) {
   case UmlAcceptEventAction:
@@ -476,6 +480,22 @@ void ActivityActionCanvas::draw(QPainter & p) {
       p.lineTo(r.right() - margin - 1, t + margin);
       p.lineTo(r.right() - 1, t + margin);
       p.lineTo(r.right() - margin - 1, t);
+
+      if (fp != 0) {
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		r.right() - margin, t, r.right() - 1, t);
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		r.right() - 1, t, r.right() - margin - 1, t + margin);
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		r.right() - margin - 1, t + margin, r.right() - 1, t + margin);
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		r.right() - 1, t + margin, r.right() - margin - 1, t);
+      }
+
       r.setWidth(r.width() - margin - 1);
       margin = (int) (3 * the_canvas()->zoom());
     }
@@ -496,8 +516,12 @@ void ActivityActionCanvas::draw(QPainter & p) {
       a.setPoint(4, r.x() + margin, (r.y() + r.bottom())/2);
       a.setPoint(5, r.x(), r.y());
   
-      if (used_color == UmlTransparent)
+      if (used_color == UmlTransparent) {
 	p.drawPolyline(a);
+
+	if (fp != 0)
+	  draw_poly(fp, a, "none");
+      }
       else {
 	if (shadow != 0) {
 	  QPointArray b(6);
@@ -512,10 +536,16 @@ void ActivityActionCanvas::draw(QPainter & p) {
 	  p.setPen(QObject::NoPen);
 	  p.drawPolygon(b, TRUE, 0, 5);
 	  p.setPen(QObject::SolidLine);
+
+	  if (fp != 0)
+	    draw_poly(fp, b, QObject::darkGray);
 	}
 	
 	p.setBrush(co);
 	p.drawPolygon(a, TRUE, 0, 5);
+
+	if (fp != 0)
+	  draw_poly(fp, a, co);
       }
       r.setLeft(r.left() + margin);
       margin = (int) (6 * the_canvas()->zoom());
@@ -540,8 +570,11 @@ void ActivityActionCanvas::draw(QPainter & p) {
       a.setPoint(4, r.x(), r.bottom());
       a.setPoint(5, r.x(), r.y());
   
-      if (used_color == UmlTransparent)
+      if (used_color == UmlTransparent) {
 	p.drawPolyline(a);
+	if (fp != 0)
+	  draw_poly(fp, a, "none");
+      }
       else {
 	if (shadow != 0) {
 	  QPointArray b(6);
@@ -556,10 +589,16 @@ void ActivityActionCanvas::draw(QPainter & p) {
 	  p.setPen(QObject::NoPen);
 	  p.drawPolygon(b, TRUE, 0, 5);
 	  p.setPen(QObject::SolidLine);
+
+	  if (fp != 0)
+	    draw_poly(fp, b, QObject::darkGray, FALSE);
 	}
       
 	p.setBrush(co);
 	p.drawPolygon(a, TRUE, 0, 5);
+
+	if (fp != 0)
+	  draw_poly(fp, a, co);
       }
       r.setWidth(r.width() - margin);
       margin = (int) (6 * the_canvas()->zoom());
@@ -574,11 +613,24 @@ void ActivityActionCanvas::draw(QPainter & p) {
       p.setPen(QObject::NoPen);
       p.setBrush(QObject::darkGray);
       p.drawRoundRect(r.left() + shadow, r.top() + shadow, r.width(), r.height());
+      
+      if (fp != 0)
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
+		QObject::darkGray.rgb()&0xffffff,
+		r.left() + shadow, r.top() + shadow, r.width() - 1, r.height() - 1);
+
       p.setPen(QObject::SolidLine);
     }
     
     p.setBrush(co);
     p.drawRoundRect(r);
+
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
+	      co.rgb()&0xffffff,
+	      r.left(), r.top(), r.width() - 1, r.height() - 1);
     
     if (data->get_action_kind() == UmlCallBehaviorAction) {
       BrowserNode * behavior =
@@ -597,6 +649,21 @@ void ActivityActionCanvas::draw(QPainter & p) {
 	p.drawLine(mx, ty, mx, by);
 	p.drawLine(lx, my, lx, by);
 	p.drawLine(rx, my, rx, by);
+
+	if (fp != 0) {
+	  fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		  " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		  lx, my, rx, my);
+	  fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		  " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		  mx, ty, mx, by);
+	  fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		  " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		  lx, my, lx, by);
+	  fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		  " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		  rx, my, rx, by);
+	}
       }
     }
     break;
@@ -608,6 +675,15 @@ void ActivityActionCanvas::draw(QPainter & p) {
 	     r.width() - margin - margin,
 	     r.height() - margin - margin,
 	     align, s);
+  
+  if (fp != 0) {
+    fputs("</g>\n", fp);
+    draw_text(r.x() + margin,
+	      r.y() + margin,
+	      r.width() - margin - margin,
+	      r.height() - margin - margin,
+	      align, s, p.font(), fp);
+  }
   
   p.setBackgroundColor(bckgrnd);
   p.setBrush(brsh);
@@ -690,6 +766,9 @@ void ActivityActionCanvas::menu(const QPoint&) {
 	  m.insertItem("Set associated diagram from behavior", 11);
       }
     }
+    
+    if (browser_node->get_associated())
+      m.insertItem("Remove diagram association",12);
   }
   m.insertSeparator();
   m.insertItem("Remove from view", 8);
@@ -724,6 +803,10 @@ void ActivityActionCanvas::menu(const QPoint&) {
   case 6:
     ((BrowserActivityAction *) browser_node)
       ->set_associated_diagram(the_canvas()->browser_diagram());
+    return;
+  case 12:
+    ((BrowserActivityAction *) browser_node)
+      ->set_associated_diagram(0);
     return;
   case 7:
     if (BrowserPin::add_pin(0, browser_node) != 0)

@@ -70,17 +70,37 @@ void SdContinuationCanvas::draw(QPainter & p) {
   p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
 
   QColor co = color(used_color);
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fputs("<g>\n", fp);
   
   p.setBackgroundColor(co);
   
-  if (used_color != UmlTransparent) 
+  if (used_color != UmlTransparent) {
     p.setBrush(co);
+
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
+	      co.rgb()&0xffffff, 
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+  }
+  else if (fp != 0)
+    fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\"  />\n",
+	    r.x(), r.y(), r.width() - 1, r.height() - 1);
   
   p.drawRoundRect(r, 50, 50);
   
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   p.drawText(r, QObject::AlignCenter, name);
-	     
+  if (fp != 0) {
+    draw_text(r, QObject::AlignCenter, name,
+	      p.font(), fp);
+    fputs("</g>\n", fp);
+  }
+
   p.setBackgroundColor(bckgrnd);
   p.setBrush(brsh);
   

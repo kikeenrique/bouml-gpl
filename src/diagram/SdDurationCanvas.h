@@ -41,9 +41,10 @@ class SdDurationCanvas : public QObject, public DiagramCanvas {
     SdLifeLineCanvas * line;
     QList<SdMsgBaseCanvas> msgs;
     UmlColor itscolor;
+    bool coregion;
   
     SdDurationCanvas(UmlCanvas * canvas, SdLifeLineCanvas * ll,
-		     int x, int y, int w, int h, int id);
+		     int x, int y, int w, int h, int id, bool coreg);
   public:
     SdDurationCanvas(UmlCanvas * canvas, SdLifeLineCanvas * ll,
 		     int v, bool isdest);

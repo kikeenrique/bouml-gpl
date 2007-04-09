@@ -88,9 +88,12 @@ void SdLifeLineCanvas::drawShape(QPainter & p) {
   p.setPen(QObject::DashLine);
   
   int m = (int) (x()+width()/2);
-  
+  FILE * fp = svg();
+
   p.drawLine(m, (int) y(), m, end);
+
   p.setPen(QObject::SolidLine);
+
   if (end != LIFE_LINE_HEIGHT) {
     int b = end + (int) width();
     
@@ -98,7 +101,30 @@ void SdLifeLineCanvas::drawShape(QPainter & p) {
 	       (int) (x() + width()) - 1, b);
     p.drawLine((int) (x() + width() - 1), end,
 	       (int) x(), b);
+
+    if (fp != 0) {
+      fprintf(fp, "<g>\n"
+	      "\t<line stroke=\"black\" stroke-dasharray=\"18,6\"  stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n"
+	      "</g>\n",
+	      m, (int) y(), m, end);
+
+      fprintf(fp, "<g>\n"
+	      "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	      (int) x(), end, (int) (x() + width()) - 1, b);
+      fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n"
+	      "</g>\n",
+	      (int) (x() + width() - 1), end, (int) x(), b);
+    }
   }
+  else if (fp != 0)
+    fprintf(fp, "<g>\n"
+	    "\t<line stroke=\"black\" stroke-dasharray=\"18,6\"  stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n"
+	    "</g>\n",
+	    m, (int) y(), m, svg_height());
 }
 
 void SdLifeLineCanvas::moveBy(double dx, double dy) {

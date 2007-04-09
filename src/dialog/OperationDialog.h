@@ -68,6 +68,7 @@ class OperationDialog : public QTabDialog {
     bool is_rel_a;
     
     // uml tab
+    QWidget * umltab;
     LineEdit * edname;
     QComboBox * edreturn_type;
     int edreturn_type_offset;
@@ -80,6 +81,7 @@ class OperationDialog : public QTabDialog {
     MultiLineEdit * comment;
     
     // c++ tab
+    QWidget * cpptab;
     bool cpp_undef;
     VisibilityGroup cpp_visibility;
     QCheckBox * friend_cb;
@@ -104,6 +106,7 @@ class OperationDialog : public QTabDialog {
     QString cl_names_tmplop;
         
     // java tab
+    QWidget * javatab;
     bool java_undef;
     QCheckBox * final_cb;
     QCheckBox * synchronized_cb;
@@ -118,6 +121,7 @@ class OperationDialog : public QTabDialog {
     QString oldjavabody;
         
     // idl tab
+    QWidget * idltab;
     bool idl_undef;
     QCheckBox * oneway_cb;
     LineEdit * edidlnamespec;	// get/set
@@ -185,7 +189,7 @@ class OperationDialog : public QTabDialog {
     void idl_unmapped_def();
     void idl_update_decl();
     void oneway_toggled(bool on);
-    void update_all_tabs();
+    void update_all_tabs(QWidget *);
     void menu_returntype();
 };
 

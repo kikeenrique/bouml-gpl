@@ -76,11 +76,28 @@ void FragmentCanvas::draw(QPainter & p) {
   p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
 
   QColor co = color(used_color);
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fputs("<g>\n", fp);
   
   p.setBackgroundColor(co);
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   
-  if (used_color != UmlTransparent) p.fillRect(r, co);
+  if (used_color != UmlTransparent) {
+    p.fillRect(r, co);
+
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      co.rgb()&0xffffff, 
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+  }
+  else if (fp != 0)
+    fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	    r.x(), r.y(), r.width() - 1, r.height() - 1);
+  
   p.drawRect(r);
   
   QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
@@ -91,15 +108,28 @@ void FragmentCanvas::draw(QPainter & p) {
   r.setHeight(fm.height() + h);
   if (!name.isEmpty())
     p.drawText(r, QObject::AlignCenter, name);
+  if (fp != 0)
+    draw_text(r, QObject::AlignCenter, name,
+	      p.font(), fp);
   
   h = (fm.height() + h)/2;
-  p.drawLine(r.left(), r.bottom(),
-	     r.right(), r.bottom());
-  p.drawLine(r.right(), r.bottom(),
-	     r.right() + h, r.bottom() - h);
-  p.drawLine(r.right() + h, r.bottom() - h,
-	     r.right() + h, r.top());
-	     
+  p.drawLine(r.left(), r.bottom(), r.right(), r.bottom());
+  p.drawLine(r.right(), r.bottom(), r.right() + h, r.bottom() - h);
+  p.drawLine(r.right() + h, r.bottom() - h, r.right() + h, r.top());
+
+  if (fp != 0) {
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    r.left(), r.bottom(), r.right(), r.bottom());
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    r.right(), r.bottom(), r.right() + h, r.bottom() - h);
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    r.right() + h, r.bottom() - h, r.right() + h, r.top());
+    fputs("</g>\n", fp);
+  }
+	       
   p.setBackgroundColor(bckgrnd);
   
   if (selected())

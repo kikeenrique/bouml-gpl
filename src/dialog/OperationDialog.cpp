@@ -146,6 +146,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   QButtonGroup * bg;
     
   grid = new QGrid(2, this);
+  umltab = grid;
   grid->setSpacing(5);
   grid->setMargin(5);
   
@@ -256,6 +257,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   
   if (! cpp_undef) {
     grid = new QGrid(2, this);
+    cpptab = grid;
     grid->setMargin(5);
     grid->setSpacing(5);
 
@@ -394,11 +396,14 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     
     cl->get_class_spec(templates, cl_names, templates_tmplop, cl_names_tmplop);
   }
+  else
+    cpptab = 0;
   
   // Java
   
   if (! java_undef) {
     grid = new QGrid(2, this);
+    javatab = grid;
     grid->setMargin(5);
     grid->setSpacing(5);
     
@@ -486,11 +491,14 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     
     addTab(grid, "Java");
   }
+  else
+    javatab = 0;
     
   // IDL
   
   if (! idl_undef) {
     grid = new QGrid(2, this);
+    idltab = grid;
     grid->setMargin(5);
     grid->setSpacing(5);
     
@@ -551,6 +559,8 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     
     addTab(grid, "Idl");
   }
+  else
+    idltab = 0;
   
   // USER : list key - value
   
@@ -564,7 +574,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   //
   
   connect(this, SIGNAL(currentChanged(QWidget *)),
-	  this, SLOT(update_all_tabs()));
+	  this, SLOT(update_all_tabs(QWidget *)));
   
   switch (l) {
   case CppView:
@@ -788,18 +798,30 @@ void OperationDialog::abstract_toggled(bool on) {
   }
 }
 
-void OperationDialog::update_all_tabs() {
+void OperationDialog::update_all_tabs(QWidget * w) {
   table->forceUpdateCells();
   etable->forceUpdateCells();
   
-  if (! cpp_undef) {
+  if (w == umltab) {
+    if (! visit)
+      edname->setFocus();
+  }
+  else if (w == cpptab) {
     cpp_update_decl();
     cpp_update_def();
+    if (! visit)
+      edcppdecl->setFocus();
   }
-  if (! java_undef)
+  else if (w == javatab) {
     java_update_def();
-  if (! idl_undef)
+    if (! visit)
+      edjavadef->setFocus();
+  }
+  else if (w == idltab) {
     idl_update_decl();
+    if (! visit)
+      edidldecl->setFocus();
+  }
 }
 
 // C++
@@ -1522,10 +1544,14 @@ void OperationDialog::cpp_update_def() {
 	  s += indent;
       }
       
-      if (!strncmp(p, "${comment}", 10))
-	manage_comment(comment->text(), p, pp);
-      else if (!strncmp(p, "${description}", 14))
-	manage_description(comment->text(), p, pp);
+      if (!strncmp(p, "${comment}", 10)) {
+	if (!manage_comment(comment->text(), p, pp) && re_template)
+	  s += templates;
+      }
+      else if (!strncmp(p, "${description}", 14)) {
+	if (!manage_description(comment->text(), p, pp) && re_template)
+	  s += templates;
+      }
       else if (!strncmp(p, "${inline}", 9)) {
 	p += 9;
 	if (inline_cb->isChecked())

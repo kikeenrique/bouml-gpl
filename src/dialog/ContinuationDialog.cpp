@@ -52,6 +52,7 @@ ContinuationDialog::ContinuationDialog(QString & s)
   hbox->addWidget(label = new QLabel("label : ", this));
   ed = new LineEdit(name, this);
   hbox->addWidget(ed);
+  ed->setFocus();
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);

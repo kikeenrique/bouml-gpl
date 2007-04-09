@@ -341,6 +341,23 @@ void ExpansionRegionCanvas::draw(QPainter & p) {
   p.setPen(QObject::DotLine);
   p.drawRoundRect(r, 8, 8);
 
+  FILE * fp = svg();
+
+  if (fp != 0) {
+    if (used_color != UmlTransparent)
+      fprintf(fp, "<g>\n"
+	      "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-dasharray=\"4,4\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
+	      co.rgb()&0xffffff,
+	      r.left(), r.top(), r.width() - 1, r.height() - 1);
+    else
+      fprintf(fp, "<g>\n"
+	      "\t<rect fill=\"none\" stroke=\"black\" stroke-dasharray=\"4,4\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
+	      r.left(), r.top(), r.width() - 1, r.height() - 1);
+  }
+
+
   int margin = (int) (6 * the_canvas()->zoom());
   QString s;
   
@@ -363,7 +380,12 @@ void ExpansionRegionCanvas::draw(QPainter & p) {
   r.setLeft(r.left() + margin);
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   p.drawText(r, QObject::AlignLeft, s);
-  
+  if (fp != 0) {
+    draw_text(r, QObject::AlignLeft, s,
+	      p.font(), fp);
+    fputs("</g>\n", fp);
+  }
+
   p.setPen(QObject::SolidLine);      
   p.setBackgroundColor(bckgrnd);
   p.setBrush(brsh);
@@ -415,14 +437,18 @@ void ExpansionRegionCanvas::menu(const QPoint&) {
   if (linked())
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
-  if (browser_node->is_writable())
+  if (browser_node->is_writable()) {
     m.insertItem("Set associated diagram",6);
+    
+    if (browser_node->get_associated())
+      m.insertItem("Remove diagram association",10);
+  }
   m.insertSeparator();
   m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
     m.insertItem("Delete from model", 8);
   m.insertSeparator();
-  if (Tool::menu_insert(&toolm, UmlExpansionRegion, 10))
+  if (Tool::menu_insert(&toolm, UmlExpansionRegion, 20))
     m.insertItem("Tool", &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
@@ -452,6 +478,10 @@ void ExpansionRegionCanvas::menu(const QPoint&) {
       ->set_associated_diagram((BrowserActivityDiagram *)
 			       the_canvas()->browser_diagram());
     return;
+  case 10:
+    ((BrowserExpansionRegion *) browser_node)
+      ->set_associated_diagram(0);
+    return;
   case 7:
     //remove from view
     delete_it();
@@ -465,8 +495,8 @@ void ExpansionRegionCanvas::menu(const QPoint&) {
       modified();
     break;
   default:
-    if (index >= 10)
-      ToolCom::run(Tool::command(index - 10), browser_node);
+    if (index >= 20)
+      ToolCom::run(Tool::command(index - 20), browser_node);
     return;
   }
   

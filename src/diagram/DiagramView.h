@@ -115,7 +115,9 @@ class DiagramView : public QCanvasView {
     void print(QPainter * p);
     
     void copy_in_clipboard(bool optimal, bool temporary);
+    bool save_pict(const char * f, bool optimal, bool temporary);
     bool save_in(const char * f, bool optimal, bool temporary);
+    bool svg_save_in(const char * f, bool optimal, bool temporary);
     
     void renumber(int ident);
     
@@ -139,7 +141,7 @@ class DiagramView : public QCanvasView {
     int default_menu(QPopupMenu & m, int f);
     void needed_width_height(int & maxx, int & maxy) const;
     
-    void save_picture(bool optimal);
+    void save_picture(bool optimal, bool svg);
     
     void alignLeft();
     void alignRight();

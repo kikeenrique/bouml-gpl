@@ -56,12 +56,17 @@ class TransitionDialog : public QTabDialog {
     
   protected:
     bool visit;
+    QWidget * umltab;
     TransitionData * rel;
     LineEdit * edname;
     QComboBox * edstereotype;
     MultiLineEdit * comment;
     QList<BodyDialog> edits;
     
+    QWidget * ocltab;
+    QWidget * cpptab;
+    QWidget * javatab;
+
     TransDialog uml;
     TransDialog cpp;
     TransDialog java;
@@ -87,7 +92,7 @@ class TransitionDialog : public QTabDialog {
     virtual ~TransitionDialog();
   
   protected:
-    void init_tab(TransDialog &, TransDef & td, const char * lbl,
+    void init_tab(QWidget *&, TransDialog &, TransDef & td, const char * lbl,
 		  const char * sl_trigger, const char * sl_guard,
 		  const char * sl_expr);
   protected slots:
@@ -104,6 +109,8 @@ class TransitionDialog : public QTabDialog {
     void edit_java_trigger();
     void edit_java_guard();
     void edit_java_expr();
+
+    void change_tabs(QWidget *);
 };
 
 #endif

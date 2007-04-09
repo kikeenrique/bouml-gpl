@@ -3,6 +3,7 @@
 
 
 #include "UmlItem.h"
+#include "anItemKind.h"
 #include <qcstring.h>
 #include "TransitionBehavior.h"
 
@@ -134,7 +135,7 @@ class UmlBaseTransition : public UmlItem {
 #endif
 
     //  the constructor, do not call it yourself !!!!!!!!!!
-     UmlBaseTransition(void * id, const QCString n) : UmlItem(id, n) {
+     UmlBaseTransition(void * id, const QCString & n) : UmlItem(id, n) {
     }
 
 };

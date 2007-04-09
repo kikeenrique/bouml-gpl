@@ -17,6 +17,26 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp UmlArtifact.cpp \
 		UmlStateAction.cpp UmlState.cpp \
 		UmlStateDiagram.cpp UmlTerminatePseudoState.cpp \
 		UmlRegion.cpp \
+		UmlAccessVariableValueAction.cpp \
+		UmlOnSignalAction.cpp \
+		UmlPinParameter.cpp \
+		UmlActivityObject.cpp \
+		UmlActivityAction.cpp \
+		UmlActivityPin.cpp \
+		UmlActivityRegion.cpp \
+		UmlActivityControlNodeClasses.cpp \
+		UmlActivityActionClasses.cpp \
+		UmlExpansionNode.cpp \
+		UmlActivityDiagram.cpp \
+		UmlFlow.cpp \
+		UmlParameterSet.cpp \
+		UmlActivityParameter.cpp \
+		UmlObjectDiagram.cpp \
+		UmlActualParameter.cpp \
+		UmlFormalParameter.cpp \
+		UmlExpansionRegion.cpp \
+		UmlActivity.cpp \
+		UmlInterruptibleActivityRegion.cpp \
 		Class.cpp Package.cpp BrowserNode.cpp Namespace.cpp \
 		Lex.cpp Statistic.cpp ClassContainer.cpp Progress.cpp \
 		../Tools/UmlBaseClassItem.cpp ../Tools/CppSettings.cpp \
@@ -43,7 +63,28 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp UmlArtifact.cpp \
 		../Tools/UmlBaseStateAction.cpp ../Tools/UmlBaseState.cpp \
 		../Tools/UmlBaseStateDiagram.cpp ../Tools/UmlBaseTerminatePseudoState.cpp \
 		../Tools/UmlBaseRegion.cpp ../Tools/StateBehavior.cpp ../Tools/UmlBaseTransition.cpp \
-		../Tools/TransitionBehavior.cpp 
+		../Tools/TransitionBehavior.cpp \
+		../Tools/UmlBaseAccessVariableValueAction.cpp \
+		../Tools/UmlBaseOnSignalAction.cpp \
+		../Tools/UmlBasePinParameter.cpp \
+		../Tools/UmlBaseActivityObject.cpp \
+		../Tools/UmlBaseActivityAction.cpp \
+		../Tools/UmlBaseActivityPin.cpp \
+		../Tools/UmlBaseActivityRegion.cpp \
+		../Tools/UmlBaseActivityControlNodeClasses.cpp \
+		../Tools/UmlBaseActivityActionClasses.cpp \
+		../Tools/UmlBaseExpansionNode.cpp \
+		../Tools/UmlBaseActivityDiagram.cpp \
+		../Tools/UmlBaseFlow.cpp \
+		../Tools/UmlBaseParameterSet.cpp \
+		../Tools/UmlBaseActivityParameter.cpp \
+		../Tools/UmlBaseObjectDiagram.cpp \
+		../Tools/UmlBaseActualParameter.cpp \
+		../Tools/UmlBaseFormalParameter.cpp \
+		../Tools/UmlBaseExpansionRegion.cpp \
+		../Tools/UmlBaseActivity.cpp \
+		../Tools/UmlBaseInterruptibleActivityRegion.cpp \
+		../Tools/FlowBehavior.cpp
 
 
 TARGET	      = cpp_reverse

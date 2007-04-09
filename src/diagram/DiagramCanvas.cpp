@@ -42,6 +42,7 @@
 #include "TransitionData.h"
 #include "UmlWindow.h"
 #include "Settings.h"
+#include "UmlGlobal.h"
 #include "myio.h"
 
 DiagramCanvas::DiagramCanvas(BrowserNode * bn, UmlCanvas * canvas,
@@ -374,7 +375,7 @@ void DiagramCanvas::draw_actor(QPainter * p, QRect r)
 {
   // the 'original' size is 40 x 40
   double scale = r.width() / 40.0;
-  int i,j;
+  int i,j,k,l;
   
   p->setBackgroundMode(QObject::TransparentMode);
   
@@ -389,24 +390,56 @@ void DiagramCanvas::draw_actor(QPainter * p, QRect r)
 	      r.left() + (int) (30 * scale), j);
   
   // body
-  i = r.left() + (int) (19 * scale);
-  j = r.top() + (int) (28 * scale);
-  p->drawLine(i, r.top() + (int) (13 * scale),
-	      i, j);
+  k = r.left() + (int) (19 * scale);
+  l = r.top() + (int) (28 * scale);
+  p->drawLine(k, r.top() + (int) (13 * scale),
+	      k, l);
   
   // legs
-  p->drawLine(i, j, r.left() + (int) (9 * scale), r.bottom());
-  p->drawLine(i, j, r.left() + (int) (29 * scale), r.bottom());
+  p->drawLine(k, l, r.left() + (int) (9 * scale), r.bottom());
+  p->drawLine(k, l, r.left() + (int) (29 * scale), r.bottom());
+
+  FILE * fp = svg();
+
+  if (fp != 0) {
+    int radius = (int) (6.5 * scale);
+
+    // head
+    fprintf(fp, "\t<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+	    k, r.top()+radius, radius, radius);
+
+    // arm
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    r.left() + (int) (8 * scale), j,
+	    r.left() + (int) (30 * scale), j);
+
+    // body
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    k, r.top() + (int) (13 * scale),
+	    k, l);
+
+    // legs
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    k, l, r.left() + (int) (9 * scale), r.bottom());
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    k, l, r.left() + (int) (29 * scale), r.bottom());
+  }
 }
 
 void DiagramCanvas::draw_control_icon(QPainter & p, QRect & r,
-				      const QColor & co, double zoom)
+				      UmlColor used_color, double zoom)
 {
   int sz = (int) (CONTROL_WIDTH * zoom);
   int cx = (r.left() + r.right()) /2;
   int dv = (int) ((CONTROL_HEIGHT - CONTROL_WIDTH) * zoom);
   int cy = r.top() + dv;
   QBrush brsh = p.brush();
+  QColor co = color(used_color);
   
   p.setBrush(co);
   
@@ -415,15 +448,37 @@ void DiagramCanvas::draw_control_icon(QPainter & p, QRect & r,
   p.drawLine(cx, cy, cx + dv, cy + dv);
   
   p.setBrush(brsh);
+
+  FILE * fp = svg();
+
+  if (fp != 0) {
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    cx, cy, cx + dv, cy - dv);
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    cx, cy, cx + dv, cy + dv);
+    sz /= 2;
+    if (used_color != UmlTransparent)
+      fprintf(fp, "\t<ellipse fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+	      co.rgb()&0xffffff,
+	      cx, cy + sz/2, sz, sz);
+    else
+      fprintf(fp, "\t<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+	      cx, cy + sz/2, sz, sz);
+  }
 }
 
 void DiagramCanvas::draw_boundary_icon(QPainter & p, QRect & r,
-				       const QColor & co, double zoom)
+				       UmlColor used_color, double zoom)
 {
   int he = (int) (BOUNDARY_HEIGHT * zoom);
   int cx = (r.left() + r.right() - he) /2;
   int cy = r.top() + he/2;
   QBrush brsh = p.brush();
+  QColor co = color(used_color);
   
   p.setBrush(co);
   
@@ -435,14 +490,36 @@ void DiagramCanvas::draw_boundary_icon(QPainter & p, QRect & r,
   p.drawLine(cx - wi, r.top(), cx - wi, r.top() + he);
   
   p.setBrush(brsh);
+
+  FILE * fp = svg();
+
+  if (fp != 0) {
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    cx - wi, cy, cx, cy);
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    cx - wi, r.top(), cx - wi, r.top() + he);
+    he /= 2;
+    if (used_color != UmlTransparent)
+      fprintf(fp, "\t<ellipse fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+	      co.rgb()&0xffffff,
+	      (r.left() + r.right()) / 2, r.top() + he, he, he);
+    else
+      fprintf(fp, "\t<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+	      (r.left() + r.right()) / 2, r.top() + he, he, he);
+  }
 }
 
  void DiagramCanvas::draw_entity_icon(QPainter & p, QRect & r,
-				      const QColor & co, double zoom)
+				      UmlColor used_color, double zoom)
 {
   int sz = (int) (ENTITY_SIZE * zoom);
   int left = (r.left() + r.right() - sz)/2;
   QBrush brsh = p.brush();
+  QColor co = color(used_color);
   
   p.setBrush(co);
     
@@ -450,6 +527,24 @@ void DiagramCanvas::draw_boundary_icon(QPainter & p, QRect & r,
   p.drawLine(left, r.top() + sz, left + sz, r.top() + sz);
   
   p.setBrush(brsh);
+
+  FILE * fp = svg();
+
+  if (fp != 0) {
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    left, r.top() + sz, left + sz, r.top() + sz);
+    sz /= 2;
+    if (used_color != UmlTransparent)
+      fprintf(fp, "\t<ellipse fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+	      co.rgb()&0xffffff,
+	      (r.left() + r.right()) / 2, r.top() + sz, sz, sz);
+    else
+      fprintf(fp, "\t<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+	      (r.left() + r.right()) / 2, r.top() + sz, sz, sz);
+  }
 }
 
 double DiagramCanvas::compute_angle(double delta_x, double delta_y)

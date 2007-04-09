@@ -327,8 +327,6 @@ QCString UmlOperation::compute_name() {
     return name();
 }
 
-// !!!!!!!!!!!!!!!il manque la valeur par defaut 
-
 void UmlOperation::generate_decl(aVisibility & current_visibility, QTextOStream & f_h,
 				 const QCString & cl_stereotype, QCString indent,
 				 bool & first, bool) {
@@ -664,10 +662,14 @@ void UmlOperation::generate_def(QTextOStream & fs, QCString indent, bool h,
 	  else
 	    fs << *p++;
 	}
-	else if (!strncmp(p, "${comment}", 10))
-	  manage_comment(p, pp);
-	else if (!strncmp(p, "${description}", 14))
-	  manage_description(p, pp);
+	else if (!strncmp(p, "${comment}", 10)) {
+	  if (!manage_comment(p, pp) && re_template)
+	    fs << ((template_oper) ? templates_tmplop : templates);
+	}
+	else if (!strncmp(p, "${description}", 14)) {
+	  if (!manage_description(p, pp) && re_template)
+	    fs << ((template_oper) ? templates_tmplop : templates);
+	}
 	else if (!strncmp(p, "${inline}", 9)) {
 	  p += 9;
 	  if (isCppInline())

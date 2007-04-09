@@ -1,6 +1,6 @@
 format 30
 "Settings" // API BASE::Settings
-  revision 5
+  revision 7
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -527,6 +527,75 @@ ${body}}
 	
 	comment " to indicates to the code generator if the #include may specify
  the path of just the file's name
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 190592 "isRelativePath"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if a relative path must be used when the path
+ must be generated in the produced #includes"
+      end
+
+      operation 190720 "set_IsRelativePath"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if a relative path must be used when the path
+ must be generated in the produced #includes
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 190848 "isForceNamespacePrefixGeneration"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if the namespace prefix must be
+ always generated before class's names"
+      end
+
+      operation 190976 "set_IsForceNamespacePrefixGeneration"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if the namespace prefix must be always generated before class's names
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
@@ -1592,6 +1661,22 @@ ${body}}
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 190464 "isSetParamRef"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if the parameter of a 'set' operation generated through the
+ attribute and relation 'add set operation' menu is a reference by default"
+      end
+
       operation 189568 "set_IsSetParamRef"
 	class_operation public explicit_return_type "bool"
 	nparams 1
@@ -1939,6 +2024,24 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	idl_decl ""
+      end
+
+      attribute 77952 "_is_relative_path"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      attribute 78080 "_is_force_namespace_gen"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
 	idl_decl ""
       end
 

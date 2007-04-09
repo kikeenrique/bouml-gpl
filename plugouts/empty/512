@@ -1,6 +1,6 @@
 format 30
 "Com" // API BASE::Com
-  revision 5
+  revision 7
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -3061,6 +3061,24 @@ public static final ${class} ${name} = new ${class}(_${name});
       end
 
       attribute 77056 "setCppIsSetParamRefCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 78208 "setCppRelativePathCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 78336 "setCppForceNamespaceGenCmd"
 	public explicit_type ""
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};

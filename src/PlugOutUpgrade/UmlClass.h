@@ -29,6 +29,7 @@
 #include <qdict.h>
 
 #include "UmlBaseClass.h"
+#include "aRelationKind.h"
 
 class UmlPackage;
 class UmlClass;
@@ -38,27 +39,6 @@ class UmlDeploymentView;
 class UmlOperation;
 class UmlAttribute;
 class UmlRelation;
-
-
-// This class manages 'formal parameters' of a template class.
-// For instance 'T' in 
-//	template class Cl<class T> ...
-// You can modify it as you want (except the constructor)
-
-class UmlFormalParameter : public UmlBaseFormalParameter {
-  public:
-    UmlFormalParameter(){};
-};
-
-// This class manages 'actual parameters' of a template class.
-// for instance T in
-//	class Cl1 : public Cl2<T> ...
-// You can modify it as you want (except the constructor)
-
-class UmlActualParameter : public UmlBaseActualParameter {
-  public:
-    UmlActualParameter(){};
-};
 
 // This class manages 'classes'
 // You can modify it as you want (except the constructor)

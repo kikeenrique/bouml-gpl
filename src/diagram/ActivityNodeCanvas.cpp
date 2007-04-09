@@ -183,6 +183,96 @@ void ActivityNodeCanvas::draw(QPainter & p) {
     
   if (selected())
     show_mark(p, r);
+
+  FILE * fp = svg();
+
+  if (fp != 0) {
+    bool big = the_canvas()->zoom() >= 1.0;
+    int px = (int) x();
+    int py = (int) y();
+
+    switch (browser_node->get_type()) {
+    case InitialAN:
+      if (big)
+	fprintf(fp, "\t<ellipse fill=\"black\" stroke=\"none\" cx=\"%d\" cy=\"%d\" rx=\"8.5\" ry=\"8.5\" />\n",
+		px + 9, py + 9);
+      else
+	fprintf(fp, "\t<ellipse fill=\"black\" stroke=\"none\" cx=\"%d\" cy=\"%d\" rx=\"5.5\" ry=\"5.5\" />\n",
+		px + 7, py + 7);
+      break;
+    case ActivityFinalAN:
+      if (big) {
+	fprintf(fp, "<g>\n"
+		"\t<ellipse fill=\"white\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" cx=\"%d\" cy=\"%d\" rx=\"11.5\" ry=\"11.5\" />\n",
+		px + 12, py + 12);
+	fprintf(fp, "\t<ellipse fill=\"black\" cx=\"%d\" cy=\"%d\" rx=\"8.5\" ry=\"8.5\" />\n"
+		"</g>\n",
+		px + 12, py + 12);
+      }
+      else {
+	fprintf(fp, "<g>\n"
+		"\t<ellipse fill=\"white\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" cx=\"%d\" cy=\"%d\" rx=\"7.5\" ry=\"7.5\" />\n",
+		px + 8, py + 8);
+	fprintf(fp, "\t<ellipse fill=\"black\" cx=\"%d\" cy=\"%d\" rx=\"4.5\" ry=\"4.5\" />\n"
+		"</g>\n",
+		px + 8, py + 8);
+      }
+      break;
+    case FlowFinalAN:
+      if (big) {
+	fprintf(fp, "<g>\n"
+		"\t<ellipse fill=\"white\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" cx=\"%d\" cy=\"%d\" rx=\"8.5\" ry=\"8.5\" />\n",
+		px + 9, py + 9);
+	fprintf(fp, "\t<line stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		px + 4, py + 4, px + 14, py + 14);
+	fprintf(fp, "\t<line stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n"
+		"</g>\n",
+		px + 14, py + 4, px + 4, py + 14);
+      }
+      else {
+	fprintf(fp, "<g>\n"
+		"\t<ellipse fill=\"white\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" cx=\"%d\" cy=\"%d\" rx=\"5.5\" ry=\"5.5\" />\n",
+		px + 7, py + 7);
+	fprintf(fp, "\t<line stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		px + 4, py + 4, px + 10, py + 10);
+	fprintf(fp, "\t<line stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n"
+		"</g>\n",
+		px + 10, py + 4, px + 4, py + 10);
+      }
+      break;
+    case DecisionAN:
+    case MergeAN:
+      // note : shadow not produced
+      if (big)
+	fprintf(fp, "<polygon fill=\"white\" stroke=\"black\" stroke-opacity=\"1\" points =\"%d,%d %d,%d %d,%d %d,%d\" />\n",
+		px + 3, py + 18, px + 12, py + 1, px + 21, py + 18, px + 12, py + 35);
+      else
+	fprintf(fp, "<polygon fill=\"white\" stroke=\"black\" stroke-opacity=\"1\" points =\"%d,%d %d,%d %d,%d %d,%d\" />\n",
+		px + 2, py + 12, px + 8, py + 1, px + 14, py + 12, px + 8, py + 23);
+      break;
+    case ForkAN:
+    case JoinAN:
+      if (horiz) {
+	if (big)
+	  fprintf(fp, "<line stroke=\"black\" stroke-width=\"3\" stroke-opacity=\"1\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		  px + 1, py + 7, px + 23, py + 7);
+	else
+	  fprintf(fp, "<line stroke=\"black\" stroke-width=\"3\" stroke-opacity=\"1\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		  px + 1, py + 7, px + 16, py + 7);
+      }
+      else {
+	if (big)
+	  fprintf(fp, "<line stroke=\"black\" stroke-width=\"3\" stroke-opacity=\"1\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		  px + 6, py + 1, px + 6, py + 24);
+	else
+	  fprintf(fp, "<line stroke=\"black\" stroke-width=\"3\" stroke-opacity=\"1\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		  px + 6, py + 1, px + 6, py + 17);
+      }
+      break;
+    default:
+      break;
+    }
+  }
 }
 
 UmlCode ActivityNodeCanvas::type() const {

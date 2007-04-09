@@ -1,34 +1,11 @@
-// *************************************************************************
-//
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
-//
-// This file is part of the BOUML Uml Toolkit.
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//
-// e-mail : bouml@free.fr
-// home   : http://bouml.free.fr
-//
-// *************************************************************************
 
-/* !!!!!!!!!! Do not modify this file !!!!!!!!!! */
-
+#include "UmlBaseComponent.h"
 #include "UmlComponent.h"
 #include "UmlComponentView.h"
-#include "UmlCom.h"
+#include "UmlComponentDiagram.h"
+#include "UmlClass.h"
 
+#include "UmlCom.h"
 UmlComponent * UmlBaseComponent::create(UmlComponentView * parent, const char * s)
 {
   return (UmlComponent *) parent->create_(aComponent, s);
@@ -45,9 +22,8 @@ UmlComponentDiagram * UmlBaseComponent::associatedDiagram() {
 }
 
 bool UmlBaseComponent::set_AssociatedDiagram(UmlComponentDiagram * d) {
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd,
-		   ((UmlBaseItem *) d)->_identifier);
-  if (UmlCom::read_ack()) {
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
   }
@@ -55,11 +31,46 @@ bool UmlBaseComponent::set_AssociatedDiagram(UmlComponentDiagram * d) {
     return FALSE;
 }
 
-void UmlBaseComponent::unload(bool rec, bool del) {
-  UmlBaseItem::unload(rec, del);
+const QVector<UmlClass> & UmlBaseComponent::realizedClasses() {
+  read_if_needed_();
+  
+  return _realized;
 }
 
-UmlBaseComponent::UmlBaseComponent(void * id, const QCString & n) : UmlItem(id, n) {
+const QVector<UmlClass> & UmlBaseComponent::providedClasses() {
+  read_if_needed_();
+  
+  return _provided;
+}
+
+const QVector<UmlClass> & UmlBaseComponent::requiredClasses() {
+  read_if_needed_();
+  
+  return _required;
+}
+
+bool UmlBaseComponent::set_AssociatedClasses(const QVector<UmlClass> & realized, const QVector<UmlClass> & provided, const QVector<UmlClass> & required) {
+  UmlCom::send_cmd(_identifier, setAssocClassesCmd,
+		   realized, provided, required);
+  if (UmlCom::read_bool()) {
+    if (_defined) {
+      _realized = realized;
+      _provided = provided;
+      _required = required;
+    }
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+void UmlBaseComponent::unload(bool rec, bool del) {
+  _realized.clear();
+  _provided.clear();
+  _required.clear();
+
+  UmlBaseItem::unload(rec, del);
+
 }
 
 void UmlBaseComponent::read_uml_() {
@@ -67,22 +78,24 @@ void UmlBaseComponent::read_uml_() {
   UmlBaseItem::read_uml_();
   
   unsigned n;
+  unsigned index;
   
-  // realized_classes
   n = UmlCom::read_unsigned();
-  
-  while (n--)
-    UmlBaseItem::read_();
-  
-  // provided
+  _realized.resize(n);
+    
+  for (index = 0; index != n; index += 1)
+    _realized.insert(index, (UmlClass *) UmlBaseItem::read_());
+
   n = UmlCom::read_unsigned();
-  
-  while (n--)
-    UmlBaseItem::read_();
-  
-  // required
+  _provided.resize(n);
+    
+  for (index = 0; index != n; index += 1)
+    _provided.insert(index, (UmlClass *) UmlBaseItem::read_());
+
   n = UmlCom::read_unsigned();
-  
-  while (n--)
-    UmlBaseItem::read_();
+  _required.resize(n);
+    
+  for (index = 0; index != n; index += 1)
+    _required.insert(index, (UmlClass *) UmlBaseItem::read_());
 }
+

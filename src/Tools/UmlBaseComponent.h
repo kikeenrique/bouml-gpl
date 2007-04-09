@@ -1,66 +1,80 @@
-// *************************************************************************
-//
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
-//
-// This file is part of the BOUML Uml Toolkit.
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//
-// e-mail : bouml@free.fr
-// home   : http://bouml.free.fr
-//
-// *************************************************************************
+#ifndef _UMLBASECOMPONENT_H
+#define _UMLBASECOMPONENT_H
 
-#ifndef UMLBASECOMPONENT_H
-#define UMLBASECOMPONENT_H
-
-/* !!!!!!!!!! Do not modify this file !!!!!!!!!! */
 
 #include "UmlItem.h"
+#include "anItemKind.h"
+#include <qvector.h>
+#include <qcstring.h>
 
+#include "UmlClass.h"	// to avoid destructor problem
 class UmlComponent;
 class UmlComponentView;
 class UmlComponentDiagram;
+class UmlClass;
 
-class UmlBaseComponent : public UmlItem {    
+//  Manage the components.
+class UmlBaseComponent : public UmlItem {
   public:
-    // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseComponent(void * id, const QCString & n);
-  
-    // returns a new component named 'name' created under 'parent', or
-    // the null pointer in case it cannot be created (the name is
-    // already used or invalid, 'parent' cannot contain it etc ...)
-    static UmlComponent * create(UmlComponentView * parent, const char * name);
-    
+    // returns a new component named 's' created under 'parent'
+    //
+    // In case it cannot be created (the name is already used or
+    // invalid, 'parent' cannot contain it etc ...) return 0 in C++
+    // and produce a RuntimeException in Java
+    static UmlComponent * create(UmlComponentView * parent, const char * s);
+
     // returns the kind of the item
     virtual anItemKind kind();
-    
+
     // returns the optional associated diagram
     UmlComponentDiagram * associatedDiagram();
-    
-    // sets the associated diagram, arg may be 0
-    bool set_AssociatedDiagram(UmlComponentDiagram *);
-    
+
+    // sets the associated diagram, arg may be null to unset it
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_AssociatedDiagram(UmlComponentDiagram * d);
+
+    // returns (in Java a copy of) the optional realized classes
+    const QVector<UmlClass> & realizedClasses();
+
+    // returns (in Java a copy of) the optional provided classes
+    const QVector<UmlClass> & providedClasses();
+
+    // returns (in Java a copy of) the optional required classes
+    const QVector<UmlClass> & requiredClasses();
+
+    // set the realized, provided and required classes lists
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_AssociatedClasses(const QVector<UmlClass> & realized, const QVector<UmlClass> & provided, const QVector<UmlClass> & required);
+
     // to unload the object to free memory, it will be reloaded
     // automatically if needed. args unused
     virtual void unload(bool = FALSE, bool = FALSE);
-    
+
+
   private:
     UmlComponentDiagram * _assoc_diagram;
 
+    QVector<UmlClass> _realized;
+
+    QVector<UmlClass> _provided;
+
+    QVector<UmlClass> _required;
+
+
+  protected:
+    //internal, do NOT use it
+    
     virtual void read_uml_();
+
+    // the constructor, do not call it yourself !!!!!!!!!!
+    UmlBaseComponent(void * id, const QCString & n);
+
 };
+
+inline UmlBaseComponent::UmlBaseComponent(void * id, const QCString & n) : UmlItem(id, n) {
+  _assoc_diagram = 0;
+}
 
 #endif

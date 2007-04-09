@@ -69,15 +69,38 @@ void SubjectCanvas::draw(QPainter & p) {
   p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
 
   QColor co = color(used_color);
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fputs("<g>\n", fp);  
   
   p.setBackgroundColor(co);
   p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
   
-  if (used_color != UmlTransparent) p.fillRect(r, co);
+  if (used_color != UmlTransparent)  {
+    p.fillRect(r, co);
+    
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      co.rgb()&0xffffff, 
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+  }
+  else if (fp != 0)
+    fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	    r.x(), r.y(), r.width() - 1, r.height() - 1);
+
   p.drawRect(r);
   
   r.setTop(r.top() + (int) (2*the_canvas()->zoom()));
   p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, name);
+  if (fp != 0) {
+    draw_text(r, QObject::AlignHCenter + QObject::AlignTop, name,
+	      p.font(), fp);
+    fputs("</g>\n", fp);
+  }
+    
   p.setBackgroundColor(bckgrnd);
   
   if (selected())

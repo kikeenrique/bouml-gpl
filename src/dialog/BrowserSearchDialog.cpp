@@ -112,6 +112,7 @@ BrowserSearchDialog::BrowserSearchDialog()
   ed->setText(saved_ed);
   gl->addWidget(new QLabel("Containing", this), 1, 0, Qt::AlignLeft);
   gl->addWidget(ed, 1, 1);
+  ed->setFocus();
   
   QGroupBox * gb = new QGroupBox(2, QGroupBox::Horizontal, this);
 

@@ -42,7 +42,6 @@ enum MiscGlobalCmd {
   showTraceCmd,
   traceAutoRaiseCmd,
   
-  withAckCmd = 124,
   setRootPermissionCmd = 125,
   setUserIdCmd = 126,
   userIdCmd = 127
@@ -282,7 +281,10 @@ enum CppSettingsCmd {
   setCppEnumReturnCmd,
   setCppReturnCmd,
   // api 26
-  setCppIsSetParamRefCmd
+  setCppIsSetParamRefCmd,
+  // api 27
+  setCppRelativePathCmd,
+  setCppForceNamespaceGenCmd
 };
 
 enum JavaSettingsCmd {

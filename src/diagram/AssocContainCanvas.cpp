@@ -263,6 +263,9 @@ AssocContainCanvas * AssocContainCanvas::read(char * & st, UmlCanvas * canvas, c
     // 2.0 deployment diagrams
     if (r->begin->type() == UmlComponent)
       Undefined.append(r);
+    else if (read_file_format() == 30)
+      // to remove redondant transitions made by release 2.22
+      RelsToCheck.append(r);
     
     return r;
   }

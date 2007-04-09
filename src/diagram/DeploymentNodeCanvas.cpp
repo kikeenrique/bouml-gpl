@@ -197,6 +197,11 @@ void DeploymentNodeCanvas::draw(QPainter & p) {
   }
   
   QColor co = color(c);
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fputs("<g>\n", fp);
+
   const int added = (int) (DEPLOYMENTNODE_CANVAS_ADDED * the_canvas()->zoom());
   QRect r = rect();
   QPointArray a(7);
@@ -216,6 +221,13 @@ void DeploymentNodeCanvas::draw(QPainter & p) {
     p.setBackgroundMode(QObject::TransparentMode);
     p.setBackgroundColor(co);
     p.drawPolyline(a);
+
+    if (fp != 0) {
+      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+      draw_poly(fp, a, "none");
+    }
   }
   else {
     p.setBackgroundMode(QObject::OpaqueMode);
@@ -224,10 +236,23 @@ void DeploymentNodeCanvas::draw(QPainter & p) {
     p.drawPolygon(a, TRUE, 0, 6);
     p.setBrush(brsh);
     p.setBackgroundColor(co);
+
+    if (fp != 0) {
+      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      co.rgb()&0xffffff,
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+      draw_poly(fp, a, co);
+    }
   }
 
   p.drawRect(r);
   p.drawLine(r.topRight(), a.point(2));
+
+  if (fp != 0)
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    r.right(), r.top(), a.point(2).x(), a.point(2).y());
 
   const int three = (int) (3 * the_canvas()->zoom());  
   QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
@@ -239,19 +264,38 @@ void DeploymentNodeCanvas::draw(QPainter & p) {
   if (st[0]) {
     p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, 
 	       QString("<<") + toUnicode(st) + ">>");
+    if (fp != 0)
+      draw_text(r, QObject::AlignHCenter + QObject::AlignTop, 
+		QString("<<") + toUnicode(st) + ">>",
+		p.font(), fp);
     r.setTop(r.top() + fm.height() + three);
   }
   
   if (horiz)
     p.drawText(r, QObject::AlignHCenter + QObject::AlignTop,
 	       iname + ":" + browser_node->get_name());
+  if (fp != 0)
+    draw_text(r, QObject::AlignHCenter + QObject::AlignTop,
+	      iname + ":" + browser_node->get_name(),
+	      p.font(), fp);
   else {
     p.drawText(r, QObject::AlignHCenter + QObject::AlignTop,
 	       iname + ":");
+    if (fp != 0)
+      draw_text(r, QObject::AlignHCenter + QObject::AlignTop,
+		iname + ":",
+		p.font(), fp);
     r.setTop(r.top() + fm.height() + three);
     p.drawText(r, QObject::AlignHCenter + QObject::AlignTop,
 	       browser_node->get_name());
+    if (fp != 0)
+      draw_text(r, QObject::AlignHCenter + QObject::AlignTop,
+		browser_node->get_name(),
+		p.font(), fp);
   }
+  
+  if (fp != 0)
+    fputs("</g>\n", fp);
   
   p.setBackgroundColor(bckgrnd);
   

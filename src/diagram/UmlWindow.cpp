@@ -1023,8 +1023,28 @@ void UmlWindow::print() {
   if (m) {
     QPrinter printer;
 
+    if (format >= IsoA0Landscape)
+      printer.setOrientation(QPrinter::Landscape);
+
+    static bool initialized = FALSE;
+    static QPrinter::ColorMode cm = QPrinter::Color;
+    static QPrinter::PageSize ps = QPrinter::A4;
+    static bool fp = FALSE;
+
+    if (initialized) {
+      printer.setColorMode(cm);
+      printer.setPageSize(ps);
+      printer.setFullPage(fp);
+    }
+
     if (printer.setup(this)) {
+      initialized = TRUE;
+      cm = printer.colorMode();
+      ps = printer.pageSize();
+      fp = printer.fullPage();
+
       QPainter paint(&printer);
+
       QApplication::setOverrideCursor(Qt::waitCursor);
       m->get_view()->print(&paint);
       QApplication::restoreOverrideCursor();

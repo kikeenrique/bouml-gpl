@@ -123,6 +123,7 @@ operation's parameter(s) without any check",
   edargs = new MultiLineEdit(this);
   edargs->setText(a->get_args());
   hbox->addWidget(edargs);  
+  edargs->setFocus();
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);

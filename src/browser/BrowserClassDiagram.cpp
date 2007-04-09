@@ -164,6 +164,15 @@ const QPixmap* BrowserClassDiagram::pixmap(int) const {
   return (deletedp()) ? DeletedClassDiagramIcon : ClassDiagramIcon;
 }
 
+void BrowserClassDiagram::draw_svg() const {
+  fputs("\t<rect fill=\"white\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" x=\"0\" y=\"0\" width=\"15\" height=\"15\" />\n"
+	"\t<path fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" "
+	"d=\"M 3 2 L 9 2 L 3 8 L 9 8 L 3 2 "
+	"M 8 5 L 12 5 L 12 9 M 11 8 L 12 9 L 13 8 "
+	"M 6 15 L 6 12 L 8 10 L 15 10\" />\n",
+	svg());
+}
+
 void BrowserClassDiagram::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
@@ -405,13 +414,13 @@ bool BrowserClassDiagram::tool_cmd(ToolCom * com, const char * args) {
     return TRUE;
   case saveInCmd:
     if (window != 0)
-      com->write_ack(window->get_view()->save_in(args, TRUE, FALSE));
+      com->write_ack(window->get_view()->save_pict(args, TRUE, FALSE));
     else {
       ClassDiagramWindow * w = new ClassDiagramWindow(full_name(), this);
       
-      com->write_ack(w->get_view()->save_in(args, 
-					    !w->get_view()->has_preferred_size_zoom(),
-					     TRUE));
+      com->write_ack(w->get_view()->save_pict(args, 
+					      !w->get_view()->has_preferred_size_zoom(),
+					      TRUE));
       w->dont_save();
       w->close(TRUE);
     }

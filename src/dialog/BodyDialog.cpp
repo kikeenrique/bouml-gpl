@@ -69,6 +69,7 @@ BodyDialog::BodyDialog(QString t, QTabDialog * d, post_edit pf,
   e->setFont(font);
   
   vbox->addWidget(e);
+  e->setFocus();
   
   UmlDesktop::setsize_center(this, previous_size, 0.5, 0.5);
 }

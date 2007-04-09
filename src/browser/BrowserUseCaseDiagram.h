@@ -64,6 +64,7 @@ class BrowserUseCaseDiagram : public BrowserDiagram {
 				    QString name = QString::null);
   
     virtual const QPixmap* pixmap (int) const;
+    virtual void draw_svg() const;
   
     virtual void menu();
     virtual void apply_shortcut(QString s);

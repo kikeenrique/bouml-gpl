@@ -370,6 +370,10 @@ void ActivityCanvas::draw(QPainter & p) {
   QBrush brsh = p.brush();
   QColor bckgrnd = p.backgroundColor();
   int margin = (int) (24 * the_canvas()->zoom());
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fputs("<g>\n", fp);  
   
   p.setBackgroundMode((used_color == UmlTransparent)
 		      ? QObject::TransparentMode
@@ -379,29 +383,56 @@ void ActivityCanvas::draw(QPainter & p) {
   
   p.setBackgroundColor(co);
   
-  if (used_color != UmlTransparent) 
+  if (used_color != UmlTransparent)
     p.setBrush(co);
   
   p.setPen(QObject::SolidLine);
   p.drawRoundRect(r, 8, 8);
+  if (fp != 0) {
+    if (used_color != UmlTransparent)
+      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
+	      co.rgb()&0xffffff,
+	      r.left(), r.top(), r.width() - 1, r.height() - 1);
+    else
+      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
+	      r.left(), r.top(), r.width() - 1, r.height() - 1);
+  }
   
   p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
   p.drawText(r.x() + margin, r.y() + margin,
 	     r.width(), r.height(), QObject::AlignLeft,
 	     browser_node->get_name());  
+  if (fp != 0)
+    draw_text(r.x() + margin, r.y() + margin,
+	      r.width(), r.height(), QObject::AlignLeft,
+	      browser_node->get_name(), p.font(), fp);  
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   
-  if (singleexec_offset.x() != 0)
+  if (singleexec_offset.x() != 0) {
     p.drawText(r.x() + singleexec_offset.x(),
 	       r.y() + singleexec_offset.y(),
 	       r.width(), r.height(), QObject::AlignLeft,
 	       "<<singleExecution>>");
+    if (fp != 0)
+      draw_text(r.x() + singleexec_offset.x(),
+		r.y() + singleexec_offset.y(),
+		r.width(), r.height(), QObject::AlignLeft,
+		"<<singleExecution>>", p.font(), fp);
+  }
   
-  if (readonly_offset.x() != 0)
+  if (readonly_offset.x() != 0) {
     p.drawText(r.x() + readonly_offset.x(),
 	       r.y() + readonly_offset.y(),
 	       r.width(), r.height(), QObject::AlignLeft,
 	       "<<readOnly>>");
+    if (fp != 0)
+      draw_text(r.x() + readonly_offset.x(),
+		r.y() + readonly_offset.y(),
+		r.width(), r.height(), QObject::AlignLeft,
+		"<<readOnly>>", p.font(), fp);
+  }
   
   if (! pre.isEmpty()) {
     p.drawText(r.x() + pre_offset.x(),
@@ -412,6 +443,17 @@ void ActivityCanvas::draw(QPainter & p) {
 	       r.y() + pre_offset.y(),
 	       r.width(), r.height(),
 	       QObject::AlignLeft, pre);
+    
+    if (fp != 0) {
+      draw_text(r.x() + pre_offset.x(),
+		r.y() + pre_offset.y(),
+		r.width(), r.height(), QObject::AlignLeft,
+		"<<precondition>>", p.font(), fp);
+      draw_text(r.x() + pre_offset.x() + post_width,
+		r.y() + pre_offset.y(),
+		r.width(), r.height(),
+		QObject::AlignLeft, pre, p.font(), fp);
+    }
   }
   
   if (! post.isEmpty()) {
@@ -423,8 +465,22 @@ void ActivityCanvas::draw(QPainter & p) {
 	       r.y() + post_offset.y(),
 	       r.width(), r.height(),
 	       QObject::AlignLeft, post);
+    
+    if (fp != 0) {
+      draw_text(r.x() + post_offset.x(),
+		r.y() + post_offset.y(),
+		r.width(), r.height(), QObject::AlignLeft,
+		"<<postcondition>>", p.font(), fp);
+      draw_text(r.x() + post_offset.x() + post_width,
+		r.y() + post_offset.y(),
+		r.width(), r.height(),
+		QObject::AlignLeft, post, p.font(), fp);
+    }
   }
       
+  if (fp != 0)
+    fputs("</g>\n", fp);
+    
   p.setBackgroundColor(bckgrnd);
   p.setBrush(brsh);
   
@@ -475,14 +531,17 @@ void ActivityCanvas::menu(const QPoint&) {
   if (linked())
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
-  if (browser_node->is_writable())
+  if (browser_node->is_writable()) {
     m.insertItem("Set associated diagram",6);
+    if (browser_node->get_associated())
+      m.insertItem("Remove diagram association",10);
+  }
   m.insertSeparator();
   m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
     m.insertItem("Delete from model", 8);
   m.insertSeparator();
-  if (Tool::menu_insert(&toolm, UmlActivity, 10))
+  if (Tool::menu_insert(&toolm, UmlActivity, 20))
     m.insertItem("Tool", &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
@@ -512,6 +571,10 @@ void ActivityCanvas::menu(const QPoint&) {
       ->set_associated_diagram((BrowserActivityDiagram *)
 			       the_canvas()->browser_diagram());
     return;
+  case 10:
+    ((BrowserActivity *) browser_node)
+      ->set_associated_diagram(0);
+    return;
   case 7:
     //remove from view
     delete_it();
@@ -524,8 +587,8 @@ void ActivityCanvas::menu(const QPoint&) {
     ((BrowserActivity *) browser_node)->add_parameter(0);
     modified();
   default:
-    if (index >= 10)
-      ToolCom::run(Tool::command(index - 10), browser_node);
+    if (index >= 20)
+      ToolCom::run(Tool::command(index - 20), browser_node);
     return;
   }
   

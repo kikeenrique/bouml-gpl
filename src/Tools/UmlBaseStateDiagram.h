@@ -3,6 +3,7 @@
 
 
 #include "UmlDiagram.h"
+#include "anItemKind.h"
 #include <qcstring.h>
 
 class UmlStateDiagram;

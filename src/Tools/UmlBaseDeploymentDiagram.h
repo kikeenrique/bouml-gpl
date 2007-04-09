@@ -1,51 +1,32 @@
-// *************************************************************************
-//
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
-//
-// This file is part of the BOUML Uml Toolkit.
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//
-// e-mail : bouml@free.fr
-// home   : http://bouml.free.fr
-//
-// *************************************************************************
+#ifndef _UMLBASEDEPLOYMENTDIAGRAM_H
+#define _UMLBASEDEPLOYMENTDIAGRAM_H
 
-#ifndef UMLBASEDEPLOYMENTDIAGRAM_H
-#define UMLBASEDEPLOYMENTDIAGRAM_H
-
-/* !!!!!!!!!! Do not modify this file !!!!!!!!!! */
 
 #include "UmlDiagram.h"
+#include "anItemKind.h"
+#include <qcstring.h>
 
 class UmlDeploymentDiagram;
 class UmlDeploymentView;
 
+//  Manage the deployment diagrams
 class UmlBaseDeploymentDiagram : public UmlDiagram {
   public:
-    // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseDeploymentDiagram(void * id, const QCString & n) 
-      : UmlDiagram(id, n) {};
-  
-    // returns a new deployment diagram named 'name' created under 'parent', or
-    // the null pointer in case it cannot be created (the name is
-    // already used or invalid, 'parent' cannot contain it etc ...)
-    static UmlDeploymentDiagram * create(UmlDeploymentView * parent, const char * name);
-    
+    // returns a new deployment diagram named 's' created under 'parent'
+    //
+    // In case it cannot be created (the name is already used or
+    // invalid, 'parent' cannot contain it etc ...) return 0 in C++
+    // and produce a RuntimeException in Java
+    static UmlDeploymentDiagram * create(UmlDeploymentView * parent, const char * s);
+
     // returns the kind of the item
     virtual anItemKind kind();
+
+
+  protected:
+    // the constructor, do not call it yourself !!!!!!!!!!
+    UmlBaseDeploymentDiagram(void * id, const QCString & n) : UmlDiagram(id, n) {};
+
 };
 
 #endif

@@ -205,14 +205,21 @@ void CodSelfLinkCanvas::moveBy(double dx, double dy) {
 void CodSelfLinkCanvas::draw(QPainter & p) {
   if (! visible()) return;
   
+  QPoint ce = center();
+
   p.save();
-  p.translate(center().x(), center().y());
-  
+  p.translate(ce.x(), ce.y());
   p.rotate(angle);
   
   QRect r(-width() / 2, -width() / 4, width() - 1, width() / 2);
   
   p.drawEllipse(r);
+
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fprintf(fp, "<ellipse fill=\"none\" stroke=\"black\" stroke-opacity=\"1\" transform=\"translate(%d %d) rotate(%d)\" rx=\"%d\" ry=\"%d\" />\n",
+	    (int) ce.x(), (int) ce.y(), (int) angle, width() / 2, width() / 4);
   
   if (selected())
     show_mark(p, r);

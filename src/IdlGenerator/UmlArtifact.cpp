@@ -50,12 +50,12 @@ void UmlArtifact::generate() {
     QCString path = pack->path(name);
     QCString mod_start;
     QCString mod_end;
-    const QCString mod = pack->idlModule();
+    QCString mod = pack->idlModule();
     
     if (! mod.isEmpty()) {
       int index = 0;
       int index2;
-      QCString closed = "\n} // module ";
+      QCString closed = "\n}; // module ";
       
       while ((index2 = mod.find(':', index)) != -1) {
 	QCString mo = mod.mid(index, index2 - index);
@@ -64,7 +64,8 @@ void UmlArtifact::generate() {
 	closed += mo;
 	mod_end = closed + "\n" + mod_end;
 	closed += "::";
-	index = index2 + 2;
+	mod.replace(index2, 2, "_");
+	index = index2 + 1;
       }
       
       mod_start += QCString("module ") + mod.mid(index) + " {\n\n";
@@ -132,6 +133,14 @@ void UmlArtifact::generate() {
       else if (!strncmp(p, "${NAME}", 7)) {
 	p += 7;
 	f << name.upper();
+      }
+      else if (!strncmp(p, "${module}", 9)) {
+	p += 9;
+	f << mod;
+      }
+      else if (!strncmp(p, "${MODULE}", 9)) {
+	p += 9;
+	f << mod.upper();
       }
       else if (!strncmp(p, "${includes}", 11)) {
 	p += 11;

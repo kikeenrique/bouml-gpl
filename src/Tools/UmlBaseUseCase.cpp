@@ -1,46 +1,16 @@
-// *************************************************************************
-//
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
-//
-// This file is part of the BOUML Uml Toolkit.
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//
-// e-mail : bouml@free.fr
-// home   : http://bouml.free.fr
-//
-// *************************************************************************
-
-/* !!!!!!!!!! Do not modify this file !!!!!!!!!! */
 
 #include "UmlBaseUseCase.h"
+#include "UmlUseCase.h"
 #include "UmlUseCaseDiagram.h"
+
 #include "UmlCom.h"
-
-anItemKind UmlBaseUseCase::kind() {
-  return anUseCase;
-}
-
 UmlUseCase * UmlBaseUseCase::create(UmlItem * parent, const char * s)
 {
   return (UmlUseCase *) parent->create_(anUseCase, s);
 }
 
-void UmlBaseUseCase::read_uml_() {
-  _assoc_diagram = (UmlUseCaseDiagram *) UmlBaseItem::read_();
-  UmlBaseItem::read_uml_();
+anItemKind UmlBaseUseCase::kind() {
+  return anUseCase;
 }
 
 UmlUseCaseDiagram * UmlBaseUseCase::associatedDiagram() {
@@ -51,11 +21,16 @@ UmlUseCaseDiagram * UmlBaseUseCase::associatedDiagram() {
 
 bool UmlBaseUseCase::set_AssociatedDiagram(UmlUseCaseDiagram * d) {
   UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
-  if (UmlCom::read_ack()) {
+  if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
   }
   else
     return FALSE;
+}
+
+void UmlBaseUseCase::read_uml_() {
+  _assoc_diagram = (UmlUseCaseDiagram *) UmlBaseItem::read_();
+  UmlBaseItem::read_uml_();
 }
 

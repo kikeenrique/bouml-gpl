@@ -1,6 +1,6 @@
 format 30
 "API BASE" // API BASE
-  revision 5
+  revision 7
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -8245,7 +8245,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 
       attribute 77696 "_java_get_set_frozen"
 	private explicit_type "bool"
-	cpp_decl "    #ifdef WITHCPP
+	cpp_decl "    #ifdef WITHJAVA
 ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 #endif
 "
@@ -8256,7 +8256,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 
       attribute 77824 "_idl_get_set_frozen"
 	private explicit_type "bool"
-	cpp_decl "    #ifdef WITHCPP
+	cpp_decl "    #ifdef WITHIDL
 ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 #endif
 "

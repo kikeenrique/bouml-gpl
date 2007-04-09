@@ -98,6 +98,7 @@ AttributeDialog::AttributeDialog(AttributeData * a)
   // general tab
   
   grid = new QGrid(2, this);
+  umltab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
   
@@ -228,6 +229,7 @@ AttributeDialog::AttributeDialog(AttributeData * a)
   
   if (! cpp_in_typedef) {
     grid = new QGrid(2, this);
+    cpptab = grid;
     grid->setMargin(5);
     grid->setSpacing(5);
     
@@ -277,11 +279,14 @@ AttributeDialog::AttributeDialog(AttributeData * a)
     
     addTab(grid, "C++");
   }
+  else
+    cpptab = 0;
   
   // Java
   
   if (! java_in_typedef) {
     grid = new QGrid(2, this);
+    javatab = grid;
     grid->setMargin(5);
     grid->setSpacing(5);
     
@@ -336,11 +341,14 @@ AttributeDialog::AttributeDialog(AttributeData * a)
     
     addTab(grid, "Java");
   }
+  else
+    javatab = 0;
   
   // IDL
   
   if (! idl_in_typedef) {
     grid = new QGrid(2, this);
+    idltab = grid;
     grid->setMargin(5);
     grid->setSpacing(5);
     
@@ -399,6 +407,8 @@ AttributeDialog::AttributeDialog(AttributeData * a)
     
     addTab(grid, "Idl");
   }
+  else
+    idltab = 0;
   
   // USER : list key - value
   
@@ -412,7 +422,7 @@ AttributeDialog::AttributeDialog(AttributeData * a)
   //
     
   connect(this, SIGNAL(currentChanged(QWidget *)),
-	  this, SLOT(update_all_tabs()));
+	  this, SLOT(update_all_tabs(QWidget *)));
 }
 
 AttributeDialog::~AttributeDialog() {
@@ -545,12 +555,28 @@ void AttributeDialog::accept() {
   }
 }
 
-void AttributeDialog::update_all_tabs() {
+void AttributeDialog::update_all_tabs(QWidget * w) {
   edname->setText(edname->text().stripWhiteSpace());
   
-  cpp_update();
-  java_update();
-  idl_update();
+  if (w == umltab) {
+    if (!visit)
+      edname->setFocus();
+  }
+  else if (w == cpptab) {
+    cpp_update();
+    if (!visit)
+      edcppdecl->setFocus();
+  }
+  else if (w == javatab) {
+    java_update();
+    if (!visit)
+      edjavadecl->setFocus();
+  }
+  else if (w == idltab) {
+    idl_update();
+    if (!visit)
+      edidldecl->setFocus();
+  }
 }
 
 void AttributeDialog::default_description() {

@@ -68,10 +68,21 @@ void HubCanvas::change_scale() {
 void HubCanvas::draw(QPainter & p) {
   if (! visible()) return;
   
-  p.drawRect(rect());
+  QRect r = rect();
+
+  p.drawRect(r);
+
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fprintf(fp, "<g>\n"
+	    "\t<rect fill=\"none\" stroke=\"black\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n"
+	    "</g>\n",
+	    r.left(), r.top(), r.width() - 1, r.height() - 1);
   
   if (selected())
-    show_mark(p, rect());
+    show_mark(p, r);
 }
 
 UmlCode HubCanvas::type() const {

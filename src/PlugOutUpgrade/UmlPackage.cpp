@@ -300,7 +300,7 @@ UmlClass * add_state_diagram(UmlClassView * base_class_view, UmlClassView * user
 			     UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
 			     UmlClass * base_item, UmlClass * user_stateitem, UmlClass * user_state)
 {
-  UmlClass * user_diagram = UmlClass::get("UmlDiagram");
+  UmlClass * user_diagram = UmlClass::get("UmlDiagram", 0);
   UmlClass * base_statediagram;
   UmlClass * user_statediagram;
   
@@ -373,7 +373,7 @@ UmlClass * add_state(UmlClassView * base_class_view, UmlClassView * user_class_v
 		  base_item, "State", base_state, user_state,
 		  user_stateitem);
   base_state->add_default_base_op(user_item, user_state,
-				  UmlClass::get("UmlClassView"),
+				  UmlClass::get("UmlClassView", 0),
 				  "state", "aState");
   user_state->add_constr(base_state, PublicVisibility);
   
@@ -875,7 +875,7 @@ void add_pseudostates(UmlClassView * base_class_view, UmlClassView * user_class_
   UmlRelation * rel;
   
   if ((rel = UmlBaseRelation::create(aGeneralisation, user_pseudostate, user_stateitem)) == 0) {
-    QCString msg = user_pseudostate->name() + " can't inherit " + user_stateitem->name();
+    QCString msg = user_pseudostate->name() + " can't inherit " + user_stateitem->name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
@@ -886,7 +886,7 @@ void add_pseudostates(UmlClassView * base_class_view, UmlClassView * user_class_
   }
   
   if ((rel = UmlBaseRelation::create(aGeneralisation, user_pseudostate, user_item)) == 0) {
-    QCString msg = user_pseudostate->name() + " can't inherit " + user_item->name();
+    QCString msg = user_pseudostate->name() + " can't inherit " + user_item->name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
@@ -954,7 +954,7 @@ void add_state_item_kind()
     "aForkPseudoState", 
     "aJoinPseudoState", 
   };
-  UmlClass * itkind = UmlClass::get("anItemKind");
+  UmlClass * itkind = UmlClass::get("anItemKind", 0);
   QCString cpp = CppSettings::enumItemDecl();
   QCString java = JavaSettings::enumPatternItemDecl();
   QCString m = "enum item anItemKind::";
@@ -964,13 +964,13 @@ void add_state_item_kind()
     
     if ((at = UmlBaseAttribute::create(itkind, kinds[i])) == 0) {
       QCString msg = "cannot add item '" + QCString(kinds[i]) +
-	"' in " + itkind->name();
+	"' in " + itkind->name() + "<br>\n";
       
       UmlCom::trace(msg);
       throw 0;
     }
     else {
-      UmlCom::trace(m + kinds[i]);
+      UmlCom::trace(m + kinds[i] + "<br>\n");
       at->set_CppDecl(cpp);
       at->set_JavaDecl(java);
     }
@@ -1000,7 +1000,7 @@ void add_state_on_instance_cmd()
   "setJavaTriggerCmd",
   "setDefCmd"
   };
-  UmlClass * itcmd = UmlClass::get("OnInstanceCmd");
+  UmlClass * itcmd = UmlClass::get("OnInstanceCmd", 0);
   QCString cpp = CppSettings::enumItemDecl();
   QCString java = JavaSettings::enumPatternItemDecl();
   QCString m = "add enum item OnInstanceCmd::";
@@ -1012,14 +1012,14 @@ void add_state_on_instance_cmd()
       // setMarkedCmd may alreadu exist
       if (i != 0) {
 	QCString msg = "cannot add enum item '" + QCString(cmds[i]) +
-	  "' in 'OnInstanceCmd'";
+	  "' in 'OnInstanceCmd'<br>\n";
 	
 	UmlCom::trace(msg);
 	throw 0;
       }
     }
     else {
-      UmlCom::trace(m + cmds[i]);
+      UmlCom::trace(m + cmds[i] + "<br>\n");
       at->set_CppDecl(cpp);
       at->set_JavaDecl(java);
     }
@@ -1136,13 +1136,13 @@ void baseitem_read_state(UmlClass * base_item) {
 void update_uml_com()
 {
   // already root
-  UmlClass * uml_com = UmlClass::get("UmlCom");
+  UmlClass * uml_com = UmlClass::get("UmlCom", 0);
   UmlOperation * op =
     uml_com->add_op("send_cmd", PublicVisibility, "void", FALSE);
   
   op->add_param(0, InputDirection, "id", "item_id");
-  op->add_param(1, InputDirection, "cmd", UmlClass::get("OnInstanceCmd"));
-  op->add_param(2, InputOutputDirection, "arg", UmlClass::get("anItemKind"));
+  op->add_param(1, InputDirection, "cmd", UmlClass::get("OnInstanceCmd", 0));
+  op->add_param(2, InputOutputDirection, "arg", UmlClass::get("anItemKind", 0));
   op->add_param(3, InputOutputDirection, "id2", "item_id");
 
   op->set_Description("internal, do NOT use it\n");
@@ -1187,7 +1187,7 @@ void upgrade_states(UmlClass * base_item,
   UmlDeploymentView * user_depl_view = (UmlDeploymentView *)
     user_item->associatedArtifact()->parent();
   
-  UmlCom::trace("State");
+  UmlCom::trace("State<br>\n");
   
   UmlClass * user_stateitem = 
     UmlClass::made(user_class_view, user_depl_view, "UmlStateItem", TRUE);
@@ -1196,25 +1196,25 @@ void upgrade_states(UmlClass * base_item,
 	      base_depl_view, user_depl_view,
 	      base_item, user_item, user_stateitem);
   
-  UmlCom::trace("Transition");
+  UmlCom::trace("Transition<br>\n");
   
   add_transition(base_class_view, user_class_view,
 		 base_depl_view, user_depl_view,
 		 base_item, user_item, user_stateitem);
   
-  UmlCom::trace("Region");
+  UmlCom::trace("Region<br>\n");
   
   add_region(base_class_view, user_class_view,
 	     base_depl_view, user_depl_view,
 	     base_item, user_item, user_stateitem, user_state);
   
-  UmlCom::trace("Action");
+  UmlCom::trace("Action<br>\n");
   
   add_stateaction(base_class_view, user_class_view,
 		  base_depl_view, user_depl_view,
 		  base_item, user_item, user_stateitem, user_state);
 
-  UmlCom::trace("Pseudo States");
+  UmlCom::trace("Pseudo States<br>\n");
   
   add_pseudostates(base_class_view, user_class_view,
 		  base_depl_view, user_depl_view,
@@ -1224,19 +1224,19 @@ void upgrade_states(UmlClass * base_item,
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update anItemKind");
+  UmlCom::trace("update anItemKind<br>\n");
   
   add_state_item_kind();
   
-  UmlCom::trace("update cmd list");
+  UmlCom::trace("update cmd list<br>\n");
   
   add_state_on_instance_cmd();
   
-  UmlCom::trace("update item read");
+  UmlCom::trace("update item read<br>\n");
   
   baseitem_read_state(base_item);
   
-  UmlCom::trace("update com");
+  UmlCom::trace("update com<br>\n");
   
   update_uml_com();
   
@@ -1245,7 +1245,7 @@ void upgrade_states(UmlClass * base_item,
 
 void base_state_include_umlcom()
 {
-  UmlArtifact * art = UmlClass::get("UmlBaseState")->associatedArtifact();
+  UmlArtifact * art = UmlClass::get("UmlBaseState", 0)->associatedArtifact();
   QCString s = art->cppSource();
   
   if (s.find("#include \"UmlCom.h\"\n") == -1) {
@@ -1368,13 +1368,13 @@ void upgrade_OnInstanceCmd_UmlSettingsCmd_CppSettingsCmd()
 {
   // upgrade OnInstanceCmd
   
-  UmlClass * cl = UmlClass::get("OnInstanceCmd");
+  UmlClass * cl = UmlClass::get("OnInstanceCmd", 0);
   QCString cpp = CppSettings::enumItemDecl();
   QCString java = JavaSettings::enumPatternItemDecl();
   UmlAttribute * at;
   
   if ((at = UmlBaseAttribute::create(cl, "moveAfterCmd")) == 0) {
-    UmlCom::trace("Cannot add 'moveAfterCmd' in 'OnInstanceCmd'");
+    UmlCom::trace("Cannot add 'moveAfterCmd' in 'OnInstanceCmd'<br>\n");
     throw 0;
   }
   else {
@@ -1385,7 +1385,7 @@ void upgrade_OnInstanceCmd_UmlSettingsCmd_CppSettingsCmd()
 
   // update UmlSettingsCmd enum
   
-  cl = UmlClass::get("UmlSettingsCmd");
+  cl = UmlClass::get("UmlSettingsCmd", 0);
   
   static const struct {
     const char * name;
@@ -1401,7 +1401,7 @@ void upgrade_OnInstanceCmd_UmlSettingsCmd_CppSettingsCmd()
     
   for (i = 0; i != sizeof(umlsettingscmd)/sizeof(umlsettingscmd[0]); i += 1) {
     if ((at = UmlBaseAttribute::create(cl, umlsettingscmd[i].name)) == 0) {
-      UmlCom::trace(QCString("Cannot add '") + umlsettingscmd[i].name +"' in 'UmlSettingsCmd'");
+      UmlCom::trace(QCString("Cannot add '") + umlsettingscmd[i].name +"' in 'UmlSettingsCmd'<br>\n");
       throw 0;
     }
     else {
@@ -1415,7 +1415,7 @@ void upgrade_OnInstanceCmd_UmlSettingsCmd_CppSettingsCmd()
   
   // update CppSettingsCmd enum
   
-  cl = UmlClass::get("CppSettingsCmd");
+  cl = UmlClass::get("CppSettingsCmd", 0);
   
   static const char * const cppsettings[] = {
     "setCppEnumReturnCmd", "setCppReturnCmd"
@@ -1423,7 +1423,7 @@ void upgrade_OnInstanceCmd_UmlSettingsCmd_CppSettingsCmd()
     
   for (i = 0; i != sizeof(cppsettings)/sizeof(cppsettings[0]); i += 1) {
     if ((at = UmlBaseAttribute::create(cl, cppsettings[i])) == 0) {
-      UmlCom::trace(QCString("Cannot add '") + cppsettings[i] +"' in 'CppSettingsCmd'");
+      UmlCom::trace(QCString("Cannot add '") + cppsettings[i] +"' in 'CppSettingsCmd'<br>\n");
       throw 0;
     }
     else {
@@ -1437,7 +1437,7 @@ void upgrade_OnInstanceCmd_UmlSettingsCmd_CppSettingsCmd()
 void upgrade_UmlSettings()
 {
     
-  UmlClass * cl = UmlClass::get("UmlSettings");
+  UmlClass * cl = UmlClass::get("UmlSettings", 0);
   
   cl->set_isAbstract(FALSE);
   cl->set_Description(" This class manages settings not linked with a language, configured through\n"
@@ -1585,7 +1585,7 @@ void upgrade_CppSettings()
     { "_enum_return", "_enum_inout",
       "enumReturn", "set_EnumReturn", "set_EnumInout", "setCppEnumReturnCmd" }
   };
-  UmlClass * cl = UmlClass::get("CppSettings");
+  UmlClass * cl = UmlClass::get("CppSettings", 0);
   unsigned i;
   unsigned j;
   
@@ -1683,7 +1683,7 @@ void upgrade_CppSettings()
     
 void upgrade_UmlBuiltin()
 {
-  UmlClass * cl = UmlClass::get("UmlBuiltin");
+  UmlClass * cl = UmlClass::get("UmlBuiltin", 0);
   UmlAttribute * at =
     cl->add_attribute("cpp_return", PublicVisibility, "string", 0, 0);
   
@@ -1765,7 +1765,7 @@ void several_components_per_class(UmlClass * uml_base_class)
 		   "\n"
 		   "  return result;\n");
   
-  UmlCom::trace("update operation UmlBaseClass::associatedComponent");
+  UmlCom::trace("update operation UmlBaseClass::associatedComponent<br>\n");
 }
 
 //
@@ -1806,33 +1806,33 @@ void upgrade_jdk5(UmlClass * javasettings)
 	QCString s = ch[i]->name();
 	
 	if (s == "enumDecl") {
-	  UmlCom::trace("rename JavaSettings::enumDecl to enumPatternDecl");
+	  UmlCom::trace("rename JavaSettings::enumDecl to enumPatternDecl<br>\n");
 	  ch[i]->set_Name("enumPatternDecl");
 	}
 	else if (s == "set_EnumDecl") {
-	  UmlCom::trace("rename JavaSettings::set_EnumDecl to set_EnumPatternDecl");
+	  UmlCom::trace("rename JavaSettings::set_EnumDecl to set_EnumPatternDecl<br>\n");
 	  ch[i]->set_Name("set_EnumPatternDecl");
 	  set_EnumPatternDecl = (UmlOperation *) ch[i];
 	}
 	else if (s == "enumItemDecl") {
-	  UmlCom::trace("rename JavaSettings::enumItemDecl to enumPatternItemDecl");
+	  UmlCom::trace("rename JavaSettings::enumItemDecl to enumPatternItemDecl<br>\n");
 	  ch[i]->set_Name("enumPatternItemDecl");
 	}
 	else if (s == "set_EnumItemDecl") {
-	  UmlCom::trace("rename JavaSettings::set_EnumItemDecl to set_EnumPatternItemDecl");
+	  UmlCom::trace("rename JavaSettings::set_EnumItemDecl to set_EnumPatternItemDecl<br>\n");
 	  ch[i]->set_Name("set_EnumPatternItemDecl");
 	}
 	else if (s == "enumItemCase") {
-	  UmlCom::trace("rename JavaSettings::enumItemCase to enumPatternItemCase");
+	  UmlCom::trace("rename JavaSettings::enumItemCase to enumPatternItemCase<br>\n");
 	  ch[i]->set_Name("enumPatternItemCase");
 	}
 	else if (s == "set_EnumItemCase") {
-	  UmlCom::trace("rename JavaSettings::set_EnumItemCase to set_EnumPatternItemCase");
+	  UmlCom::trace("rename JavaSettings::set_EnumItemCase to set_EnumPatternItemCase<br>\n");
 	  ch[i]->set_Name("set_EnumPatternItemCase");
 	  set_EnumPatternItemCase = (UmlOperation *) ch[i];
 	}
 	else if (s == "read_") {
-	  UmlCom::trace("update JavaSettings::read_");
+	  UmlCom::trace("update JavaSettings::read_<br>\n");
 	  ((UmlOperation *) ch[i])->
 	    set_CppBody("  _root = UmlCom::read_string();\n"
 			"  \n"
@@ -1955,16 +1955,16 @@ void upgrade_jdk5(UmlClass * javasettings)
 	QCString s = ch[i]->name();
 	
 	if (s == "_enum_decl") {
-	  UmlCom::trace("rename JavaSettings::_enum_decl to _enum_pattern_decl");
+	  UmlCom::trace("rename JavaSettings::_enum_decl to _enum_pattern_decl<br>\n");
 	  ch[i]->set_Name("_enum_pattern_decl");
 	  _enum_pattern_decl = (UmlAttribute *) ch[i];
 	}
 	else if (s == "_enum_item_decl") {
-	  UmlCom::trace("rename JavaSettings::_enum_item_decl to _enum_pattern_item_decl");
+	  UmlCom::trace("rename JavaSettings::_enum_item_decl to _enum_pattern_item_decl<br>\n");
 	  ch[i]->set_Name("_enum_pattern_item_decl");
 	}
 	else if (s == "_enum_item_case") {
-	  UmlCom::trace("rename JavaSettings::_enum_item_case to _enum_pattern_item_case");
+	  UmlCom::trace("rename JavaSettings::_enum_item_case to _enum_pattern_item_case<br>\n");
 	  ch[i]->set_Name("_enum_pattern_item_case");
 	  _enum_pattern_item_case = (UmlAttribute *) ch[i];
 	}
@@ -2071,22 +2071,22 @@ void upgrade_jdk5(UmlClass * javasettings)
   
   // rename JavaSettingsCmd items
   
-  UmlClass * javacmd = UmlClass::get("JavaSettingsCmd");
+  UmlClass * javacmd = UmlClass::get("JavaSettingsCmd", 0);
   
   ch = javacmd->children();
   
   for (i = 0; i != ch.size(); i += 1) {
     if (ch[i]->kind() == anAttribute) {
       if (ch[i]->name() == "setJavaEnumDeclCmd") {
-	UmlCom::trace("rename JavaSettingsCmd::setJavaEnumDeclCmd to setJavaEnumPatternDeclCmd");
+	UmlCom::trace("rename JavaSettingsCmd::setJavaEnumDeclCmd to setJavaEnumPatternDeclCmd<br>\n");
 	ch[i]->set_Name("setJavaEnumPatternDeclCmd");
       }
       else if (ch[i]->name() == "setJavaEnumItemDeclCmd") {
-	UmlCom::trace("rename JavaSettingsCmd::setJavaEnumItemDeclCmd to setJavaEnumPatternItemDeclCmd");
+	UmlCom::trace("rename JavaSettingsCmd::setJavaEnumItemDeclCmd to setJavaEnumPatternItemDeclCmd<br>\n");
 	ch[i]->set_Name("setJavaEnumPatternItemDeclCmd");
       }
       else if (ch[i]->name() == "setJavaEnumItemCaseCmd") {
-	UmlCom::trace("rename JavaSettingsCmd::setJavaEnumItemCaseCmd to setJavaEnumPatternItemCaseCmd");
+	UmlCom::trace("rename JavaSettingsCmd::setJavaEnumItemCaseCmd to setJavaEnumPatternItemCaseCmd<br>\n");
 	ch[i]->set_Name("setJavaEnumPatternItemCaseCmd");
       }
     }
@@ -2104,7 +2104,7 @@ void upgrade_jdk5(UmlClass * javasettings)
   // add UmlBaseFormalParameter::_extends
   
   UmlClass * baseformalparam =
-    UmlClass::get("UmlBaseFormalParameter");
+    UmlClass::get("UmlBaseFormalParameter", 0);
   
   ch = baseformalparam->children();
   
@@ -2113,7 +2113,7 @@ void upgrade_jdk5(UmlClass * javasettings)
       if (((UmlRelation *) ch[i])->roleName() == "_default_value") {
 	UmlRelation * default_value = (UmlRelation *) ch[i];
 	
-	UmlCom::trace("add relation UmlBaseFormalParameter::_extends");
+	UmlCom::trace("add relation UmlBaseFormalParameter::_extends<br>\n");
 	UmlRelation * extend = 
 	  UmlRelation::create(aDirectionalAggregationByValue,
 			      baseformalparam,
@@ -2131,7 +2131,7 @@ void upgrade_jdk5(UmlClass * javasettings)
   
   // add UmlBaseFormalParameter::extend()
   
-  UmlClass * typespec = UmlClass::get("UmlTypeSpec");
+  UmlClass * typespec = UmlClass::get("UmlTypeSpec", 0);
   
   op1 = baseformalparam->add_op("extend", PublicVisibility,
 				typespec, FALSE);
@@ -2143,7 +2143,7 @@ void upgrade_jdk5(UmlClass * javasettings)
   
   // update UmlBaseFormalParameter::read_()
   
-  UmlCom::trace("update UmlBaseFormalParameter::read_()");
+  UmlCom::trace("update UmlBaseFormalParameter::read_()<br>\n");
   op1 = baseformalparam->get_operation("read_");
   op1->set_CppBody("  _name = UmlCom::read_string();\n"
 		   "  _type = UmlCom::read_string();\n"
@@ -2166,9 +2166,9 @@ void upgrade_jdk5(UmlClass * javasettings)
   
   // update an UmlCom::send_cmd
 
-  ch = UmlClass::get("UmlCom")->children();
+  ch = UmlClass::get("UmlCom", 0)->children();
   
-  UmlCom::trace("update UmlCom::send_cmd(...)");
+  UmlCom::trace("update UmlCom::send_cmd(...)<br>\n");
   
   for (i = 0; i != ch.size(); i += 1) {
     if ((ch[i]->kind() == anOperation) &&
@@ -2243,9 +2243,9 @@ void upgrade_jdk5(UmlClass * javasettings)
   
   // upgrade addFormal() and replaceFormal on UmlBaseClass
   
-  UmlClass * baseclass = UmlClass::get("UmlBaseClass");
+  UmlClass * baseclass = UmlClass::get("UmlBaseClass", 0);
   
-  UmlCom::trace("update UmlBaseClass::addFormal()");
+  UmlCom::trace("update UmlBaseClass::addFormal()<br>\n");
   op1 = baseclass->get_operation("addFormal");
   op1->set_CppBody("  UmlCom::send_cmd(_identifier, addFormalCmd, rank, formal._name, \n"
 		   "		   formal._type, formal._default_value, formal._extends);\n"
@@ -2254,7 +2254,7 @@ void upgrade_jdk5(UmlClass * javasettings)
 		    "		   formal._type, formal._default_value, formal._extends);\n"
 		    "  UmlCom.check();\n");
   
-  UmlCom::trace("update UmlBaseClass::replaceFormal()");
+  UmlCom::trace("update UmlBaseClass::replaceFormal()<br>\n");
   op1 = baseclass->get_operation("replaceFormal");
   op1->set_CppBody("  UmlCom::send_cmd(_identifier, replaceFormalCmd, rank, formal._name, \n"
 		   "		   formal._type, formal._default_value, formal._extends);\n"
@@ -2269,12 +2269,12 @@ void upgrade_jdk5(UmlClass * javasettings)
 
   // add OnInstanceCmd::setJavaAnnotationCmd
       
-  UmlClass::get("OnInstanceCmd")->add_enum_item("setJavaAnnotationCmd");
+  UmlClass::get("OnInstanceCmd", 0)->add_enum_item("setJavaAnnotationCmd");
 
   // add operations javaAnnotations and set_JavaAnnotations
   // on UmlBaseClassMember 
   
-  UmlClass * baseclassmember = UmlClass::get("UmlBaseClassMember");
+  UmlClass * baseclassmember = UmlClass::get("UmlBaseClassMember", 0);
   
   op1 = baseclassmember->add_op("javaAnnotations", PublicVisibility, "string");
   op1->set_Description(" returns the Java annotations");
@@ -2330,25 +2330,25 @@ void upgrade_jdk5(UmlClass * javasettings)
   // update read_java_ on UmlBaseClass UmlBaseAttribute UmlBaseRelation
   // and UmlBaseOperation to call UmlBaseClassMember::read_java_
   
-  UmlCom::trace("update UmlBaseClass::read_java_()");
+  UmlCom::trace("update UmlBaseClass::read_java_()<br>\n");
   baseclass->get_operation("read_java_")
     ->set_CppBody("  UmlBaseClassMember::read_java_();\n"
 		  "  _java_public = UmlCom::read_bool();\n"
 		  "  _java_final = UmlCom::read_bool();\n"
 		  "  _java_external = UmlCom::read_bool();\n");
   
-  UmlCom::trace("update UmlBaseAttribute::read_java_()");
-  UmlClass::get("UmlBaseAttribute")->get_operation("read_java_")
+  UmlCom::trace("update UmlBaseAttribute::read_java_()<br>\n");
+  UmlClass::get("UmlBaseAttribute", 0)->get_operation("read_java_")
     ->set_CppBody("  UmlBaseClassMember::read_java_();\n"
 		  "  _java_transient = UmlCom::read_bool();\n");
   
-  UmlCom::trace("update UmlBaseRelation::read_java_()");
-  UmlClass::get("UmlBaseRelation")->get_operation("read_java_")
+  UmlCom::trace("update UmlBaseRelation::read_java_()<br>\n");
+  UmlClass::get("UmlBaseRelation", 0)->get_operation("read_java_")
     ->set_CppBody("  UmlBaseClassMember::read_java_();\n"
 		  "  _java_transient = UmlCom::read_bool();\n");
   
-  UmlCom::trace("update UmlBaseOperation::read_java_()");
-  UmlClass::get("UmlBaseOperation")->get_operation("read_java_")
+  UmlCom::trace("update UmlBaseOperation::read_java_()<br>\n");
+  UmlClass::get("UmlBaseOperation", 0)->get_operation("read_java_")
     ->set_CppBody("  UmlBaseClassMember::read_java_();\n"
 		  "  _java_final = UmlCom::read_bool();\n"
 		  "  _java_synchronized = UmlCom::read_bool();\n"
@@ -2365,7 +2365,7 @@ void upgrade_jdk5(UmlClass * javasettings)
 
 void fixe_package_diagram()
 {
-  UmlClass * basepackage = UmlClass::get("UmlBasePackage");
+  UmlClass * basepackage = UmlClass::get("UmlBasePackage", 0);
   UmlOperation * op;
   UmlTypeSpec t;
   unsigned uid = UmlCom::user_id();
@@ -2375,9 +2375,9 @@ void fixe_package_diagram()
   // fixe UmlBasePackage::associatedDiagram()
   
   op = basepackage->get_operation("associatedDiagram");
-  t.type = UmlClass::get("UmlDiagram");
+  t.type = UmlClass::get("UmlDiagram", 0);
   op->set_ReturnType(t);
-  UmlCom::trace("operation UmlBasePackage::associatedDiagram corrected");
+  UmlCom::trace("operation UmlBasePackage::associatedDiagram corrected<br>\n");
   
   UmlParameter param;
   
@@ -2388,7 +2388,7 @@ void fixe_package_diagram()
   param.name = "d";
   op = basepackage->get_operation("set_AssociatedDiagram");
   op->replaceParameter(0, param);
-  UmlCom::trace("operation UmlBasePackage::set_AssociatedDiagram corrected");
+  UmlCom::trace("operation UmlBasePackage::set_AssociatedDiagram corrected<br>\n");
   
   // fixe UmlBasePackage::read_uml_()
   
@@ -2397,7 +2397,7 @@ void fixe_package_diagram()
 		  "  UmlBaseItem::read_uml_();\n");
   op->set_JavaBody("  _assoc_diagram = (UmlDiagram) UmlBaseItem.read_();\n"
 		   "  super.read_uml_();\n");
-  UmlCom::trace("operation UmlBasePackage::read_ corrected");
+  UmlCom::trace("operation UmlBasePackage::read_ corrected<br>\n");
   
   // replace _assoc_diagram
   
@@ -2407,11 +2407,11 @@ void fixe_package_diagram()
   for (i = 0; i != ch.size(); i += 1) {
     if (ch[i]->kind() == aRelation) {
       if (((UmlRelation *) ch[i])->roleName() == "_assoc_diagram") {
-	UmlCom::trace("replace UmlBasePackage::_assoc_diagram");
+	UmlCom::trace("replace UmlBasePackage::_assoc_diagram<br>\n");
 	UmlRelation * old = (UmlRelation *) ch[i];
 	UmlRelation * rel = UmlRelation::create(aDirectionalAssociation,
 						basepackage,
-						UmlClass::get("UmlDiagram"));
+						UmlClass::get("UmlDiagram", 0));
 	
 	rel->set_CppDecl(old->cppDecl());
 	rel->set_JavaDecl(old->javaDecl());
@@ -2433,14 +2433,14 @@ void fixe_package_diagram()
 
 void fixe_umlbaseactualparameter_read()
 {
-  UmlClass::get("UmlBaseActualParameter")->get_operation("read_")
+  UmlClass::get("UmlBaseActualParameter", 0)->get_operation("read_")
     ->set_JavaBody("  _superClass = (UmlClass) UmlBaseItem.read_();	// cannot be 0\n"
 		   "  _rank = UmlCom.read_unsigned();\n"
 		   "  _value = new UmlTypeSpec();\n"
 		   "  _value.type = (UmlClass) UmlBaseItem.read_();\n"
 		   "  if (_value.type == null)\n"
 		   "    _value.explicit_type = UmlCom.read_string();\n");
-  UmlCom::trace("operation UmlBaseActualParameter.read_ corrected");
+  UmlCom::trace("operation UmlBaseActualParameter.read_ corrected<br>\n");
 }
 
 //
@@ -2455,11 +2455,11 @@ void add_class_association(UmlClass * baserelation)
   
   // add OnInstanceCmd::setRelationAssocClassCmd
       
-  UmlClass::get("OnInstanceCmd")->add_enum_item("setRelationAssocClassCmd");
+  UmlClass::get("OnInstanceCmd", 0)->add_enum_item("setRelationAssocClassCmd");
   
   // add relation _association
   
-  UmlClass * typespec = UmlClass::get("UmlTypeSpec");
+  UmlClass * typespec = UmlClass::get("UmlTypeSpec", 0);
   UmlRelation * rel =
     baserelation->add_relation(aDirectionalAggregationByValue, 
 			       "_association", PrivateVisibility,
@@ -2546,7 +2546,7 @@ void add_class_association(UmlClass * baserelation)
 		    "  _read_only = UmlCom.read_bool();\n"
 		    "  _get_oper = (UmlOperation) UmlBaseItem.read_();\n"
 		    "  _set_oper = (UmlOperation) UmlBaseItem.read_();\n");
-  UmlCom::trace("operation UmlBaseRelation::read_uml_ upgraded");
+  UmlCom::trace("operation UmlBaseRelation::read_uml_ upgraded<br>\n");
     
   UmlCom::set_user_id(uid);
 }
@@ -2563,7 +2563,7 @@ void add_package_visibility()
   
   // add aVisibility::setRelationAssocClassCmd
   UmlAttribute * at =
-    UmlClass::get("aVisibility")->add_enum_item("PackageVisibility");
+    UmlClass::get("aVisibility", 0)->add_enum_item("PackageVisibility");
   
   at->move_after(anAttribute, "PrivateVisibility");
     
@@ -2581,7 +2581,7 @@ void add_side(UmlClass * baserelation)
   UmlCom::set_user_id(0);  
   UmlOperation * op =
     baserelation->add_op("side", PublicVisibility,
-			 UmlClass::get("UmlRelation"));
+			 UmlClass::get("UmlRelation", 0));
   op->add_param(0, InputDirection, "first", "bool");
   op->set_cpp("${type} *", "${t0} ${p0}", "\
   UmlCom::send_cmd(_identifier, sideCmd, (char) first);\n\
@@ -2601,13 +2601,13 @@ void add_side(UmlClass * baserelation)
   
   // upgrade OnInstanceCmd
   
-  UmlClass * cl = UmlClass::get("OnInstanceCmd");
+  UmlClass * cl = UmlClass::get("OnInstanceCmd", 0);
   QCString cpp = CppSettings::enumItemDecl();
   QCString java = JavaSettings::enumPatternItemDecl();
   UmlAttribute * at;
   
   if ((at = UmlBaseAttribute::create(cl, "sideCmd")) == 0) {
-    UmlCom::trace("Cannot add 'sideCmd' in 'OnInstanceCmd'");
+    UmlCom::trace("Cannot add 'sideCmd' in 'OnInstanceCmd'<br>\n");
     throw 0;
   }
   else {
@@ -2627,7 +2627,7 @@ void add_side(UmlClass * baserelation)
 void add_object_activity_diagram_item_kind()
 {
   // already root
-  UmlClass * itkind = UmlClass::get("anItemKind");
+  UmlClass * itkind = UmlClass::get("anItemKind", 0);
   UmlAttribute * anObjectDiagram = itkind->add_enum_item("anObjectDiagram");
   UmlAttribute * anActivityDiagram = itkind->add_enum_item("anActivityDiagram");
   
@@ -2686,11 +2686,11 @@ void add_objectdiagram(UmlClass * base_item, UmlClass * user_item)
     base_item->associatedArtifact()->parent();
   UmlDeploymentView * user_depl_view = (UmlDeploymentView *)
     user_item->associatedArtifact()->parent();
-  UmlClass * user_diagram = UmlClass::get("UmlDiagram");
+  UmlClass * user_diagram = UmlClass::get("UmlDiagram", 0);
   UmlClass * base_objectdiagram;
   UmlClass * user_objectdiagram;
   
-  UmlCom::trace("Object diagram");
+  UmlCom::trace("Object diagram<br>\n");
   
   user_diagram->made(base_class_view, user_class_view,
 		     base_depl_view, user_depl_view,
@@ -2708,10 +2708,10 @@ void add_objectdiagram(UmlClass * base_item, UmlClass * user_item)
 				      " You can modify it as you want (except the constructor)");
   UmlClass * cl;
   
-  if ((cl = UmlClass::get("UmlBaseClassDiagram")) != 0)
+  if ((cl = UmlClass::get("UmlBaseClassDiagram", 0)) != 0)
     base_objectdiagram->moveAfter(cl);
   
-  if ((cl = UmlClass::get("UmlClassDiagram")) != 0)
+  if ((cl = UmlClass::get("UmlClassDiagram", 0)) != 0)
     user_objectdiagram->moveAfter(cl);
   
   //
@@ -2720,11 +2720,11 @@ void add_objectdiagram(UmlClass * base_item, UmlClass * user_item)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update anItemKind");
+  UmlCom::trace("update anItemKind<br>\n");
   
   add_object_activity_diagram_item_kind();
   
-  UmlCom::trace("update item read");
+  UmlCom::trace("update item read<br>\n");
   
   baseitem_read_objectdiagram(base_item);
   
@@ -2740,7 +2740,7 @@ UmlClass * add_activity_diagram(UmlClassView * base_class_view, UmlClassView * u
 				UmlClass * base_item, UmlClass * user_activity,
 				UmlClass * user_activityitem)
 {
-  UmlClass * user_diagram = UmlClass::get("UmlDiagram");
+  UmlClass * user_diagram = UmlClass::get("UmlDiagram", 0);
   UmlClass * base_activitydiagram;
   UmlClass * user_activitydiagram;
     
@@ -2760,10 +2760,10 @@ UmlClass * add_activity_diagram(UmlClassView * base_class_view, UmlClassView * u
 					" You can modify it as you want (except the constructor)");
   UmlClass * cl;
   
-  if ((cl = UmlClass::get("UmlBaseStateDiagram")) != 0)
+  if ((cl = UmlClass::get("UmlBaseStateDiagram", 0)) != 0)
     base_activitydiagram->moveAfter(cl);
   
-  if ((cl = UmlClass::get("UmlStateDiagram")) != 0)
+  if ((cl = UmlClass::get("UmlStateDiagram", 0)) != 0)
     user_activitydiagram->moveAfter(cl);
 
   return user_activitydiagram;
@@ -2815,7 +2815,7 @@ void add_activity(UmlClassView * base_class_view, UmlClassView * user_class_view
 		  base_item, "Activity", base_activity, user_activity,
 		  0);
   base_activity->add_default_base_op(user_item, user_activity,
-				     UmlClass::get("UmlClassView"),
+				     UmlClass::get("UmlClassView", 0),
 				     "activity", "anActivity");
   user_activity->add_constr(base_activity, PublicVisibility);  
     
@@ -3229,15 +3229,15 @@ void add_return_direction()
   
   UmlCom::set_user_id(0);
   
-  UmlClass * dir = UmlClass::get("aDirection");
+  UmlClass * dir = UmlClass::get("aDirection", 0);
   UmlAttribute * at;
     
   if ((at = UmlBaseAttribute::create(dir, "ReturnDirection")) == 0) {
-    UmlCom::trace("cannot add enum item 'ReturnDirection' in 'aDirection'");
+    UmlCom::trace("cannot add enum item 'ReturnDirection' in 'aDirection'<br>\n");
     throw 0;
   }
   else {
-    UmlCom::trace("add enum item aDirection::ReturnDirection");
+    UmlCom::trace("add enum item aDirection::ReturnDirection<br>\n");
     at->set_CppDecl(CppSettings::enumItemDecl());
     at->set_JavaDecl(JavaSettings::enumPatternItemDecl());
   }
@@ -3378,7 +3378,7 @@ void add_activityaction(UmlClassView * base_class_view, UmlClassView * user_clas
 			UmlClass * base_item, UmlClass * user_item, 
 			UmlClass * user_activitynode)
 {
-  UmlClass * user_diagram = UmlClass::get("UmlDiagram");
+  UmlClass * user_diagram = UmlClass::get("UmlDiagram", 0);
   UmlClass * base_activityaction;
   UmlClass * user_activityaction;
   
@@ -4047,7 +4047,7 @@ void add_activityaction(UmlClassView * base_class_view, UmlClassView * user_clas
   defSetBool(base_calloperation, _synchronous, set_isSynchronous, setFlagCmd, 0, 0,
 	     "isSynchronous attribute");
   
-  UmlClass * user_operation = UmlClass::get("UmlOperation");
+  UmlClass * user_operation = UmlClass::get("UmlOperation", 0);
   
   defGetPtr(base_calloperation, _operation, operation, user_operation, 0, 0,
 	    "operation");
@@ -4396,7 +4396,7 @@ UmlClass * add_activityobject(UmlClassView * base_class_view, UmlClassView * use
   ordering->add_enum_item("lifo");
   ordering->add_enum_item("fifo");
   
-  UmlClass * typespec = UmlClass::get("UmlTypeSpec");
+  UmlClass * typespec = UmlClass::get("UmlTypeSpec", 0);
   UmlOperation * op;
   
   defGet(base_activityobject, _type, type, typespec, 0, 0,
@@ -4571,7 +4571,7 @@ void add_expansionnode(UmlClassView * base_class_view, UmlClassView * user_class
 			    base_expansionnode, user_expansionnode,
 			    0);
   base_expansionnode->add_default_base_op(user_activityobject, user_expansionnode,
-					  UmlClass::get("UmlExpansionRegion"), 
+					  UmlClass::get("UmlExpansionRegion", 0), 
 					  "expansion node", "anExpansionNode");
   user_expansionnode->add_constr(base_expansionnode, PublicVisibility);
 }
@@ -4632,7 +4632,7 @@ void add_pinparam(UmlClassView * base_class_view, UmlClassView * user_class_view
 		     replaceExceptionCmd, 0, 0,
 		     "isException attribute, exclusive with isStream");
 
-  UmlClass * dir = UmlClass::get("aDirection");
+  UmlClass * dir = UmlClass::get("aDirection", 0);
   
   defGetEnum(base_pinparam, _dir, direction, dir, 0, 0, "direction");
   defSetEnum(base_pinparam, _dir, set_Direction, dir, setIdlDirCmd, 0, 0, "direction");
@@ -4723,7 +4723,7 @@ void add_pinparam(UmlClassView * base_class_view, UmlClassView * user_class_view
   
   UmlClass * base_activitypin;
   UmlClass * user_activitypin;
-  UmlClass * user_activityaction = UmlClass::get("UmlActivityAction");
+  UmlClass * user_activityaction = UmlClass::get("UmlActivityAction", 0);
   
   user_pinparam->made(base_class_view, user_class_view,
 		      base_depl_view, user_depl_view,
@@ -4748,7 +4748,7 @@ void add_pinparam(UmlClassView * base_class_view, UmlClassView * user_class_view
 		      0);
   
   base_activityparameter->add_default_base_op(user_pinparam, user_activityparameter,
-					UmlClass::get("UmlActivity"),
+					UmlClass::get("UmlActivity", 0),
 					"activity parameter", "anActivityParameter");
   user_activityparameter->add_constr(base_activityparameter, PublicVisibility);
   
@@ -4901,10 +4901,10 @@ void add_pinparam(UmlClassView * base_class_view, UmlClassView * user_class_view
   
   // update an UmlCom::send_cmd
 
-  const QVector<UmlItem> ch = UmlClass::get("UmlCom")->children();
-  UmlClass * cl = UmlClass::get("UmlClass");
+  const QVector<UmlItem> ch = UmlClass::get("UmlCom", 0)->children();
+  UmlClass * cl = UmlClass::get("UmlClass", 0);
   
-  UmlCom::trace("update UmlCom::send_cmd(...)");
+  UmlCom::trace("update UmlCom::send_cmd(...)<br>\n");
   
   for (index = 0; index != (int) ch.size(); index += 1) {
     if ((ch[index]->kind() == anOperation) &&
@@ -4939,8 +4939,8 @@ void add_pinparam(UmlClassView * base_class_view, UmlClassView * user_class_view
   
   // update UmlBaseArtifact::set_AssociatedClasses
   
-  UmlCom::trace("update UmlBaseArtifact::set_AssociatedClasses(...)");
-  op = UmlClass::get("UmlBaseArtifact")->get_operation("set_AssociatedClasses");
+  UmlCom::trace("update UmlBaseArtifact::set_AssociatedClasses(...)<br>\n");
+  op = UmlClass::get("UmlBaseArtifact", 0)->get_operation("set_AssociatedClasses");
   s = op->cppBody();
   if ((index = s.find("l);")) != -1) {
     s.insert(index, "(const QVector<UmlItem> &) ");
@@ -4987,7 +4987,7 @@ void add_activities_item_kind()
     "aForkActivityNode", 
     "aJoinActivityNode", 
   };
-  UmlClass * itkind = UmlClass::get("anItemKind");
+  UmlClass * itkind = UmlClass::get("anItemKind", 0);
   QCString cpp = CppSettings::enumItemDecl();
   QCString java = JavaSettings::enumPatternItemDecl();
   QCString m = "enum item anItemKind::";
@@ -4997,13 +4997,13 @@ void add_activities_item_kind()
     
     if ((at = UmlBaseAttribute::create(itkind, kinds[i])) == 0) {
       QCString msg = "cannot add item '" + QCString(kinds[i]) +
-	"' in " + itkind->name();
+	"' in " + itkind->name() + "<br>\n";
       
       UmlCom::trace(msg);
       throw 0;
     }
     else {
-      UmlCom::trace(m + kinds[i]);
+      UmlCom::trace(m + kinds[i] + "<br>\n");
       at->set_CppDecl(cpp);
       at->set_JavaDecl(java);
     }
@@ -5024,7 +5024,7 @@ void add_activity_on_instance_cmd()
     "setInStateCmd",
     "setOrderingCmd"
   };
-  UmlClass * itcmd = UmlClass::get("OnInstanceCmd");
+  UmlClass * itcmd = UmlClass::get("OnInstanceCmd", 0);
   QCString cpp = CppSettings::enumItemDecl();
   QCString java = JavaSettings::enumPatternItemDecl();
   QCString m = "add enum item OnInstanceCmd::";
@@ -5036,14 +5036,14 @@ void add_activity_on_instance_cmd()
       // setMarkedCmd may alreadu exist
       if (i != 0) {
 	QCString msg = "cannot add enum item '" + QCString(cmds[i]) +
-	  "' in 'OnInstanceCmd'";
+	  "' in 'OnInstanceCmd'<br>\n";
 	
 	UmlCom::trace(msg);
 	throw 0;
       }
     }
     else {
-      UmlCom::trace(m + cmds[i]);
+      UmlCom::trace(m + cmds[i] + "<br>\n");
       at->set_CppDecl(cpp);
       at->set_JavaDecl(java);
     }
@@ -5226,7 +5226,7 @@ void add_activity(UmlClass * base_item, UmlClass * user_item)
   UmlDeploymentView * user_depl_view = (UmlDeploymentView *)
     user_item->associatedArtifact()->parent();
 
-  UmlCom::trace("Activity");
+  UmlCom::trace("Activity<br>\n");
   
   UmlClass * user_activityitem = 
     UmlClass::made(user_class_view, user_depl_view, "UmlActivityItem", TRUE);
@@ -5241,7 +5241,7 @@ void add_activity(UmlClass * base_item, UmlClass * user_item)
   add_flow(base_class_view, user_class_view, base_depl_view, user_depl_view,
 	   base_item, user_item, user_activityitem, user_activitynode);
   
-  UmlClass * user_diagram = UmlClass::get("UmlActivityDiagram");
+  UmlClass * user_diagram = UmlClass::get("UmlActivityDiagram", 0);
   
   add_activityregion(base_class_view, user_class_view, base_depl_view, user_depl_view,
 		     base_item, user_item, user_activityitem, user_diagram);
@@ -5268,19 +5268,19 @@ void add_activity(UmlClass * base_item, UmlClass * user_item)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update anItemKind");
+  UmlCom::trace("update anItemKind<br>\n");
   
   add_activities_item_kind();
   
-  UmlCom::trace("update cmd list");
+  UmlCom::trace("update cmd list<br>\n");
   
   add_activity_on_instance_cmd();
   
-  UmlCom::trace("update item read");
+  UmlCom::trace("update item read<br>\n");
   
   baseitem_read_activities(base_item);
   
-  UmlCom::trace("update aDirection");
+  UmlCom::trace("update aDirection<br>\n");
   
   add_return_direction();
   
@@ -5300,7 +5300,7 @@ void add_new_trace_operations(UmlClass * uml_com)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update UmlCom");
+  UmlCom::trace("update UmlCom<br>\n");
   
   UmlOperation * op1 =
     uml_com->add_op("showTrace", PublicVisibility, "void", FALSE);
@@ -5348,14 +5348,14 @@ void add_new_trace_operations(UmlClass * uml_com)
   
   // add new global cmd
 
-  UmlClass * cl = UmlClass::get("MiscGlobalCmd");
+  UmlClass * cl = UmlClass::get("MiscGlobalCmd", 0);
   QCString cpp = CppSettings::enumItemDecl();
   QCString java = JavaSettings::enumPatternItemDecl();
   UmlAttribute * at1;
   UmlAttribute * at2;
   
   if ((at1 = UmlBaseAttribute::create(cl, "showTraceCmd")) == 0) {
-    UmlCom::trace("Cannot add 'showTraceCmd' in 'MiscGlobalCmd'");
+    UmlCom::trace("Cannot add 'showTraceCmd' in 'MiscGlobalCmd'<br>\n");
     throw 0;
   }
   else {
@@ -5368,7 +5368,7 @@ void add_new_trace_operations(UmlClass * uml_com)
   }
   
   if ((at2 = UmlBaseAttribute::create(cl, "traceAutoRaiseCmd")) == 0) {
-    UmlCom::trace("Cannot add 'traceAutoRaiseCmd' in 'MiscGlobalCmd'");
+    UmlCom::trace("Cannot add 'traceAutoRaiseCmd' in 'MiscGlobalCmd'<br>\n");
     throw 0;
   }
   else {
@@ -5422,7 +5422,7 @@ void fixe_activity(UmlClass * base_pinparam)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update UmlBasePinParameter");
+  UmlCom::trace("update UmlBasePinParameter<br>\n");
   
   UmlOperation * op;
   
@@ -5449,9 +5449,9 @@ void fixe_activity(UmlClass * base_pinparam)
   
   //
   
-  UmlCom::trace("fixe UmlBaseAddVariableValueAction::read_uml_()");
+  UmlCom::trace("fixe UmlBaseAddVariableValueAction::read_uml_()<br>\n");
   
-  op = UmlClass::get("UmlBaseAddVariableValueAction")->get_operation("read_uml_");
+  op = UmlClass::get("UmlBaseAddVariableValueAction", 0)->get_operation("read_uml_");
   
   op->set_CppBody("  UmlBaseAccessVariableValueAction::read_uml_();\n"
 		  "  _replace_all = UmlCom::read_bool();\n");
@@ -5461,9 +5461,9 @@ void fixe_activity(UmlClass * base_pinparam)
   
   //
   
-  UmlCom::trace("fixe UmlBaseRemoveVariableValueAction::read_uml_()");
+  UmlCom::trace("fixe UmlBaseRemoveVariableValueAction::read_uml_()<br>\n");
   
-  op = UmlClass::get("UmlBaseRemoveVariableValueAction")->get_operation("read_uml_");
+  op = UmlClass::get("UmlBaseRemoveVariableValueAction", 0)->get_operation("read_uml_");
   
   op->set_CppBody("  UmlBaseAccessVariableValueAction::read_uml_();\n"
 		  "  _remove_duplicates = UmlCom::read_bool();\n");
@@ -5479,11 +5479,11 @@ void fixe_activity(UmlClass * base_pinparam)
   
   UmlRelation * rel = 
     UmlBaseRelation::create(aGeneralisation, 
-			    UmlClass::get("UmlParameterSet"),
-			    UmlClass::get("UmlActivityItem"));
+			    UmlClass::get("UmlParameterSet", 0),
+			    UmlClass::get("UmlActivityItem", 0));
   
   if (rel == 0) {
-    QCString msg = "UmlParameterSet can't inherit UmlActivityItem";
+    QCString msg = "UmlParameterSet can't inherit UmlActivityItem<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
@@ -5504,7 +5504,7 @@ void add_cpp_set_param_ref(UmlClass * cppsetting)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update CppSettings");
+  UmlCom::trace("update CppSettings<br>\n");
 
   UmlAttribute * att = 
     cppsetting->add_attribute("_is_set_param_ref", PrivateVisibility, "bool", 0, 0);
@@ -5555,7 +5555,7 @@ void add_cpp_set_param_ref(UmlClass * cppsetting)
 
   //
 
-  UmlClass::get("CppSettingsCmd")->add_enum_item("setCppIsSetParamRefCmd");
+  UmlClass::get("CppSettingsCmd", 0)->add_enum_item("setCppIsSetParamRefCmd");
 
   //
 
@@ -5570,7 +5570,7 @@ void add_getter_setter_on_instance_cmd()
     "setJavaFrozenCmd",
     "setIdlFrozenCmd"
   };
-  UmlClass * itcmd = UmlClass::get("OnInstanceCmd");
+  UmlClass * itcmd = UmlClass::get("OnInstanceCmd", 0);
   QCString cpp = CppSettings::enumItemDecl();
   QCString java = JavaSettings::enumPatternItemDecl();
   QCString m = "add enum item OnInstanceCmd::";
@@ -5582,14 +5582,14 @@ void add_getter_setter_on_instance_cmd()
       // setMarkedCmd may alreadu exist
       if (i != 0) {
 	QCString msg = "cannot add enum item '" + QCString(cmds[i]) +
-	  "' in 'OnInstanceCmd'";
+	  "' in 'OnInstanceCmd'<br>\n";
 	
 	UmlCom::trace(msg);
 	throw 0;
       }
     }
     else {
-      UmlCom::trace(m + cmds[i]);
+      UmlCom::trace(m + cmds[i] + "<br>\n");
       at->set_CppDecl(cpp);
       at->set_JavaDecl(java);
     }
@@ -5602,7 +5602,7 @@ void upgrade_setter_getter()
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update UmlBaseOperation setter and getter");
+  UmlCom::trace("update UmlBaseOperation setter and getter<br>\n");
 
   //
 
@@ -5610,7 +5610,7 @@ void upgrade_setter_getter()
 
   //
 
-  UmlClass * baseoper = UmlClass::get("UmlBaseOperation");
+  UmlClass * baseoper = UmlClass::get("UmlBaseOperation", 0);
   UmlAttribute * att;
   UmlAttribute * att2;
   QCString s;
@@ -5688,6 +5688,173 @@ void upgrade_setter_getter()
 //
 //
 
+void add_cpp_relative_path_force_namespace(UmlClass * cppsetting)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("update CppSettings<br>\n");
+
+  //
+
+  UmlOperation * op = cppsetting->get_operation("read_");
+
+  op->set_CppBody(op->cppBody() + 
+		  "  _is_relative_path = UmlCom::read_bool();\n"
+		  "  _is_force_namespace_gen = UmlCom::read_bool();\n");
+  op->set_JavaBody(op->javaBody() + 
+		   "  _is_relative_path = UmlCom.read_bool();\n"
+		   "  _is_force_namespace_gen = UmlCom.read_bool();\n");
+  
+  //
+  // add missing operation isSetParamRef()
+  // 
+  
+  op = cppsetting->add_op("isSetParamRef", PublicVisibility, "bool");
+   
+  op->set_isClassMember(TRUE);
+  op->set_Description(" return if the parameter of a 'set' operation generated through the\n"
+		      " attribute and relation 'add set operation' menu is a reference by default");
+  op->set_cpp("${type}", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _is_set_param_ref;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _is_set_param_ref;\n",
+	       FALSE);
+  op->moveAfter(cppsetting->get_operation("set_IsSetParamConst"));
+  
+  //
+  // relative path
+  //
+  
+  UmlAttribute * att1 = 
+    cppsetting->add_attribute("_is_relative_path", PrivateVisibility, "bool", 0, 0);
+
+  att1->set_isClassMember(TRUE);
+  att1->moveAfter(cppsetting->get_attribute("_incl_with_path"));
+
+  // get
+  
+  op = cppsetting->add_op("isRelativePath", PublicVisibility, "bool");
+   
+  op->set_isClassMember(TRUE);
+  op->set_Description(" return if a relative path must be used when the path\n"
+		      " must be generated in the produced #includes");
+  op->set_cpp("${type}", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _is_relative_path;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _is_relative_path;\n",
+	       FALSE);
+  op->moveAfter(cppsetting->get_operation("set_IncludeWithPath"));
+
+  // set
+  
+  UmlOperation * op2 = cppsetting->add_op("set_IsRelativePath", PublicVisibility, "bool");
+  
+  op2->set_isClassMember(TRUE);
+  op2->set_Description(" set if a relative path must be used when the path\n"
+		       " must be generated in the produced #includes\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java");
+  op2->add_param(0, InputDirection, "v", "bool"); 
+  op2->set_cpp("${type}", "${t0} ${p0}",
+		"  UmlCom::send_cmd(cppSettingsCmd, setCppRelativePathCmd, v);\n"
+		"  if (UmlCom::read_bool()) {\n"
+		"    _is_relative_path = v;\n"
+		"    return TRUE;\n"
+		"  }\n"
+		"  else\n"
+		"    return FALSE;\n",
+		FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}",
+		"  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppRelativePathCmd,\n"
+		"		   (v) ? (byte) 1 : (byte) 0);\n"
+		"  UmlCom.check();\n"
+		"  _is_relative_path = v;\n",
+		FALSE);
+  op2->moveAfter(op);
+
+  //
+  // force namespace prefix generation
+  //
+  
+  UmlAttribute * att2 = 
+    cppsetting->add_attribute("_is_force_namespace_gen", PrivateVisibility, "bool", 0, 0);
+
+  att2->set_isClassMember(TRUE);
+  att2->moveAfter(att1);
+
+  // get
+  
+  op = cppsetting->add_op("isForceNamespacePrefixGeneration", PublicVisibility, "bool");
+   
+  op->set_isClassMember(TRUE);
+  op->set_Description(" return if the namespace prefix must be\n"
+		      " always generated before class's names");
+  op->set_cpp("${type}", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _is_force_namespace_gen;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _is_force_namespace_gen;\n",
+	       FALSE);
+  op->moveAfter(op2);
+
+  // set
+  
+  op2 = cppsetting->add_op("set_IsForceNamespacePrefixGeneration", PublicVisibility, "bool");
+  
+  op2->set_isClassMember(TRUE);
+  op2->set_Description(" set if the namespace prefix must be always generated before class's names\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java");
+  op2->add_param(0, InputDirection, "v", "bool"); 
+  op2->set_cpp("${type}", "${t0} ${p0}",
+		"  UmlCom::send_cmd(cppSettingsCmd, setCppForceNamespaceGenCmd, v);\n"
+		"  if (UmlCom::read_bool()) {\n"
+		"    _is_force_namespace_gen = v;\n"
+		"    return TRUE;\n"
+		"  }\n"
+		"  else\n"
+		"    return FALSE;\n",
+		FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}",
+		"  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppForceNamespaceGenCmd,\n"
+		"		   (v) ? (byte) 1 : (byte) 0);\n"
+		"  UmlCom.check();\n"
+		"  _is_force_namespace_gen = v;\n",
+		FALSE);
+  op2->moveAfter(op);
+  
+  //
+
+  UmlClass * cppsettingcmd = UmlClass::get("CppSettingsCmd", 0);
+  
+  cppsettingcmd->add_enum_item("setCppRelativePathCmd");
+  cppsettingcmd->add_enum_item("setCppForceNamespaceGenCmd");
+
+  //
+
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
 bool ask_for_upgrade()
 {
   if (QMessageBox::warning(0, "Upgrade",
@@ -5712,7 +5879,7 @@ bool ask_for_upgrade()
 
 void update_api_version(const char * v)
 {
-  UmlClass * com = UmlClass::get("UmlCom");
+  UmlClass * com = UmlClass::get("UmlCom", 0);
   const QVector<UmlItem> ch = com->children();
   
   for (unsigned i = 0; i != ch.size(); i += 1){
@@ -5750,15 +5917,15 @@ void update_api_version(const char * v)
 //
 
 bool UmlPackage::upgrade() {
-  UmlClass * uml_base_item = UmlClass::get("UmlBaseItem");
-  UmlClass * uml_item = UmlClass::get("UmlItem");
+  UmlClass * uml_base_item = UmlClass::get("UmlBaseItem", 0);
+  UmlClass * uml_item = UmlClass::get("UmlItem", 0);
   
   if ((uml_base_item == 0) || (uml_item == 0))
-    UmlCom::trace("<tt>        </tt><font face=helvetica color=red>Not a plug-out</font><br>");
+    UmlCom::trace("<tt>        </tt><font face=helvetica color=red>Not a plug-out</font><br>\n");
   else {
     bool work = FALSE;
     
-    if (UmlClass::get("UmlBaseState") == 0) {
+    if (UmlClass::get("UmlBaseState", 0) == 0) {
       if (! ask_for_upgrade())
 	return FALSE;
       
@@ -5767,7 +5934,7 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
     
-    UmlClass * uml_base_class = UmlClass::get("UmlBaseClass");
+    UmlClass * uml_base_class = UmlClass::get("UmlBaseClass", 0);
     
     if (! class_set_name_defined(uml_base_class)) {
       if (!work && !ask_for_upgrade())
@@ -5793,7 +5960,7 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
     
-    UmlClass * javasettings = UmlClass::get("JavaSettings");
+    UmlClass * javasettings = UmlClass::get("JavaSettings", 0);
     
     if (java_jdk1_4(javasettings)) {
       if (!work && !ask_for_upgrade())
@@ -5805,7 +5972,7 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
     
-    UmlClass * baserelation = UmlClass::get("UmlBaseRelation");
+    UmlClass * baserelation = UmlClass::get("UmlBaseRelation", 0);
     
     if (baserelation->get_operation("association") == 0) {
       if (!work && !ask_for_upgrade())
@@ -5822,14 +5989,14 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
     
-    if (UmlClass::get("UmlBaseObjectDiagram") == 0) {
+    if (UmlClass::get("UmlBaseObjectDiagram", 0) == 0) {
       if (!work && !ask_for_upgrade())
 	return FALSE;
       add_objectdiagram(uml_base_item, uml_item);
       work = TRUE;
     }
     
-    if (UmlClass::get("UmlBaseActivity") == 0) {
+    if (UmlClass::get("UmlBaseActivity", 0) == 0) {
       if (!work && !ask_for_upgrade())
 	return FALSE;
       add_activity(uml_base_item, uml_item);
@@ -5837,7 +6004,7 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
     
-    UmlClass * uml_com = UmlClass::get("UmlCom");
+    UmlClass * uml_com = UmlClass::get("UmlCom", 0);
     
     if (uml_com->get_operation("showTrace") == 0) {
       if (!work && !ask_for_upgrade())
@@ -5846,7 +6013,7 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
     
-    UmlClass * basepinparam = UmlClass::get("UmlBasePinParameter");
+    UmlClass * basepinparam = UmlClass::get("UmlBasePinParameter", 0);
     
     if (basepinparam->get_operation("isStream") == 0) {
       if (!work && !ask_for_upgrade())
@@ -5855,7 +6022,7 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
 
-    UmlClass * cppsetting = UmlClass::get("CppSettings");
+    UmlClass * cppsetting = UmlClass::get("CppSettings", 0);
 
     if (cppsetting->get_attribute("_is_set_param_ref") == 0)  {
       if (!work && !ask_for_upgrade())
@@ -5865,10 +6032,18 @@ bool UmlPackage::upgrade() {
 
       work = TRUE;
     }
+
+    if (cppsetting->get_attribute("_is_relative_path") == 0)  {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      add_cpp_relative_path_force_namespace(cppsetting);
+
+      work = TRUE;
+    }
     
     if (work) {
-      UmlCom::trace("update api version");
-      update_api_version("26");
+      UmlCom::trace("update api version<br>\n");
+      update_api_version("27");
       UmlCom::message("ask for save-as");
       QMessageBox::information(0, "Upgrade", 
 			       "Upgrade done\n\n"
@@ -5877,7 +6052,7 @@ bool UmlPackage::upgrade() {
       return TRUE;
     }
     else
-      UmlCom::trace("<tt>        </tt><font face=helvetica>Plug-out already up to date</font><br>");
+      UmlCom::trace("<tt>        </tt><font face=helvetica>Plug-out already up to date</font><br>\n");
   }
   
   return FALSE;

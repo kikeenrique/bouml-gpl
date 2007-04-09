@@ -307,6 +307,10 @@ void StateCanvas::draw(QPainter & p) {
   QRect r = rect();
   QRect re = r;    
   QBrush brsh = p.brush();
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fputs("<g>\n", fp);
   
   if (used_color != UmlTransparent) {
     const int shadow = the_canvas()->shadow();
@@ -317,6 +321,14 @@ void StateCanvas::draw(QPainter & p) {
       p.setPen(QObject::NoPen);
       p.setBrush(QObject::darkGray);
       p.drawRoundRect(r.left() + shadow, r.top() + shadow, r.width(), r.height());
+
+            
+      if (fp != 0)
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
+		QObject::darkGray.rgb()&0xffffff,
+		r.left() + shadow, r.top() + shadow, r.width() - 1, r.height() - 1);
+
       p.setPen(QObject::SolidLine);
     }
   }
@@ -338,15 +350,28 @@ void StateCanvas::draw(QPainter & p) {
   
   p.drawRoundRect(r);
   
+  if (fp != 0)
+    fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
+	    co.rgb()&0xffffff,
+	    r.left(), r.top(), r.width() - 1, r.height() - 1);
+  
   p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
   r.setTop(r.top() + fm.height() / 2);
   p.drawText(r, QObject::AlignHCenter, browser_node->get_name());  
+  if (fp != 0)
+    draw_text(r, QObject::AlignHCenter, browser_node->get_name(),
+	      p.font(), fp);  
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   r.setTop(r.top() + fm.height());
   
   if (data->get_stereotype()[0] != 0) {
     p.drawText(r, QObject::AlignHCenter,
 	       QString("<<") + toUnicode(data->get_stereotype()) + ">>");
+    if (fp != 0)
+      draw_text(r, QObject::AlignHCenter,
+		QString("<<") + toUnicode(data->get_stereotype()) + ">>",
+		p.font(), fp);
     r.setTop(r.top() + fm.height());
   }
   
@@ -358,8 +383,15 @@ void StateCanvas::draw(QPainter & p) {
   if (! activities.isEmpty()) {
     r.setTop(r.top() + fm.height()/2);
     p.drawLine(r.topLeft(), r.topRight());
+    if (fp != 0)
+      fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	      r.left(), r.top(), r.right(), r.top());
     r.setTop(r.top() + fm.height()/2);
     p.drawText(r, 0, activities);
+    if (fp != 0)
+      draw_text(r, 0, activities,
+		p.font(), fp);
     
     QSize sz = fm.size(0, activities);
     
@@ -386,6 +418,12 @@ void StateCanvas::draw(QPainter & p) {
       regions.resize(nregion);
       regions_rect.resize(nregion);
       p.drawLine(r.topLeft(), r.topRight());
+
+      if (fp != 0)
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		r.left(), r.top(), r.right(), r.top());
+
       p.setPen(QObject::DashLine);
       
       child = browser_node->firstChild();
@@ -418,10 +456,22 @@ void StateCanvas::draw(QPainter & p) {
 	if (nregion == 0)
 	  break;
 	
-	if (region_horizontally)
+	if (region_horizontally) {
 	  p.drawLine(r.topLeft(), r.topRight());
-	else
+
+	  if (fp != 0)
+	    fprintf(fp, "\t<line stroke=\"black\" stroke-dasharray=\"18,6\" stroke-opacity=\"1\""
+		    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		    r.left(), r.top(), r.right(), r.top());
+	}
+	else {
 	  p.drawLine(r.topLeft(), r.bottomLeft());
+
+	  if (fp != 0)
+	    fprintf(fp, "\t<line stroke=\"black\" stroke-dasharray=\"18,6\" stroke-opacity=\"1\""
+		    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		    r.left(), r.top(), r.left(), r.bottom());
+	}
 	
 	child = child->nextSibling();
       }
@@ -439,6 +489,9 @@ void StateCanvas::draw(QPainter & p) {
     regions_rect.resize(1);
     regions_rect[0] = r;
   }
+    
+  if (fp != 0)
+    fputs("</g>\n", fp);
     
   p.setBackgroundColor(bckgrnd);
   p.setBrush(brsh);
@@ -506,8 +559,12 @@ void StateCanvas::menu(const QPoint&) {
   if (linked())
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
-  if (browser_node->is_writable())
+  if (browser_node->is_writable()) {
     m.insertItem("Set associated diagram",6);
+    
+    if (browser_node->get_associated())
+      m.insertItem("Remove diagram association",9);
+  }
   m.insertSeparator();
   m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
@@ -542,6 +599,10 @@ void StateCanvas::menu(const QPoint&) {
     ((BrowserState *) browser_node)
       ->set_associated_diagram((BrowserStateDiagram *)
 			       the_canvas()->browser_diagram());
+    return;
+  case 9:
+    ((BrowserState *) browser_node)
+      ->set_associated_diagram(0);
     return;
   case 7:
     //remove from view

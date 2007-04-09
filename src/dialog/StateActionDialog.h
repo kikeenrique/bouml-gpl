@@ -52,6 +52,9 @@ class StateActionDialog : public QTabDialog {
     MultiLineEdit * comment;
     QList<BodyDialog> edits;
     
+    QWidget * umltab;
+    QWidget * cpptab;
+    QWidget * javatab;
     MultiLineEdit * uml;
     MultiLineEdit * cpp;
     MultiLineEdit * java;
@@ -72,6 +75,8 @@ class StateActionDialog : public QTabDialog {
     virtual void accept();
   
     void edit_description();
+
+    void change_tabs(QWidget *);
 };
 
 #endif

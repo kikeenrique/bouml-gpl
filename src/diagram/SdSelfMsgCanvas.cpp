@@ -80,10 +80,22 @@ void SdSelfMsgCanvas::draw(QPainter & p) {
   const QRect r = rect();
   int ah = (r.height() - 1 - 1 - 2 - 1 - 1)/2;
   int he = r.top() + 1 + 2 + ah + 1;
+  FILE * fp = svg();
   
   p.drawLine(r.left() + 1, r.top() + 1, r.right() - 1, r.top() + 1);
+#ifdef WIN32
+  p.moveTo(r.right() - 1, r.top() + 1);
+#endif
   p.lineTo(r.right() - 1, he);
   p.lineTo(r.left() + 1, he);
+
+  if (fp != 0)
+    fprintf(fp, "<g>\n"
+	    "\t<path fill=\"none\" stroke=\"black\" stroke-opacity=\"1\""
+	    " d=\"M %d %d L %d %d L %d %d L %d %d\" />\n",
+	    r.left() + 1, r.top() + 1, r.right() - 1, r.top() + 1,
+	    r.right() - 1, he,
+	    r.left() + 1, he);
   
   if (itsType == UmlSyncSelfMsg) {
     QPointArray poly(3);
@@ -95,10 +107,23 @@ void SdSelfMsgCanvas::draw(QPainter & p) {
     poly.setPoint(2, r.left() + 1 + ah, he - ah);
     p.drawPolygon(poly/*, TRUE*/);
     p.setBrush(brsh);
+
+    if (fp != 0) {
+      draw_poly(fp, poly, "black", FALSE);
+      fputs("</g>\n", fp);
+    }
   }
   else {
     p.lineTo(r.left() + 1 + ah, he + ah);
     p.drawLine(r.left() + 1, he, r.left() + 1 + ah, he - ah);
+
+    if (fp != 0)
+      fprintf(fp, "\t<path fill=\"none\" stroke=\"black\" stroke-opacity=\"1\""
+	      " d=\"M %d %d L %d %d L %d %d\" />\n"
+	      "</g>\n",
+	      r.left() + 1 + ah, he + ah,
+	      r.left() + 1, he,
+	      r.left() + 1 + ah, he - ah);
   }
   
   if (selected())

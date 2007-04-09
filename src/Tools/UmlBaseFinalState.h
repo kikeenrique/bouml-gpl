@@ -3,6 +3,7 @@
 
 
 #include "UmlPseudoState.h"
+#include "anItemKind.h"
 #include <qcstring.h>
 
 class UmlFinalState;

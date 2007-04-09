@@ -93,7 +93,16 @@ void UcUseCaseCanvas::draw(QPainter & p) {
     co = used_color;
   }
   
+  QColor col = color(co);
   QBrush brsh = p.brush();
+  bool realizationp =
+    !strcmp(browser_node->get_data()->get_stereotype(), "realization");
+  FILE * fp = svg();
+  int rx = width()/2 - 1;
+  int ry = height()/2 - 1;
+
+  if (fp != 0)
+    fputs("<g>\n", fp);
   
   if (co != UmlTransparent) {
     const int shadow = the_canvas()->shadow() - 1;
@@ -104,14 +113,36 @@ void UcUseCaseCanvas::draw(QPainter & p) {
       p.setPen(QObject::NoPen);
       p.setBrush(QObject::darkGray);
       p.drawEllipse(r.left() + shadow, r.top() + shadow, r.width(), r.height());
+
+      if (fp != 0) {
+	rx = width()/2 - 1;
+	ry = height()/2 - 1;
+
+	fprintf(fp, "\t<ellipse fill=\"#%06x\" stroke=\"none\""
+		" cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+		QObject::darkGray.rgb()&0xffffff,
+		r.left() + shadow + rx, r.top() + shadow + ry, rx, ry);
+      }
     }
+
+    if (fp != 0)
+      fprintf(fp, "\t<ellipse fill=\"#%06x\" stroke=\"black\"%s stroke-width=\"1\" stroke-opacity=\"1\""
+	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n"
+	      "</g>\n",
+	      col.rgb()&0xffffff,
+	      (realizationp) ? " stroke-dasharray=\"4,4\"" : "",
+	      r.left() + rx, r.top() + ry, rx, ry);
   }
-  
-  bool realizationp =
-    !strcmp(browser_node->get_data()->get_stereotype(), "realization");
+  else if (fp != 0)
+    fprintf(fp, "\t<ellipse fill=\"none\" stroke=\"black\"%s stroke-width=\"1\" stroke-opacity=\"1\""
+	    " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n"
+	    "</g>\n",
+	    (realizationp) ? " stroke-dasharray=\"4,4\"" : "",
+	    r.left() + rx, r.top() + ry, rx, ry);
   
   p.setBackgroundMode((co == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
-  p.setBrush(color(co));
+  p.setBrush(col);
+
   if (realizationp)
     p.setPen(QObject::DotLine);
   else
@@ -119,6 +150,7 @@ void UcUseCaseCanvas::draw(QPainter & p) {
   p.drawEllipse(r.left(), r.top(), r.width(), r.height());
   if (realizationp)
     p.setPen(QObject::SolidLine);
+
   p.setBrush(brsh);
   
   if (selected())
@@ -180,8 +212,12 @@ void UcUseCaseCanvas::menu(const QPoint&) {
   if (linked())
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
-  if (browser_node->is_writable())
+  if (browser_node->is_writable()) {
     m.insertItem("Set associated diagram",6);
+    
+    if (browser_node->get_associated())
+      m.insertItem("Remove diagram association",9);
+  }
   m.insertSeparator();
   m.insertItem("Remove from view",7);
   if (browser_node->is_writable())
@@ -218,6 +254,10 @@ void UcUseCaseCanvas::menu(const QPoint&) {
     ((BrowserUseCase *) browser_node)->set_associated_diagram((BrowserUseCaseDiagram *)
 							      the_canvas()->browser_diagram());
     break;
+  case 12:
+    ((BrowserUseCase *) browser_node)
+      ->set_associated_diagram(0);
+    return;
   case 7:
     // remove from view
     delete_it();

@@ -39,7 +39,7 @@ void UmlOperation::add_param(int rank, aDirection dir,
   
   if (!addParameter(rank, p)) {
     QCString msg = QCString("can't add parameter '") + name +
-      "' to " + parent()->name() + "::" + this->name();
+      "' to " + parent()->name() + "::" + this->name() + "<br>\n";
 
     UmlCom::trace(msg);
     throw 0;
@@ -56,7 +56,7 @@ void UmlOperation::add_param(int rank, aDirection dir,
   
   if (!addParameter(rank, p)) {
     QCString msg = QCString("can't add parameter '") + name +
-      "' to " + parent()->name() + "::" + this->name();
+      "' to " + parent()->name() + "::" + this->name() + "<br>\n";
 
     UmlCom::trace(msg);
     throw 0;
@@ -288,6 +288,6 @@ void UmlOperation::rename_jdk5() {
   
   if (changed)
     UmlCom::trace(parent()->name() + "::" + name() +
-		  " upgraded to take into account the rename of 'enum' to 'enum pattern'");
+		  " upgraded to take into account the rename of 'enum' to 'enum pattern'<br>\n");
   
 }

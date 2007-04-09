@@ -67,6 +67,7 @@ StateDialog::StateDialog(StateData * d)
   //
   
   grid = new QGrid(2, this);
+  umltab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
   
@@ -98,15 +99,15 @@ StateDialog::StateDialog(StateData * d)
   addTab(grid, "Uml");
 
   // UML / OCL
-  init_tab(uml, state->uml, "Ocl", SLOT(edit_uml_entry()),
+  init_tab(ocltab, uml, state->uml, "Ocl", SLOT(edit_uml_entry()),
 	   SLOT(edit_uml_exit()), SLOT(edit_uml_activity()));
 
   // CPP
-  init_tab(cpp, state->cpp, "C++", SLOT(edit_cpp_entry()),
+  init_tab(cpptab, cpp, state->cpp, "C++", SLOT(edit_cpp_entry()),
 	   SLOT(edit_cpp_exit()), SLOT(edit_cpp_activity()));
 
   // Java
-  init_tab(java, state->java, "Java", SLOT(edit_java_entry()),
+  init_tab(javatab, java, state->java, "Java", SLOT(edit_java_entry()),
 	   SLOT(edit_java_exit()), SLOT(edit_java_activity()));
   
   // USER : list key - value
@@ -117,6 +118,11 @@ StateDialog::StateDialog(StateData * d)
   
   kvtable = new KeyValuesTable(bn, grid, visit);
   addTab(grid, "Properties");
+  
+  //
+    
+  connect(this, SIGNAL(currentChanged(QWidget *)),
+	  this, SLOT(change_tabs(QWidget *)));
 }
 
 StateDialog::~StateDialog() {
@@ -127,17 +133,31 @@ StateDialog::~StateDialog() {
     edits.take(0)->close();
 }
 
+void StateDialog::change_tabs(QWidget * w) {
+  if (!visit) {
+    if (w == umltab)
+      edname->setFocus();
+    else if (w == ocltab)
+      uml.edentry->setFocus();
+    else if (w == cpptab)
+      cpp.edentry->setFocus();
+    else if (w == javatab)
+      java.edentry->setFocus();
+  }
+}
+
 void StateDialog::polish() {
   QTabDialog::polish();
   UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
 }
 
-void StateDialog::init_tab(StDialog & d, StateBehavior & st, const char * lbl,
-			   const char * sl_enbeh, const char * sl_exbeh,
-			   const char * sl_beh) {
+void StateDialog::init_tab(QWidget *& tab, StDialog & d, StateBehavior & st,
+			   const char * lbl, const char * sl_enbeh,
+			   const char * sl_exbeh, const char * sl_beh) {
   QGrid * grid = new QGrid(2, this);
   QVBox * vtab;
 
+  tab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
   

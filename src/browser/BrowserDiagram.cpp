@@ -37,6 +37,7 @@
 #include "BrowserComponentDiagram.h"
 #include "BrowserDeploymentDiagram.h"
 #include "BrowserObjectDiagram.h"
+#include "BrowserActivityDiagram.h"
 #include "BrowserView.h"
 #include "UmlWindow.h"
 #include "myio.h"
@@ -132,6 +133,8 @@ void BrowserDiagram::import()
   BrowserSeqDiagram::import();
   BrowserColDiagram::import();  
   BrowserStateDiagram::import();
+  BrowserObjectDiagram::import();
+  BrowserActivityDiagram::import();
 }
 
 BrowserNode * BrowserDiagram::read_diagram_ref(char * & st)
@@ -146,7 +149,8 @@ BrowserNode * BrowserDiagram::read_diagram_ref(char * & st)
       ((bn = BrowserComponentDiagram::read(st, k, 0)) == 0) &&
       ((bn = BrowserDeploymentDiagram::read(st, k, 0)) == 0) &&
       ((bn = BrowserStateDiagram::read(st, k, 0)) == 0) &&
-      ((bn = BrowserObjectDiagram::read(st, k, 0)) == 0))
+      ((bn = BrowserObjectDiagram::read(st, k, 0)) == 0) &&
+      ((bn = BrowserActivityDiagram::read(st, k, 0)) == 0))
     unknown_keyword(k);
   
   return bn;  

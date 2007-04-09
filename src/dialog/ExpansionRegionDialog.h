@@ -46,6 +46,7 @@ class ExpansionRegionDialog : public QTabDialog {
   Q_OBJECT
     
   protected:
+    QWidget * umltab;
     ExpansionRegionData * data;
     LineEdit * edname;
     QComboBox * edstereotype;
@@ -67,6 +68,8 @@ class ExpansionRegionDialog : public QTabDialog {
     virtual void polish();
     virtual void accept();
     void edit_description();
+
+    void change_tabs(QWidget *);
 };
 
 #endif

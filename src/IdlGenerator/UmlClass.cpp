@@ -203,25 +203,3 @@ void UmlClass::generate_decl(QTextOStream &, const QCString &) {
   UmlCom::trace(QCString("<font color=\"red\"><b>Embedded class <it>")
 		+ name() + "</it> not generated</b></font><br>");
 }
-
-void UmlFormalParameter::generate(QTextOStream & f, QCString & s, const char *& sep) const {
-  f << sep << type() << ' ' << name();
-  
-  s += sep;
-  s += type();
-  s += ' ';
-  s += name();
-      
-  QCString dflt = IdlSettings::type(defaultValue().toString());
-      
-  if (!dflt.isEmpty())
-    f << " = " << dflt;
-  
-  sep = ", ";
-}
-
-void UmlActualParameter::generate(QTextOStream & f) const {
-  f << ((rank() == 0) ? "<" : ", ")
-    << IdlSettings::type(value().toString());
-}
-

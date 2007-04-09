@@ -26,11 +26,10 @@
 #ifndef CLASS_H
 #define CLASS_H
 
-#include "api.h"
-
 #include "BrowserNode.h"
 #include "ClassContainer.h"
 #include "UmlClass.h"
+#include "aRelationKind.h"
 
 #ifdef REVERSE
 class UmlArtifact;

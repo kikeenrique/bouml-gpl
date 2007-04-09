@@ -136,6 +136,12 @@ void SdClassInstCanvas::draw(QPainter & p) {
       p.setBackgroundMode(QObject::TransparentMode);
       p.setFont(the_canvas()->get_font(UmlNormalFont));
       p.drawText(ra, QObject::AlignCenter, cl->get_name());
+      
+      FILE * fp = svg();
+      
+      if (fp != 0)
+	draw_text(ra, QObject::AlignCenter, cl->get_name(),
+		  p.font(), fp);
       p.setBackgroundColor(bckgrnd);
     }
     else

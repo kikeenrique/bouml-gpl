@@ -61,6 +61,7 @@ class AttributeDialog : public QTabDialog {
     int offset;
     
     // uml tab
+    QWidget * umltab;
     LineEdit * edname;
     LineEdit * edinit;
     QComboBox * edtype;
@@ -73,6 +74,7 @@ class AttributeDialog : public QTabDialog {
     MultiLineEdit * comment;
     
     // C++ tab
+    QWidget * cpptab;
     bool cpp_in_enum;
     bool cpp_in_typedef;
     VisibilityGroup cpp_visibility;
@@ -82,6 +84,7 @@ class AttributeDialog : public QTabDialog {
     MultiLineEdit * showcppdecl;
     
     // java tab
+    QWidget * javatab;
     bool java_in_enum;
     bool java_in_enum_pattern;
     bool java_in_typedef;
@@ -92,6 +95,7 @@ class AttributeDialog : public QTabDialog {
     QString javaannotation;
     
     // IDL tab
+    QWidget * idltab;
     bool idl_in_enum;
     bool idl_in_struct;
     bool idl_in_union;
@@ -138,7 +142,7 @@ class AttributeDialog : public QTabDialog {
     void idl_default_state();
     void idl_unmapped();
     void idl_update();
-    void update_all_tabs();
+    void update_all_tabs(QWidget *);
 };
 
 #endif

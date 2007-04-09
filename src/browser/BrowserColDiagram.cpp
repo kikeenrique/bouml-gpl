@@ -164,6 +164,19 @@ const QPixmap* BrowserColDiagram::pixmap(int) const {
   return (deletedp()) ? DeletedColDiagramIcon : ColDiagramIcon;
 }
 
+void BrowserColDiagram::draw_svg() const {
+  fputs("\t<rect fill=\"white\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" x=\"0\" y=\"0\" width=\"15\" height=\"15\" />\n"
+	"\t<path fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" "
+	"d=\"M 0 4 L 7 4 L 7 0 "
+	"M 8 15 L 8 12 L 15 12 "
+	"M 4 4 L 12 12 "
+	"M 2 8 L 2 6 L 4 6 "
+	"M 11 9 L 13 9 L 13 7 "
+	"M 4 8 L 6 10 "
+	"M 9 5 L 11 7\" />\n",
+	svg());
+}
+
 void BrowserColDiagram::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
@@ -439,11 +452,11 @@ bool BrowserColDiagram::tool_cmd(ToolCom * com, const char * args) {
     return TRUE;
   case saveInCmd:
     if (window != 0)
-      com->write_ack(window->get_view()->save_in(args, TRUE, FALSE));
+      com->write_ack(window->get_view()->save_pict(args, TRUE, FALSE));
     else {
       ColDiagramWindow * w = new ColDiagramWindow(full_name(), this);
       
-      com->write_ack(w->get_view()->save_in(args, 
+      com->write_ack(w->get_view()->save_pict(args, 
 					     !w->get_view()->has_preferred_size_zoom(),
 					     TRUE));
       w->dont_save();

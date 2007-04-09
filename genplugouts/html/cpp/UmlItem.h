@@ -117,8 +117,11 @@ class UmlItem : public UmlBaseItem {
 
     static QCString letters;
 
-    //true => classes and tables are generated in index.html, else an own files are generated
+    //true => use SVG picture rather than PNG
     static bool flat;
+
+    //true => classes and tables are generated in index.html, else an own files are generated
+    static bool svg;
 
 };
 

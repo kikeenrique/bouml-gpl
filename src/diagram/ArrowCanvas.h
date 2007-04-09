@@ -68,6 +68,9 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     QPoint arrow[3];	// les 2 extremites et le point milieu pour inherit
     QPointArray poly;   // aggregations
     
+    // to remove redondant relation made by release 2.22
+    static QList<ArrowCanvas> RelsToCheck;
+    
   public:
     ArrowCanvas(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
 		UmlCode t, int id, bool own_brk);
@@ -130,6 +133,7 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     virtual void history_load(QBuffer &);
     virtual void history_hide();
 
+    static void remove_redondant_rels();
     
   protected:
     void search_supports(ArrowCanvas *& plabel, 

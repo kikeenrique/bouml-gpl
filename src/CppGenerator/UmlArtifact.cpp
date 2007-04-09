@@ -61,7 +61,7 @@ void UmlArtifact::generate() {
     QCString src_path = pack->source_path(name);
     QCString nasp_start;
     QCString nasp_end;
-    const QCString nasp = pack->cppNamespace();
+    QCString nasp = pack->cppNamespace();
     
     if (! nasp.isEmpty()) {
       int index = 0;
@@ -75,7 +75,8 @@ void UmlArtifact::generate() {
 	closed += na;
 	nasp_end = closed + "\n" + nasp_end;
 	closed += "::";
-	index = index2 + 2;
+	nasp.replace(index2, 2, "_");
+	index = index2 + 1;
       }
       
       nasp_start += QCString("namespace ") + nasp.mid(index) + " {\n\n";
@@ -165,6 +166,14 @@ void UmlArtifact::generate() {
 	else if (!strncmp(p, "${NAME}", 7)) {
 	  p += 7;
 	  f_h << name.upper();
+	}
+	else if (!strncmp(p, "${namespace}", 12)) {
+	  p += 12;
+	  f_h << nasp;
+	}
+	else if (!strncmp(p, "${NAMESPACE}", 12)) {
+	  p += 12;
+	  f_h << nasp.upper();
 	}
 	else if (!strncmp(p, "${includes}", 11)
 		 || !strncmp(p, "${all_includes}", 15)) {

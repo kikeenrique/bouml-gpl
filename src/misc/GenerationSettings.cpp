@@ -131,6 +131,9 @@ QString GenerationSettings::java_extension;
 QString GenerationSettings::idl_extension;
 
 bool GenerationSettings::cpp_include_with_path;
+bool GenerationSettings::cpp_relative_path;
+
+bool GenerationSettings::cpp_force_namespace_gen;
     
 int GenerationSettings::nrelstereotypes;
 Stereotype * GenerationSettings::rel_stereotypes;
@@ -194,8 +197,8 @@ void GenerationSettings::init()
   builtins[13].set("double", "double", "double", "double");
   builtins[14].set("string", "string", "String", "string");
   
-#define CPP_H_CONTENT "#ifndef _${NAME}_H\n\
-#define _${NAME}_H\n\
+#define CPP_H_CONTENT "#ifndef ${NAMESPACE}_${NAME}_H\n\
+#define ${NAMESPACE}_${NAME}_H\n\
 \n\
 ${comment}\n\
 ${includes}\n\
@@ -221,8 +224,8 @@ ${definition}";
   java_src_content = JAVA_SRC_CONTENT;
   java_extension = "java";
   
-#define IDL_SRC_CONTENT "#ifndef _${NAME}_H\n\
-#define _${NAME}_H\n\
+#define IDL_SRC_CONTENT "#ifndef ${MODULE}_${NAME}_H\n\
+#define ${MODULE}_${NAME}_H\n\
 \n\
 ${comment}\n\
 ${includes}\n\
@@ -302,13 +305,15 @@ ${module_end}\n\
   cpp_set_param_const = FALSE;
   cpp_set_param_ref = FALSE;
   cpp_include_with_path = FALSE;
+  cpp_relative_path = FALSE;
+  cpp_force_namespace_gen = FALSE;
   
   java_class_decl = "${comment}${@}${public}${final}${abstract}class ${name}${extends}${implements} {\n${members}}\n";
   java_external_class_decl = "${name}";
   java_interface_decl = "${comment}${@}${public}interface ${name}${extends} {\n${members}}\n";
   java_enum_decl = "${comment}${@}${public}${final}${abstract}enum ${name}${implements} {\n${items};\n${members}}\n";
   java_enum_pattern_decl = "${comment}${@}${public}final class ${name} {\n${members}\n\
-  private int value;\n\n\
+  private final int value;\n\n\
   public int value() {\n\
     return value;\n\
   }\n\n\
@@ -328,10 +333,10 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   java_rel_decl[2] = "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};\n";
   java_oper_def = "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{\n  ${body}}\n";
   java_get_visibility = UmlPublic;
-  java_get_name = "get_${name}";
+  java_get_name = "get${Name}";
   java_get_final = TRUE;
   java_set_visibility = UmlPublic;
-  java_set_name = "set_${name}";
+  java_set_name = "set${Name}";
   java_set_final = FALSE;
   java_set_param_final = FALSE;
 
@@ -751,10 +756,16 @@ void GenerationSettings::send_cpp_def(ToolCom * com)
   com->write_bool(cpp_set_param_const);
   if (api_version >= 26)
     com->write_bool(cpp_set_param_ref);
+  if (api_version >= 27) {
+    com->write_bool(cpp_relative_path);
+    com->write_bool(cpp_force_namespace_gen);
+  }
 }
 
 void GenerationSettings::send_java_def(ToolCom * com)
 {
+  int api_version = com->api_format();
+  
   com->write_string(java_root_dir);
   
   int index;
@@ -792,19 +803,19 @@ void GenerationSettings::send_java_def(ToolCom * com)
   
   com->write_string(java_class_decl);
   com->write_string(java_external_class_decl);
-  if (com->api_format() >= 18)
+  if (api_version >= 18)
     com->write_string(java_enum_decl);
   com->write_string(java_enum_pattern_decl);
   com->write_string(java_interface_decl);
   com->write_string(java_attr_decl);
-  if (com->api_format() >= 18)
+  if (api_version >= 18)
     com->write_string(java_enum_item_decl);
   com->write_string(java_enum_pattern_item_decl);
   com->write_string(java_enum_pattern_item_case);
   for (index = 0; index != 3; index += 1)
     com->write_string(java_rel_decl[index]);
   com->write_string(java_oper_def);
-  if (com->api_format() >= 23)
+  if (api_version >= 23)
     com->write_char(java_get_visibility);
   else {
     switch (java_get_visibility) {
@@ -819,7 +830,7 @@ void GenerationSettings::send_java_def(ToolCom * com)
   }
   com->write_string(java_get_name);
   com->write_bool(java_get_final);
-  if (com->api_format() >= 23)
+  if (api_version >= 23)
     com->write_char(java_set_visibility);
   else {
     switch (java_set_visibility) {
@@ -1075,6 +1086,12 @@ bool GenerationSettings::tool_global_cpp_cmd(ToolCom * com,
 	break;
       case setCppIncludeWithPathCmd:
 	cpp_include_with_path = (*args != 0);
+	break;
+      case setCppRelativePathCmd:
+	cpp_relative_path = (*args != 0);
+	break;
+      case setCppForceNamespaceGenCmd:
+	cpp_force_namespace_gen = (*args != 0);
 	break;
       case setCppEnumInCmd:
 	cpp_enum_in = args;
@@ -1579,6 +1596,14 @@ void GenerationSettings::save()
     nl_indent(st);
     st << "cpp_include_with_path";
   }
+  if (cpp_relative_path) {
+    nl_indent(st);
+    st << "cpp_relative_path";
+  }
+  if (cpp_force_namespace_gen) {
+    nl_indent(st);
+    st << "cpp_force_namespace_gen";
+  }
 
   st << '\n';
   nl_indent(st);
@@ -2019,6 +2044,18 @@ void GenerationSettings::read(char * & st, char * & k)
   }
   else
     cpp_include_with_path = FALSE;
+  if (!strcmp(k, "cpp_relative_path")) {
+    cpp_relative_path = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    cpp_relative_path = FALSE;
+  if (!strcmp(k, "cpp_force_namespace_gen")) {
+    cpp_force_namespace_gen = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    cpp_force_namespace_gen = FALSE;
 
   bool old_types = !strcmp(k, "types");
   bool new_types = !strcmp(k, "type_forms");
@@ -2282,7 +2319,7 @@ void GenerationSettings::read(char * & st, char * & k)
     else {
       // old definitions
       java_enum_pattern_decl = "${comment}${public}final class ${name} {\n${members}\n\
-  private int value;\n\n\
+  private final int value;\n\n\
   public int value() {\n\
     return value;\n\
   }\n\n\

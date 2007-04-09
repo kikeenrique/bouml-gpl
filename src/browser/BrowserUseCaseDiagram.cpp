@@ -167,6 +167,19 @@ const QPixmap* BrowserUseCaseDiagram::pixmap(int) const {
   return (deletedp()) ? DeletedUseCaseDiagramIcon : UseCaseDiagramIcon;
 }
 
+void BrowserUseCaseDiagram::draw_svg() const {
+  fputs("\t<rect fill=\"white\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" x=\"0\" y=\"0\" width=\"15\" height=\"15\" />\n"
+	"\t<path fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" "
+	"d=\"M 3 0 L 4 1 L 4 2 L 3 3 L 2 2 L 2 1 L 2 0 "
+	"M 3 3 L 3 6 "
+	"M 1 8 L 3 6 L 5 8 "
+	"M 7 3 L 9 5 "
+	"M 9 7 L 11 7 L 11 5 "
+	"M 7 14 L 6 14 L 5 13 L 5 11 L 6 10 L 7 10 L 8 9 L 12 9 L 13 10 L 14 10 L 15 11"
+	"M 1 4 L 5 4\" />\n",
+	svg());
+}
+
 void BrowserUseCaseDiagram::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
@@ -447,13 +460,13 @@ bool BrowserUseCaseDiagram::tool_cmd(ToolCom * com, const char * args) {
     return TRUE;
   case saveInCmd:
     if (window != 0)
-      com->write_ack(window->get_view()->save_in(args, TRUE, FALSE));
+      com->write_ack(window->get_view()->save_pict(args, TRUE, FALSE));
     else {
       UseCaseDiagramWindow * w = new UseCaseDiagramWindow(full_name(), this);
       
-      com->write_ack(w->get_view()->save_in(args, 
-					    !w->get_view()->has_preferred_size_zoom(),
-					    TRUE));
+      com->write_ack(w->get_view()->save_pict(args, 
+					      !w->get_view()->has_preferred_size_zoom(),
+					      TRUE));
       w->dont_save();
       w->close(TRUE);
     }

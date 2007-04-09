@@ -55,6 +55,7 @@ class StateDialog : public QTabDialog {
   Q_OBJECT
     
   protected:
+    QWidget * umltab;
     bool visit;
     StateData * state;
     LineEdit * edname;
@@ -62,6 +63,9 @@ class StateDialog : public QTabDialog {
     MultiLineEdit * comment;
     QList<BodyDialog> edits;
     
+    QWidget * ocltab;
+    QWidget * cpptab;
+    QWidget * javatab;
     StDialog uml;
     StDialog cpp;
     StDialog java;
@@ -87,7 +91,7 @@ class StateDialog : public QTabDialog {
     virtual ~StateDialog();
   
   protected:
-    void init_tab(StDialog &, StateBehavior & td, const char * lbl,
+    void init_tab(QWidget *&, StDialog &, StateBehavior & td, const char * lbl,
 		  const char * sl_enbeh, const char * sl_exbeh, const char * sl_beh);
   protected slots:
     virtual void polish();
@@ -103,6 +107,8 @@ class StateDialog : public QTabDialog {
     void edit_java_entry();
     void edit_java_exit();
     void edit_java_activity();
+
+    void change_tabs(QWidget *);
 };
 
 #endif

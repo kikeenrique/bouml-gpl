@@ -59,6 +59,7 @@ class ParameterDialog : public QTabDialog {
     int offset;
     
     // uml tab
+    QWidget * umltab;
     LineEdit * edname;
     LineEdit * edinit;
     QComboBox * edtype;
@@ -73,6 +74,9 @@ class ParameterDialog : public QTabDialog {
     QRadioButton * standard_rb;
     QRadioButton * exception_rb;
     QRadioButton * stream_rb;
+    QWidget * ocltab;
+    QWidget * cpptab;
+    QWidget * javatab;
     MultiLineEdit * eduml_selection;
     MultiLineEdit * edcpp_selection;
     MultiLineEdit * edjava_selection;
@@ -89,8 +93,8 @@ class ParameterDialog : public QTabDialog {
     static void post_edit_cpp_selection(ParameterDialog * d, QString s);
     static void post_edit_java_selection(ParameterDialog * d, QString s);
     
-    void init_tab(MultiLineEdit *& ed, const char * v, const char * lbl,
-		  const char * sl);
+    void init_tab(QWidget *& tab, MultiLineEdit *& ed, const char * v,
+		  const char * lbl, const char * sl);
     
   public:
     ParameterDialog(ParameterData * a);
@@ -107,6 +111,8 @@ class ParameterDialog : public QTabDialog {
     void edit_java_selection();
     
     void menu_type();
+
+    void change_tabs(QWidget *);
 };
 
 #endif

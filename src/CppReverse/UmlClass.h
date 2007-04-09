@@ -27,21 +27,11 @@
 #define UMLCLASS_H
 
 #include "UmlBaseClass.h"
+#include "UmlFormalParameter.h"
 
 class ClassContainer;
 
-class UmlFormalParameter : public UmlBaseFormalParameter {
-  public:
-    UmlFormalParameter(){};
-    UmlFormalParameter(QCString t, QCString n, QCString v);
-};
-
 typedef QValueList<UmlFormalParameter> FormalParameterList;
-
-class UmlActualParameter : public UmlBaseActualParameter {
-  public:
-    UmlActualParameter(){};
-};
 
 class UmlClass : public UmlBaseClass {
   public:

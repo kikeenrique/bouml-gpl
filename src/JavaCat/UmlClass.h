@@ -32,19 +32,6 @@
 #include <qstringlist.h>
 #endif
 
-class UmlFormalParameter : public UmlBaseFormalParameter {
-  public:
-    UmlFormalParameter(){};
-    UmlFormalParameter(QCString n, const UmlTypeSpec & e);
-};
-
-typedef QValueList<UmlFormalParameter> FormalParameterList;
-
-class UmlActualParameter : public UmlBaseActualParameter {
-  public:
-    UmlActualParameter(){};
-};
-
 class UmlClass : public UmlBaseClass {
   public:
     UmlClass(void * id, const QCString & n);

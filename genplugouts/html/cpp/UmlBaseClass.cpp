@@ -289,6 +289,7 @@ void UmlBaseClass::unload(bool rec, bool del) {
   UmlBaseClassItem::unload(rec, del);
 }
 
+//key includes package/class-container
 QDict<UmlClass> UmlBaseClass::classes(1001);
 
  UmlBaseClass::UmlBaseClass(void * id, const QCString & n) 

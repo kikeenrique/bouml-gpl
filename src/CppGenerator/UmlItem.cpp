@@ -30,14 +30,14 @@
 UmlItem::~UmlItem() {
 }
 
-void UmlItem::manage_comment(const char *& p, const char *& pp) {
+bool UmlItem::manage_comment(const char *& p, const char *& pp) {
   static QString the_comment;
   
   p += 10;
   
   if ((pp != 0) || // comment contains ${comment} !
       description().isEmpty())
-    return;
+    return FALSE;
   
   const char * comment = description();
   
@@ -54,16 +54,17 @@ void UmlItem::manage_comment(const char *& p, const char *& pp) {
     
   pp = p;
   p = the_comment;
+  return TRUE;
 }
 
-void UmlItem::manage_description(const char *& p, const char *& pp) {
+bool UmlItem::manage_description(const char *& p, const char *& pp) {
   static QCString the_comment;
   
   p += 14;
   
   if ((pp != 0) || // comment contains ${description} !
       description().isEmpty())
-    return;
+    return FALSE;
   
   the_comment = description();
   if (*p != '\n')
@@ -71,6 +72,7 @@ void UmlItem::manage_description(const char *& p, const char *& pp) {
     
   pp = p;
   p = the_comment;
+  return TRUE;
 }
 
 void UmlItem::replace_alias(QCString & s) {

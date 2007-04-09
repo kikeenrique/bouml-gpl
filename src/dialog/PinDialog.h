@@ -59,6 +59,7 @@ class PinDialog : public QTabDialog {
     int offset;
     
     // uml tab
+    QWidget * umltab;
     LineEdit * edname;
     QComboBox * edtype;
     QComboBox * edstereotype;
@@ -72,6 +73,9 @@ class PinDialog : public QTabDialog {
     QRadioButton * standard_rb;
     QRadioButton * exception_rb;
     QRadioButton * stream_rb;
+    QWidget * ocltab;
+    QWidget * cpptab;
+    QWidget * javatab;
     MultiLineEdit * eduml_selection;
     MultiLineEdit * edcpp_selection;
     MultiLineEdit * edjava_selection;
@@ -87,8 +91,8 @@ class PinDialog : public QTabDialog {
     static void post_edit_cpp_selection(PinDialog * d, QString s);
     static void post_edit_java_selection(PinDialog * d, QString s);
     
-    void init_tab(MultiLineEdit *& ed, const char * v, const char * lbl,
-		  const char * sl);
+    void init_tab(QWidget *& tab, MultiLineEdit *& ed, const char * v,
+		  const char * lbl, const char * sl);
     
   public:
     PinDialog(PinData * a);
@@ -103,6 +107,8 @@ class PinDialog : public QTabDialog {
     void edit_cpp_selection();
     void edit_java_selection();
     void menu_type();
+
+    void change_tabs(QWidget *);
 };
 
 #endif

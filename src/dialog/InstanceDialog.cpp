@@ -57,6 +57,7 @@ InstanceDialog::InstanceDialog(Instance * i, const char * kind,
   vbox->addWidget(grid);
   new QLabel("name : ", grid);
   edname = new LineEdit(inst->get_name(), grid);
+  edname->setFocus();
   
   new QLabel("", grid);
   new QLabel("", grid);

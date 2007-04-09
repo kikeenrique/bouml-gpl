@@ -59,6 +59,7 @@ ClassInstanceDialog::ClassInstanceDialog(OdClassInstCanvas * i)
   hbox->addWidget(new QLabel("name : ", this));
   edname = new LineEdit(inst->get_name(), this);
   hbox->addWidget(edname);
+  edname->setFocus();
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);

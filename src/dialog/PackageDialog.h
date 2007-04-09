@@ -44,6 +44,7 @@ class PackageDialog : public QTabDialog {
   Q_OBJECT
     
   protected:
+    QWidget * umltab;
     PackageData * pa;
     LineEdit * edname;
     QComboBox * edstereotype;
@@ -51,19 +52,25 @@ class PackageDialog : public QTabDialog {
     QList<BodyDialog> edits;
     
     // C++
+    QWidget * cpptab;
     LineEdit * edcppsrcdir;
     LineEdit * edcpphdir;
     LineEdit * edcppnamespace;
     QPushButton * cppsrcbutton;
     QPushButton * cpphbutton;
+
     // Java
+    QWidget * javatab;
     LineEdit * edjavadir;
     LineEdit * edjavapackage;
     QPushButton * javabutton;
+
     // Idl
+    QWidget * idltab;
     LineEdit * edidldir;
     LineEdit * edidlmodule;
     QPushButton * idlbutton;
+
     // User
     KeyValuesTable * kvtable;
     
@@ -92,6 +99,8 @@ class PackageDialog : public QTabDialog {
     void cpph_relative();
     void java_relative();
     void idl_relative();
+
+    void change_tabs(QWidget *);
 };
 
 #endif

@@ -1,91 +1,91 @@
-format 8
+format 30
 
-classcanvas 139866896 class_ref 8577 // UmlUseCaseView
-  draw_all_relations default hide_attributs default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+classcanvas 128002 class_ref 8577 // UmlUseCaseView
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   xyz 34 348 2000
-classcanvas 139870192 class_ref 2816 // UmlBaseClassView
-  draw_all_relations default hide_attributs default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+classcanvas 128130 class_ref 2816 // UmlBaseClassView
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   color blue
   xyz 205 196 2000
-classcanvas 139871416 class_ref 5120 // UmlBaseUseCaseView
-  draw_all_relations default hide_attributs default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+classcanvas 128258 class_ref 5120 // UmlBaseUseCaseView
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   color blue
   xyz 17 268 2000
-classcanvas 139867776 class_ref 4096 // UmlBaseItem
-  draw_all_relations default hide_attributs default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+classcanvas 128386 class_ref 4096 // UmlBaseItem
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   color blue
   xyz 227 27 2000
-classcanvas 139876016 class_ref 7169 // UmlDeploymentView
-  draw_all_relations default hide_attributs default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+classcanvas 128514 class_ref 7169 // UmlDeploymentView
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   xyz 414 197 2000
-classcanvas 139851960 class_ref 6785 // UmlComponentView
-  draw_all_relations default hide_attributs default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+classcanvas 128642 class_ref 6785 // UmlComponentView
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   xyz 412 343 2000
-classcanvas 139868960 class_ref 4480 // UmlBasePackage
-  draw_all_relations default hide_attributs default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+classcanvas 128770 class_ref 4480 // UmlBasePackage
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   color blue
   xyz 11 133 2000
-note 139876728 "Do not modify the blue classes"
-  xyzwh 22 28 2000 113 71
-classcanvas 139853216 class_ref 6401 // UmlClassView
-  draw_all_relations default hide_attributs default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+note 128898 "Do not modify the blue classes"
+  xyzwh 22 28 2000 126 61
+classcanvas 129026 class_ref 6401 // UmlClassView
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   xyz 222 300 2000
-classcanvas 139865064 class_ref 7937 // UmlPackage
-  draw_all_relations default hide_attributs default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+classcanvas 129154 class_ref 7937 // UmlPackage
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   xyz 28 201 2000
-classcanvas 139863720 class_ref 3328 // UmlBaseComponentView
-  draw_all_relations default hide_attributs default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+classcanvas 129282 class_ref 3328 // UmlBaseComponentView
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   color blue
   xyz 395 279 2000
-classcanvas 139872712 class_ref 3584 // UmlBaseDeploymentView
-  draw_all_relations default hide_attributs default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+classcanvas 129410 class_ref 3584 // UmlBaseDeploymentView
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   color blue
   xyz 397 130 2000
-classcanvas 139874224 class_ref 7553 // UmlItem
-  draw_all_relations default hide_attributs default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+classcanvas 129538 class_ref 7553 // UmlItem
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   xyz 245 105 2000
-relationcanvas 139884576 relation_ref 6272 // <generalisation>
-  from ref 139870192 z 1000 to ref 139874224
+relationcanvas 129666 relation_ref 6272 // <generalisation>
+  from ref 128130 z 1000 to ref 129538
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
-relationcanvas 139880512 relation_ref 14336 // <generalisation>
-  from ref 139871416 z 1000 to ref 139874224
+relationcanvas 129794 relation_ref 14336 // <generalisation>
+  from ref 128258 z 1000 to ref 129538
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
-relationcanvas 139879608 relation_ref 15489 // <generalisation>
-  from ref 139853216 z 1000 to ref 139870192
+relationcanvas 129922 relation_ref 15489 // <generalisation>
+  from ref 129026 z 1000 to ref 128130
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
-relationcanvas 139882872 relation_ref 15873 // <generalisation>
-  from ref 139851960 z 1000 to ref 139863720
+relationcanvas 130050 relation_ref 15873 // <generalisation>
+  from ref 128642 z 1000 to ref 129282
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
-relationcanvas 139877720 relation_ref 16257 // <generalisation>
-  from ref 139876016 z 1000 to ref 139872712
+relationcanvas 130178 relation_ref 16257 // <generalisation>
+  from ref 128514 z 1000 to ref 129410
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
-relationcanvas 139886304 relation_ref 12800 // <generalisation>
-  from ref 139868960 z 1000 to ref 139874224
+relationcanvas 130306 relation_ref 12800 // <generalisation>
+  from ref 128770 z 1000 to ref 129538
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
-relationcanvas 139882016 relation_ref 17025 // <generalisation>
-  from ref 139865064 z 1000 to ref 139868960
+relationcanvas 130434 relation_ref 17025 // <generalisation>
+  from ref 129154 z 1000 to ref 128770
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
-relationcanvas 139883800 relation_ref 17665 // <generalisation>
-  from ref 139866896 z 1000 to ref 139871416
+relationcanvas 130562 relation_ref 17665 // <generalisation>
+  from ref 128002 z 1000 to ref 128258
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
-relationcanvas 139885432 relation_ref 7680 // <generalisation>
-  from ref 139872712 z 1000 to ref 139874224
+relationcanvas 130690 relation_ref 7680 // <generalisation>
+  from ref 129410 z 1000 to ref 129538
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
-relationcanvas 139887352 relation_ref 7424 // <generalisation>
-  from ref 139863720 z 1000 to ref 139874224
+relationcanvas 130818 relation_ref 7424 // <generalisation>
+  from ref 129282 z 1000 to ref 129538
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
-relationcanvas 139888336 relation_ref 16641 // <generalisation>
-  from ref 139874224 z 1000 to ref 139867776
+relationcanvas 130946 relation_ref 16641 // <generalisation>
+  from ref 129538 z 1000 to ref 128386
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 preferred_whz 612 448 1

@@ -35,6 +35,7 @@
 #include "BrowserClass.h"
 #include "ClassData.h"
 #include "UmlCanvas.h"
+#include "myio.h"
 
 TemplateCanvas::TemplateCanvas(CdClassCanvas * c)
     : DiagramCanvas(c->the_canvas(), -1), cl(c) {
@@ -111,6 +112,19 @@ void TemplateCanvas::draw(QPainter & p) {
   
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   p.drawText(r, QObject::AlignCenter, text);
+  
+  FILE * fp = svg();
+
+  if (fp != 0) {
+    fputs("<g>\n", fp);
+    fprintf(fp, "\t<rect fill=\"white\" stroke-dasharray=\"4,4\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	    r.x(), r.y(), r.width() - 1, r.height() - 1);
+    draw_text(r, QObject::AlignCenter, text,
+	      p.font(), fp);
+    fputs("</g>\n", fp);
+  }
+
 }
 
 UmlCode TemplateCanvas::type() const {

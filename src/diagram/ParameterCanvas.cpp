@@ -236,21 +236,45 @@ void ParameterCanvas::draw(QPainter & p) {
 		      : QObject::OpaqueMode);
 
   QColor co = color(used_color);
+  QRect r = rect();
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fputs("<g>\n", fp);
   
   p.setBackgroundColor(co);
   
-  if (used_color != UmlTransparent) 
+  if (used_color != UmlTransparent) {
     p.setBrush(co);
-  
-  QRect r = rect();
+
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      co.rgb()&0xffffff, 
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+  }
+  else if (fp != 0)
+    fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	    r.x(), r.y(), r.width() - 1, r.height() - 1);
   
   p.drawRect(r);
+
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   p.drawText(r.left() + 2, r.top() + 2,
 	     r.width() - 4, r.height() - 4,
 	     QObject::AlignCenter + QObject::WordBreak,
 	     browser_node->get_name());
+  if (fp != 0)
+    draw_text(r.left() + 2, r.top() + 2,
+	      r.width() - 4, r.height() - 4,
+	      QObject::AlignCenter + QObject::WordBreak,
+	      browser_node->get_name(),
+	      p.font(), fp);
       
+  if (fp != 0)
+    fputs("</g>\n", fp);
+
   p.setBackgroundColor(bckgrnd);
   p.setBrush(brsh);
   

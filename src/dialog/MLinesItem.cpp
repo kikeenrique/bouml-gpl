@@ -44,7 +44,7 @@ MLinesItem::MLinesItem(QTable * ta, const QString & s)
 
 QWidget * MLinesItem::createEditor() const {
 #if QT_VERSION == 230
-  ((MLinesItem *) this)->mle = new MLEDialog(fromUnicode(text()));
+  ((MLinesItem *) this)->mle = new MLEDialog(fromUnicode(text()), FALSE);
 #else
   ((MLinesItem *) this)->mle = new QMultiLineEdit(table()->viewport());
   mle->setText(text());

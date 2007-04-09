@@ -915,9 +915,7 @@ void BrowserClassView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
       (((bn = UmlDrag::decode(e, UmlColDiagram)) != 0)) ||
       (((bn = UmlDrag::decode(e, UmlObjectDiagram)) != 0)) ||
       (((bn = UmlDrag::decode(e, UmlState)) != 0)) ||
-      (((bn = UmlDrag::decode(e, UmlStateDiagram)) != 0)) ||
-      (((bn = UmlDrag::decode(e, UmlActivity)) != 0)) ||
-      (((bn = UmlDrag::decode(e, UmlActivityDiagram)) != 0))) &&
+      (((bn = UmlDrag::decode(e, UmlActivity)) != 0))) &&
       (bn != after) && (bn != this)) {
     if (may_contains(bn, FALSE)) {
       BrowserNode * old_parent = (BrowserNode *) bn->parent();

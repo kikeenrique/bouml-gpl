@@ -1,36 +1,13 @@
-// *************************************************************************
-//
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
-//
-// This file is part of the BOUML Uml Toolkit.
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//
-// e-mail : bouml@free.fr
-// home   : http://bouml.free.fr
-//
-// *************************************************************************
-
-/* !!!!!!!!!! Do not modify this file !!!!!!!!!! */
-
 #ifdef WITHCPP
 
-#include "CppSettings.h"
-#include "UmlSettings.h"
-#include "UmlCom.h"
 
+#include "CppSettings.h"
+
+#include "UmlCom.h"
+#include "UmlSettings.h"
+#include "CppSettingsCmd.h"
+#include "UmlBuiltin.h"
+#include "UmlStereotype.h"
 bool CppSettings::useDefaults()
 {
   UmlCom::send_cmd(cppSettingsCmd, getCppUseDefaultsCmd);
@@ -272,6 +249,42 @@ bool CppSettings::set_IncludeWithPath(bool v)
     return FALSE;
 }
 
+bool CppSettings::isRelativePath()
+{
+  read_if_needed_();
+
+  return _is_relative_path;
+}
+
+bool CppSettings::set_IsRelativePath(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppRelativePathCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_relative_path = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool CppSettings::isForceNamespacePrefixGeneration()
+{
+  read_if_needed_();
+
+  return _is_force_namespace_gen;
+}
+
+bool CppSettings::set_IsForceNamespacePrefixGeneration(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppForceNamespaceGenCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_force_namespace_gen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 const QCString & CppSettings::enumIn()
 {
   read_if_needed_();
@@ -326,6 +339,24 @@ bool CppSettings::set_EnumInout(QCString v)
     return FALSE;
 }
 
+QCString CppSettings::enumReturn()
+{
+  read_if_needed_();
+
+  return _enum_return;
+}
+
+bool CppSettings::set_EnumReturn(QCString v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppEnumReturnCmd, v);
+  if (UmlCom::read_bool()) {
+    _enum_return = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 const QCString & CppSettings::in()
 {
   read_if_needed_();
@@ -374,6 +405,24 @@ bool CppSettings::set_Inout(QCString v)
   UmlCom::send_cmd(cppSettingsCmd, setCppInOutCmd, v);
   if (UmlCom::read_bool()) {
     _inout = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString CppSettings::Return()
+{
+  read_if_needed_();
+
+  return _return;
+}
+
+bool CppSettings::set_Return(QCString v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppReturnCmd, v);
+  if (UmlCom::read_bool()) {
+    _return = v;
     return TRUE;
   }
   else
@@ -758,46 +807,103 @@ bool CppSettings::set_IsSetParamConst(bool v)
     return FALSE;
 }
 
+bool CppSettings::isSetParamRef()
+{
+  read_if_needed_();
+
+  return _is_set_param_ref;
+}
+
+bool CppSettings::set_IsSetParamRef(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppIsSetParamRefCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_set_param_ref = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 bool CppSettings::_defined;
-    
-QDict<QCString> CppSettings::_map_includes;
 
 QCString CppSettings::_root;
-QCString CppSettings::_h_content;
-QCString CppSettings::_src_content;
-QCString CppSettings::_h_ext;
-QCString CppSettings::_src_ext;
-bool CppSettings::_incl_with_path;
 
 QCString CppSettings::_in;
+
 QCString CppSettings::_out;
+
 QCString CppSettings::_inout;
+
 QCString CppSettings::_return;
+
 QCString CppSettings::_enum_in;
+
 QCString CppSettings::_enum_out;
+
 QCString CppSettings::_enum_inout;
+
 QCString CppSettings::_enum_return;
+
 QCString CppSettings::_class_decl;
+
 QCString CppSettings::_external_class_decl;
+
 QCString CppSettings::_struct_decl;
+
 QCString CppSettings::_union_decl;
+
 QCString CppSettings::_enum_decl;
+
 QCString CppSettings::_typedef_decl;
+
 QCString CppSettings::_attr_decl;
+
 QCString CppSettings::_enum_item_decl;
+
 QCString CppSettings::_rel_decl[2/*relation kind*/][3/*multiplicity*/];
+
 QCString CppSettings::_oper_decl;
+
 QCString CppSettings::_oper_def;
+
 bool CppSettings::_force_oper_throw;
+
 aVisibility CppSettings::_get_visibility;
+
 QCString CppSettings::_get_name;
+
 bool CppSettings::_is_get_inline;
+
 bool CppSettings::_is_get_const;
+
 bool CppSettings::_is_get_value_const;
+
 aVisibility CppSettings::_set_visibility;
+
 QCString CppSettings::_set_name;
+
 bool CppSettings::_is_set_inline;
+
 bool CppSettings::_is_set_param_const;
+
+bool CppSettings::_is_set_param_ref;
+
+QCString CppSettings::_h_content;
+
+QCString CppSettings::_src_content;
+
+QCString CppSettings::_h_ext;
+
+QCString CppSettings::_src_ext;
+
+bool CppSettings::_incl_with_path;
+
+bool CppSettings::_is_relative_path;
+
+bool CppSettings::_is_force_namespace_gen;
+
+QDict<QCString> CppSettings::_map_includes;
 
 void CppSettings::read_()
 {
@@ -876,9 +982,14 @@ void CppSettings::read_()
   _set_name = UmlCom::read_string();
   _is_set_inline = UmlCom::read_bool();
   _is_set_param_const = UmlCom::read_bool();
+
+  _is_set_param_ref = UmlCom::read_bool();
+  _is_relative_path = UmlCom::read_bool();
+  _is_force_namespace_gen = UmlCom::read_bool();
 }
 
-void CppSettings::read_if_needed_() {
+void CppSettings::read_if_needed_()
+{
   UmlSettings::read_if_needed_();
   if (!_defined) {
     UmlCom::send_cmd(cppSettingsCmd, getCppSettingsCmd);
@@ -887,4 +998,5 @@ void CppSettings::read_if_needed_() {
   }
 }
 
-#endif // WITHCPP
+
+#endif

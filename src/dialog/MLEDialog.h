@@ -40,7 +40,7 @@ class MLEDialog : public QDialog {
     QPushButton * cancel;
     
   public:
-    MLEDialog(QString t);
+    MLEDialog(QString t, bool buttons);
     ~MLEDialog();
     
     QString text();

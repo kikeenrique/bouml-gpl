@@ -257,6 +257,7 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	  
 	  note->show();
 	  note->upper();
+	  note->open();
 	  window()->package_modified();
 	}
 	break;
@@ -1302,8 +1303,10 @@ int DiagramView::default_menu(QPopupMenu & m, int f) {
   m.insertSeparator();
   m.insertItem("Copy optimal picture part", 13);
   m.insertItem("Copy visible picture part", 3);
-  m.insertItem("Save optimal picture part", 14);
-  m.insertItem("Save visible picture part", 10);
+  m.insertItem("Save optimal picture part (png)", 14);
+  m.insertItem("Save visible picture part (png)", 10);
+  m.insertItem("Save optimal picture part (svg)", 15);
+  m.insertItem("Save visible picture part (svg)", 16);
   if (!clipboard.isEmpty() &&
       (copied_from == window()->browser_diagram()->get_type()))
     m.insertItem("Paste copied items (Ctrl+v)", 9);
@@ -1361,11 +1364,19 @@ int DiagramView::default_menu(QPopupMenu & m, int f) {
     break;
   case 10:
     history_protected = TRUE;
-    save_picture(FALSE);
+    save_picture(FALSE, FALSE);
     break;
   case 14:
     history_protected = TRUE;
-    save_picture(TRUE);
+    save_picture(TRUE, FALSE);
+    break;
+  case 15:
+    history_protected = TRUE;
+    save_picture(TRUE, TRUE);
+    break;
+  case 16:
+    history_protected = TRUE;
+    save_picture(FALSE, TRUE);
     break;
   case 11:
     undo();
@@ -1438,6 +1449,9 @@ void DiagramView::load(const char * pfix) {
 	di->get_bn()->deletedp())
       di->delete_it();
   }
+  
+  // to fixe release 2.22 bug
+  ArrowCanvas::remove_redondant_rels();
   
   if (window()->get_view() != 0)
     // re-load
@@ -1571,6 +1585,14 @@ void DiagramView::paste() {
   window()->package_modified();
 }
 
+bool DiagramView::save_pict(const char * f, bool optimal, bool temporary) {
+  QFileInfo fi(f);
+
+  return (fi.extension(FALSE).lower() == "svg")
+    ? svg_save_in(f, optimal, temporary)
+    : save_in(f, optimal, temporary);
+}
+
 bool DiagramView::save_in(const char * f, bool optimal, bool temporary) {
   if (the_canvas()->selection().count() != 0) {
     // unselect element and redraw them to remove selection mark
@@ -1626,6 +1648,72 @@ bool DiagramView::save_in(const char * f, bool optimal, bool temporary) {
   return r;
 }
 
+bool DiagramView::svg_save_in(const char * f, bool optimal, bool temporary) {
+  bool result = FALSE;
+
+  the_canvas()->show_limits(FALSE);
+    
+  if (optimal) {
+    int maxx;
+    int maxy;
+    
+    needed_width_height(maxx, maxy);
+    maxx += 10;
+    maxy += 10;
+
+    // add a large margin to be sure to see all in one shot contrarilly
+    // to the optimal_window_size whose must have the pretty size
+    
+    if ((visibleWidth() >= (maxx + 90)) && (visibleHeight() >= (maxy + 90))) {
+      if (start_svg(f, maxx, maxy)) {
+	result = TRUE;
+	history_protected = TRUE;
+	the_canvas()->setAllChanged();
+	canvas()->update();
+	history_protected = FALSE;
+        end_svg();
+      }
+    }
+    else {
+  #ifndef WIN32
+      int saved_w;
+      int saved_h;
+  #endif
+      saved_w = window()->width();
+      saved_h = window()->height();
+      
+      window()->resize(maxx + 90, maxy + 90);
+      if (start_svg(f, maxx, maxy)) {
+	result = TRUE;
+	history_protected = TRUE;
+	the_canvas()->setAllChanged();
+	canvas()->update();
+	history_protected = FALSE;
+        end_svg();
+      }
+      if (! temporary) {
+  #ifdef WIN32
+	QTimer::singleShot(1, this, SLOT(restore_window_size()));
+  #else
+	window()->resize(saved_w, saved_h);
+  #endif
+      }
+    }
+  }
+  else if (start_svg(f, visibleWidth(), visibleHeight())) {
+    result = TRUE;
+    history_protected = TRUE;
+    the_canvas()->setAllChanged();
+    canvas()->update();
+    history_protected = FALSE;
+    end_svg();
+  }
+  
+  the_canvas()->show_limits(TRUE);
+
+  return result;
+}
+
 void DiagramView::copy_in_clipboard(bool optimal, bool temporary) {
   the_canvas()->show_limits(FALSE);
   
@@ -1679,15 +1767,25 @@ void DiagramView::restore_window_size() {
 #endif
 }
 
-void DiagramView::save_picture(bool optimal) {
+void DiagramView::save_picture(bool optimal, bool svg) {
   QString filename =
-    QFileDialog::getSaveFileName(QString::null, "PNG file (*.png)", this);
+    QFileDialog::getSaveFileName(QString::null, 
+				 (svg) ? "SVG file (*.svg)" : "PNG file (*.png)",
+				 this);
 
   if (!filename.isNull()) {
-    if (filename.right(4).lower() != ".png")
-      filename += ".png";
+    if (svg) {
+      if (filename.right(4).lower() != ".svg")
+	filename += ".svg";
   
-    save_in(filename, optimal, FALSE);
+      svg_save_in(filename, optimal, FALSE);
+    }
+    else {
+      if (filename.right(4).lower() != ".png")
+	filename += ".png";
+  
+      save_in(filename, optimal, FALSE);
+    }
   }
 }
 

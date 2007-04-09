@@ -5,10 +5,7 @@
 #include "UmlBaseDiagram.h"
 #include <qcstring.h>
 
-// This class allows to manage extra class member, mainly defined fot C++
-// it allows to insert C++ pre-processor directive (even they may be placed
-// in the other member definition/declaration), to declare friend
-// operation/function etc...
+// This class allows to manage diagram
 //
 // You can modify it as you want (except the constructor)
 class UmlDiagram : public UmlBaseDiagram {

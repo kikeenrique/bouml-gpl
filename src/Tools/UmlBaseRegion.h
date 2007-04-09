@@ -3,6 +3,7 @@
 
 
 #include "UmlItem.h"
+#include "anItemKind.h"
 #include <qcstring.h>
 
 class UmlRegion;

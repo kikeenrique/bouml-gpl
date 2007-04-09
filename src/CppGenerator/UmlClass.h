@@ -31,27 +31,14 @@
 
 #include "UmlBaseClass.h"
 #include "UmlTypeSpec.h"
+#include "UmlFormalParameter.h"
+#include "UmlActualParameter.h"
 
 class QTextOStream;
 
 class UmlPackage;
 class UmlClass;
 class CppRefType;
-
-class UmlFormalParameter : public UmlBaseFormalParameter {
-  public:
-    UmlFormalParameter(){};
-
-    void generate(QTextOStream & f_h, const char *& sep1,
-		  const char *& sep2) const;
-};
-
-class UmlActualParameter : public UmlBaseActualParameter {
-  public:
-    UmlActualParameter(){};
-
-    void generate(QTextOStream & f_h) const;
-};
 
 class UmlClass : public UmlBaseClass {
   private:

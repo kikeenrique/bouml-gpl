@@ -7,8 +7,7 @@ anItemKind UmlBaseTransition::kind() {
   return aTransition;
 }
 
-UmlTransition * UmlBaseTransition::create(UmlItem * start,
-					  UmlItem * end)
+UmlTransition * UmlBaseTransition::create(UmlItem * start, UmlItem * end)
 {
   UmlCom::send_cmd(start->_identifier, createCmd, aTransition,
 		   end->_identifier);

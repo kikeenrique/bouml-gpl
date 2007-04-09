@@ -68,7 +68,69 @@ static void create_directory(QCString s)
 static bool RootDirRead;
 static QCString RootDir;
 
-QCString UmlPackage::source_path(const QCString & f) {
+static QCString relative_path(const QDir & destdir, QCString relto)
+{
+  QDir fromdir(relto);
+  QCString from = QCString(fromdir.absPath());
+  QCString to = QCString(destdir.absPath());
+  const char * cfrom = from;
+  const char * cto = to;
+  int lastsep = -1;
+  int index = 0;
+  
+  for (;;) {
+    char f = cfrom[index];
+    char t = cto[index];
+    
+    if (f == 0) {
+      switch (t) {
+      case 0:
+	// same path
+	return "";
+      case '/':
+	// to = .../aze/qsd/wxc, from = .../aze => qsd/wxc/
+	return (cto + index + 1) + QCString("/");
+      default:
+	// to = .../aze/qsd/wxc, from = .../az => ../aze/qsd/wxc/
+	return "../" + QCString(cto + lastsep + 1) + "/";
+      }
+    }
+    else if (t == f) {
+      if (t == '/')
+	lastsep = index;
+      index += 1;
+    }
+    else if (t == 0) {
+      QCString r;
+      const char * p = cfrom+index;
+      
+      do {
+	if (*p == '/')
+	  r += "../";
+      } while (*++p != 0);
+      
+      if (f == '/')
+	// to = .../aze, from = .../aze/qsd/wxc => ../../
+	return r;
+      else
+	// to = .../az, from = .../aze/qsd/wxc => ../../../az/
+	return ("../"  + r + (cto + lastsep + 1)) + "/";
+    }
+    else {
+      // to = .../aze, from = .../iop/klm => ../../aze/
+      QCString r = "../";
+      const char * p = cfrom + lastsep + 1;
+      
+      while (*p != 0)
+	if (*p++ == '/')
+	  r += "../";
+      
+      return (r + (cto + lastsep + 1)) + "/";
+    }
+  }
+}
+
+QCString UmlPackage::source_path(const QCString & f, QCString relto) {
   if (!dir.read) {
     dir.src = cppSrcDir();
     dir.h = cppHDir();
@@ -110,16 +172,22 @@ QCString UmlPackage::source_path(const QCString & f) {
     dir.read = TRUE;
   }
   
+  if (f.isEmpty())
+    return dir.src;
+  
   QDir d(dir.src);
   
   if (! d.exists())
     create_directory(dir.src);	// don't return on error
   
-  return QCString(d.filePath(f)) + QCString(".") + 
-    CppSettings::sourceExtension();
+  QCString df = (relto.isEmpty())
+    ? QCString(d.filePath(f))
+    : relative_path(d, relto) + f;
+  
+  return df + QCString(".") + CppSettings::sourceExtension();
 }
 
-QCString UmlPackage::header_path(const QCString & f) {
+QCString UmlPackage::header_path(const QCString & f, QCString relto) {
   if (!dir.read) {
     source_path(f);
    
@@ -142,13 +210,19 @@ QCString UmlPackage::header_path(const QCString & f) {
     }
   }
   
+  if (f.isEmpty())
+    return dir.h;
+  
   QDir d(dir.h);
   
   if (! d.exists())
     create_directory(dir.h);	// don't return on error
   
-  return QCString(d.filePath(f)) + QCString(".") + 
-    CppSettings::headerExtension();
+  QCString df = (relto.isEmpty())
+    ? QCString(d.filePath(f))
+    : relative_path(d, relto) + f;
+  
+  return df + QCString(".") + CppSettings::headerExtension();
 }
 
 void UmlPackage::generate() {

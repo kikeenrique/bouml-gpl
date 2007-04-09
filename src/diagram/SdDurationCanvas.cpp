@@ -54,7 +54,7 @@ SdDurationCanvas::SdDurationCanvas(UmlCanvas * canvas, SdLifeLineCanvas * ll,
     : DiagramCanvas(0, canvas, 0, v, DURATION_WIDTH,
 		    (isdest) ? DURATION_MIN_HEIGHT : DURATION_START_HEIGHT,
 		    0),
-      line(ll), itscolor(UmlDefaultColor) {
+      line(ll), itscolor(UmlDefaultColor), coregion(FALSE) {
   browser_node = canvas->browser_diagram();
   update_hpos();
   setZ(DIAGRAMCANVAS_Z + 10);	// == LifeLine.z() + 10
@@ -66,9 +66,9 @@ SdDurationCanvas::SdDurationCanvas(UmlCanvas * canvas, SdLifeLineCanvas * ll,
 }
 
 SdDurationCanvas::SdDurationCanvas(UmlCanvas * canvas, SdLifeLineCanvas * ll,
-				   int x, int y, int wi, int he, int id)
+				   int x, int y, int wi, int he, int id, bool coreg)
     : DiagramCanvas(0, canvas, x, y, wi, he, id),
-      line(ll), itscolor(UmlDefaultColor) {
+      line(ll), itscolor(UmlDefaultColor), coregion(coreg) {
   browser_node = canvas->browser_diagram();
   line->add(this);
 }
@@ -108,12 +108,59 @@ void SdDurationCanvas::update_hpos() {
 
 void SdDurationCanvas::draw(QPainter & p) {
   const QRect r = rect();
+  QColor co = color((itscolor != UmlDefaultColor)
+		     ? itscolor
+		     : browser_node->get_color(UmlActivityDuration));
+  
+  int w = width() - 1;
+  int x = r.left();
+  int y = r.top();
   
   p.setBackgroundMode(QObject::OpaqueMode);
-  p.fillRect(r, color((itscolor != UmlDefaultColor)
-		      ? itscolor
-		      : browser_node->get_color(UmlActivityDuration)));
-  p.drawRect(r);
+  p.fillRect(r, co);
+  if (coregion) {
+    p.drawLine(x, y + w, x, y);
+#ifdef WIN32
+    p.moveTo(x, y);
+#endif
+    p.lineTo(x + w, y);
+    p.lineTo(x + w, y + w);
+    
+    int b = r.bottom();
+    
+    p.drawLine(x, b - w, x, b);
+#ifdef WIN32
+    p.moveTo(x, b);
+#endif
+    p.lineTo(x + w, b);
+    p.lineTo(x + w, b - w);
+  }
+  else
+    p.drawRect(r);
+
+  FILE * fp = svg();
+
+  if (fp != 0) {
+    if (coregion) {
+      fprintf(fp, "<g>\n"
+	      "\t<rect fill=\"#%06x\" stroke=\"none\" "
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n"
+	      "\t<path fill = \"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" "
+	      "d=\"M %d %d v %d h %d v %d M %d %d v %d h %d v %d\" />\n"
+	      "</g>\n",
+	      co.rgb()&0xffffff, 
+	      x, y, w, r.height() - 1,
+	      x, y + w, -w, w, w,
+	      x, r.bottom() - w, w, w, -w);
+    }
+    else
+      fprintf(fp, "<g>\n"
+	      "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n"
+	      "</g>\n",
+	      co.rgb()&0xffffff, 
+	      x, y, w, r.height() - 1);
+  }
   
   if (selected())
     show_mark(p, r);
@@ -243,7 +290,7 @@ void SdDurationCanvas::cut(const QPoint & p) {
       if (newone == 0) { 
 	// width and height to 0 on creation to not a round error
 	// because of the zoom
-	newone = new SdDurationCanvas(the_canvas(), line, r.x(), py, 0, 0, 0);
+	newone = new SdDurationCanvas(the_canvas(), line, r.x(), py, 0, 0, 0, coregion);
 	newone->DiagramCanvas::resize(width(), r.bottom() - py);
 	newone->itscolor = itscolor;
 	newone->setZ(z());
@@ -328,6 +375,7 @@ void SdDurationCanvas::menu(const QPoint & p) {
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
   m.insertSeparator();
+  m.insertItem((coregion) ? "Draw as activity bar" :  "Draw as a coregion", 7);
   m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
   m.insertItem("Select linked items", 3);
@@ -365,6 +413,10 @@ void SdDurationCanvas::menu(const QPoint & p) {
     merge(l);
     package_modified();
     break;
+  case 7:
+    coregion = !coregion;
+    modified();
+    return;
   default:
     return;
   }
@@ -467,6 +519,10 @@ void SdDurationCanvas::save(QTextStream & st, bool ref, QString & warning) const
     nl_indent(st);
     st << "durationcanvas " << get_ident() << ' ';
     ((DiagramCanvas *) line->get_obj())->save(st, TRUE, warning);
+    if (coregion) {
+      nl_indent(st);
+      st << "coregion";
+    }      
     if (itscolor != UmlDefaultColor) {
       nl_indent(st);
       st << "color " << stringify(itscolor);
@@ -498,8 +554,14 @@ SdDurationCanvas * SdDurationCanvas::read(char * & st, UmlCanvas * canvas, char 
       wrong_keyword(st, k);
     
     UmlColor color = UmlDefaultColor;
+    bool coreg = FALSE;
     
     k = read_keyword(st);
+    
+    if (!strcmp(k, "coregion")) {
+      coreg = TRUE;
+      k = read_keyword(st);
+    }
     
     read_color(st, "color", color, k);
     
@@ -512,7 +574,7 @@ SdDurationCanvas * SdDurationCanvas::read(char * & st, UmlCanvas * canvas, char 
     int w = (int) read_double(st);
     SdDurationCanvas * result =
       new SdDurationCanvas(canvas, o->get_life_line(),
-			   x, y, w, (int) read_double(st), id);
+			   x, y, w, (int) read_double(st), id, coreg);
     
     result->itscolor = color;
     result->setZ(z);

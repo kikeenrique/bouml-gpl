@@ -85,6 +85,8 @@ class ActivityDialog : public QTabDialog {
     virtual void accept();
   
     void edit_description();
+
+    void change_tabs(QWidget *);
 };
 
 #endif

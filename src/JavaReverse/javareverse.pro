@@ -24,6 +24,26 @@ SOURCES	      = main.cpp BrowserNode.cpp Statistic.cpp \
 		../JavaCat/UmlStateAction.cpp ../JavaCat/UmlState.cpp \
 		../JavaCat/UmlStateDiagram.cpp ../JavaCat/UmlTerminatePseudoState.cpp \
 		../JavaCat/UmlRegion.cpp ../JavaCat/Progress.cpp \
+		../JavaCat/UmlAccessVariableValueAction.cpp \
+		../JavaCat/UmlOnSignalAction.cpp \
+		../JavaCat/UmlPinParameter.cpp \
+		../JavaCat/UmlActivityObject.cpp \
+		../JavaCat/UmlActivityAction.cpp \
+		../JavaCat/UmlActivityPin.cpp \
+		../JavaCat/UmlActivityRegion.cpp \
+		../JavaCat/UmlActivityControlNodeClasses.cpp \
+		../JavaCat/UmlActivityActionClasses.cpp \
+		../JavaCat/UmlExpansionNode.cpp \
+		../JavaCat/UmlActivityDiagram.cpp \
+		../JavaCat/UmlFlow.cpp \
+		../JavaCat/UmlParameterSet.cpp \
+		../JavaCat/UmlActivityParameter.cpp \
+		../JavaCat/UmlObjectDiagram.cpp \
+		../JavaCat/UmlActualParameter.cpp \
+		../JavaCat/UmlFormalParameter.cpp \
+		../JavaCat/UmlExpansionRegion.cpp \
+		../JavaCat/UmlActivity.cpp \
+		../JavaCat/UmlInterruptibleActivityRegion.cpp \
 		../Tools/UmlBaseClassItem.cpp ../Tools/UmlBaseClassMember.cpp \
 		../Tools/CppSettings.cpp ../Tools/IdlSettings.cpp ../Tools/JavaSettings.cpp \
 		../Tools/UmlTypeSpec.cpp \
@@ -48,7 +68,28 @@ SOURCES	      = main.cpp BrowserNode.cpp Statistic.cpp \
 		../Tools/UmlBaseStateAction.cpp ../Tools/UmlBaseState.cpp \
 		../Tools/UmlBaseStateDiagram.cpp ../Tools/UmlBaseTerminatePseudoState.cpp \
 		../Tools/UmlBaseRegion.cpp ../Tools/StateBehavior.cpp ../Tools/UmlBaseTransition.cpp \
-		../Tools/TransitionBehavior.cpp 
+		../Tools/TransitionBehavior.cpp \
+		../Tools/UmlBaseAccessVariableValueAction.cpp \
+		../Tools/UmlBaseOnSignalAction.cpp \
+		../Tools/UmlBasePinParameter.cpp \
+		../Tools/UmlBaseActivityObject.cpp \
+		../Tools/UmlBaseActivityAction.cpp \
+		../Tools/UmlBaseActivityPin.cpp \
+		../Tools/UmlBaseActivityRegion.cpp \
+		../Tools/UmlBaseActivityControlNodeClasses.cpp \
+		../Tools/UmlBaseActivityActionClasses.cpp \
+		../Tools/UmlBaseExpansionNode.cpp \
+		../Tools/UmlBaseActivityDiagram.cpp \
+		../Tools/UmlBaseFlow.cpp \
+		../Tools/UmlBaseParameterSet.cpp \
+		../Tools/UmlBaseActivityParameter.cpp \
+		../Tools/UmlBaseObjectDiagram.cpp \
+		../Tools/UmlBaseActualParameter.cpp \
+		../Tools/UmlBaseFormalParameter.cpp \
+		../Tools/UmlBaseExpansionRegion.cpp \
+		../Tools/UmlBaseActivity.cpp \
+		../Tools/UmlBaseInterruptibleActivityRegion.cpp \
+		../Tools/FlowBehavior.cpp
 
 TARGET	      = java_reverse
 DEFINES	      = WITHJAVA REVERSE

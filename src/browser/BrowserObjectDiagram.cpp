@@ -164,6 +164,15 @@ const QPixmap* BrowserObjectDiagram::pixmap(int) const {
   return (deletedp()) ? DeletedObjectDiagramIcon : ObjectDiagramIcon;
 }
 
+void BrowserObjectDiagram::draw_svg() const {
+  fputs("\t<rect fill=\"white\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" x=\"0\" y=\"0\" width=\"15\" height=\"15\" />\n"
+	"\t<path fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" "
+	"d=\"M 2 2 L 10 2 L 10 6 L 2 6 L 2 2 "
+	"M 5 10 L 13 10 L 13 13 L 5 13 L 5 10 "
+	"M 5 6 L 9 10\" />\n",
+	svg());
+}
+
 void BrowserObjectDiagram::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
@@ -450,13 +459,13 @@ bool BrowserObjectDiagram::tool_cmd(ToolCom * com, const char * args) {
     return TRUE;
   case saveInCmd:
     if (window != 0)
-      com->write_ack(window->get_view()->save_in(args, TRUE, FALSE));
+      com->write_ack(window->get_view()->save_pict(args, TRUE, FALSE));
     else {
       ObjectDiagramWindow * w = new ObjectDiagramWindow(full_name(), this);
       
-      com->write_ack(w->get_view()->save_in(args, 
-					     !w->get_view()->has_preferred_size_zoom(),
-					     TRUE));
+      com->write_ack(w->get_view()->save_pict(args, 
+					      !w->get_view()->has_preferred_size_zoom(),
+					      TRUE));
       w->dont_save();
       w->close(TRUE);
     }

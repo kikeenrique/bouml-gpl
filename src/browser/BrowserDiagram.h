@@ -50,6 +50,8 @@ class BrowserDiagram : public BrowserNode, public Labeled<BrowserDiagram> {
     virtual bool get_shadow() const = 0;
     virtual bool get_draw_all_relations() const = 0;
     virtual void dont_draw_all_relations() = 0;
+
+    virtual void draw_svg() const = 0;
     
     CanvasFormat get_format() const { return canvas_size; }
     void set_format(CanvasFormat c) { canvas_size = c; }

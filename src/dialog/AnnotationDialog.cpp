@@ -52,12 +52,12 @@ AnnotationDialog::AnnotationDialog(QString & s, bool visit)
   // multiline edit
   
   e = new MultiLineEdit(this);
-  e->setText(s);
-  e->setReadOnly(visit);
-  
+  e->setText(s);  
   vbox->addWidget(e);
   
   if (! visit) {
+    e->setFocus();
+
     // to choose and add an annotation
     
     QLabel * label =
@@ -117,7 +117,9 @@ AnnotationDialog::AnnotationDialog(QString & s, bool visit)
     connect(accept, SIGNAL(clicked()), this, SLOT(accept()));
     connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
   }
-  else{
+  else {
+    e->setReadOnly(TRUE);
+
     // buttons cancel
     
     vbox->addWidget(new QLabel("", this));
@@ -131,8 +133,6 @@ AnnotationDialog::AnnotationDialog(QString & s, bool visit)
     
     connect(close, SIGNAL(clicked()), this, SLOT(reject()));
   }
-    
-  e->setFocus();
   
   // not done in polish else the initial size is too small
   UmlDesktop::setsize_center(this, previous_size, 0.3, 0.3);

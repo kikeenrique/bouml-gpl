@@ -96,11 +96,20 @@ void SdMsgCanvas::draw(QPainter & p) {
   const QRect r = rect();
   const int v = r.center().y();
   QPointArray poly(3);
+  FILE * fp = svg();
   
   if (itsType == UmlReturnMsg)
     p.setPen(QObject::DotLine);
   
   p.drawLine(r.left(), v, r.right(), v);
+
+  if (fp != 0) {
+    fputs("<g>\n\t<line stroke=\"black\" stroke-opacity=\"1\"", fp);
+    if (itsType == UmlReturnMsg)
+      fputs(" stroke-dasharray=\"4,4\"", fp);
+    fprintf(fp, " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    r.left(), v, r.right(), v);
+  }
   
   if (start->rect().left() < dest->rect().left()) {
     poly.setPoint(0, r.right(), v);
@@ -121,14 +130,30 @@ void SdMsgCanvas::draw(QPainter & p) {
       p.setBrush(black);
       p.drawPolygon(poly/*, TRUE*/);
       p.setBrush(brsh);
+
+      if (fp != 0) {
+	draw_poly(fp, poly, "black", FALSE);
+	fputs("</g>\n", fp);
+      }
     }
     break;
   case UmlReturnMsg:
     p.setPen(QObject::SolidLine);
     // no break !
   default:
-    p.drawLine(poly.point(0), poly.point(1));
-    p.drawLine(poly.point(0), poly.point(2));
+    {
+      QPoint p0 = poly.point(0);
+      QPoint p1 = poly.point(1);
+      QPoint p2 = poly.point(2);
+
+      p.drawLine(p0, p1);
+      p.drawLine(p0, p2);
+      if (fp != 0)
+	fprintf(fp, "\t<path fill=\"none\" stroke=\"black\" stroke-opacity=\"1\""
+		" d=\"M %d %d L %d %d L %d %d\" />\n"
+		"</g>\n",
+		p1.x(), p1.y(), p0.x(), p0.y(), p2.x(), p2.y());
+    }
   }
   
   if (selected())

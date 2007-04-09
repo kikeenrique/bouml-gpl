@@ -379,6 +379,10 @@ void ComponentCanvas::draw(QPainter & p) {
   p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
 
   QColor co = color(used_color);
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fputs("<g>\n", fp);
 
   p.setBackgroundColor(co);
   
@@ -389,7 +393,21 @@ void ComponentCanvas::draw(QPainter & p) {
     int he = r.height();
     
     r.setLeft(r.left() + (he * 5)/(13*2));
-    if (used_color != UmlTransparent) p.fillRect(r, co);
+
+    if (used_color != UmlTransparent) {
+      p.fillRect(r, co);
+      
+      if (fp != 0)
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		co.rgb()&0xffffff,
+		r.x(), r.y(), r.width() - 1, r.height() - 1);
+    }
+    else if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+
     p.drawRect(r);
     
     r.setLeft(r.left() + (he * 5)/(13*2));
@@ -399,11 +417,18 @@ void ComponentCanvas::draw(QPainter & p) {
       p.setFont(the_canvas()->get_font(UmlNormalFont));
       p.drawText(r, QObject::AlignCenter,
 		 QString("<<") + toUnicode(data->get_stereotype()) + ">>");
+      if (fp != 0)
+	draw_text(r, QObject::AlignCenter,
+		  QString("<<") + toUnicode(data->get_stereotype()) + ">>",
+		  p.font(), fp);
       r.moveBy(0, he/2);
     }
     
     p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
     p.drawText(r, QObject::AlignCenter, browser_node->get_name());
+    if (fp != 0)
+      draw_text(r, QObject::AlignCenter, browser_node->get_name(),
+		p.font(), fp);
     p.setFont(the_canvas()->get_font(UmlNormalFont));
     
     r = rect();
@@ -412,10 +437,20 @@ void ComponentCanvas::draw(QPainter & p) {
     r.setWidth((he * 5)/13);
     p.fillRect(r, co);
     p.drawRect(r);
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      co.rgb()&0xffffff,
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
     
     r.moveBy(0, (he * 4)/13);
     p.fillRect(r, co);
     p.drawRect(r);
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      co.rgb()&0xffffff,
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
   }
   else {
     // <<component>>/stereotype on 2*font_height with the icon on the right
@@ -440,26 +475,63 @@ void ComponentCanvas::draw(QPainter & p) {
 	p.fillRect (r.left() + shadow, r.bottom(),
 		    r.width() - 1, shadow,
 		    QObject::darkGray);
+
+	if (fp != 0) {
+	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		  QObject::darkGray.rgb()&0xffffff,
+		  r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
+
+	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		  QObject::darkGray.rgb()&0xffffff,
+		  r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
+	}
       }
     }
   
     QRect re = r;
   
-    if (used_color != UmlTransparent) p.fillRect(r, co);
+    if (used_color != UmlTransparent) {
+      p.fillRect(r, co);
+
+      if (fp != 0)
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		co.rgb()&0xffffff, 
+		r.x(), r.y(), r.width() - 1, r.height() - 1);
+    }
+    else if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+
     p.drawRect(r);
     
     r.setHeight(he*2);
     p.setFont(the_canvas()->get_font(UmlNormalFont));
-    if (data->get_stereotype()[0])
+    if (data->get_stereotype()[0]) {
       p.drawText(r, QObject::AlignCenter,
 		 QString("<<") + toUnicode(data->get_stereotype()) + ">>");
-    else
+      if (fp != 0)
+	draw_text(r, QObject::AlignCenter,
+		  QString("<<") + toUnicode(data->get_stereotype()) + ">>",
+		  p.font(), fp);
+    }
+    else {
       p.drawText(r, QObject::AlignCenter, "<<component>>");
+      if (fp != 0)
+	draw_text(r, QObject::AlignCenter, "<<component>>",
+		  p.font(), fp);
+    }
     
     r.moveBy(0, r.height());
     r.setHeight(he+four);
     p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
     p.drawText(r, QObject::AlignCenter, browser_node->get_name());
+    if (fp != 0)
+      draw_text(r, QObject::AlignCenter, browser_node->get_name(),
+		p.font(), fp);
     p.setFont(the_canvas()->get_font(UmlNormalFont));
     
     // draw icon
@@ -474,6 +546,10 @@ void ComponentCanvas::draw(QPainter & p) {
     
     r2.setLeft(r.left() + l);
     p.drawRect(r2);
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      r2.x(), r2.y(), r2.width() - 1, r2.height() - 1);
     
     r2.setLeft(r.left());
     r2.setTop(r.top() + l);
@@ -481,10 +557,20 @@ void ComponentCanvas::draw(QPainter & p) {
     r2.setWidth(r.width() >> 1);
     p.fillRect(r2, co);
     p.drawRect(r2);
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      co.rgb()&0xffffff, 
+	      r2.x(), r2.y(), r2.width() - 1, r2.height() - 1);
     
     r2.moveBy(0, r.width() >> 1);
     p.fillRect(r2, co);
     p.drawRect(r2);
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      co.rgb()&0xffffff, 
+	      r2.x(), r2.y(), r2.width() - 1, r2.height() - 1);
     
     // compartments
     
@@ -503,11 +589,19 @@ void ComponentCanvas::draw(QPainter & p) {
     
     if (req_prov && (!pr.isEmpty() || !rq.isEmpty())) {
       p.drawLine(r.topLeft(), r.topRight());
+      if (fp != 0)
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		r.left(), r.top(), r.right(), r.top());
+
       r.setTop(r.top() + four);
       
       if (!pr.isEmpty()) {
 	r.setLeft(left1);
 	p.drawText(r, QObject::AlignLeft + QObject::AlignTop, "<<provided interfaces>>");
+	if (fp != 0)
+	  draw_text(r, QObject::AlignLeft + QObject::AlignTop, "<<provided interfaces>>",
+		    p.font(), fp);
 	r.setLeft(left2);
 	r.setTop(r.top() + lh);
 	
@@ -515,6 +609,9 @@ void ComponentCanvas::draw(QPainter & p) {
 	     it != pr.end();
 	     it++) {
 	  p.drawText(r, QObject::AlignLeft + QObject::AlignTop, (*it)->get_name());
+	  if (fp != 0)
+	    draw_text(r, QObject::AlignLeft + QObject::AlignTop, (*it)->get_name(),
+		      p.font(), fp);
 	  r.setTop(r.top() + lh);
 	}
       }
@@ -522,6 +619,9 @@ void ComponentCanvas::draw(QPainter & p) {
       if (!rq.isEmpty()) {
 	r.setLeft(left1);
 	p.drawText(r, QObject::AlignLeft + QObject::AlignTop, "<<required interfaces>>");
+	if (fp != 0)
+	  draw_text(r, QObject::AlignLeft + QObject::AlignTop, "<<required interfaces>>",
+		    p.font(), fp);
 	r.setLeft(left2);
 	r.setTop(r.top() + lh);
 	
@@ -529,6 +629,9 @@ void ComponentCanvas::draw(QPainter & p) {
 	     it != rq.end();
 	     it++) {
 	  p.drawText(r, QObject::AlignLeft + QObject::AlignTop, (*it)->get_name());
+	  if (fp != 0)
+	    draw_text(r, QObject::AlignLeft + QObject::AlignTop, (*it)->get_name(),
+		      p.font(), fp);
 	  r.setTop(r.top() + lh);
 	}
       }
@@ -538,9 +641,17 @@ void ComponentCanvas::draw(QPainter & p) {
       r.setLeft(left0);
       r.setTop(r.top() + four);
       p.drawLine(r.topLeft(), r.topRight());
+      if (fp != 0)
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		r.left(), r.top(), r.right(), r.top());
+
       r.setTop(r.top() + four);
       r.setLeft(left1);
       p.drawText(r, QObject::AlignLeft + QObject::AlignTop, "<<realizations>>");
+      if (fp != 0)
+	draw_text(r, QObject::AlignLeft + QObject::AlignTop, "<<realizations>>",
+		  p.font(), fp);
       r.setLeft(left2);
       r.setTop(r.top() + lh);
       
@@ -548,10 +659,16 @@ void ComponentCanvas::draw(QPainter & p) {
 	   it != rz.end();
 	   it++) {
 	p.drawText(r, QObject::AlignLeft + QObject::AlignTop, (*it)->get_name());
+	if (fp != 0)
+	  draw_text(r, QObject::AlignLeft + QObject::AlignTop, (*it)->get_name(),
+		    p.font(), fp);
 	r.setTop(r.top() + lh);
       }
     }
   }
+
+  if (fp != 0)
+    fputs("</g>\n", fp);
   
   p.setBackgroundColor(bckgrnd);
   
@@ -598,8 +715,12 @@ void ComponentCanvas::menu(const QPoint&) {
   if (linked())
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
-  if (browser_node->is_writable())
+  if (browser_node->is_writable()) {
     m.insertItem("Set associated diagram",6);
+    
+    if (browser_node->get_associated())
+      m.insertItem("Remove diagram association",9);
+  }
   m.insertSeparator();
   m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
@@ -634,6 +755,10 @@ void ComponentCanvas::menu(const QPoint&) {
     ((BrowserComponent *) browser_node)
       ->set_associated_diagram((BrowserComponentDiagram *)
 			       the_canvas()->browser_diagram());
+    return;
+  case 9:
+    ((BrowserComponent *) browser_node)
+      ->set_associated_diagram(0);
     return;
   case 7:
     //remove from view

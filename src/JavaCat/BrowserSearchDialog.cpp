@@ -35,7 +35,10 @@
 #include "BrowserView.h"
 #include "Package.h"
 #include "Class.h"
-#include "api.h"
+#include "aRelationKind.h"
+#include "aDirection.h"
+#include "aVisibility.h"
+#include "anItemKind.h"
 
 int BrowserSearchDialog::saved_kind;
 QString BrowserSearchDialog::saved_ed;

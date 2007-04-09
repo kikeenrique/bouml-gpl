@@ -308,11 +308,11 @@ void UmlClass::generate_formals(QTextOStream & f) {
   QValueList<UmlFormalParameter> fs = formals();
   
   if (! fs.isEmpty()) {
-    QValueList<UmlFormalParameter>::ConstIterator it;
+    QValueList<UmlFormalParameter>::Iterator it;
     const char * sep = "<";
     
     for (it = fs.begin(); it != fs.end(); it++) {
-      const UmlFormalParameter & p = *it;
+      UmlFormalParameter & p = *it;
       
       f << sep;
       sep = ", ";
@@ -330,10 +330,5 @@ void UmlClass::generate_formals(QTextOStream & f) {
     
     f << ">";
   }
-}
-
-void UmlActualParameter::generate(QTextOStream & f) const {
-  f << ((rank() == 0) ? "<" : ", ");
-  UmlClass::write(f, value());
 }
 

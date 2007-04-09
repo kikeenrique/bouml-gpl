@@ -1,131 +1,13 @@
-// *************************************************************************
-//
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
-//
-// This file is part of the BOUML Uml Toolkit.
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//
-// e-mail : bouml@free.fr
-// home   : http://bouml.free.fr
-//
-// *************************************************************************
-
-/* !!!!!!!!!! Do not modify this file !!!!!!!!!! */
-
 #ifdef WITHJAVA
 
+
 #include "JavaSettings.h"
-#include "UmlSettings.h"
+
 #include "UmlCom.h"
-
-bool JavaSettings::_defined;
-
-QDict<QCString> JavaSettings::_map_imports;
-
-QCString JavaSettings::_root;
-QCString JavaSettings::_src_content;
-QCString JavaSettings::_ext;
-
-QCString JavaSettings::_class_decl;
-QCString JavaSettings::_external_class_decl;
-QCString JavaSettings::_enum_decl;
-QCString JavaSettings::_enum_pattern_decl;
-QCString JavaSettings::_interface_decl;
-QCString JavaSettings::_attr_decl;
-QCString JavaSettings::_enum_item_decl;
-QCString JavaSettings::_enum_pattern_item_decl;
-QCString JavaSettings::_enum_pattern_item_case;
-QCString JavaSettings::_rel_decl[3/*multiplicity*/];
-QCString JavaSettings::_oper_def;
-aVisibility JavaSettings::_get_visibility;
-QCString JavaSettings::_get_name;
-bool JavaSettings::_is_get_final;
-aVisibility JavaSettings::_set_visibility;
-QCString JavaSettings::_set_name;
-bool JavaSettings::_is_set_final;
-bool JavaSettings::_is_set_param_final;
-
-void JavaSettings::read_()
-{
-  _root = UmlCom::read_string();
-  
-  unsigned n;
-  unsigned index;
-  
-  n = UmlCom::read_unsigned();
-  
-  for (index = 0; index != n; index += 1) {
-    UmlSettings::_builtins[index].java = UmlCom::read_string();
-  }
-  
-  n = UmlCom::read_unsigned();
-  
-  for (index = 0; index != n; index += 1)
-    UmlSettings::_relation_stereotypes[index].java = UmlCom::read_string();
-  
-  n = UmlCom::read_unsigned();
-  
-  for (index = 0; index != n; index += 1)
-    UmlSettings::_class_stereotypes[index].java = UmlCom::read_string();
-  
-  n = UmlCom::read_unsigned();
-  _map_imports.clear();
-  if (n > _map_imports.size())
-    _map_imports.resize(n);
-  
-  for (index = 0; index != n; index += 1) {
-    QCString t = UmlCom::read_string();
-    QCString i = UmlCom::read_string();
-    
-    _map_imports.insert(t, new QCString(i));
-  }
-    
-  _src_content = UmlCom::read_string();
-  _ext = UmlCom::read_string();
-
-  _class_decl = UmlCom::read_string();
-  _external_class_decl = UmlCom::read_string();
-  _enum_decl = UmlCom::read_string();
-  _enum_pattern_decl = UmlCom::read_string();
-  _interface_decl = UmlCom::read_string();
-  _attr_decl = UmlCom::read_string();
-  _enum_item_decl = UmlCom::read_string();
-  _enum_pattern_item_decl = UmlCom::read_string();
-  _enum_pattern_item_case = UmlCom::read_string();
-  for (index = 0; index != 3; index += 1)
-    _rel_decl[index] = UmlCom::read_string();
-  _oper_def = UmlCom::read_string();
-  _get_visibility = (aVisibility) UmlCom::read_char();
-  _get_name = UmlCom::read_string();
-  _is_get_final = UmlCom::read_bool();
-  _set_visibility = (aVisibility) UmlCom::read_char();
-  _set_name = UmlCom::read_string();
-  _is_set_final = UmlCom::read_bool();
-  _is_set_param_final = UmlCom::read_bool();
-}
-
-void JavaSettings::read_if_needed_() {
-  UmlSettings::read_if_needed_();
-  if (!_defined) {
-    UmlCom::send_cmd(javaSettingsCmd, getJavaSettingsCmd);
-    read_();
-    _defined = TRUE;
-  }
-}
-
+#include "UmlSettings.h"
+#include "JavaSettingsCmd.h"
+#include "UmlBuiltin.h"
+#include "UmlStereotype.h"
 bool JavaSettings::useDefaults()
 {
   UmlCom::send_cmd(javaSettingsCmd, getJavaUseDefaultsCmd);
@@ -234,7 +116,7 @@ QCString JavaSettings::classUmlStereotype(const QCString & s)
   return UmlSettings::uml_class_stereotype(s, &UmlStereotype::java);
 }
 
-QCString JavaSettings::import(const QCString & s)
+QCString JavaSettings::get_import(const QCString & s)
 {
   read_if_needed_();
   
@@ -349,13 +231,6 @@ bool JavaSettings::set_ExternalClassDecl(QCString v)
     return FALSE;
 }
 
-const QCString & JavaSettings::enumDecl()
-{
-  read_if_needed_();
-  
-  return _enum_decl;
-}
-
 const QCString & JavaSettings::enumPatternDecl()
 {
   read_if_needed_();
@@ -368,6 +243,24 @@ bool JavaSettings::set_EnumPatternDecl(QCString v)
   UmlCom::send_cmd(javaSettingsCmd, setJavaEnumPatternDeclCmd, v);
   if (UmlCom::read_bool()) {
     _enum_pattern_decl = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString JavaSettings::enumDecl()
+{
+  read_if_needed_();
+  
+  return _enum_decl;
+}
+
+bool JavaSettings::set_EnumDecl(QCString v)
+{
+  UmlCom::send_cmd(javaSettingsCmd, setJavaEnumDeclCmd, v);
+  if (UmlCom::read_bool()) {
+    _enum_decl = v;
     return TRUE;
   }
   else
@@ -410,13 +303,6 @@ bool JavaSettings::set_AttributeDecl(QCString v)
     return FALSE;
 }
 
-const QCString & JavaSettings::enumItemDecl()
-{
-  read_if_needed_();
-  
-  return _enum_item_decl;
-}
-
 const QCString & JavaSettings::enumPatternItemDecl()
 {
   read_if_needed_();
@@ -447,6 +333,24 @@ bool JavaSettings::set_EnumPatternItemCase(QCString v)
   UmlCom::send_cmd(javaSettingsCmd, setJavaEnumPatternItemCaseCmd, v);
   if (UmlCom::read_bool()) {
     _enum_pattern_item_case = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString JavaSettings::enumItemDecl()
+{
+  read_if_needed_();
+  
+  return _enum_item_decl;
+}
+
+bool JavaSettings::set_EnumItemDecl(QCString v)
+{
+  UmlCom::send_cmd(javaSettingsCmd, setJavaEnumItemDeclCmd, v);
+  if (UmlCom::read_bool()) {
+    _enum_item_decl = v;
     return TRUE;
   }
   else
@@ -615,4 +519,120 @@ bool JavaSettings::set_IsSetParamFinal(bool v)
     return FALSE;
 }
 
-#endif // WITHJAVA
+bool JavaSettings::_defined;
+
+QCString JavaSettings::_root;
+
+QCString JavaSettings::_class_decl;
+
+QCString JavaSettings::_external_class_decl;
+
+QCString JavaSettings::_enum_pattern_decl;
+
+QCString JavaSettings::_enum_decl;
+
+QCString JavaSettings::_interface_decl;
+
+QCString JavaSettings::_attr_decl;
+
+QCString JavaSettings::_enum_pattern_item_decl;
+
+QCString JavaSettings::_enum_pattern_item_case;
+
+QCString JavaSettings::_enum_item_decl;
+
+QCString JavaSettings::_rel_decl[3/*multiplicity*/];
+
+QCString JavaSettings::_oper_def;
+
+aVisibility JavaSettings::_get_visibility;
+
+QCString JavaSettings::_get_name;
+
+bool JavaSettings::_is_get_final;
+
+aVisibility JavaSettings::_set_visibility;
+
+QCString JavaSettings::_set_name;
+
+bool JavaSettings::_is_set_final;
+
+bool JavaSettings::_is_set_param_final;
+
+QCString JavaSettings::_src_content;
+
+QCString JavaSettings::_ext;
+
+QDict<QCString> JavaSettings::_map_imports;
+
+void JavaSettings::read_()
+{
+  _root = UmlCom::read_string();
+  
+  unsigned n;
+  unsigned index;
+  
+  n = UmlCom::read_unsigned();
+  
+  for (index = 0; index != n; index += 1) {
+    UmlSettings::_builtins[index].java = UmlCom::read_string();
+  }
+  
+  n = UmlCom::read_unsigned();
+  
+  for (index = 0; index != n; index += 1)
+    UmlSettings::_relation_stereotypes[index].java = UmlCom::read_string();
+  
+  n = UmlCom::read_unsigned();
+  
+  for (index = 0; index != n; index += 1)
+    UmlSettings::_class_stereotypes[index].java = UmlCom::read_string();
+  
+  n = UmlCom::read_unsigned();
+  _map_imports.clear();
+  if (n > _map_imports.size())
+    _map_imports.resize(n);
+  
+  for (index = 0; index != n; index += 1) {
+    QCString t = UmlCom::read_string();
+    QCString i = UmlCom::read_string();
+    
+    _map_imports.insert(t, new QCString(i));
+  }
+    
+  _src_content = UmlCom::read_string();
+  _ext = UmlCom::read_string();
+
+  _class_decl = UmlCom::read_string();
+  _external_class_decl = UmlCom::read_string();
+  _enum_decl = UmlCom::read_string();
+  _enum_pattern_decl = UmlCom::read_string();
+  _interface_decl = UmlCom::read_string();
+  _attr_decl = UmlCom::read_string();
+  _enum_item_decl = UmlCom::read_string();
+  _enum_pattern_item_decl = UmlCom::read_string();
+  _enum_pattern_item_case = UmlCom::read_string();
+  for (index = 0; index != 3; index += 1)
+    _rel_decl[index] = UmlCom::read_string();
+  _oper_def = UmlCom::read_string();
+  _get_visibility = (aVisibility) UmlCom::read_char();
+  _get_name = UmlCom::read_string();
+  _is_get_final = UmlCom::read_bool();
+  _set_visibility = (aVisibility) UmlCom::read_char();
+  _set_name = UmlCom::read_string();
+  _is_set_final = UmlCom::read_bool();
+  _is_set_param_final = UmlCom::read_bool();
+}
+
+void JavaSettings::read_if_needed_()
+{
+  UmlSettings::read_if_needed_();
+  if (!_defined) {
+    UmlCom::send_cmd(javaSettingsCmd, getJavaSettingsCmd);
+    read_();
+    _defined = TRUE;
+  }
+}
+
+
+#endif

@@ -174,6 +174,15 @@ const QPixmap* BrowserActivityDiagram::pixmap(int) const {
   return (deletedp()) ? DeletedActivityDiagramIcon : ActivityDiagramIcon;
 }
 
+void BrowserActivityDiagram::draw_svg() const {
+  fputs("\t<rect fill=\"white\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" x=\"0\" y=\"0\" width=\"15\" height=\"15\" />\n"
+	"\t<path fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" "
+	"d=\"M 4 0 L 4 4 L 12 4 L 12 0 M 4 2 L 12 2 "
+	"M 8 5 L 6 7 L 10 7 L 8 5 M 8 7 L 8 9 "
+	"M 4 9 L 12 9 L 12 15 M 4 9 L 4 15 M 4 11 L 12 11 M 4 13 L 12 13\" />\n",
+	svg());
+}
+
 void BrowserActivityDiagram::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
@@ -473,13 +482,13 @@ bool BrowserActivityDiagram::tool_cmd(ToolCom * com, const char * args) {
     return TRUE;
   case saveInCmd:
     if (window != 0)
-      com->write_ack(window->get_view()->save_in(args, TRUE, FALSE));
+      com->write_ack(window->get_view()->save_pict(args, TRUE, FALSE));
     else {
       ActivityDiagramWindow * w = new ActivityDiagramWindow(full_name(), this);
       
-      com->write_ack(w->get_view()->save_in(args, 
-					    !w->get_view()->has_preferred_size_zoom(),
-					    TRUE));
+      com->write_ack(w->get_view()->save_pict(args, 
+					      !w->get_view()->has_preferred_size_zoom(),
+					      TRUE));
       w->dont_save();
       w->close(TRUE);
     }

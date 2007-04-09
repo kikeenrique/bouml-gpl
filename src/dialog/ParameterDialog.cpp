@@ -74,6 +74,7 @@ ParameterDialog::ParameterDialog(ParameterData * pa)
   // general tab
   
   grid = new QGrid(2, this);
+  umltab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
   
@@ -238,15 +239,15 @@ ParameterDialog::ParameterDialog(ParameterData * pa)
   
   addTab(grid, "Uml");
   
-  init_tab(eduml_selection, pa->uml_selection, "Ocl",
+  init_tab(ocltab, eduml_selection, pa->uml_selection, "Ocl",
 	   SLOT(edit_uml_selection()));
 
   // C++
-  init_tab(edcpp_selection, pa->cpp_selection, "C++",
+  init_tab(cpptab, edcpp_selection, pa->cpp_selection, "C++",
 	   SLOT(edit_cpp_selection()));
 
   // Java
-  init_tab(edjava_selection, pa->java_selection, "Java",
+  init_tab(javatab, edjava_selection, pa->java_selection, "Java",
 	   SLOT(edit_java_selection()));
   
   // USER : list key - value
@@ -257,6 +258,11 @@ ParameterDialog::ParameterDialog(ParameterData * pa)
   
   kvtable = new KeyValuesTable(pa->browser_node, grid, visit);
   addTab(grid, "Properties");
+  
+  //
+    
+  connect(this, SIGNAL(currentChanged(QWidget *)),
+	  this, SLOT(change_tabs(QWidget *)));
 }
 
 ParameterDialog::~ParameterDialog() {
@@ -267,16 +273,30 @@ ParameterDialog::~ParameterDialog() {
     edits.take(0)->close();
 }
 
+void ParameterDialog::change_tabs(QWidget * w) {
+  if (hasOkButton()) {
+    if (w == umltab)
+      edname->setFocus();
+    else if (w == ocltab)
+      eduml_selection->setFocus();
+    else if (w == cpptab)
+      edcpp_selection->setFocus();
+    else if (w == javatab)
+      edjava_selection->setFocus();
+  }
+}
+
 void ParameterDialog::polish() {
   QTabDialog::polish();
   UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
 }
 
-void ParameterDialog::init_tab(MultiLineEdit *& ed, const char * v,
-				    const char * lbl, const char * sl) {
+void ParameterDialog::init_tab(QWidget *& tab, MultiLineEdit *& ed, const char * v,
+			       const char * lbl, const char * sl) {
   bool visit = !hasOkButton();
   QGrid * grid = new QGrid(2, this);
 
+  tab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
   

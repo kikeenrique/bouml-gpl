@@ -54,7 +54,11 @@ bool CppRefType::add(UmlClass * cl, QList<CppRefType> & l, bool incl)
   }
   
   for (ref = l.first(); ref; ref = l.next()) {
-    if (ref->type.toString() == t) {
+    // don't use ref->type.toString() because of synonymous
+    // in several namespaces
+    if ((ref->type.type != 0)
+	? (ref->type.type == cl)
+	: (ref->type.explicit_type == t)) {
       if (incl)
 	ref->included = TRUE;
       return TRUE;
@@ -133,7 +137,11 @@ void CppRefType::force_ref(UmlClass * cl, QList<CppRefType> & l)
   QCString t = cl->name();
   
   for (ref = l.first(); ref; ref = l.next()) {
-    if (ref->type.toString() == t) {
+    // don't use ref->type.toString() because of synonymous
+    // in several namespaces
+    if ((ref->type.type != 0)
+	? (ref->type.type == cl)
+	: (ref->type.explicit_type == t)) {
       ref->included = FALSE;
       return;
     }
@@ -146,11 +154,20 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
 			 UmlArtifact * who)
 {
   UmlPackage * pack = who->package();
+  QCString hdir;
+  QCString srcdir;
+  
+  if (CppSettings::isRelativePath()) {
+    QCString empty;
+    
+    hdir = pack->header_path(empty);
+    srcdir = pack->source_path(empty);
+  }
   
   // aze.cpp includes aze.h
   src_incl += "#include \"";
   if (CppSettings::includeWithPath())
-    src_incl += pack->header_path(who->name());
+    src_incl += pack->header_path(who->name(), srcdir);
   else {
     src_incl += who->name();
     src_incl += '.';
@@ -165,41 +182,42 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
   for (ref = dependencies.first(); ref != 0; ref = dependencies.next()) {
     UmlClass * cl = (ref->type.type)
       ? ref->type.type
-      : UmlBaseClass::get(ref->type.explicit_type);
+      : UmlBaseClass::get(ref->type.explicit_type, 0);
     bool included = ref->included;
-    QCString form;
-    
+    QCString hform;	// form in header
+    QCString srcform;	// form in source
     
     if (cl == 0) {
       QCString in = CppSettings::include(ref->type.explicit_type);
       
       if (!in.isEmpty()) 
-	form = in + '\n';
+	hform = srcform = in + '\n';
       else
 	// doesn't know what it is
 	continue;
     }
     else if (cl->isCppExternal()) {
-      form = cl->cppDecl();
+      hform = cl->cppDecl();
       
       int index;
       
-      if ((index = form.find('\n')) == -1)
+      if ((index = hform.find('\n')) == -1)
 	// wrong form
 	continue;
       
-      form = form.mid(index + 1) + '\n';
+      hform = hform.mid(index + 1) + '\n';
       
       for (;;) {
-	if ((index = form.find("${name}")) != -1)
-	  form.replace(index, 7, cl->name());
-	else if ((index = form.find("${Name}")) != -1)
-	  form.replace(index, 7, capitalize(cl->name()));
-	else if ((index = form.find("${NAME}")) != -1)
-	  form.replace(index, 7, cl->name().upper());
+	if ((index = hform.find("${name}")) != -1)
+	  hform.replace(index, 7, cl->name());
+	else if ((index = hform.find("${Name}")) != -1)
+	  hform.replace(index, 7, capitalize(cl->name()));
+	else if ((index = hform.find("${NAME}")) != -1)
+	  hform.replace(index, 7, cl->name().upper());
 	else
 	  break;
       }
+      srcform = hform;
     }
     else {
       QCString st = cl->cpp_stereotype();	
@@ -213,10 +231,14 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
 	if (art == who)
 	  // don't include itself
 	  continue;
-	if (CppSettings::includeWithPath())
-	  form = "#include \"" + art->package()->header_path(art->name()) + "\"\n";
+	if (CppSettings::includeWithPath()) {
+	  UmlPackage * p = art->package();
+	  
+	  hform = "#include \"" + p->header_path(art->name(), hdir) + "\"\n";
+	  srcform = "#include \"" + p->header_path(art->name(), srcdir) + "\"\n";
+	}
 	else
-	  form = "#include \"" + art->name() + '.' +
+	  srcform = hform = "#include \"" + art->name() + '.' +
 	    CppSettings::headerExtension() + "\"\n";
       }
       else if (cl->parent()->kind() != aClass) {
@@ -229,22 +251,22 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
     
     if (included) {
       // #include must be placed in the header file
-      if ((h_incl.find(form) == -1) && (hdef.find(form) == -1))
-	h_incl += form;
+      if ((h_incl.find(hform) == -1) && (hdef.find(hform) == -1))
+	h_incl += hform;
     }
     else if ((cl != 0) &&
 	     !cl->isCppExternal() &&
 	     (cl->parent()->kind() != aClass)) {	// else too complicated
       // #include useless in header file, place it in the source file
-      if ((src_incl.find(form) == -1) && (h_incl.find(form) == -1) &&
-	  (hdef.find(form) == -1) && (srcdef.find(form) == -1))
-	src_incl += form;
+      if ((src_incl.find(srcform) == -1) && (h_incl.find(hform) == -1) &&
+	  (hdef.find(hform) == -1) && (srcdef.find(srcform) == -1))
+	src_incl += srcform;
       
       // header file must contains the declaration
-      form = cl->decl();
+      hform = cl->decl();
       
-      if (decl.find(form) == -1)
-	decl += form;
+      if (decl.find(hform) == -1)
+	decl += hform;
 
       if ((cl->associatedArtifact() == 0) &&
 	  (cl->parent()->kind() != aClass)) {
@@ -253,14 +275,14 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
 		      "</i> referenced but does not have associated <i>artifact</i></b></font><br>");
       }
     }
-    else if (!form.isEmpty()) {
+    else if (!hform.isEmpty()) {
       // have the #include form but does not know if it is a class or other,
       // generate the #include in the header file EXCEPT if the #include is
       // already in the header/source file to allow to optimize the generated
       // code
-      if ((src_incl.find(form) == -1) && (h_incl.find(form) == -1) &&
-	  (hdef.find(form) == -1) && (srcdef.find(form) == -1))
-	h_incl += form;
+      if ((src_incl.find(srcform) == -1) && (h_incl.find(hform) == -1) &&
+	  (hdef.find(hform) == -1) && (srcdef.find(srcform) == -1))
+	h_incl += hform;
     }
   }
   

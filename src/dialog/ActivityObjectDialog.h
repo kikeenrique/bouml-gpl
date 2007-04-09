@@ -58,6 +58,11 @@ class ActivityObjectDialog : public QTabDialog {
     QList<BodyDialog> edits;
     int offset;
     
+    QWidget * umltab;
+    QWidget * ocltab;
+    QWidget * cpptab;
+    QWidget * javatab;
+
     // uml tab
     LineEdit * edname;
     QComboBox * edtype;
@@ -81,8 +86,8 @@ class ActivityObjectDialog : public QTabDialog {
     static void post_edit_cpp_selection(ActivityObjectDialog * d, QString s);
     static void post_edit_java_selection(ActivityObjectDialog * d, QString s);
     
-    void init_tab(MultiLineEdit *& ed, const char * v, const char * lbl,
-		  const char * sl);
+    void init_tab(QWidget *& w, MultiLineEdit *& ed, const char * v,
+		  const char * lbl, const char * sl);
     
   public:
     ActivityObjectDialog(ActivityObjectData * a, const char * what,
@@ -98,6 +103,8 @@ class ActivityObjectDialog : public QTabDialog {
     void edit_cpp_selection();
     void edit_java_selection();
     void menu_type();
+
+    void change_tabs(QWidget *);
 };
 
 #endif

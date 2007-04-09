@@ -122,6 +122,7 @@ RelationDialog::RelationDialog(RelationData * r)
   QHBox * htab;
   QGroupBox *  bg;
 
+  umltab = vtab;
   vtab->setMargin(5);
   
   htab = new QHBox(vtab);
@@ -231,6 +232,7 @@ RelationDialog::RelationDialog(RelationData * r)
   //
   
   vtab = new QVBox(this);
+  cpptab = vtab;
   vtab->setMargin(5);
   
   // A
@@ -263,6 +265,7 @@ RelationDialog::RelationDialog(RelationData * r)
   //
   
   vtab = new QVBox(this);
+  javatab = vtab;
   vtab->setMargin(5);
   
   // A
@@ -284,6 +287,7 @@ RelationDialog::RelationDialog(RelationData * r)
   // IDL
   //
   vtab = new QVBox(this);
+  idltab = vtab;
   vtab->setMargin(5);
   
   // A
@@ -340,7 +344,7 @@ RelationDialog::RelationDialog(RelationData * r)
   edTypeActivated(edtype->currentItem());
   
   connect(this, SIGNAL(currentChanged(QWidget *)),
-	  this, SLOT(update_all_tabs()));
+	  this, SLOT(update_all_tabs(QWidget *)));
 }
 
 RelationDialog::~RelationDialog() {
@@ -780,7 +784,7 @@ void RelationDialog::edTypeActivated(int r)
   set_inherit_or_dependency(type);
 }
 
-void RelationDialog::update_all_tabs() {  
+void RelationDialog::update_all_tabs(QWidget * w) {  
   if (current_type == UmlDependency) {
     QString s = a.edcppdecl->text().stripWhiteSpace();
     
@@ -814,12 +818,28 @@ void RelationDialog::update_all_tabs() {
   a.edrole->setText(a.edrole->text().stripWhiteSpace());
   b.edrole->setText(b.edrole->text().stripWhiteSpace());
   
-  cpp_update_a();
-  cpp_update_b();
-  java_update_a();
-  java_update_b();
-  idl_update_a();
-  idl_update_b();
+  if (w == umltab) {
+    if (! a.visit)
+      a.edrole->setFocus();
+  }
+  else if (w == cpptab) {
+    cpp_update_a();
+    cpp_update_b();
+    if (! a.visit)
+      a.edcppdecl->setFocus();
+  }
+  else if (w == javatab) {
+    java_update_a();
+    java_update_b();
+    if (! a.visit)
+      a.edjavadecl->setFocus();
+  }
+  else if (w == idltab) {
+    idl_update_a();
+    idl_update_b();
+    if (! a.visit)
+      a.edidldecl->setFocus();
+  }
 }
 
 void RelationDialog::edit_init_a() {

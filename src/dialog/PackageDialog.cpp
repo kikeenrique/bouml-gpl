@@ -57,7 +57,9 @@ PackageDialog::PackageDialog(PackageData * da)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), pa(da) {
   da->browser_node->edit_start();
   
-  if (da->browser_node->is_writable())
+  bool visit = !da->browser_node->saveable();
+  
+  if (!visit)
     setCancelButton();
   else {
     setOkButton(QString::null);
@@ -66,14 +68,6 @@ PackageDialog::PackageDialog(PackageData * da)
 
   setCaption("Package dialog");
     
-  bool fixedname = !hasOkButton();
-  bool visit = fixedname && !da->browser_node->saveable();
-  
-  if (fixedname && da->browser_node->saveable()) {
-    setOkButton("Ok");
-    setCancelButton("Cancel");
-  }
-
   QGrid * grid;
   QVBox * vtab;
   QHBox * htab;
@@ -82,12 +76,13 @@ PackageDialog::PackageDialog(PackageData * da)
   // general tab
   
   grid = new QGrid(2, this);
+  umltab = grid;
   grid->setSpacing(5);
   grid->setMargin(5);
   
   new QLabel("name : ", grid);
   edname = new LineEdit(pa->name(), grid);
-  edname->setReadOnly(fixedname ||
+  edname->setReadOnly(!da->browser_node->is_writable() ||
 		      (pa->get_browser_node() == BrowserView::get_project()));
   
   new QLabel("stereotype : ", grid);
@@ -121,6 +116,7 @@ PackageDialog::PackageDialog(PackageData * da)
   // C++
   
   vtab = new QVBox(this);
+  cpptab = vtab;
   vtab->setMargin(5);
   
   htab = new QHBox(vtab);
@@ -194,6 +190,7 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   // Java
   
   vtab = new QVBox(this);
+  javatab = vtab;
   vtab->setMargin(5);
   
   htab = new QHBox(vtab);
@@ -241,6 +238,7 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   // IDL
   
   vtab = new QVBox(this);
+  idltab = vtab;
   vtab->setMargin(5);
   
   htab = new QHBox(vtab);
@@ -290,6 +288,11 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   vtab = new QVBox(this);
   kvtable = new KeyValuesTable(pa->get_browser_node(), vtab, visit);
   addTab(vtab, "Properties");
+  
+  //
+    
+  connect(this, SIGNAL(currentChanged(QWidget *)),
+	  this, SLOT(change_tabs(QWidget *)));
 }
 
 void PackageDialog::polish() {
@@ -303,6 +306,19 @@ PackageDialog::~PackageDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+}
+    
+void PackageDialog::change_tabs(QWidget * w) {
+  if (hasOkButton()) {
+    if (w == umltab)
+      edname->setFocus();
+    else if (w == cpptab)
+      edcpphdir->setFocus();
+    else if (w == javatab)
+      edjavadir->setFocus();
+    else if (w == idltab)
+      edidldir->setFocus();
+  }
 }
 
 void PackageDialog::edit_description() {

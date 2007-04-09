@@ -74,6 +74,7 @@ PinDialog::PinDialog(PinData * pi)
   // general tab
   
   grid = new QGrid(2, this);
+  umltab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
   
@@ -228,15 +229,15 @@ PinDialog::PinDialog(PinData * pi)
   
   addTab(grid, "Uml");
   
-  init_tab(eduml_selection, pin->uml_selection, "Ocl",
+  init_tab(ocltab, eduml_selection, pin->uml_selection, "Ocl",
 	   SLOT(edit_uml_selection()));
 
   // C++
-  init_tab(edcpp_selection, pin->cpp_selection, "C++",
+  init_tab(cpptab, edcpp_selection, pin->cpp_selection, "C++",
 	   SLOT(edit_cpp_selection()));
 
   // Java
-  init_tab(edjava_selection, pin->java_selection, "Java",
+  init_tab(javatab, edjava_selection, pin->java_selection, "Java",
 	   SLOT(edit_java_selection()));
   
   // USER : list key - value
@@ -247,6 +248,11 @@ PinDialog::PinDialog(PinData * pi)
   
   kvtable = new KeyValuesTable(pi->browser_node, grid, visit);
   addTab(grid, "Properties");
+  
+  //
+    
+  connect(this, SIGNAL(currentChanged(QWidget *)),
+	  this, SLOT(change_tabs(QWidget *)));
 }
 
 PinDialog::~PinDialog() {
@@ -257,16 +263,30 @@ PinDialog::~PinDialog() {
     edits.take(0)->close();
 }
 
+void PinDialog::change_tabs(QWidget * w) {
+  if (hasOkButton()) {
+    if (w == umltab)
+      edname->setFocus();
+    else if (w == ocltab)
+      eduml_selection->setFocus();
+    else if (w == cpptab)
+      edcpp_selection->setFocus();
+    else if (w == javatab)
+      edjava_selection->setFocus();
+  }
+}
+
 void PinDialog::polish() {
   QTabDialog::polish();
   UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
 }
 
-void PinDialog::init_tab(MultiLineEdit *& ed, const char * v,
-				    const char * lbl, const char * sl) {
+void PinDialog::init_tab(QWidget *& tab, MultiLineEdit *& ed, const char * v,
+			 const char * lbl, const char * sl) {
   bool visit = !hasOkButton();
   QGrid * grid = new QGrid(2, this);
 
+  tab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
   

@@ -47,7 +47,7 @@ void UmlClass::made(UmlClassView * base_class_view, UmlClassView * user_class_vi
   base->set_isAbstract(TRUE);
   
   if ((rel = UmlBaseRelation::create(aGeneralisation, base, this)) == 0) {
-    QCString msg = base->name() + " can't inherit " + name();
+    QCString msg = base->name() + " can't inherit " + name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
@@ -58,7 +58,7 @@ void UmlClass::made(UmlClassView * base_class_view, UmlClassView * user_class_vi
   }
   
   if ((rel = UmlBaseRelation::create(aDependency, base_item, base)) == 0) {
-    QCString msg = "Cannot add a friend dependency from " + base_item->name() + " to " + base->name();
+    QCString msg = "Cannot add a friend dependency from " + base_item->name() + " to " + base->name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
@@ -73,7 +73,7 @@ void UmlClass::made(UmlClassView * base_class_view, UmlClassView * user_class_vi
   
   user = made(user_class_view, user_depl_view, "Uml" + s);
   if ((rel = UmlBaseRelation::create(aGeneralisation, user, base)) == 0) {
-    QCString msg = user->name() + " can't inherit " + base->name();
+    QCString msg = user->name() + " can't inherit " + base->name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
@@ -85,7 +85,7 @@ void UmlClass::made(UmlClassView * base_class_view, UmlClassView * user_class_vi
   
   if (user_interf) {
     if ((rel = UmlBaseRelation::create(aGeneralisation, user, user_interf)) == 0) {
-      QCString msg = user->name() + " can't inherit " + user_interf->name();
+      QCString msg = user->name() + " can't inherit " + user_interf->name() + "<br>\n";
       
       UmlCom::trace(msg);
       throw 0;
@@ -109,7 +109,7 @@ void UmlClass::made(UmlClassView * base_class_view, UmlClassView * user_class_vi
   base->set_isAbstract(TRUE);
   
   if ((rel = UmlBaseRelation::create(aGeneralisation, base, this)) == 0) {
-    QCString msg = base->name() + " can't inherit " + name();
+    QCString msg = base->name() + " can't inherit " + name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
@@ -120,7 +120,7 @@ void UmlClass::made(UmlClassView * base_class_view, UmlClassView * user_class_vi
   }
   
   if ((rel = UmlBaseRelation::create(aDependency, base_item, base)) == 0) {
-    QCString msg = "Cannot add a friend dependency from " + base_item->name() + " to " + base->name();
+    QCString msg = "Cannot add a friend dependency from " + base_item->name() + " to " + base->name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
@@ -135,7 +135,7 @@ void UmlClass::made(UmlClassView * base_class_view, UmlClassView * user_class_vi
   
   user = made(user_class_view, user_art, "Uml" + s);
   if ((rel = UmlBaseRelation::create(aGeneralisation, user, base)) == 0) {
-    QCString msg = user->name() + " can't inherit " + base->name();
+    QCString msg = user->name() + " can't inherit " + base->name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
@@ -147,7 +147,7 @@ void UmlClass::made(UmlClassView * base_class_view, UmlClassView * user_class_vi
   
   if (user_interf) {
     if ((rel = UmlBaseRelation::create(aGeneralisation, user, user_interf)) == 0) {
-      QCString msg = user->name() + " can't inherit " + user_interf->name();
+      QCString msg = user->name() + " can't inherit " + user_interf->name() + "<br>\n";
       
       UmlCom::trace(msg);
       throw 0;
@@ -166,19 +166,19 @@ UmlClass * UmlClass::made(UmlClassView * class_view,
   UmlClass * cl = UmlBaseClass::create(class_view, s);
   
   if (cl == 0) {
-    QCString msg = "can't create class '" + s + "' in " + class_view->name();
+    QCString msg = "can't create class '" + s + "' in " + class_view->name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
   }
   
   if (interf) {
-    UmlCom::trace("add interface " + s);
+    UmlCom::trace("add interface " + s + "<br>\n");
     cl->set_Stereotype("interface");
     cl->set_JavaDecl(JavaSettings::interfaceDecl());
   }
   else {
-    UmlCom::trace("add class " + s);
+    UmlCom::trace("add class " + s + "<br>\n");
     cl->set_JavaDecl(JavaSettings::classDecl());
   }
     
@@ -196,19 +196,19 @@ UmlClass * UmlClass::made(UmlClassView * class_view,
   UmlClass * cl = UmlBaseClass::create(class_view, s);
   
   if (cl == 0) {
-    QCString msg = "can't create class '" + s + "' in " + class_view->name();
+    QCString msg = "can't create class '" + s + "' in " + class_view->name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
   }
   
   if (interf) {
-    UmlCom::trace("add interface " + s);
+    UmlCom::trace("add interface " + s + "<br>\n");
     cl->set_Stereotype("interface");
     cl->set_JavaDecl(JavaSettings::interfaceDecl());
   }
   else {
-    UmlCom::trace("add class " + s);
+    UmlCom::trace("add class " + s + "<br>\n");
     cl->set_JavaDecl(JavaSettings::classDecl());
   }
     
@@ -223,19 +223,19 @@ void UmlClass::add_kind(const char * k) {
   UmlOperation * op = UmlOperation::create(this, "kind");
   
   if (op == 0) {
-    QCString msg = "can't add operation 'kind' in " + name();
+    QCString msg = "can't add operation 'kind' in " + name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
   }
   
-  UmlCom::trace("add operation " + name() + "::kind");
+  UmlCom::trace("add operation " + name() + "::kind" + "<br>\n");
   
   op->set_Description(" returns the kind of the item");  
   
   UmlTypeSpec t;
   
-  t.type = UmlClass::get("anItemKind");
+  t.type = UmlClass::get("anItemKind", 0);
   
   op->set_ReturnType(t);
   
@@ -258,7 +258,7 @@ void UmlClass::add_default_base_op(UmlClass * super, UmlClass * user,
   UmlOperation * op = add_op("create", PublicVisibility, user, TRUE);
   
   if (op == 0) {
-    QCString msg = "can't add operation 'create' in " + name();
+    QCString msg = "can't add operation 'create' in " + name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
@@ -304,13 +304,13 @@ void UmlClass::add_constr(UmlClass * super, aVisibility v, bool unnamed) {
   UmlOperation * op = UmlOperation::create(this, name());
 
   if (op == 0) {
-    QCString msg = "can't add constructor in " + name();
+    QCString msg = "can't add constructor in " + name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
   }
   
-  UmlCom::trace("add operation " + name() + "::" + name());
+  UmlCom::trace("add operation " + name() + "::" + name() + "<br>\n");
   
   op->set_Visibility(v);
   op->set_Description("  the constructor, do not call it yourself !!!!!!!!!!");
@@ -356,13 +356,13 @@ UmlOperation * UmlClass::add_op(const char * name, aVisibility v,
 
   if (op == 0) {
     QCString msg =
-      QCString("can't add operation '") + name + "' in " + this->name();
+      QCString("can't add operation '") + name + "' in " + this->name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
   }
   
-  UmlCom::trace("add operation " + this->name() + "::" + name);
+  UmlCom::trace("add operation " + this->name() + "::" + name + "<br>\n");
   
   op->set_ReturnType(return_type);
   op->set_Visibility(v);
@@ -402,13 +402,13 @@ UmlAttribute * UmlClass::add_attribute(const char * name, aVisibility v,
 
   if (ar == 0) {
     QCString msg =
-      QCString("can't add attribute '") + name + "' in " + this->name();
+      QCString("can't add attribute '") + name + "' in " + this->name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
   }
   
-  UmlCom::trace("add attribute " + this->name() + "::" + name);
+  UmlCom::trace("add attribute " + this->name() + "::" + name + "<br>\n");
   
   ar->set_Type(type);
   ar->set_Visibility(v);
@@ -426,11 +426,11 @@ UmlAttribute * UmlClass::add_enum_item(const char * name) {
   UmlAttribute * at = UmlBaseAttribute::create(this, name);
     
   if (at == 0) {
-    UmlCom::trace("cannot add enum item " + this->name() + "::" + name);
+    UmlCom::trace("cannot add enum item " + this->name() + "::" + name + "<br>\n");
     throw 0;
   }
   else {
-    UmlCom::trace("add enum item " + this->name() + "::" + name);
+    UmlCom::trace("add enum item " + this->name() + "::" + name + "<br>\n");
     at->set_CppDecl(CppSettings::enumItemDecl());
     at->set_JavaDecl(JavaSettings::enumPatternItemDecl());
     at->set_Visibility(PublicVisibility);
@@ -447,13 +447,13 @@ UmlRelation * UmlClass::add_relation(aRelationKind k, const char * name,
   
   if (rel == 0) {
     QCString msg =
-      QCString("can't add relation '") + name + "' in " + this->name();
+      QCString("can't add relation '") + name + "' in " + this->name() + "<br>\n";
     
     UmlCom::trace(msg);
     throw 0;
   }
   
-  UmlCom::trace("add relation " + this->name() + "::" + name);
+  UmlCom::trace("add relation " + this->name() + "::" + name + "<br>\n");
   
   rel->set_RoleName(name);
   rel->set_Visibility(v);

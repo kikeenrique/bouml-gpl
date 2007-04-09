@@ -55,7 +55,7 @@ void Tool::defaults()
   unsigned index;
   
   already_read = FALSE;
-  set_ntools(14);
+  set_ntools(16);
   
   tools[0].display = "HTML documentation";
   tools[0].cmd = "ghtml";
@@ -67,61 +67,71 @@ void Tool::defaults()
   for (index = 0; index != UmlCodeSup; index += 1)
     tools[1].applicable[index] = TRUE;
   
-  tools[2].display = "Generate .pro";
-  tools[2].cmd = "gpro";
-  tools[2].applicable[UmlArtifact] = TRUE;
+  tools[2].display = "HTML doc. (svg)";
+  tools[2].cmd = "ghtml -svg";
+  for (index = 0; index != UmlCodeSup; index += 1)
+    tools[2].applicable[index] = TRUE;
   
-  tools[3].display = "Import Rose";
-  tools[3].cmd = "irose";
-  tools[3].applicable[UmlProject] = TRUE;
-  tools[3].applicable[UmlPackage] = TRUE;
+  tools[3].display = "HTML doc. (flat, svg)";
+  tools[3].cmd = "ghtml -flat -svg";
+  for (index = 0; index != UmlCodeSup; index += 1)
+    tools[3].applicable[index] = TRUE;
   
-  tools[4].display = "C++ utilities";
-  tools[4].cmd = "cpp_util";
-  tools[4].applicable[UmlClass] = TRUE;
+  tools[4].display = "Generate .pro";
+  tools[4].cmd = "gpro";
+  tools[4].applicable[UmlArtifact] = TRUE;
   
-  tools[5].display = "Generate XMI 1.2";
-  tools[5].cmd = "gxmi";
+  tools[5].display = "Import Rose";
+  tools[5].cmd = "irose";
   tools[5].applicable[UmlProject] = TRUE;
+  tools[5].applicable[UmlPackage] = TRUE;
   
-  tools[6].display = "Generate XMI 2.1";
-  tools[6].cmd = "gxmi2";
-  tools[6].applicable[UmlProject] = TRUE;
+  tools[6].display = "C++ utilities";
+  tools[6].cmd = "cpp_util";
+  tools[6].applicable[UmlClass] = TRUE;
   
-  tools[7].display = "Import XMI 2.1";
-  tools[7].cmd = "ixmi2";
+  tools[7].display = "Generate XMI 1.2";
+  tools[7].cmd = "gxmi";
   tools[7].applicable[UmlProject] = TRUE;
-  tools[7].applicable[UmlPackage] = TRUE;
   
-  tools[8].display = "C++ state machine";
-  tools[8].cmd = "stmgen";
-  tools[8].applicable[UmlState] = TRUE;
+  tools[8].display = "Generate XMI 2.1";
+  tools[8].cmd = "gxmi2";
+  tools[8].applicable[UmlProject] = TRUE;
   
-  tools[9].display = "Use case wizard";
-  tools[9].cmd = "usecasewizard";
-  tools[9].applicable[UmlUseCase] = TRUE;
+  tools[9].display = "Import XMI 2.1";
+  tools[9].cmd = "ixmi2";
+  tools[9].applicable[UmlProject] = TRUE;
+  tools[9].applicable[UmlPackage] = TRUE;
   
-  tools[10].display = "Check-in";
-  tools[10].cmd = "file_control ci";
-  tools[10].applicable[UmlProject] = TRUE;
-  tools[10].applicable[UmlPackage] = TRUE;
+  tools[10].display = "C++ state machine";
+  tools[10].cmd = "stmgen";
+  tools[10].applicable[UmlState] = TRUE;
   
-  tools[11].display = "Check-out";
-  tools[11].cmd = "file_control co";
-  tools[11].applicable[UmlProject] = TRUE;
-  tools[11].applicable[UmlPackage] = TRUE;
+  tools[11].display = "Use case wizard";
+  tools[11].cmd = "usecasewizard";
+  tools[11].applicable[UmlUseCase] = TRUE;
   
-  tools[12].display = "Deploy classes";
-  tools[12].cmd = "deplcl";
-  tools[12].applicable[UmlClassView] = TRUE;
+  tools[12].display = "Check-in";
+  tools[12].cmd = "file_control ci";
+  tools[12].applicable[UmlProject] = TRUE;
+  tools[12].applicable[UmlPackage] = TRUE;
   
-  tools[13].display = "Global Change";
-  tools[13].cmd = "global_change";
+  tools[13].display = "Check-out";
+  tools[13].cmd = "file_control co";
   tools[13].applicable[UmlProject] = TRUE;
   tools[13].applicable[UmlPackage] = TRUE;
-  tools[13].applicable[UmlClassView] = TRUE;
-  tools[13].applicable[UmlDeploymentView] = TRUE;
-  tools[13].applicable[UmlClass] = TRUE;
+  
+  tools[14].display = "Deploy classes";
+  tools[14].cmd = "deplcl";
+  tools[14].applicable[UmlClassView] = TRUE;
+  
+  tools[15].display = "Global Change";
+  tools[15].cmd = "global_change";
+  tools[15].applicable[UmlProject] = TRUE;
+  tools[15].applicable[UmlPackage] = TRUE;
+  tools[15].applicable[UmlClassView] = TRUE;
+  tools[15].applicable[UmlDeploymentView] = TRUE;
+  tools[15].applicable[UmlClass] = TRUE;
 }
 
 bool Tool::menu_insert(QPopupMenu * tool, UmlCode target, 

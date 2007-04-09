@@ -233,8 +233,12 @@ void InterruptibleActivityRegionCanvas::menu(const QPoint&) {
   if (linked())
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
-  if (browser_node->is_writable())
+  if (browser_node->is_writable()) {
     m.insertItem("Set associated diagram",6);
+    
+    if (browser_node->get_associated())
+      m.insertItem("Remove diagram association",9);
+  }
   m.insertSeparator();
   m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
@@ -269,6 +273,10 @@ void InterruptibleActivityRegionCanvas::menu(const QPoint&) {
     ((BrowserInterruptibleActivityRegion *) browser_node)
       ->set_associated_diagram((BrowserActivityDiagram *)
 			       the_canvas()->browser_diagram());
+    return;
+  case 9:
+    ((BrowserInterruptibleActivityRegion *) browser_node)
+      ->set_associated_diagram(0);
     return;
   case 7:
     //remove from view

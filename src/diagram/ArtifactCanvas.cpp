@@ -326,6 +326,10 @@ void ArtifactCanvas::draw(QPainter & p) {
   const int he = fm.height();
   QRect r = rect();
   const BasicData * data = browser_node->get_data();
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fputs("<g>\n", fp);
   
   if (used_color != UmlTransparent) {
     const int shadow = the_canvas()->shadow();
@@ -339,26 +343,64 @@ void ArtifactCanvas::draw(QPainter & p) {
 		  QObject::darkGray);
       p.fillRect (r.left() + shadow, r.bottom(),
 		  r.width() - 1, shadow,
-		  QObject::darkGray);}
+		  QObject::darkGray);
+
+      if (fp != 0) {
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		QObject::darkGray.rgb()&0xffffff,
+		r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
+
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		QObject::darkGray.rgb()&0xffffff,
+		r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
+      }
+    }
   }
   
   QRect re = r;
   
-  if (used_color != UmlTransparent) p.fillRect(r, co);
+  if (used_color != UmlTransparent) {
+    p.fillRect(r, co);
+
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      co.rgb()&0xffffff, 
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+  }
+  else if (fp != 0)
+    fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	    r.x(), r.y(), r.width() - 1, r.height() - 1);
+  
   p.drawRect(r);
 
   r.setHeight(he*2);
   p.setFont(the_canvas()->get_font(UmlNormalFont));
-  if (data->get_stereotype()[0])
+  if (data->get_stereotype()[0]) {
     p.drawText(r, QObject::AlignCenter,
 	       QString("<<") + toUnicode(data->get_stereotype()) + ">>");
-  else
+    if (fp != 0)
+      draw_text(r, QObject::AlignCenter,
+		QString("<<") + toUnicode(data->get_stereotype()) + ">>",
+		p.font(), fp);
+  }
+  else {
     p.drawText(r, QObject::AlignCenter, "<<artifact>>");
+    if (fp != 0)
+      draw_text(r, QObject::AlignCenter, "<<artifact>>",
+		p.font(), fp);
+  }
   
   r.moveBy(0, r.height());
   r.setHeight(he+four);
   p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
   p.drawText(r, QObject::AlignCenter, browser_node->get_name());
+  if (fp != 0)
+    draw_text(r, QObject::AlignCenter, browser_node->get_name(),
+	      p.font(), fp);
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   
   // draw icon
@@ -380,6 +422,14 @@ void ArtifactCanvas::draw(QPainter & p) {
   p.drawPolyline(a);
   p.moveTo(re.right() - corner_size, re.top());
   p.lineTo(re.right(), re.top() + corner_size);
+
+  if (fp != 0) {
+    draw_poly(fp, a, "none");
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n"
+	    "</g>\n",
+	    re.right() - corner_size, re.top(), re.right(), re.top() + corner_size);
+  }
   
   p.setBackgroundColor(bckgrnd);
   
@@ -427,8 +477,12 @@ void ArtifactCanvas::menu(const QPoint&) {
   if (linked())
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
-  if (browser_node->is_writable())
+  if (browser_node->is_writable()) {
     m.insertItem("Set associated diagram",6);
+    
+    if (browser_node->get_associated())
+      m.insertItem("Remove diagram association",12);
+  }
   m.insertSeparator();
   m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
@@ -468,6 +522,10 @@ void ArtifactCanvas::menu(const QPoint&) {
     ((BrowserArtifact *) browser_node)
       ->set_associated_diagram((BrowserDeploymentDiagram *)
 			       the_canvas()->browser_diagram());
+    return;
+  case 12:
+    ((BrowserArtifact *) browser_node)
+      ->set_associated_diagram(0);
     return;
   case 7:
     //remove from view

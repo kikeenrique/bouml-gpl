@@ -1,40 +1,122 @@
-// *************************************************************************
-//
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
-//
-// This file is part of the BOUML Uml Toolkit.
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//
-// e-mail : bouml@free.fr
-// home   : http://bouml.free.fr
-//
-// *************************************************************************
-
-/* !!!!!!!!!! Do not modify this file !!!!!!!!!! */
 
 #include "UmlSettings.h"
+
 #include "UmlCom.h"
+#include "UmlSettingsCmd.h"
+#include "UmlBuiltin.h"
+#include "UmlStereotype.h"
+QCString UmlSettings::artifactDescription()
+{
+  read_if_needed_();
+
+  return _artifact_default_description;
+}
+
+bool UmlSettings::set_ArtifactDescription(QCString v)
+{
+  UmlCom::send_cmd(umlSettingsCmd, setDefaultArtifactDescriptionCmd, v);
+  if (UmlCom::read_bool()) {
+    _artifact_default_description = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString UmlSettings::classDescription()
+{
+  read_if_needed_();
+
+  return _class_default_description;
+}
+
+bool UmlSettings::set_ClassDescription(QCString v)
+{
+  UmlCom::send_cmd(umlSettingsCmd, setDefaultClassDescriptionCmd, v);
+  if (UmlCom::read_bool()) {
+    _class_default_description = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString UmlSettings::operationDescription()
+{
+  read_if_needed_();
+
+  return _operation_default_description;
+}
+
+bool UmlSettings::set_OperationDescription(QCString v)
+{
+  UmlCom::send_cmd(umlSettingsCmd, setDefaultOperationDescriptionCmd, v);
+  if (UmlCom::read_bool()) {
+    _operation_default_description = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString UmlSettings::attributeDescription()
+{
+  read_if_needed_();
+
+  return _attribute_default_description;
+}
+
+bool UmlSettings::set_AttributeDescription(QCString v)
+{
+  UmlCom::send_cmd(umlSettingsCmd, setDefaultAttributeDescriptionCmd, v);
+  if (UmlCom::read_bool()) {
+    _attribute_default_description = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString UmlSettings::relationDescription()
+{
+  read_if_needed_();
+
+  return _relation_default_description;
+}
+
+bool UmlSettings::set_RelationDescription(QCString v)
+{
+  UmlCom::send_cmd(umlSettingsCmd, setDefaultRelationDescriptionCmd, v);
+  if (UmlCom::read_bool()) {
+    _relation_default_description = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
 
 bool UmlSettings::_defined;
-    
+
+QCString UmlSettings::_artifact_default_description;
+
+QCString UmlSettings::_class_default_description;
+
+QCString UmlSettings::_operation_default_description;
+
+QCString UmlSettings::_attribute_default_description;
+
+QCString UmlSettings::_relation_default_description;
+
 QDict<UmlBuiltin> UmlSettings::_map_builtins;
+
 UmlBuiltin * UmlSettings::_builtins;
+
 QDict<UmlStereotype> UmlSettings::_map_relation_stereotypes;
+
 UmlStereotype * UmlSettings::_relation_stereotypes;
+
 QDict<UmlStereotype> UmlSettings::_map_class_stereotypes;
+
 UmlStereotype * UmlSettings::_class_stereotypes;
 
 void UmlSettings::read_()
@@ -76,15 +158,16 @@ void UmlSettings::read_()
     _map_class_stereotypes.insert(_class_stereotypes[index].uml,
 				  &_class_stereotypes[index]);
   }
-  
-  UmlCom::read_string(); // artifact_default_description
-  UmlCom::read_string(); // class_default_description
-  UmlCom::read_string(); // operation_default_description
-  UmlCom::read_string(); // attribute_default_description
-  UmlCom::read_string(); // relation_default_description
+
+  _artifact_default_description = UmlCom::read_string();
+  _class_default_description = UmlCom::read_string();
+  _operation_default_description = UmlCom::read_string();
+  _attribute_default_description = UmlCom::read_string();
+  _relation_default_description = UmlCom::read_string();
 }
 
-void UmlSettings::read_if_needed_() {
+void UmlSettings::read_if_needed_()
+{
   if (!_defined) {
     UmlCom::send_cmd(umlSettingsCmd, getUmlSettingsCmd);
     read_();
@@ -114,8 +197,7 @@ QCString UmlSettings::uml_type(const QCString & t, QCString UmlBuiltin::* f)
   return 0;
 }
 
-QCString UmlSettings::uml_rel_stereotype(const QCString & t,
-					 QCString UmlStereotype::* f)
+QCString UmlSettings::uml_rel_stereotype(const QCString & t, QCString UmlStereotype::* f)
 {
   unsigned index = _map_relation_stereotypes.count();
   
@@ -126,8 +208,7 @@ QCString UmlSettings::uml_rel_stereotype(const QCString & t,
   return 0;
 }
 
-QCString UmlSettings::uml_class_stereotype(const QCString & t,
-					   QCString UmlStereotype::* f)
+QCString UmlSettings::uml_class_stereotype(const QCString & t, QCString UmlStereotype::* f)
 {
   unsigned index = _map_class_stereotypes.count();
   
@@ -157,7 +238,6 @@ UmlBuiltin * UmlSettings::add_type(const QCString & s)
   builtins[index].cpp_in = "const ${type}";
   builtins[index].cpp_out = "${type} &";
   builtins[index].cpp_inout = "${type} &";
-  builtins[index].cpp_return = "${type}";
 #endif
 #ifdef WITHJAVA
   builtins[index].java = s;
@@ -172,6 +252,7 @@ UmlBuiltin * UmlSettings::add_type(const QCString & s)
   _builtins = builtins;
   
   return &_builtins[index];
+
 }
 
 UmlStereotype * UmlSettings::add_rel_stereotype(const QCString & s)
@@ -204,6 +285,7 @@ UmlStereotype * UmlSettings::add_rel_stereotype(const QCString & s)
   _relation_stereotypes = relation_stereotypes;
 
   return &_relation_stereotypes[index];
+
 }
 
 UmlStereotype * UmlSettings::add_class_stereotype(const QCString & s)
@@ -236,4 +318,6 @@ UmlStereotype * UmlSettings::add_class_stereotype(const QCString & s)
   _class_stereotypes = class_stereotypes;
 
   return &_class_stereotypes[index];
+
 }
+

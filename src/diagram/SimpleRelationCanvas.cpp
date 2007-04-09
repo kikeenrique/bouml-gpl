@@ -532,8 +532,12 @@ SimpleRelationCanvas * SimpleRelationCanvas::read(char * & st, UmlCanvas * canva
       connect(rd, SIGNAL(changed()), result, SLOT(modified()));
       connect(rd, SIGNAL(deleted()), result, SLOT(deleted()));
 
-      if (first == 0)
+      if (first == 0) {
 	first = result;
+	if (read_file_format() == 30)
+	  // to remove redondant relation made by release 2.22
+	  RelsToCheck.append(result);
+      }
       if (stereotype != 0)
 	(result->stereotype = stereotype)->show();
       result->show();

@@ -56,6 +56,7 @@ class FlowDialog : public QTabDialog {
   Q_OBJECT
     
   protected:
+    QWidget * umltab;
     bool visit;
     FlowData * flow;
     LineEdit * edname;
@@ -105,6 +106,8 @@ class FlowDialog : public QTabDialog {
     void edit_java_guard();
     void edit_java_selection();
     void edit_java_transformation();
+
+    void change_tabs(QWidget *);
 };
 
 #endif

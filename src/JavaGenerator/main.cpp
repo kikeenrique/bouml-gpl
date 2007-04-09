@@ -50,7 +50,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QCString(argv[port_index]).toUInt())) {
     try {
-      UmlCom::trace("<b>Java generator</b> release 2.7.3<br>");
+      UmlCom::trace("<b>Java generator</b> release 2.8<br>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlCom::targetItem()->generate();

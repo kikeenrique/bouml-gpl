@@ -33,7 +33,7 @@
 #include "strutil.h"
 #include "CharSetDialog.h"
 
-void manage_comment(QString comment, const char *& p, const char *& pp)
+bool manage_comment(QString comment, const char *& p, const char *& pp)
 {
   static QString the_comment;
   
@@ -41,7 +41,7 @@ void manage_comment(QString comment, const char *& p, const char *& pp)
   
   if ((pp != 0) || // comment contains ${comment} !
       comment.isEmpty())
-    return;
+    return FALSE;
   
   const char * co = comment;
   
@@ -58,9 +58,10 @@ void manage_comment(QString comment, const char *& p, const char *& pp)
     
   pp = p;
   p = the_comment;
+  return TRUE;
 }
 
-void manage_description(QString comment, const char *& p, const char *& pp)
+bool manage_description(QString comment, const char *& p, const char *& pp)
 {
   static QString the_comment;
   
@@ -68,7 +69,7 @@ void manage_description(QString comment, const char *& p, const char *& pp)
   
   if ((pp != 0) || // comment contains ${description} !
       comment.isEmpty())
-    return;
+    return FALSE;
   
   the_comment = comment;
   
@@ -77,6 +78,7 @@ void manage_description(QString comment, const char *& p, const char *& pp)
     
   pp = p;
   p = the_comment;
+  return TRUE;
 }
 
 bool is_char_of_name(char c)

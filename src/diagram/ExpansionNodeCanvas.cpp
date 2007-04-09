@@ -213,7 +213,8 @@ void ExpansionNodeCanvas::draw(QPainter & p) {
 		      : QObject::OpaqueMode);
 
   QColor co = color(used_color);
-  
+  FILE * fp = svg();
+
   p.setBackgroundColor(co);
   
   if (used_color != UmlTransparent) 
@@ -222,13 +223,36 @@ void ExpansionNodeCanvas::draw(QPainter & p) {
   QRect r = rect();
   
   p.drawRect(r);
+
+  if (fp != 0) {
+    fputs("<g>\n", fp);
+    if (used_color != UmlTransparent)
+      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      co.rgb()&0xffffff,
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+    else
+      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+  }
   
   int dx = width() / 3;
   int b = r.bottom();
 
   p.drawLine((int) x() + dx, (int) y(), (int) x() + dx, b);
+  if (fp != 0)
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    (int) x() + dx, (int) y(), (int) x() + dx, b);
   dx += dx;
   p.drawLine((int) x() + dx, (int) y(), (int) x() + dx, b);
+  if (fp != 0) {
+    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	    (int) x() + dx, (int) y(), (int) x() + dx, b);
+    fputs("</g>\n", fp);
+  }  
 
   p.setBackgroundColor(bckgrnd);
   p.setBrush(brsh);

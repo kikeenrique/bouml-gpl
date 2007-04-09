@@ -165,6 +165,19 @@ const QPixmap* BrowserComponentDiagram::pixmap(int) const {
   return (deletedp()) ? DeletedComponentDiagramIcon : ComponentDiagramIcon;
 }
 
+void BrowserComponentDiagram::draw_svg() const {
+  fputs("\t<rect fill=\"white\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" x=\"0\" y=\"0\" width=\"15\" height=\"15\" />\n"
+	"\t<path fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" "
+	"d=\"M 2 5 L 7 5 L 7 13 L 2 13 L 2 5 "
+	"M 10 0 L 10 8 L 15 8 "
+	"M 7 11 L 12 11 L 12 8 "
+	"M 1 7 L 3 7 L 3 8 L 1 8 L 1 7 "
+	"M 1 10 L 3 10 L 3 11 L 1 11 L 1 10 "
+	"M 9 2 L 11 2 L 11 3 L 9 3 L 9 2 "
+	"M 9 5 L 11 5 L 11 6 L 9 6 L 9 5 \" />\n",
+	svg());
+}
+
 void BrowserComponentDiagram::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
@@ -410,13 +423,13 @@ bool BrowserComponentDiagram::tool_cmd(ToolCom * com, const char * args) {
     return TRUE;
   case saveInCmd:
     if (window != 0)
-      com->write_ack(window->get_view()->save_in(args, TRUE, FALSE));
+      com->write_ack(window->get_view()->save_pict(args, TRUE, FALSE));
     else {
       ComponentDiagramWindow * w = new ComponentDiagramWindow(full_name(), this);
       
-      com->write_ack(w->get_view()->save_in(args, 
-					     !w->get_view()->has_preferred_size_zoom(),
-					     TRUE));
+      com->write_ack(w->get_view()->save_pict(args, 
+					      !w->get_view()->has_preferred_size_zoom(),
+					      TRUE));
       w->dont_save();
       w->close(TRUE);
     }

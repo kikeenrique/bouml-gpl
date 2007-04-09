@@ -66,6 +66,8 @@ void ArrowPointCanvas::delete_available(bool &,
   out_model |= lines.getFirst()->may_join();
 }
 
+// not produced in SVG file
+
 void ArrowPointCanvas::change_scale() {
   // the size is not modified
   QCanvasRectangle::setVisible(FALSE);

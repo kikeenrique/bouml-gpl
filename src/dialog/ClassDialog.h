@@ -55,6 +55,7 @@ class ClassDialog : public QTabDialog {
   Q_OBJECT
     
   protected:
+    QWidget * umltab;
     ClassData * cl;
     LineEdit * edname;
     QComboBox * edstereotype;
@@ -76,6 +77,7 @@ class ClassDialog : public QTabDialog {
     QVBox * instantiate_vtab;
     
     // C++
+    QWidget * cpptab;
     QString current_cpp_stereotype;
     VisibilityGroup cpp_visibility;
     QCheckBox * cpp_external_cb;
@@ -83,6 +85,7 @@ class ClassDialog : public QTabDialog {
     MultiLineEdit * showcppdecl;
     
     // Java
+    QWidget * javatab;
     QString current_java_stereotype;
     QCheckBox * java_external_cb;
     QCheckBox * java_final_cb;
@@ -93,6 +96,7 @@ class ClassDialog : public QTabDialog {
     QString javaannotation;
     
     // Idl
+    QWidget * idltab;
     QString current_idl_stereotype;
     QCheckBox * idl_external_cb;
     MultiLineEdit * edidldecl;
@@ -153,7 +157,7 @@ class ClassDialog : public QTabDialog {
     void default_description();
     void edit_description();
     void edStereotypeActivated(const QString &);
-    void update_all_tabs();
+    void update_all_tabs(QWidget *);
     void cpp_update_decl();
     void cpp_default_decl();
     void cpp_unmapped_decl();

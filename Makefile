@@ -101,7 +101,7 @@ install:
 	cd plugouts ; tar cf - empty genpro html rose singleton cpp_utilities xmi xmi2 xmi2import sm_generator usecase_wizard sort FileControl deploy GlobalChange | (cd $(DESTDIR)$(BOUML_LIB); tar xf -)
 	echo "#!/bin/sh" >$(DESTDIR)$(BOUML_DIR)/bouml
 	echo "PATH=$(BOUML_LIB):$$"PATH >>$(DESTDIR)$(BOUML_DIR)/bouml
-	echo "$(BOUML_LIB)/bouml \"$$"@"\"" >>$(DESTDIR)$(BOUML_DIR)/bouml
+	echo "exec $(BOUML_LIB)/bouml \"$$"@"\"" >>$(DESTDIR)$(BOUML_DIR)/bouml
 	chmod +x "$(DESTDIR)$(BOUML_DIR)/bouml"
 	cd $(DESTDIR)$(BOUML_DIR) ; rm -f projectControl ; ln -s $(BOUML_LIB)/projectControl
 	cd $(DESTDIR)$(BOUML_DIR) ; rm -f projectSynchro ; ln -s $(BOUML_LIB)/projectSynchro
@@ -142,3 +142,18 @@ install:
 
 uninstall:
 	rm -rf $(DESTDIR)$(BOUML_LIB) $(DESTDIR)$(BOUML_DIR)/bouml
+	rm -rf $(DESTDIR)$(BOUML_DIR)/projectControl $(DESTDIR)$(BOUML_DIR)/projectSynchro
+	if test -n "$(BOUML_ICONS_PREFIX_DIR)" ; \
+	then \
+		for i in 16 32 48 64; do \
+			rm "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/bouml.png"; \
+			rm "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/projectControl.png"; \
+			rm "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/projectSynchro.png"; \
+		done \
+	fi
+	if test -n "$(BOUML_DESKTOP_DIR)" ; \
+	then \
+		rm "$(DESTDIR)$(BOUML_DESKTOP_DIR)/bouml.desktop" ; \
+		rm "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
+		rm "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
+	fi

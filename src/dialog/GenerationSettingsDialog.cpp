@@ -157,9 +157,21 @@ void GenerationSettingsDialog::init_cpp1() {
   edcpp_src_extension->insertItem("Cpp");
   edcpp_src_extension->insertItem("Cc");
 
-  new QLabel("    #include with pathname : ", htab);
-  cpp_include_with_path_cb = new QCheckBox(htab);
-  cpp_include_with_path_cb->setChecked(GenerationSettings::cpp_include_with_path);
+  new QLabel("    #include : ", htab);
+  cpp_include_with_path_cb = new QComboBox(FALSE, htab);
+  cpp_include_with_path_cb->insertItem("without path");
+  cpp_include_with_path_cb->insertItem("with absolute path");
+  cpp_include_with_path_cb->insertItem("with relative path");
+  if (!GenerationSettings::cpp_include_with_path)
+    cpp_include_with_path_cb->setCurrentItem(0);
+  else if (GenerationSettings::cpp_relative_path)
+    cpp_include_with_path_cb->setCurrentItem(2);
+  else
+    cpp_include_with_path_cb->setCurrentItem(1);
+
+  new QLabel("    force namespace prefix generation : ", htab);
+  cpp_force_namespace_gen_cb = new QCheckBox(htab);
+  cpp_force_namespace_gen_cb->setChecked(GenerationSettings::cpp_force_namespace_gen);
   
   addTab(vtab, "C++[1]");
 }
@@ -862,7 +874,9 @@ void GenerationSettingsDialog::init_dirs() {
   htab->setMargin(5);
   new QLabel("Defining a project root directory allows to specify \
 packages's generation directory relative to the root directory rather \
-than absolute. A root directory may itself be relative to the project path", htab);
+than absolute.\n"
+	     "A root directory may itself be relative to the project path",
+	     htab);
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
@@ -1013,8 +1027,22 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::java_src_content = edjava_src_content->text();
     GenerationSettings::idl_src_content = edidl_src_content->text();
     
-    GenerationSettings::cpp_include_with_path = 
-      cpp_include_with_path_cb->isChecked();
+    switch (cpp_include_with_path_cb->currentItem()) {
+    case 0:
+      GenerationSettings::cpp_include_with_path = FALSE;
+      GenerationSettings::cpp_relative_path = FALSE;
+      break;
+    case 1:
+      GenerationSettings::cpp_include_with_path = TRUE;
+      GenerationSettings::cpp_relative_path = FALSE;
+      break;
+    default:
+      GenerationSettings::cpp_include_with_path = TRUE;
+      GenerationSettings::cpp_relative_path = TRUE;
+    }
+    
+    GenerationSettings::cpp_force_namespace_gen = 
+      cpp_force_namespace_gen_cb->isChecked();
 
     GenerationSettings::cpp_class_decl = edcpp_class_decl->text();
     GenerationSettings::cpp_external_class_decl = edcpp_external_class_decl->text();

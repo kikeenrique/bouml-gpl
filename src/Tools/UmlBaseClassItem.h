@@ -1,75 +1,90 @@
-// *************************************************************************
-//
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
-//
-// This file is part of the BOUML Uml Toolkit.
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//
-// e-mail : bouml@free.fr
-// home   : http://bouml.free.fr
-//
-// *************************************************************************
+#ifndef _UMLBASECLASSITEM_H
+#define _UMLBASECLASSITEM_H
 
-#ifndef UMLBASECLASSITEM_H
-#define UMLBASECLASSITEM_H
-
-/* !!!!!!!!!! Do not modify this file !!!!!!!!!! */
 
 #include "UmlItem.h"
+#include <qcstring.h>
 
+//  Mother class of the all the class's items including the class themself
 class UmlBaseClassItem : public UmlItem {
-  friend class UmlBaseExtraClassMember;
-  friend class UmlBaseClassMember;
+  public:
+#ifdef WITHCPP
+    //  return the C++ declaration
+    
+    const QCString & cppDecl();
+
+    //  to set the C++ declaration
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_CppDecl(const char * s);
+#endif
+
+#ifdef WITHJAVA
+    //  return the Java defininition
+    
+    const QCString & javaDecl();
+
+    //  to set the Java definition
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_JavaDecl(const char * s);
+#endif
+
+#ifdef WITHIDL
+    //  return the IDL declaration
+    
+    const QCString & idlDecl();
+
+    //  set the IDL declaration
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_IdlDecl(const char * s);
+#endif
+
+    virtual void unload(bool = FALSE, bool = FALSE);
+
   friend class UmlBaseAttribute;
   friend class UmlBaseOperation;
   friend class UmlBaseRelation;
-  friend class UmlBaseClass;
-    
-  public:
-    UmlBaseClassItem(void * id, const QCString & n)
-      : UmlItem(id, n) {};
-  
-#ifdef WITHCPP
-    const QCString & cppDecl();
-    bool set_CppDecl(const char *);
-#endif
-#ifdef WITHJAVA
-    const QCString & javaDecl();
-    bool set_JavaDecl(const char *);
-#endif
-#ifdef WITHIDL
-    const QCString & idlDecl();
-    bool set_IdlDecl(const char *);
-#endif
-  
-    virtual void unload(bool rec = FALSE, bool del = FALSE);
-    
+
   private:
 #ifdef WITHCPP
     QCString _cpp_decl;
-    virtual void read_cpp_();
 #endif
+
 #ifdef WITHJAVA
     QCString _java_decl;
-    virtual void read_java_();
 #endif
+
 #ifdef WITHIDL
     QCString _idl_decl;
+#endif
+
+
+  protected:
+    UmlBaseClassItem(void * id, const QCString & n) : UmlItem(id, n) {};
+
+#ifdef WITHCPP
+    //internal, do NOT use it
+    
+    virtual void read_cpp_();
+#endif
+
+#ifdef WITHJAVA
+    //internal, do NOT use it
+    
+    virtual void read_java_();
+#endif
+
+#ifdef WITHIDL
+    //internal, do NOT use it
+    
     virtual void read_idl_();
 #endif
+
+  friend class UmlBaseClassMember;
+  friend class UmlBaseExtraClassMember;
+  friend class UmlBaseClass;
 };
 
 #endif

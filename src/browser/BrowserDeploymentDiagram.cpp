@@ -169,6 +169,18 @@ const QPixmap* BrowserDeploymentDiagram::pixmap(int) const {
   return (deletedp()) ? DeletedDeploymentDiagramIcon : DeploymentDiagramIcon;
 }
 
+void BrowserDeploymentDiagram::draw_svg() const {
+  fputs("\t<rect fill=\"white\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" x=\"0\" y=\"0\" width=\"15\" height=\"15\" />\n"
+	"\t<path fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" "
+	"d=\"M 5 1 L 11 1 L 11 6 L 8 9 L 2 9 L 2 4 L 5 1 "
+	"M 2 4 L 8 4 L 8 9 "
+	"M 8 4 L 11 1 "
+	"M 5 9 L 5 12 L 10 12 "
+	"M 10 15 L 10 10 L 13 7 L 15 7 "
+	"M 10 10 L 15 10\" />\n",
+	svg());
+}
+
 void BrowserDeploymentDiagram::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
@@ -423,13 +435,13 @@ bool BrowserDeploymentDiagram::tool_cmd(ToolCom * com, const char * args) {
     return TRUE;
   case saveInCmd:
     if (window != 0)
-      com->write_ack(window->get_view()->save_in(args, TRUE, FALSE));
+      com->write_ack(window->get_view()->save_pict(args, TRUE, FALSE));
     else {
       DeploymentDiagramWindow * w = new DeploymentDiagramWindow(full_name(), this);
       
-      com->write_ack(w->get_view()->save_in(args, 
-					     !w->get_view()->has_preferred_size_zoom(),
-					     TRUE));
+      com->write_ack(w->get_view()->save_pict(args, 
+					      !w->get_view()->has_preferred_size_zoom(),
+					      TRUE));
       w->dont_save();
       w->close(TRUE);
     }

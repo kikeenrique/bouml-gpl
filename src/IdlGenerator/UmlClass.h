@@ -32,22 +32,6 @@
 
 class QTextOStream;
 
-class UmlClass;
-
-class UmlFormalParameter : public UmlBaseFormalParameter {
-  public:
-    UmlFormalParameter(){};
-
-    void generate(QTextOStream & f, QCString & s, const char *& sep) const;
-};
-
-class UmlActualParameter : public UmlBaseActualParameter {
-  public:
-    UmlActualParameter(){};
-
-    void generate(QTextOStream & f) const;
-};
-
 class UmlClass : public UmlBaseClass {
   private:
     bool managed;

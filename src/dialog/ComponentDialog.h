@@ -51,6 +51,7 @@ class ComponentDialog : public QTabDialog {
   Q_OBJECT
     
   protected:
+    QWidget * umltab;
     SimpleData * data;
     LineEdit * edname;
     QComboBox * edstereotype;
@@ -101,6 +102,8 @@ class ComponentDialog : public QTabDialog {
     void unrealize_cls();
     void rz_to_pr_cls();
     void pr_to_rz_cls();
+
+    void change_tabs(QWidget *);
 };
 
 #endif

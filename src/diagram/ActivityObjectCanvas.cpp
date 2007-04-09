@@ -305,6 +305,10 @@ void ActivityObjectCanvas::draw(QPainter & p) {
     QRect r = rect();
     QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
     QColor bckgrnd = p.backgroundColor();
+    FILE * fp = svg();
+
+    if (fp != 0)
+      fputs("<g>\n", fp);
 
     p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
     
@@ -323,17 +327,48 @@ void ActivityObjectCanvas::draw(QPainter & p) {
 	p.fillRect (r.left() + shadow, r.bottom(),
 		    r.width() - 1, shadow,
 		    QObject::darkGray);
+
+	if (fp != 0) {
+	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		  QObject::darkGray.rgb()&0xffffff,
+		  r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
+
+	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		  QObject::darkGray.rgb()&0xffffff,
+		  r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
+	}
       }
     }
     
     p.setBackgroundColor(co);
     
-    if (used_color != UmlTransparent)
+    if (used_color != UmlTransparent) {
       p.fillRect(r, co);
+
+      if (fp != 0)
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		co.rgb()&0xffffff, 
+		r.x(), r.y(), r.width() - 1, r.height() - 1);
+    }
+    else if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+
     p.drawRect(r);
+
     p.setFont(the_canvas()->get_font(UmlNormalFont));
     p.drawText(r.x(), r.y(), r.width(), r.height(), QObject::AlignCenter, str);
         
+    if (fp != 0) {
+      draw_text(r.x(), r.y(), r.width(), r.height(),
+		QObject::AlignCenter, str, p.font(), fp);
+      fputs("</g>\n", fp);
+    }
+    
     if (selected())
       show_mark(p, rect());
   }
@@ -373,14 +408,18 @@ void ActivityObjectCanvas::menu(const QPoint&) {
   if (linked())
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
-  if (browser_node->is_writable())
+  if (browser_node->is_writable()) {
     m.insertItem("Set associated diagram",6);
+    
+    if (browser_node->get_associated())
+      m.insertItem("Remove diagram association",10);
+  }
   m.insertSeparator();
   m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
     m.insertItem("Delete from model", 8);
   m.insertSeparator();
-  if (Tool::menu_insert(&toolm, UmlActivityObject, 10))
+  if (Tool::menu_insert(&toolm, UmlActivityObject, 20))
     m.insertItem("Tool", &toolm);
   
   int index;
@@ -412,6 +451,10 @@ void ActivityObjectCanvas::menu(const QPoint&) {
       ->set_associated_diagram((BrowserActivityDiagram *)
 			       the_canvas()->browser_diagram());
     return;
+  case 10:
+    ((BrowserActivityObject *) browser_node)
+      ->set_associated_diagram(0);
+    return;
   case 7:
     //remove from view
     delete_it();
@@ -424,8 +467,8 @@ void ActivityObjectCanvas::menu(const QPoint&) {
     cl->select_in_browser();
     return;
   default:
-    if (index >= 10)
-      ToolCom::run(Tool::command(index - 10), browser_node);
+    if (index >= 20)
+      ToolCom::run(Tool::command(index - 20), browser_node);
     return;
   }
 }

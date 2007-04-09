@@ -240,7 +240,8 @@ void CodDirsCanvas::draw(QPainter & p) {
   const double seven = 7*zoom;
   const double five = 5*zoom;
   const double half_width = width()/2.0;
-  
+  FILE * fp = svg();
+
   QPoint p1((int) (-half_width + seven), (int) -seven);
   QPoint p2((int) (half_width - seven), p1.y());
   
@@ -248,6 +249,18 @@ void CodDirsCanvas::draw(QPainter & p) {
     p.drawLine(p1, p2);
     p.lineTo((int) (p2.x() - five), (int) (p2.y() - five));
     p.drawLine(p2.x(), p2.y(), (int) (p2.x() - five), (int) (p2.y() + five));
+
+    if (fp != 0) {
+      fprintf(fp, "<g transform=\"translate(%d %d) rotate(%d)\">\n"
+	      "\t<path stroke=\"black\" fill=\"none\" d=\"M %d %d L %d %d L %d %d M %d %d L %d %d\" />\n",
+	      center().x(), center().y(), (int) angle,
+	      p1.x(), p1.y(), p2.x(), p2.y(),
+	      (int) (p2.x() - five), (int) (p2.y() - five),
+	      p2.x(), p2.y(), (int) (p2.x() - five), (int) (p2.y() + five));
+
+      if (backward_label == 0)
+	fputs("</g>\n", fp);
+    }
   }
   
   if (backward_label != 0) {
@@ -256,6 +269,17 @@ void CodDirsCanvas::draw(QPainter & p) {
     p.drawLine(p2, p1);
     p.lineTo((int) (p1.x() + five), (int) (p1.y() - five));
     p.drawLine(p1.x(), p1.y(), (int) (p1.x() + five), (int) (p1.y() + five));
+
+    if (fp != 0) {
+      if (label == 0)
+	fprintf(fp, "<g transform=\"translate(%d %d) rotate(%d)\">\n",
+		center().x(), center().y(), (int) angle);
+      fprintf(fp, "\t<path stroke=\"black\" fill=\"none\" d=\"M %d %d L %d %d L %d %d M %d %d L %d %d\" />\n"
+	      "</g>\n",
+	      p2.x(), p2.y(), p1.x(), p1.y(),
+	      (int) (p1.x() + five), (int) (p1.y() - five),
+	      p1.x(), p1.y(), (int) (p1.x() + five), (int) (p1.y() + five));
+    }
   }
   
   p.restore();

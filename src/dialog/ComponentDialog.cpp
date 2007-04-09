@@ -90,6 +90,11 @@ ComponentDialog::ComponentDialog(SimpleData * nd)
   kvtable = new KeyValuesTable((BrowserComponent *) data->get_browser_node(),
 			       grid, !hasOkButton());
   addTab(grid, "Properties");
+  
+  //
+    
+  connect(this, SIGNAL(currentChanged(QWidget *)),
+	  this, SLOT(change_tabs(QWidget *)));
 }
 
 void ComponentDialog::polish() {
@@ -105,6 +110,11 @@ ComponentDialog::~ComponentDialog() {
     edits.take(0)->close();
 }
     
+void ComponentDialog::change_tabs(QWidget * w) {
+  if (hasOkButton() && (w == umltab))
+    edname->setFocus();
+}
+
 void ComponentDialog::init_uml_tab() {
   bool visit = !hasOkButton();  
   
@@ -112,6 +122,7 @@ void ComponentDialog::init_uml_tab() {
   QVBox * vbox;
   QGrid * grid = new QGrid(2, this);
   
+  umltab = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
 

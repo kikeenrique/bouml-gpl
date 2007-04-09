@@ -66,6 +66,7 @@ class BrowserActivityDiagram : public BrowserDiagram {
 				    QString name = QString::null);
   
     virtual const QPixmap* pixmap (int) const;
+    virtual void draw_svg() const;
     bool api_compatible(unsigned v) const;
   
     virtual void menu();

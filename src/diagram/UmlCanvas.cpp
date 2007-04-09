@@ -75,6 +75,7 @@ UmlCanvas::UmlCanvas(CanvasFormat f, BrowserDiagram * br_diag)
   set_zoom(1);	// set do_scale
   do_scale = FALSE;
   show_shadow = br_diag->get_shadow();
+  draw_all_relations = br_diag->get_draw_all_relations();
   
   All.append(this);
 }

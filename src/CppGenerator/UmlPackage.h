@@ -42,8 +42,8 @@ class UmlPackage : public UmlBasePackage {
     Dir dir;
   
   public:
-    QCString source_path(const QCString &);
-    QCString header_path(const QCString &);
+    QCString source_path(const QCString &, QCString relto = "");
+    QCString header_path(const QCString &, QCString relto = "");
     virtual void generate();
     virtual UmlPackage * package();
 };

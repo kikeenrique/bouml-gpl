@@ -101,6 +101,7 @@ ActivityActionDialog::ActivityActionDialog(ActivityActionData * a)
   //
   
   grid = mkgrid(this);
+  umltab = grid;
     
   new QLabel("name : ", grid);
   edname = new LineEdit(action->get_name(), grid);
@@ -222,6 +223,11 @@ ActivityActionDialog::ActivityActionDialog(ActivityActionData * a)
   
   kvtable = new KeyValuesTable(action, grid, visit);
   addTab(grid, "Properties");
+  
+  //
+    
+  connect(this, SIGNAL(currentChanged(QWidget *)),
+	  this, SLOT(change_tabs(QWidget *)));
 }
 
 void ActivityActionDialog::polish() {
@@ -235,6 +241,11 @@ ActivityActionDialog::~ActivityActionDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+}
+
+void ActivityActionDialog::change_tabs(QWidget * w) {
+  if (!visit && (w == umltab))
+    edname->setFocus();
 }
 
 void ActivityActionDialog::edit_description() {

@@ -239,6 +239,10 @@ void OdClassInstCanvas::draw(QPainter & p) {
     p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
     
     QColor co = color(used_color);
+    FILE * fp = svg();
+
+    if (fp != 0)
+      fputs("<g>\n", fp);
     
     if (used_color != UmlTransparent) {
       const int shadow = the_canvas()->shadow();
@@ -253,12 +257,37 @@ void OdClassInstCanvas::draw(QPainter & p) {
 	p.fillRect (r.left() + shadow, r.bottom(),
 		    r.width() - 1, shadow,
 		    QObject::darkGray);
+
+	if (fp != 0) {
+	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		  QObject::darkGray.rgb()&0xffffff,
+		  r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
+
+	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		  QObject::darkGray.rgb()&0xffffff,
+		  r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
+	}
       }
     }
     
     p.setBackgroundColor(co);
     
-    if (used_color != UmlTransparent) p.fillRect(r, co);
+    if (used_color != UmlTransparent) {
+      p.fillRect(r, co);
+
+      if (fp != 0)
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		co.rgb()&0xffffff, 
+		r.x(), r.y(), r.width() - 1, r.height() - 1);
+    }
+    else if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+
     p.drawRect(r);
     
     const int two = (int) (2 * zoom);
@@ -267,20 +296,38 @@ void OdClassInstCanvas::draw(QPainter & p) {
     p.setFont(the_canvas()->get_font(UmlNormalFont));
 
     r.setTop(r.top() + two);
-    if (horiz)
+    if (horiz) {
       p.drawText(r, QObject::AlignHCenter + QObject::AlignTop,
 		 full_name());
+      if (fp != 0)
+	draw_text(r, QObject::AlignHCenter + QObject::AlignTop,
+		  full_name(),
+		  p.font(), fp);
+    }
     else {
       p.drawText(r, QObject::AlignHCenter + QObject::AlignTop,
 		 get_name() + ":");
+      if (fp != 0)
+	draw_text(r, QObject::AlignHCenter + QObject::AlignTop,
+		  get_name() + ":",
+		  p.font(), fp);
       r.setTop(r.top() + fm.height());
       p.drawText(r, QObject::AlignHCenter + QObject::AlignTop,
 		 cl->get_name());
+      if (fp != 0)
+	draw_text(r, QObject::AlignHCenter + QObject::AlignTop,
+		  cl->get_name(),
+		  p.font(), fp);
     }
     
     if (!attributes.isEmpty()) {
       r.setTop(r.top() + he + two);
       p.drawLine(r.topLeft(), r.topRight());
+      if (fp != 0)
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		r.left(), r.top(), r.right(), r.top());
+
       r.setTop(r.top() + two);
       r.setLeft(r.left() + (int) (4 * zoom));
       
@@ -293,12 +340,18 @@ void OdClassInstCanvas::draw(QPainter & p) {
 	  it_at.current()->get_browser_node()->get_name() + egal + *it_val;      
 
 	p.drawText(r, QObject::AlignTop, s);
+	if (fp != 0)
+	  draw_text(r, QObject::AlignTop, s,
+		    p.font(), fp);
 	r.setTop(r.top() + he);
 	++it_at;
 	++it_val;
       } while (it_val != values.end());
     }
-    
+
+    if (fp != 0)
+      fputs("</g>\n", fp);
+        
     if (selected())
       show_mark(p, rect());
   }

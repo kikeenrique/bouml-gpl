@@ -111,6 +111,7 @@ void ArtifactDialog::init_uml_tab() {
   QVBox * vbox;
   QGrid * grid = new QGrid(2, this);
   
+  uml_page = grid;
   grid->setMargin(5);
   grid->setSpacing(5);
 
@@ -544,14 +545,32 @@ void ArtifactDialog::edStereotypeActivated(const QString & ste) {
 }
 
 void ArtifactDialog::update_tab(QWidget * w) {
-  if (w == cpp_h_content_page)
+  bool visit = !hasOkButton();  
+
+  if (w == uml_page) {
+    if (! visit)
+      edname->setFocus();
+  }
+  else if (w == cpp_h_content_page) {
     cpp_update_h();
-  else if (w == cpp_src_content_page)
+    if (! visit)
+      edcpp_h_content->setFocus();
+  }
+  else if (w == cpp_src_content_page) {
     cpp_update_src();
-  else if (w == java_content_page)
+    if (! visit)
+      edcpp_src_content->setFocus();
+  }
+  else if (w == java_content_page) {
     java_update_src();
-  else if (w == idl_content_page)
+    if (! visit)
+      edjava_content->setFocus();
+  }
+  else if (w == idl_content_page) {
     idl_update_src();
+    if (! visit)
+      edidl_content->setFocus();
+  }
 }
 
 
@@ -676,9 +695,10 @@ static void show_result(QSplitter * spl)
   }
 }
 
-void ArtifactDialog::compute_cpp_namespace(QString & nasp_start,
-					    QString & nasp_end) {
-  const QString nasp = (const char *)
+void ArtifactDialog::compute_cpp_namespace(QString & nasp,
+					   QString & nasp_start,
+					   QString & nasp_end) {
+  nasp = (const char *)
     ((PackageData *) 
      ((BrowserNode *) data->browser_node->parent()->parent())->get_data())
       ->get_cpp_namespace();
@@ -691,7 +711,8 @@ void ArtifactDialog::compute_cpp_namespace(QString & nasp_start,
       nasp_start += QString("namespace ") +
 	nasp.mid(index, index2 - index) + " {\n\n";
       nasp_end += "\n}\n";
-      index = index2 + 2;
+      nasp.replace(index2, 2, "_");
+      index = index2 + 1;
     }
     
     nasp_start += QString("namespace ") + nasp.mid(index) + " {\n\n";
@@ -710,9 +731,10 @@ QString ArtifactDialog::compute_java_package() {
     : QString("package ") + pack + ";\n";
 }
 
-void ArtifactDialog::compute_idl_module(QString & mod_start,
-					 QString & mod_end) {
-  const QString mod =  (const char *)
+void ArtifactDialog::compute_idl_module(QString & mod,
+					QString & mod_start,
+					QString & mod_end) {
+  mod =  (const char *)
     ((PackageData *) 
      ((BrowserNode *) data->browser_node->parent()->parent())->get_data())
       ->get_idl_module();
@@ -725,7 +747,8 @@ void ArtifactDialog::compute_idl_module(QString & mod_start,
       mod_start += QString("module ") +
 	mod.mid(index, index2 - index) + " {\n\n";
       mod_end += "\n};\n";
-      index = index2 + 2;
+      mod.replace(index2, 2, "_");
+      index = index2 + 1;
     }
     
     mod_start += QString("module ") + mod.mid(index) + " {\n\n";
@@ -743,10 +766,11 @@ void ArtifactDialog::cpp_update_h() {
     const char * p = def;
     const char * pp = 0;
     QString s;
+    QString nasp;
     QString nasp_start;
     QString nasp_end;
     
-    compute_cpp_namespace(nasp_start, nasp_end);
+    compute_cpp_namespace(nasp, nasp_start, nasp_end);
     
     bool all_incl = (def.find("${all_includes}") != -1);
     
@@ -782,6 +806,14 @@ void ArtifactDialog::cpp_update_h() {
       else if (!strncmp(p, "${NAME}", 7)) {
 	p += 7;
 	s += edname->text().stripWhiteSpace().upper();
+      }
+      else if (!strncmp(p, "${namespace}", 12)) {
+	p += 12;
+	s += nasp;
+      }
+      else if (!strncmp(p, "${NAMESPACE}", 12)) {
+	p += 12;
+	s += nasp.upper();
       }
       else if (!strncmp(p, "${includes}", 11)) {
 	p += 11;
@@ -874,10 +906,11 @@ void ArtifactDialog::cpp_update_src() {
     const char * p = def;
     const char * pp = 0;
     QString s;
+    QString nasp;
     QString nasp_start;
     QString nasp_end;
     
-    compute_cpp_namespace(nasp_start, nasp_end);
+    compute_cpp_namespace(nasp, nasp_start, nasp_end);
     
     for (;;) {
       if (*p == 0) {
@@ -914,6 +947,14 @@ void ArtifactDialog::cpp_update_src() {
       else if (!strncmp(p, "${NAME}", 7)) {
 	p += 7;
 	s += edname->text().stripWhiteSpace().upper();
+      }
+      else if (!strncmp(p, "${namespace}", 12)) {
+	p += 12;
+	s += nasp;
+      }
+      else if (!strncmp(p, "${NAMESPACE}", 12)) {
+	p += 12;
+	s += nasp.upper();
       }
       else if (!strncmp(p, "${namespace_start}", 18)) {
 	p += 18;
@@ -1053,10 +1094,11 @@ void ArtifactDialog::idl_update_src() {
     const char * p = def;
     const char * pp = 0;
     QString s;
+    QString mod;
     QString mod_start;
     QString mod_end;
     
-    compute_idl_module(mod_start, mod_end);
+    compute_idl_module(mod, mod_start, mod_end);
     
     for (;;) {
       if (*p == 0) {
@@ -1090,6 +1132,14 @@ void ArtifactDialog::idl_update_src() {
       else if (!strncmp(p, "${NAME}", 7)) {
 	p += 7;
 	s += edname->text().stripWhiteSpace().upper();
+      }
+      else if (!strncmp(p, "${module}", 9)) {
+	p += 9;
+	s += mod;
+      }
+      else if (!strncmp(p, "${MODULE}", 9)) {
+	p += 9;
+	s += mod.upper();
       }
       else if (!strncmp(p, "${includes}", 11)) {
 	p += 11;

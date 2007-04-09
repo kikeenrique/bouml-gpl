@@ -45,12 +45,6 @@ using namespace std;
 #include "CppCatWindow.h"
 #endif
 
-UmlFormalParameter::UmlFormalParameter(QCString t, QCString n, QCString v) {
-  _type = t;
-  _name = n;
-  _default_value.explicit_type = v;
-}
-
 // contains the classes whose definition in currently read
 // may be more than one because of the nested classes
 QList<UmlClass> UmlClass::UnderConstruction;

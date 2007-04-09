@@ -41,6 +41,7 @@ class ClassViewDialog : public QTabDialog {
   Q_OBJECT
     
   protected:
+    QWidget * umltab;
     BasicData * data;
     LineEdit * edname;
     QComboBox * edstereotype;
@@ -62,6 +63,8 @@ class ClassViewDialog : public QTabDialog {
     virtual void polish();
     virtual void accept();
     void edit_description();
+
+    void change_tabs(QWidget *);
 };
 
 #endif

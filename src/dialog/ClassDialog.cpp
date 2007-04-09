@@ -97,6 +97,7 @@ ClassDialog::ClassDialog(ClassData * c)
   // general tab
   
   grid = new QGrid(2, this);
+  umltab = grid;
   grid->setSpacing(5);
   grid->setMargin(5);
   
@@ -261,6 +262,7 @@ ClassDialog::ClassDialog(ClassData * c)
   // C++
   
   split = new QSplitter(Vertical, this);
+  cpptab = split;
   split->setOpaqueResize(TRUE);
   
   vtab = new QVBox(split); 
@@ -328,6 +330,7 @@ ClassDialog::ClassDialog(ClassData * c)
   // Java
   
   split = new QSplitter(Vertical, this);
+  javatab = split;
   split->setOpaqueResize(TRUE);
   
   vtab = new QVBox(split); 
@@ -403,6 +406,7 @@ ClassDialog::ClassDialog(ClassData * c)
   // IDL
   
   split = new QSplitter(Vertical, this);
+  idltab = split;
   split->setOpaqueResize(TRUE);
   
   vtab = new QVBox(split); 
@@ -511,7 +515,7 @@ ClassDialog::ClassDialog(ClassData * c)
   edStereotypeActivated(stereotype);
 
   connect(this, SIGNAL(currentChanged(QWidget *)),
-	  this, SLOT(update_all_tabs()));
+	  this, SLOT(update_all_tabs(QWidget *)));
 }
 
 void ClassDialog::polish() {
@@ -605,14 +609,32 @@ void ClassDialog::edStereotypeActivated(const QString & s) {
     idl_default_decl();
 }
 
-void ClassDialog::update_all_tabs() {
+void ClassDialog::update_all_tabs(QWidget * w) {
   formals_table->forceUpdateCells();
   if (cl->get_n_actualparams() != 0)
     actuals_table->forceUpdateCells();
 
-  cpp_update_decl();
-  java_update_decl();
-  idl_update_decl();
+  bool visit = !hasOkButton();
+  
+  if (w == umltab) {
+    if (!visit)
+      edname->setFocus();
+  }
+  else if (w == cpptab) {
+    cpp_update_decl();
+    if (!visit)
+      edcppdecl->setFocus();
+  }
+  else if (w == javatab) {
+    java_update_decl();
+    if (!visit)
+      edjavadecl->setFocus();
+  }
+  else if (w == idltab) {
+    idl_update_decl();
+    if (!visit)
+      edidldecl->setFocus();
+  }
 }
 
 static void cpp_generate_inherit(QString & s, ClassData * cl,

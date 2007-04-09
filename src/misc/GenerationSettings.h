@@ -157,6 +157,8 @@ class GenerationSettings {
     static QString cpp_h_extension;
     static QString cpp_src_extension;
     static bool cpp_include_with_path;
+    static bool cpp_relative_path;
+    static bool cpp_force_namespace_gen;
     static IncludesSpec cpp_includes;
     static QString java_extension;
     static IncludesSpec java_imports;

@@ -1,54 +1,7 @@
-// *************************************************************************
-//
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
-//
-// This file is part of the BOUML Uml Toolkit.
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//
-// e-mail : bouml@free.fr
-// home   : http://bouml.free.fr
-//
-// *************************************************************************
-
-/* !!!!!!!!!! Do not modify this file !!!!!!!!!! */
 
 #include "UmlBaseClassMember.h"
+
 #include "UmlCom.h"
-
-void UmlBaseClassMember::read_uml_() {
-  UmlBaseItem::read_uml_();
-  _class_member = UmlCom::read_bool();
-  _volatile = UmlCom::read_bool();
-  _visibility = (aVisibility) UmlCom::read_char();
-}
-
-#ifdef WITHCPP
-void UmlBaseClassMember::read_cpp_() {
-  UmlBaseClassItem::read_cpp_();
-  _cpp_visibility = (aVisibility) UmlCom::read_char();
-}
-#endif
-
-#ifdef WITHJAVA
-void UmlBaseClassMember::read_java_() {
-  UmlBaseClassItem::read_java_();
-  _java_annotation = UmlCom::read_string();
-}
-#endif
-
 bool UmlBaseClassMember::isClassMember() {
   read_if_needed_();
   
@@ -68,6 +21,7 @@ bool UmlBaseClassMember::isVolatile() {
 bool UmlBaseClassMember::set_isVolatile(bool y) {
   return set_it_(_volatile, y, setIsVolatileCmd);
 }
+
 
 aVisibility UmlBaseClassMember::visibility() {
   read_if_needed_();
@@ -111,8 +65,30 @@ QCString UmlBaseClassMember::javaAnnotations() {
   
   return _java_annotation;
 }
-    
-bool UmlBaseClassMember::set_JavaAnnotations(QCString s) {
-  return set_it_(_java_annotation, s, setJavaAnnotationCmd);
+
+bool UmlBaseClassMember::set_JavaAnnotations(const char * v) {
+  return set_it_(_java_annotation, v, setJavaAnnotationCmd);
 }
 #endif
+
+void UmlBaseClassMember::read_uml_() {
+  UmlBaseItem::read_uml_();
+  _class_member = UmlCom::read_bool();
+  _volatile = UmlCom::read_bool();
+  _visibility = (aVisibility) UmlCom::read_char();
+}
+
+#ifdef WITHCPP
+void UmlBaseClassMember::read_cpp_() {
+  UmlBaseClassItem::read_cpp_();
+  _cpp_visibility = (aVisibility) UmlCom::read_char();
+}
+#endif
+
+#ifdef WITHJAVA
+void UmlBaseClassMember::read_java_() {
+  UmlBaseClassItem::read_java_();
+  _java_annotation = UmlCom::read_string();
+}
+#endif
+
