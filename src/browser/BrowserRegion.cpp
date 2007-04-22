@@ -172,8 +172,9 @@ Note that you can undelete it after");
 void BrowserRegion::exec_menu_choice(int rank) {
   switch (rank) {
   case 1:
-    BrowserState::add_state(this, (bool) FALSE);
-    return;
+    if (BrowserState::add_state(this, (bool) FALSE) == 0)
+      return;
+    break;
   case 3:
     open(FALSE);
     return;

@@ -164,24 +164,6 @@ bool UmlBaseClass::set_isJavaExternal(bool y) {
     return FALSE;
 }
 
-bool UmlBaseClass::isJavaPublic() {
-  read_if_needed_();
-  
-  return _java_public;
-}
-
-bool UmlBaseClass::set_isJavaPublic(bool y) {
-  bool r;
-  
-  if (set_it_(r, y, setIsJavaPublicCmd)) {
-    _java_public = y;
-    return TRUE;
-  }
-  else
-    return FALSE;
-
-}
-
 bool UmlBaseClass::isJavaFinal() {
   read_if_needed_();
   
@@ -342,7 +324,6 @@ void UmlBaseClass::read_cpp_() {
 #ifdef WITHJAVA
 void UmlBaseClass::read_java_() {
   UmlBaseClassMember::read_java_();
-  _java_public = UmlCom::read_bool();
   _java_final = UmlCom::read_bool();
   _java_external = UmlCom::read_bool();
 }

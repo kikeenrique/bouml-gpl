@@ -46,6 +46,8 @@ class UmlPackage : public UmlBasePackage {
     QCString header_path(const QCString &, QCString relto = "");
     virtual void generate();
     virtual UmlPackage * package();
+    
+    static QCString rootDir();
 };
 
 #endif

@@ -10,7 +10,7 @@
 #include "UmlStereotype.h"
 bool CppSettings::useDefaults()
 {
-  UmlCom::send_cmd(cppSettingsCmd, getCppUseDefaultsCmd);
+  UmlCom:: send_cmd(cppSettingsCmd, getCppUseDefaultsCmd);
   return UmlCom::read_bool();
 }
 
@@ -261,6 +261,28 @@ bool CppSettings::set_IsRelativePath(bool v)
   UmlCom::send_cmd(cppSettingsCmd, setCppRelativePathCmd, v);
   if (UmlCom::read_bool()) {
     _is_relative_path = v;
+    if (_is_relative_path)
+      _is_root_relative_path = FALSE;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool CppSettings::isRootRelativePath()
+{
+  read_if_needed_();
+
+  return _is_root_relative_path;
+}
+
+bool CppSettings::set_IsRootRelativePath(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppRootRelativePathCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_root_relative_path = v;
+    if (_is_root_relative_path)
+      _is_relative_path = FALSE;
     return TRUE;
   }
   else
@@ -901,6 +923,8 @@ bool CppSettings::_incl_with_path;
 
 bool CppSettings::_is_relative_path;
 
+bool CppSettings::_is_root_relative_path;
+
 bool CppSettings::_is_force_namespace_gen;
 
 QDict<QCString> CppSettings::_map_includes;
@@ -986,6 +1010,7 @@ void CppSettings::read_()
   _is_set_param_ref = UmlCom::read_bool();
   _is_relative_path = UmlCom::read_bool();
   _is_force_namespace_gen = UmlCom::read_bool();
+  _is_root_relative_path = UmlCom::read_bool();
 }
 
 void CppSettings::read_if_needed_()

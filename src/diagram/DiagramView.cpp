@@ -1022,16 +1022,29 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 
 	const QCanvasItemList selected = selection();
 	QCanvasItemList::ConstIterator it;
+	QCanvasItemList l;
 	
+	// search for arrow beginning
 	for (it = selected.begin(); it != selected.end(); ++it) {
 	  if (isa_arrow(*it)) {
-	    unselect_all();
-	    // warning : the selected arrow may disapear =>
-	    // select the returned arrow still present
-	    // this allows to do several control-L
-	    select(((ArrowCanvas *) *it)->next_geometry());
-	    break;
+	    ArrowCanvas * ar = (ArrowCanvas *) *it;
+	    DiagramItem * b;
+	    DiagramItem * e;
+	    
+	    while (ar->extremities(b, e), b->type() == UmlArrowPoint)
+	      ar = ((ArrowPointCanvas *) b)->get_other(ar);
+	    
+	    if ((ar->get_start() != ((ArrowCanvas *) *it)->get_end()) &&
+		(l.find(ar) == l.end()))
+	      l.append(ar);
 	  }
+	}
+	unselect_all();
+	for (it = l.begin(); it != l.end(); ++it) {
+	  // warning : the selected arrow may disapear =>
+	  // select the returned arrow still present
+	  // this allows to do several control-L
+	  select(((ArrowCanvas *) *it)->next_geometry());
 	}
       }
       else {

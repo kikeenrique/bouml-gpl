@@ -154,6 +154,7 @@ QString BrowserClassView::full_name(bool rev, bool itself) const {
 void BrowserClassView::menu() {
   QPopupMenu m(0);
   QPopupMenu subm(0);
+  QPopupMenu roundtripm(0);
   QPopupMenu toolm(0);
   
   m.insertItem(new MenuTitle(name, m.font()), -1);
@@ -201,9 +202,9 @@ Note that you can undelete them after");
     subm.insertItem("Idl", 13);
     
     if ((edition_number == 0) &&
-	Tool::menu_insert(&toolm, get_type(), 100)) {
-      m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+	(Tool::menu_insert(&toolm, get_type(), 100))) {
+	m.insertSeparator();
+	m.insertItem("Tool", &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
@@ -238,18 +239,20 @@ void BrowserClassView::exec_menu_choice(int rank) {
     {
       BrowserClass * cl = BrowserClass::add_class(this);
       
-      if (cl != 0)
-	cl->select_in_browser();
+      if (cl == 0)
+	return;
+      cl->select_in_browser();
     }
     break;
   case 4:
     {
       BrowserState * st = BrowserState::add_state(this, (bool) TRUE);
       
-      if (st != 0)
-	st->select_in_browser();
+      if (st == 0)
+	return;
+      st->select_in_browser();
     }
-    return;	// modified called
+    break;
   case 5:
     (new ClassViewDialog(get_data()))->show();
     return;
@@ -329,7 +332,6 @@ void BrowserClassView::exec_menu_choice(int rank) {
     add_object_diagram();
     break;
   case 16:
-    
     {
       BrowserActivity * a = BrowserActivity::add_activity(this);
       
@@ -900,6 +902,11 @@ bool BrowserClassView::may_contains_them(const QList<BrowserNode> & l,
   }
   
   return TRUE;
+}
+
+BrowserNode * BrowserClassView::container(UmlCode) const {
+  // currently only for class, state machine and activity
+  return (BrowserNode *) this;
 }
 
 void BrowserClassView::DropEvent(QDropEvent * e) {

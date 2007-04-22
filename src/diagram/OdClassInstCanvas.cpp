@@ -501,6 +501,10 @@ void OdClassInstCanvas::set_type(BrowserClass * t) {
   }
 }
 
+BrowserNode * OdClassInstCanvas::the_diagram() const {
+  return browser_node;
+}
+
 bool OdClassInstCanvas::alignable() const {
   return TRUE;
 }

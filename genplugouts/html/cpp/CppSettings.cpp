@@ -249,6 +249,62 @@ bool CppSettings::set_IncludeWithPath(bool v)
     return FALSE;
 }
 
+bool CppSettings::isRelativePath()
+{
+  read_if_needed_();
+
+  return _is_relative_path;
+}
+
+bool CppSettings::set_IsRelativePath(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppRelativePathCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_relative_path = v;
+    if (v) _is_root_relative_path = FALSE;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool CppSettings::isRootRelativePath()
+{
+  read_if_needed_();
+
+  return _is_root_relative_path;
+}
+
+bool CppSettings::set_IsRootRelativePath(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppRootRelativePathCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_root_relative_path = v;
+    if (v) _is_relative_path = FALSE;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool CppSettings::isForceNamespacePrefixGeneration()
+{
+  read_if_needed_();
+
+  return _is_force_namespace_gen;
+}
+
+bool CppSettings::set_IsForceNamespacePrefixGeneration(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppForceNamespaceGenCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_force_namespace_gen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 const QCString & CppSettings::enumIn()
 {
   read_if_needed_();
@@ -771,6 +827,24 @@ bool CppSettings::set_IsSetParamConst(bool v)
     return FALSE;
 }
 
+bool CppSettings::isSetParamRef()
+{
+  read_if_needed_();
+
+  return _is_set_param_ref;
+}
+
+bool CppSettings::set_IsSetParamRef(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppIsSetParamRefCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_set_param_ref = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 bool CppSettings::_defined;
 
 QCString CppSettings::_root;
@@ -833,6 +907,8 @@ bool CppSettings::_is_set_inline;
 
 bool CppSettings::_is_set_param_const;
 
+bool CppSettings::_is_set_param_ref;
+
 QCString CppSettings::_h_content;
 
 QCString CppSettings::_src_content;
@@ -842,6 +918,12 @@ QCString CppSettings::_h_ext;
 QCString CppSettings::_src_ext;
 
 bool CppSettings::_incl_with_path;
+
+bool CppSettings::_is_relative_path;
+
+bool CppSettings::_is_root_relative_path;
+
+bool CppSettings::_is_force_namespace_gen;
 
 QDict<QCString> CppSettings::_map_includes;
 
@@ -923,6 +1005,10 @@ void CppSettings::read_()
   _is_set_inline = UmlCom::read_bool();
   _is_set_param_const = UmlCom::read_bool();
 
+  _is_set_param_ref = UmlCom::read_bool();
+  _is_relative_path = UmlCom::read_bool();
+  _is_force_namespace_gen = UmlCom::read_bool();
+  _is_root_relative_path = UmlCom::read_bool();
 }
 
 void CppSettings::read_if_needed_()

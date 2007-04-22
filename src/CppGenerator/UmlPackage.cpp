@@ -130,25 +130,30 @@ static QCString relative_path(const QDir & destdir, QCString relto)
   }
 }
 
+QCString UmlPackage::rootDir()
+{
+  if (! RootDirRead) {
+    RootDirRead = TRUE;
+    RootDir = CppSettings::rootDir();
+    
+    if (!RootDir.isEmpty() && // empty -> error
+	QDir::isRelativePath(RootDir)) {
+      QFileInfo f(getProject()->supportFile());
+      QDir d(f.dirPath());
+      
+      RootDir = d.filePath(RootDir);
+    }
+  }
+
+  return RootDir;
+}
+
 QCString UmlPackage::source_path(const QCString & f, QCString relto) {
   if (!dir.read) {
     dir.src = cppSrcDir();
     dir.h = cppHDir();
     
-    if (! RootDirRead) {
-      RootDirRead = TRUE;
-      RootDir = CppSettings::rootDir();
-
-      if (!RootDir.isEmpty() && // empty -> error
-	  QDir::isRelativePath(RootDir)) {
-	QFileInfo f(getProject()->supportFile());
-	QDir d(f.dirPath());
-
-	RootDir = d.filePath(RootDir);
-      }
-    }
-
-    QDir d_root(RootDir);
+    QDir d_root(rootDir());
     
     if (dir.src.isEmpty())
       dir.src = RootDir;

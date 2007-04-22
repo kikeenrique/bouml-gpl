@@ -60,5 +60,8 @@ void BrowserView::rightPressed(QListViewItem * item) {
 }
 
 void BrowserView::refer(const QString & href) {
-  ((BrowserNode *) selectedItem())->refer(href);
+  BrowserNode * bn = (BrowserNode *) selectedItem();
+  
+  if (bn != 0)
+    bn->refer(href);
 }

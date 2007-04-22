@@ -448,8 +448,6 @@ QCString Lex::read_word(bool in_templ)
       context.reread = QString::null;
   }
   else {
-    static QCString spaces = " \t\n\r";
-    
     for (;;) {
       int c = get();
       
@@ -460,7 +458,7 @@ QCString Lex::read_word(bool in_templ)
 	break;
       else if (Separators.find(c) == -1)
 	result += c;
-      else if (! result.isEmpty()) {
+      else if (! result.isEmpty()) {	
 	unget();
 	break;
       }

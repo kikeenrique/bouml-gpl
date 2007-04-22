@@ -107,8 +107,12 @@ void UmlClass::generate(QTextOStream & f, QCString indent) {
       manage_description(p, pp);
     else if (!strncmp(p, "${public}", 9)) {
       p += 9;
-      if (isJavaPublic())
+      if (visibility() == PublicVisibility)
 	f << "public ";
+    }
+    else if (!strncmp(p, "${visibility}", 13)) {
+      p += 13;
+      generate_visibility(f);
     }
     else if (!strncmp(p, "${final}", 8)) {
       p += 8;

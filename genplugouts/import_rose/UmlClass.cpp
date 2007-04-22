@@ -675,6 +675,8 @@ void UmlClass::java(QDict<QCString> & prop) {
 	
 	if ((index = d.find("${public}")) != -1)
 	  d.insert((unsigned) index + 9, "strictfp ");
+	else if ((index = d.find("${visibility}")) != -1)
+	  d.insert((unsigned) index + 13, "strictfp ");
       }
       prop.remove("Java/Strictfp");
     }

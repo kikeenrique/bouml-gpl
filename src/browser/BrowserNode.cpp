@@ -459,6 +459,13 @@ BrowserNode * BrowserNode::get_container(UmlCode k) const {
   return p;
 }
 
+BrowserNode * BrowserNode::container(UmlCode c) const {
+  // currently only for class, state machine and activity
+  BrowserNode * p = (BrowserNode *) parent();
+  
+  return (p == 0) ? 0 : p->container(c);
+}
+
 //
 
 QString BrowserNode::full_name(bool, bool) const {

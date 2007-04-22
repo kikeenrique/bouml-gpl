@@ -6,6 +6,14 @@ class UmlUseCase
 !!!128085.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   UmlItem::html(pfix, rank, "Use Case", level, "usecase");
 
+  QCString ep = extensionPoints();
+  
+  if (! ep.isEmpty()) {
+    fw.write("<p>Extension points:<br /><div class=\"sub\">");
+    writeq(ep);
+    fw.write("</div></p>\n");
+  }
+
   UmlDiagram * d = associatedDiagram();
   
   if (d != 0) {
@@ -34,6 +42,14 @@ class UmlUseCase
 !!!128085.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   html(pfix, rank, "Use Case", level, "usecase");
 
+  String v;
+
+  if ((v = extensionPoints()) != "") {
+    fw.write("<p>Extension points:<br /><div class=\"sub\">");
+    writeq(v);
+    fw.write("</div></p>\n");
+  }
+    
   UmlDiagram d = associatedDiagram();
   
   if (d != null) {
@@ -42,8 +58,6 @@ class UmlUseCase
     fw.write("</p>\n");
   }
 
-  String v;
-  
   if ((v = propertyValue("Summary")) != null) {
     fw.write("<p>Summary:<br /><div class=\"sub\">");
     writeq(v);

@@ -18,6 +18,9 @@ class UmlStateItem {
     //does nothing at this level
     virtual void add_incoming_trans(UmlTransition * tr);
 
+    //just to not have warning at compile time
+    virtual ~UmlStateItem();
+
 };
 
 #endif

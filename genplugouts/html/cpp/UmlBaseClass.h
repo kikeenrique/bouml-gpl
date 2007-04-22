@@ -209,8 +209,6 @@ class UmlBaseClass : public UmlClassMember {
 #ifdef WITHJAVA
     bool _java_external : 1;
 
-    bool _java_public : 1;
-
     bool _java_final : 1;
 #endif
 

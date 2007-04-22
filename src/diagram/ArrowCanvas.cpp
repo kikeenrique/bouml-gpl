@@ -69,6 +69,7 @@ ArrowCanvas::ArrowCanvas(UmlCanvas * canvas, DiagramItem * b,
   // the first time the canvas must not have a label nor stereotype  
   auto_pos = canvas->browser_diagram()
     ->get_auto_label_position(canvas->browser_diagram()->get_type());
+  boundings.resize(4);
   update_pos();
   
   connect(DrawingSettings::instance(), SIGNAL(changed()),
@@ -147,8 +148,15 @@ void ArrowCanvas::update_pos() {
   const int dx = endp.x() - beginp.x();
   const int dy = beginp.y() - endp.y();
   
-  if ((dx == 0) && (dy == 0))
+  if ((dx == 0) && (dy == 0)) {
+    // to not produce crash inside Qt (?)
+    boundings.setPoint(0, beginp.x(), beginp.y());
+    boundings.setPoint(1, beginp.x() + 1, beginp.y());
+    boundings.setPoint(2, beginp.x() + 1, beginp.y() + 1);
+    boundings.setPoint(3, beginp.x(), beginp.y() + 1);
+    setPoints(boundings);
     return;
+  }
   
   const double m = ARROW_LENGTH/sqrt(dx*dx + dy*dy);
   
@@ -156,7 +164,6 @@ void ArrowCanvas::update_pos() {
   double deltay = dx*m;
   
   // modif de delta?/1 pour placer une marge de l/1 a chaque extremite
-  boundings.resize(4);
   boundings.setPoint(0, (int) (beginp.x() - deltax - deltay/1),
 		     (int) (beginp.y() - deltay + deltax/1));
   boundings.setPoint(1, (int) (beginp.x() + deltax - deltay/1),
@@ -310,7 +317,8 @@ bool ArrowCanvas::copyable() const {
 }
 
 void ArrowCanvas::drawShape(QPainter & p) {
-  if (! visible()) return;
+  if (! visible() || (beginp == endp)) 
+    return;
   
   p.setBackgroundMode(QObject::OpaqueMode);
 
@@ -1491,7 +1499,7 @@ void ArrowCanvas::history_load(QBuffer & b) {
   int geo;
   
   ::load(geo, b);
-  if (geo < 0) {
+  if (geo <= 0) {
     fixed_geometry = FALSE;
     geometry = (LineGeometry) -geo;
   }

@@ -149,6 +149,8 @@ class UmlWindow : public QMainWindow {
     //void doc_generate();
     void cpp_reverse();
     void java_reverse();
+    void cpp_roundtrip();
+    void java_roundtrip();
     void run_tool(int param);
     void tool_settings();
     void import_tool_settings();

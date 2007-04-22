@@ -43,10 +43,10 @@
 
 QSize InstanceDialog::previous_size;
 
-InstanceDialog::InstanceDialog(Instance * i, const char * kind,
-			       const char * caption)
-    : QDialog(0, caption, TRUE), inst(i) {
-  setCaption(caption);
+InstanceDialog::InstanceDialog(Instance * i, QString w, UmlCode k)
+    : QDialog(0, w + " instance dialog", TRUE),
+      inst(i), what(w), kind(k) {
+  setCaption(what + " instance dialog");
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
   
@@ -62,7 +62,8 @@ InstanceDialog::InstanceDialog(Instance * i, const char * kind,
   new QLabel("", grid);
   new QLabel("", grid);
   
-  SmallPushButton * b = new SmallPushButton(kind, grid);
+  SmallPushButton * b =
+    new SmallPushButton(what + " :", grid);
   
   connect(b, SIGNAL(clicked()), this, SLOT(menu_type()));
   
@@ -115,18 +116,49 @@ void InstanceDialog::menu_type() {
   
   BrowserNode * bn = BrowserView::selected_item();
     
-  if ((bn->get_type() == UmlClass) && !bn->deletedp())
-    m.insertItem("Choose class selected in browser", 1);
+  if ((bn != 0) && 
+      (bn->get_type() == kind) && !bn->deletedp())
+    m.insertItem("Choose " + what + " selected in browser", 1);
   else
     bn = 0;
   
-  if ((index != -1) || (bn != 0)) {
+  bool new_available = inst->new_type_available();
+  
+  if (new_available)
+    m.insertItem("Create " + what + " and choose it", 2);
+  
+  if (new_available || (index != -1) || (bn != 0)) {
     switch (m.exec(QCursor::pos())) {
     case 0:
       nodes.at(index)->select_in_browser();
       break;
+    case 2:
+      bn = inst->new_type();
+      if (bn == 0)
+	return;
+      bn->select_in_browser();
+      // no break
     case 1:
-      edtype->setCurrentItem(list.findIndex(bn->full_name(TRUE)));
+
+      {
+	QString s = bn->full_name(TRUE);
+	
+	if ((index = list.findIndex(s)) == -1) {
+	  // new class, may be created through an other dialog
+	  index = 0;
+	  QStringList::Iterator iter = list.begin();
+	  QStringList::Iterator iter_end = list.end();
+	  
+	  while ((iter != iter_end) && (*iter < s)) {
+	    ++iter;
+	    index += 1;
+	  }
+	  nodes.insert((unsigned) index, bn);
+	  list.insert(iter, s);
+	  edtype->insertItem(s, index);
+	}
+      }
+      edtype->setCurrentItem(index);
     }
   }
 }

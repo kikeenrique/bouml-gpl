@@ -48,9 +48,9 @@ ClassData::ClassData()
       is_deleted(FALSE), is_abstract(FALSE), 
       bodies_read(FALSE), bodies_modified(FALSE),
       cpp_external(FALSE), 
-      java_external(FALSE), java_public(FALSE), java_final(FALSE),
+      java_external(FALSE), java_final(FALSE),
       idl_external(FALSE), idl_local(FALSE), idl_custom(FALSE),
-      uml_visibility(UmlPublic), cpp_visibility(UmlDefaultVisibility) {
+      uml_visibility(UmlPackageVisibility), cpp_visibility(UmlDefaultVisibility) {
   if (GenerationSettings::cpp_get_default_defs())
     cpp_decl = GenerationSettings::cpp_default_class_decl();
 
@@ -101,7 +101,6 @@ ClassData::ClassData(const ClassData * model, BrowserNode * bn)
   is_abstract = model->is_abstract;
   cpp_external = model->cpp_external;
   java_external = model->java_external;
-  java_public = model->java_public;
   java_final = model->java_final;
   idl_external = model->idl_external;
   idl_local = model->idl_local;
@@ -461,7 +460,15 @@ bool ClassData::tool_cmd(ToolCom * com, const char * args,
 	}
 	break;
       case setIsJavaPublicCmd:
-	java_public = (*args != 0);
+	{
+	  UmlVisibility v = (*args != 0) ? UmlPublic : UmlPackageVisibility;
+	  
+	  if ((cpp_visibility == UmlDefaultVisibility) &&
+	      (uml_visibility != UmlPublic) &&
+	      (uml_visibility != UmlPackageVisibility))
+	    cpp_visibility = uml_visibility;
+	  uml_visibility = v;
+	}
 	break;
       case setIsJavaFinalCmd:
 	java_final = (*args != 0);
@@ -621,11 +628,13 @@ void ClassData::edit() {
 
 void ClassData::send_uml_def(ToolCom * com, BrowserNode * bn, 
 			     const QString & comment) {
+  int api = com->api_format();
+  
   BasicData::send_uml_def(com, bn, comment);
   com->write_bool(FALSE);	// class member
-  if (com->api_format() >= 13)
+  if (api >= 13)
     com->write_bool(FALSE);	// volatile
-  com->write_char(((com->api_format() >= 23) ||
+  com->write_char(((api >= 23) ||
 		   (uml_visibility != UmlPackageVisibility))
 		  ? uml_visibility : UmlPublic);
   
@@ -660,8 +669,10 @@ void ClassData::send_uml_def(ToolCom * com, BrowserNode * bn,
 }
 
 void ClassData::send_cpp_def(ToolCom * com) {
+  int api = com->api_format();
+  
   com->write_string(cpp_decl);
-  if (com->api_format() >= 23)
+  if (api >= 23)
     com->write_char(cpp_visibility);
   else {
     switch(cpp_visibility) {
@@ -675,19 +686,22 @@ void ClassData::send_cpp_def(ToolCom * com) {
       com->write_char(cpp_visibility);
     }
   }
-  if (com->api_format() < 13)
+  if (api < 13)
     com->write_bool(FALSE);	// volatile
   com->write_bool(cpp_external);
 }
 
 void ClassData::send_java_def(ToolCom * com) {
+  int api = com->api_format();
+  
   com->write_string(java_decl);
-  if (com->api_format() >= 21)
+  if (api >= 21)
     com->write_string(java_annotation);
-  com->write_bool(java_public);
+  if (api < 29)
+    com->write_bool(uml_visibility == UmlPublic);
   com->write_bool(java_final);
   com->write_bool(java_external);
-  if ((com->api_format() >= 19) && (com->api_format() < 21))
+  if ((api >= 19) && (api < 21))
     com->write_string(java_annotation);
 }
 
@@ -702,37 +716,22 @@ void ClassData::send_idl_def(ToolCom * com) {
 //
 
 void ClassData::save(QTextStream & st, QString & warning) const {
-  bool nl = FALSE;
+  nl_indent(st);
   
-  if (is_abstract) {
-    nl = TRUE;
-    nl_indent(st);
+  if (is_abstract)
     st << "abstract ";
-  }
   
-  if (browser_node->nestedp()) {
-    if (! nl) {
-      nl = TRUE;
-      nl_indent(st);
-    }
-    st << "visibility " << stringify(uml_visibility);
-  }
+  st << "visibility " << stringify(uml_visibility) << ' ';
   
   if (!stereotype.isEmpty()) {
-    if (! nl)
-      nl_indent(st);
-    st << " stereotype ";
+    st << "stereotype ";
     save_string(stereotype, st);
-    nl_indent(st);
     
-    if (stereotype == "typedef") {
+    if (stereotype == "typedef")
       base_type.save(st, warning, " base_type ", " explicit_base_type ");
-      nl_indent(st);
-    }
   }
-  else if (nl)
-    nl_indent(st);
-
+  
+  nl_indent(st);
   if (nformals != 0) {
     st << "nformals " << nformals;
     for (int i = 0; i!= nformals; i += 1)
@@ -759,8 +758,6 @@ void ClassData::save(QTextStream & st, QString & warning) const {
   nl_indent(st);
   if (java_external)
     st << "java_external ";
-  if (java_public)
-    st << "public ";
   if (java_final)
     st << "final ";
   st << "java_decl ";
@@ -796,6 +793,10 @@ void ClassData::read(char * & st, char * & k) {
   if (!strcmp(k, "visibility")) {
     uml_visibility = ::visibility(read_keyword(st));  
     k = read_keyword(st);
+  }
+  else {
+    // old non nested class
+    uml_visibility = UmlPackageVisibility;
   }
   
   if (!strcmp(k, "stereotype")) {
@@ -879,12 +880,20 @@ void ClassData::read(char * & st, char * & k) {
   else
     java_external = FALSE;
   
-  if (!strcmp(k, "public")) {
-    java_public = TRUE;
-    k = read_keyword(st);
+  if (read_file_format() <= 33) {
+    // old file
+    if ((cpp_visibility == UmlDefaultVisibility) &&
+	(uml_visibility != UmlPublic) && 
+	(uml_visibility != UmlPackageVisibility))
+      cpp_visibility = uml_visibility;
+    
+    if (!strcmp(k, "public")) {
+      uml_visibility = UmlPublic;
+      k = read_keyword(st);
+    }
+    else
+      uml_visibility = UmlPackageVisibility;
   }
-  else
-    java_public = FALSE;
   
   if (!strcmp(k, "final")) {
     java_final = TRUE;

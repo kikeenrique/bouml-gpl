@@ -132,7 +132,10 @@ enum OnInstanceCmd {
   setUniqueCmd,
   setStreamCmd,
   setInStateCmd,
-  setOrderingCmd
+  setOrderingCmd,
+  setCppFrozenCmd,
+  setJavaFrozenCmd,
+  setIdlFrozenCmd
 
 };
 #endif

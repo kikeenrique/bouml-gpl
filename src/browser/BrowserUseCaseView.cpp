@@ -637,6 +637,13 @@ bool BrowserUseCaseView::may_contains_them(const QList<BrowserNode> & l,
   return TRUE;
 }
 
+BrowserNode * BrowserUseCaseView::container(UmlCode c) const {
+  // currently only for class, state machine and activity
+  return (c == UmlClass)
+    ? (BrowserNode *) this
+    : ((BrowserNode *) parent())->container(c);
+}
+
 void BrowserUseCaseView::DropEvent(QDropEvent * e) {
   DropAfterEvent(e, 0);
 }

@@ -28,6 +28,13 @@ class UmlRelation : public UmlBaseRelation {
     //produce the definition in Java
     void gen_java_decl(QCString s);
 
+
+  private:
+    //produce the definition in Uml
+    void gen_uml_decl();
+
+
+  public:
     virtual QCString pretty_name();
 
 };

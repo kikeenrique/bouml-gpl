@@ -2,6 +2,7 @@
 #include "UmlRelation.h"
 
 #include "UmlClass.h"
+#include "UmlAttribute.h"
 #include "CppSettings.h"
 #include "JavaSettings.h"
 
@@ -16,6 +17,8 @@ void UmlRelation::memo_ref() {
   case aDependency:
     return;
   default:
+    if (visibility() == PublicVisibility)
+      UmlAttribute::attrs.addElement(this);
     UmlItem::memo_ref();
     break;
   }
@@ -38,6 +41,10 @@ void UmlRelation::html(QCString, unsigned int, unsigned int) {
   fw.write("</b></div></td></tr></table>");
 
   fw.write("<p>Declaration :</p><ul>");
+  
+  fw.write("<li>Uml : ");
+  gen_uml_decl();
+  fw.write("</li>");
   
   QCString s = cppDecl();
 
@@ -258,6 +265,22 @@ void UmlRelation::gen_java_decl(QCString s) {
       manage_alias(p);
     else
       writeq(*p++);
+  }
+}
+
+void UmlRelation::gen_uml_decl() {
+  if (isClassMember())
+    fw.write("static, ");
+  write(visibility());
+  writeq(roleName());
+  fw.write(" : ");
+  roleType()->write();
+
+  QCString s = multiplicity();
+  
+  if (!s.isEmpty()) {
+    fw.write(", multiplicity : ");
+    writeq(s);
   }
 }
 

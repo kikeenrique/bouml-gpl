@@ -74,6 +74,7 @@ HEADERS		= browser/BrowserAttribute.h \
 		  data/ExpansionRegionData.h \
 		  data/ActivityObjectData.h \
 		  data/FlowData.h \
+		  data/UseCaseData.h \
 		  diagram/ArrowCanvas.h \
 		  diagram/HubCanvas.h \
 		  diagram/AssocContainCanvas.h \
@@ -217,6 +218,7 @@ HEADERS		= browser/BrowserAttribute.h \
 		  dialog/ActivityObjectDialog.h \
 		  dialog/FlowDialog.h \
 		  dialog/ShortcutDialog.h \
+		  dialog/UseCaseDialog.h \
 		  misc/Settings.h \
 		  misc/UmlDrag.h \
 		  misc/UmlEnum.h \
@@ -302,6 +304,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  data/ExpansionRegionData.cpp \
 		  data/ActivityObjectData.cpp \
 		  data/FlowData.cpp \
+		  data/UseCaseData.cpp \
 		  diagram/ArrowCanvas.cpp \
 		  diagram/HubCanvas.cpp \
 		  diagram/AssocContainCanvas.cpp \
@@ -450,6 +453,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  dialog/ActivityObjectDialog.cpp \
 		  dialog/FlowDialog.cpp \
 		  dialog/ShortcutDialog.cpp \
+		  dialog/UseCaseDialog.cpp \
 		  misc/Settings.cpp \
 		  misc/UmlDrag.cpp \
 		  misc/UmlGlobal.cpp \

@@ -1,27 +1,29 @@
-format 26
+format 35
 "API BASE" // API BASE
+  revision 2
+  modified_by 2 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default shadow default
+  show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
   //object diagram settings
-   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
   show_activities default region_horizontally default drawing_language default
   //activity diagram settings
-  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
   show_infonote default drawing_language default
   
   comment "The API system classes and components
@@ -30,18 +32,19 @@ DO NOT MODIFY THEM !!!
 "
   classview 256 "API BASE class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
     //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
-     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default shadow default
+    show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
     show_activities default region_horizontally default drawing_language default
-    //class settings//activity diagram settings
-    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
     
     associated_deployment_view deploymentview_ref 256 // API BASE Deployment view
@@ -50,12 +53,12 @@ DO NOT MODIFY THEM !!!
 DO NOT MODIFY THEM !!!
 "
     class 256 "aRelationKind"
-       stereotype "enum_pattern"
+      visibility public stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
 "
-      public final java_decl "${comment}${public}final class ${name} {
+      final java_decl "${comment}${public}final class ${name} {
 ${members}
   private int value;
 
@@ -159,12 +162,12 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 384 "aDirection"
-       stereotype "enum_pattern"
+      visibility public stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
 "
-      public final java_decl "${comment}${public}final class ${name} {
+      final java_decl "${comment}${public}final class ${name} {
 ${members}
   private int value;
 
@@ -223,12 +226,12 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 512 "aVisibility"
-       stereotype "enum_pattern"
+      visibility public stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
 "
-      public final java_decl "${comment}${public}final class ${name} {
+      final java_decl "${comment}${public}final class ${name} {
 ${members}
   private int value;
 
@@ -299,12 +302,12 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 640 "anItemKind"
-       stereotype "enum_pattern"
+      visibility public stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
 "
-      public final java_decl "${comment}${public}final class ${name} {
+      final java_decl "${comment}${public}final class ${name} {
 ${members}
   private int value;
 
@@ -957,7 +960,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 1024 "UmlParameter"
-       stereotype "struct"
+      visibility package stereotype "struct"
       cpp_decl "${comment}${template}struct ${name}${inherit} {
 ${members}};
 
@@ -1029,7 +1032,9 @@ ${body}}
       end
     end
 
-    class 1280 "CppSettings"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 1280 "CppSettings"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1504,6 +1509,110 @@ ${body}}
 	
 	comment " to indicates to the code generator if the #include may specify
  the path of just the file's name
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 205056 "isRelativePath"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if a relative path must be used when the path
+ must be generated in the produced #includes"
+      end
+
+      operation 205184 "set_IsRelativePath"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if a relative path must be used when the path
+ must be generated in the produced #includes
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 206336 "isRootRelativePath"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if a path relative to the project root must be used
+ when the path must be generated in the produced #includes"
+      end
+
+      operation 206464 "set_IsRootRelativePath"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if a relative to the project root path must be used
+ when the path must be generated in the produced #includes
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 205312 "isForceNamespacePrefixGeneration"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if the namespace prefix must be
+ always generated before class's names"
+      end
+
+      operation 205440 "set_IsForceNamespacePrefixGeneration"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if the namespace prefix must be always generated before class's names
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
@@ -2569,6 +2678,43 @@ ${body}}
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 204928 "isSetParamRef"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if the parameter of a 'set' operation generated through the
+ attribute and relation 'add set operation' menu is a reference by default"
+      end
+
+      operation 204032 "set_IsSetParamRef"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if the parameter of a 'set' operation generated through the
+ attribute and relation 'add set operation' menu is a reference by default
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 11008 "CppSettings"
 	cpp_inline private explicit_return_type ""
 	nparams 0
@@ -2849,6 +2995,15 @@ ${body}}
 	idl_decl ""
       end
 
+      attribute 150656 "_is_set_param_ref"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
       attribute 10112 "_h_content"
 	class_attribute private explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -2889,6 +3044,33 @@ ${body}}
 	idl_decl ""
       end
 
+      attribute 151680 "_is_relative_path"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      attribute 153088 "_is_root_relative_path"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      attribute 151808 "_is_force_namespace_gen"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
       attribute 10752 "_map_includes"
 	class_attribute private explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}QDict<${type}> ${name}${value};
@@ -2926,7 +3108,9 @@ ${body}}
       end
     end
 
-    class 1408 "IdlSettings"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 1408 "IdlSettings"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4268,7 +4452,9 @@ ${body}}
       end
     end
 
-    class 1536 "JavaSettings"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 1536 "JavaSettings"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -5533,7 +5719,9 @@ ${body}}
       end
     end
 
-    class 1664 "UmlSettings"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 1664 "UmlSettings"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -5716,6 +5904,72 @@ ${body}}
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 205568 "umlGetName"
+	class_operation public return_type class_ref 143488 // aLanguage
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the language from which the getter's name rule must be followed at Uml level"
+      end
+
+      operation 205696 "set_UmlGetName"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 143488 // aLanguage
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the language from which the getter's name rule must be followed at Uml level
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 205824 "umlSetName"
+	class_operation public return_type class_ref 143488 // aLanguage
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the language from which the setter's name rule must be followed at Uml level"
+      end
+
+      operation 205952 "set_UmlSetName"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 143488 // aLanguage
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the language from which the setter's name rule must be followed at Uml level
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 24960 "UmlSettings"
 	cpp_inline protected explicit_return_type ""
 	nparams 0
@@ -5734,6 +5988,28 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	idl_decl ""
+      end
+
+      classrelation 154496 // _uml_get_name (<directional aggregation by value>)
+	relation 154496 *-->
+	  a role_name "_uml_get_name" multiplicity "" class_relation private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 154496 // _uml_get_name (<directional aggregation by value>)
+	  b parent class_ref 143488 // aLanguage
+      end
+
+      classrelation 154624 // _uml_set_name (<directional aggregation by value>)
+	relation 154624 *-->
+	  a role_name "_uml_set_name" multiplicity "" class_relation private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 154624 // _uml_set_name (<directional aggregation by value>)
+	  b parent class_ref 143488 // aLanguage
       end
 
       attribute 134912 "_artifact_default_description"
@@ -5967,7 +6243,7 @@ ${body}}
     end
 
     class 1152 "UmlBaseActualParameter"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -6036,7 +6312,7 @@ ${members}}
 	relation 512 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 512 // <dependency>
 	  b parent class_ref 2304 // UmlBaseClass
       end
@@ -6085,7 +6361,7 @@ ${body}}
     end
 
     class 1792 "UmlBaseFormalParameter"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -6156,7 +6432,7 @@ ${members}};
 	relation 2176 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 2176 // <dependency>
 	  b parent class_ref 2304 // UmlBaseClass
@@ -6214,7 +6490,9 @@ ${body}}
       end
     end
 
-    class 1920 "UmlTypeSpec"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 1920 "UmlTypeSpec"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6289,7 +6567,7 @@ ${body}}
     end
 
     class 2176 "UmlBaseAttribute"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -6856,7 +7134,7 @@ ${body}}
     end
 
     class 2304 "UmlBaseClass"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -7520,7 +7798,7 @@ ${body}}
 	relation 3584 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 3584 // <dependency>
 	  b parent class_ref 4608 // UmlBaseRelation
@@ -7530,7 +7808,7 @@ ${body}}
 	relation 3712 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 3712 // <dependency>
 	  b parent class_ref 2944 // UmlBaseArtifact
@@ -7580,14 +7858,6 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
-	idl_decl ""
-      end
-
-      attribute 17920 "_java_public"
-	private explicit_type "bool"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 1;
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	idl_decl ""
       end
 
@@ -7785,7 +8055,7 @@ ${body}}
     end
 
     class 2432 "UmlBaseClassItem"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -7947,7 +8217,7 @@ ${body}}
 	relation 4352 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 4352 // <dependency>
 	  b parent class_ref 2176 // UmlBaseAttribute
       end
@@ -7956,7 +8226,7 @@ ${body}}
 	relation 4480 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 4480 // <dependency>
 	  b parent class_ref 4352 // UmlBaseOperation
       end
@@ -7965,7 +8235,7 @@ ${body}}
 	relation 4608 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 4608 // <dependency>
 	  b parent class_ref 4608 // UmlBaseRelation
       end
@@ -8070,7 +8340,7 @@ ${body}}
 	relation 4736 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 4736 // <dependency>
 	  b parent class_ref 2688 // UmlBaseClassMember
@@ -8080,7 +8350,7 @@ ${body}}
 	relation 4864 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 4864 // <dependency>
 	  b parent class_ref 3968 // UmlBaseExtraClassMember
@@ -8090,7 +8360,7 @@ ${body}}
 	relation 4992 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 4992 // <dependency>
 	  b parent class_ref 2304 // UmlBaseClass
@@ -8098,7 +8368,7 @@ ${body}}
     end
 
     class 2560 "UmlBaseClassDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -8173,7 +8443,7 @@ ${body}}
     end
 
     class 132864 "UmlBaseObjectDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -8250,7 +8520,7 @@ ${body}}
     end
 
     class 2688 "UmlBaseClassMember"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -8579,7 +8849,7 @@ ${body}}
       classrelation 5632 // <dependency>
 	relation 5632 -_->
 	  a protected
-	    cpp default "Generated"
+	    cpp default "#include in header"
 	    java "Generated"
 	    classrelation_ref 5632 // <dependency>
 	  b parent class_ref 2432 // UmlBaseClassItem
@@ -8589,7 +8859,7 @@ ${body}}
 	relation 5760 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 5760 // <dependency>
 	  b parent class_ref 4352 // UmlBaseOperation
@@ -8599,7 +8869,7 @@ ${body}}
 	relation 5888 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 5888 // <dependency>
 	  b parent class_ref 2176 // UmlBaseAttribute
@@ -8609,7 +8879,7 @@ ${body}}
 	relation 6016 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 6016 // <dependency>
 	  b parent class_ref 4608 // UmlBaseRelation
@@ -8619,7 +8889,7 @@ ${body}}
 	relation 6144 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 6144 // <dependency>
 	  b parent class_ref 2304 // UmlBaseClass
@@ -8627,7 +8897,7 @@ ${body}}
     end
 
     class 2816 "UmlBaseClassView"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -8762,7 +9032,7 @@ ${body}}
     end
 
     class 2944 "UmlBaseArtifact"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -9190,7 +9460,7 @@ ${body}}
 	relation 6656 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 6656 // <dependency>
 	  b parent class_ref 2304 // UmlBaseClass
@@ -9352,7 +9622,7 @@ ${body}}
     end
 
     class 6656 "UmlBaseComponent"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -9566,7 +9836,7 @@ ${body}}
     end
 
     class 3072 "UmlBaseCollaborationDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -9641,7 +9911,7 @@ ${body}}
     end
 
     class 3200 "UmlBaseComponentDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -9716,7 +9986,7 @@ ${body}}
     end
 
     class 3328 "UmlBaseComponentView"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -9791,7 +10061,7 @@ ${body}}
     end
 
     class 3456 "UmlBaseDeploymentDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -9866,7 +10136,7 @@ ${body}}
     end
 
     class 3584 "UmlBaseDeploymentView"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -9941,7 +10211,7 @@ ${body}}
     end
 
     class 3712 "UmlBaseDeployment"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -9977,7 +10247,7 @@ ${members}};
     end
 
     class 3840 "UmlBaseDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -10040,7 +10310,7 @@ ${body}}
     end
 
     class 3968 "UmlBaseExtraClassMember"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -10248,7 +10518,7 @@ ${body}}
     end
 
     class 4096 "UmlBaseItem"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -10669,7 +10939,7 @@ ${body}}
 	relation 8192 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8192 // <dependency>
 	  b parent class_ref 2432 // UmlBaseClassItem
@@ -10679,7 +10949,7 @@ ${body}}
 	relation 8448 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8448 // <dependency>
 	  b parent class_ref 2176 // UmlBaseAttribute
@@ -10689,7 +10959,7 @@ ${body}}
 	relation 8576 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8576 // <dependency>
 	  b parent class_ref 2304 // UmlBaseClass
@@ -10699,7 +10969,7 @@ ${body}}
 	relation 8704 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8704 // <dependency>
 	  b parent class_ref 2560 // UmlBaseClassDiagram
@@ -10709,7 +10979,7 @@ ${body}}
 	relation 8832 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8832 // <dependency>
 	  b parent class_ref 2816 // UmlBaseClassView
@@ -10719,7 +10989,7 @@ ${body}}
 	relation 8960 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8960 // <dependency>
 	  b parent class_ref 3072 // UmlBaseCollaborationDiagram
@@ -10729,7 +10999,7 @@ ${body}}
 	relation 9088 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9088 // <dependency>
 	  b parent class_ref 2944 // UmlBaseArtifact
@@ -10739,7 +11009,7 @@ ${body}}
 	relation 9216 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9216 // <dependency>
 	  b parent class_ref 3200 // UmlBaseComponentDiagram
@@ -10749,7 +11019,7 @@ ${body}}
 	relation 9344 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9344 // <dependency>
 	  b parent class_ref 3328 // UmlBaseComponentView
@@ -10759,7 +11029,7 @@ ${body}}
 	relation 9472 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9472 // <dependency>
 	  b parent class_ref 3712 // UmlBaseDeployment
@@ -10769,7 +11039,7 @@ ${body}}
 	relation 9600 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9600 // <dependency>
 	  b parent class_ref 3456 // UmlBaseDeploymentDiagram
@@ -10779,7 +11049,7 @@ ${body}}
 	relation 9728 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9728 // <dependency>
 	  b parent class_ref 3584 // UmlBaseDeploymentView
@@ -10789,7 +11059,7 @@ ${body}}
 	relation 9856 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9856 // <dependency>
 	  b parent class_ref 4224 // UmlBaseNode
@@ -10799,7 +11069,7 @@ ${body}}
 	relation 9984 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9984 // <dependency>
 	  b parent class_ref 4352 // UmlBaseOperation
@@ -10809,7 +11079,7 @@ ${body}}
 	relation 10112 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 10112 // <dependency>
 	  b parent class_ref 4480 // UmlBasePackage
@@ -10819,7 +11089,7 @@ ${body}}
 	relation 10240 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 10240 // <dependency>
 	  b parent class_ref 4608 // UmlBaseRelation
@@ -10829,7 +11099,7 @@ ${body}}
 	relation 14976 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 14976 // <dependency>
 	  b parent class_ref 6528 // UmlBaseNcRelation
@@ -10839,7 +11109,7 @@ ${body}}
 	relation 10368 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 10368 // <dependency>
 	  b parent class_ref 4736 // UmlBaseSequenceDiagram
@@ -10849,7 +11119,7 @@ ${body}}
 	relation 10496 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 10496 // <dependency>
 	  b parent class_ref 4864 // UmlBaseUseCase
@@ -10859,7 +11129,7 @@ ${body}}
 	relation 10624 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 10624 // <dependency>
 	  b parent class_ref 4992 // UmlBaseUseCaseDiagram
@@ -10869,7 +11139,7 @@ ${body}}
 	relation 10752 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 10752 // <dependency>
 	  b parent class_ref 5120 // UmlBaseUseCaseView
@@ -10879,7 +11149,7 @@ ${body}}
 	relation 10880 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 10880 // <dependency>
 	  b parent class_ref 3840 // UmlBaseDiagram
@@ -10889,7 +11159,7 @@ ${body}}
 	relation 11008 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 11008 // <dependency>
 	  b parent class_ref 1792 // UmlBaseFormalParameter
@@ -10899,7 +11169,7 @@ ${body}}
 	relation 11136 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 11136 // <dependency>
 	  b parent class_ref 1152 // UmlBaseActualParameter
@@ -10909,7 +11179,7 @@ ${body}}
 	relation 11264 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 11264 // <dependency>
 	  b parent class_ref 5248 // UmlCom
@@ -10919,7 +11189,7 @@ ${body}}
 	relation 11520 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 11520 // <dependency>
 	  b parent class_ref 2688 // UmlBaseClassMember
@@ -10929,7 +11199,7 @@ ${body}}
 	relation 11648 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 11648 // <dependency>
 	  b parent class_ref 3968 // UmlBaseExtraClassMember
@@ -10939,8 +11209,7 @@ ${body}}
 	relation 16000 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
+	    cpp default "${type}"
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 16000 // <dependency>
@@ -11309,7 +11578,7 @@ ${body}}
 	relation 128384 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128384 // <dependency>
 	  b parent class_ref 128384 // UmlBaseState
       end
@@ -11318,7 +11587,7 @@ ${body}}
 	relation 128896 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 128896 // <dependency>
 	  b parent class_ref 128640 // UmlBaseStateDiagram
       end
@@ -11327,7 +11596,7 @@ ${body}}
 	relation 129920 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 129920 // <dependency>
 	  b parent class_ref 129024 // UmlBaseTransition
       end
@@ -11336,7 +11605,7 @@ ${body}}
 	relation 130944 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 130944 // <dependency>
 	  b parent class_ref 129408 // UmlBaseRegion
       end
@@ -11345,7 +11614,7 @@ ${body}}
 	relation 131456 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 131456 // <dependency>
 	  b parent class_ref 129664 // UmlBaseStateAction
       end
@@ -11354,7 +11623,7 @@ ${body}}
 	relation 132224 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 132224 // <dependency>
 	  b parent class_ref 130048 // UmlBaseInitialPseudoState
       end
@@ -11363,7 +11632,7 @@ ${body}}
 	relation 132608 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 132608 // <dependency>
 	  b parent class_ref 130304 // UmlBaseEntryPointPseudoState
       end
@@ -11372,7 +11641,7 @@ ${body}}
 	relation 132992 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 132992 // <dependency>
 	  b parent class_ref 130560 // UmlBaseFinalState
       end
@@ -11381,7 +11650,7 @@ ${body}}
 	relation 133376 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 133376 // <dependency>
 	  b parent class_ref 130816 // UmlBaseTerminatePseudoState
       end
@@ -11390,7 +11659,7 @@ ${body}}
 	relation 133760 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 133760 // <dependency>
 	  b parent class_ref 131072 // UmlBaseExitPointPseudoState
       end
@@ -11399,7 +11668,7 @@ ${body}}
 	relation 134144 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 134144 // <dependency>
 	  b parent class_ref 131328 // UmlBaseDeepHistoryPseudoState
       end
@@ -11408,7 +11677,7 @@ ${body}}
 	relation 134528 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 134528 // <dependency>
 	  b parent class_ref 131584 // UmlBaseShallowHistoryPseudoState
       end
@@ -11417,7 +11686,7 @@ ${body}}
 	relation 134912 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 134912 // <dependency>
 	  b parent class_ref 131840 // UmlBaseJunctionPseudoState
       end
@@ -11426,7 +11695,7 @@ ${body}}
 	relation 135296 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 135296 // <dependency>
 	  b parent class_ref 132096 // UmlBaseChoicePseudoState
       end
@@ -11435,7 +11704,7 @@ ${body}}
 	relation 135680 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 135680 // <dependency>
 	  b parent class_ref 132352 // UmlBaseForkPseudoState
       end
@@ -11444,7 +11713,7 @@ ${body}}
 	relation 136064 -_->
 	  stereotype "friend"
 	  a protected
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 136064 // <dependency>
 	  b parent class_ref 132608 // UmlBaseJoinPseudoState
       end
@@ -11453,7 +11722,7 @@ ${body}}
 	relation 136832 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 136832 // <dependency>
 	  b parent class_ref 132864 // UmlBaseObjectDiagram
       end
@@ -11462,7 +11731,7 @@ ${body}}
 	relation 137216 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 137216 // <dependency>
 	  b parent class_ref 133248 // UmlBaseActivity
       end
@@ -11471,7 +11740,7 @@ ${body}}
 	relation 137600 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 137600 // <dependency>
 	  b parent class_ref 133504 // UmlBaseActivityDiagram
       end
@@ -11480,7 +11749,7 @@ ${body}}
 	relation 138240 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 138240 // <dependency>
 	  b parent class_ref 133760 // UmlBaseActivityNode
       end
@@ -11489,7 +11758,7 @@ ${body}}
 	relation 138752 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 138752 // <dependency>
 	  b parent class_ref 134016 // UmlBaseFlow
       end
@@ -11498,7 +11767,7 @@ ${body}}
 	relation 139776 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 139776 // <dependency>
 	  b parent class_ref 134400 // UmlBaseActivityRegion
       end
@@ -11507,7 +11776,7 @@ ${body}}
 	relation 140416 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 140416 // <dependency>
 	  b parent class_ref 134656 // UmlBaseExpansionRegion
       end
@@ -11516,7 +11785,7 @@ ${body}}
 	relation 140928 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 140928 // <dependency>
 	  b parent class_ref 135040 // UmlBaseInterruptibleActivityRegion
       end
@@ -11525,7 +11794,7 @@ ${body}}
 	relation 141312 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 141312 // <dependency>
 	  b parent class_ref 135296 // UmlBaseActivityAction
       end
@@ -11534,7 +11803,7 @@ ${body}}
 	relation 141824 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 141824 // <dependency>
 	  b parent class_ref 135552 // UmlBaseSendObjectAction
       end
@@ -11543,7 +11812,7 @@ ${body}}
 	relation 142208 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 142208 // <dependency>
 	  b parent class_ref 135808 // UmlBaseUnmarshallAction
       end
@@ -11552,7 +11821,7 @@ ${body}}
 	relation 142592 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 142592 // <dependency>
 	  b parent class_ref 136064 // UmlBaseOnSignalAction
       end
@@ -11561,7 +11830,7 @@ ${body}}
 	relation 142976 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 142976 // <dependency>
 	  b parent class_ref 136320 // UmlBaseSendSignalAction
       end
@@ -11570,7 +11839,7 @@ ${body}}
 	relation 143360 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 143360 // <dependency>
 	  b parent class_ref 136576 // UmlBaseBroadcastSignalAction
       end
@@ -11579,7 +11848,7 @@ ${body}}
 	relation 143744 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 143744 // <dependency>
 	  b parent class_ref 136832 // UmlBaseValueSpecificationAction
       end
@@ -11588,7 +11857,7 @@ ${body}}
 	relation 144128 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 144128 // <dependency>
 	  b parent class_ref 137088 // UmlBaseOpaqueAction
       end
@@ -11597,7 +11866,7 @@ ${body}}
 	relation 144512 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 144512 // <dependency>
 	  b parent class_ref 137344 // UmlBaseAcceptEventAction
       end
@@ -11606,7 +11875,7 @@ ${body}}
 	relation 144896 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 144896 // <dependency>
 	  b parent class_ref 137600 // UmlBaseCallOperationAction
       end
@@ -11615,7 +11884,7 @@ ${body}}
 	relation 145408 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 145408 // <dependency>
 	  b parent class_ref 137856 // UmlBaseCallBehaviorAction
       end
@@ -11624,7 +11893,7 @@ ${body}}
 	relation 145920 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 145920 // <dependency>
 	  b parent class_ref 138112 // UmlBaseAccessVariableValueAction
       end
@@ -11633,7 +11902,7 @@ ${body}}
 	relation 146432 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 146432 // <dependency>
 	  b parent class_ref 138368 // UmlBaseClearVariableValueAction
       end
@@ -11642,7 +11911,7 @@ ${body}}
 	relation 146816 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 146816 // <dependency>
 	  b parent class_ref 138624 // UmlBaseReadVariableValueAction
       end
@@ -11651,7 +11920,7 @@ ${body}}
 	relation 147200 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 147200 // <dependency>
 	  b parent class_ref 138880 // UmlBaseWriteVariableValueAction
       end
@@ -11660,7 +11929,7 @@ ${body}}
 	relation 147584 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 147584 // <dependency>
 	  b parent class_ref 139136 // UmlBaseAddVariableValueAction
       end
@@ -11669,7 +11938,7 @@ ${body}}
 	relation 147968 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 147968 // <dependency>
 	  b parent class_ref 139392 // UmlBaseRemoveVariableValueAction
       end
@@ -11678,7 +11947,7 @@ ${body}}
 	relation 148352 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 148352 // <dependency>
 	  b parent class_ref 139648 // UmlBaseActivityControlNode
       end
@@ -11687,7 +11956,7 @@ ${body}}
 	relation 148736 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 148736 // <dependency>
 	  b parent class_ref 139904 // UmlBaseInitialActivityNode
       end
@@ -11696,7 +11965,7 @@ ${body}}
 	relation 149120 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 149120 // <dependency>
 	  b parent class_ref 140160 // UmlBaseFlowFinalActivityNode
       end
@@ -11705,7 +11974,7 @@ ${body}}
 	relation 149504 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 149504 // <dependency>
 	  b parent class_ref 140416 // UmlBaseActivityFinalActivityNode
       end
@@ -11714,7 +11983,7 @@ ${body}}
 	relation 149888 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 149888 // <dependency>
 	  b parent class_ref 140672 // UmlBaseDecisionActivityNode
       end
@@ -11723,7 +11992,7 @@ ${body}}
 	relation 150272 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 150272 // <dependency>
 	  b parent class_ref 140928 // UmlBaseMergeActivityNode
       end
@@ -11732,7 +12001,7 @@ ${body}}
 	relation 150656 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 150656 // <dependency>
 	  b parent class_ref 141184 // UmlBaseForkActivityNode
       end
@@ -11741,7 +12010,7 @@ ${body}}
 	relation 151040 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 151040 // <dependency>
 	  b parent class_ref 141440 // UmlBaseJoinActivityNode
       end
@@ -11750,7 +12019,7 @@ ${body}}
 	relation 151424 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 151424 // <dependency>
 	  b parent class_ref 141696 // UmlBaseActivityObject
       end
@@ -11759,7 +12028,7 @@ ${body}}
 	relation 152192 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 152192 // <dependency>
 	  b parent class_ref 142080 // UmlBaseExpansionNode
       end
@@ -11768,7 +12037,7 @@ ${body}}
 	relation 152576 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 152576 // <dependency>
 	  b parent class_ref 142336 // UmlBasePinParameter
       end
@@ -11777,7 +12046,7 @@ ${body}}
 	relation 153216 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 153216 // <dependency>
 	  b parent class_ref 142720 // UmlBaseActivityPin
       end
@@ -11786,7 +12055,7 @@ ${body}}
 	relation 153600 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 153600 // <dependency>
 	  b parent class_ref 142976 // UmlBaseActivityParameter
       end
@@ -11795,14 +12064,14 @@ ${body}}
 	relation 153984 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 153984 // <dependency>
 	  b parent class_ref 143232 // UmlBaseParameterSet
       end
     end
 
     class 4224 "UmlBaseNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -11936,7 +12205,7 @@ ${body}}
     end
 
     class 4352 "UmlBaseOperation"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -12508,6 +12777,45 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 204160 "cppGetSetFrozen"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHCPP
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the if the C++ definition is frozen, only for getter/setter operation"
+      end
+
+      operation 204288 "set_CppGetSetFrozen"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the if the C++ definition is frozen, only for getter/setter operation
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 54656 "isJavaFinal"
 	public explicit_return_type "bool"
 	nparams 0
@@ -12694,6 +13002,45 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 204416 "javaGetSetFrozen"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    #ifdef WITHJAVA
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHJAVA
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the if the Java definition is frozen, only for getter/setter operation"
+      end
+
+      operation 204544 "set_JavaGetSetFrozen"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the if the Java definition is frozen, only for getter/setter operation
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 55936 "isIdlOneway"
 	public explicit_return_type "bool"
 	nparams 0
@@ -12767,6 +13114,45 @@ ${body}}
 	comment " in case the operation is a 'get' or 'set' operation, returns how
  the operation's IDL name must be generated
  
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 204672 "idlGetSetFrozen"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    #ifdef WITHIDL
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHIDL
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the if the IDL definition is frozen, only for getter/setter operation"
+      end
+
+      operation 204800 "set_IdlGetSetFrozen"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the if the IDL definition is frozen, only for getter/setter operation
+
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
@@ -12857,6 +13243,39 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 #endif
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	idl_decl ""
+      end
+
+      attribute 151296 "_cpp_get_set_frozen"
+	private explicit_type "bool"
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      attribute 151424 "_java_get_set_frozen"
+	private explicit_type "bool"
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      attribute 151552 "_idl_get_set_frozen"
+	private explicit_type "bool"
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
 	idl_decl ""
       end
 
@@ -13042,7 +13461,7 @@ ${body}}
     end
 
     class 4480 "UmlBasePackage"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -13664,7 +14083,7 @@ ${body}}
     end
 
     class 4608 "UmlBaseRelation"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -14499,7 +14918,7 @@ ${body}}
     end
 
     class 6528 "UmlBaseNcRelation"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -14645,7 +15064,7 @@ ${body}}
     end
 
     class 4736 "UmlBaseSequenceDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -14720,7 +15139,7 @@ ${body}}
     end
 
     class 4864 "UmlBaseUseCase"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -14815,6 +15234,50 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 206080 "extensionPoints"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the extension points"
+      end
+
+      operation 206208 "set_ExtensionPoints"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the extension points
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      attribute 152960 "_extension_points"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
       classrelation 14080 // _assoc_diagram (<unidirectional association>)
 	relation 14080 --->
 	  a role_name "_assoc_diagram" multiplicity "" private
@@ -14854,7 +15317,7 @@ ${body}}
     end
 
     class 4992 "UmlBaseUseCaseDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -14929,7 +15392,7 @@ ${body}}
     end
 
     class 5120 "UmlBaseUseCaseView"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -15004,7 +15467,7 @@ ${body}}
     end
 
     class 768 "UmlBuiltin"
-       stereotype "struct"
+      visibility package stereotype "struct"
       cpp_decl "${comment}${template}struct ${name}${inherit} {
 ${members}};
 
@@ -15092,7 +15555,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
     end
 
     class 896 "UmlStereotype"
-       stereotype "struct"
+      visibility package stereotype "struct"
       cpp_decl "${comment}${template}struct ${name}${inherit} {
 ${members}};
 
@@ -15145,7 +15608,9 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
       end
     end
 
-    class 5248 "UmlCom"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 5248 "UmlCom"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -15170,13 +15635,18 @@ ${members}};
 
  - trace()
 
+ - showTrace()
+
+ - traceAutoRaise()
+
  - message()
 
  - bye()
 
  - close()
  
- you must NOT call the others"
+ you must NOT call the others
+"
       operation 66688 "connect"
 	class_operation public explicit_return_type "bool"
 	nparams 1
@@ -15225,6 +15695,40 @@ ${body}}
 	
 	comment " to write messages in the tool window,
  use Qt rich text : allows HTML like formatting"
+      end
+
+      operation 203520 "showTrace"
+	class_operation public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment "to show the trace window
+"
+      end
+
+      operation 203648 "traceAutoRaise"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "y" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment "to automatically raise the trace window
+each time trace() is called
+"
       end
 
       operation 67072 "message"
@@ -15990,7 +16494,7 @@ ${body}}
     end
 
     class 5376 "CmdFamily"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -16090,7 +16594,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 5504 "MiscGlobalCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -16160,10 +16664,28 @@ public static final ${class} ${name} = new ${class}(_${name});
 "
 	idl_decl ""
       end
+
+      attribute 150400 "showTraceCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 150528 "traceAutoRaiseCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
     end
 
     class 5632 "OnInstanceCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -17342,10 +17864,37 @@ public static final ${class} ${name} = new ${class}(_${name});
 "
 	idl_decl ""
       end
+
+      attribute 150912 "setCppFrozenCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 151040 "setJavaFrozenCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 151168 "setIdlFrozenCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
     end
 
     class 5760 "ClassGlobalCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -17382,7 +17931,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 5888 "PackageGlobalCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -17446,7 +17995,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 6016 "UmlSettingsCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -17526,10 +18075,28 @@ public static final ${class} ${name} = new ${class}(_${name});
 "
 	idl_decl ""
       end
+
+      attribute 152704 "setUmlDefaultGetNameCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 152832 "setUmlDefaultSetNameCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
     end
 
     class 6144 "CppSettingsCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -17932,10 +18499,46 @@ public static final ${class} ${name} = new ${class}(_${name});
 "
 	idl_decl ""
       end
+
+      attribute 150784 "setCppIsSetParamRefCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 151936 "setCppRelativePathCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 152064 "setCppForceNamespaceGenCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 153216 "setCppRootRelativePathCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
     end
 
     class 6272 "JavaSettingsCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -18215,7 +18818,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 6400 "IdlSettingsCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -18513,7 +19116,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 128384 "UmlBaseState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -19048,7 +19651,7 @@ ${body}}
     end
 
     class 128640 "UmlBaseStateDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -19125,7 +19728,7 @@ ${body}}
     end
 
     class 133504 "UmlBaseActivityDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -19201,7 +19804,9 @@ ${body}}
       end
     end
 
-    class 128896 "StateBehavior"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 128896 "StateBehavior"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -19267,7 +19872,7 @@ ${body}}
     end
 
     class 129024 "UmlBaseTransition"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -19801,7 +20406,9 @@ ${body}}
       end
     end
 
-    class 129280 "TransitionBehavior"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 129280 "TransitionBehavior"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -19867,7 +20474,7 @@ ${body}}
     end
 
     class 129408 "UmlBaseRegion"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -19944,7 +20551,7 @@ ${body}}
     end
 
     class 129664 "UmlBaseStateAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -20236,7 +20843,7 @@ ${body}}
     end
 
     class 130048 "UmlBaseInitialPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -20312,7 +20919,7 @@ ${body}}
     end
 
     class 130304 "UmlBaseEntryPointPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -20389,7 +20996,7 @@ ${body}}
     end
 
     class 130560 "UmlBaseFinalState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -20465,7 +21072,7 @@ ${body}}
     end
 
     class 130816 "UmlBaseTerminatePseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -20541,7 +21148,7 @@ ${body}}
     end
 
     class 131072 "UmlBaseExitPointPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -20618,7 +21225,7 @@ ${body}}
     end
 
     class 131328 "UmlBaseDeepHistoryPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -20694,7 +21301,7 @@ ${body}}
     end
 
     class 131584 "UmlBaseShallowHistoryPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -20770,7 +21377,7 @@ ${body}}
     end
 
     class 131840 "UmlBaseJunctionPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -20846,7 +21453,7 @@ ${body}}
     end
 
     class 132096 "UmlBaseChoicePseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -20922,7 +21529,7 @@ ${body}}
     end
 
     class 132352 "UmlBaseForkPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -20998,7 +21605,7 @@ ${body}}
     end
 
     class 132608 "UmlBaseJoinPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -21074,7 +21681,7 @@ ${body}}
     end
 
     class 133248 "UmlBaseActivity"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -21633,7 +22240,7 @@ ${body}}
     end
 
     class 133760 "UmlBaseActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -21672,7 +22279,7 @@ ${members}}
     end
 
     class 134016 "UmlBaseFlow"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -22311,7 +22918,9 @@ ${body}}
       end
     end
 
-    class 134272 "FlowBehavior"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 134272 "FlowBehavior"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -22386,7 +22995,7 @@ ${body}}
     end
 
     class 134400 "UmlBaseActivityRegion"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -22485,7 +23094,7 @@ ${body}}
     end
 
     class 134656 "UmlBaseExpansionRegion"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -22666,7 +23275,7 @@ ${body}}
     end
 
     class 134912 "anExpansionKind"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -22720,7 +23329,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 135040 "UmlBaseInterruptibleActivityRegion"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -22797,7 +23406,7 @@ ${body}}
     end
 
     class 135296 "UmlBaseActivityAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -23230,7 +23839,7 @@ ${body}}
     end
 
     class 135552 "UmlBaseSendObjectAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -23307,7 +23916,7 @@ ${body}}
     end
 
     class 135808 "UmlBaseUnmarshallAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -23384,7 +23993,7 @@ ${body}}
     end
 
     class 136064 "UmlBaseOnSignalAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -23639,7 +24248,7 @@ ${body}}
     end
 
     class 136320 "UmlBaseSendSignalAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -23716,7 +24325,7 @@ ${body}}
     end
 
     class 136576 "UmlBaseBroadcastSignalAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -23793,7 +24402,7 @@ ${body}}
     end
 
     class 136832 "UmlBaseValueSpecificationAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -24086,7 +24695,7 @@ ${body}}
     end
 
     class 137088 "UmlBaseOpaqueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -24379,7 +24988,7 @@ ${body}}
     end
 
     class 137344 "UmlBaseAcceptEventAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -24760,7 +25369,7 @@ ${body}}
     end
 
     class 137600 "UmlBaseCallOperationAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -24941,7 +25550,7 @@ ${body}}
     end
 
     class 137856 "UmlBaseCallBehaviorAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -25122,7 +25731,7 @@ ${body}}
     end
 
     class 138112 "UmlBaseAccessVariableValueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -25221,7 +25830,7 @@ ${body}}
     end
 
     class 138368 "UmlBaseClearVariableValueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -25298,7 +25907,7 @@ ${body}}
     end
 
     class 138624 "UmlBaseReadVariableValueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -25375,7 +25984,7 @@ ${body}}
     end
 
     class 138880 "UmlBaseWriteVariableValueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -25452,7 +26061,7 @@ ${body}}
     end
 
     class 139136 "UmlBaseAddVariableValueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -25587,7 +26196,7 @@ ${body}}
     end
 
     class 139392 "UmlBaseRemoveVariableValueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -25722,7 +26331,7 @@ ${body}}
     end
 
     class 139648 "UmlBaseActivityControlNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -25761,7 +26370,7 @@ ${members}}
     end
 
     class 139904 "UmlBaseInitialActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -25838,7 +26447,7 @@ ${body}}
     end
 
     class 140160 "UmlBaseFlowFinalActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -25915,7 +26524,7 @@ ${body}}
     end
 
     class 140416 "UmlBaseActivityFinalActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -25992,7 +26601,7 @@ ${body}}
     end
 
     class 140672 "UmlBaseDecisionActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -26069,7 +26678,7 @@ ${body}}
     end
 
     class 140928 "UmlBaseMergeActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -26146,7 +26755,7 @@ ${body}}
     end
 
     class 141184 "UmlBaseForkActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -26223,7 +26832,7 @@ ${body}}
     end
 
     class 141440 "UmlBaseJoinActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -26300,7 +26909,7 @@ ${body}}
     end
 
     class 141696 "UmlBaseActivityObject"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -26863,7 +27472,7 @@ ${body}}
     end
 
     class 141952 "anOrdering"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -26926,7 +27535,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 142080 "UmlBaseExpansionNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -27003,7 +27612,7 @@ ${body}}
     end
 
     class 142336 "UmlBasePinParameter"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -27110,6 +27719,41 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 203776 "isStream"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the isStream attribute"
+      end
+
+      operation 203904 "set_IsStream"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the isStream attribute
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 190336 "direction"
 	public return_type class_ref 384 // aDirection
 	nparams 0
@@ -27209,7 +27853,7 @@ ${body}}
 
       attribute 144768 "_dummy"
 	private explicit_type "int"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 4${value};
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 5${value};
 "
 	java_decl ""
 	idl_decl ""
@@ -27253,7 +27897,7 @@ ${body}}
     end
 
     class 142592 "aParameterEffectKind"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -27325,7 +27969,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 142720 "UmlBaseActivityPin"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -27402,7 +28046,7 @@ ${body}}
     end
 
     class 142976 "UmlBaseActivityParameter"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -27559,7 +28203,7 @@ ${body}}
     end
 
     class 143232 "UmlBaseParameterSet"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -27713,11 +28357,74 @@ ${body}}
 	
       end
     end
+
+    class 143488 "aLanguage"
+      visibility package stereotype "enum_pattern"
+      cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+      java_decl "${comment}${public}final class ${name} {
+${members}
+  private int value;
+
+  public int value() {
+    return value;
+  }
+
+  public static ${name} fromInt(int value) {
+    switch (value) {
+${cases}    default: throw new Error();
+    }
+  }
+
+  private ${name}(int v) { value = v; }; 
+}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 152192 "umlLanguage"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 152320 "cppLanguage"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 152448 "javaLanguage"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 152576 "idlLanguage"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+    end
   end
 
   deploymentview 256 "API BASE Deployment view"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     comment "The API system artifacts
 
@@ -30304,6 +31011,32 @@ ${package}
 ${definition}"
       associated_classes
 	class_ref 143232 // UmlBaseParameterSet
+      end
+    end
+
+    artifact 138624 "aLanguage"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 143488 // aLanguage
       end
     end
   end

@@ -53,11 +53,12 @@ class AttributeDialog : public QTabDialog {
     
   protected:
     bool visit;
-    AttributeData * att;
     bool in_enum;
+    AttributeData * att;
     QStringList list;
     BrowserNodeList nodes;
     QList<BodyDialog> edits;
+    BrowserNode * view;
     int offset;
     
     // uml tab

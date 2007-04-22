@@ -24,6 +24,10 @@ void UmlOperation::html(QCString, unsigned int, unsigned int) {
 
   fw.write("<p>Declaration :</p><ul>");
   
+  fw.write("<li>Uml : ");
+  gen_uml_decl();
+  fw.write("</li>");
+  
   QCString s = cppDecl();
 
   if (!s.isEmpty()) {
@@ -89,6 +93,53 @@ void UmlOperation::generate_index()
     end_file();
   }
 
+}
+
+void UmlOperation::gen_uml_decl() {
+  if (isAbstract())
+    fw.write("abstract, ");
+  if (isClassMember())
+    fw.write("static, ");
+  write(visibility());
+  writeq(name());
+  
+  const QValueList<UmlParameter> & pa = params();
+  unsigned npa = pa.count();
+  unsigned rank;
+  const char * sep = "(";
+  
+  for (rank = 0; rank != npa; rank += 1) {
+    fw.write(sep);
+    sep = ", ";
+    
+    switch (pa[rank].dir) {
+    case InputOutputDirection:
+      fw.write("inout ");
+      break;
+    case InputDirection:
+      fw.write("in ");
+      break;
+    default:
+      // OutputDirection
+      fw.write("out ");
+    }
+    writeq(pa[rank].name);
+    fw.write(" : ");
+    write(pa[rank].type);
+  }
+  fw.write((rank == 0) ? "() : " : ") : ");
+  write(returnType());
+  
+  sep = ",  exceptions : ";
+  
+  const QValueList<UmlTypeSpec> e = exceptions();
+  unsigned n = e.count();
+  
+  for (unsigned index2 = 0; index2 != n; index2 += 1) {
+    fw.write(sep);
+    sep = ", ";
+    write(e[index2]);
+  }
 }
 
 void UmlOperation::gen_cpp_decl(QCString s, bool descr) {
@@ -257,7 +308,7 @@ void UmlOperation::gen_java_decl(QCString s) {
     }
     else if (!strncmp(p, "${visibility}", 13)) {
       p += 13;
-      write(visibility(), FALSE);
+      UmlItem::write(visibility(), FALSE);
       fw.write(' ');
     }
     else if (!strncmp(p, "${static}", 9)) {

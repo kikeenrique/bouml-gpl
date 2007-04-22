@@ -179,11 +179,12 @@ class CallBehaviorDialog : public QObject, public AnyActionDialog {
     QStringList * node_names;
     QCheckBox * synchronous_cb;
     QComboBox * behavior_co;
+    BrowserNode * view;
     bool visit;
 
   public:
     void init(QTabDialog *, ActivityActionData *, CallBehaviorAction *, 
-	      BrowserNodeList &, QStringList &, bool visit);
+	      BrowserNodeList &, QStringList &, BrowserNode * v, bool visit);
     bool update(CallBehaviorAction *);
     
   public slots:
@@ -275,10 +276,7 @@ class ActivityActionDialog : public QTabDialog {
     UmlActionKind current_type;
     MultiLineEdit * comment;
     BrowserNodeList classes;
-    BrowserNodeList classes_with_var;
-    QStringList class_with_var_names;
-    BrowserNodeList classes_with_oper;
-    QStringList class_with_oper_names;
+    QStringList class_names;
     BrowserNodeList behaviors;
     QStringList behavior_names;
     QList<BodyDialog> edits;

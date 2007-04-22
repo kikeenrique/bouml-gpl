@@ -3,6 +3,24 @@ class UmlAttribute
   return "attribute";
 !!!128352.java!!!	sKind() : string
   return "attribute";
+!!!204162.cpp!!!	memo_ref() : void
+  if (visibility() == PublicVisibility) {
+   
+    QCString s = parent()->stereotype();
+    
+    if ((s != "enum") && (s != "enum_pattern"))
+      attrs.addElement(this);
+  }
+  UmlItem::memo_ref();
+!!!204162.java!!!	memo_ref() : void
+  if (visibility() == aVisibility.PublicVisibility) {
+   
+    String s = parent().stereotype();
+    
+    if ((s != "enum") && (s != "enum_pattern"))
+      attrs.addElement(this);
+  }
+  super.memo_ref();
 !!!129907.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   define();
 
@@ -11,6 +29,10 @@ class UmlAttribute
   fw.write("</b></div></td></tr></table>\n");
 
   fw.write("<p>Declaration :</p><ul>");
+  
+  fw.write("<li>Uml : ");
+  gen_uml_decl();
+  fw.write("</li>");
   
   QCString s = cppDecl();
 
@@ -50,6 +72,10 @@ class UmlAttribute
 
   fw.write("<p>Declaration :</p><ul>");
   
+  fw.write("<li>Uml : ");
+  gen_uml_decl();
+  fw.write("</li>");
+  
   String s = cppDecl();
 
   if (s.length() != 0) {
@@ -79,6 +105,64 @@ class UmlAttribute
   }
 
   unload(false, false);
+!!!204418.cpp!!!	ref_index() : void
+  if (!attrs.isEmpty())
+    fw.write("<a href=\"public_properties.html\" target = \"projectFrame\"><b> -Public properties- </b></a>");
+!!!204418.java!!!	ref_index() : void
+  if (!attrs.isEmpty())
+    fw.write("<a href=\"public_properties.html\" target = \"projectFrame\"><b> -Public Properties- </b></a>");
+!!!204290.cpp!!!	generate_index() : void
+  unsigned n = attrs.size();
+  
+  if (n != 0) {
+    sort(attrs);
+    
+    start_file("public_properties", "Public Properties Index", TRUE);
+    
+    fw.write("<table>\n");
+    fw.write("<tr bgcolor=#f0f0f0><td align=center><b>Property</b></td><td align=center><b>Class</b></td><td align=center><b>Description</b></td></tr>\n");
+      
+    for (unsigned i = 0; i != n; i += 1) {
+      UmlItem * prop = attrs.elementAt(i);
+      
+      fw.write("<tr bgcolor=#f0f0f0><td>");
+      prop->write();
+      fw.write("</td><td>");
+      prop->parent()->write();
+      fw.write("</td><td>");
+      writeq(prop->description());
+      fw.write("</td></tr>\n");
+    }
+    fw.write("</table>\n");
+    
+    end_file();
+  }
+!!!204290.java!!!	generate_index() : void
+  int n = attrs.size();
+  
+  if (n != 0) {
+    sort(attrs);  
+
+    start_file("public_properties", "Public Properties Index", true);
+    
+    fw.write("<table>\n");
+    fw.write("<tr bgcolor=#f0f0f0><td align=center><b>Property</b></td><td align=center><b>Class</b></td><td align=center><b>Description</b></td></tr>\n");
+      
+    for (int i = 0; i != n; i += 1) {
+      UmlItem prop = (UmlItem) attrs.elementAt(i);
+      
+      fw.write("<tr bgcolor=#f0f0f0><td>");
+      prop.write();
+      fw.write("</td><td>");
+      prop.parent().write();
+      fw.write("</td><td>");
+      writeq(prop.description());
+      fw.write("</td></tr>\n");
+    }
+    fw.write("</table>\n");
+    
+    end_file();
+  }
 !!!130035.cpp!!!	gen_cpp_decl(in s : string, in descr : bool) : void
   const char * p;
   
@@ -361,3 +445,19 @@ class UmlAttribute
     else
       writeq(s.charAt(index++));
   }
+!!!203906.cpp!!!	gen_uml_decl() : void
+  if (isClassMember())
+    fw.write("static, ");
+  write(visibility());
+  writeq(name());
+  fw.write(" : ");
+  write(type());
+
+!!!203906.java!!!	gen_uml_decl() : void
+  if (isClassMember())
+    fw.write("static, ");
+  write(visibility());
+  writeq(name());
+  fw.write(" : ");
+  write(type());
+

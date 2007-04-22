@@ -451,6 +451,7 @@ h4.activity { background: #87ceff; }\n");
   
   UmlClass::ref_index();
   UmlOperation::ref_index();
+  UmlAttribute::ref_index();
   UmlPackage::ref_index();
   UmlUseCase::ref_index();
   UmlActivity::ref_index();
@@ -481,6 +482,7 @@ h4.activity { background: #87ceff; }\n");
   
   UmlClass.ref_index();
   UmlOperation.ref_index();
+  UmlAttribute.ref_index();
   UmlPackage.ref_index();
   UmlUseCase.ref_index();
   UmlActivity.ref_index();
@@ -508,6 +510,7 @@ h4.activity { background: #87ceff; }\n");
 !!!129520.cpp!!!	generate_indexes() : void
   UmlClass::generate_index();
   UmlOperation::generate_index();
+  UmlAttribute::generate_index();
   UmlPackage::generate_index();
   UmlUseCase::generate_index();
   UmlActivity::generate_index();
@@ -598,6 +601,7 @@ h4.activity { background: #87ceff; }\n");
 !!!129520.java!!!	generate_indexes() : void
   UmlClass.generate_index();
   UmlOperation.generate_index();
+  UmlAttribute.generate_index();
   UmlPackage.generate_index();
   UmlUseCase.generate_index();
   UmlActivity.generate_index();
@@ -1137,7 +1141,7 @@ h4.activity { background: #87ceff; }\n");
     fw.write("</b></a>");
   }
   else
-    writeq(name());
+    writeq(pretty_name());
 !!!128311.cpp!!!	write(in target : string) : void
   if (refId != 0) {
     fw.write("<a href=\"index.html#ref");
@@ -1226,6 +1230,16 @@ h4.activity { background: #87ceff; }\n");
     writeq((cpp) ? CppSettings.type(t.toString())
 		 : JavaSettings.type(t.toString()));
 
+!!!203778.cpp!!!	write(in t : UmlTypeSpec) : void
+  if (t.type != 0)
+    t.type->write();
+  else
+    writeq(t.toString());
+!!!203778.java!!!	write(in t : UmlTypeSpec) : void
+  if (t.type != null)
+    t.type.write();
+  else
+    writeq(t.toString());
 !!!128243.cpp!!!	write(in v : aVisibility, in cpp : bool) : void
   switch (v) {
   case PublicVisibility:
@@ -1259,6 +1273,36 @@ h4.activity { background: #87ceff; }\n");
     break;
   default:
     fw.write("???");
+  }
+!!!203650.cpp!!!	write(in v : aVisibility) : void
+  switch (v) {
+  case PublicVisibility:
+    fw.write("+ ");
+    break;
+  case ProtectedVisibility:
+    fw.write("# ");
+    break;
+  case PrivateVisibility:
+    fw.write("- ");
+    break;
+  default:
+    // PackageVisibility:
+    fw.write("~ ");
+  }
+!!!203650.java!!!	write(in v : aVisibility) : void
+  switch (v.value()) {
+  case aVisibility._PublicVisibility:
+    fw.write("+ ");
+    break;
+  case aVisibility._ProtectedVisibility:
+    fw.write("# ");
+    break;
+  case aVisibility._PrivateVisibility:
+    fw.write("- ");
+    break;
+  default:
+    // aVisibility._PackageVisibility:
+    fw.write("~ ");
   }
 !!!197762.cpp!!!	write(in d : aDirection) : void
   switch (d) {

@@ -34,6 +34,7 @@ class CodObjCanvas;
 class CodMsgSupport;
 class ColDiagramView;
 class OperationData;
+class BrowserClass;
 
 class CodAddMsgDialog : public QDialog {
   Q_OBJECT
@@ -42,6 +43,7 @@ class CodAddMsgDialog : public QDialog {
     CodMsgSupport * in;
     ColDiagramView * view;
     bool forward;
+    BrowserClass * cl;
     QComboBox * cbrank;
     QStringList list;
     QValueList<const OperationData *> opers;

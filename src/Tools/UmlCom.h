@@ -218,6 +218,8 @@ class UmlCom {
     
     //
     
+    static void send_cmd(CmdFamily f, unsigned int cmd, unsigned int u, char c);
+    
     static unsigned user_id();
     static void set_user_id(unsigned uid);
     static bool set_root_permission(bool);

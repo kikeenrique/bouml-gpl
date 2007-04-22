@@ -638,14 +638,14 @@ void RelationCanvas::update(bool updatepos) {
     
     s = data->get_multiplicity_b();
     
-    if (unamed || s.isEmpty() || RelationData::uni_directional(itstype)) {
-      // relation does not have multiplicity_b
+    if (unamed || s.isEmpty() || (begin->type() == UmlArrowPoint)) {
+      // relation does not have multiplicity_b or it must be hidden
       if (multiplicity_b != 0) {
 	the_canvas()->del(multiplicity_b);
 	multiplicity_b = 0;
       }
     }
-    else if ((multiplicity_b == 0) && (begin->type() != UmlArrowPoint)) {
+    else if (multiplicity_b == 0) {
       // adds multiplicity_b
       
       multiplicity_b = new LabelCanvas(s, the_canvas(), 0, 0);

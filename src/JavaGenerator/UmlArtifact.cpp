@@ -187,7 +187,7 @@ UmlArtifact * UmlArtifact::generated_one()
 
 bool UmlArtifact::imported(QCString pack_name, QCString class_name) {
   if (imports == 0) {
-    imports = new QAsciiDict<UmlArtifact>[17];
+    imports = new QAsciiDict<UmlArtifact>(17);
     
     QCString s = javaSource();
     int index = 0;

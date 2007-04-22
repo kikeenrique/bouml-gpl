@@ -154,10 +154,14 @@ class GenerationSettings {
     static SharedStr idl_set_name;
     static bool idl_set_oneway;
     
+    static DrawingLanguage uml_get_name;
+    static DrawingLanguage uml_set_name;
+
     static QString cpp_h_extension;
     static QString cpp_src_extension;
     static bool cpp_include_with_path;
     static bool cpp_relative_path;
+    static bool cpp_root_relative_path;
     static bool cpp_force_namespace_gen;
     static IncludesSpec cpp_includes;
     static QString java_extension;
@@ -228,7 +232,9 @@ class GenerationSettings {
     static bool cpp_default_set_inline() { return cpp_set_inline; };
     static bool cpp_default_set_param_const() { return cpp_set_param_const; };
     static bool cpp_default_set_param_ref() { return cpp_set_param_ref; };
-
+    static void set_cpp_return_type(const AType & type, QString & s);
+    static const QString cpp(const AType & type, UmlParamDirection, int);
+    
     static bool java_get_default_defs() { return java_default_defs; };
     static bool java_set_default_defs(bool y);
     static const char * java_default_source_content() { return java_src_content; };
@@ -275,8 +281,8 @@ class GenerationSettings {
     static const char * idl_default_set_name() { return idl_set_name; };
     static bool idl_default_set_oneway() { return idl_set_oneway; };
     
-    static void set_cpp_return_type(const AType & type, QString & s);
-    static const QString cpp(const AType & type, UmlParamDirection, int);
+    static DrawingLanguage uml_default_get_name() { return uml_get_name; }
+    static DrawingLanguage uml_default_set_name() { return uml_set_name; }
     
     static QString cpp_relation_stereotype(const QString &);
     static QString java_relation_stereotype(const QString &);

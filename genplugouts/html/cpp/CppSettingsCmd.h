@@ -45,7 +45,11 @@ enum CppSettingsCmd {
   setCppIsSetInlineCmd,
   setCppIsSetParamConstCmd,
   setCppEnumReturnCmd,
-  setCppReturnCmd
+  setCppReturnCmd,
+  setCppIsSetParamRefCmd,
+  setCppRelativePathCmd,
+  setCppForceNamespaceGenCmd,
+  setCppRootRelativePathCmd
 
 };
 #endif

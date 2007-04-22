@@ -32,7 +32,8 @@ SRC_DIRS = src \
 	src/IdlGenerator \
 	src/PlugOutUpgrade \
 	src/ProjectControl \
-	src/ProjectSynchro
+	src/ProjectSynchro \
+	src/RoundtripBody
 
 PLUGOUT_DIRS = genplugouts/html/cpp \
 	genplugouts/gpro \
@@ -59,6 +60,7 @@ PROGS = src/bouml \
 	src/PlugOutUpgrade/plug_out_upgrade \
 	src/ProjectControl/projectControl \
 	src/ProjectSynchro/projectSynchro \
+	src/RoundtripBody/roundtrip_body \
 	genplugouts/html/cpp/ghtml \
 	genplugouts/gpro/gpro \
 	genplugouts/import_rose/irose \

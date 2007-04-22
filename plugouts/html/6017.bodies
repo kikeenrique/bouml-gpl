@@ -801,6 +801,11 @@ class UmlClass
       if (isJavaPublic())
 	fw.write("public ");
     }
+    else if (!strncmp(p, "${visibility}", 13)) {
+      p += 13;
+      UmlItem::write(visibility(), FALSE);
+      fw.write(' ');
+    }
     else if (!strncmp(p, "${final}", 8)) {
       p += 8;
       if (isJavaFinal())
@@ -895,6 +900,11 @@ class UmlClass
       index += 9;
       if (isJavaPublic())
 	fw.write("public ");
+    }
+    else if (s.startsWith("${visibility}", index)) {
+      index += 13;
+      write(visibility(), false);
+      fw.write(' ');
     }
     else if (s.startsWith("${final}", index)) {
       index += 8;

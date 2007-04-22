@@ -29,6 +29,9 @@ class UmlOperation : public UmlBaseOperation {
 
 
   private:
+    //produce the definition in Uml
+    void gen_uml_decl();
+
     //produce the definition in C++
     void gen_cpp_decl(QCString s, bool descr);
 

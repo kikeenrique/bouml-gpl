@@ -57,6 +57,7 @@ class ActivityObjectDialog : public QTabDialog {
     BrowserNodeList nodes;
     QList<BodyDialog> edits;
     int offset;
+    BrowserNode * view;
     
     QWidget * umltab;
     QWidget * ocltab;

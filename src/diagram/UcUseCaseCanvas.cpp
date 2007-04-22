@@ -35,7 +35,7 @@
 #include "SimpleRelationCanvas.h"
 #include "BasicData.h"
 #include "BrowserUseCase.h"
-#include "BasicData.h"
+#include "UseCaseData.h"
 #include "LabelCanvas.h"
 #include "BrowserDiagram.h"
 #include "UmlGlobal.h"
@@ -84,6 +84,7 @@ void UcUseCaseCanvas::draw(QPainter & p) {
   
   QRect r = rect();
   UmlColor co;
+  UseCaseData * data = (UseCaseData *) browser_node->get_data();
   
   if (itscolor != UmlDefaultColor)
     co = itscolor;
@@ -96,7 +97,7 @@ void UcUseCaseCanvas::draw(QPainter & p) {
   QColor col = color(co);
   QBrush brsh = p.brush();
   bool realizationp =
-    !strcmp(browser_node->get_data()->get_stereotype(), "realization");
+    !strcmp(data->get_stereotype(), "realization");
   FILE * fp = svg();
   int rx = width()/2 - 1;
   int ry = height()/2 - 1;
@@ -127,16 +128,14 @@ void UcUseCaseCanvas::draw(QPainter & p) {
 
     if (fp != 0)
       fprintf(fp, "\t<ellipse fill=\"#%06x\" stroke=\"black\"%s stroke-width=\"1\" stroke-opacity=\"1\""
-	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n"
-	      "</g>\n",
+	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
 	      col.rgb()&0xffffff,
 	      (realizationp) ? " stroke-dasharray=\"4,4\"" : "",
 	      r.left() + rx, r.top() + ry, rx, ry);
   }
   else if (fp != 0)
     fprintf(fp, "\t<ellipse fill=\"none\" stroke=\"black\"%s stroke-width=\"1\" stroke-opacity=\"1\""
-	    " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n"
-	    "</g>\n",
+	    " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
 	    (realizationp) ? " stroke-dasharray=\"4,4\"" : "",
 	    r.left() + rx, r.top() + ry, rx, ry);
   
@@ -151,6 +150,53 @@ void UcUseCaseCanvas::draw(QPainter & p) {
   if (realizationp)
     p.setPen(QObject::SolidLine);
 
+  QString ep = data->get_extension_points();
+  
+  if (!ep.isEmpty()) {
+    QFontMetrics fbm(the_canvas()->get_font(UmlNormalBoldFont));
+    const int two = (int) (2 * the_canvas()->zoom());
+    int he = fbm.height() + two;
+    int py = (int) y() + height()/4;
+    int dx = width() / 15;
+    int px = (int) x() + dx;
+    
+    p.drawLine(px, py, r.right() - dx, py);
+    if (fp != 0)
+      fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	      px, py, r.right() - dx, py);
+    
+    int h = (height() * 3) / 4 - two;
+    int w = width() - dx - dx;
+    QColor bckgrnd = p.backgroundColor();
+    
+    py += two;
+    p.setBackgroundColor(col);
+    p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
+
+    p.drawText(px, py, w, h, QObject::AlignHCenter + QObject::AlignTop,
+	       "Extension Points");
+    if (fp != 0)
+      draw_text(px, py, w, h, QObject::AlignHCenter + QObject::AlignTop, 
+		"Extension Points", p.font(), fp);
+    
+    h -= he;
+    
+    if (h > he) {
+      // at least one line may be written
+      py += he;
+      p.setFont(the_canvas()->get_font(UmlNormalFont));
+      p.drawText(px, py, w, h, QObject::AlignCenter, ep);
+      p.setBackgroundColor(bckgrnd);
+      
+      if (fp != 0)
+	draw_text(px, py, w, h, QObject::AlignCenter, ep, p.font(), fp);
+    }
+  }
+  
+  if (fp != 0)
+    fputs("</g>\n", fp);
+  
   p.setBrush(brsh);
   
   if (selected())

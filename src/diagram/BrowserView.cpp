@@ -276,26 +276,32 @@ void BrowserView::keyPressEvent(QKeyEvent * e) {
       e->ignore();
       return;
     }
-    else if (s == "Menu") {
-      rightPressed(selectedItem());
-      e->ignore();
-      return;
-    }
-    else if (s == "Delete") {
+    else {
       BrowserNode * bn = (BrowserNode *) selectedItem();
       
-      QApplication::setOverrideCursor(Qt::waitCursor);
-      bn->delete_it();
-      QApplication::restoreOverrideCursor();
-      ((BrowserNode *) bn->parent())->modified();
-      bn->package_modified();
-      e->ignore();
-    }
-    else if ((s != "Move left") && (s != "Move right") &&
-	     (s != "Move up") && (s != "Move down")) {
-      ((BrowserNode *) selectedItem())->apply_shortcut(s);
-      e->ignore();
-      return;
+      if (bn == 0) {
+	e->ignore();
+	return;
+      }
+      else if (s == "Menu") {
+	rightPressed(bn);
+	e->ignore();
+	return;
+      }
+      else if (s == "Delete") {
+	QApplication::setOverrideCursor(Qt::waitCursor);
+	bn->delete_it();
+	QApplication::restoreOverrideCursor();
+	((BrowserNode *) bn->parent())->modified();
+	bn->package_modified();
+	e->ignore();
+      }
+      else if ((s != "Move left") && (s != "Move right") &&
+	       (s != "Move up") && (s != "Move down")) {
+	bn->apply_shortcut(s);
+	e->ignore();
+	return;
+      }
     }
   }
   

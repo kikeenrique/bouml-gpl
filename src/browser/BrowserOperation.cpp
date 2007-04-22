@@ -38,6 +38,7 @@
 #include "BrowserRelation.h"
 #include "BrowserClass.h"
 #include "OperationData.h"
+#include "GenerationSettings.h"
 #include "UmlPixmap.h"
 #include "UmlGlobal.h"
 #include "myio.h"
@@ -216,6 +217,20 @@ void BrowserOperation::set_set_of(BrowserNode * o) {
   }
 }
 
+static QString substr_name(QString s, const QString & a)
+{
+  int index;
+  
+  if ((index = s.find("${name}")) != -1)
+    s.replace(index, 7, a);
+  else if ((index = s.find("${Name}")) != -1)
+    s.replace(index, 7, capitalize(a));
+  else if ((index = s.find("${NAME}")) != -1)
+    s.replace(index, 7, a.upper());
+  
+  return s;
+}
+
 void BrowserOperation::update_get_of(const QString & attr_name,
 				     const QString & cpp_decl,
 				     const QString & java_decl,
@@ -226,7 +241,19 @@ void BrowserOperation::update_get_of(const QString & attr_name,
 				     QString ste) {
   bool create = name.isEmpty();
   
-  set_name(QString("get_") + attr_name);
+  switch (GenerationSettings::uml_default_get_name()) {
+  case CppView:
+    set_name(substr_name(GenerationSettings::cpp_default_get_name(), attr_name));
+    break;
+  case JavaView:
+    set_name(substr_name(GenerationSettings::java_default_get_name(), attr_name));
+    break;
+  case IdlView:
+    set_name(substr_name(GenerationSettings::idl_default_get_name(), attr_name));
+    break;
+  default:
+    set_name(QString("get_") + attr_name);
+  }
   
   def->update_get_of(attr_name, cpp_decl, java_decl, idl_decl, is_const,
 		     is_class_member, cl, multiplicity, ste, create, TRUE);
@@ -244,7 +271,19 @@ void BrowserOperation::update_set_of(const QString & attr_name,
 				     QString ste) {
   bool create = name.isEmpty();
   
-  set_name(QString("set_") + attr_name);
+  switch (GenerationSettings::uml_default_set_name()) {
+  case CppView:
+    set_name(substr_name(GenerationSettings::cpp_default_set_name(), attr_name));
+    break;
+  case JavaView:
+    set_name(substr_name(GenerationSettings::java_default_set_name(), attr_name));
+    break;
+  case IdlView:
+    set_name(substr_name(GenerationSettings::idl_default_set_name(), attr_name));
+    break;
+  default:
+    set_name(QString("set_") + attr_name);
+  }
 
   def->update_set_of(attr_name, cpp_decl, java_decl, idl_decl, is_const,
 		     is_class_member, cl, multiplicity, ste, create, TRUE);

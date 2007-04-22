@@ -35,12 +35,14 @@ class QRadioButton;
 class MultiLineEdit;
 class SdMsgBaseCanvas;
 class OperationData;
+class BrowserClass;
 
 class SdMsgDialog : public QDialog {
   Q_OBJECT
     
   protected:
     SdMsgBaseCanvas * mc;
+    BrowserClass * cl;
     QStringList list;
     QValueList<const OperationData *> opers;
     QComboBox * edoper;

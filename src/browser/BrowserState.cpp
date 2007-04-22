@@ -180,13 +180,26 @@ void BrowserState::add_state_diagram() {
   (new BrowserStateDiagram(child_random_name("Diagram"), this))->select_in_browser();
 }
 
+static bool is_machine(const BrowserState * s)
+{
+  switch (((BrowserNode *) s->parent())->get_type()) {
+  case UmlState:
+  case UmlRegion:
+    return FALSE;
+    break;
+  default:
+    return TRUE;
+  }
+}
+
 void BrowserState::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   QString what;
   BrowserNode * item_above = 0;
+  bool mach = is_machine(this);
   
-  if (((BrowserNode *) parent())->get_type() == UmlClassView)
+  if (mach)
     what = "state machine";
   else
     what = (!strcmp(get_stereotype(), "submachine"))
@@ -199,7 +212,7 @@ void BrowserState::menu() {
     if (!is_read_only) {
       m.setWhatsThis(m.insertItem("New state diagram", 0),
 		     "to add a <em>state diagram</em>");
-      if (((BrowserNode *) parent())->get_type() == UmlClassView) {
+      if (mach) {
 	m.setWhatsThis(m.insertItem("New submachine", 1),
 		       "to add a <em>submachine</em> to the <em>machine</em>");
 	m.setWhatsThis(m.insertItem("New state", 2),
@@ -282,11 +295,12 @@ through a transition");
     }
   }
   
-  exec_menu_choice(m.exec(QCursor::pos()), item_above);
+  exec_menu_choice(m.exec(QCursor::pos()), item_above, mach);
 }
 
 void BrowserState::exec_menu_choice(int rank,
-				    BrowserNode * item_above) {
+				    BrowserNode * item_above,
+				    bool mach) {
   switch (rank) {
   case 0:
     add_state_diagram();
@@ -305,7 +319,7 @@ void BrowserState::exec_menu_choice(int rank,
       QString name;
       QString what;
       
-      if (((BrowserNode *) parent())->get_type() == UmlClassView)
+      if (mach)
 	what = "state machine";
       else
 	what = (!strcmp(get_stereotype(), "submachine"))
@@ -358,12 +372,13 @@ void BrowserState::exec_menu_choice(int rank,
 
 void BrowserState::apply_shortcut(QString s) {
   int choice = -1;
-
+  bool mach = is_machine(this);
+  
   if (!deletedp()) {
     if (!is_read_only) {
       if (s == "New state diagram")
 	choice = 0;
-      if (((BrowserNode *) parent())->get_type() == UmlClassView) {
+      if (mach) {
 	if (s == "New submachine")
 	  choice = 1;
       }
@@ -403,7 +418,7 @@ void BrowserState::apply_shortcut(QString s) {
     }
   }
   
-  exec_menu_choice(choice, 0);
+  exec_menu_choice(choice, 0, mach);
 }
 
 void BrowserState::open(bool force_edit) {
@@ -440,13 +455,19 @@ QString BrowserState::full_name(bool rev, bool) const {
 bool BrowserState::sub_state_of(BrowserState * st) const {
   const BrowserNode * p = this;
   
-  do {
+  for (;;) {
     p = (BrowserNode *) p->parent();
     if (p == st)
       return TRUE;
-  } while (p->get_type() != UmlClassView);
-  
-  return FALSE;
+    
+    switch (p->get_type()) {
+    case UmlState:
+    case UmlRegion:
+      break;
+    default:
+      return FALSE;
+    }
+  }
 }
 
 BrowserNodeList & BrowserState::instances(BrowserNodeList & result, bool sort)
@@ -670,14 +691,14 @@ void BrowserState::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 }
 
 QString BrowserState::drag_key() const {
-  return ((((BrowserNode *) parent())->get_type() == UmlClassView))
+  return (is_machine(this))
     ? QString::number(UmlState)
     : QString::number(UmlState)
       + "#" + QString::number((unsigned long) parent());
 }
 
 QString BrowserState::drag_postfix() const {
-  return (((BrowserNode *) parent())->get_type() == UmlClassView)
+  return (is_machine(this))
     ? QString::null
     : "#" + QString::number((unsigned long) parent());
 }

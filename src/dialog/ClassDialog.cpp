@@ -134,12 +134,10 @@ ClassDialog::ClassDialog(ClassData * c)
 
   QButtonGroup * bgv;
   
-  if (bn->nestedp()) {
-    bgv = uml_visibility.init(htab, cl->get_uml_visibility(), TRUE);
-    if (visit)
-      bgv->setEnabled(FALSE);
-    htab->setStretchFactor(bgv, 1000);  
-  }
+  bgv = uml_visibility.init(htab, cl->get_uml_visibility(), TRUE);
+  if (visit)
+    bgv->setEnabled(FALSE);
+  htab->setStretchFactor(bgv, 1000);  
   
   BrowserNodeList inh;
   
@@ -339,9 +337,6 @@ ClassDialog::ClassDialog(ClassData * c)
   htab->setMargin(5);
   lbl1 = new QLabel(htab);
   bg = new QGroupBox(3, QGroupBox::Horizontal, QString::null, htab);
-  java_public_cb = new QCheckBox("public", bg);
-  if (cl->java_is_public())
-    java_public_cb->setChecked(TRUE);
   java_final_cb = new QCheckBox("final", bg);
   if (cl->java_is_final())
     java_final_cb->setChecked(TRUE);
@@ -349,13 +344,10 @@ ClassDialog::ClassDialog(ClassData * c)
   if (cl->java_is_external())
     java_external_cb->setChecked(TRUE);
   if (visit) {
-    java_public_cb->setDisabled(TRUE);
     java_final_cb->setDisabled(TRUE);
     java_external_cb->setDisabled(TRUE);
   }
   else {
-    connect(java_public_cb, SIGNAL(toggled(bool)),
-	    SLOT(java_update_decl()));
     connect(java_final_cb, SIGNAL(toggled(bool)),
 	    SLOT(java_update_decl()));
     connect(java_external_cb, SIGNAL(toggled(bool)),
@@ -1185,7 +1177,7 @@ static void java_generate_implements(QString & s, const QString & stereotype,
 void ClassDialog::java_generate_decl(QString & s, ClassData * cl, QString def,
 				     QString annotation, QString name, 
 				     QString stereotype,
-				     QString comment, bool is_public,
+				     QString comment, UmlVisibility visibility,
 				     bool is_final, bool is_abstract,
 				     ActualParamsTable * actuals,
 				     FormalParamsTable * formals,
@@ -1226,8 +1218,12 @@ void ClassDialog::java_generate_decl(QString & s, ClassData * cl, QString def,
       manage_description(comment, p, pp);
     else if (!strncmp(p, "${public}", 9)) {
       p += 9;
-      if (is_public)
+      if (visibility == UmlPublic)
 	s += "public ";
+    }
+    else if (!strncmp(p, "${visibility}", 13)) {
+      p += 13;
+      s += stringify(visibility) + QString(" ");
     }
     else if (!strncmp(p, "${final}", 8)) {
       p += 8;
@@ -1310,7 +1306,7 @@ void ClassDialog::java_update_decl() {
     java_generate_decl(s, cl, def, javaannotation,
 		       edname->text().stripWhiteSpace(),
 		       current_java_stereotype, comment->text(),
-		       java_public_cb->isChecked(), java_final_cb->isChecked(),
+		       uml_visibility.value(), java_final_cb->isChecked(),
 		       abstract_cb->isChecked(), actuals_table,
 		       formals_table, nodes, node_names, kvtable);
 
@@ -1601,8 +1597,7 @@ void ClassDialog::accept() {
   
   cl->is_abstract = abstract_cb->isChecked();
   
-  if (bn->nestedp())
-    cl->uml_visibility = uml_visibility.value();
+  cl->uml_visibility = uml_visibility.value();
   
   if (artifact != 0) {
     int index = artifact->currentItem();
@@ -1626,7 +1621,6 @@ void ClassDialog::accept() {
     cl->cpp_visibility = cpp_visibility.value();
   
   cl->java_decl = edjavadecl->text();
-  cl->java_public = java_public_cb->isChecked();
   cl->java_final = java_final_cb->isChecked();
   cl->java_external = java_external_cb->isChecked();
   cl->java_annotation = javaannotation;

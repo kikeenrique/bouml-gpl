@@ -75,6 +75,9 @@ ClassInstanceDialog::ClassInstanceDialog(OdClassInstCanvas * i)
   edtype->setCurrentItem(nodes.find(inst->get_type()));
   connect(edtype, SIGNAL(activated(int)), this, SLOT(type_changed(int)));
   hbox->addWidget(edtype);
+  cl_container = ((BrowserNode *) inst->the_canvas()->browser_diagram())->container(UmlClass);
+  if ((cl_container != 0) && !cl_container->is_writable())
+    cl_container = 0;
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
@@ -128,18 +131,49 @@ void ClassInstanceDialog::menu_class() {
   
   BrowserNode * bn = BrowserView::selected_item();
   
-  if ((bn->get_type() == UmlClass) && !bn->deletedp())
+  if ((bn != 0) && (bn->get_type() == UmlClass) && !bn->deletedp())
     m.insertItem("Choose class selected in browser", 1);
   else
     bn = 0;
   
-  if ((index != -1) || (bn != 0)) {
+  if (cl_container != 0)
+    m.insertItem("Create class and choose it", 2);
+  
+  if ((index != -1) || (bn != 0) || (cl_container != 0)) {
     switch (m.exec(QCursor::pos())) {
     case 0:
       nodes.at(index)->select_in_browser();
       break;
+    case 2:
+      bn = BrowserClass::add_class(cl_container);
+      if (bn == 0)
+	return;
+      bn->select_in_browser();
+      // no break
     case 1:
-      edtype->setCurrentItem(list.findIndex(bn->full_name(TRUE)));
+      {
+	QString s = bn->full_name(TRUE);
+	
+	if ((index = list.findIndex(s)) == -1) {
+	  // new class, may be created through an other dialog
+	  index = 0;
+	  QStringList::Iterator iter = list.begin();
+	  QStringList::Iterator iter_end = list.end();
+	  
+	  while ((iter != iter_end) && (*iter < s)) {
+	    ++iter;
+	    index += 1;
+	  }
+	  nodes.insert((unsigned) index, bn);
+	  list.insert(iter, s);
+	  edtype->insertItem(s, index);
+	}
+      }
+      edtype->setCurrentItem(index);
+      type_changed(index);
+      break;
+    default:
+      break;
     }
   }
 }

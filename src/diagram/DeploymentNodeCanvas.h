@@ -80,6 +80,8 @@ class DeploymentNodeCanvas
     virtual void set_name(const QString & s);
     
     virtual BrowserNode * get_type() const;
+    virtual BrowserNode * new_type();
+    virtual bool new_type_available();
     virtual BrowserNodeList & get_types(BrowserNodeList & r) const;
     virtual void set_type(BrowserNode * t);
     

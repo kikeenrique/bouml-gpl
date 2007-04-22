@@ -48,7 +48,7 @@ class BrowserState : public BrowserNode, public Labeled<BrowserState> {
   protected:
     BrowserState(int id);
   
-    void exec_menu_choice(int rank, BrowserNode * item_above);
+    void exec_menu_choice(int rank, BrowserNode * item_above, bool mach);
     
   public:
     BrowserState(QString s, BrowserNode * p, StateData * d, int id = 0);

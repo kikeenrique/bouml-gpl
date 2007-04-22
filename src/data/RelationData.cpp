@@ -973,7 +973,9 @@ void RelationData::save(QTextStream & st, bool ref, QString & warning) const {
       end->save(st, TRUE, warning);
     }
     else {
-      st << "parent ";
+      st << "multiplicity ";
+      save_string(b.multiplicity, st);
+      st << " parent ";
       end_removed_from->save(st, TRUE, warning);
     }
     indent(-1);
@@ -1166,7 +1168,14 @@ RelationData * RelationData::read(char * & st, char * & k)
       result->end->set_name(result->name);
     }
     else {
-      read_keyword(st, "parent");
+      k = read_keyword(st);
+      if (!strcmp(k, "multiplicity")) {
+	// new
+	result->b.multiplicity = read_string(st);
+	k = read_keyword(st);
+      }
+      if (strcmp(k, "parent"))
+	wrong_keyword(k, "parent");
       result->end_removed_from = BrowserClass::read_ref(st);
       result->b.uml_visibility =
 	((BrowserNode *) result->end_removed_from->parent())->get_visibility(UmlRelations);

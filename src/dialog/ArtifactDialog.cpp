@@ -1070,7 +1070,7 @@ void ArtifactDialog::java_update_src() {
 	  
 	  ClassDialog::java_generate_decl(s, c, c->get_javadecl(), "", bn->get_name(),
 					  c->get_stereotype(), bn->get_comment(),
-					  c->java_is_public(), c->java_is_final(),
+					  c->get_uml_visibility(), c->java_is_final(),
 					  c->get_is_abstract(), a, f, nds, node_names, 0);
 	  s += '\n';
 	}
@@ -1351,7 +1351,7 @@ void ArtifactDialog::accept() {
   BrowserArtifact * bn = (BrowserArtifact *) data->get_browser_node();
   
   if ((s != bn->get_name()) &&
-      ((BrowserNode *) bn->parent())->wrong_child_name(s, bn->get_type(),
+      ((BrowserNode *) bn->parent())->wrong_child_name(s, UmlArtifact,
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
     msg_critical("Error", edname->text() + "\n\nillegal name or already used");

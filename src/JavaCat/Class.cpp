@@ -167,8 +167,8 @@ bool Class::already_in_bouml() {
 // remove the may be added formals in all the return cases
 
 bool Class::reverse(ClassContainer * container, QCString stereotype,
-		    QCString annotation, bool publicp, bool abstractp, bool finalp,
-		    aVisibility visibility, bool subclass, QCString & path, 
+		    QCString annotation, bool abstractp, bool finalp,
+		    aVisibility visibility, QCString & path, 
 		    QValueList<FormalParameterList> tmplts)
 {
   QCString comment = Lex::get_comments();
@@ -208,12 +208,7 @@ bool Class::reverse(ClassContainer * container, QCString stereotype,
       cl_uml->set_Description((cl_uml->javaDecl().find("${description}") != -1)
 			      ? description : comment);
     
-    if (!subclass) {
-      if (publicp)
-	cl_uml->set_isJavaPublic(publicp);
-    }
-    else if (visibility != PublicVisibility)
-      cl_uml->set_Visibility(visibility);
+    cl_uml->set_Visibility(visibility);
     
     if (! annotation.isEmpty())
       cl_uml->set_JavaAnnotations(annotation);
@@ -751,8 +746,8 @@ bool Class::manage_member(QCString s, QCString & path) {
     else if (Lex::identifierp(s)) {
       if ((s == "class") || (s == "enum") ||
 	  (s == "interface") || (s == "@interface"))
-	return reverse(this, s, annotation, FALSE, m_abstractp, m_finalp,
-		       visibility, TRUE, path, tmplts);
+	return reverse(this, s, annotation, m_abstractp, m_finalp,
+		       visibility, path, tmplts);
       
       if (!type_read) {
 	if (! ((Package::scanning()) 

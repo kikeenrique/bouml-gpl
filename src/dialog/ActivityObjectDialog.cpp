@@ -115,6 +115,14 @@ ActivityObjectDialog::ActivityObjectDialog(ActivityObjectData * d, const char * 
     offset = edtype->count();
     edtype->insertStringList(list);
     edtype->setAutoCompletion(TRUE);
+    
+    // search for the view containing the activity
+    view = d->browser_node;
+    
+    do {
+      view = (BrowserNode *) view->parent();
+    } while (view->get_type() != UmlActivity);
+    view = (BrowserNode *) view->parent();
   }
   edtype->setCurrentItem(0);
   edtype->setSizePolicy(sp);
@@ -271,19 +279,48 @@ void ActivityObjectDialog::menu_type() {
   if (! visit) {
     bn = BrowserView::selected_item();
     
-    if ((bn->get_type() == UmlClass) && !bn->deletedp())
+    if ((bn != 0) && (bn->get_type() == UmlClass) && !bn->deletedp())
       m.insertItem("Choose class selected in browser", 1);
     else
       bn = 0;
+    
+    m.insertItem("Create class and choose it", 2);
   }
   
-  if ((index != -1) || (bn != 0)) {
+  if (!visit || (index != -1) || (bn != 0)) {
     switch (m.exec(QCursor::pos())) {
     case 0:
       nodes.at(index)->select_in_browser();
       break;
+    case 2:
+      bn = BrowserClass::add_class(view);
+      if (bn == 0)
+	return;
+      bn->select_in_browser();
+      // no break
     case 1:
-      edtype->setCurrentItem(list.findIndex(bn->full_name(TRUE)) + offset);
+      {
+	QString s = bn->full_name(TRUE);
+	
+	if ((index = list.findIndex(s)) == -1) {
+	  // new class, may be created through an other dialog
+	  index = 0;
+	  QStringList::Iterator iter = list.begin();
+	  QStringList::Iterator iter_end = list.end();
+	  
+	  while ((iter != iter_end) && (*iter < s)) {
+	    ++iter;
+	    index += 1;
+	  }
+	  nodes.insert((unsigned) index, bn);
+	  list.insert(iter, s);
+	  edtype->insertItem(s, index + offset);
+	}
+      }
+      edtype->setCurrentItem(index + offset);
+      break;
+    default:
+      break;
     }
   }
 }

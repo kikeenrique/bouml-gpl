@@ -351,10 +351,10 @@ void OperationData::set_browser_node(BrowserOperation * o, bool update) {
 }
 
 QString OperationData::definition(bool full) const {
-  return definition(full, TRUE);
+  return definition(full, TRUE, TRUE);
 }
 
-QString OperationData::definition(bool full, bool withdir) const {
+QString OperationData::definition(bool full, bool withdir, bool withname) const {
   QString result;
   
   if (full) {
@@ -367,7 +367,7 @@ QString OperationData::definition(bool full, bool withdir) const {
       
       for (index = 0; index != nparams; index += 1) {
 	result += sep;
-	result += params[index].definition(withdir);
+	result += params[index].definition(withdir, withname);
 	sep = ", ";
       }
       result += ")";
@@ -382,27 +382,27 @@ QString OperationData::definition(bool full, bool withdir) const {
 }
 
 QString OperationData::definition(bool full, DrawingLanguage language,
-				  bool withdir) const {
+				  bool withdir, bool withname) const {
   switch (language) {
   case UmlView:
-    return definition(full, withdir);
+    return definition(full, withdir, withname);
   case CppView:
     if (full)
-      return OperationDialog::cpp_decl((BrowserOperation *) browser_node);
+      return OperationDialog::cpp_decl((BrowserOperation *) browser_node, withname);
     else if (!cpp_decl.isEmpty())
       return definition(FALSE);
     else
       return QString::null;
   case JavaView:
     if (full)
-      return OperationDialog::java_decl((BrowserOperation *) browser_node);
+      return OperationDialog::java_decl((BrowserOperation *) browser_node, withname);
     else if (!java_def.isEmpty())
       return definition(FALSE);
     else
       return QString::null;
   default:
     if (full)
-      return OperationDialog::idl_decl((BrowserOperation *) browser_node);
+      return OperationDialog::idl_decl((BrowserOperation *) browser_node, withdir, withname);
     else if (!idl_decl.isEmpty())
       return definition(FALSE);
     else

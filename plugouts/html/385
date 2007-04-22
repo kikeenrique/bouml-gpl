@@ -1,10 +1,10 @@
-format 30
+format 35
 "API USER" // API USER
-  revision 4
+  revision 14
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
   //use case diagram settings
   package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //sequence diagram settings
@@ -29,7 +29,7 @@ format 30
   comment " 'your' API classes and components, modify them !"
   classview 385 "API USER class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
     //collaboration diagram settings
     show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
@@ -47,21 +47,23 @@ format 30
     associated_deployment_view deploymentview_ref 385 // API USER Deployment view
     comment " 'your' API classes, modify them !"
     classdiagram 129 "Inheritance Diagram of classes for Package and Views"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
       size A2
     end
 
     classdiagram 257 "Inheritance Diagram of classes for Diagrams"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
       size A2
     end
 
     classdiagram 513 "Inheritance Diagram of classes for Classes"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
       size A4
     end
 
-    class 5377 "UmlActualParameter"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 5377 "UmlActualParameter"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -98,7 +100,9 @@ ${body}}
       end
     end
 
-    class 5633 "UmlFormalParameter"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 5633 "UmlFormalParameter"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -135,7 +139,9 @@ ${body}}
       end
     end
 
-    class 5889 "UmlAttribute"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 5889 "UmlAttribute"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -186,6 +192,20 @@ ${body}}
 	comment "returns a string indicating the king of the element"
       end
 
+      operation 204162 "memo_ref"
+	cpp_virtual public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+      end
+
       operation 129907 "html"
 	cpp_virtual public explicit_return_type "void"
 	nparams 3
@@ -205,6 +225,38 @@ ${body}}
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
+      end
+
+      operation 204418 "ref_index"
+	class_operation public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+      end
+
+      operation 204290 "generate_index"
+	class_operation public explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
       end
 
       operation 130035 "gen_cpp_decl"
@@ -243,9 +295,44 @@ ${body}}
 	
 	comment "produce the definition in Java"
       end
+
+      operation 203906 "gen_uml_decl"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment "produce the definition in Uml"
+      end
+
+      attribute 129538 "attrs"
+	class_attribute public explicit_type "Vector"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      extra_member 128898 "initialization"
+	
+	cpp "" ""
+	java "  static { attrs = new Vector(); }"
+	idl ""
+      end
     end
 
-    class 6017 "UmlClass"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 6017 "UmlClass"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -619,7 +706,9 @@ ${body}}
       end
     end
 
-    class 6145 "UmlClassDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 6145 "UmlClassDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -736,7 +825,9 @@ ${body}}
       end
     end
 
-    class 132994 "UmlObjectDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 132994 "UmlObjectDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -858,7 +949,7 @@ ${body}}
     end
 
     class 5505 "UmlClassItem"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -896,7 +987,7 @@ ${members}};
     end
 
     class 6273 "UmlClassMember"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -950,7 +1041,9 @@ ${body}}
       end
     end
 
-    class 6401 "UmlClassView"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 6401 "UmlClassView"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1036,7 +1129,9 @@ ${body}}
       end
     end
 
-    class 6529 "UmlCollaborationDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 6529 "UmlCollaborationDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1153,7 +1248,9 @@ ${body}}
       end
     end
 
-    class 6657 "UmlComponentDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 6657 "UmlComponentDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1270,7 +1367,9 @@ ${body}}
       end
     end
 
-    class 6785 "UmlComponentView"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 6785 "UmlComponentView"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1356,7 +1455,9 @@ ${body}}
       end
     end
 
-    class 6913 "UmlArtifact"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 6913 "UmlArtifact"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1428,7 +1529,9 @@ ${body}}
       end
     end
 
-    class 128002 "UmlComponent"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 128002 "UmlComponent"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1499,7 +1602,9 @@ ${body}}
       end
     end
 
-    class 7041 "UmlDeploymentDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 7041 "UmlDeploymentDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1616,7 +1721,9 @@ ${body}}
       end
     end
 
-    class 7169 "UmlDeploymentView"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 7169 "UmlDeploymentView"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1703,7 +1810,7 @@ ${body}}
     end
 
     class 7297 "UmlDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -1770,7 +1877,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 7425 "UmlExtraClassMember"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 7425 "UmlExtraClassMember"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1846,7 +1955,7 @@ path, rank in the mother and level in the browser tree"
     end
 
     class 7553 "UmlItem"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -2289,6 +2398,23 @@ ${body}}
 	
       end
 
+      operation 203778 "write"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "t" type class_ref 1920 // UmlTypeSpec
+	nexceptions 1
+	  explicit_exception "IOException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+      end
+
       operation 128243 "write"
 	class_operation public explicit_return_type "void"
 	nparams 2
@@ -2302,6 +2428,23 @@ ${body}}
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+      end
+
+      operation 203650 "write"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "v" type class_ref 512 // aVisibility
+	nexceptions 1
+	  explicit_exception "IOException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
 	
@@ -2530,7 +2673,9 @@ ${body}}
       end
     end
 
-    class 7681 "UmlNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 7681 "UmlNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2602,7 +2747,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 7809 "UmlOperation"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 7809 "UmlOperation"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2720,6 +2867,23 @@ ${body}}
 	
       end
 
+      operation 203522 "gen_uml_decl"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment "produce the definition in Uml"
+      end
+
       operation 128005 "gen_cpp_decl"
 	private explicit_return_type "void"
 	nparams 2
@@ -2789,7 +2953,9 @@ ${body}}
       end
     end
 
-    class 7937 "UmlPackage"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 7937 "UmlPackage"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2940,7 +3106,9 @@ ${body}}
       end
     end
 
-    class 8065 "UmlRelation"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 8065 "UmlRelation"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3063,6 +3231,23 @@ ${body}}
 	comment "produce the definition in Java"
       end
 
+      operation 204034 "gen_uml_decl"
+	private explicit_return_type "void"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "IOException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment "produce the definition in Uml"
+      end
+
       operation 128267 "pretty_name"
 	cpp_virtual public explicit_return_type "string"
 	nparams 0
@@ -3078,7 +3263,9 @@ ${body}}
       end
     end
 
-    class 128180 "UmlNcRelation"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 128180 "UmlNcRelation"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3164,7 +3351,9 @@ ${body}}
       end
     end
 
-    class 8193 "UmlSequenceDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 8193 "UmlSequenceDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3280,7 +3469,9 @@ ${body}}
       end
     end
 
-    class 8321 "UmlUseCase"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 8321 "UmlUseCase"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3431,7 +3622,9 @@ ${body}}
       end
     end
 
-    class 8449 "UmlUseCaseDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 8449 "UmlUseCaseDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3548,7 +3741,9 @@ ${body}}
       end
     end
 
-    class 8577 "UmlUseCaseView"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 8577 "UmlUseCaseView"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3635,7 +3830,7 @@ ${body}}
     end
 
     class 128258 "UmlStateItem"
-       stereotype "interface"
+      visibility package stereotype "interface"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -3649,7 +3844,9 @@ ${members}}
       
     end
 
-    class 128514 "UmlState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 128514 "UmlState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3810,7 +4007,9 @@ ${body}}
       end
     end
 
-    class 128770 "UmlStateDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 128770 "UmlStateDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3935,7 +4134,9 @@ ${body}}
       end
     end
 
-    class 133634 "UmlActivityDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 133634 "UmlActivityDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4065,7 +4266,9 @@ ${body}}
       end
     end
 
-    class 129154 "UmlTransition"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 129154 "UmlTransition"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4146,7 +4349,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 129538 "UmlRegion"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 129538 "UmlRegion"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4242,7 +4447,9 @@ ${body}}
       end
     end
 
-    class 129794 "UmlStateAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 129794 "UmlStateAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4324,7 +4531,7 @@ path, rank in the mother and level in the browser tree"
     end
 
     class 129922 "UmlPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -4392,7 +4599,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 130178 "UmlInitialPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 130178 "UmlInitialPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4443,7 +4652,9 @@ ${body}}
       end
     end
 
-    class 130434 "UmlEntryPointPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 130434 "UmlEntryPointPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4495,7 +4706,9 @@ ${body}}
       end
     end
 
-    class 130690 "UmlFinalState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 130690 "UmlFinalState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4546,7 +4759,9 @@ ${body}}
       end
     end
 
-    class 130946 "UmlTerminatePseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 130946 "UmlTerminatePseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4597,7 +4812,9 @@ ${body}}
       end
     end
 
-    class 131202 "UmlExitPointPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 131202 "UmlExitPointPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4649,7 +4866,9 @@ ${body}}
       end
     end
 
-    class 131458 "UmlDeepHistoryPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 131458 "UmlDeepHistoryPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4700,7 +4919,9 @@ ${body}}
       end
     end
 
-    class 131714 "UmlShallowHistoryPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 131714 "UmlShallowHistoryPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4751,7 +4972,9 @@ ${body}}
       end
     end
 
-    class 131970 "UmlJunctionPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 131970 "UmlJunctionPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4802,7 +5025,9 @@ ${body}}
       end
     end
 
-    class 132226 "UmlChoicePseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 132226 "UmlChoicePseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4853,7 +5078,9 @@ ${body}}
       end
     end
 
-    class 132482 "UmlForkPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 132482 "UmlForkPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4904,7 +5131,9 @@ ${body}}
       end
     end
 
-    class 132738 "UmlJoinPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 132738 "UmlJoinPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4956,7 +5185,7 @@ ${body}}
     end
 
     class 133122 "UmlActivityItem"
-       stereotype "interface"
+      visibility package stereotype "interface"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -4970,7 +5199,9 @@ ${members}}
       
     end
 
-    class 133378 "UmlActivity"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 133378 "UmlActivity"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -5123,7 +5354,7 @@ ${body}}
     end
 
     class 133890 "UmlActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -5170,7 +5401,9 @@ ${members}}
       end
     end
 
-    class 134146 "UmlFlow"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 134146 "UmlFlow"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -5252,7 +5485,7 @@ path, rank in the mother and level in the browser tree"
     end
 
     class 134530 "UmlActivityRegion"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -5313,7 +5546,9 @@ ${body}}
       end
     end
 
-    class 134786 "UmlExpansionRegion"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 134786 "UmlExpansionRegion"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -5386,7 +5621,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 135170 "UmlInterruptibleActivityRegion"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 135170 "UmlInterruptibleActivityRegion"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -5460,7 +5697,7 @@ path, rank in the mother and level in the browser tree"
     end
 
     class 135426 "UmlActivityAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -5516,7 +5753,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 135682 "UmlSendObjectAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 135682 "UmlSendObjectAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -5589,7 +5828,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 135938 "UmlUnmarshallAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 135938 "UmlUnmarshallAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -5663,7 +5904,7 @@ path, rank in the mother and level in the browser tree"
     end
 
     class 136194 "UmlOnSignalAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -5722,7 +5963,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 136450 "UmlSendSignalAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 136450 "UmlSendSignalAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -5774,7 +6017,9 @@ ${body}}
       end
     end
 
-    class 136706 "UmlBroadcastSignalAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 136706 "UmlBroadcastSignalAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -5826,7 +6071,9 @@ ${body}}
       end
     end
 
-    class 136962 "UmlValueSpecificationAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 136962 "UmlValueSpecificationAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -5899,7 +6146,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 137218 "UmlOpaqueAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 137218 "UmlOpaqueAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -5972,7 +6221,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 137474 "UmlAcceptEventAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 137474 "UmlAcceptEventAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6045,7 +6296,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 137730 "UmlCallOperationAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 137730 "UmlCallOperationAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6118,7 +6371,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 137986 "UmlCallBehaviorAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 137986 "UmlCallBehaviorAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6192,7 +6447,7 @@ path, rank in the mother and level in the browser tree"
     end
 
     class 138242 "UmlAccessVariableValueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -6251,7 +6506,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 138498 "UmlClearVariableValueAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 138498 "UmlClearVariableValueAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6303,7 +6560,9 @@ ${body}}
       end
     end
 
-    class 138754 "UmlReadVariableValueAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 138754 "UmlReadVariableValueAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6355,7 +6614,9 @@ ${body}}
       end
     end
 
-    class 139010 "UmlWriteVariableValueAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 139010 "UmlWriteVariableValueAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6407,7 +6668,9 @@ ${body}}
       end
     end
 
-    class 139266 "UmlAddVariableValueAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 139266 "UmlAddVariableValueAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6480,7 +6743,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 139522 "UmlRemoveVariableValueAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 139522 "UmlRemoveVariableValueAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6554,7 +6819,7 @@ path, rank in the mother and level in the browser tree"
     end
 
     class 139778 "UmlActivityControlNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -6613,7 +6878,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 140034 "UmlInitialActivityNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 140034 "UmlInitialActivityNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6665,7 +6932,9 @@ ${body}}
       end
     end
 
-    class 140290 "UmlFlowFinalActivityNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 140290 "UmlFlowFinalActivityNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6717,7 +6986,9 @@ ${body}}
       end
     end
 
-    class 140546 "UmlActivityFinalActivityNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 140546 "UmlActivityFinalActivityNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6769,7 +7040,9 @@ ${body}}
       end
     end
 
-    class 140802 "UmlDecisionActivityNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 140802 "UmlDecisionActivityNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6821,7 +7094,9 @@ ${body}}
       end
     end
 
-    class 141058 "UmlMergeActivityNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 141058 "UmlMergeActivityNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6873,7 +7148,9 @@ ${body}}
       end
     end
 
-    class 141314 "UmlForkActivityNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 141314 "UmlForkActivityNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6925,7 +7202,9 @@ ${body}}
       end
     end
 
-    class 141570 "UmlJoinActivityNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 141570 "UmlJoinActivityNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -6977,7 +7256,9 @@ ${body}}
       end
     end
 
-    class 141826 "UmlActivityObject"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 141826 "UmlActivityObject"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -7071,7 +7352,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 142210 "UmlExpansionNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 142210 "UmlExpansionNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -7109,7 +7392,7 @@ ${members}}
     end
 
     class 142466 "UmlPinParameter"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -7168,7 +7451,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 142850 "UmlActivityPin"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 142850 "UmlActivityPin"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -7241,7 +7526,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 143106 "UmlActivityParameter"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 143106 "UmlActivityParameter"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -7314,7 +7601,9 @@ path, rank in the mother and level in the browser tree"
       end
     end
 
-    class 143362 "UmlParameterSet"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 143362 "UmlParameterSet"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -7385,6 +7674,15 @@ ${body}}
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
+
+      classrelation 154370 // <generalisation>
+	relation 154370 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 154370 // <generalisation>
+	  b parent class_ref 133122 // UmlActivityItem
+      end
     end
   end
 
@@ -7398,168 +7696,168 @@ Do not forget to modify Main !"
     artifact 4737 "executable"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 4480 // UmlCom
+	artifact_ref 8193 // UmlUseCaseView
 	artifact_ref 136194 // UmlAccessVariableValueAction
-	artifact_ref 133378 // UmlActivity
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 138112 // UmlBaseActivityParameter
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 131584 // UmlBaseShallowHistoryPseudoState
-	artifact_ref 130560 // UmlBaseFinalState
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 130434 // UmlEntryPointPseudoState
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 129024 // UmlBaseTransition
-	artifact_ref 137088 // anOrdering
+	artifact_ref 135040 // UmlBaseInterruptibleActivityRegion
+	artifact_ref 134272 // FlowBehavior
+	artifact_ref 134656 // UmlBaseExpansionRegion
+	artifact_ref 128180 // UmlNcRelation
+	artifact_ref 138498 // UmlParameterSet
+	artifact_ref 131328 // UmlBaseDeepHistoryPseudoState
+	artifact_ref 129408 // UmlBaseRegion
+	artifact_ref 132226 // UmlChoicePseudoState
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 137346 // UmlExpansionNode
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 896 // UmlBaseFormalParameter
 	artifact_ref 133504 // UmlBaseActivityDiagram
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 5633 // UmlClass
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 5120 // anItemKind
+	artifact_ref 134016 // UmlBaseFlow
+	artifact_ref 128640 // UmlBaseStateDiagram
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 768 // CppSettings
+	artifact_ref 134786 // UmlExpansionRegion
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 1792 // UmlBaseClassDiagram
 	artifact_ref 138368 // UmlBaseParameterSet
-	artifact_ref 128896 // StateBehavior
-	artifact_ref 135296 // UmlBaseActivityAction
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 129794 // UmlStateAction
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 4864 // aDirection
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 131584 // UmlBaseShallowHistoryPseudoState
+	artifact_ref 136962 // UmlActivityObject
+	artifact_ref 6272 // IdlSettingsCmd
 	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 131202 // UmlExitPointPseudoState
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 131970 // UmlJunctionPseudoState
-	artifact_ref 128770 // UmlStateDiagram
-	artifact_ref 133760 // UmlBaseActivityNode
-	artifact_ref 135808 // UmlBaseOnSignalAction
+	artifact_ref 137472 // UmlBasePinParameter
+	artifact_ref 133634 // UmlActivityDiagram
+	artifact_ref 131840 // UmlBaseJunctionPseudoState
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 6784 // UmlBaseNcRelation
 	artifact_ref 137216 // UmlBaseExpansionNode
-	artifact_ref 132864 // UmlBaseObjectDiagram
+	artifact_ref 133122 // UmlActivityItem
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 138112 // UmlBaseActivityParameter
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 128130 // ConfirmBox
+	artifact_ref 130434 // UmlEntryPointPseudoState
+	artifact_ref 128036 // Vector
+	artifact_ref 131970 // UmlJunctionPseudoState
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 129154 // UmlTransition
+	artifact_ref 135426 // UmlActivityAction
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 131202 // UmlExitPointPseudoState
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 132482 // UmlForkPseudoState
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 132352 // UmlBaseForkPseudoState
+	artifact_ref 134146 // UmlFlow
+	artifact_ref 129922 // UmlPseudoState
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 131714 // UmlShallowHistoryPseudoState
+	artifact_ref 136064 // UmlBaseAccessVariableValueAction
+	artifact_ref 135552 // UmlBaseActivityActionClasses
+	artifact_ref 130690 // UmlFinalState
+	artifact_ref 136320 // UmlBaseActivityControlNode
+	artifact_ref 132738 // UmlJoinPseudoState
+	artifact_ref 136832 // UmlBaseActivityObject
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 137728 // aParameterEffectKind
+	artifact_ref 129024 // UmlBaseTransition
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 130178 // UmlInitialPseudoState
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 5120 // anItemKind
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 137602 // UmlPinParameter
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 132096 // UmlBaseChoicePseudoState
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 130816 // UmlBaseTerminatePseudoState
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 135170 // UmlInterruptibleActivityRegion
+	artifact_ref 130946 // UmlTerminatePseudoState
+	artifact_ref 137856 // UmlBaseActivityPin
+	artifact_ref 7169 // UmlItem
+	artifact_ref 128896 // StateBehavior
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 133890 // UmlActivityNode
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 135682 // UmlActivityActionClasses
+	artifact_ref 129538 // UmlRegion
+	artifact_ref 129664 // UmlBaseStateAction
+	artifact_ref 133378 // UmlActivity
+	artifact_ref 7809 // UmlSequenceDiagram
 	artifact_ref 5504 // OnInstanceCmd
 	artifact_ref 128384 // UmlBaseState
 	artifact_ref 6913 // UmlDiagram
-	artifact_ref 135682 // UmlActivityActionClasses
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 137346 // UmlExpansionNode
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 129280 // TransitionBehavior
-	artifact_ref 132738 // UmlJoinPseudoState
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 130178 // UmlInitialPseudoState
-	artifact_ref 132994 // UmlObjectDiagram
-	artifact_ref 129922 // UmlPseudoState
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 4865 // Main
-	artifact_ref 131328 // UmlBaseDeepHistoryPseudoState
-	artifact_ref 132608 // UmlBaseJoinPseudoState
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 134786 // UmlExpansionRegion
-	artifact_ref 136706 // UmlActivityControlNodeClasses
-	artifact_ref 128180 // UmlNcRelation
-	artifact_ref 130048 // UmlBaseInitialPseudoState
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 128514 // UmlState
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 133634 // UmlActivityDiagram
-	artifact_ref 136450 // UmlActivityControlNode
-	artifact_ref 129154 // UmlTransition
-	artifact_ref 134656 // UmlBaseExpansionRegion
-	artifact_ref 131072 // UmlBaseExitPointPseudoState
-	artifact_ref 130816 // UmlBaseTerminatePseudoState
-	artifact_ref 132352 // UmlBaseForkPseudoState
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 131714 // UmlShallowHistoryPseudoState
-	artifact_ref 136962 // UmlActivityObject
-	artifact_ref 4992 // aVisibility
-	artifact_ref 134272 // FlowBehavior
-	artifact_ref 136576 // UmlBaseActivityControlNodeClasses
-	artifact_ref 131840 // UmlBaseJunctionPseudoState
-	artifact_ref 135040 // UmlBaseInterruptibleActivityRegion
-	artifact_ref 138498 // UmlParameterSet
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 137728 // aParameterEffectKind
-	artifact_ref 136832 // UmlBaseActivityObject
-	artifact_ref 129794 // UmlStateAction
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 137602 // UmlPinParameter
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 135426 // UmlActivityAction
-	artifact_ref 4480 // UmlCom
-	artifact_ref 132226 // UmlChoicePseudoState
-	artifact_ref 136320 // UmlBaseActivityControlNode
-	artifact_ref 132482 // UmlForkPseudoState
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 6017 // UmlClassView
 	artifact_ref 6529 // UmlComponentView
-	artifact_ref 133248 // UmlBaseActivity
-	artifact_ref 134912 // anExpansionKind
-	artifact_ref 134400 // UmlBaseActivityRegion
-	artifact_ref 137856 // UmlBaseActivityPin
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 128164 // FileWriter
-	artifact_ref 130690 // UmlFinalState
-	artifact_ref 128640 // UmlBaseStateDiagram
-	artifact_ref 131458 // UmlDeepHistoryPseudoState
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 7297 // UmlNode
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 135552 // UmlBaseActivityActionClasses
-	artifact_ref 136064 // UmlBaseAccessVariableValueAction
-	artifact_ref 132096 // UmlBaseChoicePseudoState
-	artifact_ref 130304 // UmlBaseEntryPointPseudoState
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 135938 // UmlOnSignalAction
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 129538 // UmlRegion
 	artifact_ref 137986 // UmlActivityPin
-	artifact_ref 4864 // aDirection
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 129408 // UmlBaseRegion
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 128258 // UmlStateItem
-	artifact_ref 128130 // ConfirmBox
-	artifact_ref 138242 // UmlActivityParameter
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 135170 // UmlInterruptibleActivityRegion
-	artifact_ref 128036 // Vector
-	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 137472 // UmlBasePinParameter
-	artifact_ref 134016 // UmlBaseFlow
-	artifact_ref 133122 // UmlActivityItem
+	artifact_ref 129280 // TransitionBehavior
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 3584 // UmlBaseOperation
 	artifact_ref 7937 // UmlUseCase
-	artifact_ref 130946 // UmlTerminatePseudoState
-	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 131072 // UmlBaseExitPointPseudoState
+	artifact_ref 132864 // UmlBaseObjectDiagram
+	artifact_ref 128770 // UmlStateDiagram
+	artifact_ref 128258 // UmlStateItem
+	artifact_ref 133248 // UmlBaseActivity
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 134400 // UmlBaseActivityRegion
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 130560 // UmlBaseFinalState
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 5633 // UmlClass
+	artifact_ref 4736 // aRelationKind
 	artifact_ref 134530 // UmlActivityRegion
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 129664 // UmlBaseStateAction
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 7169 // UmlItem
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 768 // CppSettings
-	artifact_ref 134146 // UmlFlow
-	artifact_ref 133890 // UmlActivityNode
+	artifact_ref 132608 // UmlBaseJoinPseudoState
+	artifact_ref 4865 // Main
+	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 128164 // FileWriter
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 135938 // UmlOnSignalAction
+	artifact_ref 136576 // UmlBaseActivityControlNodeClasses
+	artifact_ref 132994 // UmlObjectDiagram
+	artifact_ref 136450 // UmlActivityControlNode
+	artifact_ref 136706 // UmlActivityControlNodeClasses
+	artifact_ref 128514 // UmlState
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 134912 // anExpansionKind
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 4992 // aVisibility
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 135808 // UmlBaseOnSignalAction
+	artifact_ref 131458 // UmlDeepHistoryPseudoState
+	artifact_ref 137088 // anOrdering
+	artifact_ref 130304 // UmlBaseEntryPointPseudoState
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 7297 // UmlNode
+	artifact_ref 130048 // UmlBaseInitialPseudoState
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 138242 // UmlActivityParameter
+	artifact_ref 133760 // UmlBaseActivityNode
+	artifact_ref 135296 // UmlBaseActivityAction
       end
       ncouples 9
       key "genpro pro" value "/tmp/html/cpp/html.pro"
@@ -7596,7 +7894,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[argc - 1]).toUInt())) {
     try {
-      UmlCom::trace(\"<b>Html generator</b> release 2.6.3 (C++ version)<br />\");
+      UmlCom::trace(\"<b>Html generator</b> release 2.8 (C++ version)<br />\");
 
       UmlItem * target = UmlCom::targetItem();
 
@@ -7637,7 +7935,7 @@ class Main {
       UmlCom.connect(Integer.valueOf(argv[argv.length - 1]).intValue());
 
       try {
-        UmlCom.trace(\"<b>Html generator</b> release 2.6.3 (Java version)<br />\");
+        UmlCom.trace(\"<b>Html generator</b> release 2.8 (Java version)<br />\");
 
         UmlItem target = UmlCom.targetItem();
  try {
@@ -7776,6 +8074,7 @@ ${members}
 ${namespace_end}"
       java_src "${comment}
 import java.io.*;
+import java.util.*;
 
 ${package}
 ${definition}"
@@ -8187,6 +8486,7 @@ ${includes}
 
 #include \"UmlClass.h\"
 #include \"UmlOperation.h\"
+#include \"UmlAttribute.h\"
 #include \"UmlClassDiagram.h\"
 #include \"UmlObjectDiagram.h\"
 #include \"UmlActivityDiagram.h\"
@@ -8328,6 +8628,7 @@ ${namespace_end}
       cpp_src "${comment}
 ${includes}
 #include \"UmlClass.h\"
+#include \"UmlAttribute.h\"
 #include \"CppSettings.h\"
 #include \"JavaSettings.h\"
 

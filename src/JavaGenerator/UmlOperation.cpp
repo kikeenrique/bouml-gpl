@@ -176,6 +176,7 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
   if (!javaDecl().isEmpty()) {
     const char * p = javaDecl();
     const char * pp = 0;
+    const char * afterparam = 0;
     const QValueList<UmlParameter> & params = this->params();
     unsigned rank;
     const char * body_indent = strstr(p, "${body}");
@@ -212,12 +213,25 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
 	else if (*p)
 	  f << indent;
       }
-      else if ((*p == '{') && 
-	       (isAbstract() ||
-		(cl_stereotype == "interface") ||
-		(cl_stereotype == "@interface"))) {
-	f << ";";
-	break;
+      else if (*p == '{') {
+	if (cl_stereotype == "@interface") {
+	  if ((afterparam != 0) && (strstr(afterparam, "default") != 0)) {
+	    f << '{';
+	    p += 1;
+	  }
+	  else {
+	    f << ";";
+	    break;
+	  }
+	}
+	else if (isAbstract() || (cl_stereotype == "interface")) {
+	  f << ";";
+	  break;
+	}
+	else {
+	  f << '{';
+	  p += 1;
+	}
       }
       else if (*p == '@')
 	manage_alias(p, f);
@@ -277,6 +291,7 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
       else if (!strncmp(p, "${)}", 4)) {
 	p += 4;
 	f << ')';
+	afterparam = p;
       }
       else if (sscanf(p, "${t%u}", &rank) == 1) {
 	if (!generate_type(params, rank, f))

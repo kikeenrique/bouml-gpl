@@ -581,3 +581,9 @@ void UmlBaseItem::delete_it() {
   UmlCom::read_bool();
   parent()->unload(TRUE);
 }
+
+UmlItem * UmlBaseItem::from_id(unsigned uid, anItemKind k)
+{
+  UmlCom::send_cmd(miscGlobalCmd, fromIdCmd, uid, (char) k);
+  return UmlBaseItem::read_();
+}

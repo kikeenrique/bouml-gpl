@@ -161,7 +161,7 @@ BrowserClass * SdClassInstCanvas::get_type() {
 }
 
 void SdClassInstCanvas::open() {
-  InstanceDialog d(this, "class : ", "Class instance dialog");
+  InstanceDialog d(this, "class", UmlClass);
   
   if (d.exec() == QDialog::Accepted)
     modified();
@@ -295,6 +295,10 @@ void SdClassInstCanvas::set_type(BrowserClass * t) {
     connect(cl->get_data(), SIGNAL(changed()), this, SLOT(modified()));
     connect(cl->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
   }
+}
+
+BrowserNode * SdClassInstCanvas::the_diagram() const {
+  return browser_node;
 }
 
 void SdClassInstCanvas::save(QTextStream & st, bool ref, QString & warning) const {

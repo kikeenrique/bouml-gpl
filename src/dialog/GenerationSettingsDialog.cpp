@@ -162,14 +162,17 @@ void GenerationSettingsDialog::init_cpp1() {
   cpp_include_with_path_cb->insertItem("without path");
   cpp_include_with_path_cb->insertItem("with absolute path");
   cpp_include_with_path_cb->insertItem("with relative path");
+  cpp_include_with_path_cb->insertItem("with root relative path");
   if (!GenerationSettings::cpp_include_with_path)
     cpp_include_with_path_cb->setCurrentItem(0);
   else if (GenerationSettings::cpp_relative_path)
     cpp_include_with_path_cb->setCurrentItem(2);
+  else if (GenerationSettings::cpp_root_relative_path)
+    cpp_include_with_path_cb->setCurrentItem(3);
   else
     cpp_include_with_path_cb->setCurrentItem(1);
 
-  new QLabel("    force namespace prefix generation : ", htab);
+  new QLabel("    force namespace \n    prefix generation : ", htab);
   cpp_force_namespace_gen_cb = new QCheckBox(htab);
   cpp_force_namespace_gen_cb->setChecked(GenerationSettings::cpp_force_namespace_gen);
   
@@ -315,6 +318,13 @@ void GenerationSettingsDialog::init_cpp4() {
   font.setFixedPitch(TRUE);
   edcpp_get_name->setFont(font);
   
+  new QLabel("   ", htab);
+  uml_follow_cpp_get_name = new QCheckBox("followed at uml level", htab);
+  if (GenerationSettings::uml_get_name == CppView)
+    uml_follow_cpp_get_name->setChecked(TRUE);
+  connect(uml_follow_cpp_get_name, SIGNAL(toggled(bool)),
+	  this, SLOT(follow_cpp_get_name()));
+  
   new QLabel("Set operation\ndefault definition : ", grid);
   
   vtab = new QVBox(grid);
@@ -336,6 +346,13 @@ void GenerationSettingsDialog::init_cpp4() {
   edcpp_set_name = new LineEdit(htab);
   edcpp_set_name->setText(GenerationSettings::cpp_set_name);
   edcpp_set_name->setFont(font);
+  
+  new QLabel("   ", htab);
+  uml_follow_cpp_set_name = new QCheckBox("followed at uml level", htab);
+  if (GenerationSettings::uml_set_name == CppView)
+    uml_follow_cpp_set_name->setChecked(TRUE);
+  connect(uml_follow_cpp_set_name, SIGNAL(toggled(bool)),
+	  this, SLOT(follow_cpp_set_name()));
   
   //new QLabel(grid);
   //new QLabel(grid);
@@ -547,6 +564,13 @@ void GenerationSettingsDialog::init_java2() {
   edjava_get_name->setText(GenerationSettings::java_get_name);
   edjava_get_name->setFont(font);
   
+  new QLabel("   ", htab);
+  uml_follow_java_get_name = new QCheckBox("followed at uml level", htab);
+  if (GenerationSettings::uml_get_name == JavaView)
+    uml_follow_java_get_name->setChecked(TRUE);
+  connect(uml_follow_java_get_name, SIGNAL(toggled(bool)),
+	  this, SLOT(follow_java_get_name()));
+  
   new QLabel("Set operation\ndefault definition : ", grid);
   htab = new QHBox(grid);
   htab->setMargin(5);
@@ -564,6 +588,13 @@ void GenerationSettingsDialog::init_java2() {
   edjava_set_name = new LineEdit(htab);
   edjava_set_name->setText(GenerationSettings::java_set_name);
   edjava_set_name->setFont(font);
+  
+  new QLabel("   ", htab);
+  uml_follow_java_set_name = new QCheckBox("followed at uml level", htab);
+  if (GenerationSettings::uml_set_name == JavaView)
+    uml_follow_java_set_name->setChecked(TRUE);
+  connect(uml_follow_java_set_name, SIGNAL(toggled(bool)),
+	  this, SLOT(follow_java_set_name()));
   
   //new QLabel(grid);
   //new QLabel(grid);
@@ -775,6 +806,13 @@ void GenerationSettingsDialog::init_idl3() {
   edidl_get_name->setText(GenerationSettings::idl_get_name);
   edidl_get_name->setFont(font);
   
+  new QLabel("   ", htab);
+  uml_follow_idl_get_name = new QCheckBox("followed at uml level", htab);
+  if (GenerationSettings::uml_get_name == IdlView)
+    uml_follow_idl_get_name->setChecked(TRUE);
+  connect(uml_follow_idl_get_name, SIGNAL(toggled(bool)),
+	  this, SLOT(follow_idl_get_name()));
+  
   new QLabel("Set operation\ndefault definition : ", grid);
   htab = new QHBox(grid);
   idl_set_oneway_cb = new QCheckBox("oneway", htab);
@@ -784,6 +822,13 @@ void GenerationSettingsDialog::init_idl3() {
   edidl_set_name = new LineEdit(htab);
   edidl_set_name->setText(GenerationSettings::idl_set_name);
   edidl_set_name->setFont(font);
+  
+  new QLabel("   ", htab);
+  uml_follow_idl_set_name = new QCheckBox("followed at uml level", htab);
+  if (GenerationSettings::uml_set_name == IdlView)
+    uml_follow_idl_set_name->setChecked(TRUE);
+  connect(uml_follow_idl_set_name, SIGNAL(toggled(bool)),
+	  this, SLOT(follow_idl_set_name()));
   
   new QLabel("Operation default \ndeclaration : ", grid);
   edidl_oper_decl = new MultiLineEdit(grid);
@@ -951,7 +996,49 @@ static QString add_last_slash(QString s)
   
   return s;
 }
-    
+
+void GenerationSettingsDialog::follow_cpp_get_name() {
+  if (uml_follow_cpp_get_name->isChecked()) {
+    uml_follow_java_get_name->setChecked(FALSE);
+    uml_follow_idl_get_name->setChecked(FALSE);
+  }
+}
+
+void GenerationSettingsDialog::follow_cpp_set_name() {
+  if (uml_follow_cpp_set_name->isChecked()) {
+    uml_follow_java_set_name->setChecked(FALSE);
+    uml_follow_idl_set_name->setChecked(FALSE);
+  }
+}
+
+void GenerationSettingsDialog::follow_java_get_name() {
+  if (uml_follow_java_get_name->isChecked()) {
+    uml_follow_cpp_get_name->setChecked(FALSE);
+    uml_follow_idl_get_name->setChecked(FALSE);
+  }
+}
+
+void GenerationSettingsDialog::follow_java_set_name() {
+  if (uml_follow_java_set_name->isChecked()) {
+    uml_follow_cpp_set_name->setChecked(FALSE);
+    uml_follow_idl_set_name->setChecked(FALSE);
+  }
+}
+
+void GenerationSettingsDialog::follow_idl_get_name() {
+  if (uml_follow_idl_get_name->isChecked()) {
+    uml_follow_cpp_get_name->setChecked(FALSE);
+    uml_follow_java_get_name->setChecked(FALSE);
+  }
+}
+
+void GenerationSettingsDialog::follow_idl_set_name() {
+  if (uml_follow_idl_set_name->isChecked()) {
+    uml_follow_cpp_set_name->setChecked(FALSE);
+    uml_follow_java_set_name->setChecked(FALSE);
+  }
+}
+
 void GenerationSettingsDialog::accept() {
   if (types_table->check()) {
     QString enum_in = cpp_enum_in->text().stripWhiteSpace();
@@ -1031,14 +1118,21 @@ void GenerationSettingsDialog::accept() {
     case 0:
       GenerationSettings::cpp_include_with_path = FALSE;
       GenerationSettings::cpp_relative_path = FALSE;
+      GenerationSettings::cpp_root_relative_path = FALSE;
       break;
     case 1:
       GenerationSettings::cpp_include_with_path = TRUE;
       GenerationSettings::cpp_relative_path = FALSE;
+      GenerationSettings::cpp_root_relative_path = FALSE;
       break;
-    default:
+    case 2:
       GenerationSettings::cpp_include_with_path = TRUE;
       GenerationSettings::cpp_relative_path = TRUE;
+      GenerationSettings::cpp_root_relative_path = FALSE;
+    default:
+      GenerationSettings::cpp_include_with_path = TRUE;
+      GenerationSettings::cpp_relative_path = FALSE;
+      GenerationSettings::cpp_root_relative_path = TRUE;
     }
     
     GenerationSettings::cpp_force_namespace_gen = 
@@ -1142,6 +1236,26 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::attribute_default_description = edattribute_default_description->text();
     GenerationSettings::relation_default_description = edrelation_default_description->text();
     
+    //
+    
+    if (uml_follow_cpp_get_name->isChecked())
+      GenerationSettings::uml_get_name = CppView;
+    else if (uml_follow_java_get_name->isChecked())
+      GenerationSettings::uml_get_name = JavaView;
+    else if (uml_follow_idl_get_name->isChecked())
+      GenerationSettings::uml_get_name = IdlView;
+    else
+      GenerationSettings::uml_get_name = UmlView;
+    
+    if (uml_follow_cpp_set_name->isChecked())
+      GenerationSettings::uml_set_name = CppView;
+    else if (uml_follow_java_set_name->isChecked())
+      GenerationSettings::uml_set_name = JavaView;
+    else if (uml_follow_idl_set_name->isChecked())
+      GenerationSettings::uml_set_name = IdlView;
+    else
+      GenerationSettings::uml_set_name = UmlView;
+
     //
     
     GenerationSettings::cpp_root_dir = add_last_slash(edcpproot->text());

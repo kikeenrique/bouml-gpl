@@ -155,6 +155,7 @@ Package * Package::scan_dir()
     QApplication::setOverrideCursor(Qt::waitCursor);
     JavaCatWindow::clear_trace();
 #endif
+    UmlCom::message("count files ...");
     progress = new Progress(file_number(d, TRUE), "Scanning in progress, please wait ...");
     scan = TRUE;
     p->reverse_directory(d, TRUE);
@@ -316,7 +317,7 @@ void Package::reverse_file(QCString f) {
       if (imports.findIndex("java.lang.") == -1)
 	imports.append("java.lang.");
       
-      bool publicp = FALSE;
+      aVisibility visibility = PackageVisibility;
       bool abstractp = FALSE;
       bool finalp = FALSE;
       QCString annotation;
@@ -324,15 +325,19 @@ void Package::reverse_file(QCString f) {
       while (!s.isEmpty()) {
 	if ((s == "class") || (s == "enum") ||
 	    (s == "interface") || (s == "@interface")) {
-	  if (!Class::reverse(this, s, annotation, publicp, abstractp, 
-			      finalp, PrivateVisibility, FALSE, f, Formals))
+	  if (!Class::reverse(this, s, annotation, abstractp, 
+			      finalp, visibility, f, Formals))
 	    break;
-	  publicp = FALSE;
+	  visibility = PackageVisibility;
 	  abstractp = FALSE;
 	  finalp = FALSE;
 	}
 	else if (s == "public")
-	  publicp = TRUE;
+	  visibility = PublicVisibility;
+	else if (s == "protected")
+	  visibility = ProtectedVisibility;
+	else if (s == "private")
+	  visibility = PrivateVisibility;
 	else if (s == "final")
 	  finalp = TRUE;
 	else if (s == "abstract")
@@ -391,8 +396,19 @@ void Package::manage_import()
       
       s2 = Lex::read_word();	// probably the ;
     }
-    else if (! scan)
-      update_package_list(s);
+    else {
+      while (Lex::identifierp(s2)) {
+	// to manage line break inside a.b...z
+	s += s2;
+	if ((s2 = Lex::read_word()).isEmpty()) {
+	  if (! scan) 
+	    Lex::premature_eof();
+	  return;
+	}
+      }
+      if (! scan)
+	update_package_list(s);
+    }
     
     // memorize x.y. or  x.y.z
     imports.append(s);

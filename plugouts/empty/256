@@ -1,6 +1,6 @@
-format 30
+format 35
 "API BASE" // API BASE
-  revision 7
+  revision 10
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -53,12 +53,12 @@ DO NOT MODIFY THEM !!!
 DO NOT MODIFY THEM !!!
 "
     class 256 "aRelationKind"
-       stereotype "enum_pattern"
+      visibility public stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
 "
-      public final java_decl "${comment}${public}final class ${name} {
+      final java_decl "${comment}${public}final class ${name} {
 ${members}
   private int value;
 
@@ -162,12 +162,12 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 384 "aDirection"
-       stereotype "enum_pattern"
+      visibility public stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
 "
-      public final java_decl "${comment}${public}final class ${name} {
+      final java_decl "${comment}${public}final class ${name} {
 ${members}
   private int value;
 
@@ -226,12 +226,12 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 512 "aVisibility"
-       stereotype "enum_pattern"
+      visibility public stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
 "
-      public final java_decl "${comment}${public}final class ${name} {
+      final java_decl "${comment}${public}final class ${name} {
 ${members}
   private int value;
 
@@ -302,12 +302,12 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 640 "anItemKind"
-       stereotype "enum_pattern"
+      visibility public stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
 "
-      public final java_decl "${comment}${public}final class ${name} {
+      final java_decl "${comment}${public}final class ${name} {
 ${members}
   private int value;
 
@@ -960,7 +960,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 768 "UmlParameter"
-       stereotype "struct"
+      visibility package stereotype "struct"
       cpp_decl "${comment}${template}struct ${name}${inherit} {
 ${members}};
 
@@ -1033,7 +1033,7 @@ ${body}}
     end
 
     class 896 "UmlBaseActualParameter"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -1153,7 +1153,7 @@ ${body}}
     end
 
     class 1024 "UmlBaseFormalParameter"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -1284,7 +1284,9 @@ ${body}}
       end
     end
 
-    class 1152 "UmlTypeSpec"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 1152 "UmlTypeSpec"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1359,7 +1361,7 @@ ${body}}
     end
 
     class 1280 "UmlBaseAttribute"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -1934,7 +1936,7 @@ ${body}}
     end
 
     class 1408 "UmlBaseClass"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -2680,14 +2682,6 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 	idl_decl ""
       end
 
-      attribute 6784 "_java_public"
-	private explicit_type "bool"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 1;
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
-	idl_decl ""
-      end
-
       attribute 6912 "_java_final"
 	private explicit_type "bool"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 1;
@@ -2872,7 +2866,7 @@ ${body}}
     end
 
     class 1536 "UmlBaseClassItem"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -3191,7 +3185,7 @@ ${body}}
     end
 
     class 1664 "UmlBaseClassDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -3266,7 +3260,7 @@ ${body}}
     end
 
     class 132736 "UmlBaseObjectDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -3343,7 +3337,7 @@ ${body}}
     end
 
     class 1792 "UmlBaseClassMember"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -3728,7 +3722,7 @@ ${body}}
     end
 
     class 1920 "UmlBaseClassView"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -3865,7 +3859,7 @@ ${body}}
     end
 
     class 2048 "UmlBaseArtifact"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -4463,7 +4457,7 @@ ${body}}
     end
 
     class 6528 "UmlBaseComponent"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -4719,7 +4713,7 @@ ${body}}
     end
 
     class 2176 "UmlBaseCollaborationDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -4794,7 +4788,7 @@ ${body}}
     end
 
     class 2304 "UmlBaseComponentDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -4869,7 +4863,7 @@ ${body}}
     end
 
     class 2432 "UmlBaseComponentView"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -4944,7 +4938,7 @@ ${body}}
     end
 
     class 2560 "UmlBaseDeploymentDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -5019,7 +5013,7 @@ ${body}}
     end
 
     class 2688 "UmlBaseDeploymentView"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -5094,7 +5088,7 @@ ${body}}
     end
 
     class 2816 "UmlBaseDeployment"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -5130,7 +5124,7 @@ ${members}};
     end
 
     class 2944 "UmlBaseDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -5193,7 +5187,7 @@ ${body}}
     end
 
     class 3072 "UmlBaseExtraClassMember"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -5403,7 +5397,7 @@ ${body}}
     end
 
     class 3200 "UmlBaseItem"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -7055,7 +7049,7 @@ ${body}}
     end
 
     class 3328 "UmlBaseNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -7191,7 +7185,7 @@ ${body}}
     end
 
     class 3456 "UmlBaseOperation"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -8455,7 +8449,7 @@ ${body}}
     end
 
     class 3584 "UmlBasePackage"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -9130,7 +9124,7 @@ ${body}}
     end
 
     class 3712 "UmlBaseRelation"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -9973,7 +9967,7 @@ ${body}}
     end
 
     class 3840 "UmlBaseNcRelation"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -10121,7 +10115,7 @@ ${body}}
     end
 
     class 3968 "UmlBaseSequenceDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -10196,7 +10190,7 @@ ${body}}
     end
 
     class 4096 "UmlBaseUseCase"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -10291,6 +10285,50 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 191616 "extensionPoints"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the extension points"
+      end
+
+      operation 191744 "set_ExtensionPoints"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the extension points
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      attribute 79232 "_extension_points"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
       classrelation 12928 // _assoc_diagram (<unidirectional association>)
 	relation 12928 --->
 	  a role_name "_assoc_diagram" multiplicity "" private
@@ -10332,7 +10370,7 @@ ${body}}
     end
 
     class 4224 "UmlBaseUseCaseDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -10407,7 +10445,7 @@ ${body}}
     end
 
     class 4352 "UmlBaseUseCaseView"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -10482,7 +10520,7 @@ ${body}}
     end
 
     class 128256 "UmlBaseState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -11048,7 +11086,7 @@ ${body}}
     end
 
     class 128512 "UmlBaseStateDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -11125,7 +11163,7 @@ ${body}}
     end
 
     class 133376 "UmlBaseActivityDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -11201,7 +11239,9 @@ ${body}}
       end
     end
 
-    class 128768 "StateBehavior"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 128768 "StateBehavior"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -11267,7 +11307,7 @@ ${body}}
     end
 
     class 128896 "UmlBaseTransition"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -11812,7 +11852,9 @@ ${body}}
       end
     end
 
-    class 129152 "TransitionBehavior"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 129152 "TransitionBehavior"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -11878,7 +11920,7 @@ ${body}}
     end
 
     class 129280 "UmlBaseRegion"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -11955,7 +11997,7 @@ ${body}}
     end
 
     class 129536 "UmlBaseStateAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -12247,7 +12289,7 @@ ${body}}
     end
 
     class 129920 "UmlBaseInitialPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -12323,7 +12365,7 @@ ${body}}
     end
 
     class 130176 "UmlBaseEntryPointPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -12400,7 +12442,7 @@ ${body}}
     end
 
     class 130432 "UmlBaseFinalState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -12476,7 +12518,7 @@ ${body}}
     end
 
     class 130688 "UmlBaseTerminatePseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -12552,7 +12594,7 @@ ${body}}
     end
 
     class 130944 "UmlBaseExitPointPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -12629,7 +12671,7 @@ ${body}}
     end
 
     class 131200 "UmlBaseDeepHistoryPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -12705,7 +12747,7 @@ ${body}}
     end
 
     class 131456 "UmlBaseShallowHistoryPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -12781,7 +12823,7 @@ ${body}}
     end
 
     class 131712 "UmlBaseJunctionPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -12857,7 +12899,7 @@ ${body}}
     end
 
     class 131968 "UmlBaseChoicePseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -12933,7 +12975,7 @@ ${body}}
     end
 
     class 132224 "UmlBaseForkPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -13009,7 +13051,7 @@ ${body}}
     end
 
     class 132480 "UmlBaseJoinPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -13085,7 +13127,7 @@ ${body}}
     end
 
     class 4480 "UmlBuiltin"
-       stereotype "struct"
+      visibility package stereotype "struct"
       cpp_decl "${comment}${template}struct ${name}${inherit} {
 ${members}};
 
@@ -13173,7 +13215,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
     end
 
     class 4608 "UmlStereotype"
-       stereotype "struct"
+      visibility package stereotype "struct"
       cpp_decl "${comment}${template}struct ${name}${inherit} {
 ${members}};
 
@@ -13227,7 +13269,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
     end
 
     class 133120 "UmlBaseActivity"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -13786,7 +13828,7 @@ ${body}}
     end
 
     class 133632 "UmlBaseActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -13825,7 +13867,7 @@ ${members}}
     end
 
     class 133888 "UmlBaseFlow"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -14464,7 +14506,9 @@ ${body}}
       end
     end
 
-    class 134144 "FlowBehavior"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 134144 "FlowBehavior"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -14539,7 +14583,7 @@ ${body}}
     end
 
     class 134272 "UmlBaseActivityRegion"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -14638,7 +14682,7 @@ ${body}}
     end
 
     class 134528 "UmlBaseExpansionRegion"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -14819,7 +14863,7 @@ ${body}}
     end
 
     class 134784 "anExpansionKind"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -14873,7 +14917,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 134912 "UmlBaseInterruptibleActivityRegion"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -14950,7 +14994,7 @@ ${body}}
     end
 
     class 135168 "UmlBaseActivityAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -15383,7 +15427,7 @@ ${body}}
     end
 
     class 135424 "UmlBaseSendObjectAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -15460,7 +15504,7 @@ ${body}}
     end
 
     class 135680 "UmlBaseUnmarshallAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -15537,7 +15581,7 @@ ${body}}
     end
 
     class 135936 "UmlBaseOnSignalAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -15792,7 +15836,7 @@ ${body}}
     end
 
     class 136192 "UmlBaseSendSignalAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -15869,7 +15913,7 @@ ${body}}
     end
 
     class 136448 "UmlBaseBroadcastSignalAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -15946,7 +15990,7 @@ ${body}}
     end
 
     class 136704 "UmlBaseValueSpecificationAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -16239,7 +16283,7 @@ ${body}}
     end
 
     class 136960 "UmlBaseOpaqueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -16532,7 +16576,7 @@ ${body}}
     end
 
     class 137216 "UmlBaseAcceptEventAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -16913,7 +16957,7 @@ ${body}}
     end
 
     class 137472 "UmlBaseCallOperationAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -17094,7 +17138,7 @@ ${body}}
     end
 
     class 137728 "UmlBaseCallBehaviorAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -17275,7 +17319,7 @@ ${body}}
     end
 
     class 137984 "UmlBaseAccessVariableValueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -17374,7 +17418,7 @@ ${body}}
     end
 
     class 138240 "UmlBaseClearVariableValueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -17451,7 +17495,7 @@ ${body}}
     end
 
     class 138496 "UmlBaseReadVariableValueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -17528,7 +17572,7 @@ ${body}}
     end
 
     class 138752 "UmlBaseWriteVariableValueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -17605,7 +17649,7 @@ ${body}}
     end
 
     class 139008 "UmlBaseAddVariableValueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -17740,7 +17784,7 @@ ${body}}
     end
 
     class 139264 "UmlBaseRemoveVariableValueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -17875,7 +17919,7 @@ ${body}}
     end
 
     class 139520 "UmlBaseActivityControlNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -17914,7 +17958,7 @@ ${members}}
     end
 
     class 139776 "UmlBaseInitialActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -17991,7 +18035,7 @@ ${body}}
     end
 
     class 140032 "UmlBaseFlowFinalActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -18068,7 +18112,7 @@ ${body}}
     end
 
     class 140288 "UmlBaseActivityFinalActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -18145,7 +18189,7 @@ ${body}}
     end
 
     class 140544 "UmlBaseDecisionActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -18222,7 +18266,7 @@ ${body}}
     end
 
     class 140800 "UmlBaseMergeActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -18299,7 +18343,7 @@ ${body}}
     end
 
     class 141056 "UmlBaseForkActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -18376,7 +18420,7 @@ ${body}}
     end
 
     class 141312 "UmlBaseJoinActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -18453,7 +18497,7 @@ ${body}}
     end
 
     class 141568 "UmlBaseActivityObject"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -19016,7 +19060,7 @@ ${body}}
     end
 
     class 141824 "anOrdering"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -19079,7 +19123,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 141952 "UmlBaseExpansionNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -19156,7 +19200,7 @@ ${body}}
     end
 
     class 142208 "UmlBasePinParameter"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -19441,7 +19485,7 @@ ${body}}
     end
 
     class 142464 "aParameterEffectKind"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -19513,7 +19557,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 142592 "UmlBaseActivityPin"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -19590,7 +19634,7 @@ ${body}}
     end
 
     class 142848 "UmlBaseActivityParameter"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -19747,7 +19791,7 @@ ${body}}
     end
 
     class 143104 "UmlBaseParameterSet"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 

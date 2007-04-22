@@ -21,8 +21,8 @@ class UmlBaseAddVariableValueAction
 
   _replace_all = v;
 !!!180864.cpp!!!	read_uml_() : void
-  _replace_all = UmlCom::read_bool();
   UmlBaseAccessVariableValueAction::read_uml_();
+  _replace_all = UmlCom::read_bool();
 !!!180864.java!!!	read_uml_() : void
-  _replace_all = UmlCom.read_bool();
   super.read_uml_();
+  _replace_all = UmlCom.read_bool();

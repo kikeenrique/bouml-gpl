@@ -151,6 +151,16 @@ class UmlBaseOperation : public UmlClassMember {
     bool set_CppNameSpec(const char * s);
 #endif
 
+#ifdef WITHCPP
+    // return the if the C++ definition is frozen, only for getter/setter operation
+    bool cppGetSetFrozen();
+
+    // set the if the C++ definition is frozen, only for getter/setter operation
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_CppGetSetFrozen(bool v);
+#endif
+
 #ifdef WITHJAVA
     // returns TRUE if the operation is declared final in JAVA
     bool isJavaFinal();
@@ -200,6 +210,16 @@ class UmlBaseOperation : public UmlClassMember {
     bool set_JavaNameSpec(const char * s);
 #endif
 
+#ifdef WITHJAVA
+    // return the if the Java definition is frozen, only for getter/setter operation
+    bool javaGetSetFrozen();
+
+    // set the if the Java definition is frozen, only for getter/setter operation
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_JavaGetSetFrozen(bool v);
+#endif
+
 #ifdef WITHIDL
     // returns TRUE if the operation is declared oneway in IDL
     bool isIdlOneway();
@@ -218,6 +238,16 @@ class UmlBaseOperation : public UmlClassMember {
     // 
     // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_IdlNameSpec(const char * s);
+#endif
+
+#ifdef WITHIDL
+    // return the if the IDL definition is frozen, only for getter/setter operation
+    bool idlGetSetFrozen();
+
+    // set the if the IDL definition is frozen, only for getter/setter operation
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_IdlGetSetFrozen(bool v);
 #endif
 
     // to unload the object to free memory, it will be reloaded
@@ -246,6 +276,18 @@ class UmlBaseOperation : public UmlClassMember {
 
 #ifdef WITHIDL
     bool _idl_oneway : 1;
+#endif
+
+#ifdef WITHCPP
+    bool _cpp_get_set_frozen : 1;
+#endif
+
+#ifdef WITHCPP
+    bool _java_get_set_frozen : 1;
+#endif
+
+#ifdef WITHCPP
+    bool _idl_get_set_frozen : 1;
 #endif
 
     UmlTypeSpec _return_type;

@@ -81,7 +81,11 @@ class UmlItem : public UmlBaseItem {
 
     static void write(const UmlTypeSpec & t, bool cpp);
 
+    static void write(const UmlTypeSpec & t);
+
     static void write(aVisibility v, bool cpp);
+
+    static void write(aVisibility v);
 
     static void write(aDirection d);
 

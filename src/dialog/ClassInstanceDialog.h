@@ -49,6 +49,7 @@ class ClassInstanceDialog : public QDialog {
     QComboBox * edtype;
     BrowserNodeList attributes;
     MyTable * tbl;
+    BrowserNode * cl_container;
     
     static QSize previous_size;
   

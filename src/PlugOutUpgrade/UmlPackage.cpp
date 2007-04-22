@@ -34,6 +34,7 @@
 #include "UmlOperation.h"
 #include "UmlAttribute.h"
 #include "UmlCom.h"
+#include "UmlSettings.h"
 #include "CppSettings.h"
 #include "JavaSettings.h"
 
@@ -955,26 +956,9 @@ void add_state_item_kind()
     "aJoinPseudoState", 
   };
   UmlClass * itkind = UmlClass::get("anItemKind", 0);
-  QCString cpp = CppSettings::enumItemDecl();
-  QCString java = JavaSettings::enumPatternItemDecl();
-  QCString m = "enum item anItemKind::";
   
-  for (int i = 0; i != sizeof(kinds)/sizeof(kinds[0]); i += 1) {
-    UmlAttribute * at;
-    
-    if ((at = UmlBaseAttribute::create(itkind, kinds[i])) == 0) {
-      QCString msg = "cannot add item '" + QCString(kinds[i]) +
-	"' in " + itkind->name() + "<br>\n";
-      
-      UmlCom::trace(msg);
-      throw 0;
-    }
-    else {
-      UmlCom::trace(m + kinds[i] + "<br>\n");
-      at->set_CppDecl(cpp);
-      at->set_JavaDecl(java);
-    }
-  }
+  for (int i = 0; i != sizeof(kinds)/sizeof(kinds[0]); i += 1)
+    itkind->add_enum_item(kinds[i]);
 }
 
 void add_state_on_instance_cmd()
@@ -1369,69 +1353,25 @@ void upgrade_OnInstanceCmd_UmlSettingsCmd_CppSettingsCmd()
   // upgrade OnInstanceCmd
   
   UmlClass * cl = UmlClass::get("OnInstanceCmd", 0);
-  QCString cpp = CppSettings::enumItemDecl();
-  QCString java = JavaSettings::enumPatternItemDecl();
-  UmlAttribute * at;
   
-  if ((at = UmlBaseAttribute::create(cl, "moveAfterCmd")) == 0) {
-    UmlCom::trace("Cannot add 'moveAfterCmd' in 'OnInstanceCmd'<br>\n");
-    throw 0;
-  }
-  else {
-    at->set_Visibility(PublicVisibility);
-    at->set_CppDecl(cpp);
-    at->set_JavaDecl(java);
-  }
+  cl->add_enum_item("moveAfterCmd");
 
   // update UmlSettingsCmd enum
   
   cl = UmlClass::get("UmlSettingsCmd", 0);
   
-  static const struct {
-    const char * name;
-    const char * value;
-  } umlsettingscmd[] = {
-    { "setDefaultArtifactDescriptionCmd", "= 50" },
-    { "setDefaultClassDescriptionCmd", 0 },
-    { "setDefaultOperationDescriptionCmd", 0 },
-    { "setDefaultAttributeDescriptionCmd", 0 },
-    { "setDefaultRelationDescriptionCmd", 0 }
-  };
-  unsigned i;
-    
-  for (i = 0; i != sizeof(umlsettingscmd)/sizeof(umlsettingscmd[0]); i += 1) {
-    if ((at = UmlBaseAttribute::create(cl, umlsettingscmd[i].name)) == 0) {
-      UmlCom::trace(QCString("Cannot add '") + umlsettingscmd[i].name +"' in 'UmlSettingsCmd'<br>\n");
-      throw 0;
-    }
-    else {
-      at->set_Visibility(PublicVisibility);
-      at->set_CppDecl(cpp);
-      at->set_JavaDecl(java);
-      if (umlsettingscmd[i].value != 0)
-	at->set_DefaultValue(umlsettingscmd[i].value);
-    }
-  }
+  cl->add_enum_item("setDefaultArtifactDescriptionCmd")->set_DefaultValue("= 50");
+  cl->add_enum_item("setDefaultClassDescriptionCmd");
+  cl->add_enum_item("setDefaultOperationDescriptionCmd");
+  cl->add_enum_item("setDefaultAttributeDescriptionCmd");
+  cl->add_enum_item("setDefaultRelationDescriptionCmd");
   
   // update CppSettingsCmd enum
   
   cl = UmlClass::get("CppSettingsCmd", 0);
   
-  static const char * const cppsettings[] = {
-    "setCppEnumReturnCmd", "setCppReturnCmd"
-  };
-    
-  for (i = 0; i != sizeof(cppsettings)/sizeof(cppsettings[0]); i += 1) {
-    if ((at = UmlBaseAttribute::create(cl, cppsettings[i])) == 0) {
-      UmlCom::trace(QCString("Cannot add '") + cppsettings[i] +"' in 'CppSettingsCmd'<br>\n");
-      throw 0;
-    }
-    else {
-      at->set_Visibility(PublicVisibility);
-      at->set_CppDecl(cpp);
-      at->set_JavaDecl(java);
-    }
-  }
+  cl->add_enum_item("setCppEnumReturnCmd");
+  cl->add_enum_item("setCppReturnCmd");
  }
 
 void upgrade_UmlSettings()
@@ -2602,20 +2542,8 @@ void add_side(UmlClass * baserelation)
   // upgrade OnInstanceCmd
   
   UmlClass * cl = UmlClass::get("OnInstanceCmd", 0);
-  QCString cpp = CppSettings::enumItemDecl();
-  QCString java = JavaSettings::enumPatternItemDecl();
-  UmlAttribute * at;
   
-  if ((at = UmlBaseAttribute::create(cl, "sideCmd")) == 0) {
-    UmlCom::trace("Cannot add 'sideCmd' in 'OnInstanceCmd'<br>\n");
-    throw 0;
-  }
-  else {
-    at->set_Visibility(PublicVisibility);
-    at->set_CppDecl(cpp);
-    at->set_JavaDecl(java);
-    at->move_after(anAttribute, "referencedByCmd");
-  }
+  cl->add_enum_item("sideCmd")->move_after(anAttribute, "referencedByCmd");
     
   UmlCom::set_user_id(uid);
 }
@@ -3230,17 +3158,8 @@ void add_return_direction()
   UmlCom::set_user_id(0);
   
   UmlClass * dir = UmlClass::get("aDirection", 0);
-  UmlAttribute * at;
-    
-  if ((at = UmlBaseAttribute::create(dir, "ReturnDirection")) == 0) {
-    UmlCom::trace("cannot add enum item 'ReturnDirection' in 'aDirection'<br>\n");
-    throw 0;
-  }
-  else {
-    UmlCom::trace("add enum item aDirection::ReturnDirection<br>\n");
-    at->set_CppDecl(CppSettings::enumItemDecl());
-    at->set_JavaDecl(JavaSettings::enumPatternItemDecl());
-  }
+  
+  dir->add_enum_item("ReturnDirection");
   
   UmlCom::set_user_id(uid);
 }
@@ -4988,66 +4907,25 @@ void add_activities_item_kind()
     "aJoinActivityNode", 
   };
   UmlClass * itkind = UmlClass::get("anItemKind", 0);
-  QCString cpp = CppSettings::enumItemDecl();
-  QCString java = JavaSettings::enumPatternItemDecl();
-  QCString m = "enum item anItemKind::";
   
-  for (int i = 0; i != sizeof(kinds)/sizeof(kinds[0]); i += 1) {
-    UmlAttribute * at;
-    
-    if ((at = UmlBaseAttribute::create(itkind, kinds[i])) == 0) {
-      QCString msg = "cannot add item '" + QCString(kinds[i]) +
-	"' in " + itkind->name() + "<br>\n";
-      
-      UmlCom::trace(msg);
-      throw 0;
-    }
-    else {
-      UmlCom::trace(m + kinds[i] + "<br>\n");
-      at->set_CppDecl(cpp);
-      at->set_JavaDecl(java);
-    }
-  }
+  for (int i = 0; i != sizeof(kinds)/sizeof(kinds[0]); i += 1)
+    itkind->add_enum_item(kinds[i]);
 }
 
 void add_activity_on_instance_cmd()
 {
   // already root
-  static const char * const cmds[] = {
-    "setReadOnlyCmd",
-    "setSingleExecutionCmd",
-    "setUnmarshallCmd",
-    "setTimeEventCmd",
-    "setFlagCmd",
-    "setUniqueCmd",
-    "setStreamCmd",
-    "setInStateCmd",
-    "setOrderingCmd"
-  };
   UmlClass * itcmd = UmlClass::get("OnInstanceCmd", 0);
-  QCString cpp = CppSettings::enumItemDecl();
-  QCString java = JavaSettings::enumPatternItemDecl();
-  QCString m = "add enum item OnInstanceCmd::";
   
-  for (int i = 0; i != sizeof(cmds)/sizeof(cmds[0]); i += 1) {
-    UmlAttribute * at;
-    
-    if ((at = UmlBaseAttribute::create(itcmd, cmds[i])) == 0) {
-      // setMarkedCmd may alreadu exist
-      if (i != 0) {
-	QCString msg = "cannot add enum item '" + QCString(cmds[i]) +
-	  "' in 'OnInstanceCmd'<br>\n";
-	
-	UmlCom::trace(msg);
-	throw 0;
-      }
-    }
-    else {
-      UmlCom::trace(m + cmds[i] + "<br>\n");
-      at->set_CppDecl(cpp);
-      at->set_JavaDecl(java);
-    }
-  }
+  itcmd->add_enum_item("setReadOnlyCmd");
+  itcmd->add_enum_item("setSingleExecutionCmd");
+  itcmd->add_enum_item("setUnmarshallCmd");
+  itcmd->add_enum_item("setTimeEventCmd");
+  itcmd->add_enum_item("setFlagCmd");
+  itcmd->add_enum_item("setUniqueCmd");
+  itcmd->add_enum_item("setStreamCmd");
+  itcmd->add_enum_item("setInStateCmd");
+  itcmd->add_enum_item("setOrderingCmd");
 }    
 
 void baseitem_read_activities(UmlClass * base_item)
@@ -5349,35 +5227,13 @@ void add_new_trace_operations(UmlClass * uml_com)
   // add new global cmd
 
   UmlClass * cl = UmlClass::get("MiscGlobalCmd", 0);
-  QCString cpp = CppSettings::enumItemDecl();
-  QCString java = JavaSettings::enumPatternItemDecl();
-  UmlAttribute * at1;
+  UmlAttribute * at1 = cl->add_enum_item("showTraceCmd");
   UmlAttribute * at2;
   
-  if ((at1 = UmlBaseAttribute::create(cl, "showTraceCmd")) == 0) {
-    UmlCom::trace("Cannot add 'showTraceCmd' in 'MiscGlobalCmd'<br>\n");
-    throw 0;
-  }
-  else {
-    at1->set_Visibility(PublicVisibility);
-    at1->set_CppDecl(cpp);
-    at1->set_JavaDecl(java);
-    
-    if ((at2 = uml_com->get_attribute("loadCmd")) != 0)
-      at1->moveAfter(at2);
-  }
+  if ((at2 = uml_com->get_attribute("loadCmd")) != 0)
+    at1->moveAfter(at2);
   
-  if ((at2 = UmlBaseAttribute::create(cl, "traceAutoRaiseCmd")) == 0) {
-    UmlCom::trace("Cannot add 'traceAutoRaiseCmd' in 'MiscGlobalCmd'<br>\n");
-    throw 0;
-  }
-  else {
-    at2->set_Visibility(PublicVisibility);
-    at2->set_CppDecl(cpp);
-    at2->set_JavaDecl(java);
-    
-    at2->moveAfter(at1);
-  }
+  cl->add_enum_item("traceAutoRaiseCmd")->moveAfter(at1);
   
   // update UmlCom description
   uml_com->set_Description(
@@ -5565,35 +5421,11 @@ void add_cpp_set_param_ref(UmlClass * cppsetting)
 void add_getter_setter_on_instance_cmd()
 {
   // already root
-  static const char * const cmds[] = {
-    "setCppFrozenCmd",
-    "setJavaFrozenCmd",
-    "setIdlFrozenCmd"
-  };
   UmlClass * itcmd = UmlClass::get("OnInstanceCmd", 0);
-  QCString cpp = CppSettings::enumItemDecl();
-  QCString java = JavaSettings::enumPatternItemDecl();
-  QCString m = "add enum item OnInstanceCmd::";
   
-  for (int i = 0; i != sizeof(cmds)/sizeof(cmds[0]); i += 1) {
-    UmlAttribute * at;
-    
-    if ((at = UmlBaseAttribute::create(itcmd, cmds[i])) == 0) {
-      // setMarkedCmd may alreadu exist
-      if (i != 0) {
-	QCString msg = "cannot add enum item '" + QCString(cmds[i]) +
-	  "' in 'OnInstanceCmd'<br>\n";
-	
-	UmlCom::trace(msg);
-	throw 0;
-      }
-    }
-    else {
-      UmlCom::trace(m + cmds[i] + "<br>\n");
-      at->set_CppDecl(cpp);
-      at->set_JavaDecl(java);
-    }
-  }
+  itcmd->add_enum_item("setCppFrozenCmd");
+  itcmd->add_enum_item("setJavaFrozenCmd");
+  itcmd->add_enum_item("setIdlFrozenCmd");
 }    
 
 void upgrade_setter_getter()
@@ -5855,6 +5687,363 @@ void add_cpp_relative_path_force_namespace(UmlClass * cppsetting)
 //
 //
 
+void add_getter_setter_rules(UmlClass * umlsetting)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("update UmlSettings<br>\n");
+  
+  //
+  
+  UmlClassView * base_class_view = (UmlClassView *) umlsetting->parent();
+  UmlDeploymentView * base_depl_view = (UmlDeploymentView *)
+    umlsetting->associatedArtifact()->parent();
+  UmlClass * lang = 
+    UmlClass::made(base_class_view, base_depl_view, "aLanguage");
+
+  lang->set_Stereotype("enum_pattern");
+  lang->set_CppDecl(CppSettings::enumDecl());
+  lang->set_JavaDecl(JavaSettings::enumPatternDecl());
+  lang->add_enum_item("umlLanguage");
+  lang->add_enum_item("cppLanguage");
+  lang->add_enum_item("javaLanguage");
+  lang->add_enum_item("idlLanguage");
+  
+  //
+  
+  UmlRelation * rel1 =
+    umlsetting->add_relation(aDirectionalAggregationByValue, "_uml_get_name",
+			     PrivateVisibility, lang, 0, 0);
+  rel1->set_isClassMember(TRUE);
+  rel1->moveAfter(umlsetting->get_attribute("_defined"));
+  
+  UmlRelation * rel2 =
+    umlsetting->add_relation(aDirectionalAggregationByValue, "_uml_set_name",
+			     PrivateVisibility,	lang, 0, 0); 
+  rel2->set_isClassMember(TRUE);
+  rel2->moveAfter(rel1);
+  
+  //
+
+  UmlOperation * op = umlsetting->get_operation("read_");
+
+  op->set_CppBody(op->cppBody() + 
+		  "  _uml_get_name = (aLanguage) UmlCom::read_char();\n"
+		  "  _uml_set_name = (aLanguage) UmlCom::read_char();\n");
+  op->set_JavaBody(op->javaBody() + 
+		   "  _uml_get_name = aLanguage.fromInt(UmlCom.read_char());\n"
+		   "  _uml_set_name = aLanguage.fromInt(UmlCom.read_char());\n");
+  
+  // get getter name
+  
+  op = umlsetting->add_op("umlGetName", PublicVisibility, lang);
+   
+  op->set_isClassMember(TRUE);
+  op->set_Description(" return the language from which the getter's name rule must be followed at Uml level");
+  op->set_cpp("${type}", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _uml_get_name;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _uml_get_name;\n",
+	       FALSE);
+  op->moveAfter(umlsetting->get_operation("set_RelationDescription"));
+
+  // set getter name
+  
+  UmlOperation * op2;
+  
+  op2 = umlsetting->add_op("set_UmlGetName", PublicVisibility, "bool");
+  
+  op2->set_isClassMember(TRUE);
+  op2->set_Description(" set the language from which the getter's name rule must be followed at Uml level\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java");
+  op2->add_param(0, InputDirection, "v", lang); 
+  op2->set_cpp("${type}", "${t0} ${p0}",
+		"  UmlCom::send_cmd(umlSettingsCmd, setUmlDefaultGetNameCmd, (char) v);\n"
+		"  if (UmlCom::read_bool()) {\n"
+		"    _uml_get_name = v;\n"
+		"    return TRUE;\n"
+		"  }\n"
+		"  else\n"
+		"    return FALSE;\n",
+		FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}",
+		"  UmlCom.send_cmd(CmdFamily.umlSettingsCmd, UmlSettingsCmd._setUmlDefaultGetNameCmd,\n"
+		"                  (byte) v.value());\n"
+		"  UmlCom.check();\n"
+		"  _uml_get_name = v;\n",
+		FALSE);
+  op2->moveAfter(op);
+  
+  // get setter name
+  
+  op = umlsetting->add_op("umlSetName", PublicVisibility, lang);
+   
+  op->set_isClassMember(TRUE);
+  op->set_Description(" return the language from which the setter's name rule must be followed at Uml level");
+  op->set_cpp("${type}", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _uml_set_name;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _uml_set_name;\n",
+	       FALSE);
+  op->moveAfter(op2);
+
+  // set setter name
+  
+  op2 = umlsetting->add_op("set_UmlSetName", PublicVisibility, "bool");
+  
+  op2->set_isClassMember(TRUE);
+  op2->set_Description(" set the language from which the setter's name rule must be followed at Uml level\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java");
+  op2->add_param(0, InputDirection, "v", lang); 
+  op2->set_cpp("${type}", "${t0} ${p0}",
+		"  UmlCom::send_cmd(umlSettingsCmd, setUmlDefaultSetNameCmd, (char) v);\n"
+		"  if (UmlCom::read_bool()) {\n"
+		"    _uml_set_name = v;\n"
+		"    return TRUE;\n"
+		"  }\n"
+		"  else\n"
+		"    return FALSE;\n",
+		FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}",
+		"  UmlCom.send_cmd(CmdFamily.umlSettingsCmd, UmlSettingsCmd._setUmlDefaultSetNameCmd,\n"
+		"                  (byte) v.value());\n"
+		"  UmlCom.check();\n"
+		"  _uml_set_name = v;\n",
+		FALSE);
+  op2->moveAfter(op);
+  
+  // update UmlSettingsCmd enum
+  
+  UmlClass * cl = UmlClass::get("UmlSettingsCmd", 0);
+  
+  cl->add_enum_item("setUmlDefaultGetNameCmd");
+  cl->add_enum_item("setUmlDefaultSetNameCmd");
+
+  //
+
+  UmlCom::set_user_id(uid);
+}
+
+
+//
+//
+//
+
+void add_extension_points()
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("update use case<br>\n");
+  
+  //
+  
+  UmlClass * base_usecase = UmlClass::get("UmlBaseUseCase", 0);
+  UmlOperation * op;
+  
+  op = base_usecase->get_operation("read_uml_");
+  op->set_CppBody(op->cppBody() + 
+		  "  _extension_points = UmlCom::read_string();\n");
+  op->set_JavaBody(op->javaBody() + 
+		   "  _extension_points = UmlCom.read_string();\n");
+
+  //
+  
+  defGet(base_usecase, _extension_points, extensionPoints, "string", 0, 0,
+         "extension points");
+  op->moveAfter(base_usecase->get_operation("set_AssociatedDiagram"));
+  
+  UmlOperation * op2 = op;
+  
+  defSet(base_usecase, _extension_points, set_ExtensionPoints,
+	 "str", replaceExceptionCmd, 0, 0,
+	 "extension points");
+  op->moveAfter(op2);
+  
+  //
+
+  base_usecase->add_attribute("_extension_points", PrivateVisibility, "string", 0, 0)
+    ->moveAfter(op);
+
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
+void remove_java_public(UmlClass * uml_base_class)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("new class visibility<br>\n");
+  
+  //
+
+  uml_base_class->get_attribute("_java_public")->delete_it();
+  
+  UmlOperation * op;
+  
+  op = uml_base_class->get_operation("isJavaPublic");
+  op->set_CppBody("  return visibility() == PublicVisibility;\n");
+  op->set_JavaBody("  return visibility() == aVisibility.PublicVisibility;\n");
+  
+  op = uml_base_class->get_operation("set_isJavaPublic");
+  op->set_CppBody("  return set_Visibility((y) ? PublicVisibility : PackageVisibility);\n");
+  op->set_JavaBody("  set_Visibility((y) ? aVisibility.PublicVisibility : aVisibility.PackageVisibility);\n");
+  
+  QCString s;
+  
+  op = uml_base_class->get_operation("read_java_");
+  
+  s = op->cppBody();
+  s.remove(s.find("_java_public = UmlCom::read_bool();"), 34);
+  op->set_CppBody(s);
+  
+  s = op->javaBody();
+  s.remove(s.find("_java_public = UmlCom.read_bool();"), 34);
+  op->set_JavaBody(s);
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
+void add_cpp_root_relative_path(UmlClass * cppsetting)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("update UmlSettings<br>\n");
+  
+  //
+  // add root relative
+  //
+  
+  UmlAttribute * att1 = 
+    cppsetting->add_attribute("_is_root_relative_path", PrivateVisibility, "bool", 0, 0);
+
+  att1->set_isClassMember(TRUE);
+  att1->moveAfter(cppsetting->get_attribute("_is_relative_path"));
+
+  // get
+  
+  UmlOperation * op = cppsetting->add_op("isRootRelativePath", PublicVisibility, "bool");
+   
+  op->set_isClassMember(TRUE);
+  op->set_Description(" return if a path relative to the project root must be used\n"
+		      " when the path must be generated in the produced #includes");
+  op->set_cpp("${type}", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _is_root_relative_path;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _is_root_relative_path;\n",
+	       FALSE);
+  op->moveAfter(cppsetting->get_operation("set_IsRelativePath"));
+
+  // set
+  
+  UmlOperation * op2 = cppsetting->add_op("set_IsRootRelativePath", PublicVisibility, "bool");
+  
+  op2->set_isClassMember(TRUE);
+  op2->set_Description(" set if a relative to the project root path must be used\n"
+		       " when the path must be generated in the produced #includes\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java");
+  op2->add_param(0, InputDirection, "v", "bool"); 
+  op2->set_cpp("${type}", "${t0} ${p0}",
+		"  UmlCom::send_cmd(cppSettingsCmd, setCppRootRelativePathCmd, v);\n"
+		"  if (UmlCom::read_bool()) {\n"
+		"    _is_root_relative_path = v;\n"
+		"    if (v) _is_relative_path = FALSE;\n"
+		"    return TRUE;\n"
+		"  }\n"
+		"  else\n"
+		"    return FALSE;\n",
+		FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}",
+		"  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppRootRelativePathCmd,\n"
+		"		   (v) ? (byte) 1 : (byte) 0);\n"
+		"  UmlCom.check();\n"
+		"  _is_root_relative_path = v;\n"
+		"  if (v) _is_relative_path = false;\n",
+		FALSE);
+  op2->moveAfter(op);  
+  
+  // upgrade set_IsRelativePath
+  op2 = cppsetting->get_operation("set_IsRelativePath");
+  
+  op2->set_cpp("${type}", "${t0} ${p0}",
+		"  UmlCom::send_cmd(cppSettingsCmd, setCppRelativePathCmd, v);\n"
+		"  if (UmlCom::read_bool()) {\n"
+		"    _is_relative_path = v;\n"
+		"    if (v) _is_root_relative_path = FALSE;\n"
+		"    return TRUE;\n"
+		"  }\n"
+		"  else\n"
+		"    return FALSE;\n",
+		FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}",
+		"  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppRelativePathCmd,\n"
+		"		   (v) ? (byte) 1 : (byte) 0);\n"
+		"  UmlCom.check();\n"
+		"  _is_relative_path = v;\n"
+		"  if (v) _is_root_relative_path = false;\n",
+		FALSE);
+  
+  //
+  
+  UmlClass * cppsettingcmd = UmlClass::get("CppSettingsCmd", 0);
+  
+  cppsettingcmd->add_enum_item("setCppRootRelativePathCmd");
+
+  //
+  
+  op = cppsetting->get_operation("read_");
+
+  op->set_CppBody(op->cppBody() + 
+		  "  _is_root_relative_path = UmlCom::read_bool();\n");
+  op->set_JavaBody(op->javaBody() + 
+		   "  _is_root_relative_path = UmlCom.read_bool();\n");
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
+
+//
+//
+//
+
 bool ask_for_upgrade()
 {
   if (QMessageBox::warning(0, "Upgrade",
@@ -6033,17 +6222,37 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
 
-    if (cppsetting->get_attribute("_is_relative_path") == 0)  {
+    if (cppsetting->get_attribute("_is_relative_path") == 0) {
       if (!work && !ask_for_upgrade())
 	return FALSE;
       add_cpp_relative_path_force_namespace(cppsetting);
 
       work = TRUE;
     }
+
+    UmlClass * umlsetting = UmlClass::get("UmlSettings", 0);
+
+    if (umlsetting->get_operation("umlGetName") == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      add_getter_setter_rules(umlsetting);
+      add_extension_points();
+
+      work = TRUE;
+    }
+    
+    if (uml_base_class->get_attribute("_java_public") != 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      remove_java_public(uml_base_class);
+      add_cpp_root_relative_path(cppsetting);
+
+      work = TRUE;
+    }
     
     if (work) {
       UmlCom::trace("update api version<br>\n");
-      update_api_version("27");
+      update_api_version("29");
       UmlCom::message("ask for save-as");
       QMessageBox::information(0, "Upgrade", 
 			       "Upgrade done\n\n"

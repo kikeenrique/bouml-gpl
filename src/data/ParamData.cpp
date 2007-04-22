@@ -51,14 +51,22 @@ void ParamData::set_default_value(const char * str) {
   default_value = str;
 }
 
-QString ParamData::definition(bool withdir) const {
+QString ParamData::definition(bool withdir, bool withname) const {
   QString r;
   
-  if (withdir)
-    r.sprintf("%s %s : %s", stringify(dir), 
-	      (const char *) name, (const char *) type.get_type());
-  else {
+  if (withdir) {
+    if (withname)
+      r.sprintf("%s %s : %s", stringify(dir), 
+		(const char *) name, (const char *) type.get_type());
+    else
+      r.sprintf("%s %s", stringify(dir), (const char *) type.get_type());
+  }
+  else if (withname) {
     r.sprintf("%s : %s", (const char *) name, (const char *) type.get_type());
+    return r;
+  }
+  else {
+    r = (const char *) type.get_type();
     return r;
   }
   

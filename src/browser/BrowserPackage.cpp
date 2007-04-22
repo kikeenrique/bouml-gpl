@@ -99,6 +99,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   classdiagram_settings.show_full_members_definition = UmlNo;
   classdiagram_settings.show_members_visibility = UmlNo;
   classdiagram_settings.show_parameter_dir = UmlYes;
+  classdiagram_settings.show_parameter_name = UmlYes;
   classdiagram_settings.package_name_in_tab = UmlNo;
   classdiagram_settings.class_drawing_mode = Natural;
   classdiagram_settings.drawing_language = UmlView;
@@ -377,6 +378,7 @@ void BrowserPackage::menu() {
   QPopupMenu m(0);
   QPopupMenu genm(0);
   QPopupMenu revm(0);
+  QPopupMenu roundtripm(0);
   QPopupMenu toolm(0);
   QPopupMenu importm(0);
   
@@ -450,6 +452,13 @@ through a relation");
 	revm.insertItem("C++", 24);
 	revm.insertItem("Java", 25);
 	revm.insertItem("Java Catalog", 26);
+	
+	if (preserve_bodies()) {
+	  m.insertItem("Roundtrip body", &roundtripm);
+	
+	  roundtripm.insertItem("C++", 30);
+	  roundtripm.insertItem("Java", 31);
+	}
       }
 
       if (Tool::menu_insert(&toolm, 
@@ -492,6 +501,8 @@ through a relation");
 }
 
 void BrowserPackage::exec_menu_choice(int rank) {
+  bool preserve = preserve_bodies();
+      
   switch (rank) {
   case 0:
     add_package();
@@ -541,8 +552,6 @@ void BrowserPackage::exec_menu_choice(int rank) {
     return;
   case 20:
     {
-      bool preserve = preserve_bodies();
-      
       ToolCom::run((verbose_generation()) 
 		   ? ((preserve) ? "cpp_generator -v -p" : "cpp_generator -v")
 		   : ((preserve) ? "cpp_generator -p" : "cpp_generator"),
@@ -551,8 +560,6 @@ void BrowserPackage::exec_menu_choice(int rank) {
     return;
   case 21:
     {
-      bool preserve = preserve_bodies();
-      
       ToolCom::run((verbose_generation()) 
 		   ? ((preserve) ? "java_generator -v -p" : "java_generator -v")
 		   : ((preserve) ? "java_generator -p" : "java_generator"), 
@@ -592,6 +599,12 @@ void BrowserPackage::exec_menu_choice(int rank) {
     if (!import_stereotypes())
       return;
     break;
+  case 30:
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v c++" : "roundtrip_body c++", this);
+    return;
+  case 31:
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v java" : "roundtrip_body java", this);
+    return;
   default:
     if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);

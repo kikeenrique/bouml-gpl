@@ -1,4 +1,3 @@
-
 #include "UmlCom.h"
 
 #include <qsocketdevice.h> 
@@ -9,6 +8,7 @@
 #include "UmlClass.h"
 #include "UmlSettings.h"
 #include "MiscGlobalCmd.h"
+
 bool UmlCom::connect(unsigned int port)
 {
   sock = new QSocketDevice(QSocketDevice::Stream);
@@ -28,7 +28,7 @@ bool UmlCom::connect(unsigned int port)
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(27);
+    write_unsigned(29);
     flush();
     return TRUE;
   }
@@ -607,7 +607,7 @@ const char * UmlCom::read_string()
   p_buffer_in += len;
   
 #ifdef TRACE
-  //cout << "UmlCom::read_string : \"" << p_buffer_in - len << "\"\n";
+  cout << "UmlCom::read_string : \"" << p_buffer_in - len << "\"\n";
 #endif
   
   return p_buffer_in - len;
@@ -646,7 +646,7 @@ void UmlCom::read_item_list(QVector<UmlItem> & v)
   v.resize(n);
   
 #ifdef TRACE
-  //cout << "UmlCom::read_item_list " << n << " items\n";
+  cout << "UmlCom::read_item_list " << n << " items\n";
 #endif
   
   for (unsigned index = 0; index != n; index += 1)
@@ -713,4 +713,17 @@ bool UmlCom::set_root_permission(bool y)
   send_cmd(miscGlobalCmd, setRootPermissionCmd, (char) y);
   // read_char only valid if y is TRUE, else com closed
   return (y) ? (bool) read_char() : (bool) FALSE;
+}
+
+void UmlCom::send_cmd(CmdFamily f, unsigned int cmd, unsigned int u, char c)
+{
+#ifdef TRACE
+  cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << u ", " << (int) c << ")\n";
+#endif
+  
+  write_char(f);
+  write_char(cmd);
+  write_unsigned(u);
+  write_char(c);
+  flush();  
 }

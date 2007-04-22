@@ -1,6 +1,6 @@
-format 30
+format 35
 "Settings" // API BASE::Settings
-  revision 7
+  revision 10
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -52,7 +52,9 @@ DO NOT MODIFY THEM !!!
 
 DO NOT MODIFY THEM !!!
 "
-    class 4736 "CppSettings"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 4736 "CppSettings"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -562,6 +564,41 @@ ${body}}
 	
 	comment " set if a relative path must be used when the path
  must be generated in the produced #includes
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 191872 "isRootRelativePath"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if a path relative to the project root must be used
+ when the path must be generated in the produced #includes"
+      end
+
+      operation 192000 "set_IsRootRelativePath"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if a relative to the project root path must be used
+ when the path must be generated in the produced #includes
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
@@ -2036,6 +2073,15 @@ ${body}}
 	idl_decl ""
       end
 
+      attribute 79360 "_is_root_relative_path"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
       attribute 78080 "_is_force_namespace_gen"
 	class_attribute private explicit_type "bool"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -2086,7 +2132,9 @@ ${body}}
       end
     end
 
-    class 4864 "IdlSettings"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 4864 "IdlSettings"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3432,7 +3480,9 @@ ${body}}
       end
     end
 
-    class 4992 "JavaSettings"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 4992 "JavaSettings"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4701,7 +4751,9 @@ ${body}}
       end
     end
 
-    class 5120 "UmlSettings"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 5120 "UmlSettings"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -4884,6 +4936,72 @@ ${body}}
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 191104 "umlGetName"
+	class_operation public return_type class_ref 143360 // aLanguage
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the language from which the getter's name rule must be followed at Uml level"
+      end
+
+      operation 191232 "set_UmlGetName"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 143360 // aLanguage
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the language from which the getter's name rule must be followed at Uml level
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 191360 "umlSetName"
+	class_operation public return_type class_ref 143360 // aLanguage
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the language from which the setter's name rule must be followed at Uml level"
+      end
+
+      operation 191488 "set_UmlSetName"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 143360 // aLanguage
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the language from which the setter's name rule must be followed at Uml level
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 69888 "UmlSettings"
 	cpp_inline protected explicit_return_type ""
 	nparams 0
@@ -4902,6 +5020,28 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	idl_decl ""
+      end
+
+      classrelation 154624 // _uml_get_name (<directional aggregation by value>)
+	relation 154624 *-->
+	  a role_name "_uml_get_name" multiplicity "" class_relation private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 154624 // _uml_get_name (<directional aggregation by value>)
+	  b parent class_ref 143360 // aLanguage
+      end
+
+      classrelation 154752 // _uml_set_name (<directional aggregation by value>)
+	relation 154752 *-->
+	  a role_name "_uml_set_name" multiplicity "" class_relation private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 154752 // _uml_set_name (<directional aggregation by value>)
+	  b parent class_ref 143360 // aLanguage
       end
 
       attribute 61312 "_artifact_default_description"
@@ -5151,6 +5291,69 @@ ${body}}
 "
       end
     end
+
+    class 143360 "aLanguage"
+      visibility package stereotype "enum_pattern"
+      cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+      java_decl "${comment}${public}final class ${name} {
+${members}
+  private int value;
+
+  public int value() {
+    return value;
+  }
+
+  public static ${name} fromInt(int value) {
+    switch (value) {
+${cases}    default: throw new Error();
+    }
+  }
+
+  private ${name}(int v) { value = v; }; 
+}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 78464 "umlLanguage"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 78592 "cppLanguage"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 78720 "javaLanguage"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 78848 "idlLanguage"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+    end
   end
 
   deploymentview 384 "Settings Deployment view"
@@ -5316,6 +5519,32 @@ import java.util.*;
 ${definition}"
       associated_classes
 	class_ref 5120 // UmlSettings
+      end
+    end
+
+    artifact 138496 "aLanguage"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 143360 // aLanguage
       end
     end
   end

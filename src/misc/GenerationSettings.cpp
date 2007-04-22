@@ -125,6 +125,9 @@ SharedStr GenerationSettings::idl_get_name;
 SharedStr GenerationSettings::idl_set_name;
 bool GenerationSettings::idl_set_oneway;
 
+DrawingLanguage GenerationSettings::uml_get_name;
+DrawingLanguage GenerationSettings::uml_set_name;
+
 QString GenerationSettings::cpp_h_extension;
 QString GenerationSettings::cpp_src_extension;
 QString GenerationSettings::java_extension;
@@ -132,6 +135,7 @@ QString GenerationSettings::idl_extension;
 
 bool GenerationSettings::cpp_include_with_path;
 bool GenerationSettings::cpp_relative_path;
+bool GenerationSettings::cpp_root_relative_path;
 
 bool GenerationSettings::cpp_force_namespace_gen;
     
@@ -306,13 +310,14 @@ ${module_end}\n\
   cpp_set_param_ref = FALSE;
   cpp_include_with_path = FALSE;
   cpp_relative_path = FALSE;
+  cpp_root_relative_path = FALSE;
   cpp_force_namespace_gen = FALSE;
   
-  java_class_decl = "${comment}${@}${public}${final}${abstract}class ${name}${extends}${implements} {\n${members}}\n";
+  java_class_decl = "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {\n${members}}\n";
   java_external_class_decl = "${name}";
-  java_interface_decl = "${comment}${@}${public}interface ${name}${extends} {\n${members}}\n";
-  java_enum_decl = "${comment}${@}${public}${final}${abstract}enum ${name}${implements} {\n${items};\n${members}}\n";
-  java_enum_pattern_decl = "${comment}${@}${public}final class ${name} {\n${members}\n\
+  java_interface_decl = "${comment}${@}${visibility}interface ${name}${extends} {\n${members}}\n";
+  java_enum_decl = "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {\n${items};\n${members}}\n";
+  java_enum_pattern_decl = "${comment}${@}${visibility}final class ${name} {\n${members}\n\
   private final int value;\n\n\
   public int value() {\n\
     return value;\n\
@@ -372,6 +377,9 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   idl_get_name = "get_${name}";
   idl_set_name = "set_${name}";
   idl_set_oneway = FALSE;
+
+  uml_get_name = UmlView;
+  uml_set_name = UmlView;
 
   int i;
   
@@ -665,12 +673,19 @@ void GenerationSettings::send_uml_def(ToolCom * com)
   for (index = 0; index != nclassstereotypes; index += 1)
     com->write_string(class_stereotypes[index].uml);
   
-  if (com->api_format() >= 16) {
+  int api_version = com->api_format();
+  
+  if (api_version >= 16) {
     com->write_string(artifact_default_description);
     com->write_string(class_default_description);
     com->write_string(operation_default_description);
     com->write_string(attribute_default_description);
     com->write_string(relation_default_description);
+    
+    if (api_version >= 28) {
+      com->write_char(uml_get_name);
+      com->write_char(uml_set_name);
+    }
   }
 }
 
@@ -754,11 +769,14 @@ void GenerationSettings::send_cpp_def(ToolCom * com)
   com->write_string(cpp_set_name);
   com->write_bool(cpp_set_inline);
   com->write_bool(cpp_set_param_const);
-  if (api_version >= 26)
+  if (api_version >= 26) {
     com->write_bool(cpp_set_param_ref);
-  if (api_version >= 27) {
-    com->write_bool(cpp_relative_path);
-    com->write_bool(cpp_force_namespace_gen);
+    if (api_version >= 27) {
+      com->write_bool(cpp_relative_path);
+      com->write_bool(cpp_force_namespace_gen);
+      if (api_version >= 29)
+	com->write_bool(cpp_root_relative_path);
+    }
   }
 }
 
@@ -936,6 +954,20 @@ bool GenerationSettings::tool_global_uml_cmd(ToolCom * com, const char * args)
       case setDefaultRelationDescriptionCmd:
 	relation_default_description = com->get_string(args);
 	break;
+      case setUmlDefaultGetNameCmd:
+	if (((unsigned char) *args) >= DefaultDrawingLanguage) {
+	  com->write_bool(FALSE);
+	  return TRUE;
+	}
+	uml_get_name = (DrawingLanguage) *args;
+	break;
+      case setUmlDefaultSetNameCmd:
+	if (((unsigned char) *args) >= DefaultDrawingLanguage) {
+	  com->write_bool(FALSE);
+	  return TRUE;
+	}
+	uml_set_name = (DrawingLanguage) *args;
+	break;
       default:
 	com->write_bool(FALSE);
 	return TRUE;
@@ -1089,6 +1121,13 @@ bool GenerationSettings::tool_global_cpp_cmd(ToolCom * com,
 	break;
       case setCppRelativePathCmd:
 	cpp_relative_path = (*args != 0);
+	if (cpp_relative_path)
+	  cpp_root_relative_path = FALSE;
+	break;
+      case setCppRootRelativePathCmd:
+	cpp_root_relative_path = (*args != 0);
+	if (cpp_root_relative_path)
+	  cpp_relative_path = FALSE;
 	break;
       case setCppForceNamespaceGenCmd:
 	cpp_force_namespace_gen = (*args != 0);
@@ -1600,6 +1639,10 @@ void GenerationSettings::save()
     nl_indent(st);
     st << "cpp_relative_path";
   }
+  if (cpp_root_relative_path) {
+    nl_indent(st);
+    st << "cpp_root_relative_path";
+  }
   if (cpp_force_namespace_gen) {
     nl_indent(st);
     st << "cpp_force_namespace_gen";
@@ -1927,6 +1970,10 @@ void GenerationSettings::save()
   st << "idl_default_operation_declaration ";
   save_string(idl_oper_decl, st);
   
+  nl_indent(st);
+  st << "uml_get_name " << stringify(uml_get_name)
+    << " uml_set_name " << stringify(uml_set_name);
+  
   st << "\nend\n";
   
   save_includes_imports(idl_includes, "idl_includes");
@@ -2050,6 +2097,12 @@ void GenerationSettings::read(char * & st, char * & k)
   }
   else
     cpp_relative_path = FALSE;
+  if (!strcmp(k, "cpp_root_relative_path")) {
+    cpp_root_relative_path = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    cpp_root_relative_path = FALSE;
   if (!strcmp(k, "cpp_force_namespace_gen")) {
     cpp_force_namespace_gen = TRUE;
     k = read_keyword(st);
@@ -2294,7 +2347,7 @@ void GenerationSettings::read(char * & st, char * & k)
       k = read_keyword(st);
     }
     else
-      java_enum_decl = "${comment}${public}${final}${abstract}enum ${name}${implements} {\n${items};\n${members}}\n";      
+      java_enum_decl = "${comment}${visibility}${final}${abstract}enum ${name}${implements} {\n${items};\n${members}}\n";      
     if (strcmp(k, "java_default_enum_decl"))
       wrong_keyword(k, "java_default_enum_decl");
     java_enum_pattern_decl = read_string(st);
@@ -2318,7 +2371,7 @@ void GenerationSettings::read(char * & st, char * & k)
     }
     else {
       // old definitions
-      java_enum_pattern_decl = "${comment}${public}final class ${name} {\n${members}\n\
+      java_enum_pattern_decl = "${comment}${visibility}final class ${name} {\n${members}\n\
   private final int value;\n\n\
   public int value() {\n\
     return value;\n\
@@ -2479,6 +2532,20 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
     idl_oper_decl = read_string(st);
 
     k = read_keyword(st);
+    
+    if (!strcmp(k, "uml_get_name")) {
+      uml_get_name = drawing_language(read_keyword(st));
+      k = read_keyword(st);
+    }
+    else
+      uml_get_name = UmlView;
+    
+    if (!strcmp(k, "uml_set_name")) {
+      uml_set_name = drawing_language(read_keyword(st));
+      k = read_keyword(st);
+    }
+    else
+      uml_set_name = UmlView;
   }
   else
     init();

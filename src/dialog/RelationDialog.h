@@ -123,7 +123,7 @@ class RelationDialog : public QTabDialog {
     QStringList list;
     BrowserNodeList nodes;
     QComboBox * edassociation;
-    QGroupBox * uml_bgroup_b;
+    QList<QWidget> groupb;
     QGroupBox * cpp_b;
     QGroupBox * java_b;
     QGroupBox * idl_b;

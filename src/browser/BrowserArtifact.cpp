@@ -243,6 +243,7 @@ void BrowserArtifact::menu() {
   QPopupMenu clsubm(0);
   QPopupMenu gensubm(0);
   QPopupMenu editsubm(0);
+  QPopupMenu roundtripbodysubm(0);
   //QPopupMenu roundtripsubm(0);
   QPopupMenu toolm(0);
   QString cpp_h_path;
@@ -270,6 +271,13 @@ Note that you can undelete it after");
       gensubm.insertItem("C++", 10);
       gensubm.insertItem("Java", 11);
       gensubm.insertItem("Idl", 12);
+      
+      if (preserve_bodies()) {
+	m.insertItem("Roundtrip body", &roundtripbodysubm);
+	
+	roundtripbodysubm.insertItem("C++", 30);
+	roundtripbodysubm.insertItem("Java", 31);
+      }
       
       get_paths(cpp_h_path, cpp_src_path, java_path, idl_path);
       if (!cpp_h_edited && !cpp_h_path.isEmpty()) {
@@ -412,6 +420,12 @@ void BrowserArtifact::exec_menu_choice(int rank,
     return;
   case 21:
     //roundtrip Idl source files
+    return;
+  case 30:
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v c++" : "roundtrip_body c++", this);
+    return;
+  case 31:
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v java" : "roundtrip_body java", this);
     return;
   case 9999:
     {

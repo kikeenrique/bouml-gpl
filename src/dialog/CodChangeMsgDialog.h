@@ -32,12 +32,14 @@
 class QComboBox;
 class ColMsg;
 class OperationData;
+class BrowserClass;
 
 class CodChangeMsgDialog : public QDialog {
   Q_OBJECT
     
   protected:
     ColMsg * msg;
+    BrowserClass * cl;
     QStringList list;
     QValueList<const OperationData *> opers;
     QComboBox * edoper;    

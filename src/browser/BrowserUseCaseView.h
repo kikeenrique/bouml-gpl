@@ -75,6 +75,7 @@ class BrowserUseCaseView : public BrowserNode, public Labeled<BrowserUseCaseView
     virtual UmlCode get_type() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,
 				   bool & duplicable) const;
+    virtual BrowserNode * container(UmlCode) const; // container for class, state machine and activity
     virtual BasicData * get_data() const;
     virtual void get_usecasediagramsettings(UseCaseDiagramSettings &) const;
     virtual void get_sequencediagramsettings(SequenceDiagramSettings &) const;

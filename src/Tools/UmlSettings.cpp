@@ -95,7 +95,47 @@ bool UmlSettings::set_RelationDescription(QCString v)
     return FALSE;
 }
 
+aLanguage UmlSettings::umlGetName()
+{
+  read_if_needed_();
+
+  return _uml_get_name;
+}
+
+bool UmlSettings::set_UmlGetName(aLanguage v)
+{
+  UmlCom::send_cmd(umlSettingsCmd, setUmlDefaultGetNameCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _uml_get_name = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+aLanguage UmlSettings::umlSetName()
+{
+  read_if_needed_();
+
+  return _uml_set_name;
+}
+
+bool UmlSettings::set_UmlSetName(aLanguage v)
+{
+  UmlCom::send_cmd(umlSettingsCmd, setUmlDefaultSetNameCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _uml_set_name = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 bool UmlSettings::_defined;
+
+aLanguage UmlSettings::_uml_get_name;
+
+aLanguage UmlSettings::_uml_set_name;
 
 QCString UmlSettings::_artifact_default_description;
 
@@ -164,6 +204,8 @@ void UmlSettings::read_()
   _operation_default_description = UmlCom::read_string();
   _attribute_default_description = UmlCom::read_string();
   _relation_default_description = UmlCom::read_string();
+  _uml_get_name = (aLanguage) UmlCom::read_char();
+  _uml_set_name = (aLanguage) UmlCom::read_char();
 }
 
 void UmlSettings::read_if_needed_()

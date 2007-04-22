@@ -37,6 +37,8 @@ class Instance {
     virtual BrowserNode * get_type() const = 0;
     virtual BrowserNodeList & get_types(BrowserNodeList &) const = 0;
     virtual void set_type(BrowserNode *) = 0;
+    virtual BrowserNode * new_type() = 0;
+    virtual bool new_type_available() = 0;
 };
 
 #endif

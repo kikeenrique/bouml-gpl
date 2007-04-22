@@ -10,21 +10,23 @@ void UmlActivityPin::write(FileOut & out) {
   if (direction() == InputDirection) {
     switch (parent()->kind()) {
     case aSendObjectAction:
-      k = ((s == "target") || (s == "request")) ? s : "argument";
+      k = ((s == "target") || (s == "request"))
+	? ((const char *) s)
+	: "argument";
       break;
     case anUnmarshallAction:
-      k = (s == "object") ? s : "input";
+      k = (s == "object") ? ((const char *) s) : "input";
       break;
     case aSendSignalAction:
     case aCallOperationAction:
     case aCallBehaviorAction:
-      k = (s == "target") ? s : "argument";
+      k = (s == "target") ? ((const char *) s) : "argument";
       break;
     case anAddVariableValueAction:
-      k = (s == "insertAt") ? s : "value";
+      k = (s == "insertAt") ? ((const char *) s) : "value";
       break;
     case aRemoveVariableValueAction:
-      k = (s == "removeAt") ? s : "value";
+      k = (s == "removeAt") ? ((const char *) s) : "value";
       break;
     case aBroadcastSignalAction:
       k = "argument";

@@ -10,6 +10,8 @@ class UmlRelation
   case aDependency:
     return;
   default:
+    if (visibility() == PublicVisibility)
+      UmlAttribute::attrs.addElement(this);
     UmlItem::memo_ref();
     break;
   }
@@ -20,6 +22,8 @@ class UmlRelation
   case aRelationKind._aDependency:
     return;
   default:
+    if (visibility() == aVisibility.PublicVisibility)
+      UmlAttribute.attrs.addElement(this);
     super.memo_ref();
   }
 !!!130291.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
@@ -39,6 +43,10 @@ class UmlRelation
   fw.write("</b></div></td></tr></table>");
 
   fw.write("<p>Declaration :</p><ul>");
+  
+  fw.write("<li>Uml : ");
+  gen_uml_decl();
+  fw.write("</li>");
   
   QCString s = cppDecl();
 
@@ -84,6 +92,10 @@ class UmlRelation
   fw.write("</b></div></td></tr></table>");
 
   fw.write("<p>Declaration :</p><ul>");
+  
+  fw.write("<li>Uml : ");
+  gen_uml_decl();
+  fw.write("</li>");
   
   String s = cppDecl();
 
@@ -490,6 +502,34 @@ class UmlRelation
       index = manage_alias(s, index);
     else
       writeq(s.charAt(index++));
+  }
+!!!204034.cpp!!!	gen_uml_decl() : void
+  if (isClassMember())
+    fw.write("static, ");
+  write(visibility());
+  writeq(roleName());
+  fw.write(" : ");
+  roleType()->write();
+
+  QCString s = multiplicity();
+  
+  if (!s.isEmpty()) {
+    fw.write(", multiplicity : ");
+    writeq(s);
+  }
+!!!204034.java!!!	gen_uml_decl() : void
+  if (isClassMember())
+    fw.write("static, ");
+  write(visibility());
+  writeq(roleName());
+  fw.write(" : ");
+  roleType().write();
+
+  String s = multiplicity();
+  
+  if (s.length() != 0) {
+    fw.write(", multiplicity : ");
+    writeq(s);
   }
 !!!128267.cpp!!!	pretty_name() : string
   return roleName();

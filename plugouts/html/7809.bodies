@@ -20,6 +20,10 @@ class UmlOperation
 
   fw.write("<p>Declaration :</p><ul>");
   
+  fw.write("<li>Uml : ");
+  gen_uml_decl();
+  fw.write("</li>");
+  
   QCString s = cppDecl();
 
   if (!s.isEmpty()) {
@@ -57,6 +61,10 @@ class UmlOperation
   fw.write("</b></div></td></tr></table>");
 
   fw.write("<p>Declaration :</p><ul>");
+  
+  fw.write("<li>Uml : ");
+  gen_uml_decl();
+  fw.write("</li>");
   
   String s = cppDecl();
 
@@ -145,6 +153,94 @@ class UmlOperation
     fw.write("</table>\n");
     
     end_file();
+  }
+!!!203522.cpp!!!	gen_uml_decl() : void
+  if (isAbstract())
+    fw.write("abstract, ");
+  if (isClassMember())
+    fw.write("static, ");
+  write(visibility());
+  writeq(name());
+  
+  const QValueList<UmlParameter> & pa = params();
+  unsigned npa = pa.count();
+  unsigned rank;
+  const char * sep = "(";
+  
+  for (rank = 0; rank != npa; rank += 1) {
+    fw.write(sep);
+    sep = ", ";
+    
+    switch (pa[rank].dir) {
+    case InputOutputDirection:
+      fw.write("inout ");
+      break;
+    case InputDirection:
+      fw.write("in ");
+      break;
+    default:
+      // OutputDirection
+      fw.write("out ");
+    }
+    writeq(pa[rank].name);
+    fw.write(" : ");
+    write(pa[rank].type);
+  }
+  fw.write((rank == 0) ? "() : " : ") : ");
+  write(returnType());
+  
+  sep = ",  exceptions : ";
+  
+  const QValueList<UmlTypeSpec> e = exceptions();
+  unsigned n = e.count();
+  
+  for (unsigned index2 = 0; index2 != n; index2 += 1) {
+    fw.write(sep);
+    sep = ", ";
+    write(e[index2]);
+  }
+!!!203522.java!!!	gen_uml_decl() : void
+  if (isAbstract())
+    fw.write("abstract, ");
+  if (isClassMember())
+    fw.write("static, ");
+  write(visibility());
+  writeq(name());
+  
+  UmlParameter[] pa = params();
+  int rank;
+  String sep = "(";
+  
+  for (rank = 0; rank != pa.length; rank += 1) {
+    fw.write(sep);
+    sep = ", ";
+    
+    switch (pa[rank].dir.value()) {
+    case aDirection._InputOutputDirection:
+      fw.write("inout ");
+      break;
+    case aDirection._InputDirection:
+      fw.write("in ");
+      break;
+    default:
+      // aDirection.OutputDirection
+      fw.write("out ");
+    }
+    writeq(pa[rank].name);
+    fw.write(" : ");
+    write(pa[rank].type);
+  }
+  fw.write((rank == 0) ? "() : " : ") : ");
+  write(returnType());
+  
+  sep = " throws ";
+  
+  UmlTypeSpec[] e = exceptions();
+  
+  for (int index2 = 0; index2 != e.length; index2 += 1) {
+    fw.write(sep);
+    sep = ", ";
+    write(e[index2]);
   }
 !!!128005.cpp!!!	gen_cpp_decl(in s : string, in descr : bool) : void
   const char * p = bypass_comment(s);
@@ -468,7 +564,7 @@ class UmlOperation
     }
     else if (!strncmp(p, "${visibility}", 13)) {
       p += 13;
-      write(visibility(), FALSE);
+      UmlItem::write(visibility(), FALSE);
       fw.write(' ');
     }
     else if (!strncmp(p, "${static}", 9)) {

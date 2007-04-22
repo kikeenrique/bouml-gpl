@@ -40,6 +40,8 @@ class InstanceDialog : public QDialog {
     
   protected:
     Instance * inst;
+    QString what;
+    UmlCode kind;
     QStringList list;
     BrowserNodeList nodes;
     LineEdit * edname;
@@ -48,8 +50,7 @@ class InstanceDialog : public QDialog {
     static QSize previous_size;
   
   public:
-    InstanceDialog(Instance * a, const char * kind,
-		   const char * caption);
+    InstanceDialog(Instance * a, QString w, UmlCode k);
     virtual ~InstanceDialog();
   
   protected slots:

@@ -60,8 +60,10 @@ class ClassInstCanvas : public Instance {
     virtual BrowserNode * get_type() const;
     virtual BrowserNodeList & get_types(BrowserNodeList &) const;
     virtual void set_type(BrowserNode * t);
+    virtual BrowserNode * new_type();
+    virtual bool new_type_available();
     virtual void set_type(BrowserClass * t) = 0;
-    
+    virtual BrowserNode * the_diagram() const = 0;
     void compute_size(int & w, int & h, UmlCanvas *, bool as_class = FALSE);
     void draw(QPainter & p, UmlCanvas * canvas, QRect r, bool as_class = FALSE);
 };

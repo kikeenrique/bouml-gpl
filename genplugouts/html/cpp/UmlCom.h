@@ -33,6 +33,10 @@ class UmlClass;
 //
 // - trace()
 //
+// - showTrace()
+//
+// - traceAutoRaise()
+//
 // - message()
 //
 // - bye()
@@ -40,6 +44,7 @@ class UmlClass;
 // - close()
 // 
 // you must NOT call the others
+
 class UmlCom {
   public:
     // does the connexion
@@ -52,6 +57,15 @@ class UmlCom {
     // to write messages in the tool window,
     // use Qt rich text : allows HTML like formatting
     static void trace(const char * s);
+    //to show the trace window
+    
+    static void showTrace();
+
+    //to automatically raise the trace window
+    //each time trace() is called
+    
+    static void traceAutoRaise(bool y);
+
     // to write a message in the status bar line
     // does not use Qt rich text
     static void message(const char * s);

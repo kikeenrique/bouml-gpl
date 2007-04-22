@@ -99,6 +99,22 @@ void DeploymentNodeCanvas::set_type(BrowserNode * t) {
   }
 }
 
+BrowserNode * DeploymentNodeCanvas::new_type() {
+  BrowserNode * container = (BrowserNode *)
+    the_canvas()->browser_diagram()->parent();
+  
+  return (container->is_writable())
+    ? BrowserDeploymentNode::add_deploymentnode(container)
+    : 0;
+}
+
+bool DeploymentNodeCanvas::new_type_available() {
+  BrowserNode * container = (BrowserNode *)
+    the_canvas()->browser_diagram()->parent();
+  
+  return container->is_writable();
+}
+
 int DeploymentNodeCanvas::min_width() {
   QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
   
@@ -257,41 +273,35 @@ void DeploymentNodeCanvas::draw(QPainter & p) {
   const int three = (int) (3 * the_canvas()->zoom());  
   QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
   const char * st = browser_node->get_data()->get_stereotype();
+  QString s;
     
   r.setTop(r.top() + three);
   p.setFont(the_canvas()->get_font(UmlNormalFont));  
   
   if (st[0]) {
-    p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, 
-	       QString("<<") + toUnicode(st) + ">>");
+    s = QString("<<") + toUnicode(st) + ">>";
+    p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, s);
     if (fp != 0)
-      draw_text(r, QObject::AlignHCenter + QObject::AlignTop, 
-		QString("<<") + toUnicode(st) + ">>",
-		p.font(), fp);
+      draw_text(r, QObject::AlignHCenter + QObject::AlignTop, s, p.font(), fp);
     r.setTop(r.top() + fm.height() + three);
   }
   
-  if (horiz)
-    p.drawText(r, QObject::AlignHCenter + QObject::AlignTop,
-	       iname + ":" + browser_node->get_name());
-  if (fp != 0)
-    draw_text(r, QObject::AlignHCenter + QObject::AlignTop,
-	      iname + ":" + browser_node->get_name(),
-	      p.font(), fp);
+  if (horiz) {
+    s = iname + ":" + browser_node->get_name();
+    p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, s);
+    if (fp != 0)
+      draw_text(r, QObject::AlignHCenter + QObject::AlignTop, s, p.font(), fp);
+  }
   else {
-    p.drawText(r, QObject::AlignHCenter + QObject::AlignTop,
-	       iname + ":");
+    s = iname + ":";
+    p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, s);
     if (fp != 0)
-      draw_text(r, QObject::AlignHCenter + QObject::AlignTop,
-		iname + ":",
-		p.font(), fp);
+      draw_text(r, QObject::AlignHCenter + QObject::AlignTop, s, p.font(), fp);
     r.setTop(r.top() + fm.height() + three);
-    p.drawText(r, QObject::AlignHCenter + QObject::AlignTop,
-	       browser_node->get_name());
+    s = browser_node->get_name();
+    p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, s);
     if (fp != 0)
-      draw_text(r, QObject::AlignHCenter + QObject::AlignTop,
-		browser_node->get_name(),
-		p.font(), fp);
+      draw_text(r, QObject::AlignHCenter + QObject::AlignTop, s, p.font(), fp);
   }
   
   if (fp != 0)
@@ -321,7 +331,7 @@ bool DeploymentNodeCanvas::copyable() const {
 }
 
 void DeploymentNodeCanvas::open() {
-  InstanceDialog d(this, "node : ", "Node instance dialog");
+  InstanceDialog d(this, "node", UmlDeploymentNode);
   
   if (d.exec() == QDialog::Accepted)
     modified();

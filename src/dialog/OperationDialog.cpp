@@ -192,6 +192,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     edreturn_type_offset = edreturn_type->count();
     edreturn_type->insertStringList(list);
     edreturn_type->setAutoCompletion(TRUE);
+    view = o->browser_node->container(UmlClass);
   }
   edreturn_type->setCurrentItem(0);
   
@@ -617,20 +618,45 @@ void OperationDialog::menu_returntype() {
   if (! visit) {
     bn = BrowserView::selected_item();
     
-    if ((bn->get_type() == UmlClass) && !bn->deletedp())
+    if ((bn != 0) && (bn->get_type() == UmlClass) && !bn->deletedp())
       m.insertItem("Choose class selected in browser", 1);
     else
       bn = 0;
+    
+    m.insertItem("Create class and choose it", 2);
   }
   
-  if ((index != -1) || (bn != 0)) {
+  if (!visit || (index != -1) || (bn != 0)) {
     switch (m.exec(QCursor::pos())) {
     case 0:
       nodes.at(index)->select_in_browser();
       break;
+    case 2:
+      bn = BrowserClass::add_class(view);
+      if (bn == 0)
+	return;
+      bn->select_in_browser();
+      // no break
     case 1:
-      edreturn_type->setCurrentItem(list.findIndex(bn->full_name(TRUE))
-				    + edreturn_type_offset);
+      {
+	QString s = bn->full_name(TRUE);
+	
+	if ((index = list.findIndex(s)) == -1) {
+	  // new class, may be created through an other dialog
+	  index = 0;
+	  QStringList::Iterator iter = list.begin();
+	  QStringList::Iterator iter_end = list.end();
+	  
+	  while ((iter != iter_end) && (*iter < s)) {
+	    ++iter;
+	    index += 1;
+	  }
+	  nodes.insert((unsigned) index, bn);
+	  list.insert(iter, s);
+	  edreturn_type->insertItem(s, index + edreturn_type_offset);
+	}
+      }
+      edreturn_type->setCurrentItem(index + edreturn_type_offset);
     }
   }
 }
@@ -1185,7 +1211,7 @@ void OperationDialog::cpp_update_decl() {
   showcppdecl->setText(s);
 }
 
-QString OperationDialog::cpp_decl(const BrowserOperation * op)
+QString OperationDialog::cpp_decl(const BrowserOperation * op, bool withname)
 {
   OperationData * d = (OperationData *) op->get_data();
   QCString decl = d->cpp_decl;
@@ -1250,12 +1276,14 @@ QString OperationDialog::cpp_decl(const BrowserOperation * op)
       p = strchr(p, '}') + 1;
     }
     else if (sscanf(p, "${p%u}", &rank) == 1) {
-      if (rank < d->nparams) 
-	s += d->params[rank].get_name();
-      else {
-	s += "${p";
-	s += QString::number(rank);
-	s += '}';
+      if (withname) {
+	if (rank < d->nparams) 
+	  s += d->params[rank].get_name();
+	else {
+	  s += "${p";
+	  s += QString::number(rank);
+	  s += '}';
+	}
       }
       p = strchr(p, '}') + 1;
     }
@@ -1791,6 +1819,7 @@ void OperationDialog::java_update_def() {
   bool nobody = (abstract_cb->isChecked() || interf);
   const char * p = def;
   const char * pp = 0;
+  const char * afterparam = 0;
   QString indent = "";
   QString s;
   unsigned rank;
@@ -1857,6 +1886,7 @@ void OperationDialog::java_update_def() {
     }
     else if (!strncmp(p, "${)}", 4)) {
       p += 4;
+      afterparam = p;
       s += ')';
     }
     else if (!strncmp(p, "${throws}", 9)) {
@@ -1897,8 +1927,16 @@ void OperationDialog::java_update_def() {
 	s += indent;
     }
     else if ((*p == '{') && nobody) {
-      s += ";";
-      break;
+      if ((afterparam != 0) &&
+	  (ste == "@interface") &&
+	  (strstr(afterparam, "default") != 0)){
+	s += '{';
+	p += 1;
+      }
+      else {
+	s += ";";
+	break;
+      }
     }
     else if (!strncmp(p, "${@}", 4)) {
       p += 4;
@@ -1921,7 +1959,7 @@ void OperationDialog::java_update_def() {
   showjavadef->setText(s);
 }
 
-QString OperationDialog::java_decl(const BrowserOperation * op)
+QString OperationDialog::java_decl(const BrowserOperation * op, bool withname)
 {
   OperationData * d = (OperationData *) op->get_data();
   QCString decl = d->java_def;
@@ -1983,12 +2021,14 @@ QString OperationDialog::java_decl(const BrowserOperation * op)
       p = strchr(p, '}') + 1;
     }
     else if (sscanf(p, "${p%u}", &rank) == 1) {
-      if (rank < d->nparams) 
-	s += d->params[rank].get_name();
-      else {
-	s += "${p";
-	s += QString::number(rank);
-	s += '}';
+      if (withname) {
+	if (rank < d->nparams) 
+	  s += d->params[rank].get_name();
+	else {
+	  s += "${p";
+	  s += QString::number(rank);
+	  s += '}';
+	}
       }
       p = strchr(p, '}') + 1;
     }
@@ -2260,7 +2300,8 @@ void OperationDialog::idl_update_decl() {
   showidldecl->setText(s);
 }
 
-QString OperationDialog::idl_decl(const BrowserOperation * op)
+QString OperationDialog::idl_decl(const BrowserOperation * op,
+				  bool withdir, bool withname)
 {
   OperationData * d = (OperationData *) op->get_data();
   QCString decl = d->idl_decl;
@@ -2298,33 +2339,37 @@ QString OperationDialog::idl_decl(const BrowserOperation * op)
       s += ')';
     }
     else if (sscanf(p, "${d%u}", &rank) == 1) {
-      if (rank < d->nparams) 
-	switch (d->params[rank].get_dir()) {
-	case UmlIn:
-	  s += "in";
-	  break;
-	case UmlOut:
-	  s += "out";
-	  break;
-	default:
-	  // can't be return
-	  s += "inout";
+      if (withdir) {
+	if (rank < d->nparams) 
+	  switch (d->params[rank].get_dir()) {
+	  case UmlIn:
+	    s += "in";
+	    break;
+	  case UmlOut:
+	    s += "out";
+	    break;
+	  default:
+	    // can't be return
+	    s += "inout";
+	}
+	else {
+	  s += "${d";
+	  s += QString::number(rank);
+	  s += '}';
+	}
       }
-      else {
-	s += "${d";
-	s += QString::number(rank);
-	s += '}';
-      }      
       p = strchr(p, '}') + 1;
     }
     else if (sscanf(p, "${t%u}", &rank) == 1) {
-      if (rank < d->nparams) 
-	s += GenerationSettings::idl_type(d->params[rank].get_type().get_type());
-      else {
-	s += "${t";
-	s += QString::number(rank);
-	s += '}';
-      }      
+      if (withname) {
+	if (rank < d->nparams) 
+	  s += GenerationSettings::idl_type(d->params[rank].get_type().get_type());
+	else {
+	  s += "${t";
+	  s += QString::number(rank);
+	  s += '}';
+	}
+      }
       p = strchr(p, '}') + 1;
     }
     else if (sscanf(p, "${p%u}", &rank) == 1) {

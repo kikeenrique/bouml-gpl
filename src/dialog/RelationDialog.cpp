@@ -222,8 +222,8 @@ RelationDialog::RelationDialog(RelationData * r)
   init_uml_role(a, rel->a, bg, rel->get_start_class(), rel->get_end_class());
   
   // role B
-  uml_bgroup_b = new QGroupBox(2, QGroupBox::Horizontal, "ROLE 2", split);
-  init_uml_role(b, rel->b, uml_bgroup_b, rel->get_end_class(), rel->get_start_class());
+  bg = new QGroupBox(2, QGroupBox::Horizontal, "ROLE 2", split);
+  init_uml_role(b, rel->b, bg, rel->get_end_class(), rel->get_start_class());
 
   addTab(vtab, "Uml");
   
@@ -364,9 +364,11 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
 				   QGroupBox * bg,
 				   BrowserClass * cl1,
 				   BrowserClass * /*cl2*/) {
+  bool roleb = (&role == &b);
   QString stereotype = ((ClassData *) cl1->get_data())->get_stereotype();
   bool undef = (stereotype == "enum") || (stereotype == "typedef");
   QString st;
+  QLabel * lbl;
   
   st = ClassDialog::cpp_stereotype(stereotype);
   role.cpp_undef = undef || (st == "enum") || (st == "typedef");
@@ -384,10 +386,15 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
   (void) new QLabel(cl1->full_name(TRUE), bg);
   //(void) new QLabel("to : ", bg);
   //(void) new QLabel(cl2->full_name(TRUE), bg);
-  role.opt.append(new QLabel("role name : ", bg));
+  lbl = new QLabel("role name : ", bg);
+  role.opt.append(lbl);
   role.edrole = new LineEdit(rel.role, bg);
   role.edrole->setReadOnly(role.visit);
   role.opt.append(role.edrole);
+  if (roleb) {
+    groupb.append(role.edrole);
+    groupb.append(lbl);
+  }
   
   QHBox * htab;
   QSizePolicy sp;
@@ -407,20 +414,32 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
   }
   role.opt.append(role.multiplicity);  
   
-  role.opt.append(new QLabel("   initial value : ", htab));
+  lbl = new QLabel("   initial value : ", htab);
+  role.opt.append(lbl);
   role.edinit = new LineEdit(rel.init_value, htab);
   role.opt.append(role.edinit);  
+  if (roleb) {
+    groupb.append(role.edinit);
+    groupb.append(lbl);
+  }
   if (role.visit)
     role.edinit->setReadOnly(TRUE);
-  else
-    connect(new SmallPushButton("Editor", htab), SIGNAL(clicked()),
-	    this, (&role == &a) ? SLOT(edit_init_a()) : SLOT(edit_init_b()));
+  else {
+    SmallPushButton * bt = new SmallPushButton("Editor", htab);
+    
+    connect(bt, SIGNAL(clicked()),
+	    this, (roleb) ? SLOT(edit_init_b()) : SLOT(edit_init_a()));
+    if (roleb)
+      groupb.append(bt);
+  }
   
   (void) new QLabel(bg);
   htab = new QHBox(bg);
   QButtonGroup * bg2 = new QButtonGroup(3, QGroupBox::Horizontal, QString::null, htab);
   
   role.opt.append(bg2);
+  if (roleb)
+    groupb.append(bg2);
   role.classrelation_cb = new QCheckBox("class relation", bg2);
   if (rel.isa_class_relation)
     role.classrelation_cb->setChecked(TRUE);
@@ -437,9 +456,16 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
     role.constrelation_cb->setEnabled(FALSE);
   }
   
-  role.uml_visibility.init(htab, rel.uml_visibility, TRUE)->setEnabled(!role.visit);
+  QButtonGroup * vg = role.uml_visibility.init(htab, rel.uml_visibility, TRUE);
+  
+  if (role.visit)
+    vg ->setEnabled(FALSE);
+  else if (roleb)
+    groupb.append(vg);
 
-  new QLabel("description : ", bg);
+  lbl = new QLabel("description : ", bg);
+  if (roleb)
+    groupb.append(lbl);
   htab = new QHBox(bg);
   role.comment = new MultiLineEdit(htab);
   role.comment->setText(rel.comment);  
@@ -452,11 +478,22 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
     role.comment->setReadOnly(TRUE);
   else {
     QVBox * vtab = new QVBox(htab);
+    SmallPushButton * bt1 = new SmallPushButton("Editor", vtab);
     
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()), this,
-	    (&role == &a) ? SLOT(edit_description_a()) : SLOT(edit_description_b()));
-    connect(new SmallPushButton("Default", vtab), SIGNAL(clicked()), this,
-	    (&role == &a) ? SLOT(default_description_a()) : SLOT(default_description_b()));
+    connect(bt1, SIGNAL(clicked()), this,
+	    (roleb) ? SLOT(edit_description_b()) : SLOT(edit_description_a()));
+    
+    SmallPushButton * bt2 = new SmallPushButton("Default", vtab);
+    
+    connect(bt2, SIGNAL(clicked()), this,
+	    (roleb) ? SLOT(default_description_b()) : SLOT(default_description_a()));
+    
+    if (roleb) {
+      groupb.append(lbl);
+      groupb.append(role.comment);
+      groupb.append(bt1);
+      groupb.append(bt2);
+    }
   }
 }
 
@@ -674,12 +711,12 @@ void RelationDialog::init_idl_role(RoleDialog & role, const RoleData & rel,
   }
 }
 
-static void set_enabled(RoleDialog & role, bool yes)
+static void set_enabled(QList<QWidget> & l, bool y)
 {
   QWidget * w;
   
-  for (w = role.opt.first(); w != 0; w = role.opt.next())
-    w->setEnabled(yes);
+  for (w = l.first(); w != 0; w = l.next())
+    w->setEnabled(y);
 }
 
 void RelationDialog::set_inherit_or_dependency(UmlCode type)
@@ -726,11 +763,12 @@ void RelationDialog::edTypeActivated(int r)
   if (!RelationData::isa_association(type)) {
     edname->setEnabled(FALSE);
     edassociation->setEnabled(FALSE);
-    ::set_enabled(a, type != UmlDependency);
+    ::set_enabled(a.opt, type != UmlDependency);
     // note : management of dependency for buttons presence
     // and text done in update_all_tabs() to take into account
     // stereotype change
-    uml_bgroup_b->setEnabled(FALSE);
+    
+    ::set_enabled(groupb, FALSE);
     cpp_b->setEnabled(FALSE);
     java_b->setEnabled(FALSE);
     idl_b->setEnabled(FALSE);
@@ -739,17 +777,17 @@ void RelationDialog::edTypeActivated(int r)
     if (! a.visit) {
       edname->setEnabled(TRUE);
       edassociation->setEnabled(TRUE);
-      ::set_enabled(a, TRUE);
+      ::set_enabled(a.opt, TRUE);
     }
     
     if (RelationData::uni_directional(type)) {
-      uml_bgroup_b->setEnabled(FALSE);
+      ::set_enabled(groupb, FALSE);
       cpp_b->setEnabled(FALSE);
       java_b->setEnabled(FALSE);
       idl_b->setEnabled(FALSE);
     }
     else if (! b.visit) {
-      uml_bgroup_b->setEnabled(TRUE);
+      ::set_enabled(groupb, TRUE);
       cpp_b->setEnabled(TRUE);
       java_b->setEnabled(TRUE);
       idl_b->setEnabled(TRUE);

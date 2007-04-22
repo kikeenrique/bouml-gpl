@@ -31,7 +31,7 @@
 #include <qcursor.h>
 
 #include "BrowserUseCase.h"
-#include "SimpleData.h"
+#include "UseCaseData.h"
 #include "BrowserSeqDiagram.h"
 #include "BrowserColDiagram.h"
 #include "BrowserSimpleRelation.h"
@@ -63,8 +63,7 @@ BrowserUseCase::BrowserUseCase(QString s, BrowserNode * p, int id)
 BrowserUseCase::BrowserUseCase(const BrowserUseCase * model,
 			       BrowserNode * p)
     : BrowserNode(model->name, p), Labeled<BrowserUseCase>(all, 0) {
-  def = new SimpleData(model->def);
-  def->set_browser_node(this);
+  def = new UseCaseData(model->def, this);
   associated_diagram = 0;
   comment = model->comment;
   usecasediagram_settings = model->usecasediagram_settings;
@@ -94,7 +93,7 @@ BrowserUseCase::~BrowserUseCase() {
 }
 
 void BrowserUseCase::make() {
-  def = new SimpleData;
+  def = new UseCaseData;
   def->set_browser_node(this);
   
   associated_diagram = 0;
@@ -278,7 +277,7 @@ void BrowserUseCase::exec_menu_choice(int rank, BrowserNode * item_above) {
     }
     break;
   case 6:
-    edit("Use Case", its_default_stereotypes);
+    def->edit();
     return;
   case 7:
     {
@@ -456,7 +455,7 @@ void BrowserUseCase::open(bool force_edit) {
       !associated_diagram->deletedp())
     associated_diagram->open(FALSE);
   else if (!is_edited)
-    edit("Use Case", its_default_stereotypes);
+    def->edit();
 }
 
 UmlCode BrowserUseCase::get_type() const {
@@ -787,6 +786,10 @@ void BrowserUseCase::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 }
 
 // unicode
+const QStringList & BrowserUseCase::default_stereotypes() {
+  return its_default_stereotypes;
+}
+
 const QStringList & BrowserUseCase::default_stereotypes(UmlCode arrow) {
   if (IsaRelation(arrow))
     return relations_default_stereotypes[arrow];

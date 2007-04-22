@@ -76,9 +76,14 @@ CodChangeMsgDialog::CodChangeMsgDialog(ColMsg * m)
     
   msg->in->get_from_to(from, to, msg->is_forward);
   
-  if (to->get_type() != 0) {
-    to->get_type()->get_opers(opers, list);
+  // gets operations
+  cl = to->get_type();
+  if (cl != 0) {
+    cl->get_opers(opers, list);
     edoper->insertStringList(list);
+    
+    if (!cl->is_writable())
+      cl = 0;
   }
   edoper->setCurrentItem(0);
     
@@ -130,20 +135,43 @@ void CodChangeMsgDialog::menu_op() {
   
   BrowserNode * bn = BrowserView::selected_item();
   
-  if ((bn->get_type() == UmlOperation) &&
+  if ((bn != 0) && 
+      (bn->get_type() == UmlOperation) &&
       !bn->deletedp() &&
       (opers.findIndex((OperationData *) bn->get_data()) != -1))
     m.insertItem("Choose operation selected in browser", 1);
   else
     bn = 0;
   
-  if ((index != -1) || (bn != 0)) {
+  if (cl != 0)
+    m.insertItem("Create operation and choose it", 2);
+  
+  if ((index != -1) || (bn != 0) || (cl != 0)) {
     switch (m.exec(QCursor::pos())) {
     case 0:
       opers[index]->get_browser_node()->select_in_browser();
       break;
+    case 2:
+      bn = cl->add_operation();
+      if (bn == 0)
+	return;
+      bn->select_in_browser();
+      // no break
     case 1:
-      edoper->setCurrentItem(opers.findIndex((OperationData *) bn->get_data()) + 1);
+      {
+	OperationData * od = (OperationData *) bn->get_data();
+
+	if ((index = opers.findIndex(od)) == -1) {
+	  index = opers.count();
+	  opers.append(od);
+	  
+	  QString s = od->definition(TRUE);
+	  
+	  list.append(s);
+	  edoper->insertItem(s);
+	}
+      }
+      edoper->setCurrentItem(index + 1);
     }
   }
 }

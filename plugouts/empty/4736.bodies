@@ -335,6 +335,7 @@ class CppSettings
   UmlCom::send_cmd(cppSettingsCmd, setCppRelativePathCmd, v);
   if (UmlCom::read_bool()) {
     _is_relative_path = v;
+    if (v) _is_root_relative_path = FALSE;
     return TRUE;
   }
   else
@@ -344,6 +345,30 @@ class CppSettings
 		   (v) ? (byte) 1 : (byte) 0);
   UmlCom.check();
   _is_relative_path = v;
+  if (v) _is_root_relative_path = false;
+!!!191872.cpp!!!	isRootRelativePath() : bool
+  read_if_needed_();
+
+  return _is_root_relative_path;
+!!!191872.java!!!	isRootRelativePath() : bool
+  read_if_needed_();
+
+  return _is_root_relative_path;
+!!!192000.cpp!!!	set_IsRootRelativePath(in v : bool) : bool
+  UmlCom::send_cmd(cppSettingsCmd, setCppRootRelativePathCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_root_relative_path = v;
+    if (v) _is_relative_path = FALSE;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!192000.java!!!	set_IsRootRelativePath(in v : bool) : bool
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppRootRelativePathCmd,
+		   (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+  _is_root_relative_path = v;
+  if (v) _is_relative_path = false;
 !!!190848.cpp!!!	isForceNamespacePrefixGeneration() : bool
   read_if_needed_();
 
@@ -1109,6 +1134,7 @@ class CppSettings
   _is_set_param_ref = UmlCom::read_bool();
   _is_relative_path = UmlCom::read_bool();
   _is_force_namespace_gen = UmlCom::read_bool();
+  _is_root_relative_path = UmlCom::read_bool();
 !!!54784.java!!!	read_() : void
   _root = UmlCom.read_string();
   
@@ -1187,6 +1213,7 @@ class CppSettings
   _is_set_param_ref = UmlCom.read_bool();
   _is_relative_path = UmlCom.read_bool();
   _is_force_namespace_gen = UmlCom.read_bool();
+  _is_root_relative_path = UmlCom.read_bool();
 !!!54912.cpp!!!	read_if_needed_() : void
   UmlSettings::read_if_needed_();
   if (!_defined) {

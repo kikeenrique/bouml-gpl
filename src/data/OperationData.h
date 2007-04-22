@@ -121,8 +121,8 @@ class OperationData : public ClassMemberData,
     void set_browser_node(BrowserOperation *, bool update);
 
     virtual QString definition(bool full) const;
-    QString definition(bool full, bool withdir) const;
-    QString definition(bool full, DrawingLanguage language, bool withdir) const;
+    QString definition(bool full, bool withdir, bool withname) const;
+    QString definition(bool full, DrawingLanguage language, bool withdir, bool withname) const;
     
     bool get_isa_class_operation() const { return isa_class_operation; };
     

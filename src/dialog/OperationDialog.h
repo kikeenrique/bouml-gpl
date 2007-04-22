@@ -61,6 +61,7 @@ class OperationDialog : public QTabDialog {
     QStringList list;
     BrowserNodeList nodes;
     QList<BodyDialog> edits;
+    BrowserNode * view;
     AttributeData * get_of_attr;
     AttributeData * set_of_attr;
     RelationData * get_of_rel;
@@ -153,9 +154,9 @@ class OperationDialog : public QTabDialog {
     OperationDialog(OperationData * a, DrawingLanguage l);
     virtual ~OperationDialog();
   
-    static QString cpp_decl(const BrowserOperation * op);
-    static QString java_decl(const BrowserOperation * op);
-    static QString idl_decl(const BrowserOperation * op);
+    static QString cpp_decl(const BrowserOperation * op, bool withname);
+    static QString java_decl(const BrowserOperation * op, bool withname);
+    static QString idl_decl(const BrowserOperation * op, bool withdir, bool withname);
   
   protected slots:
     virtual void polish();

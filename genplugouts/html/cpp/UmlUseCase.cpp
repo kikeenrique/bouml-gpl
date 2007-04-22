@@ -9,6 +9,14 @@ QCString UmlUseCase::sKind() {
 void UmlUseCase::html(QCString pfix, unsigned int rank, unsigned int level) {
   UmlItem::html(pfix, rank, "Use Case", level, "usecase");
 
+  QCString ep = extensionPoints();
+  
+  if (! ep.isEmpty()) {
+    fw.write("<p>Extension points:<br /><div class=\"sub\">");
+    writeq(ep);
+    fw.write("</div></p>\n");
+  }
+
   UmlDiagram * d = associatedDiagram();
   
   if (d != 0) {

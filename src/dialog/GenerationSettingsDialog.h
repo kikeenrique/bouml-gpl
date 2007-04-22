@@ -80,11 +80,13 @@ class GenerationSettingsDialog : public QTabDialog {
     MultiLineEdit * edcpp_rel_decl[2][3];
     VisibilityGroup cpp_get_visibility;
     LineEdit * edcpp_get_name;
+    QCheckBox * uml_follow_cpp_get_name;
     QCheckBox * cpp_get_inline_cb;
     QCheckBox * cpp_get_const_cb;
     QCheckBox * cpp_get_value_const_cb;
     VisibilityGroup cpp_set_visibility;
     LineEdit * edcpp_set_name;
+    QCheckBox * uml_follow_cpp_set_name;
     QCheckBox * cpp_set_inline_cb;
     QCheckBox * cpp_set_param_const_cb;
     QCheckBox * cpp_set_param_ref_cb;
@@ -109,9 +111,11 @@ class GenerationSettingsDialog : public QTabDialog {
     MultiLineEdit * edjava_oper_def;
     VisibilityGroup java_get_visibility;
     LineEdit * edjava_get_name;
+    QCheckBox * uml_follow_java_get_name;
     QCheckBox * java_get_final_cb;
     VisibilityGroup java_set_visibility;
     LineEdit * edjava_set_name;
+    QCheckBox * uml_follow_java_set_name;
     QCheckBox * java_set_final_cb;
     QCheckBox * java_set_param_final_cb;
     IncludeTable * java_import_table;
@@ -138,6 +142,8 @@ class GenerationSettingsDialog : public QTabDialog {
     MultiLineEdit * edidl_oper_decl;
     LineEdit * edidl_get_name;
     LineEdit * edidl_set_name;
+    QCheckBox * uml_follow_idl_get_name;
+    QCheckBox * uml_follow_idl_set_name;
     QCheckBox * idl_set_oneway_cb;
     IncludeTable * idl_include_table;
     
@@ -190,6 +196,12 @@ class GenerationSettingsDialog : public QTabDialog {
     void cpp_relative();
     void java_relative();
     void idl_relative();
+    void follow_cpp_get_name();
+    void follow_cpp_set_name();
+    void follow_java_get_name();
+    void follow_java_set_name();
+    void follow_idl_get_name();
+    void follow_idl_set_name();
 };
 
 class TypesTable : public StringTable {

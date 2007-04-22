@@ -17,7 +17,7 @@ class UmlCom
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(25);
+    write_unsigned(29);
     flush();
     return TRUE;
   }
@@ -38,7 +38,7 @@ class UmlCom
     p_buffer_out = 4/*bytes for length*/;
 
     // send API version
-    write_unsigned(25);
+    write_unsigned(29);
     flush();
   }
   catch (Exception e) {
@@ -54,6 +54,14 @@ class UmlCom
   send_cmd(miscGlobalCmd, traceCmd, s);
 !!!66944.java!!!	trace(in s : str) : void
   send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._traceCmd, s);
+!!!203520.cpp!!!	showTrace() : void
+  send_cmd(miscGlobalCmd, showTraceCmd);
+!!!203520.java!!!	showTrace() : void
+  send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._showTraceCmd);
+!!!203648.cpp!!!	traceAutoRaise(in y : bool) : void
+  send_cmd(miscGlobalCmd, traceAutoRaiseCmd, (y == 0) ? 0 : 1);
+!!!203648.java!!!	traceAutoRaise(in y : bool) : void
+  send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._traceAutoRaiseCmd, (y) ? (byte) 1 : (byte) 0);
 !!!67072.cpp!!!	message(in s : str) : void
   send_cmd(miscGlobalCmd, messageCmd, s);
 !!!67072.java!!!	message(in s : str) : void
@@ -206,8 +214,8 @@ class UmlCom
   *p_buffer_out++ = (b == 0) ? 0 : 1;
 !!!67840.java!!!	write_bool(in b : bool) : void
   check_size_out(1);
-  
-  buffer_out[p_buffer_out++] = (b) ? (byte) 0 : (byte) 1;
+
+  buffer_out[p_buffer_out++] = (b) ? (byte) 1 : (byte) 0;
 !!!67968.cpp!!!	write_char(in c : sbyte) : void
   check_size_out(1);
   
@@ -761,6 +769,26 @@ class UmlCom
     write_id(l[i].identifier_());
   
   flush();
+!!!144768.cpp!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, inout arg : anItemKind, inout id2 : item_id) : void
+#ifdef TRACE
+  cout << "UmlCom::send_cmd(id, " << cmd << ", " << arg << ", " << id2 << ")\n";
+#endif
+  
+  write_char(onInstanceCmd);
+  write_id(id);
+  write_char(cmd);
+  write_char(arg);
+  write_id(id2);
+  flush();
+!!!144768.java!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, inout arg : anItemKind, inout id2 : item_id) : void
+  //cout << "UmlCom.send_cmd(id, " << cmd << ", " << arg << ", " << id2 << ")\n";
+  
+  write_char((byte) CmdFamily._onInstanceCmd);
+  write_id(id);
+  write_char((byte) cmd.value());
+  write_char((byte) arg.value());
+  write_id(id2);
+  flush();
 !!!71168.cpp!!!	read_id() : item_id
   read_if_needed();
   
@@ -943,23 +971,3 @@ class UmlCom
 !!!72064.java!!!	check() : void
   if (! read_bool())
     throw new RuntimeException("Cannot be done");
-!!!144768.cpp!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, inout arg : anItemKind, inout id2 : item_id) : void
-#ifdef TRACE
-  cout << "UmlCom::send_cmd(id, " << cmd << ", " << arg << ", " << id2 << ")\n";
-#endif
-  
-  write_char(onInstanceCmd);
-  write_id(id);
-  write_char(cmd);
-  write_char(arg);
-  write_id(id2);
-  flush();
-!!!144768.java!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, inout arg : anItemKind, inout id2 : item_id) : void
-  //cout << "UmlCom.send_cmd(id, " << cmd << ", " << arg << ", " << id2 << ")\n";
-  
-  write_char((byte) CmdFamily._onInstanceCmd);
-  write_id(id);
-  write_char((byte) cmd.value());
-  write_char((byte) arg.value());
-  write_id(id2);
-  flush();

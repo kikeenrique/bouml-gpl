@@ -187,6 +187,7 @@ class BrowserNode : public QListViewItem,
     virtual BasicData * add_relation(UmlCode, BrowserNode *);
     virtual QList<BrowserNode> parents() const;
     BrowserNode * get_container(UmlCode) const;
+    virtual BrowserNode * container(UmlCode) const; // container for class, state machine and activity
     virtual const char * check_inherit(const BrowserNode * parent) const;
     virtual void write_id(ToolCom * com);
     virtual bool tool_cmd(ToolCom * com, const char * args);

@@ -70,6 +70,18 @@ void ClassInstCanvas::set_type(BrowserNode * t) {
   set_type((BrowserClass *) t);
 }
 
+BrowserNode * ClassInstCanvas::new_type() {
+  BrowserNode * container = the_diagram()->container(UmlClass);
+  
+  return (container->is_writable()) ? BrowserClass::add_class(container) : 0;
+}
+
+bool ClassInstCanvas::new_type_available() {
+  BrowserNode * container = the_diagram()->container(UmlClass);
+  
+  return container->is_writable();
+}
+
 void ClassInstCanvas::compute_size(int & w, int & h, UmlCanvas * canvas, bool as_class) {
   used_color = (itscolor == UmlDefaultColor)
     ? canvas->browser_diagram()->get_color(UmlClass)

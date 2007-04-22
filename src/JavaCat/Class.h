@@ -114,8 +114,8 @@ class Class : public BrowserNode, public ClassContainer {
     
     // note tmplts equals its input value on exit
     static bool reverse(ClassContainer * container, QCString stereotype,
-			QCString annotation, bool publicp, bool abstractp, bool finalp,
-			aVisibility visibility,	bool subclass, QCString & f, 
+			QCString annotation, bool abstractp, bool finalp,
+			aVisibility visibility,	QCString & f, 
 			QValueList<FormalParameterList> tmplts);
     
 #ifndef REVERSE

@@ -51,6 +51,7 @@ using namespace std;
 #include "BrowserView.h"
 #include "BrowserClass.h"
 #include "BrowserPackage.h"
+#include "BrowserOperation.h"
 #include "DialogUtil.h"
 #include "mu.h"
 
@@ -549,7 +550,7 @@ void ToolCom::data_received(Socket * who) {
 	   close();
 	   return;
 	   }*/
-	else if (api_version > 27) {
+	else if (api_version > 29) {
 	  TraceDialog::add("<font color =\"red\"><b>the plug-out is incompatible with this too old version of BOUML<b></font>");
 	  TraceDialog::show_it();
 	  close();
@@ -688,6 +689,30 @@ void ToolCom::data_received(Socket * who) {
 	      UmlWindow::close_it();	// write access of added items not ok
 	      // no respons, all com closed by close_it()
 	      return;
+	    }
+	    break;
+	  case fromIdCmd:
+	    {
+	      p += 1;
+	      
+	      unsigned id = get_unsigned(p);
+	      BrowserNode * op;
+	      
+	      switch (get_kind(p)) {
+	      case UmlOperation:
+		op = BrowserOperation::get_it("operation_ref", id);
+	        if (!op->deletedp())
+		  break;
+		// no break
+	      default:
+		// error
+		op = 0;
+		break;
+	      }
+	      if (op == 0)
+		write_id(0);
+	      else
+		op->write_id(this);
 	    }
 	    break;
 	  default:

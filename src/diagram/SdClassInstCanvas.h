@@ -52,6 +52,7 @@ class SdClassInstCanvas : public QObject, public SdObjCanvas, public ClassInstCa
     void compute_size();
     virtual UmlCode type() const;
     virtual void set_type(BrowserClass * t);
+    virtual BrowserNode * the_diagram() const;
     virtual void open();
     virtual void menu(const QPoint&);
     virtual void history_load(QBuffer &);

@@ -9,6 +9,7 @@
 
 #include "UmlClass.h"
 #include "UmlOperation.h"
+#include "UmlAttribute.h"
 #include "UmlClassDiagram.h"
 #include "UmlObjectDiagram.h"
 #include "UmlActivityDiagram.h"
@@ -266,6 +267,7 @@ void UmlItem::ref_indexes()
   
   UmlClass::ref_index();
   UmlOperation::ref_index();
+  UmlAttribute::ref_index();
   UmlPackage::ref_index();
   UmlUseCase::ref_index();
   UmlActivity::ref_index();
@@ -296,6 +298,7 @@ void UmlItem::generate_indexes()
 {
   UmlClass::generate_index();
   UmlOperation::generate_index();
+  UmlAttribute::generate_index();
   UmlPackage::generate_index();
   UmlUseCase::generate_index();
   UmlActivity::generate_index();
@@ -690,6 +693,14 @@ void UmlItem::write(const UmlTypeSpec & t, bool cpp)
 
 }
 
+void UmlItem::write(const UmlTypeSpec & t)
+{
+  if (t.type != 0)
+    t.type->write();
+  else
+    writeq(t.toString());
+}
+
 void UmlItem::write(aVisibility v, bool cpp)
 {
   switch (v) {
@@ -707,6 +718,24 @@ void UmlItem::write(aVisibility v, bool cpp)
     break;
   default:
     fw.write("???");
+  }
+}
+
+void UmlItem::write(aVisibility v)
+{
+  switch (v) {
+  case PublicVisibility:
+    fw.write("+ ");
+    break;
+  case ProtectedVisibility:
+    fw.write("# ");
+    break;
+  case PrivateVisibility:
+    fw.write("- ");
+    break;
+  default:
+    // PackageVisibility:
+    fw.write("~ ");
   }
 }
 

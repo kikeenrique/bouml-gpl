@@ -140,6 +140,7 @@ QString BrowserDeploymentView::full_name(bool rev, bool itself) const {
 void BrowserDeploymentView::menu() {
   QPopupMenu m(0);
   QPopupMenu subm(0);
+  QPopupMenu roundtripm(0);
   QPopupMenu toolm(0);
   
   m.insertItem(new MenuTitle(name, m.font()), -1);
@@ -178,10 +179,18 @@ Note that you can undelete them after");
     subm.insertItem("Java", 11);
     subm.insertItem("Idl", 12);
     
-    if ((edition_number == 0) &&
-	Tool::menu_insert(&toolm, get_type(), 100)) {
-      m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+    if (edition_number == 0) {
+      if (preserve_bodies()) {
+	m.insertItem("Roundtrip body", &roundtripm);
+	
+	roundtripm.insertItem("C++", 30);
+	roundtripm.insertItem("Java", 31);
+      }
+      
+      if (Tool::menu_insert(&toolm, get_type(), 100)) {
+	m.insertSeparator();
+	m.insertItem("Tool", &toolm);
+      }
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
@@ -276,6 +285,12 @@ void BrowserDeploymentView::exec_menu_choice(int rank) {
     return;
   case 12:
     ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
+    return;
+  case 30:
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v c++" : "roundtrip_body c++", this);
+    return;
+  case 31:
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v java" : "roundtrip_body java", this);
     return;
   default:
     if (rank >= 100)

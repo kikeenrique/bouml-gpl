@@ -1,6 +1,6 @@
-format 30
+format 35
 "Com" // API BASE::Com
-  revision 7
+  revision 10
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -52,7 +52,9 @@ DO NOT MODIFY THEM !!!
 
 DO NOT MODIFY THEM !!!
 "
-    class 5248 "UmlCom"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 5248 "UmlCom"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1028,7 +1030,7 @@ ${body}}
     end
 
     class 5376 "CmdFamily"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -1128,7 +1130,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 5504 "MiscGlobalCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -1237,7 +1239,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 5632 "OnInstanceCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -2446,7 +2448,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 5760 "ClassGlobalCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -2483,7 +2485,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 5888 "PackageGlobalCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -2565,7 +2567,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 6016 "UmlSettingsCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -2653,10 +2655,28 @@ public static final ${class} ${name} = new ${class}(_${name});
 "
 	idl_decl ""
       end
+
+      attribute 78976 "setUmlDefaultGetNameCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 79104 "setUmlDefaultSetNameCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
     end
 
     class 6144 "CppSettingsCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -3086,10 +3106,19 @@ public static final ${class} ${name} = new ${class}(_${name});
 "
 	idl_decl ""
       end
+
+      attribute 79488 "setCppRootRelativePathCmd"
+	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
     end
 
     class 6272 "JavaSettingsCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -3369,7 +3398,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 6400 "IdlSettingsCmd"
-       stereotype "enum_pattern"
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };

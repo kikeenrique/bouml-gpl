@@ -484,6 +484,11 @@ void UmlWindow::toolMenuAboutToShow() {
       toolMenu->insertItem("Reverse Java", this, SLOT(java_reverse()));
       toolMenu->insertSeparator();
       toolMenu->insertItem("Java Catalog", this, SLOT(java_catalog()));
+      if (preserve_bodies()) {
+	toolMenu->insertSeparator();
+	toolMenu->insertItem("Roundtrip C++ bodies", this, SLOT(cpp_roundtrip()));
+	toolMenu->insertItem("Roundtrip Java bodies", this, SLOT(java_roundtrip()));
+      }
       if (BrowserClass::find("UmlBaseItem") != 0) {
 	toolMenu->insertSeparator();
 	toolMenu->insertItem("Plug-out upgrade", this, SLOT(plug_out_upgrade()));
@@ -1346,6 +1351,22 @@ void UmlWindow::java_reverse() {
   
   if (prj != 0)
     ToolCom::run("java_reverse", prj);
+}
+
+void UmlWindow::cpp_roundtrip() {
+  BrowserPackage * prj = browser->get_project();
+  
+  if (prj != 0)
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v c++" : "roundtrip_body c++",
+		 prj);
+}
+
+void UmlWindow::java_roundtrip() {
+  BrowserPackage * prj = browser->get_project();
+  
+  if (prj != 0)
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v java" : "roundtrip_body java",
+		 prj);
 }
 
 void UmlWindow::plug_out_upgrade() {

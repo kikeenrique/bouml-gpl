@@ -225,7 +225,23 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
     if ((s == "default") && (cl->stereotype() == "@interface")) {
       int index = def.find("${)}");
       
-      def.insert(index + 4, " default " + Lex::read_word());
+      Lex::mark();
+      s = Lex::read_word();
+      if (s == "{") {
+	int level = 1;
+	
+	for (;;) {
+	  if ((s = Lex::read_word()).isEmpty())
+	    return FALSE;
+	  else if (s == "{")
+	    level += 1;
+	  else if ((s == "}") && (--level == 0))
+	    break;
+	}
+	s = Lex::region();
+      }
+	
+      def.insert(index + 4, " default" + s);
       s = Lex::read_word();	
     }
     if (s != ";") {
@@ -380,6 +396,17 @@ bool UmlOperation::read_param(Class * container, unsigned rank,
     }
     else if (Lex::identifierp(s)) {
       if (!type_read) {
+	while (s.at(s.length() - 1) == '.') {
+	  // type on several lines, managed in this case
+	  QCString s2 = Lex::read_word();
+	  
+	  if (Lex::identifierp(s2))
+	    s += s2;
+	  else {
+	    Lex::error_near(s);
+	    return FALSE;
+	  }
+	}
 #ifdef TRACE
 	cout << "type = '" << s << "...'\n";
 #endif

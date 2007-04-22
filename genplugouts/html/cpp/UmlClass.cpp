@@ -445,6 +445,11 @@ void UmlClass::gen_java_decl(QCString s) {
       if (isJavaPublic())
 	fw.write("public ");
     }
+    else if (!strncmp(p, "${visibility}", 13)) {
+      p += 13;
+      UmlItem::write(visibility(), FALSE);
+      fw.write(' ');
+    }
     else if (!strncmp(p, "${final}", 8)) {
       p += 8;
       if (isJavaFinal())

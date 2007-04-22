@@ -316,7 +316,7 @@ void ObjectLinkCanvas::open() {
   get_assocs(lb, la, l);
   
   // dialog
-  ObjectLinkDialog dialog(l, data);
+  ObjectLinkDialog dialog(l, data, a, b);
   
   if ((dialog.exec() == QDialog::Accepted) && (dialog.rel() != data)) {
     set_relation(dialog.rel());

@@ -2225,7 +2225,7 @@ void draw_text(int x, int y, int w, int h, int align,
 
   bool wb = align & QObject::WordBreak;
   
-  if ((s.find('\r') == -1) && !wb) {
+  if ((s.find('\n') == -1) && !wb) {
     // one line
     fputs(header, fp);
     

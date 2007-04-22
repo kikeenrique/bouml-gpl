@@ -5,6 +5,17 @@ QCString UmlAttribute::sKind() {
   return "attribute";
 }
 
+void UmlAttribute::memo_ref() {
+  if (visibility() == PublicVisibility) {
+   
+    QCString s = parent()->stereotype();
+    
+    if ((s != "enum") && (s != "enum_pattern"))
+      attrs.addElement(this);
+  }
+  UmlItem::memo_ref();
+}
+
 void UmlAttribute::html(QCString, unsigned int, unsigned int) {
   define();
 
@@ -13,6 +24,10 @@ void UmlAttribute::html(QCString, unsigned int, unsigned int) {
   fw.write("</b></div></td></tr></table>\n");
 
   fw.write("<p>Declaration :</p><ul>");
+  
+  fw.write("<li>Uml : ");
+  gen_uml_decl();
+  fw.write("</li>");
   
   QCString s = cppDecl();
 
@@ -43,6 +58,41 @@ void UmlAttribute::html(QCString, unsigned int, unsigned int) {
   }
 
   unload(FALSE, FALSE);
+}
+
+void UmlAttribute::ref_index()
+{
+  if (!attrs.isEmpty())
+    fw.write("<a href=\"public_properties.html\" target = \"projectFrame\"><b> -Public properties- </b></a>");
+}
+
+void UmlAttribute::generate_index()
+{
+  unsigned n = attrs.size();
+  
+  if (n != 0) {
+    sort(attrs);
+    
+    start_file("public_properties", "Public Properties Index", TRUE);
+    
+    fw.write("<table>\n");
+    fw.write("<tr bgcolor=#f0f0f0><td align=center><b>Property</b></td><td align=center><b>Class</b></td><td align=center><b>Description</b></td></tr>\n");
+      
+    for (unsigned i = 0; i != n; i += 1) {
+      UmlItem * prop = attrs.elementAt(i);
+      
+      fw.write("<tr bgcolor=#f0f0f0><td>");
+      prop->write();
+      fw.write("</td><td>");
+      prop->parent()->write();
+      fw.write("</td><td>");
+      writeq(prop->description());
+      fw.write("</td></tr>\n");
+    }
+    fw.write("</table>\n");
+    
+    end_file();
+  }
 }
 
 void UmlAttribute::gen_cpp_decl(QCString s, bool descr) {
@@ -192,4 +242,16 @@ void UmlAttribute::gen_java_decl(QCString s) {
       writeq(*p++);
   }
 }
+
+void UmlAttribute::gen_uml_decl() {
+  if (isClassMember())
+    fw.write("static, ");
+  write(visibility());
+  writeq(name());
+  fw.write(" : ");
+  write(type());
+
+}
+
+Vector UmlAttribute::attrs;
 

@@ -154,36 +154,7 @@ ActivityActionDialog::ActivityActionDialog(ActivityActionData * a)
   //
   
   BrowserClass::instances(classes);
-
-  BrowserNode * c;
-
-  for (c = classes.first(); c != 0; c = classes.next()) {
-    QListViewItem * child;
-    
-    for (child = c->firstChild(); child; child = child->nextSibling()) {
-      if (!((BrowserNode *) child)->deletedp()) {
-	switch (((BrowserNode *) child)->get_type()) {
-	case UmlAssociation:
-	case UmlDirectionalAssociation:
-	case UmlAggregation:
-	case UmlAggregationByValue:
-	case UmlDirectionalAggregation:
-	case UmlDirectionalAggregationByValue:
-	case UmlAttribute:
-	  classes_with_var.append(c);
-	  break;
-	case UmlOperation:
-	  classes_with_oper.append(c);
-	  break;
-	default:
-	  break;
-	}
-      }
-    }
-  }
-
-  classes_with_oper.full_names(class_with_oper_names);
-  classes_with_var.full_names(class_with_var_names);
+  classes.full_names(class_names);
 
   BrowserState::instances(behaviors, FALSE);
   BrowserActivity::instances(behaviors, TRUE);
@@ -199,19 +170,28 @@ ActivityActionDialog::ActivityActionDialog(ActivityActionData * a)
   sendsignal.init(this, act, K(SendSignalAction), visit);
   broadcastsignal.init(this, act, K(BroadcastSignalAction), visit);
   readvariablevalue.init(this, act, K(ReadVariableValueAction),
-			 classes_with_var, class_with_var_names, visit);
+			 classes, class_names, visit);
   clearvariablevalue.init(this, act, K(ClearVariableValueAction),
-			  classes_with_var, class_with_var_names, visit);
+			  classes, class_names, visit);
   writevariablevalue.init(this, act, K(WriteVariableValueAction),
-			  classes_with_var, class_with_var_names, visit);
+			  classes, class_names, visit);
   addvariablevalue.init(this, act, K(AddVariableValueAction),
-			classes_with_var, class_with_var_names, visit);
+			classes, class_names, visit);
   removevariablevalue.init(this, act, K(RemoveVariableValueAction),
-			   classes_with_var, class_with_var_names, visit);
+			   classes, class_names, visit);
   calloperation.init(this, act, K(CallOperationAction),
-		     classes_with_oper, class_with_oper_names, visit);
+		     classes, class_names, visit);
+  
+  // search for the view containing the activity
+  BrowserNode * bn = a->browser_node;
+  
+  do {
+    bn = (BrowserNode *) bn->parent();
+  } while (bn->get_type() != UmlActivity);
+  bn = (BrowserNode *) bn->parent();
+  
   callbehavior.init(this, act, K(CallBehaviorAction),
-		    behaviors, behavior_names, visit);
+		    behaviors, behavior_names, bn, visit);
 
 #undef K
 
@@ -1037,46 +1017,79 @@ void AccessVariableValueDialog::menu_var() {
     m.insertItem("Select in browser", 0);
   
   BrowserNode * bn = 0;
+  BrowserClass * cl = 0;
   
   if (! visit) {
     bn = BrowserView::selected_item();
     
-    switch (bn->get_type()) {
-    case UmlAssociation:
-    case UmlDirectionalAssociation:
-    case UmlAggregation:
-    case UmlAggregationByValue:
-    case UmlDirectionalAggregation:
-    case UmlDirectionalAggregationByValue:
-    case UmlAttribute:
-      if (!bn->deletedp()) {
-	m.insertItem("Choose variable selected in browser", 1);
-	break;
+    if (bn != 0) {
+      switch (bn->get_type()) {
+      case UmlAssociation:
+      case UmlDirectionalAssociation:
+      case UmlAggregation:
+      case UmlAggregationByValue:
+      case UmlDirectionalAggregation:
+      case UmlDirectionalAggregationByValue:
+      case UmlAttribute:
+	if (!bn->deletedp()) {
+	  m.insertItem("Choose variable selected in browser", 1);
+	  break;
+	}
+	// no break
+      default:
+	bn = 0;
       }
-      // no break
-    default:
-      bn = 0;
+    }
+    
+    int index_cl = class_names->findIndex(class_co->currentText());
+    
+    if (index_cl != -1) {
+      cl = (BrowserClass *) classes->at(index_cl);
+      if (!cl->is_writable())
+	cl = 0;
+      else
+	m.insertItem("Create attribute and choose it", 2);
     }
   }
   
-  if ((index != -1) || (bn != 0)) {
+  if ((index != -1) || (bn != 0) || (cl != 0)) {
     switch (m.exec(QCursor::pos())) {
     case 0:
       vars.at(index)->select_in_browser();
       break;
+    case 2:
+      {
+	const char * stereotype = cl->get_data()->get_stereotype();
+	
+	bn = cl->add_attribute(0,
+			       !strcmp(stereotype, "enum") ||
+			       !strcmp(stereotype, "enum_pattern"));
+	if (bn == 0)
+	  break;
+	bn->select_in_browser();
+      }
+      // no break;
     case 1:
       var_co->clear();
       var_co->insertItem("");
       set(bn);
+      break;
     }
   }
 }
 
 void AccessVariableValueDialog::set(BrowserNode * bn) {
   BrowserClass * cl = (BrowserClass *) bn->parent();
+  int index;
   
-  class_co->setCurrentItem(class_names->findIndex(cl->full_name(TRUE)) + 1);
+  if ((index = class_names->findIndex(cl->full_name(TRUE))) == -1)
+    // new class, not managed
+    return;
+  
+  class_co->setCurrentItem(index + 1);
   insert_vars(cl);
+
+  // var is in var_names
   var_co->setCurrentItem(var_names.findIndex(bn->get_name()) + 1);
 }
 
@@ -1230,9 +1243,16 @@ bool CallOperationDialog::update(CallOperationAction * a) {
 
 void CallOperationDialog::set(BrowserNode * bn) {
   BrowserClass * cl = (BrowserClass *) bn->parent();
+  int index = class_names->findIndex(cl->full_name(TRUE));
   
-  class_co->setCurrentItem(class_names->findIndex(cl->full_name(TRUE)) + 1);
+  if (index == -1)
+    // new class, not managed
+    return;
+  
+  class_co->setCurrentItem(index + 1);
   insert_opers(cl);
+  
+  // the operation is in oper_names
   oper_co->setCurrentItem(oper_names.findIndex(((OperationData *) bn->get_data())->definition(TRUE)) + 1);
 }
 
@@ -1248,21 +1268,38 @@ void CallOperationDialog::menu_oper() {
     m.insertItem("Select in browser", 0);
   
   BrowserNode * bn = 0;
+  BrowserClass * cl = 0;
   
   if (! visit) {
     bn = BrowserView::selected_item();
     
-    if ((bn->get_type() == UmlOperation) && !bn->deletedp())
+    if ((bn != 0) && (bn->get_type() == UmlOperation) && !bn->deletedp())
       m.insertItem("Choose operation selected in browser", 1);
     else
       bn = 0;
+    
+    int index_cl = class_names->findIndex(class_co->currentText());
+    
+    if (index_cl != -1) {
+      cl = (BrowserClass *) classes->at(index_cl);
+      if (!cl->is_writable())
+	cl = 0;
+      else
+	m.insertItem("Create operation and choose it", 2);
+    }
   }
   
-  if ((index != -1) || (bn != 0)) {
+  if ((index != -1) || (bn != 0) || (cl != 0)) {
     switch (m.exec(QCursor::pos())) {
     case 0:
       opers.at(index)->select_in_browser();
       break;
+    case 2:
+      bn = cl->add_operation();
+      if (bn == 0)
+	break;
+      bn->select_in_browser();
+      // no break;
     case 1:
       oper_co->clear();
       oper_co->insertItem("");
@@ -1274,11 +1311,12 @@ void CallOperationDialog::menu_oper() {
 // call behavior
 
 void CallBehaviorDialog::init(QTabDialog * t, ActivityActionData * act,
-			       CallBehaviorAction * d, BrowserNodeList & beh,
-			       QStringList & behstr, bool ro) {
+			      CallBehaviorAction * d, BrowserNodeList & beh,
+			      QStringList & behstr, BrowserNode * v, bool ro) {
   td = t;
   nodes = &beh;
   node_names = &behstr;
+  view = v;
   visit = ro;
 
   // ocl
@@ -1366,26 +1404,67 @@ void CallBehaviorDialog::menu_beh() {
   if (! visit) {
     bn = BrowserView::selected_item();
     
-    switch (bn->get_type()) {
-    case UmlState:
-    case UmlActivity:
-      if (!bn->deletedp()) {
-	m.insertItem("Choose behavior selected in browser", 1);
-	break;
+    if (bn != 0) {
+      switch (bn->get_type()) {
+      case UmlState:
+      case UmlActivity:
+	if (!bn->deletedp()) {
+	  m.insertItem("Choose behavior selected in browser", 1);
+	  break;
+	}
+	// no break
+      default:
+	bn = 0;
       }
-      // no break
-    default:
-      bn = 0;
     }
+    
+    m.insertItem("Create activity and choose it", 2);
+    m.insertItem("Create state machine and choose it", 3);
   }
   
-  if ((index != -1) || (bn != 0)) {
+  if (!visit || (index != -1) || (bn != 0)) {
     switch (m.exec(QCursor::pos())) {
     case 0:
       nodes->at(index)->select_in_browser();
       break;
     case 1:
-      behavior_co->setCurrentItem(node_names->findIndex(bn->full_name(TRUE)) + 1);
+      break;
+    case 2:
+      bn = BrowserActivity::add_activity(view);
+      if (bn == 0)
+	return;
+      bn->select_in_browser();
+      break;
+    case 3:
+      bn = BrowserState::add_state(view, (bool) TRUE);
+      if (bn == 0)
+	return;
+      bn->select_in_browser();
+      break;
+    default:
+      return;
     }
+    
+    // here the behavior bn was choosen
+    QString s = bn->full_name(TRUE);
+    
+    index = node_names->findIndex(s);
+    
+    if (index == -1) {
+      // new behavior, may be created through an other dialog, add it
+      index = 0;
+      QStringList::Iterator iter = node_names->begin();
+      QStringList::Iterator iter_end = node_names->end();
+      
+      while ((iter != iter_end) && (*iter < s)) {
+	++iter;
+	index += 1;
+      }
+      nodes->insert((unsigned) index, bn);
+      node_names->insert(iter, s);
+      behavior_co->insertItem(*(bn->pixmap(0)), s, index + 1);
+    }
+    
+    behavior_co->setCurrentItem(index + 1);
   }
 }

@@ -56,7 +56,6 @@
 #include "MenuItalic.h"
 #include "OperationListDialog.h"
 #include "BrowserClassDiagram.h"
-#include "AttributeDialog.h"
 #include "strutil.h"
 
 CdClassCanvas::CdClassCanvas(BrowserNode * bn, UmlCanvas * canvas,
@@ -196,6 +195,7 @@ void CdClassCanvas::compute_size() {
   bool full_members = (used_settings.show_full_members_definition == UmlYes);
   bool show_visibility = (used_settings.show_members_visibility == UmlYes);
   bool show_dir = (used_settings.show_parameter_dir == UmlYes);
+  bool show_name = (used_settings.show_parameter_name == UmlYes);
   bool hide_attrs = (used_settings.hide_attributes == UmlYes);
   bool hide_opers = (used_settings.hide_operations == UmlYes);
 
@@ -258,7 +258,8 @@ void CdClassCanvas::compute_size() {
 	    continue;
 	  
 	  s = ((OperationData *) child_data)
-	    ->definition(full_members, used_settings.drawing_language, show_dir);
+	    ->definition(full_members, used_settings.drawing_language,
+			 show_dir, show_name);
 
 	  if (s.isEmpty())
 	    continue;
@@ -675,6 +676,7 @@ void CdClassCanvas::draw(QPainter & p) {
   bool full_members = (used_settings.show_full_members_definition == UmlYes);
   bool show_visibility = (used_settings.show_members_visibility == UmlYes);
   bool show_dir = (used_settings.show_parameter_dir == UmlYes);
+  bool show_name = (used_settings.show_parameter_name == UmlYes);
   
   r.setTop(r.top() + two);
   
@@ -745,7 +747,8 @@ void CdClassCanvas::draw(QPainter & p) {
 	   : (hidden_visible_operations.findIndex((BrowserNode *) child) == -1))) {
 	OperationData * data =
 	  ((OperationData *) ((BrowserNode *) child)->get_data());
-	QString s = data->definition(full_members, used_settings.drawing_language, show_dir);
+	QString s = data->definition(full_members, used_settings.drawing_language,
+				     show_dir, show_name);
 	
 	if (!s.isEmpty()) {
 	  r.setLeft(left1);

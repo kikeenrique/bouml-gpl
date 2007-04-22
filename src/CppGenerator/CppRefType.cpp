@@ -163,6 +163,8 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
     hdir = pack->header_path(empty);
     srcdir = pack->source_path(empty);
   }
+  else if (CppSettings::isRootRelativePath())
+    hdir =  srcdir = UmlPackage::rootDir();
   
   // aze.cpp includes aze.h
   src_incl += "#include \"";

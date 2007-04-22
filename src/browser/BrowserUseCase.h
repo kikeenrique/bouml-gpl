@@ -29,7 +29,7 @@
 class QPixmap;
 class StereotypesDialog;
 class BrowserUseCaseDiagram;
-class SimpleData;
+class UseCaseData;
 
 #include "BrowserNode.h"
 #include "Labeled.h"
@@ -43,7 +43,7 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
     static QStringList its_default_stereotypes;
     static QStringList relations_default_stereotypes[UmlRelations];
     
-    SimpleData * def;
+    UseCaseData * def;
     BrowserUseCaseDiagram * associated_diagram;
     UseCaseDiagramSettings usecasediagram_settings;
     SequenceDiagramSettings sequencediagram_settings;

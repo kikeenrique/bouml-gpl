@@ -31,12 +31,14 @@
 
 class MyTable;
 class RelationData;
+class BrowserClass;
 
 class ObjectLinkDialog : public QDialog {
   Q_OBJECT
     
   public:
-    ObjectLinkDialog(QList<RelationData> & l, RelationData * current);
+    ObjectLinkDialog(QList<RelationData> & l, RelationData * current,
+		     BrowserClass * a, BrowserClass * b);
     virtual ~ObjectLinkDialog();
   
     RelationData * rel() const { return choozen; }
@@ -45,6 +47,8 @@ class ObjectLinkDialog : public QDialog {
     void init(RelationData * current);
     
     QList<RelationData> & rels;
+    BrowserClass * cla;
+    BrowserClass * clb;
     RelationData * choozen;
     MyTable * table;
     
@@ -54,6 +58,7 @@ class ObjectLinkDialog : public QDialog {
     virtual void polish();
     virtual void accept();
     virtual void unselect();
+    virtual void create();
 };
 
 #endif

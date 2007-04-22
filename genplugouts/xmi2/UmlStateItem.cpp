@@ -13,3 +13,6 @@ void UmlStateItem::add_incoming_trans(UmlTransition *) {
 
 }
 
+UmlStateItem::~UmlStateItem() {
+}
+

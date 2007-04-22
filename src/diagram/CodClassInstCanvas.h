@@ -53,6 +53,7 @@ class CodClassInstCanvas : public QObject, public CodObjCanvas, public ClassInst
     virtual UmlCode type() const;
     virtual BrowserClass * get_type();
     virtual void set_type(BrowserClass * t);
+    virtual BrowserNode * the_diagram() const;
     virtual void open();
     virtual void menu(const QPoint&);
     virtual QString get_full_name() const;

@@ -355,6 +355,26 @@ class UmlBaseOperation
   UmlCom.check();
 
   _cpp_name_spec = s;
+!!!204160.cpp!!!	cppGetSetFrozen() : bool
+  read_if_needed_();
+  return _cpp_get_set_frozen;
+!!!204160.java!!!	cppGetSetFrozen() : bool
+  read_if_needed_();
+  return _cpp_get_set_frozen;
+!!!204288.cpp!!!	set_CppGetSetFrozen(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setCppFrozenCmd)) {
+    _cpp_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!204288.java!!!	set_CppGetSetFrozen(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setCppFrozenCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _cpp_get_set_frozen = v;
 !!!54656.cpp!!!	isJavaFinal() : bool
   read_if_needed_();
     
@@ -438,6 +458,26 @@ class UmlBaseOperation
   UmlCom.check();
 
   _java_name_spec = s;
+!!!204416.cpp!!!	javaGetSetFrozen() : bool
+  read_if_needed_();
+  return _java_get_set_frozen;
+!!!204416.java!!!	javaGetSetFrozen() : bool
+  read_if_needed_();
+  return _java_get_set_frozen;
+!!!204544.cpp!!!	set_JavaGetSetFrozen(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setJavaFrozenCmd)) {
+    _java_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!204544.java!!!	set_JavaGetSetFrozen(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setJavaFrozenCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _java_get_set_frozen = v;
 !!!55936.cpp!!!	isIdlOneway() : bool
   read_if_needed_();
     
@@ -475,6 +515,26 @@ class UmlBaseOperation
   UmlCom.check();
 
   _idl_name_spec = s;
+!!!204672.cpp!!!	idlGetSetFrozen() : bool
+  read_if_needed_();
+  return _idl_get_set_frozen;
+!!!204672.java!!!	idlGetSetFrozen() : bool
+  read_if_needed_();
+  return _idl_get_set_frozen;
+!!!204800.cpp!!!	set_IdlGetSetFrozen(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setIdlFrozenCmd)) {
+    _idl_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!204800.java!!!	set_IdlGetSetFrozen(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIdlFrozenCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _idl_get_set_frozen = v;
 !!!56448.cpp!!!	unload(in rec : bool, in del : bool) : void
   _return_type.explicit_type = 0;
   _params.clear();
@@ -581,6 +641,7 @@ class UmlBaseOperation
   _cpp_inline = UmlCom::read_bool();
   _cpp_def = UmlCom::read_string();
   _cpp_name_spec = UmlCom::read_string();
+  _cpp_get_set_frozen = UmlCom::read_bool();
 !!!56832.java!!!	read_cpp_() : void
   super.read_cpp_();
   _cpp_const = UmlCom.read_bool();
@@ -589,21 +650,26 @@ class UmlBaseOperation
   _cpp_inline = UmlCom.read_bool();
   _cpp_def = UmlCom.read_string();
   _cpp_name_spec = UmlCom.read_string();
+  _cpp_get_set_frozen = UmlCom.read_bool();
 !!!56960.cpp!!!	read_java_() : void
   UmlBaseClassMember::read_java_();
   _java_final = UmlCom::read_bool();
   _java_synchronized = UmlCom::read_bool();
   _java_name_spec = UmlCom::read_string();
+  _java_get_set_frozen = UmlCom::read_bool();
 !!!56960.java!!!	read_java_() : void
   super.read_java_();
   _java_final = UmlCom.read_bool();
   _java_synchronized = UmlCom.read_bool();
   _java_name_spec = UmlCom.read_string();
+  _java_get_set_frozen = UmlCom.read_bool();
 !!!57088.cpp!!!	read_idl_() : void
   UmlBaseClassMember::read_idl_();
   _idl_oneway = UmlCom::read_bool();
   _idl_name_spec = UmlCom::read_string();
+  _idl_get_set_frozen = UmlCom::read_bool();
 !!!57088.java!!!	read_idl_() : void
   super.read_idl_();
   _idl_oneway = UmlCom.read_bool();
   _idl_name_spec = UmlCom.read_string();
+  _idl_get_set_frozen = UmlCom.read_bool();

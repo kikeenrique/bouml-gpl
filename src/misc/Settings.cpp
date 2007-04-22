@@ -137,6 +137,7 @@ ClassDiagramSettings::ClassDiagramSettings() {
   show_full_members_definition = UmlDefaultState;
   show_members_visibility = UmlDefaultState;
   show_parameter_dir = UmlDefaultState;
+  show_parameter_name = UmlDefaultState;
   package_name_in_tab = UmlDefaultState;
   class_drawing_mode = DefaultClassDrawingMode;
   drawing_language = DefaultDrawingLanguage;
@@ -154,12 +155,13 @@ void ClassDiagramSettings::save(QTextStream & st) const {
 	<< " show_members_full_definition " << stringify(show_full_members_definition)
 	  << " show_members_visibility " << stringify(show_members_visibility)
 	    << " show_parameter_dir " << stringify(show_parameter_dir)
-	      << " package_name_in_tab " << stringify(package_name_in_tab)
-		<< " class_drawing_mode " << stringify(class_drawing_mode)
-		  << " drawing_language " << stringify(drawing_language)
-		    << " show_context_mode " << stringify(show_context_mode)
-		      << " auto_label_position " << stringify(auto_label_position)
-			<< " shadow " << stringify(shadow);
+	      << " show_parameter_name " << stringify(show_parameter_name)
+		<< " package_name_in_tab " << stringify(package_name_in_tab)
+		  << " class_drawing_mode " << stringify(class_drawing_mode)
+		    << " drawing_language " << stringify(drawing_language)
+		      << " show_context_mode " << stringify(show_context_mode)
+			<< " auto_label_position " << stringify(auto_label_position)
+			  << " shadow " << stringify(shadow);
 }
 
 void ClassDiagramSettings::read(char * & st, char * & k) {
@@ -181,6 +183,7 @@ void ClassDiagramSettings::read(char * & st, char * & k) {
     show_full_members_definition = state(read_keyword(st));
     show_members_visibility = show_full_members_definition;
     show_parameter_dir = UmlYes;
+    show_parameter_name = UmlYes;
     k = read_keyword(st);
   }
   else {
@@ -197,6 +200,11 @@ void ClassDiagramSettings::read(char * & st, char * & k) {
     if (!strcmp(k, "show_parameter_dir")) {
       // new version
       show_parameter_dir = state(read_keyword(st));
+      k = read_keyword(st);
+    }
+    if (!strcmp(k, "show_parameter_name")) {
+      // new version
+      show_parameter_name = state(read_keyword(st));
       k = read_keyword(st);
     }
   }
@@ -237,6 +245,7 @@ bool ClassDiagramSettings::complete(ClassDiagramSettings & result) const {
   check_default(show_full_members_definition, UmlDefaultState);
   check_default(show_members_visibility, UmlDefaultState);
   check_default(show_parameter_dir, UmlDefaultState);
+  check_default(show_parameter_name, UmlDefaultState);
   check_default(package_name_in_tab, UmlDefaultState);
   check_default(class_drawing_mode, DefaultClassDrawingMode);
   check_default(drawing_language, DefaultDrawingLanguage);
@@ -244,7 +253,7 @@ bool ClassDiagramSettings::complete(ClassDiagramSettings & result) const {
   check_default(auto_label_position, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
   
-  return done == 12;
+  return done == 13;
 }
 
 void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
@@ -253,7 +262,7 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
   switch (who) {
   case UmlClass:
     // order known by ClassDiagramSettings::set
-    a.resize(i + 8);
+    a.resize(i + 9);
   
     a[i].set("drawing language", &drawing_language);
     a[i + 1].set("drawing mode", &class_drawing_mode);
@@ -266,6 +275,8 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
 		 &show_members_visibility);
     a[i + 7].set("show parameter direction",
 		 &show_parameter_dir);
+    a[i + 8].set("show parameter name",
+		 &show_parameter_name);
     break;
   case UmlPackage:
     a.resize(i + 2);
@@ -274,7 +285,7 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
     a[i + 1].set("show context", &show_context_mode);
     break;
   case UmlClassDiagram:
-    a.resize(i + 12);
+    a.resize(i + 13);
   
     a[i].set("drawing language", &drawing_language);
     a[i + 1].set("classes drawing mode", &class_drawing_mode);
@@ -286,14 +297,16 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
 		 &show_members_visibility);
     a[i + 6].set("show parameter direction",
 		 &show_parameter_dir);
-    a[i + 7].set("draw all relations", &draw_all_relations);
-    a[i + 8].set("show packages name in tab", &package_name_in_tab);
-    a[i + 9].set("show classes and packages context", &show_context_mode);
-    a[i + 10].set("automatic labels position", &auto_label_position);
-    a[i + 11].set("draw shadow", &shadow);
+    a[i + 7].set("show parameter name",
+		 &show_parameter_name);
+    a[i + 8].set("draw all relations", &draw_all_relations);
+    a[i + 9].set("show packages name in tab", &package_name_in_tab);
+    a[i + 10].set("show classes and packages context", &show_context_mode);
+    a[i + 11].set("automatic labels position", &auto_label_position);
+    a[i + 12].set("draw shadow", &shadow);
     break;
   default:
-    a.resize(i + 12);
+    a.resize(i + 13);
   
     a[i].set("class#drawing language", &drawing_language);
     a[i + 1].set("class#classes drawing mode", &class_drawing_mode);
@@ -305,11 +318,13 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
 		 &show_members_visibility);
     a[i + 6].set("class#show operation parameter direction",
 		 &show_parameter_dir);
-    a[i + 7].set("class#draw all relations", &draw_all_relations);
-    a[i + 8].set("class#show packages name in tab", &package_name_in_tab);
-    a[i + 9].set("class#show classes and packages context", &show_context_mode);
-    a[i + 10].set("class#automatic labels position", &auto_label_position);
-    a[i + 11].set("class#draw shadow", &shadow);
+    a[i + 7].set("class#show operation parameter name",
+		 &show_parameter_name);
+    a[i + 8].set("class#draw all relations", &draw_all_relations);
+    a[i + 9].set("class#show packages name in tab", &package_name_in_tab);
+    a[i + 10].set("class#show classes and packages context", &show_context_mode);
+    a[i + 11].set("class#automatic labels position", &auto_label_position);
+    a[i + 12].set("class#draw shadow", &shadow);
   }
 }
 
@@ -330,7 +345,9 @@ void ClassDiagramSettings::set(QArray<StateSpec> & a, int index) {
   if (a[index + 6].name != 0)
     show_members_visibility = (Uml3States) *((Uml3States *) a[index + 6].state);
   if (a[index + 7].name != 0)
-    show_parameter_dir = (Uml3States) *((Uml3States *) a[index + 6].state);
+    show_parameter_dir = (Uml3States) *((Uml3States *) a[index + 7].state);
+  if (a[index + 8].name != 0)
+    show_parameter_name = (Uml3States) *((Uml3States *) a[index + 8].state);
 }
 
 

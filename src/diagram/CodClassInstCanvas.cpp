@@ -107,12 +107,25 @@ BrowserClass * CodClassInstCanvas::get_type() {
   return cl;
 }
 
+void CodClassInstCanvas::set_type(BrowserClass * t) {
+  if (t != cl) {
+    disconnect(cl->get_data(), 0, this, 0);
+    cl = t;
+    connect(cl->get_data(), SIGNAL(changed()), this, SLOT(modified()));
+    connect(cl->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
+  }
+}
+
+BrowserNode * CodClassInstCanvas::the_diagram() const {
+  return browser_node;
+}
+
 QString CodClassInstCanvas::get_full_name() const {
   return full_name();
 }
 
 void CodClassInstCanvas::open() {
-  InstanceDialog d(this, "class : ", "Class instance dialog");
+  InstanceDialog d(this, "class", UmlClass);
   
   d.raise();
   if (d.exec() == QDialog::Accepted)
@@ -234,15 +247,6 @@ void CodClassInstCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
       ((CodClassInstCanvas *) it.current())->modified();	// call package_modified()
     }
   }  
-}
-
-void CodClassInstCanvas::set_type(BrowserClass * t) {
-  if (t != cl) {
-    disconnect(cl->get_data(), 0, this, 0);
-    cl = t;
-    connect(cl->get_data(), SIGNAL(changed()), this, SLOT(modified()));
-    connect(cl->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
-  }
 }
 
 bool CodClassInstCanvas::alignable() const {

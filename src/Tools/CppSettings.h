@@ -145,6 +145,16 @@ class CppSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_IsRelativePath(bool v);
 
+    // return if a project root relative path must be used when the path
+    // must be generated in the produced #includes
+    static bool isRootRelativePath();
+
+    // set if a project root relative path must be used when the path
+    // must be generated in the produced #includes
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsRootRelativePath(bool v);
+
     // return if the namespace prefix must be
     // always generated before class's names
     static bool isForceNamespacePrefixGeneration();
@@ -522,6 +532,8 @@ class CppSettings : public UmlSettings {
     static bool _incl_with_path;
 
     static bool _is_relative_path;
+
+    static bool _is_root_relative_path;
 
     static bool _is_force_namespace_gen;
 

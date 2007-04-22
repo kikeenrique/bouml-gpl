@@ -56,6 +56,7 @@ class ParameterDialog : public QTabDialog {
     QStringList list;
     BrowserNodeList nodes;
     QList<BodyDialog> edits;
+    BrowserNode * view;
     int offset;
     
     // uml tab

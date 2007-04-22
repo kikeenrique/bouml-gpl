@@ -89,7 +89,6 @@ class ClassDialog : public QTabDialog {
     QString current_java_stereotype;
     QCheckBox * java_external_cb;
     QCheckBox * java_final_cb;
-    QCheckBox * java_public_cb;
     MultiLineEdit * edjavadecl;
     MultiLineEdit * showjavadecl;
     QPushButton * editjavaannotation;
@@ -128,7 +127,7 @@ class ClassDialog : public QTabDialog {
     static void java_generate_decl(QString & s, ClassData * cl, QString def,
 				   QString annotation, QString name,
 				   QString stereotype,
-				   QString comment, bool is_public,
+				   QString comment, UmlVisibility visibility,
 				   bool is_final, bool is_abstract,
 				   ActualParamsTable * actuals,
 				   FormalParamsTable * formals,

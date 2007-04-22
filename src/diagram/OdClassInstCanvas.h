@@ -59,6 +59,7 @@ class OdClassInstCanvas : public QObject, public DiagramCanvas,
     virtual UmlCode type() const;
     virtual BrowserClass * get_type();
     virtual void set_type(BrowserClass * t);
+    virtual BrowserNode * the_diagram() const;
     virtual void open();
     virtual void menu(const QPoint&);
     virtual const char * may_start(UmlCode &) const;

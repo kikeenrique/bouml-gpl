@@ -54,15 +54,14 @@ class ClassData : public BasicData {
     bool bodies_modified : 1;
     bool cpp_external : 1;		// C++
     bool java_external : 1;		// Java
-    bool java_public : 1;		// Java
     bool java_final : 1;		// Java
     bool idl_external : 1;		// Idl
     bool idl_local : 1;			// Idl (interface)
     bool idl_custom : 1;		// Idl (valuetype)
-    UmlVisibility uml_visibility : 4;	// nested
+    UmlVisibility uml_visibility : 4;
     
     // C++
-    UmlVisibility cpp_visibility : 4;	// nested
+    UmlVisibility cpp_visibility : 4;
     SharedStr cpp_decl;
     
     // Java
@@ -129,7 +128,6 @@ class ClassData : public BasicData {
         
     const char * get_javadecl() const { return java_decl; };
     bool java_is_external() const { return java_external; };
-    bool java_is_public() const { return java_public; };
     bool java_is_final() const { return java_final; };
     
     const char * get_idldecl() const { return idl_decl; };
