@@ -50,5 +50,7 @@ void UmlJunctionPseudoState::generate(UmlClass *, UmlClass *, UmlState * state, 
   body += indent + "stm" + state->path() + "." + _oper + "(stm);\n";
 }
 
+//  to have different name for the operation implementing the junction
+
 int UmlJunctionPseudoState::_rank;
 

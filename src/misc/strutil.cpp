@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,7 +33,8 @@
 #include "strutil.h"
 #include "CharSetDialog.h"
 
-bool manage_comment(QString comment, const char *& p, const char *& pp)
+bool manage_comment(QString comment, const char *& p,
+		    const char *& pp, bool javadoc)
 {
   static QString the_comment;
   
@@ -45,16 +46,32 @@ bool manage_comment(QString comment, const char *& p, const char *& pp)
   
   const char * co = comment;
   
-  the_comment = "//";
-  
-  do {
-    the_comment += *co;
-    if ((*co++ == '\n') && *co)
-      the_comment += "//";
-  } while (*co);
-  
-  if (*p != '\n')
-    the_comment += '\n';
+  if (javadoc) {
+    the_comment = "/**\n * ";
+    
+    do {
+      the_comment += *co;
+      if ((*co++ == '\n') && *co)
+	the_comment += " * ";
+    } while (*co);
+    
+    if (*p != '\n')
+      the_comment += (co[-1] != '\n') ? "\n */\n" : " */\n";
+    else
+      the_comment += (co[-1] != '\n') ? "\n */" : " */";
+  }
+  else {
+    the_comment = "//";
+    
+    do {
+      the_comment += *co;
+      if ((*co++ == '\n') && *co)
+	the_comment += "//";
+    } while (*co);
+    
+    if (*p != '\n')
+      the_comment += '\n';
+  }
     
   pp = p;
   p = the_comment;

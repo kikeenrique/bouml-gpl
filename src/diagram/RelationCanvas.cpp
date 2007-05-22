@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -913,20 +913,21 @@ void RelationCanvas::show_assoc_class(CdClassCanvas * cc) {
       ArrowCanvas * a = it.current();
       
       if (a->type() == UmlAnchor) {
-	DiagramItem * di = a->get_start();
+	DiagramItem * s = a->get_start();
+	DiagramItem * e = a->get_end();
 	
-	if (di == this) {
-	  if (a->get_end() == cc)
+	if (s == this) {
+	  if (e == cc)
 	    // already drawn
 	    return;
-	  else
+	  else if (e->type() == UmlClass)
 	    // not the good one
 	    a->delete_it();
 	}
-	else if (di == cc)
+	else if (s == cc)
 	  // already drawn
 	  return;
-	else
+	else if (s->type() == UmlClass)
 	  // not the good one
 	  a->delete_it();
       }
@@ -1167,7 +1168,7 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       result = new RelationCanvas(canvas, bi, di, b, t, id);
       result->geometry = geo;
       result->fixed_geometry = fixed;
-      result->setZ(z);
+      result->set_z(z);
       result->data = rd;
       connect(rd, SIGNAL(changed()), result, SLOT(modified()));
       connect(rd, SIGNAL(deleted()), result, SLOT(deleted()));

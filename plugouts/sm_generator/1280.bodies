@@ -211,7 +211,7 @@ class UmlBaseAttribute
   super.read_cpp_();
   _cpp_mutable = UmlCom.read_bool();
 !!!5120.cpp!!!	read_java_() : void
-  UmlBaseClassItem::read_java_();
+  UmlBaseClassMember::read_java_();
   _java_transient = UmlCom::read_bool();
 !!!5120.java!!!	read_java_() : void
   super.read_java_();

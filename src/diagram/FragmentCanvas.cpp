@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -370,15 +370,7 @@ const char * FragmentCanvas::may_start(UmlCode & l) const {
 }
 
 const char * FragmentCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  switch (dest->type()) {
-  case UmlAnchor:
-  case UmlLabel:
-  case UmlArrowPoint:
-  case UmlLifeLine:
-    return "illegal";
-  default:
-    return (l == UmlAnchor) ? 0 : "illegal";
-  }
+  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
 }
 
 aCorner FragmentCanvas::on_resize_point(const QPoint & p) {

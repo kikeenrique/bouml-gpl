@@ -1,23 +1,30 @@
-format 22
+format 37
 "Settings" // API BASE::Settings
+  revision 1
+  modified_by 2 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes show_parameter_name yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default
+  show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
   show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default
   
   comment "The API system classes and components concerning the settings
 
@@ -25,23 +32,28 @@ DO NOT MODIFY THEM !!!
 "
   classview 384 "Settings Class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
-    //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
-    //seq diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes show_parameter_name yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default
+    
     associated_deployment_view deploymentview_ref 384 // Settings Deployment view
     comment "The API system classes concerning the settings
 
 DO NOT MODIFY THEM !!!
 "
     class 4736 "CppSettings"
-      
-      
+      visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -517,6 +529,143 @@ ${body}}
 	
 	comment " to indicates to the code generator if the #include may specify
  the path of just the file's name
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 195712 "isRelativePath"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if a relative path must be used when the path
+ must be generated in the produced #includes"
+      end
+
+      operation 195840 "set_IsRelativePath"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if a relative path must be used when the path
+ must be generated in the produced #includes
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 196992 "isRootRelativePath"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if a path relative to the project root must be used
+ when the path must be generated in the produced #includes"
+      end
+
+      operation 197120 "set_IsRootRelativePath"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if a relative to the project root path must be used
+ when the path must be generated in the produced #includes
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 195968 "isForceNamespacePrefixGeneration"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if the namespace prefix must be
+ always generated before class's names"
+      end
+
+      operation 196096 "set_IsForceNamespacePrefixGeneration"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if the namespace prefix must be always generated before class's names
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 197248 "isGenerateJavadocStyleComment"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if ${comment} generate Javadoc style comment"
+      end
+
+      operation 197376 "set_IsGenerateJavadocStyleComment"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if ${comment} generate Javadoc style comment
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
@@ -1582,6 +1731,43 @@ ${body}}
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 195584 "isSetParamRef"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if the parameter of a 'set' operation generated through the
+ attribute and relation 'add set operation' menu is a reference by default"
+      end
+
+      operation 194688 "set_IsSetParamRef"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if the parameter of a 'set' operation generated through the
+ attribute and relation 'add set operation' menu is a reference by default
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 54656 "CppSettings"
 	cpp_inline private explicit_return_type ""
 	nparams 0
@@ -1599,10 +1785,10 @@ ${body}}
 	  a public
 	    comment "Allows to access UmlSettings protected attributes
 "
-	    cpp default "Generated"
-	    java "Generated"
+	    cpp default "${type}"
+	    java "${type}"
 	    classrelation_ref 13312 // <generalisation>
-	  b parent class_ref 5120 // UmlSettings
+	  b multiplicity "" parent class_ref 5120 // UmlSettings
       end
 
       attribute 14976 "_defined"
@@ -1793,7 +1979,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 13440 // _get_visibility (<directional aggregation by value>)
-	  b parent class_ref 512 // aVisibility
+	  b multiplicity "" parent class_ref 512 // aVisibility
       end
 
       attribute 17536 "_get_name"
@@ -1835,7 +2021,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 13568 // _set_visibility (<directional aggregation by value>)
-	  b parent class_ref 512 // aVisibility
+	  b multiplicity "" parent class_ref 512 // aVisibility
       end
 
       attribute 18048 "_set_name"
@@ -1859,6 +2045,15 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	idl_decl ""
+      end
+
+      attribute 144128 "_is_set_param_ref"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
 	idl_decl ""
       end
 
@@ -1899,6 +2094,42 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	idl_decl ""
+      end
+
+      attribute 145152 "_is_relative_path"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      attribute 146560 "_is_root_relative_path"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      attribute 145280 "_is_force_namespace_gen"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      attribute 146816 "_is_generate_javadoc_comment"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
 	idl_decl ""
       end
 
@@ -1944,8 +2175,7 @@ ${body}}
     end
 
     class 4864 "IdlSettings"
-      
-      
+      visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -3052,10 +3282,10 @@ ${body}}
 	  a public
 	    comment "Allows to access UmlSettings protected attributes
 "
-	    cpp default "Generated"
-	    java "Generated"
+	    cpp default "${type}"
+	    java "${type}"
 	    classrelation_ref 13696 // <generalisation>
-	  b parent class_ref 5120 // UmlSettings
+	  b multiplicity "" parent class_ref 5120 // UmlSettings
       end
 
       attribute 19200 "_defined"
@@ -3293,8 +3523,7 @@ ${body}}
     end
 
     class 4992 "JavaSettings"
-      
-      
+      visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -3663,6 +3892,39 @@ ${body}}
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 197504 "isGenerateJavadocStyleComment"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if ${comment} generate Javadoc style comment"
+      end
+
+      operation 197632 "set_IsGenerateJavadocStyleComment"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if ${comment} generate Javadoc style comment
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 65408 "classDecl"
 	class_operation public explicit_return_type "string"
 	nparams 0
@@ -3733,7 +3995,7 @@ ${body}}
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
 
-      operation 65920 "enumDecl"
+      operation 65920 "enumPatternDecl"
 	class_operation public explicit_return_type "string"
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
@@ -3749,7 +4011,7 @@ ${body}}
  through an abstract class having constant attributes"
       end
 
-      operation 66048 "set_EnumDecl"
+      operation 66048 "set_EnumPatternDecl"
 	class_operation public explicit_return_type "bool"
 	nparams 1
 	  param in name "v" explicit_type "string"
@@ -3766,6 +4028,41 @@ ${body}}
 	
 	comment " set the default definition of an enumeration implemented
  through an abstract class having constant attributes
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 151424 "enumDecl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " returns the default definition of an enumeration"
+      end
+
+      operation 151552 "set_EnumDecl"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the default definition of an enumeration
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
@@ -3840,7 +4137,7 @@ ${body}}
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
 
-      operation 66688 "enumItemDecl"
+      operation 66688 "enumPatternItemDecl"
 	class_operation public explicit_return_type "string"
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
@@ -3855,7 +4152,7 @@ ${body}}
 	comment " returns the default definition of an enumeration item"
       end
 
-      operation 66816 "set_EnumItemDecl"
+      operation 66816 "set_EnumPatternItemDecl"
 	class_operation public explicit_return_type "bool"
 	nparams 1
 	  param in name "v" explicit_type "string"
@@ -3875,7 +4172,7 @@ ${body}}
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
 
-      operation 66944 "enumItemCase"
+      operation 66944 "enumPatternItemCase"
 	class_operation public explicit_return_type "string"
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
@@ -3892,7 +4189,7 @@ for each enumeration item
 "
       end
 
-      operation 67072 "set_EnumItemCase"
+      operation 67072 "set_EnumPatternItemCase"
 	class_operation public explicit_return_type "bool"
 	nparams 1
 	  param in name "v" explicit_type "string"
@@ -3912,6 +4209,41 @@ ${body}}
 
  On error : return FALSE in C++, produce a RuntimeException in Java
 "
+      end
+
+      operation 151680 "enumItemDecl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " returns the default definition of an enumeration item"
+      end
+
+      operation 151808 "set_EnumItemDecl"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the default definition of an enumeration item
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
       end
 
       operation 67200 "relationDecl"
@@ -4264,10 +4596,10 @@ ${body}}
 	  a public
 	    comment "Allows to access UmlSettings protected attributes
 "
-	    cpp default "Generated"
-	    java "Generated"
+	    cpp default "${type}"
+	    java "${type}"
 	    classrelation_ref 13824 // <generalisation>
-	  b parent class_ref 5120 // UmlSettings
+	  b multiplicity "" parent class_ref 5120 // UmlSettings
       end
 
       attribute 22400 "_defined"
@@ -4303,11 +4635,20 @@ ${body}}
 	idl_decl ""
       end
 
-      attribute 22912 "_enum_decl"
+      attribute 22912 "_enum_pattern_decl"
 	class_attribute private explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	idl_decl ""
+      end
+
+      attribute 129536 "_enum_decl"
+	class_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
 	idl_decl ""
       end
 
@@ -4327,7 +4668,7 @@ ${body}}
 	idl_decl ""
       end
 
-      attribute 23296 "_enum_item_decl"
+      attribute 23296 "_enum_pattern_item_decl"
 	class_attribute private explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -4335,11 +4676,20 @@ ${body}}
 	idl_decl ""
       end
 
-      attribute 23424 "_enum_item_case"
+      attribute 23424 "_enum_pattern_item_case"
 	class_attribute private explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	idl_decl ""
+      end
+
+      attribute 129664 "_enum_item_decl"
+	class_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
 	idl_decl ""
       end
 
@@ -4366,7 +4716,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 13952 // _get_visibility (<directional aggregation by value>)
-	  b parent class_ref 512 // aVisibility
+	  b multiplicity "" parent class_ref 512 // aVisibility
       end
 
       attribute 23808 "_get_name"
@@ -4392,7 +4742,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 14080 // _set_visibility (<directional aggregation by value>)
-	  b parent class_ref 512 // aVisibility
+	  b multiplicity "" parent class_ref 512 // aVisibility
       end
 
       attribute 24064 "_set_name"
@@ -4432,6 +4782,15 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	idl_decl ""
+      end
+
+      attribute 147072 "_is_generate_javadoc_comment"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
 	idl_decl ""
       end
 
@@ -4477,8 +4836,7 @@ ${body}}
     end
 
     class 5120 "UmlSettings"
-      
-      
+      visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -4662,6 +5020,72 @@ ${body}}
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 196224 "umlGetName"
+	class_operation public return_type class_ref 143360 // aLanguage
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the language from which the getter's name rule must be followed at Uml level"
+      end
+
+      operation 196352 "set_UmlGetName"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 143360 // aLanguage
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the language from which the getter's name rule must be followed at Uml level
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 196480 "umlSetName"
+	class_operation public return_type class_ref 143360 // aLanguage
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the language from which the setter's name rule must be followed at Uml level"
+      end
+
+      operation 196608 "set_UmlSetName"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 143360 // aLanguage
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the language from which the setter's name rule must be followed at Uml level
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 69888 "UmlSettings"
 	cpp_inline protected explicit_return_type ""
 	nparams 0
@@ -4680,6 +5104,28 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	idl_decl ""
+      end
+
+      classrelation 154624 // _uml_get_name (<directional aggregation by value>)
+	relation 154624 *-->
+	  a role_name "_uml_get_name" multiplicity "" class_relation private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 154624 // _uml_get_name (<directional aggregation by value>)
+	  b multiplicity "" parent class_ref 143360 // aLanguage
+      end
+
+      classrelation 154752 // _uml_set_name (<directional aggregation by value>)
+	relation 154752 *-->
+	  a role_name "_uml_set_name" multiplicity "" class_relation private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 154752 // _uml_set_name (<directional aggregation by value>)
+	  b multiplicity "" parent class_ref 143360 // aLanguage
       end
 
       attribute 61312 "_artifact_default_description"
@@ -4742,7 +5188,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};"
 	    classrelation_ref 14208 // _builtins (<unidirectional association>)
-	  b parent class_ref 4480 // UmlBuiltin
+	  b multiplicity "" parent class_ref 4480 // UmlBuiltin
       end
 
       attribute 25088 "_map_relation_stereotypes"
@@ -4760,7 +5206,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};"
 	    classrelation_ref 14336 // _relation_stereotypes (<unidirectional association>)
-	  b parent class_ref 4608 // UmlStereotype
+	  b multiplicity "" parent class_ref 4608 // UmlStereotype
       end
 
       attribute 25216 "_map_class_stereotypes"
@@ -4778,7 +5224,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};"
 	    classrelation_ref 14464 // _class_stereotypes (<unidirectional association>)
-	  b parent class_ref 4608 // UmlStereotype
+	  b multiplicity "" parent class_ref 4608 // UmlStereotype
       end
 
       operation 70016 "read_"
@@ -4929,11 +5375,86 @@ ${body}}
 "
       end
     end
+
+    class 143360 "aLanguage"
+      visibility package stereotype "enum_pattern"
+      cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+      java_decl "${comment}${public}final class ${name} {
+${members}
+  private int value;
+
+  public int value() {
+    return value;
+  }
+
+  public static ${name} fromInt(int value) {
+    switch (value) {
+${cases}    default: throw new Error();
+    }
+  }
+
+  private ${name}(int v) { value = v; }; 
+}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 145664 "umlLanguage"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 145792 "cppLanguage"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 145920 "javaLanguage"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 146048 "idlLanguage"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+    end
   end
 
   deploymentview 384 "Settings Deployment view"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     comment "The API system artifacts concerning the settings
 
@@ -5094,6 +5615,32 @@ import java.util.*;
 ${definition}"
       associated_classes
 	class_ref 5120 // UmlSettings
+      end
+    end
+
+    artifact 138496 "aLanguage"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 143360 // aLanguage
       end
     end
   end

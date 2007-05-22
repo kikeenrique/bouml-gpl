@@ -15,7 +15,7 @@ int main(int argc, char ** argv)
     try {
       // does something on the target, here suppose that a virtual
       // operation exist at UmlItem level (and probably sub_level !)
-      UmlCom::trace("<b>Sort</b> release 1.3<br>");
+      UmlCom::trace("<b>Sort</b> release 1.3.1<br>");
       UmlCom::targetItem()->sort();
       UmlCom::trace("Done<br>");
     }

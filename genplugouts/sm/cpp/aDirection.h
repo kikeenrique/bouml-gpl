@@ -6,7 +6,8 @@
 enum aDirection {
   InputOutputDirection,
   InputDirection,
-  OutputDirection
+  OutputDirection,
+  ReturnDirection
 
 };
 #endif

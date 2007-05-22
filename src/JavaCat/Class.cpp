@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -309,10 +309,12 @@ bool Class::reverse(ClassContainer * container, QCString stereotype,
       cl_uml->set_isAbstract(abstractp);
     
 #ifdef REVERSE
-    if (!cl->from_libp() && ((BrowserNode *) cl->parent())->isa_package())
-      cl_uml->need_artifact(((Package *) cl->parent())->get_imports(),
-			    ((Package *) cl->parent())->get_static_imports(),
-			    CurrentArtifact);
+    if (!cl->from_libp() && ((BrowserNode *) cl->parent())->isa_package()) {
+      Package * pack = (Package *) cl->parent();
+      
+      cl_uml->need_artifact(pack->get_imports(), pack->is_java_lang_added(),
+			    pack->get_static_imports(), CurrentArtifact);
+    }
 #endif
     
     cl_uml->unload();
@@ -332,8 +334,10 @@ bool Class::manage_extends(ClassContainer * container,
   Class * cl = 0;
   QValueList<UmlTypeSpec> actuals;
   QCString str_actuals;
+  QCString dummy;
   
-  if (! container->read_type(typespec, &cl, tmplts, &actuals, str_actuals, 0))
+  if (! container->read_type(typespec, &cl, tmplts, &actuals, str_actuals,
+			     dummy, 0, dummy, dummy))
     return FALSE;
   
   if (typespec.type == 0) {
@@ -363,8 +367,10 @@ bool Class::manage_implements(ClassContainer * container, aRelationKind k,
     Class * cl = 0;
     QValueList<UmlTypeSpec> actuals;
     QCString str_actuals;
+    QCString dummy;
     
-    if (! container->read_type(typespec, &cl, tmplts, &actuals, str_actuals, 0))
+    if (! container->read_type(typespec, &cl, tmplts, &actuals, str_actuals,
+			       dummy, 0, dummy, dummy))
       return FALSE;
     
     if (typespec.type == 0) {
@@ -589,6 +595,9 @@ bool Class::manage_member(QCString s, QCString & path) {
   QCString value;
   QCString annotation;
   QCString oper_templ;
+  UmlClass * first_actual_class = 0;
+  QCString type_def;
+  QCString genericname;
   
 #ifdef TRACE
   cout << "Class::manage_member(" << s << ")\n";
@@ -635,8 +644,12 @@ bool Class::manage_member(QCString s, QCString & path) {
       m_transientp = TRUE;
     else if (s == "volatile")
       m_volatilep = TRUE;
-    else if (*s == '@')
-      annotation = s;
+    else if (*s == '@'){
+      if (annotation.isEmpty())
+	annotation = s;
+      else
+	annotation += "\n" + s;
+    }
     else if (s == "{") {
 #ifdef REVERSE
       if (Package::scanning() || from_libp())
@@ -725,14 +738,23 @@ bool Class::manage_member(QCString s, QCString & path) {
 	return FALSE;
       }
       
-      if ((type.type != 0)
-	  ? !UmlRelation::new_one(this, name, type, str_actuals, visibility,
+      if (type.type != 0) {
+	if (!UmlRelation::new_one(this, name, type, str_actuals, visibility,
 				  m_staticp, m_finalp, m_transientp, m_volatilep,
-				  array, value, comment, description, annotation)
-	  : !UmlAttribute::new_one(this, name, type, visibility,
-				   m_staticp, m_finalp, m_transientp,
-				   m_volatilep, array, value, 
-				   comment, description, annotation))
+				  array, value, comment, description, annotation))
+	  return FALSE;
+      }
+      else if (first_actual_class != 0) {
+	if (!UmlRelation::new_one(this, name, first_actual_class,
+				  type_def, genericname, visibility,
+				  m_staticp, m_finalp, m_transientp, m_volatilep,
+				  array, value, comment, description, annotation))
+	  return FALSE;
+      }
+      else if (!UmlAttribute::new_one(this, name, type, visibility,
+				      m_staticp, m_finalp, m_transientp,
+				      m_volatilep, array, value, 
+				      comment, description, annotation))
 	return FALSE;
       
       if (s == ";")
@@ -752,7 +774,8 @@ bool Class::manage_member(QCString s, QCString & path) {
       if (!type_read) {
 	if (! ((Package::scanning()) 
 	       ? bypass_type(s)
-	       : read_type(type, 0, tmplts, 0, str_actuals, s)))
+	       : read_type(type, 0, tmplts, 0, str_actuals, s, 
+			   &first_actual_class, type_def, genericname)))
 	  return FALSE;
 	
 #ifdef TRACE

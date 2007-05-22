@@ -60,13 +60,13 @@ bool UmlBaseClass::removeFormal(unsigned int rank) {
 
 bool UmlBaseClass::addFormal(unsigned int rank, const UmlFormalParameter & formal) {
   UmlCom::send_cmd(_identifier, addFormalCmd, rank, formal._name, 
-		   formal._type, formal._default_value);
+		   formal._type, formal._default_value, formal._extends);
   return UmlCom::read_bool();
 }
 
 bool UmlBaseClass::replaceFormal(unsigned int rank, const UmlFormalParameter & formal) {
   UmlCom::send_cmd(_identifier, replaceFormalCmd, rank, formal._name, 
-		   formal._type, formal._default_value);
+		   formal._type, formal._default_value, formal._extends);
   return UmlCom::read_bool();
 }
 
@@ -113,10 +113,18 @@ UmlArtifact * UmlBaseClass::associatedArtifact() {
   return (UmlArtifact *) UmlBaseItem::read_();
 }
 
-UmlComponent * UmlBaseClass::associatedComponent() {
+const QVector<UmlComponent> UmlBaseClass::associatedComponents() {
   UmlCom::send_cmd(_identifier, assocComponentCmd);
-  
-  return (UmlComponent *) UmlBaseItem::read_();
+
+  QVector<UmlComponent> result;
+  unsigned n = UmlCom::read_unsigned();
+
+  result.resize(n);
+
+  for (unsigned index = 0; index != n; index += 1)
+    result.insert(index, (UmlComponent *) UmlBaseItem::read_());
+
+  return result;
 }
 
 #ifdef WITHCPP
@@ -157,21 +165,11 @@ bool UmlBaseClass::set_isJavaExternal(bool y) {
 }
 
 bool UmlBaseClass::isJavaPublic() {
-  read_if_needed_();
-  
-  return _java_public;
+  return visibility() == PublicVisibility;
 }
 
 bool UmlBaseClass::set_isJavaPublic(bool y) {
-  bool r;
-  
-  if (set_it_(r, y, setIsJavaPublicCmd)) {
-    _java_public = y;
-    return TRUE;
-  }
-  else
-    return FALSE;
-
+  return set_Visibility((y) ? PublicVisibility : PackageVisibility);
 }
 
 bool UmlBaseClass::isJavaFinal() {
@@ -333,8 +331,8 @@ void UmlBaseClass::read_cpp_() {
 
 #ifdef WITHJAVA
 void UmlBaseClass::read_java_() {
-  UmlBaseClassItem::read_java_();  
-  _java_public = UmlCom::read_bool();
+  UmlBaseClassMember::read_java_();
+  ;
   _java_final = UmlCom::read_bool();
   _java_external = UmlCom::read_bool();
 }

@@ -99,6 +99,48 @@ class UmlSettings
   UmlCom.send_cmd(CmdFamily.umlSettingsCmd, UmlSettingsCmd._setDefaultRelationDescriptionCmd, v);
   UmlCom.check();
   _relation_default_description = v;
+!!!196224.cpp!!!	umlGetName() : aLanguage
+  read_if_needed_();
+
+  return _uml_get_name;
+!!!196224.java!!!	umlGetName() : aLanguage
+  read_if_needed_();
+
+  return _uml_get_name;
+!!!196352.cpp!!!	set_UmlGetName(in v : aLanguage) : bool
+  UmlCom::send_cmd(umlSettingsCmd, setUmlDefaultGetNameCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _uml_get_name = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!196352.java!!!	set_UmlGetName(in v : aLanguage) : bool
+  UmlCom.send_cmd(CmdFamily.umlSettingsCmd, UmlSettingsCmd._setUmlDefaultGetNameCmd,
+                  (byte) v.value());
+  UmlCom.check();
+  _uml_get_name = v;
+!!!196480.cpp!!!	umlSetName() : aLanguage
+  read_if_needed_();
+
+  return _uml_set_name;
+!!!196480.java!!!	umlSetName() : aLanguage
+  read_if_needed_();
+
+  return _uml_set_name;
+!!!196608.cpp!!!	set_UmlSetName(in v : aLanguage) : bool
+  UmlCom::send_cmd(umlSettingsCmd, setUmlDefaultSetNameCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _uml_set_name = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!196608.java!!!	set_UmlSetName(in v : aLanguage) : bool
+  UmlCom.send_cmd(CmdFamily.umlSettingsCmd, UmlSettingsCmd._setUmlDefaultSetNameCmd,
+                  (byte) v.value());
+  UmlCom.check();
+  _uml_set_name = v;
 !!!70016.cpp!!!	read_() : void
   unsigned n;
   unsigned index;
@@ -143,6 +185,8 @@ class UmlSettings
   _operation_default_description = UmlCom::read_string();
   _attribute_default_description = UmlCom::read_string();
   _relation_default_description = UmlCom::read_string();
+  _uml_get_name = (aLanguage) UmlCom::read_char();
+  _uml_set_name = (aLanguage) UmlCom::read_char();
 !!!70016.java!!!	read_() : void
   int n;
   int index;
@@ -187,6 +231,8 @@ class UmlSettings
   _operation_default_description = UmlCom.read_string();
   _attribute_default_description = UmlCom.read_string();
   _relation_default_description = UmlCom.read_string();
+  _uml_get_name = aLanguage.fromInt(UmlCom.read_char());
+  _uml_set_name = aLanguage.fromInt(UmlCom.read_char());
 !!!70144.cpp!!!	read_if_needed_() : void
   if (!_defined) {
     UmlCom::send_cmd(umlSettingsCmd, getUmlSettingsCmd);

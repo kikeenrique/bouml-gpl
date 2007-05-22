@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -95,6 +95,9 @@ void BrowserRelation::delete_it() {
     set_oper->delete_it();
   
   BrowserNode::delete_it();
+  
+  def->get_start()->modified();
+  def->get_end_class()->modified();  
 }
 
 bool BrowserRelation::undelete(bool, QString & warning, QString & renamed) {
@@ -298,6 +301,11 @@ AType BrowserRelation::class_association() const {
   return def->get_association();
 }
 
+const char * BrowserRelation::constraint() const {
+  return (def->is_a(this) ? def->get_constraint_a()
+			  : def->get_constraint_b());
+}
+
 const QPixmap* BrowserRelation::pixmap(int) const {
   if (deletedp())
     return DeletedRelationIcon;
@@ -396,7 +404,7 @@ void BrowserRelation::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
     open(FALSE);
-    break;
+    return;
   case 1:
     ((BrowserClass *) parent())->add_relation(this);
     return;
@@ -487,6 +495,8 @@ void BrowserRelation::modified() {
     update_get_oper();
   if (set_oper != 0)
      update_set_oper();
+  
+  ((BrowserNode *) parent())->modified();
 }
 
 UmlCode BrowserRelation::get_type() const {
@@ -740,17 +750,22 @@ BrowserRelation * BrowserRelation::read_ref(char * & st, char * k)
 }
 
 BrowserRelation * BrowserRelation::read(char * & st, char * k,
-					BrowserNode * parent)
+					BrowserNode * parent,
+					bool force)
 {
-  if (! strcmp(k, "classrelation_ref"))
-    return read_ref(st, k);
-  if (!strcmp(k, "classrelation")) {
-    int id = read_id(st);
-    
+  BrowserRelation * result;
+  int id;
+  
+  if (! strcmp(k, "classrelation_ref")) {
+    if (((result = all[id = read_id(st)]) == 0) && force)
+      result = new BrowserRelation(id);
+    return result;
+  }
+  else if (!strcmp(k, "classrelation")) {
+    id = read_id(st);
     k = read_keyword(st);
     
     RelationData * d = RelationData::read(st, k);	// updates k
-    BrowserRelation * result;
     
     if ((result = all[id]) == 0)
       result = new BrowserRelation(parent, d, id);

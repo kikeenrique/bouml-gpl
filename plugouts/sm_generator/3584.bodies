@@ -7,15 +7,15 @@ class UmlBasePackage
   return aPackage;
 !!!33664.java!!!	kind() : anItemKind
   return anItemKind.aPackage;
-!!!33792.cpp!!!	associatedDiagram() : UmlClassDiagram
+!!!33792.cpp!!!	associatedDiagram() : UmlDiagram
   read_if_needed_();
   
   return _assoc_diagram;
-!!!33792.java!!!	associatedDiagram() : UmlClassDiagram
+!!!33792.java!!!	associatedDiagram() : UmlDiagram
   read_if_needed_();
   
   return _assoc_diagram;
-!!!33920.cpp!!!	set_AssociatedDiagram(inout d : UmlClassDiagram) : bool
+!!!33920.cpp!!!	set_AssociatedDiagram(inout d : UmlDiagram) : bool
   UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
@@ -23,7 +23,7 @@ class UmlBasePackage
   }
   else
     return FALSE;
-!!!33920.java!!!	set_AssociatedDiagram(inout d : UmlClassDiagram) : bool
+!!!33920.java!!!	set_AssociatedDiagram(inout d : UmlDiagram) : bool
   UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd,
 		  d.identifier_());
   UmlCom.check();
@@ -213,10 +213,10 @@ class UmlBasePackage
   _idl_module = null;
   super.unload(rec, del);
 !!!36864.cpp!!!	read_uml_() : void
-  _assoc_diagram = (UmlClassDiagram *) UmlBaseItem::read_();
+  _assoc_diagram = (UmlDiagram *) UmlBaseItem::read_();
   UmlBaseItem::read_uml_();
 !!!36864.java!!!	read_uml_() : void
-  _assoc_diagram = (UmlClassDiagram) UmlBaseItem.read_();
+  _assoc_diagram = (UmlDiagram) UmlBaseItem.read_();
   super.read_uml_();
 !!!36992.cpp!!!	read_cpp_() : void
   _cpp_src_dir = UmlCom::read_string();

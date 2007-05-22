@@ -160,7 +160,7 @@ void UmlBaseAttribute::read_cpp_() {
 
 #ifdef WITHJAVA
 void UmlBaseAttribute::read_java_() {
-  UmlBaseClassItem::read_java_();
+  UmlBaseClassMember::read_java_();
   _java_transient = UmlCom::read_bool();
 }
 #endif

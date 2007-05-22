@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -411,7 +411,10 @@ bool UmlOperation::read_param(Class * container, unsigned rank,
 	cout << "type = '" << s << "...'\n";
 #endif
 	if (! bypass) {
-	  container->read_type(param.type, 0, tmplts, 0, str_actuals, s);
+	  QCString dummy;
+	  
+	  container->read_type(param.type, 0, tmplts, 0, str_actuals, s,
+			       0, dummy, dummy);
 
 	  if (param.type.explicit_type == "String")
 	    // at least for it !

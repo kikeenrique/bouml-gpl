@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,7 +39,6 @@ class UmlExtraClassMember : public UmlBaseExtraClassMember {
     UmlExtraClassMember(void * id, const QCString & n)
       : UmlBaseExtraClassMember(id, n) {};
   
-    //virtual void compute_dependency(QList<JavaRefType> & dependency, QCString cl_stereotype);
     virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
 			  QCString indent);
     virtual void generate_enum_pattern_item(QTextOStream &, int &, const QCString &, QCString);

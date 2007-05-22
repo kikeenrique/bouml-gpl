@@ -13,7 +13,7 @@ class UmlClassMember : public UmlBaseClassMember {
   public:
     UmlClassMember(void * id, const QCString & n) : UmlBaseClassMember(id, n) {};
 
-    void annotation();
+    void annotation_constraint();
 
 };
 

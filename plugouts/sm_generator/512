@@ -1,23 +1,30 @@
-format 22
+format 37
 "Com" // API BASE::Com
+  revision 1
+  modified_by 2 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes show_parameter_name yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default
+  show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
   show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default
   
   comment "The API system classes and components concerning the communication with BOUML
 
@@ -25,23 +32,28 @@ DO NOT MODIFY THEM !!!
 "
   classview 512 "Com Class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_full_members_definition default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default
-    //col diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default
-    //seq diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir yes show_parameter_name yes package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default
+    
     associated_deployment_view deploymentview_ref 512 // Com Deployment view
     comment "The API system classes concerning the communication with BOUML
 
 DO NOT MODIFY THEM !!!
 "
     class 5248 "UmlCom"
-      
-      
+      visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -67,13 +79,18 @@ ${members}};
 
  - trace()
 
+ - showTrace()
+
+ - traceAutoRaise()
+
  - message()
 
  - bye()
 
  - close()
  
- you must NOT call the others"
+ you must NOT call the others
+"
       operation 71168 "connect"
 	class_operation public explicit_return_type "bool"
 	nparams 1
@@ -122,6 +139,40 @@ ${body}}
 	
 	comment " to write messages in the tool window,
  use Qt rich text : allows HTML like formatting"
+      end
+
+      operation 194176 "showTrace"
+	class_operation public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment "to show the trace window
+"
+      end
+
+      operation 194304 "traceAutoRaise"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "y" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment "to automatically raise the trace window
+each time trace() is called
+"
       end
 
       operation 71552 "message"
@@ -742,20 +793,19 @@ ${body}}
 
       operation 75264 "send_cmd"
 	class_operation public explicit_return_type "void"
-	nparams 6
+	nparams 7
 	  param in name "id" explicit_type "item_id"
 	  param in name "cmd" explicit_type "OnInstanceCmd"
 	  param in name "arg1" explicit_type "uint"
 	  param in name "arg2" explicit_type "str"
 	  param in name "arg3" explicit_type "str"
 	  param in name "arg4" explicit_type "UmlTypeSpec"
-	cpp_decl "    ${comment}${friend}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, const ${t3} ${p3}, const ${t4} ${p4}, const ${t5} & ${p5}${)}${const}${volatile}${abstract};"
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, const ${t3} ${p3}, const ${t4} ${p4}, const ${t5} & ${p5}${)}${const}${volatile}${staticnl}{
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}${)}${throws}${staticnl}{
-${body}}
-"
+	  param in name "arg5" explicit_type "UmlTypeSpec"
+	cpp_decl "    ${comment}${friend}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, const ${t3} ${p3}, const ${t4} ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}${)}${const}${volatile}${abstract};"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, const ${t3} ${p3}, const ${t4} ${p4}, const ${t5} & ${p5}, const ${t6} & ${p6}${)}${const}${volatile}${staticnl}{
+${body}}"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}${)}${throws}${staticnl}{
+${body}}"
 	
 	comment "internal, do NOT use it
 "
@@ -788,7 +838,7 @@ ${body}}
 	nparams 3
 	  param in name "id" explicit_type "item_id"
 	  param in name "cmd" explicit_type "OnInstanceCmd"
-	  param in name "l" type class_ref 7169 // UmlClass
+	  param in name "l" type class_ref 8833 // UmlItem
 	cpp_decl "    ${comment}${friend}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}, ${t1} ${p1}, const QVector<${t2}> & ${p2}${)}${const}${volatile}${abstract};"
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}, ${t1} ${p1}, const QVector<${t2}> & ${p2}${)}${const}${volatile}${staticnl}{
 ${body}}
@@ -980,8 +1030,7 @@ ${body}}
     end
 
     class 5376 "CmdFamily"
-       stereotype "enum_pattern"
-      
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -1081,8 +1130,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 5504 "MiscGlobalCmd"
-       stereotype "enum_pattern"
-      
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -1170,11 +1218,34 @@ public static final ${class} ${name} = new ${class}(_${name});
 "
 	idl_decl ""
       end
+
+      attribute 143872 "showTraceCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 144000 "traceAutoRaiseCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
     end
 
     class 5632 "OnInstanceCmd"
-       stereotype "enum_pattern"
-      
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -1373,6 +1444,18 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 31104 "referencedByCmd"
 	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 130560 "sideCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -2245,11 +2328,202 @@ public static final ${class} ${name} = new ${class}(_${name});
 "
 	idl_decl ""
       end
+
+      attribute 130048 "setJavaAnnotationCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 130304 "setRelationAssocClassCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 142592 "setReadOnlyCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 142720 "setSingleExecutionCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 142848 "setUnmarshallCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 142976 "setTimeEventCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 143104 "setFlagCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 143232 "setUniqueCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 143360 "setStreamCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 143488 "setInStateCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 143616 "setOrderingCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 144384 "setCppFrozenCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 144512 "setJavaFrozenCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 144640 "setIdlFrozenCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 147456 "setConstraintCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 147584 "deleteCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
     end
 
     class 5760 "ClassGlobalCmd"
-       stereotype "enum_pattern"
-      
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -2286,8 +2560,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 5888 "PackageGlobalCmd"
-       stereotype "enum_pattern"
-      
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -2369,8 +2642,7 @@ public static final ${class} ${name} = new ${class}(_${name});
     end
 
     class 6016 "UmlSettingsCmd"
-       stereotype "enum_pattern"
-      
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -2460,11 +2732,34 @@ public static final ${class} ${name} = new ${class}(_${name});
 "
 	idl_decl ""
       end
+
+      attribute 146176 "setUmlDefaultGetNameCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 146304 "setUmlDefaultSetNameCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
     end
 
     class 6144 "CppSettingsCmd"
-       stereotype "enum_pattern"
-      
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -2867,11 +3162,70 @@ public static final ${class} ${name} = new ${class}(_${name});
 "
 	idl_decl ""
       end
+
+      attribute 144256 "setCppIsSetParamRefCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 145408 "setCppRelativePathCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 145536 "setCppForceNamespaceGenCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 146688 "setCppRootRelativePathCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 146944 "setCppJavadocStyleCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
     end
 
     class 6272 "JavaSettingsCmd"
-       stereotype "enum_pattern"
-      
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -3005,7 +3359,7 @@ public static final ${class} ${name} = new ${class}(_${name});
 	idl_decl ""
       end
 
-      attribute 49024 "setJavaEnumDeclCmd"
+      attribute 49024 "setJavaEnumPatternDeclCmd"
 	public explicit_type ""
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
@@ -3032,7 +3386,7 @@ public static final ${class} ${name} = new ${class}(_${name});
 	idl_decl ""
       end
 
-      attribute 49408 "setJavaEnumItemDeclCmd"
+      attribute 49408 "setJavaEnumPatternItemDeclCmd"
 	public explicit_type ""
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
@@ -3041,7 +3395,7 @@ public static final ${class} ${name} = new ${class}(_${name});
 	idl_decl ""
       end
 
-      attribute 49536 "setJavaEnumItemCaseCmd"
+      attribute 49536 "setJavaEnumPatternItemCaseCmd"
 	public explicit_type ""
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
@@ -3130,11 +3484,46 @@ public static final ${class} ${name} = new ${class}(_${name});
 "
 	idl_decl ""
       end
+
+      attribute 129792 "setJavaEnumDeclCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 129920 "setJavaEnumItemDeclCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 147200 "setJavaJavadocStyleCmd"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
     end
 
     class 6400 "IdlSettingsCmd"
-       stereotype "enum_pattern"
-      
+      visibility package stereotype "enum_pattern"
       cpp_decl "${comment}enum ${name} {
 ${items}
 };
@@ -3434,7 +3823,7 @@ public static final ${class} ${name} = new ${class}(_${name});
 
   deploymentview 512 "Com Deployment view"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     comment "The API system artifacts concerning the communication with BOUML
 

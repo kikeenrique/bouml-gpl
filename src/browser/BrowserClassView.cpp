@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -154,7 +154,6 @@ QString BrowserClassView::full_name(bool rev, bool itself) const {
 void BrowserClassView::menu() {
   QPopupMenu m(0);
   QPopupMenu subm(0);
-  QPopupMenu roundtripm(0);
   QPopupMenu toolm(0);
   
   m.insertItem(new MenuTitle(name, m.font()), -1);

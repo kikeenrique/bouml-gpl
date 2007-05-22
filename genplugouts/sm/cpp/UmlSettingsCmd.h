@@ -10,7 +10,9 @@ enum UmlSettingsCmd {
   setDefaultClassDescriptionCmd,
   setDefaultOperationDescriptionCmd,
   setDefaultAttributeDescriptionCmd,
-  setDefaultRelationDescriptionCmd
+  setDefaultRelationDescriptionCmd,
+  setUmlDefaultGetNameCmd,
+  setUmlDefaultSetNameCmd
 
 };
 #endif

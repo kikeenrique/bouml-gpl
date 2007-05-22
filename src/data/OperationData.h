@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -82,6 +82,7 @@ class OperationData : public ClassMemberData,
     AType return_type;
     ParamData * params;			// remark : do NOT use QArray
     ExceptionData * exceptions;
+    MyStr constraint;
     
     // c++
     OperationBody cpp_body;
@@ -124,6 +125,8 @@ class OperationData : public ClassMemberData,
     QString definition(bool full, bool withdir, bool withname) const;
     QString definition(bool full, DrawingLanguage language, bool withdir, bool withname) const;
     
+    const char * get_constraint() const { return constraint; }
+        
     bool get_isa_class_operation() const { return isa_class_operation; };
     
     bool get_is_abstract() const { return is_abstract; };

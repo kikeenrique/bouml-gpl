@@ -71,5 +71,7 @@ void UmlExitPointPseudoState::generate(UmlClass *, UmlClass *, UmlState * state,
     + "." + _oper + "(stm);\n";
 }
 
+//  to have different name for the operation implementing the exit point
+
 int UmlExitPointPseudoState::_rank;
 

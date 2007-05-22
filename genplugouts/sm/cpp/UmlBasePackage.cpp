@@ -1,7 +1,7 @@
 
 #include "UmlBasePackage.h"
 #include "UmlPackage.h"
-#include "UmlClassDiagram.h"
+#include "UmlDiagram.h"
 
 #include "UmlCom.h"
 #include "PackageGlobalCmd.h"
@@ -15,13 +15,13 @@ anItemKind UmlBasePackage::kind() {
   return aPackage;
 }
 
-UmlClassDiagram * UmlBasePackage::associatedDiagram() {
+UmlDiagram * UmlBasePackage::associatedDiagram() {
   read_if_needed_();
   
   return _assoc_diagram;
 }
 
-bool UmlBasePackage::set_AssociatedDiagram(UmlClassDiagram * d) {
+bool UmlBasePackage::set_AssociatedDiagram(UmlDiagram * d) {
   UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
@@ -168,7 +168,7 @@ void UmlBasePackage::unload(bool rec, bool del) {
 }
 
 void UmlBasePackage::read_uml_() {
-  _assoc_diagram = (UmlClassDiagram *) UmlBaseItem::read_();
+  _assoc_diagram = (UmlDiagram *) UmlBaseItem::read_();
   UmlBaseItem::read_uml_();
 }
 

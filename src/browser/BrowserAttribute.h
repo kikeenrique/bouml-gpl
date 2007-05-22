@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -82,10 +82,11 @@ class BrowserAttribute : public BrowserNode, public Labeled<BrowserAttribute> {
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
     virtual void member_cpp_def(const QString & prefix, const QString &, 
 				QString & s, bool templ) const;
+    virtual const char * constraint() const;
     
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserAttribute * read_ref(char * &);
-    static BrowserAttribute * read(char * &, char *, BrowserNode *, bool = FALSE);
+    static BrowserAttribute * read(char * &, char *, BrowserNode *, bool force = TRUE);
     static BrowserNode * get_it(const char * k, int id);
     static void post_load();
 

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -77,6 +77,7 @@ class GenerationSettings {
     static QStringList umltypes;
     
     static bool cpp_default_defs;
+    static bool cpp_javadoc_comment;
     static SharedStr cpp_h_content;
     static SharedStr cpp_src_content;
     static QString cpp_in;
@@ -111,6 +112,7 @@ class GenerationSettings {
     static bool cpp_set_param_ref;
     
     static bool java_default_defs;
+    static bool java_javadoc_comment;
     static SharedStr java_src_content;
     static SharedStr java_class_decl;
     static SharedStr java_external_class_decl;
@@ -234,6 +236,7 @@ class GenerationSettings {
     static bool cpp_default_set_param_ref() { return cpp_set_param_ref; };
     static void set_cpp_return_type(const AType & type, QString & s);
     static const QString cpp(const AType & type, UmlParamDirection, int);
+    static bool cpp_javadoc_style() { return cpp_javadoc_comment; }
     
     static bool java_get_default_defs() { return java_default_defs; };
     static bool java_set_default_defs(bool y);
@@ -256,6 +259,7 @@ class GenerationSettings {
     static const char * java_default_set_name() { return java_set_name; };
     static bool java_default_set_final() { return java_set_final; };
     static bool java_default_set_param_final() { return java_set_param_final; };
+    static bool java_javadoc_style() { return java_javadoc_comment; }
 
     static bool idl_get_default_defs() { return idl_default_defs; };
     static bool idl_set_default_defs(bool y);

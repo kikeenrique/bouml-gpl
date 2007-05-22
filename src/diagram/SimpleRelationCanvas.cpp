@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -527,7 +527,7 @@ SimpleRelationCanvas * SimpleRelationCanvas::read(char * & st, UmlCanvas * canva
       result = new SimpleRelationCanvas(canvas, bi, di, b, t, id);
       result->geometry = geo;
       result->fixed_geometry = fixed;
-      result->setZ(z);
+      result->set_z(z);
       result->data = rd;
       connect(rd, SIGNAL(changed()), result, SLOT(modified()));
       connect(rd, SIGNAL(deleted()), result, SLOT(deleted()));

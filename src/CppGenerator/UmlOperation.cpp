@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -380,7 +380,7 @@ void UmlOperation::generate_decl(aVisibility & current_visibility, QTextOStream 
       else if (*p != '$')
 	f_h << *p++;
       else if (!strncmp(p, "${comment}", 10))
-	manage_comment(p, pp);
+	manage_comment(p, pp, CppSettings::isGenerateJavadocStyleComment());
       else if (!strncmp(p, "${description}", 14))
 	manage_description(p, pp);
       else if (!strncmp(p, "${static}", 9)) {
@@ -663,7 +663,8 @@ void UmlOperation::generate_def(QTextOStream & fs, QCString indent, bool h,
 	    fs << *p++;
 	}
 	else if (!strncmp(p, "${comment}", 10)) {
-	  if (!manage_comment(p, pp) && re_template)
+	  if (!manage_comment(p, pp, CppSettings::isGenerateJavadocStyleComment())
+	      && re_template)
 	    fs << ((template_oper) ? templates_tmplop : templates);
 	}
 	else if (!strncmp(p, "${description}", 14)) {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,14 @@ class UmlRelation : public UmlBaseRelation {
 			aVisibility visibility,	bool staticp,
 			bool constp, bool transientp, bool volatilep,
 			const QCString & array,	const QCString & value,
+			QCString comment, QCString description,
+			QCString annotation);
+    static bool new_one(Class * container, const QCString & name,
+			UmlClass * type, QCString type_def,
+			QCString genericname,
+			aVisibility visibility, bool staticp,
+			bool constp, bool transientp, bool volatilep,
+			const QCString & array, const QCString & value,
 			QCString comment, QCString description,
 			QCString annotation);
 };

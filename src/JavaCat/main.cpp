@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,7 +44,7 @@ int main(int argc, char ** argv)
       //UmlCom::with_ack(FALSE);
 		       
       // warning : release is also in JavaCatWindow
-      UmlCom::trace("<b>Java catalog</b> release 2.7<br><hr>");
+      UmlCom::trace("<b>Java catalog</b> release 2.8<br><hr>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlItem * item = UmlCom::targetItem();

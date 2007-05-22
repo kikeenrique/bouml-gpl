@@ -305,6 +305,24 @@ bool CppSettings::set_IsForceNamespacePrefixGeneration(bool v)
     return FALSE;
 }
 
+bool CppSettings::isGenerateJavadocStyleComment()
+{
+  read_if_needed_();
+
+  return _is_generate_javadoc_comment;
+}
+
+bool CppSettings::set_IsGenerateJavadocStyleComment(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppJavadocStyleCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_generate_javadoc_comment = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 const QCString & CppSettings::enumIn()
 {
   read_if_needed_();
@@ -925,6 +943,8 @@ bool CppSettings::_is_root_relative_path;
 
 bool CppSettings::_is_force_namespace_gen;
 
+bool CppSettings::_is_generate_javadoc_comment;
+
 QDict<QCString> CppSettings::_map_includes;
 
 void CppSettings::read_()
@@ -1009,6 +1029,7 @@ void CppSettings::read_()
   _is_relative_path = UmlCom::read_bool();
   _is_force_namespace_gen = UmlCom::read_bool();
   _is_root_relative_path = UmlCom::read_bool();
+  _is_generate_javadoc_comment = UmlCom::read_bool();
 }
 
 void CppSettings::read_if_needed_()

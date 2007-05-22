@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -197,7 +197,8 @@ class BrowserNode : public QListViewItem,
 				QString & s, bool templ) const;
     virtual void referenced_by(QList<BrowserNode> &);
     virtual AType class_association() const;
-
+    virtual const char * constraint() const;
+    
     bool save_open_list(QTextStream &);
     void save(QTextStream &) const;
     static void save_progress_closed();

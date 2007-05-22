@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -1025,7 +1025,42 @@ void BrowserClass::get_opers(QValueList<const OperationData *> & opers,
     }
   }
 }
+
+// get the class and its members, and all parent and their members
+// except deleted
+void BrowserClass::get_tree(BrowserNodeList & l) {
+  QList<BrowserClass> all_parents;
   
+  all_parents.append(this);
+  get_all_parents(all_parents);
+  l.clear();
+  
+  for (BrowserClass * cl = all_parents.first(); cl != 0; cl = all_parents.next()) {
+    if (! cl->deletedp()) {
+      l.append(cl);
+      
+      for (QListViewItem * child = cl->firstChild(); child; child = child->nextSibling()) {
+	if (! ((BrowserNode *) child)->deletedp()) {
+	  UmlCode k = ((BrowserNode *) child)->get_type();
+	  
+	  switch (k) {
+	  default:
+	    if (! IsaRelation(k))
+	      break;
+	    // no break;
+	  case UmlAttribute:
+	  case UmlOperation:
+	    l.append((BrowserNode *) child);
+	  }
+	}
+      }
+    }
+  }
+}
+
+const char * BrowserClass::constraint() const {
+  return def->get_constraint();
+}
 
 void BrowserClass::DragMoveEvent(QDragMoveEvent * e) {
   if (UmlDrag::canDecode(e, UmlClass) ||
@@ -1544,15 +1579,16 @@ void BrowserClass::init()
       break;
     case UmlDependency:
       relations_default_stereotypes[r].append("friend");
+      relations_default_stereotypes[r].append("import");
       break;
     case UmlRealize:
       relations_default_stereotypes[r].append("bind");
       break;
     default:
       // relations corresponding to attribute
-      relations_default_stereotypes[r].append("vector");
       relations_default_stereotypes[r].append("list");
       relations_default_stereotypes[r].append("set");
+      relations_default_stereotypes[r].append("vector");
     }
   }
 }
@@ -2492,13 +2528,15 @@ BrowserClass * BrowserClass::read_ref(char * & st, const char * k)
     : result;
 }
 
-BrowserClass * BrowserClass::read(char * & st, char * k, BrowserNode * parent)
+BrowserClass * BrowserClass::read(char * & st, char * k,
+				  BrowserNode * parent,
+				  bool force)
 {
   BrowserClass * result;
   int id;
   
   if (!strcmp(k, "class_ref")) {
-    if ((result = all[id = read_id(st)]) == 0)
+    if (((result = all[id = read_id(st)]) == 0) && force)
       result = new BrowserClass(id);
     return result;
   }

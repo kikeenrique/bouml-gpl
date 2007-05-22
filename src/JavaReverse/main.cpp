@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
     try {
       //UmlCom::with_ack(FALSE);
       
-      UmlCom::trace("<b>Java reverse</b> release 2.7<br><hr>");
+      UmlCom::trace("<b>Java reverse</b> release 2.8.1<br><hr>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlItem * item = UmlCom::targetItem();

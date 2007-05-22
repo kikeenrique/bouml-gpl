@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -62,6 +62,7 @@ struct RoleDialog {
   QCheckBox * classrelation_cb;
   QCheckBox * constrelation_cb;
   MultiLineEdit * comment;
+  MultiLineEdit * constraint;
   QWidgetList opt;
   
   // C++
@@ -133,7 +134,7 @@ class RelationDialog : public QTabDialog {
   
   protected:
     void init_uml_role(RoleDialog & role, const RoleData & rel,
-		       QGroupBox * bg, BrowserClass * cl1, BrowserClass * cl2);
+		       QGroupBox * bg, BrowserClass * cl1);
     void init_cpp_role(RoleDialog & role, const RoleData & rel,
 		       QGroupBox * bg, const char * cpp_update_slot, 
 		       const char * cpp_default_slot,
@@ -154,6 +155,8 @@ class RelationDialog : public QTabDialog {
     
     static void post_edit_description_a(RelationDialog * d, QString s);
     static void post_edit_description_b(RelationDialog * d, QString s);
+    static void post_edit_constraint_a(RelationDialog * d, QString s);
+    static void post_edit_constraint_b(RelationDialog * d, QString s);
     static void post_edit_init_a(RelationDialog * d, QString s);
     static void post_edit_init_b(RelationDialog * d, QString s);
   
@@ -169,6 +172,8 @@ class RelationDialog : public QTabDialog {
     void default_description_b();
     void edit_description_a();
     void edit_description_b();
+    void edit_constraint_a();
+    void edit_constraint_b();
     void edit_init_a();
     void edit_init_b();
     void edTypeActivated(int);

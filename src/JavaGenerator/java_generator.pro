@@ -1,6 +1,6 @@
 TEMPLATE      = app
 CONFIG	      += qt warn_on release
-SOURCES	      = UmlClassItem.cpp JavaRefType.cpp UmlAttribute.cpp \
+SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp \
 		UmlClass.cpp UmlClassDiagram.cpp UmlClassMember.cpp \
 		UmlExtraClassMember.cpp UmlArtifact.cpp \
 		UmlClassView.cpp UmlCollaborationDiagram.cpp UmlComponent.cpp \

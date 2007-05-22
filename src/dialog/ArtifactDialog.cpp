@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -792,7 +792,8 @@ void ArtifactDialog::cpp_update_h() {
       else if (*p != '$')
 	s += *p++;
       else if (!strncmp(p, "${comment}", 10))
-	manage_comment(comment->text(), p, pp);
+	manage_comment(comment->text(), p, pp,
+		       GenerationSettings::cpp_javadoc_style());
       else if (!strncmp(p, "${description}", 14))
 	manage_description(comment->text(), p, pp);
       else if (!strncmp(p, "${name}", 7)) {
@@ -929,7 +930,8 @@ void ArtifactDialog::cpp_update_src() {
       else if (*p != '$')
 	s += *p++;
       else if (!strncmp(p, "${comment}", 10))
-	manage_comment(comment->text(), p, pp);
+	manage_comment(comment->text(), p, pp,
+		       GenerationSettings::cpp_javadoc_style());
       else if (!strncmp(p, "${description}", 14))
 	manage_description(comment->text(), p, pp);
       else if (!strncmp(p, "${includes}", 11)) {
@@ -1012,7 +1014,8 @@ void ArtifactDialog::java_update_src() {
       else if (*p != '$')
 	s += *p++;
       else if (!strncmp(p, "${comment}", 10))
-	manage_comment(comment->text(), p, pp);
+	manage_comment(comment->text(), p, pp,
+		       GenerationSettings::java_javadoc_style());
       else if (!strncmp(p, "${description}", 14))
 	manage_description(comment->text(), p, pp);
       else if (!strncmp(p, "${name}", 7)) {
@@ -1118,7 +1121,7 @@ void ArtifactDialog::idl_update_src() {
       else if (*p != '$')
 	s += *p++;
       else if (!strncmp(p, "${comment}", 10))
-	manage_comment(comment->text(), p, pp);
+	manage_comment(comment->text(), p, pp, FALSE);
       else if (!strncmp(p, "${description}", 14))
 	manage_description(comment->text(), p, pp);
       else if (!strncmp(p, "${name}", 7)) {

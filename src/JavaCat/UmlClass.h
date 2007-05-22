@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -36,7 +36,7 @@ class UmlClass : public UmlBaseClass {
   public:
     UmlClass(void * id, const QCString & n);
 #ifdef REVERSE
-    void need_artifact(const QStringList & imports,
+    void need_artifact(const QStringList & imports, bool remove_java_lang,
 		       const QStringList & static_imports,
 		       UmlArtifact *& cp);
 #endif

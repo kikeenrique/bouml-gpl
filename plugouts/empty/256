@@ -1,10 +1,10 @@
-format 35
+format 37
 "API BASE" // API BASE
-  revision 10
+  revision 14
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
   //use case diagram settings
   package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //sequence diagram settings
@@ -32,7 +32,7 @@ DO NOT MODIFY THEM !!!
 "
   classview 256 "API BASE class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
     //collaboration diagram settings
     show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
@@ -1002,7 +1002,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 256 // dir (<directional aggregation by value>)
-	  b parent class_ref 384 // aDirection
+	  b multiplicity "" parent class_ref 384 // aDirection
       end
 
       classrelation 384 // type (<directional aggregation by value>)
@@ -1012,7 +1012,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 384 // type (<directional aggregation by value>)
-	  b parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
       end
 
       attribute 4864 "name"
@@ -1104,7 +1104,7 @@ ${members}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 512 // <dependency>
-	  b parent class_ref 1408 // UmlBaseClass
+	  b multiplicity "" parent class_ref 1408 // UmlBaseClass
       end
 
       classrelation 640 // _superClass (<unidirectional association>)
@@ -1114,7 +1114,7 @@ ${members}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 640 // _superClass (<unidirectional association>)
-	  b parent class_ref 7169 // UmlClass
+	  b multiplicity "" parent class_ref 7169 // UmlClass
       end
 
       attribute 5120 "_rank"
@@ -1132,7 +1132,7 @@ ${members}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 768 // _value (<directional aggregation by value>)
-	  b parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
       end
 
       operation 1024 "read_"
@@ -1227,7 +1227,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 896 // <dependency>
-	  b parent class_ref 1408 // UmlBaseClass
+	  b multiplicity "" parent class_ref 1408 // UmlBaseClass
       end
 
       attribute 5248 "_name"
@@ -1254,7 +1254,7 @@ ${members}};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 1024 // _default_value (<directional aggregation by value>)
-	  b parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
       end
 
       classrelation 136448 // _extends (<directional aggregation by value>)
@@ -1264,7 +1264,7 @@ ${members}};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 136448 // _extends (<directional aggregation by value>)
-	  b parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
       end
 
       operation 1664 "read_"
@@ -1319,7 +1319,7 @@ ${members}};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 1152 // type (<unidirectional association>)
-	  b parent class_ref 7169 // UmlClass
+	  b multiplicity "" parent class_ref 7169 // UmlClass
 	comment " if != 0 the class representing the type"
       end
 
@@ -1381,7 +1381,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 1280 // <generalisation>
-	  b parent class_ref 7553 // UmlClassMember
+	  b multiplicity "" parent class_ref 7553 // UmlClassMember
       end
 
       operation 2176 "create"
@@ -1797,7 +1797,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 1408 // _type (<directional aggregation by value>)
-	  b parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
       end
 
       classrelation 1536 // _get_oper (<unidirectional association>)
@@ -1807,7 +1807,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 1536 // _get_oper (<unidirectional association>)
-	  b parent class_ref 9089 // UmlOperation
+	  b multiplicity "" parent class_ref 9089 // UmlOperation
       end
 
       classrelation 1664 // _set_oper (<unidirectional association>)
@@ -1817,7 +1817,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 1664 // _set_oper (<unidirectional association>)
-	  b parent class_ref 9089 // UmlOperation
+	  b multiplicity "" parent class_ref 9089 // UmlOperation
       end
 
       classrelation 1792 // _idl_case (<unidirectional association>)
@@ -1829,7 +1829,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 1792 // _idl_case (<unidirectional association>)
-	  b parent class_ref 7041 // UmlAttribute
+	  b multiplicity "" parent class_ref 7041 // UmlAttribute
 	comment " exclusive with idl_explicit_case"
       end
 
@@ -1955,7 +1955,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 1920 // <generalisation>
-	  b parent class_ref 7553 // UmlClassMember
+	  b multiplicity "" parent class_ref 7553 // UmlClassMember
       end
 
       operation 5376 "create"
@@ -2623,7 +2623,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 2048 // <dependency>
-	  b parent class_ref 3712 // UmlBaseRelation
+	  b multiplicity "" parent class_ref 3712 // UmlBaseRelation
       end
 
       classrelation 2176 // <dependency>
@@ -2633,7 +2633,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 2176 // <dependency>
-	  b parent class_ref 2048 // UmlBaseArtifact
+	  b multiplicity "" parent class_ref 2048 // UmlBaseArtifact
       end
 
       attribute 6272 "_classes"
@@ -2728,7 +2728,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 1;
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 2304 // _base_type (<directional aggregation by value>)
-	  b parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
       end
 
       classrelation 2432 // _assoc_diagram (<unidirectional association>)
@@ -2738,7 +2738,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 1;
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 2432 // _assoc_diagram (<unidirectional association>)
-	  b parent class_ref 7297 // UmlClassDiagram
+	  b multiplicity "" parent class_ref 7297 // UmlClassDiagram
       end
 
       classrelation 2560 // _switch_type (<directional aggregation by value>)
@@ -2751,7 +2751,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 2560 // _switch_type (<directional aggregation by value>)
-	  b parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
 	comment " union"
       end
 
@@ -2885,7 +2885,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 2688 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 10368 "cppDecl"
@@ -3030,7 +3030,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 2816 // <dependency>
-	  b parent class_ref 1280 // UmlBaseAttribute
+	  b multiplicity "" parent class_ref 1280 // UmlBaseAttribute
       end
 
       classrelation 2944 // <dependency>
@@ -3039,7 +3039,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 2944 // <dependency>
-	  b parent class_ref 3456 // UmlBaseOperation
+	  b multiplicity "" parent class_ref 3456 // UmlBaseOperation
       end
 
       classrelation 3072 // <dependency>
@@ -3048,7 +3048,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 3072 // <dependency>
-	  b parent class_ref 3712 // UmlBaseRelation
+	  b multiplicity "" parent class_ref 3712 // UmlBaseRelation
       end
 
       attribute 7424 "_cpp_decl"
@@ -3160,7 +3160,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 3200 // <dependency>
-	  b parent class_ref 1792 // UmlBaseClassMember
+	  b multiplicity "" parent class_ref 1792 // UmlBaseClassMember
       end
 
       classrelation 3328 // <dependency>
@@ -3170,7 +3170,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 3328 // <dependency>
-	  b parent class_ref 3072 // UmlBaseExtraClassMember
+	  b multiplicity "" parent class_ref 3072 // UmlBaseExtraClassMember
       end
 
       classrelation 3456 // <dependency>
@@ -3180,7 +3180,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 3456 // <dependency>
-	  b parent class_ref 1408 // UmlBaseClass
+	  b multiplicity "" parent class_ref 1408 // UmlBaseClass
       end
     end
 
@@ -3204,7 +3204,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 3584 // <generalisation>
-	  b parent class_ref 8577 // UmlDiagram
+	  b multiplicity "" parent class_ref 8577 // UmlDiagram
       end
 
       operation 11776 "create"
@@ -3278,7 +3278,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 136832 // <generalisation>
-	  b parent class_ref 8577 // UmlDiagram
+	  b multiplicity "" parent class_ref 8577 // UmlDiagram
       end
 
       operation 147712 "create"
@@ -3357,7 +3357,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 3712 // <generalisation>
-	  b parent class_ref 7425 // UmlClassItem
+	  b multiplicity "" parent class_ref 7425 // UmlClassItem
       end
 
       operation 12160 "isClassMember"
@@ -3553,6 +3553,41 @@ ${body}}
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 192640 "constraint"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the constraint"
+      end
+
+      operation 192768 "set_Constraint"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the constraint
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       attribute 7808 "_class_member"
 	private explicit_type "bool"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -3578,7 +3613,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 3840 // _visibility (<directional aggregation by value>)
-	  b parent class_ref 512 // aVisibility
+	  b multiplicity "" parent class_ref 512 // aVisibility
       end
 
       classrelation 3968 // _cpp_visibility (<directional aggregation by value>)
@@ -3591,7 +3626,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 8${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 3968 // _cpp_visibility (<directional aggregation by value>)
-	  b parent class_ref 512 // aVisibility
+	  b multiplicity "" parent class_ref 512 // aVisibility
       end
 
       attribute 62976 "_java_annotation"
@@ -3599,6 +3634,15 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 8${value};
 	cpp_decl "    #ifdef WITHJAVA
 ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 #endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      attribute 80128 "_constraint"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
@@ -3677,7 +3721,7 @@ ${body}}
 	    cpp default "#include in header"
 	    java "Generated"
 	    classrelation_ref 4096 // <dependency>
-	  b parent class_ref 1536 // UmlBaseClassItem
+	  b multiplicity "" parent class_ref 1536 // UmlBaseClassItem
       end
 
       classrelation 4224 // <dependency>
@@ -3687,7 +3731,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 4224 // <dependency>
-	  b parent class_ref 3456 // UmlBaseOperation
+	  b multiplicity "" parent class_ref 3456 // UmlBaseOperation
       end
 
       classrelation 4352 // <dependency>
@@ -3697,7 +3741,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 4352 // <dependency>
-	  b parent class_ref 1280 // UmlBaseAttribute
+	  b multiplicity "" parent class_ref 1280 // UmlBaseAttribute
       end
 
       classrelation 4480 // <dependency>
@@ -3707,7 +3751,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 4480 // <dependency>
-	  b parent class_ref 3712 // UmlBaseRelation
+	  b multiplicity "" parent class_ref 3712 // UmlBaseRelation
       end
 
       classrelation 4608 // <dependency>
@@ -3717,7 +3761,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 4608 // <dependency>
-	  b parent class_ref 1408 // UmlBaseClass
+	  b multiplicity "" parent class_ref 1408 // UmlBaseClass
       end
     end
 
@@ -3741,7 +3785,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 4736 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 13568 "create"
@@ -3825,7 +3869,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 4864 // _assoc_view (<unidirectional association>)
-	  b parent class_ref 8449 // UmlDeploymentView
+	  b multiplicity "" parent class_ref 8449 // UmlDeploymentView
       end
 
       operation 14080 "read_uml_"
@@ -3878,7 +3922,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 4992 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 14336 "create"
@@ -4290,7 +4334,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 5120 // <dependency>
-	  b parent class_ref 1408 // UmlBaseClass
+	  b multiplicity "" parent class_ref 1408 // UmlBaseClass
       end
 
       classrelation 5248 // _assoc_diagram (<unidirectional association>)
@@ -4300,7 +4344,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 5248 // _assoc_diagram (<unidirectional association>)
-	  b parent class_ref 8321 // UmlDeploymentDiagram
+	  b multiplicity "" parent class_ref 8321 // UmlDeploymentDiagram
       end
 
       classrelation 5376 // _assoc_classes (<unidirectional association>)
@@ -4311,7 +4355,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};"
 	    classrelation_ref 5376 // _assoc_classes (<unidirectional association>)
-	  b parent class_ref 7169 // UmlClass
+	  b multiplicity "" parent class_ref 7169 // UmlClass
       end
 
       classrelation 5504 // _associated (<unidirectional association>)
@@ -4323,7 +4367,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};
 "
 	    classrelation_ref 5504 // _associated (<unidirectional association>)
-	  b parent class_ref 8193 // UmlArtifact
+	  b multiplicity "" parent class_ref 8193 // UmlArtifact
       end
 
       attribute 8064 "_cpp_h"
@@ -4476,7 +4520,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 14592 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 76800 "create"
@@ -4644,7 +4688,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 14720 // _assoc_diagram (<unidirectional association>)
-	  b parent class_ref 7937 // UmlComponentDiagram
+	  b multiplicity "" parent class_ref 7937 // UmlComponentDiagram
       end
 
       classrelation 14848 // _realized (<unidirectional association>)
@@ -4655,7 +4699,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};"
 	    classrelation_ref 14848 // _realized (<unidirectional association>)
-	  b parent class_ref 7169 // UmlClass
+	  b multiplicity "" parent class_ref 7169 // UmlClass
       end
 
       classrelation 15232 // _provided (<unidirectional association>)
@@ -4666,7 +4710,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};"
 	    classrelation_ref 15232 // _provided (<unidirectional association>)
-	  b parent class_ref 7169 // UmlClass
+	  b multiplicity "" parent class_ref 7169 // UmlClass
       end
 
       classrelation 15360 // _required (<unidirectional association>)
@@ -4677,7 +4721,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};"
 	    classrelation_ref 15360 // _required (<unidirectional association>)
-	  b parent class_ref 7169 // UmlClass
+	  b multiplicity "" parent class_ref 7169 // UmlClass
       end
 
       operation 77312 "read_uml_"
@@ -4732,7 +4776,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 5632 // <generalisation>
-	  b parent class_ref 8577 // UmlDiagram
+	  b multiplicity "" parent class_ref 8577 // UmlDiagram
       end
 
       operation 17664 "create"
@@ -4807,7 +4851,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 5760 // <generalisation>
-	  b parent class_ref 8577 // UmlDiagram
+	  b multiplicity "" parent class_ref 8577 // UmlDiagram
       end
 
       operation 18048 "create"
@@ -4882,7 +4926,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 5888 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 18432 "create"
@@ -4957,7 +5001,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 6016 // <generalisation>
-	  b parent class_ref 8577 // UmlDiagram
+	  b multiplicity "" parent class_ref 8577 // UmlDiagram
       end
 
       operation 18816 "create"
@@ -5032,7 +5076,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 6144 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 19200 "create"
@@ -5107,7 +5151,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 6272 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 19584 "UmlBaseDeployment"
@@ -5143,7 +5187,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 6400 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 19712 "saveIn"
@@ -5207,7 +5251,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 6528 // <generalisation>
-	  b parent class_ref 7425 // UmlClassItem
+	  b multiplicity "" parent class_ref 7425 // UmlClassItem
       end
 
       operation 19968 "create"
@@ -5839,6 +5883,26 @@ ${body}}
  you will have to call Children() to re-access to them"
       end
 
+      operation 192896 "deleteIt"
+	public explicit_return_type "bool"
+	nparams 0
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " remove the element from the model, use it carefully because
+ after that the element can't be used anymore by the plug-out
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 23808 "isToolRunning"
 	class_operation public explicit_return_type "bool"
 	nparams 1
@@ -5887,7 +5951,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 6656 // <dependency>
-	  b parent class_ref 1536 // UmlBaseClassItem
+	  b multiplicity "" parent class_ref 1536 // UmlBaseClassItem
       end
 
       classrelation 6784 // <dependency>
@@ -5897,7 +5961,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 6784 // <dependency>
-	  b parent class_ref 1280 // UmlBaseAttribute
+	  b multiplicity "" parent class_ref 1280 // UmlBaseAttribute
       end
 
       classrelation 6912 // <dependency>
@@ -5907,7 +5971,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 6912 // <dependency>
-	  b parent class_ref 1408 // UmlBaseClass
+	  b multiplicity "" parent class_ref 1408 // UmlBaseClass
       end
 
       classrelation 7040 // <dependency>
@@ -5917,7 +5981,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7040 // <dependency>
-	  b parent class_ref 1664 // UmlBaseClassDiagram
+	  b multiplicity "" parent class_ref 1664 // UmlBaseClassDiagram
       end
 
       classrelation 7168 // <dependency>
@@ -5927,7 +5991,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7168 // <dependency>
-	  b parent class_ref 1920 // UmlBaseClassView
+	  b multiplicity "" parent class_ref 1920 // UmlBaseClassView
       end
 
       classrelation 7296 // <dependency>
@@ -5937,7 +6001,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7296 // <dependency>
-	  b parent class_ref 2176 // UmlBaseCollaborationDiagram
+	  b multiplicity "" parent class_ref 2176 // UmlBaseCollaborationDiagram
       end
 
       classrelation 7424 // <dependency>
@@ -5947,7 +6011,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7424 // <dependency>
-	  b parent class_ref 2048 // UmlBaseArtifact
+	  b multiplicity "" parent class_ref 2048 // UmlBaseArtifact
       end
 
       classrelation 7552 // <dependency>
@@ -5957,7 +6021,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7552 // <dependency>
-	  b parent class_ref 2304 // UmlBaseComponentDiagram
+	  b multiplicity "" parent class_ref 2304 // UmlBaseComponentDiagram
       end
 
       classrelation 7680 // <dependency>
@@ -5967,7 +6031,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7680 // <dependency>
-	  b parent class_ref 2432 // UmlBaseComponentView
+	  b multiplicity "" parent class_ref 2432 // UmlBaseComponentView
       end
 
       classrelation 7808 // <dependency>
@@ -5977,7 +6041,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7808 // <dependency>
-	  b parent class_ref 2816 // UmlBaseDeployment
+	  b multiplicity "" parent class_ref 2816 // UmlBaseDeployment
       end
 
       classrelation 7936 // <dependency>
@@ -5987,7 +6051,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 7936 // <dependency>
-	  b parent class_ref 2560 // UmlBaseDeploymentDiagram
+	  b multiplicity "" parent class_ref 2560 // UmlBaseDeploymentDiagram
       end
 
       classrelation 8064 // <dependency>
@@ -5997,7 +6061,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8064 // <dependency>
-	  b parent class_ref 2688 // UmlBaseDeploymentView
+	  b multiplicity "" parent class_ref 2688 // UmlBaseDeploymentView
       end
 
       classrelation 8192 // <dependency>
@@ -6007,7 +6071,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8192 // <dependency>
-	  b parent class_ref 3328 // UmlBaseNode
+	  b multiplicity "" parent class_ref 3328 // UmlBaseNode
       end
 
       classrelation 8320 // <dependency>
@@ -6017,7 +6081,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8320 // <dependency>
-	  b parent class_ref 3456 // UmlBaseOperation
+	  b multiplicity "" parent class_ref 3456 // UmlBaseOperation
       end
 
       classrelation 8448 // <dependency>
@@ -6027,7 +6091,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8448 // <dependency>
-	  b parent class_ref 3584 // UmlBasePackage
+	  b multiplicity "" parent class_ref 3584 // UmlBasePackage
       end
 
       classrelation 8576 // <dependency>
@@ -6037,7 +6101,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8576 // <dependency>
-	  b parent class_ref 3712 // UmlBaseRelation
+	  b multiplicity "" parent class_ref 3712 // UmlBaseRelation
       end
 
       classrelation 8704 // <dependency>
@@ -6047,7 +6111,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8704 // <dependency>
-	  b parent class_ref 3840 // UmlBaseNcRelation
+	  b multiplicity "" parent class_ref 3840 // UmlBaseNcRelation
       end
 
       classrelation 8832 // <dependency>
@@ -6057,7 +6121,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8832 // <dependency>
-	  b parent class_ref 3968 // UmlBaseSequenceDiagram
+	  b multiplicity "" parent class_ref 3968 // UmlBaseSequenceDiagram
       end
 
       classrelation 8960 // <dependency>
@@ -6067,7 +6131,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 8960 // <dependency>
-	  b parent class_ref 4096 // UmlBaseUseCase
+	  b multiplicity "" parent class_ref 4096 // UmlBaseUseCase
       end
 
       classrelation 9088 // <dependency>
@@ -6077,7 +6141,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9088 // <dependency>
-	  b parent class_ref 4224 // UmlBaseUseCaseDiagram
+	  b multiplicity "" parent class_ref 4224 // UmlBaseUseCaseDiagram
       end
 
       classrelation 9216 // <dependency>
@@ -6087,7 +6151,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9216 // <dependency>
-	  b parent class_ref 4352 // UmlBaseUseCaseView
+	  b multiplicity "" parent class_ref 4352 // UmlBaseUseCaseView
       end
 
       classrelation 9344 // <dependency>
@@ -6097,7 +6161,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9344 // <dependency>
-	  b parent class_ref 2944 // UmlBaseDiagram
+	  b multiplicity "" parent class_ref 2944 // UmlBaseDiagram
       end
 
       classrelation 9472 // <dependency>
@@ -6107,7 +6171,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9472 // <dependency>
-	  b parent class_ref 1024 // UmlBaseFormalParameter
+	  b multiplicity "" parent class_ref 1024 // UmlBaseFormalParameter
       end
 
       classrelation 9600 // <dependency>
@@ -6117,7 +6181,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9600 // <dependency>
-	  b parent class_ref 896 // UmlBaseActualParameter
+	  b multiplicity "" parent class_ref 896 // UmlBaseActualParameter
       end
 
       classrelation 9728 // <dependency>
@@ -6127,7 +6191,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9728 // <dependency>
-	  b parent class_ref 5248 // UmlCom
+	  b multiplicity "" parent class_ref 5248 // UmlCom
       end
 
       classrelation 9856 // <dependency>
@@ -6137,7 +6201,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9856 // <dependency>
-	  b parent class_ref 1792 // UmlBaseClassMember
+	  b multiplicity "" parent class_ref 1792 // UmlBaseClassMember
       end
 
       classrelation 9984 // <dependency>
@@ -6147,7 +6211,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "Generated"
 	    classrelation_ref 9984 // <dependency>
-	  b parent class_ref 3072 // UmlBaseExtraClassMember
+	  b multiplicity "" parent class_ref 3072 // UmlBaseExtraClassMember
       end
 
       classrelation 15488 // <dependency>
@@ -6158,7 +6222,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 15488 // <dependency>
-	  b parent class_ref 6528 // UmlBaseComponent
+	  b multiplicity "" parent class_ref 6528 // UmlBaseComponent
       end
 
       attribute 8832 "_defined"
@@ -6219,7 +6283,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 10112 // _parent (<unidirectional association>)
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       attribute 9600 "_children"
@@ -6558,7 +6622,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 128384 // <dependency>
-	  b parent class_ref 128256 // UmlBaseState
+	  b multiplicity "" parent class_ref 128256 // UmlBaseState
       end
 
       classrelation 128896 // <dependency>
@@ -6567,7 +6631,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 128896 // <dependency>
-	  b parent class_ref 128512 // UmlBaseStateDiagram
+	  b multiplicity "" parent class_ref 128512 // UmlBaseStateDiagram
       end
 
       classrelation 129920 // <dependency>
@@ -6576,7 +6640,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 129920 // <dependency>
-	  b parent class_ref 128896 // UmlBaseTransition
+	  b multiplicity "" parent class_ref 128896 // UmlBaseTransition
       end
 
       classrelation 130944 // <dependency>
@@ -6585,7 +6649,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 130944 // <dependency>
-	  b parent class_ref 129280 // UmlBaseRegion
+	  b multiplicity "" parent class_ref 129280 // UmlBaseRegion
       end
 
       classrelation 131456 // <dependency>
@@ -6594,7 +6658,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 131456 // <dependency>
-	  b parent class_ref 129536 // UmlBaseStateAction
+	  b multiplicity "" parent class_ref 129536 // UmlBaseStateAction
       end
 
       classrelation 132224 // <dependency>
@@ -6603,7 +6667,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 132224 // <dependency>
-	  b parent class_ref 129920 // UmlBaseInitialPseudoState
+	  b multiplicity "" parent class_ref 129920 // UmlBaseInitialPseudoState
       end
 
       classrelation 132608 // <dependency>
@@ -6612,7 +6676,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 132608 // <dependency>
-	  b parent class_ref 130176 // UmlBaseEntryPointPseudoState
+	  b multiplicity "" parent class_ref 130176 // UmlBaseEntryPointPseudoState
       end
 
       classrelation 132992 // <dependency>
@@ -6621,7 +6685,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 132992 // <dependency>
-	  b parent class_ref 130432 // UmlBaseFinalState
+	  b multiplicity "" parent class_ref 130432 // UmlBaseFinalState
       end
 
       classrelation 133376 // <dependency>
@@ -6630,7 +6694,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 133376 // <dependency>
-	  b parent class_ref 130688 // UmlBaseTerminatePseudoState
+	  b multiplicity "" parent class_ref 130688 // UmlBaseTerminatePseudoState
       end
 
       classrelation 133760 // <dependency>
@@ -6639,7 +6703,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 133760 // <dependency>
-	  b parent class_ref 130944 // UmlBaseExitPointPseudoState
+	  b multiplicity "" parent class_ref 130944 // UmlBaseExitPointPseudoState
       end
 
       classrelation 134144 // <dependency>
@@ -6648,7 +6712,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 134144 // <dependency>
-	  b parent class_ref 131200 // UmlBaseDeepHistoryPseudoState
+	  b multiplicity "" parent class_ref 131200 // UmlBaseDeepHistoryPseudoState
       end
 
       classrelation 134528 // <dependency>
@@ -6657,7 +6721,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 134528 // <dependency>
-	  b parent class_ref 131456 // UmlBaseShallowHistoryPseudoState
+	  b multiplicity "" parent class_ref 131456 // UmlBaseShallowHistoryPseudoState
       end
 
       classrelation 134912 // <dependency>
@@ -6666,7 +6730,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 134912 // <dependency>
-	  b parent class_ref 131712 // UmlBaseJunctionPseudoState
+	  b multiplicity "" parent class_ref 131712 // UmlBaseJunctionPseudoState
       end
 
       classrelation 135296 // <dependency>
@@ -6675,7 +6739,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 135296 // <dependency>
-	  b parent class_ref 131968 // UmlBaseChoicePseudoState
+	  b multiplicity "" parent class_ref 131968 // UmlBaseChoicePseudoState
       end
 
       classrelation 135680 // <dependency>
@@ -6684,7 +6748,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 135680 // <dependency>
-	  b parent class_ref 132224 // UmlBaseForkPseudoState
+	  b multiplicity "" parent class_ref 132224 // UmlBaseForkPseudoState
       end
 
       classrelation 136064 // <dependency>
@@ -6693,7 +6757,7 @@ ${body}}
 	  a protected
 	    cpp default "${type}"
 	    classrelation_ref 136064 // <dependency>
-	  b parent class_ref 132480 // UmlBaseJoinPseudoState
+	  b multiplicity "" parent class_ref 132480 // UmlBaseJoinPseudoState
       end
 
       classrelation 136960 // <dependency>
@@ -6702,7 +6766,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 136960 // <dependency>
-	  b parent class_ref 132736 // UmlBaseObjectDiagram
+	  b multiplicity "" parent class_ref 132736 // UmlBaseObjectDiagram
       end
 
       classrelation 137344 // <dependency>
@@ -6711,7 +6775,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 137344 // <dependency>
-	  b parent class_ref 133120 // UmlBaseActivity
+	  b multiplicity "" parent class_ref 133120 // UmlBaseActivity
       end
 
       classrelation 137728 // <dependency>
@@ -6720,7 +6784,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 137728 // <dependency>
-	  b parent class_ref 133376 // UmlBaseActivityDiagram
+	  b multiplicity "" parent class_ref 133376 // UmlBaseActivityDiagram
       end
 
       classrelation 138368 // <dependency>
@@ -6729,7 +6793,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 138368 // <dependency>
-	  b parent class_ref 133632 // UmlBaseActivityNode
+	  b multiplicity "" parent class_ref 133632 // UmlBaseActivityNode
       end
 
       classrelation 138880 // <dependency>
@@ -6738,7 +6802,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 138880 // <dependency>
-	  b parent class_ref 133888 // UmlBaseFlow
+	  b multiplicity "" parent class_ref 133888 // UmlBaseFlow
       end
 
       classrelation 139904 // <dependency>
@@ -6747,7 +6811,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 139904 // <dependency>
-	  b parent class_ref 134272 // UmlBaseActivityRegion
+	  b multiplicity "" parent class_ref 134272 // UmlBaseActivityRegion
       end
 
       classrelation 140544 // <dependency>
@@ -6756,7 +6820,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 140544 // <dependency>
-	  b parent class_ref 134528 // UmlBaseExpansionRegion
+	  b multiplicity "" parent class_ref 134528 // UmlBaseExpansionRegion
       end
 
       classrelation 141056 // <dependency>
@@ -6765,7 +6829,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 141056 // <dependency>
-	  b parent class_ref 134912 // UmlBaseInterruptibleActivityRegion
+	  b multiplicity "" parent class_ref 134912 // UmlBaseInterruptibleActivityRegion
       end
 
       classrelation 141440 // <dependency>
@@ -6774,7 +6838,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 141440 // <dependency>
-	  b parent class_ref 135168 // UmlBaseActivityAction
+	  b multiplicity "" parent class_ref 135168 // UmlBaseActivityAction
       end
 
       classrelation 141952 // <dependency>
@@ -6783,7 +6847,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 141952 // <dependency>
-	  b parent class_ref 135424 // UmlBaseSendObjectAction
+	  b multiplicity "" parent class_ref 135424 // UmlBaseSendObjectAction
       end
 
       classrelation 142336 // <dependency>
@@ -6792,7 +6856,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 142336 // <dependency>
-	  b parent class_ref 135680 // UmlBaseUnmarshallAction
+	  b multiplicity "" parent class_ref 135680 // UmlBaseUnmarshallAction
       end
 
       classrelation 142720 // <dependency>
@@ -6801,7 +6865,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 142720 // <dependency>
-	  b parent class_ref 135936 // UmlBaseOnSignalAction
+	  b multiplicity "" parent class_ref 135936 // UmlBaseOnSignalAction
       end
 
       classrelation 143104 // <dependency>
@@ -6810,7 +6874,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 143104 // <dependency>
-	  b parent class_ref 136192 // UmlBaseSendSignalAction
+	  b multiplicity "" parent class_ref 136192 // UmlBaseSendSignalAction
       end
 
       classrelation 143488 // <dependency>
@@ -6819,7 +6883,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 143488 // <dependency>
-	  b parent class_ref 136448 // UmlBaseBroadcastSignalAction
+	  b multiplicity "" parent class_ref 136448 // UmlBaseBroadcastSignalAction
       end
 
       classrelation 143872 // <dependency>
@@ -6828,7 +6892,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 143872 // <dependency>
-	  b parent class_ref 136704 // UmlBaseValueSpecificationAction
+	  b multiplicity "" parent class_ref 136704 // UmlBaseValueSpecificationAction
       end
 
       classrelation 144256 // <dependency>
@@ -6837,7 +6901,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 144256 // <dependency>
-	  b parent class_ref 136960 // UmlBaseOpaqueAction
+	  b multiplicity "" parent class_ref 136960 // UmlBaseOpaqueAction
       end
 
       classrelation 144640 // <dependency>
@@ -6846,7 +6910,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 144640 // <dependency>
-	  b parent class_ref 137216 // UmlBaseAcceptEventAction
+	  b multiplicity "" parent class_ref 137216 // UmlBaseAcceptEventAction
       end
 
       classrelation 145024 // <dependency>
@@ -6855,7 +6919,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 145024 // <dependency>
-	  b parent class_ref 137472 // UmlBaseCallOperationAction
+	  b multiplicity "" parent class_ref 137472 // UmlBaseCallOperationAction
       end
 
       classrelation 145536 // <dependency>
@@ -6864,7 +6928,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 145536 // <dependency>
-	  b parent class_ref 137728 // UmlBaseCallBehaviorAction
+	  b multiplicity "" parent class_ref 137728 // UmlBaseCallBehaviorAction
       end
 
       classrelation 146048 // <dependency>
@@ -6873,7 +6937,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 146048 // <dependency>
-	  b parent class_ref 137984 // UmlBaseAccessVariableValueAction
+	  b multiplicity "" parent class_ref 137984 // UmlBaseAccessVariableValueAction
       end
 
       classrelation 146560 // <dependency>
@@ -6882,7 +6946,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 146560 // <dependency>
-	  b parent class_ref 138240 // UmlBaseClearVariableValueAction
+	  b multiplicity "" parent class_ref 138240 // UmlBaseClearVariableValueAction
       end
 
       classrelation 146944 // <dependency>
@@ -6891,7 +6955,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 146944 // <dependency>
-	  b parent class_ref 138496 // UmlBaseReadVariableValueAction
+	  b multiplicity "" parent class_ref 138496 // UmlBaseReadVariableValueAction
       end
 
       classrelation 147328 // <dependency>
@@ -6900,7 +6964,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 147328 // <dependency>
-	  b parent class_ref 138752 // UmlBaseWriteVariableValueAction
+	  b multiplicity "" parent class_ref 138752 // UmlBaseWriteVariableValueAction
       end
 
       classrelation 147712 // <dependency>
@@ -6909,7 +6973,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 147712 // <dependency>
-	  b parent class_ref 139008 // UmlBaseAddVariableValueAction
+	  b multiplicity "" parent class_ref 139008 // UmlBaseAddVariableValueAction
       end
 
       classrelation 148096 // <dependency>
@@ -6918,7 +6982,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 148096 // <dependency>
-	  b parent class_ref 139264 // UmlBaseRemoveVariableValueAction
+	  b multiplicity "" parent class_ref 139264 // UmlBaseRemoveVariableValueAction
       end
 
       classrelation 148480 // <dependency>
@@ -6927,7 +6991,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 148480 // <dependency>
-	  b parent class_ref 139520 // UmlBaseActivityControlNode
+	  b multiplicity "" parent class_ref 139520 // UmlBaseActivityControlNode
       end
 
       classrelation 148864 // <dependency>
@@ -6936,7 +7000,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 148864 // <dependency>
-	  b parent class_ref 139776 // UmlBaseInitialActivityNode
+	  b multiplicity "" parent class_ref 139776 // UmlBaseInitialActivityNode
       end
 
       classrelation 149248 // <dependency>
@@ -6945,7 +7009,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 149248 // <dependency>
-	  b parent class_ref 140032 // UmlBaseFlowFinalActivityNode
+	  b multiplicity "" parent class_ref 140032 // UmlBaseFlowFinalActivityNode
       end
 
       classrelation 149632 // <dependency>
@@ -6954,7 +7018,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 149632 // <dependency>
-	  b parent class_ref 140288 // UmlBaseActivityFinalActivityNode
+	  b multiplicity "" parent class_ref 140288 // UmlBaseActivityFinalActivityNode
       end
 
       classrelation 150016 // <dependency>
@@ -6963,7 +7027,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 150016 // <dependency>
-	  b parent class_ref 140544 // UmlBaseDecisionActivityNode
+	  b multiplicity "" parent class_ref 140544 // UmlBaseDecisionActivityNode
       end
 
       classrelation 150400 // <dependency>
@@ -6972,7 +7036,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 150400 // <dependency>
-	  b parent class_ref 140800 // UmlBaseMergeActivityNode
+	  b multiplicity "" parent class_ref 140800 // UmlBaseMergeActivityNode
       end
 
       classrelation 150784 // <dependency>
@@ -6981,7 +7045,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 150784 // <dependency>
-	  b parent class_ref 141056 // UmlBaseForkActivityNode
+	  b multiplicity "" parent class_ref 141056 // UmlBaseForkActivityNode
       end
 
       classrelation 151168 // <dependency>
@@ -6990,7 +7054,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 151168 // <dependency>
-	  b parent class_ref 141312 // UmlBaseJoinActivityNode
+	  b multiplicity "" parent class_ref 141312 // UmlBaseJoinActivityNode
       end
 
       classrelation 151552 // <dependency>
@@ -6999,7 +7063,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 151552 // <dependency>
-	  b parent class_ref 141568 // UmlBaseActivityObject
+	  b multiplicity "" parent class_ref 141568 // UmlBaseActivityObject
       end
 
       classrelation 152320 // <dependency>
@@ -7008,7 +7072,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 152320 // <dependency>
-	  b parent class_ref 141952 // UmlBaseExpansionNode
+	  b multiplicity "" parent class_ref 141952 // UmlBaseExpansionNode
       end
 
       classrelation 152704 // <dependency>
@@ -7017,7 +7081,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 152704 // <dependency>
-	  b parent class_ref 142208 // UmlBasePinParameter
+	  b multiplicity "" parent class_ref 142208 // UmlBasePinParameter
       end
 
       classrelation 153344 // <dependency>
@@ -7026,7 +7090,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 153344 // <dependency>
-	  b parent class_ref 142592 // UmlBaseActivityPin
+	  b multiplicity "" parent class_ref 142592 // UmlBaseActivityPin
       end
 
       classrelation 153728 // <dependency>
@@ -7035,7 +7099,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 153728 // <dependency>
-	  b parent class_ref 142848 // UmlBaseActivityParameter
+	  b multiplicity "" parent class_ref 142848 // UmlBaseActivityParameter
       end
 
       classrelation 154112 // <dependency>
@@ -7044,7 +7108,7 @@ ${body}}
 	  a default
 	    cpp default "${type}"
 	    classrelation_ref 154112 // <dependency>
-	  b parent class_ref 143104 // UmlBaseParameterSet
+	  b multiplicity "" parent class_ref 143104 // UmlBaseParameterSet
       end
     end
 
@@ -7068,7 +7132,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 10240 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 26368 "create"
@@ -7151,7 +7215,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 10368 // _assoc_diagram (<unidirectional association>)
-	  b parent class_ref 8321 // UmlDeploymentDiagram
+	  b multiplicity "" parent class_ref 8321 // UmlDeploymentDiagram
       end
 
       operation 26880 "UmlBaseNode"
@@ -7204,7 +7268,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 10496 // <generalisation>
-	  b parent class_ref 7553 // UmlClassMember
+	  b multiplicity "" parent class_ref 7553 // UmlClassMember
       end
 
       operation 27136 "create"
@@ -8266,7 +8330,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 10624 // _return_type (<directional aggregation by value>)
-	  b parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
       end
 
       classrelation 10752 // _params (<unidirectional association>)
@@ -8278,7 +8342,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
 "
 	    classrelation_ref 10752 // _params (<unidirectional association>)
-	  b parent class_ref 768 // UmlParameter
+	  b multiplicity "" parent class_ref 768 // UmlParameter
       end
 
       classrelation 10880 // _exceptions (<unidirectional association>)
@@ -8290,7 +8354,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
 "
 	    classrelation_ref 10880 // _exceptions (<unidirectional association>)
-	  b parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
       end
 
       attribute 11008 "_cpp_def"
@@ -8340,7 +8404,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 11008 // _get_of (<unidirectional association>)
-	  b parent class_ref 7553 // UmlClassMember
+	  b multiplicity "" parent class_ref 7553 // UmlClassMember
       end
 
       classrelation 11136 // _set_of (<unidirectional association>)
@@ -8352,7 +8416,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 11136 // _set_of (<unidirectional association>)
-	  b parent class_ref 7553 // UmlClassMember
+	  b multiplicity "" parent class_ref 7553 // UmlClassMember
       end
 
       operation 32896 "UmlBaseOperation"
@@ -8468,7 +8532,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 11264 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 33536 "create"
@@ -8959,7 +9023,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 136576 // _assoc_diagram (<unidirectional association>)
-	  b parent class_ref 8577 // UmlDiagram
+	  b multiplicity "" parent class_ref 8577 // UmlDiagram
       end
 
       attribute 11520 "_cpp_src_dir"
@@ -9143,7 +9207,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 11520 // <generalisation>
-	  b parent class_ref 7553 // UmlClassMember
+	  b multiplicity "" parent class_ref 7553 // UmlClassMember
       end
 
       operation 37504 "create"
@@ -9783,7 +9847,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 1;
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 11648 // _rel_kind (<directional aggregation by value>)
-	  b parent class_ref 256 // aRelationKind
+	  b multiplicity "" parent class_ref 256 // aRelationKind
       end
 
       attribute 13056 "_default_value"
@@ -9801,7 +9865,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 1;
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 11776 // _role_type (<unidirectional association>)
-	  b parent class_ref 7169 // UmlClass
+	  b multiplicity "" parent class_ref 7169 // UmlClass
       end
 
       attribute 13184 "_role_name"
@@ -9828,7 +9892,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 1;
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 136704 // _association (<directional aggregation by value>)
-	  b parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
       end
 
       classrelation 11904 // _get_oper (<unidirectional association>)
@@ -9838,7 +9902,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 1;
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 11904 // _get_oper (<unidirectional association>)
-	  b parent class_ref 9089 // UmlOperation
+	  b multiplicity "" parent class_ref 9089 // UmlOperation
       end
 
       classrelation 12032 // _set_oper (<unidirectional association>)
@@ -9848,7 +9912,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 1;
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 12032 // _set_oper (<unidirectional association>)
-	  b parent class_ref 9089 // UmlOperation
+	  b multiplicity "" parent class_ref 9089 // UmlOperation
       end
 
       classrelation 12160 // _idl_case (<unidirectional association>)
@@ -9859,7 +9923,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 1;
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 12160 // _idl_case (<unidirectional association>)
-	  b parent class_ref 7041 // UmlAttribute
+	  b multiplicity "" parent class_ref 7041 // UmlAttribute
 	comment " exclusive with idl_explicit_case"
       end
 
@@ -9987,7 +10051,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 12288 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 41856 "create"
@@ -10067,7 +10131,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 12416 // _rel_kind (<directional aggregation by value>)
-	  b parent class_ref 256 // aRelationKind
+	  b multiplicity "" parent class_ref 256 // aRelationKind
       end
 
       classrelation 12544 // _target (<unidirectional association>)
@@ -10078,7 +10142,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 12544 // _target (<unidirectional association>)
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 42368 "read_uml_"
@@ -10134,7 +10198,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 12672 // <generalisation>
-	  b parent class_ref 8577 // UmlDiagram
+	  b multiplicity "" parent class_ref 8577 // UmlDiagram
       end
 
       operation 42624 "create"
@@ -10209,7 +10273,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 12800 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 43008 "create"
@@ -10336,7 +10400,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 12928 // _assoc_diagram (<unidirectional association>)
-	  b parent class_ref 9857 // UmlUseCaseDiagram
+	  b multiplicity "" parent class_ref 9857 // UmlUseCaseDiagram
       end
 
       operation 43520 "read_uml_"
@@ -10389,7 +10453,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 13056 // <generalisation>
-	  b parent class_ref 8577 // UmlDiagram
+	  b multiplicity "" parent class_ref 8577 // UmlDiagram
       end
 
       operation 43776 "create"
@@ -10464,7 +10528,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 13184 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 44160 "create"
@@ -10538,7 +10602,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 128256 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 128128 "create"
@@ -10983,7 +11047,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 129280 // _uml (<directional aggregation by value>)
-	  b parent class_ref 128768 // StateBehavior
+	  b multiplicity "" parent class_ref 128768 // StateBehavior
       end
 
       classrelation 129408 // _cpp (<directional aggregation by value>)
@@ -10996,7 +11060,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 129408 // _cpp (<directional aggregation by value>)
-	  b parent class_ref 128768 // StateBehavior
+	  b multiplicity "" parent class_ref 128768 // StateBehavior
       end
 
       classrelation 129536 // _java (<directional aggregation by value>)
@@ -11009,7 +11073,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 129536 // _java (<directional aggregation by value>)
-	  b parent class_ref 128768 // StateBehavior
+	  b multiplicity "" parent class_ref 128768 // StateBehavior
       end
 
       classrelation 129664 // _assoc_diagram (<unidirectional association>)
@@ -11020,7 +11084,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 129664 // _assoc_diagram (<unidirectional association>)
-	  b parent class_ref 128642 // UmlStateDiagram
+	  b multiplicity "" parent class_ref 128642 // UmlStateDiagram
       end
 
       operation 131968 "read_uml_"
@@ -11081,7 +11145,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 136320 // <dependency>
-	  b parent class_ref 128768 // StateBehavior
+	  b multiplicity "" parent class_ref 128768 // StateBehavior
       end
     end
 
@@ -11104,7 +11168,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 128768 // <generalisation>
-	  b parent class_ref 8577 // UmlDiagram
+	  b multiplicity "" parent class_ref 8577 // UmlDiagram
       end
 
       operation 128640 "create"
@@ -11181,7 +11245,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 137600 // <generalisation>
-	  b parent class_ref 8577 // UmlDiagram
+	  b multiplicity "" parent class_ref 8577 // UmlDiagram
       end
 
       operation 150784 "create"
@@ -11325,7 +11389,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 129792 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 132352 "kind"
@@ -11734,7 +11798,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 130304 // _target (<unidirectional association>)
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       classrelation 130432 // _uml (<directional aggregation by value>)
@@ -11745,7 +11809,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 130432 // _uml (<directional aggregation by value>)
-	  b parent class_ref 129152 // TransitionBehavior
+	  b multiplicity "" parent class_ref 129152 // TransitionBehavior
       end
 
       classrelation 130560 // _cpp (<directional aggregation by value>)
@@ -11758,7 +11822,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 130560 // _cpp (<directional aggregation by value>)
-	  b parent class_ref 129152 // TransitionBehavior
+	  b multiplicity "" parent class_ref 129152 // TransitionBehavior
       end
 
       classrelation 130688 // _java (<directional aggregation by value>)
@@ -11771,7 +11835,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 130688 // _java (<directional aggregation by value>)
-	  b parent class_ref 129152 // TransitionBehavior
+	  b multiplicity "" parent class_ref 129152 // TransitionBehavior
       end
 
       operation 135424 "read_uml_"
@@ -11848,7 +11912,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 136192 // <dependency>
-	  b parent class_ref 129152 // TransitionBehavior
+	  b multiplicity "" parent class_ref 129152 // TransitionBehavior
       end
     end
 
@@ -11938,7 +12002,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 130816 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 136064 "create"
@@ -12015,7 +12079,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 131328 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 136704 "create"
@@ -12307,7 +12371,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 132096 // <generalisation>
-	  b parent class_ref 129794 // UmlPseudoState
+	  b multiplicity "" parent class_ref 129794 // UmlPseudoState
       end
 
       operation 138496 "create"
@@ -12383,7 +12447,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 132480 // <generalisation>
-	  b parent class_ref 129794 // UmlPseudoState
+	  b multiplicity "" parent class_ref 129794 // UmlPseudoState
       end
 
       operation 139008 "create"
@@ -12460,7 +12524,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 132864 // <generalisation>
-	  b parent class_ref 129794 // UmlPseudoState
+	  b multiplicity "" parent class_ref 129794 // UmlPseudoState
       end
 
       operation 139520 "create"
@@ -12536,7 +12600,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 133248 // <generalisation>
-	  b parent class_ref 129794 // UmlPseudoState
+	  b multiplicity "" parent class_ref 129794 // UmlPseudoState
       end
 
       operation 140032 "create"
@@ -12612,7 +12676,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 133632 // <generalisation>
-	  b parent class_ref 129794 // UmlPseudoState
+	  b multiplicity "" parent class_ref 129794 // UmlPseudoState
       end
 
       operation 140544 "create"
@@ -12689,7 +12753,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 134016 // <generalisation>
-	  b parent class_ref 129794 // UmlPseudoState
+	  b multiplicity "" parent class_ref 129794 // UmlPseudoState
       end
 
       operation 141056 "create"
@@ -12765,7 +12829,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 134400 // <generalisation>
-	  b parent class_ref 129794 // UmlPseudoState
+	  b multiplicity "" parent class_ref 129794 // UmlPseudoState
       end
 
       operation 141568 "create"
@@ -12841,7 +12905,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 134784 // <generalisation>
-	  b parent class_ref 129794 // UmlPseudoState
+	  b multiplicity "" parent class_ref 129794 // UmlPseudoState
       end
 
       operation 142080 "create"
@@ -12917,7 +12981,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 135168 // <generalisation>
-	  b parent class_ref 129794 // UmlPseudoState
+	  b multiplicity "" parent class_ref 129794 // UmlPseudoState
       end
 
       operation 142592 "create"
@@ -12993,7 +13057,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 135552 // <generalisation>
-	  b parent class_ref 129794 // UmlPseudoState
+	  b multiplicity "" parent class_ref 129794 // UmlPseudoState
       end
 
       operation 143104 "create"
@@ -13069,7 +13133,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 135936 // <generalisation>
-	  b parent class_ref 129794 // UmlPseudoState
+	  b multiplicity "" parent class_ref 129794 // UmlPseudoState
       end
 
       operation 143616 "create"
@@ -13287,7 +13351,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 137216 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 148224 "create"
@@ -13773,7 +13837,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 138112 // _assoc_diagram (<unidirectional association>)
-	  b parent class_ref 133506 // UmlActivityDiagram
+	  b multiplicity "" parent class_ref 133506 // UmlActivityDiagram
       end
 
       operation 151680 "read_uml_"
@@ -13846,7 +13910,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 138240 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 152064 "UmlBaseActivityNode"
@@ -13885,7 +13949,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 138752 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 152320 "kind"
@@ -14399,7 +14463,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 139264 // _target (<unidirectional association>)
-	  b parent class_ref 133762 // UmlActivityNode
+	  b multiplicity "" parent class_ref 133762 // UmlActivityNode
       end
 
       classrelation 139392 // _uml (<directional aggregation by value>)
@@ -14410,7 +14474,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 139392 // _uml (<directional aggregation by value>)
-	  b parent class_ref 134144 // FlowBehavior
+	  b multiplicity "" parent class_ref 134144 // FlowBehavior
       end
 
       classrelation 139520 // _cpp (<directional aggregation by value>)
@@ -14423,7 +14487,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 139520 // _cpp (<directional aggregation by value>)
-	  b parent class_ref 134144 // FlowBehavior
+	  b multiplicity "" parent class_ref 134144 // FlowBehavior
       end
 
       classrelation 139648 // _java (<directional aggregation by value>)
@@ -14436,7 +14500,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 139648 // _java (<directional aggregation by value>)
-	  b parent class_ref 134144 // FlowBehavior
+	  b multiplicity "" parent class_ref 134144 // FlowBehavior
       end
 
       operation 156160 "read_uml_"
@@ -14601,7 +14665,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 139776 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 156800 "UmlBaseActivityRegion"
@@ -14663,7 +14727,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 140288 // _assoc_diagram (<unidirectional association>)
-	  b parent class_ref 133506 // UmlActivityDiagram
+	  b multiplicity "" parent class_ref 133506 // UmlActivityDiagram
       end
 
       operation 157312 "read_uml_"
@@ -14700,7 +14764,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 140416 // <generalisation>
-	  b parent class_ref 134402 // UmlActivityRegion
+	  b multiplicity "" parent class_ref 134402 // UmlActivityRegion
       end
 
       operation 157440 "create"
@@ -14844,7 +14908,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 140800 // _mode (<directional aggregation by value>)
-	  b parent class_ref 134784 // anExpansionKind
+	  b multiplicity "" parent class_ref 134784 // anExpansionKind
       end
 
       operation 158464 "read_uml_"
@@ -14935,7 +14999,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 140928 // <generalisation>
-	  b parent class_ref 134402 // UmlActivityRegion
+	  b multiplicity "" parent class_ref 134402 // UmlActivityRegion
       end
 
       operation 158592 "create"
@@ -15012,7 +15076,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 141312 // <generalisation>
-	  b parent class_ref 133762 // UmlActivityNode
+	  b multiplicity "" parent class_ref 133762 // UmlActivityNode
       end
 
       operation 159104 "UmlBaseActivityAction"
@@ -15372,7 +15436,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 141696 // _assoc_diagram (<unidirectional association>)
-	  b parent class_ref 8577 // UmlDiagram
+	  b multiplicity "" parent class_ref 8577 // UmlDiagram
       end
 
       operation 161280 "read_uml_"
@@ -15445,7 +15509,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 141824 // <generalisation>
-	  b parent class_ref 135298 // UmlActivityAction
+	  b multiplicity "" parent class_ref 135298 // UmlActivityAction
       end
 
       operation 161664 "create"
@@ -15522,7 +15586,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 142208 // <generalisation>
-	  b parent class_ref 135298 // UmlActivityAction
+	  b multiplicity "" parent class_ref 135298 // UmlActivityAction
       end
 
       operation 162176 "create"
@@ -15599,7 +15663,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 142592 // <generalisation>
-	  b parent class_ref 135298 // UmlActivityAction
+	  b multiplicity "" parent class_ref 135298 // UmlActivityAction
       end
 
       operation 162688 "UmlBaseOnSignalAction"
@@ -15854,7 +15918,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 142976 // <generalisation>
-	  b parent class_ref 136066 // UmlOnSignalAction
+	  b multiplicity "" parent class_ref 136066 // UmlOnSignalAction
       end
 
       operation 164224 "create"
@@ -15931,7 +15995,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 143360 // <generalisation>
-	  b parent class_ref 136066 // UmlOnSignalAction
+	  b multiplicity "" parent class_ref 136066 // UmlOnSignalAction
       end
 
       operation 164736 "create"
@@ -16008,7 +16072,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 143744 // <generalisation>
-	  b parent class_ref 135298 // UmlActivityAction
+	  b multiplicity "" parent class_ref 135298 // UmlActivityAction
       end
 
       operation 165248 "create"
@@ -16301,7 +16365,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 144128 // <generalisation>
-	  b parent class_ref 135298 // UmlActivityAction
+	  b multiplicity "" parent class_ref 135298 // UmlActivityAction
       end
 
       operation 167040 "create"
@@ -16594,7 +16658,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 144512 // <generalisation>
-	  b parent class_ref 135298 // UmlActivityAction
+	  b multiplicity "" parent class_ref 135298 // UmlActivityAction
       end
 
       operation 168832 "create"
@@ -16975,7 +17039,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 144896 // <generalisation>
-	  b parent class_ref 135298 // UmlActivityAction
+	  b multiplicity "" parent class_ref 135298 // UmlActivityAction
       end
 
       operation 171136 "create"
@@ -17119,7 +17183,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 145280 // _operation (<unidirectional association>)
-	  b parent class_ref 9089 // UmlOperation
+	  b multiplicity "" parent class_ref 9089 // UmlOperation
       end
 
       operation 172160 "read_uml_"
@@ -17156,7 +17220,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 145408 // <generalisation>
-	  b parent class_ref 135298 // UmlActivityAction
+	  b multiplicity "" parent class_ref 135298 // UmlActivityAction
       end
 
       operation 172288 "create"
@@ -17300,7 +17364,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 145792 // _behavior (<unidirectional association>)
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 173312 "read_uml_"
@@ -17337,7 +17401,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 145920 // <generalisation>
-	  b parent class_ref 135298 // UmlActivityAction
+	  b multiplicity "" parent class_ref 135298 // UmlActivityAction
       end
 
       operation 173440 "UmlBaseAccessVariableValueAction"
@@ -17399,7 +17463,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 146304 // _variable (<unidirectional association>)
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 173952 "read_uml_"
@@ -17436,7 +17500,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 146432 // <generalisation>
-	  b parent class_ref 138114 // UmlAccessVariableValueAction
+	  b multiplicity "" parent class_ref 138114 // UmlAccessVariableValueAction
       end
 
       operation 174080 "create"
@@ -17513,7 +17577,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 146816 // <generalisation>
-	  b parent class_ref 138114 // UmlAccessVariableValueAction
+	  b multiplicity "" parent class_ref 138114 // UmlAccessVariableValueAction
       end
 
       operation 174592 "create"
@@ -17590,7 +17654,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 147200 // <generalisation>
-	  b parent class_ref 138114 // UmlAccessVariableValueAction
+	  b multiplicity "" parent class_ref 138114 // UmlAccessVariableValueAction
       end
 
       operation 175104 "create"
@@ -17667,7 +17731,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 147584 // <generalisation>
-	  b parent class_ref 138114 // UmlAccessVariableValueAction
+	  b multiplicity "" parent class_ref 138114 // UmlAccessVariableValueAction
       end
 
       operation 175616 "create"
@@ -17802,7 +17866,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 147968 // <generalisation>
-	  b parent class_ref 138114 // UmlAccessVariableValueAction
+	  b multiplicity "" parent class_ref 138114 // UmlAccessVariableValueAction
       end
 
       operation 176512 "create"
@@ -17937,7 +18001,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 148352 // <generalisation>
-	  b parent class_ref 133762 // UmlActivityNode
+	  b multiplicity "" parent class_ref 133762 // UmlActivityNode
       end
 
       operation 177408 "UmlBaseActivityControlNode"
@@ -17976,7 +18040,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 148736 // <generalisation>
-	  b parent class_ref 139650 // UmlActivityControlNode
+	  b multiplicity "" parent class_ref 139650 // UmlActivityControlNode
       end
 
       operation 177664 "create"
@@ -18053,7 +18117,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 149120 // <generalisation>
-	  b parent class_ref 139650 // UmlActivityControlNode
+	  b multiplicity "" parent class_ref 139650 // UmlActivityControlNode
       end
 
       operation 178176 "create"
@@ -18130,7 +18194,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 149504 // <generalisation>
-	  b parent class_ref 139650 // UmlActivityControlNode
+	  b multiplicity "" parent class_ref 139650 // UmlActivityControlNode
       end
 
       operation 178688 "create"
@@ -18207,7 +18271,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 149888 // <generalisation>
-	  b parent class_ref 139650 // UmlActivityControlNode
+	  b multiplicity "" parent class_ref 139650 // UmlActivityControlNode
       end
 
       operation 179200 "create"
@@ -18284,7 +18348,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 150272 // <generalisation>
-	  b parent class_ref 139650 // UmlActivityControlNode
+	  b multiplicity "" parent class_ref 139650 // UmlActivityControlNode
       end
 
       operation 179712 "create"
@@ -18361,7 +18425,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 150656 // <generalisation>
-	  b parent class_ref 139650 // UmlActivityControlNode
+	  b multiplicity "" parent class_ref 139650 // UmlActivityControlNode
       end
 
       operation 180224 "create"
@@ -18438,7 +18502,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 151040 // <generalisation>
-	  b parent class_ref 139650 // UmlActivityControlNode
+	  b multiplicity "" parent class_ref 139650 // UmlActivityControlNode
       end
 
       operation 180736 "create"
@@ -18515,7 +18579,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 151424 // <generalisation>
-	  b parent class_ref 133762 // UmlActivityNode
+	  b multiplicity "" parent class_ref 133762 // UmlActivityNode
       end
 
       operation 181248 "create"
@@ -18925,7 +18989,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 151808 // _assoc_diagram (<unidirectional association>)
-	  b parent class_ref 133506 // UmlActivityDiagram
+	  b multiplicity "" parent class_ref 133506 // UmlActivityDiagram
       end
 
       classrelation 151936 // _type (<directional aggregation by value>)
@@ -18936,7 +19000,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 151936 // _type (<directional aggregation by value>)
-	  b parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
       end
 
       attribute 69376 "_multiplicity"
@@ -18996,7 +19060,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 152064 // _ordering (<directional aggregation by value>)
-	  b parent class_ref 141824 // anOrdering
+	  b multiplicity "" parent class_ref 141824 // anOrdering
       end
 
       attribute 70016 "_is_control"
@@ -19141,7 +19205,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 152192 // <generalisation>
-	  b parent class_ref 141698 // UmlActivityObject
+	  b multiplicity "" parent class_ref 141698 // UmlActivityObject
       end
 
       operation 184576 "create"
@@ -19218,7 +19282,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 152576 // <generalisation>
-	  b parent class_ref 141698 // UmlActivityObject
+	  b multiplicity "" parent class_ref 141698 // UmlActivityObject
       end
 
       operation 185088 "UmlBasePinParameter"
@@ -19455,7 +19519,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 152960 // _dir (<directional aggregation by value>)
-	  b parent class_ref 384 // aDirection
+	  b multiplicity "" parent class_ref 384 // aDirection
       end
 
       classrelation 153088 // _effect (<directional aggregation by value>)
@@ -19466,7 +19530,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 153088 // _effect (<directional aggregation by value>)
-	  b parent class_ref 142464 // aParameterEffectKind
+	  b multiplicity "" parent class_ref 142464 // aParameterEffectKind
       end
 
       operation 186368 "read_uml_"
@@ -19575,7 +19639,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 153216 // <generalisation>
-	  b parent class_ref 142338 // UmlPinParameter
+	  b multiplicity "" parent class_ref 142338 // UmlPinParameter
       end
 
       operation 186496 "create"
@@ -19652,7 +19716,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 153600 // <generalisation>
-	  b parent class_ref 142338 // UmlPinParameter
+	  b multiplicity "" parent class_ref 142338 // UmlPinParameter
       end
 
       operation 187008 "create"
@@ -19809,7 +19873,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 153984 // <generalisation>
-	  b parent class_ref 8833 // UmlItem
+	  b multiplicity "" parent class_ref 8833 // UmlItem
       end
 
       operation 188032 "create"
@@ -19928,7 +19992,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};
 "
 	    classrelation_ref 154368 // _pins (<unidirectional association>)
-	  b parent class_ref 142722 // UmlActivityPin
+	  b multiplicity "" parent class_ref 142722 // UmlActivityPin
       end
 
       operation 188928 "read_uml_"

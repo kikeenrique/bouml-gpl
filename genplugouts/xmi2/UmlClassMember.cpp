@@ -53,7 +53,7 @@ void UmlClassMember::write_annotation(FileOut & out) {
   
     if (!a.isEmpty()) {
       out.indent();
-      out << "<xmi:Extension extender=\"Bouml\">\n\t<stereotype name=\"";
+      out << "<xmi:Extension extender=\"Bouml\">\n\t<annotation value=\"";
       out.quote(a);
       out << "\"/>\n";
       out.indent();

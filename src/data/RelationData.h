@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -43,6 +43,7 @@ struct RoleData {
   SharedStr multiplicity;
   MyStr init_value;
   MyStr comment;
+  MyStr constraint;	// 
   UmlVisibility uml_visibility : 8;	// : 4 useless here, : 8 faster than : 4 ?
   UmlVisibility cpp_visibility : 8;	// : 4 useless here, : 8 faster than : 4 ?
   bool isa_class_relation : 1;
@@ -152,6 +153,11 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     const char * get_comment_b() const { return b.comment; };
     void  set_comment_a(const char * s) { a.comment = s; };
     void set_comment_b(const char * s) { b.comment = s; };
+    
+    const char * get_constraint_a() const { return a.constraint; };
+    const char * get_constraint_b() const { return b.constraint; };
+    void  set_constraint_a(const char * s) { a.constraint = s; };
+    void set_constraint_b(const char * s) { b.constraint = s; };
     
     bool get_cpp_virtual_inheritance() const { return a.cpp_virtual_inheritance; };
     

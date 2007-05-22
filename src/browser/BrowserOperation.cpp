@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -335,6 +335,10 @@ QString BrowserOperation::compute_name(const char * name_spec) const {
     return get_name();
 }
 
+const char * BrowserOperation::constraint() const {
+  return def->get_constraint();
+}
+
 const QPixmap* BrowserOperation::pixmap(int) const {
   if (deletedp())
     return DeletedOperationIcon;
@@ -654,13 +658,14 @@ BrowserOperation * BrowserOperation::read_ref(char * & st)
 }
 
 BrowserOperation * BrowserOperation::read(char * & st, char * k,
-					  BrowserNode * parent)
+					  BrowserNode * parent,
+					  bool force)
 {
   BrowserOperation * result;
   int id;
 
   if (!strcmp(k, "operation_ref")) {
-    if ((result = all[id = read_id(st)]) == 0)
+    if (((result = all[id = read_id(st)]) == 0) && force)
       result = new BrowserOperation(id);
     return result;
   }

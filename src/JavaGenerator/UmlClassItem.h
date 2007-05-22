@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -32,7 +32,6 @@
 
 class QTextOStream;
 class UmlTypeSpec;
-//class JavaRefType;
 
 class UmlClassItem : public UmlBaseClassItem {
   public:
@@ -40,7 +39,6 @@ class UmlClassItem : public UmlBaseClassItem {
       : UmlBaseClassItem(id, n) {
     };
   
-    //virtual void compute_dependency(QList<JavaRefType> & dependency, QCString cl_stereotype) = 0;
     virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
 			  QCString indent) = 0;
     virtual void generate_enum_pattern_item(QTextOStream & f, int & current_value,

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,8 +39,6 @@ class UmlClassMember : public UmlBaseClassMember {
 	
     void generate_visibility(QTextOStream & f);
     
-    //static bool compute_dependency(QList<JavaRefType> & dependency, QCString decl, const UmlTypeSpec &);
-
     static void remove_comments(QCString & s);
     static void remove_arrays(QCString & s);
 };

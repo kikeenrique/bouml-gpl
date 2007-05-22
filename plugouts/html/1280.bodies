@@ -390,6 +390,27 @@ class CppSettings
 		   (v) ? (byte) 1 : (byte) 0);
   UmlCom.check();
   _is_force_namespace_gen = v;
+!!!206592.cpp!!!	isGenerateJavadocStyleComment() : bool
+  read_if_needed_();
+
+  return _is_generate_javadoc_comment;
+!!!206592.java!!!	isGenerateJavadocStyleComment() : bool
+  read_if_needed_();
+
+  return _is_generate_javadoc_comment;
+!!!206720.cpp!!!	set_IsGenerateJavadocStyleComment(in v : bool) : bool
+  UmlCom::send_cmd(cppSettingsCmd, setCppJavadocStyleCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_generate_javadoc_comment = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!206720.java!!!	set_IsGenerateJavadocStyleComment(in v : bool) : bool
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppJavadocStyleCmd,
+		   (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+  _is_generate_javadoc_comment = v;
 !!!4096.cpp!!!	enumIn() : string
   read_if_needed_();
   
@@ -1135,6 +1156,7 @@ class CppSettings
   _is_relative_path = UmlCom::read_bool();
   _is_force_namespace_gen = UmlCom::read_bool();
   _is_root_relative_path = UmlCom::read_bool();
+  _is_generate_javadoc_comment = UmlCom::read_bool();
 !!!11136.java!!!	read_() : void
   _root = UmlCom.read_string();
   
@@ -1214,6 +1236,7 @@ class CppSettings
   _is_relative_path = UmlCom.read_bool();
   _is_force_namespace_gen = UmlCom.read_bool();
   _is_root_relative_path = UmlCom.read_bool();
+  _is_generate_javadoc_comment = UmlCom.read_bool();
 !!!11264.cpp!!!	read_if_needed_() : void
   UmlSettings::read_if_needed_();
   if (!_defined) {

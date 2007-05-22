@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -144,6 +144,7 @@ ClassDiagramSettings::ClassDiagramSettings() {
   show_context_mode = DefaultShowContextMode;
   auto_label_position = UmlDefaultState;
   draw_all_relations = UmlDefaultState;
+  show_infonote = UmlDefaultState;
   shadow = UmlDefaultState;
 }
 
@@ -161,7 +162,8 @@ void ClassDiagramSettings::save(QTextStream & st) const {
 		    << " drawing_language " << stringify(drawing_language)
 		      << " show_context_mode " << stringify(show_context_mode)
 			<< " auto_label_position " << stringify(auto_label_position)
-			  << " shadow " << stringify(shadow);
+			  << " show_infonote " << stringify(show_infonote)
+			    << " shadow " << stringify(shadow);
 }
 
 void ClassDiagramSettings::read(char * & st, char * & k) {
@@ -229,6 +231,10 @@ void ClassDiagramSettings::read(char * & st, char * & k) {
     auto_label_position = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "show_infonote")) {
+    show_infonote = state(read_keyword(st));
+    k = read_keyword(st);
+  }
   if (!strcmp(k, "shadow")) {
     shadow = state(read_keyword(st));
     k = read_keyword(st);
@@ -251,9 +257,10 @@ bool ClassDiagramSettings::complete(ClassDiagramSettings & result) const {
   check_default(drawing_language, DefaultDrawingLanguage);
   check_default(show_context_mode, DefaultShowContextMode);
   check_default(auto_label_position, UmlDefaultState);
+  check_default(show_infonote, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
   
-  return done == 13;
+  return done == 14;
 }
 
 void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
@@ -262,7 +269,7 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
   switch (who) {
   case UmlClass:
     // order known by ClassDiagramSettings::set
-    a.resize(i + 9);
+    a.resize(i + 10);
   
     a[i].set("drawing language", &drawing_language);
     a[i + 1].set("drawing mode", &class_drawing_mode);
@@ -277,6 +284,8 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
 		 &show_parameter_dir);
     a[i + 8].set("show parameter name",
 		 &show_parameter_name);
+    a[i + 9].set("show information note",
+		 &show_infonote);
     break;
   case UmlPackage:
     a.resize(i + 2);
@@ -285,7 +294,7 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
     a[i + 1].set("show context", &show_context_mode);
     break;
   case UmlClassDiagram:
-    a.resize(i + 13);
+    a.resize(i + 14);
   
     a[i].set("drawing language", &drawing_language);
     a[i + 1].set("classes drawing mode", &class_drawing_mode);
@@ -303,10 +312,11 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
     a[i + 9].set("show packages name in tab", &package_name_in_tab);
     a[i + 10].set("show classes and packages context", &show_context_mode);
     a[i + 11].set("automatic labels position", &auto_label_position);
-    a[i + 12].set("draw shadow", &shadow);
+    a[i + 12].set("show information note", &show_infonote);
+    a[i + 13].set("draw shadow", &shadow);
     break;
   default:
-    a.resize(i + 13);
+    a.resize(i + 14);
   
     a[i].set("class#drawing language", &drawing_language);
     a[i + 1].set("class#classes drawing mode", &class_drawing_mode);
@@ -324,7 +334,8 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
     a[i + 9].set("class#show packages name in tab", &package_name_in_tab);
     a[i + 10].set("class#show classes and packages context", &show_context_mode);
     a[i + 11].set("class#automatic labels position", &auto_label_position);
-    a[i + 12].set("class#draw shadow", &shadow);
+    a[i + 12].set("class#show information note", &show_infonote);
+    a[i + 13].set("class#draw shadow", &shadow);
   }
 }
 
@@ -348,6 +359,8 @@ void ClassDiagramSettings::set(QArray<StateSpec> & a, int index) {
     show_parameter_dir = (Uml3States) *((Uml3States *) a[index + 7].state);
   if (a[index + 8].name != 0)
     show_parameter_name = (Uml3States) *((Uml3States *) a[index + 8].state);
+  if (a[index + 9].name != 0)
+    show_infonote = (Uml3States) *((Uml3States *) a[index + 9].state);
 }
 
 

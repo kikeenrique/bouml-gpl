@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -231,15 +231,16 @@ const char * SdDurationCanvas::may_start(UmlCode &) const {
 }
 
 const char * SdDurationCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  switch (dest->type()) {
-  case UmlNote:
-  case UmlIcon:
-    return (l == UmlAnchor) ? 0 : "illegal";
-  case UmlActivityDuration:
-  case UmlLifeLine:
-    return (l != UmlAnchor) ? 0 : "illegal";
-  default:
-    return "illegal";
+  if (l == UmlAnchor) 
+    return dest->may_start(l);
+  else {
+    switch (dest->type()) {
+    case UmlActivityDuration:
+    case UmlLifeLine:
+      return 0;
+    default:
+      return "illegal";
+    }
   }
 }
 

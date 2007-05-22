@@ -165,6 +165,11 @@ class UmlBaseItem {
     //  'id' is an identifier returned by apply(), indicates if the tool is still running
     static bool isToolRunning(int id);
     
+    //remove the element from the model, use it carefully because\n"
+    // after that the element can't be used anymore by the plug-out\n"
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    void deleteIt();
+    
     // not in plug-outs managed through bouml
     void delete_it();
     static UmlItem * from_id(unsigned uid, anItemKind);

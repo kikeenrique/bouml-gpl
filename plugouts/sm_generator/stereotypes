@@ -26,8 +26,17 @@
   attribute_stereotypes  0
   operation_stereotypes  0
   state_stereotypes  3 "machine" "submachine" "top"
+  activity_stereotypes  0
+  flow_stereotypes  3 "interrupt" "multicast" "multireceive"
+  interruptibleactivityregion_stereotypes  0
   pseudostate_stereotypes  0
   stateaction_stereotypes  2 "send-signal" "receive-signal"
+  parameter_stereotypes  0
+  parameterset_stereotypes  0
+  activitynode_stereotypes  0
+  activityaction_stereotypes  0
+  activityobject_stereotypes  2 "datastore" "centralBuffer"
+  pin_stereotypes  0
   component_stereotypes  3 "source" "library" "executable"
   deploymentnode_stereotypes  2 "cpu" "device"
   classview_stereotypes  0
@@ -39,6 +48,7 @@
   coldiagram_stereotypes  0
   usecasediagram_stereotypes  0
   statediagram_stereotypes  0
+  activitydiagram_stereotypes  0
   componentdiagram_stereotypes  0
   deploymentdiagram_stereotypes  0
 end

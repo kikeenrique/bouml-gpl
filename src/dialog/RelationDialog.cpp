@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -123,16 +123,16 @@ RelationDialog::RelationDialog(RelationData * r)
   QGroupBox *  bg;
 
   umltab = vtab;
-  vtab->setMargin(5);
+  vtab->setMargin(3);
   
   htab = new QHBox(vtab);
-  htab->setMargin(5);
+  htab->setMargin(3);
   QLabel * lbl1 = new QLabel("name : ", htab);
   edname = new LineEdit(rel->get_name(), htab);
   edname->setReadOnly(a.visit);
   
   htab = new QHBox(vtab);
-  htab->setMargin(5);
+  htab->setMargin(3);
   QLabel * lbl2 = new QLabel("type : ", htab);
   
   edtype = new QComboBox(FALSE, htab);
@@ -195,7 +195,7 @@ RelationDialog::RelationDialog(RelationData * r)
   edstereotype->setSizePolicy(sp);
   
   htab = new QHBox(vtab);
-  htab->setMargin(5);
+  htab->setMargin(3);
   QLabel * lbl3 = new QLabel("association : ", htab);
     
   edassociation = new QComboBox(!a.visit, htab);
@@ -217,13 +217,16 @@ RelationDialog::RelationDialog(RelationData * r)
   
   split->setOpaqueResize(TRUE);
     
+  QString ina = "in " + rel->get_start_class()->full_name(TRUE);
+  QString inb = "in " + rel->get_end_class()->full_name(TRUE);
+  
   // role A
-  bg = new QGroupBox(2, QGroupBox::Horizontal, "ROLE 1", split);
-  init_uml_role(a, rel->a, bg, rel->get_start_class(), rel->get_end_class());
+  bg = new QGroupBox(2, QGroupBox::Horizontal, ina, split);
+  init_uml_role(a, rel->a, bg, rel->get_start_class());
   
   // role B
-  bg = new QGroupBox(2, QGroupBox::Horizontal, "ROLE 2", split);
-  init_uml_role(b, rel->b, bg, rel->get_end_class(), rel->get_start_class());
+  bg = new QGroupBox(2, QGroupBox::Horizontal, inb, split);
+  init_uml_role(b, rel->b, bg, rel->get_end_class());
 
   addTab(vtab, "Uml");
   
@@ -236,7 +239,7 @@ RelationDialog::RelationDialog(RelationData * r)
   vtab->setMargin(5);
   
   // A
-  bg = new QGroupBox(2, QGroupBox::Horizontal, "ROLE 1", vtab); 
+  bg = new QGroupBox(2, QGroupBox::Horizontal, ina, vtab); 
   new QLabel(bg);
   a.cpp_virtual_inheritance_cb = new QCheckBox("virtual", bg);
   if (rel->a.cpp_virtual_inheritance)
@@ -253,7 +256,7 @@ RelationDialog::RelationDialog(RelationData * r)
   htab = new QHBox(vtab);	// to have a vertical margin
   htab->setMargin(5);
   
-  cpp_b = new QGroupBox(2, QGroupBox::Horizontal, "ROLE 2", vtab);  
+  cpp_b = new QGroupBox(2, QGroupBox::Horizontal, inb, vtab);  
   b.cpp_virtual_inheritance_cb = 0;
   init_cpp_role(b, rel->b, cpp_b, SLOT(cpp_update_b()),
 		SLOT(cpp_default_b()), SLOT(cpp_unmapped_b()), 0);
@@ -269,7 +272,7 @@ RelationDialog::RelationDialog(RelationData * r)
   vtab->setMargin(5);
   
   // A
-  bg = new QGroupBox(2, QGroupBox::Horizontal, "ROLE 1", vtab); 
+  bg = new QGroupBox(2, QGroupBox::Horizontal, ina, vtab); 
   init_java_role(a, rel->a, bg, SLOT(java_update_a()), SLOT(java_default_a()),
 		 SLOT(java_unmapped_a()), SLOT(java_edit_annotation_a()));
   
@@ -277,7 +280,7 @@ RelationDialog::RelationDialog(RelationData * r)
   htab = new QHBox(vtab);	// to have a vertical margin
   htab->setMargin(5);
   
-  java_b = new QGroupBox(2, QGroupBox::Horizontal, "ROLE 2", vtab);
+  java_b = new QGroupBox(2, QGroupBox::Horizontal, inb, vtab);
   init_java_role(b, rel->b, java_b, SLOT(java_update_b()), SLOT(java_default_b()),
 		 SLOT(java_unmapped_b()), SLOT(java_edit_annotation_b()));
 
@@ -291,7 +294,7 @@ RelationDialog::RelationDialog(RelationData * r)
   vtab->setMargin(5);
   
   // A
-  bg = new QGroupBox(2, QGroupBox::Horizontal, "ROLE 1", vtab); 
+  bg = new QGroupBox(2, QGroupBox::Horizontal, ina, vtab); 
   
   ClassData * start_data = (ClassData *) rel->get_start_class()->get_data();
   ClassData * end_data = (ClassData *) rel->get_end_class()->get_data();
@@ -319,7 +322,7 @@ RelationDialog::RelationDialog(RelationData * r)
   htab = new QHBox(vtab);	// to have a vertical margin
   htab->setMargin(5);
   
-  idl_b = new QGroupBox(2, QGroupBox::Horizontal, "ROLE 2", vtab);    
+  idl_b = new QGroupBox(2, QGroupBox::Horizontal, inb, vtab);    
   b.idl_truncatable_inheritance_cb = 0;
   init_idl_role(b, rel->b, end_data, idl_b, SLOT(idl_update_b()),
 		SLOT(idl_default_b()), SLOT(idl_unmapped_b()));
@@ -331,10 +334,10 @@ RelationDialog::RelationDialog(RelationData * r)
   //
   
   vtab = new QVBox(this);
-  bg = new QGroupBox(1, QGroupBox::Horizontal, "ROLE 1", vtab); 
+  bg = new QGroupBox(1, QGroupBox::Horizontal, ina, vtab); 
   a.kvtable = new KeyValuesTable(rel->get_start(), bg, a.visit);
   new QLabel(vtab);
-  bg = new QGroupBox(1, QGroupBox::Horizontal, "ROLE 2", vtab); 
+  bg = new QGroupBox(1, QGroupBox::Horizontal, inb, vtab); 
   b.opt.append(bg);
   b.kvtable = new KeyValuesTable(rel->get_end(), bg, b.visit);
   addTab(vtab, "Properties");
@@ -362,8 +365,7 @@ void RelationDialog::polish() {
 
 void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
 				   QGroupBox * bg,
-				   BrowserClass * cl1,
-				   BrowserClass * /*cl2*/) {
+				   BrowserClass * cl1) {
   bool roleb = (&role == &b);
   QString stereotype = ((ClassData *) cl1->get_data())->get_stereotype();
   bool undef = (stereotype == "enum") || (stereotype == "typedef");
@@ -382,11 +384,7 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
   role.idl_in_union = (st == "union");
   role.idl_in_valuetype = (st == "valuetype");
   
-  (void) new QLabel("from : ", bg);
-  (void) new QLabel(cl1->full_name(TRUE), bg);
-  //(void) new QLabel("to : ", bg);
-  //(void) new QLabel(cl2->full_name(TRUE), bg);
-  lbl = new QLabel("role name : ", bg);
+  lbl = new QLabel("name : ", bg);
   role.opt.append(lbl);
   role.edrole = new LineEdit(rel.role, bg);
   role.edrole->setReadOnly(role.visit);
@@ -401,6 +399,7 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
   
   role.opt.append(new QLabel("multiplicity : ", bg));
   htab = new QHBox(bg);
+  htab->setMargin(0);
   role.multiplicity = new QComboBox(!role.visit, htab);
   sp = role.multiplicity->sizePolicy();
   sp.setHorData(QSizePolicy::Expanding);
@@ -435,6 +434,7 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
   
   (void) new QLabel(bg);
   htab = new QHBox(bg);
+  htab->setMargin(0);
   QButtonGroup * bg2 = new QButtonGroup(3, QGroupBox::Horizontal, QString::null, htab);
   
   role.opt.append(bg2);
@@ -495,6 +495,28 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
       groupb.append(bt2);
     }
   }
+
+  lbl = new QLabel("constraint : ", bg);
+  if (roleb)
+    groupb.append(lbl);
+  htab = new QHBox(bg);
+  role.constraint = new MultiLineEdit(htab);
+  role.constraint->setText(rel.constraint);  
+  role.constraint->setFont(font);
+  if (role.visit)
+    role.constraint->setReadOnly(TRUE);
+  else {
+    QVBox * vtab = new QVBox(htab);
+    SmallPushButton * bt1 = new SmallPushButton("Editor", vtab);
+    
+    connect(bt1, SIGNAL(clicked()), this,
+	    (roleb) ? SLOT(edit_constraint_b()) : SLOT(edit_constraint_a()));
+    
+    if (roleb) {
+      groupb.append(lbl);
+      groupb.append(role.constraint);
+    }
+  }
 }
 
 void RelationDialog::default_description_a() {
@@ -523,6 +545,26 @@ void RelationDialog::edit_description_b() {
 void RelationDialog::post_edit_description_b(RelationDialog * d, QString s)
 {
   d->b.comment->setText(s);
+}
+
+void RelationDialog::edit_constraint_a() {
+  edit(a.constraint->text(), a.edrole->text().stripWhiteSpace() + "_constraint",
+       &rel->a, TxtEdit, this, (post_edit) post_edit_constraint_a, edits);
+}
+
+void RelationDialog::post_edit_constraint_a(RelationDialog * d, QString s)
+{
+  d->a.constraint->setText(s);
+}
+
+void RelationDialog::edit_constraint_b() {
+  edit(b.constraint->text(), a.edrole->text().stripWhiteSpace() + "_constraint",
+       &rel->b, TxtEdit, this, (post_edit) post_edit_constraint_b, edits);
+}
+
+void RelationDialog::post_edit_constraint_b(RelationDialog * d, QString s)
+{
+  d->b.constraint->setText(s);
 }
 
 void RelationDialog::init_cpp_role(RoleDialog & role, const RoleData & rel,
@@ -563,9 +605,8 @@ void RelationDialog::init_cpp_role(RoleDialog & role, const RoleData & rel,
   else
     connect(role.edcppdecl, SIGNAL(textChanged()), this, cpp_update_slot);
 
-  role.opt.append(new QLabel("Result after\nsubstitution : ", bg));
+  new QLabel("Result after\nsubstitution : ", bg);
   role.showcppdecl = new MultiLineEdit(bg);
-  role.opt.append(role.showcppdecl);
   role.showcppdecl->setReadOnly(TRUE);
   role.showcppdecl->setFont(font);
 
@@ -830,6 +871,8 @@ void RelationDialog::update_all_tabs(QWidget * w) {
 	!= "friend") {
       if (! a.visit) {
 	a.cpp_include_in_header->show();
+	a.cpp_default_decl_bt->setEnabled(TRUE);
+	a.cpp_unmapped_decl_bt->setEnabled(TRUE);
 	a.cpp_default_decl_bt->setText("#include in source");
       }
       if (!s.isEmpty() &&
@@ -841,10 +884,12 @@ void RelationDialog::update_all_tabs(QWidget * w) {
       if (! a.visit) {
 	a.cpp_include_in_header->hide();
 	a.cpp_default_decl_bt->setText("Default declaration");
+	a.cpp_default_decl_bt->setEnabled(FALSE);
+	a.cpp_unmapped_decl_bt->setEnabled(FALSE);
       }
-      if ((s == "#include in source") ||
-	  (s == "#include in header"))
-	s = "${type}";
+      s = "friend " +
+	ClassDialog::cpp_stereotype(rel->get_end_class()->get_stereotype()) + 
+	  " ${type};";
     }
     a.edcppdecl->setText(s);
   }
@@ -930,8 +975,11 @@ void RelationDialog::cpp_update(RoleDialog & role, BrowserClass * cl, BrowserNod
     }
     break;
   case UmlDependency:
-    s = "";
-    break;
+    if (&role == &b) {
+      s  = "";
+      break;
+    }
+    // no break
   default:
     {
       // do NOT write
@@ -963,7 +1011,8 @@ void RelationDialog::cpp_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	}
 	
 	if (!strncmp(p, "${comment}", 10))
-	  manage_comment(role.comment->text(), p, pp);
+	  manage_comment(role.comment->text(), p, pp,
+			 GenerationSettings::cpp_javadoc_style());
 	else if (!strncmp(p, "${description}", 14))
 	  manage_description(role.comment->text(), p, pp);
 	else if (!strncmp(p, "${static}", 9)) {
@@ -1053,10 +1102,16 @@ void RelationDialog::cpp_default_a() {
     a.edcppdecl->setText(GenerationSettings::cpp_default_rel_decl(current_type,
 								  a.multiplicity->currentText().stripWhiteSpace()));
   else {
-    a.edcppdecl->setText(((current_type == UmlDependency) &&
-			  (GenerationSettings::cpp_relation_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()))
-			   != "friend"))
-			 ? "#include in source" : "${type}");
+    if (current_type != UmlDependency)
+      a.edcppdecl->setText("${type}");
+    else if (GenerationSettings::cpp_relation_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()))
+	     != "friend")
+      a.edcppdecl->setText("#include in source");
+    else
+      a.edcppdecl->setText("friend " +
+			   ClassDialog::cpp_stereotype(rel->get_end_class()->get_stereotype()) + 
+			   " ${type};");
+    
     if (! a.visit)
       a.cpp_unmapped_decl_bt->setOn(FALSE);
   }
@@ -1151,7 +1206,8 @@ void RelationDialog::java_update(RoleDialog & role, BrowserClass * cl, BrowserNo
 	}
 	
 	if (!strncmp(p, "${comment}", 10))
-	  manage_comment(role.comment->text(), p, pp);
+	  manage_comment(role.comment->text(), p, pp,
+			 GenerationSettings::java_javadoc_style());
 	else if (!strncmp(p, "${description}", 14))
 	  manage_description(role.comment->text(), p, pp);
 	else if (!strncmp(p, "${visibility}", 13)) {
@@ -1369,7 +1425,7 @@ void RelationDialog::idl_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	}
 	
 	if (!strncmp(p, "${comment}", 10))
-	  manage_comment(role.comment->text(), p, pp);
+	  manage_comment(role.comment->text(), p, pp, FALSE);
 	else if (!strncmp(p, "${description}", 14))
 	  manage_description(role.comment->text(), p, pp);
 	else if (!strncmp(p, "${readonly}", 11)) {
@@ -1521,6 +1577,7 @@ static void accept_role(RoleDialog & role, RoleData & rel,
   rel.multiplicity = role.multiplicity->currentText().stripWhiteSpace();
   rel.init_value = role.edinit->text();
   rel.comment = role.comment->text();
+  rel.constraint = role.constraint->stripWhiteSpaceText();
   
   rel.cpp_visibility = role.cpp_visibility.value();
     

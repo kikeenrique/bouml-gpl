@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,10 +40,10 @@ class UmlOperation : public UmlBaseOperation {
     UmlOperation(void * id, const QCString & n)
       : UmlBaseOperation(id, n) {};
   
-    //virtual void compute_dependency(QList<JavaRefType> & dependency, QCString cl_stereotype);
     virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
 			  QCString indent);
-    virtual void generate_enum_pattern_item(QTextOStream &, int &, const QCString &, QCString);
+    virtual void generate_enum_pattern_item(QTextOStream &, int &,
+					    const QCString &, QCString);
     virtual void generate_enum_pattern_case(QTextOStream &, QCString);
     virtual void generate_enum_member(QTextOStream &, QCString);
     
@@ -52,8 +52,7 @@ class UmlOperation : public UmlBaseOperation {
     static void read_bodies(const char * path);
     
   private:
-    const char * generate_body(QTextOStream & f, QCString indent,
-			       const char * p);
+    const char * generate_body(QTextOStream & f, QCString indent, const char * p);
 };
 
 #endif

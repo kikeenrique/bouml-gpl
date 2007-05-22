@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -92,10 +92,11 @@ class BrowserOperation : public BrowserNode, public Labeled<BrowserOperation> {
     virtual void member_cpp_def(const QString & prefix, 
 				const QString & prefix_tmplop, 
 				QString & s, bool templ) const;
+    virtual const char * constraint() const;
     
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserOperation * read_ref(char * &);
-    static BrowserOperation * read(char * &, char *, BrowserNode *);
+    static BrowserOperation * read(char * &, char *, BrowserNode *, bool force = TRUE);
     static BrowserNode * get_it(const char * k, int id);
     
     static BrowserOperation * new_one(QString s, BrowserNode * p);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -82,7 +82,7 @@ class UmlWindow : public QMainWindow {
     UmlWindow();
     ~UmlWindow();
   
-    void load(QString fn);
+    void load(QString fn, bool forcesaveas = FALSE);
     bool can_close();
     
     static void set_commented(BrowserNode * bn);
@@ -107,6 +107,7 @@ class UmlWindow : public QMainWindow {
   
   private slots:
     void newProject();
+    void newFromTemplate();
     void load();
     void save();
     void saveAs();

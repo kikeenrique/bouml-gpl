@@ -1,0 +1,9 @@
+cpp_javadoc_comment
+  
+  
+  if (!strcmp(k, "java_javadoc_comment")) {
+    java_javadoc_comment = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    java_javadoc_comment = FALSE;

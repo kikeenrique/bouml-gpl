@@ -45,6 +45,12 @@ aRelationKind UmlBaseRelation::relationKind() {
   return _rel_kind;
 }
 
+UmlRelation * UmlBaseRelation::side(bool first) {
+  UmlCom::send_cmd(_identifier, sideCmd, (char) first);
+  
+  return (UmlRelation *) UmlBaseItem::read_();
+}
+
 bool UmlBaseRelation::isReadOnly() {
   read_if_needed_();
   
@@ -81,6 +87,24 @@ UmlClass * UmlBaseRelation::roleType() {
   read_if_needed_();
   
   return _role_type;
+}
+
+UmlTypeSpec UmlBaseRelation::association() {
+  read_if_needed_();
+  
+  return _association;
+}
+
+bool UmlBaseRelation::set_Association(const UmlTypeSpec & t) {
+  if (set_it_(_association, t, setRelationAssocClassCmd)) {
+    UmlBaseRelation * other = (UmlBaseRelation *) UmlBaseItem::read_();
+    
+    if (other != 0)
+      other->_association = t;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 const QCString & UmlBaseRelation::roleName() {
@@ -252,6 +276,9 @@ void UmlBaseRelation::read_uml_() {
   UmlBaseClassMember::read_uml_();
   _rel_kind = (aRelationKind) UmlCom::read_char();
   _role_type = (UmlClass *) UmlBaseItem::read_();
+  _association.type = (UmlClass *) UmlBaseItem::read_();
+  if (_association.type == 0)
+    _association.explicit_type = UmlCom::read_string();
   _role_name = UmlCom::read_string();
   _multiplicity = UmlCom::read_string();
   _default_value = UmlCom::read_string();
@@ -270,7 +297,7 @@ void UmlBaseRelation::read_cpp_() {
 
 #ifdef WITHJAVA
 void UmlBaseRelation::read_java_() {
-  UmlBaseClassItem::read_java_();
+  UmlBaseClassMember::read_java_();
   _java_transient = UmlCom::read_bool();
 }
 #endif

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -583,6 +583,9 @@ const char * StateActionCanvas::may_start(UmlCode & l) const {
 }
 
 const char * StateActionCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  if (l == UmlAnchor)
+    return dest->may_start(l);
+  
   switch (dest->type()) {
   case UmlState:
   case UmlStateAction:
@@ -597,9 +600,6 @@ const char * StateActionCanvas::may_connect(UmlCode & l, const DiagramItem * des
   case ForkPS:
   case JoinPS:
     return (l == UmlTransition) ? 0 : "illegal";
-  case UmlNote:
-  case UmlIcon:
-    return (l == UmlAnchor) ? 0 : "illegal";
   default:
     return "illegal";
   }

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -2209,13 +2209,18 @@ void draw_text(int x, int y, int w, int h, int align,
     return;
 
   int ps = fn.pixelSize();
+  int pts = fn.pointSize();
   char header[256];
 
   sprintf(header, "\t<text font-family=\"%s\" font-size=\"%d\" fill=\"black\"",
 	  (const char *) fn.family(),
 	  // decrease size to help to have enough area
-	  ps - 1);
+	  (ps == -1) ? /* Qt3 */ pts : ps - 1);
 
+  if (ps == -1)
+    /* Qt3 */
+    ps = pts;
+  
   if (fn.bold())
     strcat(header, " font-weight=\"bold\"");
   if (fn.italic())

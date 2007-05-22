@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,6 +40,7 @@
 
 class TemplateCanvas;
 class RelationData;
+class ConstraintCanvas;
 
 class CdClassCanvas : public QObject, public DiagramCanvas,
   		      public MultipleDependency<BasicData> {
@@ -57,7 +58,7 @@ class CdClassCanvas : public QObject, public DiagramCanvas,
     QString full_name;
     QValueList<BrowserNode *> hidden_visible_attributes;
     QValueList<BrowserNode *> hidden_visible_operations;
-
+    ConstraintCanvas * constraint;
     
   protected:
     CdClassCanvas(UmlCanvas * canvas, int id);
@@ -72,6 +73,7 @@ class CdClassCanvas : public QObject, public DiagramCanvas,
     virtual bool has_relation(BasicData *) const;
     void draw_all_relations(CdClassCanvas * end = 0);
     void draw_all_class_assoc();
+    void check_constraint();
     const ClassDiagramSettings & get_settings() const { return settings; }
 
     virtual void draw(QPainter & p);

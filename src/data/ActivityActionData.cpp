@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -686,7 +686,7 @@ void AccessVariableValueAction::save(QTextStream & st, QString & warning) const 
 
 void AccessVariableValueAction::read(char * & st, char * & k) {
   if (strcmp(k, "no_variable")) {
-    if (((variable = BrowserAttribute::read(st, k, 0, TRUE)) == 0) &&
+    if (((variable = BrowserAttribute::read(st, k, 0)) == 0) &&
 	((variable = BrowserRelation::read(st, k, 0)) == 0))
       wrong_keyword(k, "no_variable or attribute_ref or relation_ref");
   }

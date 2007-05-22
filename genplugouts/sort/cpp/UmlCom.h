@@ -9,7 +9,6 @@
 #include "aRelationKind.h"
 #include <qvector.h>
 
-#include "UmlClass.h"
 #include <qcstring.h>
 
 #include <qvector.h>
@@ -17,6 +16,7 @@
 
 class UmlItem;
 class UmlTypeSpec;
+class UmlClass;
 
 class QSocketDevice;
 class UmlItem;

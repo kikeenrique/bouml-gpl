@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -27,7 +27,10 @@
 #pragma warning (disable: 4150)
 #endif
 
+#ifndef QT_NO_PRINTER
 #include <qpainter.h>
+#include <qprinter.h>
+#endif
 #include <qcursor.h>
 #include <qpopupmenu.h> 
 #include <qapplication.h>
@@ -1621,6 +1624,11 @@ bool DiagramView::save_in(const char * f, bool optimal, bool temporary) {
   bool r;
   
   if (optimal) {
+    int x0 = contentsX();
+    int y0 = contentsY();
+    
+    setContentsPos(0, 0);
+    
     int maxx;
     int maxy;
     
@@ -1653,6 +1661,8 @@ bool DiagramView::save_in(const char * f, bool optimal, bool temporary) {
 #endif
       }
     }
+    if (! temporary)
+      setContentsPos(x0, y0);
   }
   else
     r = QPixmap::grabWidget(viewport()).save(f, "PNG");
@@ -1667,6 +1677,11 @@ bool DiagramView::svg_save_in(const char * f, bool optimal, bool temporary) {
   the_canvas()->show_limits(FALSE);
     
   if (optimal) {
+    int x0 = contentsX();
+    int y0 = contentsY();
+    
+    setContentsPos(0, 0);
+    
     int maxx;
     int maxy;
     
@@ -1712,6 +1727,8 @@ bool DiagramView::svg_save_in(const char * f, bool optimal, bool temporary) {
   #endif
       }
     }
+    if (! temporary)
+      setContentsPos(x0, y0);
   }
   else if (start_svg(f, visibleWidth(), visibleHeight())) {
     result = TRUE;
@@ -1802,7 +1819,8 @@ void DiagramView::save_picture(bool optimal, bool svg) {
   }
 }
 
-void DiagramView::print(QPainter * p) {
+#ifndef QT_NO_PRINTER
+void DiagramView::print(QPrinter & printer, int div) {
   if (the_canvas()->selection().count() != 0)
     unselect_all();
 
@@ -1811,25 +1829,48 @@ void DiagramView::print(QPainter * p) {
   if (old_zoom < 1)
     set_zoom(1);
   
-  QPaintDeviceMetrics m(p->device());
-  int devh = m.height();
+  QPainter paint(&printer);
+  QPaintDeviceMetrics m(paint.device());
   int devw = m.width();
-  int h = contentsHeight();
-  int w = contentsWidth();
-  double zoom = ((double) devh)/h;
+  int devh = m.height();
+  double w = contentsWidth();
+  double h = contentsHeight();
+  double zoom = devh/h;
 
-  if (((double) devw)/w < zoom)
-    zoom = ((double) devw)/w;
+  if (devw/w < zoom)
+    zoom = devw/w;
 
-  zoom  *= 0.95;
-  p->scale(zoom, zoom);
+  zoom *= 0.98 * div;
+  w /= div;
+  h /= div;
+  paint.scale(zoom, zoom);
   ((UmlCanvas *) canvas())->show_limits(FALSE);
-  drawContents(p, 0, 0, w, h);
+
+  int i = 0;
+  
+  for (;;) {
+    int j = 0;
+    
+    for (;;) {
+      drawContents(&paint, (int) (i*w), (int) (j*h), (int) w, (int) h);
+      if (++j == div)
+	break;
+      printer.newPage();
+      paint.translate(0, -h);
+    }
+    
+    if (++i == div)
+      break;
+    printer.newPage();
+    paint.translate(-w, h*(div - 1));
+  }
+
   ((UmlCanvas *) canvas())->show_limits(TRUE);
   
   if (old_zoom < 1)
     set_zoom(old_zoom);
 }
+#endif
 
 void DiagramView::renumber(int ident) {
   id = ident;

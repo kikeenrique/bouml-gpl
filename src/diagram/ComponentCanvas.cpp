@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -884,6 +884,9 @@ bool ComponentCanvas::may_connect(UmlCode l) const {
 }
 
 const char * ComponentCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  if (l == UmlAnchor)
+    return dest->may_start(l);
+  
   switch (dest->type()) {
   case UmlComponent:
     switch (l) {
@@ -909,11 +912,6 @@ const char * ComponentCanvas::may_connect(UmlCode & l, const DiagramItem * dest)
     default:
       return "illegal";
     }
-  case UmlPackage:
-    return (l == UmlDependOn) ? 0 : "illegal";
-  case UmlNote:
-  case UmlIcon:
-    return (l == UmlAnchor) ? 0 : "illegal";
   default:
     return "illegal";
   }

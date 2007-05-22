@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -212,6 +212,7 @@ AttributeDialog::AttributeDialog(AttributeData * a)
   }
   
   QVBox * vtab = new QVBox(grid);
+  
   new QLabel("description :", vtab);
   if (! visit) {
     connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
@@ -223,6 +224,17 @@ AttributeDialog::AttributeDialog(AttributeData * a)
   comment->setReadOnly(visit);
   comment->setText(a->browser_node->get_comment());
   comment->setFont(font);
+  
+  vtab = new QVBox(grid);
+  new QLabel("constraint :", vtab);
+  if (! visit) {
+    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+	    this, SLOT(edit_constraint()));
+  }
+  constraint = new MultiLineEdit(grid);
+  constraint->setReadOnly(visit);
+  constraint->setText(a->constraint);
+  constraint->setFont(font);
   
   addTab(grid, "Uml");
   
@@ -574,6 +586,8 @@ void AttributeDialog::accept() {
     
     bn->set_comment(comment->text());
     UmlWindow::set_commented(bn);
+  
+    att->constraint = constraint->stripWhiteSpaceText();
     
     kvtable->update(bn);
     
@@ -621,6 +635,16 @@ void AttributeDialog::edit_description() {
 void AttributeDialog::post_edit_description(AttributeDialog * d, QString s)
 {
   d->comment->setText(s);
+}
+
+void AttributeDialog::edit_constraint() {
+  edit(constraint->text(), edname->text().stripWhiteSpace() + "_constraint",
+       att, TxtEdit, this, (post_edit) post_edit_constraint, edits);
+}
+
+void AttributeDialog::post_edit_constraint(AttributeDialog * d, QString s)
+{
+  d->constraint->setText(s);
 }
 
 void AttributeDialog::edit_init() {
@@ -678,7 +702,8 @@ void AttributeDialog::cpp_update() {
     }
       
     if (!strncmp(p, "${comment}", 10))
-      manage_comment(comment->text(), p, pp);
+      manage_comment(comment->text(), p, pp,
+		     GenerationSettings::cpp_javadoc_style());
     else if (!strncmp(p, "${description}", 14))
       manage_description(comment->text(), p, pp);
     else if (!strncmp(p, "${name}", 7)) {
@@ -844,7 +869,8 @@ void AttributeDialog::java_update() {
     }
       
     if (!strncmp(p, "${comment}", 10))
-      manage_comment(comment->text(), p, pp);
+      manage_comment(comment->text(), p, pp,
+		     GenerationSettings::java_javadoc_style());
     else if (!strncmp(p, "${description}", 14))
       manage_description(comment->text(), p, pp);
     else if (!strncmp(p, "${name}", 7)) {
@@ -1046,7 +1072,7 @@ void AttributeDialog::idl_update() {
     }
       
     if (!strncmp(p, "${comment}", 10))
-      manage_comment(comment->text(), p, pp);
+      manage_comment(comment->text(), p, pp, FALSE);
     else if (!strncmp(p, "${description}", 14))
       manage_description(comment->text(), p, pp);
     else if (!strncmp(p, "${name}", 7)) {

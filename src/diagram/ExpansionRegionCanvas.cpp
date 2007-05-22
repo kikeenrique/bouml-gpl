@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -564,14 +564,8 @@ const char * ExpansionRegionCanvas::may_start(UmlCode & l) const {
   return (l == UmlAnchor) ? 0 : "illegal";
 }
 
-const char * ExpansionRegionCanvas::may_connect(UmlCode &, const DiagramItem * dest) const {
-  switch (dest->type()) {
-  case UmlNote:
-  case UmlIcon:
-    return 0;
-  default:
-    return "illegal";
-  }
+const char * ExpansionRegionCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
 }
 
 void ExpansionRegionCanvas::connexion(UmlCode action, DiagramItem * dest,

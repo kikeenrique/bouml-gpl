@@ -10,6 +10,7 @@ enum aVisibility {
   PublicVisibility,
   ProtectedVisibility,
   PrivateVisibility,
+  PackageVisibility,
   DefaultVisibility
 
 };

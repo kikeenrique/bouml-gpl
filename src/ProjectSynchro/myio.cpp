@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -250,7 +250,7 @@ void copy_if_needed(QDir & fromdir, QDir & todir, QString fn)
       // to create from
       copy(fromdir, todir, fn);
     else {
-      FILE * fpto = fopen((const char *) from, "rb");
+      FILE * fpto = fopen((const char *) to, "rb");
       
       if (fpto == 0) {
 	// supose copy needed

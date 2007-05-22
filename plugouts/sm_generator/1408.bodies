@@ -72,19 +72,19 @@ class UmlBaseClass
   UmlCom.check();
 !!!6400.cpp!!!	addFormal(in rank : uint, in formal : UmlFormalParameter) : bool
   UmlCom::send_cmd(_identifier, addFormalCmd, rank, formal._name, 
-		   formal._type, formal._default_value);
+		   formal._type, formal._default_value, formal._extends);
   return UmlCom::read_bool();
 !!!6400.java!!!	addFormal(in rank : uint, in formal : UmlFormalParameter) : bool
   UmlCom.send_cmd(identifier_(), OnInstanceCmd.addFormalCmd, rank, formal._name, 
-		   formal._type, formal._default_value);
+		   formal._type, formal._default_value, formal._extends);
   UmlCom.check();
 !!!6528.cpp!!!	replaceFormal(in rank : uint, in formal : UmlFormalParameter) : bool
   UmlCom::send_cmd(_identifier, replaceFormalCmd, rank, formal._name, 
-		   formal._type, formal._default_value);
+		   formal._type, formal._default_value, formal._extends);
   return UmlCom::read_bool();
 !!!6528.java!!!	replaceFormal(in rank : uint, in formal : UmlFormalParameter) : bool
   UmlCom.send_cmd(identifier_(), OnInstanceCmd.replaceFormalCmd, rank, formal._name, 
-		   formal._type, formal._default_value);
+		   formal._type, formal._default_value, formal._extends);
   UmlCom.check();
 !!!6656.cpp!!!	actuals() : UmlActualParameter
   UmlCom::send_cmd(_identifier, actualsCmd);
@@ -148,14 +148,28 @@ class UmlBaseClass
   UmlCom.send_cmd(identifier_(), OnInstanceCmd.assocArtifactCmd);
   
   return (UmlArtifact) UmlBaseItem.read_();
-!!!77568.cpp!!!	associatedComponent() : UmlComponent
+!!!77568.cpp!!!	associatedComponents() : UmlComponent
   UmlCom::send_cmd(_identifier, assocComponentCmd);
-  
-  return (UmlComponent *) UmlBaseItem::read_();
-!!!77568.java!!!	associatedComponent() : UmlComponent
+
+  QVector<UmlComponent> result;
+  unsigned n = UmlCom::read_unsigned();
+
+  result.resize(n);
+
+  for (unsigned index = 0; index != n; index += 1)
+    result.insert(index, (UmlComponent *) UmlBaseItem::read_());
+
+  return result;
+!!!77568.java!!!	associatedComponents() : UmlComponent
   UmlCom.send_cmd(identifier_(), OnInstanceCmd.assocComponentCmd);
-  
-  return (UmlComponent) UmlBaseItem.read_();
+
+  int n = UmlCom.read_unsigned();
+  UmlComponent[] result = new UmlComponent[n];
+
+  for (int index = 0; index != n; index += 1)
+    result[index] = (UmlComponent) UmlBaseItem.read_();
+
+  return result;
 !!!7296.cpp!!!	isCppExternal() : bool
   read_if_needed_();
   
@@ -201,28 +215,13 @@ class UmlBaseClass
 
   _java_external = y;
 !!!7808.cpp!!!	isJavaPublic() : bool
-  read_if_needed_();
-  
-  return _java_public;
+  return visibility() == PublicVisibility;
 !!!7808.java!!!	isJavaPublic() : bool
-  read_if_needed_();
-  
-  return _java_public;
+  return visibility() == aVisibility.PublicVisibility;
 !!!7936.cpp!!!	set_isJavaPublic(in y : bool) : bool
-  bool r;
-  
-  if (set_it_(r, y, setIsJavaPublicCmd)) {
-    _java_public = y;
-    return TRUE;
-  }
-  else
-    return FALSE;
-
+  return set_Visibility((y) ? PublicVisibility : PackageVisibility);
 !!!7936.java!!!	set_isJavaPublic(in y : bool) : bool
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsJavaPublicCmd, (y) ? (byte) 1 : (byte) 0);
-  UmlCom.check();
-
-  _java_public = y;
+  set_Visibility((y) ? aVisibility.PublicVisibility : aVisibility.PackageVisibility);
 !!!8064.cpp!!!	isJavaFinal() : bool
   read_if_needed_();
   
@@ -364,6 +363,37 @@ class UmlBaseClass
   _switch_type = null;
   
   super.unload(rec, del);
+!!!144256.cpp!!!	set_Name(in s : string) : bool
+  if (!UmlBaseItem::set_Name(s))
+    return FALSE;
+
+  const QVector<UmlItem> ch = children();
+  QCString destr = "~" + name();
+
+  for (unsigned i = 0; i != ch.size(); i += 1) {
+    if (ch[i]->kind() == anOperation) {
+      if (ch[i]->name() == name())
+	ch[i]->set_Name(s);
+      else if (ch[i]->name() == destr)
+	ch[i]->set_Name("~" + s);
+    }
+  }
+
+  return TRUE;
+!!!144256.java!!!	set_Name(in s : string) : bool
+  super.set_Name(s);
+
+  UmlItem[] ch = children();
+  String destr = "~" + name();
+
+  for (int i = 0; i != ch.length; i += 1) {
+    if (ch[i].kind() == anItemKind.anOperation) {
+      if (ch[i].name() == name())
+	ch[i].set_Name(s);
+      else if (ch[i].name() == destr)
+	ch[i].set_Name("~" + s);
+    }
+  }
 !!!9600.cpp!!!	UmlBaseClass(in id : item_id, in n : string)
   _assoc_diagram = 0;
   
@@ -399,13 +429,13 @@ class UmlBaseClass
   super.read_cpp_();  
   _cpp_external = UmlCom.read_bool();
 !!!9984.cpp!!!	read_java_() : void
-  UmlBaseClassItem::read_java_();  
-  _java_public = UmlCom::read_bool();
+  UmlBaseClassMember::read_java_();
+  ;
   _java_final = UmlCom::read_bool();
   _java_external = UmlCom::read_bool();
 !!!9984.java!!!	read_java_() : void
   super.read_java_();  
-  _java_public = UmlCom.read_bool();
+  
   _java_final = UmlCom.read_bool();
   _java_external = UmlCom.read_bool();
 !!!10112.cpp!!!	read_idl_() : void
@@ -434,35 +464,4 @@ class UmlBaseClass
   if (defined_()) {
     UmlCom.send_cmd(identifier_(), OnInstanceCmd.getUmlDefCmd);
     read_uml_();
-  }
-!!!144256.cpp!!!	set_Name(in s : string) : bool
-  if (!UmlBaseItem::set_Name(s))
-    return FALSE;
-
-  const QVector<UmlItem> ch = children();
-  QCString destr = "~" + name();
-
-  for (unsigned i = 0; i != ch.size(); i += 1) {
-    if (ch[i]->kind() == anOperation) {
-      if (ch[i]->name() == name())
-	ch[i]->set_Name(s);
-      else if (ch[i]->name() == destr)
-	ch[i]->set_Name("~" + s);
-    }
-  }
-
-  return TRUE;
-!!!144256.java!!!	set_Name(in s : string) : bool
-  super.set_Name(s);
-
-  UmlItem[] ch = children();
-  String destr = "~" + name();
-
-  for (int i = 0; i != ch.length; i += 1) {
-    if (ch[i].kind() == anItemKind.anOperation) {
-      if (ch[i].name() == name())
-	ch[i].set_Name(s);
-      else if (ch[i].name() == destr)
-	ch[i].set_Name("~" + s);
-    }
   }

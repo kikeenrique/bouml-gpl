@@ -2,6 +2,7 @@ class UmlClass
 !!!146050.cpp!!!	defaultDef() : void
   if (cppDecl().isEmpty())
     set_CppDecl(CppSettings::classDecl());
+  setUsed();
 !!!144642.cpp!!!	trigger(in s : string, inout machine : UmlClass, inout anystate : UmlClass) : UmlOperation
   UmlOperation * tr;
   bool completion = (s == "_completion");
@@ -25,6 +26,8 @@ class UmlClass
       tr->managed();
       tr->setComment("the operation you call to signal the event " + s);
     }
+    else
+      tr->setUsed();
     
     // the bypass trigger at the anystate level
     
@@ -54,6 +57,8 @@ class UmlClass
 	tr->setComment("the current state doesn't manage the event "
 		       + s + ", give it to the upper state");
     }
+    else
+      tr->setUsed();
   }
 
   // the trigger for the class

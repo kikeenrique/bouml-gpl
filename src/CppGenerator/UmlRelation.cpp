@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -141,37 +141,8 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f_h,
     
     while (*p) {
       if (!strncmp(p, "${type}", 7)) {
-	role_type->write(f_h, FALSE);
+	role_type->write(f_h, FALSE, actuals);
 	p += 7;
-    
-	if (!actuals.isEmpty()) {
-	  QValueList<UmlActualParameter>::ConstIterator ita;
-	  bool need_space = FALSE;
-	  bool used = FALSE;
-	  
-	  for (ita = actuals.begin(); ita != actuals.end(); ++ita) {
-	    if ((*ita).superClass() == role_type) {
-	      used = TRUE;
-	      UmlClass * cl = (*ita).value().type;
-	      
-	      if (cl != 0)
-		need_space = !cl->formals().isEmpty();
-	      else {
-		QCString s = (*ita).value().explicit_type;
-		
-		need_space = (!s.isEmpty() && (s.at(s.length() - 1) == '>'));
-	      }
-	      (*ita).generate(f_h);
-	    }
-	  }
-	  
-	  if (used) {
-	    if (need_space)
-	      f_h << " >";
-	    else
-	      f_h << ">";
-	  }
-	}
       }
       else
 	f_h << *p++;
@@ -189,10 +160,10 @@ void UmlRelation::generate_decl(aVisibility & current_visibility, QTextOStream &
       
       if (! formals.isEmpty()) {
 	const char * sep = "  template <";
-	QValueList<UmlFormalParameter>::Iterator it;
+	QValueList<UmlFormalParameter>::ConstIterator it;
 	
 	for (it = formals.begin(); it != formals.end(); ++it) {
-	  f_h << sep << (*it).type();
+	  f_h << sep << (*it).name();
 	  sep = ", ";
 	}
 	
@@ -201,8 +172,9 @@ void UmlRelation::generate_decl(aVisibility & current_visibility, QTextOStream &
       else
 	f_h << "  ";
       
-      f_h << "friend " << roleType()->cpp_stereotype()
-	<< " " << roleType()->name() << ";\n";
+      f_h << "friend " << roleType()->cpp_stereotype() << " ";
+      roleType()->write(f_h);
+      f_h << ";\n";
       first = FALSE;
     }
     break;
@@ -258,7 +230,7 @@ void UmlRelation::generate_decl(aVisibility & current_visibility, QTextOStream &
 	else if (*p != '$')
 	  f_h << *p++;
 	else if (!strncmp(p, "${comment}", 10))
-	  manage_comment(p, pp);
+	  manage_comment(p, pp, CppSettings::isGenerateJavadocStyleComment());
 	else if (!strncmp(p, "${description}", 14))
 	  manage_description(p, pp);
 	else if (!strncmp(p, "${static}", 9)) {
@@ -379,10 +351,15 @@ void UmlRelation::generate_def(QTextOStream & f, QCString indent, bool h,
 	    f << cl_names << "::";
 	  f << *p++;
 	}
-	else if (!strncmp(p, "${comment}", 10))
-	  manage_comment(p, pp);
-	else if (!strncmp(p, "${description}", 14))
-	  manage_description(p, pp);
+	else if (!strncmp(p, "${comment}", 10)) {
+	  if (!manage_comment(p, pp, CppSettings::isGenerateJavadocStyleComment())
+	      && re_template)
+	    f << templates;
+	}
+	else if (!strncmp(p, "${description}", 14)) {
+	  if (!manage_description(p, pp) && re_template)
+	    f << templates;
+	}
 	else if (!strncmp(p, "${static}", 9)) {
 	  p += 9;
 	}

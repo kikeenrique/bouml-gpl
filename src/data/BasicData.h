@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -85,7 +85,7 @@ class BasicData : public QObject {
     BrowserNode * get_browser_node() const { return browser_node; };
     
     virtual QString definition(bool full) const;
-    
+        
     void save(QTextStream &, QString & warning) const;
     void read(char * & st, char * & k);
         

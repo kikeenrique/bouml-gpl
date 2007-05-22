@@ -17,7 +17,7 @@ class UmlCom
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(16);
+    write_unsigned(30);
     flush();
     return TRUE;
   }
@@ -38,7 +38,7 @@ class UmlCom
     p_buffer_out = 4/*bytes for length*/;
 
     // send API version
-    write_unsigned(16);
+    write_unsigned(30);
     flush();
   }
   catch (Exception e) {
@@ -54,6 +54,14 @@ class UmlCom
   send_cmd(miscGlobalCmd, traceCmd, s);
 !!!71424.java!!!	trace(in s : str) : void
   send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._traceCmd, s);
+!!!194176.cpp!!!	showTrace() : void
+  send_cmd(miscGlobalCmd, showTraceCmd);
+!!!194176.java!!!	showTrace() : void
+  send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._showTraceCmd);
+!!!194304.cpp!!!	traceAutoRaise(in y : bool) : void
+  send_cmd(miscGlobalCmd, traceAutoRaiseCmd, (y == 0) ? 0 : 1);
+!!!194304.java!!!	traceAutoRaise(in y : bool) : void
+  send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._traceAutoRaiseCmd, (y) ? (byte) 1 : (byte) 0);
 !!!71552.cpp!!!	message(in s : str) : void
   send_cmd(miscGlobalCmd, messageCmd, s);
 !!!71552.java!!!	message(in s : str) : void
@@ -206,8 +214,8 @@ class UmlCom
   *p_buffer_out++ = (b == 0) ? 0 : 1;
 !!!72320.java!!!	write_bool(in b : bool) : void
   check_size_out(1);
-  
-  buffer_out[p_buffer_out++] = (b) ? (byte) 0 : (byte) 1;
+
+  buffer_out[p_buffer_out++] = (b) ? (byte) 1 : (byte) 0;
 !!!72448.cpp!!!	write_char(in c : sbyte) : void
   check_size_out(1);
   
@@ -637,9 +645,9 @@ class UmlCom
     write_string(arg2.explicit_type);
   }
   flush();
-!!!75264.cpp!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, in arg1 : uint, in arg2 : str, in arg3 : str, in arg4 : UmlTypeSpec) : void
-#ifdef TRACE
-  cout << "UmlCom::send_cmd(id, " << cmd << ", " << arg1 << ", " << ((arg2) ? arg2 : "") << ", " << ((arg3) ? arg3 : "") << ", " << ", UmlTypeSpec)\n";
+!!!75264.cpp!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, in arg1 : uint, in arg2 : str, in arg3 : str, in arg4 : UmlTypeSpec, in arg5 : UmlTypeSpec) : void
+#ifdef DEBUGBOUML
+  cout << "UmlCom::send_cmd(id, " << cmd << ", " << arg1 << \", \"" << arg2 << "\", \"" << arg3 << "\", " << ", UmlTypeSpec, UmlTypeSpec)\n";
 #endif
   
   write_char(onInstanceCmd);
@@ -656,10 +664,16 @@ class UmlCom
     write_id(0);
     write_string(arg4.explicit_type);
   }
+  if (arg5.type) {
+    write_id(arg5.type->_identifier);
+    write_string("");
+  }
+  else {
+    write_id(0);
+    write_string(arg5.explicit_type);
+  }
   flush();
-!!!75264.java!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, in arg1 : uint, in arg2 : str, in arg3 : str, in arg4 : UmlTypeSpec) : void
-  //cout << "UmlCom.send_cmd(id, " << cmd << ", " << arg1 << ", " << arg2 << ", " << arg3 << ", " << ", UmlTypeSpec)\n";
-  
+!!!75264.java!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, in arg1 : uint, in arg2 : str, in arg3 : str, in arg4 : UmlTypeSpec, in arg5 : UmlTypeSpec) : void
   write_char((byte) CmdFamily._onInstanceCmd);
   write_id(id);
   write_char((byte) cmd.value());
@@ -673,6 +687,14 @@ class UmlCom
   else {
     write_id(0);
     write_string(arg4.explicit_type);
+  }
+  if (arg5.type != null) {
+    write_id(arg5.type.identifier_());
+    write_string(null);
+  }
+  else {
+    write_id(0);
+    write_string(arg5.explicit_type);
   }
   flush();
 !!!75392.cpp!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, in arg1 : uint, in arg2 : sbyte, in arg3 : str, in arg4 : str, in arg5 : UmlTypeSpec) : void
@@ -715,9 +737,9 @@ class UmlCom
     write_string(arg5.explicit_type);
   }
   flush();
-!!!75520.cpp!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, in l : UmlClass) : void
+!!!75520.cpp!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, in l : UmlItem) : void
 #ifdef TRACE
-  cout << "UmlCom::send_cmd(id, " << cmd << ", const QVector<UmlClass> & l)\n";
+  cout << "UmlCom::send_cmd(id, " << cmd << ", const QVector<UmlItem> & l)\n";
 #endif
   
   write_char(onInstanceCmd);
@@ -732,8 +754,8 @@ class UmlCom
     write_id(((UmlBaseItem *) l[i])->_identifier);
   
   flush();
-!!!75520.java!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, in l : UmlClass) : void
-  //cout << "UmlCom.send_cmd(id, " << cmd << ", const QVector<UmlClass> & l)\n";
+!!!75520.java!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, in l : UmlItem) : void
+  //cout << "UmlCom.send_cmd(id, " << cmd << ", const QVector<UmlItem> & l)\n";
   
   write_char((byte) CmdFamily._onInstanceCmd);
   write_id(id);

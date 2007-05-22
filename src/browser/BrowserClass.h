@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -79,6 +79,7 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
     virtual const char * check_inherit(const BrowserNode * parent) const;
     bool have_abstract_operation();
     void get_opers(QValueList<const OperationData *> & opers, QStringList & list);
+    void get_tree(BrowserNodeList &);
     virtual BrowserNode * get_associated() const;
     void set_associated_diagram(BrowserClassDiagram *, bool on_read = FALSE);
     BrowserArtifact * get_associated_artifact() const;
@@ -105,10 +106,11 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
     virtual BasicData * get_data() const;
     virtual bool allow_spaces() const;
     virtual const QStringList & default_stereotypes(UmlCode arrow) const;
+    virtual const char * constraint() const;
     
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserClass * read_ref(char * &, const char * k = 0);
-    static BrowserClass * read(char * &, char *, BrowserNode *);
+    static BrowserClass * read(char * &, char *, BrowserNode *, bool force = TRUE);
     static BrowserNode * get_it(const char * k, int id);
     
     static void plug_out_conversion();

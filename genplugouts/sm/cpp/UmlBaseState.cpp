@@ -1,4 +1,5 @@
 
+#include "UmlCom.h"
 #include "UmlBaseState.h"
 #include "UmlState.h"
 #include "UmlStateDiagram.h"

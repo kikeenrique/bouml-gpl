@@ -42,7 +42,7 @@ class UmlOperation
 
   fw.write("</ul>");
   
-  annotation();
+  annotation_constraint();
  
   s = description();
   
@@ -84,7 +84,7 @@ class UmlOperation
 
   fw.write("</ul>");
   
-  annotation();
+  annotation_constraint();
   
   s = description();
 

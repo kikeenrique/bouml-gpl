@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -410,15 +410,8 @@ const char * ExpansionNodeCanvas::may_start(UmlCode & l) const {
 }
 
 const char * ExpansionNodeCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  if (l == UmlAnchor) {
-    switch (dest->type()) {
-    case UmlNote:
-    case UmlIcon:
-      return 0;
-    default:
-      return "illegal";
-    }
-  }
+  if (l == UmlAnchor)
+    return dest->may_start(l);
   else if(dest->get_bn() == 0)
     return "illegal";
   else

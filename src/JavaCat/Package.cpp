@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -79,6 +79,9 @@ QDict<UmlPackage> Package::user_packages;
 
 // package which does not exist even in bouml
 QStringList Package::unknown_packages;
+
+// to know if java.lang. was artificialy added in Package::imports
+bool Package::java_lang_added;
 
 // the current import list
 QStringList Package::imports;
@@ -314,8 +317,12 @@ void Package::reverse_file(QCString f) {
 	s = Lex::read_word();
       }
       
-      if (imports.findIndex("java.lang.") == -1)
+      if (imports.findIndex("java.lang.") == -1) {
 	imports.append("java.lang.");
+	java_lang_added = TRUE;
+      }
+      else
+	java_lang_added = FALSE;
       
       aVisibility visibility = PackageVisibility;
       bool abstractp = FALSE;

@@ -195,6 +195,24 @@ bool JavaSettings::set_SourceExtension(QCString v)
     return FALSE;
 }
 
+bool JavaSettings::isGenerateJavadocStyleComment()
+{
+  read_if_needed_();
+
+  return _is_generate_javadoc_comment;
+}
+
+bool JavaSettings::set_IsGenerateJavadocStyleComment(bool v)
+{
+  UmlCom::send_cmd(javaSettingsCmd, setJavaJavadocStyleCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_generate_javadoc_comment = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 const QCString & JavaSettings::classDecl()
 {
   read_if_needed_();
@@ -563,6 +581,8 @@ QCString JavaSettings::_src_content;
 
 QCString JavaSettings::_ext;
 
+bool JavaSettings::_is_generate_javadoc_comment;
+
 QDict<QCString> JavaSettings::_map_imports;
 
 void JavaSettings::read_()
@@ -622,6 +642,7 @@ void JavaSettings::read_()
   _set_name = UmlCom::read_string();
   _is_set_final = UmlCom::read_bool();
   _is_set_param_final = UmlCom::read_bool();
+  _is_generate_javadoc_comment = UmlCom::read_bool();
 }
 
 void JavaSettings::read_if_needed_()

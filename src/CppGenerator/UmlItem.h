@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,7 +40,7 @@ class UmlItem : public UmlBaseItem {
     
     virtual void generate();
     virtual UmlPackage * package();
-    bool manage_comment(const char *& p, const char *& pp);
+    bool manage_comment(const char *& p, const char *& pp, bool javadoc);
     bool manage_description(const char *& p, const char *& pp);    
     void replace_alias(QCString & s);
     void manage_alias(const char *& p, QTextOStream & ts);

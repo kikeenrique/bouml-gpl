@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -895,7 +895,7 @@ ObjectLinkCanvas * ObjectLinkCanvas::read(char * & st, UmlCanvas * canvas, char 
       result = new ObjectLinkCanvas(canvas, bi, di, id);
       result->geometry = geo;
       result->fixed_geometry = fixed;
-      result->setZ(z);
+      result->set_z(z);
       if (rd != 0) {
 	result->data = rd;
 	result->itstype = rd->get_type();

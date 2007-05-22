@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -80,6 +80,7 @@ class OperationDialog : public QTabDialog {
     ParamsTable * table;
     ExceptionsTable * etable;
     MultiLineEdit * comment;
+    MultiLineEdit * constraint;
     
     // c++ tab
     QWidget * cpptab;
@@ -147,6 +148,7 @@ class OperationDialog : public QTabDialog {
     void manage_idl_exceptions(QString & s);
   
     static void post_edit_description(OperationDialog * d, QString s);
+    static void post_edit_constraint(OperationDialog * d, QString s);
     static void post_cpp_edit_body(OperationDialog * d, QString s);
     static void post_java_edit_body(OperationDialog * d, QString s);
   
@@ -163,6 +165,7 @@ class OperationDialog : public QTabDialog {
     virtual void accept();
     void default_description();
     void edit_description();
+    void edit_constraint();
     void classoper_toggled(bool on);
     void abstract_toggled(bool on);
     void cpp_default_decl();

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -230,6 +230,9 @@ const char * UcClassCanvas::may_start(UmlCode & c) const {
 }
 
 const char * UcClassCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  if (l == UmlAnchor)
+    return dest->may_start(l);
+  
   switch (dest->type()) {
   case UmlUseCase:
     return ((l == UmlAssociation) || (l == UmlDirectionalAssociation))
@@ -239,9 +242,6 @@ const char * UcClassCanvas::may_connect(UmlCode & l, const DiagramItem * dest) c
       ? ((BrowserClass *) browser_node)
 	->may_connect(l, (BrowserClass *) ((const UcClassCanvas *) dest)->browser_node)
       : "illegal";
-  case UmlNote:
-  case UmlIcon:
-    return (l == UmlAnchor) ? 0 : "illegal";
   default:
     return "illegal";
   }

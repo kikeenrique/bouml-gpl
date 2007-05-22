@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -30,7 +30,7 @@
 #include "UmlPackage.h"
 #include "UmlOperation.h"
 #include "UmlClass.h"
-//#include "JavaRefType.h"
+#include "JavaSettings.h"
 #include "UmlCom.h"
 #include "util.h"
 
@@ -65,17 +65,10 @@ void UmlArtifact::generate() {
     if (preserve())
       UmlOperation::read_bodies(path);
       
-    // compute dependencies
-    
-    //QList<JavaRefType> dependencies;
-    unsigned n = cls.count();
-    unsigned index;
-
-    /*for (index = 0; index != n; index += 1)
-      cls[index]->compute_dependencies(dependencies);*/
-    
     // generate file
     
+    unsigned n = cls.count();
+    unsigned index;
     QCString incl;
     QByteArray file;
     // note : QTextOStream(FILE *) does not work under windows
@@ -100,7 +93,7 @@ void UmlArtifact::generate() {
       else if (*p != '$')
 	f << *p++;
       else if (!strncmp(p, "${comment}", 10))
-	manage_comment(p, pp);
+	manage_comment(p, pp, JavaSettings::isGenerateJavadocStyleComment());
       else if (!strncmp(p, "${description}", 14))
 	manage_description(p, pp);
       else if (!strncmp(p, "${name}", 7)) {
@@ -116,7 +109,10 @@ void UmlArtifact::generate() {
 	f << name.upper();
       }
       else if (!strncmp(p, "${imports}", 10)) {
-	// not yet managed
+	QCString indent = current_indent(p, filedef);
+	
+	for (index = 0; index != n; index += 1)
+	  cls[index]->generate_import(f, indent);
 	p += 10;
 	if (*p == '\n')
 	  p += 1;
@@ -132,9 +128,11 @@ void UmlArtifact::generate() {
 	  p += 1;
       }
       else if (!strncmp(p, "${definition}", 13)) {
-	p += 13;
+	QCString indent = current_indent(p, filedef);
+	
 	for (index = 0; index != n; index += 1)
-	  cls[index]->generate(f, current_indent(p, filedef));
+	  cls[index]->generate(f, indent);
+	p += 13;
 	if (*p == '\n')
 	  p += 1;
       }

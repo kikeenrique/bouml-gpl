@@ -44,10 +44,18 @@ bool UmlUseCase::write_if_needed(FileOut & out) {
   out << "</UML:UseCase>\n"; 
  
   if (haveRel) { 
+    used = FALSE; 
+    
     for (unsigned i = 0; i != n; i += 1)  
       if (ch[i]->kind() == aNcRelation) 
         used |= ch[i]->write_if_needed(out); 
-  } 
+       
+    if (used) { 
+      out.indent(-1); 
+      out.indent(); 
+      out << "</UML:Namespace.ownedElement>\n"; 
+    } 
+  }
  
   unload(); 
   

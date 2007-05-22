@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,6 +46,8 @@ class UmlClass : public UmlBaseClass {
     
     static QList<UmlClass> context;
     
+    static QValueList<UmlActualParameter> noactuals;
+    
   public:
     UmlClass(void * id, const QCString & n)
       : UmlBaseClass(id, n), managed(FALSE) {};
@@ -76,7 +78,8 @@ class UmlClass : public UmlBaseClass {
 	      QCString & templates_tmplop, QCString & names_tmplop);
     QCString decl();
     
-    void write(QTextOStream &, bool with_formals = TRUE);
+    void write(QTextOStream &, bool with_formals = TRUE, 
+	       const QValueList<UmlActualParameter> & actuals = noactuals);
     static void write(QTextOStream &, const UmlTypeSpec &,
 		      bool with_formals = TRUE);
 };

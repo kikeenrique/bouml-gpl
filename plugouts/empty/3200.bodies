@@ -224,6 +224,15 @@ class UmlBaseItem
 
     _children = null;
   }
+!!!192896.cpp!!!	deleteIt() : bool
+  UmlCom::send_cmd(_identifier, deleteCmd);
+  if (UmlCom::read_bool() == 0) return FALSE;
+  parent()->unload(TRUE);
+  return TRUE;
+!!!192896.java!!!	deleteIt() : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.deleteCmd);
+  UmlCom.check();
+  parent().unload(true, false);
 !!!23808.cpp!!!	isToolRunning(in id : int) : bool
   UmlCom::send_cmd(miscGlobalCmd, toolRunningCmd, id);
   return UmlCom::read_bool();

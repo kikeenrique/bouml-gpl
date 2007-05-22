@@ -6,13 +6,13 @@
 #include "anItemKind.h"
 #include <qvector.h>
 
-#include "UmlClass.h"
 #include <qcstring.h>
 
 #include "UmlClass.h"	// to avoid destructor problem
 class UmlComponent;
 class UmlComponentView;
 class UmlComponentDiagram;
+class UmlClass;
 
 //  Manage the components.
 class UmlBaseComponent : public UmlItem {

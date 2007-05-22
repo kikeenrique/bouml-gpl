@@ -76,7 +76,7 @@ bool UmlBaseArtifact::removeAssociatedClass(UmlClass * cl) {
 }
 
 bool UmlBaseArtifact::set_AssociatedClasses(const QVector<UmlClass> & l) {
-  UmlCom::send_cmd(_identifier, setAssocClassesCmd, l);
+  UmlCom::send_cmd(_identifier, setAssocClassesCmd, (const QVector<UmlItem> &) l);
   if (UmlCom::read_bool()) {
     if (_defined)
       _assoc_classes = l;

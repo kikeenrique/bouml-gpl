@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -82,7 +82,7 @@ ArrowCanvas::~ArrowCanvas() {
 void ArrowCanvas::cut_self() {
   // cut the line adding two points
   QRect r = ((DiagramCanvas *) begin)->rect();
-  QPoint pt(r.right() + ARROW_LENGTH*3, r.top());
+  QPoint pt(r.left() - ARROW_LENGTH*3, r.top());
   
   ArrowPointCanvas * ap = brk(pt);
   
@@ -310,6 +310,16 @@ void ArrowCanvas::set_z(double z) {
   setZ(z);
   if (stereotype != 0)
     stereotype->setZ(z);
+  if (label != 0)
+    label->setZ(z);
+  if ((begin != 0) &&
+      (begin->type() == UmlArrowPoint) &&
+      (((ArrowPointCanvas *) begin)->z() <= z))
+    ((ArrowPointCanvas *) begin)->setZ(z + 1);
+  if ((end != 0) &&
+      (end->type() == UmlArrowPoint) &&
+      (((ArrowPointCanvas *) end)->z() <= z))
+    ((ArrowPointCanvas *) end)->setZ(z + 1);
 }
 
 bool ArrowCanvas::copyable() const {
@@ -536,24 +546,11 @@ bool ArrowCanvas::contains(int, int) const {
 }
 
 const char * ArrowCanvas::may_start(UmlCode & l) const {
-  if (itstype == UmlAnchor)
-    return "can't add an anchor to an anchor";
-  else if (l != UmlAnchor)
-    return "a relation can't have a relation";
-  else
-    return 0;
+  return (l == UmlAnchor) ? 0 : "a relation can't have a relation";
 }
 
 const char * ArrowCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  switch (dest->type()) {
-  case UmlClass:
-  case UmlNote:
-  case UmlInfo:
-  case UmlIcon:
-    return (l == UmlAnchor) ? 0 : "illegal";
-  default:
-    return "illegal";
-  }
+  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
 }
 
 void ArrowCanvas::connexion(UmlCode action, DiagramItem * dest,
@@ -1416,7 +1413,7 @@ ArrowCanvas * ArrowCanvas::read_list(char * & st, UmlCanvas * canvas,
     result = pf(canvas, bi, di, t, id);
     result->geometry = geo;
     result->fixed_geometry = fixed;
-    result->setZ(z);
+    result->set_z(z);
     result->show();
     if (label != 0)
       (result->label = label)->show();

@@ -135,7 +135,8 @@ enum OnInstanceCmd {
   setOrderingCmd,
   setCppFrozenCmd,
   setJavaFrozenCmd,
-  setIdlFrozenCmd
+  setIdlFrozenCmd,
+  setConstraintCmd
 
 };
 #endif

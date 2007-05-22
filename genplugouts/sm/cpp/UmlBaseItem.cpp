@@ -18,6 +18,7 @@
 #include "UmlSequenceDiagram.h"
 #include "UmlCollaborationDiagram.h"
 #include "UmlComponentDiagram.h"
+#include "UmlObjectDiagram.h"
 #include "UmlDeploymentDiagram.h"
 #include "UmlClassView.h"
 #include "UmlUseCaseView.h"
@@ -41,6 +42,18 @@
 #include "UmlChoicePseudoState.h"
 #include "UmlForkPseudoState.h"
 #include "UmlJoinPseudoState.h"
+#include "UmlActivityDiagram.h"
+#include "UmlActivity.h"
+#include "UmlFlow.h"
+#include "UmlActivityParameter.h"
+#include "UmlParameterSet.h"
+#include "UmlExpansionRegion.h"
+#include "UmlInterruptibleActivityRegion.h"
+#include "UmlActivityActionClasses.h"
+#include "UmlActivityObject.h"
+#include "UmlExpansionNode.h"
+#include "UmlActivityPin.h"
+#include "UmlActivityControlNodeClasses.h"
 #include "MiscGlobalCmd.h"
 
 bool UmlBaseItem::set_Name(const QCString & s) {
@@ -195,6 +208,13 @@ void UmlBaseItem::unload(bool rec, bool del) {
     delete _children;
     _children = 0;
   }
+}
+
+bool UmlBaseItem::deleteIt() {
+  UmlCom::send_cmd(_identifier, deleteCmd);
+  if (UmlCom::read_bool() == 0) return FALSE;
+  parent()->unload(TRUE);
+  return TRUE;
 }
 
 bool UmlBaseItem::isToolRunning(int id)
@@ -472,6 +492,72 @@ UmlItem * UmlBaseItem::read_()
       return new UmlForkPseudoState(id);
     case aJoinPseudoState:
       return new UmlJoinPseudoState(id);
+    case anObjectDiagram:
+      return new UmlObjectDiagram(id, name);
+    case anActivityDiagram:
+      return new UmlActivityDiagram(id, name);
+        case anActivity:
+      return new UmlActivity(id, name);
+    case aFlow:
+      return new UmlFlow(id, name);
+    case anActivityParameter:
+      return new UmlActivityParameter(id, name);
+    case aParameterSet:
+      return new UmlParameterSet(id, name);
+    case anExpansionRegion:
+      return new UmlExpansionRegion(id, name);
+    case anInterruptibleActivityRegion:
+      return new UmlInterruptibleActivityRegion(id, name);
+    case anOpaqueAction:
+      return new UmlOpaqueAction(id, name);
+    case anAcceptEventAction:
+      return new UmlAcceptEventAction(id, name);
+    case aReadVariableValueAction:
+      return new UmlReadVariableValueAction(id, name);
+    case aClearVariableValueAction:
+      return new UmlClearVariableValueAction(id, name);
+    case aWriteVariableValueAction:
+      return new UmlWriteVariableValueAction(id, name);
+    case anAddVariableValueAction:
+      return new UmlAddVariableValueAction(id, name);
+    case aRemoveVariableValueAction:
+      return new UmlRemoveVariableValueAction(id, name);
+    case aCallBehaviorAction:
+      return new UmlCallBehaviorAction(id, name);
+    case aCallOperationAction:
+      return new UmlCallOperationAction(id, name);
+    case aSendObjectAction:
+      return new UmlSendObjectAction(id, name);
+    case aSendSignalAction:
+      return new UmlSendSignalAction(id, name);
+    case aBroadcastSignalAction:
+      return new UmlBroadcastSignalAction(id, name);
+    case anUnmarshallAction:
+      return new UmlUnmarshallAction(id, name);
+    case aValueSpecificationAction:
+      return new UmlValueSpecificationAction(id, name);
+    case anActivityObject:
+      return new UmlActivityObject(id, name);
+    case anExpansionNode:
+      return new UmlExpansionNode(id, name);
+    case anActivityPin:
+      return new UmlActivityPin(id, name);
+    case anInitialActivityNode:
+      return new UmlInitialActivityNode(id, name);
+    case aFlowFinalActivityNode:
+      return new UmlFlowFinalActivityNode(id, name);
+    case anActivityFinalActivityNode:
+      return new UmlActivityFinalActivityNode(id, name);
+    case aDecisionActivityNode:
+      return new UmlDecisionActivityNode(id, name);
+    case aMergeActivityNode:
+      return new UmlMergeActivityNode(id, name);
+    case aForkActivityNode:
+      return new UmlForkActivityNode(id, name);
+    case aJoinActivityNode:
+      return new UmlJoinActivityNode(id, name);
+    case aPartition:
+      //return new UmlPartition(id, name);
     default:
       UmlCom::bye();
       UmlCom::fatal_error(QCString("unknown item type ") + QCString().setNum(kind));

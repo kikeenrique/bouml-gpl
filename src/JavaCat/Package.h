@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -58,12 +58,13 @@ class Package : public BrowserNode, public ClassContainer {
 
     void reverse_file(QCString f);
     
-    const QCString & get_path() { return path; };
+    const QCString & get_path() { return path; }
     UmlPackage * get_uml(bool mandatory = TRUE);
 #ifdef REVERSE
     void send_dir(bool rec);
-    const QStringList get_imports() { return imports; };
-    const QStringList get_static_imports() { return static_imports; };
+    const QStringList get_imports() { return imports; }
+    const bool is_java_lang_added() { return java_lang_added; }
+    const QStringList get_static_imports() { return static_imports; }
 #endif
     
     void new_class(Class *);
@@ -115,6 +116,7 @@ class Package : public BrowserNode, public ClassContainer {
     static QDict<UmlPackage> user_packages;
     static QStringList unknown_packages;
     static QStringList imports;
+    static bool java_lang_added;
     static QStringList static_imports;
     static QStack<QStringList> stack;
     static QValueList<FormalParameterList> Formals;

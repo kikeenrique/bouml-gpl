@@ -63,6 +63,14 @@ class UmlBaseClassMember : public UmlClassItem {
     bool set_JavaAnnotations(const char * v);
 #endif
 
+    // return the constraint
+    const QCString & constraint();
+
+    // set the constraint
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_Constraint(const char * v);
+
 
   private:
     bool _class_member;
@@ -77,6 +85,8 @@ class UmlBaseClassMember : public UmlClassItem {
 #ifdef WITHJAVA
     QCString _java_annotation;
 #endif
+
+    QCString _constraint;
 
 
   protected:

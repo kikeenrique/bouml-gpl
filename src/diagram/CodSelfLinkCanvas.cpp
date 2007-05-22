@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -295,14 +295,8 @@ const char * CodSelfLinkCanvas::may_start(UmlCode & l) const {
   return (l == UmlAnchor) ? 0 : "illegal";
 }
 
-const char * CodSelfLinkCanvas::may_connect(UmlCode & l, const DiagramItem * other) const {
-  switch (other->type()) {
-  case UmlNote:
-  case UmlIcon:
-    return (l == UmlAnchor) ? 0 : "illegal";
-  default:
-    return "illegal";
-  }
+const char * CodSelfLinkCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
 }
     
 bool CodSelfLinkCanvas::copyable() const {

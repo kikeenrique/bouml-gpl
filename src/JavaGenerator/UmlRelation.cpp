@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -213,7 +213,7 @@ void UmlRelation::generate(QTextOStream & f, const QCString & cl_stereotype,
 	else if (*p != '$')
 	  f << *p++;
 	else if (!strncmp(p, "${comment}", 10))
-	  manage_comment(p, pp);
+	  manage_comment(p, pp, JavaSettings::isGenerateJavadocStyleComment());
 	else if (!strncmp(p, "${description}", 14))
 	  manage_description(p, pp);
 	else if (!strncmp(p, "${visibility}", 13)) {
@@ -317,4 +317,10 @@ void UmlRelation::generate_enum_pattern_case(QTextOStream &, QCString) {
 
 void UmlRelation::generate_enum_member(QTextOStream & f, QCString indent) {
   generate(f, "enum", indent);
+}
+
+void UmlRelation::generate_import(QTextOStream & f, const QCString & indent) {
+  if ((relationKind() == aDependency) &&
+      (stereotype() == "import"))
+    roleType()->import(f, indent);
 }

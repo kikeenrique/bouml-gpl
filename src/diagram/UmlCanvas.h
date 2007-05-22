@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -89,7 +89,10 @@ class UmlCanvas : public QCanvas {
     int shadow() const;
     bool must_draw_all_relations() const { return draw_all_relations; }
     void dont_draw_all_relations();
-    void freeze_draw_all_relations() { saved_draw_all_relations = draw_all_relations; }
+    void freeze_draw_all_relations() {
+      saved_draw_all_relations = draw_all_relations;
+      draw_all_relations = FALSE;
+    }
     void unfreeze_draw_all_relations() { draw_all_relations = saved_draw_all_relations; }
     static void update_global_settings();
   

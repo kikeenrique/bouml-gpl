@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -105,6 +105,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   classdiagram_settings.drawing_language = UmlView;
   classdiagram_settings.show_context_mode = noContext;
   classdiagram_settings.auto_label_position = UmlYes;
+  classdiagram_settings.show_infonote = UmlNo;
   classdiagram_settings.shadow = UmlYes;
     
   class_settings.attribute_visibility = UmlProtected;

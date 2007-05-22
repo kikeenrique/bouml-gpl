@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -86,10 +86,11 @@ class BrowserRelation : public BrowserNode, public Labeled<BrowserRelation> {
 				QString & s, bool templ) const;
     virtual void update_stereotype(bool = FALSE);
     virtual AType class_association() const;
+    virtual const char * constraint() const;
     
     virtual void write_id(ToolCom * com);
     virtual void save(QTextStream &, bool ref, QString & warning);
-    static BrowserRelation * read(char * &, char *, BrowserNode *);
+    static BrowserRelation * read(char * &, char *, BrowserNode *, bool force = TRUE);
     static BrowserRelation * read_ref(char * & st);
     static BrowserRelation * read_ref(char * &, char * k);
     static BrowserRelation * temporary(RelationData * d);

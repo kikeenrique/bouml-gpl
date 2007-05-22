@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -64,7 +64,7 @@ ClassData::ClassData()
 }
 
 ClassData::ClassData(const ClassData * model, BrowserNode * bn)
-    : BasicData(model) {
+    : BasicData(model), constraint(model->constraint)  {
   browser_node = bn;
   
   if ((nformals = model->nformals) == 0)
@@ -142,55 +142,72 @@ void ClassData::inherit_or_instantiate(BrowserClass *) {
   update_actuals();
 }
 
+void ClassData::update_actuals(BrowserClass * parent,
+			       QList<ActualParamData> & new_actuals,
+			       QList<ActualParamData> & managed) {
+  if (((BrowserNode *) parent->parent())->get_type() == UmlClass)
+    update_actuals((BrowserClass * ) parent->parent(), new_actuals, managed);
+  
+  ActualParamData * actual;
+  int n = ((ClassData *) parent->get_data())->nformals;
+  
+  if (n != 0) {
+    // search the first associated actual
+    for (actual = actuals.first(); actual != 0; actual = actuals.next()) {
+      if ((actual->get_class() == parent) &&
+	  (managed.findRef(actual) == -1))
+	// find;
+	break;
+    }
+    
+    int nth = 0;
+    
+    // progress on still present formals
+    while (actual && (nth < n) && (actual->get_class() == parent)) {
+      // actual ok
+      new_actuals.append(actual);
+      managed.append(actual);
+      
+      actual = actuals.next();
+      nth += 1;
+    }
+    
+    if (nth < n) {
+      // adds necessary actuals
+      if (nth == 0) {
+	// new inheritance
+	connect(parent->get_data(), SIGNAL(deleted()),
+		this, SLOT(update_actuals()));
+	connect(parent->get_data(), SIGNAL(changed()),
+		this, SLOT(update_actuals()));
+      }
+      do {
+	new_actuals.append(new ActualParamData(parent, nth));
+	nth += 1;
+      } while (nth != n);
+    }
+  }
+}
+
 void ClassData::update_actuals() {
   // an inherited parent was modified/deleted, updates all actuals
   QList<BrowserNode> parents = browser_node->parents();
   QList<ActualParamData> new_actuals;
-  ActualParamData * actual;
+  QList<ActualParamData> managed;
   BrowserClass * parent;
   
   for (parent = (BrowserClass *) parents.first();
        parent != 0;
-       parent = (BrowserClass *) parents.next()) {
-    int n = ((ClassData *) parent->get_data())->nformals;
-    
-    if (n != 0) {
-      // search the first associated actual
-      for (actual = actuals.first(); actual != 0; actual = actuals.next()) {
-	if (actual->get_class() == parent)
-	  // find;
-	  break;
-      }
-      
-      int nth = 0;
-      
-      // progress on still present formals
-      while (actual && (nth < n) && (actual->get_class() == parent)) {
-	// actual ok
-	new_actuals.append(actual);
-	
-	actual = actuals.next();
-	nth += 1;
-      }
-      
-      if (nth < n) {
-	// adds necessary actuals
-	if (nth == 0) {
-	  // new inheritance
-	  connect(parent->get_data(), SIGNAL(deleted()),
-		  this, SLOT(update_actuals()));
-	  connect(parent->get_data(), SIGNAL(changed()),
-		  this, SLOT(update_actuals()));
-	}
-	do {
-	  new_actuals.append(new ActualParamData(parent, nth));
-	  nth += 1;
-	} while (nth != n);
-      }
-    }
-  }
+       parent = (BrowserClass *) parents.next())
+    update_actuals(parent, new_actuals, managed);
   
   if (!(actuals == new_actuals)) {
+    ActualParamData * actual;
+    
+    for (actual = actuals.first(); actual != 0; actual = actuals.next())
+      if (new_actuals.findRef(actual) == -1)
+	delete actual;
+
     actuals = new_actuals;
     browser_node->package_modified();
   }
@@ -425,6 +442,9 @@ bool ClassData::tool_cmd(ToolCom * com, const char * args,
 	  set_base_type(t);	  
 	}
 	break;
+      case setConstraintCmd:
+	constraint = args;
+	break;
       case setIsCppExternalCmd:
 	cpp_external = (*args != 0);
 	break;
@@ -638,6 +658,9 @@ void ClassData::send_uml_def(ToolCom * com, BrowserNode * bn,
 		   (uml_visibility != UmlPackageVisibility))
 		  ? uml_visibility : UmlPublic);
   
+  if (api >= 30)
+    com->write_string(constraint);
+  
   com->write_bool(is_abstract);
   
   if (stereotype == "typedef") {
@@ -746,6 +769,11 @@ void ClassData::save(QTextStream & st, QString & warning) const {
       ita.current()->save(st, warning);
     nl_indent(st);  
   }
+  if (!constraint.isEmpty()) {
+    nl_indent(st);
+    st << "constraint ";
+    save_string(constraint, st);
+  }
   
   if (cpp_external)
     st << "cpp_external ";
@@ -851,6 +879,13 @@ void ClassData::read(char * & st, char * & k) {
     n = 0;
     actuals.clear();
   }
+  
+  if (!strcmp(k, "constraint")) {
+    constraint = read_string(st);
+    k = read_keyword(st);
+  }
+  else
+    constraint = QString::null;
   
   if (!strcmp(k, "cpp_external")) {
     cpp_external = TRUE;

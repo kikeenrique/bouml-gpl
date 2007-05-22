@@ -11,6 +11,7 @@
 void UmlClass::defaultDef() {
   if (cppDecl().isEmpty())
     set_CppDecl(CppSettings::classDecl());
+  setUsed();
 }
 
 UmlOperation * UmlClass::trigger(QCString s, UmlClass * machine, UmlClass * anystate) {
@@ -36,6 +37,8 @@ UmlOperation * UmlClass::trigger(QCString s, UmlClass * machine, UmlClass * anys
       tr->managed();
       tr->setComment("the operation you call to signal the event " + s);
     }
+    else
+      tr->setUsed();
     
     // the bypass trigger at the anystate level
     
@@ -65,6 +68,8 @@ UmlOperation * UmlClass::trigger(QCString s, UmlClass * machine, UmlClass * anys
 	tr->setComment("the current state doesn't manage the event "
 		       + s + ", give it to the upper state");
     }
+    else
+      tr->setUsed();
   }
 
   // the trigger for the class

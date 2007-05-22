@@ -49,7 +49,8 @@ enum CppSettingsCmd {
   setCppIsSetParamRefCmd,
   setCppRelativePathCmd,
   setCppForceNamespaceGenCmd,
-  setCppRootRelativePathCmd
+  setCppRootRelativePathCmd,
+  setCppJavadocStyleCmd
 
 };
 #endif

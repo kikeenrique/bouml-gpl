@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -113,6 +113,90 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
     rel->set_JavaAnnotations(annotation);
   
   UmlClass::manage_generic(decl, dest, str_actuals, "${type}");  
+  rel->set_JavaDecl(decl);
+
+  return rel->set_RoleName(name);
+}
+
+bool UmlRelation::new_one(Class * container, const QCString & name,
+			  UmlClass * type, QCString type_def,
+			  QCString genericname,
+			  aVisibility visibility, bool staticp,
+			  bool constp, bool transientp, bool volatilep,
+			  const QCString & array, const QCString & value,
+			  QCString comment, QCString description,
+			  QCString annotation)
+{
+#ifdef TRACE
+  cout << "RELATION '" << name << "' from '" << cl->Name() << "' to '" << type->Name()
+    << "' array '" << array << "'\n";
+#endif
+  
+  if (
+#ifdef REVERSE
+      container->from_libp() &&
+#endif
+      (visibility == PrivateVisibility)) {
+    Lex::finish_line();
+    Lex::clear_comments();
+    return TRUE;
+  }
+  
+  UmlClass * cl = container->get_uml();
+  UmlRelation * rel = 
+    UmlBaseRelation::create(aDirectionalAssociation, cl, type);
+  
+  if (rel == 0) {
+    JavaCatWindow::trace(QCString("<font face=helvetica><b>cannot add relation <i>")
+			 + name + "</i> in <i>" + cl->name() + "</i> to <i>"
+			 + type->name() + "</i></b></font><br>");  
+    return FALSE;
+  }
+    
+#ifdef REVERSE
+  Statistic::one_relation_more();
+#endif
+  
+  rel->set_Visibility(visibility);
+  
+  Lex::finish_line();
+  
+  comment = Lex::get_comments(comment);
+  description = Lex::get_description(description);
+  
+  QCString decl = JavaSettings::relationDecl(array);
+  
+  if (!comment.isEmpty())
+    rel->set_Description((decl.find("${description}") != -1)
+			 ? description : comment);
+  
+  if (constp)
+    rel->set_isReadOnly(TRUE);
+  
+  if (transientp)
+    rel->set_isJavaTransient(TRUE);
+  
+  if (volatilep)
+    rel->set_isVolatile(TRUE);
+  
+  if (staticp)
+    rel->set_isClassMember(TRUE);
+  
+  if (!array.isEmpty())
+    rel->set_Multiplicity(array);
+  
+  if (! value.isEmpty())
+    rel->set_DefaultValue(value);
+  
+  if (! annotation.isEmpty())
+    rel->set_JavaAnnotations(annotation);
+  
+  
+  QCString st_uml = JavaSettings::umlType(genericname);
+  
+  rel->set_Stereotype((st_uml.isEmpty()) ? genericname : st_uml);
+  type_def.replace(0, genericname.length(), "${stereotype}");
+  decl.replace(decl.find("${type}"), 7, type_def);
   rel->set_JavaDecl(decl);
 
   return rel->set_RoleName(name);

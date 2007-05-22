@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -6039,6 +6039,255 @@ void add_cpp_root_relative_path(UmlClass * cppsetting)
   UmlCom::set_user_id(uid);
 }
 
+///
+// add generate javadoc comment settings
+//
+
+void add_cpp_generate_javadoc_comment(UmlClass * cppsetting)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("update CppSettings<br>\n");
+  
+  //
+  // add _is_generate_javadoc_comment
+  //
+  
+  UmlAttribute * att1 = 
+    cppsetting->add_attribute("_is_generate_javadoc_comment", PrivateVisibility, "bool", 0, 0);
+
+  att1->set_isClassMember(TRUE);
+  att1->moveAfter(cppsetting->get_attribute("_is_force_namespace_gen"));
+
+  // get
+  
+  UmlOperation * op = cppsetting->add_op("isGenerateJavadocStyleComment", PublicVisibility, "bool");
+   
+  op->set_isClassMember(TRUE);
+  op->set_Description(" return if ${comment} generate Javadoc style comment");
+  op->set_cpp("${type}", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _is_generate_javadoc_comment;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _is_generate_javadoc_comment;\n",
+	       FALSE);
+  op->moveAfter(cppsetting->get_operation("set_IsForceNamespacePrefixGeneration"));
+
+  // set
+  
+  UmlOperation * op2 = cppsetting->add_op("set_IsGenerateJavadocStyleComment", PublicVisibility, "bool");
+  
+  op2->set_isClassMember(TRUE);
+  op2->set_Description(" set if ${comment} generate Javadoc style comment\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java");
+  op2->add_param(0, InputDirection, "v", "bool"); 
+  op2->set_cpp("${type}", "${t0} ${p0}",
+		"  UmlCom::send_cmd(cppSettingsCmd, setCppJavadocStyleCmd, v);\n"
+		"  if (UmlCom::read_bool()) {\n"
+		"    _is_generate_javadoc_comment = v;\n"
+		"    return TRUE;\n"
+		"  }\n"
+		"  else\n"
+		"    return FALSE;\n",
+		FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}",
+		"  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppJavadocStyleCmd,\n"
+		"		   (v) ? (byte) 1 : (byte) 0);\n"
+		"  UmlCom.check();\n"
+		"  _is_generate_javadoc_comment = v;\n",
+		FALSE);
+  op2->moveAfter(op);  
+  
+  //
+  
+  UmlClass * cppsettingcmd = UmlClass::get("CppSettingsCmd", 0);
+  
+  cppsettingcmd->add_enum_item("setCppJavadocStyleCmd");
+
+  //
+  
+  op = cppsetting->get_operation("read_");
+
+  op->set_CppBody(op->cppBody() + 
+		  "  _is_generate_javadoc_comment = UmlCom::read_bool();\n");
+  op->set_JavaBody(op->javaBody() + 
+		   "  _is_generate_javadoc_comment = UmlCom.read_bool();\n");
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
+void add_java_generate_javadoc_comment(UmlClass * javasetting)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("update JavaSettings<br>\n");
+  
+  //
+  // add _is_generate_javadoc_comment
+  //
+  
+  UmlAttribute * att1 = 
+    javasetting->add_attribute("_is_generate_javadoc_comment", PrivateVisibility, "bool", 0, 0);
+
+  att1->set_isClassMember(TRUE);
+  att1->moveAfter(javasetting->get_attribute("_ext"));
+
+  // get
+  
+  UmlOperation * op = javasetting->add_op("isGenerateJavadocStyleComment", PublicVisibility, "bool");
+   
+  op->set_isClassMember(TRUE);
+  op->set_Description(" return if ${comment} generate Javadoc style comment");
+  op->set_cpp("${type}", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _is_generate_javadoc_comment;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _is_generate_javadoc_comment;\n",
+	       FALSE);
+  op->moveAfter(javasetting->get_operation("set_SourceExtension"));
+
+  // set
+  
+  UmlOperation * op2 = javasetting->add_op("set_IsGenerateJavadocStyleComment", PublicVisibility, "bool");
+  
+  op2->set_isClassMember(TRUE);
+  op2->set_Description(" set if ${comment} generate Javadoc style comment\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java");
+  op2->add_param(0, InputDirection, "v", "bool"); 
+  op2->set_cpp("${type}", "${t0} ${p0}",
+		"  UmlCom::send_cmd(javaSettingsCmd, setJavaJavadocStyleCmd, v);\n"
+		"  if (UmlCom::read_bool()) {\n"
+		"    _is_generate_javadoc_comment = v;\n"
+		"    return TRUE;\n"
+		"  }\n"
+		"  else\n"
+		"    return FALSE;\n",
+		FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}",
+		"  UmlCom.send_cmd(CmdFamily.javaSettingsCmd, JavaSettingsCmd._setJavaJavadocStyleCmd,\n"
+		"		   (v) ? (byte) 1 : (byte) 0);\n"
+		"  UmlCom.check();\n"
+		"  _is_generate_javadoc_comment = v;\n",
+		FALSE);
+  op2->moveAfter(op);  
+  
+  //
+  
+  UmlClass * javasettingcmd = UmlClass::get("JavaSettingsCmd", 0);
+  
+  javasettingcmd->add_enum_item("setJavaJavadocStyleCmd");
+
+  //
+  
+  op = javasetting->get_operation("read_");
+
+  op->set_CppBody(op->cppBody() + 
+		  "  _is_generate_javadoc_comment = UmlCom::read_bool();\n");
+  op->set_JavaBody(op->javaBody() + 
+		   "  _is_generate_javadoc_comment = UmlCom.read_bool();\n");
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
+void add_constraint(UmlClass * baseclassmember)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("Upgrade class members<br>\n");
+  
+  //
+  
+  baseclassmember->add_attribute("_constraint", PrivateVisibility, "string",
+				 0, 0)
+    ->moveAfter(baseclassmember->get_attribute("_java_annotation"));
+  
+  UmlOperation * op;
+  UmlOperation * op1;
+  
+  defGet(baseclassmember, _constraint, constraint, "string", 0, 0,
+         "constraint");
+  op->moveAfter(baseclassmember->get_operation("set_JavaAnnotations"));
+  op1 = op;
+  defSet(baseclassmember, _constraint, set_Constraint, "str", setConstraintCmd, 0, 0,
+         "constraint");
+  op->moveAfter(op1);
+  
+  op = baseclassmember->get_operation("read_uml_");
+  op->set_CppBody(op->cppBody() + "  _constraint = UmlCom::read_string();\n");
+  op->set_JavaBody(op->javaBody() + "  _constraint = UmlCom.read_string();\n");
+  
+  //
+  
+  UmlClass::get("OnInstanceCmd", 0)->add_enum_item("setConstraintCmd");
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
+//
+// add UmlBaseItem::deleteIt
+//
+
+void add_deleteit(UmlClass * uml_base_item)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("Upgrade UmlBaseItem<br>\n");
+ 
+  //
+  
+  UmlOperation * op = uml_base_item->add_op("deleteIt", PublicVisibility, "bool", TRUE);
+  
+  op->set_Description(" remove the element from the model, use it carefully because\n"
+		      " after that the element can't be used anymore by the plug-out\n"
+		      "\n"
+		      " On error : return FALSE in C++, produce a RuntimeException in Java");
+  op->set_CppBody("  UmlCom::send_cmd(_identifier, deleteCmd);\n"
+		  "  if (UmlCom::read_bool() == 0) return FALSE;\n"
+		  "  parent()->unload(TRUE);\n"
+		  "  return TRUE;\n");
+  op->set_java("void", "",
+	       "  UmlCom.send_cmd(identifier_(), OnInstanceCmd.deleteCmd);\n"
+	       "  UmlCom.check();\n"
+	       "  parent().unload(true, false);\n"
+	       , FALSE);
+  op->moveAfter(uml_base_item->get_operation("unload"));
+
+  //
+  
+  UmlClass::get("OnInstanceCmd", 0)->add_enum_item("deleteCmd");
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}
 
 //
 //
@@ -6250,9 +6499,36 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
     
+    if (cppsetting->get_attribute("_is_generate_javadoc_comment") == 0)  {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      add_cpp_generate_javadoc_comment(cppsetting);
+      add_java_generate_javadoc_comment(UmlClass::get("JavaSettings", 0));
+
+      work = TRUE;
+    }    
+    
+    UmlClass * baseclassmember = UmlClass::get("UmlBaseClassMember", 0);
+    
+    if (baseclassmember->get_attribute("_constraint") == 0)  {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      add_constraint(baseclassmember);
+
+      work = TRUE;
+    }    
+    
+    if (uml_base_item->get_operation("deleteIt") == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      add_deleteit(uml_base_item);
+
+      work = TRUE;
+    }
+    
     if (work) {
       UmlCom::trace("update api version<br>\n");
-      update_api_version("29");
+      update_api_version("30");
       UmlCom::message("ask for save-as");
       QMessageBox::information(0, "Upgrade", 
 			       "Upgrade done\n\n"

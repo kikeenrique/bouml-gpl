@@ -10,7 +10,7 @@
 #include "UmlStereotype.h"
 bool CppSettings::useDefaults()
 {
-  UmlCom:: send_cmd(cppSettingsCmd, getCppUseDefaultsCmd);
+  UmlCom::send_cmd(cppSettingsCmd, getCppUseDefaultsCmd);
   return UmlCom::read_bool();
 }
 
@@ -261,8 +261,7 @@ bool CppSettings::set_IsRelativePath(bool v)
   UmlCom::send_cmd(cppSettingsCmd, setCppRelativePathCmd, v);
   if (UmlCom::read_bool()) {
     _is_relative_path = v;
-    if (_is_relative_path)
-      _is_root_relative_path = FALSE;
+    if (v) _is_root_relative_path = FALSE;
     return TRUE;
   }
   else
@@ -281,8 +280,7 @@ bool CppSettings::set_IsRootRelativePath(bool v)
   UmlCom::send_cmd(cppSettingsCmd, setCppRootRelativePathCmd, v);
   if (UmlCom::read_bool()) {
     _is_root_relative_path = v;
-    if (_is_root_relative_path)
-      _is_relative_path = FALSE;
+    if (v) _is_relative_path = FALSE;
     return TRUE;
   }
   else
@@ -301,6 +299,24 @@ bool CppSettings::set_IsForceNamespacePrefixGeneration(bool v)
   UmlCom::send_cmd(cppSettingsCmd, setCppForceNamespaceGenCmd, v);
   if (UmlCom::read_bool()) {
     _is_force_namespace_gen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool CppSettings::isGenerateJavadocStyleComment()
+{
+  read_if_needed_();
+
+  return _is_generate_javadoc_comment;
+}
+
+bool CppSettings::set_IsGenerateJavadocStyleComment(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppJavadocStyleCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_generate_javadoc_comment = v;
     return TRUE;
   }
   else
@@ -927,6 +943,8 @@ bool CppSettings::_is_root_relative_path;
 
 bool CppSettings::_is_force_namespace_gen;
 
+bool CppSettings::_is_generate_javadoc_comment;
+
 QDict<QCString> CppSettings::_map_includes;
 
 void CppSettings::read_()
@@ -1011,6 +1029,7 @@ void CppSettings::read_()
   _is_relative_path = UmlCom::read_bool();
   _is_force_namespace_gen = UmlCom::read_bool();
   _is_root_relative_path = UmlCom::read_bool();
+  _is_generate_javadoc_comment = UmlCom::read_bool();
 }
 
 void CppSettings::read_if_needed_()

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -79,19 +79,19 @@ void StringTable::button_pressed(int row, int col, int, const QPoint &) {
   if (col == numCols() - 1) {
     QString line;
     
-    line.sprintf("line %d", row + 1);
+    line.sprintf("row %d", row + 1);
     
     QPopupMenu m;
     m.insertItem(line, -1);
     m.insertSeparator();
-    m.insertItem("Insert line before", 0);
-    m.insertItem("Insert line after", 1);
+    m.insertItem("Insert row before", 0);
+    m.insertItem("Insert row after", 1);
     m.insertSeparator();
-    m.insertItem("Delete line", 2);
+    m.insertItem("Delete row", 2);
     m.insertSeparator();
-    m.insertItem("Copy line", 3);
-    m.insertItem("Cut line", 4);
-    m.insertItem("Paste line", 5);
+    m.insertItem("Copy row", 3);
+    m.insertItem("Cut row", 4);
+    m.insertItem("Paste row", 5);
     m.insertSeparator();
 
     QPopupMenu mv;
@@ -101,7 +101,7 @@ void StringTable::button_pressed(int row, int col, int, const QPoint &) {
       if (rank != row)
 	mv.insertItem(QString::number(rank + 1), 10 + rank);
     
-    m.insertItem("Move line", &mv);
+    m.insertItem("Move row", &mv);
     
     switch (rank = m.exec(QCursor::pos())) {
     case 0:

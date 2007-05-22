@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -24,4 +24,11 @@
 // *************************************************************************
 
 #include "UmlNcRelation.h"
+#include "UmlPackage.h"
 
+void UmlNcRelation::generate_import(QTextOStream & f, const QCString & indent) {
+  if ((relationKind() == aDependency) &&
+      (stereotype() == "import") &&
+      (target()->kind() == aPackage))
+    ((UmlPackage *) target())->import(f, indent);
+}

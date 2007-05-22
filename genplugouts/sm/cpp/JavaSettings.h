@@ -105,6 +105,14 @@ class JavaSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_SourceExtension(QCString v);
 
+    // return if  generate Javadoc style comment
+    static bool isGenerateJavadocStyleComment();
+
+    // set if  generate Javadoc style comment
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsGenerateJavadocStyleComment(bool v);
+
     // returns the default definition of a class
     static const QCString & classDecl();
 
@@ -123,10 +131,18 @@ class JavaSettings : public UmlSettings {
 
     // returns the default definition of an enumeration implemented
     // through an abstract class having constant attributes
-    static const QCString & enumDecl();
+    static const QCString & enumPatternDecl();
 
     // set the default definition of an enumeration implemented
     // through an abstract class having constant attributes
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_EnumPatternDecl(QCString v);
+
+    // returns the default definition of an enumeration
+    static QCString enumDecl();
+
+    // set the default definition of an enumeration
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_EnumDecl(QCString v);
@@ -148,24 +164,32 @@ class JavaSettings : public UmlSettings {
     static bool set_AttributeDecl(QCString v);
 
     // returns the default definition of an enumeration item
-    static const QCString & enumItemDecl();
+    static const QCString & enumPatternItemDecl();
 
     // set the default definition of an enumeration item
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_EnumItemDecl(QCString v);
+    static bool set_EnumPatternItemDecl(QCString v);
 
     //Returns the 'case' form produced in the fromInt operation
     //for each enumeration item
     
-    static const QCString & enumItemCase();
+    static const QCString & enumPatternItemCase();
 
     //  set the 'case' form produced in the fromInt operation
     //  for each enumeration item
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
     
-    static bool set_EnumItemCase(QCString v);
+    static bool set_EnumPatternItemCase(QCString v);
+
+    // returns the default definition of an enumeration item
+    static QCString enumItemDecl();
+
+    // set the default definition of an enumeration item
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_EnumItemDecl(QCString v);
 
     // returns the default definition of a relation depending on the
     // multiplicity given in argument.
@@ -268,15 +292,19 @@ class JavaSettings : public UmlSettings {
 
     static QCString _external_class_decl;
 
+    static QCString _enum_pattern_decl;
+
     static QCString _enum_decl;
 
     static QCString _interface_decl;
 
     static QCString _attr_decl;
 
-    static QCString _enum_item_decl;
+    static QCString _enum_pattern_item_decl;
 
-    static QCString _enum_item_case;
+    static QCString _enum_pattern_item_case;
+
+    static QCString _enum_item_decl;
 
     static QCString _rel_decl[3/*multiplicity*/];
 
@@ -299,6 +327,8 @@ class JavaSettings : public UmlSettings {
     static QCString _src_content;
 
     static QCString _ext;
+
+    static bool _is_generate_javadoc_comment;
 
     static QDict<QCString> _map_imports;
 

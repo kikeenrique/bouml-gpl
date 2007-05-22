@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -66,6 +66,7 @@ class ClassDialog : public QTabDialog {
     QGroupBox * opt_bg;
     QComboBox * artifact;
     MultiLineEdit * comment;
+    MultiLineEdit * constraint;
     FormalParamsTable * formals_table;
     QVBox * parametrized_vtab;
     BrowserNodeList nodes;
@@ -145,6 +146,7 @@ class ClassDialog : public QTabDialog {
     static void cpp_generate_members_def(const BrowserNode * cl, QString & s);
     
     static void post_edit_description(ClassDialog * d, QString s);
+    static void post_edit_constraint(ClassDialog * d, QString s);
     
     static QString cpp_stereotype(const QString & stereotype);
     static QString java_stereotype(const QString & stereotype);
@@ -155,6 +157,7 @@ class ClassDialog : public QTabDialog {
     void accept();
     void default_description();
     void edit_description();
+    void edit_constraint();
     void edStereotypeActivated(const QString &);
     void update_all_tabs(QWidget *);
     void cpp_update_decl();

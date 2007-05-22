@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -112,7 +112,7 @@ void UmlAttribute::generate_decl(aVisibility & current_visibility, QTextOStream 
     else if (*p != '$')
       f_h << *p++;
     else if (!strncmp(p, "${comment}", 10))
-      manage_comment(p, pp);
+      manage_comment(p, pp, CppSettings::isGenerateJavadocStyleComment());
     else if (!strncmp(p, "${description}", 14))
       manage_description(p, pp);
     else if (!strncmp(p, "${name}", 7)) {
@@ -229,10 +229,15 @@ void UmlAttribute::generate_def(QTextOStream & f, QCString indent, bool h,
 	    f << cl_names << "::";
 	  f << *p++;
 	}
-	else if (!strncmp(p, "${comment}", 10))
-	  manage_comment(p, pp);
-	else if (!strncmp(p, "${description}", 14))
-	  manage_description(p, pp);
+	else if (!strncmp(p, "${comment}", 10)) {
+	  if (!manage_comment(p, pp, CppSettings::isGenerateJavadocStyleComment())
+	      && re_template)
+	    f << templates;
+	}
+	else if (!strncmp(p, "${description}", 14)) {
+	  if (!manage_description(p, pp) && re_template)
+	    f << templates;
+	}
 	else if (!strncmp(p, "${name}", 7)) {
 	  if (*pname == '$')
 	    f << cl_names << "::";

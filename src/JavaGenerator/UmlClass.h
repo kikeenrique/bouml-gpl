@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,7 +35,6 @@ class QTextOStream;
 
 class UmlPackage;
 class UmlClass;
-//class JavaRefType;
 
 class UmlClass : public UmlBaseClass {
   private:
@@ -54,7 +53,9 @@ class UmlClass : public UmlBaseClass {
     virtual void generate_enum_pattern_item(QTextOStream &, int &, const QCString &, QCString);
     virtual void generate_enum_pattern_case(QTextOStream &, QCString);
     virtual void generate_enum_member(QTextOStream &, QCString);
+    virtual void generate_import(QTextOStream & f, const QCString & indent);    
     void generate_formals(QTextOStream & f);
+    void import(QTextOStream & f, const QCString & indent);
     
     void write(QTextOStream &);
     static void write(QTextOStream &, const UmlTypeSpec &);

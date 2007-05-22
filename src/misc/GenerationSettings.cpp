@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@ Builtin * GenerationSettings::builtins;
 QStringList GenerationSettings::umltypes;
 
 bool GenerationSettings::cpp_default_defs;
+bool GenerationSettings::cpp_javadoc_comment;
 SharedStr GenerationSettings::cpp_h_content;
 SharedStr GenerationSettings::cpp_src_content;
 QString GenerationSettings::cpp_in;
@@ -80,6 +81,7 @@ bool GenerationSettings::cpp_set_param_const;
 bool GenerationSettings::cpp_set_param_ref;
 
 bool GenerationSettings::java_default_defs;
+bool GenerationSettings::java_javadoc_comment;
 SharedStr GenerationSettings::java_src_content;
 SharedStr GenerationSettings::java_class_decl;
 SharedStr GenerationSettings::java_external_class_decl;
@@ -312,6 +314,7 @@ ${module_end}\n\
   cpp_relative_path = FALSE;
   cpp_root_relative_path = FALSE;
   cpp_force_namespace_gen = FALSE;
+  cpp_javadoc_comment = FALSE;
   
   java_class_decl = "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {\n${members}}\n";
   java_external_class_decl = "${name}";
@@ -344,6 +347,7 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   java_set_name = "set${Name}";
   java_set_final = FALSE;
   java_set_param_final = FALSE;
+  java_javadoc_comment = TRUE;
 
 #define  IDL_EXTERNAL_CLASS_DECL "${name}\n#include \"${name}.idl\"\n";
   idl_external_class_decl = IDL_EXTERNAL_CLASS_DECL;
@@ -774,8 +778,11 @@ void GenerationSettings::send_cpp_def(ToolCom * com)
     if (api_version >= 27) {
       com->write_bool(cpp_relative_path);
       com->write_bool(cpp_force_namespace_gen);
-      if (api_version >= 29)
+      if (api_version >= 29) {
 	com->write_bool(cpp_root_relative_path);
+	if (api_version >= 30)
+	  com->write_bool(cpp_javadoc_comment);
+      }
     }
   }
 }
@@ -864,6 +871,8 @@ void GenerationSettings::send_java_def(ToolCom * com)
   com->write_string(java_set_name);
   com->write_bool(java_set_final);
   com->write_bool(java_set_param_final);
+  if (api_version >= 30)
+    com->write_bool(java_javadoc_comment);
 }
 
 void GenerationSettings::send_idl_def(ToolCom * com)
@@ -1245,6 +1254,9 @@ bool GenerationSettings::tool_global_cpp_cmd(ToolCom * com,
       case setCppIsSetParamRefCmd:
 	cpp_set_param_ref = (*args != 0);
 	break;
+      case setCppJavadocStyleCmd:
+	cpp_javadoc_comment = (*args != 0);
+	break;
       default:
 	return FALSE;
       }
@@ -1383,6 +1395,9 @@ bool GenerationSettings::tool_global_java_cmd(ToolCom * com,
 	break;
       case setJavaIsSetParamFinalCmd:
 	java_set_param_final = (*args != 0);
+	break;
+      case setJavaJavadocStyleCmd:
+	java_javadoc_comment = (*args != 0);
 	break;
       default:
 	return FALSE;
@@ -1647,6 +1662,11 @@ void GenerationSettings::save()
     nl_indent(st);
     st << "cpp_force_namespace_gen";
   }
+  
+  if (cpp_javadoc_comment) {
+    nl_indent(st);
+    st << "cpp_javadoc_comment";
+  }
 
   st << '\n';
   nl_indent(st);
@@ -1819,6 +1839,10 @@ void GenerationSettings::save()
 
   save_includes_imports(cpp_includes, "cpp_includes");
     
+  if (!java_javadoc_comment) {
+    st << "java_no_javadoc_comment";
+    nl_indent(st);
+  }
   st << "java_default_src_content ";
   save_string(java_src_content, st);
   nl_indent(st);
@@ -2109,6 +2133,12 @@ void GenerationSettings::read(char * & st, char * & k)
   }
   else
     cpp_force_namespace_gen = FALSE;
+  if (!strcmp(k, "cpp_javadoc_comment")) {
+    cpp_javadoc_comment = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    cpp_javadoc_comment = FALSE;
 
   bool old_types = !strcmp(k, "types");
   bool new_types = !strcmp(k, "type_forms");
@@ -2323,6 +2353,12 @@ void GenerationSettings::read(char * & st, char * & k)
       k = read_keyword(st);
     }
     
+    if (!strcmp(k, "java_no_javadoc_comment")) {
+      java_javadoc_comment = FALSE;
+      k = read_keyword(st);
+    }
+    else
+      java_javadoc_comment = TRUE;
     if (!strcmp(k, "java_default_src_content")) {
       java_src_content = read_string(st);
       k = read_keyword(st);

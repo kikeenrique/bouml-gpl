@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -220,6 +220,17 @@ ClassDialog::ClassDialog(ClassData * c)
   comment->setReadOnly(visit);
   comment->setText(bn->get_comment());
   comment->setFont(font);
+  
+  vtab = new QVBox(grid);
+  new QLabel("constraint :", vtab);
+  if (! visit) {
+    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+	    this, SLOT(edit_constraint()));
+  }
+  constraint = new MultiLineEdit(grid);
+  constraint->setReadOnly(visit);
+  constraint->setText(c->constraint);
+  constraint->setFont(font);
   
   addTab(grid, "Uml");
   
@@ -565,6 +576,16 @@ void ClassDialog::post_edit_description(ClassDialog * d, QString s)
   d->comment->setText(s);
 }
 
+void ClassDialog::edit_constraint() {
+  edit(constraint->text(), edname->text().stripWhiteSpace() + "_constraint",
+       cl, TxtEdit, this, (post_edit) post_edit_constraint, edits);
+}
+
+void ClassDialog::post_edit_constraint(ClassDialog * d, QString s)
+{
+  d->constraint->setText(s);
+}
+
 void ClassDialog::edStereotypeActivated(const QString & s) {
   QString stereotype = s.stripWhiteSpace();
   
@@ -629,6 +650,20 @@ void ClassDialog::update_all_tabs(QWidget * w) {
   }
 }
 
+static void generate_mother(BrowserClass * mother, bool cpp, QString & s,
+			    ClassData * cl, ActualParamsTable * actuals_table,
+			    BrowserNodeList & nodes, QStringList & node_names)
+{
+  if (((BrowserNode *) mother->parent())->get_type() == UmlClass) {
+    generate_mother((BrowserClass *) mother->parent(), cpp,
+		    s, cl, actuals_table, nodes, node_names);
+    s += (cpp) ? "::" : ".";
+  }
+  s += mother->get_name();
+  if (actuals_table != 0)
+    actuals_table->generate(s, cl, mother, cpp, nodes, node_names);
+}
+
 static void cpp_generate_inherit(QString & s, ClassData * cl,
 				 ActualParamsTable * actuals_table,
 				 BrowserNodeList & nodes,
@@ -645,16 +680,12 @@ static void cpp_generate_inherit(QString & s, ClassData * cl,
     
     if (r->get_cppdecl_a()[0]) {
       s += sep;
+      sep = ", ";
       s += stringify((r->get_cpp_visibility_a() != UmlDefaultVisibility)
 		     ? r->get_cpp_visibility_a() : r->get_uml_visibility_a());
       s += ((r->get_cpp_virtual_inheritance()) ? " virtual " : " ");
       
-      BrowserClass * mother = r->get_end_class();
-      
-      s += mother->get_name();
-      sep = ", ";
-      if (actuals_table != 0)
-	actuals_table->generate(s, cl, mother, TRUE, nodes, node_names);
+      generate_mother(r->get_end_class(), TRUE, s, cl, actuals_table, nodes, node_names);
     }
     
     ++it;
@@ -957,7 +988,8 @@ void ClassDialog::cpp_generate_decl(QString & s, ClassData * cl,
     }
       
     if (!strncmp(p, "${comment}", 10))
-      manage_comment(comment, p, pp);
+      manage_comment(comment, p, pp,
+		     GenerationSettings::cpp_javadoc_style());
     else if (!strncmp(p, "${description}", 14))
       manage_description(comment, p, pp);
     else if (!strncmp(p, "${name}", 7)) {
@@ -1126,10 +1158,8 @@ static void java_generate_extends(QString & s, const QString & stereotype,
       }
       
       if (gen) {
-	s += mother->get_name();
 	sep = ", ";
-	if (actuals_table != 0)
-	  actuals_table->generate(s, cl, mother, FALSE, nodes, node_names);
+	generate_mother(mother, FALSE, s, cl, actuals_table, nodes, node_names);
       }
     }
     
@@ -1163,10 +1193,8 @@ static void java_generate_implements(QString & s, const QString & stereotype,
 	if ((stereotype == "union") || (stereotype == "enum_pattern"))
 	  s += "!!!!!";
 	
-	s += mother->get_name();
 	sep = ", ";
-	if (actuals_table != 0)
-	  actuals_table->generate(s, cl, mother, FALSE, nodes, node_names);
+	generate_mother(mother, FALSE, s, cl, actuals_table, nodes, node_names);
       }
     }
     
@@ -1213,7 +1241,8 @@ void ClassDialog::java_generate_decl(QString & s, ClassData * cl, QString def,
     }
       
     if (!strncmp(p, "${comment}", 10))
-      manage_comment(comment, p, pp);
+      manage_comment(comment, p, pp,
+		     GenerationSettings::java_javadoc_style());
     else if (!strncmp(p, "${description}", 14))
       manage_description(comment, p, pp);
     else if (!strncmp(p, "${public}", 9)) {
@@ -1449,7 +1478,7 @@ void ClassDialog::idl_generate_decl(QString & s, ClassData * cl, QString def,
     }
       
     if (!strncmp(p, "${comment}", 10))
-      manage_comment(comment, p, pp);
+      manage_comment(comment, p, pp, FALSE);
     else if (!strncmp(p, "${description}", 14))
       manage_description(comment, p, pp);
     else if (!strncmp(p, "${abstract}", 11)) {
@@ -1615,6 +1644,8 @@ void ClassDialog::accept() {
   bn->set_comment(comment->text());
   UmlWindow::set_commented(bn);
   
+  cl->constraint = constraint->stripWhiteSpaceText();
+  
   cl->cpp_external = cpp_external_cb->isChecked();
   cl->cpp_decl = edcppdecl->text();
   if (bn->nestedp())
@@ -1751,7 +1782,7 @@ void FormalParamsTable::value_changed(int row, int col) {
 
 void FormalParamsTable::button_pressed(int row, int col, int, const QPoint &) {
   if (col == 4) {
-    char s[16];
+    char s[20];
     
     sprintf(s, "formal param %d", row + 1);
     

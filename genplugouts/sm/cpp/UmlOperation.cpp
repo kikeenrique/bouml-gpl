@@ -12,6 +12,8 @@ void UmlOperation::defaultDef() {
     set_CppDef("");
   else if (cppDef().isEmpty())
     set_CppDef(CppSettings::operationDef());
+
+  setUsed();
 }
 
 void UmlOperation::setType(const char * type, const char * s) {

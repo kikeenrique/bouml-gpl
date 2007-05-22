@@ -83,6 +83,7 @@ void UmlState::init(UmlClass * mother, QCString path, UmlState *) {
 		  + "' under '" + mother->name() + "'<br>");
     throw 0;
   }
+  var->setUsed();
 
   UmlTypeSpec t;
   
@@ -108,13 +109,6 @@ void UmlState::generate() {
   if (parent()->kind() != aClassView)
     UmlCom::trace("Error : must be applied on a state machine<br>");
   else {
-#warning mark
-    // unmark all items, the mark will be used to indicate useless items
-    const QVector<UmlItem> v = markedItems();
-    
-    for (unsigned index = v.count(); index != 0; index -= 1)
-      v[index - 1]->set_isMarked(FALSE);
-    
     // a class having the normalized name of the state machine 
     // implements it in the class view of the state machine
     QCString qn = quotedName();
@@ -127,6 +121,7 @@ void UmlState::generate() {
 		    + parent()->name() + "'<br>");
       return;
     }
+    machine->setUseless();
     machine->defaultDef();
     machine->setComment("implement the state machine " + name());
     
@@ -263,6 +258,9 @@ void UmlState::generate() {
     current_state->set_CppDecl(CppSettings::relationDecl(FALSE, ""));
     current_state->setComment("contains the surrent state, internal");
     current_state->set_Visibility(ProtectedVisibility);
+    
+    // all done
+    machine->deleteUseless();
   }
 }
 

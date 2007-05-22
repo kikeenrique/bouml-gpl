@@ -145,12 +145,12 @@ class CppSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_IsRelativePath(bool v);
 
-    // return if a project root relative path must be used when the path
-    // must be generated in the produced #includes
+    // return if a path relative to the project root must be used
+    // when the path must be generated in the produced #includes
     static bool isRootRelativePath();
 
-    // set if a project root relative path must be used when the path
-    // must be generated in the produced #includes
+    // set if a relative to the project root path must be used
+    // when the path must be generated in the produced #includes
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_IsRootRelativePath(bool v);
@@ -163,6 +163,14 @@ class CppSettings : public UmlSettings {
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_IsForceNamespacePrefixGeneration(bool v);
+
+    // return if  generate Javadoc style comment
+    static bool isGenerateJavadocStyleComment();
+
+    // set if  generate Javadoc style comment
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsGenerateJavadocStyleComment(bool v);
 
     // returns the default operation 'in' parameter specification 
     // in case its type is an enum
@@ -536,6 +544,8 @@ class CppSettings : public UmlSettings {
     static bool _is_root_relative_path;
 
     static bool _is_force_namespace_gen;
+
+    static bool _is_generate_javadoc_comment;
 
     static QDict<QCString> _map_includes;
 

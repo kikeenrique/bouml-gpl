@@ -6,7 +6,7 @@
 }
 
 void UmlItem::sort() {
-  UmlCom::message("target not allowed, must be a <i>package</i>, any <i>view</i> or a <i>use case</i>");
+  UmlCom::trace("target not allowed, must be a <i>package</i>, any <i>view</i> or a <i>use case</i>");
 }
 
 int UmlItem::orderWeight() {

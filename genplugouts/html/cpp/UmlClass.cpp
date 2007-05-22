@@ -102,7 +102,7 @@ void UmlClass::gen_html(QCString pfix, unsigned int rank, unsigned int level) {
   
   write_dependencies();
 
-  annotation();
+  annotation_constraint();
  
   s = description();
   

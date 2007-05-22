@@ -110,7 +110,7 @@ void UmlPackage::xmi(int argc, char ** argv) {
 <XMI.header>\n\
 	<XMI.documentation>\n\
 		<XMI.exporter>Bouml</XMI.exporter>\n\
-		<XMI.exporterVersion>1.4.3</XMI.exporterVersion>\n\
+		<XMI.exporterVersion>1.4.4</XMI.exporterVersion>\n\
 	</XMI.documentation>\n\
 	<XMI.metamodel XMI.name=\"UML\" XMI.version=\"1.4\"/>\n\
 </XMI.header>\n\

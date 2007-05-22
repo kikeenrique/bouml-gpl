@@ -64,7 +64,7 @@ void UmlRelation::html(QCString, unsigned int, unsigned int) {
 
   fw.write("</ul>");
   
-  annotation();
+  annotation_constraint();
  
   s = description();
 

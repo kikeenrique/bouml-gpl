@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -61,6 +61,7 @@ class GenerationSettingsDialog : public QTabDialog {
     QComboBox * edcpp_src_extension;
     QComboBox * cpp_include_with_path_cb;
     QCheckBox * cpp_force_namespace_gen_cb;
+    QCheckBox * cpp_javadoc_cb;
     LineEdit * cpp_enum_in;
     LineEdit * cpp_enum_out;
     LineEdit * cpp_enum_inout;
@@ -98,6 +99,7 @@ class GenerationSettingsDialog : public QTabDialog {
     // Java specific
     MultiLineEdit * edjava_src_content;
     QComboBox * edjava_extension;
+    QCheckBox * java_javadoc_cb;
     MultiLineEdit * edjava_class_decl;
     LineEdit * edjava_external_class_decl;
     MultiLineEdit * edjava_interface_decl;

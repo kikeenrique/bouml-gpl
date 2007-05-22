@@ -8,5 +8,5 @@ tool "HTML documentation" "ghtml" Project Package UseCaseView ClassView Componen
 tool "Import Rose" "irose" Project Package
 tool "Generate XMI" "gxmi" Project
 tool "Use case wizard" "usecasewizard" UseCase
-tool "Sort (C++)" "/tmp/sort/cpp/browsersort" Project Package UseCaseView ClassView ComponentView DeploymentView UseCase
-tool "Sort (Java)" "java -cp /tmp/sort/java Main" Project Package UseCaseView ClassView ComponentView DeploymentView UseCase
+tool "Sort (C++)" "/tmp/sort/cpp/browsersort" Project Package UseCaseView ClassView ComponentView DeploymentView ClassDiagram UseCase
+tool "Sort (Java)" "java -cp /tmp/sort/java Main" Project Package UseCaseView ClassView ComponentView DeploymentView UseCaseDiagram ClassDiagram UseCase

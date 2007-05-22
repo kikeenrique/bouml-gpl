@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,11 +35,11 @@ class UmlAttribute : public UmlBaseAttribute {
     UmlAttribute(void * id, const QCString & n)
       :  UmlBaseAttribute(id, n) {};
 
-    //virtual void compute_dependency(QList<JavaRefType> & dependency, QCString cl_stereotype);
     virtual void generate(QTextOStream & f, const QCString & cl_stereotype,
 			  QCString indent);
     virtual void generate_enum_pattern_item(QTextOStream & f, int & current_value,
-					    const QCString & class_name, QCString indent);
+					    const QCString & class_name,
+					    QCString indent);
     virtual void generate_enum_pattern_case(QTextOStream & f, QCString indent);
     virtual void generate_enum_item(QTextOStream & f, QCString indent, bool & first);
     virtual void generate_enum_member(QTextOStream & f, QCString indent);

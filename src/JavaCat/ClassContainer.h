@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,7 +45,9 @@ class ClassContainer {
     bool read_type(UmlTypeSpec & typespec, Class ** cl, 
 		   const QValueList<FormalParameterList> & tmplts,
 		   QValueList<UmlTypeSpec> * actuals, 
-		   QCString & str_actual, QCString s);
+		   QCString & str_actual, QCString s,
+		   UmlClass ** first_actual_class, QCString & def,
+		   QCString & genericname);
     bool bypass_type(QCString s);
 
   protected:

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,6 +44,7 @@ class ClassData : public BasicData {
   friend class ActualParamsTable;
     
   protected:
+    MyStr constraint;
     FormalParamData * formals;		// remark : do NOT use QArray
     QList<ActualParamData> actuals;
     AType base_type;			// typedef
@@ -80,6 +81,10 @@ class ClassData : public BasicData {
     virtual void send_java_def(ToolCom * com);
     virtual void send_idl_def(ToolCom * com);
     
+    void update_actuals(BrowserClass *,
+			QList<ActualParamData> & new_actuals,
+			QList<ActualParamData> & managed);
+    
   public:
     ClassData();
     ClassData(const ClassData * model, BrowserNode * bn);
@@ -89,6 +94,8 @@ class ClassData : public BasicData {
     virtual void set_deletedp(bool y);
     
     void edit();
+    
+    const char * get_constraint() const { return constraint; };
     
     bool get_is_abstract() const { return is_abstract; };
     void set_is_abstract(bool yes);

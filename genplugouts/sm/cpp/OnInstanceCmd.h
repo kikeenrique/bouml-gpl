@@ -24,6 +24,7 @@ enum OnInstanceCmd {
   javaBodyCmd,
   applyCmd,
   referencedByCmd,
+  sideCmd,
   firstSetCmd = 50,// just a mark
 
   createCmd,
@@ -120,7 +121,23 @@ enum OnInstanceCmd {
   setJavaGuardCmd,
   setJavaTriggerCmd,
   setDefCmd,
-  moveAfterCmd
+  moveAfterCmd,
+  setJavaAnnotationCmd,
+  setRelationAssocClassCmd,
+  setReadOnlyCmd,
+  setSingleExecutionCmd,
+  setUnmarshallCmd,
+  setTimeEventCmd,
+  setFlagCmd,
+  setUniqueCmd,
+  setStreamCmd,
+  setInStateCmd,
+  setOrderingCmd,
+  setCppFrozenCmd,
+  setJavaFrozenCmd,
+  setIdlFrozenCmd,
+  setConstraintCmd,
+  deleteCmd
 
 };
 #endif

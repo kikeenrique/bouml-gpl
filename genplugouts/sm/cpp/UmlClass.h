@@ -16,6 +16,7 @@ class UmlClass : public UmlBaseClass {
     UmlClass(void * id, const QCString & n) : UmlBaseClass(id, n) {};
 
     //  set default C++/Java definition if needed
+    //  set it usefull
     void defaultDef();
 
     //  add a trigger, returns the one for the class

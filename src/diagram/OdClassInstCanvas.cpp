@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -57,29 +57,25 @@ OdClassInstCanvas::OdClassInstCanvas(BrowserClass * t, UmlCanvas * canvas,
   compute_size();	// update used_settings
   set_center100();
   
-  connect(cl->get_data(), SIGNAL(changed()), this, SLOT(modified()));
-  connect(cl->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
+  BasicData * d = cl->get_data();
+  
+  connect_list.append(d);
+  connect(d, SIGNAL(changed()), this, SLOT(modified()));
+  connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
 
 OdClassInstCanvas::~OdClassInstCanvas() {
-  disconnect(cl->get_data(), 0, this, 0);
-  disconnect(DrawingSettings::instance(), SIGNAL(changed()),
-	     this, SLOT(modified()));
-  disconnect_attributes();
-}
-
-void OdClassInstCanvas::disconnect_attributes() {
-  AttributeData * d;
-  
-  for (d = attributes.first(); d!= 0; d = attributes.next())
-    disconnect(d, 0, this, 0);
 }
 
 void OdClassInstCanvas::delete_it() {
-  disconnect(cl->get_data(), 0, this, 0);
   disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
-  disconnect_attributes();
+  
+  BasicData * d;
+  
+  for (d = connect_list.first(); d!= 0; d = connect_list.next())
+    disconnect(d, 0, this, 0);
+
   DiagramCanvas::delete_it();
 }
 
@@ -189,9 +185,10 @@ void OdClassInstCanvas::modified() {
   }
 }
 
-void OdClassInstCanvas::check_attributes() {
-  disconnect_attributes();
 
+// warning : don't remove connect because may be called 
+// during connexion list use
+void OdClassInstCanvas::check_attributes() {
   if (! attributes.isEmpty()) {
     QList<BrowserClass> l;
     
@@ -212,8 +209,14 @@ void OdClassInstCanvas::check_attributes() {
 	it_val = values.remove(it_val);
       }
       else {
-	connect(d, SIGNAL(changed()), this, SLOT(modified()));
-	connect(d, SIGNAL(deleted()), this, SLOT(modified()));
+	// change on attribute modify class => memorize classes only
+	BasicData * cld = ((BrowserNode *) att->parent())->get_data();
+	
+	if (connect_list.findRef(cld) == -1) {
+	  connect_list.append(cld);
+	  connect(cld, SIGNAL(changed()), this, SLOT(modified()));
+	  connect(cld, SIGNAL(deleted()), this, SLOT(modified()));
+	}
 	
 	d = attributes.next();
 	++it_val;
@@ -494,15 +497,24 @@ void OdClassInstCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
 
 void OdClassInstCanvas::set_type(BrowserClass * t) {
   if (t != cl) {
-    disconnect(cl->get_data(), 0, this, 0);
     cl = t;
-    connect(cl->get_data(), SIGNAL(changed()), this, SLOT(modified()));
-    connect(cl->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
+    
+    BasicData * d = cl->get_data();
+    
+    if (connect_list.findRef(d) == -1) {
+      connect_list.append(d);
+      connect(d, SIGNAL(changed()), this, SLOT(modified()));
+      connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
+    }
   }
 }
 
 BrowserNode * OdClassInstCanvas::the_diagram() const {
   return browser_node;
+}
+
+void OdClassInstCanvas::delete_available(bool &, bool & out_model) const {
+  out_model |= TRUE;
 }
 
 bool OdClassInstCanvas::alignable() const {
@@ -520,7 +532,7 @@ const char * OdClassInstCanvas::may_start(UmlCode &) const {
 
 const char * OdClassInstCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   return ((dest->type() == UmlClass)
-	  ? ((l == UmlObjectLink) || IsaRelation(l))
+	  ? ((l == UmlObjectLink) || (l == UmlAnchor) || IsaRelation(l))
 	  : (l == UmlAnchor))
     ? 0 : "illegal";
 }
@@ -631,7 +643,7 @@ OdClassInstCanvas * OdClassInstCanvas::read(char * & st, UmlCanvas * canvas,
     if (!strcmp(k, "values")) {
       while (strcmp(k = read_keyword(st), "end") &&
 	     strcmp(k, "xyz")) {	// old version
-	BrowserAttribute * a = BrowserAttribute::read(st, k, 0);
+	BrowserAttribute * a = BrowserAttribute::read(st, k, 0, FALSE);
 	QString s = read_string(st);
 	
 	if (a != 0) {
@@ -660,13 +672,22 @@ OdClassInstCanvas * OdClassInstCanvas::read(char * & st, UmlCanvas * canvas,
 
 void OdClassInstCanvas::history_hide() {
   QCanvasItem::setVisible(FALSE);
-  disconnect(browser_node->get_data(), 0, this, 0);
   disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
+  
+  BasicData * d;
+  
+  for (d = connect_list.first(); d!= 0; d = connect_list.next())
+    disconnect(d, 0, this, 0);
 }
 
 void OdClassInstCanvas::history_load(QBuffer & b) {
   DiagramCanvas::history_load(b);
-  connect(browser_node->get_data(), SIGNAL(changed()), this, SLOT(modified()));
-  connect(browser_node->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
+  
+  BasicData * d;
+  
+  for (d = connect_list.first(); d!= 0; d = connect_list.next()) {
+    connect(d, SIGNAL(changed()), this, SLOT(modified()));
+    connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
+  }
 }

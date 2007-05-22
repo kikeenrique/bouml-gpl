@@ -28,7 +28,7 @@ bool UmlCom::connect(unsigned int port)
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(16);
+    write_unsigned(30);
     flush();
     return TRUE;
   }
@@ -45,6 +45,16 @@ UmlItem * UmlCom::targetItem()
 void UmlCom::trace(const char * s)
 {
   send_cmd(miscGlobalCmd, traceCmd, s);
+}
+
+void UmlCom::showTrace()
+{
+  send_cmd(miscGlobalCmd, showTraceCmd);
+}
+
+void UmlCom::traceAutoRaise(bool y)
+{
+  send_cmd(miscGlobalCmd, traceAutoRaiseCmd, (y == 0) ? 0 : 1);
 }
 
 void UmlCom::message(const char * s)
@@ -453,10 +463,10 @@ void UmlCom::send_cmd(const void * id, OnInstanceCmd cmd, unsigned int arg1, con
   flush();
 }
 
-void UmlCom::send_cmd(const void * id, OnInstanceCmd cmd, unsigned int arg1, const char * arg2, const char * arg3, const UmlTypeSpec & arg4)
+void UmlCom::send_cmd(const void * id, OnInstanceCmd cmd, unsigned int arg1, const char * arg2, const char * arg3, const UmlTypeSpec & arg4, const UmlTypeSpec & arg5)
 {
-#ifdef TRACE
-  cout << "UmlCom::send_cmd(id, " << cmd << ", " << arg1 << ", " << ((arg2) ? arg2 : "") << ", " << ((arg3) ? arg3 : "") << ", " << ", UmlTypeSpec)\n";
+#ifdef DEBUGBOUML
+  cout << "UmlCom::send_cmd(id, " << cmd << ", " << arg1 << \", \"" << arg2 << "\", \"" << arg3 << "\", " << ", UmlTypeSpec, UmlTypeSpec)\n";
 #endif
   
   write_char(onInstanceCmd);
@@ -473,9 +483,16 @@ void UmlCom::send_cmd(const void * id, OnInstanceCmd cmd, unsigned int arg1, con
     write_id(0);
     write_string(arg4.explicit_type);
   }
+  if (arg5.type) {
+    write_id(arg5.type->_identifier);
+    write_string("");
+  }
+  else {
+    write_id(0);
+    write_string(arg5.explicit_type);
+  }
   flush();
 }
-
 void UmlCom::send_cmd(const void * id, OnInstanceCmd cmd, unsigned int arg1, char arg2, const char * arg3, const char * arg4, const UmlTypeSpec & arg5)
 {
 #ifdef TRACE
@@ -500,10 +517,10 @@ void UmlCom::send_cmd(const void * id, OnInstanceCmd cmd, unsigned int arg1, cha
   flush();
 }
 
-void UmlCom::send_cmd(const void * id, OnInstanceCmd cmd, const QVector<UmlClass> & l)
+void UmlCom::send_cmd(const void * id, OnInstanceCmd cmd, const QVector<UmlItem> & l)
 {
 #ifdef TRACE
-  cout << "UmlCom::send_cmd(id, " << cmd << ", const QVector<UmlClass> & l)\n";
+  cout << "UmlCom::send_cmd(id, " << cmd << ", const QVector<UmlItem> & l)\n";
 #endif
   
   write_char(onInstanceCmd);

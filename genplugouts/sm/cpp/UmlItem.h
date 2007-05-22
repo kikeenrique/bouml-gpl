@@ -15,7 +15,7 @@ class UmlState;
 // You can modify it as you want (except the constructor)
 class UmlItem : public UmlBaseItem {
   public:
-    UmlItem(void * id, const QCString & n) : UmlBaseItem(id, n), _used(FALSE) {};
+    UmlItem(void * id, const QCString & n) : UmlBaseItem(id, n) {};
 
     virtual ~UmlItem();
 
@@ -41,16 +41,20 @@ class UmlItem : public UmlBaseItem {
     
     virtual void generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QCString & body, QCString indent);
 
-
-  protected:
-    //  to know if the item is still necessary
-    bool _used;
-
-
-  public:
     //  does nothing at this level
     
     virtual void setComment(QCString s);
+
+    // if the element was produced by a previous use of the plug-out mark it useless to may delete it at end
+    // iterate on children
+    void setUseless();
+
+    //  mark the element  is usefull
+    void setUsed();
+
+    //delete useless classes, operations and attributes
+    
+    virtual void deleteUseless();
 
 };
 

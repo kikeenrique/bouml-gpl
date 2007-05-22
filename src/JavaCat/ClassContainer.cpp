@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,15 +33,17 @@ ClassContainer::~ClassContainer() {
 
 // on exit t.explicit_type is non empty if
 // the type is ...<...>... ie *cl and typespec.type are wrong
+//
+// if first_actual_class is != 0 this means the template class
+// is unknown, and first_actual_class is the first known class
+// among actuals, def is genericname<...${type}...>
 
 bool ClassContainer::read_type(UmlTypeSpec & typespec, Class ** cl, 
 			       const QValueList<FormalParameterList> & tmplts,
 			       QValueList<UmlTypeSpec> * actuals,
-			       QCString & str_actuals, QCString s) {
-  QCString path; // type without <..>
-  QCString type; // real type form
-  bool internal_template = FALSE;
-  
+			       QCString & str_actuals, QCString s,
+			       UmlClass ** first_actual_class, QCString & def,
+			       QCString & genericname) {
   str_actuals = 0;
   if (actuals != 0)
     actuals->clear();
@@ -51,6 +53,14 @@ bool ClassContainer::read_type(UmlTypeSpec & typespec, Class ** cl,
     return FALSE;
   }
     
+  QCString path; // type without <..>
+  QCString type; // real type form
+  bool internal_template = FALSE;	// true if type is ...<...>...
+  int pfixdef_length;			// generic form including first class
+  int first_actual_class_length;	// first class's name length
+  
+  genericname = s;
+  
   for (;;) {
     internal_template = (path != type);
     
@@ -65,10 +75,13 @@ bool ClassContainer::read_type(UmlTypeSpec & typespec, Class ** cl,
     type += s;
     str_actuals = s;
     
+    // read <...>
     do {
       Lex::mark();
       
       int level = 0;
+      QCString firstword;	// first element in current actual
+      int pfixlen;		// type length including firstword
       
       for (;;) {
 	s = Lex::read_word(TRUE);
@@ -89,6 +102,10 @@ bool ClassContainer::read_type(UmlTypeSpec & typespec, Class ** cl,
 	  Lex::premature_eof();
 	  return FALSE;
 	}
+	else if (firstword.isEmpty()) {
+	  firstword = s;
+	  pfixlen = type.length() + Lex::region().length();
+	}
       }
       
       QCString e = Lex::region();
@@ -103,9 +120,21 @@ bool ClassContainer::read_type(UmlTypeSpec & typespec, Class ** cl,
 	e = e.stripWhiteSpace();
 	if (! e.isEmpty())
 	  compute_type(e, t, tmplts);
-	actuals->append(t);
+	if (actuals != 0)
+	  actuals->append(t);
       }
-      
+      else if ((first_actual_class != 0) &&
+	       (*first_actual_class == 0) && 
+	       !firstword.isEmpty()) {
+	UmlTypeSpec t;
+	
+	compute_type(firstword, t, tmplts);
+	if (t.type != 0) {
+	  *first_actual_class = t.type;
+	  first_actual_class_length = firstword.length();
+	  pfixdef_length = pfixlen - first_actual_class_length;
+	}
+      }
     } while (s == ",");
     
     s = Lex::read_word();
@@ -124,6 +153,10 @@ bool ClassContainer::read_type(UmlTypeSpec & typespec, Class ** cl,
     if (internal_template)
       // typespec.type stay unchanged
       typespec.explicit_type = type;
+  }
+  else if ((first_actual_class != 0) && (*first_actual_class != 0)) {
+    def = type.left(pfixdef_length) + "${type}" + 
+      type.mid(pfixdef_length+first_actual_class_length);
   }
   else
     // path may be not good

@@ -224,6 +224,15 @@ class UmlBaseItem
 
     _children = null;
   }
+!!!198016.cpp!!!	deleteIt() : bool
+  UmlCom::send_cmd(_identifier, deleteCmd);
+  if (UmlCom::read_bool() == 0) return FALSE;
+  parent()->unload(TRUE);
+  return TRUE;
+!!!198016.java!!!	deleteIt() : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.deleteCmd);
+  UmlCom.check();
+  parent().unload(true, false);
 !!!23808.cpp!!!	isToolRunning(in id : int) : bool
   UmlCom::send_cmd(miscGlobalCmd, toolRunningCmd, id);
   return UmlCom::read_bool();
@@ -565,6 +574,72 @@ class UmlBaseItem
       return new UmlForkPseudoState(id);
     case aJoinPseudoState:
       return new UmlJoinPseudoState(id);
+    case anObjectDiagram:
+      return new UmlObjectDiagram(id, name);
+    case anActivityDiagram:
+      return new UmlActivityDiagram(id, name);
+        case anActivity:
+      return new UmlActivity(id, name);
+    case aFlow:
+      return new UmlFlow(id, name);
+    case anActivityParameter:
+      return new UmlActivityParameter(id, name);
+    case aParameterSet:
+      return new UmlParameterSet(id, name);
+    case anExpansionRegion:
+      return new UmlExpansionRegion(id, name);
+    case anInterruptibleActivityRegion:
+      return new UmlInterruptibleActivityRegion(id, name);
+    case anOpaqueAction:
+      return new UmlOpaqueAction(id, name);
+    case anAcceptEventAction:
+      return new UmlAcceptEventAction(id, name);
+    case aReadVariableValueAction:
+      return new UmlReadVariableValueAction(id, name);
+    case aClearVariableValueAction:
+      return new UmlClearVariableValueAction(id, name);
+    case aWriteVariableValueAction:
+      return new UmlWriteVariableValueAction(id, name);
+    case anAddVariableValueAction:
+      return new UmlAddVariableValueAction(id, name);
+    case aRemoveVariableValueAction:
+      return new UmlRemoveVariableValueAction(id, name);
+    case aCallBehaviorAction:
+      return new UmlCallBehaviorAction(id, name);
+    case aCallOperationAction:
+      return new UmlCallOperationAction(id, name);
+    case aSendObjectAction:
+      return new UmlSendObjectAction(id, name);
+    case aSendSignalAction:
+      return new UmlSendSignalAction(id, name);
+    case aBroadcastSignalAction:
+      return new UmlBroadcastSignalAction(id, name);
+    case anUnmarshallAction:
+      return new UmlUnmarshallAction(id, name);
+    case aValueSpecificationAction:
+      return new UmlValueSpecificationAction(id, name);
+    case anActivityObject:
+      return new UmlActivityObject(id, name);
+    case anExpansionNode:
+      return new UmlExpansionNode(id, name);
+    case anActivityPin:
+      return new UmlActivityPin(id, name);
+    case anInitialActivityNode:
+      return new UmlInitialActivityNode(id, name);
+    case aFlowFinalActivityNode:
+      return new UmlFlowFinalActivityNode(id, name);
+    case anActivityFinalActivityNode:
+      return new UmlActivityFinalActivityNode(id, name);
+    case aDecisionActivityNode:
+      return new UmlDecisionActivityNode(id, name);
+    case aMergeActivityNode:
+      return new UmlMergeActivityNode(id, name);
+    case aForkActivityNode:
+      return new UmlForkActivityNode(id, name);
+    case aJoinActivityNode:
+      return new UmlJoinActivityNode(id, name);
+    case aPartition:
+      //return new UmlPartition(id, name);
     default:
       UmlCom::bye();
       UmlCom::fatal_error(QCString("unknown item type ") + QCString().setNum(kind));
@@ -659,6 +734,72 @@ class UmlBaseItem
       return new UmlForkPseudoState(id);
     case anItemKind._aJoinPseudoState:
       return new UmlJoinPseudoState(id);
+    case anItemKind._anObjectDiagram:
+      return new UmlObjectDiagram(id, name);
+    case anItemKind._anActivityDiagram:
+      return new UmlActivityDiagram(id, name);
+        case anItemKind._anActivity:
+      return new UmlActivity(id, name);
+    case anItemKind._aFlow:
+      return new UmlFlow(id, name);
+    case anItemKind._anActivityParameter:
+      return new UmlActivityParameter(id, name);
+    case anItemKind._aParameterSet:
+      return new UmlParameterSet(id, name);
+    case anItemKind._anExpansionRegion:
+      return new UmlExpansionRegion(id, name);
+    case anItemKind._anInterruptibleActivityRegion:
+      return new UmlInterruptibleActivityRegion(id, name);
+    case anItemKind._anOpaqueAction:
+      return new UmlOpaqueAction(id, name);
+    case anItemKind._anAcceptEventAction:
+      return new UmlAcceptEventAction(id, name);
+    case anItemKind._aReadVariableValueAction:
+      return new UmlReadVariableValueAction(id, name);
+    case anItemKind._aClearVariableValueAction:
+      return new UmlClearVariableValueAction(id, name);
+    case anItemKind._aWriteVariableValueAction:
+      return new UmlWriteVariableValueAction(id, name);
+    case anItemKind._anAddVariableValueAction:
+      return new UmlAddVariableValueAction(id, name);
+    case anItemKind._aRemoveVariableValueAction:
+      return new UmlRemoveVariableValueAction(id, name);
+    case anItemKind._aCallBehaviorAction:
+      return new UmlCallBehaviorAction(id, name);
+    case anItemKind._aCallOperationAction:
+      return new UmlCallOperationAction(id, name);
+    case anItemKind._aSendObjectAction:
+      return new UmlSendObjectAction(id, name);
+    case anItemKind._aSendSignalAction:
+      return new UmlSendSignalAction(id, name);
+    case anItemKind._aBroadcastSignalAction:
+      return new UmlBroadcastSignalAction(id, name);
+    case anItemKind._anUnmarshallAction:
+      return new UmlUnmarshallAction(id, name);
+    case anItemKind._aValueSpecificationAction:
+      return new UmlValueSpecificationAction(id, name);
+    case anItemKind._anActivityObject:
+      return new UmlActivityObject(id, name);
+    case anItemKind._anExpansionNode:
+      return new UmlExpansionNode(id, name);
+    case anItemKind._anActivityPin:
+      return new UmlActivityPin(id, name);
+    case anItemKind._anInitialActivityNode:
+      return new UmlInitialActivityNode(id, name);
+    case anItemKind._aFlowFinalActivityNode:
+      return new UmlFlowFinalActivityNode(id, name);
+    case anItemKind._anActivityFinalActivityNode:
+      return new UmlActivityFinalActivityNode(id, name);
+    case anItemKind._aDecisionActivityNode:
+      return new UmlDecisionActivityNode(id, name);
+    case anItemKind._aMergeActivityNode:
+      return new UmlMergeActivityNode(id, name);
+    case anItemKind._aForkActivityNode:
+      return new UmlForkActivityNode(id, name);
+    case anItemKind._aJoinActivityNode:
+      return new UmlJoinActivityNode(id, name);
+    case anItemKind._aPartition:
+      //return new UmlPartition(id, name);
     default:
       UmlCom.bye();
       UmlCom.fatal_error(new String("unknown item type ") + String.valueOf(kind));

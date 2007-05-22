@@ -6,6 +6,7 @@
 #include "anItemKind.h"
 #include "UmlTypeSpec.h"
 #include <qvaluelist.h>
+#include <qvector.h>
 #include <qcstring.h>
 #include <qdict.h>
 
@@ -96,10 +97,9 @@ class UmlBaseClass : public UmlClassMember {
     // setAssociatedClasses()
     UmlArtifact * associatedArtifact();
 
-    // returns the optional associated component realizing or 
-    // providing the class. to set it refer to the UmlBaseComponent's
-    // operation setAssociatedClasses()
-    UmlComponent * associatedComponent();
+    // returns the components realizing or providing the class.
+    // To set them refer to the UmlBaseComponent's operation setAssociatedClasses()
+    const QVector<UmlComponent> associatedComponents();
 
 #ifdef WITHCPP
     // returns TRUE if the class is external, its definition
@@ -212,8 +212,6 @@ class UmlBaseClass : public UmlClassMember {
 
 #ifdef WITHJAVA
     bool _java_external : 1;
-
-    bool _java_public : 1;
 
     bool _java_final : 1;
 #endif

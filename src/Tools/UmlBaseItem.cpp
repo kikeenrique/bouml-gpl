@@ -567,7 +567,13 @@ UmlItem * UmlBaseItem::read_()
     _all.resize(_all.size() * 2 - 1);
 }
 
- UmlBaseItem::~UmlBaseItem() {
+void UmlBaseItem::deleteIt() {
+  UmlCom::send_cmd(_identifier, old_deleteCmd);
+  UmlCom::read_bool();
+  parent()->unload(TRUE);
+}
+
+UmlBaseItem::~UmlBaseItem() {
   if (_children != 0)
     delete _children;
   _all.remove(_identifier);
@@ -577,7 +583,7 @@ UmlItem * UmlBaseItem::read_()
 // not in plug-outs managed through bouml
 
 void UmlBaseItem::delete_it() {
-  UmlCom::send_cmd(_identifier, deleteCmd);
+  UmlCom::send_cmd(_identifier, old_deleteCmd);
   UmlCom::read_bool();
   parent()->unload(TRUE);
 }

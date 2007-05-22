@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -53,7 +53,7 @@ AboutDialog::AboutDialog() : QDialog(0, "About BOUML", TRUE) {
   lbp->setPixmap(bp);
   hbox->addWidget(lbp);
   hbox->addWidget(new QLabel("  ", this));
-  hbox->addWidget(new QLabel("BOUML release 2.25\n\ne-mail : bouml@free.fr\nhome : http://bouml.free.fr",
+  hbox->addWidget(new QLabel("BOUML release 2.26.3\n\ne-mail : bouml@free.fr\nhome : http://bouml.free.fr",
 			     this));
   
   hbox = new QHBoxLayout(vbox); 

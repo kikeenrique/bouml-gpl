@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -73,6 +73,7 @@ class AttributeDialog : public QTabDialog {
     QCheckBox * classattribute_cb;
     QCheckBox * constattribute_cb;
     MultiLineEdit * comment;
+    MultiLineEdit * constraint;
     
     // C++ tab
     QWidget * cpptab;
@@ -114,6 +115,7 @@ class AttributeDialog : public QTabDialog {
   
     static void post_edit_init(AttributeDialog *, QString);
     static void post_edit_description(AttributeDialog *, QString);
+    static void post_edit_constraint(AttributeDialog *, QString);
     
   public:
     AttributeDialog(AttributeData * a);
@@ -130,6 +132,7 @@ class AttributeDialog : public QTabDialog {
     void edit_init();
     void default_description();
     void edit_description();
+    void edit_constraint();
     void menu_type();
     void cpp_default();
     void cpp_unmapped();

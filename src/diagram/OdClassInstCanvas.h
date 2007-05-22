@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -67,6 +67,7 @@ class OdClassInstCanvas : public QObject, public DiagramCanvas,
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     virtual bool move_with_its_package() const;
     virtual QString get_full_name() const;
+    virtual void delete_available(bool & in_model, bool & out_model) const;
     virtual bool alignable() const;
     virtual bool copyable() const;
     virtual void history_load(QBuffer &);
@@ -83,10 +84,10 @@ class OdClassInstCanvas : public QObject, public DiagramCanvas,
 
   protected:
     void check_attributes();
-    void disconnect_attributes();
 
   protected:
     QList<AttributeData> attributes;
+    QList<BasicData> connect_list;	// class only
     QStringList values;	// unicode
     
   private slots:

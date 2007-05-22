@@ -156,6 +156,7 @@ HEADERS		= browser/BrowserAttribute.h \
 		  diagram/ExpansionNodeCanvas.h \
 		  diagram/FlowCanvas.h \
 		  diagram/FragmentSeparatorCanvas.h \
+		  diagram/ConstraintCanvas.h \
 		  dialog/AttributeDialog.h \
 		  dialog/ExtraMemberDialog.h \
 		  dialog/BasicDialog.h \
@@ -219,6 +220,7 @@ HEADERS		= browser/BrowserAttribute.h \
 		  dialog/FlowDialog.h \
 		  dialog/ShortcutDialog.h \
 		  dialog/UseCaseDialog.h \
+		  dialog/ConstraintDialog.h \
 		  misc/Settings.h \
 		  misc/UmlDrag.h \
 		  misc/UmlEnum.h \
@@ -389,6 +391,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  diagram/ExpansionNodeCanvas.cpp \
 		  diagram/FlowCanvas.cpp \
 		  diagram/FragmentSeparatorCanvas.cpp \
+		  diagram/ConstraintCanvas.cpp \
 		  dialog/AttributeDialog.cpp \
 		  dialog/ExtraMemberDialog.cpp \
 		  dialog/BasicDialog.cpp \
@@ -454,6 +457,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  dialog/FlowDialog.cpp \
 		  dialog/ShortcutDialog.cpp \
 		  dialog/UseCaseDialog.cpp \
+		  dialog/ConstraintDialog.cpp \
 		  misc/Settings.cpp \
 		  misc/UmlDrag.cpp \
 		  misc/UmlGlobal.cpp \

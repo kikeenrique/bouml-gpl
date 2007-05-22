@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -64,7 +64,7 @@ void UmlAttribute::generate(QTextOStream & f, const QCString & st, QCString inde
       else if (*p != '$')
 	f << *p++;
       else if (!strncmp(p, "${comment}", 10))
-	manage_comment(p, pp);
+	manage_comment(p, pp, JavaSettings::isGenerateJavadocStyleComment());
       else if (!strncmp(p, "${description}", 14))
 	manage_description(p, pp);
       else if (!strncmp(p, "${visibility}", 13)) {
@@ -128,7 +128,8 @@ void UmlAttribute::generate(QTextOStream & f, const QCString & st, QCString inde
 }
 
 void UmlAttribute::generate_enum_pattern_item(QTextOStream & f, int & current_value,
-					       const QCString & class_name, QCString indent) {
+					      const QCString & class_name,
+					      QCString indent) {
   if (!javaDecl().isEmpty()) {
     const char * p = javaDecl();
     const char * pp = 0;
@@ -152,7 +153,7 @@ void UmlAttribute::generate_enum_pattern_item(QTextOStream & f, int & current_va
       }
       
       if (!strncmp(p, "${comment}", 10))
-	manage_comment(p, pp);
+	manage_comment(p, pp, JavaSettings::isGenerateJavadocStyleComment());
       else if (!strncmp(p, "${description}", 14))
 	manage_description(p, pp);
       else if (!strncmp(p, "${name}", 7)) {
@@ -206,7 +207,8 @@ void UmlAttribute::generate_enum_pattern_item(QTextOStream & f, int & current_va
   }
 }
 
-void UmlAttribute::generate_enum_pattern_case(QTextOStream & f, QCString indent) {
+void UmlAttribute::generate_enum_pattern_case(QTextOStream & f,
+					      QCString indent) {
   if (!javaDecl().isEmpty()) {
     const char * p = JavaSettings::enumPatternItemCase();
     const char * pp = 0;
@@ -230,7 +232,7 @@ void UmlAttribute::generate_enum_pattern_case(QTextOStream & f, QCString indent)
       }
       
       if (!strncmp(p, "${comment}", 10))
-	manage_comment(p, pp);
+	manage_comment(p, pp, JavaSettings::isGenerateJavadocStyleComment());
       else if (!strncmp(p, "${description}", 14))
 	manage_description(p, pp);
       else if (!strncmp(p, "${name}", 7)) {
@@ -250,7 +252,8 @@ void UmlAttribute::generate_enum_pattern_case(QTextOStream & f, QCString indent)
   }
 }
 
-void UmlAttribute::generate_enum_item(QTextOStream & f, QCString indent,
+void UmlAttribute::generate_enum_item(QTextOStream & f,
+				      QCString indent,
 				      bool & first) {
   if (stereotype() != "attribute") {
     if (first)
@@ -262,7 +265,8 @@ void UmlAttribute::generate_enum_item(QTextOStream & f, QCString indent,
   }
 }
 
-void UmlAttribute::generate_enum_member(QTextOStream & f, QCString indent) {
+void UmlAttribute::generate_enum_member(QTextOStream & f,
+					QCString indent) {
   if (stereotype() == "attribute")
     generate(f, "enum", indent);
 }

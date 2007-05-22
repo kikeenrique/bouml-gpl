@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -59,8 +59,6 @@ SimpleRelationDialog::SimpleRelationDialog(SimpleRelationData * r)
 
   bool visit = !hasOkButton();
   
-  UmlCode type = rel->get_type();
-  
   // general tab
   
   BrowserNode * bn = rel->get_browser_node();
@@ -89,7 +87,11 @@ SimpleRelationDialog::SimpleRelationDialog(SimpleRelationData * r)
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(rel->get_stereotype()));
   if (! visit) {
-    edstereotype->insertStringList(rel->get_start_node()->default_stereotypes(type));
+    //edstereotype->insertStringList(rel->get_start_node()->default_stereotypes(rel->get_type()));
+    if ((rel->get_start_node()->get_type() == UmlClass) &&
+	(rel->get_end_node()->get_type() == UmlPackage))
+      // for java, class - - - -> package
+      edstereotype->insertItem("import");
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);

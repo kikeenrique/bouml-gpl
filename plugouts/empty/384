@@ -1,10 +1,10 @@
-format 35
+format 37
 "Settings" // API BASE::Settings
-  revision 10
+  revision 14
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
   //use case diagram settings
   package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //sequence diagram settings
@@ -32,7 +32,7 @@ DO NOT MODIFY THEM !!!
 "
   classview 384 "Settings Class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
     //collaboration diagram settings
     show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
@@ -633,6 +633,39 @@ ${body}}
 "
 	
 	comment " set if the namespace prefix must be always generated before class's names
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 192128 "isGenerateJavadocStyleComment"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if ${comment} generate Javadoc style comment"
+      end
+
+      operation 192256 "set_IsGenerateJavadocStyleComment"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if ${comment} generate Javadoc style comment
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
@@ -1755,7 +1788,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 13312 // <generalisation>
-	  b parent class_ref 5120 // UmlSettings
+	  b multiplicity "" parent class_ref 5120 // UmlSettings
       end
 
       attribute 14976 "_defined"
@@ -1946,7 +1979,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 13440 // _get_visibility (<directional aggregation by value>)
-	  b parent class_ref 512 // aVisibility
+	  b multiplicity "" parent class_ref 512 // aVisibility
       end
 
       attribute 17536 "_get_name"
@@ -1988,7 +2021,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 13568 // _set_visibility (<directional aggregation by value>)
-	  b parent class_ref 512 // aVisibility
+	  b multiplicity "" parent class_ref 512 // aVisibility
       end
 
       attribute 18048 "_set_name"
@@ -2083,6 +2116,15 @@ ${body}}
       end
 
       attribute 78080 "_is_force_namespace_gen"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      attribute 79616 "_is_generate_javadoc_comment"
 	class_attribute private explicit_type "bool"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -3243,7 +3285,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 13696 // <generalisation>
-	  b parent class_ref 5120 // UmlSettings
+	  b multiplicity "" parent class_ref 5120 // UmlSettings
       end
 
       attribute 19200 "_defined"
@@ -3846,6 +3888,39 @@ ${body}}
 "
 	
 	comment " set the extension of the file produced by the JAVA code generator
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 192384 "isGenerateJavadocStyleComment"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if ${comment} generate Javadoc style comment"
+      end
+
+      operation 192512 "set_IsGenerateJavadocStyleComment"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if ${comment} generate Javadoc style comment
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
@@ -4524,7 +4599,7 @@ ${body}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 13824 // <generalisation>
-	  b parent class_ref 5120 // UmlSettings
+	  b multiplicity "" parent class_ref 5120 // UmlSettings
       end
 
       attribute 22400 "_defined"
@@ -4641,7 +4716,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 13952 // _get_visibility (<directional aggregation by value>)
-	  b parent class_ref 512 // aVisibility
+	  b multiplicity "" parent class_ref 512 // aVisibility
       end
 
       attribute 23808 "_get_name"
@@ -4667,7 +4742,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 14080 // _set_visibility (<directional aggregation by value>)
-	  b parent class_ref 512 // aVisibility
+	  b multiplicity "" parent class_ref 512 // aVisibility
       end
 
       attribute 24064 "_set_name"
@@ -4707,6 +4782,15 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	idl_decl ""
+      end
+
+      attribute 79872 "_is_generate_javadoc_comment"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
 	idl_decl ""
       end
 
@@ -5030,7 +5114,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 154624 // _uml_get_name (<directional aggregation by value>)
-	  b parent class_ref 143360 // aLanguage
+	  b multiplicity "" parent class_ref 143360 // aLanguage
       end
 
       classrelation 154752 // _uml_set_name (<directional aggregation by value>)
@@ -5041,7 +5125,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 154752 // _uml_set_name (<directional aggregation by value>)
-	  b parent class_ref 143360 // aLanguage
+	  b multiplicity "" parent class_ref 143360 // aLanguage
       end
 
       attribute 61312 "_artifact_default_description"
@@ -5104,7 +5188,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};"
 	    classrelation_ref 14208 // _builtins (<unidirectional association>)
-	  b parent class_ref 4480 // UmlBuiltin
+	  b multiplicity "" parent class_ref 4480 // UmlBuiltin
       end
 
       attribute 25088 "_map_relation_stereotypes"
@@ -5122,7 +5206,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};"
 	    classrelation_ref 14336 // _relation_stereotypes (<unidirectional association>)
-	  b parent class_ref 4608 // UmlStereotype
+	  b multiplicity "" parent class_ref 4608 // UmlStereotype
       end
 
       attribute 25216 "_map_class_stereotypes"
@@ -5140,7 +5224,7 @@ ${body}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};"
 	    classrelation_ref 14464 // _class_stereotypes (<unidirectional association>)
-	  b parent class_ref 4608 // UmlStereotype
+	  b multiplicity "" parent class_ref 4608 // UmlStereotype
       end
 
       operation 70016 "read_"

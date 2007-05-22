@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -31,6 +31,7 @@
 #include "UmlClass.h"
 #include "UmlOperation.h"
 #include "CppRefType.h"
+#include "CppSettings.h"
 #include "UmlCom.h"
 #include "util.h"
 
@@ -152,7 +153,7 @@ void UmlArtifact::generate() {
 	else if (*p != '$')
 	  f_h << *p++;
 	else if (!strncmp(p, "${comment}", 10))
-	  manage_comment(p, pp);
+	  manage_comment(p, pp, CppSettings::isGenerateJavadocStyleComment());
 	else if (!strncmp(p, "${description}", 14))
 	  manage_description(p, pp);
 	else if (!strncmp(p, "${name}", 7)) {
@@ -285,7 +286,7 @@ void UmlArtifact::generate() {
 	else if (*p != '$')
 	  f_src << *p++;
 	else if (!strncmp(p, "${comment}", 10))
-	  manage_comment(p, pp);
+	  manage_comment(p, pp, CppSettings::isGenerateJavadocStyleComment());
 	else if (!strncmp(p, "${description}", 14))
 	  manage_description(p, pp);
 	else if (!strncmp(p, "${name}", 7)) {

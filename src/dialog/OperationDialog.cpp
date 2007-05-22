@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -236,6 +236,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   etable = new ExceptionsTable(o, grid, list, visit);
   
   QVBox * vtab = new QVBox(grid);
+  
   new QLabel("description :", vtab);
   if (! visit) {
     connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
@@ -251,6 +252,17 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   font.setFixedPitch(TRUE);
   comment->setFont(font);
   comment->setReadOnly(visit);
+  
+  vtab = new QVBox(grid);
+  new QLabel("constraint :", vtab);
+  if (! visit) {
+    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+	    this, SLOT(edit_constraint()));
+  }
+  constraint = new MultiLineEdit(grid);
+  constraint->setReadOnly(visit);
+  constraint->setText(o->constraint);
+  constraint->setFont(font);
   
   addTab(grid, "Uml");
   
@@ -579,10 +591,12 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   
   switch (l) {
   case CppView:
-    QTimer::singleShot(100, this, SLOT(cpp_edit_body()));
+    if (! cpp_undef)
+      QTimer::singleShot(100, this, SLOT(cpp_edit_body()));
     break;
   case JavaView:
-    QTimer::singleShot(100, this, SLOT(java_edit_body()));
+    if (! java_undef)
+      QTimer::singleShot(100, this, SLOT(java_edit_body()));
     break;
   default:
     break;
@@ -675,6 +689,16 @@ void OperationDialog::post_edit_description(OperationDialog * d, QString s)
   d->comment->setText(s);
 }
 
+void OperationDialog::edit_constraint() {
+  edit(constraint->text(), edname->text().stripWhiteSpace() + "_constraint",
+       oper, TxtEdit, this, (post_edit) post_edit_constraint, edits);
+}
+
+void OperationDialog::post_edit_constraint(OperationDialog * d, QString s)
+{
+  d->constraint->setText(s);
+}
+
 void OperationDialog::accept() {
   if (!check_edits(edits))
     return;
@@ -718,6 +742,8 @@ void OperationDialog::accept() {
     
     bn->set_comment(comment->text());
     UmlWindow::set_commented(bn);
+  
+    oper->constraint = constraint->stripWhiteSpaceText();
     
     // C++
     
@@ -813,14 +839,16 @@ void OperationDialog::accept() {
 void OperationDialog::classoper_toggled(bool on) {
   if (on) {
     abstract_cb->setChecked(FALSE);
-    virtual_cb->setChecked(FALSE);
+    if (! cpp_undef)
+      virtual_cb->setChecked(FALSE);
   }
 }
 
 void OperationDialog::abstract_toggled(bool on) {
   if (on) {
     classoperation_cb->setChecked(FALSE);
-    virtual_cb->setChecked(TRUE);
+    if (! cpp_undef)
+      virtual_cb->setChecked(TRUE);
   }
 }
 
@@ -1114,7 +1142,8 @@ void OperationDialog::cpp_update_decl() {
     }
       
     if (!strncmp(p, "${comment}", 10))
-      manage_comment(comment->text(), p, pp);
+      manage_comment(comment->text(), p, pp,
+		     GenerationSettings::cpp_javadoc_style());
     else if (!strncmp(p, "${description}", 14))
       manage_description(comment->text(), p, pp);
     else if (!strncmp(p, "${friend}", 9)) {
@@ -1573,7 +1602,9 @@ void OperationDialog::cpp_update_def() {
       }
       
       if (!strncmp(p, "${comment}", 10)) {
-	if (!manage_comment(comment->text(), p, pp) && re_template)
+	if (!manage_comment(comment->text(), p, pp,
+			    GenerationSettings::cpp_javadoc_style())
+	    && re_template)
 	  s += templates;
       }
       else if (!strncmp(p, "${description}", 14)) {
@@ -1843,7 +1874,8 @@ void OperationDialog::java_update_def() {
     }
       
     if (!strncmp(p, "${comment}", 10))
-      manage_comment(comment->text(), p, pp);
+      manage_comment(comment->text(), p, pp,
+		     GenerationSettings::java_javadoc_style());
     else if (!strncmp(p, "${description}", 14))
       manage_description(comment->text(), p, pp);
     else if (!strncmp(p, "${final}", 8)) {
@@ -2226,7 +2258,7 @@ void OperationDialog::idl_update_decl() {
     }
       
     if (!strncmp(p, "${comment}", 10))
-      manage_comment(comment->text(), p, pp);
+      manage_comment(comment->text(), p, pp, FALSE);
     else if (!strncmp(p, "${description}", 14))
       manage_description(comment->text(), p, pp);
     else if (!strncmp(p, "${oneway}", 9)) {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -263,9 +263,11 @@ void BrowserUseCase::exec_menu_choice(int rank, BrowserNode * item_above) {
     {
       BrowserClass * a = BrowserClass::add_class(this);
       
-      if (a != 0)
-	a->get_data()->set_stereotype("actor");
-	a->select_in_browser();
+      if (a == 0)
+	return;
+      
+      a->get_data()->set_stereotype("actor");
+      a->select_in_browser();
     }
     break;
   case 5:

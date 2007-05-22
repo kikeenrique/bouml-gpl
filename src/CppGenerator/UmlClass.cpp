@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,6 +42,7 @@
 // parent classes and template in the class declaration of the class
 
 QList<UmlClass> UmlClass::context;
+QValueList<UmlActualParameter> UmlClass::noactuals;
  
 QCString UmlClass::cpp_stereotype()
 {
@@ -188,7 +189,7 @@ void UmlClass::generate_decl(QTextOStream & f_h, QCString indent) {
     else if (*p != '$')
       f_h << *p++;
     else if (!strncmp(p, "${comment}", 10))
-      manage_comment(p, pp);
+      manage_comment(p, pp, CppSettings::isGenerateJavadocStyleComment());
     else if (!strncmp(p, "${description}", 14))
       manage_description(p, pp);
     else if (! strncmp(p, "${name}", 7)) {
@@ -490,7 +491,28 @@ void UmlClass::write(QTextOStream & f, const UmlTypeSpec & t,
     f << CppSettings::type(t.explicit_type);
 }
 
-void UmlClass::write(QTextOStream & f, bool with_formals) {
+void UmlClass::write(QTextOStream & f, bool with_formals, 
+		     const QValueList<UmlActualParameter> & actuals) {
+  if (context.findRef(this) == -1) {
+    if (parent()->kind() == aClass) {
+      if (context.findRef((UmlClass *) parent()) == -1) {
+	// parent cannot have formals, but may have actuals
+	((UmlClass *) parent())->write(f, FALSE, actuals);
+	f << "::";
+      }
+    }
+    else {
+      UmlArtifact * cp = associatedArtifact();
+      QCString nasp = ((UmlPackage *)
+		       ((cp != 0) ? (UmlItem *) cp : (UmlItem *) this)->package())
+	->cppNamespace();
+      
+      if (CppSettings::isForceNamespacePrefixGeneration() ||
+	  (nasp != UmlArtifact::generation_package()->cppNamespace()))
+	f << nasp << "::";
+    }
+  }
+  
   if (isCppExternal()) {
     QCString s = cppDecl();
     int index = s.find('\n');
@@ -511,42 +533,51 @@ void UmlClass::write(QTextOStream & f, bool with_formals) {
       f << s;
     }
   }
-  else if (context.findRef(this) != -1)
+  else 
     f << name();	// true_name
-  else {
-    if (parent()->kind() == aClass) {
-      if (context.findRef((UmlClass *) parent()) == -1) {
-	((UmlClass *) parent())->write(f);
-	f << "::";
+    
+  if (with_formals) {
+    QValueList<UmlFormalParameter> formals = this->formals();
+    
+    if (! formals.isEmpty()) {
+      const char * sep = "<";
+      QValueList<UmlFormalParameter>::ConstIterator it;
+      
+      for (it = formals.begin(); it != formals.end(); ++it) {
+	f << sep << (*it).name();
+	sep = ", ";
       }
-    }
-    else {
-      UmlArtifact * cp = associatedArtifact();
-      QCString nasp = ((UmlPackage *)
-		       ((cp != 0) ? (UmlItem *) cp : (UmlItem *) this)->package())
-	->cppNamespace();
       
-      if (CppSettings::isForceNamespacePrefixGeneration() ||
-	  (nasp != UmlArtifact::generation_package()->cppNamespace()))
-	f << nasp << "::";
+      f << ">";
     }
+  }
+  else if (!actuals.isEmpty()) {
+    QValueList<UmlActualParameter>::ConstIterator ita;
+    bool need_space = FALSE;
+    bool used = FALSE;
     
-    f << name();	// true_name
-    
-    if (with_formals) {
-      QValueList<UmlFormalParameter> formals = this->formals();
-      
-      if (! formals.isEmpty()) {
-	const char * sep = "<";
-	QValueList<UmlFormalParameter>::ConstIterator it;
+    for (ita = actuals.begin(); ita != actuals.end(); ++ita) {
+      if ((*ita).superClass() == this) {
+	used = TRUE;
+	UmlClass * cl = (*ita).value().type;
 	
-	for (it = formals.begin(); it != formals.end(); ++it) {
-	  f << sep << (*it).name();
-	  sep = ", ";
+	if (cl != 0)
+	  need_space = !cl->formals().isEmpty();
+	else {
+	  QCString s = (*ita).value().explicit_type;
+	  
+	  need_space = (!s.isEmpty() && (s.at(s.length() - 1) == '>'));
 	}
-	
-	f << ">";
+	(*ita).generate(f);
       }
+    }
+    
+    if (used) {
+      if (need_space)
+	f << " >";
+      else
+	f << ">";
     }
   }
 }
+

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,7 +29,7 @@
 #include "qstring.h"
 
 extern bool manage_comment(QString comment, const char *& p,
-			   const char *& pp);
+			   const char *& pp, bool javadoc);
 extern bool manage_description(QString comment, const char *& p,
 			       const char *& pp);
 extern QString capitalize(const QString & s);

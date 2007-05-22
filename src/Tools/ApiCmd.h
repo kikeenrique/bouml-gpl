@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,6 +49,8 @@ enum MiscGlobalCmd {
 };
 
 enum OnInstanceCmd {
+  // get commands
+  
   parentCmd,
   childrenCmd,
   getDefCmd,
@@ -77,6 +79,8 @@ enum OnInstanceCmd {
   referencedByCmd,
   
   sideCmd,
+  
+  // set commands
   
   firstSetCmd = 50,	// just a mark
     
@@ -204,11 +208,15 @@ enum OnInstanceCmd {
   setCppFrozenCmd,
   setJavaFrozenCmd,
   setIdlFrozenCmd,
+  
+  // api30
+  setConstraintCmd,
+  deleteCmd,
     
   getIdCmd = 254, // not in plug-outs managed through bouml
     
   // api 20
-  deleteCmd = 255 // not in plug-outs managed through bouml
+  old_deleteCmd = 255 // not in plug-outs managed through bouml
 };
 
 enum ClassGlobalCmd {
@@ -290,7 +298,9 @@ enum CppSettingsCmd {
   setCppRelativePathCmd,
   setCppForceNamespaceGenCmd,
   // api 29
-  setCppRootRelativePathCmd
+  setCppRootRelativePathCmd,
+  // api 30
+  setCppJavadocStyleCmd
 };
 
 enum JavaSettingsCmd {
@@ -323,7 +333,10 @@ enum JavaSettingsCmd {
   setJavaIsSetParamFinalCmd,
   
   setJavaEnumDeclCmd,
-  setJavaEnumItemDeclCmd
+  setJavaEnumItemDeclCmd,
+  
+  // api 30
+  setJavaJavadocStyleCmd
 };
 
 enum IdlSettingsCmd {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -134,12 +134,12 @@ HideShowDialog::HideShowDialog(const BrowserNodeList & a,
   hbox->setMargin(5);
   QPushButton * ok = new QPushButton("&OK", this);
   QPushButton * cancel = new QPushButton("&Cancel", this);
-  
+    
   ok->setDefault( TRUE );
   
   bs = cancel->sizeHint();
-  ok->setFixedSize(cancel->sizeHint());
-  cancel->setFixedSize(cancel->sizeHint());
+  ok->setFixedSize(bs);
+  cancel->setFixedSize(bs);
   
   hbox->addWidget(ok);
   hbox->addWidget(cancel);

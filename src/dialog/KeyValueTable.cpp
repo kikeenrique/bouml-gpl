@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -56,10 +56,16 @@ KeyValuesTable::KeyValuesTable(HaveKeyValueData * hv, QWidget * parent, bool vis
       ti->setReplaceable(FALSE);
       setItem(index, 0, ti);
       
-      ti = new TableItem(this, QTableItem::Never,
-			 toUnicode(hv->get_value(index)));
+      QString s = toUnicode(hv->get_value(index));
+      int n = s.contains('\n');
+    
+      ti = new TableItem(this, QTableItem::Never, s);
       ti->setReplaceable(FALSE);
       setItem(index, 1, ti);
+      if (n != 0) {
+	// note : adjustRow(index) does nothing
+	setRowHeight(index, rowHeight(index)*(n+1));
+      }
     }
   }
   else {

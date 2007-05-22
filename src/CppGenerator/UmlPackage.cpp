@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -152,18 +152,25 @@ QCString UmlPackage::source_path(const QCString & f, QCString relto) {
   if (!dir.read) {
     dir.src = cppSrcDir();
     dir.h = cppHDir();
+    dir.src_absolute = dir.h_absolute = FALSE;
     
     QDir d_root(rootDir());
     
     if (dir.src.isEmpty())
+      // considered given relative
       dir.src = RootDir;
     else if (QDir::isRelativePath(dir.src))
       dir.src = d_root.filePath(dir.src);
+    else
+      dir.src_absolute = TRUE;
 
     if (dir.h.isEmpty())
+      // considered given relative
       dir.h = RootDir;
     else if (QDir::isRelativePath(dir.h))
       dir.h = d_root.filePath(dir.h);
+    else
+      dir.h_absolute = TRUE;
    
     if (dir.src.isEmpty()) {
       UmlCom::trace(QCString("<font color=\"red\"><b><b> The generation directory "
@@ -185,7 +192,7 @@ QCString UmlPackage::source_path(const QCString & f, QCString relto) {
   if (! d.exists())
     create_directory(dir.src);	// don't return on error
   
-  QCString df = (relto.isEmpty())
+  QCString df = (dir.src_absolute || relto.isEmpty())
     ? QCString(d.filePath(f))
     : relative_path(d, relto) + f;
   
@@ -223,7 +230,7 @@ QCString UmlPackage::header_path(const QCString & f, QCString relto) {
   if (! d.exists())
     create_directory(dir.h);	// don't return on error
   
-  QCString df = (relto.isEmpty())
+  QCString df = (dir.h_absolute || relto.isEmpty())
     ? QCString(d.filePath(f))
     : relative_path(d, relto) + f;
   

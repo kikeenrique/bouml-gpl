@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -32,7 +32,9 @@
 #include "UmlEnum.h"
 #include "UmlCanvas.h"
 
-class QPainter;
+#ifndef QT_NO_PRINTER
+class QPrinter;
+#endif
 class QKeyEvent;
 class QPopupMenu;
 class QBuffer;
@@ -112,7 +114,9 @@ class DiagramView : public QCanvasView {
     
     static void init();
     
-    void print(QPainter * p);
+#ifndef QT_NO_PRINTER
+    void print(QPrinter & p, int div);
+#endif
     
     void copy_in_clipboard(bool optimal, bool temporary);
     bool save_pict(const char * f, bool optimal, bool temporary);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -78,13 +78,7 @@ const char * SdObjCanvas::may_start(UmlCode & l) const {
 }
 
 const char * SdObjCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  switch (dest->type()) {
-  case UmlNote:
-  case UmlIcon:
-    return (l == UmlAnchor) ? 0 : "illegal";
-  default:
-    return "illegal";
-  }
+  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
 }
 
 void SdObjCanvas::set_mortal(bool y) {

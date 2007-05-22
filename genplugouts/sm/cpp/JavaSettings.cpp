@@ -195,6 +195,24 @@ bool JavaSettings::set_SourceExtension(QCString v)
     return FALSE;
 }
 
+bool JavaSettings::isGenerateJavadocStyleComment()
+{
+  read_if_needed_();
+
+  return _is_generate_javadoc_comment;
+}
+
+bool JavaSettings::set_IsGenerateJavadocStyleComment(bool v)
+{
+  UmlCom::send_cmd(javaSettingsCmd, setJavaJavadocStyleCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_generate_javadoc_comment = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 const QCString & JavaSettings::classDecl()
 {
   read_if_needed_();
@@ -231,7 +249,25 @@ bool JavaSettings::set_ExternalClassDecl(QCString v)
     return FALSE;
 }
 
-const QCString & JavaSettings::enumDecl()
+const QCString & JavaSettings::enumPatternDecl()
+{
+  read_if_needed_();
+  
+  return _enum_pattern_decl;
+}
+
+bool JavaSettings::set_EnumPatternDecl(QCString v)
+{
+  UmlCom::send_cmd(javaSettingsCmd, setJavaEnumPatternDeclCmd, v);
+  if (UmlCom::read_bool()) {
+    _enum_pattern_decl = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString JavaSettings::enumDecl()
 {
   read_if_needed_();
   
@@ -285,7 +321,43 @@ bool JavaSettings::set_AttributeDecl(QCString v)
     return FALSE;
 }
 
-const QCString & JavaSettings::enumItemDecl()
+const QCString & JavaSettings::enumPatternItemDecl()
+{
+  read_if_needed_();
+  
+  return _enum_pattern_item_decl;
+}
+
+bool JavaSettings::set_EnumPatternItemDecl(QCString v)
+{
+  UmlCom::send_cmd(javaSettingsCmd, setJavaEnumPatternItemDeclCmd, v);
+  if (UmlCom::read_bool()) {
+    _enum_pattern_item_decl = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+const QCString & JavaSettings::enumPatternItemCase()
+{
+  read_if_needed_();
+  
+  return _enum_pattern_item_case;
+}
+
+bool JavaSettings::set_EnumPatternItemCase(QCString v)
+{
+  UmlCom::send_cmd(javaSettingsCmd, setJavaEnumPatternItemCaseCmd, v);
+  if (UmlCom::read_bool()) {
+    _enum_pattern_item_case = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString JavaSettings::enumItemDecl()
 {
   read_if_needed_();
   
@@ -297,24 +369,6 @@ bool JavaSettings::set_EnumItemDecl(QCString v)
   UmlCom::send_cmd(javaSettingsCmd, setJavaEnumItemDeclCmd, v);
   if (UmlCom::read_bool()) {
     _enum_item_decl = v;
-    return TRUE;
-  }
-  else
-    return FALSE;
-}
-
-const QCString & JavaSettings::enumItemCase()
-{
-  read_if_needed_();
-  
-  return _enum_item_case;
-}
-
-bool JavaSettings::set_EnumItemCase(QCString v)
-{
-  UmlCom::send_cmd(javaSettingsCmd, setJavaEnumItemCaseCmd, v);
-  if (UmlCom::read_bool()) {
-    _enum_item_case = v;
     return TRUE;
   }
   else
@@ -491,15 +545,19 @@ QCString JavaSettings::_class_decl;
 
 QCString JavaSettings::_external_class_decl;
 
+QCString JavaSettings::_enum_pattern_decl;
+
 QCString JavaSettings::_enum_decl;
 
 QCString JavaSettings::_interface_decl;
 
 QCString JavaSettings::_attr_decl;
 
-QCString JavaSettings::_enum_item_decl;
+QCString JavaSettings::_enum_pattern_item_decl;
 
-QCString JavaSettings::_enum_item_case;
+QCString JavaSettings::_enum_pattern_item_case;
+
+QCString JavaSettings::_enum_item_decl;
 
 QCString JavaSettings::_rel_decl[3/*multiplicity*/];
 
@@ -522,6 +580,8 @@ bool JavaSettings::_is_set_param_final;
 QCString JavaSettings::_src_content;
 
 QCString JavaSettings::_ext;
+
+bool JavaSettings::_is_generate_javadoc_comment;
 
 QDict<QCString> JavaSettings::_map_imports;
 
@@ -549,6 +609,7 @@ void JavaSettings::read_()
     UmlSettings::_class_stereotypes[index].java = UmlCom::read_string();
   
   n = UmlCom::read_unsigned();
+  _map_imports.clear();
   if (n > _map_imports.size())
     _map_imports.resize(n);
   
@@ -565,10 +626,12 @@ void JavaSettings::read_()
   _class_decl = UmlCom::read_string();
   _external_class_decl = UmlCom::read_string();
   _enum_decl = UmlCom::read_string();
+  _enum_pattern_decl = UmlCom::read_string();
   _interface_decl = UmlCom::read_string();
   _attr_decl = UmlCom::read_string();
   _enum_item_decl = UmlCom::read_string();
-  _enum_item_case = UmlCom::read_string();
+  _enum_pattern_item_decl = UmlCom::read_string();
+  _enum_pattern_item_case = UmlCom::read_string();
   for (index = 0; index != 3; index += 1)
     _rel_decl[index] = UmlCom::read_string();
   _oper_def = UmlCom::read_string();
@@ -579,6 +642,7 @@ void JavaSettings::read_()
   _set_name = UmlCom::read_string();
   _is_set_final = UmlCom::read_bool();
   _is_set_param_final = UmlCom::read_bool();
+  _is_generate_javadoc_comment = UmlCom::read_bool();
 }
 
 void JavaSettings::read_if_needed_()

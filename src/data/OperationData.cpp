@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -76,6 +76,7 @@ OperationData::OperationData(OperationData * model, BrowserNode * bn)
       idl_oneway(model->idl_oneway), idl_get_set_frozen(model->idl_get_set_frozen), 
       nparams(model->nparams),
       nexceptions(model->nexceptions),
+      constraint(model->constraint),
       cpp_decl(model->cpp_decl),
       java_annotation(model->java_annotation),
       idl_decl(model->idl_decl) {
@@ -1238,13 +1239,17 @@ void OperationData::replace(BrowserClass * old, BrowserClass * nw) {
 
 void OperationData::send_uml_def(ToolCom * com, BrowserNode * bn, 
 				 const QString & comment) {
+  int api = com->api_format();
+  
   BasicData::send_uml_def(com, bn, comment);
   com->write_bool(isa_class_operation);
-  if (com->api_format() >= 13)
+  if (api >= 13)
     com->write_bool(is_volatile);
-  com->write_char(((com->api_format() >= 23) ||
+  com->write_char(((api >= 23) ||
 		   (uml_visibility != UmlPackageVisibility))
 		  ? uml_visibility : UmlPublic);
+  if (api >= 30)
+    com->write_string(constraint);
   return_type.send_def(com);
   com->write_bool(is_abstract);
   
@@ -1401,6 +1406,9 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
 	  com->get_type(t, args);
 	  set_return_type(t);
 	}
+	break;
+      case setConstraintCmd:
+	constraint = args;
 	break;
       case setCppVisibilityCmd:
 	{
@@ -1984,6 +1992,12 @@ void OperationData::save(QTextStream & st, bool ref, QString & warning) const {
 	exceptions[i].save(st, warning);
     }
     
+    if (!constraint.isEmpty()) {
+      nl_indent(st);
+      st << "constraint ";
+      save_string(constraint, st);
+    }
+    
     nl_indent(st);
     if (cpp_visibility != UmlDefaultVisibility)
       st << "cpp_visibility " << stringify(cpp_visibility) << " ";
@@ -2148,6 +2162,13 @@ void OperationData::read(char * & st, char * & k) {
   }
   else
     set_n_exceptions(0);
+  
+  if (!strcmp(k, "constraint")) {
+    constraint = read_string(st);
+    k = read_keyword(st);
+  }
+  else
+    constraint = QString::null;
   
   if (!strcmp(k, "cpp_visibility")) {
     cpp_visibility = ::visibility(read_keyword(st));

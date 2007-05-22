@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -163,6 +163,10 @@ void BrowserAttribute::add_set_oper() {
   set_set_oper(BrowserOperation::new_one(QString::null, (BrowserNode *) parent()));
   update_set_oper();
   ((BrowserNode *) parent())->modified();
+}
+
+const char * BrowserAttribute::constraint() const {
+  return def->get_constraint();
 }
 
 const QPixmap* BrowserAttribute::pixmap(int) const {

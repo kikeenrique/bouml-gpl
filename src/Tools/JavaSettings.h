@@ -105,6 +105,14 @@ class JavaSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_SourceExtension(QCString v);
 
+    // return if  generate Javadoc style comment
+    static bool isGenerateJavadocStyleComment();
+
+    // set if  generate Javadoc style comment
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsGenerateJavadocStyleComment(bool v);
+
     // returns the default definition of a class
     static const QCString & classDecl();
 
@@ -319,6 +327,8 @@ class JavaSettings : public UmlSettings {
     static QCString _src_content;
 
     static QCString _ext;
+
+    static bool _is_generate_javadoc_comment;
 
     static QDict<QCString> _map_imports;
 

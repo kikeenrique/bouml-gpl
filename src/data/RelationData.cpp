@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -533,17 +533,21 @@ void RelationData::set_idlcase(RoleData & role, BrowserAttribute * at,
 //
 
 void RelationData::send_uml_def(ToolCom * com, BrowserRelation * rel) {
+  int api = com->api_format();
+  
   if (rel == start) {
     BasicData::send_uml_def(com, rel, a.comment);
     com->write_bool(a.isa_class_relation);
-    if (com->api_format() >= 13)
+    if (api >= 13)
       com->write_bool(a.isa_volatile_relation);
-    com->write_char(((com->api_format() >= 23) ||
+    com->write_char(((api >= 23) ||
 		     (a.uml_visibility != UmlPackageVisibility))
 		    ? a.uml_visibility : UmlPublic);
+    if (api >= 30)
+      com->write_string(a.constraint);
     com->write_char(type);
     get_end_class()->write_id(com);
-    if (com->api_format() >= 22)
+    if (api >= 22)
       association.send_def(com);
     com->write_string(a.role);
     com->write_string(a.multiplicity);
@@ -553,14 +557,16 @@ void RelationData::send_uml_def(ToolCom * com, BrowserRelation * rel) {
   else {
     BasicData::send_uml_def(com, rel, b.comment);
     com->write_bool(b.isa_class_relation);
-    if (com->api_format() >= 13)
+    if (api >= 13)
       com->write_bool(b.isa_volatile_relation);
-    com->write_char(((com->api_format() >= 23) ||
+    com->write_char(((api >= 23) ||
 		     (b.uml_visibility != UmlPackageVisibility))
 		    ? b.uml_visibility : UmlPublic);
+    if (api >= 30)
+      com->write_string(b.constraint);
     com->write_char(type);
     get_start_class()->write_id(com);
-    if (com->api_format() >= 22)
+    if (api >= 22)
       association.send_def(com);
     com->write_string(b.role);
     com->write_string(b.multiplicity);
@@ -580,9 +586,11 @@ void RelationData::send_uml_def(ToolCom * com, BrowserRelation * rel) {
 }
 
 void RelationData::send_cpp_def(ToolCom * com, BrowserRelation * rel) {
+  int api = com->api_format();
+  
   if (rel == start) {
     com->write_string(a.cpp_decl);
-    if (com->api_format() >= 23)
+    if (api >= 23)
       com->write_char(a.cpp_visibility);
     else {
       switch(a.cpp_visibility) {
@@ -596,14 +604,14 @@ void RelationData::send_cpp_def(ToolCom * com, BrowserRelation * rel) {
 	com->write_char(a.cpp_visibility);
       }
     }
-    if (com->api_format() < 13)
+    if (api < 13)
       com->write_bool(a.isa_volatile_relation);
     com->write_bool(a.cpp_mutable);
     com->write_bool(a.cpp_virtual_inheritance);
   }
   else {
     com->write_string(b.cpp_decl);
-    if (com->api_format() >= 23)
+    if (api >= 23)
       com->write_char(b.cpp_visibility);
     else {
       switch(b.cpp_visibility) {
@@ -617,7 +625,7 @@ void RelationData::send_cpp_def(ToolCom * com, BrowserRelation * rel) {
 	com->write_char(b.cpp_visibility);
       }
     }
-    if (com->api_format() < 13)
+    if (api < 13)
       com->write_bool(b.isa_volatile_relation);
     com->write_bool(b.cpp_mutable);
     com->write_bool(FALSE);
@@ -625,20 +633,22 @@ void RelationData::send_cpp_def(ToolCom * com, BrowserRelation * rel) {
 }
 
 void RelationData::send_java_def(ToolCom * com, BrowserRelation * rel) {
+  int api = com->api_format();
+  
   if (rel == start) {
     com->write_string(a.java_decl);
-    if (com->api_format() >= 21)
+    if (api >= 21)
       com->write_string(a.java_annotation);
     com->write_bool(a.java_transient);
-    if ((com->api_format() >= 19) && (com->api_format() < 21))
+    if ((api >= 19) && (api < 21))
       com->write_string(a.java_annotation);
   }
   else {
     com->write_string(b.java_decl);
-    if (com->api_format() >= 21)
+    if (api >= 21)
       com->write_string(b.java_annotation);
     com->write_bool(b.java_transient);
-    if ((com->api_format() >= 19) && (com->api_format() < 21))
+    if ((api >= 19) && (api < 21))
       com->write_string(b.java_annotation);
   }
 }
@@ -734,6 +744,9 @@ bool RelationData::tool_cmd(ToolCom * com, BrowserRelation * rel,
 	  
 	  r.uml_visibility = v;
 	}
+	break;
+      case setConstraintCmd:
+	r.constraint = args;
 	break;
       case setCppDeclCmd:
 	r.cpp_decl = args;
@@ -891,6 +904,12 @@ static void save_role(const RoleData & role, bool assoc, QTextStream & st,
     st << "comment ";
     save_string(role.comment, st);
   }
+  if (!role.constraint.isEmpty()) {
+    nl_indent(st);
+    st << "constraint ";
+    save_string(role.constraint, st);
+  }
+  
   if (!role.cpp_decl.isEmpty()) {
     nl_indent(st);
     st << "cpp ";
@@ -1052,6 +1071,14 @@ static void read_role(RoleData & role, bool assoc,
     role.comment = read_string(st);
     k = read_keyword(st);
   }
+  
+  if (!strcmp(k, "constraint")) {
+    role.constraint = read_string(st);
+    k = read_keyword(st);
+  }
+  else
+    role.constraint = QString::null;
+  
   if (!strcmp(k, "cpp")) {
     k = read_keyword(st);
     if (!strcmp(k, "virtual")) {

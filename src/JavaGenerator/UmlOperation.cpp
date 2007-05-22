@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -242,7 +242,7 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
 	  f << *p++;
       }
       else if (!strncmp(p, "${comment}", 10))
-	manage_comment(p, pp);
+	manage_comment(p, pp, JavaSettings::isGenerateJavadocStyleComment());
       else if (!strncmp(p, "${description}", 14))
 	manage_description(p, pp);
       else if (!strncmp(p, "${visibility}", 13)) {
@@ -311,7 +311,7 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
 	
 	for (it = exceptions.begin(), sep = " throws "; 
 	     it != exceptions.end();
-	     ++it, sep = " ") {
+	     ++it, sep = ", ") {
 	  f << sep;
 	  UmlClass::write(f, *it);
 	}

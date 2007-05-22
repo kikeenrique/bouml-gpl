@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,7 +35,8 @@
 class UmlNcRelation : public UmlBaseNcRelation {
   public:
     UmlNcRelation(void * id, const QCString & n) : UmlBaseNcRelation(id, n) {};
-
+  
+    virtual void generate_import(QTextOStream & f, const QCString & indent);
 };
 
 #endif

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -102,7 +102,7 @@ void UmlClass::generate(QTextOStream & f, QCString indent) {
     else if (*p != '$')
       f << *p++;
     else if (!strncmp(p, "${comment}", 10))
-      manage_comment(p, pp);
+      manage_comment(p, pp, JavaSettings::isGenerateJavadocStyleComment());
     else if (!strncmp(p, "${description}", 14))
       manage_description(p, pp);
     else if (!strncmp(p, "${public}", 9)) {
@@ -278,18 +278,38 @@ void UmlClass::write(QTextOStream & f) {
     f << s;
   }
   else {
+    if (parent()->kind() == aClass){
+      ((UmlClass *) parent())->write(f);
+      f << '.';
+    }
+    else {
+      UmlArtifact * cp = associatedArtifact();
+      UmlPackage * pack = (UmlPackage *)
+	((cp != 0) ? (UmlItem *) cp : (UmlItem *) this)->package();
+      
+      if (pack != UmlArtifact::generation_package()) {
+	QCString s = pack->javaPackage();
+	
+	if (!s.isEmpty() && (s != "java.lang") && (s.left(10) != "java.lang.") &&
+	    !UmlArtifact::generated_one()->imported(s, name()))
+	  f << s << '.';
+      }
+    }
+    f << name();
+  }
+}
+
+void UmlClass::import(QTextOStream & f, const QCString & indent) {
+  if (parent()->kind() == aClass)
+    ((UmlClass *) parent())->import(f, indent);
+  else if (!isJavaExternal()) {
     UmlArtifact * cp = associatedArtifact();
     UmlPackage * pack = (UmlPackage *)
       ((cp != 0) ? (UmlItem *) cp : (UmlItem *) this)->package();
+    QCString s = pack->javaPackage();
     
-    if (pack != UmlArtifact::generation_package()) {
-      QCString s = pack->javaPackage();
-      
-      if (!s.isEmpty() && (s != "java.lang") && (s.left(10) != "java.lang.") &&
-	  !UmlArtifact::generated_one()->imported(s, name()))
-	f << s << '.';
-    }
-    f << name();
+    if (!s.isEmpty())
+      f << indent << "import " << s << '.' << name() << ";\n";
   }
 }
 
@@ -336,3 +356,11 @@ void UmlClass::generate_formals(QTextOStream & f) {
   }
 }
 
+void UmlClass::generate_import(QTextOStream & f, const QCString & indent) {
+  QVector<UmlItem> ch = children();
+  const unsigned sup = ch.size();
+  unsigned index;
+  
+  for (index = 0; index != sup; index += 1)
+    ch[index]->generate_import(f, indent);
+}

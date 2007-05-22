@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -72,6 +72,12 @@ QString MultiLineEdit::text() const {
   QString t = QMultiLineEdit::text();
   
   return fromUnicode(t);
+}
+
+QString MultiLineEdit::stripWhiteSpaceText() const {
+  QString t = QMultiLineEdit::text();
+  
+  return fromUnicode(t.stripWhiteSpace());
 }
 
 // setText() redefinition
@@ -304,9 +310,6 @@ void manage_alias(const BrowserNode * node,
 	nd = (BrowserNode *) nd->parent();
       }
       
-      if (key != st)
-	delete [] key;
-      
       if (value != 0)
 	// find, insert the value
 	s += value;
@@ -316,6 +319,9 @@ void manage_alias(const BrowserNode * node,
 	s += key;
 	s += "}";
       }
+      
+      if (key != st)
+	delete [] key;
     }
     
     // bypass the key

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -54,6 +54,7 @@ AttributeData::AttributeData()
 AttributeData::AttributeData(const AttributeData * model, BrowserNode * bn)
     : ClassMemberData(model),
       init_value(model->init_value), 
+      constraint(model->constraint), 
       is_deleted(FALSE), isa_class_attribute(model->isa_class_attribute),
       isa_volatile_attribute(model->isa_volatile_attribute),
       isa_const_attribute(model->isa_const_attribute),
@@ -244,13 +245,18 @@ void AttributeData::replace(BrowserClass * old, BrowserClass * nw) {
 
 void AttributeData::send_uml_def(ToolCom * com, BrowserNode * bn, 
 				const QString & comment) {
+  int api = com->api_format();
+  
   BasicData::send_uml_def(com, bn, comment);
   com->write_bool(isa_class_attribute);
-  if (com->api_format() >= 13)
+  if (api >= 13)
     com->write_char(isa_volatile_attribute);
-  com->write_char(((com->api_format() >= 23) ||
+  com->write_char(((api >= 23) ||
 		   (uml_visibility != UmlPackageVisibility))
 		  ? uml_visibility : UmlPublic);
+  
+  if (api >= 30)
+    com->write_string(constraint);
   
   type.send_def(com);
   com->write_string(init_value);
@@ -332,6 +338,8 @@ bool AttributeData::tool_cmd(ToolCom * com, const char * args,
 	  else
 	    uml_visibility = v;
 	}
+      case setConstraintCmd:
+	constraint = args;
 	break;
       case setCppDeclCmd:
 	cpp_decl = args;
@@ -424,6 +432,11 @@ void AttributeData::save(QTextStream & st, QString & warning) const {
     st << "init_value ";
     save_string(init_value, st);
   }
+  if (!constraint.isEmpty()) {
+    nl_indent(st);
+    st << "constraint ";
+    save_string(constraint, st);
+  }
   
   BasicData::save(st, warning);
   
@@ -501,6 +514,13 @@ void AttributeData::read(char * & st, char * & k) {
   }
   else
     init_value = QString::null;
+  
+  if (!strcmp(k, "constraint")) {
+    constraint = read_string(st);
+    k = read_keyword(st);
+  }
+  else
+    constraint = QString::null;
   
   BasicData::read(st, k);	// updates k
   

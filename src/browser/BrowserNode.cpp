@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -240,6 +240,10 @@ AType BrowserNode::class_association() const {
   AType r;
   
   return r;
+}
+
+const char * BrowserNode::constraint() const {
+  return "";
 }
 
 // undelete entry operation
@@ -1274,9 +1278,9 @@ bool BrowserNode::tool_cmd(ToolCom * com, const char * args) {
       }
     }
     break;
+  case old_deleteCmd:
   case deleteCmd:
-    // not for a user !
-    if (!root_permission())
+    if (is_read_only && !root_permission())
       com->write_ack(FALSE);
     else {
       delete_it();

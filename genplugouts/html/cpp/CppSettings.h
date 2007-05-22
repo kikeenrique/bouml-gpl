@@ -164,6 +164,14 @@ class CppSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_IsForceNamespacePrefixGeneration(bool v);
 
+    // return if  generate Javadoc style comment
+    static bool isGenerateJavadocStyleComment();
+
+    // set if  generate Javadoc style comment
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsGenerateJavadocStyleComment(bool v);
+
     // returns the default operation 'in' parameter specification 
     // in case its type is an enum
     static const QCString & enumIn();
@@ -536,6 +544,8 @@ class CppSettings : public UmlSettings {
     static bool _is_root_relative_path;
 
     static bool _is_force_namespace_gen;
+
+    static bool _is_generate_javadoc_comment;
 
     static QDict<QCString> _map_includes;
 

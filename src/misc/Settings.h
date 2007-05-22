@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -77,6 +77,7 @@ class ClassDiagramSettings {
     ShowContextMode show_context_mode;
     Uml3States auto_label_position;
     Uml3States draw_all_relations;
+    Uml3States show_infonote;
     Uml3States shadow;
     
     ClassDiagramSettings();

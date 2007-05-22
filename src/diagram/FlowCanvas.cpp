@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -805,7 +805,7 @@ FlowCanvas * FlowCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       result = new FlowCanvas(canvas, bi, di, b, id);
       result->geometry = geo;
       result->fixed_geometry = fixed;
-      result->setZ(z);
+      result->set_z(z);
       result->data = tr;
       connect(tr, SIGNAL(changed()), result, SLOT(modified()));
       connect(tr, SIGNAL(deleted()), result, SLOT(deleted()));

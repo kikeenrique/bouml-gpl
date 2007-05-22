@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -85,8 +85,8 @@ GenerationSettingsDialog::~GenerationSettingsDialog() {
 void GenerationSettingsDialog::init_types() {
   QGrid * grid = new QGrid(1, this);
   
-  grid->setMargin(5);
-  grid->setSpacing(5);
+  grid->setMargin(3);
+  grid->setSpacing(3);
 
   new QLabel("Types correspondence, and C++ operation argument default passing for them :", grid);
 
@@ -98,8 +98,8 @@ void GenerationSettingsDialog::init_types() {
 void GenerationSettingsDialog::init_stereotypes() {
   QGrid * grid = new QGrid(2, this);
   
-  grid->setMargin(5);
-  grid->setSpacing(5);
+  grid->setMargin(3);
+  grid->setSpacing(3);
 
   new QLabel("Relations's \nstereotypes \ncorrespondence : ", grid);
   relation_stereotypes_table = 
@@ -121,8 +121,8 @@ void GenerationSettingsDialog::init_cpp1() {
   QVBox * vtab = new QVBox(this);
   QGrid * grid = new QGrid(2, vtab);
   
-  grid->setMargin(5);
-  grid->setSpacing(5);
+  grid->setMargin(3);
+  grid->setSpacing(3);
 
   new QLabel("Header file\ndefault content :", grid);
   edcpp_h_content = new MultiLineEdit(grid);
@@ -142,22 +142,24 @@ void GenerationSettingsDialog::init_cpp1() {
   
   QHBox * htab = new QHBox(vtab);
   
-  htab->setMargin(5);
-  new QLabel("generated/reversed \nheader file extension : ", htab);
+  htab->setMargin(3);
+  htab->setStretchFactor(new QLabel("generated/reversed \nheader file extension : ", htab), 0);
   edcpp_h_extension = new QComboBox(TRUE, htab);
+  htab->setStretchFactor(edcpp_h_extension, 100);
   edcpp_h_extension->insertItem(GenerationSettings::cpp_h_extension);
   edcpp_h_extension->setCurrentItem(0);
   edcpp_h_extension->insertItem("H");
   edcpp_h_extension->insertItem("Hh");
   
-  new QLabel("    generated/reversed \n    source file extension : ", htab);
+  htab->setStretchFactor(new QLabel("    generated/reversed \n    source file extension : ", htab), 0);
   edcpp_src_extension = new QComboBox(TRUE, htab);
+  htab->setStretchFactor(edcpp_src_extension, 100);
   edcpp_src_extension->insertItem(GenerationSettings::cpp_src_extension);
   edcpp_src_extension->setCurrentItem(0);
   edcpp_src_extension->insertItem("Cpp");
   edcpp_src_extension->insertItem("Cc");
 
-  new QLabel("    #include : ", htab);
+  htab->setStretchFactor(new QLabel("    #include : ", htab), 0);
   cpp_include_with_path_cb = new QComboBox(FALSE, htab);
   cpp_include_with_path_cb->insertItem("without path");
   cpp_include_with_path_cb->insertItem("with absolute path");
@@ -172,18 +174,26 @@ void GenerationSettingsDialog::init_cpp1() {
   else
     cpp_include_with_path_cb->setCurrentItem(1);
 
-  new QLabel("    force namespace \n    prefix generation : ", htab);
+  htab = new QHBox(vtab);
+  htab->setMargin(3);
+  
+  htab->setStretchFactor(new QLabel("force namespace \nprefix generation : ", htab), 0);
   cpp_force_namespace_gen_cb = new QCheckBox(htab);
   cpp_force_namespace_gen_cb->setChecked(GenerationSettings::cpp_force_namespace_gen);
   
+  htab->setStretchFactor(new QLabel("            generate Javadoc \n            style comment : ", htab), 0);
+  cpp_javadoc_cb = new QCheckBox(htab);
+  cpp_javadoc_cb->setChecked(GenerationSettings::cpp_javadoc_comment);
+  
+  htab->setStretchFactor(new QLabel(htab), 1000);
   addTab(vtab, "C++[1]");
 }
 
 void GenerationSettingsDialog::init_cpp2() {
   QGrid * grid = new QGrid(2, this);
   
-  grid->setMargin(5);
-  grid->setSpacing(5);
+  grid->setMargin(3);
+  grid->setSpacing(3);
 
   new QLabel("Class default \ndeclaration :", grid);
   edcpp_class_decl = new MultiLineEdit(grid);
@@ -222,8 +232,8 @@ void GenerationSettingsDialog::init_cpp3() {
   QGrid * grid2;
   QHBox * htab;
   
-  grid->setMargin(5);
-  grid->setSpacing(5);
+  grid->setMargin(3);
+  grid->setSpacing(3);
 
   new QLabel("Attribute default \ndeclaration :", grid);
   edcpp_attr_decl = new MultiLineEdit(grid);
@@ -289,8 +299,8 @@ void GenerationSettingsDialog::init_cpp4() {
   QHBox * htab;
   QButtonGroup * bg;
   
-  grid->setMargin(5);
-  grid->setSpacing(5);
+  grid->setMargin(3);
+  grid->setSpacing(3);
 
   new QLabel("Get operation\ndefault definition : ", grid);
   
@@ -309,7 +319,7 @@ void GenerationSettingsDialog::init_cpp4() {
   cpp_get_value_const_cb->setChecked(GenerationSettings::cpp_get_value_const);
   cpp_get_const_cb->setChecked(GenerationSettings::cpp_get_const);
   
-  new QLabel("   name : ", htab);
+  new QLabel("  name : ", htab);
   edcpp_get_name = new LineEdit(htab);
   edcpp_get_name->setText(GenerationSettings::cpp_get_name);
   QFont font = edcpp_get_name->font();
@@ -318,8 +328,8 @@ void GenerationSettingsDialog::init_cpp4() {
   font.setFixedPitch(TRUE);
   edcpp_get_name->setFont(font);
   
-  new QLabel("   ", htab);
-  uml_follow_cpp_get_name = new QCheckBox("followed at uml level", htab);
+  new QLabel("  ", htab);
+  uml_follow_cpp_get_name = new QCheckBox("also in uml", htab);
   if (GenerationSettings::uml_get_name == CppView)
     uml_follow_cpp_get_name->setChecked(TRUE);
   connect(uml_follow_cpp_get_name, SIGNAL(toggled(bool)),
@@ -336,19 +346,19 @@ void GenerationSettingsDialog::init_cpp4() {
   bg = new QButtonGroup(4, QGroupBox::Horizontal, "Modifiers", htab);
   bg->setExclusive(FALSE);
   cpp_set_inline_cb = new QCheckBox("inline", bg);
-  cpp_set_param_const_cb = new QCheckBox("const parameter", bg);
-  cpp_set_param_ref_cb = new QCheckBox("by reference", bg);
+  cpp_set_param_const_cb = new QCheckBox("const param", bg);
+  cpp_set_param_ref_cb = new QCheckBox("by ref", bg);
   cpp_set_inline_cb->setChecked(GenerationSettings::cpp_set_inline);
   cpp_set_param_const_cb->setChecked(GenerationSettings::cpp_set_param_const);
   cpp_set_param_ref_cb->setChecked(GenerationSettings::cpp_set_param_ref);
   
-  new QLabel("   name : ", htab);
+  new QLabel("  name : ", htab);
   edcpp_set_name = new LineEdit(htab);
   edcpp_set_name->setText(GenerationSettings::cpp_set_name);
   edcpp_set_name->setFont(font);
   
-  new QLabel("   ", htab);
-  uml_follow_cpp_set_name = new QCheckBox("followed at uml level", htab);
+  new QLabel("  ", htab);
+  uml_follow_cpp_set_name = new QCheckBox("also in uml", htab);
   if (GenerationSettings::uml_set_name == CppView)
     uml_follow_cpp_set_name->setChecked(TRUE);
   connect(uml_follow_cpp_set_name, SIGNAL(toggled(bool)),
@@ -367,40 +377,40 @@ void GenerationSettingsDialog::init_cpp4() {
 
   new QLabel("Default type forms\nfor the enums :", grid);
   htab = new QHBox(grid);
-  htab->setMargin(5);
+  htab->setMargin(3);
   new QLabel("input\nparameter : ", htab);
   cpp_enum_in = new LineEdit(htab);
   cpp_enum_in->setText(GenerationSettings::cpp_enum_in);
   cpp_enum_in->setFont(font);
-  new QLabel("    output\n    parameter : ", htab);
+  new QLabel("   output\n   parameter : ", htab);
   cpp_enum_out = new LineEdit(htab);
   cpp_enum_out->setText(GenerationSettings::cpp_enum_out);
   cpp_enum_out->setFont(font);
-  new QLabel("    input output \n    parameter : ", htab);
+  new QLabel("   input output \n   parameter : ", htab);
   cpp_enum_inout = new LineEdit(htab);
   cpp_enum_inout->setText(GenerationSettings::cpp_enum_inout);
   cpp_enum_inout->setFont(font);
-  new QLabel("    operation \n    return : ", htab);
+  new QLabel("   operation \n   return : ", htab);
   cpp_enum_return = new LineEdit(htab);
   cpp_enum_return->setText(GenerationSettings::cpp_enum_return);
   cpp_enum_return->setFont(font);
   
   new QLabel("Default type forms for\nthe types not given\nin the first tab:", grid);
   htab = new QHBox(grid);
-  htab->setMargin(5);
+  htab->setMargin(3);
   new QLabel("input\nparameter : ", htab);
   cpp_in = new LineEdit(htab);
   cpp_in->setText(GenerationSettings::cpp_in);
   cpp_in->setFont(font);
-  new QLabel("    output\n    parameter : ", htab);
+  new QLabel("   output\n   parameter : ", htab);
   cpp_out = new LineEdit(htab);
   cpp_out->setText(GenerationSettings::cpp_out);
   cpp_out->setFont(font);
-  new QLabel("    input output \n    parameter : ", htab);
+  new QLabel("   input output \n   parameter : ", htab);
   cpp_inout = new LineEdit(htab);
   cpp_inout->setText(GenerationSettings::cpp_inout);
   cpp_inout->setFont(font);
-  new QLabel("    operation \n    return : ", htab);
+  new QLabel("   operation \n   return : ", htab);
   cpp_return = new LineEdit(htab);
   cpp_return->setText(GenerationSettings::cpp_return);
   cpp_return->setFont(font);
@@ -434,13 +444,13 @@ void GenerationSettingsDialog::init_cpp5() {
   QHBox * htab;
   
   htab = new QHBox(split);
-  htab->setMargin(5);
+  htab->setMargin(3);
   QLabel * lbl1 = 
     new QLabel("External classes : \nname making\n#include, using", htab);
   edcpp_external_class_decl = new MultiLineEdit(htab);
   edcpp_external_class_decl->setText(GenerationSettings::cpp_external_class_decl);
   htab = new QHBox(split);
-  htab->setMargin(5);
+  htab->setMargin(3);
   QLabel * lbl2 = 
     new QLabel("External types :\n#include form(s),\nusing, etc...", htab);
   cpp_include_table =
@@ -455,12 +465,14 @@ void GenerationSettingsDialog::init_cpp5() {
 void GenerationSettingsDialog::init_java1() {
   QGrid * grid = new QGrid(2, this);
   
-  grid->setMargin(5);
-  grid->setSpacing(5);
+  grid->setMargin(3);
+  grid->setSpacing(3);
 
   new QLabel("file default \ncontent :", grid);
   
   QHBox * htab = new QHBox(grid);
+
+  htab->setMargin(3);
   
   edjava_src_content = new MultiLineEdit(htab);
   edjava_src_content->setText(GenerationSettings::java_src_content);
@@ -470,12 +482,24 @@ void GenerationSettingsDialog::init_java1() {
   font.setFixedPitch(TRUE);
   edjava_src_content->setFont(font);
 
-  new QLabel("    generated / reversed \n    file extension : ", htab);
-  edjava_extension = new QComboBox(TRUE, htab);
+  QVBox * vtab = new QVBox(htab);
+  QHBox * htab2 = new QHBox(vtab);
+
+  vtab->setMargin(3);
+  htab2->setMargin(3);
+
+  new QLabel("    generated / reversed \n    file extension : ", htab2);
+  edjava_extension = new QComboBox(TRUE, htab2);
   edjava_extension->insertItem(GenerationSettings::java_extension);
   edjava_extension->setCurrentItem(0);
   edjava_extension->insertItem("Java");
 
+  htab2 = new QHBox(vtab);
+  htab2->setMargin(3);
+  new QLabel("    generate Javadoc \n    style comment : ", htab2);
+  java_javadoc_cb = new QCheckBox(htab2);
+  java_javadoc_cb->setChecked(GenerationSettings::java_javadoc_comment);
+  
   new QLabel("Class default \ndeclaration :", grid);
   edjava_class_decl = new MultiLineEdit(grid);
   edjava_class_decl->setText(GenerationSettings::java_class_decl);
@@ -505,8 +529,8 @@ void GenerationSettingsDialog::init_java2() {
   QHBox * htab;
   QButtonGroup * bg;
   
-  grid->setMargin(5);
-  grid->setSpacing(5);
+  grid->setMargin(3);
+  grid->setSpacing(3);
 
   new QLabel("Attribute default \ndeclaration :", grid);
   edjava_attr_decl = new MultiLineEdit(grid);
@@ -550,7 +574,7 @@ void GenerationSettingsDialog::init_java2() {
   
   new QLabel("Get operation\ndefault definition : ", grid);
   htab = new QHBox(grid);
-  htab->setMargin(5);
+  htab->setMargin(3);
   java_get_visibility.init(htab, GenerationSettings::java_get_visibility,
 			   TRUE, "Visibility");
   
@@ -559,13 +583,13 @@ void GenerationSettingsDialog::init_java2() {
   java_get_final_cb = new QCheckBox("final", bg);
   java_get_final_cb->setChecked(GenerationSettings::java_get_final);
   
-  new QLabel("   name : ", htab);
+  new QLabel("  name : ", htab);
   edjava_get_name = new LineEdit(htab);
   edjava_get_name->setText(GenerationSettings::java_get_name);
   edjava_get_name->setFont(font);
   
-  new QLabel("   ", htab);
-  uml_follow_java_get_name = new QCheckBox("followed at uml level", htab);
+  new QLabel("  ", htab);
+  uml_follow_java_get_name = new QCheckBox("also in uml", htab);
   if (GenerationSettings::uml_get_name == JavaView)
     uml_follow_java_get_name->setChecked(TRUE);
   connect(uml_follow_java_get_name, SIGNAL(toggled(bool)),
@@ -573,7 +597,7 @@ void GenerationSettingsDialog::init_java2() {
   
   new QLabel("Set operation\ndefault definition : ", grid);
   htab = new QHBox(grid);
-  htab->setMargin(5);
+  htab->setMargin(3);
   java_set_visibility.init(htab, GenerationSettings::java_set_visibility,
 			   TRUE, "Visibility");
   
@@ -584,13 +608,13 @@ void GenerationSettingsDialog::init_java2() {
   java_set_final_cb->setChecked(GenerationSettings::java_set_final);
   java_set_param_final_cb->setChecked(GenerationSettings::java_set_param_final);
   
-  new QLabel("   name : ", htab);
+  new QLabel("  name : ", htab);
   edjava_set_name = new LineEdit(htab);
   edjava_set_name->setText(GenerationSettings::java_set_name);
   edjava_set_name->setFont(font);
   
-  new QLabel("   ", htab);
-  uml_follow_java_set_name = new QCheckBox("followed at uml level", htab);
+  new QLabel("  ", htab);
+  uml_follow_java_set_name = new QCheckBox("also in uml", htab);
   if (GenerationSettings::uml_set_name == JavaView)
     uml_follow_java_set_name->setChecked(TRUE);
   connect(uml_follow_java_set_name, SIGNAL(toggled(bool)),
@@ -615,14 +639,14 @@ void GenerationSettingsDialog::init_java3() {
   QHBox * htab;
   
   htab = new QHBox(split);
-  htab->setMargin(5);
+  htab->setMargin(3);
   QLabel * lbl1 = 
     new QLabel("External classes : \nname making", htab);
   edjava_external_class_decl = new LineEdit(htab);
   edjava_external_class_decl->setText(GenerationSettings::java_external_class_decl);
 
   htab = new QHBox(split);
-  htab->setMargin(5);
+  htab->setMargin(3);
   QLabel * lbl2 = 
     new QLabel("External types :\nimport form(s) etc...", htab);
   java_import_table =
@@ -641,7 +665,7 @@ void GenerationSettingsDialog::init_idl1() {
   QHBox * htab;
   
   htab = new QHBox(split);
-  htab->setMargin(5);
+  htab->setMargin(3);
   QLabel * lbl1 = 
     new QLabel("file default \ncontent :", htab);
   edidl_src_content = new MultiLineEdit(htab);
@@ -660,8 +684,8 @@ void GenerationSettingsDialog::init_idl1() {
 
   QGrid * grid = new QGrid(2, split);
   
-  grid->setMargin(5);
-  grid->setSpacing(5);
+  grid->setMargin(3);
+  grid->setSpacing(3);
 
   new QLabel("Interface default \ndeclaration :", grid);
   edidl_interface_decl = new MultiLineEdit(grid);
@@ -708,8 +732,8 @@ void GenerationSettingsDialog::init_idl2() {
   QGrid * grid2;
   int i;
   
-  grid->setMargin(5);
-  grid->setSpacing(5);
+  grid->setMargin(3);
+  grid->setSpacing(3);
 
   new QLabel("Association and\naggregation\ndefault\ndeclaration :", grid);
   grid2 = new QGrid(2, grid);
@@ -767,8 +791,8 @@ void GenerationSettingsDialog::init_idl3() {
   QGrid * grid = new QGrid(2, this);
   QHBox * htab;
   
-  grid->setMargin(5);
-  grid->setSpacing(5);
+  grid->setMargin(3);
+  grid->setSpacing(3);
 
   new QLabel("Attribute default \ndeclaration :", grid);
   edidl_attr_decl = new MultiLineEdit(grid);
@@ -806,8 +830,8 @@ void GenerationSettingsDialog::init_idl3() {
   edidl_get_name->setText(GenerationSettings::idl_get_name);
   edidl_get_name->setFont(font);
   
-  new QLabel("   ", htab);
-  uml_follow_idl_get_name = new QCheckBox("followed at uml level", htab);
+  new QLabel("  ", htab);
+  uml_follow_idl_get_name = new QCheckBox("also in uml", htab);
   if (GenerationSettings::uml_get_name == IdlView)
     uml_follow_idl_get_name->setChecked(TRUE);
   connect(uml_follow_idl_get_name, SIGNAL(toggled(bool)),
@@ -818,13 +842,13 @@ void GenerationSettingsDialog::init_idl3() {
   idl_set_oneway_cb = new QCheckBox("oneway", htab);
   idl_set_oneway_cb->setChecked(GenerationSettings::idl_set_oneway);
   
-  new QLabel("   name : ", htab);
+  new QLabel("  name : ", htab);
   edidl_set_name = new LineEdit(htab);
   edidl_set_name->setText(GenerationSettings::idl_set_name);
   edidl_set_name->setFont(font);
   
-  new QLabel("   ", htab);
-  uml_follow_idl_set_name = new QCheckBox("followed at uml level", htab);
+  new QLabel("  ", htab);
+  uml_follow_idl_set_name = new QCheckBox("also in uml", htab);
   if (GenerationSettings::uml_set_name == IdlView)
     uml_follow_idl_set_name->setChecked(TRUE);
   connect(uml_follow_idl_set_name, SIGNAL(toggled(bool)),
@@ -846,13 +870,13 @@ void GenerationSettingsDialog::init_idl4() {
   QHBox * htab;
   
   htab = new QHBox(split);
-  htab->setMargin(5);
+  htab->setMargin(3);
   QLabel * lbl1 = 
     new QLabel("External classes : \nname making\n#include", htab);
   edidl_external_class_decl = new MultiLineEdit(htab);
   edidl_external_class_decl->setText(GenerationSettings::idl_external_class_decl);
   htab = new QHBox(split);
-  htab->setMargin(5);
+  htab->setMargin(3);
   QLabel * lbl2 = 
     new QLabel("External types :\n#include form(s)\netc...", htab);
   idl_include_table =
@@ -872,31 +896,31 @@ void GenerationSettingsDialog::init_descriptions() {
   QHBox * htab;
   
   htab = new QHBox(split);
-  htab->setMargin(5);
+  htab->setMargin(3);
   new QLabel("Artifact\ndefault\ndescription : ", htab);
   edartifact_default_description = new MultiLineEdit(htab);
   edartifact_default_description->setText(GenerationSettings::artifact_default_description);
   
   htab = new QHBox(split);
-  htab->setMargin(5);
+  htab->setMargin(3);
   new QLabel("Class\ndefault\ndescription : ", htab);
   edclass_default_description = new MultiLineEdit(htab);
   edclass_default_description->setText(GenerationSettings::class_default_description);
   
   htab = new QHBox(split);
-  htab->setMargin(5);
+  htab->setMargin(3);
   new QLabel("Operation\ndefault\ndescription : ", htab);
   edoperation_default_description = new MultiLineEdit(htab);
   edoperation_default_description->setText(GenerationSettings::operation_default_description);
   
   htab = new QHBox(split);
-  htab->setMargin(5);
+  htab->setMargin(3);
   new QLabel("Attribute\ndefault\ndescription : ", htab);
   edattribute_default_description = new MultiLineEdit(htab);
   edattribute_default_description->setText(GenerationSettings::attribute_default_description);
   
   htab = new QHBox(split);
-  htab->setMargin(5);
+  htab->setMargin(3);
   new QLabel("Relation\ndefault\ndescription : ", htab);
   edrelation_default_description = new MultiLineEdit(htab);
   edrelation_default_description->setText(GenerationSettings::relation_default_description);
@@ -913,10 +937,10 @@ void GenerationSettingsDialog::init_dirs() {
   QVBox * vtab = new QVBox(this);
   QHBox * htab;
   
-  vtab->setMargin(5);
+  vtab->setMargin(3);
   
   htab = new QHBox(vtab);
-  htab->setMargin(5);
+  htab->setMargin(3);
   new QLabel("Defining a project root directory allows to specify \
 packages's generation directory relative to the root directory rather \
 than absolute.\n"
@@ -924,7 +948,7 @@ than absolute.\n"
 	     htab);
   
   htab = new QHBox(vtab);
-  htab->setMargin(5);
+  htab->setMargin(3);
   QLabel * lbl1 = new QLabel("C++ root dir : ", htab);
   edcpproot = new LineEdit(GenerationSettings::cpp_root_dir, htab);
   new QLabel(" ", htab);
@@ -938,11 +962,11 @@ than absolute.\n"
   new QLabel("", htab);
   
   htab = new QHBox(vtab);
-  htab->setMargin(5);
+  htab->setMargin(3);
   new QLabel("", htab);
   
   htab = new QHBox(vtab);
-  htab->setMargin(5);
+  htab->setMargin(3);
   QLabel * lbl2 = new QLabel("Java root dir : ", htab);
   edjavaroot = new LineEdit(GenerationSettings::java_root_dir, htab);
   new QLabel(" ", htab);
@@ -956,11 +980,11 @@ than absolute.\n"
   new QLabel("", htab);
   
   htab = new QHBox(vtab);
-  htab->setMargin(5);
+  htab->setMargin(3);
   new QLabel("", htab);
   
   htab = new QHBox(vtab);
-  htab->setMargin(5);
+  htab->setMargin(3);
   QLabel * lbl3 = new QLabel("Idl root dir : ", htab);
   edidlroot = new LineEdit(GenerationSettings::idl_root_dir, htab);
   new QLabel(" ", htab);
@@ -1129,6 +1153,7 @@ void GenerationSettingsDialog::accept() {
       GenerationSettings::cpp_include_with_path = TRUE;
       GenerationSettings::cpp_relative_path = TRUE;
       GenerationSettings::cpp_root_relative_path = FALSE;
+      break;
     default:
       GenerationSettings::cpp_include_with_path = TRUE;
       GenerationSettings::cpp_relative_path = FALSE;
@@ -1137,6 +1162,8 @@ void GenerationSettingsDialog::accept() {
     
     GenerationSettings::cpp_force_namespace_gen = 
       cpp_force_namespace_gen_cb->isChecked();
+
+    GenerationSettings::cpp_javadoc_comment = cpp_javadoc_cb->isChecked();
 
     GenerationSettings::cpp_class_decl = edcpp_class_decl->text();
     GenerationSettings::cpp_external_class_decl = edcpp_external_class_decl->text();
@@ -1160,7 +1187,8 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::java_enum_pattern_item_case = edjava_enum_pattern_item_case->text();
     GenerationSettings::java_attr_decl = edjava_attr_decl->text();
     GenerationSettings::java_oper_def = edjava_oper_def->text();
-   
+    GenerationSettings::java_javadoc_comment = java_javadoc_cb->isChecked();
+    
     GenerationSettings::idl_interface_decl = edidl_interface_decl->text();
     GenerationSettings::idl_valuetype_decl = edidl_valuetype_decl->text();
     GenerationSettings::idl_struct_decl = edidl_struct_decl->text();
@@ -1425,7 +1453,7 @@ bool TypesTable::check() {
       if (text(index, col).stripWhiteSpace().isEmpty()) {
 	QString err;
 
-	err.sprintf("line %d : %s specification is mandatory", 
+	err.sprintf("row %d : %s specification is mandatory", 
 		    index + 1, (const char *) horizontalHeader()->label(col));
 	msg_critical("Error", err);
 	return FALSE;
@@ -1436,7 +1464,7 @@ bool TypesTable::check() {
       if (text(index, col).find("${type}") == -1) {
 	QString err;
 
-	err.sprintf("line %d : %s '%s' argument default passing does not contains ${type}", 
+	err.sprintf("row %d : %s '%s' argument default passing does not contains ${type}", 
 		    index + 1, (const char *) text(index, 0),
 		    (const char *) horizontalHeader()->label(col));
 	msg_critical("Error", err);

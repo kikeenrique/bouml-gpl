@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -30,7 +30,8 @@
 UmlItem::~UmlItem() {
 }
 
-bool UmlItem::manage_comment(const char *& p, const char *& pp) {
+bool UmlItem::manage_comment(const char *& p, const char *& pp,
+			     bool javadoc) {
   static QString the_comment;
   
   p += 10;
@@ -41,16 +42,32 @@ bool UmlItem::manage_comment(const char *& p, const char *& pp) {
   
   const char * comment = description();
   
-  the_comment = "//";
-  
-  do {
-    the_comment += *comment;
-    if ((*comment++ == '\n') && *comment)
-      the_comment += "//";
-  } while (*comment);
-  
-  if (*p != '\n')
-    the_comment += '\n';
+  if (javadoc) {
+    the_comment = "/**\n * ";
+    
+    do {
+      the_comment += *comment;
+      if ((*comment++ == '\n') && *comment)
+	the_comment += " * ";
+    } while (*comment);
+    
+    if (*p != '\n')
+      the_comment += (comment[-1] != '\n') ? "\n */\n" : " */\n";
+    else
+      the_comment += (comment[-1] != '\n') ? "\n */" : " */";
+  }
+  else {
+    the_comment = "//";
+    
+    do {
+      the_comment += *comment;
+      if ((*comment++ == '\n') && *comment)
+	the_comment += "//";
+    } while (*comment);
+    
+    if (*p != '\n')
+      the_comment += '\n';
+  }
     
   pp = p;
   p = the_comment;

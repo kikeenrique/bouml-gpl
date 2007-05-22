@@ -163,6 +163,12 @@ class UmlBaseItem {
     // you will have to call Children() to re-access to them
     virtual void unload(bool rec = FALSE, bool del = FALSE);
 
+    // remove the element from the model, use it carefully because
+    // after that the element can't be used anymore by the plug-out
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    bool deleteIt();
+
     //  'id' is an identifier returned by apply(), indicates if the tool is still running
     static bool isToolRunning(int id);
 
@@ -308,6 +314,45 @@ class UmlBaseItem {
   friend class UmlBaseChoicePseudoState;
   friend class UmlBaseForkPseudoState;
   friend class UmlBaseJoinPseudoState;
+  friend class UmlBaseObjectDiagram;
+  friend class UmlBaseActivity;
+  friend class UmlBaseActivityDiagram;
+  friend class UmlBaseActivityNode;
+  friend class UmlBaseFlow;
+  friend class UmlBaseActivityRegion;
+  friend class UmlBaseExpansionRegion;
+  friend class UmlBaseInterruptibleActivityRegion;
+  friend class UmlBaseActivityAction;
+  friend class UmlBaseSendObjectAction;
+  friend class UmlBaseUnmarshallAction;
+  friend class UmlBaseOnSignalAction;
+  friend class UmlBaseSendSignalAction;
+  friend class UmlBaseBroadcastSignalAction;
+  friend class UmlBaseValueSpecificationAction;
+  friend class UmlBaseOpaqueAction;
+  friend class UmlBaseAcceptEventAction;
+  friend class UmlBaseCallOperationAction;
+  friend class UmlBaseCallBehaviorAction;
+  friend class UmlBaseAccessVariableValueAction;
+  friend class UmlBaseClearVariableValueAction;
+  friend class UmlBaseReadVariableValueAction;
+  friend class UmlBaseWriteVariableValueAction;
+  friend class UmlBaseAddVariableValueAction;
+  friend class UmlBaseRemoveVariableValueAction;
+  friend class UmlBaseActivityControlNode;
+  friend class UmlBaseInitialActivityNode;
+  friend class UmlBaseFlowFinalActivityNode;
+  friend class UmlBaseActivityFinalActivityNode;
+  friend class UmlBaseDecisionActivityNode;
+  friend class UmlBaseMergeActivityNode;
+  friend class UmlBaseForkActivityNode;
+  friend class UmlBaseJoinActivityNode;
+  friend class UmlBaseActivityObject;
+  friend class UmlBaseExpansionNode;
+  friend class UmlBasePinParameter;
+  friend class UmlBaseActivityPin;
+  friend class UmlBaseActivityParameter;
+  friend class UmlBaseParameterSet;
 };
 
 #endif

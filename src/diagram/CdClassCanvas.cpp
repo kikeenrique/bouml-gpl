@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -36,6 +36,7 @@
 #include "RelationCanvas.h"
 #include "SimpleRelationCanvas.h"
 #include "ArrowPointCanvas.h"
+#include "ConstraintCanvas.h"
 #include "BrowserClass.h"
 #include "BrowserOperation.h"
 #include "UmlPixmap.h"
@@ -67,9 +68,11 @@ CdClassCanvas::CdClassCanvas(BrowserNode * bn, UmlCanvas * canvas,
   itscolor = UmlDefaultColor;
   indicate_visible_attr = FALSE;
   indicate_visible_oper = FALSE;
+  constraint = 0;
   
   compute_size();	// update used_settings
   set_center100();
+  check_constraint();
   
   subscribe(bn->get_data());	// = TRUE
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
@@ -91,6 +94,7 @@ CdClassCanvas::CdClassCanvas(UmlCanvas * canvas, int id)
   itscolor = UmlDefaultColor;
   indicate_visible_attr = FALSE;
   indicate_visible_oper = FALSE;
+  constraint = 0;
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
 
@@ -113,6 +117,9 @@ void CdClassCanvas::delete_it() {
   
   if (templ)
     templ->delete_it();
+  
+  if (constraint)
+    constraint->delete_it();
   
   DiagramCanvas::delete_it();
 }
@@ -404,6 +411,7 @@ void CdClassCanvas::modified() {
       draw_all_relations();    
       draw_all_simple_relations();
     }
+    check_constraint();
     canvas()->update();
     package_modified();
   }
@@ -510,19 +518,43 @@ void CdClassCanvas::draw_all_class_assoc() {
   }
 }
 
+void CdClassCanvas::check_constraint() {
+  // update must be called before
+  if (used_settings.show_infonote == UmlYes) {
+    ConstraintCanvas * c = 
+      ConstraintCanvas::compute(the_canvas(), this, constraint);
+    
+    if (constraint == 0) {
+      constraint = c;
+      constraint->upper();
+      
+      constraint->move((int) (x() + width() + the_canvas()->zoom() * 20),
+		       (int) y() + height());
+      constraint->show();
+      (new ArrowCanvas(the_canvas(), this, constraint, UmlAnchor, 0, FALSE))->show();
+    }
+  }
+  else if (constraint != 0) {
+    constraint->delete_it();
+    constraint = 0;
+  }
+}
+
 void CdClassCanvas::change_scale() {
   QCanvasRectangle::setVisible(FALSE);
   compute_size();
   recenter();
-  if (templ)
+  if (templ != 0)
     templ->update();
   QCanvasRectangle::setVisible(TRUE);
 }
 
 void CdClassCanvas::moveBy(double dx, double dy) {
   DiagramCanvas::moveBy(dx, dy);
-  if (templ)
+  if (templ != 0)
     templ->update();
+  if ((constraint != 0) && !constraint->selected())
+    constraint->moveBy(dx, dy);
 }
 
 bool CdClassCanvas::move_with_its_package() const {
@@ -1135,6 +1167,11 @@ const char * CdClassCanvas::may_start(UmlCode & l) const {
 }
 
 const char * CdClassCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  if (l == UmlAnchor)
+    return (IsaRelation(dest->type()))
+      ? ((RelationCanvas *) dest)->may_connect(l, this)
+      : dest->may_start(l);
+  
   switch (dest->type()) {
   case UmlClass:
     return ((BrowserClass *) browser_node)
@@ -1147,15 +1184,7 @@ const char * CdClassCanvas::may_connect(UmlCode & l, const DiagramItem * dest) c
     l = UmlDependOn;
     return 0;
   default:
-    if (l == UmlAnchor) {
-      if (IsaRelation(dest->type()))
-	return ((RelationCanvas *) dest)->may_connect(l, this);
-      else
-	// ok
-	return 0;
-    }
-    else 
-      return "illegal";
+    return "illegal";
   }
 }
 
@@ -1234,6 +1263,13 @@ void CdClassCanvas::save(QTextStream & st, bool ref, QString & warning) const {
 		     hidden_visible_operations);
     nl_indent(st);
     save_xyz(st, this, "xyz");
+    
+    if (constraint != 0)
+      constraint->save(st, FALSE, warning);
+
+    nl_indent(st);
+    st << "end";
+    
     indent(-1);
   }
 }
@@ -1273,7 +1309,7 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
       while ((strcmp(k = read_keyword(st), "hidden_operations")) &&
 	     (strcmp(k, "visible_operations")) &&
 	     (strcmp(k, "xyz"))) {
-	BrowserNode * b = BrowserAttribute::read(st, k, 0);
+	BrowserNode * b = BrowserAttribute::read(st, k, 0, FALSE);
 	
 	if ((b != 0) && (l.find(b) != -1))
 	  result->hidden_visible_attributes.append(b);
@@ -1288,7 +1324,7 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
       br->children(l, UmlOperation);
       
       while (strcmp(k = read_keyword(st), "xyz")) {
-	BrowserNode * b = BrowserOperation::read(st, k, 0);
+	BrowserNode * b = BrowserOperation::read(st, k, 0, FALSE);
 	
 	if ((b != 0) && (l.find(b) != -1))
 	  result->hidden_visible_operations.append(b);
@@ -1299,9 +1335,20 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
       wrong_keyword(k, "xyz");
     read_xyz(st, result);
     
+    if (read_file_format() >= 37) {
+      k = read_keyword(st);
+      if (! strcmp(k, "constraint")) {
+	result->constraint = ConstraintCanvas::read(st, canvas, k, result);
+	k = read_keyword(st);
+      }
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
+    
     result->compute_size();
     result->set_center100();
     result->show();
+    result->check_constraint();
     return result;
   }
   else 

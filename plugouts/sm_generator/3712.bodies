@@ -65,6 +65,15 @@ class UmlBaseRelation
   read_if_needed_();
   
   return _rel_kind;
+!!!152704.cpp!!!	side(in first : bool) : UmlRelation
+  UmlCom::send_cmd(_identifier, sideCmd, (char) first);
+  
+  return (UmlRelation *) UmlBaseItem::read_();
+!!!152704.java!!!	side(in first : bool) : UmlRelation
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.sideCmd, 
+		  (first) ? (byte) 1 : (byte) 0);
+  
+  return (UmlRelation) UmlBaseItem.read_();
 !!!37888.cpp!!!	isReadOnly() : bool
   read_if_needed_();
   
@@ -121,6 +130,33 @@ class UmlBaseRelation
   read_if_needed_();
   
   return _role_type;
+!!!152448.cpp!!!	association() : UmlTypeSpec
+  read_if_needed_();
+  
+  return _association;
+!!!152448.java!!!	association() : UmlTypeSpec
+  read_if_needed_();
+  
+  return _association;
+!!!152576.cpp!!!	set_Association(in t : UmlTypeSpec) : bool
+  if (set_it_(_association, t, setRelationAssocClassCmd)) {
+    UmlBaseRelation * other = (UmlBaseRelation *) UmlBaseItem::read_();
+    
+    if (other != 0)
+      other->_association = t;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!152576.java!!!	set_Association(in t : UmlTypeSpec) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setRelationAssocClassCmd, t);
+  UmlCom.check();
+  
+  _association = t;
+  UmlBaseRelation other = (UmlBaseRelation) UmlBaseItem.read_();
+  
+  if (other != null)
+    other._association = t;
 !!!38656.cpp!!!	roleName() : string
   read_if_needed_();
   
@@ -342,6 +378,9 @@ class UmlBaseRelation
   UmlBaseClassMember::read_uml_();
   _rel_kind = (aRelationKind) UmlCom::read_char();
   _role_type = (UmlClass *) UmlBaseItem::read_();
+  _association.type = (UmlClass *) UmlBaseItem::read_();
+  if (_association.type == 0)
+    _association.explicit_type = UmlCom::read_string();
   _role_name = UmlCom::read_string();
   _multiplicity = UmlCom::read_string();
   _default_value = UmlCom::read_string();
@@ -352,6 +391,10 @@ class UmlBaseRelation
   super.read_uml_();
   _rel_kind = aRelationKind.fromInt(UmlCom.read_char());
   _role_type = (UmlClass) UmlBaseItem.read_();
+  _association = new UmlTypeSpec();
+  _association.type = (UmlClass) UmlBaseItem.read_();
+  if (_association.type == null)
+    _association.explicit_type = UmlCom.read_string();
   _role_name = UmlCom.read_string();
   _multiplicity = UmlCom.read_string();
   _default_value = UmlCom.read_string();
@@ -367,7 +410,7 @@ class UmlBaseRelation
   _cpp_mutable = UmlCom.read_bool();
   _cpp_virtual_inheritance = UmlCom.read_bool();
 !!!41472.cpp!!!	read_java_() : void
-  UmlBaseClassItem::read_java_();
+  UmlBaseClassMember::read_java_();
   _java_transient = UmlCom::read_bool();
 !!!41472.java!!!	read_java_() : void
   super.read_java_();

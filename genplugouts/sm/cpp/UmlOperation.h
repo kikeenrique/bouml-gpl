@@ -17,6 +17,8 @@ class UmlOperation : public UmlBaseOperation {
     UmlOperation(void * id, const QCString & n) : UmlBaseOperation(id, n), _managed(FALSE) {};
 
     //  set the default C++/Java definition
+    //  set it usefull
+    
     void defaultDef();
 
     //  set the return type in C++/Java

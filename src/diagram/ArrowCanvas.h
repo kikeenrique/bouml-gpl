@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,7 +49,7 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
   protected:
     DiagramItem * begin;
     DiagramItem * end;
-    UmlCode itstype;
+    UmlCode itstype : 8;
     // HV : start and point aligned horiz, true end and point aligned vert
     // HVr : true end and point aligned horiz, start and point aligned vert
     // HVH = start and point1 aligned horiz,
@@ -57,9 +57,9 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     //	     point2 and true end aligned horiz
     // etc ...
     // X and Xr seem to be X for the user when he choose the geometry
-    LineGeometry geometry;
-    bool fixed_geometry;
-    bool auto_pos;
+    LineGeometry geometry : 8;
+    bool fixed_geometry : 8;
+    bool auto_pos : 8;
     LabelCanvas * label;
     LabelCanvas * stereotype;
     QPoint beginp;

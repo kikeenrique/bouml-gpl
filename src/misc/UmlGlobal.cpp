@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -96,13 +96,18 @@ void init_font()
 
 void resize_font(int i)
 {
-  NormalFont.setPointSize(i);
-  BoldFont.setPointSize(i);
-  ItalicFont.setPointSize(i);
-  BoldItalicFont.setPointSize(i);
-  UnderlineFont.setPointSize(i);
-  BoldUnderlineFont.setPointSize(i);
-  StrikeOutFont.setPointSize(i);
+  NormalFont.setPointSizeFloat(i);
+  BoldFont.setPointSizeFloat(i);
+  ItalicFont.setPointSizeFloat(i);
+  BoldItalicFont.setPointSizeFloat(i);
+  UnderlineFont.setPointSizeFloat(i);
+  BoldUnderlineFont.setPointSizeFloat(i);
+  StrikeOutFont.setPointSizeFloat(i);
+  
+  QFont fn = QApplication::font();
+  
+  fn.setPointSizeFloat(i);
+  QApplication::setFont(fn, TRUE);
 }
 
 const QColor & color(UmlColor c)

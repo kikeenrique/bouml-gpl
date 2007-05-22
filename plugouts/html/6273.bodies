@@ -1,15 +1,29 @@
 class UmlClassMember
-!!!148098.cpp!!!	annotation() : void
+!!!148098.cpp!!!	annotation_constraint() : void
 if (! javaAnnotations().isEmpty()) {
   fw.write("<p> Java annotation(s) :<ul>");
   writeq(javaAnnotations());
   fw.write("</ul>");
 }
-!!!148098.java!!!	annotation() : void
+
+if (! constraint().isEmpty()) {
+  fw.write("<p> Constraint :<ul>");
+  writeq(constraint());
+  fw.write("</ul>");
+}
+!!!148098.java!!!	annotation_constraint() : void
 String s = javaAnnotations();
   
 if (s.length() != 0) {
   fw.write("<p> Java annotation(s) :<ul>");
+  writeq(s);
+  fw.write("</ul>");
+}
+
+s = constraint();
+  
+if (s.length() != 0) {
+  fw.write("<p> Constraint :<ul>");
   writeq(s);
   fw.write("</ul>");
 }

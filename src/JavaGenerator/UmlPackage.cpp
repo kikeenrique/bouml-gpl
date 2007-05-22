@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -24,6 +24,7 @@
 // *************************************************************************
 
 #include <qdir.h>
+#include <qtextstream.h> 
 
 #include "UmlPackage.h"
 #include "UmlCom.h"
@@ -120,4 +121,11 @@ void UmlPackage::generate() {
 
 UmlPackage * UmlPackage::package() {
   return this;
+}
+
+void UmlPackage::import(QTextOStream & f, const QCString & indent) {
+  QCString s = javaPackage();
+  
+  if (!s.isEmpty())
+    f << indent << "import " << s << ".*;\n";
 }

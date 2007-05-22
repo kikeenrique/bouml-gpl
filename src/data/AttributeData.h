@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,6 +39,7 @@ class AttributeData : public ClassMemberData {
   protected:
     AType type;
     MyStr init_value;
+    MyStr constraint;
     bool is_deleted : 1;
     bool isa_class_attribute : 1;
     bool isa_volatile_attribute : 1;
@@ -79,6 +80,8 @@ class AttributeData : public ClassMemberData {
   
     virtual QString definition(bool full) const;
     QString definition(bool full, DrawingLanguage language) const;
+    
+    const char * get_constraint() const { return constraint; };
     
     bool get_isa_class_attribute() const { return isa_class_attribute; };
     

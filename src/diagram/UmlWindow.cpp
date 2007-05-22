@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,7 +42,6 @@
 #include <qmenubar.h>
 #ifndef QT_NO_PRINTER
 #include <qprinter.h>
-#include <qpainter.h>
 #endif
 #include <qwhatsthis.h>
 #include <qapplication.h>
@@ -80,6 +79,7 @@
 #include "UmlGlobal.h"
 #include "UmlPixmap.h"
 #include "DialogUtil.h"
+#include "MenuTitle.h"
 #include "myio.h"
 #include "mu.h"
 
@@ -92,7 +92,10 @@ UmlWindow * UmlWindow::the;
 
 const char * projectNewText = "To create a <em>new project</em>.<br><br>"
   "You will ask to create a new directory having the name of the project "
-  "where all the saving files will be placed.";
+  "where all the peoject files will be placed.";
+const char * projectNewFromTemplateText = "To create a <em>new project</em> from an already existing one.<br><br>"
+  "You will ask to create a new directory having the name of the project "
+  "where all the project files will be placed.";
 const char * projectOpenText = "To open a <em>project</em>.<br><br>"
   "You can also select the <b>Open command</b> from the Project menu.";
 const char * projectSaveText = "To save the project.<br><br>"
@@ -379,6 +382,11 @@ void UmlWindow::projectMenuAboutToShow() {
     id = projectMenu->insertItem("&New", this, SLOT(newProject()));
     projectMenu->setWhatsThis(id, projectNewText);
     
+    if (getenv("BOUML_TEMPLATE") != 0) {
+      id = projectMenu->insertItem("Create from &Template", this, SLOT(newFromTemplate()));
+      projectMenu->setWhatsThis(id, projectNewFromTemplateText);
+    }
+    
     id = projectMenu->insertItem(openIcon, "&Open",
 				 this, SLOT(load()));
     projectMenu->setWhatsThis(id, projectOpenText);
@@ -587,6 +595,14 @@ void UmlWindow::newProject() {
   }
 }
 
+void UmlWindow::newFromTemplate() {
+  abort_line_construction();
+  if (!BrowserNode::edition_active()) {
+    close();
+    load(getenv("BOUML_TEMPLATE"), true);
+  }
+}
+
 void UmlWindow::load() {
   abort_line_construction();
   if (!BrowserNode::edition_active()) {
@@ -635,7 +651,7 @@ void UmlWindow::load_it(QString fn) {
   the->load(fn);
 }
 
-void UmlWindow::load(QString fn) {
+void UmlWindow::load(QString fn, bool forcesaveas) {
   clear_select_historic();
   
   QFileInfo fi(fn);
@@ -717,12 +733,16 @@ void UmlWindow::load(QString fn) {
     
     msg_warning("Bouml", m);
     
-    if (must_save_as) {
+    if (must_save_as || forcesaveas) {
       if (! saveas_it())
 	close_it();
     }
     else
       browser->get_project()->package_modified();
+  }
+  else if (forcesaveas) {
+    if (! saveas_it())
+      close_it();
   }
   else if ((user_id() != 0) && (fi.baseName() == "empty")) {
     set_user_id(-1);
@@ -1024,12 +1044,13 @@ void UmlWindow::read_session() {
 void UmlWindow::print() {
   abort_line_construction();
 #ifndef QT_NO_PRINTER
-  DiagramWindow * m = ((DiagramWindow *) ws->activeWindow());
-  if (m) {
+  DiagramWindow * dw = ((DiagramWindow *) ws->activeWindow());
+  if (dw) {
     QPrinter printer;
 
-    if (format >= IsoA0Landscape)
-      printer.setOrientation(QPrinter::Landscape);
+    printer.setOrientation((format >= IsoA0Landscape)
+			   ? QPrinter::Landscape
+			   : QPrinter::Portrait);
 
     static bool initialized = FALSE;
     static QPrinter::ColorMode cm = QPrinter::Color;
@@ -1047,12 +1068,22 @@ void UmlWindow::print() {
       cm = printer.colorMode();
       ps = printer.pageSize();
       fp = printer.fullPage();
+      
+      QPopupMenu m(0);
+  
+      m.insertItem(new MenuTitle("Choose", m.font()),  -1);
+      m.insertSeparator();
+      m.insertItem("Print on 1 page", 1);
+      m.insertItem("Print on 4 pages", 2);
+      m.insertItem("Print on 9 pages", 3);
 
-      QPainter paint(&printer);
-
-      QApplication::setOverrideCursor(Qt::waitCursor);
-      m->get_view()->print(&paint);
-      QApplication::restoreOverrideCursor();
+      int div = m.exec(QCursor::pos());
+      
+      if ((div >= 1) && (div <= 3)) {
+	QApplication::setOverrideCursor(Qt::waitCursor);
+	dw->get_view()->print(printer, div);
+	QApplication::restoreOverrideCursor();
+      }
     }
   }
 #endif

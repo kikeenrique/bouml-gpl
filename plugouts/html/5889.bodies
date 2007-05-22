@@ -52,7 +52,7 @@ class UmlAttribute
 
   fw.write("</ul>");
   
-  annotation();
+  annotation_constraint();
  
   s = description();
   
@@ -94,7 +94,7 @@ class UmlAttribute
 
   fw.write("</ul>");
   
-  annotation();
+  annotation_constraint();
  
   s = description();
   

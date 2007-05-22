@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyright (C) 2004-2007 Bruno PAGES  All rights reserved.
+// Copyleft 2004-2007 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -30,7 +30,8 @@
 UmlItem::~UmlItem() {
 }
 
-void UmlItem::manage_comment(const char *& p, const char *& pp) {
+void UmlItem::manage_comment(const char *& p, const char *& pp,
+			     bool javadoc) {
   static QString the_comment;
   
   p += 10;
@@ -40,30 +41,33 @@ void UmlItem::manage_comment(const char *& p, const char *& pp) {
     return;
   
   const char * comment = description();
-  const char * pnl = strchr(comment, '\n');
   
-  if ((pnl != 0) && (pnl[1] != 0)) {
-    // several lines , use /* */
-    the_comment = "/**";
+  if (javadoc) {
+    the_comment = "/**\n * ";
     
     do {
-      if (*comment == '\n') {
-	if (comment[1] == 0)
-	  break;
-	the_comment += "\n * ";
-      }
-      else
-	the_comment += *comment;
-    } while (*++comment);
+      the_comment += *comment;
+      if ((*comment++ == '\n') && *comment)
+	the_comment += " * ";
+    } while (*comment);
     
-    the_comment += "\n */";
+    if (*p != '\n')
+      the_comment += (comment[-1] != '\n') ? "\n */\n" : " */\n";
+    else
+      the_comment += (comment[-1] != '\n') ? "\n */" : " */";
   }
-  else
-    // only one line
-    the_comment = QString("// ") + comment;
-  
-  if (*p != '\n')
-    the_comment += '\n';
+  else {
+    the_comment = "//";
+    
+    do {
+      the_comment += *comment;
+      if ((*comment++ == '\n') && *comment)
+	the_comment += "//";
+    } while (*comment);
+    
+    if (*p != '\n')
+      the_comment += '\n';
+  }
     
   pp = p;
   p = the_comment;
@@ -117,6 +121,10 @@ void UmlItem::manage_alias(const char *& p, QTextOStream & ts) {
 }
 
 void UmlItem::generate() {
+  // does nothing
+}
+
+void UmlItem::generate_import(QTextOStream &, const QCString &) {
   // does nothing
 }
 
