@@ -201,6 +201,7 @@ void CdClassCanvas::compute_size() {
   int noper = 0;
   bool full_members = (used_settings.show_full_members_definition == UmlYes);
   bool show_visibility = (used_settings.show_members_visibility == UmlYes);
+  bool show_stereotype = (used_settings.show_members_stereotype == UmlYes);
   bool show_dir = (used_settings.show_parameter_dir == UmlYes);
   bool show_name = (used_settings.show_parameter_name == UmlYes);
   bool hide_attrs = (used_settings.hide_attributes == UmlYes);
@@ -303,10 +304,18 @@ void CdClassCanvas::compute_size() {
 	  if (subscribe(child_data))
 	    connect(child_data, SIGNAL(changed()), this, SLOT(modified()));
 	}
-	else if (full_members) {
-	  if (subscribe(child_data))
-	    connect(child_data, SIGNAL(changed()), this, SLOT(modified()));
+	
+	if (show_stereotype) {
+	  QString st = child_data->get_stereotype();
+	  
+	  if (! st.isEmpty()) 
+	    wa += fm.width("<<" + st + ">>_");
 	}
+	
+	if ((full_members || show_visibility || show_stereotype) &&
+	    subscribe(child_data))
+	  connect(child_data, SIGNAL(changed()), this, SLOT(modified()));
+	
 	
 	if (wa > wi)
 	  wi = wa;
@@ -571,6 +580,7 @@ void CdClassCanvas::draw(QPainter & p) {
   if (! visible()) return;
   
   QRect r = rect();
+  QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
   QFontMetrics fbm(the_canvas()->get_font(UmlNormalBoldFont));
   QFontMetrics fbim(the_canvas()->get_font(UmlNormalBoldItalicFont));
   QColor bckgrnd = p.backgroundColor();
@@ -704,9 +714,11 @@ void CdClassCanvas::draw(QPainter & p) {
   int left0 = r.left();
   int left1 = left0 + (int) (4 * zoom);
   int left2 = left1 + fbim.width("#_");
+  int space = fm.width("_");
   QListViewItem * child;
   bool full_members = (used_settings.show_full_members_definition == UmlYes);
   bool show_visibility = (used_settings.show_members_visibility == UmlYes);
+  bool show_stereotype = (used_settings.show_members_stereotype == UmlYes);
   bool show_dir = (used_settings.show_parameter_dir == UmlYes);
   bool show_name = (used_settings.show_parameter_name == UmlYes);
   
@@ -742,6 +754,18 @@ void CdClassCanvas::draw(QPainter & p) {
 	  if (fp != 0)
 	    draw_text(r, QObject::AlignLeft + QObject::AlignTop, v[vi], p.font(), fp);
 	  r.setLeft(left2);
+	}
+	if (show_stereotype) {
+	  QString st = data->get_stereotype();
+	  
+	  if (! st.isEmpty()) {
+	    st = "<<" + st + ">>";
+	    p.setFont(the_canvas()->get_font(UmlNormalFont));
+	    p.drawText(r, QObject::AlignLeft + QObject::AlignTop, st);
+	    if (fp != 0)
+	      draw_text(r, QObject::AlignLeft + QObject::AlignTop, st, p.font(), fp);
+	    r.setLeft(r.left() + fm.width(st) + space);
+	  }
 	}
 	p.setFont((data->get_isa_class_attribute()) ? the_canvas()->get_font(UmlNormalUnderlinedFont)
 						    : the_canvas()->get_font(UmlNormalFont));
@@ -798,6 +822,18 @@ void CdClassCanvas::draw(QPainter & p) {
 	    if (fp != 0)
 	      draw_text(r, QObject::AlignLeft + QObject::AlignTop, v[vi], p.font(), fp);
 	    r.setLeft(left2);
+	  }
+	  if (show_stereotype) {
+	    QString st = data->get_stereotype();
+	    
+	    if (! st.isEmpty()) {
+	      st = "<<" + st + ">>";
+	      p.setFont(the_canvas()->get_font(UmlNormalFont));
+	      p.drawText(r, QObject::AlignLeft + QObject::AlignTop, st);
+	      if (fp != 0)
+		draw_text(r, QObject::AlignLeft + QObject::AlignTop, st, p.font(), fp);
+	      r.setLeft(r.left() + fm.width(st) + space);
+	    }
 	  }
 	  if (data->get_isa_class_operation())
 	    p.setFont(the_canvas()->get_font(UmlNormalUnderlinedFont));

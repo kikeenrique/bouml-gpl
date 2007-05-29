@@ -55,6 +55,8 @@ ArrowCanvas::ArrowCanvas(UmlCanvas * canvas, DiagramItem * b,
       : QCanvasPolygon(canvas), DiagramItem(id, canvas), begin(b), end(e),
         itstype(t), geometry(NoGeometry), fixed_geometry(FALSE),
   	label(0), stereotype(0) {
+  boundings.resize(4);
+  
   double bz = begin->get_z();
   double ez = end->get_z();
   
@@ -69,7 +71,6 @@ ArrowCanvas::ArrowCanvas(UmlCanvas * canvas, DiagramItem * b,
   // the first time the canvas must not have a label nor stereotype  
   auto_pos = canvas->browser_diagram()
     ->get_auto_label_position(canvas->browser_diagram()->get_type());
-  boundings.resize(4);
   update_pos();
   
   connect(DrawingSettings::instance(), SIGNAL(changed()),

@@ -98,6 +98,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   classdiagram_settings.hide_operations = UmlNo;
   classdiagram_settings.show_full_members_definition = UmlNo;
   classdiagram_settings.show_members_visibility = UmlNo;
+  classdiagram_settings.show_members_stereotype = UmlNo;
   classdiagram_settings.show_parameter_dir = UmlYes;
   classdiagram_settings.show_parameter_name = UmlYes;
   classdiagram_settings.package_name_in_tab = UmlNo;

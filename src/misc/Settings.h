@@ -69,6 +69,7 @@ class ClassDiagramSettings {
     Uml3States hide_operations;
     Uml3States show_full_members_definition;
     Uml3States show_members_visibility;
+    Uml3States show_members_stereotype;
     Uml3States show_parameter_dir;
     Uml3States show_parameter_name;
     Uml3States package_name_in_tab;
