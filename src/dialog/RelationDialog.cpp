@@ -186,7 +186,9 @@ RelationDialog::RelationDialog(RelationData * r)
   edstereotype = new QComboBox(!a.visit, htab);
   edstereotype->insertItem(toUnicode(rel->get_stereotype()));
   if (!a.visit) {
-    edstereotype->insertStringList(rel->get_start_class()->default_stereotypes(type));
+    edstereotype->insertStringList(rel->get_start_class()
+				   ->default_stereotypes(type,
+							 rel->get_end_class()));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -840,7 +842,9 @@ void RelationDialog::edTypeActivated(int r)
     if (!a.visit) {
       edstereotype->clear();
       edstereotype->insertItem("");
-      edstereotype->insertStringList(rel->get_start_class()->default_stereotypes(type));
+      edstereotype->insertStringList(rel->get_start_class()
+				     ->default_stereotypes(type,
+							   rel->get_end_class()));
       edstereotype->setCurrentItem(0);
     
       if (!a.edcppdecl->text().isEmpty())
@@ -966,7 +970,7 @@ void RelationDialog::cpp_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	if (!strncmp(p, "${type}", 7)) {
 	  if (role.cpp_virtual_inheritance_cb->isChecked())
 	    s = "virtual ";
-	  s += cl->get_name();
+	  s += get_cpp_name(cl);
 	  p += 7;
 	}
 	else
@@ -1037,7 +1041,7 @@ void RelationDialog::cpp_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	}
 	else if (!strncmp(p, "${type}", 7)) {
 	  p += 7;
-	  s += cl->get_name();
+	  s += get_cpp_name(cl);
 	}
 	else if (!strncmp(p, "${name}", 7)) {
 	  p += 7;
@@ -1165,7 +1169,7 @@ void RelationDialog::java_update(RoleDialog & role, BrowserClass * cl, BrowserNo
       
       while (*p) {
 	if (!strncmp(p, "${type}", 7)) {
-	  s = cl->get_name();
+	  s = get_java_name(cl);
 	  p += 7;
 	}
 	else
@@ -1237,7 +1241,7 @@ void RelationDialog::java_update(RoleDialog & role, BrowserClass * cl, BrowserNo
 	}
 	else if (!strncmp(p, "${type}", 7)) {
 	  p += 7;
-	  s += cl->get_name();
+	  s += get_java_name(cl);
 	}
 	else if (!strncmp(p, "${name}", 7)) {
 	  p += 7;
@@ -1384,7 +1388,7 @@ void RelationDialog::idl_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	  if ((role.idl_truncatable_inheritance_cb != 0) &&
 	      role.idl_truncatable_inheritance_cb->isChecked())
 	    s = "truncatable ";
-	  s += cl->get_name();
+	  s += get_idl_name(cl);
 	  p += 7;
 	}
 	else
@@ -1460,7 +1464,7 @@ void RelationDialog::idl_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	}
 	else if (!strncmp(p, "${type}", 7)) {
 	  p += 7;
-	  s += cl->get_name();
+	  s += get_idl_name(cl);
 	}
 	else if (!strncmp(p, "${name}", 7)) {
 	  p += 7;

@@ -96,6 +96,17 @@ void BrowserComponentView::make() {
   fragment_color = UmlDefaultColor;
 }
 
+BrowserComponentView* BrowserComponentView::add_component_view(BrowserNode * future_parent)
+{
+  QString name;
+  
+  if (future_parent->enter_child_name(name, "enter component view's name : ",
+				      UmlComponentView, TRUE, FALSE))
+    return new BrowserComponentView(name, future_parent);
+  else
+    return 0;
+}
+
 void BrowserComponentView::clear(bool old)
 {
   all.clear(old);
@@ -185,7 +196,13 @@ Do not undelete its sub items");
 void BrowserComponentView::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
-    add_component_diagram();
+    {
+      BrowserComponentDiagram * d =
+	BrowserComponentDiagram::add_component_diagram(this);
+      
+      if (d != 0)
+	d->select_in_browser();
+    }
     break;
   case 1:
     {
@@ -285,13 +302,12 @@ void BrowserComponentView::open(bool) {
     edit("Component view", its_default_stereotypes);
 }
 
-void BrowserComponentView::add_component_diagram() {
-  (new BrowserComponentDiagram(child_random_name("Diagram"), this))
-    ->select_in_browser();
-}
-
 UmlCode BrowserComponentView::get_type() const {
   return UmlComponentView;
+}
+
+int BrowserComponentView::get_identifier() const {
+  return get_ident();
 }
 
 BasicData * BrowserComponentView::get_data() const {
@@ -489,8 +505,10 @@ void BrowserComponentView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	insertItem(bn);
       }
       package_modified();
-      if (old_parent != this)
+      if (old_parent != this) {
 	old_parent->package_modified();
+	bn->modified();
+      }
     }
     else {
       msg_critical("Error", "Forbiden");

@@ -36,6 +36,8 @@
 #include "BrowserOperation.h"
 #include "BrowserClass.h"
 #include "RelationData.h"
+#include "BrowserClassInstance.h"
+#include "ReferenceDialog.h"
 #include "UmlPixmap.h"
 #include "UmlGlobal.h"
 #include "myio.h"
@@ -96,8 +98,13 @@ void BrowserRelation::delete_it() {
   
   BrowserNode::delete_it();
   
-  def->get_start()->modified();
-  def->get_end_class()->modified();  
+  // warning, def may be 0 in case the relation was a
+  // temporary unvalidated
+  if (def != 0) {
+    def->get_start()->modified();
+    def->get_start_class()->modified();  
+    def->get_end_class()->modified();  
+  }
 }
 
 bool BrowserRelation::undelete(bool, QString & warning, QString & renamed) {
@@ -170,6 +177,11 @@ void BrowserRelation::compute_referenced_by(QList<BrowserNode> & l,
       l.append(it.current());
     ++it;
   }
+}
+
+void BrowserRelation::referenced_by(QList<BrowserNode> & l) {
+  BrowserNode::referenced_by(l);
+  BrowserClassInstance::compute_referenced_by(l, this);
 }
 
 BrowserRelation * BrowserRelation::temporary(RelationData * d) {
@@ -373,6 +385,13 @@ a double click with the left mouse button does the same thing");
 			   "to auto define the <em>get</em> and <em>set operation</em>s");
 	  m.insertSeparator();
 	}
+      }
+  
+      m.setWhatsThis(m.insertItem("Referenced by", 8),
+		     "to know who reference the <i>relation</i>");
+      m.insertSeparator();
+      
+      if (!is_read_only && (edition_number == 0)) {
 	m.setWhatsThis(m.insertItem("Delete", 2),
 		       "to delete the <em>relation</em>. \
 Note that you can undelete it after");
@@ -392,10 +411,14 @@ Note that you can undelete it after");
       m.insertItem("Tool", &toolm);
     }
   }
-  else if (!is_read_only && (edition_number == 0))
+  else if (!is_read_only && (edition_number == 0)) {
     m.setWhatsThis(m.insertItem("Undelete", 3),
 		   "undelete the <em>relation</em> \
 (except if the class at the other side is also deleted)");
+    if (def->get_start_class()->deletedp() ||
+	def->get_end_class()->deletedp())
+      m.setItemEnabled(3, FALSE);
+  }
   
   exec_menu_choice(m.exec(QCursor::pos()));
 }
@@ -426,6 +449,9 @@ void BrowserRelation::exec_menu_choice(int rank) {
   case 7:
     ((def->is_a(this)) ? def->get_end_class()
 		       : def->get_start_class())->select_in_browser();
+    return;
+  case 8:
+    ReferenceDialog::show(this);
     return;
   default:
     if (rank >= 100)
@@ -465,6 +491,10 @@ void BrowserRelation::apply_shortcut(QString s) {
     }
     if (s == "Select target")
       choice = 7;
+  
+    if (s == "Referenced by")
+      choice = 8;
+    
     mark_shortcut(s, choice, 90);
     if (edition_number == 0)
       Tool::shortcut(s, choice, get_type(), 100);
@@ -503,6 +533,10 @@ UmlCode BrowserRelation::get_type() const {
   return (def == 0)
     ? UmlRelations	// legal case to manage get/set operation read
     : def->get_type();
+}
+
+int BrowserRelation::get_identifier() const {
+  return get_ident();
 }
 
 BasicData * BrowserRelation::get_data() const {
@@ -589,14 +623,6 @@ bool BrowserRelation::tool_cmd(ToolCom * com, const char * args) {
   
   // cmd managed
   return TRUE;
-}
-
-void BrowserRelation::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserRelation::DropEvent(QDropEvent * e) {
-  DropAfterEvent(e, 0);
 }
 
 void BrowserRelation::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
@@ -728,6 +754,13 @@ void BrowserRelation::post_load(QList<BrowserRelation> & wrong)
     ++it;
   }
 
+}
+
+// Created for a relation data ref read before its definition
+// The browser node become useless when the data definition
+// is read
+void BrowserRelation::unvalidate() {
+  def = 0;
 }
 
 BrowserRelation * BrowserRelation::read_ref(char * & st)

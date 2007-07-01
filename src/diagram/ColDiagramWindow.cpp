@@ -78,6 +78,12 @@ ColDiagramWindow::ColDiagramWindow(const QString & s, BrowserColDiagram * b, int
   addFragment->setToggleButton(TRUE);
   QWhatsThis::add(addFragment, addfragmentText);
   
+  addClassInstance
+    = new QToolButton(*classinstanceButton, "Add Class instance", QString::null,
+		      this, SLOT(hit_classinstance()), toolbar, "add class instance");
+  addClassInstance->setToggleButton(TRUE);
+  QWhatsThis::add(addClassInstance, addclassinstanceText);
+  
   addClass
     = new QToolButton(*classButton, "Add Class instance", QString::null,
 		      this, SLOT(hit_class()), toolbar, "add class instance");
@@ -167,6 +173,7 @@ void ColDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   addPackage->setOn(FALSE);
   addFragment->setOn(FALSE);
   addClass->setOn(FALSE);
+  addClassInstance->setOn(FALSE);
   addLink->setOn(FALSE);
   addSelfLink->setOn(FALSE);
   note->setOn(FALSE);
@@ -183,6 +190,10 @@ void ColDiagramWindow::hit_package() {
 
 void ColDiagramWindow::hit_fragment() {
   hit_button(UmlFragment, addFragment);
+}
+
+void ColDiagramWindow::hit_classinstance() {
+  hit_button(UmlClassInstance, addClassInstance);
 }
 
 void ColDiagramWindow::hit_class() {

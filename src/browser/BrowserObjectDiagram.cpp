@@ -62,7 +62,7 @@ BrowserObjectDiagram::BrowserObjectDiagram(int id)
 }
 
 BrowserObjectDiagram::BrowserObjectDiagram(BrowserObjectDiagram * model, BrowserNode * p)
-    : BrowserDiagram(p->child_random_name("Diagram"), p, 0), window(0) {
+    : BrowserDiagram(p->get_name(), p, 0), window(0) {
   def = new SimpleData(model->def);
   def->set_browser_node(this);
   comment = model->comment;
@@ -112,6 +112,17 @@ void BrowserObjectDiagram::make() {
   fragment_color = UmlDefaultColor;
   package_color = UmlDefaultColor;
   class_instance_color = UmlDefaultColor;
+}
+
+BrowserObjectDiagram * BrowserObjectDiagram::add_object_diagram(BrowserNode * future_parent)
+{
+  QString name;
+  
+  if (future_parent->enter_child_name(name, "enter object diagram's name : ",
+				      UmlObjectDiagram, TRUE, FALSE))
+    return new BrowserObjectDiagram(name, future_parent);
+  else
+    return 0;
 }
 
 void BrowserObjectDiagram::set_name(const char * s) {
@@ -257,11 +268,13 @@ void BrowserObjectDiagram::exec_menu_choice(int rank,
     return;
   case 3:
     {
-      BrowserObjectDiagram * cd =
-	new BrowserObjectDiagram(this, (BrowserNode *) parent());
+      QString name;
       
-      cd->select_in_browser();
-      cd->edit("Object diagram", its_default_stereotypes);
+      if (((BrowserNode *)parent())->enter_child_name(name, "enter object diagram's name : ",
+						      UmlObjectDiagram, TRUE, FALSE))
+	duplicate((BrowserNode *) parent(), name)->select_in_browser();
+      else
+	return;
     }
     break;
   case 4:
@@ -357,6 +370,10 @@ void BrowserObjectDiagram::read_session(char * & st) {
 
 UmlCode BrowserObjectDiagram::get_type() const {
   return UmlObjectDiagram;
+}
+
+int BrowserObjectDiagram::get_identifier() const {
+  return get_ident();
 }
 
 void BrowserObjectDiagram::get_objectdiagramsettings(ObjectDiagramSettings & r) const {
@@ -480,14 +497,6 @@ bool BrowserObjectDiagram::api_compatible(unsigned v) const {
   return v >= 24;
 }
 
-void BrowserObjectDiagram::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserObjectDiagram::DropEvent(QDropEvent * e) {
-  ((BrowserNode *) parent())->DropAfterEvent(e, this);
-}
-
 void BrowserObjectDiagram::save_stereotypes(QTextStream & st)
 {
   nl_indent(st);
@@ -543,6 +552,20 @@ void BrowserObjectDiagram::save(QTextStream & st, bool ref, QString & warning) {
     if (! is_api_base())
       is_read_only = FALSE;
   }
+}
+
+BrowserObjectDiagram * BrowserObjectDiagram::read_ref(char * & st, char * k)
+{
+  if (strcmp(k, "objectdiagram_ref"))
+    wrong_keyword(k, "objectdiagram_ref");
+  
+  int id = read_id(st);
+  BrowserObjectDiagram * result = 
+    (BrowserObjectDiagram *) all[id];
+  
+  return (result == 0)
+    ? new BrowserObjectDiagram(id)
+    : result;
 }
 
 BrowserObjectDiagram * BrowserObjectDiagram::read(char * & st, char * k,

@@ -38,6 +38,7 @@
 #include "BrowserUseCaseDiagram.h"
 #include "BrowserObjectDiagram.h"
 #include "BrowserClass.h"
+#include "BrowserClassInstance.h"
 #include "SettingsDialog.h"
 #include "UmlPixmap.h"
 #include "UmlDrag.h"
@@ -99,6 +100,17 @@ BrowserNode * BrowserUseCaseView::duplicate(BrowserNode * p, QString name) {
   return result;
 }
 
+BrowserUseCaseView* BrowserUseCaseView::add_use_case_view(BrowserNode * future_parent)
+{
+  QString name;
+  
+  if (future_parent->enter_child_name(name, "enter use case view's name : ",
+				      UmlUseCaseView, TRUE, FALSE))
+    return new BrowserUseCaseView(name, future_parent);
+  else
+    return 0;
+}
+
 void BrowserUseCaseView::clear(bool old)
 {
   all.clear(old);
@@ -143,6 +155,8 @@ void BrowserUseCaseView::menu() {
 		     "to add an <em>actor</em>");
       m.setWhatsThis(m.insertItem("New class", 5),
 		     "to add a <em>class</em>");
+      m.setWhatsThis(m.insertItem("New class instance", 14),
+		     "to add a <em>class instance</em>");
       m.insertSeparator();
       m.setWhatsThis(m.insertItem("New sub use case view", 6),
 		     "to add a sub <em>use case view</em>");
@@ -184,20 +198,42 @@ Do not undelete its sub items");
 void BrowserUseCaseView::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
-    add_use_case_diagram();
+    {
+      BrowserUseCaseDiagram * d = 
+	BrowserUseCaseDiagram::add_use_case_diagram(this);
+      
+      if (d == 0)
+	return;
+      d->select_in_browser();
+    }
     break;
   case 1:
-    add_sequence_diagram();
+    {
+      BrowserSeqDiagram * d = 
+	BrowserSeqDiagram::add_sequence_diagram(this);
+      
+      if (d == 0)
+	return;
+      d->select_in_browser();
+    }
     break;
   case 2:
-    add_collaboration_diagram();
+    {
+      BrowserColDiagram * d = 
+	BrowserColDiagram::add_collaboration_diagram(this);
+      
+      if (d == 0)
+	return;
+      d->select_in_browser();
+    }
     break;
   case 3:
     {
       BrowserUseCase *  uc = BrowserUseCase::add_use_case(this);
       
-      if (uc != 0)
-	uc->select_in_browser();
+      if (uc == 0)
+	return;
+      uc->select_in_browser();
     }
     break;
   case 4:
@@ -220,7 +256,14 @@ void BrowserUseCaseView::exec_menu_choice(int rank) {
     }
     break;
   case 6:
-    add_use_cases_list();
+    {
+      BrowserUseCaseView * v = 
+	BrowserUseCaseView::add_use_case_view(this);
+      
+      if (v == 0)
+	return;
+      v->select_in_browser();
+    }
     break;
   case 8:
     edit("Use case view", its_default_stereotypes);
@@ -262,8 +305,24 @@ void BrowserUseCaseView::exec_menu_choice(int rank) {
     undelete(TRUE);
     break;
   case 13:
-    add_object_diagram();
+    {
+      BrowserObjectDiagram * d = 
+	BrowserObjectDiagram::add_object_diagram(this);
+      
+      if (d == 0)
+	return;
+      d->select_in_browser();
+    }
     break;
+  case 14:
+    {
+      BrowserClassInstance * c = 
+	BrowserClassInstance::add_classinstance(this);
+      
+      if (c != 0)
+	c->select_in_browser();
+    }
+    return; // package_modified called
   default:
     if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
@@ -294,6 +353,8 @@ void BrowserUseCaseView::apply_shortcut(QString s) {
 	choice = 4;
       else if (s == "New class")
 	choice = 5;
+      else if (s == "New class instance")
+	choice = 14;
       else if (s == "New use case view")
 	choice = 6;
     }
@@ -323,33 +384,12 @@ void BrowserUseCaseView::apply_shortcut(QString s) {
   exec_menu_choice(choice);
 }
 
-void BrowserUseCaseView::add_sequence_diagram() {
-  (new BrowserSeqDiagram(child_random_name("Sequence Diagram"), this))
-    ->select_in_browser();
-}
-
-void BrowserUseCaseView::add_collaboration_diagram() {
-  (new BrowserColDiagram(child_random_name("Collaboration Diagram"), this))
-    ->select_in_browser();
-}
-
-void BrowserUseCaseView::add_object_diagram() {
-  (new BrowserObjectDiagram(child_random_name("Object Diagram"), this))
-    ->select_in_browser();
-}
-
-void BrowserUseCaseView::add_use_case_diagram() {
-  (new BrowserUseCaseDiagram(child_random_name("Use Case Diagram"), this))
-    ->select_in_browser();
-}
-
-void BrowserUseCaseView::add_use_cases_list() {
-  (new BrowserUseCaseView(child_random_name("Use Case View"), this))
-    ->select_in_browser();
-}
-
 UmlCode BrowserUseCaseView::get_type() const {
   return UmlUseCaseView;
+}
+
+int BrowserUseCaseView::get_identifier() const {
+  return get_ident();
 }
 
 BasicData * BrowserUseCaseView::get_data() const {
@@ -566,6 +606,9 @@ bool BrowserUseCaseView::tool_cmd(ToolCom * com, const char * args) {
 	  else
 	    (BrowserClass::add_class(this, args))->write_id(com);
 	  break;
+	case UmlClassInstance:
+	  BrowserClassInstance::add_from_tool(this, com, args);
+	  break;
 	default:
 	  ok = FALSE;
 	}
@@ -587,6 +630,7 @@ bool BrowserUseCaseView::tool_cmd(ToolCom * com, const char * args) {
 
 void BrowserUseCaseView::DragMoveEvent(QDragMoveEvent * e) {
   if (UmlDrag::canDecode(e, UmlClass) ||
+      UmlDrag::canDecode(e, UmlClassInstance) ||
       UmlDrag::canDecode(e, UmlUseCase) ||
       UmlDrag::canDecode(e, UmlUseCaseDiagram) ||
       UmlDrag::canDecode(e, UmlSeqDiagram) ||
@@ -600,6 +644,7 @@ void BrowserUseCaseView::DragMoveEvent(QDragMoveEvent * e) {
 
 void BrowserUseCaseView::DragMoveInsideEvent(QDragMoveEvent * e) {
   if (UmlDrag::canDecode(e, UmlClass) ||
+      UmlDrag::canDecode(e, UmlClassInstance) ||
       UmlDrag::canDecode(e, UmlUseCase) ||
       UmlDrag::canDecode(e, UmlUseCaseDiagram) ||
       UmlDrag::canDecode(e, UmlSeqDiagram) ||
@@ -621,6 +666,7 @@ bool BrowserUseCaseView::may_contains_them(const QList<BrowserNode> & l,
       duplicable = FALSE;
       // no break
     case UmlClass:
+    case UmlClassInstance:
     case UmlUseCase:
     case UmlUseCaseDiagram:
     case UmlSeqDiagram:
@@ -654,6 +700,7 @@ void BrowserUseCaseView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
   BrowserNode * bn;
   
   if ((((bn = UmlDrag::decode(e, UmlClass)) != 0) ||
+       ((bn = UmlDrag::decode(e, UmlClassInstance)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlUseCase)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlSeqDiagram)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlColDiagram)) != 0) ||
@@ -697,8 +744,10 @@ void BrowserUseCaseView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	x->insertItem(bn);
       }
       x->package_modified();
-      if (old_parent != x)
+      if (old_parent != x) {
 	old_parent->package_modified();
+	bn->modified();
+      }
     }
     else if (after == 0)
       ((BrowserNode *) parent())->DropAfterEvent(e, this);
@@ -839,6 +888,7 @@ BrowserUseCaseView * BrowserUseCaseView::read(char * & st, char * k,
 	       BrowserUseCase::read(st, k, result) ||
 	       BrowserUseCaseView::read(st, k, result, recursive) ||
 	       BrowserClass::read(st, k, result) ||
+	       BrowserClassInstance::read(st, k, result) ||
 	       BrowserSeqDiagram::read(st, k, result) ||
 	       BrowserColDiagram::read(st, k, result) ||
 	       BrowserObjectDiagram::read(st, k, result))

@@ -146,6 +146,14 @@ const QDict<QCString> UmlBaseItem::properties() {
   return _dict;
 }
 
+#ifdef HAS_MODELER_ID
+int UmlBaseItem::getIdentifier() {
+  read_if_needed_();
+
+  return _modeler_id;
+}
+#endif
+
 bool UmlBaseItem::moveAfter(const UmlItem * x) {
   UmlCom::send_cmd(_identifier, moveAfterCmd, (x != 0) ? ((UmlBaseItem *)x)->_identifier : 0);
   if (UmlCom::read_bool()) {
@@ -307,6 +315,10 @@ void UmlBaseItem::read_uml_() {
   _description = UmlCom::read_string();
   
   _marked = UmlCom::read_bool();
+  
+#ifdef HAS_MODELER_ID
+  _modeler_id = (int) UmlCom::read_unsigned();
+#endif
 }
 
 #ifdef WITHCPP

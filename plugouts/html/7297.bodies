@@ -6,7 +6,7 @@ class UmlDiagram
 
   QCString s;
   
-  s.setNum(++fig_rank);
+  s.setNum(getIdentifier());
   s = "fig" + s + ((svg) ? ".svg" : ".png");
   saveIn(directory + s);
   
@@ -62,7 +62,7 @@ class UmlDiagram
 
   define();
 
-  String s = "fig" + String.valueOf(++fig_rank) + ((svg) ? ".svg" : ".png");
+  String s = "fig" + String.valueOf(getIdentifier()) + ((svg) ? ".svg" : ".png");
   
   saveIn(directory + "/" + s);
   

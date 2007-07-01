@@ -31,7 +31,7 @@
 class Instance {
   public:
     virtual ~Instance() { }
-    virtual const QString & get_name() const = 0;
+    virtual QString get_name() const = 0;
     virtual void set_name(const QString & s) = 0;
     
     virtual BrowserNode * get_type() const = 0;

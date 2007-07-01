@@ -534,6 +534,8 @@ void BrowserClass::exec_menu_choice(int index,
       if (((BrowserNode *) parent())->enter_child_name(name, "enter class's name : ",
 						       UmlClass, FALSE, FALSE))
 	duplicate((BrowserNode *) parent(), name)->select_in_browser();
+      else
+	return;
     }
     break;
   case 14: 
@@ -940,6 +942,10 @@ UmlCode BrowserClass::get_type() const {
   return UmlClass;
 }
 
+int BrowserClass::get_identifier() const {
+  return get_ident();
+}
+
 void BrowserClass::modified() {
   repaint();
   def->modified();
@@ -976,11 +982,33 @@ void BrowserClass::get_all_parents(QList<BrowserClass> & l) const {
   }
 }
 
+// returns all attributes included the inherited
+
+void BrowserClass::get_attrs(BrowserNodeList & attributes) const {
+  attributes.clear();
+  
+  QList<BrowserClass> lcl;
+  
+  get_all_parents(lcl);
+  lcl.append(this);
+  
+  QListIterator<BrowserClass> it(lcl);
+  
+  for (; it.current(); ++it) {
+    QListViewItem * child;
+    
+    for (child = it.current()->firstChild(); child; child = child->nextSibling())
+      if (!((BrowserNode *) child)->deletedp() &&
+	  (((BrowserNode *) child)->get_type() == UmlAttribute))
+	attributes.append((BrowserNode *) child);
+  }
+}
+
 // returns all operations included the inherited (except the redefined ones
 // and the contructor and destructor of parents)
 
 void BrowserClass::get_opers(QValueList<const OperationData *> & opers,
-			     QStringList & list) {
+			     QStringList & list) const {
   QList<BrowserClass> all_parents;
   
   get_all_parents(all_parents);
@@ -1024,6 +1052,118 @@ void BrowserClass::get_opers(QValueList<const OperationData *> & opers,
       }
     }
   }
+}
+
+// search for the relations from classes of 'from' having
+// target in 'to'
+
+static void get_assocs(QList<BrowserClass> & from,
+		       QList<BrowserClass> & to,
+		       QList<RelationData> & rels)
+{
+  QListIterator<BrowserClass> it(from);
+  
+  for (; it.current(); ++it) {
+    QListViewItem * child;
+    
+    for (child = it.current()->firstChild(); child; child = child->nextSibling()) {
+      if (!((BrowserNode *) child)->deletedp()) {
+	switch (((BrowserNode *) child)->get_type()) {
+	case UmlAssociation:
+	case UmlDirectionalAssociation:
+	case UmlAggregation:
+	case UmlAggregationByValue:
+	case UmlDirectionalAggregation:
+	case UmlDirectionalAggregationByValue:
+	  {
+	    RelationData * rd = (RelationData *)
+	      ((BrowserRelation *) child)->get_data();
+	    
+	    if ((rels.findRef(rd) == -1) &&
+		(to.findRef(rd->get_end_class()) != -1))
+	      rels.append(rd);
+	  }
+	default:
+	  break;
+	}
+      }
+    }
+  }
+}
+
+// returns all relation to target included the inherited
+// if 'rev' != 0 search also for relation in opposite direction
+// and set rev to the number of relation in the first direction
+void BrowserClass::get_rels(BrowserClass * target,
+			    QList<RelationData> & l, int * rev) const {
+  QList<BrowserClass> la;
+  QList<BrowserClass> lb;
+  
+  get_all_parents(la);  
+  target->get_all_parents(lb);
+  la.append((BrowserClass *) this);
+  lb.append(target);
+  get_assocs(la, lb, l);
+  if (rev != 0) {
+    *rev = l.count();
+    QList<RelationData> ll;
+    
+    get_assocs(lb, la, ll);
+    while (! ll.isEmpty())
+      l.append(ll.take(0));
+  }
+}
+
+// search for the relations from classes of 'from' having
+// target in 'to' (may be the reverse direction of a bidir)
+
+static void get_assocs(QList<BrowserClass> & from,
+		       QList<BrowserClass> & to,
+		       QList<BrowserRelation> & rels)
+{
+  QListIterator<BrowserClass> it(from);
+  
+  for (; it.current(); ++it) {
+    QListViewItem * child;
+    
+    for (child = it.current()->firstChild(); child; child = child->nextSibling()) {
+      if (!((BrowserNode *) child)->deletedp()) {
+	switch (((BrowserNode *) child)->get_type()) {
+	case UmlAssociation:
+	case UmlDirectionalAssociation:
+	case UmlAggregation:
+	case UmlAggregationByValue:
+	case UmlDirectionalAggregation:
+	case UmlDirectionalAggregationByValue:
+	  if (rels.findRef((BrowserRelation *) child) == -1) {
+	    BrowserRelation * r = (BrowserRelation *) child;
+	    RelationData * rd = (RelationData *) r->get_data();
+	    
+	    if ((rd->is_a(r))
+		? (to.findRef(rd->get_end_class()) != -1)
+		: (to.findRef(rd->get_start_class()) != -1))
+	      rels.append(r);
+	  }
+	default:
+	  break;
+	}
+      }
+    }
+  }
+}
+
+// returns all relation to target included the inherited
+// (may be the reverse direction of a bidir)
+void BrowserClass::get_rels(BrowserClass * target,
+			    QList<BrowserRelation> & l) const {
+  QList<BrowserClass> la;
+  QList<BrowserClass> lb;
+  
+  get_all_parents(la);  
+  target->get_all_parents(lb);
+  la.append((BrowserClass *) this);
+  lb.append(target);
+  get_assocs(la, lb, l);
 }
 
 // get the class and its members, and all parent and their members
@@ -1140,7 +1280,9 @@ bool BrowserClass::may_contains_them(const QList<BrowserNode> & l,
 }
 
 void BrowserClass::move(BrowserNode * bn, BrowserNode * after) {
-  if ((bn->get_type() == UmlClass) && !bn->nestedp()) {
+  UmlCode what = bn->get_type();
+  
+  if ((what == UmlClass) && !bn->nestedp()) {
     ((BrowserClass *) bn)->def->set_uml_visibility(UmlProtected);
     ((BrowserClass *) bn)->def->set_cpp_visibility(UmlDefaultVisibility);
     ((BrowserClass *) bn)->set_associated_artifact(0);
@@ -1150,7 +1292,7 @@ void BrowserClass::move(BrowserNode * bn, BrowserNode * after) {
   char * cpp;
   char * java;
   
-  if ((old != this) && (bn->get_type() == UmlOperation)) {
+  if ((old != this) && (what == UmlOperation)) {
     OperationData * d = (OperationData *) bn->get_data();
     
     cpp = d->get_body(TRUE);
@@ -1171,7 +1313,7 @@ void BrowserClass::move(BrowserNode * bn, BrowserNode * after) {
     old->modified();
     old->package_modified();
     
-    if (bn->get_type() == UmlOperation) {
+    if (what == UmlOperation) {
       OperationData * d = (OperationData *) bn->get_data();
       
       if (cpp) {
@@ -1186,6 +1328,8 @@ void BrowserClass::move(BrowserNode * bn, BrowserNode * after) {
       if (d->get_is_abstract())
 	def->set_is_abstract(TRUE);
     }
+    
+    bn->modified();
   }
   
   modified();
@@ -1207,9 +1351,11 @@ void BrowserClass::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
        ((bn = UmlDrag::decode(e, BrowserRelation::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserSimpleRelation::drag_key(this))) != 0)) &&
       (bn != after) && (bn != this)) {
-    if (may_contains(bn, bn->get_type() == UmlClass))  {
+    bool a_class = (bn->get_type() == UmlClass);
+    
+    if (may_contains(bn, a_class))  {
       if ((after == 0) &&
-	  (bn->get_type() == UmlClass) &&
+	  a_class &&
 	  ((BrowserNode *) parent())->may_contains(bn, TRUE)) {
 	// have choice
 	QPopupMenu m(0);
@@ -1414,13 +1560,28 @@ const QStringList & BrowserClass::default_stereotypes()
 }
 
 // unicode
-const QStringList & BrowserClass::default_stereotypes(UmlCode arrow) const {
-  if (IsaRelation(arrow))
-    return relations_default_stereotypes[arrow];
-  else {
-    static QStringList empty;
+const QStringList & BrowserClass::default_stereotypes(UmlCode arrow, const BrowserNode * target) const {
+  switch (target->get_type()) {
+  case UmlUseCase:
+    return target->default_stereotypes(arrow, this);
+  case UmlPackage:
+    {
+      static QStringList l;
   
-    return empty;
+      if (arrow == UmlDependOn)
+	l.append("import");
+      return l;
+    }
+  case UmlClass:
+    if (IsaRelation(arrow))
+      return relations_default_stereotypes[arrow];
+    // no break;
+  default:
+    {
+      static QStringList empty;
+      
+      return empty;
+    }
   }
 }
 
@@ -1507,7 +1668,11 @@ void BrowserClass::set_associated_artifact(BrowserArtifact * a,
     if ((associated_artifact = a) != 0)
       a->add_associated_class(this, on_read);
 
-    def->modified();	// to upgrade drawing context
+    if (! on_read)
+      // to upgrade drawing context
+      // not done on read to not remove actuals because
+      // inherited class is not yet read
+      def->modified();
   }
 }
 
@@ -1576,6 +1741,10 @@ void BrowserClass::init()
     
     switch (r) {
     case UmlGeneralisation: 
+      relations_default_stereotypes[r].append("{complete,disjoint}");
+      relations_default_stereotypes[r].append("{incomplete,disjoint}");
+      relations_default_stereotypes[r].append("{complete,overlapping}");
+      relations_default_stereotypes[r].append("{incomplete,overlapping}");
       break;
     case UmlDependency:
       relations_default_stereotypes[r].append("friend");

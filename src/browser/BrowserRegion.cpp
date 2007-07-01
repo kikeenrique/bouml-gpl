@@ -248,6 +248,10 @@ UmlCode BrowserRegion::get_type() const {
   return UmlRegion;
 }
 
+int BrowserRegion::get_identifier() const {
+  return get_ident();
+}
+
 BasicData * BrowserRegion::get_data() const {
   return def;
 }

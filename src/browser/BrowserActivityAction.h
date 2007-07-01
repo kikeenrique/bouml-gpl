@@ -96,6 +96,7 @@ class BrowserActivityAction : public BrowserNode, public Labeled<BrowserActivity
     virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual void modified();
     virtual void on_delete();
     virtual BasicData * get_data() const;

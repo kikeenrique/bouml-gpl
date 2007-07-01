@@ -533,6 +533,10 @@ UmlCode BrowserArtifact::get_type() const {
   return UmlArtifact;
 }
 
+int BrowserArtifact::get_identifier() const {
+  return get_ident();
+}
+
 void BrowserArtifact::DragMoveEvent(QDragMoveEvent * e) {
   if (UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
     e->accept();
@@ -569,6 +573,7 @@ void BrowserArtifact::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
       if (old != this) {
 	old->modified();
 	old->package_modified();
+	bn->modified();
       }
       
       modified();
@@ -813,7 +818,7 @@ const QStringList & BrowserArtifact::default_stereotypes()
 }
 
 // unicode
-const QStringList & BrowserArtifact::default_stereotypes(UmlCode) {
+const QStringList & BrowserArtifact::default_stereotypes(UmlCode, const BrowserNode *) const {
   return relation_default_stereotypes;
 }
 

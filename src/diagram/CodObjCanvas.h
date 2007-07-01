@@ -49,7 +49,7 @@ class CodObjCanvas : public DiagramCanvas {
     virtual void moveBy(double dx, double dy);
     virtual void set_z(double z);
     
-    virtual BrowserClass * get_type();
+    virtual BrowserClass * get_class() const;
     virtual const char * may_start(UmlCode &) const;
     virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);

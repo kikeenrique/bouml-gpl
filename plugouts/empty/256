@@ -1,14 +1,14 @@
-format 37
+format 39
 "API BASE" // API BASE
-  revision 14
+  revision 16
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
   //use case diagram settings
   package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
   //collaboration diagram settings
   show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
   //object diagram settings
@@ -32,13 +32,13 @@ DO NOT MODIFY THEM !!!
 "
   classview 256 "API BASE class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
     //collaboration diagram settings
     show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
      write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
     //state diagram settings
     package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
     show_activities default region_horizontally default drawing_language default
@@ -951,6 +951,18 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 75264 "aJoinActivityNode"
 	protected explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	idl_decl ""
+      end
+
+      attribute 80768 "aClassInstance"
+	public explicit_type ""
+	constraint " ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -5861,6 +5873,25 @@ ${body}}
   and UmlComponents."
       end
 
+      operation 193024 "getIdentifier"
+	public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return a constant identifier, it is unique within a given
+ kind of element (two classes can't have the same identifiers, but
+ a class and a component may have the same identifier) 
+ except for the diagrams (a class diagram can't have the identifier
+ of a component diagram)"
+      end
+
       operation 23680 "unload"
 	cpp_virtual public explicit_return_type "void"
 	nparams 2
@@ -6247,6 +6278,15 @@ ${body}}
 	cpp_visibility private cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}long ${name}${value};"
+	idl_decl ""
+      end
+
+      attribute 80512 "_modeler_id"
+	protected explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
 	idl_decl ""
       end
 
@@ -7109,6 +7149,15 @@ ${body}}
 	    cpp default "${type}"
 	    classrelation_ref 154112 // <dependency>
 	  b multiplicity "" parent class_ref 143104 // UmlBaseParameterSet
+      end
+
+      classrelation 155008 // <dependency>
+	relation 155008 -_->
+	  stereotype "friend"
+	  a default
+	    cpp default "Generated"
+	    classrelation_ref 155008 // <dependency>
+	  b multiplicity "" parent class_ref 143488 // UmlBaseClassInstance
       end
     end
 
@@ -20009,6 +20058,454 @@ ${body}}
 	
       end
     end
+
+    class 143488 "UmlBaseClassInstance"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 154880 // <generalisation>
+	relation 154880 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 154880 // <generalisation>
+	  b multiplicity "" parent class_ref 8833 // UmlItem
+      end
+
+      operation 193792 "kind"
+	cpp_virtual public return_type class_ref 640 // anItemKind
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " returns the kind of the item"
+      end
+
+      operation 193920 "create"
+	class_operation public return_type class_ref 143618 // UmlClassInstance
+	nparams 3
+	  param inout name "parent" type class_ref 8833 // UmlItem
+	  param inout name "name" explicit_type "str"
+	  param inout name "type" type class_ref 7169 // UmlClass
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} * ${p0}, const ${t1} ${p1}, ${t2} * ${p2}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} * ${p0}, const ${t1} ${p1}, ${t2} * ${p2}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " Returns a new class instance
+
+ In case it cannot be created ('parent' cannot contain it etc ...) return 0
+  in C++ and produce a RuntimeException in Java
+"
+      end
+
+      operation 194048 "type"
+	public return_type class_ref 7169 // UmlClass
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return the type"
+      end
+
+      operation 194176 "set_Type"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 7169 // UmlClass
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set the type
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 194304 "attributesValue"
+	public return_type class_ref 143744 // SlotAttribute
+	nparams 1
+	  param out name "result" type class_ref 143744 // SlotAttribute
+	cpp_decl "    ${comment}${static}${virtual}void ${name}${(}QValueList<${t0}> & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}void ${class}::${name}${(}QValueList<${t0}> & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " Returns the attributes having a value"
+      end
+
+      operation 194432 "relationsValue"
+	public return_type class_ref 143872 // SlotRelation
+	nparams 1
+	  param out name "result" type class_ref 143872 // SlotRelation
+	cpp_decl "    ${comment}${static}${virtual}void ${name}${(}QValueList<${t0}> & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}void ${class}::${name}${(}QValueList<${t0}> & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " Returns the attributes having a value"
+      end
+
+      operation 194560 "availableAttributes"
+	public return_type class_ref 7041 // UmlAttribute
+	nparams 1
+	  param out name "result" type class_ref 7041 // UmlAttribute
+	cpp_decl "    ${comment}${static}${virtual}void ${name}${(}QVector<${t0}> & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}void ${class}::${name}${(}QVector<${t0}> & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " Returns all the attributes of the class instance,
+ including the inherited"
+      end
+
+      operation 194688 "availableRelations"
+	public return_type class_ref 9345 // UmlRelation
+	nparams 2
+	  param out name "other" type class_ref 143618 // UmlClassInstance
+	  param out name "result" type class_ref 9345 // UmlRelation
+	cpp_decl "    ${comment}${static}${virtual}void ${name}${(}${t0} * ${p0}, QVector<${t1}> & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}void ${class}::${name}${(}${t0} * ${p0}, QVector<${t1}> & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " Returns all the possible relations from the current instance to 'other', including the inherited"
+      end
+
+      operation 194816 "set_AttributeValue"
+	public explicit_return_type "bool"
+	nparams 2
+	  param in name "attribute" type class_ref 7041 // UmlAttribute
+	  param in name "value" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}bool ${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}bool ${class}::${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAttributeCmd, attribute.identifier_(), value);
+  UmlCom.check();
+}
+"
+	
+	comment " Remove the slot if the value is null.
+ Else set the value for the given attribute, replacing it
+ if the slot already exist.
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 194944 "add_Relation"
+	public explicit_return_type "bool"
+	nparams 2
+	  param in name "relation" type class_ref 7041 // UmlAttribute
+	  param in name "other" type class_ref 143618 // UmlClassInstance
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}bool ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}bool ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  UmlItem[] v = new UmlItem[2];
+
+  v[0] = relation;
+  v[1] = other;
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.addRelationCmd, v);
+  UmlCom.check();
+}
+"
+	
+	comment " Add the slot (does nothing if it already exist)
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 195072 "remove_Relation"
+	public explicit_return_type "bool"
+	nparams 2
+	  param in name "relation" type class_ref 7041 // UmlAttribute
+	  param in name "other" type class_ref 143618 // UmlClassInstance
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}bool ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}bool ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  UmlItem[] v = new UmlItem[2];
+
+  v[0] = relation;
+  v[1] = other;
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.removeRelationCmd, v);
+  UmlCom.check();
+}
+"
+	
+	comment " Remove the slot (does nothing if it doesn't exist)
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 195200 "associatedDiagram"
+	public return_type class_ref 132866 // UmlObjectDiagram
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " returns the optional associated diagram"
+      end
+
+      operation 195328 "set_AssociatedDiagram"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "d" type class_ref 132866 // UmlObjectDiagram
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " sets the associated diagram, arg may be null to unset it
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      classrelation 155648 // _type (<unidirectional association>)
+	relation 155648 --->
+	  a role_name "_type" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 155648 // _type (<unidirectional association>)
+	  b multiplicity "" parent class_ref 7169 // UmlClass
+      end
+
+      classrelation 155776 // _assoc_diagram (<unidirectional association>)
+	relation 155776 --->
+	  a role_name "_assoc_diagram" multiplicity "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 155776 // _assoc_diagram (<unidirectional association>)
+	  b multiplicity "" parent class_ref 132866 // UmlObjectDiagram
+      end
+
+      operation 195456 "read_uml_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+      end
+
+      operation 195584 "UmlBaseClassInstance"
+	protected explicit_return_type ""
+	nparams 2
+	  param in name "id" explicit_type "item_id"
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlItem(id, s) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  super(id, s);
+}
+"
+	
+	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+    end
+
+    class 143744 "SlotAttribute"
+      visibility package stereotype "struct"
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 155264 // attribute (<unidirectional association>)
+	relation 155264 --->
+	  a role_name "attribute" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 155264 // attribute (<unidirectional association>)
+	  b multiplicity "" parent class_ref 7041 // UmlAttribute
+      end
+
+      attribute 80640 "value"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      operation 193280 "SlotAttribute"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)} : attribute(0) {
+}
+"
+	
+	
+	comment " because of QValueList use"
+      end
+
+      operation 193408 "SlotAttribute"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "a" type class_ref 7041 // UmlAttribute
+	  param inout name "v" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}${)} : attribute(a), value(v) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+      end
+    end
+
+    class 143872 "SlotRelation"
+      visibility package stereotype "struct"
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 155392 // relation (<unidirectional association>)
+	relation 155392 --->
+	  a role_name "relation" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 155392 // relation (<unidirectional association>)
+	  b multiplicity "" parent class_ref 9345 // UmlRelation
+      end
+
+      classrelation 155520 // value (<unidirectional association>)
+	relation 155520 --->
+	  a role_name "value" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 155520 // value (<unidirectional association>)
+	  b multiplicity "" parent class_ref 143618 // UmlClassInstance
+      end
+
+      operation 193536 "SlotRelation"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)} : relation(0), value(0) {
+}
+"
+	
+	
+	comment " because of QValueList use"
+      end
+
+      operation 193664 "SlotRelation"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "r" type class_ref 9345 // UmlRelation
+	  param inout name "v" type class_ref 143618 // UmlClassInstance
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}${)} : relation(r), value(v) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+      end
+    end
   end
 
   deploymentview 256 "API BASE Deployment view"
@@ -20552,6 +21049,7 @@ ${includes}
 #include \"UmlAttribute.h\"
 #include \"UmlOperation.h\"
 #include \"UmlClass.h\"
+#include \"UmlClassInstance.h\"
 #include \"UmlUseCase.h\"
 #include \"UmlNode.h\"
 #include \"UmlArtifact.h\"
@@ -22165,6 +22663,87 @@ ${package}
 ${definition}"
       associated_classes
 	class_ref 143104 // UmlBaseParameterSet
+      end
+    end
+
+    artifact 138624 "UmlBaseClassInstance"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+#include \"SlotAttribute.h\"
+#include \"SlotRelation.h\"
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include \"UmlCom.h\"
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 143488 // UmlBaseClassInstance
+      end
+    end
+
+    artifact 138880 "SlotAttribute"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 143744 // SlotAttribute
+      end
+    end
+
+    artifact 139008 "SlotRelation"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 143872 // SlotRelation
       end
     end
   end

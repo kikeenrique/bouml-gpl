@@ -40,6 +40,7 @@ class ObjectDiagramWindow : public DiagramWindow {
   protected:
     ObjectDiagramView * view;
     QToolButton * addClass;
+    QToolButton * addClassInstance;
     QToolButton * addPackage;
     QToolButton * addFragment;
     QToolButton * addLink;
@@ -57,6 +58,7 @@ class ObjectDiagramWindow : public DiagramWindow {
 
   protected slots:
     void hit_class();
+    void hit_classinstance();
     void hit_package();
     void hit_fragment();
     void hit_link();

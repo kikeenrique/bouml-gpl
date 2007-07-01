@@ -71,9 +71,11 @@ class CdClassCanvas : public QObject, public DiagramCanvas,
     
     void compute_size();
     virtual bool has_relation(BasicData *) const;
+    bool has_inner(DiagramItem * end) const;
     void draw_all_relations(CdClassCanvas * end = 0);
     void draw_all_class_assoc();
     void check_constraint();
+    void check_inner();
     const ClassDiagramSettings & get_settings() const { return settings; }
 
     virtual void draw(QPainter & p);

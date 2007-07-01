@@ -36,4 +36,10 @@ class UmlBaseParameterSet
   UmlCom::read_item_list((QVector<UmlItem> &) _pins);
 !!!195200.java!!!	read_uml_() : void
   super.read_uml_();
-  _pins = (UmlActivityPin[]) UmlCom.read_item_list();
+
+  int n = UmlCom.read_unsigned();
+
+  _pins = new UmlActivityPin[n];
+
+  for (int index = 0; index != n; index += 1)
+    _pins[index] = (UmlActivityPin) UmlBaseItem.read_();

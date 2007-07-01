@@ -217,8 +217,6 @@ void BrowserView::contentsDropEvent(QDropEvent * e) {
 void BrowserView::contentsMousePressEvent(QMouseEvent * e) {
   UmlWindow::abort_line_construction();
   
-  QListView::contentsMousePressEvent(e);
-  
   QPoint p(contentsToViewport(e->pos()));
   QListViewItem * i = itemAt(p);
   
@@ -243,6 +241,8 @@ void BrowserView::contentsMousePressEvent(QMouseEvent * e) {
       }
     }
   }
+  
+  QListView::contentsMousePressEvent(e);
 }
 
 void BrowserView::contentsMouseMoveEvent(QMouseEvent * e) {

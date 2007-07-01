@@ -517,21 +517,17 @@ void UmlClass::write(QTextOStream & f, bool with_formals,
     QCString s = cppDecl();
     int index = s.find('\n');
     
-    if (index == -1)
-      // invalid, write the name
-      f << name();
-    else {
-      s = s.left(index).stripWhiteSpace();
+    s = (index == -1) ? s.stripWhiteSpace()
+		      : s.left(index).stripWhiteSpace();
       
-      if ((index = s.find("${name}")) != -1)
-	s.replace(index, 7, name());
-      else if ((index = s.find("${Name}")) != -1)
-	s.replace(index, 7, capitalize(name()));
-      else if ((index = s.find("${NAME}")) != -1)
-	s.replace(index, 7, name().upper());
-      
-      f << s;
-    }
+    if ((index = s.find("${name}")) != -1)
+      s.replace(index, 7, name());
+    else if ((index = s.find("${Name}")) != -1)
+      s.replace(index, 7, capitalize(name()));
+    else if ((index = s.find("${NAME}")) != -1)
+      s.replace(index, 7, name().upper());
+    
+    f << s;
   }
   else 
     f << name();	// true_name

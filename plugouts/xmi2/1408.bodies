@@ -215,28 +215,13 @@ class UmlBaseClass
 
   _java_external = y;
 !!!7808.cpp!!!	isJavaPublic() : bool
-  read_if_needed_();
-  
-  return _java_public;
+  return visibility() == PublicVisibility;
 !!!7808.java!!!	isJavaPublic() : bool
-  read_if_needed_();
-  
-  return _java_public;
+  return visibility() == aVisibility.PublicVisibility;
 !!!7936.cpp!!!	set_isJavaPublic(in y : bool) : bool
-  bool r;
-  
-  if (set_it_(r, y, setIsJavaPublicCmd)) {
-    _java_public = y;
-    return TRUE;
-  }
-  else
-    return FALSE;
-
+  return set_Visibility((y) ? PublicVisibility : PackageVisibility);
 !!!7936.java!!!	set_isJavaPublic(in y : bool) : bool
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsJavaPublicCmd, (y) ? (byte) 1 : (byte) 0);
-  UmlCom.check();
-
-  _java_public = y;
+  set_Visibility((y) ? aVisibility.PublicVisibility : aVisibility.PackageVisibility);
 !!!8064.cpp!!!	isJavaFinal() : bool
   read_if_needed_();
   
@@ -445,12 +430,12 @@ class UmlBaseClass
   _cpp_external = UmlCom.read_bool();
 !!!9984.cpp!!!	read_java_() : void
   UmlBaseClassMember::read_java_();
-  _java_public = UmlCom::read_bool();
+  ;
   _java_final = UmlCom::read_bool();
   _java_external = UmlCom::read_bool();
 !!!9984.java!!!	read_java_() : void
   super.read_java_();  
-  _java_public = UmlCom.read_bool();
+  
   _java_final = UmlCom.read_bool();
   _java_external = UmlCom.read_bool();
 !!!10112.cpp!!!	read_idl_() : void

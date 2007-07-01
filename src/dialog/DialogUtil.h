@@ -111,6 +111,14 @@ extern AType the_type(const QString & t, const QStringList & types,
 extern QString type(const QString & t, const QStringList & types,
 		    BrowserNodeList & nodes);
 
+// 'true' name or external name
+extern QString get_cpp_name(const BrowserClass * cl);
+extern QString get_java_name(const BrowserClass * cl);
+extern QString get_idl_name(const BrowserClass * cl);
+extern QString get_cpp_name(const AType);
+extern QString get_java_name(const AType);
+extern QString get_idl_name(const AType);
+    
 extern void manage_alias(const BrowserNode * node, const char *& p,
 			 QString & s, KeyValuesTable *);
 

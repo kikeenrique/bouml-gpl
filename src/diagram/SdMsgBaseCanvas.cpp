@@ -287,7 +287,7 @@ void SdMsgBaseCanvas::save(QTextStream & st, QString & warning) const {
     if (msg->deletedp()) {
       warning += QString("<b>") + the_canvas()->browser_diagram()->full_name() +
 	"</b> reference the class <b>" +
-	  dest->get_line()->get_obj()->get_type()->full_name() +
+	  dest->get_line()->get_obj()->get_class()->full_name() +
 	    "</b> deleted operation <b>" + msg->definition(TRUE) + "</b><br>\n<br>\n";
       if (warning[0] == '!') {
 	st << " msg ";

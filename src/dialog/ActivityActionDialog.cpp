@@ -347,7 +347,7 @@ void ActivityActionDialog::accept() {
     act->update_depend();
 
     bn->set_comment(comment->text());
-    UmlWindow::set_commented(bn);
+    UmlWindow::update_comment_if_needed(bn);
     
     kvtable->update(bn);
     

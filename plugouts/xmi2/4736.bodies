@@ -323,6 +323,94 @@ class CppSettings
   
   _incl_with_path = v;
 
+!!!211072.cpp!!!	isRelativePath() : bool
+  read_if_needed_();
+
+  return _is_relative_path;
+!!!211072.java!!!	isRelativePath() : bool
+  read_if_needed_();
+
+  return _is_relative_path;
+!!!211200.cpp!!!	set_IsRelativePath(in v : bool) : bool
+  UmlCom::send_cmd(cppSettingsCmd, setCppRelativePathCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_relative_path = v;
+    if (v) _is_root_relative_path = FALSE;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!211200.java!!!	set_IsRelativePath(in v : bool) : bool
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppRelativePathCmd,
+		   (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+  _is_relative_path = v;
+  if (v) _is_root_relative_path = false;
+!!!212352.cpp!!!	isRootRelativePath() : bool
+  read_if_needed_();
+
+  return _is_root_relative_path;
+!!!212352.java!!!	isRootRelativePath() : bool
+  read_if_needed_();
+
+  return _is_root_relative_path;
+!!!212480.cpp!!!	set_IsRootRelativePath(in v : bool) : bool
+  UmlCom::send_cmd(cppSettingsCmd, setCppRootRelativePathCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_root_relative_path = v;
+    if (v) _is_relative_path = FALSE;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!212480.java!!!	set_IsRootRelativePath(in v : bool) : bool
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppRootRelativePathCmd,
+		   (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+  _is_root_relative_path = v;
+  if (v) _is_relative_path = false;
+!!!211328.cpp!!!	isForceNamespacePrefixGeneration() : bool
+  read_if_needed_();
+
+  return _is_force_namespace_gen;
+!!!211328.java!!!	isForceNamespacePrefixGeneration() : bool
+  read_if_needed_();
+
+  return _is_force_namespace_gen;
+!!!211456.cpp!!!	set_IsForceNamespacePrefixGeneration(in v : bool) : bool
+  UmlCom::send_cmd(cppSettingsCmd, setCppForceNamespaceGenCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_force_namespace_gen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!211456.java!!!	set_IsForceNamespacePrefixGeneration(in v : bool) : bool
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppForceNamespaceGenCmd,
+		   (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+  _is_force_namespace_gen = v;
+!!!212608.cpp!!!	isGenerateJavadocStyleComment() : bool
+  read_if_needed_();
+
+  return _is_generate_javadoc_comment;
+!!!212608.java!!!	isGenerateJavadocStyleComment() : bool
+  read_if_needed_();
+
+  return _is_generate_javadoc_comment;
+!!!212736.cpp!!!	set_IsGenerateJavadocStyleComment(in v : bool) : bool
+  UmlCom::send_cmd(cppSettingsCmd, setCppJavadocStyleCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_generate_javadoc_comment = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!212736.java!!!	set_IsGenerateJavadocStyleComment(in v : bool) : bool
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppJavadocStyleCmd,
+		   (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+  _is_generate_javadoc_comment = v;
 !!!47744.cpp!!!	enumIn() : string
   read_if_needed_();
   
@@ -965,6 +1053,28 @@ class CppSettings
   
   _is_set_param_const = v;
 
+!!!210944.cpp!!!	isSetParamRef() : bool
+  read_if_needed_();
+
+  return _is_set_param_ref;
+!!!210944.java!!!	isSetParamRef() : bool
+  read_if_needed_();
+
+  return _is_set_param_ref;
+!!!210048.cpp!!!	set_IsSetParamRef(in v : bool) : bool
+  UmlCom::send_cmd(cppSettingsCmd, setCppIsSetParamRefCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_set_param_ref = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!210048.java!!!	set_IsSetParamRef(in v : bool) : bool
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppIsSetParamRefCmd,
+		  (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+  
+  _is_set_param_ref = v;
 !!!54784.cpp!!!	read_() : void
   _root = UmlCom::read_string();
   
@@ -1042,6 +1152,11 @@ class CppSettings
   _is_set_inline = UmlCom::read_bool();
   _is_set_param_const = UmlCom::read_bool();
 
+  _is_set_param_ref = UmlCom::read_bool();
+  _is_relative_path = UmlCom::read_bool();
+  _is_force_namespace_gen = UmlCom::read_bool();
+  _is_root_relative_path = UmlCom::read_bool();
+  _is_generate_javadoc_comment = UmlCom::read_bool();
 !!!54784.java!!!	read_() : void
   _root = UmlCom.read_string();
   
@@ -1117,6 +1232,11 @@ class CppSettings
   _set_name = UmlCom.read_string();
   _is_set_inline = UmlCom.read_bool();
   _is_set_param_const = UmlCom.read_bool();
+  _is_set_param_ref = UmlCom.read_bool();
+  _is_relative_path = UmlCom.read_bool();
+  _is_force_namespace_gen = UmlCom.read_bool();
+  _is_root_relative_path = UmlCom.read_bool();
+  _is_generate_javadoc_comment = UmlCom.read_bool();
 !!!54912.cpp!!!	read_if_needed_() : void
   UmlSettings::read_if_needed_();
   if (!_defined) {

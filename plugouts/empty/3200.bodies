@@ -190,6 +190,14 @@ class UmlBaseItem
 !!!23552.java!!!	referencedBy() : UmlItem
   UmlCom.send_cmd(identifier_(), OnInstanceCmd.childrenCmd);
   return UmlCom.read_item_list();
+!!!193024.cpp!!!	getIdentifier() : int
+  read_if_needed_();
+
+  return _modeler_id;
+!!!193024.java!!!	getIdentifier() : int
+  read_if_needed_();
+
+  return _modeler_id;
 !!!23680.cpp!!!	unload(in rec : bool, in del : bool) : void
   _defined = FALSE;
   _stereotype = 0;
@@ -357,6 +365,7 @@ class UmlBaseItem
   _description = UmlCom::read_string();
   
   _marked = UmlCom::read_bool();
+  _modeler_id = (int) UmlCom::read_unsigned();
 !!!24320.java!!!	read_uml_() : void
   _stereotype = UmlCom.read_string();
 
@@ -377,6 +386,7 @@ class UmlBaseItem
   _description = UmlCom.read_string();
   
   _marked = UmlCom.read_bool();
+  _modeler_id = UmlCom.read_unsigned();
 !!!24832.cpp!!!	read_children_() : void
   UmlCom::send_cmd(_identifier, childrenCmd);
   _children = new QVector<UmlItem>;
@@ -640,6 +650,8 @@ class UmlBaseItem
       return new UmlJoinActivityNode(id, name);
     case aPartition:
       //return new UmlPartition(id, name);
+    case aClassInstance:
+      return new UmlClassInstance(id, name);
     default:
       UmlCom::bye();
       UmlCom::fatal_error(QCString("unknown item type ") + QCString().setNum(kind));
@@ -800,6 +812,8 @@ class UmlBaseItem
       return new UmlJoinActivityNode(id, name);
     case anItemKind._aPartition:
       //return new UmlPartition(id, name);
+    case anItemKind._aClassInstance:
+      return new UmlClassInstance(id, name);
     default:
       UmlCom.bye();
       UmlCom.fatal_error(new String("unknown item type ") + String.valueOf(kind));

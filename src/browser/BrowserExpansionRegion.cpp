@@ -441,6 +441,10 @@ UmlCode BrowserExpansionRegion::get_type() const {
   return UmlExpansionRegion;
 }
 
+int BrowserExpansionRegion::get_identifier() const {
+  return get_ident();
+}
+
 BasicData * BrowserExpansionRegion::get_data() const {
   return def;
 }

@@ -382,7 +382,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     showcppdef->setReadOnly(TRUE);
     showcppdef->setFont(font);
     
-    editcppbody = new QPushButton((visit) ? "Show body" : "Edit body", grid);
+    editcppbody = new QPushButton((visit || (preserve_bodies())) ? "Show body" : "Edit body", grid);
     connect(editcppbody, SIGNAL(clicked()), this, SLOT(cpp_edit_body()));
     
     char * b = o->get_body(TRUE);
@@ -475,7 +475,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     showjavadef->setReadOnly(TRUE);
     showjavadef->setFont(font);
     
-    editjavabody = new QPushButton((visit) ? "Show body" : "Edit body", grid);
+    editjavabody = new QPushButton((visit || (preserve_bodies())) ? "Show body" : "Edit body", grid);
     connect(editjavabody, SIGNAL(clicked()), this, SLOT(java_edit_body()));
     
     char * b = o->get_body(FALSE);
@@ -741,7 +741,7 @@ void OperationDialog::accept() {
     etable->update(oper, nodes);
     
     bn->set_comment(comment->text());
-    UmlWindow::set_commented(bn);
+    UmlWindow::update_comment_if_needed(bn);
   
     oper->constraint = constraint->stripWhiteSpaceText();
     
@@ -1055,7 +1055,7 @@ void OperationDialog::cpp_edit_param_decl() {
 void OperationDialog::manage_cpp_type(unsigned rank, QString & s)
 {
   if (rank < table->nparams()) 
-    s += GenerationSettings::cpp_type(type(table->type(rank), list, nodes));
+    s += get_cpp_name(the_type(table->type(rank), list, nodes));
   else {
     s += "${t";
     s += QString::number(rank);
@@ -1168,8 +1168,8 @@ void OperationDialog::cpp_update_decl() {
     }
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += GenerationSettings::cpp_type(type(edreturn_type->currentText().stripWhiteSpace(),
-					     list, nodes));
+      s += get_cpp_name(the_type(edreturn_type->currentText().stripWhiteSpace(),
+				 list, nodes));
     }
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;
@@ -1271,7 +1271,7 @@ QString OperationDialog::cpp_decl(const BrowserOperation * op, bool withname)
       p += 10;
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += GenerationSettings::cpp_type(d->return_type.get_type());
+      s += get_cpp_name(d->return_type);
     }
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;
@@ -1618,8 +1618,8 @@ void OperationDialog::cpp_update_def() {
       }
       else if (!strncmp(p, "${type}", 7)) {
 	p += 7;
-	s += GenerationSettings::cpp_type(type(edreturn_type->currentText().stripWhiteSpace(),
-					       list, nodes));
+	s += get_cpp_name(the_type(edreturn_type->currentText().stripWhiteSpace(),
+				   list, nodes));
       }
       else if (!strncmp(p, "${class}", 8)) {
 	p += 8;
@@ -1741,7 +1741,10 @@ void OperationDialog::cpp_edit_body() {
     b = cppbody;
 
   edit(b, edname->text().stripWhiteSpace() + "_body",
-       oper, CppEdit, this, (post_edit) post_cpp_edit_body, edits);
+       oper, CppEdit, this, 
+       (preserve_bodies()) ? (post_edit) 0
+			   : (post_edit) post_cpp_edit_body,
+       edits);
 }
 
 void OperationDialog::post_cpp_edit_body(OperationDialog * d, QString s)
@@ -1758,7 +1761,7 @@ void OperationDialog::finalsynchronized_toggled(bool) {
 void OperationDialog::manage_java_type(unsigned rank, QString & s)
 {
   if (rank < table->nparams()) 
-    s += GenerationSettings::java_type(type(table->type(rank), list, nodes));
+    s += get_java_name(the_type(table->type(rank), list, nodes));
   else {
     s += "${t";
     s += QString::number(rank);
@@ -1905,8 +1908,8 @@ void OperationDialog::java_update_def() {
     }
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += GenerationSettings::java_type(type(edreturn_type->currentText().stripWhiteSpace(),
-					      list, nodes));
+      s += get_java_name(the_type(edreturn_type->currentText().stripWhiteSpace(),
+				  list, nodes));
     }
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;
@@ -2022,7 +2025,7 @@ QString OperationDialog::java_decl(const BrowserOperation * op, bool withname)
       p += 15;
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += GenerationSettings::java_type(d->return_type.get_type());
+      s += get_java_name(d->return_type);
     }
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;
@@ -2102,7 +2105,10 @@ void OperationDialog::java_edit_body() {
     b = javabody;
 
   edit(b, edname->text().stripWhiteSpace() + "_body",
-       oper, JavaEdit, this, (post_edit) post_java_edit_body, edits);
+       oper, JavaEdit, this, 
+       (preserve_bodies()) ? (post_edit) 0
+			   : (post_edit) post_java_edit_body,
+       edits);
 }
 
 void OperationDialog::post_java_edit_body(OperationDialog * d, QString s)
@@ -2126,7 +2132,7 @@ void OperationDialog::oneway_toggled(bool) {
 void OperationDialog::manage_idl_type(unsigned rank, QString & s)
 {
   if (rank < table->nparams()) 
-    s += GenerationSettings::idl_type(type(table->type(rank), list, nodes));
+    s += get_java_name(the_type(table->type(rank), list, nodes));
   else {
     s += "${t";
     s += QString::number(rank);
@@ -2268,8 +2274,8 @@ void OperationDialog::idl_update_decl() {
     }
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += GenerationSettings::idl_type(type(edreturn_type->currentText().stripWhiteSpace(),
-					     list, nodes));
+      s += get_idl_name(the_type(edreturn_type->currentText().stripWhiteSpace(),
+				 list, nodes));
     }
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;
@@ -2356,7 +2362,7 @@ QString OperationDialog::idl_decl(const BrowserOperation * op,
       p += 9;
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += GenerationSettings::idl_type(d->return_type.get_type());
+      s += get_java_name(d->return_type);
     }
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;

@@ -128,7 +128,7 @@ CodAddMsgDialog::CodAddMsgDialog(CodObjCanvas * from, CodObjCanvas * to,
   edoper->setAutoCompletion(TRUE);
   
   // gets operations
-  cl = to->get_type();
+  cl = to->get_class();
   if (cl != 0) {
     cl->get_opers(opers, list);
     edoper->insertStringList(list);

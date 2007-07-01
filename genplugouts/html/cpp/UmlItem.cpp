@@ -197,8 +197,7 @@ h4.activity { background: #87ceff; }\n");
 
 void UmlItem::memo_ref() {
   all.addElement(this);
-  
-  refId = ++nrefs;
+  known = TRUE;
   
   const QVector<UmlItem> ch = children();
   
@@ -208,7 +207,8 @@ void UmlItem::memo_ref() {
 
 void UmlItem::define() {
   fw.write("<a name=\"ref");
-  fw.write(refId);
+  fw.write(sKind());
+  fw.write((unsigned) getIdentifier());
   fw.write("\"></a>\n");
 }
 
@@ -322,20 +322,17 @@ void UmlItem::generate_indexes()
   previous = 0;
   for (i = 0; i != n; i += 1) {
     UmlItem * x = all.elementAt(i);
+    QCString s = x->pretty_name();
     
-    if (x->refId != 0) {
-      QCString s = x->pretty_name();
+    if (! s.isEmpty()) {
+      char c = *((const char *) s);
       
-      if (! s.isEmpty()) {
-	char c = *((const char *) s);
-	
-	if ((c >= 'a') && (c <= 'z'))
-	  c += 'A' - 'a';
-	
-	if (c != previous) {
-	  previous = c;
-	  letters += c;
-	}
+      if ((c >= 'a') && (c <= 'z'))
+	c += 'A' - 'a';
+      
+      if (c != previous) {
+	previous = c;
+	letters += c;
       }
     }
   }
@@ -343,42 +340,39 @@ void UmlItem::generate_indexes()
   previous = 0;
   for (i = 0; i != n; i += 1) {
     UmlItem * x = all.elementAt(i);
+    QCString s = x->pretty_name();
     
-    if (x->refId != 0) {
-      QCString s = x->pretty_name();
+    if (! s.isEmpty()) {
+      char c = *((const char *) s);
       
-      if (! s.isEmpty()) {
-	char c = *((const char *) s);
-	
-	if ((c >= 'a') && (c <= 'z'))
-	  c += 'A' - 'a';
-	
-	if (c != previous) {
-	  if (previous != 0) {
-	    fw.write("</table>\n");
-	    end_file();
-	  }
-	  
-	  previous = c;
-	  
-	  QCString sn;
-	  
-	  sn.setNum((int) (c & 255));
-	  
-	  start_file(QCString("index_") + sn, QCString("") + c, TRUE);
-	  
-	  fw.write("<table>\n");
-	  fw.write("<tr bgcolor=#f0f0f0><td align=center><b>Name</b></td><td align=center><b>Kind</b></td><td align=center><b>Description</b></td></tr>\n");
+      if ((c >= 'a') && (c <= 'z'))
+	c += 'A' - 'a';
+      
+      if (c != previous) {
+	if (previous != 0) {
+	  fw.write("</table>\n");
+	  end_file();
 	}
 	
-	fw.write("<tr bgcolor=#f0f0f0><td>");
-	x->write("projectFrame");
-	fw.write("</td><td>");
-	fw.write(x->sKind());
-	fw.write("</td><td>");
-	writeq(x->description());
-	fw.write("</td></tr>\n");
+	previous = c;
+	
+	QCString sn;
+	
+	sn.setNum((int) (c & 255));
+	
+	start_file(QCString("index_") + sn, QCString("") + c, TRUE);
+	
+	fw.write("<table>\n");
+	fw.write("<tr bgcolor=#f0f0f0><td align=center><b>Name</b></td><td align=center><b>Kind</b></td><td align=center><b>Description</b></td></tr>\n");
       }
+      
+      fw.write("<tr bgcolor=#f0f0f0><td>");
+      x->write("projectFrame");
+      fw.write("</td><td>");
+      fw.write(x->sKind());
+      fw.write("</td><td>");
+      writeq(x->description());
+      fw.write("</td></tr>\n");
     }
   }
 
@@ -620,16 +614,17 @@ void UmlItem::manage_alias(const char *& p) {
 }
 
 void UmlItem::write() {
-  if (refId != 0) {
+  if (known) {
     fw.write("<a href=\"");
     if (!flat && (parent() != 0) && (parent()->kind() == aClass)){
       fw.write("class");
-      fw.write(parent()->refId);
+      fw.write((unsigned) parent()->getIdentifier());
     }
     else
       fw.write("index");
     fw.write(".html#ref");
-    fw.write(refId);
+    fw.write(sKind());
+    fw.write((unsigned) getIdentifier());
     fw.write("\"><b>");
     writeq(pretty_name());
     fw.write("</b></a>");
@@ -639,9 +634,10 @@ void UmlItem::write() {
 }
 
 void UmlItem::write(QCString target) {
-  if (refId != 0) {
+  if (known) {
     fw.write("<a href=\"index.html#ref");
-    fw.write(refId);
+    fw.write(sKind());
+    fw.write((unsigned) getIdentifier());
     fw.write("\" target = \"");
     fw.write(target);
     fw.write("\"><b>");

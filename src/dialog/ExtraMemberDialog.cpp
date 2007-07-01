@@ -216,7 +216,7 @@ void ExtraMemberDialog::accept() {
   emd->idl_decl = edidl_decl->text();
   
   bn->set_comment(comment->text());
-  UmlWindow::set_commented(bn);
+  UmlWindow::update_comment_if_needed(bn);
   
   kvtable->update(bn);
   

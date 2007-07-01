@@ -29,9 +29,24 @@ class UmlBaseUseCase
   
   _assoc_diagram = d;
 
+!!!212096.cpp!!!	extensionPoints() : string
+  read_if_needed_();
+  return _extension_points;
+!!!212096.java!!!	extensionPoints() : string
+  read_if_needed_();
+  return _extension_points;
+!!!212224.cpp!!!	set_ExtensionPoints(in v : str) : bool
+  return set_it_(_extension_points, v, replaceExceptionCmd);
+!!!212224.java!!!	set_ExtensionPoints(in v : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.replaceExceptionCmd, v);
+  UmlCom.check();
+
+  _extension_points = v;
 !!!43520.cpp!!!	read_uml_() : void
   _assoc_diagram = (UmlUseCaseDiagram *) UmlBaseItem::read_();
   UmlBaseItem::read_uml_();
+  _extension_points = UmlCom::read_string();
 !!!43520.java!!!	read_uml_() : void
   _assoc_diagram = (UmlUseCaseDiagram) UmlBaseItem.read_();
   super.read_uml_();
+  _extension_points = UmlCom.read_string();

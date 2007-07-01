@@ -77,6 +77,12 @@ ObjectDiagramWindow::ObjectDiagramWindow(const QString & s, BrowserObjectDiagram
   addFragment->setToggleButton(TRUE);
   QWhatsThis::add(addFragment, addfragmentText);
   
+  addClassInstance
+    = new QToolButton(*classinstanceButton, "Add Class instance", QString::null,
+		      this, SLOT(hit_classinstance()), toolbar, "add class instance");
+  addClassInstance->setToggleButton(TRUE);
+  QWhatsThis::add(addClassInstance, addclassinstanceText);
+  
   addClass
     = new QToolButton(*classButton, "Add Class instance", QString::null,
 		      this, SLOT(hit_class()), toolbar, "add class instance");
@@ -160,6 +166,7 @@ void ObjectDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   addPackage->setOn(FALSE);
   addFragment->setOn(FALSE);
   addClass->setOn(FALSE);
+  addClassInstance->setOn(FALSE);
   addLink->setOn(FALSE);
   note->setOn(FALSE);
   anchor->setOn(FALSE);
@@ -175,6 +182,10 @@ void ObjectDiagramWindow::hit_package() {
 
 void ObjectDiagramWindow::hit_fragment() {
   hit_button(UmlFragment, addFragment);
+}
+
+void ObjectDiagramWindow::hit_classinstance() {
+  hit_button(UmlClassInstance, addClassInstance);
 }
 
 void ObjectDiagramWindow::hit_class() {

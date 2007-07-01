@@ -35,24 +35,37 @@
 #include "SdObjCanvas.h"
 #include "ClassInstCanvas.h"
 
+class BrowserNode;
+
 class SdClassInstCanvas : public QObject, public SdObjCanvas, public ClassInstCanvas {
   Q_OBJECT
     
+  protected:
+    QString iname;	// useless if browser_node is a class instance rather than a class
+
+  protected:
+    ClassDrawingMode drawing_mode;
+    ClassDrawingMode used_drawing_mode;
+    
   public:
-    SdClassInstCanvas(BrowserClass * t, UmlCanvas * canvas, int x, int id);
+    SdClassInstCanvas(BrowserNode * t, UmlCanvas * canvas, int x, int id);
     virtual ~SdClassInstCanvas();
     
-    virtual void delete_available(bool & in_model, bool & out_model) const;
     virtual void delete_it();
-    
-    virtual BrowserClass * get_type();
-    
+        
     virtual void draw(QPainter & p);
     
     void compute_size();
-    virtual UmlCode type() const;
-    virtual void set_type(BrowserClass * t);
-    virtual BrowserNode * the_diagram() const;
+    virtual UmlCode type() const;	// -> class or classinstance
+    virtual QString get_name() const;	// all cases
+    virtual void set_name(const QString & s);	// out of model case
+    virtual BrowserNode * get_type() const;	// return class, all cases
+    virtual void set_type(BrowserNode * t);	// out of model case
+    virtual BrowserNodeList& get_types(BrowserNodeList&) const;
+    virtual BrowserNode * container(UmlCode) const;
+    virtual BrowserClass* get_class() const;
+    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void remove(bool from_model);
     virtual void open();
     virtual void menu(const QPoint&);
     virtual void history_load(QBuffer &);
@@ -63,7 +76,7 @@ class SdClassInstCanvas : public QObject, public SdObjCanvas, public ClassInstCa
     
     virtual void apply_shortcut(QString s);
     void edit_drawing_settings();
-  
+    
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static SdClassInstCanvas * read(char * &, UmlCanvas * canvas, char *);
     

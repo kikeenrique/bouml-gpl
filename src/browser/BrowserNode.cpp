@@ -2,6 +2,10 @@
 //
 // Copyleft 2004-2007 Bruno PAGES  .
 //
+// *************************************************************************
+//
+// Copyleft 2004-2007 Bruno PAGES  .
+//
 // This file is part of the BOUML Uml Toolkit.
 //
 // This program is free software; you can redistribute it and/or modify
@@ -39,6 +43,7 @@
 #include "BrowserSimpleRelation.h"
 #include "SimpleRelationData.h"
 #include "BrowserAttribute.h"
+#include "BrowserClassInstance.h"
 #include "BasicData.h"
 #include "BrowserPackage.h"
 #include "BrowserView.h"
@@ -76,13 +81,15 @@ int BrowserNode::already_saved;
 BrowserNode::BrowserNode(QString s, BrowserView * parent)
     : QListViewItem(parent, s),
       name(s), is_deleted(FALSE), is_modified(FALSE), is_new(TRUE),
-      is_read_only(FALSE), is_edited(FALSE), is_marked(FALSE), is_saveable(TRUE) {
+      is_read_only(FALSE), is_edited(FALSE), is_marked(FALSE),
+      is_saveable(TRUE), is_defined(FALSE) {
 }
 
 BrowserNode::BrowserNode(QString s, BrowserNode * parent)
     : QListViewItem(parent, s),
       name(s), is_deleted(FALSE), is_modified(FALSE), is_new(TRUE),
-      is_read_only(FALSE), is_edited(FALSE), is_marked(FALSE), is_saveable(TRUE) {
+      is_read_only(FALSE), is_edited(FALSE), is_marked(FALSE),
+      is_saveable(TRUE), is_defined(FALSE) {
   
   // move it at end
   QListViewItem * child = parent->firstChild();
@@ -97,7 +104,8 @@ BrowserNode::BrowserNode(QString s, BrowserNode * parent)
 BrowserNode::BrowserNode()
     : QListViewItem(UndefinedNodePackage, "<not yet read>"),
       is_deleted(FALSE), is_modified(FALSE), is_new(TRUE),
-      is_read_only(FALSE), is_edited(FALSE), is_marked(FALSE), is_saveable(TRUE) {
+      is_read_only(FALSE), is_edited(FALSE), is_marked(FALSE),
+      is_saveable(TRUE), is_defined(FALSE) {
 }
 
 BrowserNode::~BrowserNode() {
@@ -422,6 +430,7 @@ void BrowserNode::post_load()
     wrong.take()->set_parent(UndefinedNodePackage);
   
   BrowserAttribute::post_load();
+  BrowserClassInstance::post_load();
   
   QListViewItem * child;
   
@@ -887,8 +896,10 @@ void BrowserNode::move(BrowserNode * bn, BrowserNode * after) {
     insertItem(bn);
   }
   package_modified();
-  if (old_parent != this)
+  if (old_parent != this) {
     old_parent->package_modified();
+    bn->modified();
+  }
 }
 
 void BrowserNode::toggle_mark() {
@@ -1075,32 +1086,12 @@ bool BrowserNode::same_name(const QString & s, UmlCode type) const {
   return ((get_type() == type) && (name == s));
 }
 
-QString BrowserNode::child_random_name(const QString & prefix) const {
-  static unsigned n = 0;
-  
-  for (;;) {
-    QString result;
-    
-    result.sprintf("%s%u", (const char *) prefix, ++n);
-    
-    const char * str = result;
-    QListViewItem * child;
-    
-    for (child = firstChild(); child; child = child->nextSibling())
-      if (!strcasecmp(((BrowserNode *) child)->name, str))
-	break;
-    
-    if (child == 0)
-      return result;
-  }
-}
-
 void BrowserNode::select_in_browser() {
   BrowserView::select(this);  
 }
 
 // unicode
-const QStringList & BrowserNode::default_stereotypes(UmlCode) {
+const QStringList & BrowserNode::default_stereotypes(UmlCode, const BrowserNode *) const {
   static QStringList empty;
   
   return empty;

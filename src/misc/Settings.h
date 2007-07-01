@@ -94,6 +94,7 @@ class SequenceDiagramSettings {
   public:
     Uml3States show_full_operations_definition;
     Uml3States write_horizontally;
+    ClassDrawingMode instances_drawing_mode;
     DrawingLanguage drawing_language;
     Uml3States draw_all_relations;
     Uml3States shadow;

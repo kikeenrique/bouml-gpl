@@ -75,6 +75,7 @@ class BrowserActivityDiagram : public BrowserDiagram {
     virtual void on_close();
     virtual void read_session(char * & st);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual BasicData * get_data() const;
     virtual void set_name(const char * s);
     virtual void get_activitydiagramsettings(ActivityDiagramSettings &) const;
@@ -93,7 +94,7 @@ class BrowserActivityDiagram : public BrowserDiagram {
     static BrowserActivityDiagram * read(char * &, char *, BrowserNode *);
     static BrowserActivityDiagram * read_ref(char * &, char *);
     static BrowserNode * get_it(const char * k, int id);
-    
+    static BrowserActivityDiagram *  add_activity_diagram(BrowserNode * future_parent);
     void edit_settings();
     
     static const QStringList & default_stereotypes();
@@ -107,8 +108,6 @@ class BrowserActivityDiagram : public BrowserDiagram {
     static QString drag_key(BrowserNode * p);
     virtual QString drag_key() const;
     virtual QString drag_postfix() const;
-    virtual void DragMoveEvent(QDragMoveEvent * e);
-    virtual void DropEvent(QDropEvent * e);
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
 };
 

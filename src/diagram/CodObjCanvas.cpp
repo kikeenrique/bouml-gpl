@@ -53,7 +53,7 @@ void CodObjCanvas::delete_available(bool &, bool & out_model) const {
   out_model |= TRUE;
 }
 
-BrowserClass * CodObjCanvas::get_type() {
+BrowserClass * CodObjCanvas::get_class() const {
   return 0;
 }
 
@@ -89,6 +89,7 @@ const char * CodObjCanvas::may_connect(UmlCode & l, const DiagramItem * dest) co
   
   switch (dest->type()) {
   case UmlClass:
+  case UmlClassInstance:
     return (l == UmlLink) ? 0 : "illegal";
   default:
     return "illegal";

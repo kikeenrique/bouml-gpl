@@ -21,7 +21,7 @@ class UmlTypeSpec;
 // You can modify it as you want (except the constructor)
 class UmlItem : public UmlBaseItem {
   public:
-    UmlItem(void * id, const QCString & n) : UmlBaseItem(id, n) { refId = 0; };
+    UmlItem(void * id, const QCString & n) : UmlBaseItem(id, n), known(FALSE) { };
 
     virtual ~UmlItem();
 
@@ -111,7 +111,7 @@ class UmlItem : public UmlBaseItem {
   protected:
     static Vector all;
 
-    unsigned int refId;
+    bool known;
 
     static FileWriter fw;
 

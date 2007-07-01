@@ -259,7 +259,7 @@ void ParameterSetDialog::accept() {
   else {  
     bn->set_name(s);
     bn->set_comment(comment->text());
-    UmlWindow::set_commented(bn);
+    UmlWindow::update_comment_if_needed(bn);
         
     QString stereotype = 
       fromUnicode(edstereotype->currentText().stripWhiteSpace());

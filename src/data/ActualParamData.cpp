@@ -42,9 +42,12 @@ ActualParamData::ActualParamData(const ActualParamData& p)
   set_value(p.value);
 }
 
-QString ActualParamData::get_name() const {
-  return super->full_name() + " : " +
-    ((ClassData *) super->get_data())->get_formalparam_name(rank);
+QString ActualParamData::get_name(bool full) const {
+  QString s = ((ClassData *) super->get_data())->get_formalparam_name(rank);
+  
+  return (full)
+    ? super->full_name() + " : " + s
+    : s;
 }
 
 void ActualParamData::set_value(const AType & t) {

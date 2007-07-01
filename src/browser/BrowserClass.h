@@ -78,7 +78,11 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
     void get_all_parents(QList<BrowserClass> &) const;
     virtual const char * check_inherit(const BrowserNode * parent) const;
     bool have_abstract_operation();
-    void get_opers(QValueList<const OperationData *> & opers, QStringList & list);
+    void get_opers(QValueList<const OperationData *> & opers,
+		   QStringList & list) const;
+    void get_attrs(BrowserNodeList &) const;
+    void get_rels(BrowserClass *, QList<RelationData> &, int * rev = 0) const;
+    void get_rels(BrowserClass * target, QList<BrowserRelation> & l) const;
     void get_tree(BrowserNodeList &);
     virtual BrowserNode * get_associated() const;
     void set_associated_diagram(BrowserClassDiagram *, bool on_read = FALSE);
@@ -101,11 +105,12 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
     virtual void apply_shortcut(QString s);
     virtual void open(bool force_edit);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual void modified();
     virtual void on_delete();
     virtual BasicData * get_data() const;
     virtual bool allow_spaces() const;
-    virtual const QStringList & default_stereotypes(UmlCode arrow) const;
+    virtual const QStringList & default_stereotypes(UmlCode, const BrowserNode *) const; // non class rel
     virtual const char * constraint() const;
     
     virtual void save(QTextStream &, bool ref, QString & warning);

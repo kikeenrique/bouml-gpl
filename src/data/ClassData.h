@@ -84,6 +84,7 @@ class ClassData : public BasicData {
     void update_actuals(BrowserClass *,
 			QList<ActualParamData> & new_actuals,
 			QList<ActualParamData> & managed);
+    void get_actuals(QList<ActualParamData> & l, BrowserClass * parent);
     
   public:
     ClassData();
@@ -129,6 +130,7 @@ class ClassData : public BasicData {
     QString get_actualparam_name(int);	// cannot be const, computed QString
     QString get_actualparam_value(int);	// cannot be const, computed QString
     void set_actualparam_value(int, const AType & t);
+    QString get_actuals(BrowserClass * parent);
     
     const char * get_cppdecl() const { return cpp_decl; };
     bool cpp_is_external() const { return cpp_external; };
@@ -161,6 +163,9 @@ class ClassData : public BasicData {
   private slots:
     void update_actuals();
     void on_delete();
+    
+  signals:
+    void actuals_changed();
 };
   
 #endif

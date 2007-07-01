@@ -84,6 +84,7 @@ class BrowserOperation : public BrowserNode, public Labeled<BrowserOperation> {
     virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual void modified();
     virtual BasicData * get_data() const;
     virtual bool allow_spaces() const;
@@ -111,8 +112,6 @@ class BrowserOperation : public BrowserNode, public Labeled<BrowserOperation> {
     
     static QString drag_key(BrowserNode * p);
     virtual QString drag_key() const;
-    virtual void DragMoveEvent(QDragMoveEvent * e);
-    virtual void DropEvent(QDropEvent * e);
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
     
     static const QStringList & default_stereotypes();

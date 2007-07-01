@@ -34,6 +34,8 @@
 #include "ObjectLinkCanvas.h"
 #include "ArrowPointCanvas.h"
 #include "OdClassInstCanvas.h"
+#include "ClassInstanceData.h"
+#include "BrowserClassInstance.h"
 #include "UmlCanvas.h"
 #include "LabelCanvas.h"
 #include "BrowserDiagram.h"
@@ -48,17 +50,19 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "strutil.h"
+#include "DialogUtil.h"
 
 ObjectLinkCanvas::ObjectLinkCanvas(UmlCanvas * canvas, DiagramItem * b,
-				   DiagramItem * e, int id,
+				   DiagramItem * e, UmlCode t, int id,
 				   RelationData * d)
-      : ArrowCanvas(canvas, b, e, UmlObjectLink, id, TRUE),
+      : ArrowCanvas(canvas, b, e, t, id, TRUE),
         data(d), role_a(0), role_b(0) {
   if (d != 0) {
     itstype = d->get_type();
     
     // note : not connected to all the inheritances used
-    // to access to the relation
+    // to access to the relation because check() is called by
+    // OdClassInstCanvas
     connect(d, SIGNAL(changed()), this, SLOT(modified()));
     connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
   }
@@ -130,43 +134,9 @@ void ObjectLinkCanvas::set_relation(RelationData * d) {
       z = (ObjectLinkCanvas *) ((ArrowPointCanvas *) z->end)->get_other(z);
       z->internal_set_relation(d);
     }
-    
-    if ((d != 0) && 
-	(d->get_start_class() != ((OdClassInstCanvas *) a->begin)->get_type())) {
-      // relation in the wrong direction
-      
-      // remove labels
-      if (a->role_b != 0) {
-	the_canvas()->del(a->role_b);
-	a->role_b = 0;
-      }
-      if (z->role_a != 0) {
-	the_canvas()->del(z->role_a);
-	z->role_a = 0;
-      }
-
-      // reverse direction updating begin/end & beginp/endp
-      for (;;) {
-	DiagramItem * di = a->begin;
-	
-	a->begin = a->end;
-	a->end = di;
-	
-	QPoint p = a->beginp;
-	
-	a->beginp = a->endp;
-	a->endp = p;
-	
-	if (a == z)
-	  break;
-	
-	a = (ObjectLinkCanvas *) ((ArrowPointCanvas *) a->begin)->get_other(a);
-      }
-    }
   }
   
-  update(FALSE);
-  setVisible(TRUE);
+  update(TRUE);
 }
 
 void ObjectLinkCanvas::update_pos() {
@@ -249,47 +219,6 @@ bool ObjectLinkCanvas::reflexive() const {
   return (get_start() == get_end());
 }
 
-bool compatible(UmlCode k)
-{
-  switch (k) {
-  case UmlAssociation:
-  case UmlDirectionalAssociation:
-  case UmlAggregation:
-  case UmlAggregationByValue:
-  case UmlDirectionalAggregation:
-  case UmlDirectionalAggregationByValue:
-    return TRUE;
-  default:
-    return FALSE;
-  }
-}
-
-// cherche les relations des classes de 'from' dont
-// la cible est dans 'to'
-
-static void get_assocs(QList<BrowserClass> & from,
-		       QList<BrowserClass> & to,
-		       QList<RelationData> & rels)
-{
-  QListIterator<BrowserClass> it(from);
-  
-  for (; it.current(); ++it) {
-    QListViewItem * child;
-    
-    for (child = it.current()->firstChild(); child; child = child->nextSibling()) {
-      if (!((BrowserNode *) child)->deletedp() &&
-	  compatible(((BrowserNode *) child)->get_type())) {
-	RelationData * rd = (RelationData *)
-	  ((BrowserRelation *) child)->get_data();
-	
-	if ((rels.findRef(rd) == -1) &&
-	    (to.findRef(rd->get_end_class()) != -1))
-	  rels.append(rd);
-      }
-    }
-  }
-}
-
 void ObjectLinkCanvas::open() {
   // get first & last segments
   ObjectLinkCanvas * first = this;
@@ -301,29 +230,142 @@ void ObjectLinkCanvas::open() {
   while (last->end->type() == UmlArrowPoint)
     last = (ObjectLinkCanvas *) ((ArrowPointCanvas *) last->end)->get_other(last);
   
-  // compute all compatible relations
-  BrowserClass * a = ((OdClassInstCanvas *) first->begin)->get_type();
-  BrowserClass * b = ((OdClassInstCanvas *) last->end)->get_type();
-  QList<BrowserClass> la;
-  QList<BrowserClass> lb;
+  // compute all compatible relations in the two directions
   QList<RelationData> l;
+  int nfirstdir;
   
-  a->get_all_parents(la);  
-  b->get_all_parents(lb);
-  la.append(a);
-  lb.append(b);
-  get_assocs(la, lb, l);
-  get_assocs(lb, la, l);
+  ((BrowserClass *) ((OdClassInstCanvas *) first->begin)->get_type())
+    ->get_rels((BrowserClass *) ((OdClassInstCanvas *) last->end)->get_type(),
+	       l, &nfirstdir);
   
   // dialog
-  ObjectLinkDialog dialog(l, data, a, b);
+  BrowserClassInstance * a = 
+    (BrowserClassInstance *) first->begin->get_bn();
+  BrowserClassInstance * b =
+    (BrowserClassInstance *) last->end->get_bn();
+  ObjectLinkDialog dialog(a, b, l, data, nfirstdir);
   
-  if ((dialog.exec() == QDialog::Accepted) && (dialog.rel() != data)) {
-    set_relation(dialog.rel());
+  if (dialog.exec() == QDialog::Accepted) {
+    the_canvas()->freeze_draw_all_relations();
+    
+    RelationData * choozen = dialog.rel();
+    
+    if (dialog.rev()) {
+      // choozen can't be 0
+      if (data == 0)
+	((ClassInstanceData *) b->get_data())->add(a, choozen);
+      else
+	((ClassInstanceData *) a->get_data())->replace(b, data, choozen, TRUE, FALSE);
+      first->reverse();
+      
+      ObjectLinkCanvas * aux = first;
+      first = last;
+      last = aux;
+    }
+    else if (choozen != data) {
+      if (data == 0)
+	// choozen can't be 0
+	((ClassInstanceData *) a->get_data())->add(b, choozen);
+      else
+	((ClassInstanceData *) a->get_data())->replace(b, data, choozen, TRUE, TRUE);
+    }
+    else {
+      the_canvas()->unfreeze_draw_all_relations();
+      return;
+    }
+    
+    set_relation(choozen);
+    
+    // already drawn ?
+    if ((choozen != 0) && 
+	((OdClassInstCanvas *) first->begin)
+	->is_duplicated(first, (OdClassInstCanvas *) last->end)) {
+      // already drawn
+      msg_warning("Bouml", "Relation already drawn");
+      set_relation(0);
+    }
+    
     first->modified();	// to update role label
-    last->modified();	// to update role label
+    if (first != last)
+      last->modified();	// to update role label
+    
+    the_canvas()->unfreeze_draw_all_relations();
     package_modified();
+    
+    a->get_data()->modified();
+    if (a != b)
+      b->get_data()->modified();
   }
+}
+
+void ObjectLinkCanvas::delete_available(bool & in_model, bool & out_model) const {
+  out_model |= TRUE;
+  if (data != 0) {
+    const ObjectLinkCanvas * first = this;
+    const ObjectLinkCanvas * last = this;
+    
+    while (first->begin->type() == UmlArrowPoint)
+      first = ((ObjectLinkCanvas *) ((ArrowPointCanvas *) first->begin)->get_other(first));
+    
+    while (last->end->type() == UmlArrowPoint)
+      last = (ObjectLinkCanvas *) ((ArrowPointCanvas *) last->end)->get_other(last);
+    
+    if (data->get_end())
+      in_model |= first->begin->get_bn()->is_writable() &&
+	last->end->get_bn()->is_writable();
+    else
+      in_model |= first->begin->get_bn()->is_writable();
+  }
+}
+
+void ObjectLinkCanvas::remove(bool from_model) {
+  if (data != 0) {
+    if (! from_model) {
+      if (the_canvas()->must_draw_all_relations()) {
+	const ObjectLinkCanvas * a = this;
+	
+	while (a->begin->type() == UmlArrowPoint) {
+	  a = (ObjectLinkCanvas *) ((ArrowPointCanvas *) a->begin)->get_other(a);
+	  if (a == 0)
+	    break;
+	}
+	
+	if (a && !a->begin->isSelected() && !a->begin->get_bn()->deletedp()) {
+	  a = this;
+	  
+	  while (a->end->type() == UmlArrowPoint) {
+	    a = (ObjectLinkCanvas *) ((ArrowPointCanvas *) a->end)->get_other(a);
+	    if (a == 0)
+	      break;
+	  }
+	  
+	  if (a && !a->end->isSelected() && !a->end->get_bn()->deletedp()) {
+	    msg_warning("Bouml", "<i>Draw all relations</i> forced to <i>no</i>");
+	    the_canvas()->dont_draw_all_relations();
+	  }
+	}
+      }
+    }
+    else {
+      ObjectLinkCanvas * first = this;
+      ObjectLinkCanvas * last = this;
+      
+      while (first->begin->type() == UmlArrowPoint)
+	first = ((ObjectLinkCanvas *) ((ArrowPointCanvas *) first->begin)->get_other(first));
+      
+      while (last->end->type() == UmlArrowPoint)
+	last = (ObjectLinkCanvas *) ((ArrowPointCanvas *) last->end)->get_other(last);
+      
+      ClassInstanceData * d = (ClassInstanceData *)
+	first->begin->get_bn()->get_data();
+      
+      d->replace((BrowserClassInstance *) last->end->get_bn(),
+		 data, 0, TRUE, TRUE);
+      d->modified();	// to update other relation drawings
+    }
+  }
+  
+  delete_it();
 }
 
 void ObjectLinkCanvas::menu(const QPoint & lpos) {
@@ -381,6 +423,12 @@ void ObjectLinkCanvas::menu(const QPoint & lpos) {
   m.insertSeparator();
   m.insertItem("Remove from view",7);
   
+  bool in_model = FALSE;
+  bool out_model = FALSE;
+  
+  delete_available(in_model, out_model);
+  if (in_model)
+    m.insertItem("Delete from model", 8);
   m.insertSeparator();
   /*
   if (Tool::menu_insert(&toolm, itstype, 20))
@@ -429,8 +477,10 @@ void ObjectLinkCanvas::menu(const QPoint & lpos) {
     break;
   case 7:
     // not removed from the browser : just hide it
-    delete_it();
+    remove(FALSE);
     break;
+  case 8:
+    remove(TRUE);
   default:
     /*
     if (rank >= 20) {
@@ -463,7 +513,7 @@ ArrowPointCanvas * ObjectLinkCanvas::brk(const QPoint & p) {
   
   ObjectLinkCanvas * other =
     // do not give data to not call update()
-    new ObjectLinkCanvas(the_canvas(), ap, end, itstype, 0);
+    new ObjectLinkCanvas(the_canvas(), ap, end, UmlObjectLink, 0, 0);
   
   if (data != 0) {
     other->data = data;
@@ -533,19 +583,21 @@ void ObjectLinkCanvas::update(bool updatepos) {
     
     s = data->get_role_b();
     
-    if (s.isEmpty() || RelationData::uni_directional(itstype)) {
+    if (s.isEmpty() ||
+	RelationData::uni_directional(itstype) ||
+	(begin->type() == UmlArrowPoint)) {
       // relation does not have role_b name
       if (role_b != 0) {
 	the_canvas()->del(role_b);
 	role_b = 0;
       }
     }
-    else if ((role_b == 0) && (begin->type() != UmlArrowPoint)) {
+    else if (role_b == 0) {
       // adds role_b
       role_b = new LabelCanvas(s, the_canvas(), 0, 0);
       role_b_default_position();
     }
-    else if ((role_b != 0) && (role_b->get_name() != s)) {
+    else if (role_b->get_name() != s) {
       role_b->set_name(s);
       role_b_default_position();
     }
@@ -651,25 +703,11 @@ void ObjectLinkCanvas::check() {
   if (data == 0)
     return;
   
-  if (compatible(data->get_type())) {
-    BrowserClass * a = ((OdClassInstCanvas *) get_start())->get_type();
-    BrowserClass * z = ((OdClassInstCanvas *) get_end())->get_type();
-    QList<BrowserClass> la;
-    QList<BrowserClass> lz;
-    
-    a->get_all_parents(la);  
-    z->get_all_parents(lz);
-    la.append(a);
-    lz.append(z);
-    
-    if ((la.findRef(data->get_start_class()) != -1) &&
-	(lz.findRef(data->get_end_class()) != -1))
-      return;
+  if (!((ClassInstanceData *) get_start()->get_bn()->get_data())
+      ->exist((BrowserClassInstance *) get_end()->get_bn(), data)) {
+    set_relation(0);
+    package_modified();
   }
-  
-  // here the relation doesn't exist
-  set_relation(0);
-  package_modified();
 }
 
 void ObjectLinkCanvas::role_a_default_position() const {
@@ -738,6 +776,10 @@ void ObjectLinkCanvas::role_b_default_position() const {
 		   beginp.y() - 4*h/3);
   }
   package_modified();
+}
+
+bool ObjectLinkCanvas::is(const SlotRel & slot_rel, bool isa) const {
+  return (slot_rel.rel == data) && (slot_rel.is_a == isa);
 }
 
 void ObjectLinkCanvas::save(QTextStream & st, bool ref, QString & warning) const {
@@ -833,6 +875,8 @@ ObjectLinkCanvas * ObjectLinkCanvas::read(char * & st, UmlCanvas * canvas, char 
       unamed = !RelationData::isa_association(t);
       s = rd->get_name();
     }
+    else
+      t = UmlObjectLink;
     
     for (;;) {
       read_keyword(st, "z");
@@ -892,13 +936,12 @@ ObjectLinkCanvas * ObjectLinkCanvas::read(char * & st, UmlCanvas * canvas, char 
 	di = dict_get(read_id(st), "classinstance", canvas);
 
       // do not give rd to not call update()
-      result = new ObjectLinkCanvas(canvas, bi, di, id);
+      result = new ObjectLinkCanvas(canvas, bi, di, t, id);
       result->geometry = geo;
       result->fixed_geometry = fixed;
       result->set_z(z);
       if (rd != 0) {
 	result->data = rd;
-	result->itstype = rd->get_type();
 	connect(rd, SIGNAL(changed()), result, SLOT(modified()));
 	connect(rd, SIGNAL(deleted()), result, SLOT(deleted()));
       }
@@ -971,9 +1014,15 @@ ObjectLinkCanvas * ObjectLinkCanvas::read(char * & st, UmlCanvas * canvas, char 
     if (rd != 0) {
       if (rd->get_start()->deletedp())
 	result->set_relation(0);
-      else
+      else if (read_file_format() >= 39)
 	first->check();
+      else
+	// add relation
+	((ClassInstanceData *) first->begin->get_bn()->get_data())
+	  ->add((BrowserClassInstance *) result->end->get_bn(), rd);
     }
+    
+    result->setVisible(TRUE);
     
     return result;
   }

@@ -45,7 +45,7 @@ class ActualParamData : public QObject {
     ActualParamData(const ActualParamData& p);  
     BrowserClass * get_class() const { return super; };
     
-    QString get_name() const;
+    QString get_name(bool full = TRUE) const;
     
     const AType & get_value() const { return value; };
     void set_value(const AType & t);

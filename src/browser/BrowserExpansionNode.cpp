@@ -297,6 +297,10 @@ UmlCode BrowserExpansionNode::get_type() const {
   return UmlExpansionNode;
 }
 
+int BrowserExpansionNode::get_identifier() const {
+  return get_ident();
+}
+
 BasicData * BrowserExpansionNode::get_data() const {
   return def;
 }
@@ -340,14 +344,6 @@ void BrowserExpansionNode::compute_referenced_by(QList<BrowserNode> & l,
 bool BrowserExpansionNode::tool_cmd(ToolCom * com, const char * args) {
   return (def->tool_cmd(com, args, this, comment) ||
 	  BrowserNode::tool_cmd(com, args));
-}
-
-void BrowserExpansionNode::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserExpansionNode::DropEvent(QDropEvent * e) {
-  DropAfterEvent(e, 0);
 }
 
 void BrowserExpansionNode::DropAfterEvent(QDropEvent * e, BrowserNode * after) {

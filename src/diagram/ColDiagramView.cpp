@@ -34,6 +34,7 @@
 #include "ColDiagramWindow.h"
 #include "ColDiagramView.h"
 #include "BrowserColDiagram.h"
+#include "BrowserClassInstance.h"
 #include "BrowserClass.h"
 #include "DiagramCanvas.h"
 #include "CodClassInstCanvas.h"
@@ -121,17 +122,43 @@ void ColDiagramView::contentsMousePressEvent(QMouseEvent * e) {
       switch (c) {
       case UmlClass:
 	{
-	  history_protected = TRUE;
+	  history_protected = FALSE;
+	  unselect_all();
 	  window()->selectOn();
 	  history_save();
 	  
 	  BrowserNode * parent =
 	    ((BrowserNode *) window()->browser_diagram()->parent());
-	  BrowserClass * b = BrowserClass::get_class(parent);
+	  BrowserClass * b = 
+	    BrowserClass::get_class(parent);
 	  
 	  if (b != 0) {
 	    CodClassInstCanvas * cl = 
-	      new CodClassInstCanvas(((BrowserClass *) b), the_canvas(),
+	      new CodClassInstCanvas(b, the_canvas(),
+				     e->x(), e->y(), 0);
+	    
+	    cl->show();
+	    cl->upper();
+	    window()->package_modified();
+	  }
+	}
+	canvas()->update();
+	break;
+      case UmlClassInstance:
+	{
+	  history_protected = TRUE;
+	  unselect_all();
+	  window()->selectOn();
+	  history_save();
+	  
+	  BrowserNode * parent =
+	    ((BrowserNode *) window()->browser_diagram()->parent());
+	  BrowserClassInstance * b = 
+	    BrowserClassInstance::get_classinstance(parent);
+	  
+	  if (b != 0) {
+	    CodClassInstCanvas * cl = 
+	      new CodClassInstCanvas(b, the_canvas(),
 				     e->x(), e->y(), 0);
 	    
 	    cl->show();
@@ -179,6 +206,7 @@ void ColDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 void ColDiagramView::dragEnterEvent(QDragEnterEvent * e) {
   if (!window()->frozen() &&
       (UmlDrag::canDecode(e, UmlClass, TRUE, TRUE) ||
+       UmlDrag::canDecode(e, UmlClassInstance, TRUE, TRUE) ||
        UmlDrag::canDecode(e, UmlPackage, FALSE, TRUE) ||
        UmlDrag::canDecode(e, UmlClassDiagram, FALSE, TRUE) ||
        UmlDrag::canDecode(e, UmlUseCaseDiagram, FALSE, TRUE) ||
@@ -198,16 +226,29 @@ void ColDiagramView::dropEvent(QDropEvent * e) {
   BrowserNode * bn;
   QPoint p = viewportToContents(e->pos());
   
-  if ((bn = UmlDrag::decode(e, UmlClass)) != 0) {
+  if ((bn = UmlDrag::decode(e, UmlClassInstance)) != 0) {
     history_save();
     
     CodClassInstCanvas * i = 
-      new CodClassInstCanvas(((BrowserClass *) bn),
+      new CodClassInstCanvas((BrowserClassInstance *) bn,
 			     the_canvas(), p.x(), p.y(), 0);
     
     history_protected = TRUE;
     i->show();
     i->upper();
+    canvas()->update();
+    history_protected = FALSE;
+    window()->package_modified();
+  }
+  else if ((bn = UmlDrag::decode(e, UmlClass)) != 0) {
+    history_save();
+    
+    CodClassInstCanvas * cli = 
+      new CodClassInstCanvas(bn, the_canvas(), p.x(), p.y(), 0);
+    
+    history_protected = TRUE;
+    cli->show();
+    cli->upper();
     canvas()->update();
     history_protected = FALSE;
     window()->package_modified();
@@ -264,6 +305,7 @@ void ColDiagramView::save(QTextStream & st, QString & warning,
     case UmlPackage:
     case UmlFragment:
     case UmlClass:
+    case UmlClassInstance:
     case UmlNote:
     case UmlText:
     case UmlIcon:

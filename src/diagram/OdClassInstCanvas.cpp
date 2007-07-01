@@ -34,12 +34,14 @@
 #include "OdClassInstCanvas.h"
 #include "ObjectLinkCanvas.h"
 #include "BrowserClass.h"
+#include "BrowserClassInstance.h"
+#include "ClassInstanceData.h"
 #include "BrowserAttribute.h"
 #include "AttributeData.h"
+#include "RelationData.h"
 #include "BrowserDiagram.h"
 #include "UmlCanvas.h"
 #include "ClassData.h"
-#include "ClassInstanceDialog.h"
 #include "SettingsDialog.h"
 #include "myio.h"
 #include "MenuTitle.h"
@@ -48,33 +50,37 @@
 #include "UmlGlobal.h"
 #include "strutil.h"
 
-OdClassInstCanvas::OdClassInstCanvas(BrowserClass * t, UmlCanvas * canvas,
+OdClassInstCanvas::OdClassInstCanvas(BrowserClassInstance * bn, UmlCanvas * canvas,
 				     int x, int y, int id)
     : DiagramCanvas(0, canvas, x, y, CLASSINST_CANVAS_MIN_SIZE, 1, id),
-      ClassInstCanvas(t) {
-  browser_node = canvas->browser_diagram();
+      ClassInstCanvas() {
+  browser_node = bn;
   itscolor = UmlDefaultColor;
-  compute_size();	// update used_settings
-  set_center100();
   
-  BasicData * d = cl->get_data();
-  
-  connect_list.append(d);
+  BasicData * d = bn->get_data();
+
   connect(d, SIGNAL(changed()), this, SLOT(modified()));
   connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
+  
+  if (id == 0) {
+    // not on read
+    compute_size();	// update used_settings
+    
+    if (canvas->must_draw_all_relations())
+      draw_all_relations();
+  }
 }
 
 OdClassInstCanvas::~OdClassInstCanvas() {
 }
 
 void OdClassInstCanvas::delete_it() {
+  BasicData * d = browser_node->get_data();
+
+  disconnect(d, SIGNAL(changed()), this, SLOT(modified()));
+  disconnect(d, SIGNAL(deleted()), this, SLOT(deleted()));
   disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
-  
-  BasicData * d;
-  
-  for (d = connect_list.first(); d!= 0; d = connect_list.next())
-    disconnect(d, 0, this, 0);
 
   DiagramCanvas::delete_it();
 }
@@ -82,6 +88,13 @@ void OdClassInstCanvas::delete_it() {
 void OdClassInstCanvas::deleted() {
   delete_it();
   canvas()->update();
+}
+
+void OdClassInstCanvas::remove(bool from_model) {
+  if (! from_model)
+    delete_it();
+  else
+    browser_node->delete_it();	// will remove canvas
 }
 
 void OdClassInstCanvas::compute_size() {
@@ -121,29 +134,30 @@ void OdClassInstCanvas::compute_size() {
     
     int w = fm.width(get_name() + ":");
     
-    wi = fm.width(cl->get_name());
+    wi = fm.width(((ClassInstanceData *) browser_node->get_data())
+		  ->get_class()->get_name());
     if (w > wi)
       wi = w;
   }
   
+  const QValueList<SlotAttr> & attributes = 
+    ((ClassInstanceData *) browser_node->get_data())->get_attributes();
+
   if (! attributes.isEmpty()) {
-    QListIterator<AttributeData> it_at(attributes);
-    QStringList::Iterator it_val = values.begin();
+    QValueList<SlotAttr>::ConstIterator it = attributes.begin();
     QString egal = " = ";
 
     do {
-      QString s =
-	it_at.current()->get_browser_node()->get_name() + egal + *it_val;      
+      QString s = (*it).att->get_name() + egal + (*it).value;
       int w = fm.width(s);
       
       if (w > wi)
 	wi = w;
       
-      ++it_at;
-      ++it_val;
-    } while (it_val != values.end());
+      ++it;
+    } while (it != attributes.end());
     
-    he += (fm.height() + two) * values.count() + two + two;
+    he += (fm.height() + two) * attributes.count() + two + two;
   }
   
   if (used_color != UmlTransparent) {
@@ -168,10 +182,12 @@ void OdClassInstCanvas::modified() {
   if (visible()) {
     hide();
     hide_lines();
-    check_attributes();
     compute_size();
     show();
     update_show_lines();
+    
+    if (the_canvas()->must_draw_all_relations())
+      draw_all_relations();
     
     QListIterator<ArrowCanvas> it(lines);
     
@@ -185,43 +201,94 @@ void OdClassInstCanvas::modified() {
   }
 }
 
+bool OdClassInstCanvas::has_relation(const SlotRel & slot_rel) const {
+  QListIterator<ArrowCanvas> it(lines);
+	
+  while (it.current()) {
+    if (IsaRelation(it.current()->type()) &&
+	(((ObjectLinkCanvas *) it.current())
+	 ->is(slot_rel, it.current()->get_start() == (DiagramItem *) this)))
+	return TRUE;
+    ++it;
+  }
+  
+  return FALSE;
+}
 
-// warning : don't remove connect because may be called 
-// during connexion list use
-void OdClassInstCanvas::check_attributes() {
-  if (! attributes.isEmpty()) {
-    QList<BrowserClass> l;
-    
-    cl->get_all_parents(l);
-    l.append(cl);
-    
-    AttributeData * d = attributes.first();
-    QStringList::Iterator it_val = values.begin();
+// return true if a clone of lnk already exist between this and other
+bool OdClassInstCanvas::is_duplicated(ObjectLinkCanvas * lnk, 
+				      OdClassInstCanvas * other) const {
+  RelationData * rel = lnk->get_rel();
+  QListIterator<ArrowCanvas> it(lines);
+  ArrowCanvas * ar;
+  
+  while ((ar = it.current()) != 0) {
+    if ((ar != lnk) &&
+	IsaRelation(ar->type()) &&
+	(((ObjectLinkCanvas *) ar)->get_rel() == rel) &&
+	(ar->get_end() == other))
+      return TRUE;
+    else
+      ++it;
+  }
+  return FALSE;
+}
 
-    do {
-      BrowserAttribute * att = (BrowserAttribute *) d->get_browser_node();
+void OdClassInstCanvas::draw_all_relations(OdClassInstCanvas * end) {
+  QCanvasItemList all = canvas()->allItems();
+  QCanvasItemList::Iterator cit;
+  ClassInstanceData * d = (ClassInstanceData *) browser_node->get_data();
+  const QValueList<SlotRel> & rels = d->get_relations();
+  QValueList<SlotRel>::ConstIterator it_rel;
+  
+  for (it_rel = rels.begin(); it_rel != rels.end(); it_rel++) {
+    const SlotRel & slot_rel = *it_rel;
+    
+    if (!has_relation(slot_rel)) {
+      BrowserClassInstance * end_inst = slot_rel.value;
+      DiagramItem * di;
       
-      if (att->deletedp() ||
-	  (l.findRef((BrowserClass *) att->parent())  == -1)) {
-	// must be removed
-	attributes.remove();
-	d = attributes.current();
-	it_val = values.remove(it_val);
-      }
-      else {
-	// change on attribute modify class => memorize classes only
-	BasicData * cld = ((BrowserNode *) att->parent())->get_data();
-	
-	if (connect_list.findRef(cld) == -1) {
-	  connect_list.append(cld);
-	  connect(cld, SIGNAL(changed()), this, SLOT(modified()));
-	  connect(cld, SIGNAL(deleted()), this, SLOT(modified()));
+      if (end_inst == browser_node)
+	di = this;
+      else {	
+	di = 0;
+	for (cit = all.begin(); cit != all.end(); ++cit) {
+	  DiagramItem * adi = QCanvasItemToDiagramItem(*cit);
+	  
+	  if ((adi != 0) &&		// an uml canvas item
+	      (adi->type() == UmlClassInstance) &&
+	      (((OdClassInstCanvas *) adi)->browser_node == end_inst) &&
+	      ((((OdClassInstCanvas *) adi) == end) || (*cit)->visible())) {
+	    // other class canvas find
+	    di = adi;
+	    break;
+	  }
 	}
-	
-	d = attributes.next();
-	++it_val;
       }
-    } while(it_val != values.end());
+      if (di != 0) {
+	if (slot_rel.is_a)
+	  (new ObjectLinkCanvas(the_canvas(), this, di,
+				slot_rel.rel->get_type(), 0, slot_rel.rel))
+	    ->show();
+	else
+	  (new ObjectLinkCanvas(the_canvas(), di, this,
+				slot_rel.rel->get_type(), 0, slot_rel.rel))
+	    ->show();
+      }
+    }
+  }
+  
+  if ((end == 0) && !DrawingSettings::just_modified()) {
+    for (cit = all.begin(); cit != all.end(); ++cit) {
+      DiagramItem * di = QCanvasItemToDiagramItem(*cit);
+      
+      if ((di != 0) &&	// an uml canvas item
+	  (di->type() == UmlClassInstance) &&
+	  (((OdClassInstCanvas *) di) != this) &&
+	  !((OdClassInstCanvas *) di)->browser_node->deletedp() &&
+	  ((OdClassInstCanvas *) di)->visible())
+	((OdClassInstCanvas *) di)->draw_all_relations(this);
+    }
   }
 }
 
@@ -315,6 +382,10 @@ void OdClassInstCanvas::draw(QPainter & p) {
 		  get_name() + ":",
 		  p.font(), fp);
       r.setTop(r.top() + fm.height());
+      
+      BrowserClass * cl = 
+	((ClassInstanceData *) browser_node->get_data())->get_class();
+	  
       p.drawText(r, QObject::AlignHCenter + QObject::AlignTop,
 		 cl->get_name());
       if (fp != 0)
@@ -323,6 +394,9 @@ void OdClassInstCanvas::draw(QPainter & p) {
 		  p.font(), fp);
     }
     
+    const QValueList<SlotAttr> & attributes = 
+      ((ClassInstanceData *) browser_node->get_data())->get_attributes();
+
     if (!attributes.isEmpty()) {
       r.setTop(r.top() + he + two);
       p.drawLine(r.topLeft(), r.topRight());
@@ -334,22 +408,19 @@ void OdClassInstCanvas::draw(QPainter & p) {
       r.setTop(r.top() + two);
       r.setLeft(r.left() + (int) (4 * zoom));
       
-      QListIterator<AttributeData> it_at(attributes);
-      QStringList::Iterator it_val = values.begin();
+      QValueList<SlotAttr>::ConstIterator it = attributes.begin();
       QString egal = " = ";
 
       do {
-	QString s =
-	  it_at.current()->get_browser_node()->get_name() + egal + *it_val;      
+	QString s = (*it).att->get_name() + egal + (*it).value;
 
 	p.drawText(r, QObject::AlignTop, s);
 	if (fp != 0)
 	  draw_text(r, QObject::AlignTop, s,
 		    p.font(), fp);
 	r.setTop(r.top() + he);
-	++it_at;
-	++it_val;
-      } while (it_val != values.end());
+	++it;
+      } while (it != attributes.end());
     }
 
     if (fp != 0)
@@ -361,11 +432,30 @@ void OdClassInstCanvas::draw(QPainter & p) {
 }
 
 UmlCode OdClassInstCanvas::type() const {
-  return UmlClass;
+  return UmlClassInstance;
 }
 
-BrowserClass * OdClassInstCanvas::get_type() {
-  return cl;
+// all cases
+QString OdClassInstCanvas::get_name() const {
+  return browser_node->get_name();
+}
+
+// out of model case : never called
+void OdClassInstCanvas::set_name(const QString &) {
+}
+
+// return class, all cases
+BrowserNode * OdClassInstCanvas::get_type() const {
+  return ((ClassInstanceData *) browser_node->get_data())
+    ->get_class();
+}
+
+// out of model case : never called
+void OdClassInstCanvas::set_type(BrowserNode *) {
+}
+
+BrowserNodeList& OdClassInstCanvas::get_types(BrowserNodeList& r) const {
+  return BrowserClass::instances(r);
 }
 
 QString OdClassInstCanvas::get_full_name() const {
@@ -373,10 +463,7 @@ QString OdClassInstCanvas::get_full_name() const {
 }
 
 void OdClassInstCanvas::open() {
-  ClassInstanceDialog d(this);
-  
-  if (d.exec() == QDialog::Accepted)
-    modified();		// calls check_attributes
+  browser_node->open(FALSE);
 }
 
 void OdClassInstCanvas::menu(const QPoint&) {
@@ -391,11 +478,14 @@ void OdClassInstCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem("Edit", 3);
   m.insertSeparator();
-  m.insertItem("Select class in browser", 4);
+  m.insertItem("Select in browser", 4);
+  m.insertItem("Select class in browser", 5);
   if (linked())
-    m.insertItem("Select linked items", 5);
+    m.insertItem("Select linked items", 6);
   m.insertSeparator();
-  m.insertItem("Remove from view", 6);
+  m.insertItem("Remove from view", 7);
+  if (browser_node->is_writable())
+    m.insertItem("Delete from model", 8);
   
   switch (m.exec(QCursor::pos())) {
   case 0:
@@ -410,18 +500,27 @@ void OdClassInstCanvas::menu(const QPoint&) {
     edit_drawing_settings();
     return;
   case 3:
-    open();	// call package_modified
+    browser_node->open(TRUE);
     return;
   case 4:
-    cl->select_in_browser();
+    browser_node->select_in_browser();
     return;
   case 5:
+    ((ClassInstanceData *) browser_node->get_data())
+      ->get_class()->select_in_browser();
+    return;
+  case 6:
     the_canvas()->unselect_all();
     select_associated();
     return;
-  case 6:
+  case 7:
     delete_it();
     package_modified();
+    return;
+  case 8:
+    //delete from model
+    browser_node->delete_it();	// will delete the canvas
+    break;
   default:
     return;
   }
@@ -429,7 +528,7 @@ void OdClassInstCanvas::menu(const QPoint&) {
 
 void OdClassInstCanvas::apply_shortcut(QString s) {
   if (s == "Select in browser") { 
-    cl->select_in_browser();
+    browser_node->select_in_browser();
     return;
   }
   else if (s == "Upper")
@@ -495,26 +594,18 @@ void OdClassInstCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }
 }
 
-void OdClassInstCanvas::set_type(BrowserClass * t) {
-  if (t != cl) {
-    cl = t;
-    
-    BasicData * d = cl->get_data();
-    
-    if (connect_list.findRef(d) == -1) {
-      connect_list.append(d);
-      connect(d, SIGNAL(changed()), this, SLOT(modified()));
-      connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
-    }
-  }
+BrowserClassInstance * OdClassInstCanvas::get_instance() const {
+  return (BrowserClassInstance *) browser_node;
 }
 
-BrowserNode * OdClassInstCanvas::the_diagram() const {
-  return browser_node;
+BrowserNode * OdClassInstCanvas::container(UmlCode c) const {
+  return the_canvas()->browser_diagram()->container(c);
 }
 
-void OdClassInstCanvas::delete_available(bool &, bool & out_model) const {
+void OdClassInstCanvas::delete_available(bool & in_model, bool & out_model) const {
   out_model |= TRUE;
+  if (browser_node->get_type() == UmlClassInstance)
+    in_model |=  browser_node->is_writable();
 }
 
 bool OdClassInstCanvas::alignable() const {
@@ -531,7 +622,7 @@ const char * OdClassInstCanvas::may_start(UmlCode &) const {
 }
 
 const char * OdClassInstCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  return ((dest->type() == UmlClass)
+  return ((dest->type() == UmlClassInstance)
 	  ? ((l == UmlObjectLink) || (l == UmlAnchor) || IsaRelation(l))
 	  : (l == UmlAnchor))
     ? 0 : "illegal";
@@ -541,7 +632,7 @@ void OdClassInstCanvas::connexion(UmlCode t, DiagramItem * dest, const QPoint &,
   ArrowCanvas * l;
   
   if (t == UmlObjectLink)
-    l = new ObjectLinkCanvas(the_canvas(), this, dest, 0, 0);
+    l = new ObjectLinkCanvas(the_canvas(), this, dest, UmlObjectLink, 0, 0);
   else
     l = new ArrowCanvas(the_canvas(), this, dest, t, 0, FALSE);
   
@@ -556,44 +647,21 @@ bool OdClassInstCanvas::move_with_its_package() const {
 void OdClassInstCanvas::save(QTextStream & st, bool ref, QString & warning) const {
   if (ref)
     st << "classinstance_ref " << get_ident() << " // "
-      << full_name();
+      << browser_node->full_name();
   else {
     nl_indent(st);
-    st << "classinstance " << get_ident() << ' ';
-    cl->save(st, TRUE, warning);
-    nl_indent(st);
-    if (itscolor != UmlDefaultColor)
-      st << "  color " << stringify(itscolor) << ' ';
-    if (write_horizontally != UmlDefaultState)
-      st << "  write_horizontally " << stringify(write_horizontally) << ' ';
-    save_xyz(st, this, "  xyz");
-    st << " name ";
-    save_string(get_name(), st);
-    indent(+1);
-    if (! attributes.isEmpty()) {
-      nl_indent(st);
-      st << "values";
-      indent(+1);
-      
-      QListIterator<AttributeData> it_at(attributes);
-      QStringList::ConstIterator it_val = values.begin();
-      QString dummy;
-
-      do {
-	nl_indent(st);
-	(*it_at)->get_browser_node()->save(st, TRUE, dummy);
-	nl_indent(st);
-	save_string(fromUnicode(*it_val), st);
-	++it_at;
-	++it_val;
-      } while (it_val != values.end());
-      
-      indent(-1);
-    }
+    st << "classinstancecanvas " << get_ident() << ' ';
+    browser_node->save(st, TRUE, warning);
     
-    indent(-1);
+    indent(+1);
+    
+    nl_indent(st);
+    save_xyz(st, this, "xyz");
+    ClassInstCanvas::save(st);
     nl_indent(st);
     st << "end";
+    
+    indent(-1);
   }
 }
 
@@ -603,6 +671,7 @@ OdClassInstCanvas * OdClassInstCanvas::read(char * & st, UmlCanvas * canvas,
   if (!strcmp(k, "classinstance_ref"))
     return ((OdClassInstCanvas *) dict_get(read_id(st), "classinstance", canvas));
   else if (!strcmp(k, "classinstance")) {
+    // old release
     int id = read_id(st);
     BrowserClass * cl = BrowserClass::read_ref(st);
     
@@ -626,41 +695,62 @@ OdClassInstCanvas * OdClassInstCanvas::read(char * & st, UmlCanvas * canvas,
       wrong_keyword(k, "xyz");
     
     int x = (int) read_double(st);
-    OdClassInstCanvas * result =
-      new OdClassInstCanvas(cl, canvas, x, (int) read_double(st), id);
-
-    result->setZ(read_double(st));
+    int y = (int) read_double(st);
+    double z = read_double(st);
+    
     read_keyword(st, "name");
-    result->set_name(read_string(st));
+
+    BrowserNode * parent =
+      canvas->browser_diagram()->container(UmlClass);
+    BrowserClassInstance * icl =
+      // create a new one, don't look at already exising instances
+      // contrarilly to the collaboration and sequence diagram
+      // because of attributes & relations
+      new BrowserClassInstance(read_string(st), cl, parent);
+    OdClassInstCanvas * result =
+      new OdClassInstCanvas(icl, canvas, x, y, id);
+
+    result->setZ(z);    
     result->itscolor = co;
     result->write_horizontally = ho;
     
     k = read_keyword(st);
     
-    QList<AttributeData> attributes;
-    QStringList values;
-    
-    if (!strcmp(k, "values")) {
-      while (strcmp(k = read_keyword(st), "end") &&
-	     strcmp(k, "xyz")) {	// old version
-	BrowserAttribute * a = BrowserAttribute::read(st, k, 0, FALSE);
-	QString s = read_string(st);
-	
-	if (a != 0) {
-	  attributes.append((AttributeData *) a->get_data());
-	  values.append(toUnicode(s));
-	}
-      }
-    }
+    if (!strcmp(k, "values")) 
+      ((ClassInstanceData *) icl->get_data())->read_attributes(st, k);	// updates k
     else if (strcmp(k, "end") && 
 	     strcmp(k, "xyz"))
       wrong_keyword(k, "end or xyz");
     
     if (*k == 'x')
       read_xyz(st, result);
-    result->attributes = attributes;
-    result->values = values;
-    result->check_attributes();
+    result->compute_size();
+    result->set_center100();
+    result->show();
+    
+    // to save new instance and diagram def
+    result->package_modified();
+    canvas->browser_diagram()->modified();
+    
+    return result;
+  }
+  else if (!strcmp(k, "classinstancecanvas")) {
+    int id = read_id(st);
+    BrowserClassInstance * icl = BrowserClassInstance::read_ref(st);
+    
+    read_keyword(st, "xyz");
+    
+    int x = (int) read_double(st);
+    OdClassInstCanvas * result =
+      new OdClassInstCanvas(icl, canvas, x, (int) read_double(st), id);
+
+    result->setZ(read_double(st));
+        
+    result->ClassInstCanvas::read(st, k);
+    
+    if (strcmp(k, "end"))
+      wrong_keyword(k, "end");
+
     result->compute_size();
     result->set_center100();
     result->show();
@@ -674,20 +764,18 @@ void OdClassInstCanvas::history_hide() {
   QCanvasItem::setVisible(FALSE);
   disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
   
-  BasicData * d;
-  
-  for (d = connect_list.first(); d!= 0; d = connect_list.next())
-    disconnect(d, 0, this, 0);
+  BasicData * d = browser_node->get_data();
+
+  disconnect(d, SIGNAL(changed()), this, SLOT(modified()));
+  disconnect(d, SIGNAL(deleted()), this, SLOT(deleted()));
 }
 
 void OdClassInstCanvas::history_load(QBuffer & b) {
   DiagramCanvas::history_load(b);
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
   
-  BasicData * d;
-  
-  for (d = connect_list.first(); d!= 0; d = connect_list.next()) {
-    connect(d, SIGNAL(changed()), this, SLOT(modified()));
-    connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
-  }
+  BasicData * d = browser_node->get_data();
+
+  disconnect(d, SIGNAL(changed()), this, SLOT(modified()));
+  disconnect(d, SIGNAL(deleted()), this, SLOT(deleted()));
 }

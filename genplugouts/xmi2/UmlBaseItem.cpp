@@ -9,6 +9,7 @@
 #include "UmlAttribute.h"
 #include "UmlOperation.h"
 #include "UmlClass.h"
+#include "UmlClassInstance.h"
 #include "UmlUseCase.h"
 #include "UmlNode.h"
 #include "UmlArtifact.h"
@@ -190,6 +191,12 @@ const QVector<UmlItem> UmlBaseItem::referencedBy() {
   return result;
 }
 
+int UmlBaseItem::getIdentifier() {
+  read_if_needed_();
+
+  return _modeler_id;
+}
+
 void UmlBaseItem::unload(bool rec, bool del) {
   _defined = FALSE;
   _stereotype = 0;
@@ -208,6 +215,13 @@ void UmlBaseItem::unload(bool rec, bool del) {
     delete _children;
     _children = 0;
   }
+}
+
+bool UmlBaseItem::deleteIt() {
+  UmlCom::send_cmd(_identifier, deleteCmd);
+  if (UmlCom::read_bool() == 0) return FALSE;
+  parent()->unload(TRUE);
+  return TRUE;
 }
 
 bool UmlBaseItem::isToolRunning(int id)
@@ -307,6 +321,7 @@ void UmlBaseItem::read_uml_() {
   _description = UmlCom::read_string();
   
   _marked = UmlCom::read_bool();
+  _modeler_id = (int) UmlCom::read_unsigned();
 }
 
 #ifdef WITHCPP
@@ -551,6 +566,8 @@ UmlItem * UmlBaseItem::read_()
       return new UmlJoinActivityNode(id, name);
     case aPartition:
       //return new UmlPartition(id, name);
+    case aClassInstance:
+      return new UmlClassInstance(id, name);
     default:
       UmlCom::bye();
       UmlCom::fatal_error(QCString("unknown item type ") + QCString().setNum(kind));

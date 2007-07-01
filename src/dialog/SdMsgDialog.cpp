@@ -77,7 +77,7 @@ SdMsgDialog::SdMsgDialog(SdMsgBaseCanvas * a)
   edoper->setAutoCompletion(TRUE);
 
   // gets operations
-  cl = a->get_dest()->get_line()->get_obj()->get_type();
+  cl = a->get_dest()->get_line()->get_obj()->get_class();
   if (cl != 0) {
     cl->get_opers(opers, list);
     edoper->insertStringList(list);

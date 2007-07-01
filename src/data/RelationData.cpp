@@ -1007,9 +1007,13 @@ void RelationData::save(QTextStream & st, bool ref, QString & warning) const {
   }
 }
 
-RelationData * RelationData::read_ref(char * & st, bool complete)
+RelationData * RelationData::read_ref(char * & st, bool complete,
+				      const char * k)
 {
-  read_keyword(st, "relation_ref");
+  if (k == 0)
+    read_keyword(st, "relation_ref");
+  else if (strcmp(k, "relation_ref"))
+    wrong_keyword(k, "relation_ref");
   
   int id = read_id(st);
   RelationData * result = all[id];
@@ -1169,6 +1173,13 @@ RelationData * RelationData::read(char * & st, char * & k)
     else {
       result->type = relation_type(read_keyword(st));
       result->name = default_name(result->type);
+      if (result->start != 0) {
+	// Created by RelationData::read_ref()
+	// Set start/end with a new data to not delete result
+	// when start/end will be deleted
+	result->start->unvalidate();
+	result->end->unvalidate();
+      }
     }
     
     k = read_keyword(st);

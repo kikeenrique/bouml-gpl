@@ -102,10 +102,11 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     virtual void open(bool force_edit);
     virtual void on_close();
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,
 				   bool & duplicable) const;
     virtual BasicData * get_data() const;
-    virtual const QStringList & default_stereotypes(UmlCode);
+    virtual const QStringList & default_stereotypes(UmlCode, const BrowserNode *) const; // non class rel
     virtual void get_classdiagramsettings(ClassDiagramSettings &) const;
     virtual void get_usecasediagramsettings(UseCaseDiagramSettings &) const;
     virtual void get_sequencediagramsettings(SequenceDiagramSettings &) const;
@@ -155,10 +156,6 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
     
     void add_package();
-    void add_use_case_view();
-    void add_class_view();
-    void add_component_view();
-    void add_deployment_view();
     unsigned load(bool recursive, int id = -1);
     void import_project();
     

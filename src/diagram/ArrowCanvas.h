@@ -95,10 +95,12 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     DiagramItem * get_start() const;  
     DiagramItem * get_end() const;
     void extremities(DiagramItem *& b, DiagramItem *& e) const;
+    void reverse();
     virtual BasicData * get_data() const;
     
     virtual UmlCode type() const;
     virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void remove(bool);
     virtual int rtti() const;
     virtual QPoint center() const;
     virtual QRect rect() const;

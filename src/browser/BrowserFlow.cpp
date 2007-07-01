@@ -199,10 +199,14 @@ Note that you can undelete it after");
       m.insertItem("Tool", &toolm);
     }
   }
-  else if (!is_read_only && (edition_number == 0))
+  else if (!is_read_only && (edition_number == 0)) {
     m.setWhatsThis(m.insertItem("Undelete", 3),
 		   "undelete the <em>flow</em> \
 (except if the other side is also deleted)");
+    if (def->get_start_node()->deletedp() ||
+	def->get_end_node()->deletedp())
+      m.setItemEnabled(3, FALSE);
+  }
   
   exec_menu_choice(m.exec(QCursor::pos()));
 }
@@ -275,6 +279,10 @@ UmlCode BrowserFlow::get_type() const {
   return UmlFlow;
 }
 
+int BrowserFlow::get_identifier() const {
+  return get_ident();
+}
+
 BasicData * BrowserFlow::get_data() const {
   return def;
 }
@@ -322,14 +330,6 @@ bool BrowserFlow::api_compatible(unsigned v) const {
 bool BrowserFlow::tool_cmd(ToolCom * com, const char * args) {
   return (def->tool_cmd(com, args, this, comment) ||
 	  BrowserNode::tool_cmd(com, args));
-}
-
-void BrowserFlow::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserFlow::DropEvent(QDropEvent * e) {
-  DropAfterEvent(e, 0);
 }
 
 void BrowserFlow::DropAfterEvent(QDropEvent * e, BrowserNode * after) {

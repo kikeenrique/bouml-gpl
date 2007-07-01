@@ -229,6 +229,7 @@ static const struct{
   { UmlDirectionalAggregation, "DirectionalAggregation" },
   { UmlDirectionalAggregationByValue, "DirectionalAggregationByValue" },
   { UmlExtraMember, "ExtraMember" },
+  { UmlClassInstance, "ClassInstance" },
   
   { UmlState, "State" },
   { UmlRegion, "Region" },

@@ -148,16 +148,16 @@ void GenerationSettingsDialog::init_cpp1() {
   htab->setStretchFactor(edcpp_h_extension, 100);
   edcpp_h_extension->insertItem(GenerationSettings::cpp_h_extension);
   edcpp_h_extension->setCurrentItem(0);
-  edcpp_h_extension->insertItem("H");
-  edcpp_h_extension->insertItem("Hh");
+  edcpp_h_extension->insertItem("h");
+  edcpp_h_extension->insertItem("hh");
   
   htab->setStretchFactor(new QLabel("    generated/reversed \n    source file extension : ", htab), 0);
   edcpp_src_extension = new QComboBox(TRUE, htab);
   htab->setStretchFactor(edcpp_src_extension, 100);
   edcpp_src_extension->insertItem(GenerationSettings::cpp_src_extension);
   edcpp_src_extension->setCurrentItem(0);
-  edcpp_src_extension->insertItem("Cpp");
-  edcpp_src_extension->insertItem("Cc");
+  edcpp_src_extension->insertItem("cpp");
+  edcpp_src_extension->insertItem("cc");
 
   htab->setStretchFactor(new QLabel("    #include : ", htab), 0);
   cpp_include_with_path_cb = new QComboBox(FALSE, htab);

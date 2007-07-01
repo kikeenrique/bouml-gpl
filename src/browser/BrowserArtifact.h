@@ -80,8 +80,9 @@ class BrowserArtifact : public BrowserNode, public Labeled<BrowserArtifact> {
     virtual void apply_shortcut(QString s);
     virtual void open(bool force_edit);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual BasicData * get_data() const;
-    virtual const QStringList & default_stereotypes(UmlCode);
+    virtual const QStringList & default_stereotypes(UmlCode, const BrowserNode *) const; // non class rel
     virtual void on_delete();
     virtual const char * check_inherit(const BrowserNode * parent) const;
     virtual void save(QTextStream &, bool ref, QString & warning);

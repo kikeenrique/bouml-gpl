@@ -247,6 +247,7 @@ void BrowserDeploymentNode::DropAfterEvent(QDropEvent * e, BrowserNode * after) 
       if (old != this) {
 	old->modified();
 	old->package_modified();
+	bn->modified();
       }
       
       modified();
@@ -265,6 +266,10 @@ void BrowserDeploymentNode::DropAfterEvent(QDropEvent * e, BrowserNode * after) 
 
 UmlCode BrowserDeploymentNode::get_type() const {
   return UmlDeploymentNode;
+}
+
+int BrowserDeploymentNode::get_identifier() const {
+  return get_ident();
 }
 
 BrowserDeploymentNode * BrowserDeploymentNode::get_deploymentnode(BrowserNode * future_parent)
@@ -358,6 +363,7 @@ void BrowserDeploymentNode::init()
   its_default_stereotypes.clear();
   its_default_stereotypes.append("cpu");
   its_default_stereotypes.append("device");
+  its_default_stereotypes.append("executionEnvironment");
 }
 
 // unicode

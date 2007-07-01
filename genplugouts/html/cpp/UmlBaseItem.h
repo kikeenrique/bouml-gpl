@@ -32,6 +32,13 @@ class UmlTypeSpec;
 // parts are declared 'private' rather than 'public' or 'protected'.
 class UmlBaseItem {
   public:
+    // return a constant identifier, it is unique within a given
+    // kind of element (two classes can't have the same identifiers, but
+    // a class and a component may have the same identifier) 
+    // except for the diagrams (a class diagram can't have the identifier
+    // of a component diagram)
+    int getIdentifier();
+
     // returns the kind of the item
     virtual anItemKind kind() = 0;
 
@@ -149,6 +156,12 @@ class UmlBaseItem {
     // you will have to call Children() to re-access to them
     virtual void unload(bool rec = FALSE, bool del = FALSE);
 
+    // remove the element from the model, use it carefully because
+    // after that the element can't be used anymore by the plug-out
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    bool deleteIt();
+
     //  'id' is an identifier returned by apply(), indicates if the tool is still running
     static bool isToolRunning(int id);
 
@@ -188,6 +201,12 @@ class UmlBaseItem {
 
     void * _identifier;
 
+
+  protected:
+    int _modeler_id;
+
+
+  private:
     QCString _name;
 
     //  Note : protected in Java for internal reason, but do NOT
@@ -303,6 +322,7 @@ class UmlBaseItem {
   friend class UmlBaseActivityPin;
   friend class UmlBaseActivityParameter;
   friend class UmlBaseParameterSet;
+  friend class UmlBaseClassInstance;
 };
 
 #endif

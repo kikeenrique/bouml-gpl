@@ -28,6 +28,7 @@
 #include "UmlAttribute.h"
 #include "UmlSettings.h"
 #include "IdlSettings.h"
+#include "UmlClass.h"
 #include "UmlCom.h"
 #include "util.h"
 
@@ -132,7 +133,7 @@ void UmlAttribute::generate_decl(QTextOStream & f, const QCString & cl_stereotyp
       }
       else if (!strncmp(p, "${type}", 7)) {
 	p += 7;
-	f << IdlSettings::type(type().toString());
+	UmlClass::write(f, type());
       }
       else
 	// strange

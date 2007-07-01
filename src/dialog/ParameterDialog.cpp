@@ -467,7 +467,7 @@ void ParameterDialog::accept() {
       param->java_selection = edjava_selection->text().stripWhiteSpace();
       
       bn->set_comment(comment->text());
-      UmlWindow::set_commented(bn);
+      UmlWindow::update_comment_if_needed(bn);
       
       kvtable->update(bn);
       

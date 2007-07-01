@@ -86,6 +86,7 @@ class UmlWindow : public QMainWindow {
     bool can_close();
     
     static void set_commented(BrowserNode * bn);
+    static void update_comment_if_needed(BrowserNode * bn);
     static void set_message(const QString &);
     static QWorkspace * get_workspace();
     static void clear();

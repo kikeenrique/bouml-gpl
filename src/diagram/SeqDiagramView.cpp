@@ -33,6 +33,7 @@
 #include "SeqDiagramWindow.h"
 #include "SeqDiagramView.h"
 #include "BrowserSeqDiagram.h"
+#include "BrowserClassInstance.h"
 #include "BrowserClass.h"
 #include "DiagramCanvas.h"
 #include "SdClassInstCanvas.h"
@@ -86,6 +87,29 @@ void SeqDiagramView::contentsMousePressEvent(QMouseEvent * e) {
       switch (c) {
       case UmlClass:
 	{
+	  history_protected = FALSE;
+	  unselect_all();
+	  window()->selectOn();
+	  history_save();
+	  
+	  BrowserNode * parent =
+	    ((BrowserNode *) window()->browser_diagram()->parent());
+	  BrowserClass * b = 
+	    BrowserClass::get_class(parent);
+	  
+	  if (b != 0) {
+	    SdClassInstCanvas * cli = 
+	      new SdClassInstCanvas(b, the_canvas(), e->x(), 0);
+	    
+	    cli->show();
+	    cli->moveBy(e->x() - cli->center().x(), 0);
+	    cli->upper();
+	    window()->package_modified();
+	  }
+	}
+	break;
+      case UmlClassInstance:
+	{
 	  history_protected = TRUE;
 	  unselect_all();
 	  window()->selectOn();
@@ -93,11 +117,12 @@ void SeqDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	  
 	  BrowserNode * parent =
 	    ((BrowserNode *) window()->browser_diagram()->parent());
-	  BrowserClass * b = BrowserClass::get_class(parent);
+	  BrowserClassInstance * b = 
+	    BrowserClassInstance::get_classinstance(parent);
 	  
 	  if (b != 0) {
 	    SdClassInstCanvas * cli = 
-	      new SdClassInstCanvas(((BrowserClass *) b), the_canvas(), e->x(), 0);
+	      new SdClassInstCanvas(b, the_canvas(), e->x(), 0);
 	    
 	    cli->show();
 	    cli->moveBy(e->x() - cli->center().x(), 0);
@@ -208,6 +233,7 @@ void SeqDiagramView::keyPressEvent(QKeyEvent * e) {
 void SeqDiagramView::dragEnterEvent(QDragEnterEvent * e) {
   if (!window()->frozen() &&
       (UmlDrag::canDecode(e, UmlClass, TRUE, TRUE) ||
+       UmlDrag::canDecode(e, UmlClassInstance, TRUE, TRUE) ||
        UmlDrag::canDecode(e, UmlClassDiagram, FALSE, TRUE) ||
        UmlDrag::canDecode(e, UmlUseCaseDiagram, FALSE, TRUE) ||
        UmlDrag::canDecode(e, UmlSeqDiagram, FALSE, TRUE) ||
@@ -226,11 +252,25 @@ void SeqDiagramView::dropEvent(QDropEvent * e) {
   BrowserNode * bn;
   QPoint p = viewportToContents(e->pos());
   
-  if ((bn = UmlDrag::decode(e, UmlClass)) != 0) {
+  if ((bn = UmlDrag::decode(e, UmlClassInstance)) != 0) {
     history_save();
     
     SdClassInstCanvas * cli = 
-      new SdClassInstCanvas(((BrowserClass *) bn), the_canvas(), p.x(), 0);
+      new SdClassInstCanvas((BrowserClassInstance *) bn, 
+			    the_canvas(), p.x(), 0);
+    
+    history_protected = TRUE;
+    cli->show();
+    cli->moveBy(p.x() - cli->center().x(), 0);
+    canvas()->update();
+    history_protected = FALSE;
+    window()->package_modified();
+  }
+  else if ((bn = UmlDrag::decode(e, UmlClass)) != 0) {
+    history_save();
+    
+    SdClassInstCanvas * cli = 
+      new SdClassInstCanvas(bn, the_canvas(), p.x(), 0);
     
     history_protected = TRUE;
     cli->show();
@@ -279,6 +319,7 @@ void SeqDiagramView::save(QTextStream & st, QString & warning,
     case UmlFragment:
     case UmlContinuation:
     case UmlClass:
+    case UmlClassInstance:
     case UmlNote:
     case UmlText:
     case UmlIcon:

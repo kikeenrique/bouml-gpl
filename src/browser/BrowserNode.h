@@ -72,6 +72,8 @@ class BrowserNode : public QListViewItem,
     bool is_edited : 1;
     bool is_marked : 1;
     bool is_saveable : 1;
+    bool is_defined : 1;	// to indicate inconsistency due to projectSynchro
+    				// pre condition not followed (not yet used)
     
     static bool show_stereotypes;
     static unsigned edition_number;
@@ -137,7 +139,6 @@ class BrowserNode : public QListViewItem,
     virtual bool allow_spaces() const;
     virtual bool allow_empty() const;
     virtual bool same_name(const QString & s, UmlCode type) const;
-    QString child_random_name(const QString & prefix) const;
     void select_in_browser();
     void edit(const char *, const QStringList & default_stereotypes);
     void children(BrowserNodeList & nodes,
@@ -149,6 +150,7 @@ class BrowserNode : public QListViewItem,
     virtual void open(bool force_edit);
     virtual void on_close();
     virtual UmlCode get_type() const = 0;
+    virtual int get_identifier() const = 0;
     virtual void modified();
     bool modifiedp() { return is_modified; }
     void unmodified() { is_modified = FALSE; }
@@ -177,7 +179,7 @@ class BrowserNode : public QListViewItem,
     virtual void get_activitydrawingsettings(ActivityDrawingSettings &) const;
     virtual UmlVisibility get_visibility(UmlCode) const;
     virtual void package_settings(bool & name_in_tab, ShowContextMode & show_context) const;
-    virtual const QStringList & default_stereotypes(UmlCode arrow);
+    virtual const QStringList & default_stereotypes(UmlCode, const BrowserNode *) const; // non class rel
     virtual bool get_auto_label_position(UmlCode who) const ;
     virtual bool get_write_label_horizontally(UmlCode who) const ;
     virtual bool get_show_trans_definition(UmlCode who) const;

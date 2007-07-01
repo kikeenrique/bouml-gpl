@@ -499,6 +499,10 @@ UmlCode BrowserOperation::get_type() const {
   return UmlOperation;
 }
 
+int BrowserOperation::get_identifier() const {
+  return get_ident();
+}
+
 BasicData * BrowserOperation::get_data() const {
   return def;
 }
@@ -551,21 +555,13 @@ bool BrowserOperation::tool_cmd(ToolCom * com, const char * args) {
     com->write_string(((BrowserClass *) parent())->bodies_file());
     return TRUE;
   case getIdCmd:
-    // not for a user !
+    // not for a user, old plug-out
     com->write_unsigned(get_ident());
     return TRUE;
   default:
     return (def->tool_cmd(com, args, this, comment) ||
 	    BrowserNode::tool_cmd(com, args));
   }
-}
-
-void BrowserOperation::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserOperation::DropEvent(QDropEvent * e) {
-  DropAfterEvent(e, 0);
 }
 
 void BrowserOperation::DropAfterEvent(QDropEvent * e, BrowserNode * after) {

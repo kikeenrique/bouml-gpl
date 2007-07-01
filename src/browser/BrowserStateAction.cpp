@@ -268,6 +268,10 @@ UmlCode BrowserStateAction::get_type() const {
   return UmlStateAction;
 }
 
+int BrowserStateAction::get_identifier() const {
+  return get_ident();
+}
+
 BasicData * BrowserStateAction::get_data() const {
   return def;
 }

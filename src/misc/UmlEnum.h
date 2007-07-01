@@ -68,6 +68,7 @@ enum UmlCode {
   UmlActivityObject, UmlExpansionNode, UmlActivityPin, 
   InitialAN, FlowFinalAN, ActivityFinalAN,	// warning : ActivityNode order used
   DecisionAN, MergeAN, ForkAN, JoinAN,
+  UmlClassInstance, // api >= 31
   
   // the followings are unknown by api.h
   UmlDependOn, UmlInherit, UmlObjectLink,	// not between classes
@@ -90,6 +91,7 @@ enum UmlCode {
   UmlInfo,
   UmlFragmentSeparator,
   UmlConstraint,
+  UmlInner,
 
   UmlCodeSup
 };

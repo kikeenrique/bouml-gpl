@@ -228,6 +228,8 @@ const char * stringify(UmlCode c) {
     return "---O";
   case UmlRequired:
     return "---(";
+  case UmlInner:
+    return "---+";
 
   case InitialPS:
     return "initial";
@@ -541,6 +543,8 @@ UmlCode arrow_type(const char * s)
     return UmlRequired;
   if (!strcmp(s, "---O"))
     return UmlProvided;
+  if (!strcmp(s, "---+"))
+    return UmlInner;
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a line kind");

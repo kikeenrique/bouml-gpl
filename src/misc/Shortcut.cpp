@@ -141,6 +141,7 @@ void Shortcut::init()
     "New attribute",
     "New class",
     "New class diagram",
+    "New class instance",
     "New class view",
     "New collaboration diagram",
     "New component",

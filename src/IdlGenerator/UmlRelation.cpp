@@ -83,7 +83,7 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f,
     
     while (*p) {
       if (!strncmp(p, "${type}", 7)) {
-	f << role_type->name();
+	role_type->write(f);
 	p += 7;
       }
       else
@@ -192,7 +192,7 @@ void UmlRelation::generate_decl(QTextOStream & f,
 	}
 	else if (!strncmp(p, "${type}", 7)) {
 	  p += 7;
-	  f << roleType()->name();
+	  roleType()->write(f);
 	}
 	else if (!strncmp(p, "${name}", 7)) {
 	  p += 7;

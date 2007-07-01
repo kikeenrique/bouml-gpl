@@ -63,7 +63,7 @@ BrowserComponentDiagram::BrowserComponentDiagram(int id)
 }
 
 BrowserComponentDiagram::BrowserComponentDiagram(BrowserComponentDiagram * model, BrowserNode * p)
-    : BrowserDiagram(p->child_random_name("Diagram"), p, 0), window(0) {
+    : BrowserDiagram(p->get_name(), p, 0), window(0) {
   def = new SimpleData(model->def);
   def->set_browser_node(this);
   comment = model->comment;
@@ -113,6 +113,17 @@ void BrowserComponentDiagram::make() {
   note_color = UmlDefaultColor;
   package_color = UmlDefaultColor;
   fragment_color = UmlDefaultColor;
+}
+
+BrowserComponentDiagram * BrowserComponentDiagram::add_component_diagram(BrowserNode * future_parent)
+{
+  QString name;
+  
+  if (future_parent->enter_child_name(name, "enter component diagram's name : ",
+				      UmlComponentDiagram, TRUE, FALSE))
+    return new BrowserComponentDiagram(name, future_parent);
+  else
+    return 0;
 }
 
 void BrowserComponentDiagram::set_name(const char * s) {
@@ -231,11 +242,13 @@ void BrowserComponentDiagram::exec_menu_choice(int rank) {
     return;
   case 3:
     {
-      BrowserComponentDiagram * cd =
-	new BrowserComponentDiagram(this, (BrowserNode *) parent());
+      QString name;
       
-      cd->select_in_browser();
-      cd->edit("Component diagram", its_default_stereotypes);
+      if (((BrowserNode *)parent())->enter_child_name(name, "enter component diagram's name : ",
+						      UmlComponentDiagram, TRUE, FALSE))
+	duplicate((BrowserNode *) parent(), name)->select_in_browser();
+      else
+	return;
     }
     break;
   case 4:
@@ -324,6 +337,10 @@ void BrowserComponentDiagram::read_session(char * & st) {
 
 UmlCode BrowserComponentDiagram::get_type() const {
   return UmlComponentDiagram;
+}
+
+int BrowserComponentDiagram::get_identifier() const {
+  return get_ident();
 }
 
 void BrowserComponentDiagram::get_componentdiagramsettings(ComponentDiagramSettings & r) const {
@@ -438,14 +455,6 @@ bool BrowserComponentDiagram::tool_cmd(ToolCom * com, const char * args) {
     return (def->tool_cmd(com, args, this, comment) ||
 	    BrowserNode::tool_cmd(com, args));
   }
-}
-
-void BrowserComponentDiagram::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserComponentDiagram::DropEvent(QDropEvent * e) {
-  ((BrowserNode *) parent())->DropAfterEvent(e, this);
 }
 
 void BrowserComponentDiagram::save_stereotypes(QTextStream & st)

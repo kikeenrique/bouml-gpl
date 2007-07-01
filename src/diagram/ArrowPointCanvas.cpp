@@ -118,7 +118,7 @@ void ArrowPointCanvas::connexion(UmlCode action, DiagramItem * dest,
     break;
   case UmlObjectDiagram:
     if (action == UmlObjectLink) {
-      a = new ObjectLinkCanvas(the_canvas(), this, dest, 0);
+      a = new ObjectLinkCanvas(the_canvas(), this, dest, UmlObjectLink, 0);
       a->show();
       the_canvas()->select(a);
       return;

@@ -4,12 +4,12 @@
 
 void UmlExpansionRegion::write(FileOut & out) {
   out.indent();
-  out << "<group xmi:type=\"uml:ExpansionRegion\" name =\"";
+  out << "<group xmi:type=\"uml:ExpansionRegion\" name=\"";
   out.quote(name());
   out << '"';
   out.id(this);
   if (isMustIsolate())
-    out << " mustIsolate=\true\"";
+    out << " mustIsolate=\"true\"";
   out << " mode=\"";
   switch (mode()) {
   case parallelExecution:

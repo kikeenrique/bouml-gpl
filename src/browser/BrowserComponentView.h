@@ -61,8 +61,6 @@ class BrowserComponentView : public BrowserNode, public Labeled<BrowserComponent
     
     virtual const QPixmap* pixmap (int) const;
   
-    void add_component_diagram();
-  
     virtual BrowserNode * duplicate(BrowserNode * p,
 				    QString name = QString::null);
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
@@ -70,6 +68,7 @@ class BrowserComponentView : public BrowserNode, public Labeled<BrowserComponent
     virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,
 				   bool & duplicable) const;
     virtual BasicData * get_data() const;
@@ -81,11 +80,13 @@ class BrowserComponentView : public BrowserNode, public Labeled<BrowserComponent
     virtual bool get_draw_all_relations(UmlCode) const;
     virtual bool get_auto_label_position(UmlCode who) const;
     virtual void save(QTextStream &, bool ref, QString & warning);
-    
+        
     virtual void DragMoveEvent(QDragMoveEvent * e);
     virtual void DropEvent(QDropEvent * e);
     virtual void DragMoveInsideEvent(QDragMoveEvent * e);
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
+    
+    static BrowserComponentView * add_component_view(BrowserNode * future_parent);
     
     static const QStringList & default_stereotypes();
     static void read_stereotypes(char * &, char * & k);

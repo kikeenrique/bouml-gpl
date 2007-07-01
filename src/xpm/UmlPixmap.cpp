@@ -6,6 +6,7 @@ QPixmap * noteButton;
 QPixmap * textButton;
 QPixmap * actorButton;
 QPixmap * classButton;
+QPixmap * classinstanceButton;
 QPixmap * anchorButton;
 QPixmap * selectButton;
 QPixmap * usecaseButton;
@@ -67,6 +68,8 @@ QPixmap * ActorIcon;
 QPixmap * DeletedActorIcon;
 QPixmap * ClassIcon;
 QPixmap * DeletedClassIcon;
+QPixmap * ClassInstanceIcon;
+QPixmap * DeletedClassInstanceIcon;
 QPixmap * PublicEmbeddedClassIcon;
 QPixmap * ProtectedEmbeddedClassIcon;
 QPixmap * PackageEmbeddedClassIcon;
@@ -257,6 +260,7 @@ QPixmap * rightUnavailablePixmap;
 
 // diagram pixmap
 
+QPixmap * innerPixmap;
 QPixmap * providedPixmap;
 QPixmap * entryPointPixmap;
 QPixmap * exitPointPixmap;
@@ -292,6 +296,7 @@ void init_pixmaps()
 #include "text_button.xpm"
 #include "actor_button.xpm"
 #include "class_button.xpm"
+#include "classinstance_button.xpm"
 #include "anchor_button.xpm"
 #include "select_button.xpm"
 #include "usecase_button.xpm"
@@ -351,6 +356,7 @@ void init_pixmaps()
   textButton = new QPixmap((const char **) text_button);
   actorButton = new QPixmap((const char **) actor_button);
   classButton = new QPixmap((const char **) class_button);
+  classinstanceButton = new QPixmap((const char **) classinstance_button);
   anchorButton = new QPixmap((const char **) anchor_button);
   selectButton = new QPixmap((const char **) select_button);
   usecaseButton = new QPixmap((const char **) usecase_button);
@@ -412,6 +418,8 @@ void init_pixmaps()
 #include "deletedactor_xpm.xpm"
 #include "class_xpm.xpm"
 #include "deletedclass_xpm.xpm"
+#include "deletedclassinstance_xpm.xpm"
+#include "classinstance_xpm.xpm"
 #include "publicembeddedclass_xpm.xpm"
 #include "protectedembeddedclass_xpm.xpm"
 #include "packageembeddedclass_xpm.xpm"
@@ -563,6 +571,8 @@ void init_pixmaps()
   DeletedActorIcon = new QPixmap((const char **) deletedactor_xpm);
   ClassIcon = new QPixmap((const char **) class_xpm);
   DeletedClassIcon = new QPixmap((const char **) deletedclass_xpm);
+  ClassInstanceIcon = new QPixmap((const char **) classinstance_xpm);
+  DeletedClassInstanceIcon = new QPixmap((const char **) deletedclassinstance_xpm);
   PublicEmbeddedClassIcon = new QPixmap((const char **) publicembeddedclass_xpm);
   ProtectedEmbeddedClassIcon = new QPixmap((const char **) protectedembeddedclass_xpm);
   PackageEmbeddedClassIcon = new QPixmap((const char **) packageembeddedclass_xpm);
@@ -785,6 +795,7 @@ void init_pixmaps()
   
   // diagram pixmap
   
+#include "inner_xpm.xpm"
 #include "provided_xpm.xpm"
 #include "entrypoint_pixmap.xpm"
 #include "exitpoint_pixmap.xpm"
@@ -811,6 +822,7 @@ void init_pixmaps()
 #include "joinfork_big_pixmap.xpm"
 #include "joinfork_horiz_big_pixmap.xpm"
   
+  innerPixmap = new QPixmap((const char **) inner_xpm);
   providedPixmap = new QPixmap((const char **) provided_xpm);
   entryPointPixmap = new QPixmap((const char **) entrypoint_pixmap);
   exitPointPixmap = new QPixmap((const char **) exitpoint_pixmap);

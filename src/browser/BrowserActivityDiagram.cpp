@@ -56,7 +56,7 @@ BrowserActivityDiagram::BrowserActivityDiagram(QString s, BrowserNode * p, int i
 }
 
 BrowserActivityDiagram::BrowserActivityDiagram(BrowserActivityDiagram * model, BrowserNode * p)
-    : BrowserDiagram(p->child_random_name("Diagram"), p, 0), window(0) {
+    : BrowserDiagram(p->get_name(), p, 0), window(0) {
   def = new SimpleData(model->def);
   def->set_browser_node(this);
   comment = model->comment;
@@ -123,6 +123,17 @@ void BrowserActivityDiagram::make() {
   note_color = UmlDefaultColor;
   fragment_color = UmlDefaultColor;
   package_color = UmlDefaultColor;
+}
+
+BrowserActivityDiagram *  BrowserActivityDiagram::add_activity_diagram(BrowserNode * future_parent)
+{
+  QString name;
+  
+  if (future_parent->enter_child_name(name, "enter activity diagram's name : ",
+				      UmlActivityDiagram, TRUE, FALSE))
+    return new BrowserActivityDiagram(name, future_parent);
+  else
+    return 0;
 }
 
 void BrowserActivityDiagram::set_name(const char * s) {
@@ -236,11 +247,13 @@ void BrowserActivityDiagram::exec_menu_choice(int rank) {
     return;
   case 3:
     {
-      BrowserActivityDiagram * cd =
-	new BrowserActivityDiagram(this, (BrowserNode *) parent());
+      QString name;
       
-      cd->select_in_browser();
-      cd->edit("Activity diagram", its_default_stereotypes);
+      if (((BrowserNode *)parent())->enter_child_name(name, "enter activity diagram's name : ",
+						      UmlActivityDiagram, TRUE, FALSE))
+	duplicate((BrowserNode *) parent(), name)->select_in_browser();
+      else
+	return;
     }
     break;
   case 4:
@@ -332,6 +345,10 @@ void BrowserActivityDiagram::read_session(char * & st) {
 
 UmlCode BrowserActivityDiagram::get_type() const {
   return UmlActivityDiagram;
+}
+
+int BrowserActivityDiagram::get_identifier() const {
+  return get_ident();
 }
 
 void BrowserActivityDiagram::get_activitydiagramsettings(ActivityDiagramSettings & r) const {
@@ -497,14 +514,6 @@ bool BrowserActivityDiagram::tool_cmd(ToolCom * com, const char * args) {
     return (def->tool_cmd(com, args, this, comment) ||
 	    BrowserNode::tool_cmd(com, args));
   }
-}
-
-void BrowserActivityDiagram::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserActivityDiagram::DropEvent(QDropEvent * e) {
-  ((BrowserNode *) parent())->DropAfterEvent(e, this);
 }
 
 void BrowserActivityDiagram::DropAfterEvent(QDropEvent * e, BrowserNode * after) {

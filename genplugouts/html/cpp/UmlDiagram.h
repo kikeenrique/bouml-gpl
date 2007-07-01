@@ -16,10 +16,6 @@ class UmlDiagram : public UmlBaseDiagram {
     //path, rank in the mother and level in the browser tree
     virtual void html(QCString pfix, unsigned int rank, unsigned int level);
 
-
-  protected:
-    static int fig_rank;
-
 };
 
 #endif

@@ -60,6 +60,7 @@ class BrowserParameterSet : public BrowserNode, public Labeled<BrowserParameterS
     virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual void modified();
     virtual BasicData * get_data() const;
     virtual bool allow_empty() const;
@@ -78,8 +79,6 @@ class BrowserParameterSet : public BrowserNode, public Labeled<BrowserParameterS
         
     virtual bool tool_cmd(ToolCom * com, const char * args);
     
-    virtual void DragMoveEvent(QDragMoveEvent * e);
-    virtual void DropEvent(QDropEvent * e);
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
     QString drag_key() const;
     QString drag_postfix() const;

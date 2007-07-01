@@ -452,22 +452,22 @@ void DiagramCanvas::draw_control_icon(QPainter & p, QRect & r,
   FILE * fp = svg();
 
   if (fp != 0) {
+    sz /= 2;
+    if (used_color != UmlTransparent)
+      fprintf(fp, "\t<ellipse fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+	      co.rgb()&0xffffff,
+	      cx, cy + sz, sz, sz);
+    else
+      fprintf(fp, "\t<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+	      cx, cy + sz, sz, sz);
     fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
 	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
 	    cx, cy, cx + dv, cy - dv);
     fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
 	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
 	    cx, cy, cx + dv, cy + dv);
-    sz /= 2;
-    if (used_color != UmlTransparent)
-      fprintf(fp, "\t<ellipse fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
-	      co.rgb()&0xffffff,
-	      cx, cy + sz/2, sz, sz);
-    else
-      fprintf(fp, "\t<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
-	      cx, cy + sz/2, sz, sz);
   }
 }
 

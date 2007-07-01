@@ -71,6 +71,7 @@ class BrowserObjectDiagram : public BrowserDiagram {
     virtual void on_close();
     virtual void read_session(char * & st);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual BasicData * get_data() const;
     virtual void set_name(const char * s);
     virtual void get_objectdiagramsettings(ObjectDiagramSettings &) const;
@@ -85,9 +86,12 @@ class BrowserObjectDiagram : public BrowserDiagram {
     virtual bool api_compatible(unsigned v) const;
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserObjectDiagram * read(char * &, char *, BrowserNode *);
+    static BrowserObjectDiagram * read_ref(char * & st, char * k);
     static BrowserNode * get_it(const char * k, int id);
     
     void edit_settings();
+    
+    static BrowserObjectDiagram * add_object_diagram(BrowserNode * future_parent);
     
     static const QStringList & default_stereotypes();
     static void read_stereotypes(char * &, char * & k);
@@ -96,9 +100,6 @@ class BrowserObjectDiagram : public BrowserDiagram {
     virtual void renumber(int phase);
     static void open_all();
     static void import();
-    
-    virtual void DragMoveEvent(QDragMoveEvent * e);
-    virtual void DropEvent(QDropEvent * e);
 };
 
 #endif

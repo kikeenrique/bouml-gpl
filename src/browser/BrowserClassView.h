@@ -75,10 +75,6 @@ class BrowserClassView : public BrowserNode, public Labeled<BrowserClassView> {
     virtual const QPixmap* pixmap (int) const;
   
     BrowserNode * get_class();
-    void add_class_diagram();
-    void add_object_diagram();
-    void add_sequence_diagram();
-    void add_collaboration_diagram();
     virtual BrowserNode * get_associated() const;
     void set_associated_deploymentview(BrowserDeploymentView *, bool on_read = FALSE);
   
@@ -89,6 +85,7 @@ class BrowserClassView : public BrowserNode, public Labeled<BrowserClassView> {
     virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,
 				   bool & duplicable) const;
     virtual BrowserNode * container(UmlCode) const; // container for class, state machine and activity
@@ -113,6 +110,8 @@ class BrowserClassView : public BrowserNode, public Labeled<BrowserClassView> {
     virtual DrawingLanguage get_language(UmlCode who) const;
     virtual void on_delete();
     virtual void save(QTextStream &, bool ref, QString & warning);
+    
+    static BrowserClassView * add_class_view(BrowserNode * future_parent);
     
     virtual void DragMoveEvent(QDragMoveEvent * e);
     virtual void DropEvent(QDropEvent * e);

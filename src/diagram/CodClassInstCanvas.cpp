@@ -33,6 +33,8 @@
 #include "CodClassInstCanvas.h"
 #include "CodSelfLinkCanvas.h"
 #include "BrowserClass.h"
+#include "BrowserClassInstance.h"
+#include "ClassInstanceData.h"
 #include "BrowserDiagram.h"
 #include "UmlCanvas.h"
 #include "ClassData.h"
@@ -42,16 +44,22 @@
 #include "MenuTitle.h"
 #include "ColDiagramView.h"
 
-CodClassInstCanvas::CodClassInstCanvas(BrowserClass * t, UmlCanvas * canvas,
+CodClassInstCanvas::CodClassInstCanvas(BrowserNode * bn, UmlCanvas * canvas,
 				       int x, int y, int id)
     : CodObjCanvas(0, canvas, x, y, CLASSINST_CANVAS_MIN_SIZE, 1, id),
-      ClassInstCanvas(t) {
-  browser_node = canvas->browser_diagram();
+      ClassInstCanvas() {
+  // bn may a class instance or a class
+  browser_node = bn;
   itscolor = UmlDefaultColor;
-  compute_size();
   
-  connect(cl->get_data(), SIGNAL(changed()), this, SLOT(modified()));
-  connect(cl->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
+  if (id == 0)
+    // not on read
+    compute_size();
+  
+  BasicData * d = bn->get_data();
+  
+  connect(d, SIGNAL(changed()), this, SLOT(modified()));
+  connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
 
@@ -59,9 +67,15 @@ CodClassInstCanvas::~CodClassInstCanvas() {
 }
 
 void CodClassInstCanvas::delete_it() {
-  disconnect(cl->get_data(), 0, this, 0);
+  BasicData * d = browser_node->get_data();
+
+  disconnect(d, SIGNAL(changed()), this, SLOT(modified()));
+  disconnect(d, SIGNAL(deleted()), this, SLOT(deleted()));
   disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
+  
   CodObjCanvas::delete_it();
+  
+  ((ColDiagramView *) the_canvas()->get_view())->update_msgs();
 }
 
 void CodClassInstCanvas::deleted() {
@@ -69,10 +83,17 @@ void CodClassInstCanvas::deleted() {
   canvas()->update();
 }
 
+void CodClassInstCanvas::remove(bool from_model) {
+  if (!from_model || (browser_node->get_type() == UmlClass))
+    delete_it();
+  else
+    browser_node->delete_it();	// will remove canvas
+}
+
 void CodClassInstCanvas::compute_size() {
   int wi, he;
   
-  ClassInstCanvas::compute_size(wi, he, the_canvas(), TRUE);
+  ClassInstCanvas::compute_size(wi, he, the_canvas());
   resize(wi, he);
 }
 
@@ -92,32 +113,64 @@ void CodClassInstCanvas::modified() {
 
 void CodClassInstCanvas::draw(QPainter & p) {
   if (visible()) {
-    ClassInstCanvas::draw(p, the_canvas(), rect(), TRUE);
+    ClassInstCanvas::draw(p, the_canvas(), rect());
 
     if (selected())
       show_mark(p, rect());
   }
 }
 
+// all cases
+QString CodClassInstCanvas::get_name() const {
+  return (browser_node->get_type() == UmlClass)
+    ? iname
+    : QString(browser_node->get_name());
+}
+
+// out of model case
+void CodClassInstCanvas::set_name(const QString & s) {
+  iname = s;
+}
+
+// UmlClass or UmlClassInstance
 UmlCode CodClassInstCanvas::type() const {
-  return UmlClass;
+  return browser_node->get_type();
 }
 
-BrowserClass * CodClassInstCanvas::get_type() {
-  return cl;
+// return class, all cases
+BrowserNode * CodClassInstCanvas::get_type() const {
+  return (browser_node->get_type() == UmlClass)
+    ? browser_node
+    : ((BrowserNode *)
+       ((ClassInstanceData *) browser_node->get_data())->get_class());
 }
 
-void CodClassInstCanvas::set_type(BrowserClass * t) {
-  if (t != cl) {
-    disconnect(cl->get_data(), 0, this, 0);
-    cl = t;
-    connect(cl->get_data(), SIGNAL(changed()), this, SLOT(modified()));
-    connect(cl->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
+// out of model case
+void CodClassInstCanvas::set_type(BrowserNode * t) {
+  if (t != browser_node) {
+    disconnect(browser_node->get_data(), 0, this, 0);
+    browser_node = t;
+    connect(t->get_data(), SIGNAL(changed()), this, SLOT(modified()));
+    connect(t->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
   }
 }
 
-BrowserNode * CodClassInstCanvas::the_diagram() const {
-  return browser_node;
+BrowserNodeList& CodClassInstCanvas::get_types(BrowserNodeList& r) const {
+  return BrowserClass::instances(r);
+}
+
+BrowserClass * CodClassInstCanvas::get_class() const {
+  return (BrowserClass *) get_type();
+}
+
+BrowserNode * CodClassInstCanvas::container(UmlCode c) const {
+  return the_canvas()->browser_diagram()->container(c);
+}
+
+void CodClassInstCanvas::delete_available(bool & in_model, bool & out_model) const {
+  out_model |= TRUE;
+  if (browser_node->get_type() == UmlClassInstance)
+    in_model |=  browser_node->is_writable();
 }
 
 QString CodClassInstCanvas::get_full_name() const {
@@ -125,15 +178,20 @@ QString CodClassInstCanvas::get_full_name() const {
 }
 
 void CodClassInstCanvas::open() {
-  InstanceDialog d(this, "class", UmlClass);
-  
-  d.raise();
-  if (d.exec() == QDialog::Accepted)
-    modified();
+  if (browser_node->get_type() == UmlClass) {
+    InstanceDialog d(this, "class", UmlClass);
+    
+    d.raise();
+    if (d.exec() == QDialog::Accepted)
+      modified();
+  }
+  else
+    browser_node->open(FALSE);
 }
 
 void CodClassInstCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
+  bool modelized = (browser_node->get_type() == UmlClassInstance);
   
   m.insertItem(new MenuTitle(full_name(), m.font()), -1);
   m.insertSeparator();
@@ -144,11 +202,23 @@ void CodClassInstCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem("Edit", 3);
   m.insertSeparator();
-  m.insertItem("Select class in browser", 4);
+  if (modelized)
+    m.insertItem("Select in browser", 4);
+  m.insertItem("Select class in browser", 5);
   if (linked())
-    m.insertItem("Select linked items", 5);
+    m.insertItem("Select linked items", 6);
   m.insertSeparator();
-  m.insertItem("Remove from view", 6);
+  if (modelized)
+    m.insertItem("Exit from model", 9);
+  else {
+    if (container(UmlClass)->is_writable())
+      m.insertItem("Insert in model", 10);
+    m.insertItem("Replace it", 11);
+  }
+  m.insertSeparator();
+  m.insertItem("Remove from view", 7);
+  if (modelized && browser_node->is_writable())
+    m.insertItem("Delete from model", 8);
   
   switch (m.exec(QCursor::pos())) {
   case 0:
@@ -166,24 +236,82 @@ void CodClassInstCanvas::menu(const QPoint&) {
     open();	// call package_modified
     return;
   case 4:
-    cl->select_in_browser();
+    browser_node->select_in_browser();
     return;
   case 5:
+    get_type()->select_in_browser();
+    return;
+  case 6:
     the_canvas()->unselect_all();
     select_associated();
     return;
-  case 6:
+  case 7:
     delete_it();
-    ((ColDiagramView *) the_canvas()->get_view())->update_msgs();
-    package_modified();
+    break;
+  case 8:
+    //delete from model
+    browser_node->delete_it();	// will delete the canvas
+    break;
+  case 9:
+    {
+      BasicData * d = browser_node->get_data();
+      
+      disconnect(d, SIGNAL(changed()), this, SLOT(modified()));
+      disconnect(d, SIGNAL(deleted()), this, SLOT(deleted()));
+      
+      iname = browser_node->get_name();
+      browser_node = ((ClassInstanceData *) d)->get_class();
+      d = browser_node->get_data();
+      connect(d, SIGNAL(changed()), this, SLOT(modified()));
+      connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
+    }
+    break;
+  case 10:
+    {
+      BasicData * d = browser_node->get_data();
+      
+      disconnect(d, SIGNAL(changed()), this, SLOT(modified()));
+      disconnect(d, SIGNAL(deleted()), this, SLOT(deleted()));
+      
+      browser_node =
+	new BrowserClassInstance(iname, (BrowserClass *) browser_node,
+				 container(UmlClass));
+      d = browser_node->get_data();
+      connect(d, SIGNAL(changed()), this, SLOT(modified()));
+      connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
+    }
+    break;
+  case 11:
+    {
+      BrowserNode * bn = 
+	BrowserClassInstance::get_classinstance((BrowserClass *) browser_node);
+      
+      if (bn == 0)
+	return;
+      
+      BasicData * d = browser_node->get_data();
+      
+      disconnect(d, SIGNAL(changed()), this, SLOT(modified()));
+      disconnect(d, SIGNAL(deleted()), this, SLOT(deleted()));
+      
+      browser_node = bn;
+      d = browser_node->get_data();
+      connect(d, SIGNAL(changed()), this, SLOT(modified()));
+      connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
+      modified();	// call package_modified
+      return;
+    }
+    break;
   default:
     return;
   }
+  
+  package_modified();
 }
 
 void CodClassInstCanvas::apply_shortcut(QString s) {
   if (s == "Select in browser") { 
-    cl->select_in_browser();
+    browser_node->select_in_browser();
     return;
   }
   else if (s == "Upper")
@@ -261,20 +389,31 @@ void CodClassInstCanvas::save(QTextStream & st, bool ref, QString & warning) con
   if (ref)
     st << "classinstance_ref " << get_ident() << " // "
       << full_name();
-  else {
+  else if (browser_node->get_type() == UmlClass) {
     nl_indent(st);
     st << "classinstance " << get_ident() << ' ';
-    cl->save(st, TRUE, warning);
+    browser_node->save(st, TRUE, warning);
     nl_indent(st);
-    if (itscolor != UmlDefaultColor)
-      st << "  color " << stringify(itscolor) << ' ';
-    if (write_horizontally != UmlDefaultState)
-      st << "  write_horizontally " << stringify(write_horizontally) << ' ';
-    save_xyz(st, this, "  xyz");
+    ClassInstCanvas::save(st);
     st << " name ";
-    save_string(get_name(), st);
+    save_string(iname, st);
     st << ' ';
     save_xyz(st, this, " xyz");
+  }
+  else {
+    nl_indent(st);
+    st << "classinstancecanvas " << get_ident() << ' ';
+    browser_node->save(st, TRUE, warning);
+
+    indent(+1);
+    
+    nl_indent(st);
+    save_xyz(st, this, "xyz");
+    ClassInstCanvas::save(st);
+    nl_indent(st);
+    st << "end";
+    
+    indent(-1);
   }
 }
 
@@ -284,43 +423,52 @@ CodClassInstCanvas * CodClassInstCanvas::read(char * & st, UmlCanvas * canvas,
   if (!strcmp(k, "classinstance_ref"))
     return ((CodClassInstCanvas *) dict_get(read_id(st), "classinstance", canvas));
   else if (!strcmp(k, "classinstance")) {
+    // old release and graphic instance
     int id = read_id(st);
     BrowserClass * cl = BrowserClass::read_ref(st);
+    CodClassInstCanvas * result =
+      new CodClassInstCanvas(cl, canvas, 0, 0, id);
+   
+    result->ClassInstCanvas::read(st, k);
     
-    k = read_keyword(st);
-    
-    UmlColor co = UmlDefaultColor;
-    
-    read_color(st, "color", co, k);	// updates k
-    
-    Uml3States ho;
-    
-    if (!strcmp(k, "write_horizontally") || 
-	!strcmp(k, "write_horizontaly")) {
-      ho = state(read_keyword(st));
+    if (!strcmp(k, "xyz")) {
+      read_double(st);
+      read_double(st);
+      read_double(st);
       k = read_keyword(st);
     }
-    else
-      ho = UmlDefaultState;
-    
-    if (strcmp(k, "xyz"))
-      wrong_keyword(k, "xyz");
-    
-    int x = (int) read_double(st);
-    CodClassInstCanvas * result =
-      new CodClassInstCanvas(cl, canvas, x, (int) read_double(st), id);
-
-    result->setZ(read_double(st));
-    read_keyword(st, "name");
-    result->set_name(read_string(st));
-    result->itscolor = co;
-    result->write_horizontally = ho;
+    if (strcmp(k, "name"))
+      wrong_keyword(k, "name");
+    result->iname = read_string(st);
     read_keyword(st, "xyz");
     read_xyz(st, result);
     result->compute_size();
     result->set_center100();
     result->show();
+    
     return result;
+  }
+  else if (!strcmp(k, "classinstancecanvas")) {
+    int id = read_id(st);
+    BrowserClassInstance * icl = BrowserClassInstance::read_ref(st);
+
+    read_keyword(st, "xyz");
+    
+    int x = (int) read_double(st);
+    CodClassInstCanvas * result =
+      new CodClassInstCanvas(icl, canvas, x, (int) read_double(st), id);
+
+    result->setZ(read_double(st));
+   
+    result->ClassInstCanvas::read(st, k);
+    
+    if (strcmp(k, "end"))
+      wrong_keyword(k, "end");
+
+    result->compute_size();
+    result->set_center100();
+    result->show();
+    return result;    
   }
   else
     return 0;

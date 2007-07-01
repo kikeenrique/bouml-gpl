@@ -43,6 +43,7 @@ HEADERS		= browser/BrowserAttribute.h \
 		  browser/BrowserExpansionNode.h \
 		  browser/BrowserActivityObject.h \
 		  browser/BrowserFlow.h \
+		  browser/BrowserClassInstance.h \
 		  data/ActualParamData.h \
 		  data/BasicData.h \
 		  data/SimpleData.h \
@@ -74,6 +75,7 @@ HEADERS		= browser/BrowserAttribute.h \
 		  data/ExpansionRegionData.h \
 		  data/ActivityObjectData.h \
 		  data/FlowData.h \
+		  data/ClassInstanceData.h \
 		  data/UseCaseData.h \
 		  diagram/ArrowCanvas.h \
 		  diagram/HubCanvas.h \
@@ -274,6 +276,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  browser/BrowserExpansionNode.cpp \
 		  browser/BrowserActivityObject.cpp \
 		  browser/BrowserFlow.cpp \
+		  browser/BrowserClassInstance.cpp \
 		  data/ActualParamData.cpp \
 		  data/AttributeData.cpp \
 		  data/ExtraMemberData.cpp \
@@ -306,6 +309,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  data/ExpansionRegionData.cpp \
 		  data/ActivityObjectData.cpp \
 		  data/FlowData.cpp \
+		  data/ClassInstanceData.cpp \
 		  data/UseCaseData.cpp \
 		  diagram/ArrowCanvas.cpp \
 		  diagram/HubCanvas.cpp \

@@ -190,10 +190,6 @@ BrowserNode * BrowserActivity::add_parameter(BrowserParameter * param) {
   return 0;
 }
 
-void BrowserActivity::add_activity_diagram() {
-  (new BrowserActivityDiagram(child_random_name("Diagram"), this))->select_in_browser();
-}
-
 void BrowserActivity::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
@@ -263,7 +259,14 @@ Note that you can undelete it after");
 void BrowserActivity::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
-    add_activity_diagram();
+    {
+      BrowserActivityDiagram * d = 
+	BrowserActivityDiagram::add_activity_diagram(this);
+      
+      if (d == 0)
+	return;
+      d->select_in_browser();
+    }
     break;
   case 1:
     add_parameter(0);
@@ -406,6 +409,10 @@ void BrowserActivity::modified() {
 
 UmlCode BrowserActivity::get_type() const {
   return UmlActivity;
+}
+
+int BrowserActivity::get_identifier() const {
+  return get_ident();
 }
 
 BasicData * BrowserActivity::get_data() const {

@@ -60,6 +60,7 @@ class BrowserExpansionNode : public BrowserNode, public Labeled<BrowserExpansion
     virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual void modified();
     virtual BasicData * get_data() const;
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
@@ -86,8 +87,6 @@ class BrowserExpansionNode : public BrowserNode, public Labeled<BrowserExpansion
     virtual void referenced_by(QList<BrowserNode> &);
     static void compute_referenced_by(QList<BrowserNode> &, BrowserNode *);
     
-    virtual void DragMoveEvent(QDragMoveEvent * e);
-    virtual void DropEvent(QDropEvent * e);
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
     QString drag_key() const;
     QString drag_postfix() const;

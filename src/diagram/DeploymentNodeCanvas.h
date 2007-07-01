@@ -76,7 +76,7 @@ class DeploymentNodeCanvas
     int min_width();
     int min_height();
     
-    virtual const QString & get_name() const;
+    virtual QString get_name() const;
     virtual void set_name(const QString & s);
     
     virtual BrowserNode * get_type() const;

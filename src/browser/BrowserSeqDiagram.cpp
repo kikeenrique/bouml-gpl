@@ -63,7 +63,7 @@ BrowserSeqDiagram::BrowserSeqDiagram(int id)
 }
 
 BrowserSeqDiagram::BrowserSeqDiagram(BrowserSeqDiagram * model, BrowserNode * p)
-    : BrowserDiagram(p->child_random_name("Diagram"), p, 0), window(0) {
+    : BrowserDiagram(p->get_name(), p, 0), window(0) {
   def = new SimpleData(model->def);
   def->set_browser_node(this);
   comment = model->comment;
@@ -115,6 +115,17 @@ void BrowserSeqDiagram::make() {
   duration_color = UmlDefaultColor;
   continuation_color = UmlDefaultColor;
   class_instance_color = UmlDefaultColor;
+}
+
+BrowserSeqDiagram * BrowserSeqDiagram::add_sequence_diagram(BrowserNode * future_parent)
+{
+  QString name;
+  
+  if (future_parent->enter_child_name(name, "enter sequence diagram's name : ",
+				      UmlSeqDiagram, TRUE, FALSE))
+    return new BrowserSeqDiagram(name, future_parent);
+  else
+    return 0;
 }
 
 void BrowserSeqDiagram::set_name(const char * s) {
@@ -268,11 +279,13 @@ void BrowserSeqDiagram::exec_menu_choice(int rank,
     return;
   case 3:
     {
-      BrowserSeqDiagram * sd = 
-	new BrowserSeqDiagram(this, (BrowserNode *) parent());
+      QString name;
       
-      sd->select_in_browser();
-      sd->edit("Sequence diagram", its_default_stereotypes);
+      if (((BrowserNode *)parent())->enter_child_name(name, "enter sequence diagram's name : ",
+						      UmlSeqDiagram, TRUE, FALSE))
+	duplicate((BrowserNode *) parent(), name)->select_in_browser();
+      else
+	return;
     }
     break;
   case 4:
@@ -369,6 +382,10 @@ void BrowserSeqDiagram::read_session(char * & st) {
 
 UmlCode BrowserSeqDiagram::get_type() const {
   return UmlSeqDiagram;
+}
+
+int BrowserSeqDiagram::get_identifier() const {
+  return get_ident();
 }
 
 void BrowserSeqDiagram::get_sequencediagramsettings(SequenceDiagramSettings & r) const {
@@ -469,14 +486,6 @@ bool BrowserSeqDiagram::tool_cmd(ToolCom * com, const char * args) {
     return (def->tool_cmd(com, args, this, comment) ||
 	    BrowserNode::tool_cmd(com, args));
   }
-}
-
-void BrowserSeqDiagram::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserSeqDiagram::DropEvent(QDropEvent * e) {
-  ((BrowserNode *) parent())->DropAfterEvent(e, this);
 }
 
 void BrowserSeqDiagram::save_stereotypes(QTextStream & st)

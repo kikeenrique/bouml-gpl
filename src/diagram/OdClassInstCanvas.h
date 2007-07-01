@@ -35,8 +35,10 @@
 #include "DiagramCanvas.h"
 #include "ClassInstCanvas.h"
 
+class BrowserClassInstance;
 class BasicData;
-class AttributeData;
+struct SlotRel;
+class ObjectLinkCanvas;
 
 class OdClassInstCanvas : public QObject, public DiagramCanvas,
   			  public ClassInstCanvas {
@@ -45,7 +47,7 @@ class OdClassInstCanvas : public QObject, public DiagramCanvas,
     friend class ClassInstanceDialog;
   
   public:
-    OdClassInstCanvas(BrowserClass * t, UmlCanvas * canvas,
+    OdClassInstCanvas(BrowserClassInstance * t, UmlCanvas * canvas,
 		       int x, int y, int id);
     virtual ~OdClassInstCanvas();
     
@@ -57,9 +59,13 @@ class OdClassInstCanvas : public QObject, public DiagramCanvas,
     void compute_size();
 
     virtual UmlCode type() const;
-    virtual BrowserClass * get_type();
-    virtual void set_type(BrowserClass * t);
-    virtual BrowserNode * the_diagram() const;
+    virtual QString get_name() const;	// all cases
+    virtual void set_name(const QString & s);	// out of model case
+    virtual BrowserNode * get_type() const;	// return class, all cases
+    void set_type(BrowserNode * t);	// out of model case
+    virtual BrowserNodeList& get_types(BrowserNodeList&) const;
+    virtual BrowserNode * container(UmlCode) const;
+    virtual BrowserClassInstance * get_instance() const;
     virtual void open();
     virtual void menu(const QPoint&);
     virtual const char * may_start(UmlCode &) const;
@@ -70,6 +76,7 @@ class OdClassInstCanvas : public QObject, public DiagramCanvas,
     virtual void delete_available(bool & in_model, bool & out_model) const;
     virtual bool alignable() const;
     virtual bool copyable() const;
+    virtual void remove(bool from_model);
     virtual void history_load(QBuffer &);
     virtual void history_hide();
     
@@ -78,18 +85,15 @@ class OdClassInstCanvas : public QObject, public DiagramCanvas,
 
     virtual void apply_shortcut(QString s);
     void edit_drawing_settings();
+    void draw_all_relations(OdClassInstCanvas * end = 0);
+    bool has_relation(const SlotRel &) const;
+    bool is_duplicated(ObjectLinkCanvas * lnk, 
+		       OdClassInstCanvas * other) const;
+
   
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static OdClassInstCanvas * read(char * &, UmlCanvas * canvas, char *);
 
-  protected:
-    void check_attributes();
-
-  protected:
-    QList<AttributeData> attributes;
-    QList<BasicData> connect_list;	// class only
-    QStringList values;	// unicode
-    
   private slots:
     void modified();	// canvas must be updated
     void deleted();	// the class is deleted

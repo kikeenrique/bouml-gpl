@@ -68,6 +68,7 @@ class BrowserActivityNode : public BrowserNode, public Labeled<BrowserActivityNo
     virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual void modified();
     virtual BasicData * get_data() const;
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;

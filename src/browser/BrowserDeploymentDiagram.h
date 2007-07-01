@@ -73,6 +73,7 @@ class BrowserDeploymentDiagram : public BrowserDiagram {
     virtual void on_close();
     virtual void read_session(char * & st);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual BasicData * get_data() const;
     virtual void set_name(const char * s);
     virtual void package_settings(bool & name_in_tab, ShowContextMode & show_context) const;
@@ -91,6 +92,8 @@ class BrowserDeploymentDiagram : public BrowserDiagram {
     
     void edit_settings();
 
+    static BrowserDeploymentDiagram * add_deployment_diagram(BrowserNode * future_parent);
+    
     static const QStringList & default_stereotypes();
     static void read_stereotypes(char * &, char * & k);
     static void save_stereotypes(QTextStream &);
@@ -98,9 +101,6 @@ class BrowserDeploymentDiagram : public BrowserDiagram {
     virtual void renumber(int phase);
     static void open_all();
     static void import();
-    
-    virtual void DragMoveEvent(QDragMoveEvent * e);
-    virtual void DropEvent(QDropEvent * e);
 };
 
 #endif

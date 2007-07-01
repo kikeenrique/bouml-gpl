@@ -379,6 +379,10 @@ UmlCode BrowserActivityNode::get_type() const {
   return kind;
 }
 
+int BrowserActivityNode::get_identifier() const {
+  return get_ident();
+}
+
 BasicData * BrowserActivityNode::get_data() const {
   return def;
 }

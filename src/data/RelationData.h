@@ -179,7 +179,8 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     void select_in_browser(bool prefer_start) const;
     
     void save(QTextStream &, bool ref, QString & warning) const;
-    static RelationData * read_ref(char * &, bool complete = FALSE);
+    static RelationData * read_ref(char * &, bool complete = FALSE,
+				   const char * k = 0);
     static RelationData * read(char * &, char * &);
     
     static bool uni_directional(UmlCode);

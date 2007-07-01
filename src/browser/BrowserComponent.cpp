@@ -431,6 +431,10 @@ UmlCode BrowserComponent::get_type() const {
   return UmlComponent;
 }
 
+int BrowserComponent::get_identifier() const {
+  return get_ident();
+}
+
 void BrowserComponent::DragMoveEvent(QDragMoveEvent * e) {
   if (UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
     e->accept();
@@ -467,6 +471,7 @@ void BrowserComponent::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
       if (old != this) {
 	old->modified();
 	old->package_modified();
+	bn->modified();
       }
       
       modified();

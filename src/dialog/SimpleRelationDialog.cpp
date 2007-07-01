@@ -87,11 +87,9 @@ SimpleRelationDialog::SimpleRelationDialog(SimpleRelationData * r)
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(rel->get_stereotype()));
   if (! visit) {
-    //edstereotype->insertStringList(rel->get_start_node()->default_stereotypes(rel->get_type()));
-    if ((rel->get_start_node()->get_type() == UmlClass) &&
-	(rel->get_end_node()->get_type() == UmlPackage))
-      // for java, class - - - -> package
-      edstereotype->insertItem("import");
+    edstereotype->insertStringList(rel->get_start_node()
+				   ->default_stereotypes(rel->get_type(),
+							 rel->get_end_node()));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -156,7 +154,7 @@ void SimpleRelationDialog::accept() {
   
   rel->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
   bn->set_comment(comment->text());
-  UmlWindow::set_commented(bn);
+  UmlWindow::update_comment_if_needed(bn);
   
   kvtable->update(bn);
   

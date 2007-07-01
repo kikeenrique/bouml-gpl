@@ -58,15 +58,12 @@ ReferenceDialog::ReferenceDialog(BrowserNode * target)
   nodes.sort();
   
   // remove duplicats
-  l.first();
-  while ((bn = l.current()) != 0)
-    if (bn == l.next())
-      l.remove();
+  nodes.first();
+  while ((bn = nodes.current()) != 0)
+    if (bn == nodes.next())
+      nodes.remove();
   
   QStringList names;
-  QString s = target->get_name();
-  
-  s += " is referenced by :";
   
   nodes.full_names(names);
   
@@ -75,29 +72,41 @@ ReferenceDialog::ReferenceDialog(BrowserNode * target)
  
   vbox->setMargin(5);
  
+  QString s = target->get_name();
+  
+  if (nodes.isEmpty())
+    s += (nodes.isEmpty()) ? " is not referenced" : " is referenced by :";
+  
   vbox->addWidget(new QLabel(s, this));
   
-  items = new QComboBox(FALSE, this);
-  vbox->addWidget(items);
+  QPushButton * cancel;
   
-  QStringList::Iterator it;
+  if (!nodes.isEmpty()) {
+    items = new QComboBox(FALSE, this);
+    vbox->addWidget(items);
+    
+    QStringList::Iterator it;
+    
+    for (bn = nodes.first(), it = names.begin();
+	 bn;
+	 bn = nodes.next(), ++it)
+      items->insertItem(*(bn->pixmap(0)), *it);
   
-  for (bn = l.first(), it = names.begin();
-       bn;
-       bn = l.next(), ++it)
-    items->insertItem(*(bn->pixmap(0)), *it);
+    hbox = new QHBoxLayout(vbox); 
+    hbox->setMargin(5);
+    QPushButton * select = new QPushButton("&Select", this);
+    
+    select->setDefault(TRUE);
+    hbox->addWidget(select);
+    connect(select, SIGNAL(clicked()), this, SLOT(select()));
+  }
+  else {
+    hbox = new QHBoxLayout(vbox); 
+    hbox->setMargin(5);
+  }
   
-  hbox = new QHBoxLayout(vbox); 
-  hbox->setMargin(5);
-  QPushButton * select = new QPushButton("&Select", this);
-  QPushButton * cancel = new QPushButton("&Close", this);
-  
-  select->setDefault(TRUE);
-  
-  hbox->addWidget(select);
+  cancel = new QPushButton("&Close", this);
   hbox->addWidget(cancel);
-  
-  connect(select, SIGNAL(clicked()), this, SLOT(select()));
   connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
 }
 

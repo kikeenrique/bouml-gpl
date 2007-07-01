@@ -84,6 +84,8 @@ DiagramView::DiagramView(QWidget * parent, UmlCanvas * canvas, int i)
       preferred_zoom(0), history_protected(FALSE), history_frozen(FALSE),
       first_move(FALSE), history_index(~0u) {
   // enableClipper(TRUE); => probleme d'affichage
+  preferred_size.setWidth(0);
+  preferred_size.setHeight(0);
   setStaticBackground(TRUE);
   setAcceptDrops(TRUE);
   setDragAutoScroll(TRUE);
@@ -457,7 +459,7 @@ void DiagramView::add_point(QMouseEvent * e) {
   else if ((t == UmlColDiagram) && (action == UmlLink))
     a = new CodLinkCanvas(the_canvas(), start, ap, 0);
   else if ((t == UmlObjectDiagram) && (action == UmlObjectLink))
-    a = new ObjectLinkCanvas(the_canvas(), start, ap, 0);
+    a = new ObjectLinkCanvas(the_canvas(), start, ap, UmlObjectLink, 0);
   else if (((t == UmlComponentDiagram) || (t == UmlDeploymentDiagram))
 	   && (action == UmlContain))
     a = new AssocContainCanvas(the_canvas(), start, ap, 0);
@@ -1294,7 +1296,8 @@ void DiagramView::optimal_window_size() {
 
 void DiagramView::preferred_size_zoom() {
   if (preferred_zoom != 0) {
-    window()->resize(preferred_size);
+    if (preferred_size.width() != 0)
+      window()->resize(preferred_size);
     window()->new_scale((int) (preferred_zoom * 100));
   }
 }
@@ -1328,8 +1331,17 @@ int DiagramView::default_menu(QPopupMenu & m, int f) {
     m.insertItem("Paste copied items (Ctrl+v)", 9);
   m.insertSeparator();
   m.insertItem("Set preferred size and scale", 4);
-  if (preferred_zoom != 0)
-    m.insertItem("Restore preferred size and scale", 5);
+  m.insertItem("Set preferred scale (size unset)", 17);
+  if (preferred_zoom != 0) {
+    if (preferred_size.width() != 0) {
+      m.insertItem("Restore preferred size and scale", 5);
+      m.insertItem("Unset preferred size and scale", 18);
+    }
+    else {
+      m.insertItem("Restore preferred scale", 5);
+      m.insertItem("Unset preferred scale", 18);
+    }
+  }
   init_format_menu(formatm, f);
   m.insertItem("Format", &formatm);
   m.insertSeparator();
@@ -1362,6 +1374,20 @@ int DiagramView::default_menu(QPopupMenu & m, int f) {
     preferred_zoom = the_canvas()->zoom();
     preferred_size.setWidth(window()->width());
     preferred_size.setHeight(window()->height());
+    window()->package_modified();
+    break;
+  case 17:
+    history_protected = TRUE;
+    preferred_zoom = the_canvas()->zoom();
+    preferred_size.setWidth(0);
+    preferred_size.setHeight(0);
+    window()->package_modified();
+    break;
+  case 18:
+    history_protected = TRUE;
+    preferred_zoom = 0;
+    preferred_size.setWidth(0);
+    preferred_size.setHeight(0);
     window()->package_modified();
     break;
   case 5:
@@ -1748,6 +1774,11 @@ void DiagramView::copy_in_clipboard(bool optimal, bool temporary) {
   the_canvas()->show_limits(FALSE);
   
   if (optimal) {
+    int x0 = contentsX();
+    int y0 = contentsY();
+    
+    setContentsPos(0, 0);
+    
     int maxx;
     int maxy;
     
@@ -1782,6 +1813,8 @@ void DiagramView::copy_in_clipboard(bool optimal, bool temporary) {
 #endif
       }
     }
+    if (! temporary)
+      setContentsPos(x0, y0);
   }
   else
     QApplication::clipboard()->setPixmap(QPixmap::grabWidget(viewport()));

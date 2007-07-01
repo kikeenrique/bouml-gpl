@@ -45,10 +45,11 @@ class SdObjCanvas : public DiagramCanvas {
     
     virtual void delete_it();
 
-    virtual BrowserClass * get_type();
     SdLifeLineCanvas * get_life_line() const { return life_line; };
     bool is_mortal() { return mortal; }
     void set_mortal(bool y);
+    
+    virtual BrowserClass * get_class() const = 0;
     
     virtual void moveBy(double dx, double dy);
     
@@ -58,7 +59,7 @@ class SdObjCanvas : public DiagramCanvas {
     virtual bool copyable() const;
     
   protected:
-    void read(char * & st);
+    void read(char * & st, const char * k);
     void save(QTextStream & st) const;
 };
 

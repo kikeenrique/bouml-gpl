@@ -76,6 +76,12 @@ SeqDiagramWindow::SeqDiagramWindow(const QString & s, BrowserSeqDiagram * b, int
   addFragment->setToggleButton(TRUE);
   QWhatsThis::add(addFragment, addfragmentText);
   
+  addClassInstance
+    = new QToolButton(*classinstanceButton, "Add Class instance", QString::null,
+		      this, SLOT(hit_classinstance()), toolbar, "add class instance");
+  addClassInstance->setToggleButton(TRUE);
+  QWhatsThis::add(addClassInstance, addclassinstanceText);
+  
   addClass
     = new QToolButton(*classButton, "Add Class instance", QString::null,
 		      this, SLOT(hit_class()), toolbar, "add class");
@@ -188,6 +194,7 @@ void SeqDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   select->setOn(FALSE);
   addFragment->setOn(FALSE);
   addClass->setOn(FALSE);
+  addClassInstance->setOn(FALSE);
   addContinuation->setOn(FALSE);
   syncMsg->setOn(FALSE);
   asyncMsg->setOn(FALSE);
@@ -204,6 +211,10 @@ void SeqDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
 
 void SeqDiagramWindow::hit_fragment() {
   hit_button(UmlFragment, addFragment);
+}
+
+void SeqDiagramWindow::hit_classinstance() {
+  hit_button(UmlClassInstance, addClassInstance);
 }
 
 void SeqDiagramWindow::hit_class() {

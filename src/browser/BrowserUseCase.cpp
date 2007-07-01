@@ -41,6 +41,7 @@
 #include "UmlPixmap.h"
 #include "UmlDrag.h"
 #include "BrowserClass.h"
+#include "BrowserClassInstance.h"
 #include "SettingsDialog.h"
 #include "myio.h"
 #include "ToolCom.h"
@@ -173,6 +174,8 @@ void BrowserUseCase::menu() {
 		     "to add an <em>actor</em>");
       m.setWhatsThis(m.insertItem("New class", 5),
 		     "to add a <em>class</em>");
+      m.setWhatsThis(m.insertItem("New class instance", 14),
+		     "to add a <em>class instance</em>");
       m.insertSeparator();
     }
     if (!is_edited) {
@@ -243,13 +246,34 @@ Do not undelete its sub items");
 void BrowserUseCase::exec_menu_choice(int rank, BrowserNode * item_above) {
   switch (rank) {
   case 0:
-    add_use_case_diagram();
+    {
+      BrowserUseCaseDiagram * d = 
+	BrowserUseCaseDiagram::add_use_case_diagram(this);
+      
+      if (d == 0)
+	return;
+      d->select_in_browser();
+    }
     break;
   case 1:
-    add_sequence_diagram();
+    {
+      BrowserSeqDiagram * d = 
+	BrowserSeqDiagram::add_sequence_diagram(this);
+      
+      if (d == 0)
+	return;
+      d->select_in_browser();
+    }
     break;
   case 2:
-    add_collaboration_diagram();
+    {
+      BrowserColDiagram * d = 
+	BrowserColDiagram::add_collaboration_diagram(this);
+      
+      if (d == 0)
+	return;
+      d->select_in_browser();
+    }
     break;
   case 3:
     {
@@ -325,8 +349,24 @@ void BrowserUseCase::exec_menu_choice(int rank, BrowserNode * item_above) {
     ReferenceDialog::show(this);
     return;
   case 13:
-    add_object_diagram();
+    {
+      BrowserObjectDiagram * d = 
+	BrowserObjectDiagram::add_object_diagram(this);
+      
+      if (d == 0)
+	return;
+      d->select_in_browser();
+    }
     break;
+  case 14:
+    {
+      BrowserClassInstance * c = 
+	BrowserClassInstance::add_classinstance(this);
+      
+      if (c != 0)
+	c->select_in_browser();
+    }
+    return; // package_modified called
   default:
     if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
@@ -357,6 +397,8 @@ void BrowserUseCase::apply_shortcut(QString s) {
 	choice = 4;
       else if (s == "New class")
 	choice = 5;
+      else if (s == "New class instance")
+	choice = 14;
     }
     if (!is_edited) {
       if (s == "Edit")
@@ -384,26 +426,6 @@ void BrowserUseCase::apply_shortcut(QString s) {
   }
   
   exec_menu_choice(choice, 0);
-}
-
-void BrowserUseCase::add_sequence_diagram() {
-  (new BrowserSeqDiagram(child_random_name("Sequence Diagram"), this))
-    ->select_in_browser();
-}
-
-void BrowserUseCase::add_collaboration_diagram() {
-  (new BrowserColDiagram(child_random_name("Collaboration Diagram"), this))
-    ->select_in_browser();
-}
-
-void BrowserUseCase::add_object_diagram() {
-  (new BrowserObjectDiagram(child_random_name("Object Diagram"), this))
-    ->select_in_browser();
-}
-
-void BrowserUseCase::add_use_case_diagram() {
-  (new BrowserUseCaseDiagram(child_random_name("Use Case Diagram"), this))
-    ->select_in_browser();
 }
 
 BrowserNodeList & BrowserUseCase::instances(BrowserNodeList & result) {
@@ -462,6 +484,10 @@ void BrowserUseCase::open(bool force_edit) {
 
 UmlCode BrowserUseCase::get_type() const {
   return UmlUseCase;
+}
+
+int BrowserUseCase::get_identifier() const {
+  return get_ident();
 }
 
 BasicData * BrowserUseCase::get_data() const {
@@ -614,6 +640,9 @@ bool BrowserUseCase::tool_cmd(ToolCom * com, const char * args) {
 	  else
 	    (BrowserClass::add_class(this, args))->write_id(com);
 	  break;
+	case UmlClassInstance:
+	  BrowserClassInstance::add_from_tool(this, com, args);
+	  break;
 	case UmlSimpleRelations:
 	  {
 	    UmlCode c;
@@ -685,6 +714,7 @@ void BrowserUseCase::DragMoveInsideEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, UmlObjectDiagram) ||
       UmlDrag::canDecode(e, UmlUseCase) ||
       UmlDrag::canDecode(e, UmlClass) ||
+      UmlDrag::canDecode(e, UmlClassInstance) ||
       UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
     e->accept();
   else
@@ -703,6 +733,7 @@ bool BrowserUseCase::may_contains_them(const QList<BrowserNode> & l,
     case UmlObjectDiagram:
     case UmlUseCase:
     case UmlClass:
+    case UmlClassInstance:
       break;
     default:
       if (!IsaSimpleRelation(it.current()->get_type()) ||
@@ -733,6 +764,7 @@ void BrowserUseCase::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
        ((bn = UmlDrag::decode(e, UmlObjectDiagram)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlUseCase)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlClass)) != 0) ||
+       ((bn = UmlDrag::decode(e, UmlClassInstance)) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserSimpleRelation::drag_key(this))) != 0)) &&
       (bn != after) && (bn != this)) {
     if (may_contains(bn, bn->get_type() == UmlUseCase)) {
@@ -771,8 +803,10 @@ void BrowserUseCase::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	x->insertItem(bn);
       }
       x->package_modified();
-      if (old_parent != x)
+      if (old_parent != x) {
 	old_parent->package_modified();
+	bn->modified();
+      }
     }
     else if (after == 0)
       ((BrowserNode *) parent())->DropAfterEvent(e, this);
@@ -792,7 +826,7 @@ const QStringList & BrowserUseCase::default_stereotypes() {
   return its_default_stereotypes;
 }
 
-const QStringList & BrowserUseCase::default_stereotypes(UmlCode arrow) {
+const QStringList & BrowserUseCase::default_stereotypes(UmlCode arrow, const BrowserNode *) const {
   if (IsaRelation(arrow))
     return relations_default_stereotypes[arrow];
   
@@ -823,6 +857,11 @@ void BrowserUseCase::init()
   
   relations_default_stereotypes[UmlDependency].append("include");
   relations_default_stereotypes[UmlDependency].append("extend");
+  
+  relations_default_stereotypes[UmlGeneralisation].append("{complete,disjoint}");
+  relations_default_stereotypes[UmlGeneralisation].append("{incomplete,disjoint}");
+  relations_default_stereotypes[UmlGeneralisation].append("{complete,overlapping}");
+  relations_default_stereotypes[UmlGeneralisation].append("{incomplete,overlapping}");
 }
 
 void BrowserUseCase::save_stereotypes(QTextStream & st)
@@ -987,6 +1026,7 @@ BrowserUseCase * BrowserUseCase::read(char * & st, char * k,
     if (strcmp(k, "end")) {
       while (BrowserUseCase::read(st, k, result) ||
 	     BrowserClass::read(st, k, result) ||
+	     BrowserClassInstance::read(st, k, result) ||
 	     BrowserObjectDiagram::read(st, k, result) ||
 	     BrowserSeqDiagram::read(st, k, result) ||
 	     BrowserColDiagram::read(st, k, result) ||

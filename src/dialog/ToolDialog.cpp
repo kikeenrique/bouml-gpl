@@ -46,6 +46,7 @@ static const ToolColumnDef Classes[] = {
   { UmlDirectionalAggregation, &directionalAggregationButton },
   { UmlDirectionalAggregationByValue, &directionalAggregationByValueButton },
   { UmlExtraMember, &ExtraMemberIcon },
+  { UmlClassInstance, &classinstanceButton },
 };
 
 static const ToolColumnDef States[] = {

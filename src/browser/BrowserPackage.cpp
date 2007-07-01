@@ -121,6 +121,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   
   sequencediagram_settings.show_full_operations_definition = UmlNo;
   sequencediagram_settings.write_horizontally = UmlYes;
+  sequencediagram_settings.instances_drawing_mode = Natural;
   sequencediagram_settings.drawing_language = UmlView;
   sequencediagram_settings.draw_all_relations = UmlYes;
   sequencediagram_settings.shadow = UmlYes;
@@ -510,16 +511,44 @@ void BrowserPackage::exec_menu_choice(int rank) {
     add_package();
     break;
   case 1:
-    add_use_case_view();
+    {
+      BrowserUseCaseView * v = 
+	BrowserUseCaseView::add_use_case_view(this);
+      
+      if (v == 0)
+	return;
+      v->select_in_browser();
+    }
     break;
   case 2:
-    add_class_view();
+    {
+      BrowserClassView * v = 
+	BrowserClassView::add_class_view(this);
+      
+      if (v == 0)
+	return;
+      v->select_in_browser();
+    }
     break;
   case 3:
-    add_component_view();
+    {
+      BrowserComponentView * v = 
+	BrowserComponentView::add_component_view(this);
+      
+      if (v == 0)
+	return;
+      v->select_in_browser();
+    }
     break;
   case 4:
-    add_deployment_view();
+    {
+      BrowserDeploymentView * v = 
+	BrowserDeploymentView::add_deployment_view(this);
+      
+      if (v == 0)
+	return;
+      v->select_in_browser();
+    }
     break;
   case 14:
     import_project();
@@ -770,37 +799,21 @@ BrowserPackage * BrowserPackage::get_package()
 }
 
 void BrowserPackage::add_package() {
-  BrowserPackage * p =
-    new BrowserPackage(child_random_name("Package"), this);
+  QString name;
   
-  p->select_in_browser();
-  if ((owner != -1) &&
-      (msg_warning("Bouml",
-		   "Do you want to be the owner of this new package ?\n"
-		   "(other users can't modify it while you are the owner)",
-		   QMessageBox::Yes, QMessageBox::No )
-       == QMessageBox::Yes))
-    p->owner = owner;
-}
-
-void BrowserPackage::add_use_case_view() {
-  (new BrowserUseCaseView(child_random_name("Use Case View"), this))
-    ->select_in_browser();
-}
-
-void BrowserPackage::add_class_view() {
-  (new BrowserClassView(child_random_name("Class view"), this))
-    ->select_in_browser();
-}
-
-void BrowserPackage::add_component_view() {
-  (new BrowserComponentView(child_random_name("Component view"), this))
-    ->select_in_browser();
-}
-
-void BrowserPackage::add_deployment_view() {
-  (new BrowserDeploymentView(child_random_name("Deployment view"), this))
-    ->select_in_browser();
+  if (enter_child_name(name, "enter package's name : ",
+		       UmlPackage, TRUE, FALSE)) {
+    BrowserPackage * p = new BrowserPackage(name, this);
+    
+    p->select_in_browser();
+    if ((owner != -1) &&
+	(msg_warning("Bouml",
+		     "Do you want to be the owner of this new package ?\n"
+		     "(other users can't modify it while you are the owner)",
+		     QMessageBox::Yes, QMessageBox::No )
+	 == QMessageBox::Yes))
+      p->owner = owner;
+  }
 }
 
 void BrowserPackage::import_project() {
@@ -848,6 +861,10 @@ void BrowserPackage::import_project() {
 
 UmlCode BrowserPackage::get_type() const {
   return UmlPackage;
+}
+
+int BrowserPackage::get_identifier() const {
+  return get_ident();
 }
 
 BasicData * BrowserPackage::get_data() const {
@@ -1587,8 +1604,10 @@ void BrowserPackage::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	x->insertItem(bn);
       }
       x->package_modified();
-      if (old_parent != x)
+      if (old_parent != x) {
 	old_parent->package_modified();
+	bn->modified();
+      }
     }
     else if ((parent() != 0) && (after == 0))
       ((BrowserNode *) parent())->DropAfterEvent(e, this);
@@ -1610,7 +1629,7 @@ const QStringList & BrowserPackage::default_stereotypes()
   return its_default_stereotypes;
 }
 
-const QStringList & BrowserPackage::default_stereotypes(UmlCode) {
+const QStringList & BrowserPackage::default_stereotypes(UmlCode, const BrowserNode *) const {
   return relation_default_stereotypes;
 }
 

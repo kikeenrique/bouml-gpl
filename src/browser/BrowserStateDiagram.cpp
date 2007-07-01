@@ -56,7 +56,7 @@ BrowserStateDiagram::BrowserStateDiagram(QString s, BrowserNode * p, int id)
 }
 
 BrowserStateDiagram::BrowserStateDiagram(BrowserStateDiagram * model, BrowserNode * p)
-    : BrowserDiagram(p->child_random_name("Diagram"), p, 0), window(0) {
+    : BrowserDiagram(p->get_name(), p, 0), window(0) {
   def = new SimpleData(model->def);
   def->set_browser_node(this);
   comment = model->comment;
@@ -115,6 +115,17 @@ void BrowserStateDiagram::make() {
   note_color = UmlDefaultColor;
   fragment_color = UmlDefaultColor;
   package_color = UmlDefaultColor;
+}
+
+BrowserStateDiagram * BrowserStateDiagram::add_state_diagram(BrowserNode * future_parent)
+{
+  QString name;
+  
+  if (future_parent->enter_child_name(name, "enter state diagram's name : ",
+				      UmlStateDiagram, TRUE, FALSE))
+    return new BrowserStateDiagram(name, future_parent);
+  else
+    return 0;
 }
 
 void BrowserStateDiagram::set_name(const char * s) {
@@ -236,11 +247,13 @@ void BrowserStateDiagram::exec_menu_choice(int rank) {
     return;
   case 3:
     {
-      BrowserStateDiagram * cd =
-	new BrowserStateDiagram(this, (BrowserNode *) parent());
+      QString name;
       
-      cd->select_in_browser();
-      cd->edit("State diagram", its_default_stereotypes);
+      if (((BrowserNode *)parent())->enter_child_name(name, "enter state diagram's name : ",
+						      UmlStateDiagram, TRUE, FALSE))
+	duplicate((BrowserNode *) parent(), name)->select_in_browser();
+      else
+	return;
     }
     break;
   case 4:
@@ -330,6 +343,10 @@ void BrowserStateDiagram::read_session(char * & st) {
 
 UmlCode BrowserStateDiagram::get_type() const {
   return UmlStateDiagram;
+}
+
+int BrowserStateDiagram::get_identifier() const {
+  return get_ident();
 }
 
 void BrowserStateDiagram::get_statediagramsettings(StateDiagramSettings & r) const {
@@ -486,14 +503,6 @@ bool BrowserStateDiagram::tool_cmd(ToolCom * com, const char * args) {
     return (def->tool_cmd(com, args, this, comment) ||
 	    BrowserNode::tool_cmd(com, args));
   }
-}
-
-void BrowserStateDiagram::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserStateDiagram::DropEvent(QDropEvent * e) {
-  ((BrowserNode *) parent())->DropAfterEvent(e, this);
 }
 
 void BrowserStateDiagram::DropAfterEvent(QDropEvent * e, BrowserNode * after) {

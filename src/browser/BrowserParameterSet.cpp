@@ -211,6 +211,10 @@ UmlCode BrowserParameterSet::get_type() const {
   return UmlParameterSet;
 }
 
+int BrowserParameterSet::get_identifier() const {
+  return get_ident();
+}
+
 BasicData * BrowserParameterSet::get_data() const {
   return def;
 }
@@ -233,14 +237,6 @@ QString BrowserParameterSet::full_name(bool rev, bool) const {
 bool BrowserParameterSet::tool_cmd(ToolCom * com, const char * args) {
   return (def->tool_cmd(com, args, this, comment) ||
 	  BrowserNode::tool_cmd(com, args));
-}
-
-void BrowserParameterSet::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserParameterSet::DropEvent(QDropEvent * e) {
-  DropAfterEvent(e, 0);
 }
 
 void BrowserParameterSet::DropAfterEvent(QDropEvent * e, BrowserNode * after) {

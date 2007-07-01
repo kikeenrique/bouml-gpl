@@ -73,6 +73,7 @@ class BrowserUseCaseView : public BrowserNode, public Labeled<BrowserUseCaseView
     virtual void menu();
     virtual void apply_shortcut(QString s);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,
 				   bool & duplicable) const;
     virtual BrowserNode * container(UmlCode) const; // container for class, state machine and activity
@@ -94,11 +95,7 @@ class BrowserUseCaseView : public BrowserNode, public Labeled<BrowserUseCaseView
     virtual void DragMoveInsideEvent(QDragMoveEvent * e);
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
 
-    void add_sequence_diagram();
-    void add_collaboration_diagram();
-    void add_use_case_diagram();
-    void add_object_diagram();
-    void add_use_cases_list();
+    static BrowserUseCaseView * add_use_case_view(BrowserNode * future_parent);
     
     static const QStringList & default_stereotypes();
     static void read_stereotypes(char * &, char * & k);

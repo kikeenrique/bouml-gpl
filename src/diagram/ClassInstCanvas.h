@@ -34,38 +34,35 @@
 #include "UmlEnum.h"
 #include "Instance.h"
 
+class QPainter;
+class QTextStream;
+
 class BrowserClass;
 class UmlCanvas;
-class QPainter;
 
 class ClassInstCanvas : public Instance {
   friend class ClassInstDialog;
   
   protected:
-    QString iname;
-    BrowserClass * cl;
     UmlColor itscolor;
     UmlColor used_color;
     Uml3States write_horizontally;
     bool horiz;
   
   public:
-    ClassInstCanvas(BrowserClass * t);
+    ClassInstCanvas();
     virtual ~ClassInstCanvas();
     
     QString full_name() const;
-    virtual const QString & get_name() const;
-    virtual void set_name(const QString & s);
     
-    virtual BrowserNode * get_type() const;
-    virtual BrowserNodeList & get_types(BrowserNodeList &) const;
-    virtual void set_type(BrowserNode * t);
     virtual BrowserNode * new_type();
     virtual bool new_type_available();
-    virtual void set_type(BrowserClass * t) = 0;
-    virtual BrowserNode * the_diagram() const = 0;
-    void compute_size(int & w, int & h, UmlCanvas *, bool as_class = FALSE);
-    void draw(QPainter & p, UmlCanvas * canvas, QRect r, bool as_class = FALSE);
+    virtual BrowserNode * container(UmlCode) const = 0;
+    void compute_size(int & w, int & h, UmlCanvas *);
+    void draw(QPainter & p, UmlCanvas * canvas, QRect r);
+    
+    void save(QTextStream & st) const;
+    void read(char *& st, char *& k);
 };
 
 #endif

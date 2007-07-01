@@ -73,7 +73,7 @@ class UmlClass
   
   UmlCom::message(name());
   
-  start_file("class" + s.setNum(refId), "Class " + name(), TRUE);
+  start_file("class" + s.setNum((unsigned) getIdentifier()), "Class " + name(), TRUE);
   define();
   gen_html("", 0, 0);
   end_file();
@@ -84,7 +84,7 @@ class UmlClass
   
   UmlCom.message(name());
   
-  start_file("class" + String.valueOf(refId), "Class " + name(), true);
+  start_file("class" + String.valueOf(getIdentifier()), "Class " + name(), true);
   define();
   gen_html(null, 0, 0);
   end_file();
@@ -415,47 +415,47 @@ class UmlClass
   if (already)
     fw.write("</p>\n");
 !!!130931.cpp!!!	write() : void
-  if (refId == 0)
+  if (!known)
     writeq(name());
   else {
     if (flat)
       fw.write("<a href=\"index");
     else {
       fw.write("<a href=\"class");
-      fw.write(refId);
+      fw.write((unsigned) getIdentifier());
     }
-    fw.write(".html#ref");
-    fw.write(refId);
+    fw.write(".html#refclass");
+    fw.write((unsigned) getIdentifier());
     fw.write("\"><b>");
     writeq(name());
     fw.write("</b></a>");
   }
 !!!130931.java!!!	write() : void
-  if (refId == 0)
+  if (!known)
     writeq(name());
   else {
     if (flat)
       fw.write("<a href=\"index");
     else {
       fw.write("<a href=\"class");
-      fw.write(String.valueOf(refId));
+      fw.write(String.valueOf(getIdentifier()));
     }
-    fw.write(".html#ref");
-    fw.write(String.valueOf(refId));
+    fw.write(".html#refclass");
+    fw.write(String.valueOf(getIdentifier()));
     fw.write("\"><b>");
     writeq(name());
     fw.write("</b></a>");
   }
 !!!131059.cpp!!!	write(in target : string) : void
-  if (refId != 0) {
+  if (known) {
     if (flat)
       fw.write("<a href=\"index");
     else {
       fw.write("<a href=\"class");
-      fw.write(refId);
+      fw.write((unsigned) getIdentifier());
     }
-    fw.write(".html#ref");
-    fw.write(refId);
+    fw.write(".html#refclass");
+    fw.write((unsigned) getIdentifier());
     fw.write("\" target = \"");
     fw.write(target);
     fw.write("\"><b>");
@@ -465,15 +465,15 @@ class UmlClass
   else
     writeq(name());
 !!!131059.java!!!	write(in target : string) : void
-  if (refId != 0) {
+  if (known) {
     if (flat)
       fw.write("<a href=\"index");
     else {
       fw.write("<a href=\"class");
-      fw.write(String.valueOf(refId));
+      fw.write(String.valueOf(getIdentifier()));
     }
-    fw.write(".html#ref");
-    fw.write(String.valueOf(refId));
+    fw.write(".html#refclass");
+    fw.write(String.valueOf(getIdentifier()));
     fw.write("\" target = \"");
     fw.write(target);
     fw.write("\"><b>");

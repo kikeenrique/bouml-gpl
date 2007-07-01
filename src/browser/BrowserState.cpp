@@ -176,10 +176,6 @@ BrowserState * BrowserState::get_state(BrowserNode * parent)
   return r;
 }
 
-void BrowserState::add_state_diagram() {
-  (new BrowserStateDiagram(child_random_name("Diagram"), this))->select_in_browser();
-}
-
 static bool is_machine(const BrowserState * s)
 {
   switch (((BrowserNode *) s->parent())->get_type()) {
@@ -303,7 +299,14 @@ void BrowserState::exec_menu_choice(int rank,
 				    bool mach) {
   switch (rank) {
   case 0:
-    add_state_diagram();
+    {
+      BrowserStateDiagram * d = 
+	BrowserStateDiagram::add_state_diagram(this);
+      
+      if (d == 0)
+	return;
+      d->select_in_browser();
+    }
     break;
   case 1:
     add_state(this, (bool) TRUE);
@@ -439,6 +442,10 @@ void BrowserState::modified() {
 
 UmlCode BrowserState::get_type() const {
   return UmlState;
+}
+
+int BrowserState::get_identifier() const {
+  return get_ident();
 }
 
 BasicData * BrowserState::get_data() const {

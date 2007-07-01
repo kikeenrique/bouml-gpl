@@ -31,14 +31,16 @@
 
 #include "ClassInstCanvas.h"
 #include "BrowserClass.h"
+#include "BrowserClassInstance.h"
 #include "UmlCanvas.h"
 #include "ClassData.h"
+#include "ClassInstanceData.h"
 #include "DiagramCanvas.h"
 #include "UmlGlobal.h"
 #include "BrowserDiagram.h"
 #include "myio.h"
 
-ClassInstCanvas::ClassInstCanvas(BrowserClass * t) : cl(t)  {
+ClassInstCanvas::ClassInstCanvas() {
   itscolor = UmlDefaultColor;
   write_horizontally = UmlDefaultState;
 }
@@ -47,46 +49,33 @@ ClassInstCanvas::~ClassInstCanvas() {
 }
 
 QString ClassInstCanvas::full_name() const {
-  return get_name() + ":" + cl->get_name();
-}
-
-const QString & ClassInstCanvas::get_name() const {
-  return iname;
-}
-
-void ClassInstCanvas::set_name(const QString & s) {
-  iname = s;
-}
-
-BrowserNode * ClassInstCanvas::get_type() const {
-  return cl;
-}
-
-BrowserNodeList & ClassInstCanvas::get_types(BrowserNodeList & r) const {
-  return BrowserClass::instances(r);
-}
-
-void ClassInstCanvas::set_type(BrowserNode * t) {
-  set_type((BrowserClass *) t);
+  BrowserNode * cl = get_type();
+  QString iname = get_name();
+  
+  if (iname.isEmpty())
+    return cl->get_name();
+  else
+    return iname + ":" + cl->get_name();
 }
 
 BrowserNode * ClassInstCanvas::new_type() {
-  BrowserNode * container = the_diagram()->container(UmlClass);
+  BrowserNode * bn = container(UmlClass);
   
-  return (container->is_writable()) ? BrowserClass::add_class(container) : 0;
+  return (bn->is_writable()) ? BrowserClass::add_class(bn) : 0;
 }
 
 bool ClassInstCanvas::new_type_available() {
-  BrowserNode * container = the_diagram()->container(UmlClass);
-  
-  return container->is_writable();
+  return container(UmlClass)->is_writable();
 }
 
-void ClassInstCanvas::compute_size(int & w, int & h, UmlCanvas * canvas, bool as_class) {
+void ClassInstCanvas::compute_size(int & w, int & h, UmlCanvas * canvas) {
+  BrowserNode * cl = get_type();
+  QString iname = get_name();
+  
   used_color = (itscolor == UmlDefaultColor)
     ? canvas->browser_diagram()->get_color(UmlClass)
     : itscolor;
-  
+    
   QFontMetrics fm(canvas->get_font(UmlNormalUnderlinedFont));
   double zoom = canvas->zoom();
   int minw = (int) (zoom * CLASSINST_CANVAS_MIN_SIZE);
@@ -95,44 +84,25 @@ void ClassInstCanvas::compute_size(int & w, int & h, UmlCanvas * canvas, bool as
   h = fm.height() + delta;
   horiz = TRUE;
   
-  if (cl != 0) {
-    const char * stereotype = 
-      (as_class) ? "" : cl->get_data()->get_stereotype();
+  if (!iname.isEmpty()) {
+    switch (write_horizontally) {
+    case UmlYes:
+      horiz = TRUE;
+      break;
+    case UmlNo:
+      horiz = FALSE;
+      break;
+    default:
+      // right get_classinstwritehorizontally arg set by the diagram itself
+      horiz = canvas->browser_diagram()->get_classinstwritehorizontally(UmlCodeSup);
+    }
+  }
+  
+  if (used_color != UmlTransparent) {
+    const int shadow = canvas->shadow();
     
-    if (!strcmp(stereotype, "entity")) {
-      minw = (int) (CONTROL_WIDTH * zoom);
-      h += ENTITY_SIZE;
-    }
-    else if (!strcmp(stereotype, "control")) {
-      minw = (int) (CONTROL_WIDTH * zoom);
-      h += CONTROL_HEIGHT;
-    }
-    else if (!strcmp(stereotype, "boundary")) {
-      minw = (int) (BOUNDARY_WIDTH * zoom);
-      h += BOUNDARY_HEIGHT;
-    }
-    else {
-      if (!get_name().isEmpty()) {
-	switch (write_horizontally) {
-	case UmlYes:
-	  horiz = TRUE;
-	  break;
-	case UmlNo:
-	  horiz = FALSE;
-	  break;
-	default:
-	  // right get_classinstwritehorizontally arg set by the diagram itself
-	  horiz = canvas->browser_diagram()->get_classinstwritehorizontally(UmlCodeSup);
-	}
-      }
-      
-      if (used_color != UmlTransparent) {
-	const int shadow = canvas->shadow();
-	
-	delta += shadow;
-	h += shadow;
-      }
-    }
+    delta += shadow;
+    h += shadow;
   }
   
   if (horiz)
@@ -140,7 +110,7 @@ void ClassInstCanvas::compute_size(int & w, int & h, UmlCanvas * canvas, bool as
   else {
     h += fm.height();
     
-    int wi = fm.width(get_name() + ":");
+    int wi = fm.width(iname + ":");
     
     w = fm.width(cl->get_name());
     if (wi > w)
@@ -152,77 +122,65 @@ void ClassInstCanvas::compute_size(int & w, int & h, UmlCanvas * canvas, bool as
     w = minw;
 }
 
-void ClassInstCanvas::draw(QPainter & p, UmlCanvas * canvas, QRect r, bool as_class) {
+void ClassInstCanvas::draw(QPainter & p, UmlCanvas * canvas, QRect r) {
+  BrowserNode * cl = get_type();
+  QString iname = get_name();
+  
   QColor bckgrnd = p.backgroundColor();
 
-  p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
+  p.setBackgroundMode((used_color == UmlTransparent)
+		      ? QObject::TransparentMode :
+		      QObject::OpaqueMode);
 
   FILE * fp = svg();
 
   if (fp != 0)
     fputs("<g>\n", fp);
   
-  const char * stereotype = 
-    (cl && !as_class) ? cl->get_data()->get_stereotype() : "";
+  QColor co = color(used_color);
   
-  if (!strcmp(stereotype, "entity")) {
-    DiagramCanvas::draw_entity_icon(p, r, used_color, canvas->zoom());
-    r.setTop(r.top() + ENTITY_SIZE);
-  }
-  else if (!strcmp(stereotype, "control")) {
-    DiagramCanvas::draw_control_icon(p, r, used_color, canvas->zoom());
-    r.setTop(r.top() + CONTROL_HEIGHT);
-  }
-  else if (!strcmp(stereotype, "boundary")) {
-    DiagramCanvas::draw_boundary_icon(p, r, used_color, canvas->zoom());
-    r.setTop(r.top() + BOUNDARY_HEIGHT);
-  }
-  else {
-    QColor co = color(used_color);
-
-    p.setBackgroundColor(co);
+  p.setBackgroundColor(co);
   
-    if (used_color != UmlTransparent) {
-      const int shadow = canvas->shadow();
+  if (used_color != UmlTransparent) {
+    const int shadow = canvas->shadow();
+    
+    if (shadow != 0) {
+      r.setRight(r.right() - shadow);
+      r.setBottom(r.bottom() - shadow);
       
-      if (shadow != 0) {
-	r.setRight(r.right() - shadow);
-	r.setBottom(r.bottom() - shadow);
+      p.fillRect (r.right(), r.top() + shadow,
+		  shadow, r.height() - 1,
+		  QObject::darkGray);
+      p.fillRect (r.left() + shadow, r.bottom(),
+		  r.width() - 1, shadow,
+		  QObject::darkGray);
+      
+      p.fillRect(r, co);
+      
+      if (fp != 0) {
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		QObject::darkGray.rgb()&0xffffff,
+		r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
 	
-	p.fillRect (r.right(), r.top() + shadow,
-		    shadow, r.height() - 1,
-		    QObject::darkGray);
-	p.fillRect (r.left() + shadow, r.bottom(),
-		    r.width() - 1, shadow,
-		    QObject::darkGray);
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		QObject::darkGray.rgb()&0xffffff,
+		r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
 	
-	p.fillRect(r, co);
-
-	if (fp != 0) {
-	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
-		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		  QObject::darkGray.rgb()&0xffffff,
-		  r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
-
-	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
-		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		  QObject::darkGray.rgb()&0xffffff,
-		  r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
-
-	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		  co.rgb()&0xffffff, 
-		  r.x(), r.y(), r.width() - 1, r.height() - 1);
-	}
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		co.rgb()&0xffffff, 
+		r.x(), r.y(), r.width() - 1, r.height() - 1);
       }
     }
-    else if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-    
-    p.drawRect(r);
   }
+  else if (fp != 0)
+    fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	    r.x(), r.y(), r.width() - 1, r.height() - 1);
+  
+  p.drawRect(r);
   
   p.setBackgroundMode(QObject::TransparentMode);
   p.setFont(canvas->get_font(UmlNormalUnderlinedFont));
@@ -236,9 +194,9 @@ void ClassInstCanvas::draw(QPainter & p, UmlCanvas * canvas, QRect r, bool as_cl
     QRect r1 = r;
     
     r1.setHeight(r.height()/2);
-    p.drawText(r1, QObject::AlignCenter, get_name() + ":");
+    p.drawText(r1, QObject::AlignCenter, iname + ":");
     if (fp != 0)
-      draw_text(r1, QObject::AlignCenter, get_name() + ":",
+      draw_text(r1, QObject::AlignCenter, iname + ":",
 		p.font(), fp);
     r1.moveBy(0, r.height()/2);
     p.drawText(r1, QObject::AlignCenter, cl->get_name());
@@ -251,5 +209,26 @@ void ClassInstCanvas::draw(QPainter & p, UmlCanvas * canvas, QRect r, bool as_cl
 
   if (fp != 0)
     fputs("</g>\n", fp);
+}
+
+void ClassInstCanvas::save(QTextStream & st) const {
+  if (itscolor != UmlDefaultColor)
+    st << " color " << stringify(itscolor);
+  if (write_horizontally != UmlDefaultState)
+    st << " write_horizontally " << stringify(write_horizontally);
+}
+
+void ClassInstCanvas::read(char *& st, char *& k) {
+  itscolor = UmlDefaultColor;
+  
+  k = read_keyword(st);
+  read_color(st, "color", itscolor, k);	// updates k
+  
+  if (!strcmp(k, "write_horizontally")) {
+    write_horizontally = state(read_keyword(st));
+    k = read_keyword(st);
+  }
+  else
+    write_horizontally = UmlDefaultState;
 }
 

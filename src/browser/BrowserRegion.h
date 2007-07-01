@@ -65,6 +65,7 @@ class BrowserRegion : public BrowserNode, public Labeled<BrowserRegion> {
     virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual void modified();
     virtual BasicData * get_data() const;
     virtual BrowserNode * duplicate(BrowserNode * p,

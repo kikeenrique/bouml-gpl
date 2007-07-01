@@ -571,7 +571,7 @@ void Class::manage_member(QCString s, aVisibility visibility,
       QCString typeform = "${type}";
       
       if (CppSettings::umlType(type).isEmpty() &&
-	  (modifier.isEmpty() || (modifier == "*")) &&
+	  (modifier.isEmpty() || (modifier == "*") || (modifier == "&")) &&
 	  bitfield.isEmpty() &&
 	  !typenamep &&
 	  (compute_type(type, dest_type, typeform, TRUE), dest_type.type != 0) &&
@@ -1307,9 +1307,6 @@ bool Class::set_stereotype(const QCString & st) {
   return TRUE;
 }
 
-#ifdef DEBUG_BOUML
-#warning UTILE ?
-#endif
 Class * Class::declare_if_needed(const QCString & name,
 				 QCString stereotype) {
   Class * result = 
@@ -1321,9 +1318,6 @@ Class * Class::declare_if_needed(const QCString & name,
   return result;
 }
 
-#ifdef DEBUG_BOUML
-#warning UTILE ?
-#endif
 void Class::declare_if_needed(QCString name, Class * cl) {
   BrowserNode * p = (BrowserNode *) parent();
   

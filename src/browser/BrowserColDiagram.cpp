@@ -62,7 +62,7 @@ BrowserColDiagram::BrowserColDiagram(int id)
 }
 
 BrowserColDiagram::BrowserColDiagram(BrowserColDiagram * model, BrowserNode * p)
-    : BrowserDiagram(p->child_random_name("Diagram"), p, 0), window(0) {
+    : BrowserDiagram(p->get_name(), p, 0), window(0) {
   def = new SimpleData(model->def);
   def->set_browser_node(this);
   comment = model->comment;
@@ -112,6 +112,17 @@ void BrowserColDiagram::make() {
   fragment_color = UmlDefaultColor;
   package_color = UmlDefaultColor;
   class_instance_color = UmlDefaultColor;
+}
+
+BrowserColDiagram * BrowserColDiagram::add_collaboration_diagram(BrowserNode * future_parent)
+{
+  QString name;
+  
+  if (future_parent->enter_child_name(name, "enter collaboration diagram's name : ",
+				      UmlColDiagram, TRUE, FALSE))
+    return new BrowserColDiagram(name, future_parent);
+  else
+    return 0;
 }
 
 void BrowserColDiagram::set_name(const char * s) {
@@ -261,11 +272,13 @@ void BrowserColDiagram::exec_menu_choice(int rank,
     return;
   case 3:
     {
-      BrowserColDiagram * cd =
-	new BrowserColDiagram(this, (BrowserNode *) parent());
+      QString name;
       
-      cd->select_in_browser();
-      cd->edit("Collaboration diagram", its_default_stereotypes);
+      if (((BrowserNode *)parent())->enter_child_name(name, "enter collaboration diagram's name : ",
+						      UmlColDiagram, TRUE, FALSE))
+	duplicate((BrowserNode *) parent(), name)->select_in_browser();
+      else
+	return;
     }
     break;
   case 4:
@@ -361,6 +374,10 @@ void BrowserColDiagram::read_session(char * & st) {
 
 UmlCode BrowserColDiagram::get_type() const {
   return UmlColDiagram;
+}
+
+int BrowserColDiagram::get_identifier() const {
+  return get_ident();
 }
 
 void BrowserColDiagram::get_collaborationdiagramsettings(CollaborationDiagramSettings & r) const {
@@ -467,14 +484,6 @@ bool BrowserColDiagram::tool_cmd(ToolCom * com, const char * args) {
     return (def->tool_cmd(com, args, this, comment) ||
 	    BrowserNode::tool_cmd(com, args));
   }
-}
-
-void BrowserColDiagram::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserColDiagram::DropEvent(QDropEvent * e) {
-  ((BrowserNode *) parent())->DropAfterEvent(e, this);
 }
 
 void BrowserColDiagram::save_stereotypes(QTextStream & st)

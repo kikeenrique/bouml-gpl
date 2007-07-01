@@ -32,5 +32,6 @@ void UmlParameterSet::html(QCString, unsigned int, unsigned int) {
   }
 
   unload(FALSE, FALSE);
+
 }
 

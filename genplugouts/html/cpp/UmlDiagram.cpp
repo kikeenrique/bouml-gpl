@@ -9,7 +9,7 @@ void UmlDiagram::html(QCString, unsigned int, unsigned int) {
 
   QCString s;
   
-  s.setNum(++fig_rank);
+  s.setNum(getIdentifier());
   s = "fig" + s + ((svg) ? ".svg" : ".png");
   saveIn(directory + s);
   
@@ -61,6 +61,4 @@ void UmlDiagram::html(QCString, unsigned int, unsigned int) {
 
   unload(FALSE, FALSE);
 }
-
-int UmlDiagram::fig_rank;
 

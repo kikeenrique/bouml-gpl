@@ -73,7 +73,7 @@ void DeploymentNodeCanvas::deleted() {
   canvas()->update();
 }
 
-const QString & DeploymentNodeCanvas::get_name() const {
+QString DeploymentNodeCanvas::get_name() const {
   return iname;
 }
 

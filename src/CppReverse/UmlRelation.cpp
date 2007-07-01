@@ -107,13 +107,16 @@ bool UmlRelation::new_one(UmlClass * cl, const QCString & name,
   else {
     if (!array.isEmpty())
       rel->set_Multiplicity(array);
-    decl = CppSettings::relationDecl(modifier.isEmpty(), array);
+    decl = CppSettings::relationDecl(modifier != "*", array);
     
     int index;
     
     if (!pretype.isEmpty() &&
 	((index = decl.find("${type}")) != 0))
       decl.insert(index, pretype + " ");
+    
+    if ((modifier == "&") && ((index = decl.find("${type}")) != 0))
+      decl.insert(index + 7, " &");
   }
   
   if (! value.isEmpty()) {

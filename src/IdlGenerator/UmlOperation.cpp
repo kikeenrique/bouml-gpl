@@ -59,7 +59,7 @@ static bool generate_type(const QValueList<UmlParameter> & params,
   if (rank >= params.count())
     return FALSE;
   
-  f << IdlSettings::type(params[rank].type.toString());
+  UmlClass::write(f, params[rank].type);
   return TRUE;
 }
 
@@ -167,7 +167,7 @@ void UmlOperation::generate_decl(QTextOStream & f,
       }
       else if (!strncmp(p, "${type}", 7)) {
 	p += 7;
-	f << IdlSettings::type(returnType().toString());
+	UmlClass::write(f, returnType());
       }
       else if (!strncmp(p, "${name}", 7)) {
 	p += 7;

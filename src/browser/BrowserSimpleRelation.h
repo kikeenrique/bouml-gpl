@@ -58,6 +58,7 @@ class BrowserSimpleRelation : public BrowserNode, public Labeled<BrowserSimpleRe
     virtual void open(bool);
     virtual bool in_edition() const;
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual void modified();
     virtual BasicData * get_data() const;
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
@@ -81,8 +82,6 @@ class BrowserSimpleRelation : public BrowserNode, public Labeled<BrowserSimpleRe
     static QString drag_key(BrowserNode * p);
     virtual QString drag_key() const;
     virtual QString drag_postfix() const;
-    virtual void DragMoveEvent(QDragMoveEvent * e);
-    virtual void DropEvent(QDropEvent * e);
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
 };
 

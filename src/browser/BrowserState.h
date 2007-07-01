@@ -63,7 +63,6 @@ class BrowserState : public BrowserNode, public Labeled<BrowserState> {
     static BrowserState * add_state(BrowserNode * future_parent, bool machine);
     static BrowserState * add_state(BrowserNode * future_parent, const char * name);
     static BrowserState * get_state(BrowserNode * parent);
-    void add_state_diagram();
     BrowserTransition * add_transition(BrowserNode * end);
     virtual BasicData * add_relation(UmlCode, BrowserNode * end);
     
@@ -73,6 +72,7 @@ class BrowserState : public BrowserNode, public Labeled<BrowserState> {
     virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual void modified();
     virtual void on_delete();
     virtual BasicData * get_data() const;

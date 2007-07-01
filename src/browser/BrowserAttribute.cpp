@@ -37,6 +37,7 @@
 #include "AttributeData.h"
 #include "ClassData.h"
 #include "BrowserActivityAction.h"
+#include "BrowserClassInstance.h"
 #include "UmlPixmap.h"
 #include "UmlGlobal.h"
 #include "myio.h"
@@ -359,6 +360,10 @@ UmlCode BrowserAttribute::get_type() const {
   return UmlAttribute;
 }
 
+int BrowserAttribute::get_identifier() const {
+  return get_ident();
+}
+
 BasicData * BrowserAttribute::get_data() const {
   return def;
 }
@@ -410,19 +415,12 @@ void BrowserAttribute::compute_referenced_by(QList<BrowserNode> & l,
 void BrowserAttribute::referenced_by(QList<BrowserNode> & l) {
   BrowserNode::referenced_by(l);
   BrowserActivityAction::compute_referenced_by(l, this);
+  BrowserClassInstance::compute_referenced_by(l, this);
 }
 
 bool BrowserAttribute::tool_cmd(ToolCom * com, const char * args) {
   return (def->tool_cmd(com, args, this, comment) ||
 	  BrowserNode::tool_cmd(com, args));
-}
-
-void BrowserAttribute::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserAttribute::DropEvent(QDropEvent * e) {
-  DropAfterEvent(e, 0);
 }
 
 void BrowserAttribute::DropAfterEvent(QDropEvent * e, BrowserNode * after) {

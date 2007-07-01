@@ -56,7 +56,7 @@ void UmlClass::html() {
   
   UmlCom::message(name());
   
-  start_file("class" + s.setNum(refId), "Class " + name(), TRUE);
+  start_file("class" + s.setNum((unsigned) getIdentifier()), "Class " + name(), TRUE);
   define();
   gen_html("", 0, 0);
   end_file();
@@ -229,17 +229,17 @@ void UmlClass::gen_html(QCString pfix, unsigned int rank, unsigned int level) {
 }
 
 void UmlClass::write() {
-  if (refId == 0)
+  if (!known)
     writeq(name());
   else {
     if (flat)
       fw.write("<a href=\"index");
     else {
       fw.write("<a href=\"class");
-      fw.write(refId);
+      fw.write((unsigned) getIdentifier());
     }
-    fw.write(".html#ref");
-    fw.write(refId);
+    fw.write(".html#refclass");
+    fw.write((unsigned) getIdentifier());
     fw.write("\"><b>");
     writeq(name());
     fw.write("</b></a>");
@@ -247,15 +247,15 @@ void UmlClass::write() {
 }
 
 void UmlClass::write(QCString target) {
-  if (refId != 0) {
+  if (known) {
     if (flat)
       fw.write("<a href=\"index");
     else {
       fw.write("<a href=\"class");
-      fw.write(refId);
+      fw.write((unsigned) getIdentifier());
     }
-    fw.write(".html#ref");
-    fw.write(refId);
+    fw.write(".html#refclass");
+    fw.write((unsigned) getIdentifier());
     fw.write("\" target = \"");
     fw.write(target);
     fw.write("\"><b>");

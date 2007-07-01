@@ -203,3 +203,32 @@ void UmlClass::generate_decl(QTextOStream &, const QCString &) {
   UmlCom::trace(QCString("<font color=\"red\"><b>Embedded class <it>")
 		+ name() + "</it> not generated</b></font><br>");
 }
+
+void UmlClass::write(QTextOStream & f, const UmlTypeSpec & t)
+{
+  if (t.type != 0)
+    t.type->write(f);
+  else
+    f << IdlSettings::type(t.explicit_type);
+}
+
+void UmlClass::write(QTextOStream & f) {
+  if (isIdlExternal()) {
+    QCString s = idlDecl();
+    int index = s.find('\n');
+    
+    s = (index == -1) ? s.stripWhiteSpace()
+		      : s.left(index).stripWhiteSpace();
+    
+    if ((index = s.find("${name}")) != -1)
+      s.replace(index, 7, name());
+    else if ((index = s.find("${Name}")) != -1)
+      s.replace(index, 7, capitalize(name()));
+    else if ((index = s.find("${NAME}")) != -1)
+      s.replace(index, 7, name().upper());
+    
+    f << s;
+  }
+  else 
+    f << name();	// true_name
+}

@@ -78,6 +78,7 @@ class BrowserRelation : public BrowserNode, public Labeled<BrowserRelation> {
     virtual void open(bool);
     virtual bool in_edition() const;
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual void modified();
     virtual BasicData * get_data() const;
     virtual bool same_name(const QString & s, UmlCode type) const;
@@ -96,11 +97,13 @@ class BrowserRelation : public BrowserNode, public Labeled<BrowserRelation> {
     static BrowserRelation * temporary(RelationData * d);
     static BrowserNode * get_it(const char * k, int id);
     static void post_load(QList<BrowserRelation> & wrong);
+    void unvalidate();
     
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
     
+    virtual void referenced_by(QList<BrowserNode> &);
     static void compute_referenced_by(QList<BrowserNode> &, BrowserClass *);
     
     virtual bool tool_cmd(ToolCom * com, const char * args);
@@ -108,8 +111,6 @@ class BrowserRelation : public BrowserNode, public Labeled<BrowserRelation> {
     static QString drag_key(BrowserNode * p);
     virtual QString drag_key() const;
     virtual QString drag_postfix() const;
-    virtual void DragMoveEvent(QDragMoveEvent * e);
-    virtual void DropEvent(QDropEvent * e);
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
 };
 

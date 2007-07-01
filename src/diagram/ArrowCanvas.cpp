@@ -40,9 +40,11 @@
 #include "CdClassCanvas.h"
 #include "BrowserDiagram.h"
 #include "StereotypeDialog.h"
+#include "DialogUtil.h"
 #include "myio.h"
 #include "MenuTitle.h"
 #include "DiagramView.h"
+#include "UmlPixmap.h"
 
 #include "geometry_hv.xpm"
 #include "geometry_vh.xpm"
@@ -150,7 +152,6 @@ void ArrowCanvas::update_pos() {
   const int dy = beginp.y() - endp.y();
   
   if ((dx == 0) && (dy == 0)) {
-    // to not produce crash inside Qt (?)
     boundings.setPoint(0, beginp.x(), beginp.y());
     boundings.setPoint(1, beginp.x() + 1, beginp.y());
     boundings.setPoint(2, beginp.x() + 1, beginp.y() + 1);
@@ -204,12 +205,20 @@ void ArrowCanvas::update_pos() {
     }
     break;
   default:
-    arrow[0].setX((int) (endp.x() - deltax - deltay));
-    arrow[0].setY((int) (endp.y() - deltay + deltax));
-    arrow[1].setX((int) (endp.x() + deltax - deltay));
-    arrow[1].setY((int) (endp.y() + deltay + deltax));
-    arrow[2].setX((int) (endp.x() - deltay));	// pour generalize
-    arrow[2].setY((int) (endp.y() + deltax));
+    if (itstype == UmlInner) {
+      arrow[0].setX((int) (endp.x() - deltay));
+      arrow[0].setY((int) (endp.y() + deltax));
+      arrow[1].setX((int) (endp.x() - deltay - deltay));
+      arrow[1].setY((int) (endp.y() + deltax + deltax));
+    }
+    else {
+      arrow[0].setX((int) (endp.x() - deltax - deltay));
+      arrow[0].setY((int) (endp.y() - deltay + deltax));
+      arrow[1].setX((int) (endp.x() + deltax - deltay));
+      arrow[1].setY((int) (endp.y() + deltay + deltax));
+      arrow[2].setX((int) (endp.x() - deltay));
+      arrow[2].setY((int) (endp.y() + deltax));
+    }
   }
   
   if (begin->type() != UmlArrowPoint) {  
@@ -490,9 +499,41 @@ void ArrowCanvas::drawShape(QPainter & p) {
       if (fp != 0)
 	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
 		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
-		beginp.x(), beginp.y(),endp.x(), endp.y());
+		beginp.x(), beginp.y(), endp.x(), endp.y());
     }
     break;
+  case UmlInner:
+    if (end->type() != UmlArrowPoint) {
+      p.drawLine(beginp, arrow[1]);
+      p.drawPixmap(QPoint(arrow[0].x() - ARROW_LENGTH/2,
+			  arrow[0].y() - ARROW_LENGTH/2),
+		   *innerPixmap);
+
+      if (fp != 0) {
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		beginp.x(), beginp.y(), arrow[1].x(), arrow[1].y());
+	fprintf(fp, "<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" cx=\"%d\" cy=\"%d\" rx=\"%g\" ry=\"%g\" />\n",
+		arrow[0].x(), arrow[0].y(),
+		ARROW_LENGTH/2.0, ARROW_LENGTH/2.0);
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%g\" y1=\"%d\" x2=\"%g\" y2=\"%d\" />\n",
+		arrow[0].x() - ARROW_LENGTH/2.0, arrow[0].y(),
+		arrow[0].x() + ARROW_LENGTH/2.0, arrow[0].y());
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%g\" x2=\"%d\" y2=\"%g\" />\n",
+		arrow[0].x(), arrow[0].y() - ARROW_LENGTH/2.0,
+		arrow[0].x(), arrow[0].y() + ARROW_LENGTH/2.0);
+      }
+    }
+    else {
+      p.drawLine(beginp, endp);
+
+      if (fp != 0)
+	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		beginp.x(), beginp.y(),endp.x(), endp.y());
+    }
   default:	// to avoid compiler warning
     break;
   }
@@ -525,6 +566,37 @@ BasicData * ArrowCanvas::get_data() const {
 
 void ArrowCanvas::delete_available(bool &, bool & out_model) const {
   out_model |= TRUE;
+}
+
+void ArrowCanvas::remove(bool) {
+  if (itstype == UmlInner) {
+    if (the_canvas()->must_draw_all_relations()) {
+      const ArrowCanvas * a = this;
+  
+      while (a->begin->type() == UmlArrowPoint) {
+	a = ((ArrowPointCanvas *) a->begin)->get_other(a);
+	if (a == 0)
+	  break;
+      }
+
+      if (a && !a->begin->isSelected() && !a->begin->get_bn()->deletedp()) {
+	a = this;
+  
+	while (a->end->type() == UmlArrowPoint) {
+	  a = ((ArrowPointCanvas *) a->end)->get_other(a);
+	  if (a == 0)
+	    break;
+	}
+  
+	if (a && !a->end->isSelected() && !a->end->get_bn()->deletedp()) {
+	  msg_warning("Bouml", "<i>Draw all relations</i> forced to <i>no</i>");
+	  the_canvas()->dont_draw_all_relations();
+	}
+      }
+    }
+  }
+
+  delete_it();
 }
 
 QRect ArrowCanvas::rect() const {
@@ -646,7 +718,8 @@ void ArrowCanvas::open() {
     BrowserNode * bn = get_start()->get_bn();
 
     if ((bn != 0) &&
-	edit(bn->default_stereotypes(itstype), plabel, pstereotype)) {
+	edit(bn->default_stereotypes(itstype, get_end()->get_bn()),
+	     plabel, pstereotype)) {
       canvas()->update();
       package_modified();
     }
@@ -733,7 +806,7 @@ void ArrowCanvas::menu(const QPoint&) {
     default_stereotype_position();
     break;
   case 6:
-    delete_it();
+    remove(FALSE);
     break;
   default:
     if (choice >= 10) {
@@ -808,6 +881,7 @@ void ArrowCanvas::extremities(DiagramItem *& b, DiagramItem *& e) const {
   b = begin;
   e = end;
 }
+
 // search label & stereotype supports
 void ArrowCanvas::search_supports(ArrowCanvas *& plabel, 
 				  ArrowCanvas *& pstereotype) const {
@@ -835,6 +909,26 @@ void ArrowCanvas::search_supports(ArrowCanvas *& plabel,
   
   if (p->label != 0) plabel = (ArrowCanvas *) p;
   if (p->stereotype != 0) pstereotype = (ArrowCanvas *) p;
+}
+
+// reverse line, warning caller must call update_pos() after
+void ArrowCanvas::reverse() {
+  ArrowCanvas * a = this;
+  
+  while (a->begin->type() == UmlArrowPoint)
+    a = (ArrowCanvas *) ((ArrowPointCanvas *) a->begin)->get_other(a);
+    
+  for (;;) {
+    DiagramItem * di = a->begin;
+	
+    a->begin = a->end;
+    a->end = di;
+    
+    if (a->begin->type() != UmlArrowPoint)
+      break;
+    
+    a = (ArrowCanvas *) ((ArrowPointCanvas *) a->begin)->get_other(a);
+  } 
 }
 
 ArrowPointCanvas * ArrowCanvas::brk(const QPoint & p) {

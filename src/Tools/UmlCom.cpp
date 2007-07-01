@@ -28,7 +28,7 @@ bool UmlCom::connect(unsigned int port)
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(30);
+    write_unsigned(30); // au dela chercher les #ifdef HAS_MODELER_ID
     flush();
     return TRUE;
   }

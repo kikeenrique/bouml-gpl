@@ -211,6 +211,69 @@ void ClassData::update_actuals() {
     actuals = new_actuals;
     browser_node->package_modified();
   }
+  
+  // note : even if actuals == new_actuals to take
+  // into account change in already existing formal and actual
+  emit actuals_changed();
+}
+
+void ClassData::get_actuals(QList<ActualParamData> & l, BrowserClass * parent) {
+  if (((BrowserNode *) parent->parent())->get_type() == UmlClass)
+    get_actuals(l, (BrowserClass * ) parent->parent());
+  
+  ActualParamData * actual;
+  int n = ((ClassData *) parent->get_data())->nformals;
+  
+  if (n != 0) {
+    // search the first associated actual
+    for (actual = actuals.first(); actual != 0; actual = actuals.next()) {
+      if ((actual->get_class() == parent) &&
+	  (l.findRef(actual) == -1))
+	// find;
+	break;
+    }
+    
+    int nth = 0;
+    
+    // progress on still present formals
+    while (actual && (nth < n) && (actual->get_class() == parent)) {
+      // actual ok
+      l.append(actual);
+      
+      actual = actuals.next();
+      nth += 1;
+    }
+  }
+}
+
+// returns the actuals forms associated to inheritence of 'parent'
+QString ClassData::get_actuals(BrowserClass * parent) {
+  QList<ActualParamData> l;
+  
+  get_actuals(l, parent);
+  
+  QList<BrowserNode> parents = parent->parents();
+
+  for (parent = (BrowserClass *) parents.first();
+       parent != 0;
+       parent = (BrowserClass *) parents.next())
+    get_actuals(l, parent);
+  
+  QString s;  
+  const char * sep = "<";
+  ActualParamData * actual;
+  QString arrow = "->";
+  
+  for (actual = l.first(); actual != 0; actual = l.next()) {
+    QString v = actual->get_value().get_type();
+    
+    if (!v.isEmpty()) {
+      s += sep + actual->get_name(FALSE) + arrow + v;
+      sep = ", ";
+    }
+  }
+
+  return (s.isEmpty()) ? s : s + ">";
 }
 
 const char * ClassData::get_formalparam_type(int rank) const {

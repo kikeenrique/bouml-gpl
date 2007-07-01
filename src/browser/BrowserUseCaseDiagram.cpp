@@ -63,7 +63,7 @@ BrowserUseCaseDiagram::BrowserUseCaseDiagram(int id)
 }
 
 BrowserUseCaseDiagram::BrowserUseCaseDiagram(BrowserUseCaseDiagram * model, BrowserNode * p)
-    : BrowserDiagram(p->child_random_name("Diagram"), p, 0), window(0) {
+    : BrowserDiagram(p->get_name(), p, 0), window(0) {
   def = new SimpleData(model->def);
   def->set_browser_node(this);
   comment = model->comment;
@@ -115,6 +115,17 @@ void BrowserUseCaseDiagram::make() {
   package_color = UmlDefaultColor;
   fragment_color = UmlDefaultColor;
   subject_color = UmlDefaultColor;
+}
+
+BrowserUseCaseDiagram * BrowserUseCaseDiagram::add_use_case_diagram(BrowserNode * future_parent)
+{
+  QString name;
+  
+  if (future_parent->enter_child_name(name, "enter use case diagram's name : ",
+				      UmlUseCaseDiagram, TRUE, FALSE))
+    return new BrowserUseCaseDiagram(name, future_parent);
+  else
+    return 0;
 }
 
 void BrowserUseCaseDiagram::set_name(const char * s) {
@@ -263,11 +274,13 @@ void BrowserUseCaseDiagram::exec_menu_choice(int rank,
     return;
   case 3:
     {
-      BrowserUseCaseDiagram * ucd
-	= new BrowserUseCaseDiagram(this, (BrowserNode *) parent());
+      QString name;
       
-      ucd->select_in_browser();
-      ucd->edit("Use Case diagram", its_default_stereotypes);
+      if (((BrowserNode *)parent())->enter_child_name(name, "enter use case diagram's name : ",
+						      UmlUseCaseDiagram, TRUE, FALSE))
+	duplicate((BrowserNode *) parent(), name)->select_in_browser();
+      else
+	return;
     }
     break;
   case 4:
@@ -362,6 +375,10 @@ void BrowserUseCaseDiagram::read_session(char * & st) {
 
 UmlCode BrowserUseCaseDiagram::get_type() const {
   return UmlUseCaseDiagram;
+}
+
+int BrowserUseCaseDiagram::get_identifier() const {
+  return get_ident();
 }
 
 void BrowserUseCaseDiagram::get_usecasediagramsettings(UseCaseDiagramSettings & r) const {
@@ -475,14 +492,6 @@ bool BrowserUseCaseDiagram::tool_cmd(ToolCom * com, const char * args) {
     return (def->tool_cmd(com, args, this, comment) ||
 	    BrowserNode::tool_cmd(com, args));
   }
-}
-
-void BrowserUseCaseDiagram::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserUseCaseDiagram::DropEvent(QDropEvent * e) {
-  ((BrowserNode *) parent())->DropAfterEvent(e, this);
 }
 
 void BrowserUseCaseDiagram::save_stereotypes(QTextStream & st)

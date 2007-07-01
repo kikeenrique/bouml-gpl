@@ -357,6 +357,10 @@ UmlCode BrowserPin::get_type() const {
   return UmlActivityPin;
 }
 
+int BrowserPin::get_identifier() const {
+  return get_ident();
+}
+
 BasicData * BrowserPin::get_data() const {
   return def;
 }
@@ -418,14 +422,6 @@ bool BrowserPin::tool_cmd(ToolCom * com, const char * args) {
     return (def->tool_cmd(com, args, this, comment) ||
 	    BrowserNode::tool_cmd(com, args));
   }
-}
-
-void BrowserPin::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserPin::DropEvent(QDropEvent * e) {
-  DropAfterEvent(e, 0);
 }
 
 void BrowserPin::DropAfterEvent(QDropEvent * e, BrowserNode * after) {

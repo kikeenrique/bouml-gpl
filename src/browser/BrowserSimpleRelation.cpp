@@ -198,10 +198,14 @@ Note that you can undelete it after");
       m.insertItem("Tool", &toolm);
     }
   }
-  else if (!is_read_only && (edition_number == 0))
+  else if (!is_read_only && (edition_number == 0)) {
     m.setWhatsThis(m.insertItem("Undelete", 3),
 		   "undelete the <em>relation</em> \
 (except if the other side is also deleted)");
+    if (def->get_start_node()->deletedp() ||
+	def->get_end_node()->deletedp())
+      m.setItemEnabled(3, FALSE);
+  }
   
   exec_menu_choice(m.exec(QCursor::pos()));
 }
@@ -276,6 +280,10 @@ UmlCode BrowserSimpleRelation::get_type() const {
   return def->get_type();
 }
 
+int BrowserSimpleRelation::get_identifier() const {
+  return get_ident();
+}
+
 BasicData * BrowserSimpleRelation::get_data() const {
   return def;
 }
@@ -295,14 +303,6 @@ void BrowserSimpleRelation::write_id(ToolCom * com) {
 bool BrowserSimpleRelation::tool_cmd(ToolCom * com, const char * args) {
   return (def->tool_cmd(com, args, this, comment) ||
 	  BrowserNode::tool_cmd(com, args));
-}
-
-void BrowserSimpleRelation::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserSimpleRelation::DropEvent(QDropEvent * e) {
-  DropAfterEvent(e, 0);
 }
 
 void BrowserSimpleRelation::DropAfterEvent(QDropEvent * e, BrowserNode * after) {

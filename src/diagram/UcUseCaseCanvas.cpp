@@ -224,12 +224,28 @@ void UcUseCaseCanvas::open() {
   browser_node->open(FALSE);
 }
 
+void UcUseCaseCanvas::update_name() {
+  QString oldname = label->get_name();
+  const char * st = browser_node->get_data()->get_stereotype();
+  QString newname;
+  
+  if ((*st == 0) || !strcmp(st, "realization"))
+    newname = browser_node->get_name();
+  else
+    newname = QString("<<") + st + QString(">>\n") + browser_node->get_name();
+  
+  if (newname != oldname) {
+    label->set_name(newname);
+    label->recenter();
+  }
+}
+
 void UcUseCaseCanvas::modified() {
   used_color = (itscolor == UmlDefaultColor)
     ? the_canvas()->browser_diagram()->get_color(UmlUseCase)
     : itscolor;
   
-  label->set_name(browser_node->get_name());
+  update_name();
   
   // force son reaffichage
   hide();
@@ -498,6 +514,7 @@ UcUseCaseCanvas * UcUseCaseCanvas::read(char * & st, UmlCanvas * canvas, char * 
     else if (strcmp(k, "label_xy"))
       wrong_keyword(k, "label_xy/label_xyz");
     
+    result->update_name();
     result->show();
     return result;
   }

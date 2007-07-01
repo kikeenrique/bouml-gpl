@@ -40,6 +40,7 @@
 #include "DiagramView.h"
 #include "BrowserRelation.h"
 #include "BrowserClass.h"
+#include "ClassData.h"
 #include "RelationData.h"
 #include "UmlWindow.h"
 #include "UmlGlobal.h"
@@ -63,6 +64,8 @@ RelationCanvas::RelationCanvas(UmlCanvas * canvas, DiagramItem * b,
   else if (d != 0) {
     connect(d, SIGNAL(changed()), this, SLOT(modified()));
     connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
+    connect(br_begin->get_data(), SIGNAL(actuals_changed()),
+	    this, SLOT(actuals_modified()));
   }
   
   // manages the case start == end
@@ -78,6 +81,8 @@ RelationCanvas::~RelationCanvas() {
 
 void RelationCanvas::delete_it() {
   disconnect(data, 0, this, 0);
+  disconnect(br_begin->get_data(), SIGNAL(actuals_changed()),
+	     this, SLOT(actuals_modified()));
   
   ArrowCanvas::delete_it();
 }
@@ -146,9 +151,12 @@ BrowserClass * RelationCanvas::update_begin(DiagramItem * cnend) {
     d = (RelationData *) begin->add_relation(type(), cnend);
   }
   
-  connect(d, SIGNAL(changed()), this, SLOT(modified()));
-  connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
   data = d;
+  
+  connect(data, SIGNAL(changed()), this, SLOT(modified()));
+  connect(data, SIGNAL(deleted()), this, SLOT(deleted()));
+  connect(br_begin->get_data(), SIGNAL(actuals_changed()),
+	  this, SLOT(actuals_modified()));
   
   return br_begin;
 }
@@ -432,6 +440,8 @@ ArrowPointCanvas * RelationCanvas::brk(const QPoint & p) {
   other->data = data;
   connect(data, SIGNAL(changed()), other, SLOT(modified()));
   connect(data, SIGNAL(deleted()), other, SLOT(deleted()));
+  connect(br_begin->get_data(), SIGNAL(actuals_changed()),
+	  other, SLOT(actuals_modified()));
 
   ap->add_line(this);
   end->remove_line(this);
@@ -483,6 +493,16 @@ void RelationCanvas::modified() {
   }
 }
 
+void RelationCanvas::actuals_modified() {
+  if (data->get_type() == UmlRealize) {
+    ArrowCanvas * aplabel;
+    ArrowCanvas * apstereotype;
+    
+    search_supports(aplabel, apstereotype);
+    update_actuals((RelationCanvas *) aplabel);
+  }
+}
+
 void RelationCanvas::update(bool updatepos) {
   if (data) {
     itstype = data->get_type();
@@ -507,7 +527,9 @@ void RelationCanvas::update(bool updatepos) {
     QString s = data->get_name();
     QPoint c = center();
     
-    if (unamed || s.isEmpty() || (s == RelationData::default_name(itstype))) {
+    if (itstype == UmlRealize)
+      update_actuals(plabel);
+    else if (unamed || s.isEmpty() || (s == RelationData::default_name(itstype))) {
       // relation does not have name or 'true' name
       if (plabel != 0) {
 	// removes it
@@ -659,6 +681,36 @@ void RelationCanvas::update(bool updatepos) {
   
   if (updatepos)
     update_pos();
+}
+
+void RelationCanvas::update_actuals(RelationCanvas * plabel) {
+  if ((plabel == 0) && (begin->type() == UmlArrowPoint))
+    return;
+  
+  QString s = 
+    ((ClassData *) br_begin->get_data())->get_actuals(data->get_end_class());
+  QPoint c = center();
+  QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
+  int h = fm.height();
+  
+  if (s.isEmpty()) {
+    // remove label
+    if (plabel != 0) {
+      // removes it
+      the_canvas()->del(plabel->label);
+      plabel->label = 0;
+    }
+  }
+  else if (plabel == 0)
+    // begin->type() != UmlArrowPoint
+    // adds label
+    label = new LabelCanvas(s, the_canvas(),
+			    c.x() - fm.width(s)/2, c.y() - h);
+  else if (plabel->label->get_name() != s) {
+    // update label, position will be updated later
+    plabel->label->set_name(s);
+    plabel->label_default_position();
+  }
 }
 
 void RelationCanvas::label_default_position() const {
@@ -1172,6 +1224,8 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       result->data = rd;
       connect(rd, SIGNAL(changed()), result, SLOT(modified()));
       connect(rd, SIGNAL(deleted()), result, SLOT(deleted()));
+      connect(b->get_data(), SIGNAL(actuals_changed()),
+	      result, SLOT(actuals_modified()));
 
       if (first == 0) {
 	first = result;
@@ -1302,9 +1356,13 @@ void RelationCanvas::history_load(QBuffer & b) {
   multiplicity_b = (LabelCanvas *) load_item(b);
   connect(data, SIGNAL(changed()), this, SLOT(modified()));
   connect(data, SIGNAL(deleted()), this, SLOT(deleted()));
+  connect(br_begin->get_data(), SIGNAL(actuals_changed()),
+	  this, SLOT(actuals_modified()));
 }
 
 void RelationCanvas::history_hide() {
   QCanvasItem::setVisible(FALSE);
   disconnect(data, 0, this, 0);
+  disconnect(br_begin->get_data(), SIGNAL(actuals_changed()),
+	     this, SLOT(actuals_modified()));
 }

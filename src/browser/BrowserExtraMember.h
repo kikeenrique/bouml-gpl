@@ -57,6 +57,7 @@ class BrowserExtraMember : public BrowserNode, public Labeled<BrowserExtraMember
     virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual void modified();
     virtual BasicData * get_data() const;
     virtual void set_name(const char * s);
@@ -78,8 +79,6 @@ class BrowserExtraMember : public BrowserNode, public Labeled<BrowserExtraMember
     
     virtual bool tool_cmd(ToolCom * com, const char * args);
     
-    virtual void DragMoveEvent(QDragMoveEvent * e);
-    virtual void DropEvent(QDropEvent * e);
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
 };
 

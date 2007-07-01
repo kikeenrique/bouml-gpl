@@ -31,6 +31,7 @@
 class BrowserClass;
 class RelationData;
 class DiagramItem;
+struct SlotRel;
 
 class ObjectLinkCanvas : public ArrowCanvas {
   Q_OBJECT
@@ -42,7 +43,7 @@ class ObjectLinkCanvas : public ArrowCanvas {
     
   public:
     ObjectLinkCanvas(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
-		     int id, RelationData * d = 0);
+		     UmlCode t, int id, RelationData * d = 0);
     virtual ~ObjectLinkCanvas();
     
     virtual void delete_it();
@@ -63,6 +64,8 @@ class ObjectLinkCanvas : public ArrowCanvas {
     virtual void save(QTextStream & st, bool ref, QString & warning) const;
     static ObjectLinkCanvas * read(char * & st, UmlCanvas * canvas, char *);
     
+    virtual void delete_available(bool & in_model, bool & out_model) const;
+    virtual void remove(bool from_model);
     virtual void open();
     virtual void menu(const QPoint&);
     
@@ -72,6 +75,9 @@ class ObjectLinkCanvas : public ArrowCanvas {
     
     bool reflexive() const;
     void check();
+    
+    bool is(const SlotRel &, bool isa) const;
+    RelationData * get_rel() const { return data; }
     
   protected:
     void internal_set_relation(RelationData * d);

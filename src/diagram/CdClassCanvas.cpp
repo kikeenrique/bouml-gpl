@@ -71,7 +71,6 @@ CdClassCanvas::CdClassCanvas(BrowserNode * bn, UmlCanvas * canvas,
   constraint = 0;
   
   compute_size();	// update used_settings
-  set_center100();
   check_constraint();
   
   subscribe(bn->get_data());	// = TRUE
@@ -416,6 +415,7 @@ void CdClassCanvas::modified() {
     show();
     update_show_lines();
     force_self_rel_visible();
+    check_inner();
     if (the_canvas()->must_draw_all_relations()) {
       draw_all_relations();    
       draw_all_simple_relations();
@@ -424,6 +424,24 @@ void CdClassCanvas::modified() {
     canvas()->update();
     package_modified();
   }
+}
+
+void CdClassCanvas::check_inner() {
+  QListIterator<ArrowCanvas> it(lines);
+	
+  while (it.current()) {
+    if (it.current()->type() == UmlInner) {
+      DiagramItem * b = ((ArrowCanvas *) it.current())->get_start();
+      DiagramItem * e = ((ArrowCanvas *) it.current())->get_end();
+      
+      if (((BrowserNode *) b->get_bn()->parent()) != e->get_bn())
+	it.current()->delete_it();
+      else
+	++it;
+    }
+    else
+      ++it;
+  }  
 }
 
 bool CdClassCanvas::has_relation(BasicData * def) const {
@@ -439,47 +457,78 @@ bool CdClassCanvas::has_relation(BasicData * def) const {
   return FALSE;
 }
 
+bool CdClassCanvas::has_inner(DiagramItem * end) const {
+  QListIterator<ArrowCanvas> it(lines);
+	
+  while (it.current()) {
+    if ((it.current()->type() == UmlInner) &&
+	(((ArrowCanvas *) it.current())->get_end() == end))
+      return TRUE;
+    ++it;
+  }
+  
+  return FALSE;
+}
+
 void CdClassCanvas::draw_all_relations(CdClassCanvas * end) {
   QListViewItem * child;
   QCanvasItemList all = canvas()->allItems();
   QCanvasItemList::Iterator cit;
   
   for (child = browser_node->firstChild(); child; child = child->nextSibling()) {
-    if (IsaRelation(((BrowserNode *) child)->get_type()) &&
-	!((BrowserNode *) child)->deletedp()) {
-      RelationData * def =
-	((RelationData *) ((BrowserNode *) child)->get_data());
-
-      if ((def->get_start_class() == browser_node) && 	// rel begins by this
-	  ((end == 0) || (def->get_end_class() == end->browser_node)) &&
-	  !has_relation(def)) {
-	// adds it in case the other class is drawed
-	BrowserClass * end_class = 
-	  ((BrowserClass *) def->get_end_class());
-	DiagramItem * di;
+    if (!((BrowserNode *) child)->deletedp()) {
+      UmlCode k = ((BrowserNode *) child)->get_type();
+      
+      if (IsaRelation(k)) {
+	RelationData * def =
+	  ((RelationData *) ((BrowserNode *) child)->get_data());
 	
-	if (end_class == browser_node)
-	  di = this;
-	else {	
-	  di = 0;
-	  for (cit = all.begin(); cit != all.end(); ++cit) {
-	    DiagramItem * adi = QCanvasItemToDiagramItem(*cit);
-	    
-	    if ((adi != 0) &&		// an uml canvas item
-		(adi->type() == UmlClass) &&
-		(((CdClassCanvas *) adi)->browser_node == end_class) &&
-		((((CdClassCanvas *) adi) == end) || (*cit)->visible())) {
-	      // other class canvas find
-	      di = adi;
-	      break;
+	if ((def->get_start_class() == browser_node) && 	// rel begins by this
+	    ((end == 0) || (def->get_end_class() == end->browser_node)) &&
+	    !has_relation(def)) {
+	  // adds it in case the other class is drawed
+	  BrowserClass * end_class = 
+	    ((BrowserClass *) def->get_end_class());
+	  DiagramItem * di;
+	  
+	  if (end_class == browser_node)
+	    di = this;
+	  else {	
+	    di = 0;
+	    for (cit = all.begin(); cit != all.end(); ++cit) {
+	      DiagramItem * adi = QCanvasItemToDiagramItem(*cit);
+	      
+	      if ((adi != 0) &&		// an uml canvas item
+		  (adi->type() == UmlClass) &&
+		  (((CdClassCanvas *) adi)->browser_node == end_class) &&
+		  ((((CdClassCanvas *) adi) == end) || (*cit)->visible())) {
+		// other class canvas find
+		di = adi;
+		break;
+	      }
 	    }
 	  }
+	  
+	  if (di != 0)
+	    (new RelationCanvas(the_canvas(), this, di,
+				((BrowserClass *) browser_node), 
+				def->get_type(), 0, def))->show();
 	}
-	
-	if (di != 0)
-	  (new RelationCanvas(the_canvas(), this, di,
-			      ((BrowserClass *) browser_node), 
-			      def->get_type(), 0, def))->show();
+      }
+      else if (k == UmlClass) {
+	for (cit = all.begin(); cit != all.end(); ++cit) {
+	  DiagramItem * adi = QCanvasItemToDiagramItem(*cit);
+	  
+	  if ((adi != 0) &&		// an uml canvas item
+	      (adi->type() == UmlClass) &&
+	      (((CdClassCanvas *) adi)->browser_node == child) &&
+	      ((((CdClassCanvas *) adi) == end) || (*cit)->visible())) {
+	    if (! ((CdClassCanvas *) adi)->has_inner(this))
+	      (new ArrowCanvas(the_canvas(), adi, this, UmlInner, 0, FALSE))
+		->show();
+	    break;
+	  }
+	}
       }
     }
   }
@@ -492,8 +541,9 @@ void CdClassCanvas::draw_all_relations(CdClassCanvas * end) {
 	  (di->type() == UmlClass) &&
 	  (((CdClassCanvas *) di) != this) &&
 	  !((CdClassCanvas *) di)->browser_node->deletedp() &&
-	  ((CdClassCanvas *) di)->visible())
+	  ((CdClassCanvas *) di)->visible()) {
 	((CdClassCanvas *) di)->draw_all_relations(this);
+      }
     }
   }
 }

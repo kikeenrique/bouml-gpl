@@ -63,7 +63,7 @@ BrowserDeploymentDiagram::BrowserDeploymentDiagram(int id)
 }
 
 BrowserDeploymentDiagram::BrowserDeploymentDiagram(BrowserDeploymentDiagram * model, BrowserNode * p)
-    : BrowserDiagram(p->child_random_name("Diagram"), p, 0), window(0) {
+    : BrowserDiagram(p->get_name(), p, 0), window(0) {
   def = new SimpleData(model->def);
   def->set_browser_node(this);
   comment = model->comment;
@@ -117,6 +117,17 @@ void BrowserDeploymentDiagram::make() {
   note_color = UmlDefaultColor;
   package_color = UmlDefaultColor;
   fragment_color = UmlDefaultColor;
+}
+
+BrowserDeploymentDiagram * BrowserDeploymentDiagram::add_deployment_diagram(BrowserNode * future_parent)
+{
+  QString name;
+  
+  if (future_parent->enter_child_name(name, "enter deployment diagram's name : ",
+				      UmlDeploymentDiagram, TRUE, FALSE))
+    return new BrowserDeploymentDiagram(name, future_parent);
+  else
+    return 0;
 }
 
 void BrowserDeploymentDiagram::set_name(const char * s) {
@@ -234,11 +245,13 @@ void BrowserDeploymentDiagram::exec_menu_choice(int rank) {
     return;
   case 3:
     {
-      BrowserDeploymentDiagram * cd =
-	new BrowserDeploymentDiagram(this, (BrowserNode *) parent());
+      QString name;
       
-      cd->select_in_browser();
-      cd->edit("Deployment diagram", its_default_stereotypes);
+      if (((BrowserNode *)parent())->enter_child_name(name, "enter deployment diagram's name : ",
+						      UmlDeploymentDiagram, TRUE, FALSE))
+	duplicate((BrowserNode *) parent(), name)->select_in_browser();
+      else
+	return;
     }
     break;
   case 4:
@@ -329,6 +342,10 @@ void BrowserDeploymentDiagram::read_session(char * & st) {
 
 UmlCode BrowserDeploymentDiagram::get_type() const {
   return UmlDeploymentDiagram;
+}
+
+int BrowserDeploymentDiagram::get_identifier() const {
+  return get_ident();
 }
 
 void BrowserDeploymentDiagram::get_deploymentdiagramsettings(DeploymentDiagramSettings & r) const {
@@ -450,14 +467,6 @@ bool BrowserDeploymentDiagram::tool_cmd(ToolCom * com, const char * args) {
     return (def->tool_cmd(com, args, this, comment) ||
 	    BrowserNode::tool_cmd(com, args));
   }
-}
-
-void BrowserDeploymentDiagram::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserDeploymentDiagram::DropEvent(QDropEvent * e) {
-  ((BrowserNode *) parent())->DropAfterEvent(e, this);
 }
 
 void BrowserDeploymentDiagram::save_stereotypes(QTextStream & st)

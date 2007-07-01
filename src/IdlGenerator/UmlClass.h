@@ -45,6 +45,9 @@ class UmlClass : public UmlBaseClass {
     virtual void generate(QTextOStream & f);
     virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype);
 
+    void write(QTextOStream & f);
+    static void write(QTextOStream & f, const UmlTypeSpec & t);
+
 };
 
 #endif

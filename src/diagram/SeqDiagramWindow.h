@@ -40,6 +40,7 @@ class SeqDiagramWindow : public DiagramWindow {
   protected:
     SeqDiagramView * view;
     QToolButton * addClass;
+    QToolButton * addClassInstance;
     QToolButton * addContinuation;
     QToolButton * addFragment;
     QToolButton * syncMsg;
@@ -61,6 +62,7 @@ class SeqDiagramWindow : public DiagramWindow {
 
   protected slots:
     void hit_class();
+    void hit_classinstance();
     void hit_continuation();
     void hit_fragment();
     void hit_syncmsg();

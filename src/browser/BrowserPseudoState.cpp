@@ -460,6 +460,10 @@ UmlCode BrowserPseudoState::get_type() const {
   return kind;
 }
 
+int BrowserPseudoState::get_identifier() const {
+  return get_ident();
+}
+
 BasicData * BrowserPseudoState::get_data() const {
   return def;
 }

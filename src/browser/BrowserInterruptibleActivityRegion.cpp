@@ -422,6 +422,10 @@ UmlCode BrowserInterruptibleActivityRegion::get_type() const {
   return UmlInterruptibleActivityRegion;
 }
 
+int BrowserInterruptibleActivityRegion::get_identifier() const {
+  return get_ident();
+}
+
 BasicData * BrowserInterruptibleActivityRegion::get_data() const {
   return def;
 }

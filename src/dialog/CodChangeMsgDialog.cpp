@@ -77,7 +77,7 @@ CodChangeMsgDialog::CodChangeMsgDialog(ColMsg * m)
   msg->in->get_from_to(from, to, msg->is_forward);
   
   // gets operations
-  cl = to->get_type();
+  cl = to->get_class();
   if (cl != 0) {
     cl->get_opers(opers, list);
     edoper->insertStringList(list);

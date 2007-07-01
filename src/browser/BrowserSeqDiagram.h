@@ -72,6 +72,7 @@ class BrowserSeqDiagram : public BrowserDiagram {
     virtual void on_close();
     virtual void read_session(char * & st);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual BasicData * get_data() const;
     virtual void set_name(const char * s);
     virtual void get_sequencediagramsettings(SequenceDiagramSettings &) const;
@@ -87,6 +88,8 @@ class BrowserSeqDiagram : public BrowserDiagram {
     
     void edit_settings();
 
+    static BrowserSeqDiagram * add_sequence_diagram(BrowserNode * future_parent);
+    
     static const QStringList & default_stereotypes();
     static void read_stereotypes(char * &, char * & k);
     static void save_stereotypes(QTextStream &);
@@ -94,9 +97,6 @@ class BrowserSeqDiagram : public BrowserDiagram {
     virtual void renumber(int phase);
     static void open_all();
     static void import();
-    
-    virtual void DragMoveEvent(QDragMoveEvent * e);
-    virtual void DropEvent(QDropEvent * e);
 };
 
 #endif

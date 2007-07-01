@@ -1,14 +1,14 @@
-format 37
+format 39
 "API USER" // API USER
-  revision 17
+  revision 30
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
   //use case diagram settings
   package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
   //collaboration diagram settings
   show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
   //object diagram settings
@@ -29,13 +29,13 @@ format 37
   comment " 'your' API classes and components, modify them !"
   classview 385 "API USER class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
     //collaboration diagram settings
     show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
      write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
     //state diagram settings
     package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
     show_activities default region_horizontally default drawing_language default
@@ -47,17 +47,17 @@ format 37
     associated_deployment_view deploymentview_ref 385 // API USER Deployment view
     comment " 'your' API classes, modify them !"
     classdiagram 129 "Inheritance Diagram of classes for Package and Views"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A2
     end
 
     classdiagram 257 "Inheritance Diagram of classes for Diagrams"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A2
     end
 
     classdiagram 513 "Inheritance Diagram of classes for Classes"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
@@ -1866,15 +1866,6 @@ ${body}}
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
-
-      attribute 128468 "fig_rank"
-	class_attribute protected explicit_type "int"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
-	idl_decl ""
-      end
     end
 
     class 7425 "UmlExtraClassMember"
@@ -1985,9 +1976,9 @@ ${members}};
 	nparams 2
 	  param in name "id" explicit_type "item_id"
 	  param in name "n" explicit_type "string"
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlBaseItem(id, n) { refId = 0; };
+	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlBaseItem(id, n), known(FALSE) { };
 "
-	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); refId = 0; }
+	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); known = false; }
 "
 	
       end
@@ -2598,8 +2589,8 @@ ${body}}
 	idl ""
       end
 
-      attribute 128036 "refId"
-	protected explicit_type "uint"
+      attribute 128036 "known"
+	protected explicit_type "bool"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -7654,7 +7645,7 @@ ${body}}
 	comment "returns a string indicating the king of the element"
       end
 
-      operation 198146 "html"
+      operation 207746 "html"
 	cpp_virtual public explicit_return_type "void"
 	nparams 3
 	  param in name "pfix" explicit_type "string"
@@ -7684,6 +7675,81 @@ path, rank in the mother and level in the browser tree"
 	  b multiplicity "" parent class_ref 133122 // UmlActivityItem
       end
     end
+
+    class 143746 "UmlClassInstance"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 155010 // <generalisation>
+	relation 155010 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 155010 // <generalisation>
+	  b multiplicity "" parent class_ref 143616 // UmlBaseClassInstance
+      end
+
+      operation 207618 "UmlClassInstance"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "id" explicit_type "item_id"
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlBaseClassInstance(id, s) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  super(id, s);
+}
+"
+	
+	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      operation 207874 "sKind"
+	cpp_virtual public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment "returns a string indicating the king of the element"
+      end
+
+      operation 198146 "html"
+	cpp_virtual public explicit_return_type "void"
+	nparams 3
+	  param in name "pfix" explicit_type "string"
+	  param in name "rank" explicit_type "uint"
+	  param in name "level" explicit_type "uint"
+	nexceptions 1
+	  explicit_exception "IOException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0}, ${t1}, ${t2}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment "entry to produce the html code receiving chapter number
+path, rank in the mother and level in the browser tree"
+      end
+    end
   end
 
   deploymentview 385 "API USER Deployment view"
@@ -7696,168 +7762,172 @@ Do not forget to modify Main !"
     artifact 4737 "executable"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 138112 // UmlBaseActivityParameter
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 128130 // ConfirmBox
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 131970 // UmlJunctionPseudoState
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 133760 // UmlBaseActivityNode
-	artifact_ref 135552 // UmlBaseActivityActionClasses
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 128036 // Vector
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 4865 // Main
-	artifact_ref 133122 // UmlActivityItem
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 135040 // UmlBaseInterruptibleActivityRegion
 	artifact_ref 6017 // UmlClassView
-	artifact_ref 138368 // UmlBaseParameterSet
-	artifact_ref 133634 // UmlActivityDiagram
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 138242 // UmlActivityParameter
-	artifact_ref 5633 // UmlClass
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 137216 // UmlBaseExpansionNode
-	artifact_ref 132864 // UmlBaseObjectDiagram
-	artifact_ref 7169 // UmlItem
-	artifact_ref 137602 // UmlPinParameter
-	artifact_ref 4864 // aDirection
-	artifact_ref 130690 // UmlFinalState
-	artifact_ref 134656 // UmlBaseExpansionRegion
-	artifact_ref 128514 // UmlState
-	artifact_ref 137088 // anOrdering
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 128640 // UmlBaseStateDiagram
-	artifact_ref 130304 // UmlBaseEntryPointPseudoState
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 129922 // UmlPseudoState
-	artifact_ref 136962 // UmlActivityObject
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 134272 // FlowBehavior
 	artifact_ref 4096 // UmlBaseUseCase
 	artifact_ref 136450 // UmlActivityControlNode
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 132608 // UmlBaseJoinPseudoState
-	artifact_ref 6529 // UmlComponentView
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 135296 // UmlBaseActivityAction
-	artifact_ref 129408 // UmlBaseRegion
-	artifact_ref 135426 // UmlActivityAction
-	artifact_ref 130434 // UmlEntryPointPseudoState
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 133378 // UmlActivity
-	artifact_ref 6913 // UmlDiagram
 	artifact_ref 134530 // UmlActivityRegion
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 132226 // UmlChoicePseudoState
-	artifact_ref 132482 // UmlForkPseudoState
-	artifact_ref 132352 // UmlBaseForkPseudoState
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 129664 // UmlBaseStateAction
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 134146 // UmlFlow
-	artifact_ref 131714 // UmlShallowHistoryPseudoState
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 131840 // UmlBaseJunctionPseudoState
-	artifact_ref 131584 // UmlBaseShallowHistoryPseudoState
-	artifact_ref 134400 // UmlBaseActivityRegion
-	artifact_ref 131202 // UmlExitPointPseudoState
-	artifact_ref 130560 // UmlBaseFinalState
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 133890 // UmlActivityNode
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 138498 // UmlParameterSet
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 137986 // UmlActivityPin
 	artifact_ref 129794 // UmlStateAction
-	artifact_ref 131458 // UmlDeepHistoryPseudoState
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 136194 // UmlAccessVariableValueAction
-	artifact_ref 137728 // aParameterEffectKind
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 5120 // anItemKind
-	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 131970 // UmlJunctionPseudoState
+	artifact_ref 128770 // UmlStateDiagram
+	artifact_ref 130434 // UmlEntryPointPseudoState
+	artifact_ref 7169 // UmlItem
+	artifact_ref 131840 // UmlBaseJunctionPseudoState
+	artifact_ref 138882 // UmlClassInstance
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 139136 // SlotRelation
+	artifact_ref 135170 // UmlInterruptibleActivityRegion
+	artifact_ref 128180 // UmlNcRelation
+	artifact_ref 128258 // UmlStateItem
+	artifact_ref 6528 // UmlBuiltin
 	artifact_ref 128164 // FileWriter
-	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 137602 // UmlPinParameter
+	artifact_ref 130946 // UmlTerminatePseudoState
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 131714 // UmlShallowHistoryPseudoState
+	artifact_ref 128514 // UmlState
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 137986 // UmlActivityPin
+	artifact_ref 136064 // UmlBaseAccessVariableValueAction
+	artifact_ref 129154 // UmlTransition
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 136962 // UmlActivityObject
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 129538 // UmlRegion
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 135296 // UmlBaseActivityAction
+	artifact_ref 128384 // UmlBaseState
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 138368 // UmlBaseParameterSet
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 128896 // StateBehavior
+	artifact_ref 134400 // UmlBaseActivityRegion
+	artifact_ref 134786 // UmlExpansionRegion
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 3072 // UmlBaseDiagram
 	artifact_ref 6273 // UmlArtifact
-	artifact_ref 4480 // UmlCom
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 133378 // UmlActivity
+	artifact_ref 133634 // UmlActivityDiagram
+	artifact_ref 768 // CppSettings
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 136832 // UmlBaseActivityObject
+	artifact_ref 133504 // UmlBaseActivityDiagram
+	artifact_ref 128130 // ConfirmBox
+	artifact_ref 138112 // UmlBaseActivityParameter
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 138242 // UmlActivityParameter
+	artifact_ref 129664 // UmlBaseStateAction
+	artifact_ref 129922 // UmlPseudoState
 	artifact_ref 135682 // UmlActivityActionClasses
-	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 137728 // aParameterEffectKind
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 135938 // UmlOnSignalAction
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 130178 // UmlInitialPseudoState
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 4480 // UmlCom
+	artifact_ref 128640 // UmlBaseStateDiagram
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 136194 // UmlAccessVariableValueAction
 	artifact_ref 137346 // UmlExpansionNode
-	artifact_ref 129024 // UmlBaseTransition
-	artifact_ref 133248 // UmlBaseActivity
+	artifact_ref 137216 // UmlBaseExpansionNode
+	artifact_ref 134016 // UmlBaseFlow
+	artifact_ref 134912 // anExpansionKind
+	artifact_ref 7297 // UmlNode
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 132864 // UmlBaseObjectDiagram
+	artifact_ref 128036 // Vector
+	artifact_ref 133890 // UmlActivityNode
+	artifact_ref 137088 // anOrdering
+	artifact_ref 132608 // UmlBaseJoinPseudoState
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 137856 // UmlBaseActivityPin
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 136320 // UmlBaseActivityControlNode
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 135552 // UmlBaseActivityActionClasses
+	artifact_ref 4992 // aVisibility
 	artifact_ref 4993 // UmlActualParameter
 	artifact_ref 136576 // UmlBaseActivityControlNodeClasses
-	artifact_ref 7297 // UmlNode
-	artifact_ref 128896 // StateBehavior
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 128384 // UmlBaseState
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 137856 // UmlBaseActivityPin
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 134016 // UmlBaseFlow
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 135040 // UmlBaseInterruptibleActivityRegion
-	artifact_ref 130946 // UmlTerminatePseudoState
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 134272 // FlowBehavior
+	artifact_ref 137472 // UmlBasePinParameter
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 138752 // UmlBaseClassInstance
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 131584 // UmlBaseShallowHistoryPseudoState
+	artifact_ref 134146 // UmlFlow
+	artifact_ref 4864 // aDirection
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 139008 // SlotAttribute
+	artifact_ref 130816 // UmlBaseTerminatePseudoState
+	artifact_ref 131072 // UmlBaseExitPointPseudoState
+	artifact_ref 132482 // UmlForkPseudoState
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 129024 // UmlBaseTransition
+	artifact_ref 135808 // UmlBaseOnSignalAction
+	artifact_ref 131328 // UmlBaseDeepHistoryPseudoState
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 132226 // UmlChoicePseudoState
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 133248 // UmlBaseActivity
+	artifact_ref 134656 // UmlBaseExpansionRegion
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 135426 // UmlActivityAction
 	artifact_ref 896 // UmlBaseFormalParameter
 	artifact_ref 136706 // UmlActivityControlNodeClasses
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 136832 // UmlBaseActivityObject
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 129280 // TransitionBehavior
-	artifact_ref 135808 // UmlBaseOnSignalAction
-	artifact_ref 135938 // UmlOnSignalAction
-	artifact_ref 132096 // UmlBaseChoicePseudoState
-	artifact_ref 131328 // UmlBaseDeepHistoryPseudoState
-	artifact_ref 128770 // UmlStateDiagram
-	artifact_ref 130178 // UmlInitialPseudoState
-	artifact_ref 136320 // UmlBaseActivityControlNode
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 135170 // UmlInterruptibleActivityRegion
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 132994 // UmlObjectDiagram
-	artifact_ref 129154 // UmlTransition
-	artifact_ref 132738 // UmlJoinPseudoState
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 128180 // UmlNcRelation
-	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 5120 // anItemKind
 	artifact_ref 130048 // UmlBaseInitialPseudoState
-	artifact_ref 131072 // UmlBaseExitPointPseudoState
-	artifact_ref 137472 // UmlBasePinParameter
-	artifact_ref 133504 // UmlBaseActivityDiagram
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 134912 // anExpansionKind
-	artifact_ref 4992 // aVisibility
-	artifact_ref 130816 // UmlBaseTerminatePseudoState
-	artifact_ref 134786 // UmlExpansionRegion
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 768 // CppSettings
-	artifact_ref 129538 // UmlRegion
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 128258 // UmlStateItem
-	artifact_ref 136064 // UmlBaseAccessVariableValueAction
+	artifact_ref 129280 // TransitionBehavior
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 4865 // Main
+	artifact_ref 132994 // UmlObjectDiagram
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 133760 // UmlBaseActivityNode
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 130690 // UmlFinalState
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 129408 // UmlBaseRegion
+	artifact_ref 131202 // UmlExitPointPseudoState
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 130304 // UmlBaseEntryPointPseudoState
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 132352 // UmlBaseForkPseudoState
+	artifact_ref 131458 // UmlDeepHistoryPseudoState
+	artifact_ref 133122 // UmlActivityItem
+	artifact_ref 138498 // UmlParameterSet
+	artifact_ref 132738 // UmlJoinPseudoState
+	artifact_ref 132096 // UmlBaseChoicePseudoState
+	artifact_ref 130560 // UmlBaseFinalState
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 5633 // UmlClass
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 5376 // MiscGlobalCmd
       end
       ncouples 9
       key "genpro pro" value "/tmp/html/cpp/html.pro"
@@ -7894,7 +7964,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[argc - 1]).toUInt())) {
     try {
-      UmlCom::trace(\"<b>Html generator</b> release 2.9 (C++ version)<br />\");
+      UmlCom::trace(\"<b>Html generator</b> release 2.10 (C++ version)<br />\");
 
       UmlItem * target = UmlCom::targetItem();
 
@@ -7935,7 +8005,7 @@ class Main {
       UmlCom.connect(Integer.valueOf(argv[argv.length - 1]).intValue());
 
       try {
-        UmlCom.trace(\"<b>Html generator</b> release 2.9 (Java version)<br />\");
+        UmlCom.trace(\"<b>Html generator</b> release 2.10 (Java version)<br />\");
 
         UmlItem target = UmlCom.targetItem();
  try {
@@ -9895,6 +9965,39 @@ ${package}
 ${definition}"
       associated_classes
 	class_ref 143362 // UmlParameterSet
+      end
+    end
+
+    artifact 138882 "UmlClassInstance"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include \"UmlCom.h\"
+#include \"UmlClass.h\"
+#include \"UmlAttribute.h\"
+#include \"UmlRelation.h\"
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "import java.io.*;
+import java.util.*;
+
+${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 143746 // UmlClassInstance
       end
     end
   end

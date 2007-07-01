@@ -297,6 +297,10 @@ UmlCode BrowserParameter::get_type() const {
   return UmlParameter;
 }
 
+int BrowserParameter::get_identifier() const {
+  return get_ident();
+}
+
 BasicData * BrowserParameter::get_data() const {
   return def;
 }

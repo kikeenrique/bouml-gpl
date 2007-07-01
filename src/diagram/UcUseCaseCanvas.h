@@ -38,6 +38,8 @@ class UcUseCaseCanvas : public QObject, public DiagramCanvas {
     UmlColor itscolor;
     UmlColor used_color;
   
+    void update_name();
+    
   public:
     UcUseCaseCanvas(BrowserNode * bn, UmlCanvas * canvas, int x, int y, int id);
     virtual ~UcUseCaseCanvas();

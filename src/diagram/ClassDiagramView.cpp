@@ -306,10 +306,14 @@ void ClassDiagramView::save(QTextStream & st, QString & warning,
 
   // then saves relations
   
-  for (di = items.first(); di != 0; di = items.next())
-    if ((!copy || di->copyable()) &&
-	(IsaRelation(di->type()) || IsaSimpleRelation(di->type())))
-      di->save(st, FALSE, warning);
+  for (di = items.first(); di != 0; di = items.next()) {
+    if (!copy || di->copyable()) {
+      UmlCode k = di->type();
+      
+      if (IsaRelation(k) || IsaSimpleRelation(k) || (k == UmlInner))
+	di->save(st, FALSE, warning);
+    }
+  }
   
   // then saves anchors
   

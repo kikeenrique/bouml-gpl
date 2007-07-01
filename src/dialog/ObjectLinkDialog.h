@@ -31,26 +31,33 @@
 
 class MyTable;
 class RelationData;
-class BrowserClass;
+class BrowserClassInstance;
 
 class ObjectLinkDialog : public QDialog {
   Q_OBJECT
     
   public:
-    ObjectLinkDialog(QList<RelationData> & l, RelationData * current,
-		     BrowserClass * a, BrowserClass * b);
+    ObjectLinkDialog(BrowserClassInstance * a, BrowserClassInstance * b,
+		     QList<RelationData> & l, RelationData * current,
+		     int nfirstdir);
     virtual ~ObjectLinkDialog();
   
     RelationData * rel() const { return choozen; }
+    bool rev() const { return reverse; }
     
   protected:
     void init(RelationData * current);
     
     QList<RelationData> & rels;
-    BrowserClass * cla;
-    BrowserClass * clb;
-    RelationData * choozen;
+    int nforward;
+    int ninputrels;
+    BrowserClassInstance * clia;
+    BrowserClassInstance * clib;
+    QString ra;
+    QString rb;
     MyTable * table;
+    RelationData * choozen;
+    bool reverse;
     
     static QSize previous_size;
     

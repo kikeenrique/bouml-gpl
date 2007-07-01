@@ -95,9 +95,11 @@ class RelationCanvas : public ArrowCanvas {
   protected:
     BrowserClass * update_begin(DiagramItem * cnend);
     void update(bool updatepos);
+    void update_actuals(RelationCanvas * plabel);
     
   private slots:
     void modified();	// canvas must be updated
+    void actuals_modified();	// label may be modified
     void deleted();	// the relation is deleted
 };
 

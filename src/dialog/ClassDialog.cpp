@@ -1642,7 +1642,7 @@ void ClassDialog::accept() {
     actuals_table->update(cl, nodes);
   
   bn->set_comment(comment->text());
-  UmlWindow::set_commented(bn);
+  UmlWindow::update_comment_if_needed(bn);
   
   cl->constraint = constraint->stripWhiteSpaceText();
   

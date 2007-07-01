@@ -62,8 +62,6 @@ class BrowserDeploymentView : public BrowserNode, public Labeled<BrowserDeployme
     
     virtual const QPixmap* pixmap (int) const;
   
-    void add_deployment_diagram();
-  
     virtual BrowserNode * duplicate(BrowserNode * p,
 				    QString name = QString::null);
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
@@ -71,6 +69,7 @@ class BrowserDeploymentView : public BrowserNode, public Labeled<BrowserDeployme
     virtual void apply_shortcut(QString s);
     virtual void open(bool);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,
 				   bool & duplicable) const;
     virtual BasicData * get_data() const;
@@ -87,6 +86,8 @@ class BrowserDeploymentView : public BrowserNode, public Labeled<BrowserDeployme
     virtual void DropEvent(QDropEvent * e);
     virtual void DragMoveInsideEvent(QDragMoveEvent * e);
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
+    
+    static BrowserDeploymentView * add_deployment_view(BrowserNode * future_parent);
     
     static const QStringList & default_stereotypes();
     static void read_stereotypes(char * &, char * & k);

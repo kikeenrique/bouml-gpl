@@ -80,6 +80,10 @@ enum OnInstanceCmd {
   
   sideCmd,
   
+  // api 31
+  attributesCmd,
+  relationsCmd,
+  
   // set commands
   
   firstSetCmd = 50,	// just a mark
@@ -209,11 +213,16 @@ enum OnInstanceCmd {
   setJavaFrozenCmd,
   setIdlFrozenCmd,
   
-  // api30
+  // api 30
   setConstraintCmd,
   deleteCmd,
+  
+  // api 31
+  setAttributeCmd,
+  addRelationCmd,
+  removeRelationCmd,
     
-  getIdCmd = 254, // not in plug-outs managed through bouml
+  getIdCmd = 254, // not in old plug-outs managed through bouml
     
   // api 20
   old_deleteCmd = 255 // not in plug-outs managed through bouml

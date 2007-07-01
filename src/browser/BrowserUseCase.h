@@ -68,11 +68,6 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
     BrowserUseCase(const BrowserUseCase * model, BrowserNode * p);
     virtual ~BrowserUseCase();
     
-    void add_sequence_diagram();
-    void add_collaboration_diagram();
-    void add_use_case_diagram();
-    void add_object_diagram();
-    
     virtual BrowserNode * get_associated() const;
     void set_associated_diagram(BrowserUseCaseDiagram *, bool on_read = FALSE);
     
@@ -83,6 +78,7 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
     virtual void apply_shortcut(QString s);
     virtual void open(bool force_edit);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,
 				   bool & duplicable) const;
     virtual BasicData * get_data() const;
@@ -92,7 +88,7 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
     virtual void get_objectdiagramsettings(ObjectDiagramSettings &) const;
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_auto_label_position(UmlCode who) const;
-    virtual const QStringList & default_stereotypes(UmlCode arrow);
+    virtual const QStringList & default_stereotypes(UmlCode, const BrowserNode *) const; // non class rel
     virtual void on_delete();
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual void save(QTextStream &, bool ref, QString & warning);

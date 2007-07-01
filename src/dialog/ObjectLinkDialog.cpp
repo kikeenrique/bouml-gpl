@@ -34,18 +34,19 @@
 #include "ObjectLinkDialog.h"
 #include "MyTable.h"
 #include "BrowserClass.h"
+#include "BrowserClassInstance.h"
+#include "ClassInstanceData.h"
 #include "BrowserRelation.h"
 #include "RelationData.h"
 #include "UmlDesktop.h"
 
 QSize ObjectLinkDialog::previous_size;
 
-ObjectLinkDialog::ObjectLinkDialog(QList<RelationData> & l,
-				   RelationData * current,
-				   BrowserClass * a,
-				   BrowserClass * b)
+ObjectLinkDialog::ObjectLinkDialog(BrowserClassInstance * a, BrowserClassInstance * b,
+				   QList<RelationData> & l, RelationData * current,
+				   int nfirstdir)
     : QDialog(0, "object link dialog", TRUE),
-      rels(l), cla(a), clb(b), choozen(0) {
+      rels(l), nforward(nfirstdir), clia(a), clib(b), choozen(0), reverse(FALSE) {
   setCaption("Object link dialog");
   
   QVBoxLayout * vbox = new QVBoxLayout(this);
@@ -65,7 +66,9 @@ ObjectLinkDialog::ObjectLinkDialog(QList<RelationData> & l,
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  QPushButton * newrel = (cla->is_writable() || clb->is_writable())
+  QPushButton * newrel = 
+    (((ClassInstanceData *) clia->get_data())->get_class()->is_writable() ||
+     ((ClassInstanceData *) clib->get_data())->get_class()->is_writable())
     ? new QPushButton("&New", this) : 0;
   QPushButton * unset = new QPushButton("&Unset", this);
   QPushButton * accept = new QPushButton("&OK", this);
@@ -99,16 +102,22 @@ void ObjectLinkDialog::polish() {
   UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
 }
 
-static void add_rel(MyTable * table, RelationData * d, int row)
+static void add_rel(MyTable * table, RelationData * d, int row,
+		    QString a, QString b)
 {
-  const char * name = d->get_name();
+  table->setItem(row, 0, new TableItem(table, QTableItem::Never, a));
+
+  const char * s;
   
-  if ((name != 0) && (*name != 0) && (*name != '<'))
-    table->setText(row, 0, name);    
-  table->setItem(row, 1, new TableItem(table, QTableItem::Never, d->get_start_class()->full_name(TRUE)));    
-  table->setItem(row, 2, new TableItem(table, QTableItem::Never, d->get_role_a()));
-  table->setItem(row, 3, new TableItem(table, QTableItem::Never, d->get_end_class()->full_name(TRUE)));
-  table->setItem(row, 4, new TableItem(table, QTableItem::Never, d->get_role_b()));
+  s = d->get_role_b();
+  table->setItem(row, 1, new TableItem(table, QTableItem::Never, (s == 0) ? "" : s));
+  
+  table->setItem(row, 2, new TableItem(table, QTableItem::Never, stringify(d->get_type())));
+  
+  s = d->get_role_a();
+  table->setItem(row, 3, new TableItem(table, QTableItem::Never, (s == 0) ? "" : s));
+  
+  table->setItem(row, 4, new TableItem(table, QTableItem::Never, b));
 }
 
 void ObjectLinkDialog::init(RelationData * current) {
@@ -119,18 +128,27 @@ void ObjectLinkDialog::init(RelationData * current) {
   table->setSelectionMode(QTable::Single);
   table->setSorting(FALSE);
   
-  table->horizontalHeader()->setLabel(0, "Name");
-  table->horizontalHeader()->setLabel(1, "Class A");
-  table->horizontalHeader()->setLabel(2, "Role A");
-  table->horizontalHeader()->setLabel(3, "Class B");
-  table->horizontalHeader()->setLabel(4, "Role B");
+  table->horizontalHeader()->setLabel(0, "Class Inst.");
+  table->horizontalHeader()->setLabel(1, "Role");
+  table->horizontalHeader()->setLabel(2, "kind");
+  table->horizontalHeader()->setLabel(3, "Role");
+  table->horizontalHeader()->setLabel(4, "Class Inst.");
   
+  ra = clia->get_name() + QString(":") +
+    ((ClassInstanceData *) clia->get_data())->get_class()->get_name();
+  rb = clib->get_name() + QString(":") +
+    ((ClassInstanceData *) clib->get_data())->get_class()->get_name();
   QListIterator<RelationData> iter(rels);
   int row;
   
-  for (row = 0; iter.current(); ++iter, row += 1)
-    add_rel(table, *iter, row);
+  for (row = 0; (row != nforward) && iter.current(); ++iter, row += 1)
+    add_rel(table, iter.current(), row, ra, rb);
     
+  for (; iter.current(); ++iter, row += 1)
+    add_rel(table, iter.current(), row, rb, ra);
+    
+  ninputrels = row;
+  
   table->setColumnStretchable (1, TRUE);
   table->setColumnStretchable (3, TRUE);
   table->adjustColumn(0);
@@ -149,11 +167,14 @@ void ObjectLinkDialog::init(RelationData * current) {
 }
 
 void ObjectLinkDialog::unselect() {
-  while (table->currentSelection() != -1)
+  // multi selection possible even table->setSelectionMode(QTable::Single)
+  while (table->numSelections() != 0)
     table->removeSelection(0);
 }
 
 void ObjectLinkDialog::create() {
+  BrowserClass * cla = ((ClassInstanceData *) clia->get_data())->get_class();
+  BrowserClass * clb = ((ClassInstanceData *) clib->get_data())->get_class();
   RelationData * d = (cla->is_writable())
     ? (RelationData *) cla->add_relation((clb->is_writable()) ? UmlAssociation
 							      : UmlDirectionalAssociation,
@@ -166,12 +187,12 @@ void ObjectLinkDialog::create() {
   int n = table->numRows();
   
   table->setNumRows(n + 1);
-  add_rel(table, d, n);
+  add_rel(table, d, n, ra, rb);
   rels.append(d);
   
   // multi selection possible even table->setSelectionMode(QTable::Single)
   while (table->numSelections() != 0)
-    table->removeSelection(1);
+    table->removeSelection(0);
   
   QTableSelection sel;
   
@@ -181,13 +202,11 @@ void ObjectLinkDialog::create() {
 }
 
 void ObjectLinkDialog::accept() {
-  if (table->numSelections() == 0)
-    choozen = 0;
-  else {
+  if (table->numSelections() != 0) {
     QTableSelection sel = table->selection(0);
     
     choozen = rels.at(sel.topRow());
+    reverse = (sel.topRow() >= nforward) && (sel.topRow() < ninputrels);
   }
-  
   QDialog::accept();
 }

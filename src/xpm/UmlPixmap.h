@@ -11,6 +11,7 @@ extern QPixmap * noteButton;
 extern QPixmap * textButton;
 extern QPixmap * actorButton;
 extern QPixmap * classButton;
+extern QPixmap * classinstanceButton;
 extern QPixmap * anchorButton;
 extern QPixmap * selectButton;
 extern QPixmap * usecaseButton;
@@ -72,6 +73,8 @@ extern QPixmap * ActorIcon;
 extern QPixmap * DeletedActorIcon;
 extern QPixmap * ClassIcon;
 extern QPixmap * DeletedClassIcon;
+extern QPixmap * ClassInstanceIcon;
+extern QPixmap * DeletedClassInstanceIcon;
 extern QPixmap * TemplateIcon;
 extern QPixmap * DeletedTemplateIcon;
 extern QPixmap * PublicEmbeddedClassIcon;
@@ -263,6 +266,7 @@ extern QPixmap * rightUnavailablePixmap;
 
 // diagram pixmap
 
+extern QPixmap * innerPixmap;
 extern QPixmap * providedPixmap;
 extern QPixmap * entryPointPixmap;
 extern QPixmap * exitPointPixmap;

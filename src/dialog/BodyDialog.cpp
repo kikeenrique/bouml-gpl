@@ -34,6 +34,7 @@
 #include "BodyDialog.h"
 #include "UmlDesktop.h"
 #include "strutil.h"
+#include "Tool.h"
 
 QSize BodyDialog::previous_size;
 
@@ -55,11 +56,13 @@ BodyDialog::BodyDialog(QString t, QTabDialog * d, post_edit pf,
   
   QVBoxLayout * vbox = new QVBoxLayout(this);
 
-  vbox->addWidget(new QLabel("You can specify the editor through the environment variable BOUML_EDITOR",
+  vbox->addWidget(new QLabel((f == 0) ? "Note : operation bodies preserved"
+				      : "You can specify the editor through the environment variable BOUML_EDITOR",
 			     this));
   
   e = new MultiLineEdit(this);
   e->setText(t);
+  e-> setReadOnly(f == 0);
   
   QFont font = e->font();
   
@@ -77,7 +80,7 @@ BodyDialog::BodyDialog(QString t, QTabDialog * d, post_edit pf,
 BodyDialog::~BodyDialog() {
   previous_size = size();
   
-  if (eds.remove(this))
+  if (eds.remove(this) && (f != 0))
     // dialog still active
     f(dlg, e->text());
 }

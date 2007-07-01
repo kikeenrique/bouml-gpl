@@ -46,10 +46,6 @@ void SdObjCanvas::delete_it() {
   DiagramCanvas::delete_it();
 }
 
-BrowserClass * SdObjCanvas::get_type() {
-  return 0;
-}
-
 void SdObjCanvas::change_scale() {
   DiagramCanvas::change_scale();
   
@@ -93,14 +89,12 @@ bool SdObjCanvas::copyable() const {
 
 void SdObjCanvas::save(QTextStream & st) const {
   if (mortal)
-    st << "mortal ";
-  save_xyz(st, this, "xyz");
+    st << "  mortal";
+  save_xyz(st, this, "  xyz");
   st << " life_line_z " << life_line->z();
 }
 
-void SdObjCanvas::read(char * & st) {
-  const char * k = read_keyword(st);
-  
+void SdObjCanvas::read(char * & st, const char * k) {
   if (!strcmp(k, "mortal")) {
     mortal = TRUE;
     k = read_keyword(st);

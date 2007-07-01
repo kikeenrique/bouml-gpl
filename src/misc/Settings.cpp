@@ -386,6 +386,7 @@ void ClassDiagramSettings::set(QArray<StateSpec> & a, int index) {
 SequenceDiagramSettings::SequenceDiagramSettings() {
   show_full_operations_definition = UmlDefaultState;
   write_horizontally = UmlDefaultState;
+  instances_drawing_mode = DefaultClassDrawingMode;
   drawing_language = DefaultDrawingLanguage;
   draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
@@ -395,9 +396,10 @@ void SequenceDiagramSettings::save(QTextStream & st) const {
   nl_indent(st);
   st << "show_full_operations_definition " << stringify(show_full_operations_definition)
     << " write_horizontally " << stringify(write_horizontally)
-      << " drawing_language " << stringify(drawing_language)
-	<< " draw_all_relations " << stringify(draw_all_relations)
-	  << " shadow " << stringify(shadow);
+      << " class_drawing_mode " << stringify(instances_drawing_mode)
+	<< " drawing_language " << stringify(drawing_language)
+	  << " draw_all_relations " << stringify(draw_all_relations)
+	    << " shadow " << stringify(shadow);
 }
 
 void SequenceDiagramSettings::read(char * & st, char * & k) {
@@ -410,6 +412,10 @@ void SequenceDiagramSettings::read(char * & st, char * & k) {
     write_horizontally = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "class_drawing_mode")) {
+    instances_drawing_mode = drawing_mode(read_keyword(st));
+    k = read_keyword(st);
+  }  
   if (!strcmp(k, "drawing_language")) {
     drawing_language = ::drawing_language(read_keyword(st));
     k = read_keyword(st);
@@ -429,31 +435,34 @@ bool SequenceDiagramSettings::complete(SequenceDiagramSettings & result) const {
   
   check_default(show_full_operations_definition, UmlDefaultState);
   check_default(write_horizontally, UmlDefaultState);
+  check_default(instances_drawing_mode, DefaultClassDrawingMode);  
   check_default(drawing_language, DefaultDrawingLanguage);
   check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
   
-  return done == 5;
+  return done == 6;
 }
 
 void SequenceDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 5);
+  a.resize(i + 6);
 
   if (local) {
     a[i].set("drawing language", &drawing_language);
-    a[i + 1].set("show operations full definition", &show_full_operations_definition);
-    a[i + 2].set("write name:type horizontally", &write_horizontally);
-    a[i + 3].set("draw all relations", &draw_all_relations);
-    a[i + 4].set("draw shadow", &shadow);
+    a[i + 1].set("instances drawing mode", &instances_drawing_mode);
+    a[i + 2].set("show operations full definition", &show_full_operations_definition);
+    a[i + 3].set("write name:type horizontally", &write_horizontally);
+    a[i + 4].set("draw all relations", &draw_all_relations);
+    a[i + 5].set("draw shadow", &shadow);
   }
   else {
     a[i].set("sequence#drawing language", &drawing_language);
-    a[i + 1].set("sequence#show operations full definition", &show_full_operations_definition);
-    a[i + 2].set("sequence#write name:type horizontally", &write_horizontally);
-    a[i + 3].set("sequence#draw all relations", &draw_all_relations);
-    a[i + 4].set("sequence#draw shadow", &shadow);
+    a[i + 1].set("sequence#instances drawing mode", &instances_drawing_mode);
+    a[i + 2].set("sequence#show operations full definition", &show_full_operations_definition);
+    a[i + 3].set("sequence#write name:type horizontally", &write_horizontally);
+    a[i + 4].set("sequence#draw all relations", &draw_all_relations);
+    a[i + 5].set("sequence#draw shadow", &shadow);
   }
 }
 

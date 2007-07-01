@@ -211,7 +211,7 @@ void ActivityDialog::accept() {
     java.accept(activity->java_condition);    
     
     bn->set_comment(comment->text());
-    UmlWindow::set_commented(bn);
+    UmlWindow::update_comment_if_needed(bn);
     
     kvtable->update(bn);
     

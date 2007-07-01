@@ -538,6 +538,12 @@ void UmlWindow::set_commented(BrowserNode * bn)
   }
 }
 
+void UmlWindow::update_comment_if_needed(BrowserNode * bn)
+{
+  if ((the != 0) && (the->commented == bn))
+    set_commented(bn);
+}
+
 void UmlWindow::comment_changed()
 {
   if ((the != 0) && (the->commented != 0) &&
@@ -1129,7 +1135,15 @@ void UmlWindow::preserve() {
       msg_critical("Bouml", "Unchanged : project is read-only");
     else {
       toggle_preserve_bodies();
-      if (preserve_bodies() && add_operation_profile())
+      if (! preserve_bodies())
+	msg_warning("Bouml",
+		    "Warning : <i>Preserve operations's body</i> set to false.<br><br>"
+		    "If you had modified body of operation outside Bouml without "
+		    "using <i>roundtrip body</i> after these modifications, you "
+		    "will loose them.<br>"
+		    "If needed, set <i>Preserve operations's body</i> to true, apply "
+		    "<i>roundtrip body</i>, then set <i>Preserve operations's body</i> to false");
+      else if (add_operation_profile())
 	toggle_add_operation_profile();
       prj->modified();
     }
@@ -1147,9 +1161,13 @@ void UmlWindow::addoperationprofile() {
       if (add_operation_profile() && preserve_bodies()) {
 	toggle_preserve_bodies();
 	msg_critical("Bouml",
-		     "Warning : <i>Preserve operations's body</i> toggle is cleared !"
-		     "<br><br>"
-		     "Next code generations will replace operations's body");
+		     "Warning : <i>Preserve operations's body</i> toggle is cleared !<br><br>"
+		     "Next code generations will replace operations's body<br><br>"
+		    "If you had modified body of operation outside Bouml without "
+		    "using <i>roundtrip body</i> after these modifications, you "
+		    "will loose them.<br>"
+		    "If needed, set <i>Preserve operations's body</i> to true, apply "
+		    "<i>roundtrip body</i>, then set <i>Preserve operations's body</i> to false");
       }
       prj->modified();
     }

@@ -585,7 +585,7 @@ void AttributeDialog::accept() {
     }
     
     bn->set_comment(comment->text());
-    UmlWindow::set_commented(bn);
+    UmlWindow::update_comment_if_needed(bn);
   
     att->constraint = constraint->stripWhiteSpaceText();
     
@@ -751,8 +751,8 @@ void AttributeDialog::cpp_update() {
     }
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += GenerationSettings::cpp_type(type(edtype->currentText().stripWhiteSpace(),
-					     list, nodes));
+      s += get_cpp_name(the_type(edtype->currentText().stripWhiteSpace(),
+				 list, nodes));
     }
     else if (*p == '@')
       manage_alias(att->browser_node, p, s, kvtable);
@@ -798,7 +798,7 @@ QString AttributeDialog::cpp_decl(const BrowserAttribute * at)
       p += 11;
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += GenerationSettings::cpp_type(d->type.get_type());
+      s += get_java_name(d->type);
     }
     else if (*p == '\n') {
       s += ' ';
@@ -939,8 +939,8 @@ void AttributeDialog::java_update() {
     }
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += GenerationSettings::java_type(type(edtype->currentText().stripWhiteSpace(),
-					      list, nodes));
+      s += get_java_name(the_type(edtype->currentText().stripWhiteSpace(),
+				  list, nodes));
     }
     else
       s += *p++;
@@ -991,7 +991,7 @@ QString AttributeDialog::java_decl(const BrowserAttribute * at)
       p += 8;
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += GenerationSettings::java_type(d->type.get_type());
+      s += get_java_name(d->type);
     }
     else if (!strncmp(p, "${@}", 4))
       p += 4;
@@ -1123,8 +1123,8 @@ void AttributeDialog::idl_update() {
     }
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += GenerationSettings::idl_type(type(edtype->currentText().stripWhiteSpace(),
-					     list, nodes));
+      s += get_idl_name(the_type(edtype->currentText().stripWhiteSpace(),
+				 list, nodes));
     }
     else if (*p == '@')
       manage_alias(att->browser_node, p, s, kvtable);
@@ -1177,7 +1177,7 @@ QString AttributeDialog::idl_decl(const BrowserAttribute * at)
       p += 11;
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += GenerationSettings::idl_type(d->type.get_type());
+      s += get_java_name(d->type);
     }
     else if (*p == '\n') {
       s += ' ';

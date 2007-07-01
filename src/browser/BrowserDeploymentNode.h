@@ -63,6 +63,7 @@ class BrowserDeploymentNode : public BrowserNode, public Labeled<BrowserDeployme
     virtual void apply_shortcut(QString s);
     virtual void open(bool force_edit);
     virtual UmlCode get_type() const;
+    virtual int get_identifier() const;
     virtual BasicData * get_data() const;
     virtual void on_delete();
     

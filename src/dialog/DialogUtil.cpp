@@ -42,6 +42,7 @@
 #include <qapplication.h>
 
 #include "BrowserClass.h"
+#include "ClassData.h"
 #include "DialogUtil.h"
 #include "BodyDialog.h"
 #include "DialogTimer.h"
@@ -181,7 +182,7 @@ void edit(const QString & s, QString name, void * id, EditType k,
 {
   QString ed = getenv("BOUML_EDITOR");
   
-  if (!ed.isEmpty()) {
+  if (!ed.isEmpty() && (pf != 0)) {
     // try to use it
     QString f;
     
@@ -226,7 +227,7 @@ void edit(const QString & s, QString name, void * id, EditType k,
       ed += " \"" + path + "\"&";
       system(ed);
 #endif
-      if (d->hasOkButton())
+      if (d->hasOkButton() && (pf != 0))
 	(new DialogTimer(s, path, d, pf))->start(1000);
       return;
     }
@@ -277,6 +278,99 @@ QString type(const QString & t, const QStringList & types,
   return (rank != -1) 
     ? QString(((BrowserClass *) nodes.at(rank))->get_name())
     : t;
+}
+
+QString get_cpp_name(const BrowserClass * cl)
+{
+  ClassData * d = (ClassData *) cl->get_data();
+  QString name = cl->get_name();
+  
+  if (! d->cpp_is_external())
+    return name;
+  
+  QString s = d->get_cppdecl();
+  int index = s.find('\n');
+  
+  s = (index == -1) ? s.stripWhiteSpace()
+		    : s.left(index).stripWhiteSpace();
+  if ((index = s.find("${name}")) != -1)
+    s.replace(index, 7, name);
+  else if ((index = s.find("${Name}")) != -1)
+    s.replace(index, 7, capitalize(name));
+  else if ((index = s.find("${NAME}")) != -1)
+    s.replace(index, 7, name.upper());
+  
+  return s;
+}
+
+QString get_java_name(const BrowserClass * cl)
+{
+  ClassData * d = (ClassData *) cl->get_data();
+  QString name = cl->get_name();
+  
+  if (! d->java_is_external())
+    return name;
+  
+  QString s = d->get_javadecl();
+  int index = s.find('\n');
+  
+  s = (index == -1) ? s.stripWhiteSpace()
+		    : s.left(index).stripWhiteSpace();
+  if ((index = s.find("${name}")) != -1)
+    s.replace(index, 7, name);
+  else if ((index = s.find("${Name}")) != -1)
+    s.replace(index, 7, capitalize(name));
+  else if ((index = s.find("${NAME}")) != -1)
+    s.replace(index, 7, name.upper());
+  
+  return s;
+}
+
+QString get_idl_name(const BrowserClass * cl)
+{
+  ClassData * d = (ClassData *) cl->get_data();
+  QString name = cl->get_name();
+  
+  if (! d->idl_is_external())
+    return name;
+  
+  QString s = d->get_idldecl();
+  int index = s.find('\n');
+  
+  s = (index == -1) ? s.stripWhiteSpace()
+		    : s.left(index).stripWhiteSpace();
+  if ((index = s.find("${name}")) != -1)
+    s.replace(index, 7, name);
+  else if ((index = s.find("${Name}")) != -1)
+    s.replace(index, 7, capitalize(name));
+  else if ((index = s.find("${NAME}")) != -1)
+    s.replace(index, 7, name.upper());
+  
+  return s;
+}
+
+QString get_cpp_name(const AType t)
+{
+  if (t.type != 0)
+    return get_cpp_name(t.type);
+  else
+    return GenerationSettings::cpp_type(t.explicit_type);
+}
+
+QString get_java_name(const AType t)
+{
+  if (t.type != 0)
+    return get_java_name(t.type);
+  else
+    return GenerationSettings::java_type(t.explicit_type);
+}
+
+QString get_idl_name(const AType t)
+{
+  if (t.type != 0)
+    return get_idl_name(t.type);
+  else
+    return GenerationSettings::idl_type(t.explicit_type);
 }
 
 void manage_alias(const BrowserNode * node,

@@ -100,6 +100,17 @@ void BrowserDeploymentView::make() {
   note_color = UmlDefaultColor;
 }
 
+BrowserDeploymentView * BrowserDeploymentView::add_deployment_view(BrowserNode * future_parent)
+{
+  QString name;
+  
+  if (future_parent->enter_child_name(name, "enter deployment view's name : ",
+				      UmlDeploymentView, TRUE, FALSE))
+    return new BrowserDeploymentView(name, future_parent);
+  else
+    return 0;
+}
+
 void BrowserDeploymentView::clear(bool old)
 {
   all.clear(old);
@@ -207,7 +218,14 @@ Do not undelete its sub items");
 void BrowserDeploymentView::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
-    add_deployment_diagram();
+    {
+      BrowserDeploymentDiagram * d =
+	BrowserDeploymentDiagram::add_deployment_diagram(this);
+      
+      if (d != 0)
+	d->select_in_browser();
+    }
+    break;
     break;
   case 1:
     {
@@ -354,13 +372,12 @@ void BrowserDeploymentView::open(bool) {
     edit("Deployment view", its_default_stereotypes);
 }
 
-void BrowserDeploymentView::add_deployment_diagram() {
-  (new BrowserDeploymentDiagram(child_random_name("Diagram"), this))
-    ->select_in_browser();
-}
-
 UmlCode BrowserDeploymentView::get_type() const {
   return UmlDeploymentView;
+}
+
+int BrowserDeploymentView::get_identifier() const {
+  return get_ident();
 }
 
 BasicData * BrowserDeploymentView::get_data() const {
@@ -574,8 +591,10 @@ void BrowserDeploymentView::DropAfterEvent(QDropEvent * e, BrowserNode * after) 
 	insertItem(bn);
       }
       package_modified();
-      if (old_parent != this)
+      if (old_parent != this) {
 	old_parent->package_modified();
+	bn->modified();
+      }
     }
     else {
       msg_critical("Error", "Forbiden");

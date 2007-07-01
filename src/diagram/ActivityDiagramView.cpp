@@ -58,6 +58,7 @@
 #include "BrowserActivityAction.h"
 #include "ActivityActionData.h"
 #include "ActivityObjectData.h"
+#include "ClassInstanceData.h"
 #include "BrowserPin.h"
 #include "PinCanvas.h"
 #include "MenuTitle.h"
@@ -339,6 +340,7 @@ void ActivityDiagramView::dragEnterEvent(QDragEnterEvent * e) {
        UmlDrag::canDecode(e, UmlAttribute, FALSE, TRUE) ||
        UmlDrag::canDecode(e, UmlRelations, TRUE, TRUE) ||
        UmlDrag::canDecode(e, UmlClass, FALSE, TRUE) ||
+       UmlDrag::canDecode(e, UmlClassInstance, FALSE, TRUE) ||
        UmlDrag::canDecode(e, UmlState, FALSE, TRUE)))
     e->accept();
   else
@@ -646,6 +648,33 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
 
     if (obj != 0) {
       ((ActivityObjectData *) obj->get_data())->set_type((BrowserClass *) bn);
+
+      history_save();
+      history_protected = TRUE;
+	  
+      ActivityObjectCanvas * c = 
+	new ActivityObjectCanvas(obj, the_canvas(), p.x(), p.y());
+      
+      history_protected = TRUE;
+      c->show();
+      c->force_inside();
+      history_protected = TRUE;
+      c->upper();
+    
+      canvas()->update();
+      history_protected = FALSE;
+      window()->package_modified();
+    }
+  }
+  else if ((bn = UmlDrag::decode(e, UmlClassInstance)) != 0) {
+    history_protected = FALSE;
+
+    BrowserActivityObject * obj = 
+      BrowserActivityObject::add_activityobject(container(p), bn->get_name());
+
+    if (obj != 0) {
+      ((ActivityObjectData *) obj->get_data())
+	->set_type(((ClassInstanceData *) bn->get_data())->get_class());
 
       history_save();
       history_protected = TRUE;

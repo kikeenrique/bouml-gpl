@@ -153,8 +153,14 @@ void BasicData::send_uml_def(ToolCom * com, BrowserNode * bn,
   com->write_string(stereotype);
   ((HaveKeyValueData *) bn)->send_def(com);
   com->write_string(comment);
-  if (com->api_format() > 11)
+  
+  int api = com->api_format();
+  
+  if (api > 11) {
     com->write_bool(bn->markedp());
+    if (api > 30)
+      com->write_unsigned(bn->get_identifier());
+  }
 }
 
 void BasicData::send_cpp_def(ToolCom *) {

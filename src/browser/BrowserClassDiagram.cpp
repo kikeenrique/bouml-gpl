@@ -56,7 +56,7 @@ BrowserClassDiagram::BrowserClassDiagram(QString s, BrowserNode * p, int id)
 }
 
 BrowserClassDiagram::BrowserClassDiagram(BrowserClassDiagram * model, BrowserNode * p)
-    : BrowserDiagram(p->child_random_name("Diagram"), p, 0), window(0) {
+    : BrowserDiagram(p->get_name(), p, 0), window(0) {
   def = new SimpleData(model->def);
   def->set_browser_node(this);
   comment = model->comment;
@@ -113,6 +113,17 @@ void BrowserClassDiagram::make() {
   note_color = UmlDefaultColor;
   fragment_color = UmlDefaultColor;
   package_color = UmlDefaultColor;
+}
+
+BrowserClassDiagram * BrowserClassDiagram::add_class_diagram(BrowserNode * future_parent)
+{
+  QString name;
+  
+  if (future_parent->enter_child_name(name, "enter class diagram's name : ",
+				      UmlClassDiagram, TRUE, FALSE))
+    return new BrowserClassDiagram(name, future_parent);
+  else
+    return 0;
 }
 
 void BrowserClassDiagram::set_name(const char * s) {
@@ -226,11 +237,13 @@ void BrowserClassDiagram::exec_menu_choice(int rank) {
     return;
   case 3:
     {
-      BrowserClassDiagram * cd =
-	new BrowserClassDiagram(this, (BrowserNode *) parent());
+      QString name;
       
-      cd->select_in_browser();
-      cd->edit("Class diagram", its_default_stereotypes);
+      if (((BrowserNode *)parent())->enter_child_name(name, "enter class diagram's name : ",
+						      UmlClassDiagram, TRUE, FALSE))
+	duplicate((BrowserNode *) parent(), name)->select_in_browser();
+      else
+	return;
     }
     break;
   case 4:
@@ -319,6 +332,10 @@ void BrowserClassDiagram::read_session(char * & st) {
 
 UmlCode BrowserClassDiagram::get_type() const {
   return UmlClassDiagram;
+}
+
+int BrowserClassDiagram::get_identifier() const {
+  return get_ident();
 }
 
 void BrowserClassDiagram::get_classdiagramsettings(ClassDiagramSettings & r) const {
@@ -429,14 +446,6 @@ bool BrowserClassDiagram::tool_cmd(ToolCom * com, const char * args) {
     return (def->tool_cmd(com, args, this, comment) ||
 	    BrowserNode::tool_cmd(com, args));
   }
-}
-
-void BrowserClassDiagram::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserClassDiagram::DropEvent(QDropEvent * e) {
-  ((BrowserNode *) parent())->DropAfterEvent(e, this);
 }
 
 void BrowserClassDiagram::save_stereotypes(QTextStream & st)

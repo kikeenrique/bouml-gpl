@@ -209,6 +209,10 @@ UmlCode BrowserExtraMember::get_type() const {
   return UmlExtraMember;
 }
 
+int BrowserExtraMember::get_identifier() const {
+  return get_ident();
+}
+
 BasicData * BrowserExtraMember::get_data() const {
   return def;
 }
@@ -252,14 +256,6 @@ void BrowserExtraMember::member_cpp_def(const QString &, const QString &,
 bool BrowserExtraMember::tool_cmd(ToolCom * com, const char * args) {
   return (def->tool_cmd(com, args, this, comment) ||
 	  BrowserNode::tool_cmd(com, args));
-}
-
-void BrowserExtraMember::DragMoveEvent(QDragMoveEvent * e) {
-  ((BrowserNode *) parent())->DragMoveInsideEvent(e);
-}
-
-void BrowserExtraMember::DropEvent(QDropEvent * e) {
-  DropAfterEvent(e, 0);
 }
 
 void BrowserExtraMember::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
