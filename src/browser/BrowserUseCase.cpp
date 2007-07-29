@@ -51,7 +51,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserUseCase> BrowserUseCase::all(257);
+IdDict<BrowserUseCase> BrowserUseCase::all(257, __FILE__);
 QStringList BrowserUseCase::its_default_stereotypes;	// unicode
 QStringList BrowserUseCase::relations_default_stereotypes[UmlRelations];	// unicode
 
@@ -882,6 +882,13 @@ void BrowserUseCase::read_stereotypes(char * & st, char * & k)
   }
   else
     init();
+  
+  if (!strcmp(k, "actor_stereotypes")) {
+    // old release
+    QStringList dummy;
+    read_unicode_string_list(dummy, st);
+    k = read_keyword(st);
+  }
 }
 
 void BrowserUseCase::save(QTextStream & st, bool ref, QString & warning) {
@@ -984,13 +991,22 @@ BrowserUseCase * BrowserUseCase::read(char * & st, char * k,
     result = all[id];
     
     if (result == 0)
-      result = 
-	new BrowserUseCase(read_string(st), parent, id);
+      result = new BrowserUseCase(read_string(st), parent, id);
+    else if (result->is_defined) {
+      BrowserUseCase * already_exist = result;
+
+      result = new BrowserUseCase(read_string(st), parent, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("use case", result);
+    }
     else {
       result->set_parent(parent);
       result->set_name(read_string(st));
     }
     
+    result->is_defined = TRUE;
+
     result->is_read_only = !in_import() && read_only_file() || 
       (user_id() != 0) && result->is_api_base();
     
@@ -1001,6 +1017,7 @@ BrowserUseCase * BrowserUseCase::read(char * & st, char * k,
     result->collaborationdiagram_settings.read(st, k);	// updates k
     if (read_file_format() >= 25)
       result->objectdiagram_settings.read(st, k);	// updates k
+    read_color(st, "duration", result->duration_color, k);	// old, updates k
     read_color(st, "duration_color", result->duration_color, k);	// updates k
     read_color(st, "continuation_color", result->continuation_color, k);	// updates k
     read_color(st, "note_color", result->note_color, k);	// updates k

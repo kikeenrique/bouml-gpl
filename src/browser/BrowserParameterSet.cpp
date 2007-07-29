@@ -43,7 +43,7 @@
 #include "strutil.h"
 #include "mu.h"
 
-IdDict<BrowserParameterSet> BrowserParameterSet::all(257);
+IdDict<BrowserParameterSet> BrowserParameterSet::all(257, __FILE__);
 QStringList BrowserParameterSet::its_default_stereotypes;	// unicode
 
 BrowserParameterSet::BrowserParameterSet(QString s, BrowserNode * p, ParameterSetData * d, int id)
@@ -341,12 +341,23 @@ BrowserParameterSet * BrowserParameterSet::read(char * & st, char * k,
       result = new BrowserParameterSet(s, parent, new ParameterSetData, id);
       result->def->read(st, k);	// updates k
     }
+    else if (result->is_defined) {
+      BrowserParameterSet * already_exist = result;
+
+      result = new BrowserParameterSet(s, parent, new ParameterSetData, id);
+      result->def->read(st, k);	// updates k
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("parameter set", result);
+    }
     else {
       result->def->read(st, k);	// updates k
       result->set_parent(parent);
       result->set_name(s);
     }
     
+    result->is_defined = TRUE;
+
     result->is_read_only = (!in_import() && read_only_file()) || 
       (user_id() != 0) && result->is_api_base();
     result->def->set_browser_node(result);

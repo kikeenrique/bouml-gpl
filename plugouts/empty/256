@@ -1,6 +1,6 @@
-format 39
+format 40
 "API BASE" // API BASE
-  revision 16
+  revision 18
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -971,79 +971,6 @@ public static final ${class} ${name} = new ${class}(_${name});
       end
     end
 
-    class 768 "UmlParameter"
-      visibility package stereotype "struct"
-      cpp_decl "${comment}${template}struct ${name}${inherit} {
-${members}};
-
-${inlines}
-"
-      final java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
-${members}};
-"
-      idl_decl ""
-      explicit_switch_type ""
-      
-      comment "  Represent an operation's parameter
-"
-      operation 256 "UmlParameter"
-	public explicit_return_type ""
-	nparams 0
-	
-	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
-${body}}
-"
-	
-      end
-
-      operation 384 "clone_it"
-	public return_type class_ref 768 // UmlParameter
-	nparams 0
-	
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	comment "  Clone the parameter, defined only in Java which does not have 'const' or 'value passing'"
-      end
-
-      classrelation 256 // dir (<directional aggregation by value>)
-	relation 256 *-->
-	  a role_name "dir" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
-	    classrelation_ref 256 // dir (<directional aggregation by value>)
-	  b multiplicity "" parent class_ref 384 // aDirection
-      end
-
-      classrelation 384 // type (<directional aggregation by value>)
-	relation 384 *-->
-	  a role_name "type" multiplicity "" public
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
-	    classrelation_ref 384 // type (<directional aggregation by value>)
-	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
-      end
-
-      attribute 4864 "name"
-	public explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
-	idl_decl ""
-      end
-
-      attribute 4992 "default_value"
-	public explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
-	idl_decl ""
-      end
-    end
-
     class 896 "UmlBaseActualParameter"
       abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -1098,7 +1025,7 @@ ${members}}
       end
 
       operation 896 "value"
-	const public return_type class_ref 1152 // UmlTypeSpec
+	const public return_type class_ref 145154 // UmlTypeSpec
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
 "
@@ -1144,7 +1071,7 @@ ${members}}
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 768 // _value (<directional aggregation by value>)
-	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 145154 // UmlTypeSpec
       end
 
       operation 1024 "read_"
@@ -1213,7 +1140,7 @@ ${members}};
       end
 
       operation 1536 "defaultValue"
-	const cpp_inline public return_type class_ref 1152 // UmlTypeSpec
+	const cpp_inline public return_type class_ref 145154 // UmlTypeSpec
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract} { return _default_value; };
 "
@@ -1224,7 +1151,7 @@ ${members}};
       end
 
       operation 146816 "extend"
-	public return_type class_ref 1152 // UmlTypeSpec
+	public return_type class_ref 145154 // UmlTypeSpec
 	nparams 0
 	cpp_decl "  ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract} { return _extends; };"
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{ return _extends; }"
@@ -1266,7 +1193,7 @@ ${members}};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 1024 // _default_value (<directional aggregation by value>)
-	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 145154 // UmlTypeSpec
       end
 
       classrelation 136448 // _extends (<directional aggregation by value>)
@@ -1276,7 +1203,7 @@ ${members}};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 136448 // _extends (<directional aggregation by value>)
-	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 145154 // UmlTypeSpec
       end
 
       operation 1664 "read_"
@@ -1296,7 +1223,7 @@ ${body}}
       end
     end
 
-    class 1152 "UmlTypeSpec"
+    class 145024 "UmlBaseTypeSpec"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -1314,28 +1241,7 @@ ${members}};
  - a class reference
 
  - an explicit type"
-      attribute 5504 "explicit_type"
-	public explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
-	idl_decl ""
-	comment " significant in case type == 0"
-      end
-
-      classrelation 1152 // type (<unidirectional association>)
-	relation 1152 --->
-	  a role_name "type" multiplicity "" public
-	    comment " if != 0 the class representing the type"
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
-	    classrelation_ref 1152 // type (<unidirectional association>)
-	  b multiplicity "" parent class_ref 7169 // UmlClass
-	comment " if != 0 the class representing the type"
-      end
-
-      operation 1792 "UmlTypeSpec"
+      operation 1792 "UmlBaseTypeSpec"
 	cpp_inline public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${name}${(}${)} : type(0) {};
@@ -1361,7 +1267,7 @@ ${body}}
       end
 
       operation 2048 "clone_it"
-	public return_type class_ref 1152 // UmlTypeSpec
+	public return_type class_ref 145154 // UmlTypeSpec
 	nparams 0
 	
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
@@ -1369,6 +1275,25 @@ ${body}}
 "
 	
 	comment " Clone the type specification, defined only in Java which does not have 'const' or 'value passing'"
+      end
+
+      attribute 5504 "explicit_type"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	idl_decl ""
+	comment " significant in case type == 0"
+      end
+
+      classrelation 156672 // type (<unidirectional association>)
+	relation 156672 --->
+	  a role_name "type" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	    classrelation_ref 156672 // type (<unidirectional association>)
+	  b multiplicity "" parent class_ref 7169 // UmlClass
       end
     end
 
@@ -1505,7 +1430,7 @@ ${body}}
       end
 
       operation 2944 "type"
-	public return_type class_ref 1152 // UmlTypeSpec
+	public return_type class_ref 145154 // UmlTypeSpec
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
 "
@@ -1522,7 +1447,7 @@ ${body}}
       operation 3072 "set_Type"
 	public explicit_return_type "bool"
 	nparams 1
-	  param in name "t" type class_ref 1152 // UmlTypeSpec
+	  param in name "t" type class_ref 145154 // UmlTypeSpec
 	nexceptions 1
 	  explicit_exception "RuntimeException"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
@@ -1809,7 +1734,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 1408 // _type (<directional aggregation by value>)
-	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 145154 // UmlTypeSpec
       end
 
       classrelation 1536 // _get_oper (<unidirectional association>)
@@ -2046,7 +1971,7 @@ ${body}}
       end
 
       operation 5888 "baseType"
-	public return_type class_ref 1152 // UmlTypeSpec
+	public return_type class_ref 145154 // UmlTypeSpec
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
 "
@@ -2063,7 +1988,7 @@ ${body}}
       operation 6016 "set_BaseType"
 	public explicit_return_type "bool"
 	nparams 1
-	  param in name "t" type class_ref 1152 // UmlTypeSpec
+	  param in name "t" type class_ref 145154 // UmlTypeSpec
 	nexceptions 1
 	  explicit_exception "RuntimeException"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
@@ -2181,7 +2106,7 @@ ${body}}
 	public explicit_return_type "bool"
 	nparams 2
 	  param in name "rank" explicit_type "uint"
-	  param in name "type" type class_ref 1152 // UmlTypeSpec
+	  param in name "type" type class_ref 145154 // UmlTypeSpec
 	nexceptions 1
 	  explicit_exception "RuntimeException"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract};
@@ -2421,7 +2346,7 @@ ${body}}
       end
 
       operation 8320 "switchType"
-	public return_type class_ref 1152 // UmlTypeSpec
+	public return_type class_ref 145154 // UmlTypeSpec
 	nparams 0
 	cpp_decl "    #ifdef WITHIDL
 ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
@@ -2441,7 +2366,7 @@ ${body}}
       operation 8448 "set_SwitchType"
 	public explicit_return_type "bool"
 	nparams 1
-	  param in name "t" type class_ref 1152 // UmlTypeSpec
+	  param in name "t" type class_ref 145154 // UmlTypeSpec
 	nexceptions 1
 	  explicit_exception "RuntimeException"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
@@ -2740,7 +2665,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 1;
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 2304 // _base_type (<directional aggregation by value>)
-	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 145154 // UmlTypeSpec
       end
 
       classrelation 2432 // _assoc_diagram (<unidirectional association>)
@@ -2763,7 +2688,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 2560 // _switch_type (<directional aggregation by value>)
-	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 145154 // UmlTypeSpec
 	comment " union"
       end
 
@@ -3791,13 +3716,13 @@ ${members}};
       explicit_switch_type ""
       
       comment " Manage the class views"
-      classrelation 4736 // <generalisation>
-	relation 4736 ---|>
+      classrelation 157312 // <generalisation>
+	relation 157312 ---|>
 	  a public
 	    cpp default "${type}"
 	    java "${type}"
-	    classrelation_ref 4736 // <generalisation>
-	  b multiplicity "" parent class_ref 8833 // UmlItem
+	    classrelation_ref 157312 // <generalisation>
+	  b multiplicity "" parent class_ref 145410 // UmlView
       end
 
       operation 13568 "create"
@@ -3905,7 +3830,7 @@ ${body}}
 	nparams 2
 	  param in name "id" explicit_type "item_id"
 	  param in name "n" explicit_type "string"
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlItem(id, n) {};
+	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlView(id, n) {};
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws} { super(id, n); }
 "
@@ -4932,13 +4857,13 @@ ${members}};
       explicit_switch_type ""
       
       comment "  Manage the component views"
-      classrelation 5888 // <generalisation>
-	relation 5888 ---|>
+      classrelation 157440 // <generalisation>
+	relation 157440 ---|>
 	  a public
 	    cpp default "${type}"
 	    java "${type}"
-	    classrelation_ref 5888 // <generalisation>
-	  b multiplicity "" parent class_ref 8833 // UmlItem
+	    classrelation_ref 157440 // <generalisation>
+	  b multiplicity "" parent class_ref 145410 // UmlView
       end
 
       operation 18432 "create"
@@ -4984,7 +4909,7 @@ ${body}}
 	nparams 2
 	  param in name "id" explicit_type "item_id"
 	  param in name "n" explicit_type "string"
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlItem(id, n) {};
+	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlView(id, n) {};
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws} { super(id, n); }
 "
@@ -5082,13 +5007,13 @@ ${members}};
       explicit_switch_type ""
       
       comment "  Manage the deployment views"
-      classrelation 6144 // <generalisation>
-	relation 6144 ---|>
+      classrelation 157568 // <generalisation>
+	relation 157568 ---|>
 	  a public
 	    cpp default "${type}"
 	    java "${type}"
-	    classrelation_ref 6144 // <generalisation>
-	  b multiplicity "" parent class_ref 8833 // UmlItem
+	    classrelation_ref 157568 // <generalisation>
+	  b multiplicity "" parent class_ref 145410 // UmlView
       end
 
       operation 19200 "create"
@@ -5134,7 +5059,7 @@ ${body}}
 	nparams 2
 	  param in name "id" explicit_type "item_id"
 	  param in name "n" explicit_type "string"
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlItem(id, n) {};
+	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlView(id, n) {};
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws} { super(id, n); }
 "
@@ -6573,8 +6498,8 @@ ${body}}
       operation 25600 "set_it_"
 	protected explicit_return_type "bool"
 	nparams 3
-	  param inout name "r" type class_ref 1152 // UmlTypeSpec
-	  param in name "t" type class_ref 1152 // UmlTypeSpec
+	  param inout name "r" type class_ref 145154 // UmlTypeSpec
+	  param in name "t" type class_ref 145154 // UmlTypeSpec
 	  param in name "cmd" explicit_type "OnInstanceCmd"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, const ${t1} & ${p1}, ${t2} ${p2}${)}${const}${volatile}${abstract};
 "
@@ -7155,9 +7080,18 @@ ${body}}
 	relation 155008 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 155008 // <dependency>
 	  b multiplicity "" parent class_ref 143488 // UmlBaseClassInstance
+      end
+
+      classrelation 157056 // <dependency>
+	relation 157056 -_->
+	  stereotype "friend"
+	  a default
+	    cpp default "Generated"
+	    classrelation_ref 157056 // <dependency>
+	  b multiplicity "" parent class_ref 145280 // UmlBaseView
       end
     end
 
@@ -7394,7 +7328,7 @@ ${body}}
       end
 
       operation 27648 "returnType"
-	public return_type class_ref 1152 // UmlTypeSpec
+	public return_type class_ref 145154 // UmlTypeSpec
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
 "
@@ -7411,7 +7345,7 @@ ${body}}
       operation 27776 "set_ReturnType"
 	public explicit_return_type "bool"
 	nparams 1
-	  param in name "t" type class_ref 1152 // UmlTypeSpec
+	  param in name "t" type class_ref 145154 // UmlTypeSpec
 	nexceptions 1
 	  explicit_exception "RuntimeException"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
@@ -7429,7 +7363,7 @@ ${body}}
       end
 
       operation 27904 "params"
-	public return_type class_ref 768 // UmlParameter
+	public return_type class_ref 144898 // UmlParameter
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}const QValueList<${type}> ${name}${(}${)}${const}${volatile}${abstract};
 "
@@ -7447,7 +7381,7 @@ ${body}}
 	public explicit_return_type "bool"
 	nparams 2
 	  param in name "rank" explicit_type "unsigned"
-	  param in name "p" type class_ref 768 // UmlParameter
+	  param in name "p" type class_ref 144898 // UmlParameter
 	nexceptions 1
 	  explicit_exception "RuntimeException"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract};
@@ -7488,7 +7422,7 @@ ${body}}
 	public explicit_return_type "bool"
 	nparams 2
 	  param in name "rank" explicit_type "unsigned"
-	  param in name "p" type class_ref 768 // UmlParameter
+	  param in name "p" type class_ref 144898 // UmlParameter
 	nexceptions 1
 	  explicit_exception "RuntimeException"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract};
@@ -7506,7 +7440,7 @@ ${body}}
       end
 
       operation 28416 "exceptions"
-	public return_type class_ref 1152 // UmlTypeSpec
+	public return_type class_ref 145154 // UmlTypeSpec
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}const QValueList<${type}> ${name}${(}${)}${const}${volatile}${abstract};
 "
@@ -7524,7 +7458,7 @@ ${body}}
 	public explicit_return_type "bool"
 	nparams 2
 	  param in name "rank" explicit_type "unsigned"
-	  param in name "t" type class_ref 1152 // UmlTypeSpec
+	  param in name "t" type class_ref 145154 // UmlTypeSpec
 	nexceptions 1
 	  explicit_exception "RuntimeException"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract};
@@ -7565,7 +7499,7 @@ ${body}}
 	public explicit_return_type "bool"
 	nparams 2
 	  param in name "rank" explicit_type "unsigned"
-	  param in name "t" type class_ref 1152 // UmlTypeSpec
+	  param in name "t" type class_ref 145154 // UmlTypeSpec
 	nexceptions 1
 	  explicit_exception "RuntimeException"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract};
@@ -8379,7 +8313,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	    classrelation_ref 10624 // _return_type (<directional aggregation by value>)
-	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 145154 // UmlTypeSpec
       end
 
       classrelation 10752 // _params (<unidirectional association>)
@@ -8391,7 +8325,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
 "
 	    classrelation_ref 10752 // _params (<unidirectional association>)
-	  b multiplicity "" parent class_ref 768 // UmlParameter
+	  b multiplicity "" parent class_ref 144898 // UmlParameter
       end
 
       classrelation 10880 // _exceptions (<unidirectional association>)
@@ -8403,7 +8337,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
 "
 	    classrelation_ref 10880 // _exceptions (<unidirectional association>)
-	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 145154 // UmlTypeSpec
       end
 
       attribute 11008 "_cpp_def"
@@ -8558,6 +8492,79 @@ ${body}}
 	
 	comment "internal, do NOT use it
 "
+      end
+    end
+
+    class 144768 "UmlBaseParameter"
+      visibility package stereotype "struct"
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}};
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "  Represent an operation's parameter
+"
+      operation 256 "UmlBaseParameter"
+	public explicit_return_type ""
+	nparams 0
+	
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+      end
+
+      operation 384 "clone_it"
+	public return_type class_ref 144898 // UmlParameter
+	nparams 0
+	
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment "  Clone the parameter, defined only in Java which does not have 'const' or 'value passing'"
+      end
+
+      attribute 4864 "name"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	idl_decl ""
+      end
+
+      attribute 4992 "default_value"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	idl_decl ""
+      end
+
+      classrelation 156288 // type (<directional aggregation by value>)
+	relation 156288 *-->
+	  a role_name "type" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	    classrelation_ref 156288 // type (<directional aggregation by value>)
+	  b multiplicity "" parent class_ref 145154 // UmlTypeSpec
+      end
+
+      classrelation 156416 // dir (<directional aggregation by value>)
+	relation 156416 *-->
+	  a role_name "dir" multiplicity "" public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	    classrelation_ref 156416 // dir (<directional aggregation by value>)
+	  b multiplicity "" parent class_ref 384 // aDirection
       end
     end
 
@@ -9439,7 +9446,7 @@ ${body}}
       end
 
       operation 147328 "association"
-	public return_type class_ref 1152 // UmlTypeSpec
+	public return_type class_ref 145154 // UmlTypeSpec
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
 "
@@ -9456,7 +9463,7 @@ ${body}}
       operation 147456 "set_Association"
 	public explicit_return_type "bool"
 	nparams 1
-	  param in name "t" type class_ref 1152 // UmlTypeSpec
+	  param in name "t" type class_ref 145154 // UmlTypeSpec
 	nexceptions 1
 	  explicit_exception "RuntimeException"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
@@ -9941,7 +9948,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 1;
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 136704 // _association (<directional aggregation by value>)
-	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 145154 // UmlTypeSpec
       end
 
       classrelation 11904 // _get_oper (<unidirectional association>)
@@ -10571,13 +10578,13 @@ ${members}};
       explicit_switch_type ""
       
       comment "  Manage the use case views"
-      classrelation 13184 // <generalisation>
-	relation 13184 ---|>
+      classrelation 157696 // <generalisation>
+	relation 157696 ---|>
 	  a public
 	    cpp default "${type}"
 	    java "${type}"
-	    classrelation_ref 13184 // <generalisation>
-	  b multiplicity "" parent class_ref 8833 // UmlItem
+	    classrelation_ref 157696 // <generalisation>
+	  b multiplicity "" parent class_ref 145410 // UmlView
       end
 
       operation 44160 "create"
@@ -10623,7 +10630,7 @@ ${body}}
 	nparams 2
 	  param in name "id" explicit_type "item_id"
 	  param in name "n" explicit_type "string"
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlItem(id, n) {};
+	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlView(id, n) {};
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws} { super(id, n); }
 "
@@ -18686,7 +18693,7 @@ ${body}}
       end
 
       operation 181760 "type"
-	public return_type class_ref 1152 // UmlTypeSpec
+	public return_type class_ref 145154 // UmlTypeSpec
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
 "
@@ -18703,7 +18710,7 @@ ${body}}
       operation 181888 "set_Type"
 	public explicit_return_type "bool"
 	nparams 1
-	  param in name "v" type class_ref 1152 // UmlTypeSpec
+	  param in name "v" type class_ref 145154 // UmlTypeSpec
 	nexceptions 1
 	  explicit_exception "RuntimeException"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
@@ -19049,7 +19056,7 @@ ${body}}
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	    classrelation_ref 151936 // _type (<directional aggregation by value>)
-	  b multiplicity "" parent class_ref 1152 // UmlTypeSpec
+	  b multiplicity "" parent class_ref 145154 // UmlTypeSpec
       end
 
       attribute 69376 "_multiplicity"
@@ -20506,6 +20513,45 @@ ${body}}
 	
       end
     end
+
+    class 145280 "UmlBaseView"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 156928 // <generalisation>
+	relation 156928 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 156928 // <generalisation>
+	  b multiplicity "" parent class_ref 8833 // UmlItem
+      end
+
+      operation 195840 "UmlBaseView"
+	protected explicit_return_type ""
+	nparams 2
+	  param in name "id" explicit_type "item_id"
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlItem(id, s) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  super(id, s);
+}
+"
+	
+	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+    end
   end
 
   deploymentview 256 "API BASE Deployment view"
@@ -20598,7 +20644,7 @@ ${definition}"
       end
     end
 
-    artifact 640 "UmlTypeSpec"
+    artifact 140160 "UmlBaseTypeSpec"
       stereotype "source"
       cpp_h "#ifndef _${NAME}_H
 #define _${NAME}_H
@@ -20620,7 +20666,7 @@ ${namespace_end}"
 ${package}
 ${definition}"
       associated_classes
-	class_ref 1152 // UmlTypeSpec
+	class_ref 145024 // UmlBaseTypeSpec
       end
     end
 
@@ -21163,6 +21209,32 @@ ${package}
 ${definition}"
       associated_classes
 	class_ref 3456 // UmlBaseOperation
+      end
+    end
+
+    artifact 139904 "UmlBaseParameter"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 144768 // UmlBaseParameter
       end
     end
 
@@ -21928,32 +22000,6 @@ ${package}
 ${definition}"
       associated_classes
 	class_ref 640 // anItemKind
-      end
-    end
-
-    artifact 4352 "UmlParameter"
-      stereotype "source"
-      cpp_h "#ifndef _${NAME}_H
-#define _${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      java_src "${comment}
-${package}
-${definition}"
-      associated_classes
-	class_ref 768 // UmlParameter
       end
     end
 
@@ -22744,6 +22790,32 @@ ${package}
 ${definition}"
       associated_classes
 	class_ref 143872 // SlotRelation
+      end
+    end
+
+    artifact 140416 "UmlBaseView"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 145280 // UmlBaseView
       end
     end
   end

@@ -2608,9 +2608,11 @@ void GenerationSettings::read()
 
 bool GenerationSettings::import()
 {
-  QString fn = QFileDialog::getOpenFileName("generation_settings", "generation_settings");
+  QString fn = QFileDialog::getOpenFileName(last_used_directory(), "generation_settings");
       
   if (!fn.isEmpty()) {
+    set_last_used_directory(fn);
+    
     char * s = read_file(fn);
     
     if (s != 0) {

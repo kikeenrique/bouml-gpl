@@ -96,7 +96,7 @@ class BrowserRelation : public BrowserNode, public Labeled<BrowserRelation> {
     static BrowserRelation * read_ref(char * &, char * k);
     static BrowserRelation * temporary(RelationData * d);
     static BrowserNode * get_it(const char * k, int id);
-    static void post_load(QList<BrowserRelation> & wrong);
+    static void post_load();
     void unvalidate();
     
     static void clear(bool old);

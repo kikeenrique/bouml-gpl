@@ -45,7 +45,7 @@
 #include "strutil.h"
 #include "mu.h"
 
-IdDict<BrowserSimpleRelation> BrowserSimpleRelation::all(257);
+IdDict<BrowserSimpleRelation> BrowserSimpleRelation::all(257, __FILE__);
 
 BrowserSimpleRelation::BrowserSimpleRelation(BrowserNode * p, SimpleRelationData * d, int id)
     : BrowserNode(d->definition(FALSE), p), Labeled<BrowserSimpleRelation>(all, id),
@@ -374,15 +374,25 @@ BrowserSimpleRelation *
     
     if ((result = all[id]) == 0)
       result = new BrowserSimpleRelation(parent, d, id);
+    else if (result->is_defined) {
+      BrowserSimpleRelation * already_exist = result;
+
+      result = new BrowserSimpleRelation(parent, d, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("relation", result);
+    }
     else {
       if (result->def != 0)
-	// re-load
+	// re-load ???
 	delete result->def;
       result->def = d;
       result->set_parent(parent);
       result->set_name(d->definition(FALSE));
     }
     
+    result->is_defined = TRUE;
+
     result->is_read_only = !in_import() && read_only_file() || 
       (user_id() != 0) && result->is_api_base();
     

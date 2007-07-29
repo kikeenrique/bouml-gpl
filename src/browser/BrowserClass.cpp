@@ -70,7 +70,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserClass> BrowserClass::all(257);
+IdDict<BrowserClass> BrowserClass::all(257, __FILE__);
 
 QStringList BrowserClass::its_default_stereotypes;	// unicode
 QStringList BrowserClass::relations_default_stereotypes[UmlRelations];	// unicode
@@ -1878,6 +1878,14 @@ bool BrowserClass::tool_cmd(ToolCom * com, const char * args) {
 	(*it)->write_id(com);
     }
     return TRUE;
+  case setUserCmd:
+    // plug-out upgrade, limited checks
+    if (!is_read_only || root_permission()) {
+      all.remove(get_ident());
+      new_ident(com->get_unsigned(args), all);      
+      package_modified();
+    }
+    return TRUE;
   default:
     {
       QString s = name;
@@ -2709,18 +2717,30 @@ BrowserClass * BrowserClass::read(char * & st, char * k,
       result = new BrowserClass(id);
     return result;
   }
-  else if (!strcmp(k, "class")) {
+  else if (!strcmp(k, "class") || !strcmp(k, "actor")) {
+    bool actor = (*k == 'a');
+
     id = read_id(st);
     
     QString s = read_string(st);
     
     if ((result = all[id]) == 0)
       result = new BrowserClass(s, parent, new ClassData, id);
+    else if (result->is_defined) {
+      BrowserClass * already_exist = result;
+
+      result = new BrowserClass(s, parent, new ClassData, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("class", result);
+    }
     else {
       result->set_parent(parent);
       result->set_name(s);
     }
     
+    result->is_defined = TRUE;
+
     result->is_read_only = (!in_import() && read_only_file()) ||
       (user_id() != 0) && result->is_api_base();
     
@@ -2730,7 +2750,8 @@ BrowserClass * BrowserClass::read(char * & st, char * k,
     
     k = read_keyword(st);
     
-    result->def->read(st, k);	// updates k
+    if (! actor)
+      result->def->read(st, k);	// updates k
     result->def->set_browser_node(result);
     
     if (!strcmp(k, "associated_class_diagram")) {
@@ -2776,6 +2797,9 @@ BrowserClass * BrowserClass::read(char * & st, char * k,
       if (strcmp(k, "end"))
 	wrong_keyword(k, "end");
     }
+
+    if (actor)
+      result->def->set_stereotype("actor");
     
     return result;
   }

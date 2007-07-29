@@ -236,6 +236,23 @@ void ColMsgTable::edit_msg(int row) {
   }
 }
 
+#ifdef NEW_METHOD
+void ColMsgTable::save_list(ColMsgList & l, QPtrDict<ColMsgList> & saved) {
+  if (saved.find(&l) == 0) {
+    saved.insert(&l, new ColMsgList(l));
+    
+    QListIterator<ColMsg> it(l);
+    
+    for (; it.current(); ++it) {
+      ColMsg * m = it.current();
+      
+      save_list(m->get_msgs(), saved);
+      save_list(m->in->get_msgs(), saved);
+    }
+  }
+}
+#endif
+
 void ColMsgTable::change_ranks(int row, int col) {
   ColMsg * msg = flat_msg_list[row];
   HierarchicalRankValidator validator(view, msg->hierarchical_rank);
@@ -246,6 +263,13 @@ void ColMsgTable::change_ranks(int row, int col) {
   
   if (ok && (new_hr != msg->hierarchical_rank)) {
     QString old_hr = msg->hierarchical_rank;
+    
+#ifndef NEW_METHOD
+    // it may be (?, not reproduced) not possible to reintroduce the message
+    // at its original rank when the new rank is wrong => stop to follow this
+    // way and save the original def before trying to use the new rank ;-(
+    //
+    // Fixed by doing a ColDiagramView::update_msgs() after load ?
     
     for (;;) {
       msg->in->remove_it(msg);
@@ -291,5 +315,64 @@ void ColMsgTable::change_ranks(int row, int col) {
       refresh();
       setCurrentCell(flat_msg_list.findIndex(msg), col);
     }
+#else
+    // save all the messages
+    QPtrDict<ColMsgList> saved;
+    
+    saved.setAutoDelete(TRUE);
+    save_list(view->get_msgs(), saved);
+    
+    // remove the message
+    msg->in->remove_it(msg);
+    msg->extract_it(view->get_msgs());
+    ColMsg::update_ranks(view->get_msgs());
+    
+    // try to insert the msg with the asked rank
+    msg->hierarchical_rank = new_hr;
+    msg->place_in_internal(view->get_msgs());
+    msg->place_in_its_support();
+    ColMsg::update_ranks(view->get_msgs());
+    
+    if (new_hr.find('.') != -1) {
+      // upper level msg dest must be msg start
+      ColMsg * upper =
+	ColMsg::find_rec(new_hr.left(new_hr.findRev('.')), view->get_msgs());
+      
+      if (upper == 0)
+	// error
+	new_hr = QString::null;
+      else {
+	CodObjCanvas * from;
+	CodObjCanvas * from_bis;
+	CodObjCanvas * to;
+	
+	msg->in->get_from_to(from, to, msg->is_forward);
+	upper->in->get_from_to(from_bis, to, upper->is_forward);
+	
+	if (to != from)
+	  // error
+	  new_hr = QString::null;
+      }
+    }
+    
+    if (msg->hierarchical_rank != new_hr) {
+      msg_warning("Warning", "Invalid hierarchical rank");
+      
+      msg->hierarchical_rank = old_hr;
+      
+      // restore saved lists
+      
+       QPtrDictIterator<ColMsgList> it(saved);
+       
+       while (it.current()) {
+	 *((ColMsgList *) it.currentKey()) = *(it.current());
+	 ++it;
+       }
+    }
+      
+    view->update_msgs();
+    refresh();
+    setCurrentCell(flat_msg_list.findIndex(msg), col);
+#endif
   }
 }

@@ -57,6 +57,7 @@
 ColDiagramView::ColDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
     : DiagramView(parent, canvas, id) {
   load("Collaboration");
+  update_msgs();
 }
 
 void ColDiagramView::update_msgs() {
@@ -104,6 +105,7 @@ void ColDiagramView::menu(const QPoint&) {
     // mark the diagram modified because the undid modifications
     // may be saved in the file are not saved in memory
     load("Collaboration");
+    update_msgs();
     window()->package_modified();
     break;
   case 19:

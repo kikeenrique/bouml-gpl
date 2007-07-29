@@ -85,6 +85,9 @@ class BasicData : public QObject {
     BrowserNode * get_browser_node() const { return browser_node; };
     
     virtual QString definition(bool full) const;
+    
+    virtual bool decldefbody_contain(const QString & s, bool cs,
+				     BrowserNode *);
         
     void save(QTextStream &, QString & warning) const;
     void read(char * & st, char * & k);

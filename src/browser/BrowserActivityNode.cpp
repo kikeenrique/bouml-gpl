@@ -49,7 +49,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserActivityNode> BrowserActivityNode::all(257);
+IdDict<BrowserActivityNode> BrowserActivityNode::all(257, __FILE__);
 QStringList BrowserActivityNode::its_default_stereotypes;	// unicode
 
 BrowserActivityNode::BrowserActivityNode(UmlCode c, QString s, BrowserNode * p, int id)
@@ -601,14 +601,22 @@ BrowserActivityNode * BrowserActivityNode::read(char * & st, char * k,
     result = all[id];
     
     if (result == 0)
-      result = 
-	new BrowserActivityNode(c, read_string(st), parent, id);
+      result = new BrowserActivityNode(c, read_string(st), parent, id);
+    else if (result->is_defined) {
+      BrowserActivityNode * already_exist = result;
+
+      result = new BrowserActivityNode(c, read_string(st), parent, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("activity node", result);
+    }
     else {
       result->kind = c;
       result->set_parent(parent);
       result->set_name(read_string(st));
     }
     
+    result->is_defined = TRUE;
     k = read_keyword(st);
     result->def->read(st, k);
     

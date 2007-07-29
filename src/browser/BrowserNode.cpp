@@ -151,13 +151,8 @@ void BrowserNode::delete_it() {
 	if (! ((BrowserNode *) child)->deletedp())
 	  ((BrowserNode *) child)->delete_it();
       
-      setOpen(FALSE);
-      
-      if (parent() != UndefinedNodePackage)
-	// it will be really deleted by post_load()
-	set_parent(UndefinedNodePackage);
-      else
-	repaint();
+      setOpen(FALSE);      
+      must_be_deleted();
     }
   }
 }
@@ -269,14 +264,12 @@ void BrowserNode::undelete(bool rec) {
   }
       
   if (!warning.isEmpty())
-    warning = "Some items cannot be <i>undeleted</i> :\n<ul>"
-      + warning + "</ul>";
+    warning = "<p>Some items cannot be <i>undeleted</i> :\n<ul>"
+      + warning + "</ul></p>";
   
   if (! renamed.isEmpty()) {
-    if (!warning.isEmpty())
-      warning += "<br>\n";
-    warning += "Some items are renamed :\n<ul>"
-      + renamed + "</ul>";
+    warning += "<p>Some items are renamed :\n<ul>"
+      + renamed + "</ul></p>";
   }
   if (!warning.isEmpty())
     warn(warning);
@@ -422,13 +415,11 @@ void BrowserNode::pre_load()
 
 void BrowserNode::post_load()
 {
+  signal_unconsistencies();
+  
   QList<BrowserRelation> wrong;
   
-  BrowserRelation::post_load(wrong);
-  wrong.first();
-  while (! wrong.isEmpty())
-    wrong.take()->set_parent(UndefinedNodePackage);
-  
+  BrowserRelation::post_load();
   BrowserAttribute::post_load();
   BrowserClassInstance::post_load();
   
@@ -443,6 +434,13 @@ void BrowserNode::post_load()
   UndefinedNodePackage = 0;
   
   BrowserView::get_project()->update_stereotype(TRUE);
+}
+
+void BrowserNode::must_be_deleted() {
+  if (parent() != UndefinedNodePackage) {
+    parent()->takeItem(this);
+    UndefinedNodePackage->insertItem(this);
+  }
 }
 
 void BrowserNode::set_parent(QListViewItem * p) {
@@ -1269,6 +1267,26 @@ bool BrowserNode::tool_cmd(ToolCom * com, const char * args) {
       }
     }
     break;
+  case moveInCmd:
+    // plug-out upgrade, limited checks
+    if (is_read_only && !root_permission())
+      com->write_ack(FALSE);
+    else {
+      BrowserNode * newparent = (BrowserNode *) com->get_id(args);
+      BrowserNode * oldparent = (BrowserNode *) parent();
+      
+      if ((newparent == oldparent) || (newparent == this)) {
+	com->write_ack(FALSE);
+      }
+      else {
+	oldparent->takeItem(this);
+	newparent->insertItem(this);
+	com->write_ack(TRUE);
+	oldparent->package_modified();
+	package_modified();
+      }
+    }
+    break;
   case old_deleteCmd:
   case deleteCmd:
     if (is_read_only && !root_permission())
@@ -1405,24 +1423,112 @@ void BrowserNode::renumber(int phase) {
     ((BrowserNode *) child)->renumber(phase);
 }
 
+
+// manage unconsistencies
+
+static QString UnconsistencyDeletedMsg;
+static QString UnconsistencyFixedMsg;
+static QList<BrowserNode> ModifiedPackages;
+
+void BrowserNode::signal_unconsistencies()
+{
+  QString pfix = 
+    "<p><b>Warning, the model is not consistent because some elements have\n"
+      "the same internal identifier.</b></p>\n"
+	"<p>Users working on the sale project have the same BOUML_ID,\n"
+	  "or you had change the model files, or used Project synchro\n"
+	    "without following the mandatory rules</p>\n";
+  QString msg;
+  
+  if (!UnconsistencyDeletedMsg.isEmpty())
+    msg = pfix + "<p>These elements was <b>removed</b> :</p>\n <ul>"
+      + UnconsistencyDeletedMsg + "</ul>\n";
+
+  if (!UnconsistencyFixedMsg.isEmpty()) {
+    if (UnconsistencyDeletedMsg.isEmpty())
+      msg = pfix;
+    msg += "<p>The internal identifier of these elements was changed,\n"
+      "but <u>I can't garanty the references to them are the right one</u>,\n"
+	"check your model :</p>\n<ul>" + UnconsistencyFixedMsg + "</ul>\n";
+
+    do_change_shared_ids();
+
+    do
+      ModifiedPackages.take(0)->is_modified = TRUE;
+    while (! ModifiedPackages.isEmpty());
+  }
+  
+  if (! msg.isEmpty()) {
+    UnconsistencyDeletedMsg = UnconsistencyFixedMsg = QString::null;
+    warn(msg);
+  }
+}
+
+void BrowserNode::unconsistent_fixed(const char * what, BrowserNode * newone) {  
+  UnconsistencyFixedMsg += QString("<li>") + what + QString(" <i>") +
+    quote(full_name()) + QString("</i> and <i>") + 
+      quote(newone->full_name()) + QString("</i></li>\n");
+
+  BrowserNode * bn = this;
+
+  while (bn->get_type() != UmlPackage)
+    bn = (BrowserNode *) bn->parent();
+
+  if (ModifiedPackages.findRef(bn) == -1)
+    ModifiedPackages.append(bn);
+}
+
+void BrowserNode::unconsistent_removed(const char * what, BrowserNode * newone) {
+  UnconsistencyDeletedMsg += QString("<li>") + what + QString(" <i>") +
+    quote(full_name()) + QString("</i> and <i>") + 
+      quote(newone->full_name()) + QString("</i></li>\n");
+
+  // deletion managed elsewhere
+}
+
 //
 
-void BrowserNodeList::search(BrowserNode * bn, UmlCode k,
-			     const QString & s, bool cs, bool even_deleted)
+void BrowserNodeList::search(BrowserNode * bn, UmlCode k, const QString & s,
+			     bool cs, bool even_deleted, bool for_name)
 {
   QListViewItem * child;
     
   for (child = bn->firstChild(); child != 0; child = child->nextSibling()) {
     if (even_deleted || !((BrowserNode *) child)->deletedp()) {
+      BrowserNode * ch = (BrowserNode *) child;
+      
       if (((k == UmlCodeSup) ||
 	   ((k == UmlRelations)
-	    ? IsaRelation(((BrowserNode *) child)->get_type())
-	    : (((BrowserNode *) child)->get_type() == k))) &&
+	    ? IsaRelation(ch->get_type())
+	    : (ch->get_type() == k))) &&
 	  (s.isEmpty() ||
-	   (QString(((BrowserNode *) child)->get_name()).find(s, 0, cs) != -1)))
+	   (QString((for_name) ? ch->get_name() : ch->get_comment())
+	    .find(s, 0, cs) != -1)))
 	append((BrowserNode *) child);
       
-      search((BrowserNode *) child, k, s, cs, even_deleted);
+      search((BrowserNode *) child, k, s, cs, even_deleted, for_name);
+    }
+  }
+}
+
+void BrowserNodeList::search_ddb(BrowserNode * bn, UmlCode k, const QString & s,
+				 bool cs, bool even_deleted)
+{
+  QListViewItem * child;
+    
+  for (child = bn->firstChild(); child != 0; child = child->nextSibling()) {
+    if (even_deleted || !((BrowserNode *) child)->deletedp()) {
+      BrowserNode * ch = (BrowserNode *) child;
+      
+      if (((k == UmlCodeSup) ||
+	   ((k == UmlRelations)
+	    ? IsaRelation(ch->get_type())
+	    : (ch->get_type() == k))) &&
+	  (s.isEmpty() || 
+	   ch->get_data()->decldefbody_contain(s, cs, ch)))
+	append(ch);
+      
+      search_ddb(ch, k, s, cs, even_deleted);
     }
   }
 }

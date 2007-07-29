@@ -165,6 +165,13 @@ QString AttributeData::definition(bool full, DrawingLanguage language) const {
   }	
 }
 
+bool AttributeData::decldefbody_contain(const QString & s, bool cs,
+					BrowserNode *) {
+  return ((QString(get_cppdecl()).find(s, 0, cs) != -1) ||
+	  (QString(get_javadecl()).find(s, 0, cs) != -1) ||
+	  (QString(get_idldecl()).find(s, 0, cs) != -1));
+}
+
 UmlVisibility AttributeData::get_visibility(BrowserNode *) {
   return uml_visibility;
 }

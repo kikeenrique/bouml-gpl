@@ -42,10 +42,9 @@ class Package : public BrowserNode, public ClassContainer {
 #ifndef REVERSE
     Package(BrowserView * parent, UmlPackage * u);
 #endif
-    Package(Package * parent, const char * p, const char * n);
+    Package(Package * parent, QString p, QString n);
     virtual ~Package();	// just to not have warning
     
-    void send_dir(bool rec);
     void reverse_file(QCString f);
     void reverse_variable(const QCString & name);
     
@@ -75,7 +74,8 @@ class Package : public BrowserNode, public ClassContainer {
     
     static void init(UmlPackage *, QApplication *);
     static bool scanning() { return Scan; };
-    static Package * scan_dir();
+    static bool scan_dirs();
+    static void send_dirs(bool rec);
     
     static void progress_closed();
     static const QCString & get_fname() { return fname; }
@@ -84,8 +84,9 @@ class Package : public BrowserNode, public ClassContainer {
     
   private:
     static QApplication * app;
-    static Progress * progress;
-    static int nfiles;
+    static QList<Package> Choozen;
+    static Progress * ProgressBar;
+    static int Nfiles;
     static bool Scan;
     static Package * Root;
     //static Package * Unknown;
@@ -96,7 +97,6 @@ class Package : public BrowserNode, public ClassContainer {
     static NDict<Class> Defined;
     
     UmlPackage * uml;
-    //NDict<Package> packages;
     QCString namespace_;
     QCString path;
     static QCString fname;	// without extension, empty for non header file

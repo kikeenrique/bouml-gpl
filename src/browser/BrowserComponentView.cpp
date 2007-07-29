@@ -44,7 +44,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserComponentView> BrowserComponentView::all;
+IdDict<BrowserComponentView> BrowserComponentView::all(__FILE__);
 QStringList BrowserComponentView::its_default_stereotypes;	// unicode
 
 BrowserComponentView::BrowserComponentView(QString s, BrowserNode * p, int id)
@@ -620,11 +620,21 @@ BrowserComponentView * BrowserComponentView::read(char * & st, char * k,
     
     if (r == 0)
       r = new BrowserComponentView(s, parent, id);
+    else if (r->is_defined) {
+      BrowserComponentView * already_exist = r;
+
+      r = new BrowserComponentView(s, parent, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("component view", r);
+    }
     else {
       r->set_parent(parent);
       r->set_name(s);
     }
     
+    r->is_defined = TRUE;
+
     r->is_read_only = !in_import() && read_only_file() || 
       (user_id() != 0) && r->is_api_base();
     

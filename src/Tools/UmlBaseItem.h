@@ -181,6 +181,8 @@ class UmlBaseItem {
     
     // not in plug-outs managed through bouml
     void delete_it();
+    bool moveIn(UmlItem * x);
+    void setUser(unsigned uid);
     static UmlItem * from_id(unsigned uid, anItemKind);
 
     static const QVector<UmlItem> markedItems();

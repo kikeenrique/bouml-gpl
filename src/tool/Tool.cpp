@@ -359,9 +359,10 @@ bool Tool::read(const char * f)
 
 bool Tool::import()
 {
-  QString fn = QFileDialog::getOpenFileName("tools", "tools");
+  QString fn = QFileDialog::getOpenFileName(last_used_directory(), "tools");
       
   if (!fn.isEmpty()) {
+    set_last_used_directory(fn);
     already_read = FALSE;
     set_ntools(0);
     return read((const char *) fn);

@@ -26,6 +26,8 @@
 #ifndef COLMSGTABLE_H
 #define COLMSGTABLE_H
 
+#include <qptrdict.h> 
+
 #include "MyTable.h"
 
 class ColMsg;
@@ -46,6 +48,10 @@ class ColMsgTable : public MyTable {
     void refresh(ColMsgList & m);
     void edit_msg(int row);
     void change_ranks(int row, int col);
+    
+#ifdef NEW_METHOD
+    void save_list(ColMsgList & l, QPtrDict<ColMsgList> & saved);
+#endif
     
   public:
     ColMsgTable(QWidget * parent, ColDiagramView * v, ColMsgList & m);

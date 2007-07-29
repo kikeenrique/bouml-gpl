@@ -47,7 +47,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserStateAction> BrowserStateAction::all(257);
+IdDict<BrowserStateAction> BrowserStateAction::all(257, __FILE__);
 QStringList BrowserStateAction::its_default_stereotypes;	// unicode
 
 BrowserStateAction::BrowserStateAction(BrowserNode * p,
@@ -490,15 +490,27 @@ BrowserStateAction * BrowserStateAction::read(char * & st, char * k,
   else if (!strcmp(k, "stateaction")) {
     id = read_id(st);
     result = all[id];
+
+    BrowserStateAction * already_exist = 0;
     
     if (result == 0)
       result = new BrowserStateAction(parent, new StateActionData, id);
+    else if (result->is_defined) {
+      already_exist = result;
+      result = new BrowserStateAction(parent, new StateActionData, id);
+    }
     else
       result->set_parent(parent);
     
     k = read_keyword(st);
     result->def->read(st, k);
     
+    if (already_exist != 0) {
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("state action", result);
+    }
+
+    result->is_defined = TRUE;
     result->BrowserNode::read(st, k);
     
     result->is_read_only = !in_import() && read_only_file() || 

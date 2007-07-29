@@ -51,7 +51,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserState> BrowserState::all(257);
+IdDict<BrowserState> BrowserState::all(257, __FILE__);
 QStringList BrowserState::its_default_stereotypes;	// unicode
 
 BrowserState::BrowserState(QString s, BrowserNode * p, StateData * d, int id)
@@ -90,11 +90,19 @@ BrowserState::~BrowserState() {
 void BrowserState::clear(bool old)
 {
   all.clear(old);
+  BrowserTransition::clear(old);
+  BrowserRegion::clear(old);
+  BrowserPseudoState::clear(old);
+  BrowserStateAction::clear(old);
 }
 
 void BrowserState::update_idmax_for_root()
 {
   all.update_idmax_for_root();
+  BrowserTransition::update_idmax_for_root();
+  BrowserRegion::update_idmax_for_root();
+  BrowserPseudoState::update_idmax_for_root();
+  BrowserStateAction::update_idmax_for_root();
 }
     
 void BrowserState::referenced_by(QList<BrowserNode> & l) {
@@ -813,11 +821,20 @@ BrowserState * BrowserState::read(char * & st, char * k,
     
     if (result == 0)
       result = new BrowserState(read_string(st), parent, new StateData, id);
+    else if (result->is_defined) {
+      BrowserState * already_exist = result;
+
+      result = new BrowserState(read_string(st), parent, new StateData, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("state", result);
+    }
     else {
       result->set_parent(parent);
       result->set_name(read_string(st));
     }
     
+    result->is_defined = TRUE;
     k = read_keyword(st);
     result->def->read(st, k);
 

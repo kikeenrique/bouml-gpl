@@ -48,7 +48,7 @@
 #include "ReferenceDialog.h"
 #include "mu.h"
 
-IdDict<BrowserAttribute> BrowserAttribute::all(1023);
+IdDict<BrowserAttribute> BrowserAttribute::all(1023, __FILE__);
 QStringList BrowserAttribute::its_default_stereotypes;	// unicode
 
 BrowserAttribute::BrowserAttribute(QString s, BrowserNode * p, AttributeData * d, int id)
@@ -536,12 +536,23 @@ BrowserAttribute * BrowserAttribute::read(char * & st, char * k,
       result = new BrowserAttribute(s, parent, new AttributeData, id);
       result->def->read(st, k);	// updates k2
     }
+    else if (result->is_defined) {
+      BrowserAttribute * already_exist = result;
+
+      result = new BrowserAttribute(s, parent, new AttributeData, id);
+      result->def->read(st, k);	// updates k2
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("attribute", result);
+    }
     else {
       result->def->read(st, k);	// updates k2
       result->set_parent(parent);
       result->set_name(s);
     }
     
+    result->is_defined = TRUE;
+
     result->is_read_only = (!in_import() && read_only_file()) || 
       (user_id() != 0) && result->is_api_base();
     result->def->set_browser_node(result, FALSE, FALSE);

@@ -51,7 +51,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserActivityObject> BrowserActivityObject::all(257);
+IdDict<BrowserActivityObject> BrowserActivityObject::all(257, __FILE__);
 QStringList BrowserActivityObject::its_default_stereotypes;	// unicode
 
 BrowserActivityObject::BrowserActivityObject(QString s, BrowserNode * p, int id)
@@ -735,11 +735,20 @@ BrowserActivityObject * BrowserActivityObject::read(char * & st, char * k,
     
     if (result == 0)
       result = new BrowserActivityObject(read_string(st), parent, id);
+    else if (result->is_defined) {
+      BrowserActivityObject * already_exist = result;
+
+      result = new BrowserActivityObject(read_string(st), parent, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("activity object", result);
+    }
     else {
       result->set_parent(parent);
       result->set_name(read_string(st));
     }
     
+    result->is_defined = TRUE;
     k = read_keyword(st);
     result->def->read(st, k);
     

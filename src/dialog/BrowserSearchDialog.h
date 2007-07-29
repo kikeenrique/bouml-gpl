@@ -32,6 +32,7 @@
 
 class QComboBox;
 class QCheckBox;
+class QRadioButton;
 class LineEdit;
 
 class BrowserSearchDialog : public QDialog {
@@ -44,11 +45,17 @@ class BrowserSearchDialog : public QDialog {
     LineEdit * ed;
     QCheckBox * case_sensitive;
     QCheckBox * even_deleted;
+    QRadioButton * for_name;
+    QRadioButton * for_comment;
+    QRadioButton * for_decldefbody;
     
     static int saved_kind;
     static QString saved_ed;
     static bool saved_case_sensitive;
     static bool saved_even_deleted;
+    static bool saved_name;
+    static bool saved_comment;
+    static bool saved_decldefbody;
     
     static QSize previous_size;
         

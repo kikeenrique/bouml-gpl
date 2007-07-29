@@ -43,10 +43,11 @@
 #include "GenerationSettings.h"
 #include "mu.h"
 
-IdDict<RelationData> RelationData::all(1023);
+IdDict<RelationData> RelationData::all(1023, __FILE__);
+QList<RelationData> RelationData::Unconsistent;
 
 RelationData::RelationData(UmlCode e, int id)
-    : Labeled<RelationData>(all, id), is_deleted(FALSE), type(e) {
+    : Labeled<RelationData>(all, id), is_deleted(FALSE), is_unconsistent(FALSE), type(e) {
   a.isa_class_relation = b.isa_class_relation = FALSE; 
   a.isa_volatile_relation = b.isa_volatile_relation = FALSE;
   a.isa_const_relation = b.isa_const_relation = FALSE; 
@@ -66,7 +67,7 @@ RelationData::RelationData(UmlCode e, int id)
 RelationData::RelationData(const BrowserRelation * model,
 			   BrowserRelation * r)
     : ClassMemberData((ClassMemberData *) model->get_data()),
-      Labeled<RelationData>(all, 0), is_deleted(FALSE) {
+      Labeled<RelationData>(all, 0), is_deleted(FALSE), is_unconsistent(FALSE) {
   RelationData * md = (RelationData *) model->get_data();
   
   type = md->type;
@@ -129,6 +130,9 @@ void RelationData::garbage(BrowserRelation * r) {
 	(end->get_data() == 0)) // bi-dir rel, reverse rel wasn't read
       delete this;
   }
+  else if (start == 0)
+    // end -> start read, but start -> end not read
+    delete this; 
   else {
     end = 0;
     if (start == 0)
@@ -367,6 +371,17 @@ void RelationData::set_stereotype(const char * s) {
     start->update_stereotype();
   if (end != 0)
     end->update_stereotype();
+}
+
+bool RelationData::decldefbody_contain(const QString & s, bool cs,
+				       BrowserNode * br) {
+  return (is_a((BrowserRelation *) br))
+    ? ((QString(get_cppdecl_a()).find(s, 0, cs) != -1) ||
+       (QString(get_javadecl_a()).find(s, 0, cs) != -1) ||
+       (QString(get_idldecl_a()).find(s, 0, cs) != -1))
+    : ((QString(get_cppdecl_b()).find(s, 0, cs) != -1) ||
+       (QString(get_javadecl_b()).find(s, 0, cs) != -1) ||
+       (QString(get_idldecl_b()).find(s, 0, cs) != -1));
 }
 
 bool RelationData::wrong_role_a_name(const QString & s) {
@@ -1156,8 +1171,11 @@ static void read_role(RoleData & role, bool assoc,
     role.idl_truncatable_inheritance = FALSE;
 }
 
-RelationData * RelationData::read(char * & st, char * & k)
+RelationData * RelationData::read(char * & st, char * & k,
+				  BrowserRelation *& unconsistent)
 {
+  unconsistent = 0;
+
   RelationData * result;
   int id;
   
@@ -1170,12 +1188,19 @@ RelationData * RelationData::read(char * & st, char * & k)
   else if (!strcmp(k, "relation")) {
     if ((result = all[id = read_id(st)]) == 0)
       result = new RelationData(relation_type(read_keyword(st)), id);
+    else if (result->type != UmlRelations) {
+      // shared identifier
+      result->set_unconsistent();
+      unconsistent = result->start;
+      result = new RelationData(relation_type(read_keyword(st)), id);      
+      result->set_unconsistent();
+    }
     else {
       result->type = relation_type(read_keyword(st));
       result->name = default_name(result->type);
       if (result->start != 0) {
 	// Created by RelationData::read_ref()
-	// Set start/end with a new data to not delete result
+	// unvalidate start/end to not delete result
 	// when start/end will be deleted
 	result->start->unvalidate();
 	result->end->unvalidate();
@@ -1261,4 +1286,30 @@ RelationData * RelationData::read(char * & st, char * & k)
   }
   else
     return 0;
+}
+
+//
+
+bool RelationData::has_unconsistencies()
+{ 
+  return !Unconsistent.isEmpty();
+}
+
+void RelationData::set_unconsistent() {
+  if (! is_unconsistent) {
+    is_unconsistent = TRUE;
+    Unconsistent.append(this);
+  }
+}
+
+void RelationData::delete_unconsistent()
+{
+  while (! Unconsistent.isEmpty()) {
+    RelationData * d = Unconsistent.take(0);
+   
+    d->start = d->end = 0;
+    if (!d->deletedp())
+      d->BasicData::delete_it();
+    delete d;
+  }
 }

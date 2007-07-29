@@ -48,7 +48,8 @@
 #include "strutil.h"
 #include "mu.h"
 
-IdDict<BrowserRelation> BrowserRelation::all(1023);
+IdDict<BrowserRelation> BrowserRelation::all(1023, __FILE__);
+static QList<BrowserRelation> Unconsistent;
 
 BrowserRelation::BrowserRelation(BrowserNode * p, RelationData * d, int id)
     : BrowserNode(d->get_name(), p), Labeled<BrowserRelation>(all, id),
@@ -101,9 +102,13 @@ void BrowserRelation::delete_it() {
   // warning, def may be 0 in case the relation was a
   // temporary unvalidated
   if (def != 0) {
-    def->get_start()->modified();
-    def->get_start_class()->modified();  
-    def->get_end_class()->modified();  
+    BrowserRelation * b = def->get_start();
+
+    if (b != 0) {
+      b->modified();
+      def->get_start_class()->modified();  
+      def->get_end_class()->modified();  
+    }
   }
 }
 
@@ -710,7 +715,7 @@ void BrowserRelation::save(QTextStream & st, bool ref, QString & warning) {
   }
 }
 
-void BrowserRelation::post_load(QList<BrowserRelation> & wrong)
+void BrowserRelation::post_load()
 {
   IdIterator<BrowserRelation> it(all);
   BrowserRelation * br;
@@ -724,23 +729,27 @@ void BrowserRelation::post_load(QList<BrowserRelation> & wrong)
       
       if ((d = br->def) == 0)
 	// end -> start relation, not read
-	wrong.append(br);
-      else if (d->get_type() == UmlRelations)
+	br->must_be_deleted();
+      else if (d->get_start() == 0) {
+	// end -> start read, but start -> end not read
+	d->set_unconsistent();
+      }
+      else if (d->get_type() == UmlRelations) {
 	// temporary data, rel not read,
-	wrong.append(br);
+	br->delete_it();	// to update diagrams
+	d->set_unconsistent();
+      }
       else if ((d->get_start() == br) &&
 	       ((endrel = d->get_end()) != 0) &&
 	       (endrel->def != d)) {
 	// br is the 'forward' direction of a bi dir relation,
 	// endrel is the 'backward' direction not read
 	if (endrel->def != 0)
-	  delete endrel->def;
-	endrel->def = br->def; // to help delete
-	
-	wrong.append(br);
+	  endrel->def->set_unconsistent();
+	d->set_unconsistent();
       }
       else {
-	// not a temporary relation
+	// not a temporary or unconsistent relation
 	if ((it.current()->get_oper != 0) && 
 	    (((BrowserNode *) it.current()->get_oper->parent())->get_type() != UmlClass))
 	  // operation was deleted
@@ -753,7 +762,27 @@ void BrowserRelation::post_load(QList<BrowserRelation> & wrong)
     }
     ++it;
   }
-
+  
+  while (!Unconsistent.isEmpty()) {
+    br = Unconsistent.take(0);
+    br->def->set_unconsistent();
+    br->def = 0;
+    br->must_be_deleted();
+  }
+  
+  if (RelationData::has_unconsistencies()) {
+    IdIterator<BrowserRelation> it2(all);
+  
+    while ((br = it2.current()) != 0) {
+      if ((br->def != 0) && br->def->unconsistentp()) {
+	br->def = 0; // to not call garbage
+	br->must_be_deleted();
+      }
+      ++it2;
+    }
+  
+    RelationData::delete_unconsistent();
+  }
 }
 
 // Created for a relation data ref read before its definition
@@ -798,10 +827,17 @@ BrowserRelation * BrowserRelation::read(char * & st, char * k,
     id = read_id(st);
     k = read_keyword(st);
     
-    RelationData * d = RelationData::read(st, k);	// updates k
+    BrowserRelation * unconsistent;   // data id shared
+    RelationData * d = RelationData::read(st, k, unconsistent);	// updates k
+    BrowserRelation * already_exist = 0;
     
     if ((result = all[id]) == 0)
       result = new BrowserRelation(parent, d, id);
+    else if (result->is_defined) {
+      already_exist = result;
+      result = new BrowserRelation(parent, d, id);
+      d->set_unconsistent();
+    }
     else {
       if (result->def != 0)
 	// re-load
@@ -810,7 +846,16 @@ BrowserRelation * BrowserRelation::read(char * & st, char * k,
       result->set_parent(parent);
       result->set_name(d->get_name(result));
     }
-    
+
+    if (already_exist != 0) {
+      result->unconsistent_removed("relation", already_exist);
+      Unconsistent.append(already_exist);
+    }
+
+    if ((unconsistent != 0) && (unconsistent != already_exist))
+      result->unconsistent_removed("relation", unconsistent);
+
+    result->is_defined = TRUE;
     result->is_read_only = !in_import() && read_only_file() || 
       (user_id() != 0) && result->is_api_base();
     

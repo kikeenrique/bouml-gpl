@@ -78,7 +78,7 @@
 #include "SaveProgress.h"
 #include "DialogUtil.h"
 
-IdDict<BrowserPackage> BrowserPackage::all;
+IdDict<BrowserPackage> BrowserPackage::all(__FILE__);
 QList<BrowserPackage> BrowserPackage::removed;
 
 QStringList BrowserPackage::its_default_stereotypes;	// unicode
@@ -322,6 +322,9 @@ void BrowserPackage::clear(bool old)
   BrowserComponentView::clear(old);
   BrowserDeploymentView::clear(old);
   BrowserDiagram::clear(old);
+  
+  if (! old)
+    check_ids_cleared();
 }
 
 void BrowserPackage::update_idmax_for_root()
@@ -612,6 +615,7 @@ void BrowserPackage::exec_menu_choice(int rank) {
   case 27:
     renumber(phase_renumerotation++);
     if (phase_renumerotation == 2) {
+
       renumber(2);
 #if 0
       ???
@@ -817,9 +821,11 @@ void BrowserPackage::add_package() {
 }
 
 void BrowserPackage::import_project() {
-  QString fn = QFileDialog::getOpenFileName(QString::null, "*.prj");
+  QString fn = QFileDialog::getOpenFileName(last_used_directory(), "*.prj");
   
   if (!fn.isEmpty()) {
+    set_last_used_directory(fn);
+    
     QFileInfo fi(fn);
   
     if (!fi.exists())
@@ -846,6 +852,7 @@ void BrowserPackage::import_project() {
       err = TRUE;
     }
     BrowserNode::post_load();
+    idmax_add_margin();
     BrowserDiagram::import();
     BrowserView::set_imported_project(di, 0);
     set_in_import(FALSE);
@@ -1754,9 +1761,13 @@ bool BrowserPackage::read_stereotypes(const char * f)
 
 bool BrowserPackage::import_stereotypes()
 {
-  QString fn = QFileDialog::getOpenFileName("stereotypes", "stereotypes");
+  QString fn = QFileDialog::getOpenFileName(last_used_directory(), "stereotypes");
       
-  return (!fn.isEmpty() && read_stereotypes((const char *) fn));
+  if (fn.isEmpty())
+    return FALSE;
+  
+  set_last_used_directory(fn);
+  return read_stereotypes((const char *) fn);
 }
 
 // save / restore
@@ -2296,6 +2307,7 @@ To change its format : load this project and save it.");
 	}
 	
 	read_color(st, "class_color", class_color, k);	// updates k
+	read_color(st, "duration", duration_color, k);	// old, updates k
 	read_color(st, "duration_color", duration_color, k);	// updates k
 	read_color(st, "continuation_color", continuation_color, k);	// updates k
 	read_color(st, "note_color", note_color, k);	// updates k

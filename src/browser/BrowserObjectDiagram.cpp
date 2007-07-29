@@ -586,11 +586,21 @@ BrowserObjectDiagram * BrowserObjectDiagram::read(char * & st, char * k,
     
     if ((r = (BrowserObjectDiagram *) all[id]) == 0)
       r = new BrowserObjectDiagram(s, parent, id);
+    else if (r->is_defined) {
+      BrowserObjectDiagram * already_exist = r;
+
+      r = new BrowserObjectDiagram(s, parent, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("object diagram", r);
+    }
     else {
       r->set_parent(parent);
       r->set_name(s);
     }
       
+    r->is_defined = TRUE;
+
     r->is_read_only = (!in_import() && read_only_file()) || 
       (user_id() != 0) && r->is_api_base();
     

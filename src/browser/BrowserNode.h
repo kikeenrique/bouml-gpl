@@ -72,8 +72,8 @@ class BrowserNode : public QListViewItem,
     bool is_edited : 1;
     bool is_marked : 1;
     bool is_saveable : 1;
-    bool is_defined : 1;	// to indicate inconsistency due to projectSynchro
-    				// pre condition not followed (not yet used)
+    bool is_defined : 1;	// to indicate unconsistency due to projectSynchro
+    				// pre condition not followed
     
     static bool show_stereotypes;
     static unsigned edition_number;
@@ -116,6 +116,7 @@ class BrowserNode : public QListViewItem,
     bool deletedp() const { return is_deleted; };
     void undelete(bool rec);
     virtual bool undelete(bool rec, QString & warning, QString & renamed);
+    void must_be_deleted(); // deleted after load time
     virtual BrowserNode * duplicate(BrowserNode * p,
 				    QString name = QString::null) = 0;
   
@@ -215,6 +216,10 @@ class BrowserNode : public QListViewItem,
     virtual void paintCell(QPainter * p, const QColorGroup & cg, int column,
 			   int width, int alignment);
     
+    void unconsistent_fixed(const char * what, BrowserNode * newone);
+    void unconsistent_removed(const char * what, BrowserNode * newone);
+    static void signal_unconsistencies();
+    
     static void pre_load();
     static void post_load();
     
@@ -237,8 +242,10 @@ class BrowserNodeList : public QList<BrowserNode> {
     virtual int compareItems(QCollection::Item item1, QCollection::Item item2);
   
   public:
-    void search(BrowserNode * bn, UmlCode k,
-		const QString & s, bool cs, bool even_deleted);
+    void search(BrowserNode * bn, UmlCode k, const QString & s,
+		bool cs, bool even_deleted, bool for_name);
+    void search_ddb(BrowserNode * bn, UmlCode k, const QString & s,
+		    bool cs, bool even_deleted);
   
     void names(QStringList & list) const;
     void full_names(QStringList & list) const;

@@ -499,3 +499,19 @@ UmlAttribute * UmlClass::get_attribute(const char * who) {
     
   return 0;
 }
+
+UmlRelation * UmlClass::get_relation(aRelationKind k, const char * who) {
+  const QVector<UmlItem> ch = children();
+  
+  for (unsigned i = 0; i != ch.size(); i += 1) {
+    if (ch[i]->kind() == aRelation) {
+      UmlRelation * rel = (UmlRelation *) ch[i];
+
+      if ((rel->relationKind() == k) && 
+	  ((who == 0) || (rel->roleName() == who)))
+	return rel;
+    }
+  }
+    
+  return 0;
+}

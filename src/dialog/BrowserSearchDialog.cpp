@@ -28,11 +28,14 @@
 #endif
 
 #include <qlayout.h>
+#include <qhbox.h>
 #include <qlabel.h>
 #include <qcombobox.h> 
 #include <qpushbutton.h>
+#include <qradiobutton.h>
 #include <qcheckbox.h>
 #include <qgroupbox.h> 
+#include <qbuttongroup.h>
 #include <qapplication.h>
 
 #include "BrowserSearchDialog.h"
@@ -46,6 +49,9 @@ int BrowserSearchDialog::saved_kind;
 QString BrowserSearchDialog::saved_ed;
 bool BrowserSearchDialog::saved_case_sensitive;
 bool BrowserSearchDialog::saved_even_deleted;
+bool BrowserSearchDialog::saved_name = TRUE;
+bool BrowserSearchDialog::saved_comment;
+bool BrowserSearchDialog::saved_decldefbody;
 QSize BrowserSearchDialog::previous_size;
 
 static const struct {
@@ -62,6 +68,7 @@ static const struct {
   { "attribute", UmlAttribute },
   { "artifact ", UmlArtifact },
   { "class ", UmlClass },
+  { "class instance", UmlClassInstance },
   { "class diagram", UmlClassDiagram },
   { "class view", UmlClassView },
   { "collaboration diagram", UmlColDiagram },
@@ -114,15 +121,27 @@ BrowserSearchDialog::BrowserSearchDialog()
   gl->addWidget(ed, 1, 1);
   ed->setFocus();
   
-  QGroupBox * gb = new QGroupBox(2, QGroupBox::Horizontal, this);
-
+  QHBox * hb = new QHBox(this);
+  
+  gl->addWidget(hb, 2, 1);
+  
+  QGroupBox * gb = new QGroupBox(2, QGroupBox::Horizontal, hb);
+  
   case_sensitive = new QCheckBox("case sensitive", gb);
   case_sensitive->setChecked(saved_case_sensitive);
   even_deleted = new QCheckBox("even deleted", gb);
   even_deleted->setChecked(saved_even_deleted);
-  
-  gl->addWidget(gb, 2, 1);
 
+  QButtonGroup * bg = new QButtonGroup(3, QGroupBox::Horizontal, hb);
+  
+  bg->setExclusive(TRUE);
+  for_name = new QRadioButton("name", bg);
+  for_name->setChecked(saved_name);
+  for_comment = new QRadioButton("description", bg);
+  for_comment->setChecked(saved_comment);
+  for_decldefbody = new QRadioButton("declaration/definition/body", bg);
+  for_decldefbody->setChecked(saved_decldefbody);
+  
   gl->addWidget(new QLabel("Result", this), 3, 0, Qt::AlignLeft);
   results = new QComboBox(FALSE, this);
   gl->addWidget(results, 3, 1);
@@ -159,14 +178,28 @@ BrowserSearchDialog::~BrowserSearchDialog() {
   saved_ed = ed->text();
   saved_case_sensitive = case_sensitive->isChecked();
   saved_even_deleted = even_deleted->isChecked();
+  saved_name = for_name->isChecked();
+  saved_comment = for_comment->isChecked();
+  saved_decldefbody = for_decldefbody->isChecked();
   previous_size = size();
 }
 
 void BrowserSearchDialog::search() {
+  QApplication::setOverrideCursor(Qt::waitCursor);
+
   nodes.clear();
-  nodes.search(BrowserView::get_project(), Kinds[kind->currentItem()].k,
-	       ed->text(), case_sensitive->isChecked(),
-	       even_deleted->isChecked());
+  if (for_name->isChecked())
+    nodes.search(BrowserView::get_project(), Kinds[kind->currentItem()].k,
+		 ed->text(), case_sensitive->isChecked(),
+		 even_deleted->isChecked(), TRUE);
+  else if (for_comment->isChecked())
+    nodes.search(BrowserView::get_project(), Kinds[kind->currentItem()].k,
+		 ed->text(), case_sensitive->isChecked(),
+		 even_deleted->isChecked(), FALSE);
+  else
+    nodes.search_ddb(BrowserView::get_project(), Kinds[kind->currentItem()].k,
+		     ed->text(), case_sensitive->isChecked(),
+		     even_deleted->isChecked());
   nodes.sort();
   
   results->clear();
@@ -175,6 +208,8 @@ void BrowserSearchDialog::search() {
   
   for (bn = nodes.first(); bn != 0; bn = nodes.next())
     results->insertItem(*(bn->pixmap(0)), bn->full_name(TRUE));
+
+  QApplication::restoreOverrideCursor();
 }
 
 void BrowserSearchDialog::select() {

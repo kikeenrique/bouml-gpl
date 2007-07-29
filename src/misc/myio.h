@@ -75,6 +75,9 @@ extern void save_if_needed(const char * filename, const char * newdef);
 extern char * read_file(QString filename);
 extern char * read_file(QString filename, int offset, int len);
 
+extern QString last_used_directory();
+extern void set_last_used_directory(QString);
+
 extern void set_read_file_format(unsigned);
 extern unsigned read_file_format();
 

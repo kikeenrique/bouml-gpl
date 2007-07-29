@@ -600,6 +600,25 @@ void UmlBaseItem::delete_it() {
   parent()->unload(TRUE);
 }
 
+// warning : operation bodies are lost
+bool UmlBaseItem::moveIn(UmlItem * x) {
+  UmlBaseItem * old_parent = (UmlBaseItem *)parent();
+
+  UmlCom::send_cmd(_identifier, moveInCmd, ((UmlBaseItem *)x)->_identifier);
+  if (UmlCom::read_bool()) {
+    old_parent->reread_children_if_needed_();
+    ((UmlBaseItem *)parent())->reread_children_if_needed_();
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+void UmlBaseItem::setUser(unsigned uid)
+{
+  UmlCom::send_cmd(_identifier, setUserCmd, uid);
+}
+
 UmlItem * UmlBaseItem::from_id(unsigned uid, anItemKind k)
 {
   UmlCom::send_cmd(miscGlobalCmd, fromIdCmd, uid, (char) k);

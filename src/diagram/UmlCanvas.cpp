@@ -66,7 +66,7 @@ static const struct {
 
 UmlCanvas::UmlCanvas(CanvasFormat f, BrowserDiagram * br_diag)
     : QCanvas(formatSize[f].w, formatSize[f].h),
-      br_diagram(br_diag), view(0) {
+      br_diagram(br_diag), view(0), all_items((const char *) 0) {
   width100percent = width();
   height100percent = height();
   do_paste = FALSE;

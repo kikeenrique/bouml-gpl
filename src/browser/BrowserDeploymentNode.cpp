@@ -44,7 +44,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserDeploymentNode> BrowserDeploymentNode::all;
+IdDict<BrowserDeploymentNode> BrowserDeploymentNode::all(__FILE__);
 QStringList BrowserDeploymentNode::its_default_stereotypes;	// unicode
 
 BrowserDeploymentNode::BrowserDeploymentNode(QString s, BrowserNode * p, int id)
@@ -520,13 +520,22 @@ BrowserDeploymentNode * BrowserDeploymentNode::read(char * & st, char * k,
     result = all[id];
     
     if (result == 0)
-      result = 
-	new BrowserDeploymentNode(read_string(st), parent, id);
+      result = new BrowserDeploymentNode(read_string(st), parent, id);
+    else if (result->is_defined) {
+      BrowserDeploymentNode * already_exist = result;
+
+      result = new BrowserDeploymentNode(read_string(st), parent, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("deployment node", result);
+    }
     else {
       result->set_parent(parent);
       result->set_name(read_string(st));
     }
     
+    result->is_defined = TRUE;
+
     result->is_read_only = !in_import() && read_only_file() || 
       (user_id() != 0) && result->is_api_base();
     

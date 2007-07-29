@@ -56,7 +56,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserExpansionRegion> BrowserExpansionRegion::all;
+IdDict<BrowserExpansionRegion> BrowserExpansionRegion::all(__FILE__);
 QStringList BrowserExpansionRegion::its_default_stereotypes;	// unicode
 
 BrowserExpansionRegion::BrowserExpansionRegion(QString s, BrowserNode * p, int id)
@@ -97,11 +97,13 @@ BrowserExpansionRegion::~BrowserExpansionRegion() {
 void BrowserExpansionRegion::clear(bool old)
 {
   all.clear(old);
+  BrowserExpansionNode::clear(old);
 }
 
 void BrowserExpansionRegion::update_idmax_for_root()
 {
   all.update_idmax_for_root();
+  BrowserExpansionNode::update_idmax_for_root();
 }
     
 void BrowserExpansionRegion::renumber(int phase) {
@@ -801,11 +803,20 @@ BrowserExpansionRegion * BrowserExpansionRegion::read(char * & st, char * k,
     
     if (result == 0)
       result = new BrowserExpansionRegion(read_string(st), parent, id);
+    else if (result->is_defined) {
+      BrowserExpansionRegion * already_exist = result;
+
+      result = new BrowserExpansionRegion(read_string(st), parent, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("expansion region", result);
+    }
     else {
       result->set_parent(parent);
       result->set_name(read_string(st));
     }
     
+    result->is_defined = TRUE;
     k = read_keyword(st);
     result->def->read(st, k);
 

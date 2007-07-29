@@ -98,6 +98,8 @@ class ClassData : public BasicData {
     
     const char * get_constraint() const { return constraint; };
     
+    virtual bool decldefbody_contain(const QString & s, bool cs, BrowserNode *);
+    
     bool get_is_abstract() const { return is_abstract; };
     void set_is_abstract(bool yes);
     

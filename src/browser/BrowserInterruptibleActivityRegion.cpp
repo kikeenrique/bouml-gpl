@@ -56,7 +56,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserInterruptibleActivityRegion> BrowserInterruptibleActivityRegion::all;
+IdDict<BrowserInterruptibleActivityRegion> BrowserInterruptibleActivityRegion::all(__FILE__);
 QStringList BrowserInterruptibleActivityRegion::its_default_stereotypes;	// unicode
 
 BrowserInterruptibleActivityRegion::BrowserInterruptibleActivityRegion(QString s, BrowserNode * p, int id)
@@ -757,11 +757,20 @@ BrowserInterruptibleActivityRegion *
     
     if (result == 0)
       result = new BrowserInterruptibleActivityRegion(read_string(st), parent, id);
+    else if (result->is_defined) {
+      BrowserInterruptibleActivityRegion * already_exist = result;
+
+      result = new BrowserInterruptibleActivityRegion(read_string(st), parent, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("interruptible activity region", result);
+    }
     else {
       result->set_parent(parent);
       result->set_name(read_string(st));
     }
     
+    result->is_defined = TRUE;
     k = read_keyword(st);
     result->def->read(st, k);
 

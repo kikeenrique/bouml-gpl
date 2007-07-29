@@ -48,7 +48,7 @@
 #include "strutil.h"
 #include "mu.h"
 
-IdDict<BrowserOperation> BrowserOperation::all(1023);
+IdDict<BrowserOperation> BrowserOperation::all(1023, __FILE__);
 QStringList BrowserOperation::its_default_stereotypes;	// unicode
 
 BrowserOperation::BrowserOperation(int id)
@@ -672,11 +672,20 @@ BrowserOperation * BrowserOperation::read(char * & st, char * k,
         
     if ((result = all[id]) == 0)
       result = new BrowserOperation(s, parent, new OperationData(id), id);
+    else if (result->is_defined) {
+      BrowserOperation * already_exist = result;
+
+      result = new BrowserOperation(s, parent, new OperationData(id), id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("operation", result);
+    }
     else {
       result->set_parent(parent);
       result->set_name(s);
     }
 
+    result->is_defined = TRUE;
     result->def->read(st, k);	// updates k
     
     result->is_read_only = !in_import() && read_only_file() || 

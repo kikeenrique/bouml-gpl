@@ -49,7 +49,7 @@
 #include "mu.h"
 #include "strutil.h"
 
-IdDict<BrowserClassInstance> BrowserClassInstance::all;
+IdDict<BrowserClassInstance> BrowserClassInstance::all(__FILE__);
 
 BrowserClassInstance::BrowserClassInstance(QString s, BrowserClass * cl,
 					   BrowserNode * p, int id)
@@ -583,11 +583,23 @@ BrowserClassInstance * BrowserClassInstance::read(char * & st, char * k,
       result = 
 	new BrowserClassInstance(read_string(st), (BrowserClass *) 0,
 				 parent, id);
+    else if (result->is_defined) {
+      BrowserClassInstance * already_exist = result;
+
+      result = 
+	new BrowserClassInstance(read_string(st), (BrowserClass *) 0,
+				 parent, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("class instance", result);
+    }
     else {
       result->set_parent(parent);
       result->set_name(read_string(st));
     }
     
+    result->is_defined = TRUE;
+
     result->is_read_only = !in_import() && read_only_file() || 
       (user_id() != 0) && result->is_api_base();
     

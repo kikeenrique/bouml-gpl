@@ -222,6 +222,9 @@ enum OnInstanceCmd {
   addRelationCmd,
   removeRelationCmd,
     
+  setUserCmd = 252, // not in plug-outs managed through bouml
+  moveInCmd = 253,  // not in plug-outs managed through bouml
+
   getIdCmd = 254, // not in old plug-outs managed through bouml
     
   // api 20

@@ -42,7 +42,7 @@
 #include "strutil.h"
 #include "mu.h"
 
-IdDict<BrowserExtraMember> BrowserExtraMember::all;
+IdDict<BrowserExtraMember> BrowserExtraMember::all(__FILE__);
 
 BrowserExtraMember::BrowserExtraMember(QString s, BrowserNode * p, ExtraMemberData * d, int id)
     : BrowserNode(s, p), Labeled<BrowserExtraMember>(all, id), def(d) {
@@ -298,15 +298,17 @@ BrowserExtraMember * BrowserExtraMember::read(char * & st, char * k,
     
     k = read_keyword(st);
     
-    /*if ((result = all[id]) == 0)*/ {
-      result = new BrowserExtraMember(s, parent, new ExtraMemberData, id);
-      result->def->read(st, k);	// updates k2
-    }/*
-    else {
-      result->def->read(st, k);	// updates k2
-      result->set_parent(parent);
-      result->set_name(s);
-    }*/
+    BrowserExtraMember * already_exist = all[id];
+
+    result = new BrowserExtraMember(s, parent, new ExtraMemberData, id);
+    result->def->read(st, k);	// updates k2
+
+    if (already_exist != 0) {
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("extra member", result);
+    }
+
+    result->is_defined = TRUE;
     
     result->is_read_only = !in_import() && read_only_file() || 
       (user_id() != 0) && result->is_api_base();

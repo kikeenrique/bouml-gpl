@@ -451,6 +451,13 @@ bool ClassData::reference(BrowserClass * target) const {
 
 //
 
+bool ClassData::decldefbody_contain(const QString & s, bool cs,
+				    BrowserNode *) {
+  return ((QString(get_cppdecl()).find(s, 0, cs) != -1) ||
+	  (QString(get_javadecl()).find(s, 0, cs) != -1) ||
+	  (QString(get_idldecl()).find(s, 0, cs) != -1));
+}
+
 //
 
 void ClassData::set_uml_visibility(UmlVisibility v) {

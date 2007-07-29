@@ -564,11 +564,21 @@ BrowserSeqDiagram * BrowserSeqDiagram::read(char * & st, char * k,
     
     if ((r = (BrowserSeqDiagram *) all[id]) == 0)
       r = new BrowserSeqDiagram(s, parent, id);
+    else if (r->is_defined) {
+      BrowserSeqDiagram * already_exist = r;
+
+      r = new BrowserSeqDiagram(s, parent, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("sequence diagram", r);
+    }
     else {
       r->set_parent(parent);
       r->set_name(s);
     }
     
+    r->is_defined = TRUE;
+
     r->is_read_only = !in_import() && read_only_file() || 
       (user_id() != 0) && r->is_api_base();
     
@@ -580,6 +590,7 @@ BrowserSeqDiagram * BrowserSeqDiagram::read(char * & st, char * k,
     
     r->def->read(st, k);				// updates k
     r->settings.read(st, k);				// updates k
+    read_color(st, "duration", r->duration_color, k);	// old, updates k
     read_color(st, "duration_color", r->duration_color, k);	 // updates k
     read_color(st, "continuation_color", r->continuation_color, k);	 // updates k
     read_color(st, "note_color", r->note_color, k);	// updates k

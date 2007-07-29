@@ -81,6 +81,8 @@ class ArtifactData : public SimpleData {
     void associate(BrowserArtifact *);
     void unassociate(BrowserArtifact *);
     
+    virtual bool decldefbody_contain(const QString & s, bool cs, BrowserNode *);
+    
     void edit();
     
     virtual bool tool_cmd(ToolCom * com, const char * args,

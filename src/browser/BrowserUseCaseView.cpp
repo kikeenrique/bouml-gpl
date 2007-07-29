@@ -49,7 +49,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserUseCaseView> BrowserUseCaseView::all;
+IdDict<BrowserUseCaseView> BrowserUseCaseView::all(__FILE__);
 QStringList BrowserUseCaseView::its_default_stereotypes;	// unicode
 
 BrowserUseCaseView::BrowserUseCaseView(QString s, BrowserNode * p, int id)
@@ -852,54 +852,52 @@ BrowserUseCaseView * BrowserUseCaseView::read(char * & st, char * k,
 {
   if (!strcmp(k, "usecaseview")) {
     int id = read_id(st);
-    BrowserUseCaseView * result = all[id];
-    
-    if (result != 0) {
-      msg_critical("Error", "reload not yet implemented");
-      
-      throw 0;
+    BrowserUseCaseView * already_exist = all[id];
+    BrowserUseCaseView * result =
+      new BrowserUseCaseView(read_string(st), parent, id);
+
+    if (already_exist != 0) {
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("use case views", result);
     }
-    else {
-      result = new BrowserUseCaseView(read_string(st), parent, id);
     
-      result->is_read_only = !in_import() && read_only_file() || 
-	(user_id() != 0) && result->is_api_base();
+    result->is_read_only = !in_import() && read_only_file() || 
+      (user_id() != 0) && result->is_api_base();
       
-      k = read_keyword(st);
+    k = read_keyword(st);
       
-      result->def->read(st, k);						// updates k
-      result->usecasediagram_settings.read(st, k);			// updates k
-      result->sequencediagram_settings.read(st, k);			// updates k
-      result->collaborationdiagram_settings.read(st, k);		// updates k
-      if (read_file_format() >= 25)
-	result->objectdiagram_settings.read(st, k);		// updates k
-      read_color(st, "duration_color", result->duration_color, k);	// updates k
-      read_color(st, "continuation_color", result->continuation_color, k);	// updates k
-      read_color(st, "note_color", result->note_color, k);		// updates k
-      read_color(st, "usecase_color", result->usecase_color, k);	// updates k
-      read_color(st, "package_color", result->package_color, k);	// updates k
-      read_color(st, "fragment_color", result->fragment_color, k);	// updates k
-      read_color(st, "subject_color", result->subject_color, k);	// updates k
-      read_color(st, "classinstance_color", result->classinstance_color, k);	// updates k
-      result->BrowserNode::read(st, k);	// updates k
+    result->def->read(st, k);						// updates k
+    result->usecasediagram_settings.read(st, k);			// updates k
+    result->sequencediagram_settings.read(st, k);			// updates k
+    result->collaborationdiagram_settings.read(st, k);		// updates k
+    if (read_file_format() >= 25)
+      result->objectdiagram_settings.read(st, k);		// updates k
+    read_color(st, "duration", result->duration_color, k);	// old, updates k
+    read_color(st, "duration_color", result->duration_color, k);	// updates k
+    read_color(st, "continuation_color", result->continuation_color, k);	// updates k
+    read_color(st, "note_color", result->note_color, k);		// updates k
+    read_color(st, "usecase_color", result->usecase_color, k);	// updates k
+    read_color(st, "package_color", result->package_color, k);	// updates k
+    read_color(st, "fragment_color", result->fragment_color, k);	// updates k
+    read_color(st, "subject_color", result->subject_color, k);	// updates k
+    read_color(st, "classinstance_color", result->classinstance_color, k);	// updates k
+    result->BrowserNode::read(st, k);	// updates k
       
-      if (strcmp(k, "end")) {
-	while (BrowserUseCaseDiagram::read(st, k, result) ||
-	       BrowserUseCase::read(st, k, result) ||
-	       BrowserUseCaseView::read(st, k, result, recursive) ||
-	       BrowserClass::read(st, k, result) ||
-	       BrowserClassInstance::read(st, k, result) ||
-	       BrowserSeqDiagram::read(st, k, result) ||
-	       BrowserColDiagram::read(st, k, result) ||
-	       BrowserObjectDiagram::read(st, k, result))
-	  k = read_keyword(st);
+    if (strcmp(k, "end")) {
+      while (BrowserUseCaseDiagram::read(st, k, result) ||
+	     BrowserUseCase::read(st, k, result) ||
+	     BrowserUseCaseView::read(st, k, result, recursive) ||
+	     BrowserClass::read(st, k, result) ||
+	     BrowserClassInstance::read(st, k, result) ||
+	     BrowserSeqDiagram::read(st, k, result) ||
+	     BrowserColDiagram::read(st, k, result) ||
+	     BrowserObjectDiagram::read(st, k, result))
+	k = read_keyword(st);
 	
-	if (strcmp(k, "end"))
-	  wrong_keyword(k, "end");
-      }
-      
-      return result;
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
     }
+    return result;
   }
   else
     return 0;

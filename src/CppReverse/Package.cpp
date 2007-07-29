@@ -31,6 +31,7 @@ using namespace std;
 
 #include <qfiledialog.h> 
 #include <qapplication.h>
+#include <qmessagebox.h>
 #include <qdir.h>
 
 #include "Package.h"
@@ -47,13 +48,16 @@ using namespace std;
 #include "Statistic.h"
 #include "Progress.h"
 
+// create all packages under it
+Package * Package::Root;
+
+// the packages selected by the user to reverse them
+QList<Package> Package::Choozen;
+
 // all the classes presents in the environment, the
 // key is the full name including namespaces
 NDict<Class> Package::Declared(511);
 NDict<Class> Package::Defined(511);
-
-// create all packages under it
-Package * Package::Root;
 
 // to place unknown classes
 //Package * Package::Unknown;
@@ -65,9 +69,9 @@ bool Package::Scan;
 QValueList<FormalParameterList> Package::Formals;
 
 // to show a progress bar
-Progress * Package::progress;
+Progress * Package::ProgressBar;
 QApplication * Package::app;
-int Package::nfiles;
+int Package::Nfiles;
 
 // memorise the name of the header currently reversed
 // to create artifact having the right name and respect
@@ -82,7 +86,7 @@ Package::Package(BrowserView * parent, UmlPackage * u)
 }
 #endif
 
-Package::Package(Package * parent, const char * p, const char * n)
+Package::Package(Package * parent, QString p, QString n)
     : BrowserNode(parent, n) {
   path = p;
   uml = 0;
@@ -113,46 +117,76 @@ void Package::init(UmlPackage * r, QApplication * a)
   app = a;
 }
 
-Package * Package::scan_dir() {
-  // get input C++ source dir
-  
-  QString path = QFileDialog::getExistingDirectory();
+bool Package::scan_dirs() {
+  QStringList dirs;
+  QString path = QDir::currentDirPath();
 
-  if (! path.isEmpty()) {
-    QDir d(path);
-    Package * p = new Package(Root, path, d.dirName());
-    
-    // scanning phase
+  // get input C++ source dirs
+  while (!(path = QFileDialog::getExistingDirectory(path, 0, 0,
+						   "select a directory to reverse, press cancel to finish"))
+						   .isEmpty()) {
+    if (dirs.findIndex(path) != -1)
+      QMessageBox::warning(0, "C++ reverse",
+			    "Directory already selected\n"
+			    "Press 'cancel' to reverse selected directories");
+    else {
+      dirs.append(path);
+
+      QDir d(path);
+
+      Choozen.append(new Package(Root, path, d.dirName()));
+    }
+  }
+  
+  if (dirs.isEmpty())
+    return FALSE;
+
+  dirs.clear();
+
 #ifndef REVERSE
-    QApplication::setOverrideCursor(Qt::waitCursor);
-    CppCatWindow::clear_trace();
+  QApplication::setOverrideCursor(Qt::waitCursor);
+  CppCatWindow::clear_trace();
 #endif
-    nfiles = file_number(d, TRUE, 
-			 CppSettings::headerExtension(),
-			 CppSettings::sourceExtension());
+
+  // count files
+  Package * p;
+
+  Nfiles = 0;
+
+  for (p = Choozen.first(); p != 0; p = Choozen.next()) {
+    QDir d(p->path);
+
+    Nfiles += file_number(d, TRUE, 
+			  CppSettings::headerExtension(),
+			  CppSettings::sourceExtension());
+  }
     
-    progress = new Progress(nfiles, "Scanning in progress, please wait ...");
-    Scan = TRUE;
+  // scanning phase
+  ProgressBar = new Progress(Nfiles, "Scanning in progress, please wait ...");
+  Scan = TRUE;
+
+  for (p = Choozen.first(); p != 0; p = Choozen.next()) {
+    QDir d(p->path);
+
     p->reverse_directory(d, TRUE, CppSettings::headerExtension(), TRUE);
     p->reverse_directory(d, TRUE, CppSettings::sourceExtension(), FALSE);
-    Scan = FALSE;
-    if (progress != 0)
-      delete progress;
+  }
+  Scan = FALSE;
+
+  if (ProgressBar != 0)
+    delete ProgressBar;
 #ifndef REVERSE
-    QApplication::restoreOverrideCursor();
+  QApplication::restoreOverrideCursor();
     
-    Root->setOpen(TRUE);
+  Root->setOpen(TRUE);
 #endif
     
-    return p;
-  }
-  else
-    return 0;
+  return TRUE;
 }
     
 void Package::progress_closed()
 {
-  progress = 0;
+  ProgressBar = 0;
 }
 
 int Package::file_number(QDir & d, bool rec, const char * h, const char * cpp)
@@ -187,7 +221,7 @@ int Package::file_number(QDir & d, bool rec, const char * h, const char * cpp)
   return result;
 }
 
-void Package::send_dir(bool rec) {
+void Package::send_dirs(bool rec) {
   // reverse phase
 #ifdef REVERSE
   UmlItem * prj = Root->uml;
@@ -200,16 +234,23 @@ void Package::send_dir(bool rec) {
   
   prj->set_childrenVisible(FALSE);
   
-  QDir d(path);
-  
 #ifndef REVERSE
   QApplication::setOverrideCursor(Qt::waitCursor);
 #endif
-  progress = new Progress(nfiles, "Reverse in progress, please wait ...");
-  reverse_directory(d, rec, CppSettings::headerExtension(), TRUE);
-  reverse_directory(d, rec, CppSettings::sourceExtension(), FALSE);
-  if (progress != 0)
-    delete progress;
+  ProgressBar = new Progress(Nfiles, "Reverse in progress, please wait ...");
+
+  Package * p;
+
+  for (p = Choozen.first(); p != 0; p = Choozen.next()) {
+    QDir d(p->path);
+  
+    p->reverse_directory(d, rec, CppSettings::headerExtension(), TRUE);
+    p->reverse_directory(d, rec, CppSettings::sourceExtension(), FALSE);
+  }
+
+  if (ProgressBar != 0)
+    delete ProgressBar;
+
 #ifndef REVERSE
   QApplication::restoreOverrideCursor();
 #endif
@@ -231,8 +272,8 @@ void Package::reverse_directory(QDir & d, bool rec, QString ext, bool h) {
     if (h)
       fname = it.current()->baseName();
     reverse_file(QCString(it.current()->filePath()));
-    if (progress)
-      progress->tic();
+    if (ProgressBar)
+      ProgressBar->tic();
     app->processEvents();
     ++it;
   }

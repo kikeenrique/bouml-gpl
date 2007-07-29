@@ -46,7 +46,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserRegion> BrowserRegion::all;
+IdDict<BrowserRegion> BrowserRegion::all(__FILE__);
 QStringList BrowserRegion::its_default_stereotypes;	// unicode
 
 BrowserRegion::BrowserRegion(QString s, BrowserNode * p, BasicData * d, int id)
@@ -500,11 +500,20 @@ BrowserRegion * BrowserRegion::read(char * & st, char * k,
     
     if (result == 0)
       result = new BrowserRegion(read_string(st), parent, new SimpleData, id);
+    else if (result->is_defined) {
+      BrowserRegion * already_exist = result;
+
+      result = new BrowserRegion(read_string(st), parent, new SimpleData, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("region", result);
+    }
     else {
       result->set_parent(parent);
       result->set_name(read_string(st));
     }
     
+    result->is_defined = TRUE;
     k = read_keyword(st);
     result->def->read(st, k);
 

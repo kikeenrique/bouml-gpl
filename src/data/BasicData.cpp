@@ -117,6 +117,11 @@ QString BasicData::definition(bool) const {
   return browser_node->get_name();
 }
 
+bool BasicData::decldefbody_contain(const QString &, bool,
+				    BrowserNode *) {
+  return FALSE;
+}
+
 void BasicData::save(QTextStream & st, QString &) const {
   if (! stereotype.isEmpty()) {
     nl_indent(st);

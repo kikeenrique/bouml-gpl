@@ -49,7 +49,7 @@
 #include "strutil.h"
 #include "mu.h"
 
-IdDict<BrowserPin> BrowserPin::all(257);
+IdDict<BrowserPin> BrowserPin::all(257, __FILE__);
 QStringList BrowserPin::its_default_stereotypes;	// unicode
 
 BrowserPin::BrowserPin(QString s, BrowserNode * p, PinData * d, int id)
@@ -546,12 +546,22 @@ BrowserPin * BrowserPin::read(char * & st, char * k, BrowserNode * parent)
       result = new BrowserPin(s, parent, new PinData, id);
       result->def->read(st, k);	// updates k2
     }
+    else if (result->is_defined) {
+      BrowserPin * already_exist = result;
+
+      result = new BrowserPin(s, parent, new PinData, id);
+      result->def->read(st, k);	// updates k2
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("pin", result);
+    }
     else {
       result->def->read(st, k);	// updates k2
       result->set_parent(parent);
       result->set_name(s);
     }
     
+    result->is_defined = TRUE;
     result->BrowserNode::read(st, k);
     
     if (strcmp(k, "end")) {

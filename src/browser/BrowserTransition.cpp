@@ -44,7 +44,7 @@
 #include "strutil.h"
 #include "mu.h"
 
-IdDict<BrowserTransition> BrowserTransition::all(1023);
+IdDict<BrowserTransition> BrowserTransition::all(1023, __FILE__);
 
 BrowserTransition::BrowserTransition(BrowserNode * p, BrowserNode * end)
     : BrowserNode("<transition>", p), Labeled<BrowserTransition>(all, 0),
@@ -388,14 +388,23 @@ BrowserTransition *
     
     if ((result = all[id]) == 0)
       result = new BrowserTransition(parent, d, id);
+    else if (result->is_defined) {
+      BrowserTransition * already_exist = result;
+
+      result = new BrowserTransition(parent, d, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("transition", result);
+    }
     else {
       if (result->def != 0)
-	// re-load
+	// re-load ???
 	delete result->def;
       result->def = d;
       result->set_parent(parent);
     }
     
+    result->is_defined = TRUE;
     result->set_name(s);
     
     result->is_read_only = !in_import() && read_only_file() || 

@@ -125,6 +125,8 @@ class OperationData : public ClassMemberData,
     QString definition(bool full, bool withdir, bool withname) const;
     QString definition(bool full, DrawingLanguage language, bool withdir, bool withname) const;
     
+    virtual bool decldefbody_contain(const QString & s, bool cs, BrowserNode *);
+    
     const char * get_constraint() const { return constraint; }
         
     bool get_isa_class_operation() const { return isa_class_operation; };

@@ -1832,11 +1832,13 @@ void DiagramView::restore_window_size() {
 
 void DiagramView::save_picture(bool optimal, bool svg) {
   QString filename =
-    QFileDialog::getSaveFileName(QString::null, 
+    QFileDialog::getSaveFileName(last_used_directory(), 
 				 (svg) ? "SVG file (*.svg)" : "PNG file (*.png)",
 				 this);
 
   if (!filename.isNull()) {
+    set_last_used_directory(filename);
+    
     if (svg) {
       if (filename.right(4).lower() != ".svg")
 	filename += ".svg";

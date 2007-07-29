@@ -51,7 +51,7 @@
 #include "ComponentDialog.h"
 #include "DialogUtil.h"
 
-IdDict<BrowserComponent> BrowserComponent::all(257);
+IdDict<BrowserComponent> BrowserComponent::all(257, __FILE__);
 QStringList BrowserComponent::its_default_stereotypes;	// unicode
 
 BrowserComponent::BrowserComponent(QString s, BrowserNode * p, int id)
@@ -1113,12 +1113,23 @@ BrowserComponent * BrowserComponent::read(char * & st, char * k,
       result = new BrowserComponent(s, parent, id);
       result->def->read(st, k);	// updates k
     }
+    else if (result->is_defined) {
+      BrowserComponent * already_exist = result;
+
+      result = new BrowserComponent(s, parent, id);
+      result->def->read(st, k);	// updates k
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("component", result);
+    }
     else {
       result->def->read(st, k);	// updates k
       result->set_parent(parent);
       result->set_name(s);
     }
     
+    result->is_defined = TRUE;
+
     result->is_read_only = !in_import() && read_only_file() || 
       (user_id() != 0) && result->is_api_base();
     

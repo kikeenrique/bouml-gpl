@@ -243,6 +243,14 @@ void ArtifactData::on_delete() {
   
   browser_node->on_delete();
 }
+
+bool ArtifactData::decldefbody_contain(const QString & s, bool cs,
+				       BrowserNode *) {
+  return ((QString(get_cpp_h()).find(s, 0, cs) != -1) ||
+	  (QString(get_cpp_src()).find(s, 0, cs) != -1) ||
+	  (QString(get_java_src()).find(s, 0, cs) != -1) ||
+	  (QString(get_idl_src()).find(s, 0, cs) != -1));
+}
   
 void ArtifactData::associate(BrowserArtifact * other) {
   if ((associated == 0) || (associated->find(other) == 0)) {

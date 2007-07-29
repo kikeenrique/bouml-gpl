@@ -49,7 +49,7 @@
 #include "strutil.h"
 #include "mu.h"
 
-IdDict<BrowserExpansionNode> BrowserExpansionNode::all(257);
+IdDict<BrowserExpansionNode> BrowserExpansionNode::all(257, __FILE__);
 QStringList BrowserExpansionNode::its_default_stereotypes;	// unicode
 
 BrowserExpansionNode::BrowserExpansionNode(QString s, BrowserNode * p, int id)
@@ -470,12 +470,22 @@ BrowserExpansionNode *
       result = new BrowserExpansionNode(s, parent, id);
       result->def->read(st, k);	// updates k2
     }
+    else if (result->is_defined) {
+      BrowserExpansionNode * already_exist = result;
+
+      result = new BrowserExpansionNode(s, parent, id);
+      result->def->read(st, k);	// updates k2
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("expansion node", result);
+    }
     else {
       result->def->read(st, k);	// updates k2
       result->set_parent(parent);
       result->set_name(s);
     }
     
+    result->is_defined = TRUE;
     result->BrowserNode::read(st, k);
     
     if (strcmp(k, "end")) {

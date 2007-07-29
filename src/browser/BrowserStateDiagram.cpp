@@ -620,11 +620,21 @@ BrowserStateDiagram * BrowserStateDiagram::read(char * & st, char * k,
     
     if ((r = (BrowserStateDiagram *) all[id]) == 0)
       r = new BrowserStateDiagram(s, parent, id);
+    else if (r->is_defined) {
+      BrowserStateDiagram * already_exist = r;
+
+      r = new BrowserStateDiagram(s, parent, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("state diagram", r);
+    }
     else {
       r->set_parent(parent);
       r->set_name(s);
     }
     
+    r->is_defined = TRUE;
+
     r->is_read_only = (!in_import() && read_only_file()) || 
       (user_id() != 0) && r->is_api_base();
     

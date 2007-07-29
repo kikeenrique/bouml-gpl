@@ -45,7 +45,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserDeploymentView> BrowserDeploymentView::all;
+IdDict<BrowserDeploymentView> BrowserDeploymentView::all(__FILE__);
 QStringList BrowserDeploymentView::its_default_stereotypes;	// unicode
 
 BrowserDeploymentView::BrowserDeploymentView(QString s, BrowserNode * p, int id)
@@ -713,11 +713,21 @@ BrowserDeploymentView * BrowserDeploymentView::read(char * & st, char * k,
     
     if (r == 0)
       r = new BrowserDeploymentView(s, parent, id);
+    else if (r->is_defined) {
+      BrowserDeploymentView * already_exist = r;
+
+      r = new BrowserDeploymentView(s, parent, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("deployment view", r);
+    }
     else {
       r->set_parent(parent);
       r->set_name(s);
     }
     
+    r->is_defined = TRUE;
+
     r->is_read_only = !in_import() && read_only_file() || 
       (user_id() != 0) && r->is_api_base();
     

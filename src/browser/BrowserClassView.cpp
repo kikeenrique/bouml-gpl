@@ -54,7 +54,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserClassView> BrowserClassView::all;
+IdDict<BrowserClassView> BrowserClassView::all(__FILE__);
 QStringList BrowserClassView::its_default_stereotypes;	// unicode
 
 BrowserClassView::BrowserClassView(QString s, BrowserNode * p, int id)
@@ -132,12 +132,18 @@ void BrowserClassView::clear(bool old)
 {
   all.clear(old);
   BrowserClass::clear(old);
+  BrowserState::clear(old);
+  BrowserActivity::clear(old);
+  BrowserClassInstance::clear(old);
 }
 
 void BrowserClassView::update_idmax_for_root()
 {
   all.update_idmax_for_root();
   BrowserClass::update_idmax_for_root();
+  BrowserState::update_idmax_for_root();
+  BrowserActivity::update_idmax_for_root();
+  BrowserClassInstance::update_idmax_for_root();
 }
     
 void BrowserClassView::renumber(int phase) {
@@ -1111,80 +1117,77 @@ BrowserClassView * BrowserClassView::read(char * & st, char * k,
 {
   if (!strcmp(k, "classview")) {
     int id = read_id(st);
-    
-    BrowserClassView * r = all[id];
-    
-    if (r != 0) {
-      msg_critical("Error", "reload not yet implemented");
+    BrowserClassView * already_exist = all[id];
+    BrowserClassView * r = new BrowserClassView(read_string(st), parent, id);
       
-      throw 0;
+    if (already_exist != 0) {
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("class views", r);
     }
-    else {
-      r = new BrowserClassView(read_string(st), parent, id);
+
+    r->is_read_only = !in_import() && read_only_file() || 
+      (user_id() != 0) && r->is_api_base();
       
-      r->is_read_only = !in_import() && read_only_file() || 
-	(user_id() != 0) && r->is_api_base();
+    k = read_keyword(st);
       
+    r->def->read(st, k);					// updates k
+    r->classdiagram_settings.read(st, k);			// updates k
+    if (read_file_format() >= 6) {
+      r->collaborationdiagram_settings.read(st, k);		// updates k
+      if (read_file_format() >= 25)
+	r->objectdiagram_settings.read(st, k);		// updates k
+      r->sequencediagram_settings.read(st, k);		// updates k
+    }
+    if (read_file_format() >= 21)
+      r->statediagram_settings.read(st, k);			// updates k
+    r->class_settings.read(st, k);				// updates k
+    if (read_file_format() >= 26)
+      r->activitydiagram_settings.read(st, k);		// updates k
+    read_color(st, "class_color", r->class_color, k);		// updates k
+    read_color(st, "note_color", r->note_color, k);		// updates k
+    read_color(st, "package_color", r->package_color, k);	// updates k
+    read_color(st, "fragment_color", r->fragment_color, k);	// updates k
+    read_color(st, "duration", r->duration_color, k);	// old, updates k
+    read_color(st, "duration_color", r->duration_color, k);	// updates k
+    read_color(st, "continuation_color", r->continuation_color, k);	// updates k
+    read_color(st, "state_color", r->state_color, k);		// updates k
+    read_color(st, "stateaction_color", r->stateaction_color, k);		// updates k
+    read_color(st, "activity_color", r->activity_color, k);		// updates k
+    read_color(st, "activityregion_color", r->activityregion_color, k);		// updates k
+    read_color(st, "activityaction_color", r->activityaction_color, k);		// updates k
+    read_color(st, "parameterpin_color", r->parameterpin_color, k);		// updates k
+    if ((read_file_format() < 20) && !strcmp(k, "associated_componentview")) {
+      // old format
+      r->set_associated_deploymentview(BrowserDeploymentView::read_ref(st, "deploymentview_ref"),
+				       TRUE);
       k = read_keyword(st);
-      
-      r->def->read(st, k);					// updates k
-      r->classdiagram_settings.read(st, k);			// updates k
-      if (read_file_format() >= 6) {
-	r->collaborationdiagram_settings.read(st, k);		// updates k
-	if (read_file_format() >= 25)
-	  r->objectdiagram_settings.read(st, k);		// updates k
-	r->sequencediagram_settings.read(st, k);		// updates k
-      }
-      if (read_file_format() >= 21)
-	r->statediagram_settings.read(st, k);			// updates k
-      r->class_settings.read(st, k);				// updates k
-      if (read_file_format() >= 26)
-	r->activitydiagram_settings.read(st, k);		// updates k
-      read_color(st, "class_color", r->class_color, k);		// updates k
-      read_color(st, "note_color", r->note_color, k);		// updates k
-      read_color(st, "package_color", r->package_color, k);	// updates k
-      read_color(st, "fragment_color", r->fragment_color, k);	// updates k
-      read_color(st, "duration_color", r->duration_color, k);	// updates k
-      read_color(st, "continuation_color", r->continuation_color, k);	// updates k
-      read_color(st, "state_color", r->state_color, k);		// updates k
-      read_color(st, "stateaction_color", r->stateaction_color, k);		// updates k
-      read_color(st, "activity_color", r->activity_color, k);		// updates k
-      read_color(st, "activityregion_color", r->activityregion_color, k);		// updates k
-      read_color(st, "activityaction_color", r->activityaction_color, k);		// updates k
-      read_color(st, "parameterpin_color", r->parameterpin_color, k);		// updates k
-      if ((read_file_format() < 20) && !strcmp(k, "associated_componentview")) {
-	// old format
-	r->set_associated_deploymentview(BrowserDeploymentView::read_ref(st, "deploymentview_ref"),
-					 TRUE);
-	k = read_keyword(st);
-      }
-      else if (!strcmp(k, "associated_deployment_view") ||
-	       ((read_file_format() < 20) && !strcmp(k, "associated_component_view"))) {
-	r->set_associated_deploymentview(BrowserDeploymentView::read_ref(st, read_keyword(st)),
-					 TRUE);
-	k = read_keyword(st);
-      }
-      
-      r->BrowserNode::read(st, k);				// updates k
-      
-      if (strcmp(k, "end")) {
-	while (BrowserClassDiagram::read(st, k, r) ||
-	       BrowserColDiagram::read(st, k, r) ||
-	       BrowserSeqDiagram::read(st, k, r) ||
-	       BrowserObjectDiagram::read(st, k, r) ||
-	       BrowserClass::read(st, k, r) ||
-	       BrowserClassInstance::read(st, k, r) ||
-	       BrowserState::read(st, k, r) ||
-	       BrowserActivity::read(st, k, r) ||
-	       BrowserActivityAction::read(st, k, r))
-	  k = read_keyword(st);
-	
-	if (strcmp(k, "end"))
-	  wrong_keyword(k, "end");
-      }
-      
-      return r;
     }
+    else if (!strcmp(k, "associated_deployment_view") ||
+	     ((read_file_format() < 20) && !strcmp(k, "associated_component_view"))) {
+      r->set_associated_deploymentview(BrowserDeploymentView::read_ref(st, read_keyword(st)),
+				       TRUE);
+      k = read_keyword(st);
+    }
+    
+    r->BrowserNode::read(st, k);				// updates k
+    
+    if (strcmp(k, "end")) {
+      while (BrowserClassDiagram::read(st, k, r) ||
+	     BrowserColDiagram::read(st, k, r) ||
+	     BrowserSeqDiagram::read(st, k, r) ||
+	     BrowserObjectDiagram::read(st, k, r) ||
+	     BrowserClass::read(st, k, r) ||
+	     BrowserClassInstance::read(st, k, r) ||
+	     BrowserState::read(st, k, r) ||
+	     BrowserActivity::read(st, k, r) ||
+	     BrowserActivityAction::read(st, k, r))
+	k = read_keyword(st);
+	
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
+    
+    return r;
   }
   else
     return 0;

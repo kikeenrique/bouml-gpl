@@ -60,7 +60,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserActivity> BrowserActivity::all;
+IdDict<BrowserActivity> BrowserActivity::all(__FILE__);
 QStringList BrowserActivity::its_default_stereotypes;	// unicode
 
 BrowserActivity::BrowserActivity(QString s, BrowserNode * p, int id)
@@ -99,11 +99,25 @@ BrowserActivity::~BrowserActivity() {
 void BrowserActivity::clear(bool old)
 {
   all.clear(old);
+  BrowserActivityNode::clear(old);
+  BrowserParameter::clear(old);
+  BrowserActivityAction::clear(old);
+  BrowserInterruptibleActivityRegion::clear(old);
+  BrowserExpansionRegion::clear(old);
+  BrowserActivityObject::clear(old);
+  BrowserFlow::clear(old);
 }
 
 void BrowserActivity::update_idmax_for_root()
 {
   all.update_idmax_for_root();
+  BrowserActivityNode::update_idmax_for_root();
+  BrowserParameter::update_idmax_for_root();
+  BrowserActivityAction::update_idmax_for_root();
+  BrowserInterruptibleActivityRegion::update_idmax_for_root();
+  BrowserExpansionRegion::update_idmax_for_root();
+  BrowserActivityObject::update_idmax_for_root();
+  BrowserFlow::update_idmax_for_root();
 }
     
 void BrowserActivity::referenced_by(QList<BrowserNode> & l) {
@@ -800,11 +814,20 @@ BrowserActivity * BrowserActivity::read(char * & st, char * k,
     
     if (result == 0)
       result = new BrowserActivity(read_string(st), parent, id);
+    else if (result->is_defined) {
+      BrowserActivity * already_exist = result;
+
+      result = new BrowserActivity(read_string(st), parent, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("activity", result);
+    }
     else {
       result->set_parent(parent);
       result->set_name(read_string(st));
     }
     
+    result->is_defined = TRUE;
     k = read_keyword(st);
     result->def->read(st, k);
 

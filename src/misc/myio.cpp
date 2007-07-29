@@ -2001,11 +2001,13 @@ void warn(const QString & s)
   QTextView * t = new QTextView(d);
   QFontMetrics fm(QApplication::font());
   //int w = e->maxLineWidth() + e->minimumSizeHint().width();
-  int maxw = (UmlWindow::get_workspace()->height() * 4)/5;
+  int maxw = (UmlWindow::get_workspace()->width() * 4)/5;
+  int maxh = (UmlWindow::get_workspace()->height() * 4)/5;
+  int he = (e->numLines() + 5) * fm.height();
   
   t->setText(s);
   t->setMinimumSize(maxw, //(w > maxw) ? maxw : w,
-		    ((e->numLines() > 15) ? 15 : e->numLines()) * fm.height());
+		    (he > maxh) ? maxh : he);
 		    
   vbox->addWidget(t);
   
@@ -2348,5 +2350,21 @@ void draw_text(int x, int y, int w, int h, int align,
       }	
     }
   }
+}
+
+//
+
+static QString Last_Used_Directory;
+
+QString last_used_directory()
+{
+  return Last_Used_Directory;
+}
+
+void set_last_used_directory(QString s)
+{
+  QFileInfo fi(s);
+  
+  Last_Used_Directory = fi.dirPath();
 }
 

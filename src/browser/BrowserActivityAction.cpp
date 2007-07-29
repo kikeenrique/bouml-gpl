@@ -54,7 +54,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserActivityAction> BrowserActivityAction::all(257);
+IdDict<BrowserActivityAction> BrowserActivityAction::all(257, __FILE__);
 QStringList BrowserActivityAction::its_default_stereotypes;	// unicode
 
 BrowserActivityAction::BrowserActivityAction(QString s, BrowserNode * p, int id)
@@ -100,11 +100,15 @@ BrowserActivityAction::~BrowserActivityAction() {
 void BrowserActivityAction::clear(bool old)
 {
   all.clear(old);
+  BrowserParameterSet::clear(old);
+  BrowserPin::clear(old);
 }
 
 void BrowserActivityAction::update_idmax_for_root()
 {
   all.update_idmax_for_root();
+  BrowserParameterSet::update_idmax_for_root();
+  BrowserPin::update_idmax_for_root();
 }
     
 void BrowserActivityAction::referenced_by(QList<BrowserNode> & l) {
@@ -1055,11 +1059,20 @@ BrowserActivityAction * BrowserActivityAction::read(char * & st, char * k,
     
     if (result == 0)
       result = new BrowserActivityAction(read_string(st), parent, id);
+    else if (result->is_defined) {
+      BrowserActivityAction * already_exist = result;
+
+      result = new BrowserActivityAction(read_string(st), parent, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("activity action", result);
+    }
     else {
       result->set_parent(parent);
       result->set_name(read_string(st));
     }
     
+    result->is_defined = TRUE;
     k = read_keyword(st);
     result->def->read(st, k);
     

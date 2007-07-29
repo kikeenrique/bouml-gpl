@@ -53,7 +53,7 @@
 #include "BrowserView.h"
 #include "mu.h"
 
-IdDict<BrowserArtifact> BrowserArtifact::all(257);
+IdDict<BrowserArtifact> BrowserArtifact::all(257, __FILE__);
 QStringList BrowserArtifact::its_default_stereotypes;	// unicode
 QStringList BrowserArtifact::relation_default_stereotypes;	// unicode
 
@@ -862,6 +862,12 @@ bool BrowserArtifact::tool_cmd(ToolCom * com, const char * args) {
 	  com->write_ack(TRUE);
 	}
 	break;
+      case setUserCmd:
+	// plug-out upgrade
+	all.remove(get_ident());
+	new_ident(com->get_unsigned(args), all);      
+	package_modified();
+	break;
       case createCmd:
 	{
 	  bool ok = TRUE;
@@ -1058,12 +1064,23 @@ BrowserArtifact * BrowserArtifact::read(char * & st, char * k,
       result = new BrowserArtifact(s, parent, id);
       result->def->read(st, k);	// updates k
     }
+    else if (result->is_defined) {
+      BrowserArtifact * already_exist = result;
+
+      result = new BrowserArtifact(s, parent, id);
+      result->def->read(st, k);	// updates k
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("artifact", result);
+    }
     else {
       result->def->read(st, k);	// updates k
       result->set_parent(parent);
       result->set_name(s);
     }
     
+    result->is_defined = TRUE;
+
     result->is_read_only = !in_import() && read_only_file() || 
       (user_id() != 0) && result->is_api_base();
     

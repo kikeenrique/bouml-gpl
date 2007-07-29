@@ -46,7 +46,7 @@
 #include "BrowserView.h"
 #include "mu.h"
 
-IdDict<OperationData> OperationData::all(1023);
+IdDict<OperationData> OperationData::all(1023, __FILE__);
 
 OperationData::OperationData(int id)
     : Labeled<OperationData>(all, id),
@@ -409,6 +409,16 @@ QString OperationData::definition(bool full, DrawingLanguage language,
     else
       return QString::null;
   }
+}
+
+bool OperationData::decldefbody_contain(const QString & s, bool cs,
+					BrowserNode *) {
+  return ((QString(get_cppdecl()).find(s, 0, cs) != -1) ||
+	  (QString(get_cppdef()).find(s, 0, cs) != -1) ||
+	  (QString(get_javadef()).find(s, 0, cs) != -1) ||
+	  (QString(get_idldecl()).find(s, 0, cs) != -1) ||
+	  (QString(get_body(TRUE)).find(s, 0, cs) != -1) ||
+	  (QString(get_body(FALSE)).find(s, 0, cs) != -1));
 }
 
 UmlVisibility OperationData::get_visibility(BrowserNode *) {

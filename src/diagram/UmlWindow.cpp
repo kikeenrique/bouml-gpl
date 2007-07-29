@@ -575,10 +575,12 @@ void UmlWindow::newProject() {
     close();
     
     if (browser->get_project() == 0) {
-      QString f = QFileDialog::getSaveFileName(QString::null, "*", this,
+      QString f = QFileDialog::getSaveFileName(last_used_directory(), "*", this,
 					       0, "Select parent directory");
       
       if (!f.isEmpty()) {
+	set_last_used_directory(f);
+	
 	QDir di;
 	
 	if (di.mkdir(f)) {
@@ -615,10 +617,12 @@ void UmlWindow::load() {
     close();
     
     if (browser->get_project() == 0) {
-      QString fn = QFileDialog::getOpenFileName(QString::null, "*.prj", this);
+      QString fn = QFileDialog::getOpenFileName(last_used_directory(), "*.prj", this);
       
-      if (!fn.isEmpty())
+      if (!fn.isEmpty()) {
+	set_last_used_directory(fn);
 	load(fn);
+      }
       else
 	statusBar()->message("Loading aborted", 2000);
     }
@@ -702,6 +706,7 @@ void UmlWindow::load(QString fn, bool forcesaveas) {
   }
   
   BrowserNode::post_load();
+  idmax_add_margin();
   browser->get_project()->setOpen(TRUE);
   QApplication::restoreOverrideCursor();
   setCaption("Bouml : " + fn);
@@ -795,10 +800,12 @@ bool UmlWindow::saveas_it()
 {
   if (the->browser->get_project() && !BrowserNode::edition_active()) {
     for (;;) {
-      QString f = QFileDialog::getSaveFileName(QString::null, "*", the,
+      QString f = QFileDialog::getSaveFileName(last_used_directory(), "*", the,
 					       0, "Select parent directory");
       
       if (!f.isEmpty()) {
+	set_last_used_directory(f);
+	
 	QDir d(f);
 	
 	if (d.dirName() == "empty")

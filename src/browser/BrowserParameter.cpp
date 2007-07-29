@@ -51,7 +51,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserParameter> BrowserParameter::all(257);
+IdDict<BrowserParameter> BrowserParameter::all(257, __FILE__);
 QStringList BrowserParameter::its_default_stereotypes;	// unicode
 
 BrowserParameter::BrowserParameter(QString s, BrowserNode * p, int id)
@@ -530,12 +530,22 @@ BrowserParameter * BrowserParameter::read(char * & st, char * k,
       result = new BrowserParameter(s, parent, id);
       result->def->read(st, k);	// updates k2
     }
+    else if (result->is_defined) {
+      BrowserParameter * already_exist = result;
+
+      result = new BrowserParameter(s, parent, id);
+      result->def->read(st, k);	// updates k2
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("activity parameter", result);
+    }
     else {
       result->def->read(st, k);	// updates k2
       result->set_parent(parent);
       result->set_name(s);
     }
     
+    result->is_defined = TRUE;
     result->BrowserNode::read(st, k);
     
     if (strcmp(k, "end")) {

@@ -42,9 +42,26 @@
 
 template <class X> class Labeled;
 template <class X> class IdIterator;
+template <class X> class IdDict;
 
 extern void set_in_import(bool y);
 extern bool in_import();
+
+// internal, not in the template to not define them several
+// times for nothing
+extern void update_idmax_for_root(QIntDict<void> & d, int & idmax);
+
+extern int place(IdDict<void> & d, int id, void *);
+extern int new_place(IdDict<void> & d, int user_id, void *);
+extern void will_change_id(IdDict<void> & d, int &, void *);
+extern void do_change_shared_ids();
+
+// to add a margin of 8 on idmax after project loading
+// to limit the possibility for a deleted element still
+// present in a diagram known through its id to exist
+// for an other element created after
+extern void memo_idmax_loc(int & idmaxref, const char * who);
+extern void idmax_add_margin();
 
 template <class X> class IdDict {
 #if 0
@@ -63,15 +80,15 @@ template <class X> class IdDict {
     bool old_diagram;
     
   public:
-    IdDict() { idmax = 0; }
-    IdDict(int sz) { idmax = 0; dict[0].resize(sz); }
+    IdDict(const char * who) { idmax = 0; memo_idmax_loc(idmax, who); }
+    IdDict(int sz, const char * who) { idmax = 0; dict[0].resize(sz); memo_idmax_loc(idmax, who); }
   
     X * operator[](int k) {
       return dict[(old_diagram || in_import()) ? 1 : 0][k];
     }
   
-    bool remove(int id) {
-      return dict[0].remove(id);
+    void remove(int id) {
+      dict[0].remove(id);
     }
     
     void clear(bool olds) {
@@ -84,17 +101,7 @@ template <class X> class IdDict {
     }
     
     void update_idmax_for_root() {
-      QIntDictIterator<X> it(dict[0]); 
-
-      while (it.current()) {
-	int id = it.currentKey();
-	
-	if ((((unsigned) (id & ~127)) > ((unsigned) idmax)) &&
-	    ((id & 127) == 0))
-	  idmax = id & ~127;
-	
-	++it;
-      }
+      ::update_idmax_for_root((QIntDict<void> &) dict[0], idmax);
     }
     
     void read_old_diagram(bool y) { old_diagram = y; }
@@ -121,11 +128,13 @@ template <class X> class Labeled {
     void new_ident(int user_id, IdDict<X> & d) {
       ident = new_place((IdDict<void> &) d, user_id, (X *) this);
     }
+    void must_change_id(IdDict<X> & d) {
+      will_change_id((IdDict<void> &) d, ident, (X *) this);
+    }
 };
 
-// internal, not in the template to not define them several
-// times for nothing
-extern int place(IdDict<void> & d, int id, void *);
-extern int new_place(IdDict<void> & d, int user_id, void *);
+//
+
+extern void check_ids_cleared();
 
 #endif

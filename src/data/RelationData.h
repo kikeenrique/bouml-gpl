@@ -74,9 +74,11 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
   
   protected:
     static IdDict<RelationData> all;
+    static QList<RelationData> Unconsistent;
   
     // Uml
     bool is_deleted : 8;	// 1 useless here, 8 faster than 1 ?
+    bool is_unconsistent : 8;	// 1 useless here, 8 faster than 1 ?
     UmlCode type: 8;		// 1 useless here, 8 faster than 1 ?
     MyStr name;
     RoleData a;
@@ -125,6 +127,8 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     virtual void set_stereotype(const QString &);
     virtual void set_stereotype(const QCString &);
     virtual void set_stereotype(const char *);
+    
+    virtual bool decldefbody_contain(const QString & s, bool cs, BrowserNode *);
     
     bool is_a(const BrowserRelation * br) const { return br == start; };
     
@@ -181,7 +185,7 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     void save(QTextStream &, bool ref, QString & warning) const;
     static RelationData * read_ref(char * &, bool complete = FALSE,
 				   const char * k = 0);
-    static RelationData * read(char * &, char * &);
+    static RelationData * read(char * &, char * &, BrowserRelation *& unconsistent);
     
     static bool uni_directional(UmlCode);
     static const QString & default_name(UmlCode e);
@@ -193,6 +197,11 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     static void update_idmax_for_root();
     void renumber(int phase, BrowserRelation * br);
     bool is_writable(const BrowserRelation * br) const;
+
+    bool unconsistentp() const { return is_unconsistent; }
+    void set_unconsistent();
+    static bool has_unconsistencies();
+    static void delete_unconsistent();
     
   protected slots:
     void end_deleted();

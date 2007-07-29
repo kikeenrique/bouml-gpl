@@ -81,6 +81,8 @@ class AttributeData : public ClassMemberData {
     virtual QString definition(bool full) const;
     QString definition(bool full, DrawingLanguage language) const;
     
+    virtual bool decldefbody_contain(const QString & s, bool cs, BrowserNode *);
+    
     const char * get_constraint() const { return constraint; };
     
     bool get_isa_class_attribute() const { return isa_class_attribute; };

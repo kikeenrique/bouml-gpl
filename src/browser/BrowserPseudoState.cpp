@@ -46,7 +46,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
-IdDict<BrowserPseudoState> BrowserPseudoState::all(257);
+IdDict<BrowserPseudoState> BrowserPseudoState::all(257, __FILE__);
 QStringList BrowserPseudoState::its_default_stereotypes;	// unicode
 
 BrowserPseudoState::BrowserPseudoState(UmlCode c, QString s, BrowserNode * p,
@@ -682,6 +682,15 @@ BrowserPseudoState * BrowserPseudoState::read(char * & st, char * k,
     if (result == 0)
       result = new BrowserPseudoState(c, (allow_empty(c)) ? "" : (const char *) read_string(st),
 				      parent, new SimpleData, id);
+    else if (result->is_defined) {
+      BrowserPseudoState * already_exist = result;
+
+      result = new BrowserPseudoState(c, (allow_empty(c)) ? "" : (const char *) read_string(st),
+				      parent, new SimpleData, id);
+
+      already_exist->must_change_id(all);
+      already_exist->unconsistent_fixed("pseudo state", result);
+    }
     else {
       result->kind = c;
       result->set_parent(parent);
@@ -689,6 +698,7 @@ BrowserPseudoState * BrowserPseudoState::read(char * & st, char * k,
 	result->set_name(read_string(st));
     }
     
+    result->is_defined = TRUE;
     k = read_keyword(st);
     result->def->read(st, k);
     
