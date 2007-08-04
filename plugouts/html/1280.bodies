@@ -61,53 +61,53 @@ class CppSettings
       return _builtins[index].uml;
   
   return null;
-!!!1536.cpp!!!	relationStereotype(in s : string) : string
+!!!1536.cpp!!!	relationAttributeStereotype(in s : string) : string
   read_if_needed_();
   
-  UmlStereotype * b = UmlSettings::_map_relation_stereotypes.find(s);
+  UmlStereotype * b = UmlSettings::_map_relation_attribute_stereotypes.find(s);
   
   return (b) ? b->cpp : s;
-!!!1536.java!!!	relationStereotype(in s : string) : string
+!!!1536.java!!!	relationAttributeStereotype(in s : string) : string
   read_if_needed_();
   
-  UmlStereotype b = (UmlStereotype) _map_relation_stereotypes.get(s);
+  UmlStereotype b = (UmlStereotype) _map_relation_attribute_stereotypes.get(s);
   
   return (b != null) ? b.cpp : s;
-!!!1664.cpp!!!	set_RelationStereotype(in s : string, in v : string) : bool
-  UmlCom::send_cmd(cppSettingsCmd, setCppRelationStereotypeCmd, s, v);
+!!!1664.cpp!!!	set_RelationAttributeStereotype(in s : string, in v : string) : bool
+  UmlCom::send_cmd(cppSettingsCmd, setCppRelationAttributeStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
-    UmlStereotype * st = UmlSettings::_map_relation_stereotypes.find(s);
+    UmlStereotype * st = UmlSettings::_map_relation_attribute_stereotypes.find(s);
 
     if (st == 0)
-      st = UmlSettings::add_rel_stereotype(s);
+      st = UmlSettings::add_rel_attr_stereotype(s);
     st->cpp = v;
     
     return TRUE;
   }
   else
     return FALSE;
-!!!1664.java!!!	set_RelationStereotype(in s : string, in v : string) : bool
- UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppRelationStereotypeCmd, s, v);
+!!!1664.java!!!	set_RelationAttributeStereotype(in s : string, in v : string) : bool
+ UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppRelationAttributeStereotypeCmd, s, v);
  UmlCom.check();
  
- UmlStereotype st = (UmlStereotype) _map_relation_stereotypes.get(s);
+ UmlStereotype st = (UmlStereotype) _map_relation_attribute_stereotypes.get(s);
 
  if (st == null)
-   st = add_rel_stereotype(s);
+   st = add_rel_attr_stereotype(s);
  st.cpp = v;
 
-!!!1792.cpp!!!	relationUmlStereotype(in s : string) : string
+!!!1792.cpp!!!	relationAttributeUmlStereotype(in s : string) : string
   read_if_needed_();
   
-  return UmlSettings::uml_rel_stereotype(s, &UmlStereotype::cpp);
-!!!1792.java!!!	relationUmlStereotype(in s : string) : string
+  return UmlSettings::uml_rel_attr_stereotype(s, &UmlStereotype::cpp);
+!!!1792.java!!!	relationAttributeUmlStereotype(in s : string) : string
   read_if_needed_();
   
-  int index = _relation_stereotypes.length;
+  int index = _relation_attribute_stereotypes.length;
   
   while (index-- != 0)
-    if (_relation_stereotypes[index].cpp.equals(s))
-      return _relation_stereotypes[index].uml;
+    if (_relation_attribute_stereotypes[index].cpp.equals(s))
+      return _relation_attribute_stereotypes[index].uml;
   
   return null;
 !!!1920.cpp!!!	classStereotype(in s : string) : string
@@ -715,28 +715,27 @@ class CppSettings
   
   _typedef_decl = v;
 
-!!!7168.cpp!!!	attributeDecl() : string
+!!!7168.cpp!!!	attributeDecl(in multiplicity : str) : string
   read_if_needed_();
-  
-  return _attr_decl;
-!!!7168.java!!!	attributeDecl() : string
+
+  return _attr_decl[UmlSettings::multiplicity_column(multiplicity)];
+!!!7168.java!!!	attributeDecl(in multiplicity : str) : string
   read_if_needed_();
-  
-  return _attr_decl;
-!!!7296.cpp!!!	set_AttributeDecl(in v : string) : bool
-  UmlCom::send_cmd(cppSettingsCmd, setCppAttributeDeclCmd, v);
+
+  return _attr_decl[UmlSettings.multiplicity_column(multiplicity)];
+!!!7296.cpp!!!	set_AttributeDecl(in multiplicity : str, in v : string) : bool
+  UmlCom::send_cmd(cppSettingsCmd, setCppAttributeDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
-    _attr_decl = v;
+    _attr_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
     return TRUE;
   }
   else
     return FALSE;
-!!!7296.java!!!	set_AttributeDecl(in v : string) : bool
-  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppAttributeDeclCmd, v);
+!!!7296.java!!!	set_AttributeDecl(in multiplicity : str, in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppAttributeDeclCmd, multiplicity, v);
   UmlCom.check();
-  
-  _attr_decl = v;
 
+  _attr_decl[UmlSettings.multiplicity_column(multiplicity)] = v;
 !!!7424.cpp!!!	enumItemDecl() : string
   read_if_needed_();
   
@@ -1094,7 +1093,7 @@ class CppSettings
   n = UmlCom::read_unsigned();
   
   for (index = 0; index != n; index += 1)
-    UmlSettings::_relation_stereotypes[index].cpp = UmlCom::read_string();
+    UmlSettings::_relation_attribute_stereotypes[index].cpp = UmlCom::read_string();
   
   n = UmlCom::read_unsigned();
   
@@ -1133,7 +1132,8 @@ class CppSettings
   _union_decl = UmlCom::read_string();
   _enum_decl = UmlCom::read_string();
   _typedef_decl = UmlCom::read_string();
-  _attr_decl = UmlCom::read_string();
+  for (index = 0; index != 3; index += 1)
+    _attr_decl[index] = UmlCom::read_string();
   _enum_item_decl = UmlCom::read_string();
   for (index = 0; index != 3; index += 1) {
     _rel_decl[0][index] = UmlCom::read_string();
@@ -1176,7 +1176,7 @@ class CppSettings
   n = UmlCom.read_unsigned();
   
   for (index = 0; index != n; index += 1)
-    UmlSettings._relation_stereotypes[index].cpp = UmlCom.read_string();
+    UmlSettings._relation_attribute_stereotypes[index].cpp = UmlCom.read_string();
   
   n = UmlCom.read_unsigned();
   
@@ -1213,7 +1213,8 @@ class CppSettings
   _union_decl = UmlCom.read_string();
   _enum_decl = UmlCom.read_string();
   _typedef_decl = UmlCom.read_string();
-  _attr_decl = UmlCom.read_string();
+  for (index = 0; index != 3; index += 1)
+    _attr_decl[index] = UmlCom.read_string();
   _enum_item_decl = UmlCom.read_string();
   _rel_decl = new String[2][3];
   for (index = 0; index != 3; index += 1) {

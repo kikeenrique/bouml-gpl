@@ -899,8 +899,10 @@ static void save_role(const RoleData & role, bool assoc, QTextStream & st,
   if (assoc) {
     st << "role_name ";
     save_string(role.role, st);
-    st << " multiplicity ";
-    save_string(role.multiplicity, st);
+    if (!role.multiplicity.isEmpty()) {
+      st << " multiplicity ";
+      save_string(role.multiplicity, st);
+    }
     if (!role.init_value.isEmpty()) {
       st << " init_value ";
       save_string(role.init_value, st);
@@ -1001,14 +1003,17 @@ void RelationData::save(QTextStream & st, bool ref, QString & warning) const {
     
     nl_indent(st);
     indent(+1);
-    st << "b ";
+    st << "b";
     if (!RelationData::uni_directional(type)) {
+      st << ' ';
       save_role(b, assoc, st, warning);
       end->save(st, TRUE, warning);
     }
     else {
-      st << "multiplicity ";
-      save_string(b.multiplicity, st);
+      if (!b.multiplicity.isEmpty()) {
+        st << " multiplicity ";
+	save_string(b.multiplicity, st);
+      }
       st << " parent ";
       end_removed_from->save(st, TRUE, warning);
     }
@@ -1052,11 +1057,15 @@ static void read_role(RoleData & role, bool assoc,
   if (assoc) {
     read_keyword(st, "role_name");
     role.role = read_string(st);
-    read_keyword(st, "multiplicity");
-    role.multiplicity = read_string(st);
-    
+
     k = read_keyword(st);
     
+    if (!strcmp(k, "multiplicity")) {
+      role.multiplicity = read_string(st);
+      k = read_keyword(st);
+    }
+    else
+      role.multiplicity = 0;
     if (!strcmp(k, "init_value")) {
       role.init_value = read_string(st);
       k = read_keyword(st);
@@ -1233,10 +1242,11 @@ RelationData * RelationData::read(char * & st, char * & k,
     else {
       k = read_keyword(st);
       if (!strcmp(k, "multiplicity")) {
-	// new
 	result->b.multiplicity = read_string(st);
 	k = read_keyword(st);
       }
+      else
+	result->b.multiplicity = 0;
       if (strcmp(k, "parent"))
 	wrong_keyword(k, "parent");
       result->end_removed_from = BrowserClass::read_ref(st);

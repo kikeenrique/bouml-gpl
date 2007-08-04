@@ -38,6 +38,7 @@ class AttributeData : public ClassMemberData {
   
   protected:
     AType type;
+    SharedStr multiplicity;
     MyStr init_value;
     MyStr constraint;
     bool is_deleted : 1;
@@ -85,6 +86,8 @@ class AttributeData : public ClassMemberData {
     
     const char * get_constraint() const { return constraint; };
     
+    const char * get_multiplicity() const { return multiplicity; };
+
     bool get_isa_class_attribute() const { return isa_class_attribute; };
     
     bool get_isa_const_attribute() const { return isa_const_attribute; };

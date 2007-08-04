@@ -413,11 +413,11 @@ UmlAttribute * UmlClass::add_attribute(const char * name, aVisibility v,
   ar->set_Type(type);
   ar->set_Visibility(v);
   
-  QCString s = CppSettings::attributeDecl();
+  QCString s = CppSettings::attributeDecl("");
   
   conditional(s, if_def, end_if);
   ar->set_CppDecl(s);
-  ar->set_JavaDecl(JavaSettings::attributeDecl());
+  ar->set_JavaDecl(JavaSettings::attributeDecl(""));
   
   return ar;
 }

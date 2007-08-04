@@ -371,10 +371,13 @@ the <em>class view</em>, this artifact will contain the generated code of the cl
 	}
       }
     }
-    else
+    else {
       m.setWhatsThis(m.insertItem("Edit", 3),
 		     "to edit the <em>class</em>, \
 a double click with the left mouse button does the same thing");
+      m.setWhatsThis(m.insertItem("Duplicate", 13),
+		     "to duplicate the <em>class</em>");
+    }
     
     bool have_sep = FALSE;
     

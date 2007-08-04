@@ -733,9 +733,9 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
       return TRUE;
     }
     else if (s == "=") {
-      // initialized variable
+      // initialized param
       Lex::mark();
-      skip_expr("),");
+      skip_expr("),", TRUE);
       Lex::unread_word();	// ')' or ','
       param.default_value = Lex::region();
     }
@@ -1444,7 +1444,7 @@ void UmlOperation::skip_body(int level) {
   Lex::clear_comments();
 }
 
-void UmlOperation::skip_expr(QCString end) {
+void UmlOperation::skip_expr(QCString end, bool allow_templ) {
   QCString e;
   int level = 0;
     
@@ -1460,11 +1460,19 @@ void UmlOperation::skip_expr(QCString end) {
       break;
     
     switch (c) {
+    case '<':
+      if (! allow_templ)
+	break;
+      // no break
     case '(':
     case '{':
     case '[':
       level += 1;
       break;
+    case '>':
+      if (! allow_templ)
+	break;
+      // no break
     case ')':
     case '}':
     case ']':

@@ -95,7 +95,7 @@ void AttributeData::set_browser_node(BrowserAttribute * a, bool update,
   
     if (GenerationSettings::cpp_get_default_defs()) {
       if (ClassDialog::cpp_stereotype(cl_stereotype) != "enum")
-	cpp_decl = GenerationSettings::cpp_default_attr_decl();
+	cpp_decl = GenerationSettings::cpp_default_attr_decl(multiplicity);
       else
 	cpp_decl = (enum_item) ? GenerationSettings::cpp_default_enum_item_decl() : "";
     }
@@ -104,7 +104,7 @@ void AttributeData::set_browser_node(BrowserAttribute * a, bool update,
       bool enump = ClassDialog::java_stereotype(cl_stereotype) == "enum";
       
       if (!enum_item) {
-	java_decl = GenerationSettings::java_default_attr_decl();
+	java_decl = GenerationSettings::java_default_attr_decl(multiplicity);
 	if (enump)
 	  set_stereotype("attribute");
       }
@@ -120,11 +120,11 @@ void AttributeData::set_browser_node(BrowserAttribute * a, bool update,
       if (idl_st == "enum")
 	idl_decl =  (enum_item) ? GenerationSettings::idl_default_enum_item_decl() :  "";
       else if (idl_st == "union")
-	idl_decl = GenerationSettings::idl_default_union_item_decl();
+	idl_decl = GenerationSettings::idl_default_union_item_decl(multiplicity);
       else if (idl_st == "valuetype")
-	idl_decl = GenerationSettings::idl_default_valuetype_attr_decl();
+	idl_decl = GenerationSettings::idl_default_valuetype_attr_decl(multiplicity);
       else
-	idl_decl = GenerationSettings::idl_default_attr_decl();
+	idl_decl = GenerationSettings::idl_default_attr_decl(multiplicity);
     }
   }
 }
@@ -266,6 +266,10 @@ void AttributeData::send_uml_def(ToolCom * com, BrowserNode * bn,
     com->write_string(constraint);
   
   type.send_def(com);
+
+  if (api >= 32)
+    com->write_string(multiplicity);
+
   com->write_string(init_value);
   com->write_bool(isa_const_attribute);
   
@@ -345,6 +349,10 @@ bool AttributeData::tool_cmd(ToolCom * com, const char * args,
 	  else
 	    uml_visibility = v;
 	}
+	break;
+      case setMultiplicityCmd:
+	multiplicity = args;
+	break;
       case setConstraintCmd:
 	constraint = args;
 	break;
@@ -434,6 +442,11 @@ void AttributeData::save(QTextStream & st, QString & warning) const {
     st << "const_attribute ";
   st << stringify(uml_visibility);
   type.save(st, warning, " type ", " explicit_type ");
+  if (! multiplicity.isEmpty()) {
+    nl_indent(st);
+    st << "multiplicity ";
+    save_string(multiplicity, st);
+  }
   if (!init_value.isEmpty()) {
     nl_indent(st);
     st << "init_value ";
@@ -515,6 +528,13 @@ void AttributeData::read(char * & st, char * & k) {
   set_type(t);
   
   k = read_keyword(st);
+  if (!strcmp(k, "multiplicity")) {
+    multiplicity = read_string(st);
+    k = read_keyword(st);
+  }
+  else
+    multiplicity = 0;
+  
   if (!strcmp(k, "init_value")) {
     init_value = read_string(st);
     k = read_keyword(st);

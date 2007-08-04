@@ -45,17 +45,17 @@ class CppSettings : public UmlSettings {
 
     // returns the C++ stereotype corresponding to the 'UML' stereotype given
     // in argument
-    static QCString relationStereotype(QCString s);
+    static QCString relationAttributeStereotype(QCString s);
 
     // set the C++ stereotype corresponding to the 'UML' stereotype given
     // in argument
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_RelationStereotype(QCString s, QCString v);
+    static bool set_RelationAttributeStereotype(QCString s, QCString v);
 
-    // reverse of the RelationStereotype() operation, returns the 'UML' 
+    // reverse of the RelationAttributeStereotype() operation, returns the 'UML' 
     // stereotype corresponding to the C++ one given in argument
-    static QCString relationUmlStereotype(QCString s);
+    static QCString relationAttributeUmlStereotype(QCString s);
 
     // returns the C++ stereotype corresponding to the 'UML' stereotype given
     // in argument
@@ -134,6 +134,43 @@ class CppSettings : public UmlSettings {
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_IncludeWithPath(bool v);
+
+    // return if a relative path must be used when the path
+    // must be generated in the produced #includes
+    static bool isRelativePath();
+
+    // set if a relative path must be used when the path
+    // must be generated in the produced #includes
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsRelativePath(bool v);
+
+    // return if a path relative to the project root must be used
+    // when the path must be generated in the produced #includes
+    static bool isRootRelativePath();
+
+    // set if a relative to the project root path must be used
+    // when the path must be generated in the produced #includes
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsRootRelativePath(bool v);
+
+    // return if the namespace prefix must be
+    // always generated before class's names
+    static bool isForceNamespacePrefixGeneration();
+
+    // set if the namespace prefix must be always generated before class's names
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsForceNamespacePrefixGeneration(bool v);
+
+    // return if  generate Javadoc style comment
+    static bool isGenerateJavadocStyleComment();
+
+    // set if  generate Javadoc style comment
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsGenerateJavadocStyleComment(bool v);
 
     // returns the default operation 'in' parameter specification 
     // in case its type is an enum
@@ -266,13 +303,13 @@ class CppSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_TypedefDecl(QCString v);
 
-    // returns the default definition of an attribute
-    static const QCString & attributeDecl();
+    // returns the default definition of an attribute depending on the multiplicity
+    static const QCString & attributeDecl(const char * multiplicity);
 
     // set the default definition of an attribute
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_AttributeDecl(QCString v);
+    static bool set_AttributeDecl(const char * multiplicity, QCString v);
 
     // returns the default definition of an enumeration item
     static const QCString & enumItemDecl();
@@ -413,6 +450,16 @@ class CppSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_IsSetParamConst(bool v);
 
+    // return if the parameter of a 'set' operation generated through the
+    // attribute and relation 'add set operation' menu is a reference by default
+    static bool isSetParamRef();
+
+    // set if the parameter of a 'set' operation generated through the
+    // attribute and relation 'add set operation' menu is a reference by default
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsSetParamRef(bool v);
+
 
   private:
     // never called !
@@ -450,7 +497,7 @@ class CppSettings : public UmlSettings {
 
     static QCString _typedef_decl;
 
-    static QCString _attr_decl;
+    static QCString _attr_decl[3/*multiplicity*/];
 
     static QCString _enum_item_decl;
 
@@ -480,6 +527,8 @@ class CppSettings : public UmlSettings {
 
     static bool _is_set_param_const;
 
+    static bool _is_set_param_ref;
+
     static QCString _h_content;
 
     static QCString _src_content;
@@ -489,6 +538,14 @@ class CppSettings : public UmlSettings {
     static QCString _src_ext;
 
     static bool _incl_with_path;
+
+    static bool _is_relative_path;
+
+    static bool _is_root_relative_path;
+
+    static bool _is_force_namespace_gen;
+
+    static bool _is_generate_javadoc_comment;
 
     static QDict<QCString> _map_includes;
 

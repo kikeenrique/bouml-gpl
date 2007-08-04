@@ -57,7 +57,7 @@ class UmlOperation : public UmlBaseOperation {
 #endif
   
     static void skip_body(int level = 0);
-    static void skip_expr(QCString end);
+    static void skip_expr(QCString end, bool allow_templ = FALSE);
     static bool pfunc(bool & func, QCString & name, QCString & type,
 		      const char * namespec);
   private:

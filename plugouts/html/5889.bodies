@@ -189,6 +189,23 @@ class UmlAttribute
 	p += 7;
 	writeq(name());
       }
+      else if (!strncmp(p, "${multiplicity}", 15)) {
+	p += 15;
+	
+	QCString m = multiplicity();
+	
+	if (m.isEmpty() || (((const char *) m)[0] != '[')) {
+	  fw.write("[");
+	  writeq(m);
+	  fw.write("]");
+	}
+	else
+	  writeq(m);
+      }
+      else if (!strncmp(p, "${stereotype}", 13)) {
+	p += 13;
+	writeq(CppSettings::relationAttributeStereotype(stereotype()));
+      }
       else if (!strncmp(p, "${value}", 8) || !strncmp(p, "${h_value}", 10))
 	return;
       else if (!strncmp(p, "${static}", 9)) {
@@ -266,6 +283,23 @@ class UmlAttribute
       index += 7;
       writeq(name());
     }
+    else if (s.startsWith("${multiplicity}", index)) {
+      index += 15;
+      
+      String m = multiplicity();
+      
+      if ((m.length() == 0) || (m.charAt(0) != '[')) {
+  	fw.write("[");
+  	writeq(m);
+  	fw.write("]");
+      }
+      else
+  	writeq(m);
+    }
+    else if (s.startsWith("${stereotype}", index)) {
+      index += 13;
+      writeq(CppSettings.relationAttributeStereotype(stereotype()));
+    }
     else if (s.startsWith("${value}", index) ||
 	     s.startsWith("${h_value}", index))
       break;
@@ -326,6 +360,35 @@ class UmlAttribute
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;
       writeq(name());
+    }
+    else if (!strncmp(p, "${multiplicity}", 15)) {
+      p += 15;
+      
+      QCString m = multiplicity();
+
+      if (! m.isEmpty()) {
+	const char * s = m;
+	
+	if (*s != '[')
+	  fw.write("[]");
+	else {
+	  while (*s) {
+	    switch (*s++) {
+	    case '[':
+	      fw.write('[');
+	      break;
+	    case ']':
+	      fw.write(']');
+	    default:
+	      break;
+	    }
+	  }
+	}
+      }
+    }
+    else if (!strncmp(p, "${stereotype}", 13)) {
+      p += 13;
+      writeq(JavaSettings::relationAttributeStereotype(stereotype()));
     }
     else if (!strncmp(p, "${value}", 8)) {
       p += 8;
@@ -392,6 +455,34 @@ class UmlAttribute
       index += 7;
       writeq(name());
     }
+    else if (s.startsWith("${multiplicity}", index)) {
+      index += 15;
+      
+      String m = multiplicity();
+      int mn = m.length();
+      
+      if (mn != 0) {
+  	if (m.charAt(0) != '[')
+  	  fw.write("[]");
+  	else {
+  	  for (int index2 = 0; index2 != mn; index2 += 1) {
+  	    switch (m.charAt(index2++)) {
+  	    case '[':
+  	      fw.write('[');
+  	      break;
+  	    case ']':
+  	      fw.write(']');
+  	    default:
+  	      break;
+  	    }
+  	  }
+  	}
+      }
+    }
+    else if (s.startsWith("${stereotype}", index)) {
+      index += 13;
+      writeq(JavaSettings.relationAttributeStereotype(stereotype()));
+    }
     else if (s.startsWith("${value}", index)) {
       index += 8;
     }
@@ -453,6 +544,12 @@ class UmlAttribute
   fw.write(" : ");
   write(type());
 
+  QCString s = multiplicity();
+  
+  if (!s.isEmpty()) {
+    fw.write(", multiplicity : ");
+    writeq(s);
+  }
 !!!203906.java!!!	gen_uml_decl() : void
   if (isClassMember())
     fw.write("static, ");
@@ -460,4 +557,10 @@ class UmlAttribute
   writeq(name());
   fw.write(" : ");
   write(type());
-
+  
+  String s = multiplicity();
+  
+  if (s.length() != 0) {
+    fw.write(", multiplicity : ");
+    writeq(s);
+  }

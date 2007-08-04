@@ -45,17 +45,17 @@ class IdlSettings : public UmlSettings {
 
     // returns the IDL stereotype corresponding to the 'UML' stereotype given
     // in argument
-    static QCString relationStereotype(const QCString & s);
+    static QCString relationAttributeStereotype(const QCString & s);
 
     // set the IDL stereotype corresponding to the 'UML' stereotype given
     // in argument
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_RelationStereotype(QCString s, QCString v);
+    static bool set_RelationAttributeStereotype(QCString s, QCString v);
 
-    // reverse of the RelationStereotype() operation, returns the 'UML' 
+    // reverse of the RelationAttributeStereotype() operation, returns the 'UML' 
     // stereotype corresponding to the IDL one given in argument
-    static QCString relationUmlStereotype(QCString s);
+    static QCString relationAttributeUmlStereotype(QCString s);
 
     // returns the IDL stereotype corresponding to the 'UML' stereotype given
     // in argument

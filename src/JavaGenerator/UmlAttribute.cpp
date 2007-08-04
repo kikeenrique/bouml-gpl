@@ -95,9 +95,34 @@ void UmlAttribute::generate(QTextOStream & f, const QCString & st, QCString inde
 	p += 7;
 	UmlClass::write(f, type());
       }
+      else if (!strncmp(p, "${stereotype}", 13)) {
+	p += 13;
+	f << JavaSettings::relationAttributeStereotype(stereotype());
+      }
       else if (!strncmp(p, "${name}", 7)) {
 	p += 7;
 	f << name();
+      }
+      else if (!strncmp(p, "${multiplicity}", 15)) {
+	p += 15;
+	
+	QCString m = multiplicity();
+	
+	if (*m != '[')
+	  f << "[]";
+	else {
+	  for (unsigned index = 0; index != m.length(); index += 1) {
+	    switch (m.at(index)) {
+	    case '[':
+	      f << '[';
+	      break;
+	    case ']':
+	      f << ']';
+	    default:
+	      break;
+	    }
+	  }
+	}
       }
       else if (!strncmp(p, "${value}", 8)) {
 	p += 8;

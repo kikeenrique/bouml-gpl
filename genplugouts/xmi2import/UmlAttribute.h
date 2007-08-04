@@ -25,6 +25,11 @@ class UmlAttribute : public UmlBaseAttribute {
     //  call at end of import : try to solve type
     virtual void solve(QCString idref);
 
+
+  protected:
+    //import the lower multiplicity starting by 'tk' inside 'where'
+    void importMultiplicity(FileIn & in, Token & token, bool upper);
+
 };
 
 #endif

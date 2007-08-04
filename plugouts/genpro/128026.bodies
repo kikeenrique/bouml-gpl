@@ -1,5 +1,5 @@
 class Dialog
-!!!128538.cpp!!!	Dialog(inout art : UmlArtifact, in path_exe : string, inout pro : string, inout target : string, inout tmplt : string, inout config : string, inout defines : string, inout includepath : string, inout dependpath : string, inout objectsdir : string)
+!!!128538.cpp!!!	Dialog(inout art : UmlArtifact, in path_exe : string, inout pro : string, inout target : string, inout tmplt : string, inout config : string, inout defines : string, inout includepath : string, inout dependpath : string, inout objectsdir : string, inout footer : string)
   QDir d(path_exe);
   QVBoxLayout * vbox = new QVBoxLayout(this);
   QGrid * grid = new QGrid(2, this);
@@ -121,6 +121,10 @@ class Dialog
   browseobjectsdir = new SmallPushButton("browse", htab);
   connect(browseobjectsdir, SIGNAL(clicked ()), this, SLOT(browse_objectsdir()));
   
+  new QLabel("footer : ", grid);
+  edfooter = new QMultiLineEdit(grid);
+  edfooter->setText(footer);
+  
   new QLabel(grid);
   new QLabel(grid);
   
@@ -164,6 +168,7 @@ class Dialog
   _includepath = edincludepath->text();
   _dependpath = eddependpath->text();
   _objectsdir = edobjectsdir->text();
+  _footer = edfooter->text();
   
   QDialog::accept();
 !!!128794.cpp!!!	browse_pro() : void

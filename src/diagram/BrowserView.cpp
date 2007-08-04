@@ -271,42 +271,35 @@ void BrowserView::keyPressEvent(QKeyEvent * e) {
   QString s = Shortcut::shortcut(e->key(), e->state());
   
   if (!s.isEmpty()) {
-    if (s == "Save") {
+    e->accept();
+
+    if (s == "Save")
       UmlWindow::save_it();
-      e->ignore();
-      return;
-    }
     else {
       BrowserNode * bn = (BrowserNode *) selectedItem();
       
-      if (bn == 0) {
-	e->ignore();
-	return;
-      }
-      else if (s == "Menu") {
-	rightPressed(bn);
-	e->ignore();
-	return;
-      }
-      else if (s == "Delete") {
-	QApplication::setOverrideCursor(Qt::waitCursor);
-	bn->delete_it();
-	QApplication::restoreOverrideCursor();
-	((BrowserNode *) bn->parent())->modified();
-	bn->package_modified();
-	e->ignore();
-      }
-      else if ((s != "Move left") && (s != "Move right") &&
-	       (s != "Move up") && (s != "Move down")) {
-	bn->apply_shortcut(s);
-	e->ignore();
-	return;
+      if (bn != 0) {
+	if (s == "Menu")
+	  rightPressed(bn);
+	else if (s == "Delete") {
+	  QApplication::setOverrideCursor(Qt::waitCursor);
+	  bn->delete_it();
+	  QApplication::restoreOverrideCursor();
+	  ((BrowserNode *) bn->parent())->modified();
+	  bn->package_modified();
+	}
+	else if ((s != "Move left") && (s != "Move right") &&
+		 (s != "Move up") && (s != "Move down"))
+	  bn->apply_shortcut(s);
+	else
+          QListView::keyPressEvent(e);
       }
     }
   }
-  
-  // no shortcut
-  QListView::keyPressEvent(e);
+  else {
+    // no shortcut
+    QListView::keyPressEvent(e);
+  }
 }
 
 void BrowserView::menu() {

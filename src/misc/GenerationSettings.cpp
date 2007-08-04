@@ -62,7 +62,7 @@ SharedStr GenerationSettings::cpp_struct_decl;
 SharedStr GenerationSettings::cpp_union_decl;
 SharedStr GenerationSettings::cpp_enum_decl;
 SharedStr GenerationSettings::cpp_typedef_decl;
-SharedStr GenerationSettings::cpp_attr_decl;
+SharedStr GenerationSettings::cpp_attr_decl[3];
 SharedStr GenerationSettings::cpp_enum_item_decl;
 SharedStr GenerationSettings::cpp_rel_decl[2][3];
 SharedStr GenerationSettings::cpp_oper_decl;
@@ -88,7 +88,7 @@ SharedStr GenerationSettings::java_external_class_decl;
 SharedStr GenerationSettings::java_interface_decl;
 SharedStr GenerationSettings::java_enum_decl;
 SharedStr GenerationSettings::java_enum_pattern_decl;
-SharedStr GenerationSettings::java_attr_decl;
+SharedStr GenerationSettings::java_attr_decl[3];
 SharedStr GenerationSettings::java_enum_item_decl;
 SharedStr GenerationSettings::java_enum_pattern_item_decl;
 SharedStr GenerationSettings::java_enum_pattern_item_case;
@@ -114,11 +114,11 @@ SharedStr GenerationSettings::idl_union_decl;
 SharedStr GenerationSettings::idl_external_class_decl;
 IncludesSpec GenerationSettings::idl_includes;
 SharedStr GenerationSettings::idl_enum_decl;
-SharedStr GenerationSettings::idl_attr_decl;
-SharedStr GenerationSettings::idl_valuetype_attr_decl;
-SharedStr GenerationSettings::idl_union_item_decl;
+SharedStr GenerationSettings::idl_attr_decl[3];
+SharedStr GenerationSettings::idl_valuetype_attr_decl[3];
+SharedStr GenerationSettings::idl_union_item_decl[3];
 SharedStr GenerationSettings::idl_enum_item_decl;
-SharedStr GenerationSettings::idl_const_decl;
+SharedStr GenerationSettings::idl_const_decl[3];
 SharedStr GenerationSettings::idl_valuetype_rel_decl[3];
 SharedStr GenerationSettings::idl_rel_decl[3];
 SharedStr GenerationSettings::idl_union_rel_decl[3];
@@ -141,8 +141,8 @@ bool GenerationSettings::cpp_root_relative_path;
 
 bool GenerationSettings::cpp_force_namespace_gen;
     
-int GenerationSettings::nrelstereotypes;
-Stereotype * GenerationSettings::rel_stereotypes;
+int GenerationSettings::nrelattrstereotypes;
+Stereotype * GenerationSettings::relattr_stereotypes;
 
 int GenerationSettings::nclassstereotypes;
 Stereotype * GenerationSettings::class_stereotypes;
@@ -242,16 +242,16 @@ ${module_end}\n\
   idl_src_content = IDL_SRC_CONTENT;
   idl_extension = "idl";
   
-  if (rel_stereotypes != 0)
-    delete [] rel_stereotypes;
+  if (relattr_stereotypes != 0)
+    delete [] relattr_stereotypes;
   
-  nrelstereotypes = 4;
-  rel_stereotypes = new Stereotype[nrelstereotypes];
+  nrelattrstereotypes = 4;
+  relattr_stereotypes = new Stereotype[nrelattrstereotypes];
   
-  rel_stereotypes[0].set("sequence", "vector", "Vector", "sequence");
-  rel_stereotypes[1].set("vector", "vector", "Vector", "sequence");
-  rel_stereotypes[2].set("list", "list", "Vector", "sequence");
-  rel_stereotypes[3].set("set", "set", "Vector", "sequence");
+  relattr_stereotypes[0].set("sequence", "vector", "Vector", "sequence");
+  relattr_stereotypes[1].set("vector", "vector", "Vector", "sequence");
+  relattr_stereotypes[2].set("list", "list", "Vector", "sequence");
+  relattr_stereotypes[3].set("set", "set", "Vector", "sequence");
   
   if (class_stereotypes != 0)
     delete [] class_stereotypes;
@@ -289,7 +289,13 @@ ${module_end}\n\
   cpp_union_decl = "${comment}${template}union ${name} {\n${members}};\n${inlines}\n";
   cpp_enum_decl = "${comment}enum ${name} {\n${items}\n};\n";
   cpp_typedef_decl = "${comment}typedef ${type} ${name};\n";
-  cpp_attr_decl = "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};\n";
+#define CPP_ATTR_DECL1	"    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};\n"
+#define CPP_ATTR_DECL2	"    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${multiplicity}${value};\n"
+#define CPP_ATTR_DESCR1	"    ${description}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};\n"
+#define CPP_ATTR_DESCR2	"    ${description}${static}${mutable}${volatile}${const}${type} ${name}${multiplicity}${value};\n"
+  cpp_attr_decl[0] = "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};\n";
+  cpp_attr_decl[1] = CPP_ATTR_DECL1;
+  cpp_attr_decl[2] = CPP_ATTR_DECL2;
   cpp_enum_item_decl = "  ${name}${value},${comment}";
   cpp_rel_decl[0][0] = "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};\n";
   cpp_rel_decl[0][1] = "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};\n";
@@ -331,7 +337,13 @@ ${cases}    default: throw new Error();\n\
     }\n\n\
   }\n\
   private ${name}(int v) { value = v; };\n}\n";
-  java_attr_decl = "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};\n";
+#define JAVA_ATTR_DECL1	"  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype} ${name}${value};\n"
+#define JAVA_ATTR_DECL2	"  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};\n"
+#define JAVA_ATTR_DESCR1	"  ${description}${@}${visibility}${static}${final}${transient}${volatile}${stereotype} ${name}${value};\n"
+#define JAVA_ATTR_DESCR2	"  ${description}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};\n"
+  java_attr_decl[0] = "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};\n";
+  java_attr_decl[1] = JAVA_ATTR_DECL1;
+  java_attr_decl[2] = JAVA_ATTR_DECL2;
   java_enum_item_decl = "  ${@}${name}${value},${comment}";
   java_enum_pattern_item_decl = "  ${comment}${@}public static final int _${name}${value};\n\
 public static final ${class} ${name} = new ${class}(_${name});\n";
@@ -359,18 +371,44 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   idl_exception_decl = "${comment}exception ${name} {\n${members}};\n";
   idl_union_decl = "${comment}union ${name} switch(${switch}) {\n${members}};\n";
   idl_enum_decl = "${comment}enum ${name} {\n${items}};\n";
-  idl_attr_decl = "  ${comment}${readonly}${attribute} ${type} ${name};\n";
-#define IDL_VALUETYPE_ATTRIBUTE_DECL "  ${comment}${visibility}${type} ${name};\n"
-  idl_valuetype_attr_decl = IDL_VALUETYPE_ATTRIBUTE_DECL;
-  idl_const_decl = "  ${comment}const ${type} ${name}${value};\n";
-  idl_union_item_decl = "  ${comment}case ${case} : ${readonly}${type} ${name};";
+#define IDL_ATTR_DECL1	"  ${comment}${readonly}${attribute}${stereotype}<${type}> ${name};\n"
+#define IDL_ATTR_DECL2	"  ${comment}${readonly}${attribute}${stereotype}<${type},${multiplicity}> ${name};\n"
+#define IDL_ATTR_DESCR1	"  ${description}${readonly}${attribute}${stereotype}<${type}> ${name};\n"
+#define IDL_ATTR_DESCR2	"  ${description}${readonly}${attribute}${stereotype}<${type},${multiplicity}> ${name};\n"
+  idl_attr_decl[0] = "  ${comment}${readonly}${attribute}${type} ${name};\n";
+  idl_attr_decl[1] = IDL_ATTR_DECL1;
+  idl_attr_decl[2] = IDL_ATTR_DECL2;
+#define IDL_VALUETYPE_ATTRIBUTE_DECL0 "  ${comment}${visibility}${type} ${name};\n"
+#define IDL_VALUETYPE_ATTRIBUTE_DECL1 "  ${comment}${visibility}${stereotype}<${type}> ${name};\n"
+#define IDL_VALUETYPE_ATTRIBUTE_DECL2 "  ${comment}${visibility}${stereotype}<${type},${multiplicity}> ${name};\n"
+#define IDL_VALUETYPE_ATTRIBUTE_DESCR1 "  ${description}${visibility}${stereotype}<${type}> ${name};\n"
+#define IDL_VALUETYPE_ATTRIBUTE_DESCR2 "  ${description}${visibility}${stereotype}<${type},${multiplicity}> ${name};\n"
+  idl_valuetype_attr_decl[0] = IDL_VALUETYPE_ATTRIBUTE_DECL0;
+  idl_valuetype_attr_decl[1] = IDL_VALUETYPE_ATTRIBUTE_DECL1;
+  idl_valuetype_attr_decl[2] = IDL_VALUETYPE_ATTRIBUTE_DECL2;
+#define IDL_CONST_ATTR_DECL1  "  ${comment}const ${stereotype}<${type}> ${name}${value};\n"
+#define IDL_CONST_ATTR_DECL2  "  ${comment}const ${stereotype}<${type},${multiplicity}> ${name}${value};\n"
+#define IDL_CONST_ATTR_DESCR1  "  ${description}const ${stereotype}<${type}> ${name}${value};\n"
+#define IDL_CONST_ATTR_DESCR2  "  ${description}const ${stereotype}<${type},${multiplicity}> ${name}${value};\n"
+  idl_const_decl[0] = "  ${comment}const ${type} ${name}${value};\n";
+  idl_const_decl[1] = IDL_CONST_ATTR_DECL1;
+  idl_const_decl[2] = IDL_CONST_ATTR_DECL2;
+#define IDL_UNION_ATTR_DECL1  "  ${comment}case ${case} : ${readonly}${stereotype}<${type}> ${name};";
+#define IDL_UNION_ATTR_DECL2  "  ${comment}case ${case} : ${readonly}${stereotype}<${type},${multiplicity}> ${name};";
+#define IDL_UNION_ATTR_DESCR1  "  ${description}case ${case} : ${readonly}${stereotype}<${type}> ${name};";
+#define IDL_UNION_ATTR_DESCR2  "  ${description}case ${case} : ${readonly}${stereotype}<${type},${multiplicity}> ${name};";
+  idl_union_item_decl[0] = "  ${comment}case ${case} : ${readonly}${type} ${name};";
+  idl_union_item_decl[1] = IDL_UNION_ATTR_DECL1;
+  idl_union_item_decl[2] = IDL_UNION_ATTR_DECL2;
   idl_enum_item_decl = "  ${name},${comment}";
-  idl_rel_decl[0] = "  ${comment}${readonly}${attribute} ${type} ${name};\n";
-  idl_rel_decl[1] = "  ${comment}${readonly}${attribute} ${stereotype}<${type}> ${name};\n";
-  idl_rel_decl[2] = "  ${comment}${readonly}${attribute} ${stereotype}<${type},${multiplicity}> ${name};\n";
+  idl_rel_decl[0] = "  ${comment}${readonly}${attribute}${type} ${name};\n";
+  idl_rel_decl[1] = "  ${comment}${readonly}${attribute}${stereotype}<${type}> ${name};\n";
+  idl_rel_decl[2] = "  ${comment}${readonly}${attribute}${stereotype}<${type},${multiplicity}> ${name};\n";
 #define IDL_VALUETYPE_REL_DECL0 "  ${comment}${visibility}${type} ${name};\n"
 #define IDL_VALUETYPE_REL_DECL1 "  ${comment}${visibility}${stereotype}<${type}> ${name};\n"
 #define IDL_VALUETYPE_REL_DECL2 "  ${comment}${visibility}${stereotype}<${type},${multiplicity}> ${name};\n"
+#define IDL_VALUETYPE_REL_DESCR1 "  ${description}${visibility}${stereotype}<${type}> ${name};\n"
+#define IDL_VALUETYPE_REL_DESCR2 "  ${description}${visibility}${stereotype}<${type},${multiplicity}> ${name};\n"
   idl_valuetype_rel_decl[0] = IDL_VALUETYPE_REL_DECL0;
   idl_valuetype_rel_decl[1] = IDL_VALUETYPE_REL_DECL1;
   idl_valuetype_rel_decl[2] = IDL_VALUETYPE_REL_DECL2;
@@ -483,6 +521,17 @@ QString GenerationSettings::idl_type(const QString & s)
   return (index == -1) ? s : builtins[index].idl;
 }
 
+static unsigned multiplicity_column(const QString & mult)
+{
+  if (mult.isEmpty() || (mult == "1"))
+    return 0;
+
+  if ((mult == "*") || (mult.find("..") != -1))
+    return 1;
+
+  return 2;
+}
+
 const QString GenerationSettings::cpp(const AType & type,
 				      UmlParamDirection dir, int rank)
 {
@@ -551,19 +600,15 @@ void GenerationSettings::set_cpp_return_type(const AType & type, QString & s)
   }
 }
 
-static unsigned multiplicity_column(const QString & mult)
+const char *
+  GenerationSettings::cpp_default_attr_decl(const QString & mult)
 {
-  if (mult.isEmpty() || (mult == "1"))
-    return 0;
-
-  if ((mult == "*") || (mult.find("..") != -1))
-    return 1;
-
-  return 2;
+  return cpp_attr_decl[multiplicity_column(mult)];
 }
 
-QString GenerationSettings::cpp_default_rel_decl(UmlCode rel,
-						 const QString & mult)
+const char *
+  GenerationSettings::cpp_default_rel_decl(UmlCode rel,
+					   const QString & mult)
 {
   switch (rel) {
   default:
@@ -576,52 +621,86 @@ QString GenerationSettings::cpp_default_rel_decl(UmlCode rel,
   }
 }
 
-QString GenerationSettings::java_default_rel_decl(const QString & mult)
+const char *
+  GenerationSettings::java_default_rel_decl(const QString & mult)
 {
   return java_rel_decl[multiplicity_column(mult)];
 }
 
-QString GenerationSettings::idl_default_rel_decl(const QString & mult)
+const char *
+  GenerationSettings::java_default_attr_decl(const QString & mult)
+{
+  return java_attr_decl[multiplicity_column(mult)];
+}
+
+const char *
+  GenerationSettings::idl_default_attr_decl(const QString & mult)
+{
+  return idl_attr_decl[multiplicity_column(mult)];
+}
+
+const char *
+  GenerationSettings::idl_default_valuetype_attr_decl(const QString & mult)
+{
+  return idl_valuetype_attr_decl[multiplicity_column(mult)];
+}
+
+const char *
+  GenerationSettings::idl_default_const_decl(const QString & mult)
+{
+  return idl_const_decl[multiplicity_column(mult)];
+}
+
+const char *
+  GenerationSettings::idl_default_union_item_decl(const QString & mult)
+{
+  return idl_union_item_decl[multiplicity_column(mult)];
+}
+
+const char *
+  GenerationSettings::idl_default_rel_decl(const QString & mult)
 {
   return idl_rel_decl[multiplicity_column(mult)];
 }
 
-QString GenerationSettings::idl_default_valuetype_rel_decl(const QString & mult)
+const char *
+  GenerationSettings::idl_default_valuetype_rel_decl(const QString & mult)
 {
   return idl_valuetype_rel_decl[multiplicity_column(mult)];
 }
 
-QString GenerationSettings::idl_default_union_rel_decl(const QString & mult)
+const char *
+  GenerationSettings::idl_default_union_rel_decl(const QString & mult)
 {
   return idl_union_rel_decl[multiplicity_column(mult)];
 }
 
-int GenerationSettings::find_relation_stereotype(const QString & s) {
+int GenerationSettings::find_relationattribute_stereotype(const QString & s) {
   int i;
   
-  for (i = 0; i != nrelstereotypes; i += 1)
-    if (rel_stereotypes[i].uml == s)
+  for (i = 0; i != nrelattrstereotypes; i += 1)
+    if (relattr_stereotypes[i].uml == s)
       return i;
   
   return -1;
 }
 
-QString GenerationSettings::cpp_relation_stereotype(const QString & s) {
-  int index = find_relation_stereotype(s);
+QString GenerationSettings::cpp_relationattribute_stereotype(const QString & s) {
+  int index = find_relationattribute_stereotype(s);
   
-  return (index == -1) ? s : rel_stereotypes[index].cpp;
+  return (index == -1) ? s : relattr_stereotypes[index].cpp;
 }
 
-QString GenerationSettings::java_relation_stereotype(const QString & s) {
-  int index = find_relation_stereotype(s);
+QString GenerationSettings::java_relationattribute_stereotype(const QString & s) {
+  int index = find_relationattribute_stereotype(s);
   
-  return (index == -1) ? s : rel_stereotypes[index].java;
+  return (index == -1) ? s : relattr_stereotypes[index].java;
 }
 
-QString GenerationSettings::idl_relation_stereotype(const QString & s) {
-  int index = find_relation_stereotype(s);
+QString GenerationSettings::idl_relationattribute_stereotype(const QString & s) {
+  int index = find_relationattribute_stereotype(s);
   
-  return (index == -1) ? s : rel_stereotypes[index].idl;
+  return (index == -1) ? s : relattr_stereotypes[index].idl;
 }
 
 int GenerationSettings::find_class_stereotype(const QString & s) {
@@ -667,10 +746,10 @@ void GenerationSettings::send_uml_def(ToolCom * com)
   for (index = 0; index != nbuiltins; index += 1)
     com->write_string(builtins[index].uml);
   
-  com->write_unsigned((unsigned) nrelstereotypes);
+  com->write_unsigned((unsigned) nrelattrstereotypes);
   
-  for (index = 0; index != nrelstereotypes; index += 1)
-    com->write_string(rel_stereotypes[index].uml);
+  for (index = 0; index != nrelattrstereotypes; index += 1)
+    com->write_string(relattr_stereotypes[index].uml);
   
   com->write_unsigned((unsigned) nclassstereotypes);
   
@@ -711,10 +790,10 @@ void GenerationSettings::send_cpp_def(ToolCom * com)
       com->write_string(builtins[index].cpp_return);
   }
   
-  com->write_unsigned((unsigned) nrelstereotypes);
+  com->write_unsigned((unsigned) nrelattrstereotypes);
   
-  for (index = 0; index != nrelstereotypes; index += 1)
-    com->write_string(rel_stereotypes[index].cpp);
+  for (index = 0; index != nrelattrstereotypes; index += 1)
+    com->write_string(relattr_stereotypes[index].cpp);
   
   com->write_unsigned((unsigned) nclassstereotypes);
   
@@ -755,7 +834,11 @@ void GenerationSettings::send_cpp_def(ToolCom * com)
   com->write_string(cpp_union_decl);
   com->write_string(cpp_enum_decl);
   com->write_string(cpp_typedef_decl);
-  com->write_string(cpp_attr_decl);
+  com->write_string(cpp_attr_decl[0]);
+  if (api_version >= 32) {
+    com->write_string(cpp_attr_decl[1]);
+    com->write_string(cpp_attr_decl[2]);
+  }
   com->write_string(cpp_enum_item_decl);
   for (index = 0; index != 3; index += 1) {
     com->write_string(cpp_rel_decl[0][index]);
@@ -801,10 +884,10 @@ void GenerationSettings::send_java_def(ToolCom * com)
     com->write_string(builtins[index].java);
   }
   
-  com->write_unsigned((unsigned) nrelstereotypes);
+  com->write_unsigned((unsigned) nrelattrstereotypes);
   
-  for (index = 0; index != nrelstereotypes; index += 1)
-    com->write_string(rel_stereotypes[index].java);
+  for (index = 0; index != nrelattrstereotypes; index += 1)
+    com->write_string(relattr_stereotypes[index].java);
   
   com->write_unsigned((unsigned) nclassstereotypes);
   
@@ -832,7 +915,11 @@ void GenerationSettings::send_java_def(ToolCom * com)
     com->write_string(java_enum_decl);
   com->write_string(java_enum_pattern_decl);
   com->write_string(java_interface_decl);
-  com->write_string(java_attr_decl);
+  com->write_string(java_attr_decl[0]);
+  if (api_version >= 32) {
+    com->write_string(java_attr_decl[1]);
+    com->write_string(java_attr_decl[2]);
+  }
   if (api_version >= 18)
     com->write_string(java_enum_item_decl);
   com->write_string(java_enum_pattern_item_decl);
@@ -877,6 +964,8 @@ void GenerationSettings::send_java_def(ToolCom * com)
 
 void GenerationSettings::send_idl_def(ToolCom * com)
 {
+  int api_version = com->api_format();
+
   com->write_string(idl_root_dir);
   
   int index;
@@ -887,10 +976,10 @@ void GenerationSettings::send_idl_def(ToolCom * com)
     com->write_string(builtins[index].idl);
   }
   
-  com->write_unsigned((unsigned) nrelstereotypes);
+  com->write_unsigned((unsigned) nrelattrstereotypes);
   
-  for (index = 0; index != nrelstereotypes; index += 1)
-    com->write_string(rel_stereotypes[index].idl);
+  for (index = 0; index != nrelattrstereotypes; index += 1)
+    com->write_string(relattr_stereotypes[index].idl);
   
   com->write_unsigned((unsigned) nclassstereotypes);
   
@@ -920,15 +1009,30 @@ void GenerationSettings::send_idl_def(ToolCom * com)
   com->write_string(idl_union_decl);
   com->write_string(idl_enum_decl);
   com->write_string(idl_external_class_decl);
-  com->write_string(idl_attr_decl);
-  com->write_string(idl_valuetype_attr_decl);
-  com->write_string(idl_union_item_decl);
-  com->write_string(idl_enum_item_decl);
-  com->write_string(idl_const_decl);
-  for (index = 0; index != 3; index += 1) {
-    com->write_string(idl_rel_decl[index]);
-    com->write_string(idl_valuetype_rel_decl[index]);
-    com->write_string(idl_union_rel_decl[index]);
+  if (api_version >= 32) {
+    com->write_string(idl_enum_item_decl);
+    for (index = 0; index != 3; index += 1) {
+      com->write_string(idl_attr_decl[index]);
+      com->write_string(idl_valuetype_attr_decl[index]);
+      com->write_string(idl_union_item_decl[index]);
+      com->write_string(idl_const_decl[index]);
+      com->write_string(idl_rel_decl[index]);
+      com->write_string(idl_valuetype_rel_decl[index]);
+      com->write_string(idl_union_rel_decl[index]);
+    }
+  }
+  else {
+    com->write_string(idl_attr_decl[0]);
+    com->write_string(idl_valuetype_attr_decl[0]);
+    com->write_string(idl_union_item_decl[0]);
+    com->write_string(idl_enum_item_decl);
+    com->write_string(idl_const_decl[0]);
+
+    for (index = 0; index != 3; index += 1) {
+      com->write_string(idl_rel_decl[index]);
+      com->write_string(idl_valuetype_rel_decl[index]);
+      com->write_string(idl_union_rel_decl[index]);
+    }
   }
   com->write_string(idl_oper_decl);
   com->write_string(idl_get_name);
@@ -1082,6 +1186,8 @@ bool GenerationSettings::tool_global_cpp_cmd(ToolCom * com,
     if (!BrowserView::get_project()->is_writable())
       com->write_bool(FALSE);
     else {
+      int api_version = com->api_format();
+
       switch ((unsigned char) args[-1]) {
       case setCppUseDefaultsCmd:
 	cpp_set_default_defs(*args);
@@ -1093,11 +1199,11 @@ bool GenerationSettings::tool_global_cpp_cmd(ToolCom * com,
 	  get_type(u).cpp = args;
 	}
 	break;
-      case setCppRelationStereotypeCmd:
+      case setCppRelationAttributeStereotypeCmd:
 	{
 	  const char * u = com->get_string(args);
 	  
-	  get_stereotype(nrelstereotypes, rel_stereotypes, u).cpp = args;
+	  get_stereotype(nrelattrstereotypes, relattr_stereotypes, u).cpp = args;
 	}
 	break;
       case setCppClassStereotypeCmd:
@@ -1184,7 +1290,13 @@ bool GenerationSettings::tool_global_cpp_cmd(ToolCom * com,
 	cpp_typedef_decl = args;
 	break;
       case setCppAttributeDeclCmd:
-	cpp_attr_decl = args;
+	if (api_version >= 32) {
+	  int i = multiplicity_column(com->get_string(args));
+
+	  cpp_attr_decl[i] = args;
+	}
+	else
+	  cpp_attr_decl[0] = args;
 	break;
       case setCppEnumItemDeclCmd:
 	cpp_enum_item_decl = args;
@@ -1283,6 +1395,8 @@ bool GenerationSettings::tool_global_java_cmd(ToolCom * com,
     if (!BrowserView::get_project()->is_writable())
       com->write_bool(FALSE);
     else {
+      int api_version = com->api_format();
+
       switch ((unsigned char) args[-1]) {
       case setJavaUseDefaultsCmd:
 	java_set_default_defs(*args);
@@ -1294,11 +1408,11 @@ bool GenerationSettings::tool_global_java_cmd(ToolCom * com,
 	  get_type(u).java = args;
 	}
 	break;
-      case setJavaRelationStereotypeCmd:
+      case setJavaRelationAttributeStereotypeCmd:
 	{
 	  const char * u = com->get_string(args);
 	  
-	  get_stereotype(nrelstereotypes, rel_stereotypes, u).java = args;
+	  get_stereotype(nrelattrstereotypes, relattr_stereotypes, u).java = args;
 	}
 	break;
       case setJavaClassStereotypeCmd:
@@ -1335,7 +1449,13 @@ bool GenerationSettings::tool_global_java_cmd(ToolCom * com,
 	java_interface_decl = args;
 	break;
       case setJavaAttributeDeclCmd:
-	java_attr_decl = args;
+	if (api_version >= 32) {
+	  int i = multiplicity_column(com->get_string(args));
+
+	  java_attr_decl[i] = args;
+	}
+	else
+	  java_attr_decl[0] = args;
 	break;
       case setJavaEnumItemDeclCmd:
 	java_enum_item_decl = args;
@@ -1425,6 +1545,8 @@ bool GenerationSettings::tool_global_idl_cmd(ToolCom * com,
     if (!BrowserView::get_project()->is_writable())
       com->write_bool(FALSE);
     else {
+      int api_version = com->api_format();
+
       switch ((unsigned char) args[-1]) {
       case setIdlUseDefaultsCmd:
 	idl_set_default_defs(*args);
@@ -1436,11 +1558,11 @@ bool GenerationSettings::tool_global_idl_cmd(ToolCom * com,
 	  get_type(u).idl = args;
 	}
 	break;
-      case setIdlRelationStereotypeCmd:
+      case setIdlRelationAttributeStereotypeCmd:
 	{
 	  const char * u = com->get_string(args);
 	  
-	  get_stereotype(nrelstereotypes, rel_stereotypes, u).idl = args;
+	  get_stereotype(nrelattrstereotypes, relattr_stereotypes, u).idl = args;
 	}
 	break;
       case setIdlClassStereotypeCmd:
@@ -1487,19 +1609,43 @@ bool GenerationSettings::tool_global_idl_cmd(ToolCom * com,
 	idl_external_class_decl = args;
 	break;
       case setIdlAttributeDeclCmd:
-	idl_attr_decl = args;
+	if (api_version >= 32) {
+	  int i = multiplicity_column(com->get_string(args));
+
+	  idl_attr_decl[i] = args;
+	}
+	else
+	  idl_attr_decl[0] = args;
 	break;
       case setIdlValuetypeAttributeDeclCmd:
-	idl_valuetype_attr_decl = args;
+	if (api_version >= 32) {
+	  int i = multiplicity_column(com->get_string(args));
+
+	  idl_valuetype_attr_decl[i] = args;
+	}
+	else
+	  idl_valuetype_attr_decl[0] = args;
 	break;
       case setIdlUnionItemDeclCmd:
-	idl_union_item_decl = args;
+	if (api_version >= 32) {
+	  int i = multiplicity_column(com->get_string(args));
+
+	  idl_union_item_decl[i] = args;
+	}
+	else
+	  idl_union_item_decl[0] = args;
 	break;
       case setIdlEnumItemDeclCmd:
 	idl_enum_item_decl = args;
 	break;
       case setIdlConstDeclCmd:
-	idl_const_decl = args;
+	if (api_version >= 32) {
+	  int i = multiplicity_column(com->get_string(args));
+
+	  idl_const_decl[i] = args;
+	}
+	else
+	  idl_const_decl[0] = args;
 	break;
       case setIdlRelationDeclCmd:
 	{
@@ -1698,10 +1844,10 @@ void GenerationSettings::save()
   
   nl_indent(st);
   nl_indent(st);
-  st << "relations_stereotypes " << nrelstereotypes << " // uml cpp java idl";
+  st << "relations_stereotypes " << nrelattrstereotypes << " // uml cpp java idl";
   
-  for (index = 0; index != nrelstereotypes; index += 1) {
-    Stereotype & s = rel_stereotypes[index];
+  for (index = 0; index != nrelattrstereotypes; index += 1) {
+    Stereotype & s = relattr_stereotypes[index];
     
     nl_indent(st);
     st << "  ";
@@ -1781,7 +1927,14 @@ void GenerationSettings::save()
   save_string(cpp_typedef_decl, st);
   nl_indent(st);
   st << "cpp_default_attribute_declaration ";
-  save_string(cpp_attr_decl, st);
+  save_string(cpp_attr_decl[0], st);
+  st << " // multiplicity 1";
+  nl_indent(st);
+  save_string(cpp_attr_decl[1], st);
+  st << " // multiplicity * a..b";
+  nl_indent(st);
+  save_string(cpp_attr_decl[2], st);
+  st << " // multiplicity [..]";
   nl_indent(st);
   st << "cpp_default_enum_item_declaration ";
   save_string(cpp_enum_item_decl, st);
@@ -1862,7 +2015,14 @@ void GenerationSettings::save()
   save_string(java_enum_pattern_decl, st);
   nl_indent(st);
   st << "java_default_attribute_declaration ";
-  save_string(java_attr_decl, st);
+  save_string(java_attr_decl[0], st);
+  st << " // multiplicity 1";
+  nl_indent(st);
+  save_string(java_attr_decl[1], st);
+  st << " // multiplicity * a..b";
+  nl_indent(st);
+  save_string(java_attr_decl[2], st);
+  st << " // multiplicity N";
   nl_indent(st);
   st << "java5_default_enum_item_declaration ";
   save_string(java_enum_item_decl, st);
@@ -1931,19 +2091,47 @@ void GenerationSettings::save()
   save_string(idl_external_class_decl, st);
   nl_indent(st);
   st << "idl_default_attribute_declaration ";
-  save_string(idl_attr_decl, st);
+  save_string(idl_attr_decl[0], st);
+  st << " // multiplicity 1";
+  nl_indent(st);
+  save_string(idl_attr_decl[1], st);
+  st << " // multiplicity * a..b";
+  nl_indent(st);
+  save_string(idl_attr_decl[2], st);
+  st << " // multiplicity N";
   nl_indent(st);
   st << "idl_default_valuetype_attribute_declaration ";
-  save_string(idl_valuetype_attr_decl, st);
+  save_string(idl_valuetype_attr_decl[0], st);
+  st << " // multiplicity 1";
+  nl_indent(st);
+  save_string(idl_valuetype_attr_decl[1], st);
+  st << " // multiplicity * a..b";
+  nl_indent(st);
+  save_string(idl_valuetype_attr_decl[2], st);
+  st << " // multiplicity N";
   nl_indent(st);
   st << "idl_default_const_declaration ";
-  save_string(idl_const_decl, st);
+  save_string(idl_const_decl[0], st);
+  st << " // multiplicity 1";
+  nl_indent(st);
+  save_string(idl_const_decl[1], st);
+  st << " // multiplicity * a..b";
+  nl_indent(st);
+  save_string(idl_const_decl[2], st);
+  st << " // multiplicity N";
   nl_indent(st);
   st << "idl_default_enum_item_declaration ";
   save_string(idl_enum_item_decl, st);
   nl_indent(st);
   st << "idl_default_union_item_declaration ";
-  save_string(idl_union_item_decl, st);
+  save_string(idl_union_item_decl[0], st);
+  st << " // multiplicity 1";
+  nl_indent(st);
+  save_string(idl_union_item_decl[1], st);
+  st << " // multiplicity * a..b";
+  nl_indent(st);
+  save_string(idl_union_item_decl[2], st);
+  st << " // multiplicity N";
   nl_indent(st);
   st << "idl_association_aggregation_declaration";
   indent(+1);
@@ -2061,6 +2249,8 @@ void GenerationSettings::read_descriptions(char * & st, char * & k)
 
 void GenerationSettings::read(char * & st, char * & k)
 {
+  int fileformat = read_file_format();
+
   if (!strcmp(k, "cpp_default_defs")) {
     cpp_default_defs = TRUE;
     k = read_keyword(st);
@@ -2176,14 +2366,14 @@ void GenerationSettings::read(char * & st, char * & k)
       umltypes.append("void");
     
     read_keyword(st, "relations_stereotypes");
-    if (rel_stereotypes != 0)
-      delete [] rel_stereotypes;
+    if (relattr_stereotypes != 0)
+      delete [] relattr_stereotypes;
 
-    nrelstereotypes = (int) read_unsigned(st);
-    rel_stereotypes = new Stereotype[nrelstereotypes];
+    nrelattrstereotypes = (int) read_unsigned(st);
+    relattr_stereotypes = new Stereotype[nrelattrstereotypes];
     
-    for (index = 0; index != nrelstereotypes; index += 1) {
-      Stereotype & s = rel_stereotypes[index];
+    for (index = 0; index != nrelattrstereotypes; index += 1) {
+      Stereotype & s = relattr_stereotypes[index];
       
       s.uml = read_string(st);
       s.cpp = read_string(st);
@@ -2272,7 +2462,19 @@ void GenerationSettings::read(char * & st, char * & k)
     cpp_typedef_decl = read_string(st);
     read_keyword(st, "cpp_default_attribute_declaration",
 		 "cpp_default_attribut_declaration");
-    cpp_attr_decl = read_string(st);
+    cpp_attr_decl[0] = read_string(st);
+    if (fileformat >= 41) {
+      cpp_attr_decl[1] = read_string(st);
+      cpp_attr_decl[2] = read_string(st);
+    }
+    else if (cpp_attr_decl[0].find("${description}") != -1) {
+      cpp_attr_decl[1] = CPP_ATTR_DESCR1;
+      cpp_attr_decl[2] = CPP_ATTR_DESCR2;
+    }
+    else {
+      cpp_attr_decl[1] = CPP_ATTR_DECL1;
+      cpp_attr_decl[2] = CPP_ATTR_DECL2;
+    }
     read_keyword(st, "cpp_default_enum_item_declaration");
     cpp_enum_item_decl = read_string(st);
     read_keyword(st, "cpp_association_aggregation_declaration");
@@ -2389,7 +2591,19 @@ void GenerationSettings::read(char * & st, char * & k)
     java_enum_pattern_decl = read_string(st);
     read_keyword(st, "java_default_attribute_declaration",
 		 "java_default_attribut_declaration");
-    java_attr_decl = read_string(st);
+    java_attr_decl[0] = read_string(st);
+    if (fileformat >= 41) {
+      java_attr_decl[1] = read_string(st);
+      java_attr_decl[2] = read_string(st);
+    }
+    else if (java_attr_decl[0].find("${description}") != -1) {
+      java_attr_decl[1] = JAVA_ATTR_DESCR1;
+      java_attr_decl[2] = JAVA_ATTR_DESCR2;
+    }
+    else {
+      java_attr_decl[1] = JAVA_ATTR_DECL1;
+      java_attr_decl[2] = JAVA_ATTR_DECL2;
+    }
     k = read_keyword(st);
     if (! strcmp(k, "java5_default_enum_item_declaration")) {
       java_enum_item_decl = read_string(st);
@@ -2512,23 +2726,74 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
     if (strcmp(k, "idl_default_attribute_declaration") &&
 	strcmp(k, "idl_default_attribut_declaration"))
       wrong_keyword(k, "idl_default_attribute_declaration");
-    idl_attr_decl = read_string(st);
-    k = read_keyword(st);
+    idl_attr_decl[0] = read_string(st);
+    if (fileformat >= 41) {
+      idl_attr_decl[1] = read_string(st);
+      idl_attr_decl[2] = read_string(st);
+    }
+    else if (idl_attr_decl[0].find("${description}") != -1) {
+      idl_attr_decl[1] = IDL_ATTR_DESCR1;
+      idl_attr_decl[2] = IDL_ATTR_DESCR2;
+    }
+    else {
+      idl_attr_decl[1] = IDL_ATTR_DECL1;
+      idl_attr_decl[2] = IDL_ATTR_DECL2;
+    }
+     k = read_keyword(st);
     if (!strcmp(k, "idl_default_valuetype_attribute_declaration") ||
 	!strcmp(k, "idl_default_valuetype_attribut_declaration")) {
-      idl_valuetype_attr_decl = read_string(st);
+      idl_valuetype_attr_decl[0] = read_string(st);
+      if (fileformat >= 41) {
+	idl_valuetype_attr_decl[1] = read_string(st);
+	idl_valuetype_attr_decl[2] = read_string(st);
+      }
+      else if (idl_valuetype_attr_decl[0].find("${description}") != -1) {
+	idl_valuetype_attr_decl[1] = IDL_VALUETYPE_ATTRIBUTE_DESCR1;
+	idl_valuetype_attr_decl[2] = IDL_VALUETYPE_ATTRIBUTE_DESCR2;
+      }
+      else {
+	idl_valuetype_attr_decl[1] = IDL_VALUETYPE_ATTRIBUTE_DECL1;
+	idl_valuetype_attr_decl[2] = IDL_VALUETYPE_ATTRIBUTE_DECL2;
+      }
       k = read_keyword(st);
     }
-    else
+    else {
       // old version
-      idl_valuetype_attr_decl = IDL_VALUETYPE_ATTRIBUTE_DECL;
+      idl_valuetype_attr_decl[0] = IDL_VALUETYPE_ATTRIBUTE_DECL0;
+      idl_valuetype_attr_decl[1] = IDL_VALUETYPE_ATTRIBUTE_DECL1;
+      idl_valuetype_attr_decl[2] = IDL_VALUETYPE_ATTRIBUTE_DECL2;
+    }
     if (strcmp(k, "idl_default_const_declaration"))
       wrong_keyword(k, "idl_default_const_declaration");
-    idl_const_decl = read_string(st);
+    idl_const_decl[0] = read_string(st);
+    if (fileformat >= 41) {
+      idl_const_decl[1] = read_string(st);
+      idl_const_decl[2] = read_string(st);
+    }
+    else if (idl_const_decl[0].find("${description}") != -1) {
+      idl_const_decl[1] = IDL_CONST_ATTR_DESCR1;
+      idl_const_decl[2] = IDL_CONST_ATTR_DESCR2;
+    }
+    else {
+      idl_const_decl[1] = IDL_CONST_ATTR_DECL1;
+      idl_const_decl[2] = IDL_CONST_ATTR_DECL2;
+    }
     read_keyword(st, "idl_default_enum_item_declaration");
     idl_enum_item_decl = read_string(st);
     read_keyword(st, "idl_default_union_item_declaration");
-    idl_union_item_decl = read_string(st);
+    idl_union_item_decl[0] = read_string(st);
+    if (fileformat >= 41) {
+      idl_union_item_decl[1] = read_string(st);
+      idl_union_item_decl[2] = read_string(st);
+    }
+    else if (idl_union_item_decl[0].find("${description}") != -1) {
+      idl_union_item_decl[1] = IDL_UNION_ATTR_DESCR1;
+      idl_union_item_decl[2] = IDL_UNION_ATTR_DESCR2;
+    }
+    else {
+      idl_union_item_decl[1] = IDL_UNION_ATTR_DECL1;
+      idl_union_item_decl[2] = IDL_UNION_ATTR_DECL2;
+    }
     read_keyword(st, "idl_association_aggregation_declaration");
     idl_rel_decl[0] = read_string(st);
     idl_rel_decl[1] = read_string(st);

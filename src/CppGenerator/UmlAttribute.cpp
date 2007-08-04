@@ -50,12 +50,17 @@ void UmlAttribute::compute_dependency(QList<CppRefType> & dependency,
     decl.remove((unsigned) index, 11);
   if ((index = decl.find("${const}")) != -1)
     decl.remove((unsigned) index, 8);
+  if ((index = decl.find("${multiplicity}")) != -1)
+    decl.remove((unsigned) index, 15);
   if ((index = decl.find("${value}")) != -1)
     decl.remove((unsigned) index, 8);
   if ((index = decl.find("${h_value}")) != -1)
     decl.remove((unsigned) index, 10);
   if ((index = decl.find("${name}")) != -1)
     decl.remove((unsigned) index, 7);
+  if ((index = decl.find("${stereotype}")) != -1)
+    decl.replace((unsigned) index, 13,
+		 CppSettings::relationAttributeStereotype(stereotype()));
   replace_alias(decl);
 
   if (!UmlClassMember::compute_dependency(dependency, decl, type(), all_in_h)) {
@@ -118,6 +123,18 @@ void UmlAttribute::generate_decl(aVisibility & current_visibility, QTextOStream 
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;
       f_h << name();
+    }
+    else if (!strncmp(p, "${multiplicity}", 15)) {
+      p += 15;
+      
+      if (*((const char *) multiplicity()) == '[')
+	f_h << multiplicity();
+      else
+	f_h << '[' << multiplicity() << ']';
+    }
+    else if (!strncmp(p, "${stereotype}", 13)) {
+      p += 13;
+      f_h << CppSettings::relationAttributeStereotype(stereotype());
     }
     else if (!strncmp(p, "${value}", 8) || !strncmp(p, "${h_value}", 10)) {
       p += (p[2] == 'h') ? 10 : 8;
@@ -243,6 +260,18 @@ void UmlAttribute::generate_def(QTextOStream & f, QCString indent, bool h,
 	    f << cl_names << "::";
 	  p += 7;
 	  f << name();
+	}
+	else if (!strncmp(p, "${multiplicity}", 15)) {
+	  p += 15;
+	  
+	  if (*((const char *) multiplicity()) == '[')
+	    f << multiplicity();
+	  else
+	    f << '[' << multiplicity() << ']';
+	}
+	else if (!strncmp(p, "${stereotype}", 13)) {
+	  p += 13;
+	  f << CppSettings::relationAttributeStereotype(stereotype());
 	}
 	else if (!strncmp(p, "${value}", 8)) {
 	  p += 8;

@@ -81,7 +81,7 @@ bool UmlAttribute::new_one(Class * container, const QCString & name,
   comment = Lex::get_comments(comment);
   description = Lex::get_description(description);
   
-  QCString decl = JavaSettings::attributeDecl();
+  QCString decl = JavaSettings::attributeDecl("");
   int index = decl.find("${type}");
   
   if ((index == -1) || (decl.find("${name}") == -1)) {
@@ -105,8 +105,10 @@ bool UmlAttribute::new_one(Class * container, const QCString & name,
   if (staticp)
     at->set_isClassMember(TRUE);
   
-  if (!array.isEmpty())
-    decl.insert(index + 7, array);
+  if (!array.isEmpty()) {
+    decl.insert(index + 7, "${multiplicity}");
+    at->set_Multiplicity(array);
+  }
   
   if (! value.isEmpty())
     at->set_DefaultValue(value);
@@ -114,13 +116,28 @@ bool UmlAttribute::new_one(Class * container, const QCString & name,
   if (! annotation.isEmpty())
     at->set_JavaAnnotations(annotation);
 
+  if (typespec.type == 0) {
+    QCString t = typespec.explicit_type;
+    int index2;
+    
+    if (!t.isEmpty() &&
+	(t.at(t.length() - 1) == '>') &&
+	((index2 = t.find('<')) > 0)) {
+      at->set_Stereotype(t.left(index2));
+      typespec.explicit_type =
+	// may be a,b ...
+	t.mid(index2 + 1, t.length() - 2 - index2);
+      decl.replace(index, 7, "${stereotype}<${type}>");
+    }
+  }
+  
   at->set_Visibility(visibility);
   
   if (cl->stereotype() == "enum") {
     at->set_JavaDecl(decl);
     at->set_Stereotype("attribute");
   }
-  else if (decl != JavaSettings::attributeDecl())
+  else if (decl != JavaSettings::attributeDecl(""))
     at->set_JavaDecl(decl);
   
   return at->set_Type(typespec);

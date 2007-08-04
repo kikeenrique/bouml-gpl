@@ -1,1 +1,3 @@
-../Tools/UmlTypeSpec.cpp
+
+#include "UmlTypeSpec.h"
+

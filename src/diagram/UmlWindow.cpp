@@ -80,6 +80,7 @@
 #include "UmlPixmap.h"
 #include "DialogUtil.h"
 #include "MenuTitle.h"
+#include "Shortcut.h"
 #include "myio.h"
 #include "mu.h"
 
@@ -1512,6 +1513,21 @@ void UmlWindow::abort_line_construction() {
   
   for (w = l.first(); w != 0; w = l.next())
     ((DiagramWindow *) w)->get_view()->abort_line_construction();
+}
+
+//
+
+void UmlWindow::keyPressEvent(QKeyEvent * e) {
+  QString s = Shortcut::shortcut(e->key(), e->state());
+  
+  if (!s.isEmpty()) {
+    e->accept();
+
+    if (s == "Save")
+      UmlWindow::save_it();
+  }
+  else
+    QMainWindow::keyPressEvent(e);
 }
 
 //

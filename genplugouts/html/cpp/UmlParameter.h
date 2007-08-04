@@ -2,21 +2,11 @@
 #define _UMLPARAMETER_H
 
 
-#include "aDirection.h"
-#include "UmlTypeSpec.h"
-#include <qcstring.h>
+#include "UmlBaseParameter.h"
 
 //  Represent an operation's parameter
 
-struct UmlParameter {
-    aDirection dir;
-
-    UmlTypeSpec type;
-
-    QCString name;
-
-    QCString default_value;
-
+struct UmlParameter : public UmlBaseParameter {
 };
 
 #endif

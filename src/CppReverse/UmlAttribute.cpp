@@ -96,7 +96,7 @@ bool UmlAttribute::new_one(Class * cl, const QCString & name,
   if (volatilep) at->set_isVolatile(TRUE);
   if (mutablep) at->set_isCppMutable(TRUE);
   
-  QCString decl = CppSettings::attributeDecl();
+  QCString decl = CppSettings::attributeDecl("");
   int index = decl.find("${type}");
   
   if ((index == -1) ||
@@ -118,12 +118,30 @@ bool UmlAttribute::new_one(Class * cl, const QCString & name,
   else {
     if (!modifier.isEmpty())
       decl.insert(index + 7, QCString(" ") + modifier);
+        
+    if (typeform != "${type}")
+      decl.replace(index, 7, typeform);
+    else if (typespec.type == 0) {
+      QCString t = typespec.explicit_type;
+      int index2;
+      
+      if (!t.isEmpty() &&
+	  (t.at(t.length() - 1) == '>') &&
+	  ((index2 = t.find('<')) > 0)) {
+	at->set_Stereotype(t.left(index2));
+	typespec.explicit_type =
+	  // may be a,b ...
+	  t.mid(index2 + 1, t.length() - 2 - index2);
+	at->set_Type(typespec);
+	decl.replace(index, 7, "${stereotype}<${type}>");
+      }
+    }
     
-    decl.replace(index, 7, typeform);
+    if (!array.isEmpty()) {
+      decl.insert(decl.find("${name}") + 7, "${multiplicity}");
+      at->set_Multiplicity(array);
+    }
     
-    if (!array.isEmpty())
-      decl.insert(decl.find("${name}") + 7, array);
-
     if (!bitfield.isEmpty())
       decl.insert(decl.find(';'), QCString(" : ") + bitfield);
   }

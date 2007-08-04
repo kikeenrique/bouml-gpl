@@ -329,6 +329,8 @@ void BrowserAttribute::apply_shortcut(QString s) {
     if (!is_read_only && (edition_number == 0)) {
       if (s == "Delete")
 	choice = 1;
+      else if (s == "Duplicate")
+	choice = 6;
     }
     mark_shortcut(s, choice, 90);
     if (edition_number == 0)

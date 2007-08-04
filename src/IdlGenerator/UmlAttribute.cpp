@@ -81,6 +81,14 @@ void UmlAttribute::generate_decl(QTextOStream & f, const QCString & cl_stereotyp
 	p += 7;
 	f << name();
       }
+      else if (!strncmp(p, "${stereotype}", 13)) {
+	p += 13;
+	f << IdlSettings::relationAttributeStereotype(stereotype());
+      }
+      else if (!strncmp(p, "${multiplicity}", 15)) {
+	p += 15;
+	f << multiplicity();
+      }
       else if (!strncmp(p, "${value}", 8)) {
 	p += 8;
 	if (!defaultValue().isEmpty() && isReadOnly() && isClassMember())

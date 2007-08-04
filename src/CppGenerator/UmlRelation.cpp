@@ -71,7 +71,7 @@ void UmlRelation::compute_dependency(QList<CppRefType> & dependencies,
       decl.remove((unsigned) index, 10);
     if ((index = decl.find("${stereotype}")) != -1)
       decl.replace((unsigned) index, 13,
-		   CppSettings::relationStereotype(stereotype()));
+		   CppSettings::relationAttributeStereotype(stereotype()));
     if ((index = decl.find("${association}")) != -1) {
       decl.replace((unsigned) index, 14,
 		   association().toString());
@@ -271,7 +271,7 @@ void UmlRelation::generate_decl(aVisibility & current_visibility, QTextOStream &
 	}
 	else if (!strncmp(p, "${stereotype}", 13)) {
 	  p += 13;
-	  f_h << CppSettings::relationStereotype(stereotype());
+	  f_h << CppSettings::relationAttributeStereotype(stereotype());
 	}
 	else if (!strncmp(p, "${value}", 8))
 	  p += 8;
@@ -396,7 +396,7 @@ void UmlRelation::generate_def(QTextOStream & f, QCString indent, bool h,
 	}
 	else if (!strncmp(p, "${stereotype}", 13)) {
 	  p += 13;
-	  f << CppSettings::relationStereotype(stereotype());
+	  f << CppSettings::relationAttributeStereotype(stereotype());
 	}
 	else if (!strncmp(p, "${value}", 8)) {
 	  p += 8;

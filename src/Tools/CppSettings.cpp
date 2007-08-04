@@ -52,23 +52,23 @@ QCString CppSettings::umlType(QCString s)
   return UmlSettings::uml_type(s, &UmlBuiltin::cpp);
 }
 
-QCString CppSettings::relationStereotype(QCString s)
+QCString CppSettings::relationAttributeStereotype(QCString s)
 {
   read_if_needed_();
   
-  UmlStereotype * b = UmlSettings::_map_relation_stereotypes.find(s);
+  UmlStereotype * b = UmlSettings::_map_relation_attribute_stereotypes.find(s);
   
   return (b) ? b->cpp : s;
 }
 
-bool CppSettings::set_RelationStereotype(QCString s, QCString v)
+bool CppSettings::set_RelationAttributeStereotype(QCString s, QCString v)
 {
-  UmlCom::send_cmd(cppSettingsCmd, setCppRelationStereotypeCmd, s, v);
+  UmlCom::send_cmd(cppSettingsCmd, setCppRelationAttributeStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
-    UmlStereotype * st = UmlSettings::_map_relation_stereotypes.find(s);
+    UmlStereotype * st = UmlSettings::_map_relation_attribute_stereotypes.find(s);
 
     if (st == 0)
-      st = UmlSettings::add_rel_stereotype(s);
+      st = UmlSettings::add_rel_attr_stereotype(s);
     st->cpp = v;
     
     return TRUE;
@@ -77,11 +77,11 @@ bool CppSettings::set_RelationStereotype(QCString s, QCString v)
     return FALSE;
 }
 
-QCString CppSettings::relationUmlStereotype(QCString s)
+QCString CppSettings::relationAttributeUmlStereotype(QCString s)
 {
   read_if_needed_();
   
-  return UmlSettings::uml_rel_stereotype(s, &UmlStereotype::cpp);
+  return UmlSettings::uml_rel_attr_stereotype(s, &UmlStereotype::cpp);
 }
 
 QCString CppSettings::classStereotype(QCString s)
@@ -575,18 +575,18 @@ bool CppSettings::set_TypedefDecl(QCString v)
     return FALSE;
 }
 
-const QCString & CppSettings::attributeDecl()
+const QCString & CppSettings::attributeDecl(const char * multiplicity)
 {
   read_if_needed_();
-  
-  return _attr_decl;
+
+  return _attr_decl[UmlSettings::multiplicity_column(multiplicity)];
 }
 
-bool CppSettings::set_AttributeDecl(QCString v)
+bool CppSettings::set_AttributeDecl(const char * multiplicity, QCString v)
 {
-  UmlCom::send_cmd(cppSettingsCmd, setCppAttributeDeclCmd, v);
+  UmlCom::send_cmd(cppSettingsCmd, setCppAttributeDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
-    _attr_decl = v;
+    _attr_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
     return TRUE;
   }
   else
@@ -895,7 +895,7 @@ QCString CppSettings::_enum_decl;
 
 QCString CppSettings::_typedef_decl;
 
-QCString CppSettings::_attr_decl;
+QCString CppSettings::_attr_decl[3/*multiplicity*/];
 
 QCString CppSettings::_enum_item_decl;
 
@@ -967,7 +967,7 @@ void CppSettings::read_()
   n = UmlCom::read_unsigned();
   
   for (index = 0; index != n; index += 1)
-    UmlSettings::_relation_stereotypes[index].cpp = UmlCom::read_string();
+    UmlSettings::_relation_attribute_stereotypes[index].cpp = UmlCom::read_string();
   
   n = UmlCom::read_unsigned();
   
@@ -1006,7 +1006,8 @@ void CppSettings::read_()
   _union_decl = UmlCom::read_string();
   _enum_decl = UmlCom::read_string();
   _typedef_decl = UmlCom::read_string();
-  _attr_decl = UmlCom::read_string();
+  for (index = 0; index != 3; index += 1)
+    _attr_decl[index] = UmlCom::read_string();
   _enum_item_decl = UmlCom::read_string();
   for (index = 0; index != 3; index += 1) {
     _rel_decl[0][index] = UmlCom::read_string();

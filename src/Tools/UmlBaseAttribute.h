@@ -15,7 +15,7 @@ class UmlOperation;
 
 class UmlBaseAttribute : public UmlClassMember {
   public:
-    // returns a new attribute named 's' created under 'parent'
+    // returns a new attribute named 'name' created under 'parent'
     //
     // In case it cannot be created (the name is already used or
     // invalid, 'parent' cannot contain it etc ...) return 0 in C++
@@ -48,6 +48,14 @@ class UmlBaseAttribute : public UmlClassMember {
     // 
     // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_Type(const UmlTypeSpec & t);
+
+    // returns the multiplicity (may be an empty string)
+    const QCString & multiplicity();
+
+    // to set the multiplicity
+    // 
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_Multiplicity(const char * s);
 
     // returns the 'get' operation of the attribute, or 0 if it does not exist
     UmlOperation * getOperation();
@@ -111,6 +119,12 @@ class UmlBaseAttribute : public UmlClassMember {
   private:
     bool _read_only;
 
+
+  public:
+    QCString _multiplicity;
+
+
+  private:
 #ifdef WITHCPP
     bool _cpp_mutable;
 #endif
@@ -140,25 +154,17 @@ class UmlBaseAttribute : public UmlClassMember {
 
 
   protected:
-    //internal, do NOT use it
-    
     virtual void read_uml_();
 
 #ifdef WITHCPP
-    //internal, do NOT use it
-    
     virtual void read_cpp_();
 #endif
 
 #ifdef WITHJAVA
-    //internal, do NOT use it
-    
     virtual void read_java_();
 #endif
 
 #ifdef WITHIDL
-    //internal, do NOT use it
-    
     virtual void read_idl_();
 #endif
 

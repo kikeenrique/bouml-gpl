@@ -40,33 +40,79 @@ UmlPackage::UmlPackage(void * id, const QCString & n)
   namespace_fixedp = FALSE;
 }
 
-UmlClassView * UmlPackage::get_classview() {
-  if (class_view == 0) {
-    QVector<UmlItem> ch = UmlItem::children();
+UmlClassView * UmlPackage::get_classview(const QCString & nmsp) {
+  UmlPackage * pack;
+  
+  if (nmsp != cppNamespace()) {
+    if (namespace_fixedp) {
+      if ((pack = findNamespace(nmsp)) == 0) {
+	QCString s = nmsp;
+	
+	if (s.isEmpty())
+	  s = name();
+	else {
+	  int index = 0;
+	  
+	  while ((index = s.find("::", index)) != -1)
+	    s.replace(index++, 2, " ");
+	}
+	
+	if (((pack = UmlBasePackage::create(this, s)) == 0) &&
+	    ((pack = UmlBasePackage::create(this, s += "_")) == 0)) {
+#ifdef REVERSE
+	  UmlCom::trace(QCString("<font face=helvetica><b>cannot create package <i>")
+			+ s + "</i> under package <i>"
+			+ name() + "</b></font><br>");
+	  UmlCom::message("");
+	  throw 0;
+#else
+	  QMessageBox::critical(0, "Fatal Error", 
+				QCString("<font face=helvetica><b>cannot create package <i>")
+				+ s + "</i> under package <i>"
+				+ Name() + "</b></font><br>");
+	  QApplication::exit(1);
+#endif	  
+	}
+	
+	pack->set_CppNamespace(nmsp);
+	pack->namespace_fixedp = TRUE;
+      }
+    }
+    else {
+      pack = this;
+      pack->set_CppNamespace(nmsp);
+      pack->namespace_fixedp = TRUE;
+    }
+  }
+  else
+    pack = this;
+  
+  if (pack->class_view == 0) {
+    QVector<UmlItem> ch = pack->children();
     
     for (unsigned index = 0; index != ch.size(); index += 1)
       // return the first class view find
       if (ch[index]->kind() == aClassView)
-	return class_view = (UmlClassView *) ch[index];
+	return pack->class_view = (UmlClassView *) ch[index];
     
-    if ((class_view = UmlBaseClassView::create(this, name())) == 0) {
+    if ((pack->class_view = UmlBaseClassView::create(pack, name())) == 0) {
 #ifdef REVERSE
       UmlCom::trace(QCString("<font face=helvetica><b>cannot create class view <i>")
 		    + name() + "</i> under package <i>"
-		    + name() + "</b></font><br>");
+		    + pack->name() + "</b></font><br>");
       UmlCom::message("");
       throw 0;
 #else
       QMessageBox::critical(0, "Fatal Error", 
 			    QCString("<font face=helvetica><b>cannot create class view <i>")
 			    + name() + "</i> under package <i>"
-			    + name() + "</b></font><br>");
+			    + pack->name() + "</b></font><br>");
       QApplication::exit(1);
 #endif
     }
   }
   
-  return class_view;
+  return pack->class_view;
 }
 
 #ifdef REVERSE

@@ -36,10 +36,11 @@ SOURCES	      = UmlClassItem.cpp CppRefType.cpp UmlAttribute.cpp \
 		UmlFormalParameter.cpp \
 		UmlExpansionRegion.cpp \
 		UmlActivity.cpp \
+		UmlTypeSpec.cpp \
 		UmlInterruptibleActivityRegion.cpp \
 		../Tools/UmlBaseClassItem.cpp ../Tools/CppSettings.cpp \
 		../Tools/IdlSettings.cpp ../Tools/JavaSettings.cpp \
-		../Tools/UmlTypeSpec.cpp ../Tools/UmlBaseArtifact.cpp \
+		../Tools/UmlBaseArtifact.cpp \
 		../Tools/UmlBaseAttribute.cpp ../Tools/UmlBaseClass.cpp \
 		../Tools/UmlBaseClassDiagram.cpp ../Tools/UmlBaseClassMember.cpp \
 		../Tools/UmlBaseExtraClassMember.cpp ../Tools/UmlBaseClassView.cpp \
@@ -82,7 +83,10 @@ SOURCES	      = UmlClassItem.cpp CppRefType.cpp UmlAttribute.cpp \
 		../Tools/UmlBaseExpansionRegion.cpp \
 		../Tools/UmlBaseActivity.cpp \
 		../Tools/UmlBaseInterruptibleActivityRegion.cpp \
-		../Tools/FlowBehavior.cpp
+		../Tools/FlowBehavior.cpp \
+		../Tools/UmlBaseTypeSpec.cpp \
+		../Tools/UmlBaseParameter.cpp \
+		../Tools/UmlBaseView.cpp
 		
 TARGET	      = cpp_generator
 DEFINES	      = WITHCPP

@@ -103,6 +103,7 @@ void CodLinkCanvas::menu(const QPoint&) {
     new_dirs = FALSE;
   
   QPopupMenu m;
+  QPopupMenu geo;
   
   m.insertItem(new MenuTitle("Link", m.font()), -1);
   m.insertSeparator();
@@ -118,9 +119,16 @@ void CodLinkCanvas::menu(const QPoint&) {
     m.insertItem("Edit drawing settings", 5);
     m.insertSeparator();
   }
+  if (get_start() != get_end()) {
+    init_geometry_menu(geo, 10);
+    m.insertItem("Geometry (Ctrl+l)", &geo);
+    m.insertSeparator();
+  }
   m.insertItem("Remove from view", 6);
   
-  switch (m.exec(QCursor::pos())) {
+  int rank = m.exec(QCursor::pos());
+  
+  switch (rank) {
   case 1:
     {
       CodAddMsgDialog dialog(to, from, d,
@@ -162,7 +170,15 @@ void CodLinkCanvas::menu(const QPoint&) {
     select_associated();
     return;
   default:
-    return;
+    if (rank >= 10) {
+      rank -= 10;
+      if (rank != (int) geometry)
+	set_geometry((LineGeometry) rank, TRUE);
+      else
+	return;
+    }
+    else
+      return;
   }
   
   package_modified();

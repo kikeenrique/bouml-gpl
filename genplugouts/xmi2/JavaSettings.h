@@ -45,17 +45,17 @@ class JavaSettings : public UmlSettings {
 
     // returns the JAVA stereotype corresponding to the 'UML' stereotype given
     // in argument
-    static QCString relationStereotype(const QCString & s);
+    static QCString relationAttributeStereotype(const QCString & s);
 
     // set the JAVA stereotype corresponding to the 'UML' stereotype given
     // in argument
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_RelationStereotype(QCString s, QCString v);
+    static bool set_RelationAttributeStereotype(QCString s, QCString v);
 
-    // reverse of the RelationStereotype() operation, returns the 'UML' 
+    // reverse of the RelationAttributeStereotype() operation, returns the 'UML' 
     // stereotype corresponding to the JAVA one given in argument
-    static QCString relationUmlStereotype(const QCString & s);
+    static QCString relationAttributeUmlStereotype(const QCString & s);
 
     // returns the JAVA stereotype corresponding to the 'UML' stereotype given
     // in argument
@@ -155,13 +155,13 @@ class JavaSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_InterfaceDecl(QCString v);
 
-    // returns the default definition of an attribute
-    static const QCString & attributeDecl();
+    // returns the default definition of an attribute depending on the multiplicity
+    static const QCString & attributeDecl(const char * multiplicity);
 
     // set the default definition of an attribute
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_AttributeDecl(QCString v);
+    static bool set_AttributeDecl(const char * multiplicity, QCString v);
 
     // returns the default definition of an enumeration item
     static const QCString & enumPatternItemDecl();
@@ -298,7 +298,7 @@ class JavaSettings : public UmlSettings {
 
     static QCString _interface_decl;
 
-    static QCString _attr_decl;
+    static QCString _attr_decl[3/*multiplicity*/];
 
     static QCString _enum_pattern_item_decl;
 

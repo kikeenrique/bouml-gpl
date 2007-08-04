@@ -200,7 +200,7 @@ void UmlRelation::generate_decl(QTextOStream & f,
 	}
 	else if (!strncmp(p, "${stereotype}", 13)) {
 	  p += 13;
-	  f << IdlSettings::relationStereotype(stereotype());
+	  f << IdlSettings::relationAttributeStereotype(stereotype());
 	}
 	else if (!strncmp(p, "${multiplicity}", 15)) {
 	  p += 15;

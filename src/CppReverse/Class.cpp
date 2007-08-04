@@ -120,6 +120,7 @@ Class * Class::reverse(ClassContainer * container, QCString stereotype,
   
   if (Package::scanning()) {
     cl->filename = path;
+    cl->its_namespace = Namespace::current();
 #ifdef REVERSE
     if (! tmplts.isEmpty())
       cl->formals = tmplts.first();
@@ -133,7 +134,6 @@ Class * Class::reverse(ClassContainer * container, QCString stereotype,
     Statistic::one_class_more();
 #endif
     cl->reversedp = TRUE;
-    cl->its_namespace = Namespace::current();
     
     cl_uml = cl->get_uml();
     
@@ -875,6 +875,7 @@ Class * Class::reverse_enum(ClassContainer * container,
   
   if (Package::scanning()) {
     cl->filename = path;
+    cl->its_namespace = Namespace::current();
 #ifndef REVERSE
     cl->description = comment;
 #endif
@@ -886,7 +887,6 @@ Class * Class::reverse_enum(ClassContainer * container,
   Statistic::one_class_more();
 #endif
   cl->reversedp = TRUE;
-  cl->its_namespace = Namespace::current();
   
   UmlClass * cl_uml = cl->get_uml();
   
@@ -1051,8 +1051,11 @@ bool Class::reverse_typedef(ClassContainer *  container, const QCString & path,
       if (name1 != name2) {
 	Class * ty = container->define(name2, "typedef");
 	
-	if (Package::scanning())
+	if (Package::scanning()) {
+	  if (ty != 0)
+	    ty->its_namespace = Namespace::current();
 	  return (ty != 0);
+	}
 	
 	UmlClass * ty_uml;
 	
@@ -1119,6 +1122,7 @@ bool Class::reverse_typedef(ClassContainer *  container, const QCString & path,
   //bool tmpl = FALSE;
   QCString type;
   UmlTypeSpec base_type;
+  QCString typeform = "${type}";
   
   for (;;) {
     if ((s == "unsigned") || (s == "signed") ||
@@ -1143,11 +1147,8 @@ bool Class::reverse_typedef(ClassContainer *  container, const QCString & path,
 	type = s = Lex::complete_template_type(s);
 	Lex::mark();
 	
-	if (!Package::scanning()) {      
-	  QCString typeform;
-	  
-	  container->compute_type(s, base_type, typeform);
-	}
+	if (!Package::scanning())
+	  container->compute_type(s, base_type, typeform, TRUE);
       }
       else
 	break;
@@ -1177,6 +1178,8 @@ bool Class::reverse_typedef(ClassContainer *  container, const QCString & path,
   
   if (Package::scanning()) {
     UmlOperation::skip_body();
+    if (ty != 0)
+      ty->its_namespace = Namespace::current();
     return (ty != 0);
   }
   
@@ -1266,6 +1269,9 @@ bool Class::reverse_typedef(ClassContainer *  container, const QCString & path,
   
   if (!intermediate.isEmpty())
     decl.insert(index + 7, intermediate);
+  
+  if ((base_type.type != 0) && (typeform != "${type}"))
+    decl.replace(index, 7, typeform);
   
   if (!s.isEmpty())
     decl.insert(decl.find("${name}") + 7, s);	// find cannot return -1
@@ -1378,7 +1384,7 @@ UmlClass * Class::get_uml() {
     return uml;
 
   UmlItem * p = (((BrowserNode *) parent())->isa_package())
-    ? (UmlItem *) ((Package *) parent())->get_uml()->get_classview()
+    ? (UmlItem *) ((Package *) parent())->get_uml()->get_classview(get_namespace())
     : (UmlItem *) ((Class *) parent())->get_uml();
   QCString str = QCString(text(0));
   bool anonymous = str.isEmpty();

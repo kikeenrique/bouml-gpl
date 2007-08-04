@@ -130,7 +130,7 @@ class Package : public BrowserNode, public ClassContainer {
     void reverse_directory(QDir & dir, bool rec);
     
     void set_package(QCString s);
-    Package * find(QCString s);
+    Package * find(QCString s, bool nohack);
     static Package * package_unknown();
     
     static void update_package_list(QCString name);

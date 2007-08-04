@@ -264,7 +264,7 @@ void Package::reverse_directory(QDir & d, bool rec) {
     while ((di = itd.current()) != 0) {
       if (((const char *) di->fileName())[0] != '.') {
 	QDir sd(di->filePath());
-	Package * p = find(QCString(sd.dirName()));
+	Package * p = find(QCString(sd.dirName()), TRUE);
 	
 	if (p != 0)
 	  p->reverse_directory(sd, TRUE);
@@ -637,7 +637,7 @@ void Package::compute_type(QCString name, UmlTypeSpec & typespec,
 	int index = name.findRev('.');
 	
 	if (index != -1) {
-	  pack = pack->find(name.left(index));
+	  pack = pack->find(name.left(index), FALSE);
 	  pack->set_package(name.left(index));
 	  name = name.mid(index + 1);
 	}
@@ -699,12 +699,12 @@ void Package::declare(const QCString & name, Class * cl) {
     Undefined.insert(name, cl);
 }
 
-Package * Package::find(QCString s) {
+Package * Package::find(QCString s, bool nohack) {
   int index;
   QCString name = ((index = s.find('.')) != -1) ? s.left(index) : s;
   
   // hack
-  if (text(0) == (const char *) name) {
+  if (!nohack && (text(0) == (const char *) name)) {
     if (index == -1)
       return this;
     
@@ -726,7 +726,7 @@ Package * Package::find(QCString s) {
   if (p == 0)
     p = new Package(this, path + "/" + name, name);
   
-  return (index == -1) ? p : p->find(s.mid(index + 1));
+  return (index == -1) ? p : p->find(s.mid(index + 1), nohack);
 }
 
 Package * Package::package_unknown()

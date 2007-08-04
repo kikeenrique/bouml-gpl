@@ -36,7 +36,7 @@ class UmlPackage : public UmlBasePackage {
     UmlPackage(void * id, const QCString & n);
   
     void reverse_main(const QCString & type, QCString comment);
-    UmlClassView * get_classview();
+    UmlClassView * get_classview(const QCString & nmsp);
     UmlDeploymentView * get_deploymentview(const QCString & nmsp);    
 
   private:

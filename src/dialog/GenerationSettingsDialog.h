@@ -76,7 +76,7 @@ class GenerationSettingsDialog : public QTabDialog {
     MultiLineEdit * edcpp_union_decl;
     MultiLineEdit * edcpp_enum_decl;
     MultiLineEdit * edcpp_typedef_decl;
-    MultiLineEdit * edcpp_attr_decl;
+    MultiLineEdit * edcpp_attr_decl[3];
     MultiLineEdit * edcpp_enum_item_decl;
     MultiLineEdit * edcpp_rel_decl[2][3];
     VisibilityGroup cpp_get_visibility;
@@ -105,7 +105,7 @@ class GenerationSettingsDialog : public QTabDialog {
     MultiLineEdit * edjava_interface_decl;
     MultiLineEdit * edjava_enum_decl;
     MultiLineEdit * edjava_enum_pattern_decl;
-    MultiLineEdit * edjava_attr_decl;
+    MultiLineEdit * edjava_attr_decl[3];
     MultiLineEdit * edjava_enum_item_decl;
     MultiLineEdit * edjava_enum_pattern_item_decl;
     MultiLineEdit * edjava_enum_pattern_item_case;
@@ -133,10 +133,10 @@ class GenerationSettingsDialog : public QTabDialog {
     MultiLineEdit * edidl_typedef_decl;
     MultiLineEdit * edidl_exception_decl;
     MultiLineEdit * edidl_enum_decl;
-    MultiLineEdit * edidl_attr_decl;
-    MultiLineEdit * edidl_valuetype_attr_decl;
-    MultiLineEdit * edidl_const_decl;
-    MultiLineEdit * edidl_union_item_decl;
+    MultiLineEdit * edidl_attr_decl[3];
+    MultiLineEdit * edidl_valuetype_attr_decl[3];
+    MultiLineEdit * edidl_const_decl[3];
+    MultiLineEdit * edidl_union_item_decl[3];
     MultiLineEdit * edidl_enum_item_decl;
     MultiLineEdit * edidl_rel_decl[3];
     MultiLineEdit * edidl_valuetype_rel_decl[3];
@@ -181,10 +181,12 @@ class GenerationSettingsDialog : public QTabDialog {
     void init_java1();
     void init_java2();
     void init_java3();
+    void init_java4();
     void init_idl1();
     void init_idl2();
     void init_idl3();
     void init_idl4();
+    void init_idl5();
     void init_descriptions();
     void init_dirs();
     void relative(LineEdit * ed, QPushButton * button);

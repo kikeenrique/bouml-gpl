@@ -4,6 +4,7 @@
 #include "SmallPushButton.h"
 
 #include <qlineedit.h>
+#include <qmultilineedit.h>
 #include <qpushbutton.h>
 #include <qcombobox.h>
 #include <qlayout.h>
@@ -13,10 +14,10 @@
 #include <qgrid.h>
 #include <qhbox.h>
 
-Dialog::Dialog(UmlArtifact * art, const QCString & path_exe, QCString & pro, QCString & target, QCString & tmplt, QCString & config, QCString & defines, QCString & includepath, QCString & dependpath, QCString & objectsdir)
+Dialog::Dialog(UmlArtifact * art, const QCString & path_exe, QCString & pro, QCString & target, QCString & tmplt, QCString & config, QCString & defines, QCString & includepath, QCString & dependpath, QCString & objectsdir, QCString & footer)
   : QDialog(0, 0, TRUE), _art(art), _pro(pro), _target(target), _tmplt(tmplt),
     _config(config), _defines(defines), _includepath(includepath), _dependpath(dependpath),
-    _objectsdir(objectsdir) {
+    _objectsdir(objectsdir), _footer(footer) {
   QDir d(path_exe);
   QVBoxLayout * vbox = new QVBoxLayout(this);
   QGrid * grid = new QGrid(2, this);
@@ -138,6 +139,10 @@ Dialog::Dialog(UmlArtifact * art, const QCString & path_exe, QCString & pro, QCS
   browseobjectsdir = new SmallPushButton("browse", htab);
   connect(browseobjectsdir, SIGNAL(clicked ()), this, SLOT(browse_objectsdir()));
   
+  new QLabel("footer : ", grid);
+  edfooter = new QMultiLineEdit(grid);
+  edfooter->setText(footer);
+  
   new QLabel(grid);
   new QLabel(grid);
   
@@ -183,6 +188,7 @@ void Dialog::accept() {
   _includepath = edincludepath->text();
   _dependpath = eddependpath->text();
   _objectsdir = edobjectsdir->text();
+  _footer = edfooter->text();
   
   QDialog::accept();
 }

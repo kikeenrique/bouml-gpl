@@ -249,6 +249,8 @@ void BrowserClassInstance::menu() {
       m.setWhatsThis(m.insertItem("Edit", 0),
 		     "to edit the <em>class instance</em>, \
 a double click with the left mouse button does the same thing");
+      m.setWhatsThis(m.insertItem("Duplicate", 4),
+		     "to duplicate the <em>class instance</em>");
       if (!is_read_only && (edition_number == 0)) {
 	m.insertSeparator();
 	m.setWhatsThis(m.insertItem("Delete", 1),
@@ -291,6 +293,9 @@ void BrowserClassInstance::exec_menu_choice(int rank) {
   case 3:
     ReferenceDialog::show(this);
     return;
+  case 4:
+    duplicate((BrowserNode *) parent(), "")->select_in_browser();
+    break;
   default:
     if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
@@ -316,6 +321,8 @@ void BrowserClassInstance::apply_shortcut(QString s) {
     }
     if (s == "Referenced by")
       choice = 3;
+    else if (s == "Duplicate")
+      choice = 4;
     mark_shortcut(s, choice, 90);
     if (edition_number == 0)
       Tool::shortcut(s, choice, get_type(), 100);

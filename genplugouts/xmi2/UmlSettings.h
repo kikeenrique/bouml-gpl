@@ -103,9 +103,9 @@ class UmlSettings {
 
     static UmlBuiltin * _builtins;
 
-    static QDict<UmlStereotype> _map_relation_stereotypes;
+    static QDict<UmlStereotype> _map_relation_attribute_stereotypes;
 
-    static UmlStereotype * _relation_stereotypes;
+    static UmlStereotype * _relation_attribute_stereotypes;
 
     static QDict<UmlStereotype> _map_class_stereotypes;
 
@@ -129,7 +129,7 @@ class UmlSettings {
 
     //internal, do NOT use it
     
-    static QCString uml_rel_stereotype(const QCString & t, QCString UmlStereotype::* f);
+    static QCString uml_rel_attr_stereotype(const QCString & t, QCString UmlStereotype::* f);
 
     //internal, do NOT use it
     
@@ -141,7 +141,7 @@ class UmlSettings {
 
     //internal, do NOT use it
     
-    static UmlStereotype * add_rel_stereotype(const QCString & s);
+    static UmlStereotype * add_rel_attr_stereotype(const QCString & s);
 
     //internal, do NOT use it
     

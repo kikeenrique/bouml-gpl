@@ -58,7 +58,13 @@
 #include "MiscGlobalCmd.h"
 
 bool UmlBaseItem::set_Name(const QCString & s) {
-  return set_it_(_name, s, setNameCmd);
+  UmlCom::send_cmd(_identifier, setNameCmd, s);
+  if (UmlCom::read_bool()) {
+    _name = s;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 const QCString & UmlBaseItem::stereotype() {

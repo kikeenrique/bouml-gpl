@@ -924,11 +924,14 @@ void DiagramView::moveSelected(int dx, int dy, bool first) {
 void DiagramView::keyPressEvent(QKeyEvent * e) {
   if (draw_line) {
     abort_line_construction();
+    e->ignore();
   }
   else if (!window()->frozen()) {
     QString s = Shortcut::shortcut(e->key(), e->state());
   
     if (!s.isEmpty()) {
+      e->accept();
+
       if (s == "Move left") {
 	history_protected = TRUE;
 	if (first_move) {
@@ -980,7 +983,6 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
       else if (s == "Select all") {
 	history_protected = TRUE;
 	select_all();	// clear history_protected
-	e->ignore();
 	return;
       }
       else if (s == "Copy") {
@@ -1006,7 +1008,6 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 	  undo();
 	else
 	  QApplication::beep();
-	e->ignore();
 	return;
       }
       else if (s == "Redo") {
@@ -1015,7 +1016,6 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 	  redo();
 	else
 	  QApplication::beep();
-	e->ignore();
 	return;
       }
       else if (s == "Save") {
@@ -1166,8 +1166,11 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
       canvas()->update();
       history_protected = FALSE;
     }
+    else
+      e->ignore();
   }  
-  e->ignore();
+  else
+    e->ignore();
 }
 
 void DiagramView::keyReleaseEvent(QKeyEvent *) {

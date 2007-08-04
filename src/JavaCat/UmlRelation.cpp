@@ -40,6 +40,7 @@ using namespace std;
 #include "Statistic.h"
 #endif
 
+// not from a form 'generic<...C...> var' where C is a class
 bool UmlRelation::new_one(Class * container, const QCString & name,
 			  UmlTypeSpec & dest, QCString str_actuals,
 			  aVisibility visibility, bool staticp,
@@ -118,6 +119,7 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
   return rel->set_RoleName(name);
 }
 
+// from a form 'generic<...C...> var' where C is a class
 bool UmlRelation::new_one(Class * container, const QCString & name,
 			  UmlClass * type, QCString type_def,
 			  QCString genericname,

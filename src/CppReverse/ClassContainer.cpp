@@ -116,10 +116,12 @@ void ClassContainer::compute_type(QCString type, UmlTypeSpec & typespec,
 				  QCString & typeform,
 				  bool get_first_template_actual,
 				  const QValueList<FormalParameterList> & tmplts) {
+  typespec.type = 0;
+  typespec.explicit_type = 0;
+  
   if (!strncmp((const char *) type, "struct ", 7) ||
       !strncmp((const char *) type, "union ", 6) ||
       !strncmp((const char *) type, "enum ", 5)) {
-    typespec.type = 0;
     typespec.explicit_type = "<complex type>";
     typeform = type;
     return;
@@ -136,36 +138,66 @@ void ClassContainer::compute_type(QCString type, UmlTypeSpec & typespec,
     if (strncmp(p + index + 1, "const ", 6) == 0)
       index += 6;
     
-    typeform = type.left(index + 1) + typeform;
-    
-    // search the end of the first type in <>
+    // look at each actual in <>
     unsigned level = 1;
     int index2;
+    QCString tf1;
+    QCString t1;
     
-    for (index2 = index + 1; p[index2]; index2 += 1) {
-      char c = p[index2];
-      
-      if ((c == ',') || (c == '*') || (c == '[')) {
-	if (level == 1)
+    for (;;) {
+      // earch for the current arg end
+      for (index2 = index + 1; p[index2]; index2 += 1) {
+	char c = p[index2];
+	
+	if ((c == ',') || (c == '*') || (c == '[') || (c == '&')) {
+	  if (level == 1)
+	    break;
+	}
+	else if (c == '<')
+	  level += 1;
+	else if ((c == '>') && (--level == 0))
 	  break;
       }
-      else if (c == '<')
-	level += 1;
-      else if ((c == '>') && (--level == 0))
-	break;
-    }
-    
-    if (p[index2]) {
-      typeform += type.mid(index2);
-      type = type.mid(index + 1, index2 - index - 1).stripWhiteSpace();
+      
+      if (p[index2]) {
+	QCString tf = type.left(index + 1) + typeform + type.mid(index2);
+	QCString t = type.mid(index + 1, index2 - index - 1).stripWhiteSpace();
 #ifdef DEBUG_BOUML
-      cout << "typeform '" << typeform << "' type '" << type << "'\n";
+	cout << "typeform '" << tf << "' type '" << t << "'\n";
 #endif
-    }
-    else {
-      typespec.explicit_type = type;
-      typespec.type = 0;
-      return;
+	UmlTypeSpec ts;
+	
+	QCString normalized = Lex::normalize(t);
+  
+	if (!find_type(normalized, ts) &&
+	     (Namespace::current().isEmpty() ||
+	      (normalized.at(0) == ':') || 
+	      !find_type("::" + normalized, ts))) {
+	  if (get_first_template_actual) {
+	    get_first_template_actual = FALSE;
+	    tf1 = tf;
+	    t1 = t;
+	  }
+	  index = index2;
+	}
+	else {
+	  // find a class
+	  typeform = tf;
+	  type = t;
+	  typespec.type = ts.type;
+	  break;
+	}
+      }
+      else if (!get_first_template_actual) {
+	// has first actual
+	typeform = tf1;
+	type = t1;
+	break;
+      }
+      else {
+	typespec.explicit_type = type;
+	return;
+      }
     }
   }
 
@@ -185,61 +217,69 @@ void ClassContainer::compute_type(QCString type, UmlTypeSpec & typespec,
     }
   }
 
-  if (! find_type(Lex::normalize(type), typespec)) {
-    typespec.explicit_type = CppSettings::umlType(type);
-    if (typespec.explicit_type.isEmpty()) {
-      // search for equivalent forms
-      if (type == "long int")
-	typespec.explicit_type = CppSettings::umlType("long");
-      else if (type == "long")
-	typespec.explicit_type = CppSettings::umlType("long int");
-      else if (type == "unsigned long int")
-	typespec.explicit_type = CppSettings::umlType("unsigned long");
-      else if (type == "unsigned long")
-	typespec.explicit_type = CppSettings::umlType("unsigned long int");
-      else if (type == "unsigned")
-	typespec.explicit_type = CppSettings::umlType("unsigned int");
-      else if (type == "unsigned int")
-	typespec.explicit_type = CppSettings::umlType("unsigned");
-      else if ((type == "signed") || (type == "signed int"))
-	typespec.explicit_type = CppSettings::umlType("int");
-    }
+  if (typespec.type == 0) {
+    QCString normalized = Lex::normalize(type);
     
-    if (typespec.explicit_type.isEmpty()) {
-      typespec.explicit_type = type; /*
-      if (!Lex::identifierp(type, TRUE))
-	typespec.explicit_type = type;
-      else {
-	QCString t = type;
-
-	while ((index = t.find(':')) == 0)
-	  t = t.mid(1);
-
-	ClassContainer * cc = Package::unknown();
-
-	while (index != -1) {
-	  if ((cc = cc->declare_if_needed(t.left(index))) == 0) {
-	    typespec.explicit_type = type;
-	    return;
-	  }
-
-	  while (t[index] == ':')
-	    index += 1;
-	  t = t.mid(index);
-	  index = t.find(':');
-	}
-
-	if (((cc = cc->declare_if_needed(t)) == 0) ||
-	    ((typespec.type = ((Class *) cc)->get_uml()) == 0))
+    if (!find_type(normalized, typespec) &&
+	(Namespace::current().isEmpty() ||
+	 (normalized.at(0) == ':') || 
+	 !find_type("::" + normalized, typespec))) {
+      typespec.explicit_type = CppSettings::umlType(type);
+      if (typespec.explicit_type.isEmpty()) {
+	// search for equivalent forms
+	if (type == "long int")
+	  typespec.explicit_type = CppSettings::umlType("long");
+	else if (type == "long")
+	  typespec.explicit_type = CppSettings::umlType("long int");
+	else if (type == "unsigned long int")
+	  typespec.explicit_type = CppSettings::umlType("unsigned long");
+	else if (type == "unsigned long")
+	  typespec.explicit_type = CppSettings::umlType("unsigned long int");
+	else if (type == "unsigned")
+	  typespec.explicit_type = CppSettings::umlType("unsigned int");
+	else if (type == "unsigned int")
+	  typespec.explicit_type = CppSettings::umlType("unsigned");
+	else if ((type == "signed") || (type == "signed int"))
+	  typespec.explicit_type = CppSettings::umlType("int");
+      }
+      
+      if (typespec.explicit_type.isEmpty()) {
+	typespec.explicit_type = type; /*
+	if (!Lex::identifierp(type, TRUE))
 	  typespec.explicit_type = type;
-      }*/
+	else {
+	  QCString t = type;
+	  
+	  while ((index = t.find(':')) == 0)
+	    t = t.mid(1);
+	  
+	  ClassContainer * cc = Package::unknown();
+	  
+	  while (index != -1) {
+	    if ((cc = cc->declare_if_needed(t.left(index))) == 0) {
+	      typespec.explicit_type = type;
+	      return;
+	    }
+	    
+	    while (t[index] == ':')
+	      index += 1;
+	    t = t.mid(index);
+	    index = t.find(':');
+	  }
+	  
+	  if (((cc = cc->declare_if_needed(t)) == 0) ||
+	      ((typespec.type = ((Class *) cc)->get_uml()) == 0))
+	    typespec.explicit_type = type;
+	}*/
+      }
+      typespec.type = 0;
     }
-    typespec.type = 0;
   }
-  else if ((typespec.type != 0) &&
-	   !typespec.type->formals().isEmpty() &&
-	   (type.at(type.length() - 1) == '>') &&
-	   !typespec.type->inside_its_definition()) {
+  
+  if ((typespec.type != 0) &&
+      !typespec.type->formals().isEmpty() &&
+      (type.at(type.length() - 1) == '>') &&
+      !typespec.type->inside_its_definition()) {
     typespec.type = 0;
     typespec.explicit_type = type;
   }

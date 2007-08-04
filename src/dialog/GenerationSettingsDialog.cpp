@@ -65,10 +65,12 @@ GenerationSettingsDialog::GenerationSettingsDialog()
   init_java1();
   init_java2();
   init_java3();
+  init_java4();
   init_idl1();
   init_idl2();
   init_idl3();
   init_idl4();
+  init_idl5();
   init_descriptions();
   init_dirs();
 }
@@ -101,10 +103,10 @@ void GenerationSettingsDialog::init_stereotypes() {
   grid->setMargin(3);
   grid->setSpacing(3);
 
-  new QLabel("Relations's \nstereotypes \ncorrespondence : ", grid);
+  new QLabel("Attributes and \nRelations\nstereotypes \ncorrespondence : ", grid);
   relation_stereotypes_table = 
-    new StereotypesTable(grid, GenerationSettings::nrelstereotypes,
-			 GenerationSettings::rel_stereotypes);
+    new StereotypesTable(grid, GenerationSettings::nrelattrstereotypes,
+			 GenerationSettings::relattr_stereotypes);
   
   //new QLabel(grid);
   //new QLabel(grid);
@@ -235,14 +237,29 @@ void GenerationSettingsDialog::init_cpp3() {
   grid->setMargin(3);
   grid->setSpacing(3);
 
-  new QLabel("Attribute default \ndeclaration :", grid);
-  edcpp_attr_decl = new MultiLineEdit(grid);
-  edcpp_attr_decl->setText(GenerationSettings::cpp_attr_decl);
-  QFont font = edcpp_attr_decl->font();
+  new QLabel("Attribute \ndefault \ndeclaration :", grid);
+
+  grid2 = new QGrid(2, grid);
+  (new QLabel("Multiplicity", grid2))->setAlignment(Qt::AlignCenter);
+  new QLabel(grid2);
+  new QLabel("unspecified,\n1 or 1", grid2);
+  edcpp_attr_decl[0] = new MultiLineEdit(grid2);
+  new QLabel("* or a..b", grid2);
+  edcpp_attr_decl[1] = new MultiLineEdit(grid2);
+  new QLabel("X (means [X])\nor [...]...[...]", grid2);
+  edcpp_attr_decl[2] = new MultiLineEdit(grid2);
+
+  QFont font = edcpp_attr_decl[0]->font();
+  int i, j;
+
   if (! hasCodec())
     font.setFamily("Courier");
   font.setFixedPitch(TRUE);
-  edcpp_attr_decl->setFont(font);
+
+  for (i = 0; i != 3; i += 1) {
+    edcpp_attr_decl[i]->setText(GenerationSettings::cpp_attr_decl[i]);
+    edcpp_attr_decl[i]->setFont(font);
+  }
   
   new QLabel(grid);
   new QLabel(grid);
@@ -282,13 +299,12 @@ void GenerationSettingsDialog::init_cpp3() {
   new QLabel("X (means [X])\nor [...]...[...]", grid2);
   edcpp_rel_decl[1][2] = new MultiLineEdit(grid2);
 
-  for (int i = 0; i != 2; i += 1) {
-    for (int j = 0; j != 3; j += 1) {
+  for (i = 0; i != 2; i += 1) {
+    for (j = 0; j != 3; j += 1) {
       edcpp_rel_decl[i][j]->setText(GenerationSettings::cpp_rel_decl[i][j]);
       edcpp_rel_decl[i][j]->setFont(font);
     }
   }
-  
   
   addTab(grid, "C++[3]");
 }
@@ -526,24 +542,68 @@ void GenerationSettingsDialog::init_java1() {
 void GenerationSettingsDialog::init_java2() {
   QGrid * grid = new QGrid(2, this);
   QGrid * grid2;
+  
+  grid->setMargin(3);
+  grid->setSpacing(3);
+
+  new QLabel("Attribute \ndefault \ndeclaration :", grid);
+
+  grid2 = new QGrid(2, grid);
+  new QLabel("multiplicity '1'\nor unspecified", grid2);
+  edjava_attr_decl[0] = new MultiLineEdit(grid2);
+  new QLabel("multiplicity '*'\nor 'a..b'", grid2);
+  edjava_attr_decl[1] = new MultiLineEdit(grid2);
+  new QLabel("X (probably a\nnumber)", grid2);
+  edjava_attr_decl[2] = new MultiLineEdit(grid2);
+
+  QFont font = edjava_attr_decl[0]->font();
+  int i;
+
+  if (! hasCodec())
+    font.setFamily("Courier");
+  font.setFixedPitch(TRUE);
+
+  for (i = 0; i != 3; i += 1) {
+    edjava_attr_decl[i]->setText(GenerationSettings::java_attr_decl[i]);
+    edjava_attr_decl[i]->setFont(font);
+  }
+
+  new QLabel(grid);
+  new QLabel(grid);
+  
+  new QLabel("Association and\naggregation\ndefault\ndeclaration :", grid);
+  grid2 = new QGrid(2, grid);
+  new QLabel("multiplicity '1'\nor unspecified", grid2);
+  edjava_rel_decl[0] = new MultiLineEdit(grid2);
+  new QLabel("multiplicity '*'\nor 'a..b'", grid2);
+  edjava_rel_decl[1] = new MultiLineEdit(grid2);
+  new QLabel("X (probably a\nnumber)", grid2);
+  edjava_rel_decl[2] = new MultiLineEdit(grid2);
+  for (i = 0; i != 3; i += 1) {
+    edjava_rel_decl[i]->setText(GenerationSettings::java_rel_decl[i]);
+    edjava_rel_decl[i]->setFont(font);
+  }
+
+  addTab(grid, "Java[2]");
+}  
+
+void GenerationSettingsDialog::init_java3() {
+  QGrid * grid = new QGrid(2, this);
   QHBox * htab;
   QButtonGroup * bg;
   
   grid->setMargin(3);
   grid->setSpacing(3);
 
-  new QLabel("Attribute default \ndeclaration :", grid);
-  edjava_attr_decl = new MultiLineEdit(grid);
-  edjava_attr_decl->setText(GenerationSettings::java_attr_decl);
-  QFont font = edjava_attr_decl->font();  
-  if (! hasCodec())
-    font.setFamily("Courier");
-  font.setFixedPitch(TRUE);
-  edjava_attr_decl->setFont(font);
-
   new QLabel("Enumeration item \ndefault definition :", grid);
   edjava_enum_item_decl = new MultiLineEdit(grid);
   edjava_enum_item_decl->setText(GenerationSettings::java_enum_item_decl);
+  
+  QFont font = edjava_enum_item_decl->font();
+
+  if (! hasCodec())
+    font.setFamily("Courier");
+  font.setFixedPitch(TRUE);
   edjava_enum_item_decl->setFont(font);
 
   new QLabel("Enum pattern item \ndefault definition :", grid);
@@ -556,22 +616,6 @@ void GenerationSettingsDialog::init_java2() {
   edjava_enum_pattern_item_case->setText(GenerationSettings::java_enum_pattern_item_case);
   edjava_enum_pattern_item_case->setFont(font);
 
-  new QLabel("Association and\naggregation\ndefault\ndeclaration :", grid);
-  grid2 = new QGrid(2, grid);
-  new QLabel("multiplicity '1'\nor unspecified", grid2);
-  edjava_rel_decl[0] = new MultiLineEdit(grid2);
-  new QLabel("multiplicity '*'\nor 'a..b'", grid2);
-  edjava_rel_decl[1] = new MultiLineEdit(grid2);
-  new QLabel("X (probably a\nnumber)", grid2);
-  edjava_rel_decl[2] = new MultiLineEdit(grid2);
-  for (int i = 0; i != 3; i += 1) {
-    edjava_rel_decl[i]->setText(GenerationSettings::java_rel_decl[i]);
-    edjava_rel_decl[i]->setFont(font);
-  }
-  
-  //new QLabel(grid);
-  //new QLabel(grid);
-  
   new QLabel("Get operation\ndefault definition : ", grid);
   htab = new QHBox(grid);
   htab->setMargin(3);
@@ -628,10 +672,10 @@ void GenerationSettingsDialog::init_java2() {
   edjava_oper_def->setText(GenerationSettings::java_oper_def);
   edjava_oper_def->setFont(font);
 
-  addTab(grid, "Java[2]");
+  addTab(grid, "Java[3]");
 }  
 
-void GenerationSettingsDialog::init_java3() {
+void GenerationSettingsDialog::init_java4() {
   QSplitter * split = new QSplitter(Vertical, this);
   
   split->setOpaqueResize(TRUE);
@@ -654,7 +698,7 @@ void GenerationSettingsDialog::init_java3() {
 		     "Import etc...", "import ");
 
   same_width(lbl1, lbl2);
-  addTab(split, "Java[3]");
+  addTab(split, "Java[4]");
 }
 
 void GenerationSettingsDialog::init_idl1() {
@@ -730,6 +774,69 @@ void GenerationSettingsDialog::init_idl1() {
 void GenerationSettingsDialog::init_idl2() {
   QGrid * grid = new QGrid(2, this);
   QGrid * grid2;
+  
+  grid->setMargin(3);
+  grid->setSpacing(3);
+
+  new QLabel("Attribute \ndefault \ndeclaration :", grid);
+  grid2 = new QGrid(2, grid);
+  new QLabel("multiplicity '1'\nor unspecified", grid2);
+  edidl_attr_decl[0] = new MultiLineEdit(grid2);
+  new QLabel("multiplicity '*'\nor 'a..b'", grid2);
+  edidl_attr_decl[1] = new MultiLineEdit(grid2);
+  new QLabel("X (probably a\nnumber)", grid2);
+  edidl_attr_decl[2] = new MultiLineEdit(grid2);
+
+  QFont font = edjava_attr_decl[0]->font();
+  int i;
+
+  if (! hasCodec())
+    font.setFamily("Courier");
+  font.setFixedPitch(TRUE);
+
+  for (i = 0; i != 3; i += 1) {
+    edidl_attr_decl[i]->setText(GenerationSettings::idl_attr_decl[i]);
+    edidl_attr_decl[i]->setFont(font);
+  }
+
+  new QLabel(grid);
+  new QLabel(grid);
+  
+  new QLabel("Attribute default \ndeclaration in\nvaluetype :", grid);
+  grid2 = new QGrid(2, grid);
+  new QLabel("multiplicity '1'\nor unspecified", grid2);
+  edidl_valuetype_attr_decl[0] = new MultiLineEdit(grid2);
+  new QLabel("multiplicity '*'\nor 'a..b'", grid2);
+  edidl_valuetype_attr_decl[1] = new MultiLineEdit(grid2);
+  new QLabel("X (probably a\nnumber)", grid2);
+  edidl_valuetype_attr_decl[2] = new MultiLineEdit(grid2);
+  for (i = 0; i != 3; i += 1) {
+    edidl_valuetype_attr_decl[i]->setText(GenerationSettings::idl_valuetype_attr_decl[i]);
+    edidl_valuetype_attr_decl[i]->setFont(font);
+  }
+
+  new QLabel(grid);
+  new QLabel(grid);
+  
+  new QLabel("Constant default \ndeclaration :", grid);
+  grid2 = new QGrid(2, grid);
+  new QLabel("multiplicity '1'\nor unspecified", grid2);
+  edidl_const_decl[0] = new MultiLineEdit(grid2);
+  new QLabel("multiplicity '*'\nor 'a..b'", grid2);
+  edidl_const_decl[1] = new MultiLineEdit(grid2);
+  new QLabel("X (probably a\nnumber)", grid2);
+  edidl_const_decl[2] = new MultiLineEdit(grid2);
+  for (i = 0; i != 3; i += 1) {
+    edidl_const_decl[i]->setText(GenerationSettings::idl_const_decl[i]);
+    edidl_const_decl[i]->setFont(font);
+  }
+
+  addTab(grid, "Idl[2]");
+}
+
+void GenerationSettingsDialog::init_idl3() {
+  QGrid * grid = new QGrid(2, this);
+  QGrid * grid2;
   int i;
   
   grid->setMargin(3);
@@ -784,45 +891,49 @@ void GenerationSettingsDialog::init_idl2() {
     edidl_union_rel_decl[i]->setFont(font);
   }
   
-  addTab(grid, "Idl[2]");
+  addTab(grid, "Idl[3]");
 }
 
-void GenerationSettingsDialog::init_idl3() {
+void GenerationSettingsDialog::init_idl4() {
   QGrid * grid = new QGrid(2, this);
+  QGrid * grid2;
   QHBox * htab;
   
   grid->setMargin(3);
   grid->setSpacing(3);
 
-  new QLabel("Attribute default \ndeclaration :", grid);
-  edidl_attr_decl = new MultiLineEdit(grid);
-  edidl_attr_decl->setText(GenerationSettings::idl_attr_decl);
-  QFont font = edidl_attr_decl->font();
+  new QLabel("Union item \ndefault \ndeclaration :", grid);
+  grid2 = new QGrid(2, grid);
+  new QLabel("multiplicity '1'\nor unspecified", grid2);
+  edidl_union_item_decl[0] = new MultiLineEdit(grid2);
+  new QLabel("multiplicity '*'\nor 'a..b'", grid2);
+  edidl_union_item_decl[1] = new MultiLineEdit(grid2);
+  new QLabel("X (probably a\nnumber)", grid2);
+  edidl_union_item_decl[2] = new MultiLineEdit(grid2);
+  
+  QFont font = edidl_union_item_decl[0]->font();
+  int i;
+
   if (! hasCodec())
     font.setFamily("Courier");
   font.setFixedPitch(TRUE);
-  edidl_attr_decl->setFont(font);
+  
+  for (i = 0; i != 3; i += 1) {
+    edidl_union_item_decl[i]->setText(GenerationSettings::idl_union_item_decl[i]);
+    edidl_union_item_decl[i]->setFont(font);
+  }
 
-  new QLabel("Attribute default \ndeclaration in\nvaluetype :", grid);
-  edidl_valuetype_attr_decl = new MultiLineEdit(grid);
-  edidl_valuetype_attr_decl->setText(GenerationSettings::idl_valuetype_attr_decl);
-  edidl_valuetype_attr_decl->setFont(font);
-
-  new QLabel("Constant default \ndeclaration :", grid);
-  edidl_const_decl = new MultiLineEdit(grid);
-  edidl_const_decl->setText(GenerationSettings::idl_const_decl);
-  edidl_const_decl->setFont(font);
-
-  new QLabel("Union item \ndefault declaration :", grid);
-  edidl_union_item_decl = new MultiLineEdit(grid);
-  edidl_union_item_decl->setText(GenerationSettings::idl_union_item_decl);
-  edidl_union_item_decl->setFont(font);
-
+  new QLabel(grid);
+  new QLabel(grid);
+  
   new QLabel("Enumeration item \ndefault declaration :", grid);
   edidl_enum_item_decl = new MultiLineEdit(grid);
   edidl_enum_item_decl->setText(GenerationSettings::idl_enum_item_decl);
   edidl_enum_item_decl->setFont(font);
 
+  new QLabel(grid);
+  new QLabel(grid);
+  
   new QLabel("Get operation\ndefault definition : ", grid);  
   htab = new QHBox(grid);
   new QLabel("name : ", htab);
@@ -854,15 +965,18 @@ void GenerationSettingsDialog::init_idl3() {
   connect(uml_follow_idl_set_name, SIGNAL(toggled(bool)),
 	  this, SLOT(follow_idl_set_name()));
   
+  new QLabel(grid);
+  new QLabel(grid);
+  
   new QLabel("Operation default \ndeclaration : ", grid);
   edidl_oper_decl = new MultiLineEdit(grid);
   edidl_oper_decl->setText(GenerationSettings::idl_oper_decl);
   edidl_oper_decl->setFont(font);
 
-  addTab(grid, "Idl[3]");
+  addTab(grid, "Idl[4]");
 }
 
-void GenerationSettingsDialog::init_idl4() {
+void GenerationSettingsDialog::init_idl5() {
   QSplitter * split = new QSplitter(Vertical, this);
   
   split->setOpaqueResize(TRUE);
@@ -885,7 +999,7 @@ void GenerationSettingsDialog::init_idl4() {
 
   same_width(lbl1, lbl2);
   
-  addTab(split, "Idl[4]");
+  addTab(split, "Idl[5]");
 }
 
 void GenerationSettingsDialog::init_descriptions() {
@@ -1110,8 +1224,8 @@ void GenerationSettingsDialog::accept() {
     }
 
     types_table->update();
-    relation_stereotypes_table->update(GenerationSettings::nrelstereotypes,
-				       GenerationSettings::rel_stereotypes);
+    relation_stereotypes_table->update(GenerationSettings::nrelattrstereotypes,
+				       GenerationSettings::relattr_stereotypes);
     class_stereotypes_table->update(GenerationSettings::nclassstereotypes,
 				    GenerationSettings::class_stereotypes);
     cpp_include_table->update();
@@ -1165,13 +1279,16 @@ void GenerationSettingsDialog::accept() {
 
     GenerationSettings::cpp_javadoc_comment = cpp_javadoc_cb->isChecked();
 
+    int i;
+    
     GenerationSettings::cpp_class_decl = edcpp_class_decl->text();
     GenerationSettings::cpp_external_class_decl = edcpp_external_class_decl->text();
     GenerationSettings::cpp_struct_decl = edcpp_struct_decl->text();
     GenerationSettings::cpp_typedef_decl = edcpp_typedef_decl->text();
     GenerationSettings::cpp_union_decl = edcpp_union_decl->text();
     GenerationSettings::cpp_enum_decl = edcpp_enum_decl->text();
-    GenerationSettings::cpp_attr_decl = edcpp_attr_decl->text();
+    for (i = 0; i != 3; i += 1)
+      GenerationSettings::cpp_attr_decl[i] = edcpp_attr_decl[i]->text();
     GenerationSettings::cpp_enum_item_decl = edcpp_enum_item_decl->text();
     GenerationSettings::cpp_oper_decl = edcpp_oper_decl->text();
     GenerationSettings::cpp_oper_def = edcpp_oper_def->text();
@@ -1185,7 +1302,8 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::java_enum_item_decl = edjava_enum_item_decl->text();
     GenerationSettings::java_enum_pattern_item_decl = edjava_enum_pattern_item_decl->text();
     GenerationSettings::java_enum_pattern_item_case = edjava_enum_pattern_item_case->text();
-    GenerationSettings::java_attr_decl = edjava_attr_decl->text();
+    for (i = 0; i != 3; i += 1)
+      GenerationSettings::java_attr_decl[i] = edjava_attr_decl[i]->text();
     GenerationSettings::java_oper_def = edjava_oper_def->text();
     GenerationSettings::java_javadoc_comment = java_javadoc_cb->isChecked();
     
@@ -1197,14 +1315,16 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::idl_exception_decl = edidl_exception_decl->text();
     GenerationSettings::idl_typedef_decl = edidl_typedef_decl->text();
     GenerationSettings::idl_external_class_decl = edidl_external_class_decl->text();
-    GenerationSettings::idl_attr_decl = edidl_attr_decl->text();
-    GenerationSettings::idl_valuetype_attr_decl = edidl_valuetype_attr_decl->text();
-    GenerationSettings::idl_const_decl = edidl_const_decl->text();
-    GenerationSettings::idl_union_item_decl = edidl_union_item_decl->text();
+    for (i = 0; i != 3; i += 1) {
+      GenerationSettings::idl_attr_decl[i] = edidl_attr_decl[i]->text();
+      GenerationSettings::idl_valuetype_attr_decl[i] = edidl_valuetype_attr_decl[i]->text();
+      GenerationSettings::idl_const_decl[i] = edidl_const_decl[i]->text();
+      GenerationSettings::idl_union_item_decl[i] = edidl_union_item_decl[i]->text();
+    }
     GenerationSettings::idl_enum_item_decl = edidl_enum_item_decl->text();
     GenerationSettings::idl_oper_decl = edidl_oper_decl->text();
 
-    int i, j;
+    int j;
     
     for (i = 0; i != 2; i += 1)
       for (j = 0; j != 3; j += 1)

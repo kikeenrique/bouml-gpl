@@ -701,8 +701,9 @@ bool Class::manage_member(QCString s, QCString & path) {
 	}
       }
       
-      return UmlOperation::new_one(this, name, tmplts, oper_templ, type,
-				   str_actuals, visibility, m_finalp, m_abstractp,
+      return UmlOperation::new_one(this, name, tmplts, oper_templ,
+				   type, str_actuals, first_actual_class, type_def,
+				   visibility, m_finalp, m_abstractp,
 				   m_staticp, m_nativep, m_strictfp, m_synchronizedp,
 				   array, comment, description, annotation);
     }

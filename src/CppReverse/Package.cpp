@@ -125,22 +125,57 @@ bool Package::scan_dirs() {
   while (!(path = QFileDialog::getExistingDirectory(path, 0, 0,
 						   "select a directory to reverse, press cancel to finish"))
 						   .isEmpty()) {
-    if (dirs.findIndex(path) != -1)
-      QMessageBox::warning(0, "C++ reverse",
-			    "Directory already selected\n"
-			    "Press 'cancel' to reverse selected directories");
-    else {
-      dirs.append(path);
 
+    int pathlen = path.length();
+    
+    if (((const char *) path)[pathlen - 1] != '/') {
+      path += "/";
+      pathlen += 1;
+    }
+    
+    QString err = 0;
+    
+    for (QStringList::Iterator it = dirs.begin(); it != dirs.end(); ++it) {
+      int dlen = (*it).length();
+      
+      if (dlen >= pathlen) {
+	if ((*it).left(pathlen) == path) {
+	  err = (dlen == pathlen)
+	    ? path + " is already selected\n"
+	    : "An already selected directory is a subdirectory of " + path;
+	  break;
+	}
+      }
+      else if (path.left(dlen) == *it) {
+	err = path + " is a subdirectory of an already selected directory\n";
+	break;
+      }
+    }
+		   
+    if (!err.isEmpty())
+      QMessageBox::warning(0, "C++ reverse",
+			    err + "Press 'cancel' to reverse selected directories");
+    else {
       QDir d(path);
+      QCString s;
+      
+      dirs.append(path);
+      s.sprintf("<font face=helvetica>%dth directory to reverse : <b>", dirs.count());
+      s += QCString(path) + "</b><br></font>\n";
+      UmlCom::trace(s);
 
       Choozen.append(new Package(Root, path, d.dirName()));
+      
+      d.cdUp();
+      path = d.absPath();
     }
   }
   
   if (dirs.isEmpty())
     return FALSE;
 
+  UmlCom::trace("<hr>\n");
+  
   dirs.clear();
 
 #ifndef REVERSE

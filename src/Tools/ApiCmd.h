@@ -265,7 +265,7 @@ enum CppSettingsCmd {
   
   setCppUseDefaultsCmd,
   setCppTypeCmd,
-  setCppRelationStereotypeCmd,
+  setCppRelationAttributeStereotypeCmd,
   setCppClassStereotypeCmd,
   setCppIncludeCmd,
   setCppHeaderContentCmd,
@@ -321,7 +321,7 @@ enum JavaSettingsCmd {
   
   setJavaUseDefaultsCmd,
   setJavaTypeCmd,
-  setJavaRelationStereotypeCmd,
+  setJavaRelationAttributeStereotypeCmd,
   setJavaClassStereotypeCmd,
   setJavaImportCmd,
   setJavaRootdirCmd,
@@ -357,7 +357,7 @@ enum IdlSettingsCmd {
   
   setIdlUseDefaultsCmd,
   setIdlTypeCmd,
-  setIdlRelationStereotypeCmd,
+  setIdlRelationAttributeStereotypeCmd,
   setIdlClassStereotypeCmd,
   setIdlIncludeCmd,
   setIdlRootDirCmd,

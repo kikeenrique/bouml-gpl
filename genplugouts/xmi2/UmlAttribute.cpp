@@ -49,6 +49,7 @@ void UmlAttribute::write(FileOut & out) {
       write_java_type(out);
   }
 
+  write_multiplicity(out, multiplicity());
   write_default_value(out, defaultValue());
   write_annotation(out);
   write_description_properties(out);

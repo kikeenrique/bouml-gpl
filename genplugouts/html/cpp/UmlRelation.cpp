@@ -138,7 +138,7 @@ void UmlRelation::gen_cpp_decl(QCString s, bool descr) {
     }
     else if (!strncmp(p, "${stereotype}", 13)) {
       p += 13;
-      writeq(CppSettings::relationStereotype(stereotype()));
+      writeq(CppSettings::relationAttributeStereotype(stereotype()));
     }
     else if (!strncmp(p, "${value}", 8) || !strncmp(p, "${h_value}", 10)) {
       break;
@@ -239,7 +239,7 @@ void UmlRelation::gen_java_decl(QCString s) {
     }
     else if (!strncmp(p, "${stereotype}", 13)) {
       p += 13;
-      writeq(JavaSettings::relationStereotype(stereotype()));
+      writeq(JavaSettings::relationAttributeStereotype(stereotype()));
     }
     else if (!strncmp(p, "${value}", 8)) {
       p += 8;

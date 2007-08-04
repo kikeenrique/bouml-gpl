@@ -7086,6 +7086,287 @@ void add_umlbaseview_umlview(UmlClass * base_item, UmlClass * user_item)
 }
 
 //
+// add multiplicity on attributes
+//
+
+void add_multiplicity(UmlClass * settings, QCString attr,
+			     QCString get, QCString set,
+			     QCString who, QCString Who, QCString what)
+{
+  
+  UmlOperation * op;
+  QCString s;
+  
+  // upgrade get
+  
+  op = settings->get_operation(get);
+  op->add_param(0, InputDirection, "multiplicity", "str");
+  s = op->cppDecl();
+  op->set_CppDecl(s.insert(s.find("${)}"), "const ${t0} ${p0}"));
+  s = op->cppDef();
+  op->set_CppDef(s.insert(s.find("${)}"), "const ${t0} ${p0}"));
+  op->set_CppBody("  read_if_needed_();\n"
+		  "\n"
+		  "  return " + attr + "[UmlSettings::multiplicity_column(multiplicity)];\n");
+  s = op->javaDecl();
+  op->set_JavaDef(s.insert(s.find("${)}"), "${t0} ${p0}"));
+  op->set_JavaBody("  read_if_needed_();\n"
+		   "\n"
+		   "  return " + attr + "[UmlSettings.multiplicity_column(multiplicity)];\n");
+  
+  op->set_Description(op->description() + " depending on the multiplicity");
+  
+  // upgrade set
+  
+  op = settings->get_operation(set);
+  op->add_param(0, InputDirection, "multiplicity", "str");
+  s = op->cppDecl();
+  op->set_CppDecl(s.replace(s.find("${t0}"), 11,
+			    "const ${t0} ${p0}, ${t1} ${p1}"));
+  s = op->cppDef();
+  op->set_CppDef(s.replace(s.find("${t0}"), 11,
+			   "const ${t0} ${p0}, ${t1} ${p1}"));
+  op->set_CppBody("  UmlCom::send_cmd(" + who + "SettingsCmd, set" + Who + what + "DeclCmd, multiplicity, v);\n"
+		  "  if (UmlCom::read_bool()) {\n"
+		  "    " + attr + "[UmlSettings::multiplicity_column(multiplicity)] = v;\n"
+		  "    return TRUE;\n"
+		  "  }\n"
+		  "  else\n"
+		  "    return FALSE;\n");
+
+  s = op->javaDecl();
+  op->set_JavaDef(s.insert(s.find("${)}"), ", ${t1} ${p1}"));
+  op->set_JavaBody("  UmlCom.send_cmd(CmdFamily." + who + "SettingsCmd, " + Who + "SettingsCmd._set" + Who + what + "DeclCmd, multiplicity, v);\n"
+		   "  UmlCom.check();\n"
+		   "\n"
+		   "  " + attr + "[UmlSettings.multiplicity_column(multiplicity)] = v;\n");
+  
+  UmlAttribute * att = settings->get_attribute(attr);
+  
+  s = att->cppDecl();
+  att->set_CppDecl(s.insert(s.find("${name}")+7, "[3/*multiplicity*/]"));
+  s = att->javaDecl();
+  att->set_JavaDecl(s.insert(s.find("${name}")+7, "[/*multiplicity*/]"));
+
+  
+  // upgrade read_
+  
+  op = settings->get_operation("read_");
+  s = op->cppBody();
+  op->set_CppBody(s.replace(s.find(attr + " ="), attr.length() + 2,
+			    "for (index = 0; index != 3; index += 1)\n"
+			    "    " + attr + "[index] ="));
+  s = op->javaBody();
+  op->set_JavaBody(s.replace(s.find(attr + " ="), attr.length() + 2,
+			     "for (index = 0; index != 3; index += 1)\n"
+			     "    " + attr + "[index] ="));
+}
+
+void add_attribute_multiplicity(UmlClass * settings, QCString who, QCString Who)
+{  
+  UmlCom::trace("upgrade " + Who + "Settings<br>");
+  
+  settings->get_operation("relationStereotype")->set_Name("relationAttributeStereotype");
+  settings->get_operation("set_RelationStereotype")->set_Name("set_RelationAttributeStereotype");
+  settings->get_operation("relationUmlStereotype")->set_Name("relationAttributeUmlStereotype");
+
+  add_multiplicity(settings, "_attr_decl", "attributeDecl", "set_AttributeDecl",
+		   who, Who, "Attribute");
+}
+
+void rename_in(QCString & s, QCString from, QCString to)
+{
+  int index = 0;
+  
+  while ((index = s.find(from, index)) != -1) {
+    s.replace(index, from.length(), to);
+    index += to.length() - from.length();
+  }
+}
+
+QCString rename_in(QCString s)
+{
+  rename_in(s, "elationStereotype", "elationAttributeStereotype");
+  rename_in(s, "relationUmlStereotype", "relationAttributeUmlStereotype");
+  rename_in(s, "_relation_stereotypes", "_relation_attribute_stereotypes");
+  rename_in(s, "_rel_stereotype", "_rel_attr_stereotype");
+  
+  return s;
+}
+
+void rename_in(UmlOperation * op)
+{
+  op->set_CppBody(rename_in(op->cppBody()));
+  op->set_JavaBody(rename_in(op->javaBody()));
+  op->set_Description(rename_in(op->description()));
+}
+
+void add_attribute_multiplicity(UmlClass * umlsettings, UmlClass * cppsettings, 
+				UmlClass * javasettings, UmlClass * idlsettings)
+{
+  UmlCom::trace("Add multiplicity on attribute<br>\n");
+  
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  // copy multiplicity() and set_Multiplicity() from UmlBaseRelation
+  
+  UmlClass * attribute = UmlClass::get("UmlBaseAttribute", 0);
+  UmlClass * relation = UmlClass::get("UmlBaseRelation", 0);
+  UmlOperation * op1, * op2;
+  
+  op1 = relation->get_operation("multiplicity");
+  op2 = attribute->add_op("multiplicity", PublicVisibility,
+			  op1->returnType().explicit_type, FALSE);
+  op2->set_CppDecl(op1->cppDecl());
+  op2->set_CppDef(op1->cppDef());
+  op2->set_CppBody(op1->cppBody());
+  op2->set_JavaDef(op1->javaDef());
+  op2->set_JavaBody(op1->javaBody());
+  op2->set_Description(op1->description());
+  op2->moveAfter(attribute->get_operation("set_Type"));
+  
+  op1 = relation->get_operation("set_Multiplicity");
+  op2 = attribute->add_op("set_Multiplicity", PublicVisibility,
+			  op1->returnType().explicit_type, TRUE);
+  op2->addParameter(0, op1->params()[0]);
+  op2->addParameter(1, op1->params()[1]);
+  op2->set_CppDecl(op1->cppDecl());
+  op2->set_CppDef(op1->cppDef());
+  op2->set_CppBody(op1->cppBody());
+  op2->set_JavaDef(op1->javaDef());
+  op2->set_JavaBody(op1->javaBody());
+  op2->set_Description(op1->description());
+  op2->moveAfter(attribute->get_operation("multiplicity"));
+  
+  // copy _multiplicity from UmlBaseRelation
+  
+  UmlAttribute * att1, * att2;
+  
+  att1 = relation->get_attribute("_multiplicity");
+  att2 = attribute->add_attribute("_multiplicity", PublicVisibility,
+				  att1->type().explicit_type, 0, 0);
+  att2->set_CppDecl(att1->cppDecl());
+  att2->set_JavaDecl(att1->javaDecl());
+  att2->moveAfter(attribute->get_attribute("_read_only"));
+  
+  // modify read_uml_()
+  
+  QCString s;
+  
+  op1 = attribute->get_operation("read_uml_");
+  s = op1->cppBody();
+  op1->set_CppBody(s.insert(s.find("_default_value ="),
+			    "_multiplicity = UmlCom::read_string();\n"
+			    "  "));
+  s = op1->javaBody();
+  op1->set_JavaBody(s.insert(s.find("_default_value ="),
+			     "_multiplicity = UmlCom.read_string();\n"
+			     "  "));
+  
+  // modify unload
+
+  op1 = attribute->get_operation("unload");
+  s = op1->cppBody();
+  op1->set_CppBody(s + "  _multiplicity = 0;\n");
+  s = op1->javaBody();
+  op1->set_JavaBody(s + "  _multiplicity = null;\n");
+  
+  // upgrade *Settings
+  
+  add_attribute_multiplicity(cppsettings, "cpp", "Cpp");
+  add_attribute_multiplicity(javasettings, "java", "Java");
+  add_attribute_multiplicity(idlsettings, "idl", "Idl");
+  
+  add_multiplicity(idlsettings, "_valuetype_attr_decl", "valuetypeAttributeDecl",
+		   "set_ValuetypeAttributeDecl", "idl", "Idl", "ValuetypeAttribute");
+  add_multiplicity(idlsettings, "_union_item_decl", "unionItemDecl",
+		   "set_UnionItemDecl", "idl", "Idl", "UnionItem");
+  add_multiplicity(idlsettings, "_const_decl", "constDecl",
+		   "set_ConstDecl", "idl", "Idl", "Const");
+
+  // rename cmds
+  
+  UmlCom::trace("rename settings cmds<br>\n");
+  
+  UmlClass::get("CppSettingsCmd", 0)->get_attribute("setCppRelationStereotypeCmd")
+    ->set_Name("setCppRelationAttributeStereotypeCmd");
+  UmlClass::get("JavaSettingsCmd", 0)->get_attribute("setJavaRelationStereotypeCmd")
+    ->set_Name("setJavaRelationAttributeStereotypeCmd");
+  UmlClass::get("IdlSettingsCmd", 0)->get_attribute("setIdlRelationStereotypeCmd")
+    ->set_Name("setIdlRelationAttributeStereotypeCmd");
+
+  //
+  
+  UmlCom::trace("upgrade UmlSettings<br>\n");
+  
+  umlsettings->get_attribute("_map_relation_stereotypes")
+    ->set_Name("_map_relation_attribute_stereotypes");
+  umlsettings->get_relation(aDirectionalAssociation, "_relation_stereotypes")
+    ->set_RoleName("_relation_attribute_stereotypes");
+
+  umlsettings->get_operation("uml_rel_stereotype")->set_Name("uml_rel_attr_stereotype");
+  umlsettings->get_operation("add_rel_stereotype")->set_Name("add_rel_attr_stereotype");    
+
+  //
+  
+  UmlCom::trace("upgrade body to take into account renamings<br>\n");
+  
+  rename_in(cppsettings->get_operation("set_RelationAttributeStereotype"));
+  rename_in(cppsettings->get_operation("relationAttributeStereotype"));
+  rename_in(cppsettings->get_operation("relationAttributeUmlStereotype"));
+  rename_in(cppsettings->get_operation("read_"));
+  
+  rename_in(javasettings->get_operation("set_RelationAttributeStereotype"));
+  rename_in(javasettings->get_operation("relationAttributeStereotype"));
+  rename_in(javasettings->get_operation("relationAttributeUmlStereotype"));
+  rename_in(javasettings->get_operation("read_"));
+  
+  rename_in(idlsettings->get_operation("set_RelationAttributeStereotype"));  
+  rename_in(idlsettings->get_operation("relationAttributeStereotype"));
+  rename_in(idlsettings->get_operation("relationAttributeUmlStereotype"));
+  rename_in(idlsettings->get_operation("read_"));
+  
+  rename_in(umlsettings->get_operation("read_"));
+  rename_in(umlsettings->get_operation("uml_rel_attr_stereotype"));
+  rename_in(umlsettings->get_operation("add_rel_attr_stereotype"));
+  
+  //
+
+  UmlCom::set_user_id(uid);
+}
+
+//
+
+void fixe_set_name(UmlClass * baseitem)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlOperation * op = baseitem->get_operation("set_Name");
+  
+  op->set_CppBody("  UmlCom::send_cmd(_identifier, setNameCmd, s);\n"
+		  "  if (UmlCom::read_bool()) {\n"
+		  "    _name = s;\n"
+		  "    return TRUE;\n"
+		  "  }\n"
+		  "  else\n"
+		  "    return FALSE;\n");
+  
+  op->set_JavaBody("    UmlCom.send_cmd(identifier_(), OnInstanceCmd.setNameCmd, s);\n"
+		   "    UmlCom.check();\n"
+		   "    _name = s;\n");
+  
+  //
+
+  UmlCom::set_user_id(uid);
+  
+}
+
+
+//
 //
 //
 
@@ -7342,9 +7623,19 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
     
+    if (cppsetting->get_operation("relationAttributeStereotype") == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      fixe_set_name(uml_base_item);
+      add_attribute_multiplicity(umlsetting, cppsetting, javasettings,
+				 UmlClass::get("IdlSettings", 0));
+
+      work = TRUE;
+    }
+    
     if (work) {
       UmlCom::trace("update api version<br>\n");
-      update_api_version("31");
+      update_api_version("32");
       UmlCom::message("ask for save-as");
       QMessageBox::information(0, "Upgrade", 
 			       "Upgrade done\n\n"

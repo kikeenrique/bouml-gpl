@@ -198,7 +198,7 @@ void UmlOperation::generate_decl(QTextOStream & f,
       }
       else if (!strncmp(p, "${stereotype}", 13)) {
 	p += 13;
-	f << IdlSettings::relationStereotype(stereotype());
+	f << IdlSettings::relationAttributeStereotype(stereotype());
       }
       else if (!strncmp(p, "${raisesnl}", 11)) {
 	if (exceptions.count() != 0) {

@@ -175,6 +175,9 @@ class UmlWindow : public QMainWindow {
     
     void windowsMenuAboutToShow();
     void windowsMenuActivated(int id);
+
+    virtual void keyPressEvent(QKeyEvent * e);
+
 };
 
 #endif

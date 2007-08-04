@@ -278,7 +278,7 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
       else if (!strncmp(p, "${stereotype}", 13)) {
 	p += 13;
 	// get/set relation with multiplicity > 1
-	f << JavaSettings::relationStereotype(stereotype());
+	f << JavaSettings::relationAttributeStereotype(stereotype());
       }
       else if (!strncmp(p, "${name}", 7)) {
 	p += 7;

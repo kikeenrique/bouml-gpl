@@ -55,7 +55,7 @@ ClassInstanceData::ClassInstanceData(BrowserClass * c) : cl(c) {
 }
 
 ClassInstanceData::ClassInstanceData(ClassInstanceData * model)
-    : SimpleData(model), cl(0) {
+    : SimpleData(model), cl(model->cl) {
   BasicData * cld = cl->get_data();
     
   connect_list.append(cld);

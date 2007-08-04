@@ -25,6 +25,8 @@ enum OnInstanceCmd {
   applyCmd,
   referencedByCmd,
   sideCmd,
+  attributesCmd,
+  relationsCmd,
   firstSetCmd = 50,// just a mark
 
   createCmd,
@@ -132,7 +134,15 @@ enum OnInstanceCmd {
   setUniqueCmd,
   setStreamCmd,
   setInStateCmd,
-  setOrderingCmd
+  setOrderingCmd,
+  setCppFrozenCmd,
+  setJavaFrozenCmd,
+  setIdlFrozenCmd,
+  setConstraintCmd,
+  deleteCmd,
+  setAttributeCmd,
+  addRelationCmd,
+  removeRelationCmd
 
 };
 #endif

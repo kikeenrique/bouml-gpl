@@ -60,8 +60,11 @@ bool UmlRelation::new_one(UmlClass * cl, const QCString & name,
 #endif
   
   UmlRelation * rel = 
-    UmlBaseRelation::create((modifier.isEmpty()) ? aDirectionalAggregationByValue
-						 : aDirectionalAssociation,
+    UmlBaseRelation::create((modifier.isEmpty() &&
+			     ((typeform == "${type}") ||
+			      (typeform[typeform.find("${type}") + 7] != '*')))
+			    ? aDirectionalAggregationByValue
+			    : aDirectionalAssociation,
 			    cl, dest);
   
   if (rel == 0) {

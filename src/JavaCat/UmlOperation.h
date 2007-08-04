@@ -43,8 +43,10 @@ class UmlOperation : public UmlBaseOperation {
 	
     static bool new_one(Class * container, const QCString & name,
 			const QValueList<FormalParameterList> & tmplts,
-			const QCString & oper_templ, UmlTypeSpec & type,
-			QCString str_actuals, aVisibility visibility,
+			const QCString & oper_templ,
+			UmlTypeSpec & type, QCString str_actuals,
+			UmlClass * first_actual_class, QCString type_def,
+			aVisibility visibility,
 			bool finalp, bool abstractp, bool staticp,
 			bool nativep, bool strictfp, bool synchronizedp,
 			const QCString & array,	QCString comment,

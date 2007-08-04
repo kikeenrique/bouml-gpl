@@ -57,7 +57,15 @@
 #include "MiscGlobalCmd.h"
 
 bool UmlBaseItem::set_Name(const QCString & s) {
-  return set_it_(_name, s, setNameCmd);
+  // don't use _set_it else the name is not
+  // updated in case the item is not yet load (!_defined)
+  UmlCom::send_cmd(_identifier, setNameCmd, s);
+  if (UmlCom::read_bool()) {
+    _name = s;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 const QCString & UmlBaseItem::stereotype() {
@@ -146,13 +154,11 @@ const QDict<QCString> UmlBaseItem::properties() {
   return _dict;
 }
 
-#ifdef HAS_MODELER_ID
 int UmlBaseItem::getIdentifier() {
   read_if_needed_();
 
   return _modeler_id;
 }
-#endif
 
 bool UmlBaseItem::moveAfter(const UmlItem * x) {
   UmlCom::send_cmd(_identifier, moveAfterCmd, (x != 0) ? ((UmlBaseItem *)x)->_identifier : 0);
@@ -316,9 +322,7 @@ void UmlBaseItem::read_uml_() {
   
   _marked = UmlCom::read_bool();
   
-#ifdef HAS_MODELER_ID
   _modeler_id = (int) UmlCom::read_unsigned();
-#endif
 }
 
 #ifdef WITHCPP

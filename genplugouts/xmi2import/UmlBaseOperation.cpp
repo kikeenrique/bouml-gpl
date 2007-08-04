@@ -238,6 +238,24 @@ bool UmlBaseOperation::set_CppNameSpec(const char * s) {
 }
 #endif
 
+#ifdef WITHCPP
+bool UmlBaseOperation::cppGetSetFrozen() {
+  read_if_needed_();
+  return _cpp_get_set_frozen;
+}
+
+bool UmlBaseOperation::set_CppGetSetFrozen(bool v) {
+  bool vv;
+
+  if (set_it_(vv, v, setCppFrozenCmd)) {
+    _cpp_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
 #ifdef WITHJAVA
 bool UmlBaseOperation::isJavaFinal() {
   read_if_needed_();
@@ -304,6 +322,24 @@ bool UmlBaseOperation::set_JavaNameSpec(const char * s) {
 }
 #endif
 
+#ifdef WITHJAVA
+bool UmlBaseOperation::javaGetSetFrozen() {
+  read_if_needed_();
+  return _java_get_set_frozen;
+}
+
+bool UmlBaseOperation::set_JavaGetSetFrozen(bool v) {
+  bool vv;
+
+  if (set_it_(vv, v, setJavaFrozenCmd)) {
+    _java_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
 #ifdef WITHIDL
 bool UmlBaseOperation::isIdlOneway() {
   read_if_needed_();
@@ -330,6 +366,24 @@ const QCString & UmlBaseOperation::idlNameSpec() {
 
 bool UmlBaseOperation::set_IdlNameSpec(const char * s) {
   return set_it_(_idl_name_spec, s, setIdlNameSpecCmd);
+}
+#endif
+
+#ifdef WITHIDL
+bool UmlBaseOperation::idlGetSetFrozen() {
+  read_if_needed_();
+  return _idl_get_set_frozen;
+}
+
+bool UmlBaseOperation::set_IdlGetSetFrozen(bool v) {
+  bool vv;
+
+  if (set_it_(vv, v, setIdlFrozenCmd)) {
+    _idl_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 #endif
 
@@ -392,6 +446,7 @@ void UmlBaseOperation::read_cpp_() {
   _cpp_inline = UmlCom::read_bool();
   _cpp_def = UmlCom::read_string();
   _cpp_name_spec = UmlCom::read_string();
+  _cpp_get_set_frozen = UmlCom::read_bool();
 }
 #endif
 
@@ -401,6 +456,7 @@ void UmlBaseOperation::read_java_() {
   _java_final = UmlCom::read_bool();
   _java_synchronized = UmlCom::read_bool();
   _java_name_spec = UmlCom::read_string();
+  _java_get_set_frozen = UmlCom::read_bool();
 }
 #endif
 
@@ -409,6 +465,7 @@ void UmlBaseOperation::read_idl_() {
   UmlBaseClassMember::read_idl_();
   _idl_oneway = UmlCom::read_bool();
   _idl_name_spec = UmlCom::read_string();
+  _idl_get_set_frozen = UmlCom::read_bool();
 }
 #endif
 

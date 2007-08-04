@@ -1,6 +1,8 @@
 
 #include "UmlAttribute.h"
 
+#include "CppSettings.h"
+#include "JavaSettings.h"
 QCString UmlAttribute::sKind() {
   return "attribute";
 }
@@ -121,6 +123,23 @@ void UmlAttribute::gen_cpp_decl(QCString s, bool descr) {
 	p += 7;
 	writeq(name());
       }
+      else if (!strncmp(p, "${multiplicity}", 15)) {
+	p += 15;
+	
+	QCString m = multiplicity();
+	
+	if (m.isEmpty() || (((const char *) m)[0] != '[')) {
+	  fw.write("[");
+	  writeq(m);
+	  fw.write("]");
+	}
+	else
+	  writeq(m);
+      }
+      else if (!strncmp(p, "${stereotype}", 13)) {
+	p += 13;
+	writeq(CppSettings::relationAttributeStereotype(stereotype()));
+      }
       else if (!strncmp(p, "${value}", 8) || !strncmp(p, "${h_value}", 10))
 	return;
       else if (!strncmp(p, "${static}", 9)) {
@@ -189,6 +208,35 @@ void UmlAttribute::gen_java_decl(QCString s) {
       p += 7;
       writeq(name());
     }
+    else if (!strncmp(p, "${multiplicity}", 15)) {
+      p += 15;
+      
+      QCString m = multiplicity();
+
+      if (! m.isEmpty()) {
+	const char * s = m;
+	
+	if (*s != '[')
+	  fw.write("[]");
+	else {
+	  while (*s) {
+	    switch (*s++) {
+	    case '[':
+	      fw.write('[');
+	      break;
+	    case ']':
+	      fw.write(']');
+	    default:
+	      break;
+	    }
+	  }
+	}
+      }
+    }
+    else if (!strncmp(p, "${stereotype}", 13)) {
+      p += 13;
+      writeq(JavaSettings::relationAttributeStereotype(stereotype()));
+    }
     else if (!strncmp(p, "${value}", 8)) {
       p += 8;
     }
@@ -251,6 +299,12 @@ void UmlAttribute::gen_uml_decl() {
   fw.write(" : ");
   write(type());
 
+  QCString s = multiplicity();
+  
+  if (!s.isEmpty()) {
+    fw.write(", multiplicity : ");
+    writeq(s);
+  }
 }
 
 Vector UmlAttribute::attrs;

@@ -10,13 +10,14 @@ class UmlArtifact;
 class SmallPushButton;
 
 class QLineEdit;
+class QMultiLineEdit;
 class QPushButton;
 class QComboBox;
 
 class Dialog : public QDialog {
   Q_OBJECT
   public:
-    Dialog(UmlArtifact * art, const QCString & path_exe, QCString & pro, QCString & target, QCString & tmplt, QCString & config, QCString & defines, QCString & includepath, QCString & dependpath, QCString & objectsdir);
+    Dialog(UmlArtifact * art, const QCString & path_exe, QCString & pro, QCString & target, QCString & tmplt, QCString & config, QCString & defines, QCString & includepath, QCString & dependpath, QCString & objectsdir, QCString & footer);
 
   protected:
     UmlArtifact * _art;
@@ -36,6 +37,8 @@ class Dialog : public QDialog {
     QCString & _dependpath;
 
     QCString & _objectsdir;
+
+    QCString & _footer;
 
     QLineEdit * edpro;
 
@@ -60,6 +63,8 @@ class Dialog : public QDialog {
     QLineEdit * edobjectsdir;
 
     QPushButton * browseobjectsdir;
+
+    QMultiLineEdit * edfooter;
 
   protected slots:    virtual void accept();
     void browse_pro();

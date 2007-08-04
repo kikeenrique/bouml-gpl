@@ -1,6 +1,6 @@
-format 39
+format 41
 "Aux" // Aux
-  revision 6
+  revision 7
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -129,7 +129,7 @@ ${body}}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	    classrelation_ref 129188 // v (<unidirectional association>)
-	  b multiplicity "" parent class_ref 7553 // UmlItem
+	  b parent class_ref 7553 // UmlItem
       end
     end
 

@@ -45,17 +45,17 @@ class CppSettings : public UmlSettings {
 
     // returns the C++ stereotype corresponding to the 'UML' stereotype given
     // in argument
-    static QCString relationStereotype(QCString s);
+    static QCString relationAttributeStereotype(QCString s);
 
     // set the C++ stereotype corresponding to the 'UML' stereotype given
     // in argument
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_RelationStereotype(QCString s, QCString v);
+    static bool set_RelationAttributeStereotype(QCString s, QCString v);
 
-    // reverse of the RelationStereotype() operation, returns the 'UML' 
+    // reverse of the RelationAttributeStereotype() operation, returns the 'UML' 
     // stereotype corresponding to the C++ one given in argument
-    static QCString relationUmlStereotype(QCString s);
+    static QCString relationAttributeUmlStereotype(QCString s);
 
     // returns the C++ stereotype corresponding to the 'UML' stereotype given
     // in argument
@@ -303,13 +303,13 @@ class CppSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_TypedefDecl(QCString v);
 
-    // returns the default definition of an attribute
-    static const QCString & attributeDecl();
+    // returns the default definition of an attribute depending on the multiplicity
+    static const QCString & attributeDecl(const char * multiplicity);
 
     // set the default definition of an attribute
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_AttributeDecl(QCString v);
+    static bool set_AttributeDecl(const char * multiplicity, QCString v);
 
     // returns the default definition of an enumeration item
     static const QCString & enumItemDecl();
@@ -497,7 +497,7 @@ class CppSettings : public UmlSettings {
 
     static QCString _typedef_decl;
 
-    static QCString _attr_decl;
+    static QCString _attr_decl[3/*multiplicity*/];
 
     static QCString _enum_item_decl;
 

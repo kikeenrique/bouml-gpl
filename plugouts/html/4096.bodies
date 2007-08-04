@@ -8,13 +8,17 @@ class UmlBaseItem
 
   return _modeler_id;
 !!!46208.cpp!!!	set_Name(in s : string) : bool
-  return set_it_(_name, s, setNameCmd);
+  UmlCom::send_cmd(_identifier, setNameCmd, s);
+  if (UmlCom::read_bool()) {
+    _name = s;
+    return TRUE;
+  }
+  else
+    return FALSE;
 !!!46208.java!!!	set_Name(in s : string) : bool
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setNameCmd, s);
-  UmlCom.check();
-  
-  if (_defined) _name = s;
-
+    UmlCom.send_cmd(identifier_(), OnInstanceCmd.setNameCmd, s);
+    UmlCom.check();
+    _name = s;
 !!!46336.cpp!!!	stereotype() : string
   read_if_needed_();
   

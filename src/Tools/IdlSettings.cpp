@@ -52,23 +52,23 @@ QCString IdlSettings::umlType(QCString s)
   return UmlSettings::uml_type(s, &UmlBuiltin::idl);
 }
 
-QCString IdlSettings::relationStereotype(const QCString & s)
+QCString IdlSettings::relationAttributeStereotype(const QCString & s)
 {
   read_if_needed_();
   
-  UmlStereotype * b = UmlSettings::_map_relation_stereotypes.find(s);
+  UmlStereotype * b = UmlSettings::_map_relation_attribute_stereotypes.find(s);
   
   return (b) ? b->idl : s;
 }
 
-bool IdlSettings::set_RelationStereotype(QCString s, QCString v)
+bool IdlSettings::set_RelationAttributeStereotype(QCString s, QCString v)
 {
-  UmlCom::send_cmd(idlSettingsCmd, setIdlRelationStereotypeCmd, s, v);
+  UmlCom::send_cmd(idlSettingsCmd, setIdlRelationAttributeStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
-    UmlStereotype * st = UmlSettings::_map_relation_stereotypes.find(s);
+    UmlStereotype * st = UmlSettings::_map_relation_attribute_stereotypes.find(s);
 
     if (st == 0)
-      st = UmlSettings::add_rel_stereotype(s);
+      st = UmlSettings::add_rel_attr_stereotype(s);
     st->idl = v;
     
     return TRUE;
@@ -77,11 +77,11 @@ bool IdlSettings::set_RelationStereotype(QCString s, QCString v)
     return FALSE;
 }
 
-QCString IdlSettings::relationUmlStereotype(QCString s)
+QCString IdlSettings::relationAttributeUmlStereotype(QCString s)
 {
   read_if_needed_();
   
-  return UmlSettings::uml_rel_stereotype(s, &UmlStereotype::idl);
+  return UmlSettings::uml_rel_attr_stereotype(s, &UmlStereotype::idl);
 }
 
 QCString IdlSettings::classStereotype(QCString s)
@@ -621,7 +621,7 @@ void IdlSettings::read_()
   n = UmlCom::read_unsigned();
   
   for (index = 0; index != n; index += 1)
-    UmlSettings::_relation_stereotypes[index].idl = UmlCom::read_string();
+    UmlSettings::_relation_attribute_stereotypes[index].idl = UmlCom::read_string();
   
   n = UmlCom::read_unsigned();
   

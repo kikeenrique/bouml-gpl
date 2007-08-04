@@ -8,15 +8,10 @@ class UmlArtifact
 
     path = pack->cppSrcDir();
   
-    if (path.isEmpty()) {
-      path = CppSettings::rootDir();
-      if (path.isEmpty()) {
-        QMessageBox::critical((QWidget *) 0, "Error", "Generation directory must be set");
-        return;
-      }
-    }
+    if (path.isEmpty())
+      path = root_dir();
     else if (QDir::isRelativePath(path)) {
-      QDir d(CppSettings::rootDir());
+      QDir d(root_dir());
       
       d.cd(path);
       path = d.absPath();
@@ -61,6 +56,7 @@ class UmlArtifact
   QCString includepath;
   QCString dependpath;
   QCString objectsdir;
+  QCString footer;
 
   if (!propertyValue("genpro tmplt", tmplt))
     tmplt = "app";
@@ -71,10 +67,11 @@ class UmlArtifact
   propertyValue("genpro includepath", includepath);
   propertyValue("genpro dependpath", dependpath);
   propertyValue("genpro objectsdir", objectsdir);
+  propertyValue("genpro footer", footer);
   
   for (;;) {
-    Dialog dialog(this, path, pro, target, tmplt, config,
-		  defines, includepath, dependpath, objectsdir);
+    Dialog dialog(this, path, pro, target, tmplt, config, defines,
+		  includepath, dependpath, objectsdir, footer);
     
     if (dialog.exec() != QDialog::Accepted)
       return;
@@ -88,6 +85,7 @@ class UmlArtifact
     set_PropertyValue("genpro includepath", includepath);
     set_PropertyValue("genpro dependpath", dependpath);
     set_PropertyValue("genpro objectsdir", objectsdir);
+    set_PropertyValue("genpro footer", footer);
 
     QFile f(pro);
     
@@ -154,7 +152,7 @@ class UmlArtifact
 	}
       }
       
-      t << '\n';
+      t << '\n' << footer << '\n';
       
       f.close();
       return;
@@ -180,7 +178,7 @@ class UmlArtifact
   }
 
   if (QDir::isRelativePath(dir)) {
-    QDir d(CppSettings::rootDir());
+    QDir d(root_dir());
     
     d.cd(dir);
     dir = d.absPath();

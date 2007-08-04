@@ -1217,12 +1217,12 @@ void OperationDialog::cpp_update_decl() {
     }
     else if (oper->is_get_or_set && !strncmp(p, "${stereotype}", 13)) {
       p += 13;
-      // get/set relation with multiplicity > 1
-      s += GenerationSettings::cpp_relation_stereotype(oper->stereotype);
+      // get/set with multiplicity > 1
+      s += GenerationSettings::cpp_relationattribute_stereotype(oper->stereotype);
     }
     else if (oper->is_get_or_set && !strncmp(p, "${association}", 14)) {
       p += 14;
-      // get/set relation with multiplicity > 1
+      // get/set with multiplicity > 1
       s += GenerationSettings::cpp_type(((BrowserOperation *) oper->browser_node)
 					->get_of_association().get_type());
     }
@@ -1318,12 +1318,12 @@ QString OperationDialog::cpp_decl(const BrowserOperation * op, bool withname)
     }
     else if (d->is_get_or_set && !strncmp(p, "${stereotype}", 13)) {
       p += 13;
-      // get/set relation with multiplicity > 1
-      s += GenerationSettings::cpp_relation_stereotype(d->stereotype);
+      // get/set with multiplicity > 1
+      s += GenerationSettings::cpp_relationattribute_stereotype(d->stereotype);
     }
     else if (d->is_get_or_set && !strncmp(p, "${association}", 14)) {
       p += 14;
-      // get/set relation with multiplicity > 1
+      // get/set with multiplicity > 1
       s += GenerationSettings::cpp_type(op->get_of_association().get_type());
     }
     else if (*p == '\n') {
@@ -1673,12 +1673,12 @@ void OperationDialog::cpp_update_def() {
       }
       else if (oper->is_get_or_set && !strncmp(p, "${stereotype}", 13)) {
 	p += 13;
-	// get/set relation with multiplicity > 1
-	s += GenerationSettings::cpp_relation_stereotype(oper->stereotype);
+	// get/set with multiplicity > 1
+	s += GenerationSettings::cpp_relationattribute_stereotype(oper->stereotype);
       }
       else if (oper->is_get_or_set && !strncmp(p, "${association}", 14)) {
 	p += 14;
-	// get/set relation with multiplicity > 1
+	// get/set with multiplicity > 1
 	s += GenerationSettings::cpp_type(((BrowserOperation *) oper->browser_node)
 					  ->get_of_association().get_type());
       }
@@ -1947,12 +1947,12 @@ void OperationDialog::java_update_def() {
     }
     else if (oper->is_get_or_set && !strncmp(p, "${stereotype}", 13)) {
       p += 13;
-      // get/set relation with multiplicity > 1
-      s += GenerationSettings::java_relation_stereotype(oper->stereotype);
+      // get/set with multiplicity > 1
+      s += GenerationSettings::java_relationattribute_stereotype(oper->stereotype);
     }
     else if (oper->is_get_or_set && !strncmp(p, "${association}", 14)) {
       p += 14;
-      // get/set relation with multiplicity > 1
+      // get/set with multiplicity > 1
       s += GenerationSettings::java_type(((BrowserOperation *) oper->browser_node)
 					 ->get_of_association().get_type());
     }
@@ -2071,12 +2071,12 @@ QString OperationDialog::java_decl(const BrowserOperation * op, bool withname)
       p += 4;
     else if (d->is_get_or_set && !strncmp(p, "${stereotype}", 13)) {
       p += 13;
-      // get/set relation with multiplicity > 1
-      s += GenerationSettings::java_relation_stereotype(d->stereotype);
+      // get/set with multiplicity > 1
+      s += GenerationSettings::java_relationattribute_stereotype(d->stereotype);
     }
     else if (d->is_get_or_set && !strncmp(p, "${association}", 14)) {
       p += 14;
-      // get/set relation with multiplicity > 1
+      // get/set with multiplicity > 1
       s += GenerationSettings::java_type(op->get_of_association().get_type());
     }
     else if (*p == '\n') {
@@ -2303,12 +2303,12 @@ void OperationDialog::idl_update_decl() {
     }
     else if (oper->is_get_or_set && !strncmp(p, "${stereotype}", 13)) {
       p += 13;
-      // get/set relation with multiplicity > 1
-      s += GenerationSettings::idl_relation_stereotype(oper->stereotype);
+      // get/set with multiplicity > 1
+      s += GenerationSettings::idl_relationattribute_stereotype(oper->stereotype);
     }
     else if (oper->is_get_or_set && !strncmp(p, "${association}", 14)) {
       p += 14;
-      // get/set relation with multiplicity > 1
+      // get/set with multiplicity > 1
       s += GenerationSettings::idl_type(((BrowserOperation *) oper->browser_node)
 					->get_of_association().get_type());
     }
@@ -2422,12 +2422,12 @@ QString OperationDialog::idl_decl(const BrowserOperation * op,
     }
     else if (d->is_get_or_set && !strncmp(p, "${stereotype}", 13)) {
       p += 13;
-      // get/set relation with multiplicity > 1
-      s += GenerationSettings::idl_relation_stereotype(d->stereotype);
+      // get/set with multiplicity > 1
+      s += GenerationSettings::idl_relationattribute_stereotype(d->stereotype);
     }
     else if (d->is_get_or_set && !strncmp(p, "${association}", 14)) {
       p += 14;
-      // get/set relation with multiplicity > 1
+      // get/set with multiplicity > 1
       s += GenerationSettings::idl_type(op->get_of_association().get_type());
     }
     else if (!strncmp(p, "${raisesnl}", 11)) {

@@ -255,7 +255,7 @@ void UmlOperation::gen_cpp_decl(QCString s, bool descr) {
       UmlClassMember * m = getOf();
       
       if ((m != 0) || ((m = setOf()) != 0))
-	writeq(CppSettings::relationStereotype(m->stereotype()));
+	writeq(CppSettings::relationAttributeStereotype(m->stereotype()));
     }
     else if (!strncmp(p, "${association}", 14)) {
       p += 14;
@@ -379,7 +379,7 @@ void UmlOperation::gen_java_decl(QCString s) {
       UmlClassMember * m = getOf();
       
       if ((m != 0) || ((m = setOf()) != 0))
-	writeq(JavaSettings::relationStereotype(m->stereotype()));
+	writeq(JavaSettings::relationAttributeStereotype(m->stereotype()));
     }
     else if (!strncmp(p, "${association}", 14)) {
       p += 14;

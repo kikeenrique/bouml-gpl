@@ -368,6 +368,11 @@ void ObjectLinkCanvas::remove(bool from_model) {
   delete_it();
 }
 
+#ifdef WIN32
+#pragma optimize("", off)
+// generated code is wrong if optimize speed
+// because 'this' is changed to a wrong value inside the operation
+#endif
 void ObjectLinkCanvas::menu(const QPoint & lpos) {
   ObjectLinkCanvas * plabel;
   ObjectLinkCanvas * pstereotype;
@@ -405,7 +410,6 @@ void ObjectLinkCanvas::menu(const QPoint & lpos) {
   if (data != 0)
     m.insertItem("Select relation in browser", 2);
   if (plabel || pstereotype || first->role_b || last->role_a) {
-    m.insertSeparator();
     m.insertItem("Select labels", 3);
     m.insertItem("Labels default position", 4);
     if (plabel && (label == 0))
@@ -415,7 +419,6 @@ void ObjectLinkCanvas::menu(const QPoint & lpos) {
   }
   
   if (get_start() != get_end()) {
-    m.insertSeparator();
     init_geometry_menu(geo, 10);
     m.insertItem("Geometry (Ctrl+l)", &geo);
   }
@@ -481,6 +484,7 @@ void ObjectLinkCanvas::menu(const QPoint & lpos) {
     break;
   case 8:
     remove(TRUE);
+    break;
   default:
     /*
     if (rank >= 20) {
@@ -503,6 +507,9 @@ void ObjectLinkCanvas::menu(const QPoint & lpos) {
   
   package_modified();
 }
+#ifdef WIN32
+#pragma optimize("", on)
+#endif
 
 
 ArrowPointCanvas * ObjectLinkCanvas::brk(const QPoint & p) {

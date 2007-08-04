@@ -64,6 +64,7 @@ class AttributeDialog : public QTabDialog {
     // uml tab
     QWidget * umltab;
     LineEdit * edname;
+    QComboBox * multiplicity;
     LineEdit * edinit;
     QComboBox * edtype;
     QComboBox * edstereotype;

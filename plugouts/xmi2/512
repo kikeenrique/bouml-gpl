@@ -1,6 +1,6 @@
-format 39
+format 41
 "Com" // API BASE::Com
-  revision 8
+  revision 9
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -2829,7 +2829,7 @@ public static final ${class} ${name} = new ${class}(_${name});
 	idl_decl ""
       end
 
-      attribute 42880 "setCppRelationStereotypeCmd"
+      attribute 42880 "setCppRelationAttributeStereotypeCmd"
 	public explicit_type ""
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
@@ -3295,7 +3295,7 @@ public static final ${class} ${name} = new ${class}(_${name});
 	idl_decl ""
       end
 
-      attribute 48000 "setJavaRelationStereotypeCmd"
+      attribute 48000 "setJavaRelationAttributeStereotypeCmd"
 	public explicit_type ""
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
@@ -3587,7 +3587,7 @@ public static final ${class} ${name} = new ${class}(_${name});
 	idl_decl ""
       end
 
-      attribute 51328 "setIdlRelationStereotypeCmd"
+      attribute 51328 "setIdlRelationAttributeStereotypeCmd"
 	public explicit_type ""
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};

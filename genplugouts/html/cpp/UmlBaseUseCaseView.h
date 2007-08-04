@@ -2,14 +2,15 @@
 #define _UMLBASEUSECASEVIEW_H
 
 
-#include "UmlItem.h"
+#include "UmlView.h"
 #include "anItemKind.h"
 #include <qcstring.h>
 
 class UmlUseCaseView;
+class UmlItem;
 
 //  Manage the use case views
-class UmlBaseUseCaseView : public UmlItem {
+class UmlBaseUseCaseView : public UmlView {
   public:
     // returns a new use case view named 'name' created under 'parent'
     //
@@ -24,7 +25,7 @@ class UmlBaseUseCaseView : public UmlItem {
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseUseCaseView(void * id, const QCString & n) : UmlItem(id, n) {};
+    UmlBaseUseCaseView(void * id, const QCString & n) : UmlView(id, n) {};
 
 };
 

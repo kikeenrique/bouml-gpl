@@ -367,6 +367,7 @@ class UmlBaseItem {
   friend class UmlBaseActivityParameter;
   friend class UmlBaseParameterSet;
   friend class UmlBaseClassInstance;
+  friend class UmlBaseView;
 };
 
 #endif

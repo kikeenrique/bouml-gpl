@@ -44,8 +44,10 @@ using namespace std;
 
 bool UmlOperation::new_one(Class * container, const QCString & name,
 			   const QValueList<FormalParameterList> & tmplts,
-			   const QCString & oper_templ, UmlTypeSpec & type,
-			   QCString str_actuals, aVisibility visibility,
+			   const QCString & oper_templ,
+			   UmlTypeSpec & type, QCString str_actuals,
+			   UmlClass * first_actual_class, QCString type_def,
+			   aVisibility visibility,
 			   bool finalp, bool abstractp, bool staticp,
 			   bool nativep, bool strictfp, bool synchronizedp, 
 			   const QCString & array, QCString comment,
@@ -85,10 +87,6 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
     
   if (op != 0) {
     op->set_Visibility(visibility);
-    if ((type.type != 0) || !type.explicit_type.isEmpty()) {
-      // not a contructor 
-      op->set_ReturnType(type);
-    }
     if (staticp) op->set_isClassMember(TRUE);
     if (abstractp) op->set_isAbstract(TRUE);
     if (finalp) op->set_isJavaFinal(TRUE);
@@ -148,7 +146,21 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
 	def.remove(index, 11);
     }
     
-    UmlClass::manage_generic(def, type, str_actuals, "${type}"); 
+    if (type.type != 0) {
+      UmlClass::manage_generic(def, type, str_actuals, "${type}"); 
+      op->set_ReturnType(type);
+    }
+    else if (first_actual_class != 0) {
+      UmlTypeSpec t;
+      
+      t.type = first_actual_class;
+      def.replace(def.find("${type}"), 7, type_def);
+      op->set_ReturnType(t);
+    }
+    else if (!type.explicit_type.isEmpty()) {
+      // not a contructor 
+      op->set_ReturnType(type);
+    }
   }
   
   // parameters

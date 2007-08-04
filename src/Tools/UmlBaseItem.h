@@ -154,14 +154,12 @@ class UmlBaseItem {
     //  and UmlComponents.
     const QVector<UmlItem> referencedBy();
     
-#ifdef HAS_MODELER_ID
     // return a constant identifier, it is unique within a given
     // kind of element (two classes can't have the same identifiers, but
     // a class and a component may have the same identifier) 
     // except for the diagrams (a class diagram can't have the identifier
     // of a component diagram)
     int getIdentifier();
-#endif
 
     // to unload the object to free memory, it will be reloaded automatically
     // if needed. Recursively done for the sub items if 'rec' is TRUE. 
@@ -223,9 +221,7 @@ class UmlBaseItem {
 
     void * _identifier;
     
-#ifdef HAS_MODELER_ID
     int _modeler_id;
-#endif
 
     QCString _name;
 

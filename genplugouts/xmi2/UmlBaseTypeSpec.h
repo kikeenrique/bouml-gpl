@@ -1,5 +1,5 @@
-#ifndef _UMLTYPESPEC_H
-#define _UMLTYPESPEC_H
+#ifndef _UMLBASETYPESPEC_H
+#define _UMLBASETYPESPEC_H
 
 
 #include <qcstring.h>
@@ -11,18 +11,17 @@ class UmlClass;
 // - a class reference
 //
 // - an explicit type
-class UmlTypeSpec {
+class UmlBaseTypeSpec {
   public:
-    // significant in case type == 0
-    QCString explicit_type;
-
-    // if != 0 the class representing the type
-    UmlClass * type;
-
-    UmlTypeSpec() : type(0) {};
+    UmlBaseTypeSpec() : type(0) {};
 
     // returns the type as a string in all cases
     const QCString & toString() const;
+
+    // significant in case type == 0
+    QCString explicit_type;
+
+    UmlClass * type;
 
 };
 

@@ -1,1 +1,0 @@
-../Tools/IdlSettings.cpp

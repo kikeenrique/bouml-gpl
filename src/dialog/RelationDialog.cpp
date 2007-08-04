@@ -871,7 +871,7 @@ void RelationDialog::update_all_tabs(QWidget * w) {
   if (current_type == UmlDependency) {
     QString s = a.edcppdecl->text().stripWhiteSpace();
     
-    if (GenerationSettings::cpp_relation_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()))
+    if (GenerationSettings::cpp_relationattribute_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()))
 	!= "friend") {
       if (! a.visit) {
 	a.cpp_include_in_header->show();
@@ -1056,7 +1056,7 @@ void RelationDialog::cpp_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	}
 	else if (!strncmp(p, "${stereotype}", 13)) {
 	  p += 13;
-	  s += GenerationSettings::cpp_relation_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+	  s += GenerationSettings::cpp_relationattribute_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
 	}
 	else if (!strncmp(p, "${h_value}", 10)) {
 	  p += 10;
@@ -1108,7 +1108,7 @@ void RelationDialog::cpp_default_a() {
   else {
     if (current_type != UmlDependency)
       a.edcppdecl->setText("${type}");
-    else if (GenerationSettings::cpp_relation_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()))
+    else if (GenerationSettings::cpp_relationattribute_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()))
 	     != "friend")
       a.edcppdecl->setText("#include in source");
     else
@@ -1270,7 +1270,7 @@ void RelationDialog::java_update(RoleDialog & role, BrowserClass * cl, BrowserNo
 	}
 	else if (!strncmp(p, "${stereotype}", 13)) {
 	  p += 13;
-	  s += GenerationSettings::java_relation_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+	  s += GenerationSettings::java_relationattribute_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
 	}
 	else if (!strncmp(p, "${value}", 8)) {
 	  p += 8;
@@ -1472,7 +1472,7 @@ void RelationDialog::idl_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	}
 	else if (!strncmp(p, "${stereotype}", 13)) {
 	  p += 13;
-	  s += GenerationSettings::idl_relation_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+	  s += GenerationSettings::idl_relationattribute_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
 	}
 	else if (!strncmp(p, "${multiplicity}", 15)) {
 	  p += 15;

@@ -72,11 +72,10 @@ void UmlAttribute::importIt(FileIn & in, Token & token, UmlItem * where)
 	    if (! token.closed())
 	      in.finish(s);
 	  }
-	  else if ((s == "lowervalue") || (s == "uppervalue")) {
-	    // attributes doesn't have yet multiplicity
-	    if (! token.closed())
-	      in.finish(s);
-	  }
+	  else if (s == "lowervalue")
+	    att->importMultiplicity(in, token, FALSE);
+	  else if (s == "uppervalue")
+	    att->importMultiplicity(in, token, TRUE);
 	  else
 	    att->UmlItem::import(in, token);
 	}
@@ -92,5 +91,28 @@ void UmlAttribute::solve(QCString idref) {
     set_Type(ts);
   else
     UmlCom::trace("attribute : unknown type reference '" + idref + "'<br>");
+}
+
+void UmlAttribute::importMultiplicity(FileIn & in, Token & token, bool upper) {
+  QCString s = token.valueOf("value");
+  
+  if (!s.isEmpty() && 
+      (s != "Unspecified")) {	// VP
+    QCString m = multiplicity();
+    
+    if (m.isEmpty())
+      m = s;
+    else if (m != s) {
+      if (upper)
+	m += ".." + s;
+      else
+	m = s + ".." + m;
+    }
+    
+    set_Multiplicity(m);
+  }
+
+  if (! token.closed())
+    in.finish(token.what());
 }
 

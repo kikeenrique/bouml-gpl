@@ -1,14 +1,14 @@
-format 30
+format 41
 "Aux" // Aux
-  revision 34
-  modified_by 3 "roland"
+  revision 35
+  modified_by 2 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
   //use case diagram settings
   package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
   //collaboration diagram settings
   show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
   //object diagram settings
@@ -28,13 +28,13 @@ format 30
   
   classview 128130 "Aux class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
     //collaboration diagram settings
     show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
      write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
     //state diagram settings
     package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
     show_activities default region_horizontally default drawing_language default
@@ -45,11 +45,13 @@ format 30
     
     associated_deployment_view deploymentview_ref 128130 // Aux class view
     classdiagram 129154 "Diagram9"
-      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
-    class 143362 "FileIn"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 143362 "FileIn"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -297,7 +299,9 @@ ${body}}
       end
     end
 
-    class 143490 "Token"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 143490 "Token"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -448,8 +452,8 @@ ${body}}
       end
 
       class 143618 "Couple"
-	visibility private stereotype "struct"
-	cpp_decl "${comment}${template}struct ${name}${inherit} {
+	visibility package stereotype "struct"
+	cpp_visibility private cpp_decl "${comment}${template}struct ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -524,8 +528,7 @@ ${members}}
     end
 
     class 143746 "PFunc"
-       stereotype "typedef"
-       explicit_base_type ""
+      visibility package stereotype "typedef" explicit_base_type ""
       cpp_decl "${comment}typedef void (*${name})(FileIn &, Token &, UmlItem *);
 "
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
@@ -536,7 +539,9 @@ ${members}}
       
     end
 
-    class 143874 "UnresolvedWithContext"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 143874 "UnresolvedWithContext"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -609,7 +614,7 @@ ${body}}
 
       classrelation 155650 // element (<unidirectional association>)
 	relation 155650 --->
-	  a role_name "element" multiplicity "" protected
+	  a role_name "element" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -649,7 +654,9 @@ ${body}}
       end
     end
 
-    class 144002 "Unresolved"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 144002 "Unresolved"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -722,7 +729,7 @@ ${body}}
 
       classrelation 155906 // element (<unidirectional association>)
 	relation 155906 --->
-	  a role_name "element" multiplicity "" protected
+	  a role_name "element" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -779,7 +786,9 @@ ${body}}
       end
     end
 
-    class 144130 "UnresolvedRelation"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 144130 "UnresolvedRelation"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -902,7 +911,9 @@ ${body}}
       end
     end
 
-    class 144258 "Association"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 144258 "Association"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1012,7 +1023,7 @@ ${body}}
     end
 
     class 144386 "Role"
-       stereotype "struct"
+      visibility package stereotype "struct"
       cpp_decl "${comment}${template}struct ${name}${inherit} {
 ${members}};
 
@@ -1135,7 +1146,9 @@ ${body}}
       end
     end
 
-    class 144514 "AssociationClass"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 144514 "AssociationClass"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1265,7 +1278,9 @@ ${body}}
       end
     end
 
-    class 144898 "Trigger"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 144898 "Trigger"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1353,7 +1368,9 @@ ${body}}
       end
     end
 
-    class 145026 "Signal"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 145026 "Signal"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}

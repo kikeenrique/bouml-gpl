@@ -52,23 +52,23 @@ QCString CppSettings::umlType(QCString s)
   return UmlSettings::uml_type(s, &UmlBuiltin::cpp);
 }
 
-QCString CppSettings::relationStereotype(QCString s)
+QCString CppSettings::relationAttributeStereotype(QCString s)
 {
   read_if_needed_();
   
-  UmlStereotype * b = UmlSettings::_map_relation_stereotypes.find(s);
+  UmlStereotype * b = UmlSettings::_map_relation_attribute_stereotypes.find(s);
   
   return (b) ? b->cpp : s;
 }
 
-bool CppSettings::set_RelationStereotype(QCString s, QCString v)
+bool CppSettings::set_RelationAttributeStereotype(QCString s, QCString v)
 {
-  UmlCom::send_cmd(cppSettingsCmd, setCppRelationStereotypeCmd, s, v);
+  UmlCom::send_cmd(cppSettingsCmd, setCppRelationAttributeStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
-    UmlStereotype * st = UmlSettings::_map_relation_stereotypes.find(s);
+    UmlStereotype * st = UmlSettings::_map_relation_attribute_stereotypes.find(s);
 
     if (st == 0)
-      st = UmlSettings::add_rel_stereotype(s);
+      st = UmlSettings::add_rel_attr_stereotype(s);
     st->cpp = v;
     
     return TRUE;
@@ -77,11 +77,11 @@ bool CppSettings::set_RelationStereotype(QCString s, QCString v)
     return FALSE;
 }
 
-QCString CppSettings::relationUmlStereotype(QCString s)
+QCString CppSettings::relationAttributeUmlStereotype(QCString s)
 {
   read_if_needed_();
   
-  return UmlSettings::uml_rel_stereotype(s, &UmlStereotype::cpp);
+  return UmlSettings::uml_rel_attr_stereotype(s, &UmlStereotype::cpp);
 }
 
 QCString CppSettings::classStereotype(QCString s)
@@ -243,6 +243,80 @@ bool CppSettings::set_IncludeWithPath(bool v)
   UmlCom::send_cmd(cppSettingsCmd, setCppIncludeWithPathCmd, v);
   if (UmlCom::read_bool()) {
     _incl_with_path = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool CppSettings::isRelativePath()
+{
+  read_if_needed_();
+
+  return _is_relative_path;
+}
+
+bool CppSettings::set_IsRelativePath(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppRelativePathCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_relative_path = v;
+    if (v) _is_root_relative_path = FALSE;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool CppSettings::isRootRelativePath()
+{
+  read_if_needed_();
+
+  return _is_root_relative_path;
+}
+
+bool CppSettings::set_IsRootRelativePath(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppRootRelativePathCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_root_relative_path = v;
+    if (v) _is_relative_path = FALSE;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool CppSettings::isForceNamespacePrefixGeneration()
+{
+  read_if_needed_();
+
+  return _is_force_namespace_gen;
+}
+
+bool CppSettings::set_IsForceNamespacePrefixGeneration(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppForceNamespaceGenCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_force_namespace_gen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool CppSettings::isGenerateJavadocStyleComment()
+{
+  read_if_needed_();
+
+  return _is_generate_javadoc_comment;
+}
+
+bool CppSettings::set_IsGenerateJavadocStyleComment(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppJavadocStyleCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_generate_javadoc_comment = v;
     return TRUE;
   }
   else
@@ -501,18 +575,18 @@ bool CppSettings::set_TypedefDecl(QCString v)
     return FALSE;
 }
 
-const QCString & CppSettings::attributeDecl()
+const QCString & CppSettings::attributeDecl(const char * multiplicity)
 {
   read_if_needed_();
-  
-  return _attr_decl;
+
+  return _attr_decl[UmlSettings::multiplicity_column(multiplicity)];
 }
 
-bool CppSettings::set_AttributeDecl(QCString v)
+bool CppSettings::set_AttributeDecl(const char * multiplicity, QCString v)
 {
-  UmlCom::send_cmd(cppSettingsCmd, setCppAttributeDeclCmd, v);
+  UmlCom::send_cmd(cppSettingsCmd, setCppAttributeDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
-    _attr_decl = v;
+    _attr_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
     return TRUE;
   }
   else
@@ -771,6 +845,24 @@ bool CppSettings::set_IsSetParamConst(bool v)
     return FALSE;
 }
 
+bool CppSettings::isSetParamRef()
+{
+  read_if_needed_();
+
+  return _is_set_param_ref;
+}
+
+bool CppSettings::set_IsSetParamRef(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppIsSetParamRefCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_set_param_ref = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 bool CppSettings::_defined;
 
 QCString CppSettings::_root;
@@ -803,7 +895,7 @@ QCString CppSettings::_enum_decl;
 
 QCString CppSettings::_typedef_decl;
 
-QCString CppSettings::_attr_decl;
+QCString CppSettings::_attr_decl[3/*multiplicity*/];
 
 QCString CppSettings::_enum_item_decl;
 
@@ -833,6 +925,8 @@ bool CppSettings::_is_set_inline;
 
 bool CppSettings::_is_set_param_const;
 
+bool CppSettings::_is_set_param_ref;
+
 QCString CppSettings::_h_content;
 
 QCString CppSettings::_src_content;
@@ -842,6 +936,14 @@ QCString CppSettings::_h_ext;
 QCString CppSettings::_src_ext;
 
 bool CppSettings::_incl_with_path;
+
+bool CppSettings::_is_relative_path;
+
+bool CppSettings::_is_root_relative_path;
+
+bool CppSettings::_is_force_namespace_gen;
+
+bool CppSettings::_is_generate_javadoc_comment;
 
 QDict<QCString> CppSettings::_map_includes;
 
@@ -865,7 +967,7 @@ void CppSettings::read_()
   n = UmlCom::read_unsigned();
   
   for (index = 0; index != n; index += 1)
-    UmlSettings::_relation_stereotypes[index].cpp = UmlCom::read_string();
+    UmlSettings::_relation_attribute_stereotypes[index].cpp = UmlCom::read_string();
   
   n = UmlCom::read_unsigned();
   
@@ -904,7 +1006,8 @@ void CppSettings::read_()
   _union_decl = UmlCom::read_string();
   _enum_decl = UmlCom::read_string();
   _typedef_decl = UmlCom::read_string();
-  _attr_decl = UmlCom::read_string();
+  for (index = 0; index != 3; index += 1)
+    _attr_decl[index] = UmlCom::read_string();
   _enum_item_decl = UmlCom::read_string();
   for (index = 0; index != 3; index += 1) {
     _rel_decl[0][index] = UmlCom::read_string();
@@ -923,6 +1026,11 @@ void CppSettings::read_()
   _is_set_inline = UmlCom::read_bool();
   _is_set_param_const = UmlCom::read_bool();
 
+  _is_set_param_ref = UmlCom::read_bool();
+  _is_relative_path = UmlCom::read_bool();
+  _is_force_namespace_gen = UmlCom::read_bool();
+  _is_root_relative_path = UmlCom::read_bool();
+  _is_generate_javadoc_comment = UmlCom::read_bool();
 }
 
 void CppSettings::read_if_needed_()

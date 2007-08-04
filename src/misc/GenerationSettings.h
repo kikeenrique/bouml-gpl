@@ -94,7 +94,7 @@ class GenerationSettings {
     static SharedStr cpp_union_decl;
     static SharedStr cpp_enum_decl;
     static SharedStr cpp_typedef_decl;
-    static SharedStr cpp_attr_decl;
+    static SharedStr cpp_attr_decl[3/*multiplicity*/];
     static SharedStr cpp_enum_item_decl;
     static SharedStr cpp_rel_decl[2/*relation kind*/][3/*multiplicity*/];
     static SharedStr cpp_oper_decl;
@@ -119,7 +119,7 @@ class GenerationSettings {
     static SharedStr java_enum_decl;
     static SharedStr java_enum_pattern_decl;
     static SharedStr java_interface_decl;
-    static SharedStr java_attr_decl;
+    static SharedStr java_attr_decl[3/*multiplicity*/];
     static SharedStr java_enum_item_decl;
     static SharedStr java_enum_pattern_item_decl;
     static SharedStr java_enum_pattern_item_case;
@@ -143,11 +143,11 @@ class GenerationSettings {
     static SharedStr idl_exception_decl;
     static SharedStr idl_union_decl;
     static SharedStr idl_enum_decl;
-    static SharedStr idl_attr_decl;
-    static SharedStr idl_valuetype_attr_decl;
-    static SharedStr idl_union_item_decl;
+    static SharedStr idl_attr_decl[3/*multiplicity*/];
+    static SharedStr idl_valuetype_attr_decl[3/*multiplicity*/];
+    static SharedStr idl_union_item_decl[3/*multiplicity*/];
     static SharedStr idl_enum_item_decl;
-    static SharedStr idl_const_decl;
+    static SharedStr idl_const_decl[3/*multiplicity*/];
     static SharedStr idl_rel_decl[3/*multiplicity*/];
     static SharedStr idl_valuetype_rel_decl[3/*multiplicity*/];
     static SharedStr idl_union_rel_decl[3/*multiplicity*/];
@@ -171,8 +171,8 @@ class GenerationSettings {
     static QString idl_extension;
     static IncludesSpec idl_includes;
     
-    static int nrelstereotypes;
-    static Stereotype * rel_stereotypes;
+    static int nrelattrstereotypes;
+    static Stereotype * relattr_stereotypes;
     
     static int nclassstereotypes;
     static Stereotype * class_stereotypes;
@@ -188,7 +188,7 @@ class GenerationSettings {
     static QString idl_root_dir;
   
     static int find_type(const QString &);
-    static int find_relation_stereotype(const QString &);
+    static int find_relationattribute_stereotype(const QString &);
     static int find_class_stereotype(const QString &);
     static Builtin & get_type(const char * u);
     static Stereotype & get_stereotype(int & n, Stereotype * & st, const char * u);
@@ -218,9 +218,9 @@ class GenerationSettings {
     static const char * cpp_default_union_decl() { return cpp_union_decl; };
     static const char * cpp_default_enum_decl() { return cpp_enum_decl; };
     static const char * cpp_default_typedef_decl() { return cpp_typedef_decl; };
-    static const char * cpp_default_attr_decl() { return cpp_attr_decl; };
+    static const char * cpp_default_attr_decl(const QString & mult);
     static const char * cpp_default_enum_item_decl() { return cpp_enum_item_decl; };
-    static QString cpp_default_rel_decl(UmlCode rel, const QString & mult);
+    static const char * cpp_default_rel_decl(UmlCode rel, const QString & mult);
     static const char * cpp_default_oper_decl() { return cpp_oper_decl; };
     static const char * cpp_default_oper_def() { return cpp_oper_def; };
     static bool cpp_oper_force_throw() { return cpp_force_throw; };
@@ -246,11 +246,11 @@ class GenerationSettings {
     static const char * java_default_interface_decl() { return java_interface_decl; };
     static const char * java_default_enum_decl() { return java_enum_decl; };
     static const char * java_default_enum_pattern_decl() { return java_enum_pattern_decl; };
-    static const char * java_default_attr_decl() { return java_attr_decl; };
+    static const char * java_default_attr_decl(const QString & mult);
     static const char * java_default_enum_item_decl() { return java_enum_item_decl; };
     static const char * java_default_enum_pattern_item_decl() { return java_enum_pattern_item_decl; };
     static const char * java_default_enum_pattern_item_case() { return java_enum_pattern_item_case; };
-    static QString java_default_rel_decl(const QString & mult);
+    static const char * java_default_rel_decl(const QString & mult);
     static const char * java_default_oper_def() { return java_oper_def; };
     static UmlVisibility java_default_get_visibility() { return java_get_visibility; };
     static const char * java_default_get_name() { return java_get_name; };
@@ -272,14 +272,14 @@ class GenerationSettings {
     static const char * idl_default_exception_decl() { return idl_exception_decl; };
     static const char * idl_default_union_decl() { return idl_union_decl; };
     static const char * idl_default_enum_decl() { return idl_enum_decl; };
-    static const char * idl_default_attr_decl() { return idl_attr_decl; };
-    static const char * idl_default_valuetype_attr_decl() { return idl_valuetype_attr_decl; };
-    static const char * idl_default_const_decl() { return idl_const_decl; };
-    static const char * idl_default_union_item_decl() { return idl_union_item_decl; };
+    static const char * idl_default_attr_decl(const QString & mult);
+    static const char * idl_default_valuetype_attr_decl(const QString & mult);
+    static const char * idl_default_const_decl(const QString & mult);
+    static const char * idl_default_union_item_decl(const QString & mult);
     static const char * idl_default_enum_item_decl() { return idl_enum_item_decl; };
-    static QString idl_default_rel_decl(const QString & mult);
-    static QString idl_default_valuetype_rel_decl(const QString & mult);
-    static QString idl_default_union_rel_decl(const QString & mult);
+    static const char * idl_default_rel_decl(const QString & mult);
+    static const char * idl_default_valuetype_rel_decl(const QString & mult);
+    static const char * idl_default_union_rel_decl(const QString & mult);
     static const char * idl_default_oper_decl() { return idl_oper_decl; };
     static const char * idl_default_get_name() { return idl_get_name; };
     static const char * idl_default_set_name() { return idl_set_name; };
@@ -288,9 +288,9 @@ class GenerationSettings {
     static DrawingLanguage uml_default_get_name() { return uml_get_name; }
     static DrawingLanguage uml_default_set_name() { return uml_set_name; }
     
-    static QString cpp_relation_stereotype(const QString &);
-    static QString java_relation_stereotype(const QString &);
-    static QString idl_relation_stereotype(const QString &);
+    static QString cpp_relationattribute_stereotype(const QString &);
+    static QString java_relationattribute_stereotype(const QString &);
+    static QString idl_relationattribute_stereotype(const QString &);
     
     static QString cpp_class_stereotype(const QString &);
     static QString java_class_stereotype(const QString &);

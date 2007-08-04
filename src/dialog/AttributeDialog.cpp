@@ -165,13 +165,27 @@ AttributeDialog::AttributeDialog(AttributeData * a)
       view = a->browser_node->container(UmlClass);
     }
     edtype->setCurrentItem(0);
-    
     edtype->setSizePolicy(sp);
+
+    new QLabel("multiplicity : ", grid);
+    htab = new QHBox(grid);
+    htab->setMargin(0);
+    multiplicity = new QComboBox(!visit, htab);
+    multiplicity->setSizePolicy(sp);
+    multiplicity->insertItem(a->get_multiplicity());
+    if (!visit) {
+      multiplicity->insertItem("1");
+      multiplicity->insertItem("0..1");
+      multiplicity->insertItem("*");
+      multiplicity->insertItem("1..*");
+    }
 
     new QLabel("initial value :", grid);
   }
-  else
+  else {
+    multiplicity = 0;
     new QLabel("value :", grid);
+  }
   
   htab = new QHBox(grid);
   edinit = new LineEdit(a->get_init_value(), htab);
@@ -550,6 +564,8 @@ void AttributeDialog::accept() {
     
       att->isa_const_attribute = constattribute_cb->isChecked();
 
+      att->multiplicity = multiplicity->currentText().stripWhiteSpace();
+
       att->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
     }
     
@@ -658,8 +674,9 @@ void AttributeDialog::post_edit_init(AttributeDialog * d, QString s)
 }
 
 void AttributeDialog::cpp_default() {
-  edcppdecl->setText((cpp_in_enum) ? GenerationSettings::cpp_default_enum_item_decl()
-				   : GenerationSettings::cpp_default_attr_decl());
+  edcppdecl->setText((cpp_in_enum) 
+		     ? GenerationSettings::cpp_default_enum_item_decl()
+		     : GenerationSettings::cpp_default_attr_decl(multiplicity->currentText().stripWhiteSpace()));
   cpp_update();
 }
 
@@ -754,6 +771,17 @@ void AttributeDialog::cpp_update() {
       s += get_cpp_name(the_type(edtype->currentText().stripWhiteSpace(),
 				 list, nodes));
     }
+    else if (!strncmp(p, "${multiplicity}", 15)) {
+      p += 15;
+      
+      QString m = multiplicity->currentText().stripWhiteSpace();
+      
+      s += (*m == '[') ? m : QString("[") + m + "]";
+    }
+    else if (!strncmp(p, "${stereotype}", 13)) {
+      p += 13;
+      s += GenerationSettings::cpp_relationattribute_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+    }
     else if (*p == '@')
       manage_alias(att->browser_node, p, s, kvtable);
     else
@@ -800,6 +828,17 @@ QString AttributeDialog::cpp_decl(const BrowserAttribute * at)
       p += 7;
       s += get_java_name(d->type);
     }
+    else if (!strncmp(p, "${multiplicity}", 15)) {
+      p += 15;
+      
+      QString m = d->get_multiplicity();
+      
+      s += (*m == '[') ? m : QString("[") + m + "]";
+    }
+    else if (!strncmp(p, "${stereotype}", 13)) {
+      p += 13;
+      s += GenerationSettings::cpp_relationattribute_stereotype(d->stereotype);
+    }
     else if (*p == '\n') {
       s += ' ';
       do
@@ -830,7 +869,7 @@ void AttributeDialog::java_default() {
   else {
     if (java_in_enum)
       edstereotype->setCurrentItem(attribute_st_rank);
-    edjavadecl->setText(GenerationSettings::java_default_attr_decl());
+    edjavadecl->setText(GenerationSettings::java_default_attr_decl(multiplicity->currentText().stripWhiteSpace()));
   }
   java_update();
 }
@@ -942,6 +981,31 @@ void AttributeDialog::java_update() {
       s += get_java_name(the_type(edtype->currentText().stripWhiteSpace(),
 				  list, nodes));
     }
+    else if (!strncmp(p, "${multiplicity}", 15)) {
+      p += 15;
+      
+      QString m = multiplicity->currentText().stripWhiteSpace();
+      
+      if (*m != '[')
+	s += "[]";
+      else {
+	for (unsigned index = 0; index != m.length(); index += 1) {
+	  switch (m.at(index).latin1()) {
+	  case '[':
+	    s += '[';
+	    break;
+	  case ']':
+	    s += ']';
+	  default:
+	    break;
+	  }
+	}
+      }
+    }
+    else if (!strncmp(p, "${stereotype}", 13)) {
+      p += 13;
+      s += GenerationSettings::java_relationattribute_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+    }
     else
       s += *p++;
   }
@@ -993,6 +1057,31 @@ QString AttributeDialog::java_decl(const BrowserAttribute * at)
       p += 7;
       s += get_java_name(d->type);
     }
+    else if (!strncmp(p, "${multiplicity}", 15)) {
+      p += 15;
+      
+      QString m = d->get_multiplicity();
+      
+      if (*m != '[')
+	s += "[]";
+      else {
+	for (unsigned index = 0; index != m.length(); index += 1) {
+	  switch (m.at(index).latin1()) {
+	  case '[':
+	    s += '[';
+	    break;
+	  case ']':
+	    s += ']';
+	  default:
+	    break;
+	  }
+	}
+      }
+    }
+    else if (!strncmp(p, "${stereotype}", 13)) {
+      p += 13;
+      s += GenerationSettings::java_relationattribute_stereotype(d->get_multiplicity());
+    }
     else if (!strncmp(p, "${@}", 4))
       p += 4;
     else if (*p == '\n') {
@@ -1023,17 +1112,17 @@ void AttributeDialog::idl_default() {
   if (idl_in_enum)
     edidldecl->setText(GenerationSettings::idl_default_enum_item_decl());
   else if (idl_in_union)
-    edidldecl->setText(GenerationSettings::idl_default_union_item_decl());
+    edidldecl->setText(GenerationSettings::idl_default_union_item_decl(multiplicity->currentText().stripWhiteSpace()));
   else
     edidldecl->setText((constattribute_cb->isChecked() &&
 			!edinit->text().stripWhiteSpace().isEmpty())
-		       ? GenerationSettings::idl_default_const_decl()
-		       : GenerationSettings::idl_default_attr_decl());
+		       ? GenerationSettings::idl_default_const_decl(multiplicity->currentText().stripWhiteSpace())
+		       : GenerationSettings::idl_default_attr_decl(multiplicity->currentText().stripWhiteSpace()));
   idl_update();
 }
 
 void AttributeDialog::idl_default_state() {
-  edidldecl->setText(GenerationSettings::idl_default_valuetype_attr_decl());
+  edidldecl->setText(GenerationSettings::idl_default_valuetype_attr_decl(multiplicity->currentText().stripWhiteSpace()));
   idl_update();
 }
 
@@ -1126,6 +1215,14 @@ void AttributeDialog::idl_update() {
       s += get_idl_name(the_type(edtype->currentText().stripWhiteSpace(),
 				 list, nodes));
     }
+    else if (!strncmp(p, "${stereotype}", 13)) {
+      p += 13;
+      s += GenerationSettings::idl_relationattribute_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+    }
+    else if (!strncmp(p, "${multiplicity}", 15)) {
+      p += 15;
+      s += multiplicity->currentText().stripWhiteSpace();
+    }
     else if (*p == '@')
       manage_alias(att->browser_node, p, s, kvtable);
     else
@@ -1178,6 +1275,14 @@ QString AttributeDialog::idl_decl(const BrowserAttribute * at)
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
       s += get_java_name(d->type);
+    }
+    else if (!strncmp(p, "${stereotype}", 13)) {
+      p += 13;
+      s += GenerationSettings::idl_relationattribute_stereotype(d->get_stereotype());
+    }
+    else if (!strncmp(p, "${multiplicity}", 15)) {
+      p += 15;
+      s += d->get_multiplicity();
     }
     else if (*p == '\n') {
       s += ' ';
