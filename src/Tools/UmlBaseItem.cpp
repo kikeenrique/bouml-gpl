@@ -9,6 +9,7 @@
 #include "UmlAttribute.h"
 #include "UmlOperation.h"
 #include "UmlClass.h"
+#include "UmlClassInstance.h"
 #include "UmlUseCase.h"
 #include "UmlNode.h"
 #include "UmlArtifact.h"
@@ -567,6 +568,8 @@ UmlItem * UmlBaseItem::read_()
       return new UmlJoinActivityNode(id, name);
     case aPartition:
       //return new UmlPartition(id, name);
+    case aClassInstance:
+      return new UmlClassInstance(id, name);
     default:
       UmlCom::bye();
       UmlCom::fatal_error(QCString("unknown item type ") + QCString().setNum(kind));

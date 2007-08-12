@@ -3,7 +3,9 @@
 #include "FileOut.h"
 
 void UmlClass::ref(FileOut & out) {
-  if (parent()->kind() != aClassView)
+  if ((stereotype() == "actor") ||
+      ((parent()->kind() != aClassView) &&
+       (parent()->kind() != aClass)))
     out << "<UML:Actor";
   else if (stereotype() == "interface")
     out << "<UML:Interface";
@@ -30,7 +32,9 @@ bool UmlClass::write_if_needed(FileOut & out) {
   // even if the class doen't have children
   parent()->write(out);
   
-  if (parent()->kind() != aClassView)
+  if ((stereotype() == "actor") ||
+      ((parent()->kind() != aClassView) &&
+       (parent()->kind() != aClass)))
     // force it to be an actor
     write_actor(out);
   else {

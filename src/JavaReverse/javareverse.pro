@@ -45,6 +45,7 @@ SOURCES	      = main.cpp BrowserNode.cpp Statistic.cpp \
 		../JavaCat/UmlActivity.cpp \
 		../JavaCat/UmlInterruptibleActivityRegion.cpp \
 		../JavaCat/UmlTypeSpec.cpp \
+		../JavaCat/UmlClassInstance.cpp \
 		../Tools/UmlBaseClassItem.cpp ../Tools/UmlBaseClassMember.cpp \
 		../Tools/CppSettings.cpp ../Tools/IdlSettings.cpp ../Tools/JavaSettings.cpp \
 		../Tools/UmlBaseAttribute.cpp ../Tools/UmlBaseClass.cpp \
@@ -92,7 +93,8 @@ SOURCES	      = main.cpp BrowserNode.cpp Statistic.cpp \
 		../Tools/FlowBehavior.cpp \
 		../Tools/UmlBaseTypeSpec.cpp \
 		../Tools/UmlBaseParameter.cpp \
-		../Tools/UmlBaseView.cpp
+		../Tools/UmlBaseView.cpp \
+		../Tools/UmlBaseClassInstance.cpp
 
 TARGET	      = java_reverse
 DEFINES	      = WITHJAVA REVERSE

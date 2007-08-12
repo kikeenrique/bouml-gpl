@@ -15,7 +15,7 @@ int main(int argc, char ** argv)
   if (UmlCom::connect(QString(argv[argc - 1]).toUInt())) {
     try {
       // warning : update release number in UmlPackage::xmi !
-      UmlCom::trace("<b>Xmi generator</b> release 1.4.4<br>");
+      UmlCom::trace("<b>Xmi generator</b> release 1.4.5<br>");
       UmlCom::targetItem()->xmi(argc - 2, argv + 1);
     }
     catch (...) {

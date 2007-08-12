@@ -86,6 +86,7 @@ class BrowserComponent : public BrowserNode, public Labeled<BrowserComponent> {
     virtual void open(bool force_edit);
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual void modified();
     virtual BasicData * get_data() const;
     virtual void on_delete();
     virtual const char * check_inherit(const BrowserNode * parent) const;

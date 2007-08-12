@@ -131,7 +131,10 @@ const QPixmap* BrowserStateAction::pixmap(int) const {
 }
 
 BrowserTransition * BrowserStateAction::add_transition(BrowserNode * end) {
-  return new BrowserTransition(this, end);
+  BrowserTransition * result = new BrowserTransition(this, end);
+  
+  modified();
+  return result;
 }
 
 BasicData * BrowserStateAction::add_relation(UmlCode, BrowserNode * end) {
@@ -262,6 +265,8 @@ void BrowserStateAction::open(bool) {
 void BrowserStateAction::modified() {
   repaint();
   ((BrowserNode *) parent())->modified();
+  // to update drawing
+  def->modified();
 }
 
 UmlCode BrowserStateAction::get_type() const {

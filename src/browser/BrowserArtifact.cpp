@@ -529,6 +529,13 @@ void BrowserArtifact::open(bool force_edit) {
     def->edit();
 }
 
+void BrowserArtifact::modified() {
+  repaint();
+  ((BrowserNode *) parent())->modified();
+  // to update regions drawing
+  def->modified();
+}
+
 UmlCode BrowserArtifact::get_type() const {
   return UmlArtifact;
 }

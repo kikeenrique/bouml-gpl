@@ -39,6 +39,7 @@ SOURCES	      = main.cpp util.cpp \
 		UmlActivity.cpp \
 		UmlInterruptibleActivityRegion.cpp \
 		UmlTypeSpec.cpp \
+		UmlClassInstance.cpp \
 		../Tools/UmlBaseClassItem.cpp ../Tools/CppSettings.cpp \
 		../Tools/IdlSettings.cpp ../Tools/JavaSettings.cpp \
 		../Tools/UmlBaseArtifact.cpp \
@@ -87,7 +88,8 @@ SOURCES	      = main.cpp util.cpp \
 		../Tools/FlowBehavior.cpp \
 		../Tools/UmlBaseTypeSpec.cpp \
 		../Tools/UmlBaseParameter.cpp \
-		../Tools/UmlBaseView.cpp
+		../Tools/UmlBaseView.cpp \
+		../Tools/UmlBaseClassInstance.cpp
 		
 TARGET	      = roundtrip_body
 DEFINES	      = WITHCPP WITHJAVA WITHIDL

@@ -427,6 +427,13 @@ void BrowserComponent::open(bool force_edit) {
   }
 }
 
+void BrowserComponent::modified() {
+  repaint();
+  ((BrowserNode *) parent())->modified();
+  // to update regions drawing
+  def->modified();
+}
+
 UmlCode BrowserComponent::get_type() const {
   return UmlComponent;
 }

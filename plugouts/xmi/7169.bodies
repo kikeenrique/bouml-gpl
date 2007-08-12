@@ -1,6 +1,8 @@
 class UmlClass
 !!!128772.cpp!!!	ref(inout out : FileOut) : void
-  if (parent()->kind() != aClassView)
+  if ((stereotype() == "actor") ||
+      ((parent()->kind() != aClassView) &&
+       (parent()->kind() != aClass)))
     out << "<UML:Actor";
   else if (stereotype() == "interface")
     out << "<UML:Interface";
@@ -23,7 +25,9 @@ class UmlClass
   // even if the class doen't have children
   parent()->write(out);
   
-  if (parent()->kind() != aClassView)
+  if ((stereotype() == "actor") ||
+      ((parent()->kind() != aClassView) &&
+       (parent()->kind() != aClass)))
     // force it to be an actor
     write_actor(out);
   else {

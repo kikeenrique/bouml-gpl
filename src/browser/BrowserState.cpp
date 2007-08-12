@@ -121,7 +121,10 @@ const QPixmap* BrowserState::pixmap(int) const {
 }
 
 BrowserTransition * BrowserState::add_transition(BrowserNode * end) {
-  return new BrowserTransition(this, end);
+  BrowserTransition * result = new BrowserTransition(this, end);
+  
+  modified();
+  return result;
 }
 
 BasicData * BrowserState::add_relation(UmlCode, BrowserNode * end) {

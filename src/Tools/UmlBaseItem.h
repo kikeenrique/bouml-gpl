@@ -188,6 +188,7 @@ class UmlBaseItem {
   friend class UmlBaseClassItem;
   friend class UmlBaseAttribute;
   friend class UmlBaseClass;
+  friend class UmlBaseClassInstance;
   friend class UmlBaseClassDiagram;
   friend class UmlBaseClassView;
   friend class UmlBaseCollaborationDiagram;

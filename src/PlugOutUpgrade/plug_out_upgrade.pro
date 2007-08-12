@@ -39,6 +39,7 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp \
 		UmlActivity.cpp \
 		UmlTypeSpec.cpp \
 		UmlInterruptibleActivityRegion.cpp \
+		UmlClassInstance.cpp \
 		../Tools/UmlBaseClassItem.cpp ../Tools/CppSettings.cpp \
 		../Tools/IdlSettings.cpp ../Tools/JavaSettings.cpp \
 		../Tools/UmlBaseArtifact.cpp \
@@ -87,7 +88,8 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp \
 		../Tools/FlowBehavior.cpp \
 		../Tools/UmlBaseTypeSpec.cpp \
 		../Tools/UmlBaseParameter.cpp \
-		../Tools/UmlBaseView.cpp
+		../Tools/UmlBaseView.cpp \
+		../Tools/UmlBaseClassInstance.cpp
 
 TARGET	      = plug_out_upgrade
 DEFINES	      = WITHCPP WITHJAVA WITHIDL

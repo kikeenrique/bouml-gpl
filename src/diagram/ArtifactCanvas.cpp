@@ -59,8 +59,10 @@ ArtifactCanvas::ArtifactCanvas(BrowserNode * bn, UmlCanvas * canvas,
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 
-  if (canvas->must_draw_all_relations())
+  if (canvas->must_draw_all_relations()) {
     draw_all_relations();
+    draw_all_simple_relations();
+  }
 }
 
 ArtifactCanvas::ArtifactCanvas(UmlCanvas * canvas, int id)
@@ -146,8 +148,10 @@ void ArtifactCanvas::modified() {
   compute_size();
   show();
   update_show_lines();
-  if (the_canvas()->must_draw_all_relations())
+  if (the_canvas()->must_draw_all_relations()) {
     draw_all_relations();
+    draw_all_simple_relations();
+  }
   canvas()->update();
   package_modified();
 }

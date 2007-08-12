@@ -826,7 +826,7 @@ QString AttributeDialog::cpp_decl(const BrowserAttribute * at)
       p += 11;
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += get_java_name(d->type);
+      s += get_cpp_name(d->type);
     }
     else if (!strncmp(p, "${multiplicity}", 15)) {
       p += 15;
@@ -1274,7 +1274,7 @@ QString AttributeDialog::idl_decl(const BrowserAttribute * at)
       p += 11;
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += get_java_name(d->type);
+      s += get_idl_name(d->type);
     }
     else if (!strncmp(p, "${stereotype}", 13)) {
       p += 13;

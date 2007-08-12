@@ -38,6 +38,7 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp \
 		UmlActivity.cpp \
 		UmlInterruptibleActivityRegion.cpp \
 		UmlTypeSpec.cpp \
+		UmlClassInstance.cpp \
 		../Tools/UmlBaseClassItem.cpp ../Tools/UmlBaseClassMember.cpp \
 		../Tools/UmlBaseExtraClassMember.cpp ../Tools/CppSettings.cpp \
 		../Tools/IdlSettings.cpp ../Tools/JavaSettings.cpp \
@@ -86,7 +87,8 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp \
 		../Tools/FlowBehavior.cpp \
 		../Tools/UmlBaseTypeSpec.cpp \
 		../Tools/UmlBaseParameter.cpp \
-		../Tools/UmlBaseView.cpp
+		../Tools/UmlBaseView.cpp \
+		../Tools/UmlBaseClassInstance.cpp
 TARGET	      = java_generator
 DEFINES	      = WITHJAVA
 INCLUDEPATH   = ../Tools ../JavaGenerator

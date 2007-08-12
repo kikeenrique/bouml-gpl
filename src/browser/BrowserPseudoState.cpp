@@ -188,7 +188,10 @@ bool BrowserPseudoState::allow_empty(UmlCode c) {
 }
 
 BrowserTransition * BrowserPseudoState::add_transition(BrowserNode * end) {
-  return new BrowserTransition(this, end);
+  BrowserTransition * result = new BrowserTransition(this, end);
+  
+  modified();
+  return result;
 }
 
 BasicData * BrowserPseudoState::add_relation(UmlCode, BrowserNode * end) {
@@ -454,6 +457,8 @@ void BrowserPseudoState::open(bool) {
 void BrowserPseudoState::modified() {
   repaint();
   ((BrowserNode *) parent())->modified();
+  // to update regions drawing
+  def->modified();
 }
 
 UmlCode BrowserPseudoState::get_type() const {

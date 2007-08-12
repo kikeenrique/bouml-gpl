@@ -482,6 +482,13 @@ void BrowserUseCase::open(bool force_edit) {
     def->edit();
 }
 
+void BrowserUseCase::modified() {
+  repaint();
+  ((BrowserNode *) parent())->modified();
+  // to update drawing
+  def->modified();
+}
+
 UmlCode BrowserUseCase::get_type() const {
   return UmlUseCase;
 }

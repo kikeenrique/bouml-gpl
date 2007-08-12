@@ -193,8 +193,12 @@ BrowserActivityAction::add_parameter_set(BrowserParameterSet * paramset,
 
 // flow or dependency
 BasicData * BrowserActivityAction::add_relation(UmlCode l, BrowserNode * end) {
-  if (l == UmlFlow)
-    return (new BrowserFlow(this, end))->get_data();
+  if (l == UmlFlow) {
+    BasicData * result = (new BrowserFlow(this, end))->get_data();
+   
+    modified();	// to update diagrams
+    return result;
+  }
   else
     return BrowserNode::add_relation(l, end);
 }

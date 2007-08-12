@@ -42,7 +42,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QCString(argv[port_index]).toUInt())) {
     try {
-      UmlCom::trace("<b>IDL generator</b> release 2.7<br>");
+      UmlCom::trace("<b>IDL generator</b> release 2.7.1<br>");
       
       UmlCom::targetItem()->generate();
       
