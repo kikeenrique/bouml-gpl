@@ -47,7 +47,7 @@ bool UmlState::inside(UmlState * other) {
   }
 }
 
-void UmlState::init(UmlClass * mother, QCString path, UmlState *) {
+void UmlState::init(UmlClass * mother, QCString path, QCString pretty_path, UmlState *) {
   // create if needed the class implementing the state
 
   QCString qn = quotedName() + "_State";
@@ -68,7 +68,9 @@ void UmlState::init(UmlClass * mother, QCString path, UmlState *) {
   
   _class->defaultDef();
   _class->setComment("implement the state " + name());
-  _class->set_Visibility(ProtectedVisibility);
+  _class->set_Visibility((mother->parent()->kind() == aClass)
+			 ? PublicVisibility // for friend
+			 : ProtectedVisibility);
 
   // create if needed the attribute memorizing the class instance
   // implementing the state
@@ -89,11 +91,12 @@ void UmlState::init(UmlClass * mother, QCString path, UmlState *) {
   
   t.type = _class;
   var->set_Type(t);
-  var->set_CppDecl(CppSettings::attributeDecl());
+  var->set_CppDecl(CppSettings::attributeDecl(0));
   var->setComment("memorize the instance of the state " + name() + ", internal");
   var->set_Visibility((path.isEmpty()) ? ProtectedVisibility : PublicVisibility);
   
   _path = path + "." + qn;
+  _pretty_path = pretty_path + "." + name();
 	
   // goes down
 
@@ -101,7 +104,7 @@ void UmlState::init(UmlClass * mother, QCString path, UmlState *) {
   unsigned index;
   
   for (index = 0; index != ch.count(); index += 1)
-    ch[index]->init(_class, _path, this);
+    ch[index]->init(_class, _path, _pretty_path, this);
 
 }
 
@@ -161,7 +164,7 @@ void UmlState::generate() {
     upper->setParams("${t0} &");
     
     // add if needed classes associated to each state, and set flags
-    init(machine, "", this);
+    init(machine, "", "", this);
 	
     // add constructor if needed
     UmlOperation * machine_constr = (UmlOperation *)
@@ -237,7 +240,10 @@ void UmlState::generate() {
     final->defaultDef();
     final->setComment("execution done, internal");
     final->setType("void", "${type}");
-    final->set_CppBody("  _current_state = 0;\n");
+    final->set_CppBody("  _current_state = 0;\n"
+		       "#ifdef VERBOSE_STATE_MACHINE\n"
+		       "  puts(\"DEBUG : final state reached\n"
+		       "#endif\n");
     final->set_isCppInline(TRUE);
     final->set_Visibility(ProtectedVisibility);
     
@@ -256,7 +262,7 @@ void UmlState::generate() {
     } 
     current_state->set_RoleName("_current_state");
     current_state->set_CppDecl(CppSettings::relationDecl(FALSE, ""));
-    current_state->setComment("contains the surrent state, internal");
+    current_state->setComment("contains the current state, internal");
     current_state->set_Visibility(ProtectedVisibility);
     
     // all done
@@ -264,7 +270,7 @@ void UmlState::generate() {
   }
 }
 
-void UmlState::generate(UmlClass * machine, UmlClass * anystate, UmlState * state) {
+void UmlState::generate(UmlClass * machine, UmlClass * anystate, UmlState *) {
   // inherits anystate
   const QVector<UmlItem> clch = _class->children();
   unsigned index;
@@ -295,11 +301,20 @@ void UmlState::generate(UmlClass * machine, UmlClass * anystate, UmlState * stat
     
   // additional operations
     
+  QCString s;
+    
+  s = cppEntryBehavior();
+  if (! s.isEmpty())
+    s.insert(0,
+	     "#ifdef VERBOSE_STATE_MACHINE\n"
+	     "\tputs(\"DEBUG : execute entry behavior of " + _pretty_path + "\");\n"
+	     "#endif\n");
+    
   if (!_has_initial && 
-      ((!cppEntryBehavior().isEmpty()) || _has_completion)) {
+      ((!s.isEmpty()) || _has_completion)) {
     // add a 'create' to do the entry behavior / completion
     UmlOperation * create = _class->trigger("create", machine, anystate);
-    QCString body = cppEntryBehavior();
+    QCString body = s;
     
     if (_has_completion)
       body += "\t_completion(stm);\n";
@@ -307,7 +322,7 @@ void UmlState::generate(UmlClass * machine, UmlClass * anystate, UmlState * stat
     create->set_CppBody(body);
   }
 
-  if (!cppEntryBehavior().isEmpty()) {
+  if (!s.isEmpty()) {
     // add operation _doentry
     UmlOperation * doen;
     
@@ -324,10 +339,12 @@ void UmlState::generate(UmlClass * machine, UmlClass * anystate, UmlState * stat
     doen->setParams("${t0} & ${p0}");
     doen->setComment("perform the 'entry behavior'");
     doen->setType("void", "${type}");
-    doen->set_CppBody(cppEntryBehavior());
+    doen->set_CppBody(s);
   }
 
-  if (!cppExitBehavior().isEmpty()) {
+  s = cppExitBehavior();
+  
+  if (!s.isEmpty()) {
     // add operation _doexit
     UmlOperation * doex;
     
@@ -344,13 +361,18 @@ void UmlState::generate(UmlClass * machine, UmlClass * anystate, UmlState * stat
     doex->setParams("${t0} & ${p0}");
     doex->setComment("perform the 'exit behavior'");
     doex->setType("void", "${type}");
-    doex->set_CppBody(cppExitBehavior());
+    s.insert(0, 
+	     "#ifdef VERBOSE_STATE_MACHINE\n"
+	     "\tputs(\"DEBUG : execute exit behavior of " + _pretty_path + "\");\n"
+	     "#endif\n");
+    doex->set_CppBody(s);
   }
 
-  if (!cppDoActivity().isEmpty()) {
+  s = cppDoActivity();
+  
+  if (!s.isEmpty()) {
     // add operation _do
     UmlOperation * da;
-    QCString body = cppDoActivity();
     
     if (((da = (UmlOperation *) _class->getChild(anOperation, "_do")) == 0) &&
 	((da = UmlBaseOperation::create(_class, "_do")) == 0)) {
@@ -365,7 +387,11 @@ void UmlState::generate(UmlClass * machine, UmlClass * anystate, UmlState * stat
     da->setParams("${t0} & ${p0}");
     da->setComment("perform the 'do activity'");
     da->setType("void", "${type}");
-    da->set_CppBody(body);
+    s.insert(0, 
+	     "#ifdef VERBOSE_STATE_MACHINE\n"
+	     "\tputs(\"DEBUG : execute do behavior of " + _pretty_path + "\");\n"
+	     "#endif\n");
+    da->set_CppBody(s);
   }
 
   // adds operation _upper()
@@ -393,5 +419,24 @@ void UmlState::generate(UmlClass * machine, UmlClass * anystate, UmlState * stat
     upper->setParams("${t0} & ${p0}");
     upper->set_CppBody("  return &stm" + _path.left(dot) + ";\n");
   }
+
+  // adds friend declaration
+  const QVector<UmlItem> stmch = machine->children();
+  
+  for (index = 0; index != stmch.count(); index += 1) {
+    if ((stmch[index]->kind() == aRelation) &&
+	(((UmlRelation *) stmch[index])->relationKind() == aDependency) &&
+	(((UmlRelation *) stmch[index])->roleType() == _class))
+      // already exist
+      return;
+  }
+
+  UmlRelation * fr = UmlRelation::create(aDependency, machine, _class);
+  
+  if (fr == 0) {
+    UmlCom::trace("Error : cannot add friend dependency to '" + _class->name() + "'<br>");
+    throw 0;
+  }
+  fr->set_Stereotype("friend");
 }
 

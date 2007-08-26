@@ -32,7 +32,12 @@ UmlOperation * UmlClass::trigger(QCString s, UmlClass * machine, UmlClass * anys
       tr->setType("bool", "${type}");
       if (tr->cppBody().isEmpty() && (s != "create"))
 	tr->set_CppBody("\
-  if (_current_state != 0) _current_state->" + s + "(*this);\n\
+  if (_current_state != 0) {\n\
+#ifdef VERBOSE_STATE_MACHINE\n\
+    puts(\"DEBUG : fire trigger " + s + "\");\n\
+#endif\n\
+    _current_state->" + s + "(*this);\n\
+  }\n\
   return (_current_state != 0);\n");
       tr->managed();
       tr->setComment("the operation you call to signal the event " + s);
@@ -61,7 +66,11 @@ UmlOperation * UmlClass::trigger(QCString s, UmlClass * machine, UmlClass * anys
 	// the trigger is not managed, gives it at the upper level
 	tr->set_CppBody("  " + anystate->name() + " * st = _upper(stm);\n\n"
 			"  if (st != 0)\n"
-			"    st->" + s + "(stm);\n");
+			"    st->" + s + "(stm);\n"
+			"#ifdef VERBOSE_STATE_MACHINE\n"
+			"  else\n"
+			"    puts(\"DEBUG : transition " + s + " not expected\");\n"
+			"#endif\n");
       }
       tr->managed();
       if (s != "create")

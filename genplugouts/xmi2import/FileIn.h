@@ -50,6 +50,8 @@ class FileIn {
 
     FILE * _fp;
 
+    bool _utf8;
+
     int _linenum;
 
     int _length;
@@ -65,6 +67,10 @@ class FileIn {
     const char * read_string();
 
     char read_special_char();
+
+
+  public:
+    void setEncoding(QCString s);
 
 };
 

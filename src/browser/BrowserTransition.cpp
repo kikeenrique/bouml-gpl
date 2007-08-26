@@ -350,7 +350,13 @@ void BrowserTransition::save(QTextStream & st, bool ref,
     save_string(name, st);
     indent(+1);
     def->save(st, warning);
-    BrowserNode::save(st);
+    BrowserNode::save(st); 
+    
+    if (! def->internal()) {
+      nl_indent(st);
+      st << "external ";
+    }
+
     indent(-1);
     nl_indent(st);
     st << "end";
@@ -411,11 +417,17 @@ BrowserTransition *
       (user_id() != 0) && result->is_api_base();
     
     result->BrowserNode::read(st, k);
+    d->set_browser_node(result);	// call update_stereotype();
+        
+    if (strcmp(k, "external") == 0) {
+      d->set_internal(FALSE);
+      k = read_keyword(st);
+    }
+    else
+      d->set_internal(parent == d->get_end_node());
     
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");
-    
-    d->set_browser_node(result);	// call update_stereotype();
     
     return result;
   }

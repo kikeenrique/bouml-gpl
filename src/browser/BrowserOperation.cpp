@@ -390,8 +390,6 @@ void BrowserOperation::menu() {
       m.setWhatsThis(m.insertItem("Edit", 0),
 		     "to edit the <em>operation</em>, \
 a double click with the left mouse button does the same thing");
-      m.setWhatsThis(m.insertItem("Duplicate", 1),
-		     "to copy the <em>operation</em> in a new one");
       if (strstr(def->get_cppdef(), "${body}") != 0)
 	m.setWhatsThis(m.insertItem("Edit C++ body", 4),
 		       "to edit the <em>operation</em> and its C++ body");

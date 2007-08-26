@@ -25,6 +25,8 @@ enum OnInstanceCmd {
   applyCmd,
   referencedByCmd,
   sideCmd,
+  attributesCmd,
+  relationsCmd,
   firstSetCmd = 50,// just a mark
 
   createCmd,
@@ -137,7 +139,10 @@ enum OnInstanceCmd {
   setJavaFrozenCmd,
   setIdlFrozenCmd,
   setConstraintCmd,
-  deleteCmd
+  deleteCmd,
+  setAttributeCmd,
+  addRelationCmd,
+  removeRelationCmd
 
 };
 #endif

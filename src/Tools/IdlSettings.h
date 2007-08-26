@@ -169,31 +169,31 @@ class IdlSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_EnumDecl(QCString v);
 
-    // returns the default definition of an attribute
-    static const QCString & attributeDecl();
+    // returns the default definition of an attribute depending on the multiplicity
+    static const QCString & attributeDecl(const char * multiplicity);
 
     // set the default definition of an attribute
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_AttributeDecl(QCString v);
+    static bool set_AttributeDecl(const char * multiplicity, QCString v);
 
     // returns the default definition of an attribute
-    // placed in a valuetype
-    static const QCString & valuetypeAttributeDecl();
+    // placed in a valuetype depending on the multiplicity
+    static const QCString & valuetypeAttributeDecl(const char * multiplicity);
 
     // set the default definition of an attribute
     // placed in a valuetype
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_ValuetypeAttributeDecl(QCString v);
+    static bool set_ValuetypeAttributeDecl(const char * multiplicity, QCString v);
 
-    // returns the default definition of an union item
-    static const QCString & unionItemDecl();
+    // returns the default definition of an union item depending on the multiplicity
+    static const QCString & unionItemDecl(const char * multiplicity);
 
     // set the default definition of an union item
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_UnionItemDecl(QCString v);
+    static bool set_UnionItemDecl(const char * multiplicity, QCString v);
 
     // returns the default definition of an enumeration item
     static const QCString & enumItemDecl();
@@ -203,13 +203,13 @@ class IdlSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_EnumItemDecl(QCString v);
 
-    // returns the default definition of a constant attribute
-    static const QCString & constDecl();
+    // returns the default definition of a constant attribute depending on the multiplicity
+    static const QCString & constDecl(const char * multiplicity);
 
     // set the default definition of a constant attribute
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    static bool set_ConstDecl(QCString v);
+    static bool set_ConstDecl(const char * multiplicity, QCString v);
 
     // returns the default definition of a relation depending on the
     // multiplicity given in argument.
@@ -304,15 +304,15 @@ class IdlSettings : public UmlSettings {
 
     static QCString _external_class_decl;
 
-    static QCString _attr_decl;
+    static QCString _attr_decl[3/*multiplicity*/];
 
-    static QCString _valuetype_attr_decl;
+    static QCString _valuetype_attr_decl[3/*multiplicity*/];
 
-    static QCString _union_item_decl;
+    static QCString _union_item_decl[3/*multiplicity*/];
 
     static QCString _enum_item_decl;
 
-    static QCString _const_decl;
+    static QCString _const_decl[3/*multiplicity*/];
 
     static QCString _rel_decl[3/*multiplicity*/];
 
@@ -336,12 +336,8 @@ class IdlSettings : public UmlSettings {
 
 
   protected:
-    //internal, do NOT use it
-    
     static void read_();
 
-    //internal, do NOT use it
-    
     static void read_if_needed_();
 
 };

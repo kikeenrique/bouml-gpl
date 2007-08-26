@@ -39,9 +39,17 @@ UmlArtifact * UmlArtifact::current;
 
 void UmlArtifact::generate() {
   if (! managed) {
+    managed = TRUE;
+    
+    if (stereotype() == "text") {
+      generate_text();
+      return;
+    }
+    else if (stereotype() != "source")
+      return;
+    
     package_of_generated_artifact = package();
     current = this;
-    managed = TRUE;
     
     const QCString filedef = javaSource();
     
@@ -155,6 +163,7 @@ void UmlArtifact::generate() {
 		      + path + "</i>, edit the <i> generation settings</i> (tab directory) or the <i>"
 		      + package_of_generated_artifact->name()
 		      + "</i> Java directory specification</b></font><br>");
+	incr_error();
       }
       else {
 	fputs((const char *) file, fp);
@@ -170,6 +179,53 @@ void UmlArtifact::generate() {
       imports = 0;
     }
   }
+}
+
+void UmlArtifact::generate_text() {
+  const QCString srcdef = javaSource();
+  
+  if (srcdef.isEmpty()) {
+    if (verbose())
+      UmlCom::trace(QCString("<hr><font face=helvetica><i>")
+		    + name() + "</i> has an empty Java definition</font><br>");
+    return;
+  }
+    
+  UmlPackage * pack = package();
+  const QCString & name = UmlArtifact::name();    
+  QCString src_path = pack->text_path(name);
+  
+  QCString s = " in <i> " + src_path + "</i>";
+      
+  UmlCom::message(name);
+  if (verbose())
+    UmlCom::trace(QCString("<hr><font face=helvetica>Generate code for <i> ")
+		  + name + "</i>" + s + "</font><br>");
+  else
+    set_trace_header(QCString("<font face=helvetica>Generate code for <i> ")
+		     + name + "</i>" + s + "</font><br>");
+      
+  if (must_be_saved(src_path, (const char *) srcdef)) {
+    write_trace_header();
+    
+    FILE * fp_src;
+    
+    if ((fp_src = fopen((const char *) src_path, "wb")) == 0) {
+      write_trace_header();
+      UmlCom::trace(QCString("<font color=\"red\"><b><i> ")
+		    + name + " : </i> cannot open <i> " 
+		    + src_path + "</i>, edit the <i> generation settings</i> (tab directory) or the <i>"
+		    + pack->name() + "</i> Java directory specification</b></font><br>");
+      incr_error();
+    }
+    else {
+      fputs((const char *) srcdef, fp_src);
+      fclose(fp_src);
+    }
+  }
+  else if (get_trace_header().isEmpty())
+    UmlCom::trace(QCString("<font face=helvetica><i> ")
+		  + src_path + "</i> not modified</font><br>");
 }
 
 UmlPackage * UmlArtifact::generation_package()

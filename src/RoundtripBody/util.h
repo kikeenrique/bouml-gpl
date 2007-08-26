@@ -34,4 +34,7 @@ extern void set_trace_header(QCString s);
 extern QCString get_trace_header();
 extern void write_trace_header();
 
+extern void incr_error();
+extern int n_errors();
+
 #endif

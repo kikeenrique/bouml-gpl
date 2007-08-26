@@ -8,7 +8,7 @@ enum CppSettingsCmd {
   getCppUseDefaultsCmd,
   setCppUseDefaultsCmd,
   setCppTypeCmd,
-  setCppRelationStereotypeCmd,
+  setCppRelationAttributeStereotypeCmd,
   setCppClassStereotypeCmd,
   setCppIncludeCmd,
   setCppHeaderContentCmd,

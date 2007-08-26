@@ -118,3 +118,27 @@ void write_trace_header()
   }
 }
 
+//
+
+static int NErrors;
+static int NWarnings;
+
+void incr_error()
+{
+  NErrors += 1;
+}
+
+void incr_warning()
+{
+  NWarnings += 1;
+}
+
+int n_errors()
+{
+  return NErrors;
+}
+
+int n_warnings()
+{
+  return NWarnings;
+}

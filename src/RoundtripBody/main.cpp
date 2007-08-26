@@ -48,13 +48,18 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QCString(argv[port_index]).toUInt())) {
     try {
-      UmlCom::trace("<b>Roundtrip body</b> release 1.2<br>");
+      UmlCom::trace("<b>Roundtrip body</b> release 1.2.1<br>");
       UmlCom::traceAutoRaise(FALSE);
       if (cpp) 
 	UmlCom::targetItem()->roundtrip_cpp();  
       else
 	UmlCom::targetItem()->roundtrip_java();      
-      UmlCom::trace("<hr><font face=helvetica>Roundtrip done</font><br>");
+      
+      QCString s;
+      
+      s.sprintf("<hr><font face=helvetica>Roundtrip done : %d errors</font><br>",
+		n_errors());
+      UmlCom::trace(s);
     }
     catch (...) {
     }

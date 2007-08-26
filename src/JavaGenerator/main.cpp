@@ -50,12 +50,16 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QCString(argv[port_index]).toUInt())) {
     try {
-      UmlCom::trace("<b>Java generator</b> release 2.11.1<br>");
+      UmlCom::trace("<b>Java generator</b> release 2.11.2<br>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlCom::targetItem()->generate();
       
-      UmlCom::trace("<hr><font face=helvetica>Generation done</font><br>");
+      QCString s;
+      
+      s.sprintf("<hr><font face=helvetica>Generation done : %d warnings, %d errors</font><br>",
+		n_warnings(), n_errors());
+      UmlCom::trace(s);
     }
     catch (...) {
     }

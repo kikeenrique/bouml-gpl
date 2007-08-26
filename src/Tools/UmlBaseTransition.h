@@ -23,7 +23,7 @@ class UmlBaseTransition : public UmlItem {
 
     // returns the 'end' object (the 'start' object is the parent of the transition) no set !
     virtual UmlItem * target();
-
+    
     // return the trigger in OCL
     const QCString & trigger();
 

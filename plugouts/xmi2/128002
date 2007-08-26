@@ -1,6 +1,6 @@
 format 41
 "Aux" // Aux
-  revision 21
+  revision 26
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -60,12 +60,13 @@ ${members}}
       comment "QTextOStream + usefull operations"
       operation 145794 "FileOut"
 	public explicit_return_type ""
-	nparams 2
+	nparams 3
 	  param inout name "fp" explicit_type "QFile"
 	  param in name "lf" explicit_type "bool"
-	cpp_decl "    ${comment}${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${volatile};
+	  param in name "utf8" explicit_type "bool"
+	cpp_decl "    ${comment}${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${volatile};
 "
-	cpp_def "${inline}${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${volatile} : QTextStream(fp), _lf(lf), _indent(0){
+	cpp_def "${inline}${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${volatile} : QTextStream(fp), _lf(lf), _indent(0){
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {

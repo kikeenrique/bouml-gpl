@@ -52,6 +52,7 @@ class TransitionData : public SimpleData {
   friend class TransitionDialog;
   
   protected:
+    bool is_internal;
     BrowserNode * end;
     TransDef uml;
     TransDef cpp;
@@ -76,6 +77,8 @@ class TransitionData : public SimpleData {
     BrowserTransition * get_start() const { 
       return (BrowserTransition *) browser_node;
     }
+    bool internal() const { return is_internal; }
+    void set_internal(bool y) { is_internal = y; }
     QString str(bool horiz, DrawingLanguage) const;
     
     virtual bool tool_cmd(ToolCom * com, const char * args,

@@ -42,6 +42,7 @@ class UmlPackage : public UmlBasePackage {
   
   public:
     QCString file_path(const QCString &);
+    QCString text_path(const QCString &);
     virtual void generate();
     virtual UmlPackage * package();
     void import(QTextOStream & f, const QCString & indent);

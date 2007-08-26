@@ -17,7 +17,7 @@ class UmlRegion : public UmlBaseRegion, public UmlStateItem {
 
     //  initialization before generation
     
-    virtual void init(UmlClass * mother, QCString path, UmlState * state);
+    virtual void init(UmlClass * mother, QCString path, QCString pretty_path, UmlState * state);
 
 };
 

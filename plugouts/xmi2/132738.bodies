@@ -1,4 +1,7 @@
 class FileOut
+!!!145794.cpp!!!	FileOut(inout fp : QFile, in lf : bool, in utf8 : bool)
+  if (utf8)
+    setEncoding(QTextStream::UnicodeUTF8);
 !!!144642.cpp!!!	indent() : void
   QTextStream & ts = *this;
   
@@ -106,7 +109,7 @@ class FileOut
    case '&': (*this) << "&amp;"; break;
    case '\n': if (_lf) (*this) << *s; else (*this) << "&#10;"; break;
    case '\r': if (_lf) (*this) << *s; else (*this) << "&#13;"; break;
-   default: (*this) << *s;
+   default: (*this) << *s; break;
    }
    s += 1;
  }

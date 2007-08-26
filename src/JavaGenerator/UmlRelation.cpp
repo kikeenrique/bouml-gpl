@@ -51,6 +51,7 @@ void UmlRelation::generate_extends(const char *& sep, QTextOStream & f,
 	write_trace_header();
 	UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>cannot extends a <i>")
 		      + other_stereotype + "</i></b></font><br>");
+	incr_warning();
 	return;
       }
     }
@@ -59,6 +60,7 @@ void UmlRelation::generate_extends(const char *& sep, QTextOStream & f,
 	write_trace_header();
 	UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>an <i>")
 		      + cl_stereotype + "</i> cannot extends</b></font><br>");
+	incr_warning();
 	return;
       }
       else if ((other_stereotype == "union") ||
@@ -67,11 +69,13 @@ void UmlRelation::generate_extends(const char *& sep, QTextOStream & f,
 	write_trace_header();
 	UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>cannot extends an <i>")
 		      + other_stereotype + "</i></b></font><br>");
+	incr_warning();
 	return;
       }
       else if (*sep == ',') {
 	write_trace_header();
 	UmlCom::trace("<tt>        </tt><font color=\"red\"><b>extend several classes</b></font><br>");
+	incr_warning();
 	return;
       }
     }
@@ -130,6 +134,7 @@ void UmlRelation::generate_implements(const char *& sep, QTextOStream & f,
 	write_trace_header();
 	UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>an <i>")
 		      + cl_stereotype + "</i> cannot inherits</b></font><br>");
+	incr_warning();
       }
       else {
 	f << sep;
@@ -178,6 +183,7 @@ void UmlRelation::generate(QTextOStream & f, const QCString & cl_stereotype,
       if (cl_stereotype == "enum_pattern") {
 	write_trace_header();
 	UmlCom::trace("<tt>        </tt><font color=\"red\"><b>an <i>enum_pattern</i> cannot have relation</b></font><br>");
+	incr_warning();
 	return;
       }
       
@@ -309,6 +315,7 @@ void UmlRelation::generate_enum_pattern_item(QTextOStream &, int &,
 					     const QCString &, QCString) {
   write_trace_header();
   UmlCom::trace("<tt>        </tt><font color=\"red\"><b>an <i>enum_pattern</i> cannot have relation</b></font><br>");
+  incr_warning();
 }
 
 void UmlRelation::generate_enum_pattern_case(QTextOStream &, QCString) {

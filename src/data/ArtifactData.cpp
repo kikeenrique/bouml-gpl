@@ -325,8 +325,10 @@ void ArtifactData::convert_add_include_artifact() {
 void ArtifactData::save(QTextStream & st, QString & warning) const {
   BasicData::save(st, warning);
   
-  if (stereotype == "source") {
-    if (!cpp_h.isEmpty()) {
+  bool a_text = (stereotype == "text");
+  
+  if (a_text || (stereotype == "source")) {
+    if (!a_text && !cpp_h.isEmpty()) {
       nl_indent(st);
       st << "cpp_h ";
       save_string(cpp_h, st);
@@ -374,7 +376,10 @@ void ArtifactData::read(char * & st, char * & k) {
   java_src = QString::null;
   idl_src = QString::null;
   
-  if (stereotype == "source") {
+  if ((stereotype == "text") && (read_file_format() < 42))
+    stereotype = "_text";
+  
+  if ((stereotype == "source") || (stereotype == "text")) {
     if (!strcmp(k, "cpp_h")) {
       cpp_h = read_string(st);
       k = read_keyword(st);

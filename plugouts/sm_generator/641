@@ -1,14 +1,14 @@
-format 37
+format 41
 "API USER" // API USER
-  revision 2
+  revision 8
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
   //use case diagram settings
   package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
   //collaboration diagram settings
   show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
   //object diagram settings
@@ -29,13 +29,13 @@ format 37
   comment " 'your' API classes and components, modify them !"
   classview 641 "Diagrams"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
     //collaboration diagram settings
     show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
      write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
     //state diagram settings
     package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
     show_activities default region_horizontally default drawing_language default
@@ -47,37 +47,37 @@ format 37
     comment "Some diagrams describing the API classes organisation
 "
     classdiagram 129 "Package and Views classes inheritance diagram"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 257 "Class and class members classes inheritance diagram"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 128002 "State (1)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 128130 "State (2)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 128258 "State (3)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 385 "Diagrams classes inheritance diagram"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     sequencediagram 513 "Typical Execution"
-      show_full_operations_definition no write_horizontally default drawing_language default draw_all_relations default shadow default
+      show_full_operations_definition no write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
       size A4
     end
 
@@ -108,13 +108,13 @@ ${members}}
 
   classview 769 "API USER class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
     //collaboration diagram settings
     show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
      write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
     //state diagram settings
     package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
     show_activities default region_horizontally default drawing_language default
@@ -125,6 +125,34 @@ ${members}}
     
     associated_deployment_view deploymentview_ref 641 // API USER Deployment view
     comment "'your' API classes, modify them !"
+    class 145282 "UmlTypeSpec"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}};
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment " this class memorize a type specification, which may be
+
+ - a class reference
+
+ - an explicit type"
+      classrelation 157186 // <generalisation>
+	relation 157186 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 157186 // <generalisation>
+	  b parent class_ref 145152 // UmlBaseTypeSpec
+      end
+    end
+
     class 6785 "UmlActualParameter"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -149,7 +177,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 14593 // <generalisation>
-	  b multiplicity "" parent class_ref 896 // UmlBaseActualParameter
+	  b parent class_ref 896 // UmlBaseActualParameter
       end
 
       operation 76801 "UmlActualParameter"
@@ -188,7 +216,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 14721 // <generalisation>
-	  b multiplicity "" parent class_ref 1024 // UmlBaseFormalParameter
+	  b parent class_ref 1024 // UmlBaseFormalParameter
       end
 
       operation 76929 "UmlFormalParameter"
@@ -226,7 +254,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 14849 // <generalisation>
-	  b multiplicity "" parent class_ref 1280 // UmlBaseAttribute
+	  b parent class_ref 1280 // UmlBaseAttribute
       end
 
       operation 77057 "UmlAttribute"
@@ -265,7 +293,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 14977 // <generalisation>
-	  b multiplicity "" parent class_ref 1408 // UmlBaseClass
+	  b parent class_ref 1408 // UmlBaseClass
       end
 
       operation 77185 "UmlClass"
@@ -340,7 +368,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 15105 // <generalisation>
-	  b multiplicity "" parent class_ref 1664 // UmlBaseClassDiagram
+	  b parent class_ref 1664 // UmlBaseClassDiagram
       end
 
       operation 77313 "UmlClassDiagram"
@@ -379,7 +407,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 137090 // <generalisation>
-	  b multiplicity "" parent class_ref 132736 // UmlBaseObjectDiagram
+	  b parent class_ref 132736 // UmlBaseObjectDiagram
       end
 
       operation 153218 "UmlObjectDiagram"
@@ -421,7 +449,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 15233 // <generalisation>
-	  b multiplicity "" parent class_ref 1536 // UmlBaseClassItem
+	  b parent class_ref 1536 // UmlBaseClassItem
       end
 
       operation 77441 "UmlClassItem"
@@ -472,7 +500,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 15361 // <generalisation>
-	  b multiplicity "" parent class_ref 1792 // UmlBaseClassMember
+	  b parent class_ref 1792 // UmlBaseClassMember
       end
 
       operation 149890 "setComment"
@@ -514,7 +542,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 15489 // <generalisation>
-	  b multiplicity "" parent class_ref 1920 // UmlBaseClassView
+	  b parent class_ref 1920 // UmlBaseClassView
       end
 
       operation 77697 "UmlClassView"
@@ -554,7 +582,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 15617 // <generalisation>
-	  b multiplicity "" parent class_ref 2176 // UmlBaseCollaborationDiagram
+	  b parent class_ref 2176 // UmlBaseCollaborationDiagram
       end
 
       operation 77825 "UmlCollaborationDiagram"
@@ -594,7 +622,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 15745 // <generalisation>
-	  b multiplicity "" parent class_ref 2304 // UmlBaseComponentDiagram
+	  b parent class_ref 2304 // UmlBaseComponentDiagram
       end
 
       operation 77953 "UmlComponentDiagram"
@@ -632,7 +660,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 15873 // <generalisation>
-	  b multiplicity "" parent class_ref 2432 // UmlBaseComponentView
+	  b parent class_ref 2432 // UmlBaseComponentView
       end
 
       operation 78081 "UmlComponentView"
@@ -670,7 +698,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 16001 // <generalisation>
-	  b multiplicity "" parent class_ref 2048 // UmlBaseArtifact
+	  b parent class_ref 2048 // UmlBaseArtifact
       end
 
       operation 78209 "UmlArtifact"
@@ -708,7 +736,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 128130 // <generalisation>
-	  b multiplicity "" parent class_ref 6528 // UmlBaseComponent
+	  b parent class_ref 6528 // UmlBaseComponent
       end
 
       operation 128002 "UmlComponent"
@@ -748,7 +776,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 16129 // <generalisation>
-	  b multiplicity "" parent class_ref 2560 // UmlBaseDeploymentDiagram
+	  b parent class_ref 2560 // UmlBaseDeploymentDiagram
       end
 
       operation 78337 "UmlDeploymentDiagram"
@@ -786,7 +814,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 16257 // <generalisation>
-	  b multiplicity "" parent class_ref 2688 // UmlBaseDeploymentView
+	  b parent class_ref 2688 // UmlBaseDeploymentView
       end
 
       operation 78465 "UmlDeploymentView"
@@ -827,7 +855,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 16385 // <generalisation>
-	  b multiplicity "" parent class_ref 2944 // UmlBaseDiagram
+	  b parent class_ref 2944 // UmlBaseDiagram
       end
 
       operation 78593 "UmlDiagram"
@@ -868,7 +896,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 16513 // <generalisation>
-	  b multiplicity "" parent class_ref 3072 // UmlBaseExtraClassMember
+	  b parent class_ref 3072 // UmlBaseExtraClassMember
       end
 
       operation 78721 "UmlExtraClassMember"
@@ -907,7 +935,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 16641 // <generalisation>
-	  b multiplicity "" parent class_ref 3200 // UmlBaseItem
+	  b parent class_ref 3200 // UmlBaseItem
       end
 
       operation 78849 "UmlItem"
@@ -968,13 +996,14 @@ ${body}}
 
       operation 149250 "init"
 	cpp_virtual public explicit_return_type "void"
-	nparams 3
+	nparams 4
 	  param inout name "mother" type class_ref 7169 // UmlClass
 	  param in name "path" explicit_type "string"
+	  param in name "pretty_path" explicit_type "string"
 	  param inout name "state" type class_ref 128386 // UmlState
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} * ${p2}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} * ${p3}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} *, ${t1}, ${t2} *${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} *, ${t1}, ${t2}, ${t3} *${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
@@ -1104,7 +1133,6 @@ ${body}}
 	comment "delete useless classes, operations and attributes
 "
       end
-
     end
 
     class 8961 "UmlNode"
@@ -1129,7 +1157,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 16769 // <generalisation>
-	  b multiplicity "" parent class_ref 3328 // UmlBaseNode
+	  b parent class_ref 3328 // UmlBaseNode
       end
 
       operation 79105 "UmlNode"
@@ -1168,7 +1196,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 16897 // <generalisation>
-	  b multiplicity "" parent class_ref 3456 // UmlBaseOperation
+	  b parent class_ref 3456 // UmlBaseOperation
       end
 
       operation 79233 "UmlOperation"
@@ -1316,6 +1344,31 @@ ${body}}
       end
     end
 
+    class 145026 "UmlParameter"
+      visibility package stereotype "struct"
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      final java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}};
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "  Represent an operation's parameter
+"
+      classrelation 156930 // <generalisation>
+	relation 156930 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 156930 // <generalisation>
+	  b parent class_ref 144896 // UmlBaseParameter
+      end
+    end
+
     class 9217 "UmlPackage"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -1338,7 +1391,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 17025 // <generalisation>
-	  b multiplicity "" parent class_ref 3584 // UmlBasePackage
+	  b parent class_ref 3584 // UmlBasePackage
       end
 
       operation 79361 "UmlPackage"
@@ -1377,7 +1430,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 17153 // <generalisation>
-	  b multiplicity "" parent class_ref 3712 // UmlBaseRelation
+	  b parent class_ref 3712 // UmlBaseRelation
       end
 
       operation 79489 "UmlRelation"
@@ -1415,7 +1468,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 17281 // <generalisation>
-	  b multiplicity "" parent class_ref 3840 // UmlBaseNcRelation
+	  b parent class_ref 3840 // UmlBaseNcRelation
       end
 
       operation 79617 "UmlNcRelation"
@@ -1455,7 +1508,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 17409 // <generalisation>
-	  b multiplicity "" parent class_ref 3968 // UmlBaseSequenceDiagram
+	  b parent class_ref 3968 // UmlBaseSequenceDiagram
       end
 
       operation 79745 "UmlSequenceDiagram"
@@ -1492,7 +1545,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 17537 // <generalisation>
-	  b multiplicity "" parent class_ref 4096 // UmlBaseUseCase
+	  b parent class_ref 4096 // UmlBaseUseCase
       end
 
       operation 79873 "UmlUseCase"
@@ -1532,7 +1585,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 17665 // <generalisation>
-	  b multiplicity "" parent class_ref 4224 // UmlBaseUseCaseDiagram
+	  b parent class_ref 4224 // UmlBaseUseCaseDiagram
       end
 
       operation 80001 "UmlUseCaseDiagram"
@@ -1570,7 +1623,7 @@ ${members}};
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 17793 // <generalisation>
-	  b multiplicity "" parent class_ref 4352 // UmlBaseUseCaseView
+	  b parent class_ref 4352 // UmlBaseUseCaseView
       end
 
       operation 80129 "UmlUseCaseView"
@@ -1620,7 +1673,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 128514 // <generalisation>
-	  b multiplicity "" parent class_ref 128256 // UmlBaseState
+	  b parent class_ref 128256 // UmlBaseState
       end
 
       classrelation 128642 // <generalisation>
@@ -1629,7 +1682,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 128642 // <generalisation>
-	  b multiplicity "" parent class_ref 128130 // UmlStateItem
+	  b parent class_ref 128130 // UmlStateItem
       end
 
       operation 128514 "UmlState"
@@ -1723,6 +1776,23 @@ ${body}}
 "
       end
 
+      operation 201986 "prettyPath"
+	const cpp_inline public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+  return _pretty_path;
+}
+"
+	final java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  return _path;
+}
+"
+	
+	comment "  the path of the state to be produced in debug trace"
+      end
+
       operation 151298 "inside"
 	public explicit_return_type "bool"
 	nparams 1
@@ -1740,13 +1810,14 @@ ${body}}
 
       operation 146946 "init"
 	cpp_virtual public explicit_return_type "void"
-	nparams 3
+	nparams 4
 	  param inout name "mother" type class_ref 7169 // UmlClass
 	  param in name "path" explicit_type "string"
+	  param in name "pretty_path" explicit_type "string"
 	  param inout name "state" type class_ref 128386 // UmlState
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} * ${p2}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} * ${p3}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} *${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} *${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
@@ -1811,7 +1882,7 @@ ${body}}
 	  param inout name "state" type class_ref 128386 // UmlState
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} * ${p2}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} * ${p1}, ${t2} *${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
@@ -1861,6 +1932,17 @@ ${body}}
 	comment "  the path from the machine up to the class instance associated
   to the state."
       end
+
+      attribute 130562 "_pretty_path"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+	comment "  the path from the machine up to the class instance associated
+  to the state."
+      end
     end
 
     class 128642 "UmlStateDiagram"
@@ -1882,7 +1964,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 129026 // <generalisation>
-	  b multiplicity "" parent class_ref 128512 // UmlBaseStateDiagram
+	  b parent class_ref 128512 // UmlBaseStateDiagram
       end
 
       classrelation 129154 // <generalisation>
@@ -1891,7 +1973,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 129154 // <generalisation>
-	  b multiplicity "" parent class_ref 128130 // UmlStateItem
+	  b parent class_ref 128130 // UmlStateItem
       end
 
       operation 129026 "UmlStateDiagram"
@@ -1935,7 +2017,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 137858 // <generalisation>
-	  b multiplicity "" parent class_ref 133376 // UmlBaseActivityDiagram
+	  b parent class_ref 133376 // UmlBaseActivityDiagram
       end
 
       classrelation 137986 // <generalisation>
@@ -1944,7 +2026,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 137986 // <generalisation>
-	  b multiplicity "" parent class_ref 132994 // UmlActivityItem
+	  b parent class_ref 132994 // UmlActivityItem
       end
 
       operation 156290 "UmlActivityDiagram"
@@ -1983,7 +2065,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 130050 // <generalisation>
-	  b multiplicity "" parent class_ref 128896 // UmlBaseTransition
+	  b parent class_ref 128896 // UmlBaseTransition
       end
 
       classrelation 130178 // <generalisation>
@@ -1992,7 +2074,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 130178 // <generalisation>
-	  b multiplicity "" parent class_ref 128130 // UmlStateItem
+	  b parent class_ref 128130 // UmlStateItem
       end
 
       operation 135938 "UmlTransition"
@@ -2139,7 +2221,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 131074 // <generalisation>
-	  b multiplicity "" parent class_ref 129280 // UmlBaseRegion
+	  b parent class_ref 129280 // UmlBaseRegion
       end
 
       classrelation 131202 // <generalisation>
@@ -2148,7 +2230,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 131202 // <generalisation>
-	  b multiplicity "" parent class_ref 128130 // UmlStateItem
+	  b parent class_ref 128130 // UmlStateItem
       end
 
       operation 136450 "UmlRegion"
@@ -2169,13 +2251,14 @@ ${members}}
 
       operation 147074 "init"
 	cpp_virtual public explicit_return_type "void"
-	nparams 3
+	nparams 4
 	  param inout name "mother" type class_ref 7169 // UmlClass
 	  param in name "path" explicit_type "string"
+	  param in name "pretty_path" explicit_type "string"
 	  param inout name "state" type class_ref 128386 // UmlState
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} * ${p2}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} * ${p3}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} *${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} *${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
@@ -2206,7 +2289,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 131586 // <generalisation>
-	  b multiplicity "" parent class_ref 129536 // UmlBaseStateAction
+	  b parent class_ref 129536 // UmlBaseStateAction
       end
 
       classrelation 131714 // <generalisation>
@@ -2215,7 +2298,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 131714 // <generalisation>
-	  b multiplicity "" parent class_ref 128130 // UmlStateItem
+	  b parent class_ref 128130 // UmlStateItem
       end
 
       operation 136578 "UmlStateAction"
@@ -2289,7 +2372,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 131842 // <generalisation>
-	  b multiplicity "" parent class_ref 128130 // UmlStateItem
+	  b parent class_ref 128130 // UmlStateItem
       end
 
       classrelation 131970 // <generalisation>
@@ -2298,7 +2381,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 131970 // <generalisation>
-	  b multiplicity "" parent class_ref 8833 // UmlItem
+	  b parent class_ref 8833 // UmlItem
       end
     end
 
@@ -2321,7 +2404,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 132354 // <generalisation>
-	  b multiplicity "" parent class_ref 129920 // UmlBaseInitialPseudoState
+	  b parent class_ref 129920 // UmlBaseInitialPseudoState
       end
 
       operation 138882 "UmlInitialPseudoState"
@@ -2376,7 +2459,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 132738 // <generalisation>
-	  b multiplicity "" parent class_ref 130176 // UmlBaseEntryPointPseudoState
+	  b parent class_ref 130176 // UmlBaseEntryPointPseudoState
       end
 
       operation 139394 "UmlEntryPointPseudoState"
@@ -2434,7 +2517,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 133122 // <generalisation>
-	  b multiplicity "" parent class_ref 130432 // UmlBaseFinalState
+	  b parent class_ref 130432 // UmlBaseFinalState
       end
 
       operation 139906 "UmlFinalState"
@@ -2493,7 +2576,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 133506 // <generalisation>
-	  b multiplicity "" parent class_ref 130688 // UmlBaseTerminatePseudoState
+	  b parent class_ref 130688 // UmlBaseTerminatePseudoState
       end
 
       operation 140418 "UmlTerminatePseudoState"
@@ -2550,7 +2633,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 133890 // <generalisation>
-	  b multiplicity "" parent class_ref 130944 // UmlBaseExitPointPseudoState
+	  b parent class_ref 130944 // UmlBaseExitPointPseudoState
       end
 
       operation 140930 "UmlExitPointPseudoState"
@@ -2668,7 +2751,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 134274 // <generalisation>
-	  b multiplicity "" parent class_ref 131200 // UmlBaseDeepHistoryPseudoState
+	  b parent class_ref 131200 // UmlBaseDeepHistoryPseudoState
       end
 
       operation 141442 "UmlDeepHistoryPseudoState"
@@ -2706,7 +2789,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 134658 // <generalisation>
-	  b multiplicity "" parent class_ref 131456 // UmlBaseShallowHistoryPseudoState
+	  b parent class_ref 131456 // UmlBaseShallowHistoryPseudoState
       end
 
       operation 141954 "UmlShallowHistoryPseudoState"
@@ -2744,7 +2827,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 135042 // <generalisation>
-	  b multiplicity "" parent class_ref 131712 // UmlBaseJunctionPseudoState
+	  b parent class_ref 131712 // UmlBaseJunctionPseudoState
       end
 
       operation 142466 "UmlJunctionPseudoState"
@@ -2844,7 +2927,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 135426 // <generalisation>
-	  b multiplicity "" parent class_ref 131968 // UmlBaseChoicePseudoState
+	  b parent class_ref 131968 // UmlBaseChoicePseudoState
       end
 
       operation 142978 "UmlChoicePseudoState"
@@ -2902,7 +2985,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 135810 // <generalisation>
-	  b multiplicity "" parent class_ref 132224 // UmlBaseForkPseudoState
+	  b parent class_ref 132224 // UmlBaseForkPseudoState
       end
 
       operation 143490 "UmlForkPseudoState"
@@ -2940,7 +3023,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 136194 // <generalisation>
-	  b multiplicity "" parent class_ref 132480 // UmlBaseJoinPseudoState
+	  b parent class_ref 132480 // UmlBaseJoinPseudoState
       end
 
       operation 144002 "UmlJoinPseudoState"
@@ -2993,7 +3076,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 137474 // <generalisation>
-	  b multiplicity "" parent class_ref 133120 // UmlBaseActivity
+	  b parent class_ref 133120 // UmlBaseActivity
       end
 
       operation 153730 "UmlActivity"
@@ -3032,7 +3115,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 138498 // <generalisation>
-	  b multiplicity "" parent class_ref 133632 // UmlBaseActivityNode
+	  b parent class_ref 133632 // UmlBaseActivityNode
       end
 
       classrelation 138626 // <generalisation>
@@ -3041,7 +3124,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 138626 // <generalisation>
-	  b multiplicity "" parent class_ref 132994 // UmlActivityItem
+	  b parent class_ref 132994 // UmlActivityItem
       end
 
       operation 157314 "UmlActivityNode"
@@ -3080,7 +3163,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 139010 // <generalisation>
-	  b multiplicity "" parent class_ref 133888 // UmlBaseFlow
+	  b parent class_ref 133888 // UmlBaseFlow
       end
 
       classrelation 139138 // <generalisation>
@@ -3089,7 +3172,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 139138 // <generalisation>
-	  b multiplicity "" parent class_ref 132994 // UmlActivityItem
+	  b parent class_ref 132994 // UmlActivityItem
       end
 
       operation 161794 "UmlFlow"
@@ -3127,7 +3210,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 140034 // <generalisation>
-	  b multiplicity "" parent class_ref 134272 // UmlBaseActivityRegion
+	  b parent class_ref 134272 // UmlBaseActivityRegion
       end
 
       classrelation 140162 // <generalisation>
@@ -3136,7 +3219,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 140162 // <generalisation>
-	  b multiplicity "" parent class_ref 132994 // UmlActivityItem
+	  b parent class_ref 132994 // UmlActivityItem
       end
 
       operation 162050 "UmlActivityRegion"
@@ -3175,7 +3258,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 140674 // <generalisation>
-	  b multiplicity "" parent class_ref 134528 // UmlBaseExpansionRegion
+	  b parent class_ref 134528 // UmlBaseExpansionRegion
       end
 
       operation 162946 "UmlExpansionRegion"
@@ -3214,7 +3297,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 141186 // <generalisation>
-	  b multiplicity "" parent class_ref 134912 // UmlBaseInterruptibleActivityRegion
+	  b parent class_ref 134912 // UmlBaseInterruptibleActivityRegion
       end
 
       operation 164098 "UmlInterruptibleActivityRegion"
@@ -3253,7 +3336,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 141570 // <generalisation>
-	  b multiplicity "" parent class_ref 135168 // UmlBaseActivityAction
+	  b parent class_ref 135168 // UmlBaseActivityAction
       end
 
       operation 164354 "UmlActivityAction"
@@ -3292,7 +3375,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 142082 // <generalisation>
-	  b multiplicity "" parent class_ref 135424 // UmlBaseSendObjectAction
+	  b parent class_ref 135424 // UmlBaseSendObjectAction
       end
 
       operation 167170 "UmlSendObjectAction"
@@ -3331,7 +3414,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 142466 // <generalisation>
-	  b multiplicity "" parent class_ref 135680 // UmlBaseUnmarshallAction
+	  b parent class_ref 135680 // UmlBaseUnmarshallAction
       end
 
       operation 167682 "UmlUnmarshallAction"
@@ -3370,7 +3453,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 142850 // <generalisation>
-	  b multiplicity "" parent class_ref 135936 // UmlBaseOnSignalAction
+	  b parent class_ref 135936 // UmlBaseOnSignalAction
       end
 
       operation 167938 "UmlOnSignalAction"
@@ -3409,7 +3492,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 143234 // <generalisation>
-	  b multiplicity "" parent class_ref 136192 // UmlBaseSendSignalAction
+	  b parent class_ref 136192 // UmlBaseSendSignalAction
       end
 
       operation 169730 "UmlSendSignalAction"
@@ -3448,7 +3531,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 143618 // <generalisation>
-	  b multiplicity "" parent class_ref 136448 // UmlBaseBroadcastSignalAction
+	  b parent class_ref 136448 // UmlBaseBroadcastSignalAction
       end
 
       operation 170242 "UmlBroadcastSignalAction"
@@ -3487,7 +3570,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 144002 // <generalisation>
-	  b multiplicity "" parent class_ref 136704 // UmlBaseValueSpecificationAction
+	  b parent class_ref 136704 // UmlBaseValueSpecificationAction
       end
 
       operation 170754 "UmlValueSpecificationAction"
@@ -3526,7 +3609,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 144386 // <generalisation>
-	  b multiplicity "" parent class_ref 136960 // UmlBaseOpaqueAction
+	  b parent class_ref 136960 // UmlBaseOpaqueAction
       end
 
       operation 172546 "UmlOpaqueAction"
@@ -3565,7 +3648,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 144770 // <generalisation>
-	  b multiplicity "" parent class_ref 137216 // UmlBaseAcceptEventAction
+	  b parent class_ref 137216 // UmlBaseAcceptEventAction
       end
 
       operation 174338 "UmlAcceptEventAction"
@@ -3604,7 +3687,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 145154 // <generalisation>
-	  b multiplicity "" parent class_ref 137472 // UmlBaseCallOperationAction
+	  b parent class_ref 137472 // UmlBaseCallOperationAction
       end
 
       operation 176642 "UmlCallOperationAction"
@@ -3643,7 +3726,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 145666 // <generalisation>
-	  b multiplicity "" parent class_ref 137728 // UmlBaseCallBehaviorAction
+	  b parent class_ref 137728 // UmlBaseCallBehaviorAction
       end
 
       operation 177794 "UmlCallBehaviorAction"
@@ -3682,7 +3765,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 146178 // <generalisation>
-	  b multiplicity "" parent class_ref 137984 // UmlBaseAccessVariableValueAction
+	  b parent class_ref 137984 // UmlBaseAccessVariableValueAction
       end
 
       operation 178690 "UmlAccessVariableValueAction"
@@ -3721,7 +3804,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 146690 // <generalisation>
-	  b multiplicity "" parent class_ref 138240 // UmlBaseClearVariableValueAction
+	  b parent class_ref 138240 // UmlBaseClearVariableValueAction
       end
 
       operation 179586 "UmlClearVariableValueAction"
@@ -3760,7 +3843,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 147074 // <generalisation>
-	  b multiplicity "" parent class_ref 138496 // UmlBaseReadVariableValueAction
+	  b parent class_ref 138496 // UmlBaseReadVariableValueAction
       end
 
       operation 180098 "UmlReadVariableValueAction"
@@ -3799,7 +3882,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 147458 // <generalisation>
-	  b multiplicity "" parent class_ref 138752 // UmlBaseWriteVariableValueAction
+	  b parent class_ref 138752 // UmlBaseWriteVariableValueAction
       end
 
       operation 180610 "UmlWriteVariableValueAction"
@@ -3838,7 +3921,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 147842 // <generalisation>
-	  b multiplicity "" parent class_ref 139008 // UmlBaseAddVariableValueAction
+	  b parent class_ref 139008 // UmlBaseAddVariableValueAction
       end
 
       operation 181122 "UmlAddVariableValueAction"
@@ -3877,7 +3960,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 148226 // <generalisation>
-	  b multiplicity "" parent class_ref 139264 // UmlBaseRemoveVariableValueAction
+	  b parent class_ref 139264 // UmlBaseRemoveVariableValueAction
       end
 
       operation 182018 "UmlRemoveVariableValueAction"
@@ -3916,7 +3999,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 148610 // <generalisation>
-	  b multiplicity "" parent class_ref 139520 // UmlBaseActivityControlNode
+	  b parent class_ref 139520 // UmlBaseActivityControlNode
       end
 
       operation 182658 "UmlActivityControlNode"
@@ -3955,7 +4038,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 148994 // <generalisation>
-	  b multiplicity "" parent class_ref 139776 // UmlBaseInitialActivityNode
+	  b parent class_ref 139776 // UmlBaseInitialActivityNode
       end
 
       operation 183170 "UmlInitialActivityNode"
@@ -3994,7 +4077,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 149378 // <generalisation>
-	  b multiplicity "" parent class_ref 140032 // UmlBaseFlowFinalActivityNode
+	  b parent class_ref 140032 // UmlBaseFlowFinalActivityNode
       end
 
       operation 183682 "UmlFlowFinalActivityNode"
@@ -4033,7 +4116,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 149762 // <generalisation>
-	  b multiplicity "" parent class_ref 140288 // UmlBaseActivityFinalActivityNode
+	  b parent class_ref 140288 // UmlBaseActivityFinalActivityNode
       end
 
       operation 184194 "UmlActivityFinalActivityNode"
@@ -4072,7 +4155,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 150146 // <generalisation>
-	  b multiplicity "" parent class_ref 140544 // UmlBaseDecisionActivityNode
+	  b parent class_ref 140544 // UmlBaseDecisionActivityNode
       end
 
       operation 184706 "UmlDecisionActivityNode"
@@ -4111,7 +4194,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 150530 // <generalisation>
-	  b multiplicity "" parent class_ref 140800 // UmlBaseMergeActivityNode
+	  b parent class_ref 140800 // UmlBaseMergeActivityNode
       end
 
       operation 185218 "UmlMergeActivityNode"
@@ -4150,7 +4233,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 150914 // <generalisation>
-	  b multiplicity "" parent class_ref 141056 // UmlBaseForkActivityNode
+	  b parent class_ref 141056 // UmlBaseForkActivityNode
       end
 
       operation 185730 "UmlForkActivityNode"
@@ -4189,7 +4272,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 151298 // <generalisation>
-	  b multiplicity "" parent class_ref 141312 // UmlBaseJoinActivityNode
+	  b parent class_ref 141312 // UmlBaseJoinActivityNode
       end
 
       operation 186242 "UmlJoinActivityNode"
@@ -4228,7 +4311,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 151682 // <generalisation>
-	  b multiplicity "" parent class_ref 141568 // UmlBaseActivityObject
+	  b parent class_ref 141568 // UmlBaseActivityObject
       end
 
       operation 186754 "UmlActivityObject"
@@ -4267,7 +4350,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 152450 // <generalisation>
-	  b multiplicity "" parent class_ref 141952 // UmlBaseExpansionNode
+	  b parent class_ref 141952 // UmlBaseExpansionNode
       end
 
       operation 190082 "UmlExpansionNode"
@@ -4306,7 +4389,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 152834 // <generalisation>
-	  b multiplicity "" parent class_ref 142208 // UmlBasePinParameter
+	  b parent class_ref 142208 // UmlBasePinParameter
       end
 
       operation 190338 "UmlPinParameter"
@@ -4345,7 +4428,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 153474 // <generalisation>
-	  b multiplicity "" parent class_ref 142592 // UmlBaseActivityPin
+	  b parent class_ref 142592 // UmlBaseActivityPin
       end
 
       operation 192002 "UmlActivityPin"
@@ -4384,7 +4467,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 153858 // <generalisation>
-	  b multiplicity "" parent class_ref 142848 // UmlBaseActivityParameter
+	  b parent class_ref 142848 // UmlBaseActivityParameter
       end
 
       operation 192514 "UmlActivityParameter"
@@ -4423,7 +4506,7 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 154242 // <generalisation>
-	  b multiplicity "" parent class_ref 143104 // UmlBaseParameterSet
+	  b parent class_ref 143104 // UmlBaseParameterSet
       end
 
       operation 193538 "UmlParameterSet"
@@ -4448,7 +4531,85 @@ ${members}}
 	    cpp default "${type}"
 	    java "${type}"
 	    classrelation_ref 154498 // <generalisation>
-	  b multiplicity "" parent class_ref 132994 // UmlActivityItem
+	  b parent class_ref 132994 // UmlActivityItem
+      end
+    end
+
+    class 144514 "UmlClassInstance"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 155906 // <generalisation>
+	relation 155906 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 155906 // <generalisation>
+	  b parent class_ref 144384 // UmlBaseClassInstance
+      end
+
+      operation 198274 "UmlClassInstance"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "id" explicit_type "item_id"
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlBaseClassInstance(id, s) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  super(id, s);
+}
+"
+	
+	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+    end
+
+    class 145538 "UmlView"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 157570 // <generalisation>
+	relation 157570 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 157570 // <generalisation>
+	  b parent class_ref 145408 // UmlBaseView
+      end
+
+      operation 200834 "UmlView"
+	protected explicit_return_type ""
+	nparams 2
+	  param in name "id" explicit_type "item_id"
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlBaseView(id, s) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  super(id, s);
+}
+"
+	
+	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
   end
@@ -4460,171 +4621,205 @@ ${members}}
     comment "'your' API artifacts modify them !
 
 Do not forget to modify Main !"
+    artifact 140418 "UmlTypeSpec"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 145282 // UmlTypeSpec
+      end
+    end
+
     artifact 6529 "executable"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 4480 // UmlBuiltin
-	artifact_ref 134658 // UmlExpansionRegion
-	artifact_ref 6528 // UmlBaseComponent
-	artifact_ref 3072 // UmlBaseRelation
-	artifact_ref 132610 // UmlJoinPseudoState
-	artifact_ref 129666 // UmlStateAction
-	artifact_ref 5632 // OnInstanceCmd
-	artifact_ref 136066 // UmlAccessVariableValueAction
-	artifact_ref 135298 // UmlActivityAction
-	artifact_ref 135168 // UmlBaseActivityAction
-	artifact_ref 138240 // UmlBaseParameterSet
-	artifact_ref 132866 // UmlObjectDiagram
-	artifact_ref 128130 // UmlStateItem
-	artifact_ref 1024 // UmlBaseClassDiagram
-	artifact_ref 1920 // UmlBaseDeployment
-	artifact_ref 384 // UmlBaseClassItem
-	artifact_ref 3200 // UmlBaseNcRelation
-	artifact_ref 8833 // UmlItem
-	artifact_ref 5376 // CmdFamily
-	artifact_ref 9089 // UmlOperation
-	artifact_ref 130944 // UmlBaseExitPointPseudoState
-	artifact_ref 130688 // UmlBaseTerminatePseudoState
-	artifact_ref 131074 // UmlExitPointPseudoState
-	artifact_ref 132994 // UmlActivityItem
-	artifact_ref 136448 // UmlBaseActivityControlNodeClasses
-	artifact_ref 138496 // aLanguage
-	artifact_ref 7681 // UmlClassView
-	artifact_ref 3584 // UmlBaseUseCaseDiagram
-	artifact_ref 7425 // UmlClassDiagram
-	artifact_ref 131330 // UmlDeepHistoryPseudoState
-	artifact_ref 131712 // UmlBaseJunctionPseudoState
-	artifact_ref 130562 // UmlFinalState
-	artifact_ref 136704 // UmlBaseActivityObject
 	artifact_ref 133888 // UmlBaseFlow
-	artifact_ref 134018 // UmlFlow
-	artifact_ref 137474 // UmlPinParameter
-	artifact_ref 256 // UmlBaseActualParameter
-	artifact_ref 136192 // UmlBaseActivityControlNode
-	artifact_ref 4352 // UmlParameter
-	artifact_ref 3840 // aRelationKind
-	artifact_ref 3968 // aDirection
-	artifact_ref 7809 // UmlCollaborationDiagram
-	artifact_ref 2816 // UmlBaseOperation
-	artifact_ref 130176 // UmlBaseEntryPointPseudoState
-	artifact_ref 3712 // UmlBaseUseCaseView
-	artifact_ref 130818 // UmlTerminatePseudoState
-	artifact_ref 129280 // UmlBaseRegion
-	artifact_ref 135554 // UmlActivityActionClasses
-	artifact_ref 134402 // UmlActivityRegion
-	artifact_ref 133376 // UmlBaseActivityDiagram
-	artifact_ref 134528 // UmlBaseExpansionRegion
-	artifact_ref 5248 // UmlCom
-	artifact_ref 9217 // UmlPackage
-	artifact_ref 1536 // UmlBaseArtifact
-	artifact_ref 5120 // UmlSettings
-	artifact_ref 129410 // UmlRegion
-	artifact_ref 768 // UmlBaseAttribute
-	artifact_ref 132480 // UmlBaseJoinPseudoState
-	artifact_ref 135936 // UmlBaseAccessVariableValueAction
-	artifact_ref 134912 // UmlBaseInterruptibleActivityRegion
-	artifact_ref 137218 // UmlExpansionNode
-	artifact_ref 129536 // UmlBaseStateAction
-	artifact_ref 7169 // UmlAttribute
-	artifact_ref 9345 // UmlRelation
-	artifact_ref 131968 // UmlBaseChoicePseudoState
-	artifact_ref 4736 // CppSettings
-	artifact_ref 512 // UmlBaseFormalParameter
-	artifact_ref 133632 // UmlBaseActivityNode
-	artifact_ref 137600 // aParameterEffectKind
-	artifact_ref 2560 // UmlBaseItem
-	artifact_ref 132224 // UmlBaseForkPseudoState
-	artifact_ref 2048 // UmlBaseDeploymentDiagram
-	artifact_ref 133762 // UmlActivityNode
-	artifact_ref 128768 // StateBehavior
-	artifact_ref 128896 // UmlBaseTransition
-	artifact_ref 9601 // UmlSequenceDiagram
-	artifact_ref 132354 // UmlForkPseudoState
-	artifact_ref 4224 // anItemKind
-	artifact_ref 9473 // UmlNcRelation
-	artifact_ref 1664 // UmlBaseComponentDiagram
-	artifact_ref 3456 // UmlBaseUseCase
-	artifact_ref 137728 // UmlBaseActivityPin
-	artifact_ref 134272 // UmlBaseActivityRegion
 	artifact_ref 134784 // anExpansionKind
-	artifact_ref 128386 // UmlState
-	artifact_ref 4992 // JavaSettings
-	artifact_ref 6272 // JavaSettingsCmd
-	artifact_ref 1408 // UmlBaseCollaborationDiagram
-	artifact_ref 8705 // UmlExtraClassMember
-	artifact_ref 7297 // UmlClass
-	artifact_ref 9729 // UmlUseCase
-	artifact_ref 640 // UmlTypeSpec
-	artifact_ref 2176 // UmlBaseDeploymentView
-	artifact_ref 8065 // UmlComponentDiagram
-	artifact_ref 7937 // UmlArtifact
-	artifact_ref 3328 // UmlBaseSequenceDiagram
-	artifact_ref 7041 // UmlFormalParameter
-	artifact_ref 5760 // ClassGlobalCmd
-	artifact_ref 5888 // PackageGlobalCmd
-	artifact_ref 131842 // UmlJunctionPseudoState
-	artifact_ref 130432 // UmlBaseFinalState
-	artifact_ref 131456 // UmlBaseShallowHistoryPseudoState
-	artifact_ref 130050 // UmlInitialPseudoState
-	artifact_ref 4608 // UmlStereotype
-	artifact_ref 129794 // UmlPseudoState
-	artifact_ref 8961 // UmlNode
-	artifact_ref 8577 // UmlDiagram
-	artifact_ref 133250 // UmlActivity
-	artifact_ref 137858 // UmlActivityPin
-	artifact_ref 135424 // UmlBaseActivityActionClasses
-	artifact_ref 135042 // UmlInterruptibleActivityRegion
-	artifact_ref 135810 // UmlOnSignalAction
-	artifact_ref 138370 // UmlParameterSet
-	artifact_ref 136960 // anOrdering
-	artifact_ref 6400 // IdlSettingsCmd
-	artifact_ref 128256 // UmlBaseState
-	artifact_ref 8193 // UmlComponentView
-	artifact_ref 129152 // TransitionBehavior
-	artifact_ref 134144 // FlowBehavior
+	artifact_ref 134272 // UmlBaseActivityRegion
+	artifact_ref 136704 // UmlBaseActivityObject
+	artifact_ref 4736 // CppSettings
 	artifact_ref 136322 // UmlActivityControlNode
-	artifact_ref 136834 // UmlActivityObject
-	artifact_ref 130306 // UmlEntryPointPseudoState
-	artifact_ref 7553 // UmlClassMember
-	artifact_ref 6785 // UmlActualParameter
-	artifact_ref 131586 // UmlShallowHistoryPseudoState
-	artifact_ref 6016 // UmlSettingsCmd
-	artifact_ref 137088 // UmlBaseExpansionNode
-	artifact_ref 132736 // UmlBaseObjectDiagram
-	artifact_ref 135680 // UmlBaseOnSignalAction
-	artifact_ref 137344 // UmlBasePinParameter
-	artifact_ref 128642 // UmlStateDiagram
-	artifact_ref 6913 // UmlClassItem
-	artifact_ref 2944 // UmlBasePackage
-	artifact_ref 129920 // UmlBaseInitialPseudoState
-	artifact_ref 5504 // MiscGlobalCmd
-	artifact_ref 136578 // UmlActivityControlNodeClasses
-	artifact_ref 133506 // UmlActivityDiagram
-	artifact_ref 138114 // UmlActivityParameter
-	artifact_ref 132098 // UmlChoicePseudoState
-	artifact_ref 2432 // UmlBaseExtraClassMember
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 4096 // aVisibility
-	artifact_ref 8321 // UmlDeploymentDiagram
-	artifact_ref 896 // UmlBaseClass
-	artifact_ref 6657 // Main
-	artifact_ref 128512 // UmlBaseStateDiagram
+	artifact_ref 2560 // UmlBaseItem
+	artifact_ref 137858 // UmlActivityPin
+	artifact_ref 3584 // UmlBaseUseCaseDiagram
+	artifact_ref 3968 // aDirection
+	artifact_ref 3072 // UmlBaseRelation
+	artifact_ref 134912 // UmlBaseInterruptibleActivityRegion
+	artifact_ref 137474 // UmlPinParameter
+	artifact_ref 8065 // UmlComponentDiagram
+	artifact_ref 512 // UmlBaseFormalParameter
 	artifact_ref 8449 // UmlDeploymentView
-	artifact_ref 133120 // UmlBaseActivity
-	artifact_ref 137984 // UmlBaseActivityParameter
-	artifact_ref 1792 // UmlBaseComponentView
-	artifact_ref 9985 // UmlUseCaseView
-	artifact_ref 4864 // IdlSettings
-	artifact_ref 9857 // UmlUseCaseDiagram
-	artifact_ref 6144 // CppSettingsCmd
-	artifact_ref 131200 // UmlBaseDeepHistoryPseudoState
-	artifact_ref 129026 // UmlTransition
-	artifact_ref 2688 // UmlBaseNode
-	artifact_ref 1280 // UmlBaseClassView
-	artifact_ref 2304 // UmlBaseDiagram
+	artifact_ref 137218 // UmlExpansionNode
 	artifact_ref 1152 // UmlBaseClassMember
+	artifact_ref 256 // UmlBaseActualParameter
+	artifact_ref 1024 // UmlBaseClassDiagram
+	artifact_ref 140288 // UmlBaseTypeSpec
+	artifact_ref 5888 // PackageGlobalCmd
+	artifact_ref 6400 // IdlSettingsCmd
+	artifact_ref 129794 // UmlPseudoState
+	artifact_ref 140544 // UmlBaseView
+	artifact_ref 131968 // UmlBaseChoicePseudoState
+	artifact_ref 130432 // UmlBaseFinalState
+	artifact_ref 129152 // TransitionBehavior
+	artifact_ref 4480 // UmlBuiltin
+	artifact_ref 133120 // UmlBaseActivity
+	artifact_ref 131586 // UmlShallowHistoryPseudoState
+	artifact_ref 4992 // JavaSettings
+	artifact_ref 7169 // UmlAttribute
+	artifact_ref 129410 // UmlRegion
+	artifact_ref 2304 // UmlBaseDiagram
+	artifact_ref 132098 // UmlChoicePseudoState
+	artifact_ref 133376 // UmlBaseActivityDiagram
+	artifact_ref 135680 // UmlBaseOnSignalAction
+	artifact_ref 139520 // UmlBaseClassInstance
+	artifact_ref 130944 // UmlBaseExitPointPseudoState
+	artifact_ref 129920 // UmlBaseInitialPseudoState
+	artifact_ref 140032 // UmlBaseParameter
+	artifact_ref 130688 // UmlBaseTerminatePseudoState
+	artifact_ref 6785 // UmlActualParameter
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 896 // UmlBaseClass
+	artifact_ref 6016 // UmlSettingsCmd
+	artifact_ref 136066 // UmlAccessVariableValueAction
+	artifact_ref 8833 // UmlItem
+	artifact_ref 128256 // UmlBaseState
+	artifact_ref 137088 // UmlBaseExpansionNode
+	artifact_ref 134144 // FlowBehavior
+	artifact_ref 132994 // UmlActivityItem
+	artifact_ref 6913 // UmlClassItem
+	artifact_ref 2048 // UmlBaseDeploymentDiagram
+	artifact_ref 136578 // UmlActivityControlNodeClasses
+	artifact_ref 133632 // UmlBaseActivityNode
+	artifact_ref 137728 // UmlBaseActivityPin
+	artifact_ref 129280 // UmlBaseRegion
+	artifact_ref 140418 // UmlTypeSpec
+	artifact_ref 132866 // UmlObjectDiagram
+	artifact_ref 7041 // UmlFormalParameter
+	artifact_ref 134658 // UmlExpansionRegion
+	artifact_ref 5248 // UmlCom
+	artifact_ref 7681 // UmlClassView
+	artifact_ref 128512 // UmlBaseStateDiagram
+	artifact_ref 137984 // UmlBaseActivityParameter
+	artifact_ref 4096 // aVisibility
+	artifact_ref 134402 // UmlActivityRegion
+	artifact_ref 2816 // UmlBaseOperation
+	artifact_ref 5120 // UmlSettings
+	artifact_ref 2176 // UmlBaseDeploymentView
+	artifact_ref 1664 // UmlBaseComponentDiagram
+	artifact_ref 1280 // UmlBaseClassView
+	artifact_ref 128386 // UmlState
+	artifact_ref 6144 // CppSettingsCmd
+	artifact_ref 140674 // UmlView
+	artifact_ref 128768 // StateBehavior
+	artifact_ref 135936 // UmlBaseAccessVariableValueAction
+	artifact_ref 136448 // UmlBaseActivityControlNodeClasses
+	artifact_ref 135168 // UmlBaseActivityAction
+	artifact_ref 132224 // UmlBaseForkPseudoState
+	artifact_ref 135042 // UmlInterruptibleActivityRegion
+	artifact_ref 140162 // UmlParameter
+	artifact_ref 2688 // UmlBaseNode
+	artifact_ref 6528 // UmlBaseComponent
+	artifact_ref 131074 // UmlExitPointPseudoState
+	artifact_ref 134528 // UmlBaseExpansionRegion
+	artifact_ref 3840 // aRelationKind
+	artifact_ref 138240 // UmlBaseParameterSet
+	artifact_ref 129536 // UmlBaseStateAction
+	artifact_ref 3456 // UmlBaseUseCase
+	artifact_ref 9729 // UmlUseCase
+	artifact_ref 139776 // SlotAttribute
+	artifact_ref 133250 // UmlActivity
+	artifact_ref 139650 // UmlClassInstance
+	artifact_ref 5632 // OnInstanceCmd
+	artifact_ref 7809 // UmlCollaborationDiagram
+	artifact_ref 129026 // UmlTransition
+	artifact_ref 3328 // UmlBaseSequenceDiagram
+	artifact_ref 136960 // anOrdering
+	artifact_ref 3200 // UmlBaseNcRelation
+	artifact_ref 3712 // UmlBaseUseCaseView
+	artifact_ref 130562 // UmlFinalState
+	artifact_ref 131330 // UmlDeepHistoryPseudoState
+	artifact_ref 8193 // UmlComponentView
+	artifact_ref 7553 // UmlClassMember
+	artifact_ref 9345 // UmlRelation
+	artifact_ref 138370 // UmlParameterSet
+	artifact_ref 8577 // UmlDiagram
+	artifact_ref 128896 // UmlBaseTransition
+	artifact_ref 130176 // UmlBaseEntryPointPseudoState
+	artifact_ref 132610 // UmlJoinPseudoState
+	artifact_ref 135298 // UmlActivityAction
+	artifact_ref 1920 // UmlBaseDeployment
+	artifact_ref 135810 // UmlOnSignalAction
+	artifact_ref 6657 // Main
+	artifact_ref 8705 // UmlExtraClassMember
+	artifact_ref 128130 // UmlStateItem
+	artifact_ref 9217 // UmlPackage
+	artifact_ref 130306 // UmlEntryPointPseudoState
+	artifact_ref 137344 // UmlBasePinParameter
+	artifact_ref 4224 // anItemKind
+	artifact_ref 132736 // UmlBaseObjectDiagram
+	artifact_ref 130818 // UmlTerminatePseudoState
+	artifact_ref 9601 // UmlSequenceDiagram
+	artifact_ref 136834 // UmlActivityObject
+	artifact_ref 6272 // JavaSettingsCmd
+	artifact_ref 5504 // MiscGlobalCmd
+	artifact_ref 135554 // UmlActivityActionClasses
+	artifact_ref 9985 // UmlUseCaseView
+	artifact_ref 7937 // UmlArtifact
+	artifact_ref 9857 // UmlUseCaseDiagram
+	artifact_ref 135424 // UmlBaseActivityActionClasses
+	artifact_ref 131456 // UmlBaseShallowHistoryPseudoState
+	artifact_ref 131200 // UmlBaseDeepHistoryPseudoState
+	artifact_ref 138114 // UmlActivityParameter
+	artifact_ref 1408 // UmlBaseCollaborationDiagram
+	artifact_ref 1536 // UmlBaseArtifact
+	artifact_ref 133762 // UmlActivityNode
+	artifact_ref 8321 // UmlDeploymentDiagram
+	artifact_ref 8961 // UmlNode
+	artifact_ref 138496 // aLanguage
+	artifact_ref 2432 // UmlBaseExtraClassMember
+	artifact_ref 131842 // UmlJunctionPseudoState
+	artifact_ref 5376 // CmdFamily
+	artifact_ref 4608 // UmlStereotype
+	artifact_ref 131712 // UmlBaseJunctionPseudoState
+	artifact_ref 139904 // SlotRelation
+	artifact_ref 134018 // UmlFlow
+	artifact_ref 1792 // UmlBaseComponentView
+	artifact_ref 384 // UmlBaseClassItem
+	artifact_ref 9089 // UmlOperation
+	artifact_ref 5760 // ClassGlobalCmd
+	artifact_ref 130050 // UmlInitialPseudoState
+	artifact_ref 136192 // UmlBaseActivityControlNode
+	artifact_ref 4864 // IdlSettings
+	artifact_ref 129666 // UmlStateAction
+	artifact_ref 7297 // UmlClass
+	artifact_ref 128642 // UmlStateDiagram
+	artifact_ref 2944 // UmlBasePackage
+	artifact_ref 137600 // aParameterEffectKind
+	artifact_ref 132480 // UmlBaseJoinPseudoState
+	artifact_ref 9473 // UmlNcRelation
+	artifact_ref 132354 // UmlForkPseudoState
+	artifact_ref 768 // UmlBaseAttribute
+	artifact_ref 7425 // UmlClassDiagram
+	artifact_ref 133506 // UmlActivityDiagram
       end
-      ncouples 9
+      ncouples 10
       key "genpro pro" value "/tmp/sm/cpp/SmGenerator.pro"
       key "genpro path" value "/tmp/sm/cpp/"
       key "genpro target" value "/tmp/sm/cpp/stmgen"
@@ -4634,6 +4829,7 @@ Do not forget to modify Main !"
       key "genpro includepath" value ""
       key "genpro dependpath" value ""
       key "genpro objectsdir" value ""
+      key "genpro footer" value ""
       comment "  Reference all the components used to made a C++ executable,
   used by 'genpro' to produce a .pro file allowing to produce a Makefile
   with 'tmake' or 'qmake'"
@@ -4654,7 +4850,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
     try {
-      UmlCom::trace(\"<b>State Machine C++ generator</b> release 1.2<br>\");
+      UmlCom::trace(\"<b>State Machine C++ generator</b> release 1.3<br>\");
       UmlCom::targetItem()->generate();
     }
     catch (...) {
@@ -5231,6 +5427,32 @@ ${package}
 ${definition}"
       associated_classes
 	class_ref 9089 // UmlOperation
+      end
+    end
+
+    artifact 140162 "UmlParameter"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 145026 // UmlParameter
       end
     end
 
@@ -6488,6 +6710,58 @@ ${package}
 ${definition}"
       associated_classes
 	class_ref 143234 // UmlParameterSet
+      end
+    end
+
+    artifact 139650 "UmlClassInstance"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 144514 // UmlClassInstance
+      end
+    end
+
+    artifact 140674 "UmlView"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 145538 // UmlView
       end
     end
   end

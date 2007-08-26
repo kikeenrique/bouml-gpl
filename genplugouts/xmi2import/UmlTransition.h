@@ -40,6 +40,8 @@ class UmlTransition : public UmlBaseTransition, public UmlStateItem {
 
         QCString triggerRef;
 
+        QCString kind;
+
     };
     
     

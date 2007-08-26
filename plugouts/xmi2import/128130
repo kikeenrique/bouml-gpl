@@ -1,6 +1,6 @@
 format 41
 "Aux" // Aux
-  revision 35
+  revision 37
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -71,7 +71,7 @@ ${members}}
 	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}, ${t1} * ${p1}${)}${volatile};
 "
 	cpp_def "${inline}${class}::${name}${(}const ${t0} & ${p0}, ${t1} * ${p1}${)}${volatile}
-  : _path(path), _fp(fp), _linenum(1), _length(1024) {
+  : _path(path), _fp(fp), _utf8(false), _linenum(1), _length(1024) {
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -218,6 +218,15 @@ ${body}}
 	idl_decl ""
       end
 
+      attribute 137858 "_utf8"
+	protected explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
       attribute 128258 "_linenum"
 	protected explicit_type "int"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -290,6 +299,21 @@ ${body}}
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
 "
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+      end
+
+      operation 231810 "setEncoding"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{

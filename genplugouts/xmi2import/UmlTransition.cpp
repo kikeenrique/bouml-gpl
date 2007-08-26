@@ -58,6 +58,9 @@ void UmlTransition::solveThem()
 	if (! transition.guard.isEmpty())
 	  t->set_Guard(transition.guard);
 	
+	if (*isrc == *itgt)
+	  t->set_IsExternal(transition.kind == "external");
+	
 	t->unload(FALSE, FALSE);
       }
     }
@@ -76,6 +79,7 @@ void UmlTransition::importIt(FileIn & in, Token & token, UmlItem *)
   transition.source = token.valueOf("source");
   transition.target = token.valueOf("target");
   transition.triggerRef = token.valueOf("trigger");
+  transition.kind = token.valueOf("kind");
   
   if (! token.closed()) {
     QCString k = token.what();

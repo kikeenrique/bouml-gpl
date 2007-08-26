@@ -39,5 +39,8 @@ extern bool preserve();
 extern void set_trace_header(QCString s);
 extern QCString get_trace_header();
 extern void write_trace_header();
-
+extern void incr_error();
+extern void incr_warning();
+extern int n_errors();
+extern int n_warnings();
 #endif

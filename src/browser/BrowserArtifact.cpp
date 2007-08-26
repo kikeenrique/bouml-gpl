@@ -176,7 +176,7 @@ QString BrowserArtifact::full_name(bool rev, bool) const {
 }
 
 QString BrowserArtifact::get_path(QString path, QString root,
-				   const char * ext) const {
+				  const char * ext) const {
   if (QDir::isRelativePath(root))
     root = BrowserView::get_dir().filePath(root);
   
@@ -192,33 +192,38 @@ QString BrowserArtifact::get_path(QString path, QString root,
   
   QDir d(path);
     
-  path = d.filePath(name + "." + ext);
+  path = (ext != 0) ? d.filePath(name + "." + ext) : d.filePath(name);
   
   return (QFile::exists(path)) ? path : QString::null;
 }
 
 void BrowserArtifact::get_paths(QString & cpp_h_path, QString & cpp_src_path,
-				 QString & java_path, QString & idl_path) const {
-  if (!strcmp(def->get_stereotype(), "source")) {
+				QString & java_path, QString & idl_path) const {
+  bool a_text = !strcmp(def->get_stereotype(), "text");
+  
+  if (a_text || !strcmp(def->get_stereotype(), "source")) {
     PackageData * pd = (PackageData *)
       ((BrowserNode *) parent()->parent())->get_data();
     
-    if (def->get_cpp_h()[0] != 0)
+    if (!a_text && (def->get_cpp_h()[0] != 0))
       cpp_h_path = get_path((const char *) pd->get_cpp_h_dir(),
 			    GenerationSettings::get_cpp_root_dir(),
 			    GenerationSettings::get_cpp_h_extension());
     if (def->get_cpp_src()[0] != 0)
       cpp_src_path = get_path((const char *) pd->get_cpp_src_dir(),
 			      GenerationSettings::get_cpp_root_dir(),
-			      GenerationSettings::get_cpp_src_extension());
+			      (a_text) ? (const char *) 0
+				       : (const char *) GenerationSettings::get_cpp_src_extension());
     if (def->get_java_src()[0] != 0)
       java_path = get_path((const char *) pd->get_java_dir(),
 			   GenerationSettings::get_java_root_dir(),
-			   GenerationSettings::get_java_extension());
+			   (a_text) ? (const char *) 0
+				    : (const char *) GenerationSettings::get_java_extension());
     if (def->get_idl_src()[0] != 0)
       idl_path = get_path((const char *) pd->get_idl_dir(),
 			  GenerationSettings::get_idl_root_dir(),
-			  GenerationSettings::get_idl_extension());
+			  (a_text) ? (const char *) 0
+				   : (const char *) GenerationSettings::get_idl_extension());
   }
 }
 
@@ -265,14 +270,17 @@ a double click with the left mouse button does the same thing");
 Note that you can undelete it after");
       }
     }
-    if (!strcmp(def->get_stereotype(), "source")) {
+    
+    bool a_text = !strcmp(def->get_stereotype(), "text");
+    
+    if (a_text || !strcmp(def->get_stereotype(), "source")) {
       m.insertSeparator();
       m.insertItem("Generate", &gensubm);
       gensubm.insertItem("C++", 10);
       gensubm.insertItem("Java", 11);
       gensubm.insertItem("Idl", 12);
       
-      if (preserve_bodies()) {
+      if (!a_text && preserve_bodies()) {
 	m.insertItem("Roundtrip body", &roundtripbodysubm);
 	
 	roundtripbodysubm.insertItem("C++", 30);
@@ -280,7 +288,7 @@ Note that you can undelete it after");
       }
       
       get_paths(cpp_h_path, cpp_src_path, java_path, idl_path);
-      if (!cpp_h_edited && !cpp_h_path.isEmpty()) {
+      if (!a_text && !cpp_h_edited && !cpp_h_path.isEmpty()) {
 	//if (! cpp_src_path.isEmpty())
 	  //roundtripsubm.insertItem("C++ header & source files", 13);
 	editsubm.insertItem("C++ header file", 14);
@@ -474,7 +482,10 @@ void BrowserArtifact::apply_shortcut(QString s) {
 	  choice = 1;
       }
     }
-    if (!strcmp(def->get_stereotype(), "source")) {
+    
+    bool a_text = !strcmp(def->get_stereotype(), "text");
+    
+    if (a_text || !strcmp(def->get_stereotype(), "source")) {
       if (s == "Generate C++")
 	choice = 10;
       else if (s == "Generate Java")
@@ -483,7 +494,7 @@ void BrowserArtifact::apply_shortcut(QString s) {
 	choice = 12;
       
       get_paths(cpp_h_path, cpp_src_path, java_path, idl_path);
-      if (!cpp_h_edited && !cpp_h_path.isEmpty()) {
+      if (!a_text && !cpp_h_edited && !cpp_h_path.isEmpty()) {
 	//if (! cpp_src_path.isEmpty())
 	  //roundtripsubm.insertItem("C++ header & source files", 13);
 	if (s == "See C++ header file")
@@ -810,6 +821,7 @@ void BrowserArtifact::init()
   its_default_stereotypes.append("file");
   its_default_stereotypes.append("script");
   its_default_stereotypes.append("source");
+  its_default_stereotypes.append("text");
   its_default_stereotypes.append("library");
   its_default_stereotypes.append("executable");
   

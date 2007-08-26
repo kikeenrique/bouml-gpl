@@ -90,7 +90,7 @@ void UmlOperation::roundtrip(const char * path, bool cpp)
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
 		      " : unvalid preserve body block, end of line expected</font><br>");
 	UmlCom::bye();
-	UmlCom::fatal_error("read_bodies 3");
+	UmlCom::fatal_error("read_bodies 2");
       }
 
       UmlOperation * op = (UmlOperation *)
@@ -102,6 +102,8 @@ void UmlOperation::roundtrip(const char * path, bool cpp)
 	n.sprintf("%x", id);
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
 		      " : unvalid operation id " + n + "</font><br>");
+	UmlCom::bye();
+	UmlCom::fatal_error("read_bodies 3");
 	return;
       }
       
@@ -125,6 +127,7 @@ void UmlOperation::roundtrip(const char * path, bool cpp)
 	  write_trace_header();
 	  UmlCom::trace("<tt>        </tt><font color=\"red\"><b>cannot update body of <i>"
 			+ op->name() + "</i></b></font><br>");
+	  incr_error();
 	}
 	else {
 	  write_trace_header();

@@ -31,6 +31,8 @@ void UmlTransition::write_it(FileOut & out) {
   }
   out.ref(parent(), "source");
   out.ref(target(), "target");
+  if (parent() == target())
+    out << " kind=\"" << ((isExternal()) ? "external" : "internal") << '"';
   out << ">\n";
   out.indent(+1);
   

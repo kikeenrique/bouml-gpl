@@ -38,6 +38,7 @@ class UmlPackage : public UmlBasePackage {
   
   public:
     QCString path(const QCString &);
+    QCString text_path(const QCString &);
     void generate();
 };
 

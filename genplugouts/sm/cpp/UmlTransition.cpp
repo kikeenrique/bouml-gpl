@@ -139,38 +139,54 @@ void UmlTransition::generate(QList<UmlTransition> trs, UmlClass * machine, UmlCl
     
     // the parent common to the current and the target state
     UmlState * common = state;
-    bool fromExit = 
-      // the exit behavior is made entering in the exit point
-      (tr->parent()->kind() == anExitPointPseudoState);
+    bool self_external = (state == tg) && tr->isExternal();
     
-    // compute common parent and manage exit behavior
-    if (tr->target()->kind() != aTerminatePseudoState) {
-      while (! ((UmlState *) tg)->inside(common)) {
-	if (!fromExit && !common->cppExitBehavior().isEmpty())
-	  body += indent + "  stm" + common->path() + "._doexit(stm);\n";
-	fromExit = FALSE;
-	
-	switch (common->parent()->kind()) {
-	case aState:
-	  common = (UmlState *) common->parent();
-	  break;
-	case aRegion:
-	  common = (UmlState *) common->parent()->parent();
-	  break;
-	default:
-	  UmlCom::trace("Error : transition from '" + state->name()
-			+ "' goes outside the state machine");
-	  throw 0;
+    if (self_external) {
+      // execute exit behavior
+      if (!state->cppExitBehavior().isEmpty())
+	body += indent + "  _doexit(stm);\n";
+    }
+    else {
+      bool fromExit = 
+	// the exit behavior is made entering in the exit point
+	(tr->parent()->kind() == anExitPointPseudoState);
+      
+      // compute common parent and manage exit behavior
+      if (tr->target()->kind() != aTerminatePseudoState) {
+	while (! ((UmlState *) tg)->inside(common)) {
+	  if (!fromExit && !common->cppExitBehavior().isEmpty())
+	    body += indent + "  stm" + common->path() + "._doexit(stm);\n";
+	  fromExit = FALSE;
+	  
+	  switch (common->parent()->kind()) {
+	  case aState:
+	    common = (UmlState *) common->parent();
+	    break;
+	  case aRegion:
+	    common = (UmlState *) common->parent()->parent();
+	    break;
+	  default:
+	    UmlCom::trace("Error : transition from '" + state->name()
+			  + "' goes outside the state machine");
+		    throw 0;
+	  }
 	}
       }
     }
     
     // manage transition activity
     if (!tr->cppActivity().isEmpty())
-      body += tr->cppActivity();
+      body += "\
+#ifdef VERBOSE_STATE_MACHINE\n\
+  puts(\"DEBUG : execute activity of transition " + tr->name() + "\");\n\
+#endif\n" + tr->cppActivity();
   
     // manage entry behavior
-    if (tr->target()->kind() != aTerminatePseudoState) {
+    if (self_external) {
+      if (!state->cppEntryBehavior().isEmpty())
+	body += indent + "  _doentry(stm);\n";
+    }
+    else if (tr->target()->kind() != aTerminatePseudoState) {
       if (tg != common) {
 	QCString enter;
 	UmlState * tg_parent;
@@ -191,7 +207,10 @@ void UmlTransition::generate(QList<UmlTransition> trs, UmlClass * machine, UmlCl
       // set the current state if needed
       if (tg != state)
 	body += indent + "  stm._set_currentState(stm"
-	  + ((UmlState *) tg)->path() + ");\n";
+	  + ((UmlState *) tg)->path() + ");\n\
+#ifdef VERBOSE_STATE_MACHINE\n\
+  puts(\"DEBUG : current state is now " + ((UmlState *) tg)->prettyPath() + "\");\n\
+#endif\n";
     }
 
     // do the transition

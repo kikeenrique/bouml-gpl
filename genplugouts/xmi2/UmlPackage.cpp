@@ -132,7 +132,19 @@ void UmlPackage::xmi(int argc, char ** argv) {
       }
 	
       {
-	FileOut out(&fp, _linefeed);
+	bool utf8;
+	
+	if (encoding.left(3).lower() == "utf") {
+	  if (encoding.right(1) != "8") {
+	    encoding = "UTF-8";
+	    UmlCom::trace("warning : replace encoding by UTF-8");
+	  }
+	  utf8 = TRUE;
+	}
+	else
+	  utf8 = FALSE;
+
+	FileOut out(&fp, _linefeed, utf8);
 	
 	// header
 
@@ -143,8 +155,8 @@ void UmlPackage::xmi(int argc, char ** argv) {
 	if (_use_profile)
 	  out << " xmlns:boumlprofile=\"http://bouml.free.fr/profiles/boumlprofile/1.0\"";
 	out << ">\n\
-	<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.4\"/>\n\
-	<uml:Model xmi:type=\"uml:Model\" name=\"" << name() << "\">\n";
+	<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.5\"/>\n\
+	<uml:Model xmi:type=\"uml:Model\" xmi:id=\"themodel\" name=\"" << name() << "\">\n";
 	out.indent(+2);
 	write(out);
 		

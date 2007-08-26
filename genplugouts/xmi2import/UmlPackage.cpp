@@ -82,6 +82,8 @@ void UmlPackage::importHeader(FileIn & in) {
     return;
   }
 
+  in.setEncoding(tk.valueOf("encoding"));
+
   (void) in.read();	// update tk
   
   if (tk.what() == "xmi:xmi") {

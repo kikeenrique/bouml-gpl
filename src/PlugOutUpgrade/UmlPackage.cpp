@@ -7365,6 +7365,51 @@ void fixe_set_name(UmlClass * baseitem)
   
 }
 
+//
+
+void add_external(UmlClass * transition)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlAttribute * att = 
+    transition->add_attribute("_is_external", PublicVisibility, "bool", 0, 0);
+  
+  att->moveAfter(transition->get_relation(aDirectionalAssociation, "_target"));
+  
+  UmlOperation * op;
+  UmlOperation * get;
+  
+  defGetBool(transition, _is_external, isExternal, 0, 0, "");
+  op->set_Description(" return if the transition is internal or external,\n"
+		      " only self transitions can't be external");
+  op->moveAfter(transition->get_operation("target"));
+  get = op;
+  
+  defSetBool(transition, _is_external, set_IsExternal, setIsCppExternalCmd, 0, 0,
+	     "");
+  op->set_Description(" set if the transition is internal or external,\n"
+		      " only a self transition may be set internal"
+		      "\n"
+		      " On error return FALSE in C++, produce a RuntimeException in Java");
+  op->moveAfter(get);
+    
+  QCString body;
+    
+  op = transition->get_operation("read_uml_");
+  body = op->cppBody();
+  body += "  _is_external = !UmlCom::read_bool();\n";
+  op->set_CppBody(body);
+      
+  body = op->javaBody();
+  body += "  _is_external = !UmlCom.read_bool();\n";
+  op->set_JavaBody(body);
+  
+  //
+
+  UmlCom::set_user_id(uid);
+}
 
 //
 //
@@ -7633,9 +7678,19 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
     
+    UmlClass * transition = UmlClass::get("UmlBaseTransition", 0);
+    
+    if (transition->get_operation("isExternal") == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      add_external(transition);
+
+      work = TRUE;
+    }
+    
     if (work) {
       UmlCom::trace("update api version<br>\n");
-      update_api_version("32");
+      update_api_version("33");
       UmlCom::message("ask for save-as");
       QMessageBox::information(0, "Upgrade", 
 			       "Upgrade done\n\n"

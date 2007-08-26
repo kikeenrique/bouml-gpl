@@ -4,7 +4,7 @@
 
 #include "UmlCom.h"
 FileIn::FileIn(const QString & path, FILE * fp)
-  : _path(path), _fp(fp), _linenum(1), _length(1024) {
+  : _path(path), _fp(fp), _utf8(false), _linenum(1), _length(1024) {
   _buffer = new char[_length];
 
   _special_chars["amp"] = '&';
@@ -305,21 +305,24 @@ const char * FileIn::read_string() {
     case '&':
       // special char
       c = read_special_char();
-      // no break !
+      break;
     default:
-      if ((index + 1) == _length) {
-	// can't add c then 0
-	char * b = new char[_length + 1024];
-	
-	memcpy(b, _buffer, index);
-	delete [] _buffer;
-	_buffer = b;
-	_length += 1024;
-      }
-      
-      _buffer[index++] = c;
+      if (_utf8 && (((unsigned char) c) > 127))
+	c = ((c & 3) << 6) + (fgetc(_fp) & 0x3f);
       break;
     }
+
+    if ((index + 1) == _length) {
+      // can't add c then 0
+      char * b = new char[_length + 1024];
+      
+      memcpy(b, _buffer, index);
+      delete [] _buffer;
+      _buffer = b;
+      _length += 1024;
+    }
+    
+    _buffer[index++] = c;
   }
 }
 
@@ -370,6 +373,17 @@ char FileIn::read_special_char() {
       error("not a valid special character");
     
     return iter.data();
+  }
+}
+
+void FileIn::setEncoding(QCString s) {
+  if (s.left(3).lower() == "utf") {
+    if (s.right(1) != "8") {
+      UmlCom::trace("sorry, in the UTF encoding, only UTF-8 is managed");
+      throw 0;
+    }
+    else
+      _utf8 = TRUE;
   }
 }
 

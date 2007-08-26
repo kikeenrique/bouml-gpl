@@ -60,52 +60,52 @@ class JavaSettings
       return _builtins[index].uml;
   
   return null;
-!!!63616.cpp!!!	relationStereotype(in s : string) : string
+!!!63616.cpp!!!	relationAttributeStereotype(in s : string) : string
   read_if_needed_();
   
-  UmlStereotype * b = UmlSettings::_map_relation_stereotypes.find(s);
+  UmlStereotype * b = UmlSettings::_map_relation_attribute_stereotypes.find(s);
   
   return (b) ? b->java : s;
-!!!63616.java!!!	relationStereotype(in s : string) : string
+!!!63616.java!!!	relationAttributeStereotype(in s : string) : string
   read_if_needed_();
   
-  UmlStereotype b = (UmlStereotype) UmlSettings._map_relation_stereotypes.get(s);
+  UmlStereotype b = (UmlStereotype) UmlSettings._map_relation_attribute_stereotypes.get(s);
   
   return (b != null) ? b.java : s;
-!!!63744.cpp!!!	set_RelationStereotype(in s : string, in v : string) : bool
-  UmlCom::send_cmd(javaSettingsCmd, setJavaRelationStereotypeCmd, s, v);
+!!!63744.cpp!!!	set_RelationAttributeStereotype(in s : string, in v : string) : bool
+  UmlCom::send_cmd(javaSettingsCmd, setJavaRelationAttributeStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
-    UmlStereotype * st = UmlSettings::_map_relation_stereotypes.find(s);
+    UmlStereotype * st = UmlSettings::_map_relation_attribute_stereotypes.find(s);
 
     if (st == 0)
-      st = UmlSettings::add_rel_stereotype(s);
+      st = UmlSettings::add_rel_attr_stereotype(s);
     st->java = v;
     
     return TRUE;
   }
   else
     return FALSE;
-!!!63744.java!!!	set_RelationStereotype(in s : string, in v : string) : bool
-  UmlCom.send_cmd(CmdFamily.javaSettingsCmd, JavaSettingsCmd._setJavaRelationStereotypeCmd, s, v);
+!!!63744.java!!!	set_RelationAttributeStereotype(in s : string, in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.javaSettingsCmd, JavaSettingsCmd._setJavaRelationAttributeStereotypeCmd, s, v);
   UmlCom.check();
 
-  UmlStereotype st = (UmlStereotype) UmlSettings._map_relation_stereotypes.get(s);
+  UmlStereotype st = (UmlStereotype) UmlSettings._map_relation_attribute_stereotypes.get(s);
 
   if (st == null)
-    st = UmlSettings.add_rel_stereotype(s);
+    st = UmlSettings.add_rel_attr_stereotype(s);
   st.java = v;
-!!!63872.cpp!!!	relationUmlStereotype(in s : string) : string
+!!!63872.cpp!!!	relationAttributeUmlStereotype(in s : string) : string
   read_if_needed_();
   
-  return UmlSettings::uml_rel_stereotype(s, &UmlStereotype::java);
-!!!63872.java!!!	relationUmlStereotype(in s : string) : string
+  return UmlSettings::uml_rel_attr_stereotype(s, &UmlStereotype::java);
+!!!63872.java!!!	relationAttributeUmlStereotype(in s : string) : string
   read_if_needed_();
   
-  int index = _relation_stereotypes.length;
+  int index = _relation_attribute_stereotypes.length;
   
   while (index-- != 0)
-    if (_relation_stereotypes[index].java.equals(s))
-      return _relation_stereotypes[index].uml;
+    if (_relation_attribute_stereotypes[index].java.equals(s))
+      return _relation_attribute_stereotypes[index].uml;
   
   return null;
 !!!64000.cpp!!!	classStereotype(in s : string) : string
@@ -383,28 +383,27 @@ class JavaSettings
   
   _interface_decl = v;
 
-!!!66432.cpp!!!	attributeDecl() : string
+!!!66432.cpp!!!	attributeDecl(in multiplicity : str) : string
   read_if_needed_();
-  
-  return _attr_decl;
-!!!66432.java!!!	attributeDecl() : string
+
+  return _attr_decl[UmlSettings::multiplicity_column(multiplicity)];
+!!!66432.java!!!	attributeDecl(in multiplicity : str) : string
   read_if_needed_();
-  
-  return _attr_decl;
-!!!66560.cpp!!!	set_AttributeDecl(in v : string) : bool
-  UmlCom::send_cmd(javaSettingsCmd, setJavaAttributeDeclCmd, v);
+
+  return _attr_decl[UmlSettings.multiplicity_column(multiplicity)];
+!!!66560.cpp!!!	set_AttributeDecl(in multiplicity : str, in v : string) : bool
+  UmlCom::send_cmd(javaSettingsCmd, setJavaAttributeDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
-    _attr_decl = v;
+    _attr_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
     return TRUE;
   }
   else
     return FALSE;
-!!!66560.java!!!	set_AttributeDecl(in v : string) : bool
-  UmlCom.send_cmd(CmdFamily.javaSettingsCmd, JavaSettingsCmd._setJavaAttributeDeclCmd, v);
+!!!66560.java!!!	set_AttributeDecl(in multiplicity : str, in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.javaSettingsCmd, JavaSettingsCmd._setJavaAttributeDeclCmd, multiplicity, v);
   UmlCom.check();
-  
-  _attr_decl = v;
 
+  _attr_decl[UmlSettings.multiplicity_column(multiplicity)] = v;
 !!!66688.cpp!!!	enumPatternItemDecl() : string
   read_if_needed_();
   
@@ -683,7 +682,7 @@ class JavaSettings
   n = UmlCom::read_unsigned();
   
   for (index = 0; index != n; index += 1)
-    UmlSettings::_relation_stereotypes[index].java = UmlCom::read_string();
+    UmlSettings::_relation_attribute_stereotypes[index].java = UmlCom::read_string();
   
   n = UmlCom::read_unsigned();
   
@@ -710,7 +709,8 @@ class JavaSettings
   _enum_decl = UmlCom::read_string();
   _enum_pattern_decl = UmlCom::read_string();
   _interface_decl = UmlCom::read_string();
-  _attr_decl = UmlCom::read_string();
+  for (index = 0; index != 3; index += 1)
+    _attr_decl[index] = UmlCom::read_string();
   _enum_item_decl = UmlCom::read_string();
   _enum_pattern_item_decl = UmlCom::read_string();
   _enum_pattern_item_case = UmlCom::read_string();
@@ -740,7 +740,7 @@ class JavaSettings
   n = UmlCom.read_unsigned();
   
   for (index = 0; index != n; index += 1)
-    UmlSettings._relation_stereotypes[index].java = UmlCom.read_string();
+    UmlSettings._relation_attribute_stereotypes[index].java = UmlCom.read_string();
   
   n = UmlCom.read_unsigned();
   
@@ -765,7 +765,8 @@ class JavaSettings
   _enum_decl = UmlCom.read_string();
   _enum_pattern_decl = UmlCom.read_string();
   _interface_decl = UmlCom.read_string();
-  _attr_decl = UmlCom.read_string();
+  for (index = 0; index != 3; index += 1)
+    _attr_decl[index] = UmlCom.read_string();
   _enum_item_decl = UmlCom.read_string();
   _enum_pattern_item_decl = UmlCom.read_string();
   _enum_pattern_item_case = UmlCom.read_string();

@@ -28,10 +28,13 @@ class UmlState : public UmlBaseState, public UmlStateItem {
     
     QCString path() const;
 
+    //  the path of the state to be produced in debug trace
+    QCString prettyPath() const;
+
     bool inside(UmlState * other);
 
     //  perform initializations before generation
-    virtual void init(UmlClass * mother, QCString path, UmlState * state);
+    virtual void init(UmlClass * mother, QCString path, QCString pretty_path, UmlState * state);
 
     //  to indicate that the state has a completion
     
@@ -60,6 +63,10 @@ class UmlState : public UmlBaseState, public UmlStateItem {
     //  to the state.
     QCString _path;
 
+    //  the path from the machine up to the class instance associated
+    //  to the state.
+    QCString _pretty_path;
+
 };
 
 inline UmlClass * UmlState::assocClass() const {
@@ -68,6 +75,10 @@ inline UmlClass * UmlState::assocClass() const {
 
 inline QCString UmlState::path() const {
   return _path;
+}
+
+inline QCString UmlState::prettyPath() const {
+  return _pretty_path;
 }
 
 inline void UmlState::setHasCompletion() {

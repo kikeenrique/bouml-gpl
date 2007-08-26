@@ -77,7 +77,6 @@ class BrowserState : public BrowserNode, public Labeled<BrowserState> {
     virtual void on_delete();
     virtual BasicData * get_data() const;
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
-    bool sub_state_of(BrowserState * st) const;
     
     virtual BrowserNode * get_associated() const;
     void set_associated_diagram(BrowserStateDiagram *, bool on_read = FALSE);

@@ -42,11 +42,15 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QCString(argv[port_index]).toUInt())) {
     try {
-      UmlCom::trace("<b>IDL generator</b> release 2.7.1<br>");
+      UmlCom::trace("<b>IDL generator</b> release 2.7.2<br>");
       
       UmlCom::targetItem()->generate();
       
-      UmlCom::trace("<hr><font face=helvetica>Generation done</font><br>");
+      QCString s;
+      
+      s.sprintf("<hr><font face=helvetica>Generation done : %d warnings, %d errors</font><br>",
+		n_warnings(), n_errors());
+      UmlCom::trace(s);
     }
     catch (...) {
     }

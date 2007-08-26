@@ -1,6 +1,6 @@
 format 41
 "Com" // API BASE::Com
-  revision 20
+  revision 22
   modified_by 2 "bruno"
   // class settings
   //class diagram settings

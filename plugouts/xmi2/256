@@ -1,6 +1,6 @@
 format 41
 "API BASE" // API BASE
-  revision 9
+  revision 10
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -7132,7 +7132,7 @@ ${body}}
 	relation 158336 -_->
 	  stereotype "friend"
 	  a default
-	    cpp default "Generated"
+	    cpp default "${type}"
 	    classrelation_ref 158336 // <dependency>
 	  b parent class_ref 145920 // UmlBaseView
       end
@@ -11524,6 +11524,42 @@ ${body}}
 	comment " returns the 'end' object (the 'start' object is the parent of the transition) no set !"
       end
 
+      operation 217344 "isExternal"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " return if the transition is internal or external,
+ only self transitions can't be external"
+      end
+
+      operation 217472 "set_IsExternal"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment " set if the transition is internal or external,
+ only a self transition may be set internal
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 132736 "trigger"
 	public explicit_return_type "string"
 	nparams 0
@@ -11878,6 +11914,15 @@ ${body}}
 "
 	    classrelation_ref 130304 // _target (<unidirectional association>)
 	  b parent class_ref 8833 // UmlItem
+      end
+
+      attribute 152320 "_is_external"
+	public explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
       end
 
       classrelation 130432 // _uml (<directional aggregation by value>)

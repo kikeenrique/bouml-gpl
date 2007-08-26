@@ -46,6 +46,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "Settings.h"
+#include "ArrowPointCanvas.h"
 #include "strutil.h"
 
 StateCanvas::StateCanvas(BrowserNode * bn, UmlCanvas * canvas,
@@ -174,22 +175,91 @@ void StateCanvas::compute_size() {
 			(height() > min_height) ? height() : min_height);
 }
 
+static bool sub_of(BrowserNode * br, BrowserState * st) {
+  for (;;) {
+    br = (BrowserNode *) br->parent();
+    if (br == st)
+      return TRUE;
+    
+    switch (br->get_type()) {
+    case UmlState:
+    case UmlRegion:
+      break;
+    default:
+      return FALSE;
+    }
+  }
+}
+
 void StateCanvas::prepare_for_move(bool on_resize) {
   if (! on_resize) {
     DiagramCanvas::prepare_for_move(on_resize);
     
-    // select sub states, even through regions
+    // select sub nodes
     QCanvasItemList all = canvas()->allItems();
     QCanvasItemList::Iterator cit;
+    UmlCanvas * canvas = the_canvas();
     
     for (cit = all.begin(); cit != all.end(); ++cit) {
       if ((*cit)->visible() && !(*cit)->selected()) {
 	DiagramItem * di = QCanvasItemToDiagramItem(*cit);
 	
-	if ((di != 0) &&
-	    (di->type() == UmlState) &&
-	    ((BrowserState *) di->get_bn())->sub_state_of((BrowserState*) browser_node))
-	  the_canvas()->select(*cit);
+	if ((di != 0) && (di->get_bn() != 0)) {
+	  switch (di->type()) {
+	  case UmlState:
+	  case UmlStateAction:
+	  case InitialPS:
+	  case EntryPointPS:
+	  case FinalPS:
+	  case TerminatePS:      
+	  case ExitPointPS:
+	  case DeepHistoryPS:
+	  case ShallowHistoryPS:
+	  case JunctionPS:
+	  case ChoicePS:
+	  case ForkPS:
+	  case JoinPS:
+	    if (sub_of(di->get_bn(), (BrowserState*) browser_node))
+	      canvas->select(*cit);
+	    break;
+	  default:
+	    break;
+	  }
+	}
+      }
+    }
+
+    // select points on lines having the two extremities selected or
+    // connecting pin/parameter/expansion node of element selected
+    for (cit = all.begin(); cit != all.end(); ++cit) {
+      if ((*cit)->visible() && !(*cit)->selected() && isa_arrow(*cit)) {
+	ArrowCanvas * ar = (ArrowCanvas *) *cit;
+	DiagramItem * b;
+	DiagramItem * e;
+	
+	ar->extremities(b, e);
+
+	if (!b->isSelected() || !e->isSelected()) {
+	  DiagramItem * start = ar->get_start();
+	  DiagramItem * dest = ar->get_end();
+
+	  if (start->isSelected() && dest->isSelected()) {
+	    while (b->type() == UmlArrowPoint) {
+	      canvas->select((ArrowPointCanvas *) b);
+	      ar = ((ArrowPointCanvas *) b)->get_other(ar);
+	      ar->extremities(b, e);
+	    }
+
+	    ar = (ArrowCanvas *) *cit;
+	    ar->extremities(b, e);
+
+	    while (e->type() == UmlArrowPoint) {
+	      canvas->select((ArrowPointCanvas *) e);
+	      ar = ((ArrowPointCanvas *) e)->get_other(ar);
+	      ar->extremities(b, e);
+	    }
+	  }
+	}
       }
     }
   }
@@ -217,7 +287,7 @@ void StateCanvas::modified() {
     draw_all_transitions();
   }
   canvas()->update();
-  force_sub_states_inside();
+  force_sub_inside();
   package_modified();
 }
 
@@ -243,10 +313,10 @@ aCorner StateCanvas::on_resize_point(const QPoint & p) {
 void StateCanvas::resize(aCorner c, int dx, int dy) {
   DiagramCanvas::resize(c, dx, dy, min_width, min_height);
   
-  force_sub_states_inside();
+  force_sub_inside();
 }
 
-void StateCanvas::force_sub_states_inside() {
+void StateCanvas::force_sub_inside() {
   // update sub states (even through region) position to be
   // inside of the state / region
   
@@ -257,44 +327,64 @@ void StateCanvas::force_sub_states_inside() {
     if ((*cit)->visible() && !(*cit)->selected()) {
       DiagramItem * di = QCanvasItemToDiagramItem(*cit);
       
-      if ((di != 0) && (di->type() == UmlState)) {
-	StateCanvas * sst = (StateCanvas *) di;	
-	BrowserNode * parent =
-	  (BrowserNode *) sst->browser_node->parent();
-	QRect r;
-	
-	if (parent == browser_node)
-	  r = regions_rect[0];
-	else if ((parent->get_type() == UmlRegion) &&
-		 (parent->parent() == browser_node)) {
-	  if (regions.size() == 0)
-	    continue;
-	  r = region_rect((BrowserRegion *) parent);
-	}
-	else
-	  continue;
-	
-	QRect ssr = sst->rect();
-	int dx = 0;
-	int dy = 0;
-	
-	if (ssr.left() < r.left()) {
-	  if (ssr.right() <= r.right())
-	    dx = r.left() - ssr.left();
-	}
-	else if (ssr.right() > r.right())
-	  dx = r.right() - ssr.right();
-	
-	if (ssr.top() < r.top()) {
-	  if (ssr.bottom() <= r.bottom())
-	    dy = r.top() - ssr.top();
-	}
-	else if (ssr.bottom() > r.bottom())
-	  dy = r.bottom() - ssr.bottom();
-	
-	if ((dx != 0) || (dy != 0)) {
-	  (*cit)->moveBy(dx, dy);
-	  sst->force_sub_states_inside();
+      if (di != 0) {
+	switch (di->type()) {
+	case UmlState:
+	case UmlStateAction:
+	case InitialPS:
+	case EntryPointPS:
+	case FinalPS:
+	case TerminatePS:      
+	case ExitPointPS:
+	case DeepHistoryPS:
+	case ShallowHistoryPS:
+	case JunctionPS:
+	case ChoicePS:
+	case ForkPS:
+	case JoinPS:
+	  {
+	    BrowserNode * parent =
+	      (BrowserNode *) di->get_bn()->parent();
+	    QRect r;
+	    
+	    if (parent == browser_node)
+	      r = regions_rect[0];
+	    else if ((parent->get_type() == UmlRegion) &&
+		     (parent->parent() == browser_node)) {
+	      if (regions.size() == 0)
+		continue;
+	      r = region_rect((BrowserRegion *) parent);
+	    }
+	    else
+	      continue;
+	    
+	    QRect di_r = di->rect();
+	    int dx = 0;
+	    int dy = 0;
+	    
+	    if (di_r.left() < r.left()) {
+	      if (di_r.right() <= r.right())
+		dx = r.left() - di_r.left();
+	    }
+	    else if (di_r.right() > r.right())
+	      dx = r.right() - di_r.right();
+	    
+	    if (di_r.top() < r.top()) {
+	      if (di_r.bottom() <= r.bottom())
+		dy = r.top() - di_r.top();
+	    }
+	    else if (di_r.bottom() > r.bottom())
+	      dy = r.bottom() - di_r.bottom();
+	    
+	    if ((dx != 0) || (dy != 0)) {
+	      (*cit)->moveBy(dx, dy);
+	      if (di->type() == UmlState)
+		((StateCanvas *) di)->force_sub_inside();
+	    }
+	  }
+	  break;
+	default:
+	  break;
 	}
       }
     }

@@ -30,6 +30,7 @@
 #include "JavaSettings.h"
 #include "UmlClass.h"
 #include "UmlCom.h"
+#include "util.h"
 
 void UmlAttribute::generate(QTextOStream & f, const QCString & st, QCString indent) {
   if (!javaDecl().isEmpty()) {
@@ -201,10 +202,12 @@ void UmlAttribute::generate_enum_pattern_item(QTextOStream & f, int & current_va
 	  int v;
 	  
 	  v = d.toInt(&ok);
-	  if (! ok) 
+	  if (! ok) {
 	    UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b><i>") +
 			  defaultValue() + "</i> wrong value for <i> "
 			  + name() + "</i></b></font><br>");
+	    incr_error();
+	  }
 	  else
 	    current_value = v;
 	}

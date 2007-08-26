@@ -237,6 +237,12 @@ QCString UmlPackage::header_path(const QCString & f, QCString relto) {
   return df + QCString(".") + CppSettings::headerExtension();
 }
 
+QCString UmlPackage::text_path(const QCString & f, QCString relto) {
+  QCString r = source_path(f, relto);
+
+  return r.left(r.length() - 1 - CppSettings::headerExtension().length());
+}
+
 void UmlPackage::generate() {
   QVector<UmlItem> ch = UmlItem::children();
   

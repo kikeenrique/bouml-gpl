@@ -247,6 +247,7 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
 	write_trace_header();
 	UmlCom::trace(QCString("<font color=\"red\"><b> class<i> ") + cl->name() +
 		      "</i> referenced but does not have associated <i>artifact</i></b></font><br>");
+	incr_warning();
 	continue;
       }
     }
@@ -275,6 +276,7 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
 	write_trace_header();
       	UmlCom::trace(QCString("<font color=\"red\"><b> class<i> ") + cl->name() +
 		      "</i> referenced but does not have associated <i>artifact</i></b></font><br>");
+	incr_warning();
       }
     }
     else if (!hform.isEmpty()) {

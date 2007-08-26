@@ -470,24 +470,6 @@ QString BrowserState::full_name(bool rev, bool) const {
 	       : p + "::" + name;
 }
 
-bool BrowserState::sub_state_of(BrowserState * st) const {
-  const BrowserNode * p = this;
-  
-  for (;;) {
-    p = (BrowserNode *) p->parent();
-    if (p == st)
-      return TRUE;
-    
-    switch (p->get_type()) {
-    case UmlState:
-    case UmlRegion:
-      break;
-    default:
-      return FALSE;
-    }
-  }
-}
-
 BrowserNodeList & BrowserState::instances(BrowserNodeList & result, bool sort)
 {
   IdIterator<BrowserState> it(all);

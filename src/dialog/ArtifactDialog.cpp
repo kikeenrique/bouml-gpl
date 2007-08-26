@@ -514,15 +514,16 @@ void ArtifactDialog::post_edit_description(ArtifactDialog * d, QString s) {
 
 void ArtifactDialog::edStereotypeActivated(const QString & ste) {
   bool a_source = (ste.stripWhiteSpace() == "source");
+  bool a_text = (ste.stripWhiteSpace() == "text");
     
-  setTabEnabled(cpp_h_content_page, a_source);
-  setTabEnabled(cpp_src_content_page, a_source);
-  setTabEnabled(java_content_page, a_source);
-  setTabEnabled(idl_content_page, a_source);
-  setTabEnabled(cl_assoc_page, a_source);
-  setTabEnabled(art_assoc_page, !a_source);
+  setTabEnabled(cpp_h_content_page, a_source && !a_text);
+  setTabEnabled(cpp_src_content_page, a_source || a_text);
+  setTabEnabled(java_content_page, a_source || a_text);
+  setTabEnabled(idl_content_page, a_source || a_text);
+  setTabEnabled(cl_assoc_page, a_source && !a_text);
+  setTabEnabled(art_assoc_page, !a_source && !a_text);
   
-  if (! a_source) {
+  if (!a_source && !a_text) {
     if (!lb_art_initialized) {
       lb_art_initialized = TRUE;
       if (data->associated != 0)
@@ -588,7 +589,8 @@ void ArtifactDialog::post_cpp_edit_h(ArtifactDialog * d, QString s)
 void ArtifactDialog::cpp_edit_src() {
   edit(edcpp_src_content->text(),
        edname->text().stripWhiteSpace() + "_source", data,
-       CppEdit, this, (post_edit) post_cpp_edit_src, edits);
+       (edstereotype->currentText().stripWhiteSpace() == "text") ? TxtEdit : CppEdit,
+       this, (post_edit) post_cpp_edit_src, edits);
 }
 
 void ArtifactDialog::post_cpp_edit_src(ArtifactDialog * d, QString s)
@@ -599,7 +601,8 @@ void ArtifactDialog::post_cpp_edit_src(ArtifactDialog * d, QString s)
 void ArtifactDialog::java_edit() {
   edit(edjava_content->text(),
        edname->text().stripWhiteSpace() + "_source", data,
-       JavaEdit, this, (post_edit) post_java_edit, edits);
+       (edstereotype->currentText().stripWhiteSpace() == "text") ? TxtEdit : JavaEdit,
+       this, (post_edit) post_java_edit, edits);
 }
 
 void ArtifactDialog::post_java_edit(ArtifactDialog * d, QString s)
@@ -626,21 +629,24 @@ void ArtifactDialog::cpp_default_h() {
 }
 
 void ArtifactDialog::cpp_default_src() {
-  edcpp_src_content->setText((n_cpp != 0)
+  edcpp_src_content->setText(((n_cpp != 0) &&
+			      (edstereotype->currentText().stripWhiteSpace() != "text"))
 			     ? GenerationSettings::cpp_default_source_content()
 			     : "");
   cpp_update_src();
 }
 
 void ArtifactDialog::java_default_src() {
-  edjava_content->setText((n_java != 0)
+  edjava_content->setText(((n_java != 0) &&
+			   (edstereotype->currentText().stripWhiteSpace() != "text"))
 			  ? GenerationSettings::java_default_source_content()
 			  : "");
   java_update_src();
 }
 
 void ArtifactDialog::idl_default_src() {
-  edidl_content->setText((n_idl != 0)
+  edidl_content->setText(((n_idl != 0) &&
+			  (edstereotype->currentText().stripWhiteSpace() != "text"))
 			 ? GenerationSettings::idl_default_source_content()
 			 : "");
   idl_update_src();
@@ -1365,20 +1371,22 @@ void ArtifactDialog::accept() {
         
     QString stereotype = 
       fromUnicode(edstereotype->currentText().stripWhiteSpace());
+    bool a_text = (stereotype == "text");
     
     data->set_stereotype(stereotype);
     
-    if (stereotype != "source")
-      data->update_associated(art_associated);
-    else {
+    if (a_text || (stereotype == "source")) {
       QValueList<BrowserClass *> l;
-      unsigned n = lb_cl_associated->count();
-
-      for (unsigned i = 0; i != n; i += 1)
-	l.append((BrowserClass *)
-		 (((ListBoxBrowserNode *) lb_cl_associated->item(i))
-		  ->browser_node));
-    
+      
+      if (! a_text) {
+	unsigned n = lb_cl_associated->count();
+	
+	for (unsigned i = 0; i != n; i += 1)
+	  l.append((BrowserClass *)
+		   (((ListBoxBrowserNode *) lb_cl_associated->item(i))
+		    ->browser_node));
+      }
+      
       bn->set_associated_classes(l);
       
       if (isTabEnabled(cpp_h_content_page)) {
@@ -1405,6 +1413,8 @@ void ArtifactDialog::accept() {
       else
 	data->idl_src = QString::null;
     }
+    else 
+      data->update_associated(art_associated);
     
     kvtable->update(bn);
   

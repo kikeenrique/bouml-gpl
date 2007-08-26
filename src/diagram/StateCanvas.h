@@ -82,7 +82,7 @@ class StateCanvas : public QObject, public DiagramCanvas {
     virtual aCorner on_resize_point(const QPoint & p);
     virtual void resize(aCorner c, int dx, int dy);
     virtual void prepare_for_move(bool on_resize);
-    void force_sub_states_inside();
+    void force_sub_inside();
     
     virtual bool has_drawing_settings() const;
     virtual void edit_drawing_settings(QList<DiagramItem> &);

@@ -34,6 +34,7 @@
 
 class QPushButton;
 class QComboBox;
+class QCheckBox;
 
 class LineEdit;
 class MultiLineEdit;
@@ -59,6 +60,7 @@ class TransitionDialog : public QTabDialog {
     QWidget * umltab;
     TransitionData * rel;
     LineEdit * edname;
+    QCheckBox * internal_cb;
     QComboBox * edstereotype;
     MultiLineEdit * comment;
     QList<BodyDialog> edits;

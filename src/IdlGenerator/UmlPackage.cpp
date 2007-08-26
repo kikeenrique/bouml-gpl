@@ -122,6 +122,12 @@ QCString UmlPackage::path(const QCString & f) {
     IdlSettings::sourceExtension();
 }
 
+QCString UmlPackage::text_path(const QCString & f) {
+  QCString r = path(f);
+  
+  return r.left(r.length() - 1 - IdlSettings::sourceExtension().length());
+}
+
 void UmlPackage::generate() {
   QVector<UmlItem> ch = UmlItem::children();
   

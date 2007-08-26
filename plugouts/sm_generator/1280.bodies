@@ -52,6 +52,21 @@ class UmlBaseAttribute
   UmlCom.check();
 
   _type = t;
+!!!201088.cpp!!!	multiplicity() : string
+  read_if_needed_();
+  
+  return _multiplicity;
+!!!201088.java!!!	multiplicity() : string
+  read_if_needed_();
+  
+  return _multiplicity;
+!!!201216.cpp!!!	set_Multiplicity(in s : str, inout  : ) : bool
+  return set_it_(_multiplicity, s, setMultiplicityCmd);
+!!!201216.java!!!	set_Multiplicity(in s : str, inout  : ) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setMultiplicityCmd, s);
+  UmlCom.check();
+
+  _multiplicity = s;
 !!!3200.cpp!!!	getOperation() : UmlOperation
   read_if_needed_();
   
@@ -173,11 +188,13 @@ class UmlBaseAttribute
   _idl_explicit_case = 0;
 #endif
   UmlBaseClassMember::unload(rec, del);
+  _multiplicity = 0;
 !!!4608.java!!!	unload(in rec : bool, in del : bool) : void
   _type = null;
   _default_value = null;
   _idl_explicit_case = null;
   super.unload(rec, del);
+  _multiplicity = null;
 !!!4736.cpp!!!	UmlBaseAttribute(in id : item_id, in n : string)
   _get_oper = 0;
   _set_oper = 0;
@@ -190,6 +207,7 @@ class UmlBaseAttribute
   _type.type = (UmlClass *) UmlBaseItem::read_();
   if (_type.type == 0)
     _type.explicit_type = UmlCom::read_string();
+  _multiplicity = UmlCom::read_string();
   _default_value = UmlCom::read_string();
   _read_only = UmlCom::read_bool();
   _get_oper = (UmlOperation *) UmlBaseItem::read_();
@@ -200,6 +218,7 @@ class UmlBaseAttribute
   _type.type = (UmlClass) UmlBaseItem.read_();
   if (_type.type == null)
     _type.explicit_type = UmlCom.read_string();
+  _multiplicity = UmlCom.read_string();
   _default_value = UmlCom.read_string();
   _read_only = UmlCom.read_bool();
   _get_oper = (UmlOperation) UmlBaseItem.read_();

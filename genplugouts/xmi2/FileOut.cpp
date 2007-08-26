@@ -4,7 +4,9 @@
 
 #include <qtextstream.h>
 #include <qfile.h>
-FileOut::FileOut(QFile * fp, bool lf) : QTextStream(fp), _lf(lf), _indent(0){
+FileOut::FileOut(QFile * fp, bool lf, bool utf8) : QTextStream(fp), _lf(lf), _indent(0){
+  if (utf8)
+    setEncoding(QTextStream::UnicodeUTF8);
 }
 
 void FileOut::indent() {
@@ -132,7 +134,7 @@ void FileOut::quote(const char * s) {
    case '&': (*this) << "&amp;"; break;
    case '\n': if (_lf) (*this) << *s; else (*this) << "&#10;"; break;
    case '\r': if (_lf) (*this) << *s; else (*this) << "&#13;"; break;
-   default: (*this) << *s;
+   default: (*this) << *s; break;
    }
    s += 1;
  }

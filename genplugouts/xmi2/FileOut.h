@@ -12,7 +12,7 @@ class UmlItem;
 //QTextOStream + usefull operations
 class FileOut : public QTextStream {
   public:
-    FileOut(QFile * fp, bool lf);
+    FileOut(QFile * fp, bool lf, bool utf8);
 
     void indent();
 

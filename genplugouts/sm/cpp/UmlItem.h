@@ -27,7 +27,7 @@ class UmlItem : public UmlBaseItem {
 
     //  initialization, does nothing at this level
     
-    virtual void init(UmlClass * mother, QCString path, UmlState * state);
+    virtual void init(UmlClass * mother, QCString path, QCString pretty_path, UmlState * state);
 
     //  program entry point, correspond to a wrong Tools configuration
     

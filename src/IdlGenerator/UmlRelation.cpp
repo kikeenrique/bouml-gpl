@@ -46,6 +46,7 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f,
       write_trace_header();
       UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>an <i>")
 		    + cl_stereotype + "</i> cannot inherits</b></font><br>");
+      incr_warning();
       return;
     }
     
@@ -56,6 +57,7 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f,
       write_trace_header();
       UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>cannot inherits an <i>")
 		    + other_stereotype + "</i></b></font><br>");
+      incr_warning();
       return;
     }
     
@@ -102,11 +104,13 @@ void UmlRelation::generate_decl(QTextOStream & f,
     if (cl_stereotype == "enum") {
       write_trace_header();
       UmlCom::trace("<tt>        </tt><font color=\"red\"><b>an <i>enum</i> cannot have relation</b></font><br>");
+      incr_warning();
       return;
     }
     if (cl_stereotype == "typedef") {
       write_trace_header();
       UmlCom::trace("<tt>        </tt><font color=\"red\"><b>a <i>typedef</i> cannot have relation</b></font><br>");
+      incr_warning();
       return;
     }
     if (!idlDecl().isEmpty()) {
@@ -186,6 +190,7 @@ void UmlRelation::generate_decl(QTextOStream & f,
 	    write_trace_header();
 	    UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>unspecified <i>case</i> for <i>")
 			  + name() + "</b></font><br>");
+	    incr_error();
 	  }
 	  else
 	    f << idlCase();

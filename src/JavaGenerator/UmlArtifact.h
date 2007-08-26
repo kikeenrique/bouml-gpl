@@ -45,6 +45,8 @@ class UmlArtifact : public UmlBaseArtifact {
     
     static bool must_be_saved(const char * path, const char * new_contains);
   
+    void generate_text();
+
   public:
     UmlArtifact(void * id, const QCString & n)
       : UmlBaseArtifact(id, n), managed(FALSE), imports(0) {};

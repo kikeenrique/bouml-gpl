@@ -48,7 +48,7 @@ QCString UmlItem::quotedName() {
 
 }
 
-void UmlItem::init(UmlClass *, QCString, UmlState *) {
+void UmlItem::init(UmlClass *, QCString, QCString, UmlState *) {
 }
 
 void UmlItem::generate() {

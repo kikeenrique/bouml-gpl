@@ -46,7 +46,10 @@ TransitionData::TransitionData() : end(0) {
 TransitionData::TransitionData(const BrowserTransition * model,
 			       BrowserTransition * r)
     : SimpleData(model->get_data()) {
-  set_start_end(r, ((TransitionData *) model->get_data())->end);
+  TransitionData * md = (TransitionData *) model->get_data();
+  
+  set_start_end(r, md->end);	// set is_internal
+  is_internal &= md->is_internal;
 }
 
 TransitionData::~TransitionData() {
@@ -64,6 +67,8 @@ void TransitionData::set_start_end(BrowserTransition * s, BrowserNode * e) {
   browser_node = s;
   end = e;
   connect(e->get_data(), SIGNAL(deleted()), this, SLOT(end_deleted()));
+  
+  is_internal = (s->parent() == e);
 }
 
 BrowserNode * TransitionData::get_start_node() const {
@@ -98,6 +103,8 @@ void TransitionData::send_uml_def(ToolCom * com,
   BasicData::send_uml_def(com, bn, comment);
   get_end_node()->write_id(com);
   uml.send_def(com);
+  if (com->api_format() >= 33)
+    com->write_bool(is_internal);
 }
 
 void TransitionData::send_cpp_def(ToolCom * com) {
@@ -142,6 +149,16 @@ bool TransitionData::tool_cmd(ToolCom * com, const char * args,
 	break;
       case setJavaActivityCmd:
 	java.expr = args;
+	break;
+      case setIsCppExternalCmd:
+	if (*args != 0)
+	  is_internal = FALSE;
+	else if (get_start_node() != end) {
+	  com->write_ack(FALSE);
+	  return TRUE;
+	}
+	else
+	  is_internal = TRUE;
 	break;
       default:
 	return BasicData::tool_cmd(com, args, bn, comment);

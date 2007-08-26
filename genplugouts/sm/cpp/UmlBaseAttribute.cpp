@@ -44,6 +44,16 @@ bool UmlBaseAttribute::set_Type(const UmlTypeSpec & t) {
   return set_it_(_type, t, setTypeCmd);
 }
 
+const QCString & UmlBaseAttribute::multiplicity() {
+  read_if_needed_();
+  
+  return _multiplicity;
+}
+
+bool UmlBaseAttribute::set_Multiplicity(const char * s) {
+  return set_it_(_multiplicity, s, setMultiplicityCmd);
+}
+
 UmlOperation * UmlBaseAttribute::getOperation() {
   read_if_needed_();
   
@@ -138,6 +148,7 @@ void UmlBaseAttribute::unload(bool rec, bool del) {
   _idl_explicit_case = 0;
 #endif
   UmlBaseClassMember::unload(rec, del);
+  _multiplicity = 0;
 }
 
 void UmlBaseAttribute::read_uml_() {
@@ -145,6 +156,7 @@ void UmlBaseAttribute::read_uml_() {
   _type.type = (UmlClass *) UmlBaseItem::read_();
   if (_type.type == 0)
     _type.explicit_type = UmlCom::read_string();
+  _multiplicity = UmlCom::read_string();
   _default_value = UmlCom::read_string();
   _read_only = UmlCom::read_bool();
   _get_oper = (UmlOperation *) UmlBaseItem::read_();

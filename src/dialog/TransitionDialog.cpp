@@ -31,6 +31,7 @@
 #include <qvbox.h>
 #include <qlabel.h>
 #include <qcombobox.h> 
+#include <qcheckbox.h> 
 #include <qpushbutton.h> 
 
 #include "TransitionDialog.h"
@@ -87,6 +88,14 @@ TransitionDialog::TransitionDialog(TransitionData * r)
   sp.setHorData(QSizePolicy::Expanding);
   edstereotype->setSizePolicy(sp);
   
+  if (r->get_start_node() != r->get_end_node())
+    internal_cb = 0;
+  else {
+    new QLabel(grid);
+    internal_cb = new QCheckBox("internal", grid);
+    internal_cb->setChecked(r->internal());
+  }
+    
   QVBox * vtab = new QVBox(grid);
   new QLabel("description :", vtab);
   if (! visit)
@@ -256,6 +265,9 @@ void TransitionDialog::accept() {
   else {  
     bn->set_name(s);
     rel->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+    
+    if (internal_cb != 0)
+      rel->set_internal(internal_cb->isChecked());
     
     uml.accept(rel->uml);  
     cpp.accept(rel->cpp);  

@@ -112,6 +112,12 @@ QCString UmlPackage::file_path(const QCString & f) {
     JavaSettings::sourceExtension();
 }
 
+QCString UmlPackage::text_path(const QCString & f) {
+  QCString r = file_path(f);
+  
+  return r.left(r.length() - 1 - JavaSettings::sourceExtension().length());
+}
+
 void UmlPackage::generate() {
   QVector<UmlItem> ch = UmlItem::children();
   

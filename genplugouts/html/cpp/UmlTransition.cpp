@@ -10,11 +10,18 @@ void UmlTransition::html(QCString, unsigned int, unsigned int) {
   writeq(name());
   fw.write("</div></td></tr></table>");
   
-  fw.write("<p>From ");
-  parent()->write();
-  fw.write(" To ");
-  target()->write();
-  fw.write("</p>");
+  if (parent() == target()) {
+    fw.write("<p>Self relation of ");
+    parent()->write();
+    fw.write((isExternal()) ? ", external</p>" : ", internal</p>");
+  }
+  else {
+    fw.write("<p>From ");
+    parent()->write();
+    fw.write(" To ");
+    target()->write();
+    fw.write("</p>");
+  }
 
   fw.write("<p>Trigger :</p><ul>");
   

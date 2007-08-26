@@ -58,3 +58,17 @@ void write_trace_header()
     TraceHeader = "";
   }
 }
+
+//
+
+static int NErrors;
+
+void incr_error()
+{
+  NErrors += 1;
+}
+
+int n_errors()
+{
+  return NErrors;
+}
