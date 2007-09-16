@@ -6,6 +6,7 @@
 #include <qcstring.h>
 
 class FileOut;
+class UmlRelation;
 
 // This class manages 'classes', notes that the class 'ClassItem'
 // is a mother class of the class's children.
@@ -14,7 +15,7 @@ class FileOut;
 
 class UmlClass : public UmlBaseClass {
   public:
-    UmlClass(void * id, const QCString & n) : UmlBaseClass(id, n) {};
+    UmlClass(void * id, const QCString & n) : UmlBaseClass(id, n), _assoc(0) {};
 
     virtual void write(FileOut & out);
 
@@ -25,6 +26,16 @@ class UmlClass : public UmlBaseClass {
 
   public:
     void write_actuals(FileOut & out);
+
+    virtual void search_class_assoc();
+
+    //return 0 in case the class is already an association class 
+    UmlClass * set_assoc(UmlRelation * rel);
+
+
+  protected:
+    //relation when the class is an association class
+    UmlRelation * _assoc;
 
 };
 

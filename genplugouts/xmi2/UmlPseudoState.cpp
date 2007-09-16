@@ -21,7 +21,7 @@ void UmlPseudoState::add_incoming_trans(UmlTransition * tr) {
 
 void UmlPseudoState::write(FileOut & out) {
   out.indent();
-  out << "<connectionPoint xmi:type=\"uml:Pseudostate\"";
+  out << "<subvertex xmi:type=\"uml:Pseudostate\"";
   out.id(this);
   if (! name().isEmpty()) {
     out << " name=\"";
@@ -46,7 +46,7 @@ void UmlPseudoState::write(FileOut & out) {
 
   out.indent(-1);
   out.indent();
-  out << "</connectionPoint>\n";
+  out << "</subvertex>\n";
     
   unload(); 
 }

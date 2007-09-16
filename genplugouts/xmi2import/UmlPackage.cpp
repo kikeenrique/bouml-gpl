@@ -21,6 +21,8 @@
 #include "UmlNode.h"
 #include "UmlFlow.h"
 #include "UmlTransition.h"
+#include "Binding.h"
+#include "ClassInstance.h"
 
 void UmlPackage::import() {
   QString path = QFileDialog::getOpenFileName(QString::null, QString::null, 0, 0, "open xmi/xml file");
@@ -47,6 +49,8 @@ void UmlPackage::import() {
       Association::solveThem();	// must be done after UnresolvedRelation::solveThem();
       UmlFlow::solveThem();
       UmlTransition::solveThem();
+      Binding::solveThem(); // must be done when all classes and realization or generalization are done
+      ClassInstance::solveThem(); // must be done when all classes are done
       
       UmlCom::trace(QCString("<br><font face=helvetica>xmi import done<br><br>") +
 		    QCString("<font face=helvetica> ") +
@@ -94,27 +98,12 @@ void UmlPackage::importHeader(FileIn & in) {
     else if (ver != "2.1")
       UmlCom::trace("warning : imported file is not xmi 2.1<br><br>");
 
-    while ((void) in.read(), !tk.close("xmi:xmi")) {
-      if (tk.what() == "xmi:documentation") {
-	QCString who = tk.valueOf("exporter");
-
-	if (who.isNull())
-	  who = tk.valueOf("xmi:exporter");
-      
-	if (! who.isNull()) {
-	  UmlCom::trace("xmi file produced by <b>" + who + "</b><br><br>");
-	  FromBouml = (who == "Bouml");
-	}
-      
-	if (! tk.closed())
-	  in.finish(tk.what());
-      }
-      else
-	UmlCom::targetItem()->import(in, tk);
-    }
+    while ((void) in.read(), !tk.close("xmi:xmi"))
+      UmlCom::targetItem()->import(in, tk);
   }
   else if (tk.what() == "uml:model") {
     // Borland Together 2006 for Eclipse
+    // Visual Paradigm for UML 6.1
     QCString ver = tk.valueOf("xmi:version");
 
     if (ver.isEmpty())
@@ -131,6 +120,7 @@ void UmlPackage::importHeader(FileIn & in) {
 UmlItem * UmlPackage::container(anItemKind kind, const Token & token, FileIn & in) {
   switch (kind) {
   case aClass:
+  case aClassInstance:
   case aState:
   case anActivity:
     if (_classview == 0)

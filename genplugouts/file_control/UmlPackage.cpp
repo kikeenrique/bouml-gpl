@@ -15,7 +15,7 @@ void UmlPackage::fileControl(bool ci) {
   QCString cmd;
   
   if (! prj->propertyValue((ci) ? "check-in-cmd" : "check-out-cmd", cmd))
-    cmd = "specify the command with the file replaced by %file";
+    cmd = "specify the command containing %file and %dir or %dironly";
   
   Dialog dialog(ci, cmd, rec, reload);	// the dialog execution set 'cmd' and 'rec'
   
@@ -35,20 +35,27 @@ void UmlPackage::fileControl(bool ci) {
   
     // apply the command on each file
     QDictIterator<void> it(files);
-    int index_file = cmd.find("%file");
-    bool has_dir = (cmd.find("%dir") != -1);
     QFileInfo prjpath(prjfile);
     QString dir = prjpath.dirPath(TRUE);
+    QString dironly = dir;
+    int index;
+    
+    if ((dironly.length() > 3) &&
+        (((const char *) dironly)[1] == ':') &&
+        (((const char *) dironly)[2] == '/'))
+      dironly = dironly.mid(2);
   
+    while ((index = cmd.find("%dironly")) != -1)
+      cmd.replace(index, 8, dironly);
+    
+    while ((index = cmd.find("%dir")) != -1)
+      cmd.replace(index, 4, dir);
+      
     while (it.current()) {
       QString s = cmd;
   
-      s.replace(index_file, 5, it.currentKey());
-      if (has_dir) {
-        int index_dir = s.find("%dir");
-        
-        s.replace(index_dir, 4, dir);
-      }
+      while ((index = s.find("%file")) != -1)
+        s.replace(index, 5, it.currentKey());
       
       system((const char *) s);
       ++it;

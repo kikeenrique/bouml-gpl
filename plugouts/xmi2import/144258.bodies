@@ -65,8 +65,6 @@ class Association
     (*it).solve(it.key());
     
   All.clear();
-
-  AssociationClass::solveThem();
 !!!215554.cpp!!!	solve(in id : string) : void
   if (roles[0].id.isEmpty() || roles[0].idref.isEmpty() ||
       roles[1].id.isEmpty() || roles[1].idref.isEmpty())
@@ -126,7 +124,6 @@ class Association
 	  ra->set_Name(name);
 	
 	UmlItem::All.insert(a.id, ra);
-	UmlItem::All.insert(id, ra);	// for association classes
 	if (a.name.isEmpty()) {
 	  s.sprintf("anonymous_role_%u", ++n);
 	  ra->set_RoleName(s);
@@ -140,6 +137,13 @@ class Association
 	  ra->set_isClassMember(TRUE);
 	if (! a.multiplicity.isEmpty())
 	  ra->set_Multiplicity(a.multiplicity);
+	
+ 	if (is_class_association) {
+ 	  UmlTypeSpec t;
+ 	  
+ 	  t.type = (UmlClass *) UmlItem::All[id];	// exist !
+ 	  ra->set_Association(t);
+ 	}
 	
 	if (rb != 0) {
 	  UmlItem::All.insert(b.id, rb);

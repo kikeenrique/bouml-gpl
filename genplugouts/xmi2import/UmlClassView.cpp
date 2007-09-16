@@ -7,6 +7,7 @@
 UmlItem * UmlClassView::container(anItemKind kind, const Token & token, FileIn & in) {
   switch (kind) {
   case aClass:
+  case aClassInstance:
   case aState:
   case anActivity:
     return this;

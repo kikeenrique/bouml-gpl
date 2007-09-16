@@ -14,7 +14,7 @@ class UmlExitPointPseudoState : public UmlBaseExitPointPseudoState {
      UmlExitPointPseudoState(void * id, const QCString & s) : UmlBaseExitPointPseudoState(id, s) {
     }
 
-    virtual void init(UmlClass * mother, QCString path, UmlState * state);
+    virtual void init(UmlClass * mother, QCString path, QCString pretty_path, UmlState * state);
 
     //  generate code for this pseudo state
     

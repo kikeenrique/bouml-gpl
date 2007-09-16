@@ -465,9 +465,12 @@ CodClassInstCanvas * CodClassInstCanvas::read(char * & st, UmlCanvas * canvas,
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");
 
-    result->compute_size();
-    result->set_center100();
-    result->show();
+    if (result->get_type() != 0) {
+      // not a deleted instance
+      result->compute_size();
+      result->set_center100();
+      result->show();
+    }
     return result;    
   }
   else

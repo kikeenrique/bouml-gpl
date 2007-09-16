@@ -173,6 +173,7 @@ void UmlActivity::readParameter(FileIn & in, Token & token) {
       in.error("cannot create activity parameter '"
 	       + s + "' in '" + name() + "'");
 
+    param->addItem(token.xmiId(), in);
   }
 
   param->readParameter(in, token);
@@ -203,6 +204,7 @@ void UmlActivity::readParameterNode(FileIn & in, Token & token) {
       in.error("cannot create activity parameter node '"
 	       + s + "' in '" + name() + "'");
 
+    param->addItem(token.xmiId(), in);
   }
 
   param->readParameterNode(in, token);

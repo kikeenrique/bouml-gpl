@@ -1,6 +1,6 @@
 TEMPLATE	= app
 TARGET		= stmgen
-CONFIG		+= debug warn_on qt
+CONFIG		+= release warn_on qt
 DEFINES		= WITHCPP WITHJAVA WITHIDL
 HEADERS		= ./UmlActivityDiagram.h \
 		  ./UmlBaseClassItem.h \

@@ -7415,6 +7415,42 @@ void add_external(UmlClass * transition)
 //
 //
 
+void fixe_classinstance(UmlClass * bci)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+
+  //
+  
+  UmlCom::trace("Fixe UmlBaseClassInstance operation profiles<br>\n");
+  
+  UmlClass * rel = UmlClass::get("UmlRelation", 0);
+  UmlOperation * op = bci->get_operation("add_Relation");
+  QValueList<UmlParameter> params = op->params();
+  UmlParameter param = params.first();
+    
+  param.type.type = rel;
+  op->replaceParameter(0, param);
+  
+  //
+  
+  op = bci->get_operation("remove_Relation");
+  params = op->params();
+  param = params.first();
+    
+  param.type.type = rel;
+  op->replaceParameter(0, param);
+  
+  //
+
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
 bool ask_for_upgrade()
 {
   if (QMessageBox::warning(0, "Upgrade",
@@ -7684,6 +7720,18 @@ bool UmlPackage::upgrade() {
       if (!work && !ask_for_upgrade())
 	return FALSE;
       add_external(transition);
+
+      work = TRUE;
+    }
+    
+    UmlClass * bci = UmlClass::get("UmlBaseClassInstance", 0);
+    UmlOperation * op = bci->get_operation("add_Relation");
+    const QValueList<UmlParameter> params = op->params();
+
+    if (params.first().type.type->name() == "UmlAttribute") {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      fixe_classinstance(bci);
 
       work = TRUE;
     }

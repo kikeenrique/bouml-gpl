@@ -53,8 +53,11 @@ void UmlState::write(FileOut & out) {
       if (ch[i]->kind() != aRegion)
 	ch[i]->write(out);
     
+#if 0
+    // to bypass Eclipse's bug
     while (! _trans.isEmpty())
       _trans.take(0)->write_it(out);
+#endif
     
     out.indent(-1);
     out.indent();
@@ -65,6 +68,12 @@ void UmlState::write(FileOut & out) {
     if (ch[i]->kind() == aRegion)
       ch[i]->write(out);
        
+#if 1
+    // to bypass Eclipse's bug
+    while (! _trans.isEmpty())
+      _trans.take(0)->write_it(out);
+#endif
+    
   out.indent(-1); 
   out.indent(); 
   out << "</" << k << ">\n"; 

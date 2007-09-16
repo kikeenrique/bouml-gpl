@@ -44,6 +44,8 @@ class UmlState : public UmlBaseState, public UmlStateItem {
     
     bool hasCompletion();
 
+    bool needCreate();
+
     //  entry point for the state machine generation
     virtual void generate();
 

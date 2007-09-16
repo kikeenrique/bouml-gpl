@@ -19,8 +19,8 @@ int main(int argc, char ** argv)
     try {
       bool ci = (strcmp(argv[1], "ci") == 0);
 
-      UmlCom::trace((ci) ? "<b>file control</b> release 1.0.3, check-in"
-			 : "<b>file control</b> release 1.0.3, check-out");
+      UmlCom::trace((ci) ? "<b>file control</b> release 1.0.4, check-in"
+			 : "<b>file control</b> release 1.0.4, check-out");
       UmlCom::targetItem()->fileControl(ci);
     }
     catch (...) {

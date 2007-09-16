@@ -17,6 +17,7 @@ void UmlClass::defaultDef() {
 UmlOperation * UmlClass::trigger(QCString s, UmlClass * machine, UmlClass * anystate) {
   UmlOperation * tr;
   bool completion = (s == "_completion");
+  bool create = (s == "create");
 
   if (!completion) {
     // the trigger for the user
@@ -30,7 +31,7 @@ UmlOperation * UmlClass::trigger(QCString s, UmlClass * machine, UmlClass * anys
     if (! tr->isManaged()) {
       tr->defaultDef();
       tr->setType("bool", "${type}");
-      if (tr->cppBody().isEmpty() && (s != "create"))
+      if (!create)
 	tr->set_CppBody("\
   if (_current_state != 0) {\n\
 #ifdef VERBOSE_STATE_MACHINE\n\
@@ -59,7 +60,7 @@ UmlOperation * UmlClass::trigger(QCString s, UmlClass * machine, UmlClass * anys
       tr->setType("void", "${type}");
       if (tr->params().isEmpty())
 	tr->addParam(0, InputOutputDirection, "stm", machine);
-      if (s == "create")
+      if (create)
 	tr->setParams("${t0} &");
       else {
 	tr->setParams("${t0} & ${p0}");
@@ -71,11 +72,10 @@ UmlOperation * UmlClass::trigger(QCString s, UmlClass * machine, UmlClass * anys
 			"  else\n"
 			"    puts(\"DEBUG : transition " + s + " not expected\");\n"
 			"#endif\n");
-      }
-      tr->managed();
-      if (s != "create")
 	tr->setComment("the current state doesn't manage the event "
 		       + s + ", give it to the upper state");
+      }
+      tr->managed();
     }
     else
       tr->setUsed();

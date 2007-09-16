@@ -140,7 +140,8 @@ void ClassInstanceData::init_other_side() {
 // during connexion list use
 
 void ClassInstanceData::check() {
-  if (cl->deletedp())
+  if ((cl == 0) || // deleted class instance referenced in a diagram
+      cl->deletedp())
     browser_node->delete_it();
   else if (!attributes.isEmpty() || !relations.isEmpty()) {
     bool modif = FALSE;
@@ -494,9 +495,9 @@ bool ClassInstanceData::tool_cmd(ToolCom * com, const char * args,
 	{
 	  BrowserAttribute * at = (BrowserAttribute *) com->get_id(args);
 	  bool find = FALSE;
-	  QValueList<SlotAttr>::Iterator it_attr = attributes.begin();
+	  QValueList<SlotAttr>::Iterator it_attr;
 	  
-	  while (it_attr != attributes.end()) {
+	  for (it_attr = attributes.begin(); it_attr != attributes.end(); ++it_attr) {
 	    SlotAttr & slot_attr = *it_attr;
 	    
 	    if (slot_attr.att == at) {
@@ -649,7 +650,7 @@ bool ClassInstanceData::change_rel(ToolCom * com, const char * args,
       }
       
       // add it
-      if ((*it).is_a)
+      if (rd->is_a(r))
 	add(other, rd);
       else
 	((ClassInstanceData *)other->get_data())

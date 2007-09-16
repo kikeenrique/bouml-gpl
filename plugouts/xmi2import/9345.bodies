@@ -9,7 +9,6 @@ class UmlRelation
   declareFct("ownedmember", "uml:Association", &importIt);
   declareFct("packagedelement", "uml:Association", &importIt);
 
-  AssociationClass::init();
 !!!215170.cpp!!!	importIt(inout in : FileIn, inout token : Token, inout where : UmlItem) : void
   Association & assoc = Association::get(token.xmiId(), token.valueOf("name"));
   

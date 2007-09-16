@@ -26,6 +26,12 @@ class UmlClassView
     out.indent(); 
     out << ((_uml_20) ? "</ownedMember>\n" : "</packagedElement>\n");
   }
+!!!219522.cpp!!!	search_class_assoc() : void
+  const QVector<UmlItem> ch = children();
+  unsigned n = ch.size();
+  
+  for (unsigned i = 0; i != n; i += 1)
+    ch[i]->search_class_assoc();
 !!!130307.cpp!!!	memo_relation(inout r : UmlItem) : void
   if (_gen_views)
 	_relations.append(r);

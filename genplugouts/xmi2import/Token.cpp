@@ -22,8 +22,20 @@ void Token::read(FileIn & in, bool any) {
     if (str || (*k != '!'))
       break;
     
-    while ((*in.readWord(any, str) != '>') || str)
-      ;
+    int minus = 0;
+    
+    for (;;) {
+      char c = *in.readWord(any, str);
+      
+      if (! str) {
+	if (c == '-')
+	  minus += 1;
+	else if ((c == '>') && (minus == 2))
+	  break;
+	else
+	  minus = 0;
+      }
+    }
   }
 
 

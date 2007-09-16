@@ -425,9 +425,13 @@ AttributeDialog::AttributeDialog(AttributeData * a)
 					    : "Default Attribute declaration",
 			      htab),
 	      SIGNAL(pressed ()), this, SLOT(idl_default()));
-      if (!idl_in_enum && !idl_in_union && !idl_in_struct)
-	connect(new QPushButton("Default State declaration", htab), SIGNAL(pressed ()),
-		this, SLOT(idl_default_state()));
+      if (!idl_in_enum && !idl_in_union) {
+	if (!idl_in_struct)
+	  connect(new QPushButton("Default State declaration", htab), SIGNAL(pressed ()),
+		  this, SLOT(idl_default_state()));
+	connect(new QPushButton("Default constant declaration", htab), SIGNAL(pressed ()),
+		this, SLOT(idl_default_constant()));
+      }
       connect(new QPushButton("Not generated in Idl", htab), SIGNAL(pressed ()),
 	      this, SLOT(idl_unmapped()));
     }
@@ -1123,6 +1127,11 @@ void AttributeDialog::idl_default() {
 
 void AttributeDialog::idl_default_state() {
   edidldecl->setText(GenerationSettings::idl_default_valuetype_attr_decl(multiplicity->currentText().stripWhiteSpace()));
+  idl_update();
+}
+
+void AttributeDialog::idl_default_constant() {
+  edidldecl->setText(GenerationSettings::idl_default_const_decl(multiplicity->currentText().stripWhiteSpace()));
   idl_update();
 }
 

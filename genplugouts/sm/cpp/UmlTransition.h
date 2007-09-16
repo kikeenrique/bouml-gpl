@@ -21,7 +21,7 @@ class UmlTransition : public UmlBaseTransition, public UmlStateItem {
 
     //  initialization before generation
     
-    virtual void init(UmlClass * mother, QCString path, UmlState * state);
+    virtual void init(UmlClass * mother, QCString path, QCString pretty_path, UmlState * state);
 
     //   manage transition from a state or an initial pseudo state
     

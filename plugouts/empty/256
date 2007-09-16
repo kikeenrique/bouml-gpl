@@ -1,6 +1,6 @@
-format 41
+format 42
 "API BASE" // API BASE
-  revision 22
+  revision 23
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -20344,7 +20344,7 @@ ${body}}
       operation 194944 "add_Relation"
 	public explicit_return_type "bool"
 	nparams 2
-	  param in name "relation" type class_ref 7041 // UmlAttribute
+	  param in name "relation" type class_ref 9345 // UmlRelation
 	  param in name "other" type class_ref 143618 // UmlClassInstance
 	nexceptions 1
 	  explicit_exception "RuntimeException"
@@ -20371,7 +20371,7 @@ ${body}}
       operation 195072 "remove_Relation"
 	public explicit_return_type "bool"
 	nparams 2
-	  param in name "relation" type class_ref 7041 // UmlAttribute
+	  param in name "relation" type class_ref 9345 // UmlRelation
 	  param in name "other" type class_ref 143618 // UmlClassInstance
 	nexceptions 1
 	  explicit_exception "RuntimeException"

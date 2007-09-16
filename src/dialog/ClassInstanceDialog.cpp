@@ -158,8 +158,10 @@ ClassInstanceDialog::ClassInstanceDialog(ClassInstanceData * i)
   connect(b, SIGNAL(clicked()), this, SLOT(menu_class()));
 
   edtype = new QComboBox(FALSE, grid);
-  if (visit)
+  if (visit) {
     edtype->insertItem(inst->get_class()->full_name());
+    nodes.append(inst->get_class());
+  }
   else {
     BrowserClass::instances(nodes);
     nodes.full_names(list);

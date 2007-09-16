@@ -143,7 +143,7 @@ void UmlPackage::xmi(int argc, char ** argv) {
 	}
 	else
 	  utf8 = FALSE;
-
+	
 	FileOut out(&fp, _linefeed, utf8);
 	
 	// header
@@ -155,9 +155,10 @@ void UmlPackage::xmi(int argc, char ** argv) {
 	if (_use_profile)
 	  out << " xmlns:boumlprofile=\"http://bouml.free.fr/profiles/boumlprofile/1.0\"";
 	out << ">\n\
-	<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.5\"/>\n\
+	<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.5.3\"/>\n\
 	<uml:Model xmi:type=\"uml:Model\" xmi:id=\"themodel\" name=\"" << name() << "\">\n";
 	out.indent(+2);
+	search_class_assoc();
 	write(out);
 		
 	// non class types
@@ -209,6 +210,14 @@ void UmlPackage::write(FileOut & out) {
   out.indent(-1); 
   out.indent(); 
   out << ((_uml_20) ? "</ownedMember>\n" : "</packagedElement>\n");
+}
+
+void UmlPackage::search_class_assoc() {
+  const QVector<UmlItem> ch = children();
+  unsigned n = ch.size();
+  
+  for (unsigned i = 0; i != n; i += 1)
+    ch[i]->search_class_assoc();
 }
 
 void UmlPackage::memo_relation(UmlItem * r) {

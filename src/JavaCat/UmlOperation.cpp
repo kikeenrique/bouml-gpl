@@ -302,12 +302,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
 	ln -= 1;
       e.truncate(ln);
       
-      if (e.stripWhiteSpace().find('\n') == -1) {
-	// body on one line, does not use ${body}
-	def.replace(def.find("${body}"), 7, e);
-      }
-      else
-	op->set_JavaBody(e);
+      op->set_JavaBody(e);
     }
 #endif
   }

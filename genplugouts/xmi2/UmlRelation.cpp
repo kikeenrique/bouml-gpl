@@ -90,6 +90,10 @@ void UmlRelation::write_realization(FileOut & out) {
 void UmlRelation::write_relation(FileOut & out) {
   // note : it is the first side
  
+  if (_assoc_class != 0)
+    // generated in the association class
+    return;
+    
   const char * k = (_uml_20) ? "ownedElement" : "packagedElement";
 
   out.indent();
@@ -112,6 +116,16 @@ void UmlRelation::write_relation(FileOut & out) {
   write_visibility(out);
   out << ">\n";
   
+  write_ends(out);
+  
+  out.indent();
+  out << "</" << k << ">\n";
+
+}
+
+void UmlRelation::write_ends(FileOut & out) {
+  // note : it is the first side
+ 
   out.indent();
   out << "\t<memberEnd";
   out.idref(this);
@@ -128,7 +142,10 @@ void UmlRelation::write_relation(FileOut & out) {
   else {
     out << "\t<ownedEnd xmi:type=\"uml:Property\"";
     out.id_prefix(this, "REVERSE_");
-    out.ref(this, "association", "ASSOC_");
+    if (_assoc_class != 0)
+      out.ref(_assoc_class, "association");
+    else
+      out.ref(this, "association", "ASSOC_");
     out << " visibility=\"" << ((_vis_prefix) ? "vis_private\"" : "private\"");
     out.ref(parent(), "type");
     out << " aggregation=\"";
@@ -151,31 +168,7 @@ void UmlRelation::write_relation(FileOut & out) {
     out.idref_prefix(this, "REVERSE_");
     out << "/>\n";
   }
-  
-  out.indent();
-  out << "</" << k << ">\n";
 
-  UmlTypeSpec assoc = association();
-  
-  if (assoc.type != 0) {
-    out.indent();
-    out << '<' << k << " xmi:type=\"uml:AssociationClass\"";
-    out.id_prefix(this, "ASSOC_CLASS_");
-    out << ">\n";
-    
-    out.indent();
-    out << "\t<memberEnd ";
-    out.idref_prefix(this, "ASSOC_");
-    out << "/>\n";
-    
-    out.indent();
-    out << "\t<memberEnd ";
-    out.idref(assoc.type);
-    out << "/>\n";
-    
-    out.indent();
-    out << "</" << k << ">\n";
-  }
 }
 
 void UmlRelation::write_relation_as_attribute(FileOut & out) {
@@ -207,7 +200,10 @@ void UmlRelation::write_relation_as_attribute(FileOut & out) {
   
   UmlRelation * first = side(TRUE);
 
-  out.ref(first, "association", "ASSOC_");
+  if (first->_assoc_class != 0)
+    out.ref(first->_assoc_class, "association");
+  else
+    out.ref(first, "association", "ASSOC_");
 
   out << " aggregation=\"";
   if (this == first) {
@@ -246,5 +242,34 @@ void UmlRelation::write_relation_as_attribute(FileOut & out) {
   out << "</ownedAttribute>\n";
 
   unload();
+}
+
+void UmlRelation::search_class_assoc() {
+  if (side(TRUE) != this)
+    return;
+    
+  switch (relationKind()) {
+  case aGeneralisation:
+  case aRealization:
+  case aDependency:
+    break;
+  default:
+    {
+      UmlTypeSpec a = association();
+      
+      if (a.type != 0) {
+	// not generated for actors
+	UmlItem * p = parent();
+	
+	if (p->stereotype() != "actor") {
+	  do {
+	    p = p->parent();
+	  } while (p->kind() == aClass);
+	  if (p->kind() == aClassView)
+	    _assoc_class = a.type->set_assoc(this);
+	}
+      }
+    }
+  }
 }
 

@@ -3,6 +3,7 @@
 #include "FileIn.h"
 #include "Token.h"
 
+#include "UmlFinalState.h"
 #include "UmlChoicePseudoState.h"
 #include "UmlDeepHistoryPseudoState.h"
 #include "UmlEntryPointPseudoState.h"
@@ -23,11 +24,18 @@ void UmlPseudoState::init()
 
 void UmlPseudoState::importIt(FileIn & in, Token & token, UmlItem * where)
 {
+  QCString k = token.valueOf("kind");
+  
+  if (k == "final") {
+    // Visual Paradigm 6.1
+    UmlFinalState::importIt(in, token, where);
+    return;
+  }
+  
   // search a container for any pseudo state
   where = where->container(anInitialPseudoState, token, in);
     
   if (where != 0) {
-    QCString k = token.valueOf("kind");
     QCString s = token.valueOf("name");
     
     if (s.isEmpty()) {

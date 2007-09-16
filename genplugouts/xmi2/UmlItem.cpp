@@ -79,6 +79,9 @@ void UmlItem::write_description_properties(FileOut & out) {
   }
 }
 
+void UmlItem::search_class_assoc() {
+}
+
 void UmlItem::memo_relation(UmlItem * r) {
   parent()->memo_relation(r);
 }

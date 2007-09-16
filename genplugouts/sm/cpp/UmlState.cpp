@@ -18,6 +18,7 @@ bool UmlState::isLeaf() {
     switch (ch[index]->kind()) {
     case aState:
     case aRegion:
+    case anInitialPseudoState:
       return FALSE;
     default:
       break;
@@ -105,6 +106,13 @@ void UmlState::init(UmlClass * mother, QCString path, QCString pretty_path, UmlS
   
   for (index = 0; index != ch.count(); index += 1)
     ch[index]->init(_class, _path, _pretty_path, this);
+
+}
+
+bool UmlState::needCreate() {
+  return (_has_completion ||
+	  !cppEntryBehavior().isEmpty() ||
+	  !isLeaf());
 
 }
 
@@ -242,9 +250,11 @@ void UmlState::generate() {
     final->setType("void", "${type}");
     final->set_CppBody("  _current_state = 0;\n"
 		       "#ifdef VERBOSE_STATE_MACHINE\n"
-		       "  puts(\"DEBUG : final state reached\n"
+		       "  puts(\"DEBUG : final state reached\");\n"
 		       "#endif\n");
-    final->set_isCppInline(TRUE);
+    if (final->isCppInline())
+      // defined by old release
+      final->set_isCppInline(FALSE);
     final->set_Visibility(ProtectedVisibility);
     
     // add if needed a relation to memorize the current state
@@ -304,21 +314,18 @@ void UmlState::generate(UmlClass * machine, UmlClass * anystate, UmlState *) {
   QCString s;
     
   s = cppEntryBehavior();
-  if (! s.isEmpty())
-    s.insert(0,
-	     "#ifdef VERBOSE_STATE_MACHINE\n"
-	     "\tputs(\"DEBUG : execute entry behavior of " + _pretty_path + "\");\n"
-	     "#endif\n");
     
-  if (!_has_initial && 
-      ((!s.isEmpty()) || _has_completion)) {
+  if (isLeaf() && // done by the transition from initial pseudo state for the non leaf
+      (_has_completion || !s.isEmpty())) {
     // add a 'create' to do the entry behavior / completion
     UmlOperation * create = _class->trigger("create", machine, anystate);
-    QCString body = s;
+    QCString body;
     
+    if (!s.isEmpty())
+      body = "\t_doentry(stm);\n";
     if (_has_completion)
       body += "\t_completion(stm);\n";
-
+    
     create->set_CppBody(body);
   }
 
@@ -339,6 +346,10 @@ void UmlState::generate(UmlClass * machine, UmlClass * anystate, UmlState *) {
     doen->setParams("${t0} & ${p0}");
     doen->setComment("perform the 'entry behavior'");
     doen->setType("void", "${type}");
+    s.insert(0,
+	     "#ifdef VERBOSE_STATE_MACHINE\n"
+	     "\tputs(\"DEBUG : execute entry behavior of " + _pretty_path + "\");\n"
+	     "#endif\n");
     doen->set_CppBody(s);
   }
 

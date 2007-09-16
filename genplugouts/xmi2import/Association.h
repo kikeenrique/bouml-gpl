@@ -5,11 +5,9 @@
 #include <qcstring.h>
 #include "aRelationKind.h"
 #include <qmap.h>
-#include <qvaluelist.h>
 
 class FileIn;
 class Token;
-class UmlItem;
 
 // an unused role has an empty id
 struct Role {
@@ -40,8 +38,11 @@ struct Role {
 
 class Association {
   public:
+    Association() : is_class_association(FALSE) {}
+
     void import(FileIn & in, Token & token);
 
+    void set_class_association(){ is_class_association = TRUE; }
     // search for the association from its id
     
     static Association & get(QCString id, QCString s = "");
@@ -54,41 +55,13 @@ class Association {
 
     Role roles[2];
 
+    static QMap<QCString, Association> All;
+
+    bool is_class_association;
+
 
   private:
     void solve(QCString id);
-
-
-  protected:
-    static QMap<QCString, Association> All;
-
-};
-
-class AssociationClass {
-  public:
-    AssociationClass(QCString r1, QCString r2) : ref1(r1), ref2(r2) {}
-
-    //  for QValueList
-    AssociationClass();
-
-    static void init();
-
-    //import the association class starting by 'tk' inside 'where'
-    static void importIt(FileIn & in, Token & token, UmlItem * where);
-
-    static void solveThem();
-
-
-  private:
-    void solve();
-
-
-  protected:
-    QCString ref1;
-
-    QCString ref2;
-
-    static QValueList<AssociationClass> All;
 
 };
 

@@ -110,6 +110,8 @@ class UmlItem
 !!!191618.cpp!!!	declareFct(in what : string, in type : string, inout fct : PFunc) : void
   Functions[what + " " + type] = fct;
 !!!195458.cpp!!!	init() : void
+  declareFct("xmi:documentation", "", &importDocumentation);
+
   declareFct("ownedcomment", "uml:Comment", &importComment);
   
   declareFct("xmi:extension", "", &importExtension);
@@ -131,6 +133,19 @@ class UmlItem
   declareFct("ownedmember", "uml:Realization", &importRealization);
   declareFct("packagedelement", "uml:Realization", &importRealization);
   declareFct("interfacerealization", "uml:InterfaceRealization", &importRealization);
+!!!234242.cpp!!!	importDocumentation(inout in : FileIn, inout token : Token, inout where : UmlItem) : void
+  QCString who = token.valueOf("exporter");
+
+  if (who.isNull())
+    who = token.valueOf("xmi:exporter");
+    
+    if (! who.isNull()) {
+      UmlCom::trace("xmi file produced by <b>" + who + "</b><br><br>");
+      FromBouml = (who == "Bouml");
+    }
+
+  if (! token.closed())
+    in.finish(token.what());
 !!!195586.cpp!!!	importComment(inout in : FileIn, inout token : Token, inout where : UmlItem) : void
   QCString doc = token.valueOf("body");
 

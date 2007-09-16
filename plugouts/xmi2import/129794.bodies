@@ -5,11 +5,18 @@ class UmlPseudoState
 
   declareFct("connectionpoint", "", &importIt);// Borland Together 2006 for Eclipse
 !!!197762.cpp!!!	importIt(inout in : FileIn, inout token : Token, inout where : UmlItem) : void
+  QCString k = token.valueOf("kind");
+  
+  if (k == "final") {
+    // Visual Paradigm 6.1
+    UmlFinalState::importIt(in, token, where);
+    return;
+  }
+  
   // search a container for any pseudo state
   where = where->container(anInitialPseudoState, token, in);
     
   if (where != 0) {
-    QCString k = token.valueOf("kind");
     QCString s = token.valueOf("name");
     
     if (s.isEmpty()) {

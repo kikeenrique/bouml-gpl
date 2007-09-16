@@ -38,7 +38,10 @@ ConstrDestrCopyDialog::ConstrDestrCopyDialog(UmlClass * cl, bool have_constructo
 			   : "the class doesn't have contructor  ",
 			   g));
   
-  add_constr = new QCheckBox("add constructor", g);
+  QHBox * h = new QHBox(g);
+    
+  add_constr = new QCheckBox("add constructor", h);
+  constr_explicit = new QCheckBox("explicit", h);
   
   // destructor
   
@@ -49,7 +52,7 @@ ConstrDestrCopyDialog::ConstrDestrCopyDialog(UmlClass * cl, bool have_constructo
     labels.append(new QLabel("the class doesn't have destructor  ",
 			     g));
     
-    QHBox * h = new QHBox(g);
+    h = new QHBox(g);
     
     add_destr = new QCheckBox("add destructor", h);
     virtual_destr = new QCheckBox("virtual", h);
@@ -174,7 +177,7 @@ ConstrDestrCopyDialog::ConstrDestrCopyDialog(UmlClass * cl, bool have_constructo
 
 void ConstrDestrCopyDialog::accept() {
   if (add_constr->isChecked())
-    target->addContructor();
+    target->addContructor(constr_explicit->isChecked());
     
   if ((add_destr != 0) && add_destr->isChecked())
     target->addDestructor(virtual_destr->isChecked());

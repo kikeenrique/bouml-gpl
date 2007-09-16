@@ -18,7 +18,6 @@ void UmlRelation::init()
   declareFct("ownedmember", "uml:Association", &importIt);
   declareFct("packagedelement", "uml:Association", &importIt);
 
-  AssociationClass::init();
 }
 
 void UmlRelation::importIt(FileIn & in, Token & token, UmlItem *)

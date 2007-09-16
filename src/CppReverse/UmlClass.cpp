@@ -147,7 +147,7 @@ bool UmlClass::manage_inherit(ClassContainer * container,
 	mother_name += "<" + after_gt;
 	Lex::come_back();
 	// must add inheritance before setting actuals
-	if ((rel = UmlBaseRelation::create(aGeneralisation, this, mother.type)) == 0) {
+	if ((rel = UmlBaseRelation::create(aRealization, this, mother.type)) == 0) {
 	  Lex::warn("cannot inherit <font color =\"red\">" +
 		    Lex::quote(mother_name) +" </font>");
 #ifdef DEBUG_BOUML
@@ -157,7 +157,9 @@ bool UmlClass::manage_inherit(ClassContainer * container,
 	}
 	else if (!get_actuals(mother.type, container, tmplts))
 	  return FALSE;
-
+	
+	rel->set_Stereotype("bind");
+	
         s = Lex::read_word();
       }
     }

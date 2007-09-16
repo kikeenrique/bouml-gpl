@@ -1,5 +1,5 @@
 class UmlExitPointPseudoState
-!!!149634.cpp!!!	init(inout mother : UmlClass, in path : string, inout state : UmlState) : void
+!!!149634.cpp!!!	init(inout mother : UmlClass, in path : string, in pretty_path : string, inout state : UmlState) : void
   // check transition number
   const QVector<UmlItem> ch = children();
   
@@ -13,9 +13,10 @@ class UmlExitPointPseudoState
     throw 0;
   }
 
-  // here there is 1 transition
-  if (((UmlTransition *) ch[0])->triggerName() == "_completion")
-    state->setHasCompletion();
+  // note : don't call setHasCompletion() in this case to not execute 
+  // the output transition in _completion(), this is done when the
+  // exit point is reached
+
 !!!148866.cpp!!!	generate(inout machine : UmlClass, inout anystate : UmlClass, inout state : UmlState) : void
   // adds the operation _exit<n>() to share this pseudo state a priori shared
   if (_oper.isEmpty())
@@ -45,8 +46,14 @@ class UmlExitPointPseudoState
   // transition number <= 1 already checked by init()
   const QVector<UmlItem> ch = children();
   
-  if (ch.count() != 0)
-    ch[0]->generate(machine, anystate, state, body, "  ");
+  if (ch.count() != 0) {
+    if (!((UmlTransition *) ch[0])->cppGuard().isEmpty()) {
+      UmlCom::trace("Error : transition from an exit point can't have guard<br>");
+      throw 0;
+    }
+    else
+      ch[0]->generate(machine, anystate, state, body, "  ");
+  }
 
   ex->set_CppBody(body);
 !!!148738.cpp!!!	generate(inout machine : UmlClass, inout anystate : UmlClass, inout state : UmlState, inout body : string, in indent : string) : void

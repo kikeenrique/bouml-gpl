@@ -58,6 +58,9 @@ Dialog::Dialog(QCString & path, QCString & encoding, QCString & genview, QCStrin
   }
 
   encoding_cb = new QComboBox(TRUE, htab);
+  htab->setStretchFactor(encoding_cb, 1000);
+  if (_encoding.isEmpty())
+    _encoding = "UTF-8";
   encoding_cb->insertItem(QString(_encoding));
   if (!charset.isEmpty() && (_encoding != (const char *) charset))
     encoding_cb->insertItem(charset);
@@ -187,6 +190,17 @@ Dialog::Dialog(QCString & path, QCString & encoding, QCString & genview, QCStrin
   connect(cpp, SIGNAL(clicked()), this, SLOT(accept_cpp()));
   connect(java, SIGNAL(clicked()), this, SLOT(accept_java()));
   connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+
+  // help
+  
+  htab = new QHBox(this);
+  htab->setMargin(5);
+  vbox->addWidget(htab);
+  
+  new QLabel(htab);
+  new QLabel("Remark : to help Eclipse to import the generated file,\n"
+	     "choose Uml 2.1 and name the file with the extension '.xmi'", htab);
+  new QLabel(htab);
 }
 
 void Dialog::browse() {

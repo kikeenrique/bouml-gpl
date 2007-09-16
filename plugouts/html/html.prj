@@ -1,6 +1,6 @@
-format 41
+format 42
 "html"
-  revision 12
+  revision 14
   modified_by 2 "bruno"
   cpp_root_dir "/tmp/html/cpp/"
   java_root_dir "/tmp/html/java/"
@@ -38,8 +38,18 @@ format 41
 
   mark_for_import
   
-  ncouples 1
+  ncouples 11
   key "html dir" value "/tmp/html_html/"
+  key "gxmi path" value "/tmp/html.xmi"
+  key "gxmi gen views" value "no"
+  key "gxmi encoding" value "UTF-8"
+  key "gxmi uml2.0" value "no"
+  key "gxmi use profile" value "no"
+  key "gxmi pk prefix" value "no"
+  key "gxmi vis prefix" value "no"
+  key "gxmi primitive type" value "no"
+  key "gxmi gen extensions" value "yes"
+  key "gxmi linefeed" value "no"
   package_ref 256 // API BASE
 
   package_ref 385 // API USER

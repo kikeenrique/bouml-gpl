@@ -14,7 +14,7 @@ class UmlPseudoState
   _incoming_trans.append(tr);
 !!!198530.cpp!!!	write(inout out : FileOut) : void
   out.indent();
-  out << "<connectionPoint xmi:type=\"uml:Pseudostate\"";
+  out << "<subvertex xmi:type=\"uml:Pseudostate\"";
   out.id(this);
   if (! name().isEmpty()) {
     out << " name=\"";
@@ -39,6 +39,6 @@ class UmlPseudoState
 
   out.indent(-1);
   out.indent();
-  out << "</connectionPoint>\n";
+  out << "</subvertex>\n";
     
   unload(); 

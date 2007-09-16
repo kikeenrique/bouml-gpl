@@ -158,6 +158,8 @@ class UmlItem : public UmlBaseItem {
 
     static void init();
 
+    static void importDocumentation(FileIn & in, Token & token, UmlItem * where);
+
     static void importComment(FileIn & in, Token & token, UmlItem * where);
 
     static void importExtension(FileIn & in, Token & token, UmlItem * where);
@@ -178,6 +180,8 @@ class UmlItem : public UmlBaseItem {
     
     static void outgoing(FileIn & in, Token & token, UmlItem * where);
 
+    static QMap<QCString, QCString> OpaqueDefs;
+
 
   protected:
     static bool FromBouml;
@@ -191,8 +195,6 @@ class UmlItem : public UmlBaseItem {
     static QMap<QCString, PFunc> Functions;
 
     static QMap<QCString, UmlTypeSpec> PrimitiveTypes;
-
-    static QMap<QCString, QCString> OpaqueDefs;
 
     static QMap<QCString,UmlItem*> Incomings;
 

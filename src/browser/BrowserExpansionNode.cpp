@@ -341,9 +341,48 @@ void BrowserExpansionNode::compute_referenced_by(QList<BrowserNode> & l,
   }
 }
 
+bool BrowserExpansionNode::api_compatible(unsigned v) const {
+  return (v > 24);
+}
+
 bool BrowserExpansionNode::tool_cmd(ToolCom * com, const char * args) {
-  return (def->tool_cmd(com, args, this, comment) ||
-	  BrowserNode::tool_cmd(com, args));
+  switch ((unsigned char) args[-1]) {
+  case createCmd: 
+    {
+      bool ok = TRUE;
+      
+      if (is_read_only && !root_permission())
+	ok = FALSE;
+      else {
+	UmlCode k = com->get_kind(args);
+	
+	switch (k) {
+	case UmlFlow:
+	  {
+	    BrowserNode * end = (BrowserNode *) com->get_id(args);
+	    
+	    if (may_connect(end) == 0)
+	      (new BrowserFlow(this, end))->write_id(com);
+	    else
+	      ok = FALSE;
+	  }
+	  break;
+	default:
+	  ok = FALSE;
+	}
+      }
+      
+      if (! ok)
+	com->write_id(0);
+      else
+	package_modified();
+      
+      return TRUE;
+    }
+  default:
+    return (def->tool_cmd(com, args, this, comment) ||
+	    BrowserNode::tool_cmd(com, args));
+  }
 }
 
 void BrowserExpansionNode::DropAfterEvent(QDropEvent * e, BrowserNode * after) {

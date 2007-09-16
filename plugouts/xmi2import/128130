@@ -1,6 +1,6 @@
-format 41
+format 42
 "Aux" // Aux
-  revision 37
+  revision 44
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -44,8 +44,8 @@ format 41
     show_infonote default drawing_language default
     
     associated_deployment_view deploymentview_ref 128130 // Aux class view
-    classdiagram 129154 "Diagram9"
-      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    classdiagram 129154 "Diagram"
+      draw_all_relations no hide_attributes default hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position no show_infonote default shadow default
       size A4
     end
 
@@ -948,6 +948,17 @@ ${members}}
       idl_decl ""
       explicit_switch_type ""
       
+      operation 232962 "Association"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${name}${(}${)} : is_class_association(FALSE) {}
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+      end
+
       operation 215426 "import"
 	public explicit_return_type "void"
 	nparams 2
@@ -958,6 +969,16 @@ ${members}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+      end
+
+      operation 233090 "set_class_association"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}{ is_class_association = TRUE; }"
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
@@ -1017,6 +1038,28 @@ ${body}}
 	  b parent class_ref 144386 // Role
       end
 
+      classrelation 157186 // All (<directional aggregation by value>)
+	relation 157186 *-->
+	  stereotype "map"
+	  a role_name "All" multiplicity "*" class_relation protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${association}, ${type}> ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 157186 // All (<directional aggregation by value>)
+	  b parent class_ref 144258 // Association
+	  association_explicit_type "string"
+      end
+
+      attribute 139010 "is_class_association"
+	protected explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
       operation 215554 "solve"
 	private explicit_return_type "void"
 	nparams 1
@@ -1030,19 +1073,6 @@ ${body}}
 ${body}}
 "
 	
-      end
-
-      classrelation 157186 // All (<directional aggregation by value>)
-	relation 157186 *-->
-	  stereotype "map"
-	  a role_name "All" multiplicity "*" class_relation protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${association}, ${type}> ${name}${value};
-"
-	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
-	    classrelation_ref 157186 // All (<directional aggregation by value>)
-	  b parent class_ref 144258 // Association
-	  association_explicit_type "string"
       end
     end
 
@@ -1167,138 +1197,6 @@ ${body}}
 ${body}}
 "
 	
-      end
-    end
-
-    class 144514 "AssociationClass"
-      visibility package 
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-
-${inlines}
-"
-      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
-${members}}
-"
-      idl_decl ""
-      explicit_switch_type ""
-      
-      operation 215810 "AssociationClass"
-	public explicit_return_type ""
-	nparams 2
-	  param in name "r1" explicit_type "string"
-	  param in name "r2" explicit_type "string"
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, ${t1} ${p1}${)} : ref1(r1), ref2(r2) {}
-"
-	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
-${body}}
-"
-	
-      end
-
-      operation 216066 "AssociationClass"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${name}${(}${)}${volatile};
-"
-	cpp_def "${inline}${class}::${name}${(}${)}${volatile} {
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
-${body}}
-"
-	
-	comment "  for QValueList"
-      end
-
-      operation 216578 "init"
-	class_operation public explicit_return_type "void"
-	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-      end
-
-      operation 215682 "importIt"
-	class_operation public explicit_return_type "void"
-	nparams 3
-	  param inout name "in" type class_ref 143362 // FileIn
-	  param inout name "token" type class_ref 143490 // Token
-	  param inout name "where" type class_ref 8833 // UmlItem
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, ${t1} & ${p1}, ${t2} * ${p2}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} & ${p1}, ${t2} *${)}${const}${volatile}${staticnl}{
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	comment "import the association class starting by 'tk' inside 'where'"
-      end
-
-      operation 216322 "solveThem"
-	class_operation public explicit_return_type "void"
-	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-      end
-
-      operation 215938 "solve"
-	private explicit_return_type "void"
-	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-      end
-
-      attribute 131970 "ref1"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
-	idl_decl ""
-      end
-
-      attribute 132098 "ref2"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
-	idl_decl ""
-      end
-
-      classrelation 157058 // All (<directional aggregation by value>)
-	relation 157058 *-->
-	  stereotype "list"
-	  a role_name "All" multiplicity "*" class_relation protected
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}QValueList<${type}> ${name}${value};
-"
-	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
-	    classrelation_ref 157058 // All (<directional aggregation by value>)
-	  b parent class_ref 144514 // AssociationClass
       end
     end
 
@@ -1481,6 +1379,295 @@ ${body}}
 	idl_decl ""
       end
     end
+
+    class 148610 "Binding"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Manages template actuals
+"
+      operation 235650 "import"
+	class_operation public explicit_return_type "void"
+	nparams 4
+	  param inout name "in" type class_ref 143362 // FileIn
+	  param inout name "token" type class_ref 143490 // Token
+	  param inout name "where" type class_ref 7169 // UmlClass
+	  param inout name "" explicit_type ""
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, ${t1} & ${p1}, ${t2} * ${p2}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} & ${p1}, ${t2} * ${p2}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+      end
+
+      operation 235522 "solveThem"
+	class_operation public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+      end
+
+      classrelation 162946 // All (<directional aggregation>)
+	relation 162690 o-->
+	  stereotype "list"
+	  a role_name "All" multiplicity "*" class_relation protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 162946 // All (<directional aggregation>)
+	  b parent class_ref 148610 // Binding
+      end
+
+      attribute 140674 "boundId"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+	comment "xmiId of the class having the binbing"
+      end
+
+      attribute 140418 "formalId"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+	comment "xmiId of the formal"
+      end
+
+      attribute 140546 "actualId"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+	comment "xmiId of the actual, may be a class, or an opaque expression"
+      end
+
+      attribute 141826 "actual"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+	comment "the actual if actualId is empty"
+      end
+
+      attribute 141954 "signatureId"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+	comment "xmiId of the signature
+"
+      end
+    end
+
+    class 149762 "ClassInstance"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 238338 "init"
+	class_operation public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+      end
+
+      operation 238210 "importIt"
+	class_operation public explicit_return_type "void"
+	nparams 3
+	  param inout name "in" type class_ref 143362 // FileIn
+	  param inout name "token" type class_ref 143490 // Token
+	  param inout name "where" type class_ref 8833 // UmlItem
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, ${t1} & ${p1}, ${t2} * ${p2}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} & ${p1}, ${t2} * ${p2}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	comment "import the activity node starting by 'tk' inside 'where'"
+      end
+
+      operation 239618 "solveThem"
+	class_operation public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+      end
+
+      classrelation 165250 // All (<directional aggregation by value>)
+	relation 164994 *-->
+	  stereotype "list"
+	  a role_name "All" multiplicity "*" class_relation protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 165250 // All (<directional aggregation by value>)
+	  b parent class_ref 149762 // ClassInstance
+      end
+
+      class 149890 "Slot"
+	visibility protected stereotype "struct"
+	cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+	java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	idl_decl ""
+	explicit_switch_type ""
+	
+	operation 238466 "importIt"
+	  public explicit_return_type "void"
+	  nparams 2
+	    param inout name "in" type class_ref 143362 // FileIn
+	    param inout name "token" type class_ref 143490 // Token
+	  cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	  cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	  java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	  
+	  comment "import the activity node starting by 'tk' inside 'where'"
+	end
+
+	attribute 143106 "featureId"
+	  public explicit_type "string"
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  idl_decl ""
+	end
+
+	attribute 143234 "value"
+	  public explicit_type "string"
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  idl_decl ""
+	end
+
+	attribute 143362 "valueId"
+	  public explicit_type "string"
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	  idl_decl ""
+	end
+      end
+
+      classrelation 165378 // bindings (<directional aggregation by value>)
+	relation 165122 *-->
+	  stereotype "QValueList"
+	  a role_name "bindings" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 165378 // bindings (<directional aggregation by value>)
+	  b parent class_ref 149890 // Slot
+      end
+
+      attribute 144514 "id"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      attribute 144642 "name"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      attribute 144770 "classifierId"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+
+      attribute 144898 "where"
+	protected type class_ref 8833 // UmlItem
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	idl_decl ""
+      end
+    end
   end
 
   deploymentview 128130 "Aux class view"
@@ -1569,7 +1756,6 @@ ${definition}"
       associated_classes
 	class_ref 144386 // Role
 	class_ref 144258 // Association
-	class_ref 144514 // AssociationClass
       end
     end
 
@@ -1622,6 +1808,63 @@ ${package}
 ${definition}"
       associated_classes
 	class_ref 145026 // Signal
+      end
+    end
+
+    artifact 142594 "Binding"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+#include \"UmlCom.h\"
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 148610 // Binding
+      end
+    end
+
+    artifact 143746 "ClassInstance"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+#include \"UmlClassInstance.h\"
+#include \"UmlAttribute.h\"
+#include \"UmlRelation.h\"
+#include \"UmlCom.h\"
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 149762 // ClassInstance
       end
     end
   end

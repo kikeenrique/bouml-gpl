@@ -9,6 +9,7 @@
 UmlItem * UmlUseCase::container(anItemKind kind, const Token & token, FileIn & in) {
   switch (kind) {
   case aClass:
+  case aClassInstance:
   case anUseCase:
     return this;
   default:

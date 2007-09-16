@@ -27,6 +27,9 @@ public slots:
     //checkbox to add constructor
     QCheckBox * add_constr;
 
+    //checkbox to add constructor
+    QCheckBox * constr_explicit;
+
     //checkbox to add destructor
     QCheckBox * add_destr;
 

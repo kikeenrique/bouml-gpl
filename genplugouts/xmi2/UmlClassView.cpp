@@ -32,6 +32,14 @@ void UmlClassView::write(FileOut & out) {
   }
 }
 
+void UmlClassView::search_class_assoc() {
+  const QVector<UmlItem> ch = children();
+  unsigned n = ch.size();
+  
+  for (unsigned i = 0; i != n; i += 1)
+    ch[i]->search_class_assoc();
+}
+
 void UmlClassView::memo_relation(UmlItem * r) {
   if (_gen_views)
 	_relations.append(r);

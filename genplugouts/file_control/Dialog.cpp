@@ -29,8 +29,9 @@ Dialog::Dialog(bool ci, QCString & cmd, bool & rec, bool & reload)
     htab = new QHBox(this);
     htab->setMargin(5);
     vbox->addWidget(htab);
-    new QLabel("In the command %file will be replaced by the file's name"
-  	     " and %dir by the directory where is the file", htab);
+    new QLabel("In the command %file will be replaced by the file's name,"
+  	     " %dir by the directory where is the file\n"
+  	     "%dironly is replaced by the directory without the drive", htab);
     
     // add command edit
     

@@ -34,6 +34,8 @@ class UmlItem : public UmlBaseItem {
 
     void write_description_properties(FileOut & out);
 
+    virtual void search_class_assoc();
+
     //Memorize the relation in the package (or the view in case the views
     //are generated as package) containing the current element, to generate
     //the relation at the package/view level

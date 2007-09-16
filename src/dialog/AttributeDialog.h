@@ -145,6 +145,7 @@ class AttributeDialog : public QTabDialog {
     void java_edit_annotation();
     void idl_default();
     void idl_default_state();
+    void idl_default_constant();
     void idl_unmapped();
     void idl_update();
     void update_all_tabs(QWidget *);

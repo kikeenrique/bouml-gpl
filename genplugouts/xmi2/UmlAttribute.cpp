@@ -35,18 +35,38 @@ void UmlAttribute::write(FileOut & out) {
   out.indent(+1);
   
   const UmlTypeSpec & t = type();
+  QCString stp = parent()->stereotype();
 
   switch (_lang) {
   case Uml:
-    UmlItem::write_type(out, t);
+    if ((stp == "enum") || (stp == "enum_pattern")) {
+      UmlTypeSpec ts;
+      
+      ts.type = (UmlClass *) parent();
+      UmlItem::write_type(out, ts);
+    }
+    else
+      UmlItem::write_type(out, t);
     break;
   case Cpp:
     if ((t.type != 0) || !t.explicit_type.isEmpty())
       write_cpp_type(out);
+    else if ((stp == "enum") || (stp == "enum_pattern")) {
+      UmlTypeSpec ts;
+      
+      ts.type = (UmlClass *) parent();
+      UmlItem::write_type(out, ts);
+    }
     break;
   default: // java
     if ((t.type != 0) || !t.explicit_type.isEmpty())
       write_java_type(out);
+    else if ((stp == "enum") || (stp == "enum_pattern")) {
+      UmlTypeSpec ts;
+      
+      ts.type = (UmlClass *) parent();
+      UmlItem::write_type(out, ts);
+    }
   }
 
   write_multiplicity(out, multiplicity());

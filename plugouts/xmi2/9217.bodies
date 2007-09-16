@@ -133,7 +133,7 @@ class UmlPackage
 	}
 	else
 	  utf8 = FALSE;
-
+	
 	FileOut out(&fp, _linefeed, utf8);
 	
 	// header
@@ -145,9 +145,10 @@ class UmlPackage
 	if (_use_profile)
 	  out << " xmlns:boumlprofile=\"http://bouml.free.fr/profiles/boumlprofile/1.0\"";
 	out << ">\n\
-	<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.5\"/>\n\
+	<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.5.3\"/>\n\
 	<uml:Model xmi:type=\"uml:Model\" xmi:id=\"themodel\" name=\"" << name() << "\">\n";
 	out.indent(+2);
+	search_class_assoc();
 	write(out);
 		
 	// non class types
@@ -197,5 +198,11 @@ class UmlPackage
   out.indent(-1); 
   out.indent(); 
   out << ((_uml_20) ? "</ownedMember>\n" : "</packagedElement>\n");
+!!!219650.cpp!!!	search_class_assoc() : void
+  const QVector<UmlItem> ch = children();
+  unsigned n = ch.size();
+  
+  for (unsigned i = 0; i != n; i += 1)
+    ch[i]->search_class_assoc();
 !!!130179.cpp!!!	memo_relation(inout r : UmlItem) : void
   _relations.append(r);

@@ -7,7 +7,7 @@
 #include "UmlOperation.h"
 #include "UmlTransition.h"
 
-void UmlFinalState::generate(UmlClass * machine, UmlClass * anystate, UmlState * state, QCString & body, QCString indent) {
+void UmlFinalState::generate(UmlClass *, UmlClass *, UmlState *, QCString & body, QCString indent) {
   if (parent()->kind() != aRegion)
     body += indent + "stm._final();\n";
   else {

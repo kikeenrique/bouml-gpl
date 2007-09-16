@@ -240,7 +240,7 @@ QCString UmlPackage::header_path(const QCString & f, QCString relto) {
 QCString UmlPackage::text_path(const QCString & f, QCString relto) {
   QCString r = source_path(f, relto);
 
-  return r.left(r.length() - 1 - CppSettings::headerExtension().length());
+  return r.left(r.length() - 1 - CppSettings::sourceExtension().length());
 }
 
 void UmlPackage::generate() {

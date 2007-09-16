@@ -14,4 +14,5 @@ tool "html (flat, C++)" "ghtml -flat" Project Package UseCaseView ClassView Comp
 tool "html (svg, C++)" "ghtml -svg" Project Package UseCaseView ClassView ComponentView DeploymentView UseCaseDiagram SeqDiagram ColDiagram ClassDiagram ObjectDiagram StateDiagram ActivityDiagram ComponentDiagram DeploymentDiagram UseCase Component Node Artifact
 tool "html (flat, svg, C++)" "ghtml -flat -svg" Project Package UseCaseView ClassView ComponentView DeploymentView UseCaseDiagram SeqDiagram ColDiagram ClassDiagram ObjectDiagram StateDiagram ActivityDiagram ComponentDiagram DeploymentDiagram UseCase Component Node Artifact
 tool "generate xmi" "gxmi" Project
+tool "generate xmi 2.1" "gxmi2" Project
 tool "plug out upgrade" "plug_out_upgrade" Project

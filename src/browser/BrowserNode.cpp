@@ -1210,6 +1210,7 @@ bool BrowserNode::tool_cmd(ToolCom * com, const char * args) {
 	}
 	else {
 	  set_name(args);
+	  update_stereotype();
 	  package_modified();
 	  get_data()->modified();
 	}

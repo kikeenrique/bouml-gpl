@@ -27,7 +27,7 @@ void UmlActivityControlNode::write(FileOut & out) {
   
   out.indent(-1);
   out.indent();
-  out << ((parent()->kind() == anActivity) ? "</node>\n" : "</containedNode\n");
+  out << ((parent()->kind() == anActivity) ? "</node>\n" : "</containedNode>\n");
     
   unload();
 }

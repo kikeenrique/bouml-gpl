@@ -20,7 +20,8 @@ class UmlRegion : public UmlBaseRegion, public UmlStateItem {
     
     virtual void memo_incoming_trans();
 
-    //memorize trans starting in sub elements to produce them later
+    //to ask parent to memorize trans starting in sub elements to produce them later
+    //Don't memorize transitions in the region itself to bypass Eclipse's bug
     
     virtual void memo_trans(UmlTransition * tr);
 
@@ -28,7 +29,10 @@ class UmlRegion : public UmlBaseRegion, public UmlStateItem {
 
 
   protected:
+#if 0
+    // To bypass Eclipse's bug
     QList<UmlTransition> _trans;
+#endif
 
 };
 

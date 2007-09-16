@@ -20,8 +20,11 @@ QCString UmlTransition::triggerName() {
       s = "create";
       break;
     case aState:
-    case anExitPointPseudoState:
       s = "_completion";
+      break;
+    case anExitPointPseudoState:
+      // note : not managed as a 'standard' completion
+      // see UmlExitPointPseudoState class
       break;
     default:
 #warning to check
@@ -29,14 +32,16 @@ QCString UmlTransition::triggerName() {
       throw 0;
     }
   }
-  else if (parent()->kind() == anInitialPseudoState) {
+  else if ((parent()->kind() == anInitialPseudoState) ||
+#warning to check
+	   (parent()->kind() == anEntryPointPseudoState)) {
     if (s != "create") {
-      UmlCom::trace("Error : the transition from an 'initial' sub state may only have the trigger 'create'<br>");
+      UmlCom::trace("Error : the transition from an 'initial' or 'entry point' pseudo state may only have the trigger 'create'<br>");
       throw 0;
     }
   }
   else if (s == "create") {
-    UmlCom::trace("Error : only the transition from an 'initial' sub state may have the trigger 'create'<br>");
+    UmlCom::trace("Error : only the transition from an 'initial' or 'entry point' pseudo state may have the trigger 'create'<br>");
     throw 0;
   }
   else if (s[0] == '_') {
@@ -47,7 +52,7 @@ QCString UmlTransition::triggerName() {
   return s;
 }
 
-void UmlTransition::init(UmlClass *, QCString, UmlState * state) {
+void UmlTransition::init(UmlClass *, QCString, QCString, UmlState * state) {
   if (triggerName() == "_completion")
     state->setHasCompletion();
 }
@@ -62,17 +67,34 @@ void UmlTransition::generate(UmlClass * machine, UmlClass * anystate, UmlState *
   const QVector<UmlItem> ch = parent()->children();
   unsigned index = ch.findRef(this);
   QList<UmlTransition> trs;
+  UmlTransition * tr_no_guard = 0;
   
-  trs.append(this);
+  if (cppGuard().isEmpty())
+    tr_no_guard = this;
+  else
+    trs.append(this);
   
   while (++index != ch.count()) {
     if ((ch[index]->kind() == aTransition) &&
 	(((UmlTransition *) ch[index])->triggerName() == s)) {
-      trs.append((UmlTransition *) ch[index]);
+      if (!((UmlTransition *) ch[index])->cppGuard().isEmpty())
+	trs.append((UmlTransition *) ch[index]);
+      else if (tr_no_guard != 0) {
+	UmlCom::trace("Error : several transitions from '" + parent()->name()
+		      + "' don't have guard");
+	throw 0;
+      }
+      else
+	tr_no_guard = (UmlTransition *) ch[index];
+      
       ((UmlTransition *) ch[index])->_already_managed = TRUE;
     }
   }
 
+  if (tr_no_guard != 0)
+    // place it at end
+    trs.append(tr_no_guard);
+    
   // made the trigger
 
   UmlOperation * trg = state->assocClass()->trigger(s, machine, anystate);
@@ -126,10 +148,9 @@ void UmlTransition::generate(QList<UmlTransition> trs, UmlClass * machine, UmlCl
 	+ tr->cppGuard() + ") {\n";
       guard = TRUE;
     }
-    else if (tr != trs.getFirst())
-      body += ((tr == trs.getLast()) ? "else {\n" : "else if (1) {\n");
     else
-      body += ((tr == trs.getLast()) ? "{\n" : "if (1) {\n");
+      // no gard : it is the last transition, may be the first
+      body += ((tr == trs.getFirst()) ? "{\n" : "else {\n");
 
     // the target state
     UmlItem * tg = tr->target();
@@ -168,7 +189,7 @@ void UmlTransition::generate(QList<UmlTransition> trs, UmlClass * machine, UmlCl
 	  default:
 	    UmlCom::trace("Error : transition from '" + state->name()
 			  + "' goes outside the state machine");
-		    throw 0;
+	    throw 0;
 	  }
 	}
       }
@@ -176,15 +197,14 @@ void UmlTransition::generate(QList<UmlTransition> trs, UmlClass * machine, UmlCl
     
     // manage transition activity
     if (!tr->cppActivity().isEmpty())
-      body += "\
-#ifdef VERBOSE_STATE_MACHINE\n\
-  puts(\"DEBUG : execute activity of transition " + tr->name() + "\");\n\
-#endif\n" + tr->cppActivity();
+      body += "#ifdef VERBOSE_STATE_MACHINE\n" + indent + 
+	"  puts(\"DEBUG : execute activity of transition " + tr->name() +
+	  "\");\n#endif\n" + tr->cppActivity();
   
     // manage entry behavior
     if (self_external) {
-      if (!state->cppEntryBehavior().isEmpty())
-	body += indent + "  _doentry(stm);\n";
+      if (state->needCreate())
+	body += indent + "  create(stm);\n";
     }
     else if (tr->target()->kind() != aTerminatePseudoState) {
       if (tg != common) {
@@ -207,16 +227,14 @@ void UmlTransition::generate(QList<UmlTransition> trs, UmlClass * machine, UmlCl
       // set the current state if needed
       if (tg != state)
 	body += indent + "  stm._set_currentState(stm"
-	  + ((UmlState *) tg)->path() + ");\n\
-#ifdef VERBOSE_STATE_MACHINE\n\
-  puts(\"DEBUG : current state is now " + ((UmlState *) tg)->prettyPath() + "\");\n\
-#endif\n";
+	  + ((UmlState *) tg)->path() + ");\n#ifdef VERBOSE_STATE_MACHINE\n" +
+	    indent + "  puts(\"DEBUG : current state is now " + ((UmlState *) tg)->prettyPath() +
+	      "\");\n#endif\n";
     }
 
     // do the transition
     if (tr->target()->kind() == aState) {
-      if (tg != state)
-	// enter state
+      if ((tg != state) && ((UmlState *) tg)->needCreate())
 	body += indent + "  stm"
 	  + ((UmlState *) tg)->path() + ".create(stm);\n";
     }

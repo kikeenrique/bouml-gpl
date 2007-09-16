@@ -162,7 +162,7 @@ void UmlItem::set_dir(int argc, char ** argv) {
       fw.write("\
 div.title { font-size: 150%; background: #87ceff; text-align: center; font-weight: bold; }\n\
 \n\
-div.sub { margin-left : 20; }\n\
+div.sub { margin-left : 20px; }\n\
 div.element { background: #d3d3d3; }\n\
 \n\
 h1.package { background: #ffe4c4; }\n\

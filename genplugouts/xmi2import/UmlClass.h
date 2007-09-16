@@ -5,6 +5,8 @@
 #include "UmlBaseClass.h"
 #include <qcstring.h>
 #include "anItemKind.h"
+#include <qvaluelist.h>
+#include <qmap.h>
 
 class UmlItem;
 class Token;
@@ -45,9 +47,31 @@ class UmlClass : public UmlBaseClass {
 
     static int numberOf() { return NumberOf; };
 
+    //return the class owing the signature whose id is given in parameter,
+    //may return 0
+    
+    static UmlClass * signature(QCString id);
+
+    //returns the rank of the formal from its id,
+    //return -1 if not found and produce error message
+    int formalRank(QCString id);
+
+    // if this generalize tmpl return true
+    // else if this realize tmpl, set stereotype to bind and return true
+    // else add a realization to tmpl stereotyped bind and return true
+    // return FALSE on error
+    
+    bool bind(UmlClass * tmpl);
+
 
   protected:
     static int NumberOf;
+
+    //xmiId of the formals following formals order
+    QValueList<QCString> formalsId;
+
+    //associate the class owning the template signature with the signature id
+    static QMap<QCString, UmlClass *> signatures;
 
 };
 

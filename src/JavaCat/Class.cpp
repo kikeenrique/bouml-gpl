@@ -411,7 +411,8 @@ bool Class::add_inherit(aRelationKind k, UmlTypeSpec & typespec,
     actual_rank = uml->actuals().count();
     
   UmlRelation * rel =
-    UmlRelation::create(k, uml, typespec.type);
+    UmlRelation::create((actuals.isEmpty()) ? k : aRealization,
+			uml, typespec.type);
   
   if (rel == 0) {
 #ifdef TRACE
@@ -435,6 +436,7 @@ bool Class::add_inherit(aRelationKind k, UmlTypeSpec & typespec,
       uml->replaceActual(actual_rank++, *iter);
     
     rel->set_JavaDecl("${type}");
+    rel->set_Stereotype("bind");
   }
   
   return TRUE;

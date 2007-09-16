@@ -2,6 +2,7 @@ class UmlClassView
 !!!193026.cpp!!!	container(in kind : anItemKind, in token : Token, inout in : FileIn) : UmlItem
   switch (kind) {
   case aClass:
+  case aClassInstance:
   case aState:
   case anActivity:
     return this;

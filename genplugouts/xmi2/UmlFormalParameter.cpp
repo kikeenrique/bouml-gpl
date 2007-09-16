@@ -3,7 +3,7 @@
 #include "FileOut.h"
 #include "UmlClass.h"
 
-void UmlFormalParameter::write(FileOut & out, const UmlClass * cl, int rank) const {
+void UmlFormalParameter::write(FileOut & out, const UmlClass * cl, int rank, bool uml20) const {
   char tp[32];
   char te[32];
 
@@ -21,7 +21,10 @@ void UmlFormalParameter::write(FileOut & out, const UmlClass * cl, int rank) con
   out.indent(+1);
 
   out.indent();
-  out << "<ownedParameteredElement xmi:type=\"uml:Class\"";
+  if (uml20)
+    out << "<ownedElement xmi:type=\"uml:Class\"";
+  else
+    out << "<ownedParameteredElement xmi:type=\"uml:Class\"";
   out.id_prefix(cl, te);
   out << " name=\"";
   out.quote(name());

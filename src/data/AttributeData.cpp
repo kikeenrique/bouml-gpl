@@ -86,6 +86,9 @@ void AttributeData::set_browser_node(BrowserAttribute * a, bool update,
   BasicData::set_browser_node(a);
   
   if (update) {
+    if (enum_item)
+      type.type = (BrowserClass *) a->parent();
+    
     if (uml_visibility == UmlDefaultVisibility)
       uml_visibility = 
 	((BrowserNode *) browser_node->parent())->get_visibility(UmlAttribute);

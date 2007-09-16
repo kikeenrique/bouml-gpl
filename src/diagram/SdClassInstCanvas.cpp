@@ -566,9 +566,15 @@ SdClassInstCanvas * SdClassInstCanvas::read(char * & st, UmlCanvas * canvas, cha
       k = read_keyword(st);
     }
 
-    result->compute_size();
-    result->SdObjCanvas::read(st, k);
-    result->show();
+    if (result->get_type() != 0) {
+      // not a deleted instance
+      result->compute_size();
+      result->SdObjCanvas::read(st, k);
+      result->show();
+    }
+    else
+      result->SdObjCanvas::read(st, k);
+    
     return result;
   }
   else

@@ -17,7 +17,12 @@ void UmlRegion::memo_incoming_trans() {
 }
 
 void UmlRegion::memo_trans(UmlTransition * tr) {
+#if 0
   _trans.append(tr);
+#else
+  // to bypass Eclipse's bug
+  dynamic_cast<UmlStateItem *>(parent())->memo_trans(tr);
+#endif
 }
 
 void UmlRegion::write(FileOut & out) {
@@ -38,8 +43,11 @@ void UmlRegion::write(FileOut & out) {
   for (i = 0; i != n; i += 1)
     ch[i]->write(out);
     
+#if 0
+  // to bypass Eclipse's bug this is done by the parent state
   while (! _trans.isEmpty())
-    _trans.take(0)->write(out);
+    _trans.take(0)->write_it(out);
+#endif
 
   out.indent(-1); 
   out.indent(); 

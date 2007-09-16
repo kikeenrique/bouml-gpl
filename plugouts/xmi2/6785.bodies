@@ -15,11 +15,27 @@ class UmlActualParameter
   out.idref_prefix(superClass(), tp);
   out << "/>\n";
 
-  // how to produce actual ????
   out.indent();
-  out << "\t<!-- how to indicate the actual is ";
-  out.quote((value().type != 0) ? value().type->name() : value().explicit_type);
-  out << " ? -->\n";
+  if (value().type != 0) {
+    out << "\t<actual";
+    out.idref(value().type);
+    out << "/>\n";
+  }
+  else {
+    // produce an opaque expression, even in case of primitive type
+    static UmlItem * opaqueactual = 0;
+    
+    out << "\t<actual";
+    out.idref_prefix(++opaqueactual, "OPAQUE_ACTUAL_");
+    out << "/>\n";
+    
+    out.indent();
+    out << "\t<ownedActual xmi:type=\"uml:OpaqueExpression\"";
+    out.id_prefix(opaqueactual, "OPAQUE_ACTUAL_");
+    out << " body=\"";
+    out.quote(value().explicit_type);
+    out << "\"/>\n";
+  }
 
   out.indent();
   out << "</parameterSubstitution>\n";

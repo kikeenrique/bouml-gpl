@@ -74,7 +74,7 @@ bool UmlBaseClassInstance::set_AttributeValue(UmlAttribute * attribute, const ch
   return UmlCom::read_bool();
 }
 
-bool UmlBaseClassInstance::add_Relation(UmlAttribute * relation, UmlClassInstance * other) {
+bool UmlBaseClassInstance::add_Relation(UmlRelation * relation, UmlClassInstance * other) {
   QVector<UmlItem> v(2);
 
   v.insert(0, relation);
@@ -83,7 +83,7 @@ bool UmlBaseClassInstance::add_Relation(UmlAttribute * relation, UmlClassInstanc
   return UmlCom::read_bool();
 }
 
-bool UmlBaseClassInstance::remove_Relation(UmlAttribute * relation, UmlClassInstance * other) {
+bool UmlBaseClassInstance::remove_Relation(UmlRelation * relation, UmlClassInstance * other) {
   QVector<UmlItem> v(2);
 
   v.insert(0, relation);

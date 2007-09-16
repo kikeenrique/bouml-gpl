@@ -66,7 +66,7 @@ void UmlClass::utilities() {
 
 }
 
-void UmlClass::addContructor() {
+void UmlClass::addContructor(bool expl) {
   UmlOperation * op = UmlOperation::create(this, name());
   
   if (op == 0)
@@ -80,18 +80,18 @@ void UmlClass::addContructor() {
     s = op->cppDecl();
     if (s.isEmpty())
       s = CppSettings::operationDecl();
-    if ((index = s.find("${type} ")) != -1) {
+    if ((index = s.find("${type} ")) != -1)
       s.remove(index, 8);
-      op->set_CppDecl(s);
-    }
+    if (expl && ((index = s.find("${name}")) != -1))
+      s.insert(index, "explicit ");
+    op->set_CppDecl(s);
     
     s = op->cppDef();
     if (s.isEmpty())
       s = CppSettings::operationDef();
-    if ((index = s.find("${type} ")) != -1) {
+    if ((index = s.find("${type} ")) != -1)
       s.remove(index, 8);
-      op->set_CppDef(s);
-    }
+    op->set_CppDef(s);
   }
 }
 

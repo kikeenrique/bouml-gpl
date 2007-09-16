@@ -3,6 +3,7 @@
 #include "UmlComponent.h"
 #include "UmlComponentView.h"
 #include "UmlComponentDiagram.h"
+#include "UmlClass.h"
 
 #include "UmlCom.h"
 UmlComponent * UmlBaseComponent::create(UmlComponentView * parent, const char * s)

@@ -203,7 +203,7 @@ void UmlAcceptEventAction::importIt(FileIn & in, Token & token, UmlItem * where)
     
     a->addItem(token.xmiId(), in);
     
-    if (token.valueOf("isUnmarshall") == "true")
+    if (token.valueOf("isunmarshall") == "true")
       a->set_isUnmarshall(TRUE);
     
     if (!(s = token.valueOf("trigger")).isEmpty()) {

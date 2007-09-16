@@ -218,6 +218,8 @@ void UmlItem::declareFct(QCString what, QCString type, PFunc fct)
 
 void UmlItem::init()
 {
+  declareFct("xmi:documentation", "", &importDocumentation);
+
   declareFct("ownedcomment", "uml:Comment", &importComment);
   
   declareFct("xmi:extension", "", &importExtension);
@@ -239,6 +241,22 @@ void UmlItem::init()
   declareFct("ownedmember", "uml:Realization", &importRealization);
   declareFct("packagedelement", "uml:Realization", &importRealization);
   declareFct("interfacerealization", "uml:InterfaceRealization", &importRealization);
+}
+
+void UmlItem::importDocumentation(FileIn & in, Token & token, UmlItem *)
+{
+  QCString who = token.valueOf("exporter");
+
+  if (who.isNull())
+    who = token.valueOf("xmi:exporter");
+    
+    if (! who.isNull()) {
+      UmlCom::trace("xmi file produced by <b>" + who + "</b><br><br>");
+      FromBouml = (who == "Bouml");
+    }
+
+  if (! token.closed())
+    in.finish(token.what());
 }
 
 void UmlItem::importComment(FileIn & in, Token & token, UmlItem * where)
@@ -477,6 +495,8 @@ void UmlItem::outgoing(FileIn & in, Token & token, UmlItem * where)
     in.finish(token.what());
 }
 
+QMap<QCString, QCString> UmlItem::OpaqueDefs;
+
 bool UmlItem::FromBouml;
 
 QMap<QCString, UmlItem *> UmlItem::All;
@@ -484,8 +504,6 @@ QMap<QCString, UmlItem *> UmlItem::All;
 QMap<QCString, PFunc> UmlItem::Functions;
 
 QMap<QCString, UmlTypeSpec> UmlItem::PrimitiveTypes;
-
-QMap<QCString, QCString> UmlItem::OpaqueDefs;
 
 QMap<QCString,UmlItem*> UmlItem::Incomings;
 

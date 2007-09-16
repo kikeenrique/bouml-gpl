@@ -20,7 +20,7 @@ class UmlClass : public UmlBaseClass {
 
     //add a constructor to the class
     
-    void addContructor();
+    void addContructor(bool expl);
 
     //add a destructor to the class
     

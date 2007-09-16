@@ -7,7 +7,6 @@
 #include "OnInstanceCmd.h"
 #include "anItemKind.h"
 #include "aRelationKind.h"
-#include "UmlClass.h"
 #include <qcstring.h>
 
 #include <qvector.h>
@@ -15,6 +14,7 @@
 
 class UmlItem;
 class UmlTypeSpec;
+class UmlClass;
 
 class QSocketDevice;
 class UmlItem;
