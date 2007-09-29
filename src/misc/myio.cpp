@@ -312,6 +312,8 @@ const char * stringify(UmlColor c)
     return "lightblue";
   case UmlBlue:
     return "blue";
+  case UmlLightMediumBlue:
+    return "lightmediumblue";
   case UmlMediumBlue:
     return "mediumblue";
   case UmlDarkBlue:
@@ -320,16 +322,22 @@ const char * stringify(UmlColor c)
     return "lightgreen";
   case UmlGreen:
     return "green";
+  case UmlLightMediumGreen:
+    return "lightmediumgreen";
   case UmlMediumGreen:
     return "mediumgreen";
   case UmlDarkGreen:
     return "darkgreen";
   case UmlRed:
     return "red";
+  case UmlVeryLightGray:
+    return "verylightgray";
   case UmlLightGray:
     return "lightgray";
   case UmlGray:
     return "gray";
+  case UmlDarkGray:
+    return "darkgray";
     
   case UmlLightRed:
     return "lightred";
@@ -800,6 +808,8 @@ UmlColor color(const char * s)
     return UmlDarkYellow;
   if (!strcmp(s, "lightblue"))
     return UmlLightBlue;
+  if (!strcmp(s, "lightmediumblue"))
+    return UmlLightMediumBlue;
   if (!strcmp(s, "mediumblue"))
     return UmlMediumBlue;
   if (!strcmp(s, "blue"))
@@ -810,6 +820,8 @@ UmlColor color(const char * s)
     return UmlLightGreen;
   if (!strcmp(s, "green"))
     return UmlGreen;
+  if (!strcmp(s, "lightmediumgreen"))
+    return UmlLightMediumGreen;
   if (!strcmp(s, "mediumgreen"))
     return UmlMediumGreen;
   if (!strcmp(s, "darkgreen"))
@@ -820,10 +832,14 @@ UmlColor color(const char * s)
     return UmlMidRed;
   if (!strcmp(s, "red"))
     return UmlRed;
+  if (!strcmp(s, "verylightgray"))
+    return UmlVeryLightGray;
   if (!strcmp(s, "lightgray"))
     return UmlLightGray;
   if (!strcmp(s, "gray"))
     return UmlGray;
+  if (!strcmp(s, "darkgray"))
+    return UmlDarkGray;
   
   if (! strcmp(s, "verylightorange"))
     return UmlVeryLightOrange;
@@ -2082,6 +2098,24 @@ double load_double(QBuffer & b)
   
   b.readBlock((char *) &d, sizeof(d));
   return d;
+}
+
+void save(float f, QBuffer & b)
+{
+  b.writeBlock((char *) &f, sizeof(f));
+}
+
+void load(float & f, QBuffer & b)
+{
+  b.readBlock((char *) &f, sizeof(f));
+}
+
+double load_float(QBuffer & b)
+{
+  float f;
+  
+  b.readBlock((char *) &f, sizeof(f));
+  return f;
 }
 
 void save(int i, QBuffer & b)

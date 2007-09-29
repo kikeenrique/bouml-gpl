@@ -48,12 +48,12 @@
 #include "strutil.h"
 
 SimpleRelationCanvas::SimpleRelationCanvas(UmlCanvas * canvas,
-					   DiagramItem * b,
-					   DiagramItem * e,
-					   BrowserNode * bb,
-					   UmlCode t, int id,
+					   DiagramItem * b, DiagramItem * e,
+					   BrowserNode * bb, UmlCode t, int id,
+					   float d_start, float d_end,
 					   SimpleRelationData * d)
-      : ArrowCanvas(canvas, b, e, t, id, TRUE), br_begin(bb), data(d) {
+      : ArrowCanvas(canvas, b, e, t, id, TRUE, d_start, d_end),
+        br_begin(bb), data(d) {
   if ((e->type() != UmlArrowPoint) && (bb == 0)) {
     // end of line construction
     update_begin(e);
@@ -238,7 +238,11 @@ void SimpleRelationCanvas::menu(const QPoint &) {
       }
       else if (rank >= 10) {
 	rank -= 10;
-	if (rank != (int) geometry)
+	if (rank == RecenterBegin)
+	  set_decenter(-1.0, decenter_end);
+	else if (rank == RecenterEnd)
+	  set_decenter(decenter_begin, -1.0);
+	else if (rank != (int) geometry)
 	  set_geometry((LineGeometry) rank, TRUE);
 	else
 	  return;
@@ -266,7 +270,8 @@ ArrowPointCanvas * SimpleRelationCanvas::brk(const QPoint & p) {
   
   SimpleRelationCanvas * other =
     // do not give data to not call update()
-    new SimpleRelationCanvas(the_canvas(), ap, end, br_begin, itstype, 0);
+    new SimpleRelationCanvas(the_canvas(), ap, end, br_begin,
+			     itstype, 0, decenter_begin, decenter_end);
   
   other->data = data;
   connect(data, SIGNAL(changed()), other, SLOT(modified()));
@@ -413,7 +418,8 @@ void SimpleRelationCanvas::drop(BrowserNode * bn, UmlCanvas * canvas)
       msg_information("Bouml", "relation already drawn");
     else {
       SimpleRelationCanvas * rel = 
-	new SimpleRelationCanvas(canvas, ccfrom, ccto, from, bn->get_type(), 0, def);
+	new SimpleRelationCanvas(canvas, ccfrom, ccto, from,
+				 bn->get_type(), 0, -1.0, -1.0, def);
       
       rel->show();
       rel->package_modified();
@@ -429,12 +435,23 @@ void SimpleRelationCanvas::save(QTextStream & st, bool ref, QString & warning) c
     nl_indent(st);
     st << "simplerelationcanvas " << get_ident() << ' ';
     data->get_start()->save(st, TRUE, warning);	// data doesn't have id
+    indent(+1);
     if (geometry != NoGeometry) {
-      st << " geometry " << stringify(geometry);
+      nl_indent(st);
+      st << "geometry " << stringify(geometry);
       if (!fixed_geometry)
 	st << " unfixed";
     }
-    indent(+1);
+    if (decenter_begin >= 0) {
+      // float output/input bugged
+      nl_indent(st);
+      st << "decenter_begin " << ((int) (decenter_begin * 1000));
+    }
+    if (decenter_end >= 0) {
+      // float output/input bugged
+      nl_indent(st);
+      st << "decenter_end " << ((int) (decenter_end * 1000));
+    }
     (const SimpleRelationCanvas *) ArrowCanvas::save_lines(st, TRUE, TRUE, warning);
     indent(-1);
   }
@@ -455,19 +472,37 @@ SimpleRelationCanvas * SimpleRelationCanvas::read(char * & st, UmlCanvas * canva
     if (! strcmp(k, "geometry")) {
       geo = line_geometry(read_keyword(st));
       k = read_keyword(st);
-      if (! strcmp(k, "unfixed"))
+      if (! strcmp(k, "unfixed")) {
+	k = read_keyword(st);
 	fixed = FALSE;
-      else {
-	fixed = TRUE;
-	unread_keyword(k, st);
       }
+      else
+	fixed = TRUE;
     }
     else {
-      unread_keyword(k, st);
       geo = NoGeometry;
       fixed = FALSE;
     }
+    
+    float dbegin;
+    float dend;
+
+    if (! strcmp(k, "decenter_begin")) {
+      dbegin = read_double(st) / 1000;
+      k = read_keyword(st);
+    }
+    else
+      dbegin = -1;
+
+    if (! strcmp(k, "decenter_end")) {
+      dend = read_double(st) / 1000;
+      k = read_keyword(st);
+    }
+    else
+      dend = -1;
       
+    unread_keyword(k, st);
+    
     read_keyword(st, "from");
     read_keyword(st, "ref");
     
@@ -524,7 +559,7 @@ SimpleRelationCanvas * SimpleRelationCanvas::read(char * & st, UmlCanvas * canva
 	di = dict_get(read_id(st), "classcanvas", canvas);
 
       // do not give rd to not call update()
-      result = new SimpleRelationCanvas(canvas, bi, di, b, t, id);
+      result = new SimpleRelationCanvas(canvas, bi, di, b, t, id, dbegin, dend);
       result->geometry = geo;
       result->fixed_geometry = fixed;
       result->set_z(z);

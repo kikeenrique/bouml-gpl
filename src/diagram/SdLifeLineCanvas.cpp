@@ -74,6 +74,10 @@ void SdLifeLineCanvas::update_pos() {
        r.top() + LIFE_LINE_TOPOFFSET * the_canvas()->zoom() + 100000);
 }
 
+bool SdLifeLineCanvas::is_decenter(const QPoint &, bool &) const {
+  return FALSE;
+}
+
 void SdLifeLineCanvas::change_scale() {
   double scale = the_canvas()->zoom();
   int w = (int) (width_scale100*scale);

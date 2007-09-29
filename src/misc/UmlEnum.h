@@ -150,10 +150,12 @@ enum UmlColor {
   UmlDarkYellow,
   UmlLightBlue,
   UmlBlue,
+  UmlLightMediumBlue,
   UmlMediumBlue,
   UmlDarkBlue,
   UmlLightGreen,
   UmlGreen,
+  UmlLightMediumGreen,
   UmlMediumGreen,
   UmlDarkGreen,
   UmlLightRed,
@@ -167,8 +169,10 @@ enum UmlColor {
   UmlMagenta,
   UmlMidMagenta,
   UmlDarkMagenta,
+  UmlVeryLightGray,
   UmlLightGray,
   UmlGray,
+  UmlDarkGray,
   UmlDefaultColor
 };
 
@@ -204,6 +208,9 @@ enum LineGeometry {
   VHVGeometry,
   GeometrySup
 };
+
+#define RecenterBegin GeometrySup
+#define RecenterEnd (RecenterBegin + 1)
 
 extern const char * stringify(UmlVisibility);
 extern const char * stringify(UmlParamDirection);

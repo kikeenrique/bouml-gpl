@@ -45,7 +45,8 @@ class TransitionCanvas : public ArrowCanvas {
   public:
     TransitionCanvas(UmlCanvas * canvas, DiagramItem * b,
 		     DiagramItem * e, BrowserNode * bb,
-		     int id, TransitionData * d = 0);
+		     int id, float d_start, float d_end,
+		     TransitionData * d = 0);
     virtual ~TransitionCanvas();
     
     virtual void delete_it();

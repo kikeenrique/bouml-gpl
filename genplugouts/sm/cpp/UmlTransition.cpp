@@ -15,7 +15,9 @@ QCString UmlTransition::triggerName() {
   if (s.isEmpty()) {
     switch (parent()->kind()) {
     case anInitialPseudoState:
+#ifndef WIN32
 #warning to check
+#endif
     case anEntryPointPseudoState:
       s = "create";
       break;
@@ -27,13 +29,17 @@ QCString UmlTransition::triggerName() {
       // see UmlExitPointPseudoState class
       break;
     default:
+#ifndef WIN32
 #warning to check
+#endif
       UmlCom::trace("Error : transition must have a trigger<br>");
       throw 0;
     }
   }
   else if ((parent()->kind() == anInitialPseudoState) ||
+#ifndef WIN32
 #warning to check
+#endif
 	   (parent()->kind() == anEntryPointPseudoState)) {
     if (s != "create") {
       UmlCom::trace("Error : the transition from an 'initial' or 'entry point' pseudo state may only have the trigger 'create'<br>");

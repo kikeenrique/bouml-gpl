@@ -29,6 +29,23 @@
 #include "JavaSettings.h"
 #include "util.h"
 
+static QCString remove_throw(QCString d)
+{
+  int index;
+  
+  index = d.find("${throw}");
+  if (index != -1)
+    d.remove(index, 8);
+  
+  return d;
+}
+
+
+void UmlOperation::remove_cpp_throw() {
+  set_CppDecl(remove_throw(CppSettings::operationDecl()));
+  set_CppDef(remove_throw(CppSettings::operationDef()));
+}
+
 void UmlOperation::add_param(int rank, aDirection dir,
 			     const char * name, const char * type) {
   UmlParameter p;
@@ -70,7 +87,7 @@ void UmlOperation::set_cpp(const char * return_form_or_inherit,
   if (*return_form_or_inherit == ':') {
     // inherit
     if (inlinep) {
-      QCString s = CppSettings::operationDecl();
+      QCString s = remove_throw(CppSettings::operationDecl());
       int index = s.find("${)}");
       
       s.resize(index + 5);
@@ -90,7 +107,7 @@ void UmlOperation::set_cpp(const char * return_form_or_inherit,
       set_CppDef("");
     }
     else {
-      QCString s = CppSettings::operationDecl();
+      QCString s = remove_throw(CppSettings::operationDecl());
       int index = s.find("${)}");
       
       s.resize(index + 5);
@@ -99,7 +116,7 @@ void UmlOperation::set_cpp(const char * return_form_or_inherit,
       conditional(s, if_def, end_if);
       set_CppDecl(s);
       
-      s = CppSettings::operationDef();
+      s = remove_throw(CppSettings::operationDef());
       index = s.find("${)}");
       s.resize(index + 5);
       s.insert(index, params);
@@ -119,7 +136,7 @@ void UmlOperation::set_cpp(const char * return_form_or_inherit,
   else {
     // return
     if (inlinep) {
-      QCString s = CppSettings::operationDecl();
+      QCString s = remove_throw(CppSettings::operationDecl());
       int index = s.find("${type}");
       
       s.replace(index, 7, return_form_or_inherit);
@@ -138,7 +155,7 @@ void UmlOperation::set_cpp(const char * return_form_or_inherit,
       set_CppDef("");
     }
     else {
-      QCString s = CppSettings::operationDecl();
+      QCString s = remove_throw(CppSettings::operationDecl());
       int index = s.find("${type}");
       
       s.replace(index, 7, return_form_or_inherit);
@@ -146,7 +163,7 @@ void UmlOperation::set_cpp(const char * return_form_or_inherit,
       conditional(s, if_def, end_if);
       set_CppDecl(s);
       
-      s = CppSettings::operationDef();
+      s = remove_throw(CppSettings::operationDef());
       index = s.find("${type}");
       s.replace(index, 7, return_form_or_inherit);
       s.insert(s.find("${)}", index), params);

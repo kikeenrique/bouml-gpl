@@ -3,5 +3,7 @@ class UmlFinalState
   if (parent()->kind() != aRegion)
     body += indent + "stm._final();\n";
   else {
+#ifndef WIN32
 #warning A FAIRE
+#endif
   }

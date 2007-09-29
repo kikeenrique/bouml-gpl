@@ -54,15 +54,18 @@ class DiagramView : public QCanvasView {
     QCanvasRectangle * selectArea;
     DiagramItem * start;	// last added line part start
     QCanvasLine * line;
-    bool draw_line;
     DiagramItem * arrowBeginning;// broken line start
-    aCorner do_resize;
     QCanvasItemList temp;
     QSize preferred_size;
     double preferred_zoom;
+    bool draw_line;
+    aCorner do_resize;
     bool history_protected;
     bool history_frozen;
     bool first_move;
+    bool on_arrow_decenter;
+    bool decenter_start;
+    bool decenter_horiz;
     QList<QByteArray> history;
     unsigned history_index;
 #ifdef WIN32

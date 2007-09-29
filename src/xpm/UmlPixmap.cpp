@@ -228,17 +228,21 @@ QPixmap * YellowPixmap;
 QPixmap * DarkYellowPixmap;
 QPixmap * LightBluePixmap;
 QPixmap * BluePixmap;
+QPixmap * LightMediumBluePixmap;
 QPixmap * MediumBluePixmap;
 QPixmap * DarkBluePixmap;
 QPixmap * LightGreenPixmap;
 QPixmap * GreenPixmap;
 QPixmap * MediumGreenPixmap;
+QPixmap * LightMediumGreenPixmap;
 QPixmap * DarkGreenPixmap;
 QPixmap * LightRedPixmap;
 QPixmap * MidRedPixmap;
 QPixmap * RedPixmap;
+QPixmap * VeryLightGrayPixmap;
 QPixmap * LightGrayPixmap;
 QPixmap * GrayPixmap;
+QPixmap * DarkGrayPixmap;
 QPixmap * VeryLightOrangePixmap;
 QPixmap * LightOrangePixmap;
 QPixmap * OrangePixmap;
@@ -729,10 +733,12 @@ void init_pixmaps()
 #include "darkyellow_xpm.xpm"
 #include "lightblue_xpm.xpm"
 #include "blue_xpm.xpm"
+#include "lightmediumblue_xpm.xpm"
 #include "mediumblue_xpm.xpm"
 #include "darkblue_xpm.xpm"
 #include "lightgreen_xpm.xpm"
 #include "green_xpm.xpm"
+#include "lightmediumgreen_xpm.xpm"
 #include "mediumgreen_xpm.xpm"
 #include "darkgreen_xpm.xpm"
 #include "lightred_xpm.xpm"
@@ -746,8 +752,10 @@ void init_pixmaps()
 #include "magenta_xpm.xpm"
 #include "midmagenta_xpm.xpm"
 #include "darkmagenta_xpm.xpm"
+#include "verylightgray_xpm.xpm"
 #include "lightgray_xpm.xpm"
 #include "gray_xpm.xpm"
+#include "darkgray_xpm.xpm"
 
   WhitePixmap = new QPixmap((const char **) white_xpm);
   LightYellowPixmap = new QPixmap((const char **) lightyellow_xpm);
@@ -756,10 +764,12 @@ void init_pixmaps()
   DarkYellowPixmap = new QPixmap((const char **) darkyellow_xpm);
   LightBluePixmap = new QPixmap((const char **) lightblue_xpm);
   BluePixmap = new QPixmap((const char **) blue_xpm);
+  LightMediumBluePixmap = new QPixmap((const char **) lightmediumblue_xpm);
   MediumBluePixmap = new QPixmap((const char **) mediumblue_xpm);
   DarkBluePixmap = new QPixmap((const char **) darkblue_xpm);
   LightGreenPixmap = new QPixmap((const char **) lightgreen_xpm);
   GreenPixmap = new QPixmap((const char **) green_xpm);
+  LightMediumGreenPixmap = new QPixmap((const char **) lightmediumgreen_xpm);
   MediumGreenPixmap = new QPixmap((const char **) mediumgreen_xpm);
   DarkGreenPixmap = new QPixmap((const char **) darkgreen_xpm);
   LightRedPixmap = new QPixmap((const char **) lightred_xpm);
@@ -773,8 +783,10 @@ void init_pixmaps()
   MagentaPixmap = new QPixmap((const char **) magenta_xpm);
   MidMagentaPixmap = new QPixmap((const char **) midmagenta_xpm);
   DarkMagentaPixmap = new QPixmap((const char **) darkmagenta_xpm);
+  VeryLightGrayPixmap = new QPixmap((const char **) verylightgray_xpm);
   LightGrayPixmap = new QPixmap((const char **) lightgray_xpm);
   GrayPixmap = new QPixmap((const char **) gray_xpm);
+  DarkGrayPixmap = new QPixmap((const char **) darkgray_xpm);
 
   // dialog pixmap
 

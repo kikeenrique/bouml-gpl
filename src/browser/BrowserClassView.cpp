@@ -303,7 +303,7 @@ void BrowserClassView::exec_menu_choice(int rank) {
   case 7:
     {
       QArray<StateSpec> st;
-      QArray<ColorSpec> co(11);
+      QArray<ColorSpec> co(12);
       
       classdiagram_settings.complete(st, UmlClassView);
       sequencediagram_settings.complete(st, FALSE);
@@ -321,9 +321,9 @@ void BrowserClassView::exec_menu_choice(int rank) {
       co[6].set("state color", &state_color);
       co[7].set("state action color", &stateaction_color);
       co[8].set("activity color", &activity_color);
-      co[8].set("activity region color", &activityregion_color);
-      co[9].set("activity action color", &activityaction_color);
-      co[10].set("parameter and pin color", &parameterpin_color);
+      co[9].set("activity region color", &activityregion_color);
+      co[10].set("activity action color", &activityaction_color);
+      co[11].set("parameter and pin color", &parameterpin_color);
 
       SettingsDialog dialog(&st, &co, FALSE, FALSE);
       
@@ -698,11 +698,11 @@ bool BrowserClassView::get_auto_label_position(UmlCode who) const {
   case UmlClassDiagram:
     v = classdiagram_settings.auto_label_position;
     break;
-  case UmlStateDiagram:
-    v = statediagram_settings.auto_label_position;
-    break;
   case UmlObjectDiagram:
     v = objectdiagram_settings.auto_label_position;
+    break;
+  case UmlStateDiagram:
+    v = statediagram_settings.auto_label_position;
     break;
   case UmlActivityDiagram:
     v = activitydiagram_settings.auto_label_position;
@@ -900,9 +900,7 @@ void BrowserClassView::DragMoveEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, UmlColDiagram) ||
       UmlDrag::canDecode(e, UmlObjectDiagram) ||
       UmlDrag::canDecode(e, UmlState) ||
-      UmlDrag::canDecode(e, UmlStateDiagram) ||
-      UmlDrag::canDecode(e, UmlActivity) ||
-      UmlDrag::canDecode(e, UmlActivityDiagram))
+      UmlDrag::canDecode(e, UmlActivity))
     e->accept();
   else
     ((BrowserNode *) parent())->DragMoveInsideEvent(e);
@@ -916,9 +914,7 @@ void BrowserClassView::DragMoveInsideEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, UmlColDiagram) ||
       UmlDrag::canDecode(e, UmlObjectDiagram) ||
       UmlDrag::canDecode(e, UmlState) ||
-      UmlDrag::canDecode(e, UmlStateDiagram) ||
-      UmlDrag::canDecode(e, UmlActivity) ||
-      UmlDrag::canDecode(e, UmlActivityDiagram))
+      UmlDrag::canDecode(e, UmlActivity))
     e->accept();
   else
     e->ignore();
@@ -937,9 +933,7 @@ bool BrowserClassView::may_contains_them(const QList<BrowserNode> & l,
     case UmlColDiagram:
     case UmlObjectDiagram:
     case UmlState:
-    case UmlStateDiagram:
     case UmlActivity:
-    case UmlActivityDiagram:
       if (! may_contains(it.current(), FALSE))
 	return FALSE;
       break;
@@ -1052,7 +1046,6 @@ void BrowserClassView::save(QTextStream & st, bool ref, QString & warning) {
     nl_indent(st);
     st << "//activity diagram settings";
     activitydiagram_settings.save(st);
-    nl_indent(st);
     
     bool nl = FALSE;
     
@@ -1179,8 +1172,7 @@ BrowserClassView * BrowserClassView::read(char * & st, char * k,
 	     BrowserClass::read(st, k, r) ||
 	     BrowserClassInstance::read(st, k, r) ||
 	     BrowserState::read(st, k, r) ||
-	     BrowserActivity::read(st, k, r) ||
-	     BrowserActivityAction::read(st, k, r))
+	     BrowserActivity::read(st, k, r))
 	k = read_keyword(st);
 	
       if (strcmp(k, "end"))

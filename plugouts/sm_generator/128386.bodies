@@ -100,166 +100,174 @@ class UmlState
 	  !isLeaf());
 
 !!!144258.cpp!!!	generate() : void
-  if (parent()->kind() != aClassView)
+  switch (parent()->kind()) {
+  case anUseCase:
+  case anUseCaseView:
+    UmlCom::trace("Error : generation done only for state machines under class views<br>");
+    break;
+  default:
     UmlCom::trace("Error : must be applied on a state machine<br>");
-  else {
-    // a class having the normalized name of the state machine 
-    // implements it in the class view of the state machine
-    QCString qn = quotedName();
-    UmlClass * machine = (UmlClass *) parent()->getChild(aClass, qn);
-    
-    if ((machine == 0) &&
-	((machine = UmlBaseClass::create(parent(), qn)) == 0)) {
-      UmlCom::trace("Error : can't create class '" + qn
-		    + "' in class view '"
-		    + parent()->name() + "'<br>");
-      return;
-    }
-    machine->setUseless();
-    machine->defaultDef();
-    machine->setComment("implement the state machine " + name());
-    
-    // a class named "AnyState" is a super class of all the classes
-    // representing sub states
-    // it is defined a the first position under machine
-    UmlClass * anystate = (UmlClass *) machine->getChild(aClass, "AnyState");
-    
-    if (anystate == 0) {
-      if ((anystate = UmlBaseClass::create(machine, "AnyState")) == 0) {
-	UmlCom::trace("Error : can't create nested class 'AnyState' in '"
-		      + qn + "'<br>");
-	return;
-      }
+    break;
+  case aClassView:
+    {
+      // a class having the normalized name of the state machine 
+      // implements it in the class view of the state machine
+      QCString qn = quotedName();
+      UmlClass * machine = (UmlClass *) parent()->getChild(aClass, qn);
       
-      anystate->moveAfter(0);
-    }
-    anystate->defaultDef();
-    anystate->setComment("Mother class of all the classes representing states");
-    anystate->set_Visibility(ProtectedVisibility);
-    
-    // add abstract operation _upper
-    UmlOperation * upper;
-  
-    if (((upper = (UmlOperation *) anystate->getChild(anOperation, "_upper")) == 0) &&
-	((upper = UmlBaseOperation::create(anystate, "_upper")) == 0)) {
-      UmlCom::trace("Error : cannot create operation _upper in class '"
-		    + anystate->name() + "'<br>");
-      throw 0;
-    }
-    upper->set_isCppVirtual(TRUE);
-    upper->set_isAbstract(TRUE);
-    upper->defaultDef();
-    upper->setComment("return the upper state");
-    upper->setType(anystate, "${type} *");
-    upper->addParam(0, InputOutputDirection, "stm", machine);
-    upper->setParams("${t0} &");
-    
-    // add if needed classes associated to each state, and set flags
-    init(machine, "", "", this);
+      if ((machine == 0) &&
+	  ((machine = UmlBaseClass::create(parent(), qn)) == 0)) {
+	UmlCom::trace("Error : can't create class '" + qn
+		      + "' in class view '"
+		      + parent()->name() + "'<br>");
+	return;
+      }
+      machine->setUseless();
+      machine->defaultDef();
+      machine->setComment("implement the state machine " + name());
+      
+      // a class named "AnyState" is a super class of all the classes
+      // representing sub states
+      // it is defined a the first position under machine
+      UmlClass * anystate = (UmlClass *) machine->getChild(aClass, "AnyState");
+      
+      if (anystate == 0) {
+	if ((anystate = UmlBaseClass::create(machine, "AnyState")) == 0) {
+	  UmlCom::trace("Error : can't create nested class 'AnyState' in '"
+			+ qn + "'<br>");
+	  return;
+	}
 	
-    // add constructor if needed
-    UmlOperation * machine_constr = (UmlOperation *)
-      machine->getChild(anOperation, machine->name());
-    
-    if (machine_constr == 0) {
-      if ((machine_constr =
-	   UmlBaseOperation::create(machine, machine->name()))
-	  == 0) {
-	UmlCom::trace("Error : can't create constructor in class '"
-		      + machine->name() + "'<br>");
+	anystate->moveAfter(0);
+      }
+      anystate->defaultDef();
+      anystate->setComment("Mother class of all the classes representing states");
+      anystate->set_Visibility(ProtectedVisibility);
+      
+      // add abstract operation _upper
+      UmlOperation * upper;
+      
+      if (((upper = (UmlOperation *) anystate->getChild(anOperation, "_upper")) == 0) &&
+	  ((upper = UmlBaseOperation::create(anystate, "_upper")) == 0)) {
+	UmlCom::trace("Error : cannot create operation _upper in class '"
+		      + anystate->name() + "'<br>");
+	throw 0;
+      }
+      upper->set_isCppVirtual(TRUE);
+      upper->set_isAbstract(TRUE);
+      upper->defaultDef();
+      upper->setComment("return the upper state");
+      upper->setType(anystate, "${type} *");
+      upper->addParam(0, InputOutputDirection, "stm", machine);
+      upper->setParams("${t0} &");
+      
+      // add if needed classes associated to each state, and set flags
+      init(machine, "", "", this);
+      
+      // add constructor if needed
+      UmlOperation * machine_constr = (UmlOperation *)
+	machine->getChild(anOperation, machine->name());
+      
+      if (machine_constr == 0) {
+	if ((machine_constr =
+	     UmlBaseOperation::create(machine, machine->name()))
+	    == 0) {
+	  UmlCom::trace("Error : can't create constructor in class '"
+			+ machine->name() + "'<br>");
+	  return;
+	}
+      }
+      machine_constr->defaultDef();
+      machine_constr->setType("", "");
+      if (machine_constr->cppBody().isEmpty())
+	machine_constr->set_CppBody("  _current_state = 0;\n");
+      
+      // generate the machine
+      generate(machine, anystate, this);
+      
+      // set create's body
+      UmlOperation * cr = (UmlOperation *)
+	machine->getChild(anOperation, "create");
+      
+      if (cr == 0) {
+	UmlCom::trace("Error : the state machine must have a transition from 'initial'<br>");
 	return;
       }
-    }
-    machine_constr->defaultDef();
-    machine_constr->setType("", "");
-    if (machine_constr->cppBody().isEmpty())
-      machine_constr->set_CppBody("  _current_state = 0;\n");
-
-    // generate the machine
-    generate(machine, anystate, this);
-    
-    // set create's body
-    UmlOperation * cr = (UmlOperation *)
-      machine->getChild(anOperation, "create");
-    
-    if (cr == 0) {
-      UmlCom::trace("Error : the state machine must have a transition from 'initial'<br>");
-      return;
-    }
-    if (cr->cppBody().isEmpty())
-      cr->set_CppBody("\
-  if (_current_state == 0)\n\
-    (_current_state = &(*this)" + path() + ")->create(*this);\n\
-  return (_current_state != 0);\n");
-    
-    // add if needed operation _set_currentState
-    UmlOperation * set_currentState = (UmlOperation *)
-      machine->getChild(anOperation, "_set_currentState");
-    
-    if (set_currentState == 0) {
-      if ((set_currentState =
-	   UmlBaseOperation::create(machine, "_set_currentState"))
-	  == 0) {
-	UmlCom::trace("Error : can't create operation '_set_currentState' in class '"
-		      + machine->name() + "'<br>");
-	return;
+      if (cr->cppBody().isEmpty())
+	cr->set_CppBody("\
+if (_current_state == 0)\n\
+(_current_state = &(*this)" + path() + ")->create(*this);\n\
+return (_current_state != 0);\n");
+      
+      // add if needed operation _set_currentState
+      UmlOperation * set_currentState = (UmlOperation *)
+	machine->getChild(anOperation, "_set_currentState");
+      
+      if (set_currentState == 0) {
+	if ((set_currentState =
+	     UmlBaseOperation::create(machine, "_set_currentState"))
+	    == 0) {
+	  UmlCom::trace("Error : can't create operation '_set_currentState' in class '"
+			+ machine->name() + "'<br>");
+	  return;
+	}
       }
-    }
-    set_currentState->defaultDef();
-    set_currentState->setComment("change the current state, internal");
-    set_currentState->setType("void", "${type}");
-    if (set_currentState->params().isEmpty())
-      set_currentState->addParam(0, InputOutputDirection, "st", anystate);
-    set_currentState->setParams("${t0} & ${p0}");
-    set_currentState->set_CppBody("  _current_state = &st;\n");
-    set_currentState->set_isCppInline(TRUE);
-    set_currentState->set_Visibility(ProtectedVisibility);
-    
-    // add if needed operation _final
-    UmlOperation * final = (UmlOperation *)
-      machine->getChild(anOperation, "_final");
-    
-    if (final == 0) {
-      if ((final =
-	   UmlBaseOperation::create(machine, "_final"))
-	  == 0) {
-	UmlCom::trace("Error : can't create operation '_final' in class '"
-		      + machine->name() + "'<br>");
-	return;
+      set_currentState->defaultDef();
+      set_currentState->setComment("change the current state, internal");
+      set_currentState->setType("void", "${type}");
+      if (set_currentState->params().isEmpty())
+	set_currentState->addParam(0, InputOutputDirection, "st", anystate);
+      set_currentState->setParams("${t0} & ${p0}");
+      set_currentState->set_CppBody("  _current_state = &st;\n");
+      set_currentState->set_isCppInline(TRUE);
+      set_currentState->set_Visibility(ProtectedVisibility);
+      
+      // add if needed operation _final
+      UmlOperation * final = (UmlOperation *)
+	machine->getChild(anOperation, "_final");
+      
+      if (final == 0) {
+	if ((final =
+	     UmlBaseOperation::create(machine, "_final"))
+	    == 0) {
+	  UmlCom::trace("Error : can't create operation '_final' in class '"
+			+ machine->name() + "'<br>");
+	  return;
+	}
       }
+      final->defaultDef();
+      final->setComment("execution done, internal");
+      final->setType("void", "${type}");
+      final->set_CppBody("  _current_state = 0;\n"
+			 "#ifdef VERBOSE_STATE_MACHINE\n"
+			 "  puts(\"DEBUG : final state reached\");\n"
+			 "#endif\n");
+      if (final->isCppInline())
+	// defined by old release
+	final->set_isCppInline(FALSE);
+      final->set_Visibility(ProtectedVisibility);
+      
+      // add if needed a relation to memorize the current state
+      UmlRelation * current_state = (UmlRelation *)
+	machine->getChild(aRelation, "_current_state");
+      
+      if (current_state == 0) {
+	if ((current_state =
+	     UmlBaseRelation::create(aDirectionalAggregation, machine, anystate))
+	    == 0) {
+	  UmlCom::trace("Error : can't create relation '_current_state' from '"
+			+ machine->name() + "' to '" + anystate->name() + "'<br>");
+	  return;
+	}
+      } 
+      current_state->set_RoleName("_current_state");
+      current_state->set_CppDecl(CppSettings::relationDecl(FALSE, ""));
+      current_state->setComment("contains the current state, internal");
+      current_state->set_Visibility(ProtectedVisibility);
+      
+      // all done
+      machine->deleteUseless();
     }
-    final->defaultDef();
-    final->setComment("execution done, internal");
-    final->setType("void", "${type}");
-    final->set_CppBody("  _current_state = 0;\n"
-		       "#ifdef VERBOSE_STATE_MACHINE\n"
-		       "  puts(\"DEBUG : final state reached\");\n"
-		       "#endif\n");
-    if (final->isCppInline())
-      // defined by old release
-      final->set_isCppInline(FALSE);
-    final->set_Visibility(ProtectedVisibility);
-    
-    // add if needed a relation to memorize the current state
-    UmlRelation * current_state = (UmlRelation *)
-      machine->getChild(aRelation, "_current_state");
-    
-    if (current_state == 0) {
-      if ((current_state =
-	   UmlBaseRelation::create(aDirectionalAggregation, machine, anystate))
-	  == 0) {
-	UmlCom::trace("Error : can't create relation '_current_state' from '"
-		      + machine->name() + "' to '" + anystate->name() + "'<br>");
-	return;
-      }
-    } 
-    current_state->set_RoleName("_current_state");
-    current_state->set_CppDecl(CppSettings::relationDecl(FALSE, ""));
-    current_state->setComment("contains the current state, internal");
-    current_state->set_Visibility(ProtectedVisibility);
-    
-    // all done
-    machine->deleteUseless();
   }
 !!!145922.cpp!!!	generate(inout machine : UmlClass, inout anystate : UmlClass, inout state : UmlState) : void
   // inherits anystate

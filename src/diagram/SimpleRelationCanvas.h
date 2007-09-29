@@ -42,7 +42,8 @@ class SimpleRelationCanvas : public ArrowCanvas {
   public:
     SimpleRelationCanvas(UmlCanvas * canvas, DiagramItem * b,
 			 DiagramItem * e, BrowserNode * bb, UmlCode t,
-			 int id, SimpleRelationData * d = 0);
+			 int id, float d_start, float d_end,
+			 SimpleRelationData * d = 0);
     virtual ~SimpleRelationCanvas();
     
     virtual void delete_it();

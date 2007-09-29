@@ -54,8 +54,9 @@
 
 ObjectLinkCanvas::ObjectLinkCanvas(UmlCanvas * canvas, DiagramItem * b,
 				   DiagramItem * e, UmlCode t, int id,
+				   float d_begin, float d_end,
 				   RelationData * d)
-      : ArrowCanvas(canvas, b, e, t, id, TRUE),
+      : ArrowCanvas(canvas, b, e, t, id, TRUE, d_begin, d_end),
         data(d), role_a(0), role_b(0) {
   if (d != 0) {
     itstype = d->get_type();
@@ -496,7 +497,11 @@ void ObjectLinkCanvas::menu(const QPoint & lpos) {
     }
     else*/ if (rank >= 10) {
       rank -= 10;
-      if (rank != (int) geometry)
+      if (rank == RecenterBegin)
+	set_decenter(-1.0, decenter_end);
+      else if (rank == RecenterEnd)
+	set_decenter(decenter_begin, -1.0);
+      else if (rank != (int) geometry)
 	set_geometry((LineGeometry) rank, TRUE);
       else
 	return;
@@ -520,7 +525,8 @@ ArrowPointCanvas * ObjectLinkCanvas::brk(const QPoint & p) {
   
   ObjectLinkCanvas * other =
     // do not give data to not call update()
-    new ObjectLinkCanvas(the_canvas(), ap, end, UmlObjectLink, 0, 0);
+    new ObjectLinkCanvas(the_canvas(), ap, end, UmlObjectLink, 0,
+			 decenter_begin, decenter_end, 0);
   
   if (data != 0) {
     other->data = data;
@@ -811,6 +817,16 @@ void ObjectLinkCanvas::save(QTextStream & st, bool ref, QString & warning) const
       if (!fixed_geometry)
 	st << " unfixed";
     }
+    if (decenter_begin >= 0) {
+      // float output/input bugged
+      nl_indent(st);
+      st << "decenter_begin " << ((int) (decenter_begin * 1000));
+    }
+    if (decenter_end >= 0) {
+      // float output/input bugged
+      nl_indent(st);
+      st << "decenter_end " << ((int) (decenter_end * 1000));
+    }
     
     const ObjectLinkCanvas * last = 
       (const ObjectLinkCanvas *) ArrowCanvas::save_lines(st, TRUE, TRUE, warning);
@@ -851,19 +867,37 @@ ObjectLinkCanvas * ObjectLinkCanvas::read(char * & st, UmlCanvas * canvas, char 
     if (! strcmp(k, "geometry")) {
       geo = line_geometry(read_keyword(st));
       k = read_keyword(st);
-      if (! strcmp(k, "unfixed"))
+      if (! strcmp(k, "unfixed")) {
+	k = read_keyword(st);
 	fixed = FALSE;
-      else {
-	fixed = TRUE;
-	unread_keyword(k, st);
       }
+      else
+	fixed = TRUE;
     }
     else {
-      unread_keyword(k, st);
       geo = NoGeometry;
       fixed = FALSE;
     }
+    
+    float dbegin;
+    float dend;
 
+    if (! strcmp(k, "decenter_begin")) {
+      dbegin = read_double(st) / 1000;
+      k = read_keyword(st);
+    }
+    else
+      dbegin = -1;
+
+    if (! strcmp(k, "decenter_end")) {
+      dend = read_double(st) / 1000;
+      k = read_keyword(st);
+    }
+    else
+      dend = -1;
+
+    unread_keyword(k, st);
+    
     read_keyword(st, "from");
     read_keyword(st, "ref");
     
@@ -943,7 +977,7 @@ ObjectLinkCanvas * ObjectLinkCanvas::read(char * & st, UmlCanvas * canvas, char 
 	di = dict_get(read_id(st), "classinstance", canvas);
 
       // do not give rd to not call update()
-      result = new ObjectLinkCanvas(canvas, bi, di, t, id);
+      result = new ObjectLinkCanvas(canvas, bi, di, t, id, dbegin, dend);
       result->geometry = geo;
       result->fixed_geometry = fixed;
       result->set_z(z);

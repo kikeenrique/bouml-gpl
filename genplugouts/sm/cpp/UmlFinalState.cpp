@@ -11,7 +11,9 @@ void UmlFinalState::generate(UmlClass *, UmlClass *, UmlState *, QCString & body
   if (parent()->kind() != aRegion)
     body += indent + "stm._final();\n";
   else {
+#ifndef WIN32
 #warning A FAIRE
+#endif
   }
 }
 

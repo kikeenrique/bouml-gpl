@@ -268,11 +268,13 @@ void OdClassInstCanvas::draw_all_relations(OdClassInstCanvas * end) {
       if (di != 0) {
 	if (slot_rel.is_a)
 	  (new ObjectLinkCanvas(the_canvas(), this, di,
-				slot_rel.rel->get_type(), 0, slot_rel.rel))
+				slot_rel.rel->get_type(),
+				0, -1.0, -1.0, slot_rel.rel))
 	    ->show();
 	else
 	  (new ObjectLinkCanvas(the_canvas(), di, this,
-				slot_rel.rel->get_type(), 0, slot_rel.rel))
+				slot_rel.rel->get_type(),
+				0, -1.0, -1.0, slot_rel.rel))
 	    ->show();
       }
     }
@@ -632,9 +634,9 @@ void OdClassInstCanvas::connexion(UmlCode t, DiagramItem * dest, const QPoint &,
   ArrowCanvas * l;
   
   if (t == UmlObjectLink)
-    l = new ObjectLinkCanvas(the_canvas(), this, dest, UmlObjectLink, 0, 0);
+    l = new ObjectLinkCanvas(the_canvas(), this, dest, UmlObjectLink, 0, -1.0, -1.0, 0);
   else
-    l = new ArrowCanvas(the_canvas(), this, dest, t, 0, FALSE);
+    l = new ArrowCanvas(the_canvas(), this, dest, t, 0, FALSE, -1.0, -1.0);
   
   l->show();
   the_canvas()->select(l);

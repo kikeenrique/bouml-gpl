@@ -31,7 +31,7 @@
 class AssocContainCanvas : public ArrowCanvas {
   public:
     AssocContainCanvas(UmlCanvas * canvas, DiagramItem * b,
-		     DiagramItem * e, int id);
+		     DiagramItem * e, int id, float d_start, float d_end);
     virtual ~AssocContainCanvas();
     
     virtual ArrowPointCanvas * brk(const QPoint &);

@@ -49,10 +49,11 @@
 #include "DialogUtil.h"
 #include "strutil.h"
 
-FlowCanvas::FlowCanvas(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
-		       BrowserNode * bb, int id, FlowData * d)
-      : ArrowCanvas(canvas, b, e, UmlFlow, id, TRUE), br_begin(bb),
-        data(d), selection(0), transformation(0),
+FlowCanvas::FlowCanvas(UmlCanvas * canvas, DiagramItem * b,
+		       DiagramItem * e, BrowserNode * bb, int id,
+		       float d_start, float d_end, FlowData * d)
+      : ArrowCanvas(canvas, b, e, UmlFlow, id, TRUE, d_start, d_end),
+        br_begin(bb), data(d), selection(0), transformation(0),
   	write_horizontally(UmlDefaultState) {
   if ((e->type() != UmlArrowPoint) && (bb == 0)) {
     // end of line construction
@@ -295,7 +296,11 @@ void FlowCanvas::menu(const QPoint &) {
       }
       else if (rank >= 10) {
 	rank -= 10;
-	if (rank != (int) geometry)
+	if (rank == RecenterBegin)
+	  set_decenter(-1.0, decenter_end);
+	else if (rank == RecenterEnd)
+	  set_decenter(decenter_begin, -1.0);
+	else if (rank != (int) geometry)
 	  set_geometry((LineGeometry) rank, TRUE);
 	else
 	  return;
@@ -391,7 +396,8 @@ ArrowPointCanvas * FlowCanvas::brk(const QPoint & p) {
   
   FlowCanvas * other =
     // do not give data to not call update()
-    new FlowCanvas(the_canvas(), ap, end, br_begin, 0);
+    new FlowCanvas(the_canvas(), ap, end, br_begin, 0,
+		   decenter_begin, decenter_end);
   
   other->data = data;
   other->settings = settings;
@@ -566,7 +572,9 @@ void FlowCanvas::check_sel_trans() {
 	  
 	  selection->move(beginp.x(), (cdy < 0) ? 0 : cdy);
 	  selection->show();
-	  (new ArrowCanvas(the_canvas(), this, selection, UmlAnchor, 0, FALSE))->show();
+	  (new ArrowCanvas(the_canvas(), this, selection,
+			   UmlAnchor, 0, FALSE, -1.0, -1.0))
+	    ->show();
 	}
 	else
 	  selection->set(s);
@@ -591,7 +599,9 @@ void FlowCanvas::check_sel_trans() {
 	  
 	  transformation->move(beginp.x(), (cdy < 0) ? 0 : cdy);
 	  transformation->show();
-	  (new ArrowCanvas(the_canvas(), this, transformation, UmlAnchor, 0, FALSE))->show();
+	  (new ArrowCanvas(the_canvas(), this, transformation,
+			   UmlAnchor, 0, FALSE, -1.0, -1.0))
+	    ->show();
 	}
 	else
 	  transformation->set(s);
@@ -665,7 +675,7 @@ void FlowCanvas::drop(BrowserNode * bn, UmlCanvas * canvas)
       msg_information("Bouml", "flow already drawn");
     else {
       FlowCanvas * tr = 
-	new FlowCanvas(canvas, difrom, dito, from, 0, def);
+	new FlowCanvas(canvas, difrom, dito, from, 0, -1.0, -1.0, def);
       
       tr->show();
       tr->package_modified();
@@ -687,6 +697,16 @@ void FlowCanvas::save(QTextStream & st, bool ref, QString & warning) const {
       st << "geometry " << stringify(geometry);
       if (!fixed_geometry)
 	st << " unfixed";
+    }
+    if (decenter_begin >= 0) {
+      // float output/input bugged
+      nl_indent(st);
+      st << "decenter_begin " << ((int) (decenter_begin * 1000));
+    }
+    if (decenter_end >= 0) {
+      // float output/input bugged
+      nl_indent(st);
+      st << "decenter_end " << ((int) (decenter_end * 1000));
     }
     nl_indent(st);
     (const FlowCanvas *) ArrowCanvas::save_lines(st, TRUE, TRUE, warning);
@@ -725,18 +745,36 @@ FlowCanvas * FlowCanvas::read(char * & st, UmlCanvas * canvas, char * k)
     if (! strcmp(k, "geometry")) {
       geo = line_geometry(read_keyword(st));
       k = read_keyword(st);
-      if (! strcmp(k, "unfixed"))
+      if (! strcmp(k, "unfixed")) {
+	k = read_keyword(st);
 	fixed = FALSE;
+      }
       else {
 	fixed = TRUE;
-	unread_keyword(k, st);
       }
     }
-    else {
-      unread_keyword(k, st);
+    else
       geo = NoGeometry;
-    }
+    
+    float dbegin;
+    float dend;
 
+    if (! strcmp(k, "decenter_begin")) {
+      dbegin = read_double(st) / 1000;
+      k = read_keyword(st);
+    }
+    else
+      dbegin = -1;
+
+    if (! strcmp(k, "decenter_end")) {
+      dend = read_double(st) / 1000;
+      k = read_keyword(st);
+    }
+    else
+      dend = -1;
+
+    unread_keyword(k, st);
+    
     read_keyword(st, "from");
     read_keyword(st, "ref");
     
@@ -802,7 +840,7 @@ FlowCanvas * FlowCanvas::read(char * & st, UmlCanvas * canvas, char * k)
 	di = dict_get(read_id(st), "activity node", canvas);
 
       // do not give data to not call update()
-      result = new FlowCanvas(canvas, bi, di, b, id);
+      result = new FlowCanvas(canvas, bi, di, b, id, dbegin, dend);
       result->geometry = geo;
       result->fixed_geometry = fixed;
       result->set_z(z);

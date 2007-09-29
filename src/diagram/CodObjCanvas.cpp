@@ -110,7 +110,7 @@ void CodObjCanvas::connexion(UmlCode l, DiagramItem * dest,
   default:
     if (dest != this) {
       ArrowCanvas * a =
-	new CodLinkCanvas(the_canvas(), this, dest, 0);
+	new CodLinkCanvas(the_canvas(), this, dest, 0, -1.0, -1.0);
       
       a->show();
       the_canvas()->select(a);

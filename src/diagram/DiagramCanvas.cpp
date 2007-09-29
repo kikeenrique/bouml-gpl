@@ -205,7 +205,7 @@ bool DiagramCanvas::contains(int x, int y) const {
 void DiagramCanvas::connexion(UmlCode action, DiagramItem * dest,
 			      const QPoint &, const QPoint &) {
   ArrowCanvas * a = 
-    new ArrowCanvas(the_canvas(), this, dest, action, 0, FALSE);
+    new ArrowCanvas(the_canvas(), this, dest, action, 0, FALSE, -1.0, -1.0);
   
   a->show();
   the_canvas()->select(a);
@@ -614,7 +614,8 @@ void DiagramCanvas::draw_all_simple_relations(DiagramCanvas * end) {
 	if (di != 0)
 	  (new SimpleRelationCanvas(the_canvas(), this, di,
 				    (BrowserNode *) child, 
-				    def->get_type(), 0, def))->show();
+				    def->get_type(), 0,
+				    -1.0, -1.0, def))->show();
       }
     }
   }
@@ -684,7 +685,7 @@ void DiagramCanvas::draw_all_flows(DiagramCanvas * end) {
 	if (di != 0)
 	  (new FlowCanvas(the_canvas(), this, di,
 			  (BrowserNode *) child, 
-			  0, def))->show();
+			  0, -1.0, -1.0, def))->show();
       }
     }
   }
@@ -754,7 +755,7 @@ void DiagramCanvas::draw_all_transitions(DiagramCanvas * end) {
 	if (di != 0)
 	  (new TransitionCanvas(the_canvas(), this, di,
 				(BrowserNode *) child, 
-				0, def))->show();
+				0, -1.0, -1.0, def))->show();
       }
     }
   }

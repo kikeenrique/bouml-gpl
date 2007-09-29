@@ -38,7 +38,7 @@
 #include <qpaintdevicemetrics.h>
 #include <qfiledialog.h>
 #include <qbuffer.h>
-#ifdef WIN32
+#if defined(WIN32) || (QT_VERSION != 230)
 #include <qtimer.h>
 #endif
 
@@ -80,9 +80,9 @@ UmlCode DiagramView::copied_from;
 
 DiagramView::DiagramView(QWidget * parent, UmlCanvas * canvas, int i)
     : QCanvasView(canvas, parent), id(i), selectArea(0), start(0),
-      line(0), draw_line(FALSE), arrowBeginning(0), do_resize(NoCorner),
-      preferred_zoom(0), history_protected(FALSE), history_frozen(FALSE),
-      first_move(FALSE), history_index(~0u) {
+      line(0), arrowBeginning(0), preferred_zoom(0), draw_line(FALSE),
+      do_resize(NoCorner), history_protected(FALSE), history_frozen(FALSE),
+      first_move(FALSE), on_arrow_decenter(FALSE), history_index(~0u) {
   // enableClipper(TRUE); => probleme d'affichage
   preferred_size.setWidth(0);
   preferred_size.setHeight(0);
@@ -355,6 +355,8 @@ void DiagramView::contentsMouseReleaseEvent(QMouseEvent * e) {
   if (!window()->frozen()) {
     if (do_resize != NoCorner)
       do_resize = NoCorner;
+    else if (on_arrow_decenter)
+      on_arrow_decenter = FALSE;
     else if (line != 0) {
       history_protected = TRUE;
       the_canvas()->del(line);
@@ -455,22 +457,22 @@ void DiagramView::add_point(QMouseEvent * e) {
   ArrowCanvas * a;
   
   if ((t == UmlClassDiagram) && IsaRelation(action))
-    a = new RelationCanvas(the_canvas(), start, ap, 0, action, 0);
+    a = new RelationCanvas(the_canvas(), start, ap, 0, action, 0, -1.0, -1.0);
   else if ((t == UmlColDiagram) && (action == UmlLink))
-    a = new CodLinkCanvas(the_canvas(), start, ap, 0);
+    a = new CodLinkCanvas(the_canvas(), start, ap, 0, -1.0, -1.0);
   else if ((t == UmlObjectDiagram) && (action == UmlObjectLink))
-    a = new ObjectLinkCanvas(the_canvas(), start, ap, UmlObjectLink, 0);
+    a = new ObjectLinkCanvas(the_canvas(), start, ap, UmlObjectLink, 0, -1.0, -1.0);
   else if (((t == UmlComponentDiagram) || (t == UmlDeploymentDiagram))
 	   && (action == UmlContain))
-    a = new AssocContainCanvas(the_canvas(), start, ap, 0);
+    a = new AssocContainCanvas(the_canvas(), start, ap, 0, -1.0, -1.0);
   else if ((t == UmlStateDiagram) && (action == UmlTransition))
-    a = new TransitionCanvas(the_canvas(), start, ap, 0, 0);
+    a = new TransitionCanvas(the_canvas(), start, ap, 0, 0, -1.0, -1.0);
   else if ((t == UmlActivityDiagram) && (action == UmlFlow))
-    a = new FlowCanvas(the_canvas(), start, ap, 0, 0);
+    a = new FlowCanvas(the_canvas(), start, ap, 0, 0, -1.0, -1.0);
   else if (IsaSimpleRelation(action))
-    a = new SimpleRelationCanvas(the_canvas(), start, ap, 0, action, 0);
+    a = new SimpleRelationCanvas(the_canvas(), start, ap, 0, action, 0, -1.0, -1.0);
   else
-    a = new ArrowCanvas(the_canvas(), start, ap, action, 0, FALSE);
+    a = new ArrowCanvas(the_canvas(), start, ap, action, 0, FALSE, -1.0, -1.0);
   
   temp.append(a);		// before the point, see abort_line_construction()
   temp.append(ap);
@@ -513,7 +515,17 @@ void DiagramView::contentsMouseMoveEvent(QMouseEvent * e) {
 	  ArrowCanvas * a = ((ArrowCanvas *) selection().first());
 	  ArrowPointCanvas * ap;
 	  
-	  if (a->cut_on_move(ap)) {
+	  if (on_arrow_decenter) {
+	    a->decenter(e->pos(), decenter_start, decenter_horiz);
+	    window()->package_modified();
+	  }
+	  else if (a->is_decenter(mousePressPos, decenter_start, decenter_horiz)) {
+	    on_arrow_decenter = TRUE;
+	    history_save();
+	    a->decenter(e->pos(), decenter_start, decenter_horiz);
+	    window()->package_modified();
+	  }
+	  else if (a->cut_on_move(ap)) {
 	    // cuts the line in two adding an ArrowPoint which
 	    // becomes the alone selected item allowing to move it
 	    history_save();
@@ -649,7 +661,7 @@ void DiagramView::relation_to_simplerelation(UmlCode k) {
     ap->upper();
   
     ArrowCanvas * a = 
-      new SimpleRelationCanvas(the_canvas(), start, ap, 0, k, 0);
+      new SimpleRelationCanvas(the_canvas(), start, ap, 0, k, 0, -1.0, -1.0);
     
     ap->show();
     a->show();
@@ -1280,7 +1292,7 @@ void DiagramView::do_optimal_window_size() {
   optimal_window_size();
   canvas()->update();
   // do it an other time because of the scroll bars
-#ifdef WIN32
+#if defined(WIN32) || (QT_VERSION != 230)
   QTimer::singleShot(1, this, SLOT(optimal_window_size()));
 #else
   optimal_window_size();

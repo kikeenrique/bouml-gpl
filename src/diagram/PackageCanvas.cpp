@@ -553,9 +553,9 @@ void PackageCanvas::connexion(UmlCode action, DiagramItem * dest,
   ArrowCanvas * r;
   
   if (IsaSimpleRelation(action))
-    r = new SimpleRelationCanvas(the_canvas(), this, dest, 0, action, 0);
+    r = new SimpleRelationCanvas(the_canvas(), this, dest, 0, action, 0, -1.0, -1.0);
   else
-    r = new ArrowCanvas(the_canvas(), this, dest, action, 0, FALSE);
+    r = new ArrowCanvas(the_canvas(), this, dest, action, 0, FALSE, -1.0, -1.0);
   
   r->show();
   the_canvas()->select(r);

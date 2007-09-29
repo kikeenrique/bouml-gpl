@@ -42,6 +42,8 @@
 #include "UmlDrag.h"
 #include "BrowserClass.h"
 #include "BrowserClassInstance.h"
+#include "BrowserState.h"
+#include "BrowserActivity.h"
 #include "SettingsDialog.h"
 #include "myio.h"
 #include "ToolCom.h"
@@ -78,6 +80,12 @@ BrowserUseCase::BrowserUseCase(const BrowserUseCase * model,
   continuation_color = model->continuation_color;
   usecase_color = model->usecase_color;
   package_color = model->package_color;
+  state_color = model->state_color;
+  stateaction_color = model->stateaction_color;
+  activity_color = model->activity_color;
+  activityregion_color = model->activityregion_color;
+  activityaction_color = model->activityaction_color;
+  parameterpin_color = model->parameterpin_color;
   
   is_modified = true;
 }
@@ -105,7 +113,13 @@ void BrowserUseCase::make() {
   usecase_color = UmlDefaultColor;
   package_color = UmlDefaultColor;
   fragment_color = UmlDefaultColor;
-  subject_color = UmlDefaultColor;	   
+  subject_color = UmlDefaultColor;
+  state_color = UmlDefaultColor;
+  stateaction_color = UmlDefaultColor;
+  activity_color = UmlDefaultColor;
+  activityregion_color = UmlDefaultColor;
+  activityaction_color = UmlDefaultColor;
+  parameterpin_color = UmlDefaultColor;   
 }
 
 BrowserNode * BrowserUseCase::duplicate(BrowserNode * p, QString name) {
@@ -176,6 +190,10 @@ void BrowserUseCase::menu() {
 		     "to add a <em>class</em>");
       m.setWhatsThis(m.insertItem("New class instance", 14),
 		     "to add a <em>class instance</em>");
+      m.setWhatsThis(m.insertItem("New state machine", 15),
+		     "to add a <em>state machine</em>");
+      m.setWhatsThis(m.insertItem("New activity", 16),
+		     "to add an <em>activity</em>");
       m.insertSeparator();
     }
     if (!is_edited) {
@@ -308,12 +326,14 @@ void BrowserUseCase::exec_menu_choice(int rank, BrowserNode * item_above) {
   case 7:
     {
       QArray<StateSpec> st;
-      QArray<ColorSpec> co(7);
+      QArray<ColorSpec> co(13);
       
       usecasediagram_settings.complete(st, FALSE);
       sequencediagram_settings.complete(st, FALSE);
       collaborationdiagram_settings.complete(st, FALSE);
       objectdiagram_settings.complete(st, FALSE);
+      statediagram_settings.complete(st, FALSE);
+      activitydiagram_settings.complete(st, FALSE);
       
       co[0].set("note color", &note_color);
       co[1].set("use case color", &usecase_color);
@@ -322,6 +342,12 @@ void BrowserUseCase::exec_menu_choice(int rank, BrowserNode * item_above) {
       co[4].set("subject color", &subject_color);
       co[5].set("duration color", &duration_color);
       co[6].set("continuation color", &continuation_color);
+      co[7].set("state color", &state_color);
+      co[8].set("state action color", &stateaction_color);
+      co[9].set("activity color", &activity_color);
+      co[10].set("activity region color", &activityregion_color);
+      co[11].set("activity action color", &activityaction_color);
+      co[12].set("parameter and pin color", &parameterpin_color);
 
       SettingsDialog dialog(&st, &co, FALSE, FALSE);
       
@@ -367,6 +393,23 @@ void BrowserUseCase::exec_menu_choice(int rank, BrowserNode * item_above) {
 	c->select_in_browser();
     }
     return; // package_modified called
+  case 15:
+    {
+      BrowserState * st = BrowserState::add_state(this, (bool) TRUE);
+      
+      if (st == 0)
+	return;
+      st->select_in_browser();
+    }
+    break;
+  case 16:
+    {
+      BrowserActivity * a = BrowserActivity::add_activity(this);
+      
+      if (a != 0)
+	a->select_in_browser();
+    }
+    return; // package_modified called
   default:
     if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
@@ -399,6 +442,10 @@ void BrowserUseCase::apply_shortcut(QString s) {
 	choice = 5;
       else if (s == "New class instance")
 	choice = 14;
+      else if (s == "New state machine")
+	choice = 15;
+      else if (s == "New activity")
+	choice = 16;
     }
     if (!is_edited) {
       if (s == "Edit")
@@ -521,6 +568,16 @@ void BrowserUseCase::get_usecasediagramsettings(UseCaseDiagramSettings & r) cons
     ((BrowserNode *) parent())->get_usecasediagramsettings(r);
 }
 
+void BrowserUseCase::get_statediagramsettings(StateDiagramSettings & r) const {
+  if (! statediagram_settings.complete(r))
+    ((BrowserNode *) parent())->get_statediagramsettings(r);
+}
+
+void BrowserUseCase::get_activitydiagramsettings(ActivityDiagramSettings & r) const {
+  if (! activitydiagram_settings.complete(r))
+    ((BrowserNode *) parent())->get_activitydiagramsettings(r);
+}
+
 UmlColor BrowserUseCase::get_color(UmlCode who) const {
   UmlColor c;
   
@@ -543,6 +600,27 @@ UmlColor BrowserUseCase::get_color(UmlCode who) const {
   case UmlContinuation:
     c = continuation_color;
     break;
+  case UmlState:
+    c = state_color;
+    break;
+  case UmlStateAction:
+    c = stateaction_color;
+    break;
+  case UmlActivity:
+    c = activity_color;
+    break;
+  case UmlInterruptibleActivityRegion:
+  case UmlExpansionRegion:
+    c = activityregion_color;
+    break;
+  case UmlActivityAction:
+    c = activityaction_color;
+    break;
+  case UmlExpansionNode:
+  case UmlParameter:
+  case UmlActivityPin:
+    c = parameterpin_color;
+    break;
   default:	// UmlDuration
     c = duration_color;
   }
@@ -562,6 +640,12 @@ bool BrowserUseCase::get_auto_label_position(UmlCode who) const {
   case UmlObjectDiagram:
     v = objectdiagram_settings.auto_label_position;
     break;
+  case UmlStateDiagram:
+    v = statediagram_settings.auto_label_position;
+    break;
+  case UmlActivityDiagram:
+    v = activitydiagram_settings.auto_label_position;
+    break;
   default:
     // error
     return FALSE;
@@ -575,6 +659,97 @@ bool BrowserUseCase::get_auto_label_position(UmlCode who) const {
   default:
     return ((BrowserNode *) parent())->get_auto_label_position(who);
   }
+}
+
+
+
+bool BrowserUseCase::get_write_label_horizontally(UmlCode who) const {
+  Uml3States v;
+  
+  switch (who) {
+  case UmlStateDiagram:
+    v = statediagram_settings.write_label_horizontally;
+    break;
+  case UmlActivityDiagram:
+    v = activitydiagram_settings.write_label_horizontally;
+    break;
+  default:
+    // error
+    return FALSE;
+  }
+  
+  switch (v) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_write_label_horizontally(who);
+  }
+}
+
+bool BrowserUseCase::get_show_trans_definition(UmlCode who) const {
+  Uml3States v;
+  
+  switch (who) {
+  case UmlStateDiagram:
+    v = statediagram_settings.show_trans_definition;
+    break;
+  default:
+    // error
+    return FALSE;
+  }
+  
+  switch (v) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_show_trans_definition(who);
+  }
+}
+
+bool BrowserUseCase::get_show_opaque_action_definition(UmlCode who) const {
+  Uml3States v;
+  
+  switch (who) {
+  case UmlActivityDiagram:
+    v = activitydiagram_settings.show_opaque_action_definition;
+    break;
+  default:
+    // error
+    return FALSE;
+  }
+  
+  switch (v) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_show_opaque_action_definition(who);
+  }
+}
+
+DrawingLanguage BrowserUseCase::get_language(UmlCode who) const {
+  DrawingLanguage v;
+  
+  switch (who) {
+  case UmlStateDiagram:
+    v = statediagram_settings.statedrawingsettings.drawing_language;
+    break;
+  case UmlActivityDiagram:
+    v = activitydiagram_settings.activitydrawingsettings.drawing_language;
+    break;
+  default:
+    // error
+    return UmlView;
+  }
+  
+  return (v != DefaultDrawingLanguage)
+    ? v
+    : ((BrowserNode *) parent())->get_language(who);
 }
 
 BrowserNode * BrowserUseCase::get_associated() const {
@@ -676,6 +851,18 @@ bool BrowserUseCase::tool_cmd(ToolCom * com, const char * args) {
 	    }
 	  }
 	  break;
+	case UmlState:
+	  if (wrong_child_name(args, UmlState, TRUE, FALSE))
+	    ok = FALSE;
+	  else
+	    (BrowserState::add_state(this, args))->write_id(com);
+	  break;
+	case UmlActivity:
+	  if (wrong_child_name(args, UmlActivity, TRUE, FALSE))
+	    ok = FALSE;
+	  else
+	    (BrowserActivity::add_activity(this, args))->write_id(com);
+	  break;
 	default:
 	  ok = FALSE;
 	}
@@ -708,6 +895,8 @@ void BrowserUseCase::DragMoveEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, UmlSeqDiagram) ||
       UmlDrag::canDecode(e, UmlColDiagram) ||
       UmlDrag::canDecode(e, UmlObjectDiagram) ||
+      UmlDrag::canDecode(e, UmlState) ||
+      UmlDrag::canDecode(e, UmlActivity) ||
       UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
     e->accept();
   else
@@ -722,6 +911,8 @@ void BrowserUseCase::DragMoveInsideEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, UmlUseCase) ||
       UmlDrag::canDecode(e, UmlClass) ||
       UmlDrag::canDecode(e, UmlClassInstance) ||
+      UmlDrag::canDecode(e, UmlState) ||
+      UmlDrag::canDecode(e, UmlActivity) ||
       UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
     e->accept();
   else
@@ -741,6 +932,8 @@ bool BrowserUseCase::may_contains_them(const QList<BrowserNode> & l,
     case UmlUseCase:
     case UmlClass:
     case UmlClassInstance:
+    case UmlState:
+    case UmlActivity:
       break;
     default:
       if (!IsaSimpleRelation(it.current()->get_type()) ||
@@ -772,7 +965,9 @@ void BrowserUseCase::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
        ((bn = UmlDrag::decode(e, UmlUseCase)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlClass)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlClassInstance)) != 0) ||
-       ((bn = UmlDrag::decode(e, BrowserSimpleRelation::drag_key(this))) != 0)) &&
+       ((bn = UmlDrag::decode(e, BrowserSimpleRelation::drag_key(this))) != 0) ||
+       ((bn = UmlDrag::decode(e, UmlState)) != 0) ||
+       ((bn = UmlDrag::decode(e, UmlActivity)) != 0)) &&
       (bn != after) && (bn != this)) {
     if (may_contains(bn, bn->get_type() == UmlUseCase)) {
       BrowserNode * x = this;
@@ -919,6 +1114,12 @@ void BrowserUseCase::save(QTextStream & st, bool ref, QString & warning) {
     nl_indent(st);
     st << "//object diagram settings";
     objectdiagram_settings.save(st);
+    nl_indent(st);
+    st << "//state diagram settings";
+    statediagram_settings.save(st);
+    nl_indent(st);
+    st << "//activity diagram settings";
+    activitydiagram_settings.save(st);
   
     bool nl = FALSE;
     
@@ -929,6 +1130,12 @@ void BrowserUseCase::save(QTextStream & st, bool ref, QString & warning) {
     save_color(st, "package_color", package_color, nl);
     save_color(st, "fragment_color", fragment_color, nl);
     save_color(st, "subject_color", subject_color, nl);
+    save_color(st, "state_color", state_color, nl);
+    save_color(st, "stateaction_color", stateaction_color, nl);
+    save_color(st, "activity_color", activity_color, nl);
+    save_color(st, "activityregion_color", activityregion_color, nl);
+    save_color(st, "activityaction_color", activityaction_color, nl);
+    save_color(st, "parameterpin_color", parameterpin_color, nl);
   
     if (associated_diagram != 0) {
       nl_indent(st);
@@ -1024,6 +1231,10 @@ BrowserUseCase * BrowserUseCase::read(char * & st, char * k,
     result->collaborationdiagram_settings.read(st, k);	// updates k
     if (read_file_format() >= 25)
       result->objectdiagram_settings.read(st, k);	// updates k
+    if (read_file_format() >= 43) {
+      result->statediagram_settings.read(st, k);		// updates k
+      result->activitydiagram_settings.read(st, k);		// updates k
+    }
     read_color(st, "duration", result->duration_color, k);	// old, updates k
     read_color(st, "duration_color", result->duration_color, k);	// updates k
     read_color(st, "continuation_color", result->continuation_color, k);	// updates k
@@ -1032,7 +1243,14 @@ BrowserUseCase * BrowserUseCase::read(char * & st, char * k,
     read_color(st, "package_color", result->package_color, k);	// updates k
     read_color(st, "fragment_color", result->fragment_color, k);	// updates k
     read_color(st, "subject_color", result->subject_color, k);	// updates k
-    
+    if (read_file_format() >= 43) {
+      read_color(st, "state_color", result->state_color, k);		// updates k
+      read_color(st, "stateaction_color", result->stateaction_color, k);		// updates k
+      read_color(st, "activity_color", result->activity_color, k);		// updates k
+      read_color(st, "activityregion_color", result->activityregion_color, k);		// updates k
+      read_color(st, "activityaction_color", result->activityaction_color, k);		// updates k
+      read_color(st, "parameterpin_color", result->parameterpin_color, k);		// updates k
+    }    
     if (!strcmp(k, "associated_usecase_diagram")) {
       // old format
       result->set_associated_diagram(BrowserUseCaseDiagram::read_ref(st, "usecasediagram_ref"),
@@ -1055,7 +1273,9 @@ BrowserUseCase * BrowserUseCase::read(char * & st, char * k,
 	     BrowserSeqDiagram::read(st, k, result) ||
 	     BrowserColDiagram::read(st, k, result) ||
 	     BrowserUseCaseDiagram::read(st, k, result) ||
-	     BrowserSimpleRelation::read(st, k, result))
+	     BrowserSimpleRelation::read(st, k, result) ||
+	     BrowserState::read(st, k, result) ||
+	     BrowserActivity::read(st, k, result))
 	k = read_keyword(st);
       
       if (strcmp(k, "end"))
@@ -1076,6 +1296,7 @@ BrowserNode * BrowserUseCase::get_it(const char * k, int id)
   BrowserNode * r;
   
   if ((r = BrowserUseCaseDiagram::get_it(k, id)) == 0)
+    // state and activity managed in class view
     r = BrowserSimpleRelation::get_it(k, id);
   
   return r;

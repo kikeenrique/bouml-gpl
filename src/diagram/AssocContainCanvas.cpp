@@ -43,8 +43,8 @@
 #include "DialogUtil.h"
 
 AssocContainCanvas::AssocContainCanvas(UmlCanvas * canvas, DiagramItem * b,
-				   DiagramItem * e, int id)
-    : ArrowCanvas(canvas, b, e, UmlContain, id, TRUE) {
+				   DiagramItem * e, int id, float d_start, float d_end)
+    : ArrowCanvas(canvas, b, e, UmlContain, id, TRUE, d_start, d_end) {
   // note : can't be a self relation
 }
 
@@ -134,7 +134,11 @@ void AssocContainCanvas::menu(const QPoint&) {
   default:
     if (rank >= 10) {
       rank -= 10;
-      if (rank != (int) geometry)
+      if (rank == RecenterBegin)
+	set_decenter(-1.0, decenter_end);
+      else if (rank == RecenterEnd)
+	set_decenter(decenter_begin, -1.0);
+      else if (rank != (int) geometry)
 	set_geometry((LineGeometry) rank, TRUE);
       else
 	return;      
@@ -190,7 +194,8 @@ ArrowPointCanvas * AssocContainCanvas::brk(const QPoint & p) {
   ap->setZ(z() + 1);
   
   AssocContainCanvas * other =
-    new AssocContainCanvas(the_canvas(), ap, end, 0);
+    new AssocContainCanvas(the_canvas(), ap, end, 0,
+			   decenter_begin, decenter_end);
 
   ap->add_line(this);
   end->remove_line(this);
@@ -218,16 +223,24 @@ void AssocContainCanvas::save(QTextStream & st, bool ref, QString & warning) con
       if (!fixed_geometry)
 	st << " unfixed";
     }
+    if (decenter_begin >= 0) {
+      // float output/input bugged
+      st << "decenter_begin " << ((int) (decenter_begin * 1000));
+    }
+    if (decenter_end >= 0) {
+      // float output/input bugged
+      st << " decenter_end " << ((int) (decenter_end * 1000));
+    }
     indent(+1);
     save_lines(st, TRUE, TRUE, warning);
     indent(-1);
   }
 }
 
-static ArrowCanvas * make(UmlCanvas * canvas, DiagramItem * b,
-			  DiagramItem * e, UmlCode, int id)
+static ArrowCanvas * make(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
+			  UmlCode, float d_start, float d_end, int id)
 {
-  return new AssocContainCanvas(canvas, b, e, id);
+  return new AssocContainCanvas(canvas, b, e, id, d_start, d_end);
 }
 
 AssocContainCanvas * AssocContainCanvas::read(char * & st, UmlCanvas * canvas, char * k)
@@ -243,21 +256,39 @@ AssocContainCanvas * AssocContainCanvas::read(char * & st, UmlCanvas * canvas, c
     if (!strcmp(k, "geometry")) {
       geo = line_geometry(read_keyword(st));
       k = read_keyword(st);
-      if (! strcmp(k, "unfixed"))
+      if (! strcmp(k, "unfixed")) {
+	k = read_keyword(st);
 	fixed = FALSE;
-      else {
-	fixed = TRUE;
-	unread_keyword(k, st);
       }
+      else
+	fixed = TRUE;
     }
     else {
-      unread_keyword(k, st);
       geo = NoGeometry;
       fixed = FALSE;
     }
     
+    float dbegin;
+    float dend;
+
+    if (! strcmp(k, "decenter_begin")) {
+      dbegin = read_double(st) / 1000;
+      k = read_keyword(st);
+    }
+    else
+      dbegin = -1;
+
+    if (! strcmp(k, "decenter_end")) {
+      dend = read_double(st) / 1000;
+      k = read_keyword(st);
+    }
+    else
+      dend = -1;
+    
+    unread_keyword(k, st);
+    
     AssocContainCanvas * r = (AssocContainCanvas *)
-      read_list(st, canvas, UmlContain, geo, fixed, id, &make);
+      read_list(st, canvas, UmlContain, geo, fixed, dbegin, dend, id, &make);
     
     // remove association between components available in the
     // 2.0 deployment diagrams

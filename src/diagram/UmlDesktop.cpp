@@ -144,6 +144,24 @@ void UmlDesktop::init()
       return;
     }
   }
+  else if ((QApplication::desktop()->width() > 2000) ||
+	   (QApplication::desktop()->width() > 
+	    2*QApplication::desktop()->height())) {
+    QString def;
+    
+    def.sprintf("0,0,%d,%d",
+		QApplication::desktop()->width() - 1,
+		QApplication::desktop()->height() - 1);
+    
+    msg_warning("Bouml",
+		"You probably have a multiple screens configuration.\n\n"
+		"You can ask Bouml to use by default one screen defining\n"
+		"the environment variable BOUML_LIMIT_DESKTOP (refer\n"
+		"to the reference manual chapter 'Troubleshootings')\n\n"
+		"To not see this warning each time you start Bouml without\n"
+		"modifying the screen usage, define the environment variable\n"
+		"BOUML_LIMIT_DESKTOP to value " + def);
+  }
   
   // default case or error
   

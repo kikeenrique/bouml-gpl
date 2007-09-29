@@ -363,7 +363,7 @@ const char * InterruptibleActivityRegionCanvas::may_connect(UmlCode & l, const D
 void InterruptibleActivityRegionCanvas::connexion(UmlCode action, DiagramItem * dest,
 						  const QPoint &, const QPoint &) {
   ArrowCanvas * a =
-    new ArrowCanvas(the_canvas(), this, dest, action, 0, FALSE);
+    new ArrowCanvas(the_canvas(), this, dest, action, 0, FALSE, -1.0, -1.0);
   
   a->show();
   the_canvas()->select(a);

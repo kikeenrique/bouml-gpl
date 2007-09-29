@@ -45,8 +45,9 @@
 #include "MenuTitle.h"
 
 CodLinkCanvas::CodLinkCanvas(UmlCanvas * canvas, DiagramItem * b,
-			     DiagramItem * e, int id)
-      : ArrowCanvas(canvas, b, e, UmlLink, id, TRUE), dirs(0) {
+			     DiagramItem * e, int id,
+			     float d_start, float d_end)
+      : ArrowCanvas(canvas, b, e, UmlLink, id, TRUE, d_start, d_end), dirs(0) {
   // note : can't be a self relation
 }
 
@@ -172,7 +173,11 @@ void CodLinkCanvas::menu(const QPoint&) {
   default:
     if (rank >= 10) {
       rank -= 10;
-      if (rank != (int) geometry)
+      if (rank == RecenterBegin)
+	set_decenter(-1.0, decenter_end);
+      else if (rank == RecenterEnd)
+	set_decenter(decenter_begin, -1.0);
+      else if (rank != (int) geometry)
 	set_geometry((LineGeometry) rank, TRUE);
       else
 	return;
@@ -201,7 +206,7 @@ ArrowPointCanvas * CodLinkCanvas::brk(const QPoint & p) {
   ap->setZ(z() + 1);	// + 1 else point can't be selected
   
   CodLinkCanvas * other =
-    new CodLinkCanvas(the_canvas(), ap, end, 0);
+    new CodLinkCanvas(the_canvas(), ap, end, 0, decenter_begin, decenter_end);
 
   ap->add_line(this);
   end->remove_line(this);
@@ -289,6 +294,12 @@ void CodLinkCanvas::save(QTextStream & st, bool ref, QString & warning) const {
   else if (begin->type() != UmlArrowPoint) {
     nl_indent(st);
     st << "linkcanvas " << get_ident();
+    if (decenter_begin >= 0)
+      // float output/input bugged
+      st << " decenter_begin " << ((int) (decenter_begin * 1000));
+    if (decenter_end >= 0)
+      // float output/input bugged
+      st << " decenter_end " << ((int) (decenter_end * 1000));
     indent(+1);
     save_lines(st, TRUE, TRUE, warning);
     indent(-1);
@@ -306,6 +317,27 @@ CodLinkCanvas * CodLinkCanvas::read(char * & st, UmlCanvas * canvas, char * & k)
     return ((CodLinkCanvas *) dict_get(read_id(st), "link canvas", canvas));
   else if (!strcmp(k, "linkcanvas")) {
     int id = read_id(st);
+    
+    float dbegin;
+    float dend;
+    
+    k = read_keyword(st);
+
+    if (! strcmp(k, "decenter_begin")) {
+      dbegin = read_double(st) / 1000;
+      k = read_keyword(st);
+    }
+    else
+      dbegin = -1;
+
+    if (! strcmp(k, "decenter_end")) {
+      dend = read_double(st) / 1000;
+      k = read_keyword(st);
+    }
+    else
+      dend = -1;
+    
+    unread_keyword(k, st);
     
     read_keyword(st, "from");
     read_keyword(st, "ref");
@@ -332,7 +364,7 @@ CodLinkCanvas * CodLinkCanvas::read(char * & st, UmlCanvas * canvas, char * & k)
       if (ap == 0)
 	unknown_keyword(k);
 
-      result = new CodLinkCanvas(canvas, bi, ap, id);
+      result = new CodLinkCanvas(canvas, bi, ap, id, dbegin, dend);
       if (read_file_format() >= 5)
 	result->setZ(z);
       result->show();
@@ -343,7 +375,8 @@ CodLinkCanvas * CodLinkCanvas::read(char * & st, UmlCanvas * canvas, char * & k)
     }
     
     result =
-      new CodLinkCanvas(canvas, bi, dict_get(read_id(st), "", canvas), id);
+      new CodLinkCanvas(canvas, bi, dict_get(read_id(st), "", canvas),
+			id, dbegin, dend);
     result->show();
     
     k = read_keyword(st);

@@ -182,6 +182,10 @@ const char * SdMsgBaseCanvas::may_connect(UmlCode & l, const DiagramItem * dest)
   return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
 }
 
+bool SdMsgBaseCanvas::is_decenter(const QPoint &, bool &) const {
+  return FALSE;
+}
+
 void SdMsgBaseCanvas::open() {
   if (itsType != UmlReturnMsg) {
     SdMsgDialog d(this);

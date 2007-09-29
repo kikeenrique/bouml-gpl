@@ -154,6 +154,9 @@ ComboColor::ComboColor(QWidget * parent, UmlColor v,
     case UmlBlue:
       insertItem(* BluePixmap);
       break;
+    case UmlLightMediumBlue:
+      insertItem(* LightMediumBluePixmap);
+      break;
     case UmlMediumBlue:
       insertItem(* MediumBluePixmap);
       break;
@@ -165,6 +168,9 @@ ComboColor::ComboColor(QWidget * parent, UmlColor v,
       break;
     case UmlGreen:
       insertItem(* GreenPixmap);
+      break;
+    case UmlLightMediumGreen:
+      insertItem(* LightMediumGreenPixmap);
       break;
     case UmlMediumGreen:
       insertItem(* MediumGreenPixmap);
@@ -205,11 +211,17 @@ ComboColor::ComboColor(QWidget * parent, UmlColor v,
     case UmlDarkMagenta:
       insertItem(* DarkMagentaPixmap);
       break;
+    case UmlVeryLightGray:
+      insertItem(* VeryLightGrayPixmap);
+      break;
     case UmlLightGray:
       insertItem(* LightGrayPixmap);
       break;
     case UmlGray:
       insertItem(* GrayPixmap);
+      break;
+    case UmlDarkGray:
+      insertItem(* DarkGrayPixmap);
       break;
     default:
       insertItem("Unknown color");
@@ -227,7 +239,7 @@ ComboColor::ComboColor(QWidget * parent, UmlColor v,
 #ifdef WIN32
   setSizeLimit(34);	// yes !, don't set it to count() !
 #else
-  setSizeLimit(20);	// yes !, don't set it to count() !
+  setSizeLimit(22);	// yes !, don't set it to count() !
 #endif
 }
 

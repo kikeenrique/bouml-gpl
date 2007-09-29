@@ -11,6 +11,8 @@ UmlItem * UmlUseCase::container(anItemKind kind, const Token & token, FileIn & i
   case aClass:
   case aClassInstance:
   case anUseCase:
+  case aState:
+  case anActivity:
     return this;
   default:
     return parent()->container(kind, token, in);

@@ -12,17 +12,18 @@ class UmlOperation : public UmlBaseOperation {
     UmlOperation(void * id, const QCString & n)
       : UmlBaseOperation(id, n) {};
   
- void add_param(int rank, aDirection dir,
-		const char * name, const char * type);
- void add_param(int rank, aDirection dir,
-		const char * name, UmlClass * type);
- void set_cpp(const char * return_form_or_inherit,
-	      const char * params, const char * body,
-	      bool inlinep, const char * if_def, const char * end_if);
- void set_java(const char * return_form, const char * params,
-	       const char * body, bool inlinep);
+    void remove_cpp_throw();
+    void add_param(int rank, aDirection dir,
+		   const char * name, const char * type);
+    void add_param(int rank, aDirection dir,
+		   const char * name, UmlClass * type);
+    void set_cpp(const char * return_form_or_inherit,
+		 const char * params, const char * body,
+		 bool inlinep, const char * if_def, const char * end_if);
+    void set_java(const char * return_form, const char * params,
+		  const char * body, bool inlinep);
     
- virtual void rename_jdk5();
+    virtual void rename_jdk5();
 };
 
 #endif

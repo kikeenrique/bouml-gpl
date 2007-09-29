@@ -238,9 +238,7 @@ void UmlClass::add_kind(const char * k) {
   t.type = UmlClass::get("anItemKind", 0);
   
   op->set_ReturnType(t);
-  
-  op->set_CppDecl(CppSettings::operationDecl());
-  op->set_CppDef(CppSettings::operationDef());
+  op->remove_cpp_throw();
   op->set_isCppVirtual(TRUE);
   op->set_CppBody(QCString("  return ") + k + ";");
   
@@ -312,6 +310,7 @@ void UmlClass::add_constr(UmlClass * super, aVisibility v, bool unnamed) {
   
   UmlCom::trace("add operation " + name() + "::" + name() + "<br>\n");
   
+  op->remove_cpp_throw();
   op->set_Visibility(v);
   op->set_Description("  the constructor, do not call it yourself !!!!!!!!!!");
   op->add_param(0, InputDirection, "id", "item_id");
@@ -364,6 +363,7 @@ UmlOperation * UmlClass::add_op(const char * name, aVisibility v,
   
   UmlCom::trace("add operation " + this->name() + "::" + name + "<br>\n");
   
+  op->remove_cpp_throw();
   op->set_ReturnType(return_type);
   op->set_Visibility(v);
   

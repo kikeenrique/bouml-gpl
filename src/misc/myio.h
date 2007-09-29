@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include "UmlEnum.h"
 
-#define FILEFORMAT 42
+#define FILEFORMAT 43
 
 class QDir;
 class QFile;
@@ -142,6 +142,10 @@ extern void load(QPointArray & a, QBuffer &);
 extern void save(double, QBuffer &);
 extern void load(double &, QBuffer &);
 extern double load_double(QBuffer &);
+
+extern void save(float, QBuffer &);
+extern void load(float &, QBuffer &);
+extern double load_float(QBuffer &);
 
 extern void save(int, QBuffer &);
 extern void load(int &, QBuffer &);

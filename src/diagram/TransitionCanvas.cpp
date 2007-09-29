@@ -49,11 +49,12 @@
 #include "strutil.h"
 
 TransitionCanvas::TransitionCanvas(UmlCanvas * canvas,
-				   DiagramItem * b,
-				   DiagramItem * e,
-				   BrowserNode * bb,
-				   int id, TransitionData * d)
-      : ArrowCanvas(canvas, b, e, UmlTransition, id, TRUE), br_begin(bb), data(d) {
+				   DiagramItem * b, DiagramItem * e,
+				   BrowserNode * bb, int id,
+				   float d_begin, float d_end,
+				   TransitionData * d)
+      : ArrowCanvas(canvas, b, e, UmlTransition, id, TRUE, d_begin, d_end),
+  	br_begin(bb), data(d) {
   if ((e->type() != UmlArrowPoint) && (bb == 0)) {
     // end of line construction
     update_begin(e);
@@ -292,7 +293,11 @@ void TransitionCanvas::menu(const QPoint &) {
       }
       else if (rank >= 10) {
 	rank -= 10;
-	if (rank != (int) geometry)
+	if (rank == RecenterBegin)
+	  set_decenter(-1.0, decenter_end);
+	else if (rank == RecenterEnd)
+	  set_decenter(decenter_begin, -1.0);
+	else if (rank != (int) geometry)
 	  set_geometry((LineGeometry) rank, TRUE);
 	else
 	  return;
@@ -384,7 +389,8 @@ ArrowPointCanvas * TransitionCanvas::brk(const QPoint & p) {
   
   TransitionCanvas * other =
     // do not give data to not call update()
-    new TransitionCanvas(the_canvas(), ap, end, br_begin, 0);
+    new TransitionCanvas(the_canvas(), ap, end, br_begin, 0,
+			 decenter_begin, decenter_end);
   
   other->data = data;
   other->drawing_language = drawing_language;
@@ -577,7 +583,7 @@ void TransitionCanvas::drop(BrowserNode * bn, UmlCanvas * canvas)
       msg_information("Bouml", "transition already drawn");
     else {
       TransitionCanvas * tr = 
-	new TransitionCanvas(canvas, difrom, dito, from, 0, def);
+	new TransitionCanvas(canvas, difrom, dito, from, 0, -1.0, -1.0, def);
       
       tr->show();
       tr->package_modified();
@@ -599,6 +605,16 @@ void TransitionCanvas::save(QTextStream & st, bool ref, QString & warning) const
       st << "geometry " << stringify(geometry);
       if (!fixed_geometry)
 	st << " unfixed";
+    }
+    if (decenter_begin >= 0) {
+      nl_indent(st);
+      // float output/input bugged
+      st << "decenter_begin " << ((int) (decenter_begin * 1000));
+    }
+    if (decenter_end >= 0) {
+      // float output/input bugged
+      nl_indent(st);
+      st << "decenter_end " << ((int) (decenter_end * 1000));
     }
     nl_indent(st);
     (const TransitionCanvas *) ArrowCanvas::save_lines(st, TRUE, TRUE, warning);
@@ -625,18 +641,35 @@ TransitionCanvas * TransitionCanvas::read(char * & st, UmlCanvas * canvas, char 
     if (! strcmp(k, "geometry")) {
       geo = line_geometry(read_keyword(st));
       k = read_keyword(st);
-      if (! strcmp(k, "unfixed"))
+      if (! strcmp(k, "unfixed")) {
+	k = read_keyword(st);
 	fixed = FALSE;
-      else {
-	fixed = TRUE;
-	unread_keyword(k, st);
       }
+      else
+	fixed = TRUE;
     }
-    else {
-      unread_keyword(k, st);
+    else
       geo = NoGeometry;
-    }
+    
+    float dbegin;
+    float dend;
 
+    if (! strcmp(k, "decenter_begin")) {
+      dbegin = read_double(st) / 1000;
+      k = read_keyword(st);
+    }
+    else
+      dbegin = -1;
+
+    if (! strcmp(k, "decenter_end")) {
+      dend = read_double(st) / 1000;
+      k = read_keyword(st);
+    }
+    else
+      dend = -1;
+    
+    unread_keyword(k, st);
+    
     read_keyword(st, "from");
     read_keyword(st, "ref");
     
@@ -697,7 +730,7 @@ TransitionCanvas * TransitionCanvas::read(char * & st, UmlCanvas * canvas, char 
 	di = dict_get(read_id(st), "statecanvas/pseudostate", canvas);
 
       // do not give tr to not call update()
-      result = new TransitionCanvas(canvas, bi, di, b, id);
+      result = new TransitionCanvas(canvas, bi, di, b, id, dbegin, dend);
       result->geometry = geo;
       result->fixed_geometry = fixed;
       result->set_z(z);

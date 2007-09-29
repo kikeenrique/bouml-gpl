@@ -70,6 +70,8 @@ class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
     virtual double min_y() const = 0;
     virtual void change_duration(SdDurationCanvas * oldone,
 				 SdDurationCanvas * newone) = 0;
+    
+    virtual bool is_decenter(const QPoint &, bool &) const;
 
     virtual UmlCode type() const;
     virtual const char * may_start(UmlCode &) const;

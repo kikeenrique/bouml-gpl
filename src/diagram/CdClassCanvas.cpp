@@ -512,7 +512,7 @@ void CdClassCanvas::draw_all_relations(CdClassCanvas * end) {
 	  if (di != 0)
 	    (new RelationCanvas(the_canvas(), this, di,
 				((BrowserClass *) browser_node), 
-				def->get_type(), 0, def))->show();
+				def->get_type(), 0, -1.0, -1.0, def))->show();
 	}
       }
       else if (k == UmlClass) {
@@ -524,7 +524,7 @@ void CdClassCanvas::draw_all_relations(CdClassCanvas * end) {
 	      (((CdClassCanvas *) adi)->browser_node == child) &&
 	      ((((CdClassCanvas *) adi) == end) || (*cit)->visible())) {
 	    if (! ((CdClassCanvas *) adi)->has_inner(this))
-	      (new ArrowCanvas(the_canvas(), adi, this, UmlInner, 0, FALSE))
+	      (new ArrowCanvas(the_canvas(), adi, this, UmlInner, 0, FALSE, -1.0, -1.0))
 		->show();
 	    break;
 	  }
@@ -590,7 +590,7 @@ void CdClassCanvas::check_constraint() {
       constraint->move((int) (x() + width() + the_canvas()->zoom() * 20),
 		       (int) y() + height());
       constraint->show();
-      (new ArrowCanvas(the_canvas(), this, constraint, UmlAnchor, 0, FALSE))->show();
+      (new ArrowCanvas(the_canvas(), this, constraint, UmlAnchor, 0, FALSE, -1.0, -1.0))->show();
     }
   }
   else if (constraint != 0) {
@@ -1284,11 +1284,11 @@ void CdClassCanvas::connexion(UmlCode action, DiagramItem * dest,
   ArrowCanvas * a;
   
   if (IsaRelation(action))
-    a = new RelationCanvas(the_canvas(), this, dest, 0, action, 0);
+    a = new RelationCanvas(the_canvas(), this, dest, 0, action, 0, -1.0, -1.0);
   else if (IsaSimpleRelation(action))
-    a = new SimpleRelationCanvas(the_canvas(), this, dest, 0, action, 0);
+    a = new SimpleRelationCanvas(the_canvas(), this, dest, 0, action, 0, -1.0, -1.0);
   else
-    a = new ArrowCanvas(the_canvas(), this, dest, action, 0, FALSE);
+    a = new ArrowCanvas(the_canvas(), this, dest, action, 0, FALSE, -1.0, -1.0);
   
   a->show();
   the_canvas()->select(a);

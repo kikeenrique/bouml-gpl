@@ -53,6 +53,8 @@ class SdLifeLineCanvas : public DiagramCanvas {
     void update_pos();
     void update_instance_dead();
     
+    virtual bool is_decenter(const QPoint &, bool &) const;
+    
     virtual void drawShape(QPainter & p);
     virtual void moveBy(double dx, double dy);
     

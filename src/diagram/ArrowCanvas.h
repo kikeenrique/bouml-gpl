@@ -67,13 +67,15 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     QPointArray boundings;
     QPoint arrow[3];	// les 2 extremites et le point milieu pour inherit
     QPointArray poly;   // aggregations
+    float decenter_begin;	// not taken into account if
+    float decenter_end;		// fixed geometry. < 0 means don't care
     
     // to remove redondant relation made by release 2.22
     static QList<ArrowCanvas> RelsToCheck;
     
   public:
     ArrowCanvas(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
-		UmlCode t, int id, bool own_brk);
+		UmlCode t, int id, bool own_brk, float d_start, float d_end);
     virtual ~ArrowCanvas();
     
     virtual void delete_it();
@@ -85,13 +87,16 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     
     virtual void update_pos();
     void move_outside(QRect r);
-    virtual void default_stereotype_position() const;
-    virtual void default_label_position() const;
     bool cut_on_move(ArrowPointCanvas *&) const;
+    virtual bool is_decenter(QPoint mousepresspos,
+			     bool & start, bool & horiz) const;
+    void decenter(QPoint, bool start, bool horiz);
     void cut_self();
     virtual ArrowPointCanvas * brk(const QPoint &);
     bool may_join() const;
     virtual ArrowCanvas * join(ArrowCanvas * other, ArrowPointCanvas * ap);
+    virtual void default_stereotype_position() const;
+    virtual void default_label_position() const;
     DiagramItem * get_start() const;  
     DiagramItem * get_end() const;
     void extremities(DiagramItem *& b, DiagramItem *& e) const;
@@ -128,9 +133,10 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     static ArrowCanvas * read(char * & st, UmlCanvas * canvas, char * k);
     static ArrowCanvas * read_list(char * & st, UmlCanvas * canvas,
 				   UmlCode t, LineGeometry geo,
-				   bool fixed, int id,
+				   bool fixed, float dbegin, float dend, int id,
 				   ArrowCanvas * (*pf)(UmlCanvas * canvas, DiagramItem * b,
-						       DiagramItem * e, UmlCode t, int id));
+						       DiagramItem * e, UmlCode t, 
+						       float dbegin, float dend, int id));
     virtual void history_save(QBuffer &) const;
     virtual void history_load(QBuffer &);
     virtual void history_hide();
@@ -141,6 +147,8 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     void search_supports(ArrowCanvas *& plabel, 
 			 ArrowCanvas *& pstereotype) const;
     void propag_geometry(LineGeometry geo, bool fixed);
+    void propag_decenter(float db, float de);
+    void set_decenter(float db, float de);
     ArrowCanvas * set_geometry(LineGeometry geo, bool fixed);
     void init_geometry_menu(QPopupMenu & m, int first);
     

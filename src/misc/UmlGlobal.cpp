@@ -47,15 +47,19 @@ QColor UmlMediumYellowColor(0xff, 0xeb, 0x60);
 QColor UmlDarkYellowColor(0xff, 0xd7, 0x0);
 QColor UmlLightBlueColor(0xe0, 0xff, 0xff);
 QColor UmlBlueColor(0xc0, 0xff, 0xff);
+QColor UmlLightMediumBlueColor(0x90, 0xcc, 0xff);
 QColor UmlMediumBlueColor(0x60, 0xaa, 0xff);
-QColor UmlDarkBlueColor(0x0, 0x55, 0xff);
+QColor UmlDarkBlueColor(0x0, 0xaa, 0xff);
 QColor UmlLightGreenColor(0xdf, 0xff, 0xdf);
 QColor UmlGreenColor(0xc0, 0xff, 0xc0);
+QColor UmlLightMediumGreenColor(0x90, 0xe9, 0x90);
 QColor UmlMediumGreenColor(0x60, 0xd4, 0x60);
 QColor UmlDarkGreenColor(0x0, 0xaa, 0x0);
 QColor UmlRedColor(0xff, 0x00, 0x00);
-QColor UmlGrayColor(0xdc, 0xdc, 0xdc);
+QColor UmlVeryLightGrayColor(0xf6, 0xf6, 0xf6);
 QColor UmlLightGrayColor(0xed, 0xed, 0xed);
+QColor UmlGrayColor(0xdc, 0xdc, 0xdc);
+QColor UmlDarkGrayColor(0xcb, 0xcb, 0xcb);
 QColor UmlBlackColor(0, 0, 0);
 
 QColor UmlLightRedColor(0xff, 0xc0, 0xc0);
@@ -130,6 +134,8 @@ const QColor & color(UmlColor c)
     return UmlLightBlueColor;
   case UmlBlue:
     return UmlBlueColor;
+  case UmlLightMediumBlue:
+    return UmlLightMediumBlueColor;
   case UmlMediumBlue:
     return UmlMediumBlueColor;
   case UmlDarkBlue:
@@ -138,16 +144,22 @@ const QColor & color(UmlColor c)
     return UmlLightGreenColor;
   case UmlGreen:
     return UmlGreenColor;
+  case UmlLightMediumGreen:
+    return UmlLightMediumGreenColor;
   case UmlMediumGreen:
     return UmlMediumGreenColor;
   case UmlDarkGreen:
     return UmlDarkGreenColor;
   case UmlRed:
     return UmlRedColor;
+  case UmlVeryLightGray:
+    return UmlVeryLightGrayColor;
   case UmlLightGray:
     return UmlLightGrayColor;
   case UmlGray:
     return UmlGrayColor;
+  case UmlDarkGray:
+    return UmlDarkGrayColor;
     
   case UmlLightRed:
     return UmlLightRedColor;

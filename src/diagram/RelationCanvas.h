@@ -46,7 +46,8 @@ class RelationCanvas : public ArrowCanvas {
     
   public:
     RelationCanvas(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
-		   BrowserClass * bb, UmlCode t, int id, RelationData * d = 0);
+		   BrowserClass * bb, UmlCode t, int id, 
+		   float d_start, float d_end, RelationData * d = 0);
     virtual ~RelationCanvas();
     
     virtual void delete_it();

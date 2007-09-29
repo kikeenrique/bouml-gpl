@@ -91,8 +91,9 @@ static const struct {
   { "sequence diagram", UmlSeqDiagram },
   { "state", UmlState },
   { "state action", UmlStateAction, },
-  { "state diagram", UmlTransition },  
+  { "state diagram", UmlStateDiagram },  
   { "state region", UmlRegion },
+  { "transition", UmlTransition },  
   { "use case", UmlUseCase },  
   { "use case diagram", UmlUseCaseDiagram },
   { "use case view", UmlUseCaseView }

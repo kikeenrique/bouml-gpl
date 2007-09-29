@@ -43,7 +43,8 @@ class ObjectLinkCanvas : public ArrowCanvas {
     
   public:
     ObjectLinkCanvas(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
-		     UmlCode t, int id, RelationData * d = 0);
+		     UmlCode t, int id, float d_start, float d_end,
+		     RelationData * d = 0);
     virtual ~ObjectLinkCanvas();
     
     virtual void delete_it();

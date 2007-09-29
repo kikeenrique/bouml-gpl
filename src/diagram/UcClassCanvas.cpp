@@ -312,7 +312,8 @@ void UcClassCanvas::draw_all_depend_gene(UcClassCanvas * end) {
 	if (di != 0)
 	  (new RelationCanvas(the_canvas(), this, di,
 			      ((BrowserClass *) browser_node), 
-			      def->get_type(), 0, def))->show();
+			      def->get_type(), 0, -1.0, -1.0, def))
+	    ->show();
       }
     }
   }
@@ -336,9 +337,9 @@ void UcClassCanvas::connexion(UmlCode action, DiagramItem * dest,
   ArrowCanvas * a;
   
   if ((dest->type() == UmlClass) && IsaRelation(action))
-    a = new RelationCanvas(the_canvas(), this, dest, 0, action, 0);
+    a = new RelationCanvas(the_canvas(), this, dest, 0, action, 0, -1.0, -1.0);
   else
-    a = new ArrowCanvas(the_canvas(), this, dest, action, 0, FALSE);
+    a = new ArrowCanvas(the_canvas(), this, dest, action, 0, FALSE, -1.0, -1.0);
   
   a->show();
   the_canvas()->select(a);

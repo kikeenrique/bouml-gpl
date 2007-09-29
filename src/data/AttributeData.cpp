@@ -53,6 +53,7 @@ AttributeData::AttributeData()
 
 AttributeData::AttributeData(const AttributeData * model, BrowserNode * bn)
     : ClassMemberData(model),
+      multiplicity(model->multiplicity),
       init_value(model->init_value), 
       constraint(model->constraint), 
       is_deleted(FALSE), isa_class_attribute(model->isa_class_attribute),

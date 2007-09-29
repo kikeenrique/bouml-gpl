@@ -49,6 +49,8 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
     SequenceDiagramSettings sequencediagram_settings;
     CollaborationDiagramSettings collaborationdiagram_settings;
     ObjectDiagramSettings objectdiagram_settings;
+    StateDiagramSettings statediagram_settings;
+    ActivityDiagramSettings activitydiagram_settings;
     // note : does not have class settings because classes defined under
     //	      a use case cannot be generated
     UmlColor note_color;
@@ -58,6 +60,12 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
     UmlColor continuation_color;
     UmlColor usecase_color;
     UmlColor package_color;
+    UmlColor state_color;
+    UmlColor stateaction_color;
+    UmlColor activity_color;
+    UmlColor activityregion_color;
+    UmlColor activityaction_color;
+    UmlColor parameterpin_color;
   
     BrowserUseCase(int id);
     void make();
@@ -87,8 +95,14 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
     virtual void get_sequencediagramsettings(SequenceDiagramSettings &) const;
     virtual void get_collaborationdiagramsettings(CollaborationDiagramSettings &) const;
     virtual void get_objectdiagramsettings(ObjectDiagramSettings &) const;
+    virtual void get_statediagramsettings(StateDiagramSettings &) const;
+    virtual void get_activitydiagramsettings(ActivityDiagramSettings &) const;
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_auto_label_position(UmlCode who) const;
+    virtual bool get_write_label_horizontally(UmlCode who) const;
+    virtual bool get_show_trans_definition(UmlCode who) const;
+    virtual bool get_show_opaque_action_definition(UmlCode who) const;
+    virtual DrawingLanguage get_language(UmlCode who) const;
     virtual const QStringList & default_stereotypes(UmlCode, const BrowserNode *) const; // non class rel
     virtual void on_delete();
     virtual bool tool_cmd(ToolCom * com, const char * args);

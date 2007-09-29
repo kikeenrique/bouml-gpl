@@ -296,11 +296,11 @@ void StateCanvas::connexion(UmlCode action, DiagramItem * dest,
   ArrowCanvas * a;
   
   if (action == UmlTransition)
-    a = new TransitionCanvas(the_canvas(), this, dest, 0, 0);
+    a = new TransitionCanvas(the_canvas(), this, dest, 0, 0, -1.0, -1.0);
   else if (IsaSimpleRelation(action))
-    a = new SimpleRelationCanvas(the_canvas(), this, dest, 0, action, 0);
+    a = new SimpleRelationCanvas(the_canvas(), this, dest, 0, action, 0, -1.0, -1.0);
   else
-    a = new ArrowCanvas(the_canvas(), this, dest, action, 0, FALSE);
+    a = new ArrowCanvas(the_canvas(), this, dest, action, 0, FALSE, -1.0, -1.0);
   
   a->show();
   the_canvas()->select(a);

@@ -102,7 +102,7 @@ void ArrowPointCanvas::connexion(UmlCode action, DiagramItem * dest,
   switch (the_canvas()->browser_diagram()->get_type()) {
   case UmlClassDiagram:
     if (IsaRelation(action)) {
-      a = new RelationCanvas(the_canvas(), this, dest, 0, action, 0);
+      a = new RelationCanvas(the_canvas(), this, dest, 0, action, 0, -1.0, -1.0);
       a->show();
       the_canvas()->select(a);
       return;
@@ -110,7 +110,7 @@ void ArrowPointCanvas::connexion(UmlCode action, DiagramItem * dest,
     break;
   case UmlColDiagram:
     if (action == UmlLink) {
-      a = new CodLinkCanvas(the_canvas(), this, dest, 0);
+      a = new CodLinkCanvas(the_canvas(), this, dest, 0, -1.0, -1.0);
       a->show();
       the_canvas()->select(a);
       return;
@@ -118,7 +118,7 @@ void ArrowPointCanvas::connexion(UmlCode action, DiagramItem * dest,
     break;
   case UmlObjectDiagram:
     if (action == UmlObjectLink) {
-      a = new ObjectLinkCanvas(the_canvas(), this, dest, UmlObjectLink, 0);
+      a = new ObjectLinkCanvas(the_canvas(), this, dest, UmlObjectLink, 0, -1.0, -1.0);
       a->show();
       the_canvas()->select(a);
       return;
@@ -127,21 +127,21 @@ void ArrowPointCanvas::connexion(UmlCode action, DiagramItem * dest,
   case UmlDeploymentDiagram:
   case UmlComponentDiagram:
     if (action == UmlContain) {
-      a = new AssocContainCanvas(the_canvas(), this, dest, 0);
+      a = new AssocContainCanvas(the_canvas(), this, dest, 0, -1.0, -1.0);
       a->show();
       the_canvas()->select(a);
       return;
     }
   case UmlStateDiagram:
     if (action == UmlTransition) {
-      a = new TransitionCanvas(the_canvas(), this, dest, 0, 0);
+      a = new TransitionCanvas(the_canvas(), this, dest, 0, 0, -1.0, -1.0);
       a->show();
       the_canvas()->select(a);
       return;
     }
   case UmlActivityDiagram:
     if (action == UmlFlow) {
-      a = new FlowCanvas(the_canvas(), this, dest, 0, 0);
+      a = new FlowCanvas(the_canvas(), this, dest, 0, 0, -1.0, -1.0);
       a->show();
       the_canvas()->select(a);
       return;
@@ -151,9 +151,9 @@ void ArrowPointCanvas::connexion(UmlCode action, DiagramItem * dest,
   }
   
   if (IsaSimpleRelation(action))
-    a = new SimpleRelationCanvas(the_canvas(), this, dest, 0, action, 0);
+    a = new SimpleRelationCanvas(the_canvas(), this, dest, 0, action, 0, -1.0, -1.0);
   else
-    a = new ArrowCanvas(the_canvas(), this, dest, action, 0, FALSE);
+    a = new ArrowCanvas(the_canvas(), this, dest, action, 0, FALSE, -1.0, -1.0);
   
   a->show();
   the_canvas()->select(a);

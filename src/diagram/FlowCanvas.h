@@ -50,7 +50,8 @@ class FlowCanvas : public ArrowCanvas {
 
   public:
     FlowCanvas(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
-	       BrowserNode * bb, int id, FlowData * d = 0);
+	       BrowserNode * bb, int id, float d_start, float d_end,
+	       FlowData * d = 0);
     virtual ~FlowCanvas();
     
     virtual void delete_it();

@@ -40,7 +40,8 @@ class CodLinkCanvas : public ArrowCanvas {
     CodDirsCanvas * dirs;
     
   public:
-    CodLinkCanvas(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e, int id);
+    CodLinkCanvas(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
+		  int id, float d_start, float d_end);
     virtual ~CodLinkCanvas();
     
     virtual void delete_it();
