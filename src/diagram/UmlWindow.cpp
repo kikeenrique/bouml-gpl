@@ -104,11 +104,13 @@ const char * projectSaveText = "To save the project.<br><br>"
 const char * projectSaveAsText = "To save all in a new project.";
 const char * diagramPrintText = "To print the current diagram.<br><br>"
   "You can also select the Print command from the Project menu.";
-const char * cppText = "To set or not the C++ definition/declaration "
+const char * cppText = "To manage or not C++ and to set or not the C++ definition/declaration "
   "to the default value when a class/operation/attribute/relation is created";
-const char * javaText = "To set or not the Java definition/declaration "
+const char * javaText = "To manage or not Java and to set or not the Java definition/declaration "
   "to the default value when a class/operation/attribute/relation is created";
-const char * idlText = "To set or not the IDL definition/declaration "
+const char * phpText = "To manage or not Php and to set or not the Php definition/declaration "
+  "to the default value when a class/operation/attribute/relation is created";
+const char * idlText = "To manage or not IDL and to set or not the IDL definition/declaration "
   "to the default value when a class/operation/attribute/relation is created";
 const char * verboseText = "To ask or not for a verbose code generation";
 const char * preserve_bodiesText = "To preserve or not the operations's body";
@@ -193,6 +195,43 @@ UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
   connect(toolMenu, SIGNAL(aboutToShow()), this, SLOT(toolMenuAboutToShow()));
   menuBar()->insertItem("&Tools", toolMenu);
 
+  langMenu = new QPopupMenu(this);
+  menuBar()->insertItem("&Languages", langMenu);
+  langMenu->setCheckable(TRUE);
+  connect(langMenu, SIGNAL(aboutToShow()),
+	  this, SLOT(langMenuAboutToShow()));
+  
+  use_cpp_id =
+    langMenu->insertItem("C++ management and default declaration/definition", this, SLOT(use_cpp()));
+  langMenu->setItemChecked(use_cpp_id, GenerationSettings::cpp_get_default_defs());
+  langMenu->setWhatsThis(use_cpp_id, cppText);
+  use_java_id =
+    langMenu->insertItem("Java management and default definition", this, SLOT(use_java()));
+  langMenu->setItemChecked(use_java_id, GenerationSettings::java_get_default_defs());
+  langMenu->setWhatsThis(use_java_id, javaText);
+  use_php_id =
+    langMenu->insertItem("Php management and default definition", this, SLOT(use_php()));
+  langMenu->setItemChecked(use_php_id, GenerationSettings::php_get_default_defs());
+  langMenu->setWhatsThis(use_php_id, phpText);
+  use_idl_id =
+    langMenu->insertItem("Idl management and default declaration", this, SLOT(use_idl()));
+  langMenu->setItemChecked(use_idl_id, GenerationSettings::idl_get_default_defs());
+  langMenu->setWhatsThis(use_idl_id, idlText);
+  
+  langMenu->insertSeparator();
+  verbose_gen_id =
+    langMenu->insertItem("Verbose code generation", this, SLOT(verbose()));
+  langMenu->setWhatsThis(verbose_gen_id, verboseText);
+
+  preserve_bodies_id =
+    langMenu->insertItem("Preserve operations's body", this, SLOT(preserve()));
+  langMenu->setWhatsThis(preserve_bodies_id, preserve_bodiesText);
+
+  add_operation_profile_id =
+    langMenu->insertItem("Add operation profile on body edition", this,
+			 SLOT(addoperationprofile()));
+  langMenu->setWhatsThis(add_operation_profile_id, add_operation_profileText);
+  
   miscMenu = new QPopupMenu(this);
   menuBar()->insertItem("&Miscellaneous", miscMenu);
   miscMenu->setCheckable(TRUE);
@@ -254,34 +293,7 @@ UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
   miscMenu->setWhatsThis(id, formatMenuText);
   
   miscMenu->insertSeparator();
-  use_cpp_id =
-    miscMenu->insertItem("C++ default declaration/definition", this, SLOT(use_cpp()));
-  miscMenu->setItemChecked(use_cpp_id, GenerationSettings::cpp_get_default_defs());
-  miscMenu->setWhatsThis(use_cpp_id, cppText);
-  use_java_id =
-    miscMenu->insertItem("Java default definition", this, SLOT(use_java()));
-  miscMenu->setItemChecked(use_java_id, GenerationSettings::java_get_default_defs());
-  miscMenu->setWhatsThis(use_java_id, javaText);
-  use_idl_id =
-    miscMenu->insertItem("Idl default declaration", this, SLOT(use_idl()));
-  miscMenu->setItemChecked(use_idl_id, GenerationSettings::idl_get_default_defs());
-  miscMenu->setWhatsThis(use_idl_id, idlText);
   
-  miscMenu->insertSeparator();
-  verbose_gen_id =
-    miscMenu->insertItem("Verbose code generation", this, SLOT(verbose()));
-  miscMenu->setWhatsThis(verbose_gen_id, verboseText);
-
-  preserve_bodies_id =
-    miscMenu->insertItem("Preserve operations's body", this, SLOT(preserve()));
-  miscMenu->setWhatsThis(preserve_bodies_id, preserve_bodiesText);
-
-  add_operation_profile_id =
-    miscMenu->insertItem("Add operation profile on body edition", this,
-			 SLOT(addoperationprofile()));
-  miscMenu->setWhatsThis(add_operation_profile_id, add_operation_profileText);
-  
-  miscMenu->insertSeparator();
   shortcut_id =
     miscMenu->insertItem("Edit shortcuts", this, SLOT(edit_shortcuts()));
   
@@ -486,17 +498,20 @@ void UmlWindow::toolMenuAboutToShow() {
     toolMenu->insertSeparator();
     toolMenu->insertItem("Generate C++", this, SLOT(cpp_generate()), CTRL+Key_G);
     toolMenu->insertItem("Generate Java", this, SLOT(java_generate()), CTRL+Key_J);
+    toolMenu->insertItem("Generate Php", this, SLOT(php_generate()), CTRL+Key_P);
     toolMenu->insertItem("Generate Idl", this, SLOT(idl_generate()), CTRL+Key_I);
     if (!BrowserNode::edition_active()) {
       toolMenu->insertSeparator();
       toolMenu->insertItem("Reverse C++", this, SLOT(cpp_reverse()));
       toolMenu->insertItem("Reverse Java", this, SLOT(java_reverse()));
+      toolMenu->insertItem("Reverse Php", this, SLOT(php_reverse()));
       toolMenu->insertSeparator();
       toolMenu->insertItem("Java Catalog", this, SLOT(java_catalog()));
       if (preserve_bodies()) {
 	toolMenu->insertSeparator();
 	toolMenu->insertItem("Roundtrip C++ bodies", this, SLOT(cpp_roundtrip()));
 	toolMenu->insertItem("Roundtrip Java bodies", this, SLOT(java_roundtrip()));
+	toolMenu->insertItem("Roundtrip Php bodies", this, SLOT(php_roundtrip()));
       }
       if (BrowserClass::find("UmlBaseItem") != 0) {
 	toolMenu->insertSeparator();
@@ -591,8 +606,8 @@ void UmlWindow::newProject() {
 	  browser->get_project()->BrowserPackage::save_all(FALSE);
 	  
 	  msg_warning("New project",
-		      "Do not forget to set the default target language(s)\n"
-		      "through the 'Miscellaneous' menu\n"
+		      "Do not forget to set the target languages list\n"
+		      "through the 'Languages' menu\n"
 		      "\n"
 		      "If you program in Java, the Java Catalog plug-out\n"
 		      "will help you, use it !");
@@ -756,7 +771,7 @@ void UmlWindow::load(QString fn, bool forcesaveas) {
     if (! saveas_it())
       close_it();
   }
-  else if ((user_id() != 0) && (fi.baseName() == "empty")) {
+  else if ((user_id() != 0) && (my_baseName(fi) == "empty")) {
     set_user_id(-1);
     saveAs();
   }
@@ -1127,6 +1142,10 @@ void UmlWindow::use_java() {
   GenerationSettings::java_set_default_defs(!GenerationSettings::java_get_default_defs());
 }
 
+void UmlWindow::use_php() {
+  GenerationSettings::php_set_default_defs(!GenerationSettings::php_get_default_defs());
+}
+
 void UmlWindow::use_idl() {
   GenerationSettings::idl_set_default_defs(!GenerationSettings::idl_get_default_defs());
 }
@@ -1188,30 +1207,41 @@ void UmlWindow::edit_shortcuts() {
   d.exec();
 }
 
-void UmlWindow::miscMenuAboutToShow() {
+void UmlWindow::langMenuAboutToShow() {
   abort_line_construction();
   
-  miscMenu->setItemChecked(use_cpp_id,
+  langMenu->setItemChecked(use_cpp_id,
 			   GenerationSettings::cpp_get_default_defs());
-  miscMenu->setItemChecked(use_java_id,
+  langMenu->setItemChecked(use_java_id,
 			   GenerationSettings::java_get_default_defs());
-  miscMenu->setItemChecked(use_idl_id,
+  langMenu->setItemChecked(use_php_id,
+			   GenerationSettings::php_get_default_defs());
+  langMenu->setItemChecked(use_idl_id,
 			   GenerationSettings::idl_get_default_defs());
-  miscMenu->setItemChecked(verbose_gen_id, verbose_generation());
+  langMenu->setItemChecked(verbose_gen_id, verbose_generation());
   
   BrowserPackage * prj = browser->get_project();
   bool enabled = (prj != 0);
   
-  miscMenu->setItemEnabled(use_cpp_id, enabled);
-  miscMenu->setItemEnabled(use_java_id, enabled);
-  miscMenu->setItemEnabled(use_idl_id, enabled);
-  miscMenu->setItemEnabled(verbose_gen_id, enabled);
+  langMenu->setItemEnabled(use_cpp_id, enabled);
+  langMenu->setItemEnabled(use_java_id, enabled);
+  langMenu->setItemEnabled(use_php_id, enabled);
+  langMenu->setItemEnabled(use_idl_id, enabled);
+  langMenu->setItemEnabled(verbose_gen_id, enabled);
   if (enabled) {
-    miscMenu->setItemChecked(preserve_bodies_id, preserve_bodies());
-    miscMenu->setItemChecked(add_operation_profile_id, add_operation_profile());
+    langMenu->setItemChecked(preserve_bodies_id, preserve_bodies());
+    langMenu->setItemChecked(add_operation_profile_id, add_operation_profile());
   }
-  miscMenu->setItemEnabled(preserve_bodies_id, enabled && prj->is_writable());
-  miscMenu->setItemEnabled(add_operation_profile_id, enabled && prj->is_writable());
+  langMenu->setItemEnabled(preserve_bodies_id, enabled && prj->is_writable());
+  langMenu->setItemEnabled(add_operation_profile_id, enabled && prj->is_writable());
+}
+
+void UmlWindow::miscMenuAboutToShow() {
+  abort_line_construction();
+  
+  BrowserPackage * prj = browser->get_project();
+  bool enabled = (prj != 0);
+  
   miscMenu->setItemEnabled(shortcut_id, enabled);
   miscMenu->setItemEnabled(show_browser_stereotypes_id, enabled);
 }
@@ -1372,6 +1402,17 @@ void UmlWindow::java_generate() {
 		 prj);
 }
 
+void UmlWindow::php_generate() {
+  BrowserPackage * prj = browser->get_project();
+  bool preserve = preserve_bodies();
+  
+  if (prj != 0)
+    ToolCom::run((verbose_generation()) 
+		 ? ((preserve) ? "php_generator -v -p" : "php_generator -v")
+		 : ((preserve) ? "php_generator -p" : "php_generator"),
+		 prj);
+}
+
 void UmlWindow::idl_generate() {
   BrowserPackage * prj = browser->get_project();
   
@@ -1410,6 +1451,13 @@ void UmlWindow::java_reverse() {
     ToolCom::run("java_reverse", prj);
 }
 
+void UmlWindow::php_reverse() {
+  BrowserPackage * prj = browser->get_project();
+  
+  if (prj != 0)
+    ToolCom::run("php_reverse", prj);
+}
+
 void UmlWindow::cpp_roundtrip() {
   BrowserPackage * prj = browser->get_project();
   
@@ -1423,6 +1471,14 @@ void UmlWindow::java_roundtrip() {
   
   if (prj != 0)
     ToolCom::run((verbose_generation()) ? "roundtrip_body -v java" : "roundtrip_body java",
+		 prj);
+}
+
+void UmlWindow::php_roundtrip() {
+  BrowserPackage * prj = browser->get_project();
+  
+  if (prj != 0)
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v php" : "roundtrip_body php",
 		 prj);
 }
 

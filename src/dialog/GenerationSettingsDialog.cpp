@@ -66,6 +66,8 @@ GenerationSettingsDialog::GenerationSettingsDialog()
   init_java2();
   init_java3();
   init_java4();
+  init_php1();
+  init_php2();
   init_idl1();
   init_idl2();
   init_idl3();
@@ -106,7 +108,7 @@ void GenerationSettingsDialog::init_stereotypes() {
   new QLabel("Attributes and \nRelations\nstereotypes \ncorrespondence : ", grid);
   relation_stereotypes_table = 
     new StereotypesTable(grid, GenerationSettings::nrelattrstereotypes,
-			 GenerationSettings::relattr_stereotypes);
+			 GenerationSettings::relattr_stereotypes, FALSE);
   
   //new QLabel(grid);
   //new QLabel(grid);
@@ -114,7 +116,7 @@ void GenerationSettingsDialog::init_stereotypes() {
   new QLabel("Classes's \nstereotypes \ncorrespondence : ", grid);
   class_stereotypes_table =
     new StereotypesTable(grid, GenerationSettings::nclassstereotypes,
-			 GenerationSettings::class_stereotypes);
+			 GenerationSettings::class_stereotypes, TRUE);
 
   addTab(grid, "Stereotypes");
 }  
@@ -188,7 +190,11 @@ void GenerationSettingsDialog::init_cpp1() {
   cpp_javadoc_cb->setChecked(GenerationSettings::cpp_javadoc_comment);
   
   htab->setStretchFactor(new QLabel(htab), 1000);
+  
   addTab(vtab, "C++[1]");
+  
+  if (!GenerationSettings::cpp_get_default_defs())
+    removePage(vtab);
 }
 
 void GenerationSettingsDialog::init_cpp2() {
@@ -227,6 +233,9 @@ void GenerationSettingsDialog::init_cpp2() {
   edcpp_typedef_decl->setFont(font);
 
   addTab(grid, "C++[2]");
+  
+  if (!GenerationSettings::cpp_get_default_defs())
+    removePage(grid);
 }
 
 void GenerationSettingsDialog::init_cpp3() {
@@ -307,6 +316,9 @@ void GenerationSettingsDialog::init_cpp3() {
   }
   
   addTab(grid, "C++[3]");
+  
+  if (!GenerationSettings::cpp_get_default_defs())
+    removePage(grid);
 }
 
 void GenerationSettingsDialog::init_cpp4() {
@@ -450,6 +462,9 @@ void GenerationSettingsDialog::init_cpp4() {
 
 
   addTab(grid, "C++[4]");
+  
+  if (!GenerationSettings::cpp_get_default_defs())
+    removePage(grid);
 }
 
 void GenerationSettingsDialog::init_cpp5() {
@@ -476,6 +491,9 @@ void GenerationSettingsDialog::init_cpp5() {
   same_width(lbl1, lbl2);
   
   addTab(split, "C++[5]");
+  
+  if (!GenerationSettings::cpp_get_default_defs())
+    removePage(split);
 }
 
 void GenerationSettingsDialog::init_java1() {
@@ -508,7 +526,7 @@ void GenerationSettingsDialog::init_java1() {
   edjava_extension = new QComboBox(TRUE, htab2);
   edjava_extension->insertItem(GenerationSettings::java_extension);
   edjava_extension->setCurrentItem(0);
-  edjava_extension->insertItem("Java");
+  edjava_extension->insertItem("java");
 
   htab2 = new QHBox(vtab);
   htab2->setMargin(3);
@@ -537,6 +555,9 @@ void GenerationSettingsDialog::init_java1() {
   edjava_enum_pattern_decl->setFont(font);
 
   addTab(grid, "Java[1]");
+  
+  if (!GenerationSettings::java_get_default_defs())
+    removePage(grid);
 }
 
 void GenerationSettingsDialog::init_java2() {
@@ -585,6 +606,9 @@ void GenerationSettingsDialog::init_java2() {
   }
 
   addTab(grid, "Java[2]");
+  
+  if (!GenerationSettings::java_get_default_defs())
+    removePage(grid);
 }  
 
 void GenerationSettingsDialog::init_java3() {
@@ -619,8 +643,9 @@ void GenerationSettingsDialog::init_java3() {
   new QLabel("Get operation\ndefault definition : ", grid);
   htab = new QHBox(grid);
   htab->setMargin(3);
-  java_get_visibility.init(htab, GenerationSettings::java_get_visibility,
-			   TRUE, "Visibility");
+  java_get_visibility.init(htab, GenerationSettings::javaphp_get_visibility,
+			   TRUE, "Visibility (shared with Php)");
+  java_get_visibility.connect(SIGNAL(clicked (int)), this, SLOT(java_get_visi_changed(int)));
   
   bg = new QButtonGroup(1, QGroupBox::Horizontal, "Modifiers", htab);
   bg->setExclusive(FALSE);
@@ -642,8 +667,9 @@ void GenerationSettingsDialog::init_java3() {
   new QLabel("Set operation\ndefault definition : ", grid);
   htab = new QHBox(grid);
   htab->setMargin(3);
-  java_set_visibility.init(htab, GenerationSettings::java_set_visibility,
-			   TRUE, "Visibility");
+  java_set_visibility.init(htab, GenerationSettings::javaphp_set_visibility,
+			   TRUE, "Visibility (shared with Php)");
+  java_set_visibility.connect(SIGNAL(clicked (int)), this, SLOT(java_set_visi_changed(int)));
   
   bg = new QButtonGroup(2, QGroupBox::Horizontal, "Modifiers", htab);
   bg->setExclusive(FALSE);
@@ -673,6 +699,9 @@ void GenerationSettingsDialog::init_java3() {
   edjava_oper_def->setFont(font);
 
   addTab(grid, "Java[3]");
+  
+  if (!GenerationSettings::java_get_default_defs())
+    removePage(grid);
 }  
 
 void GenerationSettingsDialog::init_java4() {
@@ -699,7 +728,161 @@ void GenerationSettingsDialog::init_java4() {
 
   same_width(lbl1, lbl2);
   addTab(split, "Java[4]");
+  
+  if (!GenerationSettings::java_get_default_defs())
+    removePage(split);
 }
+
+void GenerationSettingsDialog::init_php1() {
+  QGrid * grid = new QGrid(2, this);
+  
+  grid->setMargin(3);
+  grid->setSpacing(3);
+
+  new QLabel("file default \ncontent :", grid);
+  
+  QHBox * htab = new QHBox(grid);
+
+  htab->setMargin(3);
+  
+  edphp_src_content = new MultiLineEdit(htab);
+  edphp_src_content->setText(GenerationSettings::php_src_content);
+  QFont font = edphp_src_content->font();
+  if (! hasCodec())
+    font.setFamily("Courier");
+  font.setFixedPitch(TRUE);
+  edphp_src_content->setFont(font);
+
+  new QLabel("    generated / reversed \n    file extension : ", htab);
+  edphp_extension = new QComboBox(TRUE, htab);
+  edphp_extension->insertItem(GenerationSettings::php_extension);
+  edphp_extension->setCurrentItem(0);
+  edphp_extension->insertItem("php");
+
+  new QLabel("Class default \ndeclaration :", grid);
+  edphp_class_decl = new MultiLineEdit(grid);
+  edphp_class_decl->setText(GenerationSettings::php_class_decl);
+  edphp_class_decl->setFont(font);
+
+  new QLabel("Interface default \ndeclaration :", grid);
+  edphp_interface_decl = new MultiLineEdit(grid);
+  edphp_interface_decl->setText(GenerationSettings::php_interface_decl);
+  edphp_interface_decl->setFont(font);
+
+  new QLabel("Enum default \ndeclaration :", grid);
+  edphp_enum_decl = new MultiLineEdit(grid);
+  edphp_enum_decl->setText(GenerationSettings::php_enum_decl);
+  edphp_enum_decl->setFont(font);
+
+  addTab(grid, "Php[1]");
+  
+  if (!GenerationSettings::php_get_default_defs())
+    removePage(grid);
+}
+
+void GenerationSettingsDialog::init_php2() {
+  QGrid * grid = new QGrid(2, this);
+  
+  grid->setMargin(3);
+  grid->setSpacing(3);
+
+  new QLabel("Attribute default \ndeclaration :", grid);
+  edphp_attr_decl = new MultiLineEdit(grid);
+
+  QFont font = edphp_attr_decl->font();
+
+  if (! hasCodec())
+    font.setFamily("Courier");
+  font.setFixedPitch(TRUE);
+
+  edphp_attr_decl->setText(GenerationSettings::php_attr_decl);
+  edphp_attr_decl->setFont(font);
+
+  new QLabel("Association and\naggregation\ndefault\ndeclaration :", grid);
+  edphp_rel_decl = new MultiLineEdit(grid);
+  edphp_rel_decl->setText(GenerationSettings::php_rel_decl);
+  edphp_rel_decl->setFont(font);
+
+  QHBox * htab;
+  QButtonGroup * bg;
+  
+  new QLabel("Enumeration item \ndefault definition :", grid);
+  edphp_enum_item_decl = new MultiLineEdit(grid);
+  edphp_enum_item_decl->setText(GenerationSettings::php_enum_item_decl);
+  
+  if (! hasCodec())
+    font.setFamily("Courier");
+  font.setFixedPitch(TRUE);
+  edphp_enum_item_decl->setFont(font);
+
+  new QLabel("Get operation\ndefault definition : ", grid);
+  htab = new QHBox(grid);
+  htab->setMargin(3);
+  php_get_visibility.init(htab, GenerationSettings::javaphp_get_visibility,
+			   FALSE, "Visibility (shared with Java)");
+  php_get_visibility.connect(SIGNAL(clicked (int)), this, SLOT(php_get_visi_changed(int)));
+  
+  bg = new QButtonGroup(1, QGroupBox::Horizontal, "Modifiers", htab);
+  bg->setExclusive(FALSE);
+  php_get_final_cb = new QCheckBox("final", bg);
+  php_get_final_cb->setChecked(GenerationSettings::php_get_final);
+  
+  new QLabel("  name : ", htab);
+  edphp_get_name = new LineEdit(htab);
+  edphp_get_name->setText(GenerationSettings::php_get_name);
+  edphp_get_name->setFont(font);
+  
+  new QLabel("  ", htab);
+  uml_follow_php_get_name = new QCheckBox("also in uml", htab);
+  if (GenerationSettings::uml_get_name == PhpView)
+    uml_follow_php_get_name->setChecked(TRUE);
+  connect(uml_follow_php_get_name, SIGNAL(toggled(bool)),
+	  this, SLOT(follow_php_get_name()));
+  
+  new QLabel("Set operation\ndefault definition : ", grid);
+  htab = new QHBox(grid);
+  htab->setMargin(3);
+  php_set_visibility.init(htab, GenerationSettings::javaphp_set_visibility,
+			   FALSE, "Visibility (shared with Java)");
+  php_set_visibility.connect(SIGNAL(clicked (int)), this, SLOT(php_set_visi_changed(int)));
+  
+  bg = new QButtonGroup(2, QGroupBox::Horizontal, "Modifiers", htab);
+  bg->setExclusive(FALSE);
+  php_set_final_cb = new QCheckBox("final", bg);
+  php_set_final_cb->setChecked(GenerationSettings::php_set_final);
+  
+  new QLabel("  name : ", htab);
+  edphp_set_name = new LineEdit(htab);
+  edphp_set_name->setText(GenerationSettings::php_set_name);
+  edphp_set_name->setFont(font);
+  
+  new QLabel("  ", htab);
+  uml_follow_php_set_name = new QCheckBox("also in uml", htab);
+  if (GenerationSettings::uml_set_name == PhpView)
+    uml_follow_php_set_name->setChecked(TRUE);
+  connect(uml_follow_php_set_name, SIGNAL(toggled(bool)),
+	  this, SLOT(follow_php_set_name()));
+  
+  //new QLabel(grid);
+  //new QLabel(grid);
+  
+  new QLabel("Operation\ndefault definition :", grid);
+  edphp_oper_def = new MultiLineEdit(grid);
+  edphp_oper_def->setText(GenerationSettings::php_oper_def);
+  edphp_oper_def->setFont(font);
+
+  new QLabel(grid);
+  new QLabel(grid);
+  
+  new QLabel("External classes : \nname making", grid);
+  edphp_external_class_decl = new LineEdit(grid);
+  edphp_external_class_decl->setText(GenerationSettings::php_external_class_decl);
+  
+  addTab(grid, "Php[2]");
+  
+  if (!GenerationSettings::php_get_default_defs())
+    removePage(grid);
+}  
 
 void GenerationSettingsDialog::init_idl1() {
   QSplitter * split = new QSplitter(Vertical, this);
@@ -769,6 +952,9 @@ void GenerationSettingsDialog::init_idl1() {
   edidl_exception_decl->setFont(font);
 
   addTab(split, "Idl[1]");
+  
+  if (!GenerationSettings::idl_get_default_defs())
+    removePage(split);
 }
 
 void GenerationSettingsDialog::init_idl2() {
@@ -778,7 +964,7 @@ void GenerationSettingsDialog::init_idl2() {
   grid->setMargin(3);
   grid->setSpacing(3);
 
-  new QLabel("Attribute \ndefault \ndeclaration :", grid);
+  new QLabel("Attribute default \ndeclaration :", grid);
   grid2 = new QGrid(2, grid);
   new QLabel("multiplicity '1'\nor unspecified", grid2);
   edidl_attr_decl[0] = new MultiLineEdit(grid2);
@@ -832,6 +1018,9 @@ void GenerationSettingsDialog::init_idl2() {
   }
 
   addTab(grid, "Idl[2]");
+  
+  if (!GenerationSettings::idl_get_default_defs())
+    removePage(grid);
 }
 
 void GenerationSettingsDialog::init_idl3() {
@@ -892,6 +1081,9 @@ void GenerationSettingsDialog::init_idl3() {
   }
   
   addTab(grid, "Idl[3]");
+  
+  if (!GenerationSettings::idl_get_default_defs())
+    removePage(grid);
 }
 
 void GenerationSettingsDialog::init_idl4() {
@@ -974,6 +1166,9 @@ void GenerationSettingsDialog::init_idl4() {
   edidl_oper_decl->setFont(font);
 
   addTab(grid, "Idl[4]");
+  
+  if (!GenerationSettings::idl_get_default_defs())
+    removePage(grid);
 }
 
 void GenerationSettingsDialog::init_idl5() {
@@ -1000,6 +1195,9 @@ void GenerationSettingsDialog::init_idl5() {
   same_width(lbl1, lbl2);
   
   addTab(split, "Idl[5]");
+  
+  if (!GenerationSettings::idl_get_default_defs())
+    removePage(split);
 }
 
 void GenerationSettingsDialog::init_descriptions() {
@@ -1099,7 +1297,25 @@ than absolute.\n"
   
   htab = new QHBox(vtab);
   htab->setMargin(3);
-  QLabel * lbl3 = new QLabel("Idl root dir : ", htab);
+  QLabel * lbl3 = new QLabel("Php root dir : ", htab);
+  edphproot = new LineEdit(GenerationSettings::php_root_dir, htab);
+  new QLabel(" ", htab);
+  button = new QPushButton("Browse", htab);
+  connect(button, SIGNAL(clicked ()), this, SLOT(phproot_browse()));
+  new QLabel("", htab);
+  phprelbutton = new QPushButton((GenerationSettings::php_root_dir.isEmpty() || 
+				   QDir::isRelativePath(GenerationSettings::php_root_dir))
+				  ? Absolute : Relative, htab);
+  connect(phprelbutton, SIGNAL(clicked ()), this, SLOT(php_relative()));
+  new QLabel("", htab);
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(3);
+  new QLabel("", htab);
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(3);
+  QLabel * lbl4 = new QLabel("Idl root dir : ", htab);
   edidlroot = new LineEdit(GenerationSettings::idl_root_dir, htab);
   new QLabel(" ", htab);
   button = new QPushButton("Browse", htab);
@@ -1111,7 +1327,7 @@ than absolute.\n"
   connect(idlrelbutton, SIGNAL(clicked ()), this, SLOT(idl_relative()));
   new QLabel("", htab);
   
-  same_width(lbl1, lbl2, lbl3);
+  same_width(lbl1, lbl2, lbl3, lbl4);
   
   vtab->setStretchFactor(new QHBox(vtab), 1000);
   
@@ -1138,6 +1354,7 @@ static QString add_last_slash(QString s)
 void GenerationSettingsDialog::follow_cpp_get_name() {
   if (uml_follow_cpp_get_name->isChecked()) {
     uml_follow_java_get_name->setChecked(FALSE);
+    uml_follow_php_get_name->setChecked(FALSE);
     uml_follow_idl_get_name->setChecked(FALSE);
   }
 }
@@ -1145,6 +1362,7 @@ void GenerationSettingsDialog::follow_cpp_get_name() {
 void GenerationSettingsDialog::follow_cpp_set_name() {
   if (uml_follow_cpp_set_name->isChecked()) {
     uml_follow_java_set_name->setChecked(FALSE);
+    uml_follow_php_set_name->setChecked(FALSE);
     uml_follow_idl_set_name->setChecked(FALSE);
   }
 }
@@ -1152,6 +1370,7 @@ void GenerationSettingsDialog::follow_cpp_set_name() {
 void GenerationSettingsDialog::follow_java_get_name() {
   if (uml_follow_java_get_name->isChecked()) {
     uml_follow_cpp_get_name->setChecked(FALSE);
+    uml_follow_php_get_name->setChecked(FALSE);
     uml_follow_idl_get_name->setChecked(FALSE);
   }
 }
@@ -1159,6 +1378,23 @@ void GenerationSettingsDialog::follow_java_get_name() {
 void GenerationSettingsDialog::follow_java_set_name() {
   if (uml_follow_java_set_name->isChecked()) {
     uml_follow_cpp_set_name->setChecked(FALSE);
+    uml_follow_php_set_name->setChecked(FALSE);
+    uml_follow_idl_set_name->setChecked(FALSE);
+  }
+}
+
+void GenerationSettingsDialog::follow_php_get_name() {
+  if (uml_follow_php_get_name->isChecked()) {
+    uml_follow_cpp_get_name->setChecked(FALSE);
+    uml_follow_java_get_name->setChecked(FALSE);
+    uml_follow_idl_get_name->setChecked(FALSE);
+  }
+}
+
+void GenerationSettingsDialog::follow_php_set_name() {
+  if (uml_follow_php_set_name->isChecked()) {
+    uml_follow_cpp_set_name->setChecked(FALSE);
+    uml_follow_java_set_name->setChecked(FALSE);
     uml_follow_idl_set_name->setChecked(FALSE);
   }
 }
@@ -1167,6 +1403,7 @@ void GenerationSettingsDialog::follow_idl_get_name() {
   if (uml_follow_idl_get_name->isChecked()) {
     uml_follow_cpp_get_name->setChecked(FALSE);
     uml_follow_java_get_name->setChecked(FALSE);
+    uml_follow_php_get_name->setChecked(FALSE);
   }
 }
 
@@ -1174,6 +1411,7 @@ void GenerationSettingsDialog::follow_idl_set_name() {
   if (uml_follow_idl_set_name->isChecked()) {
     uml_follow_cpp_set_name->setChecked(FALSE);
     uml_follow_java_set_name->setChecked(FALSE);
+    uml_follow_php_set_name->setChecked(FALSE);
   }
 }
 
@@ -1245,11 +1483,13 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::cpp_h_extension = edcpp_h_extension->currentText();
     GenerationSettings::cpp_src_extension = edcpp_src_extension->currentText();
     GenerationSettings::java_extension = edjava_extension->currentText();
+    GenerationSettings::php_extension = edphp_extension->currentText();
     GenerationSettings::idl_extension = edidl_extension->currentText();
 
     GenerationSettings::cpp_h_content = edcpp_h_content->text();
     GenerationSettings::cpp_src_content = edcpp_src_content->text();
     GenerationSettings::java_src_content = edjava_src_content->text();
+    GenerationSettings::php_src_content = edphp_src_content->text();
     GenerationSettings::idl_src_content = edidl_src_content->text();
     
     switch (cpp_include_with_path_cb->currentItem()) {
@@ -1307,6 +1547,14 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::java_oper_def = edjava_oper_def->text();
     GenerationSettings::java_javadoc_comment = java_javadoc_cb->isChecked();
     
+    GenerationSettings::php_class_decl = edphp_class_decl->text();
+    GenerationSettings::php_external_class_decl = edphp_external_class_decl->text();
+    GenerationSettings::php_interface_decl = edphp_interface_decl->text();
+    GenerationSettings::php_enum_decl = edphp_enum_decl->text();
+    GenerationSettings::php_enum_item_decl = edphp_enum_item_decl->text();
+    GenerationSettings::php_attr_decl = edphp_attr_decl->text();
+    GenerationSettings::php_oper_def = edphp_oper_def->text();
+    
     GenerationSettings::idl_interface_decl = edidl_interface_decl->text();
     GenerationSettings::idl_valuetype_decl = edidl_valuetype_decl->text();
     GenerationSettings::idl_struct_decl = edidl_struct_decl->text();
@@ -1335,6 +1583,8 @@ void GenerationSettingsDialog::accept() {
       GenerationSettings::java_rel_decl[i] = 
 	edjava_rel_decl[i]->text();
     
+    GenerationSettings::php_rel_decl = edphp_rel_decl->text();
+    
     for (i = 0; i != 3; i += 1) {
       GenerationSettings::idl_rel_decl[i] = 
 	edidl_rel_decl[i]->text();
@@ -1357,13 +1607,18 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::cpp_set_param_const = cpp_set_param_const_cb->isChecked();
     GenerationSettings::cpp_set_param_ref = cpp_set_param_ref_cb->isChecked();
     
-    GenerationSettings::java_get_visibility = java_get_visibility.value();
+    GenerationSettings::javaphp_get_visibility = java_get_visibility.value();
     GenerationSettings::java_get_name = edjava_get_name->text();
     GenerationSettings::java_get_final = java_get_final_cb->isChecked();
-    GenerationSettings::java_set_visibility = java_set_visibility.value();
+    GenerationSettings::javaphp_set_visibility = java_set_visibility.value();
     GenerationSettings::java_set_name = edjava_set_name->text();
     GenerationSettings::java_set_final = java_set_final_cb->isChecked();
     GenerationSettings::java_set_param_final = java_set_param_final_cb->isChecked();
+
+    GenerationSettings::php_get_name = edphp_get_name->text();
+    GenerationSettings::php_get_final = php_get_final_cb->isChecked();
+    GenerationSettings::php_set_name = edphp_set_name->text();
+    GenerationSettings::php_set_final = php_set_final_cb->isChecked();
 
     GenerationSettings::idl_get_name = edidl_get_name->text();
     GenerationSettings::idl_set_name = edidl_set_name->text();
@@ -1390,6 +1645,8 @@ void GenerationSettingsDialog::accept() {
       GenerationSettings::uml_get_name = CppView;
     else if (uml_follow_java_get_name->isChecked())
       GenerationSettings::uml_get_name = JavaView;
+    else if (uml_follow_php_get_name->isChecked())
+      GenerationSettings::uml_get_name = PhpView;
     else if (uml_follow_idl_get_name->isChecked())
       GenerationSettings::uml_get_name = IdlView;
     else
@@ -1399,6 +1656,8 @@ void GenerationSettingsDialog::accept() {
       GenerationSettings::uml_set_name = CppView;
     else if (uml_follow_java_set_name->isChecked())
       GenerationSettings::uml_set_name = JavaView;
+    else if (uml_follow_php_set_name->isChecked())
+      GenerationSettings::uml_set_name = PhpView;
     else if (uml_follow_idl_set_name->isChecked())
       GenerationSettings::uml_set_name = IdlView;
     else
@@ -1408,6 +1667,7 @@ void GenerationSettingsDialog::accept() {
     
     GenerationSettings::cpp_root_dir = add_last_slash(edcpproot->text());
     GenerationSettings::java_root_dir = add_last_slash(edjavaroot->text());
+    GenerationSettings::php_root_dir = add_last_slash(edphproot->text());
     GenerationSettings::idl_root_dir = add_last_slash(edidlroot->text());
     
     //
@@ -1432,6 +1692,15 @@ void GenerationSettingsDialog::javaroot_browse() {
   
   if (! dir.isNull())
     edjavaroot->setText(dir);
+}
+
+void GenerationSettingsDialog::phproot_browse() {
+  QString dir =
+    QFileDialog::getExistingDirectory(edphproot->text(), this, 0,
+				      "Php root directory");
+  
+  if (! dir.isNull())
+    edphproot->setText(dir);
 }
 
 void GenerationSettingsDialog::idlroot_browse() {
@@ -1478,10 +1747,31 @@ void GenerationSettingsDialog::java_relative() {
   relative(edjavaroot, javarelbutton);
 }
 
+void GenerationSettingsDialog::php_relative() {
+  relative(edphproot, phprelbutton);
+}
+
 void GenerationSettingsDialog::idl_relative() {
   relative(edidlroot, idlrelbutton);
 }
 
+//
+
+void GenerationSettingsDialog::java_get_visi_changed(int) {
+  php_get_visibility.follow(java_get_visibility);
+}
+
+void GenerationSettingsDialog::java_set_visi_changed(int) {
+  php_set_visibility.follow(java_set_visibility);
+}
+
+void GenerationSettingsDialog::php_get_visi_changed(int) {
+  java_get_visibility.follow(php_get_visibility);
+}
+
+void GenerationSettingsDialog::php_set_visi_changed(int) {
+  java_get_visibility.follow(php_set_visibility);
+}
 
 // TypesTable
 
@@ -1599,32 +1889,60 @@ bool TypesTable::check() {
 
 // StereotypesTable
 
-StereotypesTable::StereotypesTable(QWidget * parent, int nst, Stereotype * st)
-    : StringTable(nst + 1, 5, parent, FALSE) {
+StereotypesTable::StereotypesTable(QWidget * parent, int nst,
+				   Stereotype * st, bool php)
+    : StringTable(nst + 1, (php) ? 6 : 5, parent, FALSE), with_php(php) {
   horizontalHeader()->setLabel(0, "Uml");
   horizontalHeader()->setLabel(1, "C++");
   horizontalHeader()->setLabel(2, "Java");
-  horizontalHeader()->setLabel(3, "Idl");
-  horizontalHeader()->setLabel(4, "do");
-  
-  int index;
-  
-  for (index = 0; index < nst; index += 1){
-    Stereotype & s = st[index];
+  if (with_php) {
+    horizontalHeader()->setLabel(3, "Php");
+    horizontalHeader()->setLabel(4, "Idl");
+    horizontalHeader()->setLabel(5, "do");
     
-    setText(index, 0, s.uml);
-    setText(index, 1, s.cpp);
-    setText(index, 2, s.java);
-    setText(index, 3, s.idl);
-    setText(index, 4, QString::null);
+    int index;
+    
+    for (index = 0; index < nst; index += 1){
+      Stereotype & s = st[index];
+      
+      setText(index, 0, s.uml);
+      setText(index, 1, s.cpp);
+      setText(index, 2, s.java);
+      setText(index, 3, s.php);
+      setText(index, 4, s.idl);
+      setText(index, 5, QString::null);
+    }
+    
+    init_row(index);
+    
+    for (index = 0; index != 5; index += 1)
+      setColumnStretchable (index, TRUE);
+    adjustColumn(5);
+    setColumnStretchable (5, FALSE);
   }
-  
-  init_row(index);
-  
-  for (index = 0; index != 4; index += 1)
-    setColumnStretchable (index, TRUE);
-  adjustColumn(4);
-  setColumnStretchable (4, FALSE);
+  else {
+    horizontalHeader()->setLabel(3, "Idl");
+    horizontalHeader()->setLabel(4, "do");
+    
+    int index;
+    
+    for (index = 0; index < nst; index += 1){
+      Stereotype & s = st[index];
+      
+      setText(index, 0, s.uml);
+      setText(index, 1, s.cpp);
+      setText(index, 2, s.java);
+      setText(index, 3, s.idl);
+      setText(index, 4, QString::null);
+    }
+    
+    init_row(index);
+    
+    for (index = 0; index != 4; index += 1)
+      setColumnStretchable (index, TRUE);
+    adjustColumn(4);
+    setColumnStretchable (4, FALSE);
+  }
 }
 
 void StereotypesTable::init_row(int index) {
@@ -1632,6 +1950,8 @@ void StereotypesTable::init_row(int index) {
   setText(index, 1, QString::null);
   setText(index, 2, QString::null);
   setText(index, 3, QString::null);
+  if (with_php)
+    setText(index, 3, QString::null);
 }
 
 void StereotypesTable::update(int & nst, Stereotype *& st) {
@@ -1647,13 +1967,26 @@ void StereotypesTable::update(int & nst, Stereotype *& st) {
   nst = n;
   st = new Stereotype[n];
   
-  for (index = 0; index != n; index += 1) {
-    Stereotype & s = st[index];
-    
-    s.uml = text(index, 0).stripWhiteSpace();
-    s.cpp = text(index, 1).stripWhiteSpace();
-    s.java = text(index, 2).stripWhiteSpace();
-    s.idl = text(index, 3).stripWhiteSpace();
+  if (with_php) {
+    for (index = 0; index != n; index += 1) {
+      Stereotype & s = st[index];
+      
+      s.uml = text(index, 0).stripWhiteSpace();
+      s.cpp = text(index, 1).stripWhiteSpace();
+      s.java = text(index, 2).stripWhiteSpace();
+      s.php = text(index, 3).stripWhiteSpace();
+      s.idl = text(index, 4).stripWhiteSpace();
+    }
+  }
+  else {
+    for (index = 0; index != n; index += 1) {
+      Stereotype & s = st[index];
+      
+      s.uml = text(index, 0).stripWhiteSpace();
+      s.cpp = text(index, 1).stripWhiteSpace();
+      s.java = text(index, 2).stripWhiteSpace();
+      s.idl = text(index, 3).stripWhiteSpace();
+    }
   }
 }
 

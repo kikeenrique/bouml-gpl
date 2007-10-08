@@ -340,6 +340,73 @@ bool UmlBaseOperation::set_JavaGetSetFrozen(bool v) {
 }
 #endif
 
+#ifdef WITHPHP
+bool UmlBaseOperation::isPhpFinal() {
+  read_if_needed_();
+    
+  return _php_final;
+}
+
+bool UmlBaseOperation::set_isPhpFinal(bool y) {
+  bool b;
+  
+  if (set_it_(b, y, setPhpFinalCmd)) {
+    _php_final = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+const QCString & UmlBaseOperation::phpDef() {
+  return phpDecl();
+}
+
+bool UmlBaseOperation::set_PhpDef(const char * s) {
+  return set_PhpDecl(s);
+}
+
+QCString UmlBaseOperation::phpBody() {
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, phpBodyCmd);
+  return UmlCom::read_string();
+}
+
+bool UmlBaseOperation::set_PhpBody(const char * s) {
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, setPhpBodyCmd, s);
+  return UmlCom::read_bool();
+}
+
+const QCString & UmlBaseOperation::phpNameSpec() {
+  read_if_needed_();
+    
+  return _php_name_spec;
+}
+
+bool UmlBaseOperation::set_PhpNameSpec(const char * s) {
+  return set_it_(_php_name_spec, s, setPhpNameSpecCmd);
+}
+#endif
+
+#ifdef WITHPHP
+bool UmlBaseOperation::phpGetSetFrozen() {
+  read_if_needed_();
+  return _php_get_set_frozen;
+}
+
+bool UmlBaseOperation::set_PhpGetSetFrozen(bool v) {
+  bool vv;
+
+  if (set_it_(vv, v, setPhpFrozenCmd)) {
+    _php_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
 #ifdef WITHIDL
 bool UmlBaseOperation::isIdlOneway() {
   read_if_needed_();
@@ -397,6 +464,9 @@ void UmlBaseOperation::unload(bool rec, bool del) {
 #endif
 #ifdef WITHJAVA
   _java_name_spec = 0;
+#endif
+#ifdef WITHPHP
+  _php_name_spec = 0;
 #endif
 #ifdef WITHIDL
   _idl_name_spec = 0;
@@ -457,6 +527,15 @@ void UmlBaseOperation::read_java_() {
   _java_synchronized = UmlCom::read_bool();
   _java_name_spec = UmlCom::read_string();
   _java_get_set_frozen = UmlCom::read_bool();
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBaseOperation::read_php_() {
+  UmlBaseClassMember::read_php_();
+  _php_final = UmlCom::read_bool();
+  _php_name_spec = UmlCom::read_string();
+  _php_get_set_frozen = UmlCom::read_bool();
 }
 #endif
 

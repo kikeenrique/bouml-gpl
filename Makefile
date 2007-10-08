@@ -29,6 +29,8 @@ SRC_DIRS = src \
 	src/JavaGenerator \
 	src/JavaReverse \
 	src/JavaCat \
+	src/PhpGenerator \
+	src/PhpReverse \
 	src/IdlGenerator \
 	src/PlugOutUpgrade \
 	src/ProjectControl \
@@ -56,6 +58,8 @@ PROGS = src/bouml \
 	src/JavaGenerator/java_generator \
 	src/JavaReverse/java_reverse \
 	src/JavaCat/java_catalog \
+	src/PhpGenerator/php_generator \
+	src/PhpReverse/php_reverse \
 	src/IdlGenerator/idl_generator \
 	src/PlugOutUpgrade/plug_out_upgrade \
 	src/ProjectControl/projectControl \

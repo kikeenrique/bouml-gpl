@@ -265,6 +265,9 @@ RelationDialog::RelationDialog(RelationData * r)
 
   addTab(vtab, "C++");
   
+  if (!GenerationSettings::cpp_get_default_defs())
+    removePage(vtab);
+  
   //
   // Java
   //
@@ -287,6 +290,35 @@ RelationDialog::RelationDialog(RelationData * r)
 		 SLOT(java_unmapped_b()), SLOT(java_edit_annotation_b()));
 
   addTab(vtab, "Java");
+  
+  if (!GenerationSettings::java_get_default_defs())
+    removePage(vtab);
+  
+  //
+  // Php
+  //
+  
+  vtab = new QVBox(this);
+  phptab = vtab;
+  vtab->setMargin(5);
+  
+  // A
+  bg = new QGroupBox(2, QGroupBox::Horizontal, ina, vtab); 
+  init_php_role(a, rel->a, bg, SLOT(php_update_a()),
+		SLOT(php_default_a()), SLOT(php_unmapped_a()));
+  
+  // B
+  htab = new QHBox(vtab);	// to have a vertical margin
+  htab->setMargin(5);
+  
+  php_b = new QGroupBox(2, QGroupBox::Horizontal, inb, vtab);
+  init_php_role(b, rel->b, php_b, SLOT(php_update_b()),
+		SLOT(php_default_b()), SLOT(php_unmapped_b()));
+
+  addTab(vtab, "Php");
+  
+  if (!GenerationSettings::php_get_default_defs())
+    removePage(vtab);
   
   //
   // IDL
@@ -330,6 +362,9 @@ RelationDialog::RelationDialog(RelationData * r)
 		SLOT(idl_default_b()), SLOT(idl_unmapped_b()));
 
   addTab(vtab, "IDL");
+  
+  if (!GenerationSettings::idl_get_default_defs())
+    removePage(vtab);
   
   //
   // USER : list key - value
@@ -379,6 +414,9 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
   
   st = ClassDialog::java_stereotype(stereotype);
   role.java_undef = undef || (st == "enum") || (st == "typedef");
+  
+  st = ClassDialog::php_stereotype(stereotype);
+  role.php_undef = undef || (st == "enum") || (st == "typedef");
   
   st = ClassDialog::idl_stereotype(stereotype);
   role.idl_undef = undef || (st == "enum") || (st == "typedef");
@@ -690,6 +728,45 @@ void RelationDialog::init_java_role(RoleDialog & role, const RoleData & rel,
 	  this, java_edit_annotation);
 }
 
+void RelationDialog::init_php_role(RoleDialog & role, const RoleData & rel,
+				   QGroupBox * bg,
+				   const char * php_update_slot, 
+				   const char * php_default_slot,
+				   const char * php_unmapped_slot) {
+  role.opt.append(new QLabel("Declaration : ", bg));
+  role.edphpdecl = new MultiLineEdit(bg);
+  role.opt.append(role.edphpdecl);
+  QFont font = role.edphpdecl->font();
+  if (! hasCodec())
+    font.setFamily("Courier");
+  font.setFixedPitch(TRUE);
+  role.edphpdecl->setText(rel.php_decl);
+  role.edphpdecl->setFont(font);
+  if (role.visit)
+    role.edphpdecl->setReadOnly(TRUE);
+  else
+    connect(role.edphpdecl, SIGNAL(textChanged()), this, php_update_slot);
+
+  role.opt.append(new QLabel("Result after\nsubstitution : ", bg));
+  role.showphpdecl = new MultiLineEdit(bg);
+  role.opt.append(role.showphpdecl);
+  role.showphpdecl->setReadOnly(TRUE);
+  role.showphpdecl->setFont(font);
+
+  new QLabel("", bg);
+  QHBox * htab = new QHBox(bg);
+  htab->setMargin(5);
+  
+  if (! role.visit) {
+    role.php_default_decl_bt = new QPushButton("Default declaration", htab);
+    connect(role.php_default_decl_bt, SIGNAL(pressed()),
+	    this, php_default_slot);
+    role.php_unmapped_decl_bt = new QPushButton("Not generated in Php", htab);
+    connect(role.php_unmapped_decl_bt, SIGNAL(pressed()),
+	    this, php_unmapped_slot);
+  }
+}
+
 void RelationDialog::init_idl_role(RoleDialog & role, const RoleData & rel,
 				   ClassData * cld, QGroupBox * bg,
 				   const char * idl_update_slot, 
@@ -814,6 +891,7 @@ void RelationDialog::edTypeActivated(int r)
     ::set_enabled(groupb, FALSE);
     cpp_b->setEnabled(FALSE);
     java_b->setEnabled(FALSE);
+    php_b->setEnabled(FALSE);
     idl_b->setEnabled(FALSE);
   }
   else {
@@ -827,12 +905,14 @@ void RelationDialog::edTypeActivated(int r)
       ::set_enabled(groupb, FALSE);
       cpp_b->setEnabled(FALSE);
       java_b->setEnabled(FALSE);
+      php_b->setEnabled(FALSE);
       idl_b->setEnabled(FALSE);
     }
     else if (! b.visit) {
       ::set_enabled(groupb, TRUE);
       cpp_b->setEnabled(TRUE);
       java_b->setEnabled(TRUE);
+      php_b->setEnabled(TRUE);
       idl_b->setEnabled(TRUE);
     }
   }
@@ -851,6 +931,8 @@ void RelationDialog::edTypeActivated(int r)
 	cpp_default_a();
       if (!a.edjavadecl->text().isEmpty())
 	java_default_a();
+      if (!a.edphpdecl->text().isEmpty())
+	php_default_a();
       if (!a.edidldecl->text().isEmpty())
 	idl_default_a();
     }
@@ -859,6 +941,8 @@ void RelationDialog::edTypeActivated(int r)
 	cpp_default_b();
       if (!b.edjavadecl->text().isEmpty())
 	java_default_b();
+      if (!b.edphpdecl->text().isEmpty())
+	php_default_b();
       if (!b.edidldecl->text().isEmpty())
 	idl_default_b();
     }
@@ -920,6 +1004,12 @@ void RelationDialog::update_all_tabs(QWidget * w) {
     java_update_b();
     if (! a.visit)
       a.edjavadecl->setFocus();
+  }
+  else if (w == phptab) {
+    php_update_a();
+    php_update_b();
+    if (! a.visit)
+      a.edphpdecl->setFocus();
   }
   else if (w == idltab) {
     idl_update_a();
@@ -1368,6 +1458,160 @@ void RelationDialog::java_edit_annotation_b() {
     java_update_b();
 }
   
+// Php management
+
+void RelationDialog::php_update(RoleDialog & role, BrowserClass * cl, BrowserNode * rl) {
+  QString s;
+  
+  switch (current_type) {
+  case UmlRealize:
+  case UmlGeneralisation:
+    {
+      // do NOT write
+      //	const char * p = role.edphpdecl->text();
+      // because the QString is immediatly destroyed !
+      QString def = role.edphpdecl->text();
+      const char * p = def;
+      
+      while (*p) {
+	if (!strncmp(p, "${type}", 7)) {
+	  s = get_php_name(cl);
+	  p += 7;
+	}
+	else
+	  s += *p++;
+      }
+    }
+    break;
+  case UmlDependency:
+    s = "";
+    break;
+  default:
+    {
+      // do NOT write
+      //	const char * p = role.edphpdecl->text();
+      // because the QString is immediatly destroyed !
+      QString def = role.edphpdecl->text();
+      const char * p = def;
+      const char * pp = 0;
+      QString indent = "";
+      
+      while ((*p == ' ') || (*p == '\t'))
+	indent += *p++;
+      
+      s = indent;
+      
+      for (;;) {
+	if (*p == 0) {
+	  if (pp == 0)
+	    break;
+	  
+	  // comment management done
+	  p = pp;
+	  pp = 0;
+	  if (*p == 0)
+	    break;
+	  s += indent;
+	}
+	
+	if (!strncmp(p, "${comment}", 10))
+	  manage_comment(role.comment->text(), p, pp, FALSE);
+	else if (!strncmp(p, "${description}", 14))
+	  manage_description(role.comment->text(), p, pp);
+	else if (!strncmp(p, "${visibility}", 13)) {
+	  p += 13;
+	  if (role.uml_visibility.value() != UmlPackageVisibility)
+	    s += role.uml_visibility.state() + ' ';
+	}
+	else if (!strncmp(p, "${static}", 9)) {
+	  p += 9;
+	  if (role.classrelation_cb->isChecked())
+	    s += "static ";
+	}
+	else if (!strncmp(p, "${name}", 7)) {
+	  p += 7;
+	  if (!role.constrelation_cb->isChecked())
+	    s += "$";
+	  s += role.edrole->text();
+	}
+	else if (!strncmp(p, "${const}", 8)) {
+	  p += 8;
+	  if (role.constrelation_cb->isChecked())
+	    s += "const ";
+	}
+	else if (!strncmp(p, "${var}", 6)) {
+	  p += 6;
+	  if (!role.constrelation_cb->isChecked() &&
+	      !role.classrelation_cb->isChecked() &&
+	      (role.uml_visibility.value() == UmlPackageVisibility))
+	    s += "var ";
+	}
+	else if (!strncmp(p, "${value}", 8)) {
+	  p += 8;
+	  if (!role.edinit->text().stripWhiteSpace().isEmpty()) {
+	    s += (role.edinit->text().stripWhiteSpace().at(0) == QChar('='))
+	      ? " " : " = ";
+	    s += role.edinit->text();
+	  }
+	}
+	else if (*p == '\n') {
+	  s += *p++;
+	  if (*p)
+	    s += indent;
+	}
+	else if (*p == '@')
+	  manage_alias(rl, p, s, role.kvtable);
+	else
+	  s += *p++;
+      }
+    }
+  }
+  
+  role.showphpdecl->setText(s);
+}
+
+void RelationDialog::php_update_a() {
+  php_update(a, rel->get_end_class(), rel->start);
+}
+
+void RelationDialog::php_update_b() {
+  if (! RelationData::uni_directional(current_type))
+    php_update(b, rel->get_start_class(), rel->end);
+}
+
+void RelationDialog::php_default_a() {
+  if (a.php_undef)
+    a.edphpdecl->setText(QString::null);
+  else if (RelationData::isa_association(current_type))
+    a.edphpdecl->setText(GenerationSettings::php_default_rel_decl());
+  else {
+    a.edphpdecl->setText("${type}");
+    a.php_unmapped_decl_bt->setOn(FALSE);
+  }
+  php_update_a();
+}
+
+void RelationDialog::php_unmapped_a() {
+  a.edphpdecl->setText(QString::null);
+  a.showphpdecl->setText(QString::null);
+  
+  if (!RelationData::isa_association(current_type))
+    a.php_default_decl_bt->setOn(FALSE);
+}
+
+void RelationDialog::php_default_b() {
+  if (b.php_undef)
+    b.edphpdecl->setText(QString::null);
+  else 
+    b.edphpdecl->setText(GenerationSettings::php_default_rel_decl());
+  php_update_b();
+}
+
+void RelationDialog::php_unmapped_b() {
+  b.edphpdecl->setText(QString::null);
+  b.showphpdecl->setText(QString::null);
+}
+
 // Idl management
 
 void RelationDialog::idl_update(RoleDialog & role, BrowserClass * cl, BrowserNode * rl) {
@@ -1598,6 +1842,7 @@ static void accept_role(RoleDialog & role, RoleData & rel,
   rel.cpp_decl = role.edcppdecl->text();
   rel.java_decl = role.edjavadecl->text();
   rel.java_annotation = role.javaannotation;
+  rel.php_decl = role.edphpdecl->text();
   rel.idl_decl = role.edidldecl->text();
 }
 

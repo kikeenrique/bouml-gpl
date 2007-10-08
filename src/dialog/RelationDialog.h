@@ -87,6 +87,13 @@ struct RoleDialog {
   QPushButton * editjavaannotation;
   QString javaannotation;
   
+  // Php
+  bool php_undef;
+  MultiLineEdit * edphpdecl;
+  MultiLineEdit * showphpdecl;
+  QPushButton * php_default_decl_bt;
+  QPushButton * php_unmapped_decl_bt;
+  
   // Idl
   bool idl_undef;
   bool idl_in_struct;
@@ -113,6 +120,7 @@ class RelationDialog : public QTabDialog {
     QWidget * umltab;
     QWidget * cpptab;
     QWidget * javatab;
+    QWidget * phptab;
     QWidget * idltab;
     RelationData * rel;
     LineEdit * edname;
@@ -127,6 +135,7 @@ class RelationDialog : public QTabDialog {
     QList<QWidget> groupb;
     QGroupBox * cpp_b;
     QGroupBox * java_b;
+    QGroupBox * php_b;
     QGroupBox * idl_b;
     QList<BodyDialog> edits;
         
@@ -145,11 +154,15 @@ class RelationDialog : public QTabDialog {
 			const char * java_default_slot,
 			const char * java_unmapped_slot,
 			const char * java_edit_annotation);
+    void init_php_role(RoleDialog & role, const RoleData & rel,
+		       QGroupBox * bg, const char * php_update_slot, 
+		       const char * php_default_slot, const char * php_unmapped_slot);
     void init_idl_role(RoleDialog & role, const RoleData & rel, ClassData * cld,
 		       QGroupBox * bg, const char * idl_update_slot, 
 		       const char * idl_default_slot, const char * idl_unmapped_slot);
     void cpp_update(RoleDialog & role, BrowserClass * cl, BrowserNode * rl);
     void java_update(RoleDialog & role, BrowserClass * cl, BrowserNode * rl);
+    void php_update(RoleDialog & role, BrowserClass * cl, BrowserNode * rl);
     void idl_update(RoleDialog & role, BrowserClass * cl, BrowserNode * rl);
     void set_inherit_or_dependency(UmlCode type);
     
@@ -192,6 +205,12 @@ class RelationDialog : public QTabDialog {
     void java_unmapped_b();
     void java_edit_annotation_a();
     void java_edit_annotation_b();
+    void php_update_a();
+    void php_update_b();
+    void php_default_a();
+    void php_unmapped_a();
+    void php_default_b();
+    void php_unmapped_b();
     void idl_update_a();
     void idl_update_b();
     void idl_default_a();

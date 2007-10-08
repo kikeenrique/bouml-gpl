@@ -73,8 +73,8 @@ void UmlArtifact::roundtrip_cpp() {
 			 + s + "</font><br>");
     }
 
-    UmlOperation::roundtrip(h_path, TRUE);
-    UmlOperation::roundtrip(src_path, TRUE);
+    UmlOperation::roundtrip(h_path, cppLanguage);
+    UmlOperation::roundtrip(src_path, cppLanguage);
   }
 }
 
@@ -106,6 +106,38 @@ void UmlArtifact::roundtrip_java() {
 			 + s + "</font><br>");
     }
 
-    UmlOperation::roundtrip(src_path, FALSE);
+    UmlOperation::roundtrip(src_path, javaLanguage);
+  }
+}
+
+void UmlArtifact::roundtrip_php() {
+  if (! managed) {
+    managed = TRUE;
+    
+    if (stereotype() != "source")
+      return;
+    
+    const QCString srcdef = phpSource();
+    
+    if (srcdef.isEmpty())
+      return;
+    
+    const QCString & name = UmlArtifact::name();    
+    UmlPackage * pack = package();
+    QCString src_path = pack->php_path(name);
+    
+    {
+      QCString s = " <i> " + src_path + "</i>";
+      
+      UmlCom::message(name);
+      if (verbose())
+	UmlCom::trace(QCString("<hr><font face=helvetica>roundtrip body from")
+		      + s + "</font><br>");
+      else
+	set_trace_header(QCString("<font face=helvetica>roundtrip body from")
+			 + s + "</font><br>");
+    }
+
+    UmlOperation::roundtrip(src_path, phpLanguage);
   }
 }

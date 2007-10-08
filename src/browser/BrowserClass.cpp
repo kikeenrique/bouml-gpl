@@ -423,6 +423,7 @@ a double click with the left mouse button does the same thing");
       m.insertItem("Generate", &gensubm);    
       gensubm.insertItem("C++", 10);
       gensubm.insertItem("Java", 11);
+      gensubm.insertItem("Php", 22);
       gensubm.insertItem("Idl", 12);
     }
     if ((edition_number == 0) && 
@@ -524,6 +525,16 @@ void BrowserClass::exec_menu_choice(int index,
       ToolCom::run((verbose_generation()) 
 		   ? ((preserve) ? "java_generator -v -p" : "java_generator -v")
 		   : ((preserve) ? "java_generator -p" : "java_generator"), 
+		   this);
+    }
+    return;
+  case 22:
+    {
+      bool preserve = preserve_bodies();
+      
+      ToolCom::run((verbose_generation()) 
+		   ? ((preserve) ? "php_generator -v -p" : "php_generator -v")
+		   : ((preserve) ? "php_generator -p" : "php_generator"), 
 		   this);
     }
     return;
@@ -663,6 +674,8 @@ void BrowserClass::apply_shortcut(QString s) {
 	choice = 10;
       else if (s == "Generate Java")
 	choice = 11;
+      else if (s == "Generate Php")
+	choice = 22;
       else if (s == "Generate Idl")
 	choice = 12;
     }
@@ -1294,16 +1307,18 @@ void BrowserClass::move(BrowserNode * bn, BrowserNode * after) {
   BrowserNode * old = ((BrowserNode *) bn->parent());
   char * cpp;
   char * java;
+  char * php;
   
   if ((old != this) && (what == UmlOperation)) {
     OperationData * d = (OperationData *) bn->get_data();
     
-    cpp = d->get_body(TRUE);
-    java = d->get_body(FALSE);
+    cpp = d->get_body('c');
+    java = d->get_body('j');
+    php = d->get_body('p');
     d->create_modified_body_file();
   }
   else
-    cpp = java = 0;
+    cpp = java = php = 0;
   
   if (after)
     bn->moveItem(after);
@@ -1320,12 +1335,16 @@ void BrowserClass::move(BrowserNode * bn, BrowserNode * after) {
       OperationData * d = (OperationData *) bn->get_data();
       
       if (cpp) {
-	d->new_body(cpp, TRUE);
+	d->new_body(cpp, 'c');
 	delete [] cpp;
       }
       if (java) {
-	d->new_body(java, FALSE);
+	d->new_body(java, 'j');
 	delete [] java;
+      }
+      if (php) {
+	d->new_body(php, 'p');
+	delete [] php;
       }
       
       if (d->get_is_abstract())
@@ -2011,8 +2030,9 @@ void BrowserClass::save(QTextStream & st, bool ref, QString & warning) {
 	    OperationData * od =
 	      (OperationData *) ((BrowserNode *) child)->get_data();
 	    
-	    od->save_body(qf, modified_bodies, TRUE);
-	    od->save_body(qf, modified_bodies, FALSE);
+	    od->save_body(qf, modified_bodies, 'c');
+	    od->save_body(qf, modified_bodies, 'j');
+	    od->save_body(qf, modified_bodies, 'p');
 	  }
 	  child = child->nextSibling();
 	  if (child != 0)
@@ -2227,12 +2247,12 @@ void BrowserClass::plug_out_conversion()
 	  set_user_id(uid);	// to create saved  *_<n>.b file name
 	  op1 = (OperationData *) ((BrowserNode *) child)->get_data();
 	  op2 = (OperationData *) baseComponentCreation->get_data();
-	  if ((b = op1->get_body(TRUE)) != 0) {
-	    op2->new_body(b, TRUE);
+	  if ((b = op1->get_body('c')) != 0) {
+	    op2->new_body(b, 'c');
 	    delete [] b;
 	  }
-	  if ((b = op1->get_body(FALSE)) != 0) {
-	    op2->new_body(b, FALSE);
+	  if ((b = op1->get_body('j')) != 0) {
+	    op2->new_body(b, 'j');
 	    delete [] b;
 	  }	  
 	  baseComponentCreation->set_comment(((BrowserNode *) child)->get_comment());
@@ -2250,14 +2270,14 @@ void BrowserClass::plug_out_conversion()
 	  op1 = (OperationData *) baseComponentCreate->get_data();
 	  op2 = (OperationData *) ((BrowserNode *) child)->get_data();
 
-	  if ((b = op2->get_body(TRUE)) != 0) {
-	    op1->new_body(b, TRUE);
-	    op2->new_body(component2artifact(b), TRUE);
+	  if ((b = op2->get_body('c')) != 0) {
+	    op1->new_body(b, 'c');
+	    op2->new_body(component2artifact(b), 'c');
 	    delete [] b;
 	  }
-	  if ((b = op2->get_body(FALSE)) != 0) {
-	    op1->new_body(b, FALSE);
-	    op2->new_body(component2artifact(b), FALSE);
+	  if ((b = op2->get_body('j')) != 0) {
+	    op1->new_body(b, 'j');
+	    op2->new_body(component2artifact(b), 'j');
 	    delete [] b;
 	  }	  
 	  baseComponentCreate->set_comment(((BrowserNode *) child)->get_comment());
@@ -2274,14 +2294,14 @@ void BrowserClass::plug_out_conversion()
 	  op1 = (OperationData *) baseComponentKind->get_data();
 	  op2 = (OperationData *) ((BrowserNode *) child)->get_data();
 
-	  if ((b = op2->get_body(TRUE)) != 0) {
-	    op1->new_body(b, TRUE);
-	    op2->new_body(component2artifact(b), TRUE);
+	  if ((b = op2->get_body('c')) != 0) {
+	    op1->new_body(b, 'c');
+	    op2->new_body(component2artifact(b), 'c');
 	    delete [] b;
 	  }
-	  if ((b = op2->get_body(FALSE)) != 0) {
-	    op1->new_body(b, FALSE);
-	    op2->new_body(component2artifact(b), FALSE);
+	  if ((b = op2->get_body('j')) != 0) {
+	    op1->new_body(b, 'j');
+	    op2->new_body(component2artifact(b), 'j');
 	    delete [] b;
 	  }	  
 	  baseComponentKind->set_comment(((BrowserNode *) child)->get_comment());
@@ -2295,19 +2315,19 @@ void BrowserClass::plug_out_conversion()
 	  set_user_id(uid);	// to create saved  *_<n>.b file name
 	  op1 = (OperationData *) baseComponentRead_uml_->get_data();
 	  op1->new_body("  _assoc_diagram = (UmlComponentDiagram *) UmlBaseItem::read_();\n\
-  UmlBaseItem::read_uml_();\n", TRUE);
+  UmlBaseItem::read_uml_();\n", 'c');
 	  op1->new_body("  _assoc_diagram = (UmlComponentDiagram) UmlBaseItem.read_();\n\
-  super.read_uml_();\n", FALSE);
+  super.read_uml_();\n", 'j');
 	  baseComponentRead_uml_->set_comment(((BrowserNode *) child)->get_comment());
 	  
 	  // UmlBaseArtifact read_uml_ operation
 	  op2 = (OperationData *) ((BrowserNode *) child)->get_data();
-	  if ((b = op2->get_body(TRUE)) != 0) {
-	    op2->new_body(component2artifact(b), TRUE);
+	  if ((b = op2->get_body('c')) != 0) {
+	    op2->new_body(component2artifact(b), 'c');
 	    delete [] b;
 	  }
-	  if ((b = op2->get_body(FALSE)) != 0) {
-	    op2->new_body(component2artifact(b), FALSE);
+	  if ((b = op2->get_body('j')) != 0) {
+	    op2->new_body(component2artifact(b), 'j');
 	    delete [] b;
 	  }	  
 	  set_user_id(0);
@@ -2320,12 +2340,12 @@ void BrowserClass::plug_out_conversion()
 	  set_user_id(uid);	// to create saved  *_<n>.b file name
 	  op1 = (OperationData *) baseComponentAssociatedDiagram->get_data();
 	  op2 = (OperationData *) ((BrowserNode *) child)->get_data();
-	  if ((b = op2->get_body(TRUE)) != 0) {
-	    op1->new_body(b, TRUE);
+	  if ((b = op2->get_body('c')) != 0) {
+	    op1->new_body(b, 'c');
 	    delete [] b;
 	  }
-	  if ((b = op2->get_body(FALSE)) != 0) {
-	    op1->new_body(b, FALSE);
+	  if ((b = op2->get_body('j')) != 0) {
+	    op1->new_body(b, 'j');
 	    delete [] b;
 	  }	  
 	  baseComponentAssociatedDiagram->set_comment(((BrowserNode *) child)->get_comment());
@@ -2341,12 +2361,12 @@ void BrowserClass::plug_out_conversion()
 	  set_user_id(uid);	// to create saved  *_<n>.b file name
 	  op1 = (OperationData *) baseComponentSet_AssociatedDiagram->get_data();
 	  op2 = (OperationData *) ((BrowserNode *) child)->get_data();
-	  if ((b = op2->get_body(TRUE)) != 0) {
-	    op1->new_body(b, TRUE);
+	  if ((b = op2->get_body('c')) != 0) {
+	    op1->new_body(b, 'c');
 	    delete [] b;
 	  }
-	  if ((b = op2->get_body(FALSE)) != 0) {
-	    op1->new_body(b, FALSE);
+	  if ((b = op2->get_body('j')) != 0) {
+	    op1->new_body(b, 'j');
 	    delete [] b;
 	  }	  
 	  baseComponentSet_AssociatedDiagram->set_comment(((BrowserNode *) child)->get_comment());
@@ -2358,12 +2378,12 @@ void BrowserClass::plug_out_conversion()
 	  ((BrowserNode *) child)->set_name("associatedArtifacts");
 	  set_user_id(uid);	// to create saved  *_<n>.b file name
 	  op1 = (OperationData *) ((BrowserNode *) child)->get_data();
-	  if ((b = op1->get_body(TRUE)) != 0) {
-	    op1->new_body(component2artifact(b), TRUE);
+	  if ((b = op1->get_body('c')) != 0) {
+	    op1->new_body(component2artifact(b), 'c');
 	    delete [] b;
 	  }
-	  if ((b = op1->get_body(FALSE)) != 0) {
-	    op1->new_body(component2artifact(b), FALSE);
+	  if ((b = op1->get_body('j')) != 0) {
+	    op1->new_body(component2artifact(b), 'j');
 	    delete [] b;
 	  }	  
 	  set_user_id(0);
@@ -2373,12 +2393,12 @@ void BrowserClass::plug_out_conversion()
 	  set_user_id(uid);	// to create saved  *_<n>.b file name
 	  op1 = (OperationData *) ((BrowserNode *) child)->get_data();
 	  op1->set_param_type(0, t_artifact);
-	  if ((b = op1->get_body(TRUE)) != 0) {
-	    op1->new_body(component2artifact(b), TRUE);
+	  if ((b = op1->get_body('c')) != 0) {
+	    op1->new_body(component2artifact(b), 'c');
 	    delete [] b;
 	  }
-	  if ((b = op1->get_body(FALSE)) != 0) {
-	    op1->new_body(component2artifact(b), FALSE);
+	  if ((b = op1->get_body('j')) != 0) {
+	    op1->new_body(component2artifact(b), 'j');
 	    delete [] b;
 	  }	  
 	  set_user_id(0);
@@ -2388,12 +2408,12 @@ void BrowserClass::plug_out_conversion()
 	  set_user_id(uid);	// to create saved  *_<n>.b file name
 	  op1 = (OperationData *) ((BrowserNode *) child)->get_data();
 	  op1->set_param_type(0, t_artifact);
-	  if ((b = op1->get_body(TRUE)) != 0) {
-	    op1->new_body(component2artifact(b), TRUE);
+	  if ((b = op1->get_body('c')) != 0) {
+	    op1->new_body(component2artifact(b), 'c');
 	    delete [] b;
 	  }
-	  if ((b = op1->get_body(FALSE)) != 0) {
-	    op1->new_body(component2artifact(b), FALSE);
+	  if ((b = op1->get_body('j')) != 0) {
+	    op1->new_body(component2artifact(b), 'j');
 	    delete [] b;
 	  }	  
 	  set_user_id(0);
@@ -2402,12 +2422,12 @@ void BrowserClass::plug_out_conversion()
 	  ((BrowserNode *) child)->set_name("removeAllAssociatedArtifacts");
 	  set_user_id(uid);	// to create saved  *_<n>.b file name
 	  op1 = (OperationData *) ((BrowserNode *) child)->get_data();
-	  if ((b = op1->get_body(TRUE)) != 0) {
-	    op1->new_body(component2artifact(b), TRUE);
+	  if ((b = op1->get_body('c')) != 0) {
+	    op1->new_body(component2artifact(b), 'c');
 	    delete [] b;
 	  }
-	  if ((b = op1->get_body(FALSE)) != 0) {
-	    op1->new_body(component2artifact(b), FALSE);
+	  if ((b = op1->get_body('j')) != 0) {
+	    op1->new_body(component2artifact(b), 'j');
 	    delete [] b;
 	  }	  
 	  set_user_id(0);
@@ -2466,12 +2486,12 @@ void BrowserClass::plug_out_conversion()
 	  
 	  set_user_id(uid);	// to create saved  *_<n>.b file name
 	  op1 = (OperationData *) ((BrowserNode *) child)->get_data();
-	  if ((b = op1->get_body(TRUE)) != 0) {
-	    op1->new_body(component2artifact(b), TRUE);
+	  if ((b = op1->get_body('c')) != 0) {
+	    op1->new_body(component2artifact(b), 'c');
 	    delete [] b;
 	  }
-	  if ((b = op1->get_body(FALSE)) != 0) {
-	    op1->new_body(component2artifact(b), FALSE);
+	  if ((b = op1->get_body('j')) != 0) {
+	    op1->new_body(component2artifact(b), 'j');
 	    delete [] b;
 	  }	  
 	}
@@ -2501,12 +2521,12 @@ void BrowserClass::plug_out_conversion()
 	else if (strcmp(((BrowserNode *) child)->get_name(), "read_uml_") == 0) {
 	  set_user_id(uid);	// to create saved  *_<n>.b file name
 	  op1 = (OperationData *) ((BrowserNode *) child)->get_data();
-	  if ((b = op1->get_body(TRUE)) != 0) {
-	    op1->new_body(component2artifact(b), TRUE);
+	  if ((b = op1->get_body('c')) != 0) {
+	    op1->new_body(component2artifact(b), 'c');
 	    delete [] b;
 	  }
-	  if ((b = op1->get_body(FALSE)) != 0) {
-	    op1->new_body(component2artifact(b), FALSE);
+	  if ((b = op1->get_body('j')) != 0) {
+	    op1->new_body(component2artifact(b), 'j');
 	    delete [] b;
 	  }	  
 	}
@@ -2526,22 +2546,22 @@ void BrowserClass::plug_out_conversion()
 	if (strcmp(((BrowserNode *) child)->get_name(), "read_") == 0) {
 	  set_user_id(uid);	// to create saved  *_<n>.b file name
 	  op1 = (OperationData *) ((BrowserNode *) child)->get_data();
-	  if ((b = op1->get_body(TRUE)) != 0) {
+	  if ((b = op1->get_body('c')) != 0) {
 	    s = b;
 	    delete [] b;
 	    s.insert(s.find("case aNode:"),
 		     "case anArtifact:\n\
       result = new UmlArtifact(id, name);\n\
       break;\n    ");
-	    op1->new_body(s, TRUE);
+	    op1->new_body(s, 'c');
 	  }
-	  if ((b = op1->get_body(FALSE)) != 0) {
+	  if ((b = op1->get_body('j')) != 0) {
 	    s = b;
 	    delete [] b;
 	    s.insert(s.find("case anItemKind._aNode:"),
 		   "case anItemKind._anArtifact:\n\
       return new UmlArtifact(id, name);\n    ");
-	    op1->new_body(s, FALSE);
+	    op1->new_body(s, 'j');
 	  }
 	  set_user_id(0);
 	}
@@ -2599,18 +2619,18 @@ void BrowserClass::plug_out_conversion()
 	  (strcmp(((BrowserNode *) child)->get_name(), "connect") == 0)) {
 	set_user_id(uid);	// to create saved  *_<n>.b file name
 	op1 = (OperationData *) ((BrowserNode *) child)->get_data();
-	if ((b = op1->get_body(TRUE)) != 0) {
+	if ((b = op1->get_body('c')) != 0) {
 	  s = b;
 	  delete [] b;
 	  s.insert(s.find("write_unsigned(")+15, "1");
-	  op1->new_body(s, TRUE);
+	  op1->new_body(s, 'c');
 	}
 	
-	if ((b = op1->get_body(FALSE)) != 0) {
+	if ((b = op1->get_body('j')) != 0) {
 	  s = b;
 	  delete [] b;
 	  s.insert(s.find("write_unsigned(")+15, "1");
-	  op1->new_body(s, FALSE);
+	  op1->new_body(s, 'j');
 	}
 	set_user_id(0);
 	break;

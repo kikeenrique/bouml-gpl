@@ -232,7 +232,7 @@ int Package::file_number(QDir & d, bool rec, const char * h, const char * cpp)
   QFileInfo * fi;
   
   while ((fi = it.current()) != 0) {
-    if ((fi->extension() == h) || (fi->extension() == cpp))
+    if ((fi->extension(FALSE) == h) || (fi->extension(FALSE) == cpp))
       result += 1;
     ++it;
   }
@@ -297,6 +297,16 @@ void Package::send_dirs(bool rec) {
 #endif
 }
 
+QString my_baseName(QFileInfo * fi)
+{
+  QString fn = fi->fileName();
+  int index = fn.findRev('.');
+  
+  return (index == -1)
+    ? fn
+    : fn.left(index);
+}
+
 void Package::reverse_directory(QDir & d, bool rec, QString ext, bool h) {
   // reads files
   const QFileInfoList * list =
@@ -305,7 +315,7 @@ void Package::reverse_directory(QDir & d, bool rec, QString ext, bool h) {
   
   while (it.current() != 0) {
     if (h)
-      fname = it.current()->baseName();
+      fname = my_baseName(it.current());
     reverse_file(QCString(it.current()->filePath()));
     if (ProgressBar)
       ProgressBar->tic();

@@ -97,7 +97,7 @@ extern void same_width(QWidget *, QWidget *, QWidget *);
 extern void same_width(QWidget *, QWidget *, QWidget *, QWidget *);
 extern void same_width(QWidget *, QWidget *, QWidget *, QWidget *, QWidget *);
 
-enum EditType { CppEdit, JavaEdit, TxtEdit };
+enum EditType { CppEdit, JavaEdit, PhpEdit, TxtEdit };
 
 typedef void (* post_edit)(QTabDialog *, QString);
 
@@ -114,9 +114,11 @@ extern QString type(const QString & t, const QStringList & types,
 // 'true' name or external name
 extern QString get_cpp_name(const BrowserClass * cl);
 extern QString get_java_name(const BrowserClass * cl);
+extern QString get_php_name(const BrowserClass * cl);
 extern QString get_idl_name(const BrowserClass * cl);
 extern QString get_cpp_name(const AType);
 extern QString get_java_name(const AType);
+extern QString get_php_name(const AType);
 extern QString get_idl_name(const AType);
     
 extern void manage_alias(const BrowserNode * node, const char *& p,

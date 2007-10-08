@@ -60,7 +60,7 @@ QStringList BrowserArtifact::relation_default_stereotypes;	// unicode
 BrowserArtifact::BrowserArtifact(QString s, BrowserNode * p, int id)
     : BrowserNode(s, p), Labeled<BrowserArtifact>(all, id),
       cpp_h_edited(FALSE), cpp_src_edited(FALSE),
-      java_edited(FALSE), idl_edited(FALSE) {
+      java_edited(FALSE), php_edited(FALSE), idl_edited(FALSE) {
   def = new ArtifactData;
   def->set_browser_node(this);
   
@@ -71,7 +71,7 @@ BrowserArtifact::BrowserArtifact(const BrowserArtifact * model,
 				 BrowserNode * p)
     : BrowserNode(model->name, p), Labeled<BrowserArtifact>(all, 0),
       cpp_h_edited(FALSE), cpp_src_edited(FALSE),
-      java_edited(FALSE), idl_edited(FALSE) {
+      java_edited(FALSE), php_edited(FALSE), idl_edited(FALSE) {
   def = new ArtifactData(model->def, this);
   comment = model->comment;
   associated_diagram = 0;  
@@ -80,7 +80,7 @@ BrowserArtifact::BrowserArtifact(const BrowserArtifact * model,
 BrowserArtifact::BrowserArtifact(int id)
     : BrowserNode(), Labeled<BrowserArtifact>(all, id),
       cpp_h_edited(FALSE), cpp_src_edited(FALSE),
-      java_edited(FALSE), idl_edited(FALSE) {
+      java_edited(FALSE), php_edited(FALSE), idl_edited(FALSE) {
   // not yet read
   def = new ArtifactData;
   def->set_browser_node(this);
@@ -198,7 +198,8 @@ QString BrowserArtifact::get_path(QString path, QString root,
 }
 
 void BrowserArtifact::get_paths(QString & cpp_h_path, QString & cpp_src_path,
-				QString & java_path, QString & idl_path) const {
+				QString & java_path, QString & php_path, 
+				QString & idl_path) const {
   bool a_text = !strcmp(def->get_stereotype(), "text");
   
   if (a_text || !strcmp(def->get_stereotype(), "source")) {
@@ -219,6 +220,11 @@ void BrowserArtifact::get_paths(QString & cpp_h_path, QString & cpp_src_path,
 			   GenerationSettings::get_java_root_dir(),
 			   (a_text) ? (const char *) 0
 				    : (const char *) GenerationSettings::get_java_extension());
+    if (def->get_php_src()[0] != 0)
+      php_path = get_path((const char *) pd->get_php_dir(),
+			  GenerationSettings::get_php_root_dir(),
+			  (a_text) ? (const char *) 0
+				   : (const char *) GenerationSettings::get_php_extension());
     if (def->get_idl_src()[0] != 0)
       idl_path = get_path((const char *) pd->get_idl_dir(),
 			  GenerationSettings::get_idl_root_dir(),
@@ -254,6 +260,7 @@ void BrowserArtifact::menu() {
   QString cpp_h_path;
   QString cpp_src_path;
   QString java_path;
+  QString php_path;
   QString idl_path;
   
   m.insertItem(new MenuTitle(name, m.font()), -1);
@@ -278,6 +285,7 @@ Note that you can undelete it after");
       m.insertItem("Generate", &gensubm);
       gensubm.insertItem("C++", 10);
       gensubm.insertItem("Java", 11);
+      gensubm.insertItem("Php", 22);
       gensubm.insertItem("Idl", 12);
       
       if (!a_text && preserve_bodies()) {
@@ -285,9 +293,10 @@ Note that you can undelete it after");
 	
 	roundtripbodysubm.insertItem("C++", 30);
 	roundtripbodysubm.insertItem("Java", 31);
+	roundtripbodysubm.insertItem("Php", 32);
       }
       
-      get_paths(cpp_h_path, cpp_src_path, java_path, idl_path);
+      get_paths(cpp_h_path, cpp_src_path, java_path, php_path, idl_path);
       if (!a_text && !cpp_h_edited && !cpp_h_path.isEmpty()) {
 	//if (! cpp_src_path.isEmpty())
 	  //roundtripsubm.insertItem("C++ header & source files", 13);
@@ -301,6 +310,10 @@ Note that you can undelete it after");
       if (!java_edited && !java_path.isEmpty()) {
 	editsubm.insertItem("Java source file", 18);
 	//roundtripsubm.insertItem("Java source file", 19);
+      }
+      if (!php_edited && !php_path.isEmpty()) {
+	editsubm.insertItem("Php source file", 23);
+	//roundtripsubm.insertItem("Php source file", 24);
       }
       if (!idl_edited && !idl_path.isEmpty()) {
 	editsubm.insertItem("Idl source file", 20);
@@ -358,13 +371,15 @@ through a relation");
   }
   
   exec_menu_choice(m.exec(QCursor::pos()),
-		   cpp_h_path, cpp_src_path, java_path, idl_path);
+		   cpp_h_path, cpp_src_path,
+		   java_path, php_path, idl_path);
 }
 
 void BrowserArtifact::exec_menu_choice(int rank,
 				       QString cpp_h_path,
 				       QString cpp_src_path,
 				       QString java_path,
+				       QString php_path,
 				       QString idl_path) {
   switch (rank) {
   case 0:
@@ -399,6 +414,16 @@ void BrowserArtifact::exec_menu_choice(int rank,
 		   this);
     }
     return;
+  case 22:
+    {
+      bool preserve = preserve_bodies();
+      
+      ToolCom::run((verbose_generation()) 
+		   ? ((preserve) ? "php_generator -v -p" : "php_generator -v")
+		   : ((preserve) ? "php_generator -p" : "php_generator"), 
+		   this);
+    }
+    return;
   case 12:
     ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
     return;
@@ -423,6 +448,12 @@ void BrowserArtifact::exec_menu_choice(int rank,
   case 19:
     //roundtrip Java source files
     return;
+  case 23:
+    (new SourceDialog(php_path, php_edited, edition_number))->show();
+    return;
+  case 24:
+    //roundtrip Php source files
+    return;
   case 20:
     (new SourceDialog(idl_path, idl_edited, edition_number))->show();
     return;
@@ -434,6 +465,9 @@ void BrowserArtifact::exec_menu_choice(int rank,
     return;
   case 31:
     ToolCom::run((verbose_generation()) ? "roundtrip_body -v java" : "roundtrip_body java", this);
+    return;
+  case 32:
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v php" : "roundtrip_body php", this);
     return;
   case 9999:
     {
@@ -471,6 +505,7 @@ void BrowserArtifact::apply_shortcut(QString s) {
   QString cpp_h_path;
   QString cpp_src_path;
   QString java_path;
+  QString php_path;
   QString idl_path;
   
   if (!deletedp()) {
@@ -490,10 +525,12 @@ void BrowserArtifact::apply_shortcut(QString s) {
 	choice = 10;
       else if (s == "Generate Java")
 	choice = 11;
+      else if (s == "Generate Php")
+	choice = 22;
       else if (s == "Generate Idl")
 	choice = 12;
       
-      get_paths(cpp_h_path, cpp_src_path, java_path, idl_path);
+      get_paths(cpp_h_path, cpp_src_path, java_path, php_path, idl_path);
       if (!a_text && !cpp_h_edited && !cpp_h_path.isEmpty()) {
 	//if (! cpp_src_path.isEmpty())
 	  //roundtripsubm.insertItem("C++ header & source files", 13);
@@ -511,6 +548,11 @@ void BrowserArtifact::apply_shortcut(QString s) {
 	  choice = 18;
 	//roundtripsubm.insertItem("Java source file", 19);
       }
+      if (!php_edited && !php_path.isEmpty()) {
+	if (s == "Php source file")
+	  choice = 23;
+	//roundtripsubm.insertItem("Php source file", 24);
+      }
       if (!idl_edited && !idl_path.isEmpty()) {
 	if (s == "Idl source file")
 	  choice = 20;
@@ -527,8 +569,8 @@ void BrowserArtifact::apply_shortcut(QString s) {
     if (s == "Undelete")
       choice = 2;
   
-  exec_menu_choice(choice,
-		   cpp_h_path, cpp_src_path, java_path, idl_path);
+  exec_menu_choice(choice, cpp_h_path, cpp_src_path,
+		   java_path, php_path, idl_path);
 }
 
 void BrowserArtifact::open(bool force_edit) {
@@ -745,6 +787,10 @@ void BrowserArtifact::associate_class(BrowserClass * c, bool on_read) {
     if (*cd->get_javadecl() != 0) {
       if (*def->get_java_src() == 0)
 	def->use_default_java_src();
+    }
+    if (*cd->get_phpdecl() != 0) {
+      if (*def->get_php_src() == 0)
+	def->use_default_php_src();
     }
     if (*cd->get_idldecl() != 0) {
       if (*def->get_idl_src() == 0)

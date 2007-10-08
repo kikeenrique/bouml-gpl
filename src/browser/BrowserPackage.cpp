@@ -449,7 +449,8 @@ through a relation");
     m.insertItem("Generate", &genm);
     genm.insertItem("C++", 20);
     genm.insertItem("Java", 21);
-    genm.insertItem("Idl", 22);
+    genm.insertItem("Php", 22);
+    genm.insertItem("Idl", 23);
     
     if (edition_number == 0) {
       if (!is_read_only) {
@@ -458,12 +459,14 @@ through a relation");
 	revm.insertItem("C++", 24);
 	revm.insertItem("Java", 25);
 	revm.insertItem("Java Catalog", 26);
+	revm.insertItem("Php", 32);
 	
 	if (preserve_bodies()) {
 	  m.insertItem("Roundtrip body", &roundtripm);
 	
 	  roundtripm.insertItem("C++", 30);
 	  roundtripm.insertItem("Java", 31);
+	  roundtripm.insertItem("Php", 33);
 	}
       }
 
@@ -601,6 +604,14 @@ void BrowserPackage::exec_menu_choice(int rank) {
     }
     return;
   case 22:
+    {
+      ToolCom::run((verbose_generation()) 
+		   ? ((preserve) ? "php_generator -v -p" : "php_generator -v")
+		   : ((preserve) ? "php_generator -p" : "php_generator"), 
+		   this);
+    }
+    return;
+  case 23:
     ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
     return;
   case 24:
@@ -611,6 +622,9 @@ void BrowserPackage::exec_menu_choice(int rank) {
     return;
   case 26:
     ToolCom::run("java_catalog", this);
+    return;
+  case 32:
+    ToolCom::run("php_reverse", this);
     return;
   case 27:
     renumber(phase_renumerotation++);
@@ -639,6 +653,9 @@ void BrowserPackage::exec_menu_choice(int rank) {
     return;
   case 31:
     ToolCom::run((verbose_generation()) ? "roundtrip_body -v java" : "roundtrip_body java", this);
+    return;
+  case 33:
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v php" : "roundtrip_body php", this);
     return;
   default:
     if (rank >= 100)
@@ -694,8 +711,10 @@ void BrowserPackage::apply_shortcut(QString s) {
       choice = 20;
     else if (s == "Generate Java")
       choice = 21;
-    else if (s == "Generate Idl")
+    else if (s == "Generate Php")
       choice = 22;
+    else if (s == "Generate Idl")
+      choice = 23;
     
     if (edition_number == 0)
       Tool::shortcut(s, choice, get_type(), 100);
@@ -831,7 +850,9 @@ void BrowserPackage::import_project() {
     if (!fi.exists())
       return;
 
-    if (wrong_child_name(fi.baseName(), UmlPackage, TRUE, FALSE)) {
+    QString bname = my_baseName(fi);
+    
+    if (wrong_child_name(bname, UmlPackage, TRUE, FALSE)) {
       msg_critical("Error", "illegal name or already used");
       return;
     }
@@ -839,7 +860,7 @@ void BrowserPackage::import_project() {
     QApplication::setOverrideCursor(Qt::waitCursor);
     QDir di(fi.dirPath(TRUE));
     
-    BrowserPackage * p = new BrowserPackage(fi.baseName(), this);
+    BrowserPackage * p = new BrowserPackage(bname, this);
     bool err = FALSE;
     
     set_in_import(TRUE);

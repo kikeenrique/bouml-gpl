@@ -245,43 +245,43 @@ QPtrDict<UmlItem> UmlBaseItem::_all(997);
 
 void UmlBaseItem::read_if_needed_() {
   if (!_defined) {
-#ifdef WITHCPP
-# ifdef WITHJAVA
-#  ifdef WITHIDL
+#if defined(WITHCPP) & defined(WITHJAVA) & defined(WITHPHP) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getDefCmd);
     read_uml_();
     read_cpp_();
     read_java_();
+    read_php_();
     read_idl_();
-#  else
-    ... WITHIDL must be defined when WITHCPP and WITHJAVA are both defined
-#  endif
-# else
-#  ifdef WITHIDL
-    ... WITHJAVA must be defined when WITHCPP and WITHIDL are both defined
-#  else
+#else
+# if defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getCppDefCmd);
     read_uml_();
     read_cpp_();
-#  endif
-# endif
-#else
-# ifdef WITHJAVA
-#  ifdef WITHIDL
-    ... WITHCPP must be defined when WITHIDL and WITHJAVA are both defined
-#  else
+# else
+#  if !defined(WITHCPP) & defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getJavaDefCmd);
     read_uml_();
     read_java_();
-#  endif
-# else
-#  ifdef WITHIDL
+#  else
+#   if !defined(WITHCPP) & !defined(WITHJAVA) & defined(WITHPHP) & !defined(WITHIDL)
+    UmlCom::send_cmd(_identifier, getPhpDefCmd);
+    read_uml_();
+    read_php_();
+#   else
+#    if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getIdlDefCmd);
     read_uml_();
     read_idl_();
-#  else
+#    else
+#     if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getUmlDefCmd);
     read_uml_();
+#     else
+    ... WITHCPP and WITHJAVA and WITHPHP and WITHIDL must be both defined or undefined
+    ... or only one of them must be defined
+#     endif
+#    endif
+#   endif
 #  endif
 # endif
 #endif
@@ -333,6 +333,11 @@ void UmlBaseItem::read_cpp_() {
 
 #ifdef WITHJAVA
 void UmlBaseItem::read_java_() {
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBaseItem::read_php_() {
 }
 #endif
 

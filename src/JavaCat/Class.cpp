@@ -436,7 +436,8 @@ bool Class::add_inherit(aRelationKind k, UmlTypeSpec & typespec,
       uml->replaceActual(actual_rank++, *iter);
     
     rel->set_JavaDecl("${type}");
-    rel->set_Stereotype("bind");
+    if (! actuals.isEmpty())
+      rel->set_Stereotype("bind");
   }
   
   return TRUE;

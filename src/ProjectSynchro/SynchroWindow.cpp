@@ -110,6 +110,16 @@ SynchroWindow::~SynchroWindow() {
     browser->close();
 }
 
+QString my_baseName(QFileInfo & fi)
+{
+  QString fn = fi.fileName();
+  int index = fn.findRev('.');
+  
+  return (index == -1)
+    ? fn
+    : fn.left(index);
+}
+
 void SynchroWindow::load(QString path) {
   QFileInfo fi(path);
   
@@ -148,8 +158,8 @@ The project is already locked by 'Project control' or 'Project syncho'\n\
     QString ids;
     
     while ((pfi = it.current()) != 0) {
-      if (pfi->isDir() && (pfi->baseName() != "all"))
-	ids += " " + pfi->baseName();
+      if (pfi->isDir() && (my_baseName(*pfi) != "all"))
+	ids += " " + my_baseName(*pfi);
       ++it;
     }
     
@@ -215,15 +225,15 @@ void SynchroWindow::load(int argc, char ** argv) {
       return;
     }
     
-    if (fi.extension() != "prj") {
+    if (fi.extension(FALSE) != "prj") {
       QMessageBox::critical(0, "Project synchro", 
 			    argv[index] + QString(" is not a project"));
       return;
     }
     
     if (name.isEmpty())
-      name = fi.baseName();
-    else if (fi.baseName() != name) {
+      name = my_baseName(fi);
+    else if (my_baseName(fi) != name) {
       QMessageBox::critical(0, "Project synchro", "not the same project");
       return;
     }
@@ -281,7 +291,7 @@ void SynchroWindow::windows_style() {
 }
 
 void SynchroWindow::about() {
-  QMessageBox::about(this, "Project synchro", "<p>Version <b>1.1.1</b></p>" );
+  QMessageBox::about(this, "Project synchro", "<p>Version <b>1.1.2</b></p>" );
 }
 
 void SynchroWindow::aboutQt() {

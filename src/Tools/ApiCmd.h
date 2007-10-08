@@ -28,7 +28,8 @@
 
 enum CmdFamily {
   onInstanceCmd, classGlobalCmd, packageGlobalCmd, miscGlobalCmd,
-  umlSettingsCmd, cppSettingsCmd, javaSettingsCmd, idlSettingsCmd
+  umlSettingsCmd, cppSettingsCmd, javaSettingsCmd, idlSettingsCmd,
+  phpSettingsCmd
 };
 
 enum MiscGlobalCmd {
@@ -83,6 +84,10 @@ enum OnInstanceCmd {
   // api 31
   attributesCmd,
   relationsCmd,
+  
+  // api 34
+  getPhpDefCmd,
+  phpBodyCmd,
   
   // set commands
   
@@ -221,6 +226,17 @@ enum OnInstanceCmd {
   setAttributeCmd,
   addRelationCmd,
   removeRelationCmd,
+  
+  // api 34
+  setPhpDeclCmd,
+  setIsPhpExternalCmd,
+  setIsPhpFinalCmd,
+  setPhpSrcCmd,
+  setPhpFinalCmd,
+  setPhpBodyCmd,
+  setPhpNameSpecCmd,
+  setPhpDirCmd,
+  setPhpFrozenCmd,
     
   setUserCmd = 252, // not in plug-outs managed through bouml
   moveInCmd = 253,  // not in plug-outs managed through bouml
@@ -349,6 +365,31 @@ enum JavaSettingsCmd {
   
   // api 30
   setJavaJavadocStyleCmd
+};
+
+// api 34
+enum PhpSettingsCmd {
+  getPhpSettingsCmd,
+  getPhpUseDefaultsCmd,
+  
+  setPhpUseDefaultsCmd,
+  setPhpClassStereotypeCmd,
+  setPhpRootdirCmd,
+  setPhpSourceContentCmd,
+  setPhpSourceExtensionCmd,
+  setPhpClassDeclCmd,
+  setPhpEnumDeclCmd,
+  setPhpExternalClassDeclCmd,
+  setPhpInterfaceDeclCmd,
+  setPhpAttributeDeclCmd,
+  setPhpEnumItemDeclCmd,
+  setPhpRelationDeclCmd,
+  setPhpOperationDefCmd,
+  setPhpGetNameCmd,
+  setPhpSetNameCmd,
+  setPhpIsGetFinalCmd,
+  setPhpIsSetFinalCmd,
+  setPhpIsSetParamFinalCmd,
 };
 
 enum IdlSettingsCmd {

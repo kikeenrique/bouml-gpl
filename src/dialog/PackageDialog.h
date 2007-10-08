@@ -65,6 +65,11 @@ class PackageDialog : public QTabDialog {
     LineEdit * edjavapackage;
     QPushButton * javabutton;
 
+    // Php
+    QWidget * phptab;
+    LineEdit * edphpdir;
+    QPushButton * phpbutton;
+
     // Idl
     QWidget * idltab;
     LineEdit * edidldir;
@@ -94,10 +99,12 @@ class PackageDialog : public QTabDialog {
     void cppsrc_browse();
     void cpph_browse();
     void java_browse();
+    void php_browse();
     void idl_browse();
     void cppsrc_relative();
     void cpph_relative();
     void java_relative();
+    void php_relative();
     void idl_relative();
 
     void change_tabs(QWidget *);

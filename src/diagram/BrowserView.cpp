@@ -148,8 +148,8 @@ bool BrowserView::save_as(const QDir & new_dir) {
     QFileInfo *fi;
     
     while ((fi = it.current()) != 0) {
-      if ((fi->extension() != "prj") && 
-	  (fi->extension() != "lock") &&
+      if ((fi->extension(FALSE) != "prj") && 
+	  (fi->extension(FALSE) != "lock") &&
 	  !copy_file(fi, new_dir))
 	return FALSE;
       ++it;

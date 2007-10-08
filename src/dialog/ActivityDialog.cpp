@@ -44,6 +44,7 @@
 #include "strutil.h"
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
+#include "GenerationSettings.h"
 
 QSize ActivityDialog::previous_size;
 
@@ -115,13 +116,15 @@ ActivityDialog::ActivityDialog(ActivityData * d)
   addTab(grid, "Uml");
 
   // UML / OCL
-  init_tab(uml, activity->uml_condition, "Ocl");
+  init_tab(uml, activity->uml_condition, "Ocl", TRUE);
 
   // CPP
-  init_tab(cpp, activity->cpp_condition, "C++");
+  init_tab(cpp, activity->cpp_condition, "C++",
+	   GenerationSettings::cpp_get_default_defs());
 
   // Java
-  init_tab(java, activity->java_condition, "Java");
+  init_tab(java, activity->java_condition, "Java",
+	   GenerationSettings::java_get_default_defs());
   
   // USER : list key - value
   
@@ -156,7 +159,8 @@ void ActivityDialog::change_tabs(QWidget *) {
     edname->setFocus();
 }
 
-void ActivityDialog::init_tab(CondDialog & d, InfoData & cd, const char * lbl) {
+void ActivityDialog::init_tab(CondDialog & d, InfoData & cd,
+			      const char * lbl, bool enabled) {
   QGrid * grid = new QGrid(2, this);
   grid->setMargin(5);
   grid->setSpacing(5);
@@ -174,6 +178,9 @@ void ActivityDialog::init_tab(CondDialog & d, InfoData & cd, const char * lbl) {
     d.edpost->setReadOnly(TRUE);
   
   addTab(grid, lbl);
+  
+  if (! enabled)
+    removePage(grid);
 }
 
 void ActivityDialog::edit_description() {

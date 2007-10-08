@@ -717,7 +717,7 @@ void ToolCom::data_received(Socket * who) {
 	    break;
 	  default:
 #ifdef DEBUGCOM
-	    cerr << "unknown MiscGlobalCmd : " << p[0] << "\n";
+	    cerr << "unknown MiscGlobalCmd : " << (unsigned) p[0] << "\n";
 #endif
 	    throw 0;
 	  }
@@ -729,7 +729,7 @@ void ToolCom::data_received(Socket * who) {
 #endif
 	  if (!GenerationSettings::tool_global_uml_cmd(this, p+1)) {
 #ifdef DEBUGCOM
-	    cerr << "unknown UmlSettingsCmd : " << p[0] << "\n";
+	    cerr << "unknown UmlSettingsCmd : " << (unsigned) p[0] << "\n";
 #endif
 	    throw 0;
 	  }
@@ -741,7 +741,7 @@ void ToolCom::data_received(Socket * who) {
 #endif
 	  if (!GenerationSettings::tool_global_cpp_cmd(this, p+1)) {
 #ifdef DEBUGCOM
-	    cerr << "unknown CppSettingsCmd : " << p[0] << "\n";
+	    cerr << "unknown CppSettingsCmd : " << (unsigned) p[0] << "\n";
 #endif
 	    throw 0;
 	  }
@@ -753,7 +753,19 @@ void ToolCom::data_received(Socket * who) {
 #endif
 	  if (!GenerationSettings::tool_global_java_cmd(this, p+1)) {
 #ifdef DEBUGCOM
-	    cerr << "unknown JavaSettingsCmd : " << p[0] << "\n";
+	    cerr << "unknown JavaSettingsCmd : " << (unsigned) p[0] << "\n";
+#endif
+	    throw 0;
+	  }
+	  break;
+	case phpSettingsCmd:
+#ifdef DEBUGCOM
+	  cerr << "ToolCom::data_received() PhpSettingsCmd "
+	    << (unsigned) p[0] << '\n';
+#endif
+	  if (!GenerationSettings::tool_global_php_cmd(this, p+1)) {
+#ifdef DEBUGCOM
+	    cerr << "unknown PhpSettingsCmd : " << (unsigned) p[0] << "\n";
 #endif
 	    throw 0;
 	  }
@@ -772,7 +784,7 @@ void ToolCom::data_received(Socket * who) {
 	  break;
 	default:
 #ifdef DEBUGCOM
-	  cerr << "unknown CmdFamily : " << p[-1] << "\n";
+	  cerr << "unknown CmdFamily : " << (unsigned) p[-1] << "\n";
 #endif
 	  throw 0;
 	}

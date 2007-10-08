@@ -29,6 +29,7 @@
 #include "UmlCom.h"
 #include "CppSettings.h"
 #include "JavaSettings.h"
+#include "PhpSettings.h"
 
 UmlPackage::UmlPackage(void * id, const QCString & n)
     : UmlBasePackage(id, n) {
@@ -38,11 +39,21 @@ UmlPackage::UmlPackage(void * id, const QCString & n)
 static bool RootDirRead;
 static QCString RootDir;
 
-QCString UmlPackage::rootDir(bool cpp)
+QCString UmlPackage::rootDir(aLanguage who)
 {
   if (! RootDirRead) {
     RootDirRead = TRUE;
-    RootDir = (cpp) ? CppSettings::rootDir() : JavaSettings::rootDir();
+    
+    switch (who){
+    case cppLanguage:
+      RootDir = CppSettings::rootDir();
+      break;
+    case javaLanguage:
+      RootDir = JavaSettings::rootDir();
+      break;
+    default:
+      RootDir = PhpSettings::rootDir();
+    }
     
     if (!RootDir.isEmpty() && // empty -> error
 	QDir::isRelativePath(RootDir)) {
@@ -61,7 +72,7 @@ QCString UmlPackage::source_path(const QCString & f) {
     dir.src = cppSrcDir();
     dir.h = cppHDir();
     
-    QDir d_root(rootDir(TRUE));
+    QDir d_root(rootDir(cppLanguage));
     
     if (dir.src.isEmpty())
       dir.src = RootDir;
@@ -129,7 +140,7 @@ QCString UmlPackage::java_path(const QCString & f) {
   if (!dir.read) {
     dir.src = javaDir();
     
-    QDir d_root(rootDir(FALSE));
+    QDir d_root(rootDir(javaLanguage));
     
     if (dir.src.isEmpty())
       dir.src = RootDir;
@@ -153,11 +164,46 @@ QCString UmlPackage::java_path(const QCString & f) {
   return QCString(d.filePath(f)) + QCString(".") + JavaSettings::sourceExtension();
 }
 
+QCString UmlPackage::php_path(const QCString & f) {
+  if (!dir.read) {
+    dir.src = phpDir();
+    
+    QDir d_root(rootDir(phpLanguage));
+    
+    if (dir.src.isEmpty())
+      dir.src = RootDir;
+    else if (QDir::isRelativePath(dir.src))
+      dir.src = d_root.filePath(dir.src);
+
+    if (dir.src.isEmpty()) {
+      UmlCom::trace(QCString("<font color=\"red\"><b><b> The generation directory "
+			    "must be specified for the package<i> ") + name()
+		    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
+		    "or edit the package (tab 'php')</b></font><br>");
+      UmlCom::bye();
+      UmlCom::fatal_error("UmlPackage::php_path");
+    }
+        
+    dir.read = TRUE;
+  }
+  
+  QDir d(dir.src);
+  
+  return QCString(d.filePath(f)) + QCString(".") + PhpSettings::sourceExtension();
+}
+
 void UmlPackage::roundtrip_java() {
   QVector<UmlItem> ch = UmlItem::children();
   
   for (unsigned index = 0; index != ch.size(); index += 1)
     ch[index]->roundtrip_java();
+}
+
+void UmlPackage::roundtrip_php() {
+  QVector<UmlItem> ch = UmlItem::children();
+  
+  for (unsigned index = 0; index != ch.size(); index += 1)
+    ch[index]->roundtrip_php();
 }
 
 UmlPackage * UmlPackage::package() {

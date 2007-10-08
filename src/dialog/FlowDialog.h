@@ -91,7 +91,7 @@ class FlowDialog : public QTabDialog {
   protected:
     void init_tab(FlDialog &, FlowDef & fdef, const char * lbl,
 		  const char * sl_guard, const char * sl_selection,
-		  const char * sl_transformation);
+		  const char * sl_transformation, bool enabled);
   protected slots:
     virtual void polish();
     virtual void accept();

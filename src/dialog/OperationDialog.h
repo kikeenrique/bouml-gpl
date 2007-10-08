@@ -110,7 +110,7 @@ class OperationDialog : public QTabDialog {
     // java tab
     QWidget * javatab;
     bool java_undef;
-    QCheckBox * final_cb;
+    QCheckBox * javafinal_cb;
     QCheckBox * synchronized_cb;
     LineEdit * edjavanamespec;	// get/set
     QCheckBox * javafrozen_cb;	// get/set
@@ -121,6 +121,18 @@ class OperationDialog : public QTabDialog {
     QString javaannotation;
     QString javabody;
     QString oldjavabody;
+        
+    // php tab
+    QWidget * phptab;
+    bool php_undef;
+    QCheckBox * phpfinal_cb;
+    LineEdit * edphpnamespec;	// get/set
+    QCheckBox * phpfrozen_cb;	// get/set
+    MultiLineEdit * edphpdef;
+    MultiLineEdit * showphpdef;
+    QPushButton * editphpbody;
+    QString phpbody;
+    QString oldphpbody;
         
     // idl tab
     QWidget * idltab;
@@ -143,6 +155,7 @@ class OperationDialog : public QTabDialog {
     void manage_var(unsigned rank, QString & s);
     void manage_java_type(unsigned rank, QString & s);
     void manage_java_exceptions(QString & s);
+    void manage_php_type(unsigned rank, QString & s);
     void manage_idl_type(unsigned rank, QString & s);
     void manage_dir(unsigned rank, QString & s);
     void manage_idl_exceptions(QString & s);
@@ -151,6 +164,7 @@ class OperationDialog : public QTabDialog {
     static void post_edit_constraint(OperationDialog * d, QString s);
     static void post_cpp_edit_body(OperationDialog * d, QString s);
     static void post_java_edit_body(OperationDialog * d, QString s);
+    static void post_php_edit_body(OperationDialog * d, QString s);
   
   public:
     OperationDialog(OperationData * a, DrawingLanguage l);
@@ -158,6 +172,7 @@ class OperationDialog : public QTabDialog {
   
     static QString cpp_decl(const BrowserOperation * op, bool withname);
     static QString java_decl(const BrowserOperation * op, bool withname);
+    static QString php_decl(const BrowserOperation * op, bool withname);
     static QString idl_decl(const BrowserOperation * op, bool withdir, bool withname);
   
   protected slots:
@@ -188,7 +203,13 @@ class OperationDialog : public QTabDialog {
     void java_update_def();
     void java_edit_body();
     void java_edit_annotation();
-    void finalsynchronized_toggled(bool on);
+    void java_finalsynchronized_toggled(bool on);
+    void php_default_def();
+    void php_unmapped_def();
+    void php_update_def();
+    void php_edit_body();
+    void php_final_toggled(bool on);
+    void php_edit_param();
     void idl_default_def();
     void idl_unmapped_def();
     void idl_update_decl();
@@ -315,6 +336,57 @@ class CppParamsDialog : public QDialog {
   public:
     CppParamsDialog(ParamsTable * params, MultiLineEdit * form);
     virtual ~CppParamsDialog();
+  
+  protected slots:
+    virtual void polish();
+    virtual void accept();
+};
+
+class PhpParamsTable : public MyTable {
+  Q_OBJECT
+
+  protected:
+    ParamsTable * params;
+    MultiLineEdit * edform;
+  
+    static QString copied[5];		// copy/cut/paste
+  
+  public:
+    PhpParamsTable(ParamsTable * p, MultiLineEdit * f, QWidget * parent);
+    void update_edform();
+  
+  protected:
+    bool extract(int tblindex, int & strindex, QString s);
+
+    void insert_row_before(int row);
+    void insert_row_after(int row);
+    void delete_row(int row);
+    void copy_row(int row);
+    void cut_row(int row);
+    void paste_row(int row);
+    void move_row(int from, int to);
+    void init_row(int row);
+    void update_name(int row);
+    void update_names();
+    
+    virtual void setItem(int row, int col, QTableItem * item);
+    
+  protected slots:
+    void button_pressed(int row, int col, int button, const QPoint & mousePos);
+    virtual void setCurrentCell(int row, int col);
+};
+
+class PhpParamsDialog : public QDialog {
+  Q_OBJECT
+    
+  protected:
+    PhpParamsTable * tbl;
+    
+    static QSize previous_size;
+  
+  public:
+    PhpParamsDialog(ParamsTable * params, MultiLineEdit * form);
+    virtual ~PhpParamsDialog();
   
   protected slots:
     virtual void polish();

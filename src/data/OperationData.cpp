@@ -57,6 +57,7 @@ OperationData::OperationData(int id)
       cpp_const(FALSE), cpp_friend(FALSE), cpp_virtual(FALSE),
       cpp_inline(FALSE), cpp_get_set_frozen(FALSE),
       java_final(FALSE), java_synchronized(FALSE), java_get_set_frozen(FALSE),
+      php_final(FALSE), php_get_set_frozen(FALSE),
       idl_oneway(FALSE), idl_get_set_frozen(FALSE),
       nparams(0), nexceptions(0), params(0), exceptions(0) {
 }
@@ -73,6 +74,7 @@ OperationData::OperationData(OperationData * model, BrowserNode * bn)
       cpp_inline(model->cpp_inline), cpp_get_set_frozen(model->cpp_get_set_frozen),
       java_final(model->java_final), java_synchronized(model->java_synchronized),
       java_get_set_frozen(model->java_get_set_frozen),
+      php_final(model->php_final), php_get_set_frozen(model->php_get_set_frozen),
       idl_oneway(model->idl_oneway), idl_get_set_frozen(model->idl_get_set_frozen), 
       nparams(model->nparams),
       nexceptions(model->nexceptions),
@@ -84,6 +86,7 @@ OperationData::OperationData(OperationData * model, BrowserNode * bn)
   
   cpp_def.assign((const char *) model->cpp_def, FALSE);
   java_def.assign((const char *) model->java_def, FALSE);
+  php_def.assign((const char *) model->php_def, FALSE);
   return_type = model->return_type;
   depend_on(return_type.type);
   
@@ -288,6 +291,29 @@ QString OperationData::default_java_def(const QString & name) {
   return s;
 }
 
+QString OperationData::default_php_def(const QString & name, bool nobody) {
+  QString s = GenerationSettings::php_default_oper_def();
+  QString parent_name = ((BrowserNode *) browser_node->parent())->get_name();
+  
+  if ((name == parent_name) ||
+      (name == "__construct") || (name == "__destruct")) {
+    // constructor destructor
+    int index;
+    
+    if ((index = s.find("${static}")) != -1)
+      s.remove(index, 9);
+  }
+  
+  if (nobody) {
+    int index = s.find("${)}");
+    
+    if (index != -1)
+      s = s.left(index + 4) + ";";
+  }
+  
+  return s;
+}
+
 QString OperationData::default_idl_decl(const QString & name) {
   QString s = GenerationSettings::idl_default_oper_decl();
   QString parent_name = ((BrowserNode *) browser_node->parent())->get_name();
@@ -341,6 +367,11 @@ void OperationData::set_browser_node(BrowserOperation * o, bool update) {
     
     if (GenerationSettings::java_get_default_defs())
       java_def.assign(default_java_def(browser_node->get_name()), TRUE);
+    
+    if (GenerationSettings::php_get_default_defs())
+      php_def.assign(default_php_def(browser_node->get_name(),
+				     ClassDialog::php_stereotype(st) == "interface"),
+		     TRUE);
     
     if (GenerationSettings::idl_get_default_defs()) {
       if (ClassDialog::idl_stereotype(st) != "enum")
@@ -401,6 +432,13 @@ QString OperationData::definition(bool full, DrawingLanguage language,
       return definition(FALSE);
     else
       return QString::null;
+  case PhpView:
+    if (full)
+      return OperationDialog::php_decl((BrowserOperation *) browser_node, withname);
+    else if (!php_def.isEmpty())
+      return definition(FALSE);
+    else
+      return QString::null;
   default:
     if (full)
       return OperationDialog::idl_decl((BrowserOperation *) browser_node, withdir, withname);
@@ -416,9 +454,11 @@ bool OperationData::decldefbody_contain(const QString & s, bool cs,
   return ((QString(get_cppdecl()).find(s, 0, cs) != -1) ||
 	  (QString(get_cppdef()).find(s, 0, cs) != -1) ||
 	  (QString(get_javadef()).find(s, 0, cs) != -1) ||
+	  (QString(get_phpdef()).find(s, 0, cs) != -1) ||
 	  (QString(get_idldecl()).find(s, 0, cs) != -1) ||
-	  (QString(get_body(TRUE)).find(s, 0, cs) != -1) ||
-	  (QString(get_body(FALSE)).find(s, 0, cs) != -1));
+	  (QString(get_body('c')).find(s, 0, cs) != -1) ||
+	  (QString(get_body('j')).find(s, 0, cs) != -1) ||
+	  (QString(get_body('p')).find(s, 0, cs) != -1));
 }
 
 UmlVisibility OperationData::get_visibility(BrowserNode *) {
@@ -740,6 +780,68 @@ void OperationData::update_java_get_of(QCString & def, const QString & attr_name
   }
 }
 
+void OperationData::update_php_get_of(QCString & def, const QString & attr_name,
+				      QString attphp_decl)
+{
+  attphp_decl = attphp_decl.stripWhiteSpace();
+  
+  int index;
+  
+  if ((index = attphp_decl.find("${comment}")) != -1)
+    attphp_decl.remove(index, 10);
+  if ((index = attphp_decl.find("${description}")) != -1)
+    attphp_decl.remove(index, 14);
+  if ((index = attphp_decl.find("${visibility}")) != -1)
+    attphp_decl.remove(index, 13);
+  if ((index = attphp_decl.find("${static}")) != -1)
+    attphp_decl.remove(index, 9);
+  if ((index = attphp_decl.find("${var}")) != -1)
+    attphp_decl.remove(index, 6);
+  if ((index = attphp_decl.find("${const}")) != -1)
+    attphp_decl.remove(index, 8);
+  if ((index = attphp_decl.find("${value}")) != -1)
+    attphp_decl.remove(index, 8);
+  if ((index = attphp_decl.find(";")) != -1)
+    attphp_decl.remove(index, 1);
+  
+  QString attr_name_spec = extract_name(attphp_decl);
+  
+  if (attr_name_spec.isEmpty())
+    def = QString::null;
+  else {
+    QCString d = (const char *) GenerationSettings::php_default_oper_def();
+    QString type_spec_name = attphp_decl;
+    
+    type_spec_name.replace(type_spec_name.find(attr_name_spec),
+			   attr_name_spec.length(), "$$");
+    
+    if ((index = d.find("${name}")) != -1) {
+      d.replace(index, 7, type_spec_name);
+
+      QString attr_full_name = attr_name_spec;
+      
+      if ((index = attr_full_name.find("${name}")) != -1)
+	attr_full_name.replace(index, 7, attr_name);
+      
+      if ((index = d.find("$$")) != -1)
+	d.replace(index, 2, "${name}");
+      
+      if ((index = d.find("${body}")) != -1) {
+	QString indent;
+	QString end = (d[index + 7] == '}') ? ";\n" : ";";
+	
+	if (d[index - 1] == '\n')
+	  indent = "  ";
+	
+	d.replace(index, 7, indent + "return $this->" + attr_full_name + end);
+      }
+      def = d;
+    }
+    else
+      def = 0;
+  }
+}
+
 void OperationData::update_idl_get_of(QCString & decl, QString attidl_decl,
 				      QString multiplicity)
 {
@@ -799,7 +901,7 @@ void OperationData::update_idl_get_of(QCString & decl, QString attidl_decl,
 
 void OperationData::update_get_of(const QString & attr_name,
 				  QString attcpp_decl, QString attjava_decl,
-				  QString attidl_decl,
+				  QString attphp_decl, QString attidl_decl,
 				  bool attis_const, bool attis_class_member,
 				  const AType & cl, QString multiplicity,
 				  QString relstereotype, bool create, bool update) {
@@ -822,7 +924,7 @@ void OperationData::update_get_of(const QString & attr_name,
 	cpp_const = GenerationSettings::cpp_default_get_const();
 	cpp_inline = GenerationSettings::cpp_default_get_inline();
 	if (GenerationSettings::cpp_default_get_visibility() !=
-	    GenerationSettings::java_default_get_visibility())
+	    GenerationSettings::javaphp_default_get_visibility())
 	  cpp_visibility = GenerationSettings::cpp_default_get_visibility();
       }
     
@@ -845,7 +947,7 @@ void OperationData::update_get_of(const QString & attr_name,
     if (java_name_spec.isEmpty())
       java_name_spec = GenerationSettings::java_default_get_name();
     java_final = GenerationSettings::java_default_get_final();  
-    uml_visibility = GenerationSettings::java_default_get_visibility();
+    uml_visibility = GenerationSettings::javaphp_default_get_visibility();
   }
 
   if (!update || !java_get_set_frozen) {
@@ -854,6 +956,21 @@ void OperationData::update_get_of(const QString & attr_name,
       java_def.assign(QString::null, TRUE);
     else
       java_def.assign(def, FALSE);
+  }
+  
+  // Php
+  if (create) {
+    if (php_name_spec.isEmpty())
+      php_name_spec = GenerationSettings::php_default_get_name();
+    php_final = GenerationSettings::php_default_get_final();  
+  }
+
+  if (!update || !php_get_set_frozen) {
+    update_php_get_of(def, attr_name, attphp_decl);
+    if (def.isEmpty())
+      php_def.assign(QString::null, TRUE);
+    else
+      php_def.assign(def, FALSE);
   }
   
   // Idl
@@ -1068,6 +1185,74 @@ void OperationData::update_java_set_of(QCString & def,
   }
 }
 
+void OperationData::update_php_set_of(QCString & def,
+				       const QString & attr_name,
+				       QString attphp_decl)
+{
+  attphp_decl = attphp_decl.stripWhiteSpace();
+  
+  int index;
+  
+  if ((index = attphp_decl.find("${comment}")) != -1)
+    attphp_decl.remove(index, 10);
+  if ((index = attphp_decl.find("${description}")) != -1)
+    attphp_decl.remove(index, 14);
+  if ((index = attphp_decl.find("${visibility}")) != -1)
+    attphp_decl.remove(index, 13);
+  if ((index = attphp_decl.find("${static}")) != -1)
+    attphp_decl.remove(index, 9);
+  if ((index = attphp_decl.find("${var}")) != -1)
+    attphp_decl.remove(index, 6);
+  if ((index = attphp_decl.find("${const}")) != -1)
+    attphp_decl.remove(index, 8);
+  if ((index = attphp_decl.find("${value}")) != -1)
+    attphp_decl.remove(index, 8);
+  if ((index = attphp_decl.find(";")) != -1)
+    attphp_decl.remove(index, 1);
+  
+  QString attr_name_spec = extract_name(attphp_decl);
+  
+  if (attr_name_spec.isEmpty())
+    def= 0;
+  else {  
+    QString arg_spec = attphp_decl;
+    
+    arg_spec.replace(arg_spec.find(attr_name_spec),
+		     attr_name_spec.length(),"${p0}");
+    
+    if ((index = arg_spec.find("${final}")) != -1) {
+      arg_spec.remove(index, 8);
+    }
+    
+    QCString d = (const char *) GenerationSettings::php_default_oper_def();
+    
+    if ((index = d.find("${)}")) != -1) {
+      d.insert(index, arg_spec);
+      
+      QString attr_full_name = attr_name_spec;
+      
+      if ((index = attr_full_name.find("${name}")) != -1)
+	attr_full_name.replace(index, 7, attr_name);
+	
+      if ((index = d.find("${body}")) != -1) {
+	QString indent;
+	QString end = (d[index + 7] == '}') ? ";\n" : ";";
+	
+	if (d[index - 1] == '\n')
+	  indent = "  ";
+	
+	d.replace(index, 7, indent + "$this->" + attr_full_name + " = ${p0}" + end);
+		
+	def = d;
+      }    
+      else
+	def = 0;
+    }
+    else
+      def = 0;
+  }
+}
+
 void OperationData::update_idl_set_of(QCString & decl, QString attidl_decl,
 				      QString multiplicity)
 {
@@ -1124,7 +1309,7 @@ void OperationData::update_idl_set_of(QCString & decl, QString attidl_decl,
 
 void OperationData::update_set_of(const QString & attr_name,
 				  QString attcpp_decl, QString attjava_decl,
-				  QString attidl_decl,
+				  QString attphp_decl, QString attidl_decl,
 				  bool attis_const, bool attis_class_member,
 				  const AType & cl, QString multiplicity,
 				  QString relstereotype, bool create, bool update) {
@@ -1154,7 +1339,7 @@ void OperationData::update_set_of(const QString & attr_name,
 	  cpp_name_spec = GenerationSettings::cpp_default_set_name();
 	cpp_inline = GenerationSettings::cpp_default_set_inline();
 	if (GenerationSettings::cpp_default_set_visibility() !=
-	    GenerationSettings::java_default_set_visibility())
+	    GenerationSettings::javaphp_default_set_visibility())
 	  cpp_visibility = GenerationSettings::cpp_default_set_visibility(); 
       }
     
@@ -1177,7 +1362,7 @@ void OperationData::update_set_of(const QString & attr_name,
     if (java_name_spec.isEmpty())
       java_name_spec = GenerationSettings::java_default_set_name();
     java_final = GenerationSettings::java_default_set_final();
-    uml_visibility = GenerationSettings::java_default_set_visibility();
+    uml_visibility = GenerationSettings::javaphp_default_set_visibility();
   }
   
   if (!update || !java_get_set_frozen) {
@@ -1186,6 +1371,21 @@ void OperationData::update_set_of(const QString & attr_name,
       java_def.assign(QString::null, TRUE);
     else
       java_def.assign(def, FALSE);
+  }
+  
+  // Php
+  if (create) {
+    if (php_name_spec.isEmpty())
+      php_name_spec = GenerationSettings::php_default_set_name();
+    php_final = GenerationSettings::php_default_set_final();
+  }
+  
+  if (!update || !php_get_set_frozen) {
+    update_php_set_of(def, attr_name, attphp_decl);
+    if (def.isEmpty())
+      php_def.assign(QString::null, TRUE);
+    else
+      php_def.assign(def, FALSE);
   }
   
   // Idl
@@ -1327,6 +1527,13 @@ void OperationData::send_java_def(ToolCom * com) {
   if (com->api_format() >= 26)
     com->write_bool(java_get_set_frozen);
 }
+    
+void OperationData::send_php_def(ToolCom * com) {
+  com->write_string(php_def);
+  com->write_bool(php_final);
+  com->write_string(php_name_spec);
+  com->write_bool(php_get_set_frozen);
+}
 
 void OperationData::send_idl_def(ToolCom * com) {
   com->write_string(idl_decl);
@@ -1367,13 +1574,13 @@ void OperationData::convert(OperationData * comp, OperationData * art)
     }
   }
   else {
-    char * b = art->get_body(TRUE);
+    char * b = art->get_body('c');
     
     if (b != 0) {
       s = b;
       if ((index = s.find("UmlBaseComponent")) != -1) {
 	s.replace(index+7, 9, "Artifact");
-	art->new_body(s, TRUE);
+	art->new_body(s, 'c');
       }
       
       delete [] b;
@@ -1452,15 +1659,15 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
 	break;
       case setCppBodyCmd:
 	{
-	  char * b = get_body(TRUE);
+	  char * b = get_body('c');
 	  
 	  if (b != 0) {
 	    if (strcmp(b, args))
-	      new_body(args, TRUE);
+	      new_body(args, 'c');
 	    delete [] b;
 	  }
 	  else if (*args)
-	    new_body(args, TRUE);
+	    new_body(args, 'c');
 	}
 	break;
       case setCppNameSpecCmd:
@@ -1498,15 +1705,15 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
 	break;
       case setJavaBodyCmd:
 	{
-	  char * b = get_body(FALSE);
+	  char * b = get_body('j');
 	  
 	  if (b != 0) {
 	    if (strcmp(b, args))
-	      new_body(args, FALSE);
+	      new_body(args, 'j');
 	    delete [] b;
 	  }
 	  else if (*args)
-	    new_body(args, FALSE);
+	    new_body(args, 'j');
 	}
 	break;
       case setJavaNameSpecCmd:
@@ -1514,6 +1721,38 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
 	break;
       case setJavaFrozenCmd:
 	java_get_set_frozen = (*args != 0);
+	break;
+      case setPhpDeclCmd:
+	{
+	  QString ste = GenerationSettings::php_class_stereotype(stereotype);
+	  
+	  php_def.assign(args,
+			 is_abstract ||
+			 (ste == "interface") ||
+			 (strstr(args, "${body}") != 0));
+	}
+	break;
+      case setPhpFinalCmd:
+	php_final = (*args != 0);
+	break;
+      case setPhpBodyCmd:
+	{
+	  char * b = get_body('p');
+	  
+	  if (b != 0) {
+	    if (strcmp(b, args))
+	      new_body(args, 'p');
+	    delete [] b;
+	  }
+	  else if (*args)
+	    new_body(args, 'p');
+	}
+	break;
+      case setPhpNameSpecCmd:
+	php_name_spec = args;
+	break;
+      case setPhpFrozenCmd:
+	php_get_set_frozen = (*args != 0);
 	break;
       case setIsIdlOnewayCmd:
 	idl_oneway = (*args != 0);
@@ -1677,7 +1916,7 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
     switch ((unsigned char) args[-1]) {
     case cppBodyCmd:
       {
-	char * body = get_body(TRUE);
+	char * body = get_body('c');
 	
 	if (body != 0) {
 	  com->write_string(body);
@@ -1689,7 +1928,20 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
       break;
     case javaBodyCmd:
       {
-	char * body = get_body(FALSE);
+	char * body = get_body('j');
+	
+	if (body != 0) {
+	  com->write_string(body);
+	  delete [] body;
+	}
+	else
+	  com->write_string("");
+	return TRUE;
+      }
+      break;
+    case phpBodyCmd:
+      {
+	char * body = get_body('p');
 	
 	if (body != 0) {
 	  com->write_string(body);
@@ -1784,6 +2036,18 @@ char * OperationData::set_bodies_info(BrowserClass * cl, int id)
 	  // !! wrong file
 	  b = 0;
       }
+      if (strncmp(p2, ".php!!!\t", 8) == 0) {
+	if (b != 0)
+	  b->length = p - start - 3;
+	
+	if (((d = all[id]) != 0) && (d->browser_node->parent() == cl)) {
+	  b = &d->php_body;
+	  find = TRUE;
+	}
+	else
+	  // !! wrong file
+	  b = 0;
+      }
       
       if (find) {
 	if ((p = strchr(p2, '\n')) != 0) {
@@ -1841,10 +2105,21 @@ void OperationData::create_modified_body_file() {
   }
 }
 
-char * OperationData::get_body(bool cpp) {
-  OperationBody & body_info = (cpp) ? cpp_body : java_body;
+char * OperationData::get_body(int who) {
+  OperationBody * body_info;
   
-  switch (body_info.length) {
+  switch (who) {
+  case 'c':
+    body_info = &cpp_body;
+    break;
+  case 'j':
+    body_info = &java_body;
+    break;
+  default: // 'p'
+    body_info = &php_body;
+  }
+  
+  switch (body_info->length) {
   case -1:
     set_bodies_info();
     break;
@@ -1853,11 +2128,26 @@ char * OperationData::get_body(bool cpp) {
   }
   
   return read_definition(((BrowserClass *) browser_node->parent())->get_ident(),
-			 "bodies", body_info.offset, body_info.length);
+			 "bodies", body_info->offset, body_info->length);
 }
 
-void OperationData::new_body(QString s, bool cpp) {
-  OperationBody & body_info = (cpp) ? cpp_body : java_body;
+void OperationData::new_body(QString s, int who) {
+  OperationBody * body_info;
+  QString key;
+  
+  switch (who) {
+  case 'c':
+    body_info = &cpp_body;
+    key = ".cpp!!!\t";
+    break;
+  case 'j':
+    body_info = &java_body;
+    key = ".java!!!\t";
+    break;
+  default: // 'p'
+    body_info = &php_body;
+    key = ".php!!!\t";
+  }
   
   if (! ((BrowserClass *) browser_node->parent())->get_bodies_read())
     set_bodies_info();
@@ -1890,23 +2180,38 @@ void OperationData::new_body(QString s, bool cpp) {
       s += '\n';
     
     QString op_header = QString("!!!") + QString::number(get_ident()) +
-      ((cpp) ? ".cpp!!!\t" : ".java!!!\t") + definition(TRUE) + "\n";
+      key + definition(TRUE) + "\n";
     
     fp.writeBlock(op_header, op_header.length());
     
-    body_info.offset = fp.at();
-    body_info.length = s.length();
+    body_info->offset = fp.at();
+    body_info->length = s.length();
     
     fp.writeBlock(s, s.length());
   }
   else
-    body_info.length = 0;
+    body_info->length = 0;
 }
 	
-void OperationData::save_body(QFile & qf, char * modified_bodies, bool cpp) {
-  OperationBody & body_info = (cpp) ? cpp_body : java_body;
+void OperationData::save_body(QFile & qf, char * modified_bodies, int who) {
+  OperationBody * body_info;
+  QString key;
   
-  if (body_info.length > 0) {
+  switch (who) {
+  case 'c':
+    body_info = &cpp_body;
+    key = ".cpp!!!\t";
+    break;
+  case 'j':
+    body_info = &java_body;
+    key = ".java!!!\t";
+    break;
+  default: // 'p'
+    body_info = &php_body;
+    key = ".php!!!\t";
+  }
+  
+  if (body_info->length > 0) {
     if (!qf.isOpen()) {
       BrowserClass * cl = (BrowserClass *) browser_node->parent();
       QDir d = BrowserView::get_dir();
@@ -1925,15 +2230,15 @@ void OperationData::save_body(QFile & qf, char * modified_bodies, bool cpp) {
     }
     
     QString op_header = QString("!!!") + QString::number(get_ident()) +
-      ((cpp) ? ".cpp!!!\t" : ".java!!!\t") + definition(TRUE) + "\n";
+      key + definition(TRUE) + "\n";
     
     qf.writeBlock(op_header, op_header.length());
     
     int new_offset = qf.at();
     
-    qf.writeBlock(modified_bodies + body_info.offset,
-		  body_info.length);
-    body_info.offset = new_offset;
+    qf.writeBlock(modified_bodies + body_info->offset,
+		  body_info->length);
+    body_info->offset = new_offset;
   }
 }
 
@@ -1951,8 +2256,9 @@ void OperationData::import(BrowserClass * cl, int id)
     if (((BrowserNode *) child)->get_type() == UmlOperation) {
       OperationData * d = (OperationData *) ((BrowserNode *) child)->get_data();
 
-      d->save_body(qf, s, TRUE);
-      d->save_body(qf, s, FALSE);
+      d->save_body(qf, s, 'c');
+      d->save_body(qf, s, 'j');
+      d->save_body(qf, s, 'p');
     }
   }
 
@@ -2052,6 +2358,22 @@ void OperationData::save(QTextStream & st, bool ref, QString & warning) const {
     }
     
     nl_indent(st);
+    if (php_get_set_frozen)
+      st << "php_frozen ";   
+    if (php_final)
+      st << "php_final ";
+    if (! php_def.isEmpty()) {
+      st << "php_def ";
+      save_string(php_def, st);
+    }
+
+    if (!php_name_spec.isEmpty()) {
+      nl_indent(st);
+      st << "php_name_spec ";
+      save_string(php_name_spec, st);
+    }
+    
+    nl_indent(st);
     if (idl_get_set_frozen)
       st << "idl_frozen ";   
     if (idl_oneway)
@@ -2078,6 +2400,7 @@ OperationData * OperationData::read_ref(char * & st)
 void OperationData::read(char * & st, char * & k) {
   cpp_body.length = -1;
   java_body.length = -1;
+  php_body.length = -1;
   
   k = read_keyword(st);
   BasicData::read(st, k);	// updates k
@@ -2263,6 +2586,43 @@ void OperationData::read(char * & st, char * & k) {
   else {
     is_get_or_set = FALSE;
     java_name_spec = QString::null;
+  }
+  
+  if (!strcmp(k, "php_frozen")) {
+    php_get_set_frozen = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    php_get_set_frozen = FALSE;
+  
+  if (!strcmp(k, "php_final")) {
+    php_final = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    php_final = FALSE;
+  
+  if (!strcmp(k, "php_def")) {
+    char * d = read_string(st);
+    QString ste = GenerationSettings::php_class_stereotype(stereotype);
+    
+    php_def.assign(d,
+		   is_abstract ||
+		   (strstr(d, "${body}") != 0) || 
+		   (ste == "interface"));
+    k = read_keyword(st);
+  }
+  else
+    php_def.assign(QString::null, TRUE);
+  
+  if (!strcmp(k, "php_name_spec")) {
+    is_get_or_set = TRUE;
+    php_name_spec = read_string(st);
+    k = read_keyword(st);
+  } 
+  else {
+    is_get_or_set = FALSE;
+    php_name_spec = QString::null;
   }
   
   if (!strcmp(k, "idl_frozen")) {

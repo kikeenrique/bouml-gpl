@@ -99,6 +99,7 @@ class BasicData : public QObject {
 			      const QString & comment);
     virtual void send_cpp_def(ToolCom * com);
     virtual void send_java_def(ToolCom * com);
+    virtual void send_php_def(ToolCom * com);
     virtual void send_idl_def(ToolCom * com);
     
   protected slots:

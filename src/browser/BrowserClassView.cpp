@@ -218,6 +218,7 @@ Note that you can undelete them after");
     m.insertItem("Generate", &subm);
     subm.insertItem("C++", 11);
     subm.insertItem("Java", 12);
+    subm.insertItem("Php", 22);
     subm.insertItem("Idl", 13);
     
     if ((edition_number == 0) &&
@@ -362,6 +363,16 @@ void BrowserClassView::exec_menu_choice(int rank) {
 		   this);
     }
     return;
+  case 22:
+    {
+      bool preserve = preserve_bodies();
+      
+      ToolCom::run((verbose_generation()) 
+		   ? ((preserve) ? "php_generator -v -p" : "php_generator -v")
+		   : ((preserve) ? "php_generator -p" : "php_generator"), 
+		   this);
+    }
+    return;
   case 13:
     ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
     return;
@@ -449,6 +460,8 @@ void BrowserClassView::apply_shortcut(QString s) {
       choice = 11;
     else if (s == "Generate Java")
       choice = 12;
+    else if (s == "Generate Php")
+      choice = 22;
     else if (s == "Generate Idl")
       choice = 13;
   }

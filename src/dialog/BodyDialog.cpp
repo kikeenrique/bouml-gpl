@@ -50,6 +50,9 @@ BodyDialog::BodyDialog(QString t, QTabDialog * d, post_edit pf,
   case JavaEdit:
     setCaption(what + " (Java)");
     break;
+  case PhpEdit:
+    setCaption(what + " (Php)");
+    break;
   default:
     setCaption(what);
   }

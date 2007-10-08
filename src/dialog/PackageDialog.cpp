@@ -187,6 +187,9 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   
   addTab(vtab, "C++");
   
+  if (!GenerationSettings::cpp_get_default_defs())
+    removePage(vtab);
+  
   // Java
   
   vtab = new QVBox(this);
@@ -234,6 +237,52 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   vtab->setStretchFactor(new QHBox(vtab), 1000);
   
   addTab(vtab, "Java");
+  
+  if (!GenerationSettings::java_get_default_defs())
+    removePage(vtab);
+  
+  // Php
+  
+  vtab = new QVBox(this);
+  phptab = vtab;
+  vtab->setMargin(5);
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(5);
+  new QLabel("The generation directory may be relative in case the root directory\n\
+is specified (through the project menu entry 'edit generation settings')\n\n", htab);
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(5);
+  lbl1 = new QLabel("directory : ", htab);
+  edphpdir = new LineEdit(pa->php_dir, htab);
+  if (visit) 
+    edphpdir->setReadOnly(TRUE);
+  else {
+    htab = new QHBox(vtab);
+    new QLabel("", htab);
+    button = new QPushButton("Browse", htab);
+    connect(button, SIGNAL(clicked ()), this, SLOT(php_browse()));
+    new QLabel("", htab);
+    phpbutton = new QPushButton((pa->php_dir.isEmpty() || 
+				  QDir::isRelativePath(pa->php_dir))
+				 ? Absolute : Relative, htab);
+    if (GenerationSettings::get_php_root_dir().isEmpty())
+      phpbutton->setEnabled(FALSE); 
+    connect(phpbutton, SIGNAL(clicked ()), this, SLOT(php_relative()));
+    new QLabel("", htab);
+  }
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(5);
+  new QLabel("", htab);
+    
+  vtab->setStretchFactor(new QHBox(vtab), 1000);
+  
+  addTab(vtab, "Php");
+  
+  if (!GenerationSettings::php_get_default_defs())
+    removePage(vtab);
   
   // IDL
   
@@ -283,6 +332,9 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   
   addTab(vtab, "IDL");
   
+  if (!GenerationSettings::idl_get_default_defs())
+    removePage(vtab);
+  
   // USER : list key - value
   
   vtab = new QVBox(this);
@@ -316,6 +368,8 @@ void PackageDialog::change_tabs(QWidget * w) {
       edcpphdir->setFocus();
     else if (w == javatab)
       edjavadir->setFocus();
+    else if (w == phptab)
+      edphpdir->setFocus();
     else if (w == idltab)
       edidldir->setFocus();
   }
@@ -352,6 +406,7 @@ void PackageDialog::accept() {
     pa->cpp_namespace = edcppnamespace->text().simplifyWhiteSpace();
     pa->java_dir = edjavadir->text().simplifyWhiteSpace();
     pa->java_package = edjavapackage->text().simplifyWhiteSpace();
+    pa->php_dir = edphpdir->text().simplifyWhiteSpace();
     pa->idl_dir = edidldir->text().simplifyWhiteSpace();
     pa->idl_module = edidlmodule->text().simplifyWhiteSpace();
     
@@ -411,6 +466,11 @@ void PackageDialog::java_browse() {
 	 GenerationSettings::get_java_root_dir());
 }
 
+void PackageDialog::php_browse() {
+  browse(edphpdir, phpbutton, "Php directory",
+	 GenerationSettings::get_php_root_dir());
+}
+
 void PackageDialog::idl_browse() {
   browse(edidldir, idlbutton, "Idl directory",
 	 GenerationSettings::get_idl_root_dir());
@@ -452,6 +512,10 @@ void PackageDialog::cppsrc_relative() {
 
 void PackageDialog::java_relative() {
   relative(edjavadir, javabutton, GenerationSettings::get_java_root_dir());
+}
+
+void PackageDialog::php_relative() {
+  relative(edphpdir, phpbutton, GenerationSettings::get_php_root_dir());
 }
 
 void PackageDialog::idl_relative() {

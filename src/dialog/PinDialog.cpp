@@ -231,15 +231,17 @@ PinDialog::PinDialog(PinData * pi)
   addTab(grid, "Uml");
   
   init_tab(ocltab, eduml_selection, pin->uml_selection, "Ocl",
-	   SLOT(edit_uml_selection()));
+	   SLOT(edit_uml_selection()), TRUE);
 
   // C++
   init_tab(cpptab, edcpp_selection, pin->cpp_selection, "C++",
-	   SLOT(edit_cpp_selection()));
+	   SLOT(edit_cpp_selection()),
+	   GenerationSettings::cpp_get_default_defs());
 
   // Java
   init_tab(javatab, edjava_selection, pin->java_selection, "Java",
-	   SLOT(edit_java_selection()));
+	   SLOT(edit_java_selection()),
+	   GenerationSettings::java_get_default_defs());
   
   // USER : list key - value
   
@@ -283,7 +285,7 @@ void PinDialog::polish() {
 }
 
 void PinDialog::init_tab(QWidget *& tab, MultiLineEdit *& ed, const char * v,
-			 const char * lbl, const char * sl) {
+			 const char * lbl, const char * sl, bool enabled) {
   bool visit = !hasOkButton();
   QGrid * grid = new QGrid(2, this);
 
@@ -309,6 +311,9 @@ void PinDialog::init_tab(QWidget *& tab, MultiLineEdit *& ed, const char * v,
     ed->setReadOnly(TRUE);
   
   addTab(grid, lbl);
+  
+  if (! enabled)
+    removePage(grid);
 }
 
 void PinDialog::menu_type() {

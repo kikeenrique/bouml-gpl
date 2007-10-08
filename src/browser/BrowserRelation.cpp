@@ -235,7 +235,9 @@ void BrowserRelation::update_get_oper() {
   if (def->is_a(this)) {
     t.type = def->get_end_class();
     get_oper->update_get_of(def->get_role_a(), def->get_cppdecl_a(),
-			    def->get_javadecl_a(), def->get_idldecl_a(), 
+			    def->get_javadecl_a(), 
+			    def->get_phpdecl_a(), 
+			    def->get_idldecl_a(), 
 			    def->get_isa_const_relation_a(),
 			    def->get_isa_class_relation_a(),
 			    t, def->get_multiplicity_a(),
@@ -244,7 +246,9 @@ void BrowserRelation::update_get_oper() {
   else {
     t.type = def->get_start_class();
     get_oper->update_get_of(def->get_role_b(), def->get_cppdecl_b(),
-			    def->get_javadecl_b(), def->get_idldecl_b(), 
+			    def->get_javadecl_b(),
+			    def->get_phpdecl_b(),
+			    def->get_idldecl_b(), 
 			    def->get_isa_const_relation_b(),
 			    def->get_isa_class_relation_b(),
 			    t, def->get_multiplicity_b(),
@@ -258,7 +262,9 @@ void BrowserRelation::update_set_oper() {
   if (def->is_a(this)) {
     t.type = def->get_end_class();
     set_oper->update_set_of(def->get_role_a(), def->get_cppdecl_a(),
-			    def->get_javadecl_a(), def->get_idldecl_a(), 
+			    def->get_javadecl_a(), 
+			    def->get_phpdecl_a(), 
+			    def->get_idldecl_a(), 
 			    def->get_isa_const_relation_a(),
 			    def->get_isa_class_relation_a(),
 			    t, def->get_multiplicity_a(),
@@ -267,7 +273,9 @@ void BrowserRelation::update_set_oper() {
   else {
     t.type = def->get_start_class();
     set_oper->update_set_of(def->get_role_b(), def->get_cppdecl_b(),
-			    def->get_javadecl_b(), def->get_idldecl_b(), 
+			    def->get_javadecl_b(),
+			    def->get_phpdecl_b(),
+			    def->get_idldecl_b(), 
 			    def->get_isa_const_relation_b(),
 			    def->get_isa_class_relation_b(),
 			    t, def->get_multiplicity_b(),

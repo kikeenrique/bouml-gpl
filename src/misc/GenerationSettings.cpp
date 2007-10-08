@@ -95,13 +95,30 @@ SharedStr GenerationSettings::java_enum_pattern_item_case;
 SharedStr GenerationSettings::java_rel_decl[3];
 SharedStr GenerationSettings::java_oper_def;
 IncludesSpec GenerationSettings::java_imports;
-UmlVisibility GenerationSettings::java_get_visibility;
+UmlVisibility GenerationSettings::javaphp_get_visibility;
 SharedStr GenerationSettings::java_get_name;
 bool GenerationSettings::java_get_final;
-UmlVisibility GenerationSettings::java_set_visibility;
+UmlVisibility GenerationSettings::javaphp_set_visibility;
 SharedStr GenerationSettings::java_set_name;
 bool GenerationSettings::java_set_final;
 bool GenerationSettings::java_set_param_final;
+
+bool GenerationSettings::php_default_defs;
+SharedStr GenerationSettings::php_src_content;
+SharedStr GenerationSettings::php_class_decl;
+SharedStr GenerationSettings::php_external_class_decl;
+SharedStr GenerationSettings::php_enum_decl;
+SharedStr GenerationSettings::php_interface_decl;
+SharedStr GenerationSettings::php_attr_decl;
+SharedStr GenerationSettings::php_enum_item_decl;
+SharedStr GenerationSettings::php_rel_decl;
+SharedStr GenerationSettings::php_oper_def;
+SharedStr GenerationSettings::php_get_name;
+bool GenerationSettings::php_get_final;
+SharedStr GenerationSettings::php_set_name;
+bool GenerationSettings::php_set_final;
+QString GenerationSettings::php_extension;
+QString GenerationSettings::php_root_dir;
 
 bool GenerationSettings::idl_default_defs;
 SharedStr GenerationSettings::idl_src_content;
@@ -170,10 +187,12 @@ inline void Builtin::set(const char * u, const char * c,
 }
 
 inline void Stereotype::set(const char * u, const char * c,
-			    const char * j, const char * i) {
+			    const char * j, const char * p, 
+			    const char * i) {
   uml = u;
   cpp = c;
   java = j;
+  php = p;
   idl = i;
 }
 
@@ -229,6 +248,13 @@ ${imports}\n\
 ${definition}";
   java_src_content = JAVA_SRC_CONTENT;
   java_extension = "java";
+
+#define PHP_SRC_CONTENT "<?php\n\
+${comment}\n\
+${definition}\n\
+?>\n";
+  php_src_content = PHP_SRC_CONTENT;
+  php_extension = "php";
   
 #define IDL_SRC_CONTENT "#ifndef ${MODULE}_${NAME}_H\n\
 #define ${MODULE}_${NAME}_H\n\
@@ -248,10 +274,10 @@ ${module_end}\n\
   nrelattrstereotypes = 4;
   relattr_stereotypes = new Stereotype[nrelattrstereotypes];
   
-  relattr_stereotypes[0].set("sequence", "vector", "Vector", "sequence");
-  relattr_stereotypes[1].set("vector", "vector", "Vector", "sequence");
-  relattr_stereotypes[2].set("list", "list", "Vector", "sequence");
-  relattr_stereotypes[3].set("set", "set", "Vector", "sequence");
+  relattr_stereotypes[0].set("sequence", "vector", "Vector", "", "sequence");
+  relattr_stereotypes[1].set("vector", "vector", "Vector", "", "sequence");
+  relattr_stereotypes[2].set("list", "list", "Vector", "", "sequence");
+  relattr_stereotypes[3].set("set", "set", "Vector", "", "sequence");
   
   if (class_stereotypes != 0)
     delete [] class_stereotypes;
@@ -259,19 +285,19 @@ ${module_end}\n\
   nclassstereotypes = 13;
   class_stereotypes = new Stereotype[nclassstereotypes];
   
-  class_stereotypes[0].set("class", "class", "class", "valuetype");
-  class_stereotypes[1].set("interface", "class", "interface", "interface");
-  class_stereotypes[2].set("exception", "class", "class", "exception");
-  class_stereotypes[3].set("enum", "enum", "enum", "enum");
-  class_stereotypes[4].set("enum_pattern", "enum", "enum_pattern", "enum");
-  class_stereotypes[5].set("struct", "struct", "class", "struct");
-  class_stereotypes[6].set("union", "union", "class", "union");
-  class_stereotypes[7].set("typedef", "typedef", "ignored", "typedef");
-  class_stereotypes[8].set("boundary", "class", "class", "interface");
-  class_stereotypes[9].set("control", "class", "class", "valuetype");
-  class_stereotypes[10].set("entity", "class", "class", "valuetype");
-  class_stereotypes[11].set("actor", "ignored", "ignored", "ignored");
-  class_stereotypes[12].set("@interface", "ignored", "@interface", "ignored");
+  class_stereotypes[0].set("class", "class", "class", "class", "valuetype");
+  class_stereotypes[1].set("interface", "class", "interface", "interface", "interface");
+  class_stereotypes[2].set("exception", "class", "class", "class", "exception");
+  class_stereotypes[3].set("enum", "enum", "enum", "enum", "enum");
+  class_stereotypes[4].set("enum_pattern", "enum", "enum_pattern", "enum", "enum");
+  class_stereotypes[5].set("struct", "struct", "class", "class", "struct");
+  class_stereotypes[6].set("union", "union", "class", "class", "union");
+  class_stereotypes[7].set("typedef", "typedef", "ignored", "ignored", "typedef");
+  class_stereotypes[8].set("boundary", "class", "class", "class", "interface");
+  class_stereotypes[9].set("control", "class", "class", "class", "valuetype");
+  class_stereotypes[10].set("entity", "class", "class", "class", "valuetype");
+  class_stereotypes[11].set("actor", "ignored", "ignored", "ignored", "ignored");
+  class_stereotypes[12].set("@interface", "ignored", "@interface", "ignored", "ignored");
   
   cpp_enum_in = "${type}";
   cpp_enum_out = "${type} &";
@@ -352,14 +378,35 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   java_rel_decl[1] = "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype} ${name}${value};\n";
   java_rel_decl[2] = "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};\n";
   java_oper_def = "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{\n  ${body}}\n";
-  java_get_visibility = UmlPublic;
+  javaphp_get_visibility = UmlPublic;
   java_get_name = "get${Name}";
   java_get_final = TRUE;
-  java_set_visibility = UmlPublic;
+  javaphp_set_visibility = UmlPublic;
   java_set_name = "set${Name}";
   java_set_final = FALSE;
   java_set_param_final = FALSE;
   java_javadoc_comment = TRUE;
+
+#define PHP_CLASS "${comment}${final}${visibility}${abstract}class ${name}${extends}${implements} {\n${members}}\n"
+  php_class_decl = PHP_CLASS;
+  php_external_class_decl = "${name}";
+#define PHP_ENUM "${comment}final ${visibility}class ${name} {\n${items}}\n"
+  php_enum_decl = PHP_ENUM;
+#define PHP_INTERFACE "${comment}${visibility}interface ${name} {\n${members}}\n"
+  php_interface_decl = PHP_INTERFACE;
+#define PHP_ATTR "  ${comment}${visibility}${const}${static}${var}${name}${value};\n"
+  php_attr_decl = PHP_ATTR;
+#define PHP_ENUMITEM "  const ${name}${value};${comment}\n"
+  php_enum_item_decl = PHP_ENUMITEM;
+#define PHP_REL PHP_ATTR
+  php_rel_decl = PHP_REL;
+#define PHP_OPER "  ${comment}${final}${visibility}${abstract}${static}function ${name}${(}${)}\n{\n  ${body}}\n"
+  // PHP_OPER known by php reverse
+  php_oper_def = PHP_OPER;
+  php_get_name = "get${Name}";
+  php_get_final = TRUE;
+  php_set_name = "set${Name}";
+  php_set_final = FALSE;
 
 #define  IDL_EXTERNAL_CLASS_DECL "${name}\n#include \"${name}.idl\"\n";
   idl_external_class_decl = IDL_EXTERNAL_CLASS_DECL;
@@ -453,10 +500,12 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   
   cpp_root_dir = QString::null;
   java_root_dir = QString::null;
+  php_root_dir = QString::null;
   idl_root_dir = QString::null;
   
   cpp_set_default_defs(FALSE);
   java_set_default_defs(FALSE);
+  php_set_default_defs(FALSE);
   idl_set_default_defs(FALSE);
 }
 
@@ -502,6 +551,16 @@ QString GenerationSettings::java_type(const QString & s)
   int index = find_type(s);
   
   return (index == -1) ? s : builtins[index].java;
+}
+
+bool GenerationSettings::php_set_default_defs(bool y)
+{ 
+  BrowserPackage * p = BrowserView::get_project();
+  
+  if (p != 0)
+    p->modified();
+  
+  return php_default_defs = y;
 }
 
 bool GenerationSettings::idl_set_default_defs(bool y)
@@ -725,6 +784,12 @@ QString GenerationSettings::java_class_stereotype(const QString & s) {
   return (index == -1) ? s : class_stereotypes[index].java;
 }
 
+QString GenerationSettings::php_class_stereotype(const QString & s) {
+  int index = find_class_stereotype(s);
+  
+  return (index == -1) ? s : class_stereotypes[index].php;
+}
+
 QString GenerationSettings::idl_class_stereotype(const QString & s) {
   int index = find_class_stereotype(s);
   
@@ -928,31 +993,31 @@ void GenerationSettings::send_java_def(ToolCom * com)
     com->write_string(java_rel_decl[index]);
   com->write_string(java_oper_def);
   if (api_version >= 23)
-    com->write_char(java_get_visibility);
+    com->write_char(javaphp_get_visibility);
   else {
-    switch (java_get_visibility) {
+    switch (javaphp_get_visibility) {
     case UmlPackageVisibility:
       com->write_char(UmlPublic);
       break;
     case UmlDefaultVisibility:
       com->write_char(UmlDefaultVisibility - 1);
     default:
-      com->write_char(java_get_visibility);
+      com->write_char(javaphp_get_visibility);
     }
   }
   com->write_string(java_get_name);
   com->write_bool(java_get_final);
   if (api_version >= 23)
-    com->write_char(java_set_visibility);
+    com->write_char(javaphp_set_visibility);
   else {
-    switch (java_set_visibility) {
+    switch (javaphp_set_visibility) {
     case UmlPackageVisibility:
       com->write_char(UmlPublic);
       break;
     case UmlDefaultVisibility:
       com->write_char(UmlDefaultVisibility - 1);
     default:
-      com->write_char(java_set_visibility);
+      com->write_char(javaphp_set_visibility);
     }
   }
   com->write_string(java_set_name);
@@ -960,6 +1025,39 @@ void GenerationSettings::send_java_def(ToolCom * com)
   com->write_bool(java_set_param_final);
   if (api_version >= 30)
     com->write_bool(java_javadoc_comment);
+}
+
+void GenerationSettings::send_php_def(ToolCom * com)
+{
+  com->write_string(php_root_dir);
+  
+  int index;
+  
+  com->write_unsigned((unsigned) nclassstereotypes);
+  
+  for (index = 0; index != nclassstereotypes; index += 1)
+    com->write_string(class_stereotypes[index].php);
+  
+  QStringList::Iterator it_t;
+  QStringList::Iterator it_i;
+  
+  com->write_string(php_src_content);
+  com->write_string(php_extension);
+  
+  com->write_string(php_class_decl);
+  com->write_string(php_external_class_decl);
+  com->write_string(php_enum_decl);
+  com->write_string(php_interface_decl);
+  com->write_string(php_attr_decl);
+  com->write_string(php_enum_item_decl);
+  com->write_string(php_rel_decl);
+  com->write_string(php_oper_def);
+  com->write_char(javaphp_get_visibility);
+  com->write_string(php_get_name);
+  com->write_bool(php_get_final);
+  com->write_char(javaphp_get_visibility);
+  com->write_string(php_set_name);
+  com->write_bool(php_set_final);
 }
 
 void GenerationSettings::send_idl_def(ToolCom * com)
@@ -1123,7 +1221,7 @@ Builtin & GenerationSettings::get_type(const char * u)
 }
 
 Stereotype & GenerationSettings::get_stereotype(int & n, Stereotype * & st,
-					     const char * u)
+						const char * u)
 {
   int index;
   
@@ -1138,7 +1236,7 @@ Stereotype & GenerationSettings::get_stereotype(int & n, Stereotype * & st,
   for (index = 0; index != n; index += 1)
     s[index] = st[index];
   
-  s[index].set(u, u, u, u);
+  s[index].set(u, u, u, u, u);
 
   if (st)
     delete [] st;
@@ -1486,7 +1584,7 @@ bool GenerationSettings::tool_global_java_cmd(ToolCom * com,
 	    return TRUE;
 	  }
 	  else
-	    java_get_visibility = v;
+	    javaphp_get_visibility = v;
 	}
 	break;
       case setJavaGetNameCmd:
@@ -1510,7 +1608,7 @@ bool GenerationSettings::tool_global_java_cmd(ToolCom * com,
 	    return TRUE;
 	  }
 	  else
-	    java_set_visibility = v;
+	    javaphp_set_visibility = v;
 	}
 	break;
       case setJavaIsSetParamFinalCmd:
@@ -1518,6 +1616,89 @@ bool GenerationSettings::tool_global_java_cmd(ToolCom * com,
 	break;
       case setJavaJavadocStyleCmd:
 	java_javadoc_comment = (*args != 0);
+	break;
+      default:
+	return FALSE;
+      }
+      com->write_bool(TRUE);
+      BrowserView::get_project()->package_modified();
+    }
+  }
+  
+  return TRUE;
+}
+
+bool GenerationSettings::tool_global_php_cmd(ToolCom * com,
+					      const char * args)
+{
+  switch ((unsigned char) args[-1]) {  
+  case getPhpSettingsCmd:
+    send_php_def(com);
+    break;
+  case getPhpUseDefaultsCmd:
+    com->write_bool(php_get_default_defs());
+    break;
+  default:
+    // set cmds only
+    if (!BrowserView::get_project()->is_writable())
+      com->write_bool(FALSE);
+    else {
+      //int api_version = com->api_format();
+
+      switch ((unsigned char) args[-1]) {
+      case setPhpUseDefaultsCmd:
+	php_set_default_defs(*args);
+	break;
+      case setPhpClassStereotypeCmd:
+	{
+	  const char * u = com->get_string(args);
+	  
+	  get_stereotype(nclassstereotypes, class_stereotypes, u).php = args;
+	}
+	break;
+      case setPhpRootdirCmd:
+	php_root_dir = args;
+	break;
+      case setPhpSourceContentCmd:
+	break;
+      case setPhpSourceExtensionCmd:
+	php_extension = args;
+	break;
+      case setPhpClassDeclCmd:
+	php_class_decl = args;
+	break;
+      case setPhpExternalClassDeclCmd:
+	php_external_class_decl = args;
+	break;
+      case setPhpEnumDeclCmd:
+	php_enum_decl = args;
+	break;
+      case setPhpInterfaceDeclCmd:
+	php_interface_decl = args;
+	break;
+      case setPhpAttributeDeclCmd:
+	php_attr_decl = args;
+	break;
+      case setPhpEnumItemDeclCmd:
+	php_enum_item_decl = args;
+	break;
+      case setPhpRelationDeclCmd:
+	php_rel_decl = args;
+	break;
+      case setPhpOperationDefCmd:
+	php_oper_def = args;
+	break;
+      case setPhpGetNameCmd:
+	php_get_name = args;
+	break;
+      case setPhpSetNameCmd:
+	php_set_name = args;
+	break;
+      case setPhpIsGetFinalCmd:
+	php_get_final = (*args != 0);
+	break;
+      case setPhpIsSetFinalCmd:
+	php_set_final = (*args != 0);
 	break;
       default:
 	return FALSE;
@@ -1727,6 +1908,11 @@ void GenerationSettings::save_dirs(QTextStream & st)
     st << "java_root_dir ";
     save_string(java_root_dir, st);
   }
+  if (!php_root_dir.isEmpty()) {
+    nl_indent(st);
+    st << "php_root_dir ";
+    save_string(php_root_dir, st);
+  }
   if (!idl_root_dir.isEmpty()) {
     nl_indent(st);
     st << "idl_root_dir ";
@@ -1780,6 +1966,8 @@ void GenerationSettings::save()
     st << "cpp_default_defs ";
   if (java_default_defs)
     st << "java_default_defs ";
+  if (php_default_defs)
+    st << "php_default_defs ";
   if (idl_default_defs)
     st << "idl_default_defs ";
   
@@ -1790,6 +1978,8 @@ void GenerationSettings::save()
   save_string(cpp_src_extension, st);
   st << " java_extension ";
   save_string(java_extension, st);
+  st << " php_extension ";
+  save_string(php_extension, st);
   st << " idl_extension ";
   save_string(idl_extension, st);
   if (cpp_include_with_path) {
@@ -1862,7 +2052,7 @@ void GenerationSettings::save()
   
   nl_indent(st);
   nl_indent(st);
-  st << "classes_stereotypes " << nclassstereotypes << " // uml cpp java idl";
+  st << "classes_stereotypes " << nclassstereotypes << " // uml cpp java php idl";
   
   for (index = 0; index != nclassstereotypes; index += 1) {
     Stereotype & s = class_stereotypes[index];
@@ -1874,6 +2064,8 @@ void GenerationSettings::save()
     save_string(s.cpp, st);
     st << ' ';
     save_string(s.java, st);
+    st << ' ';
+    save_string(s.php, st);
     st << ' ';
     save_string(s.idl, st);
   }
@@ -1996,6 +2188,7 @@ void GenerationSettings::save()
     st << "java_no_javadoc_comment";
     nl_indent(st);
   }
+  
   st << "java_default_src_content ";
   save_string(java_src_content, st);
   nl_indent(st);
@@ -2049,13 +2242,13 @@ void GenerationSettings::save()
   st << "java_get ";
   save_string(java_get_name, st);
   if (java_get_final) st << " final";
-  st << ' ' << stringify(java_get_visibility);
+  st << ' ' << stringify(javaphp_get_visibility);
   nl_indent(st);
   st << "java_set ";
   save_string(java_set_name, st);
   if (java_set_final) st << " final";
   if (java_set_param_final) st << " param_final";
-  st << ' ' << stringify(java_set_visibility);
+  st << ' ' << stringify(javaphp_set_visibility);
   nl_indent(st);
   st << "java_default_operation_definition ";
   save_string(java_oper_def, st);
@@ -2063,6 +2256,42 @@ void GenerationSettings::save()
   
   save_includes_imports(java_imports, "java_imports");
 
+  st << "php_default_src_content ";
+  save_string(php_src_content, st);
+  nl_indent(st);
+  st << "php_default_class_decl ";
+  save_string(php_class_decl, st);
+  nl_indent(st);
+  st << "php_default_enum_decl ";
+  save_string(php_enum_decl, st);
+  nl_indent(st);
+  st << "php_default_external_class_decl ";
+  save_string(php_external_class_decl, st);
+  nl_indent(st);
+  st << "php_default_interface_decl ";
+  save_string(php_interface_decl, st);
+  nl_indent(st);
+  st << "php_default_attribute_declaration ";
+  save_string(php_attr_decl, st);
+  nl_indent(st);
+  st << "php_default_enum_item_decl ";
+  save_string(php_enum_item_decl, st);
+  nl_indent(st);
+  st << "php_default_relation_declaration";
+  save_string(php_rel_decl, st);
+  nl_indent(st);
+  st << "php_get ";
+  save_string(php_get_name, st);
+  if (php_get_final) st << " final";
+  nl_indent(st);
+  st << "php_set ";
+  save_string(php_set_name, st);
+  if (php_set_final) st << " final";
+  nl_indent(st);
+  st << "php_default_operation_definition ";
+  save_string(php_oper_def, st);
+  nl_indent(st);
+  
   st << "idl_default_src_content ";
   save_string(idl_src_content, st);
   nl_indent(st);
@@ -2198,7 +2427,7 @@ void GenerationSettings::read_dirs(char * & st, char * & k)
 {
   if (!strcmp(k, "root_dir")) {
     // old version
-    cpp_root_dir = java_root_dir = idl_root_dir = read_string(st);
+    cpp_root_dir = java_root_dir = php_root_dir = idl_root_dir = read_string(st);
     k = read_keyword(st);
   }
   else {
@@ -2208,6 +2437,10 @@ void GenerationSettings::read_dirs(char * & st, char * & k)
     }
     if (!strcmp(k, "java_root_dir")) {
       java_root_dir = read_string(st);
+      k = read_keyword(st);
+    }
+    if (!strcmp(k, "php_root_dir")) {
+      php_root_dir = read_string(st);
       k = read_keyword(st);
     }
     if (!strcmp(k, "idl_root_dir")) {
@@ -2265,6 +2498,13 @@ void GenerationSettings::read(char * & st, char * & k)
   else
     java_default_defs = FALSE;
   
+  if (!strcmp(k, "php_default_defs")) {
+    php_default_defs = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    java_default_defs = FALSE;
+  
   if (!strcmp(k, "idl_default_defs")) {
     idl_default_defs = TRUE;
     k = read_keyword(st);
@@ -2292,6 +2532,13 @@ void GenerationSettings::read(char * & st, char * & k)
   }
   else
     java_extension = "java";
+
+  if (!strcmp(k, "php_extension")) {
+    php_extension = read_string(st);
+    k = read_keyword(st);
+  }
+  else
+    php_extension = "php";
 
   if (!strcmp(k, "idl_extension")) {
     idl_extension = read_string(st);
@@ -2387,14 +2634,35 @@ void GenerationSettings::read(char * & st, char * & k)
 
     nclassstereotypes = (int) read_unsigned(st);
     class_stereotypes = new Stereotype[nclassstereotypes];
-    
-    for (index = 0; index != nclassstereotypes; index += 1) {
-      Stereotype & s = class_stereotypes[index];
-      
-      s.uml = read_string(st);
-      s.cpp = read_string(st);
-      s.java = read_string(st);
-      s.idl = read_string(st);
+
+    if (fileformat < 44) {
+      for (index = 0; index != nclassstereotypes; index += 1) {
+	Stereotype & s = class_stereotypes[index];
+	
+	s.uml = read_string(st);
+	s.cpp = read_string(st);
+	s.java = read_string(st);
+	if (s.uml == "interface")
+	  s.php = "interface";
+	else if ((s.uml == "enum") || (s.uml == "enum_pattern"))
+	  s.php = "enum";
+	else if ((s.uml == "typedef") || (s.uml == "actor") || (s.uml == "@interface"))
+	  s.php = "ignored";
+	else 
+	  s.php = "class";
+	s.idl = read_string(st);
+      }
+    }
+    else {
+      for (index = 0; index != nclassstereotypes; index += 1) {
+	Stereotype & s = class_stereotypes[index];
+	
+	s.uml = read_string(st);
+	s.cpp = read_string(st);
+	s.java = read_string(st);
+	s.php = read_string(st);
+	s.idl = read_string(st);
+      }
     }
      
     if (new_types)
@@ -2561,6 +2829,7 @@ void GenerationSettings::read(char * & st, char * & k)
     }
     else
       java_javadoc_comment = TRUE;
+    
     if (!strcmp(k, "java_default_src_content")) {
       java_src_content = read_string(st);
       k = read_keyword(st);
@@ -2651,7 +2920,7 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
     }
     else
       java_get_final = FALSE;
-    java_get_visibility = ::visibility(k);
+    javaphp_get_visibility = ::visibility(k);
     read_keyword(st, "java_set");
     java_set_name = read_string(st);
     k = read_keyword(st);
@@ -2682,6 +2951,65 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
 	java_imports.types.append(read_string(st));
 	java_imports.includes.append(read_string(st));
       }
+      k = read_keyword(st);
+    }
+
+    if (fileformat < 44) {
+      php_src_content = PHP_SRC_CONTENT;
+      php_extension = "php";
+      php_class_decl = PHP_CLASS;
+      php_external_class_decl = "${name}";
+      php_enum_decl = PHP_ENUM;
+      php_interface_decl = PHP_INTERFACE;
+      php_attr_decl = PHP_ATTR;
+      php_enum_item_decl = PHP_ENUMITEM;
+      php_rel_decl = PHP_REL;
+      php_oper_def = PHP_OPER;
+      php_get_name = "get${Name}";
+      php_get_final = TRUE;
+      php_set_name = "set${Name}";
+      php_set_final = FALSE;
+    }
+    else {
+      if (strcmp(k, "php_default_src_content"))
+	wrong_keyword(k, "php_default_src_content");
+      php_src_content = read_string(st);
+      read_keyword(st, "php_default_class_decl");
+      php_class_decl = read_string(st);
+      read_keyword(st, "php_default_enum_decl");
+      php_enum_decl = read_string(st);
+      read_keyword(st, "php_default_external_class_decl");
+      php_external_class_decl = read_string(st);
+      read_keyword(st, "php_default_interface_decl");
+      php_interface_decl = read_string(st);
+      read_keyword(st, "php_default_attribute_declaration");
+      php_attr_decl = read_string(st);
+      read_keyword(st, "php_default_enum_item_decl");
+      php_enum_item_decl = read_string(st);
+      read_keyword(st, "php_default_relation_declaration");
+      php_rel_decl = read_string(st);
+      read_keyword(st, "php_get");
+      php_get_name = read_string(st);
+      k = read_keyword(st);
+      if (!strcmp(k, "final")) {
+	php_get_final = TRUE;
+	k = read_keyword(st);
+      }
+      else
+	php_get_final = FALSE;
+      if (strcmp(k, "php_set"))
+	wrong_keyword(k, "php_set");
+      php_set_name = read_string(st);
+      k = read_keyword(st);
+      if (!strcmp(k, "final")) {
+	php_set_final = TRUE;
+	k = read_keyword(st);
+      }
+      else
+	php_set_final = FALSE;
+      if (strcmp(k, "php_default_operation_definition"))
+	wrong_keyword(k, "php_default_operation_definition");
+      php_oper_def = read_string(st);
       k = read_keyword(st);
     }
     
@@ -3013,7 +3341,7 @@ QString GenerationSettings::new_java_enums()
   for (index = 0; index != nclassstereotypes; index += 1)
     s[index] = class_stereotypes[index];
   
-  s[index].set("enum_pattern", "enum", "enum_pattern", "enum");
+  s[index].set("enum_pattern", "enum", "enum_pattern", "ignored", "enum");
   
   if (class_stereotypes != 0)
     delete [] class_stereotypes;

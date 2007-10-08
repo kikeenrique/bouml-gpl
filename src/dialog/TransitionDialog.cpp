@@ -43,6 +43,7 @@
 #include "strutil.h"
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
+#include "GenerationSettings.h"
 
 QSize TransitionDialog::previous_size;
 
@@ -110,15 +111,17 @@ TransitionDialog::TransitionDialog(TransitionData * r)
 
   // UML / OCL
   init_tab(ocltab, uml, rel->uml, "Ocl", SLOT(edit_uml_trigger()),
-	   SLOT(edit_uml_guard()), SLOT(edit_uml_expr()));
+	   SLOT(edit_uml_guard()), SLOT(edit_uml_expr()), TRUE);
 
   // CPP
   init_tab(cpptab, cpp, rel->cpp, "C++", SLOT(edit_cpp_trigger()),
-	   SLOT(edit_cpp_guard()), SLOT(edit_cpp_expr()));
+	   SLOT(edit_cpp_guard()), SLOT(edit_cpp_expr()),
+	   GenerationSettings::cpp_get_default_defs());
 
   // Java
   init_tab(javatab, java, rel->java, "Java", SLOT(edit_java_trigger()),
-	   SLOT(edit_java_guard()), SLOT(edit_java_expr()));
+	   SLOT(edit_java_guard()), SLOT(edit_java_expr()),
+	   GenerationSettings::java_get_default_defs());
   
   // USER : list key - value
   
@@ -163,7 +166,8 @@ void TransitionDialog::polish() {
 
 void TransitionDialog::init_tab(QWidget *& tab, TransDialog & d, TransDef & td,
 				const char * lbl, const char * sl_trigger,
-				const char * sl_guard, const char * sl_expr) {
+				const char * sl_guard, const char * sl_expr,
+				bool enabled) {
   QGrid * grid = new QGrid(2, this);
   QVBox * vtab;
 
@@ -211,6 +215,9 @@ void TransitionDialog::init_tab(QWidget *& tab, TransDialog & d, TransDef & td,
     d.edexpr->setReadOnly(TRUE);
   
   addTab(grid, lbl);
+  
+  if (! enabled)
+    removePage(grid);
 }
 
 void TransitionDialog::edit_description() {

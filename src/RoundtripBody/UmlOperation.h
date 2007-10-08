@@ -27,6 +27,7 @@
 #define UMLOPERATION_H
 
 #include "UmlBaseOperation.h"
+#include "aLanguage.h"
 
 class QTextOStream;
 
@@ -35,7 +36,7 @@ class UmlOperation : public UmlBaseOperation {
     UmlOperation(void * id, const QCString & n)
       : UmlBaseOperation(id, n) {};
   
-  static void roundtrip(const char * path, bool cpp);
+  static void roundtrip(const char * path, aLanguage who);
 };
 
 #endif

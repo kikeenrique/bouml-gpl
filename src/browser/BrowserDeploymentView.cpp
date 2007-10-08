@@ -188,7 +188,8 @@ Note that you can undelete them after");
     m.insertItem("Generate", &subm);
     subm.insertItem("C++", 10);
     subm.insertItem("Java", 11);
-    subm.insertItem("Idl", 12);
+    subm.insertItem("Php", 12);
+    subm.insertItem("Idl", 13);
     
     if (edition_number == 0) {
       if (preserve_bodies()) {
@@ -196,6 +197,7 @@ Note that you can undelete them after");
 	
 	roundtripm.insertItem("C++", 30);
 	roundtripm.insertItem("Java", 31);
+	roundtripm.insertItem("Php", 32);
       }
       
       if (Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -302,6 +304,16 @@ void BrowserDeploymentView::exec_menu_choice(int rank) {
     }
     return;
   case 12:
+    {
+      bool preserve = preserve_bodies();
+      
+      ToolCom::run((verbose_generation()) 
+		   ? ((preserve) ? "php_generator -v -p" : "php_generator -v")
+		   : ((preserve) ? "php_generator -p" : "php_generator"), 
+		   this);
+    }
+    return;
+  case 13:
     ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
     return;
   case 30:
@@ -309,6 +321,9 @@ void BrowserDeploymentView::exec_menu_choice(int rank) {
     return;
   case 31:
     ToolCom::run((verbose_generation()) ? "roundtrip_body -v java" : "roundtrip_body java", this);
+    return;
+  case 32:
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v php" : "roundtrip_body php", this);
     return;
   default:
     if (rank >= 100)
@@ -354,8 +369,10 @@ void BrowserDeploymentView::apply_shortcut(QString s) {
       choice = 10;
     else if (s == "Generate Java")
       choice = 11;
-    else if (s == "Generate Idl")
+    else if (s == "Generate Php")
       choice = 12;
+    else if (s == "Generate Idl")
+      choice = 13;
   }
   else if (!is_read_only && (edition_number == 0)) {
     if (s == "Undelete")

@@ -96,7 +96,7 @@ class TransitionDialog : public QTabDialog {
   protected:
     void init_tab(QWidget *&, TransDialog &, TransDef & td, const char * lbl,
 		  const char * sl_trigger, const char * sl_guard,
-		  const char * sl_expr);
+		  const char * sl_expr, bool enabled);
   protected slots:
     virtual void polish();
     virtual void accept();

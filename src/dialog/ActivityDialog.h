@@ -78,7 +78,7 @@ class ActivityDialog : public QTabDialog {
     virtual ~ActivityDialog();
   
   protected:
-    void init_tab(CondDialog &, InfoData & cond, const char * lbl);
+    void init_tab(CondDialog &, InfoData & cond, const char * lbl, bool enabled);
   
   protected slots:
     virtual void polish();

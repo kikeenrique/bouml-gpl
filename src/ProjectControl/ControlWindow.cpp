@@ -196,6 +196,16 @@ void ControlWindow::change_user() {
   }
 }
 
+QString my_baseName(QFileInfo & fi)
+{
+  QString fn = fi.fileName();
+  int index = fn.findRev('.');
+  
+  return (index == -1)
+    ? fn
+    : fn.left(index);
+}
+
 void ControlWindow::load(QString path) {
   browser->close();
   
@@ -220,8 +230,8 @@ The project is already locked by 'Project control' or 'Project syncho'\n\
     QString ids;
     
     while ((fi = it.current()) != 0) {
-      if (fi->isDir() && (fi->baseName() != "all"))
-	ids += " " + fi->baseName();
+      if (fi->isDir() && (my_baseName(*fi) != "all"))
+	ids += " " + my_baseName(*fi);
       ++it;
     }
     
@@ -283,7 +293,7 @@ void ControlWindow::windows_style() {
 }
 
 void ControlWindow::about() {
-  QMessageBox::about(this, "Project control", "<p>Version <b>1.1</b></p>" );
+  QMessageBox::about(this, "Project control", "<p>Version <b>1.1.1</b></p>" );
 }
 
 void ControlWindow::aboutQt() {

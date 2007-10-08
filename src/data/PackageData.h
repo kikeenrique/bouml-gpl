@@ -40,6 +40,7 @@ class PackageData : public SimpleData {
     MyStr cpp_src_dir;
     MyStr cpp_h_dir;
     MyStr java_dir;
+    MyStr php_dir;
     MyStr idl_dir;
     
     MyStr cpp_namespace;
@@ -48,6 +49,7 @@ class PackageData : public SimpleData {
     
     virtual void send_cpp_def(ToolCom * com);
     virtual void send_java_def(ToolCom * com);
+    virtual void send_php_def(ToolCom * com);
     virtual void send_idl_def(ToolCom * com);
     
   public:
@@ -60,6 +62,7 @@ class PackageData : public SimpleData {
     const MyStr & get_cpp_src_dir() const { return cpp_src_dir; };
     const MyStr & get_cpp_h_dir() const { return cpp_h_dir; };
     const MyStr & get_java_dir() const { return java_dir; };
+    const MyStr & get_php_dir() const { return php_dir; };
     const MyStr & get_idl_dir() const { return idl_dir; };
     
     const MyStr & get_cpp_namespace() const { return cpp_namespace; };

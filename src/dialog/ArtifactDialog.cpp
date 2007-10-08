@@ -69,6 +69,7 @@ ArtifactDialog::ArtifactDialog(ArtifactData * nd)
   init_uml_tab();
   init_cpp_tab();
   init_java_tab();
+  init_php_tab();
   init_idl_tab();
   init_assoc_classes_tab();
   init_assoc_artifacts_tab();
@@ -207,6 +208,9 @@ void ArtifactDialog::init_cpp_tab() {
   
   addTab(cpp_h_content_page, "C++ header");
   
+  if (!GenerationSettings::cpp_get_default_defs())
+    removePage(cpp_h_content_page);
+  
   // C++ source
 
   cpp_src_content_page = new QSplitter(Vertical, this);
@@ -247,6 +251,9 @@ void ArtifactDialog::init_cpp_tab() {
     same_width(lbl1, lbl2, edit);
   
   addTab(cpp_src_content_page, "C++ source");
+  
+  if (!GenerationSettings::cpp_get_default_defs())
+    removePage(cpp_src_content_page);
 }
 
 void ArtifactDialog::init_java_tab() {
@@ -299,6 +306,64 @@ void ArtifactDialog::init_java_tab() {
     same_width(lbl1, lbl2, edit);
   
   addTab(java_content_page, "Java source");
+  
+  if (!GenerationSettings::java_get_default_defs())
+    removePage(java_content_page);
+}
+
+void ArtifactDialog::init_php_tab() {
+  bool visit = !hasOkButton();  
+  QHBox * hbox;
+  QVBox * vbox;
+  QLabel * lbl1;
+  QLabel * lbl2;
+  QPushButton * edit = 0;
+  
+  php_content_page = new QSplitter(Vertical, this);
+  php_content_page->setOpaqueResize(TRUE);
+  
+  vbox = new QVBox(php_content_page); 
+  
+  hbox = new QHBox(vbox); 
+  hbox->setMargin(5);  
+  lbl1 = new QLabel("File \ndefinition : ", hbox);
+  edphp_content = new MultiLineEdit(hbox);
+  edphp_content->setText(data->php_src);
+  QFont font = comment->font();
+  if (! hasCodec())
+    font.setFamily("Courier");
+  font.setFixedPitch(TRUE);
+  edphp_content->setFont(font);
+  if (visit)
+    edphp_content->setReadOnly(TRUE);
+  else {
+    connect(edphp_content, SIGNAL(textChanged()), this, SLOT(php_update_src()));
+
+    hbox = new QHBox(vbox); 
+    edit = new SmallPushButton("Editor", hbox);
+    connect(edit, SIGNAL(clicked()), this, SLOT(php_edit()));
+    connect(new QPushButton("Default definition", hbox), SIGNAL(pressed ()),
+	    this, SLOT(php_default_src()));
+    connect(new QPushButton("Not generated in Php", hbox), SIGNAL(pressed ()),
+	    this, SLOT(php_unmapped_src()));
+  }
+
+  hbox = new QHBox(php_content_page, "result"); 
+  hbox->setMargin(5);  
+  lbl2 = new QLabel("Result after\nsubstitution : ", hbox);
+  showphp_content = new MultiLineEdit(hbox);
+  showphp_content->setReadOnly(TRUE);
+  showphp_content->setFont(font);
+  
+  if (visit)
+    same_width(lbl1, lbl2);
+  else
+    same_width(lbl1, lbl2, edit);
+  
+  addTab(php_content_page, "Php source");
+  
+  if (!GenerationSettings::php_get_default_defs())
+    removePage(php_content_page);
 }
 
 void ArtifactDialog::init_idl_tab() {
@@ -351,6 +416,9 @@ void ArtifactDialog::init_idl_tab() {
     same_width(lbl1, lbl2, edit);
   
   addTab(idl_content_page, "Idl source");
+  
+  if (!GenerationSettings::idl_get_default_defs())
+    removePage(idl_content_page);
 }
 
 void ArtifactDialog::init_assoc_classes_tab() {
@@ -412,7 +480,7 @@ void ArtifactDialog::init_assoc_classes_tab() {
   lb_cl_associated->setSelectionMode((visit) ? QListBox::NoSelection
 					     : QListBox::Multi);
   
-  n_cpp = n_java = n_idl = 0;
+  n_cpp = n_java = n_php = n_idl = 0;
   
   for (it = l.begin(); it != end; ++it) {
     if (!(*it)->deletedp() && !(*it)->nestedp()) {
@@ -424,6 +492,8 @@ void ArtifactDialog::init_assoc_classes_tab() {
 	n_cpp += 1;
       if (c->get_javadecl()[0])
 	n_java += 1;
+      if (c->get_phpdecl()[0])
+	n_php += 1;
       if (c->get_idldecl()[0])
 	n_idl += 1;
     }
@@ -519,6 +589,7 @@ void ArtifactDialog::edStereotypeActivated(const QString & ste) {
   setTabEnabled(cpp_h_content_page, a_source && !a_text);
   setTabEnabled(cpp_src_content_page, a_source || a_text);
   setTabEnabled(java_content_page, a_source || a_text);
+  setTabEnabled(php_content_page, a_source || a_text);
   setTabEnabled(idl_content_page, a_source || a_text);
   setTabEnabled(cl_assoc_page, a_source && !a_text);
   setTabEnabled(art_assoc_page, !a_source && !a_text);
@@ -539,6 +610,9 @@ void ArtifactDialog::edStereotypeActivated(const QString & ste) {
     
     if (n_java == 0)
       setTabEnabled(java_content_page, FALSE);
+    
+    if (n_php == 0)
+      setTabEnabled(php_content_page, FALSE);
     
     if (n_idl == 0)
       setTabEnabled(idl_content_page, FALSE);
@@ -566,6 +640,11 @@ void ArtifactDialog::update_tab(QWidget * w) {
     java_update_src();
     if (! visit)
       edjava_content->setFocus();
+  }
+  else if (w == php_content_page) {
+    php_update_src();
+    if (! visit)
+      edphp_content->setFocus();
   }
   else if (w == idl_content_page) {
     idl_update_src();
@@ -610,6 +689,18 @@ void ArtifactDialog::post_java_edit(ArtifactDialog * d, QString s)
   d->edjava_content->setText(s);
 }
 
+void ArtifactDialog::php_edit() {
+  edit(edphp_content->text(),
+       edname->text().stripWhiteSpace() + "_source", data,
+       (edstereotype->currentText().stripWhiteSpace() == "text") ? TxtEdit : PhpEdit,
+       this, (post_edit) post_php_edit, edits);
+}
+
+void ArtifactDialog::post_php_edit(ArtifactDialog * d, QString s)
+{
+  d->edphp_content->setText(s);
+}
+
 void ArtifactDialog::idl_edit() {
   edit(edidl_content->text(),
        edname->text().stripWhiteSpace() + "_source",
@@ -644,6 +735,14 @@ void ArtifactDialog::java_default_src() {
   java_update_src();
 }
 
+void ArtifactDialog::php_default_src() {
+  edphp_content->setText(((n_php != 0) &&
+			  (edstereotype->currentText().stripWhiteSpace() != "text"))
+			 ? GenerationSettings::php_default_source_content()
+			 : "");
+  php_update_src();
+}
+
 void ArtifactDialog::idl_default_src() {
   edidl_content->setText(((n_idl != 0) &&
 			  (edstereotype->currentText().stripWhiteSpace() != "text"))
@@ -665,6 +764,11 @@ void ArtifactDialog::cpp_unmapped_src() {
 void ArtifactDialog::java_unmapped_src() {
   edjava_content->setText(QString::null);
   java_update_src();
+}
+
+void ArtifactDialog::php_unmapped_src() {
+  edphp_content->setText(QString::null);
+  php_update_src();
 }
 
 void ArtifactDialog::idl_unmapped_src() {
@@ -1093,6 +1197,78 @@ void ArtifactDialog::java_update_src() {
   }
 }
 
+void ArtifactDialog::php_update_src() {
+  if (lb_cl_associated->count() == 0)
+    hide_result(php_content_page);
+  else {
+    show_result(php_content_page);
+    
+    QString def = edphp_content->text();  
+    const char * p = def;
+    const char * pp = 0;
+    QString s;
+    
+    for (;;) {
+      if (*p == 0) {
+	if (pp == 0)
+	  break;
+	
+	// comment management done
+	p = pp;
+	pp = 0;
+	if (*p == 0)
+	  break;
+      }
+       
+      if (*p == '@')
+	manage_alias(data->browser_node, p, s, kvtable);
+      else if (*p != '$')
+	s += *p++;
+      else if (!strncmp(p, "${comment}", 10))
+	manage_comment(comment->text(), p, pp, FALSE);
+      else if (!strncmp(p, "${description}", 14))
+	manage_description(comment->text(), p, pp);
+      else if (!strncmp(p, "${name}", 7)) {
+	p += 7;
+	s += edname->text().stripWhiteSpace();
+      }
+      else if (!strncmp(p, "${Name}", 7)) {
+	p += 7;
+	s += capitalize(edname->text().stripWhiteSpace());
+      }
+      else if (!strncmp(p, "${NAME}", 7)) {
+	p += 7;
+	s += edname->text().stripWhiteSpace().upper();
+      }
+      else if (!strncmp(p, "${definition}", 13)) {
+	p += 13;
+	if (*p == '\n')
+	  p += 1;
+	
+	static QStringList nodes;	// must be static for FormalParamsTable
+	QStringList node_names;
+	unsigned n = lb_cl_associated->count();
+
+	for (unsigned i = 0; i != n; i += 1) {
+	  BrowserNode * bn =
+	    ((ListBoxBrowserNode *) lb_cl_associated->item(i))->browser_node;
+	  ClassData * c = (ClassData *) bn->get_data();
+	  
+	  ClassDialog::php_generate_decl(s, c, c->get_phpdecl(), bn->get_name(),
+					 c->get_stereotype(), bn->get_comment(),
+					 c->get_uml_visibility(), c->php_is_final(),
+					 c->get_is_abstract(), 0);
+	  s += '\n';
+	}
+      }
+      else
+	s += *p++;
+    }
+    
+    showphp_content->setText(s);
+  }
+}
+
 void ArtifactDialog::idl_update_src() {
   if (lb_cl_associated->count() == 0)
     hide_result(idl_content_page);
@@ -1212,6 +1388,8 @@ void ArtifactDialog::associate_cls() {
 	n_cpp += 1;
       if (c->get_javadecl()[0])
 	n_java += 1;
+      if (c->get_phpdecl()[0])
+	n_php += 1;
       if (c->get_idldecl()[0])
 	n_idl += 1;
     }
@@ -1237,6 +1415,8 @@ void ArtifactDialog::unassociate_cls() {
 	n_cpp -= 1;
       if (c->get_javadecl()[0])
 	n_java -= 1;
+      if (c->get_phpdecl()[0])
+	n_php -= 1;
       if (c->get_idldecl()[0])
 	n_idl -= 1;
     }
@@ -1406,6 +1586,12 @@ void ArtifactDialog::accept() {
       }
       else
 	data->java_src = QString::null;
+      
+      if (isTabEnabled(php_content_page)) {
+	data->php_src = edphp_content->text();
+      }
+      else
+	data->php_src = QString::null;
       
       if (isTabEnabled(idl_content_page)) {
 	data->idl_src = edidl_content->text();

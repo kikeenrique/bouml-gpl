@@ -822,6 +822,7 @@ bool BrowserComponent::tool_cmd(ToolCom * com, const char * args) {
   case getUmlDefCmd:
   case getCppDefCmd:
   case getJavaDefCmd:
+  case getPhpDefCmd:
   case getIdlDefCmd:
     BrowserNode::tool_cmd(com, args);
     if (com->api_format() > 13) {

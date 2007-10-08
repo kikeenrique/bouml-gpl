@@ -86,7 +86,7 @@ QString SdMsgBaseCanvas::get_msg(bool with_args) const {
     the_canvas()->browser_diagram()->get_sequencediagramsettings(dflt);
     
     m = msg->definition(dflt.show_full_operations_definition == UmlYes,
-			dflt.drawing_language, TRUE);
+			dflt.drawing_language, TRUE, TRUE);
   }
   
   if (!with_args || args.isEmpty())

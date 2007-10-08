@@ -52,6 +52,7 @@
 #include "BodyDialog.h"
 #include "UmlWindow.h"
 #include "BrowserView.h"
+#include "GenerationSettings.h"
 
 QSize ActivityActionDialog::previous_size;
 
@@ -432,7 +433,7 @@ void AnyActionDialog::init_cpp(QTabDialog * t, ActivityActionData * act,
   // else some sub widget will be wrong placed
   t->addTab(cpp_grid, "C++");
 
-  if (d == 0)
+  if ((d == 0) || !GenerationSettings::cpp_get_default_defs())
     t->removePage(cpp_grid);
 }
 
@@ -450,7 +451,7 @@ void AnyActionDialog::init_java(QTabDialog * t, ActivityActionData * act,
   // else some sub widget will be wrong placed
   t->addTab(java_grid, "Java");
 
-  if (d == 0)
+  if ((d == 0) || !GenerationSettings::java_get_default_defs())
     t->removePage(java_grid);
 }
 
@@ -544,7 +545,7 @@ void OpaqueDialog::init(QTabDialog * t, ActivityActionData * act,
 
   t->addTab(cpp_grid, "C++");
 
-  if (d == 0)
+  if ((d == 0) || !GenerationSettings::cpp_get_default_defs())
     t->removePage(cpp_grid);
 
   // java
@@ -570,7 +571,7 @@ void OpaqueDialog::init(QTabDialog * t, ActivityActionData * act,
 
   t->addTab(java_grid, "Java");
 
-  if (d == 0)
+  if ((d == 0) || !GenerationSettings::java_get_default_defs())
     t->removePage(java_grid);
 }
 
@@ -665,7 +666,7 @@ void AcceptEventDialog::init(QTabDialog * t, ActivityActionData * act,
 
   t->addTab(cpp_grid, "trigger - C++");
 
-  if (d == 0)
+  if ((d == 0) || !GenerationSettings::cpp_get_default_defs())
     t->removePage(cpp_grid);
 
   // java
@@ -684,7 +685,7 @@ void AcceptEventDialog::init(QTabDialog * t, ActivityActionData * act,
 
   t->addTab(java_grid, "trigger - Java");
 
-  if (d == 0)
+  if ((d == 0) || !GenerationSettings::java_get_default_defs())
     t->removePage(java_grid);
 }
 
@@ -756,7 +757,7 @@ void ValueSpecificationDialog::init(QTabDialog * t, ActivityActionData * act,
 
   t->addTab(cpp_grid, "value - C++");
 
-  if (d == 0)
+  if ((d == 0) || !GenerationSettings::cpp_get_default_defs())
     t->removePage(cpp_grid);
 
   // java
@@ -782,7 +783,7 @@ void ValueSpecificationDialog::init(QTabDialog * t, ActivityActionData * act,
 
   t->addTab(java_grid, "value - Java");
 
-  if (d == 0)
+  if ((d == 0) || !GenerationSettings::java_get_default_defs())
     t->removePage(java_grid);
 }
 
@@ -865,7 +866,7 @@ void SendSignalDialog::init(QTabDialog * t, ActivityActionData * act,
 
   t->addTab(cpp_grid, "signal - C++");
 
-  if (d == 0)
+  if ((d == 0) || !GenerationSettings::cpp_get_default_defs())
     t->removePage(cpp_grid);
 
   // java
@@ -884,7 +885,7 @@ void SendSignalDialog::init(QTabDialog * t, ActivityActionData * act,
 
   t->addTab(java_grid, "signal - Java");
 
-  if (d == 0)
+  if ((d == 0) || !GenerationSettings::java_get_default_defs())
     t->removePage(java_grid);
 }
 

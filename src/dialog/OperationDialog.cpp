@@ -93,6 +93,9 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   st = GenerationSettings::java_class_stereotype(stereotype);
   java_undef = (st == "enum_pattern") || (st == "typedef");
   
+  st = GenerationSettings::php_class_stereotype(stereotype);
+  php_undef = (st == "enum") || (st == "typedef");
+  
   st = GenerationSettings::idl_class_stereotype(stereotype);
   idl_undef = (st == "enum") || (st == "typedef");
   
@@ -385,7 +388,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     editcppbody = new QPushButton((visit || (preserve_bodies())) ? "Show body" : "Edit body", grid);
     connect(editcppbody, SIGNAL(clicked()), this, SLOT(cpp_edit_body()));
     
-    char * b = o->get_body(TRUE);
+    char * b = o->get_body('c');
     
     if (b != 0) {
       cppbody = oldcppbody = b;
@@ -406,6 +409,9 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     }
     
     addTab(grid, "C++");
+  
+    if (!GenerationSettings::cpp_get_default_defs())
+      removePage(grid);
     
     cl->get_class_spec(templates, cl_names, templates_tmplop, cl_names_tmplop);
   }
@@ -429,14 +435,14 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     }
 
     bg = new QButtonGroup(2, QGroupBox::Horizontal, QString::null, grid);
-    final_cb = new QCheckBox("final", bg);
+    javafinal_cb = new QCheckBox("final", bg);
     if (o->get_java_final())
-      final_cb->setChecked(TRUE);
+      javafinal_cb->setChecked(TRUE);
     if (visit)
-      final_cb->setDisabled(TRUE);
+      javafinal_cb->setDisabled(TRUE);
     else
-      connect(final_cb, SIGNAL(toggled(bool)),
-	      SLOT(finalsynchronized_toggled(bool)));
+      connect(javafinal_cb, SIGNAL(toggled(bool)),
+	      SLOT(java_finalsynchronized_toggled(bool)));
 
     synchronized_cb = new QCheckBox("synchronized", bg);
     if (o->get_java_synchronized())
@@ -445,7 +451,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
       synchronized_cb->setDisabled(TRUE);
     else
       connect(synchronized_cb, SIGNAL(toggled(bool)),
-	      SLOT(finalsynchronized_toggled(bool)));
+	      SLOT(java_finalsynchronized_toggled(bool)));
     
     if (o->is_get_or_set) {
       new QLabel("Name form : ", grid);
@@ -478,7 +484,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     editjavabody = new QPushButton((visit || (preserve_bodies())) ? "Show body" : "Edit body", grid);
     connect(editjavabody, SIGNAL(clicked()), this, SLOT(java_edit_body()));
     
-    char * b = o->get_body(FALSE);
+    char * b = o->get_body('j');
     
     if (b != 0) {
       javabody = oldjavabody = b;
@@ -503,9 +509,95 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
 	    this, SLOT(java_edit_annotation()));
     
     addTab(grid, "Java");
+  
+    if (!GenerationSettings::java_get_default_defs())
+      removePage(grid);
   }
   else
     javatab = 0;
+    
+  // Php
+  
+  if (! php_undef) {
+    grid = new QGrid(2, this);
+    phptab = grid;
+    grid->setMargin(5);
+    grid->setSpacing(5);
+    
+    if (visit || !o->is_get_or_set)
+      new QLabel(grid);
+    else {
+      phpfrozen_cb = new QCheckBox("frozen", grid);
+      if (o->php_get_set_frozen)
+	phpfrozen_cb->setChecked(TRUE);
+    }
+
+    bg = new QButtonGroup(2, QGroupBox::Horizontal, QString::null, grid);
+    phpfinal_cb = new QCheckBox("final", bg);
+    if (o->get_php_final())
+      phpfinal_cb->setChecked(TRUE);
+    if (visit)
+      phpfinal_cb->setDisabled(TRUE);
+    else
+      connect(phpfinal_cb, SIGNAL(toggled(bool)),
+	      SLOT(php_final_toggled(bool)));
+
+    if (o->is_get_or_set) {
+      new QLabel("Name form : ", grid);
+      htab = new QHBox(grid);
+      edphpnamespec = new LineEdit(htab);
+      edphpnamespec->setText(o->php_name_spec);
+      if (visit)
+	edphpnamespec->setDisabled(TRUE);
+      else {
+	connect(edphpnamespec, SIGNAL(textChanged(const QString &)), this, SLOT(php_update_def()));
+      }
+    }
+    else
+      edphpnamespec = 0;
+    
+    new QLabel("Definition :", grid);
+    edphpdef = new MultiLineEdit(grid);
+    edphpdef->setText(o->get_phpdef());
+    edphpdef->setFont(font);
+    if (visit)
+      edphpdef->setReadOnly(TRUE);
+    else
+      connect(edphpdef, SIGNAL(textChanged()), this, SLOT(php_update_def()));
+    
+    new QLabel("Result after\nsubstitution : ", grid);
+    showphpdef = new MultiLineEdit(grid);
+    showphpdef->setReadOnly(TRUE);
+    showphpdef->setFont(font);
+    
+    editphpbody = new QPushButton((visit || (preserve_bodies())) ? "Show body" : "Edit body", grid);
+    connect(editphpbody, SIGNAL(clicked()), this, SLOT(php_edit_body()));
+    
+    char * b = o->get_body('p');
+    
+    if (b != 0) {
+      phpbody = oldphpbody = b;
+      delete [] b;
+    }
+        
+    htab = new QHBox(grid);  
+
+    if (! visit) {
+      connect(new QPushButton("Default definition", htab), SIGNAL(pressed ()),
+	      this, SLOT(php_default_def()));
+      connect(new QPushButton("Not generated in Php", htab), SIGNAL(pressed ()),
+	      this, SLOT(php_unmapped_def()));
+      connect(new QPushButton("Edit parameters", htab), SIGNAL(clicked()),
+	      this, SLOT(php_edit_param()));      
+    }
+    
+    addTab(grid, "Php");
+  
+    if (!GenerationSettings::php_get_default_defs())
+      removePage(grid);
+  }
+  else
+    phptab = 0;
     
   // IDL
   
@@ -571,6 +663,9 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     }
     
     addTab(grid, "Idl");
+  
+    if (!GenerationSettings::idl_get_default_defs())
+      removePage(grid);
   }
   else
     idltab = 0;
@@ -597,6 +692,10 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   case JavaView:
     if (! java_undef)
       QTimer::singleShot(100, this, SLOT(java_edit_body()));
+    break;
+  case PhpView:
+    if (! php_undef)
+      QTimer::singleShot(100, this, SLOT(php_edit_body()));
     break;
   default:
     break;
@@ -751,7 +850,7 @@ void OperationDialog::accept() {
       oper->cpp_decl = QString::null;
       oper->cpp_def.assign(QString::null, TRUE);
       if (!oldcppbody.isEmpty())
-	oper->new_body(QString::null, TRUE);
+	oper->new_body(QString::null, 'c');
     }
     else {
       if (oper->is_get_or_set) {
@@ -762,10 +861,10 @@ void OperationDialog::accept() {
       if (!abstract_cb->isChecked() && 
 	  (edcppdef->text().find("${body}") != -1)) {
 	if (cppbody != oldcppbody)
-	  oper->new_body(cppbody, TRUE);
+	  oper->new_body(cppbody, 'c');
       }
       else if(!oldcppbody.isEmpty())
-	oper->new_body(QString::null, TRUE);
+	oper->new_body(QString::null, 'c');
       oper->cpp_decl = edcppdecl->text();
       oper->cpp_visibility = cpp_visibility.value();
       
@@ -784,7 +883,7 @@ void OperationDialog::accept() {
     if (java_undef) {
       oper->java_def.assign(QString::null, TRUE);
       if (!oldjavabody.isEmpty())
-	oper->new_body(QString::null, FALSE);
+	oper->new_body(QString::null, 'j');
     }
     else {
       if (oper->is_get_or_set) {
@@ -798,17 +897,46 @@ void OperationDialog::accept() {
       if (!abstract_cb->isChecked() && !interf &&
 	  (edjavadef->text().find("${body}") != -1)) {
 	if (javabody != oldjavabody)
-	  oper->new_body(javabody, FALSE);
+	  oper->new_body(javabody, 'j');
       }
       else if (!oldjavabody.isEmpty())
-	oper->new_body(QString::null, FALSE);
-      oper->java_final = final_cb->isChecked();
+	oper->new_body(QString::null, 'j');
+      oper->java_final = javafinal_cb->isChecked();
       oper->java_synchronized = synchronized_cb->isChecked();
       oper->java_def.assign(edjavadef->text(),
 			    abstract_cb->isChecked() || interf ||
 			    (edjavadef->text().find("${body}") != -1));
       
       oper->java_annotation = javaannotation;
+    }
+    
+    // php
+    
+    if (php_undef) {
+      oper->php_def.assign(QString::null, TRUE);
+      if (!oldphpbody.isEmpty())
+	oper->new_body(QString::null, 'p');
+    }
+    else {
+      if (oper->is_get_or_set) {
+	oper->php_name_spec = edphpnamespec->text().stripWhiteSpace();
+	oper->php_get_set_frozen = phpfrozen_cb->isChecked();
+      }
+      
+      QString ste = GenerationSettings::php_class_stereotype(cl->get_stereotype());
+      bool interf = (ste == "interface");
+      
+      if (!abstract_cb->isChecked() && !interf &&
+	  (edphpdef->text().find("${body}") != -1)) {
+	if (phpbody != oldphpbody)
+	  oper->new_body(phpbody, 'p');
+      }
+      else if (!oldphpbody.isEmpty())
+	oper->new_body(QString::null, 'p');
+      oper->php_final = phpfinal_cb->isChecked();
+      oper->php_def.assign(edphpdef->text(),
+			    abstract_cb->isChecked() || interf ||
+			    (edphpdef->text().find("${body}") != -1));
     }
     
     // idl
@@ -870,6 +998,11 @@ void OperationDialog::update_all_tabs(QWidget * w) {
     java_update_def();
     if (! visit)
       edjavadef->setFocus();
+  }
+  else if (w == phptab) {
+    php_update_def();
+    if (! visit)
+      edphpdef->setFocus();
   }
   else if (w == idltab) {
     idl_update_decl();
@@ -1754,7 +1887,7 @@ void OperationDialog::post_cpp_edit_body(OperationDialog * d, QString s)
 
 // Java
 
-void OperationDialog::finalsynchronized_toggled(bool) {
+void OperationDialog::java_finalsynchronized_toggled(bool) {
   java_update_def();
 }
 
@@ -1883,7 +2016,7 @@ void OperationDialog::java_update_def() {
       manage_description(comment->text(), p, pp);
     else if (!strncmp(p, "${final}", 8)) {
       p += 8;
-      if (final_cb->isChecked())
+      if (javafinal_cb->isChecked())
 	s += "final ";
     }
     else if (!strncmp(p, "${visibility}", 13)) {
@@ -2122,7 +2255,313 @@ void OperationDialog::java_edit_annotation() {
   if (dialog.exec() == QDialog::Accepted)
     java_update_def();
 }
+
+// Php
+
+void OperationDialog::php_final_toggled(bool) {
+  php_update_def();
+}
+
+void OperationDialog::manage_php_type(unsigned rank, QString & s)
+{
+  if (rank < table->nparams()) 
+    s += get_php_name(the_type(table->type(rank), list, nodes));
+  else {
+    s += "${t";
+    s += QString::number(rank);
+    s += '}';
+  }
+}
+
+void OperationDialog::php_default_def() {
+  if (oper->is_get_or_set) {
+    QCString def;
+    
+    if (get_of_attr != 0)
+      oper->update_php_get_of(def, get_of_attr->get_browser_node()->get_name(),
+			       get_of_attr->get_phpdecl());
+    else if (set_of_attr != 0)
+      oper->update_php_set_of(def, set_of_attr->get_browser_node()->get_name(),
+			       set_of_attr->get_phpdecl());
+    else if (get_of_rel != 0) {
+      if (is_rel_a)
+	oper->update_php_get_of(def, get_of_rel->get_role_a(), 
+				 get_of_rel->get_phpdecl_a());
+      else
+	oper->update_php_get_of(def, get_of_rel->get_role_b(), 
+				 get_of_rel->get_phpdecl_b());
+    }
+    else {
+      // set_of_rel != 0
+      if (is_rel_a)
+	oper->update_php_set_of(def, set_of_rel->get_role_a(), 
+				 set_of_rel->get_phpdecl_a());
+      else
+	oper->update_php_set_of(def, set_of_rel->get_role_b(), 
+				 set_of_rel->get_phpdecl_b());
+    }
+
+    edphpdef->setText(def);
+  }
+  else {
+    QString ste = GenerationSettings::php_class_stereotype(cl->get_stereotype());
+    QString s = oper->default_php_def(edname->text().stripWhiteSpace(),
+				      abstract_cb->isChecked() || (ste == "interface"));
+    QString params;
+    int index;
+    int nparams = (int) table->nparams();
+    const char * sep;
+    
+    for (index = 0, sep = ""; index != nparams; index += 1, sep = ", ") {
+      QString p;
+      
+      p.sprintf("%s${p%d}", sep, index);
+      params += p;
+    }
+    
+    if ((index = s.find("${)}")) != -1)
+      s.insert(index, params);
+    
+    edphpdef->setText(s);
+  }
   
+  php_update_def();
+}
+
+void OperationDialog::php_unmapped_def() {
+  edphpdef->setText(QString::null);
+  showphpdef->setText(QString::null);
+}
+
+void OperationDialog::php_update_def() {
+  // do NOT write
+  //	const char * p = edphpdef->text();
+  // because the QString is immediatly destroyed !
+  QString def = edphpdef->text();
+  QString ste = GenerationSettings::php_class_stereotype(cl->get_stereotype());
+  bool interf = (ste == "interface");
+  bool nobody = (abstract_cb->isChecked() || interf);
+  const char * p = def;
+  const char * pp = 0;
+  const char * afterparam = 0;
+  QString indent = "";
+  QString s;
+  unsigned rank;
+  
+  while ((*p == ' ') || (*p == '\t'))
+    indent += *p++;
+  
+  s = indent;
+  
+  for (;;) {
+    if (*p == 0) {
+      if (pp == 0)
+	break;
+      
+      // comment management done
+      p = pp;
+      pp = 0;
+      if (*p == 0)
+	break;
+      s += indent;
+    }
+      
+    if (!strncmp(p, "${comment}", 10))
+      manage_comment(comment->text(), p, pp, FALSE);
+    else if (!strncmp(p, "${description}", 14))
+      manage_description(comment->text(), p, pp);
+    else if (!strncmp(p, "${final}", 8)) {
+      p += 8;
+      if (phpfinal_cb->isChecked())
+	s += "final ";
+    }
+    else if (!strncmp(p, "${visibility}", 13)) {
+      p += 13;
+      if (uml_visibility.value() != UmlPackageVisibility)
+	s += uml_visibility.state() + ' ';
+    }
+    else if (!strncmp(p, "${static}", 9)) {
+      p += 9;
+      if (classoperation_cb->isChecked())
+	s += "static ";
+    }
+    else if (!strncmp(p, "${abstract}", 11)) {
+      p += 11;
+      if (abstract_cb->isChecked() && !interf)
+	s += "abstract ";
+    }
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      s += compute_name(edphpnamespec);
+    }
+    else if (!strncmp(p, "${(}", 4)) {
+      p += 4;
+      s += '(';
+    }
+    else if (!strncmp(p, "${)}", 4)) {
+      p += 4;
+      afterparam = p;
+      s += ')';
+    }
+    else if (!strncmp(p, "${staticnl}", 11)) {
+      p += 11;
+      if (classoperation_cb->isChecked()) {
+	s += '\n';
+	s += indent;
+      }
+      else
+	s += ' ';
+    }
+    else if (sscanf(p, "${t%u}", &rank) == 1) {
+      manage_php_type(rank, s);
+      p = strchr(p, '}') + 1;
+    }
+    else if (sscanf(p, "${p%u}", &rank) == 1) {
+      s += "$";
+      manage_var(rank, s);
+      p = strchr(p, '}') + 1;
+    }
+    else if (*p == '\n') {
+      s += *p++;
+      if (*p)
+	s += indent;
+    }
+    else if ((*p == '{') && nobody) {
+      s += ";";
+      break;
+    }
+    else if (*p == '@')
+      manage_alias(oper->browser_node, p, s, kvtable);
+    else
+      s += *p++;
+  }
+    
+  editphpbody->setEnabled(!nobody && (def.find("${body}") != -1));
+  
+  showphpdef->setText(s);
+}
+
+QString OperationDialog::php_decl(const BrowserOperation * op, bool withname)
+{
+  OperationData * d = (OperationData *) op->get_data();
+  QCString decl = d->php_def;
+  
+  remove_comments(decl);
+  
+  int index = decl.find("function ");
+  if (index != -1)
+    decl.remove(index, 9);
+  
+  const char * p = decl;
+  QString s;
+  unsigned rank;
+
+  while ((*p == ' ') || (*p == '\t'))
+    p += 1;
+  
+  while (*p) {
+    if (!strncmp(p, "${comment}", 10))
+      p += 10;
+    else if (!strncmp(p, "${description}", 14))
+      p += 14;
+    else if (!strncmp(p, "${final}", 8))
+      p += 8;
+    else if (!strncmp(p, "${visibility}", 13))
+      p += 13;
+    else if (!strncmp(p, "${static}", 9))
+      p += 9;
+    else if (!strncmp(p, "${abstract}", 11))
+      p += 11;
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      s += op->compute_name(d->php_name_spec);
+    }
+    else if (!strncmp(p, "${(}", 4)) {
+      p += 4;
+      s += '(';
+    }
+    else if (!strncmp(p, "${)}", 4)) {
+      p += 4;
+      s += ')';
+    }
+    else if (!strncmp(p, "${staticnl}", 11)) {
+      p += 11;
+      s += ' ';
+    }
+    else if (sscanf(p, "${t%u}", &rank) == 1) {
+      if (rank < d->nparams) 
+	s += d->params[rank].get_type().get_type();
+      else {
+	s += "${t";
+	s += QString::number(rank);
+	s += '}';
+      }
+      p = strchr(p, '}') + 1;
+    }
+    else if (sscanf(p, "${p%u}", &rank) == 1) {
+      if (withname) {
+	if (rank < d->nparams) 
+	  s += QCString("$") + d->params[rank].get_name();
+	else {
+	  s += "${p";
+	  s += QString::number(rank);
+	  s += '}';
+	}
+      }
+      p = strchr(p, '}') + 1;
+    }
+    else if (*p == '\n') {
+      s += ' ';
+      do
+	p+= 1;
+      while ((*p == ' ') || (*p == '\t'));
+    }
+    else if ((*p == '{') || (*p == ';'))
+      break;
+    else if (*p == '@')
+      manage_alias(op, p, s, 0);
+    else
+      s += *p++;
+  }
+  
+  return s;
+}
+
+void OperationDialog::php_edit_body() {
+  QString b;
+
+  if (add_operation_profile())
+    b = add_profile(showphpdef->text()) + phpbody;
+  else
+    b = phpbody;
+
+  edit(b, edname->text().stripWhiteSpace() + "_body",
+       oper, PhpEdit, this, 
+       (preserve_bodies()) ? (post_edit) 0
+			   : (post_edit) post_php_edit_body,
+       edits);
+}
+
+void OperationDialog::post_php_edit_body(OperationDialog * d, QString s)
+{
+  d->phpbody = (add_operation_profile()) ? remove_profile(s) : s;
+}
+
+void OperationDialog::php_edit_param() {
+  QString form = edphpdef->text();
+  int index;
+
+  if (((index = form.find("${(}")) != 0) &&
+      (form.find("${)}", index + 4) != 0)) {
+    PhpParamsDialog d(table, edphpdef);
+    
+    if (d.exec() == QDialog::Accepted)
+      php_update_def();
+  }
+  else
+    msg_warning("Bouml", "wrong specification");
+}
+
 // Idl
 
 void OperationDialog::oneway_toggled(bool) {
@@ -2132,7 +2571,7 @@ void OperationDialog::oneway_toggled(bool) {
 void OperationDialog::manage_idl_type(unsigned rank, QString & s)
 {
   if (rank < table->nparams()) 
-    s += get_java_name(the_type(table->type(rank), list, nodes));
+    s += get_idl_name(the_type(table->type(rank), list, nodes));
   else {
     s += "${t";
     s += QString::number(rank);
@@ -2362,7 +2801,7 @@ QString OperationDialog::idl_decl(const BrowserOperation * op,
       p += 9;
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      s += get_java_name(d->return_type);
+      s += get_idl_name(d->return_type);
     }
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;
@@ -2749,11 +3188,8 @@ void ParamsTable::update(OperationData * oper,
 			 BrowserNodeList & nodes) {
   forceUpdateCells();
   
-  int n = numRows();
+  int n = nparams();
   int index;
-  
-  if (text(n - 1, 1).isEmpty())
-    n -= 1;
   
   oper->set_n_params(n);
   
@@ -2783,7 +3219,10 @@ void ParamsTable::update(OperationData * oper,
 unsigned ParamsTable::nparams() const {
   int n = numRows();
   
-  return (text(n - 1, 1).isEmpty()) ? n -= 1 : n;
+  while (n && text(n - 1, 1).isEmpty())
+    n -= 1;
+  
+  return n;
 }
 
 QString ParamsTable::name(unsigned rank) const {
@@ -3010,11 +3449,8 @@ void ExceptionsTable::update(OperationData * oper,
 			     BrowserNodeList & nodes) {
   forceUpdateCells();
   
-  int n = numRows();
+  int n = nexceptions();
   int index;
-  
-  if (text(n - 1, 0).isEmpty())
-    n -= 1;
   
   oper->set_n_exceptions(n);
   
@@ -3037,7 +3473,10 @@ void ExceptionsTable::update(OperationData * oper,
 unsigned ExceptionsTable::nexceptions() const {
   int n = numRows();
   
-  return (text(n - 1, 0).isEmpty()) ? n -= 1 : n;
+  while (n && text(n - 1, 0).isEmpty())
+    n -= 1;
+  
+  return n;
 }
 
 QString ExceptionsTable::type(unsigned rank) const {
@@ -3688,6 +4127,485 @@ void CppParamsDialog::polish() {
   
 
 void CppParamsDialog::accept() {
+  tbl->update_edform();
+  
+  QDialog::accept();
+}
+
+//
+// PhpParamTable
+//
+
+// copy/cut/paste
+QString PhpParamsTable::copied[5];	// copy/cut/paste
+
+static QStringList PhpTypeRankList;
+static QStringList PhpRefList;
+static QStringList PhpParamRankList;
+
+PhpParamsTable::PhpParamsTable(ParamsTable * p, MultiLineEdit * f, QWidget * parent)
+    : MyTable(0, 5, parent), params(p), edform(f) {
+    
+  setSorting(FALSE);
+  setSelectionMode(NoSelection);	// single does not work
+  setRowMovingEnabled(TRUE);
+  horizontalHeader()->setLabel(0, "Name");
+  horizontalHeader()->setLabel(1, "${t<i>}/array");
+  horizontalHeader()->setLabel(2, "Ref.");
+  horizontalHeader()->setLabel(3, "${p<i>}");
+  horizontalHeader()->setLabel(4, "do");
+  setColumnStretchable (0, TRUE);
+  setColumnStretchable (1, TRUE);
+  adjustColumn(2);
+  setColumnStretchable (3, TRUE);
+  adjustColumn(4);
+
+  
+  QString form = edform->text();
+  //the presence of ${(} and ${)} was checked
+  int form_index = form.find("${(}") + 4;
+  int tbl_index = 0;
+    
+  while (extract(tbl_index, form_index, form)) {
+    setText(tbl_index, 4, QString::null);
+    tbl_index += 1;
+  }
+  
+  if (tbl_index == 0)
+    insert_row_before(0);
+    
+  connect(this, SIGNAL(pressed(int, int, int, const QPoint &)),
+	  this, SLOT(button_pressed(int, int, int, const QPoint &)));
+  
+  if (PhpRefList.isEmpty()) {
+    PhpRefList.append("");
+    PhpRefList.append("&");
+  }
+  
+  PhpTypeRankList.clear();
+  PhpParamRankList.clear();
+  
+  for (int rank = 0; rank != params->numRows(); rank += 1) {
+    if (!params->name(rank).isEmpty() || !params->type(rank).isEmpty()) {
+      QString s;
+      
+      s.sprintf("${t%u}", rank);
+      PhpTypeRankList.append(s);
+      s.sprintf("${p%u}", rank);
+      PhpParamRankList.append(s);
+    }
+  }
+  PhpTypeRankList.append("array");
+}
+
+void PhpParamsTable::init_row(int row) {
+  setItem(row, 0, new QTableItem(this, QTableItem::Never, QString::null));
+  setItem(row, 1, new ComboItem(this, QString::null, PhpTypeRankList));
+  setItem(row, 2, new ComboItem(this, QString::null, PhpRefList));
+  setItem(row, 3, new ComboItem(this, QString::null, PhpParamRankList));
+  setText(row, 4, QString::null);
+}
+
+bool PhpParamsTable::extract(int tblindex, int & strindex, QString s) {
+  // s at least contains ${)}
+  while (s.at(strindex).isSpace())
+    strindex += 1;
+  
+  int sup = supOf(s, strindex);
+  
+  if (s.mid(strindex, sup - strindex).stripWhiteSpace().isEmpty())
+    return FALSE;
+  
+  QString t_i;
+  QString ptr;
+  QString p_i;
+  int index = s.find("${t", strindex);
+  
+  if ((index == -1) || (index >= sup)) {
+    // no $type
+    index = s.find("${p", strindex);
+    
+    if ((index != -1) && (index < sup)) {
+      // no $type, have name
+      t_i = s.mid(strindex, index - strindex).stripWhiteSpace();
+      
+      // extract ptr
+      int ir = t_i.find('&');
+
+      if (ir != -1) {
+	ptr = t_i.mid(ir).stripWhiteSpace();
+	t_i = t_i.left(ir).stripWhiteSpace();
+      }
+      
+      if (((strindex = s.find('}', index + 2)) == -1) || (strindex >= sup))
+	return FALSE;
+      else {
+	strindex += 1;
+	p_i = s.mid(index, strindex - index);
+      }
+    }
+  }
+  else {
+    if (((strindex = s.find('}', index + 2)) == -1) || (strindex >= sup))
+      return FALSE;
+  
+    strindex += 1;
+    t_i = s.mid(index, strindex - index);
+    
+    index = s.find("${p", strindex);
+    
+    if ((index != -1) && (index < sup)) {
+      // named
+      ptr = s.mid(strindex, index - strindex).stripWhiteSpace();
+      if (((strindex = s.find('}', index + 2)) == -1) || (strindex >= sup))
+	return FALSE;
+      else {
+	strindex += 1;
+	p_i = s.mid(index, strindex - index);
+      }
+    }
+  }
+  
+  setNumRows(tblindex + 1);
+
+  setItem(tblindex, 1, new ComboItem(this, t_i, PhpTypeRankList));
+  setItem(tblindex, 2, new ComboItem(this, ptr, PhpRefList));
+  setItem(tblindex, 3, new ComboItem(this, p_i, PhpParamRankList));
+  
+  strindex = (s.at(sup) == QChar(',')) ? sup + 1 : sup;
+    
+  return TRUE;
+}
+
+void PhpParamsTable::setItem(int row, int col, QTableItem * item) {
+  QTable::setItem(row, col, item);
+  
+  if ((col == 1) || (col == 3))
+    update_name(row);
+}
+
+void PhpParamsTable::setCurrentCell(int row, int col) {
+  QTable::setCurrentCell(row, col);
+  update_names();
+}
+
+void PhpParamsTable::update_names() {
+  int n = numRows();
+  int row;
+
+  for (row = 0; row != n; row += 1)
+    update_name(row);
+}
+
+void PhpParamsTable::update_name(int row) {
+  bool t_set;
+  bool p_set;
+  unsigned t_i;
+  unsigned p_i;
+  
+  if (!text(row, 1).isEmpty() &&
+      (sscanf((const char *) text(row, 1), "${t%u}", &t_i) == 1))
+    t_set = TRUE;
+  else
+    t_set = FALSE;
+  
+  if (!text(row, 3).isEmpty() &&
+      (sscanf((const char *) text(row, 3), "${p%u}", &p_i) == 1))
+    p_set = TRUE;
+  else
+    p_set = FALSE;
+  
+  if (t_set) {
+    if (p_set)
+      QTable::setItem(row, 0,
+		      new QTableItem(this, QTableItem::Never,
+				     ((t_i == p_i) && (t_i < params->nparams()))
+				     ? params->name(t_i) : QString::null));
+    else
+      QTable::setItem(row, 0,
+		      new QTableItem(this, QTableItem::Never,
+				     (t_i < params->nparams())
+				     ? params->name(t_i) : QString::null));
+  }
+  else
+    QTable::setItem(row, 0,
+		    new QTableItem(this, QTableItem::Never,
+				   (p_set && (p_i < params->nparams()))
+				   ? params->name(p_i) : QString::null));
+}
+
+void PhpParamsTable::button_pressed(int row, int col, int, const QPoint &) {
+  if (col == 4) {
+    char s[16];
+    
+    sprintf(s, "param %d", row + 1);
+    
+    QPopupMenu m;
+    m.insertItem(s, -1);
+    m.insertSeparator();
+    m.insertItem("Insert param before", 0);
+    m.insertItem("Insert param after", 1);
+    m.insertSeparator();
+    m.insertItem("Delete param", 2);
+    m.insertSeparator();
+    m.insertItem("Copy param", 3);
+    m.insertItem("Cut param", 4);
+    m.insertItem("Paste param", 5);
+    m.insertSeparator();
+    
+    QPopupMenu mv;
+    int rank;
+    
+    for (rank = 0; rank != numRows(); rank += 1)
+      if (rank != row)
+	mv.insertItem(QString::number(rank + 1), 10 + rank);
+    
+    m.insertItem("Move param", &mv);
+    m.insertSeparator();
+    
+    QPopupMenu rk;
+    int t_i;
+    int p_i;
+    
+    if (text(row, 1).isEmpty() ||
+	(sscanf((const char *) text(row, 1), "${t%d}", &t_i) != 1))
+      t_i = -1;
+    if (text(row, 3).isEmpty() ||
+	(sscanf((const char *) text(row, 3), "${p%d}", &p_i) != 1))
+      p_i = -1;
+    
+    for (rank = 0; rank != params->numRows(); rank += 1)
+      if ((!params->name(rank).isEmpty() || !params->type(rank).isEmpty()) &&
+	  ((rank != t_i) || (rank != p_i)))
+	rk.insertItem(QString::number(rank), 100 + rank);
+    
+    m.insertItem("Set rank <i>", &rk);
+    
+    switch (rank = m.exec(QCursor::pos())) {
+    case 0:
+      insert_row_before(row);
+      break;
+    case 1:
+      insert_row_after(row);
+      break;
+    case 2:
+      delete_row(row);
+      break;
+    case 3:
+      copy_row(row);
+      break;
+    case 4:
+      cut_row(row);
+      break;
+    case 5:
+      paste_row(row);
+      break;
+    default:
+      if (rank >= 100) {
+	char s[16];
+	
+	if (t_i != -1) {
+	  sprintf(s, "${t%d}", rank - 100);
+	  setItem(row, 1, new ComboItem(this, s, PhpTypeRankList));
+	}
+	
+	if (p_i != -1) {
+	  sprintf(s, "${p%d}", rank - 100);
+	  setItem(row, 3, new ComboItem(this, s, PhpParamRankList));
+	}
+      }
+      else if (rank >= 10)
+	move_row(row, rank - 10);
+      break;
+    }
+  }
+}
+
+void PhpParamsTable::insert_row_before(int row) {
+  int n = numRows();
+  int index;
+  int col;
+  
+  setNumRows(n + 1);
+  
+  for (index = n; index != row; index -= 1) {
+    for (col = 0; col != 4; col += 1) {
+      QTableItem * it = item(index - 1, col);
+      
+      takeItem(it);
+      setItem(index, col, it);
+    }
+    setText(index, 4, text(index - 1, 4));
+  }
+
+  init_row(row);
+ }
+
+void PhpParamsTable::insert_row_after(int row) {
+  int n = numRows();
+  int index;
+  int col;
+  
+  setNumRows(n + 1);
+  
+  for (index = n; index > row + 1; index -= 1) {
+    for (col = 0; col != 4; col += 1) {
+      QTableItem * it = item(index - 1, col);
+      
+      takeItem(it);
+      setItem(index, col, it);
+    }
+    setText(index, 4, text(index - 1, col));
+  }
+
+  init_row(row + 1);
+ }
+
+void PhpParamsTable::delete_row(int row) {
+  int n = numRows();
+  int index;
+  int col;
+
+  clearCellWidget(row, 1);
+    
+  if (row == (n - 1)) {
+    // the last line : empty it
+    init_row(row);
+  }
+  else {
+    for (index = row; index != n - 1; index += 1) {
+      for (col = 0; col != 4; col += 1) {
+	QTableItem * it = item(index + 1, col);
+	
+	takeItem(it);
+	setItem(index, col, it);
+      }
+      setText(index, 4, text(index + 1, col));
+    }
+    
+    setNumRows(n - 1);
+  }
+}
+
+void PhpParamsTable::copy_row(int row) {
+  int col;
+  
+  for (col = 0; col != 5; col += 1)
+    copied[col] = text(row, col);
+}
+
+void PhpParamsTable::cut_row(int row) {
+  copy_row(row);
+  delete_row(row);
+}
+
+void PhpParamsTable::paste_row(int row) {
+  int col;
+  
+  for (col = 0; col != 5; col += 1)
+    setText(row, col, copied[col]);
+}
+
+void PhpParamsTable::move_row(int from, int to) {
+  int col;
+  QString save_copied[5];
+  
+  for (col = 0; col != 5; col += 1)
+    save_copied[col] = copied[col];
+  
+  cut_row(from);
+  if (to > from)
+    insert_row_after(to - 1);
+  else
+    insert_row_before(to);
+  paste_row(to);
+  
+  for (col = 0; col != 5; col += 1)
+    copied[col] = save_copied[col];
+}
+
+void PhpParamsTable::update_edform() {
+  forceUpdateCells();
+  
+  QString s;
+  const char * sep = "";
+  
+  int n = numRows();
+  int index;
+  
+  for (index = 0; index != n; index += 1) {
+    QString p;
+    int col;
+    
+    for (col = 1; col != 4; col += 1) {
+      if (!text(index, col).isEmpty()) {
+	if (p.isEmpty())
+	  p += text(index, col);
+	else
+	  p += " " + text(index, col);
+      }
+    }
+    
+    p = p.stripWhiteSpace();
+    if (! p.isEmpty()) {
+      s += sep + p;
+      sep = ", ";
+    }
+  }
+  
+  QString form = edform->text();
+  
+  index = form.find("${(}");
+  
+  form.replace(index + 4, form.find("${)}") - index - 4, s);
+  edform->setText(form);
+}
+
+//
+// PhpParamsDialog
+//
+
+QSize PhpParamsDialog::previous_size;
+
+PhpParamsDialog::PhpParamsDialog(ParamsTable * params, MultiLineEdit * form)
+    : QDialog(0, "Php parameters dialog", TRUE) {
+  setCaption("Php parameters dialog");
+
+  QVBoxLayout * vbox = new QVBoxLayout(this); 
+  
+  vbox->setMargin(5);
+
+  tbl = new PhpParamsTable(params, form, this);
+  vbox->addWidget(tbl);
+  
+  QHBoxLayout * hbox = new QHBoxLayout(vbox); 
+  hbox->setMargin(5);
+  QPushButton * accept = new QPushButton("&OK", this);
+  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QSize bs(cancel->sizeHint());
+  
+  accept->setDefault(TRUE);
+  accept->setFixedSize(bs);
+  cancel->setFixedSize(bs);
+  
+  hbox->addWidget(accept);
+  hbox->addWidget(cancel);
+    
+  connect(accept, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+}
+
+PhpParamsDialog::~PhpParamsDialog() {
+  previous_size = size();
+}
+
+void PhpParamsDialog::polish() {
+  QDialog::polish();
+  UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
+}
+  
+
+void PhpParamsDialog::accept() {
   tbl->update_edform();
   
   QDialog::accept();

@@ -93,7 +93,7 @@ class PinDialog : public QTabDialog {
     static void post_edit_java_selection(PinDialog * d, QString s);
     
     void init_tab(QWidget *& tab, MultiLineEdit *& ed, const char * v,
-		  const char * lbl, const char * sl);
+		  const char * lbl, const char * sl, bool enabled);
     
   public:
     PinDialog(PinData * a);

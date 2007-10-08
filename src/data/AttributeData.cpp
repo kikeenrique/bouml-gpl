@@ -64,7 +64,7 @@ AttributeData::AttributeData(const AttributeData * model, BrowserNode * bn)
       uml_visibility(model->uml_visibility),
       cpp_visibility(model->cpp_visibility), cpp_decl(model->cpp_decl), 
       java_decl(model->java_decl), java_annotation(model->java_annotation),
-      idl_decl(model->idl_decl) {
+      php_decl(model->php_decl), idl_decl(model->idl_decl) {
   browser_node = bn;
   idl_case = 0;	// set_idlcase look at current value
   set_type(model->type);
@@ -118,6 +118,12 @@ void AttributeData::set_browser_node(BrowserAttribute * a, bool update,
 	  : GenerationSettings::java_default_enum_pattern_item_decl();
     }
     
+    if (GenerationSettings::php_get_default_defs()) {
+      php_decl = (enum_item)
+	? GenerationSettings::php_default_enum_item_decl()
+	: GenerationSettings::php_default_attr_decl();
+    }
+    
     QString idl_st = ClassDialog::idl_stereotype(cl_stereotype);
     
     if (GenerationSettings::idl_get_default_defs()) {
@@ -159,6 +165,13 @@ QString AttributeData::definition(bool full, DrawingLanguage language) const {
       return definition(FALSE);
     else
       return QString::null;
+  case PhpView:
+    if (full)
+      return AttributeDialog::php_decl((BrowserAttribute *) browser_node);
+    else if (!php_decl.isEmpty())
+      return definition(FALSE);
+    else
+      return QString::null;
   default:
     if (full)
       return AttributeDialog::idl_decl((BrowserAttribute *) browser_node);
@@ -173,6 +186,7 @@ bool AttributeData::decldefbody_contain(const QString & s, bool cs,
 					BrowserNode *) {
   return ((QString(get_cppdecl()).find(s, 0, cs) != -1) ||
 	  (QString(get_javadecl()).find(s, 0, cs) != -1) ||
+	  (QString(get_phpdecl()).find(s, 0, cs) != -1) ||
 	  (QString(get_idldecl()).find(s, 0, cs) != -1));
 }
 
@@ -318,6 +332,10 @@ void AttributeData::send_java_def(ToolCom * com) {
     com->write_string(java_annotation);
 }
 
+void AttributeData::send_php_def(ToolCom * com) {
+  com->write_string(php_decl);
+}
+
 void AttributeData::send_idl_def(ToolCom * com) {
   com->write_string(idl_decl);
   if (idl_case == 0) {
@@ -375,6 +393,9 @@ bool AttributeData::tool_cmd(ToolCom * com, const char * args,
 	    s += '\n';
 	  java_annotation = s;
 	}
+	break;
+      case setPhpDeclCmd:
+	php_decl = args;
 	break;
       case setIdlDeclCmd:
 	idl_decl = args;
@@ -482,6 +503,10 @@ void AttributeData::save(QTextStream & st, QString & warning) const {
     st << "java_annotation ";
     save_string(java_annotation, st);
   }
+  
+  nl_indent(st);
+  st << "php_decl ";
+  save_string(php_decl, st);  
   
   nl_indent(st);
   if (idl_case != 0) {
@@ -602,6 +627,13 @@ void AttributeData::read(char * & st, char * & k) {
   }
   else
     java_annotation = QString::null;
+    
+  if (!strcmp(k, "php_decl")) {
+    php_decl = read_string(st);
+    k = read_keyword(st);
+  }
+  else
+    php_decl = QString::null;
     
   if (!strcmp(k, "idl_case")) {
     set_idlcase(BrowserAttribute::read_ref(st), "");

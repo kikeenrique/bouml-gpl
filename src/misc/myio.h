@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include "UmlEnum.h"
 
-#define FILEFORMAT 43
+#define FILEFORMAT 44
 
 class QDir;
 class QFile;
@@ -46,6 +46,8 @@ class QRect;
 class QFont;
 
 class DiagramItem;
+
+extern QString my_baseName(QFileInfo & fi);
 
 typedef struct {
   QString filename;

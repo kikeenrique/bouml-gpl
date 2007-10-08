@@ -42,6 +42,7 @@
 #include "strutil.h"
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
+#include "GenerationSettings.h"
 
 QSize StateDialog::previous_size;
 
@@ -100,15 +101,17 @@ StateDialog::StateDialog(StateData * d)
 
   // UML / OCL
   init_tab(ocltab, uml, state->uml, "Ocl", SLOT(edit_uml_entry()),
-	   SLOT(edit_uml_exit()), SLOT(edit_uml_activity()));
+	   SLOT(edit_uml_exit()), SLOT(edit_uml_activity()), TRUE);
 
   // CPP
   init_tab(cpptab, cpp, state->cpp, "C++", SLOT(edit_cpp_entry()),
-	   SLOT(edit_cpp_exit()), SLOT(edit_cpp_activity()));
+	   SLOT(edit_cpp_exit()), SLOT(edit_cpp_activity()),
+	   GenerationSettings::cpp_get_default_defs());
 
   // Java
   init_tab(javatab, java, state->java, "Java", SLOT(edit_java_entry()),
-	   SLOT(edit_java_exit()), SLOT(edit_java_activity()));
+	   SLOT(edit_java_exit()), SLOT(edit_java_activity()),
+	   GenerationSettings::java_get_default_defs());
   
   // USER : list key - value
   
@@ -153,7 +156,8 @@ void StateDialog::polish() {
 
 void StateDialog::init_tab(QWidget *& tab, StDialog & d, StateBehavior & st,
 			   const char * lbl, const char * sl_enbeh,
-			   const char * sl_exbeh, const char * sl_beh) {
+			   const char * sl_exbeh, const char * sl_beh,
+			   bool enabled) {
   QGrid * grid = new QGrid(2, this);
   QVBox * vtab;
 
@@ -198,6 +202,9 @@ void StateDialog::init_tab(QWidget *& tab, StDialog & d, StateBehavior & st,
     d.edactivity->setReadOnly(TRUE);
   
   addTab(grid, lbl);
+  
+  if (! enabled)
+    removePage(grid);
 }
 
 void StateDialog::edit_description() {

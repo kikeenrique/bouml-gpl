@@ -1146,6 +1146,7 @@ bool BrowserNode::tool_cmd(ToolCom * com, const char * args) {
   case getUmlDefCmd:
   case getCppDefCmd:
   case getJavaDefCmd:
+  case getPhpDefCmd:
   case getIdlDefCmd:
     get_data()->send_uml_def(com, this, comment);
     break;

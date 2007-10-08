@@ -27,6 +27,7 @@
 #define UMLPACKAGE_H
 
 #include "UmlBasePackage.h"
+#include "aLanguage.h"
 
 struct Dir {
   QCString src;
@@ -45,11 +46,13 @@ class UmlPackage : public UmlBasePackage {
     QCString source_path(const QCString &);
     QCString header_path(const QCString &);
     QCString java_path(const QCString &);
+    QCString php_path(const QCString &);
     virtual void roundtrip_cpp();
     virtual void roundtrip_java();
+    virtual void roundtrip_php();
     virtual UmlPackage * package();
     
-    static QCString rootDir(bool cpp);
+    static QCString rootDir(aLanguage who);
 };
 
 #endif

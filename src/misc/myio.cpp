@@ -52,6 +52,18 @@
 #include "DialogUtil.h"
 #include "mu.h"
 
+// QFile::baseName() return string before the first '.' rather than the last
+
+QString my_baseName(QFileInfo & fi)
+{
+  QString fn = fi.fileName();
+  int index = fn.findRev('.');
+  
+  return (index == -1)
+    ? fn
+    : fn.left(index);
+}
+
 static ReadContext Context;
 static bool ReadOnlyForced;
 
@@ -434,6 +446,8 @@ const char * stringify(DrawingLanguage l)
     return "c++";
   case JavaView:
     return "java";
+  case PhpView:
+    return "php";
   case IdlView:
     return "idl";
   case DefaultDrawingLanguage:
@@ -762,6 +776,8 @@ DrawingLanguage drawing_language(const char * s)
     return CppView;
   if (!strcmp(s, "java"))
     return JavaView;
+  if (!strcmp(s, "php"))
+    return PhpView;
   if (!strcmp(s, "idl"))
     return IdlView;
   if (!strcmp(s, "default"))

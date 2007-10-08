@@ -61,7 +61,7 @@ static char * read_file(const char * filename)
     return 0;
 }
 
-void UmlOperation::roundtrip(const char * path, bool cpp)
+void UmlOperation::roundtrip(const char * path, aLanguage who)
 {
   char * s = read_file(path);
   
@@ -120,10 +120,34 @@ void UmlOperation::roundtrip(const char * path, bool cpp)
 	p2 -= 1;
       *p2 = 0;
       
-      QCString previous = (cpp) ? op->cppBody() : op->javaBody();
+      QCString previous;
+      
+      switch (who) {
+      case cppLanguage:
+	previous = op->cppBody();
+	break;
+      case javaLanguage:
+	previous = op->javaBody();
+	break;
+      default:
+	previous = op->phpBody();
+      }
 	  
       if (body != previous) {
-	if (! ((cpp) ? op->set_CppBody(body) : op->set_JavaBody(body))) {
+	bool ok;
+	
+	switch (who) {
+	case cppLanguage:
+	  ok = op->set_CppBody(body);
+	  break;
+	case javaLanguage:
+	  ok = op->set_JavaBody(body);
+	  break;
+	default:
+	  ok = op->set_PhpBody(body);
+	}
+	
+	if (! ok) {
 	  write_trace_header();
 	  UmlCom::trace("<tt>        </tt><font color=\"red\"><b>cannot update body of <i>"
 			+ op->name() + "</i></b></font><br>");

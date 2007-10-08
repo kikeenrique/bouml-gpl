@@ -225,6 +225,9 @@ static void default_decls(RoleData & r, UmlCode type, QString cl_stereotype)
   if (GenerationSettings::java_get_default_defs())
     r.java_decl = GenerationSettings::java_default_rel_decl(QString::null);
   
+  if (GenerationSettings::php_get_default_defs())
+    r.php_decl = GenerationSettings::php_default_rel_decl();
+  
   if (GenerationSettings::idl_get_default_defs()) {
     QString idl_st = ClassDialog::idl_stereotype(cl_stereotype);
     
@@ -261,6 +264,8 @@ BrowserRelation * RelationData::set_start_end(BrowserRelation * s, BrowserClass 
 	  ? "${type}" : "";
       if (GenerationSettings::java_get_default_defs())
 	a.java_decl = "${type}";
+      if (GenerationSettings::php_get_default_defs())
+	a.php_decl = "${type}";
       if (GenerationSettings::idl_get_default_defs())
 	a.idl_decl = (ClassDialog::idl_stereotype(st) != "enum")
 	  ? "${type}" : "";
@@ -378,9 +383,11 @@ bool RelationData::decldefbody_contain(const QString & s, bool cs,
   return (is_a((BrowserRelation *) br))
     ? ((QString(get_cppdecl_a()).find(s, 0, cs) != -1) ||
        (QString(get_javadecl_a()).find(s, 0, cs) != -1) ||
+       (QString(get_phpdecl_a()).find(s, 0, cs) != -1) ||
        (QString(get_idldecl_a()).find(s, 0, cs) != -1))
     : ((QString(get_cppdecl_b()).find(s, 0, cs) != -1) ||
        (QString(get_javadecl_b()).find(s, 0, cs) != -1) ||
+       (QString(get_phpdecl_b()).find(s, 0, cs) != -1) ||
        (QString(get_idldecl_b()).find(s, 0, cs) != -1));
 }
 
@@ -668,6 +675,15 @@ void RelationData::send_java_def(ToolCom * com, BrowserRelation * rel) {
   }
 }
 
+void RelationData::send_php_def(ToolCom * com, BrowserRelation * rel) {
+  if (rel == start) {
+    com->write_string(a.php_decl);
+  }
+  else {
+    com->write_string(b.php_decl);
+  }
+}
+
 void RelationData::send_idl_def(ToolCom * com, BrowserRelation * rel) {
   if (rel == start) {
     com->write_string(a.idl_decl);
@@ -779,6 +795,9 @@ bool RelationData::tool_cmd(ToolCom * com, BrowserRelation * rel,
 	  r.java_annotation = s;
 	}
 	break;
+      case setPhpDeclCmd:
+	r.php_decl = args;
+	break;
       case setIdlDeclCmd:
 	r.idl_decl = args;
 	break;
@@ -850,6 +869,8 @@ bool RelationData::tool_cmd(ToolCom * com, BrowserRelation * rel,
       send_uml_def(com, rel);
       send_cpp_def(com, rel);
       send_java_def(com, rel);
+      if (com->api_format() >= 34)
+	send_php_def(com, rel);
       send_idl_def(com, rel);
       break;
     case getUmlDefCmd:
@@ -862,6 +883,10 @@ bool RelationData::tool_cmd(ToolCom * com, BrowserRelation * rel,
     case getJavaDefCmd:
       send_uml_def(com, rel);
       send_java_def(com, rel);
+      break;
+    case getPhpDefCmd:
+      send_uml_def(com, rel);
+      send_php_def(com, rel);
       break;
     case getIdlDefCmd:
       send_uml_def(com, rel);
@@ -951,6 +976,12 @@ static void save_role(const RoleData & role, bool assoc, QTextStream & st,
     nl_indent(st);
     st << "java_annotation ";
     save_string(role.java_annotation, st);
+  }
+  
+  if (!role.php_decl.isEmpty()) {
+    nl_indent(st);
+    st << "php ";
+    save_string(role.php_decl, st);
   }
   
   if (role.idl_case != 0) {
@@ -1154,6 +1185,13 @@ static void read_role(RoleData & role, bool assoc,
   else
     role.java_annotation = QString::null;
   
+  if (!strcmp(k, "php")) {
+    role.php_decl = read_string(st);
+    k = read_keyword(st);
+  }
+  else
+    role.php_decl = QString::null;
+
   if (!strcmp(k, "idl_case")) {
     rd->set_idlcase(role, BrowserAttribute::read_ref(st), "");
     k = read_keyword(st);

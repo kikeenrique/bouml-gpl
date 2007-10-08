@@ -219,7 +219,7 @@ void UmlClass::generate(QTextOStream & f, QCString indent) {
 	      f << '\n';
 	    }
 	  }
-	  else if ((ch[index]->kind() != aNcRelation) &&
+	  else if ((it->kind() != aNcRelation) &&
 		   !((UmlClassItem *) it)->javaDecl().isEmpty())
 	    ((UmlClassItem *) it)->generate(f, stereotype, indent);
 	}

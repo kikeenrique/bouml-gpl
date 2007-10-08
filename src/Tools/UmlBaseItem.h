@@ -266,6 +266,12 @@ class UmlBaseItem {
     virtual void read_java_();
 #endif
 
+#ifdef WITHPHP
+    //internal, do NOT use it
+    
+    virtual void read_php_();
+#endif
+
 #ifdef WITHIDL
     //internal, do NOT use it
     

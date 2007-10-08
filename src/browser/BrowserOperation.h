@@ -64,12 +64,14 @@ class BrowserOperation : public BrowserNode, public Labeled<BrowserOperation> {
     void set_get_of(BrowserNode * o);
     void set_set_of(BrowserNode * o);
     void update_get_of(const QString & attr_name, const QString & cpp_decl,
-		       const QString & java_decl, const QString & idl_decl,
+		       const QString & java_decl, const QString & php_decl, 
+		       const QString & idl_decl,
 		       bool is_const, bool is_class_member,
 		       const AType & cl, QString multiplicity = QString::null,
 		       QString stereotype = QString::null);
     void update_set_of(const QString & attr_name, const QString & cpp_decl,
-		       const QString & java_decl, const QString & idl_decl,
+		       const QString & java_decl, const QString & php_decl, 
+		       const QString & idl_decl,
 		       bool is_const, bool is_class_member,
 		       const AType & cl, QString multiplicity = QString::null,
 		       QString stereotype = QString::null);

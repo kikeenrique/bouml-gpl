@@ -42,6 +42,7 @@
 #include "strutil.h"
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
+#include "GenerationSettings.h"
 
 QSize StateActionDialog::previous_size;
 
@@ -122,6 +123,9 @@ StateActionDialog::StateActionDialog(StateActionData * d)
   
   addTab(grid, "C++");
   
+  if (! GenerationSettings::cpp_get_default_defs())
+    removePage(grid);
+  
   // Java
   grid = new QGrid(2, this);
   javatab = grid;
@@ -135,6 +139,9 @@ StateActionDialog::StateActionDialog(StateActionData * d)
     java->setReadOnly(TRUE);
   
   addTab(grid, "Java");
+  
+  if (! GenerationSettings::java_get_default_defs())
+    removePage(grid);
 
   // USER : list key - value
   

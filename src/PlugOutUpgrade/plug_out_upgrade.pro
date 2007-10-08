@@ -92,5 +92,5 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp \
 		../Tools/UmlBaseClassInstance.cpp
 
 TARGET	      = plug_out_upgrade
-DEFINES	      = WITHCPP WITHJAVA WITHIDL
+DEFINES	      = WITHCPP WITHJAVA WITHPHP WITHIDL
 INCLUDEPATH   = ../Tools ../PlugOutUpgrade

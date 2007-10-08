@@ -1,3 +1,10 @@
+//#define TRACE
+//#ifdef TRACE
+//#include <iostream>
+//
+//using namespace std;
+//#endif
+
 #include "UmlCom.h"
 
 #include <qsocketdevice.h> 
@@ -28,7 +35,7 @@ bool UmlCom::connect(unsigned int port)
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(32);
+    write_unsigned(33);
     flush();
     return TRUE;
   }
@@ -718,7 +725,7 @@ bool UmlCom::set_root_permission(bool y)
 void UmlCom::send_cmd(CmdFamily f, unsigned int cmd, unsigned int u, char c)
 {
 #ifdef TRACE
-  cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << u ", " << (int) c << ")\n";
+  cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << u << ", " << (int) c << ")\n";
 #endif
   
   write_char(f);

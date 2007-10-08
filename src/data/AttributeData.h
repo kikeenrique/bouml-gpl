@@ -58,6 +58,9 @@ class AttributeData : public ClassMemberData {
     SharedStr java_decl;
     SharedStr java_annotation;
     
+    // Php
+    SharedStr php_decl;
+    
     // Idl
     BrowserAttribute * idl_case;	// exclusive with idl_explicit_case
     MyStr idl_explicit_case;
@@ -67,6 +70,7 @@ class AttributeData : public ClassMemberData {
 			      const QString & comment);
     virtual void send_cpp_def(ToolCom * com);
     virtual void send_java_def(ToolCom * com);
+    virtual void send_php_def(ToolCom * com);
     virtual void send_idl_def(ToolCom * com);
     
   public:
@@ -105,6 +109,8 @@ class AttributeData : public ClassMemberData {
     const char * get_cppdecl() const { return cpp_decl; };
         
     const char * get_javadecl() const { return java_decl; };
+        
+    const char * get_phpdecl() const { return php_decl; };
     
     const char * get_idldecl() const { return idl_decl; };
     const char * get_idlcase() const;

@@ -44,6 +44,7 @@ PackageData::PackageData(PackageData * model)
   cpp_src_dir = model->cpp_src_dir;
   cpp_h_dir = model->cpp_h_dir;
   java_dir = model->java_dir;
+  php_dir = model->php_dir;
   idl_dir = model->idl_dir;
   cpp_namespace = model->cpp_namespace;
   java_package = model->java_package;
@@ -70,6 +71,10 @@ void PackageData::send_cpp_def(ToolCom * com) {
 void PackageData::send_java_def(ToolCom * com) {
   com->write_string(java_dir);
   com->write_string(java_package);
+}
+
+void PackageData::send_php_def(ToolCom * com) {
+  com->write_string(php_dir);
 }
 
 void PackageData::send_idl_def(ToolCom * com) {
@@ -101,6 +106,9 @@ bool PackageData::tool_cmd(ToolCom * com, const char * args,
 	break;
       case setJavaPackageCmd:
 	java_package = args;
+	break;
+      case setPhpDirCmd:
+	php_dir = args;
 	break;
       case setIdlDirCmd:
 	idl_dir = args;
@@ -154,6 +162,11 @@ void PackageData::save(QTextStream & st, QString & warning) const {
     st << "java_package ";
     save_string(java_package, st);
   }
+  if (!php_dir.isEmpty()) {
+    nl_indent(st);
+    st << "php_dir ";
+    save_string(php_dir, st);
+  }
   if (!idl_dir.isEmpty()) {
     nl_indent(st);
     st << "idl_dir ";
@@ -187,6 +200,10 @@ void PackageData::read(char * & st, char * & k) {
   }
   if (!strcmp(k, "java_package")) {
     java_package = read_string(st);
+    k = read_keyword(st);
+  }
+  if (!strcmp(k, "php_dir")) {
+    php_dir = read_string(st);
     k = read_keyword(st);
   }
   if (!strcmp(k, "idl_dir")) {

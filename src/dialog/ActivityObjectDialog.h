@@ -88,7 +88,7 @@ class ActivityObjectDialog : public QTabDialog {
     static void post_edit_java_selection(ActivityObjectDialog * d, QString s);
     
     void init_tab(QWidget *& w, MultiLineEdit *& ed, const char * v,
-		  const char * lbl, const char * sl);
+		  const char * lbl, const char * sl, bool enabled);
     
   public:
     ActivityObjectDialog(ActivityObjectData * a, const char * what,

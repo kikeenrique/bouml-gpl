@@ -70,13 +70,17 @@ BrowserOperation::BrowserOperation(const BrowserOperation * model, BrowserNode *
   
   const char * b;
   
-  b = model->def->get_body(TRUE);
+  b = model->def->get_body('c');
   if ((b != 0) && (*b != 0))
-    def->new_body(b, TRUE);
+    def->new_body(b, 'c');
   
-  b = model->def->get_body(FALSE);
+  b = model->def->get_body('j');
   if ((b != 0) && (*b != 0))
-    def->new_body(b, FALSE);
+    def->new_body(b, 'j');
+  
+  b = model->def->get_body('p');
+  if ((b != 0) && (*b != 0))
+    def->new_body(b, 'p');
 }
 
 BrowserNode * BrowserOperation::duplicate(BrowserNode * p, QString n) {
@@ -106,6 +110,7 @@ BrowserOperation::~BrowserOperation() {
   if (deletedp()) {
     delete_definition(get_ident(), "cpp");
     delete_definition(get_ident(), "java");
+    delete_definition(get_ident(), "php");
   }
 #endif
   
@@ -143,23 +148,28 @@ bool BrowserOperation::delete_internal(QString &) {
 void BrowserOperation::renumber(int phase) {
   static QPtrDict<char> cpp;
   static QPtrDict<char> java;
+  static QPtrDict<char> php;
   
   char * b;
   
   if (phase == -1) {  
-    if ((b = def->get_body(TRUE)) != 0)
+    if ((b = def->get_body('c')) != 0)
       cpp.insert(this, b);
-    if ((b = def->get_body(FALSE)) != 0)
+    if ((b = def->get_body('j')) != 0)
       java.insert(this, b);
+    if ((b = def->get_body('p')) != 0)
+      php.insert(this, b);
   }
   else {
     new_ident(phase, all);
     def->renumber(phase);
     
     if ((b = cpp.take(this)) != 0)
-      def->new_body(b, TRUE);
+      def->new_body(b, 'c');
     if ((b = java.take(this)) != 0)
-      def->new_body(b, FALSE);
+      def->new_body(b, 'j');
+    if ((b = php.take(this)) != 0)
+      def->new_body(b, 'p');
   }
 }
 
@@ -234,6 +244,7 @@ static QString substr_name(QString s, const QString & a)
 void BrowserOperation::update_get_of(const QString & attr_name,
 				     const QString & cpp_decl,
 				     const QString & java_decl,
+				     const QString & php_decl,
 				     const QString & idl_decl,
 				     bool is_const, bool is_class_member,
 				     const AType & cl,
@@ -248,6 +259,9 @@ void BrowserOperation::update_get_of(const QString & attr_name,
   case JavaView:
     set_name(substr_name(GenerationSettings::java_default_get_name(), attr_name));
     break;
+  case PhpView:
+    set_name(substr_name(GenerationSettings::php_default_get_name(), attr_name));
+    break;
   case IdlView:
     set_name(substr_name(GenerationSettings::idl_default_get_name(), attr_name));
     break;
@@ -255,7 +269,7 @@ void BrowserOperation::update_get_of(const QString & attr_name,
     set_name(QString("get_") + attr_name);
   }
   
-  def->update_get_of(attr_name, cpp_decl, java_decl, idl_decl, is_const,
+  def->update_get_of(attr_name, cpp_decl, java_decl, php_decl, idl_decl, is_const,
 		     is_class_member, cl, multiplicity, ste, create, TRUE);
   
   update_stereotype();
@@ -264,6 +278,7 @@ void BrowserOperation::update_get_of(const QString & attr_name,
 void BrowserOperation::update_set_of(const QString & attr_name,
 				     const QString & cpp_decl,
 				     const QString & java_decl,
+				     const QString & php_decl,
 				     const QString & idl_decl,
 				     bool is_const, bool is_class_member,
 				     const AType & cl,
@@ -278,6 +293,9 @@ void BrowserOperation::update_set_of(const QString & attr_name,
   case JavaView:
     set_name(substr_name(GenerationSettings::java_default_set_name(), attr_name));
     break;
+  case PhpView:
+    set_name(substr_name(GenerationSettings::php_default_set_name(), attr_name));
+    break;
   case IdlView:
     set_name(substr_name(GenerationSettings::idl_default_set_name(), attr_name));
     break;
@@ -285,7 +303,7 @@ void BrowserOperation::update_set_of(const QString & attr_name,
     set_name(QString("set_") + attr_name);
   }
 
-  def->update_set_of(attr_name, cpp_decl, java_decl, idl_decl, is_const,
+  def->update_set_of(attr_name, cpp_decl, java_decl, php_decl, idl_decl, is_const,
 		     is_class_member, cl, multiplicity, ste, create, TRUE);
   
   update_stereotype();
@@ -396,6 +414,9 @@ a double click with the left mouse button does the same thing");
       if (strstr(def->get_javadef(), "${body}") != 0)
 	m.setWhatsThis(m.insertItem("Edit Java body", 5),
 		       "to edit the <em>operation</em> and its Java body");
+      if (strstr(def->get_phpdef(), "${body}") != 0)
+	m.setWhatsThis(m.insertItem("Edit Php body", 6),
+		       "to edit the <em>operation</em> and its Php body");
       m.setWhatsThis(m.insertItem("Duplicate", 1),
 		     "to copy the <em>operation</em> in a new one");
       if (!is_read_only && (edition_number == 0)) {
@@ -439,6 +460,9 @@ void BrowserOperation::exec_menu_choice(int rank) {
   case 5:
     def->edit(JavaView);
     return;
+  case 6:
+    def->edit(PhpView);
+    return;
   default:
     if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
@@ -465,6 +489,9 @@ void BrowserOperation::apply_shortcut(QString s) {
       if (strstr(def->get_javadef(), "${body}") != 0)
 	if (s == "Edit Java body")
 	  choice = 5;
+      if (strstr(def->get_phpdef(), "${body}") != 0)
+	if (s == "Edit Php body")
+	  choice = 6;
       if (s == "Duplicate")
 	choice = 1;
       if (!is_read_only && (edition_number == 0)) {

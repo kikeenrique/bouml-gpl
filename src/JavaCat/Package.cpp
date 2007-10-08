@@ -190,7 +190,7 @@ int Package::file_number(QDir & d, bool rec)
   QFileInfo * fi;
   
   while ((fi = it.current()) != 0) {
-    if (fi->extension() == "java")
+    if (fi->extension(FALSE) == "java")
       result += 1;
     ++it;
   }

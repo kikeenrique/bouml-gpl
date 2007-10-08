@@ -56,6 +56,8 @@ class ClassData : public BasicData {
     bool cpp_external : 1;		// C++
     bool java_external : 1;		// Java
     bool java_final : 1;		// Java
+    bool php_external : 1;		// Php
+    bool php_final : 1;			// Php
     bool idl_external : 1;		// Idl
     bool idl_local : 1;			// Idl (interface)
     bool idl_custom : 1;		// Idl (valuetype)
@@ -69,6 +71,9 @@ class ClassData : public BasicData {
     SharedStr java_decl;
     SharedStr java_annotation;
     
+    // Php
+    SharedStr php_decl;
+    
     // IDL
     AType switch_type;			// union
     SharedStr idl_decl;
@@ -79,6 +84,7 @@ class ClassData : public BasicData {
 			      const QString & comment);
     virtual void send_cpp_def(ToolCom * com);
     virtual void send_java_def(ToolCom * com);
+    virtual void send_php_def(ToolCom * com);
     virtual void send_idl_def(ToolCom * com);
     
     void update_actuals(BrowserClass *,
@@ -140,6 +146,10 @@ class ClassData : public BasicData {
     const char * get_javadecl() const { return java_decl; };
     bool java_is_external() const { return java_external; };
     bool java_is_final() const { return java_final; };
+        
+    const char * get_phpdecl() const { return php_decl; };
+    bool php_is_external() const { return php_external; };
+    bool php_is_final() const { return php_final; };
     
     const char * get_idldecl() const { return idl_decl; };
     const AType & get_switch_type() const { return switch_type; };

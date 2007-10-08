@@ -44,6 +44,7 @@
 #include "DialogUtil.h"
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
+#include "GenerationSettings.h"
 #include "strutil.h"
 
 QSize ExtraMemberDialog::previous_size;
@@ -139,6 +140,9 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
     
   addTab(grid, "C++");
   
+  if (!GenerationSettings::cpp_get_default_defs())
+    removePage(grid);
+  
   // Java
   
   grid = new QGrid(2, this);
@@ -157,6 +161,30 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
     
   addTab(grid, "Java");
   
+  if (!GenerationSettings::java_get_default_defs())
+    removePage(grid);
+  
+  // Php
+  
+  grid = new QGrid(2, this);
+  grid->setMargin(5);
+  grid->setSpacing(5);
+  
+  vtab = new QVBox(grid);
+  new QLabel("Php :", vtab);
+  if (! visit)
+    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+	    this, SLOT(edit_php_decl()));
+  edphp_decl = new MultiLineEdit(grid);
+  edphp_decl->setReadOnly(visit);
+  edphp_decl->setText(ex->php_decl);
+  edphp_decl->setFont(font);
+    
+  addTab(grid, "Php");
+  
+  if (!GenerationSettings::php_get_default_defs())
+    removePage(grid);
+  
   // IDL
   
   grid = new QGrid(2, this);
@@ -174,6 +202,9 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
   edidl_decl->setFont(font);
     
   addTab(grid, "Idl");
+  
+  if (!GenerationSettings::idl_get_default_defs())
+    removePage(grid);
   
   // USER : list key - value
   
@@ -213,6 +244,7 @@ void ExtraMemberDialog::accept() {
   emd->cpp_def = edcpp_def->text();
   emd->cpp_inline = inline_cb->isChecked();
   emd->java_decl = edjava_decl->text();
+  emd->php_decl = edphp_decl->text();
   emd->idl_decl = edidl_decl->text();
   
   bn->set_comment(comment->text());
@@ -265,6 +297,16 @@ void ExtraMemberDialog::edit_java_decl() {
 void ExtraMemberDialog::post_edit_java_decl(ExtraMemberDialog * d, QString s)
 {
   d->edjava_decl->setText(s);
+}
+
+void ExtraMemberDialog::edit_php_decl() {
+  edit(edphp_decl->text(), edname->text().stripWhiteSpace() + "_class_extra_member",
+       emd, PhpEdit, this, (post_edit) post_edit_php_decl, edits);
+}
+
+void ExtraMemberDialog::post_edit_php_decl(ExtraMemberDialog * d, QString s)
+{
+  d->edphp_decl->setText(s);
 }
 
 void ExtraMemberDialog::edit_idl_decl() {

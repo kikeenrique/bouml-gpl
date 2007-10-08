@@ -49,6 +49,7 @@ ClassData::ClassData()
       bodies_read(FALSE), bodies_modified(FALSE),
       cpp_external(FALSE), 
       java_external(FALSE), java_final(FALSE),
+      php_external(FALSE), php_final(FALSE),
       idl_external(FALSE), idl_local(FALSE), idl_custom(FALSE),
       uml_visibility(UmlPackageVisibility), cpp_visibility(UmlDefaultVisibility) {
   if (GenerationSettings::cpp_get_default_defs())
@@ -56,6 +57,9 @@ ClassData::ClassData()
 
   if (GenerationSettings::java_get_default_defs())
     java_decl = GenerationSettings::java_default_class_decl();
+
+  if (GenerationSettings::php_get_default_defs())
+    php_decl = GenerationSettings::php_default_class_decl();
 
   if (GenerationSettings::idl_get_default_defs())
     idl_decl = GenerationSettings::idl_default_valuetype_decl();
@@ -102,6 +106,8 @@ ClassData::ClassData(const ClassData * model, BrowserNode * bn)
   cpp_external = model->cpp_external;
   java_external = model->java_external;
   java_final = model->java_final;
+  php_external = model->php_external;
+  php_final = model->php_final;
   idl_external = model->idl_external;
   idl_local = model->idl_local;
   idl_custom = model->idl_custom;
@@ -110,6 +116,7 @@ ClassData::ClassData(const ClassData * model, BrowserNode * bn)
   cpp_decl = model->cpp_decl;
   java_decl = model->java_decl;
   java_annotation = model->java_annotation;
+  php_decl = model->php_decl;
   set_switch_type(model->switch_type);
   idl_decl = model->idl_decl;
     
@@ -455,6 +462,7 @@ bool ClassData::decldefbody_contain(const QString & s, bool cs,
 				    BrowserNode *) {
   return ((QString(get_cppdecl()).find(s, 0, cs) != -1) ||
 	  (QString(get_javadecl()).find(s, 0, cs) != -1) ||
+	  (QString(get_phpdecl()).find(s, 0, cs) != -1) ||
 	  (QString(get_idldecl()).find(s, 0, cs) != -1));
 }
 
@@ -562,6 +570,15 @@ bool ClassData::tool_cmd(ToolCom * com, const char * args,
 	break;
       case setIsJavaFinalCmd:
 	java_final = (*args != 0);
+	break;
+      case setIsPhpExternalCmd:
+	php_external = (*args != 0);
+	break;
+      case setPhpDeclCmd:
+	php_decl = args;
+	break;
+      case setIsPhpFinalCmd:
+	php_final = (*args != 0);
 	break;
       case setIdlDeclCmd:
 	idl_decl = args;
@@ -798,6 +815,12 @@ void ClassData::send_java_def(ToolCom * com) {
     com->write_string(java_annotation);
 }
 
+void ClassData::send_php_def(ToolCom * com) {
+  com->write_string(php_decl);
+  com->write_bool(php_final);
+  com->write_bool(php_external);
+}
+
 void ClassData::send_idl_def(ToolCom * com) {
   com->write_string(idl_decl);
   switch_type.send_def(com);
@@ -865,6 +888,14 @@ void ClassData::save(QTextStream & st, QString & warning) const {
     st << "java_annotation ";
     save_string(java_annotation, st);
   }
+  
+  nl_indent(st);
+  if (php_external)
+    st << "php_external ";
+  if (php_final)
+    st << "php_final ";
+  st << "php_decl ";
+  save_string(php_decl, st);
 
   nl_indent(st);
   if (idl_external)
@@ -1020,6 +1051,29 @@ void ClassData::read(char * & st, char * & k) {
   }
   else
     java_annotation = QString::null;
+  
+  if (!strcmp(k, "php_external")) {
+    php_external = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    php_external = FALSE;
+  
+  if (!strcmp(k, "php_final")) {
+    php_final = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    php_final = FALSE;
+  
+  if (!strcmp(k, "php_decl")) {
+    php_decl = read_string(st);
+    k = read_keyword(st);
+  }
+  else if (read_file_format() >= 44)
+    wrong_keyword(k, "php_decl");
+  else
+    php_decl = "";
   
   if (!strcmp(k, "idl_external")) {
     idl_external = TRUE;

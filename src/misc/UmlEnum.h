@@ -178,7 +178,7 @@ enum UmlColor {
 
 enum ClassDrawingMode { asClass, asControl, asBoundary, asEntity, asActor, Natural, DefaultClassDrawingMode };
 
-enum DrawingLanguage { UmlView, CppView, JavaView, IdlView, DefaultDrawingLanguage };
+enum DrawingLanguage { UmlView, CppView, JavaView, IdlView, PhpView, DefaultDrawingLanguage };
 
 enum ShowContextMode { noContext, umlContext, namespaceContext, packageContext, moduleContext, DefaultShowContextMode };
 

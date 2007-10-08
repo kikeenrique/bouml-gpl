@@ -38,6 +38,10 @@ void UmlItem::roundtrip_java() {
   // does nothing
 }
 
+void UmlItem::roundtrip_php() {
+  // does nothing
+}
+
 UmlPackage * UmlItem::package() {
   return parent()->package();
 }

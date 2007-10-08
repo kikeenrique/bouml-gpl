@@ -95,7 +95,7 @@ class ParameterDialog : public QTabDialog {
     static void post_edit_java_selection(ParameterDialog * d, QString s);
     
     void init_tab(QWidget *& tab, MultiLineEdit *& ed, const char * v,
-		  const char * lbl, const char * sl);
+		  const char * lbl, const char * sl, bool enabled);
     
   public:
     ParameterDialog(ParameterData * a);

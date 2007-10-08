@@ -60,8 +60,8 @@ class OperationData : public ClassMemberData,
     static IdDict<OperationData> all;
   
     // uml
-    UmlVisibility uml_visibility : 8;	// faster that 3 ? (2 not enough!)
-    UmlVisibility cpp_visibility : 8;	// faster that 3 ? (2 not enough!)
+    UmlVisibility uml_visibility : 4;
+    UmlVisibility cpp_visibility : 4;
     bool is_deleted : 1;
     bool is_get_or_set : 1;
     bool isa_class_operation : 1;
@@ -75,6 +75,8 @@ class OperationData : public ClassMemberData,
     bool java_final : 1;		// Java
     bool java_synchronized : 1;		// java
     bool java_get_set_frozen : 1;	// java
+    bool php_final : 1;			// php
+    bool php_get_set_frozen : 1;	// php
     bool idl_oneway : 1;		// Idl
     bool idl_get_set_frozen : 1;	// Idl
     unsigned short nparams;
@@ -95,6 +97,11 @@ class OperationData : public ClassMemberData,
     MayBeSharedStr java_def;
     SharedStr java_name_spec;	// get${Name}
     SharedStr java_annotation;
+
+    // php
+    OperationBody php_body;
+    MayBeSharedStr php_def;
+    SharedStr php_name_spec;	// get${Name}
     
     // idl
     SharedStr idl_decl;
@@ -106,6 +113,7 @@ class OperationData : public ClassMemberData,
 			      const QString & comment);
     virtual void send_cpp_def(ToolCom * com);
     virtual void send_java_def(ToolCom * com);
+    virtual void send_php_def(ToolCom * com);
     virtual void send_idl_def(ToolCom * com);
     
     void set_bodies_info();
@@ -148,6 +156,8 @@ class OperationData : public ClassMemberData,
     
     bool get_java_synchronized() const { return java_synchronized; };
     
+    bool get_php_final() const { return php_final; };
+    
     bool get_idl_oneway() const { return idl_oneway; };
     
     UmlVisibility get_uml_visibility() const { return uml_visibility; };
@@ -183,6 +193,9 @@ class OperationData : public ClassMemberData,
     const char * get_javadef() const { return java_def; };
     QString default_java_def(const QString & name);
 
+    const char * get_phpdef() const { return php_def; };
+    QString default_php_def(const QString & name, bool nobody);
+
     const char * get_idldecl() const { return idl_decl; };
     QString default_idl_decl(const QString & name);
 
@@ -190,12 +203,14 @@ class OperationData : public ClassMemberData,
     
     void update_get_of(const QString & attr_name,
 		       QString cpp_decl, QString java_decl,
-		       QString idl_decl, bool cpp_const, bool is_class_member,
+		       QString php_decl, QString idl_decl,
+		       bool cpp_const, bool is_class_member,
 		       const AType & cl, QString multiplicity,
 		       QString stereotype, bool create, bool update);
     void update_set_of(const QString & attr_name,
 		       QString cpp_decl, QString java_decl,
-		       QString idl_decl, bool cpp_const, bool is_class_member,
+		       QString php_decl, QString idl_decl,
+		       bool cpp_const, bool is_class_member,
 		       const AType & cl, QString multiplicity,
 		       QString stereotype, bool create, bool update);
     
@@ -204,10 +219,10 @@ class OperationData : public ClassMemberData,
     
     bool reference(BrowserClass *) const;
     
-    void new_body(QString, bool cpp);
-    char * get_body(bool cpp);
+    void new_body(QString, int who);
+    char * get_body(int who);
     void create_modified_body_file();
-    void save_body(QFile & qf, char * modified_bodies, bool cpp);
+    void save_body(QFile & qf, char * modified_bodies, int who);
     void save(QTextStream &, bool ref, QString & warning) const;
     static OperationData * read_ref(char * &);
     void read(char * &, char * &);
@@ -229,6 +244,8 @@ class OperationData : public ClassMemberData,
 				  QString multiplicity);
     static void update_java_get_of(QCString & def, const QString & attr_name,
 				   QString attjava_decl);
+    static void update_php_get_of(QCString & def, const QString & attr_name,
+				  QString attphp_decl);
     static void update_idl_get_of(QCString & decl, QString attidl_decl,
 				  QString multiplicity);
     static void update_cpp_set_of(QCString & decl, QCString & def,
@@ -238,6 +255,9 @@ class OperationData : public ClassMemberData,
     static void update_java_set_of(QCString & def,
 				   const QString & attr_name,
 				   QString attjava_decl);
+    static void update_php_set_of(QCString & def,
+				  const QString & attr_name,
+				  QString attphp_decl);
     static void update_idl_set_of(QCString & decl, QString attidl_decl,
 				  QString multiplicity);
     

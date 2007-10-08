@@ -119,7 +119,7 @@ QString ColMsg::def(bool hierarchical, bool full, DrawingLanguage language) {
   else if (!full)
     op = operation->definition(FALSE);
   else {
-    op = operation->definition(TRUE, language, TRUE);
+    op = operation->definition(TRUE, language, TRUE, TRUE);
     
     if (op.isEmpty())
       return op;

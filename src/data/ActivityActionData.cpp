@@ -457,9 +457,11 @@ void OpaqueAction::send_def(ToolCom * com, DrawingLanguage lang) {
   case CppView:
     com->write_string(cpp_behavior);
     break;
-  default:
-    // JavaView
+  case JavaView:
     com->write_string(java_behavior);
+    break;
+  default:
+    break;
   }
 }
 
@@ -573,9 +575,11 @@ void AcceptEventAction::send_def(ToolCom * com, DrawingLanguage lang) {
   case CppView:
     com->write_string(cpp_trigger);
     break;
-  default:
-    // JavaView
+  case JavaView:
     com->write_string(java_trigger);
+    break;
+  default:
+    break;
   }
 }
 
@@ -1365,9 +1369,11 @@ void SendSignalAction::send_def(ToolCom * com, DrawingLanguage lang) {
   case CppView:
     com->write_string(cpp_signal);
     break;
-  default:
-    // JavaView
+  case JavaView:
     com->write_string(java_signal);
+    break;
+  default:
+    break;
   }
 }
 
@@ -1540,9 +1546,11 @@ void ValueSpecificationAction::send_def(ToolCom * com, DrawingLanguage lang) {
   case CppView:
     com->write_string(cpp_value);
     break;
-  default:
-    // JavaView
+  case JavaView:
     com->write_string(java_value);
+    break;
+  default:
+    break;
   }
 }
 

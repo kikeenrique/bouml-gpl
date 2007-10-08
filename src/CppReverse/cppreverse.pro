@@ -42,7 +42,6 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp UmlArtifact.cpp \
 		Class.cpp Package.cpp BrowserNode.cpp Namespace.cpp \
 		Lex.cpp Statistic.cpp ClassContainer.cpp Progress.cpp \
 		../Tools/UmlBaseClassItem.cpp ../Tools/CppSettings.cpp \
-		../Tools/IdlSettings.cpp ../Tools/JavaSettings.cpp \
 		../Tools/UmlBaseArtifact.cpp \
 		../Tools/UmlBaseAttribute.cpp ../Tools/UmlBaseClass.cpp \
 		../Tools/UmlBaseClassDiagram.cpp ../Tools/UmlBaseClassMember.cpp \

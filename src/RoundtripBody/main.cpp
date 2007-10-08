@@ -33,14 +33,20 @@ int main(int argc, char ** argv)
 {
   int port_index;
   bool cpp;
+  bool java;
+  bool php;
   
   if (argc == 3) {
     port_index = 2;
     cpp = (argv[1][0] == 'c');
+    java = (argv[1][0] == 'j');
+    php = (argv[1][0] == 'p');
   }
   else if (argc == 4) {
     set_verbose();
     cpp = (argv[2][0] == 'c');
+    java = (argv[2][0] == 'j');
+    php = (argv[2][0] == 'p');
     port_index = 3;
   }
   else
@@ -48,12 +54,14 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QCString(argv[port_index]).toUInt())) {
     try {
-      UmlCom::trace("<b>Roundtrip body</b> release 1.2.1<br>");
+      UmlCom::trace("<b>Roundtrip body</b> release 1.3<br>");
       UmlCom::traceAutoRaise(FALSE);
       if (cpp) 
 	UmlCom::targetItem()->roundtrip_cpp();  
-      else
-	UmlCom::targetItem()->roundtrip_java();      
+      else if (java)
+	UmlCom::targetItem()->roundtrip_java();  
+      else if (php)
+	UmlCom::targetItem()->roundtrip_php(); 
       
       QCString s;
       

@@ -97,6 +97,13 @@ class AttributeDialog : public QTabDialog {
     QPushButton * editjavaannotation;
     QString javaannotation;
     
+    // php tab
+    QWidget * phptab;
+    bool php_in_enum;
+    bool php_in_typedef;
+    MultiLineEdit * edphpdecl;
+    MultiLineEdit * showphpdecl;
+    
     // IDL tab
     QWidget * idltab;
     bool idl_in_enum;
@@ -124,6 +131,7 @@ class AttributeDialog : public QTabDialog {
   
     static QString cpp_decl(const BrowserAttribute * at);
     static QString java_decl(const BrowserAttribute * at);
+    static QString php_decl(const BrowserAttribute * at);
     static QString idl_decl(const BrowserAttribute * at);
   
   protected slots:
@@ -143,6 +151,9 @@ class AttributeDialog : public QTabDialog {
     void java_unmapped();
     void java_update();
     void java_edit_annotation();
+    void php_default();
+    void php_unmapped();
+    void php_update();
     void idl_default();
     void idl_default_state();
     void idl_default_constant();

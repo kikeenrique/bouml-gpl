@@ -46,8 +46,7 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp UmlArtifact.cpp \
 		UmlTypeSpec.cpp \
 		UmlClassInstance.cpp \
 		../Tools/UmlBaseClassItem.cpp ../Tools/UmlBaseClassMember.cpp \
-		../Tools/CppSettings.cpp \
-		../Tools/IdlSettings.cpp ../Tools/JavaSettings.cpp \
+		../Tools/JavaSettings.cpp \
 		../Tools/UmlBaseAttribute.cpp ../Tools/UmlBaseClass.cpp \
 		../Tools/UmlBaseExtraClassMember.cpp ../Tools/UmlBaseArtifact.cpp \
 		../Tools/UmlBaseClassDiagram.cpp ../Tools/UmlBaseClassView.cpp \

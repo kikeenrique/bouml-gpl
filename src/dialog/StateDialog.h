@@ -92,7 +92,8 @@ class StateDialog : public QTabDialog {
   
   protected:
     void init_tab(QWidget *&, StDialog &, StateBehavior & td, const char * lbl,
-		  const char * sl_enbeh, const char * sl_exbeh, const char * sl_beh);
+		  const char * sl_enbeh, const char * sl_exbeh, const char * sl_beh,
+		  bool enabled);
   protected slots:
     virtual void polish();
     virtual void accept();

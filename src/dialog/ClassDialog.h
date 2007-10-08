@@ -95,6 +95,14 @@ class ClassDialog : public QTabDialog {
     QPushButton * editjavaannotation;
     QString javaannotation;
     
+    // Php
+    QWidget * phptab;
+    QString current_php_stereotype;
+    QCheckBox * php_external_cb;
+    QCheckBox * php_final_cb;
+    MultiLineEdit * edphpdecl;
+    MultiLineEdit * showphpdecl;
+    
     // Idl
     QWidget * idltab;
     QString current_idl_stereotype;
@@ -136,6 +144,12 @@ class ClassDialog : public QTabDialog {
 				   QStringList & node_names,
 				   KeyValuesTable * kvt);
   
+    static void php_generate_decl(QString & s, ClassData * cl, QString def,
+				  QString name, QString stereotype,
+				  QString comment, UmlVisibility visibility,
+				  bool is_final, bool is_abstract,
+				  KeyValuesTable * kvt);
+  
     static void idl_generate_decl(QString & s, ClassData * cl, QString def,
 				  QString name, QString stereotype,
 				  QString basetype, QString comment,
@@ -150,6 +164,7 @@ class ClassDialog : public QTabDialog {
     
     static QString cpp_stereotype(const QString & stereotype);
     static QString java_stereotype(const QString & stereotype);
+    static QString php_stereotype(const QString & stereotype);
     static QString idl_stereotype(const QString & stereotype);
 
   protected slots:
@@ -167,6 +182,9 @@ class ClassDialog : public QTabDialog {
     void java_default_decl();
     void java_unmapped_decl();
     void java_edit_annotation();
+    void php_update_decl();
+    void php_default_decl();
+    void php_unmapped_decl();
     void idl_update_decl();
     void idl_default_decl();
     void idl_unmapped_decl();

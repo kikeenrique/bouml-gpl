@@ -36,22 +36,22 @@ QButtonGroup * VisibilityGroup::init(QWidget * parent, UmlVisibility v,
 				     bool pack_allowed,
 				     const char * title,
 				     const char * default_prefix) {
-   QButtonGroup * bg =
+   bgroup =
      new QButtonGroup((default_prefix != 0) ? 5 : 4,
 		      QGroupBox::Horizontal, title, parent);
-   bg->setExclusive(TRUE);
+   bgroup->setExclusive(TRUE);
    if (default_prefix != 0) {
      default_pfix = default_prefix;
      default_visibility_rb =
-       new QRadioButton(default_pfix + " (protected)", bg);
+       new QRadioButton(default_pfix + " (protected)", bgroup);
    }
    else
      default_visibility_rb = 0;
    
-   public_rb = new QRadioButton("public", bg);
-   protected_rb = new QRadioButton("protected", bg);
-   private_rb = new QRadioButton("private", bg);
-   package_rb = (pack_allowed) ? new QRadioButton("package", bg) : 0;
+   public_rb = new QRadioButton("public", bgroup);
+   protected_rb = new QRadioButton("protected", bgroup);
+   private_rb = new QRadioButton("private", bgroup);
+   package_rb = (pack_allowed) ? new QRadioButton("package", bgroup) : 0;
   
    switch (v) {
     case UmlPublic:
@@ -71,7 +71,7 @@ QButtonGroup * VisibilityGroup::init(QWidget * parent, UmlVisibility v,
 	default_visibility_rb->setChecked(TRUE);
    }
    
-   return bg;
+   return bgroup;
 }
 
 void VisibilityGroup::update_default(const VisibilityGroup & default_grp) {
@@ -84,6 +84,31 @@ void VisibilityGroup::update_default(const VisibilityGroup & default_grp) {
       default_visibility_rb->setText(default_pfix + " (private)");
     else
       default_visibility_rb->setText(default_pfix + " (package)");
+  }
+}
+
+
+void VisibilityGroup::connect(const char * sig, QWidget * w, const char * slt) {
+  QObject::connect(bgroup, sig, w, slt);
+}
+
+void VisibilityGroup::follow(const VisibilityGroup & other) {
+  static bool inside = FALSE;
+    
+  if (! inside) {
+    inside = TRUE;
+    
+    public_rb->setChecked(other.public_rb->isChecked());
+    protected_rb->setChecked(other.protected_rb->isChecked());
+    private_rb->setChecked(other.private_rb->isChecked());
+    if (package_rb != 0) {
+      if (other.package_rb != 0)
+	package_rb->setChecked(other.package_rb->isChecked());
+      else
+	package_rb->setChecked(FALSE);
+    }
+    
+    inside = FALSE;
   }
 }
 

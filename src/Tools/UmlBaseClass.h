@@ -142,14 +142,31 @@ class UmlBaseClass : public UmlClassMember {
     bool set_isJavaFinal(bool y);
 #endif
 
+#ifdef WITHPHP
+    // returns TRUE if the class is external, its definition
+    // must contain how the name is made on the first line
+    // (isPhpExternal by default), the other lines are ignored
+    bool isPhpExternal();
+
+    // set if the class is external
+    // 
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isPhpExternal(bool y);
+
+    // returns TRUE is the class is final   
+    bool isPhpFinal();
+
+    // set if the class is final
+    // 
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isPhpFinal(bool y);
+#endif
+
 #ifdef WITHIDL
     // returns the switch's type, significant in case the class
     // is an union in IDL
     const UmlTypeSpec & switchType();
 
-    // to set the switch type even the class is not (already) an IDL union
-    //
-    // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_SwitchType(const UmlTypeSpec & t);
 
     // returns TRUE if the class is external, its definition
@@ -216,6 +233,12 @@ class UmlBaseClass : public UmlClassMember {
     bool _java_final : 1;
 #endif
 
+#ifdef WITHPHP
+    bool _php_external : 1;
+
+    bool _php_final : 1;
+#endif
+
 #ifdef WITHIDL
     bool _idl_external : 1;
 
@@ -253,6 +276,12 @@ class UmlBaseClass : public UmlClassMember {
     //internal, do NOT use it
     
     virtual void read_java_();
+#endif
+
+#ifdef WITHPHP
+    //internal, do NOT use it
+    
+    virtual void read_php_();
 #endif
 
 #ifdef WITHIDL

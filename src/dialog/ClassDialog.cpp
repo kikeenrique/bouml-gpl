@@ -336,6 +336,9 @@ ClassDialog::ClassDialog(ClassData * c)
   
   addTab(split, "C++");
   
+  if (!GenerationSettings::cpp_get_default_defs())
+    removePage(split);
+  
   // Java
   
   split = new QSplitter(Vertical, this);
@@ -406,6 +409,76 @@ ClassDialog::ClassDialog(ClassData * c)
 
   addTab(split, "Java");
   
+  if (!GenerationSettings::java_get_default_defs())
+    removePage(split);
+  
+  // Php
+  
+  split = new QSplitter(Vertical, this);
+  phptab = split;
+  split->setOpaqueResize(TRUE);
+  
+  vtab = new QVBox(split); 
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(5);
+  lbl1 = new QLabel(htab);
+  bg = new QGroupBox(3, QGroupBox::Horizontal, QString::null, htab);
+  php_final_cb = new QCheckBox("final", bg);
+  if (cl->php_is_final())
+    php_final_cb->setChecked(TRUE);
+  php_external_cb = new QCheckBox("external", bg);
+  if (cl->php_is_external())
+    php_external_cb->setChecked(TRUE);
+  if (visit) {
+    php_final_cb->setDisabled(TRUE);
+    php_external_cb->setDisabled(TRUE);
+  }
+  else {
+    connect(php_final_cb, SIGNAL(toggled(bool)),
+	    SLOT(php_update_decl()));
+    connect(php_external_cb, SIGNAL(toggled(bool)),
+	    SLOT(php_update_decl()));
+  }
+  
+  htab = new QHBox(vtab); 
+  htab->setMargin(5);  
+  lbl2 = new QLabel("Definition : ", htab);
+  edphpdecl = new MultiLineEdit(htab);
+  edphpdecl->setText(c->php_decl);
+  edphpdecl->setFont(font);
+  if (visit)
+    edphpdecl->setReadOnly(TRUE);
+  else
+    connect(edphpdecl, SIGNAL(textChanged()), this, SLOT(php_update_decl()));
+
+  vtab = new QVBox(split); 
+  
+  htab = new QHBox(vtab); 
+  htab->setMargin(5);  
+  lbl3 = new QLabel("Result after\nsubstitution : ", htab);
+  showphpdecl = new MultiLineEdit(htab);
+  showphpdecl->setReadOnly(TRUE);
+  showphpdecl->setFont(font);
+
+  htab = new QHBox(vtab); 
+  lbl4 = new QLabel(htab);
+
+  if (!visit) {
+    connect(new QPushButton("Default definition", htab), SIGNAL(pressed ()),
+	    this, SLOT(php_default_decl()));
+    connect(new QPushButton("Not generated in Php", htab), SIGNAL(pressed ()),
+	    this, SLOT(php_unmapped_decl()));
+          
+  }
+  
+  same_width(lbl1, lbl2, lbl3, lbl4);
+
+  addTab(split, "Php");
+  
+  if (!GenerationSettings::php_get_default_defs())
+    removePage(split);
+  
   // IDL
   
   split = new QSplitter(Vertical, this);
@@ -454,8 +527,7 @@ ClassDialog::ClassDialog(ClassData * c)
     idl_custom_cb->setChecked(TRUE);
   if (visit) {
     idl_local_cb->setDisabled(TRUE);
-    java_final_cb->setDisabled(TRUE);
-    java_external_cb->setDisabled(TRUE);
+    idl_external_cb->setDisabled(TRUE);
   }
   else {
     connect(idl_local_cb, SIGNAL(toggled(bool)),
@@ -501,6 +573,9 @@ ClassDialog::ClassDialog(ClassData * c)
   
   addTab(split, "IDL");
   
+  if (!GenerationSettings::idl_get_default_defs())
+    removePage(split);
+  
   // USER : list key - value
   
   vtab = new QVBox(this);
@@ -513,6 +588,7 @@ ClassDialog::ClassDialog(ClassData * c)
   
   current_cpp_stereotype = cpp_stereotype(stereotype);
   current_java_stereotype = java_stereotype(stereotype);
+  current_php_stereotype = php_stereotype(stereotype);
   current_idl_stereotype = idl_stereotype(stereotype);
   
   edStereotypeActivated(stereotype);
@@ -549,6 +625,14 @@ QString ClassDialog::java_stereotype(const QString & stereotype)
   return ((s == "interface") || (s == "@interface") ||
 	  (s == "enum") || (s == "enum_pattern") ||
 	  (s == "ignored"))
+    ? s : QString("class");
+}
+
+QString ClassDialog::php_stereotype(const QString & stereotype)
+{
+  QString s = GenerationSettings::php_class_stereotype(stereotype);
+  
+  return ((s == "interface") || (s == "enum") || (s == "ignored"))
     ? s : QString("class");
 }
 
@@ -612,6 +696,9 @@ void ClassDialog::edStereotypeActivated(const QString & s) {
   if (current_java_stereotype != java_stereotype(stereotype))
     java_default_decl();
   
+  if (current_php_stereotype != php_stereotype(stereotype))
+    php_default_decl();
+  
   QString idl_st = idl_stereotype(stereotype);
   
   switch_bg->setEnabled(idl_st == "union");
@@ -642,6 +729,11 @@ void ClassDialog::update_all_tabs(QWidget * w) {
     java_update_decl();
     if (!visit)
       edjavadecl->setFocus();
+  }
+  else if (w == phptab) {
+    php_update_decl();
+    if (!visit)
+      edphpdecl->setFocus();
   }
   else if (w == idltab) {
     idl_update_decl();
@@ -1387,6 +1479,227 @@ void ClassDialog::java_edit_annotation() {
     java_update_decl();
 }
   
+static void php_generate_extends(QString & s, const QString & stereotype,
+				 ClassData * cl) {
+  BrowserNodeList inh;
+  const char * sep = " extends ";
+    
+  cl->get_browser_node()->children(inh, UmlGeneralisation, UmlRealize);
+  
+  QListIterator<BrowserNode> it(inh);
+  
+  while (it.current() != 0) {
+    RelationData * r = 
+      (RelationData *) ((BrowserRelation *) it.current())->get_data();
+    
+    if (r->get_phpdecl_a()[0]) {
+      bool gen = FALSE;
+      BrowserClass * mother = r->get_end_class();
+      QString other_stereotype =
+	ClassDialog::php_stereotype(((ClassData *) mother->get_data())->get_stereotype());
+      
+      if (stereotype == "interface") {
+	gen = TRUE;
+	s += sep;
+	
+	if (other_stereotype != "interface")
+	  s += "!!!!!";
+      }
+      else if (other_stereotype != "interface") {
+	gen = TRUE;
+	s += sep;
+	
+	if ((*sep == ',') ||
+	    (stereotype == "union") || (stereotype == "enum") ||
+	    (other_stereotype == "union") || (other_stereotype == "enum"))
+	  s += "!!!!!";
+      }
+      
+      if (gen) {
+	sep = ", ";
+	s += mother->get_name();
+      }
+    }
+    
+    ++it;
+  }
+}
+
+static void php_generate_implements(QString & s, const QString & stereotype,
+				    ClassData * cl) {
+  BrowserNodeList inh;
+  const char * sep = " implements ";
+    
+  cl->get_browser_node()->children(inh, UmlGeneralisation, UmlRealize);
+  
+  QListIterator<BrowserNode> it(inh);
+  
+  while (it.current() != 0) {
+    RelationData * r = 
+      (RelationData *) ((BrowserRelation *) it.current())->get_data();
+    
+    if (r->get_phpdecl_a()[0]) {
+      BrowserClass * mother = r->get_end_class();
+      QString other_stereotype =
+	ClassDialog::php_stereotype(((ClassData *) mother->get_data())->get_stereotype());
+      
+      if (other_stereotype == "interface") {
+	s += sep;
+	
+	if (stereotype == "union")
+	  s += "!!!!!";
+	
+	sep = ", ";
+	s += mother->get_name();
+      }
+    }
+    
+    ++it;
+  }
+}
+
+void ClassDialog::php_generate_decl(QString & s, ClassData * cl, QString def,
+				    QString name, QString stereotype,
+				    QString comment, UmlVisibility visibility,
+				    bool is_final, bool is_abstract,
+				    KeyValuesTable * kvt)
+{
+  const char * p = def;
+  
+  if (p == 0)
+    return;
+  
+  QString indent = "";
+
+  while ((*p == ' ') || (*p == '\t'))
+    indent += *p++;
+  
+  s += indent;
+  
+  const char * pp = 0;
+  
+  for (;;) {
+    if (*p == 0) {
+      if (pp == 0)
+	break;
+      
+      // comment management done
+      p = pp;
+      pp = 0;  
+      if (*p == 0)
+	break;
+      s += indent;
+    }
+      
+    if (!strncmp(p, "${comment}", 10))
+      manage_comment(comment, p, pp, FALSE);
+    else if (!strncmp(p, "${description}", 14))
+      manage_description(comment, p, pp);
+    else if (!strncmp(p, "${public}", 9)) {
+      p += 9;
+      if (visibility == UmlPublic)
+	s += "public ";
+    }
+    else if (!strncmp(p, "${visibility}", 13)) {
+      p += 13;
+      if (visibility != UmlPackageVisibility)
+	s += stringify(visibility) + QString(" ");
+    }
+    else if (!strncmp(p, "${final}", 8)) {
+      p += 8;
+      if (is_final)
+	s += "final ";
+    }
+    else if (!strncmp(p, "${abstract}", 11)) {
+      p += 11;
+      if (is_abstract)
+	s += "abstract ";
+    }
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      s += name;
+    }
+    else if (!strncmp(p, "${extends}", 10)) {
+      p += 10;
+      php_generate_extends(s, stereotype, cl);
+    }
+    else if (!strncmp(p, "${implements}", 13)) {
+      p += 13;
+      php_generate_implements(s, stereotype, cl);
+    }
+    else if (!strncmp(p, "${members}", 10)) {
+      p += 10;
+      generate_members(cl->browser_node, s,
+		       &AttributeData::get_phpdecl, &OperationData::get_phpdef, 
+		       &RelationData::get_phpdecl_a, &RelationData::get_phpdecl_b,
+		       &ExtraMemberData::get_php_decl, &ClassData::get_phpdecl,
+		       php_stereotype, FALSE, FALSE, (stereotype == "enum"));
+    }
+    else if (!strncmp(p, "${items}", 8)) {
+      p += 8;
+      generate_members(cl->browser_node, s,
+		       &AttributeData::get_phpdecl, &OperationData::get_phpdef, 
+		       &RelationData::get_phpdecl_a, &RelationData::get_phpdecl_b,
+		       &ExtraMemberData::get_php_decl, &ClassData::get_phpdecl,
+		       php_stereotype, FALSE, TRUE, FALSE);
+    }
+    else if (*p == '\n') {
+      s += *p++;
+      if (*p)
+	s += indent;
+    }
+    else if (*p == '@')
+      manage_alias(cl->browser_node, p, s, kvt);
+    else
+      s += *p++;
+  }
+}
+
+void ClassDialog::php_update_decl() {
+  QString s;
+  
+  if (php_external_cb->isChecked())
+    showphpdecl->setEnabled(FALSE);
+  else {
+    showphpdecl->setEnabled(TRUE);
+    
+    QString def = edphpdecl->text().stripWhiteSpace();
+
+    php_generate_decl(s, cl, def, 
+		       edname->text().stripWhiteSpace(),
+		       current_php_stereotype, comment->text(),
+		       uml_visibility.value(), php_final_cb->isChecked(),
+		       abstract_cb->isChecked(), kvtable);
+  }
+  
+  showphpdecl->setText(s);
+}
+
+void ClassDialog::php_default_decl() {
+  if (php_external_cb->isChecked())
+    edphpdecl->setText(GenerationSettings::php_default_external_class_decl());
+  else {
+    current_php_stereotype =
+      php_stereotype(edstereotype->currentText().stripWhiteSpace());
+    
+    if (current_php_stereotype == "enum")
+      edphpdecl->setText(GenerationSettings::php_default_enum_decl());
+    else if (current_php_stereotype == "interface")
+      edphpdecl->setText(GenerationSettings::php_default_interface_decl());
+    else if (current_php_stereotype == "ignored")
+      edphpdecl->setText(QString::null);
+    else
+      edphpdecl->setText(GenerationSettings::php_default_class_decl());
+  
+    php_update_decl();
+  }
+}
+
+void ClassDialog::php_unmapped_decl() {
+  edphpdecl->setText(QString::null);
+  showphpdecl->setText(QString::null);
+}
+
 static void idl_generate_inherit(QString & s, QString st, ClassData * cl) {
   if ((st == "union") || (st == "enum"))
     return;
@@ -1655,6 +1968,10 @@ void ClassDialog::accept() {
   cl->java_final = java_final_cb->isChecked();
   cl->java_external = java_external_cb->isChecked();
   cl->java_annotation = javaannotation;
+  
+  cl->php_decl = edphpdecl->text();
+  cl->php_final = php_final_cb->isChecked();
+  cl->php_external = php_external_cb->isChecked();
   
   cl->idl_decl = edidldecl->text();  
   cl->idl_local = idl_local_cb->isChecked();

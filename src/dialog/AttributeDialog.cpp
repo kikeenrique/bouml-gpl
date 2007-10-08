@@ -83,6 +83,10 @@ AttributeDialog::AttributeDialog(AttributeData * a)
   java_in_enum_pattern = !java_in_enum && (lang_st == "enum_pattern");
   java_in_typedef = !java_in_enum && (lang_st == "typedef");
   
+  lang_st = GenerationSettings::php_class_stereotype(stereotype);
+  php_in_enum = in_enum || (lang_st == "enum");
+  php_in_typedef = !php_in_enum && (lang_st == "typedef");
+  
   lang_st = GenerationSettings::idl_class_stereotype(stereotype);
   idl_in_enum = in_enum || (lang_st == "enum");
   idl_in_typedef = !idl_in_enum && (lang_st == "typedef");
@@ -305,6 +309,9 @@ AttributeDialog::AttributeDialog(AttributeData * a)
     }
     
     addTab(grid, "C++");
+  
+    if (!GenerationSettings::cpp_get_default_defs())
+      removePage(grid);
   }
   else
     cpptab = 0;
@@ -367,9 +374,52 @@ AttributeDialog::AttributeDialog(AttributeData * a)
 	    this, SLOT(java_edit_annotation()));
     
     addTab(grid, "Java");
+  
+    if (!GenerationSettings::java_get_default_defs())
+      removePage(grid);
   }
   else
     javatab = 0;
+  
+  // Php
+  
+  if (! php_in_typedef) {
+    grid = new QGrid(2, this);
+    phptab = grid;
+    grid->setMargin(5);
+    grid->setSpacing(5);
+    
+    new QLabel("Declaration :", grid);
+    edphpdecl = new MultiLineEdit(grid);
+    edphpdecl->setText(a->get_phpdecl());
+    edphpdecl->setFont(font);
+    if (visit)
+      edphpdecl->setReadOnly(TRUE);
+    else
+      connect(edphpdecl, SIGNAL(textChanged()), this, SLOT(php_update()));
+    
+    new QLabel("Result after\nsubstitution :", grid);
+    showphpdecl = new MultiLineEdit(grid);
+    showphpdecl->setReadOnly(TRUE);
+    showphpdecl->setFont(font);
+    
+    new QLabel(grid);
+    htab = new QHBox(grid);
+
+    if (! visit) {
+      connect(new QPushButton("Default declaration", htab), SIGNAL(pressed ()),
+	      this, SLOT(php_default()));
+      connect(new QPushButton("Not generated in Php", htab), SIGNAL(pressed ()),
+	      this, SLOT(php_unmapped())); 
+    }
+    
+    addTab(grid, "Php");
+  
+    if (!GenerationSettings::php_get_default_defs())
+      removePage(grid);
+  }
+  else
+    phptab = 0;
   
   // IDL
   
@@ -437,6 +487,9 @@ AttributeDialog::AttributeDialog(AttributeData * a)
     }
     
     addTab(grid, "Idl");
+  
+    if (!GenerationSettings::idl_get_default_defs())
+      removePage(grid);
   }
   else
     idltab = 0;
@@ -593,6 +646,8 @@ void AttributeDialog::accept() {
     att->java_decl = (java_in_typedef) ? QString::null : edjavadecl->text();
     att->java_annotation = javaannotation;
     
+    att->php_decl = (php_in_typedef) ? QString::null : edphpdecl->text();
+    
     att->idl_decl = (idl_in_typedef) ? QString::null : edidldecl->text();
     if (idl_in_union) {
       int index;
@@ -635,6 +690,11 @@ void AttributeDialog::update_all_tabs(QWidget * w) {
     java_update();
     if (!visit)
       edjavadecl->setFocus();
+  }
+  else if (w == phptab) {
+    php_update();
+    if (!visit)
+      edphpdecl->setFocus();
   }
   else if (w == idltab) {
     idl_update();
@@ -1112,6 +1172,167 @@ void AttributeDialog::java_edit_annotation() {
     java_update();
 }
   
+void AttributeDialog::php_default() {
+  if (php_in_enum)
+    edphpdecl->setText(GenerationSettings::php_default_enum_item_decl());
+  else
+    edphpdecl->setText(GenerationSettings::php_default_attr_decl());
+
+  php_update();
+}
+
+void AttributeDialog::php_unmapped() {
+  edphpdecl->setText(QString::null);
+  showphpdecl->setText(QString::null);
+}
+
+void AttributeDialog::php_update() {
+  // do NOT write
+  //	const char * p = edphpdecl->text();
+  // because the QString is immediatly destroyed !
+  QString def = edphpdecl->text();
+  const char * p = def;
+  const char * pp = 0;
+  QString indent = "";
+  QString s;
+
+  while ((*p == ' ') || (*p == '\t'))
+    indent += *p++;
+  
+  s = indent;
+  
+  for (;;) {
+    if (*p == 0) {
+      if (pp == 0)
+	break;
+      
+      // comment management done
+      p = pp;
+      pp = 0;
+      if (*p == 0)
+	break;
+      s += indent;
+    }
+      
+    if (!strncmp(p, "${comment}", 10))
+      manage_comment(comment->text(), p, pp, FALSE);
+    else if (!strncmp(p, "${description}", 14))
+      manage_description(comment->text(), p, pp);
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      if (!php_in_enum && !constattribute_cb->isChecked())
+	s += "$";
+      s += edname->text();
+    }
+    else if (!strncmp(p, "${value}", 8)) {
+      p += 8;
+      
+      if (!edinit->text().stripWhiteSpace().isEmpty()) {
+	s += (edinit->text().stripWhiteSpace().at(0) == QChar('='))
+	  ? " " : " = ";
+	s += edinit->text();
+      }
+      else if (php_in_enum)
+	s += " = ...";
+    }
+    else if (!strncmp(p, "${const}", 8)) {
+      p += 8;
+      if (constattribute_cb->isChecked())
+	s += "const ";
+    }
+    else if (!strncmp(p, "${var}", 6)) {
+      p += 6;
+      if (!php_in_enum && 
+	  !constattribute_cb->isChecked() &&
+	  !classattribute_cb->isChecked() &&
+	  (uml_visibility.value() == UmlPackageVisibility))
+	s += "var ";
+    }
+    else if (*p == '\n') {
+      s += *p++;
+      if (*p)
+	s += indent;
+    }
+    else if (*p == '@')
+      manage_alias(att->browser_node, p, s, kvtable);
+    else if (!strncmp(p, "${visibility}", 13)) {
+      p += 13;
+      if (uml_visibility.value() != UmlPackageVisibility)
+	s += uml_visibility.state() + ' ';
+    }
+    else if (!strncmp(p, "${static}", 9)) {
+      p += 9;
+      if (classattribute_cb->isChecked())
+	s += "static ";
+    }
+    else
+      s += *p++;
+  }
+
+  showphpdecl->setText(s);
+}
+
+QString AttributeDialog::php_decl(const BrowserAttribute * at)
+{
+  QString s;
+  AttributeData * d = (AttributeData *) at->get_data();
+  QCString decl = d->php_decl;
+  
+  remove_comments(decl);
+  
+  const char * p = decl;
+  
+  while ((*p == ' ') || (*p == '\t'))
+    p += 1;
+  
+  while (*p) {
+    if (!strncmp(p, "${comment}", 10))
+      p += 10;
+    else if (!strncmp(p, "${description}", 14))
+      p += 14;
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      
+      ClassData * cld = (ClassData *) 
+	((BrowserNode *) at->parent())->get_data();
+      QString stereotype = cld->get_stereotype();
+      bool in_enum = (stereotype == "enum");
+      QString lang_st = GenerationSettings::php_class_stereotype(stereotype);
+      
+      in_enum |= (lang_st == "enum");
+
+      if (!in_enum &&
+	  !((AttributeData *) at->get_data())->get_isa_const_attribute())
+	s += "$";
+      s += at->get_name();
+    }
+    else if (!strncmp(p, "${value}", 8))
+      break;
+    else if (!strncmp(p, "${const}", 8))
+      p += 8;
+    else if (!strncmp(p, "${visibility}", 13))
+      p += 13;
+    else if (!strncmp(p, "${static}", 9))
+      p += 9;
+    else if (!strncmp(p, "${var}", 6))
+      p += 6;
+    else if (*p == '\n') {
+      s += ' ';
+      do
+	p+= 1;
+      while ((*p == ' ') || (*p == '\t'));
+    }
+    else if (*p == ';')
+      break;
+    else if (*p == '@')
+      manage_alias(at, p, s, 0);
+    else
+      s += *p++;
+  }
+
+  return s;
+}
+
 void AttributeDialog::idl_default() {
   if (idl_in_enum)
     edidldecl->setText(GenerationSettings::idl_default_enum_item_decl());

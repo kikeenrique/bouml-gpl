@@ -42,6 +42,7 @@
 #include "strutil.h"
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
+#include "GenerationSettings.h"
 
 QSize FlowDialog::previous_size;
 
@@ -100,15 +101,18 @@ FlowDialog::FlowDialog(FlowData * d)
 
   // UML / OCL
   init_tab(uml, flow->uml, "Ocl", SLOT(edit_uml_guard()),
-	   SLOT(edit_uml_selection()), SLOT(edit_uml_transformation()));
+	   SLOT(edit_uml_selection()), SLOT(edit_uml_transformation()),
+	   TRUE);
 
   // CPP
   init_tab(cpp, flow->cpp, "C++", SLOT(edit_cpp_guard()),
-	   SLOT(edit_cpp_selection()), SLOT(edit_cpp_transformation()));
+	   SLOT(edit_cpp_selection()), SLOT(edit_cpp_transformation()),
+	   GenerationSettings::cpp_get_default_defs());
 
   // Java
   init_tab(java, flow->java, "Java", SLOT(edit_java_guard()),
-	   SLOT(edit_java_selection()), SLOT(edit_java_transformation()));
+	   SLOT(edit_java_selection()), SLOT(edit_java_transformation()),
+	   GenerationSettings::java_get_default_defs());
   
   // USER : list key - value
   
@@ -145,7 +149,7 @@ void FlowDialog::change_tabs(QWidget * w) {
 
 void FlowDialog::init_tab(FlDialog & d, FlowDef & st, const char * lbl,
 			  const char * sl_guard, const char * sl_selection,
-			  const char * sl_transformation) {
+			  const char * sl_transformation, bool enabled) {
   QGrid * grid = new QGrid(2, this);
   QVBox * vtab;
 
@@ -196,6 +200,9 @@ void FlowDialog::init_tab(FlDialog & d, FlowDef & st, const char * lbl,
     d.edtransformation->setReadOnly(TRUE);
   
   addTab(grid, lbl);
+  
+  if (! enabled)
+    removePage(grid);
 }
 
 void FlowDialog::edit_description() {

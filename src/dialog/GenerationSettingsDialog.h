@@ -122,6 +122,27 @@ class GenerationSettingsDialog : public QTabDialog {
     QCheckBox * java_set_param_final_cb;
     IncludeTable * java_import_table;
   
+    // Php specific
+    MultiLineEdit * edphp_src_content;
+    QComboBox * edphp_extension;
+    QCheckBox * php_phpdoc_cb;
+    MultiLineEdit * edphp_class_decl;
+    LineEdit * edphp_external_class_decl;
+    MultiLineEdit * edphp_interface_decl;
+    MultiLineEdit * edphp_enum_decl;
+    MultiLineEdit * edphp_attr_decl;
+    MultiLineEdit * edphp_enum_item_decl;
+    MultiLineEdit * edphp_rel_decl;
+    MultiLineEdit * edphp_oper_def;
+    VisibilityGroup php_get_visibility;
+    LineEdit * edphp_get_name;
+    QCheckBox * uml_follow_php_get_name;
+    QCheckBox * php_get_final_cb;
+    VisibilityGroup php_set_visibility;
+    LineEdit * edphp_set_name;
+    QCheckBox * uml_follow_php_set_name;
+    QCheckBox * php_set_final_cb;
+  
     // Idl specific
     MultiLineEdit * edidl_src_content;
     QComboBox * edidl_extension;
@@ -158,10 +179,12 @@ class GenerationSettingsDialog : public QTabDialog {
     
     // directories
     LineEdit * edcpproot;
-    LineEdit * edjavaroot;  
+    LineEdit * edjavaroot; 
+    LineEdit * edphproot;  
     LineEdit * edidlroot;
     QPushButton * cpprelbutton;
     QPushButton * javarelbutton;
+    QPushButton * phprelbutton;
     QPushButton * idlrelbutton;
     
     static QSize previous_size;
@@ -182,6 +205,8 @@ class GenerationSettingsDialog : public QTabDialog {
     void init_java2();
     void init_java3();
     void init_java4();
+    void init_php1();
+    void init_php2();
     void init_idl1();
     void init_idl2();
     void init_idl3();
@@ -196,14 +221,22 @@ class GenerationSettingsDialog : public QTabDialog {
     virtual void accept();
     void cpproot_browse();
     void javaroot_browse();
+    void phproot_browse();
     void idlroot_browse();
     void cpp_relative();
     void java_relative();
+    void php_relative();
     void idl_relative();
+    void java_get_visi_changed(int);
+    void java_set_visi_changed(int);
+    void php_get_visi_changed(int);
+    void php_set_visi_changed(int);
     void follow_cpp_get_name();
     void follow_cpp_set_name();
     void follow_java_get_name();
     void follow_java_set_name();
+    void follow_php_get_name();
+    void follow_php_set_name();
     void follow_idl_get_name();
     void follow_idl_set_name();
 };
@@ -219,8 +252,11 @@ class TypesTable : public StringTable {
 };
 
 class StereotypesTable : public StringTable {
+  protected:
+    bool with_php;
+  
   public:
-    StereotypesTable(QWidget * parent, int nst, Stereotype * st);
+    StereotypesTable(QWidget * parent, int nst, Stereotype * st, bool php);
   
     virtual void init_row(int r);
   

@@ -182,15 +182,17 @@ ActivityObjectDialog::ActivityObjectDialog(ActivityObjectData * d, const char * 
   
   // UML / OCL
   init_tab(ocltab, eduml_selection, data->uml_selection, "Ocl",
-	   SLOT(edit_uml_selection()));
+	   SLOT(edit_uml_selection()), TRUE);
 
   // C++
   init_tab(cpptab, edcpp_selection, data->cpp_selection, "C++",
-	   SLOT(edit_cpp_selection()));
+	   SLOT(edit_cpp_selection()),
+	   GenerationSettings::cpp_get_default_defs());
 
   // Java
   init_tab(javatab, edjava_selection, data->java_selection, "Java",
-	   SLOT(edit_java_selection()));
+	   SLOT(edit_java_selection()),
+	   GenerationSettings::java_get_default_defs());
   
   // USER : list key - value
   
@@ -235,7 +237,7 @@ void ActivityObjectDialog::change_tabs(QWidget * w) {
 
 void ActivityObjectDialog::init_tab(QWidget *& w, MultiLineEdit *& ed, 
 				    const char * v, const char * lbl,
-				    const char * sl) {
+				    const char * sl, bool enabled) {
   bool visit = !hasOkButton();
   QGrid * grid = new QGrid(2, this);
 
@@ -261,6 +263,9 @@ void ActivityObjectDialog::init_tab(QWidget *& w, MultiLineEdit *& ed,
     ed->setReadOnly(TRUE);
   
   addTab(grid, lbl);
+  
+  if (! enabled)
+    removePage(grid);
 }
 
 void ActivityObjectDialog::menu_type() {
