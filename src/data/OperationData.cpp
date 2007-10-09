@@ -1980,7 +1980,9 @@ char * OperationData::set_bodies_info(BrowserClass * cl, int id)
     if (((BrowserNode *) child)->get_type() == UmlOperation) {
       OperationData * d = (OperationData *) ((BrowserNode *) child)->get_data();
       
-      d->cpp_body.length = d->java_body.length = 0;
+      d->cpp_body.length = 
+	d->java_body.length =
+	  d->php_body.length = 0;
     }
   }
 

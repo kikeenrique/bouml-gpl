@@ -53,7 +53,7 @@ AboutDialog::AboutDialog() : QDialog(0, "About BOUML", TRUE) {
   lbp->setPixmap(bp);
   hbox->addWidget(lbp);
   hbox->addWidget(new QLabel("  ", this));
-  hbox->addWidget(new QLabel("BOUML release 3.0.1\n\ne-mail : bouml@free.fr\nhome : http://bouml.free.fr",
+  hbox->addWidget(new QLabel("BOUML release 3.0.2\n\ne-mail : bouml@free.fr\nhome : http://bouml.free.fr",
 			     this));
   
   hbox = new QHBoxLayout(vbox); 

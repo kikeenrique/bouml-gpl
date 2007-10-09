@@ -386,6 +386,7 @@ void ArrowCanvas::drawShape(QPainter & p) {
     fputs("<g>\n", fp);
   
   switch (((itstype == UmlTransition) &&
+	   (get_data() != 0) && // not under construction
 	   ((TransitionData *) get_data())->internal())
 	  ? UmlDependency : itstype) {
   case UmlDirectionalAggregation:

@@ -160,13 +160,13 @@ void UmlTransition::generate(QList<UmlTransition> trs, UmlClass * machine, UmlCl
 
     // the target state
     UmlItem * tg = tr->target();
+    bool self_external = (state == tg) && tr->isExternal();
     
     while (tg->kind() != aState)
       tg = tg->parent();
     
     // the parent common to the current and the target state
     UmlState * common = state;
-    bool self_external = (state == tg) && tr->isExternal();
     
     if (self_external) {
       // execute exit behavior
