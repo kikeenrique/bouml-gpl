@@ -148,6 +148,20 @@ class UmlBaseItem {
     //  Apply asynchronously the tool on the item, returns an identifier to call isToolDone()
     int apply(QCString cmd);
 
+    // return TRUE in case the item is marked
+    bool isMarked();
+
+    // to mark/unmark the current item. The project cannot be marked
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isMarked(bool v);
+
+    //  Returns the items referencing the current one.
+    //  The result may contains UmlAttribute, UmlRelations, UmlNcRelations,
+    //  UmlOperation (their bodies are not taken into account) , UmlClass
+    //  and UmlComponents.
+    const QVector<UmlItem> referencedBy();
+
     // to unload the object to free memory, it will be reloaded automatically
     // if needed. Recursively done for the sub items if 'rec' is TRUE. 
     //
@@ -164,6 +178,8 @@ class UmlBaseItem {
 
     //  'id' is an identifier returned by apply(), indicates if the tool is still running
     static bool isToolRunning(int id);
+
+    static const QVector<UmlItem> markedItems();
 
   friend class UmlBaseClassItem;
   friend class UmlBaseAttribute;
@@ -237,6 +253,10 @@ class UmlBaseItem {
 
 #ifdef WITHJAVA
     virtual void read_java_();
+#endif
+
+#ifdef WITHPHP
+    virtual void read_php_();
 #endif
 
 #ifdef WITHIDL

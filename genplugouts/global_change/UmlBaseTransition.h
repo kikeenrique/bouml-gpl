@@ -24,6 +24,16 @@ class UmlBaseTransition : public UmlItem {
     // returns the 'end' object (the 'start' object is the parent of the transition) no set !
     virtual UmlItem * target();
 
+    // return if the transition is internal or external,
+    // only self transitions can't be external
+    bool isExternal();
+
+    // set if the transition is internal or external,
+    // only a self transition may be set internal
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_IsExternal(bool v);
+
     // return the trigger in OCL
     const QCString & trigger();
 
@@ -112,6 +122,12 @@ class UmlBaseTransition : public UmlItem {
   private:
     UmlItem * _target;
 
+
+  public:
+    bool _is_external;
+
+
+  private:
     TransitionBehavior _uml;
 
 #ifdef WITHCPP

@@ -2268,7 +2268,7 @@ void draw_text(int x, int y, int w, int h, int align,
   int pts = fn.pointSize();
   char header[256];
 
-  sprintf(header, "\t<text font-family=\"%s\" font-size=\"%d\" fill=\"black\"",
+  sprintf(header, "\t<text font-family=\"%s\" font-size=\"%d\" fill=\"black\" xml:space=\"preserve\"",
 	  (const char *) fn.family(),
 	  // decrease size to help to have enough area
 	  (ps == -1) ? /* Qt3 */ pts : ps - 1);

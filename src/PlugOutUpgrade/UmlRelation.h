@@ -13,6 +13,8 @@ class UmlRelation : public UmlBaseRelation {
   public:
     UmlRelation(void * id, const QCString & n)
       : UmlBaseRelation(id, n) {};
+    
+    static UmlRelation * java2Php(UmlClass * php, UmlClass * java, const char * name);
 };
 
 #endif

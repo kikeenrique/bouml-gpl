@@ -31,6 +31,14 @@ class UmlBasePinParameter : public UmlActivityObject {
     // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_IsException(bool v);
 
+    // return the isStream attribute
+    bool isStream();
+
+    // set the isStream attribute
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_IsStream(bool v);
+
     // return the direction
     aDirection direction();
 
@@ -55,7 +63,7 @@ class UmlBasePinParameter : public UmlActivityObject {
 
     bool _stream : 1;
 
-    int _dummy : 4;
+    int _dummy : 5;
 
     aDirection _dir : 8;
 

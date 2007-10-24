@@ -430,7 +430,6 @@ class UmlBaseClass
   _cpp_external = UmlCom.read_bool();
 !!!9984.cpp!!!	read_java_() : void
   UmlBaseClassMember::read_java_();
-  ;
   _java_final = UmlCom::read_bool();
   _java_external = UmlCom::read_bool();
 !!!9984.java!!!	read_java_() : void

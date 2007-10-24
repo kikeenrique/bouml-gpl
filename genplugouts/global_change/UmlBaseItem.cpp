@@ -9,6 +9,7 @@
 #include "UmlAttribute.h"
 #include "UmlOperation.h"
 #include "UmlClass.h"
+#include "UmlClassInstance.h"
 #include "UmlUseCase.h"
 #include "UmlNode.h"
 #include "UmlArtifact.h"
@@ -57,7 +58,13 @@
 #include "MiscGlobalCmd.h"
 
 bool UmlBaseItem::set_Name(const QCString & s) {
-  return set_it_(_name, s, setNameCmd);
+  UmlCom::send_cmd(_identifier, setNameCmd, s);
+  if (UmlCom::read_bool()) {
+    _name = s;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 const QCString & UmlBaseItem::stereotype() {
@@ -190,6 +197,12 @@ const QVector<UmlItem> UmlBaseItem::referencedBy() {
   return result;
 }
 
+int UmlBaseItem::getIdentifier() {
+  read_if_needed_();
+
+  return _modeler_id;
+}
+
 void UmlBaseItem::unload(bool rec, bool del) {
   _defined = FALSE;
   _stereotype = 0;
@@ -208,6 +221,13 @@ void UmlBaseItem::unload(bool rec, bool del) {
     delete _children;
     _children = 0;
   }
+}
+
+bool UmlBaseItem::deleteIt() {
+  UmlCom::send_cmd(_identifier, deleteCmd);
+  if (UmlCom::read_bool() == 0) return FALSE;
+  parent()->unload(TRUE);
+  return TRUE;
 }
 
 bool UmlBaseItem::isToolRunning(int id)
@@ -230,43 +250,43 @@ QPtrDict<UmlItem> UmlBaseItem::_all(997);
 
 void UmlBaseItem::read_if_needed_() {
   if (!_defined) {
-#ifdef WITHCPP
-# ifdef WITHJAVA
-#  ifdef WITHIDL
+#if defined(WITHCPP) & defined(WITHJAVA) & defined(WITHPHP) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getDefCmd);
     read_uml_();
     read_cpp_();
     read_java_();
+    read_php_();
     read_idl_();
-#  else
-    ... WITHIDL must be defined when WITHCPP and WITHJAVA are both defined
-#  endif
-# else
-#  ifdef WITHIDL
-    ... WITHJAVA must be defined when WITHCPP and WITHIDL are both defined
-#  else
+#else
+# if defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getCppDefCmd);
     read_uml_();
     read_cpp_();
-#  endif
-# endif
-#else
-# ifdef WITHJAVA
-#  ifdef WITHIDL
-    ... WITHCPP must be defined when WITHIDL and WITHJAVA are both defined
-#  else
+# else
+#  if !defined(WITHCPP) & defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getJavaDefCmd);
     read_uml_();
     read_java_();
-#  endif
-# else
-#  ifdef WITHIDL
+#  else
+#   if !defined(WITHCPP) & !defined(WITHJAVA) & defined(WITHPHP) & !defined(WITHIDL)
+    UmlCom::send_cmd(_identifier, getPhpDefCmd);
+    read_uml_();
+    read_php_();
+#   else
+#    if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getIdlDefCmd);
     read_uml_();
     read_idl_();
-#  else
+#    else
+#     if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getUmlDefCmd);
     read_uml_();
+#     else
+    ... WITHCPP and WITHJAVA and WITHPHP and WITHIDL must be both defined or undefined
+    ... or only one of them must be defined
+#     endif
+#    endif
+#   endif
 #  endif
 # endif
 #endif
@@ -307,6 +327,7 @@ void UmlBaseItem::read_uml_() {
   _description = UmlCom::read_string();
   
   _marked = UmlCom::read_bool();
+  _modeler_id = (int) UmlCom::read_unsigned();
 }
 
 #ifdef WITHCPP
@@ -316,6 +337,11 @@ void UmlBaseItem::read_cpp_() {
 
 #ifdef WITHJAVA
 void UmlBaseItem::read_java_() {
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBaseItem::read_php_() {
 }
 #endif
 
@@ -551,6 +577,8 @@ UmlItem * UmlBaseItem::read_()
       return new UmlJoinActivityNode(id, name);
     case aPartition:
       //return new UmlPartition(id, name);
+    case aClassInstance:
+      return new UmlClassInstance(id, name);
     default:
       UmlCom::bye();
       UmlCom::fatal_error(QCString("unknown item type ") + QCString().setNum(kind));

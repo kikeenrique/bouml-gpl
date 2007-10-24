@@ -177,6 +177,12 @@ void UmlBaseAttribute::read_java_() {
 }
 #endif
 
+#ifdef WITHPHP
+void UmlBaseAttribute::read_php_() {
+  UmlBaseClassMember::read_php_();
+}
+#endif
+
 #ifdef WITHIDL
 void UmlBaseAttribute::read_idl_() {
   UmlBaseClassItem::read_idl_();

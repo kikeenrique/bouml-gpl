@@ -44,3 +44,23 @@ void conditional(QCString & s, const char * if_def, const char * end_if)
 	     ? "#endif\n"
 	     : "\n#endif");
 }
+
+QCString java2Php(QCString s)
+{
+  int index;
+  
+  while ((index = s.find("JAVA")) != -1)
+    s.replace(index, 4, "PHP");
+  
+  while ((index = s.find("Java")) != -1)
+    s.replace(index, 4, "Php");
+  
+  while ((index = s.find("java")) != -1)
+    s.replace(index, 4, "php");
+  
+  if ((index = s.find("produce a RuntimeException in Php")) != -1)
+    s.replace(index + 30, 3, "Java");
+  
+  return s;
+}
+

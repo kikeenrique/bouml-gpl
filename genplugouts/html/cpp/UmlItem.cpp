@@ -679,14 +679,21 @@ void UmlItem::writeq(char c)
  }
 }
 
-void UmlItem::write(const UmlTypeSpec & t, bool cpp)
+void UmlItem::write(const UmlTypeSpec & t, aLanguage lang)
 {
   if (t.type != 0)
     t.type->write();
   else
-    writeq((cpp) ? CppSettings::type(t.toString())
-		 : JavaSettings::type(t.toString()));
-
+    switch (lang) {
+    case cppLanguage:
+      writeq(CppSettings::type(t.toString()));
+      break;
+    case javaLanguage:
+      writeq(JavaSettings::type(t.toString()));
+      break;
+    default:
+      writeq(t.toString());
+  }
 }
 
 void UmlItem::write(const UmlTypeSpec & t)
@@ -697,7 +704,7 @@ void UmlItem::write(const UmlTypeSpec & t)
     writeq(t.toString());
 }
 
-void UmlItem::write(aVisibility v, bool cpp)
+void UmlItem::write(aVisibility v, aLanguage lang)
 {
   switch (v) {
   case PublicVisibility:
@@ -710,7 +717,15 @@ void UmlItem::write(aVisibility v, bool cpp)
     fw.write("private");
     break;
   case PackageVisibility:
-    fw.write((cpp) ? "public" : "package");
+    switch (lang) {
+    case cppLanguage:
+      fw.write("public");
+      break;
+    case javaLanguage:
+      fw.write("package");
+    default:
+      break;
+    }
     break;
   default:
     fw.write("???");

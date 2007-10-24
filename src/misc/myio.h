@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include "UmlEnum.h"
 
-#define FILEFORMAT 44
+#define FILEFORMAT 46
 
 class QDir;
 class QFile;

@@ -77,6 +77,7 @@ class OperationDialog : public QTabDialog {
     VisibilityGroup uml_visibility;
     QCheckBox * classoperation_cb;
     QCheckBox * abstract_cb;
+    QCheckBox * forcegenbody_cb;
     ParamsTable * table;
     ExceptionsTable * etable;
     MultiLineEdit * comment;
@@ -183,6 +184,7 @@ class OperationDialog : public QTabDialog {
     void edit_constraint();
     void classoper_toggled(bool on);
     void abstract_toggled(bool on);
+    void forcegenbody_toggled(bool on);
     void cpp_default_decl();
     void cpp_decl_from_def();
     void cpp_unmapped_decl();

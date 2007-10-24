@@ -112,3 +112,8 @@ void UmlOperation::setParams(const char * s) {
   }
 }
 
+void UmlOperation::setUsed() {
+  UmlItem::setUsed();
+  set_isBodyGenerationForced(TRUE);
+}
+

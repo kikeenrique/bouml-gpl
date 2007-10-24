@@ -58,20 +58,26 @@ class ComponentDialog : public QTabDialog {
     MultiLineEdit * comment;
     QList<BodyDialog> edits;
         
-    QPtrDict<BrowserNode> d_associated;
-    
     // required classes
     QVBox * rq_page;
     QComboBox * rq_stereotypefilter;
     QListBox * lb_rq_available;
     QListBox * lb_rq;
+    QValueList<BrowserClass *> rqs;
         
-    // realized/provided classes
-    QVBox * pr_rz_page;
-    QComboBox * pr_rz_stereotypefilter;
-    QListBox * lb_pr_rz_available;
+    // provided classes
+    QVBox * pr_page;
+    QComboBox * pr_stereotypefilter;
+    QListBox * lb_pr_available;
     QListBox * lb_pr;
+    QValueList<BrowserClass *> prs;
+        
+    // realization classes
+    QVBox * rz_page;
+    QComboBox * rz_stereotypefilter;
+    QListBox * lb_rz_available;
     QListBox * lb_rz;
+    QValueList<BrowserClass *> rzs;
     
     // user
     KeyValuesTable * kvtable;
@@ -79,8 +85,13 @@ class ComponentDialog : public QTabDialog {
     static QSize previous_size;
     
     void init_uml_tab();
-    void init_rq_tab();
-    void init_pr_rz_tab();
+    void init_l_tab(QVBox *& page, QComboBox *& stereotypefilter,
+		    void (ComponentDialog::* filteractivated)(const QString & st),
+		    const char * filter_slt,
+		    const char * add_slt, const char * remove_slt,
+		    QListBox *& lb_available, QListBox *& lb,
+		    const QValueList<BrowserClass *> & cls,
+		    const char * lbl);
     
     static void post_edit_description(ComponentDialog * d, QString s);
     
@@ -93,15 +104,14 @@ class ComponentDialog : public QTabDialog {
     virtual void accept();
     void edit_description();
     void rq_stereotypeFilterActivated(const QString & st);
-    void pr_rz_stereotypeFilterActivated(const QString & st);
+    void pr_stereotypeFilterActivated(const QString & st);
+    void rz_stereotypeFilterActivated(const QString & st);
     void require_cls();
     void unrequire_cls();
     void provide_cls();
     void unprovide_cls();
     void realize_cls();
     void unrealize_cls();
-    void rz_to_pr_cls();
-    void pr_to_rz_cls();
 
     void change_tabs(QWidget *);
 };

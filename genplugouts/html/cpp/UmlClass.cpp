@@ -4,6 +4,7 @@
 #include "UmlFormalParameter.h"
 
 #include "JavaSettings.h"
+#include "PhpSettings.h"
 #include "UmlArtifact.h"
 #include "UmlComponent.h"
 #include "UmlClassDiagram.h"
@@ -84,6 +85,14 @@ void UmlClass::gen_html(QCString pfix, unsigned int rank, unsigned int level) {
   if (!s.isEmpty()) {
     fw.write("<li>Java : ");
     gen_java_decl(s);
+    fw.write("</li>");
+  }
+
+  s = phpDecl();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Php : ");
+    gen_php_decl(s);
     fw.write("</li>");
   }
 
@@ -369,7 +378,7 @@ void UmlClass::gen_cpp_decl(QCString s, bool descr) {
 	}
       }
       if (! find)
-	UmlItem::write(baseType(), TRUE);
+	UmlItem::write(baseType(), cppLanguage);
     }
     else if (!strncmp(p, "${template}", 11)) {
       p += 11;
@@ -397,7 +406,7 @@ void UmlClass::gen_cpp_decl(QCString s, bool descr) {
 	    // UmlItem::write else G++ call UmlClass::write(QCString) !
 	    UmlItem::write((rel->cppVisibility() == DefaultVisibility)
 		           ? rel->visibility() : rel->cppVisibility(),
-			   TRUE);
+			   cppLanguage);
 	    fw.write((rel->cppVirtualInheritance()) ? " virtual " : " ");
 	    rel->roleType()->write();
 	    generate(actuals(), rel->roleType(), TRUE);
@@ -447,7 +456,7 @@ void UmlClass::gen_java_decl(QCString s) {
     }
     else if (!strncmp(p, "${visibility}", 13)) {
       p += 13;
-      UmlItem::write(visibility(), FALSE);
+      UmlItem::write(visibility(), javaLanguage);
       fw.write(' ');
     }
     else if (!strncmp(p, "${final}", 8)) {
@@ -532,6 +541,103 @@ void UmlClass::gen_java_decl(QCString s) {
   }
 }
 
+void UmlClass::gen_php_decl(QCString s) {
+  QCString st = PhpSettings::classStereotype(stereotype());
+  
+  if (st == "ignored")
+    return;
+    
+  const char * p = bypass_comment(s);
+  UmlRelation * extend = 0;
+
+  while (*p != 0) {
+    if (!strncmp(p, "${comment}", 10))
+      p += 10;
+    else if (!strncmp(p, "${description}", 14))
+      p += 14;
+    else if (!strncmp(p, "${visibility}", 13)) {
+      p += 13;
+      UmlItem::write(visibility(), phpLanguage);
+      fw.write(' ');
+    }
+    else if (!strncmp(p, "${final}", 8)) {
+      p += 8;
+      if (isPhpFinal())
+	fw.write("final ");
+    }
+    else if (!strncmp(p, "${abstract}", 11)) {
+      p += 11;
+      if (isAbstract())
+	fw.write("abstract ");
+    }
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      writeq(name());
+      generics();
+    }
+    else if (!strncmp(p, "${extends}", 10)) {
+      p += 10;
+
+      const QVector<UmlItem> ch = children();
+
+      for (unsigned i = 0; i != ch.size(); i += 1) {
+	if (ch[i]->kind() == aRelation) {
+	  UmlRelation * rel = (UmlRelation *) ch[i];
+	  aRelationKind k = rel->relationKind();
+	  
+	  if (((k == aGeneralisation) ||
+	       (k == aRealization)) &&
+	      (!rel->phpDecl().isEmpty()) &&
+	      ((st == "interface") ||
+	       (PhpSettings::classStereotype(rel->roleType()->stereotype()) != "interface"))) {
+	    extend = rel;
+	    fw.write(" extends ");
+	    rel->roleType()->write();
+	    break;
+	  }
+	}
+      }
+    }
+    else if (!strncmp(p, "${implements}", 13)) {
+      p += 13;
+
+      const QVector<UmlItem> ch = children();
+      const char * sep = " implements ";
+
+      for (unsigned i = 0; i != ch.size(); i += 1) {
+	if (ch[i]->kind() == aRelation) {
+	  UmlRelation * rel = (UmlRelation *) ch[i];
+	  aRelationKind k = rel->relationKind();
+	  
+	  if ((rel != extend) &&
+	      ((k == aGeneralisation) ||
+	       (k == aRealization)) &&
+	      (!rel->phpDecl().isEmpty())) {
+	    fw.write(sep);
+	    sep = ", ";
+	    rel->roleType()->write();
+	  }
+	}
+      }
+    }
+    else if (*p == '\r')
+      p += 1;
+    else if (*p == '\n') {
+      fw.write(' ');
+
+      do
+	p += 1;
+      while ((*p != 0) && (*p <= ' '));
+    }
+    else if ((*p == '{') || (*p == ';'))
+      break;
+    else if (*p == '@')
+      manage_alias(p);
+    else
+      writeq(*p++);
+  }
+}
+
 void UmlClass::generate(const QValueList<UmlActualParameter> a, UmlClass * mother, bool cpp) {
   unsigned i;
   unsigned n = a.count();
@@ -545,10 +651,11 @@ void UmlClass::generate(const QValueList<UmlActualParameter> a, UmlClass * mothe
   }
     
   const char * sep = "<";
+  aLanguage lang = (cpp) ? cppLanguage : javaLanguage;
   
   do {
     writeq(sep);
-    UmlItem::write(a[i].value(), cpp);
+    UmlItem::write(a[i].value(), lang);
     sep = ", ";
   }
   while ((++i != n) && (a[i].superClass() == mother));
@@ -594,7 +701,7 @@ void UmlClass::generics() {
       
       if ((t.type != 0) || ! t.explicit_type.isEmpty()) {
 	fw.write(" extends ");
-	UmlItem::write(t, FALSE);
+	UmlItem::write(t, javaLanguage);
       }
     }
     

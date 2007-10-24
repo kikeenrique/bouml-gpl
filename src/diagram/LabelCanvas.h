@@ -44,12 +44,14 @@ class LabelCanvas : public QCanvasText, public DiagramItem {
     static const char * Zigzag;
   
   protected:
+    bool multi_lines_centered;
     int center_x_scale100;
     int center_y_scale100;
     
   public:
     LabelCanvas(const QString & n, UmlCanvas * canvas, int x, int y,
-		bool bold = FALSE, bool italic = FALSE, bool underlined = FALSE);
+		bool bold = FALSE, bool italic = FALSE,
+		bool underlined = FALSE, bool mlcentered = TRUE);
     virtual ~LabelCanvas();
     
     virtual void delete_it();

@@ -50,7 +50,7 @@ class UmlItem : public UmlBaseItem {
     void setUseless();
 
     //  mark the element  is usefull
-    void setUsed();
+    virtual void setUsed();
 
     //delete useless classes, operations and attributes
     

@@ -29,14 +29,14 @@ class UmlBaseComponent
   
   _assoc_diagram = d;
 
-!!!78336.cpp!!!	realizedClasses() : UmlClass
+!!!78336.cpp!!!	realizingClasses() : UmlClass
   read_if_needed_();
   
-  return _realized;
-!!!78336.java!!!	realizedClasses() : UmlClass
+  return _realizing;
+!!!78336.java!!!	realizingClasses() : UmlClass
   read_if_needed_();
   
-  return (UmlClass[]) _realized.clone();
+  return (UmlClass[]) _realizing.clone();
 !!!78464.cpp!!!	providedClasses() : UmlClass
   read_if_needed_();
   
@@ -61,10 +61,10 @@ class UmlBaseComponent
   unsigned index;
   
   n = UmlCom::read_unsigned();
-  _realized.resize(n);
+  _realizing.resize(n);
     
   for (index = 0; index != n; index += 1)
-    _realized.insert(index, (UmlClass *) UmlBaseItem::read_());
+    _realizing.insert(index, (UmlClass *) UmlBaseItem::read_());
 
   n = UmlCom::read_unsigned();
   _provided.resize(n);
@@ -85,10 +85,10 @@ class UmlBaseComponent
   int index;
   
   n = UmlCom.read_unsigned();
-  _realized = new UmlClass[n];
+  _realizing = new UmlClass[n];
   
   for (index = 0; index != n; index += 1)
-    _realized[index] = (UmlClass) UmlBaseItem.read_();
+    _realizing[index] = (UmlClass) UmlBaseItem.read_();
   
   n = UmlCom.read_unsigned();
   _provided = new UmlClass[n];

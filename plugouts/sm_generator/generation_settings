@@ -1,6 +1,6 @@
 
-  cpp_default_defs java_default_defs 
-  cpp_h_extension "h" cpp_src_extension "cpp" java_extension "java" idl_extension "idl"
+  cpp_default_defs 
+  cpp_h_extension "h" cpp_src_extension "cpp" java_extension "java" php_extension "php" idl_extension "idl"
 
   type_forms 20 // uml cpp java idl cpp_in cpp_out cpp_inout cpp_return
     "void" "void" "void" "void" "${type}" "${type} &" "${type} &" "${type}"
@@ -31,18 +31,18 @@
     "set" "QSet" "Vector" "sequence"
     "dict" "QDict" "Hashtable" "sequence"
   
-  classes_stereotypes 11 // uml cpp java idl
-    "class" "class" "class" "valuetype"
-    "interface" "class" "interface" "interface"
-    "exception" "class" "class" "exception"
-    "enum" "enum" "enum" "enum"
-    "enum_pattern" "enum" "enum_pattern" "enum"
-    "struct" "struct" "class" "struct"
-    "union" "union" "class" "union"
-    "typedef" "typedef" "ignored" "typedef"
-    "boundary" "class" "class" "interface"
-    "control" "class" "class" "valuetype"
-    "entity" "class" "class" "valuetype"
+  classes_stereotypes 11 // uml cpp java php idl
+    "class" "class" "class" "class" "valuetype"
+    "interface" "class" "interface" "interface" "interface"
+    "exception" "class" "class" "class" "exception"
+    "enum" "enum" "enum" "enum" "enum"
+    "enum_pattern" "enum" "enum_pattern" "enum" "enum"
+    "struct" "struct" "class" "class" "struct"
+    "union" "union" "class" "class" "union"
+    "typedef" "typedef" "ignored" "ignored" "typedef"
+    "boundary" "class" "class" "class" "interface"
+    "control" "class" "class" "class" "valuetype"
+    "entity" "class" "class" "class" "valuetype"
   
   cpp_enum_default_type_forms "${type}" "${type} &" "${type} &" "${type}" // in out inout return
   other_cpp_types_default_type_forms "const ${type} *" "${type} *" "${type} *" "${type} *" // in out inout return
@@ -170,6 +170,33 @@ public static final ${class} ${name} = new ${class}(_${name});
   java_set "set_${name}" public
   java_default_operation_definition "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
+"
+  php_default_src_content "<?php
+${comment}
+${definition}
+?>
+"
+  php_default_class_decl "${comment}${final}${visibility}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+  php_default_enum_decl "${comment}final ${visibility}class ${name} {
+${items}}
+"
+  php_default_external_class_decl "${name}"
+  php_default_interface_decl "${comment}${visibility}interface ${name} {
+${members}}
+"
+  php_default_attribute_declaration "  ${comment}${visibility}${const}${static}${var}${name}${value};
+"
+  php_default_enum_item_decl "  const ${name}${value};${comment}
+"
+  php_default_relation_declaration"  ${comment}${visibility}${const}${static}${var}${name}${value};
+"
+  php_get "get${Name}" final
+  php_set "set${Name}"
+  php_default_operation_definition "  ${comment}${final}${visibility}${abstract}${static}function ${name}${(}${)}
+{
+  ${body}}
 "
   idl_default_src_content "#ifndef _${NAME}_H
 #define _${NAME}_H

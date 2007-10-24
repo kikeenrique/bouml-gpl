@@ -97,6 +97,18 @@ UmlPackage * UmlBasePackage::findPackage(const QCString & n) const {
 }
 #endif
 
+#ifdef WITHPHP
+const QCString & UmlBasePackage::phpDir() {
+  read_if_needed_();
+  
+  return _php_dir;
+}
+
+bool UmlBasePackage::set_PhpDir(const QCString & s) {
+  return set_it_(_php_dir, s, setPhpDirCmd);
+}
+#endif
+
 #ifdef WITHIDL
 const QCString & UmlBasePackage::idlDir() {
   read_if_needed_();
@@ -160,6 +172,9 @@ void UmlBasePackage::unload(bool rec, bool del) {
   _java_dir = 0;
   _java_package = 0;
 #endif
+#ifdef WITHPHP
+  _php_dir = 0;
+#endif
 #ifdef WITHIDL
   _idl_dir = 0;
   _idl_module = 0;
@@ -184,6 +199,12 @@ void UmlBasePackage::read_cpp_() {
 void UmlBasePackage::read_java_() {
   _java_dir = UmlCom::read_string();
   _java_package = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBasePackage::read_php_() {
+  _php_dir = UmlCom::read_string();
 }
 #endif
 

@@ -121,11 +121,11 @@ void ArrowJunctionCanvas::draw(QPainter & p) {
     case UmlProvided:
       p.drawPixmap(QPoint((int) x(), (int) y()), *providedPixmap);
       if (fp != 0)
-	fprintf(fp, "<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" cx=\"%d\" cy=\"%d\" rx=\"%g\" ry=\"%g\" />\n",
+	fprintf(fp, "<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
 		// 4 is the margin inside the pixmap
 		(int) (x() + PROVIDED_RADIUS + 4),
 		(int) (y() + PROVIDED_RADIUS + 4),
-		PROVIDED_RADIUS, PROVIDED_RADIUS);
+		(int) PROVIDED_RADIUS, (int) PROVIDED_RADIUS);
       break;
     default:
       // to avoid compiler warning

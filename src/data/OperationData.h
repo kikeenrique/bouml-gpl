@@ -66,6 +66,7 @@ class OperationData : public ClassMemberData,
     bool is_get_or_set : 1;
     bool isa_class_operation : 1;
     bool is_abstract : 1;
+    bool force_body_gen : 1;
     bool is_volatile : 1;
     bool cpp_const : 1;			// C++
     bool cpp_friend : 1;		// C++
@@ -143,6 +144,8 @@ class OperationData : public ClassMemberData,
     void set_is_abstract(bool yes);
     
     bool get_is_volatile() const { return is_volatile; };
+    
+    bool body_generation_forced() const { return force_body_gen; };
     
     bool get_cpp_const() const { return cpp_const; };
     

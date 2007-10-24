@@ -154,6 +154,13 @@ class UmlBaseItem {
     //  and UmlComponents.
     const QVector<UmlItem> referencedBy();
 
+    // return a constant identifier, it is unique within a given
+    // kind of element (two classes can't have the same identifiers, but
+    // a class and a component may have the same identifier) 
+    // except for the diagrams (a class diagram can't have the identifier
+    // of a component diagram)
+    int getIdentifier();
+
     // to unload the object to free memory, it will be reloaded automatically
     // if needed. Recursively done for the sub items if 'rec' is TRUE. 
     //
@@ -161,6 +168,12 @@ class UmlBaseItem {
     // internal dictionnary in C++ and Java (to allow it to be garbaged),
     // you will have to call Children() to re-access to them
     virtual void unload(bool rec = FALSE, bool del = FALSE);
+
+    // remove the element from the model, use it carefully because
+    // after that the element can't be used anymore by the plug-out
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    bool deleteIt();
 
     //  'id' is an identifier returned by apply(), indicates if the tool is still running
     static bool isToolRunning(int id);
@@ -203,6 +216,12 @@ class UmlBaseItem {
 
     void * _identifier;
 
+
+  protected:
+    int _modeler_id;
+
+
+  private:
     QCString _name;
 
     //  Note : protected in Java for internal reason, but do NOT
@@ -243,6 +262,12 @@ class UmlBaseItem {
     //internal, do NOT use it
     
     virtual void read_java_();
+#endif
+
+#ifdef WITHPHP
+    //internal, do NOT use it
+    
+    virtual void read_php_();
 #endif
 
 #ifdef WITHIDL
@@ -346,6 +371,8 @@ class UmlBaseItem {
   friend class UmlBaseActivityPin;
   friend class UmlBaseActivityParameter;
   friend class UmlBaseParameterSet;
+  friend class UmlBaseClassInstance;
+  friend class UmlBaseView;
 };
 
 #endif

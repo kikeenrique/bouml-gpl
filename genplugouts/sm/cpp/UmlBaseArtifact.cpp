@@ -174,6 +174,18 @@ bool UmlBaseArtifact::set_JavaSource(const QCString & s) {
 }
 #endif
 
+#ifdef WITHPHP
+const QCString & UmlBaseArtifact::phpSource() {
+  read_if_needed_();
+  
+  return _php_src;
+}
+
+bool UmlBaseArtifact::set_PhpSource(const QCString & s) {
+  return set_it_(_php_src, s, setPhpSrcCmd);
+}
+#endif
+
 #ifdef WITHIDL
 const QCString & UmlBaseArtifact::idlSource() {
   read_if_needed_();
@@ -195,6 +207,9 @@ void UmlBaseArtifact::unload(bool rec, bool del) {
 #endif
 #ifdef WITHJAVA
   _java_src = 0;
+#endif
+#ifdef WITHPHP
+  _php_src = 0;
 #endif
 #ifdef WITHIDL
   _idl_src = 0;
@@ -232,6 +247,12 @@ void UmlBaseArtifact::read_cpp_() {
 #ifdef WITHJAVA
 void UmlBaseArtifact::read_java_() {
   _java_src = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBaseArtifact::read_php_() {
+  _php_src = UmlCom::read_string();
 }
 #endif
 

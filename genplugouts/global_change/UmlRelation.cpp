@@ -22,6 +22,15 @@ if (ctx.onRelation() && ctx.match_stereotype(stereotype())) {
     }
   }
   
+  if (ctx.php()) {
+    const QCString & c = phpDecl();
+    
+    if (!c.isEmpty() && ctx.match(c)) {
+      if (!set_PhpDecl(ctx.replace(c)))
+	ctx.err();
+    }
+  }
+  
   if (ctx.idl()) {
     const QCString & c = idlDecl();
     

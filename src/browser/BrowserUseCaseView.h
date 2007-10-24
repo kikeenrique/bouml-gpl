@@ -80,6 +80,7 @@ class BrowserUseCaseView : public BrowserNode, public Labeled<BrowserUseCaseView
 				    QString name = QString::null);
     virtual void menu();
     virtual void apply_shortcut(QString s);
+    virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,

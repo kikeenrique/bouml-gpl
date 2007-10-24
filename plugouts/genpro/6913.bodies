@@ -63,7 +63,22 @@ class UmlArtifact
   if (!propertyValue("genpro config", config))
     config = "debug warn_on qt";
   if (!propertyValue("genpro defines", defines))
-    defines = "WITHCPP WITHJAVA WITHIDL";
+    defines = "WITHCPP WITHJAVA WITHPHP WITHIDL";
+  else if (defines.find("WITHPHP") == -1) {
+    int n = 0;
+    
+    if (defines.find("WITHCPP") != -1)
+      n += 1;
+    
+    if (defines.find("WITHJAVA") != -1)
+      n += 1;
+    
+    if (defines.find("WITHIDL") != -1)
+      n += 1;
+    
+    if (n > 1)
+      defines += " WITHPHP";
+  }
   propertyValue("genpro includepath", includepath);
   propertyValue("genpro dependpath", dependpath);
   propertyValue("genpro objectsdir", objectsdir);

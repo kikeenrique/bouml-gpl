@@ -29,6 +29,21 @@ class UmlBaseClassItem
   UmlCom.check();
 
   _java_decl = s;
+!!!217984.cpp!!!	phpDecl() : string
+  read_if_needed_();
+  
+  return _php_decl;
+!!!217984.java!!!	phpDecl() : string
+  read_if_needed_();
+  
+  return _php_decl;
+!!!218112.cpp!!!	set_PhpDecl(in s : str) : bool
+  return set_it_(_php_decl, s, setPhpDeclCmd);
+!!!218112.java!!!	set_PhpDecl(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpDeclCmd, s);
+  UmlCom.check();
+
+  _php_decl = s;
 !!!35968.cpp!!!	idlDecl() : string
   read_if_needed_();
   
@@ -51,6 +66,9 @@ class UmlBaseClassItem
 #ifdef WITHJAVA
   _java_decl = 0;
 #endif
+#ifdef WITHPHP
+  _php_decl = 0;
+#endif
 #ifdef WITHIDL
   _idl_decl = 0;
 #endif
@@ -58,6 +76,7 @@ class UmlBaseClassItem
 !!!36224.java!!!	unload(in rec : bool, in del : bool) : void
   _cpp_decl = null;
   _java_decl = null;
+  _php_decl = null;
   _idl_decl = null;
   super.unload(rec, del);
 !!!36352.cpp!!!	read_cpp_() : void
@@ -68,6 +87,10 @@ class UmlBaseClassItem
   _java_decl = UmlCom::read_string();
 !!!36480.java!!!	read_java_() : void
   _java_decl = UmlCom.read_string();
+!!!218240.cpp!!!	read_php_() : void
+  _php_decl = UmlCom::read_string();
+!!!218240.java!!!	read_php_() : void
+  _php_decl = UmlCom.read_string();
 !!!36608.cpp!!!	read_idl_() : void
   _idl_decl = UmlCom::read_string();
 !!!36608.java!!!	read_idl_() : void

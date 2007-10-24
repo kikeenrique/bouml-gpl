@@ -5,6 +5,7 @@
 
 #include "UmlCom.h"
 #include "PackageGlobalCmd.h"
+#include "MiscGlobalCmd.h"
 UmlPackage * UmlBasePackage::create(UmlPackage * parent, const char * name)
 {
   return (UmlPackage *) parent->create_(aPackage, name);
@@ -61,7 +62,7 @@ bool UmlBasePackage::set_CppNamespace(const QCString & s) {
   return set_it_(_cpp_namespace, s, setCppNamespaceCmd);
 }
 
-UmlPackage * UmlBasePackage::getNamespace(const QCString & n, const UmlBasePackage * p)
+UmlPackage * UmlBasePackage::findNamespace(const QCString & n, const UmlBasePackage * p)
 {
   UmlCom::send_cmd(packageGlobalCmd, findNamespaceCmd, (p) ? p->_identifier : 0, n);
   
@@ -90,11 +91,23 @@ bool UmlBasePackage::set_JavaPackage(const QCString & s) {
   return set_it_(_java_package, s, setJavaPackageCmd);
 }
 
-UmlPackage * UmlBasePackage::getPackage(const QCString & n, const UmlBasePackage * p)
+UmlPackage * UmlBasePackage::findPackage(const QCString & n, const UmlBasePackage * p)
 {
   UmlCom::send_cmd(packageGlobalCmd, findPackageCmd, (p) ? p->_identifier : 0, n);
   
   return (UmlPackage *) UmlBaseItem::read_();  
+}
+#endif
+
+#ifdef WITHPHP
+const QCString & UmlBasePackage::phpDir() {
+  read_if_needed_();
+  
+  return _php_dir;
+}
+
+bool UmlBasePackage::set_PhpDir(const QCString & s) {
+  return set_it_(_php_dir, s, setPhpDirCmd);
 }
 #endif
 
@@ -119,7 +132,7 @@ bool UmlBasePackage::set_IdlModule(const QCString & s) {
   return set_it_(_idl_module, s, setIdlModuleCmd);
 }
 
-UmlPackage * UmlBasePackage::getModule(const QCString & n, const UmlBasePackage * p)
+UmlPackage * UmlBasePackage::findModule(const QCString & n, const UmlBasePackage * p)
 {
   UmlCom::send_cmd(packageGlobalCmd, findModuleCmd, (p) ? p->_identifier : 0, n);
   
@@ -127,11 +140,28 @@ UmlPackage * UmlBasePackage::getModule(const QCString & n, const UmlBasePackage 
 }
 #endif
 
-UmlBasePackage * UmlBasePackage::getProject()
+UmlPackage * UmlBasePackage::getProject()
 {
   UmlCom::send_cmd(packageGlobalCmd, getProjectCmd);
   
   return (UmlPackage *) UmlBaseItem::read_();  
+}
+
+bool UmlBasePackage::isProjectModified()
+{
+  UmlCom::send_cmd(packageGlobalCmd, isProjectModifiedCmd);
+  
+  return UmlCom::read_bool();
+}
+
+void UmlBasePackage::saveProject()
+{
+  UmlCom::send_cmd(packageGlobalCmd, saveProjectCmd);
+}
+
+void UmlBasePackage::loadProject(QCString p)
+{
+  UmlCom::send_cmd(miscGlobalCmd, loadCmd, (const char *) p);
 }
 
 void UmlBasePackage::unload(bool rec, bool del) {
@@ -144,6 +174,9 @@ void UmlBasePackage::unload(bool rec, bool del) {
 #ifdef WITHJAVA
   _java_dir = 0;
   _java_package = 0;
+#endif
+#ifdef WITHPHP
+  _php_dir = 0;
 #endif
 #ifdef WITHIDL
   _idl_dir = 0;
@@ -169,6 +202,12 @@ void UmlBasePackage::read_cpp_() {
 void UmlBasePackage::read_java_() {
   _java_dir = UmlCom::read_string();
   _java_package = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBasePackage::read_php_() {
+  _php_dir = UmlCom::read_string();
 }
 #endif
 

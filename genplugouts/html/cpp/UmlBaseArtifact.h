@@ -108,6 +108,16 @@ class UmlBaseArtifact : public UmlItem {
     bool set_JavaSource(const QCString & s);
 #endif
 
+#ifdef WITHPHP
+    // returns the Php file definition
+    const QCString & phpSource();
+
+    // to set the Php file definition
+    // 
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PhpSource(const QCString & s);
+#endif
+
 #ifdef WITHIDL
     // returns the Idl file definition
     const QCString & idlSource();
@@ -141,6 +151,10 @@ class UmlBaseArtifact : public UmlItem {
     QCString _java_src;
 #endif
 
+#ifdef WITHPHP
+    QCString _php_src;
+#endif
+
 #ifdef WITHIDL
     QCString _idl_src;
 #endif
@@ -155,6 +169,10 @@ class UmlBaseArtifact : public UmlItem {
 
 #ifdef WITHJAVA
     virtual void read_java_();
+#endif
+
+#ifdef WITHPHP
+    virtual void read_php_();
 #endif
 
 #ifdef WITHIDL

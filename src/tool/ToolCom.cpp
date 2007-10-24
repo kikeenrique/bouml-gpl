@@ -550,7 +550,7 @@ void ToolCom::data_received(Socket * who) {
 	   close();
 	   return;
 	   }*/
-	else if (api_version > 34) {
+	else if (api_version > 35) {
 	  TraceDialog::add("<font color =\"red\"><b>the plug-out is incompatible with this too old version of BOUML<b></font>");
 	  TraceDialog::show_it();
 	  close();
@@ -622,6 +622,7 @@ void ToolCom::data_received(Socket * who) {
 	    break;
 	  case showTraceCmd:
 	    TraceDialog::show_it();
+	    break;
 	  case traceAutoRaiseCmd:
 	    TraceDialog::trace_auto_raise(p[1]);
 	    break;

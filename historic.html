@@ -1,3 +1,161 @@
+<h3>3.2.1</h3>October, 24th 2007<br /><br />
+    <ul>
+	<li> <font color="#C05800">Previous version modify the position of the
+		labels in the diagrams in some cases</font>, fixed.
+		<br /><br /></li>
+
+	<li> When you edited operation body through shortcut or context
+		menu with <i>add operation profile on body edition</i> set,
+		the operation profile was not be showed, fixed.
+		</li>
+    </ul>
+<br /><br />
+
+
+<h3>3.2</h3>October, 21th 2007<br /><br />
+    <ul>
+	<li> The SVG produced for a <i>component diagram</i>
+		contained floating point numbers. Depending on the settings
+		associated to your country, the representation of a float can
+		uses a ',' rather than a '.', not compatible
+		with SVG. Now all the produced numbers are integers.
+		<br /><br /></li>
+
+	<li> Add <i>xml:space="preserve"</i> in the SVG text forms, at least
+		to indent arguments given on several lines in a 
+		<i>sequence diagram</i>.
+		<br /><br /></li>
+
+	<li> It was not possible to add a <i>state diagram</i> icon and an
+		<i>activity diagram</i>	icon in a <i>state diagram</i>,
+		<i>component diagram</i>, <i>sequence diagram</i>,
+		<i>collaboration diagram</i>, <i>object diagram</i>,
+		<i>use case diagram</i>, <i>deployment diagram</i>
+		and <i>activity diagram</i>. Fixed.
+		<br /><br /></li>
+
+	<li> The interfaces provided and required by a nested subcomponent
+		are automatically provided and required by the direct
+		container component, but this didn't work for more levels,
+		fixed.
+		<br /><br /></li>
+
+	<li> In a <i>sequence diagram</i>, the arguments given on several	
+		lines are shown pseudo centered, fixed.
+		<br /><br /></li>
+
+	<li> It was not possible for a <i>component</i> to require and
+		provide the same interface, this limitation is removed.
+		<br /><br /></li>
+
+	<li> Modify the component dialog to set the <i>realizing classes</i>
+		(wrongly labeled <i>realized classes</i> in previous releases)
+		in a dedicated tab rather than to set them with the
+		<i>provided classes</i>.
+		<br /><br /></li>
+
+	<li> <b>Plug-out upgrade 1.10.1</b><br />
+		<font color="#C05800">Since Bouml 2.28 the activities are not added,
+		fixed.</font><br />
+		Rename the operation <i>UmlBaseComponent::realizedClasses</i> to
+		<i>realizingClasses</i>.
+		Warning, doesn't modify the exiting calls of <i>realizedClasses</i>.
+		Rename the parameter <i>realized</i> of the operation
+		<i>UmlBaseComponent::set_AssociatedClasses</i> to <i>realizing</i><br />
+		Add operation <i>PhpSettings::classUmlStereotype</i>.<br />
+		Add operations <i>UmlBaseItem::isMarked</i>, <i>UmlBaseItem::set_isMarked</i>,
+		<i>UmlBaseItem::markedItems</i>, <i>UmlBaseItem::referencedBy</i>,
+		<i>UmlBaseState::set_AssociatedDiagram</i>,
+		<i>UmlBasePackage::loadProject</i>, <i>UmlBasePackage::saveProject</i>
+		and <i>UmlBasePackage::isProjectModified</i>
+		if they are not defined.
+		<br /><br /></li>
+
+	<li> <b>Html documentation Generator 2.13.1</b><br />
+	     <i>Plug-out</i> <b>empty</b><br />
+		Upgraded by <i>plug-out upgrade</i>.
+		<br /><br /></li>
+
+	<li> <b>.pro Generator 2.1.3</b><br />
+		Add <i>WITHPHP</i> if at least two <i>WITH*</i>
+		are defined. Note : compatible with old
+		<i>plug-outs</i> without Php.		
+		<br /><br /></li>
+
+	<li> Because the format of the BOUML files is changed,
+	     the previous releases of BOUML cannot read a project
+	     saved with this version. Obviously this release is
+	     able to read the projects made by previous releases of BOUML.</li>
+    </ul>
+<br /><br />
+
+
+<h3>3.1</h3>October, 14th 2007<br /><br />
+    <ul>
+	<li> Since the 3.0 when you load a project <i>Java management and default definition</i>
+		is forced to false if <i>Php management and default definition</i>
+		is not set, fixed.
+		<br /><br /></li>
+
+	<li> Add <i>force body generation</i> flag on the operations to allow to
+		generate their body even if <i>preserve operation's body</i> is set.<br />
+		Usefull to generate the implementation of the <i>state machines</i>
+		in all the cases.
+		<br /><br /></li>
+		
+	<li> <b>Java Generator 2.13</b><br />
+	     <b>C++ Generator 2.10</b><br />
+		Fixe the indent of the first item of an <i>enum</i> itself
+		embeded in an other class.<br />
+		To manage operations having their body generated even
+		if <i>preserve operation's body</i> is set.
+		<br /><br /></li>
+
+	<li> <b>Php Generator 1.1</b><br />
+		To manage operations having their body generated even
+		if <i>preserve operation's body</i> is set.
+		<br /><br /></li>
+
+	<li> <b>State machine generator 1.4</b><br />
+		To set <i>force body generation</i> on the produced operations.<br />
+		Upgraded by <i>plug-out upgrade</i>.
+		<br /><br /></li>
+
+	<li> <b>Roundtrip body 1.5</b><br />
+		To not change the body of the operations having
+		<i>force body generation</i> set.
+		<br /><br /></li>
+
+	<li> <b>Global change 1.1</b><br />
+		To manage Php definitions.<br />
+		Upgraded by <i>plug-out upgrade</i>.
+		<br /><br /></li>
+	
+	<li> <b>Html documentation Generator 2.13</b><br />
+		To generate Php definitions.<br />
+		Upgraded by <i>plug-out upgrade</i>.
+		<br /><br /></li>
+
+	<li> <b>Plug-out upgrade 1.10</b><br />
+		To add missing vector allocations in Java definitions.<br />
+		To add Php management and <i>force body generation</i>.<br />
+		Note : you must define <i>WITHPHP</i> when
+		your <i>plug-out</i> is implemented in C++ and you
+		defined <i>WITHCPP WITHJAVA</i> and <i>WITHIDL</i>.
+		<br /><br /></li>
+
+	<li> <i>Plug-out</i> <b>empty</b><br />
+		Upgraded by <i>plug-out upgrade</i>.
+		<br /><br /></li>
+
+	<li> Because the format of the BOUML files is changed,
+	     the previous releases of BOUML cannot read a project
+	     saved with this version. Obviously this release is
+	     able to read the projects made by previous releases of BOUML.</li>
+    </ul>
+<br /><br />
+		
+
 <h3>3.0.2</h3>October, 9th 2007<br /><br />
     <ul>
 	<li> <font color="red">Since 2.32.1 Bouml crash when you add a non self
@@ -98,7 +256,13 @@
 		<br /><br /></li>
 
 	<li> <i>Plug-out upgrade</i> and the other <i>Plug-outs</i> will
-		be upgraded later to manage Php.</li>
+		be upgraded later to manage Php.
+		<br /><br /></li>
+
+	<li> Because the format of the BOUML files is changed,
+	     the previous releases of BOUML cannot read a project
+	     saved with this version. Obviously this release is
+	     able to read the projects made by previous releases of BOUML.</li>
     </ul>
 <br /><br />
 		

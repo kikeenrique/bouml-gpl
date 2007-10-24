@@ -56,6 +56,8 @@ Q_OBJECT
 
     QCheckBox * java_cb;
 
+    QCheckBox * php_cb;
+
     QCheckBox * idl_cb;
 
     QLineEdit * current_le;

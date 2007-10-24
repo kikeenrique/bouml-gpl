@@ -62,6 +62,14 @@ void UmlRelation::html(QCString, unsigned int, unsigned int) {
     fw.write("</li>");
   }
 
+  s = phpDecl();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Php : ");
+    gen_php_decl(s);
+    fw.write("</li>");
+  }
+
   fw.write("</ul>");
   
   annotation_constraint();
@@ -83,7 +91,7 @@ void UmlRelation::gen_cpp_decl(QCString s, bool descr) {
   if (! descr) {
     write((cppVisibility() == DefaultVisibility)
 	  ? visibility() : cppVisibility(),
-	  TRUE);
+	  cppLanguage);
     fw.write(": ");
     p = bypass_comment(s);
   }
@@ -145,7 +153,7 @@ void UmlRelation::gen_cpp_decl(QCString s, bool descr) {
     }
     else if (!strncmp(p, "${association}", 14)) {
       p += 14;
-      write(association(), TRUE);
+      write(association(), cppLanguage);
     }
     else if (*p == '\r')
       p += 1;
@@ -181,7 +189,7 @@ void UmlRelation::gen_java_decl(QCString s) {
       p += 14;
     else if (!strncmp(p, "${visibility}", 13)) {
       p += 13;
-      write(visibility(), FALSE);
+      write(visibility(), javaLanguage);
       fw.write(' ');
     }
     else if (!strncmp(p, "${static}", 9)) {
@@ -246,10 +254,64 @@ void UmlRelation::gen_java_decl(QCString s) {
     }
     else if (!strncmp(p, "${association}", 14)) {
       p += 14;
-      write(association(), FALSE);
+      write(association(), javaLanguage);
     }
     else if (!strncmp(p, "${@}", 4))
       p += 4;
+    else if (*p == '\r')
+      p += 1;
+    else if (*p == '\n') {
+      fw.write(' ');
+
+      do
+	p += 1;
+      while ((*p != 0) && (*p <= ' '));
+    }
+    else if (*p == ';')
+      break;
+    else if (*p == '@')
+      manage_alias(p);
+    else
+      writeq(*p++);
+  }
+}
+
+void UmlRelation::gen_php_decl(QCString s) {
+  const char * p = bypass_comment(s);
+
+  while (*p) {
+    if (!strncmp(p, "${comment}", 10))
+      p += 10;
+    else if (!strncmp(p, "${description}", 14))
+      p += 14;
+    else if (!strncmp(p, "${visibility}", 13)) {
+      p += 13;
+      write(visibility(), phpLanguage);
+      fw.write(' ');
+    }
+    else if (!strncmp(p, "${static}", 9)) {
+      p += 9;
+      if (isClassMember())
+	fw.write("static ");
+    }
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      if (!isReadOnly())
+	fw.write("$");
+      writeq(roleName());
+    }
+    else if (!strncmp(p, "${var}", 6)) {
+      p += 6;
+      if (!isReadOnly() &&
+	  !isClassMember() &&
+	  (visibility() == PackageVisibility))
+	fw.write("var ");
+    }
+    else if (!strncmp(p, "${const}", 8)) {
+      p += 8;
+      if (isReadOnly())
+	fw.write("const ");
+    }
     else if (*p == '\r')
       p += 1;
     else if (*p == '\n') {

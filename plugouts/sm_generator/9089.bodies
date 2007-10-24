@@ -99,3 +99,6 @@ class UmlOperation
   }
 !!!147458.cpp!!!	managed() : void
   _managed = TRUE;
+!!!204290.cpp!!!	setUsed() : void
+  UmlItem::setUsed();
+  set_isBodyGenerationForced(TRUE);

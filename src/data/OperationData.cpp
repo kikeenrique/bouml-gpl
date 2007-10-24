@@ -53,7 +53,8 @@ OperationData::OperationData(int id)
       uml_visibility(UmlDefaultVisibility),
       cpp_visibility(UmlDefaultVisibility),
       is_deleted(FALSE), is_get_or_set(FALSE),
-      isa_class_operation(FALSE), is_abstract(FALSE), is_volatile(FALSE), 
+      isa_class_operation(FALSE), is_abstract(FALSE),
+      force_body_gen(FALSE), is_volatile(FALSE),
       cpp_const(FALSE), cpp_friend(FALSE), cpp_virtual(FALSE),
       cpp_inline(FALSE), cpp_get_set_frozen(FALSE),
       java_final(FALSE), java_synchronized(FALSE), java_get_set_frozen(FALSE),
@@ -68,7 +69,9 @@ OperationData::OperationData(OperationData * model, BrowserNode * bn)
       cpp_visibility(UmlDefaultVisibility),
       is_deleted(FALSE), is_get_or_set(FALSE),
       isa_class_operation(model->isa_class_operation),
-      is_abstract(model->is_abstract), is_volatile(model->is_volatile),
+      is_abstract(model->is_abstract), 
+      force_body_gen(model->force_body_gen),
+      is_volatile(model->is_volatile),
       cpp_const(model->cpp_const),
       cpp_friend(model->cpp_friend), cpp_virtual(model->cpp_virtual),
       cpp_inline(model->cpp_inline), cpp_get_set_frozen(model->cpp_get_set_frozen),
@@ -1462,6 +1465,8 @@ void OperationData::send_uml_def(ToolCom * com, BrowserNode * bn,
     com->write_string(constraint);
   return_type.send_def(com);
   com->write_bool(is_abstract);
+  if (api >= 35)
+    com->write_bool(force_body_gen);
   
   unsigned n;
   ParamData * p;
@@ -1598,6 +1603,12 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
       com->write_ack(FALSE);
     else {
       switch ((unsigned char) args[-1]) {
+      case setIsForceBodyGenCmd:
+	force_body_gen = (*args != 0);
+	bn->package_modified();
+	com->write_ack(TRUE);
+	// useless to say the operation is modified
+	return TRUE;
       case setIsClassMemberCmd:
 	isa_class_operation = (*args != 0);
 	break;
@@ -2280,6 +2291,8 @@ void OperationData::save(QTextStream & st, bool ref, QString & warning) const {
       st << "class_operation ";
     else if (is_abstract)
       st << "abstract ";
+    if (force_body_gen)
+      st << "force_body_gen ";
     if (is_volatile)
       st << "volatile ";
     
@@ -2416,6 +2429,13 @@ void OperationData::read(char * & st, char * & k) {
     is_abstract = TRUE;
     k = read_keyword(st);
   }
+  
+  if (!strcmp(k, "force_body_gen")) {
+    force_body_gen = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    force_body_gen = FALSE;
   
   if (!strcmp(k, "volatile")) {
     is_volatile = TRUE;

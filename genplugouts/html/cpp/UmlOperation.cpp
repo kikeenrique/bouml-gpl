@@ -3,6 +3,7 @@
 
 #include "CppSettings.h"
 #include "JavaSettings.h"
+#include "PhpSettings.h"
 #include "UmlRelation.h"
 
 QCString UmlOperation::sKind() {
@@ -41,6 +42,14 @@ void UmlOperation::html(QCString, unsigned int, unsigned int) {
   if (!s.isEmpty()) {
     fw.write("<li>Java : ");
     gen_java_decl(s);
+    fw.write("</li>");
+  }
+
+  s = phpDecl();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Php : ");
+    gen_php_decl(s);
     fw.write("</li>");
   }
 
@@ -148,7 +157,7 @@ void UmlOperation::gen_cpp_decl(QCString s, bool descr) {
   if (! descr) {
     write((cppVisibility() == DefaultVisibility)
 	  ? visibility() : cppVisibility(),
-	  TRUE);
+	  cppLanguage);
     fw.write(": ");
     p = bypass_comment(s);
   }
@@ -186,7 +195,7 @@ void UmlOperation::gen_cpp_decl(QCString s, bool descr) {
     }
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      write(returnType(), TRUE);
+      write(returnType(), cppLanguage);
     }
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;
@@ -221,7 +230,7 @@ void UmlOperation::gen_cpp_decl(QCString s, bool descr) {
       for (index2 = 0; index2 != n; index2 += 1) {
 	fw.write(sep);
 	sep = ", ";
-	write(e[index2], TRUE);
+	write(e[index2], cppLanguage);
       }
       if (index2 != 0)
 	fw.write(')');
@@ -232,7 +241,7 @@ void UmlOperation::gen_cpp_decl(QCString s, bool descr) {
       p = strchr(p, '}') + 1;
 
       if (rank < npa) 
-	write(pa[rank].type, TRUE);
+	write(pa[rank].type, cppLanguage);
       else
 	fw.write("???");
     }
@@ -264,7 +273,7 @@ void UmlOperation::gen_cpp_decl(QCString s, bool descr) {
       
       if (((m != 0) || ((m = setOf()) != 0)) &&
 	  (m->kind() == aRelation))
-	write(((UmlRelation *) m)->association(), TRUE);
+	write(((UmlRelation *) m)->association(), cppLanguage);
     }
     else if (*p == '\r')
       p += 1;
@@ -308,7 +317,7 @@ void UmlOperation::gen_java_decl(QCString s) {
     }
     else if (!strncmp(p, "${visibility}", 13)) {
       p += 13;
-      UmlItem::write(visibility(), FALSE);
+      UmlItem::write(visibility(), javaLanguage);
       fw.write(' ');
     }
     else if (!strncmp(p, "${static}", 9)) {
@@ -328,7 +337,7 @@ void UmlOperation::gen_java_decl(QCString s) {
     }
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      write(returnType(), FALSE);
+      write(returnType(), javaLanguage);
     }
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;
@@ -352,7 +361,7 @@ void UmlOperation::gen_java_decl(QCString s) {
       for (unsigned index2 = 0; index2 != n; index2 += 1) {
 	fw.write(sep);
 	sep = ", ";
-	write(e[index2], FALSE);
+	write(e[index2], javaLanguage);
       }
     }
     else if (!strncmp(p, "${staticnl}", 11))
@@ -361,7 +370,7 @@ void UmlOperation::gen_java_decl(QCString s) {
       p = strchr(p, '}') + 1;
 
       if (rank < npa)
-	write(pa[rank].type, FALSE);
+	write(pa[rank].type, javaLanguage);
       else
 	fw.write("???");
     }
@@ -388,10 +397,93 @@ void UmlOperation::gen_java_decl(QCString s) {
       
       if (((m != 0) || ((m = setOf()) != 0)) &&
 	  (m->kind() == aRelation))
-	write(((UmlRelation *) m)->association(), FALSE);
+	write(((UmlRelation *) m)->association(), javaLanguage);
     }
     else if (!strncmp(p, "${@}", 4))
       p += 4;
+    else if (*p == '\r')
+      p += 1;
+    else if (*p == '\n') {
+      fw.write(' ');
+
+      do
+	p += 1;
+      while ((*p != 0) && (*p <= ' '));
+    }
+    else if ((*p == '{') || (*p == ';'))
+      break;
+    else if (*p == '@')
+      manage_alias(p);
+    else
+      writeq(*p++);
+  }
+}
+
+void UmlOperation::gen_php_decl(QCString s) {
+  QCString cl_stereotype = 
+     PhpSettings::classStereotype(parent()->stereotype());
+  const char * p = bypass_comment(s);
+  const QValueList<UmlParameter> & pa = params();
+  unsigned npa = pa.count();
+  unsigned rank;
+
+  while (*p) {
+    if (!strncmp(p, "${comment}", 10))
+      p += 10;
+    else if (!strncmp(p, "${description}", 14))
+      p += 14;
+    else if (!strncmp(p, "${final}", 8)) {
+      p += 8;
+      if (isPhpFinal())
+	fw.write("final ");
+    }
+    else if (!strncmp(p, "${visibility}", 13)) {
+      p += 13;
+      UmlItem::write(visibility(), phpLanguage);
+      fw.write(' ');
+    }
+    else if (!strncmp(p, "${static}", 9)) {
+      p += 9;
+      if (isClassMember())
+	fw.write("static ");
+    }
+    else if (!strncmp(p, "${abstract}", 11)) {
+      p += 11;
+      if (isAbstract() && (cl_stereotype != "interface"))
+	fw.write("abstract ");
+    }
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      writeq(compute_name(phpNameSpec()));
+    }
+    else if (!strncmp(p, "${(}", 4)) {
+      p += 4;
+      fw.write('(');
+    }
+    else if (!strncmp(p, "${)}", 4)) {
+      p += 4;
+      fw.write(')');
+    }
+    else if (!strncmp(p, "${staticnl}", 11))
+      break;
+    else if (sscanf(p, "${t%u}", &rank) == 1) {
+      p = strchr(p, '}') + 1;
+
+      if (rank < npa)
+	write(pa[rank].type, phpLanguage);
+      else
+	fw.write("???");
+    }
+    else if (sscanf(p, "${p%u}", &rank) == 1) {
+      p = strchr(p, '}') + 1;
+
+      if (rank < npa) {
+	fw.write('$');
+	writeq(pa[rank].name);
+      }
+      else
+	fw.write("???");
+    }
     else if (*p == '\r')
       p += 1;
     else if (*p == '\n') {

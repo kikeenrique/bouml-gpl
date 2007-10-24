@@ -26,6 +26,14 @@ class UmlBaseOperation : public UmlClassMember {
     // returns the kind of the item
     virtual anItemKind kind();
 
+    // indicates if the body is generated even if preserve body is set, returns TRUE if yes
+    bool isBodyGenerationForced();
+
+    // to set if the body is generated even if preserve body is set
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isBodyGenerationForced(bool v);
+
     // indicates if the operation is abstract, returns TRUE if yes
     bool isAbstract();
 
@@ -220,6 +228,57 @@ class UmlBaseOperation : public UmlClassMember {
     bool set_JavaGetSetFrozen(bool v);
 #endif
 
+#ifdef WITHPHP
+    // returns TRUE if the operation is declared final in PHP
+    bool isPhpFinal();
+
+    // to set if the operation is declared final in PHP
+    // 
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isPhpFinal(bool y);
+
+    // returns the operation's definition in Php, notes that it is
+    // already made by the inherited PhpDecl operation
+    const QCString & phpDef();
+
+    // sets the operation's definition in Php, notes that it is
+    // already made by the inherited set_PhpDecl operation
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PhpDef(const char * s);
+
+    // returns the operation's body in Php++, useless if the def does
+    // not contains ${body} Note that the body is get each time from BOUML
+    // for memory size reason
+    QCString phpBody();
+
+    // sets the operation's body in Php, useless if the def does not 
+    // contains ${body}
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PhpBody(const char * s);
+
+    // in case the operation is a 'get' or 'set' operation, returns how
+    // the operation's PHP name must be generated
+    const QCString & phpNameSpec();
+
+    // in case the operation is a 'get' or 'set' operation, returns how
+    // the operation's PHP name must be generated
+    // 
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PhpNameSpec(const char * s);
+#endif
+
+#ifdef WITHPHP
+    // return the if the Php definition is frozen, only for getter/setter operation
+    bool phpGetSetFrozen();
+
+    // set the if the Php definition is frozen, only for getter/setter operation
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PhpGetSetFrozen(bool v);
+#endif
+
 #ifdef WITHIDL
     // returns TRUE if the operation is declared oneway in IDL
     bool isIdlOneway();
@@ -256,6 +315,8 @@ class UmlBaseOperation : public UmlClassMember {
 
 
   private:
+    bool _force_body_generation : 1;
+
     bool _abstract : 1;
 
 #ifdef WITHCPP
@@ -274,6 +335,10 @@ class UmlBaseOperation : public UmlClassMember {
     bool _java_synchronized : 1;
 #endif
 
+#ifdef WITHPHP
+    bool _php_final : 1;
+#endif
+
 #ifdef WITHIDL
     bool _idl_oneway : 1;
 #endif
@@ -284,6 +349,10 @@ class UmlBaseOperation : public UmlClassMember {
 
 #ifdef WITHCPP
     bool _java_get_set_frozen : 1;
+#endif
+
+#ifdef WITHCPP
+    bool _php_get_set_frozen : 1;
 #endif
 
 #ifdef WITHCPP
@@ -304,6 +373,10 @@ class UmlBaseOperation : public UmlClassMember {
 
 #ifdef WITHJAVA
     QCString _java_name_spec;
+#endif
+
+#ifdef WITHPHP
+    QCString _php_name_spec;
 #endif
 
 #ifdef WITHIDL
@@ -329,6 +402,10 @@ class UmlBaseOperation : public UmlClassMember {
 
 #ifdef WITHJAVA
     virtual void read_java_();
+#endif
+
+#ifdef WITHPHP
+    virtual void read_php_();
 #endif
 
 #ifdef WITHIDL

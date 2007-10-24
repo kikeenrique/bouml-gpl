@@ -78,11 +78,6 @@ void UmlAttribute::generate(QTextOStream & f, const QCString & st,
 	if (isClassMember())
 	  f << "static ";
       }
-      else if (!strncmp(p, "${final}", 8)) {
-	p += 8;
-	if (isReadOnly())
-	  f << "final ";
-      }
       else if (!strncmp(p, "${type}", 7)) {
 	p += 7;
 	UmlClass::write(f, type());

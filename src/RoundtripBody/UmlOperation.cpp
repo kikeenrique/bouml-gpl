@@ -133,7 +133,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
 	previous = op->phpBody();
       }
 	  
-      if (body != previous) {
+      if (!op->isBodyGenerationForced() && (body != previous)) {
 	bool ok;
 	
 	switch (who) {

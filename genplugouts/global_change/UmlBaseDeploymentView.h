@@ -2,7 +2,7 @@
 #define _UMLBASEDEPLOYMENTVIEW_H
 
 
-#include "UmlItem.h"
+#include "UmlView.h"
 #include "anItemKind.h"
 #include <qcstring.h>
 
@@ -10,7 +10,7 @@ class UmlDeploymentView;
 class UmlPackage;
 
 //  Manage the deployment views
-class UmlBaseDeploymentView : public UmlItem {
+class UmlBaseDeploymentView : public UmlView {
   public:
     // returns a new deployment view named 's' created under 'parent'
     //
@@ -25,7 +25,7 @@ class UmlBaseDeploymentView : public UmlItem {
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseDeploymentView(void * id, const QCString & n) : UmlItem(id, n) {};
+    UmlBaseDeploymentView(void * id, const QCString & n) : UmlView(id, n) {};
 
 };
 

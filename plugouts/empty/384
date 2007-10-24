@@ -1,6 +1,6 @@
-format 42
+format 46
 "Settings" // API BASE::Settings
-  revision 23
+  revision 26
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -46,7 +46,6 @@ DO NOT MODIFY THEM !!!
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
-    
     associated_deployment_view deploymentview_ref 384 // Settings Deployment view
     comment "The API system classes concerning the settings
 
@@ -62,6 +61,7 @@ ${inlines}
       final java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -83,6 +83,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " returns TRUE when the created C++ objects are initialized
  with the default declaration/definition"
       end
@@ -102,6 +103,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " if y is TRUE the future created C++ objects will be initialized
  with the default declaration/definition
 
@@ -120,6 +122,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the C++ type corresponding to the 'UML' type given in
  argument, as it is configured in the first 'Generation settings'
@@ -142,6 +145,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the C++ type corresponding to the 'UML' type given in
  argument, as it is configured in the first 'Generation settings'
  dialog's tab
@@ -162,6 +166,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " reverse of the Type() operation, returns the 'UML' type corresponding
  to the C++ type given in argument"
       end
@@ -178,6 +183,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the C++ stereotype corresponding to the 'UML' stereotype given
  in argument"
@@ -199,6 +205,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the C++ stereotype corresponding to the 'UML' stereotype given
  in argument
 
@@ -218,6 +225,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " reverse of the RelationAttributeStereotype() operation, returns the 'UML' 
  stereotype corresponding to the C++ one given in argument"
       end
@@ -234,6 +242,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the C++ stereotype corresponding to the 'UML' stereotype given
  in argument"
@@ -255,6 +264,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the C++ stereotype corresponding to the 'UML' stereotype given
  in argument
 
@@ -274,6 +284,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " reverse of the ClassStereotype() operation, returns the 'UML' 
  stereotype corresponding to the C++ one given in argument"
       end
@@ -290,6 +301,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the #include or other form specified in the last 
  'Generation settings' tab for the C++ type given in argument."
@@ -311,6 +323,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the #include or other form specified in the last 
  'Generation settings' tab for the C++ type given in argument.
 
@@ -328,6 +341,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the 'root' directory "
       end
@@ -347,6 +361,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the 'root' directory 
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -363,6 +378,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default header file content"
       end
@@ -382,6 +398,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default header file content
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -398,6 +415,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default source file content"
       end
@@ -417,6 +435,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default source file content
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -433,6 +452,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the extension of the header files produced by the
  C++ code generator"
@@ -453,6 +473,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the extension of the header files produced by the
  C++ code generator
 
@@ -470,6 +491,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the extension of the source files produced by the
  C++ code generator"
@@ -490,6 +512,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the extension of the source files produced by the
  C++ code generator
 
@@ -507,6 +530,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " indicates to the code generator if the #include may specify
  the path of just the file's name"
@@ -527,6 +551,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " to indicates to the code generator if the #include may specify
  the path of just the file's name
 
@@ -545,6 +570,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " return if a relative path must be used when the path
  must be generated in the produced #includes"
       end
@@ -561,6 +587,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " set if a relative path must be used when the path
  must be generated in the produced #includes
@@ -580,6 +607,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " return if a path relative to the project root must be used
  when the path must be generated in the produced #includes"
       end
@@ -596,6 +624,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " set if a relative to the project root path must be used
  when the path must be generated in the produced #includes
@@ -615,6 +644,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " return if the namespace prefix must be
  always generated before class's names"
       end
@@ -631,6 +661,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " set if the namespace prefix must be always generated before class's names
 
@@ -649,6 +680,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " return if ${comment} generate Javadoc style comment"
       end
 
@@ -664,6 +696,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " set if ${comment} generate Javadoc style comment
 
@@ -681,6 +714,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default operation 'in' parameter specification 
  in case its type is an enum"
@@ -701,6 +735,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default operation 'in' parameter specification 
  in case its type is an enum
 
@@ -718,6 +753,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default operation 'out' parameter specification 
  in case its type is an enum"
@@ -738,6 +774,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default operation 'out' parameter specification 
  in case its type is an enum
 
@@ -755,6 +792,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default operation 'inout' parameter specification 
  in case its type is an enum"
@@ -775,6 +813,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default operation 'inout' parameter specification 
  in case its type is an enum
 
@@ -793,6 +832,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " return the default operation value type form"
       end
 
@@ -808,6 +848,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " set the default operation value type form
 
@@ -825,6 +866,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default operation 'in' parameter specification 
  in case its type is not an enum or a type specified in the
@@ -846,6 +888,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default operation 'in' parameter specification 
  in case its type is not an enum or a type specified in the
  first 'Generation settings' tab
@@ -864,6 +907,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default operation 'out' parameter specification 
  in case its type is not an enum or a type specified in the
@@ -885,6 +929,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default operation 'out' parameter specification 
  in case its type is not an enum or a type specified in the
  first 'Generation settings' tab
@@ -903,6 +948,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default operation 'inout' parameter specification 
  in case its type is not an enum or a type specified in the
@@ -924,6 +970,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default operation 'inout' parameter specification 
  in case its type is not an enum or a type specified in the
  first 'Generation settings' tab
@@ -944,6 +991,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " return the default operation value type form"
       end
 
@@ -959,6 +1007,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " set the default operation value type form
 
@@ -976,6 +1025,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of a class"
       end
@@ -995,6 +1045,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of a class
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -1011,6 +1062,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default specification for an 'external' class"
       end
@@ -1030,6 +1082,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default specification for an 'external' class
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -1046,6 +1099,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of a struct"
       end
@@ -1065,6 +1119,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of a struct
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -1081,6 +1136,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an union"
       end
@@ -1100,6 +1156,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an union
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -1116,6 +1173,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an enum"
       end
@@ -1135,6 +1193,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an enum
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -1151,6 +1210,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of a typedef"
       end
@@ -1170,6 +1230,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of a typedef
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -1187,6 +1248,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an attribute depending on the multiplicity"
       end
@@ -1207,6 +1269,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an attribute
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -1223,6 +1286,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an enumeration item"
       end
@@ -1242,6 +1306,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an enumeration item
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -1260,6 +1325,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of a relation depending on it is an
  aggregation by value or not and the multiplicity, given in argument."
@@ -1282,6 +1348,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of a relation depending on it is an
  aggregation by value or not and the multiplicity, given in argument.
 
@@ -1299,6 +1366,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default declaration of an operation"
       end
@@ -1318,6 +1386,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default declaration of an operation
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -1334,6 +1403,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an operation"
       end
@@ -1353,6 +1423,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an operation
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -1369,6 +1440,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " return TRUE if the operations profile must contain 'throw()'
  when the operations does not have exception"
@@ -1389,6 +1461,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set if the operations profile must contain 'throw()'
  when the operations does not have exception
 
@@ -1406,6 +1479,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default visibility of a 'get' operation generated
  through the attribute and relation 'add get operation' menu"
@@ -1426,6 +1500,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default visibility of a 'get' operation generated
  through the attribute and relation 'add get operation' menu
 
@@ -1443,6 +1518,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default name of a 'get' operation generated 
  through the attribute and relation 'add get operation' menu"
@@ -1463,6 +1539,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default name of a 'get' operation generated 
  through the attribute and relation 'add get operation' menu
 
@@ -1480,6 +1557,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns if a 'get' operation generated through the attribute
  and relation 'add get operation' menu is inline by default"
@@ -1500,6 +1578,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set if a 'get' operation generated through the attribute
  and relation 'add get operation' menu is inline by default
 
@@ -1517,6 +1596,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns if a 'get' operation generated through the attribute
  and relation 'add get operation' menu is const by default"
@@ -1537,6 +1617,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set if a 'get' operation generated through the attribute
  and relation 'add get operation' menu is const by default
 
@@ -1554,6 +1635,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns if the value returned by a 'get' operation generated through
  the attribute and relation 'add get operation' menu is const by default"
@@ -1574,6 +1656,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set if the value returned by a 'get' operation generated through
  the attribute and relation 'add get operation' menu is const by default
 
@@ -1592,6 +1675,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default visibility of a 'set' operation generated
  through the attribute and relation 'add set operation' menu"
@@ -1612,6 +1696,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default visibility of a 'set' operation generated
  through the attribute and relation 'add set operation' menu
 
@@ -1630,6 +1715,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default name of a 'set' operation generated 
  through the attribute and relation 'add set operation' menu"
@@ -1650,6 +1736,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default name of a 'set' operation generated 
  through the attribute and relation 'add set operation' menu
 
@@ -1668,6 +1755,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns if a 'set' operation generated through the attribute
  and relation 'add set operation' menu is inline by default"
@@ -1688,6 +1776,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set if a 'set' operation generated through the attribute
  and relation 'add set operation' menu is inline by default
 
@@ -1706,6 +1795,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns if the parameters of a 'set' operation generated through the
  attribute and relation 'add set operation' menu are const by default"
@@ -1726,6 +1816,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set if the parameters of a 'set' operation generated through the
  attribute and relation 'add set operation' menu are const by default
 
@@ -1744,6 +1835,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " return if the parameter of a 'set' operation generated through the
  attribute and relation 'add set operation' menu is a reference by default"
@@ -1764,6 +1856,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set if the parameter of a 'set' operation generated through the
  attribute and relation 'add set operation' menu is a reference by default
 
@@ -1778,6 +1871,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${name}${(}${)}${throws}{
 ${body}}
 "
+	
 	
 	comment " never called !"
       end
@@ -1799,6 +1893,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1807,6 +1902,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1815,6 +1911,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1823,6 +1920,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1831,6 +1929,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1840,6 +1939,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1848,6 +1948,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1856,6 +1957,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1864,6 +1966,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1873,6 +1976,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1881,6 +1985,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1890,6 +1995,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1898,6 +2004,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1906,6 +2013,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1914,6 +2022,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1922,6 +2031,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1930,6 +2040,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[3/*multiplicity*/]${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}[/*multiplicity*/]${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1938,6 +2049,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1946,6 +2058,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[2/*relation kind*/][3/*multiplicity*/]${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[][] ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1954,6 +2067,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1962,6 +2076,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1971,6 +2086,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1989,6 +2105,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1997,6 +2114,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2005,6 +2123,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2013,6 +2132,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2031,6 +2151,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2039,6 +2160,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2047,6 +2169,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2056,6 +2179,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2064,6 +2188,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2072,6 +2197,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2080,6 +2206,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2088,6 +2215,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2096,6 +2224,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2105,6 +2234,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2114,6 +2244,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2123,6 +2254,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2132,6 +2264,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2140,6 +2273,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}QDict<${type}> ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}Hashtable ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2154,6 +2288,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "internal, do NOT use it
 "
@@ -2171,6 +2306,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -2186,6 +2322,7 @@ ${inlines}
       final java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2207,6 +2344,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " returns TRUE when the created Java objects are initialized
  with the default declaration/definition"
       end
@@ -2225,6 +2363,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " if y is TRUE the future created Java objects will be initialized
  with the default declaration/definition
@@ -2245,6 +2384,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the IDL type corresponding to the 'UML' type given in
  argument, as it is configured in the first 'Generation settings'
@@ -2267,6 +2407,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the IDL type corresponding to the 'UML' type given in
  argument, as it is configured in the first 'Generation settings'
  dialog's tab
@@ -2287,6 +2428,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " reverse of the Type() operation, returns the 'UML' type corresponding
  to the IDL type given in argument"
       end
@@ -2303,6 +2445,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the IDL stereotype corresponding to the 'UML' stereotype given
  in argument"
@@ -2324,6 +2467,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the IDL stereotype corresponding to the 'UML' stereotype given
  in argument
 
@@ -2343,6 +2487,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " reverse of the RelationAttributeStereotype() operation, returns the 'UML' 
  stereotype corresponding to the IDL one given in argument"
       end
@@ -2359,6 +2504,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the IDL stereotype corresponding to the 'UML' stereotype given
  in argument"
@@ -2380,6 +2526,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the IDL stereotype corresponding to the 'UML' stereotype given
  in argument
 
@@ -2399,6 +2546,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " reverse of the ClassStereotype() operation, returns the 'UML' 
  stereotype corresponding to the IDL one given in argument"
       end
@@ -2415,6 +2563,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the #include or other form specified in the last 
  'Generation settings' tab for the Idl type given in argument."
@@ -2436,6 +2585,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the #include or other form specified in the last 
  'Generation settings' tab for the Idl type given in argument.
 
@@ -2453,6 +2603,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the 'root' directory "
       end
@@ -2472,6 +2623,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the 'root' directory 
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -2488,6 +2640,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default source file content"
       end
@@ -2507,6 +2660,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default source file content
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -2523,6 +2677,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the extension of the files produced by the Idl code generator"
       end
@@ -2542,6 +2697,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the extension of the files produced by the Idl code generator
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -2558,6 +2714,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an interface"
       end
@@ -2577,6 +2734,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an interface
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -2593,6 +2751,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of a valuetype"
       end
@@ -2612,6 +2771,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of a valuetype
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -2628,6 +2788,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default specification for an 'external' class"
       end
@@ -2647,6 +2808,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default specification for an 'external' class
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -2663,6 +2825,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of a struct"
       end
@@ -2682,6 +2845,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of a struct
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -2698,6 +2862,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of a typedef"
       end
@@ -2717,6 +2882,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of a typedef
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -2733,6 +2899,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an exception"
       end
@@ -2752,6 +2919,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an exception
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -2768,6 +2936,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an union"
       end
@@ -2787,6 +2956,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an union
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -2803,6 +2973,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an enum"
       end
@@ -2822,6 +2993,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an enum
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -2839,6 +3011,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an attribute depending on the multiplicity"
       end
@@ -2859,6 +3032,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an attribute
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -2876,6 +3050,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an attribute
  placed in a valuetype depending on the multiplicity"
@@ -2897,6 +3072,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an attribute
  placed in a valuetype
 
@@ -2915,6 +3091,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an union item depending on the multiplicity"
       end
@@ -2935,6 +3112,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an union item
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -2951,6 +3129,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an enumeration item"
       end
@@ -2970,6 +3149,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an enumeration item
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -2987,6 +3167,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of a constant attribute depending on the multiplicity"
       end
@@ -3007,6 +3188,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of a constant attribute
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -3024,6 +3206,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of a relation depending on the
  multiplicity given in argument."
@@ -3045,6 +3228,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of a relation depending on the
  multiplicity given in argument.
 
@@ -3063,6 +3247,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of a relation in a valuetype
  depending on the multiplicity given in argument."
@@ -3084,6 +3269,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of a relation in a valuetype
  depending on the multiplicity given in argument.
 
@@ -3102,6 +3288,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of a relation in an union
  depending on the multiplicity given in argument."
@@ -3123,6 +3310,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of a relation in an union
  depending on the multiplicity given in argument.
 
@@ -3140,6 +3328,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default declaration of an operation"
       end
@@ -3159,6 +3348,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default declaration of an operation
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -3175,6 +3365,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default name of a 'get' operation generated through
  the attribute and relation 'add get operation' menu"
@@ -3195,6 +3386,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default name of a 'get' operation generated through
  the attribute and relation 'add get operation' menu
 
@@ -3212,6 +3404,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default name of a 'set' operation generated 
  through the attribute and relation 'add set operation' menu"
@@ -3232,6 +3425,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default name of a 'set' operation generated 
  through the attribute and relation 'add set operation' menu
 
@@ -3249,6 +3443,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns if a 'set' operation generated through the attribute
  and relation 'add set operation' menu is oneway by default"
@@ -3269,6 +3464,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set if a 'set' operation generated through the attribute
  and relation 'add set operation' menu is oneway by default
 
@@ -3283,6 +3479,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${name}${(}${)}${throws}{
 ${body}}
 "
+	
 	
 	comment " never called !"
       end
@@ -3303,6 +3500,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3311,6 +3509,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3319,6 +3518,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3327,6 +3527,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3335,6 +3536,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3343,6 +3545,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3351,6 +3554,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3359,6 +3563,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3367,6 +3572,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3376,6 +3582,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3384,6 +3591,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[3/*multiplicity*/]${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}[/*multiplicity*/]${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3392,6 +3600,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[3/*multiplicity*/]${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}[/*multiplicity*/]${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3400,6 +3609,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[3/*multiplicity*/]${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}[/*multiplicity*/]${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3408,6 +3618,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3416,6 +3627,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[3/*multiplicity*/]${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}[/*multiplicity*/]${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3424,6 +3636,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[3/*multiplicity*/]${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3432,6 +3645,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[3/*multiplicity*/]${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3440,6 +3654,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[3/*multiplicity*/]${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3448,6 +3663,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3456,6 +3672,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3464,6 +3681,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3472,6 +3690,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3480,6 +3699,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3488,6 +3708,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3496,6 +3717,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}QDict<${type}> ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}Hashtable ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3510,6 +3732,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "internal, do NOT use it
 "
@@ -3527,6 +3750,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -3542,6 +3766,7 @@ ${inlines}
       final java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3563,6 +3788,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " returns TRUE when the created Java objects are initialized
  with the default declaration/definition"
       end
@@ -3582,6 +3808,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " if y is TRUE the future created Java objects will be initialized
  with the default declaration/definition
 
@@ -3600,6 +3827,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the JAVA type corresponding to the 'UML' type given in
  argument, as it is configured in the first 'Generation settings'
@@ -3622,6 +3850,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the JAVA type corresponding to the 'UML' type given in
  argument, as it is configured in the first 'Generation settings'
  dialog's tab
@@ -3642,6 +3871,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " reverse of the Type() operation, returns the 'UML' type corresponding
  to the JAVA type given in argument"
       end
@@ -3658,6 +3888,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the JAVA stereotype corresponding to the 'UML' stereotype given
  in argument"
@@ -3679,6 +3910,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the JAVA stereotype corresponding to the 'UML' stereotype given
  in argument
 
@@ -3698,6 +3930,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " reverse of the RelationAttributeStereotype() operation, returns the 'UML' 
  stereotype corresponding to the JAVA one given in argument"
       end
@@ -3714,6 +3947,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the JAVA stereotype corresponding to the 'UML' stereotype given
  in argument"
@@ -3735,6 +3969,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the JAVA stereotype corresponding to the 'UML' stereotype given
  in argument
 
@@ -3754,6 +3989,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " reverse of the ClassStereotype() operation, returns the 'UML' 
  stereotype corresponding to the JAVA one given in argument"
       end
@@ -3770,6 +4006,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns the import or other form specified in the last
 'Generation settings' tab for the Java type given in argument."
@@ -3791,6 +4028,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "  set the import or other form specified in the last
   'Generation settings' tab for the Java type given in argument.
 
@@ -3808,6 +4046,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "  return the 'root' directory"
       end
@@ -3827,6 +4066,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "  set the 'root' directory
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -3843,6 +4083,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default source file content"
       end
@@ -3862,6 +4103,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default source file content
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -3878,6 +4120,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the extension of the file produced by the JAVA code generator"
       end
@@ -3897,6 +4140,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the extension of the file produced by the JAVA code generator
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -3914,6 +4158,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " return if ${comment} generate Javadoc style comment"
       end
 
@@ -3929,6 +4174,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " set if ${comment} generate Javadoc style comment
 
@@ -3946,6 +4192,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of a class"
       end
@@ -3965,6 +4212,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of a class
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -3981,6 +4229,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default specification for an 'external' class"
       end
@@ -4000,6 +4249,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default specification for an 'external' class
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -4016,6 +4266,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an enumeration implemented
  through an abstract class having constant attributes"
@@ -4036,6 +4287,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an enumeration implemented
  through an abstract class having constant attributes
 
@@ -4053,6 +4305,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an enumeration"
       end
@@ -4072,6 +4325,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an enumeration
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -4088,6 +4342,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an interface"
       end
@@ -4107,6 +4362,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an interface
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -4124,6 +4380,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an attribute depending on the multiplicity"
       end
@@ -4144,6 +4401,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an attribute
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -4160,6 +4418,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an enumeration item"
       end
@@ -4179,6 +4438,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an enumeration item
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -4195,6 +4455,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "Returns the 'case' form produced in the fromInt operation
 for each enumeration item
@@ -4216,6 +4477,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "  set the 'case' form produced in the fromInt operation
   for each enumeration item
 
@@ -4235,6 +4497,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " returns the default definition of an enumeration item"
       end
 
@@ -4253,6 +4516,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an enumeration item
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -4270,6 +4534,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of a relation depending on the
  multiplicity given in argument."
@@ -4291,6 +4556,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of a relation depending on the
  multiplicity given in argument.
 
@@ -4308,6 +4574,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default definition of an operation"
       end
@@ -4327,6 +4594,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default definition of an operation
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -4343,6 +4611,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default visibility of a 'get' operation generated
  through the attribute and relation 'add get operation'"
@@ -4363,6 +4632,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default visibility of a 'get' operation generated
  through the attribute and relation 'add get operation'
 
@@ -4380,6 +4650,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default name of a 'get' operation generated 
  through the attribute and relation 'add get operation' menu"
@@ -4400,6 +4671,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default name of a 'get' operation generated 
  through the attribute and relation 'add get operation' menu
 
@@ -4417,6 +4689,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default name of a 'set' operation generated 
  through the attribute and relation 'add set operation' menu"
@@ -4437,6 +4710,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default name of a 'set' operation generated 
  through the attribute and relation 'add set operation' menu
 
@@ -4454,6 +4728,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "  return if a 'get' operation generated through the attribute
   and relation 'add get operation' menu is final by default"
@@ -4474,6 +4749,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "  set if a 'get' operation generated through the attribute
   and relation 'add get operation' menu is final by default
 
@@ -4491,6 +4767,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns if a 'set' operation generated through the attribute
  and relation 'add set operation' menu is final by default"
@@ -4511,6 +4788,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set if a 'set' operation generated through the attribute
  and relation 'add set operation' menu is final by default
 
@@ -4528,6 +4806,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns the default visibility of a 'set' operation generated
  through the attribute and relation 'add set operation'"
@@ -4548,6 +4827,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the default visibility of a 'set' operation generated
  through the attribute and relation 'add set operation'
 
@@ -4565,6 +4845,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " returns if the parameters of a 'set' operation generated through the
  attribute and relation 'add set operation' menu are final by default"
@@ -4585,6 +4866,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set if the parameters of a 'set' operation generated through the
  attribute and relation 'add set operation' menu are final by default
 
@@ -4599,6 +4881,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${name}${(}${)}${throws}{
 ${body}}
 "
+	
 	
 	comment " never called !"
       end
@@ -4619,6 +4902,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4627,6 +4911,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4635,6 +4920,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4644,6 +4930,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4652,6 +4939,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4661,6 +4949,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4669,6 +4958,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4677,6 +4967,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[3/*multiplicity*/]${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}[/*multiplicity*/]${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4685,6 +4976,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4693,6 +4985,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4702,6 +4995,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4710,6 +5004,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[3/*multiplicity*/]${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4718,6 +5013,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4736,6 +5032,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4744,6 +5041,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4762,6 +5060,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4770,6 +5069,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4778,6 +5078,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4786,6 +5087,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4794,6 +5096,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4803,6 +5106,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4811,6 +5115,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}QDict<${type}> ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}Hashtable ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4825,6 +5130,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "internal, do NOT use it
 "
@@ -4842,8 +5148,1000 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "internal, do NOT use it
 "
+      end
+    end
+
+    class 146560 "PhpSettings"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment " This class manages settings concerning PHP, configured through
+ the 'Generation settings' dialog.
+
+ This class may be defined as a 'singleton', but I prefer to use static 
+ members allowing to just write 'PhpSettings::member' rather than
+ 'PhpSettings::instance()->member' or other long sentence like this."
+      operation 197376 "useDefaults"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns TRUE when the created Php objects are initialized
+ with the default declaration/definition"
+      end
+
+      operation 197504 "set_UseDefaults"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "y" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " if y is TRUE the future created Php objects will be initialized
+ with the default declaration/definition
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 197632 "classStereotype"
+	class_operation public explicit_return_type "string"
+	nparams 1
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns the PHP stereotype corresponding to the 'UML' stereotype given
+ in argument"
+      end
+
+      operation 197760 "set_ClassStereotype"
+	class_operation public explicit_return_type "bool"
+	nparams 2
+	  param in name "s" explicit_type "string"
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set the PHP stereotype corresponding to the 'UML' stereotype given
+ in argument
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 206464 "classUmlStereotype"
+	class_operation public explicit_return_type "string"
+	nparams 1
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " reverse of the ClassStereotype() operation, returns the 'UML' 
+ stereotype corresponding to the PHP one given in argument"
+      end
+
+      operation 197888 "rootDir"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment "  return the 'root' directory"
+      end
+
+      operation 198016 "set_RootDir"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment "  set the 'root' directory
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 198144 "sourceContent"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns the default source file content"
+      end
+
+      operation 198272 "set_SourceContent"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set the default source file content
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 198400 "sourceExtension"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns the extension of the file produced by the PHP code generator"
+      end
+
+      operation 198528 "set_SourceExtension"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set the extension of the file produced by the PHP code generator
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 198656 "classDecl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns the default definition of a class"
+      end
+
+      operation 198784 "set_ClassDecl"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set the default definition of a class
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 198912 "externalClassDecl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns the default specification for an 'external' class"
+      end
+
+      operation 199040 "set_ExternalClassDecl"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set the default specification for an 'external' class
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 199168 "enumDecl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns the default definition of an enumeration"
+      end
+
+      operation 199296 "set_EnumDecl"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set the default definition of an enumeration
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 199424 "interfaceDecl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns the default definition of an interface"
+      end
+
+      operation 199552 "set_InterfaceDecl"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set the default definition of an interface
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 199680 "attributeDecl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns the default definition of an attribute"
+      end
+
+      operation 199808 "set_AttributeDecl"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set the default definition of an attribute
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 199936 "enumItemDecl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns the default definition of an enumeration item"
+      end
+
+      operation 200064 "set_EnumItemDecl"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set the default definition of an enumeration item
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 200192 "relationDecl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns the default definition of an relation"
+      end
+
+      operation 200320 "set_RelationDecl"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set the default definition of an relation
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 200448 "operationDef"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns the default definition of an operation"
+      end
+
+      operation 200576 "set_OperationDef"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set the default definition of an operation
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 200704 "getVisibility"
+	class_operation public return_type class_ref 512 // aVisibility
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns the default visibility of a 'get' operation generated
+ through the attribute and relation 'add get operation'
+
+ note : visibility shared with Java"
+      end
+
+      operation 200832 "set_GetVisibility"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 512 // aVisibility
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set the default visibility of a 'get' operation generated
+ through the attribute and relation 'add get operation'
+
+ On error : return FALSE in C++, produce a RuntimeException in Java
+
+ note : visibility shared with Java"
+      end
+
+      operation 200960 "getName"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns the default name of a 'get' operation generated 
+ through the attribute and relation 'add get operation' menu"
+      end
+
+      operation 201088 "set_GetName"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set the default name of a 'get' operation generated 
+ through the attribute and relation 'add get operation' menu
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 201216 "setName"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns the default name of a 'set' operation generated 
+ through the attribute and relation 'add set operation' menu"
+      end
+
+      operation 201344 "set_SetName"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set the default name of a 'set' operation generated 
+ through the attribute and relation 'add set operation' menu
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 201472 "isGetFinal"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment "  return if a 'get' operation generated through the attribute
+  and relation 'add get operation' menu is final by default"
+      end
+
+      operation 201600 "set_IsGetFinal"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment "  set if a 'get' operation generated through the attribute
+  and relation 'add get operation' menu is final by default
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 201728 "isSetFinal"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns if a 'set' operation generated through the attribute
+ and relation 'add set operation' menu is final by default"
+      end
+
+      operation 201856 "set_IsSetFinal"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set if a 'set' operation generated through the attribute
+ and relation 'add set operation' menu is final by default
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 201984 "setVisibility"
+	class_operation public return_type class_ref 512 // aVisibility
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " returns the default visibility of a 'set' operation generated
+ through the attribute and relation 'add set operation'
+
+   note : visibility shared with Java"
+      end
+
+      operation 202112 "set_SetVisibility"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 512 // aVisibility
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " set the default visibility of a 'set' operation generated
+ through the attribute and relation 'add set operation'
+
+ On error : return FALSE in C++, produce a RuntimeException in Java
+
+   note : visibility shared with Java"
+      end
+
+      operation 202240 "PhpSettings"
+	cpp_inline private explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${name}${(}${)} {};
+"
+	java_def "  ${comment}${visibility}${final}${name}${(}${)}${throws}{
+${body}}
+"
+	
+	
+	comment " never called !"
+      end
+
+      classrelation 158336 // <generalisation>
+	relation 158336 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 158336 // <generalisation>
+	  b parent class_ref 5120 // UmlSettings
+      end
+
+      attribute 129280 "_defined"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 129408 "_root"
+	class_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 129536 "_class_decl"
+	class_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 129664 "_external_class_decl"
+	class_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 129792 "_enum_decl"
+	class_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 129920 "_interface_decl"
+	class_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 130048 "_attr_decl"
+	class_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 130176 "_enum_item_decl"
+	class_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 130304 "_rel_decl"
+	class_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 130432 "_oper_def"
+	class_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	idl_decl ""
+      end
+
+      classrelation 158464 // _get_visibility (<directional aggregation by value>)
+	relation 158464 *-->
+	  a role_name "_get_visibility" class_relation private
+	    cpp default "#ifndef WITHJAVA
+    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+#endif
+"
+	    classrelation_ref 158464 // _get_visibility (<directional aggregation by value>)
+	  b parent class_ref 512 // aVisibility
+      end
+
+      attribute 130560 "_get_name"
+	class_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 130688 "_is_get_final"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	idl_decl ""
+      end
+
+      classrelation 158592 // _set_visibility (<directional aggregation by value>)
+	relation 158592 *-->
+	  a role_name "_set_visibility" class_relation private
+	    cpp default "#ifndef WITHJAVA
+    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+#endif
+"
+	    classrelation_ref 158592 // _set_visibility (<directional aggregation by value>)
+	  b parent class_ref 512 // aVisibility
+      end
+
+      attribute 130816 "_set_name"
+	class_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 130944 "_is_set_final"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 131072 "_src_content"
+	class_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 131200 "_ext"
+	class_attribute private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	idl_decl ""
+      end
+
+      operation 202368 "read_"
+	class_operation protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+      end
+
+      operation 202496 "read_if_needed_"
+	class_operation protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
       end
     end
 
@@ -4857,6 +6155,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4879,6 +6178,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " return the default description"
       end
 
@@ -4894,6 +6194,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " set the default description
 
@@ -4912,6 +6213,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " return the default description"
       end
 
@@ -4927,6 +6229,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " set the default description
 
@@ -4945,6 +6248,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " return the default description"
       end
 
@@ -4960,6 +6264,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " set the default description
 
@@ -4978,6 +6283,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " return the default description"
       end
 
@@ -4993,6 +6299,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " set the default description
 
@@ -5011,6 +6318,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " return the default description"
       end
 
@@ -5026,6 +6334,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " set the default description
 
@@ -5044,6 +6353,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " return the language from which the getter's name rule must be followed at Uml level"
       end
 
@@ -5059,6 +6369,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment " set the language from which the getter's name rule must be followed at Uml level
 
@@ -5077,6 +6388,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " return the language from which the setter's name rule must be followed at Uml level"
       end
 
@@ -5093,6 +6405,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " set the language from which the setter's name rule must be followed at Uml level
 
  On error : return FALSE in C++, produce a RuntimeException in Java"
@@ -5107,6 +6420,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment " never called !"
       end
 
@@ -5115,6 +6429,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -5146,6 +6461,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -5155,6 +6471,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -5164,6 +6481,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -5173,6 +6491,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -5182,6 +6501,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -5190,6 +6510,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}QDict<${type}> ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}Hashtable ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -5208,6 +6529,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}QDict<${type}> ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}Hashtable ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -5226,6 +6548,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}QDict<${type}> ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}Hashtable ${name}${value};"
+	php_decl ""
 	idl_decl ""
       end
 
@@ -5251,6 +6574,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -5266,6 +6590,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "internal, do NOT use it
 "
@@ -5284,6 +6609,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -5298,6 +6624,7 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} UmlBuiltin::* ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "internal, do NOT use it
@@ -5316,6 +6643,7 @@ ${body}}
 "
 	
 	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -5330,6 +6658,7 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} UmlStereotype::* ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "internal, do NOT use it
@@ -5349,6 +6678,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -5366,6 +6696,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -5382,6 +6713,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "internal, do NOT use it
 "
@@ -5411,6 +6743,7 @@ ${cases}    default: throw new Error();
   private ${name}(int v) { value = v; }; 
 }
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5420,6 +6753,7 @@ ${cases}    default: throw new Error();
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -5429,6 +6763,7 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -5438,6 +6773,7 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -5447,6 +6783,17 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	idl_decl ""
+      end
+
+      attribute 135424 "phpLanguage"
+	public type class_ref 143360 // aLanguage
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
 	idl_decl ""
       end
     end
@@ -5584,6 +6931,49 @@ ${package}
 ${definition}"
       associated_classes
 	class_ref 4992 // JavaSettings
+      end
+    end
+
+    artifact 141696 "PhpSettings"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+#ifdef WITHPHP
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+
+#endif
+
+#endif
+"
+      cpp_src "#ifdef WITHPHP
+
+${comment}
+${includes}
+#include \"UmlCom.h\"
+#include \"PhpSettingsCmd.h\"
+#include \"JavaSettingsCmd.h\"
+#include \"UmlStereotype.h\"
+#ifdef WITHJAVA
+#include \"JavaSettings.h\"
+#endif
+${namespace_start}
+${members}
+${namespace_end}
+
+#endif
+"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 146560 // PhpSettings
       end
     end
 

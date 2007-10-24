@@ -17,6 +17,10 @@ struct UmlStereotype {
     QCString java;
 #endif
 
+#ifdef WITHPHP
+    QCString php;
+#endif
+
 #ifdef WITHIDL
     QCString idl;
 #endif

@@ -113,6 +113,14 @@ class UmlClass
     fw.write("</li>");
   }
 
+  s = phpDecl();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Php : ");
+    gen_php_decl(s);
+    fw.write("</li>");
+  }
+
   fw.write("</ul>");
   
   if (subClasses.size() != 0) {
@@ -272,6 +280,14 @@ class UmlClass
   if (s.length() != 0) {
     fw.write("<li>Java : ");
     gen_java_decl(s);
+    fw.write("</li>");
+  }
+
+  s = phpDecl();
+
+  if (s.length() != 0) {
+    fw.write("<li>Php : ");
+    gen_php_decl(s);
     fw.write("</li>");
   }
 
@@ -634,7 +650,7 @@ class UmlClass
 	}
       }
       if (! find)
-	UmlItem::write(baseType(), TRUE);
+	UmlItem::write(baseType(), cppLanguage);
     }
     else if (!strncmp(p, "${template}", 11)) {
       p += 11;
@@ -662,7 +678,7 @@ class UmlClass
 	    // UmlItem::write else G++ call UmlClass::write(QCString) !
 	    UmlItem::write((rel->cppVisibility() == DefaultVisibility)
 		           ? rel->visibility() : rel->cppVisibility(),
-			   TRUE);
+			   cppLanguage);
 	    fw.write((rel->cppVirtualInheritance()) ? " virtual " : " ");
 	    rel->roleType()->write();
 	    generate(actuals(), rel->roleType(), TRUE);
@@ -728,7 +744,7 @@ class UmlClass
 	}
       }
       if (! find)
-	write(baseType(), true);
+	write(baseType(), aLanguage.cppLanguage);
     }
     else if (s.startsWith("${template}", index)) {
       index += 11;
@@ -755,7 +771,7 @@ class UmlClass
 	    fw.write(sep);
 	    write((cppVisibility() == aVisibility.DefaultVisibility)
 		  ? visibility() : cppVisibility(),
-		  true);
+		  aLanguage.cppLanguage);
 	    fw.write((rel.cppVirtualInheritance()) ? " virtual " : " ");
 	    rel.roleType().write();
 	    generate(actuals(), rel.roleType(), true);
@@ -803,7 +819,7 @@ class UmlClass
     }
     else if (!strncmp(p, "${visibility}", 13)) {
       p += 13;
-      UmlItem::write(visibility(), FALSE);
+      UmlItem::write(visibility(), javaLanguage);
       fw.write(' ');
     }
     else if (!strncmp(p, "${final}", 8)) {
@@ -903,7 +919,7 @@ class UmlClass
     }
     else if (s.startsWith("${visibility}", index)) {
       index += 13;
-      write(visibility(), false);
+      write(visibility(), aLanguage.javaLanguage);
       fw.write(' ');
     }
     else if (s.startsWith("${final}", index)) {
@@ -987,6 +1003,197 @@ class UmlClass
     else
       writeq(s.charAt(index++));
   }
+!!!211458.cpp!!!	gen_php_decl(in s : string) : void
+  QCString st = PhpSettings::classStereotype(stereotype());
+  
+  if (st == "ignored")
+    return;
+    
+  const char * p = bypass_comment(s);
+  UmlRelation * extend = 0;
+
+  while (*p != 0) {
+    if (!strncmp(p, "${comment}", 10))
+      p += 10;
+    else if (!strncmp(p, "${description}", 14))
+      p += 14;
+    else if (!strncmp(p, "${visibility}", 13)) {
+      p += 13;
+      UmlItem::write(visibility(), phpLanguage);
+      fw.write(' ');
+    }
+    else if (!strncmp(p, "${final}", 8)) {
+      p += 8;
+      if (isPhpFinal())
+	fw.write("final ");
+    }
+    else if (!strncmp(p, "${abstract}", 11)) {
+      p += 11;
+      if (isAbstract())
+	fw.write("abstract ");
+    }
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      writeq(name());
+      generics();
+    }
+    else if (!strncmp(p, "${extends}", 10)) {
+      p += 10;
+
+      const QVector<UmlItem> ch = children();
+
+      for (unsigned i = 0; i != ch.size(); i += 1) {
+	if (ch[i]->kind() == aRelation) {
+	  UmlRelation * rel = (UmlRelation *) ch[i];
+	  aRelationKind k = rel->relationKind();
+	  
+	  if (((k == aGeneralisation) ||
+	       (k == aRealization)) &&
+	      (!rel->phpDecl().isEmpty()) &&
+	      ((st == "interface") ||
+	       (PhpSettings::classStereotype(rel->roleType()->stereotype()) != "interface"))) {
+	    extend = rel;
+	    fw.write(" extends ");
+	    rel->roleType()->write();
+	    break;
+	  }
+	}
+      }
+    }
+    else if (!strncmp(p, "${implements}", 13)) {
+      p += 13;
+
+      const QVector<UmlItem> ch = children();
+      const char * sep = " implements ";
+
+      for (unsigned i = 0; i != ch.size(); i += 1) {
+	if (ch[i]->kind() == aRelation) {
+	  UmlRelation * rel = (UmlRelation *) ch[i];
+	  aRelationKind k = rel->relationKind();
+	  
+	  if ((rel != extend) &&
+	      ((k == aGeneralisation) ||
+	       (k == aRealization)) &&
+	      (!rel->phpDecl().isEmpty())) {
+	    fw.write(sep);
+	    sep = ", ";
+	    rel->roleType()->write();
+	  }
+	}
+      }
+    }
+    else if (*p == '\r')
+      p += 1;
+    else if (*p == '\n') {
+      fw.write(' ');
+
+      do
+	p += 1;
+      while ((*p != 0) && (*p <= ' '));
+    }
+    else if ((*p == '{') || (*p == ';'))
+      break;
+    else if (*p == '@')
+      manage_alias(p);
+    else
+      writeq(*p++);
+  }
+!!!211458.java!!!	gen_php_decl(in s : string) : void
+  String st = PhpSettings.classStereotype(stereotype());
+  
+  if (st.equals("ignored"))
+    return;
+    
+  int n = s.length();
+  int index = bypass_comment(s);
+  UmlRelation extend = null;
+
+  while (index != n) {
+    if (s.startsWith("${comment}", index))
+      index += 10;
+    else if (s.startsWith("${description}", index))
+      index += 14;
+    else if (s.startsWith("${visibility}", index)) {
+      index += 13;
+      write(visibility(), aLanguage.phpLanguage);
+      fw.write(' ');
+    }
+    else if (s.startsWith("${final}", index)) {
+      index += 8;
+      if (isPhpFinal())
+	fw.write("final ");
+    }
+    else if (s.startsWith("${abstract}", index)) {
+      index += 11;
+      if (isAbstract())
+	fw.write("abstract ");
+    }
+    else if (s.startsWith("${name}", index)) {
+      index += 7;
+      writeq(name());
+      generics();
+    }
+    else if (s.startsWith("${extends}", index)) {
+      index += 10;
+
+      UmlItem[] ch = children();
+
+      for (int i = 0; i != ch.length; i += 1) {
+	if (ch[i].kind() == anItemKind.aRelation) {
+	  UmlRelation rel = (UmlRelation) ch[i];
+	  aRelationKind k = rel.relationKind();
+	  
+	  if (((k == aRelationKind.aGeneralisation) ||
+	       (k == aRelationKind.aRealization)) &&
+	      (rel.phpDecl().length() != 0) &&
+	      (st.equals("interface") ||
+	       !PhpSettings.classStereotype(rel.roleType().stereotype()).equals("interface"))) {
+	    extend = rel;
+	    fw.write(" extends ");
+	    rel.roleType().write();
+	    break;
+	  }
+	}
+      }
+    }
+    else if (s.startsWith("${implements}", index)) {
+      index += 13;
+
+      UmlItem[] ch = children();
+      String sep = " implements ";
+
+      for (int i = 0; i != ch.length; i += 1) {
+	if (ch[i].kind() == anItemKind.aRelation) {
+	  UmlRelation rel = (UmlRelation) ch[i];
+	  aRelationKind k = rel.relationKind();
+	  
+	  if ((rel != extend) &&
+	      ((k == aRelationKind.aGeneralisation) ||
+	       (k == aRelationKind.aRealization)) &&
+	      (rel.phpDecl().length() != 0)) {
+	    fw.write(sep);
+	    sep = ", ";
+	    rel.roleType().write();
+	  }
+	}
+      }
+    }
+    else if (s.charAt(index) == '\r')
+      index += 1;
+    else if (s.charAt(index) == '\n') {
+      fw.write(' ');
+
+      do
+	index += 1;
+      while ((index != n) && Character.isWhitespace(s.charAt(index)));
+    }
+    else if ((s.charAt(index) == '{') || (s.charAt(index) == ';'))
+      break;
+    else if (s.charAt(index) == '@')
+      index = manage_alias(s, index);
+    else
+      writeq(s.charAt(index++));
+  }
 !!!128321.cpp!!!	generate(in a : UmlActualParameter, in mother : UmlClass, in cpp : bool) : void
   unsigned i;
   unsigned n = a.count();
@@ -1000,10 +1207,11 @@ class UmlClass
   }
     
   const char * sep = "<";
+  aLanguage lang = (cpp) ? cppLanguage : javaLanguage;
   
   do {
     writeq(sep);
-    UmlItem::write(a[i].value(), cpp);
+    UmlItem::write(a[i].value(), lang);
     sep = ", ";
   }
   while ((++i != n) && (a[i].superClass() == mother));
@@ -1021,10 +1229,11 @@ class UmlClass
   }
     
   String sep = "<";
+  aLanguage lang = (cpp) ? aLanguage.cppLanguage : aLanguage.javaLanguage;
   
   do {
     writeq(sep);
-    write(a[i].value(), cpp);
+    write(a[i].value(), lang);
     sep = ", ";
   }
   while ((++i != a.length) && (a[i].superClass() == mother));
@@ -1083,7 +1292,7 @@ class UmlClass
       
       if ((t.type != 0) || ! t.explicit_type.isEmpty()) {
 	fw.write(" extends ");
-	UmlItem::write(t, FALSE);
+	UmlItem::write(t, javaLanguage);
       }
     }
     
@@ -1105,7 +1314,7 @@ class UmlClass
       
       if ((t.type != null) || (t.explicit_type.length() != 0)) {
 	fw.write(" extends ");
-	UmlItem.write(t, false);
+	UmlItem.write(t, aLanguage.javaLanguage);
       }
     }
     

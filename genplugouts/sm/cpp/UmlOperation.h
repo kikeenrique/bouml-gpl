@@ -39,6 +39,9 @@ class UmlOperation : public UmlBaseOperation {
 
     bool isManaged() const;
 
+    //  mark the element  is usefull
+    virtual void setUsed();
+
 
   protected:
     bool _managed;

@@ -173,7 +173,7 @@ void ComponentCanvas::compute_size() {
     BrowserComponent * comp = (BrowserComponent *) browser_node;
     const QValueList<BrowserClass *> & pr = comp->get_provided_classes();
     const QValueList<BrowserClass *> & rq = comp->get_required_classes();
-    const QValueList<BrowserClass *> & rz = comp->get_realized_classes();
+    const QValueList<BrowserClass *> & rz = comp->get_realizing_classes();
     int lh = fm.height() + four;	// line height
     
     if (req_prov && (!pr.isEmpty() || !rq.isEmpty())) {
@@ -272,18 +272,20 @@ void ComponentCanvas::change_scale() {
 }
 
 bool ComponentCanvas::valid(ArrowCanvas * a) const {
+  QValueList<BrowserClass *> l;
+  
   switch (a->type()) {
   case UmlRequired:
-    return (((BrowserComponent *) browser_node)->get_all_required_classes(FALSE)
-	    .findIndex(((ArrowJunctionCanvas *) a->get_end())->get_interface())
-	    != -1);
+    ((BrowserComponent *) browser_node)->get_all_required_classes(l, FALSE);
+    break;
   case UmlProvided: 
-    return (((BrowserComponent *) browser_node)->get_all_provided_classes(FALSE)
-	    .findIndex(((ArrowJunctionCanvas *) a->get_end())->get_interface())
-	    != -1);
+    ((BrowserComponent *) browser_node)->get_all_provided_classes(l, FALSE);
+    break;
   default:
     return TRUE;
   }
+  
+  return (l.findIndex(((ArrowJunctionCanvas *) a->get_end())->get_interface()) != -1);
 }
 
 void ComponentCanvas::modified() {
@@ -320,9 +322,13 @@ void ComponentCanvas::check_line(ArrowCanvas * l) {
 
 bool ComponentCanvas::connexion(UmlCode action, const QPoint &, const QPoint & p) {
   BrowserComponent * comp = (BrowserComponent *) browser_node;
-  QValueList<BrowserClass *> l = 
-    (action == UmlProvided) ? comp->get_all_provided_classes(TRUE)
-			    : comp->get_all_required_classes(TRUE);
+  QValueList<BrowserClass *> l;
+   
+  if (action == UmlProvided) 
+    comp->get_all_provided_classes(l, TRUE);
+  else
+    comp->get_all_required_classes(l, TRUE);
+  
   ClassListDialog dialog("Choose class", l);
     
   if (dialog.exec() != QDialog::Accepted)
@@ -577,7 +583,7 @@ void ComponentCanvas::draw(QPainter & p) {
     BrowserComponent * comp = (BrowserComponent *) browser_node;
     const QValueList<BrowserClass *> & pr = comp->get_provided_classes();
     const QValueList<BrowserClass *> & rq = comp->get_required_classes();
-    const QValueList<BrowserClass *> & rz = comp->get_realized_classes();
+    const QValueList<BrowserClass *> & rz = comp->get_realizing_classes();
     int lh = fm.height() + four;	// line height
     
     r = re;
@@ -859,12 +865,20 @@ const char * ComponentCanvas::may_start(UmlCode & l) const {
     l = UmlInherit;
     return (browser_node->is_writable()) ? 0 : "read only";
   case UmlProvided:
-    return (!((BrowserComponent *) browser_node)->get_all_provided_classes(FALSE).isEmpty())
-      ? 0 : "no provided interfaces";
+    {
+      QValueList<BrowserClass *> ll;
+      
+      ((BrowserComponent *) browser_node)->get_all_provided_classes(ll, FALSE);
+      return (!ll.isEmpty()) ? 0 : "no provided interfaces";
+    }
     break;
   case UmlRequired:
-    return (!((BrowserComponent *) browser_node)->get_all_required_classes(FALSE).isEmpty())
-      ? 0 : "no required interfaces";
+    {
+      QValueList<BrowserClass *> ll;
+      
+      ((BrowserComponent *) browser_node)->get_all_required_classes(ll, FALSE);
+      return (!ll.isEmpty()) ? 0 : "no required interfaces";
+    }
     break;
   case UmlAnchor:
     return 0;
@@ -900,15 +914,21 @@ const char * ComponentCanvas::may_connect(UmlCode & l, const DiagramItem * dest)
   case UmlArrowJunction:
     switch (l) {
     case UmlRequired:
-      return (((BrowserComponent *) browser_node)->get_all_required_classes(FALSE)
-	      .findIndex(((ArrowJunctionCanvas *) dest)->get_interface())
-	      != -1)
+    {
+      QValueList<BrowserClass *> ll;
+      
+      ((BrowserComponent *) browser_node)->get_all_required_classes(ll, FALSE);
+      return (ll.findIndex(((ArrowJunctionCanvas *) dest)->get_interface()) != -1)
 	? 0 : "not required";
+    }
     case UmlProvided:
-      return (((BrowserComponent *) browser_node)->get_all_provided_classes(FALSE)
-	      .findIndex(((ArrowJunctionCanvas *) dest)->get_interface())
-	      != -1)
+    {
+      QValueList<BrowserClass *> ll;
+      
+      ((BrowserComponent *) browser_node)->get_all_provided_classes(ll, FALSE);
+      return (ll.findIndex(((ArrowJunctionCanvas *) dest)->get_interface()) != -1)
 	? 0 : "not provided";
+    }
     default:
       return "illegal";
     }

@@ -237,6 +237,9 @@ enum OnInstanceCmd {
   setPhpNameSpecCmd,
   setPhpDirCmd,
   setPhpFrozenCmd,
+  
+  // api 35
+  setIsForceBodyGenCmd,
     
   setUserCmd = 252, // not in plug-outs managed through bouml
   moveInCmd = 253,  // not in plug-outs managed through bouml

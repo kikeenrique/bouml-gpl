@@ -94,7 +94,7 @@ void UmlClass::generate(QTextOStream & f, QCString indent) {
 
     if (*p == '\n') {
       f << *p++;
-      if (*p && strncmp(p, "${members}", 10))
+      if (*p && strncmp(p, "${members}", 10) && strncmp(p, "${items}", 8))
 	f << indent;
     }
     else if (*p == '@')

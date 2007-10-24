@@ -2503,7 +2503,7 @@ void GenerationSettings::read(char * & st, char * & k)
     k = read_keyword(st);
   }
   else
-    java_default_defs = FALSE;
+    php_default_defs = FALSE;
   
   if (!strcmp(k, "idl_default_defs")) {
     idl_default_defs = TRUE;

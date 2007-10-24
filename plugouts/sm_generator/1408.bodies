@@ -245,6 +245,51 @@ class UmlBaseClass
   UmlCom.check();
 
   _java_final = y;
+!!!210048.cpp!!!	isPhpExternal() : bool
+  read_if_needed_();
+  
+  return _php_external;
+!!!210048.java!!!	isPhpExternal() : bool
+  read_if_needed_();
+  
+  return _php_external;
+!!!210176.cpp!!!	set_isPhpExternal(in y : bool) : bool
+  bool r;
+  
+  if (set_it_(r, y, setIsPhpExternalCmd)) {
+    _php_external = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!210176.java!!!	set_isPhpExternal(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsPhpExternalCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _php_external = y;
+!!!210304.cpp!!!	isPhpFinal() : bool
+  read_if_needed_();
+  
+  return _php_final;
+!!!210304.java!!!	isPhpFinal() : bool
+  read_if_needed_();
+  
+  return _php_final;
+!!!210432.cpp!!!	set_isPhpFinal(in y : bool) : bool
+  bool r;
+  
+  if (set_it_(r, y, setIsPhpFinalCmd)) {
+    _php_final = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+
+!!!210432.java!!!	set_isPhpFinal(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsPhpFinalCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _php_final = y;
 !!!8320.cpp!!!	switchType() : UmlTypeSpec
   read_if_needed_();
   
@@ -430,7 +475,6 @@ class UmlBaseClass
   _cpp_external = UmlCom.read_bool();
 !!!9984.cpp!!!	read_java_() : void
   UmlBaseClassMember::read_java_();
-  ;
   _java_final = UmlCom::read_bool();
   _java_external = UmlCom::read_bool();
 !!!9984.java!!!	read_java_() : void
@@ -438,6 +482,15 @@ class UmlBaseClass
   
   _java_final = UmlCom.read_bool();
   _java_external = UmlCom.read_bool();
+!!!210560.cpp!!!	read_php_() : void
+  UmlBaseClassMember::read_php_();
+  _php_final = UmlCom::read_bool();
+  _php_external = UmlCom::read_bool();
+!!!210560.java!!!	read_php_() : void
+  super.read_php_();  
+  
+  _php_final = UmlCom.read_bool();
+  _php_external = UmlCom.read_bool();
 !!!10112.cpp!!!	read_idl_() : void
   UmlBaseClassItem::read_idl_();
   _switch_type.type = (UmlClass *) UmlBaseItem::read_();

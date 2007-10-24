@@ -44,13 +44,16 @@ class BrowserComponent : public BrowserNode, public Labeled<BrowserComponent> {
     
     SimpleData * def;
     BrowserComponentDiagram * associated_diagram;
-    QValueList<BrowserClass *> realized_classes;
+    QValueList<BrowserClass *> realizing_classes;
     QValueList<BrowserClass *> provided_classes;
     QValueList<BrowserClass *> required_classes;
     
     void associate_class(BrowserClass * c);
     void exec_menu_choice(int rank, BrowserNode * item_above);
   
+    void get_all_provided_classes(QValueList<BrowserClass *> &) const;
+    void get_all_required_classes(QValueList<BrowserClass *> &) const;
+    
   public:
     BrowserComponent(QString s, BrowserNode * p, int id = 0);
     BrowserComponent(const BrowserComponent * model, BrowserNode * p);
@@ -72,11 +75,11 @@ class BrowserComponent : public BrowserNode, public Labeled<BrowserComponent> {
     const QValueList<BrowserClass *> & get_required_classes() const {
       return required_classes;
     }
-    const QValueList<BrowserClass *> & get_realized_classes() const {
-      return realized_classes;
+    const QValueList<BrowserClass *> & get_realizing_classes() const {
+      return realizing_classes;
     }
-    QValueList<BrowserClass *> get_all_provided_classes(bool sorted) const;
-    QValueList<BrowserClass *> get_all_required_classes(bool sorted) const;
+    void get_all_provided_classes(QValueList<BrowserClass *> &, bool sorted) const;
+    void get_all_required_classes(QValueList<BrowserClass *> &, bool sorted) const;
     
     virtual BrowserNode * duplicate(BrowserNode * p,
 				    QString name = QString::null);

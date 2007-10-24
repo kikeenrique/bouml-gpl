@@ -15,6 +15,22 @@ anItemKind UmlBaseOperation::kind() {
   return anOperation;
 }
 
+bool UmlBaseOperation::isBodyGenerationForced() {
+  read_if_needed_();
+  return _force_body_generation;
+}
+
+bool UmlBaseOperation::set_isBodyGenerationForced(bool v) {
+  bool vv;
+
+  if (set_it_(vv, v, setIsForceBodyGenCmd)) {
+    _force_body_generation = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 bool UmlBaseOperation::isAbstract() {
   read_if_needed_();
     
@@ -238,6 +254,24 @@ bool UmlBaseOperation::set_CppNameSpec(const char * s) {
 }
 #endif
 
+#ifdef WITHCPP
+bool UmlBaseOperation::cppGetSetFrozen() {
+  read_if_needed_();
+  return _cpp_get_set_frozen;
+}
+
+bool UmlBaseOperation::set_CppGetSetFrozen(bool v) {
+  bool vv;
+
+  if (set_it_(vv, v, setCppFrozenCmd)) {
+    _cpp_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
 #ifdef WITHJAVA
 bool UmlBaseOperation::isJavaFinal() {
   read_if_needed_();
@@ -304,6 +338,91 @@ bool UmlBaseOperation::set_JavaNameSpec(const char * s) {
 }
 #endif
 
+#ifdef WITHJAVA
+bool UmlBaseOperation::javaGetSetFrozen() {
+  read_if_needed_();
+  return _java_get_set_frozen;
+}
+
+bool UmlBaseOperation::set_JavaGetSetFrozen(bool v) {
+  bool vv;
+
+  if (set_it_(vv, v, setJavaFrozenCmd)) {
+    _java_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
+#ifdef WITHPHP
+bool UmlBaseOperation::isPhpFinal() {
+  read_if_needed_();
+    
+  return _php_final;
+}
+
+bool UmlBaseOperation::set_isPhpFinal(bool y) {
+  bool b;
+  
+  if (set_it_(b, y, setPhpFinalCmd)) {
+    _php_final = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+const QCString & UmlBaseOperation::phpDef() {
+  return phpDecl();
+}
+
+bool UmlBaseOperation::set_PhpDef(const char * s) {
+  return set_PhpDecl(s);
+}
+
+QCString UmlBaseOperation::phpBody() {
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, phpBodyCmd);
+  return UmlCom::read_string();
+}
+
+bool UmlBaseOperation::set_PhpBody(const char * s) {
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, setPhpBodyCmd, s);
+  return UmlCom::read_bool();
+}
+
+const QCString & UmlBaseOperation::phpNameSpec() {
+  read_if_needed_();
+    
+  return _php_name_spec;
+}
+
+bool UmlBaseOperation::set_PhpNameSpec(const char * s) {
+  return set_it_(_php_name_spec, s, setPhpNameSpecCmd);
+}
+#endif
+
+#ifdef WITHPHP
+bool UmlBaseOperation::phpGetSetFrozen() {
+  read_if_needed_();
+  return _php_get_set_frozen;
+}
+
+bool UmlBaseOperation::set_PhpGetSetFrozen(bool v) {
+  bool vv;
+
+  if (set_it_(vv, v, setPhpFrozenCmd)) {
+    _php_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
 #ifdef WITHIDL
 bool UmlBaseOperation::isIdlOneway() {
   read_if_needed_();
@@ -333,6 +452,24 @@ bool UmlBaseOperation::set_IdlNameSpec(const char * s) {
 }
 #endif
 
+#ifdef WITHIDL
+bool UmlBaseOperation::idlGetSetFrozen() {
+  read_if_needed_();
+  return _idl_get_set_frozen;
+}
+
+bool UmlBaseOperation::set_IdlGetSetFrozen(bool v) {
+  bool vv;
+
+  if (set_it_(vv, v, setIdlFrozenCmd)) {
+    _idl_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
 void UmlBaseOperation::unload(bool rec, bool del) {
   _return_type.explicit_type = 0;
   _params.clear();
@@ -343,6 +480,9 @@ void UmlBaseOperation::unload(bool rec, bool del) {
 #endif
 #ifdef WITHJAVA
   _java_name_spec = 0;
+#endif
+#ifdef WITHPHP
+  _php_name_spec = 0;
 #endif
 #ifdef WITHIDL
   _idl_name_spec = 0;
@@ -356,6 +496,8 @@ void UmlBaseOperation::read_uml_() {
   if (_return_type.type == 0)
     _return_type.explicit_type = UmlCom::read_string();
   _abstract = UmlCom::read_bool();
+  
+  _force_body_generation = UmlCom::read_bool();
   
   unsigned n;
   
@@ -392,6 +534,7 @@ void UmlBaseOperation::read_cpp_() {
   _cpp_inline = UmlCom::read_bool();
   _cpp_def = UmlCom::read_string();
   _cpp_name_spec = UmlCom::read_string();
+  _cpp_get_set_frozen = UmlCom::read_bool();
 }
 #endif
 
@@ -401,6 +544,16 @@ void UmlBaseOperation::read_java_() {
   _java_final = UmlCom::read_bool();
   _java_synchronized = UmlCom::read_bool();
   _java_name_spec = UmlCom::read_string();
+  _java_get_set_frozen = UmlCom::read_bool();
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBaseOperation::read_php_() {
+  UmlBaseClassMember::read_php_();
+  _php_final = UmlCom::read_bool();
+  _php_name_spec = UmlCom::read_string();
+  _php_get_set_frozen = UmlCom::read_bool();
 }
 #endif
 
@@ -409,6 +562,7 @@ void UmlBaseOperation::read_idl_() {
   UmlBaseClassMember::read_idl_();
   _idl_oneway = UmlCom::read_bool();
   _idl_name_spec = UmlCom::read_string();
+  _idl_get_set_frozen = UmlCom::read_bool();
 }
 #endif
 

@@ -33,6 +33,9 @@ class UmlAttribute : public UmlBaseAttribute {
     //produce the definition in Java
     void gen_java_decl(QCString s);
 
+    //produce the definition in Php
+    void gen_php_decl(QCString s);
+
 
   private:
     //produce the definition in Uml

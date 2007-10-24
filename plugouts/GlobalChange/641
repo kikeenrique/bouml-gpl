@@ -1,125 +1,127 @@
-format 27
+format 45
 "API USER" // API USER
+  revision 2
+  modified_by 2 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default shadow default
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
   //object diagram settings
-   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
   draw_component_as_icon default show_component_req_prov default show_component_rea default
   //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
   show_activities default region_horizontally default drawing_language default
   //activity diagram settings
-  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
   show_infonote default drawing_language default
   
   comment " 'your' API classes and components, modify them !"
   classview 641 "Diagrams"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
     //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
-     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default shadow default
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
     //activity diagram settings
-    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
-    
     comment "Some diagrams describing the API classes organisation
 "
     classdiagram 129 "Package and Views classes inheritance diagram"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 257 "Class and class members classes inheritance diagram"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 128002 "State (1)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 128130 "State (2)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 128258 "State (3)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 385 "Diagrams classes inheritance diagram"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 128 "Activity (1)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 256 "Activity (2)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 384 "Activity (3)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 512 "Activity (4)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 640 "Activity (5)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 768 "Activity (6)"
-      draw_all_relations yes hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations yes hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     sequencediagram 513 "Typical Execution"
-      show_full_operations_definition no write_horizontally default drawing_language default shadow default
+      show_full_operations_definition no write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
       size A4
     end
 
     class 6529 "bouml"
-       stereotype "actor"
+      visibility package stereotype "actor"
       cpp_decl ""
       java_decl ""
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
     end
 
     class 6657 "plug_out"
-       stereotype "actor"
+      visibility package stereotype "actor"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -128,6 +130,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -136,24 +139,25 @@ ${members}}
 
   classview 769 "API USER class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
     //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
-     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default shadow default
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
     //state diagram settings
-    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
     show_activities default region_horizontally default drawing_language default
     //class settings
     //activity diagram settings
-    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
-    
     associated_deployment_view deploymentview_ref 641 // API USER Deployment view
     comment "'your' API classes, modify them !"
-    class 6785 "UmlActualParameter"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 145794 "UmlTypeSpec"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -161,6 +165,36 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment " this class memorize a type specification, which may be
+
+ - a class reference
+
+ - an explicit type"
+      classrelation 157314 // <generalisation>
+	relation 157314 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 157314 // <generalisation>
+	  b parent class_ref 145664 // UmlBaseTypeSpec
+      end
+    end
+
+    class 6785 "UmlActualParameter"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}};
+"
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -187,10 +221,13 @@ ${members}};
 ${body}}
 "
 	
+	
       end
     end
 
-    class 6913 "UmlFormalParameter"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 6913 "UmlFormalParameter"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -198,6 +235,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -224,10 +262,13 @@ ${members}};
 ${body}}
 "
 	
+	
       end
     end
 
-    class 7041 "UmlAttribute"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 7041 "UmlAttribute"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -235,6 +276,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -261,6 +303,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 190466 "change"
@@ -274,10 +317,13 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
-    class 7169 "UmlClass"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 7169 "UmlClass"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -285,6 +331,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -311,6 +358,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 190338 "change"
@@ -324,10 +372,13 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
-    class 7297 "UmlClassDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 7297 "UmlClassDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -335,6 +386,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -361,10 +413,13 @@ ${members}};
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }"
 	
+	
       end
     end
 
-    class 132866 "UmlObjectDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 132866 "UmlObjectDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -372,6 +427,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -402,12 +458,13 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
     class 7425 "UmlClassItem"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -416,6 +473,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -441,11 +499,12 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
     class 7553 "UmlClassMember"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -454,6 +513,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -471,6 +531,7 @@ ${members}}
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       classrelation 15361 // <generalisation>
@@ -483,7 +544,9 @@ ${members}}
       end
     end
 
-    class 7681 "UmlClassView"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 7681 "UmlClassView"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -491,6 +554,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -516,6 +580,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 190594 "change"
@@ -529,10 +594,13 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
-    class 7809 "UmlCollaborationDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 7809 "UmlCollaborationDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -540,6 +608,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -567,10 +636,13 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
-    class 7937 "UmlComponentDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 7937 "UmlComponentDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -578,6 +650,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -605,10 +678,13 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
-    class 8065 "UmlComponentView"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 8065 "UmlComponentView"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -616,6 +692,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -641,10 +718,13 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
-    class 8193 "UmlArtifact"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 8193 "UmlArtifact"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -652,6 +732,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -677,6 +758,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 190722 "change"
@@ -690,10 +772,13 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
-    class 128002 "UmlComponent"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 128002 "UmlComponent"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -701,6 +786,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -726,10 +812,13 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
-    class 8321 "UmlDeploymentDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 8321 "UmlDeploymentDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -737,6 +826,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -764,10 +854,13 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
-    class 8449 "UmlDeploymentView"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 8449 "UmlDeploymentView"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -775,6 +868,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -800,6 +894,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 190850 "change"
@@ -813,11 +908,12 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
     class 8577 "UmlDiagram"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -826,6 +922,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -854,10 +951,13 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
-    class 8705 "UmlExtraClassMember"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 8705 "UmlExtraClassMember"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -865,6 +965,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -893,11 +994,12 @@ ${members}}
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws} { super(id, n); }
 "
 	
+	
       end
     end
 
     class 8833 "UmlItem"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -906,6 +1008,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -932,6 +1035,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 78977 "~UmlItem"
@@ -942,6 +1046,7 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -957,10 +1062,13 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
-    class 8961 "UmlNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 8961 "UmlNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -968,6 +1076,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -993,10 +1102,13 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
-    class 9089 "UmlOperation"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 9089 "UmlOperation"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1004,6 +1116,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1030,6 +1143,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 189698 "change"
@@ -1043,10 +1157,39 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
-    class 9217 "UmlPackage"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 145538 "UmlParameter"
+      visibility package stereotype "struct"
+      cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      final java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}};
+"
+      php_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "  Represent an operation's parameter
+"
+      classrelation 157058 // <generalisation>
+	relation 157058 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 157058 // <generalisation>
+	  b parent class_ref 145408 // UmlBaseParameter
+      end
+    end
+
+    class 9217 "UmlPackage"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1054,6 +1197,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1079,6 +1223,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 189826 "change"
@@ -1092,10 +1237,13 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
-    class 9345 "UmlRelation"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 9345 "UmlRelation"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1103,6 +1251,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1129,6 +1278,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 189954 "change"
@@ -1142,10 +1292,13 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
-    class 9473 "UmlNcRelation"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 9473 "UmlNcRelation"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1153,6 +1306,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1178,10 +1332,13 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
-    class 9601 "UmlSequenceDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 9601 "UmlSequenceDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1189,6 +1346,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1215,10 +1373,13 @@ ${members}};
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }"
 	
+	
       end
     end
 
-    class 9729 "UmlUseCase"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 9729 "UmlUseCase"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1226,6 +1387,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1251,10 +1413,13 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
-    class 9857 "UmlUseCaseDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 9857 "UmlUseCaseDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1262,6 +1427,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1289,10 +1455,13 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
-    class 9985 "UmlUseCaseView"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 9985 "UmlUseCaseView"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1300,6 +1469,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1325,11 +1495,12 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
     class 128130 "UmlStateItem"
-       stereotype "interface"
+      visibility package stereotype "interface"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -1338,12 +1509,15 @@ ${inlines}
       java_decl "${comment}${public}interface ${name}${extends} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
     end
 
-    class 128386 "UmlState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 128386 "UmlState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1351,6 +1525,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1385,11 +1560,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 128642 "UmlStateDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 128642 "UmlStateDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1397,6 +1575,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1431,11 +1610,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 133506 "UmlActivityDiagram"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 133506 "UmlActivityDiagram"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1443,6 +1625,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1482,11 +1665,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 129026 "UmlTransition"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 129026 "UmlTransition"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1494,6 +1680,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1528,10 +1715,13 @@ ${members}}
 }
 "
 	
+	
       end
     end
 
-    class 129410 "UmlRegion"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 129410 "UmlRegion"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1539,6 +1729,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1573,11 +1764,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 129666 "UmlStateAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 129666 "UmlStateAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1585,6 +1779,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1618,12 +1813,13 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
     class 129794 "UmlPseudoState"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -1632,6 +1828,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1647,6 +1844,7 @@ ${members}}
   super(id, s);
 }
 "
+	
 	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
@@ -1670,7 +1868,9 @@ ${members}}
       end
     end
 
-    class 130050 "UmlInitialPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 130050 "UmlInitialPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1678,6 +1878,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1702,11 +1903,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 130306 "UmlEntryPointPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 130306 "UmlEntryPointPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1714,6 +1918,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1739,11 +1944,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 130562 "UmlFinalState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 130562 "UmlFinalState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1751,6 +1959,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1775,11 +1984,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 130818 "UmlTerminatePseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 130818 "UmlTerminatePseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1787,6 +1999,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1811,11 +2024,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 131074 "UmlExitPointPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 131074 "UmlExitPointPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1823,6 +2039,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1848,11 +2065,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 131330 "UmlDeepHistoryPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 131330 "UmlDeepHistoryPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1860,6 +2080,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1884,11 +2105,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 131586 "UmlShallowHistoryPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 131586 "UmlShallowHistoryPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1896,6 +2120,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1920,11 +2145,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 131842 "UmlJunctionPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 131842 "UmlJunctionPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1932,6 +2160,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1956,11 +2185,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 132098 "UmlChoicePseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 132098 "UmlChoicePseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -1968,6 +2200,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1992,11 +2225,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 132354 "UmlForkPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 132354 "UmlForkPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2004,6 +2240,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2028,11 +2265,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 132610 "UmlJoinPseudoState"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 132610 "UmlJoinPseudoState"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2040,6 +2280,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2064,12 +2305,13 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
     class 132994 "UmlActivityItem"
-       stereotype "interface"
+      visibility package stereotype "interface"
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -2078,12 +2320,15 @@ ${inlines}
       java_decl "${comment}${public}interface ${name}${extends} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
     end
 
-    class 133250 "UmlActivity"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 133250 "UmlActivity"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2091,6 +2336,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2116,12 +2362,13 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
     class 133762 "UmlActivityNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -2130,6 +2377,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2164,11 +2412,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 134018 "UmlFlow"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 134018 "UmlFlow"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2176,6 +2427,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2210,11 +2462,12 @@ ${members}}
 }
 "
 	
+	
       end
     end
 
     class 134402 "UmlActivityRegion"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -2223,6 +2476,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2257,11 +2511,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 134658 "UmlExpansionRegion"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 134658 "UmlExpansionRegion"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2269,6 +2526,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2294,11 +2552,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 135042 "UmlInterruptibleActivityRegion"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 135042 "UmlInterruptibleActivityRegion"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2306,6 +2567,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2331,12 +2593,13 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
     class 135298 "UmlActivityAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -2345,6 +2608,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2370,11 +2634,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 135554 "UmlSendObjectAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 135554 "UmlSendObjectAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2382,6 +2649,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2407,11 +2675,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 135810 "UmlUnmarshallAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 135810 "UmlUnmarshallAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2419,6 +2690,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2444,12 +2716,13 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
     class 136066 "UmlOnSignalAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -2458,6 +2731,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2483,11 +2757,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 136322 "UmlSendSignalAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 136322 "UmlSendSignalAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2495,6 +2772,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2520,11 +2798,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 136578 "UmlBroadcastSignalAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 136578 "UmlBroadcastSignalAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2532,6 +2813,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2557,11 +2839,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 136834 "UmlValueSpecificationAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 136834 "UmlValueSpecificationAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2569,6 +2854,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2594,11 +2880,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 137090 "UmlOpaqueAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 137090 "UmlOpaqueAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2606,6 +2895,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2631,11 +2921,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 137346 "UmlAcceptEventAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 137346 "UmlAcceptEventAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2643,6 +2936,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2668,11 +2962,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 137602 "UmlCallOperationAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 137602 "UmlCallOperationAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2680,6 +2977,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2705,11 +3003,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 137858 "UmlCallBehaviorAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 137858 "UmlCallBehaviorAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2717,6 +3018,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2742,12 +3044,13 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
     class 138114 "UmlAccessVariableValueAction"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -2756,6 +3059,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2781,11 +3085,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 138370 "UmlClearVariableValueAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 138370 "UmlClearVariableValueAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2793,6 +3100,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2818,11 +3126,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 138626 "UmlReadVariableValueAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 138626 "UmlReadVariableValueAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2830,6 +3141,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2855,11 +3167,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 138882 "UmlWriteVariableValueAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 138882 "UmlWriteVariableValueAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2867,6 +3182,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2892,11 +3208,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 139138 "UmlAddVariableValueAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 139138 "UmlAddVariableValueAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2904,6 +3223,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2929,11 +3249,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 139394 "UmlRemoveVariableValueAction"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 139394 "UmlRemoveVariableValueAction"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -2941,6 +3264,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2966,12 +3290,13 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
     class 139650 "UmlActivityControlNode"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -2980,6 +3305,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3005,11 +3331,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 139906 "UmlInitialActivityNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 139906 "UmlInitialActivityNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3017,6 +3346,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3042,11 +3372,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 140162 "UmlFlowFinalActivityNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 140162 "UmlFlowFinalActivityNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3054,6 +3387,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3079,11 +3413,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 140418 "UmlActivityFinalActivityNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 140418 "UmlActivityFinalActivityNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3091,6 +3428,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3116,11 +3454,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 140674 "UmlDecisionActivityNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 140674 "UmlDecisionActivityNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3128,6 +3469,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3153,11 +3495,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 140930 "UmlMergeActivityNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 140930 "UmlMergeActivityNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3165,6 +3510,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3190,11 +3536,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 141186 "UmlForkActivityNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 141186 "UmlForkActivityNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3202,6 +3551,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3227,11 +3577,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 141442 "UmlJoinActivityNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 141442 "UmlJoinActivityNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3239,6 +3592,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3264,11 +3618,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 141698 "UmlActivityObject"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 141698 "UmlActivityObject"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3276,6 +3633,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3301,11 +3659,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 142082 "UmlExpansionNode"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 142082 "UmlExpansionNode"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3313,6 +3674,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3338,12 +3700,13 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
     class 142338 "UmlPinParameter"
-      abstract 
+      abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -3352,6 +3715,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3377,11 +3741,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 142722 "UmlActivityPin"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 142722 "UmlActivityPin"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3389,6 +3756,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3414,11 +3782,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 142978 "UmlActivityParameter"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 142978 "UmlActivityParameter"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3426,6 +3797,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3451,11 +3823,14 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
 
-    class 143234 "UmlParameterSet"cpp_decl "${comment}${template}class ${name}${inherit} {
+    class 143234 "UmlParameterSet"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
 ${inlines}
@@ -3463,6 +3838,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3488,6 +3864,98 @@ ${members}}
 }
 "
 	
+	
+	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      classrelation 155394 // <generalisation>
+	relation 155394 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 155394 // <generalisation>
+	  b parent class_ref 132994 // UmlActivityItem
+      end
+    end
+
+    class 145026 "UmlClassInstance"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 156034 // <generalisation>
+	relation 156034 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 156034 // <generalisation>
+	  b parent class_ref 144896 // UmlBaseClassInstance
+      end
+
+      operation 198658 "UmlClassInstance"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "id" explicit_type "item_id"
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlBaseClassInstance(id, s) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  super(id, s);
+}
+"
+	
+	
+	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+    end
+
+    class 146050 "UmlView"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 157698 // <generalisation>
+	relation 157698 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 157698 // <generalisation>
+	  b parent class_ref 145920 // UmlBaseView
+      end
+
+      operation 201218 "UmlView"
+	protected explicit_return_type ""
+	nparams 2
+	  param in name "id" explicit_type "item_id"
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlBaseView(id, s) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  super(id, s);
+}
+"
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3495,186 +3963,223 @@ ${members}}
 
   deploymentview 641 "API USER Deployment view"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default
     comment "'your' API artifacts modify them !
 
 Do not forget to modify Main !"
+    artifact 140802 "UmlTypeSpec"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 145794 // UmlTypeSpec
+      end
+    end
+
     artifact 6529 "executable"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 2304 // UmlBaseDiagram
-	artifact_ref 130306 // UmlEntryPointPseudoState
-	artifact_ref 4224 // anItemKind
-	artifact_ref 3584 // UmlBaseUseCaseDiagram
-	artifact_ref 8321 // UmlDeploymentDiagram
-	artifact_ref 136192 // UmlBaseActivityControlNode
-	artifact_ref 134144 // FlowBehavior
-	artifact_ref 1408 // UmlBaseCollaborationDiagram
-	artifact_ref 7681 // UmlClassView
-	artifact_ref 129536 // UmlBaseStateAction
-	artifact_ref 5248 // UmlCom
-	artifact_ref 133120 // UmlBaseActivity
-	artifact_ref 135424 // UmlBaseActivityActionClasses
-	artifact_ref 137474 // UmlPinParameter
-	artifact_ref 130432 // UmlBaseFinalState
-	artifact_ref 136448 // UmlBaseActivityControlNodeClasses
-	artifact_ref 137728 // UmlBaseActivityPin
-	artifact_ref 135810 // UmlOnSignalAction
-	artifact_ref 2560 // UmlBaseItem
-	artifact_ref 132866 // UmlObjectDiagram
-	artifact_ref 7169 // UmlAttribute
-	artifact_ref 9601 // UmlSequenceDiagram
-	artifact_ref 137344 // UmlBasePinParameter
-	artifact_ref 131586 // UmlShallowHistoryPseudoState
-	artifact_ref 6528 // UmlBaseComponent
-	artifact_ref 6016 // UmlSettingsCmd
-	artifact_ref 2048 // UmlBaseDeploymentDiagram
-	artifact_ref 138114 // UmlActivityParameter
-	artifact_ref 131330 // UmlDeepHistoryPseudoState
-	artifact_ref 4864 // IdlSettings
-	artifact_ref 7297 // UmlClass
-	artifact_ref 136578 // UmlActivityControlNodeClasses
-	artifact_ref 138626 // Context
-	artifact_ref 9345 // UmlRelation
-	artifact_ref 896 // UmlBaseClass
-	artifact_ref 130944 // UmlBaseExitPointPseudoState
-	artifact_ref 7041 // UmlFormalParameter
-	artifact_ref 2688 // UmlBaseNode
-	artifact_ref 3200 // UmlBaseNcRelation
-	artifact_ref 4480 // UmlBuiltin
-	artifact_ref 8577 // UmlDiagram
-	artifact_ref 8961 // UmlNode
-	artifact_ref 6657 // Main
-	artifact_ref 7937 // UmlArtifact
-	artifact_ref 4352 // UmlParameter
-	artifact_ref 137858 // UmlActivityPin
-	artifact_ref 7425 // UmlClassDiagram
-	artifact_ref 129794 // UmlPseudoState
-	artifact_ref 3840 // aRelationKind
-	artifact_ref 130176 // UmlBaseEntryPointPseudoState
-	artifact_ref 130562 // UmlFinalState
-	artifact_ref 128642 // UmlStateDiagram
-	artifact_ref 768 // UmlBaseAttribute
-	artifact_ref 134658 // UmlExpansionRegion
-	artifact_ref 6144 // CppSettingsCmd
-	artifact_ref 4736 // CppSettings
-	artifact_ref 132480 // UmlBaseJoinPseudoState
-	artifact_ref 132736 // UmlBaseObjectDiagram
-	artifact_ref 128256 // UmlBaseState
-	artifact_ref 135680 // UmlBaseOnSignalAction
-	artifact_ref 9857 // UmlUseCaseDiagram
-	artifact_ref 128896 // UmlBaseTransition
-	artifact_ref 2432 // UmlBaseExtraClassMember
-	artifact_ref 129666 // UmlStateAction
-	artifact_ref 9473 // UmlNcRelation
-	artifact_ref 8193 // UmlComponentView
-	artifact_ref 134528 // UmlBaseExpansionRegion
-	artifact_ref 4608 // UmlStereotype
-	artifact_ref 133506 // UmlActivityDiagram
-	artifact_ref 9985 // UmlUseCaseView
-	artifact_ref 2816 // UmlBaseOperation
-	artifact_ref 7553 // UmlClassMember
-	artifact_ref 133632 // UmlBaseActivityNode
-	artifact_ref 512 // UmlBaseFormalParameter
-	artifact_ref 129280 // UmlBaseRegion
-	artifact_ref 8833 // UmlItem
-	artifact_ref 5632 // OnInstanceCmd
-	artifact_ref 131842 // UmlJunctionPseudoState
-	artifact_ref 128512 // UmlBaseStateDiagram
-	artifact_ref 8705 // UmlExtraClassMember
-	artifact_ref 129026 // UmlTransition
-	artifact_ref 135298 // UmlActivityAction
-	artifact_ref 131456 // UmlBaseShallowHistoryPseudoState
-	artifact_ref 640 // UmlTypeSpec
-	artifact_ref 136322 // UmlActivityControlNode
-	artifact_ref 138498 // Dialog
-	artifact_ref 8449 // UmlDeploymentView
-	artifact_ref 1664 // UmlBaseComponentDiagram
-	artifact_ref 6785 // UmlActualParameter
-	artifact_ref 134912 // UmlBaseInterruptibleActivityRegion
-	artifact_ref 9217 // UmlPackage
-	artifact_ref 128768 // StateBehavior
-	artifact_ref 129410 // UmlRegion
-	artifact_ref 132994 // UmlActivityItem
-	artifact_ref 1920 // UmlBaseDeployment
-	artifact_ref 130688 // UmlBaseTerminatePseudoState
-	artifact_ref 129152 // TransitionBehavior
-	artifact_ref 5504 // MiscGlobalCmd
-	artifact_ref 6272 // JavaSettingsCmd
-	artifact_ref 1792 // UmlBaseComponentView
-	artifact_ref 1280 // UmlBaseClassView
-	artifact_ref 130818 // UmlTerminatePseudoState
-	artifact_ref 135554 // UmlActivityActionClasses
-	artifact_ref 131200 // UmlBaseDeepHistoryPseudoState
-	artifact_ref 132354 // UmlForkPseudoState
-	artifact_ref 133376 // UmlBaseActivityDiagram
-	artifact_ref 135936 // UmlBaseAccessVariableValueAction
-	artifact_ref 5376 // CmdFamily
-	artifact_ref 2176 // UmlBaseDeploymentView
-	artifact_ref 4992 // JavaSettings
-	artifact_ref 136066 // UmlAccessVariableValueAction
-	artifact_ref 5760 // ClassGlobalCmd
-	artifact_ref 3072 // UmlBaseRelation
-	artifact_ref 138370 // UmlParameterSet
-	artifact_ref 4096 // aVisibility
-	artifact_ref 132098 // UmlChoicePseudoState
-	artifact_ref 129920 // UmlBaseInitialPseudoState
-	artifact_ref 128130 // UmlStateItem
-	artifact_ref 138240 // UmlBaseParameterSet
-	artifact_ref 135168 // UmlBaseActivityAction
-	artifact_ref 134402 // UmlActivityRegion
-	artifact_ref 136704 // UmlBaseActivityObject
-	artifact_ref 136834 // UmlActivityObject
-	artifact_ref 132224 // UmlBaseForkPseudoState
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 134272 // UmlBaseActivityRegion
-	artifact_ref 131968 // UmlBaseChoicePseudoState
-	artifact_ref 134018 // UmlFlow
-	artifact_ref 137984 // UmlBaseActivityParameter
-	artifact_ref 1152 // UmlBaseClassMember
-	artifact_ref 9089 // UmlOperation
-	artifact_ref 128386 // UmlState
-	artifact_ref 1024 // UmlBaseClassDiagram
-	artifact_ref 137218 // UmlExpansionNode
-	artifact_ref 130050 // UmlInitialPseudoState
-	artifact_ref 131712 // UmlBaseJunctionPseudoState
-	artifact_ref 8065 // UmlComponentDiagram
-	artifact_ref 137600 // aParameterEffectKind
-	artifact_ref 5120 // UmlSettings
-	artifact_ref 9729 // UmlUseCase
-	artifact_ref 132610 // UmlJoinPseudoState
-	artifact_ref 256 // UmlBaseActualParameter
-	artifact_ref 384 // UmlBaseClassItem
-	artifact_ref 3456 // UmlBaseUseCase
-	artifact_ref 133250 // UmlActivity
-	artifact_ref 131074 // UmlExitPointPseudoState
-	artifact_ref 135042 // UmlInterruptibleActivityRegion
-	artifact_ref 2944 // UmlBasePackage
-	artifact_ref 3968 // aDirection
-	artifact_ref 133762 // UmlActivityNode
-	artifact_ref 134784 // anExpansionKind
-	artifact_ref 6913 // UmlClassItem
-	artifact_ref 7809 // UmlCollaborationDiagram
-	artifact_ref 1536 // UmlBaseArtifact
-	artifact_ref 133888 // UmlBaseFlow
-	artifact_ref 136960 // anOrdering
-	artifact_ref 3712 // UmlBaseUseCaseView
-	artifact_ref 3328 // UmlBaseSequenceDiagram
-	artifact_ref 137088 // UmlBaseExpansionNode
-	artifact_ref 5888 // PackageGlobalCmd
+	artifact_ref 140672 // UmlBaseTypeSpec
+	artifact_ref 141058 // UmlView
 	artifact_ref 6400 // IdlSettingsCmd
+	artifact_ref 130562 // UmlFinalState
+	artifact_ref 133632 // UmlBaseActivityNode
+	artifact_ref 7425 // UmlClassDiagram
+	artifact_ref 133888 // UmlBaseFlow
+	artifact_ref 6528 // UmlBaseComponent
+	artifact_ref 1024 // UmlBaseClassDiagram
+	artifact_ref 140160 // SlotAttribute
+	artifact_ref 131074 // UmlExitPointPseudoState
+	artifact_ref 132098 // UmlChoicePseudoState
+	artifact_ref 131712 // UmlBaseJunctionPseudoState
+	artifact_ref 131330 // UmlDeepHistoryPseudoState
+	artifact_ref 136192 // UmlBaseActivityControlNode
+	artifact_ref 137728 // UmlBaseActivityPin
+	artifact_ref 3840 // aRelationKind
+	artifact_ref 138370 // UmlParameterSet
+	artifact_ref 136704 // UmlBaseActivityObject
+	artifact_ref 137984 // UmlBaseActivityParameter
+	artifact_ref 138498 // Dialog
+	artifact_ref 3200 // UmlBaseNcRelation
+	artifact_ref 9729 // UmlUseCase
+	artifact_ref 134018 // UmlFlow
+	artifact_ref 136066 // UmlAccessVariableValueAction
+	artifact_ref 129666 // UmlStateAction
+	artifact_ref 2432 // UmlBaseExtraClassMember
+	artifact_ref 1664 // UmlBaseComponentDiagram
+	artifact_ref 138240 // UmlBaseParameterSet
+	artifact_ref 140802 // UmlTypeSpec
+	artifact_ref 8449 // UmlDeploymentView
+	artifact_ref 133506 // UmlActivityDiagram
+	artifact_ref 128896 // UmlBaseTransition
+	artifact_ref 5888 // PackageGlobalCmd
+	artifact_ref 2944 // UmlBasePackage
+	artifact_ref 7169 // UmlAttribute
+	artifact_ref 128130 // UmlStateItem
+	artifact_ref 5120 // UmlSettings
+	artifact_ref 1920 // UmlBaseDeployment
+	artifact_ref 138114 // UmlActivityParameter
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 137088 // UmlBaseExpansionNode
+	artifact_ref 8321 // UmlDeploymentDiagram
+	artifact_ref 7809 // UmlCollaborationDiagram
+	artifact_ref 6016 // UmlSettingsCmd
+	artifact_ref 128512 // UmlBaseStateDiagram
+	artifact_ref 135042 // UmlInterruptibleActivityRegion
+	artifact_ref 135554 // UmlActivityActionClasses
+	artifact_ref 134402 // UmlActivityRegion
+	artifact_ref 135168 // UmlBaseActivityAction
+	artifact_ref 131842 // UmlJunctionPseudoState
+	artifact_ref 134272 // UmlBaseActivityRegion
+	artifact_ref 7041 // UmlFormalParameter
+	artifact_ref 3584 // UmlBaseUseCaseDiagram
+	artifact_ref 135424 // UmlBaseActivityActionClasses
+	artifact_ref 134658 // UmlExpansionRegion
+	artifact_ref 137218 // UmlExpansionNode
+	artifact_ref 129280 // UmlBaseRegion
+	artifact_ref 134144 // FlowBehavior
+	artifact_ref 2560 // UmlBaseItem
+	artifact_ref 8705 // UmlExtraClassMember
+	artifact_ref 6144 // CppSettingsCmd
+	artifact_ref 256 // UmlBaseActualParameter
+	artifact_ref 4224 // anItemKind
+	artifact_ref 5248 // UmlCom
+	artifact_ref 9601 // UmlSequenceDiagram
+	artifact_ref 4992 // JavaSettings
+	artifact_ref 3072 // UmlBaseRelation
+	artifact_ref 6913 // UmlClassItem
+	artifact_ref 130432 // UmlBaseFinalState
+	artifact_ref 132480 // UmlBaseJoinPseudoState
+	artifact_ref 130176 // UmlBaseEntryPointPseudoState
+	artifact_ref 9473 // UmlNcRelation
+	artifact_ref 136578 // UmlActivityControlNodeClasses
+	artifact_ref 9089 // UmlOperation
+	artifact_ref 136322 // UmlActivityControlNode
+	artifact_ref 137474 // UmlPinParameter
+	artifact_ref 7297 // UmlClass
+	artifact_ref 9217 // UmlPackage
+	artifact_ref 131200 // UmlBaseDeepHistoryPseudoState
+	artifact_ref 133120 // UmlBaseActivity
+	artifact_ref 1152 // UmlBaseClassMember
+	artifact_ref 7937 // UmlArtifact
+	artifact_ref 1792 // UmlBaseComponentView
+	artifact_ref 132610 // UmlJoinPseudoState
+	artifact_ref 131586 // UmlShallowHistoryPseudoState
+	artifact_ref 129536 // UmlBaseStateAction
+	artifact_ref 8577 // UmlDiagram
+	artifact_ref 130050 // UmlInitialPseudoState
+	artifact_ref 137858 // UmlActivityPin
+	artifact_ref 6272 // JavaSettingsCmd
+	artifact_ref 3328 // UmlBaseSequenceDiagram
+	artifact_ref 4736 // CppSettings
+	artifact_ref 3456 // UmlBaseUseCase
+	artifact_ref 137344 // UmlBasePinParameter
+	artifact_ref 9985 // UmlUseCaseView
+	artifact_ref 133250 // UmlActivity
+	artifact_ref 140288 // SlotRelation
+	artifact_ref 129410 // UmlRegion
+	artifact_ref 3968 // aDirection
+	artifact_ref 130818 // UmlTerminatePseudoState
+	artifact_ref 2304 // UmlBaseDiagram
+	artifact_ref 130688 // UmlBaseTerminatePseudoState
+	artifact_ref 133762 // UmlActivityNode
+	artifact_ref 134912 // UmlBaseInterruptibleActivityRegion
+	artifact_ref 134784 // anExpansionKind
+	artifact_ref 8833 // UmlItem
+	artifact_ref 8193 // UmlComponentView
+	artifact_ref 5632 // OnInstanceCmd
+	artifact_ref 131456 // UmlBaseShallowHistoryPseudoState
+	artifact_ref 132224 // UmlBaseForkPseudoState
+	artifact_ref 6785 // UmlActualParameter
+	artifact_ref 135936 // UmlBaseAccessVariableValueAction
+	artifact_ref 140416 // UmlBaseParameter
+	artifact_ref 2688 // UmlBaseNode
+	artifact_ref 128386 // UmlState
+	artifact_ref 9345 // UmlRelation
+	artifact_ref 1280 // UmlBaseClassView
+	artifact_ref 129794 // UmlPseudoState
+	artifact_ref 135680 // UmlBaseOnSignalAction
+	artifact_ref 132866 // UmlObjectDiagram
+	artifact_ref 139904 // UmlBaseClassInstance
+	artifact_ref 135810 // UmlOnSignalAction
+	artifact_ref 138626 // Context
+	artifact_ref 768 // UmlBaseAttribute
+	artifact_ref 136448 // UmlBaseActivityControlNodeClasses
+	artifact_ref 137600 // aParameterEffectKind
+	artifact_ref 136960 // anOrdering
+	artifact_ref 130944 // UmlBaseExitPointPseudoState
+	artifact_ref 5376 // CmdFamily
+	artifact_ref 140928 // UmlBaseView
+	artifact_ref 132994 // UmlActivityItem
+	artifact_ref 129152 // TransitionBehavior
+	artifact_ref 133376 // UmlBaseActivityDiagram
+	artifact_ref 2048 // UmlBaseDeploymentDiagram
+	artifact_ref 384 // UmlBaseClassItem
+	artifact_ref 6657 // Main
+	artifact_ref 129920 // UmlBaseInitialPseudoState
+	artifact_ref 4864 // IdlSettings
+	artifact_ref 7553 // UmlClassMember
+	artifact_ref 132736 // UmlBaseObjectDiagram
+	artifact_ref 141184 // PhpSettings
+	artifact_ref 140034 // UmlClassInstance
+	artifact_ref 2176 // UmlBaseDeploymentView
+	artifact_ref 5760 // ClassGlobalCmd
+	artifact_ref 141312 // PhpSettingsCmd
+	artifact_ref 896 // UmlBaseClass
+	artifact_ref 128642 // UmlStateDiagram
+	artifact_ref 8961 // UmlNode
+	artifact_ref 134528 // UmlBaseExpansionRegion
+	artifact_ref 136834 // UmlActivityObject
+	artifact_ref 130306 // UmlEntryPointPseudoState
+	artifact_ref 140546 // UmlParameter
+	artifact_ref 128768 // StateBehavior
+	artifact_ref 1536 // UmlBaseArtifact
+	artifact_ref 5504 // MiscGlobalCmd
+	artifact_ref 7681 // UmlClassView
+	artifact_ref 4096 // aVisibility
+	artifact_ref 8065 // UmlComponentDiagram
+	artifact_ref 132354 // UmlForkPseudoState
+	artifact_ref 9857 // UmlUseCaseDiagram
+	artifact_ref 4608 // UmlStereotype
+	artifact_ref 512 // UmlBaseFormalParameter
+	artifact_ref 3712 // UmlBaseUseCaseView
+	artifact_ref 1408 // UmlBaseCollaborationDiagram
+	artifact_ref 2816 // UmlBaseOperation
+	artifact_ref 129026 // UmlTransition
+	artifact_ref 4480 // UmlBuiltin
+	artifact_ref 131968 // UmlBaseChoicePseudoState
+	artifact_ref 135298 // UmlActivityAction
+	artifact_ref 128256 // UmlBaseState
       end
-      ncouples 9
+      ncouples 10
       key "genpro pro" value "/tmp/global_change/global_change.pro"
       key "genpro path" value "/tmp/global_change/"
       key "genpro target" value "/tmp/global_change/global_change"
       key "genpro tmplt" value "app"
       key "genpro config" value "debug warn_on qt"
-      key "genpro defines" value "WITHCPP WITHJAVA WITHIDL"
+      key "genpro defines" value "WITHCPP WITHJAVA WITHIDL WITHPHP"
       key "genpro includepath" value ""
       key "genpro dependpath" value ""
       key "genpro objectsdir" value ""
+      key "genpro footer" value ""
       comment "  Reference all the components used to made a C++ executable,
   used by 'genpro' to produce a .pro file allowing to produce a Makefile
   with 'tmake' or 'qmake'"
@@ -3701,7 +4206,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
     try {
-      UmlCom::trace(\"<b>Global change</b> release 1.0<br>\");
+      UmlCom::trace(\"<b>Global change</b> release 1.1<br>\");
       
       Dialog dialog;
 
@@ -3716,29 +4221,6 @@ int main(int argc, char ** argv)
   
   UmlCom::close();
   return 0;
-}
-"
-      java_src "// the program is called with the socket port number in argument
-
-class Main {
-  public static void main(String argv[]) {
-
-    if (argv.length == 1) {
-      UmlCom.connect(Integer.valueOf(argv[0]).intValue());
-
-      try {
-        // does something on the target, here suppose that a virtual
-        // operation exist at UmlItem level (and probably sub_level !)
-        UmlCom.targetItem().???();
-      }
-      finally {
-        // must be called to cleanly inform that all is done
-        UmlCom.bye();
-        UmlCom.close();
-      }
-    }
-    System.exit(0);
-  }
 }
 "
       associated_classes
@@ -4210,9 +4692,6 @@ ${includes}
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      java_src "${comment}
-${package}
-${definition}"
       associated_classes
 	class_ref 8833 // UmlItem
       end
@@ -4267,6 +4746,32 @@ ${package}
 ${definition}"
       associated_classes
 	class_ref 9089 // UmlOperation
+      end
+    end
+
+    artifact 140546 "UmlParameter"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 145538 // UmlParameter
       end
     end
 
@@ -5482,6 +5987,58 @@ ${package}
 ${definition}"
       associated_classes
 	class_ref 143234 // UmlParameterSet
+      end
+    end
+
+    artifact 140034 "UmlClassInstance"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 145026 // UmlClassInstance
+      end
+    end
+
+    artifact 141058 "UmlView"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 146050 // UmlView
       end
     end
   end

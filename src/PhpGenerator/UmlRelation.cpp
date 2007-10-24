@@ -189,17 +189,14 @@ void UmlRelation::generate(QTextOStream & f, const QCString &,
 	  if (isClassMember())
 	    f << "static ";
 	}
-	else if (!strncmp(p, "${final}", 8)) {
-	  p += 8;
-	  if (isReadOnly())
-	    f << "final ";
-	}
 	else if (!strncmp(p, "${type}", 7)) {
 	  p += 7;
 	  roleType()->write(f);
 	}
 	else if (!strncmp(p, "${name}", 7)) {
 	  p += 7;
+	  if (!isReadOnly())
+	    f << "$";
 	  f << roleName();
 	}
 	else if (!strncmp(p, "${var}", 6)) {

@@ -73,7 +73,8 @@ enum anItemKind {
   aDecisionActivityNode,
   aMergeActivityNode,
   aForkActivityNode,
-  aJoinActivityNode
+  aJoinActivityNode,
+  aClassInstance
 
 };
 #endif

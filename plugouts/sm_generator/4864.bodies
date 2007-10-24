@@ -799,6 +799,9 @@ class IdlSettings
   _union_decl = UmlCom.read_string();
   _enum_decl = UmlCom.read_string();
   _external_class_decl = UmlCom.read_string();
+  _attr_decl = new String[3];
+  _valuetype_attr_decl = new String[3];
+  _union_item_decl = new String[3];
   for (index = 0; index != 3; index += 1)
     _attr_decl[index] = UmlCom.read_string();
   for (index = 0; index != 3; index += 1)
@@ -806,6 +809,7 @@ class IdlSettings
   for (index = 0; index != 3; index += 1)
     _union_item_decl[index] = UmlCom.read_string();
   _enum_item_decl = UmlCom.read_string();
+  _const_decl = new String[3];
   for (index = 0; index != 3; index += 1)
     _const_decl[index] = UmlCom.read_string();
   _rel_decl = new String[3];

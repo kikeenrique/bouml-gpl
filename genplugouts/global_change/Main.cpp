@@ -17,7 +17,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
     try {
-      UmlCom::trace("<b>Global change</b> release 1.0<br>");
+      UmlCom::trace("<b>Global change</b> release 1.1<br>");
       
       Dialog dialog;
 

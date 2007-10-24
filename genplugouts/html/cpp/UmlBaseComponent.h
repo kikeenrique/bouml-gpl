@@ -34,8 +34,8 @@ class UmlBaseComponent : public UmlItem {
     // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_AssociatedDiagram(UmlComponentDiagram * d);
 
-    // returns (in Java a copy of) the optional realized classes
-    const QVector<UmlClass> & realizedClasses();
+    // returns (in Java a copy of) the optional realizing classes
+    const QVector<UmlClass> & realizingClasses();
 
     // returns (in Java a copy of) the optional provided classes
     const QVector<UmlClass> & providedClasses();
@@ -47,7 +47,7 @@ class UmlBaseComponent : public UmlItem {
   private:
     UmlComponentDiagram * _assoc_diagram;
 
-    QVector<UmlClass> _realized;
+    QVector<UmlClass> _realizing;
 
     QVector<UmlClass> _provided;
 

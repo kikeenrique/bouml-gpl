@@ -198,10 +198,8 @@ void ClassDiagramView::dragEnterEvent(QDragEnterEvent * e) {
        UmlDrag::canDecode(e, UmlObjectDiagram, FALSE, TRUE) ||
        UmlDrag::canDecode(e, UmlComponentDiagram, FALSE, TRUE) ||
        UmlDrag::canDecode(e, UmlDeploymentDiagram, FALSE, TRUE) ||
-       UmlDrag::canDecode(e, UmlActivityDiagram, TRUE, TRUE) ||
        UmlDrag::canDecode(e, UmlStateDiagram, TRUE, TRUE) ||
-       UmlDrag::canDecode(e, UmlActivityDiagram, TRUE, TRUE) ||
-       UmlDrag::canDecode(e, UmlStateDiagram, TRUE, TRUE)))
+       UmlDrag::canDecode(e, UmlActivityDiagram, TRUE, TRUE)))
     e->accept();
   else
     e->ignore();

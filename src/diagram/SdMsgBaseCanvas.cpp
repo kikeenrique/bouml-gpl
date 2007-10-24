@@ -223,7 +223,7 @@ void SdMsgBaseCanvas::modified() {
     }
     else if (label == 0) {
       // adds label
-      label = new LabelCanvas(s, the_canvas(), 0, 0);
+      label = new LabelCanvas(s, the_canvas(), 0, 0, FALSE, FALSE, FALSE, FALSE);
       default_label_position();
       label->show();
     }
@@ -242,8 +242,9 @@ void SdMsgBaseCanvas::modified() {
 
 void SdMsgBaseCanvas::default_label_position() const {
   QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
+  QSize sz = fm.size(0, label->get_name());
       
-  label->move(rect().center().x() - fm.width(label->get_name())/2,
+  label->move(rect().center().x() - sz.width()/2,
 	      y() - fm.height());
 }
 
@@ -378,7 +379,8 @@ void SdMsgBaseCanvas::read(char * & st) {
     
     label =
       new LabelCanvas(get_msg(TRUE), the_canvas(),
-		      lx, (int) read_double(st));
+		      lx, (int) read_double(st),
+		      FALSE, FALSE, FALSE, FALSE);
     label->show();
   }
 }

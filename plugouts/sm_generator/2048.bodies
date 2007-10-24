@@ -254,6 +254,21 @@ class UmlBaseArtifact
   UmlCom.check();
 
   _java_src = s;
+!!!209536.cpp!!!	phpSource() : string
+  read_if_needed_();
+  
+  return _php_src;
+!!!209536.java!!!	phpSource() : string
+  read_if_needed_();
+  
+  return _php_src;
+!!!209664.cpp!!!	set_PhpSource(in s : string) : bool
+  return set_it_(_php_src, s, setPhpSrcCmd);
+!!!209664.java!!!	set_PhpSource(in s : string) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpSrcCmd, s);
+  UmlCom.check();
+
+  _php_src = s;
 !!!16640.cpp!!!	idlSource() : string
   read_if_needed_();
   
@@ -279,6 +294,9 @@ class UmlBaseArtifact
 #ifdef WITHJAVA
   _java_src = 0;
 #endif
+#ifdef WITHPHP
+  _php_src = 0;
+#endif
 #ifdef WITHIDL
   _idl_src = 0;
 #endif
@@ -289,6 +307,7 @@ class UmlBaseArtifact
   _cpp_h = null;
   _cpp_src = null;
   _java_src = null;
+  _php_src = null;
   _idl_src = null;
   super.unload(rec, del);
 !!!17024.cpp!!!	read_uml_() : void
@@ -337,6 +356,10 @@ class UmlBaseArtifact
   _java_src = UmlCom::read_string();
 !!!17280.java!!!	read_java_() : void
   _java_src = UmlCom.read_string();
+!!!209792.cpp!!!	read_php_() : void
+  _php_src = UmlCom::read_string();
+!!!209792.java!!!	read_php_() : void
+  _php_src = UmlCom.read_string();
 !!!17408.cpp!!!	read_idl_() : void
   _idl_src = UmlCom::read_string();
 !!!17408.java!!!	read_idl_() : void

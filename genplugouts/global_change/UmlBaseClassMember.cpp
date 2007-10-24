@@ -71,11 +71,21 @@ bool UmlBaseClassMember::set_JavaAnnotations(const char * v) {
 }
 #endif
 
+const QCString & UmlBaseClassMember::constraint() {
+  read_if_needed_();
+  return _constraint;
+}
+
+bool UmlBaseClassMember::set_Constraint(const char * v) {
+  return set_it_(_constraint, v, setConstraintCmd);
+}
+
 void UmlBaseClassMember::read_uml_() {
   UmlBaseItem::read_uml_();
   _class_member = UmlCom::read_bool();
   _volatile = UmlCom::read_bool();
   _visibility = (aVisibility) UmlCom::read_char();
+  _constraint = UmlCom::read_string();
 }
 
 #ifdef WITHCPP

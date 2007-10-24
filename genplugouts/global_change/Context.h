@@ -25,7 +25,7 @@ class Context {
 
     void set_targets(bool art, bool cl, bool op, bool att, bool rel);
 
-    void set_language(bool c, bool j, bool i);
+    void set_language(bool c, bool j, bool p, bool i);
 
     bool match_stereotype(const QCString & s);
 
@@ -48,6 +48,8 @@ class Context {
     const bool cpp() const;
 
     const bool java() const;
+
+    const bool php() const;
 
     const bool idl() const;
 
@@ -89,6 +91,8 @@ class Context {
 
     bool _java;
 
+    bool _php;
+
     bool _idl;
 
     QCString _old;
@@ -119,10 +123,11 @@ _onAttribute = att;
 _onRelation = rel;
 }
 
-inline void Context::set_language(bool c, bool j, bool i) {
-  _cpp = c;
-  _java = j;
-  _idl = i;
+inline void Context::set_language(bool c, bool j, bool p, bool i) {
+_cpp = c;
+_java = j;
+_php = p;
+_idl = i;
 }
 
 inline const bool Context::onArtifact() const {
@@ -151,6 +156,10 @@ inline const bool Context::cpp() const {
 
 inline const bool Context::java() const {
   return _java;
+}
+
+inline const bool Context::php() const {
+  return _php;
 }
 
 inline const bool Context::idl() const {

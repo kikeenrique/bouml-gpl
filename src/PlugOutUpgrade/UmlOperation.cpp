@@ -24,6 +24,7 @@
 // *************************************************************************
 
 #include "UmlOperation.h"
+#include "UmlClass.h"
 #include "UmlCom.h"
 #include "CppSettings.h"
 #include "JavaSettings.h"
@@ -307,4 +308,65 @@ void UmlOperation::rename_jdk5() {
     UmlCom::trace(parent()->name() + "::" + name() +
 		  " upgraded to take into account the rename of 'enum' to 'enum pattern'<br>\n");
   
+}
+
+
+UmlOperation * UmlOperation::java2Php(UmlClass * php, UmlClass * java,
+				      const char * javaname,
+				      const char * phpname)
+{
+  if (phpname == 0)
+    phpname = javaname;
+  
+  UmlOperation * from = java->get_operation(javaname);
+  
+  if (from == 0) {
+    QCString err = QCString("cannot find operation '") + 
+      javaname + QCString("' in class '") + java->name()
+	+ QCString("'<br>\n");
+    UmlCom::trace(err);
+    throw 0;
+  }
+  
+  UmlOperation * to = UmlBaseOperation::create(php, phpname);
+  
+  if (to == 0) {
+    QCString err = QCString("cannot create operation '") + 
+      phpname + QCString("' in class '") + php->name()
+	+ QCString("'<br>\n");
+    UmlCom::trace(err);
+    throw 0;
+  }
+  
+  UmlCom::trace("add operation " + php->name() + "::" + phpname + "<br>\n");
+
+  to->set_Description(::java2Php(from->description()));
+  to->set_ReturnType(from->returnType());
+  to->set_isClassMember(from->isClassMember());
+  to->set_Visibility(from->visibility());
+  to->set_CppVisibility(from->cppVisibility());
+  
+  const QValueList<UmlParameter> params = from->params();
+  unsigned index;
+  
+  for (index = 0; index != params.count(); index += 1)
+    to->addParameter(index, params[index]);
+  
+  const QValueList<UmlTypeSpec> exceptions = from->exceptions();
+  
+  for (index = 0; index != exceptions.count(); index += 1)
+    to->addException(index, exceptions[index]);
+  
+  to->set_isCppVirtual(from->isCppVirtual());
+  to->set_isCppConst(from->isCppConst());
+  to->set_isCppInline(from->isCppInline());
+  to->set_CppDecl(::java2Php(from->cppDecl()));
+  to->set_CppDef(::java2Php(from->cppDef()));
+  to->set_CppBody(::java2Php(from->cppBody()));
+  
+  to->set_isJavaFinal(from->isJavaFinal());
+  to->set_JavaDef(from->javaDef());
+  to->set_JavaBody(::java2Php(from->javaBody()));
+  
+  return to;
 }

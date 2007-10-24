@@ -50,6 +50,14 @@ class UmlAttribute
     fw.write("</li>");
   }
 
+  s = phpDecl();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Php : ");
+    gen_php_decl(s);
+    fw.write("</li>");
+  }
+
   fw.write("</ul>");
   
   annotation_constraint();
@@ -89,6 +97,14 @@ class UmlAttribute
   if (s.length() != 0) {
     fw.write("<li>Java : ");
     gen_java_decl(s);
+    fw.write("</li>");
+  }
+
+  s = phpDecl();
+
+  if (s.length() != 0) {
+    fw.write("<li>Php : ");
+    gen_php_decl(s);
     fw.write("</li>");
   }
 
@@ -169,7 +185,7 @@ class UmlAttribute
   if (! descr) {
     write((cppVisibility() == DefaultVisibility)
 	  ? visibility() : cppVisibility(),
-	  TRUE);
+	  cppLanguage);
     fw.write(": ");
     p = bypass_comment(s);
   }
@@ -230,7 +246,7 @@ class UmlAttribute
       }
       else if (!strncmp(p, "${type}", 7)) {
 	p += 7;
-	write(type(), TRUE);
+	write(type(), cppLanguage);
       }
       else
 	fw.write(*p++);
@@ -267,7 +283,7 @@ class UmlAttribute
   if (! descr) {
     write((cppVisibility() == aVisibility.DefaultVisibility)
 	  ? visibility() : cppVisibility(),
-	  true);
+	  aLanguage.cppLanguage);
     fw.write(": ");
     index = bypass_comment(s);
   }
@@ -325,7 +341,7 @@ class UmlAttribute
     }
     else if (s.startsWith("${type}", index)) {
       index += 7;
-      write(type(), true);
+      write(type(), aLanguage.cppLanguage);
     }
     else if (s.charAt(index) == '\r')
       index += 1;
@@ -399,7 +415,7 @@ class UmlAttribute
     }
     else if (!strncmp(p, "${visibility}", 13)) {
       p += 13;
-      write(visibility(), FALSE);
+      write(visibility(), javaLanguage);
       fw.write(' ');
     }
     else if (!strncmp(p, "${static}", 9)) {
@@ -424,7 +440,7 @@ class UmlAttribute
     }
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      write(type(), FALSE);
+      write(type(), javaLanguage);
     }
     else if (!strncmp(p, "${@}", 4))
       p += 4;
@@ -492,7 +508,7 @@ class UmlAttribute
     }
     else if (s.startsWith("${visibility}", index)) {
       index += 13;
-      write(visibility(), false);
+      write(visibility(), aLanguage.javaLanguage);
       fw.write(' ');
     }
     else if (s.startsWith("${static}", index)) {
@@ -517,10 +533,129 @@ class UmlAttribute
     }
     else if (s.startsWith("${type}", index)) {
       index += 7;
-      write(type(), false);
+      write(type(), aLanguage.javaLanguage);
     }
     else if (s.startsWith("${@}", index)) {
       index += 4;
+    }
+    else if ((s.charAt(index) == '\n') || (s.charAt(index) == '\r')) {
+      fw.write(' ');
+
+      do
+	index += 1;
+      while ((index != n) && Character.isWhitespace(s.charAt(index)));
+    }
+    else if ((s.charAt(index) == '{') || (s.charAt(index) == ';'))
+      break;
+    else if (s.charAt(index) == '@')
+      index = manage_alias(s, index);
+    else
+      writeq(s.charAt(index++));
+  }
+!!!211330.cpp!!!	gen_php_decl(in s : string) : void
+  QCString st = PhpSettings::classStereotype(stereotype());
+  const char * p = bypass_comment(s);
+
+  while (*p) {
+    if (!strncmp(p, "${comment}", 10))
+      p += 10;
+    else if (!strncmp(p, "${description}", 14))
+      p += 14;
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      if ((st != "enum") && !isReadOnly())
+	fw.write('$');
+      writeq(name());
+    }
+    else if (!strncmp(p, "${var}", 6)) {
+      p += 6;
+      if ((st != "enum") &&
+	  !isReadOnly() &&
+	  !isClassMember() &&
+	  (visibility() == PackageVisibility))
+	fw.write("var ");
+    }
+    else if (!strncmp(p, "${value}", 8)) {
+      p += 8;
+    }
+    else if (!strncmp(p, "${visibility}", 13)) {
+      p += 13;
+      write(visibility(), phpLanguage);
+      fw.write(' ');
+    }
+    else if (!strncmp(p, "${static}", 9)) {
+      p += 9;
+      if (isClassMember())
+	fw.write("static ");
+    }
+    else if (!strncmp(p, "${type}", 7)) {
+      p += 7;
+      write(type(), phpLanguage);
+    }
+    else if (!strncmp(p, "${const}", 8)) {
+      p += 8;
+      if (isReadOnly())
+	fw.write("const ");
+    }
+    else if ((*p == '\n') || (*p == '\r')) {
+      fw.write(' ');
+
+      do
+	p += 1;
+      while ((*p != 0) && (*p <= ' '));
+    }
+    else if ((*p == '{') || (*p == ';'))
+      break;
+    else if (*p == '@')
+      manage_alias(p);
+    else
+      writeq(*p++);
+  }
+!!!211330.java!!!	gen_php_decl(in s : string) : void
+  String st = PhpSettings.classStereotype(stereotype());
+  int n = s.length();
+  int index = bypass_comment(s);
+
+  while (index != n) {
+    if (s.startsWith("${comment}", index))
+      index += 10;
+    else if (s.startsWith("${description}", index))
+      index += 14;
+    else if (s.startsWith("${name}", index)) {
+      index += 7;
+      if ((st != "enum") && !isReadOnly())
+	fw.write('$');
+      writeq(name());
+    }
+    else if (s.startsWith("${var}", index)) {
+      index += 6;
+      if ((st != "enum") &&
+	  !isReadOnly() &&
+	  !isClassMember() &&
+	  (visibility() == aVisibility.PackageVisibility))
+	fw.write("var ");
+    }
+    else if (s.startsWith("${value}", index)) {
+      index += 8;
+    }
+    else if (s.startsWith("${visibility}", index)) {
+      index += 13;
+      write(visibility(), aLanguage.phpLanguage);
+      fw.write(' ');
+    }
+    else if (s.startsWith("${static}", index)) {
+      index += 9;
+      if (isClassMember())
+	fw.write("static ");
+    }
+    else if (s.startsWith("${type}", index)) {
+      index += 7;
+      write(type(), aLanguage.phpLanguage);
+    }
+    else if (s.startsWith("${const}")) {
+      index += 8;
+      if (isReadOnly())
+	fw.write("const ");
     }
     else if ((s.charAt(index) == '\n') || (s.charAt(index) == '\r')) {
       fw.write(' ');

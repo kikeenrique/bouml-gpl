@@ -25,6 +25,10 @@ enum OnInstanceCmd {
   applyCmd,
   referencedByCmd,
   sideCmd,
+  attributesCmd,
+  relationsCmd,
+  getPhpDefCmd,
+  phpBodyCmd,
   firstSetCmd = 50,// just a mark
 
   createCmd,
@@ -132,7 +136,25 @@ enum OnInstanceCmd {
   setUniqueCmd,
   setStreamCmd,
   setInStateCmd,
-  setOrderingCmd
+  setOrderingCmd,
+  setCppFrozenCmd,
+  setJavaFrozenCmd,
+  setIdlFrozenCmd,
+  setConstraintCmd,
+  deleteCmd,
+  setAttributeCmd,
+  addRelationCmd,
+  removeRelationCmd,
+  setPhpDeclCmd,
+  setIsPhpExternalCmd,
+  setIsPhpFinalCmd,
+  setPhpSrcCmd,
+  setPhpFinalCmd,
+  setPhpBodyCmd,
+  setPhpNameSpecCmd,
+  setPhpDirCmd,
+  setPhpFrozenCmd,
+  setIsForceBodyGenCmd
 
 };
 #endif

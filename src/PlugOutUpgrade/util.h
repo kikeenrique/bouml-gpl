@@ -31,4 +31,6 @@ class QCString;
 void conditional(QCString & s, const char * if_def,
 		 const char * end_if);
 
+QCString java2Php(QCString s);
+
 #endif

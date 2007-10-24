@@ -209,8 +209,8 @@ void ObjectDiagramView::dropEvent(QDropEvent * e) {
 	   ((bn = UmlDrag::decode(e, UmlObjectDiagram)) != 0) ||
 	   ((bn = UmlDrag::decode(e, UmlComponentDiagram)) != 0) ||
 	   ((bn = UmlDrag::decode(e, UmlDeploymentDiagram)) != 0) ||
-	   ((bn = UmlDrag::decode(e, UmlStateDiagram)) != 0) ||
-	   ((bn = UmlDrag::decode(e, UmlActivityDiagram)) != 0)) {
+	   ((bn = UmlDrag::decode(e, UmlStateDiagram, TRUE)) != 0) ||
+	   ((bn = UmlDrag::decode(e, UmlActivityDiagram, TRUE)) != 0)) {
     history_save();
     
     IconCanvas * ic = new IconCanvas(bn, the_canvas(), p.x(), p.y(), 0);

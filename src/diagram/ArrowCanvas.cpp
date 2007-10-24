@@ -553,17 +553,17 @@ void ArrowCanvas::drawShape(QPainter & p) {
 	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
 		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
 		beginp.x(), beginp.y(), arrow[1].x(), arrow[1].y());
-	fprintf(fp, "<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" cx=\"%d\" cy=\"%d\" rx=\"%g\" ry=\"%g\" />\n",
+	fprintf(fp, "<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
 		arrow[0].x(), arrow[0].y(),
-		ARROW_LENGTH/2.0, ARROW_LENGTH/2.0);
+		ARROW_LENGTH/2, ARROW_LENGTH/2);
 	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
-		" x1=\"%g\" y1=\"%d\" x2=\"%g\" y2=\"%d\" />\n",
-		arrow[0].x() - ARROW_LENGTH/2.0, arrow[0].y(),
-		arrow[0].x() + ARROW_LENGTH/2.0, arrow[0].y());
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		arrow[0].x() - ARROW_LENGTH/2, arrow[0].y(),
+		arrow[0].x() + ARROW_LENGTH/2, arrow[0].y());
 	fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
-		" x1=\"%d\" y1=\"%g\" x2=\"%d\" y2=\"%g\" />\n",
-		arrow[0].x(), arrow[0].y() - ARROW_LENGTH/2.0,
-		arrow[0].x(), arrow[0].y() + ARROW_LENGTH/2.0);
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		arrow[0].x(), arrow[0].y() - ARROW_LENGTH/2,
+		arrow[0].x(), arrow[0].y() + ARROW_LENGTH/2);
       }
     }
     else {

@@ -14,19 +14,6 @@ void UmlComponent::html(QCString pfix, unsigned int rank, unsigned int level) {
     fw.write("</p>\n");
   }
 
-  const QVector<UmlClass> & realized = realizedClasses();
-
-  if (realized.size() != 0) {
-    const char * sep = "<p>realized classes : ";
-    
-    for (unsigned i = 0; i != realized.size(); i += 1) {
-      fw.write(sep);
-      sep = ", ";
-      realized[i]->write();
-    }
-    fw.write("</p>\n");
-  }
-
   const QVector<UmlClass> & provided = providedClasses();
 
   if (provided.size() != 0) {
@@ -49,6 +36,19 @@ void UmlComponent::html(QCString pfix, unsigned int rank, unsigned int level) {
       fw.write(sep);
       sep = ", ";
       required[i]->write();
+    }
+    fw.write("</p>\n");
+  }
+
+  const QVector<UmlClass> & realizing = realizingClasses();
+
+  if (realizing.size() != 0) {
+    const char * sep = "<p>realizing classes : ";
+    
+    for (unsigned i = 0; i != realizing.size(); i += 1) {
+      fw.write(sep);
+      sep = ", ";
+      realizing[i]->write();
     }
     fw.write("</p>\n");
   }

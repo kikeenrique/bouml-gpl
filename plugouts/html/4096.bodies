@@ -177,6 +177,29 @@ class UmlBaseItem
 !!!73216.java!!!	apply(in cmd : string) : int
   UmlCom.send_cmd(identifier_(), OnInstanceCmd.applyCmd, cmd); 
   return UmlCom.read_unsigned();
+!!!220800.cpp!!!	isMarked() : bool
+  read_if_needed_();
+  return _marked;
+!!!220800.java!!!	isMarked() : bool
+  read_if_needed_();
+  return _marked;
+!!!220928.cpp!!!	set_isMarked(in v : bool) : bool
+  return set_it_(_marked, v, setMarkedCmd);
+!!!220928.java!!!	set_isMarked(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setMarkedCmd, (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _marked = v;
+!!!221184.cpp!!!	referencedBy() : UmlItem
+  UmlCom::send_cmd(_identifier, referencedByCmd);
+  
+  QVector<UmlItem> result;
+  
+  UmlCom::read_item_list(result);
+  return result;
+!!!221184.java!!!	referencedBy() : UmlItem
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.childrenCmd);
+  return UmlCom.read_item_list();
 !!!47872.cpp!!!	unload(in rec : bool, in del : bool) : void
   _defined = FALSE;
   _stereotype = 0;
@@ -226,45 +249,55 @@ class UmlBaseItem
 !!!73344.java!!!	isToolRunning(in id : int) : bool
   UmlCom.send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._toolRunningCmd);
   return UmlCom.read_bool();
+!!!221056.cpp!!!	markedItems() : UmlItem
+  UmlCom::send_cmd(miscGlobalCmd, allMarkedCmd);
+  
+  QVector<UmlItem> result;
+  
+  UmlCom::read_item_list(result);
+  return result;
+!!!221056.java!!!	markedItems() : UmlItem
+  UmlCom.send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._allMarkedCmd);
+  return UmlCom.read_item_list();
 !!!48000.cpp!!!	read_if_needed_() : void
   if (!_defined) {
-#ifdef WITHCPP
-# ifdef WITHJAVA
-#  ifdef WITHIDL
+#if defined(WITHCPP) & defined(WITHJAVA) & defined(WITHPHP) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getDefCmd);
     read_uml_();
     read_cpp_();
     read_java_();
+    read_php_();
     read_idl_();
-#  else
-    ... WITHIDL must be defined when WITHCPP and WITHJAVA are both defined
-#  endif
-# else
-#  ifdef WITHIDL
-    ... WITHJAVA must be defined when WITHCPP and WITHIDL are both defined
-#  else
+#else
+# if defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getCppDefCmd);
     read_uml_();
     read_cpp_();
-#  endif
-# endif
-#else
-# ifdef WITHJAVA
-#  ifdef WITHIDL
-    ... WITHCPP must be defined when WITHIDL and WITHJAVA are both defined
-#  else
+# else
+#  if !defined(WITHCPP) & defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getJavaDefCmd);
     read_uml_();
     read_java_();
-#  endif
-# else
-#  ifdef WITHIDL
+#  else
+#   if !defined(WITHCPP) & !defined(WITHJAVA) & defined(WITHPHP) & !defined(WITHIDL)
+    UmlCom::send_cmd(_identifier, getPhpDefCmd);
+    read_uml_();
+    read_php_();
+#   else
+#    if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getIdlDefCmd);
     read_uml_();
     read_idl_();
-#  else
+#    else
+#     if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getUmlDefCmd);
     read_uml_();
+#     else
+    ... WITHCPP and WITHJAVA and WITHPHP and WITHIDL must be both defined or undefined
+    ... or only one of them must be defined
+#     endif
+#    endif
+#   endif
 #  endif
 # endif
 #endif
@@ -277,6 +310,7 @@ class UmlBaseItem
     read_uml_();
     read_cpp_();
     read_java_();
+    read_php_();
     read_idl_();
     
     _defined = true;

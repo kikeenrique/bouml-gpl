@@ -27,6 +27,8 @@ enum OnInstanceCmd {
   sideCmd,
   attributesCmd,
   relationsCmd,
+  getPhpDefCmd,
+  phpBodyCmd,
   firstSetCmd = 50,// just a mark
 
   createCmd,
@@ -142,7 +144,17 @@ enum OnInstanceCmd {
   deleteCmd,
   setAttributeCmd,
   addRelationCmd,
-  removeRelationCmd
+  removeRelationCmd,
+  setPhpDeclCmd,
+  setIsPhpExternalCmd,
+  setIsPhpFinalCmd,
+  setPhpSrcCmd,
+  setPhpFinalCmd,
+  setPhpBodyCmd,
+  setPhpNameSpecCmd,
+  setPhpDirCmd,
+  setPhpFrozenCmd,
+  setIsForceBodyGenCmd
 
 };
 #endif

@@ -4,6 +4,7 @@
 
 #include "UmlBaseItem.h"
 #include <qcstring.h>
+#include "aLanguage.h"
 #include "aVisibility.h"
 #include "aDirection.h"
 #include "aParameterEffectKind.h"
@@ -79,11 +80,11 @@ class UmlItem : public UmlBaseItem {
 
     static void writeq(char c);
 
-    static void write(const UmlTypeSpec & t, bool cpp);
+    static void write(const UmlTypeSpec & t, aLanguage lang);
 
     static void write(const UmlTypeSpec & t);
 
-    static void write(aVisibility v, bool cpp);
+    static void write(aVisibility v, aLanguage lang);
 
     static void write(aVisibility v);
 

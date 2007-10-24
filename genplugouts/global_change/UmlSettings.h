@@ -3,6 +3,7 @@
 
 
 #include <qcstring.h>
+#include "aLanguage.h"
 #include <qdict.h>
 
 struct UmlBuiltin;
@@ -57,6 +58,22 @@ class UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_RelationDescription(QCString v);
 
+    // return the language from which the getter's name rule must be followed at Uml level
+    static aLanguage umlGetName();
+
+    // set the language from which the getter's name rule must be followed at Uml level
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_UmlGetName(aLanguage v);
+
+    // return the language from which the setter's name rule must be followed at Uml level
+    static aLanguage umlSetName();
+
+    // set the language from which the setter's name rule must be followed at Uml level
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_UmlSetName(aLanguage v);
+
 
   protected:
     // never called !
@@ -64,6 +81,14 @@ class UmlSettings {
 
     static bool _defined;
 
+
+  private:
+    static aLanguage _uml_get_name;
+
+    static aLanguage _uml_set_name;
+
+
+  protected:
     static QCString _artifact_default_description;
 
     static QCString _class_default_description;
@@ -78,9 +103,9 @@ class UmlSettings {
 
     static UmlBuiltin * _builtins;
 
-    static QDict<UmlStereotype> _map_relation_stereotypes;
+    static QDict<UmlStereotype> _map_relation_attribute_stereotypes;
 
-    static UmlStereotype * _relation_stereotypes;
+    static UmlStereotype * _relation_attribute_stereotypes;
 
     static QDict<UmlStereotype> _map_class_stereotypes;
 
@@ -104,7 +129,7 @@ class UmlSettings {
 
     //internal, do NOT use it
     
-    static QCString uml_rel_stereotype(const QCString & t, QCString UmlStereotype::* f);
+    static QCString uml_rel_attr_stereotype(const QCString & t, QCString UmlStereotype::* f);
 
     //internal, do NOT use it
     
@@ -116,7 +141,7 @@ class UmlSettings {
 
     //internal, do NOT use it
     
-    static UmlStereotype * add_rel_stereotype(const QCString & s);
+    static UmlStereotype * add_rel_attr_stereotype(const QCString & s);
 
     //internal, do NOT use it
     

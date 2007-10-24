@@ -183,7 +183,9 @@ void UmlClass::generate_decl(QTextOStream & f_h, QCString indent) {
 
     if (*p == '\n') {
       f_h << *p++;
-      if (*p && (*p != '#') && strncmp(p, "${members}", 10))
+      if (*p && (*p != '#') &&
+	  strncmp(p, "${members}", 10) &&
+	  strncmp(p, "${items}", 8))
 	f_h << indent;
     }
     else if (*p == '@')

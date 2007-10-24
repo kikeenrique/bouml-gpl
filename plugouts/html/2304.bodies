@@ -245,6 +245,51 @@ class UmlBaseClass
   UmlCom.check();
 
   _java_final = y;
+!!!217344.cpp!!!	isPhpExternal() : bool
+  read_if_needed_();
+  
+  return _php_external;
+!!!217344.java!!!	isPhpExternal() : bool
+  read_if_needed_();
+  
+  return _php_external;
+!!!217472.cpp!!!	set_isPhpExternal(in y : bool) : bool
+  bool r;
+  
+  if (set_it_(r, y, setIsPhpExternalCmd)) {
+    _php_external = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!217472.java!!!	set_isPhpExternal(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsPhpExternalCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _php_external = y;
+!!!217600.cpp!!!	isPhpFinal() : bool
+  read_if_needed_();
+  
+  return _php_final;
+!!!217600.java!!!	isPhpFinal() : bool
+  read_if_needed_();
+  
+  return _php_final;
+!!!217728.cpp!!!	set_isPhpFinal(in y : bool) : bool
+  bool r;
+  
+  if (set_it_(r, y, setIsPhpFinalCmd)) {
+    _php_final = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+
+!!!217728.java!!!	set_isPhpFinal(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsPhpFinalCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _php_final = y;
 !!!34048.cpp!!!	switchType() : UmlTypeSpec
   read_if_needed_();
   
@@ -399,7 +444,6 @@ class UmlBaseClass
   _cpp_external = UmlCom.read_bool();
 !!!34944.cpp!!!	read_java_() : void
   UmlBaseClassMember::read_java_();
-  ;
   _java_final = UmlCom::read_bool();
   _java_external = UmlCom::read_bool();
 !!!34944.java!!!	read_java_() : void
@@ -407,6 +451,15 @@ class UmlBaseClass
   
   _java_final = UmlCom.read_bool();
   _java_external = UmlCom.read_bool();
+!!!217856.cpp!!!	read_php_() : void
+  UmlBaseClassMember::read_php_();
+  _php_final = UmlCom::read_bool();
+  _php_external = UmlCom::read_bool();
+!!!217856.java!!!	read_php_() : void
+  super.read_php_();  
+  
+  _php_final = UmlCom.read_bool();
+  _php_external = UmlCom.read_bool();
 !!!35072.cpp!!!	read_idl_() : void
   UmlBaseClassItem::read_idl_();
   _switch_type.type = (UmlClass *) UmlBaseItem::read_();

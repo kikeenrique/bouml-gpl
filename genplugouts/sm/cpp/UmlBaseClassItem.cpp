@@ -26,6 +26,18 @@ bool UmlBaseClassItem::set_JavaDecl(const char * s) {
 }
 #endif
 
+#ifdef WITHPHP
+const QCString & UmlBaseClassItem::phpDecl() {
+  read_if_needed_();
+  
+  return _php_decl;
+}
+
+bool UmlBaseClassItem::set_PhpDecl(const char * s) {
+  return set_it_(_php_decl, s, setPhpDeclCmd);
+}
+#endif
+
 #ifdef WITHIDL
 const QCString & UmlBaseClassItem::idlDecl() {
   read_if_needed_();
@@ -45,6 +57,9 @@ void UmlBaseClassItem::unload(bool rec, bool del) {
 #ifdef WITHJAVA
   _java_decl = 0;
 #endif
+#ifdef WITHPHP
+  _php_decl = 0;
+#endif
 #ifdef WITHIDL
   _idl_decl = 0;
 #endif
@@ -60,6 +75,12 @@ void UmlBaseClassItem::read_cpp_() {
 #ifdef WITHJAVA
 void UmlBaseClassItem::read_java_() {
   _java_decl = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBaseClassItem::read_php_() {
+  _php_decl = UmlCom::read_string();
 }
 #endif
 

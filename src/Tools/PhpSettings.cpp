@@ -355,7 +355,7 @@ bool PhpSettings::set_IsSetFinal(bool v)
 aVisibility PhpSettings::setVisibility()
 {
 #ifdef WITHJAVA
-  return JavaSettings::getVisibility();
+  return JavaSettings::setVisibility();
 #else
   read_if_needed_();
   

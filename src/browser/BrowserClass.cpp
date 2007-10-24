@@ -395,13 +395,13 @@ a double click with the left mouse button does the same thing");
       if (associated_components.first() == associated_components.last())
 	// only one component
 	m.setWhatsThis(m.insertItem("Select associated component", 100000),
-		       "to select a <em>component</em> realizing or providing the <em>class</em>");
+		       "to select the <em>component</em> providing the <em>class</em>");
       else {
 	compsubm.insertItem(new MenuTitle("Choose component", m.font()), -1);
 	compsubm.insertSeparator();
 	
 	m.setWhatsThis(m.insertItem("Select an associated component", &compsubm),
-		       "to select a <em>component</em> realizing or providing the <em>class</em>");
+		       "to select a <em>component</em> providing the <em>class</em>");
 	
 	index = 100000;
 	

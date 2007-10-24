@@ -40,6 +40,14 @@ class UmlOperation
     fw.write("</li>");
   }
 
+  s = phpDecl();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Php : ");
+    gen_php_decl(s);
+    fw.write("</li>");
+  }
+
   fw.write("</ul>");
   
   annotation_constraint();
@@ -79,6 +87,14 @@ class UmlOperation
   if (s.length() != 0) {
     fw.write("<li>Java : ");
     gen_java_decl(s);
+    fw.write("</li>");
+  }
+
+  s = phpDecl();
+
+  if (s.length() != 0) {
+    fw.write("<li>Php : ");
+    gen_php_decl(s);
     fw.write("</li>");
   }
 
@@ -248,7 +264,7 @@ class UmlOperation
   if (! descr) {
     write((cppVisibility() == DefaultVisibility)
 	  ? visibility() : cppVisibility(),
-	  TRUE);
+	  cppLanguage);
     fw.write(": ");
     p = bypass_comment(s);
   }
@@ -286,7 +302,7 @@ class UmlOperation
     }
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      write(returnType(), TRUE);
+      write(returnType(), cppLanguage);
     }
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;
@@ -321,7 +337,7 @@ class UmlOperation
       for (index2 = 0; index2 != n; index2 += 1) {
 	fw.write(sep);
 	sep = ", ";
-	write(e[index2], TRUE);
+	write(e[index2], cppLanguage);
       }
       if (index2 != 0)
 	fw.write(')');
@@ -332,7 +348,7 @@ class UmlOperation
       p = strchr(p, '}') + 1;
 
       if (rank < npa) 
-	write(pa[rank].type, TRUE);
+	write(pa[rank].type, cppLanguage);
       else
 	fw.write("???");
     }
@@ -364,7 +380,7 @@ class UmlOperation
       
       if (((m != 0) || ((m = setOf()) != 0)) &&
 	  (m->kind() == aRelation))
-	write(((UmlRelation *) m)->association(), TRUE);
+	write(((UmlRelation *) m)->association(), cppLanguage);
     }
     else if (*p == '\r')
       p += 1;
@@ -395,7 +411,7 @@ class UmlOperation
   if (! descr) {
     write((cppVisibility() == aVisibility.DefaultVisibility)
 	  ? visibility() : cppVisibility(),
-	  true);
+	  aLanguage.cppLanguage);
     fw.write(": ");
     index = bypass_comment(s);
   }
@@ -431,7 +447,7 @@ class UmlOperation
     }
     else if (s.startsWith("${type}", index)) {
       index += 7;
-      write(returnType(), true);
+      write(returnType(), aLanguage.cppLanguage);
     }
     else if (s.startsWith("${name}", index)) {
       index += 7;
@@ -465,7 +481,7 @@ class UmlOperation
       for (index2 = 0; index2 != e.length; index2 += 1) {
 	fw.write(sep);
 	sep = ", ";
-	write(e[index2], true);
+	write(e[index2], aLanguage.cppLanguage);
       }
       if (index2 != 0)
 	fw.write(')');
@@ -482,7 +498,7 @@ class UmlOperation
       int rank = Integer.valueOf(s.substring(index + 3, index2)).intValue();
       
       if (rank < pa.length) 
-	write(pa[rank].type, true);
+	write(pa[rank].type, aLanguage.cppLanguage);
       else
 	fw.write("???");
       index = index2 + 1;
@@ -522,7 +538,7 @@ class UmlOperation
       
       if (((m != null) || ((m = setOf()) != null)) &&
 	  (m.kind() == anItemKind.aRelation))
-	write(((UmlRelation) m).association(), true);
+	write(((UmlRelation) m).association(), aLanguage.cppLanguage);
     }
     else if (s.charAt(index) == '\r')
       index += 1;
@@ -564,7 +580,7 @@ class UmlOperation
     }
     else if (!strncmp(p, "${visibility}", 13)) {
       p += 13;
-      UmlItem::write(visibility(), FALSE);
+      UmlItem::write(visibility(), javaLanguage);
       fw.write(' ');
     }
     else if (!strncmp(p, "${static}", 9)) {
@@ -584,7 +600,7 @@ class UmlOperation
     }
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
-      write(returnType(), FALSE);
+      write(returnType(), javaLanguage);
     }
     else if (!strncmp(p, "${name}", 7)) {
       p += 7;
@@ -608,7 +624,7 @@ class UmlOperation
       for (unsigned index2 = 0; index2 != n; index2 += 1) {
 	fw.write(sep);
 	sep = ", ";
-	write(e[index2], FALSE);
+	write(e[index2], javaLanguage);
       }
     }
     else if (!strncmp(p, "${staticnl}", 11))
@@ -617,7 +633,7 @@ class UmlOperation
       p = strchr(p, '}') + 1;
 
       if (rank < npa)
-	write(pa[rank].type, FALSE);
+	write(pa[rank].type, javaLanguage);
       else
 	fw.write("???");
     }
@@ -644,7 +660,7 @@ class UmlOperation
       
       if (((m != 0) || ((m = setOf()) != 0)) &&
 	  (m->kind() == aRelation))
-	write(((UmlRelation *) m)->association(), FALSE);
+	write(((UmlRelation *) m)->association(), javaLanguage);
     }
     else if (!strncmp(p, "${@}", 4))
       p += 4;
@@ -680,7 +696,7 @@ class UmlOperation
     }
     else if (s.startsWith("${visibility}", index)) {
       index += 13;
-      write(visibility(), false);
+      write(visibility(), aLanguage.javaLanguage);
       fw.write(' ');
     }
     else if (s.startsWith("${static}", index)) {
@@ -700,7 +716,7 @@ class UmlOperation
     }
     else if (s.startsWith("${type}", index)) {
       index += 7;
-      write(returnType(), false);
+      write(returnType(), aLanguage.javaLanguage);
     }
     else if (s.startsWith("${name}", index)) {
       index += 7;
@@ -723,7 +739,7 @@ class UmlOperation
       for (int index2 = 0; index2 != e.length; index2 += 1) {
 	fw.write(sep);
 	sep = ", ";
-	write(e[index2], false);
+	write(e[index2], aLanguage.javaLanguage);
       }
     }
     else if (s.startsWith("${staticnl}", index))
@@ -739,7 +755,7 @@ class UmlOperation
       UmlParameter[] p = params();
       
       if (rank < p.length) 
-	write(p[rank].type, false);
+	write(p[rank].type, aLanguage.javaLanguage);
       else
 	fw.write("???");
       index = index2 + 1;
@@ -774,10 +790,184 @@ class UmlOperation
       
       if (((m != null) || ((m = setOf()) != null)) &&
 	  (m.kind() == anItemKind.aRelation))
-	write(((UmlRelation) m).association(), false);
+	write(((UmlRelation) m).association(), aLanguage.javaLanguage);
     }
     else if (s.startsWith("${@}", index)) {
       index += 4;
+    }
+    else if (s.charAt(index) == '\r')
+      index += 1;
+    else if (s.charAt(index) == '\n') {
+      fw.write(' ');
+
+      do
+	index += 1;
+      while ((index != n) && Character.isWhitespace(s.charAt(index)));
+    }
+    else if ((s.charAt(index) == '{') || (s.charAt(index) == ';'))
+      break;
+    else if (s.charAt(index) == '@')
+      index = manage_alias(s, index);
+    else
+      writeq(s.charAt(index++));
+  }
+!!!211586.cpp!!!	gen_php_decl(in s : string) : void
+  QCString cl_stereotype = 
+     PhpSettings::classStereotype(parent()->stereotype());
+  const char * p = bypass_comment(s);
+  const QValueList<UmlParameter> & pa = params();
+  unsigned npa = pa.count();
+  unsigned rank;
+
+  while (*p) {
+    if (!strncmp(p, "${comment}", 10))
+      p += 10;
+    else if (!strncmp(p, "${description}", 14))
+      p += 14;
+    else if (!strncmp(p, "${final}", 8)) {
+      p += 8;
+      if (isPhpFinal())
+	fw.write("final ");
+    }
+    else if (!strncmp(p, "${visibility}", 13)) {
+      p += 13;
+      UmlItem::write(visibility(), phpLanguage);
+      fw.write(' ');
+    }
+    else if (!strncmp(p, "${static}", 9)) {
+      p += 9;
+      if (isClassMember())
+	fw.write("static ");
+    }
+    else if (!strncmp(p, "${abstract}", 11)) {
+      p += 11;
+      if (isAbstract() && (cl_stereotype != "interface"))
+	fw.write("abstract ");
+    }
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      writeq(compute_name(phpNameSpec()));
+    }
+    else if (!strncmp(p, "${(}", 4)) {
+      p += 4;
+      fw.write('(');
+    }
+    else if (!strncmp(p, "${)}", 4)) {
+      p += 4;
+      fw.write(')');
+    }
+    else if (!strncmp(p, "${staticnl}", 11))
+      break;
+    else if (sscanf(p, "${t%u}", &rank) == 1) {
+      p = strchr(p, '}') + 1;
+
+      if (rank < npa)
+	write(pa[rank].type, phpLanguage);
+      else
+	fw.write("???");
+    }
+    else if (sscanf(p, "${p%u}", &rank) == 1) {
+      p = strchr(p, '}') + 1;
+
+      if (rank < npa) {
+	fw.write('$');
+	writeq(pa[rank].name);
+      }
+      else
+	fw.write("???");
+    }
+    else if (*p == '\r')
+      p += 1;
+    else if (*p == '\n') {
+      fw.write(' ');
+
+      do
+	p += 1;
+      while ((*p != 0) && (*p <= ' '));
+    }
+    else if ((*p == '{') || (*p == ';'))
+      break;
+    else if (*p == '@')
+      manage_alias(p);
+    else
+      writeq(*p++);
+  }
+!!!211586.java!!!	gen_php_decl(in s : string) : void
+  String cl_stereotype = 
+     PhpSettings.classStereotype(parent().stereotype());
+  int n = s.length();
+  int index = bypass_comment(s);
+
+  while (index != n) {
+    if (s.startsWith("${comment}", index))
+      index += 10;
+    else if (s.startsWith("${description}", index))
+      index += 14;
+    else if (s.startsWith("${final}", index)) {
+      index += 8;
+      if (isPhpFinal())
+	fw.write("final ");
+    }
+    else if (s.startsWith("${visibility}", index)) {
+      index += 13;
+      write(visibility(), aLanguage.phpLanguage);
+      fw.write(' ');
+    }
+    else if (s.startsWith("${static}", index)) {
+      index += 9;
+      if (isClassMember())
+	fw.write("static ");
+    }
+    else if (s.startsWith("${abstract}", index)) {
+      index += 11;
+      if (isAbstract() && !cl_stereotype.equals("interface"))
+	fw.write("abstract ");
+    }
+    else if (s.startsWith("${name}", index)) {
+      index += 7;
+      writeq(compute_name(phpNameSpec()));
+    }
+    else if (s.startsWith("${(}", index)) {
+      index += 4;
+      fw.write('(');
+    }
+    else if (s.startsWith("${)}", index)) {
+      index += 4;
+      fw.write(')');
+    }
+    else if (s.startsWith("${staticnl}", index))
+      break;
+    else if (s.startsWith("${t", index)) {
+      int index2 = s.indexOf('}', index + 3);
+      
+      if (index2 == -1)
+	break;
+      
+      int rank = Integer.valueOf(s.substring(index + 3, index2)).intValue();
+      UmlParameter[] p = params();
+      
+      if (rank < p.length) 
+	write(p[rank].type, aLanguage.phpLanguage);
+      else
+	fw.write("???");
+      index = index2 + 1;
+    }
+    else if (s.startsWith("${p", index)) {
+      int index2 = s.indexOf('}', index + 3);
+      
+      if (index2 == -1)
+	break;
+      
+      int rank = Integer.valueOf(s.substring(index + 3, index2)).intValue();
+      UmlParameter[] p = params();
+      
+      if (rank < p.length) {
+	fw.write('$');
+	writeq(p[rank].name);
+      }
+      else
+	fw.write("???");
+      index = index2 + 1;
     }
     else if (s.charAt(index) == '\r')
       index += 1;

@@ -92,6 +92,7 @@ class UmlClass : public UmlBaseClass {
 			       const char * if_def, const char * end_if);
     UmlOperation * get_operation(const char *);
     UmlAttribute * get_attribute(const char *);
+    UmlRelation * get_relation(const char * = 0);
     UmlRelation * get_relation(aRelationKind k, const char * = 0);
 };
 

@@ -24,6 +24,10 @@ class UmlOperation : public UmlBaseOperation {
 		  const char * body, bool inlinep);
     
     virtual void rename_jdk5();
+    
+    static UmlOperation * java2Php(UmlClass * php, UmlClass * java,
+				   const char * name,
+				   const char * newname = 0);
 };
 
 #endif

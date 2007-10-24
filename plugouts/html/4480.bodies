@@ -75,11 +75,11 @@ class UmlBasePackage
   UmlCom.check();
 
   _cpp_namespace = s;
-!!!58496.cpp!!!	getNamespace(in n : string, in p : UmlBasePackage = 0) : UmlPackage
+!!!58496.cpp!!!	findNamespace(in n : string, in p : UmlBasePackage = 0) : UmlPackage
   UmlCom::send_cmd(packageGlobalCmd, findNamespaceCmd, (p) ? p->_identifier : 0, n);
   
   return (UmlPackage *) UmlBaseItem::read_();  
-!!!58496.java!!!	getNamespace(in n : string, in p : UmlBasePackage = 0) : UmlPackage
+!!!58496.java!!!	findNamespace(in n : string, in p : UmlBasePackage = 0) : UmlPackage
   UmlCom.send_cmd(CmdFamily.packageGlobalCmd, PackageGlobalCmd._findNamespaceCmd,
 		  (p != null) ? p.identifier_() : 0, n);
   
@@ -114,15 +114,30 @@ class UmlBasePackage
   UmlCom.check();
 
   _java_package = s;
-!!!59136.cpp!!!	getPackage(in n : string, in p : UmlBasePackage = 0) : UmlPackage
+!!!59136.cpp!!!	findPackage(in n : string, in p : UmlBasePackage = 0) : UmlPackage
   UmlCom::send_cmd(packageGlobalCmd, findPackageCmd, (p) ? p->_identifier : 0, n);
   
   return (UmlPackage *) UmlBaseItem::read_();  
-!!!59136.java!!!	getPackage(in n : string, in p : UmlBasePackage = 0) : UmlPackage
+!!!59136.java!!!	findPackage(in n : string, in p : UmlBasePackage = 0) : UmlPackage
   UmlCom.send_cmd(CmdFamily.packageGlobalCmd, PackageGlobalCmd._findPackageCmd,
 		  (p != null) ? p.identifier_() : 0, n);
   
   return (UmlPackage) UmlBaseItem.read_();  
+!!!219904.cpp!!!	phpDir() : string
+  read_if_needed_();
+  
+  return _php_dir;
+!!!219904.java!!!	phpDir() : string
+  read_if_needed_();
+  
+  return _php_dir;
+!!!220032.cpp!!!	set_PhpDir(in s : string) : bool
+  return set_it_(_php_dir, s, setPhpDirCmd);
+!!!220032.java!!!	set_PhpDir(in s : string) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpDirCmd, s);
+  UmlCom.check();
+
+  _php_dir = s;
 !!!59264.cpp!!!	idlDir() : string
   read_if_needed_();
   
@@ -153,23 +168,39 @@ class UmlBasePackage
   UmlCom.check();
 
   _idl_module = s;
-!!!59776.cpp!!!	getModule(in n : string, in p : UmlBasePackage = 0) : UmlPackage
+!!!59776.cpp!!!	findModule(in n : string, in p : UmlBasePackage = 0) : UmlPackage
   UmlCom::send_cmd(packageGlobalCmd, findModuleCmd, (p) ? p->_identifier : 0, n);
   
   return (UmlPackage *) UmlBaseItem::read_();  
-!!!59776.java!!!	getModule(in n : string, in p : UmlBasePackage = 0) : UmlPackage
+!!!59776.java!!!	findModule(in n : string, in p : UmlBasePackage = 0) : UmlPackage
   UmlCom.send_cmd(CmdFamily.packageGlobalCmd, PackageGlobalCmd._findModuleCmd,
 		  (p != null) ? p.identifier_() : 0, n);
   
   return (UmlPackage) UmlBaseItem.read_();  
-!!!73088.cpp!!!	getProject() : UmlBasePackage
+!!!73088.cpp!!!	getProject() : UmlPackage
   UmlCom::send_cmd(packageGlobalCmd, getProjectCmd);
   
   return (UmlPackage *) UmlBaseItem::read_();  
-!!!73088.java!!!	getProject() : UmlBasePackage
+!!!73088.java!!!	getProject() : UmlPackage
   UmlCom.send_cmd(CmdFamily.packageGlobalCmd, PackageGlobalCmd._getProjectCmd);
   
   return (UmlPackage) UmlBaseItem.read_();  
+!!!221440.cpp!!!	isProjectModified() : bool
+  UmlCom::send_cmd(packageGlobalCmd, isProjectModifiedCmd);
+  
+  return UmlCom::read_bool();
+!!!221440.java!!!	isProjectModified() : bool
+  UmlCom.send_cmd(CmdFamily.packageGlobalCmd, PackageGlobalCmd._isProjectModifiedCmd);
+  
+  return UmlCom.read_bool();
+!!!221568.cpp!!!	saveProject() : void
+  UmlCom::send_cmd(packageGlobalCmd, saveProjectCmd);
+!!!221568.java!!!	saveProject() : void
+  UmlCom.send_cmd(CmdFamily.packageGlobalCmd, PackageGlobalCmd._saveProjectCmd);
+!!!221696.cpp!!!	loadProject(in p : string) : void
+  UmlCom::send_cmd(miscGlobalCmd, loadCmd, (const char *) p);
+!!!221696.java!!!	loadProject(in p : string) : void
+  UmlCom.send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._loadCmd, p);
 !!!59904.cpp!!!	unload(in rec : bool, in del : bool) : void
   _assoc_diagram = 0;
 #ifdef WITHCPP
@@ -180,6 +211,9 @@ class UmlBasePackage
 #ifdef WITHJAVA
   _java_dir = 0;
   _java_package = 0;
+#endif
+#ifdef WITHPHP
+  _php_dir = 0;
 #endif
 #ifdef WITHIDL
   _idl_dir = 0;
@@ -193,6 +227,7 @@ class UmlBasePackage
   _cpp_namespace = null;
   _java_dir = null;
   _java_package = null;
+  _php_dir = null;
   _idl_dir = null;
   _idl_module = null;
   super.unload(rec, del);
@@ -216,6 +251,10 @@ class UmlBasePackage
 !!!60288.java!!!	read_java_() : void
   _java_dir = UmlCom.read_string();
   _java_package = UmlCom.read_string();
+!!!220160.cpp!!!	read_php_() : void
+  _php_dir = UmlCom::read_string();
+!!!220160.java!!!	read_php_() : void
+  _php_dir = UmlCom.read_string();
 !!!60416.cpp!!!	read_idl_() : void
   _idl_dir = UmlCom::read_string();
   _idl_module = UmlCom::read_string();

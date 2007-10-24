@@ -17,7 +17,7 @@ class UmlCom
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(33);
+    write_unsigned(35);
     flush();
     return TRUE;
   }
@@ -38,7 +38,7 @@ class UmlCom
     p_buffer_out = 4/*bytes for length*/;
 
     // send API version
-    write_unsigned(33);
+    write_unsigned(35);
     flush();
   }
   catch (Exception e) {

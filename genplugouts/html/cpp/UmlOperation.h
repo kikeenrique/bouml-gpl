@@ -38,6 +38,9 @@ class UmlOperation : public UmlBaseOperation {
     //produce the definition in Java
     void gen_java_decl(QCString s);
 
+    //produce the definition in Php
+    void gen_php_decl(QCString s);
+
 
   public:
     QCString compute_name(QCString s);

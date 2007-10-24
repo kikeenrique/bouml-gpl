@@ -1,5 +1,5 @@
 
-  cpp_default_defs java_default_defs php_default_defs 
+  cpp_default_defs java_default_defs 
   cpp_h_extension "h" cpp_src_extension "cpp" java_extension "java" php_extension "php" idl_extension "idl"
 
   type_forms 20 // uml cpp java idl cpp_in cpp_out cpp_inout cpp_return

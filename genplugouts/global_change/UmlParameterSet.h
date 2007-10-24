@@ -4,8 +4,9 @@
 
 #include "UmlBaseParameterSet.h"
 #include <qcstring.h>
+#include "UmlActivityItem.h"
 
-class UmlParameterSet : public UmlBaseParameterSet {
+class UmlParameterSet : public UmlBaseParameterSet, public UmlActivityItem {
   public:
     //  the constructor, do not call it yourself !!!!!!!!!!
      UmlParameterSet(void * id, const QCString & s) : UmlBaseParameterSet(id, s) {

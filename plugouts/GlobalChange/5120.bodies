@@ -99,6 +99,48 @@ class UmlSettings
   UmlCom.send_cmd(CmdFamily.umlSettingsCmd, UmlSettingsCmd._setDefaultRelationDescriptionCmd, v);
   UmlCom.check();
   _relation_default_description = v;
+!!!196608.cpp!!!	umlGetName() : aLanguage
+  read_if_needed_();
+
+  return _uml_get_name;
+!!!196608.java!!!	umlGetName() : aLanguage
+  read_if_needed_();
+
+  return _uml_get_name;
+!!!196736.cpp!!!	set_UmlGetName(in v : aLanguage) : bool
+  UmlCom::send_cmd(umlSettingsCmd, setUmlDefaultGetNameCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _uml_get_name = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!196736.java!!!	set_UmlGetName(in v : aLanguage) : bool
+  UmlCom.send_cmd(CmdFamily.umlSettingsCmd, UmlSettingsCmd._setUmlDefaultGetNameCmd,
+                  (byte) v.value());
+  UmlCom.check();
+  _uml_get_name = v;
+!!!196864.cpp!!!	umlSetName() : aLanguage
+  read_if_needed_();
+
+  return _uml_set_name;
+!!!196864.java!!!	umlSetName() : aLanguage
+  read_if_needed_();
+
+  return _uml_set_name;
+!!!196992.cpp!!!	set_UmlSetName(in v : aLanguage) : bool
+  UmlCom::send_cmd(umlSettingsCmd, setUmlDefaultSetNameCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _uml_set_name = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!196992.java!!!	set_UmlSetName(in v : aLanguage) : bool
+  UmlCom.send_cmd(CmdFamily.umlSettingsCmd, UmlSettingsCmd._setUmlDefaultSetNameCmd,
+                  (byte) v.value());
+  UmlCom.check();
+  _uml_set_name = v;
 !!!70016.cpp!!!	read_() : void
   unsigned n;
   unsigned index;
@@ -116,14 +158,14 @@ class UmlSettings
   
   n = UmlCom::read_unsigned();
   
-  _relation_stereotypes = new UmlStereotype[n];
-  if (n/2 > _map_relation_stereotypes.size())
-    _map_relation_stereotypes.resize(_map_relation_stereotypes.size() * 2 - 1);
+  _relation_attribute_stereotypes = new UmlStereotype[n];
+  if (n/2 > _map_relation_attribute_stereotypes.size())
+    _map_relation_attribute_stereotypes.resize(_map_relation_attribute_stereotypes.size() * 2 - 1);
   
   for (index = 0; index != n; index += 1) {
-    _relation_stereotypes[index].uml = UmlCom::read_string();
-    _map_relation_stereotypes.insert(_relation_stereotypes[index].uml,
-				     &_relation_stereotypes[index]);
+    _relation_attribute_stereotypes[index].uml = UmlCom::read_string();
+    _map_relation_attribute_stereotypes.insert(_relation_attribute_stereotypes[index].uml,
+				     &_relation_attribute_stereotypes[index]);
   }
   
   n = UmlCom::read_unsigned();
@@ -143,6 +185,8 @@ class UmlSettings
   _operation_default_description = UmlCom::read_string();
   _attribute_default_description = UmlCom::read_string();
   _relation_default_description = UmlCom::read_string();
+  _uml_get_name = (aLanguage) UmlCom::read_char();
+  _uml_set_name = (aLanguage) UmlCom::read_char();
 !!!70016.java!!!	read_() : void
   int n;
   int index;
@@ -160,14 +204,14 @@ class UmlSettings
   
   n = UmlCom.read_unsigned();
   
-  _relation_stereotypes = new UmlStereotype[n];
-  _map_relation_stereotypes = new Hashtable((n == 0) ? 1 : n);
+  _relation_attribute_stereotypes = new UmlStereotype[n];
+  _map_relation_attribute_stereotypes = new Hashtable((n == 0) ? 1 : n);
   
   for (index = 0; index != n; index += 1) {
-    _relation_stereotypes[index] = new UmlStereotype();
-    _relation_stereotypes[index].uml = UmlCom.read_string();
-    _map_relation_stereotypes.put(_relation_stereotypes[index].uml,
-				  _relation_stereotypes[index]);
+    _relation_attribute_stereotypes[index] = new UmlStereotype();
+    _relation_attribute_stereotypes[index].uml = UmlCom.read_string();
+    _map_relation_attribute_stereotypes.put(_relation_attribute_stereotypes[index].uml,
+				  _relation_attribute_stereotypes[index]);
   }
   
   n = UmlCom.read_unsigned();
@@ -187,6 +231,8 @@ class UmlSettings
   _operation_default_description = UmlCom.read_string();
   _attribute_default_description = UmlCom.read_string();
   _relation_default_description = UmlCom.read_string();
+  _uml_get_name = aLanguage.fromInt(UmlCom.read_char());
+  _uml_set_name = aLanguage.fromInt(UmlCom.read_char());
 !!!70144.cpp!!!	read_if_needed_() : void
   if (!_defined) {
     UmlCom::send_cmd(umlSettingsCmd, getUmlSettingsCmd);
@@ -223,12 +269,12 @@ class UmlSettings
       return _builtins[index].uml;
   
   return 0;
-!!!70528.cpp!!!	uml_rel_stereotype(in t : string, inout f : string) : string
-  unsigned index = _map_relation_stereotypes.count();
+!!!70528.cpp!!!	uml_rel_attr_stereotype(in t : string, inout f : string) : string
+  unsigned index = _map_relation_attribute_stereotypes.count();
   
   while (index--)
-    if ((_relation_stereotypes[index]).*f == t)
-      return _relation_stereotypes[index].uml;
+    if ((_relation_attribute_stereotypes[index]).*f == t)
+      return _relation_attribute_stereotypes[index].uml;
   
   return 0;
 !!!70656.cpp!!!	uml_class_stereotype(in t : string, inout f : string) : string
@@ -297,17 +343,17 @@ class UmlSettings
   _builtins = builtins;
   
   return builtin;
-!!!70912.cpp!!!	add_rel_stereotype(in s : string) : UmlStereotype
-  unsigned n = _map_relation_stereotypes.count();
+!!!70912.cpp!!!	add_rel_attr_stereotype(in s : string) : UmlStereotype
+  unsigned n = _map_relation_attribute_stereotypes.count();
   unsigned index;
 
   UmlStereotype * relation_stereotypes = new UmlStereotype[n + 1];
 
-  if (n/2 > _map_relation_stereotypes.size())
-    _map_relation_stereotypes.resize(_map_relation_stereotypes.size() * 2 - 1);
+  if (n/2 > _map_relation_attribute_stereotypes.size())
+    _map_relation_attribute_stereotypes.resize(_map_relation_attribute_stereotypes.size() * 2 - 1);
   
   for (index = 0; index != n; index += 1)
-    relation_stereotypes[index] = _relation_stereotypes[index];
+    relation_stereotypes[index] = _relation_attribute_stereotypes[index];
     
   relation_stereotypes[index].uml = s;
 #ifdef WITHCPP
@@ -320,21 +366,21 @@ class UmlSettings
   relation_stereotypes[index].idl = s;
 #endif
 
-  _map_relation_stereotypes.insert(s, &_relation_stereotypes[index]);
+  _map_relation_attribute_stereotypes.insert(s, &_relation_attribute_stereotypes[index]);
 
-  delete [] _relation_stereotypes;
-  _relation_stereotypes = relation_stereotypes;
+  delete [] _relation_attribute_stereotypes;
+  _relation_attribute_stereotypes = relation_stereotypes;
 
-  return &_relation_stereotypes[index];
+  return &_relation_attribute_stereotypes[index];
 
-!!!70912.java!!!	add_rel_stereotype(in s : string) : UmlStereotype
-  int n = _relation_stereotypes.length;
+!!!70912.java!!!	add_rel_attr_stereotype(in s : string) : UmlStereotype
+  int n = _relation_attribute_stereotypes.length;
   int index;
 
   UmlStereotype[] relation_stereotypes = new UmlStereotype[n + 1];
 
   for (index = 0; index != n; index += 1)
-    relation_stereotypes[index] = _relation_stereotypes[index];
+    relation_stereotypes[index] = _relation_attribute_stereotypes[index];
     
   UmlStereotype st = new UmlStereotype();
   
@@ -344,9 +390,9 @@ class UmlSettings
   st.java = s;
   st.idl = s;
 
-  _map_relation_stereotypes.put(s, st);
+  _map_relation_attribute_stereotypes.put(s, st);
 
-  _relation_stereotypes = relation_stereotypes;
+  _relation_attribute_stereotypes = relation_stereotypes;
 
   return st;
 !!!71040.cpp!!!	add_class_stereotype(in s : string) : UmlStereotype

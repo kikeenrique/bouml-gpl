@@ -7,7 +7,9 @@ enum PackageGlobalCmd {
   findNamespaceCmd,
   findPackageCmd,
   findModuleCmd,
-  getProjectCmd
+  getProjectCmd,
+  isProjectModifiedCmd,
+  saveProjectCmd
 
 };
 #endif

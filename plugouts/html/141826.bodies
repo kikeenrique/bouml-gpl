@@ -25,7 +25,7 @@ class UmlActivityObject
   unload(false, false);
 !!!197506.cpp!!!	html_internal(in pfix : string, in rank : uint, in level : uint) : void
   fw.write("<p>Type : ");
-  write(type(), TRUE);
+  write(type(), cppLanguage);
   fw.write("</p>");
   
   if (! multiplicity().isEmpty()) {
@@ -98,7 +98,7 @@ class UmlActivityObject
 
 !!!197506.java!!!	html_internal(in pfix : string, in rank : uint, in level : uint) : void
   fw.write("<p>Type : ");
-  write(type(), true);
+  write(type(), aLanguage.cppLanguage);
   fw.write("</p>");
   
   if (multiplicity().length() != 0) {

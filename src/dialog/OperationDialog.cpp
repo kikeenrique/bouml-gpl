@@ -209,7 +209,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     bg->setEnabled(FALSE);
   htab->setStretchFactor(bg, 1000);
   
-  htab->setStretchFactor(new QLabel("      ", htab), 0);
+  htab->setStretchFactor(new QLabel("  ", htab), 0);
   
   bg = new QButtonGroup(2, QGroupBox::Horizontal, QString::null, htab);
   htab->setStretchFactor(bg, 1000);
@@ -229,6 +229,18 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     connect(abstract_cb, SIGNAL(toggled(bool)),
 	    SLOT(abstract_toggled(bool)));
   }
+  
+  htab->setStretchFactor(new QLabel("  ", htab), 0);
+  
+  bg = new QButtonGroup(1, QGroupBox::Horizontal, QString::null, htab);
+  htab->setStretchFactor(bg, 1000);
+  forcegenbody_cb = new QCheckBox("force body generation", bg);
+  forcegenbody_cb->setDisabled(visit);
+  if (o->body_generation_forced())
+    forcegenbody_cb->setChecked(TRUE);
+  else if (! visit)
+    connect(forcegenbody_cb, SIGNAL(toggled(bool)),
+	    SLOT(forcegenbody_toggled(bool)));
   
   new QLabel("parameters : ", grid);
   table = new ParamsTable(o, grid, list, visit);
@@ -385,7 +397,10 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     showcppdef->setReadOnly(TRUE);
     showcppdef->setFont(font);
     
-    editcppbody = new QPushButton((visit || (preserve_bodies())) ? "Show body" : "Edit body", grid);
+    editcppbody = new QPushButton((visit ||
+				   (preserve_bodies() && !forcegenbody_cb->isChecked()))
+				  ? "Show body" : "Edit body",
+				  grid);
     connect(editcppbody, SIGNAL(clicked()), this, SLOT(cpp_edit_body()));
     
     char * b = o->get_body('c');
@@ -481,7 +496,10 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     showjavadef->setReadOnly(TRUE);
     showjavadef->setFont(font);
     
-    editjavabody = new QPushButton((visit || (preserve_bodies())) ? "Show body" : "Edit body", grid);
+    editjavabody = new QPushButton((visit ||
+				    (preserve_bodies() && !forcegenbody_cb->isChecked()))
+				   ? "Show body" : "Edit body",
+				   grid);
     connect(editjavabody, SIGNAL(clicked()), this, SLOT(java_edit_body()));
     
     char * b = o->get_body('j');
@@ -570,7 +588,10 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     showphpdef->setReadOnly(TRUE);
     showphpdef->setFont(font);
     
-    editphpbody = new QPushButton((visit || (preserve_bodies())) ? "Show body" : "Edit body", grid);
+    editphpbody = new QPushButton((visit ||
+				   (preserve_bodies() && !forcegenbody_cb->isChecked()))
+				  ? "Show body" : "Edit body",
+				  grid);
     connect(editphpbody, SIGNAL(clicked()), this, SLOT(php_edit_body()));
     
     char * b = o->get_body('p');
@@ -686,16 +707,22 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   
   switch (l) {
   case CppView:
-    if (! cpp_undef)
+    if (! cpp_undef) {
+      cpp_update_def();
       QTimer::singleShot(100, this, SLOT(cpp_edit_body()));
+    }
     break;
   case JavaView:
-    if (! java_undef)
+    if (! java_undef) {
+      java_update_def();
       QTimer::singleShot(100, this, SLOT(java_edit_body()));
+    }
     break;
   case PhpView:
-    if (! php_undef)
+    if (! php_undef) {
+      php_update_def();
       QTimer::singleShot(100, this, SLOT(php_edit_body()));
+    }
     break;
   default:
     break;
@@ -835,6 +862,8 @@ void OperationDialog::accept() {
     
     oper->isa_class_operation = classoperation_cb->isChecked();
     oper->set_is_abstract(abstract_cb->isChecked());
+    
+    oper->force_body_gen = forcegenbody_cb->isChecked();
     
     table->update(oper, nodes);
     etable->update(oper, nodes);
@@ -978,6 +1007,15 @@ void OperationDialog::abstract_toggled(bool on) {
     if (! cpp_undef)
       virtual_cb->setChecked(TRUE);
   }
+}
+
+void OperationDialog::forcegenbody_toggled(bool on) {
+  const char * lbl = (visit || (preserve_bodies() && !on))
+    ? "Show body" : "Edit body";
+			       
+  editcppbody->setText(lbl);
+  editjavabody->setText(lbl);
+  editphpbody->setText(lbl);
 }
 
 void OperationDialog::update_all_tabs(QWidget * w) {
@@ -1875,8 +1913,9 @@ void OperationDialog::cpp_edit_body() {
 
   edit(b, edname->text().stripWhiteSpace() + "_body",
        oper, CppEdit, this, 
-       (preserve_bodies()) ? (post_edit) 0
-			   : (post_edit) post_cpp_edit_body,
+       (preserve_bodies() && !forcegenbody_cb->isChecked())
+       ? (post_edit) 0
+       : (post_edit) post_cpp_edit_body,
        edits);
 }
 
@@ -2239,8 +2278,9 @@ void OperationDialog::java_edit_body() {
 
   edit(b, edname->text().stripWhiteSpace() + "_body",
        oper, JavaEdit, this, 
-       (preserve_bodies()) ? (post_edit) 0
-			   : (post_edit) post_java_edit_body,
+       (preserve_bodies() && !forcegenbody_cb->isChecked())
+       ? (post_edit) 0
+       : (post_edit) post_java_edit_body,
        edits);
 }
 
@@ -2537,8 +2577,9 @@ void OperationDialog::php_edit_body() {
 
   edit(b, edname->text().stripWhiteSpace() + "_body",
        oper, PhpEdit, this, 
-       (preserve_bodies()) ? (post_edit) 0
-			   : (post_edit) post_php_edit_body,
+       (preserve_bodies() && !forcegenbody_cb->isChecked())
+       ? (post_edit) 0
+       : (post_edit) post_php_edit_body,
        edits);
 }
 

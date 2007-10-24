@@ -212,6 +212,10 @@ class UmlBaseRelation : public UmlClassMember {
     virtual void read_java_();
 #endif
 
+#ifdef WITHPHP
+    virtual void read_php_();
+#endif
+
 #ifdef WITHIDL
     virtual void read_idl_();
 #endif

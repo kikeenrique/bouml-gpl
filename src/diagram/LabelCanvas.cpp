@@ -38,7 +38,7 @@ const char * LabelCanvas::Triangle = "^^^";
 const char * LabelCanvas::Zigzag = "~~~";
 
 LabelCanvas::LabelCanvas(const QString & n, UmlCanvas * canvas, int x, int y,
-			 bool bold, bool italic, bool underlined)
+			 bool bold, bool italic, bool underlined, bool mlcentered)
     : QCanvasText(n, canvas), DiagramItem(-1, canvas) {
   if (bold)
     setFont((italic) ? ((UmlCanvas *) canvas)->get_font(UmlNormalBoldItalicFont)
@@ -48,6 +48,7 @@ LabelCanvas::LabelCanvas(const QString & n, UmlCanvas * canvas, int x, int y,
   else
     setFont((underlined) ? ((UmlCanvas *) canvas)->get_font(UmlNormalUnderlinedFont)
 			 : ((UmlCanvas *) canvas)->get_font(UmlNormalFont));
+  multi_lines_centered = mlcentered;
   setX(x);
   setY(y);
   setZ(LABEL_Z);
@@ -216,9 +217,12 @@ void LabelCanvas::draw(QPainter & p) {
     // no triangle nor zigzag
     if (text().find('\n') != -1) {
       p.setFont(font());
-      p.drawText(rect(), QObject::AlignHCenter, text().mid(0, index - 1));
+      
+      int flg = (multi_lines_centered) ? AlignHCenter : 0;
+      
+      p.drawText(rect(), flg, text().mid(0, index - 1));
       if (fp != 0)
-	draw_text(rect(), QObject::AlignHCenter, text().mid(0, index - 1),
+	draw_text(rect(), flg, text().mid(0, index - 1),
 		  p.font(), fp);
     }
     else {

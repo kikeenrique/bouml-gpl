@@ -63,54 +63,54 @@ class IdlSettings
   
   return null;
 
-!!!55680.cpp!!!	relationStereotype(in s : string) : string
+!!!55680.cpp!!!	relationAttributeStereotype(in s : string) : string
   read_if_needed_();
   
-  UmlStereotype * b = UmlSettings::_map_relation_stereotypes.find(s);
+  UmlStereotype * b = UmlSettings::_map_relation_attribute_stereotypes.find(s);
   
   return (b) ? b->idl : s;
-!!!55680.java!!!	relationStereotype(in s : string) : string
+!!!55680.java!!!	relationAttributeStereotype(in s : string) : string
   read_if_needed_();
   
-  UmlStereotype b = (UmlStereotype) UmlSettings._map_relation_stereotypes.get(s);
+  UmlStereotype b = (UmlStereotype) UmlSettings._map_relation_attribute_stereotypes.get(s);
   
   return (b != null) ? b.idl : s;
-!!!55808.cpp!!!	set_RelationStereotype(in s : string, in v : string) : bool
-  UmlCom::send_cmd(idlSettingsCmd, setIdlRelationStereotypeCmd, s, v);
+!!!55808.cpp!!!	set_RelationAttributeStereotype(in s : string, in v : string) : bool
+  UmlCom::send_cmd(idlSettingsCmd, setIdlRelationAttributeStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
-    UmlStereotype * st = UmlSettings::_map_relation_stereotypes.find(s);
+    UmlStereotype * st = UmlSettings::_map_relation_attribute_stereotypes.find(s);
 
     if (st == 0)
-      st = UmlSettings::add_rel_stereotype(s);
+      st = UmlSettings::add_rel_attr_stereotype(s);
     st->idl = v;
     
     return TRUE;
   }
   else
     return FALSE;
-!!!55808.java!!!	set_RelationStereotype(in s : string, in v : string) : bool
- UmlCom.send_cmd(CmdFamily.idlSettingsCmd, IdlSettingsCmd._setIdlRelationStereotypeCmd, s, v);
+!!!55808.java!!!	set_RelationAttributeStereotype(in s : string, in v : string) : bool
+ UmlCom.send_cmd(CmdFamily.idlSettingsCmd, IdlSettingsCmd._setIdlRelationAttributeStereotypeCmd, s, v);
  UmlCom.check();
  
- UmlStereotype st = (UmlStereotype) _map_relation_stereotypes.get(s);
+ UmlStereotype st = (UmlStereotype) _map_relation_attribute_stereotypes.get(s);
  
  if (st == null)
-   st = add_rel_stereotype(s);
+   st = add_rel_attr_stereotype(s);
  st.idl = v;
 
-!!!55936.cpp!!!	relationUmlStereotype(in s : string) : string
+!!!55936.cpp!!!	relationAttributeUmlStereotype(in s : string) : string
   read_if_needed_();
   
-  return UmlSettings::uml_rel_stereotype(s, &UmlStereotype::idl);
-!!!55936.java!!!	relationUmlStereotype(in s : string) : string
+  return UmlSettings::uml_rel_attr_stereotype(s, &UmlStereotype::idl);
+!!!55936.java!!!	relationAttributeUmlStereotype(in s : string) : string
 
   read_if_needed_();
   
-  int index = _relation_stereotypes.length;
+  int index = _relation_attribute_stereotypes.length;
   
   while (index-- != 0)
-    if (_relation_stereotypes[index].idl.equals(s))
-      return _relation_stereotypes[index].uml;
+    if (_relation_attribute_stereotypes[index].idl.equals(s))
+      return _relation_attribute_stereotypes[index].uml;
   
   return null;
 !!!56064.cpp!!!	classStereotype(in s : string) : string
@@ -433,71 +433,69 @@ class IdlSettings
   
   _enum_decl = v;
 
-!!!59520.cpp!!!	attributeDecl() : string
+!!!59520.cpp!!!	attributeDecl(in multiplicity : str) : string
   read_if_needed_();
-  
-  return _attr_decl;
-!!!59520.java!!!	attributeDecl() : string
-  read_if_needed_();
-  
-  return _attr_decl;
-!!!59648.cpp!!!	set_AttributeDecl(in v : string) : bool
-  UmlCom::send_cmd(idlSettingsCmd, setIdlAttributeDeclCmd, v);
-  if (UmlCom::read_bool()) {
-    _attr_decl = v;
-    return TRUE;
-  }
-  else
-    return FALSE;
-!!!59648.java!!!	set_AttributeDecl(in v : string) : bool
-  UmlCom.send_cmd(CmdFamily.idlSettingsCmd, IdlSettingsCmd._setIdlAttributeDeclCmd, v);
-  UmlCom.check();
-  
-  _attr_decl = v;
 
-!!!59776.cpp!!!	valuetypeAttributeDecl() : string
+  return _attr_decl[UmlSettings::multiplicity_column(multiplicity)];
+!!!59520.java!!!	attributeDecl(in multiplicity : str) : string
   read_if_needed_();
-  
-  return _valuetype_attr_decl;
-!!!59776.java!!!	valuetypeAttributeDecl() : string
-  read_if_needed_();
-  
-  return _valuetype_attr_decl;
-!!!59904.cpp!!!	set_ValuetypeAttributeDecl(in v : string) : bool
-  UmlCom::send_cmd(idlSettingsCmd, setIdlValuetypeAttributeDeclCmd, v);
-  if (UmlCom::read_bool()) {
-    _valuetype_attr_decl = v;
-    return TRUE;
-  }
-  else
-    return FALSE;
-!!!59904.java!!!	set_ValuetypeAttributeDecl(in v : string) : bool
-  UmlCom.send_cmd(CmdFamily.idlSettingsCmd, IdlSettingsCmd._setIdlValuetypeAttributeDeclCmd, v);
-  UmlCom.check();
-  
-  _valuetype_attr_decl = v;
-!!!60032.cpp!!!	unionItemDecl() : string
-  read_if_needed_();
-  
-  return _union_item_decl;
-!!!60032.java!!!	unionItemDecl() : string
-  read_if_needed_();
-  
-  return _union_item_decl;
-!!!60160.cpp!!!	set_UnionItemDecl(in v : string) : bool
-  UmlCom::send_cmd(idlSettingsCmd, setIdlUnionItemDeclCmd, v);
-  if (UmlCom::read_bool()) {
-    _union_item_decl = v;
-    return TRUE;
-  }
-  else
-    return FALSE;
-!!!60160.java!!!	set_UnionItemDecl(in v : string) : bool
-  UmlCom.send_cmd(CmdFamily.idlSettingsCmd, IdlSettingsCmd._setIdlUnionItemDeclCmd, v);
-  UmlCom.check();
-  
-  _union_item_decl = v;
 
+  return _attr_decl[UmlSettings.multiplicity_column(multiplicity)];
+!!!59648.cpp!!!	set_AttributeDecl(in multiplicity : str, in v : string) : bool
+  UmlCom::send_cmd(idlSettingsCmd, setIdlAttributeDeclCmd, multiplicity, v);
+  if (UmlCom::read_bool()) {
+    _attr_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!59648.java!!!	set_AttributeDecl(in multiplicity : str, in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.idlSettingsCmd, IdlSettingsCmd._setIdlAttributeDeclCmd, multiplicity, v);
+  UmlCom.check();
+
+  _attr_decl[UmlSettings.multiplicity_column(multiplicity)] = v;
+!!!59776.cpp!!!	valuetypeAttributeDecl(in multiplicity : str) : string
+  read_if_needed_();
+
+  return _valuetype_attr_decl[UmlSettings::multiplicity_column(multiplicity)];
+!!!59776.java!!!	valuetypeAttributeDecl(in multiplicity : str) : string
+  read_if_needed_();
+
+  return _valuetype_attr_decl[UmlSettings.multiplicity_column(multiplicity)];
+!!!59904.cpp!!!	set_ValuetypeAttributeDecl(in multiplicity : str, in v : string) : bool
+  UmlCom::send_cmd(idlSettingsCmd, setIdlValuetypeAttributeDeclCmd, multiplicity, v);
+  if (UmlCom::read_bool()) {
+    _valuetype_attr_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!59904.java!!!	set_ValuetypeAttributeDecl(in multiplicity : str, in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.idlSettingsCmd, IdlSettingsCmd._setIdlValuetypeAttributeDeclCmd, multiplicity, v);
+  UmlCom.check();
+
+  _valuetype_attr_decl[UmlSettings.multiplicity_column(multiplicity)] = v;
+!!!60032.cpp!!!	unionItemDecl(in multiplicity : str) : string
+  read_if_needed_();
+
+  return _union_item_decl[UmlSettings::multiplicity_column(multiplicity)];
+!!!60032.java!!!	unionItemDecl(in multiplicity : str) : string
+  read_if_needed_();
+
+  return _union_item_decl[UmlSettings.multiplicity_column(multiplicity)];
+!!!60160.cpp!!!	set_UnionItemDecl(in multiplicity : str, in v : string) : bool
+  UmlCom::send_cmd(idlSettingsCmd, setIdlUnionItemDeclCmd, multiplicity, v);
+  if (UmlCom::read_bool()) {
+    _union_item_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!60160.java!!!	set_UnionItemDecl(in multiplicity : str, in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.idlSettingsCmd, IdlSettingsCmd._setIdlUnionItemDeclCmd, multiplicity, v);
+  UmlCom.check();
+
+  _union_item_decl[UmlSettings.multiplicity_column(multiplicity)] = v;
 !!!60288.cpp!!!	enumItemDecl() : string
   read_if_needed_();
   
@@ -520,28 +518,27 @@ class IdlSettings
   
   _enum_item_decl = v;
 
-!!!60544.cpp!!!	constDecl() : string
+!!!60544.cpp!!!	constDecl(in multiplicity : str) : string
   read_if_needed_();
-  
-  return _const_decl;
-!!!60544.java!!!	constDecl() : string
+
+  return _const_decl[UmlSettings::multiplicity_column(multiplicity)];
+!!!60544.java!!!	constDecl(in multiplicity : str) : string
   read_if_needed_();
-  
-  return _const_decl;
-!!!60672.cpp!!!	set_ConstDecl(in v : string) : bool
-  UmlCom::send_cmd(idlSettingsCmd, setIdlConstDeclCmd, v);
+
+  return _const_decl[UmlSettings.multiplicity_column(multiplicity)];
+!!!60672.cpp!!!	set_ConstDecl(in multiplicity : str, in v : string) : bool
+  UmlCom::send_cmd(idlSettingsCmd, setIdlConstDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
-    _const_decl = v;
+    _const_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
     return TRUE;
   }
   else
     return FALSE;
-!!!60672.java!!!	set_ConstDecl(in v : string) : bool
-  UmlCom.send_cmd(CmdFamily.idlSettingsCmd, IdlSettingsCmd._setIdlConstDeclCmd, v);
+!!!60672.java!!!	set_ConstDecl(in multiplicity : str, in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.idlSettingsCmd, IdlSettingsCmd._setIdlConstDeclCmd, multiplicity, v);
   UmlCom.check();
-  
-  _const_decl = v;
 
+  _const_decl[UmlSettings.multiplicity_column(multiplicity)] = v;
 !!!60800.cpp!!!	relationDecl(in multiplicity : str) : string
   read_if_needed_();
   
@@ -711,7 +708,7 @@ class IdlSettings
   n = UmlCom::read_unsigned();
   
   for (index = 0; index != n; index += 1)
-    UmlSettings::_relation_stereotypes[index].idl = UmlCom::read_string();
+    UmlSettings::_relation_attribute_stereotypes[index].idl = UmlCom::read_string();
   
   n = UmlCom::read_unsigned();
   
@@ -741,11 +738,15 @@ class IdlSettings
   _union_decl = UmlCom::read_string();
   _enum_decl = UmlCom::read_string();
   _external_class_decl = UmlCom::read_string();
-  _attr_decl = UmlCom::read_string();
-  _valuetype_attr_decl = UmlCom::read_string();
-  _union_item_decl = UmlCom::read_string();
+  for (index = 0; index != 3; index += 1)
+    _attr_decl[index] = UmlCom::read_string();
+  for (index = 0; index != 3; index += 1)
+    _valuetype_attr_decl[index] = UmlCom::read_string();
+  for (index = 0; index != 3; index += 1)
+    _union_item_decl[index] = UmlCom::read_string();
   _enum_item_decl = UmlCom::read_string();
-  _const_decl = UmlCom::read_string();
+  for (index = 0; index != 3; index += 1)
+    _const_decl[index] = UmlCom::read_string();
   for (index = 0; index != 3; index += 1) {
     _rel_decl[index] = UmlCom::read_string();
     _valuetype_rel_decl[index] = UmlCom::read_string();
@@ -770,7 +771,7 @@ class IdlSettings
   n = UmlCom.read_unsigned();
   
   for (index = 0; index != n; index += 1)
-    UmlSettings._relation_stereotypes[index].idl = UmlCom.read_string();
+    UmlSettings._relation_attribute_stereotypes[index].idl = UmlCom.read_string();
   
   n = UmlCom.read_unsigned();
   
@@ -798,11 +799,19 @@ class IdlSettings
   _union_decl = UmlCom.read_string();
   _enum_decl = UmlCom.read_string();
   _external_class_decl = UmlCom.read_string();
-  _attr_decl = UmlCom.read_string();
-  _valuetype_attr_decl = UmlCom.read_string();
-  _union_item_decl = UmlCom.read_string();
+  _attr_decl = new String[3];
+  _valuetype_attr_decl = new String[3];
+  _union_item_decl = new String[3];
+  for (index = 0; index != 3; index += 1)
+    _attr_decl[index] = UmlCom.read_string();
+  for (index = 0; index != 3; index += 1)
+    _valuetype_attr_decl[index] = UmlCom.read_string();
+  for (index = 0; index != 3; index += 1)
+    _union_item_decl[index] = UmlCom.read_string();
   _enum_item_decl = UmlCom.read_string();
-  _const_decl = UmlCom.read_string();
+  _const_decl = new String[3];
+  for (index = 0; index != 3; index += 1)
+    _const_decl[index] = UmlCom.read_string();
   _rel_decl = new String[3];
   _union_rel_decl = new String[3];
   for (index = 0; index != 3; index += 1) {

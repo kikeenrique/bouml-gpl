@@ -28,6 +28,9 @@ class UmlRelation : public UmlBaseRelation {
     //produce the definition in Java
     void gen_java_decl(QCString s);
 
+    //produce the definition in Java
+    void gen_php_decl(QCString s);
+
 
   private:
     //produce the definition in Uml

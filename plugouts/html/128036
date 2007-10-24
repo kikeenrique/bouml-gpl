@@ -1,6 +1,6 @@
-format 41
+format 46
 "Aux" // Aux
-  revision 8
+  revision 10
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -42,7 +42,6 @@ format 41
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
-    
     associated_deployment_view deploymentview_ref 128036 // Aux
     class 128036 "Vector"
       visibility package 
@@ -52,6 +51,7 @@ ${members}};
 ${inlines}
 "
       java_decl ""
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -67,6 +67,7 @@ ${inlines}
 ${body}}
 "
 	
+	
       end
 
       operation 128164 "size"
@@ -74,6 +75,7 @@ ${body}}
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} { return v.count(); }
 "
+	
 	
 	
       end
@@ -89,6 +91,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128292 "elementAt"
@@ -97,6 +100,7 @@ ${body}}
 	  param in name "i" explicit_type "uint"
 	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract} { return v[i]; }
 "
+	
 	
 	
       end
@@ -110,6 +114,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128239 "contains"
@@ -118,6 +123,7 @@ ${body}}
 	  param in name "x" type class_ref 7553 // UmlItem
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${abstract} { return (!v.isEmpty() && (v.findRef(x) != -1)); }
 "
+	
 	
 	
       end
@@ -141,6 +147,7 @@ ${members}};
 ${inlines}
 "
       java_decl ""
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -158,6 +165,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 129316 "close"
@@ -168,6 +176,7 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -183,6 +192,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128548 "write"
@@ -194,6 +204,7 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -209,6 +220,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128804 "write"
@@ -222,6 +234,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128420 "ts"
@@ -229,6 +242,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
 
@@ -237,6 +251,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	java_decl ""
+	php_decl ""
 	idl_decl ""
       end
     end
@@ -247,6 +262,7 @@ ${body}}
       java_decl "${comment}${public}${final}${abstract}class ${name} extends Dialog implements ActionListener{
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -262,6 +278,7 @@ this one is defined here
 ${body}}
 "
 	
+	
       end
 
       operation 128386 "ok"
@@ -271,6 +288,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -283,6 +301,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 128002 "choice"
@@ -290,6 +309,7 @@ ${body}}
 	cpp_decl ""
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -298,6 +318,7 @@ ${body}}
 	cpp_decl ""
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -306,6 +327,7 @@ ${body}}
 	cpp_decl ""
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
     end

@@ -113,7 +113,7 @@ const char * UmlOperation::generate_body(QTextOStream & f,
   bool no_indent;
   char s_id[9];
   
-  if (preserve()) {
+  if (preserve() && !isBodyGenerationForced()) {
     unsigned id = get_id();
     
     sprintf(s_id, "%08X", id);
@@ -135,7 +135,7 @@ const char * UmlOperation::generate_body(QTextOStream & f,
   while (*p != '$')
     bindent += *p++;
 
-  if (preserve())
+  if (preserve() && !isBodyGenerationForced())
     f << bindent << BodyPrefix << s_id << '\n';
 
   if ((body != 0) && (*body != 0)) {
@@ -160,7 +160,7 @@ const char * UmlOperation::generate_body(QTextOStream & f,
     add_nl = body[-1] != '\n';
   }
   
-  if (preserve()) {
+  if (preserve() && !isBodyGenerationForced()) {
     if (add_nl)
       f << '\n';
     

@@ -1,6 +1,6 @@
-format 41
+format 45
 "sm_generator"
-  revision 2
+  revision 4
   modified_by 2 "bruno"
   cpp_root_dir "/tmp/sm/cpp/"
   java_root_dir "/tmp/sm/java/"

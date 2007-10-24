@@ -26,6 +26,15 @@ if (ctx.onArtifact() && ctx.match_stereotype(stereotype())) {
     }
   }
   
+  if (ctx.php()) {
+    const QCString & c = phpSource();
+    
+    if (!c.isEmpty() && ctx.match(c)) {
+      if (!set_PhpSource(ctx.replace(c)))
+	ctx.err();
+    }
+  }
+  
   if (ctx.idl()) {
     const QCString & c = idlSource();
     

@@ -11,6 +11,10 @@ class UmlAttribute : public UmlBaseAttribute {
   public:
     UmlAttribute(void * id, const QCString & n)
       :  UmlBaseAttribute(id, n) {};
+    
+    static UmlAttribute * java2Php(UmlClass * php, UmlClass * java,
+				   const char * javaname,
+				   const char * phpname = 0);
 };
 
 #endif

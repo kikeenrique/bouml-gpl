@@ -1,6 +1,6 @@
-format 42
+format 46
 "API USER" // API USER
-  revision 36
+  revision 45
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -43,7 +43,6 @@ format 42
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
-    
     associated_deployment_view deploymentview_ref 385 // API USER Deployment view
     comment " 'your' API classes, modify them !"
     class 145282 "UmlTypeSpec"
@@ -56,6 +55,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -99,6 +99,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -125,6 +126,7 @@ ${members}};
 ${body}}
 "
 	
+	
       end
     end
 
@@ -138,6 +140,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -164,6 +167,7 @@ ${members}};
 ${body}}
 "
 	
+	
       end
     end
 
@@ -177,6 +181,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -203,6 +208,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 128352 "sKind"
@@ -216,6 +222,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -231,6 +238,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -251,6 +259,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -269,6 +278,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 204290 "generate_index"
@@ -284,6 +294,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -303,6 +314,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "produce the definition in C++"
       end
 
@@ -321,7 +333,27 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "produce the definition in Java"
+      end
+
+      operation 211330 "gen_php_decl"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "s" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "IOException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment "produce the definition in Php"
       end
 
       operation 203906 "gen_uml_decl"
@@ -338,6 +370,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "produce the definition in Uml"
       end
 
@@ -347,6 +380,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -354,6 +388,7 @@ ${body}}
 	
 	cpp "" ""
 	java "  static { attrs = new Vector(); }"
+	php ""
 	idl ""
       end
     end
@@ -368,6 +403,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -394,6 +430,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); inherited_opers = null; }
 "
 	
+	
       end
 
       operation 128480 "sKind"
@@ -407,6 +444,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -422,6 +460,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "set he html ref
 set the classes list
@@ -446,6 +485,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -463,6 +503,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "generate the html definition in an own file
 "
@@ -485,6 +526,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "generate the html definition except header/chapter in the current file
 "
       end
@@ -502,6 +544,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "write a html ref to the class"
       end
@@ -521,6 +564,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "write a html ref to the class going to an other html file"
       end
 
@@ -538,6 +582,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128252 "generate_index"
@@ -554,6 +599,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128111 "add_inherited_opers"
@@ -569,6 +615,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 128111 "inherited_opers"
@@ -577,6 +624,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -586,6 +634,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -594,6 +643,7 @@ ${body}}
 	cpp "" ""
 	java "  static { classes = new Vector(); }
 "
+	php ""
 	idl ""
       end
 
@@ -613,6 +663,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "produce the definition in C++"
       end
 
@@ -631,7 +682,27 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "produce the definition in Java"
+      end
+
+      operation 211458 "gen_php_decl"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "s" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "IOException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment "produce the definition in Php"
       end
 
       operation 128321 "generate"
@@ -651,6 +722,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128449 "generate"
@@ -668,6 +740,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 148226 "generics"
@@ -683,6 +756,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -700,6 +774,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 128060 "subClasses"
@@ -708,6 +783,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -716,6 +792,7 @@ ${body}}
 	cpp "" ""
 	java "{ subClasses = new Vector(); }
 "
+	php ""
 	idl ""
       end
 
@@ -731,6 +808,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
     end
 
@@ -744,6 +822,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -770,6 +849,7 @@ ${members}};
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }"
 	
+	
       end
 
       operation 128608 "sKind"
@@ -783,6 +863,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -798,6 +879,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "set he html ref
 set the diagrams list"
@@ -817,6 +899,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128892 "generate_index"
@@ -833,6 +916,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 128124 "diagrams"
@@ -841,6 +925,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -849,6 +934,7 @@ ${body}}
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }
 "
+	php ""
 	idl ""
       end
     end
@@ -863,6 +949,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -893,6 +980,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -908,6 +996,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "returns a string indicating the king of the element"
       end
 
@@ -922,6 +1011,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "set he html ref
 set the diagrams list"
@@ -941,6 +1031,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 152066 "generate_index"
@@ -957,6 +1048,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 129026 "diagrams"
@@ -965,6 +1057,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -972,6 +1065,7 @@ ${body}}
 	
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
+	php ""
 	idl ""
       end
     end
@@ -986,6 +1080,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1011,6 +1106,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -1024,6 +1120,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1040,6 +1137,7 @@ ${members}}
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
+	
 	
       end
 
@@ -1066,6 +1164,7 @@ ${members}}
 ${body}}
 "
 	
+	
       end
     end
 
@@ -1079,6 +1178,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1104,6 +1204,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 128736 "sKind"
@@ -1117,6 +1218,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -1138,6 +1240,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -1154,6 +1257,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
     end
 
@@ -1167,6 +1271,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1194,6 +1299,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 128864 "sKind"
@@ -1207,6 +1313,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -1222,6 +1329,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "set he html ref
 set the diagrams list"
@@ -1241,6 +1349,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 129660 "generate_index"
@@ -1257,6 +1366,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 128764 "diagrams"
@@ -1265,6 +1375,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1272,6 +1383,7 @@ ${body}}
 	
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
+	php ""
 	idl ""
       end
     end
@@ -1286,6 +1398,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1313,6 +1426,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 128992 "sKind"
@@ -1326,6 +1440,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -1341,6 +1456,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "set he html ref
 set the diagrams list"
@@ -1360,6 +1476,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 129020 "generate_index"
@@ -1376,6 +1493,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 128380 "diagrams"
@@ -1384,6 +1502,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1391,6 +1510,7 @@ ${body}}
 	
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
+	php ""
 	idl ""
       end
     end
@@ -1405,6 +1525,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1430,6 +1551,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 129120 "sKind"
@@ -1443,6 +1565,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -1464,6 +1587,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -1480,6 +1604,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
     end
 
@@ -1493,6 +1618,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1518,6 +1644,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 128213 "html"
@@ -1537,6 +1664,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -1553,6 +1681,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "returns a string indicating the king of the element"
       end
     end
@@ -1567,6 +1696,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1590,6 +1720,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -1605,6 +1736,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -1627,6 +1759,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -1640,6 +1773,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1667,6 +1801,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 129376 "sKind"
@@ -1680,6 +1815,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -1695,6 +1831,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "set he html ref
 set the diagrams list"
@@ -1714,6 +1851,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 129148 "generate_index"
@@ -1730,6 +1868,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 128508 "diagrams"
@@ -1738,6 +1877,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -1745,6 +1885,7 @@ ${body}}
 	
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
+	php ""
 	idl ""
       end
     end
@@ -1759,6 +1900,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1784,6 +1926,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 129395 "html"
@@ -1803,6 +1946,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -1819,6 +1963,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "returns a string indicating the king of the element"
       end
 
@@ -1834,6 +1979,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
     end
 
@@ -1847,6 +1993,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1872,6 +2019,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 128852 "html"
@@ -1891,6 +2039,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -1906,6 +2055,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1934,6 +2084,7 @@ ${members}}
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws} { super(id, n); }
 "
 	
+	
       end
 
       operation 130656 "sKind"
@@ -1947,6 +2098,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -1968,6 +2120,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -1983,6 +2136,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2009,6 +2163,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); known = false; }
 "
 	
+	
       end
 
       operation 74369 "~UmlItem"
@@ -2019,6 +2174,7 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -2034,6 +2190,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -2051,6 +2208,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1}[] ${p1}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "  Set the directory where the files will be generated
   initializing 'directory'.
@@ -2071,6 +2229,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 129060 "define"
@@ -2086,6 +2245,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -2106,6 +2266,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128724 "end_file"
@@ -2121,6 +2282,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -2138,6 +2300,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 129520 "generate_indexes"
@@ -2153,6 +2316,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -2170,6 +2334,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128084 "html"
@@ -2186,6 +2351,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -2201,6 +2367,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -2223,6 +2390,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128341 "html"
@@ -2240,6 +2408,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -2260,6 +2429,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 152578 "write_dependencies"
@@ -2275,6 +2445,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -2297,6 +2468,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128261 "bypass_comment"
@@ -2311,6 +2483,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}int ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "bypass the comments at the beginning of the form
 "
@@ -2330,6 +2503,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128883 "write"
@@ -2345,6 +2519,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -2363,6 +2538,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128340 "writeq"
@@ -2379,6 +2555,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -2397,13 +2574,14 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128115 "write"
 	class_operation public explicit_return_type "void"
 	nparams 2
 	  param in name "t" type class_ref 145282 // UmlTypeSpec
-	  param in name "cpp" explicit_type "bool"
+	  param in name "lang" type class_ref 143488 // aLanguage
 	nexceptions 1
 	  explicit_exception "IOException"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
@@ -2414,6 +2592,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -2432,13 +2611,14 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128243 "write"
 	class_operation public explicit_return_type "void"
 	nparams 2
 	  param in name "v" type class_ref 512 // aVisibility
-	  param in name "cpp" explicit_type "bool"
+	  param in name "lang" type class_ref 143488 // aLanguage
 	nexceptions 1
 	  explicit_exception "IOException"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
@@ -2449,6 +2629,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -2467,6 +2648,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 197762 "write"
@@ -2483,6 +2665,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -2501,6 +2684,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 198018 "write"
@@ -2517,6 +2701,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -2537,6 +2722,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128065 "sort"
@@ -2551,6 +2737,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -2569,6 +2756,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128112 "gt"
@@ -2584,6 +2772,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128139 "pretty_name"
@@ -2598,6 +2787,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 128011 "all"
@@ -2606,6 +2796,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2614,6 +2805,7 @@ ${body}}
 	cpp "" ""
 	java "  static { all = new Vector(); }
 "
+	php ""
 	idl ""
       end
 
@@ -2623,6 +2815,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2632,6 +2825,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2641,6 +2835,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2651,6 +2846,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2660,6 +2856,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2668,6 +2865,7 @@ ${body}}
 	cpp "" ""
 	java "{ letters = new String(); }
 "
+	php ""
 	idl ""
       end
 
@@ -2677,6 +2875,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
 	comment "true => use SVG picture rather than PNG"
       end
@@ -2687,6 +2886,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
 	comment "true => classes and tables are generated in index.html, else an own files are generated"
       end
@@ -2702,6 +2902,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2727,6 +2928,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 129632 "sKind"
@@ -2740,6 +2942,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -2761,6 +2964,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -2776,6 +2980,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2802,6 +3007,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 129760 "sKind"
@@ -2815,6 +3021,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -2830,6 +3037,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -2850,6 +3058,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -2868,6 +3077,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 128240 "generate_index"
@@ -2884,6 +3094,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 203522 "gen_uml_decl"
@@ -2899,6 +3110,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "produce the definition in Uml"
       end
@@ -2919,6 +3131,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "produce the definition in C++"
       end
 
@@ -2937,7 +3150,27 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "produce the definition in Java"
+      end
+
+      operation 211586 "gen_php_decl"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "s" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "IOException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment "produce the definition in Php"
       end
 
       operation 128371 "compute_name"
@@ -2953,6 +3186,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 128112 "opers"
@@ -2961,6 +3195,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -2968,6 +3203,7 @@ ${body}}
 	
 	cpp "" ""
 	java "  static { opers = new Vector(); }"
+	php ""
 	idl ""
       end
     end
@@ -2982,6 +3218,7 @@ ${inlines}
       final java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3007,6 +3244,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3032,6 +3270,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 129888 "sKind"
@@ -3045,6 +3284,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -3066,6 +3306,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -3081,6 +3322,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "set the html ref
 set the package list"
@@ -3100,6 +3342,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 150402 "generate_index"
@@ -3116,6 +3359,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 149378 "chapterp"
@@ -3130,6 +3374,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 128898 "packages"
@@ -3138,6 +3383,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3146,6 +3392,7 @@ ${body}}
 	cpp "" ""
 	java "  static { packages = new Vector(); }
 "
+	php ""
 	idl ""
       end
     end
@@ -3160,6 +3407,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3186,6 +3434,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 130016 "sKind"
@@ -3199,6 +3448,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -3214,6 +3464,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -3233,6 +3484,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -3254,6 +3506,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "produce the definition in C++"
       end
 
@@ -3272,6 +3525,26 @@ ${body}}
 ${body}}
 "
 	
+	
+	comment "produce the definition in Java"
+      end
+
+      operation 211714 "gen_php_decl"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "s" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "IOException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
 	comment "produce the definition in Java"
       end
 
@@ -3289,6 +3562,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "produce the definition in Uml"
       end
 
@@ -3304,6 +3578,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
     end
 
@@ -3317,6 +3592,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3342,6 +3618,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 148354 "sKind"
@@ -3355,6 +3632,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -3376,6 +3654,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -3392,6 +3671,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
     end
 
@@ -3405,6 +3685,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3431,6 +3712,7 @@ ${members}};
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }"
 	
+	
       end
 
       operation 130144 "sKind"
@@ -3444,6 +3726,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -3459,6 +3742,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "set he html ref
 set the diagrams list"
@@ -3478,6 +3762,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 129276 "generate_index"
@@ -3494,6 +3779,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 128636 "diagrams"
@@ -3502,6 +3788,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3509,6 +3796,7 @@ ${body}}
 	
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
+	php ""
 	idl ""
       end
     end
@@ -3523,6 +3811,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3548,6 +3837,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 130272 "sKind"
@@ -3561,6 +3851,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -3582,6 +3873,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -3597,6 +3889,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "set the html ref
 set the use case list"
@@ -3616,6 +3909,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 150658 "generate_index"
@@ -3632,6 +3926,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 149506 "chapterp"
@@ -3646,6 +3941,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 128770 "usecases"
@@ -3654,6 +3950,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3662,6 +3959,7 @@ ${body}}
 	cpp "" ""
 	java "  static { usecases = new Vector(); }
 "
+	php ""
 	idl ""
       end
     end
@@ -3676,6 +3974,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3703,6 +4002,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 130400 "sKind"
@@ -3716,6 +4016,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -3731,6 +4032,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "set he html ref
 set the diagrams list"
@@ -3750,6 +4052,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 129404 "generate_index"
@@ -3766,6 +4069,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 128252 "diagrams"
@@ -3774,6 +4078,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -3781,6 +4086,7 @@ ${body}}
 	
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
+	php ""
 	idl ""
       end
     end
@@ -3795,6 +4101,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3820,6 +4127,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 130528 "sKind"
@@ -3833,6 +4141,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -3854,6 +4163,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -3870,6 +4180,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
     end
 
@@ -3883,6 +4194,7 @@ ${inlines}
       java_decl "${comment}${public}interface ${name}${extends} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3898,6 +4210,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3932,6 +4245,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3946,6 +4260,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -3967,6 +4282,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -3982,6 +4298,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "set the html ref
 set the state list"
@@ -4001,6 +4318,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 151042 "generate_index"
@@ -4017,6 +4335,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 149762 "chapterp"
@@ -4031,6 +4350,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 128642 "states"
@@ -4039,6 +4359,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4047,6 +4368,7 @@ ${body}}
 	cpp "" ""
 	java "  static { states = new Vector(); }
 "
+	php ""
 	idl ""
       end
     end
@@ -4061,6 +4383,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4075,6 +4398,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "set he html ref
 set the diagrams list"
@@ -4091,6 +4415,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -4109,6 +4434,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 147458 "generate_index"
@@ -4125,6 +4451,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 128386 "diagrams"
@@ -4133,6 +4460,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4140,6 +4468,7 @@ ${body}}
 	
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
+	php ""
 	idl ""
       end
 
@@ -4174,6 +4503,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -4188,6 +4518,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4208,6 +4539,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "set he html ref
 set the diagrams list"
       end
@@ -4223,6 +4555,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -4241,6 +4574,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 193026 "generate_index"
@@ -4257,6 +4591,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 129154 "diagrams"
@@ -4265,6 +4600,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -4272,6 +4608,7 @@ ${body}}
 	
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
+	php ""
 	idl ""
       end
 
@@ -4306,6 +4643,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -4320,6 +4658,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4334,6 +4673,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -4354,6 +4694,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -4390,6 +4731,7 @@ path, rank in the mother and level in the browser tree"
 }
 "
 	
+	
       end
     end
 
@@ -4403,6 +4745,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4418,6 +4761,7 @@ ${members}}
   super(id, s);
 }
 "
+	
 	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
@@ -4452,6 +4796,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "returns a string indicating the king of the element"
       end
 
@@ -4472,6 +4817,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -4488,6 +4834,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
     end
 
@@ -4501,6 +4848,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4515,6 +4863,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -4535,6 +4884,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -4570,6 +4920,7 @@ path, rank in the mother and level in the browser tree"
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -4584,6 +4935,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4599,6 +4951,7 @@ ${members}}
   super(id, s);
 }
 "
+	
 	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
@@ -4619,6 +4972,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -4653,6 +5007,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4667,6 +5022,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -4692,6 +5048,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -4706,6 +5063,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4720,6 +5078,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -4746,6 +5105,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -4760,6 +5120,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4774,6 +5135,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -4799,6 +5161,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -4813,6 +5176,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4827,6 +5191,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -4852,6 +5217,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -4866,6 +5232,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4880,6 +5247,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -4906,6 +5274,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -4920,6 +5289,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4934,6 +5304,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -4959,6 +5330,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -4973,6 +5345,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4987,6 +5360,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -5012,6 +5386,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5026,6 +5401,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5040,6 +5416,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -5065,6 +5442,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5079,6 +5457,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5093,6 +5472,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -5118,6 +5498,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5132,6 +5513,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5146,6 +5528,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -5171,6 +5554,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5185,6 +5569,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5199,6 +5584,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -5224,6 +5610,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5238,6 +5625,7 @@ ${inlines}
       java_decl "${comment}${public}interface ${name}${extends} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5253,6 +5641,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5278,6 +5667,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5292,6 +5682,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -5313,6 +5704,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -5328,6 +5720,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "set the html ref
 set the activity list"
@@ -5347,6 +5740,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 193666 "generate_index"
@@ -5363,6 +5757,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       operation 193538 "chapterp"
@@ -5377,6 +5772,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
 
       attribute 129282 "activities"
@@ -5385,6 +5781,7 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
 	idl_decl ""
       end
 
@@ -5393,6 +5790,7 @@ ${body}}
 	cpp "" ""
 	java "  static { activities = new Vector(); }
 "
+	php ""
 	idl ""
       end
     end
@@ -5407,6 +5805,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5441,6 +5840,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5455,6 +5855,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5469,6 +5870,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -5489,6 +5891,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -5525,6 +5928,7 @@ path, rank in the mother and level in the browser tree"
 }
 "
 	
+	
       end
     end
 
@@ -5538,6 +5942,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5572,6 +5977,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5587,6 +5993,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
     end
 
@@ -5600,6 +6007,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5625,6 +6033,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5639,6 +6048,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -5660,6 +6070,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -5675,6 +6086,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5700,6 +6112,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5714,6 +6127,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -5735,6 +6149,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -5750,6 +6165,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5766,6 +6182,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -5793,6 +6210,7 @@ path, rank in the mother and level in the browser tree"
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5807,6 +6225,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5821,6 +6240,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -5841,6 +6261,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -5868,6 +6289,7 @@ path, rank in the mother and level in the browser tree"
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5882,6 +6304,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5896,6 +6319,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -5916,6 +6340,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -5943,6 +6368,7 @@ path, rank in the mother and level in the browser tree"
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5957,6 +6383,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5976,6 +6403,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -6003,6 +6431,7 @@ path, rank in the mother and level in the browser tree"
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6017,6 +6446,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6031,6 +6461,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -6057,6 +6488,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6071,6 +6503,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6085,6 +6518,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -6111,6 +6545,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6125,6 +6560,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6139,6 +6575,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -6159,6 +6596,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -6186,6 +6624,7 @@ path, rank in the mother and level in the browser tree"
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6200,6 +6639,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6214,6 +6654,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -6234,6 +6675,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -6261,6 +6703,7 @@ path, rank in the mother and level in the browser tree"
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6275,6 +6718,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6289,6 +6733,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -6309,6 +6754,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -6336,6 +6782,7 @@ path, rank in the mother and level in the browser tree"
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6350,6 +6797,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6364,6 +6812,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -6384,6 +6833,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -6411,6 +6861,7 @@ path, rank in the mother and level in the browser tree"
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6425,6 +6876,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6439,6 +6891,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -6459,6 +6912,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -6486,6 +6940,7 @@ path, rank in the mother and level in the browser tree"
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6500,6 +6955,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6519,6 +6975,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -6546,6 +7003,7 @@ path, rank in the mother and level in the browser tree"
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6560,6 +7018,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6574,6 +7033,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -6600,6 +7060,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6614,6 +7075,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6628,6 +7090,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -6654,6 +7117,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6668,6 +7132,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6682,6 +7147,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -6708,6 +7174,7 @@ ${body}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6722,6 +7189,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6736,6 +7204,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -6756,6 +7225,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -6783,6 +7253,7 @@ path, rank in the mother and level in the browser tree"
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6797,6 +7268,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6811,6 +7283,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -6831,6 +7304,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -6858,6 +7332,7 @@ path, rank in the mother and level in the browser tree"
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6872,6 +7347,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6897,6 +7373,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -6917,6 +7394,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -6932,6 +7410,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6957,6 +7436,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -6972,6 +7452,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "returns a string indicating the king of the element"
       end
     end
@@ -6986,6 +7467,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7011,6 +7493,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7026,6 +7509,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "returns a string indicating the king of the element"
       end
     end
@@ -7040,6 +7524,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7065,6 +7550,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7080,6 +7566,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "returns a string indicating the king of the element"
       end
     end
@@ -7094,6 +7581,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7119,6 +7607,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7134,6 +7623,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "returns a string indicating the king of the element"
       end
     end
@@ -7148,6 +7638,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7173,6 +7664,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7188,6 +7680,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "returns a string indicating the king of the element"
       end
     end
@@ -7202,6 +7695,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7227,6 +7721,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7242,6 +7737,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "returns a string indicating the king of the element"
       end
     end
@@ -7256,6 +7752,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7281,6 +7778,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7296,6 +7794,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "returns a string indicating the king of the element"
       end
     end
@@ -7310,6 +7809,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7335,6 +7835,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7349,6 +7850,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -7369,6 +7871,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -7391,6 +7894,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -7406,6 +7910,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7431,6 +7936,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -7445,6 +7951,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7470,6 +7977,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7490,6 +7998,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -7505,6 +8014,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7530,6 +8040,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7544,6 +8055,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -7565,6 +8077,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -7580,6 +8093,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7605,6 +8119,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7619,6 +8134,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -7640,6 +8156,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -7655,6 +8172,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7680,6 +8198,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7694,6 +8213,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -7714,6 +8234,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
@@ -7739,6 +8260,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7764,6 +8286,7 @@ ${members}}
 }
 "
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7778,6 +8301,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	comment "returns a string indicating the king of the element"
       end
@@ -7799,6 +8323,7 @@ ${body}}
 ${body}}
 "
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -7814,6 +8339,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7838,6 +8364,7 @@ ${members}}
   super(id, s);
 }
 "
+	
 	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
@@ -7880,177 +8407,179 @@ ${definition}"
     artifact 4737 "executable"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 138368 // UmlBaseParameterSet
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 134272 // FlowBehavior
-	artifact_ref 130946 // UmlTerminatePseudoState
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 133890 // UmlActivityNode
-	artifact_ref 128164 // FileWriter
-	artifact_ref 137088 // anOrdering
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 133760 // UmlBaseActivityNode
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 138498 // UmlParameterSet
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 128514 // UmlState
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 136450 // UmlActivityControlNode
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 132864 // UmlBaseObjectDiagram
-	artifact_ref 7169 // UmlItem
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 135426 // UmlActivityAction
-	artifact_ref 135682 // UmlActivityActionClasses
-	artifact_ref 4865 // Main
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 140162 // UmlParameter
-	artifact_ref 135296 // UmlBaseActivityAction
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 129922 // UmlPseudoState
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 139136 // SlotRelation
-	artifact_ref 137472 // UmlBasePinParameter
-	artifact_ref 5633 // UmlClass
-	artifact_ref 131584 // UmlBaseShallowHistoryPseudoState
-	artifact_ref 134656 // UmlBaseExpansionRegion
-	artifact_ref 132352 // UmlBaseForkPseudoState
-	artifact_ref 130816 // UmlBaseTerminatePseudoState
-	artifact_ref 131072 // UmlBaseExitPointPseudoState
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 4480 // UmlCom
-	artifact_ref 139008 // SlotAttribute
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 129024 // UmlBaseTransition
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 131714 // UmlShallowHistoryPseudoState
-	artifact_ref 132226 // UmlChoicePseudoState
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 140032 // UmlBaseParameter
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 4992 // aVisibility
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 137602 // UmlPinParameter
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 137986 // UmlActivityPin
-	artifact_ref 133122 // UmlActivityItem
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 131840 // UmlBaseJunctionPseudoState
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 135938 // UmlOnSignalAction
-	artifact_ref 131328 // UmlBaseDeepHistoryPseudoState
-	artifact_ref 128770 // UmlStateDiagram
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 130434 // UmlEntryPointPseudoState
-	artifact_ref 129154 // UmlTransition
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 135170 // UmlInterruptibleActivityRegion
-	artifact_ref 130048 // UmlBaseInitialPseudoState
-	artifact_ref 136962 // UmlActivityObject
-	artifact_ref 129280 // TransitionBehavior
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 140674 // UmlView
-	artifact_ref 136320 // UmlBaseActivityControlNode
-	artifact_ref 129794 // UmlStateAction
-	artifact_ref 130304 // UmlBaseEntryPointPseudoState
-	artifact_ref 133378 // UmlActivity
-	artifact_ref 4864 // aDirection
-	artifact_ref 129408 // UmlBaseRegion
-	artifact_ref 129538 // UmlRegion
-	artifact_ref 137346 // UmlExpansionNode
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 130560 // UmlBaseFinalState
-	artifact_ref 140544 // UmlBaseView
-	artifact_ref 137728 // aParameterEffectKind
-	artifact_ref 135552 // UmlBaseActivityActionClasses
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 134146 // UmlFlow
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 136832 // UmlBaseActivityObject
-	artifact_ref 128036 // Vector
-	artifact_ref 140288 // UmlBaseTypeSpec
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 136706 // UmlActivityControlNodeClasses
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 140418 // UmlTypeSpec
-	artifact_ref 134786 // UmlExpansionRegion
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 134530 // UmlActivityRegion
-	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 132608 // UmlBaseJoinPseudoState
-	artifact_ref 128180 // UmlNcRelation
-	artifact_ref 768 // CppSettings
-	artifact_ref 131458 // UmlDeepHistoryPseudoState
-	artifact_ref 132994 // UmlObjectDiagram
-	artifact_ref 138242 // UmlActivityParameter
-	artifact_ref 133634 // UmlActivityDiagram
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 132482 // UmlForkPseudoState
-	artifact_ref 131970 // UmlJunctionPseudoState
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 128896 // StateBehavior
-	artifact_ref 135808 // UmlBaseOnSignalAction
-	artifact_ref 128384 // UmlBaseState
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 5120 // anItemKind
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 6272 // IdlSettingsCmd
 	artifact_ref 137216 // UmlBaseExpansionNode
-	artifact_ref 6656 // UmlStereotype
+	artifact_ref 139008 // SlotAttribute
+	artifact_ref 136450 // UmlActivityControlNode
 	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 134912 // anExpansionKind
-	artifact_ref 134016 // UmlBaseFlow
-	artifact_ref 134400 // UmlBaseActivityRegion
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 130178 // UmlInitialPseudoState
-	artifact_ref 129664 // UmlBaseStateAction
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 138624 // aLanguage
-	artifact_ref 137856 // UmlBaseActivityPin
-	artifact_ref 135040 // UmlBaseInterruptibleActivityRegion
-	artifact_ref 131202 // UmlExitPointPseudoState
-	artifact_ref 138112 // UmlBaseActivityParameter
-	artifact_ref 138752 // UmlBaseClassInstance
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 133248 // UmlBaseActivity
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 6529 // UmlComponentView
-	artifact_ref 128130 // ConfirmBox
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 7297 // UmlNode
-	artifact_ref 136064 // UmlBaseAccessVariableValueAction
-	artifact_ref 128258 // UmlStateItem
-	artifact_ref 136576 // UmlBaseActivityControlNodeClasses
-	artifact_ref 136194 // UmlAccessVariableValueAction
-	artifact_ref 128640 // UmlBaseStateDiagram
-	artifact_ref 133504 // UmlBaseActivityDiagram
-	artifact_ref 1024 // IdlSettings
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 129408 // UmlBaseRegion
+	artifact_ref 131458 // UmlDeepHistoryPseudoState
+	artifact_ref 128896 // StateBehavior
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 7041 // UmlExtraClassMember
 	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 132096 // UmlBaseChoicePseudoState
-	artifact_ref 138882 // UmlClassInstance
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 1664 // UmlBaseClass
 	artifact_ref 130690 // UmlFinalState
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 132482 // UmlForkPseudoState
+	artifact_ref 134146 // UmlFlow
+	artifact_ref 140674 // UmlView
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 130946 // UmlTerminatePseudoState
+	artifact_ref 129664 // UmlBaseStateAction
+	artifact_ref 135170 // UmlInterruptibleActivityRegion
+	artifact_ref 141952 // PhpSettingsCmd
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 5120 // anItemKind
+	artifact_ref 140544 // UmlBaseView
+	artifact_ref 135552 // UmlBaseActivityActionClasses
+	artifact_ref 133248 // UmlBaseActivity
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 128770 // UmlStateDiagram
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 138242 // UmlActivityParameter
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 138882 // UmlClassInstance
+	artifact_ref 140032 // UmlBaseParameter
+	artifact_ref 132608 // UmlBaseJoinPseudoState
+	artifact_ref 130178 // UmlInitialPseudoState
+	artifact_ref 135938 // UmlOnSignalAction
+	artifact_ref 4864 // aDirection
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 132096 // UmlBaseChoicePseudoState
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 4992 // aVisibility
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 140162 // UmlParameter
+	artifact_ref 131072 // UmlBaseExitPointPseudoState
+	artifact_ref 133634 // UmlActivityDiagram
+	artifact_ref 139136 // SlotRelation
+	artifact_ref 129538 // UmlRegion
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 134530 // UmlActivityRegion
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 137472 // UmlBasePinParameter
+	artifact_ref 130816 // UmlBaseTerminatePseudoState
+	artifact_ref 135040 // UmlBaseInterruptibleActivityRegion
+	artifact_ref 134912 // anExpansionKind
+	artifact_ref 130560 // UmlBaseFinalState
+	artifact_ref 137602 // UmlPinParameter
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 129794 // UmlStateAction
+	artifact_ref 4480 // UmlCom
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 7297 // UmlNode
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 133890 // UmlActivityNode
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 131970 // UmlJunctionPseudoState
+	artifact_ref 128258 // UmlStateItem
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 136064 // UmlBaseAccessVariableValueAction
+	artifact_ref 134400 // UmlBaseActivityRegion
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 136706 // UmlActivityControlNodeClasses
+	artifact_ref 7169 // UmlItem
+	artifact_ref 135808 // UmlBaseOnSignalAction
+	artifact_ref 134786 // UmlExpansionRegion
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 141824 // PhpSettings
+	artifact_ref 140418 // UmlTypeSpec
+	artifact_ref 128384 // UmlBaseState
+	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 132994 // UmlObjectDiagram
+	artifact_ref 137728 // aParameterEffectKind
+	artifact_ref 137088 // anOrdering
+	artifact_ref 136576 // UmlBaseActivityControlNodeClasses
+	artifact_ref 134016 // UmlBaseFlow
+	artifact_ref 128130 // ConfirmBox
+	artifact_ref 128514 // UmlState
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 135426 // UmlActivityAction
+	artifact_ref 131202 // UmlExitPointPseudoState
+	artifact_ref 132864 // UmlBaseObjectDiagram
+	artifact_ref 135296 // UmlBaseActivityAction
+	artifact_ref 133122 // UmlActivityItem
+	artifact_ref 137346 // UmlExpansionNode
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 131714 // UmlShallowHistoryPseudoState
+	artifact_ref 128164 // FileWriter
+	artifact_ref 132352 // UmlBaseForkPseudoState
+	artifact_ref 138752 // UmlBaseClassInstance
+	artifact_ref 138624 // aLanguage
+	artifact_ref 131584 // UmlBaseShallowHistoryPseudoState
+	artifact_ref 133378 // UmlActivity
+	artifact_ref 137986 // UmlActivityPin
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 128180 // UmlNcRelation
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 129922 // UmlPseudoState
+	artifact_ref 129024 // UmlBaseTransition
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 128640 // UmlBaseStateDiagram
+	artifact_ref 135682 // UmlActivityActionClasses
+	artifact_ref 128036 // Vector
+	artifact_ref 131840 // UmlBaseJunctionPseudoState
+	artifact_ref 131328 // UmlBaseDeepHistoryPseudoState
+	artifact_ref 134272 // FlowBehavior
+	artifact_ref 138498 // UmlParameterSet
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 130048 // UmlBaseInitialPseudoState
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 768 // CppSettings
+	artifact_ref 140288 // UmlBaseTypeSpec
+	artifact_ref 136194 // UmlAccessVariableValueAction
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 130434 // UmlEntryPointPseudoState
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 5633 // UmlClass
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 134656 // UmlBaseExpansionRegion
+	artifact_ref 133504 // UmlBaseActivityDiagram
+	artifact_ref 130304 // UmlBaseEntryPointPseudoState
+	artifact_ref 137856 // UmlBaseActivityPin
+	artifact_ref 136832 // UmlBaseActivityObject
+	artifact_ref 136320 // UmlBaseActivityControlNode
+	artifact_ref 138112 // UmlBaseActivityParameter
 	artifact_ref 132738 // UmlJoinPseudoState
+	artifact_ref 129280 // TransitionBehavior
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 4865 // Main
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 136962 // UmlActivityObject
+	artifact_ref 133760 // UmlBaseActivityNode
+	artifact_ref 138368 // UmlBaseParameterSet
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 132226 // UmlChoicePseudoState
+	artifact_ref 129154 // UmlTransition
       end
       ncouples 10
       key "genpro pro" value "/tmp/html/cpp/html.pro"
@@ -8058,7 +8587,7 @@ ${definition}"
       key "genpro target" value "/tmp/html/cpp/ghtml"
       key "genpro tmplt" value "app"
       key "genpro config" value "debug warn_on qt"
-      key "genpro defines" value "WITHCPP WITHJAVA WITHIDL"
+      key "genpro defines" value "WITHCPP WITHJAVA WITHIDL WITHPHP"
       key "genpro includepath" value ""
       key "genpro dependpath" value ""
       key "genpro objectsdir" value ""
@@ -8088,7 +8617,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[argc - 1]).toUInt())) {
     try {
-      UmlCom::trace(\"<b>Html generator</b> release 2.12.1 (C++ version)<br />\");
+      UmlCom::trace(\"<b>Html generator</b> release 2.13.1 (C++ version)<br />\");
 
       UmlItem * target = UmlCom::targetItem();
 
@@ -8129,7 +8658,7 @@ class Main {
       UmlCom.connect(Integer.valueOf(argv[argv.length - 1]).intValue());
 
       try {
-        UmlCom.trace(\"<b>Html generator</b> release 2.12.1 (Java version)<br />\");
+        UmlCom.trace(\"<b>Html generator</b> release 2.13.1 (Java version)<br />\");
 
         UmlItem target = UmlCom.targetItem();
  try {
@@ -8265,6 +8794,7 @@ ${namespace_end}
 ${includes}
 #include \"CppSettings.h\"
 #include \"JavaSettings.h\"
+#include \"PhpSettings.h\"
 ${namespace_start}
 ${members}
 ${namespace_end}"
@@ -8295,6 +8825,7 @@ ${namespace_end}
       cpp_src "${comment}
 ${includes}
 #include \"JavaSettings.h\"
+#include \"PhpSettings.h\"
 #include \"UmlArtifact.h\"
 #include \"UmlComponent.h\"
 #include \"UmlClassDiagram.h\"
@@ -8761,6 +9292,7 @@ ${namespace_end}
 ${includes}
 #include \"CppSettings.h\"
 #include \"JavaSettings.h\"
+#include \"PhpSettings.h\"
 #include \"UmlRelation.h\"
 
 ${namespace_start}

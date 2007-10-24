@@ -10,19 +10,6 @@ class UmlComponent
     fw.write("</p>\n");
   }
 
-  const QVector<UmlClass> & realized = realizedClasses();
-
-  if (realized.size() != 0) {
-    const char * sep = "<p>realized classes : ";
-    
-    for (unsigned i = 0; i != realized.size(); i += 1) {
-      fw.write(sep);
-      sep = ", ";
-      realized[i]->write();
-    }
-    fw.write("</p>\n");
-  }
-
   const QVector<UmlClass> & provided = providedClasses();
 
   if (provided.size() != 0) {
@@ -48,6 +35,19 @@ class UmlComponent
     }
     fw.write("</p>\n");
   }
+
+  const QVector<UmlClass> & realizing = realizingClasses();
+
+  if (realizing.size() != 0) {
+    const char * sep = "<p>realizing classes : ";
+    
+    for (unsigned i = 0; i != realizing.size(); i += 1) {
+      fw.write(sep);
+      sep = ", ";
+      realizing[i]->write();
+    }
+    fw.write("</p>\n");
+  }
   
   write_children(pfix, rank, level);
 
@@ -63,19 +63,8 @@ class UmlComponent
     fw.write("</p>\n");
   }
 
-  UmlClass[] cls = realizedClasses();
-
-  if (cls.length != 0) {
-    String sep = "<p>realized classes : ";
-    
-    for (int i = 0; i != cls.length; i += 1) {
-      fw.write(sep);
-      sep = ", ";
-      cls[i].write();
-    }
-    fw.write("</p>\n");
-  }
-
+  UmlClass[] cls;
+  
   cls = providedClasses();
 
   if (cls.length != 0) {
@@ -93,6 +82,19 @@ class UmlComponent
 
   if (cls.length != 0) {
     String sep = "<p>required classes : ";
+    
+    for (int i = 0; i != cls.length; i += 1) {
+      fw.write(sep);
+      sep = ", ";
+      cls[i].write();
+    }
+    fw.write("</p>\n");
+  }
+
+  cls = realizingClasses();
+
+  if (cls.length != 0) {
+    String sep = "<p>realizing classes : ";
     
     for (int i = 0; i != cls.length; i += 1) {
       fw.write(sep);

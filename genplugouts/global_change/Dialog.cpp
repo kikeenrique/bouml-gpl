@@ -16,6 +16,7 @@
 
 #include "UmlCom.h"
 #include "Context.h"
+#include "UmlItem.h"
 
 Dialog::Dialog() : QDialog(0, 0, TRUE) {
   QVBoxLayout * vbox = new QVBoxLayout(this);
@@ -151,6 +152,7 @@ Dialog::Dialog() : QDialog(0, 0, TRUE) {
   
   cpp_cb = new QCheckBox("C++", htab);
   java_cb = new QCheckBox("Java", htab);
+  php_cb = new QCheckBox("Php", htab);
   idl_cb = new QCheckBox("Idl", htab);
   
   //
@@ -203,7 +205,7 @@ void Dialog::do_replace() {
     ctx.set_stereotype(QCString(stereotype_le->text()), is_rb->isChecked(), isnot_rb->isChecked());
     ctx.set_targets(artifact_cb->isChecked(), class_cb->isChecked(),
   		  operation_cb->isChecked(), attribute_cb->isChecked(), relation_cb->isChecked());
-    ctx.set_language(cpp_cb->isChecked(), java_cb->isChecked(), idl_cb->isChecked());
+    ctx.set_language(cpp_cb->isChecked(), java_cb->isChecked(), php_cb->isChecked(), idl_cb->isChecked());
     
     UmlCom::targetItem()->change(ctx);
     

@@ -9,6 +9,8 @@ enum MiscGlobalCmd {
   messageCmd,
   toolRunningCmd,
   targetCmd,
+  allMarkedCmd,
+  loadCmd,
   showTraceCmd,
   traceAutoRaiseCmd
 

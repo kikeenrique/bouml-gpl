@@ -1,6 +1,6 @@
-format 41
+format 46
 "API USER" // API USER
-  revision 3
+  revision 5
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -43,7 +43,6 @@ format 41
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
-    
     associated_deployment_view deploymentview_ref 385 // API USER Deployment view
     comment "'your' API classes, modify them !"
     classdiagram 129 "Inheritance Diagram of classes for Package and Views"
@@ -71,6 +70,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -97,6 +97,7 @@ ${members}};
 ${body}}
 "
 	
+	
       end
     end
 
@@ -110,6 +111,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -136,6 +138,7 @@ ${members}};
 ${body}}
 "
 	
+	
       end
     end
 
@@ -149,6 +152,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -175,6 +179,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -188,6 +193,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -214,6 +220,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -227,6 +234,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -253,6 +261,7 @@ ${members}};
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }"
 	
+	
       end
     end
 
@@ -266,6 +275,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -291,6 +301,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -304,6 +315,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -320,6 +332,7 @@ ${members}}
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
+	
 	
       end
 
@@ -343,6 +356,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -368,6 +382,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -381,6 +396,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -408,6 +424,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -421,6 +438,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -448,6 +466,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -461,6 +480,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -486,6 +506,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -499,6 +520,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -524,6 +546,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 128154 "genpro"
@@ -537,6 +560,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -552,6 +576,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
       end
 
@@ -569,6 +594,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
     end
 
@@ -582,6 +608,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -607,6 +634,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -620,6 +648,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -647,6 +676,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -660,6 +690,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -685,6 +716,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -698,6 +730,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -726,6 +759,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -739,6 +773,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -767,6 +802,7 @@ ${members}}
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws} { super(id, n); }
 "
 	
+	
       end
     end
 
@@ -780,6 +816,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -806,6 +843,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
 
       operation 74369 "~UmlItem"
@@ -816,6 +854,7 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -832,6 +871,7 @@ ${body}}
 ${body}}
 "
 	
+	
       end
     end
 
@@ -845,6 +885,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -870,6 +911,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -883,6 +925,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -909,6 +952,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -922,6 +966,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -947,6 +992,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -960,6 +1006,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -986,6 +1033,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -999,6 +1047,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1024,6 +1073,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -1037,6 +1087,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1063,6 +1114,7 @@ ${members}};
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }"
 	
+	
       end
     end
 
@@ -1076,6 +1128,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1101,6 +1154,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -1114,6 +1168,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1141,6 +1196,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
 
@@ -1154,6 +1210,7 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1179,6 +1236,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
       end
     end
   end
@@ -1193,86 +1251,86 @@ Do not forget to modify Main !"
     artifact 4737 "executable"
       stereotype "executable"
       associated_artifacts
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 128002 // UmlComponent
 	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 128228 // UmlNcRelation
+	artifact_ref 6912 // UmlBaseComponent
 	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 6913 // UmlDiagram
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 8065 // UmlUseCaseDiagram
 	artifact_ref 5248 // CmdFamily
-	artifact_ref 7297 // UmlNode
-	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 896 // UmlBaseFormalParameter
 	artifact_ref 6400 // UmlParameter
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 4864 // aDirection
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 128026 // Dialog
+	artifact_ref 2688 // UmlBaseDeployment
 	artifact_ref 4865 // Main
 	artifact_ref 1024 // IdlSettings
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 4864 // aDirection
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 6529 // UmlComponentView
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 128026 // Dialog
-	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 6913 // UmlDiagram
 	artifact_ref 3840 // UmlBaseRelation
 	artifact_ref 5888 // UmlSettingsCmd
 	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 128154 // SmallPushButton
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 3328 // UmlBaseItem
 	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 7297 // UmlNode
+	artifact_ref 1280 // UmlTypeSpec
 	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 2432 // UmlBaseComponentDiagram
 	artifact_ref 4992 // aVisibility
-	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 5633 // UmlClass
+	artifact_ref 5889 // UmlClassMember
 	artifact_ref 4480 // UmlCom
 	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 5505 // UmlAttribute
 	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 768 // CppSettings
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 512 // UmlBaseActualParameter
 	artifact_ref 4736 // aRelationKind
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 2432 // UmlBaseComponentDiagram
 	artifact_ref 6656 // UmlStereotype
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 7169 // UmlItem
-	artifact_ref 7425 // UmlOperation
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 1536 // UmlBaseAttribute
 	artifact_ref 6144 // JavaSettingsCmd
 	artifact_ref 5120 // anItemKind
-	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 6145 // UmlCollaborationDiagram
 	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 4993 // UmlActualParameter
 	artifact_ref 4352 // UmlBaseUseCaseView
 	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 5633 // UmlClass
-	artifact_ref 128154 // SmallPushButton
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 2688 // UmlBaseDeployment
 	artifact_ref 7681 // UmlRelation
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 768 // CppSettings
+	artifact_ref 7169 // UmlItem
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 3968 // UmlBaseSequenceDiagram
       end
       ncouples 10
       key "genpro pro" value "/tmp/gpro/gpro.pro"
@@ -1308,7 +1366,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
     try {
-      UmlCom::trace(\"<b><i>.pro</i> generator</b> release 2.1.2<br>\");
+      UmlCom::trace(\"<b><i>.pro</i> generator</b> release 2.1.3<br>\");
 
       UmlCom::targetItem()->genpro();
     }

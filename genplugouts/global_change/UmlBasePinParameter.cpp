@@ -34,6 +34,22 @@ bool UmlBasePinParameter::set_IsException(bool v) {
     return FALSE;
 }
 
+bool UmlBasePinParameter::isStream() {
+  read_if_needed_();
+  return _stream;
+}
+
+bool UmlBasePinParameter::set_IsStream(bool v) {
+  bool vv;
+
+  if (set_it_(vv, v, setStreamCmd)) {
+    _stream = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 aDirection UmlBasePinParameter::direction() {
   read_if_needed_();
   return _dir;

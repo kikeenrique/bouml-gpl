@@ -431,6 +431,11 @@ void BrowserUseCaseView::apply_shortcut(QString s) {
   exec_menu_choice(choice);
 }
 
+void BrowserUseCaseView::open(bool) {
+  if (!is_edited)
+    edit("Use Case view", its_default_stereotypes);
+}
+
 UmlCode BrowserUseCaseView::get_type() const {
   return UmlUseCaseView;
 }

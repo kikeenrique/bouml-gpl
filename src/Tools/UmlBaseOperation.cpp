@@ -15,6 +15,23 @@ anItemKind UmlBaseOperation::kind() {
   return anOperation;
 }
 
+bool UmlBaseOperation::isBodyGenerationForced() {
+  read_if_needed_();
+    
+  return _force_body_generation;
+}
+
+bool UmlBaseOperation::set_isBodyGenerationForced(bool y) {
+  bool b;
+  
+  if (set_it_(b, y, setIsForceBodyGenCmd)) {
+    _force_body_generation = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 bool UmlBaseOperation::isAbstract() {
   read_if_needed_();
     
@@ -480,6 +497,8 @@ void UmlBaseOperation::read_uml_() {
   if (_return_type.type == 0)
     _return_type.explicit_type = UmlCom::read_string();
   _abstract = UmlCom::read_bool();
+  
+  _force_body_generation = UmlCom::read_bool();
   
   unsigned n;
   

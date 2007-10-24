@@ -123,6 +123,21 @@ class UmlBasePackage
 		  identifier_(), n);
   
   return (UmlPackage) UmlBaseItem.read_();  
+!!!210304.cpp!!!	phpDir() : string
+  read_if_needed_();
+  
+  return _php_dir;
+!!!210304.java!!!	phpDir() : string
+  read_if_needed_();
+  
+  return _php_dir;
+!!!210432.cpp!!!	set_PhpDir(in s : string) : bool
+  return set_it_(_php_dir, s, setPhpDirCmd);
+!!!210432.java!!!	set_PhpDir(in s : string) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpDirCmd, s);
+  UmlCom.check();
+
+  _php_dir = s;
 !!!35584.cpp!!!	idlDir() : string
   read_if_needed_();
   
@@ -197,6 +212,9 @@ class UmlBasePackage
   _java_dir = 0;
   _java_package = 0;
 #endif
+#ifdef WITHPHP
+  _php_dir = 0;
+#endif
 #ifdef WITHIDL
   _idl_dir = 0;
   _idl_module = 0;
@@ -209,6 +227,7 @@ class UmlBasePackage
   _cpp_namespace = null;
   _java_dir = null;
   _java_package = null;
+  _php_dir = null;
   _idl_dir = null;
   _idl_module = null;
   super.unload(rec, del);
@@ -232,6 +251,10 @@ class UmlBasePackage
 !!!37120.java!!!	read_java_() : void
   _java_dir = UmlCom.read_string();
   _java_package = UmlCom.read_string();
+!!!210560.cpp!!!	read_php_() : void
+  _php_dir = UmlCom::read_string();
+!!!210560.java!!!	read_php_() : void
+  _php_dir = UmlCom.read_string();
 !!!37248.cpp!!!	read_idl_() : void
   _idl_dir = UmlCom::read_string();
   _idl_module = UmlCom::read_string();

@@ -1,12 +1,16 @@
 class UmlBaseItem
 !!!21376.cpp!!!	set_Name(in s : string) : bool
-  return set_it_(_name, s, setNameCmd);
+  UmlCom::send_cmd(_identifier, setNameCmd, s);
+  if (UmlCom::read_bool()) {
+    _name = s;
+    return TRUE;
+  }
+  else
+    return FALSE;
 !!!21376.java!!!	set_Name(in s : string) : bool
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setNameCmd, s);
-  UmlCom.check();
-  
-  if (_defined) _name = s;
-
+    UmlCom.send_cmd(identifier_(), OnInstanceCmd.setNameCmd, s);
+    UmlCom.check();
+    _name = s;
 !!!21504.cpp!!!	stereotype() : string
   read_if_needed_();
   
@@ -190,6 +194,14 @@ class UmlBaseItem
 !!!23552.java!!!	referencedBy() : UmlItem
   UmlCom.send_cmd(identifier_(), OnInstanceCmd.childrenCmd);
   return UmlCom.read_item_list();
+!!!198528.cpp!!!	getIdentifier() : int
+  read_if_needed_();
+
+  return _modeler_id;
+!!!198528.java!!!	getIdentifier() : int
+  read_if_needed_();
+
+  return _modeler_id;
 !!!23680.cpp!!!	unload(in rec : bool, in del : bool) : void
   _defined = FALSE;
   _stereotype = 0;
@@ -224,6 +236,15 @@ class UmlBaseItem
 
     _children = null;
   }
+!!!198400.cpp!!!	deleteIt() : bool
+  UmlCom::send_cmd(_identifier, deleteCmd);
+  if (UmlCom::read_bool() == 0) return FALSE;
+  parent()->unload(TRUE);
+  return TRUE;
+!!!198400.java!!!	deleteIt() : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.deleteCmd);
+  UmlCom.check();
+  parent().unload(true, false);
 !!!23808.cpp!!!	isToolRunning(in id : int) : bool
   UmlCom::send_cmd(miscGlobalCmd, toolRunningCmd, id);
   return UmlCom::read_bool();
@@ -242,43 +263,43 @@ class UmlBaseItem
   return UmlCom.read_item_list();
 !!!24064.cpp!!!	read_if_needed_() : void
   if (!_defined) {
-#ifdef WITHCPP
-# ifdef WITHJAVA
-#  ifdef WITHIDL
+#if defined(WITHCPP) & defined(WITHJAVA) & defined(WITHPHP) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getDefCmd);
     read_uml_();
     read_cpp_();
     read_java_();
+    read_php_();
     read_idl_();
-#  else
-    ... WITHIDL must be defined when WITHCPP and WITHJAVA are both defined
-#  endif
-# else
-#  ifdef WITHIDL
-    ... WITHJAVA must be defined when WITHCPP and WITHIDL are both defined
-#  else
+#else
+# if defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getCppDefCmd);
     read_uml_();
     read_cpp_();
-#  endif
-# endif
-#else
-# ifdef WITHJAVA
-#  ifdef WITHIDL
-    ... WITHCPP must be defined when WITHIDL and WITHJAVA are both defined
-#  else
+# else
+#  if !defined(WITHCPP) & defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getJavaDefCmd);
     read_uml_();
     read_java_();
-#  endif
-# else
-#  ifdef WITHIDL
+#  else
+#   if !defined(WITHCPP) & !defined(WITHJAVA) & defined(WITHPHP) & !defined(WITHIDL)
+    UmlCom::send_cmd(_identifier, getPhpDefCmd);
+    read_uml_();
+    read_php_();
+#   else
+#    if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getIdlDefCmd);
     read_uml_();
     read_idl_();
-#  else
+#    else
+#     if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getUmlDefCmd);
     read_uml_();
+#     else
+    ... WITHCPP and WITHJAVA and WITHPHP and WITHIDL must be both defined or undefined
+    ... or only one of them must be defined
+#     endif
+#    endif
+#   endif
 #  endif
 # endif
 #endif
@@ -291,6 +312,7 @@ class UmlBaseItem
     read_uml_();
     read_cpp_();
     read_java_();
+    read_php_();
     read_idl_();
     
     _defined = true;
@@ -348,6 +370,7 @@ class UmlBaseItem
   _description = UmlCom::read_string();
   
   _marked = UmlCom::read_bool();
+  _modeler_id = (int) UmlCom::read_unsigned();
 !!!24320.java!!!	read_uml_() : void
   _stereotype = UmlCom.read_string();
 
@@ -368,6 +391,7 @@ class UmlBaseItem
   _description = UmlCom.read_string();
   
   _marked = UmlCom.read_bool();
+  _modeler_id = UmlCom.read_unsigned();
 !!!24832.cpp!!!	read_children_() : void
   UmlCom::send_cmd(_identifier, childrenCmd);
   _children = new QVector<UmlItem>;
@@ -631,6 +655,8 @@ class UmlBaseItem
       return new UmlJoinActivityNode(id, name);
     case aPartition:
       //return new UmlPartition(id, name);
+    case aClassInstance:
+      return new UmlClassInstance(id, name);
     default:
       UmlCom::bye();
       UmlCom::fatal_error(QCString("unknown item type ") + QCString().setNum(kind));
@@ -791,6 +817,8 @@ class UmlBaseItem
       return new UmlJoinActivityNode(id, name);
     case anItemKind._aPartition:
       //return new UmlPartition(id, name);
+    case anItemKind._aClassInstance:
+      return new UmlClassInstance(id, name);
     default:
       UmlCom.bye();
       UmlCom.fatal_error(new String("unknown item type ") + String.valueOf(kind));

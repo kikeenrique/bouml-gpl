@@ -383,8 +383,8 @@ bool UmlBaseAddVariableValueAction::set_isReplaceAll(bool v) {
 }
 
 void UmlBaseAddVariableValueAction::read_uml_() {
-  _replace_all = UmlCom::read_bool();
   UmlBaseAccessVariableValueAction::read_uml_();
+  _replace_all = UmlCom::read_bool();
 }
 
 UmlRemoveVariableValueAction * UmlBaseRemoveVariableValueAction::create(UmlItem * parent, const char * s)
@@ -406,7 +406,7 @@ bool UmlBaseRemoveVariableValueAction::set_isRemoveDuplicates(bool v) {
 }
 
 void UmlBaseRemoveVariableValueAction::read_uml_() {
-  _remove_duplicates = UmlCom::read_bool();
   UmlBaseAccessVariableValueAction::read_uml_();
+  _remove_duplicates = UmlCom::read_bool();
 }
 

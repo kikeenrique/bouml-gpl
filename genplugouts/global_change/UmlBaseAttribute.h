@@ -49,6 +49,14 @@ class UmlBaseAttribute : public UmlClassMember {
     // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_Type(const UmlTypeSpec & t);
 
+    // returns the multiplicity (may be an empty string)
+    const QCString & multiplicity();
+
+    // to set the multiplicity
+    // 
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_Multiplicity(const char * s);
+
     // returns the 'get' operation of the attribute, or 0 if it does not exist
     UmlOperation * getOperation();
 
@@ -111,6 +119,12 @@ class UmlBaseAttribute : public UmlClassMember {
   private:
     bool _read_only;
 
+
+  public:
+    QCString _multiplicity;
+
+
+  private:
 #ifdef WITHCPP
     bool _cpp_mutable;
 #endif
@@ -154,6 +168,12 @@ class UmlBaseAttribute : public UmlClassMember {
     //internal, do NOT use it
     
     virtual void read_java_();
+#endif
+
+#ifdef WITHPHP
+    //internal, do NOT use it
+    
+    virtual void read_php_();
 #endif
 
 #ifdef WITHIDL

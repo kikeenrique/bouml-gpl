@@ -31,10 +31,10 @@ bool UmlBaseComponent::set_AssociatedDiagram(UmlComponentDiagram * d) {
     return FALSE;
 }
 
-const QVector<UmlClass> & UmlBaseComponent::realizedClasses() {
+const QVector<UmlClass> & UmlBaseComponent::realizingClasses() {
   read_if_needed_();
   
-  return _realized;
+  return _realizing;
 }
 
 const QVector<UmlClass> & UmlBaseComponent::providedClasses() {
@@ -57,10 +57,10 @@ void UmlBaseComponent::read_uml_() {
   unsigned index;
   
   n = UmlCom::read_unsigned();
-  _realized.resize(n);
+  _realizing.resize(n);
     
   for (index = 0; index != n; index += 1)
-    _realized.insert(index, (UmlClass *) UmlBaseItem::read_());
+    _realizing.insert(index, (UmlClass *) UmlBaseItem::read_());
 
   n = UmlCom::read_unsigned();
   _provided.resize(n);

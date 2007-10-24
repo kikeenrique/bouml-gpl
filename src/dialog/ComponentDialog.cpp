@@ -63,24 +63,24 @@ ComponentDialog::ComponentDialog(SimpleData * nd)
   setCaption("component dialog");
     
   BrowserComponent * bn = (BrowserComponent *) nd->get_browser_node();
-  const QValueList<BrowserClass *> & rq = bn->get_required_classes();
-  const QValueList<BrowserClass *> & rz = bn->get_realized_classes();
-  const QValueList<BrowserClass *> & pr = bn->get_provided_classes();
-  QValueList<BrowserClass *>::ConstIterator it;
-    
-  d_associated.resize(47);
-  
-  for (it = rq.begin(); it != rq.end(); ++it)
-    d_associated.insert(*it, *it);
-  for (it = rz.begin(); it != rz.end(); ++it)
-    d_associated.insert(*it, *it);
-  for (it = pr.begin(); it != pr.end(); ++it)
-    d_associated.insert(*it, *it);
     
   init_uml_tab();
-  init_rq_tab();
-  init_pr_rz_tab();
-  
+  rqs = bn->get_required_classes();
+  init_l_tab(rq_page, rq_stereotypefilter, &ComponentDialog::rq_stereotypeFilterActivated,
+	     SLOT(rq_stereotypeFilterActivated(const QString &)),
+	     SLOT(require_cls()), SLOT(unrequire_cls()), 
+	     lb_rq_available, lb_rq, rqs, "Required classes");
+  prs = bn->get_provided_classes();
+  init_l_tab(pr_page, pr_stereotypefilter, &ComponentDialog::pr_stereotypeFilterActivated,
+	     SLOT(pr_stereotypeFilterActivated(const QString &)),
+	     SLOT(provide_cls()), SLOT(unprovide_cls()), 
+	     lb_pr_available, lb_pr, prs, "Provided classes");
+  rzs = bn->get_realizing_classes();
+  init_l_tab(rz_page, rz_stereotypefilter, &ComponentDialog::rz_stereotypeFilterActivated,
+	     SLOT(rz_stereotypeFilterActivated(const QString &)),
+	     SLOT(realize_cls()), SLOT(unrealize_cls()), 
+	     lb_rz_available, lb_rz, rzs, "Realizing classes");
+
   // USER : list key - value
   
   QGrid * grid = new QGrid(2, this);
@@ -159,184 +159,76 @@ void ComponentDialog::init_uml_tab() {
   addTab(grid, "Uml");
 }
 
-void ComponentDialog::init_rq_tab() {
+void ComponentDialog::init_l_tab(QVBox *& page, QComboBox *& stereotypefilter,
+				 void (ComponentDialog::* filteractivated)(const QString & st),
+				 const char * slt,
+				 const char * add_slt, const char * remove_slt,
+				 QListBox *& lb_available, QListBox *& lb,
+				 const QValueList<BrowserClass *> & cls,
+				 const char * lbl) {
   bool visit = !hasOkButton();  
   QHBox * hbox;
   QVBox * vbox;  
   QPushButton * button;
-  BrowserComponent * bn = (BrowserComponent *) data->get_browser_node();
   
-  rq_page = new QVBox(this);
+  page = new QVBox(this);
   
   if (!visit) {
-    hbox = new QHBox(rq_page);
+    hbox = new QHBox(page);
     hbox->setMargin(5);
     new QLabel("Stereotype filtering  ", hbox);
-    rq_stereotypefilter = new QComboBox(TRUE, hbox);
-    rq_stereotypefilter->setAutoCompletion(TRUE);
-    rq_stereotypefilter->insertItem("");
-    rq_stereotypefilter->insertStringList(BrowserClass::default_stereotypes());
-    rq_stereotypefilter->setCurrentItem(0);
-    QSizePolicy sp = rq_stereotypefilter->sizePolicy();
+    stereotypefilter = new QComboBox(TRUE, hbox);
+    stereotypefilter->setAutoCompletion(TRUE);
+    stereotypefilter->insertItem("");
+    stereotypefilter->insertStringList(BrowserClass::default_stereotypes());
+    stereotypefilter->setCurrentItem(0);
+    QSizePolicy sp = stereotypefilter->sizePolicy();
     sp.setHorData(QSizePolicy::Expanding);
-    rq_stereotypefilter->setSizePolicy(sp);
-    connect(rq_stereotypefilter, SIGNAL(activated(const QString &)),
-	    this, SLOT(rq_stereotypeFilterActivated(const QString &)));
+    stereotypefilter->setSizePolicy(sp);
+    connect(stereotypefilter, SIGNAL(activated(const QString &)),
+	    this, slt);
     
-    hbox = new QHBox(rq_page);
+    hbox = new QHBox(page);
     vbox = new QVBox(hbox);
     vbox->setMargin(5);
     (new QLabel("Available classes", vbox))->setAlignment(AlignCenter);
-    lb_rq_available = new QListBox(vbox);
-    lb_rq_available->setSelectionMode(QListBox::Multi);
-    
-    rq_stereotypeFilterActivated(QString::null);
+    lb_available = new QListBox(vbox);
+    lb_available->setSelectionMode(QListBox::Multi);
     
     vbox = new QVBox(hbox);
     vbox->setMargin(5);
     (new QLabel("", vbox))->setScaledContents(TRUE);
     button = new QPushButton(vbox);
     button->setPixmap(*rightPixmap);
-    connect(button, SIGNAL(clicked()), this, SLOT(require_cls()));
+    connect(button, SIGNAL(clicked()), this, add_slt);
     (new QLabel("", vbox))->setScaledContents(TRUE);
     button = new QPushButton(vbox);
     button->setPixmap(*leftPixmap);
-    connect(button, SIGNAL(clicked()), this, SLOT(unrequire_cls()));
+    connect(button, SIGNAL(clicked()), this, remove_slt);
     (new QLabel("", vbox))->setScaledContents(TRUE);
     vbox = new QVBox(hbox);
   }
   else
-    vbox = rq_page;
+    vbox = page;
   
   vbox->setMargin(5);
-  (new QLabel("Required classes", vbox))->setAlignment(AlignCenter);
-  lb_rq = new QListBox(vbox);
-  lb_rq->setSelectionMode((visit) ? QListBox::NoSelection
-				  : QListBox::Multi);
-  
-  const QValueList<BrowserClass *> & rq = bn->get_required_classes();
-  QValueList<BrowserClass *>::ConstIterator it;
-  
-  for (it = rq.begin(); it != rq.end(); ++it)
-    if (!(*it)->deletedp())
-      lb_rq->insertItem(new ListBoxBrowserNode(*it, (*it)->full_name(TRUE)));
-  
-  lb_rq->sort();
-  
-  addTab(rq_page, "Required classes");
-}
-
-void ComponentDialog::init_pr_rz_tab() {
-  bool visit = !hasOkButton();  
-  QHBox * hbox;
-  QVBox * vbox;  
-  QPushButton * button;
-  BrowserComponent * bn = (BrowserComponent *) data->get_browser_node();
-  
-  pr_rz_page = new QVBox(this);
-  
-  if (!visit) {
-    hbox = new QHBox(pr_rz_page);
-    hbox->setMargin(5);
-    new QLabel("Stereotype filtering  ", hbox);
-    pr_rz_stereotypefilter = new QComboBox(TRUE, hbox);
-    pr_rz_stereotypefilter->setAutoCompletion(TRUE);
-    pr_rz_stereotypefilter->insertItem("");
-    pr_rz_stereotypefilter->insertStringList(BrowserClass::default_stereotypes());
-    pr_rz_stereotypefilter->setCurrentItem(0);
-    QSizePolicy sp = pr_rz_stereotypefilter->sizePolicy();
-    sp.setHorData(QSizePolicy::Expanding);
-    pr_rz_stereotypefilter->setSizePolicy(sp);
-    connect(pr_rz_stereotypefilter, SIGNAL(activated(const QString &)),
-	    this, SLOT(pr_rz_stereotypeFilterActivated(const QString &)));
-    
-    hbox = new QHBox(pr_rz_page);
-    vbox = new QVBox(hbox);
-    vbox->setMargin(5);
-    (new QLabel("Available classes", vbox))->setAlignment(AlignCenter);
-    lb_pr_rz_available = new QListBox(vbox);
-    lb_pr_rz_available->setSelectionMode(QListBox::Multi);
-    
-    pr_rz_stereotypeFilterActivated(QString::null);
-    
-    vbox = new QVBox(hbox);
-    vbox->setMargin(5);
-    (new QLabel("", vbox))->setScaledContents(TRUE);
-    button = new QPushButton(vbox);
-    button->setPixmap(*rightPixmap);
-    connect(button, SIGNAL(clicked()), this, SLOT(provide_cls()));
-    (new QLabel("", vbox))->setScaledContents(TRUE);
-    button = new QPushButton(vbox);
-    button->setPixmap(*leftPixmap);
-    connect(button, SIGNAL(clicked()), this, SLOT(unprovide_cls()));
-    (new QLabel("", vbox))->setScaledContents(TRUE);
-
-    (new QLabel("", vbox))->setScaledContents(TRUE);
-    button = new QPushButton(vbox);
-    button->setPixmap(*rightPixmap);
-    connect(button, SIGNAL(clicked()), this, SLOT(realize_cls()));
-    (new QLabel("", vbox))->setScaledContents(TRUE);
-    button = new QPushButton(vbox);
-    button->setPixmap(*leftPixmap);
-    connect(button, SIGNAL(clicked()), this, SLOT(unrealize_cls()));
-    (new QLabel("", vbox))->setScaledContents(TRUE);
-
-    vbox = new QVBox(hbox);
-  }
-  else
-    vbox = pr_rz_page;
+  (new QLabel(lbl, vbox))->setAlignment(AlignCenter);
+  lb = new QListBox(vbox);
+  lb->setSelectionMode((visit) ? QListBox::NoSelection
+			       : QListBox::Multi);
   
   QValueList<BrowserClass *>::ConstIterator it;
   
-  vbox->setMargin(5);
-  
-  (new QLabel("Provided classes", vbox))->setAlignment(AlignCenter);
-  lb_pr = new QListBox(vbox);
-  lb_pr->setSelectionMode((visit) ? QListBox::NoSelection
-				  : QListBox::Multi);
-  
-  const QValueList<BrowserClass *> & pr = bn->get_provided_classes();
-  
-  for (it = pr.begin(); it != pr.end(); ++it)
+  for (it = cls.begin(); it != cls.end(); ++it)
     if (!(*it)->deletedp())
-      lb_pr->insertItem(new ListBoxBrowserNode(*it, (*it)->full_name(TRUE)));
+      lb->insertItem(new ListBoxBrowserNode(*it, (*it)->full_name(TRUE)));
   
-  lb_pr->sort();
-  
-  if (!visit) {
-    QHBox * hb = new QHBox(vbox);
+  lb->sort();
+
+  if (! visit)
+    (this->*filteractivated)(QString::null);
     
-    hb->setMargin(5);
-    //(new QLabel("", hb))->setScaledContents(TRUE);
-    hb->setStretchFactor(new QLabel("", hb), 100);
-    button = new QPushButton(hb);
-    button->setPixmap(*upPixmap);
-    connect(button, SIGNAL(clicked()), this, SLOT(rz_to_pr_cls()));
-    hb->setStretchFactor(button, 0);
-    //(new QLabel("", hb))->setScaledContents(TRUE);
-    hb->setStretchFactor(new QLabel("", hb), 100);
-    button = new QPushButton(hb);
-    button->setPixmap(*downPixmap);
-    connect(button, SIGNAL(clicked()), this, SLOT(pr_to_rz_cls()));
-    hb->setStretchFactor(button, 0);
-    //(new QLabel("", hb))->setScaledContents(TRUE);
-    hb->setStretchFactor(new QLabel("", hb), 100);
-  }
-  
-  (new QLabel("Realized classes", vbox))->setAlignment(AlignCenter);
-  lb_rz = new QListBox(vbox);
-  lb_rz->setSelectionMode((visit) ? QListBox::NoSelection
-				  : QListBox::Multi);
-  
-  const QValueList<BrowserClass *> & rz = bn->get_realized_classes();
-  
-  for (it = rz.begin(); it != rz.end(); ++it)
-    if (!(*it)->deletedp())
-      lb_rz->insertItem(new ListBoxBrowserNode(*it, (*it)->full_name(TRUE)));
-  
-  lb_rz->sort();
-  
-  addTab(pr_rz_page, "Provided/realized classes");
+  addTab(page, lbl);
 }
 
 void ComponentDialog::rq_stereotypeFilterActivated(const QString & st) {
@@ -348,14 +240,14 @@ void ComponentDialog::rq_stereotypeFilterActivated(const QString & st) {
   BrowserClass::instances(classes, st, TRUE);
   
   for (cl = classes.first(); cl != 0; cl = classes.next())
-    if (d_associated.find(cl) == 0)
+    if (rqs.findIndex((BrowserClass *) cl) == -1)
       lb_rq_available->insertItem(new ListBoxBrowserNode(cl, cl->full_name(TRUE)));
   
   lb_rq_available->sort();
 }
 
-void ComponentDialog::pr_rz_stereotypeFilterActivated(const QString & st) {
-  lb_pr_rz_available->clear();
+void ComponentDialog::pr_stereotypeFilterActivated(const QString & st) {
+  lb_pr_available->clear();
   
   BrowserNodeList classes;
   BrowserNode * cl;
@@ -363,10 +255,25 @@ void ComponentDialog::pr_rz_stereotypeFilterActivated(const QString & st) {
   BrowserClass::instances(classes, st, TRUE);
   
   for (cl = classes.first(); cl != 0; cl = classes.next())
-    if (d_associated.find(cl) == 0)
-      lb_pr_rz_available->insertItem(new ListBoxBrowserNode(cl, cl->full_name(TRUE)));
+    if (prs.findIndex((BrowserClass *) cl) == -1)
+      lb_pr_available->insertItem(new ListBoxBrowserNode(cl, cl->full_name(TRUE)));
   
-  lb_rq_available->sort();
+  lb_pr_available->sort();
+}
+
+void ComponentDialog::rz_stereotypeFilterActivated(const QString & st) {
+  lb_rz_available->clear();
+  
+  BrowserNodeList classes;
+  BrowserNode * cl;
+
+  BrowserClass::instances(classes, st, TRUE);
+  
+  for (cl = classes.first(); cl != 0; cl = classes.next())
+    if (rzs.findIndex((BrowserClass *) cl) == -1)
+      lb_rz_available->insertItem(new ListBoxBrowserNode(cl, cl->full_name(TRUE)));
+  
+  lb_rz_available->sort();
 }
 
 void ComponentDialog::require_cls() {
@@ -376,25 +283,9 @@ void ComponentDialog::require_cls() {
     QListBoxItem * item = lb_rq_available->item(i);
     
     if (item->selected()) {
+      rqs.append((BrowserClass *) ((ListBoxBrowserNode *) item)->browser_node);
       lb_rq_available->takeItem(item);
       lb_rq->insertItem(item);
-      
-      BrowserNode * c =
-	((ListBoxBrowserNode *) item)->browser_node;
-      
-      d_associated.insert(c, c);
-      
-      unsigned int j;
-      unsigned int n = lb_pr_rz_available->count();
-      
-      for (j = 0; j != n; j += 1) {
-	item = lb_pr_rz_available->item(j);
-      
-	if (((ListBoxBrowserNode *) item)->browser_node == c) {
-	  delete item;
-	  break;
-	}
-      }
     }
     else
       i += 1;
@@ -410,54 +301,33 @@ void ComponentDialog::unrequire_cls() {
     QListBoxItem * item = lb_rq->item(i);
     
     if (item->selected()) {
-      BrowserNode * c =
-	((ListBoxBrowserNode *) item)->browser_node;
+      BrowserNode * c = ((ListBoxBrowserNode *) item)->browser_node;
       QString s = item->text();
       
       delete item;
-      d_associated.remove(c);
+      rqs.remove((BrowserClass *) c);
       
       if (rq_stereotypefilter->currentText().isEmpty() ||
 	  (c->get_stereotype() == rq_stereotypefilter->currentText()))
 	lb_rq_available->insertItem(new ListBoxBrowserNode(c, s));
-      if (pr_rz_stereotypefilter->currentText().isEmpty() ||
-	  (c->get_stereotype() == pr_rz_stereotypefilter->currentText()))
-	lb_pr_rz_available->insertItem(new ListBoxBrowserNode(c, s));
     }
     else
       i += 1;
   }
   
   lb_rq_available->sort();
-  lb_pr_rz_available->sort();
 }
 
 void ComponentDialog::provide_cls() {
   unsigned int i = 0;
   
-  while (i != lb_pr_rz_available->count()) {
-    QListBoxItem * item = lb_pr_rz_available->item(i);
+  while (i != lb_pr_available->count()) {
+    QListBoxItem * item = lb_pr_available->item(i);
     
     if (item->selected()) {
-      lb_pr_rz_available->takeItem(item);
+      prs.append((BrowserClass *) ((ListBoxBrowserNode *) item)->browser_node);
+      lb_pr_available->takeItem(item);
       lb_pr->insertItem(item);
-      
-      BrowserNode * c =
-	((ListBoxBrowserNode *) item)->browser_node;
-      
-      d_associated.insert(c, c);
-      
-      unsigned int j;
-      unsigned int n = lb_rq_available->count();
-      
-      for (j = 0; j != n; j += 1) {
-	item = lb_rq_available->item(j);
-      
-	if (((ListBoxBrowserNode *) item)->browser_node == c) {
-	  delete item;
-	  break;
-	}
-      }
     }
     else
       i += 1;
@@ -473,54 +343,33 @@ void ComponentDialog::unprovide_cls() {
     QListBoxItem * item = lb_pr->item(i);
     
     if (item->selected()) {
-      BrowserNode * c =
-	((ListBoxBrowserNode *) item)->browser_node;
+      BrowserNode * c = ((ListBoxBrowserNode *) item)->browser_node;
       QString s = item->text();
       
       delete item;
-      d_associated.remove(c);
+      prs.remove((BrowserClass *) c);
       
-      if (rq_stereotypefilter->currentText().isEmpty() ||
-	  (c->get_stereotype() == rq_stereotypefilter->currentText()))
-	lb_rq_available->insertItem(new ListBoxBrowserNode(c, s));
-      if (pr_rz_stereotypefilter->currentText().isEmpty() ||
-	  (c->get_stereotype() == pr_rz_stereotypefilter->currentText()))
-	lb_pr_rz_available->insertItem(new ListBoxBrowserNode(c, s));
+      if (pr_stereotypefilter->currentText().isEmpty() ||
+	  (c->get_stereotype() == pr_stereotypefilter->currentText()))
+	lb_pr_available->insertItem(new ListBoxBrowserNode(c, s));
     }
     else
       i += 1;
   }
   
-  lb_rq_available->sort();
-  lb_pr_rz_available->sort();
+  lb_pr_available->sort();
 }
 
 void ComponentDialog::realize_cls() {
   unsigned int i = 0;
   
-  while (i != lb_pr_rz_available->count()) {
-    QListBoxItem * item = lb_pr_rz_available->item(i);
+  while (i != lb_rz_available->count()) {
+    QListBoxItem * item = lb_rz_available->item(i);
     
     if (item->selected()) {
-      lb_pr_rz_available->takeItem(item);
+      rzs.append((BrowserClass *) ((ListBoxBrowserNode *) item)->browser_node);
+      lb_rz_available->takeItem(item);
       lb_rz->insertItem(item);
-      
-      BrowserNode * c =
-	((ListBoxBrowserNode *) item)->browser_node;
-      
-      d_associated.insert(c, c);
-      
-      unsigned int j;
-      unsigned int n = lb_rq_available->count();
-      
-      for (j = 0; j != n; j += 1) {
-	item = lb_rq_available->item(j);
-      
-	if (((ListBoxBrowserNode *) item)->browser_node == c) {
-	  delete item;
-	  break;
-	}
-      }
     }
     else
       i += 1;
@@ -536,60 +385,21 @@ void ComponentDialog::unrealize_cls() {
     QListBoxItem * item = lb_rz->item(i);
     
     if (item->selected()) {
-      BrowserNode * c =
-	((ListBoxBrowserNode *) item)->browser_node;
+      BrowserNode * c = ((ListBoxBrowserNode *) item)->browser_node;
       QString s = item->text();
       
       delete item;
-      d_associated.remove(c);
+      rzs.remove((BrowserClass *) c);
       
-      if (rq_stereotypefilter->currentText().isEmpty() ||
-	  (c->get_stereotype() == rq_stereotypefilter->currentText()))
-	lb_rq_available->insertItem(new ListBoxBrowserNode(c, s));
-      if (pr_rz_stereotypefilter->currentText().isEmpty() ||
-	  (c->get_stereotype() == pr_rz_stereotypefilter->currentText()))
-	lb_pr_rz_available->insertItem(new ListBoxBrowserNode(c, s));
+      if (rz_stereotypefilter->currentText().isEmpty() ||
+	  (c->get_stereotype() == rz_stereotypefilter->currentText()))
+	lb_rz_available->insertItem(new ListBoxBrowserNode(c, s));
     }
     else
       i += 1;
   }
   
-  lb_rq_available->sort();
-  lb_pr_rz_available->sort();
-}
-
-void ComponentDialog::rz_to_pr_cls() {
-  unsigned int i = 0;
-  
-  while (i != lb_rz->count()) {
-    QListBoxItem * item = lb_rz->item(i);
-    
-    if (item->selected()) {
-      lb_rz->takeItem(item);
-      lb_pr->insertItem(item);
-    }
-    else
-      i += 1;
-  }
-  
-  lb_pr->sort();
-}
-
-void ComponentDialog::pr_to_rz_cls() {
-  unsigned int i = 0;
-  
-  while (i != lb_pr->count()) {
-    QListBoxItem * item = lb_pr->item(i);
-    
-    if (item->selected()) {
-      lb_pr->takeItem(item);
-      lb_rz->insertItem(item);
-    }
-    else
-      i += 1;
-  }
-  
-  lb_rz->sort();
+  lb_rz_available->sort();
 }
 
 void ComponentDialog::edit_description() {

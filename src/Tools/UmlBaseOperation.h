@@ -26,6 +26,14 @@ class UmlBaseOperation : public UmlClassMember {
     // returns the kind of the item
     virtual anItemKind kind();
 
+    // indicates if the body is generated even if preserve body is set, returns TRUE if yes
+    bool isBodyGenerationForced();
+
+    // to set the 'force generation' flag
+    // 
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isBodyGenerationForced(bool y);
+
     // indicates if the operation is abstract, returns TRUE if yes
     bool isAbstract();
 
@@ -310,6 +318,8 @@ class UmlBaseOperation : public UmlClassMember {
 
 
   private:
+    bool _force_body_generation : 1;
+  
     bool _abstract : 1;
 
 #ifdef WITHCPP

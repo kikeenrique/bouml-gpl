@@ -17,7 +17,7 @@ class UmlCom
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(25);
+    write_unsigned(35);
     flush();
     return TRUE;
   }
@@ -38,7 +38,7 @@ class UmlCom
     p_buffer_out = 4/*bytes for length*/;
 
     // send API version
-    write_unsigned(25);
+    write_unsigned(35);
     flush();
   }
   catch (Exception e) {
@@ -54,6 +54,14 @@ class UmlCom
   send_cmd(miscGlobalCmd, traceCmd, s);
 !!!71424.java!!!	trace(in s : str) : void
   send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._traceCmd, s);
+!!!194560.cpp!!!	showTrace() : void
+  send_cmd(miscGlobalCmd, showTraceCmd);
+!!!194560.java!!!	showTrace() : void
+  send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._showTraceCmd);
+!!!194688.cpp!!!	traceAutoRaise(in y : bool) : void
+  send_cmd(miscGlobalCmd, traceAutoRaiseCmd, (y == 0) ? 0 : 1);
+!!!194688.java!!!	traceAutoRaise(in y : bool) : void
+  send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._traceAutoRaiseCmd, (y) ? (byte) 1 : (byte) 0);
 !!!71552.cpp!!!	message(in s : str) : void
   send_cmd(miscGlobalCmd, messageCmd, s);
 !!!71552.java!!!	message(in s : str) : void
@@ -206,8 +214,8 @@ class UmlCom
   *p_buffer_out++ = (b == 0) ? 0 : 1;
 !!!72320.java!!!	write_bool(in b : bool) : void
   check_size_out(1);
-  
-  buffer_out[p_buffer_out++] = (b) ? (byte) 0 : (byte) 1;
+
+  buffer_out[p_buffer_out++] = (b) ? (byte) 1 : (byte) 0;
 !!!72448.cpp!!!	write_char(in c : sbyte) : void
   check_size_out(1);
   

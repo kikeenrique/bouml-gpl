@@ -165,21 +165,11 @@ bool UmlBaseClass::set_isJavaExternal(bool y) {
 }
 
 bool UmlBaseClass::isJavaPublic() {
-  read_if_needed_();
-  
-  return _java_public;
+  return visibility() == PublicVisibility;
 }
 
 bool UmlBaseClass::set_isJavaPublic(bool y) {
-  bool r;
-  
-  if (set_it_(r, y, setIsJavaPublicCmd)) {
-    _java_public = y;
-    return TRUE;
-  }
-  else
-    return FALSE;
-
+  return set_Visibility((y) ? PublicVisibility : PackageVisibility);
 }
 
 bool UmlBaseClass::isJavaFinal() {
@@ -193,6 +183,43 @@ bool UmlBaseClass::set_isJavaFinal(bool y) {
   
   if (set_it_(r, y, setIsJavaFinalCmd)) {
     _java_final = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+
+}
+#endif
+
+#ifdef WITHPHP
+bool UmlBaseClass::isPhpExternal() {
+  read_if_needed_();
+  
+  return _php_external;
+}
+
+bool UmlBaseClass::set_isPhpExternal(bool y) {
+  bool r;
+  
+  if (set_it_(r, y, setIsPhpExternalCmd)) {
+    _php_external = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool UmlBaseClass::isPhpFinal() {
+  read_if_needed_();
+  
+  return _php_final;
+}
+
+bool UmlBaseClass::set_isPhpFinal(bool y) {
+  bool r;
+  
+  if (set_it_(r, y, setIsPhpFinalCmd)) {
+    _php_final = y;
     return TRUE;
   }
   else
@@ -342,9 +369,18 @@ void UmlBaseClass::read_cpp_() {
 #ifdef WITHJAVA
 void UmlBaseClass::read_java_() {
   UmlBaseClassMember::read_java_();
-  _java_public = UmlCom::read_bool();
+  ;
   _java_final = UmlCom::read_bool();
   _java_external = UmlCom::read_bool();
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBaseClass::read_php_() {
+  UmlBaseClassMember::read_php_();
+  ;
+  _php_final = UmlCom::read_bool();
+  _php_external = UmlCom::read_bool();
 }
 #endif
 

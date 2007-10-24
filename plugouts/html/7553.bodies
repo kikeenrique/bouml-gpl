@@ -1208,19 +1208,29 @@ h4.activity { background: #87ceff; }\n");
     fw.write(c);
     break;
   }
-!!!128115.cpp!!!	write(in t : UmlTypeSpec, in cpp : bool) : void
+!!!128115.cpp!!!	write(in t : UmlTypeSpec, in lang : aLanguage) : void
   if (t.type != 0)
     t.type->write();
   else
-    writeq((cpp) ? CppSettings::type(t.toString())
-		 : JavaSettings::type(t.toString()));
-
-!!!128115.java!!!	write(in t : UmlTypeSpec, in cpp : bool) : void
+    switch (lang) {
+    case cppLanguage:
+      writeq(CppSettings::type(t.toString()));
+      break;
+    case javaLanguage:
+      writeq(JavaSettings::type(t.toString()));
+      break;
+    default:
+      writeq(t.toString());
+  }
+!!!128115.java!!!	write(in t : UmlTypeSpec, in lang : aLanguage) : void
   if (t.type != null)
     t.type.write();
+  else if (lang == aLanguage.cppLanguage)
+    writeq(CppSettings.type(t.toString()));
+  else if (lang == aLanguage.javaLanguage)
+    writeq(JavaSettings.type(t.toString()));
   else
-    writeq((cpp) ? CppSettings.type(t.toString())
-		 : JavaSettings.type(t.toString()));
+    writeq(t.toString());
 
 !!!203778.cpp!!!	write(in t : UmlTypeSpec) : void
   if (t.type != 0)
@@ -1232,7 +1242,7 @@ h4.activity { background: #87ceff; }\n");
     t.type.write();
   else
     writeq(t.toString());
-!!!128243.cpp!!!	write(in v : aVisibility, in cpp : bool) : void
+!!!128243.cpp!!!	write(in v : aVisibility, in lang : aLanguage) : void
   switch (v) {
   case PublicVisibility:
     fw.write("public");
@@ -1244,12 +1254,20 @@ h4.activity { background: #87ceff; }\n");
     fw.write("private");
     break;
   case PackageVisibility:
-    fw.write((cpp) ? "public" : "package");
+    switch (lang) {
+    case cppLanguage:
+      fw.write("public");
+      break;
+    case javaLanguage:
+      fw.write("package");
+    default:
+      break;
+    }
     break;
   default:
     fw.write("???");
   }
-!!!128243.java!!!	write(in v : aVisibility, in cpp : bool) : void
+!!!128243.java!!!	write(in v : aVisibility, in lang : aLanguage) : void
   switch (v.value()) {
   case aVisibility._PublicVisibility:
     fw.write("public");
@@ -1261,7 +1279,10 @@ h4.activity { background: #87ceff; }\n");
     fw.write("private");
     break;
   case aVisibility._PackageVisibility:
-    fw.write((cpp) ? "public" : "package");
+    if (lang == aLanguage.cppLanguage)
+      fw.write("public");
+    else if (lang == aLanguage.javaLanguage)
+      fw.write("package");
     break;
   default:
     fw.write("???");

@@ -20,7 +20,7 @@ void UmlActivityObject::html(QCString pfix, unsigned int rank, unsigned int leve
 
 void UmlActivityObject::html_internal(QCString pfix, unsigned int rank, unsigned int level) {
   fw.write("<p>Type : ");
-  write(type(), TRUE);
+  write(type(), cppLanguage);
   fw.write("</p>");
   
   if (! multiplicity().isEmpty()) {
