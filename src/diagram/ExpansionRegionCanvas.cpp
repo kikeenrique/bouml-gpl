@@ -343,20 +343,12 @@ void ExpansionRegionCanvas::draw(QPainter & p) {
 
   FILE * fp = svg();
 
-  if (fp != 0) {
-    if (used_color != UmlTransparent)
-      fprintf(fp, "<g>\n"
-	      "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-dasharray=\"4,4\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
-	      co.rgb()&0xffffff,
-	      r.left(), r.top(), r.width() - 1, r.height() - 1);
-    else
-      fprintf(fp, "<g>\n"
-	      "\t<rect fill=\"none\" stroke=\"black\" stroke-dasharray=\"4,4\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
-	      r.left(), r.top(), r.width() - 1, r.height() - 1);
-  }
-
+  if (fp != 0)
+    fprintf(fp, "<g>\n"
+	    "\t<rect fill=\"%s\" stroke=\"black\" stroke-dasharray=\"4,4\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
+	    svg_color(used_color),
+	    r.left(), r.top(), r.width() - 1, r.height() - 1);
 
   int margin = (int) (6 * the_canvas()->zoom());
   QString s;

@@ -73,6 +73,7 @@ BrowserSeqDiagram::BrowserSeqDiagram(BrowserSeqDiagram * model, BrowserNode * p)
   duration_color = model->duration_color;
   continuation_color = model->continuation_color;
   class_instance_color = model->class_instance_color;
+  overlapping_bars = model->overlapping_bars;
   canvas_size = model->canvas_size;
   is_modified = TRUE;
   
@@ -115,6 +116,7 @@ void BrowserSeqDiagram::make() {
   duration_color = UmlDefaultColor;
   continuation_color = UmlDefaultColor;
   class_instance_color = UmlDefaultColor;
+  overlapping_bars = TRUE;
 }
 
 BrowserSeqDiagram * BrowserSeqDiagram::add_sequence_diagram(BrowserNode * future_parent)
@@ -534,6 +536,8 @@ void BrowserSeqDiagram::save(QTextStream & st, bool ref, QString & warning) {
     }
     
     nl_indent(st);
+    if (overlapping_bars)
+      st << "overlapping_bars ";
     st << "size " << stringify(get_format());
     
     indent(-1);
@@ -598,6 +602,12 @@ BrowserSeqDiagram * BrowserSeqDiagram::read(char * & st, char * k,
     read_color(st, "class_instance_color", r->class_instance_color, k);// updates k
     read_color(st, "fragment_color", r->fragment_color, k);	// updates k
     r->BrowserNode::read(st, k);			// updates k
+    
+    if (!strcmp(k, "overlapping_bars"))
+      // constructor set overlapping_bars to TRUE
+      k = read_keyword(st);
+    else
+      r->overlapping_bars = FALSE;
     
     if (!strcmp(k, "size")) {
       r->set_format(canvas_format(read_keyword(st)));

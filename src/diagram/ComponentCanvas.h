@@ -82,10 +82,13 @@ class ComponentCanvas : public QObject, public DiagramCanvas,
     virtual void check_line(ArrowCanvas * l);
     virtual aCorner on_resize_point(const QPoint & p);
     virtual void resize(aCorner c, int dx, int dy);
+    virtual void prepare_for_move(bool on_resize);
     virtual bool move_with_its_package() const;
     
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;
     static ComponentCanvas * read(char * &, UmlCanvas *, char *);
+    virtual void post_loaded();
+
     virtual void history_save(QBuffer &) const;    
     virtual void history_load(QBuffer &);
     virtual void history_hide();   

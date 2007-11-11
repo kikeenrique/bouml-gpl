@@ -226,15 +226,10 @@ void ExpansionNodeCanvas::draw(QPainter & p) {
 
   if (fp != 0) {
     fputs("<g>\n", fp);
-    if (used_color != UmlTransparent)
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      co.rgb()&0xffffff,
-	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-    else
-      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+    fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	    svg_color(used_color),
+	    r.x(), r.y(), r.width() - 1, r.height() - 1);
   }
   
   int dx = width() / 3;
@@ -428,6 +423,11 @@ void ExpansionNodeCanvas::modified() {
     draw_all_flows();
   canvas()->update();
   package_modified();
+}
+
+void ExpansionNodeCanvas::post_loaded() {
+  if (the_canvas()->must_draw_all_relations())
+    draw_all_flows();
 }
 
 void ExpansionNodeCanvas::connexion(UmlCode action, DiagramItem * dest,

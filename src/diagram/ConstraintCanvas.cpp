@@ -74,7 +74,7 @@ ConstraintCanvas::ConstraintCanvas(UmlCanvas * canvas, CdClassCanvas * a, QStrin
   if (h < height())
     h = height();
 
-  setSize(w, h);
+  DiagramCanvas::resize(w, h);
   setZ(a->get_z());
 
   width_scale100 = w;

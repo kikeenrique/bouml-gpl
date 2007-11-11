@@ -77,18 +77,13 @@ void SubjectCanvas::draw(QPainter & p) {
   p.setBackgroundColor(co);
   p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
   
-  if (used_color != UmlTransparent)  {
+  if (used_color != UmlTransparent)
     p.fillRect(r, co);
-    
-    if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      co.rgb()&0xffffff, 
-	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-  }
-  else if (fp != 0)
-    fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+  
+  if (fp != 0)
+    fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	    svg_color(used_color), 
 	    r.x(), r.y(), r.width() - 1, r.height() - 1);
 
   p.drawRect(r);
@@ -300,6 +295,29 @@ aCorner SubjectCanvas::on_resize_point(const QPoint & p) {
 
 void SubjectCanvas::resize(aCorner c, int dx, int dy) {
   DiagramCanvas::resize(c, dx, dy, min_width, min_height);
+}
+
+void SubjectCanvas::prepare_for_move(bool on_resize) {
+  if (!on_resize) {
+    DiagramCanvas::prepare_for_move(on_resize);
+    
+    QRect r = rect();
+    QCanvasItemList l = collisions(TRUE);
+    QCanvasItemList::ConstIterator it;
+    QCanvasItemList::ConstIterator end = l.end();
+    DiagramItem * di;
+  
+    for (it = l.begin(); it != end; ++it) {
+      if ((*it)->visible() && // at least not deleted
+	  !(*it)->selected() &&
+	  ((di = QCanvasItemToDiagramItem(*it)) != 0) &&
+	  r.contains(di->rect(), TRUE) &&
+	  di->move_with(UmlSubject)) {
+	the_canvas()->select(*it);
+	di->prepare_for_move(FALSE);
+      }
+    }
+  }
 }
 
 void SubjectCanvas::save(QTextStream & st, bool ref, QString &) const {

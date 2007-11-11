@@ -36,6 +36,7 @@ extern QPixmap * syncmsgButton;
 extern QPixmap * syncselfmsgButton;
 extern QPixmap * asyncselfmsgButton;
 extern QPixmap * returnmsgButton;
+extern QPixmap * selfreturnmsgButton;
 extern QPixmap * selflinkButton;
 extern QPixmap * fitscaleButton;
 extern QPixmap * optwindowsizeButton;
@@ -248,6 +249,7 @@ extern QPixmap * VeryLightGrayPixmap;
 extern QPixmap * LightGrayPixmap;
 extern QPixmap * GrayPixmap;
 extern QPixmap * DarkGrayPixmap;
+extern QPixmap * BlackPixmap;
 
 extern QPixmap * VeryLightOrangePixmap;
 extern QPixmap * LightOrangePixmap;

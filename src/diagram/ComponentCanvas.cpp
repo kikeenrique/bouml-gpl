@@ -315,6 +315,12 @@ void ComponentCanvas::modified() {
   package_modified();
 }
 
+void ComponentCanvas::post_loaded() {
+  force_self_rel_visible();
+  if (the_canvas()->must_draw_all_relations())
+    draw_all_simple_relations();
+}
+
 void ComponentCanvas::check_line(ArrowCanvas * l) {
   if (!valid(l))
     Undefined.append(l);
@@ -339,6 +345,7 @@ bool ComponentCanvas::connexion(UmlCode action, const QPoint &, const QPoint & p
     new ArrowJunctionCanvas(the_canvas(), p.x(), p.y(), *it, 0); 
   
   aj->show();
+  aj->upper();
   
   ArrowCanvas * a = 
     new ArrowCanvas(the_canvas(), this, aj, action, 0, FALSE, -1.0, -1.0);
@@ -373,6 +380,29 @@ void ComponentCanvas::resize(aCorner c, int dx, int dy) {
     DiagramCanvas::resize(c, dx, dy, min_width, min_height);
 }
 
+void ComponentCanvas::prepare_for_move(bool on_resize) {
+  if (! on_resize) {
+    DiagramCanvas::prepare_for_move(on_resize);
+    
+    QCanvasItemList l = collisions(TRUE);
+    QCanvasItemList::ConstIterator it;
+    QCanvasItemList::ConstIterator end = l.end();
+    DiagramItem * di;
+    BrowserNode * p = get_bn();
+  
+    for (it = l.begin(); it != end; ++it) {
+      if ((*it)->visible() && // at least not deleted
+	  !(*it)->selected() &&
+	  ((di = QCanvasItemToDiagramItem(*it)) != 0) &&
+	  (di->type() == UmlComponent) &&
+	  (di->get_bn()->parent() == p)) {
+	the_canvas()->select(*it);
+	di->prepare_for_move(FALSE);
+      }
+    }
+  }
+}
+
 bool ComponentCanvas::move_with_its_package() const {
   return TRUE;
 }
@@ -400,18 +430,13 @@ void ComponentCanvas::draw(QPainter & p) {
     
     r.setLeft(r.left() + (he * 5)/(13*2));
 
-    if (used_color != UmlTransparent) {
+    if (used_color != UmlTransparent)
       p.fillRect(r, co);
       
-      if (fp != 0)
-	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		co.rgb()&0xffffff,
-		r.x(), r.y(), r.width() - 1, r.height() - 1);
-    }
-    else if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      svg_color(used_color),
 	      r.x(), r.y(), r.width() - 1, r.height() - 1);
 
     p.drawRect(r);
@@ -444,18 +469,18 @@ void ComponentCanvas::draw(QPainter & p) {
     p.fillRect(r, co);
     p.drawRect(r);
     if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      co.rgb()&0xffffff,
+	      svg_color((used_color != UmlTransparent) ? used_color : UmlWhite),
 	      r.x(), r.y(), r.width() - 1, r.height() - 1);
     
     r.moveBy(0, (he * 4)/13);
     p.fillRect(r, co);
     p.drawRect(r);
     if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      co.rgb()&0xffffff,
+	      svg_color((used_color != UmlTransparent) ? used_color : UmlWhite),
 	      r.x(), r.y(), r.width() - 1, r.height() - 1);
   }
   else {
@@ -498,18 +523,12 @@ void ComponentCanvas::draw(QPainter & p) {
   
     QRect re = r;
   
-    if (used_color != UmlTransparent) {
+    if (used_color != UmlTransparent)
       p.fillRect(r, co);
-
-      if (fp != 0)
-	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		co.rgb()&0xffffff, 
-		r.x(), r.y(), r.width() - 1, r.height() - 1);
-    }
-    else if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      svg_color(used_color), 
 	      r.x(), r.y(), r.width() - 1, r.height() - 1);
 
     p.drawRect(r);
@@ -564,18 +583,18 @@ void ComponentCanvas::draw(QPainter & p) {
     p.fillRect(r2, co);
     p.drawRect(r2);
     if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      co.rgb()&0xffffff, 
+	      svg_color(used_color), 
 	      r2.x(), r2.y(), r2.width() - 1, r2.height() - 1);
     
     r2.moveBy(0, r.width() >> 1);
     p.fillRect(r2, co);
     p.drawRect(r2);
     if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      co.rgb()&0xffffff, 
+	      svg_color(used_color), 
 	      r2.x(), r2.y(), r2.width() - 1, r2.height() - 1);
     
     // compartments

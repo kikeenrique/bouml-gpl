@@ -33,6 +33,8 @@
 class TextCanvas : public DiagramCanvas {
   protected:
     UmlFont itsfont;
+    UmlColor fg_c;
+    UmlColor bg_c;
     QString text;
   
   public:

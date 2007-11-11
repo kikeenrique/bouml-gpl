@@ -23,38 +23,27 @@
 //
 // *************************************************************************
 
-#ifndef SDSELFMSGCANVAS_H
-#define SDSELFMSGCANVAS_H
+#ifndef SDDURATIONSUPPORT_H
+#define SDDURATIONSUPPORT_H
 
-#include "SdMsgBaseCanvas.h"
+#include <qlist.h>
 
-class SdSelfMsgCanvas : public SdMsgBaseCanvas {
+class SdDurationCanvas;
+class SdLifeLineCanvas;
+
+class SdDurationSupport {
   public:
-    SdSelfMsgCanvas(UmlCanvas * canvas, SdDurationCanvas * d,
-		    UmlCode l, int v, int id);
-    virtual ~SdSelfMsgCanvas();
-    
-    virtual void draw(QPainter & p);
-    
-    virtual void update_hpos();
-    virtual void check_vpos(const QRect &);
-    virtual double min_y() const;
-    virtual void update();
-    virtual void change_duration(SdDurationCanvas * oldone,
-				 SdDurationCanvas * newone);
-    virtual int overlap_dir(SdDurationCanvas *) const;
-    virtual void menu(const QPoint&);
-    virtual void select_associated();
-    
-    virtual bool has_drawing_settings() const;
-    virtual void edit_drawing_settings(QList<DiagramItem> &);
-    
-    virtual void apply_shortcut(QString s);
-    void edit_drawing_settings();
-  
-    virtual void save(QTextStream &, bool ref, QString & warning) const;
-    static SdSelfMsgCanvas * read(char * &, UmlCanvas *, char *);
+    virtual void add(SdDurationCanvas *) = 0;
+    virtual void remove(SdDurationCanvas *) = 0;
+
+    virtual void update_instance_dead() = 0;
+    virtual void update_v_to_contain(SdDurationCanvas *, bool) = 0;
+    virtual int sub_x(int sub_w) const = 0;
+    virtual double min_y() const = 0;
+    virtual double getZ() const = 0;
+
+    virtual bool isaDuration() const = 0;
+    virtual SdLifeLineCanvas * get_line() const = 0;
 };
 
 #endif
-

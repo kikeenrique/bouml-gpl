@@ -40,13 +40,21 @@ void UmlRelation::html(QCString, unsigned int, unsigned int) {
   writeq(name());
   fw.write("</b></div></td></tr></table>");
 
+  QCString s = description();
+
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    gen_cpp_decl(s, TRUE);
+    fw.write("<br /></p>");
+  }
+
   fw.write("<p>Declaration :</p><ul>");
   
   fw.write("<li>Uml : ");
   gen_uml_decl();
   fw.write("</li>");
   
-  QCString s = cppDecl();
+  s = cppDecl();
 
   if (!s.isEmpty()) {
     fw.write("<li>C++ : ");
@@ -73,15 +81,8 @@ void UmlRelation::html(QCString, unsigned int, unsigned int) {
   fw.write("</ul>");
   
   annotation_constraint();
+  write_properties();
  
-  s = description();
-
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    gen_cpp_decl(s, TRUE);
-    fw.write("<br /></p>");
-  }
-
   unload(FALSE, FALSE);
 }
 

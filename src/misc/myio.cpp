@@ -51,6 +51,7 @@
 #include "strutil.h"
 #include "DialogUtil.h"
 #include "mu.h"
+#include "UmlGlobal.h"
 
 // QFile::baseName() return string before the first '.' rather than the last
 
@@ -93,6 +94,19 @@ void force_read_only(bool y)
 {
   ReadOnlyForced = y;
 }
+
+static bool OnLoadDiagram;
+
+bool on_load_diagram()
+{
+  return OnLoadDiagram;
+}
+
+void set_on_load_diagram(bool y)
+{
+  OnLoadDiagram = y;
+}
+
 
 const char * stringify(UmlVisibility v) {
   switch(v) {
@@ -350,6 +364,8 @@ const char * stringify(UmlColor c)
     return "gray";
   case UmlDarkGray:
     return "darkgray";
+  case UmlBlack:
+    return "black";
     
   case UmlLightRed:
     return "lightred";
@@ -856,6 +872,8 @@ UmlColor color(const char * s)
     return UmlGray;
   if (!strcmp(s, "darkgray"))
     return UmlDarkGray;
+  if (!strcmp(s, "black"))
+    return UmlBlack;
   
   if (! strcmp(s, "verylightorange"))
     return UmlVeryLightOrange;
@@ -2061,6 +2079,19 @@ DiagramItem * load_item(QBuffer & b)
   return di;
 }
 
+void save_ptr(const void * ptr, QBuffer & b)
+{
+  b.writeBlock((char *) &ptr, sizeof(ptr));
+}
+
+void * load_ptr(QBuffer & b)
+{
+  void * ptr;
+  
+  b.readBlock((char *) &ptr, sizeof(ptr));
+  return ptr;
+}
+
 void save(const QPoint & p, QBuffer & b)
 {
   int i;
@@ -2186,11 +2217,30 @@ int svg_height()
   return pict_height;
 }
 
-void draw_poly(FILE * fp, QPointArray & poly, const char * color, bool stroke)
+const char * svg_color(UmlColor c)
+{
+  static const char * svg[UmlDefaultColor];
+  const char * r = svg[c];
+  
+  if (r == 0) {
+    if (c == UmlTransparent)
+      r = svg[c] = "none";
+    else {
+      QColor col = color(c);
+      
+      r = svg[c] = new char[16];
+      sprintf((char *) r, "#%06x", col.rgb()&0xffffff);
+    }
+  }
+  
+  return r;
+}
+
+void draw_poly(FILE * fp, QPointArray & poly, UmlColor color, bool stroke)
 {
   fprintf(fp, (stroke) ? "\t<polygon fill=\"%s\" stroke=\"black\" stroke-opacity=\"1\""
 		       : "\t<polygon fill=\"%s\" stroke=\"none\"",
-	  color);
+	  svg_color(color));
 
   const char * sep = " points=\"";
   int n = poly.size();
@@ -2204,11 +2254,10 @@ void draw_poly(FILE * fp, QPointArray & poly, const char * color, bool stroke)
   fputs("\" />\n", fp);
 }
 
-void draw_poly(FILE * fp, QPointArray & poly, const QColor & color, bool stroke)
+void draw_shadow(FILE * fp, QPointArray & poly)
 {
-  fprintf(fp, (stroke) ? "\t<polygon fill=\"#%06x\" stroke=\"black\" stroke-opacity=\"1\""
-		       : "\t<polygon fill=\"#%06x\" stroke=\"none\"",
-	  color.rgb()&0xffffff);
+  fprintf(fp, "\t<polygon fill=\"#%06x\" stroke=\"none\"",
+	  QObject::darkGray.rgb()&0xffffff);
 
   const char * sep = " points=\"";
   int n = poly.size();
@@ -2259,19 +2308,29 @@ static void xml_text(FILE * fp, QString s)
 }
 
 void draw_text(int x, int y, int w, int h, int align,
-	       QString s, const QFont & fn, FILE * fp)
+	       QString s, const QFont & fn, FILE * fp,
+	       UmlColor fg, UmlColor bg)
 {
   if (s.isEmpty())
     return;
 
+  if (bg != UmlTransparent)
+    fprintf(fp, "\t<rect fill=\"%s\" stroke=\"none\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	    svg_color(bg), x, y, w, h);
+
+  if (fg == UmlTransparent)
+    fg = UmlBlack;
+  
   int ps = fn.pixelSize();
   int pts = fn.pointSize();
   char header[256];
 
-  sprintf(header, "\t<text font-family=\"%s\" font-size=\"%d\" fill=\"black\" xml:space=\"preserve\"",
+  sprintf(header, "\t<text font-family=\"%s\" font-size=\"%d\" fill=\"%s\" xml:space=\"preserve\"",
 	  (const char *) fn.family(),
 	  // decrease size to help to have enough area
-	  (ps == -1) ? /* Qt3 */ pts : ps - 1);
+	  (ps == -1) ? /* Qt3 */ pts : ps - 1,
+	  svg_color(fg));
 
   if (ps == -1)
     /* Qt3 */
@@ -2417,4 +2476,3 @@ void set_last_used_directory(QString s)
   
   Last_Used_Directory = fi.dirPath();
 }
-

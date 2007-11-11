@@ -389,7 +389,7 @@ void CdClassCanvas::compute_size() {
   }
   
   // force odd width and height for line alignment
-  setSize(wi | 1, he | 1);
+  DiagramCanvas::resize(wi | 1, he | 1);
     
   if (tmpl) {
     if (templ == 0) {
@@ -424,6 +424,16 @@ void CdClassCanvas::modified() {
     canvas()->update();
     package_modified();
   }
+}
+
+void CdClassCanvas::post_loaded() {
+  force_self_rel_visible();
+  check_inner();
+  if (the_canvas()->must_draw_all_relations()) {
+    draw_all_relations();    
+    draw_all_simple_relations();
+  }
+  check_constraint();
 }
 
 void CdClassCanvas::check_inner() {
@@ -533,7 +543,9 @@ void CdClassCanvas::draw_all_relations(CdClassCanvas * end) {
     }
   }
   
-  if ((end == 0) && !DrawingSettings::just_modified()) {
+  if ((end == 0) &&
+      !DrawingSettings::just_modified() &&
+      !on_load_diagram()) {
     for (cit = all.begin(); cit != all.end(); ++cit) {
       DiagramItem * di = QCanvasItemToDiagramItem(*cit);
       
@@ -679,9 +691,9 @@ void CdClassCanvas::draw(QPainter & p) {
       p.fillRect(r, co);
 
       if (fp != 0)
-	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		co.rgb()&0xffffff, 
+		svg_color(used_color), 
 		r.x(), r.y(), r.width() - 1, r.height() - 1);
     }
     else if (fp != 0)

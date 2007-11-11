@@ -81,14 +81,14 @@ void ClassDiagramView::menu(const QPoint& p) {
 	  (((BrowserNode *) child)->get_type() == UmlClass) &&
 	  (drawn[(BrowserNode *) child] == 0)) {
 	// not already shown
-	m.insertItem("Add classes of the selected class view", 19);
+	m.insertItem("Add classes of the selected class view", 29);
 	m.insertSeparator();
 	break;
       }
     }
   }
   
-  switch (default_menu(m, 20)) {
+  switch (default_menu(m, 30)) {
   case EDIT_DRAWING_SETTING_CMD:
     ((BrowserClassDiagram *) ((UmlCanvas *) canvas())->browser_diagram())->edit_settings();
     break;
@@ -99,7 +99,7 @@ void ClassDiagramView::menu(const QPoint& p) {
     load("Class");
     window()->package_modified();
     break;
-  case 19:
+  case 29:
     add_classview_classes(bn, p, drawn);
     break;
   }

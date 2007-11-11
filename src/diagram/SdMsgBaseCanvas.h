@@ -67,9 +67,11 @@ class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
     void update_after_move(SdDurationCanvas * p);
     void default_label_position() const;
     virtual void update_hpos() = 0;
+    virtual void check_vpos(const QRect &) = 0;
     virtual double min_y() const = 0;
     virtual void change_duration(SdDurationCanvas * oldone,
 				 SdDurationCanvas * newone) = 0;
+    virtual int overlap_dir(SdDurationCanvas *) const = 0;
     
     virtual bool is_decenter(const QPoint &, bool &) const;
 
@@ -88,7 +90,7 @@ class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
     
     void save(QTextStream & st, QString & warning) const;
     void read(char * &);
-    
+  
   protected slots:
     void modified();	// canvas must be updated
 };

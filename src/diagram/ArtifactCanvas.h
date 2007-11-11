@@ -87,6 +87,7 @@ class ArtifactCanvas : public QObject, public DiagramCanvas {
   
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;
     static ArtifactCanvas * read(char * &, UmlCanvas *, char *);
+    virtual void post_loaded();
     
   private slots:
     void modified();	// canvas must be updated

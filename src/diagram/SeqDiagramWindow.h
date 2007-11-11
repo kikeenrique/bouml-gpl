@@ -48,6 +48,7 @@ class SeqDiagramWindow : public DiagramWindow {
     QToolButton * syncSelfMsg;
     QToolButton * asyncSelfMsg;
     QToolButton * returnMsg;
+    QToolButton * selfreturnMsg;
     QToolButton * note;
     QToolButton * anchor;
     QToolButton * text;
@@ -70,6 +71,7 @@ class SeqDiagramWindow : public DiagramWindow {
     void hit_syncselfmsg();
     void hit_asyncselfmsg();
     void hit_returnmsg();
+    void hit_selfreturnmsg();
     void hit_note();
     void hit_anchor();
     void hit_text();

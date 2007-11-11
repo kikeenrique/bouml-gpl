@@ -179,8 +179,16 @@ const char * SdLifeLineCanvas::may_connect(UmlCode & l, const DiagramItem * dest
 
 void SdLifeLineCanvas::connexion(UmlCode l, DiagramItem * dest,
 				 const QPoint & s, const QPoint & e) {
-  if ((l == UmlSyncSelfMsg) || (l == UmlAsyncSelfMsg) || (dest != this))
+  switch (l) {
+  default:
+    if (dest == this)
+      break;
+    // no break
+  case UmlSyncSelfMsg:
+  case UmlAsyncSelfMsg:
+  case UmlSelfReturnMsg:
     (new SdDurationCanvas(the_canvas(), this, s.y(), FALSE))->connexion(l, dest, s, e);
+  }
 }
 
 void SdLifeLineCanvas::add(SdDurationCanvas * d) {
@@ -191,6 +199,20 @@ void SdLifeLineCanvas::add(SdDurationCanvas * d) {
 void SdLifeLineCanvas::remove(SdDurationCanvas * d) {
   durations.remove(d);
   update_instance_dead();
+}
+
+void SdLifeLineCanvas::toFlat() {
+  QListIterator<SdDurationCanvas> it(durations);
+
+  for (; it.current(); ++it)
+    it.current()->toFlat();
+}
+
+void SdLifeLineCanvas::toOverlapping() {
+  QListIterator<SdDurationCanvas> it(durations);
+
+  for (; it.current(); ++it)
+    it.current()->toOverlapping();
 }
 
 void SdLifeLineCanvas::update_instance_dead() {
@@ -216,6 +238,32 @@ void SdLifeLineCanvas::update_instance_dead() {
     hide();
     show();
   }
+}
+
+void SdLifeLineCanvas::update_v_to_contain(SdDurationCanvas *, bool) {
+  update_instance_dead();
+}
+
+int SdLifeLineCanvas::sub_x(int sub_w) const {
+  QRect r = rect();
+  
+  return (r.left() + r.right() - sub_w)/2 + 1;
+}
+
+double SdLifeLineCanvas::min_y() const {
+  return y() + 6 * the_canvas()->zoom();
+}
+
+SdLifeLineCanvas * SdLifeLineCanvas::get_line() const {
+  return (SdLifeLineCanvas *) this;
+}
+
+bool SdLifeLineCanvas::isaDuration() const {
+  return false;
+}
+
+double SdLifeLineCanvas::getZ() const {
+  return z();
 }
 
 void SdLifeLineCanvas::open() {

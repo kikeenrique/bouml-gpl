@@ -12,9 +12,17 @@ class UmlState
 	  ? "StateMachine" : "State",
 	  pfix, rank, "state", level);
 
+  QCString s = description();
+  
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(description());
+    fw.write("<br /></p>");
+  }
+
   fw.write("<p>Entry Behavior :</p><ul>");
   
-  QCString s = entryBehavior();
+  s = entryBehavior();
 
   if (!s.isEmpty()) {
     fw.write("<li>OCL : <pre>\n");
@@ -96,14 +104,6 @@ class UmlState
 
   fw.write("</ul>");
  
-  s = description();
-  
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    writeq(description());
-    fw.write("<br /></p>");
-  }
-
   UmlStateDiagram * d = associatedDiagram();
   
   if (d != 0) {
@@ -111,6 +111,8 @@ class UmlState
     d->write();
     fw.write("</p>");
   }
+
+  write_properties();
 
   write_children(pfix, rank, level);
 
@@ -122,9 +124,17 @@ class UmlState
 	  ? "StateMachine" : "State",
 	  pfix, rank, "state", level);
 
+  String s = description();
+  
+  if (s.length() != 0) {
+    fw.write("<p>");
+    writeq(description());
+    fw.write("<br /></p>");
+  }
+
   fw.write("<p>Entry Behavior :</p><ul>");
   
-  String s = entryBehavior();
+  s = entryBehavior();
 
   if (s.length() != 0) {
     fw.write("<li>OCL : <pre>\n");
@@ -206,14 +216,6 @@ class UmlState
 
   fw.write("</ul>");
  
-  s = description();
-  
-  if (s.length() != 0) {
-    fw.write("<p>");
-    writeq(description());
-    fw.write("<br /></p>");
-  }
-
   UmlStateDiagram d = associatedDiagram();
   
   if (d != null) {
@@ -221,6 +223,8 @@ class UmlState
     d.write();
     fw.write("</p>");
   }
+
+  write_properties();
 
   write_children(pfix, rank, level);
 

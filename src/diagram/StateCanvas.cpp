@@ -291,6 +291,14 @@ void StateCanvas::modified() {
   package_modified();
 }
 
+void StateCanvas::post_loaded() {
+  force_self_rel_visible();
+  if (the_canvas()->must_draw_all_relations()) {
+    //draw_all_simple_relations();
+    draw_all_transitions();
+  }
+}
+
 void StateCanvas::connexion(UmlCode action, DiagramItem * dest,
 			    const QPoint &, const QPoint &) {
   ArrowCanvas * a;
@@ -441,9 +449,9 @@ void StateCanvas::draw(QPainter & p) {
   p.drawRoundRect(r);
   
   if (fp != 0)
-    fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-opacity=\"1\""
+    fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-opacity=\"1\""
 	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
-	    co.rgb()&0xffffff,
+	    svg_color(used_color),
 	    r.left(), r.top(), r.width() - 1, r.height() - 1);
   
   p.setFont(the_canvas()->get_font(UmlNormalBoldFont));

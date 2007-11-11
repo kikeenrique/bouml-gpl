@@ -172,6 +172,12 @@ void ActivityNodeCanvas::modified() {
   package_modified();
 }
 
+void ActivityNodeCanvas::post_loaded() {
+  force_self_rel_visible();
+  if (the_canvas()->must_draw_all_relations())
+    draw_all_flows();
+}
+
 void ActivityNodeCanvas::draw(QPainter & p) {
   if (!visible() || (xpm == 0)) return;
 

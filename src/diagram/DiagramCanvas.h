@@ -68,6 +68,7 @@ class DiagramCanvas : public QCanvasRectangle, public DiagramItem {
     virtual bool isSelected() const;
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     virtual void prepare_for_move(bool on_resize);
+    virtual bool move_with(UmlCode) const;
     void force_self_rel_visible();
     
     virtual void change_scale();

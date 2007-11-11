@@ -223,6 +223,9 @@ ComboColor::ComboColor(QWidget * parent, UmlColor v,
     case UmlDarkGray:
       insertItem(* DarkGrayPixmap);
       break;
+    case UmlBlack:
+      insertItem(* BlackPixmap);
+      break;
     default:
       insertItem("Unknown color");
     }
@@ -239,17 +242,18 @@ ComboColor::ComboColor(QWidget * parent, UmlColor v,
 #ifdef WIN32
   setSizeLimit(34);	// yes !, don't set it to count() !
 #else
-  setSizeLimit(22);	// yes !, don't set it to count() !
+  setSizeLimit(25);	// yes !, don't set it to count() !
 #endif
 }
 
 QSize SettingsDialog::previous_size;
 
 SettingsDialog::SettingsDialog(QArray<StateSpec> * st, QArray<ColorSpec> * co,
-			       bool nodefault, bool own, bool unchanged)
-    : QTabDialog(0, "Diagram Drawing Settings dialog", TRUE),
+			       bool nodefault, bool own, bool unchanged,
+			       const char * title)
+    : QTabDialog(0, title, TRUE),
       states(st), colors(co), several(unchanged) {
-  setCaption("Diagram Drawing Settings dialog");
+  setCaption(title);
   
   QGrid * grid = 0;
   QString tabname;

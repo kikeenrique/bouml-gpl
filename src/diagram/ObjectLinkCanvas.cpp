@@ -850,14 +850,12 @@ ObjectLinkCanvas * ObjectLinkCanvas::read(char * & st, UmlCanvas * canvas, char 
     return ((ObjectLinkCanvas *) dict_get(read_id(st), "objectlinkcanvas", canvas));
   else if (!strcmp(k, "objectlinkcanvas")) {    
     int id = read_id(st);
-    RelationData * rd;
+    RelationData * rd = 0;
     
     k = read_keyword(st);
-    if (! strcmp(k, "norel"))
-      rd = 0;
-    else if (! strcmp(k, "rel"))
+    if (! strcmp(k, "rel"))
       rd = RelationData::read_ref(st, TRUE);
-    else
+    else if (strcmp(k, "norel"))
       wrong_keyword(k, "norel' or 'rel");
     
     LineGeometry geo;

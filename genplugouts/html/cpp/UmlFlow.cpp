@@ -10,16 +10,24 @@ void UmlFlow::html(QCString, unsigned int, unsigned int) {
   fw.write("<table><tr><td><div class=\"element\">Flow  <b>");
   writeq(name());
   fw.write("</div></td></tr></table>");
-  
+
   fw.write("<p>From ");
   parent()->write();
   fw.write(" To ");
   target()->write();
   fw.write("</p>");
 
+  QCString s = description();
+
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(s);
+    fw.write("<br /></p>");
+  }
+  
   fw.write("<p>Weight :</p><ul>");
   
-  QCString s = weight();
+  s = weight();
 
   if (!s.isEmpty()) {
     fw.write("<li>OCL : <pre>\n");
@@ -128,14 +136,8 @@ void UmlFlow::html(QCString, unsigned int, unsigned int) {
   }
 
   fw.write("</ul>");
-
-  s = description();
-
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    writeq(s);
-    fw.write("<br /></p>");
-  }
+  
+  write_properties();
 
   unload(FALSE, FALSE);
 }

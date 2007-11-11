@@ -395,12 +395,11 @@ BrowserClassInstance * BrowserClassInstance::get_classinstance(BrowserClass * cl
   }
   nodes.sort();
   
-  // use cl here but this any element is good for
-  cl->enter_child_name(dummy, "choose existing instance : ",
-		   UmlClassInstance, nodes, &old,
-		   TRUE, TRUE, TRUE);
-
-  return ((BrowserClassInstance *) old);
+  // use cl here but any element is good for
+  return (! cl->enter_child_name(dummy, "choose existing instance : ",
+				 UmlClassInstance, nodes, &old,
+				 TRUE, TRUE, TRUE))
+    ? 0 : ((BrowserClassInstance *) old);
 }
 
 BrowserClassInstance * BrowserClassInstance::add_classinstance(BrowserNode * future_parent)

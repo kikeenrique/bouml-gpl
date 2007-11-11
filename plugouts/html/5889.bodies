@@ -28,13 +28,21 @@ class UmlAttribute
   writeq(name());
   fw.write("</b></div></td></tr></table>\n");
 
+  QCString s = description();
+  
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    gen_cpp_decl(s, TRUE);
+    fw.write("<br /></p>");
+  }
+
   fw.write("<p>Declaration :</p><ul>");
   
   fw.write("<li>Uml : ");
   gen_uml_decl();
   fw.write("</li>");
   
-  QCString s = cppDecl();
+  s = cppDecl();
 
   if (!s.isEmpty()) {
     fw.write("<li>C++ : ");
@@ -61,15 +69,8 @@ class UmlAttribute
   fw.write("</ul>");
   
   annotation_constraint();
+  write_properties();
  
-  s = description();
-  
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    gen_cpp_decl(s, TRUE);
-    fw.write("<br /></p>");
-  }
-
   unload(FALSE, FALSE);
 !!!129907.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   define();
@@ -78,13 +79,21 @@ class UmlAttribute
   writeq(name());
   fw.write("</b></div></td></tr></table>\n");
 
+  String s = description();
+  
+  if (s.length() != 0) {
+    fw.write("<p>");
+    gen_cpp_decl(s, true);
+    fw.write("<br /></p>");
+  }
+
   fw.write("<p>Declaration :</p><ul>");
   
   fw.write("<li>Uml : ");
   gen_uml_decl();
   fw.write("</li>");
   
-  String s = cppDecl();
+  s = cppDecl();
 
   if (s.length() != 0) {
     fw.write("<li>C++ : ");
@@ -111,14 +120,7 @@ class UmlAttribute
   fw.write("</ul>");
   
   annotation_constraint();
- 
-  s = description();
-  
-  if (s.length() != 0) {
-    fw.write("<p>");
-    gen_cpp_decl(s, true);
-    fw.write("<br /></p>");
-  }
+  write_properties();
 
   unload(false, false);
 !!!204418.cpp!!!	ref_index() : void

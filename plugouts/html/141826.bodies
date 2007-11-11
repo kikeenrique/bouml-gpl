@@ -24,6 +24,15 @@ class UmlActivityObject
 
   unload(false, false);
 !!!197506.cpp!!!	html_internal(in pfix : string, in rank : uint, in level : uint) : void
+  QCString s = description();
+  
+  s = description();
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(s);
+    fw.write("<br /></p>");
+  }
+
   fw.write("<p>Type : ");
   write(type(), cppLanguage);
   fw.write("</p>");
@@ -42,7 +51,7 @@ class UmlActivityObject
 
   fw.write("<p>Selection :</p><ul>");
   
-  QCString s = selection();
+  s = selection();
 
   if (!s.isEmpty()) {
     fw.write("<li>OCL : <pre>\n");
@@ -77,15 +86,6 @@ class UmlActivityObject
   if (isControlType())
     fw.write("<p>Is control type</p>\n");
 
-  s = description();
-  
-  s = description();
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    writeq(s);
-    fw.write("<br /></p>");
-  }
-
   UmlActivityDiagram * d = associatedDiagram();
   
   if (d != 0) {
@@ -94,9 +94,19 @@ class UmlActivityObject
     fw.write("</p>");
   }
 
+  write_properties();
+
   write_children(pfix, rank, level);
 
 !!!197506.java!!!	html_internal(in pfix : string, in rank : uint, in level : uint) : void
+  String s = description();
+  
+  if (s.length() != 0) {
+    fw.write("<p>");
+    writeq(s);
+    fw.write("<br /></p>");
+  }
+
   fw.write("<p>Type : ");
   write(type(), aLanguage.cppLanguage);
   fw.write("</p>");
@@ -115,7 +125,7 @@ class UmlActivityObject
   
   fw.write("<p>Selection :</p><ul>");
   
-  String s = selection();
+  s = selection();
 
   if (s.length() != 0) {
     fw.write("<li>OCL : <pre>\n");
@@ -150,13 +160,6 @@ class UmlActivityObject
   if (isControlType())
     fw.write("<p>Is control type</p>\n");
 
-  s = description();
-  if (s.length() != 0) {
-    fw.write("<p>");
-    writeq(s);
-    fw.write("<br /></p>");
-  }
-
   UmlActivityDiagram d = associatedDiagram();
   
   if (d != null) {
@@ -164,5 +167,7 @@ class UmlActivityObject
     d.write();
     fw.write("</p>");
   }
+
+  write_properties();
 
   write_children(pfix, rank, level);

@@ -966,7 +966,7 @@ void RelationDialog::update_all_tabs(QWidget * w) {
       if (!s.isEmpty() &&
 	  (s != "#include in source") &&
 	  (s != "#include in header"))
-	s = "#include in source";
+	s = "#include in header";
     }
     else {
       if (! a.visit) {

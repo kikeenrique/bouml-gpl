@@ -44,6 +44,7 @@
 #include "IconCanvas.h"
 #include "FragmentCanvas.h"
 #include "SdContinuationCanvas.h"
+#include "SdLifeLineCanvas.h"
 #include "NoteCanvas.h"
 #include "TextCanvas.h"
 #include "UmlPixmap.h"
@@ -60,10 +61,16 @@ SeqDiagramView::SeqDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
 void SeqDiagramView::menu(const QPoint&) {
   QPopupMenu m(0);
   QPopupMenu formatm(0);
+  BrowserSeqDiagram * sd = (BrowserSeqDiagram *) window()->browser_diagram();
+  bool overlapping = sd->is_overlapping_bars();
   
   m.insertItem(new MenuTitle("Sequence diagram menu", m.font()), -1);
+  m.insertItem((overlapping) ? "Transform to flat activity bars"
+			     : "Transform to overlapping activity bars",
+	       29);
+  m.insertSeparator();
  
-  switch (default_menu(m, 20)) {
+  switch (default_menu(m, 30)) {
   case EDIT_DRAWING_SETTING_CMD:
     ((BrowserSeqDiagram *) the_canvas()->browser_diagram())->edit_settings();
     return;
@@ -74,6 +81,44 @@ void SeqDiagramView::menu(const QPoint&) {
     load("Sequence");
     window()->package_modified();
     break;
+  case 29:
+    unselect_all();
+    sd->set_overlapping_bars(!overlapping);
+    if (overlapping)
+      toFlat();
+    else
+      toOverlapping();
+    canvas()->update();
+    window()->package_modified();
+    break;
+  }
+}
+
+void SeqDiagramView::toFlat() {
+  QCanvasItemList all = canvas()->allItems();
+  QCanvasItemList::Iterator cit;
+    
+  for (cit = all.begin(); cit != all.end(); ++cit) {
+    DiagramItem * it = QCanvasItemToDiagramItem(*cit);
+      
+    if ((it != 0) && // an uml canvas item
+	(*cit)->visible() &&
+	(it->type() == UmlLifeLine))
+      ((SdLifeLineCanvas *) it)->toFlat();
+  }
+}
+
+void SeqDiagramView::toOverlapping() {
+  QCanvasItemList all = canvas()->allItems();
+  QCanvasItemList::Iterator cit;
+    
+  for (cit = all.begin(); cit != all.end(); ++cit) {
+    DiagramItem * it = QCanvasItemToDiagramItem(*cit);
+      
+    if ((it != 0) && // an uml canvas item
+	(*cit)->visible() &&
+	(it->type() == UmlLifeLine))
+      ((SdLifeLineCanvas *) it)->toOverlapping();
   }
 }
 
@@ -133,6 +178,7 @@ void SeqDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	break;
       case UmlSyncSelfMsg:
       case UmlAsyncSelfMsg:
+      case UmlSelfReturnMsg:
 	{
 	  history_protected = TRUE;
 	  unselect_all();
@@ -347,6 +393,7 @@ void SeqDiagramView::save(QTextStream & st, QString & warning,
     case UmlSyncSelfMsg:
     case UmlAsyncSelfMsg:
     case UmlReturnMsg:
+    case UmlSelfReturnMsg:
       if (!copy || di->copyable())
 	di->save(st, FALSE, warning);
     default:

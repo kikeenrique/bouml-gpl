@@ -56,6 +56,8 @@ class UmlDiagram
     fw.write("<br /></p>");
   }
 
+  write_properties();
+
   unload(FALSE, FALSE);
 !!!128852.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   UmlCom.message(name());
@@ -120,6 +122,8 @@ class UmlDiagram
     writeq(description());
     fw.write("<br /></p>");
   }
+
+  write_properties();
 
   unload(false, false);
 

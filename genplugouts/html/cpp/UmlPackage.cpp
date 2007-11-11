@@ -12,8 +12,17 @@ void UmlPackage::html(QCString pfix, unsigned int rank, unsigned int level) {
   
   chapter("Package", pfix, rank, "package", level);
 
-  QCString s = cppNamespace();
+  QCString s = description();
+  
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(s);
+    fw.write("<br /></p>");
+  }
+  
   bool ul = FALSE;
+  
+  s = cppNamespace();
   
   if (!s.isEmpty()) {
     fw.write("<p></p><ul>\n");
@@ -39,14 +48,6 @@ void UmlPackage::html(QCString pfix, unsigned int rank, unsigned int level) {
     
   write_dependencies();
     
-  s = description();
-  
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    writeq(s);
-    fw.write("<br /></p>");
-  }
-  
   UmlDiagram * d = associatedDiagram();
   
   if (d != 0) {
@@ -54,6 +55,8 @@ void UmlPackage::html(QCString pfix, unsigned int rank, unsigned int level) {
     d->write();
     fw.write("</p>\n");
   }
+
+  write_properties();
 
   write_children(pfix, rank, level);
 

@@ -21,9 +21,17 @@ class UmlTransition
     fw.write("</p>");
   }
 
+  QCString s = description();
+
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(s);
+    fw.write("<br /></p>");
+  }
+
   fw.write("<p>Trigger :</p><ul>");
   
-  QCString s = trigger();
+  s = trigger();
 
   if (!s.isEmpty()) {
     fw.write("<li>OCL : <pre>\n");
@@ -105,13 +113,7 @@ class UmlTransition
 
   fw.write("</ul>");
  
-  s = description();
-
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    writeq(s);
-    fw.write("<br /></p>");
-  }
+  write_properties();
 
   unload(FALSE, FALSE);
 !!!145282.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
@@ -132,9 +134,17 @@ class UmlTransition
     fw.write("</p>");
   }
 
+  String s = description();
+  
+  if (s.length() != 0) {
+    fw.write("<p>");
+    writeq(description());
+    fw.write("<br /></p>");
+  }
+
   fw.write("<p>Trigger :</p><ul>");
   
-  String s = trigger();
+  s = trigger();
 
   if (s.length() != 0) {
     fw.write("<li>OCL : <pre>\n");
@@ -216,13 +226,7 @@ class UmlTransition
 
   fw.write("</ul>");
  
-  s = description();
-  
-  if (s.length() != 0) {
-    fw.write("<p>");
-    writeq(description());
-    fw.write("<br /></p>");
-  }
+  write_properties();
 
   unload(false, false);
 

@@ -38,7 +38,7 @@
 #include "LabelCanvas.h"
 #include "Settings.h"
 #include "SettingsDialog.h"
-#include "BrowserDiagram.h"
+#include "BrowserSeqDiagram.h"
 #include "myio.h"
 #include "MenuTitle.h"
 
@@ -132,7 +132,7 @@ void SdMsgCanvas::draw(QPainter & p) {
       p.setBrush(brsh);
 
       if (fp != 0) {
-	draw_poly(fp, poly, "black", FALSE);
+	draw_poly(fp, poly, UmlBlack, FALSE);
 	fputs("</g>\n", fp);
       }
     }
@@ -165,12 +165,28 @@ void SdMsgCanvas::update() {
   SdMsgBaseCanvas::update_after_move(dest);
 }
 
+void SdMsgCanvas::check_vpos(const QRect &) {
+  // do nothing, concern self msg
+}
+
 void SdMsgCanvas::change_duration(SdDurationCanvas * oldone,
 				  SdDurationCanvas * newone) {
   if (oldone == start)
     start = newone;
   else
     dest = newone;
+}
+
+int SdMsgCanvas::overlap_dir(SdDurationCanvas * d) const {
+  switch (itsType) {
+  case UmlReturnMsg:
+    return -1;
+  case UmlSyncMsg:
+    return (d != start) ? 1 : 0;
+  default:
+    // async
+    return 0;
+  }
 }
 
 void SdMsgCanvas::menu(const QPoint&) {
@@ -182,7 +198,6 @@ void SdMsgCanvas::menu(const QPoint&) {
   m.insertItem("Lower", 1);
   m.insertSeparator();
   m.insertItem("Edit", 2);
-  m.insertSeparator();
   m.insertItem("Edit drawing settings", 3);
   m.insertSeparator();
   if (msg != 0)
@@ -192,6 +207,16 @@ void SdMsgCanvas::menu(const QPoint&) {
     m.insertSeparator();
     m.insertItem("Select label", 5);
     m.insertItem("Label default position", 6);
+  }
+  if (((BrowserSeqDiagram *) the_canvas()->browser_diagram())
+      ->is_overlapping_bars()) {
+    m.insertSeparator();
+    m.insertItem("Start from new overlapping bar", 9);
+    if (start->isOverlappingDuration())
+      m.insertItem("Start from parent bar", 10);
+    m.insertItem("Go to new overlapping bar", 11);
+    if (dest->isOverlappingDuration())
+      m.insertItem("Go to parent bar", 12);
   }
   m.insertSeparator();
   m.insertItem("Remove from view", 7);
@@ -231,6 +256,18 @@ void SdMsgCanvas::menu(const QPoint&) {
   case 8:
     msg->get_browser_node()->select_in_browser();
     return;
+  case 9:
+    start->go_up(this, FALSE);
+    break;
+  case 10:
+    start->go_down(this);
+    break;
+  case 11:
+    dest->go_up(this, TRUE);
+    break;
+  case 12:
+    dest->go_down(this);
+    break;
   default:
     return;
   }

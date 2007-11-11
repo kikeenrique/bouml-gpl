@@ -390,9 +390,9 @@ void ActivityCanvas::draw(QPainter & p) {
   p.drawRoundRect(r, 8, 8);
   if (fp != 0) {
     if (used_color != UmlTransparent)
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-opacity=\"1\""
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
-	      co.rgb()&0xffffff,
+	      svg_color(used_color),
 	      r.left(), r.top(), r.width() - 1, r.height() - 1);
     else
       fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-opacity=\"1\""

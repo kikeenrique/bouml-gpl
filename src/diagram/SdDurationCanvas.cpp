@@ -37,7 +37,7 @@
 #include "SdSelfMsgCanvas.h"
 #include "SdMsgCanvas.h"
 #include "UmlCanvas.h"
-#include "BrowserDiagram.h"
+#include "BrowserSeqDiagram.h"
 #include "UmlGlobal.h"
 #include "Settings.h"
 #include "SettingsDialog.h"
@@ -49,39 +49,43 @@
 
 #define DURATION_TOP 70
 
-SdDurationCanvas::SdDurationCanvas(UmlCanvas * canvas, SdLifeLineCanvas * ll,
+SdDurationCanvas::SdDurationCanvas(UmlCanvas * canvas, SdDurationSupport * sp,
 				   int v, bool isdest)
     : DiagramCanvas(0, canvas, 0, v, DURATION_WIDTH,
 		    (isdest) ? DURATION_MIN_HEIGHT : DURATION_START_HEIGHT,
 		    0),
-      line(ll), itscolor(UmlDefaultColor), coregion(FALSE) {
+      support(sp), itscolor(UmlDefaultColor), coregion(FALSE) {
   browser_node = canvas->browser_diagram();
   update_hpos();
-  setZ(DIAGRAMCANVAS_Z + 10);	// == LifeLine.z() + 10
+  setZ(sp->getZ() + 10);
   show();
   
-  line->add(this);
+  support->add(this);
 
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
 
-SdDurationCanvas::SdDurationCanvas(UmlCanvas * canvas, SdLifeLineCanvas * ll,
+// called by load
+SdDurationCanvas::SdDurationCanvas(UmlCanvas * canvas, SdDurationSupport * sp,
 				   int x, int y, int wi, int he, int id, bool coreg)
     : DiagramCanvas(0, canvas, x, y, wi, he, id),
-      line(ll), itscolor(UmlDefaultColor), coregion(coreg) {
+      support(sp), itscolor(UmlDefaultColor), coregion(coreg) {
   browser_node = canvas->browser_diagram();
-  line->add(this);
+  support->add(this);
 }
 
 SdDurationCanvas::~SdDurationCanvas() {
 }
 
 void SdDurationCanvas::delete_it() {
+  while (!durations.isEmpty())
+    durations.first()->delete_it();
+  
   while (!msgs.isEmpty())
     msgs.first()->delete_it();	// will update msgs
   
   disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
-  line->remove(this);
+  support->remove(this);
   DiagramCanvas::delete_it();
 }
 
@@ -93,30 +97,33 @@ void SdDurationCanvas::change_scale() {
   DiagramCanvas::change_scale();
   
   hide();
-  if ((width() & 1) == 0)
-    // force odd width
-    setSize(width() + 1, height());
   update_hpos();
   show();
 }
 
 void SdDurationCanvas::update_hpos() {
-  QRect r = line->rect();
+  move(support->sub_x(width()), 100000);
   
-  move((r.left() + r.right() - width())/2 + 1, 100000);
+  QListIterator<SdDurationCanvas> itd(durations);
+  
+  for (; itd.current(); ++itd)
+    itd.current()->update_hpos();
 }
 
 void SdDurationCanvas::draw(QPainter & p) {
   const QRect r = rect();
-  QColor co = color((itscolor != UmlDefaultColor)
-		     ? itscolor
-		     : browser_node->get_color(UmlActivityDuration));
+  UmlColor used_color = (itscolor != UmlDefaultColor)
+    ? itscolor
+    : browser_node->get_color(UmlActivityDuration);
+  QColor co = color(used_color);
   
   int w = width() - 1;
   int x = r.left();
   int y = r.top();
   
-  p.setBackgroundMode(QObject::OpaqueMode);
+  p.setBackgroundMode((used_color == UmlTransparent)
+		      ? QObject::TransparentMode
+		      : QObject::OpaqueMode);
   p.fillRect(r, co);
   if (coregion) {
     p.drawLine(x, y + w, x, y);
@@ -143,22 +150,22 @@ void SdDurationCanvas::draw(QPainter & p) {
   if (fp != 0) {
     if (coregion) {
       fprintf(fp, "<g>\n"
-	      "\t<rect fill=\"#%06x\" stroke=\"none\" "
+	      "\t<rect fill=\"%s\" stroke=\"none\" "
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n"
 	      "\t<path fill = \"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\" "
 	      "d=\"M %d %d v %d h %d v %d M %d %d v %d h %d v %d\" />\n"
 	      "</g>\n",
-	      co.rgb()&0xffffff, 
+	      svg_color(used_color), 
 	      x, y, w, r.height() - 1,
 	      x, y + w, -w, w, w,
 	      x, r.bottom() - w, w, w, -w);
     }
     else
       fprintf(fp, "<g>\n"
-	      "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n"
 	      "</g>\n",
-	      co.rgb()&0xffffff, 
+	      svg_color(used_color), 
 	      x, y, w, r.height() - 1);
   }
   
@@ -178,14 +185,14 @@ void SdDurationCanvas::moveBy(double dx, double dy) {
       it.current()->update_hpos();
   }
   else {
-    if ((y() + dy) < min_y())
-      dy = min_y() - y();
+    double my = min_y();
+    
+    if ((y() + dy) < my)
+      dy = my - y();
     
     // accept only vertical move
     DiagramCanvas::moveBy(0, dy);
     
-    // deplacer les SdDurationCanvas qui ne sont pas selectionnees et qu il recouvre
-
     // move messages (even selected, this case is managed by the messages)
     QListIterator<SdMsgBaseCanvas> it(msgs);
     
@@ -193,11 +200,27 @@ void SdDurationCanvas::moveBy(double dx, double dy) {
       it.current()->moveBy(100000, dy);
   }
   
-  line->update_instance_dead();
+  support->update_v_to_contain(this, FALSE);
+  support->update_instance_dead();
+}
+
+void SdDurationCanvas::prepare_for_move(bool on_resize) {  
+  DiagramCanvas::prepare_for_move(on_resize);
+  
+  if (! on_resize) {
+    QListIterator<SdDurationCanvas> itd(durations);
+    
+    for (; itd.current(); ++itd) {
+      if (! itd.current()->selected()) {
+	the_canvas()->select(itd.current());
+	itd.current()->prepare_for_move(on_resize);    
+      }
+    }
+  }
 }
 
 double SdDurationCanvas::min_y() const {
-  return line->y() + 5;
+  return support->min_y();
 }
 
 UmlCode SdDurationCanvas::type() const {
@@ -208,6 +231,8 @@ DiagramItem::LineDirection SdDurationCanvas::allowed_direction(UmlCode c) {
   return (c == UmlAnchor) ? DiagramItem::All : DiagramItem::Vertical;
 }
 
+// called by the duration's messages to increase if
+// needed the duration to contain its messages
 void SdDurationCanvas::update_v_to_contain(const QRect re) {
   const QRect r = rect();
   
@@ -216,14 +241,44 @@ void SdDurationCanvas::update_v_to_contain(const QRect re) {
     
     QCanvasItem::moveBy(0, dy);
     DiagramCanvas::resize(r.width(), r.height() - dy);
-  
-    line->update_instance_dead();
+    update_self();
   }
   else if (re.bottom() > r.bottom()) {
     DiagramCanvas::resize(r.width(), re.bottom() - r.top() + 1);
-  
-    line->update_instance_dead();
+    update_self();
   }
+  
+  // done in all cases
+  support->update_v_to_contain(this, TRUE);
+}
+
+void SdDurationCanvas::update_v_to_contain(SdDurationCanvas * d, bool force) {
+  if (force || !selected()) {
+    int min_b = (int) d->y() + d->height() + width()/2;
+    int b = (int) y() + height();
+    
+    if (d->y() < y()){
+      QCanvasItem::moveBy(0, d->y() - y());
+      DiagramCanvas::resize(width(), 
+			    ((min_b > b) ? min_b : b) - (int) y());
+      update_self();
+    }
+    else if (min_b > b) {
+      DiagramCanvas::resize(width(), min_b - (int) y() + 1);
+      update_self();
+    }
+
+    // done in all cases
+    support->update_v_to_contain(this, force);
+  }
+}
+
+void SdDurationCanvas::update_self() {
+  QListIterator<SdMsgBaseCanvas> it(msgs);
+  QRect r = rect();
+    
+  for ( ; it.current(); ++it )
+    it.current()->check_vpos(r);
 }
 
 const char * SdDurationCanvas::may_start(UmlCode &) const {
@@ -248,8 +303,16 @@ void SdDurationCanvas::connexion(UmlCode l, DiagramItem * dest,
 				 const QPoint & s, const QPoint & e) {
   switch (l) {
   case UmlSyncSelfMsg:
+    if (((BrowserSeqDiagram * ) browser_node)->is_overlapping_bars()) {
+      SdDurationCanvas * d = (SdDurationCanvas *) dest;
+      
+      dest = new SdDurationCanvas(the_canvas(), d, s.y(), TRUE);
+      d->update_v_to_contain((SdDurationCanvas *) dest, FALSE);
+    }
+    // no break;
   case UmlAsyncSelfMsg:
-    new SdSelfMsgCanvas(the_canvas(), this, l, s.y(), 0);
+  case UmlSelfReturnMsg:
+    (new SdSelfMsgCanvas(the_canvas(), ((SdDurationCanvas *) dest), l, s.y(), 0))->upper();
     break;
   case UmlAnchor:
     DiagramCanvas::connexion(l, dest, s, e);
@@ -259,8 +322,16 @@ void SdDurationCanvas::connexion(UmlCode l, DiagramItem * dest,
       if (dest->type() == UmlLifeLine)
 	// insert an activity duration canvas
 	dest = new SdDurationCanvas(the_canvas(), ((SdLifeLineCanvas *) dest), s.y(), TRUE);
+      else if (((BrowserSeqDiagram * ) browser_node)->is_overlapping_bars() &&
+	       (l == UmlSyncMsg)) {
+	SdDurationCanvas * d = (SdDurationCanvas *) dest;
+	
+	dest = new SdDurationCanvas(the_canvas(), d, s.y(), TRUE);
+	d->update_v_to_contain((SdDurationCanvas *) dest, FALSE);
+      }
       
-      new SdMsgCanvas(the_canvas(), this, ((SdDurationCanvas *) dest), l, s.y(), 0);
+      (new SdMsgCanvas(the_canvas(), this, ((SdDurationCanvas *) dest), l, s.y(), 0))
+	->upper();
     }
   }
 }
@@ -272,26 +343,43 @@ void SdDurationCanvas::add(SdMsgBaseCanvas * m) {
 void SdDurationCanvas::remove(SdMsgBaseCanvas * m) {
   msgs.removeRef(m);
   
-  if (msgs.isEmpty())
+  if (msgs.isEmpty() && durations.isEmpty())
     // now useless, remove it
     delete_it();
 }
 
-void SdDurationCanvas::cut(const QPoint & p) {
-  int py = p.y();
+void SdDurationCanvas::add(SdDurationCanvas * d) {
+  durations.append(d);
+}
+
+void SdDurationCanvas::remove(SdDurationCanvas * d) {
+  durations.remove(d);
+  
+  if (msgs.isEmpty() && durations.isEmpty())
+    // now useless, remove it
+    delete_it();
+}
+
+void SdDurationCanvas::cut_internal(int py) {
+  QListIterator<SdDurationCanvas> itd(durations);
+  
+  for (; itd.current(); ++itd)
+    itd.current()->cut_internal(py);
+  
   QRect r = rect();
   DiagramCanvas::resize(width(), py - r.top());
+  SdDurationCanvas * newone = 0;
+  
   QList<SdMsgBaseCanvas> ms(msgs);
   QListIterator<SdMsgBaseCanvas> it(ms);
-  SdDurationCanvas * newone = 0;
   
   for ( ; it.current(); ++it ) {
     if (it.current()->rect().center().y() > py) {
       // on the new duration
       if (newone == 0) { 
-	// width and height to 0 on creation to not a round error
-	// because of the zoom
-	newone = new SdDurationCanvas(the_canvas(), line, r.x(), py, 0, 0, 0, coregion);
+	// width and height to 0 on creation to not have
+	// a round error because of the zoom
+	newone = new SdDurationCanvas(the_canvas(), support, r.x(), py, 0, 0, 0, coregion);
 	newone->DiagramCanvas::resize(width(), r.bottom() - py);
 	newone->itscolor = itscolor;
 	newone->setZ(z());
@@ -303,6 +391,32 @@ void SdDurationCanvas::cut(const QPoint & p) {
     }
   }
   
+  QList<SdDurationCanvas> durs(durations);
+  QListIterator<SdDurationCanvas> itdur(durs);
+  
+  for (itdur.toFirst() ; itdur.current(); ++itdur) {
+    if (itdur.current()->rect().center().y() > py) {
+      // on the new duration
+      if (newone == 0) { 
+	// width and height to 0 on creation to not have 
+	// a round error because of the zoom
+	newone = new SdDurationCanvas(the_canvas(), support, r.x(), py, 0, 0, 0, coregion);
+	newone->DiagramCanvas::resize(width(), r.bottom() - py);
+	newone->itscolor = itscolor;
+	newone->setZ(z());
+	newone->show();
+      }
+      remove(itdur.current());
+      newone->add(itdur.current());
+      itdur.current()->support =  newone;
+    }
+    
+    itdur.current()->update_v_to_contain(itdur.current(), TRUE);
+  }
+}
+
+void SdDurationCanvas::cut(const QPoint & p) {
+  cut_internal(p.y());  
   package_modified();
 }
 
@@ -322,23 +436,161 @@ void SdDurationCanvas::merge(QList<SdDurationCanvas> & l) {
     if (dr.bottom() > vmax)
       vmax = dr.bottom();
     
-    QList<SdMsgBaseCanvas> & ms = d->msgs;
-    
-    while (! ms.isEmpty()) {
-      SdMsgBaseCanvas * m = ms.first();
-      
-      msgs.append(m);
-      m->change_duration(d, this);
-      ms.removeRef(m);
-    }
-    
-    d->delete_it();
+    collapse(d);
   }
   
   if (vmin < r.top())
     QCanvasItem::moveBy(0, vmin - r.top());
 
-  DiagramCanvas::resize(r.width(), vmax - vmin + 1);  
+  DiagramCanvas::resize(r.width(), vmax - vmin + 1);
+  update_self();
+}
+
+void SdDurationCanvas::collapse(SdDurationCanvas * d) {
+  QList<SdMsgBaseCanvas> & ms = d->msgs;
+  
+  while (! ms.isEmpty()) {
+    SdMsgBaseCanvas * m = ms.take(0);
+    
+    msgs.append(m);
+    m->change_duration(d, this);
+  }
+  
+  QList<SdDurationCanvas> & durs = d->durations;
+  
+  while (! durs.isEmpty()) {
+    SdDurationCanvas * dur = durs.take(0);
+    
+    durations.append(dur);
+    dur->support = this;
+  }
+  
+  d->delete_it();
+}
+
+void SdDurationCanvas::go_up(SdMsgBaseCanvas * m, bool isdest) {
+  // create a new overlapping bar and move m in it
+  int v = (m->type() != UmlSelfReturnMsg)
+    ? (int) m->y()
+    : (int) (m->y() - DURATION_MIN_HEIGHT * the_canvas()->zoom() + m->rect().height() / 2);
+  SdDurationCanvas * d = 
+    new SdDurationCanvas(the_canvas(), this, v, isdest);
+  update_v_to_contain(d, FALSE);
+  
+  d->msgs.append(m);
+  m->change_duration(this, d);
+  d->update_hpos(); // update sub duration and msg hpos
+  d->update_self();
+  msgs.removeRef(m);
+  m->upper();
+}
+
+void SdDurationCanvas::go_down(SdMsgBaseCanvas * m) {
+  // move m in parent bar
+  SdDurationCanvas * d = (SdDurationCanvas *) support;
+  
+  d->msgs.append(m);
+  m->change_duration(this, d);
+  d->update_hpos(); // update sub duration and msg hpos
+  d->update_self();
+  remove(m);
+}
+
+void SdDurationCanvas::toFlat() {
+  while (! durations.isEmpty()) {
+    SdDurationCanvas * d = durations.getFirst();
+    
+    d->toFlat();
+    collapse(d);
+  }
+  
+  if (! isOverlappingDuration())
+    update_hpos(); // update msg hpos
+}
+
+void SdDurationCanvas::toOverlapping() {
+  // reorder messages, few messages => use bubble sort
+  unsigned sz = msgs.count();
+  SdMsgBaseCanvas ** v = new SdMsgBaseCanvas *[sz];
+  unsigned index = 0;
+  
+  while (! msgs.isEmpty())
+    v[index++] = msgs.take(0);
+  
+  bool modified;
+  
+  do {
+    modified = FALSE;
+    
+    for (index = 1; index < sz; index += 1) {
+      if (v[index - 1]->y() > v[index]->y()) {
+	modified = TRUE;
+	
+	SdMsgBaseCanvas * m = v[index - 1];
+	
+	v[index - 1] = v[index];
+	v[index] = m;
+      }
+    }
+  } while (modified);
+  
+  index = 0;  
+  toOverlapping(v, this, index, sz);
+    
+  delete [] v;
+  
+  postToOverlapping();
+}
+
+void SdDurationCanvas::toOverlapping(SdMsgBaseCanvas ** v,
+				     SdDurationCanvas * orig, 
+				     unsigned & index, unsigned sz) {
+  bool first = TRUE;
+  
+  while (index != sz) {
+    SdMsgBaseCanvas * m = v[index++];
+    
+    switch (m->overlap_dir(orig)) {
+    case -1:
+      msgs.append(m);
+      if (this != orig) {
+	m->change_duration(orig, this);
+	return;
+      }
+      // redondant return
+      break;
+    default: // 1
+      if (! first) {
+	index -= 1;
+	(new SdDurationCanvas(the_canvas(), this, (int) m->y(), TRUE))
+	  ->toOverlapping(v, orig, index, sz);
+	break;
+      }
+      // no break;
+    case 0:
+      msgs.append(m);
+      if (this != orig)
+	m->change_duration(orig, this);
+      break;
+    }
+    
+    first = FALSE;
+  }
+}
+
+void SdDurationCanvas::postToOverlapping() {
+  QListIterator<SdDurationCanvas> itd(durations);
+  
+  for (; itd.current(); ++itd)
+    itd.current()->postToOverlapping();
+  
+  QListIterator<SdMsgBaseCanvas> it(msgs);
+  
+  for ( ; it.current(); ++it ) {
+    it.current()->upper();
+    it.current()->update_hpos();
+    ((DiagramItem *) it.current())->update();	// not QCanvasItem::update
+  }
 }
 
 void SdDurationCanvas::open() {
@@ -366,7 +618,7 @@ void SdDurationCanvas::menu(const QPoint & p) {
       
       if ((di != 0) &&
 	  (di->type() == UmlActivityDuration) &&
-	  (((SdDurationCanvas *) di)->line == line))
+	  (((SdDurationCanvas *) di)->support == support))
 	l.append((SdDurationCanvas *) di);
     }
   }
@@ -386,6 +638,8 @@ void SdDurationCanvas::menu(const QPoint & p) {
   m.insertItem("Cut here", 5);
   if (!l.isEmpty())
     m.insertItem("Merge juxtaposed activity bars", 6);
+  if (support->isaDuration())
+    m.insertItem("Collapse in parent bar", 8);
 
   switch (m.exec(QCursor::pos())) {
   case 0:
@@ -418,6 +672,16 @@ void SdDurationCanvas::menu(const QPoint & p) {
     coregion = !coregion;
     modified();
     return;
+  case 8:
+    {
+      SdDurationCanvas * d = (SdDurationCanvas *) support;
+      
+      d->collapse(this);
+      d->update_hpos(); // update sub duration and msg hpos
+      d->update_self();
+    }    
+    package_modified();
+    break;
   default:
     return;
   }
@@ -479,18 +743,30 @@ aCorner SdDurationCanvas::on_resize_point(const QPoint & p) {
   return ::on_resize_point(p, rect());
 }
 
+// note : don't consider the messages
+// size will be rectified if needed by the messages calling
+// update_v_to_contain()
 void SdDurationCanvas::resize(aCorner c, int, int dy) {
+  if ((dy < 0) && ((c == UmlTopLeft) || (c == UmlTopRight))) {
+    double my = min_y();
+    
+    if ((y() + dy) < my)
+      dy = (int) (my - y());
+  }
+  
   double zoom = the_canvas()->zoom();
   
   DiagramCanvas::resize(c, 0, dy,
 			(int) (DURATION_WIDTH * zoom),
 			(int) (DURATION_MIN_HEIGHT * zoom));
   
-  line->update_instance_dead();
+  support->update_v_to_contain(this, FALSE);
+  support->update_instance_dead();
 }
 
 void SdDurationCanvas::select_associated() {
-  the_canvas()->select(this);
+  if (! selected())
+    the_canvas()->select(this);
   
   QListIterator<SdMsgBaseCanvas> it(msgs);
   
@@ -512,24 +788,71 @@ bool SdDurationCanvas::copyable() const {
   return FALSE;
 }
 
+void SdDurationCanvas::update_instance_dead() {
+  // do nothing
+}
+
+int SdDurationCanvas::sub_x(int sub_w) const {
+  QRect r = rect();
+  
+  return r.right() - sub_w/2 + 1;
+}
+
+SdLifeLineCanvas * SdDurationCanvas::get_line() const {
+  return support->get_line();
+}
+
+bool SdDurationCanvas::isaDuration() const {
+  return true;
+}
+
+bool SdDurationCanvas::isOverlappingDuration() const {
+  return support->isaDuration();
+}
+
+double SdDurationCanvas::getZ() const {
+  return z();
+}
+
+void SdDurationCanvas::save_sub(QTextStream & st) const {
+  nl_indent(st);
+  st << "overlappingdurationcanvas " << get_ident();
+  save_internal(st);
+}
+
+void SdDurationCanvas::save_internal(QTextStream & st) const {
+  indent(+1);
+  
+  if (coregion) {
+    nl_indent(st);
+    st << "coregion";
+  }      
+  if (itscolor != UmlDefaultColor) {
+    nl_indent(st);
+    st << "color " << stringify(itscolor);
+  }
+  
+  nl_indent(st);
+  save_xyzwh(st, this, "xyzwh");
+  
+  QListIterator<SdDurationCanvas> itd(durations);
+  
+  for (; itd.current(); ++itd)
+    itd.current()->save_sub(st);
+  
+  indent(-1);
+  nl_indent(st);
+  st << "end";
+}
+
 void SdDurationCanvas::save(QTextStream & st, bool ref, QString & warning) const {
   if (ref)
-    st << "durationcanvas_ref " << get_ident() << " // "
-      << line->get_obj()->get_ident();
-  else {
+    st << "durationcanvas_ref " << get_ident();
+  else if (!support->isaDuration()) {
     nl_indent(st);
     st << "durationcanvas " << get_ident() << ' ';
-    ((DiagramCanvas *) line->get_obj())->save(st, TRUE, warning);
-    if (coregion) {
-      nl_indent(st);
-      st << "coregion";
-    }      
-    if (itscolor != UmlDefaultColor) {
-      nl_indent(st);
-      st << "color " << stringify(itscolor);
-    }
-    nl_indent(st);
-    save_xyzwh(st, this, "  xyzwh");
+    ((DiagramCanvas *) ((SdLifeLineCanvas *) support)->get_obj())->save(st, TRUE, warning);
+    save_internal(st);
   }
 }
 
@@ -539,6 +862,53 @@ SdDurationCanvas * SdDurationCanvas::read(char * & st, UmlCanvas * canvas,
   return read(st, canvas,
 	      read_keyword(st, (ref) ? "durationcanvas_ref"
 				     : "durationcanvas"));
+}
+
+SdDurationCanvas * SdDurationCanvas::read_internal(char * & st,
+						   UmlCanvas * canvas, int id,
+						   SdDurationSupport * sp)
+{
+  UmlColor color = UmlDefaultColor;
+  bool coreg = FALSE;
+  char * k = read_keyword(st);
+  
+  if (!strcmp(k, "coregion")) {
+    coreg = TRUE;
+    k = read_keyword(st);
+  }
+  
+  read_color(st, "color", color, k);
+  
+  if (strcmp(k, "xyzwh"))
+    wrong_keyword(k, "xyzwh");
+  
+  int x = (int) read_double(st);
+  int y = (int) read_double(st);
+  double z = read_double(st);
+  int w = (int) read_double(st);
+  SdDurationCanvas * result =
+    new SdDurationCanvas(canvas, sp, x, y, w, 
+			 (int) read_double(st), id, coreg);
+  
+  result->itscolor = color;
+  result->setZ(z);
+  result->update_hpos();	// in case the current font is not the original one
+  result->set_center100();
+  result->show();
+
+  if (read_file_format() >= 48) {
+    k = read_keyword(st);
+    
+    while (!strcmp(k, "overlappingdurationcanvas")) {
+      (void) read_internal(st, canvas, read_id(st), result);
+      k = read_keyword(st);
+    }
+    
+    if (strcmp(k, "end"))
+      wrong_keyword(k, "end");
+  }
+  
+  return result;
 }
 
 SdDurationCanvas * SdDurationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
@@ -554,36 +924,7 @@ SdDurationCanvas * SdDurationCanvas::read(char * & st, UmlCanvas * canvas, char 
     if ((o = SdClassInstCanvas::read(st, canvas, k)) == 0)
       wrong_keyword(st, k);
     
-    UmlColor color = UmlDefaultColor;
-    bool coreg = FALSE;
-    
-    k = read_keyword(st);
-    
-    if (!strcmp(k, "coregion")) {
-      coreg = TRUE;
-      k = read_keyword(st);
-    }
-    
-    read_color(st, "color", color, k);
-    
-    if (strcmp(k, "xyzwh"))
-      wrong_keyword(k, "xyzwh");
-    
-    int x = (int) read_double(st);
-    int y = (int) read_double(st);
-    double z = read_double(st);
-    int w = (int) read_double(st);
-    SdDurationCanvas * result =
-      new SdDurationCanvas(canvas, o->get_life_line(),
-			   x, y, w, (int) read_double(st), id, coreg);
-    
-    result->itscolor = color;
-    result->setZ(z);
-    result->update_hpos();	// in case the current font is not the original one
-    result->set_center100();
-    result->show();
-    
-    return result;
+    return read_internal(st, canvas, id, o->get_life_line());
   }
   else
     return 0;
@@ -600,13 +941,19 @@ void SdDurationCanvas::history_save(QBuffer & b) const {
   ::save(height_scale100, b);
   ::save(width(), b);
   ::save(height(), b);
-  ::save(line, b);
-  ::save((int) msgs.count(), b);
+  ::save_ptr(support, b);
   
   QListIterator<SdMsgBaseCanvas> it(msgs);
   
+  ::save((int) msgs.count(), b);
   for (; it.current(); ++it)
     ::save(it.current(), b);
+  
+  QListIterator<SdDurationCanvas> itd(durations);
+  
+  ::save((int) durations.count(), b);
+  for (; itd.current(); ++itd)
+    ::save(itd.current(), b);
 }
 
 void SdDurationCanvas::history_load(QBuffer & b) {
@@ -620,7 +967,7 @@ void SdDurationCanvas::history_load(QBuffer & b) {
   ::load(h, b);
   QCanvasRectangle::setSize(w, h);
   
-  line = (SdLifeLineCanvas *) ::load_item(b);
+  support = (SdDurationSupport *) ::load_ptr(b);
   
   int n;
   
@@ -629,6 +976,12 @@ void SdDurationCanvas::history_load(QBuffer & b) {
   
   while (n--)
     msgs.append((SdMsgBaseCanvas *) ::load_item(b));
+  
+  ::load(n, b);
+  durations.clear();
+  
+  while (n--)
+    durations.append((SdDurationCanvas *) ::load_item(b));
   
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));  
 }

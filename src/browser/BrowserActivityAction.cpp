@@ -497,7 +497,7 @@ BrowserActivityAction::add_remove_variable_value(BrowserNode * future_parent,
 void BrowserActivityAction::menu() {
   QString s = name;
   int index;
-  BrowserNode * who;
+  BrowserNode * who = 0;
   
   if (s.isEmpty()) {
     s = stringify(def->get_action_kind());

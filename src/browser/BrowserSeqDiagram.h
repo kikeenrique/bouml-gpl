@@ -49,6 +49,7 @@ class BrowserSeqDiagram : public BrowserDiagram {
     UmlColor duration_color;
     UmlColor continuation_color;
     UmlColor class_instance_color;
+    bool overlapping_bars;
   
     BrowserSeqDiagram(BrowserSeqDiagram * model, BrowserNode * p);
     BrowserSeqDiagram(int id);
@@ -87,6 +88,8 @@ class BrowserSeqDiagram : public BrowserDiagram {
     static BrowserNode * get_it(const char * k, int id);
     
     void edit_settings();
+    bool is_overlapping_bars() const { return overlapping_bars; }
+    void set_overlapping_bars(bool y) { overlapping_bars = y; }
 
     static BrowserSeqDiagram * add_sequence_diagram(BrowserNode * future_parent);
     

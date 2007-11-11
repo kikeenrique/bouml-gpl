@@ -60,7 +60,8 @@ class SettingsDialog : public QTabDialog {
   
   public:
     SettingsDialog(QArray<StateSpec> * st, QArray<ColorSpec> * co,
-		   bool nodefault, bool own, bool unchanged = false);
+		   bool nodefault, bool own, bool unchanged = FALSE,
+		   const char * title = "Diagram Drawing Settings dialog");
     virtual ~SettingsDialog();
     
   protected slots:

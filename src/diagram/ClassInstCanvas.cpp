@@ -168,9 +168,9 @@ void ClassInstCanvas::draw(QPainter & p, UmlCanvas * canvas, QRect r) {
 		QObject::darkGray.rgb()&0xffffff,
 		r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
 	
-	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		co.rgb()&0xffffff, 
+		svg_color(used_color), 
 		r.x(), r.y(), r.width() - 1, r.height() - 1);
       }
     }

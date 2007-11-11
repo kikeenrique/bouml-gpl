@@ -291,23 +291,16 @@ void PinCanvas::draw(QPainter & p) {
   
   p.setBackgroundColor(co);
   
-  if (used_color != UmlTransparent) {
+  if (used_color != UmlTransparent)
     p.setBrush(co);
 
-    if (fp != 0)
-      fprintf(fp, "<g>\n"
-	      "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n"
-	      "</g>\n",
-	      co.rgb()&0xffffff, 
-	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-  }
-  else if (fp != 0)
+  if (fp != 0)
     fprintf(fp, "<g>\n"
-	    "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n"
 	    "</g>\n",
-	    r.x(), r.y(), r.width() - 1, r.height() - 1);  
+	    svg_color(used_color), 
+	    r.x(), r.y(), r.width() - 1, r.height() - 1);
   
   p.drawRect(r);
       
@@ -489,6 +482,11 @@ void PinCanvas::modified() {
     draw_all_flows();
   canvas()->update();
   package_modified();
+}
+
+void PinCanvas::post_loaded() {
+  if (the_canvas()->must_draw_all_relations())
+    draw_all_flows();
 }
 
 void PinCanvas::connexion(UmlCode action, DiagramItem * dest,

@@ -83,18 +83,13 @@ void UcUseCaseCanvas::draw(QPainter & p) {
   if (! visible()) return;
   
   QRect r = rect();
-  UmlColor co;
   UseCaseData * data = (UseCaseData *) browser_node->get_data();
   
-  if (itscolor != UmlDefaultColor)
-    co = itscolor;
-  else {
-    if (used_color == UmlDefaultColor)
-      used_color = the_canvas()->browser_diagram()->get_color(UmlUseCase);
-    co = used_color;
-  }
+  used_color = (itscolor == UmlDefaultColor)
+    ? the_canvas()->browser_diagram()->get_color(UmlUseCase)
+    : itscolor;
   
-  QColor col = color(co);
+  QColor col = color(used_color);
   QBrush brsh = p.brush();
   bool realizationp =
     !strcmp(data->get_stereotype(), "realization");
@@ -105,7 +100,7 @@ void UcUseCaseCanvas::draw(QPainter & p) {
   if (fp != 0)
     fputs("<g>\n", fp);
   
-  if (co != UmlTransparent) {
+  if (used_color != UmlTransparent) {
     const int shadow = the_canvas()->shadow() - 1;
     
     if (shadow != -1) {
@@ -127,9 +122,9 @@ void UcUseCaseCanvas::draw(QPainter & p) {
     }
 
     if (fp != 0)
-      fprintf(fp, "\t<ellipse fill=\"#%06x\" stroke=\"black\"%s stroke-width=\"1\" stroke-opacity=\"1\""
+      fprintf(fp, "\t<ellipse fill=\"%s\" stroke=\"black\"%s stroke-width=\"1\" stroke-opacity=\"1\""
 	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
-	      col.rgb()&0xffffff,
+	      svg_color(used_color),
 	      (realizationp) ? " stroke-dasharray=\"4,4\"" : "",
 	      r.left() + rx, r.top() + ry, rx, ry);
   }
@@ -139,7 +134,7 @@ void UcUseCaseCanvas::draw(QPainter & p) {
 	    (realizationp) ? " stroke-dasharray=\"4,4\"" : "",
 	    r.left() + rx, r.top() + ry, rx, ry);
   
-  p.setBackgroundMode((co == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
+  p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
   p.setBrush(col);
 
   if (realizationp)
@@ -255,6 +250,12 @@ void UcUseCaseCanvas::modified() {
     draw_all_simple_relations();
   canvas()->update();
   package_modified();
+}
+
+void UcUseCaseCanvas::post_loaded() {
+  force_self_rel_visible();
+  if (the_canvas()->must_draw_all_relations())
+    draw_all_simple_relations();
 }
 
 void UcUseCaseCanvas::menu(const QPoint&) {

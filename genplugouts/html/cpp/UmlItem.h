@@ -64,6 +64,8 @@ class UmlItem : public UmlBaseItem {
 
     void write_dependencies();
 
+    void write_properties();
+
     void chapter(QCString k, QCString pfix, unsigned int rank, QCString kind, unsigned int level);
 
     //bypass the comments at the beginning of the form

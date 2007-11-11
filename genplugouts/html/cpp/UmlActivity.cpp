@@ -11,6 +11,14 @@ void UmlActivity::html(QCString pfix, unsigned int rank, unsigned int level) {
 
   chapter("Activity", pfix, rank, "activity", level);
   
+  QCString s = description();
+  
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(description());
+    fw.write("<br /></p>");
+  }
+
   if (isReadOnly()) {
     if (isSingleExecution())
       fw.write("<p>Read only, single execution</p>");
@@ -22,7 +30,7 @@ void UmlActivity::html(QCString pfix, unsigned int rank, unsigned int level) {
 
   fw.write("<p>Pre Condition :</p><ul>");
   
-  QCString s = preCondition();
+  s = preCondition();
 
   if (!s.isEmpty()) {
     fw.write("<li>OCL : <pre>\n");
@@ -76,14 +84,6 @@ void UmlActivity::html(QCString pfix, unsigned int rank, unsigned int level) {
 
   fw.write("</ul>");
  
-  s = description();
-  
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    writeq(description());
-    fw.write("<br /></p>");
-  }
-
   UmlActivityDiagram * d = associatedDiagram();
   
   if (d != 0) {
@@ -91,6 +91,8 @@ void UmlActivity::html(QCString pfix, unsigned int rank, unsigned int level) {
     d->write();
     fw.write("</p>");
   }
+  
+  write_properties();
 
   write_children(pfix, rank, level);
 

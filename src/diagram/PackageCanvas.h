@@ -77,6 +77,7 @@ class PackageCanvas : public QObject, public DiagramCanvas {
   
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static PackageCanvas * read(char * &, UmlCanvas * canvas, char *);
+    virtual void post_loaded();
   
     void check_size();
     int min_width();

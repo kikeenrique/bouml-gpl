@@ -42,9 +42,11 @@ class SdMsgCanvas : public SdMsgBaseCanvas {
     virtual void draw(QPainter & p);
 
     virtual void update_hpos();
+    virtual void check_vpos(const QRect &);
     virtual double min_y() const;
     virtual void change_duration(SdDurationCanvas * oldone,
 				 SdDurationCanvas * newone);
+    virtual int overlap_dir(SdDurationCanvas *) const;
     virtual void update();
     virtual void menu(const QPoint&);
     virtual void select_associated();

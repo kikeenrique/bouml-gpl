@@ -23,9 +23,17 @@ void UmlTransition::html(QCString, unsigned int, unsigned int) {
     fw.write("</p>");
   }
 
+  QCString s = description();
+
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(s);
+    fw.write("<br /></p>");
+  }
+
   fw.write("<p>Trigger :</p><ul>");
   
-  QCString s = trigger();
+  s = trigger();
 
   if (!s.isEmpty()) {
     fw.write("<li>OCL : <pre>\n");
@@ -107,13 +115,7 @@ void UmlTransition::html(QCString, unsigned int, unsigned int) {
 
   fw.write("</ul>");
  
-  s = description();
-
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    writeq(s);
-    fw.write("<br /></p>");
-  }
+  write_properties();
 
   unload(FALSE, FALSE);
 }

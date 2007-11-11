@@ -186,6 +186,14 @@ void StateActionCanvas::modified() {
   package_modified();
 }
 
+void StateActionCanvas::post_loaded() {
+  force_self_rel_visible();
+  if (the_canvas()->must_draw_all_relations()) {
+    //draw_all_simple_relations();
+    draw_all_transitions();
+  }
+}
+
 void StateActionCanvas::connexion(UmlCode action, DiagramItem * dest,
 			    const QPoint &, const QPoint &) {
   ArrowCanvas * a;
@@ -221,7 +229,7 @@ void StateActionCanvas::draw(QPainter & p) {
   const BasicData * data = browser_node->get_data();
   const char * st = data->get_stereotype();
   const int shadow = the_canvas()->shadow();
-      
+  
   p.setBackgroundMode((used_color == UmlTransparent)
 		      ? QObject::TransparentMode
 		      : QObject::OpaqueMode);
@@ -260,7 +268,7 @@ void StateActionCanvas::draw(QPainter & p) {
     if (used_color == UmlTransparent) {
       p.drawPolyline(a);
       if (fp != 0)
-	draw_poly(fp, a, "none");
+	draw_poly(fp, a, UmlTransparent);
     }
     else {
       if (shadow != 0) {
@@ -278,14 +286,14 @@ void StateActionCanvas::draw(QPainter & p) {
 	p.setPen(QObject::SolidLine);
 
 	if (fp != 0)
-	  draw_poly(fp, b, QObject::darkGray, FALSE);
+	  draw_shadow(fp, b);
       }
       
       p.setBrush(co);
       p.drawPolygon(a, TRUE, 0, 5);
 
       if (fp != 0)
-	draw_poly(fp, a, co);
+	draw_poly(fp, a, used_color);
     }
 
     r.setRight(r.right() - hh);
@@ -312,7 +320,7 @@ void StateActionCanvas::draw(QPainter & p) {
       p.drawPolyline(a);
 
       if (fp != 0)
-	draw_poly(fp, a, "none");
+	draw_poly(fp, a, UmlTransparent);
     }
     else {
       if (shadow != 0) {
@@ -330,14 +338,14 @@ void StateActionCanvas::draw(QPainter & p) {
 	p.setPen(QObject::SolidLine);
 
 	if (fp != 0)
-	  draw_poly(fp, b, QObject::darkGray, FALSE);
+	  draw_shadow(fp, b);
       }
       
       p.setBrush(co);
       p.drawPolygon(a, TRUE, 0, 5);
 
       if (fp != 0)
-	draw_poly(fp, a, co);
+	draw_poly(fp, a, used_color);
     }
 
     r.setRight(r.right() - hh);
@@ -373,17 +381,11 @@ void StateActionCanvas::draw(QPainter & p) {
     p.setBrush(co);
     p.drawRect(r);
     
-    if (fp != 0) {
-      if (used_color != UmlTransparent)
-	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		co.rgb()&0xffffff, 
-		r.x(), r.y(), r.width() - 1, r.height() - 1);
-      else if (fp != 0)
-	fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		r.x(), r.y(), r.width() - 1, r.height() - 1);
-    }
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      svg_color(used_color), 
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
 
     if (st[0] != 0) {
       r.setTop(r.top() + fm.height() / 2);

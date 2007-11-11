@@ -8,8 +8,17 @@ class UmlPackage
   
   chapter("Package", pfix, rank, "package", level);
 
-  QCString s = cppNamespace();
+  QCString s = description();
+  
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(s);
+    fw.write("<br /></p>");
+  }
+  
   bool ul = FALSE;
+  
+  s = cppNamespace();
   
   if (!s.isEmpty()) {
     fw.write("<p></p><ul>\n");
@@ -35,14 +44,6 @@ class UmlPackage
     
   write_dependencies();
     
-  s = description();
-  
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    writeq(s);
-    fw.write("<br /></p>");
-  }
-  
   UmlDiagram * d = associatedDiagram();
   
   if (d != 0) {
@@ -50,6 +51,8 @@ class UmlPackage
     d->write();
     fw.write("</p>\n");
   }
+
+  write_properties();
 
   write_children(pfix, rank, level);
 
@@ -59,8 +62,17 @@ class UmlPackage
   
   chapter("Package", pfix, rank, "package", level);
 
-  String s = cppNamespace();
+  String s = description();
+  
+  if (s.length() != 0) {
+    fw.write("<p>");
+    writeq(s);
+    fw.write("<br /></p>");
+  }
+    
   boolean ul = false;
+  
+  s = cppNamespace();
   
   if (s.length() != 0) {
     fw.write("<p></p><ul>\n");
@@ -85,14 +97,6 @@ class UmlPackage
     fw.write("</ul>\n");
     
   write_dependencies();
-    
-  s = description();
-  
-  if (s.length() != 0) {
-    fw.write("<p>");
-    writeq(s);
-    fw.write("<br /></p>");
-  }
   
   UmlDiagram d = associatedDiagram();
   
@@ -101,6 +105,8 @@ class UmlPackage
     d.write();
     fw.write("</p>\n");
   }
+
+  write_properties();
 
   write_children(pfix, rank, level);
 

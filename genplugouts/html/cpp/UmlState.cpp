@@ -14,9 +14,17 @@ void UmlState::html(QCString pfix, unsigned int rank, unsigned int level) {
 	  ? "StateMachine" : "State",
 	  pfix, rank, "state", level);
 
+  QCString s = description();
+  
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(description());
+    fw.write("<br /></p>");
+  }
+
   fw.write("<p>Entry Behavior :</p><ul>");
   
-  QCString s = entryBehavior();
+  s = entryBehavior();
 
   if (!s.isEmpty()) {
     fw.write("<li>OCL : <pre>\n");
@@ -98,14 +106,6 @@ void UmlState::html(QCString pfix, unsigned int rank, unsigned int level) {
 
   fw.write("</ul>");
  
-  s = description();
-  
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    writeq(description());
-    fw.write("<br /></p>");
-  }
-
   UmlStateDiagram * d = associatedDiagram();
   
   if (d != 0) {
@@ -113,6 +113,8 @@ void UmlState::html(QCString pfix, unsigned int rank, unsigned int level) {
     d->write();
     fw.write("</p>");
   }
+
+  write_properties();
 
   write_children(pfix, rank, level);
 

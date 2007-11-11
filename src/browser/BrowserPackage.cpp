@@ -706,18 +706,30 @@ void BrowserPackage::apply_shortcut(QString s) {
     }
     if (s == "Referenced by")
       choice = 13;
-    mark_shortcut(s, choice, 90);
-    if (s == "Generate C++")
-      choice = 20;
-    else if (s == "Generate Java")
-      choice = 21;
-    else if (s == "Generate Php")
-      choice = 22;
-    else if (s == "Generate Idl")
-      choice = 23;
+    else
+      mark_shortcut(s, choice, 90);
     
-    if (edition_number == 0)
-      Tool::shortcut(s, choice, get_type(), 100);
+    if (choice == -1) {
+      if (s == "Generate C++")
+	choice = 20;
+      else if (s == "Generate Java")
+	choice = 21;
+      else if (s == "Generate Php")
+	choice = 22;
+      else if (s == "Generate Idl")
+	choice = 23;
+      else if (preserve_bodies()) {
+	if (s == "Roundtrip C++ operation body")
+	  choice = 30;
+	else if (s == "Roundtrip Java operation body")
+	  choice = 31;
+	else if (s == "Roundtrip Php operation body")
+	  choice = 32;
+      }    
+      
+      if ((choice == -1) && (edition_number == 0))
+	Tool::shortcut(s, choice, get_type(), 100);
+    }
   }
   else if (!is_read_only && (edition_number == 0)) {
     if (s == "Undelete")

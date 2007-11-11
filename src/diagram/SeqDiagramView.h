@@ -43,7 +43,9 @@ class SeqDiagramView : public DiagramView {
   private:
     SeqDiagramWindow * window() {
       return (SeqDiagramWindow *) parent();
-    };
+    }
+    void toFlat();
+    void toOverlapping();
 
   protected:
     virtual void contentsMousePressEvent(QMouseEvent *);

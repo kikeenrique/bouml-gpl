@@ -739,6 +739,8 @@ h4.activity { background: #87ceff; }\n");
     writeq(description());
     fw.write("<br /></p>\n");
   }
+
+  write_properties();
   
   const QVector<UmlItem> ch = children();
   unsigned n = ch.size();
@@ -771,6 +773,8 @@ h4.activity { background: #87ceff; }\n");
     writeq(description());
     fw.write("<br /></p>\n");
   }
+
+  write_properties();
   
   UmlItem[] ch = children();
   
@@ -798,8 +802,6 @@ h4.activity { background: #87ceff; }\n");
   writeq(name());
   fw.write("</b></div></td></tr></table>\n");
   
-  write_dependencies();
-
   QCString d = description();
   
   if (!d.isEmpty()) {
@@ -808,11 +810,15 @@ h4.activity { background: #87ceff; }\n");
     fw.write("<br /></p>\n");
   }
   
+  write_dependencies();
+
   if (diagram != 0) {
     fw.write("<p>Diagram : ");
     diagram->write();
     fw.write("</p>\n");
   }
+
+  write_properties();
 !!!128341.java!!!	html(in what : str, in diagram : UmlDiagram) : void
   define();
 
@@ -822,8 +828,6 @@ h4.activity { background: #87ceff; }\n");
   writeq(name());
   fw.write("</b></div></td></tr></table>\n");
   
-  write_dependencies();
-
   String d = description();
   
   if (d.length() != 0) {
@@ -832,11 +836,15 @@ h4.activity { background: #87ceff; }\n");
     fw.write("<br /></p>\n");
   }
   
+  write_dependencies();
+
   if (diagram != null) {
     fw.write("<p>Diagram : ");
     diagram.write();
     fw.write("</p>\n");
   }
+
+  write_properties();
 !!!150018.cpp!!!	write_children(in pfix : string, in rank : uint, in level : uint) : void
   const QVector<UmlItem> ch = children();
   unsigned n = ch.size();
@@ -909,6 +917,46 @@ h4.activity { background: #87ceff; }\n");
       ((UmlNcRelation) ch[i]).target().write();
       fw.write("</p>");
     }
+  }
+!!!212866.cpp!!!	write_properties() : void
+  const QDict<QCString> d = properties();
+  
+  if (! d.isEmpty()) {
+    fw.write("<p>Properties:<ul>\n");
+    
+    QDictIterator<QCString> it(d);
+    
+    while (it.current()) {
+      fw.write("<li>");
+      writeq(it.currentKey().latin1());
+      fw.write(":<br /><div class=\"sub\">");
+      writeq(*(it.current()));
+      fw.write("</div></p></li>\n");
+      ++it;
+    }
+    
+    fw.write("</ul></p>\n");
+  }
+!!!212866.java!!!	write_properties() : void
+  Hashtable d = properties();
+  
+  if (! d.isEmpty()) {
+    fw.write("<p>Properties:<ul>\n");
+    
+    Set set = d.entrySet();
+    Iterator i = set.iterator();
+    
+    while(i.hasNext()){
+      Map.Entry e = (Map.Entry) i.next();
+
+      fw.write("<li>");
+      writeq((String) e.getKey());
+      fw.write(":<br /><div class=\"sub\">");
+      writeq((String) e.getValue());
+      fw.write("</div></p></li>\n");
+    }
+    
+    fw.write("</ul></p>\n");
   }
 !!!128596.cpp!!!	chapter(in k : string, in pfix : string, in rank : uint, in kind : string, in level : uint) : void
   if (rank != 0) {

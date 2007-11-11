@@ -27,6 +27,7 @@
 #define SDLIFELINECANVAS_H
 
 #include "DiagramCanvas.h"
+#include "SdDurationSupport.h"
 
 #define LIFE_LINE_TOPOFFSET 41
 
@@ -34,11 +35,11 @@ class SdDead;
 class SdObjCanvas;
 class SdDurationCanvas;
 
-class SdLifeLineCanvas : public DiagramCanvas {
+class SdLifeLineCanvas : public DiagramCanvas, public SdDurationSupport {
   protected:
+    QList<SdDurationCanvas> durations;
     SdObjCanvas * obj;
     int end;
-    QList<SdDurationCanvas> durations;
   
   public:
     SdLifeLineCanvas(UmlCanvas * canvas, SdObjCanvas * o);
@@ -47,11 +48,19 @@ class SdLifeLineCanvas : public DiagramCanvas {
     virtual void delete_it();
 
     SdObjCanvas * get_obj() const { return obj; };
-    void add(SdDurationCanvas *);
-    void remove(SdDurationCanvas *);
+    virtual void add(SdDurationCanvas *);
+    virtual void remove(SdDurationCanvas *);
+    void toFlat();
+    void toOverlapping();
     double instance_max_y() const;
     void update_pos();
-    void update_instance_dead();
+    virtual void update_instance_dead();
+    virtual void update_v_to_contain(SdDurationCanvas *, bool);
+    virtual int sub_x(int sub_w) const;
+    virtual double min_y() const;
+    virtual SdLifeLineCanvas * get_line() const;
+    virtual bool isaDuration() const;
+    virtual double getZ() const;
     
     virtual bool is_decenter(const QPoint &, bool &) const;
     

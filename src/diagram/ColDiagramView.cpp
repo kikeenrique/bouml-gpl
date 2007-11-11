@@ -94,9 +94,9 @@ void ColDiagramView::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle("Collaboration diagram menu", m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Edit all the messages", 19);
+  m.insertItem("Edit all the messages", 29);
  
-  switch (default_menu(m, 20)) {
+  switch (default_menu(m, 30)) {
   case EDIT_DRAWING_SETTING_CMD:
     ((BrowserColDiagram *) the_canvas()->browser_diagram())->edit_settings();
     break;
@@ -108,7 +108,7 @@ void ColDiagramView::menu(const QPoint&) {
     update_msgs();
     window()->package_modified();
     break;
-  case 19:
+  case 29:
     CodEditMsgDialog::exec(this, msgs);
     break;
   }

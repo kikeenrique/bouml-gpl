@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include "UmlEnum.h"
 
-#define FILEFORMAT 46
+#define FILEFORMAT 48
 
 class QDir;
 class QFile;
@@ -65,6 +65,9 @@ extern void restore_context(ReadContext &);
 extern bool read_only_file();
 extern void set_read_only_file();
 extern void force_read_only(bool y);
+
+extern bool on_load_diagram();
+extern void set_on_load_diagram(bool);
 
 extern void backup(QDir & d, QString fn);
 extern void delete_backup(QDir & d);
@@ -135,6 +138,9 @@ extern void warn(const QString &);
 extern void save(const DiagramItem *, QBuffer &);
 extern DiagramItem * load_item(QBuffer &);
 
+extern void save_ptr(const void *, QBuffer &);
+extern void * load_ptr(QBuffer &);
+
 extern void save(const QPoint & p, QBuffer &);
 extern void load(QPoint & p, QBuffer &);
 
@@ -159,12 +165,13 @@ extern bool start_svg(const char * f, int w, int h);
 extern void end_svg();
 extern FILE * svg();
 extern int svg_height();
+extern const char * svg_color(UmlColor);
+extern void draw_shadow(FILE * fp, QPointArray & poly);
 extern void draw_poly(FILE * fp, QPointArray & poly,
-		      const char * color, bool stroke = TRUE);
-extern void draw_poly(FILE * fp, QPointArray & poly,
-		      const QColor & color, bool stroke = TRUE);
+		      UmlColor color, bool stroke = TRUE);
 extern void draw_text(const QRect & r, int align, QString s, const QFont &, FILE *);
-extern void draw_text(int x, int y, int w, int h, int align, QString s, const QFont &, FILE *);
-
+extern void draw_text(int x, int y, int w, int h, int align, QString s,
+		      const QFont &, FILE *, UmlColor fg = UmlBlack,
+		      UmlColor bg = UmlTransparent);
 
 #endif

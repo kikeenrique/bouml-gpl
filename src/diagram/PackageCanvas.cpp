@@ -216,18 +216,13 @@ void PackageCanvas::draw(QPainter & p) {
   
   r.setWidth(r.width() * 2 / 5);
   r.setHeight(he + four);
-  if (used_color != UmlTransparent) {
+  if (used_color != UmlTransparent)
     p.fillRect(r, co);
-
-    if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      co.rgb()&0xffffff, 
-	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-  }
-  else if (fp != 0)
-    fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+  
+  if (fp != 0)
+    fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	    svg_color(used_color), 
 	    r.x(), r.y(), r.width() - 1, r.height() - 1);
 
   p.drawRect(r);
@@ -260,18 +255,13 @@ void PackageCanvas::draw(QPainter & p) {
   }
   
   r.setTop(r.top() + he + four - 1);
-  if (used_color != UmlTransparent) {
+  if (used_color != UmlTransparent)
     p.fillRect(r, co);
-
-    if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      co.rgb()&0xffffff,
-	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-  }
-  else if (fp != 0)
-    fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+  
+  if (fp != 0)
+    fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	    svg_color(used_color),
 	    r.x(), r.y(), r.width() - 1, r.height() - 1);
 
   p.drawRect(r);
@@ -370,6 +360,12 @@ void PackageCanvas::modified() {
     draw_all_simple_relations();
   canvas()->update();
   package_modified();
+}
+
+void PackageCanvas::post_loaded() {
+  force_self_rel_visible();
+  if (the_canvas()->must_draw_all_relations())
+    draw_all_simple_relations();
 }
 
 void PackageCanvas::menu(const QPoint&) {

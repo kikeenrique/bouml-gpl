@@ -38,6 +38,7 @@ class NoteCanvas : public QObject, public DiagramCanvas {
     UmlFont itsfont;
     UmlColor itscolor;
     UmlColor used_color;
+    UmlColor fg_c;
     QString note;
   
     void save_internal(QTextStream & st) const;

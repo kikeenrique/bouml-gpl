@@ -69,8 +69,10 @@ BrowserDiagram::~BrowserDiagram() {
 }
 
 void BrowserDiagram::package_modified() {
-  is_modified = TRUE;
-  BrowserNode::package_modified();
+  if (!on_load_diagram()) {
+    is_modified = TRUE;
+    BrowserNode::package_modified();
+  }
 }
 
 bool BrowserDiagram::get_auto_label_position(UmlCode) const {

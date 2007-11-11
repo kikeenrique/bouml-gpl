@@ -19,6 +19,15 @@ void UmlActivityObject::html(QCString pfix, unsigned int rank, unsigned int leve
 }
 
 void UmlActivityObject::html_internal(QCString pfix, unsigned int rank, unsigned int level) {
+  QCString s = description();
+  
+  s = description();
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(s);
+    fw.write("<br /></p>");
+  }
+
   fw.write("<p>Type : ");
   write(type(), cppLanguage);
   fw.write("</p>");
@@ -37,7 +46,7 @@ void UmlActivityObject::html_internal(QCString pfix, unsigned int rank, unsigned
 
   fw.write("<p>Selection :</p><ul>");
   
-  QCString s = selection();
+  s = selection();
 
   if (!s.isEmpty()) {
     fw.write("<li>OCL : <pre>\n");
@@ -72,15 +81,6 @@ void UmlActivityObject::html_internal(QCString pfix, unsigned int rank, unsigned
   if (isControlType())
     fw.write("<p>Is control type</p>\n");
 
-  s = description();
-  
-  s = description();
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    writeq(s);
-    fw.write("<br /></p>");
-  }
-
   UmlActivityDiagram * d = associatedDiagram();
   
   if (d != 0) {
@@ -88,6 +88,8 @@ void UmlActivityObject::html_internal(QCString pfix, unsigned int rank, unsigned
     d->write();
     fw.write("</p>");
   }
+
+  write_properties();
 
   write_children(pfix, rank, level);
 

@@ -242,7 +242,7 @@ void DeploymentNodeCanvas::draw(QPainter & p) {
       fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
 	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-      draw_poly(fp, a, "none");
+      draw_poly(fp, a, UmlTransparent);
     }
   }
   else {
@@ -254,11 +254,11 @@ void DeploymentNodeCanvas::draw(QPainter & p) {
     p.setBackgroundColor(co);
 
     if (fp != 0) {
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      co.rgb()&0xffffff,
+	      svg_color(c),
 	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-      draw_poly(fp, a, co);
+      draw_poly(fp, a, c);
     }
   }
 

@@ -187,24 +187,31 @@ bool SdMsgBaseCanvas::is_decenter(const QPoint &, bool &) const {
 }
 
 void SdMsgBaseCanvas::open() {
-  if (itsType != UmlReturnMsg) {
-    SdMsgDialog d(this);
-    
-    if (d.exec() == QDialog::Accepted)
-      modified();
-  }
-  else {
-    bool ok = FALSE;
-    QString s =
-      QInputDialog::getText("Return", "value :", QLineEdit::Normal,
-			    (const char *) explicit_msg, &ok);
-    
-    s = s.stripWhiteSpace();
-    
-    if (ok && (s != (const char *) explicit_msg)) {
-      explicit_msg = s;
-      modified();
+  switch (itsType) {
+  case UmlReturnMsg:
+  case UmlSelfReturnMsg:
+    {
+      bool ok = FALSE;
+      QString s =
+	QInputDialog::getText("Return", "value :", QLineEdit::Normal,
+			      (const char *) explicit_msg, &ok);
+      
+      s = s.stripWhiteSpace();
+      
+      if (ok && (s != (const char *) explicit_msg)) {
+	explicit_msg = s;
+	modified();
+      }
     }
+    break;
+  default:
+    {
+      SdMsgDialog d(this);
+      
+      if (d.exec() == QDialog::Accepted)
+	modified();
+    }
+    break;
   }
 }
 
@@ -331,7 +338,8 @@ void SdMsgBaseCanvas::save(QTextStream & st, QString & warning) const {
 }
 
 void SdMsgBaseCanvas::read(char * & st) {
-  if ((itsType != UmlReturnMsg) || (read_file_format() >= 4)) {
+  if (((itsType != UmlReturnMsg) && (itsType != UmlSelfReturnMsg)) ||
+      (read_file_format() >= 4)) {
     char * k = read_keyword(st);
     const OperationData * method = 0;
     QString expl;

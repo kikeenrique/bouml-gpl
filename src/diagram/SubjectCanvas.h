@@ -60,6 +60,7 @@ class SubjectCanvas : public QObject, public DiagramCanvas {
     virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual aCorner on_resize_point(const QPoint &);
     virtual void resize(aCorner c, int dx, int dy);
+    virtual void prepare_for_move(bool on_resize);
     virtual void change_scale();
     
     virtual bool has_drawing_settings() const;

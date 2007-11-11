@@ -52,6 +52,7 @@ const char * asyncmsgText = "Click this button to send an <em>asynchronous messa
 const char * syncselfmsgText = "Click this button to send a <em>reflexive synchronous message</em>";
 const char * asyncselfmsgText = "Click this button to send a <em>reflexive asynchronous message</em>";
 const char * returnmsgText = "Click this button to add an <em>explicitly return</em>";
+const char * selfreturnmsgText = "Click this button to add an <em>explicit reflexive return</em>";
 const char * textText = "Click this button to add a <em>text</em>";
 const char * addcontinuationText = "Click this button to add a <em>continuation</em>";
 
@@ -123,6 +124,12 @@ SeqDiagramWindow::SeqDiagramWindow(const QString & s, BrowserSeqDiagram * b, int
 		    this, SLOT(hit_returnmsg()), toolbar, "explicit return");
   returnMsg->setToggleButton(TRUE);
   QWhatsThis::add(returnMsg, returnmsgText);
+  
+  selfreturnMsg =
+    new QToolButton(*selfreturnmsgButton, "Explicit reflexive return", QString::null,
+		    this, SLOT(hit_selfreturnmsg()), toolbar, "explicit reflexive return");
+  selfreturnMsg->setToggleButton(TRUE);
+  QWhatsThis::add( selfreturnMsg,  selfreturnmsgText);
   
   note =
     new QToolButton(*noteButton, "Note", QString::null,
@@ -200,6 +207,7 @@ void SeqDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   asyncMsg->setOn(FALSE);
   syncSelfMsg->setOn(FALSE);
   asyncSelfMsg->setOn(FALSE);
+  selfreturnMsg->setOn(FALSE);
   returnMsg->setOn(FALSE);
   note->setOn(FALSE);
   anchor->setOn(FALSE);
@@ -243,6 +251,10 @@ void SeqDiagramWindow::hit_asyncselfmsg() {
 
 void SeqDiagramWindow::hit_returnmsg() {
   hit_button(UmlReturnMsg, returnMsg);
+}
+
+void SeqDiagramWindow::hit_selfreturnmsg() {
+  hit_button(UmlSelfReturnMsg, selfreturnMsg);
 }
 
 void SeqDiagramWindow::hit_note() {

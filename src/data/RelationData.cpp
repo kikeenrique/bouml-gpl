@@ -272,7 +272,7 @@ BrowserRelation * RelationData::set_start_end(BrowserRelation * s, BrowserClass 
       break;
     case UmlDependency:
       if (GenerationSettings::cpp_get_default_defs())
-	a.cpp_decl = "Generated";
+	a.cpp_decl = "#include in source";
       break;
     default:
       a.uml_visibility =

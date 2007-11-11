@@ -348,31 +348,49 @@ void BrowserDeploymentView::apply_shortcut(QString s) {
       else if (s == "New artifact")
 	choice = 2;
     }
-    if (!is_edited) {
-      if (s == "Edit")
-	choice = 3;
-      if (!is_read_only) {
-	//m.setWhatsThis(m.insertItem("Edit node settings", 4),
-	//		   "to set the sub node's settings");
-	if (s == "Edit drawing settings")
-	  choice = 5;
-	if (edition_number == 0) {
-	  if (s == "Delete")
-	    choice = 6;
+   
+    if (choice == -1) {
+      if (!is_edited) {
+	if (s == "Edit")
+	  choice = 3;
+	else if (!is_read_only) {
+	  //m.setWhatsThis(m.insertItem("Edit node settings", 4),
+	  //		   "to set the sub node's settings");
+	  if (s == "Edit drawing settings")
+	    choice = 5;
+	  if (edition_number == 0) {
+	    if (s == "Delete")
+	      choice = 6;
+	  }
+	}
+      }
+      if (choice == -1) {
+	if (preserve_bodies()) {
+	  if (s == "Roundtrip C++ operation body")
+	    choice = 30;
+	  else if (s == "Roundtrip Java operation body")
+	    choice = 31;
+	  else if (s == "Roundtrip Php operation body")
+	    choice = 32;
+	}
+	
+	if (choice == -1)
+	  mark_shortcut(s, choice, 90);
+	
+	if (choice == -1) {
+	  if (edition_number == 0)
+	    Tool::shortcut(s, choice, get_type(), 100);
+	  if (s == "Generate C++")
+	    choice = 10;
+	  else if (s == "Generate Java")
+	    choice = 11;
+	  else if (s == "Generate Php")
+	    choice = 12;
+	  else if (s == "Generate Idl")
+	    choice = 13;
 	}
       }
     }
-    mark_shortcut(s, choice, 90);
-    if (edition_number == 0)
-      Tool::shortcut(s, choice, get_type(), 100);
-    if (s == "Generate C++")
-      choice = 10;
-    else if (s == "Generate Java")
-      choice = 11;
-    else if (s == "Generate Php")
-      choice = 12;
-    else if (s == "Generate Idl")
-      choice = 13;
   }
   else if (!is_read_only && (edition_number == 0)) {
     if (s == "Undelete")

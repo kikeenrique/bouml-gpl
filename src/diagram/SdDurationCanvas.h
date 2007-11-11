@@ -27,6 +27,7 @@
 #define SDDURATIONCANVAS_H
 
 #include "DiagramCanvas.h"
+#include "SdDurationSupport.h"
 
 #define DURATION_WIDTH 11
 
@@ -34,35 +35,61 @@ class SdObjCanvas;
 class SdLifeLineCanvas;
 class SdMsgBaseCanvas;
 
-class SdDurationCanvas : public QObject, public DiagramCanvas {
+class SdDurationCanvas : public QObject, public DiagramCanvas, public SdDurationSupport {
   Q_OBJECT
     
   protected:
-    SdLifeLineCanvas * line;
+    SdDurationSupport * support;
+    QList<SdDurationCanvas> durations;
     QList<SdMsgBaseCanvas> msgs;
     UmlColor itscolor;
     bool coregion;
   
-    SdDurationCanvas(UmlCanvas * canvas, SdLifeLineCanvas * ll,
+    SdDurationCanvas(UmlCanvas * canvas, SdDurationSupport * sp,
 		     int x, int y, int w, int h, int id, bool coreg);
+
+    void save_sub(QTextStream &) const;
+    void save_internal(QTextStream &) const;
+    void cut_internal(int py);
+    void update_self();
+    void cut(const QPoint & p);
+    void merge(QList<SdDurationCanvas> &);
+    void collapse(SdDurationCanvas *);
+    void toOverlapping(SdMsgBaseCanvas **, SdDurationCanvas * orig,
+				    unsigned & index, unsigned sz);
+    void postToOverlapping();
+
+    static SdDurationCanvas * read_internal(char * & st, UmlCanvas *, int id, SdDurationSupport *);
+    
   public:
-    SdDurationCanvas(UmlCanvas * canvas, SdLifeLineCanvas * ll,
+    SdDurationCanvas(UmlCanvas * canvas, SdDurationSupport * sp,
 		     int v, bool isdest);
     virtual ~SdDurationCanvas();
     
     virtual void delete_it();
-
-    double min_y() const;
+    
+    virtual void add(SdDurationCanvas *);
+    virtual void remove(SdDurationCanvas *);
+    virtual void update_instance_dead();
+    virtual void update_v_to_contain(SdDurationCanvas *, bool force);
+    virtual int sub_x(int sub_w) const;
+    virtual double min_y() const;
+    virtual SdLifeLineCanvas * get_line() const;
+    virtual bool isaDuration() const;
+    virtual double getZ() const;
+    void go_up(SdMsgBaseCanvas *, bool isdest);
+    void go_down(SdMsgBaseCanvas *);
     void update_hpos();
     void update_v_to_contain(const QRect re);
     void add(SdMsgBaseCanvas *);
     void remove(SdMsgBaseCanvas *);
-    SdLifeLineCanvas * get_line() { return line; };
-    void cut(const QPoint & p);
-    void merge(QList<SdDurationCanvas> &);
+    bool isOverlappingDuration() const;
+    void toFlat();
+    void toOverlapping();
     
     virtual void draw(QPainter & p);
     virtual void moveBy(double dx, double dy);
+    virtual void prepare_for_move(bool on_resize);
     
     virtual UmlCode type() const;
     virtual void open();

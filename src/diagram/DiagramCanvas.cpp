@@ -234,16 +234,16 @@ void DiagramCanvas::resize(aCorner c, int dx, int dy,
   hide_lines();
   
   switch (c) {
-  case ::TopLeft:
+  case UmlTopLeft:
     QCanvasRectangle::moveBy(dx, dy);
     dx = -dx;
     dy = -dy;
     break;
-  case ::TopRight:
+  case UmlTopRight:
     QCanvasRectangle::moveBy(0, dy);
     dy = -dy;
     break;
-  case ::BottomLeft:
+  case UmlBottomLeft:
     QCanvasRectangle::moveBy(dx, 0);
     dx = -dx;
     break;
@@ -288,6 +288,16 @@ void DiagramCanvas::prepare_for_move(bool on_resize) {
 	it.current()->select_associated();
       ++it;
     }
+  }
+}
+
+bool DiagramCanvas::move_with(UmlCode k) const {
+  switch (k) {
+  case UmlSubject:
+  case UmlFragment:
+    return (the_canvas()->browser_diagram()->get_type() == UmlUseCaseDiagram);
+  default:
+    return FALSE;
   }
 }
 
@@ -453,15 +463,10 @@ void DiagramCanvas::draw_control_icon(QPainter & p, QRect & r,
 
   if (fp != 0) {
     sz /= 2;
-    if (used_color != UmlTransparent)
-      fprintf(fp, "\t<ellipse fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
-	      co.rgb()&0xffffff,
-	      cx, cy + sz, sz, sz);
-    else
-      fprintf(fp, "\t<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
-	      cx, cy + sz, sz, sz);
+    fprintf(fp, "\t<ellipse fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+	    svg_color(used_color),
+	    cx, cy + sz, sz, sz);
     fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
 	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
 	    cx, cy, cx + dv, cy - dv);
@@ -501,15 +506,10 @@ void DiagramCanvas::draw_boundary_icon(QPainter & p, QRect & r,
 	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
 	    cx - wi, r.top(), cx - wi, r.top() + he);
     he /= 2;
-    if (used_color != UmlTransparent)
-      fprintf(fp, "\t<ellipse fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
-	      co.rgb()&0xffffff,
-	      (r.left() + r.right()) / 2, r.top() + he, he, he);
-    else
-      fprintf(fp, "\t<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
-	      (r.left() + r.right()) / 2, r.top() + he, he, he);
+    fprintf(fp, "\t<ellipse fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+	    svg_color(used_color),
+	    (r.left() + r.right()) / 2, r.top() + he, he, he);
   }
 }
 
@@ -535,15 +535,10 @@ void DiagramCanvas::draw_boundary_icon(QPainter & p, QRect & r,
 	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
 	    left, r.top() + sz, left + sz, r.top() + sz);
     sz /= 2;
-    if (used_color != UmlTransparent)
-      fprintf(fp, "\t<ellipse fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
-	      co.rgb()&0xffffff,
-	      (r.left() + r.right()) / 2, r.top() + sz, sz, sz);
-    else
-      fprintf(fp, "\t<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
-	      (r.left() + r.right()) / 2, r.top() + sz, sz, sz);
+    fprintf(fp, "\t<ellipse fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+	    svg_color(used_color),
+	    (r.left() + r.right()) / 2, r.top() + sz, sz, sz);
   }
 }
 
@@ -620,7 +615,9 @@ void DiagramCanvas::draw_all_simple_relations(DiagramCanvas * end) {
     }
   }
   
-  if ((end == 0) && !DrawingSettings::just_modified()) {
+  if ((end == 0) && 
+      !DrawingSettings::just_modified() &&
+      !on_load_diagram()) {
     for (cit = all.begin(); cit != all.end(); ++cit) {
       DiagramCanvas * dc = QCanvasItemToDiagramCanvas(*cit);
       
@@ -690,7 +687,9 @@ void DiagramCanvas::draw_all_flows(DiagramCanvas * end) {
     }
   }
   
-  if ((end == 0) && !DrawingSettings::just_modified()) {
+  if ((end == 0) &&
+      !DrawingSettings::just_modified() &&
+      !on_load_diagram()) {
     for (cit = all.begin(); cit != all.end(); ++cit) {
       DiagramCanvas * dc = QCanvasItemToDiagramCanvas(*cit);
       
@@ -760,7 +759,9 @@ void DiagramCanvas::draw_all_transitions(DiagramCanvas * end) {
     }
   }
   
-  if ((end == 0) && !DrawingSettings::just_modified()) {
+  if ((end == 0) && 
+      !DrawingSettings::just_modified() &&
+      !on_load_diagram()) {
     for (cit = all.begin(); cit != all.end(); ++cit) {
       DiagramCanvas * dc = QCanvasItemToDiagramCanvas(*cit);
       

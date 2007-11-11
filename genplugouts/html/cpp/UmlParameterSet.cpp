@@ -11,6 +11,14 @@ void UmlParameterSet::html(QCString, unsigned int, unsigned int) {
   writeq(name());
   fw.write("</div></td></tr></table>");
   
+  QCString s = description();
+
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(s);
+    fw.write("<br /></p>");
+  }
+
   fw.write("<p>Contains :");
   
   const QVector<UmlActivityPin> & p = pins();
@@ -23,13 +31,7 @@ void UmlParameterSet::html(QCString, unsigned int, unsigned int) {
   
   fw.write("</p>");
 
-  QCString s = description();
-
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    writeq(s);
-    fw.write("<br /></p>");
-  }
+  write_properties();
 
   unload(FALSE, FALSE);
 

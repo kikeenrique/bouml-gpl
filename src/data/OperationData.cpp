@@ -594,11 +594,11 @@ void OperationData::update_cpp_get_of(QCString & decl, QCString & def,
   if ((index = attcpp_decl.find("${volatile}")) != -1)
     attcpp_decl.remove(index, 11);
   if ((index = attcpp_decl.find("${value}")) != -1)
-    attcpp_decl.remove(index, 8);
+    attcpp_decl.truncate(index);
   if ((index = attcpp_decl.find("${h_value}")) != -1)
-    attcpp_decl.remove(index, 10);
+    attcpp_decl.truncate(index);
   if ((index = attcpp_decl.find(";")) != -1)
-    attcpp_decl.remove(index, 1);
+    attcpp_decl.truncate(index);
   
   QString attr_name_spec = extract_name(attcpp_decl);
   
@@ -738,10 +738,12 @@ void OperationData::update_java_get_of(QCString & def, const QString & attr_name
     attjava_decl.remove(index, 12);
   if ((index = attjava_decl.find("${volatile}")) != -1)
     attjava_decl.remove(index, 11);
+  if ((index = attjava_decl.find("=")) != -1)
+    attjava_decl.truncate(index);
   if ((index = attjava_decl.find("${value}")) != -1)
-    attjava_decl.remove(index, 8);
+    attjava_decl.truncate(index);
   if ((index = attjava_decl.find(";")) != -1)
-    attjava_decl.remove(index, 1);
+    attjava_decl.truncate(index);
   
   QString attr_name_spec = extract_name(attjava_decl);
   
@@ -803,9 +805,9 @@ void OperationData::update_php_get_of(QCString & def, const QString & attr_name,
   if ((index = attphp_decl.find("${const}")) != -1)
     attphp_decl.remove(index, 8);
   if ((index = attphp_decl.find("${value}")) != -1)
-    attphp_decl.remove(index, 8);
+    attphp_decl.truncate(index);
   if ((index = attphp_decl.find(";")) != -1)
-    attphp_decl.remove(index, 1);
+    attphp_decl.truncate(index);
   
   QString attr_name_spec = extract_name(attphp_decl);
   
@@ -868,9 +870,9 @@ void OperationData::update_idl_get_of(QCString & decl, QString attidl_decl,
   if ((index = attidl_decl.find("const ")) != -1)
     attidl_decl.remove(index, 6);
   if ((index = attidl_decl.find("${value}")) != -1)
-    attidl_decl.remove(index, 8);
+    attidl_decl.truncate(index);
   if ((index = attidl_decl.find(";")) != -1)
-    attidl_decl.remove(index, 1);
+    attidl_decl.truncate(index);
   
   QString attr_name_spec = extract_name(attidl_decl);
   
@@ -1011,11 +1013,11 @@ void OperationData::update_cpp_set_of(QCString & decl, QCString & def,
   if ((index = attcpp_decl.find("${volatile}")) != -1)
     attcpp_decl.remove(index, 11);
   if ((index = attcpp_decl.find("${value}")) != -1)
-    attcpp_decl.remove(index, 8);
+    attcpp_decl.truncate(index);
   if ((index = attcpp_decl.find("${h_value}")) != -1)
-    attcpp_decl.remove(index, 10);
+    attcpp_decl.truncate(index);
   if ((index = attcpp_decl.find(";")) != -1)
-    attcpp_decl.remove(index, 1);
+    attcpp_decl.truncate(index);
   
   QString attr_name_spec = extract_name(attcpp_decl);
   
@@ -1134,10 +1136,12 @@ void OperationData::update_java_set_of(QCString & def,
     attjava_decl.remove(index, 12);
   if ((index = attjava_decl.find("${volatile}")) != -1)
     attjava_decl.remove(index, 11);
+  if ((index = attjava_decl.find("=")) != -1)
+    attjava_decl.truncate(index);
   if ((index = attjava_decl.find("${value}")) != -1)
-    attjava_decl.remove(index, 8);
+    attjava_decl.truncate(index);
   if ((index = attjava_decl.find(";")) != -1)
-    attjava_decl.remove(index, 1);
+    attjava_decl.truncate(index);
   
   QString attr_name_spec = extract_name(attjava_decl);
   
@@ -1209,9 +1213,9 @@ void OperationData::update_php_set_of(QCString & def,
   if ((index = attphp_decl.find("${const}")) != -1)
     attphp_decl.remove(index, 8);
   if ((index = attphp_decl.find("${value}")) != -1)
-    attphp_decl.remove(index, 8);
+    attphp_decl.truncate(index);
   if ((index = attphp_decl.find(";")) != -1)
-    attphp_decl.remove(index, 1);
+    attphp_decl.truncate(index);
   
   QString attr_name_spec = extract_name(attphp_decl);
   
@@ -1280,9 +1284,9 @@ void OperationData::update_idl_set_of(QCString & decl, QString attidl_decl,
   if ((index = attidl_decl.find("const ")) != -1)
     attidl_decl.remove(index, 6);
   if ((index = attidl_decl.find("${value}")) != -1)
-    attidl_decl.remove(index, 8);
+    attidl_decl.truncate(index);
   if ((index = attidl_decl.find(";")) != -1)
-    attidl_decl.remove(index, 1);
+    attidl_decl.truncate(index);
   
   QString attr_name_spec = extract_name(attidl_decl);
   

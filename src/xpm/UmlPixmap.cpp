@@ -31,6 +31,7 @@ QPixmap * syncmsgButton;
 QPixmap * syncselfmsgButton;
 QPixmap * asyncselfmsgButton;
 QPixmap * returnmsgButton;
+QPixmap * selfreturnmsgButton;
 QPixmap * selflinkButton;
 QPixmap * fitscaleButton;
 QPixmap * optwindowsizeButton;
@@ -243,6 +244,7 @@ QPixmap * VeryLightGrayPixmap;
 QPixmap * LightGrayPixmap;
 QPixmap * GrayPixmap;
 QPixmap * DarkGrayPixmap;
+QPixmap * BlackPixmap;
 QPixmap * VeryLightOrangePixmap;
 QPixmap * LightOrangePixmap;
 QPixmap * OrangePixmap;
@@ -325,6 +327,7 @@ void init_pixmaps()
 #include "syncselfmsg_button.xpm"
 #include "asyncselfmsg_button.xpm"
 #include "returnmsg_button.xpm"
+#include "selfreturnmsg_button.xpm"
 #include "selflink_button.xpm"
 #include "fitscale_button.xpm"
 #include "optwinsize_button.xpm"
@@ -385,6 +388,7 @@ void init_pixmaps()
   syncselfmsgButton = new QPixmap((const char **) syncselfmsg_button);
   asyncselfmsgButton = new QPixmap((const char **) asyncselfmsg_button);
   returnmsgButton = new QPixmap((const char **) returnmsg_button);
+  selfreturnmsgButton = new QPixmap((const char **) selfreturnmsg_button);
   selflinkButton = new QPixmap((const char **) selflink_button);
   fitscaleButton = new QPixmap((const char **) fitscale_button);
   optwindowsizeButton = new QPixmap((const char **) optwinsize_button);
@@ -756,6 +760,7 @@ void init_pixmaps()
 #include "lightgray_xpm.xpm"
 #include "gray_xpm.xpm"
 #include "darkgray_xpm.xpm"
+#include "black_xpm.xpm"
 
   WhitePixmap = new QPixmap((const char **) white_xpm);
   LightYellowPixmap = new QPixmap((const char **) lightyellow_xpm);
@@ -787,6 +792,7 @@ void init_pixmaps()
   LightGrayPixmap = new QPixmap((const char **) lightgray_xpm);
   GrayPixmap = new QPixmap((const char **) gray_xpm);
   DarkGrayPixmap = new QPixmap((const char **) darkgray_xpm);
+  BlackPixmap = new QPixmap((const char **) black_xpm);
 
   // dialog pixmap
 

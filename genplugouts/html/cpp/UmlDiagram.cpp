@@ -59,6 +59,8 @@ void UmlDiagram::html(QCString, unsigned int, unsigned int) {
     fw.write("<br /></p>");
   }
 
+  write_properties();
+
   unload(FALSE, FALSE);
 }
 

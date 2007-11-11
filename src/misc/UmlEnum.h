@@ -74,7 +74,8 @@ enum UmlCode {
   UmlDependOn, UmlInherit, UmlObjectLink,	// not between classes
   UmlArrowPoint,
   UmlNote, UmlAnchor, UmlLabel, UmlText,
-  UmlSyncMsg, UmlAsyncMsg, UmlSyncSelfMsg, UmlAsyncSelfMsg, UmlReturnMsg,
+  UmlSyncMsg, UmlAsyncMsg, UmlSyncSelfMsg, UmlAsyncSelfMsg,
+  UmlReturnMsg, UmlSelfReturnMsg,
   UmlLifeLine, UmlActivityDuration,
   UmlLink, UmlSelfLink, UmlLinkDirs,
   UmlContain, 
@@ -115,7 +116,7 @@ inline bool IsaActivityContainer(UmlCode k)
   }
 }
 
-enum aCorner { NoCorner, TopLeft, TopRight, BottomLeft, BottomRight };
+enum aCorner { NoCorner, UmlTopLeft, UmlTopRight, UmlBottomLeft, UmlBottomRight };
 
 enum UmlVisibility { UmlPublic, UmlProtected, UmlPrivate, UmlPackageVisibility, UmlDefaultVisibility };
 
@@ -173,6 +174,7 @@ enum UmlColor {
   UmlLightGray,
   UmlGray,
   UmlDarkGray,
+  UmlBlack,
   UmlDefaultColor
 };
 

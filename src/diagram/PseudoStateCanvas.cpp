@@ -172,6 +172,14 @@ void PseudoStateCanvas::modified() {
   package_modified();
 }
 
+void PseudoStateCanvas::post_loaded() {
+  force_self_rel_visible();
+  if (the_canvas()->must_draw_all_relations()) {
+    //draw_all_simple_relations();
+    draw_all_transitions();
+  }
+}
+
 void PseudoStateCanvas::connexion(UmlCode action, DiagramItem * dest,
 				  const QPoint &, const QPoint &) {
   ArrowCanvas * a;

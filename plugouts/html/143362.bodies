@@ -8,6 +8,14 @@ class UmlParameterSet
   writeq(name());
   fw.write("</div></td></tr></table>");
   
+  QCString s = description();
+
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    writeq(s);
+    fw.write("<br /></p>");
+  }
+
   fw.write("<p>Contains :");
   
   const QVector<UmlActivityPin> & p = pins();
@@ -20,13 +28,7 @@ class UmlParameterSet
   
   fw.write("</p>");
 
-  QCString s = description();
-
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    writeq(s);
-    fw.write("<br /></p>");
-  }
+  write_properties();
 
   unload(FALSE, FALSE);
 
@@ -35,6 +37,14 @@ class UmlParameterSet
   writeq(name());
   fw.write("</div></td></tr></table>");
   
+  String s = description();
+  
+  if (s.length() != 0) {
+    fw.write("<p>");
+    writeq(description());
+    fw.write("<br /></p>");
+  }
+
   fw.write("<p>Contains :");
   
   UmlActivityPin[] p = pins();
@@ -46,12 +56,6 @@ class UmlParameterSet
 
   fw.write("</p>");
 
-  String s = description();
-  
-  if (s.length() != 0) {
-    fw.write("<p>");
-    writeq(description());
-    fw.write("<br /></p>");
-  }
+  write_properties();
 
   unload(false, false);

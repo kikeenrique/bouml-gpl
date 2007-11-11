@@ -254,6 +254,14 @@ void ActivityActionCanvas::modified() {
   package_modified();
 }
 
+void ActivityActionCanvas::post_loaded() {
+  force_pins_arround();
+  if (the_canvas()->must_draw_all_relations()) {
+    draw_all_flows();
+    draw_all_simple_relations();
+  }
+}
+
 aCorner ActivityActionCanvas::on_resize_point(const QPoint & p) {
   return ::on_resize_point(p, rect());
 }
@@ -522,7 +530,7 @@ void ActivityActionCanvas::draw(QPainter & p) {
 	p.drawPolyline(a);
 
 	if (fp != 0)
-	  draw_poly(fp, a, "none");
+	  draw_poly(fp, a, UmlTransparent);
       }
       else {
 	if (shadow != 0) {
@@ -540,14 +548,14 @@ void ActivityActionCanvas::draw(QPainter & p) {
 	  p.setPen(QObject::SolidLine);
 
 	  if (fp != 0)
-	    draw_poly(fp, b, QObject::darkGray);
+	    draw_shadow(fp, b);
 	}
 	
 	p.setBrush(co);
 	p.drawPolygon(a, TRUE, 0, 5);
 
 	if (fp != 0)
-	  draw_poly(fp, a, co);
+	  draw_poly(fp, a, used_color);
       }
       r.setLeft(r.left() + margin);
       margin = (int) (6 * the_canvas()->zoom());
@@ -575,7 +583,7 @@ void ActivityActionCanvas::draw(QPainter & p) {
       if (used_color == UmlTransparent) {
 	p.drawPolyline(a);
 	if (fp != 0)
-	  draw_poly(fp, a, "none");
+	  draw_poly(fp, a, UmlTransparent);
       }
       else {
 	if (shadow != 0) {
@@ -593,14 +601,14 @@ void ActivityActionCanvas::draw(QPainter & p) {
 	  p.setPen(QObject::SolidLine);
 
 	  if (fp != 0)
-	    draw_poly(fp, b, QObject::darkGray, FALSE);
+	    draw_shadow(fp, b);
 	}
       
 	p.setBrush(co);
 	p.drawPolygon(a, TRUE, 0, 5);
 
 	if (fp != 0)
-	  draw_poly(fp, a, co);
+	  draw_poly(fp, a, used_color);
       }
       r.setWidth(r.width() - margin);
       margin = (int) (6 * the_canvas()->zoom());
@@ -629,9 +637,9 @@ void ActivityActionCanvas::draw(QPainter & p) {
     p.drawRoundRect(r);
 
     if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-opacity=\"1\""
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
-	      co.rgb()&0xffffff,
+	      svg_color(used_color),
 	      r.left(), r.top(), r.width() - 1, r.height() - 1);
     
     if (data->get_action_kind() == UmlCallBehaviorAction) {

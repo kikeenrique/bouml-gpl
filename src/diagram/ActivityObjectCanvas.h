@@ -90,6 +90,7 @@ class ActivityObjectCanvas : public QObject, public DiagramCanvas {
 
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static ActivityObjectCanvas * read(char * &, UmlCanvas * canvas, char *);
+    virtual void post_loaded();
     
   private slots:
     void modified();	// canvas must be updated

@@ -132,7 +132,7 @@ void ArtifactCanvas::compute_size() {
   }
   
   // force odd width and height for line alignment
-  setSize(wi | 1, he | 1);
+  DiagramCanvas::resize(wi | 1, he | 1);
 }
 
 void ArtifactCanvas::change_scale() {  
@@ -154,6 +154,13 @@ void ArtifactCanvas::modified() {
   }
   canvas()->update();
   package_modified();
+}
+
+void ArtifactCanvas::post_loaded() {
+  if (the_canvas()->must_draw_all_relations()) {
+    draw_all_relations();
+    draw_all_simple_relations();
+  }
 }
 
 void ArtifactCanvas::connexion(UmlCode action, DiagramItem * dest,
@@ -195,7 +202,8 @@ void ArtifactCanvas::draw_all_relations() {
   if (strcmp(browser_node->get_stereotype(), "source") != 0)
     // may start association
     update_relations();
-  else if (!DrawingSettings::just_modified()) {
+  else if (!DrawingSettings::just_modified() &&
+	   !on_load_diagram()) {
     // remove all association starting from 'this'
     QListIterator<ArrowCanvas> it(lines);
     
@@ -371,9 +379,9 @@ void ArtifactCanvas::draw(QPainter & p) {
     p.fillRect(r, co);
 
     if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      co.rgb()&0xffffff, 
+	      svg_color(used_color), 
 	      r.x(), r.y(), r.width() - 1, r.height() - 1);
   }
   else if (fp != 0)
@@ -430,7 +438,7 @@ void ArtifactCanvas::draw(QPainter & p) {
   p.lineTo(re.right(), re.top() + corner_size);
 
   if (fp != 0) {
-    draw_poly(fp, a, "none");
+    draw_poly(fp, a, UmlTransparent);
     fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
 	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n"
 	    "</g>\n",

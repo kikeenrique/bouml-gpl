@@ -58,8 +58,10 @@ class UcClassCanvas : public QObject, public DiagramCanvas {
     
     virtual void history_load(QBuffer &);
     virtual void history_hide();
+
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static UcClassCanvas * read(char * &, UmlCanvas * canvas, char *);
+    virtual void post_loaded();
     
   private slots:
     void modified();	// canvas must be updated

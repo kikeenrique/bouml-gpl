@@ -69,6 +69,7 @@ class ExpansionNodeCanvas : public QObject, public DiagramCanvas {
 
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static ExpansionNodeCanvas * read(char * &, UmlCanvas *, char *, ExpansionRegionCanvas *);
+    virtual void post_loaded();
     
     virtual void history_save(QBuffer &) const;
     virtual void history_load(QBuffer &);

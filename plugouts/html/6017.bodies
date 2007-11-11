@@ -94,6 +94,14 @@ class UmlClass
   UmlCom::message(name());
   
   QCString s;
+ 
+  s = description();
+  
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    gen_cpp_decl(s, TRUE);
+    fw.write("<br /></p>");
+  }
   
   fw.write("<p>Declaration :</p><ul>");
   
@@ -137,14 +145,6 @@ class UmlClass
   write_dependencies();
 
   annotation_constraint();
- 
-  s = description();
-  
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    gen_cpp_decl(s, TRUE);
-    fw.write("<br /></p>");
-  }
   
   bool p = FALSE;
   UmlItem * x;
@@ -189,6 +189,8 @@ class UmlClass
     parent()->write();
     fw.write("</p>\n");
   }
+
+  write_properties();
 
   //
 
@@ -264,6 +266,14 @@ class UmlClass
   UmlCom.message(name());
   
   String s;
+ 
+  s = description();
+  
+  if (s.length() != 0) {
+    fw.write("<p>");
+    gen_cpp_decl(s, true);
+    fw.write("<br /></p>");
+  }
   
   fw.write("<p>Declaration :</p><ul>");
   
@@ -307,14 +317,6 @@ class UmlClass
   write_dependencies();
   
   annotation_constraint();
- 
-  s = description();
-  
-  if (s.length() != 0) {
-    fw.write("<p>");
-    gen_cpp_decl(s, true);
-    fw.write("<br /></p>");
-  }
   
   boolean p = false;
   UmlItem x;
@@ -359,6 +361,8 @@ class UmlClass
     parent().write();
     fw.write("</p>\n");
   }
+
+  write_properties();
   
   //
 

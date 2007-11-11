@@ -175,7 +175,7 @@ void OdClassInstCanvas::compute_size() {
     wi = minw;
   
   // force odd width and height for line alignment
-  setSize(wi | 1, he | 1);
+  DiagramCanvas::resize(wi | 1, he | 1);
 }
 
 void OdClassInstCanvas::modified() {
@@ -199,6 +199,11 @@ void OdClassInstCanvas::modified() {
     canvas()->update();
     package_modified();
   }
+}
+
+void OdClassInstCanvas::post_loaded() {
+  if (the_canvas()->must_draw_all_relations())
+    draw_all_relations();
 }
 
 bool OdClassInstCanvas::has_relation(const SlotRel & slot_rel) const {
@@ -280,7 +285,9 @@ void OdClassInstCanvas::draw_all_relations(OdClassInstCanvas * end) {
     }
   }
   
-  if ((end == 0) && !DrawingSettings::just_modified()) {
+  if ((end == 0) &&
+      !DrawingSettings::just_modified() &&
+      !on_load_diagram()) {
     for (cit = all.begin(); cit != all.end(); ++cit) {
       DiagramItem * di = QCanvasItemToDiagramItem(*cit);
       
@@ -346,18 +353,13 @@ void OdClassInstCanvas::draw(QPainter & p) {
     
     p.setBackgroundColor(co);
     
-    if (used_color != UmlTransparent) {
+    if (used_color != UmlTransparent)
       p.fillRect(r, co);
 
-      if (fp != 0)
-	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		co.rgb()&0xffffff, 
-		r.x(), r.y(), r.width() - 1, r.height() - 1);
-    }
-    else if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      svg_color(used_color), 
 	      r.x(), r.y(), r.width() - 1, r.height() - 1);
 
     p.drawRect(r);

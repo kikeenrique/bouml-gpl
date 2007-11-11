@@ -72,6 +72,7 @@ class ActivityNodeCanvas : public QObject, public DiagramCanvas {
     
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;
     static ActivityNodeCanvas * read(char * &, UmlCanvas *, char *);
+    virtual void post_loaded();
     
     void force_inside();
     

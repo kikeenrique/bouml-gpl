@@ -112,6 +112,14 @@ void UcClassCanvas::modified() {
   package_modified();
 }
 
+void UcClassCanvas::post_loaded() {
+  force_self_rel_visible();
+  if (the_canvas()->must_draw_all_relations()) {
+    draw_all_depend_gene();    
+    draw_all_simple_relations();
+  }
+}
+
 UmlCode UcClassCanvas::type() const {
   return UmlClass;
 }
@@ -318,7 +326,9 @@ void UcClassCanvas::draw_all_depend_gene(UcClassCanvas * end) {
     }
   }
   
-  if ((end == 0) && !DrawingSettings::just_modified()) {
+  if ((end == 0) &&
+      !DrawingSettings::just_modified() &&
+      !on_load_diagram()) {
     for (cit = all.begin(); cit != all.end(); ++cit) {
       DiagramItem * di = QCanvasItemToDiagramItem(*cit);
       

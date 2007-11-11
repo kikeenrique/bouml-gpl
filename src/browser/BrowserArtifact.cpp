@@ -529,41 +529,58 @@ void BrowserArtifact::apply_shortcut(QString s) {
 	choice = 22;
       else if (s == "Generate Idl")
 	choice = 12;
-      
-      get_paths(cpp_h_path, cpp_src_path, java_path, php_path, idl_path);
-      if (!a_text && !cpp_h_edited && !cpp_h_path.isEmpty()) {
-	//if (! cpp_src_path.isEmpty())
-	  //roundtripsubm.insertItem("C++ header & source files", 13);
-	if (s == "See C++ header file")
-	  choice = 14;
-	//roundtripsubm.insertItem("C++ header file", 15);
-      }
-      if (!cpp_src_edited && !cpp_src_path.isEmpty()) {
-	if (s == "See C++ source file")
-	  choice = 16;
-	//roundtripsubm.insertItem("C++ source file", 17);
-      }
-      if (!java_edited && !java_path.isEmpty()) {
-	if (s == "Java source file")
-	  choice = 18;
-	//roundtripsubm.insertItem("Java source file", 19);
-      }
-      if (!php_edited && !php_path.isEmpty()) {
-	if (s == "Php source file")
-	  choice = 23;
-	//roundtripsubm.insertItem("Php source file", 24);
-      }
-      if (!idl_edited && !idl_path.isEmpty()) {
-	if (s == "Idl source file")
-	  choice = 20;
-	//roundtripsubm.insertItem("Idl source file", 21);
+      else {
+	if (!a_text && preserve_bodies()) {
+	  if (s == "Roundtrip C++ operation body")
+	    choice = 30;
+	  else if (s == "Roundtrip Java operation body")
+	    choice = 31;
+	  else if (s == "Roundtrip Php operation body")
+	    choice = 32;
+	}
+	
+	if (choice == -1) {
+	  get_paths(cpp_h_path, cpp_src_path, java_path, php_path, idl_path);
+	  if (!a_text && !cpp_h_edited && !cpp_h_path.isEmpty()) {
+	    //if (! cpp_src_path.isEmpty())
+	    //roundtripsubm.insertItem("C++ header & source files", 13);
+	    if (s == "See C++ header file")
+	      choice = 14;
+	    //roundtripsubm.insertItem("C++ header file", 15);
+	  }
+	  if (!cpp_src_edited && !cpp_src_path.isEmpty()) {
+	    if (s == "See C++ source file")
+	      choice = 16;
+	    //roundtripsubm.insertItem("C++ source file", 17);
+	  }
+	  if (!java_edited && !java_path.isEmpty()) {
+	    if (s == "Java source file")
+	      choice = 18;
+	    //roundtripsubm.insertItem("Java source file", 19);
+	  }
+	  if (!php_edited && !php_path.isEmpty()) {
+	    if (s == "Php source file")
+	      choice = 23;
+	    //roundtripsubm.insertItem("Php source file", 24);
+	  }
+	  if (!idl_edited && !idl_path.isEmpty()) {
+	    if (s == "Idl source file")
+	      choice = 20;
+	    //roundtripsubm.insertItem("Idl source file", 21);
+	  }
+	}
       }
     }
-    if (s == "Referenced by")
-      choice = 3;
-    mark_shortcut(s, choice, 90);
-    if (edition_number == 0)
-      Tool::shortcut(s, choice, get_type(), 100);
+    
+    if (choice == -1) {
+      if (s == "Referenced by")
+	choice = 3;
+      else {
+	mark_shortcut(s, choice, 90);
+	if ((choice == -1) && (edition_number == 0))
+	  Tool::shortcut(s, choice, get_type(), 100);
+      }
+    }
   }
   else if (!is_read_only && (edition_number == 0))
     if (s == "Undelete")

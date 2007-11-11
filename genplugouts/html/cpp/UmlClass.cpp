@@ -69,6 +69,14 @@ void UmlClass::gen_html(QCString pfix, unsigned int rank, unsigned int level) {
   UmlCom::message(name());
   
   QCString s;
+ 
+  s = description();
+  
+  if (!s.isEmpty()) {
+    fw.write("<p>");
+    gen_cpp_decl(s, TRUE);
+    fw.write("<br /></p>");
+  }
   
   fw.write("<p>Declaration :</p><ul>");
   
@@ -112,14 +120,6 @@ void UmlClass::gen_html(QCString pfix, unsigned int rank, unsigned int level) {
   write_dependencies();
 
   annotation_constraint();
- 
-  s = description();
-  
-  if (!s.isEmpty()) {
-    fw.write("<p>");
-    gen_cpp_decl(s, TRUE);
-    fw.write("<br /></p>");
-  }
   
   bool p = FALSE;
   UmlItem * x;
@@ -164,6 +164,8 @@ void UmlClass::gen_html(QCString pfix, unsigned int rank, unsigned int level) {
     parent()->write();
     fw.write("</p>\n");
   }
+
+  write_properties();
 
   //
 

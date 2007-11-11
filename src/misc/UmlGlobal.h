@@ -59,6 +59,7 @@ extern QColor UmlVeryLightGrayColor;
 extern QColor UmlLightGrayColor;
 extern QColor UmlGrayColor;
 extern QColor UmlDarkGrayColor;
+extern QColor UmlBlackColor;
 
 extern QColor UmlLightRedColor;
 extern QColor UmlMidRedColor;

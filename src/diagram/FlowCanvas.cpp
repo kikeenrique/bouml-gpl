@@ -739,16 +739,14 @@ FlowCanvas * FlowCanvas::read(char * & st, UmlCanvas * canvas, char * k)
     BrowserFlow * br = BrowserFlow::read_ref(st);
     FlowData * tr = (FlowData *) br->get_data();
     LineGeometry geo;
-    bool fixed;
+    bool fixed = FALSE;
     
     k = read_keyword(st);
     if (! strcmp(k, "geometry")) {
       geo = line_geometry(read_keyword(st));
       k = read_keyword(st);
-      if (! strcmp(k, "unfixed")) {
+      if (! strcmp(k, "unfixed"))
 	k = read_keyword(st);
-	fixed = FALSE;
-      }
       else {
 	fixed = TRUE;
       }

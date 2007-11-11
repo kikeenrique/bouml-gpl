@@ -47,7 +47,7 @@ NoteCanvas::NoteCanvas(UmlCanvas * canvas, int x, int y, int id)
     : DiagramCanvas(0, canvas, x, y, NOTE_CANVAS_MIN_SIZE,
 		    NOTE_CANVAS_MIN_SIZE, id),
       itsfont(UmlNormalFont), itscolor(UmlDefaultColor),
-      used_color(UmlDefaultColor) {
+      used_color(UmlDefaultColor), fg_c(UmlBlack)  {
   browser_node = canvas->browser_diagram();
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
@@ -66,18 +66,14 @@ void NoteCanvas::draw(QPainter & p) {
   QRect r = rect();
   QBrush brsh = p.brush();
   QColor bckgrnd = p.backgroundColor();
+  QPen fgcolor = p.pen();
   QPointArray a(7);
-  UmlColor c;
   
-  if (itscolor != UmlDefaultColor)
-    c = itscolor;
-  else {
-    if (used_color == UmlDefaultColor)
-      used_color = the_canvas()->browser_diagram()->get_color(UmlNote);
-    c = used_color;
-  }
+  used_color = (itscolor == UmlDefaultColor)
+    ? the_canvas()->browser_diagram()->get_color(UmlNote)
+    : itscolor;
   
-  QColor co = color(c);
+  QColor co = color(used_color);
   
   const int corner_size = (int) (NOTE_MARGIN * the_canvas()->zoom());
   
@@ -94,13 +90,13 @@ void NoteCanvas::draw(QPainter & p) {
   if (fp != 0)
     fputs("<g>\n", fp);
 
-  if (c == UmlTransparent) {
+  if (used_color == UmlTransparent) {
     p.setBackgroundMode(QObject::TransparentMode);
     p.setBackgroundColor(co);
     p.drawPolyline(a);
 
     if (fp != 0)
-      draw_poly(fp, a, "none");
+      draw_poly(fp, a, UmlTransparent);
   }
   else {
     p.setBackgroundMode(QObject::OpaqueMode);
@@ -110,7 +106,7 @@ void NoteCanvas::draw(QPainter & p) {
     p.setBackgroundColor(co);
 
     if (fp != 0)
-      draw_poly(fp, a, co);
+      draw_poly(fp, a, used_color);
   }
   
   p.moveTo(r.right() - corner_size, r.top());
@@ -122,6 +118,9 @@ void NoteCanvas::draw(QPainter & p) {
 	    r.right() - corner_size, r.top(), r.right(), r.top() + corner_size);
   
   p.setFont(the_canvas()->get_font(itsfont));
+  if (fg_c != UmlTransparent)
+    p.setPen(color(fg_c));
+  
   p.drawText (r.left() + corner_size, r.top() + corner_size,
 	      r.width() - 2*corner_size, r.height() - 2*corner_size, 
 	      QObject::AlignLeft + QObject::AlignTop + QObject::WordBreak,
@@ -131,13 +130,13 @@ void NoteCanvas::draw(QPainter & p) {
     draw_text(r.left() + corner_size, r.top() + corner_size,
 	      r.width() - 2*corner_size, r.height() - 2*corner_size, 
 	      QObject::AlignLeft + QObject::AlignTop + QObject::WordBreak,
-	      note, p.font(), fp);
+	      note, p.font(), fp, fg_c);
     fputs("</g>\n", fp);
   }
 
   p.setFont(the_canvas()->get_font(UmlNormalFont));
-    
   p.setBackgroundColor(bckgrnd);
+  p.setPen(fgcolor);
   
   if (selected())
     show_mark(p, r);
@@ -191,6 +190,7 @@ void NoteCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem("Edit", 2);
   m.insertSeparator();
+  m.insertItem("Color of text", 6);
   m.insertItem("Font", &fontsubm);  
   init_font_menu(fontsubm, the_canvas(), 10);
   m.insertItem("Edit drawing settings", 3);
@@ -225,6 +225,25 @@ void NoteCanvas::menu(const QPoint&) {
     return;
   case 5:
     delete_it();
+    break;
+  case 6:
+    {
+      QArray<ColorSpec> co(1);
+      
+      co[0].set("color", &fg_c);
+      
+      SettingsDialog dialog(0, &co, TRUE, TRUE, FALSE,
+			    "Text color dialog");
+      
+      dialog.raise();
+      if (dialog.exec() != QDialog::Accepted)
+	return;
+      
+      // force son reaffichage
+      hide();
+      show();
+      canvas()->update();
+    }
     break;
   default:
     if (index >= 10) {
@@ -317,6 +336,8 @@ void NoteCanvas::save_internal(QTextStream & st) const {
     st << "  color " << stringify(itscolor);
   if (itsfont != UmlNormalFont)
     st << "  font " << stringify(itsfont);
+  if (fg_c != UmlBlack)
+    st << "  fg " << stringify(fg_c);
   save_xyzwh(st, this, "  xyzwh");
 }
 
@@ -338,6 +359,7 @@ void NoteCanvas::read_internal(char * & st) {
   char * k = read_keyword(st);
   read_color(st, "color", itscolor, k);
   read_font(st, "font", itsfont, k);
+  read_color(st, "fg", fg_c, k);
   
   if (strcmp(k, "xyzwh"))
     wrong_keyword(k, "xyzwh");

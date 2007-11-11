@@ -38,7 +38,7 @@
 #include "LabelCanvas.h"
 #include "Settings.h"
 #include "SettingsDialog.h"
-#include "BrowserNode.h"
+#include "BrowserSeqDiagram.h"
 #include "myio.h"
 #include "MenuTitle.h"
 
@@ -51,6 +51,7 @@ SdSelfMsgCanvas::SdSelfMsgCanvas(UmlCanvas * canvas, SdDurationCanvas * d,
   dest->add(this);
   update_hpos();
   setSize(SELF_MSG_WIDTH, SELF_MSG_HEIGHT);
+  check_vpos(d->rect());
   set_center100();
   show();
 }
@@ -72,6 +73,27 @@ void SdSelfMsgCanvas::update_hpos() {
   center_y_scale100 = cy;	// updated later
 }
 
+void SdSelfMsgCanvas::check_vpos(const QRect & r) {
+  if (((BrowserSeqDiagram *) the_canvas()->browser_diagram())
+      ->is_overlapping_bars()) {
+    double v;
+    
+    switch (itsType) {
+    case UmlSelfReturnMsg:
+      v = r.bottom() - height() / 2;
+      break;
+    case UmlSyncSelfMsg:
+      v = r.top();
+      break;
+    default:
+      return;
+    }
+    
+    if (y() != v)
+      DiagramCanvas::moveBy(0, v - y());
+  }
+}
+
 double SdSelfMsgCanvas::min_y() const {
   return dest->min_y();
 }
@@ -82,6 +104,9 @@ void SdSelfMsgCanvas::draw(QPainter & p) {
   int he = r.top() + 1 + 2 + ah + 1;
   FILE * fp = svg();
   
+  if (itsType == UmlSelfReturnMsg)
+    p.setPen(QObject::DotLine);
+  
   p.drawLine(r.left() + 1, r.top() + 1, r.right() - 1, r.top() + 1);
 #ifdef WIN32
   p.moveTo(r.right() - 1, r.top() + 1);
@@ -89,13 +114,15 @@ void SdSelfMsgCanvas::draw(QPainter & p) {
   p.lineTo(r.right() - 1, he);
   p.lineTo(r.left() + 1, he);
 
-  if (fp != 0)
-    fprintf(fp, "<g>\n"
-	    "\t<path fill=\"none\" stroke=\"black\" stroke-opacity=\"1\""
-	    " d=\"M %d %d L %d %d L %d %d L %d %d\" />\n",
+  if (fp != 0) {
+    fputs("<g>\n\t<path fill=\"none\" stroke=\"black\" stroke-opacity=\"1\"", fp);
+    if (itsType == UmlSelfReturnMsg)
+      fputs(" stroke-dasharray=\"4,4\"", fp);
+    fprintf(fp, " d=\"M %d %d L %d %d L %d %d L %d %d\" />\n",
 	    r.left() + 1, r.top() + 1, r.right() - 1, r.top() + 1,
 	    r.right() - 1, he,
 	    r.left() + 1, he);
+  }
   
   if (itsType == UmlSyncSelfMsg) {
     QPointArray poly(3);
@@ -109,11 +136,14 @@ void SdSelfMsgCanvas::draw(QPainter & p) {
     p.setBrush(brsh);
 
     if (fp != 0) {
-      draw_poly(fp, poly, "black", FALSE);
+      draw_poly(fp, poly, UmlBlack, FALSE);
       fputs("</g>\n", fp);
     }
   }
   else {
+    if (itsType == UmlSelfReturnMsg)
+      p.setPen(QObject::SolidLine);
+    
     p.lineTo(r.left() + 1 + ah, he + ah);
     p.drawLine(r.left() + 1, he, r.left() + 1 + ah, he - ah);
 
@@ -131,12 +161,36 @@ void SdSelfMsgCanvas::draw(QPainter & p) {
 }
 
 void SdSelfMsgCanvas::update() {
+  if (((BrowserSeqDiagram *) the_canvas()->browser_diagram())
+      ->is_overlapping_bars()) {
+    switch (itsType) {
+    case UmlSelfReturnMsg:
+    case UmlSyncSelfMsg:
+      check_vpos(dest->rect());
+      return;
+    default:
+      break;
+    }
+  }
+  
   SdMsgBaseCanvas::update_after_move(dest);
 }
 
 void SdSelfMsgCanvas::change_duration(SdDurationCanvas *,
 				      SdDurationCanvas * newone) {
   dest = newone;
+}
+
+int SdSelfMsgCanvas::overlap_dir(SdDurationCanvas *) const {
+  switch (itsType) {
+  case UmlSelfReturnMsg:
+    return -1;
+  case UmlSyncSelfMsg:
+    return 1;
+  default:
+    // async
+    return 0;
+  }
 }
 
 void SdSelfMsgCanvas::menu(const QPoint&) {
@@ -148,7 +202,6 @@ void SdSelfMsgCanvas::menu(const QPoint&) {
   m.insertItem("Lower", 1);
   m.insertSeparator();
   m.insertItem("Edit", 2);
-  m.insertSeparator();
   m.insertItem("Edit drawing settings", 3);
   m.insertSeparator();
   if (msg != 0)
@@ -158,6 +211,13 @@ void SdSelfMsgCanvas::menu(const QPoint&) {
     m.insertSeparator();
     m.insertItem("Select label", 5);
     m.insertItem("Label default position", 6);
+  }
+  if (((BrowserSeqDiagram *) the_canvas()->browser_diagram())
+      ->is_overlapping_bars()) {
+    m.insertSeparator();
+    m.insertItem("Go to new overlapping bar", 9);
+    if (dest->isOverlappingDuration())
+      m.insertItem("Go to parent bar", 10);
   }
   m.insertSeparator();
   m.insertItem("Remove from view", 7);
@@ -197,6 +257,11 @@ void SdSelfMsgCanvas::menu(const QPoint&) {
   case 8:
     msg->get_browser_node()->select_in_browser();
     return;
+  case 9:
+    dest->go_up(this, TRUE);
+    break;
+  case 10:
+    dest->go_down(this);
   default:
     return;
   }
@@ -278,13 +343,23 @@ void SdSelfMsgCanvas::select_associated() {
 
 void SdSelfMsgCanvas::save(QTextStream & st, bool ref, QString & warning) const {
   if (ref) {
-    st << "reflexivemsg_ref " << get_ident()
-      << " // " << get_msg(FALSE);
+    st << ((itsType == UmlSelfReturnMsg)
+	   ? "selfreflexivemsg_ref "
+	   : "reflexivemsg_ref ")
+      << get_ident() << " // " << get_msg(FALSE);
   }
   else {
     nl_indent(st);
-    st << "reflexivemsg " << get_ident()
-      << ((itsType == UmlSyncSelfMsg) ? " synchronous" : " asynchronous");
+    switch (itsType) {
+    case UmlSelfReturnMsg:
+      st << "selfreflexivemsg " << get_ident();
+      break;
+    case UmlSyncSelfMsg:
+    st << "reflexivemsg " << get_ident() << " synchronous";
+      break;
+    default:
+      st << "reflexivemsg " << get_ident() << " asynchronous";
+    }
     indent(+1);
     SdMsgBaseCanvas::save(st, warning);
     indent(-1);
@@ -295,19 +370,25 @@ SdSelfMsgCanvas * SdSelfMsgCanvas::read(char * & st, UmlCanvas * canvas, char * 
 {
   if (!strcmp(k, "reflexivemsg_ref"))
     return ((SdSelfMsgCanvas *) dict_get(read_id(st), "reflexivemsg", canvas));
-  else if (!strcmp(k, "reflexivemsg")) {
+  if (!strcmp(k, "selfreflexivemsg_ref"))
+    return ((SdSelfMsgCanvas *) dict_get(read_id(st), "selfreflexivemsg", canvas));
+  else if (!strcmp(k, "reflexivemsg") || !strcmp(k, "selfreflexivemsg")) {
     int id = read_id(st);
     UmlCode c;
     
-    k = read_keyword(st);
-    
-    if (!strcmp(k, "synchronous"))
-      c = UmlSyncSelfMsg;
-    else if (!strcmp(k, "asynchronous"))
-      c = UmlAsyncSelfMsg;
+    if (*k == 's')
+      c = UmlSelfReturnMsg;
     else {
-      wrong_keyword(k, "synchronous/asynchronous");
-      return 0; 	// to avoid warning
+      k = read_keyword(st);
+      
+      if (!strcmp(k, "synchronous"))
+	c = UmlSyncSelfMsg;
+      else if (!strcmp(k, "asynchronous"))
+	c = UmlAsyncSelfMsg;
+      else {
+	wrong_keyword(k, "synchronous/asynchronous");
+	return 0; 	// to avoid warning
+      }
     }
     
     read_keyword(st, "to");

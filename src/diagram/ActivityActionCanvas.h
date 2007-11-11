@@ -111,6 +111,7 @@ class ActivityActionCanvas : public QObject, public DiagramCanvas {
   
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;
     static ActivityActionCanvas * read(char * &, UmlCanvas *, char *);
+    virtual void post_loaded();
     
     virtual void history_save(QBuffer &) const;
     virtual void history_load(QBuffer &);

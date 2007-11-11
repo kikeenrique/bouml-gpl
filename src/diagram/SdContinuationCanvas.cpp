@@ -77,18 +77,13 @@ void SdContinuationCanvas::draw(QPainter & p) {
   
   p.setBackgroundColor(co);
   
-  if (used_color != UmlTransparent) {
+  if (used_color != UmlTransparent)
     p.setBrush(co);
 
-    if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
-	      co.rgb()&0xffffff, 
-	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-  }
-  else if (fp != 0)
-    fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\"  />\n",
+  if (fp != 0)
+    fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
+	    svg_color(used_color), 
 	    r.x(), r.y(), r.width() - 1, r.height() - 1);
   
   p.drawRoundRect(r, 50, 50);

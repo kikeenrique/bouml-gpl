@@ -702,7 +702,7 @@ void ToolCom::data_received(Socket * who) {
 	      switch (get_kind(p)) {
 	      case UmlOperation:
 		op = BrowserOperation::get_it("operation_ref", id);
-	        if (!op->deletedp())
+	        if ((op == 0) || !op->deletedp())
 		  break;
 		// no break
 	      default:

@@ -93,6 +93,7 @@ class OdClassInstCanvas : public QObject, public DiagramCanvas,
   
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static OdClassInstCanvas * read(char * &, UmlCanvas * canvas, char *);
+    virtual void post_loaded();
 
   private slots:
     void modified();	// canvas must be updated

@@ -99,11 +99,14 @@ class DiagramItem : public Labeled<DiagramItem> {
     virtual void set_z(double z) = 0;	// only called by upper() & lower()
     virtual void prepare_for_move(bool on_resize);
     virtual bool move_with_its_package() const;
+    virtual bool move_with(UmlCode) const;
     virtual bool copyable() const;
     virtual void select_associated();
     virtual bool isSelected() const = 0;
     virtual void unassociate(DiagramItem *);
     virtual void save(QTextStream & st, bool ref, QString & warning) const = 0;
+    virtual void post_loaded();
+
     virtual void history_save(QBuffer &)const = 0;
     virtual void history_load(QBuffer &) = 0;
     virtual void history_hide() = 0;

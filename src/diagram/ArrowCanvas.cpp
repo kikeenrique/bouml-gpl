@@ -432,7 +432,7 @@ void ArrowCanvas::drawShape(QPainter & p) {
 	  p.setBrush(brsh);
 
 	  if (fp != 0)
-	    draw_poly(fp, poly, "white");
+	    draw_poly(fp, poly, UmlWhite);
 	}
 	break;
       case UmlAggregationByValue:
@@ -445,7 +445,7 @@ void ArrowCanvas::drawShape(QPainter & p) {
 	  p.setBrush(brsh);
 
 	  if (fp != 0)
-	    draw_poly(fp, poly, "black");
+	    draw_poly(fp, poly, UmlBlack);
 	}      
 	break;
       default:	// to avoid compiler warning

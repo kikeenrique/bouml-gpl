@@ -8,7 +8,7 @@ QCString UmlUseCase::sKind() {
 
 void UmlUseCase::html(QCString pfix, unsigned int rank, unsigned int level) {
   UmlItem::html(pfix, rank, "Use Case", level, "usecase");
-
+    
   QCString ep = extensionPoints();
   
   if (! ep.isEmpty()) {
@@ -23,22 +23,6 @@ void UmlUseCase::html(QCString pfix, unsigned int rank, unsigned int level) {
     fw.write("<p>Diagram : ");
     d->write();
     fw.write("</p>\n");
-  }
-
-  const char * prop[] = {
-    "Summary", "Context", "Pre-Conditions", "Description", "Post-Conditions", "Exceptions"
-  };
-
-  for (int i = 0; i != sizeof(prop)/sizeof(*prop); i += 1) {
-    QCString v;
-    
-    if (propertyValue(prop[i], v)) {
-      fw.write("<p>");
-      fw.write(prop[i]);
-      fw.write(":<br /><div class=\"sub\">");
-      writeq(v);
-      fw.write("</div></p>\n");
-    }
   }
 
   unload(FALSE, FALSE);

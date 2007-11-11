@@ -33,17 +33,19 @@
 
 #include "TextCanvas.h"
 #include "MLEDialog.h"
+#include "UmlGlobal.h"
 #include "UmlCanvas.h"
 #include "myio.h"
 #include "MenuTitle.h"
 #include "BrowserDiagram.h"
 #include "strutil.h"
 #include "DialogUtil.h"
+#include "SettingsDialog.h"
 
 TextCanvas::TextCanvas(UmlCanvas * canvas, int x, int y, int id)
     : DiagramCanvas(0, canvas, x, y, TEXT_CANVAS_MIN_SIZE,
 		    TEXT_CANVAS_MIN_SIZE, id),
-      itsfont(UmlNormalFont) {
+      itsfont(UmlNormalFont), fg_c(UmlBlack), bg_c(UmlTransparent) {
   browser_node = canvas->browser_diagram();
 }
 
@@ -53,7 +55,18 @@ TextCanvas::~TextCanvas() {
 void TextCanvas::draw(QPainter & p) {
   if (! visible()) return;
   
-  p.setBackgroundMode(QObject::TransparentMode);
+  QColor bgcolor = p.backgroundColor();
+  QPen fgcolor = p.pen();
+  
+  if (bg_c == UmlTransparent)
+    p.setBackgroundMode(QObject::TransparentMode);
+  else {
+    p.setBackgroundMode(QObject::OpaqueMode);
+    p.setBackgroundColor(color(bg_c));
+  }
+  
+  if (fg_c != UmlTransparent)
+    p.setPen(color(fg_c));
   
   QRect r = rect();
   
@@ -65,10 +78,13 @@ void TextCanvas::draw(QPainter & p) {
   
   if (fp != 0)
     draw_text (r.left(), r.top(), r.width(), r.height(), 
-	       QObject::AlignLeft + QObject::AlignTop + QObject::WordBreak, text,
-	       p.font(), fp);
+	       QObject::AlignLeft + QObject::AlignTop + QObject::WordBreak,
+	       text, p.font(), fp, fg_c, bg_c);
+  
   p.setFont(the_canvas()->get_font(UmlNormalFont));
-    
+  p.setBackgroundColor(bgcolor);
+  p.setPen(fgcolor);
+  
   if (selected())
     show_mark(p, r);
 }
@@ -120,6 +136,7 @@ void TextCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem("Edit", 2);
   m.insertSeparator();
+  m.insertItem("Color", 5);
   m.insertItem("Font", &fontsubm);  
   init_font_menu(fontsubm, the_canvas(), 10);
   if (linked()) {
@@ -157,6 +174,26 @@ void TextCanvas::menu(const QPoint&) {
     // delete
     the_canvas()->del(this);
     break;
+  case 5:
+    {
+      QArray<ColorSpec> co(2);
+      
+      co[0].set("foreground", &fg_c);
+      co[1].set("background", &bg_c);
+      
+      SettingsDialog dialog(0, &co, TRUE, TRUE, FALSE,
+			    "Text color dialog");
+      
+      dialog.raise();
+      if (dialog.exec() != QDialog::Accepted)
+	return;
+      
+      // force son reaffichage
+      hide();
+      show();
+      canvas()->update();
+    }
+    break;
   default:
     if (index >= 10) {
       itsfont = (UmlFont) (index - 10);
@@ -166,7 +203,8 @@ void TextCanvas::menu(const QPoint&) {
       canvas()->update();
       break;
     }
-    return;
+    else
+      return;
   }
   
   package_modified();
@@ -228,6 +266,10 @@ void TextCanvas::save(QTextStream & st, bool ref, QString &) const {
     nl_indent(st);
     if (itsfont != UmlNormalFont)
       st << "  font " << stringify(itsfont);
+    if (fg_c != UmlBlack)
+      st << "  fg " << stringify(fg_c);
+    if (bg_c != UmlTransparent)
+      st << "  bg " << stringify(bg_c);
     save_xyzwh(st, this, "  xyzwh");
   }
 }
@@ -240,9 +282,13 @@ TextCanvas * TextCanvas::read(char * & st, UmlCanvas * canvas, char * k)
     int id = read_id(st);
     QString text = toUnicode(read_string(st));
     UmlFont font;
+    UmlColor fg_c = UmlBlack;
+    UmlColor bg_c = UmlTransparent;
 
     k = read_keyword(st);
     read_font(st, "font", font, k);
+    read_color(st, "fg", fg_c, k);
+    read_color(st, "bg", bg_c, k);
     
     if (strcmp(k, "xyzwh"))
       wrong_keyword(k, "xyzwh");
@@ -255,8 +301,11 @@ TextCanvas * TextCanvas::read(char * & st, UmlCanvas * canvas, char * k)
     read_zwh(st, result);
     result->width_scale100 = result->width();
     result->height_scale100 = result->height();
+    result->set_center100();
     result->text = text;
     result->itsfont = font;
+    result->fg_c = fg_c;
+    result->bg_c = bg_c;
     result->show();
     
     return result;

@@ -160,6 +160,8 @@ const QColor & color(UmlColor c)
     return UmlGrayColor;
   case UmlDarkGray:
     return UmlDarkGrayColor;
+  case UmlBlack:
+    return UmlBlackColor;
     
   case UmlLightRed:
     return UmlLightRedColor;

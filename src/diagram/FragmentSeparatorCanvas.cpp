@@ -133,7 +133,7 @@ void FragmentSeparatorCanvas::moveBy(double, double dy) {
 }
 
 UmlCode FragmentSeparatorCanvas::type() const {
-  return UmlLifeLine;
+  return UmlFragmentSeparator;
 }
 
 void FragmentSeparatorCanvas::delete_available(bool &, bool & out_model) const {

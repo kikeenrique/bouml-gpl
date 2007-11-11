@@ -107,6 +107,10 @@ void DiagramItem::update() {
   // does nothing
 }
 
+void DiagramItem::post_loaded() {
+  // does nothing
+}
+
 bool DiagramItem::connexion(UmlCode, const QPoint &, const QPoint &) {
   // not allowed
   return FALSE;
@@ -191,6 +195,10 @@ bool DiagramItem::move_with_its_package() const {
   return FALSE;
 }
 
+bool DiagramItem::move_with(UmlCode) const {
+  return FALSE;
+}
+
 void DiagramItem::select_associated() {
   QListIterator<ArrowCanvas> it(lines);
   
@@ -219,13 +227,13 @@ void show_mark(QPainter & p, const QRect & r)
 aCorner on_resize_point(const QPoint & p, const QRect & r)
 {
   if ((p - r.topLeft()).manhattanLength() < SELECT_SQUARE_SIZE*2)
-    return TopLeft;
+    return UmlTopLeft;
   if ((p - r.topRight()).manhattanLength() < SELECT_SQUARE_SIZE*2)
-    return TopRight;
+    return UmlTopRight;
   if ((p - r.bottomLeft()).manhattanLength() < SELECT_SQUARE_SIZE*2)
-    return BottomLeft;
+    return UmlBottomLeft;
   if ((p - r.bottomRight()).manhattanLength() < SELECT_SQUARE_SIZE*2)
-    return BottomRight;
+    return UmlBottomRight;
   
   return NoCorner; 
 }

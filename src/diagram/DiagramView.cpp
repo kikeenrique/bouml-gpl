@@ -45,6 +45,7 @@
 #include "DiagramView.h"
 #include "DiagramWindow.h"
 #include "DiagramCanvas.h"
+#include "BrowserView.h"
 #include "RelationCanvas.h"
 #include "SimpleRelationCanvas.h"
 #include "TransitionCanvas.h"
@@ -381,6 +382,17 @@ void DiagramView::contentsMouseReleaseEvent(QMouseEvent * e) {
 	    draw_line = FALSE;
 	    unsetCursor();
 	    arrowBeginning->post_connexion(action, i);
+	  }
+	  else if (start->may_connect(action)) {
+	    // component required/provided interface
+	    if (start->connexion(action, mousePressPos, e->pos())) {
+	      window()->package_modified();
+	      temp.clear();
+	      draw_line = FALSE;
+	      unsetCursor();
+	    }
+	    else
+	      abort_line_construction();
 	  }
 	  else if (strcmp(err, "illegal")) {
 	    msg_critical("Bouml", err);
@@ -1324,16 +1336,63 @@ void DiagramView::set_format(int f) {
   }
 }
 
+static bool find_browser_element(QCanvas * canvas, QCanvasItemList & r)
+{
+  BrowserNode * bn = BrowserView::selected_item();
+  
+  if (bn == 0)
+    return FALSE;
+      
+  BasicData * d = bn->get_data();
+  UmlCode k = bn->get_type();
+  QCanvasItemList l = canvas->allItems();
+  QCanvasItemList::Iterator it;
+
+  switch (k) {
+  case UmlClassDiagram:
+  case UmlUseCaseDiagram:
+  case UmlSeqDiagram:
+  case UmlColDiagram:
+  case UmlComponentDiagram:
+  case UmlDeploymentDiagram:
+  case UmlObjectDiagram:
+  case UmlActivityDiagram:
+    k = UmlIcon;
+    break;
+  default:
+    break;
+  }
+  
+  for (it = l.begin(); it != l.end(); ++it) {
+    if ((*it)->visible()) {
+      DiagramItem * di = QCanvasItemToDiagramItem(*it);
+      
+      if ((di != 0) && (di->type() == k)) {
+	if (di->get_bn() == bn)
+	  r.append(*it);
+	else {
+	  ArrowCanvas * a = dynamic_cast<ArrowCanvas *>(di);
+	  
+	  if ((a != 0) && (a->get_data() == d))
+	    r.append(*it);
+	}
+      }
+    }
+  }
+  
+  return !r.isEmpty();
+}
+
 int DiagramView::default_menu(QPopupMenu & m, int f) {
   QPopupMenu formatm(0);
+  QCanvasItemList l;
   
   m.insertItem("Edit drawing settings", EDIT_DRAWING_SETTING_CMD);
   m.insertSeparator();
   m.insertItem("Select diagram in browser", 1);
   m.insertItem("Select all (Ctrl+a)", 2);
-  m.insertSeparator();
-  m.insertItem("Optimal scale", 7);
-  m.insertItem("Optimal window size", 8);
+  if (find_browser_element(canvas(), l))
+    m.insertItem("Find selected browser element", 19);
   m.insertSeparator();
   m.insertItem("Copy optimal picture part", 13);
   m.insertItem("Copy visible picture part", 3);
@@ -1345,6 +1404,8 @@ int DiagramView::default_menu(QPopupMenu & m, int f) {
       (copied_from == window()->browser_diagram()->get_type()))
     m.insertItem("Paste copied items (Ctrl+v)", 9);
   m.insertSeparator();
+  m.insertItem("Optimal scale", 7);
+  m.insertItem("Optimal window size", 8);
   m.insertItem("Set preferred size and scale", 4);
   m.insertItem("Set preferred scale (size unset)", 17);
   if (preferred_zoom != 0) {
@@ -1375,7 +1436,21 @@ int DiagramView::default_menu(QPopupMenu & m, int f) {
     break;
   case 2:
     select_all();
-    return choice;	// clear history_protected
+    break;
+  case 19:
+    history_protected = TRUE;
+    unselect_all();
+    
+    {
+      QCanvasItemList::Iterator it;
+  
+      for (it = l.begin(); it != l.end(); ++it)
+	select(*it);
+    }
+    
+    ensureVisible((int) l.first()->x(), (int) l.first()->y());
+    canvas()->update();
+    break;    
   case 3:
     history_protected = TRUE;
     copy_in_clipboard(FALSE, FALSE);
@@ -1465,6 +1540,7 @@ void DiagramView::load(const char * pfix) {
   // for a re-load :
   unselect_all();
   preferred_zoom = 0;
+  set_on_load_diagram(TRUE);
   
   QCanvasItemList all = canvas()->allItems();
   QCanvasItemList::Iterator it;
@@ -1513,7 +1589,19 @@ void DiagramView::load(const char * pfix) {
   if (window()->get_view() != 0)
     // re-load
     preferred_size_zoom();
+  
   canvas()->update();
+  
+  all = canvas()->allItems();  
+  
+  for (it = all.begin(); it != all.end(); ++it)
+    if ((*it)->visible() &&
+	((di = QCanvasItemToDiagramItem(*it)) != 0))
+      di->post_loaded();
+  
+  canvas()->update();
+  
+  set_on_load_diagram(FALSE);
 }
 
 void DiagramView::read() {
@@ -1556,6 +1644,7 @@ void DiagramView::read() {
 
 void DiagramView::paste() {
   history_protected = TRUE;
+  set_on_load_diagram(TRUE);
   
   double old_zoom = ((UmlCanvas *) canvas())->zoom();
   char * s = new char[clipboard.length() + 1];
@@ -1638,6 +1727,17 @@ void DiagramView::paste() {
   
   set_zoom(old_zoom);
   canvas()->update();
+  
+  l = canvas()->allItems();  
+  
+  for (it = l.begin(); it != l.end(); ++it)
+    if ((*it)->visible() &&
+	((di = QCanvasItemToDiagramItem(*it)) != 0))
+      di->post_loaded();
+  
+  canvas()->update();
+
+  set_on_load_diagram(FALSE);
   history_protected = FALSE;
   window()->package_modified();
 }

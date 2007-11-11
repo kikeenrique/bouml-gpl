@@ -424,6 +424,8 @@ void UmlItem::html(QCString pfix, unsigned int rank, QCString what, unsigned int
     writeq(description());
     fw.write("<br /></p>\n");
   }
+
+  write_properties();
   
   const QVector<UmlItem> ch = children();
   unsigned n = ch.size();
@@ -457,8 +459,6 @@ void UmlItem::html(const char * what, UmlDiagram * diagram) {
   writeq(name());
   fw.write("</b></div></td></tr></table>\n");
   
-  write_dependencies();
-
   QCString d = description();
   
   if (!d.isEmpty()) {
@@ -467,11 +467,15 @@ void UmlItem::html(const char * what, UmlDiagram * diagram) {
     fw.write("<br /></p>\n");
   }
   
+  write_dependencies();
+
   if (diagram != 0) {
     fw.write("<p>Diagram : ");
     diagram->write();
     fw.write("</p>\n");
   }
+
+  write_properties();
 }
 
 void UmlItem::write_children(QCString pfix, unsigned int rank, unsigned int level) {
@@ -512,6 +516,27 @@ void UmlItem::write_dependencies() {
       ((UmlNcRelation *) ch[i])->target()->write();
       fw.write("</p>");
     }
+  }
+}
+
+void UmlItem::write_properties() {
+  const QDict<QCString> d = properties();
+  
+  if (! d.isEmpty()) {
+    fw.write("<p>Properties:<ul>\n");
+    
+    QDictIterator<QCString> it(d);
+    
+    while (it.current()) {
+      fw.write("<li>");
+      writeq(it.currentKey().latin1());
+      fw.write(":<br /><div class=\"sub\">");
+      writeq(*(it.current()));
+      fw.write("</div></p></li>\n");
+      ++it;
+    }
+    
+    fw.write("</ul></p>\n");
   }
 }
 
