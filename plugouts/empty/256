@@ -1,6 +1,6 @@
-format 46
+format 48
 "API BASE" // API BASE
-  revision 26
+  revision 27
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -1134,15 +1134,6 @@ ${members}}
 	comment " returns the actual's value"
       end
 
-      classrelation 512 // <dependency>
-	relation 512 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 512 // <dependency>
-	  b parent class_ref 1408 // UmlBaseClass
-      end
-
       classrelation 640 // _superClass (<unidirectional association>)
 	relation 640 --->
 	  a role_name "_superClass" protected
@@ -1187,6 +1178,15 @@ ${body}}
 	
 	comment "internal, do NOT use it
 "
+      end
+
+      extra_member 1152 "friend"
+	
+	cpp "  friend class UmlBaseClass;
+" ""
+	java ""
+	php ""
+	idl ""
       end
     end
 
@@ -1264,16 +1264,6 @@ ${members}};
 	comment "  return the optional extend (Java)"
       end
 
-      classrelation 896 // <dependency>
-	relation 896 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 896 // <dependency>
-	  b parent class_ref 1408 // UmlBaseClass
-      end
-
       attribute 5248 "_name"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -1328,6 +1318,15 @@ ${body}}
 	
 	comment "internal, do NOT use it
 "
+      end
+
+      extra_member 1280 "friend"
+	
+	cpp "  friend class UmlBaseClass;
+" ""
+	java ""
+	php ""
+	idl ""
       end
     end
 
@@ -2881,26 +2880,6 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
-      classrelation 2048 // <dependency>
-	relation 2048 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 2048 // <dependency>
-	  b parent class_ref 3712 // UmlBaseRelation
-      end
-
-      classrelation 2176 // <dependency>
-	relation 2176 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 2176 // <dependency>
-	  b parent class_ref 2048 // UmlBaseArtifact
-      end
-
       attribute 6272 "_classes"
 	class_attribute private type class_ref 7169 // UmlClass
 	init_value "(1001)"
@@ -3185,6 +3164,16 @@ ${body}}
 	comment "internal, do NOT use it
 "
       end
+
+      extra_member 1408 "friend"
+	
+	cpp "  friend class UmlBaseArtifact;
+  friend class UmlBaseRelation;
+" ""
+	java ""
+	php ""
+	idl ""
+      end
     end
 
     class 1536 "UmlBaseClassItem"
@@ -3396,33 +3385,6 @@ ${body}}
 	
       end
 
-      classrelation 2816 // <dependency>
-	relation 2816 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 2816 // <dependency>
-	  b parent class_ref 1280 // UmlBaseAttribute
-      end
-
-      classrelation 2944 // <dependency>
-	relation 2944 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 2944 // <dependency>
-	  b parent class_ref 3456 // UmlBaseOperation
-      end
-
-      classrelation 3072 // <dependency>
-	relation 3072 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 3072 // <dependency>
-	  b parent class_ref 3712 // UmlBaseRelation
-      end
-
       attribute 7424 "_cpp_decl"
 	private explicit_type "string"
 	cpp_decl "    #ifdef WITHCPP
@@ -3564,34 +3526,18 @@ ${body}}
 "
       end
 
-      classrelation 3200 // <dependency>
-	relation 3200 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 3200 // <dependency>
-	  b parent class_ref 1792 // UmlBaseClassMember
-      end
-
-      classrelation 3328 // <dependency>
-	relation 3328 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 3328 // <dependency>
-	  b parent class_ref 3072 // UmlBaseExtraClassMember
-      end
-
-      classrelation 3456 // <dependency>
-	relation 3456 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 3456 // <dependency>
-	  b parent class_ref 1408 // UmlBaseClass
+      extra_member 1536 "friend"
+	
+	cpp "  friend class UmlBaseClass;
+  friend class UmlBaseExtraClassMember;
+  friend class UmlBaseClassMember;
+  friend class UmlBaseRelation;
+  friend class UmlBaseOperation;
+  friend class UmlBaseAttribute;
+" ""
+	java ""
+	php ""
+	idl ""
       end
     end
 
@@ -4164,44 +4110,16 @@ ${body}}
 	  b parent class_ref 1536 // UmlBaseClassItem
       end
 
-      classrelation 4224 // <dependency>
-	relation 4224 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 4224 // <dependency>
-	  b parent class_ref 3456 // UmlBaseOperation
-      end
-
-      classrelation 4352 // <dependency>
-	relation 4352 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 4352 // <dependency>
-	  b parent class_ref 1280 // UmlBaseAttribute
-      end
-
-      classrelation 4480 // <dependency>
-	relation 4480 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 4480 // <dependency>
-	  b parent class_ref 3712 // UmlBaseRelation
-      end
-
-      classrelation 4608 // <dependency>
-	relation 4608 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 4608 // <dependency>
-	  b parent class_ref 1408 // UmlBaseClass
+      extra_member 1664 "friend"
+	
+	cpp "  friend class UmlBaseClass;
+  friend class UmlBaseRelation;
+  friend class UmlBaseAttribute;
+  friend class UmlBaseOperation;
+" ""
+	java ""
+	php ""
+	idl ""
       end
     end
 
@@ -4837,16 +4755,6 @@ ${body}}
  automatically if needed. args unused"
       end
 
-      classrelation 5120 // <dependency>
-	relation 5120 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 5120 // <dependency>
-	  b parent class_ref 1408 // UmlBaseClass
-      end
-
       classrelation 5248 // _assoc_diagram (<unidirectional association>)
 	relation 5248 --->
 	  a role_name "_assoc_diagram" private
@@ -5048,6 +4956,15 @@ ${body}}
 	
 	
 	comment " the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      extra_member 1792 "friend"
+	
+	cpp "  friend class UmlBaseClass;
+" ""
+	java ""
+	php ""
+	idl ""
       end
     end
 
@@ -5388,13 +5305,60 @@ ${body}}
 	nparams 2
 	  param in name "id" explicit_type "item_id"
 	  param in name "n" explicit_type "string"
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlDiagram(id, n) {};
+	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlDiagram(id, n), _def(0) {};
 "
-	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws} { super(id, n); }
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws} { super(id, n);   _def = null;
+}
 "
 	
 	
 	comment " the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      operation 215552 "definition"
+	public return_type class_ref 149762 // UmlCollaborationDiagramDefinition
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " return the semantic part of the diagram not present in the model"
+      end
+
+      operation 215680 "unload"
+	cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param in name "rec" explicit_type "bool"
+	  param in name "del" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} = FALSE, ${t1} = FALSE${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " to unload the object to free memory, it will be reloaded automatically
+ if needed. args unused"
+      end
+
+      classrelation 163968 // _def (<unidirectional association>)
+	relation 163968 --->
+	  a role_name "_def" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 163968 // _def (<unidirectional association>)
+	  b parent class_ref 149762 // UmlCollaborationDiagramDefinition
       end
     end
 
@@ -6591,287 +6555,6 @@ ${body}}
 	idl ""
       end
 
-      classrelation 6656 // <dependency>
-	relation 6656 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 6656 // <dependency>
-	  b parent class_ref 1536 // UmlBaseClassItem
-      end
-
-      classrelation 6784 // <dependency>
-	relation 6784 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 6784 // <dependency>
-	  b parent class_ref 1280 // UmlBaseAttribute
-      end
-
-      classrelation 6912 // <dependency>
-	relation 6912 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 6912 // <dependency>
-	  b parent class_ref 1408 // UmlBaseClass
-      end
-
-      classrelation 7040 // <dependency>
-	relation 7040 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 7040 // <dependency>
-	  b parent class_ref 1664 // UmlBaseClassDiagram
-      end
-
-      classrelation 7168 // <dependency>
-	relation 7168 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 7168 // <dependency>
-	  b parent class_ref 1920 // UmlBaseClassView
-      end
-
-      classrelation 7296 // <dependency>
-	relation 7296 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 7296 // <dependency>
-	  b parent class_ref 2176 // UmlBaseCollaborationDiagram
-      end
-
-      classrelation 7424 // <dependency>
-	relation 7424 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 7424 // <dependency>
-	  b parent class_ref 2048 // UmlBaseArtifact
-      end
-
-      classrelation 7552 // <dependency>
-	relation 7552 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 7552 // <dependency>
-	  b parent class_ref 2304 // UmlBaseComponentDiagram
-      end
-
-      classrelation 7680 // <dependency>
-	relation 7680 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 7680 // <dependency>
-	  b parent class_ref 2432 // UmlBaseComponentView
-      end
-
-      classrelation 7808 // <dependency>
-	relation 7808 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 7808 // <dependency>
-	  b parent class_ref 2816 // UmlBaseDeployment
-      end
-
-      classrelation 7936 // <dependency>
-	relation 7936 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 7936 // <dependency>
-	  b parent class_ref 2560 // UmlBaseDeploymentDiagram
-      end
-
-      classrelation 8064 // <dependency>
-	relation 8064 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 8064 // <dependency>
-	  b parent class_ref 2688 // UmlBaseDeploymentView
-      end
-
-      classrelation 8192 // <dependency>
-	relation 8192 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 8192 // <dependency>
-	  b parent class_ref 3328 // UmlBaseNode
-      end
-
-      classrelation 8320 // <dependency>
-	relation 8320 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 8320 // <dependency>
-	  b parent class_ref 3456 // UmlBaseOperation
-      end
-
-      classrelation 8448 // <dependency>
-	relation 8448 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 8448 // <dependency>
-	  b parent class_ref 3584 // UmlBasePackage
-      end
-
-      classrelation 8576 // <dependency>
-	relation 8576 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 8576 // <dependency>
-	  b parent class_ref 3712 // UmlBaseRelation
-      end
-
-      classrelation 8704 // <dependency>
-	relation 8704 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 8704 // <dependency>
-	  b parent class_ref 3840 // UmlBaseNcRelation
-      end
-
-      classrelation 8832 // <dependency>
-	relation 8832 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 8832 // <dependency>
-	  b parent class_ref 3968 // UmlBaseSequenceDiagram
-      end
-
-      classrelation 8960 // <dependency>
-	relation 8960 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 8960 // <dependency>
-	  b parent class_ref 4096 // UmlBaseUseCase
-      end
-
-      classrelation 9088 // <dependency>
-	relation 9088 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 9088 // <dependency>
-	  b parent class_ref 4224 // UmlBaseUseCaseDiagram
-      end
-
-      classrelation 9216 // <dependency>
-	relation 9216 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 9216 // <dependency>
-	  b parent class_ref 4352 // UmlBaseUseCaseView
-      end
-
-      classrelation 9344 // <dependency>
-	relation 9344 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 9344 // <dependency>
-	  b parent class_ref 2944 // UmlBaseDiagram
-      end
-
-      classrelation 9472 // <dependency>
-	relation 9472 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 9472 // <dependency>
-	  b parent class_ref 1024 // UmlBaseFormalParameter
-      end
-
-      classrelation 9600 // <dependency>
-	relation 9600 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 9600 // <dependency>
-	  b parent class_ref 896 // UmlBaseActualParameter
-      end
-
-      classrelation 9728 // <dependency>
-	relation 9728 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 9728 // <dependency>
-	  b parent class_ref 5248 // UmlCom
-      end
-
-      classrelation 9856 // <dependency>
-	relation 9856 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 9856 // <dependency>
-	  b parent class_ref 1792 // UmlBaseClassMember
-      end
-
-      classrelation 9984 // <dependency>
-	relation 9984 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "Generated"
-	    classrelation_ref 9984 // <dependency>
-	  b parent class_ref 3072 // UmlBaseExtraClassMember
-      end
-
-      classrelation 15488 // <dependency>
-	relation 15488 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
-	    classrelation_ref 15488 // <dependency>
-	  b parent class_ref 6528 // UmlBaseComponent
-      end
-
       attribute 8832 "_defined"
 	private explicit_type "bool"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -7322,517 +7005,104 @@ ${body}}
 "
       end
 
-      classrelation 128384 // <dependency>
-	relation 128384 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 128384 // <dependency>
-	  b parent class_ref 128256 // UmlBaseState
-      end
-
-      classrelation 128896 // <dependency>
-	relation 128896 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 128896 // <dependency>
-	  b parent class_ref 128512 // UmlBaseStateDiagram
-      end
-
-      classrelation 129920 // <dependency>
-	relation 129920 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 129920 // <dependency>
-	  b parent class_ref 128896 // UmlBaseTransition
-      end
-
-      classrelation 130944 // <dependency>
-	relation 130944 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 130944 // <dependency>
-	  b parent class_ref 129280 // UmlBaseRegion
-      end
-
-      classrelation 131456 // <dependency>
-	relation 131456 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 131456 // <dependency>
-	  b parent class_ref 129536 // UmlBaseStateAction
-      end
-
-      classrelation 132224 // <dependency>
-	relation 132224 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 132224 // <dependency>
-	  b parent class_ref 129920 // UmlBaseInitialPseudoState
-      end
-
-      classrelation 132608 // <dependency>
-	relation 132608 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 132608 // <dependency>
-	  b parent class_ref 130176 // UmlBaseEntryPointPseudoState
-      end
-
-      classrelation 132992 // <dependency>
-	relation 132992 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 132992 // <dependency>
-	  b parent class_ref 130432 // UmlBaseFinalState
-      end
-
-      classrelation 133376 // <dependency>
-	relation 133376 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 133376 // <dependency>
-	  b parent class_ref 130688 // UmlBaseTerminatePseudoState
-      end
-
-      classrelation 133760 // <dependency>
-	relation 133760 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 133760 // <dependency>
-	  b parent class_ref 130944 // UmlBaseExitPointPseudoState
-      end
-
-      classrelation 134144 // <dependency>
-	relation 134144 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 134144 // <dependency>
-	  b parent class_ref 131200 // UmlBaseDeepHistoryPseudoState
-      end
-
-      classrelation 134528 // <dependency>
-	relation 134528 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 134528 // <dependency>
-	  b parent class_ref 131456 // UmlBaseShallowHistoryPseudoState
-      end
-
-      classrelation 134912 // <dependency>
-	relation 134912 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 134912 // <dependency>
-	  b parent class_ref 131712 // UmlBaseJunctionPseudoState
-      end
-
-      classrelation 135296 // <dependency>
-	relation 135296 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 135296 // <dependency>
-	  b parent class_ref 131968 // UmlBaseChoicePseudoState
-      end
-
-      classrelation 135680 // <dependency>
-	relation 135680 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 135680 // <dependency>
-	  b parent class_ref 132224 // UmlBaseForkPseudoState
-      end
-
-      classrelation 136064 // <dependency>
-	relation 136064 -_->
-	  stereotype "friend"
-	  a protected
-	    cpp default "${type}"
-	    classrelation_ref 136064 // <dependency>
-	  b parent class_ref 132480 // UmlBaseJoinPseudoState
-      end
-
-      classrelation 136960 // <dependency>
-	relation 136960 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 136960 // <dependency>
-	  b parent class_ref 132736 // UmlBaseObjectDiagram
-      end
-
-      classrelation 137344 // <dependency>
-	relation 137344 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 137344 // <dependency>
-	  b parent class_ref 133120 // UmlBaseActivity
-      end
-
-      classrelation 137728 // <dependency>
-	relation 137728 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 137728 // <dependency>
-	  b parent class_ref 133376 // UmlBaseActivityDiagram
-      end
-
-      classrelation 138368 // <dependency>
-	relation 138368 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 138368 // <dependency>
-	  b parent class_ref 133632 // UmlBaseActivityNode
-      end
-
-      classrelation 138880 // <dependency>
-	relation 138880 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 138880 // <dependency>
-	  b parent class_ref 133888 // UmlBaseFlow
-      end
-
-      classrelation 139904 // <dependency>
-	relation 139904 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 139904 // <dependency>
-	  b parent class_ref 134272 // UmlBaseActivityRegion
-      end
-
-      classrelation 140544 // <dependency>
-	relation 140544 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 140544 // <dependency>
-	  b parent class_ref 134528 // UmlBaseExpansionRegion
-      end
-
-      classrelation 141056 // <dependency>
-	relation 141056 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 141056 // <dependency>
-	  b parent class_ref 134912 // UmlBaseInterruptibleActivityRegion
-      end
-
-      classrelation 141440 // <dependency>
-	relation 141440 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 141440 // <dependency>
-	  b parent class_ref 135168 // UmlBaseActivityAction
-      end
-
-      classrelation 141952 // <dependency>
-	relation 141952 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 141952 // <dependency>
-	  b parent class_ref 135424 // UmlBaseSendObjectAction
-      end
-
-      classrelation 142336 // <dependency>
-	relation 142336 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 142336 // <dependency>
-	  b parent class_ref 135680 // UmlBaseUnmarshallAction
-      end
-
-      classrelation 142720 // <dependency>
-	relation 142720 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 142720 // <dependency>
-	  b parent class_ref 135936 // UmlBaseOnSignalAction
-      end
-
-      classrelation 143104 // <dependency>
-	relation 143104 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 143104 // <dependency>
-	  b parent class_ref 136192 // UmlBaseSendSignalAction
-      end
-
-      classrelation 143488 // <dependency>
-	relation 143488 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 143488 // <dependency>
-	  b parent class_ref 136448 // UmlBaseBroadcastSignalAction
-      end
-
-      classrelation 143872 // <dependency>
-	relation 143872 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 143872 // <dependency>
-	  b parent class_ref 136704 // UmlBaseValueSpecificationAction
-      end
-
-      classrelation 144256 // <dependency>
-	relation 144256 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 144256 // <dependency>
-	  b parent class_ref 136960 // UmlBaseOpaqueAction
-      end
-
-      classrelation 144640 // <dependency>
-	relation 144640 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 144640 // <dependency>
-	  b parent class_ref 137216 // UmlBaseAcceptEventAction
-      end
-
-      classrelation 145024 // <dependency>
-	relation 145024 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 145024 // <dependency>
-	  b parent class_ref 137472 // UmlBaseCallOperationAction
-      end
-
-      classrelation 145536 // <dependency>
-	relation 145536 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 145536 // <dependency>
-	  b parent class_ref 137728 // UmlBaseCallBehaviorAction
-      end
-
-      classrelation 146048 // <dependency>
-	relation 146048 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 146048 // <dependency>
-	  b parent class_ref 137984 // UmlBaseAccessVariableValueAction
-      end
-
-      classrelation 146560 // <dependency>
-	relation 146560 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 146560 // <dependency>
-	  b parent class_ref 138240 // UmlBaseClearVariableValueAction
-      end
-
-      classrelation 146944 // <dependency>
-	relation 146944 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 146944 // <dependency>
-	  b parent class_ref 138496 // UmlBaseReadVariableValueAction
-      end
-
-      classrelation 147328 // <dependency>
-	relation 147328 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 147328 // <dependency>
-	  b parent class_ref 138752 // UmlBaseWriteVariableValueAction
-      end
-
-      classrelation 147712 // <dependency>
-	relation 147712 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 147712 // <dependency>
-	  b parent class_ref 139008 // UmlBaseAddVariableValueAction
-      end
-
-      classrelation 148096 // <dependency>
-	relation 148096 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 148096 // <dependency>
-	  b parent class_ref 139264 // UmlBaseRemoveVariableValueAction
-      end
-
-      classrelation 148480 // <dependency>
-	relation 148480 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 148480 // <dependency>
-	  b parent class_ref 139520 // UmlBaseActivityControlNode
-      end
-
-      classrelation 148864 // <dependency>
-	relation 148864 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 148864 // <dependency>
-	  b parent class_ref 139776 // UmlBaseInitialActivityNode
-      end
-
-      classrelation 149248 // <dependency>
-	relation 149248 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 149248 // <dependency>
-	  b parent class_ref 140032 // UmlBaseFlowFinalActivityNode
-      end
-
-      classrelation 149632 // <dependency>
-	relation 149632 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 149632 // <dependency>
-	  b parent class_ref 140288 // UmlBaseActivityFinalActivityNode
-      end
-
-      classrelation 150016 // <dependency>
-	relation 150016 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 150016 // <dependency>
-	  b parent class_ref 140544 // UmlBaseDecisionActivityNode
-      end
-
-      classrelation 150400 // <dependency>
-	relation 150400 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 150400 // <dependency>
-	  b parent class_ref 140800 // UmlBaseMergeActivityNode
-      end
-
-      classrelation 150784 // <dependency>
-	relation 150784 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 150784 // <dependency>
-	  b parent class_ref 141056 // UmlBaseForkActivityNode
-      end
-
-      classrelation 151168 // <dependency>
-	relation 151168 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 151168 // <dependency>
-	  b parent class_ref 141312 // UmlBaseJoinActivityNode
-      end
-
-      classrelation 151552 // <dependency>
-	relation 151552 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 151552 // <dependency>
-	  b parent class_ref 141568 // UmlBaseActivityObject
-      end
-
-      classrelation 152320 // <dependency>
-	relation 152320 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 152320 // <dependency>
-	  b parent class_ref 141952 // UmlBaseExpansionNode
-      end
-
-      classrelation 152704 // <dependency>
-	relation 152704 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 152704 // <dependency>
-	  b parent class_ref 142208 // UmlBasePinParameter
-      end
-
-      classrelation 153344 // <dependency>
-	relation 153344 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 153344 // <dependency>
-	  b parent class_ref 142592 // UmlBaseActivityPin
-      end
-
-      classrelation 153728 // <dependency>
-	relation 153728 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 153728 // <dependency>
-	  b parent class_ref 142848 // UmlBaseActivityParameter
-      end
-
-      classrelation 154112 // <dependency>
-	relation 154112 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 154112 // <dependency>
-	  b parent class_ref 143104 // UmlBaseParameterSet
-      end
-
-      classrelation 155008 // <dependency>
-	relation 155008 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 155008 // <dependency>
-	  b parent class_ref 143488 // UmlBaseClassInstance
-      end
-
-      classrelation 157056 // <dependency>
-	relation 157056 -_->
-	  stereotype "friend"
-	  a default
-	    cpp default "${type}"
-	    classrelation_ref 157056 // <dependency>
-	  b parent class_ref 145280 // UmlBaseView
+      extra_member 1920 "friend"
+	
+	cpp "  friend class UmlBaseView;
+  friend class UmlBaseClassInstance;
+  friend class UmlBaseParameterSet;
+  friend class UmlBaseActivityParameter;
+  friend class UmlBaseActivityPin;
+  friend class UmlBasePinParameter;
+  friend class UmlBaseExpansionNode;
+  friend class UmlBaseActivityObject;
+  friend class UmlBaseJoinActivityNode;
+  friend class UmlBaseForkActivityNode;
+  friend class UmlBaseMergeActivityNode;
+  friend class UmlBaseDecisionActivityNode;
+  friend class UmlBaseActivityFinalActivityNode;
+  friend class UmlBaseFlowFinalActivityNode;
+  friend class UmlBaseInitialActivityNode;
+  friend class UmlBaseActivityControlNode;
+  friend class UmlBaseRemoveVariableValueAction;
+  friend class UmlBaseAddVariableValueAction;
+  friend class UmlBaseWriteVariableValueAction;
+  friend class UmlBaseReadVariableValueAction;
+  friend class UmlBaseClearVariableValueAction;
+  friend class UmlBaseAccessVariableValueAction;
+  friend class UmlBaseCallBehaviorAction;
+  friend class UmlBaseCallOperationAction;
+  friend class UmlBaseAcceptEventAction;
+  friend class UmlBaseOpaqueAction;
+  friend class UmlBaseValueSpecificationAction;
+  friend class UmlBaseBroadcastSignalAction;
+  friend class UmlBaseSendSignalAction;
+  friend class UmlBaseOnSignalAction;
+  friend class UmlBaseUnmarshallAction;
+  friend class UmlBaseSendObjectAction;
+  friend class UmlBaseActivityAction;
+  friend class UmlBaseInterruptibleActivityRegion;
+  friend class UmlBaseExpansionRegion;
+  friend class UmlBaseActivityRegion;
+  friend class UmlBaseFlow;
+  friend class UmlBaseActivityNode;
+  friend class UmlBaseActivityDiagram;
+  friend class UmlBaseActivity;
+  friend class UmlBaseObjectDiagram;
+  friend class UmlBaseJoinPseudoState;
+  friend class UmlBaseForkPseudoState;
+  friend class UmlBaseChoicePseudoState;
+  friend class UmlBaseJunctionPseudoState;
+  friend class UmlBaseShallowHistoryPseudoState;
+  friend class UmlBaseDeepHistoryPseudoState;
+  friend class UmlBaseExitPointPseudoState;
+  friend class UmlBaseTerminatePseudoState;
+  friend class UmlBaseFinalState;
+  friend class UmlBaseEntryPointPseudoState;
+  friend class UmlBaseInitialPseudoState;
+  friend class UmlBaseStateAction;
+  friend class UmlBaseRegion;
+  friend class UmlBaseTransition;
+  friend class UmlBaseStateDiagram;
+  friend class UmlBaseState;
+  friend class UmlBaseComponent;
+  friend class UmlBaseExtraClassMember;
+  friend class UmlBaseClassMember;
+  friend class UmlCom;
+  friend class UmlBaseActualParameter;
+  friend class UmlBaseFormalParameter;
+  friend class UmlBaseDiagram;
+  friend class UmlBaseUseCaseView;
+  friend class UmlBaseUseCaseDiagram;
+  friend class UmlBaseUseCase;
+  friend class UmlBaseSequenceDiagram;
+  friend class UmlBaseNcRelation;
+  friend class UmlBaseRelation;
+  friend class UmlBasePackage;
+  friend class UmlBaseOperation;
+  friend class UmlBaseNode;
+  friend class UmlBaseDeploymentView;
+  friend class UmlBaseDeploymentDiagram;
+  friend class UmlBaseDeployment;
+  friend class UmlBaseComponentView;
+  friend class UmlBaseComponentDiagram;
+  friend class UmlBaseArtifact;
+  friend class UmlBaseCollaborationDiagram;
+  friend class UmlBaseClassView;
+  friend class UmlBaseClassDiagram;
+  friend class UmlBaseClass;
+  friend class UmlBaseAttribute;
+  friend class UmlBaseClassItem;
+  friend class UmlBaseUseCaseReference;
+  friend class UmlBaseUseCaseAssociation;
+  friend class UmlBaseClassInstanceReference;
+  friend class UmlBaseMessage;
+  friend class UmlBaseUseCaseDiagramDefinition;
+  friend class UmlBaseSequenceDiagramDefinition;
+  friend class UmlBaseCollaborationDiagramDefinition;
+" ""
+	java ""
+	php ""
+	idl ""
       end
     end
 
@@ -11620,13 +10890,60 @@ ${body}}
 	nparams 2
 	  param in name "id" explicit_type "item_id"
 	  param in name "n" explicit_type "string"
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlDiagram(id, n) {};
+	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlDiagram(id, n), _def(0) {};
 "
-	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws} { super(id, n); }
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws} { super(id, n);   _def = null;
+}
 "
 	
 	
 	comment " the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      operation 214784 "definition"
+	public return_type class_ref 149506 // UmlSequenceDiagramDefinition
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " return the semantic part of the diagram not present in the model"
+      end
+
+      operation 214912 "unload"
+	cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param in name "rec" explicit_type "bool"
+	  param in name "del" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} = FALSE, ${t1} = FALSE${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " to unload the object to free memory, it will be reloaded automatically
+ if needed. args unused"
+      end
+
+      classrelation 163456 // _def (<unidirectional association>)
+	relation 163456 --->
+	  a role_name "_def" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 163456 // _def (<unidirectional association>)
+	  b parent class_ref 149506 // UmlSequenceDiagramDefinition
       end
     end
 
@@ -11889,13 +11206,60 @@ ${body}}
 	nparams 2
 	  param in name "id" explicit_type "item_id"
 	  param in name "n" explicit_type "string"
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlDiagram(id, n) {};
+	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlDiagram(id, n), _def(0) {};
 "
-	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws} { super(id, n); }
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws} { super(id, n);   _def = null;
+}
 "
 	
 	
 	comment " the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      operation 213888 "definition"
+	public return_type class_ref 149250 // UmlUseCaseDiagramDefinition
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " return the semantic part of the diagram not present in the model"
+      end
+
+      operation 214016 "unload"
+	cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param in name "rec" explicit_type "bool"
+	  param in name "del" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} = FALSE, ${t1} = FALSE${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	comment " to unload the object to free memory, it will be reloaded automatically
+ if needed. args unused"
+      end
+
+      classrelation 162816 // _def (<unidirectional association>)
+	relation 162816 --->
+	  a role_name "_def" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 162816 // _def (<unidirectional association>)
+	  b parent class_ref 149250 // UmlUseCaseDiagramDefinition
       end
     end
 
@@ -22780,6 +22144,7 @@ ${namespace_end}
 #endif
 "
       cpp_src "${comment}
+#include \"UmlCom.h\"
 ${includes}
 ${namespace_start}
 ${members}
@@ -23293,6 +22658,7 @@ ${namespace_end}
 #endif
 "
       cpp_src "${comment}
+#include \"UmlCom.h\"
 ${includes}
 ${namespace_start}
 ${members}
@@ -23346,6 +22712,7 @@ ${namespace_end}
 #endif
 "
       cpp_src "${comment}
+#include \"UmlCom.h\"
 ${includes}
 ${namespace_start}
 ${members}
@@ -24781,4 +24148,6 @@ ${definition}"
   package_ref 384 // Settings
 
   package_ref 512 // Com
+
+  package_ref 128128 // Diagram
 end

@@ -142,7 +142,7 @@ void UmlOperation::set_cpp(const char * return_form_or_inherit,
       
       s.replace(index, 7, return_form_or_inherit);
       s.insert(s.find("${)}", index), params);
-      s.resize(s.findRev(";"));
+      s.resize(s.findRev(";") + 1);
       if (*body) {
 	s.append(" {\n  ");
 	s.append(body);

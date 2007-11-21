@@ -33,6 +33,7 @@ class ColDiagramWindow;
 class DiagramItem;
 class UmlCanvas;
 class OperationData;
+class ToolCom;
 
 class ColDiagramView : public DiagramView {
   protected:
@@ -48,6 +49,8 @@ class ColDiagramView : public DiagramView {
     virtual void menu(const QPoint&);
     virtual void read(char *, char * k);
     virtual void save(QTextStream & st, QString & warning, bool copy) const;
+    
+    void send(ToolCom * com);
     
   private:
     ColDiagramWindow * window() const {

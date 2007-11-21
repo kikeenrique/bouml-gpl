@@ -33,11 +33,12 @@
 #include "UmlCom.h"
 #include "CppSettings.h"
 #include "JavaSettings.h"
+#include "UmlExtraClassMember.h"
 #include "util.h"
 
 void UmlClass::made(UmlClassView * base_class_view, UmlClassView * user_class_view,
 		    UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-		    UmlClass * base_item, const QCString & s, UmlClass *& base,
+		    UmlClass * base_item, QCString s, UmlClass *& base,
 		    UmlClass *& user, UmlClass * user_interf) {
   unsigned uid = UmlCom::user_id();
   UmlRelation * rel;
@@ -99,7 +100,7 @@ void UmlClass::made(UmlClassView * base_class_view, UmlClassView * user_class_vi
 
 void UmlClass::made(UmlClassView * base_class_view, UmlClassView * user_class_view,
 		    UmlArtifact * base_art, UmlArtifact * user_art,
-		    UmlClass * base_item, const QCString & s, UmlClass *& base,
+		    UmlClass * base_item, QCString s, UmlClass *& base,
 		    UmlClass *& user, UmlClass * user_interf) {
   unsigned uid = UmlCom::user_id();
   UmlRelation * rel;
@@ -161,7 +162,7 @@ void UmlClass::made(UmlClassView * base_class_view, UmlClassView * user_class_vi
 
 UmlClass * UmlClass::made(UmlClassView * class_view,
 			  UmlDeploymentView * depl_view,
-			  const QCString & s, bool interf)
+			  QCString s, bool interf)
 {
   UmlClass * cl = UmlBaseClass::create(class_view, s);
   
@@ -191,7 +192,7 @@ UmlClass * UmlClass::made(UmlClassView * class_view,
 
 UmlClass * UmlClass::made(UmlClassView * class_view,
 			  UmlArtifact * art,
-			  const QCString & s, bool interf)
+			  QCString s, bool interf)
 {
   UmlClass * cl = UmlBaseClass::create(class_view, s);
   
@@ -298,7 +299,7 @@ void UmlClass::add_default_base_op(UmlClass * super, UmlClass * user,
   UmlCom::set_user_id(uid);
 }
 
-void UmlClass::add_constr(UmlClass * super, aVisibility v, bool unnamed) {
+UmlOperation * UmlClass::add_constr(UmlClass * super, aVisibility v, bool unnamed) {
   UmlOperation * op = UmlOperation::create(this, name());
 
   if (op == 0) {
@@ -313,25 +314,54 @@ void UmlClass::add_constr(UmlClass * super, aVisibility v, bool unnamed) {
   op->remove_cpp_throw();
   op->set_Visibility(v);
   op->set_Description("  the constructor, do not call it yourself !!!!!!!!!!");
-  op->add_param(0, InputDirection, "id", "item_id");
-  if (unnamed) {
-    op->set_cpp(": " + super->name() + "(id, \"\")", 
-		"${t0} ${p0}",
-		"", TRUE, 0, 0);
-    op->set_java("", 
-		 "${t0} ${p0}",
-		 "  super(id, \"\");\n", TRUE);
-   }
-  else {
-    op->add_param(1, InputDirection, "s", "string");
-    op->set_cpp(": " + super->name() + "(id, s)", 
-		"${t0} ${p0}, const ${t1} & ${p1}",
-		"", TRUE, 0, 0);
-    op->set_java("", 
-		 "${t0} ${p0}, ${t1} ${p1}",
-		 "  super(id, s);\n", TRUE);
+  
+  if (super != 0) {
+    op->add_param(0, InputDirection, "id", "item_id");
+    if (unnamed) {
+      op->set_cpp(": " + super->name() + "(id, \"\")", 
+		  "${t0} ${p0}",
+		  "", TRUE, 0, 0);
+      op->set_java("", 
+		   "${t0} ${p0}",
+		   "  super(id, \"\");\n", TRUE);
+    }
+    else {
+      op->add_param(1, InputDirection, "s", "string");
+      op->set_cpp(": " + super->name() + "(id, s)", 
+		  "${t0} ${p0}, const ${t1} & ${p1}",
+		  "", TRUE, 0, 0);
+      op->set_java("", 
+		   "${t0} ${p0}, ${t1} ${p1}",
+		   "  super(id, s);\n", TRUE);
+    }
   }
+  
+  return op;
 }
+
+UmlOperation * UmlClass::add_destr(aVisibility v, const char * comment) {
+  QCString s = "~" + name();
+  UmlOperation * op = UmlOperation::create(this, s);
+
+  if (op == 0) {
+    QCString msg = "can't add destructor in " + name() + "<br>\n";
+    
+    UmlCom::trace(msg);
+    throw 0;
+  }
+  
+  UmlCom::trace("add operation " + name() + "::~" + name() + "<br>\n");
+  
+  op->remove_cpp_throw();
+  op->set_Visibility(v);
+  if (comment != 0)
+    op->set_Description(comment);
+  op->set_cpp("", "", "", FALSE, 0, 0);
+  op->set_JavaDecl("");
+  
+  return op;
+}
+
 
 UmlOperation * UmlClass::add_op(const char * name, aVisibility v,
 				UmlClass * return_type, bool excpt) {
@@ -478,6 +508,40 @@ UmlRelation * UmlClass::add_relation(aRelationKind k, const char * name,
   return rel;
 }
 
+UmlRelation * UmlClass::add_vect_assoc(const char * name, aVisibility v, UmlClass * type,
+				       const char * if_def, const char * end_if)
+{
+  UmlRelation * rel = UmlRelation::create(aDirectionalAggregationByValue, this, type);
+  
+  if (rel == 0) {
+    QCString msg =
+      QCString("can't add relation '") + name + "' in " + this->name() + "<br>\n";
+    
+    UmlCom::trace(msg);
+    throw 0;
+  }
+  
+  UmlCom::trace("add relation " + this->name() + "::" + name + "<br>\n");
+  
+  rel->set_RoleName(name);
+  rel->set_Visibility(v);
+  rel->set_Multiplicity("*");
+  rel->set_Stereotype("vector");
+  
+  QCString s;
+  
+  s = CppSettings::relationDecl(TRUE, "");
+  s.replace(s.find("${type}"), 7, "QVector<${type}>");
+  conditional(s, if_def, end_if);
+  rel->set_CppDecl(s);
+  
+  s = JavaSettings::relationDecl("");
+  s.insert(s.find("${type}") + 7, "[]");
+  rel->set_JavaDecl(s);
+  
+  return rel;
+}
+
 UmlOperation * UmlClass::get_operation(const char * who) {
   const QVector<UmlItem> ch = children();
   
@@ -529,4 +593,42 @@ UmlRelation * UmlClass::get_relation(const char * who) {
   }
     
   return 0;
+}
+
+void UmlClass::replace_friend() {
+  QCString s;
+  const QVector<UmlItem> ch = children();
+  unsigned i = ch.size();
+  
+  while (i--) {
+    if ((ch[i]->kind() == aRelation) &&
+	(((UmlRelation *) ch[i])->relationKind() == aDependency) &&
+	(ch[i]->stereotype() == "friend")) {
+      s += "  friend class " + ((UmlRelation *) ch[i])->roleType()->name()
+	+ ";\n";
+      ch[i]->deleteIt();
+    }
+  }
+  
+  if (!s.isEmpty())
+    UmlExtraClassMember::create(this, "friend")->set_CppDecl(s);
+}
+
+void UmlClass::add_friend(const char * scl) {
+  QCString s = QCString("  friend class ") + scl + ";\n";
+  const QVector<UmlItem> ch = children();
+  unsigned i = ch.size();
+  
+  while (i--) {
+    if ((ch[i]->kind() == anExtraClassMember) &&
+	(ch[i]->name() == "friend")) {
+      UmlExtraClassMember * x = (UmlExtraClassMember *) ch[i];
+      QCString f = x->cppDecl() + s;
+      
+      x->set_CppDecl(f);
+      return;
+    }
+  }
+  
+  UmlExtraClassMember::create(this, "friend")->set_CppDecl(s);
 }

@@ -43,6 +43,8 @@
 #include "BrowserOperation.h"
 #include "BrowserDiagram.h"
 #include "myio.h"
+#include "ToolCom.h"
+#include "../Tools/aMessageKind.h"
 
 SdMsgBaseCanvas::SdMsgBaseCanvas(UmlCanvas * canvas, SdDurationCanvas * d,
 				 UmlCode l, int v, int id)
@@ -407,4 +409,58 @@ void SdMsgBaseCanvas::history_load(QBuffer & b) {
     connect(msg, SIGNAL(changed()), this, SLOT(modified()));
     connect(msg, SIGNAL(deleted()), this, SLOT(modified()));
   }
+}
+
+// for plug out
+
+void SdMsgBaseCanvas::send_implicit_return(ToolCom * com, int fromid,
+					   unsigned x, unsigned y)
+{
+  com->write_id(0);
+  com->write_string("");
+  com->write_unsigned((unsigned) fromid);
+  com->write_unsigned((unsigned) fromid);
+  
+  com->write_char(anImplicitReturn);
+  com->write_string("");
+  com->write_unsigned(x);
+  com->write_unsigned(y);
+  com->write_unsigned(y);
+}
+
+void SdMsgBaseCanvas::send(ToolCom * com, int fromid) const {
+  if (msg == 0) {
+    com->write_id(0);
+    com->write_string(explicit_msg);
+  }
+  else if (msg->deletedp()) {
+    com->write_id(0);
+    com->write_string(msg->get_browser_node()->get_name());
+  }
+  else 
+    msg->get_browser_node()->write_id(com);
+  com->write_unsigned((unsigned) fromid);
+  com->write_unsigned((unsigned) dest->get_line()->get_obj()->get_ident());
+  
+  switch (itsType) {
+  case UmlSyncMsg:
+  case UmlSyncSelfMsg:
+    com->write_char(aSynchronousCall);
+    break;
+  case UmlAsyncMsg:
+  case UmlAsyncSelfMsg:
+    com->write_char(anAsynchronousCall);
+    break;
+  default:
+    com->write_char(anExplicitReturn);
+    break;
+  }
+
+  com->write_string((const char *) args);
+  com->write_unsigned((unsigned) x());
+  
+  unsigned v = (unsigned) y() + height()/2;
+  
+  com->write_unsigned(v);
+  com->write_unsigned(v);
 }

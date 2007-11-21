@@ -43,6 +43,7 @@
 #include "SettingsDialog.h"
 #include "myio.h"
 #include "MenuTitle.h"
+#include "ToolCom.h"
 
 #define DURATION_MIN_HEIGHT 25
 #define DURATION_START_HEIGHT 40
@@ -989,4 +990,93 @@ void SdDurationCanvas::history_load(QBuffer & b) {
     durations.append((SdDurationCanvas *) ::load_item(b));
   
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));  
+}
+
+// for plug out
+
+unsigned SdDurationCanvas::count_msg() const {
+  unsigned count = 0;
+  QListIterator<SdMsgBaseCanvas> itm(msgs);
+  double maxy = 0;
+  bool isreturn = FALSE;
+  
+  for (; itm.current(); ++itm) {
+    switch (itm.current()->type()) {
+    case UmlSyncMsg:
+    case UmlAsyncMsg:
+    case UmlReturnMsg:
+      if (itm.current()->get_dest() == this)
+	break;
+      // no break
+    default:
+      // msg start from duration
+      count += 1;
+    }
+    
+    if (itm.current()->y() > maxy) {
+      maxy = itm.current()->y();
+      
+      switch (itm.current()->type()) {
+      case UmlReturnMsg:
+      case UmlSelfReturnMsg:
+	isreturn = TRUE;
+	break;
+      default:
+	isreturn = FALSE;
+      }
+    }
+  }
+  
+  if (!isreturn)
+    count += 1;
+  
+  QListIterator<SdDurationCanvas> itd(durations);
+  
+  for (; itd.current(); ++itd)
+    count += itd.current()->count_msg();
+  
+  return count;
+}
+
+void SdDurationCanvas::send(ToolCom * com, int id) const {
+  QListIterator<SdMsgBaseCanvas> itm(msgs);
+  double maxy = 0;
+  bool isreturn = FALSE;
+  
+  for (; itm.current(); ++itm) {
+    switch (itm.current()->type()) {
+    case UmlSyncMsg:
+    case UmlAsyncMsg:
+    case UmlReturnMsg:
+      if (itm.current()->get_dest() == this)
+	break;
+      // no break
+    default:
+      // msg start from duration
+      itm.current()->send(com, id);
+    }
+    
+    if (itm.current()->y() > maxy) {
+      maxy = itm.current()->y();
+      
+      switch (itm.current()->type()) {
+      case UmlReturnMsg:
+      case UmlSelfReturnMsg:
+	isreturn = TRUE;
+	break;
+      default:
+	isreturn = FALSE;
+      }
+    }
+  }
+  
+  if (!isreturn)
+    SdMsgBaseCanvas::send_implicit_return(com, id,
+					  (unsigned) x() + width(),
+					  (unsigned) y() + height());
+  
+  QListIterator<SdDurationCanvas> itd(durations);
+  
+  for (; itd.current(); ++itd)
+    itd.current()->send(com, id);
 }

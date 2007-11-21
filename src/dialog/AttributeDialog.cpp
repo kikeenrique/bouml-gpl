@@ -158,10 +158,9 @@ AttributeDialog::AttributeDialog(AttributeData * a)
     
     edtype = new QComboBox(!visit, grid);
     edtype->insertItem(a->get_type().get_full_type());
+    BrowserClass::instances(nodes);
+    nodes.full_names(list);        
     if (!visit) {
-      BrowserClass::instances(nodes);
-      nodes.full_names(list);
-        
       edtype->insertStringList(GenerationSettings::basic_types());
       offset = edtype->count();
       edtype->insertStringList(list);

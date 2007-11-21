@@ -40,7 +40,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
     try {
-      UmlCom::trace("<b>Plug-out Upgrade</b> release 1.10.1<br><hr>");
+      UmlCom::trace("<b>Plug-out Upgrade</b> release 1.10.2<br><hr>");
       if (UmlPackage::getProject()->upgrade())
 	UmlCom::trace("<br><hr>Done<br>");
     }

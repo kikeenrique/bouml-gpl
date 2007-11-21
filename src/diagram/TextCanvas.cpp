@@ -41,6 +41,7 @@
 #include "strutil.h"
 #include "DialogUtil.h"
 #include "SettingsDialog.h"
+#include "ToolCom.h"
 
 TextCanvas::TextCanvas(UmlCanvas * canvas, int x, int y, int id)
     : DiagramCanvas(0, canvas, x, y, TEXT_CANVAS_MIN_SIZE,
@@ -332,4 +333,28 @@ void TextCanvas::history_load(QBuffer & b) {
   ::load(w, b);
   ::load(h, b);
   QCanvasRectangle::setSize(w, h);
+}
+
+// for plug outs
+
+void TextCanvas::send(ToolCom * com, QCanvasItemList & all)
+{
+  QCanvasItemList::Iterator cit;
+
+  for (cit = all.begin(); cit != all.end(); ++cit) {
+    DiagramItem *di = QCanvasItemToDiagramItem(*cit);
+    
+    if ((di != 0) && 
+	(*cit)->visible() &&
+	(di->type() == UmlText)) {
+      TextCanvas * tx = (TextCanvas *) di;
+      QCString s = fromUnicode(tx->text);
+      
+      com->write_bool(TRUE);	// one more
+      com->write_string((const char *) s);
+      com->write(tx->rect());
+    }
+  }
+  
+  com->write_bool(FALSE);	// done
 }

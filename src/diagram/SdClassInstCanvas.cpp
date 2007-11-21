@@ -42,7 +42,9 @@
 #include "SettingsDialog.h"
 #include "Settings.h"
 #include "myio.h"
+#include "strutil.h"
 #include "MenuTitle.h"
+#include "ToolCom.h"
 
 SdClassInstCanvas::SdClassInstCanvas(BrowserNode * bn, UmlCanvas * canvas,
 				     int x, int id)
@@ -599,4 +601,45 @@ void SdClassInstCanvas::history_load(QBuffer & b) {
 
   disconnect(d, SIGNAL(changed()), this, SLOT(modified()));
   disconnect(d, SIGNAL(deleted()), this, SLOT(deleted()));
+}
+
+// for plug outs
+
+void SdClassInstCanvas::send(ToolCom * com, QCanvasItemList & all)
+{
+  QList<SdClassInstCanvas> l;
+  QCanvasItemList::Iterator cit;
+
+  for (cit = all.begin(); cit != all.end(); ++cit) {
+    DiagramItem *di = QCanvasItemToDiagramItem(*cit);
+    
+    if ((di != 0) && (*cit)->visible()) {
+       switch (di->type()) {
+       case UmlClass:
+       case UmlClassInstance:
+	 l.append((SdClassInstCanvas *) di);
+	 break;
+       default:
+	 break;
+       }
+    }
+  }
+
+  com->write_unsigned(l.count());
+  
+  QListIterator<SdClassInstCanvas> it(l);
+  
+  for (; it.current(); ++it) {
+    SdClassInstCanvas * i = it.current();
+    
+    com->write_unsigned((unsigned) i->get_ident());
+    if (i->browser_node->get_type() == UmlClass) {      
+      com->write_id(0);
+      
+      QCString s = fromUnicode(i->iname);
+      
+      com->write_string((const char *) s);
+    }
+    i->browser_node->write_id(com);
+  }
 }

@@ -10,7 +10,6 @@ class UmlEntryPointPseudoState : public UmlBaseEntryPointPseudoState {
     //  the constructor, do not call it yourself !!!!!!!!!!
      UmlEntryPointPseudoState(void * id, const QCString & s) : UmlBaseEntryPointPseudoState(id, s) {
     }
-
 };
 
 #endif

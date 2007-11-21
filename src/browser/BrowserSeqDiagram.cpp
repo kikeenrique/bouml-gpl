@@ -34,7 +34,7 @@
 #include "BrowserSeqDiagram.h"
 #include "SimpleData.h"
 #include "SeqDiagramWindow.h"
-#include "DiagramView.h"
+#include "SeqDiagramView.h"
 #include "UmlPixmap.h"
 #include "SettingsDialog.h"
 #include "myio.h"
@@ -480,6 +480,17 @@ bool BrowserSeqDiagram::tool_cmd(ToolCom * com, const char * args) {
       com->write_ack(w->get_view()->save_pict(args, 
 					     !w->get_view()->has_preferred_size_zoom(),
 					     TRUE));
+      w->dont_save();
+      w->close(TRUE);
+    }
+    return TRUE;
+  case sideCmd:
+    if (window != 0)
+      ((SeqDiagramView *) window->get_view())->send(com);
+    else {
+      SeqDiagramWindow * w = new SeqDiagramWindow(full_name(), this);
+      
+      ((SeqDiagramView *) w->get_view())->send(com);
       w->dont_save();
       w->close(TRUE);
     }

@@ -28,6 +28,8 @@
 
 #include "DiagramCanvas.h"
 
+class ToolCom;
+
 #define SUBJECT_CANVAS_MIN_SIZE 30
 
 class SubjectCanvas : public QObject, public DiagramCanvas {
@@ -74,6 +76,8 @@ class SubjectCanvas : public QObject, public DiagramCanvas {
     virtual void history_save(QBuffer &) const;
     virtual void history_load(QBuffer &);
     virtual void history_hide();
+    
+    static void send(ToolCom * com, QCanvasItemList & all);
     
   private slots:
     void modified();

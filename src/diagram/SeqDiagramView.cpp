@@ -453,4 +453,13 @@ void SeqDiagramView::read(char * st, char * k) {
     wrong_keyword(k, "end");
 }
 
+// for plug-out
 
+void SeqDiagramView::send(ToolCom * com) {
+  QCanvasItemList l = canvas()->allItems();
+  
+  FragmentCanvas::send(com, l);
+  SdClassInstCanvas::send(com, l);
+  SdLifeLineCanvas::send(com, l);
+  TextCanvas::send(com, l);
+}

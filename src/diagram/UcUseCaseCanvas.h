@@ -28,6 +28,8 @@
 
 #include "DiagramCanvas.h"
 
+class ToolCom;
+
 #define USECASE_CANVAS_MIN_WIDTH 64
 #define USECASE_CANVAS_MIN_HEIGHT 32
 
@@ -75,6 +77,8 @@ class UcUseCaseCanvas : public QObject, public DiagramCanvas {
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static UcUseCaseCanvas * read(char * &, UmlCanvas * canvas, char *);
     virtual void post_loaded();
+    
+    static void send(ToolCom * com, QCanvasItemList & all);
     
   private slots:
     void modified();	// canvas must be updated

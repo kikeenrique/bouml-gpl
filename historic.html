@@ -1,3 +1,57 @@
+<h3>3.3.4</h3>November, 21th 2007<br /><br />
+    <ul>
+	<li> <font color="red">Previous releases crash on undo when
+			the diagram contains a <i>constraint</i></font>, fixed.
+		<br /><br /></li>
+	
+	<li> A <i>plug-out</i> can now access to <i>semantic</i> informations
+		not present in the model out of the drawing in <i>use case, collaboration</i>
+		and <i>sequence</i> diagrams.<ul>
+		<li> <i>use case diagram</i> : access to <ul>
+			<li> the <i>uses cases</i>, <i>actors</i>, <i>subjects</i>
+				and <i>fragments</i> present in the diagram,</li>
+			<li> the association between <i>actor</i> and <i>uses case</i>
+				indicating if the <i>actor</i> is a primary or secondary
+				<i>actor</i> in the association, </li>
+			<li> the <i>subject</i> and <i>fragment compartment</i> where the
+				<i>uses cases</i> is drawn if this is the case</li>
+			</ul>
+			Note that other data like inheritance between <i>use cases</i>
+				are part of the model.</li>
+		<li> <i>collaboration diagram</i> : access to <ul>
+			<li> the <i>class instances</i> present	in the diagram,</li>
+			<li> the messages between instances, ordered on the rank</li>
+			</ul></li>
+		<li> <i>sequence diagram</i> : access to <ul>
+			<li> the <i>class instances</i> and <i>fragments</i> present
+				in the diagram,</li>
+			<li> the messages between instances ordered on the sending time
+				(vertical position in the diagram), </li>
+			<li> the <i>fragment compartment</i> where a
+				message is sent,</i> 
+			<li> the <i>fragment compartment</i> where the fragments
+				may be drawn and the <i>text</i> may be placed in the
+				<i>fragments compartment</i> (corresponding to a
+				guard of a <i>fragment alt</i> for instance)
+			</ul></li>
+		</ul><br /></li>
+
+	<li> <b>Plug-out upgrade 1.10.2</b><br />
+		To access to the <i>semantic</i> informations from a 
+		<i>use case, collaboration</i> and <i>sequence</i> diagrams,
+		through the new operation <i>definition</i>.<br />
+		A new <i>package</i> named Diagram is created to place the new classes
+		supporting these informations under the <i>packages API BASE</i> and
+		<i>API USER</i>
+		<br /><br /></li>
+
+	<li> <i>Plug-out</i> <b>empty</b><br />
+		Upgraded by <i>plug-out upgrade</i>.
+		</li>
+    </ul>
+<br /><br />
+
+
 <h3>3.3.3</h3>November, 21th 2007<br /><br />
     <ul>
 	<li> <font color="red">Previous releases crash when you add

@@ -31,6 +31,7 @@
 #define FRAGMENT_CANVAS_MIN_SIZE 30
 
 class FragmentSeparatorCanvas;
+class ToolCom;
 
 class FragmentCanvas : public QObject, public DiagramCanvas {
   Q_OBJECT
@@ -81,6 +82,8 @@ class FragmentCanvas : public QObject, public DiagramCanvas {
     
     virtual void apply_shortcut(QString s);
     void edit_drawing_settings();
+    
+    static void send(ToolCom * com, QCanvasItemList & all);
   
   private slots:
     void modified();

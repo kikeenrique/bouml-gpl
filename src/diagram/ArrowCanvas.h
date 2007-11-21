@@ -30,6 +30,8 @@
 
 #include "DiagramItem.h"
 
+class ToolCom;
+
 #define ARROW_LENGTH 10
 
 //#define ARROW_Z 1000
@@ -142,6 +144,8 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     virtual void history_hide();
 
     static void remove_redondant_rels();
+    
+    void write_uc_rel(ToolCom * com) const;
     
   protected:
     void search_supports(ArrowCanvas *& plabel, 

@@ -34,6 +34,7 @@
 class SdObjCanvas;
 class SdLifeLineCanvas;
 class SdMsgBaseCanvas;
+class ToolCom;
 
 class SdDurationCanvas : public QObject, public DiagramCanvas, public SdDurationSupport {
   Q_OBJECT
@@ -117,6 +118,9 @@ class SdDurationCanvas : public QObject, public DiagramCanvas, public SdDuration
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static SdDurationCanvas * read(char * & st, UmlCanvas * canvas, char *);
     static SdDurationCanvas * read(char * & st, UmlCanvas * canvas, bool ref);
+    
+    unsigned count_msg() const;
+    void send(ToolCom * com, int id) const;
     
   private slots:
     void modified();

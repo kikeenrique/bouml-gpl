@@ -36,6 +36,7 @@
 #include "ClassInstCanvas.h"
 
 class BrowserNode;
+class ToolCom;
 
 class SdClassInstCanvas : public QObject, public SdObjCanvas, public ClassInstCanvas {
   Q_OBJECT
@@ -79,6 +80,8 @@ class SdClassInstCanvas : public QObject, public SdObjCanvas, public ClassInstCa
     
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static SdClassInstCanvas * read(char * &, UmlCanvas * canvas, char *);
+    
+    static void send(ToolCom * com, QCanvasItemList & all);
     
   private slots:
     void modified();	// canvas must be updated

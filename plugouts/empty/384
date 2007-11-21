@@ -1,6 +1,6 @@
-format 46
+format 48
 "Settings" // API BASE::Settings
-  revision 26
+  revision 27
   modified_by 2 "bruno"
   // class settings
   //class diagram settings

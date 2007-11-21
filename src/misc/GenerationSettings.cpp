@@ -271,13 +271,14 @@ ${module_end}\n\
   if (relattr_stereotypes != 0)
     delete [] relattr_stereotypes;
   
-  nrelattrstereotypes = 4;
+  nrelattrstereotypes = 5;
   relattr_stereotypes = new Stereotype[nrelattrstereotypes];
   
   relattr_stereotypes[0].set("sequence", "vector", "Vector", "", "sequence");
   relattr_stereotypes[1].set("vector", "vector", "Vector", "", "sequence");
   relattr_stereotypes[2].set("list", "list", "Vector", "", "sequence");
   relattr_stereotypes[3].set("set", "set", "Vector", "", "sequence");
+  relattr_stereotypes[4].set("map", "map", "Hashtable", "", "sequence");
   
   if (class_stereotypes != 0)
     delete [] class_stereotypes;

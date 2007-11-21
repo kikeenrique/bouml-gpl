@@ -98,9 +98,9 @@ install:
 	then \
 		for i in 16 32 48 64; do \
 			mkdir -p "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps"; \
-			cp bouml.$$i.png "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/bouml.png"; \
-			cp projectControl.$$i.png "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/projectControl.png"; \
-			cp projectSynchro.$$i.png "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/projectSynchro.png"; \
+			cp -p bouml.$$i.png "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/bouml.png"; \
+			cp -p projectControl.$$i.png "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/projectControl.png"; \
+			cp -p projectSynchro.$$i.png "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/projectSynchro.png"; \
 		done \
 	fi
 	for i in $(PROGS); do cp -p $$i "$(DESTDIR)$(BOUML_LIB)" ; done

@@ -39,6 +39,8 @@ class UmlArtifact : public UmlBaseArtifact {
     UmlArtifact(void * id, const QCString & n)
       : UmlBaseArtifact(id, n) {};
   
+  void add_includes(const char *, bool h = TRUE);
+  void add_import(const char *);
   static UmlArtifact * made(UmlDeploymentView * depl_view, const QCString & s);
 };
 

@@ -10,6 +10,8 @@ class UmlClassView : public UmlBaseClassView {
   public:
     UmlClassView(void * id, const QCString & n)
       : UmlBaseClassView(id, n) {};
+    
+    virtual void replace_friend();
 };
 
 #endif

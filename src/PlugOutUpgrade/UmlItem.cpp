@@ -22,3 +22,8 @@ void UmlItem::move_after(anItemKind k, const char * name) {
     }
   }
 }
+
+void UmlItem::replace_friend()
+{
+  // does nothing
+}

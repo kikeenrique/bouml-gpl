@@ -35,7 +35,7 @@
 #include "SimpleData.h"
 #include "UseCaseDiagramWindow.h"
 #include "BrowserUseCaseView.h"
-#include "DiagramView.h"
+#include "UseCaseDiagramView.h"
 #include "UmlPixmap.h"
 #include "SettingsDialog.h"
 #include "myio.h"
@@ -484,6 +484,17 @@ bool BrowserUseCaseDiagram::tool_cmd(ToolCom * com, const char * args) {
       com->write_ack(w->get_view()->save_pict(args, 
 					      !w->get_view()->has_preferred_size_zoom(),
 					      TRUE));
+      w->dont_save();
+      w->close(TRUE);
+    }
+    return TRUE;
+  case sideCmd:
+    if (window != 0)
+      ((UseCaseDiagramView *) window->get_view())->send(com);
+    else {
+      UseCaseDiagramWindow * w = new UseCaseDiagramWindow(full_name(), this);
+      
+      ((UseCaseDiagramView *) w->get_view())->send(com);
       w->dont_save();
       w->close(TRUE);
     }

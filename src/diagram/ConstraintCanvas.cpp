@@ -359,7 +359,7 @@ void ConstraintCanvas::history_hide() {
 }
 
 void ConstraintCanvas::history_load(QBuffer & b) {
-  DiagramCanvas::history_load(b);
+  NoteCanvas::history_load(b);
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(update()));
   
   QValueList<BasicData *>::Iterator iter;

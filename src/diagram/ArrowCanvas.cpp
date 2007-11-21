@@ -46,6 +46,8 @@
 #include "MenuTitle.h"
 #include "DiagramView.h"
 #include "UmlPixmap.h"
+#include "ToolCom.h"
+#include "strutil.h"
 
 #include "geometry_hv.xpm"
 #include "geometry_vh.xpm"
@@ -1863,4 +1865,48 @@ void ArrowCanvas::remove_redondant_rels()
   }
   
   RelsToCheck.clear();
+}
+
+// for plug-out
+
+void ArrowCanvas::write_uc_rel(ToolCom * com) const {
+  // between use case an actor
+  DiagramItem * from = get_start();
+  DiagramItem * to = get_end();
+  
+  if (from->type() == UmlUseCase) {
+    com->write_unsigned((unsigned) from->get_ident());
+    to->get_bn()->write_id(com);
+    com->write_bool((itstype == UmlDirectionalAssociation)
+		    ? FALSE
+		    : (to->rect().center().x() < from->rect().center().x()));
+  }
+  else {
+    com->write_unsigned((unsigned) to->get_ident());
+    from->get_bn()->write_id(com);
+    com->write_bool((itstype == UmlDirectionalAssociation)
+		    ? TRUE
+		    : (to->rect().center().x() > from->rect().center().x()));
+  }
+  
+  ArrowCanvas * plabel;
+  ArrowCanvas * pstereotype;
+    
+  search_supports(plabel, pstereotype);
+  
+  QCString s;
+  
+  if (plabel == 0)
+    com->write_string("");
+  else {
+    s = fromUnicode(plabel->label->text());
+    com->write_string(s);
+  }
+  
+  if (pstereotype == 0)
+    com->write_string("");
+  else {
+    s = fromUnicode(pstereotype->stereotype->text());
+    com->write_string(s);
+  }
 }

@@ -34,6 +34,7 @@
 class SdDead;
 class SdObjCanvas;
 class SdDurationCanvas;
+class ToolCom;
 
 class SdLifeLineCanvas : public DiagramCanvas, public SdDurationSupport {
   protected:
@@ -79,6 +80,8 @@ class SdLifeLineCanvas : public DiagramCanvas, public SdDurationSupport {
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     virtual void history_save(QBuffer &) const;
     virtual void history_load(QBuffer &);
+    
+    static void send(ToolCom * com, const QCanvasItemList & l);
 };
 
 #endif

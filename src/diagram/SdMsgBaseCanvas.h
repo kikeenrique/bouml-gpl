@@ -31,6 +31,7 @@
 
 class SdDurationCanvas;
 class OperationData;
+class ToolCom;
 
 class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
   Q_OBJECT
@@ -90,6 +91,10 @@ class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
     
     void save(QTextStream & st, QString & warning) const;
     void read(char * &);
+    
+    void send(ToolCom * com, int fromid) const;
+    static void send_implicit_return(ToolCom * com, int fromid,
+				     unsigned x, unsigned y);
   
   protected slots:
     void modified();	// canvas must be updated

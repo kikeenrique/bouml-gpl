@@ -32,6 +32,7 @@
 #include <qpopupmenu.h> 
 
 #include "UcUseCaseCanvas.h"
+#include "UcClassCanvas.h"
 #include "SimpleRelationCanvas.h"
 #include "BasicData.h"
 #include "BrowserUseCase.h"
@@ -551,4 +552,77 @@ void UcUseCaseCanvas::history_load(QBuffer & b) {
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
   connect(browser_node->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(browser_node->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
+}
+
+// for plug outs
+
+void UcUseCaseCanvas::send(ToolCom * com, QCanvasItemList & all)
+{
+  QList<UcUseCaseCanvas> lu;
+  QList<UcClassCanvas> la;
+  QCanvasItemList::Iterator cit;
+
+  for (cit = all.begin(); cit != all.end(); ++cit) {
+    DiagramItem *di = QCanvasItemToDiagramItem(*cit);
+    
+    if ((di != 0) && (*cit)->visible()) {
+      switch (di->type()) {
+      case UmlUseCase:
+	lu.append((UcUseCaseCanvas *) di);
+	break;
+      case UmlClass:
+	la.append((UcClassCanvas *) di);
+	break;
+      default:
+	break;
+      }
+    }
+  }
+  
+  // send UC
+  
+  com->write_unsigned(lu.count());
+  
+  QListIterator<UcUseCaseCanvas> itu(lu);
+  
+  for (; itu.current(); ++itu) {
+    com->write_unsigned((unsigned) itu.current()->get_ident());
+    itu.current()->get_bn()->write_id(com);
+    com->write(itu.current()->rect());
+  }
+  
+  // send Actors
+  
+  com->write_unsigned(la.count());
+  
+  QListIterator<UcClassCanvas> ita(la);
+  
+  for (; ita.current(); ++ita)
+    ita.current()->get_bn()->write_id(com);
+  
+  // send rels
+  
+  QList<ArrowCanvas> lr;
+  
+  for (itu.toFirst(); itu.current(); ++itu) {
+    QListIterator<ArrowCanvas> itl(itu.current()->lines);
+    
+    for (; itl.current(); ++itl) {
+      ArrowCanvas * r = itl.current();
+      DiagramItem * from = r->get_start();
+      DiagramItem * to = r->get_end();
+      
+      if ((from->type() == UmlUseCase)
+	  ? (to->type() == UmlClass)
+	  : (from->type() == UmlClass))
+	lr.append(r);
+    }
+  }
+  
+  com->write_unsigned(lr.count());
+  
+  QListIterator<ArrowCanvas> itr(lr);
+  
+  for (; itr.current(); ++itr)
+    itr.current()->write_uc_rel(com);
 }

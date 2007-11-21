@@ -37,6 +37,7 @@
 
 class QStringList;
 class BrowserNode;
+class ToolCom;
 
 class CodClassInstCanvas : public QObject, public CodObjCanvas, public ClassInstCanvas {
   Q_OBJECT
@@ -80,6 +81,8 @@ class CodClassInstCanvas : public QObject, public CodObjCanvas, public ClassInst
   
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static CodClassInstCanvas * read(char * &, UmlCanvas * canvas, char *);
+    
+    static void send(ToolCom * com, QCanvasItemList & all);
     
   private slots:
     void modified();	// canvas must be updated

@@ -41,8 +41,10 @@
 #include "InstanceDialog.h"
 #include "SettingsDialog.h"
 #include "myio.h"
+#include "strutil.h"
 #include "MenuTitle.h"
 #include "ColDiagramView.h"
+#include "ToolCom.h"
 
 CodClassInstCanvas::CodClassInstCanvas(BrowserNode * bn, UmlCanvas * canvas,
 				       int x, int y, int id)
@@ -488,4 +490,45 @@ void CodClassInstCanvas::history_load(QBuffer & b) {
   connect(browser_node->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(browser_node->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
+}
+
+// for plug outs
+
+void CodClassInstCanvas::send(ToolCom * com, QCanvasItemList & all)
+{
+  QList<CodClassInstCanvas> l;
+  QCanvasItemList::Iterator cit;
+
+  for (cit = all.begin(); cit != all.end(); ++cit) {
+    DiagramItem *di = QCanvasItemToDiagramItem(*cit);
+    
+    if ((di != 0) && (*cit)->visible()) {
+       switch (di->type()) {
+       case UmlClass:
+       case UmlClassInstance:
+	 l.append((CodClassInstCanvas *) di);
+	 break;
+       default:
+	 break;
+       }
+    }
+  }
+
+  com->write_unsigned(l.count());
+  
+  QListIterator<CodClassInstCanvas> it(l);
+  
+  for (; it.current(); ++it) {
+    CodClassInstCanvas * i = it.current();
+    
+    com->write_unsigned((unsigned) i->get_ident());
+    if (i->browser_node->get_type() == UmlClass) {      
+      com->write_id(0);
+      
+      QCString s = fromUnicode(i->iname);
+      
+      com->write_string((const char *) s);
+    }
+    i->browser_node->write_id(com);
+  }
 }

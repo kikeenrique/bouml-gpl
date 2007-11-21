@@ -31,6 +31,7 @@
 class UseCaseDiagramWindow;
 class DiagramItem;
 class UmlCanvas;
+class ToolCom;
 
 class UseCaseDiagramView : public DiagramView {
   Q_OBJECT
@@ -41,6 +42,8 @@ class UseCaseDiagramView : public DiagramView {
     virtual void menu(const QPoint&);
     virtual void read(char *, char * k);
     virtual void save(QTextStream & st, QString & warning, bool copy) const;
+    
+    void send(ToolCom * com);
     
   private:
     UseCaseDiagramWindow * window() {

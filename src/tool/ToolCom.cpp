@@ -479,6 +479,13 @@ void ToolCom::write_char(char c)
 #endif
 }
 
+void ToolCom::write(QRect r) {
+  write_unsigned((unsigned) r.x());
+  write_unsigned((unsigned) r.y());
+  write_unsigned((unsigned) r.width());
+  write_unsigned((unsigned) r.height());  
+}
+
 void ToolCom::write_ack(bool b)
 {
   /*if (with_ack)*/ {
@@ -550,7 +557,7 @@ void ToolCom::data_received(Socket * who) {
 	   close();
 	   return;
 	   }*/
-	else if (api_version > 35) {
+	else if (api_version > 36) {
 	  TraceDialog::add("<font color =\"red\"><b>the plug-out is incompatible with this too old version of BOUML<b></font>");
 	  TraceDialog::show_it();
 	  close();

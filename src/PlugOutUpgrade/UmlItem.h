@@ -15,6 +15,7 @@ class UmlItem : public UmlBaseItem {
     
     virtual void rename_jdk5();
     void move_after(anItemKind k, const char * name);
+    virtual void replace_friend();
 };
 
 #endif

@@ -414,4 +414,12 @@ void ColDiagramView::read(char * st, char * k) {
     wrong_keyword(k, "end");
 }
 
+// for plug-out
 
+void ColDiagramView::send(ToolCom * com) {
+  QCanvasItemList l = canvas()->allItems();
+  
+  //FragmentCanvas::send(com, l);
+  CodClassInstCanvas::send(com, l);
+  ColMsg::send(com, msgs);
+}

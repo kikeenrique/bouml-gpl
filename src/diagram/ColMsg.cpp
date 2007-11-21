@@ -39,6 +39,7 @@
 #include "CodSelfLinkCanvas.h"
 #include "CodDirsCanvas.h"
 #include "myio.h"
+#include "ToolCom.h"
 
 
 int ColMsgList::compareItems(QCollection::Item item1,
@@ -470,3 +471,49 @@ void ColMsg::read(char * & st, ColMsgList & l, UmlCanvas * canvas) {
   } while (strcmp(k, "msgsend"));
 }
 
+// for plug out
+
+void ColMsg::get_all(const ColMsgList & l, ColMsgList & r)
+{
+  QListIterator<ColMsg> it(l);
+  
+  for (; it.current(); ++it) {
+    r.append(it.current());
+    get_all(it.current()->msgs, r);
+  }
+}
+
+void ColMsg::send(ToolCom * com, const ColMsgList & l)
+{
+  ColMsgList lm;
+  
+  get_all(l, lm);
+  lm.sort();
+  
+  com->write_unsigned(lm.count());
+  
+  ColMsg * msg;
+  
+  for (msg = lm.first(); msg != 0; msg = lm.next()) {
+    if (msg->operation == 0) {
+      com->write_id(0);
+      com->write_string(msg->explicit_operation);
+    }
+    else if (msg->operation->deletedp()) {
+      com->write_id(0);
+      com->write_string(msg->operation->get_browser_node()->get_name());
+    }
+    else 
+      msg->operation->get_browser_node()->write_id(com);
+  
+    CodObjCanvas * from;
+    CodObjCanvas * to;
+    
+    msg->in->get_from_to(from, to, msg->is_forward);
+    com->write_unsigned((unsigned) from->get_ident());
+    com->write_unsigned((unsigned) to->get_ident());
+    
+    com->write_unsigned(msg->absolute_rank);
+    com->write_string((const char *) msg->hierarchical_rank);
+  }
+}

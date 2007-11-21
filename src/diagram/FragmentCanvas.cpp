@@ -42,6 +42,8 @@
 #include "myio.h"
 #include "MenuTitle.h"
 #include "DialogUtil.h"
+#include "ToolCom.h"
+#include "strutil.h"
 
 FragmentCanvas::FragmentCanvas(UmlCanvas * canvas, int x, int y, int id)
     : DiagramCanvas(0, canvas, x, y, FRAGMENT_CANVAS_MIN_SIZE,
@@ -511,3 +513,68 @@ void FragmentCanvas::history_hide() {
   disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
 
+// for plug outs
+
+void FragmentCanvas::send(ToolCom * com, QCanvasItemList & all)
+{
+  QList<FragmentCanvas> fragments;
+  QCanvasItemList::Iterator cit;
+
+  for (cit = all.begin(); cit != all.end(); ++cit) {
+    DiagramItem *di = QCanvasItemToDiagramItem(*cit);
+    
+    if ((di != 0) && (*cit)->visible() && (di->type() == UmlFragment))
+      fragments.append((FragmentCanvas *) di);
+  }
+  
+  com->write_unsigned(fragments.count());
+  
+  FragmentCanvas * f;
+  
+  for (f = fragments.first(); f != 0; f = fragments.next()) {
+    QCString s = fromUnicode(f->name);
+    
+    com->write_string((const char *) s);
+    com->write(f->rect());
+    
+    // few separators, use bubble sort
+    unsigned sz = f->separators.count();
+    
+    if (sz == 0)
+      com->write_unsigned(1);
+    else {
+      FragmentSeparatorCanvas ** v = new FragmentSeparatorCanvas *[sz];
+      unsigned index;      
+      QListIterator<FragmentSeparatorCanvas> it(f->separators);
+      
+      for (index = 0; it.current(); ++it, index += 1)
+	v[index] = it.current();
+      
+      bool modified;
+      
+      do {
+	modified = FALSE;
+	
+	for (index = 1; index < sz; index += 1) {
+	  if (v[index - 1]->y() > v[index]->y()) {
+	    modified = TRUE;
+	    
+	    FragmentSeparatorCanvas * fs = v[index - 1];
+	    
+	    v[index - 1] = v[index];
+	    v[index] = fs;
+	  }
+	}
+      } while (modified);
+      
+      com->write_unsigned(sz + 1);
+      
+      for (index = 0; index != sz; index += 1)
+	com->write_unsigned((unsigned) v[index]->y());
+      
+      delete [] v;
+    }
+      
+    com->write_unsigned((unsigned) (f->y() + f->height() - 1));
+  }
+}

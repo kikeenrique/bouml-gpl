@@ -34,7 +34,7 @@
 #include "BrowserColDiagram.h"
 #include "SimpleData.h"
 #include "ColDiagramWindow.h"
-#include "DiagramView.h"
+#include "ColDiagramView.h"
 #include "UmlPixmap.h"
 #include "SettingsDialog.h"
 #include "myio.h"
@@ -476,6 +476,17 @@ bool BrowserColDiagram::tool_cmd(ToolCom * com, const char * args) {
       com->write_ack(w->get_view()->save_pict(args, 
 					     !w->get_view()->has_preferred_size_zoom(),
 					     TRUE));
+      w->dont_save();
+      w->close(TRUE);
+    }
+    return TRUE;
+  case sideCmd:
+    if (window != 0)
+      ((ColDiagramView *) window->get_view())->send(com);
+    else {
+      ColDiagramWindow * w = new ColDiagramWindow(full_name(), this);
+      
+      ((ColDiagramView *) w->get_view())->send(com);
       w->dont_save();
       w->close(TRUE);
     }

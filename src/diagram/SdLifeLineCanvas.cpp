@@ -35,6 +35,7 @@
 #include "SdObjCanvas.h"
 #include "SdDurationCanvas.h"
 #include "MenuTitle.h"
+#include "ToolCom.h"
 #include "myio.h"
 
 #define LIFE_LINE_WIDTH 7
@@ -336,3 +337,37 @@ void SdLifeLineCanvas::history_load(QBuffer & b) {
     durations.append((SdDurationCanvas *) ::load_item(b));
 }
 
+void SdLifeLineCanvas::send(ToolCom * com, const QCanvasItemList & l)
+{
+  QCanvasItemList::ConstIterator cit;
+  unsigned n = 0;
+  
+  for (cit = l.begin(); cit != l.end(); ++cit) {
+    DiagramItem * it = QCanvasItemToDiagramItem(*cit);
+      
+    if ((it != 0) && // an uml canvas item
+	(*cit)->visible() &&
+	(it->type() == UmlLifeLine)) {
+      QListIterator<SdDurationCanvas> iter(((SdLifeLineCanvas *) it)->durations);
+      
+      for (; iter.current(); ++iter)
+	n += iter.current()->count_msg();
+    }
+  }
+  
+  com->write_unsigned(n);
+  
+  for (cit = l.begin(); cit != l.end(); ++cit) {
+    DiagramItem * it = QCanvasItemToDiagramItem(*cit);
+      
+    if ((it != 0) && // an uml canvas item
+	(*cit)->visible() &&
+	(it->type() == UmlLifeLine)) {
+      int id = ((SdLifeLineCanvas *) it)->obj->get_ident();
+      QListIterator<SdDurationCanvas> iter(((SdLifeLineCanvas *) it)->durations);
+      
+      for (; iter.current(); ++iter)
+	iter.current()->send(com, id);
+    }
+  }
+}

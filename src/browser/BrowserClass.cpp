@@ -1780,6 +1780,7 @@ void BrowserClass::init()
       relations_default_stereotypes[r].append("list");
       relations_default_stereotypes[r].append("set");
       relations_default_stereotypes[r].append("vector");
+      relations_default_stereotypes[r].append("map");
     }
   }
 }

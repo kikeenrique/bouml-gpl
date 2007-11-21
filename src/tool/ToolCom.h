@@ -34,6 +34,7 @@
 
 class Socket;
 class AType;
+class QRect;
 
 class ToolCom  :public QObject {
   Q_OBJECT
@@ -93,6 +94,7 @@ class ToolCom  :public QObject {
     void write_id(void * id);
     void write_string(const char * p);
     void write_char(char c);
+    void write(QRect r);
     void write_ack(bool);
     void fatal_error(const char * msg);
     

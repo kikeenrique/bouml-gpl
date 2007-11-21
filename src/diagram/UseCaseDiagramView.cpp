@@ -333,4 +333,13 @@ void UseCaseDiagramView::read(char * st, char * k) {
     wrong_keyword(k, "end");
 }
 
+// for plug-out
+
+void UseCaseDiagramView::send(ToolCom * com) {
+  QCanvasItemList l = canvas()->allItems();
+  
+  FragmentCanvas::send(com, l);
+  SubjectCanvas::send(com, l);
+  UcUseCaseCanvas::send(com, l);
+}
 

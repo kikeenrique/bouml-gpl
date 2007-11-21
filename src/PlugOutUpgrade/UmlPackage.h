@@ -39,6 +39,8 @@ class UmlPackage : public UmlBasePackage {
       : UmlBasePackage(id, n) {};
   
     bool upgrade();
+    
+    virtual void replace_friend();
 };
 
 #endif

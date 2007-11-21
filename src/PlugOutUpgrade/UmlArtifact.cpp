@@ -52,3 +52,25 @@ UmlArtifact * UmlArtifact::made(UmlDeploymentView * depl_view,
   
   return art;
 }
+
+void UmlArtifact::add_includes(const char * i, bool h) {
+  if (h) {
+    QCString s = cppHeader();
+    
+    s.insert(s.find("${includes}"), i);
+    set_CppHeader(s);
+  }
+  else {
+    QCString s = cppSource();
+    
+    s.insert(s.find("${includes}"), i);
+    set_CppSource(s);
+  }
+}
+
+void UmlArtifact::add_import(const char * i) {
+  QCString s = javaSource();
+  
+  s.insert(s.find("${definition}"), i);
+  set_JavaSource(s);
+}

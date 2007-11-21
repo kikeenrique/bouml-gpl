@@ -41,6 +41,7 @@
 #include "myio.h"
 #include "MenuTitle.h"
 #include "strutil.h"
+#include "ToolCom.h"
 
 SubjectCanvas::SubjectCanvas(UmlCanvas * canvas, int x, int y, int id)
     : DiagramCanvas(0, canvas, x, y, SUBJECT_CANVAS_MIN_SIZE,
@@ -396,3 +397,30 @@ void SubjectCanvas::history_hide() {
   disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
 
+// for plug outs
+
+void SubjectCanvas::send(ToolCom * com, QCanvasItemList & all)
+{
+  QList<SubjectCanvas> subjects;
+  QCanvasItemList::Iterator cit;
+
+  for (cit = all.begin(); cit != all.end(); ++cit) {
+    DiagramItem *di = QCanvasItemToDiagramItem(*cit);
+    
+    if ((di != 0) && 
+	(*cit)->visible() &&
+	(di->type() == UmlSubject))
+      subjects.append((SubjectCanvas *) di);
+  }
+  
+  com->write_unsigned(subjects.count());
+  
+  SubjectCanvas * sc;
+  
+  for (sc = subjects.first(); sc != 0; sc = subjects.next()) {
+    QCString s = fromUnicode(sc->name);
+    
+    com->write_string((const char *) s);
+    com->write(sc->rect());
+  }
+}

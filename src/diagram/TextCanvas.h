@@ -28,6 +28,8 @@
 
 #include "DiagramCanvas.h"
 
+class ToolCom;
+
 #define TEXT_CANVAS_MIN_SIZE 15
 
 class TextCanvas : public DiagramCanvas {
@@ -58,6 +60,8 @@ class TextCanvas : public DiagramCanvas {
     virtual void history_load(QBuffer &);
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static TextCanvas * read(char * &, UmlCanvas *, char *);
+    
+    static void send(ToolCom * com, QCanvasItemList & all);
 };
 
 #endif

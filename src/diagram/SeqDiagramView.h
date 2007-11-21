@@ -31,6 +31,7 @@
 class SeqDiagramWindow;
 class DiagramItem;
 class UmlCanvas;
+class ToolCom;
 
 class SeqDiagramView : public DiagramView {
   public:
@@ -39,6 +40,8 @@ class SeqDiagramView : public DiagramView {
     virtual void menu(const QPoint&);
     virtual void read(char *, char * k);
     virtual void save(QTextStream & st, QString & warning, bool copy) const;
+    
+    void send(ToolCom * com);
     
   private:
     SeqDiagramWindow * window() {

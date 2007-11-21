@@ -36,6 +36,7 @@ class CodObjCanvas;
 class CodMsgSupport;
 class QTextStream;
 class UmlCanvas;
+class ToolCom;
 
 class ColMsg;
 
@@ -69,6 +70,8 @@ class ColMsg {
     void update_rank(unsigned & r);
     void delete_it_internal();
     
+    static void get_all(const ColMsgList & l, ColMsgList & r);
+    
   public:
     void delete_it(bool rec, ColMsgList & top);
   
@@ -98,6 +101,8 @@ class ColMsg {
     
     static bool lt(const char * h1, const char * h2);
     static bool gt(const char * h1, const char * h2);
+    
+    static void send(ToolCom * com, const ColMsgList & l);
 };
 
 #endif
