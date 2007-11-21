@@ -303,15 +303,20 @@ void SdDurationCanvas::connexion(UmlCode l, DiagramItem * dest,
 				 const QPoint & s, const QPoint & e) {
   switch (l) {
   case UmlSyncSelfMsg:
-    if (((BrowserSeqDiagram * ) browser_node)->is_overlapping_bars()) {
+    if (dest->type() == UmlLifeLine)
+      dest = this;
+    else if (((BrowserSeqDiagram * ) browser_node)->is_overlapping_bars()) {
       SdDurationCanvas * d = (SdDurationCanvas *) dest;
       
       dest = new SdDurationCanvas(the_canvas(), d, s.y(), TRUE);
       d->update_v_to_contain((SdDurationCanvas *) dest, FALSE);
     }
-    // no break;
+    (new SdSelfMsgCanvas(the_canvas(), ((SdDurationCanvas *) dest), l, s.y(), 0))->upper();
+    break;
   case UmlAsyncSelfMsg:
   case UmlSelfReturnMsg:
+    if (dest->type() == UmlLifeLine)
+      dest = this;
     (new SdSelfMsgCanvas(the_canvas(), ((SdDurationCanvas *) dest), l, s.y(), 0))->upper();
     break;
   case UmlAnchor:
