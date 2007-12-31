@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -67,7 +67,7 @@ void SubjectCanvas::draw(QPainter & p) {
   QRect r = rect();
   QColor bckgrnd = p.backgroundColor();
 
-  p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
+  p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
 
   QColor co = color(used_color);
   FILE * fp = svg();
@@ -90,9 +90,9 @@ void SubjectCanvas::draw(QPainter & p) {
   p.drawRect(r);
   
   r.setTop(r.top() + (int) (2*the_canvas()->zoom()));
-  p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, name);
+  p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, name);
   if (fp != 0) {
-    draw_text(r, QObject::AlignHCenter + QObject::AlignTop, name,
+    draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, name,
 	      p.font(), fp);
     fputs("</g>\n", fp);
   }

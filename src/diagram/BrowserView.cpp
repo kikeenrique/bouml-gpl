@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -227,9 +227,9 @@ void BrowserView::contentsMousePressEvent(QMouseEvent * e) {
     // in a diagram)
     selected(i);
     
-    if (e->button() == QObject::LeftButton) {
+    if (e->button() == ::Qt::LeftButton) {
       if (!((BrowserNode *) i)->deletedp() && (i != project)) {
-	if (e->state() & ControlButton)
+	if (e->state() & ::Qt::ControlButton)
 	  ((BrowserNode *) i)->toggle_mark();
 	else if (e->pos().x() > header()->cellPos(header()->mapToActual(0)) +
 		 treeStepSize() * (i->depth() + (rootIsDecorated() ? 1 : 0)) + itemMargin()/* ||
@@ -282,7 +282,7 @@ void BrowserView::keyPressEvent(QKeyEvent * e) {
 	if (s == "Menu")
 	  rightPressed(bn);
 	else if (s == "Delete") {
-	  QApplication::setOverrideCursor(Qt::waitCursor);
+	  QApplication::setOverrideCursor(::Qt::waitCursor);
 	  bn->delete_it();
 	  QApplication::restoreOverrideCursor();
 	  ((BrowserNode *) bn->parent())->modified();

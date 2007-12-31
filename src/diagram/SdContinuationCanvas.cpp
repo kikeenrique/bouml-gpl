@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -67,7 +67,7 @@ void SdContinuationCanvas::draw(QPainter & p) {
   QColor bckgrnd = p.backgroundColor();
   QBrush brsh = p.brush();
 
-  p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
+  p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
 
   QColor co = color(used_color);
   FILE * fp = svg();
@@ -89,9 +89,9 @@ void SdContinuationCanvas::draw(QPainter & p) {
   p.drawRoundRect(r, 50, 50);
   
   p.setFont(the_canvas()->get_font(UmlNormalFont));
-  p.drawText(r, QObject::AlignCenter, name);
+  p.drawText(r, ::Qt::AlignCenter, name);
   if (fp != 0) {
-    draw_text(r, QObject::AlignCenter, name,
+    draw_text(r, ::Qt::AlignCenter, name,
 	      p.font(), fp);
     fputs("</g>\n", fp);
   }

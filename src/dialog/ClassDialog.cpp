@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -123,7 +123,7 @@ ClassDialog::ClassDialog(ClassData * c)
   
   new QLabel(grid);
   htab = new QHBox(grid);
-  opt_bg = new QGroupBox(3, QGroupBox::Horizontal, QString::null, htab);
+  opt_bg = new QGroupBox(3, Qt::Horizontal, QString::null, htab);
   abstract_cb = new QCheckBox("abstract", opt_bg);
   if (cl->get_is_abstract()) {
     abstract_cb->setChecked(TRUE);
@@ -270,7 +270,7 @@ ClassDialog::ClassDialog(ClassData * c)
   
   // C++
   
-  split = new QSplitter(Vertical, this);
+  split = new QSplitter(Qt::Vertical, this);
   cpptab = split;
   split->setOpaqueResize(TRUE);
   
@@ -279,7 +279,7 @@ ClassDialog::ClassDialog(ClassData * c)
   htab = new QHBox(vtab);
   htab->setMargin(5);
   lbl1 = new QLabel(htab);
-  bg = new QGroupBox(1, QGroupBox::Horizontal, QString::null, htab);
+  bg = new QGroupBox(1, Qt::Horizontal, QString::null, htab);
   cpp_external_cb = new QCheckBox("external", bg);
   if (cl->cpp_is_external())
     cpp_external_cb->setChecked(TRUE);
@@ -341,7 +341,7 @@ ClassDialog::ClassDialog(ClassData * c)
   
   // Java
   
-  split = new QSplitter(Vertical, this);
+  split = new QSplitter(Qt::Vertical, this);
   javatab = split;
   split->setOpaqueResize(TRUE);
   
@@ -350,7 +350,7 @@ ClassDialog::ClassDialog(ClassData * c)
   htab = new QHBox(vtab);
   htab->setMargin(5);
   lbl1 = new QLabel(htab);
-  bg = new QGroupBox(3, QGroupBox::Horizontal, QString::null, htab);
+  bg = new QGroupBox(3, Qt::Horizontal, QString::null, htab);
   java_final_cb = new QCheckBox("final", bg);
   if (cl->java_is_final())
     java_final_cb->setChecked(TRUE);
@@ -414,7 +414,7 @@ ClassDialog::ClassDialog(ClassData * c)
   
   // Php
   
-  split = new QSplitter(Vertical, this);
+  split = new QSplitter(Qt::Vertical, this);
   phptab = split;
   split->setOpaqueResize(TRUE);
   
@@ -423,7 +423,7 @@ ClassDialog::ClassDialog(ClassData * c)
   htab = new QHBox(vtab);
   htab->setMargin(5);
   lbl1 = new QLabel(htab);
-  bg = new QGroupBox(3, QGroupBox::Horizontal, QString::null, htab);
+  bg = new QGroupBox(3, Qt::Horizontal, QString::null, htab);
   php_final_cb = new QCheckBox("final", bg);
   if (cl->php_is_final())
     php_final_cb->setChecked(TRUE);
@@ -481,7 +481,7 @@ ClassDialog::ClassDialog(ClassData * c)
   
   // IDL
   
-  split = new QSplitter(Vertical, this);
+  split = new QSplitter(Qt::Vertical, this);
   idltab = split;
   split->setOpaqueResize(TRUE);
   
@@ -489,7 +489,7 @@ ClassDialog::ClassDialog(ClassData * c)
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
-  switch_bg = new QGroupBox(2, QGroupBox::Horizontal, QString::null, htab);
+  switch_bg = new QGroupBox(2, Qt::Horizontal, QString::null, htab);
   new QLabel("switch type : ", switch_bg);
   edswitch_type = new QComboBox(!visit, switch_bg);
   if (!visit) {
@@ -515,7 +515,7 @@ ClassDialog::ClassDialog(ClassData * c)
   htab = new QHBox(vtab);
   htab->setMargin(5);
   lbl1 = new QLabel(htab);
-  bg = new QGroupBox(3, QGroupBox::Horizontal, QString::null, htab);
+  bg = new QGroupBox(3, Qt::Horizontal, QString::null, htab);
   idl_external_cb = new QCheckBox("external", bg);
   if (cl->idl_is_external())
     idl_external_cb->setChecked(TRUE);

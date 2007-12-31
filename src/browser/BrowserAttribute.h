@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -93,6 +93,7 @@ class BrowserAttribute : public BrowserNode, public Labeled<BrowserAttribute> {
 
     static BrowserAttribute * new_one(QString s, BrowserNode * p, bool enum_item);
     
+    static void init();
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);

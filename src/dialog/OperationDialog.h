@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -94,6 +94,7 @@ class OperationDialog : public QTabDialog {
     QCheckBox * inline_cb;
     LineEdit * edcppnamespec;	// get/set
     QCheckBox * cppfrozen_cb;	// get/set
+    QCheckBox * indentcppbody_cb;
     MultiLineEdit * edcppdecl;
     CppParamsTable * paramcppdecltable;
     MultiLineEdit * showcppdecl;
@@ -115,6 +116,7 @@ class OperationDialog : public QTabDialog {
     QCheckBox * synchronized_cb;
     LineEdit * edjavanamespec;	// get/set
     QCheckBox * javafrozen_cb;	// get/set
+    QCheckBox * indentjavabody_cb;
     MultiLineEdit * edjavadef;
     MultiLineEdit * showjavadef;
     QPushButton * editjavabody;
@@ -129,6 +131,7 @@ class OperationDialog : public QTabDialog {
     QCheckBox * phpfinal_cb;
     LineEdit * edphpnamespec;	// get/set
     QCheckBox * phpfrozen_cb;	// get/set
+    QCheckBox * indentphpbody_cb;
     MultiLineEdit * edphpdef;
     MultiLineEdit * showphpdef;
     QPushButton * editphpbody;

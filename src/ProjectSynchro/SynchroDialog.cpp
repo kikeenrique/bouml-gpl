@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -64,7 +64,7 @@ SynchroDialog::SynchroDialog(QList<BrowserView> & b)
       new QLabel("\nChoose the projects to synchronize with the others\n", 
 		 this);
     
-    lbl->setAlignment(QObject::AlignCenter);
+    lbl->setAlignment(::Qt::AlignCenter);
     vbox->addWidget(lbl);
     
     if (has_ro_need_update) {
@@ -72,7 +72,7 @@ SynchroDialog::SynchroDialog(QList<BrowserView> & b)
 	new QLabel("\nWarning : some projects can't be synchronized because of read-only files\n", 
 		   this);
       
-      lbl->setAlignment(QObject::AlignCenter);
+      lbl->setAlignment(::Qt::AlignCenter);
       vbox->addWidget(lbl);
     }
   }
@@ -81,7 +81,7 @@ SynchroDialog::SynchroDialog(QList<BrowserView> & b)
       new QLabel("\nSynchronisation not possible because of read-only files\n", 
 		 this);
     
-    lbl->setAlignment(QObject::AlignCenter);
+    lbl->setAlignment(::Qt::AlignCenter);
     vbox->addWidget(lbl);
   }
   else {
@@ -89,7 +89,7 @@ SynchroDialog::SynchroDialog(QList<BrowserView> & b)
       new QLabel("\nAll the projects are synchronized\n",
 		 this);
     
-    lbl->setAlignment(QObject::AlignCenter);
+    lbl->setAlignment(::Qt::AlignCenter);
     vbox->addWidget(lbl);
   }
   

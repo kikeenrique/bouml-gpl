@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -416,18 +416,18 @@ void StateCanvas::draw(QPainter & p) {
     if (shadow != 0) {
       r.setRight(r.right() - shadow);
       r.setBottom(r.bottom() - shadow);
-      p.setPen(QObject::NoPen);
-      p.setBrush(QObject::darkGray);
+      p.setPen(::Qt::NoPen);
+      p.setBrush(::Qt::darkGray);
       p.drawRoundRect(r.left() + shadow, r.top() + shadow, r.width(), r.height());
 
             
       if (fp != 0)
 	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
 		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
-		QObject::darkGray.rgb()&0xffffff,
+		::Qt::darkGray.rgb()&0xffffff,
 		r.left() + shadow, r.top() + shadow, r.width() - 1, r.height() - 1);
 
-      p.setPen(QObject::SolidLine);
+      p.setPen(::Qt::SolidLine);
     }
   }
   
@@ -436,8 +436,8 @@ void StateCanvas::draw(QPainter & p) {
   const BasicData * data = browser_node->get_data();
   
   p.setBackgroundMode((used_color == UmlTransparent)
-		      ? QObject::TransparentMode
-		      : QObject::OpaqueMode);
+		      ? ::Qt::TransparentMode
+		      : ::Qt::OpaqueMode);
 
   QColor co = color(used_color);
   
@@ -456,18 +456,18 @@ void StateCanvas::draw(QPainter & p) {
   
   p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
   r.setTop(r.top() + fm.height() / 2);
-  p.drawText(r, QObject::AlignHCenter, browser_node->get_name());  
+  p.drawText(r, ::Qt::AlignHCenter, browser_node->get_name());  
   if (fp != 0)
-    draw_text(r, QObject::AlignHCenter, browser_node->get_name(),
+    draw_text(r, ::Qt::AlignHCenter, browser_node->get_name(),
 	      p.font(), fp);  
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   r.setTop(r.top() + fm.height());
   
   if (data->get_stereotype()[0] != 0) {
-    p.drawText(r, QObject::AlignHCenter,
+    p.drawText(r, ::Qt::AlignHCenter,
 	       QString("<<") + toUnicode(data->get_stereotype()) + ">>");
     if (fp != 0)
-      draw_text(r, QObject::AlignHCenter,
+      draw_text(r, ::Qt::AlignHCenter,
 		QString("<<") + toUnicode(data->get_stereotype()) + ">>",
 		p.font(), fp);
     r.setTop(r.top() + fm.height());
@@ -522,7 +522,7 @@ void StateCanvas::draw(QPainter & p) {
 		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
 		r.left(), r.top(), r.right(), r.top());
 
-      p.setPen(QObject::DashLine);
+      p.setPen(::Qt::DashLine);
       
       child = browser_node->firstChild();
       
@@ -574,7 +574,7 @@ void StateCanvas::draw(QPainter & p) {
 	child = child->nextSibling();
       }
       
-      p.setPen(QObject::SolidLine);
+      p.setPen(::Qt::SolidLine);
     }
     else {
       regions.resize(0);

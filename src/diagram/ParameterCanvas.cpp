@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -232,8 +232,8 @@ void ParameterCanvas::draw(QPainter & p) {
   QColor bckgrnd = p.backgroundColor();
   
   p.setBackgroundMode((used_color == UmlTransparent)
-		      ? QObject::TransparentMode
-		      : QObject::OpaqueMode);
+		      ? ::Qt::TransparentMode
+		      : ::Qt::OpaqueMode);
 
   QColor co = color(used_color);
   QRect r = rect();
@@ -258,12 +258,12 @@ void ParameterCanvas::draw(QPainter & p) {
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   p.drawText(r.left() + 2, r.top() + 2,
 	     r.width() - 4, r.height() - 4,
-	     QObject::AlignCenter + QObject::WordBreak,
+	     ::Qt::AlignCenter + ::Qt::WordBreak,
 	     browser_node->get_name());
   if (fp != 0)
     draw_text(r.left() + 2, r.top() + 2,
 	      r.width() - 4, r.height() - 4,
-	      QObject::AlignCenter + QObject::WordBreak,
+	      ::Qt::AlignCenter + ::Qt::WordBreak,
 	      browser_node->get_name(),
 	      p.font(), fp);
       

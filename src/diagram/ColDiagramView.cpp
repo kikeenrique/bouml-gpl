@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -116,7 +116,7 @@ void ColDiagramView::menu(const QPoint&) {
   
 void ColDiagramView::contentsMousePressEvent(QMouseEvent * e) {
   if (!window()->frozen()) {
-    if (e->button() == QObject::RightButton)
+    if (e->button() == ::Qt::RightButton)
       DiagramView::contentsMousePressEvent(e);
     else {
       UmlCode c = window()->buttonOn();

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -517,7 +517,7 @@ const char * UmlOperation::generate_body(QTextOStream & fs,
   }
   
   if (body == 0) {
-    no_indent = FALSE;
+    no_indent = !cppContextualBodyIndent();
     modeler_body = cppBody();	// to not free the string
     body = modeler_body;
   }

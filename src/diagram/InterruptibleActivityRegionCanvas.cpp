@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -173,8 +173,8 @@ void InterruptibleActivityRegionCanvas::draw(QPainter & p) {
   QColor bckgrnd = p.backgroundColor();
   
   p.setBackgroundMode((used_color == UmlTransparent)
-		      ? QObject::TransparentMode
-		      : QObject::OpaqueMode);
+		      ? ::Qt::TransparentMode
+		      : ::Qt::OpaqueMode);
 
   QColor co = color(used_color);
   
@@ -183,10 +183,10 @@ void InterruptibleActivityRegionCanvas::draw(QPainter & p) {
   if (used_color != UmlTransparent) 
     p.setBrush(co);
   
-  p.setPen(QObject::DotLine);
+  p.setPen(::Qt::DotLine);
   p.drawRoundRect(r, 8, 8);
   
-  p.setPen(QObject::SolidLine);      
+  p.setPen(::Qt::SolidLine);      
   p.setBackgroundColor(bckgrnd);
   p.setBrush(brsh);
   

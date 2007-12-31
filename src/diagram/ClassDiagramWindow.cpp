@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -53,9 +53,9 @@ const char * dependencyText = "Click this button to create a <em>dependency</em>
 extern const char * associationText;
 const char * directionalassociationText = "Click this button to create an <em>unidirectional association</em>";
 const char * aggregationText = "Click this button to create an <em>aggregation</em>";
-const char * aggregationbyvalueText = "Click this button to create an <em>aggregation by value</em>";
+const char * aggregationbyvalueText = "Click this button to create a <em>composition</em>";
 const char * directionalaggregationText = "Click this button to create a <em>directional aggregation</em>";
-const char * directionalaggregationbyvalueText = "Click this button to create a <em>directional aggregation by value</em>";
+const char * directionalaggregationbyvalueText = "Click this button to create a <em>directional composition</em>";
 const char * realizeText = "Click this button to create a <em>realization</em>";
 extern const char * textText;
 
@@ -129,8 +129,8 @@ ClassDiagramWindow::ClassDiagramWindow(const QString & s, BrowserClassDiagram * 
   QWhatsThis::add(aggregation, aggregationText);
 
   aggregationbyvalue =
-    new QToolButton(*aggregationByValueButton, "Aggregation By Value", QString::null,
-		    this, SLOT(hit_aggregationbyvalue()), toolbar, "aggregation by value");
+    new QToolButton(*aggregationByValueButton, "Composition", QString::null,
+		    this, SLOT(hit_aggregationbyvalue()), toolbar, "composition");
   aggregationbyvalue->setToggleButton(TRUE);
   QWhatsThis::add(aggregationbyvalue, aggregationbyvalueText);
   
@@ -141,8 +141,8 @@ ClassDiagramWindow::ClassDiagramWindow(const QString & s, BrowserClassDiagram * 
   QWhatsThis::add(directionalaggregation, directionalaggregationText);
   
   directionalaggregationbyvalue =
-    new QToolButton(*directionalAggregationByValueButton, "Directional Aggregation By Value", QString::null,
-		    this, SLOT(hit_directionalaggregationbyvalue()), toolbar, "directional aggregation by value");
+    new QToolButton(*directionalAggregationByValueButton, "Directional Composition", QString::null,
+		    this, SLOT(hit_directionalaggregationbyvalue()), toolbar, "directional composition");
   directionalaggregationbyvalue->setToggleButton(TRUE);
   QWhatsThis::add(directionalaggregationbyvalue, directionalaggregationbyvalueText);
   

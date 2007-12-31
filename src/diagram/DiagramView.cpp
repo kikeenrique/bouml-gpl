@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -94,7 +94,7 @@ DiagramView::DiagramView(QWidget * parent, UmlCanvas * canvas, int i)
   setHScrollBarMode(Auto);
   setFocusPolicy(QWidget::StrongFocus);
   //setFocusPolicy(QWidget::WheelFocus);
-  canvas->setBackgroundColor(QObject::white);
+  canvas->setBackgroundColor(::Qt::white);
   canvas->setDoubleBuffering(TRUE);
   
   canvas->set_view(this);
@@ -135,7 +135,7 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
   if (!window()->frozen()) {
     QCanvasItem * ci = the_canvas()->collision(e->pos());
     
-    if (e->button() == QObject::RightButton) {
+    if (e->button() == ::Qt::RightButton) {
       // menu on several objects (excluding labels)
   
       if (! draw_line) {
@@ -228,7 +228,7 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	  const QCanvasItemList selected = selection();
 	  QCanvasItemList::ConstIterator it = selected.find(ci);
 	  
-	  if ((e->state() & ControlButton) == 0) {
+	  if ((e->state() & ::Qt::ControlButton) == 0) {
 	    if (it == selected.end()) {
 	      // ne designe pas un objet selectionne, vide la selection
 	      unselect_all();
@@ -333,7 +333,7 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	    }
 	    else {
 	      history_save();
-	      setCursor(pointingHandCursor);
+	      setCursor(::Qt::pointingHandCursor);
 	      arrowBeginning = start = i;
 	      draw_line = TRUE;
 	      mousePressPos = e->pos();
@@ -431,7 +431,7 @@ void DiagramView::contentsMouseReleaseEvent(QMouseEvent * e) {
       history_protected = FALSE;
       window()->selectOn();
     }
-    else if ((e->button() != QObject::RightButton) && (selectArea != 0)) {
+    else if ((e->button() != ::Qt::RightButton) && (selectArea != 0)) {
       // selectionne les objets dans la zone de selection
       QRect r = selectArea->boundingRect();
       
@@ -500,21 +500,21 @@ void DiagramView::add_point(QMouseEvent * e) {
   line->setZ(TOP_Z);
   line->setPoints(e->pos().x(), e->pos().y(), 
 		  e->pos().x(), e->pos().y());
-  line->setPen(QObject::DotLine);
+  line->setPen(::Qt::DotLine);
   line->show();
-  line->setPen(QObject::SolidLine);
+  line->setPen(::Qt::SolidLine);
   
   canvas()->update();
   history_protected = FALSE;
   window()->package_modified();
   
   // remark : mouse tracking does not work (?)
-  setCursor(pointingHandCursor);
+  setCursor(::Qt::pointingHandCursor);
 }
 
 void DiagramView::contentsMouseMoveEvent(QMouseEvent * e) {
   if (!window()->frozen()) {
-    if (e->button() != QObject::RightButton) {
+    if (e->button() != ::Qt::RightButton) {
       history_protected = TRUE;
       
       int dx = e->pos().x() - mousePressPos.x();
@@ -586,9 +586,9 @@ void DiagramView::contentsMouseMoveEvent(QMouseEvent * e) {
 	    line->setPoints(mousePressPos.x(), mousePressPos.y(), 
 			    e->pos().x(), e->pos().y());
 	  }
-	  line->setPen(QObject::DotLine);
+	  line->setPen(::Qt::DotLine);
 	  line->show();
-	  line->setPen(QObject::SolidLine);
+	  line->setPen(::Qt::SolidLine);
 	}
 	else {
 	  QPoint st = line->startPoint();
@@ -1218,6 +1218,9 @@ void DiagramView::select_all() {
 }
 
 void DiagramView::set_zoom(double zoom) {
+  if (draw_line)
+    abort_line_construction();
+  
   ((UmlCanvas *) canvas())->set_zoom(zoom);
   
   QCanvasItemList all = canvas()->allItems();
@@ -1281,6 +1284,9 @@ void DiagramView::needed_width_height(int & maxx, int & maxy) const {
 }
 
 void DiagramView::fit_scale() {
+  if (draw_line)
+    abort_line_construction();
+  
   int maxx;
   int maxy;
   
@@ -1300,6 +1306,9 @@ void DiagramView::fit_scale() {
 }
 
 void DiagramView::do_optimal_window_size() {
+  if (draw_line)
+    abort_line_construction();
+  
   history_protected = TRUE;
   optimal_window_size();
   canvas()->update();
@@ -1384,6 +1393,9 @@ static bool find_browser_element(QCanvas * canvas, QCanvasItemList & r)
 }
 
 int DiagramView::default_menu(QPopupMenu & m, int f) {
+  if (draw_line)
+    abort_line_construction();
+
   QPopupMenu formatm(0);
   QCanvasItemList l;
   

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -101,17 +101,17 @@ void TemplateCanvas::set_z(double) {
 void TemplateCanvas::draw(QPainter & p) {
   if (! visible()) return;
   
-  p.setBackgroundMode(QObject::OpaqueMode);
+  p.setBackgroundMode(::Qt::OpaqueMode);
   
   QRect r = rect();
   
-  p.fillRect(r, QObject::white);
-  p.setPen(QObject::DotLine);
+  p.fillRect(r, ::Qt::white);
+  p.setPen(::Qt::DotLine);
   p.drawRect(r);
-  p.setPen(QObject::SolidLine);
+  p.setPen(::Qt::SolidLine);
   
   p.setFont(the_canvas()->get_font(UmlNormalFont));
-  p.drawText(r, QObject::AlignCenter, text);
+  p.drawText(r, ::Qt::AlignCenter, text);
   
   FILE * fp = svg();
 
@@ -120,7 +120,7 @@ void TemplateCanvas::draw(QPainter & p) {
     fprintf(fp, "\t<rect fill=\"white\" stroke-dasharray=\"4,4\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
 	    r.x(), r.y(), r.width() - 1, r.height() - 1);
-    draw_text(r, QObject::AlignCenter, text,
+    draw_text(r, ::Qt::AlignCenter, text,
 	      p.font(), fp);
     fputs("</g>\n", fp);
   }

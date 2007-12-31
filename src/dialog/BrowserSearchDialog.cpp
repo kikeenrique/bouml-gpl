@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -126,14 +126,14 @@ BrowserSearchDialog::BrowserSearchDialog()
   
   gl->addWidget(hb, 2, 1);
   
-  QGroupBox * gb = new QGroupBox(2, QGroupBox::Horizontal, hb);
+  QGroupBox * gb = new QGroupBox(2, Qt::Horizontal, hb);
   
   case_sensitive = new QCheckBox("case sensitive", gb);
   case_sensitive->setChecked(saved_case_sensitive);
   even_deleted = new QCheckBox("even deleted", gb);
   even_deleted->setChecked(saved_even_deleted);
 
-  QButtonGroup * bg = new QButtonGroup(3, QGroupBox::Horizontal, hb);
+  QButtonGroup * bg = new QButtonGroup(3, Qt::Horizontal, hb);
   
   bg->setExclusive(TRUE);
   for_name = new QRadioButton("name", bg);

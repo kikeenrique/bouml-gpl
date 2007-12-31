@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -376,8 +376,8 @@ void ActivityCanvas::draw(QPainter & p) {
     fputs("<g>\n", fp);  
   
   p.setBackgroundMode((used_color == UmlTransparent)
-		      ? QObject::TransparentMode
-		      : QObject::OpaqueMode);
+		      ? ::Qt::TransparentMode
+		      : ::Qt::OpaqueMode);
 
   QColor co = color(used_color);
   
@@ -386,7 +386,7 @@ void ActivityCanvas::draw(QPainter & p) {
   if (used_color != UmlTransparent)
     p.setBrush(co);
   
-  p.setPen(QObject::SolidLine);
+  p.setPen(::Qt::SolidLine);
   p.drawRoundRect(r, 8, 8);
   if (fp != 0) {
     if (used_color != UmlTransparent)
@@ -402,79 +402,79 @@ void ActivityCanvas::draw(QPainter & p) {
   
   p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
   p.drawText(r.x() + margin, r.y() + margin,
-	     r.width(), r.height(), QObject::AlignLeft,
+	     r.width(), r.height(), ::Qt::AlignLeft,
 	     browser_node->get_name());  
   if (fp != 0)
     draw_text(r.x() + margin, r.y() + margin,
-	      r.width(), r.height(), QObject::AlignLeft,
+	      r.width(), r.height(), ::Qt::AlignLeft,
 	      browser_node->get_name(), p.font(), fp);  
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   
   if (singleexec_offset.x() != 0) {
     p.drawText(r.x() + singleexec_offset.x(),
 	       r.y() + singleexec_offset.y(),
-	       r.width(), r.height(), QObject::AlignLeft,
+	       r.width(), r.height(), ::Qt::AlignLeft,
 	       "<<singleExecution>>");
     if (fp != 0)
       draw_text(r.x() + singleexec_offset.x(),
 		r.y() + singleexec_offset.y(),
-		r.width(), r.height(), QObject::AlignLeft,
+		r.width(), r.height(), ::Qt::AlignLeft,
 		"<<singleExecution>>", p.font(), fp);
   }
   
   if (readonly_offset.x() != 0) {
     p.drawText(r.x() + readonly_offset.x(),
 	       r.y() + readonly_offset.y(),
-	       r.width(), r.height(), QObject::AlignLeft,
+	       r.width(), r.height(), ::Qt::AlignLeft,
 	       "<<readOnly>>");
     if (fp != 0)
       draw_text(r.x() + readonly_offset.x(),
 		r.y() + readonly_offset.y(),
-		r.width(), r.height(), QObject::AlignLeft,
+		r.width(), r.height(), ::Qt::AlignLeft,
 		"<<readOnly>>", p.font(), fp);
   }
   
   if (! pre.isEmpty()) {
     p.drawText(r.x() + pre_offset.x(),
 	       r.y() + pre_offset.y(),
-	       r.width(), r.height(), QObject::AlignLeft,
+	       r.width(), r.height(), ::Qt::AlignLeft,
 	       "<<precondition>>");
     p.drawText(r.x() + pre_offset.x() + post_width,
 	       r.y() + pre_offset.y(),
 	       r.width(), r.height(),
-	       QObject::AlignLeft, pre);
+	       ::Qt::AlignLeft, pre);
     
     if (fp != 0) {
       draw_text(r.x() + pre_offset.x(),
 		r.y() + pre_offset.y(),
-		r.width(), r.height(), QObject::AlignLeft,
+		r.width(), r.height(), ::Qt::AlignLeft,
 		"<<precondition>>", p.font(), fp);
       draw_text(r.x() + pre_offset.x() + post_width,
 		r.y() + pre_offset.y(),
 		r.width(), r.height(),
-		QObject::AlignLeft, pre, p.font(), fp);
+		::Qt::AlignLeft, pre, p.font(), fp);
     }
   }
   
   if (! post.isEmpty()) {
     p.drawText(r.x() + post_offset.x(),
 	       r.y() + post_offset.y(),
-	       r.width(), r.height(), QObject::AlignLeft,
+	       r.width(), r.height(), ::Qt::AlignLeft,
 	       "<<postcondition>>");
     p.drawText(r.x() + post_offset.x() + post_width,
 	       r.y() + post_offset.y(),
 	       r.width(), r.height(),
-	       QObject::AlignLeft, post);
+	       ::Qt::AlignLeft, post);
     
     if (fp != 0) {
       draw_text(r.x() + post_offset.x(),
 		r.y() + post_offset.y(),
-		r.width(), r.height(), QObject::AlignLeft,
+		r.width(), r.height(), ::Qt::AlignLeft,
 		"<<postcondition>>", p.font(), fp);
       draw_text(r.x() + post_offset.x() + post_width,
 		r.y() + post_offset.y(),
 		r.width(), r.height(),
-		QObject::AlignLeft, post, p.font(), fp);
+		::Qt::AlignLeft, post, p.font(), fp);
     }
   }
       

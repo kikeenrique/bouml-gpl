@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -160,8 +160,8 @@ void ActivityActionCanvas::update() {
   s = s.stripWhiteSpace();
   
   align = (s.find('\n') != -1)
-    ? (int) QObject::AlignLeft | QObject::AlignVCenter
-    : (int) QObject::AlignCenter | QObject::WordBreak;
+    ? (int) ::Qt::AlignLeft | ::Qt::AlignVCenter
+    : (int) ::Qt::AlignCenter | ::Qt::WordBreak;
   
   force_pins_arround();
   check_parameter_sets_position();
@@ -460,8 +460,8 @@ void ActivityActionCanvas::draw(QPainter & p) {
   QColor bckgrnd = p.backgroundColor();
   
   p.setBackgroundMode((used_color == UmlTransparent)
-		      ? QObject::TransparentMode
-		      : QObject::OpaqueMode);
+		      ? ::Qt::TransparentMode
+		      : ::Qt::OpaqueMode);
 
   QColor co = color(used_color);
   
@@ -484,8 +484,8 @@ void ActivityActionCanvas::draw(QPainter & p) {
       
       int t = (r.y() + r.bottom() - margin)/2;
       
-      p.setPen(QObject::SolidLine);
-      p.setBackgroundMode(QObject::TransparentMode);
+      p.setPen(::Qt::SolidLine);
+      p.setBackgroundMode(::Qt::TransparentMode);
       p.drawLine(r.right() - margin, t, r.right() - 1, t);
       p.lineTo(r.right() - margin - 1, t + margin);
       p.lineTo(r.right() - 1, t + margin);
@@ -542,10 +542,10 @@ void ActivityActionCanvas::draw(QPainter & p) {
 	  b.setPoint(3, r.x() + shadow, r.bottom() + shadow);
 	  b.setPoint(4, r.x() + margin + shadow, (r.y() + r.bottom())/2 + shadow);
 	  b.setPoint(5, r.x() + shadow, r.y() + shadow);
-	  p.setBrush(QObject::darkGray);
-	  p.setPen(QObject::NoPen);
+	  p.setBrush(::Qt::darkGray);
+	  p.setPen(::Qt::NoPen);
 	  p.drawPolygon(b, TRUE, 0, 5);
-	  p.setPen(QObject::SolidLine);
+	  p.setPen(::Qt::SolidLine);
 
 	  if (fp != 0)
 	    draw_shadow(fp, b);
@@ -595,10 +595,10 @@ void ActivityActionCanvas::draw(QPainter & p) {
 	  b.setPoint(3, r.right() - margin + shadow, r.bottom() + shadow);
 	  b.setPoint(4, r.x() + shadow, r.bottom() + shadow);
 	  b.setPoint(5, r.x() + shadow, r.y() + shadow);
-	  p.setBrush(QObject::darkGray);
-	  p.setPen(QObject::NoPen);
+	  p.setBrush(::Qt::darkGray);
+	  p.setPen(::Qt::NoPen);
 	  p.drawPolygon(b, TRUE, 0, 5);
-	  p.setPen(QObject::SolidLine);
+	  p.setPen(::Qt::SolidLine);
 
 	  if (fp != 0)
 	    draw_shadow(fp, b);
@@ -620,17 +620,17 @@ void ActivityActionCanvas::draw(QPainter & p) {
     if ((used_color != UmlTransparent) && (shadow != 0)) {
       r.setRight(r.right() - shadow);
       r.setBottom(r.bottom() - shadow);
-      p.setPen(QObject::NoPen);
-      p.setBrush(QObject::darkGray);
+      p.setPen(::Qt::NoPen);
+      p.setBrush(::Qt::darkGray);
       p.drawRoundRect(r.left() + shadow, r.top() + shadow, r.width(), r.height());
       
       if (fp != 0)
 	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
 		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
-		QObject::darkGray.rgb()&0xffffff,
+		::Qt::darkGray.rgb()&0xffffff,
 		r.left() + shadow, r.top() + shadow, r.width() - 1, r.height() - 1);
 
-      p.setPen(QObject::SolidLine);
+      p.setPen(::Qt::SolidLine);
     }
     
     p.setBrush(co);

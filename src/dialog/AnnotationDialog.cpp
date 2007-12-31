@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -83,9 +83,10 @@ AnnotationDialog::AnnotationDialog(QString & s, bool visit)
     cb->setSizePolicy(sp);
     cb->setAutoCompletion(TRUE);
     
-    cb->insertStrList(DefaultAnnotations, 
-		      sizeof(DefaultAnnotations)/sizeof(*DefaultAnnotations),
-		      -1);
+    for (int i = 0;
+	 i != sizeof(DefaultAnnotations)/sizeof(*DefaultAnnotations);
+	 i += 1)
+      cb->insertItem(DefaultAnnotations[i]);
     
     QStringList list;
     

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -105,7 +105,7 @@ void SdSelfMsgCanvas::draw(QPainter & p) {
   FILE * fp = svg();
   
   if (itsType == UmlSelfReturnMsg)
-    p.setPen(QObject::DotLine);
+    p.setPen(::Qt::DotLine);
   
   p.drawLine(r.left() + 1, r.top() + 1, r.right() - 1, r.top() + 1);
 #ifdef WIN32
@@ -142,7 +142,7 @@ void SdSelfMsgCanvas::draw(QPainter & p) {
   }
   else {
     if (itsType == UmlSelfReturnMsg)
-      p.setPen(QObject::SolidLine);
+      p.setPen(::Qt::SolidLine);
     
     p.lineTo(r.left() + 1 + ah, he + ah);
     p.drawLine(r.left() + 1, he, r.left() + 1 + ah, he - ah);

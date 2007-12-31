@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -168,28 +168,28 @@ bool BrowserNode::load(QDir & dir) {
 void BrowserNode::key_event(QKeyEvent * e) {
   // control or alt is pressed with p, u or a
   QApplication::setOverrideCursor(Qt::waitCursor);
-  if (e->state() == QObject::ControlButton) {
+  if (e->state() == ::Qt::ControlButton) {
     switch (e->key()) {
-    case QObject::Key_A:
+    case ::Qt::Key_A:
       assign(user_id());
       break;
-    case QObject::Key_P:
+    case ::Qt::Key_P:
       assign(0);
       break;
-    default: // QObject::Key_U
+    default: // ::Qt::Key_U
       assign(-1);
       break;
     }
   }
   else {
     switch (e->key()) {
-    case QObject::Key_A:
+    case ::Qt::Key_A:
       assign_all(user_id());
       break;
-    case QObject::Key_P:
+    case ::Qt::Key_P:
       assign_all(0);
       break;
-    default: // QObject::Key_U
+    default: // ::Qt::Key_U
       assign_all(-1);
       break;
     }

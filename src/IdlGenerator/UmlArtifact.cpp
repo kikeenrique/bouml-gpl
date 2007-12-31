@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -221,7 +221,7 @@ void UmlArtifact::generate_text() {
   
   if (srcdef.isEmpty()) {
     if (verbose())
-      UmlCom::trace(QCString("<hr><font face=helvetica><i>")
+      UmlCom::trace(QCString("<hr><font face=helvetica>artifact <i>")
 		    + name() + "</i> has an empty IDL definition</font><br>");
     return;
   }

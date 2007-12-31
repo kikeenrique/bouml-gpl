@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -226,6 +226,33 @@ void remove_preprocessor(QCString & s)
       s.remove(index, index3 - index);
   }
 }
+
+
+QString java_multiplicity(QString m)
+{
+  QString r;
+
+  if (! m.isEmpty()) {
+    if (*m != '[')
+      r += "[]";
+    else {
+      for (unsigned index = 0; index != m.length(); index += 1) {
+	switch (m.at(index).latin1()) {
+	case '[':
+	  r += '[';
+	  break;
+	case ']':
+	  r += ']';
+	default:
+	  break;
+	}
+      }
+    }
+  }
+  
+  return r;
+}
+
 //
 
 static QTextCodec * Codec;
@@ -293,4 +320,3 @@ QCString fromUnicode(const QString & s)
   else
     return Codec->fromUnicode(s);
 }
-

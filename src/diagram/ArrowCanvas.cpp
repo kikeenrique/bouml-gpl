@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -379,7 +379,7 @@ void ArrowCanvas::drawShape(QPainter & p) {
   if (! visible() || (beginp == endp)) 
     return;
   
-  p.setBackgroundMode(QObject::OpaqueMode);
+  p.setBackgroundMode(::Qt::OpaqueMode);
 
   FILE * fp = svg();
   const char * dash = "";
@@ -429,7 +429,7 @@ void ArrowCanvas::drawShape(QPainter & p) {
 	{
 	  QBrush brsh = p.brush();
 	  
-	  p.setBrush(white);
+	  p.setBrush(::Qt::white);
 	  p.drawPolygon(poly/*, TRUE*/);
 	  p.setBrush(brsh);
 
@@ -442,7 +442,7 @@ void ArrowCanvas::drawShape(QPainter & p) {
 	{
 	  QBrush brsh = p.brush();
 	  
-	  p.setBrush(black);
+	  p.setBrush(::Qt::black);
 	  p.drawPolygon(poly/*, TRUE*/);
 	  p.setBrush(brsh);
 
@@ -470,9 +470,9 @@ void ArrowCanvas::drawShape(QPainter & p) {
 		endp.x(), endp.y(), arrow[1].x(), arrow[1].y());
       }
     }
-    p.setPen(QObject::DotLine);
+    p.setPen(::Qt::DotLine);
     p.drawLine(beginp, endp);
-    p.setPen(QObject::SolidLine);
+    p.setPen(::Qt::SolidLine);
 
     if (fp != 0)
       fprintf(fp, "\t<line stroke-dasharray=\"4,4\" stroke=\"black\" stroke-opacity=\"1\""
@@ -480,14 +480,14 @@ void ArrowCanvas::drawShape(QPainter & p) {
 	      beginp.x(), beginp.y(), endp.x(), endp.y());
     break;
   case UmlRealize:
-    p.setPen(QObject::DotLine);
+    p.setPen(::Qt::DotLine);
     dash = "stroke-dasharray=\"4,4\" ";
     // no break
   case UmlGeneralisation:
   case UmlInherit:
     if (end->type() != UmlArrowPoint) {
       p.drawLine(beginp, arrow[2]);
-      p.setPen(QObject::SolidLine);
+      p.setPen(::Qt::SolidLine);
       p.drawLine(endp, arrow[0]);
       p.drawLine(endp, arrow[1]);
       p.drawLine(arrow[0], arrow[1]);
@@ -508,7 +508,7 @@ void ArrowCanvas::drawShape(QPainter & p) {
     }
     else {
       p.drawLine(beginp, endp);
-      p.setPen(QObject::SolidLine);
+      p.setPen(::Qt::SolidLine);
       if (fp != 0)
 	fprintf(fp, "\t<line %sstroke=\"black\" stroke-opacity=\"1\""
 		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
@@ -516,9 +516,9 @@ void ArrowCanvas::drawShape(QPainter & p) {
     }
     break;
   case UmlAnchor:
-    p.setPen(QObject::DotLine);
+    p.setPen(::Qt::DotLine);
     p.drawLine(beginp, endp);
-    p.setPen(QObject::SolidLine);
+    p.setPen(::Qt::SolidLine);
 
     if (fp != 0)
       fprintf(fp, "\t<line stroke-dasharray=\"4,4\" stroke=\"black\" stroke-opacity=\"1\""
@@ -586,10 +586,10 @@ void ArrowCanvas::drawShape(QPainter & p) {
   if (selected()) {
     p.fillRect(beginp.x() - SELECT_SQUARE_SIZE/2,
 	       beginp.y() - SELECT_SQUARE_SIZE/2,
-	       SELECT_SQUARE_SIZE, SELECT_SQUARE_SIZE, black);
+	       SELECT_SQUARE_SIZE, SELECT_SQUARE_SIZE, ::Qt::black);
     p.fillRect(endp.x() - SELECT_SQUARE_SIZE/2,
 	       endp.y() - SELECT_SQUARE_SIZE/2,
-	       SELECT_SQUARE_SIZE, SELECT_SQUARE_SIZE, black);
+	       SELECT_SQUARE_SIZE, SELECT_SQUARE_SIZE, ::Qt::black);
   }
 }
 

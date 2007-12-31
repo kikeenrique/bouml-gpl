@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -75,7 +75,7 @@ void FragmentCanvas::draw(QPainter & p) {
   QRect r = rect();
   QColor bckgrnd = p.backgroundColor();
 
-  p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
+  p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
 
   QColor co = color(used_color);
   FILE * fp = svg();
@@ -104,9 +104,9 @@ void FragmentCanvas::draw(QPainter & p) {
   r.setWidth(w + h);
   r.setHeight(fm.height() + h);
   if (!name.isEmpty())
-    p.drawText(r, QObject::AlignCenter, name);
+    p.drawText(r, ::Qt::AlignCenter, name);
   if (fp != 0)
-    draw_text(r, QObject::AlignCenter, name,
+    draw_text(r, ::Qt::AlignCenter, name,
 	      p.font(), fp);
   
   h = (fm.height() + h)/2;

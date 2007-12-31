@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -85,7 +85,7 @@ void ArrowPointCanvas::draw(QPainter & p) {
   r.setWidth(r.width() - 1);
   r.setHeight(r.height() - 1);
   
-  p.fillRect(r, QObject::black);
+  p.fillRect(r, ::Qt::black);
   
   if (selected())
     show_mark(p, rect());

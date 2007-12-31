@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -166,7 +166,7 @@ void LabelCanvas::move_outside(QRect r, double angle) {
 void LabelCanvas::draw(QPainter & p) {
   if (! visible()) return;
   
-  p.setBackgroundMode(QObject::TransparentMode);
+  p.setBackgroundMode(::Qt::TransparentMode);
   
   QRect r = boundingRect();
   FILE * fp = svg();
@@ -193,9 +193,9 @@ void LabelCanvas::draw(QPainter & p) {
   else if (index != -1) {
     // label then triangle under
     p.setFont(font());
-    p.drawText(rect(), QObject::AlignHCenter, text().mid(0, index - 1));
+    p.drawText(rect(), ::Qt::AlignHCenter, text().mid(0, index - 1));
     if (fp != 0)
-      draw_text(rect(), QObject::AlignHCenter, text().mid(0, index - 1),
+      draw_text(rect(), ::Qt::AlignHCenter, text().mid(0, index - 1),
 		p.font(), fp);
 
     QFontMetrics fm(font());
@@ -218,7 +218,7 @@ void LabelCanvas::draw(QPainter & p) {
     if (text().find('\n') != -1) {
       p.setFont(font());
       
-      int flg = (multi_lines_centered) ? AlignHCenter : 0;
+      int flg = (multi_lines_centered) ? ::Qt::AlignHCenter : 0;
       
       p.drawText(rect(), flg, text().mid(0, index - 1));
       if (fp != 0)

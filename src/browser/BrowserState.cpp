@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -151,7 +151,7 @@ BrowserState * BrowserState::add_state(BrowserNode * future_parent,
 }
 
 BrowserState * BrowserState::add_state(BrowserNode * future_parent,
-				       const char * name)
+				       QString name)
 {
   return new BrowserState(name, future_parent, new StateData());
 }

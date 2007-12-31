@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,7 +39,7 @@ SelectAreaCanvas::SelectAreaCanvas(int x, int y, int width, int height,
 void SelectAreaCanvas::drawShape(QPainter & p) {
   if (! visible()) return;
   
-  p.setPen(QObject::DotLine);
+  p.setPen(::Qt::DotLine);
   QCanvasRectangle::drawShape(p);
-  p.setPen(QObject::SolidLine);
+  p.setPen(::Qt::SolidLine);
 }

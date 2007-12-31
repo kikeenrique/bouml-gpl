@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -99,7 +99,7 @@ void SdMsgCanvas::draw(QPainter & p) {
   FILE * fp = svg();
   
   if (itsType == UmlReturnMsg)
-    p.setPen(QObject::DotLine);
+    p.setPen(::Qt::DotLine);
   
   p.drawLine(r.left(), v, r.right(), v);
 
@@ -138,7 +138,7 @@ void SdMsgCanvas::draw(QPainter & p) {
     }
     break;
   case UmlReturnMsg:
-    p.setPen(QObject::SolidLine);
+    p.setPen(::Qt::SolidLine);
     // no break !
   default:
     {

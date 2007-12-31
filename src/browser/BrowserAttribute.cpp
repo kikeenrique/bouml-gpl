@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -124,6 +124,15 @@ void BrowserAttribute::delete_it() {
     set_oper->delete_it();
 }
 
+void BrowserAttribute::init()
+{
+  its_default_stereotypes.clear();
+  its_default_stereotypes.append("list");
+  its_default_stereotypes.append("set");
+  its_default_stereotypes.append("vector");
+  its_default_stereotypes.append("map");
+}
+
 void BrowserAttribute::set_get_oper(BrowserOperation * op) {
   if (get_oper == 0) {
     get_oper = op;
@@ -144,7 +153,8 @@ void BrowserAttribute::update_get_oper() {
 			  def->get_idldecl(), 
 			  def->get_isa_const_attribute(),
 			  def->get_isa_class_attribute(),
-			  def->get_type());
+			  def->get_type(), def->get_multiplicity(),
+			  def->get_stereotype());
 }
 
 void BrowserAttribute::update_set_oper() {
@@ -153,7 +163,8 @@ void BrowserAttribute::update_set_oper() {
 			  def->get_idldecl(), 
 			  def->get_isa_const_attribute(),
 			  def->get_isa_class_attribute(),
-			  def->get_type());
+			  def->get_type(), def->get_multiplicity(),
+			  def->get_stereotype());
 }
 
 void BrowserAttribute::add_get_oper() {

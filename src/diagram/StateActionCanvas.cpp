@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -231,8 +231,8 @@ void StateActionCanvas::draw(QPainter & p) {
   const int shadow = the_canvas()->shadow();
   
   p.setBackgroundMode((used_color == UmlTransparent)
-		      ? QObject::TransparentMode
-		      : QObject::OpaqueMode);
+		      ? ::Qt::TransparentMode
+		      : ::Qt::OpaqueMode);
 
   QColor co = color(used_color);
   FILE * fp = svg();
@@ -243,8 +243,8 @@ void StateActionCanvas::draw(QPainter & p) {
   p.setBackgroundColor(co);
   
   p.setBackgroundMode((used_color != UmlTransparent)
-		      ? QObject::OpaqueMode
-		      : QObject::TransparentMode);
+		      ? ::Qt::OpaqueMode
+		      : ::Qt::TransparentMode);
   
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   
@@ -280,10 +280,10 @@ void StateActionCanvas::draw(QPainter & p) {
 	b.setPoint(3, r.right() - hh + shadow, r.bottom() + shadow);
 	b.setPoint(4, r.left() + shadow, r.bottom() + shadow);
 	b.setPoint(5, r.left() + shadow, r.top() + shadow);
-	p.setBrush(QObject::darkGray);
-	p.setPen(QObject::NoPen);
+	p.setBrush(::Qt::darkGray);
+	p.setPen(::Qt::NoPen);
 	p.drawPolygon(b, TRUE, 0, 5);
-	p.setPen(QObject::SolidLine);
+	p.setPen(::Qt::SolidLine);
 
 	if (fp != 0)
 	  draw_shadow(fp, b);
@@ -332,10 +332,10 @@ void StateActionCanvas::draw(QPainter & p) {
 	b.setPoint(3, r.right() + shadow, r.bottom() + shadow);
 	b.setPoint(4, r.left() + shadow, r.bottom() + shadow);
 	b.setPoint(5, r.left() + shadow, r.top() + shadow);
-	p.setBrush(QObject::darkGray);
-	p.setPen(QObject::NoPen);
+	p.setBrush(::Qt::darkGray);
+	p.setPen(::Qt::NoPen);
 	p.drawPolygon(b, TRUE, 0, 5);
-	p.setPen(QObject::SolidLine);
+	p.setPen(::Qt::SolidLine);
 
 	if (fp != 0)
 	  draw_shadow(fp, b);
@@ -359,20 +359,20 @@ void StateActionCanvas::draw(QPainter & p) {
       
 	p.fillRect (r.right(), r.top() + shadow,
 		    shadow, r.height() - 1,
-		    QObject::darkGray);
+		    ::Qt::darkGray);
 	p.fillRect (r.left() + shadow, r.bottom(),
 		    r.width() - 1, shadow,
-		    QObject::darkGray);
+		    ::Qt::darkGray);
 
 	if (fp != 0) {
 	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
 		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		  QObject::darkGray.rgb()&0xffffff,
+		  ::Qt::darkGray.rgb()&0xffffff,
 		  r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
 
 	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
 		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		  QObject::darkGray.rgb()&0xffffff,
+		  ::Qt::darkGray.rgb()&0xffffff,
 		  r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
 	}
       }
@@ -389,9 +389,9 @@ void StateActionCanvas::draw(QPainter & p) {
 
     if (st[0] != 0) {
       r.setTop(r.top() + fm.height() / 2);
-      p.drawText(r, QObject::AlignHCenter, QString("<<") + toUnicode(st) + ">>");
+      p.drawText(r, ::Qt::AlignHCenter, QString("<<") + toUnicode(st) + ">>");
       if (fp != 0)
-	draw_text(r, QObject::AlignHCenter, QString("<<") + toUnicode(st) + ">>",
+	draw_text(r, ::Qt::AlignHCenter, QString("<<") + toUnicode(st) + ">>",
 		  p.font(), fp);
       r.setTop(r.top() + 3*fm.height()/2);
     }
@@ -400,9 +400,9 @@ void StateActionCanvas::draw(QPainter & p) {
   r.setLeft(r.left() + (r.width()
 			+ (int) (8 * the_canvas()->zoom())
 			- mw)/2 + 1);
-  p.drawText(r, QObject::AlignVCenter, s);
+  p.drawText(r, ::Qt::AlignVCenter, s);
   if (fp != 0) {
-    draw_text(r, QObject::AlignVCenter, s,
+    draw_text(r, ::Qt::AlignVCenter, s,
 	      p.font(), fp);
     fputs("</g>\n", fp);
   }

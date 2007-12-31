@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -320,7 +320,7 @@ void ActivityObjectCanvas::draw(QPainter & p) {
     if (fp != 0)
       fputs("<g>\n", fp);
 
-    p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
+    p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
     
     QColor co = color(used_color);
     
@@ -333,20 +333,20 @@ void ActivityObjectCanvas::draw(QPainter & p) {
 	
 	p.fillRect (r.right(), r.top() + shadow,
 		    shadow, r.height() - 1,
-		    QObject::darkGray);
+		    ::Qt::darkGray);
 	p.fillRect (r.left() + shadow, r.bottom(),
 		    r.width() - 1, shadow,
-		    QObject::darkGray);
+		    ::Qt::darkGray);
 
 	if (fp != 0) {
 	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
 		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		  QObject::darkGray.rgb()&0xffffff,
+		  ::Qt::darkGray.rgb()&0xffffff,
 		  r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
 
 	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
 		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		  QObject::darkGray.rgb()&0xffffff,
+		  ::Qt::darkGray.rgb()&0xffffff,
 		  r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
 	}
       }
@@ -371,11 +371,11 @@ void ActivityObjectCanvas::draw(QPainter & p) {
     p.drawRect(r);
 
     p.setFont(the_canvas()->get_font(UmlNormalFont));
-    p.drawText(r.x(), r.y(), r.width(), r.height(), QObject::AlignCenter, str);
+    p.drawText(r.x(), r.y(), r.width(), r.height(), ::Qt::AlignCenter, str);
         
     if (fp != 0) {
       draw_text(r.x(), r.y(), r.width(), r.height(),
-		QObject::AlignCenter, str, p.font(), fp);
+		::Qt::AlignCenter, str, p.font(), fp);
       fputs("</g>\n", fp);
     }
     

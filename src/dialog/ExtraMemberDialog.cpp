@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -112,7 +112,7 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
   
   new QLabel(grid);
   QButtonGroup * gp = 
-    new QButtonGroup(1, QGroupBox::Horizontal, QString::null, grid);
+    new QButtonGroup(1, Qt::Horizontal, QString::null, grid);
   inline_cb = new QCheckBox("inline", gp);
   inline_cb->setDisabled(visit);
   if (ex->cpp_inline)

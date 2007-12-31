@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -268,11 +268,13 @@ void UmlRelation::generate_decl(aVisibility & current_visibility, QTextOStream &
 	}
 	else if (!strncmp(p, "${multiplicity}", 15)) {
 	  p += 15;
+      
+	  const QCString & m = multiplicity();
 	  
-	  if (*((const char *) multiplicity()) == '[')
-	    f_h << multiplicity();
+	  if (!m.isEmpty() && (*((const char *) m) == '['))
+	    f_h << m;
 	  else
-	    f_h << '[' << multiplicity() << ']';
+	    f_h << '[' << m << ']';
 	}
 	else if (!strncmp(p, "${stereotype}", 13)) {
 	  p += 13;
@@ -393,11 +395,13 @@ void UmlRelation::generate_def(QTextOStream & f, QCString indent, bool h,
 	}
 	else if (!strncmp(p, "${multiplicity}", 15)) {
 	  p += 15;
+      
+	  const QCString & m = multiplicity();
 	  
-	  if (*((const char *) multiplicity()) == '[')
-	    f << multiplicity();
+	  if (!m.isEmpty() && (*((const char *) m) == '['))
+	    f << m;
 	  else
-	    f << '[' << multiplicity() << ']';
+	    f << '[' << m << ']';
 	}
 	else if (!strncmp(p, "${stereotype}", 13)) {
 	  p += 13;

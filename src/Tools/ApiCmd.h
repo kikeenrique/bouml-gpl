@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -240,6 +240,11 @@ enum OnInstanceCmd {
   
   // api 35
   setIsForceBodyGenCmd,
+  
+  // api 37
+  setCppContextualBodyIndent,
+  setJavaContextualBodyIndent,
+  setPhpContextualBodyIndent,
     
   setUserCmd = 252, // not in plug-outs managed through bouml
   moveInCmd = 253,  // not in plug-outs managed through bouml

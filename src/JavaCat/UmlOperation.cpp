@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -105,17 +105,6 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
       // use a definition where ${body] is not indented
       def = "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{\n${body}}\n";
       index = def.find("${type}");
-    }
-    else {
-      // unindent ${body}
-      int index2 = def.find("${body}", index);
-      int index3 = index2;
-      
-      while ((def[--index3] == ' ') || (def[index3] == '\t'))
-	;
-      
-      def.remove((unsigned) (index3 + 1),
-		 (unsigned) (index2 - index3 - 1));
     }
     
     if (!array.isEmpty())
@@ -303,6 +292,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
       e.truncate(ln);
       
       op->set_JavaBody(e);
+      op->set_JavaContextualBodyIndent(FALSE);
     }
 #endif
   }
@@ -348,7 +338,11 @@ bool UmlOperation::read_param(Class * container, unsigned rank,
     return FALSE;
   
   for (;;) {
-    if (s == "final")
+    if (s.isEmpty()) {
+      Lex::premature_eof();
+      return FALSE;
+    }
+    else if (s == "final")
       finalp = TRUE;
     else if ((s == "void") || (s == "byte") || (s == "char") ||
 	     (s == "short") || (s == "int") || (s == "long") ||

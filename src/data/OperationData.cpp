@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -56,9 +56,10 @@ OperationData::OperationData(int id)
       isa_class_operation(FALSE), is_abstract(FALSE),
       force_body_gen(FALSE), is_volatile(FALSE),
       cpp_const(FALSE), cpp_friend(FALSE), cpp_virtual(FALSE),
-      cpp_inline(FALSE), cpp_get_set_frozen(FALSE),
-      java_final(FALSE), java_synchronized(FALSE), java_get_set_frozen(FALSE),
-      php_final(FALSE), php_get_set_frozen(FALSE),
+      cpp_inline(FALSE), cpp_get_set_frozen(FALSE), cpp_indent_body(TRUE),
+      java_final(FALSE), java_synchronized(FALSE),
+      java_get_set_frozen(FALSE), java_indent_body(TRUE),
+      php_final(FALSE), php_get_set_frozen(FALSE), php_indent_body(TRUE),
       idl_oneway(FALSE), idl_get_set_frozen(FALSE),
       nparams(0), nexceptions(0), params(0), exceptions(0) {
 }
@@ -73,12 +74,20 @@ OperationData::OperationData(OperationData * model, BrowserNode * bn)
       force_body_gen(model->force_body_gen),
       is_volatile(model->is_volatile),
       cpp_const(model->cpp_const),
-      cpp_friend(model->cpp_friend), cpp_virtual(model->cpp_virtual),
-      cpp_inline(model->cpp_inline), cpp_get_set_frozen(model->cpp_get_set_frozen),
-      java_final(model->java_final), java_synchronized(model->java_synchronized),
+      cpp_friend(model->cpp_friend),
+      cpp_virtual(model->cpp_virtual),
+      cpp_inline(model->cpp_inline),
+      cpp_get_set_frozen(model->cpp_get_set_frozen),
+      cpp_indent_body(model->cpp_indent_body),
+      java_final(model->java_final),
+      java_synchronized(model->java_synchronized),
       java_get_set_frozen(model->java_get_set_frozen),
-      php_final(model->php_final), php_get_set_frozen(model->php_get_set_frozen),
-      idl_oneway(model->idl_oneway), idl_get_set_frozen(model->idl_get_set_frozen), 
+      java_indent_body(model->java_indent_body),
+      php_final(model->php_final),
+      php_get_set_frozen(model->php_get_set_frozen),
+      php_indent_body(model->php_indent_body),
+      idl_oneway(model->idl_oneway),
+      idl_get_set_frozen(model->idl_get_set_frozen), 
       nparams(model->nparams),
       nexceptions(model->nexceptions),
       constraint(model->constraint),
@@ -608,8 +617,9 @@ void OperationData::update_cpp_get_of(QCString & decl, QCString & def,
   }
   else {  
     int index2;
-    bool has_multiplicity;
-    QString mult;
+    bool has_multiplicity = FALSE;
+    bool const_mult_value = FALSE;
+    QString next_mult;
     QString type_spec_name_spec = attcpp_decl;
     QString type_spec_name;
     bool has_stereotype = (attcpp_decl.find("${stereotype}") != -1);
@@ -619,19 +629,30 @@ void OperationData::update_cpp_get_of(QCString & decl, QCString & def,
     
     if ((index = type_spec_name_spec.find("${multiplicity}")) != -1) {
       type_spec_name_spec.remove(index, 15);
-      if ((index = multiplicity.find(']')) != -1) {
-	mult = QString(")") + multiplicity.right(index + 1);
+      
+      if (! multiplicity.isEmpty()) {
+	next_mult = "${const})";
+	
+	if (*((const char *) multiplicity) != '[')
+	  multiplicity = "[" + multiplicity + "]";
+	else if (((index = multiplicity.find(']')) != -1) &&
+		 (index != (int) (multiplicity.length() - 1)))
+	  // several dims
+	  next_mult += multiplicity.mid(index + 1);
+	
 	has_multiplicity = TRUE;
       }
-      else
-	has_multiplicity = FALSE;
     }
-    else
-      has_multiplicity = FALSE;
     
     if ((index = type_spec_name_spec.find("${const}")) != -1) {
-      if (attis_const || GenerationSettings::cpp_default_get_value_const())
-	type_spec_name_spec.replace(index, 8, "const ");
+      if (attis_const || GenerationSettings::cpp_default_get_value_const()) {
+	if (has_multiplicity) {
+	  const_mult_value = TRUE;
+	  type_spec_name_spec.remove(index, 8);
+	}
+	else
+	  type_spec_name_spec.replace(index, 8, "const ");
+      }
       else
 	type_spec_name_spec.remove(index, 8);
     }
@@ -640,8 +661,20 @@ void OperationData::update_cpp_get_of(QCString & decl, QCString & def,
     
     QString type_spec_oper_name = type_spec_name_spec;
     
-    if ((index = type_spec_oper_name.find("${name}")) != -1)
+    if ((index = type_spec_oper_name.find("${name}")) != -1) {
+      if (const_mult_value) {
+	if (type_spec_oper_name[index].isLetterOrNumber()) {
+	  type_spec_oper_name = type_spec_name_spec.insert(index, " const ");
+	  index += 7;
+	}
+	else {
+	  type_spec_oper_name = type_spec_name_spec.insert(index, "const ");
+	  index += 6;
+	}
+      }
+      
       type_spec_oper_name.replace(index, 7, (has_multiplicity) ? "(* $$" : "$$");
+    }
     
     QCString d = (const char *) GenerationSettings::cpp_default_oper_decl();
     
@@ -656,8 +689,12 @@ void OperationData::update_cpp_get_of(QCString & decl, QCString & def,
 	d.replace(index, 2, (has_stereotype) ? "& ${name}" : "${name}");
       
       if (has_multiplicity) {
-	if ((index = d.find("${)}")) != -1)
-	  d.insert(index + 4, mult);
+	if ((index = d.find("${const}")) != -1)
+	  d.remove(index, 8);
+
+	if ((index = d.find("${)}")) != -1) {	  
+	  d.insert(index + 4, (const char *) next_mult);
+	}
 	else
 	  d = 0;
       }
@@ -693,8 +730,11 @@ void OperationData::update_cpp_get_of(QCString & decl, QCString & def,
 	d.replace(index, 2, "${name}");
       
       if (has_multiplicity) {
+	if ((index = d.find("${const}")) != -1)
+	  d.remove(index, 8);
+	
 	if ((index = d.find("${)}")) != -1)
-	  d.insert(index + 4, mult);
+	  d.insert(index + 4, (const char *) next_mult);
 	else
 	  d = 0;
       }
@@ -716,7 +756,7 @@ void OperationData::update_cpp_get_of(QCString & decl, QCString & def,
 }
 
 void OperationData::update_java_get_of(QCString & def, const QString & attr_name,
-				       QString attjava_decl)
+				       QString attjava_decl, QString multiplicity)
 {
   attjava_decl = attjava_decl.stripWhiteSpace();
   
@@ -748,7 +788,7 @@ void OperationData::update_java_get_of(QCString & def, const QString & attr_name
   QString attr_name_spec = extract_name(attjava_decl);
   
   if (attr_name_spec.isEmpty())
-    def = QString::null;
+    def = "";
   else {
     int index2;
     QCString d = (const char *) GenerationSettings::java_default_oper_def();
@@ -768,6 +808,9 @@ void OperationData::update_java_get_of(QCString & def, const QString & attr_name
       
       if ((index = d.find("$$")) != -1)
 	d.replace(index, 2, "${name}");
+      
+      if ((index = d.find("${multiplicity}")) != -1)
+	d.replace(index, 15, java_multiplicity(multiplicity));
       
       if ((index = d.find("${body}")) != -1) {
 	QString indent;
@@ -812,7 +855,7 @@ void OperationData::update_php_get_of(QCString & def, const QString & attr_name,
   QString attr_name_spec = extract_name(attphp_decl);
   
   if (attr_name_spec.isEmpty())
-    def = QString::null;
+    def = "";
   else {
     QCString d = (const char *) GenerationSettings::php_default_oper_def();
     QString type_spec_name = attphp_decl;
@@ -909,11 +952,14 @@ void OperationData::update_get_of(const QString & attr_name,
 				  QString attphp_decl, QString attidl_decl,
 				  bool attis_const, bool attis_class_member,
 				  const AType & cl, QString multiplicity,
-				  QString relstereotype, bool create, bool update) {
+				  QString relstereotype, bool create) {
   set_return_type(cl);
   isa_class_operation = attis_class_member;
   stereotype = relstereotype.stripWhiteSpace();
   is_get_or_set = TRUE;
+  
+  if (create)
+    force_body_gen = TRUE;
   
   QString st = ((BrowserClass *) browser_node->parent())->get_stereotype();
   QCString decl;
@@ -921,7 +967,7 @@ void OperationData::update_get_of(const QString & attr_name,
   
   // C++
   
-  if (!update || !cpp_get_set_frozen) {
+  if (!cpp_get_set_frozen) {
     if (ClassDialog::cpp_stereotype(st) != "enum") {
       if (create) {
 	if (cpp_name_spec.isEmpty())
@@ -955,10 +1001,10 @@ void OperationData::update_get_of(const QString & attr_name,
     uml_visibility = GenerationSettings::javaphp_default_get_visibility();
   }
 
-  if (!update || !java_get_set_frozen) {
-    update_java_get_of(def, attr_name, attjava_decl);
+  if (!java_get_set_frozen) {
+    update_java_get_of(def, attr_name, attjava_decl, multiplicity);
     if (def.isEmpty())
-      java_def.assign(QString::null, TRUE);
+      java_def.assign("", TRUE);
     else
       java_def.assign(def, FALSE);
   }
@@ -970,16 +1016,16 @@ void OperationData::update_get_of(const QString & attr_name,
     php_final = GenerationSettings::php_default_get_final();  
   }
 
-  if (!update || !php_get_set_frozen) {
+  if (!php_get_set_frozen) {
     update_php_get_of(def, attr_name, attphp_decl);
     if (def.isEmpty())
-      php_def.assign(QString::null, TRUE);
+      php_def.assign("", TRUE);
     else
       php_def.assign(def, FALSE);
   }
   
   // Idl
-  if (!update || !idl_get_set_frozen) {
+  if (!idl_get_set_frozen) {
     if (ClassDialog::idl_stereotype(st) != "enum") {
       if (create && idl_name_spec.isEmpty())
 	idl_name_spec = GenerationSettings::idl_default_get_name();
@@ -993,11 +1039,83 @@ void OperationData::update_get_of(const QString & attr_name,
   }
 }
 
+static QCString cpp_copy(const QCString attr_full_name, const QCString param_name,
+			 QCString multiplicity, const QCString elt_type,
+			 QCString indent)
+{
+  int var_index = elt_type.find("$$");
+  
+  // note : param name is value or new_value
+  QCString src_pfix;
+  QCString tgt_pfix;
+  QCString index_pfix;
+      
+  QCString s4 = attr_full_name.left(4);
+  
+  if ((s4 == "src_") || (s4 == "tgt_") || (s4 == "pos_")) {
+    src_pfix = "src";
+    tgt_pfix = "tgt";
+    index_pfix = "pos";
+  }
+  else {
+    src_pfix = "src_";
+    tgt_pfix = "tgt_";
+    index_pfix = "pos_";
+  }
+  
+  QCString r;
+  QCString srank;
+  QCString close;
+  QCString src_prev = param_name;
+  QCString tgt_prev = attr_full_name;
+  int rank = 0;
+  
+  do {
+    int index;
+    
+    if ((*((const char *) multiplicity) != '[') ||
+	((index = multiplicity.find("]")) == -1))
+      return "#error unvalid multiplicity part \"" + QCString(multiplicity) + "\"\n";
+    
+    QCString n = "(" + multiplicity.mid(1, index - 1) + ")";
+    
+    multiplicity = multiplicity.mid(index + 1).stripWhiteSpace();
+    
+    QCString s;
+    
+    srank.setNum(rank);
+    
+    s = elt_type;
+    s.replace(var_index, 2, src_pfix + srank);
+    s.replace(s.find("%%"), 2, multiplicity);
+    r += indent + s + " = " + src_prev + ";\n";
+    src_prev = "*" + src_pfix + srank;
+    
+    s = elt_type;
+    s.replace(var_index, 2, tgt_pfix + srank);
+    s.replace(s.find("%%"), 2, multiplicity);
+    r += indent + s + " = " + tgt_prev + ";\n";
+    tgt_prev = "*" + tgt_pfix + srank;
+    
+    r += "\n" + indent + "for (int " + index_pfix + srank + " = " + n +
+      "; " + index_pfix + srank + "--; " + src_pfix + srank + " += 1, "
+	+ tgt_pfix + srank + " += 1) {\n";
+    
+    close = indent + "}\n" + close;
+    indent += "  ";
+    rank += 1;
+  } while (!multiplicity.isEmpty());
+  
+  r += indent + "*" + tgt_pfix + srank + " = *" +
+    src_pfix + srank + ";\n" + close;
+  
+  return r;
+}
+
 void OperationData::update_cpp_set_of(QCString & decl, QCString & def,
 				      const QString & attr_name,
 				      QString attcpp_decl, bool attis_const, 
-				      QString multiplicity)
-{
+				      QString multiplicity) {
   attcpp_decl = attcpp_decl.stripWhiteSpace();
   
   int index;
@@ -1029,14 +1147,20 @@ void OperationData::update_cpp_set_of(QCString & decl, QCString & def,
     bool has_stereotype = (attcpp_decl.find("${stereotype}") != -1);
     bool byref = GenerationSettings::cpp_default_set_param_ref();
     QString arg_spec = attcpp_decl;
-    bool has_multiplicity;
+    QString elt_type;
+    bool has_multiplicity = FALSE;
     
     if ((index = arg_spec.find("${multiplicity}")) != -1) {
-      arg_spec.replace(index, 15, multiplicity);
-      has_multiplicity = TRUE;
+      if (! multiplicity.isEmpty()) {     
+	if (*((const char *) multiplicity) != '[')
+	  multiplicity = "[" + multiplicity + "]";
+      
+	elt_type = arg_spec;
+	elt_type.replace(index, 15, "%%");
+	arg_spec.replace(index, 15, multiplicity);
+	has_multiplicity = TRUE;
+      }
     }
-    else
-      has_multiplicity = FALSE;
     
     if (byref && ((index = arg_spec.find("${type}")) != -1)) {
       // don't add ref for a pointer or a ref
@@ -1063,10 +1187,21 @@ void OperationData::update_cpp_set_of(QCString & decl, QCString & def,
 	arg_spec.remove(index, 8);
     }
     
+    if (has_multiplicity) {
+      elt_type.replace(elt_type.find(attr_name_spec),
+		       attr_name_spec.length(), "(* $$)");
+      
+      if ((index = elt_type.find("${type}")) != -1)
+	elt_type.replace(index, 7, "${t0}");
+      
+      if ((index = elt_type.find("${const}")) != -1)
+	elt_type.remove(index, 8);
+    }
+    
     QCString d = (const char *) GenerationSettings::cpp_default_oper_decl();
     
     if ((index = d.find("${)}")) != -1) {
-      d.insert(index, arg_spec);
+      d.insert(index, (const char *) arg_spec);
       
       if ((index = d.find("${abstract}")) != -1)
 	d.remove(index, 11);
@@ -1081,7 +1216,7 @@ void OperationData::update_cpp_set_of(QCString & decl, QCString & def,
     d = (const char *) GenerationSettings::cpp_default_oper_def();
     
     if ((index = d.find("${)}")) != -1) {
-      d.insert(index, arg_spec);
+      d.insert(index, (const char *) arg_spec);
       
       QString attr_full_name = attr_name_spec;
       
@@ -1090,17 +1225,40 @@ void OperationData::update_cpp_set_of(QCString & decl, QCString & def,
       
       if ((index = d.find("${body}")) != -1) {
 	QString indent;
-	QString end = (d[index + 7] == '}') ? ";\n" : ";";
 	
-	if (d[index - 1] == '\n')
-	  indent = "  ";
-	
-	if (has_multiplicity)
+	if (has_multiplicity) {
+	  if (d[index - 1] == '\n')
+	    indent = "  ";
+	  else {
+	    int index2 = index;
+	      
+	    while (index2 != 0) {
+	      char c = d[index2 - 1];
+	      
+	      if ((c != ' ') && (c != '\t'))
+		break;
+	      else
+		index2 -= 1;
+	    }
+	    
+	    if (index != index2) {
+	      indent = d.mid(index2, index - index2);
+	      d.remove(index2, index - index2);
+	      index = index2;
+	    }
+	  }
 	  d.replace(index, 7,
-		    indent + "memcpy(" + attr_full_name + ", ${p0}, sizeof(${p0}))" + end);
-	else
+		    cpp_copy(QCString(attr_full_name), params[0].get_name(),
+			     QCString(multiplicity), QCString(elt_type), 
+			     QCString(indent)));
+	}
+	else {
+	  if (d[index - 1] == '\n')
+	    indent = "  ";
+	  
 	  d.replace(index, 7,
-		    indent + attr_full_name + " = ${p0}" + end);
+		    indent + attr_full_name + " = ${p0};\n");
+	}
 	
 	def = d;
       }
@@ -1112,9 +1270,8 @@ void OperationData::update_cpp_set_of(QCString & decl, QCString & def,
   }
 }
 
-void OperationData::update_java_set_of(QCString & def,
-				       const QString & attr_name,
-				       QString attjava_decl)
+void OperationData::update_java_set_of(QCString & def, const QString & attr_name,
+				       QString attjava_decl, QString multiplicity)
 {
   attjava_decl = attjava_decl.stripWhiteSpace();
   
@@ -1166,12 +1323,15 @@ void OperationData::update_java_set_of(QCString & def,
     QCString d = (const char *) GenerationSettings::java_default_oper_def();
     
     if ((index = d.find("${)}")) != -1) {
-      d.insert(index, arg_spec);
+      d.insert(index, (const char *) arg_spec);
       
       QString attr_full_name = attr_name_spec;
       
       if ((index = attr_full_name.find("${name}")) != -1)
 	attr_full_name.replace(index, 7, attr_name);
+      
+      if ((index = d.find("${multiplicity}")) != -1)
+	d.replace(index, 15, java_multiplicity(multiplicity));
 	
       if ((index = d.find("${body}")) != -1) {
 	QString indent;
@@ -1234,7 +1394,7 @@ void OperationData::update_php_set_of(QCString & def,
     QCString d = (const char *) GenerationSettings::php_default_oper_def();
     
     if ((index = d.find("${)}")) != -1) {
-      d.insert(index, arg_spec);
+      d.insert(index, (const char *) arg_spec);
       
       QString attr_full_name = attr_name_spec;
       
@@ -1306,7 +1466,7 @@ void OperationData::update_idl_set_of(QCString & decl, QString attidl_decl,
     if ((index = d.find("${)}")) == -1)
       decl = 0;
     else {
-      d.insert(index, arg_spec);
+      d.insert(index, (const char *) arg_spec);
       if ((index = d.find("${multiplicity}")) != -1)
 	d.replace(index, 15, multiplicity);
       decl = d;
@@ -1319,7 +1479,7 @@ void OperationData::update_set_of(const QString & attr_name,
 				  QString attphp_decl, QString attidl_decl,
 				  bool attis_const, bool attis_class_member,
 				  const AType & cl, QString multiplicity,
-				  QString relstereotype, bool create, bool update) {
+				  QString relstereotype, bool create) {
 //#warning warning si attis_const;
   
   stereotype = relstereotype.stripWhiteSpace();
@@ -1331,15 +1491,19 @@ void OperationData::update_set_of(const QString & attr_name,
     set_n_params(1);
     set_param_dir(0, UmlIn);
   }
+  
   set_param_name(0, (attr_name == "value") ? "new_value" : "value");
   set_param_type(0, cl);
+  
+  if (create)
+    force_body_gen = TRUE;
   
   QString st = ((BrowserClass *) browser_node->parent())->get_stereotype();
   QCString decl;
   QCString def;
   
   // C++
-  if (!update || !cpp_get_set_frozen) {
+  if (!cpp_get_set_frozen) {
     if (ClassDialog::cpp_stereotype(st) != "enum") {
       if (create) {
 	if (cpp_name_spec.isEmpty())
@@ -1354,7 +1518,7 @@ void OperationData::update_set_of(const QString & attr_name,
 			attis_const, multiplicity);
       cpp_decl = decl;
       if (def.isEmpty())
-	cpp_def.assign(QString::null, TRUE);
+	cpp_def.assign("", TRUE);
       else
 	cpp_def.assign(def, FALSE);
     }
@@ -1372,10 +1536,10 @@ void OperationData::update_set_of(const QString & attr_name,
     uml_visibility = GenerationSettings::javaphp_default_set_visibility();
   }
   
-  if (!update || !java_get_set_frozen) {
-    update_java_set_of(def, attr_name, attjava_decl);
+  if (!java_get_set_frozen) {
+    update_java_set_of(def, attr_name, attjava_decl, multiplicity);
     if (def.isEmpty())
-      java_def.assign(QString::null, TRUE);
+      java_def.assign("", TRUE);
     else
       java_def.assign(def, FALSE);
   }
@@ -1387,16 +1551,16 @@ void OperationData::update_set_of(const QString & attr_name,
     php_final = GenerationSettings::php_default_set_final();
   }
   
-  if (!update || !php_get_set_frozen) {
+  if (!php_get_set_frozen) {
     update_php_set_of(def, attr_name, attphp_decl);
     if (def.isEmpty())
-      php_def.assign(QString::null, TRUE);
+      php_def.assign("", TRUE);
     else
       php_def.assign(def, FALSE);
   }
   
   // Idl
-  if (!update || !idl_get_set_frozen) {
+  if (!idl_get_set_frozen) {
     if (ClassDialog::idl_stereotype(st) != "enum") {
       if (create) {
 	if (idl_name_spec.isEmpty())
@@ -1522,6 +1686,8 @@ void OperationData::send_cpp_def(ToolCom * com) {
   com->write_string(cpp_name_spec);
   if (com->api_format() >= 26)
     com->write_bool(cpp_get_set_frozen);
+  if (com->api_format() >= 37)
+    com->write_bool(cpp_indent_body);
 }
     
 void OperationData::send_java_def(ToolCom * com) {
@@ -1535,6 +1701,8 @@ void OperationData::send_java_def(ToolCom * com) {
     com->write_string(java_annotation);
   if (com->api_format() >= 26)
     com->write_bool(java_get_set_frozen);
+  if (com->api_format() >= 37)
+    com->write_bool(java_indent_body);
 }
     
 void OperationData::send_php_def(ToolCom * com) {
@@ -1542,6 +1710,8 @@ void OperationData::send_php_def(ToolCom * com) {
   com->write_bool(php_final);
   com->write_string(php_name_spec);
   com->write_bool(php_get_set_frozen);
+  if (com->api_format() >= 37)
+    com->write_bool(php_indent_body);
 }
 
 void OperationData::send_idl_def(ToolCom * com) {
@@ -1560,7 +1730,7 @@ void OperationData::convert(OperationData * comp, OperationData * art)
   // UmlComponent constructor definition
   comp->cpp_decl =
     "    ${comment}${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlBaseComponent(id, n) {};\n";
-  comp->cpp_def.assign(QString::null, TRUE);
+  comp->cpp_def.assign("", TRUE);
   comp->java_def.assign("  ${comment}${@}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }\n",
 			FALSE);
   
@@ -1792,8 +1962,8 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
 	    return TRUE;
 	  }
     
-	  QString name = com->get_string(args);
-	  QString dflt = com->get_string(args);
+	  QCString name = com->get_string(args);
+	  QCString dflt = com->get_string(args);
 	  AType t;
 	  ParamData * new_params = new ParamData[nparams + 1];
 	  unsigned index;
@@ -1805,7 +1975,7 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
 	  
 	  new_params[index].set_name(name);
 	  new_params[index].set_dir(dir);
-	  new_params[index].set_default_value((dflt.isEmpty()) ? QString::null : dflt);
+	  new_params[index].set_default_value((dflt.isEmpty()) ? "" : (const char *) dflt);
 	  new_params[index].set_type(t);
 	  depend_on(t.type);
 	  
@@ -1830,15 +2000,15 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
 	    return TRUE;
 	  }
 	  
-	  QString name = com->get_string(args);
-	  QString dflt = com->get_string(args);
+	  QCString name = com->get_string(args);
+	  QCString dflt = com->get_string(args);
 	  AType t;
 	  
 	  com->get_type(t, args);
 	  
 	  params[rank].set_name(name);
 	  params[rank].set_dir(dir);
-	  params[rank].set_default_value((dflt.isEmpty()) ? QString::null : dflt);
+	  params[rank].set_default_value((dflt.isEmpty()) ? "" : (const char *) dflt);
 	  set_param_type(rank, t);
 	}
 	break;
@@ -1915,6 +2085,15 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
 	    exceptions[rank - 1] = exceptions[rank];
 	  nexceptions -= 1;
 	}
+	break;
+      case setCppContextualBodyIndent:
+	cpp_indent_body = (*args != 0);
+	break;
+      case setJavaContextualBodyIndent:
+	java_indent_body = (*args != 0);
+	break;
+      case setPhpContextualBodyIndent:
+	php_indent_body = (*args != 0);
 	break;
       default:
 	return BasicData::tool_cmd(com, args, bn, comment);
@@ -2259,6 +2438,12 @@ void OperationData::save_body(QFile & qf, char * modified_bodies, int who) {
   }
 }
 
+void OperationData::raz_body() {
+  cpp_body.length = 
+    java_body.length =
+      php_body.length = 0;
+}
+
 // save all the operations's body of cl, id is its old ident
 void OperationData::import(BrowserClass * cl, int id)
 {
@@ -2300,6 +2485,8 @@ void OperationData::save(QTextStream & st, bool ref, QString & warning) const {
     if (is_volatile)
       st << "volatile ";
     
+    if (! cpp_indent_body)
+      st << "preserve_cpp_body_indent ";
     if (cpp_get_set_frozen)
       st << "cpp_frozen ";   
     if (cpp_const)
@@ -2354,6 +2541,8 @@ void OperationData::save(QTextStream & st, bool ref, QString & warning) const {
     }
 
     nl_indent(st);
+    if (! java_indent_body)
+      st << "preserve_java_body_indent ";
     if (java_get_set_frozen)
       st << "java_frozen ";   
     if (java_final)
@@ -2377,6 +2566,8 @@ void OperationData::save(QTextStream & st, bool ref, QString & warning) const {
     }
     
     nl_indent(st);
+    if (! php_indent_body)
+      st << "preserve_php_body_indent ";
     if (php_get_set_frozen)
       st << "php_frozen ";   
     if (php_final)
@@ -2447,7 +2638,14 @@ void OperationData::read(char * & st, char * & k) {
   }
   else
     is_volatile = FALSE;
-  
+    
+  if (!strcmp(k, "preserve_cpp_body_indent")) {
+    cpp_indent_body = FALSE;
+    k = read_keyword(st);
+  }
+  else
+    cpp_indent_body = TRUE;
+
   if (!strcmp(k, "cpp_frozen")) {
     cpp_get_set_frozen = TRUE;
     k = read_keyword(st);
@@ -2527,7 +2725,7 @@ void OperationData::read(char * & st, char * & k) {
     k = read_keyword(st);
   }
   else
-    constraint = QString::null;
+    constraint = "";
   
   if (!strcmp(k, "cpp_visibility")) {
     cpp_visibility = ::visibility(read_keyword(st));
@@ -2541,7 +2739,7 @@ void OperationData::read(char * & st, char * & k) {
     k = read_keyword(st);
   }
   else
-    cpp_decl = QString::null;
+    cpp_decl = "";
   
   if (!strcmp(k, "cpp_def")) {
     char * d = read_string(st);
@@ -2550,7 +2748,7 @@ void OperationData::read(char * & st, char * & k) {
     k = read_keyword(st);
   }
   else
-    cpp_def.assign(QString::null, TRUE);
+    cpp_def.assign("", TRUE);
 
   if (!strcmp(k, "cpp_name_spec")) {
     is_get_or_set = TRUE;
@@ -2559,8 +2757,15 @@ void OperationData::read(char * & st, char * & k) {
   } 
   else {
     is_get_or_set = FALSE;
-    cpp_name_spec = QString::null;
+    cpp_name_spec = "";
   }
+    
+  if (!strcmp(k, "preserve_java_body_indent")) {
+    java_indent_body = FALSE;
+    k = read_keyword(st);
+  }
+  else
+    java_indent_body = TRUE;
   
   if (!strcmp(k, "java_frozen")) {
     java_get_set_frozen = TRUE;
@@ -2595,14 +2800,14 @@ void OperationData::read(char * & st, char * & k) {
     k = read_keyword(st);
   }
   else
-    java_def.assign(QString::null, TRUE);
+    java_def.assign("", TRUE);
   
   if (!strcmp(k, "java_annotation")) {
     java_annotation = read_string(st);
     k = read_keyword(st);
   }
   else
-    java_annotation = QString::null;
+    java_annotation = "";
   
   if (!strcmp(k, "java_name_spec")) {
     is_get_or_set = TRUE;
@@ -2611,8 +2816,15 @@ void OperationData::read(char * & st, char * & k) {
   } 
   else {
     is_get_or_set = FALSE;
-    java_name_spec = QString::null;
+    java_name_spec = "";
   }
+    
+  if (!strcmp(k, "preserve_php_body_indent")) {
+    php_indent_body = FALSE;
+    k = read_keyword(st);
+  }
+  else
+    php_indent_body = TRUE;
   
   if (!strcmp(k, "php_frozen")) {
     php_get_set_frozen = TRUE;
@@ -2639,7 +2851,7 @@ void OperationData::read(char * & st, char * & k) {
     k = read_keyword(st);
   }
   else
-    php_def.assign(QString::null, TRUE);
+    php_def.assign("", TRUE);
   
   if (!strcmp(k, "php_name_spec")) {
     is_get_or_set = TRUE;
@@ -2648,7 +2860,7 @@ void OperationData::read(char * & st, char * & k) {
   } 
   else {
     is_get_or_set = FALSE;
-    php_name_spec = QString::null;
+    php_name_spec = "";
   }
   
   if (!strcmp(k, "idl_frozen")) {
@@ -2670,7 +2882,7 @@ void OperationData::read(char * & st, char * & k) {
     k = read_keyword(st);
   }
   else
-    idl_decl = QString::null;
+    idl_decl = "";
   
   if (!strcmp(k, "idl_name_spec")) {
     is_get_or_set = TRUE;
@@ -2679,6 +2891,6 @@ void OperationData::read(char * & st, char * & k) {
   } 
   else {
     is_get_or_set = FALSE;
-    idl_name_spec = QString::null;
+    idl_name_spec = "";
   }
 }

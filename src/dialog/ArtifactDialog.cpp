@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -165,7 +165,7 @@ void ArtifactDialog::init_cpp_tab() {
   
   // C++ h
 
-  cpp_h_content_page = new QSplitter(Vertical, this);
+  cpp_h_content_page = new QSplitter(Qt::Vertical, this);
   cpp_h_content_page->setOpaqueResize(TRUE);
   
   vbox = new QVBox(cpp_h_content_page); 
@@ -213,7 +213,7 @@ void ArtifactDialog::init_cpp_tab() {
   
   // C++ source
 
-  cpp_src_content_page = new QSplitter(Vertical, this);
+  cpp_src_content_page = new QSplitter(Qt::Vertical, this);
   cpp_src_content_page->setOpaqueResize(TRUE);
   
   vbox = new QVBox(cpp_src_content_page); 
@@ -264,7 +264,7 @@ void ArtifactDialog::init_java_tab() {
   QLabel * lbl2;
   QPushButton * edit = 0;
   
-  java_content_page = new QSplitter(Vertical, this);
+  java_content_page = new QSplitter(Qt::Vertical, this);
   java_content_page->setOpaqueResize(TRUE);
   
   vbox = new QVBox(java_content_page); 
@@ -319,7 +319,7 @@ void ArtifactDialog::init_php_tab() {
   QLabel * lbl2;
   QPushButton * edit = 0;
   
-  php_content_page = new QSplitter(Vertical, this);
+  php_content_page = new QSplitter(Qt::Vertical, this);
   php_content_page->setOpaqueResize(TRUE);
   
   vbox = new QVBox(php_content_page); 
@@ -374,7 +374,7 @@ void ArtifactDialog::init_idl_tab() {
   QLabel * lbl2;
   QPushButton * edit = 0;
   
-  idl_content_page = new QSplitter(Vertical, this);
+  idl_content_page = new QSplitter(Qt::Vertical, this);
   idl_content_page->setOpaqueResize(TRUE);
   
   vbox = new QVBox(idl_content_page); 
@@ -437,7 +437,7 @@ void ArtifactDialog::init_assoc_classes_tab() {
     hbox = new QHBox(cl_assoc_page);
     vbox = new QVBox(hbox);
     vbox->setMargin(5);
-    (new QLabel("Classes without artifact", vbox))->setAlignment(AlignCenter);
+    (new QLabel("Classes without artifact", vbox))->setAlignment(Qt::AlignCenter);
     lb_cl_available = new QListBox(vbox);
     lb_cl_available->setSelectionMode(QListBox::Multi);
     
@@ -475,7 +475,7 @@ void ArtifactDialog::init_assoc_classes_tab() {
     vbox = cl_assoc_page;
   
   vbox->setMargin(5);
-  (new QLabel("Associated classes", vbox))->setAlignment(AlignCenter);
+  (new QLabel("Associated classes", vbox))->setAlignment(Qt::AlignCenter);
   lb_cl_associated = new QListBox(vbox);
   lb_cl_associated->setSelectionMode((visit) ? QListBox::NoSelection
 					     : QListBox::Multi);
@@ -539,7 +539,7 @@ void ArtifactDialog::init_assoc_artifacts_tab() {
     hbox = new QHBox(art_assoc_page);
     vbox = new QVBox(hbox);
     vbox->setMargin(5);
-    (new QLabel("Unassociated artifacts", vbox))->setAlignment(AlignCenter);
+    (new QLabel("Unassociated artifacts", vbox))->setAlignment(Qt::AlignCenter);
     lb_art_available = new QListBox(vbox);
     lb_art_available->setSelectionMode(QListBox::Multi);
     
@@ -560,7 +560,7 @@ void ArtifactDialog::init_assoc_artifacts_tab() {
     vbox = art_assoc_page;
   
   vbox->setMargin(5);
-  (new QLabel("Associated artifacts", vbox))->setAlignment(AlignCenter);
+  (new QLabel("Associated artifacts", vbox))->setAlignment(Qt::AlignCenter);
   lb_art_associated = new QListBox(vbox);
   lb_art_associated->setSelectionMode((visit) ? QListBox::NoSelection
 					       : QListBox::Multi);

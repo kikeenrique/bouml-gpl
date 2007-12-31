@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -84,7 +84,7 @@ void UcClassCanvas::remove(bool from_model) {
 void UcClassCanvas::draw(QPainter & p) {
   if (! visible()) return;
   
-  p.setBackgroundMode(QObject::OpaqueMode);
+  p.setBackgroundMode(::Qt::OpaqueMode);
   
   QRect r = rect();
   FILE * fp = svg();

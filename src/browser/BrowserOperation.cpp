@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -270,7 +270,7 @@ void BrowserOperation::update_get_of(const QString & attr_name,
   }
   
   def->update_get_of(attr_name, cpp_decl, java_decl, php_decl, idl_decl, is_const,
-		     is_class_member, cl, multiplicity, ste, create, TRUE);
+		     is_class_member, cl, multiplicity, ste, create);
   
   update_stereotype();
 }
@@ -304,7 +304,7 @@ void BrowserOperation::update_set_of(const QString & attr_name,
   }
 
   def->update_set_of(attr_name, cpp_decl, java_decl, php_decl, idl_decl, is_const,
-		     is_class_member, cl, multiplicity, ste, create, TRUE);
+		     is_class_member, cl, multiplicity, ste, create);
   
   update_stereotype();
 }

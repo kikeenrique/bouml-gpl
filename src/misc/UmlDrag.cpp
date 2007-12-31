@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,7 +37,7 @@ QString UmlDrag::postfix;
 bool UmlDrag::ro;
 
 UmlDrag::UmlDrag(BrowserNode * bn, QWidget * parent, const char * name)
-    : QStoredDrag(Key + bn->drag_key(), parent, name) {
+    : QStoredDrag(UmlDrag::Key + bn->drag_key(), parent, name) {
   // stay in the same application : can use address directly
   QByteArray a(sizeof(bn));
   
@@ -57,21 +57,21 @@ bool UmlDrag::canDecode(QDragMoveEvent * e, UmlCode type,
     return FALSE;
   
   return (e->source() != 0) &&
-    e->provides((withpostfix) ? Key + QString::number(type) + postfix
-			      : Key + QString::number(type));
+    e->provides((withpostfix) ? UmlDrag::Key + QString::number(type) + postfix
+			      : UmlDrag::Key + QString::number(type));
 }
 
 bool UmlDrag::canDecode(QDragMoveEvent * e, const QString & type)
 {
-  return !ro && (e->source() != 0) && e->provides(Key + type);
+  return !ro && (e->source() != 0) && e->provides(UmlDrag::Key + type);
 }
 
 BrowserNode * UmlDrag::decode(QDropEvent * e, UmlCode type,
 			      bool withpostfix)
 {
   QByteArray payload =
-    e->data((withpostfix) ? Key + QString::number(type) + postfix
-			  : Key + QString::number(type));
+    e->data((withpostfix) ? UmlDrag::Key + QString::number(type) + postfix
+			  : UmlDrag::Key + QString::number(type));
   
   if (payload.size()) {
     e->accept();
@@ -86,7 +86,7 @@ BrowserNode * UmlDrag::decode(QDropEvent * e, UmlCode type,
 
 BrowserNode * UmlDrag::decode(QDropEvent * e, const QString & type)
 {
-  QByteArray payload = e->data(Key + type);
+  QByteArray payload = e->data(UmlDrag::Key + type);
   
   if (payload.size()) {
     e->accept();

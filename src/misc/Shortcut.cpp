@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -275,9 +275,9 @@ QString Shortcut::shortcut(int key, int buttons)
   flags[0] = ' ';
   flags[1] = 0;
   
-  if (buttons & QObject::ShiftButton) flags[0] += 1;
-  if (buttons & QObject::ControlButton) flags[0] += 2;
-  if (buttons & QObject::AltButton) flags[0] += 4;
+  if (buttons & ::Qt::ShiftButton) flags[0] += 1;
+  if (buttons & ::Qt::ControlButton) flags[0] += 2;
+  if (buttons & ::Qt::AltButton) flags[0] += 4;
   
   QMap<QString, QString>::ConstIterator it =
     Shortcuts.find(flags + codeToName(key));

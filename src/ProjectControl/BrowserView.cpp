@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -47,10 +47,10 @@ BrowserView::BrowserView(QWidget * parent) : QListView(parent) {
   setColumnWidthMode(2, Maximum);
   setColumnWidthMode(3, Maximum);
   setColumnWidthMode(4, Maximum);
-  setColumnAlignment(1, QObject::AlignHCenter);
-  setColumnAlignment(2, QObject::AlignHCenter);
-  setColumnAlignment(3, QObject::AlignHCenter);
-  setColumnAlignment(4, QObject::AlignHCenter);
+  setColumnAlignment(1, ::Qt::AlignHCenter);
+  setColumnAlignment(2, ::Qt::AlignHCenter);
+  setColumnAlignment(3, ::Qt::AlignHCenter);
+  setColumnAlignment(4, ::Qt::AlignHCenter);
   setTreeStepSize(18);
   
   connect(this, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
@@ -85,12 +85,12 @@ void BrowserView::rightPressed(QListViewItem * item) {
 
 void BrowserView::keyPressEvent(QKeyEvent * e) {
   switch (e->state()) {
-  case QObject::ControlButton:
-  case QObject::AltButton:
+  case ::Qt::ControlButton:
+  case ::Qt::AltButton:
     switch (e->key()) {
-    case QObject::Key_A:
-    case QObject::Key_P:
-    case QObject::Key_U:
+    case ::Qt::Key_A:
+    case ::Qt::Key_P:
+    case ::Qt::Key_U:
       {
 	QListViewItem * t = selectedItem();
 	

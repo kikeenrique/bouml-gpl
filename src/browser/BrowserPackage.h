@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -174,6 +174,7 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     static void save_all(bool modified_only);
     static bool must_be_saved();
     virtual void init_save_counter();
+    static bool load_version(QString fn);
     
     static void clear(bool old);
     static void update_idmax_for_root();

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -124,7 +124,7 @@ void SeqDiagramView::toOverlapping() {
 
 void SeqDiagramView::contentsMousePressEvent(QMouseEvent * e) {
   if (!window()->frozen()) {
-    if (e->button() == QObject::RightButton)
+    if (e->button() == ::Qt::RightButton)
       DiagramView::contentsMousePressEvent(e);
     else {
       UmlCode c = window()->buttonOn();
@@ -250,12 +250,12 @@ void SeqDiagramView::keyPressEvent(QKeyEvent * e) {
   if (!window()->frozen()) {
     DiagramView::keyPressEvent(e);
     
-    if (e->state() != QObject::ControlButton) {
+    if (e->state() != ::Qt::ControlButton) {
       switch (e->key()) {
-      case QObject::Key_Left:
-      case QObject::Key_Up:
-      case QObject::Key_Right:
-      case QObject::Key_Down:
+      case ::Qt::Key_Left:
+      case ::Qt::Key_Up:
+      case ::Qt::Key_Right:
+      case ::Qt::Key_Down:
 	{
 	  QCanvasItemList all = canvas()->allItems();
 	  QCanvasItemList::Iterator cit;

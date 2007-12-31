@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -1236,8 +1236,7 @@ void save_if_needed(const char * filename, const char * newdef)
     backup(d, filename);
     
     if ((fp = fopen((const char *) path, "wb")) == 0)
-      msg_warning("Uml",
-			   path + " can't be modified");
+      msg_warning("Uml", path + " can't be modified");
     else {
       fputs(newdef, fp);
       fclose(fp);
@@ -1559,14 +1558,14 @@ char * read_string(char * & st)
 
   if (*st == 0) {
     msg_critical("Error", 
-			  where() + "premature end of file, string expected");
+		 where() + "premature end of file, string expected");
     throw 0;
   }
     
   if (*st != '"') {
     msg_critical("Error", 
 			  where() + "string expected after '"
-			  + Context.previous_word + "'");
+			  + QString(Context.previous_word) + "'");
     throw 0;
   }
   
@@ -1629,8 +1628,8 @@ char * read_keyword(char * & st)
   
   if (*st == '"') {
     msg_critical("Error",
-			  where() + "keyword expected after '"
-			  + Context.previous_word + "'");
+		 where() + "keyword expected after '"
+		 + QString(Context.previous_word) + "'");
     throw 0;
   }
   
@@ -1653,16 +1652,16 @@ char * read_keyword(char * & st, const char * expected)
 
   if (*st == 0) {
     msg_critical("Error",
-			  where() + "premature end of file, '" 
-			  + expected + "' expected");
+		 where() + "premature end of file, '" 
+		 + QString(expected) + "' expected");
     throw 0;
   }
   
   if (*st == '"') {
     msg_critical("Error",
-			  where() + "'" + expected + 
-			  "' expected rather than a string after '"
-			  + Context.previous_word + "'");
+		 where() + "'" + QString(expected) + 
+		 "' expected rather than a string after '"
+		 + QString(Context.previous_word) + "'");
     throw 0;
   }
   
@@ -1677,8 +1676,8 @@ char * read_keyword(char * & st, const char * expected)
 
   if (strcmp(r, expected)) {
     msg_critical("Error",
-			  where() + "'" + expected + "' expected rather than '"
-			  + r + "' after '" + Context.previous_word + "'");
+		 where() + "'" + QString(expected) + "' expected rather than '"
+		 + QString(r) + "' after '" + QString(Context.previous_word) + "'");
     throw 0;
   }
 
@@ -1696,16 +1695,16 @@ char * read_keyword(char * & st, const char * expected1,
 
   if (*st == 0) {
     msg_critical("Error",
-			  where() + "premature end of file, '" 
-			  + expected1 + "' expected");
+		 where() + "premature end of file, '" 
+		 + QString(expected1) + "' expected");
     throw 0;
   }
   
   if (*st == '"') {
     msg_critical("Error",
-			  where() + "'" + expected1 + 
-			  "' expected rather than a string after '"
-			  + Context.previous_word + "'");
+		 where() + "'" + QString(expected1) + 
+		 "' expected rather than a string after '"
+		 + QString(Context.previous_word) + "'");
     throw 0;
   }
   
@@ -1720,8 +1719,8 @@ char * read_keyword(char * & st, const char * expected1,
 
   if (strcmp(r, expected1) && strcmp(r, expected2)) {
     msg_critical("Error",
-			  where() + "'" + expected1 + "' expected rather than '"
-			  + r + "' after '" + Context.previous_word + "'");
+		 where() + "'" + QString(expected1) + "' expected rather than '"
+		 + QString(r) + "' after '" + QString(Context.previous_word) + "'");
     throw 0;
   }
 
@@ -1748,13 +1747,13 @@ int read_id(char * & st)
 
   if (*st == 0) {
     msg_critical("Error",
-			  where() + "premature end of file, id expected");
+		 where() + "premature end of file, id expected");
     throw 0;
   }
   
   if (*st == '"') {
     msg_critical("Error",
-			  where() + "id expected after '" + Context.previous_word + "'");
+		 where() + "id expected after '" + QString(Context.previous_word) + "'");
     throw 0;
   }
   
@@ -1767,7 +1766,7 @@ int read_id(char * & st)
   
   if (st == r+1) {
     msg_critical("Error", 
-			  where() + "id expected after '" + Context.previous_word + "'");
+		 where() + "id expected after '" + QString(Context.previous_word) + "'");
     throw 0;
   }
   
@@ -1784,13 +1783,13 @@ unsigned read_unsigned(char * & st)
 
   if (*st == 0) {
     msg_critical("Error",
-			  where() + "premature end of file, unsigned expected");
+		 where() + "premature end of file, unsigned expected");
     throw 0;
   }
   
   if (*st == '"') {
     msg_critical("Error",
-			  where() + "unsigned expected after '" + Context.previous_word + "'");
+		 where() + "unsigned expected after '" + QString(Context.previous_word) + "'");
     throw 0;
   }
   
@@ -1803,7 +1802,7 @@ unsigned read_unsigned(char * & st)
   
   if (st == r+1) {
     msg_critical("Error", 
-			  where() + "unsigned expected after '" + Context.previous_word + "'");
+		 where() + "unsigned expected after '" + QString(Context.previous_word) + "'");
     throw 0;
   }
   
@@ -1820,13 +1819,13 @@ double read_double(char * & st)
 
   if (*st == 0) {
     msg_critical("Error",
-			  where() + "premature end of file, float expected");
+		 where() + "premature end of file, float expected");
     throw 0;
   }
   
   if (*st == '"') {
     msg_critical("Error",
-			  where() + "float expected after '" + Context.previous_word + "'");
+		 where() + "float expected after '" + QString(Context.previous_word) + "'");
     throw 0;
   }
   
@@ -1856,8 +1855,8 @@ double read_double(char * & st)
     if (!ok) {
       // '.' or ',' problem ?
       msg_critical("Error", 
-			    where() + "float expected rather than '"
-			    + s + "' after '" + Context.previous_word + "'");
+		   where() + "float expected rather than '"
+		   + s + "' after '" + QString(Context.previous_word) + "'");
       throw 0;
     }
   }
@@ -1898,7 +1897,7 @@ char * skip_until(char * & st, const char * expected)
     
     if (*st == 0) {
       msg_critical("Error",
-			    where() + "premature end of file");
+		   where() + "premature end of file");
       throw 0;
     }
   
@@ -1912,23 +1911,23 @@ char * skip_until(char * & st, const char * expected)
 void wrong_keyword(const char * k, const char * expected)
 {
   msg_critical("Error",
-			where() + "'" + expected
-			+ "' expected rather than '" + k + "'");
+	       where() + "'" + QString(expected)
+	       + "' expected rather than '" + QString(k) + "'");
   throw 0;
 }
 
 void unknown_keyword(const char * k)
 {
   msg_critical("Error",
-			where() + "unknown or unexpected keyword '" + k + "'");
+	       where() + "unknown or unexpected keyword '" + QString(k) + "'");
   throw 0;
 }
 
 void unknown_ref(const char * kind, int id)
 {
   msg_critical("Error", 
-			where() + QString::number(id) +
-			" unknown " + kind + " identifier");
+	       where() + QString::number(id) +
+	       " unknown " + QString(kind) + " identifier");
   throw 0;
 }
 
@@ -2257,7 +2256,7 @@ void draw_poly(FILE * fp, QPointArray & poly, UmlColor color, bool stroke)
 void draw_shadow(FILE * fp, QPointArray & poly)
 {
   fprintf(fp, "\t<polygon fill=\"#%06x\" stroke=\"none\"",
-	  QObject::darkGray.rgb()&0xffffff);
+	  ::Qt::darkGray.rgb()&0xffffff);
 
   const char * sep = " points=\"";
   int n = poly.size();
@@ -2343,17 +2342,17 @@ void draw_text(int x, int y, int w, int h, int align,
   if (fn.underline())
     strcat(header, " text-decoration=\"underline\"");
 
-  bool wb = align & QObject::WordBreak;
+  bool wb = align & ::Qt::WordBreak;
   
   if ((s.find('\n') == -1) && !wb) {
     // one line
     fputs(header, fp);
     
-    if ((align & QObject::AlignHCenter) != 0) {
+    if ((align & ::Qt::AlignHCenter) != 0) {
       fputs(" text-anchor=\"middle\"", fp);
       x += w/2;
     }
-    if ((align & QObject::AlignVCenter) != 0)
+    if ((align & ::Qt::AlignVCenter) != 0)
       y += (h + ps)/2;
     else
       y += ps;
@@ -2428,7 +2427,7 @@ void draw_text(int x, int y, int w, int h, int align,
     // write lines
     ps = fm.lineSpacing();
     
-    if ((align & QObject::AlignVCenter) != 0) {
+    if ((align & ::Qt::AlignVCenter) != 0) {
       int dy = h - l.count() * ps;
       
       if (dy > 0)
@@ -2437,7 +2436,7 @@ void draw_text(int x, int y, int w, int h, int align,
     
     y -= fm.leading();
     
-    if ((align & QObject::AlignHCenter) != 0) {
+    if ((align & ::Qt::AlignHCenter) != 0) {
       x += w/2;
 
       for (iter = l.begin(); iter != l.end(); ++iter) {

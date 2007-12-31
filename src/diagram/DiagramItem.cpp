@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -218,10 +218,10 @@ void show_mark(QPainter & p, const QRect & r)
   int w = (SELECT_SQUARE_SIZE < r.width())
     ? SELECT_SQUARE_SIZE : r.width() - 1;
 
-  p.fillRect(r.left(), r.top(), w, h, QObject::black);
-  p.fillRect(r.right() - w, r.top(), w, h, QObject::black);
-  p.fillRect(r.left(), r.bottom() - h, w, h, QObject::black);
-  p.fillRect(r.right() - w, r.bottom() - h, w, h, QObject::black);
+  p.fillRect(r.left(), r.top(), w, h, ::Qt::black);
+  p.fillRect(r.right() - w, r.top(), w, h, ::Qt::black);
+  p.fillRect(r.left(), r.bottom() - h, w, h, ::Qt::black);
+  p.fillRect(r.right() - w, r.bottom() - h, w, h, ::Qt::black);
 }
 
 aCorner on_resize_point(const QPoint & p, const QRect & r)

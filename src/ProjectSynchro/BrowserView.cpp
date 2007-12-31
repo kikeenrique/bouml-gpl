@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,8 +48,8 @@ BrowserView::BrowserView(QWidget * parent)
   setColumnWidthMode(0, Maximum);
   setColumnWidthMode(1, Maximum);
   setColumnWidthMode(2, Maximum);
-  setColumnAlignment(1, QObject::AlignHCenter);
-  setColumnAlignment(2, QObject::AlignHCenter);
+  setColumnAlignment(1, ::Qt::AlignHCenter);
+  setColumnAlignment(2, ::Qt::AlignHCenter);
   setTreeStepSize(18);
   
   connect(this, SIGNAL(selectionChanged(QListViewItem *)),

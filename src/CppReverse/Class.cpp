@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -410,12 +410,7 @@ void Class::manage_member(QCString s, aVisibility visibility,
 #endif
   
   for (;;) {
-    if (s == 0) {
-      if (!Package::scanning())
-	Lex::premature_eof();
-      break;
-    }
-    else if (s == "static") {
+    if (s == "static") {
       staticp = TRUE;
       Lex::mark();
     }
@@ -784,6 +779,11 @@ void Class::manage_member(QCString s, aVisibility visibility,
     }
     else if (s == "~")
       destructor = TRUE;
+    else if (s.isEmpty()) {
+      if (!Package::scanning())
+	Lex::premature_eof();
+      return;
+    }
     else if (*((const char *) s) == '[')
       array += s;
     else if (s == ":") {

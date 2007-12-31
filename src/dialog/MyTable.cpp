@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,7 +35,7 @@
 // manage the empty but not null QString (ie QString(""))
 
 int TableItem::alignment() const {
-  return AlignLeft | AlignVCenter;
+  return Qt::AlignLeft | Qt::AlignVCenter;
 }
 
 // to use TableItem rather than QTableItem

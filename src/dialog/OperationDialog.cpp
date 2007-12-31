@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -211,7 +211,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   
   htab->setStretchFactor(new QLabel("  ", htab), 0);
   
-  bg = new QButtonGroup(2, QGroupBox::Horizontal, QString::null, htab);
+  bg = new QButtonGroup(2, Qt::Horizontal, QString::null, htab);
   htab->setStretchFactor(bg, 1000);
   classoperation_cb = new QCheckBox("class operation", bg);
   classoperation_cb->setDisabled(visit);
@@ -232,7 +232,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   
   htab->setStretchFactor(new QLabel("  ", htab), 0);
   
-  bg = new QButtonGroup(1, QGroupBox::Horizontal, QString::null, htab);
+  bg = new QButtonGroup(1, Qt::Horizontal, QString::null, htab);
   htab->setStretchFactor(bg, 1000);
   forcegenbody_cb = new QCheckBox("force body generation", bg);
   forcegenbody_cb->setDisabled(visit);
@@ -305,7 +305,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     
     htab->setStretchFactor(new QLabel("      ", htab), 0);
     
-    bg = new QButtonGroup(5, QGroupBox::Horizontal, QString::null, htab);
+    bg = new QButtonGroup(5, Qt::Horizontal, QString::null, htab);
     const_cb = new QCheckBox("const", bg);
     volatile_cb = new QCheckBox("volatile", bg);
     friend_cb = new QCheckBox("friend", bg);
@@ -392,7 +392,16 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     else
       connect(edcppdef, SIGNAL(textChanged()), this, SLOT(cpp_update_def()));
     
-    new QLabel("Result after\nsubstitution : ", grid);
+    vtab = new QVBox(grid);
+    new QLabel("Result after\nsubstitution : ", vtab);
+    if (!visit && !o->is_get_or_set) {
+      indentcppbody_cb = new QCheckBox("contextual\nbody indent", vtab);
+      if (preserve_bodies() && !forcegenbody_cb->isChecked())
+	indentcppbody_cb->setEnabled(FALSE);
+      else
+	indentcppbody_cb->setChecked(o->cpp_indent_body);
+    }
+    
     showcppdef = new MultiLineEdit(grid);
     showcppdef->setReadOnly(TRUE);
     showcppdef->setFont(font);
@@ -449,7 +458,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
 	javafrozen_cb->setChecked(TRUE);
     }
 
-    bg = new QButtonGroup(2, QGroupBox::Horizontal, QString::null, grid);
+    bg = new QButtonGroup(2, Qt::Horizontal, QString::null, grid);
     javafinal_cb = new QCheckBox("final", bg);
     if (o->get_java_final())
       javafinal_cb->setChecked(TRUE);
@@ -491,7 +500,16 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     else
       connect(edjavadef, SIGNAL(textChanged()), this, SLOT(java_update_def()));
     
-    new QLabel("Result after\nsubstitution : ", grid);
+    vtab = new QVBox(grid);
+    new QLabel("Result after\nsubstitution : ", vtab);
+    if (!visit && !o->is_get_or_set) {
+      indentjavabody_cb = new QCheckBox("contextual\nbody indent", vtab);
+      if (preserve_bodies() && !forcegenbody_cb->isChecked())
+	indentjavabody_cb->setEnabled(FALSE);
+      else
+	indentjavabody_cb->setChecked(o->java_indent_body);
+    }
+    
     showjavadef = new MultiLineEdit(grid);
     showjavadef->setReadOnly(TRUE);
     showjavadef->setFont(font);
@@ -550,7 +568,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
 	phpfrozen_cb->setChecked(TRUE);
     }
 
-    bg = new QButtonGroup(2, QGroupBox::Horizontal, QString::null, grid);
+    bg = new QButtonGroup(2, Qt::Horizontal, QString::null, grid);
     phpfinal_cb = new QCheckBox("final", bg);
     if (o->get_php_final())
       phpfinal_cb->setChecked(TRUE);
@@ -583,7 +601,16 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     else
       connect(edphpdef, SIGNAL(textChanged()), this, SLOT(php_update_def()));
     
-    new QLabel("Result after\nsubstitution : ", grid);
+    vtab = new QVBox(grid);
+    new QLabel("Result after\nsubstitution : ", vtab);
+    if (!visit && !o->is_get_or_set) {
+      indentphpbody_cb = new QCheckBox("contextual\nbody indent", vtab);
+      if (preserve_bodies() && !forcegenbody_cb->isChecked())
+	indentphpbody_cb->setEnabled(FALSE);
+      else
+	indentphpbody_cb->setChecked(o->php_indent_body);
+    }
+    
     showphpdef = new MultiLineEdit(grid);
     showphpdef->setReadOnly(TRUE);
     showphpdef->setFont(font);
@@ -636,7 +663,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
 	idlfrozen_cb->setChecked(TRUE);
     }
 
-    bg = new QButtonGroup(1, QGroupBox::Horizontal, QString::null, grid);
+    bg = new QButtonGroup(1, Qt::Horizontal, QString::null, grid);
     oneway_cb = new QCheckBox("oneway", bg);
     if (o->get_idl_oneway())
       oneway_cb->setChecked(TRUE);
@@ -887,6 +914,8 @@ void OperationDialog::accept() {
 	oper->cpp_body.length = 0;
 	oper->cpp_get_set_frozen = cppfrozen_cb->isChecked();
       }
+      else
+	oper->cpp_indent_body = indentcppbody_cb->isChecked();
       if (!abstract_cb->isChecked() && 
 	  (edcppdef->text().find("${body}") != -1)) {
 	if (cppbody != oldcppbody)
@@ -919,6 +948,8 @@ void OperationDialog::accept() {
 	oper->java_name_spec = edjavanamespec->text().stripWhiteSpace();
 	oper->java_get_set_frozen = javafrozen_cb->isChecked();
       }
+      else
+	oper->java_indent_body = indentjavabody_cb->isChecked();
       
       QString ste = GenerationSettings::java_class_stereotype(cl->get_stereotype());
       bool interf = (ste == "interface") || (ste == "@interface");
@@ -951,6 +982,8 @@ void OperationDialog::accept() {
 	oper->php_name_spec = edphpnamespec->text().stripWhiteSpace();
 	oper->php_get_set_frozen = phpfrozen_cb->isChecked();
       }
+      else
+	oper->php_indent_body = indentphpbody_cb->isChecked();
       
       QString ste = GenerationSettings::php_class_stereotype(cl->get_stereotype());
       bool interf = (ste == "interface");
@@ -1010,12 +1043,18 @@ void OperationDialog::abstract_toggled(bool on) {
 }
 
 void OperationDialog::forcegenbody_toggled(bool on) {
-  const char * lbl = (visit || (preserve_bodies() && !on))
-    ? "Show body" : "Edit body";
+  bool ro = (visit || (preserve_bodies() && !on));
+  const char * lbl = (ro) ? "Show body" : "Edit body";
 			       
   editcppbody->setText(lbl);
   editjavabody->setText(lbl);
   editphpbody->setText(lbl);
+  
+  if (!visit && !oper->is_get_or_set) {
+    indentcppbody_cb->setEnabled(editcppbody->isEnabled() && !ro);
+    indentjavabody_cb->setEnabled(editjavabody->isEnabled() && !ro);
+    indentphpbody_cb->setEnabled(editphpbody->isEnabled() && !ro);
+  }
 }
 
 void OperationDialog::update_all_tabs(QWidget * w) {
@@ -1088,12 +1127,12 @@ void OperationDialog::cpp_default_decl() {
       oper->update_cpp_get_of(decl, def, get_of_attr->get_browser_node()->get_name(),
 			      get_of_attr->get_cppdecl(),
 			      get_of_attr->get_isa_const_attribute(),
-			      QString::null);
+			      get_of_attr->get_multiplicity());
     else if (set_of_attr != 0)
       oper->update_cpp_set_of(decl, def, set_of_attr->get_browser_node()->get_name(),
 			      set_of_attr->get_cppdecl(),
 			      set_of_attr->get_isa_const_attribute(),
-			      QString::null);
+			      set_of_attr->get_multiplicity());
     else if (get_of_rel != 0) {
       if (is_rel_a)
 	oper->update_cpp_get_of(decl, def, get_of_rel->get_role_a(), 
@@ -1525,12 +1564,12 @@ void OperationDialog::cpp_default_def() {
       oper->update_cpp_get_of(decl, def, get_of_attr->get_browser_node()->get_name(),
 			      get_of_attr->get_cppdecl(),
 			      get_of_attr->get_isa_const_attribute(),
-			      QString::null);
+			      get_of_attr->get_multiplicity());
     else if (set_of_attr != 0)
       oper->update_cpp_set_of(decl, def, set_of_attr->get_browser_node()->get_name(),
 			      set_of_attr->get_cppdecl(),
 			      set_of_attr->get_isa_const_attribute(),
-			      QString::null);
+			      set_of_attr->get_multiplicity());
     else if (get_of_rel != 0) {
       if (is_rel_a)
 	oper->update_cpp_get_of(decl, def, get_of_rel->get_role_a(), 
@@ -1870,6 +1909,8 @@ void OperationDialog::cpp_update_def() {
     editcppbody->setEnabled(FALSE);
   
   showcppdef->setText(s);
+  
+  forcegenbody_toggled(forcegenbody_cb->isChecked());	// update indent*body_cb
 }
 
 static QString add_profile(QString b)
@@ -1963,26 +2004,32 @@ void OperationDialog::java_default_def() {
     
     if (get_of_attr != 0)
       oper->update_java_get_of(def, get_of_attr->get_browser_node()->get_name(),
-			       get_of_attr->get_javadecl());
+			       get_of_attr->get_javadecl(),
+			       get_of_attr->get_multiplicity());
     else if (set_of_attr != 0)
       oper->update_java_set_of(def, set_of_attr->get_browser_node()->get_name(),
-			       set_of_attr->get_javadecl());
+			       set_of_attr->get_javadecl(),
+			       set_of_attr->get_multiplicity());
     else if (get_of_rel != 0) {
       if (is_rel_a)
 	oper->update_java_get_of(def, get_of_rel->get_role_a(), 
-				 get_of_rel->get_javadecl_a());
+				 get_of_rel->get_javadecl_a(),
+				 get_of_rel->get_multiplicity_a());
       else
 	oper->update_java_get_of(def, get_of_rel->get_role_b(), 
-				 get_of_rel->get_javadecl_b());
+				 get_of_rel->get_javadecl_b(),
+				 get_of_rel->get_multiplicity_b());
     }
     else {
       // set_of_rel != 0
       if (is_rel_a)
 	oper->update_java_set_of(def, set_of_rel->get_role_a(), 
-				 set_of_rel->get_javadecl_a());
+				 set_of_rel->get_javadecl_a(),
+				 set_of_rel->get_multiplicity_a());
       else
 	oper->update_java_set_of(def, set_of_rel->get_role_b(), 
-				 set_of_rel->get_javadecl_b());
+				 set_of_rel->get_javadecl_b(),
+				 set_of_rel->get_multiplicity_b());
     }
 
     edjavadef->setText(def);
@@ -2164,6 +2211,8 @@ void OperationDialog::java_update_def() {
   editjavaannotation->setEnabled(def.find("${@}") != -1);  
   
   showjavadef->setText(s);
+  
+  forcegenbody_toggled(forcegenbody_cb->isChecked());	// update indent*body_cb
 }
 
 QString OperationDialog::java_decl(const BrowserOperation * op, bool withname)
@@ -2479,6 +2528,8 @@ void OperationDialog::php_update_def() {
   editphpbody->setEnabled(!nobody && (def.find("${body}") != -1));
   
   showphpdef->setText(s);
+  
+  forcegenbody_toggled(forcegenbody_cb->isChecked());	// update indent*body_cb
 }
 
 QString OperationDialog::php_decl(const BrowserOperation * op, bool withname)
@@ -2663,9 +2714,11 @@ void OperationDialog::idl_default_def() {
     QCString decl;
     
     if (get_of_attr != 0)
-      oper->update_idl_get_of(decl, get_of_attr->get_idldecl(), QString::null);
+      oper->update_idl_get_of(decl, get_of_attr->get_idldecl(),
+			      get_of_attr->get_multiplicity());
     else if (set_of_attr != 0)
-      oper->update_idl_set_of(decl, set_of_attr->get_idldecl(), QString::null);
+      oper->update_idl_set_of(decl, set_of_attr->get_idldecl(),
+			      set_of_attr->get_multiplicity());
     else if (get_of_rel != 0) {
       if (is_rel_a)
 	oper->update_idl_get_of(decl, get_of_rel->get_idldecl_a(),

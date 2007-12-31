@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -457,9 +457,9 @@ const QString & RelationData::default_name(UmlCode e)
   static const QString unidirectionalassociation("<unidirectional association>");
   static const QString generalisation("<generalisation>");
   static const QString aggregation("<aggregation>");
-  static const QString aggregationbyvalue("<aggregation by value>");
+  static const QString aggregationbyvalue("<composition>");
   static const QString directionalaggregation("<directional aggregation>");
-  static const QString directionalaggregationbyvalue("<directional aggregation by value>");
+  static const QString directionalaggregationbyvalue("<directional composition>");
   static const QString dependency("<dependency>");
   static const QString realization("<realization>");
   static const QString notread("<not yet read>");

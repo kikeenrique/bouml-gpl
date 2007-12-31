@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -412,7 +412,7 @@ void ComponentCanvas::draw(QPainter & p) {
   
   QColor bckgrnd = p.backgroundColor();
 
-  p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
+  p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
 
   QColor co = color(used_color);
   FILE * fp = svg();
@@ -446,19 +446,19 @@ void ComponentCanvas::draw(QPainter & p) {
     if (data->get_stereotype()[0]) {
       r.setHeight(he/2);
       p.setFont(the_canvas()->get_font(UmlNormalFont));
-      p.drawText(r, QObject::AlignCenter,
+      p.drawText(r, ::Qt::AlignCenter,
 		 QString("<<") + toUnicode(data->get_stereotype()) + ">>");
       if (fp != 0)
-	draw_text(r, QObject::AlignCenter,
+	draw_text(r, ::Qt::AlignCenter,
 		  QString("<<") + toUnicode(data->get_stereotype()) + ">>",
 		  p.font(), fp);
       r.moveBy(0, he/2);
     }
     
     p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
-    p.drawText(r, QObject::AlignCenter, browser_node->get_name());
+    p.drawText(r, ::Qt::AlignCenter, browser_node->get_name());
     if (fp != 0)
-      draw_text(r, QObject::AlignCenter, browser_node->get_name(),
+      draw_text(r, ::Qt::AlignCenter, browser_node->get_name(),
 		p.font(), fp);
     p.setFont(the_canvas()->get_font(UmlNormalFont));
     
@@ -502,20 +502,20 @@ void ComponentCanvas::draw(QPainter & p) {
 	
 	p.fillRect (r.right(), r.top() + shadow,
 		    shadow, r.height() - 1,
-		    QObject::darkGray);
+		    ::Qt::darkGray);
 	p.fillRect (r.left() + shadow, r.bottom(),
 		    r.width() - 1, shadow,
-		    QObject::darkGray);
+		    ::Qt::darkGray);
 
 	if (fp != 0) {
 	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
 		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		  QObject::darkGray.rgb()&0xffffff,
+		  ::Qt::darkGray.rgb()&0xffffff,
 		  r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
 
 	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
 		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		  QObject::darkGray.rgb()&0xffffff,
+		  ::Qt::darkGray.rgb()&0xffffff,
 		  r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
 	}
       }
@@ -536,26 +536,26 @@ void ComponentCanvas::draw(QPainter & p) {
     r.setHeight(he*2);
     p.setFont(the_canvas()->get_font(UmlNormalFont));
     if (data->get_stereotype()[0]) {
-      p.drawText(r, QObject::AlignCenter,
+      p.drawText(r, ::Qt::AlignCenter,
 		 QString("<<") + toUnicode(data->get_stereotype()) + ">>");
       if (fp != 0)
-	draw_text(r, QObject::AlignCenter,
+	draw_text(r, ::Qt::AlignCenter,
 		  QString("<<") + toUnicode(data->get_stereotype()) + ">>",
 		  p.font(), fp);
     }
     else {
-      p.drawText(r, QObject::AlignCenter, "<<component>>");
+      p.drawText(r, ::Qt::AlignCenter, "<<component>>");
       if (fp != 0)
-	draw_text(r, QObject::AlignCenter, "<<component>>",
+	draw_text(r, ::Qt::AlignCenter, "<<component>>",
 		  p.font(), fp);
     }
     
     r.moveBy(0, r.height());
     r.setHeight(he+four);
     p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
-    p.drawText(r, QObject::AlignCenter, browser_node->get_name());
+    p.drawText(r, ::Qt::AlignCenter, browser_node->get_name());
     if (fp != 0)
-      draw_text(r, QObject::AlignCenter, browser_node->get_name(),
+      draw_text(r, ::Qt::AlignCenter, browser_node->get_name(),
 		p.font(), fp);
     p.setFont(the_canvas()->get_font(UmlNormalFont));
     
@@ -623,9 +623,9 @@ void ComponentCanvas::draw(QPainter & p) {
       
       if (!pr.isEmpty()) {
 	r.setLeft(left1);
-	p.drawText(r, QObject::AlignLeft + QObject::AlignTop, "<<provided interfaces>>");
+	p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, "<<provided interfaces>>");
 	if (fp != 0)
-	  draw_text(r, QObject::AlignLeft + QObject::AlignTop, "<<provided interfaces>>",
+	  draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, "<<provided interfaces>>",
 		    p.font(), fp);
 	r.setLeft(left2);
 	r.setTop(r.top() + lh);
@@ -633,9 +633,9 @@ void ComponentCanvas::draw(QPainter & p) {
 	for (QValueList<BrowserClass *>::ConstIterator it = pr.begin();
 	     it != pr.end();
 	     it++) {
-	  p.drawText(r, QObject::AlignLeft + QObject::AlignTop, (*it)->get_name());
+	  p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, (*it)->get_name());
 	  if (fp != 0)
-	    draw_text(r, QObject::AlignLeft + QObject::AlignTop, (*it)->get_name(),
+	    draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, (*it)->get_name(),
 		      p.font(), fp);
 	  r.setTop(r.top() + lh);
 	}
@@ -643,9 +643,9 @@ void ComponentCanvas::draw(QPainter & p) {
       
       if (!rq.isEmpty()) {
 	r.setLeft(left1);
-	p.drawText(r, QObject::AlignLeft + QObject::AlignTop, "<<required interfaces>>");
+	p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, "<<required interfaces>>");
 	if (fp != 0)
-	  draw_text(r, QObject::AlignLeft + QObject::AlignTop, "<<required interfaces>>",
+	  draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, "<<required interfaces>>",
 		    p.font(), fp);
 	r.setLeft(left2);
 	r.setTop(r.top() + lh);
@@ -653,9 +653,9 @@ void ComponentCanvas::draw(QPainter & p) {
 	for (QValueList<BrowserClass *>::ConstIterator it = rq.begin();
 	     it != rq.end();
 	     it++) {
-	  p.drawText(r, QObject::AlignLeft + QObject::AlignTop, (*it)->get_name());
+	  p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, (*it)->get_name());
 	  if (fp != 0)
-	    draw_text(r, QObject::AlignLeft + QObject::AlignTop, (*it)->get_name(),
+	    draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, (*it)->get_name(),
 		      p.font(), fp);
 	  r.setTop(r.top() + lh);
 	}
@@ -673,9 +673,9 @@ void ComponentCanvas::draw(QPainter & p) {
 
       r.setTop(r.top() + four);
       r.setLeft(left1);
-      p.drawText(r, QObject::AlignLeft + QObject::AlignTop, "<<realizations>>");
+      p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, "<<realizations>>");
       if (fp != 0)
-	draw_text(r, QObject::AlignLeft + QObject::AlignTop, "<<realizations>>",
+	draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, "<<realizations>>",
 		  p.font(), fp);
       r.setLeft(left2);
       r.setTop(r.top() + lh);
@@ -683,9 +683,9 @@ void ComponentCanvas::draw(QPainter & p) {
       for (QValueList<BrowserClass *>::ConstIterator it = rz.begin();
 	   it != rz.end();
 	   it++) {
-	p.drawText(r, QObject::AlignLeft + QObject::AlignTop, (*it)->get_name());
+	p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, (*it)->get_name());
 	if (fp != 0)
-	  draw_text(r, QObject::AlignLeft + QObject::AlignTop, (*it)->get_name(),
+	  draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, (*it)->get_name(),
 		    p.font(), fp);
 	r.setTop(r.top() + lh);
       }

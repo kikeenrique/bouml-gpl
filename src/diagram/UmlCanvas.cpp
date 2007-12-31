@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -92,8 +92,8 @@ void UmlCanvas::set_view(DiagramView * v) {
   hlimit = new QCanvasLine(this);
   vlimit->setZ(TOP_Z);	// alien
   hlimit->setZ(TOP_Z);	// alien
-  vlimit->setPen(QObject::DotLine);
-  hlimit->setPen(QObject::DotLine);
+  vlimit->setPen(::Qt::DotLine);
+  hlimit->setPen(::Qt::DotLine);
   update_limits();
   vlimit->show();
   hlimit->show();
@@ -114,9 +114,9 @@ void UmlCanvas::resize(CanvasFormat f) {
   update_limits();
   
   // force redisplay else phantoms may appears
-  setBackgroundColor(QObject::lightGray);
+  setBackgroundColor(::Qt::lightGray);
   update();
-  setBackgroundColor(QObject::white);
+  setBackgroundColor(::Qt::white);
   update();
 }
 

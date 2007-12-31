@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -148,7 +148,7 @@ void PinCanvas::update() {
   if (!s.isEmpty()) {
     if (label == 0) {
       QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
-      QRect r = fm.boundingRect(0, 0, 1000, 1000, QObject::AlignCenter, s);
+      QRect r = fm.boundingRect(0, 0, 1000, 1000, ::Qt::AlignCenter, s);
       QPoint pp = center();
       QPoint pa = act->center();
       int x, y;
@@ -282,8 +282,8 @@ void PinCanvas::draw(QPainter & p) {
   QColor bckgrnd = p.backgroundColor();
   
   p.setBackgroundMode((used_color == UmlTransparent)
-		      ? QObject::TransparentMode
-		      : QObject::OpaqueMode);
+		      ? ::Qt::TransparentMode
+		      : ::Qt::OpaqueMode);
 
   QColor co = color(used_color);
   QRect r = rect();

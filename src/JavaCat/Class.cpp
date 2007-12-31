@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -675,7 +675,12 @@ bool Class::manage_member(QCString s, QCString & path) {
   }
   
   for (;;) {
-    if (s == "(") {
+    if (s.isEmpty()) {
+      if (!Package::scanning())
+	Lex::premature_eof();
+      return FALSE;
+    }
+    else if (s == "(") {
       // an operation
       if (Package::scanning()) {
 	UmlOperation::skip_body(0);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -315,7 +315,7 @@ void OdClassInstCanvas::draw(QPainter & p) {
     QColor bckgrnd = p.backgroundColor();
     double zoom = the_canvas()->zoom();
 
-    p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
+    p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
     
     QColor co = color(used_color);
     FILE * fp = svg();
@@ -332,20 +332,20 @@ void OdClassInstCanvas::draw(QPainter & p) {
 	
 	p.fillRect (r.right(), r.top() + shadow,
 		    shadow, r.height() - 1,
-		    QObject::darkGray);
+		    ::Qt::darkGray);
 	p.fillRect (r.left() + shadow, r.bottom(),
 		    r.width() - 1, shadow,
-		    QObject::darkGray);
+		    ::Qt::darkGray);
 
 	if (fp != 0) {
 	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
 		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		  QObject::darkGray.rgb()&0xffffff,
+		  ::Qt::darkGray.rgb()&0xffffff,
 		  r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
 
 	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
 		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		  QObject::darkGray.rgb()&0xffffff,
+		  ::Qt::darkGray.rgb()&0xffffff,
 		  r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
 	}
       }
@@ -371,18 +371,18 @@ void OdClassInstCanvas::draw(QPainter & p) {
 
     r.setTop(r.top() + two);
     if (horiz) {
-      p.drawText(r, QObject::AlignHCenter + QObject::AlignTop,
+      p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop,
 		 full_name());
       if (fp != 0)
-	draw_text(r, QObject::AlignHCenter + QObject::AlignTop,
+	draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop,
 		  full_name(),
 		  p.font(), fp);
     }
     else {
-      p.drawText(r, QObject::AlignHCenter + QObject::AlignTop,
+      p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop,
 		 get_name() + ":");
       if (fp != 0)
-	draw_text(r, QObject::AlignHCenter + QObject::AlignTop,
+	draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop,
 		  get_name() + ":",
 		  p.font(), fp);
       r.setTop(r.top() + fm.height());
@@ -390,10 +390,10 @@ void OdClassInstCanvas::draw(QPainter & p) {
       BrowserClass * cl = 
 	((ClassInstanceData *) browser_node->get_data())->get_class();
 	  
-      p.drawText(r, QObject::AlignHCenter + QObject::AlignTop,
+      p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop,
 		 cl->get_name());
       if (fp != 0)
-	draw_text(r, QObject::AlignHCenter + QObject::AlignTop,
+	draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop,
 		  cl->get_name(),
 		  p.font(), fp);
     }
@@ -418,9 +418,9 @@ void OdClassInstCanvas::draw(QPainter & p) {
       do {
 	QString s = (*it).att->get_name() + egal + (*it).value;
 
-	p.drawText(r, QObject::AlignTop, s);
+	p.drawText(r, ::Qt::AlignTop, s);
 	if (fp != 0)
-	  draw_text(r, QObject::AlignTop, s,
+	  draw_text(r, ::Qt::AlignTop, s,
 		    p.font(), fp);
 	r.setTop(r.top() + he);
 	++it;

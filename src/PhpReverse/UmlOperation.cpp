@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -120,17 +120,6 @@ bool UmlOperation::new_one(Class * container, aVisibility visibility,
       def = "  ${comment}${final}${visibility}${abstract}${static}function ${name}${(}${)}\n{\n  ${body}}\n";
       index = def.find("${name}");
     }
-    else {
-      // unindent ${body}
-      int index2 = def.find("${body}", index);
-      int index3 = index2;
-      
-      while ((def[--index3] == ' ') || (def[index3] == '\t'))
-	;
-      
-      def.remove((unsigned) (index3 + 1),
-		 (unsigned) (index2 - index3 - 1));
-    }
     
     if (refp)
       def.insert(index, "&");
@@ -226,6 +215,7 @@ bool UmlOperation::new_one(Class * container, aVisibility visibility,
       e.truncate(ln);
       
       op->set_PhpBody(e);
+      op->set_PhpContextualBodyIndent(FALSE);
     }
 #endif
   }

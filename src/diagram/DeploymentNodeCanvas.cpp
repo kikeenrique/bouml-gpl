@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -234,7 +234,7 @@ void DeploymentNodeCanvas::draw(QPainter & p) {
   a.setPoint(6, r.left(), r.top());
   
   if (c == UmlTransparent) {
-    p.setBackgroundMode(QObject::TransparentMode);
+    p.setBackgroundMode(::Qt::TransparentMode);
     p.setBackgroundColor(co);
     p.drawPolyline(a);
 
@@ -246,7 +246,7 @@ void DeploymentNodeCanvas::draw(QPainter & p) {
     }
   }
   else {
-    p.setBackgroundMode(QObject::OpaqueMode);
+    p.setBackgroundMode(::Qt::OpaqueMode);
     p.fillRect(r, co);
     p.setBrush(co);
     p.drawPolygon(a, TRUE, 0, 6);
@@ -280,28 +280,28 @@ void DeploymentNodeCanvas::draw(QPainter & p) {
   
   if (st[0]) {
     s = QString("<<") + toUnicode(st) + ">>";
-    p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, s);
+    p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s);
     if (fp != 0)
-      draw_text(r, QObject::AlignHCenter + QObject::AlignTop, s, p.font(), fp);
+      draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s, p.font(), fp);
     r.setTop(r.top() + fm.height() + three);
   }
   
   if (horiz) {
     s = iname + ":" + browser_node->get_name();
-    p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, s);
+    p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s);
     if (fp != 0)
-      draw_text(r, QObject::AlignHCenter + QObject::AlignTop, s, p.font(), fp);
+      draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s, p.font(), fp);
   }
   else {
     s = iname + ":";
-    p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, s);
+    p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s);
     if (fp != 0)
-      draw_text(r, QObject::AlignHCenter + QObject::AlignTop, s, p.font(), fp);
+      draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s, p.font(), fp);
     r.setTop(r.top() + fm.height() + three);
     s = browser_node->get_name();
-    p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, s);
+    p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s);
     if (fp != 0)
-      draw_text(r, QObject::AlignHCenter + QObject::AlignTop, s, p.font(), fp);
+      draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s, p.font(), fp);
   }
   
   if (fp != 0)

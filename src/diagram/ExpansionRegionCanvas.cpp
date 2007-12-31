@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -328,8 +328,8 @@ void ExpansionRegionCanvas::draw(QPainter & p) {
   QColor bckgrnd = p.backgroundColor();
   
   p.setBackgroundMode((used_color == UmlTransparent)
-		      ? QObject::TransparentMode
-		      : QObject::OpaqueMode);
+		      ? ::Qt::TransparentMode
+		      : ::Qt::OpaqueMode);
 
   QColor co = color(used_color);
   
@@ -338,7 +338,7 @@ void ExpansionRegionCanvas::draw(QPainter & p) {
   if (used_color != UmlTransparent) 
     p.setBrush(co);
   
-  p.setPen(QObject::DotLine);
+  p.setPen(::Qt::DotLine);
   p.drawRoundRect(r, 8, 8);
 
   FILE * fp = svg();
@@ -371,14 +371,14 @@ void ExpansionRegionCanvas::draw(QPainter & p) {
   r.setTop(r.top() + margin);
   r.setLeft(r.left() + margin);
   p.setFont(the_canvas()->get_font(UmlNormalFont));
-  p.drawText(r, QObject::AlignLeft, s);
+  p.drawText(r, ::Qt::AlignLeft, s);
   if (fp != 0) {
-    draw_text(r, QObject::AlignLeft, s,
+    draw_text(r, ::Qt::AlignLeft, s,
 	      p.font(), fp);
     fputs("</g>\n", fp);
   }
 
-  p.setPen(QObject::SolidLine);      
+  p.setPen(::Qt::SolidLine);      
   p.setBackgroundColor(bckgrnd);
   p.setBrush(brsh);
   

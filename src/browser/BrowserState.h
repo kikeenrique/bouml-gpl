@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -61,7 +61,7 @@ class BrowserState : public BrowserNode, public Labeled<BrowserState> {
 				    QString name = QString::null);
     static BrowserNodeList & instances(BrowserNodeList &, bool sort);
     static BrowserState * add_state(BrowserNode * future_parent, bool machine);
-    static BrowserState * add_state(BrowserNode * future_parent, const char * name);
+    static BrowserState * add_state(BrowserNode * future_parent, QString name);
     static BrowserState * get_state(BrowserNode * parent);
     BrowserTransition * add_transition(BrowserNode * end);
     virtual BasicData * add_relation(UmlCode, BrowserNode * end);

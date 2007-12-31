@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -276,9 +276,9 @@ ${module_end}\n\
   
   relattr_stereotypes[0].set("sequence", "vector", "Vector", "", "sequence");
   relattr_stereotypes[1].set("vector", "vector", "Vector", "", "sequence");
-  relattr_stereotypes[2].set("list", "list", "Vector", "", "sequence");
-  relattr_stereotypes[3].set("set", "set", "Vector", "", "sequence");
-  relattr_stereotypes[4].set("map", "map", "Hashtable", "", "sequence");
+  relattr_stereotypes[2].set("list", "list", "List", "", "sequence");
+  relattr_stereotypes[3].set("set", "set", "Set", "", "sequence");
+  relattr_stereotypes[4].set("map", "map", "Map", "", "sequence");
   
   if (class_stereotypes != 0)
     delete [] class_stereotypes;
@@ -364,9 +364,9 @@ ${cases}    default: throw new Error();\n\
     }\n\n\
   }\n\
   private ${name}(int v) { value = v; };\n}\n";
-#define JAVA_ATTR_DECL1	"  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype} ${name}${value};\n"
+#define JAVA_ATTR_DECL1	"  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};\n"
 #define JAVA_ATTR_DECL2	"  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};\n"
-#define JAVA_ATTR_DESCR1	"  ${description}${@}${visibility}${static}${final}${transient}${volatile}${stereotype} ${name}${value};\n"
+#define JAVA_ATTR_DESCR1	"  ${description}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};\n"
 #define JAVA_ATTR_DESCR2	"  ${description}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};\n"
   java_attr_decl[0] = "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};\n";
   java_attr_decl[1] = JAVA_ATTR_DECL1;
@@ -376,7 +376,7 @@ ${cases}    default: throw new Error();\n\
 public static final ${class} ${name} = new ${class}(_${name});\n";
   java_enum_pattern_item_case = "    case _${name}: return ${name};\n";
   java_rel_decl[0] = "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};\n";
-  java_rel_decl[1] = "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype} ${name}${value};\n";
+  java_rel_decl[1] = "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};\n";
   java_rel_decl[2] = "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};\n";
   java_oper_def = "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{\n  ${body}}\n";
   javaphp_get_visibility = UmlPublic;
@@ -3206,6 +3206,11 @@ bool GenerationSettings::import()
       
   if (!fn.isEmpty()) {
     set_last_used_directory(fn);
+    
+    // format is missing in generation setting file
+    // have to read associated project file format
+    if (!BrowserPackage::load_version(fn))
+      return FALSE;
     
     char * s = read_file(fn);
     

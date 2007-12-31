@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -243,7 +243,7 @@ void BrowserClass::paintCell(QPainter * p, const QColorGroup & cg, int column,
   const QColor & bg = p->backgroundColor();
   
   if (is_marked) {
-    p->setBackgroundMode(OpaqueMode);
+    p->setBackgroundMode(::Qt::OpaqueMode);
     p->setBackgroundColor(UmlRedColor);
   }
     
@@ -253,7 +253,7 @@ void BrowserClass::paintCell(QPainter * p, const QColorGroup & cg, int column,
   QListViewItem::paintCell(p, cg, column, width, alignment);
   
   if (is_marked) {
-    p->setBackgroundMode(TransparentMode);
+    p->setBackgroundMode(::Qt::TransparentMode);
     p->setBackgroundColor(bg);
   }
 }
@@ -1499,7 +1499,7 @@ const char * BrowserClass::check_inherit(const BrowserNode * new_parent) const {
 }
   
 QList<BrowserOperation> BrowserClass::inherited_operations(unsigned limit) const {
-  QApplication::setOverrideCursor(Qt::waitCursor);
+  QApplication::setOverrideCursor(::Qt::waitCursor);
   
   QList<BrowserClass> all_parents;
   
@@ -1783,6 +1783,8 @@ void BrowserClass::init()
       relations_default_stereotypes[r].append("map");
     }
   }
+  
+  BrowserAttribute::init();
 }
 
 bool BrowserClass::tool_cmd(ToolCom * com, const char * args) {
@@ -2044,6 +2046,10 @@ void BrowserClass::save(QTextStream & st, bool ref, QString & warning) {
 	else {
 	  // set 'not modified' to delete the associated file on exit
 	  ((BrowserNode *) child)->unmodified();
+	  
+	  if (((BrowserNode *) child)->get_type() == UmlOperation)
+	    ((OperationData *) ((BrowserNode *) child)->get_data())
+	      ->raz_body();
 	  
 	  if ((child = child->nextSibling()) == 0)
 	    break;

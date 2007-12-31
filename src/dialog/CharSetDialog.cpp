@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -51,7 +51,7 @@ CharSetDialog::CharSetDialog(QString cs) : QDialog(0, "charset dialog", TRUE) {
   
   QLabel * lbl = new QLabel("ERROR : No codec for '" + cs + "'\n", this);
   
-  lbl->setAlignment(QObject::AlignCenter);
+  lbl->setAlignment(::Qt::AlignCenter);
   vbox->addWidget(lbl);
   
   vbox->addWidget(new QLabel("\nBOUML_CHARSET environment variable MUST be changed\n\n"

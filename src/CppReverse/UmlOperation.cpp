@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -97,7 +97,7 @@ bool UmlOperation::pfunc(bool & func, QCString & name, QCString & type,
 	return FALSE;
       }
       
-      skip_expr(")");
+      skip_expr(")", TRUE);
       
       func = FALSE;
       type += Lex::region();	// complete
@@ -502,16 +502,6 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
 	    
 	    def.insert((index2 > index3) ? index2 + 8 : index3 + 11, "${throw}");
 	  }
-	  
-	  // unindent ${body}
-	  int index4 = def.find("${body}", index);
-	  int index5 = index4;
-	  
-	  while ((def[--index5] == ' ') || (def[index5] == '\t'))
-	    ;
-	  
-	  def.remove((unsigned) (index5 + 1),
-		     (unsigned) (index4 - index5 - 1));
 	}
 	
 	if (!pfunc) {
@@ -628,7 +618,11 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
   bool pfct = FALSE;
   
   for (;;) {
-    if (s == "const") {
+    if (s.isEmpty()) {
+      Lex::premature_eof();
+      return FALSE;
+    }
+    else if (s == "const") {
       if (!modifier.isEmpty())
 	modifier += QCString(" ") + s;
       else {
@@ -1386,6 +1380,7 @@ bool UmlOperation::reverse_if_def(Package * pack,
       const char * p = s;
       
       op->set_CppBody((*p == '\n') ? p+1 : p);
+      op->set_CppContextualBodyIndent(FALSE);
       
       if (inlinep)
 	op->set_isCppInline(TRUE);
@@ -1456,7 +1451,7 @@ void UmlOperation::skip_expr(QCString end, bool allow_templ) {
     
     char c = *e;
     
-    if ((end.find(c) != -1) && (level == 0))
+    if ((end.find(c) != -1) && (level <= 0))
       break;
     
     switch (c) {
@@ -1466,8 +1461,11 @@ void UmlOperation::skip_expr(QCString end, bool allow_templ) {
       // no break
     case '(':
     case '{':
-    case '[':
       level += 1;
+      break;
+    case '[':
+      if (e.length() == 1)
+	level += 1;
       break;
     case '>':
       if (! allow_templ)

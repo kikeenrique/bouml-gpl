@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -107,8 +107,8 @@ void UcUseCaseCanvas::draw(QPainter & p) {
     if (shadow != -1) {
       r.setRight(r.right() - shadow);
       r.setBottom(r.bottom() - shadow);
-      p.setPen(QObject::NoPen);
-      p.setBrush(QObject::darkGray);
+      p.setPen(::Qt::NoPen);
+      p.setBrush(::Qt::darkGray);
       p.drawEllipse(r.left() + shadow, r.top() + shadow, r.width(), r.height());
 
       if (fp != 0) {
@@ -117,7 +117,7 @@ void UcUseCaseCanvas::draw(QPainter & p) {
 
 	fprintf(fp, "\t<ellipse fill=\"#%06x\" stroke=\"none\""
 		" cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
-		QObject::darkGray.rgb()&0xffffff,
+		::Qt::darkGray.rgb()&0xffffff,
 		r.left() + shadow + rx, r.top() + shadow + ry, rx, ry);
       }
     }
@@ -135,16 +135,16 @@ void UcUseCaseCanvas::draw(QPainter & p) {
 	    (realizationp) ? " stroke-dasharray=\"4,4\"" : "",
 	    r.left() + rx, r.top() + ry, rx, ry);
   
-  p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
+  p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
   p.setBrush(col);
 
   if (realizationp)
-    p.setPen(QObject::DotLine);
+    p.setPen(::Qt::DotLine);
   else
-    p.setPen(QObject::SolidLine);
+    p.setPen(::Qt::SolidLine);
   p.drawEllipse(r.left(), r.top(), r.width(), r.height());
   if (realizationp)
-    p.setPen(QObject::SolidLine);
+    p.setPen(::Qt::SolidLine);
 
   QString ep = data->get_extension_points();
   
@@ -170,10 +170,10 @@ void UcUseCaseCanvas::draw(QPainter & p) {
     p.setBackgroundColor(col);
     p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
 
-    p.drawText(px, py, w, h, QObject::AlignHCenter + QObject::AlignTop,
+    p.drawText(px, py, w, h, ::Qt::AlignHCenter + ::Qt::AlignTop,
 	       "Extension Points");
     if (fp != 0)
-      draw_text(px, py, w, h, QObject::AlignHCenter + QObject::AlignTop, 
+      draw_text(px, py, w, h, ::Qt::AlignHCenter + ::Qt::AlignTop, 
 		"Extension Points", p.font(), fp);
     
     h -= he;
@@ -182,11 +182,11 @@ void UcUseCaseCanvas::draw(QPainter & p) {
       // at least one line may be written
       py += he;
       p.setFont(the_canvas()->get_font(UmlNormalFont));
-      p.drawText(px, py, w, h, QObject::AlignCenter, ep);
+      p.drawText(px, py, w, h, ::Qt::AlignCenter, ep);
       p.setBackgroundColor(bckgrnd);
       
       if (fp != 0)
-	draw_text(px, py, w, h, QObject::AlignCenter, ep, p.font(), fp);
+	draw_text(px, py, w, h, ::Qt::AlignCenter, ep, p.font(), fp);
     }
   }
   

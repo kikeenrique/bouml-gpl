@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -138,6 +138,8 @@ class RelationDialog : public QTabDialog {
     QGroupBox * php_b;
     QGroupBox * idl_b;
     QList<BodyDialog> edits;
+    BrowserNode * view;
+    int offset;
         
     static QSize previous_size;
   
@@ -190,6 +192,7 @@ class RelationDialog : public QTabDialog {
     void edit_init_a();
     void edit_init_b();
     void edTypeActivated(int);
+    void menu_assoc();
     void cpp_update_a();
     void cpp_update_b();
     void cpp_default_a();

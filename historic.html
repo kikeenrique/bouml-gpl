@@ -1,3 +1,124 @@
+<h3>3.4.1</h3>December, 31th 2007<br /><br />
+    <ul>
+	<li> Default <i>getter</i> and <i>setter</i> definition was wrong
+		in Java and C++ when the associated attribute/relation
+		produces an array (because of its multiplicity), fixed.<br />
+	     Furthermore in this case the <i>setter</i> definition in C++ stops
+		to use a <i>memcpy</i>, and now copy the elements one by one.
+		<br /><br /></li>
+
+	<li> In the relation dialog the new button <i>association</i>
+		allows to create a new class and set the value with it,
+		or in case the value is a class to select it in the browser
+		(like for the button <i>type</i> in the attribute dialog).
+		<br /><br /></li>
+
+	<li> <b>C++ Generator 2.11.1</b><br />
+	     <b>Java Generator 2.14.1</b><br />
+	     <b>Php Generator 1.2.1</b><br />
+	     <b>Idl Generator 2.8.2</b><br />
+		When a class or an artifact have an empty definition
+		the message contained the name of the element without
+		its kind, this was disturbing in case the class and
+		the artifact have the same name. Now the message
+		indicates if the problem concerns the class or the
+		artifact.
+		<br /></li>
+    </ul>
+<br /><br />
+
+
+<h3>3.4</h3>December, 16th 2007<br /><br />
+    <ul>
+	<li> <font color="red">Previous releases crash when you
+		start to draw an association part of the model
+		(not an <i>anchor</i> for instance) in a diagram
+		and you use one of the buttons allowing to change
+		the zoom</font>, fixed.
+		<br /><br /></li>
+
+	<li> It is now possible to ask for to not add the indent dependent
+		on the context when the body of an operation is
+		produced. This feature is mainly added to simplify the
+		work of the reverses and to preserve the original indent
+		of the reversed operations.<br />
+		By default the indent depend on	the context, this means
+		for instance depend on the indent of its class.
+		<br /><br /></li>
+
+	<li> <b>C++ Reverse 2.8</b><br />
+	     <b>Java Reverse 2.11</b><br />
+	     <b>Php Reverse 1.1</b><br />
+	     <b>Roundtrip body 1.6</b><br />
+		To ask for to not add the indent dependent
+		on the context when the body of an operation is
+		produced.
+		<br /><br /></li>
+
+
+	<li> <b>C++ Generator 2.11</b><br />
+	     <b>Java Generator 2.14</b><br />
+	     <b>Php Generator 1.2</b><br />
+		To manage body indent not dependent on the context.
+		<br /><br /></li>
+
+	<li> Remark : Bouml is now also available on 
+		<a href="http://sourceforge.net/projects/bouml" target="_blank">source forge</a>
+		<br /><br /></li>
+
+	<li> Because the format of the BOUML files is changed,
+	     the previous releases of BOUML cannot read a project
+	     saved with this version. Obviously this release is
+	     able to read the projects made by previous releases of BOUML.</li>
+    </ul>
+<br /><br />
+
+
+<h3>3.3.5</h3>December, 10th 2007<br /><br />
+    <ul>
+	<li> The stereotype of an attribute was not copied to
+		its <i>getter</i> and <i>setter</i>, fixed.
+		<br /><br /></li>
+
+	<li> <font color="blue">Now when you create a new project the
+		<i>generation settings</i> in Java use <i>generics</i></font>,
+		for that by default :<ul>
+		<li> the UML stereotypes <i>list, set</i> and <i>map</i> produce
+			<i>List, Set</i> and <i>Map</i> in Java,</li>
+		<li> the attributes and relation definition in Java contains
+			<i>${stereotype}&lt;${type}&gt;</i> when the multiplicity
+			is * or a form <i>a..b</i> whatever <i>a</i> and <i>b</i>
+			are.</li>
+		</ul>
+		<br /><br /></li>
+
+	<li> <b>C++ Reverse 2.7.2</b><br />
+		Previous releases may crash reaching a premature
+		end of file, fixed.<br />
+		Fixing in the reverse of an operation having at least one
+		parameter being a pointer to an operation having itself
+		one parameter being an array.
+		<br /><br /></li>
+
+	<li> <b>Java Reverse 2.10.2</b><br />
+	     <b>Java Catalog 2.10.2</b><br />
+		Previous releases may crash reaching a premature
+		end of file, fixed.
+		<br /><br /></li>
+
+	<li> <b>C++ Generator 2.10.1</b><br />
+	     <b>Java Generator 2.13.1</b><br />
+	     <b>Php Generator 1.1.1</b><br />
+	     <b>Idl Generator 2.8.1</b><br />
+		An extra line break was generated at the end of a
+		non null comment when the form <i>${comment}</i>
+		or <i>${description}</i> is placed at the end of the
+		declaration/definition, fixed.
+		</li>
+    </ul>
+<br /><br />
+
+
 <h3>3.3.4</h3>November, 21th 2007<br /><br />
     <ul>
 	<li> <font color="red">Previous releases crash on undo when
@@ -28,19 +149,21 @@
 			<li> the messages between instances ordered on the sending time
 				(vertical position in the diagram), </li>
 			<li> the <i>fragment compartment</i> where a
-				message is sent,</i> 
+				message is sent,</li> 
 			<li> the <i>fragment compartment</i> where the fragments
 				may be drawn and the <i>text</i> may be placed in the
 				<i>fragments compartment</i> (corresponding to a
-				guard of a <i>fragment alt</i> for instance)
+				guard of a <i>fragment alt</i> for instance)</li>
 			</ul></li>
 		</ul><br /></li>
 
 	<li> <b>Plug-out upgrade 1.10.2</b><br />
 		To access to the <i>semantic</i> informations from a 
 		<i>use case, collaboration</i> and <i>sequence</i> diagrams,
-		through the new operation <i>definition</i>.<br />
-		A new <i>package</i> named Diagram is created to place the new classes
+		through the new operation <i>definition</i> defined on
+		<i>UmlBaseCollaborationDiagram, UmlBaseSequenceDiagram</i>
+		and <i>UmlBaseUseCaseDiagram</i>.<br />
+		A new <i>package</i> named <i>Diagram</i> is created to place the new classes
 		supporting these informations under the <i>packages API BASE</i> and
 		<i>API USER</i>
 		<br /><br /></li>

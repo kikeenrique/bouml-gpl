@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -221,12 +221,12 @@ void SdClassInstCanvas::draw(QPainter & p) {
       
       QColor bckgrnd = p.backgroundColor();
       
-      p.setBackgroundMode(QObject::TransparentMode);
+      p.setBackgroundMode(::Qt::TransparentMode);
       p.setFont(the_canvas()->get_font(UmlNormalFont));
-      p.drawText(r, QObject::AlignCenter, full_name());
+      p.drawText(r, ::Qt::AlignCenter, full_name());
       
       if (fp != 0)
-	draw_text(r, QObject::AlignCenter, full_name(),
+	draw_text(r, ::Qt::AlignCenter, full_name(),
 		  p.font(), fp);
       p.setBackgroundColor(bckgrnd);
 

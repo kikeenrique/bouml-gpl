@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -64,7 +64,7 @@ void UmlClass::generate() {
       }
       else if (cppDecl().isEmpty()) {
 	if (verbose())
-	  UmlCom::trace(QCString("<hr><font face=helvetica><i>")
+	  UmlCom::trace(QCString("<hr><font face=helvetica>class <i>")
 			+ name() + "</i> has an empty C++ definition</font><br>");
       }
       else

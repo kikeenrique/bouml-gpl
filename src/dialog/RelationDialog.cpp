@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,6 +35,8 @@
 #include <qradiobutton.h> 
 #include <qpushbutton.h> 
 #include <qsplitter.h> 
+#include <qpopupmenu.h> 
+#include <qcursor.h> 
 
 #include "RelationDialog.h"
 #include "RelationData.h"
@@ -64,9 +66,9 @@ static const struct {
   {UmlAssociation, "association", &associationButton},
   {UmlDirectionalAssociation, "unidirectional association", &directionalAssociationButton},
   {UmlAggregation, "aggregation", &aggregationButton},
-  {UmlAggregationByValue, "aggregation by value", &aggregationByValueButton},
+  {UmlAggregationByValue, "composition", &aggregationByValueButton},
   {UmlDirectionalAggregation, "directional aggregation", &directionalAggregationButton},
-  {UmlDirectionalAggregationByValue, "directional aggregation by value", &directionalAggregationByValueButton},
+  {UmlDirectionalAggregationByValue, "directional composition", &directionalAggregationByValueButton},
   {UmlRealize, "realization", &realizeButton}
 };
 
@@ -79,7 +81,7 @@ static const struct {
   {UmlDependency, "dependency", &dependencyButton},
   {UmlDirectionalAssociation, "unidirectional association", &directionalAssociationButton},
   {UmlDirectionalAggregation, "directional aggregation", &directionalAggregationButton},
-  {UmlDirectionalAggregationByValue, "directional aggregation by value", &directionalAggregationByValueButton},
+  {UmlDirectionalAggregationByValue, "directional composition", &directionalAggregationByValueButton},
   {UmlRealize, "realization", &realizeButton}
 };
 
@@ -90,7 +92,7 @@ static const struct {
 } BiRelTypes[] = {
   {UmlAssociation, "association", &associationButton},
   {UmlAggregation, "aggregation", &aggregationButton},
-  {UmlAggregationByValue, "aggregation by value", &aggregationByValueButton},
+  {UmlAggregationByValue, "composition", &aggregationByValueButton},
 };
 
 RelationDialog::RelationDialog(RelationData * r)
@@ -198,24 +200,29 @@ RelationDialog::RelationDialog(RelationData * r)
   
   htab = new QHBox(vtab);
   htab->setMargin(3);
-  QLabel * lbl3 = new QLabel("association : ", htab);
+    
+  SmallPushButton * button_assoc = 
+    new SmallPushButton("association :", htab);
+  
+  connect(button_assoc, SIGNAL(clicked()), this, SLOT(menu_assoc()));
     
   edassociation = new QComboBox(!a.visit, htab);
   edassociation->insertItem(rel->association.get_full_type());
+  BrowserClass::instances(nodes);
+  nodes.full_names(list);
   if (!a.visit) {
-    BrowserClass::instances(nodes);
-    nodes.full_names(list);
-    
     edassociation->insertStringList(GenerationSettings::basic_types());
+    offset = edassociation->count();
     edassociation->insertStringList(list);
     edassociation->setAutoCompletion(TRUE);
+    view = rel->get_start_class()->container(UmlClass);
   }
   edassociation->setCurrentItem(0);
   edassociation->setSizePolicy(sp);
   
-  same_width(lbl1, lbl2, lbl3);
+  same_width(lbl1, lbl2, button_assoc);
     
-  QSplitter * split = new QSplitter(Vertical, vtab);
+  QSplitter * split = new QSplitter(Qt::Vertical, vtab);
   
   split->setOpaqueResize(TRUE);
     
@@ -223,11 +230,11 @@ RelationDialog::RelationDialog(RelationData * r)
   QString inb = "in " + rel->get_end_class()->full_name(TRUE);
   
   // role A
-  bg = new QGroupBox(2, QGroupBox::Horizontal, ina, split);
+  bg = new QGroupBox(2, Qt::Horizontal, ina, split);
   init_uml_role(a, rel->a, bg, rel->get_start_class());
   
   // role B
-  bg = new QGroupBox(2, QGroupBox::Horizontal, inb, split);
+  bg = new QGroupBox(2, Qt::Horizontal, inb, split);
   init_uml_role(b, rel->b, bg, rel->get_end_class());
 
   addTab(vtab, "Uml");
@@ -241,7 +248,7 @@ RelationDialog::RelationDialog(RelationData * r)
   vtab->setMargin(5);
   
   // A
-  bg = new QGroupBox(2, QGroupBox::Horizontal, ina, vtab); 
+  bg = new QGroupBox(2, Qt::Horizontal, ina, vtab); 
   new QLabel(bg);
   a.cpp_virtual_inheritance_cb = new QCheckBox("virtual", bg);
   if (rel->a.cpp_virtual_inheritance)
@@ -258,7 +265,7 @@ RelationDialog::RelationDialog(RelationData * r)
   htab = new QHBox(vtab);	// to have a vertical margin
   htab->setMargin(5);
   
-  cpp_b = new QGroupBox(2, QGroupBox::Horizontal, inb, vtab);  
+  cpp_b = new QGroupBox(2, Qt::Horizontal, inb, vtab);  
   b.cpp_virtual_inheritance_cb = 0;
   init_cpp_role(b, rel->b, cpp_b, SLOT(cpp_update_b()),
 		SLOT(cpp_default_b()), SLOT(cpp_unmapped_b()), 0);
@@ -277,7 +284,7 @@ RelationDialog::RelationDialog(RelationData * r)
   vtab->setMargin(5);
   
   // A
-  bg = new QGroupBox(2, QGroupBox::Horizontal, ina, vtab); 
+  bg = new QGroupBox(2, Qt::Horizontal, ina, vtab); 
   init_java_role(a, rel->a, bg, SLOT(java_update_a()), SLOT(java_default_a()),
 		 SLOT(java_unmapped_a()), SLOT(java_edit_annotation_a()));
   
@@ -285,7 +292,7 @@ RelationDialog::RelationDialog(RelationData * r)
   htab = new QHBox(vtab);	// to have a vertical margin
   htab->setMargin(5);
   
-  java_b = new QGroupBox(2, QGroupBox::Horizontal, inb, vtab);
+  java_b = new QGroupBox(2, Qt::Horizontal, inb, vtab);
   init_java_role(b, rel->b, java_b, SLOT(java_update_b()), SLOT(java_default_b()),
 		 SLOT(java_unmapped_b()), SLOT(java_edit_annotation_b()));
 
@@ -303,7 +310,7 @@ RelationDialog::RelationDialog(RelationData * r)
   vtab->setMargin(5);
   
   // A
-  bg = new QGroupBox(2, QGroupBox::Horizontal, ina, vtab); 
+  bg = new QGroupBox(2, Qt::Horizontal, ina, vtab); 
   init_php_role(a, rel->a, bg, SLOT(php_update_a()),
 		SLOT(php_default_a()), SLOT(php_unmapped_a()));
   
@@ -311,7 +318,7 @@ RelationDialog::RelationDialog(RelationData * r)
   htab = new QHBox(vtab);	// to have a vertical margin
   htab->setMargin(5);
   
-  php_b = new QGroupBox(2, QGroupBox::Horizontal, inb, vtab);
+  php_b = new QGroupBox(2, Qt::Horizontal, inb, vtab);
   init_php_role(b, rel->b, php_b, SLOT(php_update_b()),
 		SLOT(php_default_b()), SLOT(php_unmapped_b()));
 
@@ -328,7 +335,7 @@ RelationDialog::RelationDialog(RelationData * r)
   vtab->setMargin(5);
   
   // A
-  bg = new QGroupBox(2, QGroupBox::Horizontal, ina, vtab); 
+  bg = new QGroupBox(2, Qt::Horizontal, ina, vtab); 
   
   ClassData * start_data = (ClassData *) rel->get_start_class()->get_data();
   ClassData * end_data = (ClassData *) rel->get_end_class()->get_data();
@@ -356,7 +363,7 @@ RelationDialog::RelationDialog(RelationData * r)
   htab = new QHBox(vtab);	// to have a vertical margin
   htab->setMargin(5);
   
-  idl_b = new QGroupBox(2, QGroupBox::Horizontal, inb, vtab);    
+  idl_b = new QGroupBox(2, Qt::Horizontal, inb, vtab);    
   b.idl_truncatable_inheritance_cb = 0;
   init_idl_role(b, rel->b, end_data, idl_b, SLOT(idl_update_b()),
 		SLOT(idl_default_b()), SLOT(idl_unmapped_b()));
@@ -371,10 +378,10 @@ RelationDialog::RelationDialog(RelationData * r)
   //
   
   vtab = new QVBox(this);
-  bg = new QGroupBox(1, QGroupBox::Horizontal, ina, vtab); 
+  bg = new QGroupBox(1, Qt::Horizontal, ina, vtab); 
   a.kvtable = new KeyValuesTable(rel->get_start(), bg, a.visit);
   new QLabel(vtab);
-  bg = new QGroupBox(1, QGroupBox::Horizontal, inb, vtab); 
+  bg = new QGroupBox(1, Qt::Horizontal, inb, vtab); 
   b.opt.append(bg);
   b.kvtable = new KeyValuesTable(rel->get_end(), bg, b.visit);
   addTab(vtab, "Properties");
@@ -475,7 +482,7 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
   (void) new QLabel(bg);
   htab = new QHBox(bg);
   htab->setMargin(0);
-  QButtonGroup * bg2 = new QButtonGroup(3, QGroupBox::Horizontal, QString::null, htab);
+  QButtonGroup * bg2 = new QButtonGroup(3, Qt::Horizontal, QString::null, htab);
   
   role.opt.append(bg2);
   if (roleb)
@@ -951,6 +958,70 @@ void RelationDialog::edTypeActivated(int r)
   set_inherit_or_dependency(type);
 }
 
+
+
+void RelationDialog::menu_assoc() {
+  QPopupMenu m(0);
+
+  m.insertItem("Choose", -1);
+  m.insertSeparator();
+  
+  int index = list.findIndex(edassociation->currentText().stripWhiteSpace());
+  
+  if (index != -1)
+    m.insertItem("Select in browser", 0);
+  
+  BrowserNode * bn = 0;
+  
+  if (! a.visit) {
+    bn = BrowserView::selected_item();
+    
+    if ((bn != 0) && (bn->get_type() == UmlClass) && !bn->deletedp())
+      m.insertItem("Choose class selected in browser", 1);
+    else
+      bn = 0;
+    
+    m.insertItem("Create class and choose it", 2);
+  }
+  
+  if (!a.visit || (index != -1) || (bn != 0)) {
+    switch (m.exec(QCursor::pos())) {
+    case 0:
+      nodes.at(index)->select_in_browser();
+      break;
+    case 2:
+      bn = BrowserClass::add_class(view);
+      if (bn == 0)
+	return;
+      bn->select_in_browser();
+      // no break
+    case 1:
+      {
+	QString s = bn->full_name(TRUE);
+	
+	if ((index = list.findIndex(s)) == -1) {
+	  // new class, may be created through an other dialog
+	  index = 0;
+	  QStringList::Iterator iter = list.begin();
+	  QStringList::Iterator iter_end = list.end();
+	  
+	  while ((iter != iter_end) && (*iter < s)) {
+	    ++iter;
+	    index += 1;
+	  }
+	  nodes.insert((unsigned) index, bn);
+	  list.insert(iter, s);
+	  edassociation->insertItem(s, index + offset);
+	}
+      }
+      edassociation->setCurrentItem(index + offset);
+      break;
+    default:
+      break;
+    }
+  }
+}
+
 void RelationDialog::update_all_tabs(QWidget * w) {  
   if (current_type == UmlDependency) {
     QString s = a.edcppdecl->text().stripWhiteSpace();
@@ -1339,24 +1410,7 @@ void RelationDialog::java_update(RoleDialog & role, BrowserClass * cl, BrowserNo
 	}
 	else if (!strncmp(p, "${multiplicity}", 15)) {
 	  p += 15;
-	  
-	  QString m = role.multiplicity->currentText().stripWhiteSpace();
-	  
-	  if (*m != '[')
-	    s += "[]";
-	  else {
-	    for (unsigned index = 0; index != m.length(); index += 1) {
-	      switch (m.at(index).latin1()) {
-	      case '[':
-		s += '[';
-		break;
-	      case ']':
-		s += ']';
-	      default:
-		break;
-	      }
-	    }
-	  }
+	  s += java_multiplicity(role.multiplicity->currentText().stripWhiteSpace());
 	}
 	else if (!strncmp(p, "${stereotype}", 13)) {
 	  p += 13;

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -88,16 +88,16 @@ void SdLifeLineCanvas::change_scale() {
 }
 
 void SdLifeLineCanvas::drawShape(QPainter & p) {
-  p.setBackgroundMode(QObject::OpaqueMode);
+  p.setBackgroundMode(::Qt::OpaqueMode);
   
-  p.setPen(QObject::DashLine);
+  p.setPen(::Qt::DashLine);
   
   int m = (int) (x()+width()/2);
   FILE * fp = svg();
 
   p.drawLine(m, (int) y(), m, end);
 
-  p.setPen(QObject::SolidLine);
+  p.setPen(::Qt::SolidLine);
 
   if (end != LIFE_LINE_HEIGHT) {
     int b = end + (int) width();

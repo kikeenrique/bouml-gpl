@@ -273,6 +273,25 @@ bool UmlBaseOperation::set_CppGetSetFrozen(bool v) {
 }
 #endif
 
+#ifdef WITHCPP
+bool UmlBaseOperation::cppContextualBodyIndent() {
+  read_if_needed_();
+    
+  return _cpp_contextual_body_indent;
+}
+
+bool UmlBaseOperation::set_CppContextualBodyIndent(bool v) {
+  bool vv;
+
+  if (set_it_(vv, v, setCppContextualBodyIndent)) {
+    _cpp_contextual_body_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
 #ifdef WITHJAVA
 bool UmlBaseOperation::isJavaFinal() {
   read_if_needed_();
@@ -357,6 +376,25 @@ bool UmlBaseOperation::set_JavaGetSetFrozen(bool v) {
 }
 #endif
 
+#ifdef WITHJAVA
+bool UmlBaseOperation::javaContextualBodyIndent() {
+  read_if_needed_();
+    
+  return _java_contextual_body_indent;
+}
+
+bool UmlBaseOperation::set_JavaContextualBodyIndent(bool v) {
+  bool vv;
+
+  if (set_it_(vv, v, setJavaContextualBodyIndent)) {
+    _java_contextual_body_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
 #ifdef WITHPHP
 bool UmlBaseOperation::isPhpFinal() {
   read_if_needed_();
@@ -417,6 +455,25 @@ bool UmlBaseOperation::set_PhpGetSetFrozen(bool v) {
 
   if (set_it_(vv, v, setPhpFrozenCmd)) {
     _php_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
+#ifdef WITHPHP
+bool UmlBaseOperation::phpContextualBodyIndent() {
+  read_if_needed_();
+    
+  return _php_contextual_body_indent;
+}
+
+bool UmlBaseOperation::set_PhpContextualBodyIndent(bool v) {
+  bool vv;
+
+  if (set_it_(vv, v, setPhpContextualBodyIndent)) {
+    _php_contextual_body_indent = v;
     return TRUE;
   }
   else
@@ -536,6 +593,7 @@ void UmlBaseOperation::read_cpp_() {
   _cpp_def = UmlCom::read_string();
   _cpp_name_spec = UmlCom::read_string();
   _cpp_get_set_frozen = UmlCom::read_bool();
+  _cpp_contextual_body_indent = UmlCom::read_bool();
 }
 #endif
 
@@ -546,6 +604,7 @@ void UmlBaseOperation::read_java_() {
   _java_synchronized = UmlCom::read_bool();
   _java_name_spec = UmlCom::read_string();
   _java_get_set_frozen = UmlCom::read_bool();
+  _java_contextual_body_indent = UmlCom::read_bool();
 }
 #endif
 
@@ -555,6 +614,7 @@ void UmlBaseOperation::read_php_() {
   _php_final = UmlCom::read_bool();
   _php_name_spec = UmlCom::read_string();
   _php_get_set_frozen = UmlCom::read_bool();
+  _php_contextual_body_indent = UmlCom::read_bool();
 }
 #endif
 

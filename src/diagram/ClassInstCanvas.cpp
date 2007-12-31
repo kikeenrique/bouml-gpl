@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -129,8 +129,8 @@ void ClassInstCanvas::draw(QPainter & p, UmlCanvas * canvas, QRect r) {
   QColor bckgrnd = p.backgroundColor();
 
   p.setBackgroundMode((used_color == UmlTransparent)
-		      ? QObject::TransparentMode :
-		      QObject::OpaqueMode);
+		      ? ::Qt::TransparentMode :
+		      ::Qt::OpaqueMode);
 
   FILE * fp = svg();
 
@@ -150,22 +150,22 @@ void ClassInstCanvas::draw(QPainter & p, UmlCanvas * canvas, QRect r) {
       
       p.fillRect (r.right(), r.top() + shadow,
 		  shadow, r.height() - 1,
-		  QObject::darkGray);
+		  ::Qt::darkGray);
       p.fillRect (r.left() + shadow, r.bottom(),
 		  r.width() - 1, shadow,
-		  QObject::darkGray);
+		  ::Qt::darkGray);
       
       p.fillRect(r, co);
       
       if (fp != 0) {
 	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
 		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		QObject::darkGray.rgb()&0xffffff,
+		::Qt::darkGray.rgb()&0xffffff,
 		r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
 	
 	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
 		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		QObject::darkGray.rgb()&0xffffff,
+		::Qt::darkGray.rgb()&0xffffff,
 		r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
 	
 	fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
@@ -182,26 +182,26 @@ void ClassInstCanvas::draw(QPainter & p, UmlCanvas * canvas, QRect r) {
   
   p.drawRect(r);
   
-  p.setBackgroundMode(QObject::TransparentMode);
+  p.setBackgroundMode(::Qt::TransparentMode);
   p.setFont(canvas->get_font(UmlNormalUnderlinedFont));
   if (horiz) {
-    p.drawText(r, QObject::AlignCenter, full_name());
+    p.drawText(r, ::Qt::AlignCenter, full_name());
     if (fp != 0)
-      draw_text(r, QObject::AlignCenter, full_name(),
+      draw_text(r, ::Qt::AlignCenter, full_name(),
 		p.font(), fp);
   }
   else {
     QRect r1 = r;
     
     r1.setHeight(r.height()/2);
-    p.drawText(r1, QObject::AlignCenter, iname + ":");
+    p.drawText(r1, ::Qt::AlignCenter, iname + ":");
     if (fp != 0)
-      draw_text(r1, QObject::AlignCenter, iname + ":",
+      draw_text(r1, ::Qt::AlignCenter, iname + ":",
 		p.font(), fp);
     r1.moveBy(0, r.height()/2);
-    p.drawText(r1, QObject::AlignCenter, cl->get_name());
+    p.drawText(r1, ::Qt::AlignCenter, cl->get_name());
     if (fp != 0)
-      draw_text(r1, QObject::AlignCenter, cl->get_name(),
+      draw_text(r1, ::Qt::AlignCenter, cl->get_name(),
 		p.font(), fp);
   }
   p.setFont(canvas->get_font(UmlNormalFont));

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -65,8 +65,13 @@ void UmlItem::manage_comment(const char *& p, const char *& pp,
 	the_comment += "//";
     } while (*comment);
     
-    if (*p != '\n')
+    switch (*p) {
+    case 0:
+    case '\n':
+      break;
+    default:
       the_comment += '\n';
+    }
   }
     
   pp = p;
@@ -83,8 +88,14 @@ void UmlItem::manage_description(const char *& p, const char *& pp) {
     return;
   
   the_comment = description();
-  if (*p != '\n')
+
+  switch (*p) {
+  case 0:
+  case '\n':
+    break;
+  default:
     the_comment += '\n';
+  }
     
   pp = p;
   p = the_comment;

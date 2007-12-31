@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,7 +48,7 @@ UserDialog::UserDialog(const QPoint & p)
     new QLabel("\nSelect a user to get its identity,\nyou may change or set his name\n", 
 	       this);
   
-  lbl->setAlignment(QObject::AlignCenter);
+  lbl->setAlignment(::Qt::AlignCenter);
   vbox->addWidget(lbl);
   
   hbox = new QHBoxLayout(vbox);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -301,10 +301,10 @@ UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
   QPopupMenu * help = new QPopupMenu(this);
   menuBar()->insertItem("&Help", help);
   
-  help->insertItem("&About", this, SLOT(about()), Key_F1);
+  help->insertItem("&About", this, SLOT(about()), ::Qt::Key_F1);
   help->insertItem("About&Qt", this, SLOT(aboutQt()));
   help->insertSeparator();
-  help->insertItem("What's This", this, SLOT(whatsThis()), SHIFT+Key_F1);
+  help->insertItem("What's This", this, SLOT(whatsThis()), ::Qt::SHIFT+::Qt::Key_F1);
     
   //
   // sub windows
@@ -405,7 +405,7 @@ void UmlWindow::projectMenuAboutToShow() {
     projectMenu->setWhatsThis(id, projectOpenText);
     
     id = projectMenu->insertItem(saveIcon, "&Save",
-				 this, SLOT(save()), CTRL+Key_S);
+				 this, SLOT(save()), ::Qt::CTRL+::Qt::Key_S);
     projectMenu->setWhatsThis(id, projectSaveText);
     projectMenu->setItemEnabled(id, enabled);
     
@@ -496,10 +496,10 @@ void UmlWindow::toolMenuAboutToShow() {
   toolMenu->insertItem("Show &Trace Window", this, SLOT(show_trace()));
   if (browser->get_project() != 0) {
     toolMenu->insertSeparator();
-    toolMenu->insertItem("Generate C++", this, SLOT(cpp_generate()), CTRL+Key_G);
-    toolMenu->insertItem("Generate Java", this, SLOT(java_generate()), CTRL+Key_J);
-    toolMenu->insertItem("Generate Php", this, SLOT(php_generate()), CTRL+Key_P);
-    toolMenu->insertItem("Generate Idl", this, SLOT(idl_generate()), CTRL+Key_I);
+    toolMenu->insertItem("Generate C++", this, SLOT(cpp_generate()), ::Qt::CTRL+::Qt::Key_G);
+    toolMenu->insertItem("Generate Java", this, SLOT(java_generate()), ::Qt::CTRL+::Qt::Key_J);
+    toolMenu->insertItem("Generate Php", this, SLOT(php_generate()), ::Qt::CTRL+::Qt::Key_P);
+    toolMenu->insertItem("Generate Idl", this, SLOT(idl_generate()), ::Qt::CTRL+::Qt::Key_I);
     if (!BrowserNode::edition_active()) {
       toolMenu->insertSeparator();
       toolMenu->insertItem("Reverse C++", this, SLOT(cpp_reverse()));
@@ -703,7 +703,7 @@ void UmlWindow::load(QString fn, bool forcesaveas) {
    
   historic_add(fi.absFilePath());
   
-  QApplication::setOverrideCursor(Qt::waitCursor);
+  QApplication::setOverrideCursor(::Qt::waitCursor);
   set_in_import(FALSE);
   browser->set_project(di);
   BrowserNode::pre_load();
@@ -790,7 +790,7 @@ void UmlWindow::save() {
       // hide the window else the user see that 
       // all the not-open diagram window will be open
       // to save their content
-      QApplication::setOverrideCursor(Qt::waitCursor);
+      QApplication::setOverrideCursor(::Qt::waitCursor);
       ws->hide();
       BrowserPackage::save_all(TRUE);
       ws->show();
@@ -839,7 +839,7 @@ bool UmlWindow::saveas_it()
 	    }
 	  }
 	  
-	  QApplication::setOverrideCursor(Qt::waitCursor);
+	  QApplication::setOverrideCursor(::Qt::waitCursor);
 	  di.cd(f);
 	  the->ws->hide();
 	  if (the->browser->save_as(di))
@@ -904,7 +904,7 @@ void UmlWindow::close_it()
   
   the->save_session();
   
-  QApplication::setOverrideCursor(Qt::waitCursor);
+  QApplication::setOverrideCursor(::Qt::waitCursor);
   
   // close all diagram windows
   // do not hide ws, else a future diagram window opening will crash !
@@ -1109,7 +1109,7 @@ void UmlWindow::print() {
       int div = m.exec(QCursor::pos());
       
       if ((div >= 1) && (div <= 3)) {
-	QApplication::setOverrideCursor(Qt::waitCursor);
+	QApplication::setOverrideCursor(::Qt::waitCursor);
 	dw->get_view()->print(printer, div);
 	QApplication::restoreOverrideCursor();
       }

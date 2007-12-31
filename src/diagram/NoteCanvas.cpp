@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -91,7 +91,7 @@ void NoteCanvas::draw(QPainter & p) {
     fputs("<g>\n", fp);
 
   if (used_color == UmlTransparent) {
-    p.setBackgroundMode(QObject::TransparentMode);
+    p.setBackgroundMode(::Qt::TransparentMode);
     p.setBackgroundColor(co);
     p.drawPolyline(a);
 
@@ -99,7 +99,7 @@ void NoteCanvas::draw(QPainter & p) {
       draw_poly(fp, a, UmlTransparent);
   }
   else {
-    p.setBackgroundMode(QObject::OpaqueMode);
+    p.setBackgroundMode(::Qt::OpaqueMode);
     p.setBrush(co);
     p.drawPolygon(a, TRUE, 0, 6);
     p.setBrush(brsh);
@@ -109,8 +109,8 @@ void NoteCanvas::draw(QPainter & p) {
       draw_poly(fp, a, used_color);
   }
   
-  p.moveTo(r.right() - corner_size, r.top());
-  p.lineTo(r.right(), r.top() + corner_size);
+  p.drawLine(r.right() - corner_size, r.top(),
+	     r.right(), r.top() + corner_size);
 
   if (fp != 0)
     fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
@@ -123,13 +123,13 @@ void NoteCanvas::draw(QPainter & p) {
   
   p.drawText (r.left() + corner_size, r.top() + corner_size,
 	      r.width() - 2*corner_size, r.height() - 2*corner_size, 
-	      QObject::AlignLeft + QObject::AlignTop + QObject::WordBreak,
+	      ::Qt::AlignLeft + ::Qt::AlignTop + ::Qt::WordBreak,
 	      note);
 
   if (fp != 0) {
     draw_text(r.left() + corner_size, r.top() + corner_size,
 	      r.width() - 2*corner_size, r.height() - 2*corner_size, 
-	      QObject::AlignLeft + QObject::AlignTop + QObject::WordBreak,
+	      ::Qt::AlignLeft + ::Qt::AlignTop + ::Qt::WordBreak,
 	      note, p.font(), fp, fg_c);
     fputs("</g>\n", fp);
   }

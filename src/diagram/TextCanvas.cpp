@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -60,9 +60,9 @@ void TextCanvas::draw(QPainter & p) {
   QPen fgcolor = p.pen();
   
   if (bg_c == UmlTransparent)
-    p.setBackgroundMode(QObject::TransparentMode);
+    p.setBackgroundMode(::Qt::TransparentMode);
   else {
-    p.setBackgroundMode(QObject::OpaqueMode);
+    p.setBackgroundMode(::Qt::OpaqueMode);
     p.setBackgroundColor(color(bg_c));
   }
   
@@ -73,13 +73,13 @@ void TextCanvas::draw(QPainter & p) {
   
   p.setFont(the_canvas()->get_font(itsfont));
   p.drawText (r.left(), r.top(), r.width(), r.height(), 
-	      QObject::AlignLeft + QObject::AlignTop + QObject::WordBreak, text);
+	      ::Qt::AlignLeft + ::Qt::AlignTop + ::Qt::WordBreak, text);
   
   FILE * fp = svg();
   
   if (fp != 0)
     draw_text (r.left(), r.top(), r.width(), r.height(), 
-	       QObject::AlignLeft + QObject::AlignTop + QObject::WordBreak,
+	       ::Qt::AlignLeft + ::Qt::AlignTop + ::Qt::WordBreak,
 	       text, p.font(), fp, fg_c, bg_c);
   
   p.setFont(the_canvas()->get_font(UmlNormalFont));

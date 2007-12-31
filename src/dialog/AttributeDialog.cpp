@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -211,7 +211,7 @@ AttributeDialog::AttributeDialog(AttributeData * a)
     
     htab->setStretchFactor(new QLabel("      ", htab), 0);
     
-    bg = new QButtonGroup(3, QGroupBox::Horizontal, QString::null, htab);
+    bg = new QButtonGroup(3, Qt::Horizontal, QString::null, htab);
     htab->setStretchFactor(bg, 1000);
     bg->setExclusive(FALSE);
     classattribute_cb = new QCheckBox("class attribute", bg);
@@ -1046,24 +1046,7 @@ void AttributeDialog::java_update() {
     }
     else if (!strncmp(p, "${multiplicity}", 15)) {
       p += 15;
-      
-      QString m = multiplicity->currentText().stripWhiteSpace();
-      
-      if (*m != '[')
-	s += "[]";
-      else {
-	for (unsigned index = 0; index != m.length(); index += 1) {
-	  switch (m.at(index).latin1()) {
-	  case '[':
-	    s += '[';
-	    break;
-	  case ']':
-	    s += ']';
-	  default:
-	    break;
-	  }
-	}
-      }
+      s += java_multiplicity(multiplicity->currentText().stripWhiteSpace());
     }
     else if (!strncmp(p, "${stereotype}", 13)) {
       p += 13;

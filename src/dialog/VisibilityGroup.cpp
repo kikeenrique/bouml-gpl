@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -38,7 +38,7 @@ QButtonGroup * VisibilityGroup::init(QWidget * parent, UmlVisibility v,
 				     const char * default_prefix) {
    bgroup =
      new QButtonGroup((default_prefix != 0) ? 5 : 4,
-		      QGroupBox::Horizontal, title, parent);
+		      Qt::Horizontal, title, parent);
    bgroup->setExclusive(TRUE);
    if (default_prefix != 0) {
      default_pfix = default_prefix;

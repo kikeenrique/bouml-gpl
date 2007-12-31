@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -65,16 +65,14 @@ class BrowserOperation : public BrowserNode, public Labeled<BrowserOperation> {
     void set_set_of(BrowserNode * o);
     void update_get_of(const QString & attr_name, const QString & cpp_decl,
 		       const QString & java_decl, const QString & php_decl, 
-		       const QString & idl_decl,
-		       bool is_const, bool is_class_member,
-		       const AType & cl, QString multiplicity = QString::null,
-		       QString stereotype = QString::null);
+		       const QString & idl_decl, bool is_const,
+		       bool is_class_member, const AType & cl,
+		       QString multiplicity, QString stereotype);
     void update_set_of(const QString & attr_name, const QString & cpp_decl,
 		       const QString & java_decl, const QString & php_decl, 
-		       const QString & idl_decl,
-		       bool is_const, bool is_class_member,
-		       const AType & cl, QString multiplicity = QString::null,
-		       QString stereotype = QString::null);
+		       const QString & idl_decl, bool is_const,
+		       bool is_class_member, const AType & cl,
+		       QString multiplicity, QString stereotype);
     QString get_of_name() const;	// rel or attribute name
     AType get_of_association() const; // rel's association or ${association}
     QString compute_name(const char * name_spec) const;

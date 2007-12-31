@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -192,7 +192,7 @@ void PackageCanvas::draw(QPainter & p) {
   
   QColor bckgrnd = p.backgroundColor();
 
-  p.setBackgroundMode((used_color == UmlTransparent) ? QObject::TransparentMode : QObject::OpaqueMode);
+  p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
 
   QColor co = color(used_color);
   
@@ -230,21 +230,21 @@ void PackageCanvas::draw(QPainter & p) {
   if ((used_color != UmlTransparent) && (shadow != 0)) {
     p.fillRect (r.right(), r.top() + shadow,
 		shadow, r.height() - 1 - shadow,
-		QObject::darkGray);
+		::Qt::darkGray);
 
     if (fp != 0)
       fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      QObject::darkGray.rgb()&0xffffff,
+	      ::Qt::darkGray.rgb()&0xffffff,
 	      r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - shadow - 1);
   }
 
   const char * name = browser_node->get_name();
   
   if (in_tab) {
-    p.drawText(r, QObject::AlignCenter, name);
+    p.drawText(r, ::Qt::AlignCenter, name);
     if (fp != 0)
-      draw_text(r, QObject::AlignCenter, name,
+      draw_text(r, ::Qt::AlignCenter, name,
 		p.font(), fp);
   }
   
@@ -269,20 +269,20 @@ void PackageCanvas::draw(QPainter & p) {
   if ((used_color != UmlTransparent) && (shadow != 0)) {
     p.fillRect (r.right(), r.top() + shadow,
 		shadow, r.height() - 1,
-		QObject::darkGray);
+		::Qt::darkGray);
     p.fillRect (r.left() + shadow, r.bottom(),
 		r.width() - 1, shadow,
-		QObject::darkGray);
+		::Qt::darkGray);
 
     if (fp != 0) {
       fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      QObject::darkGray.rgb()&0xffffff,
+	      ::Qt::darkGray.rgb()&0xffffff,
 	      r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
 
       fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      QObject::darkGray.rgb()&0xffffff,
+	      ::Qt::darkGray.rgb()&0xffffff,
 	      r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
     }
   }
@@ -292,9 +292,9 @@ void PackageCanvas::draw(QPainter & p) {
   r.setTop(r.top() + three);
   
   if (! in_tab) {
-    p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, name);
+    p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, name);
     if (fp != 0)
-      draw_text(r, QObject::AlignHCenter + QObject::AlignTop, name,
+      draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, name,
 		p.font(), fp);
     r.setTop(r.top() + he + three);
   }
@@ -302,10 +302,10 @@ void PackageCanvas::draw(QPainter & p) {
   const BasicData * data = browser_node->get_data();
   
   if (data->get_stereotype()[0]) {
-    p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, 
+    p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, 
 	       QString("<<") + toUnicode(data->get_stereotype()) + ">>");
     if (fp != 0)
-      draw_text(r, QObject::AlignHCenter + QObject::AlignTop, 
+      draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, 
 		QString("<<") + toUnicode(data->get_stereotype()) + ">>",
 		p.font(), fp);
     r.setTop(r.top() + he + three);
@@ -313,9 +313,9 @@ void PackageCanvas::draw(QPainter & p) {
   
   if (full_name != name) {
     p.setFont(the_canvas()->get_font(UmlNormalItalicFont));
-    p.drawText(r, QObject::AlignHCenter + QObject::AlignTop, full_name);
+    p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, full_name);
     if (fp != 0)
-      draw_text(r, QObject::AlignHCenter + QObject::AlignTop, full_name,
+      draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, full_name,
 		p.font(), fp);
     p.setFont(the_canvas()->get_font(UmlNormalFont));
   }

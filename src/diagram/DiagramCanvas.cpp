@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -387,7 +387,7 @@ void DiagramCanvas::draw_actor(QPainter * p, QRect r)
   double scale = r.width() / 40.0;
   int i,j,k,l;
   
-  p->setBackgroundMode(QObject::TransparentMode);
+  p->setBackgroundMode(::Qt::TransparentMode);
   
   // head
   i = (int) (13 * scale);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -625,7 +625,7 @@ void AcceptEventDialog::init(QTabDialog * t, ActivityActionData * act,
 
   new QLabel("", ocl_grid);
   QButtonGroup * grp = 
-    new QButtonGroup(2, QGroupBox::Horizontal, QString::null, ocl_grid);
+    new QButtonGroup(2, Qt::Horizontal, QString::null, ocl_grid);
 
   unmarshall_cb = new QCheckBox("unmarshall", grp);
   unmarshall_cb->setDisabled(visit);
@@ -1102,7 +1102,7 @@ void ChangeVariableValueDialog::init(QTabDialog * t, ActivityActionData * act,
   
   new QLabel("", ocl_grid);
   QButtonGroup * grp = 
-    new QButtonGroup(2, QGroupBox::Horizontal, QString::null, ocl_grid);
+    new QButtonGroup(2, Qt::Horizontal, QString::null, ocl_grid);
 
   flag_cb = new QCheckBox(flg_name, grp);
   flag_cb->setDisabled(visit);
@@ -1150,7 +1150,7 @@ void CallOperationDialog::init(QTabDialog * t, ActivityActionData * act,
 
   new QLabel("", ocl_grid);
   QButtonGroup * grp = 
-    new QButtonGroup(2, QGroupBox::Horizontal, QString::null, ocl_grid);
+    new QButtonGroup(2, Qt::Horizontal, QString::null, ocl_grid);
 
   synchronous_cb = new QCheckBox("synchronous", grp);
   synchronous_cb->setDisabled(visit);
@@ -1326,7 +1326,7 @@ void CallBehaviorDialog::init(QTabDialog * t, ActivityActionData * act,
 
   new QLabel("", ocl_grid);
   QButtonGroup * grp = 
-    new QButtonGroup(2, QGroupBox::Horizontal, QString::null, ocl_grid);
+    new QButtonGroup(2, Qt::Horizontal, QString::null, ocl_grid);
 
   synchronous_cb = new QCheckBox("synchronous", grp);
   synchronous_cb->setDisabled(visit);

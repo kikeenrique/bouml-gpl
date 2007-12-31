@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -77,7 +77,7 @@ void IconCanvas::draw(QPainter & p) {
   
   QRect r = rect();
   
-  p.setBackgroundMode(QObject::OpaqueMode);
+  p.setBackgroundMode(::Qt::OpaqueMode);
   
   p.drawPixmap(r.topLeft(), *(browser_node->pixmap(0)));
     

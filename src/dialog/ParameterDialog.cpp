@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -201,7 +201,7 @@ ParameterDialog::ParameterDialog(ParameterData * pa)
   new QLabel(grid);
   htab = new QHBox(grid);
   QButtonGroup * bg = 
-    new QButtonGroup(2, QGroupBox::Horizontal, QString::null, htab);
+    new QButtonGroup(2, Qt::Horizontal, QString::null, htab);
   
   is_control_cb = new QCheckBox("is_control", bg);
   if (pa->is_control)
@@ -214,7 +214,7 @@ ParameterDialog::ParameterDialog(ParameterData * pa)
   unique_cb->setDisabled(visit);
   
   bg = 
-    new QButtonGroup(3, QGroupBox::Horizontal, QString::null, htab);
+    new QButtonGroup(3, Qt::Horizontal, QString::null, htab);
   bg->setExclusive(TRUE);
   
   standard_rb = new QRadioButton("standard", bg);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -102,7 +102,7 @@ SdMsgDialog::SdMsgDialog(SdMsgBaseCanvas * a)
   
   htab->setMargin(5);
   
-  QButtonGroup * bg = new QButtonGroup(2, QGroupBox::Horizontal, "Message type", htab);
+  QButtonGroup * bg = new QButtonGroup(2, Qt::Horizontal, "Message type", htab);
   
   bg->setExclusive(TRUE);
   synchronous_rb = new QRadioButton("synchronous", bg);

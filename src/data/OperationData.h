@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -73,11 +73,14 @@ class OperationData : public ClassMemberData,
     bool cpp_virtual : 1;		// C++
     bool cpp_inline : 1;		// C++
     bool cpp_get_set_frozen : 1;	// C++
+    bool cpp_indent_body : 1;		// C++
     bool java_final : 1;		// Java
     bool java_synchronized : 1;		// java
     bool java_get_set_frozen : 1;	// java
+    bool java_indent_body : 1;		// java
     bool php_final : 1;			// php
     bool php_get_set_frozen : 1;	// php
+    bool php_indent_body : 1;		// php
     bool idl_oneway : 1;		// Idl
     bool idl_get_set_frozen : 1;	// Idl
     unsigned short nparams;
@@ -209,13 +212,13 @@ class OperationData : public ClassMemberData,
 		       QString php_decl, QString idl_decl,
 		       bool cpp_const, bool is_class_member,
 		       const AType & cl, QString multiplicity,
-		       QString stereotype, bool create, bool update);
+		       QString stereotype, bool create);
     void update_set_of(const QString & attr_name,
 		       QString cpp_decl, QString java_decl,
 		       QString php_decl, QString idl_decl,
 		       bool cpp_const, bool is_class_member,
 		       const AType & cl, QString multiplicity,
-		       QString stereotype, bool create, bool update);
+		       QString stereotype, bool create);
     
     virtual bool tool_cmd(ToolCom * com, const char * args,
 			  BrowserNode * bn, const QString & comment);
@@ -227,6 +230,7 @@ class OperationData : public ClassMemberData,
     void create_modified_body_file();
     void save_body(QFile & qf, char * modified_bodies, int who);
     void save(QTextStream &, bool ref, QString & warning) const;
+    void raz_body();
     static OperationData * read_ref(char * &);
     void read(char * &, char * &);
     static void import(BrowserClass * cl, int id);
@@ -246,18 +250,17 @@ class OperationData : public ClassMemberData,
 				  QString attcpp_decl, bool attis_const,
 				  QString multiplicity);
     static void update_java_get_of(QCString & def, const QString & attr_name,
-				   QString attjava_decl);
+				   QString attjava_decl, QString multiplicity);
     static void update_php_get_of(QCString & def, const QString & attr_name,
 				  QString attphp_decl);
     static void update_idl_get_of(QCString & decl, QString attidl_decl,
 				  QString multiplicity);
-    static void update_cpp_set_of(QCString & decl, QCString & def,
-				  const QString & attr_name,
-				  QString attcpp_decl, bool attis_const, 
-				  QString multiplicity);
-    static void update_java_set_of(QCString & def,
-				   const QString & attr_name,
-				   QString attjava_decl);
+    void update_cpp_set_of(QCString & decl, QCString & def,
+			   const QString & attr_name,
+			   QString attcpp_decl, bool attis_const, 
+			   QString multiplicity);
+    static void update_java_set_of(QCString & def, const QString & attr_name,
+				   QString attjava_decl, QString multiplicity);
     static void update_php_set_of(QCString & def,
 				  const QString & attr_name,
 				  QString attphp_decl);

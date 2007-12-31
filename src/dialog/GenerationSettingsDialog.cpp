@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -251,7 +251,7 @@ void GenerationSettingsDialog::init_cpp3() {
   grid2 = new QGrid(2, grid);
   (new QLabel("Multiplicity", grid2))->setAlignment(Qt::AlignCenter);
   new QLabel(grid2);
-  new QLabel("unspecified,\n1 or 1", grid2);
+  new QLabel("unspecified,\nor 1", grid2);
   edcpp_attr_decl[0] = new MultiLineEdit(grid2);
   new QLabel("* or a..b", grid2);
   edcpp_attr_decl[1] = new MultiLineEdit(grid2);
@@ -293,12 +293,12 @@ void GenerationSettingsDialog::init_cpp3() {
   new QLabel(grid);
   new QLabel(grid);
 
-  new QLabel("Aggregation\nby value\ndefault\ndeclaration :", grid);
+  new QLabel("Composition\ndefault\ndeclaration :", grid);
   grid2 = new QGrid(2, grid);
   (new QLabel("Multiplicity", grid2))->setAlignment(Qt::AlignCenter);
   htab = new QHBox(grid2);
   htab->setStretchFactor(new QLabel(htab), 1000);
-  (new QLabel("Aggregation by value ", htab))->setAlignment(Qt::AlignCenter);
+  (new QLabel("Composition ", htab))->setAlignment(Qt::AlignCenter);
   (new QLabel(htab))->setPixmap(*aggregationByValueButton);
   htab->setStretchFactor(new QLabel(htab), 1000);
   new QLabel("unspecified\nor 1", grid2);
@@ -338,7 +338,7 @@ void GenerationSettingsDialog::init_cpp4() {
   cpp_get_visibility.init(htab, GenerationSettings::cpp_get_visibility,
 			       FALSE, "Visibility");
 
-  bg = new QButtonGroup(3, QGroupBox::Horizontal, "Modifiers", htab);
+  bg = new QButtonGroup(3, Qt::Horizontal, "Modifiers", htab);
   bg->setExclusive(FALSE);
   cpp_get_inline_cb = new QCheckBox("inline", bg);
   cpp_get_value_const_cb = new QCheckBox("const value", bg);
@@ -371,7 +371,7 @@ void GenerationSettingsDialog::init_cpp4() {
   cpp_set_visibility.init(htab, GenerationSettings::cpp_get_visibility,
 			  FALSE, "Visibility");
   
-  bg = new QButtonGroup(4, QGroupBox::Horizontal, "Modifiers", htab);
+  bg = new QButtonGroup(4, Qt::Horizontal, "Modifiers", htab);
   bg->setExclusive(FALSE);
   cpp_set_inline_cb = new QCheckBox("inline", bg);
   cpp_set_param_const_cb = new QCheckBox("const param", bg);
@@ -468,7 +468,7 @@ void GenerationSettingsDialog::init_cpp4() {
 }
 
 void GenerationSettingsDialog::init_cpp5() {
-  QSplitter * split = new QSplitter(Vertical, this);
+  QSplitter * split = new QSplitter(Qt::Vertical, this);
   
   split->setOpaqueResize(TRUE);
   
@@ -647,7 +647,7 @@ void GenerationSettingsDialog::init_java3() {
 			   TRUE, "Visibility (shared with Php)");
   java_get_visibility.connect(SIGNAL(clicked (int)), this, SLOT(java_get_visi_changed(int)));
   
-  bg = new QButtonGroup(1, QGroupBox::Horizontal, "Modifiers", htab);
+  bg = new QButtonGroup(1, Qt::Horizontal, "Modifiers", htab);
   bg->setExclusive(FALSE);
   java_get_final_cb = new QCheckBox("final", bg);
   java_get_final_cb->setChecked(GenerationSettings::java_get_final);
@@ -671,7 +671,7 @@ void GenerationSettingsDialog::init_java3() {
 			   TRUE, "Visibility (shared with Php)");
   java_set_visibility.connect(SIGNAL(clicked (int)), this, SLOT(java_set_visi_changed(int)));
   
-  bg = new QButtonGroup(2, QGroupBox::Horizontal, "Modifiers", htab);
+  bg = new QButtonGroup(2, Qt::Horizontal, "Modifiers", htab);
   bg->setExclusive(FALSE);
   java_set_final_cb = new QCheckBox("final", bg);
   java_set_param_final_cb = new QCheckBox("final parameter", bg);
@@ -705,7 +705,7 @@ void GenerationSettingsDialog::init_java3() {
 }  
 
 void GenerationSettingsDialog::init_java4() {
-  QSplitter * split = new QSplitter(Vertical, this);
+  QSplitter * split = new QSplitter(Qt::Vertical, this);
   
   split->setOpaqueResize(TRUE);
   
@@ -822,7 +822,7 @@ void GenerationSettingsDialog::init_php2() {
 			   FALSE, "Visibility (shared with Java)");
   php_get_visibility.connect(SIGNAL(clicked (int)), this, SLOT(php_get_visi_changed(int)));
   
-  bg = new QButtonGroup(1, QGroupBox::Horizontal, "Modifiers", htab);
+  bg = new QButtonGroup(1, Qt::Horizontal, "Modifiers", htab);
   bg->setExclusive(FALSE);
   php_get_final_cb = new QCheckBox("final", bg);
   php_get_final_cb->setChecked(GenerationSettings::php_get_final);
@@ -846,7 +846,7 @@ void GenerationSettingsDialog::init_php2() {
 			   FALSE, "Visibility (shared with Java)");
   php_set_visibility.connect(SIGNAL(clicked (int)), this, SLOT(php_set_visi_changed(int)));
   
-  bg = new QButtonGroup(2, QGroupBox::Horizontal, "Modifiers", htab);
+  bg = new QButtonGroup(2, Qt::Horizontal, "Modifiers", htab);
   bg->setExclusive(FALSE);
   php_set_final_cb = new QCheckBox("final", bg);
   php_set_final_cb->setChecked(GenerationSettings::php_set_final);
@@ -885,7 +885,7 @@ void GenerationSettingsDialog::init_php2() {
 }  
 
 void GenerationSettingsDialog::init_idl1() {
-  QSplitter * split = new QSplitter(Vertical, this);
+  QSplitter * split = new QSplitter(Qt::Vertical, this);
   
   split->setOpaqueResize(TRUE);
   
@@ -1172,7 +1172,7 @@ void GenerationSettingsDialog::init_idl4() {
 }
 
 void GenerationSettingsDialog::init_idl5() {
-  QSplitter * split = new QSplitter(Vertical, this);
+  QSplitter * split = new QSplitter(Qt::Vertical, this);
   
   split->setOpaqueResize(TRUE);
   
@@ -1201,7 +1201,7 @@ void GenerationSettingsDialog::init_idl5() {
 }
 
 void GenerationSettingsDialog::init_descriptions() {
-  QSplitter * split = new QSplitter(Vertical, this);
+  QSplitter * split = new QSplitter(Qt::Vertical, this);
   
   split->setOpaqueResize(TRUE);
   

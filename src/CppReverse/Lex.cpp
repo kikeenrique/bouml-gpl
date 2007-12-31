@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -888,6 +888,10 @@ QCString Lex::quote(QCString s)
 {
   QCString result;
   const char * p = s;
+  
+  if (p == 0)
+    // empty string
+    return result;
   
   for (;;) {
     switch (*p) {

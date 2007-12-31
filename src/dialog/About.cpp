@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -53,7 +53,12 @@ AboutDialog::AboutDialog() : QDialog(0, "About BOUML", TRUE) {
   lbp->setPixmap(bp);
   hbox->addWidget(lbp);
   hbox->addWidget(new QLabel("  ", this));
-  hbox->addWidget(new QLabel("BOUML release 3.3.4\n\ne-mail : bouml@free.fr\nhome : http://bouml.free.fr\n\nBruno Pages",
+  hbox->addWidget(new QLabel("BOUML release 3.4.1\n"
+			     "\n"
+			     "http://bouml.free.fr\n"
+			     "http://sourceforge.net/projects/bouml\n"
+			     "\n"
+			     "Bruno Pages (bouml@free.fr)",
 			     this));
   
   hbox = new QHBoxLayout(vbox); 

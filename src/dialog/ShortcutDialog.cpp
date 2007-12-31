@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -74,11 +74,11 @@ ShortcutDialog::ShortcutDialog() : QTabDialog(0, 0, TRUE) {
   vtab->setMargin(5);
   
   (new QLabel("Here are the shortcuts to do a command (menu entry)", vtab))
-    ->setAlignment(QObject::AlignHCenter);
+    ->setAlignment(::Qt::AlignHCenter);
 
 #ifdef __APPLE__
   (new QLabel("Note : sometimes the key 'Alt' is named 'Option'", vtab))
-    ->setAlignment(QObject::AlignHCenter);
+    ->setAlignment(::Qt::AlignHCenter);
 #endif  
   
   cmd_table = new ShortcutTable(vtab, FALSE, ncmds);
@@ -92,11 +92,11 @@ ShortcutDialog::ShortcutDialog() : QTabDialog(0, 0, TRUE) {
   vtab->setMargin(5);
   
   (new QLabel("Here are the shortcuts to call a tool (plug-out)", vtab))
-    ->setAlignment(QObject::AlignHCenter);
+    ->setAlignment(::Qt::AlignHCenter);
 
 #ifdef __APPLE__
   (new QLabel("Note : sometimes the key 'Alt' is named 'Option'", vtab))
-    ->setAlignment(QObject::AlignHCenter);
+    ->setAlignment(::Qt::AlignHCenter);
   
 #endif  
   tool_table = new ShortcutTable(vtab, TRUE, ntools);

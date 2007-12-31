@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -91,7 +91,7 @@ ActivityDialog::ActivityDialog(ActivityData * d)
   
   new QLabel(grid);
   QButtonGroup * bg = 
-    new QButtonGroup(2, QGroupBox::Horizontal, QString::null, grid);
+    new QButtonGroup(2, Qt::Horizontal, QString::null, grid);
   
   readonly_cb = new QCheckBox("read only", bg);
   if (activity->read_only)

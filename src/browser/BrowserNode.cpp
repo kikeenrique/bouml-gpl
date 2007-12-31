@@ -1,10 +1,10 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -393,7 +393,7 @@ void BrowserNode::paintCell(QPainter * p, const QColorGroup & cg, int column,
   const QColor & bg = p->backgroundColor();
   
   if (is_marked) {
-    p->setBackgroundMode(OpaqueMode);
+    p->setBackgroundMode(::Qt::OpaqueMode);
     p->setBackgroundColor(UmlRedColor);
   }
     
@@ -401,7 +401,7 @@ void BrowserNode::paintCell(QPainter * p, const QColorGroup & cg, int column,
   QListViewItem::paintCell(p, cg, column, width, alignment);
   
   if (is_marked) {
-    p->setBackgroundMode(TransparentMode);
+    p->setBackgroundMode(::Qt::TransparentMode);
     p->setBackgroundColor(bg);
   }
     

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -1690,7 +1690,7 @@ void BrowserPackage::init()
 void BrowserPackage::save_stereotypes()
 {
   QByteArray newdef;
-  QTextOStream st(newdef);
+  QTextStream st(newdef, IO_WriteOnly);
 	
   st.setEncoding(QTextStream::Latin1);
   
@@ -2460,6 +2460,56 @@ To change its format : load this project and save it.");
   
   return result;
 }
+
+bool BrowserPackage::load_version(QString fn)
+{
+  QFileInfo any_fi(fn);
+  QDir d(any_fi.dirPath(TRUE));
+  const QFileInfoList * l = d.entryInfoList("*.prj");
+  
+  if (l) {
+    QListIterator<QFileInfo> it(*l);
+    QFileInfo * fi = it.current();
+    
+    if (fi != 0) {
+      fn = fi->absFilePath();
+  
+      char * s = read_file(fn);
+      
+      if (s == 0) {
+	msg_critical("Error", "can't read project file");
+	return FALSE;
+      }
+      
+      bool ok = TRUE;
+      
+      try {
+	char * st = s;
+	
+	read_keyword(st, "format");
+	set_read_file_format(read_unsigned(st));
+	
+	if (read_file_format() > FILEFORMAT) {
+	  msg_critical("Error", 
+		       "Your version of BOUML is too old to read this project");
+	  throw 0;
+	}
+      }
+      catch (int) {
+	ok = FALSE;
+      }
+      
+      delete [] s;
+      
+      return ok;
+    }
+  }
+  
+  msg_critical("Error", "can't find project file");
+  
+  return FALSE;
+}
+
 
 BrowserPackage * BrowserPackage::read_ref(char * & st)
 {

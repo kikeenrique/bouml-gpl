@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,6 +39,7 @@ extern QString extract_name(QString s);
 extern QString quote(QString s);
 extern void remove_comments(QCString & s);
 extern void remove_preprocessor(QCString & s);
+extern QString java_multiplicity(QString m);
 
 extern void initCodec();
 extern QString toUnicode(const char *);

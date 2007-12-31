@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -139,12 +139,18 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
 	switch (who) {
 	case cppLanguage:
 	  ok = op->set_CppBody(body);
+	  if (ok)
+	    op->set_CppContextualBodyIndent(FALSE);
 	  break;
 	case javaLanguage:
 	  ok = op->set_JavaBody(body);
+	  if (ok)
+	    op->set_JavaContextualBodyIndent(FALSE);
 	  break;
 	default:
 	  ok = op->set_PhpBody(body);
+	  if (ok)
+	    op->set_PhpContextualBodyIndent(FALSE);
 	}
 	
 	if (! ok) {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2007 Bruno PAGES  .
+// Copyleft 2004-2008 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -89,16 +89,16 @@ void FragmentSeparatorCanvas::change_scale() {
 }
 
 void FragmentSeparatorCanvas::drawShape(QPainter & p) {
-  p.setBackgroundMode(QObject::TransparentMode);
+  p.setBackgroundMode(::Qt::TransparentMode);
   
-  p.setPen(QObject::DashLine);
+  p.setPen(::Qt::DashLine);
   
   int m = (int) (fragment->y() + fragment->height() * vpos);
   
   p.drawLine((int) fragment->x(), m,
 	     (int) fragment->x() + fragment->width() - 1, m);
   
-  p.setPen(QObject::SolidLine);
+  p.setPen(::Qt::SolidLine);
 
 
   FILE * fp = svg();
