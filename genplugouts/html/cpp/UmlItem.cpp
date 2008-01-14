@@ -929,7 +929,7 @@ FileWriter UmlItem::fw;
 
 QCString UmlItem::directory;
 
-unsigned int UmlItem::nrefs = 0;
+unsigned int UmlItem::nrefs= 0;
 
 QCString UmlItem::letters;
 

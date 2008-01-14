@@ -38,8 +38,10 @@ extern bool is_char_of_name(char c);
 extern QString extract_name(QString s);
 extern QString quote(QString s);
 extern void remove_comments(QCString & s);
+extern void remove_comments(QString & s);
 extern void remove_preprocessor(QCString & s);
 extern QString java_multiplicity(QString m);
+extern bool need_equal(const char * p, QString v, bool cpp);
 
 extern void initCodec();
 extern QString toUnicode(const char *);

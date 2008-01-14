@@ -79,10 +79,14 @@ void UmlClassMember::remove_arrays(QCString & s)
   }
 }
 
-void UmlClassMember::generate_visibility(QTextOStream & f) {
+void UmlClassMember::generate_visibility(QTextOStream & f, const char * parent_st) {
   switch (visibility()) {
   case PublicVisibility:
-    f << "public ";
+    if ((parent()->kind() != aClass) ||
+        (parent_st == 0) ||
+        ((*parent_st != 'i') && (*parent_st != '@')))
+      // not public by default
+      f << "public ";
     break;
   case ProtectedVisibility:
     f << "protected ";

@@ -39,6 +39,7 @@
 #include "AType.h"
 #include "myio.h"
 #include "ToolCom.h"
+#include "err.h"
 
 int GenerationSettings::nbuiltins;
 Builtin * GenerationSettings::builtins;
@@ -104,6 +105,7 @@ bool GenerationSettings::java_set_final;
 bool GenerationSettings::java_set_param_final;
 
 bool GenerationSettings::php_default_defs;
+bool GenerationSettings::php_javadoc_comment;
 SharedStr GenerationSettings::php_src_content;
 SharedStr GenerationSettings::php_class_decl;
 SharedStr GenerationSettings::php_external_class_decl;
@@ -408,6 +410,7 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   php_get_final = TRUE;
   php_set_name = "set${Name}";
   php_set_final = FALSE;
+  php_javadoc_comment = FALSE;
 
 #define  IDL_EXTERNAL_CLASS_DECL "${name}\n#include \"${name}.idl\"\n";
   idl_external_class_decl = IDL_EXTERNAL_CLASS_DECL;
@@ -1030,6 +1033,8 @@ void GenerationSettings::send_java_def(ToolCom * com)
 
 void GenerationSettings::send_php_def(ToolCom * com)
 {
+  int api_version = com->api_format();
+  
   com->write_string(php_root_dir);
   
   int index;
@@ -1059,6 +1064,8 @@ void GenerationSettings::send_php_def(ToolCom * com)
   com->write_char(javaphp_get_visibility);
   com->write_string(php_set_name);
   com->write_bool(php_set_final);
+  if (api_version >= 38)
+    com->write_bool(php_javadoc_comment);
 }
 
 void GenerationSettings::send_idl_def(ToolCom * com)
@@ -1701,6 +1708,9 @@ bool GenerationSettings::tool_global_php_cmd(ToolCom * com,
       case setPhpIsSetFinalCmd:
 	php_set_final = (*args != 0);
 	break;
+      case setPhpJavadocStyleCmd:
+	php_javadoc_comment = (*args != 0);
+	break;
       default:
 	return FALSE;
       }
@@ -2256,7 +2266,11 @@ void GenerationSettings::save()
   nl_indent(st);
   
   save_includes_imports(java_imports, "java_imports");
-
+  
+  if (php_javadoc_comment) {
+    st << "php_javadoc_comment";
+    nl_indent(st);
+  }
   st << "php_default_src_content ";
   save_string(php_src_content, st);
   nl_indent(st);
@@ -2970,8 +2984,15 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
       php_get_final = TRUE;
       php_set_name = "set${Name}";
       php_set_final = FALSE;
+      php_javadoc_comment = FALSE;
     }
     else {
+      if (!strcmp(k, "php_javadoc_comment")) {
+	php_javadoc_comment = TRUE;
+	k = read_keyword(st);
+      }
+      else
+	php_javadoc_comment = FALSE;
       if (strcmp(k, "php_default_src_content"))
 	wrong_keyword(k, "php_default_src_content");
       php_src_content = read_string(st);
@@ -3187,6 +3208,7 @@ void GenerationSettings::read()
     
   if (s != 0) {
     
+    PRE_TRY;
     try {
       char * st = s;
       char * k = read_keyword(st);
@@ -3196,6 +3218,7 @@ void GenerationSettings::read()
     catch (int) {
       ;
     }
+    POST_TRY;
     delete [] s;
   }
 }
@@ -3215,6 +3238,7 @@ bool GenerationSettings::import()
     char * s = read_file(fn);
     
     if (s != 0) {
+      PRE_TRY;
       try {
 	char * st = s;
 	char * k = read_keyword(st);
@@ -3224,6 +3248,7 @@ bool GenerationSettings::import()
       catch (int) {
 	;
       }
+      POST_TRY;
       delete [] s;
       return TRUE;
     }
@@ -3240,6 +3265,7 @@ static bool read_incl(IncludesSpec & sp, const char * filename)
     sp.types.clear();
     sp.includes.clear();
     
+    PRE_TRY;
     try {
       char * st = s;
       
@@ -3251,6 +3277,7 @@ static bool read_incl(IncludesSpec & sp, const char * filename)
     catch (int) {
       ;
     }
+    POST_TRY;
     delete [] s;
     return TRUE;
   }

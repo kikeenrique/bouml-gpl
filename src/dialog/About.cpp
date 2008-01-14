@@ -53,7 +53,7 @@ AboutDialog::AboutDialog() : QDialog(0, "About BOUML", TRUE) {
   lbp->setPixmap(bp);
   hbox->addWidget(lbp);
   hbox->addWidget(new QLabel("  ", this));
-  hbox->addWidget(new QLabel("BOUML release 3.4.1\n"
+  hbox->addWidget(new QLabel("BOUML release 3.5\n"
 			     "\n"
 			     "http://bouml.free.fr\n"
 			     "http://sourceforge.net/projects/bouml\n"

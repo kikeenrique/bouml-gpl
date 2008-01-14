@@ -34,6 +34,7 @@
 #include "Tool.h"
 #include "myio.h"
 #include "BrowserView.h"
+#include "err.h"
 
 unsigned Tool::ntools;
 ATool * Tool::tools;
@@ -338,6 +339,7 @@ bool Tool::read(const char * f)
     char * s = read_file((f == 0) ? "tools" : f);
     
     if (s != 0) {
+      PRE_TRY;
       try {
 	char * st = s;
 	char * k;
@@ -347,6 +349,7 @@ bool Tool::read(const char * f)
       catch (int) {
 	;
       }
+      POST_TRY;
       delete [] s;
       return TRUE;
     }

@@ -91,9 +91,12 @@ void UmlAttribute::generate_decl(QTextOStream & f, const QCString & cl_stereotyp
 	f << multiplicity();
       }
       else if (!strncmp(p, "${value}", 8)) {
+	if (!defaultValue().isEmpty() && isReadOnly() && isClassMember()) {
+	  if (need_equal(p, defaultValue()))
+	    f << " = ";
+	  f << defaultValue();
+	}
 	p += 8;
-	if (!defaultValue().isEmpty() && isReadOnly() && isClassMember())
-	  f << ' ' << defaultValue();
       }
       else if (in_enum)
 	// strange

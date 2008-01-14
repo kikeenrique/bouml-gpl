@@ -27,7 +27,6 @@
 #pragma warning (disable: 4150)
 #endif
 
-#include <stdlib.h>
 #include <qcursor.h>
 #include <qworkspace.h>
 #include <qsplitter.h>
@@ -83,6 +82,7 @@
 #include "Shortcut.h"
 #include "myio.h"
 #include "mu.h"
+#include "err.h"
 
 #include "filesave.xpm"
 #include "fileopen.xpm"
@@ -710,6 +710,7 @@ void UmlWindow::load(QString fn, bool forcesaveas) {
   
   unsigned format;
   
+  PRE_TRY;
   try {
     format = browser->get_project()->load(TRUE);
   }
@@ -720,6 +721,7 @@ void UmlWindow::load(QString fn, bool forcesaveas) {
   
     return;
   }
+  POST_TRY;
   
   BrowserNode::post_load();
   idmax_add_margin();
@@ -1011,6 +1013,7 @@ void UmlWindow::read_session() {
     if (fp.readBlock(s, size) != -1) {
       s[size] = 0;
       
+      PRE_TRY;
       try {
 	char * st = s;
       
@@ -1065,6 +1068,7 @@ void UmlWindow::read_session() {
       }
       catch (...) {
       }
+      POST_TRY;
     }
     delete [] s;
   }

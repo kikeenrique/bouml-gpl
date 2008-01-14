@@ -575,7 +575,17 @@ bool Class::get_formals(FormalParameterList & tmplt, bool name_only,
 }
 
 bool Class::manage_member(QCString s, QCString & path) {
-  aVisibility visibility = PackageVisibility;
+  aVisibility visibility;
+  
+  switch (stereotype) {
+  case 'i':
+  case '@':
+    visibility = PublicVisibility;
+    break;
+  default:
+    visibility = PackageVisibility;
+  }
+
   QCString comment = Lex::get_comments();
   QCString description = Lex::get_description();
   bool m_staticp = FALSE;

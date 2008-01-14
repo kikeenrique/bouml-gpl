@@ -77,6 +77,7 @@
 #include "mu.h"
 #include "SaveProgress.h"
 #include "DialogUtil.h"
+#include "err.h"
 
 IdDict<BrowserPackage> BrowserPackage::all(__FILE__);
 QList<BrowserPackage> BrowserPackage::removed;
@@ -878,12 +879,16 @@ void BrowserPackage::import_project() {
     set_in_import(TRUE);
     BrowserView::set_imported_project(di, p);
     BrowserNode::pre_load();
+
+    PRE_TRY;
     try {
       p->load(TRUE);
     }
     catch (int) {
       err = TRUE;
     }
+    POST_TRY;
+
     BrowserNode::post_load();
     idmax_add_margin();
     BrowserDiagram::import();
@@ -1752,6 +1757,7 @@ bool BrowserPackage::read_stereotypes(const char * f)
   char * s = read_file((f == 0) ? "stereotypes" : f);
     
   if (s != 0) {
+    PRE_TRY;
     try {
       char * st = s;
       char * k = read_keyword(st);
@@ -1785,6 +1791,7 @@ bool BrowserPackage::read_stereotypes(const char * f)
     catch (int) {
       ;
     }
+    POST_TRY;
     delete [] s;
     return TRUE;
   }
@@ -2017,7 +2024,7 @@ void BrowserPackage::save_all(bool modified_only)
 	  pack->is_read_only = FALSE;
       }
       else
-	throw 0;
+	THROW_ERROR 0;
     }
     ++it;
   }
@@ -2225,7 +2232,7 @@ unsigned BrowserPackage::load(bool recursive, int id) {
 		     BrowserView::get_dir().absFilePath(fn)
 		     + "cannot be read");
 	delete [] s;
-	throw 0;
+	THROW_ERROR 0;
       }
       offset += nread;
     } while (offset != sz);
@@ -2234,6 +2241,7 @@ unsigned BrowserPackage::load(bool recursive, int id) {
       
     bool err = FALSE;
     
+    PRE_TRY;
     try {
       char * st = s;
       char * k;
@@ -2435,6 +2443,7 @@ To change its format : load this project and save it.");
     catch (int) {
       err = TRUE;
     }
+    POST_TRY;
     
     delete [] s;
     
@@ -2451,10 +2460,10 @@ To change its format : load this project and save it.");
     restore_context(context);
     
     if (err)
-      throw 0;
+      THROW_ERROR 0;
   }
   else
-    throw 0;
+    THROW_ERROR 0;
   
   is_imported = is_modified = in_import();
   
@@ -2483,6 +2492,7 @@ bool BrowserPackage::load_version(QString fn)
       
       bool ok = TRUE;
       
+      PRE_TRY;
       try {
 	char * st = s;
 	
@@ -2498,6 +2508,7 @@ bool BrowserPackage::load_version(QString fn)
       catch (int) {
 	ok = FALSE;
       }
+      POST_TRY;
       
       delete [] s;
       

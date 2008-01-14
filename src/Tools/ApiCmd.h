@@ -398,6 +398,9 @@ enum PhpSettingsCmd {
   setPhpIsGetFinalCmd,
   setPhpIsSetFinalCmd,
   setPhpIsSetParamFinalCmd,
+  
+  // api 38
+  setPhpJavadocStyleCmd
 };
 
 enum IdlSettingsCmd {

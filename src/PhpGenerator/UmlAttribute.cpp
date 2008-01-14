@@ -66,7 +66,7 @@ void UmlAttribute::generate(QTextOStream & f, const QCString & st,
       else if (*p != '$')
 	f << *p++;
       else if (!strncmp(p, "${comment}", 10))
-	manage_comment(p, pp, FALSE);
+	manage_comment(p, pp, PhpSettings::isGenerateJavadocStyleComment());
       else if (!strncmp(p, "${description}", 14))
 	manage_description(p, pp);
       else if (!strncmp(p, "${visibility}", 13)) {
@@ -97,14 +97,14 @@ void UmlAttribute::generate(QTextOStream & f, const QCString & st,
 	  f << "var ";
       }
       else if (!strncmp(p, "${value}", 8)) {
-	p += 8;
 	if (!defaultValue().isEmpty()) {
-	   f << ((defaultValue().stripWhiteSpace().at(0) == QChar('='))
-		 ? " " : " = ")
-	     << defaultValue();
+	  if (need_equal(p, defaultValue()))
+	    f << " = ";
+	  f << defaultValue();
 	}
 	else if (st == "enum")
 	  f << " = " << enum_item_rank;
+	p += 8;
       }
       else if (!strncmp(p, "${const}", 8)) {
 	p += 8;

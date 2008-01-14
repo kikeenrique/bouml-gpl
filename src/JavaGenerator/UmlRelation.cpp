@@ -224,7 +224,7 @@ void UmlRelation::generate(QTextOStream & f, const QCString & cl_stereotype,
 	  manage_description(p, pp);
 	else if (!strncmp(p, "${visibility}", 13)) {
 	  p += 13;
-	  generate_visibility(f);
+	  generate_visibility(f, cl_stereotype);
 	}
 	else if (!strncmp(p, "${static}", 9)) {
 	  p += 9;
@@ -280,13 +280,12 @@ void UmlRelation::generate(QTextOStream & f, const QCString & cl_stereotype,
 	  }
 	}
 	else if (!strncmp(p, "${value}", 8)) {
-	  p += 8;
 	  if (!defaultValue().isEmpty()) {
-	    if (*((const char *) defaultValue()) == '=')
-	      f << ' ' << defaultValue();
-	    else
-	      f << defaultValue();
+	    if (need_equal(p, defaultValue()))
+	      f << " = ";
+	    f << defaultValue();
 	  }
+	  p += 8;
 	}
 	else if (!strncmp(p, "${association}", 14)) {
 	  p += 14;

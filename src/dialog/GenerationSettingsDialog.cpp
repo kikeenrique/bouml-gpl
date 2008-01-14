@@ -753,11 +753,23 @@ void GenerationSettingsDialog::init_php1() {
   font.setFixedPitch(TRUE);
   edphp_src_content->setFont(font);
 
-  new QLabel("    generated / reversed \n    file extension : ", htab);
-  edphp_extension = new QComboBox(TRUE, htab);
+  QVBox * vtab = new QVBox(htab);
+  QHBox * htab2 = new QHBox(vtab);
+
+  vtab->setMargin(3);
+  htab2->setMargin(3);
+
+  new QLabel("    generated / reversed \n    file extension : ", htab2);
+  edphp_extension = new QComboBox(TRUE, htab2);
   edphp_extension->insertItem(GenerationSettings::php_extension);
   edphp_extension->setCurrentItem(0);
   edphp_extension->insertItem("php");
+
+  htab2 = new QHBox(vtab);
+  htab2->setMargin(3);
+  new QLabel("    generate Javadoc \n    style comment : ", htab2);
+  php_javadoc_cb = new QCheckBox(htab2);
+  php_javadoc_cb->setChecked(GenerationSettings::php_javadoc_comment);
 
   new QLabel("Class default \ndeclaration :", grid);
   edphp_class_decl = new MultiLineEdit(grid);
@@ -1554,6 +1566,7 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::php_enum_item_decl = edphp_enum_item_decl->text();
     GenerationSettings::php_attr_decl = edphp_attr_decl->text();
     GenerationSettings::php_oper_def = edphp_oper_def->text();
+    GenerationSettings::php_javadoc_comment = php_javadoc_cb->isChecked();
     
     GenerationSettings::idl_interface_decl = edidl_interface_decl->text();
     GenerationSettings::idl_valuetype_decl = edidl_valuetype_decl->text();

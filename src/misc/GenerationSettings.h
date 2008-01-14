@@ -136,6 +136,7 @@ class GenerationSettings {
     static bool java_set_param_final;
     
     static bool php_default_defs;
+    static bool php_javadoc_comment;
     static SharedStr php_src_content;
     static SharedStr php_class_decl;
     static SharedStr php_external_class_decl;
@@ -296,6 +297,7 @@ class GenerationSettings {
     static bool php_default_get_final() { return php_get_final; };
     static const char * php_default_set_name() { return php_set_name; };
     static bool php_default_set_final() { return php_set_final; };
+    static bool php_javadoc_style() { return php_javadoc_comment; }
 
     static bool idl_get_default_defs() { return idl_default_defs; };
     static bool idl_set_default_defs(bool y);

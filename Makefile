@@ -120,9 +120,8 @@ install:
 		echo "Name=BOUML" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/bouml.desktop" ; \
 		echo "Type=Application" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/bouml.desktop" ; \
 		echo "Comment=Free UML 2 modeler" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/bouml.desktop" ; \
-		echo "Exec=bouml" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/bouml.desktop" ; \
+		echo "Exec=$(BOUML_DIR)/bouml" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/bouml.desktop" ; \
 		echo "TryExec=bouml" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/bouml.desktop" ; \
-		echo "Path=$(BOUML_LIB)" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/bouml.desktop" ; \
 		echo "Icon=bouml" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/bouml.desktop" ; \
 		echo "Categories=Development;" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/bouml.desktop" ; \
 		echo "[Desktop Entry]" > "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
@@ -130,9 +129,8 @@ install:
 		echo "Name=Project Control" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
 		echo "Type=Application" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
 		echo "Comment=Bouml project's files control" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
-		echo "Exec=projectControl" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
+		echo "Exec=$(BOUML_LIB)/projectControl" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
 		echo "TryExec=projectControl" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
-		echo "Path=$(BOUML_LIB)" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
 		echo "Icon=projectControl" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
 		echo "Categories=Development;" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectControl.desktop" ; \
 		echo "[Desktop Entry]" > "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
@@ -140,9 +138,8 @@ install:
 		echo "Name=Project Synchro" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
 		echo "Type=Application" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
 		echo "Comment=Bouml project's files synchronization" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
-		echo "Exec=projectSynchro" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
+		echo "Exec=$(BOUML_LIB)/projectSynchro" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
 		echo "TryExec=projectSynchro" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
-		echo "Path=$(BOUML_LIB)" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
 		echo "Icon=projectSynchro" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
 		echo "Categories=Development;" >> "$(DESTDIR)$(BOUML_DESKTOP_DIR)/projectSynchro.desktop" ; \
 	fi

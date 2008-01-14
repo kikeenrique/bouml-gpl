@@ -29,6 +29,7 @@
 #include <qstring.h>
 
 extern QCString capitalize(const QCString & s);
+extern bool need_equal(const char * p, const char * v);
 extern QCString current_indent(const char * p, const char * begin);
 
 extern void set_verbose();

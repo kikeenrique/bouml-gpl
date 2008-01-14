@@ -35,6 +35,37 @@ QCString capitalize(const QCString & s)
     : s.left(1).upper() + s.mid(1);
 }
 
+
+bool need_equal(const char * p, const char * v)
+{
+  for (;;) {
+    switch (*v++) {
+    case 0:
+    case '=':
+      return FALSE;
+    case ' ':
+    case '\t':
+    case '\n':
+    case '\r':
+      break;
+    default:
+      for (;;) {
+	switch (*--p) {
+	case '=':
+	  return FALSE;
+	case ' ':
+	case '\t':
+	case '\n':
+	case '\r':
+	  break;
+	default:
+	  return TRUE;
+	}
+      }
+    }
+  }
+}
+
 QCString current_indent(const char * p, const char * begin)
 {
   QString indent = "";	// to not be QCString::null

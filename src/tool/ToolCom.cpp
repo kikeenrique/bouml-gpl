@@ -33,8 +33,6 @@
 #pragma warning (disable: 4150)
 #endif
 
-#include <stdlib.h>
-
 #ifdef DEBUGCOM
 #include <iostream>
 
@@ -54,6 +52,8 @@ using namespace std;
 #include "BrowserOperation.h"
 #include "DialogUtil.h"
 #include "mu.h"
+#include "err.h"
+
 
 Socket::Socket(ToolCom * c)
     : QSocketDevice(QSocketDevice::Stream), com(c) {
@@ -509,7 +509,7 @@ void ToolCom::fatal_error(const char *
 #endif
   
   close();
-  throw 0;
+  THROW_ERROR 0;
 }
 
 void ToolCom::data_received(Socket * who) {
@@ -534,6 +534,7 @@ void ToolCom::data_received(Socket * who) {
     do_exit = exit_bouml;
   }
   else if (sock != 0) {
+    PRE_TRY;
     try {
       const char * p = read_buffer();
       
@@ -557,7 +558,7 @@ void ToolCom::data_received(Socket * who) {
 	   close();
 	   return;
 	   }*/
-	else if (api_version > 37) {
+	else if (api_version > 38) {
 	  TraceDialog::add("<font color =\"red\"><b>the plug-out is incompatible with this too old version of BOUML<b></font>");
 	  TraceDialog::show_it();
 	  close();
@@ -809,12 +810,13 @@ void ToolCom::data_received(Socket * who) {
     catch (...) {
       close();
     }
+    POST_TRY;
   }
   
   if (do_exit) {
     BrowserView::remove_temporary_files();
     set_user_id(-1);    // delete lock
 
-    throw 0;
+    THROW_ERROR 0;
   }
 }

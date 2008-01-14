@@ -1592,7 +1592,8 @@ void ClassDialog::php_generate_decl(QString & s, ClassData * cl, QString def,
     }
       
     if (!strncmp(p, "${comment}", 10))
-      manage_comment(comment, p, pp, FALSE);
+      manage_comment(comment, p, pp,
+		     GenerationSettings::php_javadoc_style());
     else if (!strncmp(p, "${description}", 14))
       manage_description(comment, p, pp);
     else if (!strncmp(p, "${public}", 9)) {

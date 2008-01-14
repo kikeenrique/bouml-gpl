@@ -112,7 +112,7 @@ void UmlClass::generate(QTextOStream & f, QCString indent) {
     }
     else if (!strncmp(p, "${visibility}", 13)) {
       p += 13;
-      generate_visibility(f);
+      generate_visibility(f, "");
     }
     else if (!strncmp(p, "${final}", 8)) {
       p += 8;

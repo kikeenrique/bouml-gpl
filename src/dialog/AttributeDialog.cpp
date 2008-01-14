@@ -792,13 +792,14 @@ void AttributeDialog::cpp_update() {
     }
     else if ((cpp_in_enum && !strncmp(p, "${value}", 8)) ||
 	     !strncmp(p, "${h_value}", 10)) {
-      p += (p[2] == 'h') ? 10 : 8;
-      if (!edinit->text().stripWhiteSpace().isEmpty() &&
-	  (cpp_in_enum || classattribute_cb->isChecked())) {
-	if (edinit->text().stripWhiteSpace().at(0) == QChar('='))
-	  s += ' ';
+      QString i = edinit->text().stripWhiteSpace();
+
+      if (!i.isEmpty() && (cpp_in_enum || classattribute_cb->isChecked())) {
+	if (need_equal(p, i, TRUE))
+	  s += " = ";
 	s += edinit->text();
       }
+      p += (p[2] == 'h') ? 10 : 8;
     }
     else if (!strncmp(p, "${value}", 8))
       p += 8;
@@ -980,15 +981,17 @@ void AttributeDialog::java_update() {
       s += edname->text();
     }
     else if (!strncmp(p, "${value}", 8)) {
-      p += 8;
-      
-      if (!edinit->text().stripWhiteSpace().isEmpty()) {
-	if (edinit->text().at(0) == QChar('='))
-	  s += ' ';
+      QString i = edinit->text().stripWhiteSpace();
+
+      if (!i.isEmpty()) {
+	if (need_equal(p, i, FALSE))
+	  s += " = ";
 	s += edinit->text();
       }
       else if (java_in_enum_pattern)
 	s += " = ...";
+
+      p += 8;
     }
     else if (*p == '\n') {
       s += *p++;
@@ -1197,7 +1200,8 @@ void AttributeDialog::php_update() {
     }
       
     if (!strncmp(p, "${comment}", 10))
-      manage_comment(comment->text(), p, pp, FALSE);
+      manage_comment(comment->text(), p, pp,
+		     GenerationSettings::php_javadoc_style());
     else if (!strncmp(p, "${description}", 14))
       manage_description(comment->text(), p, pp);
     else if (!strncmp(p, "${name}", 7)) {
@@ -1207,15 +1211,17 @@ void AttributeDialog::php_update() {
       s += edname->text();
     }
     else if (!strncmp(p, "${value}", 8)) {
-      p += 8;
+      QString i = edinit->text().stripWhiteSpace();
       
-      if (!edinit->text().stripWhiteSpace().isEmpty()) {
-	s += (edinit->text().stripWhiteSpace().at(0) == QChar('='))
-	  ? " " : " = ";
+      if (!i.isEmpty()) {
+	if (need_equal(p, i, FALSE))
+	  s += " = ";
 	s += edinit->text();
       }
       else if (php_in_enum)
 	s += " = ...";
+
+      p += 8;
     }
     else if (!strncmp(p, "${const}", 8)) {
       p += 8;
@@ -1381,9 +1387,12 @@ void AttributeDialog::idl_update() {
       s += edname->text();
     }
     else if (!strncmp(p, "${value}", 8)) {
-      p += 8;
-      s += ' ';
+      QString i = edinit->text().stripWhiteSpace();
+
+      if (need_equal(p, i, FALSE))
+	s += " = ";
       s += edinit->text();
+      p += 8;
     }
     else if (*p == '\n') {
       s += *p++;

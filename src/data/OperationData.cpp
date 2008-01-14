@@ -45,6 +45,7 @@
 #include "strutil.h"
 #include "BrowserView.h"
 #include "mu.h"
+#include "err.h"
 
 IdDict<OperationData> OperationData::all(1023, __FILE__);
 
@@ -586,6 +587,7 @@ void OperationData::update_cpp_get_of(QCString & decl, QCString & def,
 				      QString attcpp_decl, bool attis_const,
 				      QString multiplicity)
 {
+  remove_comments(attcpp_decl);
   attcpp_decl = attcpp_decl.stripWhiteSpace();
  
   int index;
@@ -758,6 +760,7 @@ void OperationData::update_cpp_get_of(QCString & decl, QCString & def,
 void OperationData::update_java_get_of(QCString & def, const QString & attr_name,
 				       QString attjava_decl, QString multiplicity)
 {
+  remove_comments(attjava_decl);
   attjava_decl = attjava_decl.stripWhiteSpace();
   
   int index;
@@ -831,6 +834,7 @@ void OperationData::update_java_get_of(QCString & def, const QString & attr_name
 void OperationData::update_php_get_of(QCString & def, const QString & attr_name,
 				      QString attphp_decl)
 {
+  remove_comments(attphp_decl);
   attphp_decl = attphp_decl.stripWhiteSpace();
   
   int index;
@@ -893,6 +897,7 @@ void OperationData::update_php_get_of(QCString & def, const QString & attr_name,
 void OperationData::update_idl_get_of(QCString & decl, QString attidl_decl,
 				      QString multiplicity)
 {
+  remove_comments(attidl_decl);
   attidl_decl = attidl_decl.stripWhiteSpace();
   
   int index;
@@ -1116,6 +1121,7 @@ void OperationData::update_cpp_set_of(QCString & decl, QCString & def,
 				      const QString & attr_name,
 				      QString attcpp_decl, bool attis_const, 
 				      QString multiplicity) {
+  remove_comments(attcpp_decl);
   attcpp_decl = attcpp_decl.stripWhiteSpace();
   
   int index;
@@ -1273,6 +1279,7 @@ void OperationData::update_cpp_set_of(QCString & decl, QCString & def,
 void OperationData::update_java_set_of(QCString & def, const QString & attr_name,
 				       QString attjava_decl, QString multiplicity)
 {
+  remove_comments(attjava_decl);
   attjava_decl = attjava_decl.stripWhiteSpace();
   
   int index;
@@ -1356,6 +1363,7 @@ void OperationData::update_php_set_of(QCString & def,
 				       const QString & attr_name,
 				       QString attphp_decl)
 {
+  remove_comments(attphp_decl);
   attphp_decl = attphp_decl.stripWhiteSpace();
   
   int index;
@@ -1423,6 +1431,7 @@ void OperationData::update_php_set_of(QCString & def,
 void OperationData::update_idl_set_of(QCString & decl, QString attidl_decl,
 				      QString multiplicity)
 {
+  remove_comments(attidl_decl);
   attidl_decl = attidl_decl.stripWhiteSpace();
   
   int index;
@@ -2417,7 +2426,7 @@ void OperationData::save_body(QFile & qf, char * modified_bodies, int who) {
       backup(d, filename);
       qf.setName(filename);
       if (open_file(qf, IO_WriteOnly) == -1)
-	throw 0;
+	THROW_ERROR 0;
       
       QString header =
 	QString("class ") + cl->get_data()->definition(TRUE) + '\n';

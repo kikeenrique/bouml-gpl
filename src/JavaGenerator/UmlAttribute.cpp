@@ -32,7 +32,8 @@
 #include "UmlCom.h"
 #include "util.h"
 
-void UmlAttribute::generate(QTextOStream & f, const QCString & st, QCString indent) {
+void UmlAttribute::generate(QTextOStream & f, const QCString & cl_stereotype,
+			    QCString indent) {
   if (!javaDecl().isEmpty()) {
     const char * p = javaDecl();
     const char * pp = 0;
@@ -70,7 +71,7 @@ void UmlAttribute::generate(QTextOStream & f, const QCString & st, QCString inde
 	manage_description(p, pp);
       else if (!strncmp(p, "${visibility}", 13)) {
 	p += 13;
-	generate_visibility(f);
+	generate_visibility(f, cl_stereotype);
       }
       else if (!strncmp(p, "${static}", 9)) {
 	p += 9;
@@ -126,13 +127,12 @@ void UmlAttribute::generate(QTextOStream & f, const QCString & st, QCString inde
 	}
       }
       else if (!strncmp(p, "${value}", 8)) {
-	p += 8;
 	if (!defaultValue().isEmpty()) {
-	  if (*((const char *) defaultValue()) == '=')
-	    f << ' ' << defaultValue();
-	  else
-	    f << defaultValue();
+	  if (need_equal(p, defaultValue()))
+	    f << " = ";
+	  f << defaultValue();
 	}
+	p += 8;
       }
       else if (!strncmp(p, "${@}", 4)) {
 	p += 4;
@@ -148,7 +148,7 @@ void UmlAttribute::generate(QTextOStream & f, const QCString & st, QCString inde
 	f << *p++;
     }
       
-    if (st != "enum")
+    if (cl_stereotype != "enum")
       f << '\n';
   }
 }

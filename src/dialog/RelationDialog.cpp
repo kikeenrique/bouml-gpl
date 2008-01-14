@@ -1417,12 +1417,14 @@ void RelationDialog::java_update(RoleDialog & role, BrowserClass * cl, BrowserNo
 	  s += GenerationSettings::java_relationattribute_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
 	}
 	else if (!strncmp(p, "${value}", 8)) {
-	  p += 8;
-	  if (!role.edinit->text().stripWhiteSpace().isEmpty()) {
-	    if (role.edinit->text().stripWhiteSpace().at(0) == QChar('='))
-	      s += ' ';
+          QString i = role.edinit->text().stripWhiteSpace();
+
+	  if (!i.isEmpty()) {
+	    if (need_equal(p, i, FALSE))
+	      s += " = ";
 	    s += role.edinit->text();
 	  }
+	  p += 8;
 	}
 	else if (!strncmp(p, "${association}", 14)) {
 	  p += 14;
@@ -1569,7 +1571,8 @@ void RelationDialog::php_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	}
 	
 	if (!strncmp(p, "${comment}", 10))
-	  manage_comment(role.comment->text(), p, pp, FALSE);
+	  manage_comment(role.comment->text(), p, pp,
+			 GenerationSettings::php_javadoc_style());
 	else if (!strncmp(p, "${description}", 14))
 	  manage_description(role.comment->text(), p, pp);
 	else if (!strncmp(p, "${visibility}", 13)) {
@@ -1601,12 +1604,14 @@ void RelationDialog::php_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	    s += "var ";
 	}
 	else if (!strncmp(p, "${value}", 8)) {
-	  p += 8;
-	  if (!role.edinit->text().stripWhiteSpace().isEmpty()) {
-	    s += (role.edinit->text().stripWhiteSpace().at(0) == QChar('='))
-	      ? " " : " = ";
+          QString i = role.edinit->text().stripWhiteSpace();
+
+	  if (!i.isEmpty()) {
+	    if (need_equal(p, i, FALSE))
+	      s += " = ";
 	    s += role.edinit->text();
 	  }
+	  p += 8;
 	}
 	else if (*p == '\n') {
 	  s += *p++;

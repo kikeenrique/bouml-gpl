@@ -192,7 +192,33 @@ void remove_comments(QCString & s)
       break;
     case '*':
       if ((index2 = s.find("*/", index1 + 2)) != -1)
-	s.replace(index1, index2 - index1 + 1, " ");
+	s.replace(index1, index2 - index1 + 2, " ");
+      else
+	s.remove(index1, ~0);
+      break;
+    default:
+      index1 += 1;
+    }
+  }
+}
+
+void remove_comments(QString & s)
+{
+  int index1 = 0;
+  
+  while ((index1 = s.find('/', index1)) != -1) {
+    int index2;
+    
+    switch (((const char *) s)[index1 + 1]) {
+    case '/':
+      if ((index2 = s.find('\n', index1 + 2)) != -1)
+	s.remove(index1, index2 - index1 + 1);
+      else
+	s.remove(index1, ~0);
+      break;
+    case '*':
+      if ((index2 = s.find("*/", index1 + 2)) != -1)
+	s.replace(index1, index2 - index1 + 2, " ");
       else
 	s.remove(index1, ~0);
       break;
@@ -251,6 +277,29 @@ QString java_multiplicity(QString m)
   }
   
   return r;
+}
+
+// remark : v is not empty and doesn't start by spaces
+bool need_equal(const char * p, QString v, bool cpp)
+{
+   QChar v0 = v.at(0);
+
+   if ((v0 == QChar('=')) || (cpp && (v0 == QChar('('))))
+     return FALSE;
+
+   for (;;) {
+     switch (*--p) {
+     case '=':
+       return FALSE;
+     case ' ':
+     case '\t':
+     case '\n':
+     case '\r':
+       break;
+     default:
+       return TRUE;
+     }
+   }
 }
 
 //

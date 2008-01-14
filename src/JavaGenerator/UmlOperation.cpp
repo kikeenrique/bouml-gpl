@@ -248,7 +248,7 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
 	manage_description(p, pp);
       else if (!strncmp(p, "${visibility}", 13)) {
 	p += 13;
-	generate_visibility(f);
+	generate_visibility(f, cl_stereotype);
       }
       else if (!strncmp(p, "${final}", 8)) {
 	p += 8;

@@ -37,7 +37,7 @@ class UmlClassMember : public UmlBaseClassMember {
     UmlClassMember(void * id, const QCString & n)
       : UmlBaseClassMember(id, n) {};
 	
-    void generate_visibility(QTextOStream & f);
+    void generate_visibility(QTextOStream & f, const char * parent_st);
     
     static void remove_comments(QCString & s);
     static void remove_arrays(QCString & s);

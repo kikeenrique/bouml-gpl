@@ -125,7 +125,7 @@ class GenerationSettingsDialog : public QTabDialog {
     // Php specific
     MultiLineEdit * edphp_src_content;
     QComboBox * edphp_extension;
-    QCheckBox * php_phpdoc_cb;
+    QCheckBox * php_javadoc_cb;
     MultiLineEdit * edphp_class_decl;
     LineEdit * edphp_external_class_decl;
     MultiLineEdit * edphp_interface_decl;

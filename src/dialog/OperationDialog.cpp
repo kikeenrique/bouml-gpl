@@ -2456,7 +2456,8 @@ void OperationDialog::php_update_def() {
     }
       
     if (!strncmp(p, "${comment}", 10))
-      manage_comment(comment->text(), p, pp, FALSE);
+      manage_comment(comment->text(), p, pp,
+		     GenerationSettings::php_javadoc_style());
     else if (!strncmp(p, "${description}", 14))
       manage_description(comment->text(), p, pp);
     else if (!strncmp(p, "${final}", 8)) {

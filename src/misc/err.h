@@ -23,25 +23,15 @@
 //
 // *************************************************************************
 
-#ifndef _UTIL_H
-#define _UTIL_h
+#ifndef _ERR_H
+#define _ERR_H
 
-#include <qcstring.h>
+#include <stdlib.h>
 
-extern QString capitalize(const QString & s);
-extern QCString capitalize(const QCString & s);
-extern QCString current_indent(const char * p, const char * begin);
-extern const char * name_spec(const char *);
-extern bool need_equal(const char * p, const char * v);
-extern void set_verbose();
-extern bool verbose();
-extern void set_preserve();
-extern bool preserve();
-extern void set_trace_header(QCString s);
-extern QCString get_trace_header();
-extern void write_trace_header();
-extern void incr_error();
-extern void incr_warning();
-extern int n_errors();
-extern int n_warnings();
+// to manage case where Qt is compiled with -fnoexceptions
+extern bool ExitOnError;
+#define THROW_ERROR if (ExitOnError) ::exit(0); else throw 
+#define PRE_TRY bool previous_ExitOnError = ExitOnError; ExitOnError = FALSE
+#define POST_TRY ExitOnError = previous_ExitOnError
+
 #endif

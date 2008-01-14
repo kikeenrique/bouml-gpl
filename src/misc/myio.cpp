@@ -27,7 +27,6 @@
 #pragma warning (disable: 4150)
 #endif
 
-#include <stdlib.h>
 #include <qtextstream.h> 
 #include <qdir.h>
 #include <qfile.h>
@@ -52,6 +51,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 #include "UmlGlobal.h"
+#include "err.h"
 
 // QFile::baseName() return string before the first '.' rather than the last
 
@@ -586,7 +586,7 @@ UmlCode arrow_type(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a line kind");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 UmlCode relation_type(const char * s, bool simple_relation)
@@ -616,7 +616,7 @@ UmlCode relation_type(const char * s, bool simple_relation)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a relation kind");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 bool IsaSimpleRelation(UmlCode c)
@@ -645,7 +645,7 @@ UmlVisibility visibility(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a visibility");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 UmlParamDirection direction(const char * s)
@@ -661,7 +661,7 @@ UmlParamDirection direction(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a direction");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 UmlParamEffect effect(const char * s)
@@ -679,7 +679,7 @@ UmlParamEffect effect(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a parameter effect");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 UmlActionKind activity_action_kind(const char * s)
@@ -715,7 +715,7 @@ UmlActionKind activity_action_kind(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not an activity action kind");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 UmlExpansionKind expansion_mode_kind(const char * s)
@@ -729,7 +729,7 @@ UmlExpansionKind expansion_mode_kind(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not an expansion node kind");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 UmlOrderingKind ordering(const char * s)
@@ -745,7 +745,7 @@ UmlOrderingKind ordering(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not an ordering");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 Uml3States state(const char * s)
@@ -759,7 +759,7 @@ Uml3States state(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a state");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 ClassDrawingMode drawing_mode(const char * s)
@@ -781,7 +781,7 @@ ClassDrawingMode drawing_mode(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a class drawing mode");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 DrawingLanguage drawing_language(const char * s)
@@ -801,7 +801,7 @@ DrawingLanguage drawing_language(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a drawing language");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 ShowContextMode context_mode(const char * s)
@@ -821,7 +821,7 @@ ShowContextMode context_mode(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a context mode");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 UmlColor color(const char * s)
@@ -894,7 +894,7 @@ UmlColor color(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a color");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 UmlFont font(const char * s)
@@ -930,7 +930,7 @@ UmlFont font(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a font");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 CanvasFormat canvas_format(const char * s)
@@ -983,7 +983,7 @@ CanvasFormat canvas_format(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a canvas format");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 UmlCode pseudo_state_kind(const char * s)
@@ -1013,7 +1013,7 @@ UmlCode pseudo_state_kind(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a pseudo state kind");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 UmlCode activity_node_kind(const char * s)
@@ -1035,7 +1035,7 @@ UmlCode activity_node_kind(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not an activity node kind");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 LineGeometry line_geometry(const char * s)
@@ -1055,7 +1055,7 @@ LineGeometry line_geometry(const char * s)
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a line geometry");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 
@@ -1559,14 +1559,14 @@ char * read_string(char * & st)
   if (*st == 0) {
     msg_critical("Error", 
 		 where() + "premature end of file, string expected");
-    throw 0;
+    THROW_ERROR 0;
   }
     
   if (*st != '"') {
     msg_critical("Error", 
 			  where() + "string expected after '"
 			  + QString(Context.previous_word) + "'");
-    throw 0;
+    THROW_ERROR 0;
   }
   
   char * r = st + 1;
@@ -1576,7 +1576,7 @@ char * read_string(char * & st)
     case 0:
       msg_critical("Error",
 			    where() + "premature end of file reading a string");
-      throw 0;
+      THROW_ERROR 0;
     case '"':
       Context.removed_char = ' ';
       *st++ = 0;
@@ -1607,7 +1607,7 @@ char * read_string(char * & st)
       if (*++st  == 0) {
 	msg_critical("Error",
 			      where() + "premature end of file reading a string");
-	throw 0;
+	THROW_ERROR 0;
       }
       break;
     case '\n':
@@ -1623,14 +1623,14 @@ char * read_keyword(char * & st)
   if (*st == 0) {
     msg_critical("Error",
 			  where() + "premature end of file, keyword expected");
-    throw 0;
+    THROW_ERROR 0;
   }
   
   if (*st == '"') {
     msg_critical("Error",
 		 where() + "keyword expected after '"
 		 + QString(Context.previous_word) + "'");
-    throw 0;
+    THROW_ERROR 0;
   }
   
   char * r = st;
@@ -1654,7 +1654,7 @@ char * read_keyword(char * & st, const char * expected)
     msg_critical("Error",
 		 where() + "premature end of file, '" 
 		 + QString(expected) + "' expected");
-    throw 0;
+    THROW_ERROR 0;
   }
   
   if (*st == '"') {
@@ -1662,7 +1662,7 @@ char * read_keyword(char * & st, const char * expected)
 		 where() + "'" + QString(expected) + 
 		 "' expected rather than a string after '"
 		 + QString(Context.previous_word) + "'");
-    throw 0;
+    THROW_ERROR 0;
   }
   
   char * r = st;
@@ -1678,7 +1678,7 @@ char * read_keyword(char * & st, const char * expected)
     msg_critical("Error",
 		 where() + "'" + QString(expected) + "' expected rather than '"
 		 + QString(r) + "' after '" + QString(Context.previous_word) + "'");
-    throw 0;
+    THROW_ERROR 0;
   }
 
   set_previous_word(r);
@@ -1697,7 +1697,7 @@ char * read_keyword(char * & st, const char * expected1,
     msg_critical("Error",
 		 where() + "premature end of file, '" 
 		 + QString(expected1) + "' expected");
-    throw 0;
+    THROW_ERROR 0;
   }
   
   if (*st == '"') {
@@ -1705,7 +1705,7 @@ char * read_keyword(char * & st, const char * expected1,
 		 where() + "'" + QString(expected1) + 
 		 "' expected rather than a string after '"
 		 + QString(Context.previous_word) + "'");
-    throw 0;
+    THROW_ERROR 0;
   }
   
   char * r = st;
@@ -1721,7 +1721,7 @@ char * read_keyword(char * & st, const char * expected1,
     msg_critical("Error",
 		 where() + "'" + QString(expected1) + "' expected rather than '"
 		 + QString(r) + "' after '" + QString(Context.previous_word) + "'");
-    throw 0;
+    THROW_ERROR 0;
   }
 
   set_previous_word(r);
@@ -1748,13 +1748,13 @@ int read_id(char * & st)
   if (*st == 0) {
     msg_critical("Error",
 		 where() + "premature end of file, id expected");
-    throw 0;
+    THROW_ERROR 0;
   }
   
   if (*st == '"') {
     msg_critical("Error",
 		 where() + "id expected after '" + QString(Context.previous_word) + "'");
-    throw 0;
+    THROW_ERROR 0;
   }
   
   int result = 0;
@@ -1767,7 +1767,7 @@ int read_id(char * & st)
   if (st == r+1) {
     msg_critical("Error", 
 		 where() + "id expected after '" + QString(Context.previous_word) + "'");
-    throw 0;
+    THROW_ERROR 0;
   }
   
   st[-1] = 0;
@@ -1784,13 +1784,13 @@ unsigned read_unsigned(char * & st)
   if (*st == 0) {
     msg_critical("Error",
 		 where() + "premature end of file, unsigned expected");
-    throw 0;
+    THROW_ERROR 0;
   }
   
   if (*st == '"') {
     msg_critical("Error",
 		 where() + "unsigned expected after '" + QString(Context.previous_word) + "'");
-    throw 0;
+    THROW_ERROR 0;
   }
   
   int result = 0;
@@ -1803,7 +1803,7 @@ unsigned read_unsigned(char * & st)
   if (st == r+1) {
     msg_critical("Error", 
 		 where() + "unsigned expected after '" + QString(Context.previous_word) + "'");
-    throw 0;
+    THROW_ERROR 0;
   }
   
   st[-1] = 0;
@@ -1820,13 +1820,13 @@ double read_double(char * & st)
   if (*st == 0) {
     msg_critical("Error",
 		 where() + "premature end of file, float expected");
-    throw 0;
+    THROW_ERROR 0;
   }
   
   if (*st == '"') {
     msg_critical("Error",
 		 where() + "float expected after '" + QString(Context.previous_word) + "'");
-    throw 0;
+    THROW_ERROR 0;
   }
   
   char * r = st;
@@ -1857,7 +1857,7 @@ double read_double(char * & st)
       msg_critical("Error", 
 		   where() + "float expected rather than '"
 		   + s + "' after '" + QString(Context.previous_word) + "'");
-      throw 0;
+      THROW_ERROR 0;
     }
   }
   
@@ -1898,7 +1898,7 @@ char * skip_until(char * & st, const char * expected)
     if (*st == 0) {
       msg_critical("Error",
 		   where() + "premature end of file");
-      throw 0;
+      THROW_ERROR 0;
     }
   
   if (*st == '"') 
@@ -1913,14 +1913,14 @@ void wrong_keyword(const char * k, const char * expected)
   msg_critical("Error",
 	       where() + "'" + QString(expected)
 	       + "' expected rather than '" + QString(k) + "'");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 void unknown_keyword(const char * k)
 {
   msg_critical("Error",
 	       where() + "unknown or unexpected keyword '" + QString(k) + "'");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 void unknown_ref(const char * kind, int id)
@@ -1928,7 +1928,7 @@ void unknown_ref(const char * kind, int id)
   msg_critical("Error", 
 	       where() + QString::number(id) +
 	       " unknown " + QString(kind) + " identifier");
-  throw 0;
+  THROW_ERROR 0;
 }
 
 //

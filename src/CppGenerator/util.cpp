@@ -74,6 +74,37 @@ const char * name_spec(const char * spec)
   return p;
 }
 
+bool need_equal(const char * p, const char * v)
+{
+  for (;;) {
+    switch (*v++) {
+    case 0:
+    case '=':
+    case '(':
+      return FALSE;
+    case ' ':
+    case '\t':
+    case '\n':
+    case '\r':
+      break;
+    default:
+      for (;;) {
+	switch (*--p) {
+	case '=':
+	  return FALSE;
+	case ' ':
+	case '\t':
+	case '\n':
+	case '\r':
+	  break;
+	default:
+	  return TRUE;
+	}
+      }
+    }
+  }
+}
+
 //
 
 static QCString TraceHeader;

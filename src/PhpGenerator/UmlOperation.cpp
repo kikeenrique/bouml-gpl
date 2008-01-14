@@ -233,7 +233,7 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
 	  f << *p++;
       }
       else if (!strncmp(p, "${comment}", 10))
-	manage_comment(p, pp, FALSE);
+	manage_comment(p, pp, PhpSettings::isGenerateJavadocStyleComment());
       else if (!strncmp(p, "${description}", 14))
 	manage_description(p, pp);
       else if (!strncmp(p, "${visibility}", 13)) {

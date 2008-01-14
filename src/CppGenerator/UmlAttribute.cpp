@@ -141,13 +141,14 @@ void UmlAttribute::generate_decl(aVisibility & current_visibility, QTextOStream 
       f_h << CppSettings::relationAttributeStereotype(stereotype());
     }
     else if (!strncmp(p, "${value}", 8) || !strncmp(p, "${h_value}", 10)) {
+      const char * pb = p;
+
       p += (p[2] == 'h') ? 10 : 8;
       if (in_enum) {
 	if (!defaultValue().isEmpty()) {
-	  if (*((const char *) defaultValue()) == '=')
-	    f_h << ' ' << defaultValue();
-	  else
-	    f_h << defaultValue();
+	  if (need_equal(pb, defaultValue()))
+	    f_h << " = ";
+          f_h << defaultValue();
 	}
 	if (last) {
 	  if (*p == ',')
@@ -157,10 +158,9 @@ void UmlAttribute::generate_decl(aVisibility & current_visibility, QTextOStream 
 	  f_h << ',';
       }
       else if ((p[-8] == 'h') && isClassMember() && !defaultValue().isEmpty()) {
-	if (*((const char *) defaultValue()) == '=')
-	  f_h << ' ' << defaultValue();
-	else
-	  f_h << defaultValue();
+	if (need_equal(pb, defaultValue()))
+	  f_h << " = ";
+	f_h << defaultValue();
       }
     }
     else if (in_enum)
@@ -280,13 +280,12 @@ void UmlAttribute::generate_def(QTextOStream & f, QCString indent, bool h,
 	  f << CppSettings::relationAttributeStereotype(stereotype());
 	}
 	else if (!strncmp(p, "${value}", 8)) {
-	  p += 8;
 	  if (!defaultValue().isEmpty()) {
-	    if (*((const char *) defaultValue()) == '=')
-	      f << ' ' << defaultValue();
-	    else
-	      f << defaultValue();
+	    if (need_equal(p, defaultValue()))
+	      f << " = ";
+	    f << defaultValue();
 	  }
+	  p += 8;
 	}
 	else if (!strncmp(p, "${h_value}", 10))
 	  p += 10;

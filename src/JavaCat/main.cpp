@@ -44,7 +44,7 @@ int main(int argc, char ** argv)
       //UmlCom::with_ack(FALSE);
 		       
       // warning : release is also in JavaCatWindow
-      UmlCom::trace("<b>Java catalog</b> release 2.10.2<br><hr>");
+      UmlCom::trace("<b>Java catalog</b> release 2.10.3<br><hr>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlItem * item = UmlCom::targetItem();

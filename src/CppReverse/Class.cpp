@@ -916,6 +916,9 @@ Class * Class::reverse_enum(ClassContainer * container,
     }
     
     if (! Lex::identifierp(s, TRUE)) {
+      if (s == "}")
+	break;
+      
       Lex::syntax_error(QCString("enum item expected rather than <font color =\"red\"> ")
 			+ s + "</font>");
       UmlOperation::skip_body(1);
@@ -1210,7 +1213,7 @@ bool Class::reverse_typedef(ClassContainer *  container, const QCString & path,
     // for builtin types
     base_type.explicit_type = type;
   else
-    UmlBaseRelation::create(aRealization, ty_uml, base_type.type);
+    UmlBaseRelation::create(aDependency, ty_uml, base_type.type);
   
   ty_uml->set_BaseType(base_type);
   

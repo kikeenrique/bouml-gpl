@@ -283,13 +283,12 @@ void UmlRelation::generate_decl(aVisibility & current_visibility, QTextOStream &
 	else if (!strncmp(p, "${value}", 8))
 	  p += 8;
 	else if (!strncmp(p, "${h_value}", 10)) {
-	  p += 10;
 	  if (!defaultValue().isEmpty() && isClassMember()) {
-	    if (*((const char *) defaultValue()) == '=')
-	      f_h << ' ' << defaultValue();
-	    else
-	      f_h << defaultValue();
+	    if (need_equal(p, defaultValue()))
+	      f_h << " = ";
+	    f_h << defaultValue();
 	  }
+	  p += 10;
 	}
 	else if (!strncmp(p, "${association}", 14)) {
 	  p += 14;
@@ -408,13 +407,12 @@ void UmlRelation::generate_def(QTextOStream & f, QCString indent, bool h,
 	  f << CppSettings::relationAttributeStereotype(stereotype());
 	}
 	else if (!strncmp(p, "${value}", 8)) {
-	  p += 8;
 	  if (!defaultValue().isEmpty()) {
-	    if (*((const char *) defaultValue()) == '=')
-	      f << ' ' << defaultValue();
-	    else
-	      f << defaultValue();
+	    if (need_equal(p, defaultValue()))
+	      f << " = ";
+	    f << defaultValue();
 	  }
+	  p += 8;
 	}
 	else if (!strncmp(p, "${h_value}", 10))
 	  p += 10;

@@ -40,11 +40,15 @@
 #include "strutil.h"
 #include "DialogUtil.h"
 #include "mu.h"
+#include "err.h"
 
+bool ExitOnError = FALSE;
 QApplication * theApp;
 
 int main(int argc, char **argv)
 {
+  ExitOnError = FALSE;
+
   theApp = new QApplication (argc, argv);
   
   initCodec();
@@ -105,11 +109,11 @@ int main(int argc, char **argv)
 	msg_warning("Error", "Bouml was called with wrong parameters, ignore them");
     }
     
+
+    ExitOnError = TRUE;
     theApp->exec();
   }
   catch (...) {
-    // cannot read or write a file
-    // exit after plug-out exec
     ;
   }
   

@@ -2,7 +2,6 @@
 #define _UMLBASEPARAMETERSET_H
 
 
-#include "UmlActivityPin.h"
 #include "UmlItem.h"
 #include "anItemKind.h"
 #include <qcstring.h>
@@ -10,6 +9,7 @@
 
 class UmlActivityParameter;
 class UmlActivityAction;
+class UmlActivityPin;
 
 class UmlBaseParameterSet : public UmlItem {
   public:

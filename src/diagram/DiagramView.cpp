@@ -67,6 +67,7 @@
 #include "MenuTitle.h"
 #include "DialogUtil.h"
 #include "myio.h"
+#include "err.h"
 
 #include "align_top.xpm"
 #include "align_bottom.xpm"
@@ -1569,6 +1570,7 @@ void DiagramView::load(const char * pfix) {
   // load
   BrowserNode::pre_load();
   
+  PRE_TRY;
   try {
     QString t = pfix;
     
@@ -1580,6 +1582,7 @@ void DiagramView::load(const char * pfix) {
   catch (int) {
     ;
   }
+  POST_TRY;
   
   BrowserNode::post_load();
   DiagramItem::post_load();
@@ -1623,6 +1626,7 @@ void DiagramView::read() {
     unsigned format = read_file_format();
     bool error = FALSE;
     
+    PRE_TRY;
     try {
       char * st = s;
       char * k;
@@ -1643,6 +1647,7 @@ void DiagramView::read() {
     catch (...) {
       error = TRUE;
     }
+    POST_TRY;
     
     delete [] s;
     the_canvas()->read_old_diagram(FALSE);
@@ -1650,7 +1655,7 @@ void DiagramView::read() {
     the_canvas()->clear_old_ids();
     
     if (error)
-      throw 0;
+      THROW_ERROR 0;
   }
 }
 
@@ -1668,6 +1673,7 @@ void DiagramView::paste() {
   the_canvas()->set_paste(TRUE);
   read_in("clipboard");
   
+  PRE_TRY;
   try {
     char * st = s;
     char * k;
@@ -1686,6 +1692,7 @@ void DiagramView::paste() {
   catch (int) {
     ;
   }
+  POST_TRY;
   
   delete [] s;
   
