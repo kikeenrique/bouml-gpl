@@ -45,7 +45,7 @@ UmlClassView * UmlPackage::get_classview(const QCString & nmsp) {
   
   if (nmsp != cppNamespace()) {
     if (namespace_fixedp) {
-      if ((pack = findNamespace(nmsp)) == 0) {
+      if ((pack = findCppNamespace(nmsp)) == 0) {
 	QCString s = nmsp;
 	
 	if (s.isEmpty())
@@ -154,7 +154,7 @@ UmlDeploymentView * UmlPackage::get_deploymentview(const QCString & nmsp) {
   
   if (nmsp != cppNamespace()) {
     if (namespace_fixedp) {
-      if ((pack = findNamespace(nmsp)) == 0) {
+      if ((pack = findCppNamespace(nmsp)) == 0) {
 	QCString s = nmsp;
 	
 	if (s.isEmpty())

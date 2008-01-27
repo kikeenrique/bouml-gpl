@@ -138,6 +138,20 @@ class OperationDialog : public QTabDialog {
     QString phpbody;
     QString oldphpbody;
         
+    // python tab
+    QWidget * pythontab;
+    bool python_undef;
+    LineEdit * edpythonnamespec;	// get/set
+    QCheckBox * pythonfrozen_cb;	// get/set
+    QCheckBox * indentpythonbody_cb;
+    MultiLineEdit * edpythondef;
+    MultiLineEdit * showpythondef;
+    QPushButton * editpythonbody;
+    QPushButton * editpythondecorator;
+    QString pythondecorator;
+    QString pythonbody;
+    QString oldpythonbody;
+        
     // idl tab
     QWidget * idltab;
     bool idl_undef;
@@ -153,6 +167,16 @@ class OperationDialog : public QTabDialog {
     static QSize previous_size;
   
   protected:
+    void manage_decorators(QString & s, QString indent,
+			   bool & indent_needed);
+    void init_get_set();
+    void init_uml();
+    void init_cpp();
+    void init_java();
+    void init_php();
+    void init_python();
+    void init_idl();
+
     QString compute_name(LineEdit * spec);
     void manage_cpp_type(unsigned rank, QString & s);
     void manage_cpp_exceptions(QString & s);
@@ -160,6 +184,7 @@ class OperationDialog : public QTabDialog {
     void manage_java_type(unsigned rank, QString & s);
     void manage_java_exceptions(QString & s);
     void manage_php_type(unsigned rank, QString & s);
+    void manage_python_type(unsigned rank, QString & s);
     void manage_idl_type(unsigned rank, QString & s);
     void manage_dir(unsigned rank, QString & s);
     void manage_idl_exceptions(QString & s);
@@ -168,6 +193,7 @@ class OperationDialog : public QTabDialog {
     static void post_edit_constraint(OperationDialog * d, QString s);
     static void post_cpp_edit_body(OperationDialog * d, QString s);
     static void post_java_edit_body(OperationDialog * d, QString s);
+    static void post_python_edit_body(OperationDialog * d, QString s);
     static void post_php_edit_body(OperationDialog * d, QString s);
   
   public:
@@ -177,6 +203,7 @@ class OperationDialog : public QTabDialog {
     static QString cpp_decl(const BrowserOperation * op, bool withname);
     static QString java_decl(const BrowserOperation * op, bool withname);
     static QString php_decl(const BrowserOperation * op, bool withname);
+    static QString python_decl(const BrowserOperation * op, bool withname);
     static QString idl_decl(const BrowserOperation * op, bool withdir, bool withname);
   
   protected slots:
@@ -215,6 +242,12 @@ class OperationDialog : public QTabDialog {
     void php_edit_body();
     void php_final_toggled(bool on);
     void php_edit_param();
+    void python_default_def();
+    void python_unmapped_def();
+    void python_update_def();
+    void python_edit_body();
+    void python_edit_param();
+    void python_edit_decorator();
     void idl_default_def();
     void idl_unmapped_def();
     void idl_update_decl();
@@ -392,6 +425,57 @@ class PhpParamsDialog : public QDialog {
   public:
     PhpParamsDialog(ParamsTable * params, MultiLineEdit * form);
     virtual ~PhpParamsDialog();
+  
+  protected slots:
+    virtual void polish();
+    virtual void accept();
+};
+
+class PythonParamsTable : public MyTable {
+  Q_OBJECT
+
+  protected:
+    ParamsTable * params;
+    MultiLineEdit * edform;
+  
+    static QString copied[4];		// copy/cut/paste
+  
+  public:
+    PythonParamsTable(ParamsTable * p, MultiLineEdit * f, QWidget * parent);
+    void update_edform();
+  
+  protected:
+    bool extract(int tblindex, int & strindex, QString s);
+
+    void insert_row_before(int row);
+    void insert_row_after(int row);
+    void delete_row(int row);
+    void copy_row(int row);
+    void cut_row(int row);
+    void paste_row(int row);
+    void move_row(int from, int to);
+    void init_row(int row);
+    void update_name(int row);
+    void update_names();
+    
+    virtual void setItem(int row, int col, QTableItem * item);
+    
+  protected slots:
+    void button_pressed(int row, int col, int button, const QPoint & mousePos);
+    virtual void setCurrentCell(int row, int col);
+};
+
+class PythonParamsDialog : public QDialog {
+  Q_OBJECT
+    
+  protected:
+    PythonParamsTable * tbl;
+    
+    static QSize previous_size;
+  
+  public:
+    PythonParamsDialog(ParamsTable * params, MultiLineEdit * form);
+    virtual ~PythonParamsDialog();
   
   protected slots:
     virtual void polish();

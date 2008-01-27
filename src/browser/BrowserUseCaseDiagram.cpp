@@ -73,6 +73,7 @@ BrowserUseCaseDiagram::BrowserUseCaseDiagram(BrowserUseCaseDiagram * model, Brow
   package_color = model->package_color;
   fragment_color = model->fragment_color;
   subject_color = model->subject_color;
+  class_color = model->class_color;
   canvas_size = model->canvas_size;
   is_modified = TRUE;
   
@@ -115,6 +116,7 @@ void BrowserUseCaseDiagram::make() {
   package_color = UmlDefaultColor;
   fragment_color = UmlDefaultColor;
   subject_color = UmlDefaultColor;
+  class_color = UmlDefaultColor;
 }
 
 BrowserUseCaseDiagram * BrowserUseCaseDiagram::add_use_case_diagram(BrowserNode * future_parent)
@@ -346,7 +348,7 @@ void BrowserUseCaseDiagram::open(bool) {
 
 void BrowserUseCaseDiagram::edit_settings() {
   QArray<StateSpec> st;
-  QArray<ColorSpec> co(5);
+  QArray<ColorSpec> co(6);
   
   settings.complete(st, TRUE);
   
@@ -355,6 +357,7 @@ void BrowserUseCaseDiagram::edit_settings() {
   co[2].set("package color", &package_color);
   co[3].set("fragment color", &fragment_color);
   co[4].set("subject color", &subject_color);
+  co[5].set("class color", &class_color);
 
   SettingsDialog dialog(&st, &co, FALSE, FALSE);
   
@@ -386,6 +389,10 @@ void BrowserUseCaseDiagram::get_usecasediagramsettings(UseCaseDiagramSettings & 
     ((BrowserNode *) parent())->get_usecasediagramsettings(r);
 }
 
+void BrowserUseCaseDiagram::get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const {
+  if (!settings.complete(r))
+    ((BrowserNode *) parent())->get_simpleclassdiagramsettings(r);
+}
 
 void BrowserUseCaseDiagram::package_settings(bool & name_in_tab,
 					     ShowContextMode & show_context) const {
@@ -411,6 +418,9 @@ UmlColor BrowserUseCaseDiagram::get_color(UmlCode who) const {
     break;
   case UmlSubject:
     c = subject_color;
+    break;
+  case UmlClass:
+    c = class_color;
     break;
   default:
     c = package_color;
@@ -538,6 +548,7 @@ void BrowserUseCaseDiagram::save(QTextStream & st, bool ref, QString & warning) 
     save_color(st, "package_color", package_color, nl);
     save_color(st, "fragment_color", fragment_color, nl);
     save_color(st, "subject_color", subject_color, nl);
+    save_color(st, "class_color", class_color, nl);
     
     BrowserNode::save(st);
 
@@ -629,6 +640,11 @@ BrowserUseCaseDiagram * BrowserUseCaseDiagram::read(char * & st, char * k,
     read_color(st, "package_color", r->package_color, k);	// updates k
     read_color(st, "fragment_color", r->fragment_color, k);	// updates k
     read_color(st, "subject_color", r->subject_color, k);	// updates k
+    if (read_file_format() >= 52)
+      read_color(st, "class_color", r->class_color, k);	// updates k
+    else
+      r->class_color = UmlDefaultColor;
+
     r->BrowserNode::read(st, k);	// updates k
     
     if (!strcmp(k, "size")) {

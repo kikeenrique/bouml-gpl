@@ -180,9 +180,9 @@ enum UmlColor {
 
 enum ClassDrawingMode { asClass, asControl, asBoundary, asEntity, asActor, Natural, DefaultClassDrawingMode };
 
-enum DrawingLanguage { UmlView, CppView, JavaView, IdlView, PhpView, DefaultDrawingLanguage };
+enum DrawingLanguage { UmlView, CppView, JavaView, IdlView, PhpView, PythonView, DefaultDrawingLanguage };
 
-enum ShowContextMode { noContext, umlContext, namespaceContext, packageContext, moduleContext, DefaultShowContextMode };
+enum ShowContextMode { noContext, umlContext, namespaceContext, javaPackageContext, pythonPackageContext, moduleContext, DefaultShowContextMode };
 
 enum UmlFont {
   UmlSmallFont, UmlSmallItalicFont, UmlSmallBoldFont, UmlSmallBoldItalicFont, 

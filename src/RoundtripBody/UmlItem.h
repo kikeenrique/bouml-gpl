@@ -41,6 +41,7 @@ class UmlItem : public UmlBaseItem {
     virtual void roundtrip_cpp();
     virtual void roundtrip_java();
     virtual void roundtrip_php();
+    virtual void roundtrip_python();
     virtual UmlPackage * package();
 };
 

@@ -183,6 +183,12 @@ void UmlBaseAttribute::read_php_() {
 }
 #endif
 
+#ifdef WITHPYTHON
+void UmlBaseAttribute::read_python_() {
+  UmlBaseClassMember::read_python_();
+}
+#endif
+
 #ifdef WITHIDL
 void UmlBaseAttribute::read_idl_() {
   UmlBaseClassItem::read_idl_();

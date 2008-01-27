@@ -77,7 +77,7 @@ static void param_error(const QCString & parent, const QCString & name,
 			unsigned rank, const char * where)
 {
   write_trace_header();
-  UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>while compiling <i>")
+  UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>while compiling <i>")
 		+ parent + "::" + name + "</i> " + where
 		+ ", parameter rank " + QCString().setNum(rank)
 		+ " does not exist</font></b><br>");
@@ -117,7 +117,7 @@ void UmlOperation::generate_decl(QTextOStream & f,
     if ((cl_stereotype != "interface") &&
 	(cl_stereotype != "valuetype")) {
       write_trace_header();
-      UmlCom::trace("<tt>        </tt><font color=\"red\"><b>cannot have operation</b></font><br>");
+      UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>cannot have operation</b></font><br>");
       incr_warning();
       return;
     }

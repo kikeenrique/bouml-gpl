@@ -103,6 +103,14 @@ class ClassDialog : public QTabDialog {
     MultiLineEdit * edphpdecl;
     MultiLineEdit * showphpdecl;
     
+    // Python
+    QWidget * pythontab;
+    QString current_python_stereotype;
+    QCheckBox * python_external_cb;
+    QCheckBox * python_2_2_cb;
+    MultiLineEdit * edpythondecl;
+    MultiLineEdit * showpythondecl;
+    
     // Idl
     QWidget * idltab;
     QString current_idl_stereotype;
@@ -150,6 +158,13 @@ class ClassDialog : public QTabDialog {
 				  bool is_final, bool is_abstract,
 				  KeyValuesTable * kvt);
   
+    static void python_generate_decl(QString & s, ClassData * cl, QString def,
+				     QString name, QString stereotype,
+				     QString comment, bool is_python_2_2,
+				     BrowserNodeList & nodes,
+				     QStringList & node_names,
+				     KeyValuesTable * kvt);
+  
     static void idl_generate_decl(QString & s, ClassData * cl, QString def,
 				  QString name, QString stereotype,
 				  QString basetype, QString comment,
@@ -158,6 +173,7 @@ class ClassDialog : public QTabDialog {
 				  KeyValuesTable * kvt);
     
     static void cpp_generate_members_def(const BrowserNode * cl, QString & s);
+    static QString python_instance_att_rel(BrowserNode * cl);
     
     static void post_edit_description(ClassDialog * d, QString s);
     static void post_edit_constraint(ClassDialog * d, QString s);
@@ -165,6 +181,7 @@ class ClassDialog : public QTabDialog {
     static QString cpp_stereotype(const QString & stereotype);
     static QString java_stereotype(const QString & stereotype);
     static QString php_stereotype(const QString & stereotype);
+    static QString python_stereotype(const QString & stereotype);
     static QString idl_stereotype(const QString & stereotype);
 
   protected slots:
@@ -185,6 +202,9 @@ class ClassDialog : public QTabDialog {
     void php_update_decl();
     void php_default_decl();
     void php_unmapped_decl();
+    void python_update_decl();
+    void python_default_decl();
+    void python_unmapped_decl();
     void idl_update_decl();
     void idl_default_decl();
     void idl_unmapped_decl();

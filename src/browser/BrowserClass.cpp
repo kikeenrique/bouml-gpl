@@ -424,6 +424,7 @@ a double click with the left mouse button does the same thing");
       gensubm.insertItem("C++", 10);
       gensubm.insertItem("Java", 11);
       gensubm.insertItem("Php", 22);
+      gensubm.insertItem("Python", 25);
       gensubm.insertItem("Idl", 12);
     }
     if ((edition_number == 0) && 
@@ -535,6 +536,16 @@ void BrowserClass::exec_menu_choice(int index,
       ToolCom::run((verbose_generation()) 
 		   ? ((preserve) ? "php_generator -v -p" : "php_generator -v")
 		   : ((preserve) ? "php_generator -p" : "php_generator"), 
+		   this);
+    }
+    return;
+  case 25:
+    {
+      bool preserve = preserve_bodies();
+      
+      ToolCom::run((verbose_generation()) 
+		   ? ((preserve) ? "python_generator -v -p" : "python_generator -v")
+		   : ((preserve) ? "python_generator -p" : "python_generator"), 
 		   this);
     }
     return;
@@ -676,6 +687,8 @@ void BrowserClass::apply_shortcut(QString s) {
 	choice = 11;
       else if (s == "Generate Php")
 	choice = 22;
+      else if (s == "Generate Python")
+	choice = 25;
       else if (s == "Generate Idl")
 	choice = 12;
     }
@@ -1225,20 +1238,25 @@ void BrowserClass::DragMoveEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, UmlExtraMember) ||
       UmlDrag::canDecode(e, BrowserOperation::drag_key(this)) ||
       UmlDrag::canDecode(e, BrowserRelation::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
-    e->accept();
+      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
   else
     ((BrowserNode *) parent())->DragMoveInsideEvent(e);
 }
 
 void BrowserClass::DragMoveInsideEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, UmlClass) ||
-      UmlDrag::canDecode(e, UmlAttribute) ||
-      UmlDrag::canDecode(e, UmlOperation) ||
-      UmlDrag::canDecode(e, UmlExtraMember) ||
-      UmlDrag::canDecode(e, BrowserOperation::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserRelation::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
+  if (!is_read_only &&
+      (UmlDrag::canDecode(e, UmlClass) ||
+       UmlDrag::canDecode(e, UmlAttribute) ||
+       UmlDrag::canDecode(e, UmlOperation) ||
+       UmlDrag::canDecode(e, UmlExtraMember) ||
+       UmlDrag::canDecode(e, BrowserOperation::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserRelation::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))))
     e->accept();
   else
     e->ignore();
@@ -1308,6 +1326,7 @@ void BrowserClass::move(BrowserNode * bn, BrowserNode * after) {
   char * cpp;
   char * java;
   char * php;
+  char * python;
   
   if ((old != this) && (what == UmlOperation)) {
     OperationData * d = (OperationData *) bn->get_data();
@@ -1315,10 +1334,11 @@ void BrowserClass::move(BrowserNode * bn, BrowserNode * after) {
     cpp = d->get_body('c');
     java = d->get_body('j');
     php = d->get_body('p');
+    python = d->get_body('y');
     d->create_modified_body_file();
   }
   else
-    cpp = java = php = 0;
+    cpp = java = php = python = 0;
   
   if (after)
     bn->moveItem(after);
@@ -1345,6 +1365,10 @@ void BrowserClass::move(BrowserNode * bn, BrowserNode * after) {
       if (php) {
 	d->new_body(php, 'p');
 	delete [] php;
+      }
+      if (python) {
+	d->new_body(python, 'y');
+	delete [] python;
       }
       
       if (d->get_is_abstract())
@@ -1771,6 +1795,7 @@ void BrowserClass::init()
     case UmlDependency:
       relations_default_stereotypes[r].append("friend");
       relations_default_stereotypes[r].append("import");
+      relations_default_stereotypes[r].append("from");
       break;
     case UmlRealize:
       relations_default_stereotypes[r].append("bind");
@@ -2036,6 +2061,7 @@ void BrowserClass::save(QTextStream & st, bool ref, QString & warning) {
 	    od->save_body(qf, modified_bodies, 'c');
 	    od->save_body(qf, modified_bodies, 'j');
 	    od->save_body(qf, modified_bodies, 'p');
+	    od->save_body(qf, modified_bodies, 'y');
 	  }
 	  child = child->nextSibling();
 	  if (child != 0)

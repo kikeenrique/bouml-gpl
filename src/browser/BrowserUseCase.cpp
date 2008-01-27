@@ -86,6 +86,7 @@ BrowserUseCase::BrowserUseCase(const BrowserUseCase * model,
   activityregion_color = model->activityregion_color;
   activityaction_color = model->activityaction_color;
   parameterpin_color = model->parameterpin_color;
+  class_color = model->class_color;
   
   is_modified = true;
 }
@@ -120,6 +121,7 @@ void BrowserUseCase::make() {
   activityregion_color = UmlDefaultColor;
   activityaction_color = UmlDefaultColor;
   parameterpin_color = UmlDefaultColor;   
+  class_color = UmlDefaultColor;   
 }
 
 BrowserNode * BrowserUseCase::duplicate(BrowserNode * p, QString name) {
@@ -326,7 +328,7 @@ void BrowserUseCase::exec_menu_choice(int rank, BrowserNode * item_above) {
   case 7:
     {
       QArray<StateSpec> st;
-      QArray<ColorSpec> co(13);
+      QArray<ColorSpec> co(14);
       
       usecasediagram_settings.complete(st, FALSE);
       sequencediagram_settings.complete(st, FALSE);
@@ -348,6 +350,7 @@ void BrowserUseCase::exec_menu_choice(int rank, BrowserNode * item_above) {
       co[10].set("activity region color", &activityregion_color);
       co[11].set("activity action color", &activityaction_color);
       co[12].set("parameter and pin color", &parameterpin_color);
+      co[13].set("class color", &class_color);
 
       SettingsDialog dialog(&st, &co, FALSE, FALSE);
       
@@ -578,6 +581,11 @@ void BrowserUseCase::get_activitydiagramsettings(ActivityDiagramSettings & r) co
     ((BrowserNode *) parent())->get_activitydiagramsettings(r);
 }
 
+void BrowserUseCase::get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const {
+  if (!usecasediagram_settings.complete(r))
+    ((BrowserNode *) parent())->get_simpleclassdiagramsettings(r);
+}
+
 UmlColor BrowserUseCase::get_color(UmlCode who) const {
   UmlColor c;
   
@@ -620,6 +628,9 @@ UmlColor BrowserUseCase::get_color(UmlCode who) const {
   case UmlParameter:
   case UmlActivityPin:
     c = parameterpin_color;
+    break;
+  case UmlClass:
+    c = class_color;
     break;
   default:	// UmlDuration
     c = duration_color;
@@ -897,23 +908,28 @@ void BrowserUseCase::DragMoveEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, UmlObjectDiagram) ||
       UmlDrag::canDecode(e, UmlState) ||
       UmlDrag::canDecode(e, UmlActivity) ||
-      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
-    e->accept();
+      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
   else
     ((BrowserNode *) parent())->DragMoveInsideEvent(e);
 }
 
 void BrowserUseCase::DragMoveInsideEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, UmlUseCaseDiagram) ||
-      UmlDrag::canDecode(e, UmlSeqDiagram) ||
-      UmlDrag::canDecode(e, UmlColDiagram) ||
-      UmlDrag::canDecode(e, UmlObjectDiagram) ||
-      UmlDrag::canDecode(e, UmlUseCase) ||
-      UmlDrag::canDecode(e, UmlClass) ||
-      UmlDrag::canDecode(e, UmlClassInstance) ||
-      UmlDrag::canDecode(e, UmlState) ||
-      UmlDrag::canDecode(e, UmlActivity) ||
-      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
+  if (!is_read_only &&
+      (UmlDrag::canDecode(e, UmlUseCaseDiagram) ||
+       UmlDrag::canDecode(e, UmlSeqDiagram) ||
+       UmlDrag::canDecode(e, UmlColDiagram) ||
+       UmlDrag::canDecode(e, UmlObjectDiagram) ||
+       UmlDrag::canDecode(e, UmlUseCase) ||
+       UmlDrag::canDecode(e, UmlClass) ||
+       UmlDrag::canDecode(e, UmlClassInstance) ||
+       UmlDrag::canDecode(e, UmlState) ||
+       UmlDrag::canDecode(e, UmlActivity) ||
+       UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))))
     e->accept();
   else
     e->ignore();
@@ -1136,6 +1152,7 @@ void BrowserUseCase::save(QTextStream & st, bool ref, QString & warning) {
     save_color(st, "activityregion_color", activityregion_color, nl);
     save_color(st, "activityaction_color", activityaction_color, nl);
     save_color(st, "parameterpin_color", parameterpin_color, nl);
+    save_color(st, "class_color", class_color, nl);
   
     if (associated_diagram != 0) {
       nl_indent(st);
@@ -1251,6 +1268,10 @@ BrowserUseCase * BrowserUseCase::read(char * & st, char * k,
       read_color(st, "activityaction_color", result->activityaction_color, k);		// updates k
       read_color(st, "parameterpin_color", result->parameterpin_color, k);		// updates k
     }    
+    if (read_file_format() >= 52)
+      read_color(st, "class_color", result->class_color, k);		// updates k
+    else
+      result->class_color = UmlDefaultColor;
     if (!strcmp(k, "associated_usecase_diagram")) {
       // old format
       result->set_associated_diagram(BrowserUseCaseDiagram::read_ref(st, "usecasediagram_ref"),

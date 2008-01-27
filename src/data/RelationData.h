@@ -64,6 +64,9 @@ struct RoleData {
   // Php
   SharedStr php_decl;
   
+  // Python
+  SharedStr python_decl;
+  
   // Idl
   BrowserAttribute * idl_case;	// exclusive with idl_explicit_case
   SharedStr idl_explicit_case;
@@ -95,6 +98,7 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     virtual void send_cpp_def(ToolCom * com, BrowserRelation * rel);
     virtual void send_java_def(ToolCom * com, BrowserRelation * rel);
     virtual void send_php_def(ToolCom * com, BrowserRelation * rel);
+    virtual void send_python_def(ToolCom * com, BrowserRelation * rel);
     virtual void send_idl_def(ToolCom * com, BrowserRelation * rel);
     
   public:
@@ -180,6 +184,9 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     
     const char * get_phpdecl_a() const { return a.php_decl; };
     const char * get_phpdecl_b() const { return b.php_decl; };
+    
+    const char * get_pythondecl_a() const { return a.python_decl; };
+    const char * get_pythondecl_b() const { return b.python_decl; };
     
     const char * get_idldecl_a() const { return a.idl_decl; };
     const char * get_idldecl_b() const { return b.idl_decl; };

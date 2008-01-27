@@ -53,6 +53,9 @@ BodyDialog::BodyDialog(QString t, QTabDialog * d, post_edit pf,
   case PhpEdit:
     setCaption(what + " (Php)");
     break;
+  case PythonEdit:
+    setCaption(what + " (Python)");
+    break;
   default:
     setCaption(what);
   }

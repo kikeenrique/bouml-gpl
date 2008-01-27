@@ -223,6 +223,7 @@ HEADERS		= browser/BrowserAttribute.h \
 		  dialog/ShortcutDialog.h \
 		  dialog/UseCaseDialog.h \
 		  dialog/ConstraintDialog.h \
+		  dialog/DecoratorDialog.h \
 		  misc/Settings.h \
 		  misc/UmlDrag.h \
 		  misc/UmlEnum.h \
@@ -462,6 +463,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  dialog/ShortcutDialog.cpp \
 		  dialog/UseCaseDialog.cpp \
 		  dialog/ConstraintDialog.cpp \
+		  dialog/DecoratorDialog.cpp \
 		  misc/Settings.cpp \
 		  misc/UmlDrag.cpp \
 		  misc/UmlGlobal.cpp \

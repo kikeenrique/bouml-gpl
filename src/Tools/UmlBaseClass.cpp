@@ -220,6 +220,43 @@ bool UmlBaseClass::set_isPhpFinal(bool y) {
 }
 #endif
 
+#ifdef WITHPYTHON
+bool UmlBaseClass::isPythonExternal() {
+  read_if_needed_();
+  
+  return _python_external;
+}
+
+bool UmlBaseClass::set_isPythonExternal(bool y) {
+  bool r;
+  
+  if (set_it_(r, y, setIsPythonExternalCmd)) {
+    _python_external = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool UmlBaseClass::isPython_2_2() {
+  read_if_needed_();
+  
+  return _python_2_2;
+}
+
+bool UmlBaseClass::set_isPython_2_2(bool y) {
+  bool r;
+  
+  if (set_it_(r, y, setIsPython2_2Cmd)) {
+    _python_2_2 = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+
+}
+#endif
+
 #ifdef WITHIDL
 const UmlTypeSpec & UmlBaseClass::switchType() {
   read_if_needed_();
@@ -371,6 +408,14 @@ void UmlBaseClass::read_php_() {
   UmlBaseClassMember::read_php_();
   _php_final = UmlCom::read_bool();
   _php_external = UmlCom::read_bool();
+}
+#endif
+
+#ifdef WITHPYTHON
+void UmlBaseClass::read_python_() {
+  UmlBaseClassMember::read_python_();
+  _python_2_2 = UmlCom::read_bool();
+  _python_external = UmlCom::read_bool();
 }
 #endif
 

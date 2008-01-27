@@ -309,6 +309,69 @@ class UmlBaseOperation : public UmlClassMember {
     bool set_PhpContextualBodyIndent(bool v);
 #endif
 
+#ifdef WITHPYTHON
+    // returns the operation's definition in Python, notes that it is
+    // already made by the inherited PythonDecl operation
+    const QCString & pythonDef();
+
+    // sets the operation's definition in Python, notes that it is
+    // already made by the inherited set_PythonDecl operation
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PythonDef(const char * s);
+
+    // returns the operation's body in Python++, useless if the def does
+    // not contains ${body} Note that the body is get each time from BOUML
+    // for memory size reason
+    QCString pythonBody();
+
+    // sets the operation's body in Python, useless if the def does not 
+    // contains ${body}
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PythonBody(const char * s);
+
+    // in case the operation is a 'get' or 'set' operation, returns how
+    // the operation's PYTHON name must be generated
+    const QCString & pythonNameSpec();
+
+    // in case the operation is a 'get' or 'set' operation, returns how
+    // the operation's PYTHON name must be generated
+    // 
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PythonNameSpec(const char * s);
+#endif
+
+#ifdef WITHPYTHON
+    // return the if the Python definition is frozen, only for getter/setter operation
+    bool pythonGetSetFrozen();
+
+    // set the if the Python definition is frozen, only for getter/setter operation
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PythonGetSetFrozen(bool v);
+#endif
+
+#ifdef WITHPYTHON
+    // return if the indent of the body in Python is contextual
+    bool pythonContextualBodyIndent();
+
+    // set the if the indent of the body in Python is contextual or not
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PythonContextualBodyIndent(bool v);
+#endif
+
+#ifdef WITHPYTHON
+    // return the decorators
+    const QCString &  pythonDecorators();
+
+    // set the decorators
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PythonDecorators(const char * s);
+#endif
+
 #ifdef WITHIDL
     // returns TRUE if the operation is declared oneway in IDL
     bool isIdlOneway();
@@ -388,6 +451,10 @@ class UmlBaseOperation : public UmlClassMember {
     bool _php_get_set_frozen : 1;
 #endif
 
+#ifdef WITHPYTHON
+    bool _python_get_set_frozen : 1;
+#endif
+
 #ifdef WITHIDL
     bool _idl_get_set_frozen : 1;
 #endif
@@ -402,6 +469,10 @@ class UmlBaseOperation : public UmlClassMember {
 
 #ifdef WITHPHP
     bool _php_contextual_body_indent : 1;
+#endif
+
+#ifdef WITHPYTHON
+    bool _python_contextual_body_indent : 1;
 #endif
 
     UmlTypeSpec _return_type;
@@ -422,6 +493,11 @@ class UmlBaseOperation : public UmlClassMember {
 
 #ifdef WITHPHP
     QCString _php_name_spec;
+#endif
+
+#ifdef WITHPYTHON
+    QCString _python_name_spec;
+    QCString _python_decorators;
 #endif
 
 #ifdef WITHIDL
@@ -459,6 +535,12 @@ class UmlBaseOperation : public UmlClassMember {
     //internal, do NOT use it
     
     virtual void read_php_();
+#endif
+
+#ifdef WITHPYTHON
+    //internal, do NOT use it
+    
+    virtual void read_python_();
 #endif
 
 #ifdef WITHIDL

@@ -90,6 +90,19 @@ class ClassDiagramSettings {
     void read(char * &, char * &);
 };
 
+class SimpleClassDiagramSettings {
+  public:
+    ClassDrawingMode class_drawing_mode;
+    ShowContextMode show_context_mode;
+    
+    SimpleClassDiagramSettings();
+    
+    void complete(QArray<StateSpec> & a/*, UmlCode who*/);
+    void set(QArray<StateSpec> & a, int index);
+    void save(QTextStream &) const;
+    void read(char * &, char * &);
+};
+
 class SequenceDiagramSettings {
   public:
     Uml3States show_full_operations_definition;
@@ -150,10 +163,12 @@ class UseCaseDiagramSettings {
     Uml3States auto_label_position;
     Uml3States draw_all_relations;
     Uml3States shadow;
-  
+    ClassDrawingMode class_drawing_mode;
+
     UseCaseDiagramSettings();
     
     bool complete(UseCaseDiagramSettings & result) const;
+    bool complete(SimpleClassDiagramSettings & result) const;
     void complete(QArray<StateSpec> & a, bool local);
     void save(QTextStream &) const;
     void read(char * &, char * &);

@@ -116,13 +116,14 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     virtual void get_deploymentdiagramsettings(DeploymentDiagramSettings &) const;
     virtual void get_statediagramsettings(StateDiagramSettings & r) const;
     virtual void get_activitydiagramsettings(ActivityDiagramSettings & r) const;
-    virtual UmlColor get_color(UmlCode) const;
-    virtual bool get_shadow(UmlCode) const;
-    virtual bool get_draw_all_relations(UmlCode) const;
     virtual bool get_classinstwritehorizontally(UmlCode k) const;
     virtual void get_componentdrawingsettings(bool depl, ComponentDrawingSettings & r) const;
     virtual void get_statedrawingsettings(StateDrawingSettings & r) const;
     virtual void get_activitydrawingsettings(ActivityDrawingSettings & r) const;
+    virtual void get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const;
+    virtual UmlColor get_color(UmlCode) const;
+    virtual bool get_shadow(UmlCode) const;
+    virtual bool get_draw_all_relations(UmlCode) const;
     virtual UmlVisibility get_visibility(UmlCode) const;
     virtual bool get_auto_label_position(UmlCode who) const ;
     virtual bool get_write_label_horizontally(UmlCode who) const ;

@@ -34,11 +34,11 @@ class CdClassCanvas;
 
 class TemplateCanvas : public DiagramCanvas {
   protected:
-    CdClassCanvas * cl;
+    DiagramCanvas * cl;
     QString text;
   
   public:
-    TemplateCanvas(CdClassCanvas * c);
+    TemplateCanvas(DiagramCanvas * c);
     virtual ~TemplateCanvas();
 
     virtual void draw(QPainter & p);

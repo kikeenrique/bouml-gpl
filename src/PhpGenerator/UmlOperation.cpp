@@ -67,7 +67,7 @@ static bool generate_var(const QValueList<UmlParameter> & params,
 static void param_error(const QCString & parent, const QCString & name, unsigned rank)
 {
   write_trace_header();
-  UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>while compiling <i>")
+  UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>while compiling <i>")
 		+ parent + "::" + name + "</i> parameter rank " + QCString().setNum(rank)
 		+ " does not exist</font></b><br>");
   incr_error();
@@ -109,7 +109,6 @@ const char * UmlOperation::generate_body(QTextOStream & f,
 {
   const char * body = 0;
   QCString modeler_body;
-  bool add_nl = FALSE;
   bool no_indent;
   char s_id[9];
   
@@ -147,25 +146,22 @@ const char * UmlOperation::generate_body(QTextOStream & f,
     else {
       f << bindent;
       
-      for (; *body; body += 1) {
+      while (*body) {
 	f << *body;
-	if (*body == '\n') {
-	  if (body[1] == 0)
+	if (*body++ == '\n') {
+	  if (*body == 0)
 	    break;
 	  f << bindent;
 	}
       }
     }
     
-    add_nl = body[-1] != '\n';
+    if (body[-1] != '\n')
+      f << '\n';
   }
   
-  if (preserve() && !isBodyGenerationForced()) {
-    if (add_nl)
-      f << '\n';
-    
+  if (preserve() && !isBodyGenerationForced())
     f << bindent << BodyPostfix << s_id << '\n';
-  }
   
   f << indent;	// for the }
   

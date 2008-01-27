@@ -66,6 +66,7 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
     UmlColor activityregion_color;
     UmlColor activityaction_color;
     UmlColor parameterpin_color;
+    UmlColor class_color;
   
     BrowserUseCase(int id);
     void make();
@@ -97,6 +98,7 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
     virtual void get_objectdiagramsettings(ObjectDiagramSettings &) const;
     virtual void get_statediagramsettings(StateDiagramSettings &) const;
     virtual void get_activitydiagramsettings(ActivityDiagramSettings &) const;
+    virtual void get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const;
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_auto_label_position(UmlCode who) const;
     virtual bool get_write_label_horizontally(UmlCode who) const;

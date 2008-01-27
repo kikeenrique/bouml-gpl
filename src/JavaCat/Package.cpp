@@ -438,7 +438,7 @@ void Package::update_package_list(QCString name)
       (user_classes[name] == 0) &&      
       (unknown_packages.findIndex(name) == -1)) {
     // try to find the package in bouml
-    UmlPackage * up = UmlPackage::getProject()->findPackage(name);
+    UmlPackage * up = UmlPackage::getProject()->findJavaPackage(name);
     
     if (up == 0) {
       int index;
@@ -450,7 +450,7 @@ void Package::update_package_list(QCString name)
 	    (unknown_packages.findIndex(subname) != -1))
 	  return;
 	
-	if ((up = UmlPackage::getProject()->findPackage(subname)) != 0)
+	if ((up = UmlPackage::getProject()->findJavaPackage(subname)) != 0)
 	  name = subname;
 	else {
 	  unknown_packages.append(subname);
@@ -779,7 +779,7 @@ void Package::set_package(QCString s) {
 UmlPackage * Package::get_uml(bool mandatory) {
   if (uml == 0) {
     if (!package.isEmpty() &&
-	((uml = UmlPackage::getProject()->findPackage(package)) != 0))
+	((uml = UmlPackage::getProject()->findJavaPackage(package)) != 0))
       return uml;
 
     const char * name = text(0);

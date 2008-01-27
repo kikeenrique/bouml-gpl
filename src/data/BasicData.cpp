@@ -177,6 +177,9 @@ void BasicData::send_java_def(ToolCom *) {
 void BasicData::send_php_def(ToolCom *) {
 }
 
+void BasicData::send_python_def(ToolCom *) {
+}
+
 void BasicData::send_idl_def(ToolCom *) {
 }
 
@@ -197,8 +200,11 @@ bool BasicData::tool_cmd(ToolCom * com, const char * args,
     send_uml_def(com, bn, comment);
     send_cpp_def(com);
     send_java_def(com);
-    if (com->api_format() >= 34)
+    if (com->api_format() >= 34) {
       send_php_def(com);
+      if (com->api_format() >= 39)
+	send_python_def(com);
+    }
     send_idl_def(com);
     break;
   case getUmlDefCmd:
@@ -215,6 +221,10 @@ bool BasicData::tool_cmd(ToolCom * com, const char * args,
   case getPhpDefCmd:
     send_uml_def(com, bn, comment);
     send_php_def(com);
+    break;
+  case getPythonDefCmd:
+    send_uml_def(com, bn, comment);
+    send_python_def(com);
     break;
   case getIdlDefCmd:
     send_uml_def(com, bn, comment);

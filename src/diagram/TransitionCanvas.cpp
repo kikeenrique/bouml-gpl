@@ -223,7 +223,7 @@ void TransitionCanvas::menu(const QPoint &) {
       m.insertItem("Labels default position", 4);
       if (plabel && (label == 0))
 	m.insertItem("Attach transition's name to this segment", 5);
-      if (stereotype == 0)
+      if (pstereotype && (stereotype == 0))
 	m.insertItem("Attach stereotype to this segment", 6);
     }
   

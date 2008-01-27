@@ -150,7 +150,7 @@ void BrowserAttribute::set_set_oper(BrowserOperation * op) {
 void BrowserAttribute::update_get_oper() {
   get_oper->update_get_of(name, def->get_cppdecl(),
 			  def->get_javadecl(), def->get_phpdecl(), 
-			  def->get_idldecl(), 
+			  def->get_pythondecl(), def->get_idldecl(), 
 			  def->get_isa_const_attribute(),
 			  def->get_isa_class_attribute(),
 			  def->get_type(), def->get_multiplicity(),
@@ -160,7 +160,7 @@ void BrowserAttribute::update_get_oper() {
 void BrowserAttribute::update_set_oper() {
   set_oper->update_set_of(name, def->get_cppdecl(),
 			  def->get_javadecl(), def->get_phpdecl(), 
-			  def->get_idldecl(), 
+			  def->get_pythondecl(), def->get_idldecl(), 
 			  def->get_isa_const_attribute(),
 			  def->get_isa_class_attribute(),
 			  def->get_type(), def->get_multiplicity(),

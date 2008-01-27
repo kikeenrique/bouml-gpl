@@ -90,7 +90,7 @@ class AttributeDialog : public QTabDialog {
     QWidget * javatab;
     bool java_in_enum;
     bool java_in_enum_pattern;
-    bool java_in_typedef;
+    bool java_ignored;
     QCheckBox * transient_cb;
     MultiLineEdit * edjavadecl;
     MultiLineEdit * showjavadecl;
@@ -100,9 +100,17 @@ class AttributeDialog : public QTabDialog {
     // php tab
     QWidget * phptab;
     bool php_in_enum;
-    bool php_in_typedef;
+    bool php_ignored;
     MultiLineEdit * edphpdecl;
     MultiLineEdit * showphpdecl;
+    
+    // python tab
+    QWidget * pythontab;
+    bool python_in_enum;
+    bool python_ignored;
+    MultiLineEdit * edpythondecl;
+    MultiLineEdit * showpythondecl;
+    QString python_self;
     
     // IDL tab
     QWidget * idltab;
@@ -132,6 +140,7 @@ class AttributeDialog : public QTabDialog {
     static QString cpp_decl(const BrowserAttribute * at);
     static QString java_decl(const BrowserAttribute * at);
     static QString php_decl(const BrowserAttribute * at);
+    static QString python_decl(const BrowserAttribute * at);
     static QString idl_decl(const BrowserAttribute * at);
   
   protected slots:
@@ -154,6 +163,9 @@ class AttributeDialog : public QTabDialog {
     void php_default();
     void php_unmapped();
     void php_update();
+    void python_default();
+    void python_unmapped();
+    void python_update();
     void idl_default();
     void idl_default_state();
     void idl_default_constant();

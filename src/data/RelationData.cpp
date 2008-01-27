@@ -228,6 +228,9 @@ static void default_decls(RoleData & r, UmlCode type, QString cl_stereotype)
   if (GenerationSettings::php_get_default_defs())
     r.php_decl = GenerationSettings::php_default_rel_decl();
   
+  if (GenerationSettings::python_get_default_defs())
+    r.python_decl = GenerationSettings::python_default_rel_decl(type, QString::null);
+  
   if (GenerationSettings::idl_get_default_defs()) {
     QString idl_st = ClassDialog::idl_stereotype(cl_stereotype);
     
@@ -266,6 +269,8 @@ BrowserRelation * RelationData::set_start_end(BrowserRelation * s, BrowserClass 
 	a.java_decl = "${type}";
       if (GenerationSettings::php_get_default_defs())
 	a.php_decl = "${type}";
+      if (GenerationSettings::python_get_default_defs())
+	a.python_decl = "${type}";
       if (GenerationSettings::idl_get_default_defs())
 	a.idl_decl = (ClassDialog::idl_stereotype(st) != "enum")
 	  ? "${type}" : "";
@@ -273,6 +278,8 @@ BrowserRelation * RelationData::set_start_end(BrowserRelation * s, BrowserClass 
     case UmlDependency:
       if (GenerationSettings::cpp_get_default_defs())
 	a.cpp_decl = "#include in source";
+      if (GenerationSettings::python_get_default_defs())
+	a.python_decl = "${type}";
       break;
     default:
       a.uml_visibility =
@@ -383,11 +390,13 @@ bool RelationData::decldefbody_contain(const QString & s, bool cs,
   return (is_a((BrowserRelation *) br))
     ? ((QString(get_cppdecl_a()).find(s, 0, cs) != -1) ||
        (QString(get_javadecl_a()).find(s, 0, cs) != -1) ||
+       (QString(get_pythondecl_a()).find(s, 0, cs) != -1) ||
        (QString(get_phpdecl_a()).find(s, 0, cs) != -1) ||
        (QString(get_idldecl_a()).find(s, 0, cs) != -1))
     : ((QString(get_cppdecl_b()).find(s, 0, cs) != -1) ||
        (QString(get_javadecl_b()).find(s, 0, cs) != -1) ||
        (QString(get_phpdecl_b()).find(s, 0, cs) != -1) ||
+       (QString(get_pythondecl_b()).find(s, 0, cs) != -1) ||
        (QString(get_idldecl_b()).find(s, 0, cs) != -1));
 }
 
@@ -684,6 +693,15 @@ void RelationData::send_php_def(ToolCom * com, BrowserRelation * rel) {
   }
 }
 
+void RelationData::send_python_def(ToolCom * com, BrowserRelation * rel) {
+  if (rel == start) {
+    com->write_string(a.python_decl);
+  }
+  else {
+    com->write_string(b.python_decl);
+  }
+}
+
 void RelationData::send_idl_def(ToolCom * com, BrowserRelation * rel) {
   if (rel == start) {
     com->write_string(a.idl_decl);
@@ -798,6 +816,9 @@ bool RelationData::tool_cmd(ToolCom * com, BrowserRelation * rel,
       case setPhpDeclCmd:
 	r.php_decl = args;
 	break;
+      case setPythonDeclCmd:
+	r.python_decl = args;
+	break;
       case setIdlDeclCmd:
 	r.idl_decl = args;
 	break;
@@ -869,8 +890,11 @@ bool RelationData::tool_cmd(ToolCom * com, BrowserRelation * rel,
       send_uml_def(com, rel);
       send_cpp_def(com, rel);
       send_java_def(com, rel);
-      if (com->api_format() >= 34)
+      if (com->api_format() >= 34) {
 	send_php_def(com, rel);
+	if (com->api_format() >= 39)
+	  send_python_def(com, rel);
+      }
       send_idl_def(com, rel);
       break;
     case getUmlDefCmd:
@@ -887,6 +911,10 @@ bool RelationData::tool_cmd(ToolCom * com, BrowserRelation * rel,
     case getPhpDefCmd:
       send_uml_def(com, rel);
       send_php_def(com, rel);
+      break;
+    case getPythonDefCmd:
+      send_uml_def(com, rel);
+      send_python_def(com, rel);
       break;
     case getIdlDefCmd:
       send_uml_def(com, rel);
@@ -982,6 +1010,12 @@ static void save_role(const RoleData & role, bool assoc, QTextStream & st,
     nl_indent(st);
     st << "php ";
     save_string(role.php_decl, st);
+  }
+  
+  if (!role.python_decl.isEmpty()) {
+    nl_indent(st);
+    st << "python ";
+    save_string(role.python_decl, st);
   }
   
   if (role.idl_case != 0) {
@@ -1191,6 +1225,13 @@ static void read_role(RoleData & role, bool assoc,
   }
   else
     role.php_decl = QString::null;
+
+  if (!strcmp(k, "python")) {
+    role.python_decl = read_string(st);
+    k = read_keyword(st);
+  }
+  else
+    role.python_decl = QString::null;
 
   if (!strcmp(k, "idl_case")) {
     rd->set_idlcase(role, BrowserAttribute::read_ref(st), "");

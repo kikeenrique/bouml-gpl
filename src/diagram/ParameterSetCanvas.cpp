@@ -429,7 +429,7 @@ ParameterSetCanvas * ParameterSetCanvas::read(char * & st, UmlCanvas * canvas,
     else
       wrong_keyword(k, "xyz");
 
-  // note :width_scale100 & height_scale100 useless, position depend on pins
+    // note : width_scale100 & height_scale100 useless, position depend on pins
     result->update();
     result->show();
 

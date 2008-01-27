@@ -29,6 +29,7 @@
 
 #include <qlayout.h>
 #include <qlabel.h>
+#include <qtextview.h> 
 #include <qpushbutton.h>
 
 #include "About.h"
@@ -53,13 +54,31 @@ AboutDialog::AboutDialog() : QDialog(0, "About BOUML", TRUE) {
   lbp->setPixmap(bp);
   hbox->addWidget(lbp);
   hbox->addWidget(new QLabel("  ", this));
-  hbox->addWidget(new QLabel("BOUML release 3.5\n"
-			     "\n"
-			     "http://bouml.free.fr\n"
-			     "http://sourceforge.net/projects/bouml\n"
-			     "\n"
-			     "Bruno Pages (bouml@free.fr)",
-			     this));
+
+  const char * htmltext = ("BOUML release <b>4.0</b><br>\n"
+			   "<br>\n"
+			   "<i>http://bouml.free.fr</i><br>\n"
+			   "<i>http://sourceforge.net/projects/bouml</i><br>\n"
+			   "<br>\n"
+			   "Bruno Pages (<i>bouml@free.fr</i>)");
+  const char * sizetext = ("BOUML release 4.0\n"
+			   "\n"
+			   "http://bouml.free.fr\n"
+			   "http://sourceforge.net/projects/bouml____\n"
+			   "\n"
+			   "Bruno Pages (bouml@free.fr)\n\n");
+  QTextView * tx =
+    new QTextView(htmltext, QString::null, this);
+  QFont fnt = tx->font();
+  
+  fnt.setItalic(TRUE);
+  
+  QFontMetrics fm(fnt);
+  
+  tx->setVScrollBarMode(QScrollView::AlwaysOff);
+  tx->setHScrollBarMode(QScrollView::AlwaysOff);
+  tx->setMinimumSize(fm.size(0, sizetext));
+  hbox->addWidget(tx);
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);

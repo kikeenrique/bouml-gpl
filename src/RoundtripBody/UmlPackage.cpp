@@ -30,6 +30,7 @@
 #include "CppSettings.h"
 #include "JavaSettings.h"
 #include "PhpSettings.h"
+#include "PythonSettings.h"
 
 UmlPackage::UmlPackage(void * id, const QCString & n)
     : UmlBasePackage(id, n) {
@@ -51,8 +52,11 @@ QCString UmlPackage::rootDir(aLanguage who)
     case javaLanguage:
       RootDir = JavaSettings::rootDir();
       break;
-    default:
+    case phpLanguage:
       RootDir = PhpSettings::rootDir();
+      break;
+    default:
+      RootDir = PythonSettings::rootDir();
     }
     
     if (!RootDir.isEmpty() && // empty -> error
@@ -192,6 +196,34 @@ QCString UmlPackage::php_path(const QCString & f) {
   return QCString(d.filePath(f)) + QCString(".") + PhpSettings::sourceExtension();
 }
 
+QCString UmlPackage::python_path(const QCString & f) {
+  if (!dir.read) {
+    dir.src = pythonDir();
+    
+    QDir d_root(rootDir(pythonLanguage));
+    
+    if (dir.src.isEmpty())
+      dir.src = RootDir;
+    else if (QDir::isRelativePath(dir.src))
+      dir.src = d_root.filePath(dir.src);
+
+    if (dir.src.isEmpty()) {
+      UmlCom::trace(QCString("<font color=\"red\"><b><b> The generation directory "
+			    "must be specified for the package<i> ") + name()
+		    + "</i>, edit the <i> generation settings</i> (tab 'directory') "
+		    "or edit the package (tab 'python')</b></font><br>");
+      UmlCom::bye();
+      UmlCom::fatal_error("UmlPackage::python_path");
+    }
+        
+    dir.read = TRUE;
+  }
+  
+  QDir d(dir.src);
+  
+  return QCString(d.filePath(f)) + QCString(".") + PythonSettings::sourceExtension();
+}
+
 void UmlPackage::roundtrip_java() {
   QVector<UmlItem> ch = UmlItem::children();
   
@@ -204,6 +236,13 @@ void UmlPackage::roundtrip_php() {
   
   for (unsigned index = 0; index != ch.size(); index += 1)
     ch[index]->roundtrip_php();
+}
+
+void UmlPackage::roundtrip_python() {
+  QVector<UmlItem> ch = UmlItem::children();
+  
+  for (unsigned index = 0; index != ch.size(); index += 1)
+    ch[index]->roundtrip_python();
 }
 
 UmlPackage * UmlPackage::package() {

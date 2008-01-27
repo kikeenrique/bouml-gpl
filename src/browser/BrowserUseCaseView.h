@@ -58,7 +58,7 @@ class BrowserUseCaseView : public BrowserNode, public Labeled<BrowserUseCaseView
     UmlColor continuation_color;
     UmlColor usecase_color;
     UmlColor package_color;
-    UmlColor classinstance_color;
+    UmlColor class_color;
     UmlColor state_color;
     UmlColor stateaction_color;
     UmlColor activity_color;
@@ -95,6 +95,7 @@ class BrowserUseCaseView : public BrowserNode, public Labeled<BrowserUseCaseView
     virtual void get_statediagramsettings(StateDiagramSettings &) const;
     virtual void get_activitydrawingsettings(ActivityDrawingSettings &) const;
     virtual void get_activitydiagramsettings(ActivityDiagramSettings &) const;
+    virtual void get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const;
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_shadow(UmlCode) const;
     virtual bool get_draw_all_relations(UmlCode) const;

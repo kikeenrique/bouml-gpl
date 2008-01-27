@@ -464,6 +464,8 @@ const char * stringify(DrawingLanguage l)
     return "java";
   case PhpView:
     return "php";
+  case PythonView:
+    return "python";
   case IdlView:
     return "idl";
   case DefaultDrawingLanguage:
@@ -482,8 +484,10 @@ const char * stringify(ShowContextMode v)
     return "uml";
   case namespaceContext:
     return "namespace";
-  case packageContext:
-    return "package";
+  case javaPackageContext:
+    return "java_package";
+  case pythonPackageContext:
+    return "python_package";
   case moduleContext:
     return "module";
   case DefaultShowContextMode:
@@ -794,6 +798,8 @@ DrawingLanguage drawing_language(const char * s)
     return JavaView;
   if (!strcmp(s, "php"))
     return PhpView;
+  if (!strcmp(s, "python"))
+    return PythonView;
   if (!strcmp(s, "idl"))
     return IdlView;
   if (!strcmp(s, "default"))
@@ -812,8 +818,10 @@ ShowContextMode context_mode(const char * s)
     return umlContext;
   if (!strcmp(s, "namespace"))
     return namespaceContext;
-  if (!strcmp(s, "package"))
-    return packageContext;
+  if (!strcmp(s, "package") || !strcmp(s, "java_package"))
+    return javaPackageContext;
+  if (!strcmp(s, "python_package"))
+    return pythonPackageContext;
   if (!strcmp(s, "module"))
     return moduleContext;
   if (!strcmp(s, "default"))

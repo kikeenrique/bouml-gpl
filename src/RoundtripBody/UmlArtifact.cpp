@@ -141,3 +141,35 @@ void UmlArtifact::roundtrip_php() {
     UmlOperation::roundtrip(src_path, phpLanguage);
   }
 }
+
+void UmlArtifact::roundtrip_python() {
+  if (! managed) {
+    managed = TRUE;
+    
+    if (stereotype() != "source")
+      return;
+    
+    const QCString srcdef = pythonSource();
+    
+    if (srcdef.isEmpty())
+      return;
+    
+    const QCString & name = UmlArtifact::name();    
+    UmlPackage * pack = package();
+    QCString src_path = pack->python_path(name);
+    
+    {
+      QCString s = " <i> " + src_path + "</i>";
+      
+      UmlCom::message(name);
+      if (verbose())
+	UmlCom::trace(QCString("<hr><font face=helvetica>roundtrip body from")
+		      + s + "</font><br>");
+      else
+	set_trace_header(QCString("<font face=helvetica>roundtrip body from")
+			 + s + "</font><br>");
+    }
+
+    UmlOperation::roundtrip(src_path, pythonLanguage);
+  }
+}

@@ -558,7 +558,7 @@ void ToolCom::data_received(Socket * who) {
 	   close();
 	   return;
 	   }*/
-	else if (api_version > 38) {
+	else if (api_version > 39) {
 	  TraceDialog::add("<font color =\"red\"><b>the plug-out is incompatible with this too old version of BOUML<b></font>");
 	  TraceDialog::show_it();
 	  close();
@@ -787,6 +787,18 @@ void ToolCom::data_received(Socket * who) {
 	  if (!GenerationSettings::tool_global_idl_cmd(this, p+1)) {
 #ifdef DEBUGCOM
 	    cerr << "unknown IdlSettingsCmd : " << p[0] << "\n";
+#endif
+	    throw 0;
+	  }
+	  break;
+	case pythonSettingsCmd:
+#ifdef DEBUGCOM
+	  cerr << "ToolCom::data_received() PythonSettingsCmd "
+	    << (unsigned) p[0] << '\n';
+#endif
+	  if (!GenerationSettings::tool_global_python_cmd(this, p+1)) {
+#ifdef DEBUGCOM
+	    cerr << "unknown PythonSettingsCmd : " << (unsigned) p[0] << "\n";
 #endif
 	    throw 0;
 	  }

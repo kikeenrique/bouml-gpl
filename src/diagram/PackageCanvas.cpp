@@ -106,8 +106,12 @@ int PackageCanvas::min_width() {
     if ((full_name = ((const char *) data->get_cpp_namespace())).isEmpty())
       full_name = browser_node->get_name();
     break;
-  case packageContext:
+  case javaPackageContext:
     if ((full_name = ((const char *) data->get_java_package())).isEmpty())
+      full_name = browser_node->get_name();
+    break;
+  case pythonPackageContext:
+    if ((full_name = ((const char *) data->get_python_package())).isEmpty())
       full_name = browser_node->get_name();
     break;
   case moduleContext:

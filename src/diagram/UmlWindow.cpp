@@ -106,9 +106,11 @@ const char * diagramPrintText = "To print the current diagram.<br><br>"
   "You can also select the Print command from the Project menu.";
 const char * cppText = "To manage or not C++ and to set or not the C++ definition/declaration "
   "to the default value when a class/operation/attribute/relation is created";
-const char * javaText = "To manage or not Java and to set or not the Java definition/declaration "
+const char * javaText = "To manage or not Java and to set or not the Java definition "
   "to the default value when a class/operation/attribute/relation is created";
-const char * phpText = "To manage or not Php and to set or not the Php definition/declaration "
+const char * phpText = "To manage or not Php and to set or not the Php definition "
+  "to the default value when a class/operation/attribute/relation is created";
+const char * pythonText = "To manage or not Python and to set or not the Python definition "
   "to the default value when a class/operation/attribute/relation is created";
 const char * idlText = "To manage or not IDL and to set or not the IDL definition/declaration "
   "to the default value when a class/operation/attribute/relation is created";
@@ -213,6 +215,10 @@ UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
     langMenu->insertItem("Php management and default definition", this, SLOT(use_php()));
   langMenu->setItemChecked(use_php_id, GenerationSettings::php_get_default_defs());
   langMenu->setWhatsThis(use_php_id, phpText);
+  use_python_id =
+    langMenu->insertItem("Python management and default definition", this, SLOT(use_python()));
+  langMenu->setItemChecked(use_python_id, GenerationSettings::python_get_default_defs());
+  langMenu->setWhatsThis(use_python_id, pythonText);
   use_idl_id =
     langMenu->insertItem("Idl management and default declaration", this, SLOT(use_idl()));
   langMenu->setItemChecked(use_idl_id, GenerationSettings::idl_get_default_defs());
@@ -499,12 +505,14 @@ void UmlWindow::toolMenuAboutToShow() {
     toolMenu->insertItem("Generate C++", this, SLOT(cpp_generate()), ::Qt::CTRL+::Qt::Key_G);
     toolMenu->insertItem("Generate Java", this, SLOT(java_generate()), ::Qt::CTRL+::Qt::Key_J);
     toolMenu->insertItem("Generate Php", this, SLOT(php_generate()), ::Qt::CTRL+::Qt::Key_P);
+    toolMenu->insertItem("Generate Python", this, SLOT(python_generate()), ::Qt::CTRL+::Qt::Key_Y);
     toolMenu->insertItem("Generate Idl", this, SLOT(idl_generate()), ::Qt::CTRL+::Qt::Key_I);
     if (!BrowserNode::edition_active()) {
       toolMenu->insertSeparator();
       toolMenu->insertItem("Reverse C++", this, SLOT(cpp_reverse()));
       toolMenu->insertItem("Reverse Java", this, SLOT(java_reverse()));
       toolMenu->insertItem("Reverse Php", this, SLOT(php_reverse()));
+      toolMenu->insertItem("Reverse Python", this, SLOT(python_reverse()));
       toolMenu->insertSeparator();
       toolMenu->insertItem("Java Catalog", this, SLOT(java_catalog()));
       if (preserve_bodies()) {
@@ -512,6 +520,7 @@ void UmlWindow::toolMenuAboutToShow() {
 	toolMenu->insertItem("Roundtrip C++ bodies", this, SLOT(cpp_roundtrip()));
 	toolMenu->insertItem("Roundtrip Java bodies", this, SLOT(java_roundtrip()));
 	toolMenu->insertItem("Roundtrip Php bodies", this, SLOT(php_roundtrip()));
+	toolMenu->insertItem("Roundtrip Python bodies", this, SLOT(python_roundtrip()));
       }
       if (BrowserClass::find("UmlBaseItem") != 0) {
 	toolMenu->insertSeparator();
@@ -1150,6 +1159,10 @@ void UmlWindow::use_php() {
   GenerationSettings::php_set_default_defs(!GenerationSettings::php_get_default_defs());
 }
 
+void UmlWindow::use_python() {
+  GenerationSettings::python_set_default_defs(!GenerationSettings::python_get_default_defs());
+}
+
 void UmlWindow::use_idl() {
   GenerationSettings::idl_set_default_defs(!GenerationSettings::idl_get_default_defs());
 }
@@ -1220,6 +1233,8 @@ void UmlWindow::langMenuAboutToShow() {
 			   GenerationSettings::java_get_default_defs());
   langMenu->setItemChecked(use_php_id,
 			   GenerationSettings::php_get_default_defs());
+  langMenu->setItemChecked(use_python_id,
+			   GenerationSettings::python_get_default_defs());
   langMenu->setItemChecked(use_idl_id,
 			   GenerationSettings::idl_get_default_defs());
   langMenu->setItemChecked(verbose_gen_id, verbose_generation());
@@ -1230,6 +1245,7 @@ void UmlWindow::langMenuAboutToShow() {
   langMenu->setItemEnabled(use_cpp_id, enabled);
   langMenu->setItemEnabled(use_java_id, enabled);
   langMenu->setItemEnabled(use_php_id, enabled);
+  langMenu->setItemEnabled(use_python_id, enabled);
   langMenu->setItemEnabled(use_idl_id, enabled);
   langMenu->setItemEnabled(verbose_gen_id, enabled);
   if (enabled) {
@@ -1417,6 +1433,17 @@ void UmlWindow::php_generate() {
 		 prj);
 }
 
+void UmlWindow::python_generate() {
+  BrowserPackage * prj = browser->get_project();
+  bool preserve = preserve_bodies();
+  
+  if (prj != 0)
+    ToolCom::run((verbose_generation()) 
+		 ? ((preserve) ? "python_generator -v -p" : "python_generator -v")
+		 : ((preserve) ? "python_generator -p" : "python_generator"),
+		 prj);
+}
+
 void UmlWindow::idl_generate() {
   BrowserPackage * prj = browser->get_project();
   
@@ -1462,6 +1489,13 @@ void UmlWindow::php_reverse() {
     ToolCom::run("php_reverse", prj);
 }
 
+void UmlWindow::python_reverse() {
+  BrowserPackage * prj = browser->get_project();
+  
+  if (prj != 0)
+    ToolCom::run("python_reverse", prj);
+}
+
 void UmlWindow::cpp_roundtrip() {
   BrowserPackage * prj = browser->get_project();
   
@@ -1483,6 +1517,14 @@ void UmlWindow::php_roundtrip() {
   
   if (prj != 0)
     ToolCom::run((verbose_generation()) ? "roundtrip_body -v php" : "roundtrip_body php",
+		 prj);
+}
+
+void UmlWindow::python_roundtrip() {
+  BrowserPackage * prj = browser->get_project();
+  
+  if (prj != 0)
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v python" : "roundtrip_body python",
 		 prj);
 }
 

@@ -35,18 +35,21 @@ int main(int argc, char ** argv)
   bool cpp;
   bool java;
   bool php;
+  bool python;
   
   if (argc == 3) {
     port_index = 2;
     cpp = (argv[1][0] == 'c');
     java = (argv[1][0] == 'j');
-    php = (argv[1][0] == 'p');
+    php = (argv[1][1] == 'h');
+    python = (argv[1][1] == 'y');
   }
   else if (argc == 4) {
     set_verbose();
     cpp = (argv[2][0] == 'c');
     java = (argv[2][0] == 'j');
-    php = (argv[2][0] == 'p');
+    php = (argv[2][1] == 'h');
+    python = (argv[2][1] == 'y');
     port_index = 3;
   }
   else
@@ -54,14 +57,16 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QCString(argv[port_index]).toUInt())) {
     try {
-      UmlCom::trace("<b>Roundtrip body</b> release 1.6<br>");
+      UmlCom::trace("<b>Roundtrip body</b> release 1.7<br>");
       UmlCom::traceAutoRaise(FALSE);
       if (cpp) 
 	UmlCom::targetItem()->roundtrip_cpp();  
       else if (java)
 	UmlCom::targetItem()->roundtrip_java();  
       else if (php)
-	UmlCom::targetItem()->roundtrip_php(); 
+	UmlCom::targetItem()->roundtrip_php();  
+      else if (python)
+	UmlCom::targetItem()->roundtrip_python(); 
       
       QCString s;
       

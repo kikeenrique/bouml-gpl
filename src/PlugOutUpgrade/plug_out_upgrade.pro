@@ -42,6 +42,7 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp \
 		UmlClassInstance.cpp \
 		../Tools/UmlBaseClassItem.cpp ../Tools/CppSettings.cpp \
 		../Tools/IdlSettings.cpp ../Tools/JavaSettings.cpp \
+		../Tools/PhpSettings.cpp ../Tools/PythonSettings.cpp \
 		../Tools/UmlBaseArtifact.cpp \
 		../Tools/UmlBaseAttribute.cpp ../Tools/UmlBaseClass.cpp \
 		../Tools/UmlBaseClassDiagram.cpp ../Tools/UmlBaseClassMember.cpp \
@@ -92,5 +93,5 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp \
 		../Tools/UmlBaseClassInstance.cpp
 
 TARGET	      = plug_out_upgrade
-DEFINES	      = WITHCPP WITHJAVA WITHPHP WITHIDL
+DEFINES	      = WITHCPP WITHJAVA WITHPHP WITHIDL WITHPYTHON
 INCLUDEPATH   = ../Tools ../PlugOutUpgrade

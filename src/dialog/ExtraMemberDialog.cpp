@@ -185,6 +185,27 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
   if (!GenerationSettings::php_get_default_defs())
     removePage(grid);
   
+  // Python
+  
+  grid = new QGrid(2, this);
+  grid->setMargin(5);
+  grid->setSpacing(5);
+  
+  vtab = new QVBox(grid);
+  new QLabel("Python :", vtab);
+  if (! visit)
+    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+	    this, SLOT(edit_python_decl()));
+  edpython_decl = new MultiLineEdit(grid);
+  edpython_decl->setReadOnly(visit);
+  edpython_decl->setText(ex->php_decl);
+  edpython_decl->setFont(font);
+    
+  addTab(grid, "Python");
+  
+  if (!GenerationSettings::python_get_default_defs())
+    removePage(grid);
+  
   // IDL
   
   grid = new QGrid(2, this);
@@ -245,6 +266,7 @@ void ExtraMemberDialog::accept() {
   emd->cpp_inline = inline_cb->isChecked();
   emd->java_decl = edjava_decl->text();
   emd->php_decl = edphp_decl->text();
+  emd->python_decl = edpython_decl->text();
   emd->idl_decl = edidl_decl->text();
   
   bn->set_comment(comment->text());
@@ -307,6 +329,16 @@ void ExtraMemberDialog::edit_php_decl() {
 void ExtraMemberDialog::post_edit_php_decl(ExtraMemberDialog * d, QString s)
 {
   d->edphp_decl->setText(s);
+}
+
+void ExtraMemberDialog::edit_python_decl() {
+  edit(edpython_decl->text(), edname->text().stripWhiteSpace() + "_class_extra_member",
+       emd, PythonEdit, this, (post_edit) post_edit_python_decl, edits);
+}
+
+void ExtraMemberDialog::post_edit_python_decl(ExtraMemberDialog * d, QString s)
+{
+  d->edpython_decl->setText(s);
 }
 
 void ExtraMemberDialog::edit_idl_decl() {

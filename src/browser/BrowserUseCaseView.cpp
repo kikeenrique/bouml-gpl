@@ -66,7 +66,7 @@ BrowserUseCaseView::BrowserUseCaseView(QString s, BrowserNode * p, int id)
   package_color = UmlDefaultColor;
   fragment_color = UmlDefaultColor;
   subject_color = UmlDefaultColor;
-  classinstance_color = UmlDefaultColor;
+  class_color = UmlDefaultColor;
   state_color = UmlDefaultColor;
   stateaction_color = UmlDefaultColor;
   activity_color = UmlDefaultColor;
@@ -92,7 +92,7 @@ BrowserUseCaseView::BrowserUseCaseView(const BrowserUseCaseView * model,
   continuation_color = model->continuation_color;
   usecase_color = model->usecase_color;
   package_color = model->package_color;
-  classinstance_color = model->classinstance_color;
+  class_color = model->class_color;
   state_color = model->state_color;
   stateaction_color = model->stateaction_color;
   activity_color = model->activity_color;
@@ -305,7 +305,7 @@ void BrowserUseCaseView::exec_menu_choice(int rank) {
       co[4].set("subject color", &subject_color);
       co[5].set("duration color", &duration_color);
       co[6].set("continuation color", &continuation_color);
-      co[7].set("class instance color", &usecase_color);
+      co[7].set("class color", &class_color);
       co[8].set("state color", &state_color);
       co[9].set("state action color", &stateaction_color);
       co[10].set("activity color", &activity_color);
@@ -488,6 +488,11 @@ void BrowserUseCaseView::get_activitydrawingsettings(ActivityDrawingSettings & r
     ((BrowserNode *) parent())->get_activitydrawingsettings(result);
 }
 
+void BrowserUseCaseView::get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const {
+  if (!usecasediagram_settings.complete(r))
+    ((BrowserNode *) parent())->get_simpleclassdiagramsettings(r);
+}
+
 UmlColor BrowserUseCaseView::get_color(UmlCode who) const {
   UmlColor c;
   
@@ -510,8 +515,8 @@ UmlColor BrowserUseCaseView::get_color(UmlCode who) const {
   case UmlContinuation:
     c = continuation_color;
     break;
-  case UmlClass:	// instance
-    c = classinstance_color;
+  case UmlClass:
+    c = class_color;
     break;
   case UmlState:
     c = state_color;
@@ -850,23 +855,28 @@ void BrowserUseCaseView::DragMoveEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, UmlObjectDiagram) ||
       UmlDrag::canDecode(e, UmlUseCaseView) ||
       UmlDrag::canDecode(e, UmlState) ||
-      UmlDrag::canDecode(e, UmlActivity))
-    e->accept();
+      UmlDrag::canDecode(e, UmlActivity)) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
   else
     ((BrowserNode *) parent())->DragMoveInsideEvent(e);
 }
 
 void BrowserUseCaseView::DragMoveInsideEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, UmlClass) ||
-      UmlDrag::canDecode(e, UmlClassInstance) ||
-      UmlDrag::canDecode(e, UmlUseCase) ||
-      UmlDrag::canDecode(e, UmlUseCaseDiagram) ||
-      UmlDrag::canDecode(e, UmlSeqDiagram) ||
-      UmlDrag::canDecode(e, UmlColDiagram) ||
-      UmlDrag::canDecode(e, UmlObjectDiagram) ||
-      UmlDrag::canDecode(e, UmlUseCaseView) ||
-      UmlDrag::canDecode(e, UmlState) ||
-      UmlDrag::canDecode(e, UmlActivity))
+  if (!is_read_only &&
+      (UmlDrag::canDecode(e, UmlClass) ||
+       UmlDrag::canDecode(e, UmlClassInstance) ||
+       UmlDrag::canDecode(e, UmlUseCase) ||
+       UmlDrag::canDecode(e, UmlUseCaseDiagram) ||
+       UmlDrag::canDecode(e, UmlSeqDiagram) ||
+       UmlDrag::canDecode(e, UmlColDiagram) ||
+       UmlDrag::canDecode(e, UmlObjectDiagram) ||
+       UmlDrag::canDecode(e, UmlUseCaseView) ||
+       UmlDrag::canDecode(e, UmlState) ||
+       UmlDrag::canDecode(e, UmlActivity)))
     e->accept();
   else
     e->ignore();
@@ -1035,7 +1045,7 @@ void BrowserUseCaseView::save(QTextStream & st, bool ref, QString & warning) {
     save_color(st, "package_color", package_color, nl);
     save_color(st, "fragment_color", fragment_color, nl);
     save_color(st, "subject_color", subject_color, nl);
-    save_color(st, "classinstance_color", classinstance_color, nl);
+    save_color(st, "class_color", class_color, nl);
     save_color(st, "state_color", state_color, nl);
     save_color(st, "stateaction_color", stateaction_color, nl);
     save_color(st, "activity_color", activity_color, nl);
@@ -1116,7 +1126,10 @@ BrowserUseCaseView * BrowserUseCaseView::read(char * & st, char * k,
     read_color(st, "package_color", result->package_color, k);	// updates k
     read_color(st, "fragment_color", result->fragment_color, k);	// updates k
     read_color(st, "subject_color", result->subject_color, k);	// updates k
-    read_color(st, "classinstance_color", result->classinstance_color, k);	// updates k
+    if (read_file_format() >= 52)
+      read_color(st, "class_color", result->class_color, k);	// updates k
+    else
+      read_color(st, "classinstance_color", result->class_color, k);	// updates k
     if (read_file_format() >= 43) {
       read_color(st, "state_color", result->state_color, k);		// updates k
       read_color(st, "stateaction_color", result->stateaction_color, k);		// updates k

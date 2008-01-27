@@ -645,8 +645,12 @@ void BrowserState::DragMoveEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, BrowserPseudoState::drag_key(this)) ||
       UmlDrag::canDecode(e, BrowserStateAction::drag_key(this)) ||
       UmlDrag::canDecode(e, BrowserStateDiagram::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserTransition::drag_key(this)))
-    e->accept();
+      UmlDrag::canDecode(e, BrowserTransition::drag_key(this))) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
   else
     ((BrowserNode *) parent())->DragMoveInsideEvent(e);
 }
@@ -656,12 +660,13 @@ void BrowserState::DropEvent(QDropEvent * e) {
 }
 
 void BrowserState::DragMoveInsideEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, BrowserState::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserRegion::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserPseudoState::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserStateAction::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserStateDiagram::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserTransition::drag_key(this)))
+  if (!is_read_only &&
+      (UmlDrag::canDecode(e, BrowserState::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserRegion::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserPseudoState::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserStateAction::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserStateDiagram::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserTransition::drag_key(this))))
     e->accept();
   else
     e->ignore();

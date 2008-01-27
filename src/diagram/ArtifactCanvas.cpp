@@ -508,6 +508,8 @@ void ArtifactCanvas::menu(const QPoint&) {
   
   gensubm.insertItem("C++", 9);
   gensubm.insertItem("Java", 10);
+  gensubm.insertItem("Php", 13);
+  gensubm.insertItem("Python", 14);
   gensubm.insertItem("Idl", 11);
   
   switch (index = m.exec(QCursor::pos())) {
@@ -557,6 +559,12 @@ void ArtifactCanvas::menu(const QPoint&) {
     return;
   case 11:
     browser_node->apply_shortcut("Generate Idl");
+    return;
+  case 13:
+    browser_node->apply_shortcut("Generate Php");
+    return;
+  case 14:
+    browser_node->apply_shortcut("Generate Python");
     return;
   default:
     if (index >= 20)

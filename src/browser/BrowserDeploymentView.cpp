@@ -189,6 +189,7 @@ Note that you can undelete them after");
     subm.insertItem("C++", 10);
     subm.insertItem("Java", 11);
     subm.insertItem("Php", 12);
+    subm.insertItem("Python", 14);
     subm.insertItem("Idl", 13);
     
     if (edition_number == 0) {
@@ -198,6 +199,7 @@ Note that you can undelete them after");
 	roundtripm.insertItem("C++", 30);
 	roundtripm.insertItem("Java", 31);
 	roundtripm.insertItem("Php", 32);
+	roundtripm.insertItem("Python", 33);
       }
       
       if (Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -313,6 +315,16 @@ void BrowserDeploymentView::exec_menu_choice(int rank) {
 		   this);
     }
     return;
+  case 14:
+    {
+      bool preserve = preserve_bodies();
+      
+      ToolCom::run((verbose_generation()) 
+		   ? ((preserve) ? "python_generator -v -p" : "python_generator -v")
+		   : ((preserve) ? "python_generator -p" : "python_generator"), 
+		   this);
+    }
+    return;
   case 13:
     ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
     return;
@@ -324,6 +336,9 @@ void BrowserDeploymentView::exec_menu_choice(int rank) {
     return;
   case 32:
     ToolCom::run((verbose_generation()) ? "roundtrip_body -v php" : "roundtrip_body php", this);
+    return;
+  case 33:
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v python" : "roundtrip_body python", this);
     return;
   default:
     if (rank >= 100)
@@ -372,6 +387,8 @@ void BrowserDeploymentView::apply_shortcut(QString s) {
 	    choice = 31;
 	  else if (s == "Roundtrip Php operation body")
 	    choice = 32;
+	  else if (s == "Roundtrip Python operation body")
+	    choice = 33;
 	}
 	
 	if (choice == -1)
@@ -386,6 +403,8 @@ void BrowserDeploymentView::apply_shortcut(QString s) {
 	    choice = 11;
 	  else if (s == "Generate Php")
 	    choice = 12;
+	  else if (s == "Generate Python")
+	    choice = 14;
 	  else if (s == "Generate Idl")
 	    choice = 13;
 	}
@@ -566,16 +585,21 @@ bool BrowserDeploymentView::tool_cmd(ToolCom * com, const char * args) {
 void BrowserDeploymentView::DragMoveEvent(QDragMoveEvent * e) {
   if (UmlDrag::canDecode(e, UmlArtifact) ||
       UmlDrag::canDecode(e, UmlDeploymentNode) ||
-      UmlDrag::canDecode(e, UmlDeploymentDiagram))
-    e->accept();
+      UmlDrag::canDecode(e, UmlDeploymentDiagram)) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
   else
     ((BrowserNode *) parent())->DragMoveInsideEvent(e);
 }
 
 void BrowserDeploymentView::DragMoveInsideEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, UmlArtifact) ||
-      UmlDrag::canDecode(e, UmlDeploymentNode) ||
-      UmlDrag::canDecode(e, UmlDeploymentDiagram))
+  if (!is_read_only &&
+      (UmlDrag::canDecode(e, UmlArtifact) ||
+       UmlDrag::canDecode(e, UmlDeploymentNode) ||
+       UmlDrag::canDecode(e, UmlDeploymentDiagram)))
     e->accept();
   else
     e->ignore();

@@ -226,7 +226,7 @@ void FlowCanvas::menu(const QPoint &) {
       m.insertItem("Labels default position", 4);
       if (plabel && (label == 0))
 	m.insertItem("Attach flow label to this segment", 5);
-      if (stereotype == 0)
+      if (pstereotype && (stereotype == 0))
 	m.insertItem("Attach stereotype to this segment", 6);
     }
   

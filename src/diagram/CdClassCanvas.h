@@ -36,8 +36,6 @@
 #include "MultipleDependency.h"
 #include "Settings.h"
 
-#define CLASS_CANVAS_MIN_SIZE 40
-
 class TemplateCanvas;
 class RelationData;
 class ConstraintCanvas;

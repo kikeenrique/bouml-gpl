@@ -42,6 +42,10 @@ void UmlItem::roundtrip_php() {
   // does nothing
 }
 
+void UmlItem::roundtrip_python() {
+  // does nothing
+}
+
 UmlPackage * UmlItem::package() {
   return parent()->package();
 }

@@ -443,14 +443,19 @@ int BrowserComponent::get_identifier() const {
 }
 
 void BrowserComponent::DragMoveEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
-    e->accept();
+  if (UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
   else
     ((BrowserNode *) parent())->DragMoveInsideEvent(e);
 }
 
 void BrowserComponent::DragMoveInsideEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
+  if (!is_read_only &&
+      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
     e->accept();
   else
     e->ignore();
@@ -825,6 +830,7 @@ bool BrowserComponent::tool_cmd(ToolCom * com, const char * args) {
   case getCppDefCmd:
   case getJavaDefCmd:
   case getPhpDefCmd:
+  case getPythonDefCmd:
   case getIdlDefCmd:
     BrowserNode::tool_cmd(com, args);
     if (com->api_format() > 13) {

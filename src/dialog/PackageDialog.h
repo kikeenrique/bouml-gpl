@@ -70,6 +70,12 @@ class PackageDialog : public QTabDialog {
     LineEdit * edphpdir;
     QPushButton * phpbutton;
 
+    // Python
+    QWidget * pythontab;
+    LineEdit * edpythondir;
+    LineEdit * edpythonpackage;
+    QPushButton * pythonbutton;
+
     // Idl
     QWidget * idltab;
     LineEdit * edidldir;
@@ -100,11 +106,13 @@ class PackageDialog : public QTabDialog {
     void cpph_browse();
     void java_browse();
     void php_browse();
+    void python_browse();
     void idl_browse();
     void cppsrc_relative();
     void cpph_relative();
     void java_relative();
     void php_relative();
+    void python_relative();
     void idl_relative();
 
     void change_tabs(QWidget *);

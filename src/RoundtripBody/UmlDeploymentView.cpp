@@ -45,3 +45,10 @@ void UmlDeploymentView::roundtrip_php() {
   for (unsigned index = 0; index != ch.size(); index += 1)
     ch[index]->roundtrip_php();
 }
+
+void UmlDeploymentView::roundtrip_python() {
+  QVector<UmlItem> ch = UmlItem::children();
+  
+  for (unsigned index = 0; index != ch.size(); index += 1)
+    ch[index]->roundtrip_python();
+}

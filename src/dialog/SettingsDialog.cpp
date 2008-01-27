@@ -99,16 +99,23 @@ ComboStates::ComboStates(QWidget * parent, DrawingLanguage v,
     setCurrentItem(v);
 }
 
+static QString _2space(QString s)
+{
+  int index = s.find("_");
+  
+  return (index == -1) ? s : s.replace(index, 1, " ");
+}
+
 ComboStates::ComboStates(QWidget * parent, ShowContextMode v,
 			 bool nodefault, bool unchanged) 
     : QComboBox(FALSE, parent) {
   int i;
   
-  for (i = 0; i != (int) DefaultShowContextMode; i += 1)
-    insertItem(stringify((ShowContextMode) i));
+   for (i = 0; i != (int) DefaultShowContextMode; i += 1)
+    insertItem(_2space(stringify((ShowContextMode) i)));
   // the last value MUST be default
   if (!nodefault)
-    insertItem(stringify((ShowContextMode) i));
+    insertItem(_2space(stringify((ShowContextMode) i)));
   if (unchanged) {
     insertItem("<unchanged>");
     setCurrentItem(count() - 1); 

@@ -81,6 +81,10 @@ BrowserOperation::BrowserOperation(const BrowserOperation * model, BrowserNode *
   b = model->def->get_body('p');
   if ((b != 0) && (*b != 0))
     def->new_body(b, 'p');
+  
+  b = model->def->get_body('y');
+  if ((b != 0) && (*b != 0))
+    def->new_body(b, 'y');
 }
 
 BrowserNode * BrowserOperation::duplicate(BrowserNode * p, QString n) {
@@ -111,6 +115,7 @@ BrowserOperation::~BrowserOperation() {
     delete_definition(get_ident(), "cpp");
     delete_definition(get_ident(), "java");
     delete_definition(get_ident(), "php");
+    delete_definition(get_ident(), "python");
   }
 #endif
   
@@ -149,6 +154,7 @@ void BrowserOperation::renumber(int phase) {
   static QPtrDict<char> cpp;
   static QPtrDict<char> java;
   static QPtrDict<char> php;
+  static QPtrDict<char> python;
   
   char * b;
   
@@ -159,6 +165,8 @@ void BrowserOperation::renumber(int phase) {
       java.insert(this, b);
     if ((b = def->get_body('p')) != 0)
       php.insert(this, b);
+    if ((b = def->get_body('y')) != 0)
+      python.insert(this, b);
   }
   else {
     new_ident(phase, all);
@@ -170,6 +178,8 @@ void BrowserOperation::renumber(int phase) {
       def->new_body(b, 'j');
     if ((b = php.take(this)) != 0)
       def->new_body(b, 'p');
+    if ((b = python.take(this)) != 0)
+      def->new_body(b, 'y');
   }
 }
 
@@ -245,6 +255,7 @@ void BrowserOperation::update_get_of(const QString & attr_name,
 				     const QString & cpp_decl,
 				     const QString & java_decl,
 				     const QString & php_decl,
+				     const QString & python_decl,
 				     const QString & idl_decl,
 				     bool is_const, bool is_class_member,
 				     const AType & cl,
@@ -262,6 +273,9 @@ void BrowserOperation::update_get_of(const QString & attr_name,
   case PhpView:
     set_name(substr_name(GenerationSettings::php_default_get_name(), attr_name));
     break;
+  case PythonView:
+    set_name(substr_name(GenerationSettings::python_default_get_name(), attr_name));
+    break;
   case IdlView:
     set_name(substr_name(GenerationSettings::idl_default_get_name(), attr_name));
     break;
@@ -269,8 +283,8 @@ void BrowserOperation::update_get_of(const QString & attr_name,
     set_name(QString("get_") + attr_name);
   }
   
-  def->update_get_of(attr_name, cpp_decl, java_decl, php_decl, idl_decl, is_const,
-		     is_class_member, cl, multiplicity, ste, create);
+  def->update_get_of(attr_name, cpp_decl, java_decl, php_decl, python_decl, idl_decl,
+		     is_const, is_class_member, cl, multiplicity, ste, create);
   
   update_stereotype();
 }
@@ -279,6 +293,7 @@ void BrowserOperation::update_set_of(const QString & attr_name,
 				     const QString & cpp_decl,
 				     const QString & java_decl,
 				     const QString & php_decl,
+				     const QString & python_decl,
 				     const QString & idl_decl,
 				     bool is_const, bool is_class_member,
 				     const AType & cl,
@@ -296,6 +311,9 @@ void BrowserOperation::update_set_of(const QString & attr_name,
   case PhpView:
     set_name(substr_name(GenerationSettings::php_default_set_name(), attr_name));
     break;
+  case PythonView:
+    set_name(substr_name(GenerationSettings::python_default_set_name(), attr_name));
+    break;
   case IdlView:
     set_name(substr_name(GenerationSettings::idl_default_set_name(), attr_name));
     break;
@@ -303,8 +321,8 @@ void BrowserOperation::update_set_of(const QString & attr_name,
     set_name(QString("set_") + attr_name);
   }
 
-  def->update_set_of(attr_name, cpp_decl, java_decl, php_decl, idl_decl, is_const,
-		     is_class_member, cl, multiplicity, ste, create);
+  def->update_set_of(attr_name, cpp_decl, java_decl, php_decl, python_decl, idl_decl,
+		     is_const, is_class_member, cl, multiplicity, ste, create);
   
   update_stereotype();
 }
@@ -417,6 +435,9 @@ a double click with the left mouse button does the same thing");
       if (strstr(def->get_phpdef(), "${body}") != 0)
 	m.setWhatsThis(m.insertItem("Edit Php body", 6),
 		       "to edit the <em>operation</em> and its Php body");
+      if (strstr(def->get_pythondef(), "${body}") != 0)
+	m.setWhatsThis(m.insertItem("Edit Python body", 7),
+		       "to edit the <em>operation</em> and its Python body");
       m.setWhatsThis(m.insertItem("Duplicate", 1),
 		     "to copy the <em>operation</em> in a new one");
       if (!is_read_only && (edition_number == 0)) {
@@ -463,6 +484,9 @@ void BrowserOperation::exec_menu_choice(int rank) {
   case 6:
     def->edit(PhpView);
     return;
+  case 7:
+    def->edit(PythonView);
+    return;
   default:
     if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
@@ -492,6 +516,9 @@ void BrowserOperation::apply_shortcut(QString s) {
       if (strstr(def->get_phpdef(), "${body}") != 0)
 	if (s == "Edit Php body")
 	  choice = 6;
+      if (strstr(def->get_pythondef(), "${body}") != 0)
+	if (s == "Edit Python body")
+	  choice = 7;
       if (s == "Duplicate")
 	choice = 1;
       if (!is_read_only && (edition_number == 0)) {
@@ -572,6 +599,23 @@ void BrowserOperation::compute_referenced_by(QList<BrowserNode> & l,
       l.append(it.current());
     ++it;
   }
+}
+
+QString BrowserOperation::python_init_self(BrowserNode * cl)
+{
+  QListViewItem * child;
+  
+  for (child = cl->firstChild(); child; child = child->nextSibling()) {
+    if ((((BrowserNode *) child)->get_type() == UmlOperation) &&
+	(((BrowserNode *) child)->get_name() == "__init__")) {
+      return (((BrowserOperation *) child)->def->get_n_params() != 0)
+	? ((BrowserOperation *) child)->def->get_param_name(0)
+	: "self";
+    }
+  }
+  
+  // not find
+  return "self";
 }
 
 bool BrowserOperation::tool_cmd(ToolCom * com, const char * args) {

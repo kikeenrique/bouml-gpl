@@ -61,6 +61,7 @@ OperationData::OperationData(int id)
       java_final(FALSE), java_synchronized(FALSE),
       java_get_set_frozen(FALSE), java_indent_body(TRUE),
       php_final(FALSE), php_get_set_frozen(FALSE), php_indent_body(TRUE),
+      python_get_set_frozen(FALSE), python_indent_body(TRUE),
       idl_oneway(FALSE), idl_get_set_frozen(FALSE),
       nparams(0), nexceptions(0), params(0), exceptions(0) {
 }
@@ -87,19 +88,26 @@ OperationData::OperationData(OperationData * model, BrowserNode * bn)
       php_final(model->php_final),
       php_get_set_frozen(model->php_get_set_frozen),
       php_indent_body(model->php_indent_body),
+      python_get_set_frozen(model->python_get_set_frozen),
+      python_indent_body(model->python_indent_body),
       idl_oneway(model->idl_oneway),
       idl_get_set_frozen(model->idl_get_set_frozen), 
       nparams(model->nparams),
       nexceptions(model->nexceptions),
       constraint(model->constraint),
       cpp_decl(model->cpp_decl),
+      cpp_name_spec(model->cpp_name_spec),
+      java_name_spec(model->java_name_spec),
       java_annotation(model->java_annotation),
-      idl_decl(model->idl_decl) {
+      python_name_spec(model->python_name_spec),
+      python_decorator(model->python_decorator),
+      idl_decl(model->idl_decl), idl_name_spec(model->idl_name_spec) {
   browser_node = bn;
   
   cpp_def.assign((const char *) model->cpp_def, FALSE);
   java_def.assign((const char *) model->java_def, FALSE);
   php_def.assign((const char *) model->php_def, FALSE);
+  python_def.assign((const char *) model->python_def, FALSE);
   return_type = model->return_type;
   depend_on(return_type.type);
   
@@ -327,6 +335,10 @@ QString OperationData::default_php_def(const QString & name, bool nobody) {
   return s;
 }
 
+QString OperationData::default_python_def(const QString &) {
+  return GenerationSettings::python_default_oper_def();
+}
+
 QString OperationData::default_idl_decl(const QString & name) {
   QString s = GenerationSettings::idl_default_oper_decl();
   QString parent_name = ((BrowserNode *) browser_node->parent())->get_name();
@@ -385,6 +397,10 @@ void OperationData::set_browser_node(BrowserOperation * o, bool update) {
       php_def.assign(default_php_def(browser_node->get_name(),
 				     ClassDialog::php_stereotype(st) == "interface"),
 		     TRUE);
+    
+    if (GenerationSettings::python_get_default_defs())
+      python_def.assign(default_python_def(browser_node->get_name()),
+			TRUE);
     
     if (GenerationSettings::idl_get_default_defs()) {
       if (ClassDialog::idl_stereotype(st) != "enum")
@@ -452,6 +468,13 @@ QString OperationData::definition(bool full, DrawingLanguage language,
       return definition(FALSE);
     else
       return QString::null;
+  case PythonView:
+    if (full)
+      return OperationDialog::python_decl((BrowserOperation *) browser_node, withname);
+    else if (!python_def.isEmpty())
+      return definition(FALSE);
+    else
+      return QString::null;
   default:
     if (full)
       return OperationDialog::idl_decl((BrowserOperation *) browser_node, withdir, withname);
@@ -468,9 +491,11 @@ bool OperationData::decldefbody_contain(const QString & s, bool cs,
 	  (QString(get_cppdef()).find(s, 0, cs) != -1) ||
 	  (QString(get_javadef()).find(s, 0, cs) != -1) ||
 	  (QString(get_phpdef()).find(s, 0, cs) != -1) ||
+	  (QString(get_pythondef()).find(s, 0, cs) != -1) ||
 	  (QString(get_idldecl()).find(s, 0, cs) != -1) ||
 	  (QString(get_body('c')).find(s, 0, cs) != -1) ||
 	  (QString(get_body('j')).find(s, 0, cs) != -1) ||
+	  (QString(get_body('y')).find(s, 0, cs) != -1) ||
 	  (QString(get_body('p')).find(s, 0, cs) != -1));
 }
 
@@ -894,6 +919,70 @@ void OperationData::update_php_get_of(QCString & def, const QString & attr_name,
   }
 }
 
+void OperationData::update_python_get_of(QCString & def, const QString & attr_name,
+					 QString attpython_decl, bool attis_class_member)
+{
+  remove_python_comments(attpython_decl);
+  attpython_decl = attpython_decl.stripWhiteSpace();
+  
+  int index;
+  
+  if ((index = attpython_decl.find("${comment}")) != -1)
+    attpython_decl.remove(index, 10);
+  if ((index = attpython_decl.find("${description}")) != -1)
+    attpython_decl.remove(index, 14);
+  if ((index = attpython_decl.find("${self}")) != -1)
+    attpython_decl.remove(index, 7);
+  if ((index = attpython_decl.find("${stereotype}")) != -1)
+    attpython_decl.remove(index, 13);
+  if ((index = attpython_decl.find("${multiplicity}")) != -1)
+    attpython_decl.remove(index, 15);
+  if ((index = attpython_decl.find("${value}")) != -1)
+    attpython_decl.remove(index, 8);
+  if ((index = attpython_decl.find("${type}")) != -1)
+    attpython_decl.truncate(index);
+  if ((index = attpython_decl.find(" =")) != -1)
+    attpython_decl.truncate(index);
+  else if ((index = attpython_decl.find("=")) != -1)
+    attpython_decl.truncate(index);
+  
+  QString attr_name_spec = extract_name(attpython_decl);
+  
+  if (attr_name_spec.isEmpty())
+    def = "";
+  else {
+    QCString d = (const char *) GenerationSettings::python_default_oper_def();
+    QString type_spec_name = attpython_decl;
+    
+    type_spec_name.replace(type_spec_name.find(attr_name_spec),
+			   attr_name_spec.length(), "$$");
+    
+    if ((index = d.find("${name}")) != -1) {
+      d.replace(index, 7, type_spec_name);
+
+      QString attr_full_name = attr_name_spec;
+      
+      if ((index = attr_full_name.find("${name}")) != -1)
+	attr_full_name.replace(index, 7, attr_name);
+      
+      if ((index = d.find("$$")) != -1)
+	d.replace(index, 2, "${name}");
+      
+      if ((index = d.find("${body}")) != -1) {
+	d.replace(index, 7,
+		  ((attis_class_member) ? "return " : "return self.")
+		    + attr_full_name);
+      }
+      if (!attis_class_member && (index = d.find("${(}")) != -1)
+	d.insert(index + 4, "self");
+      
+      def = d;
+    }
+    else
+      def = 0;
+  }
+}
+
 void OperationData::update_idl_get_of(QCString & decl, QString attidl_decl,
 				      QString multiplicity)
 {
@@ -954,7 +1043,8 @@ void OperationData::update_idl_get_of(QCString & decl, QString attidl_decl,
 
 void OperationData::update_get_of(const QString & attr_name,
 				  QString attcpp_decl, QString attjava_decl,
-				  QString attphp_decl, QString attidl_decl,
+				  QString attphp_decl, QString attpython_decl,
+				  QString attidl_decl,
 				  bool attis_const, bool attis_class_member,
 				  const AType & cl, QString multiplicity,
 				  QString relstereotype, bool create) {
@@ -980,7 +1070,7 @@ void OperationData::update_get_of(const QString & attr_name,
 	cpp_const = GenerationSettings::cpp_default_get_const();
 	cpp_inline = GenerationSettings::cpp_default_get_inline();
 	if (GenerationSettings::cpp_default_get_visibility() !=
-	    GenerationSettings::javaphp_default_get_visibility())
+	    GenerationSettings::noncpp_default_get_visibility())
 	  cpp_visibility = GenerationSettings::cpp_default_get_visibility();
       }
     
@@ -1003,7 +1093,7 @@ void OperationData::update_get_of(const QString & attr_name,
     if (java_name_spec.isEmpty())
       java_name_spec = GenerationSettings::java_default_get_name();
     java_final = GenerationSettings::java_default_get_final();  
-    uml_visibility = GenerationSettings::javaphp_default_get_visibility();
+    uml_visibility = GenerationSettings::noncpp_default_get_visibility();
   }
 
   if (!java_get_set_frozen) {
@@ -1027,6 +1117,20 @@ void OperationData::update_get_of(const QString & attr_name,
       php_def.assign("", TRUE);
     else
       php_def.assign(def, FALSE);
+  }
+  
+  // Python
+  if (create) {
+    if (python_name_spec.isEmpty())
+      python_name_spec = GenerationSettings::python_default_get_name();
+  }
+
+  if (!python_get_set_frozen) {
+    update_python_get_of(def, attr_name, attpython_decl, attis_class_member);
+    if (def.isEmpty())
+      python_def.assign("", TRUE);
+    else
+      python_def.assign(def, FALSE);
   }
   
   // Idl
@@ -1428,6 +1532,76 @@ void OperationData::update_php_set_of(QCString & def,
   }
 }
 
+void OperationData::update_python_set_of(QCString & def,
+					const QString & attr_name,
+					QString attpython_decl,
+					bool attis_class_member)
+{
+  remove_python_comments(attpython_decl);
+  attpython_decl = attpython_decl.stripWhiteSpace();
+  
+  int index;
+  
+  if ((index = attpython_decl.find("${comment}")) != -1)
+    attpython_decl.remove(index, 10);
+  if ((index = attpython_decl.find("${description}")) != -1)
+    attpython_decl.remove(index, 14);
+  if ((index = attpython_decl.find("${self}")) != -1)
+    attpython_decl.remove(index, 7);
+  if ((index = attpython_decl.find("${stereotype}")) != -1)
+    attpython_decl.remove(index, 13);
+  if ((index = attpython_decl.find("${multiplicity}")) != -1)
+    attpython_decl.remove(index, 15);
+  if ((index = attpython_decl.find("${value}")) != -1)
+    attpython_decl.truncate(index);
+  if ((index = attpython_decl.find("${type}")) != -1)
+    attpython_decl.truncate(index);
+  if ((index = attpython_decl.find(" =")) != -1)
+    attpython_decl.truncate(index);
+  else if ((index = attpython_decl.find("=")) != -1)
+    attpython_decl.truncate(index);
+  
+  QString attr_name_spec = extract_name(attpython_decl);
+  
+  if (attr_name_spec.isEmpty())
+    def= 0;
+  else {  
+    QString arg_spec = attpython_decl;
+    
+    arg_spec.replace(arg_spec.find(attr_name_spec),
+		     attr_name_spec.length(),"${p0}");
+    
+    QCString d = (const char *) GenerationSettings::python_default_oper_def();
+    
+    if ((index = d.find("${)}")) != -1) {
+      if (! attis_class_member) {
+	d.insert(index, "self, ");
+	index += 6;
+      }
+      d.insert(index, (const char *) arg_spec);
+      
+      QString attr_full_name = attr_name_spec;
+      
+      if ((index = attr_full_name.find("${name}")) != -1)
+	attr_full_name.replace(index, 7, attr_name);
+	
+      if ((index = d.find("${body}")) != -1) {
+	QString s;
+
+	if (!attis_class_member)
+	  s = "self.";
+	
+	d.replace(index, 7, s + attr_full_name + " = ${p0}");		
+	def = d;
+      }    
+      else
+	def = 0;
+    }
+    else
+      def = 0;
+  }
+}
+
 void OperationData::update_idl_set_of(QCString & decl, QString attidl_decl,
 				      QString multiplicity)
 {
@@ -1485,7 +1659,8 @@ void OperationData::update_idl_set_of(QCString & decl, QString attidl_decl,
 
 void OperationData::update_set_of(const QString & attr_name,
 				  QString attcpp_decl, QString attjava_decl,
-				  QString attphp_decl, QString attidl_decl,
+				  QString attphp_decl, QString attpython_decl,
+				  QString attidl_decl,
 				  bool attis_const, bool attis_class_member,
 				  const AType & cl, QString multiplicity,
 				  QString relstereotype, bool create) {
@@ -1519,7 +1694,7 @@ void OperationData::update_set_of(const QString & attr_name,
 	  cpp_name_spec = GenerationSettings::cpp_default_set_name();
 	cpp_inline = GenerationSettings::cpp_default_set_inline();
 	if (GenerationSettings::cpp_default_set_visibility() !=
-	    GenerationSettings::javaphp_default_set_visibility())
+	    GenerationSettings::noncpp_default_set_visibility())
 	  cpp_visibility = GenerationSettings::cpp_default_set_visibility(); 
       }
     
@@ -1542,7 +1717,7 @@ void OperationData::update_set_of(const QString & attr_name,
     if (java_name_spec.isEmpty())
       java_name_spec = GenerationSettings::java_default_set_name();
     java_final = GenerationSettings::java_default_set_final();
-    uml_visibility = GenerationSettings::javaphp_default_set_visibility();
+    uml_visibility = GenerationSettings::noncpp_default_set_visibility();
   }
   
   if (!java_get_set_frozen) {
@@ -1566,6 +1741,20 @@ void OperationData::update_set_of(const QString & attr_name,
       php_def.assign("", TRUE);
     else
       php_def.assign(def, FALSE);
+  }
+  
+  // Python
+  if (create) {
+    if (python_name_spec.isEmpty())
+      python_name_spec = GenerationSettings::python_default_set_name();
+  }
+  
+  if (!python_get_set_frozen) {
+    update_python_set_of(def, attr_name, attpython_decl, attis_class_member);
+    if (def.isEmpty())
+      python_def.assign("", TRUE);
+    else
+      python_def.assign(def, FALSE);
   }
   
   // Idl
@@ -1721,6 +1910,14 @@ void OperationData::send_php_def(ToolCom * com) {
   com->write_bool(php_get_set_frozen);
   if (com->api_format() >= 37)
     com->write_bool(php_indent_body);
+}
+
+void OperationData::send_python_def(ToolCom * com) {
+  com->write_string(python_def);
+  com->write_string(python_decorator);
+  com->write_string(python_name_spec);
+  com->write_bool(python_get_set_frozen);
+  com->write_bool(python_indent_body);
 }
 
 void OperationData::send_idl_def(ToolCom * com) {
@@ -1916,37 +2113,30 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
       case setJavaFrozenCmd:
 	java_get_set_frozen = (*args != 0);
 	break;
-      case setPhpDeclCmd:
-	{
-	  QString ste = GenerationSettings::php_class_stereotype(stereotype);
-	  
-	  php_def.assign(args,
-			 is_abstract ||
-			 (ste == "interface") ||
-			 (strstr(args, "${body}") != 0));
-	}
+      case setPythonDeclCmd:
+        python_def.assign(args, (strstr(args, "${body}") != 0));
 	break;
-      case setPhpFinalCmd:
-	php_final = (*args != 0);
+      case setPythonDecoratorsCmd:
+	python_decorator = args;
 	break;
-      case setPhpBodyCmd:
+      case setPythonBodyCmd:
 	{
-	  char * b = get_body('p');
+	  char * b = get_body('y');
 	  
 	  if (b != 0) {
 	    if (strcmp(b, args))
-	      new_body(args, 'p');
+	      new_body(args, 'y');
 	    delete [] b;
 	  }
 	  else if (*args)
-	    new_body(args, 'p');
+	    new_body(args, 'y');
 	}
 	break;
-      case setPhpNameSpecCmd:
-	php_name_spec = args;
+      case setPythonNameSpecCmd:
+	python_name_spec = args;
 	break;
-      case setPhpFrozenCmd:
-	php_get_set_frozen = (*args != 0);
+      case setPythonFrozenCmd:
+	python_get_set_frozen = (*args != 0);
 	break;
       case setIsIdlOnewayCmd:
 	idl_oneway = (*args != 0);
@@ -2104,6 +2294,9 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
       case setPhpContextualBodyIndent:
 	php_indent_body = (*args != 0);
 	break;
+      case setPythonContextualBodyIndent:
+	python_indent_body = (*args != 0);
+	break;
       default:
 	return BasicData::tool_cmd(com, args, bn, comment);
       }
@@ -2155,6 +2348,19 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
 	return TRUE;
       }
       break;
+    case pythonBodyCmd:
+      {
+	char * body = get_body('y');
+	
+	if (body != 0) {
+	  com->write_string(body);
+	  delete [] body;
+	}
+	else
+	  com->write_string("");
+	return TRUE;
+      }
+      break;
     default:
       return BasicData::tool_cmd(com, args, bn, comment);
     }
@@ -2185,7 +2391,8 @@ char * OperationData::set_bodies_info(BrowserClass * cl, int id)
       
       d->cpp_body.length = 
 	d->java_body.length =
-	  d->php_body.length = 0;
+	  d->python_body.length = 0;
+	    d->php_body.length = 0;
     }
   }
 
@@ -2247,6 +2454,18 @@ char * OperationData::set_bodies_info(BrowserClass * cl, int id)
 	
 	if (((d = all[id]) != 0) && (d->browser_node->parent() == cl)) {
 	  b = &d->php_body;
+	  find = TRUE;
+	}
+	else
+	  // !! wrong file
+	  b = 0;
+      }
+      if (strncmp(p2, ".python!!!\t", 11) == 0) {
+	if (b != 0)
+	  b->length = p - start - 3;
+	
+	if (((d = all[id]) != 0) && (d->browser_node->parent() == cl)) {
+	  b = &d->python_body;
 	  find = TRUE;
 	}
 	else
@@ -2320,8 +2539,11 @@ char * OperationData::get_body(int who) {
   case 'j':
     body_info = &java_body;
     break;
-  default: // 'p'
+  case 'p':
     body_info = &php_body;
+    break;
+  default: // 'y'
+    body_info = &python_body;
   }
   
   switch (body_info->length) {
@@ -2349,9 +2571,13 @@ void OperationData::new_body(QString s, int who) {
     body_info = &java_body;
     key = ".java!!!\t";
     break;
-  default: // 'p'
+  case 'p':
     body_info = &php_body;
     key = ".php!!!\t";
+    break;
+  default: // 'y'
+    body_info = &python_body;
+    key = ".python!!!\t";
   }
   
   if (! ((BrowserClass *) browser_node->parent())->get_bodies_read())
@@ -2411,9 +2637,13 @@ void OperationData::save_body(QFile & qf, char * modified_bodies, int who) {
     body_info = &java_body;
     key = ".java!!!\t";
     break;
-  default: // 'p'
+  case 'p':
     body_info = &php_body;
     key = ".php!!!\t";
+    break;
+  default: // 'y'
+    body_info = &python_body;
+    key = ".python!!!\t";
   }
   
   if (body_info->length > 0) {
@@ -2450,7 +2680,8 @@ void OperationData::save_body(QFile & qf, char * modified_bodies, int who) {
 void OperationData::raz_body() {
   cpp_body.length = 
     java_body.length =
-      php_body.length = 0;
+      python_body.length = 0;
+	php_body.length = 0;
 }
 
 // save all the operations's body of cl, id is its old ident
@@ -2470,6 +2701,7 @@ void OperationData::import(BrowserClass * cl, int id)
       d->save_body(qf, s, 'c');
       d->save_body(qf, s, 'j');
       d->save_body(qf, s, 'p');
+      d->save_body(qf, s, 'y');
     }
   }
 
@@ -2593,6 +2825,26 @@ void OperationData::save(QTextStream & st, bool ref, QString & warning) const {
     }
     
     nl_indent(st);
+    if (! python_indent_body)
+      st << "preserve_python_body_indent ";
+    if (python_get_set_frozen)
+      st << "python_frozen ";   
+    if (! python_decorator.isEmpty()) {
+      st << "python_decorator ";
+      save_string(python_decorator, st);
+    }
+    if (! python_def.isEmpty()) {
+      st << "python_def ";
+      save_string(python_def, st);
+    }
+
+    if (!python_name_spec.isEmpty()) {
+      nl_indent(st);
+      st << "python_name_spec ";
+      save_string(python_name_spec, st);
+    }
+    
+    nl_indent(st);
     if (idl_get_set_frozen)
       st << "idl_frozen ";   
     if (idl_oneway)
@@ -2619,6 +2871,7 @@ OperationData * OperationData::read_ref(char * & st)
 void OperationData::read(char * & st, char * & k) {
   cpp_body.length = -1;
   java_body.length = -1;
+  python_body.length = -1;
   php_body.length = -1;
   
   k = read_keyword(st);
@@ -2870,6 +3123,46 @@ void OperationData::read(char * & st, char * & k) {
   else {
     is_get_or_set = FALSE;
     php_name_spec = "";
+  }
+  
+  if (!strcmp(k, "preserve_python_body_indent")) {
+    python_indent_body = FALSE;
+    k = read_keyword(st);
+  }
+  else
+    python_indent_body = TRUE;
+  
+  if (!strcmp(k, "python_frozen")) {
+    python_get_set_frozen = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    python_get_set_frozen = FALSE;
+  
+  if (!strcmp(k, "python_decorator")) {
+    python_decorator = read_string(st);
+    k = read_keyword(st);
+  }
+  else
+    python_decorator = "";
+  
+  if (!strcmp(k, "python_def")) {
+    char * d = read_string(st);
+    
+    python_def.assign(d, (strstr(d, "${body}") != 0));
+    k = read_keyword(st);
+  }
+  else
+    python_def.assign("", TRUE);
+  
+  if (!strcmp(k, "python_name_spec")) {
+    is_get_or_set = TRUE;
+    python_name_spec = read_string(st);
+    k = read_keyword(st);
+  } 
+  else {
+    is_get_or_set = FALSE;
+    python_name_spec = "";
   }
   
   if (!strcmp(k, "idl_frozen")) {

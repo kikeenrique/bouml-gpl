@@ -95,14 +95,14 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f_h,
   case aRealization:
     if ((cl_stereotype == "union") || (cl_stereotype == "enum")) {
       write_trace_header();
-      UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>an <i>")
+      UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>an <i>")
 		    + cl_stereotype + "</i> cannot inherits</b></font><br>");
       incr_warning();
       return;
     }
     else if (cl_stereotype == "typedef") {
       write_trace_header();
-      UmlCom::trace("<tt>        </tt><font color=\"red\"><b>a <i>typedef</i> cannot inherits</b></font><br>");
+      UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>a <i>typedef</i> cannot inherits</b></font><br>");
       incr_warning();
       return;
     }
@@ -113,7 +113,7 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f_h,
     if ((other_stereotype == "union") ||
 	(other_stereotype == "enum")) {
       write_trace_header();
-      UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>cannot inherits an <i>")
+      UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>cannot inherits an <i>")
 		    + other_stereotype + "</i></b></font><br>");
       incr_warning();
       return;
@@ -188,13 +188,13 @@ void UmlRelation::generate_decl(aVisibility & current_visibility, QTextOStream &
     if (!cppDecl().isEmpty()) {
       if (cl_stereotype == "enum") {
 	write_trace_header();
-	UmlCom::trace("<tt>        </tt><font color=\"red\"><b>an <i>enum</i> cannot have relation</b></font><br>");
+	UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>an <i>enum</i> cannot have relation</b></font><br>");
 	incr_warning();
 	return;
       }
       if (cl_stereotype == "typedef") {
 	write_trace_header();
-	UmlCom::trace("<tt>        </tt><font color=\"red\"><b>a <i>typedef</i> cannot have relation</b></font><br>");
+	UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>a <i>typedef</i> cannot have relation</b></font><br>");
 	incr_warning();
 	return;
       }

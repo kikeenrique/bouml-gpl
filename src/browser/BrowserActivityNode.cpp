@@ -458,8 +458,12 @@ bool BrowserActivityNode::tool_cmd(ToolCom * com, const char * args) {
 }
 
 void BrowserActivityNode::DragMoveEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, BrowserFlow::drag_key(this)))
-    e->accept();
+  if (UmlDrag::canDecode(e, BrowserFlow::drag_key(this))) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
   else
     ((BrowserNode *) parent())->DragMoveInsideEvent(e);
 }
@@ -469,7 +473,8 @@ void BrowserActivityNode::DropEvent(QDropEvent * e) {
 }
 
 void BrowserActivityNode::DragMoveInsideEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, BrowserFlow::drag_key(this)))
+  if (!is_read_only &&
+      UmlDrag::canDecode(e, BrowserFlow::drag_key(this)))
     e->accept();
   else
     e->ignore();

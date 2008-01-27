@@ -29,7 +29,7 @@
 enum CmdFamily {
   onInstanceCmd, classGlobalCmd, packageGlobalCmd, miscGlobalCmd,
   umlSettingsCmd, cppSettingsCmd, javaSettingsCmd, idlSettingsCmd,
-  phpSettingsCmd
+  phpSettingsCmd, pythonSettingsCmd
 };
 
 enum MiscGlobalCmd {
@@ -88,6 +88,10 @@ enum OnInstanceCmd {
   // api 34
   getPhpDefCmd,
   phpBodyCmd,
+  
+  // api 39
+  getPythonDefCmd,
+  pythonBodyCmd,
   
   // set commands
   
@@ -245,6 +249,19 @@ enum OnInstanceCmd {
   setCppContextualBodyIndent,
   setJavaContextualBodyIndent,
   setPhpContextualBodyIndent,
+  
+  // api 39
+  setPythonDeclCmd,
+  setIsPythonExternalCmd,
+  setPythonSrcCmd,
+  setPythonBodyCmd,
+  setPythonNameSpecCmd,
+  setPythonDirCmd,
+  setPythonFrozenCmd,
+  setIsPython2_2Cmd,
+  setPythonDecoratorsCmd,
+  setPythonPackageCmd,
+  setPythonContextualBodyIndent,
     
   setUserCmd = 252, // not in plug-outs managed through bouml
   moveInCmd = 253,  // not in plug-outs managed through bouml
@@ -260,12 +277,13 @@ enum ClassGlobalCmd {
 };
 
 enum PackageGlobalCmd {
-  findNamespaceCmd,
-  findPackageCmd,
-  findModuleCmd,
+  findCppNamespaceCmd,
+  findJavaPackageCmd,
+  findIdlModuleCmd,
   getProjectCmd,
   isProjectModifiedCmd,
-  saveProjectCmd
+  saveProjectCmd,
+  findPythonPackageCmd,
 };
 
 enum UmlSettingsCmd {
@@ -401,6 +419,32 @@ enum PhpSettingsCmd {
   
   // api 38
   setPhpJavadocStyleCmd
+};
+
+// api 39
+enum PythonSettingsCmd {
+  getPythonSettingsCmd,
+  getPythonUseDefaultsCmd,
+  
+  setPythonUseDefaultsCmd,
+  setPython22Cmd,
+  setPythonIndentStepCmd,
+  setPythonRelationAttributeStereotypeCmd,
+  setPythonClassStereotypeCmd,
+  setPythonImportCmd,
+  setPythonRootdirCmd,
+  setPythonSourceContentCmd,
+  setPythonSourceExtensionCmd,
+  setPythonClassDeclCmd,
+  setPythonEnumDeclCmd,
+  setPythonExternalClassDeclCmd,
+  setPythonInterfaceDeclCmd,
+  setPythonAttributeDeclCmd,
+  setPythonEnumItemDeclCmd,
+  setPythonRelationDeclCmd,
+  setPythonOperationDefCmd,
+  setPythonGetNameCmd,
+  setPythonSetNameCmd,
 };
 
 enum IdlSettingsCmd {

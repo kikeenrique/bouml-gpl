@@ -47,9 +47,11 @@ class UmlPackage : public UmlBasePackage {
     QCString header_path(const QCString &);
     QCString java_path(const QCString &);
     QCString php_path(const QCString &);
+    QCString python_path(const QCString &);
     virtual void roundtrip_cpp();
     virtual void roundtrip_java();
     virtual void roundtrip_php();
+    virtual void roundtrip_python();
     virtual UmlPackage * package();
     
     static QCString rootDir(aLanguage who);

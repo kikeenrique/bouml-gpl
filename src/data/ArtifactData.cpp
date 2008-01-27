@@ -51,6 +51,7 @@ ArtifactData::ArtifactData(ArtifactData * model, BrowserNode * bn)
   cpp_src = model->cpp_src;
   java_src = model->java_src;
   php_src = model->php_src;
+  python_src = model->python_src;
   idl_src = model->idl_src;
   
 #if 0
@@ -94,6 +95,10 @@ void ArtifactData::use_default_java_src() {
 
 void ArtifactData::use_default_php_src() {
   php_src = GenerationSettings::php_default_source_content();
+}
+
+void ArtifactData::use_default_python_src() {
+  python_src = GenerationSettings::python_default_source_content();
 }
 
 void ArtifactData::use_default_idl_src() {
@@ -164,6 +169,10 @@ void ArtifactData::send_php_def(ToolCom * com) {
   com->write_string(php_src);
 }
 
+void ArtifactData::send_python_def(ToolCom * com) {
+  com->write_string(python_src);
+}
+
 void ArtifactData::send_idl_def(ToolCom * com) {
   com->write_string(idl_src);
 }
@@ -187,6 +196,9 @@ bool ArtifactData::tool_cmd(ToolCom * com, const char * args,
 	break;
       case setPhpSrcCmd:
 	php_src = args;
+	break;
+      case setPythonSrcCmd:
+	python_src = args;
 	break;
       case setIdlSrcCmd:
 	idl_src = args;
@@ -262,6 +274,7 @@ bool ArtifactData::decldefbody_contain(const QString & s, bool cs,
 	  (QString(get_cpp_src()).find(s, 0, cs) != -1) ||
 	  (QString(get_java_src()).find(s, 0, cs) != -1) ||
 	  (QString(get_php_src()).find(s, 0, cs) != -1) ||
+	  (QString(get_python_src()).find(s, 0, cs) != -1) ||
 	  (QString(get_idl_src()).find(s, 0, cs) != -1));
 }
   
@@ -361,6 +374,11 @@ void ArtifactData::save(QTextStream & st, QString & warning) const {
       st << "php_src ";
       save_string(php_src, st);
     }
+    if (!python_src.isEmpty()) {
+      nl_indent(st);
+      st << "python_src ";
+      save_string(python_src, st);
+    }
     if (!idl_src.isEmpty()) {
       nl_indent(st);
       st << "idl_src ";
@@ -393,6 +411,7 @@ void ArtifactData::read(char * & st, char * & k) {
   cpp_src = QString::null;
   java_src = QString::null;
   php_src = QString::null;
+  python_src = QString::null;
   idl_src = QString::null;
   
   if ((stereotype == "text") && (read_file_format() < 42))
@@ -424,6 +443,11 @@ void ArtifactData::read(char * & st, char * & k) {
     
     if (!strcmp(k, "php_src")) {
       php_src = read_string(st);
+      k = read_keyword(st);
+    }
+    
+    if (!strcmp(k, "python_src")) {
+      python_src = read_string(st);
       k = read_keyword(st);
     }
     

@@ -40,8 +40,7 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp \
 		UmlTypeSpec.cpp \
 		UmlClassInstance.cpp \
 		../Tools/UmlBaseClassItem.cpp ../Tools/UmlBaseClassMember.cpp \
-		../Tools/UmlBaseExtraClassMember.cpp ../Tools/CppSettings.cpp \
-		../Tools/IdlSettings.cpp ../Tools/PhpSettings.cpp \
+		../Tools/UmlBaseExtraClassMember.cpp ../Tools/PhpSettings.cpp \
 		../Tools/UmlBaseArtifact.cpp \
 		../Tools/UmlBaseAttribute.cpp ../Tools/UmlBaseClass.cpp \
 		../Tools/UmlBaseClassDiagram.cpp ../Tools/UmlBaseClassView.cpp \

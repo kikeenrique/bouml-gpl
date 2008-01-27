@@ -168,6 +168,10 @@ class UmlBaseAttribute : public UmlClassMember {
     virtual void read_php_();
 #endif
 
+#ifdef WITHPYTHON
+    virtual void read_python_();
+#endif
+
 #ifdef WITHIDL
     virtual void read_idl_();
 #endif

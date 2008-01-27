@@ -199,6 +199,10 @@ void edit(const QString & s, QString name, void * id, EditType k,
       f.sprintf("%s_%lx_%d.%s", (const char *) name, (unsigned long) id, user_id(),
 		(const char *) GenerationSettings::get_php_extension());
       break;
+    case PythonEdit:
+      f.sprintf("%s_%lx_%d.%s", (const char *) name, (unsigned long) id, user_id(),
+		(const char *) GenerationSettings::get_python_extension());
+      break;
     default: // TxTEdit
       f.sprintf("%s_%lx_%d.txt", (const char *) name, (unsigned long) id, user_id());
     }
@@ -353,6 +357,29 @@ QString get_php_name(const BrowserClass * cl)
   return s;
 }
 
+QString get_python_name(const BrowserClass * cl)
+{
+  ClassData * d = (ClassData *) cl->get_data();
+  QString name = cl->get_name();
+  
+  if (! d->python_is_external())
+    return name;
+  
+  QString s = d->get_pythondecl();
+  int index = s.find('\n');
+  
+  s = (index == -1) ? s.stripWhiteSpace()
+		    : s.left(index).stripWhiteSpace();
+  if ((index = s.find("${name}")) != -1)
+    s.replace(index, 7, name);
+  else if ((index = s.find("${Name}")) != -1)
+    s.replace(index, 7, capitalize(name));
+  else if ((index = s.find("${NAME}")) != -1)
+    s.replace(index, 7, name.upper());
+  
+  return s;
+}
+
 QString get_idl_name(const BrowserClass * cl)
 {
   ClassData * d = (ClassData *) cl->get_data();
@@ -396,6 +423,14 @@ QString get_php_name(const AType t)
 {
   if (t.type != 0)
     return get_php_name(t.type);
+  else
+    return t.explicit_type;
+}
+
+QString get_python_name(const AType t)
+{
+  if (t.type != 0)
+    return get_python_name(t.type);
   else
     return t.explicit_type;
 }

@@ -63,9 +63,9 @@ SharedStr GenerationSettings::cpp_struct_decl;
 SharedStr GenerationSettings::cpp_union_decl;
 SharedStr GenerationSettings::cpp_enum_decl;
 SharedStr GenerationSettings::cpp_typedef_decl;
-SharedStr GenerationSettings::cpp_attr_decl[3];
+SharedStr GenerationSettings::cpp_attr_decl[/*multiplicity*/3];
 SharedStr GenerationSettings::cpp_enum_item_decl;
-SharedStr GenerationSettings::cpp_rel_decl[2][3];
+SharedStr GenerationSettings::cpp_rel_decl[/*relation kind*/2][/*multiplicity*/3];
 SharedStr GenerationSettings::cpp_oper_decl;
 SharedStr GenerationSettings::cpp_oper_def;
 bool GenerationSettings::cpp_force_throw;
@@ -89,17 +89,17 @@ SharedStr GenerationSettings::java_external_class_decl;
 SharedStr GenerationSettings::java_interface_decl;
 SharedStr GenerationSettings::java_enum_decl;
 SharedStr GenerationSettings::java_enum_pattern_decl;
-SharedStr GenerationSettings::java_attr_decl[3];
+SharedStr GenerationSettings::java_attr_decl[/*multiplicity*/3];
 SharedStr GenerationSettings::java_enum_item_decl;
 SharedStr GenerationSettings::java_enum_pattern_item_decl;
 SharedStr GenerationSettings::java_enum_pattern_item_case;
-SharedStr GenerationSettings::java_rel_decl[3];
+SharedStr GenerationSettings::java_rel_decl[/*multiplicity*/3];
 SharedStr GenerationSettings::java_oper_def;
 IncludesSpec GenerationSettings::java_imports;
-UmlVisibility GenerationSettings::javaphp_get_visibility;
+UmlVisibility GenerationSettings::noncpp_get_visibility;
 SharedStr GenerationSettings::java_get_name;
 bool GenerationSettings::java_get_final;
-UmlVisibility GenerationSettings::javaphp_set_visibility;
+UmlVisibility GenerationSettings::noncpp_set_visibility;
 SharedStr GenerationSettings::java_set_name;
 bool GenerationSettings::java_set_final;
 bool GenerationSettings::java_set_param_final;
@@ -119,9 +119,22 @@ SharedStr GenerationSettings::php_get_name;
 bool GenerationSettings::php_get_final;
 SharedStr GenerationSettings::php_set_name;
 bool GenerationSettings::php_set_final;
-QString GenerationSettings::php_extension;
-QString GenerationSettings::php_root_dir;
 
+bool GenerationSettings::python_default_defs;
+bool GenerationSettings::python_2_2;
+QString GenerationSettings::python_indent_step;
+SharedStr GenerationSettings::python_src_content;
+SharedStr GenerationSettings::python_class_decl;
+SharedStr GenerationSettings::python_enum_decl;
+SharedStr GenerationSettings::python_external_class_decl;
+SharedStr GenerationSettings::python_attr_decl[2/*multiplicity*/];
+SharedStr GenerationSettings::python_enum_item_decl;
+SharedStr GenerationSettings::python_rel_decl[2/*relation kind*/][2/*multiplicity*/];
+SharedStr GenerationSettings::python_oper_def;
+IncludesSpec GenerationSettings::python_imports;
+SharedStr GenerationSettings::python_get_name;
+SharedStr GenerationSettings::python_set_name;
+    
 bool GenerationSettings::idl_default_defs;
 SharedStr GenerationSettings::idl_src_content;
 SharedStr GenerationSettings::idl_interface_decl;
@@ -133,14 +146,14 @@ SharedStr GenerationSettings::idl_union_decl;
 SharedStr GenerationSettings::idl_external_class_decl;
 IncludesSpec GenerationSettings::idl_includes;
 SharedStr GenerationSettings::idl_enum_decl;
-SharedStr GenerationSettings::idl_attr_decl[3];
-SharedStr GenerationSettings::idl_valuetype_attr_decl[3];
-SharedStr GenerationSettings::idl_union_item_decl[3];
+SharedStr GenerationSettings::idl_attr_decl[/*multiplicity*/3];
+SharedStr GenerationSettings::idl_valuetype_attr_decl[/*multiplicity*/3];
+SharedStr GenerationSettings::idl_union_item_decl[/*multiplicity*/3];
 SharedStr GenerationSettings::idl_enum_item_decl;
-SharedStr GenerationSettings::idl_const_decl[3];
-SharedStr GenerationSettings::idl_valuetype_rel_decl[3];
-SharedStr GenerationSettings::idl_rel_decl[3];
-SharedStr GenerationSettings::idl_union_rel_decl[3];
+SharedStr GenerationSettings::idl_const_decl[/*multiplicity*/3];
+SharedStr GenerationSettings::idl_valuetype_rel_decl[/*multiplicity*/3];
+SharedStr GenerationSettings::idl_rel_decl[/*multiplicity*/3];
+SharedStr GenerationSettings::idl_union_rel_decl[/*multiplicity*/3];
 SharedStr GenerationSettings::idl_oper_decl;
 SharedStr GenerationSettings::idl_get_name;
 SharedStr GenerationSettings::idl_set_name;
@@ -152,6 +165,8 @@ DrawingLanguage GenerationSettings::uml_set_name;
 QString GenerationSettings::cpp_h_extension;
 QString GenerationSettings::cpp_src_extension;
 QString GenerationSettings::java_extension;
+QString GenerationSettings::php_extension;
+QString GenerationSettings::python_extension;
 QString GenerationSettings::idl_extension;
 
 bool GenerationSettings::cpp_include_with_path;
@@ -175,6 +190,9 @@ QString GenerationSettings::relation_default_description;
 QString GenerationSettings::cpp_root_dir;
 QString GenerationSettings::java_root_dir;
 QString GenerationSettings::idl_root_dir;
+QString GenerationSettings::php_root_dir;
+QString GenerationSettings::python_root_dir;
+
 
 inline void Builtin::set(const char * u, const char * c,
 			 const char * j, const char * i) {
@@ -190,11 +208,12 @@ inline void Builtin::set(const char * u, const char * c,
 
 inline void Stereotype::set(const char * u, const char * c,
 			    const char * j, const char * p, 
-			    const char * i) {
+			    const char * y, const char * i) {
   uml = u;
   cpp = c;
   java = j;
   php = p;
+  python = y;
   idl = i;
 }
 
@@ -258,6 +277,12 @@ ${definition}\n\
   php_src_content = PHP_SRC_CONTENT;
   php_extension = "php";
   
+#define PYTHON_SRC_CONTENT "${comment}\n\
+${import}\n\
+${definition}";
+  python_src_content = PYTHON_SRC_CONTENT;
+  python_extension = "py";
+  
 #define IDL_SRC_CONTENT "#ifndef ${MODULE}_${NAME}_H\n\
 #define ${MODULE}_${NAME}_H\n\
 \n\
@@ -276,11 +301,11 @@ ${module_end}\n\
   nrelattrstereotypes = 5;
   relattr_stereotypes = new Stereotype[nrelattrstereotypes];
   
-  relattr_stereotypes[0].set("sequence", "vector", "Vector", "", "sequence");
-  relattr_stereotypes[1].set("vector", "vector", "Vector", "", "sequence");
-  relattr_stereotypes[2].set("list", "list", "List", "", "sequence");
-  relattr_stereotypes[3].set("set", "set", "Set", "", "sequence");
-  relattr_stereotypes[4].set("map", "map", "Map", "", "sequence");
+  relattr_stereotypes[0].set("sequence", "vector", "Vector", "", "list", "sequence");
+  relattr_stereotypes[1].set("vector", "vector", "Vector", "", "list", "sequence");
+  relattr_stereotypes[2].set("list", "list", "List", "", "list", "sequence");
+  relattr_stereotypes[3].set("set", "set", "Set", "", "set", "sequence");
+  relattr_stereotypes[4].set("map", "map", "Map", "", "dict", "sequence");
   
   if (class_stereotypes != 0)
     delete [] class_stereotypes;
@@ -288,19 +313,19 @@ ${module_end}\n\
   nclassstereotypes = 13;
   class_stereotypes = new Stereotype[nclassstereotypes];
   
-  class_stereotypes[0].set("class", "class", "class", "class", "valuetype");
-  class_stereotypes[1].set("interface", "class", "interface", "interface", "interface");
-  class_stereotypes[2].set("exception", "class", "class", "class", "exception");
-  class_stereotypes[3].set("enum", "enum", "enum", "enum", "enum");
-  class_stereotypes[4].set("enum_pattern", "enum", "enum_pattern", "enum", "enum");
-  class_stereotypes[5].set("struct", "struct", "class", "class", "struct");
-  class_stereotypes[6].set("union", "union", "class", "class", "union");
-  class_stereotypes[7].set("typedef", "typedef", "ignored", "ignored", "typedef");
-  class_stereotypes[8].set("boundary", "class", "class", "class", "interface");
-  class_stereotypes[9].set("control", "class", "class", "class", "valuetype");
-  class_stereotypes[10].set("entity", "class", "class", "class", "valuetype");
-  class_stereotypes[11].set("actor", "ignored", "ignored", "ignored", "ignored");
-  class_stereotypes[12].set("@interface", "ignored", "@interface", "ignored", "ignored");
+  class_stereotypes[0].set("class", "class", "class", "class", "class", "valuetype");
+  class_stereotypes[1].set("interface", "class", "interface", "interface", "class", "interface");
+  class_stereotypes[2].set("exception", "class", "class", "class", "class", "exception");
+  class_stereotypes[3].set("enum", "enum", "enum", "enum", "enum", "enum");
+  class_stereotypes[4].set("enum_pattern", "enum", "enum_pattern", "enum", "enum", "enum");
+  class_stereotypes[5].set("struct", "struct", "class", "class", "class", "struct");
+  class_stereotypes[6].set("union", "union", "class", "class", "class", "union");
+  class_stereotypes[7].set("typedef", "typedef", "ignored", "ignored", "ignored", "typedef");
+  class_stereotypes[8].set("boundary", "class", "class", "class", "class", "interface");
+  class_stereotypes[9].set("control", "class", "class", "class", "class", "valuetype");
+  class_stereotypes[10].set("entity", "class", "class", "class", "class", "valuetype");
+  class_stereotypes[11].set("actor", "ignored", "ignored", "ignored", "ignored", "ignored");
+  class_stereotypes[12].set("@interface", "ignored", "@interface", "ignored", "ignored", "ignored");
   
   cpp_enum_in = "${type}";
   cpp_enum_out = "${type} &";
@@ -381,10 +406,10 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   java_rel_decl[1] = "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};\n";
   java_rel_decl[2] = "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};\n";
   java_oper_def = "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{\n  ${body}}\n";
-  javaphp_get_visibility = UmlPublic;
+  noncpp_get_visibility = UmlPublic;
   java_get_name = "get${Name}";
   java_get_final = TRUE;
-  javaphp_set_visibility = UmlPublic;
+  noncpp_set_visibility = UmlPublic;
   java_set_name = "set${Name}";
   java_set_final = FALSE;
   java_set_param_final = FALSE;
@@ -393,7 +418,7 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
 #define PHP_CLASS "${comment}${final}${visibility}${abstract}class ${name}${extends}${implements} {\n${members}}\n"
   php_class_decl = PHP_CLASS;
   php_external_class_decl = "${name}";
-#define PHP_ENUM "${comment}final ${visibility}class ${name} {\n${items}}\n"
+#define PHP_ENUM "${comment}${visibility}final class ${name} {\n${items}}\n"
   php_enum_decl = PHP_ENUM;
 #define PHP_INTERFACE "${comment}${visibility}interface ${name} {\n${members}}\n"
   php_interface_decl = PHP_INTERFACE;
@@ -411,6 +436,32 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   php_set_name = "set${Name}";
   php_set_final = FALSE;
   php_javadoc_comment = FALSE;
+
+  python_2_2 = TRUE;
+#define PYTHON_INDENT_STEP "    "
+  python_indent_step = PYTHON_INDENT_STEP;
+#define PYTHON_CLASS "class ${name}${inherit}:\n${docstring}${members}\n"
+  python_class_decl = PYTHON_CLASS;
+  python_external_class_decl = "${name}";
+#define PYTHON_ENUM "class ${name}:\n${docstring}${members}\n"
+  python_enum_decl = PYTHON_ENUM;
+#define PYTHON_ATTR1 "${comment}${self}${name} = ${value}\n"
+#define PYTHON_ATTR2 "${comment}${self}${name} = ${stereotype}()\n"
+  python_attr_decl[0] = PYTHON_ATTR1;
+  python_attr_decl[1] = PYTHON_ATTR2;
+#define PYTHON_ENUMITEM PYTHON_ATTR1
+  python_enum_item_decl = PYTHON_ENUMITEM;
+#define PYTHON_REL1 PYTHON_ATTR1
+#define PYTHON_REL2 PYTHON_ATTR2
+#define PYTHON_REL_COMP "${comment}${self}${name} = ${type}()\n"
+  python_rel_decl[0][0] = PYTHON_REL1;
+  python_rel_decl[0][1] = PYTHON_REL2;
+  python_rel_decl[1][0] = PYTHON_REL_COMP;
+  python_rel_decl[1][1] = PYTHON_REL2;
+#define PYTHON_OPER "${@}${static}${abstract}def ${name}${(}${)}:\n${docstring}${body}\n"
+  python_oper_def = PYTHON_OPER;
+  python_get_name = "get${Name}";
+  python_set_name = "set${Name}";
 
 #define  IDL_EXTERNAL_CLASS_DECL "${name}\n#include \"${name}.idl\"\n";
   idl_external_class_decl = IDL_EXTERNAL_CLASS_DECL;
@@ -505,11 +556,13 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   cpp_root_dir = QString::null;
   java_root_dir = QString::null;
   php_root_dir = QString::null;
+  python_root_dir = QString::null;
   idl_root_dir = QString::null;
   
   cpp_set_default_defs(FALSE);
   java_set_default_defs(FALSE);
   php_set_default_defs(FALSE);
+  python_set_default_defs(FALSE);
   idl_set_default_defs(FALSE);
 }
 
@@ -567,6 +620,16 @@ bool GenerationSettings::php_set_default_defs(bool y)
   return php_default_defs = y;
 }
 
+bool GenerationSettings::python_set_default_defs(bool y)
+{ 
+  BrowserPackage * p = BrowserView::get_project();
+  
+  if (p != 0)
+    p->modified();
+  
+  return python_default_defs = y;
+}
+
 bool GenerationSettings::idl_set_default_defs(bool y)
 { 
   BrowserPackage * p = BrowserView::get_project();
@@ -593,6 +656,11 @@ static unsigned multiplicity_column(const QString & mult)
     return 1;
 
   return 2;
+}
+
+static unsigned python_multiplicity_column(const QString & mult)
+{
+  return (mult.isEmpty() || (mult == "1")) ? 0 : 1;
 }
 
 const QString GenerationSettings::cpp(const AType & type,
@@ -697,6 +765,27 @@ const char *
 }
 
 const char *
+  GenerationSettings::python_default_attr_decl(const QString & mult)
+{
+  return python_attr_decl[python_multiplicity_column(mult)];
+}
+
+const char *
+  GenerationSettings::python_default_rel_decl(UmlCode rel,
+					      const QString & mult)
+{
+  switch (rel) {
+  default:
+    return (const char *) 
+      python_rel_decl[0][python_multiplicity_column((mult == "0..1") ? QString::null : mult)];
+  case UmlAggregationByValue:
+  case UmlDirectionalAggregationByValue:
+    return (const char *) 
+      python_rel_decl[1][python_multiplicity_column(mult)];
+  }
+}
+
+const char *
   GenerationSettings::idl_default_attr_decl(const QString & mult)
 {
   return idl_attr_decl[multiplicity_column(mult)];
@@ -760,6 +849,12 @@ QString GenerationSettings::java_relationattribute_stereotype(const QString & s)
   return (index == -1) ? s : relattr_stereotypes[index].java;
 }
 
+QString GenerationSettings::python_relationattribute_stereotype(const QString & s) {
+  int index = find_relationattribute_stereotype(s);
+  
+  return (index == -1) ? s : relattr_stereotypes[index].python;
+}
+
 QString GenerationSettings::idl_relationattribute_stereotype(const QString & s) {
   int index = find_relationattribute_stereotype(s);
   
@@ -792,6 +887,12 @@ QString GenerationSettings::php_class_stereotype(const QString & s) {
   int index = find_class_stereotype(s);
   
   return (index == -1) ? s : class_stereotypes[index].php;
+}
+
+QString GenerationSettings::python_class_stereotype(const QString & s) {
+  int index = find_class_stereotype(s);
+  
+  return (index == -1) ? s : class_stereotypes[index].python;
 }
 
 QString GenerationSettings::idl_class_stereotype(const QString & s) {
@@ -997,31 +1098,31 @@ void GenerationSettings::send_java_def(ToolCom * com)
     com->write_string(java_rel_decl[index]);
   com->write_string(java_oper_def);
   if (api_version >= 23)
-    com->write_char(javaphp_get_visibility);
+    com->write_char(noncpp_get_visibility);
   else {
-    switch (javaphp_get_visibility) {
+    switch (noncpp_get_visibility) {
     case UmlPackageVisibility:
       com->write_char(UmlPublic);
       break;
     case UmlDefaultVisibility:
       com->write_char(UmlDefaultVisibility - 1);
     default:
-      com->write_char(javaphp_get_visibility);
+      com->write_char(noncpp_get_visibility);
     }
   }
   com->write_string(java_get_name);
   com->write_bool(java_get_final);
   if (api_version >= 23)
-    com->write_char(javaphp_set_visibility);
+    com->write_char(noncpp_set_visibility);
   else {
-    switch (javaphp_set_visibility) {
+    switch (noncpp_set_visibility) {
     case UmlPackageVisibility:
       com->write_char(UmlPublic);
       break;
     case UmlDefaultVisibility:
       com->write_char(UmlDefaultVisibility - 1);
     default:
-      com->write_char(javaphp_set_visibility);
+      com->write_char(noncpp_set_visibility);
     }
   }
   com->write_string(java_set_name);
@@ -1058,14 +1159,64 @@ void GenerationSettings::send_php_def(ToolCom * com)
   com->write_string(php_enum_item_decl);
   com->write_string(php_rel_decl);
   com->write_string(php_oper_def);
-  com->write_char(javaphp_get_visibility);
+  com->write_char(noncpp_get_visibility);
   com->write_string(php_get_name);
   com->write_bool(php_get_final);
-  com->write_char(javaphp_get_visibility);
+  com->write_char(noncpp_get_visibility);
   com->write_string(php_set_name);
   com->write_bool(php_set_final);
   if (api_version >= 38)
     com->write_bool(php_javadoc_comment);
+}
+
+void GenerationSettings::send_python_def(ToolCom * com)
+{
+  //int api_version = com->api_format();
+  
+  com->write_bool((python_2_2) ? 1 : 0);
+  com->write_string(python_indent_step);
+  com->write_string(python_root_dir);
+  
+  int index;
+  
+  com->write_unsigned((unsigned) nrelattrstereotypes);
+  
+  for (index = 0; index != nrelattrstereotypes; index += 1)
+    com->write_string(relattr_stereotypes[index].python);
+  
+  com->write_unsigned((unsigned) nclassstereotypes);
+  
+  for (index = 0; index != nclassstereotypes; index += 1)
+    com->write_string(class_stereotypes[index].python);
+  
+  QStringList::Iterator it_t;
+  QStringList::Iterator it_i;
+  
+  com->write_unsigned((unsigned) python_imports.types.count());
+  
+  for (it_t = python_imports.types.begin(), it_i = python_imports.includes.begin();
+       it_t != python_imports.types.end();
+       it_t++, it_i++) {
+    com->write_string(*it_t);
+    com->write_string(*it_i);
+  }
+    
+  com->write_string(python_src_content);
+  com->write_string(python_extension);
+  
+  com->write_string(python_class_decl);
+  com->write_string(python_external_class_decl);
+  com->write_string(python_enum_decl);
+  com->write_string(python_attr_decl[0]);
+  com->write_string(python_attr_decl[1]);
+  com->write_string(python_enum_item_decl);
+  com->write_string(python_rel_decl[0][0]);
+  com->write_string(python_rel_decl[0][1]);
+  com->write_string(python_rel_decl[1][0]);
+  com->write_string(python_rel_decl[1][1]);
+  com->write_string(python_oper_def);
+  com->write_string(python_get_name);
+  com->write_string(python_set_name);
 }
 
 void GenerationSettings::send_idl_def(ToolCom * com)
@@ -1244,7 +1395,7 @@ Stereotype & GenerationSettings::get_stereotype(int & n, Stereotype * & st,
   for (index = 0; index != n; index += 1)
     s[index] = st[index];
   
-  s[index].set(u, u, u, u, u);
+  s[index].set(u, u, u, u, u, u);
 
   if (st)
     delete [] st;
@@ -1592,7 +1743,7 @@ bool GenerationSettings::tool_global_java_cmd(ToolCom * com,
 	    return TRUE;
 	  }
 	  else
-	    javaphp_get_visibility = v;
+	    noncpp_get_visibility = v;
 	}
 	break;
       case setJavaGetNameCmd:
@@ -1616,7 +1767,7 @@ bool GenerationSettings::tool_global_java_cmd(ToolCom * com,
 	    return TRUE;
 	  }
 	  else
-	    javaphp_set_visibility = v;
+	    noncpp_set_visibility = v;
 	}
 	break;
       case setJavaIsSetParamFinalCmd:
@@ -1710,6 +1861,105 @@ bool GenerationSettings::tool_global_php_cmd(ToolCom * com,
 	break;
       case setPhpJavadocStyleCmd:
 	php_javadoc_comment = (*args != 0);
+	break;
+      default:
+	return FALSE;
+      }
+      com->write_bool(TRUE);
+      BrowserView::get_project()->package_modified();
+    }
+  }
+  
+  return TRUE;
+}
+
+bool GenerationSettings::tool_global_python_cmd(ToolCom * com,
+						const char * args)
+{
+  switch ((unsigned char) args[-1]) {  
+  case getPythonSettingsCmd:
+    send_python_def(com);
+    break;
+  case getPythonUseDefaultsCmd:
+    com->write_bool(python_get_default_defs());
+    break;
+  default:
+    // set cmds only
+    if (!BrowserView::get_project()->is_writable())
+      com->write_bool(FALSE);
+    else {
+      //int api_version = com->api_format();
+
+      switch ((unsigned char) args[-1]) {
+      case setPythonUseDefaultsCmd:
+	python_set_default_defs(*args);
+	break;
+      case setPython22Cmd:
+	python_2_2 = *args != 0;
+	break;
+      case setPythonIndentStepCmd:
+	python_indent_step = args;
+	break;
+      case setPythonRelationAttributeStereotypeCmd:
+	{
+	  const char * u = com->get_string(args);
+	  
+	  get_stereotype(nrelattrstereotypes, relattr_stereotypes, u).python = args;
+	}
+	break;
+      case setPythonClassStereotypeCmd:
+	{
+	  const char * u = com->get_string(args);
+	  
+	  get_stereotype(nclassstereotypes, class_stereotypes, u).python = args;
+	}
+	break;
+      case setPythonImportCmd:
+	set_include(python_imports, com, args);
+	break;
+      case setPythonRootdirCmd:
+	python_root_dir = args;
+	break;
+      case setPythonSourceContentCmd:
+	break;
+      case setPythonSourceExtensionCmd:
+	python_extension = args;
+	break;
+      case setPythonClassDeclCmd:
+	python_class_decl = args;
+	break;
+      case setPythonExternalClassDeclCmd:
+	python_external_class_decl = args;
+	break;
+      case setPythonEnumDeclCmd:
+	python_enum_decl = args;
+	break;
+      case setPythonAttributeDeclCmd:
+	{
+	  int i = python_multiplicity_column(com->get_string(args));
+
+	  python_attr_decl[i] = args;
+	}
+	break;
+      case setPythonEnumItemDeclCmd:
+	python_enum_item_decl = args;
+	break;
+      case setPythonRelationDeclCmd:
+	{
+	  int i1 = (*args++) ? 1 : 0;
+	  int i2 = python_multiplicity_column(com->get_string(args));
+	  
+	  python_rel_decl[i1][i2] = args;
+	}
+	break;
+      case setPythonOperationDefCmd:
+	python_oper_def = args;
+	break;
+      case setPythonGetNameCmd:
+	python_get_name = args;
+	break;
+      case setPythonSetNameCmd:
+	python_set_name = args;
 	break;
       default:
 	return FALSE;
@@ -1924,6 +2174,11 @@ void GenerationSettings::save_dirs(QTextStream & st)
     st << "php_root_dir ";
     save_string(php_root_dir, st);
   }
+  if (!python_root_dir.isEmpty()) {
+    nl_indent(st);
+    st << "python_root_dir ";
+    save_string(python_root_dir, st);
+  }
   if (!idl_root_dir.isEmpty()) {
     nl_indent(st);
     st << "idl_root_dir ";
@@ -1979,6 +2234,8 @@ void GenerationSettings::save()
     st << "java_default_defs ";
   if (php_default_defs)
     st << "php_default_defs ";
+  if (python_default_defs)
+    st << "python_default_defs ";
   if (idl_default_defs)
     st << "idl_default_defs ";
   
@@ -1991,6 +2248,8 @@ void GenerationSettings::save()
   save_string(java_extension, st);
   st << " php_extension ";
   save_string(php_extension, st);
+  st << " python_extension ";
+  save_string(python_extension, st);
   st << " idl_extension ";
   save_string(idl_extension, st);
   if (cpp_include_with_path) {
@@ -2045,7 +2304,7 @@ void GenerationSettings::save()
   
   nl_indent(st);
   nl_indent(st);
-  st << "relations_stereotypes " << nrelattrstereotypes << " // uml cpp java idl";
+  st << "relations_stereotypes " << nrelattrstereotypes << " // uml cpp java pythonidl";
   
   for (index = 0; index != nrelattrstereotypes; index += 1) {
     Stereotype & s = relattr_stereotypes[index];
@@ -2058,12 +2317,14 @@ void GenerationSettings::save()
     st << ' ';
     save_string(s.java, st);
     st << ' ';
+    save_string(s.python, st);
+    st << ' ';
     save_string(s.idl, st);
   }
   
   nl_indent(st);
   nl_indent(st);
-  st << "classes_stereotypes " << nclassstereotypes << " // uml cpp java php idl";
+  st << "classes_stereotypes " << nclassstereotypes << " // uml cpp java php python idl";
   
   for (index = 0; index != nclassstereotypes; index += 1) {
     Stereotype & s = class_stereotypes[index];
@@ -2077,6 +2338,8 @@ void GenerationSettings::save()
     save_string(s.java, st);
     st << ' ';
     save_string(s.php, st);
+    st << ' ';
+    save_string(s.python, st);
     st << ' ';
     save_string(s.idl, st);
   }
@@ -2253,13 +2516,13 @@ void GenerationSettings::save()
   st << "java_get ";
   save_string(java_get_name, st);
   if (java_get_final) st << " final";
-  st << ' ' << stringify(javaphp_get_visibility);
+  st << ' ' << stringify(noncpp_get_visibility);
   nl_indent(st);
   st << "java_set ";
   save_string(java_set_name, st);
   if (java_set_final) st << " final";
   if (java_set_param_final) st << " param_final";
-  st << ' ' << stringify(javaphp_set_visibility);
+  st << ' ' << stringify(noncpp_set_visibility);
   nl_indent(st);
   st << "java_default_operation_definition ";
   save_string(java_oper_def, st);
@@ -2306,6 +2569,61 @@ void GenerationSettings::save()
   st << "php_default_operation_definition ";
   save_string(php_oper_def, st);
   nl_indent(st);
+  
+  if (python_2_2) {
+    st << "python_2_2";
+    nl_indent(st);
+  }
+  st << "python_indent_step ";
+  save_string(python_indent_step, st);
+  nl_indent(st);
+  st << "python_default_src_content ";
+  save_string(python_src_content, st);
+  nl_indent(st);
+  st << "python_default_class_decl ";
+  save_string(python_class_decl, st);
+  nl_indent(st);
+  st << "python_default_enum_decl ";
+  save_string(python_enum_decl, st);
+  nl_indent(st);
+  st << "python_default_external_class_decl ";
+  save_string(python_external_class_decl, st);
+  nl_indent(st);
+  st << "python_default_attribute_declaration ";
+  save_string(python_attr_decl[0], st);
+  st << " // multiplicity 1";
+  nl_indent(st);
+  save_string(python_attr_decl[1], st);
+  st << " // multiplicity != 1";
+  nl_indent(st);
+  st << "python_default_enum_item_decl ";
+  save_string(python_enum_item_decl, st);
+  nl_indent(st);
+  st << "python_default_relation_declaration";
+  save_string(python_rel_decl[0][0], st);
+  st << " // multiplicity 1";
+  nl_indent(st);
+  save_string(python_rel_decl[0][1], st);
+  st << " // multiplicity != 1";
+  nl_indent(st);
+  st << "python_default_composition_declaration";
+  save_string(python_rel_decl[1][0], st);
+  st << " // multiplicity 1";
+  nl_indent(st);
+  save_string(python_rel_decl[1][1], st);
+  st << " // multiplicity != 1";
+  nl_indent(st);
+  st << "python_default_operation_definition ";
+  save_string(python_oper_def, st);
+  nl_indent(st);
+  st << "python_get ";
+  save_string(python_get_name, st);
+  nl_indent(st);
+  st << "python_set ";
+  save_string(python_set_name, st);
+  nl_indent(st);
+  
+  save_includes_imports(python_imports, "python_imports");
   
   st << "idl_default_src_content ";
   save_string(idl_src_content, st);
@@ -2442,7 +2760,11 @@ void GenerationSettings::read_dirs(char * & st, char * & k)
 {
   if (!strcmp(k, "root_dir")) {
     // old version
-    cpp_root_dir = java_root_dir = php_root_dir = idl_root_dir = read_string(st);
+    cpp_root_dir =
+      java_root_dir =
+	php_root_dir =
+	  python_root_dir =
+	    idl_root_dir = read_string(st);
     k = read_keyword(st);
   }
   else {
@@ -2456,6 +2778,10 @@ void GenerationSettings::read_dirs(char * & st, char * & k)
     }
     if (!strcmp(k, "php_root_dir")) {
       php_root_dir = read_string(st);
+      k = read_keyword(st);
+    }
+    if (!strcmp(k, "python_root_dir")) {
+      python_root_dir = read_string(st);
       k = read_keyword(st);
     }
     if (!strcmp(k, "idl_root_dir")) {
@@ -2520,6 +2846,13 @@ void GenerationSettings::read(char * & st, char * & k)
   else
     php_default_defs = FALSE;
   
+  if (!strcmp(k, "python_default_defs")) {
+    python_default_defs = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    python_default_defs = FALSE;
+  
   if (!strcmp(k, "idl_default_defs")) {
     idl_default_defs = TRUE;
     k = read_keyword(st);
@@ -2554,6 +2887,13 @@ void GenerationSettings::read(char * & st, char * & k)
   }
   else
     php_extension = "php";
+
+  if (!strcmp(k, "python_extension")) {
+    python_extension = read_string(st);
+    k = read_keyword(st);
+  }
+  else
+    python_extension = "py";
 
   if (!strcmp(k, "idl_extension")) {
     idl_extension = read_string(st);
@@ -2640,6 +2980,14 @@ void GenerationSettings::read(char * & st, char * & k)
       s.uml = read_string(st);
       s.cpp = read_string(st);
       s.java = read_string(st);
+      if (fileformat >= 51)
+	s.python = read_string(st);
+      else if (s.uml == "set")
+	s.python = "set";
+      else if (s.uml == "map")
+	s.python = "dict";
+      else
+	s.python = "list";
       s.idl = read_string(st);
     }
         
@@ -2657,14 +3005,33 @@ void GenerationSettings::read(char * & st, char * & k)
 	s.uml = read_string(st);
 	s.cpp = read_string(st);
 	s.java = read_string(st);
-	if (s.uml == "interface")
+	if (s.uml == "interface") {
 	  s.php = "interface";
+	  s.python = "class";
+	}
 	else if ((s.uml == "enum") || (s.uml == "enum_pattern"))
-	  s.php = "enum";
+	  s.php = s.python = "enum";
 	else if ((s.uml == "typedef") || (s.uml == "actor") || (s.uml == "@interface"))
-	  s.php = "ignored";
+	  s.php = s.python = "ignored";
 	else 
-	  s.php = "class";
+	  s.php = s.python = "class";
+	s.idl = read_string(st);
+      }
+    }
+    else if (fileformat < 51) {
+      for (index = 0; index != nclassstereotypes; index += 1) {
+	Stereotype & s = class_stereotypes[index];
+	
+	s.uml = read_string(st);
+	s.cpp = read_string(st);
+	s.java = read_string(st);
+	s.php = read_string(st);
+	if ((s.uml == "enum") || (s.uml == "enum_pattern"))
+	  s.python = "enum";
+	else if ((s.uml == "typedef") || (s.uml == "actor") || (s.uml == "@interface"))
+	  s.python = "ignored";
+	else 
+	  s.python = "class";
 	s.idl = read_string(st);
       }
     }
@@ -2676,6 +3043,7 @@ void GenerationSettings::read(char * & st, char * & k)
 	s.cpp = read_string(st);
 	s.java = read_string(st);
 	s.php = read_string(st);
+	s.python = read_string(st);
 	s.idl = read_string(st);
       }
     }
@@ -2935,7 +3303,7 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
     }
     else
       java_get_final = FALSE;
-    javaphp_get_visibility = ::visibility(k);
+    noncpp_get_visibility = ::visibility(k);
     read_keyword(st, "java_set");
     java_set_name = read_string(st);
     k = read_keyword(st);
@@ -3032,6 +3400,63 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
       if (strcmp(k, "php_default_operation_definition"))
 	wrong_keyword(k, "php_default_operation_definition");
       php_oper_def = read_string(st);
+      k = read_keyword(st);
+    }
+    
+    if (fileformat < 51) {
+      python_2_2 = TRUE;
+      python_indent_step = PYTHON_INDENT_STEP;
+      python_src_content = PYTHON_SRC_CONTENT;
+      python_extension = "py";
+      python_class_decl = PYTHON_CLASS;
+      python_enum_decl = PYTHON_ENUM;
+      python_external_class_decl = "${name}";
+      python_attr_decl[0] = PYTHON_ATTR1;
+      python_attr_decl[1] = PYTHON_ATTR2;
+      python_enum_item_decl = PYTHON_ENUMITEM;
+      python_rel_decl[0][0] = PYTHON_REL1;
+      python_rel_decl[0][1] = PYTHON_REL2;
+      python_rel_decl[1][0] = PYTHON_REL_COMP;
+      python_rel_decl[1][1] = PYTHON_REL2;
+      python_oper_def = PYTHON_OPER;
+      python_get_name = "get${Name}";
+      python_set_name = "set${Name}";
+    }
+    else {
+      if (! strcmp(k, "python_2_2")) {
+	python_2_2 = TRUE;
+	k = read_keyword(st);
+      }
+      else
+	python_2_2 = FALSE;
+      if (strcmp(k, "python_indent_step"))
+	wrong_keyword(k, "python_indent_step");
+      python_indent_step = read_string(st);
+      read_keyword(st, "python_default_src_content");
+      python_src_content = read_string(st);
+      read_keyword(st, "python_default_class_decl");
+      python_class_decl = read_string(st);
+      read_keyword(st, "python_default_enum_decl");
+      python_enum_decl = read_string(st);
+      read_keyword(st, "python_default_external_class_decl");
+      python_external_class_decl = read_string(st);
+      read_keyword(st, "python_default_attribute_declaration");
+      python_attr_decl[0] = read_string(st);
+      python_attr_decl[1] = read_string(st);
+      read_keyword(st, "python_default_enum_item_decl");
+      python_enum_item_decl = read_string(st);
+      read_keyword(st, "python_default_relation_declaration");
+      python_rel_decl[0][0] = read_string(st);
+      python_rel_decl[0][1] = read_string(st);
+      read_keyword(st, "python_default_composition_declaration");
+      python_rel_decl[1][0] = read_string(st);
+      python_rel_decl[1][1] = read_string(st);
+      read_keyword(st, "python_default_operation_definition");
+      python_oper_def = read_string(st);
+      read_keyword(st, "python_get");
+      python_get_name = read_string(st);
+      read_keyword(st, "python_set");
+      python_set_name = read_string(st);
       k = read_keyword(st);
     }
     
@@ -3303,6 +3728,7 @@ void GenerationSettings::read_includes_imports()
     d.rename("import", "java_imports");  
   }
   
+  read_incl(python_imports, "python_imports");
   read_incl(idl_includes, "idl_includes");
 }
 
@@ -3374,7 +3800,7 @@ QString GenerationSettings::new_java_enums()
   for (index = 0; index != nclassstereotypes; index += 1)
     s[index] = class_stereotypes[index];
   
-  s[index].set("enum_pattern", "enum", "enum_pattern", "ignored", "enum");
+  s[index].set("enum_pattern", "enum", "enum_pattern", "ignored", "ignored", "enum");
   
   if (class_stereotypes != 0)
     delete [] class_stereotypes;

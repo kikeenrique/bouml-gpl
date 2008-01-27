@@ -155,8 +155,12 @@ void CdClassCanvas::compute_size() {
     f = &PackageData::get_cpp_namespace;
     sep = "::";
     break;
-  case packageContext:
+  case javaPackageContext:
     f = &PackageData::get_java_package;
+    sep = ".";
+    break;
+  case pythonPackageContext:
+    f = &PackageData::get_python_package;
     sep = ".";
     break;
   case moduleContext:
@@ -1050,11 +1054,13 @@ void CdClassCanvas::menu(const QPoint&) {
     m.insertItem("Delete from model", 13);
   m.insertSeparator();
   m.insertItem("Generate", &gensubm);
-  if (Tool::menu_insert(&toolm, UmlClass, 20))
+  if (Tool::menu_insert(&toolm, UmlClass, 30))
     m.insertItem("Tool", &toolm);
   
   gensubm.insertItem("C++", 14);
   gensubm.insertItem("Java", 15);
+  gensubm.insertItem("Php", 19);
+  gensubm.insertItem("Python", 20);
   gensubm.insertItem("Idl", 16);
   
   QStringList::Iterator it;
@@ -1151,6 +1157,12 @@ void CdClassCanvas::menu(const QPoint&) {
     the_canvas()->unselect_all();
     select_associated();
     return;
+  case 19:
+    browser_node->apply_shortcut("Generate Php");
+    return;
+  case 20:
+    browser_node->apply_shortcut("Generate Python");
+    return;
   case 1999:
     {
       OperationListDialog dialog("Choose operation to edit", 
@@ -1182,8 +1194,8 @@ void CdClassCanvas::menu(const QPoint&) {
     else if (index >= 1000)
       // attribute
       attributes.at(index - 1000)->open(FALSE);
-    else if (index >= 20)
-      ToolCom::run(Tool::command(index - 20), browser_node);
+    else if (index >= 30)
+      ToolCom::run(Tool::command(index - 30), browser_node);
     return;
   }
   

@@ -55,10 +55,11 @@ class Stereotype {
     QString cpp;
     QString java;
     QString php;
+    QString python;
     QString idl;
     
     void set(const char * u, const char * c, const char * j,
-	     const char * p, const char * i);
+	     const char * p, const char * y, const char * i);
 };
 
 // on the tool API one use a QDict, it is useless here because
@@ -127,10 +128,10 @@ class GenerationSettings {
     static SharedStr java_enum_pattern_item_case;
     static SharedStr java_rel_decl[3/*multiplicity*/];
     static SharedStr java_oper_def;
-    static UmlVisibility javaphp_get_visibility;
+    static UmlVisibility noncpp_get_visibility;
     static SharedStr java_get_name;
     static bool java_get_final;
-    static UmlVisibility javaphp_set_visibility;
+    static UmlVisibility noncpp_set_visibility;
     static SharedStr java_set_name;
     static bool java_set_final;
     static bool java_set_param_final;
@@ -150,6 +151,20 @@ class GenerationSettings {
     static bool php_get_final;
     static SharedStr php_set_name;
     static bool php_set_final;
+    
+    static bool python_default_defs;
+    static bool python_2_2;
+    static QString python_indent_step;
+    static SharedStr python_src_content;
+    static SharedStr python_class_decl;
+    static SharedStr python_external_class_decl;
+    static SharedStr python_enum_decl;
+    static SharedStr python_attr_decl[2/*multiplicity*/];
+    static SharedStr python_enum_item_decl;
+    static SharedStr python_rel_decl[2/*relation kind*/][2/*multiplicity*/];
+    static SharedStr python_oper_def;
+    static SharedStr python_get_name;
+    static SharedStr python_set_name;
     
     static bool idl_default_defs;
     static SharedStr idl_src_content;
@@ -186,7 +201,9 @@ class GenerationSettings {
     static IncludesSpec cpp_includes;
     static QString java_extension;
     static IncludesSpec java_imports;
+    static IncludesSpec python_imports;
     static QString php_extension;
+    static QString python_extension;
     static QString idl_extension;
     static IncludesSpec idl_includes;
     
@@ -205,6 +222,7 @@ class GenerationSettings {
     static QString cpp_root_dir;
     static QString java_root_dir;
     static QString php_root_dir;
+    static QString python_root_dir;
     static QString idl_root_dir;
   
     static int find_type(const QString &);
@@ -219,6 +237,7 @@ class GenerationSettings {
     static void send_cpp_def(ToolCom * com);
     static void send_java_def(ToolCom * com);
     static void send_php_def(ToolCom * com);
+    static void send_python_def(ToolCom * com);
     static void send_idl_def(ToolCom * com);
     
   public:
@@ -273,10 +292,10 @@ class GenerationSettings {
     static const char * java_default_enum_pattern_item_case() { return java_enum_pattern_item_case; };
     static const char * java_default_rel_decl(const QString & mult);
     static const char * java_default_oper_def() { return java_oper_def; };
-    static UmlVisibility javaphp_default_get_visibility() { return javaphp_get_visibility; };
+    static UmlVisibility noncpp_default_get_visibility() { return noncpp_get_visibility; };
     static const char * java_default_get_name() { return java_get_name; };
     static bool java_default_get_final() { return java_get_final; };
-    static UmlVisibility javaphp_default_set_visibility() { return javaphp_set_visibility; };
+    static UmlVisibility noncpp_default_set_visibility() { return noncpp_set_visibility; };
     static const char * java_default_set_name() { return java_set_name; };
     static bool java_default_set_final() { return java_set_final; };
     static bool java_default_set_param_final() { return java_set_param_final; };
@@ -298,6 +317,21 @@ class GenerationSettings {
     static const char * php_default_set_name() { return php_set_name; };
     static bool php_default_set_final() { return php_set_final; };
     static bool php_javadoc_style() { return php_javadoc_comment; }
+
+    static bool python_get_default_defs() { return python_default_defs; };
+    static bool python_set_default_defs(bool y);
+    static bool python_default_2_2() { return python_2_2; };
+    static const QString & python_get_indent_step() { return python_indent_step; }
+    static const char * python_default_source_content() { return python_src_content; };
+    static const char * python_default_class_decl() { return python_class_decl; };
+    static const char * python_default_external_class_decl() { return python_external_class_decl; };
+    static const char * python_default_enum_decl() { return python_enum_decl; };
+    static const char * python_default_attr_decl(const QString & mult);
+    static const char * python_default_enum_item_decl() { return python_enum_item_decl; };
+    static const char * python_default_rel_decl(UmlCode rel, const QString & mult);
+    static const char * python_default_oper_def() { return python_oper_def; };
+    static const char * python_default_get_name() { return python_get_name; };
+    static const char * python_default_set_name() { return python_set_name; };
 
     static bool idl_get_default_defs() { return idl_default_defs; };
     static bool idl_set_default_defs(bool y);
@@ -328,11 +362,13 @@ class GenerationSettings {
     
     static QString cpp_relationattribute_stereotype(const QString &);
     static QString java_relationattribute_stereotype(const QString &);
+    static QString python_relationattribute_stereotype(const QString &);
     static QString idl_relationattribute_stereotype(const QString &);
     
     static QString cpp_class_stereotype(const QString &);
     static QString java_class_stereotype(const QString &);
     static QString php_class_stereotype(const QString &);
+    static QString python_class_stereotype(const QString &);
     static QString idl_class_stereotype(const QString &);
     
     static QString default_artifact_description() { return artifact_default_description; }
@@ -344,15 +380,14 @@ class GenerationSettings {
     static const QString & get_cpp_root_dir() { return cpp_root_dir; };
     static const QString & get_java_root_dir() { return java_root_dir; };
     static const QString & get_php_root_dir() { return php_root_dir; };
+    static const QString & get_python_root_dir() { return python_root_dir; };
     static const QString & get_idl_root_dir() { return idl_root_dir; };
     
     static const QString & get_cpp_h_extension() { return cpp_h_extension; };
     static const QString & get_cpp_src_extension() { return cpp_src_extension; };
-    //static bool get_cpp_include_with_path;
-    //static IncludesSpec get_cpp_includes;
     static const QString & get_java_extension() { return java_extension; };
-    //static IncludesSpec get_java_imports;
     static const QString & get_php_extension() { return php_extension; };
+    static const QString & get_python_extension() { return python_extension; };
     static const QString & get_idl_extension() { return idl_extension; };
 
     static bool edit();
@@ -361,6 +396,7 @@ class GenerationSettings {
     static bool tool_global_cpp_cmd(ToolCom * com, const char * args);
     static bool tool_global_java_cmd(ToolCom * com, const char * args);
     static bool tool_global_php_cmd(ToolCom * com, const char * args);
+    static bool tool_global_python_cmd(ToolCom * com, const char * args);
     static bool tool_global_idl_cmd(ToolCom * com, const char * args);
 
     static void save_dirs(QTextStream & st);

@@ -35,6 +35,8 @@
 
 const char * BodyPrefix = "// Bouml preserved body begin ";
 const char * BodyPostfix = "// Bouml preserved body end ";
+const char * BodyPythonPrefix = "## Bouml preserved body begin ";
+const char * BodyPythonPostfix = "## Bouml preserved body end ";
 const int BodyPrefixLength = 30;
 const int BodyPostfixLength = 28;
 
@@ -68,8 +70,44 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
   if (s != 0) {
     char * p1 = s;
     char * p2;
+    QCString (UmlOperation::*get_body)();
+    bool (UmlOperation::*set_body)(const char * s);
+    bool (UmlOperation::*set_contextualbodyindent)(bool v);
+    const char * prefix;
+    const char * postfix;
     
-    while ((p2 = strstr(p1, BodyPrefix)) != 0) {
+    switch (who) {
+    case cppLanguage:
+      get_body = &UmlOperation::cppBody;
+      set_body = &UmlOperation::set_CppBody;
+      set_contextualbodyindent = &UmlOperation::set_CppContextualBodyIndent;
+      prefix = BodyPrefix;
+      postfix = BodyPostfix;
+      break;
+    case javaLanguage:
+      get_body = &UmlOperation::javaBody;
+      set_body = &UmlOperation::set_JavaBody;
+      set_contextualbodyindent = &UmlOperation::set_JavaContextualBodyIndent;
+      prefix = BodyPrefix;
+      postfix = BodyPostfix;
+      break;
+    case phpLanguage:
+      get_body = &UmlOperation::phpBody;
+      set_body = &UmlOperation::set_PhpBody;
+      set_contextualbodyindent = &UmlOperation::set_PhpContextualBodyIndent;
+      prefix = BodyPrefix;
+      postfix = BodyPostfix;
+      break;
+    default:
+      // python
+      get_body = &UmlOperation::pythonBody;
+      set_body = &UmlOperation::set_PythonBody;
+      set_contextualbodyindent = &UmlOperation::set_PythonContextualBodyIndent;
+      prefix = BodyPythonPrefix;
+      postfix = BodyPythonPostfix;
+    }
+    
+    while ((p2 = strstr(p1, prefix)) != 0) {
       p2 += BodyPrefixLength;
       
       char * body;
@@ -107,7 +145,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
 	return;
       }
       
-      if (((p1 = strstr(body, BodyPostfix)) == 0) ||
+      if (((p1 = strstr(body, postfix)) == 0) ||
 	  (strncmp(p1 + BodyPostfixLength, p2, 8) != 0)) {
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
 		      " : unvalid preserve body block, wrong balanced</font><br>");
@@ -120,54 +158,26 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
 	p2 -= 1;
       *p2 = 0;
       
-      QCString previous;
-      
-      switch (who) {
-      case cppLanguage:
-	previous = op->cppBody();
-	break;
-      case javaLanguage:
-	previous = op->javaBody();
-	break;
-      default:
-	previous = op->phpBody();
-      }
+      QCString previous = (op->*get_body)();
 	  
-      if (!op->isBodyGenerationForced() && (body != previous)) {
-	bool ok;
-	
-	switch (who) {
-	case cppLanguage:
-	  ok = op->set_CppBody(body);
-	  if (ok)
-	    op->set_CppContextualBodyIndent(FALSE);
-	  break;
-	case javaLanguage:
-	  ok = op->set_JavaBody(body);
-	  if (ok)
-	    op->set_JavaContextualBodyIndent(FALSE);
-	  break;
-	default:
-	  ok = op->set_PhpBody(body);
-	  if (ok)
-	    op->set_PhpContextualBodyIndent(FALSE);
-	}
-	
-	if (! ok) {
+      if (!op->isBodyGenerationForced() && (body != previous)) {	
+	if (! (op->*set_body)(body)) {
 	  write_trace_header();
-	  UmlCom::trace("<tt>        </tt><font color=\"red\"><b>cannot update body of <i>"
+	  UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>cannot update body of <i>"
 			+ op->name() + "</i></b></font><br>");
 	  incr_error();
 	}
 	else {
+	  (op->*set_contextualbodyindent)(FALSE);
+	  
 	  write_trace_header();
-	  UmlCom::trace("<tt>        </tt>update body of <i>"
+	  UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;update body of <i>"
 			+ op->name() + "</i><br>");
 	}
       }
       else if (verbose()) {
 	write_trace_header();
-	UmlCom::trace("<tt>        </tt>body of <i>"
+	UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;body of <i>"
 		      + op->name() + "</i> unchanged<br>");
       }
       

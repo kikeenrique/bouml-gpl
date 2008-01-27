@@ -118,6 +118,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   usecasediagram_settings.show_context_mode = noContext;
   usecasediagram_settings.auto_label_position = UmlYes;
   usecasediagram_settings.draw_all_relations = UmlYes;
+  usecasediagram_settings.class_drawing_mode = asActor;
   usecasediagram_settings.shadow = UmlYes;
   
   sequencediagram_settings.show_full_operations_definition = UmlNo;
@@ -451,6 +452,7 @@ through a relation");
     genm.insertItem("C++", 20);
     genm.insertItem("Java", 21);
     genm.insertItem("Php", 22);
+    genm.insertItem("Python", 34);
     genm.insertItem("Idl", 23);
     
     if (edition_number == 0) {
@@ -461,6 +463,7 @@ through a relation");
 	revm.insertItem("Java", 25);
 	revm.insertItem("Java Catalog", 26);
 	revm.insertItem("Php", 32);
+	revm.insertItem("Python", 35);
 	
 	if (preserve_bodies()) {
 	  m.insertItem("Roundtrip body", &roundtripm);
@@ -468,6 +471,7 @@ through a relation");
 	  roundtripm.insertItem("C++", 30);
 	  roundtripm.insertItem("Java", 31);
 	  roundtripm.insertItem("Php", 33);
+	  roundtripm.insertItem("Python", 36);
 	}
       }
 
@@ -612,6 +616,14 @@ void BrowserPackage::exec_menu_choice(int rank) {
 		   this);
     }
     return;
+  case 34:
+    {
+      ToolCom::run((verbose_generation()) 
+		   ? ((preserve) ? "python_generator -v -p" : "python_generator -v")
+		   : ((preserve) ? "python_generator -p" : "python_generator"), 
+		   this);
+    }
+    return;
   case 23:
     ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
     return;
@@ -626,6 +638,9 @@ void BrowserPackage::exec_menu_choice(int rank) {
     return;
   case 32:
     ToolCom::run("php_reverse", this);
+    return;
+  case 35:
+    ToolCom::run("python_reverse", this);
     return;
   case 27:
     renumber(phase_renumerotation++);
@@ -657,6 +672,9 @@ void BrowserPackage::exec_menu_choice(int rank) {
     return;
   case 33:
     ToolCom::run((verbose_generation()) ? "roundtrip_body -v php" : "roundtrip_body php", this);
+    return;
+  case 36:
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v python" : "roundtrip_body python", this);
     return;
   default:
     if (rank >= 100)
@@ -717,6 +735,8 @@ void BrowserPackage::apply_shortcut(QString s) {
 	choice = 21;
       else if (s == "Generate Php")
 	choice = 22;
+      else if (s == "Generate Python")
+	choice = 34;
       else if (s == "Generate Idl")
 	choice = 23;
       else if (preserve_bodies()) {
@@ -726,6 +746,8 @@ void BrowserPackage::apply_shortcut(QString s) {
 	  choice = 31;
 	else if (s == "Roundtrip Php operation body")
 	  choice = 32;
+	else if (s == "Roundtrip Python operation body")
+	  choice = 35;
       }    
       
       if ((choice == -1) && (edition_number == 0))
@@ -1152,6 +1174,11 @@ void BrowserPackage::get_activitydrawingsettings(ActivityDrawingSettings & resul
     ((BrowserNode *) parent())->get_activitydrawingsettings(result);
 }
 
+void BrowserPackage::get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const {
+  if (!usecasediagram_settings.complete(r))
+    ((BrowserNode *) parent())->get_simpleclassdiagramsettings(r);
+}
+
 UmlVisibility BrowserPackage::get_visibility(UmlCode who) const {
   UmlVisibility v;
   
@@ -1482,13 +1509,13 @@ bool BrowserPackage::tool_global_cmd(ToolCom * com, const char * args)
   const MyStr & (PackageData::* pf)() const;
   
   switch ((unsigned char) args[-1]) {
-  case findNamespaceCmd:
+  case findCppNamespaceCmd:
     pf = &PackageData::get_cpp_namespace;
     break;
-  case findPackageCmd:
+  case findJavaPackageCmd:
     pf = &PackageData::get_java_package;
     break;
-  case findModuleCmd:
+  case findIdlModuleCmd:
     pf = &PackageData::get_idl_module;
     break;
   case getProjectCmd:
@@ -1552,8 +1579,12 @@ void BrowserPackage::DragMoveEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, UmlClassView) ||
       UmlDrag::canDecode(e, UmlComponentView) ||
       UmlDrag::canDecode(e, UmlDeploymentView) ||
-      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
-    e->accept();
+      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
   else if (parent() != 0)
     ((BrowserNode *) parent())->DragMoveInsideEvent(e);
   else
@@ -1561,12 +1592,13 @@ void BrowserPackage::DragMoveEvent(QDragMoveEvent * e) {
 }
 
 void BrowserPackage::DragMoveInsideEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, UmlPackage) ||
-      UmlDrag::canDecode(e, UmlUseCaseView) ||
-      UmlDrag::canDecode(e, UmlClassView) ||
-      UmlDrag::canDecode(e, UmlComponentView) ||
-      UmlDrag::canDecode(e, UmlDeploymentView) ||
-      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
+  if (!is_read_only &&
+      (UmlDrag::canDecode(e, UmlPackage) ||
+       UmlDrag::canDecode(e, UmlUseCaseView) ||
+       UmlDrag::canDecode(e, UmlClassView) ||
+       UmlDrag::canDecode(e, UmlComponentView) ||
+       UmlDrag::canDecode(e, UmlDeploymentView) ||
+       UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))))
     e->accept();
   else
     e->ignore();
@@ -1690,6 +1722,7 @@ void BrowserPackage::init()
   relation_default_stereotypes.clear();
   relation_default_stereotypes.append("access");
   relation_default_stereotypes.append("import");
+  relation_default_stereotypes.append("from");
 }
 
 void BrowserPackage::save_stereotypes()

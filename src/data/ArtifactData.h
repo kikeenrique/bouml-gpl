@@ -53,6 +53,9 @@ class ArtifactData : public SimpleData {
     // PHP
     SharedStr php_src;
     
+    // Python
+    SharedStr python_src;
+    
     // Idl
     SharedStr idl_src;
     
@@ -61,6 +64,7 @@ class ArtifactData : public SimpleData {
     virtual void send_cpp_def(ToolCom * com);
     virtual void send_java_def(ToolCom * com);
     virtual void send_php_def(ToolCom * com);
+    virtual void send_python_def(ToolCom * com);
     virtual void send_idl_def(ToolCom * com);
     
     void update_associated(QPtrDict<BrowserArtifact> & d);
@@ -80,6 +84,9 @@ class ArtifactData : public SimpleData {
         
     const char * get_php_src() const { return php_src; };
     void use_default_php_src();
+    
+    const char * get_python_src() const { return python_src; };
+    void use_default_python_src();
     
     const char * get_idl_src() const { return idl_src; };
     void use_default_idl_src();

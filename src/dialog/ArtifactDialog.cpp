@@ -70,6 +70,7 @@ ArtifactDialog::ArtifactDialog(ArtifactData * nd)
   init_cpp_tab();
   init_java_tab();
   init_php_tab();
+  init_python_tab();
   init_idl_tab();
   init_assoc_classes_tab();
   init_assoc_artifacts_tab();
@@ -366,6 +367,61 @@ void ArtifactDialog::init_php_tab() {
     removePage(php_content_page);
 }
 
+void ArtifactDialog::init_python_tab() {
+  bool visit = !hasOkButton();  
+  QHBox * hbox;
+  QVBox * vbox;
+  QLabel * lbl1;
+  QLabel * lbl2;
+  QPushButton * edit = 0;
+  
+  python_content_page = new QSplitter(Qt::Vertical, this);
+  python_content_page->setOpaqueResize(TRUE);
+  
+  vbox = new QVBox(python_content_page); 
+  
+  hbox = new QHBox(vbox); 
+  hbox->setMargin(5);  
+  lbl1 = new QLabel("File \ndefinition : ", hbox);
+  edpython_content = new MultiLineEdit(hbox);
+  edpython_content->setText(data->python_src);
+  QFont font = comment->font();
+  if (! hasCodec())
+    font.setFamily("Courier");
+  font.setFixedPitch(TRUE);
+  edpython_content->setFont(font);
+  if (visit)
+    edpython_content->setReadOnly(TRUE);
+  else {
+    connect(edpython_content, SIGNAL(textChanged()), this, SLOT(python_update_src()));
+
+    hbox = new QHBox(vbox); 
+    edit = new SmallPushButton("Editor", hbox);
+    connect(edit, SIGNAL(clicked()), this, SLOT(python_edit()));
+    connect(new QPushButton("Default definition", hbox), SIGNAL(pressed ()),
+	    this, SLOT(python_default_src()));
+    connect(new QPushButton("Not generated in Python", hbox), SIGNAL(pressed ()),
+	    this, SLOT(python_unmapped_src()));
+  }
+
+  hbox = new QHBox(python_content_page, "result"); 
+  hbox->setMargin(5);  
+  lbl2 = new QLabel("Result after\nsubstitution : ", hbox);
+  showpython_content = new MultiLineEdit(hbox);
+  showpython_content->setReadOnly(TRUE);
+  showpython_content->setFont(font);
+  
+  if (visit)
+    same_width(lbl1, lbl2);
+  else
+    same_width(lbl1, lbl2, edit);
+  
+  addTab(python_content_page, "Python source");
+  
+  if (!GenerationSettings::python_get_default_defs())
+    removePage(python_content_page);
+}
+
 void ArtifactDialog::init_idl_tab() {
   bool visit = !hasOkButton();  
   QHBox * hbox;
@@ -480,7 +536,7 @@ void ArtifactDialog::init_assoc_classes_tab() {
   lb_cl_associated->setSelectionMode((visit) ? QListBox::NoSelection
 					     : QListBox::Multi);
   
-  n_cpp = n_java = n_php = n_idl = 0;
+  n_cpp = n_java = n_php = n_python = n_idl = 0;
   
   for (it = l.begin(); it != end; ++it) {
     if (!(*it)->deletedp() && !(*it)->nestedp()) {
@@ -494,6 +550,8 @@ void ArtifactDialog::init_assoc_classes_tab() {
 	n_java += 1;
       if (c->get_phpdecl()[0])
 	n_php += 1;
+      if (c->get_pythondecl()[0])
+	n_python += 1;
       if (c->get_idldecl()[0])
 	n_idl += 1;
     }
@@ -590,6 +648,7 @@ void ArtifactDialog::edStereotypeActivated(const QString & ste) {
   setTabEnabled(cpp_src_content_page, a_source || a_text);
   setTabEnabled(java_content_page, a_source || a_text);
   setTabEnabled(php_content_page, a_source || a_text);
+  setTabEnabled(python_content_page, a_source || a_text);
   setTabEnabled(idl_content_page, a_source || a_text);
   setTabEnabled(cl_assoc_page, a_source && !a_text);
   setTabEnabled(art_assoc_page, !a_source && !a_text);
@@ -613,6 +672,9 @@ void ArtifactDialog::edStereotypeActivated(const QString & ste) {
     
     if (n_php == 0)
       setTabEnabled(php_content_page, FALSE);
+    
+    if (n_python == 0)
+      setTabEnabled(python_content_page, FALSE);
     
     if (n_idl == 0)
       setTabEnabled(idl_content_page, FALSE);
@@ -645,6 +707,11 @@ void ArtifactDialog::update_tab(QWidget * w) {
     php_update_src();
     if (! visit)
       edphp_content->setFocus();
+  }
+  else if (w == python_content_page) {
+    python_update_src();
+    if (! visit)
+      edpython_content->setFocus();
   }
   else if (w == idl_content_page) {
     idl_update_src();
@@ -701,6 +768,18 @@ void ArtifactDialog::post_php_edit(ArtifactDialog * d, QString s)
   d->edphp_content->setText(s);
 }
 
+void ArtifactDialog::python_edit() {
+  edit(edpython_content->text(),
+       edname->text().stripWhiteSpace() + "_source", data,
+       (edstereotype->currentText().stripWhiteSpace() == "text") ? TxtEdit : PythonEdit,
+       this, (post_edit) post_python_edit, edits);
+}
+
+void ArtifactDialog::post_python_edit(ArtifactDialog * d, QString s)
+{
+  d->edpython_content->setText(s);
+}
+
 void ArtifactDialog::idl_edit() {
   edit(edidl_content->text(),
        edname->text().stripWhiteSpace() + "_source",
@@ -743,6 +822,14 @@ void ArtifactDialog::php_default_src() {
   php_update_src();
 }
 
+void ArtifactDialog::python_default_src() {
+  edpython_content->setText(((n_python != 0) &&
+			     (edstereotype->currentText().stripWhiteSpace() != "text"))
+			    ? GenerationSettings::python_default_source_content()
+			    : "");
+  python_update_src();
+}
+
 void ArtifactDialog::idl_default_src() {
   edidl_content->setText(((n_idl != 0) &&
 			  (edstereotype->currentText().stripWhiteSpace() != "text"))
@@ -769,6 +856,11 @@ void ArtifactDialog::java_unmapped_src() {
 void ArtifactDialog::php_unmapped_src() {
   edphp_content->setText(QString::null);
   php_update_src();
+}
+
+void ArtifactDialog::python_unmapped_src() {
+  edpython_content->setText(QString::null);
+  python_update_src();
 }
 
 void ArtifactDialog::idl_unmapped_src() {
@@ -1270,6 +1362,81 @@ void ArtifactDialog::php_update_src() {
   }
 }
 
+void ArtifactDialog::python_update_src() {
+  if (lb_cl_associated->count() == 0)
+    hide_result(python_content_page);
+  else {
+    show_result(python_content_page);
+    
+    QString def = edpython_content->text();  
+    const char * p = def;
+    const char * pp = 0;
+    QString s;
+    
+    for (;;) {
+      if (*p == 0) {
+	if (pp == 0)
+	  break;
+	
+	// comment management done
+	p = pp;
+	pp = 0;
+	if (*p == 0)
+	  break;
+      }
+       
+      if (*p == '@')
+	manage_alias(data->browser_node, p, s, kvtable);
+      else if (*p != '$')
+	s += *p++;
+      else if (!strncmp(p, "${comment}", 10))
+	manage_python_comment(comment->text(), p, pp);
+      else if (!strncmp(p, "${description}", 14))
+	manage_python_description(comment->text(), p, pp);
+      else if (!strncmp(p, "${name}", 7)) {
+	p += 7;
+	s += edname->text().stripWhiteSpace();
+      }
+      else if (!strncmp(p, "${Name}", 7)) {
+	p += 7;
+	s += capitalize(edname->text().stripWhiteSpace());
+      }
+      else if (!strncmp(p, "${NAME}", 7)) {
+	p += 7;
+	s += edname->text().stripWhiteSpace().upper();
+      }
+      else if (!strncmp(p, "${definition}", 13)) {
+	p += 13;
+	if (*p == '\n')
+	  p += 1;
+	
+	BrowserNodeList nds;
+	QStringList node_names;
+	unsigned n = lb_cl_associated->count();
+
+	for (unsigned i = 0; i != n; i += 1) {
+	  BrowserNode * bn =
+	    ((ListBoxBrowserNode *) lb_cl_associated->item(i))->browser_node;
+	  ClassData * c = (ClassData *) bn->get_data();
+	  
+	  ClassDialog::python_generate_decl(s, c, c->get_pythondecl(), bn->get_name(),
+					    c->get_stereotype(), bn->get_comment(),
+					    c->python_is_2_2(), nds, node_names, 0);
+	  s += '\n';
+	}
+      }
+      else if (!strncmp(p, "${import}", 9)) {
+	p += 9;
+	s += "...import    // produced by the Python generator\n";
+      }
+      else
+	s += *p++;
+    }
+    
+    showpython_content->setText(s);
+  }
+}
+
 void ArtifactDialog::idl_update_src() {
   if (lb_cl_associated->count() == 0)
     hide_result(idl_content_page);
@@ -1391,6 +1558,8 @@ void ArtifactDialog::associate_cls() {
 	n_java += 1;
       if (c->get_phpdecl()[0])
 	n_php += 1;
+      if (c->get_pythondecl()[0])
+	n_python += 1;
       if (c->get_idldecl()[0])
 	n_idl += 1;
     }
@@ -1418,6 +1587,8 @@ void ArtifactDialog::unassociate_cls() {
 	n_java -= 1;
       if (c->get_phpdecl()[0])
 	n_php -= 1;
+      if (c->get_pythondecl()[0])
+	n_python -= 1;
       if (c->get_idldecl()[0])
 	n_idl -= 1;
     }
@@ -1593,6 +1764,12 @@ void ArtifactDialog::accept() {
       }
       else
 	data->php_src = QString::null;
+      
+      if (isTabEnabled(python_content_page)) {
+	data->python_src = edpython_content->text();
+      }
+      else
+	data->python_src = QString::null;
       
       if (isTabEnabled(idl_content_page)) {
 	data->idl_src = edidl_content->text();

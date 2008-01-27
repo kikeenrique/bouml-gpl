@@ -55,6 +55,7 @@ class ComponentDrawingSettings;
 class StateDrawingSettings;
 class ActivityDrawingSettings;
 class ObjectDiagramSettings;
+class SimpleClassDiagramSettings;
 class BrowserNodeList;
 class ToolCom;
 class SaveProgress;
@@ -171,13 +172,14 @@ class BrowserNode : public QListViewItem,
     virtual void get_deploymentdiagramsettings(DeploymentDiagramSettings &) const;
     virtual void get_statediagramsettings(StateDiagramSettings &) const;
     virtual void get_activitydiagramsettings(ActivityDiagramSettings &) const;
-    virtual UmlColor get_color(UmlCode) const;
-    virtual bool get_shadow(UmlCode) const;
     virtual bool get_draw_all_relations(UmlCode) const;
     virtual bool get_classinstwritehorizontally(UmlCode k) const;
     virtual void get_componentdrawingsettings(bool depl, ComponentDrawingSettings & r) const;
     virtual void get_statedrawingsettings(StateDrawingSettings &) const;
     virtual void get_activitydrawingsettings(ActivityDrawingSettings &) const;
+    virtual void get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const;
+    virtual bool get_shadow(UmlCode) const;
+    virtual UmlColor get_color(UmlCode) const;
     virtual UmlVisibility get_visibility(UmlCode) const;
     virtual void package_settings(bool & name_in_tab, ShowContextMode & show_context) const;
     virtual const QStringList & default_stereotypes(UmlCode, const BrowserNode *) const; // non class rel

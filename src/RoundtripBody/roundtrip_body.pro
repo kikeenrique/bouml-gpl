@@ -42,7 +42,8 @@ SOURCES	      = main.cpp util.cpp \
 		UmlClassInstance.cpp \
 		../Tools/UmlBaseClassItem.cpp ../Tools/CppSettings.cpp \
 		../Tools/IdlSettings.cpp ../Tools/JavaSettings.cpp \
-		../Tools/PhpSettings.cpp ../Tools/UmlBaseArtifact.cpp \
+		../Tools/PhpSettings.cpp ../Tools/PythonSettings.cpp \
+		../Tools/UmlBaseArtifact.cpp \
 		../Tools/UmlBaseAttribute.cpp ../Tools/UmlBaseClass.cpp \
 		../Tools/UmlBaseClassDiagram.cpp ../Tools/UmlBaseClassMember.cpp \
 		../Tools/UmlBaseExtraClassMember.cpp ../Tools/UmlBaseClassView.cpp \
@@ -92,5 +93,5 @@ SOURCES	      = main.cpp util.cpp \
 		../Tools/UmlBaseClassInstance.cpp
 		
 TARGET	      = roundtrip_body
-DEFINES	      = WITHCPP WITHJAVA WITHPHP WITHIDL
+DEFINES	      = WITHCPP WITHJAVA WITHPHP WITHIDL WITHPYTHON
 INCLUDEPATH   = ../Tools ../RoundtripBody

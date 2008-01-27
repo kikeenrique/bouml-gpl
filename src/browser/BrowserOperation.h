@@ -65,13 +65,13 @@ class BrowserOperation : public BrowserNode, public Labeled<BrowserOperation> {
     void set_set_of(BrowserNode * o);
     void update_get_of(const QString & attr_name, const QString & cpp_decl,
 		       const QString & java_decl, const QString & php_decl, 
-		       const QString & idl_decl, bool is_const,
-		       bool is_class_member, const AType & cl,
+		       const QString & python_decl, const QString & idl_decl, 
+		       bool is_const, bool is_class_member, const AType & cl,
 		       QString multiplicity, QString stereotype);
     void update_set_of(const QString & attr_name, const QString & cpp_decl,
 		       const QString & java_decl, const QString & php_decl, 
-		       const QString & idl_decl, bool is_const,
-		       bool is_class_member, const AType & cl,
+		       const QString & python_decl, const QString & idl_decl, 
+		       bool is_const, bool is_class_member, const AType & cl,
 		       QString multiplicity, QString stereotype);
     QString get_of_name() const;	// rel or attribute name
     AType get_of_association() const; // rel's association or ${association}
@@ -107,6 +107,8 @@ class BrowserOperation : public BrowserNode, public Labeled<BrowserOperation> {
     virtual void renumber(int phase);
     
     static void compute_referenced_by(QList<BrowserNode> &, BrowserClass *);
+    
+    static QString python_init_self(BrowserNode * cl);
     
     virtual bool tool_cmd(ToolCom * com, const char * args);
     

@@ -47,6 +47,7 @@ class BrowserArtifact : public BrowserNode, public Labeled<BrowserArtifact> {
     bool cpp_src_edited;
     bool java_edited;
     bool php_edited;
+    bool python_edited;
     bool idl_edited;
     ArtifactData * def;
     BrowserDeploymentDiagram * associated_diagram;
@@ -56,7 +57,7 @@ class BrowserArtifact : public BrowserNode, public Labeled<BrowserArtifact> {
     void exec_menu_choice(int rank,
 			  QString cpp_h_path, QString cpp_src_path,
 			  QString java_path, QString php_path, 
-			  QString idl_path);
+			  QString python_path, QString idl_path);
   
   public:
     BrowserArtifact(QString s, BrowserNode * p, int id = 0);
@@ -125,7 +126,7 @@ class BrowserArtifact : public BrowserNode, public Labeled<BrowserArtifact> {
     void associate_class(BrowserClass * c, bool on_read);
     void get_paths(QString & cpp_h_path, QString & cpp_src_path,
 		   QString & java_path, QString & php_path, 
-		   QString & idl_path) const;
+		   QString & python_path, QString & idl_path) const;
     QString get_path(QString path, QString root,
 		     const char * ext) const;
 };

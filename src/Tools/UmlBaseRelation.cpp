@@ -308,6 +308,12 @@ void UmlBaseRelation::read_php_() {
 }
 #endif
 
+#ifdef WITHPYTHON
+void UmlBaseRelation::read_python_() {
+  UmlBaseClassMember::read_python_();
+}
+#endif
+
 #ifdef WITHIDL
 void UmlBaseRelation::read_idl_() {
   UmlBaseClassItem::read_idl_();

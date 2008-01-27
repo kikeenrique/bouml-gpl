@@ -47,6 +47,7 @@
 #include "ParamData.h"
 #include "BrowserOperation.h"
 #include "ClassData.h"
+#include "ClassDialog.h"
 #include "BrowserAttribute.h"
 #include "AttributeData.h"
 #include "BrowserRelation.h"
@@ -64,6 +65,7 @@
 #include "strutil.h"
 #include "BodyDialog.h"
 #include "AnnotationDialog.h"
+#include "DecoratorDialog.h"
 #include "Tool.h"
 
 QSize OperationDialog::previous_size;
@@ -88,26 +90,95 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   QString st;
   
   st = GenerationSettings::cpp_class_stereotype(stereotype);
-  cpp_undef = (st == "enum") || (st == "typedef");
+  cpp_undef = (st == "enum") || (st == "typedef") || (st == "ignored");
   
   st = GenerationSettings::java_class_stereotype(stereotype);
-  java_undef = (st == "enum_pattern") || (st == "typedef");
+  java_undef = (st == "enum_pattern") || (st == "typedef") || (st == "ignored");
   
   st = GenerationSettings::php_class_stereotype(stereotype);
-  php_undef = (st == "enum") || (st == "typedef");
+  php_undef = (st == "enum") || (st == "typedef") || (st == "ignored");
+  
+  st = GenerationSettings::python_class_stereotype(stereotype);
+  python_undef = (st == "enum") || (st == "typedef") || (st == "ignored");
   
   st = GenerationSettings::idl_class_stereotype(stereotype);
-  idl_undef = (st == "enum") || (st == "typedef");
+  idl_undef = (st == "enum") || (st == "typedef") || (st == "ignored");
   
-  // to manage get_ set_, search corresp attr/rel
+  init_get_set();
+  init_uml();
+  init_cpp();
+  init_java();
+  init_php();
+  init_python();
+  init_idl();
   
+  // USER : list key - value
+  
+  QGrid *   grid = new QGrid(2, this);
+
+  grid->setMargin(5);
+  grid->setSpacing(5);
+  
+  kvtable = new KeyValuesTable(o->get_browser_node(), grid, visit);
+  addTab(grid, "Properties");
+  
+  //
+  
+  connect(this, SIGNAL(currentChanged(QWidget *)),
+	  this, SLOT(update_all_tabs(QWidget *)));
+  
+  switch (l) {
+  case CppView:
+    if (! cpp_undef) {
+      cpp_update_def();
+      QTimer::singleShot(100, this, SLOT(cpp_edit_body()));
+    }
+    break;
+  case JavaView:
+    if (! java_undef) {
+      java_update_def();
+      QTimer::singleShot(100, this, SLOT(java_edit_body()));
+    }
+    break;
+  case PhpView:
+    if (! php_undef) {
+      php_update_def();
+      QTimer::singleShot(100, this, SLOT(php_edit_body()));
+    }
+    break;
+  case PythonView:
+    if (! python_undef) {
+      python_update_def();
+      QTimer::singleShot(100, this, SLOT(python_edit_body()));
+    }
+    break;
+  default:
+    break;
+  }
+}
+
+OperationDialog::~OperationDialog() {
+  oper->browser_node->edit_end();
+  previous_size = size();
+  
+  while (!edits.isEmpty())
+    edits.take(0)->close();
+}
+
+void OperationDialog::polish() {
+  QTabDialog::polish();
+  UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
+}
+
+// to manage get_ set_, search corresp attr/rel
+void OperationDialog::init_get_set() {  
   get_of_attr = 0;
   set_of_attr = 0;
   get_of_rel = 0;
   set_of_rel = 0;
   
-  if (o->is_get_or_set) {
-    BrowserOperation * br_op = (BrowserOperation *) o->browser_node;
+  if (oper->is_get_or_set) {
+    BrowserOperation * br_op = (BrowserOperation *) oper->browser_node;
     QListViewItem * child;
     
     for (child = br_op->parent()->firstChild();
@@ -141,9 +212,10 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
       }
     }
   }
-    
-  // general tab
-  
+}
+
+// general tab
+void OperationDialog::init_uml() {  
   QGrid * grid;
   QHBox * htab;
   QButtonGroup * bg;
@@ -154,17 +226,17 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   grid->setMargin(5);
   
   new QLabel("class : ", grid);
-  new QLabel(((BrowserNode *) o->get_browser_node()->parent())->full_name(TRUE),
+  new QLabel(((BrowserNode *) oper->get_browser_node()->parent())->full_name(TRUE),
 	     grid);
   
   new QLabel("name : ", grid);
-  edname = new LineEdit(o->name(), grid);
+  edname = new LineEdit(oper->name(), grid);
   edname->setReadOnly(visit);
   
   new QLabel("stereotype : ", grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(oper->stereotype));
-  if (o->is_get_or_set)
+  if (oper->is_get_or_set)
     edstereotype->setEnabled(FALSE);
   else if (! visit) {
     edstereotype->insertStringList(BrowserOperation::default_stereotypes());
@@ -177,7 +249,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   sp.setHorData(QSizePolicy::Expanding);
   edstereotype->setSizePolicy(sp);
 
-  if (o->is_get_or_set)
+  if (oper->is_get_or_set)
     new QLabel("value type : ", grid);
   else
     connect(new SmallPushButton("value type :", grid), SIGNAL(clicked()),
@@ -187,15 +259,15 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   nodes.full_names(list);
 
   edreturn_type = new QComboBox(!visit, grid);
-  edreturn_type->insertItem(o->get_return_type().get_full_type());
-  if (o->is_get_or_set)
+  edreturn_type->insertItem(oper->get_return_type().get_full_type());
+  if (oper->is_get_or_set)
     edreturn_type->setEnabled(FALSE);
   else if (! visit) {
     edreturn_type->insertStringList(GenerationSettings::basic_types());
     edreturn_type_offset = edreturn_type->count();
     edreturn_type->insertStringList(list);
     edreturn_type->setAutoCompletion(TRUE);
-    view = o->browser_node->container(UmlClass);
+    view = oper->browser_node->container(UmlClass);
   }
   edreturn_type->setCurrentItem(0);
   
@@ -204,7 +276,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   new QLabel(grid);
   
   htab = new QHBox(grid);
-  bg = uml_visibility.init(htab, o->get_uml_visibility(), TRUE);
+  bg = uml_visibility.init(htab, oper->get_uml_visibility(), TRUE);
   if (visit)
     bg->setEnabled(FALSE);
   htab->setStretchFactor(bg, 1000);
@@ -213,15 +285,15 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   
   bg = new QButtonGroup(2, Qt::Horizontal, QString::null, htab);
   htab->setStretchFactor(bg, 1000);
-  classoperation_cb = new QCheckBox("class operation", bg);
+  classoperation_cb = new QCheckBox("static operation", bg);
   classoperation_cb->setDisabled(visit);
   abstract_cb = new QCheckBox("abstract", bg);
   abstract_cb->setDisabled(visit);
-  if (o->get_isa_class_operation())
+  if (oper->get_isa_class_operation())
     classoperation_cb->setChecked(TRUE);
-  else if (o->get_is_abstract())
+  else if (oper->get_is_abstract())
     abstract_cb->setChecked(TRUE);
-  if (o->is_get_or_set)
+  if (oper->is_get_or_set)
     bg->setEnabled(FALSE);
   else if (! visit) {
     connect(classoperation_cb, SIGNAL(toggled(bool)),
@@ -236,19 +308,19 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   htab->setStretchFactor(bg, 1000);
   forcegenbody_cb = new QCheckBox("force body generation", bg);
   forcegenbody_cb->setDisabled(visit);
-  if (o->body_generation_forced())
+  if (oper->body_generation_forced())
     forcegenbody_cb->setChecked(TRUE);
   else if (! visit)
     connect(forcegenbody_cb, SIGNAL(toggled(bool)),
 	    SLOT(forcegenbody_toggled(bool)));
   
   new QLabel("parameters : ", grid);
-  table = new ParamsTable(o, grid, list, visit);
-  if (o->is_get_or_set)
+  table = new ParamsTable(oper, grid, list, visit);
+  if (oper->is_get_or_set)
     table->setEnabled(FALSE);
   
   new QLabel("exceptions : ", grid);
-  etable = new ExceptionsTable(o, grid, list, visit);
+  etable = new ExceptionsTable(oper, grid, list, visit);
   
   QVBox * vtab = new QVBox(grid);
   
@@ -260,7 +332,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
 	    this, SLOT(default_description()));
   }
   comment = new MultiLineEdit(grid);
-  comment->setText(o->get_browser_node()->get_comment());
+  comment->setText(oper->get_browser_node()->get_comment());
   QFont font = comment->font();
   if (! hasCodec())
     font.setFamily("Courier");
@@ -276,30 +348,36 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   }
   constraint = new MultiLineEdit(grid);
   constraint->setReadOnly(visit);
-  constraint->setText(o->constraint);
+  constraint->setText(oper->constraint);
   constraint->setFont(font);
   
   addTab(grid, "Uml");
+}
+
   
-  // C++
-  
+// C++
+void OperationDialog::init_cpp() {  
   if (! cpp_undef) {
+    QGrid * grid;
+    QHBox * htab;
+    QButtonGroup * bg;
+    
     grid = new QGrid(2, this);
     cpptab = grid;
     grid->setMargin(5);
     grid->setSpacing(5);
 
-    if (visit || !o->is_get_or_set)
+    if (visit || !oper->is_get_or_set)
       new QLabel(grid);
     else {
       cppfrozen_cb = new QCheckBox("frozen", grid);
-      if (o->cpp_get_set_frozen)
+      if (oper->cpp_get_set_frozen)
 	cppfrozen_cb->setChecked(TRUE);
     }
 
     htab = new QHBox(grid);
     
-    bg = cpp_visibility.init(htab, o->get_cpp_visibility(), FALSE, 0, "follow uml");
+    bg = cpp_visibility.init(htab, oper->get_cpp_visibility(), FALSE, 0, "follow uml");
     if (visit)
       bg->setEnabled(FALSE);
     
@@ -311,15 +389,15 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     friend_cb = new QCheckBox("friend", bg);
     virtual_cb = new QCheckBox("virtual", bg);
     inline_cb = new QCheckBox("inline", bg);
-    if (o->get_cpp_const())
+    if (oper->get_cpp_const())
       const_cb->setChecked(TRUE);
-    if (o->get_is_volatile())
+    if (oper->get_is_volatile())
       volatile_cb->setChecked(TRUE);
-    if (o->get_cpp_friend())
+    if (oper->get_cpp_friend())
       friend_cb->setChecked(TRUE);
-    if (o->get_cpp_virtual())
+    if (oper->get_cpp_virtual())
       virtual_cb->setChecked(TRUE);
-    if (o->get_cpp_inline())
+    if (oper->get_cpp_inline())
       inline_cb->setChecked(TRUE);
     if (visit) {
       const_cb->setDisabled(TRUE);
@@ -341,10 +419,10 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
 	      SLOT(inline_toggled(bool)));
     }
     
-    if (o->is_get_or_set) {
+    if (oper->is_get_or_set) {
       new QLabel("Name form : ", grid);
       edcppnamespec = new LineEdit(grid);
-      edcppnamespec->setText(o->cpp_name_spec);
+      edcppnamespec->setText(oper->cpp_name_spec);
       if (visit)
 	edcppnamespec->setReadOnly(TRUE);
       else {
@@ -357,8 +435,8 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     
     new QLabel("Declaration : ", grid);
     edcppdecl = new MultiLineEdit(grid);
-    edcppdecl->setText(o->get_cppdecl());
-    edcppdecl->setFont(font);
+    edcppdecl->setText(oper->get_cppdecl());
+    edcppdecl->setFont(comment->font());
     if (visit)
       edcppdecl->setReadOnly(TRUE);
     else
@@ -367,14 +445,14 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     new QLabel("Result after\nsubstitution : ", grid);
     showcppdecl = new MultiLineEdit(grid);
     showcppdecl->setReadOnly(TRUE);
-    showcppdecl->setFont(font);
+    showcppdecl->setFont(comment->font());
     
     if (! visit) {
       new QLabel(grid);
       htab = new QHBox(grid);  
       connect(new QPushButton("Default declaration", htab), SIGNAL(pressed()),
 	      this, SLOT(cpp_default_decl()));
-      if (!o->is_get_or_set)
+      if (!oper->is_get_or_set)
 	connect(new QPushButton("From definition", htab), SIGNAL(pressed()),
 		this, SLOT(cpp_decl_from_def()));
       connect(new QPushButton("Not generated in C++", htab), SIGNAL(pressed()),
@@ -385,26 +463,27 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     
     new QLabel("Definition :", grid);
     edcppdef = new MultiLineEdit(grid);
-    edcppdef->setText(o->get_cppdef());
-    edcppdef->setFont(font);
+    edcppdef->setText(oper->get_cppdef());
+    edcppdef->setFont(comment->font());
     if (visit)
       edcppdef->setReadOnly(TRUE);
     else
       connect(edcppdef, SIGNAL(textChanged()), this, SLOT(cpp_update_def()));
     
-    vtab = new QVBox(grid);
+    QVBox * vtab = vtab = new QVBox(grid);
+
     new QLabel("Result after\nsubstitution : ", vtab);
-    if (!visit && !o->is_get_or_set) {
+    if (!visit && !oper->is_get_or_set) {
       indentcppbody_cb = new QCheckBox("contextual\nbody indent", vtab);
       if (preserve_bodies() && !forcegenbody_cb->isChecked())
 	indentcppbody_cb->setEnabled(FALSE);
       else
-	indentcppbody_cb->setChecked(o->cpp_indent_body);
+	indentcppbody_cb->setChecked(oper->cpp_indent_body);
     }
     
     showcppdef = new MultiLineEdit(grid);
     showcppdef->setReadOnly(TRUE);
-    showcppdef->setFont(font);
+    showcppdef->setFont(comment->font());
     
     editcppbody = new QPushButton((visit ||
 				   (preserve_bodies() && !forcegenbody_cb->isChecked()))
@@ -412,7 +491,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
 				  grid);
     connect(editcppbody, SIGNAL(clicked()), this, SLOT(cpp_edit_body()));
     
-    char * b = o->get_body('c');
+    char * b = oper->get_body('c');
     
     if (b != 0) {
       cppbody = oldcppbody = b;
@@ -423,7 +502,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
       htab = new QHBox(grid);  
       connect(new QPushButton("Default definition", htab), SIGNAL(pressed ()),
 	      this, SLOT(cpp_default_def()));
-      if (!o->is_get_or_set)
+      if (!oper->is_get_or_set)
 	connect(new QPushButton("From declaration", htab), SIGNAL(pressed ()),
 		this, SLOT(cpp_def_from_decl()));
       connect(new QPushButton("Not generated in C++", htab), SIGNAL(pressed ()),
@@ -441,26 +520,31 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   }
   else
     cpptab = 0;
+}
   
-  // Java
-  
+// Java
+void OperationDialog::init_java() {  
   if (! java_undef) {
+    QGrid * grid;
+    QHBox * htab;
+    QButtonGroup * bg;
+
     grid = new QGrid(2, this);
     javatab = grid;
     grid->setMargin(5);
     grid->setSpacing(5);
     
-    if (visit || !o->is_get_or_set)
+    if (visit || !oper->is_get_or_set)
       new QLabel(grid);
     else {
       javafrozen_cb = new QCheckBox("frozen", grid);
-      if (o->java_get_set_frozen)
+      if (oper->java_get_set_frozen)
 	javafrozen_cb->setChecked(TRUE);
     }
 
     bg = new QButtonGroup(2, Qt::Horizontal, QString::null, grid);
     javafinal_cb = new QCheckBox("final", bg);
-    if (o->get_java_final())
+    if (oper->get_java_final())
       javafinal_cb->setChecked(TRUE);
     if (visit)
       javafinal_cb->setDisabled(TRUE);
@@ -469,7 +553,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
 	      SLOT(java_finalsynchronized_toggled(bool)));
 
     synchronized_cb = new QCheckBox("synchronized", bg);
-    if (o->get_java_synchronized())
+    if (oper->get_java_synchronized())
       synchronized_cb->setChecked(TRUE);
     if (visit)
       synchronized_cb->setDisabled(TRUE);
@@ -477,11 +561,11 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
       connect(synchronized_cb, SIGNAL(toggled(bool)),
 	      SLOT(java_finalsynchronized_toggled(bool)));
     
-    if (o->is_get_or_set) {
+    if (oper->is_get_or_set) {
       new QLabel("Name form : ", grid);
       htab = new QHBox(grid);
       edjavanamespec = new LineEdit(htab);
-      edjavanamespec->setText(o->java_name_spec);
+      edjavanamespec->setText(oper->java_name_spec);
       if (visit)
 	edjavanamespec->setDisabled(TRUE);
       else {
@@ -493,26 +577,27 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     
     new QLabel("Definition :", grid);
     edjavadef = new MultiLineEdit(grid);
-    edjavadef->setText(o->get_javadef());
-    edjavadef->setFont(font);
+    edjavadef->setText(oper->get_javadef());
+    edjavadef->setFont(comment->font());
     if (visit)
       edjavadef->setReadOnly(TRUE);
     else
       connect(edjavadef, SIGNAL(textChanged()), this, SLOT(java_update_def()));
     
-    vtab = new QVBox(grid);
+    QVBox * vtab = vtab = new QVBox(grid);
+
     new QLabel("Result after\nsubstitution : ", vtab);
-    if (!visit && !o->is_get_or_set) {
+    if (!visit && !oper->is_get_or_set) {
       indentjavabody_cb = new QCheckBox("contextual\nbody indent", vtab);
       if (preserve_bodies() && !forcegenbody_cb->isChecked())
 	indentjavabody_cb->setEnabled(FALSE);
       else
-	indentjavabody_cb->setChecked(o->java_indent_body);
+	indentjavabody_cb->setChecked(oper->java_indent_body);
     }
     
     showjavadef = new MultiLineEdit(grid);
     showjavadef->setReadOnly(TRUE);
-    showjavadef->setFont(font);
+    showjavadef->setFont(comment->font());
     
     editjavabody = new QPushButton((visit ||
 				    (preserve_bodies() && !forcegenbody_cb->isChecked()))
@@ -520,7 +605,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
 				   grid);
     connect(editjavabody, SIGNAL(clicked()), this, SLOT(java_edit_body()));
     
-    char * b = o->get_body('j');
+    char * b = oper->get_body('j');
     
     if (b != 0) {
       javabody = oldjavabody = b;
@@ -537,7 +622,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
       
     }
     
-    javaannotation = (const char *) o->java_annotation;
+    javaannotation = (const char *) oper->java_annotation;
     editjavaannotation =
       new QPushButton((visit) ? "Show annotation" : "Edit annotation",
 		      htab);
@@ -551,26 +636,31 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   }
   else
     javatab = 0;
+}
     
-  // Php
-  
+// Php
+void OperationDialog::init_php() {  
   if (! php_undef) {
+    QGrid * grid;
+    QHBox * htab;
+    QButtonGroup * bg;
+
     grid = new QGrid(2, this);
     phptab = grid;
     grid->setMargin(5);
     grid->setSpacing(5);
     
-    if (visit || !o->is_get_or_set)
+    if (visit || !oper->is_get_or_set)
       new QLabel(grid);
     else {
       phpfrozen_cb = new QCheckBox("frozen", grid);
-      if (o->php_get_set_frozen)
+      if (oper->php_get_set_frozen)
 	phpfrozen_cb->setChecked(TRUE);
     }
 
     bg = new QButtonGroup(2, Qt::Horizontal, QString::null, grid);
     phpfinal_cb = new QCheckBox("final", bg);
-    if (o->get_php_final())
+    if (oper->get_php_final())
       phpfinal_cb->setChecked(TRUE);
     if (visit)
       phpfinal_cb->setDisabled(TRUE);
@@ -578,11 +668,11 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
       connect(phpfinal_cb, SIGNAL(toggled(bool)),
 	      SLOT(php_final_toggled(bool)));
 
-    if (o->is_get_or_set) {
+    if (oper->is_get_or_set) {
       new QLabel("Name form : ", grid);
       htab = new QHBox(grid);
       edphpnamespec = new LineEdit(htab);
-      edphpnamespec->setText(o->php_name_spec);
+      edphpnamespec->setText(oper->php_name_spec);
       if (visit)
 	edphpnamespec->setDisabled(TRUE);
       else {
@@ -594,26 +684,27 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     
     new QLabel("Definition :", grid);
     edphpdef = new MultiLineEdit(grid);
-    edphpdef->setText(o->get_phpdef());
-    edphpdef->setFont(font);
+    edphpdef->setText(oper->get_phpdef());
+    edphpdef->setFont(comment->font());
     if (visit)
       edphpdef->setReadOnly(TRUE);
     else
       connect(edphpdef, SIGNAL(textChanged()), this, SLOT(php_update_def()));
     
-    vtab = new QVBox(grid);
+    QVBox * vtab = vtab = new QVBox(grid);
+
     new QLabel("Result after\nsubstitution : ", vtab);
-    if (!visit && !o->is_get_or_set) {
+    if (!visit && !oper->is_get_or_set) {
       indentphpbody_cb = new QCheckBox("contextual\nbody indent", vtab);
       if (preserve_bodies() && !forcegenbody_cb->isChecked())
 	indentphpbody_cb->setEnabled(FALSE);
       else
-	indentphpbody_cb->setChecked(o->php_indent_body);
+	indentphpbody_cb->setChecked(oper->php_indent_body);
     }
     
     showphpdef = new MultiLineEdit(grid);
     showphpdef->setReadOnly(TRUE);
-    showphpdef->setFont(font);
+    showphpdef->setFont(comment->font());
     
     editphpbody = new QPushButton((visit ||
 				   (preserve_bodies() && !forcegenbody_cb->isChecked()))
@@ -621,7 +712,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
 				  grid);
     connect(editphpbody, SIGNAL(clicked()), this, SLOT(php_edit_body()));
     
-    char * b = o->get_body('p');
+    char * b = oper->get_body('p');
     
     if (b != 0) {
       phpbody = oldphpbody = b;
@@ -646,26 +737,126 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   }
   else
     phptab = 0;
+}
+
+// Python
+void OperationDialog::init_python() {  
+  if (! python_undef) {
+    QGrid * grid;
+    QHBox * htab;
+
+    grid = new QGrid(2, this);
+    pythontab = grid;
+    grid->setMargin(5);
+    grid->setSpacing(5);
     
-  // IDL
+    if (!visit && oper->is_get_or_set) {
+      pythonfrozen_cb = new QCheckBox("frozen", grid);
+      if (oper->python_get_set_frozen)
+	pythonfrozen_cb->setChecked(TRUE);
+      new QLabel(grid);
+    }
+
+    if (oper->is_get_or_set) {
+      new QLabel("Name form : ", grid);
+      htab = new QHBox(grid);
+      edpythonnamespec = new LineEdit(htab);
+      edpythonnamespec->setText(oper->python_name_spec);
+      if (visit)
+	edpythonnamespec->setDisabled(TRUE);
+      else {
+	connect(edpythonnamespec, SIGNAL(textChanged(const QString &)), this, SLOT(python_update_def()));
+      }
+    }
+    else
+      edpythonnamespec = 0;
+    
+    new QLabel("Definition :", grid);
+    edpythondef = new MultiLineEdit(grid);
+    edpythondef->setText(oper->get_pythondef());
+    edpythondef->setFont(comment->font());
+    if (visit)
+      edpythondef->setReadOnly(TRUE);
+    else
+      connect(edpythondef, SIGNAL(textChanged()), this, SLOT(python_update_def()));
+    
+    QVBox * vtab = vtab = new QVBox(grid);
+
+    new QLabel("Result after\nsubstitution : ", vtab);
+    if (!visit && !oper->is_get_or_set) {
+      indentpythonbody_cb = new QCheckBox("contextual\nbody indent", vtab);
+      if (preserve_bodies() && !forcegenbody_cb->isChecked())
+	indentpythonbody_cb->setEnabled(FALSE);
+      else
+	indentpythonbody_cb->setChecked(oper->python_indent_body);
+    }
+    showpythondef = new MultiLineEdit(grid);
+    showpythondef->setReadOnly(TRUE);
+    showpythondef->setFont(comment->font());
+    
+    editpythonbody = new QPushButton((visit ||
+				   (preserve_bodies() && !forcegenbody_cb->isChecked()))
+				  ? "Show body" : "Edit body",
+				  grid);
+    connect(editpythonbody, SIGNAL(clicked()), this, SLOT(python_edit_body()));
+    
+    char * b = oper->get_body('y');
+    
+    if (b != 0) {
+      pythonbody = oldpythonbody = b;
+      delete [] b;
+    }
+        
+    htab = new QHBox(grid);  
+
+    if (! visit) {
+      connect(new QPushButton("Default definition", htab), SIGNAL(pressed ()),
+	      this, SLOT(python_default_def()));
+      connect(new QPushButton("Not generated in Python", htab), SIGNAL(pressed ()),
+	      this, SLOT(python_unmapped_def()));
+      connect(new QPushButton("Edit parameters", htab), SIGNAL(clicked()),
+	      this, SLOT(python_edit_param()));      
+    }
+    
+    pythondecorator = (const char *) oper->python_decorator;
+    editpythondecorator =
+      new QPushButton((visit) ? "Show decorators" : "Edit decorators",
+		      htab);
+    connect(editpythondecorator, SIGNAL(clicked ()),
+	    this, SLOT(python_edit_decorator()));
+
+    addTab(grid, "Python");
   
+    if (!GenerationSettings::python_get_default_defs())
+      removePage(grid);
+  }
+  else
+    pythontab = 0;
+}
+
+// IDL
+void OperationDialog::init_idl() {  
   if (! idl_undef) {
+    QGrid * grid;
+    QHBox * htab;
+    QButtonGroup * bg;
+
     grid = new QGrid(2, this);
     idltab = grid;
     grid->setMargin(5);
     grid->setSpacing(5);
     
-    if (visit || !o->is_get_or_set)
+    if (visit || !oper->is_get_or_set)
       new QLabel(grid);
     else {
       idlfrozen_cb = new QCheckBox("frozen", grid);
-      if (o->idl_get_set_frozen)
+      if (oper->idl_get_set_frozen)
 	idlfrozen_cb->setChecked(TRUE);
     }
 
     bg = new QButtonGroup(1, Qt::Horizontal, QString::null, grid);
     oneway_cb = new QCheckBox("oneway", bg);
-    if (o->get_idl_oneway())
+    if (oper->get_idl_oneway())
       oneway_cb->setChecked(TRUE);
     if (visit)
       oneway_cb->setDisabled(TRUE);
@@ -673,11 +864,11 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
       connect(oneway_cb, SIGNAL(toggled(bool)),
 	      SLOT(oneway_toggled(bool)));
     
-    if (o->is_get_or_set) {
+    if (oper->is_get_or_set) {
       new QLabel("Name form : ", grid);
       htab = new QHBox(grid);
       edidlnamespec = new LineEdit(htab);
-      edidlnamespec->setText(o->idl_name_spec);
+      edidlnamespec->setText(oper->idl_name_spec);
       if (visit)
 	edidlnamespec->setReadOnly(TRUE);
       else {
@@ -689,8 +880,8 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     
     new QLabel("Declaration :", grid);
     edidldecl = new MultiLineEdit(grid);
-    edidldecl->setText(o->get_idldecl());
-    edidldecl->setFont(font);
+    edidldecl->setText(oper->get_idldecl());
+    edidldecl->setFont(comment->font());
     if (visit)
       edidldecl->setReadOnly(TRUE);
     else
@@ -699,7 +890,7 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
     new QLabel("Result after\nsubstitution : ", grid);
     showidldecl = new MultiLineEdit(grid);
     showidldecl->setReadOnly(TRUE);
-    showidldecl->setFont(font);
+    showidldecl->setFont(comment->font());
     
     if (! visit) {
       new QLabel(grid);
@@ -717,56 +908,6 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   }
   else
     idltab = 0;
-  
-  // USER : list key - value
-  
-  grid = new QGrid(2, this);
-  grid->setMargin(5);
-  grid->setSpacing(5);
-  
-  kvtable = new KeyValuesTable(o->get_browser_node(), grid, visit);
-  addTab(grid, "Properties");
-  
-  //
-  
-  connect(this, SIGNAL(currentChanged(QWidget *)),
-	  this, SLOT(update_all_tabs(QWidget *)));
-  
-  switch (l) {
-  case CppView:
-    if (! cpp_undef) {
-      cpp_update_def();
-      QTimer::singleShot(100, this, SLOT(cpp_edit_body()));
-    }
-    break;
-  case JavaView:
-    if (! java_undef) {
-      java_update_def();
-      QTimer::singleShot(100, this, SLOT(java_edit_body()));
-    }
-    break;
-  case PhpView:
-    if (! php_undef) {
-      php_update_def();
-      QTimer::singleShot(100, this, SLOT(php_edit_body()));
-    }
-    break;
-  default:
-    break;
-  }
-}
-
-OperationDialog::~OperationDialog() {
-  oper->browser_node->edit_end();
-  previous_size = size();
-  
-  while (!edits.isEmpty())
-    edits.take(0)->close();
-}
-
-void OperationDialog::polish() {
-  QTabDialog::polish();
-  UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
 }
 
 void OperationDialog::menu_returntype() {
@@ -1001,6 +1142,35 @@ void OperationDialog::accept() {
 			    (edphpdef->text().find("${body}") != -1));
     }
     
+    // python
+    
+    if (python_undef) {
+      oper->python_def.assign(QString::null, TRUE);
+      if (!oldpythonbody.isEmpty())
+	oper->new_body(QString::null, 'y');
+    }
+    else {
+      if (oper->is_get_or_set) {
+	oper->python_name_spec = edpythonnamespec->text().stripWhiteSpace();
+	oper->python_get_set_frozen = pythonfrozen_cb->isChecked();
+      }
+      else
+	oper->python_indent_body = indentpythonbody_cb->isChecked();
+            
+      // rmq : abstractmethod have body !
+      if (edpythondef->text().find("${body}") != -1) {
+	if (pythonbody != oldpythonbody)
+	  oper->new_body(pythonbody, 'y');
+      }
+      else if (!oldpythonbody.isEmpty())
+	oper->new_body(QString::null, 'y');
+      oper->python_def.assign(edpythondef->text(),
+			      // rmq : abstractmethod have body !
+			      (edpythondef->text().find("${body}") != -1));
+      
+      oper->python_decorator = pythondecorator;
+    }
+    
     // idl
     
     if (idl_undef)
@@ -1049,11 +1219,13 @@ void OperationDialog::forcegenbody_toggled(bool on) {
   editcppbody->setText(lbl);
   editjavabody->setText(lbl);
   editphpbody->setText(lbl);
+  editpythonbody->setText(lbl);
   
   if (!visit && !oper->is_get_or_set) {
     indentcppbody_cb->setEnabled(editcppbody->isEnabled() && !ro);
     indentjavabody_cb->setEnabled(editjavabody->isEnabled() && !ro);
     indentphpbody_cb->setEnabled(editphpbody->isEnabled() && !ro);
+    indentpythonbody_cb->setEnabled(editpythonbody->isEnabled() && !ro);
   }
 }
 
@@ -1080,6 +1252,11 @@ void OperationDialog::update_all_tabs(QWidget * w) {
     php_update_def();
     if (! visit)
       edphpdef->setFocus();
+  }
+  else if (w == pythontab) {
+    python_update_def();
+    if (! visit)
+      edpythondef->setFocus();
   }
   else if (w == idltab) {
     idl_update_decl();
@@ -1915,24 +2092,24 @@ void OperationDialog::cpp_update_def() {
 
 static QString add_profile(QString b)
 {
-  b.insert(0, "##\t");
+  b.insert(0, "#| ");
 
   int index = 3;
   int index2;
 
   while ((index2 = b.find('\n', index)) != -1) {
-    b.insert(index2 + 1, "##\t");
+    b.insert(index2 + 1, "#| ");
     index = index2 + 4;
   }
 
-  b += "\n##\t---- these lines will be automatically removed ----\n";
+  b += "\n#| ---- these lines will be automatically removed ----\n";
 
   return b;
 }
 
 static QString remove_profile(QString b)
 {
-  while ((b.length() > 3) && (b.mid(0, 3) == "##\t")) {
+  while ((b.length() > 3) && (b.mid(0, 3) == "#| ")) {
     int index = b.find('\n', 3);
 
     if (index == -1)
@@ -2653,6 +2830,352 @@ void OperationDialog::php_edit_param() {
   }
   else
     msg_warning("Bouml", "wrong specification");
+}
+
+// Python
+
+void OperationDialog::manage_python_type(unsigned rank, QString & s)
+{
+  if (rank < table->nparams()) 
+    s += get_python_name(the_type(table->type(rank), list, nodes));
+  else {
+    s += "${t";
+    s += QString::number(rank);
+    s += '}';
+  }
+}
+
+void OperationDialog::python_default_def() {
+  if (oper->is_get_or_set) {
+    QCString def;
+    
+    if (get_of_attr != 0)
+      oper->update_python_get_of(def, get_of_attr->get_browser_node()->get_name(),
+				 get_of_attr->get_pythondecl(),
+				 get_of_attr->get_isa_class_attribute());
+    else if (set_of_attr != 0)
+      oper->update_python_set_of(def, set_of_attr->get_browser_node()->get_name(),
+				 set_of_attr->get_pythondecl(),
+				 set_of_attr->get_isa_class_attribute());
+    else if (get_of_rel != 0) {
+      if (is_rel_a)
+	oper->update_python_get_of(def, get_of_rel->get_role_a(), 
+				   get_of_rel->get_pythondecl_a(),
+				   get_of_rel->get_isa_class_relation_a());
+      else
+	oper->update_python_get_of(def, get_of_rel->get_role_b(), 
+				   get_of_rel->get_pythondecl_b(),
+				   get_of_rel->get_isa_class_relation_b());
+    }
+    else {
+      // set_of_rel != 0
+      if (is_rel_a)
+	oper->update_python_set_of(def, set_of_rel->get_role_a(), 
+				 set_of_rel->get_pythondecl_a(),
+				 set_of_rel->get_isa_class_relation_a());
+      else
+	oper->update_python_set_of(def, set_of_rel->get_role_b(), 
+				 set_of_rel->get_pythondecl_b(),
+				 set_of_rel->get_isa_class_relation_b());
+    }
+
+    edpythondef->setText(def);
+  }
+  else {
+    // rmq : abstractmethod have body !
+    QString s = oper->default_python_def(edname->text().stripWhiteSpace());
+    QString params;
+    int index;
+    int nparams = (int) table->nparams();
+    const char * sep;
+    
+    for (index = 0, sep = ""; index != nparams; index += 1, sep = ", ") {
+      QString p;
+      
+      p.sprintf("%s${p%d}", sep, index);
+      params += p;
+    }
+    
+    if ((index = s.find("${)}")) != -1)
+      s.insert(index, params);
+    
+    edpythondef->setText(s);
+  }
+  
+  python_update_def();
+}
+
+void OperationDialog::python_unmapped_def() {
+  edpythondef->setText(QString::null);
+  showpythondef->setText(QString::null);
+}
+
+void OperationDialog::manage_decorators(QString & s, QString indent,
+					bool & indent_needed) {
+  if (! pythondecorator.isEmpty()) {
+    int index = 0;
+    int index2;
+    
+    while ((index2 = pythondecorator.find("\n", index)) != -1){
+      if (indent_needed)
+	s += indent;
+      else
+	indent_needed = TRUE;
+      s += pythondecorator.mid(index, index2 + 1 - index);
+      index = index2 + 1;
+    }
+    
+    if (index != (int) pythondecorator.length()) {
+      if (indent_needed) {
+	s += indent;
+	indent_needed = FALSE;
+      }
+      s += pythondecorator.mid(index);
+    }
+  }
+}
+
+void OperationDialog::python_update_def() {
+  // do NOT write
+  //	const char * p = edpythondef->text();
+  // because the QString is immediatly destroyed !
+  QString def = edpythondef->text();
+  const char * p = def;
+
+  if (p == 0)
+    return;
+  
+  bool nobody = abstract_cb->isChecked();
+  const char * pp = 0;
+  const char * afterparam = 0;
+  bool indent_needed = FALSE;
+  QString indent;
+  QString saved_indent = indent;
+  QString indent_step = 
+    GenerationSettings::python_get_indent_step();
+  QString s;
+  unsigned rank;
+  
+  for (;;) {
+    if (*p == 0) {
+      if (pp == 0)
+	break;
+      
+      // comment management done
+      p = pp;
+      if (*p == 0)
+	break;
+      pp = 0;
+      indent = saved_indent;
+    }
+      
+    if (!strncmp(p, "${comment}", 10))
+      manage_python_comment(comment->text(), p, pp);
+    else if (!strncmp(p, "${description}", 14))
+      manage_python_description(comment->text(), p, pp);
+    else if (!strncmp(p, "${docstring}", 12))
+      manage_python_docstring(comment->text(), p, pp, indent_needed, indent, saved_indent);
+    else if (!strncmp(p, "${static}", 9)) {
+      p += 9;
+      if (classoperation_cb->isChecked()) {
+	if (indent_needed)
+	  s += "\n";
+	else
+	  indent_needed = TRUE;
+	s += "@staticmethod\n";
+      }
+    }
+    else if (!strncmp(p, "${abstract}", 11)) {
+      p += 11;
+      if (abstract_cb->isChecked()) {
+	if (indent_needed)
+	  s += "\n";
+	else
+	  indent_needed = TRUE;
+	s += "@abstractmethod\n";
+      }
+    }
+    else if (!strncmp(p, "${name}", 7)) {
+      if (indent_needed) {
+	indent_needed = FALSE;
+	s += indent;
+      }
+      p += 7;
+      s += compute_name(edpythonnamespec);
+    }
+    else if (!strncmp(p, "${(}", 4)) {
+      p += 4;
+      s += '(';
+    }
+    else if (!strncmp(p, "${)}", 4)) {
+      p += 4;
+      afterparam = p;
+      s += ')';
+    }
+    else if (!strncmp(p, "${@}", 4)) {
+      manage_decorators(s, indent, indent_needed);
+      p += 4;
+    }
+    else if (sscanf(p, "${t%u}", &rank) == 1) {
+      manage_python_type(rank, s);
+      p = strchr(p, '}') + 1;
+    }
+    else if (sscanf(p, "${p%u}", &rank) == 1) {
+      manage_var(rank, s);
+      p = strchr(p, '}') + 1;
+    }
+    else if (*p == '@')
+      manage_alias(oper->browser_node, p, s, kvtable);
+    else if (!strncmp(p, "${body}", 7)) {
+      if (edname->text().stripWhiteSpace() == "__init__")
+	s += ClassDialog::python_instance_att_rel(cl->get_browser_node());
+      s += "${body}";
+      p += 7;
+      indent_needed = FALSE;
+    }
+    else {
+      if (indent_needed) {
+	indent_needed = FALSE;
+	s += indent;
+      }
+      switch (*p) {
+      case ':':
+	if (pp == 0) {
+	  indent += indent_step;
+	  saved_indent = indent;
+	  indent_step = "";
+	}
+	break;
+      case '\n':
+	indent_needed = TRUE;
+	break;
+      }
+      s += *p++;
+    }
+  }
+    
+  editpythonbody->setEnabled(!nobody && (def.find("${body}") != -1));
+  editpythondecorator->setEnabled(def.find("${@}") != -1);  
+  
+  showpythondef->setText(s);
+  
+  forcegenbody_toggled(forcegenbody_cb->isChecked());	// update indent*body_cb
+}
+
+QString OperationDialog::python_decl(const BrowserOperation * op, bool withname)
+{
+  OperationData * d = (OperationData *) op->get_data();
+  QCString decl = d->python_def;
+  
+  remove_python_comments(decl);
+  
+  int index = decl.find("def ");
+  QString s;
+
+  if (index == -1)
+    return s;
+
+  decl.remove(0, index + 4);
+  
+  const char * p = decl;
+  unsigned rank;
+
+  while (*p) {
+    if (!strncmp(p, "${comment}", 10))
+      p += 10;
+    else if (!strncmp(p, "${description}", 14))
+      p += 14;
+    else if (!strncmp(p, "${docstring}", 12))
+      p += 12;
+    else if (!strncmp(p, "${static}", 9))
+      p += 9;
+    else if (!strncmp(p, "${abstract}", 11))
+      p += 11;
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      s += op->compute_name(d->python_name_spec);
+    }
+    else if (!strncmp(p, "${(}", 4)) {
+      p += 4;
+      s += '(';
+    }
+    else if (!strncmp(p, "${)}", 4)) {
+      p += 4;
+      s += ')';
+      break;
+    }
+    else if (sscanf(p, "${t%u}", &rank) == 1) {
+      if (rank < d->nparams) 
+	s += d->params[rank].get_type().get_type();
+      else {
+	s += "${t";
+	s += QString::number(rank);
+	s += '}';
+      }
+      p = strchr(p, '}') + 1;
+    }
+    else if (sscanf(p, "${p%u}", &rank) == 1) {
+      if (withname) {
+	if (rank < d->nparams) 
+	  s += d->params[rank].get_name();
+	else {
+	  s += "${p";
+	  s += QString::number(rank);
+	  s += '}';
+	}
+      }
+      p = strchr(p, '}') + 1;
+    }
+    else if (*p == '@')
+      manage_alias(op, p, s, 0);
+    else
+      s += *p++;
+  }
+  
+  return s;
+}
+
+void OperationDialog::python_edit_body() {
+  QString b;
+
+  if (add_operation_profile())
+    b = add_profile(showpythondef->text()) + pythonbody;
+  else
+    b = pythonbody;
+
+  edit(b, edname->text().stripWhiteSpace() + "_body",
+       oper, PythonEdit, this, 
+       (preserve_bodies() && !forcegenbody_cb->isChecked())
+       ? (post_edit) 0
+       : (post_edit) post_python_edit_body,
+       edits);
+}
+
+void OperationDialog::post_python_edit_body(OperationDialog * d, QString s)
+{
+  d->pythonbody = (add_operation_profile()) ? remove_profile(s) : s;
+}
+
+void OperationDialog::python_edit_param() {
+  QString form = edpythondef->text();
+  int index;
+
+  if (((index = form.find("${(}")) != 0) &&
+      (form.find("${)}", index + 4) != 0)) {
+    PythonParamsDialog d(table, edpythondef);
+    
+    if (d.exec() == QDialog::Accepted)
+      python_update_def();
+  }
+  else
+    msg_warning("Bouml", "wrong specification");
+}
+
+void OperationDialog::python_edit_decorator() {
+  DecoratorDialog dialog(pythondecorator, !hasOkButton());
+  
+  if (dialog.exec() == QDialog::Accepted)
+    python_update_def();
 }
 
 // Idl
@@ -4701,6 +5224,420 @@ void PhpParamsDialog::polish() {
   
 
 void PhpParamsDialog::accept() {
+  tbl->update_edform();
+  
+  QDialog::accept();
+}
+
+//
+// PythonParamTable
+//
+
+// copy/cut/paste
+QString PythonParamsTable::copied[4];	// copy/cut/paste
+
+static QStringList PythonTypeRankList;
+static QStringList PythonModList;
+static QStringList PythonParamRankList;
+
+PythonParamsTable::PythonParamsTable(ParamsTable * p, MultiLineEdit * f, QWidget * parent)
+    : MyTable(0, 4, parent), params(p), edform(f) {
+    
+  setSorting(FALSE);
+  setSelectionMode(NoSelection);	// single does not work
+  setRowMovingEnabled(TRUE);
+  horizontalHeader()->setLabel(0, "Name");
+  horizontalHeader()->setLabel(1, "Modifier");
+  horizontalHeader()->setLabel(2, "${p<i>}");
+  horizontalHeader()->setLabel(3, "do");
+  setColumnStretchable (0, TRUE);
+  adjustColumn(1);
+  setColumnStretchable (2, TRUE);
+  adjustColumn(3);
+
+  
+  QString form = edform->text();
+  //the presence of ${(} and ${)} was checked
+  int form_index = form.find("${(}") + 4;
+  int tbl_index = 0;
+    
+  while (extract(tbl_index, form_index, form)) {
+    setText(tbl_index, 3, QString::null);
+    tbl_index += 1;
+  }
+  
+  if (tbl_index == 0)
+    insert_row_before(0);
+    
+  connect(this, SIGNAL(pressed(int, int, int, const QPoint &)),
+	  this, SLOT(button_pressed(int, int, int, const QPoint &)));
+  
+  if (PythonModList.isEmpty()) {
+    PythonModList.append("");
+    PythonModList.append("*");
+    PythonModList.append("**");
+  }
+  
+  PythonParamRankList.clear();
+  
+  for (int rank = 0; rank != params->numRows(); rank += 1) {
+    if (!params->name(rank).isEmpty()) {
+      QString s;
+      
+      s.sprintf("${p%u}", rank);
+      PythonParamRankList.append(s);
+    }
+  }
+}
+
+void PythonParamsTable::init_row(int row) {
+  setItem(row, 0, new QTableItem(this, QTableItem::Never, QString::null));
+  setItem(row, 1, new ComboItem(this, QString::null, PythonModList));
+  setItem(row, 2, new ComboItem(this, QString::null, PythonParamRankList));
+  setText(row, 3, QString::null);
+}
+
+bool PythonParamsTable::extract(int tblindex, int & strindex, QString s) {
+  // s at least contains ${)}
+  while (s.at(strindex).isSpace())
+    strindex += 1;
+  
+  int sup = supOf(s, strindex);
+  
+  if (s.mid(strindex, sup - strindex).stripWhiteSpace().isEmpty())
+    return FALSE;
+  
+  QString p_i;
+  QString ptr;
+  QString m_i;
+  int index = s.find("${p", strindex);
+    
+  if ((index != -1) && (index < sup)) {
+    // have name
+    m_i = s.mid(strindex, index - strindex).stripWhiteSpace();
+      
+    // extract modifier
+    if (m_i.find("**") != -1)
+      m_i = "**";
+    else if (m_i.find("*") != -1)
+      m_i = "*";
+    
+    if (((strindex = s.find('}', index + 2)) == -1) || (strindex >= sup))
+      return FALSE;
+    else {
+      strindex += 1;
+      p_i = s.mid(index, strindex - index);
+    }
+  }
+  
+  setNumRows(tblindex + 1);
+
+  setItem(tblindex, 1, new ComboItem(this, m_i, PythonModList));
+  setItem(tblindex, 2, new ComboItem(this, p_i, PythonParamRankList));
+  
+  strindex = (s.at(sup) == QChar(',')) ? sup + 1 : sup;
+    
+  return TRUE;
+}
+
+void PythonParamsTable::setItem(int row, int col, QTableItem * item) {
+  QTable::setItem(row, col, item);
+  
+  if (col == 2)
+    update_name(row);
+}
+
+void PythonParamsTable::setCurrentCell(int row, int col) {
+  QTable::setCurrentCell(row, col);
+  update_names();
+}
+
+void PythonParamsTable::update_names() {
+  int n = numRows();
+  int row;
+
+  for (row = 0; row != n; row += 1)
+    update_name(row);
+}
+
+void PythonParamsTable::update_name(int row) {
+  bool p_set;
+  unsigned p_i;
+  
+  if (!text(row, 2).isEmpty() &&
+      (sscanf((const char *) text(row, 2), "${p%u}", &p_i) == 1))
+    p_set = TRUE;
+  else
+    p_set = FALSE;
+  
+  QTable::setItem(row, 0,
+		  new QTableItem(this, QTableItem::Never,
+				 (p_set && (p_i < params->nparams()))
+				 ? params->name(p_i) : QString::null));
+}
+
+void PythonParamsTable::button_pressed(int row, int col, int, const QPoint &) {
+  if (col == 4) {
+    char s[16];
+    
+    sprintf(s, "param %d", row + 1);
+    
+    QPopupMenu m;
+    m.insertItem(s, -1);
+    m.insertSeparator();
+    m.insertItem("Insert param before", 0);
+    m.insertItem("Insert param after", 1);
+    m.insertSeparator();
+    m.insertItem("Delete param", 2);
+    m.insertSeparator();
+    m.insertItem("Copy param", 3);
+    m.insertItem("Cut param", 4);
+    m.insertItem("Paste param", 5);
+    m.insertSeparator();
+    
+    QPopupMenu mv;
+    int rank;
+    
+    for (rank = 0; rank != numRows(); rank += 1)
+      if (rank != row)
+	mv.insertItem(QString::number(rank + 1), 10 + rank);
+    
+    m.insertItem("Move param", &mv);
+    m.insertSeparator();
+    
+    QPopupMenu rk;
+    int p_i;
+    
+    if (text(row, 2).isEmpty() ||
+	(sscanf((const char *) text(row, 2), "${p%d}", &p_i) != 1))
+      p_i = -1;
+    
+    for (rank = 0; rank != params->numRows(); rank += 1)
+      if (!params->name(rank).isEmpty() && (rank != p_i))
+	rk.insertItem(QString::number(rank), 100 + rank);
+    
+    m.insertItem("Set rank <i>", &rk);
+    
+    switch (rank = m.exec(QCursor::pos())) {
+    case 0:
+      insert_row_before(row);
+      break;
+    case 1:
+      insert_row_after(row);
+      break;
+    case 2:
+      delete_row(row);
+      break;
+    case 3:
+      copy_row(row);
+      break;
+    case 4:
+      cut_row(row);
+      break;
+    case 5:
+      paste_row(row);
+      break;
+    default:
+      if (rank >= 100) {
+	char s[16];
+	
+	if (p_i != -1) {
+	  sprintf(s, "${p%d}", rank - 100);
+	  setItem(row, 2, new ComboItem(this, s, PythonParamRankList));
+	}
+      }
+      else if (rank >= 10)
+	move_row(row, rank - 10);
+      break;
+    }
+  }
+}
+
+void PythonParamsTable::insert_row_before(int row) {
+  int n = numRows();
+  int index;
+  int col;
+  
+  setNumRows(n + 1);
+  
+  for (index = n; index != row; index -= 1) {
+    for (col = 0; col != 3; col += 1) {
+      QTableItem * it = item(index - 1, col);
+      
+      takeItem(it);
+      setItem(index, col, it);
+    }
+    setText(index, col, text(index - 1, col));
+  }
+
+  init_row(row);
+}
+
+void PythonParamsTable::insert_row_after(int row) {
+  int n = numRows();
+  int index;
+  int col;
+  
+  setNumRows(n + 1);
+  
+  for (index = n; index > row + 1; index -= 1) {
+    for (col = 0; col != 3; col += 1) {
+      QTableItem * it = item(index - 1, col);
+      
+      takeItem(it);
+      setItem(index, col, it);
+    }
+    setText(index, col, text(index - 1, col));
+  }
+
+  init_row(row + 1);
+ }
+
+void PythonParamsTable::delete_row(int row) {
+  int n = numRows();
+  int index;
+  int col;
+
+  clearCellWidget(row, 1);
+    
+  if (row == (n - 1)) {
+    // the last line : empty it
+    init_row(row);
+  }
+  else {
+    for (index = row; index != n - 1; index += 1) {
+      for (col = 0; col != 3; col += 1) {
+	QTableItem * it = item(index + 1, col);
+	
+	takeItem(it);
+	setItem(index, col, it);
+      }
+      setText(index, col, text(index + 1, col));
+    }
+    
+    setNumRows(n - 1);
+  }
+}
+
+void PythonParamsTable::copy_row(int row) {
+  int col;
+  
+  for (col = 0; col != 4; col += 1)
+    copied[col] = text(row, col);
+}
+
+void PythonParamsTable::cut_row(int row) {
+  copy_row(row);
+  delete_row(row);
+}
+
+void PythonParamsTable::paste_row(int row) {
+  int col;
+  
+  for (col = 0; col != 4; col += 1)
+    setText(row, col, copied[col]);
+}
+
+void PythonParamsTable::move_row(int from, int to) {
+  int col;
+  QString save_copied[4];
+  
+  for (col = 0; col != 4; col += 1)
+    save_copied[col] = copied[col];
+  
+  cut_row(from);
+  if (to > from)
+    insert_row_after(to - 1);
+  else
+    insert_row_before(to);
+  paste_row(to);
+  
+  for (col = 0; col != 4; col += 1)
+    copied[col] = save_copied[col];
+}
+
+void PythonParamsTable::update_edform() {
+  forceUpdateCells();
+  
+  QString s;
+  const char * sep = "";
+  
+  int n = numRows();
+  int index;
+  
+  for (index = 0; index != n; index += 1) {
+    QString p;
+    int col;
+    
+    for (col = 1; col != 3; col += 1) {
+      if (!text(index, col).isEmpty()) {
+	if (p.isEmpty())
+	  p += text(index, col);
+	else
+	  p += " " + text(index, col);
+      }
+    }
+    
+    p = p.stripWhiteSpace();
+    if (! p.isEmpty()) {
+      s += sep + p;
+      sep = ", ";
+    }
+  }
+  
+  QString form = edform->text();
+  
+  index = form.find("${(}");
+  
+  form.replace(index + 4, form.find("${)}") - index - 4, s);
+  edform->setText(form);
+}
+
+//
+// PythonParamsDialog
+//
+
+QSize PythonParamsDialog::previous_size;
+
+PythonParamsDialog::PythonParamsDialog(ParamsTable * params, MultiLineEdit * form)
+    : QDialog(0, "Python parameters dialog", TRUE) {
+  setCaption("Python parameters dialog");
+
+  QVBoxLayout * vbox = new QVBoxLayout(this); 
+  
+  vbox->setMargin(5);
+
+  tbl = new PythonParamsTable(params, form, this);
+  vbox->addWidget(tbl);
+  
+  QHBoxLayout * hbox = new QHBoxLayout(vbox); 
+  hbox->setMargin(5);
+  QPushButton * accept = new QPushButton("&OK", this);
+  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QSize bs(cancel->sizeHint());
+  
+  accept->setDefault(TRUE);
+  accept->setFixedSize(bs);
+  cancel->setFixedSize(bs);
+  
+  hbox->addWidget(accept);
+  hbox->addWidget(cancel);
+    
+  connect(accept, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+}
+
+PythonParamsDialog::~PythonParamsDialog() {
+  previous_size = size();
+}
+
+void PythonParamsDialog::polish() {
+  QDialog::polish();
+  UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
+}
+  
+
+void PythonParamsDialog::accept() {
   tbl->update_edform();
   
   QDialog::accept();

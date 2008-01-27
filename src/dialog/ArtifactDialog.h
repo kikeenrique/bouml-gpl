@@ -82,6 +82,12 @@ class ArtifactDialog : public QTabDialog {
     MultiLineEdit * edphp_content;
     MultiLineEdit * showphp_content;
     
+    // python
+    unsigned n_python;
+    QSplitter * python_content_page;
+    MultiLineEdit * edpython_content;
+    MultiLineEdit * showpython_content;
+    
     // idl
     unsigned n_idl;
     QSplitter * idl_content_page;
@@ -110,6 +116,7 @@ class ArtifactDialog : public QTabDialog {
     void init_cpp_tab();
     void init_java_tab();
     void init_php_tab();
+    void init_python_tab();
     void init_idl_tab();
     void init_assoc_classes_tab();
     void init_assoc_artifacts_tab();
@@ -123,6 +130,7 @@ class ArtifactDialog : public QTabDialog {
     static void post_cpp_edit_src(ArtifactDialog * d, QString s);
     static void post_java_edit(ArtifactDialog * d, QString s);
     static void post_php_edit(ArtifactDialog * d, QString s);
+    static void post_python_edit(ArtifactDialog * d, QString s);
     static void post_idl_edit(ArtifactDialog * d, QString s);
     
   public:
@@ -152,6 +160,10 @@ class ArtifactDialog : public QTabDialog {
     void php_update_src();
     void php_default_src();
     void php_unmapped_src();
+    void python_edit();
+    void python_update_src();
+    void python_default_src();
+    void python_unmapped_src();
     void idl_edit();
     void idl_update_src();
     void idl_default_src();

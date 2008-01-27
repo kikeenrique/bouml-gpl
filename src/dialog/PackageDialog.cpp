@@ -284,6 +284,57 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   if (!GenerationSettings::php_get_default_defs())
     removePage(vtab);
   
+  // Python
+  
+  vtab = new QVBox(this);
+  pythontab = vtab;
+  vtab->setMargin(5);
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(5);
+  new QLabel("The generation directory may be relative in case the root directory\n\
+is specified (through the project menu entry 'edit generation settings')\n\n", htab);
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(5);
+  lbl1 = new QLabel("directory : ", htab);
+  edpythondir = new LineEdit(pa->python_dir, htab);
+  if (visit) 
+    edpythondir->setReadOnly(TRUE);
+  else {
+    htab = new QHBox(vtab);
+    new QLabel("", htab);
+    button = new QPushButton("Browse", htab);
+    connect(button, SIGNAL(clicked ()), this, SLOT(python_browse()));
+    new QLabel("", htab);
+    pythonbutton = new QPushButton((pa->python_dir.isEmpty() || 
+				    QDir::isRelativePath(pa->python_dir))
+				   ? Absolute : Relative, htab);
+    if (GenerationSettings::get_python_root_dir().isEmpty())
+      pythonbutton->setEnabled(FALSE); 
+    connect(pythonbutton, SIGNAL(clicked ()), this, SLOT(python_relative()));
+    new QLabel("", htab);
+  }
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(5);
+  new QLabel("", htab);
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(5);
+  lbl2 = new QLabel("package : ", htab);
+  edpythonpackage = new LineEdit(pa->python_package, htab);
+  edpythonpackage->setReadOnly(visit);
+  
+  same_width(lbl1, lbl2);
+      
+  vtab->setStretchFactor(new QHBox(vtab), 1000);
+  
+  addTab(vtab, "Python");
+  
+  if (!GenerationSettings::python_get_default_defs())
+    removePage(vtab);
+  
   // IDL
   
   vtab = new QVBox(this);
@@ -370,6 +421,8 @@ void PackageDialog::change_tabs(QWidget * w) {
       edjavadir->setFocus();
     else if (w == phptab)
       edphpdir->setFocus();
+    else if (w == pythontab)
+      edpythondir->setFocus();
     else if (w == idltab)
       edidldir->setFocus();
   }
@@ -407,6 +460,8 @@ void PackageDialog::accept() {
     pa->java_dir = edjavadir->text().simplifyWhiteSpace();
     pa->java_package = edjavapackage->text().simplifyWhiteSpace();
     pa->php_dir = edphpdir->text().simplifyWhiteSpace();
+    pa->python_dir = edpythondir->text().simplifyWhiteSpace();
+    pa->python_package = edpythonpackage->text().simplifyWhiteSpace();
     pa->idl_dir = edidldir->text().simplifyWhiteSpace();
     pa->idl_module = edidlmodule->text().simplifyWhiteSpace();
     
@@ -471,6 +526,11 @@ void PackageDialog::php_browse() {
 	 GenerationSettings::get_php_root_dir());
 }
 
+void PackageDialog::python_browse() {
+  browse(edpythondir, pythonbutton, "Python directory",
+	 GenerationSettings::get_python_root_dir());
+}
+
 void PackageDialog::idl_browse() {
   browse(edidldir, idlbutton, "Idl directory",
 	 GenerationSettings::get_idl_root_dir());
@@ -516,6 +576,10 @@ void PackageDialog::java_relative() {
 
 void PackageDialog::php_relative() {
   relative(edphpdir, phpbutton, GenerationSettings::get_php_root_dir());
+}
+
+void PackageDialog::python_relative() {
+  relative(edpythondir, pythonbutton, GenerationSettings::get_python_root_dir());
 }
 
 void PackageDialog::idl_relative() {

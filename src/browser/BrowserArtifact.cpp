@@ -60,7 +60,8 @@ QStringList BrowserArtifact::relation_default_stereotypes;	// unicode
 BrowserArtifact::BrowserArtifact(QString s, BrowserNode * p, int id)
     : BrowserNode(s, p), Labeled<BrowserArtifact>(all, id),
       cpp_h_edited(FALSE), cpp_src_edited(FALSE),
-      java_edited(FALSE), php_edited(FALSE), idl_edited(FALSE) {
+      java_edited(FALSE), php_edited(FALSE),
+      python_edited(FALSE), idl_edited(FALSE) {
   def = new ArtifactData;
   def->set_browser_node(this);
   
@@ -71,7 +72,8 @@ BrowserArtifact::BrowserArtifact(const BrowserArtifact * model,
 				 BrowserNode * p)
     : BrowserNode(model->name, p), Labeled<BrowserArtifact>(all, 0),
       cpp_h_edited(FALSE), cpp_src_edited(FALSE),
-      java_edited(FALSE), php_edited(FALSE), idl_edited(FALSE) {
+      java_edited(FALSE), php_edited(FALSE),
+      python_edited(FALSE), idl_edited(FALSE) {
   def = new ArtifactData(model->def, this);
   comment = model->comment;
   associated_diagram = 0;  
@@ -80,7 +82,8 @@ BrowserArtifact::BrowserArtifact(const BrowserArtifact * model,
 BrowserArtifact::BrowserArtifact(int id)
     : BrowserNode(), Labeled<BrowserArtifact>(all, id),
       cpp_h_edited(FALSE), cpp_src_edited(FALSE),
-      java_edited(FALSE), php_edited(FALSE), idl_edited(FALSE) {
+      java_edited(FALSE), php_edited(FALSE),
+      python_edited(FALSE), idl_edited(FALSE) {
   // not yet read
   def = new ArtifactData;
   def->set_browser_node(this);
@@ -199,7 +202,7 @@ QString BrowserArtifact::get_path(QString path, QString root,
 
 void BrowserArtifact::get_paths(QString & cpp_h_path, QString & cpp_src_path,
 				QString & java_path, QString & php_path, 
-				QString & idl_path) const {
+				QString & python_path, QString & idl_path) const {
   bool a_text = !strcmp(def->get_stereotype(), "text");
   
   if (a_text || !strcmp(def->get_stereotype(), "source")) {
@@ -225,6 +228,11 @@ void BrowserArtifact::get_paths(QString & cpp_h_path, QString & cpp_src_path,
 			  GenerationSettings::get_php_root_dir(),
 			  (a_text) ? (const char *) 0
 				   : (const char *) GenerationSettings::get_php_extension());
+    if (def->get_python_src()[0] != 0)
+      python_path = get_path((const char *) pd->get_python_dir(),
+			     GenerationSettings::get_python_root_dir(),
+			     (a_text) ? (const char *) 0
+				      : (const char *) GenerationSettings::get_python_extension());
     if (def->get_idl_src()[0] != 0)
       idl_path = get_path((const char *) pd->get_idl_dir(),
 			  GenerationSettings::get_idl_root_dir(),
@@ -261,6 +269,7 @@ void BrowserArtifact::menu() {
   QString cpp_src_path;
   QString java_path;
   QString php_path;
+  QString python_path;
   QString idl_path;
   
   m.insertItem(new MenuTitle(name, m.font()), -1);
@@ -286,6 +295,7 @@ Note that you can undelete it after");
       gensubm.insertItem("C++", 10);
       gensubm.insertItem("Java", 11);
       gensubm.insertItem("Php", 22);
+      gensubm.insertItem("Python", 25);
       gensubm.insertItem("Idl", 12);
       
       if (!a_text && preserve_bodies()) {
@@ -294,9 +304,10 @@ Note that you can undelete it after");
 	roundtripbodysubm.insertItem("C++", 30);
 	roundtripbodysubm.insertItem("Java", 31);
 	roundtripbodysubm.insertItem("Php", 32);
+	roundtripbodysubm.insertItem("Python", 33);
       }
       
-      get_paths(cpp_h_path, cpp_src_path, java_path, php_path, idl_path);
+      get_paths(cpp_h_path, cpp_src_path, java_path, php_path, python_path, idl_path);
       if (!a_text && !cpp_h_edited && !cpp_h_path.isEmpty()) {
 	//if (! cpp_src_path.isEmpty())
 	  //roundtripsubm.insertItem("C++ header & source files", 13);
@@ -314,6 +325,10 @@ Note that you can undelete it after");
       if (!php_edited && !php_path.isEmpty()) {
 	editsubm.insertItem("Php source file", 23);
 	//roundtripsubm.insertItem("Php source file", 24);
+      }
+      if (!python_edited && !python_path.isEmpty()) {
+	editsubm.insertItem("Python source file", 26);
+	//roundtripsubm.insertItem("Python source file", 27);
       }
       if (!idl_edited && !idl_path.isEmpty()) {
 	editsubm.insertItem("Idl source file", 20);
@@ -372,7 +387,7 @@ through a relation");
   
   exec_menu_choice(m.exec(QCursor::pos()),
 		   cpp_h_path, cpp_src_path,
-		   java_path, php_path, idl_path);
+		   java_path, php_path, python_path, idl_path);
 }
 
 void BrowserArtifact::exec_menu_choice(int rank,
@@ -380,6 +395,7 @@ void BrowserArtifact::exec_menu_choice(int rank,
 				       QString cpp_src_path,
 				       QString java_path,
 				       QString php_path,
+				       QString python_path,
 				       QString idl_path) {
   switch (rank) {
   case 0:
@@ -424,6 +440,16 @@ void BrowserArtifact::exec_menu_choice(int rank,
 		   this);
     }
     return;
+  case 25:
+    {
+      bool preserve = preserve_bodies();
+      
+      ToolCom::run((verbose_generation()) 
+		   ? ((preserve) ? "python_generator -v -p" : "python_generator -v")
+		   : ((preserve) ? "python_generator -p" : "python_generator"), 
+		   this);
+    }
+    return;
   case 12:
     ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
     return;
@@ -454,6 +480,12 @@ void BrowserArtifact::exec_menu_choice(int rank,
   case 24:
     //roundtrip Php source files
     return;
+  case 26:
+    (new SourceDialog(python_path, python_edited, edition_number))->show();
+    return;
+  case 27:
+    //roundtrip Python source files
+    return;
   case 20:
     (new SourceDialog(idl_path, idl_edited, edition_number))->show();
     return;
@@ -468,6 +500,9 @@ void BrowserArtifact::exec_menu_choice(int rank,
     return;
   case 32:
     ToolCom::run((verbose_generation()) ? "roundtrip_body -v php" : "roundtrip_body php", this);
+    return;
+  case 33:
+    ToolCom::run((verbose_generation()) ? "roundtrip_body -v python" : "roundtrip_body python", this);
     return;
   case 9999:
     {
@@ -506,6 +541,7 @@ void BrowserArtifact::apply_shortcut(QString s) {
   QString cpp_src_path;
   QString java_path;
   QString php_path;
+  QString python_path;
   QString idl_path;
   
   if (!deletedp()) {
@@ -527,6 +563,8 @@ void BrowserArtifact::apply_shortcut(QString s) {
 	choice = 11;
       else if (s == "Generate Php")
 	choice = 22;
+      else if (s == "Generate Python")
+	choice = 25;
       else if (s == "Generate Idl")
 	choice = 12;
       else {
@@ -537,10 +575,12 @@ void BrowserArtifact::apply_shortcut(QString s) {
 	    choice = 31;
 	  else if (s == "Roundtrip Php operation body")
 	    choice = 32;
+	  else if (s == "Roundtrip Python operation body")
+	    choice = 33;
 	}
 	
 	if (choice == -1) {
-	  get_paths(cpp_h_path, cpp_src_path, java_path, php_path, idl_path);
+	  get_paths(cpp_h_path, cpp_src_path, java_path, php_path, python_path, idl_path);
 	  if (!a_text && !cpp_h_edited && !cpp_h_path.isEmpty()) {
 	    //if (! cpp_src_path.isEmpty())
 	    //roundtripsubm.insertItem("C++ header & source files", 13);
@@ -562,6 +602,11 @@ void BrowserArtifact::apply_shortcut(QString s) {
 	    if (s == "Php source file")
 	      choice = 23;
 	    //roundtripsubm.insertItem("Php source file", 24);
+	  }
+	  if (!python_edited && !python_path.isEmpty()) {
+	    if (s == "Python source file")
+	      choice = 26;
+	    //roundtripsubm.insertItem("Python source file", 27);
 	  }
 	  if (!idl_edited && !idl_path.isEmpty()) {
 	    if (s == "Idl source file")
@@ -587,7 +632,7 @@ void BrowserArtifact::apply_shortcut(QString s) {
       choice = 2;
   
   exec_menu_choice(choice, cpp_h_path, cpp_src_path,
-		   java_path, php_path, idl_path);
+		   java_path, php_path, python_path, idl_path);
 }
 
 void BrowserArtifact::open(bool force_edit) {
@@ -615,14 +660,19 @@ int BrowserArtifact::get_identifier() const {
 }
 
 void BrowserArtifact::DragMoveEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
-    e->accept();
+  if (UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
   else
     ((BrowserNode *) parent())->DragMoveInsideEvent(e);
 }
 
 void BrowserArtifact::DragMoveInsideEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
+  if (!is_read_only &&
+      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
     e->accept();
   else
     e->ignore();
@@ -809,6 +859,10 @@ void BrowserArtifact::associate_class(BrowserClass * c, bool on_read) {
       if (*def->get_php_src() == 0)
 	def->use_default_php_src();
     }
+    if (*cd->get_pythondecl() != 0) {
+      if (*def->get_python_src() == 0)
+	def->use_default_python_src();
+    }
     if (*cd->get_idldecl() != 0) {
       if (*def->get_idl_src() == 0)
 	def->use_default_idl_src();
@@ -891,6 +945,8 @@ void BrowserArtifact::init()
   relation_default_stereotypes.clear();
   relation_default_stereotypes.append("deploy");
   relation_default_stereotypes.append("manifest");
+  relation_default_stereotypes.append("import");
+  relation_default_stereotypes.append("from");
 }
 
 // unicode

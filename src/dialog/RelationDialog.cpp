@@ -41,6 +41,7 @@
 #include "RelationDialog.h"
 #include "RelationData.h"
 #include "BrowserRelation.h"
+#include "BrowserOperation.h"
 #include "ClassData.h"
 #include "BrowserView.h"
 #include "BrowserClass.h"
@@ -328,6 +329,33 @@ RelationDialog::RelationDialog(RelationData * r)
     removePage(vtab);
   
   //
+  // Python
+  //
+  
+  vtab = new QVBox(this);
+  pythontab = vtab;
+  vtab->setMargin(5);
+  
+  // A
+  bg = new QGroupBox(2, Qt::Horizontal, ina, vtab); 
+  init_python_role(a, rel->a, rel->get_start_class(), bg, SLOT(python_update_a()),
+		   SLOT(python_default_a()), SLOT(python_unmapped_a()));
+  
+  // B
+  htab = new QHBox(vtab);	// to have a vertical margin
+  htab->setMargin(5);
+  
+  python_b = new QGroupBox(2, Qt::Horizontal, inb, vtab);
+  init_python_role(b, rel->b, rel->get_end_class(),
+		   python_b, SLOT(python_update_b()),
+		   SLOT(python_default_b()), SLOT(python_unmapped_b()));
+
+  addTab(vtab, "Python");
+  
+  if (!GenerationSettings::python_get_default_defs())
+    removePage(vtab);
+  
+  //
   // IDL
   //
   vtab = new QVBox(this);
@@ -417,16 +445,19 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
   QLabel * lbl;
   
   st = ClassDialog::cpp_stereotype(stereotype);
-  role.cpp_undef = undef || (st == "enum") || (st == "typedef");
+  role.cpp_undef = undef || (st == "enum") || (st == "typedef") || (st == "ignored");
   
   st = ClassDialog::java_stereotype(stereotype);
-  role.java_undef = undef || (st == "enum") || (st == "typedef");
+  role.java_undef = undef || (st == "enum") || (st == "typedef") || (st == "ignored");
   
   st = ClassDialog::php_stereotype(stereotype);
-  role.php_undef = undef || (st == "enum") || (st == "typedef");
+  role.php_undef = undef || (st == "enum") || (st == "typedef") || (st == "ignored");
+  
+  st = ClassDialog::python_stereotype(stereotype);
+  role.python_undef = undef || (st == "enum") || (st == "typedef") || (st == "ignored");
   
   st = ClassDialog::idl_stereotype(stereotype);
-  role.idl_undef = undef || (st == "enum") || (st == "typedef");
+  role.idl_undef = undef || (st == "enum") || (st == "typedef") || (st == "ignored");
   role.idl_in_struct = (st == "struct");
   role.idl_in_union = (st == "union");
   role.idl_in_valuetype = (st == "valuetype");
@@ -487,7 +518,7 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
   role.opt.append(bg2);
   if (roleb)
     groupb.append(bg2);
-  role.classrelation_cb = new QCheckBox("class relation", bg2);
+  role.classrelation_cb = new QCheckBox("static relation", bg2);
   if (rel.isa_class_relation)
     role.classrelation_cb->setChecked(TRUE);
   role.volatile_cb = new QCheckBox("volatile", bg2);
@@ -774,6 +805,48 @@ void RelationDialog::init_php_role(RoleDialog & role, const RoleData & rel,
   }
 }
 
+void RelationDialog::init_python_role(RoleDialog & role, const RoleData & rel,
+				      BrowserClass * cl, QGroupBox * bg,
+				      const char * python_update_slot, 
+				      const char * python_default_slot,
+				      const char * python_unmapped_slot) {
+  role.python_self =
+    BrowserOperation::python_init_self(cl) + ".";
+    
+  role.opt.append(new QLabel("Declaration : ", bg));
+  role.edpythondecl = new MultiLineEdit(bg);
+  role.opt.append(role.edpythondecl);
+  QFont font = role.edpythondecl->font();
+  if (! hasCodec())
+    font.setFamily("Courier");
+  font.setFixedPitch(TRUE);
+  role.edpythondecl->setText(rel.python_decl);
+  role.edpythondecl->setFont(font);
+  if (role.visit)
+    role.edpythondecl->setReadOnly(TRUE);
+  else
+    connect(role.edpythondecl, SIGNAL(textChanged()), this, python_update_slot);
+
+  role.opt.append(new QLabel("Result after\nsubstitution : ", bg));
+  role.showpythondecl = new MultiLineEdit(bg);
+  role.opt.append(role.showpythondecl);
+  role.showpythondecl->setReadOnly(TRUE);
+  role.showpythondecl->setFont(font);
+
+  new QLabel("", bg);
+  QHBox * htab = new QHBox(bg);
+  htab->setMargin(5);
+  
+  if (! role.visit) {
+    role.python_default_decl_bt = new QPushButton("Default declaration", htab);
+    connect(role.python_default_decl_bt, SIGNAL(pressed()),
+	    this, python_default_slot);
+    role.python_unmapped_decl_bt = new QPushButton("Not generated in Python", htab);
+    connect(role.python_unmapped_decl_bt, SIGNAL(pressed()),
+	    this, python_unmapped_slot);
+  }
+}
+
 void RelationDialog::init_idl_role(RoleDialog & role, const RoleData & rel,
 				   ClassData * cld, QGroupBox * bg,
 				   const char * idl_update_slot, 
@@ -899,6 +972,7 @@ void RelationDialog::edTypeActivated(int r)
     cpp_b->setEnabled(FALSE);
     java_b->setEnabled(FALSE);
     php_b->setEnabled(FALSE);
+    python_b->setEnabled(FALSE);
     idl_b->setEnabled(FALSE);
   }
   else {
@@ -913,6 +987,7 @@ void RelationDialog::edTypeActivated(int r)
       cpp_b->setEnabled(FALSE);
       java_b->setEnabled(FALSE);
       php_b->setEnabled(FALSE);
+      python_b->setEnabled(FALSE);
       idl_b->setEnabled(FALSE);
     }
     else if (! b.visit) {
@@ -920,6 +995,7 @@ void RelationDialog::edTypeActivated(int r)
       cpp_b->setEnabled(TRUE);
       java_b->setEnabled(TRUE);
       php_b->setEnabled(TRUE);
+      python_b->setEnabled(TRUE);
       idl_b->setEnabled(TRUE);
     }
   }
@@ -940,6 +1016,8 @@ void RelationDialog::edTypeActivated(int r)
 	java_default_a();
       if (!a.edphpdecl->text().isEmpty())
 	php_default_a();
+      if (!a.edpythondecl->text().isEmpty())
+	python_default_a();
       if (!a.edidldecl->text().isEmpty())
 	idl_default_a();
     }
@@ -950,6 +1028,8 @@ void RelationDialog::edTypeActivated(int r)
 	java_default_b();
       if (!b.edphpdecl->text().isEmpty())
 	php_default_b();
+      if (!b.edpythondecl->text().isEmpty())
+	python_default_b();
       if (!b.edidldecl->text().isEmpty())
 	idl_default_b();
     }
@@ -1081,6 +1161,12 @@ void RelationDialog::update_all_tabs(QWidget * w) {
     php_update_b();
     if (! a.visit)
       a.edphpdecl->setFocus();
+  }
+  else if (w == pythontab) {
+    python_update_a();
+    python_update_b();
+    if (! a.visit)
+      a.edpythondecl->setFocus();
   }
   else if (w == idltab) {
     idl_update_a();
@@ -1611,6 +1697,10 @@ void RelationDialog::php_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	      s += " = ";
 	    s += role.edinit->text();
 	  }
+	  else if (need_equal(p, "None", FALSE))
+	    s += " = None";
+	  else
+	    s += "None";
 	  p += 8;
 	}
 	else if (*p == '\n') {
@@ -1669,6 +1759,148 @@ void RelationDialog::php_default_b() {
 void RelationDialog::php_unmapped_b() {
   b.edphpdecl->setText(QString::null);
   b.showphpdecl->setText(QString::null);
+}
+
+// Python management
+
+void RelationDialog::python_update(RoleDialog & role, BrowserClass * cl, BrowserNode * rl) {
+  QString s;
+  
+  switch (current_type) {
+  case UmlRealize:
+  case UmlGeneralisation:
+    {
+      // do NOT write
+      //	const char * p = role.edpythondecl->text();
+      // because the QString is immediatly destroyed !
+      QString def = role.edpythondecl->text();
+      const char * p = def;
+      
+      while (*p) {
+	if (!strncmp(p, "${type}", 7)) {
+	  s = get_python_name(cl);
+	  p += 7;
+	}
+	else
+	  s += *p++;
+      }
+    }
+    break;
+  case UmlDependency:
+    if (&role == &b) {
+      s  = "";
+      break;
+    }
+    // no break
+  default:
+    {
+      // do NOT write
+      //	const char * p = role.edpythondecl->text();
+      // because the QString is immediatly destroyed !
+      QString def = role.edpythondecl->text();
+      const char * p = def;
+      const char * pp = 0;
+      
+      for (;;) {
+	if (*p == 0) {
+	  if (pp == 0)
+	    break;
+	  
+	  // comment management done
+	  p = pp;
+	  pp = 0;
+	  if (*p == 0)
+	    break;
+	}
+	
+	if (!strncmp(p, "${comment}", 10))
+	  manage_python_comment(role.comment->text(), p, pp);
+	else if (!strncmp(p, "${description}", 14))
+	  manage_python_description(role.comment->text(), p, pp);
+	else if (!strncmp(p, "${name}", 7)) {
+	  p += 7;
+	  s += role.edrole->text();
+	}
+	else if (!strncmp(p, "${value}", 8)) {
+          QString i = role.edinit->text().stripWhiteSpace();
+
+	  if (!i.isEmpty()) {
+	    if (need_equal(p, i, FALSE))
+	      s += " = ";
+	    s += role.edinit->text();
+	  }
+	  else if (need_equal(p, "None", FALSE))
+	    s += " = None";
+	  else
+	    s += "None";
+	  p += 8;
+	}
+	else if (!strncmp(p, "${self}", 7)) {
+	  p += 7;
+	  if (!role.classrelation_cb->isChecked())
+	    s += role.python_self;
+	}
+	else if (!strncmp(p, "${stereotype}", 13)) {
+	  p += 13;
+	  s += GenerationSettings::python_relationattribute_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+	}
+	else if (!strncmp(p, "${type}", 7)) {
+	  p += 7;
+	  s += get_python_name(cl);
+	}
+	else if (*p == '@')
+	  manage_alias(rl, p, s, role.kvtable);
+	else
+	  s += *p++;
+      }
+    }
+  }
+  
+  role.showpythondecl->setText(s);
+}
+
+void RelationDialog::python_update_a() {
+  python_update(a, rel->get_end_class(), rel->start);
+}
+
+void RelationDialog::python_update_b() {
+  if (! RelationData::uni_directional(current_type))
+    python_update(b, rel->get_start_class(), rel->end);
+}
+
+void RelationDialog::python_default_a() {
+  if (a.python_undef)
+    a.edpythondecl->setText(QString::null);
+  else if (RelationData::isa_association(current_type))
+    a.edpythondecl->setText(GenerationSettings::python_default_rel_decl(current_type,
+									a.multiplicity->currentText().stripWhiteSpace()));
+  else {
+    a.edpythondecl->setText("${type}");
+    a.python_unmapped_decl_bt->setOn(FALSE);
+  }
+  python_update_a();
+}
+
+void RelationDialog::python_unmapped_a() {
+  a.edpythondecl->setText(QString::null);
+  a.showpythondecl->setText(QString::null);
+  
+  if (!RelationData::isa_association(current_type))
+    a.python_default_decl_bt->setOn(FALSE);
+}
+
+void RelationDialog::python_default_b() {
+  if (b.python_undef)
+    b.edpythondecl->setText(QString::null);
+  else 
+    b.edpythondecl->setText(GenerationSettings::python_default_rel_decl(UmlAssociation,
+									b.multiplicity->currentText().stripWhiteSpace()));
+  python_update_b();
+}
+
+void RelationDialog::python_unmapped_b() {
+  b.edpythondecl->setText(QString::null);
+  b.showpythondecl->setText(QString::null);
 }
 
 // Idl management
@@ -1902,6 +2134,7 @@ static void accept_role(RoleDialog & role, RoleData & rel,
   rel.java_decl = role.edjavadecl->text();
   rel.java_annotation = role.javaannotation;
   rel.php_decl = role.edphpdecl->text();
+  rel.python_decl = role.edpythondecl->text();
   rel.idl_decl = role.edidldecl->text();
 }
 

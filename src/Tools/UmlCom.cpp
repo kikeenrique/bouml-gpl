@@ -1,9 +1,9 @@
 //#define TRACE
-//#ifdef TRACE
-//#include <iostream>
-//
-//using namespace std;
-//#endif
+#ifdef TRACE
+#include <iostream>
+
+using namespace std;
+#endif
 
 #include "UmlCom.h"
 
@@ -35,7 +35,7 @@ bool UmlCom::connect(unsigned int port)
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(38);
+    write_unsigned(39);
     flush();
     return TRUE;
   }

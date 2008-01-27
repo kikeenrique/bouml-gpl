@@ -108,6 +108,7 @@ class DiagramCanvas : public QCanvasRectangle, public DiagramItem {
 };
 
 #define CLASS_ICON_SIZE 20
+#define CLASS_CANVAS_MIN_SIZE 40
 #define CONTROL_WIDTH CLASS_ICON_SIZE
 #define CONTROL_HEIGHT (CLASS_ICON_SIZE + 5)
 #define ENTITY_SIZE CLASS_ICON_SIZE

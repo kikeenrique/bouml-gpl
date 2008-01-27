@@ -65,6 +65,7 @@ class UmlWindow : public QMainWindow {
     int use_cpp_id;
     int use_java_id;
     int use_php_id;
+    int use_python_id;
     int use_idl_id;
     int verbose_gen_id;
     int preserve_bodies_id;
@@ -129,6 +130,7 @@ class UmlWindow : public QMainWindow {
     void use_cpp();
     void use_java();
     void use_php();
+    void use_python();
     void use_idl();
     void verbose();
     void preserve();
@@ -150,15 +152,18 @@ class UmlWindow : public QMainWindow {
     void cpp_generate();
     void java_generate();
     void php_generate();
+    void python_generate();
     void idl_generate();
     void java_catalog();
     //void doc_generate();
     void cpp_reverse();
     void java_reverse();
     void php_reverse();
+    void python_reverse();
     void cpp_roundtrip();
     void java_roundtrip();
     void php_roundtrip();
+    void python_roundtrip();
     void run_tool(int param);
     void tool_settings();
     void import_tool_settings();

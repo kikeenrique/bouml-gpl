@@ -383,6 +383,49 @@ void ClassDiagramSettings::set(QArray<StateSpec> & a, int index) {
 
 //
 
+SimpleClassDiagramSettings::SimpleClassDiagramSettings() {
+  class_drawing_mode = DefaultClassDrawingMode;
+  show_context_mode = DefaultShowContextMode;
+}
+
+void SimpleClassDiagramSettings::save(QTextStream & st) const {
+  nl_indent(st);
+  st << "class_drawing_mode " << stringify(class_drawing_mode)
+    << " show_context_mode " << stringify(show_context_mode);
+}
+
+void SimpleClassDiagramSettings::read(char * & st, char * & k) {
+  if ((!strcmp(k, "class_view_mode")) ||	// old
+      (!strcmp(k, "class_drawing_mode"))) {
+    class_drawing_mode = drawing_mode(read_keyword(st));
+    k = read_keyword(st);
+  }
+  if (!strcmp(k, "show_context_mode")) {
+    show_context_mode = context_mode(read_keyword(st));
+    k = read_keyword(st);
+  }
+}
+
+void SimpleClassDiagramSettings::complete(QArray<StateSpec> & a) {
+  int i = a.size();
+  
+  a.resize(i + 2);
+  
+  a[i].set("drawing mode", &class_drawing_mode);
+  a[i + 1].set("show context", &show_context_mode);
+}
+
+// to update class canvas settings
+void SimpleClassDiagramSettings::set(QArray<StateSpec> & a, int index) {
+  if (a[index].name != 0)
+    class_drawing_mode = (ClassDrawingMode) *((ClassDrawingMode *) a[index].state);
+  if (a[index + 1].name != 0)
+    show_context_mode = (ShowContextMode) *((ShowContextMode *) a[index + 1].state);
+}
+
+
+//
+
 SequenceDiagramSettings::SequenceDiagramSettings() {
   show_full_operations_definition = UmlDefaultState;
   write_horizontally = UmlDefaultState;
@@ -666,6 +709,7 @@ UseCaseDiagramSettings::UseCaseDiagramSettings() {
   show_context_mode = DefaultShowContextMode;
   auto_label_position = UmlDefaultState;
   draw_all_relations = UmlDefaultState;
+  class_drawing_mode = DefaultClassDrawingMode;
   shadow = UmlDefaultState;
 }
 
@@ -675,7 +719,8 @@ void UseCaseDiagramSettings::save(QTextStream & st) const {
     << " show_context " << stringify(show_context_mode)
       << " auto_label_position " << stringify(auto_label_position)
 	<< " draw_all_relations " << stringify(draw_all_relations)
-	  << " shadow " << stringify(shadow);
+	  << " class_drawing_mode " << stringify(class_drawing_mode)
+	    << " shadow " << stringify(shadow);
 }
 
 void UseCaseDiagramSettings::read(char * & st, char * & k) {
@@ -695,6 +740,10 @@ void UseCaseDiagramSettings::read(char * & st, char * & k) {
     draw_all_relations = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "class_drawing_mode")) {
+    class_drawing_mode = drawing_mode(read_keyword(st));
+    k = read_keyword(st);
+  }
   if (!strcmp(k, "shadow")) {
     shadow = state(read_keyword(st));
     k = read_keyword(st);
@@ -709,27 +758,39 @@ bool UseCaseDiagramSettings::complete(UseCaseDiagramSettings & result) const {
   check_default(auto_label_position, UmlDefaultState);
   check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
+  check_default(class_drawing_mode, DefaultClassDrawingMode);
   
-  return done == 5;
+  return done == 6;
+}
+
+bool UseCaseDiagramSettings::complete(SimpleClassDiagramSettings & result) const {
+  unsigned done = 0;
+  
+  check_default(show_context_mode, DefaultShowContextMode);
+  check_default(class_drawing_mode, DefaultClassDrawingMode);
+  
+  return done == 2;
 }
 
 void UseCaseDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 5);
+  a.resize(i + 6);
   if (local) {
     a[i].set("packages name in tab", &package_name_in_tab);
     a[i + 1].set("show package context", &show_context_mode);
     a[i + 2].set("automatic labels position", &auto_label_position);
     a[i + 3].set("draw all relations", &draw_all_relations);
-    a[i + 4].set("draw shadow", &shadow);
+    a[i + 4].set("class drawing mode", &class_drawing_mode);
+    a[i + 5].set("draw shadow", &shadow);
   }
   else {
     a[i].set("use case#show packages name in tab", &package_name_in_tab);
     a[i + 1].set("use case#show packages context", &show_context_mode);
     a[i + 2].set("use case#automatic labels position", &auto_label_position);
     a[i + 3].set("use case#draw all relations", &draw_all_relations);
-    a[i + 4].set("use case#draw shadow", &shadow);
+    a[i + 4].set("use case#class drawing mode", &class_drawing_mode);
+    a[i + 5].set("use case#draw shadow", &shadow);
   }
 }
 

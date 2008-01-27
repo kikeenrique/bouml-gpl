@@ -94,6 +94,14 @@ struct RoleDialog {
   QPushButton * php_default_decl_bt;
   QPushButton * php_unmapped_decl_bt;
   
+  // Python
+  bool python_undef;
+  MultiLineEdit * edpythondecl;
+  MultiLineEdit * showpythondecl;
+  QPushButton * python_default_decl_bt;
+  QPushButton * python_unmapped_decl_bt;
+  QString python_self;
+  
   // Idl
   bool idl_undef;
   bool idl_in_struct;
@@ -116,11 +124,11 @@ class RelationDialog : public QTabDialog {
   Q_OBJECT
     
   protected:
-    // Uml
     QWidget * umltab;
     QWidget * cpptab;
     QWidget * javatab;
     QWidget * phptab;
+    QWidget * pythontab;
     QWidget * idltab;
     RelationData * rel;
     LineEdit * edname;
@@ -136,6 +144,7 @@ class RelationDialog : public QTabDialog {
     QGroupBox * cpp_b;
     QGroupBox * java_b;
     QGroupBox * php_b;
+    QGroupBox * python_b;
     QGroupBox * idl_b;
     QList<BodyDialog> edits;
     BrowserNode * view;
@@ -159,12 +168,16 @@ class RelationDialog : public QTabDialog {
     void init_php_role(RoleDialog & role, const RoleData & rel,
 		       QGroupBox * bg, const char * php_update_slot, 
 		       const char * php_default_slot, const char * php_unmapped_slot);
+    void init_python_role(RoleDialog & role, const RoleData & rel, BrowserClass *,
+			  QGroupBox * bg, const char * python_update_slot, 
+			  const char * python_default_slot, const char * python_unmapped_slot);
     void init_idl_role(RoleDialog & role, const RoleData & rel, ClassData * cld,
 		       QGroupBox * bg, const char * idl_update_slot, 
 		       const char * idl_default_slot, const char * idl_unmapped_slot);
     void cpp_update(RoleDialog & role, BrowserClass * cl, BrowserNode * rl);
     void java_update(RoleDialog & role, BrowserClass * cl, BrowserNode * rl);
     void php_update(RoleDialog & role, BrowserClass * cl, BrowserNode * rl);
+    void python_update(RoleDialog & role, BrowserClass * cl, BrowserNode * rl);
     void idl_update(RoleDialog & role, BrowserClass * cl, BrowserNode * rl);
     void set_inherit_or_dependency(UmlCode type);
     
@@ -214,6 +227,12 @@ class RelationDialog : public QTabDialog {
     void php_unmapped_a();
     void php_default_b();
     void php_unmapped_b();
+    void python_update_a();
+    void python_update_b();
+    void python_default_a();
+    void python_unmapped_a();
+    void python_default_b();
+    void python_unmapped_b();
     void idl_update_a();
     void idl_update_b();
     void idl_default_a();

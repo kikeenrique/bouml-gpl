@@ -219,6 +219,7 @@ Note that you can undelete them after");
     subm.insertItem("C++", 11);
     subm.insertItem("Java", 12);
     subm.insertItem("Php", 22);
+    subm.insertItem("Python", 25);
     subm.insertItem("Idl", 13);
     
     if ((edition_number == 0) &&
@@ -373,6 +374,16 @@ void BrowserClassView::exec_menu_choice(int rank) {
 		   this);
     }
     return;
+  case 25:
+    {
+      bool preserve = preserve_bodies();
+      
+      ToolCom::run((verbose_generation()) 
+		   ? ((preserve) ? "python_generator -v -p" : "python_generator -v")
+		   : ((preserve) ? "python_generator -p" : "python_generator"), 
+		   this);
+    }
+    return;
   case 13:
     ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
     return;
@@ -462,6 +473,8 @@ void BrowserClassView::apply_shortcut(QString s) {
       choice = 12;
     else if (s == "Generate Php")
       choice = 22;
+    else if (s == "Generate Python")
+      choice = 25;
     else if (s == "Generate Idl")
       choice = 13;
   }
@@ -913,21 +926,26 @@ void BrowserClassView::DragMoveEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, UmlColDiagram) ||
       UmlDrag::canDecode(e, UmlObjectDiagram) ||
       UmlDrag::canDecode(e, UmlState) ||
-      UmlDrag::canDecode(e, UmlActivity))
-    e->accept();
+      UmlDrag::canDecode(e, UmlActivity)) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
   else
     ((BrowserNode *) parent())->DragMoveInsideEvent(e);
 }
 
 void BrowserClassView::DragMoveInsideEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, UmlClass) ||
-      UmlDrag::canDecode(e, UmlClassInstance) ||
-      UmlDrag::canDecode(e, UmlClassDiagram) ||
-      UmlDrag::canDecode(e, UmlSeqDiagram) ||
-      UmlDrag::canDecode(e, UmlColDiagram) ||
-      UmlDrag::canDecode(e, UmlObjectDiagram) ||
-      UmlDrag::canDecode(e, UmlState) ||
-      UmlDrag::canDecode(e, UmlActivity))
+  if (!is_read_only &&
+      (UmlDrag::canDecode(e, UmlClass) ||
+       UmlDrag::canDecode(e, UmlClassInstance) ||
+       UmlDrag::canDecode(e, UmlClassDiagram) ||
+       UmlDrag::canDecode(e, UmlSeqDiagram) ||
+       UmlDrag::canDecode(e, UmlColDiagram) ||
+       UmlDrag::canDecode(e, UmlObjectDiagram) ||
+       UmlDrag::canDecode(e, UmlState) ||
+       UmlDrag::canDecode(e, UmlActivity)))
     e->accept();
   else
     e->ignore();

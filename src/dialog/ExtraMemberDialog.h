@@ -66,6 +66,9 @@ class ExtraMemberDialog : public QTabDialog {
     // php tab
     MultiLineEdit * edphp_decl;
     
+    // python tab
+    MultiLineEdit * edpython_decl;
+    
     // IDL tab
     MultiLineEdit * edidl_decl;
     
@@ -79,6 +82,7 @@ class ExtraMemberDialog : public QTabDialog {
     static void post_edit_cpp_def(ExtraMemberDialog *, QString);
     static void post_edit_java_decl(ExtraMemberDialog *, QString);
     static void post_edit_php_decl(ExtraMemberDialog *, QString);
+    static void post_edit_python_decl(ExtraMemberDialog *, QString);
     static void post_edit_idl_decl(ExtraMemberDialog *, QString);
     
   public:
@@ -93,6 +97,7 @@ class ExtraMemberDialog : public QTabDialog {
     void edit_cpp_def();
     void edit_java_decl();
     void edit_php_decl();
+    void edit_python_decl();
     void edit_idl_decl();
     void edit_description();
 };

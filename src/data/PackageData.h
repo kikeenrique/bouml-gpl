@@ -41,15 +41,18 @@ class PackageData : public SimpleData {
     MyStr cpp_h_dir;
     MyStr java_dir;
     MyStr php_dir;
+    MyStr python_dir;
     MyStr idl_dir;
     
     MyStr cpp_namespace;
     MyStr java_package;
+    MyStr python_package;
     MyStr idl_module;
     
     virtual void send_cpp_def(ToolCom * com);
     virtual void send_java_def(ToolCom * com);
     virtual void send_php_def(ToolCom * com);
+    virtual void send_python_def(ToolCom * com);
     virtual void send_idl_def(ToolCom * com);
     
   public:
@@ -63,10 +66,12 @@ class PackageData : public SimpleData {
     const MyStr & get_cpp_h_dir() const { return cpp_h_dir; };
     const MyStr & get_java_dir() const { return java_dir; };
     const MyStr & get_php_dir() const { return php_dir; };
+    const MyStr & get_python_dir() const { return python_dir; };
     const MyStr & get_idl_dir() const { return idl_dir; };
     
     const MyStr & get_cpp_namespace() const { return cpp_namespace; };
     const MyStr & get_java_package() const { return java_package; };
+    const MyStr & get_python_package() const { return python_package; };
     const MyStr & get_idl_module() const { return idl_module; };
     
     virtual bool tool_cmd(ToolCom * com, const char * args,

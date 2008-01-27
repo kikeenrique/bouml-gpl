@@ -584,8 +584,12 @@ bool BrowserActivityObject::may_contains_them(const QList<BrowserNode> & l,
 
 void BrowserActivityObject::DragMoveEvent(QDragMoveEvent * e) {
   if (UmlDrag::canDecode(e, BrowserFlow::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
-    e->accept();
+      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
   else
     ((BrowserNode *) parent())->DragMoveInsideEvent(e);
 }
@@ -595,8 +599,9 @@ void BrowserActivityObject::DropEvent(QDropEvent * e) {
 }
 
 void BrowserActivityObject::DragMoveInsideEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, BrowserFlow::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
+  if (!is_read_only &&
+      (UmlDrag::canDecode(e, BrowserFlow::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))))
     e->accept();
   else
     e->ignore();

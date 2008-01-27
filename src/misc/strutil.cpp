@@ -98,6 +98,74 @@ bool manage_description(QString comment, const char *& p, const char *& pp)
   return TRUE;
 }
 
+bool manage_python_comment(QString comment, const char *& p,
+			   const char *& pp)
+{
+  static QString the_comment;
+  
+  p += 10;
+  
+  if ((pp != 0) || // comment contains ${comment} !
+      comment.isEmpty())
+    return FALSE;
+  
+  const char * co = comment;
+  
+  the_comment = "#";
+    
+  do {
+    the_comment += *co;
+    if ((*co++ == '\n') && *co)
+      the_comment += "#";
+  } while (*co);
+  
+  if (*p != '\n')
+    the_comment += '\n';
+    
+  pp = p;
+  p = the_comment;
+  return TRUE;
+}
+
+bool manage_python_description(QString comment, const char *& p, const char *& pp)
+{
+  return manage_description(comment, p, pp);
+}
+
+void manage_python_docstring(QString comment, const char *& p, const char *& pp,
+			     bool & indent_needed, QString & indent,
+			     QString & saved_indent)
+{
+  static QString the_comment;
+  
+  p += 12;
+  
+  the_comment = comment;
+  
+  if ((pp != 0) || // comment contains ${description} !
+      the_comment.isEmpty())
+    return;
+    
+  int index = 0;
+  
+  while ((index = the_comment.find("\"\"\"", index)) != -1) {
+    the_comment.insert(index, "\\");
+    index += 2;
+  }
+  
+  the_comment = "\"\"\"" + the_comment + "\"\"\"\n";
+  
+  if (indent_needed) {
+    indent_needed = FALSE;
+    the_comment = indent + the_comment;
+  }
+
+  pp = p;
+  p = the_comment;
+  saved_indent =  indent;
+  indent = "";
+}
+
 bool is_char_of_name(char c)
 {
   return (((c >= 'a') && (c <= 'z')) ||
@@ -225,6 +293,34 @@ void remove_comments(QString & s)
     default:
       index1 += 1;
     }
+  }
+}
+
+void remove_python_comments(QCString & s)
+{
+  int index1 = 0;
+  
+  while ((index1 = s.find('#', index1)) != -1) {
+    int index2;
+    
+    if ((index2 = s.find('\n', index1 + 1)) != -1)
+      s.remove(index1, index2 - index1 + 1);
+    else
+      s.remove(index1, ~0);
+  }
+}
+
+void remove_python_comments(QString & s)
+{
+  int index1 = 0;
+  
+  while ((index1 = s.find('/', index1)) != -1) {
+    int index2;
+    
+    if ((index2 = s.find('\n', index1 + 2)) != -1)
+      s.remove(index1, index2 - index1 + 1);
+    else
+      s.remove(index1, ~0);
   }
 }
 

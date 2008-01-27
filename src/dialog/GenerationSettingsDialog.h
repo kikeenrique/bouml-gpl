@@ -35,6 +35,7 @@
 class QComboBox;
 class QCheckBox;
 class QRadioButton;
+class QSpinBox;
 
 class LineEdit;
 class MultiLineEdit;
@@ -143,6 +144,26 @@ class GenerationSettingsDialog : public QTabDialog {
     QCheckBox * uml_follow_php_set_name;
     QCheckBox * php_set_final_cb;
   
+    // Python specific
+    QSpinBox * indentstep_sb;
+    MultiLineEdit * edpython_src_content;
+    QComboBox * edpython_extension;
+    QCheckBox * python_2_2_cb;
+    MultiLineEdit * edpython_class_decl;
+    MultiLineEdit * edpython_enum_decl;
+    MultiLineEdit * edpython_external_class_decl;
+    MultiLineEdit * edpython_attr_decl[2];
+    MultiLineEdit * edpython_enum_item_decl;
+    MultiLineEdit * edpython_rel_decl[2][2];
+    MultiLineEdit * edpython_oper_def;
+    VisibilityGroup python_get_visibility;
+    LineEdit * edpython_get_name;
+    QCheckBox * uml_follow_python_get_name;
+    VisibilityGroup python_set_visibility;
+    LineEdit * edpython_set_name;
+    QCheckBox * uml_follow_python_set_name;
+    IncludeTable * python_import_table;
+  
     // Idl specific
     MultiLineEdit * edidl_src_content;
     QComboBox * edidl_extension;
@@ -181,10 +202,12 @@ class GenerationSettingsDialog : public QTabDialog {
     LineEdit * edcpproot;
     LineEdit * edjavaroot; 
     LineEdit * edphproot;  
+    LineEdit * edpythonroot;  
     LineEdit * edidlroot;
     QPushButton * cpprelbutton;
     QPushButton * javarelbutton;
     QPushButton * phprelbutton;
+    QPushButton * pythonrelbutton;
     QPushButton * idlrelbutton;
     
     static QSize previous_size;
@@ -207,6 +230,10 @@ class GenerationSettingsDialog : public QTabDialog {
     void init_java4();
     void init_php1();
     void init_php2();
+    void init_python1();
+    void init_python2();
+    void init_python3();
+    void init_python4();
     void init_idl1();
     void init_idl2();
     void init_idl3();
@@ -222,10 +249,12 @@ class GenerationSettingsDialog : public QTabDialog {
     void cpproot_browse();
     void javaroot_browse();
     void phproot_browse();
+    void pythonroot_browse();
     void idlroot_browse();
     void cpp_relative();
     void java_relative();
     void php_relative();
+    void python_relative();
     void idl_relative();
     void java_get_visi_changed(int);
     void java_set_visi_changed(int);
@@ -237,6 +266,8 @@ class GenerationSettingsDialog : public QTabDialog {
     void follow_java_set_name();
     void follow_php_get_name();
     void follow_php_set_name();
+    void follow_python_get_name();
+    void follow_python_set_name();
     void follow_idl_get_name();
     void follow_idl_set_name();
 };
@@ -254,7 +285,6 @@ class TypesTable : public StringTable {
 class StereotypesTable : public StringTable {
   protected:
     bool with_php;
-  
   public:
     StereotypesTable(QWidget * parent, int nst, Stereotype * st, bool php);
   

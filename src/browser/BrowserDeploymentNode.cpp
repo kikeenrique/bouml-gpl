@@ -212,14 +212,19 @@ void BrowserDeploymentNode::open(bool force_edit) {
 }
 
 void BrowserDeploymentNode::DragMoveEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
-    e->accept();
+  if (UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
   else
     ((BrowserNode *) parent())->DragMoveInsideEvent(e);
 }
 
 void BrowserDeploymentNode::DragMoveInsideEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
+  if (!is_read_only &&
+      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
     e->accept();
   else
     e->ignore();

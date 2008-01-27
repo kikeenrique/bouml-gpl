@@ -448,15 +448,20 @@ bool BrowserComponentView::tool_cmd(ToolCom * com, const char * args) {
 
 void BrowserComponentView::DragMoveEvent(QDragMoveEvent * e) {
   if (UmlDrag::canDecode(e, UmlComponent) ||
-      UmlDrag::canDecode(e, UmlComponentDiagram))
-    e->accept();
+      UmlDrag::canDecode(e, UmlComponentDiagram)) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
   else
     ((BrowserNode *) parent())->DragMoveInsideEvent(e);
 }
 
 void BrowserComponentView::DragMoveInsideEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, UmlComponent) ||
-      UmlDrag::canDecode(e, UmlComponentDiagram))
+  if (!is_read_only &&
+      (UmlDrag::canDecode(e, UmlComponent) ||
+       UmlDrag::canDecode(e, UmlComponentDiagram)))
     e->accept();
   else
     e->ignore();

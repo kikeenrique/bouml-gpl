@@ -44,6 +44,7 @@ ExtraMemberData::ExtraMemberData(const ExtraMemberData * model, BrowserNode * bn
       cpp_inline(model->cpp_inline), 
       cpp_decl(model->cpp_decl), cpp_def(model->cpp_def), 
       java_decl(model->java_decl), php_decl(model->php_decl), 
+      python_decl(model->python_decl), 
       idl_decl(model->idl_decl) {
   browser_node = bn;
 }
@@ -87,6 +88,10 @@ void ExtraMemberData::send_php_def(ToolCom * com) {
   com->write_string(php_decl);
 }
 
+void ExtraMemberData::send_python_def(ToolCom * com) {
+  com->write_string(python_decl);
+}
+
 void ExtraMemberData::send_idl_def(ToolCom * com) {
   com->write_string(idl_decl);
 }
@@ -113,6 +118,9 @@ bool ExtraMemberData::tool_cmd(ToolCom * com, const char * args,
 	break;
       case setPhpDeclCmd:
 	php_decl = args;
+	break;
+      case setPythonDeclCmd:
+	python_decl = args;
 	break;
       case setIdlDeclCmd:
 	idl_decl = args;
@@ -154,6 +162,9 @@ void ExtraMemberData::save(QTextStream & st, QString & warning) const {
   st << "php ";
   save_string(php_decl, st);
   nl_indent(st);
+  st << "python ";
+  save_string(python_decl, st);
+  nl_indent(st);
   st << "idl ";
   save_string(idl_decl, st);
 }
@@ -191,6 +202,13 @@ void ExtraMemberData::read(char * & st, char * & k) {
   }
   else
     php_decl = QString::null;
+    
+  if (!strcmp(k, "python")) {
+    python_decl = read_string(st);
+    k = read_keyword(st);
+  }
+  else
+    python_decl = QString::null;
     
   if (!strcmp(k, "idl")) {
     idl_decl = read_string(st);

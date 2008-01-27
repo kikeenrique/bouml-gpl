@@ -39,6 +39,7 @@ class UmlDeploymentView : public UmlBaseDeploymentView {
     virtual void roundtrip_cpp();
     virtual void roundtrip_java();
     virtual void roundtrip_php();
+    virtual void roundtrip_python();
 };
 
 #endif

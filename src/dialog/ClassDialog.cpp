@@ -479,6 +479,73 @@ ClassDialog::ClassDialog(ClassData * c)
   if (!GenerationSettings::php_get_default_defs())
     removePage(split);
   
+  // Python
+  
+  split = new QSplitter(Qt::Vertical, this);
+  pythontab = split;
+  split->setOpaqueResize(TRUE);
+  
+  vtab = new QVBox(split); 
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(5);
+  lbl1 = new QLabel(htab);
+  bg = new QGroupBox(3, Qt::Horizontal, QString::null, htab);
+  python_2_2_cb = new QCheckBox("Python 2.2", bg);
+  if (cl->python_is_2_2())
+    python_2_2_cb->setChecked(TRUE);
+  python_external_cb = new QCheckBox("external", bg);
+  if (cl->python_is_external())
+    python_external_cb->setChecked(TRUE);
+  if (visit) {
+    python_2_2_cb->setDisabled(TRUE);
+    python_external_cb->setDisabled(TRUE);
+  }
+  else {
+    connect(python_2_2_cb, SIGNAL(toggled(bool)),
+	    SLOT(python_update_decl()));
+    connect(python_external_cb, SIGNAL(toggled(bool)),
+	    SLOT(python_update_decl()));
+  }
+  
+  htab = new QHBox(vtab); 
+  htab->setMargin(5);  
+  lbl2 = new QLabel("Definition : ", htab);
+  edpythondecl = new MultiLineEdit(htab);
+  edpythondecl->setText(c->python_decl);
+  edpythondecl->setFont(font);
+  if (visit)
+    edpythondecl->setReadOnly(TRUE);
+  else
+    connect(edpythondecl, SIGNAL(textChanged()), this, SLOT(python_update_decl()));
+
+  vtab = new QVBox(split); 
+  
+  htab = new QHBox(vtab); 
+  htab->setMargin(5);  
+  lbl3 = new QLabel("Result after\nsubstitution : ", htab);
+  showpythondecl = new MultiLineEdit(htab);
+  showpythondecl->setReadOnly(TRUE);
+  showpythondecl->setFont(font);
+
+  htab = new QHBox(vtab); 
+  lbl4 = new QLabel(htab);
+
+  if (!visit) {
+    connect(new QPushButton("Default definition", htab), SIGNAL(pressed ()),
+	    this, SLOT(python_default_decl()));
+    connect(new QPushButton("Not generated in Python", htab), SIGNAL(pressed ()),
+	    this, SLOT(python_unmapped_decl()));
+          
+  }
+  
+  same_width(lbl1, lbl2, lbl3, lbl4);
+
+  addTab(split, "Python");
+  
+  if (!GenerationSettings::python_get_default_defs())
+    removePage(split);
+  
   // IDL
   
   split = new QSplitter(Qt::Vertical, this);
@@ -589,6 +656,7 @@ ClassDialog::ClassDialog(ClassData * c)
   current_cpp_stereotype = cpp_stereotype(stereotype);
   current_java_stereotype = java_stereotype(stereotype);
   current_php_stereotype = php_stereotype(stereotype);
+  current_python_stereotype = python_stereotype(stereotype);
   current_idl_stereotype = idl_stereotype(stereotype);
   
   edStereotypeActivated(stereotype);
@@ -633,6 +701,14 @@ QString ClassDialog::php_stereotype(const QString & stereotype)
   QString s = GenerationSettings::php_class_stereotype(stereotype);
   
   return ((s == "interface") || (s == "enum") || (s == "ignored"))
+    ? s : QString("class");
+}
+
+QString ClassDialog::python_stereotype(const QString & stereotype)
+{
+  QString s = GenerationSettings::python_class_stereotype(stereotype);
+  
+  return ((s == "enum") || (s == "ignored"))
     ? s : QString("class");
 }
 
@@ -699,6 +775,9 @@ void ClassDialog::edStereotypeActivated(const QString & s) {
   if (current_php_stereotype != php_stereotype(stereotype))
     php_default_decl();
   
+  if (current_python_stereotype != python_stereotype(stereotype))
+    python_default_decl();
+  
   QString idl_st = idl_stereotype(stereotype);
   
   switch_bg->setEnabled(idl_st == "union");
@@ -734,6 +813,11 @@ void ClassDialog::update_all_tabs(QWidget * w) {
     php_update_decl();
     if (!visit)
       edphpdecl->setFocus();
+  }
+  else if (w == pythontab) {
+    python_update_decl();
+    if (!visit)
+      edpythondecl->setFocus();
   }
   else if (w == idltab) {
     idl_update_decl();
@@ -824,7 +908,9 @@ static void generate_members(BrowserNode * cl, QString & s,
 			     QString (* ste_f)(const QString &),
 			     bool idl_union = FALSE,
 			     bool only_items = FALSE,
-			     bool except_items = FALSE) 
+			     bool except_items = FALSE,
+			     bool except_instance_att_rel = FALSE,
+			     bool only_instance_att_rel = FALSE) 
 {
   QListViewItem * child;
   
@@ -835,7 +921,7 @@ static void generate_members(BrowserNode * cl, QString & s,
     
     switch (((BrowserNode *) child)->get_type()) {
     case UmlDependency:
-      if (! only_items) {
+      if (!only_items && !only_instance_att_rel && (att_f == &AttributeData::get_cppdecl)) {
 	RelationData * rel = (RelationData *) ((BrowserNode *) child)->get_data();
 	
 	if (rel->is_a((BrowserRelation *) child)
@@ -861,6 +947,12 @@ static void generate_members(BrowserNode * cl, QString & s,
       {
          // without the var 'at' G++ 3.2 generate a wrong code
 	 AttributeData * at = (AttributeData *) ((BrowserNode *) child)->get_data();
+	 
+	 if ((at->get_isa_class_attribute())
+	     ? only_instance_att_rel
+	     : except_instance_att_rel)
+	   continue;
+	 
 	 const char * st = at->get_stereotype();
 	 
 	 if (only_items) {
@@ -881,7 +973,7 @@ static void generate_members(BrowserNode * cl, QString & s,
       }
       break;
     case UmlOperation:
-      if (! only_items) {
+      if (!only_items && !only_instance_att_rel) {
          // without the var 'op' G++ 3.2 generate a wrong code
 	 OperationData * op = (OperationData *) ((BrowserNode *) child)->get_data();
 
@@ -890,16 +982,19 @@ static void generate_members(BrowserNode * cl, QString & s,
       }
       break;
     case UmlExtraMember:
-      if (! only_items) {
+      if (!only_items && !only_instance_att_rel) {
          // without the var 'emd' G++ 3.2 generate a wrong code
 	 ExtraMemberData * emd = (ExtraMemberData *) ((BrowserNode *) child)->get_data();
 
-	 s += (emd->*ex_f)();
+	 decl = (emd->*ex_f)();
+	 if (decl.isEmpty())
+	   continue;
+	 s += decl;
 	 s += '\n';
 	 continue;
       }
     case UmlClass:
-      if (! only_items) {
+      if (!only_items && !only_instance_att_rel) {
          // without the var 'cl' G++ 3.2 generate a wrong code
 	 ClassData * cl = (ClassData *) ((BrowserNode *) child)->get_data();
 
@@ -912,9 +1007,22 @@ static void generate_members(BrowserNode * cl, QString & s,
       if (! only_items) {
 	RelationData * re = (RelationData *) ((BrowserNode *) child)->get_data();
 
-        decl = (re->is_a((BrowserRelation *) child))
-	  ? (re->*rel_a_f)()
-	  : (re->*rel_b_f)();
+	if (re->is_a((BrowserRelation *) child)) {
+	  if ((re->get_isa_class_relation_a())
+	      ? only_instance_att_rel
+	      : except_instance_att_rel)
+	    continue;
+	  
+	  decl = (re->*rel_a_f)();
+	}
+	else {
+	  if ((re->get_isa_class_relation_b()) 
+	      ? only_instance_att_rel
+	      : except_instance_att_rel)
+	    continue;
+	  
+	  decl = (re->*rel_b_f)();
+	}
         post = "\n";
       }
     }
@@ -1630,11 +1738,12 @@ void ClassDialog::php_generate_decl(QString & s, ClassData * cl, QString def,
     }
     else if (!strncmp(p, "${members}", 10)) {
       p += 10;
-      generate_members(cl->browser_node, s,
-		       &AttributeData::get_phpdecl, &OperationData::get_phpdef, 
-		       &RelationData::get_phpdecl_a, &RelationData::get_phpdecl_b,
-		       &ExtraMemberData::get_php_decl, &ClassData::get_phpdecl,
-		       php_stereotype, FALSE, FALSE, (stereotype == "enum"));
+      if (stereotype != "enum")
+	generate_members(cl->browser_node, s,
+			 &AttributeData::get_phpdecl, &OperationData::get_phpdef, 
+			 &RelationData::get_phpdecl_a, &RelationData::get_phpdecl_b,
+			 &ExtraMemberData::get_php_decl, &ClassData::get_phpdecl,
+			 php_stereotype);
     }
     else if (!strncmp(p, "${items}", 8)) {
       p += 8;
@@ -1642,7 +1751,7 @@ void ClassDialog::php_generate_decl(QString & s, ClassData * cl, QString def,
 		       &AttributeData::get_phpdecl, &OperationData::get_phpdef, 
 		       &RelationData::get_phpdecl_a, &RelationData::get_phpdecl_b,
 		       &ExtraMemberData::get_php_decl, &ClassData::get_phpdecl,
-		       php_stereotype, FALSE, TRUE, FALSE);
+		       php_stereotype);
     }
     else if (*p == '\n') {
       s += *p++;
@@ -1700,6 +1809,187 @@ void ClassDialog::php_unmapped_decl() {
   edphpdecl->setText(QString::null);
   showphpdecl->setText(QString::null);
 }
+
+static void python_generate_inherit(QString & s, ClassData * cl, bool object,
+				    BrowserNodeList & nodes,
+				    QStringList & node_names) {  
+  BrowserNodeList inh;
+  const char * sep = "(";
+  
+  cl->get_browser_node()->children(inh, UmlGeneralisation, UmlRealize);
+  
+  QListIterator<BrowserNode> it(inh);
+  
+  while (it.current() != 0) {
+    RelationData * r = (RelationData *) it.current()->get_data();
+    
+    if (r->get_cppdecl_a()[0]) {
+      s += sep;
+      sep = ", ";
+      
+      generate_mother(r->get_end_class(), FALSE, s, cl, 0, nodes, node_names);
+    }
+    
+    ++it;
+  }
+
+  if (*sep != '(')
+    s += ")";
+  else if (object)
+    s += "(object)";
+}
+
+void ClassDialog::python_generate_decl(QString & s, ClassData * cl, QString def,
+				       QString name, QString,
+				       QString comment, bool is_2_2, 
+				       BrowserNodeList & nodes,
+				       QStringList & node_names,
+				       KeyValuesTable * kvt)
+{
+  const char * p = def;
+  
+  if (p == 0)
+    return;
+  
+  const char * pp = 0;
+  bool indent_needed = FALSE;
+  QString indent;
+  QString saved_indent = indent;
+  QString indent_step =
+    GenerationSettings::python_get_indent_step();
+  
+  for (;;) {
+    if (*p == 0) {
+      if (pp == 0)
+	break;
+      
+      // comment management done
+      p = pp;
+      if (*p == 0)
+	break;
+      pp = 0;
+      indent = saved_indent;
+    }
+      
+    if (!strncmp(p, "${comment}", 10))
+      manage_python_comment(comment, p, pp);
+    else if (!strncmp(p, "${description}", 14))
+      manage_python_description(comment, p, pp);
+    else if (!strncmp(p, "${docstring}", 12))
+      manage_python_docstring(comment, p, pp, indent_needed, indent, saved_indent);
+    else if (!strncmp(p, "${name}", 7)) {
+      if (indent_needed) {
+	indent_needed = FALSE;
+	s += indent;
+      }
+      p += 7;
+      s += name;
+    }
+    else if (!strncmp(p, "${inherit}", 10)) {
+      p += 10;
+      python_generate_inherit(s, cl, is_2_2, nodes, node_names);
+    }
+    else if (!strncmp(p, "${members}", 10)) {
+      p += 10;
+      generate_members(cl->browser_node, s,
+		       &AttributeData::get_pythondecl, &OperationData::get_pythondef, 
+		       &RelationData::get_pythondecl_a, &RelationData::get_pythondecl_b,
+		       &ExtraMemberData::get_python_decl, &ClassData::get_pythondecl,
+		       python_stereotype, FALSE, FALSE, FALSE, TRUE);
+      QListViewItem * child;
+      bool has__init__ = FALSE;
+  
+      for (child = cl->browser_node->firstChild(); child; child = child->nextSibling()) {
+	if ((((BrowserNode *) child)->get_type() == UmlOperation) &&
+	    !strcmp(((BrowserNode *) child)->get_name(), "__init__")) {
+	  has__init__ = TRUE;
+	  break;
+	}
+      }
+      if (! has__init__)
+	s += "...__init__()\n";
+      indent_needed = TRUE;
+    }
+    else if (*p == '@')
+      manage_alias(cl->browser_node, p, s, kvt);
+    else {
+      if (indent_needed) {
+	indent_needed = FALSE;
+	s += indent;
+      }
+      switch (*p) {
+      case ':':
+	if (pp == 0) {
+	  indent += indent_step;
+	  saved_indent = indent;
+	  indent_step = "";
+	}
+	break;
+      case '\n':
+	indent_needed = TRUE;
+	break;
+      }
+      s += *p++;
+    }
+  }
+}
+
+void ClassDialog::python_update_decl() {
+  QString s;
+  
+  if (python_external_cb->isChecked())
+    showpythondecl->setEnabled(FALSE);
+  else {
+    showpythondecl->setEnabled(TRUE);
+    
+    QString def = edpythondecl->text().stripWhiteSpace();
+
+    python_generate_decl(s, cl, def, 
+		       edname->text().stripWhiteSpace(),
+		       current_python_stereotype, comment->text(),
+		       python_2_2_cb->isChecked(), nodes, node_names,
+		       kvtable);
+  }
+  
+  showpythondecl->setText(s);
+}
+
+void ClassDialog::python_default_decl() {
+  if (python_external_cb->isChecked())
+    edpythondecl->setText(GenerationSettings::python_default_external_class_decl());
+  else {
+    current_python_stereotype =
+      python_stereotype(edstereotype->currentText().stripWhiteSpace());
+    
+    if (current_python_stereotype == "enum")
+      edpythondecl->setText(GenerationSettings::python_default_enum_decl());
+    else if (current_python_stereotype == "ignored")
+      edpythondecl->setText(QString::null);
+    else
+      edpythondecl->setText(GenerationSettings::python_default_class_decl());
+  
+    python_update_decl();
+  }
+}
+
+void ClassDialog::python_unmapped_decl() {
+  edpythondecl->setText(QString::null);
+  showpythondecl->setText(QString::null);
+}
+
+QString ClassDialog::python_instance_att_rel(BrowserNode * cl)
+{
+  QString s;
+  
+  generate_members(cl, s,
+		   &AttributeData::get_pythondecl, &OperationData::get_pythondef, 
+		   &RelationData::get_pythondecl_a, &RelationData::get_pythondecl_b,
+		   &ExtraMemberData::get_python_decl, &ClassData::get_pythondecl,
+		   python_stereotype, FALSE, FALSE, FALSE, FALSE, TRUE);
+  
+  return s;
+}
+
 
 static void idl_generate_inherit(QString & s, QString st, ClassData * cl) {
   if ((st == "union") || (st == "enum"))
@@ -1973,6 +2263,10 @@ void ClassDialog::accept() {
   cl->php_decl = edphpdecl->text();
   cl->php_final = php_final_cb->isChecked();
   cl->php_external = php_external_cb->isChecked();
+  
+  cl->python_decl = edpythondecl->text();
+  cl->python_2_2 = python_2_2_cb->isChecked();
+  cl->python_external = python_external_cb->isChecked();
   
   cl->idl_decl = edidldecl->text();  
   cl->idl_local = idl_local_cb->isChecked();

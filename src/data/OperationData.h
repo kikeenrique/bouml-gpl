@@ -81,6 +81,8 @@ class OperationData : public ClassMemberData,
     bool php_final : 1;			// php
     bool php_get_set_frozen : 1;	// php
     bool php_indent_body : 1;		// php
+    bool python_get_set_frozen : 1;	// python
+    bool python_indent_body : 1;	// python
     bool idl_oneway : 1;		// Idl
     bool idl_get_set_frozen : 1;	// Idl
     unsigned short nparams;
@@ -107,6 +109,12 @@ class OperationData : public ClassMemberData,
     MayBeSharedStr php_def;
     SharedStr php_name_spec;	// get${Name}
     
+    // python
+    OperationBody python_body;
+    MayBeSharedStr python_def;
+    SharedStr python_name_spec;	// get${Name}
+    SharedStr python_decorator;
+    
     // idl
     SharedStr idl_decl;
     SharedStr idl_name_spec;	// get_${name}
@@ -118,6 +126,7 @@ class OperationData : public ClassMemberData,
     virtual void send_cpp_def(ToolCom * com);
     virtual void send_java_def(ToolCom * com);
     virtual void send_php_def(ToolCom * com);
+    virtual void send_python_def(ToolCom * com);
     virtual void send_idl_def(ToolCom * com);
     
     void set_bodies_info();
@@ -163,7 +172,7 @@ class OperationData : public ClassMemberData,
     bool get_java_synchronized() const { return java_synchronized; };
     
     bool get_php_final() const { return php_final; };
-    
+        
     bool get_idl_oneway() const { return idl_oneway; };
     
     UmlVisibility get_uml_visibility() const { return uml_visibility; };
@@ -202,6 +211,9 @@ class OperationData : public ClassMemberData,
     const char * get_phpdef() const { return php_def; };
     QString default_php_def(const QString & name, bool nobody);
 
+    const char * get_pythondef() const { return python_def; };
+    QString default_python_def(const QString & name);
+
     const char * get_idldecl() const { return idl_decl; };
     QString default_idl_decl(const QString & name);
 
@@ -209,13 +221,15 @@ class OperationData : public ClassMemberData,
     
     void update_get_of(const QString & attr_name,
 		       QString cpp_decl, QString java_decl,
-		       QString php_decl, QString idl_decl,
+		       QString php_decl, QString python_decl,
+		       QString idl_decl,
 		       bool cpp_const, bool is_class_member,
 		       const AType & cl, QString multiplicity,
 		       QString stereotype, bool create);
     void update_set_of(const QString & attr_name,
 		       QString cpp_decl, QString java_decl,
-		       QString php_decl, QString idl_decl,
+		       QString php_decl, QString python_decl,
+		       QString idl_decl,
 		       bool cpp_const, bool is_class_member,
 		       const AType & cl, QString multiplicity,
 		       QString stereotype, bool create);
@@ -253,6 +267,8 @@ class OperationData : public ClassMemberData,
 				   QString attjava_decl, QString multiplicity);
     static void update_php_get_of(QCString & def, const QString & attr_name,
 				  QString attphp_decl);
+    static void update_python_get_of(QCString & def, const QString & attr_name,
+				     QString attpython_decl, bool attis_class_member);
     static void update_idl_get_of(QCString & decl, QString attidl_decl,
 				  QString multiplicity);
     void update_cpp_set_of(QCString & decl, QCString & def,
@@ -264,6 +280,8 @@ class OperationData : public ClassMemberData,
     static void update_php_set_of(QCString & def,
 				  const QString & attr_name,
 				  QString attphp_decl);
+    static void update_python_set_of(QCString & def, const QString & attr_name,
+				     QString attpython_decl, bool attis_class_member);
     static void update_idl_set_of(QCString & decl, QString attidl_decl,
 				  QString multiplicity);
     

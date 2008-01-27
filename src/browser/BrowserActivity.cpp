@@ -656,8 +656,12 @@ void BrowserActivity::DragMoveEvent(QDragMoveEvent * e) {
   /*
       UmlDrag::canDecode(e, BrowserPartition::drag_key(this)) ||
       */
-      UmlDrag::canDecode(e, BrowserActivityDiagram::drag_key(this)))
-    e->accept();
+      UmlDrag::canDecode(e, BrowserActivityDiagram::drag_key(this))) {
+    if (!is_read_only)
+      e->accept();
+    else
+      e->ignore();
+  }
   else
     ((BrowserNode *) parent())->DragMoveInsideEvent(e);
 }
@@ -667,20 +671,21 @@ void BrowserActivity::DropEvent(QDropEvent * e) {
 }
 
 void BrowserActivity::DragMoveInsideEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, BrowserParameter::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserActivityNode::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserActivityAction::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserActivityObject::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserInterruptibleActivityRegion::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserExpansionRegion::drag_key(this)) ||
-      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)) ||
+  if (!is_read_only &&
+      (UmlDrag::canDecode(e, BrowserParameter::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserActivityNode::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserActivityAction::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserActivityObject::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserInterruptibleActivityRegion::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserExpansionRegion::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)) ||
 #ifndef WIN32
 #warning
 #endif
   /*
-      UmlDrag::canDecode(e, BrowserPartition::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserPartition::drag_key(this)) ||
       */
-      UmlDrag::canDecode(e, BrowserActivityDiagram::drag_key(this)))
+       UmlDrag::canDecode(e, BrowserActivityDiagram::drag_key(this))))
     e->accept();
   else
     e->ignore();

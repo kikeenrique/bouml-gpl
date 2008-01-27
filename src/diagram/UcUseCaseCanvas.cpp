@@ -504,6 +504,7 @@ UcUseCaseCanvas * UcUseCaseCanvas::read(char * & st, UmlCanvas * canvas, char * 
     read_zwh(st, result);
     result->width_scale100 = result->width();
     result->height_scale100 = result->height();
+    result->set_center100();
 
     k = read_keyword(st);
     read_xy(st, result->label);

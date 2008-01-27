@@ -45,9 +45,12 @@ PackageData::PackageData(PackageData * model)
   cpp_h_dir = model->cpp_h_dir;
   java_dir = model->java_dir;
   php_dir = model->php_dir;
+  python_dir = model->python_dir;
   idl_dir = model->idl_dir;
+
   cpp_namespace = model->cpp_namespace;
   java_package = model->java_package;
+  python_package = model->python_package;
   idl_module = model->idl_module;
 }
 
@@ -75,6 +78,11 @@ void PackageData::send_java_def(ToolCom * com) {
 
 void PackageData::send_php_def(ToolCom * com) {
   com->write_string(php_dir);
+}
+
+void PackageData::send_python_def(ToolCom * com) {
+  com->write_string(python_dir);
+  com->write_string(python_package);
 }
 
 void PackageData::send_idl_def(ToolCom * com) {
@@ -109,6 +117,12 @@ bool PackageData::tool_cmd(ToolCom * com, const char * args,
 	break;
       case setPhpDirCmd:
 	php_dir = args;
+	break;
+      case setPythonDirCmd:
+	python_dir = args;
+	break;
+      case setPythonPackageCmd:
+	python_package = args;
 	break;
       case setIdlDirCmd:
 	idl_dir = args;
@@ -167,6 +181,16 @@ void PackageData::save(QTextStream & st, QString & warning) const {
     st << "php_dir ";
     save_string(php_dir, st);
   }
+  if (!python_dir.isEmpty()) {
+    nl_indent(st);
+    st << "python_dir ";
+    save_string(python_dir, st);
+  }
+  if (!python_package.isEmpty()) {
+    nl_indent(st);
+    st << "python_package ";
+    save_string(python_package, st);
+  }
   if (!idl_dir.isEmpty()) {
     nl_indent(st);
     st << "idl_dir ";
@@ -204,6 +228,14 @@ void PackageData::read(char * & st, char * & k) {
   }
   if (!strcmp(k, "php_dir")) {
     php_dir = read_string(st);
+    k = read_keyword(st);
+  }
+  if (!strcmp(k, "python_dir")) {
+    python_dir = read_string(st);
+    k = read_keyword(st);
+  }
+  if (!strcmp(k, "python_package")) {
+    python_package = read_string(st);
     k = read_keyword(st);
   }
   if (!strcmp(k, "idl_dir")) {

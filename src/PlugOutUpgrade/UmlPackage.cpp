@@ -10460,7 +10460,7 @@ bool UmlPackage::upgrade() {
   UmlClass * uml_item = UmlClass::get("UmlItem", 0);
   
   if ((uml_base_item == 0) || (uml_item == 0))
-    UmlCom::trace("<tt>        </tt><font face=helvetica color=red>Not a plug-out</font><br>\n");
+    UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;<font face=helvetica color=red>Not a plug-out</font><br>\n");
   else {
     bool work = FALSE;
     
@@ -10720,7 +10720,7 @@ bool UmlPackage::upgrade() {
       return TRUE;
     }
     else
-      UmlCom::trace("<tt>        </tt><font face=helvetica>Plug-out already up to date</font><br>\n");
+      UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;<font face=helvetica>Plug-out already up to date</font><br>\n");
   }
   
   return FALSE;

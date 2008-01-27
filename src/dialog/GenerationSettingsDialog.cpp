@@ -39,6 +39,7 @@
 #include <qradiobutton.h> 
 #include <qbuttongroup.h>
 #include <qsplitter.h> 
+#include <qspinbox.h>
 
 #include "GenerationSettingsDialog.h"
 #include "BrowserView.h"
@@ -68,6 +69,9 @@ GenerationSettingsDialog::GenerationSettingsDialog()
   init_java4();
   init_php1();
   init_php2();
+  init_python1();
+  init_python2();
+  init_python3();
   init_idl1();
   init_idl2();
   init_idl3();
@@ -643,7 +647,7 @@ void GenerationSettingsDialog::init_java3() {
   new QLabel("Get operation\ndefault definition : ", grid);
   htab = new QHBox(grid);
   htab->setMargin(3);
-  java_get_visibility.init(htab, GenerationSettings::javaphp_get_visibility,
+  java_get_visibility.init(htab, GenerationSettings::noncpp_get_visibility,
 			   TRUE, "Visibility (shared with Php)");
   java_get_visibility.connect(SIGNAL(clicked (int)), this, SLOT(java_get_visi_changed(int)));
   
@@ -667,7 +671,7 @@ void GenerationSettingsDialog::init_java3() {
   new QLabel("Set operation\ndefault definition : ", grid);
   htab = new QHBox(grid);
   htab->setMargin(3);
-  java_set_visibility.init(htab, GenerationSettings::javaphp_set_visibility,
+  java_set_visibility.init(htab, GenerationSettings::noncpp_set_visibility,
 			   TRUE, "Visibility (shared with Php)");
   java_set_visibility.connect(SIGNAL(clicked (int)), this, SLOT(java_set_visi_changed(int)));
   
@@ -830,7 +834,7 @@ void GenerationSettingsDialog::init_php2() {
   new QLabel("Get operation\ndefault definition : ", grid);
   htab = new QHBox(grid);
   htab->setMargin(3);
-  php_get_visibility.init(htab, GenerationSettings::javaphp_get_visibility,
+  php_get_visibility.init(htab, GenerationSettings::noncpp_get_visibility,
 			   FALSE, "Visibility (shared with Java)");
   php_get_visibility.connect(SIGNAL(clicked (int)), this, SLOT(php_get_visi_changed(int)));
   
@@ -854,7 +858,7 @@ void GenerationSettingsDialog::init_php2() {
   new QLabel("Set operation\ndefault definition : ", grid);
   htab = new QHBox(grid);
   htab->setMargin(3);
-  php_set_visibility.init(htab, GenerationSettings::javaphp_set_visibility,
+  php_set_visibility.init(htab, GenerationSettings::noncpp_set_visibility,
 			   FALSE, "Visibility (shared with Java)");
   php_set_visibility.connect(SIGNAL(clicked (int)), this, SLOT(php_set_visi_changed(int)));
   
@@ -895,6 +899,210 @@ void GenerationSettingsDialog::init_php2() {
   if (!GenerationSettings::php_get_default_defs())
     removePage(grid);
 }  
+
+void GenerationSettingsDialog::init_python1() {
+  QGrid * grid = new QGrid(2, this);
+  
+  grid->setMargin(3);
+  grid->setSpacing(3);
+
+  new QLabel("indent step :", grid);
+  
+  QHBox * htab = new QHBox(grid);
+
+  htab->setMargin(3);
+  indentstep_sb = new QSpinBox(1, 8, 1, htab);
+  indentstep_sb->setSuffix(" spaces");
+  indentstep_sb->setValue(GenerationSettings::python_indent_step.length());
+  
+  QLabel * lbl = new QLabel(htab);
+  QSizePolicy sp = lbl->sizePolicy();
+  sp.setHorData(QSizePolicy::Expanding);
+  lbl->setSizePolicy(sp);
+  
+  new QLabel("file default \ncontent :", grid);
+  
+  htab = new QHBox(grid);
+  htab->setMargin(3);
+  edpython_src_content = new MultiLineEdit(htab);
+  edpython_src_content->setText(GenerationSettings::python_src_content);
+  QFont font = edpython_src_content->font();
+  if (! hasCodec())
+    font.setFamily("Courier");
+  font.setFixedPitch(TRUE);
+  edpython_src_content->setFont(font);
+
+  new QLabel("    generated /\n    reversed\n    file extension : ", htab);
+  edpython_extension = new QComboBox(TRUE, htab);
+  edpython_extension->insertItem(GenerationSettings::python_extension);
+  edpython_extension->setCurrentItem(0);
+  edpython_extension->insertItem("py");
+
+  new QLabel("Class default \ndeclaration :", grid);
+
+  htab = new QHBox(grid);
+  htab->setMargin(3);
+  edpython_class_decl = new MultiLineEdit(htab);
+  edpython_class_decl->setText(GenerationSettings::python_class_decl);
+  edpython_class_decl->setFont(font);
+
+  new QLabel("    classes of Python 2.2 ", htab);
+  python_2_2_cb = new QCheckBox(htab);
+  python_2_2_cb->setChecked(GenerationSettings::python_2_2);
+
+  new QLabel("Enum default \ndeclaration :", grid);
+  edpython_enum_decl = new MultiLineEdit(grid);
+  edpython_enum_decl->setText(GenerationSettings::python_enum_decl);
+  edpython_enum_decl->setFont(font);
+
+  new QLabel("Attribute \ndefault \ndeclaration :", grid);
+
+  QGrid * grid2 = new QGrid(2, grid);
+
+  new QLabel("multiplicity '1'\nor unspecified", grid2);
+  edpython_attr_decl[0] = new MultiLineEdit(grid2);
+  new QLabel("other\nmultiplicity", grid2);
+  edpython_attr_decl[1] = new MultiLineEdit(grid2);
+
+  int i;
+
+  for (i = 0; i != 2; i += 1) {
+    edpython_attr_decl[i]->setText(GenerationSettings::python_attr_decl[i]);
+    edpython_attr_decl[i]->setFont(font);
+  }
+
+  addTab(grid, "Python[1]");
+  
+  if (!GenerationSettings::python_get_default_defs())
+    removePage(grid);
+}
+
+void GenerationSettingsDialog::init_python2() {
+  QGrid * grid = new QGrid(2, this);
+  QGrid * grid2;
+  
+  grid->setMargin(3);
+  grid->setSpacing(3);
+
+  new QLabel("Association and\naggregation\ndefault\ndeclaration :", grid);
+  grid2 = new QGrid(2, grid);
+  new QLabel("multiplicity '1'\nor unspecified", grid2);
+  edpython_rel_decl[0][0] = new MultiLineEdit(grid2);
+
+  QFont font = edpython_rel_decl[0][0]->font();
+  int i;
+
+  if (! hasCodec())
+    font.setFamily("Courier");
+  font.setFixedPitch(TRUE);
+
+  new QLabel("other\nmultiplicity", grid2);
+  edpython_rel_decl[0][1] = new MultiLineEdit(grid2);
+
+  for (i = 0; i != 2; i += 1) {
+    edpython_rel_decl[0][i]->setText(GenerationSettings::python_rel_decl[0][i]);
+    edpython_rel_decl[0][i]->setFont(font);
+  }
+
+  new QLabel(grid);
+  new QLabel(grid);
+  
+  new QLabel("Composition\ndefault\ndeclaration :", grid);
+  grid2 = new QGrid(2, grid);
+  new QLabel("multiplicity '1'\nor unspecified", grid2);
+  edpython_rel_decl[1][0] = new MultiLineEdit(grid2);
+  new QLabel("other\nmultiplicity", grid2);
+  edpython_rel_decl[1][1] = new MultiLineEdit(grid2);
+  for (i = 0; i != 2; i += 1) {
+    edpython_rel_decl[1][i]->setText(GenerationSettings::python_rel_decl[1][i]);
+    edpython_rel_decl[1][i]->setFont(font);
+  }
+
+  QHBox * htab;
+  
+  new QLabel(grid);
+  new QLabel(grid);
+
+  new QLabel("Enumeration item \ndefault definition :", grid);
+  edpython_enum_item_decl = new MultiLineEdit(grid);
+  edpython_enum_item_decl->setText(GenerationSettings::python_enum_item_decl);
+  edpython_enum_item_decl->setFont(font);
+
+  new QLabel(grid);
+  new QLabel(grid);
+
+  new QLabel("Get operation\ndefault definition : ", grid);
+  htab = new QHBox(grid);
+  htab->setMargin(3);
+  new QLabel("  name : ", htab);
+  edpython_get_name = new LineEdit(htab);
+  edpython_get_name->setText(GenerationSettings::python_get_name);
+  edpython_get_name->setFont(font);
+  
+  new QLabel("  ", htab);
+  uml_follow_python_get_name = new QCheckBox("also in uml", htab);
+  if (GenerationSettings::uml_get_name == PythonView)
+    uml_follow_python_get_name->setChecked(TRUE);
+  connect(uml_follow_python_get_name, SIGNAL(toggled(bool)),
+	  this, SLOT(follow_python_get_name()));
+  
+  new QLabel("Set operation\ndefault definition : ", grid);
+  htab = new QHBox(grid);
+  htab->setMargin(3);
+  new QLabel("  name : ", htab);
+  edpython_set_name = new LineEdit(htab);
+  edpython_set_name->setText(GenerationSettings::python_set_name);
+  edpython_set_name->setFont(font);
+  
+  new QLabel("  ", htab);
+  uml_follow_python_set_name = new QCheckBox("also in uml", htab);
+  if (GenerationSettings::uml_set_name == PythonView)
+    uml_follow_python_set_name->setChecked(TRUE);
+  connect(uml_follow_python_set_name, SIGNAL(toggled(bool)),
+	  this, SLOT(follow_python_set_name()));
+  
+  new QLabel(grid);
+  new QLabel(grid);
+  
+  new QLabel("Operation\ndefault definition :", grid);
+  edpython_oper_def = new MultiLineEdit(grid);
+  edpython_oper_def->setText(GenerationSettings::python_oper_def);
+  edpython_oper_def->setFont(font);
+  
+  addTab(grid, "Python[2]");
+  
+  if (!GenerationSettings::python_get_default_defs())
+    removePage(grid);
+}  
+
+void GenerationSettingsDialog::init_python3() {
+  QSplitter * split = new QSplitter(Qt::Vertical, this);
+  
+  split->setOpaqueResize(TRUE);
+  
+  QHBox * htab;
+  
+  htab = new QHBox(split);
+  htab->setMargin(3);
+  QLabel * lbl1 = 
+    new QLabel("External classes : \nname making\nimport", htab);
+  edpython_external_class_decl = new MultiLineEdit(htab);
+  edpython_external_class_decl->setText(GenerationSettings::python_external_class_decl);
+
+  htab = new QHBox(split);
+  htab->setMargin(3);
+  QLabel * lbl2 = 
+    new QLabel("External types :\nimport form(s)", htab);
+  python_import_table =
+    new IncludeTable(htab, GenerationSettings::python_imports,
+		     "Import", "import ");
+
+  same_width(lbl1, lbl2);
+  addTab(split, "Python[3]");
+  
+  if (!GenerationSettings::python_get_default_defs())
+    removePage(split);
+}
 
 void GenerationSettingsDialog::init_idl1() {
   QSplitter * split = new QSplitter(Qt::Vertical, this);
@@ -1327,7 +1535,25 @@ than absolute.\n"
   
   htab = new QHBox(vtab);
   htab->setMargin(3);
-  QLabel * lbl4 = new QLabel("Idl root dir : ", htab);
+  QLabel * lbl4 = new QLabel("Python root dir : ", htab);
+  edpythonroot = new LineEdit(GenerationSettings::python_root_dir, htab);
+  new QLabel(" ", htab);
+  button = new QPushButton("Browse", htab);
+  connect(button, SIGNAL(clicked ()), this, SLOT(pythonroot_browse()));
+  new QLabel("", htab);
+  pythonrelbutton = new QPushButton((GenerationSettings::python_root_dir.isEmpty() || 
+				     QDir::isRelativePath(GenerationSettings::python_root_dir))
+				    ? Absolute : Relative, htab);
+  connect(pythonrelbutton, SIGNAL(clicked ()), this, SLOT(python_relative()));
+  new QLabel("", htab);
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(3);
+  new QLabel("", htab);
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(3);
+  QLabel * lbl5 = new QLabel("Idl root dir : ", htab);
   edidlroot = new LineEdit(GenerationSettings::idl_root_dir, htab);
   new QLabel(" ", htab);
   button = new QPushButton("Browse", htab);
@@ -1339,7 +1565,7 @@ than absolute.\n"
   connect(idlrelbutton, SIGNAL(clicked ()), this, SLOT(idl_relative()));
   new QLabel("", htab);
   
-  same_width(lbl1, lbl2, lbl3, lbl4);
+  same_width(lbl1, lbl2, lbl3, lbl4, lbl5);
   
   vtab->setStretchFactor(new QHBox(vtab), 1000);
   
@@ -1367,6 +1593,7 @@ void GenerationSettingsDialog::follow_cpp_get_name() {
   if (uml_follow_cpp_get_name->isChecked()) {
     uml_follow_java_get_name->setChecked(FALSE);
     uml_follow_php_get_name->setChecked(FALSE);
+    uml_follow_python_get_name->setChecked(FALSE);
     uml_follow_idl_get_name->setChecked(FALSE);
   }
 }
@@ -1375,6 +1602,7 @@ void GenerationSettingsDialog::follow_cpp_set_name() {
   if (uml_follow_cpp_set_name->isChecked()) {
     uml_follow_java_set_name->setChecked(FALSE);
     uml_follow_php_set_name->setChecked(FALSE);
+    uml_follow_python_set_name->setChecked(FALSE);
     uml_follow_idl_set_name->setChecked(FALSE);
   }
 }
@@ -1383,6 +1611,7 @@ void GenerationSettingsDialog::follow_java_get_name() {
   if (uml_follow_java_get_name->isChecked()) {
     uml_follow_cpp_get_name->setChecked(FALSE);
     uml_follow_php_get_name->setChecked(FALSE);
+    uml_follow_python_get_name->setChecked(FALSE);
     uml_follow_idl_get_name->setChecked(FALSE);
   }
 }
@@ -1391,6 +1620,7 @@ void GenerationSettingsDialog::follow_java_set_name() {
   if (uml_follow_java_set_name->isChecked()) {
     uml_follow_cpp_set_name->setChecked(FALSE);
     uml_follow_php_set_name->setChecked(FALSE);
+    uml_follow_python_set_name->setChecked(FALSE);
     uml_follow_idl_set_name->setChecked(FALSE);
   }
 }
@@ -1399,6 +1629,7 @@ void GenerationSettingsDialog::follow_php_get_name() {
   if (uml_follow_php_get_name->isChecked()) {
     uml_follow_cpp_get_name->setChecked(FALSE);
     uml_follow_java_get_name->setChecked(FALSE);
+    uml_follow_python_get_name->setChecked(FALSE);
     uml_follow_idl_get_name->setChecked(FALSE);
   }
 }
@@ -1407,6 +1638,25 @@ void GenerationSettingsDialog::follow_php_set_name() {
   if (uml_follow_php_set_name->isChecked()) {
     uml_follow_cpp_set_name->setChecked(FALSE);
     uml_follow_java_set_name->setChecked(FALSE);
+    uml_follow_python_set_name->setChecked(FALSE);
+    uml_follow_idl_set_name->setChecked(FALSE);
+  }
+}
+
+void GenerationSettingsDialog::follow_python_get_name() {
+  if (uml_follow_php_get_name->isChecked()) {
+    uml_follow_cpp_get_name->setChecked(FALSE);
+    uml_follow_java_get_name->setChecked(FALSE);
+    uml_follow_php_get_name->setChecked(FALSE);
+    uml_follow_idl_get_name->setChecked(FALSE);
+  }
+}
+
+void GenerationSettingsDialog::follow_python_set_name() {
+  if (uml_follow_php_set_name->isChecked()) {
+    uml_follow_cpp_set_name->setChecked(FALSE);
+    uml_follow_java_set_name->setChecked(FALSE);
+    uml_follow_php_set_name->setChecked(FALSE);
     uml_follow_idl_set_name->setChecked(FALSE);
   }
 }
@@ -1416,6 +1666,7 @@ void GenerationSettingsDialog::follow_idl_get_name() {
     uml_follow_cpp_get_name->setChecked(FALSE);
     uml_follow_java_get_name->setChecked(FALSE);
     uml_follow_php_get_name->setChecked(FALSE);
+    uml_follow_python_get_name->setChecked(FALSE);
   }
 }
 
@@ -1424,6 +1675,7 @@ void GenerationSettingsDialog::follow_idl_set_name() {
     uml_follow_cpp_set_name->setChecked(FALSE);
     uml_follow_java_set_name->setChecked(FALSE);
     uml_follow_php_set_name->setChecked(FALSE);
+    uml_follow_python_set_name->setChecked(FALSE);
   }
 }
 
@@ -1480,6 +1732,7 @@ void GenerationSettingsDialog::accept() {
 				    GenerationSettings::class_stereotypes);
     cpp_include_table->update();
     java_import_table->update();
+    python_import_table->update();
     idl_include_table->update();
     
     GenerationSettings::cpp_enum_in = enum_in;
@@ -1496,12 +1749,14 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::cpp_src_extension = edcpp_src_extension->currentText();
     GenerationSettings::java_extension = edjava_extension->currentText();
     GenerationSettings::php_extension = edphp_extension->currentText();
+    GenerationSettings::python_extension = edpython_extension->currentText();
     GenerationSettings::idl_extension = edidl_extension->currentText();
 
     GenerationSettings::cpp_h_content = edcpp_h_content->text();
     GenerationSettings::cpp_src_content = edcpp_src_content->text();
     GenerationSettings::java_src_content = edjava_src_content->text();
     GenerationSettings::php_src_content = edphp_src_content->text();
+    GenerationSettings::python_src_content = edpython_src_content->text();
     GenerationSettings::idl_src_content = edidl_src_content->text();
     
     switch (cpp_include_with_path_cb->currentItem()) {
@@ -1568,6 +1823,16 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::php_oper_def = edphp_oper_def->text();
     GenerationSettings::php_javadoc_comment = php_javadoc_cb->isChecked();
     
+    GenerationSettings::python_indent_step = "        " + (8 - indentstep_sb->value());
+    GenerationSettings::python_2_2 = python_2_2_cb->isChecked();
+    GenerationSettings::python_class_decl = edpython_class_decl->text();
+    GenerationSettings::python_external_class_decl = edpython_external_class_decl->text();
+    GenerationSettings::python_enum_decl = edpython_enum_decl->text();
+    GenerationSettings::python_enum_item_decl = edpython_enum_item_decl->text();
+    GenerationSettings::python_attr_decl[0] = edpython_attr_decl[0]->text();
+    GenerationSettings::python_attr_decl[1] = edpython_attr_decl[1]->text();
+    GenerationSettings::python_oper_def = edpython_oper_def->text();
+    
     GenerationSettings::idl_interface_decl = edidl_interface_decl->text();
     GenerationSettings::idl_valuetype_decl = edidl_valuetype_decl->text();
     GenerationSettings::idl_struct_decl = edidl_struct_decl->text();
@@ -1607,6 +1872,10 @@ void GenerationSettingsDialog::accept() {
 	edidl_union_rel_decl[i]->text();
     }
     
+    for (i = 0; i != 2; i += 1)
+      for (j = 0; j != 2; j += 1)
+	GenerationSettings::python_rel_decl[i][j] = 
+	  edpython_rel_decl[i][j]->text();
     //
     
     GenerationSettings::cpp_get_visibility = cpp_get_visibility.value();
@@ -1620,10 +1889,10 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::cpp_set_param_const = cpp_set_param_const_cb->isChecked();
     GenerationSettings::cpp_set_param_ref = cpp_set_param_ref_cb->isChecked();
     
-    GenerationSettings::javaphp_get_visibility = java_get_visibility.value();
+    GenerationSettings::noncpp_get_visibility = java_get_visibility.value();
     GenerationSettings::java_get_name = edjava_get_name->text();
     GenerationSettings::java_get_final = java_get_final_cb->isChecked();
-    GenerationSettings::javaphp_set_visibility = java_set_visibility.value();
+    GenerationSettings::noncpp_set_visibility = java_set_visibility.value();
     GenerationSettings::java_set_name = edjava_set_name->text();
     GenerationSettings::java_set_final = java_set_final_cb->isChecked();
     GenerationSettings::java_set_param_final = java_set_param_final_cb->isChecked();
@@ -1632,6 +1901,9 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::php_get_final = php_get_final_cb->isChecked();
     GenerationSettings::php_set_name = edphp_set_name->text();
     GenerationSettings::php_set_final = php_set_final_cb->isChecked();
+
+    GenerationSettings::python_get_name = edpython_get_name->text();
+    GenerationSettings::python_set_name = edpython_set_name->text();
 
     GenerationSettings::idl_get_name = edidl_get_name->text();
     GenerationSettings::idl_set_name = edidl_set_name->text();
@@ -1660,6 +1932,8 @@ void GenerationSettingsDialog::accept() {
       GenerationSettings::uml_get_name = JavaView;
     else if (uml_follow_php_get_name->isChecked())
       GenerationSettings::uml_get_name = PhpView;
+    else if (uml_follow_python_get_name->isChecked())
+      GenerationSettings::uml_get_name = PythonView;
     else if (uml_follow_idl_get_name->isChecked())
       GenerationSettings::uml_get_name = IdlView;
     else
@@ -1671,6 +1945,8 @@ void GenerationSettingsDialog::accept() {
       GenerationSettings::uml_set_name = JavaView;
     else if (uml_follow_php_set_name->isChecked())
       GenerationSettings::uml_set_name = PhpView;
+    else if (uml_follow_python_set_name->isChecked())
+      GenerationSettings::uml_set_name = PythonView;
     else if (uml_follow_idl_set_name->isChecked())
       GenerationSettings::uml_set_name = IdlView;
     else
@@ -1681,6 +1957,7 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::cpp_root_dir = add_last_slash(edcpproot->text());
     GenerationSettings::java_root_dir = add_last_slash(edjavaroot->text());
     GenerationSettings::php_root_dir = add_last_slash(edphproot->text());
+    GenerationSettings::python_root_dir = add_last_slash(edpythonroot->text());
     GenerationSettings::idl_root_dir = add_last_slash(edidlroot->text());
     
     //
@@ -1714,6 +1991,15 @@ void GenerationSettingsDialog::phproot_browse() {
   
   if (! dir.isNull())
     edphproot->setText(dir);
+}
+
+void GenerationSettingsDialog::pythonroot_browse() {
+  QString dir =
+    QFileDialog::getExistingDirectory(edpythonroot->text(), this, 0,
+				      "Python root directory");
+  
+  if (! dir.isNull())
+    edpythonroot->setText(dir);
 }
 
 void GenerationSettingsDialog::idlroot_browse() {
@@ -1764,6 +2050,10 @@ void GenerationSettingsDialog::php_relative() {
   relative(edphproot, phprelbutton);
 }
 
+void GenerationSettingsDialog::python_relative() {
+  relative(edpythonroot, pythonrelbutton);
+}
+
 void GenerationSettingsDialog::idl_relative() {
   relative(edidlroot, idlrelbutton);
 }
@@ -1772,18 +2062,22 @@ void GenerationSettingsDialog::idl_relative() {
 
 void GenerationSettingsDialog::java_get_visi_changed(int) {
   php_get_visibility.follow(java_get_visibility);
+  python_get_visibility.follow(java_get_visibility);
 }
 
 void GenerationSettingsDialog::java_set_visi_changed(int) {
   php_set_visibility.follow(java_set_visibility);
+  python_set_visibility.follow(java_set_visibility);
 }
 
 void GenerationSettingsDialog::php_get_visi_changed(int) {
   java_get_visibility.follow(php_get_visibility);
+  python_get_visibility.follow(php_get_visibility);
 }
 
 void GenerationSettingsDialog::php_set_visi_changed(int) {
   java_get_visibility.follow(php_set_visibility);
+  python_set_visibility.follow(php_set_visibility);
 }
 
 // TypesTable
@@ -1904,12 +2198,39 @@ bool TypesTable::check() {
 
 StereotypesTable::StereotypesTable(QWidget * parent, int nst,
 				   Stereotype * st, bool php)
-    : StringTable(nst + 1, (php) ? 6 : 5, parent, FALSE), with_php(php) {
+    : StringTable(nst + 1, (php) ? 7 : 6, parent, FALSE), with_php(php) {
   horizontalHeader()->setLabel(0, "Uml");
   horizontalHeader()->setLabel(1, "C++");
   horizontalHeader()->setLabel(2, "Java");
   if (with_php) {
     horizontalHeader()->setLabel(3, "Php");
+    horizontalHeader()->setLabel(4, "Python");
+    horizontalHeader()->setLabel(5, "Idl");
+    horizontalHeader()->setLabel(6, "do");
+    
+    int index;
+    
+    for (index = 0; index < nst; index += 1){
+      Stereotype & s = st[index];
+      
+      setText(index, 0, s.uml);
+      setText(index, 1, s.cpp);
+      setText(index, 2, s.java);
+      setText(index, 3, s.php);
+      setText(index, 4, s.python);
+      setText(index, 5, s.idl);
+      setText(index, 6, QString::null);
+    }
+    
+    init_row(index);
+    
+    for (index = 0; index != 6; index += 1)
+      setColumnStretchable (index, TRUE);
+    adjustColumn(6);
+    setColumnStretchable (6, FALSE);
+  }
+  else {
+    horizontalHeader()->setLabel(3, "Python");
     horizontalHeader()->setLabel(4, "Idl");
     horizontalHeader()->setLabel(5, "do");
     
@@ -1921,7 +2242,7 @@ StereotypesTable::StereotypesTable(QWidget * parent, int nst,
       setText(index, 0, s.uml);
       setText(index, 1, s.cpp);
       setText(index, 2, s.java);
-      setText(index, 3, s.php);
+      setText(index, 3, s.python);
       setText(index, 4, s.idl);
       setText(index, 5, QString::null);
     }
@@ -1933,29 +2254,6 @@ StereotypesTable::StereotypesTable(QWidget * parent, int nst,
     adjustColumn(5);
     setColumnStretchable (5, FALSE);
   }
-  else {
-    horizontalHeader()->setLabel(3, "Idl");
-    horizontalHeader()->setLabel(4, "do");
-    
-    int index;
-    
-    for (index = 0; index < nst; index += 1){
-      Stereotype & s = st[index];
-      
-      setText(index, 0, s.uml);
-      setText(index, 1, s.cpp);
-      setText(index, 2, s.java);
-      setText(index, 3, s.idl);
-      setText(index, 4, QString::null);
-    }
-    
-    init_row(index);
-    
-    for (index = 0; index != 4; index += 1)
-      setColumnStretchable (index, TRUE);
-    adjustColumn(4);
-    setColumnStretchable (4, FALSE);
-  }
 }
 
 void StereotypesTable::init_row(int index) {
@@ -1963,8 +2261,10 @@ void StereotypesTable::init_row(int index) {
   setText(index, 1, QString::null);
   setText(index, 2, QString::null);
   setText(index, 3, QString::null);
+  setText(index, 4, QString::null);
+  setText(index, 5, QString::null);
   if (with_php)
-    setText(index, 3, QString::null);
+    setText(index, 6, QString::null);
 }
 
 void StereotypesTable::update(int & nst, Stereotype *& st) {
@@ -1988,7 +2288,8 @@ void StereotypesTable::update(int & nst, Stereotype *& st) {
       s.cpp = text(index, 1).stripWhiteSpace();
       s.java = text(index, 2).stripWhiteSpace();
       s.php = text(index, 3).stripWhiteSpace();
-      s.idl = text(index, 4).stripWhiteSpace();
+      s.python = text(index, 4).stripWhiteSpace();
+      s.idl = text(index, 5).stripWhiteSpace();
     }
   }
   else {
@@ -1998,7 +2299,8 @@ void StereotypesTable::update(int & nst, Stereotype *& st) {
       s.uml = text(index, 0).stripWhiteSpace();
       s.cpp = text(index, 1).stripWhiteSpace();
       s.java = text(index, 2).stripWhiteSpace();
-      s.idl = text(index, 3).stripWhiteSpace();
+      s.python = text(index, 3).stripWhiteSpace();
+      s.idl = text(index, 4).stripWhiteSpace();
     }
   }
 }

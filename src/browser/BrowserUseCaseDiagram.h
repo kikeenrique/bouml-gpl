@@ -49,6 +49,7 @@ class BrowserUseCaseDiagram : public BrowserDiagram {
     UmlColor fragment_color;
     UmlColor subject_color;
     UmlColor package_color;
+    UmlColor class_color;
     
     BrowserUseCaseDiagram(BrowserUseCaseDiagram * model, BrowserNode * p);
     BrowserUseCaseDiagram(int id);
@@ -80,6 +81,7 @@ class BrowserUseCaseDiagram : public BrowserDiagram {
     virtual bool get_draw_all_relations() const;
     virtual void dont_draw_all_relations();
     virtual void get_usecasediagramsettings(UseCaseDiagramSettings & r) const;
+    virtual void get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const;
     virtual bool get_auto_label_position(UmlCode who) const ;    
     virtual void package_settings(bool & name_in_tab, ShowContextMode & show_context) const;
     virtual bool tool_cmd(ToolCom * com, const char * args);

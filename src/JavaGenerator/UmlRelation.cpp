@@ -49,7 +49,7 @@ void UmlRelation::generate_extends(const char *& sep, QTextOStream & f,
     if ((cl_stereotype == "interface") || (cl_stereotype == "@interface")) {
       if ((other_stereotype != "interface") && (other_stereotype != "@interface")) {
 	write_trace_header();
-	UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>cannot extends a <i>")
+	UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>cannot extends a <i>")
 		      + other_stereotype + "</i></b></font><br>");
 	incr_warning();
 	return;
@@ -58,7 +58,7 @@ void UmlRelation::generate_extends(const char *& sep, QTextOStream & f,
     else if ((other_stereotype != "interface") && (other_stereotype != "@interface")) {
       if ((cl_stereotype == "union") || (cl_stereotype == "enum_pattern")) {
 	write_trace_header();
-	UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>an <i>")
+	UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>an <i>")
 		      + cl_stereotype + "</i> cannot extends</b></font><br>");
 	incr_warning();
 	return;
@@ -67,14 +67,14 @@ void UmlRelation::generate_extends(const char *& sep, QTextOStream & f,
 	       (other_stereotype == "enum") ||
 	       (other_stereotype == "enum_pattern")) {
 	write_trace_header();
-	UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>cannot extends an <i>")
+	UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>cannot extends an <i>")
 		      + other_stereotype + "</i></b></font><br>");
 	incr_warning();
 	return;
       }
       else if (*sep == ',') {
 	write_trace_header();
-	UmlCom::trace("<tt>        </tt><font color=\"red\"><b>extend several classes</b></font><br>");
+	UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>extend several classes</b></font><br>");
 	incr_warning();
 	return;
       }
@@ -132,7 +132,7 @@ void UmlRelation::generate_implements(const char *& sep, QTextOStream & f,
     if ((other_stereotype == "interface") || (other_stereotype == "@interface")) {
       if ((cl_stereotype == "union") || (cl_stereotype == "enum_pattern")) {
 	write_trace_header();
-	UmlCom::trace(QCString("<tt>        </tt><font color=\"red\"><b>an <i>")
+	UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>an <i>")
 		      + cl_stereotype + "</i> cannot inherits</b></font><br>");
 	incr_warning();
       }
@@ -182,7 +182,7 @@ void UmlRelation::generate(QTextOStream & f, const QCString & cl_stereotype,
     if (!javaDecl().isEmpty()) {
       if (cl_stereotype == "enum_pattern") {
 	write_trace_header();
-	UmlCom::trace("<tt>        </tt><font color=\"red\"><b>an <i>enum_pattern</i> cannot have relation</b></font><br>");
+	UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>an <i>enum_pattern</i> cannot have relation</b></font><br>");
 	incr_warning();
 	return;
       }
@@ -313,7 +313,7 @@ void UmlRelation::generate(QTextOStream & f, const QCString & cl_stereotype,
 void UmlRelation::generate_enum_pattern_item(QTextOStream &, int &,
 					     const QCString &, QCString) {
   write_trace_header();
-  UmlCom::trace("<tt>        </tt><font color=\"red\"><b>an <i>enum_pattern</i> cannot have relation</b></font><br>");
+  UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>an <i>enum_pattern</i> cannot have relation</b></font><br>");
   incr_warning();
 }
 

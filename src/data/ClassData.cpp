@@ -50,6 +50,7 @@ ClassData::ClassData()
       cpp_external(FALSE), 
       java_external(FALSE), java_final(FALSE),
       php_external(FALSE), php_final(FALSE),
+      python_external(FALSE),
       idl_external(FALSE), idl_local(FALSE), idl_custom(FALSE),
       uml_visibility(UmlPackageVisibility), cpp_visibility(UmlDefaultVisibility) {
   if (GenerationSettings::cpp_get_default_defs())
@@ -60,6 +61,10 @@ ClassData::ClassData()
 
   if (GenerationSettings::php_get_default_defs())
     php_decl = GenerationSettings::php_default_class_decl();
+
+  if (GenerationSettings::python_get_default_defs())
+    python_decl = GenerationSettings::python_default_class_decl();
+  python_2_2 = GenerationSettings::python_default_2_2();
 
   if (GenerationSettings::idl_get_default_defs())
     idl_decl = GenerationSettings::idl_default_valuetype_decl();
@@ -108,6 +113,8 @@ ClassData::ClassData(const ClassData * model, BrowserNode * bn)
   java_final = model->java_final;
   php_external = model->php_external;
   php_final = model->php_final;
+  python_2_2 = model->python_2_2;
+  python_external = model->python_external;
   idl_external = model->idl_external;
   idl_local = model->idl_local;
   idl_custom = model->idl_custom;
@@ -117,6 +124,7 @@ ClassData::ClassData(const ClassData * model, BrowserNode * bn)
   java_decl = model->java_decl;
   java_annotation = model->java_annotation;
   php_decl = model->php_decl;
+  python_decl = model->python_decl;
   set_switch_type(model->switch_type);
   idl_decl = model->idl_decl;
     
@@ -463,6 +471,7 @@ bool ClassData::decldefbody_contain(const QString & s, bool cs,
   return ((QString(get_cppdecl()).find(s, 0, cs) != -1) ||
 	  (QString(get_javadecl()).find(s, 0, cs) != -1) ||
 	  (QString(get_phpdecl()).find(s, 0, cs) != -1) ||
+	  (QString(get_pythondecl()).find(s, 0, cs) != -1) ||
 	  (QString(get_idldecl()).find(s, 0, cs) != -1));
 }
 
@@ -579,6 +588,15 @@ bool ClassData::tool_cmd(ToolCom * com, const char * args,
 	break;
       case setIsPhpFinalCmd:
 	php_final = (*args != 0);
+	break;
+      case setIsPythonExternalCmd:
+	python_external = (*args != 0);
+	break;
+      case setPythonDeclCmd:
+	python_decl = args;
+	break;
+      case setIsPython2_2Cmd:
+	python_2_2 = (*args != 0);
 	break;
       case setIdlDeclCmd:
 	idl_decl = args;
@@ -821,6 +839,12 @@ void ClassData::send_php_def(ToolCom * com) {
   com->write_bool(php_external);
 }
 
+void ClassData::send_python_def(ToolCom * com) {
+  com->write_string(python_decl);
+  com->write_bool(python_2_2);
+  com->write_bool(php_external);
+}
+
 void ClassData::send_idl_def(ToolCom * com) {
   com->write_string(idl_decl);
   switch_type.send_def(com);
@@ -896,6 +920,14 @@ void ClassData::save(QTextStream & st, QString & warning) const {
     st << "php_final ";
   st << "php_decl ";
   save_string(php_decl, st);
+
+  nl_indent(st);
+  if (python_external)
+    st << "python_external ";
+  if (python_2_2)
+    st << "python_2_2 ";
+  st << "python_decl ";
+  save_string(python_decl, st);
 
   nl_indent(st);
   if (idl_external)
@@ -1074,6 +1106,29 @@ void ClassData::read(char * & st, char * & k) {
     wrong_keyword(k, "php_decl");
   else
     php_decl = "";
+  
+  if (!strcmp(k, "python_external")) {
+    python_external = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    python_external = FALSE;
+  
+  if (!strcmp(k, "python_2_2")) {
+    python_2_2 = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    python_2_2 = (read_file_format() < 51);
+  
+  if (!strcmp(k, "python_decl")) {
+    python_decl = read_string(st);
+    k = read_keyword(st);
+  }
+  else if (read_file_format() >= 51)
+    wrong_keyword(k, "python_decl");
+  else
+    python_decl = "";
   
   if (!strcmp(k, "idl_external")) {
     idl_external = TRUE;

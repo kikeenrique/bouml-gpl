@@ -31,13 +31,12 @@
 #include <qpopupmenu.h> 
 
 #include "TemplateCanvas.h"
-#include "CdClassCanvas.h"
 #include "BrowserClass.h"
 #include "ClassData.h"
 #include "UmlCanvas.h"
 #include "myio.h"
 
-TemplateCanvas::TemplateCanvas(CdClassCanvas * c)
+TemplateCanvas::TemplateCanvas(DiagramCanvas * c)
     : DiagramCanvas(c->the_canvas(), -1), cl(c) {
   update();
 }

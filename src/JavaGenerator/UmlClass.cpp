@@ -316,7 +316,7 @@ void UmlClass::import(QTextOStream & f, const QCString & indent) {
 void UmlClass::generate_enum_pattern_item(QTextOStream &, int &,
 					  const QCString &, QCString) {
   write_trace_header();
-  UmlCom::trace("<tt>        </tt><font color=\"red\"><b>an <i>enum pattern</i> cannot have sub-class</b></font><br>");
+  UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>an <i>enum pattern</i> cannot have sub-class</b></font><br>");
   incr_warning();
 }
 

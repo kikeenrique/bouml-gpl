@@ -528,6 +528,10 @@ void BrowserNode::get_deploymentdiagramsettings(DeploymentDiagramSettings & d) c
   ((BrowserNode *) parent())->get_deploymentdiagramsettings(d);
 }
 
+void BrowserNode::get_simpleclassdiagramsettings(SimpleClassDiagramSettings & d) const {
+  ((BrowserNode *) parent())->get_simpleclassdiagramsettings(d);
+}
+
 UmlColor BrowserNode::get_color(UmlCode who) const {
   return ((BrowserNode *) parent())->get_color(who);
 }
@@ -1147,6 +1151,7 @@ bool BrowserNode::tool_cmd(ToolCom * com, const char * args) {
   case getCppDefCmd:
   case getJavaDefCmd:
   case getPhpDefCmd:
+  case getPythonDefCmd:
   case getIdlDefCmd:
     get_data()->send_uml_def(com, this, comment);
     break;

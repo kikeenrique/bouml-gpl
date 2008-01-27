@@ -44,6 +44,7 @@
 #include "BrowserView.h"
 #include "BrowserClass.h"
 #include "BrowserAttribute.h"
+#include "BrowserOperation.h"
 #include "KeyValueTable.h"
 #include "UmlWindow.h"
 #include "UmlDesktop.h"
@@ -81,11 +82,15 @@ AttributeDialog::AttributeDialog(AttributeData * a)
   lang_st = GenerationSettings::java_class_stereotype(stereotype);
   java_in_enum = in_enum || (lang_st == "enum");
   java_in_enum_pattern = !java_in_enum && (lang_st == "enum_pattern");
-  java_in_typedef = !java_in_enum && (lang_st == "typedef");
+  java_ignored = !java_in_enum && (lang_st == "ignored");
   
   lang_st = GenerationSettings::php_class_stereotype(stereotype);
   php_in_enum = in_enum || (lang_st == "enum");
-  php_in_typedef = !php_in_enum && (lang_st == "typedef");
+  php_ignored = !php_in_enum && (lang_st == "ignored");
+  
+  lang_st = GenerationSettings::python_class_stereotype(stereotype);
+  python_in_enum = in_enum || (lang_st == "enum");
+  python_ignored = !python_in_enum && (lang_st == "ignored");
   
   lang_st = GenerationSettings::idl_class_stereotype(stereotype);
   idl_in_enum = in_enum || (lang_st == "enum");
@@ -214,7 +219,7 @@ AttributeDialog::AttributeDialog(AttributeData * a)
     bg = new QButtonGroup(3, Qt::Horizontal, QString::null, htab);
     htab->setStretchFactor(bg, 1000);
     bg->setExclusive(FALSE);
-    classattribute_cb = new QCheckBox("class attribute", bg);
+    classattribute_cb = new QCheckBox("static attribute", bg);
     if (a->get_isa_class_attribute())
       classattribute_cb->setChecked(TRUE);
     volatile_cb = new QCheckBox("volatile", bg);
@@ -317,7 +322,7 @@ AttributeDialog::AttributeDialog(AttributeData * a)
   
   // Java
   
-  if (! java_in_typedef) {
+  if (! java_ignored) {
     grid = new QGrid(2, this);
     javatab = grid;
     grid->setMargin(5);
@@ -382,7 +387,11 @@ AttributeDialog::AttributeDialog(AttributeData * a)
   
   // Php
   
-  if (! php_in_typedef) {
+  if (! php_ignored) {
+    python_self =
+      BrowserOperation::python_init_self((BrowserNode *) a->browser_node->parent())
+	+ ".";
+    
     grid = new QGrid(2, this);
     phptab = grid;
     grid->setMargin(5);
@@ -419,6 +428,46 @@ AttributeDialog::AttributeDialog(AttributeData * a)
   }
   else
     phptab = 0;
+  
+  // Python
+  
+  if (! python_ignored) {
+    grid = new QGrid(2, this);
+    pythontab = grid;
+    grid->setMargin(5);
+    grid->setSpacing(5);
+    
+    new QLabel("Declaration :", grid);
+    edpythondecl = new MultiLineEdit(grid);
+    edpythondecl->setText(a->get_pythondecl());
+    edpythondecl->setFont(font);
+    if (visit)
+      edpythondecl->setReadOnly(TRUE);
+    else
+      connect(edpythondecl, SIGNAL(textChanged()), this, SLOT(python_update()));
+    
+    new QLabel("Result after\nsubstitution :", grid);
+    showpythondecl = new MultiLineEdit(grid);
+    showpythondecl->setReadOnly(TRUE);
+    showpythondecl->setFont(font);
+    
+    new QLabel(grid);
+    htab = new QHBox(grid);
+
+    if (! visit) {
+      connect(new QPushButton("Default declaration", htab), SIGNAL(pressed ()),
+	      this, SLOT(python_default()));
+      connect(new QPushButton("Not generated in Python", htab), SIGNAL(pressed ()),
+	      this, SLOT(python_unmapped())); 
+    }
+    
+    addTab(grid, "Python");
+  
+    if (!GenerationSettings::python_get_default_defs())
+      removePage(grid);
+  }
+  else
+    pythontab = 0;
   
   // IDL
   
@@ -639,13 +688,15 @@ void AttributeDialog::accept() {
       ? FALSE
       : mutable_cb->isChecked();
     
-    att->java_transient = (java_in_enum || java_in_typedef || java_in_enum_pattern)
+    att->java_transient = (java_in_enum || java_ignored || java_in_enum_pattern)
       ? FALSE
       : transient_cb->isChecked();
-    att->java_decl = (java_in_typedef) ? QString::null : edjavadecl->text();
+    att->java_decl = (java_ignored) ? QString::null : edjavadecl->text();
     att->java_annotation = javaannotation;
     
-    att->php_decl = (php_in_typedef) ? QString::null : edphpdecl->text();
+    att->php_decl = (php_ignored) ? QString::null : edphpdecl->text();
+
+    att->python_decl = (python_ignored) ? QString::null : edpythondecl->text();
     
     att->idl_decl = (idl_in_typedef) ? QString::null : edidldecl->text();
     if (idl_in_union) {
@@ -694,6 +745,11 @@ void AttributeDialog::update_all_tabs(QWidget * w) {
     php_update();
     if (!visit)
       edphpdecl->setFocus();
+  }
+  else if (w == pythontab) {
+    python_update();
+    if (!visit)
+      edpythondecl->setFocus();
   }
   else if (w == idltab) {
     idl_update();
@@ -989,7 +1045,7 @@ void AttributeDialog::java_update() {
 	s += edinit->text();
       }
       else if (java_in_enum_pattern)
-	s += " = ...";
+	s += (need_equal(p, "", FALSE)) ? " = ..." : "...";
 
       p += 8;
     }
@@ -1029,7 +1085,7 @@ void AttributeDialog::java_update() {
     }
     else if (!strncmp(p, "${transient}", 12)) {
       p += 12;
-      if (!java_in_enum && !java_in_enum_pattern && !java_in_typedef && transient_cb->isChecked())
+      if (!java_in_enum && !java_in_enum_pattern && !java_ignored && transient_cb->isChecked())
 	s += "transient ";
     }
     else if (!strncmp(p, "${volatile}", 11)) {
@@ -1219,7 +1275,7 @@ void AttributeDialog::php_update() {
 	s += edinit->text();
       }
       else if (php_in_enum)
-	s += " = ...";
+	s += (need_equal(p, "", FALSE)) ? " = ..." : "...";
 
       p += 8;
     }
@@ -1312,6 +1368,143 @@ QString AttributeDialog::php_decl(const BrowserAttribute * at)
     }
     else if (*p == ';')
       break;
+    else if (*p == '@')
+      manage_alias(at, p, s, 0);
+    else
+      s += *p++;
+  }
+
+  return s;
+}
+
+void AttributeDialog::python_default() {
+  if (python_in_enum)
+    edpythondecl->setText(GenerationSettings::python_default_enum_item_decl());
+  else if (!java_in_enum_pattern)
+    edpythondecl->setText(GenerationSettings::python_default_attr_decl(""));
+  else
+    edpythondecl->setText(GenerationSettings::python_default_attr_decl(multiplicity->currentText().stripWhiteSpace()));
+
+  python_update();
+}
+
+void AttributeDialog::python_unmapped() {
+  edpythondecl->setText(QString::null);
+  showpythondecl->setText(QString::null);
+}
+
+void AttributeDialog::python_update() {
+  // do NOT write
+  //	const char * p = edpythondecl->text();
+  // because the QString is immediatly destroyed !
+  QString def = edpythondecl->text();
+  const char * p = def;
+  const char * pp = 0;
+  QString s;
+
+  for (;;) {
+    if (*p == 0) {
+      if (pp == 0)
+	break;
+      
+      // comment management done
+      p = pp;
+      pp = 0;
+      if (*p == 0)
+	break;
+    }
+      
+    if (!strncmp(p, "${comment}", 10))
+      manage_python_comment(comment->text(), p, pp);
+    else if (!strncmp(p, "${description}", 14))
+      manage_python_description(comment->text(), p, pp);
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      s += edname->text();
+    }
+    else if (!strncmp(p, "${value}", 8)) {
+      QString i = edinit->text().stripWhiteSpace();
+      
+      if (!i.isEmpty()) {
+	if (need_equal(p, i, FALSE))
+	  s += " = ";
+	s += edinit->text();
+      }
+      else if (python_in_enum)
+	s += (need_equal(p, "", FALSE)) ? " = ..." : "...";
+      else if (need_equal(p, "None", FALSE))
+	s += " = None";
+      else
+	s += "None";
+
+      p += 8;
+    }
+    else if (!strncmp(p, "${self}", 7)) {
+      p += 7;
+      if (java_in_enum_pattern || !classattribute_cb->isChecked())
+	s += python_self;
+    }
+    else if (!strncmp(p, "${stereotype}", 13)) {
+      p += 13;
+      if (! java_in_enum_pattern)
+	s += GenerationSettings::python_relationattribute_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+    }
+    else if (!strncmp(p, "${type}", 7)) {
+      p += 7;
+      s += get_python_name(the_type(edtype->currentText().stripWhiteSpace(),
+				    list, nodes));
+    }
+    else if (*p == '@')
+      manage_alias(att->browser_node, p, s, kvtable);
+    else
+      s += *p++;
+  }
+
+  showpythondecl->setText(s);
+}
+
+// produced out of __init__
+QString AttributeDialog::python_decl(const BrowserAttribute * at)
+{
+  QString s;
+  AttributeData * d = (AttributeData *) at->get_data();
+  QCString decl = d->python_decl;
+  
+  remove_comments(decl);
+  
+  const char * p = decl;
+  
+  while (*p) {
+    if (!strncmp(p, "${comment}", 10)) {
+      p += 10;
+    }
+    else if (!strncmp(p, "${description}", 14)) {
+      p += 14;
+    }
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      s += at->get_name();
+    }
+    else if (!strncmp(p, "${value}", 8)) {
+      break;
+    }
+    else if (!strncmp(p, "${self}", 7)) {
+      p += 7;
+    }
+    else if (!strncmp(p, "${stereotype}", 13)) {
+      p += 13;
+    }
+    else if (!strncmp(p, "${type}", 7)) {
+      p += 7;
+    }
+    else if (*p == '=')
+      break;
+    else if (*p == '\n') {
+      s += ' ';
+      do
+	p+= 1;
+      while ((*p == ' ') || (*p == '\t'));
+    }
     else if (*p == '@')
       manage_alias(at, p, s, 0);
     else

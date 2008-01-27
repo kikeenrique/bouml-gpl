@@ -49,12 +49,16 @@ class ExtraMemberData : public BasicData {
     // Php
     MyStr php_decl;
     
+    // Python
+    MyStr python_decl;
+    
     // Idl
     MyStr idl_decl;
     
     virtual void send_cpp_def(ToolCom * com);
     virtual void send_java_def(ToolCom * com);
     virtual void send_php_def(ToolCom * com);
+    virtual void send_python_def(ToolCom * com);
     virtual void send_idl_def(ToolCom * com);
     
   public:
@@ -74,6 +78,8 @@ class ExtraMemberData : public BasicData {
     const char * get_java_decl() const { return java_decl; };
             
     const char * get_php_decl() const { return php_decl; };
+    
+    const char * get_python_decl() const { return python_decl; };
     
     const char * get_idl_decl() const { return idl_decl; };
     
