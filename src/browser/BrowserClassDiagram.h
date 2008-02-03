@@ -85,7 +85,7 @@ class BrowserClassDiagram : public BrowserDiagram {
 
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserClassDiagram * read(char * &, char *, BrowserNode *);
-    static BrowserClassDiagram * read_ref(char * &, char *);
+    static BrowserClassDiagram * read_ref(char * &, const char *);
     static BrowserNode * get_it(const char * k, int id);
 
     void edit_settings();

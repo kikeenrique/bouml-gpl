@@ -1,5 +1,5 @@
 /* XPM */
-static char*protected_package_xpm[]={
+static const char*protected_package_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "_ c #ff0000",
@@ -21,7 +21,7 @@ static char*protected_package_xpm[]={
 "#______________#",
 "################"};
 
-static char*free_package_xpm[]={
+static const char*free_package_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "_ c #000000",
@@ -43,7 +43,7 @@ static char*free_package_xpm[]={
 "#______________#",
 "################"};
 
-static char*user_package_xpm[]={
+static const char*user_package_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "_ c #00ff00",
@@ -65,7 +65,7 @@ static char*user_package_xpm[]={
 "#______________#",
 "################"};
 
-static char*other_package_xpm[]={
+static const char*other_package_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "_ c #ffa858",
@@ -88,7 +88,7 @@ static char*other_package_xpm[]={
 "################"};
 
 /* XPM */
-static char*ro_protected_package_xpm[]={
+static const char*ro_protected_package_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "_ c #ff0000",
@@ -110,7 +110,7 @@ static char*ro_protected_package_xpm[]={
 "#______________#",
 "################"};
 
-static char*ro_free_package_xpm[]={
+static const char*ro_free_package_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "_ c #a0a0a0",
@@ -132,7 +132,7 @@ static char*ro_free_package_xpm[]={
 "#______________#",
 "################"};
 
-static char*ro_user_package_xpm[]={
+static const char*ro_user_package_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "_ c #00ff00",
@@ -154,7 +154,7 @@ static char*ro_user_package_xpm[]={
 "#______________#",
 "################"};
 
-static char*ro_other_package_xpm[]={
+static const char*ro_other_package_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "_ c #ffa858",

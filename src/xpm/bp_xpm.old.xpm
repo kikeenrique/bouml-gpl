@@ -1,5 +1,5 @@
 /* XPM */
-static char *bp_256[] = {
+static const char *bp_256[] = {
 /* width height ncolors chars_per_pixel */
 "110 150 256 2",
 /* colors */

@@ -505,7 +505,7 @@ void BrowserClassDiagram::save(QTextStream & st, bool ref, QString & warning) {
   }
 }
 
-BrowserClassDiagram * BrowserClassDiagram::read_ref(char * & st, char * k)
+BrowserClassDiagram * BrowserClassDiagram::read_ref(char * & st, const char * k)
 {
   if (strcmp(k, "classdiagram_ref"))
     wrong_keyword(k, "classdiagram_ref");

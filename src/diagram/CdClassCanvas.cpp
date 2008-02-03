@@ -205,10 +205,15 @@ void CdClassCanvas::compute_size() {
   bool full_members = (used_settings.show_full_members_definition == UmlYes);
   bool show_visibility = (used_settings.show_members_visibility == UmlYes);
   bool show_stereotype = (used_settings.show_members_stereotype == UmlYes);
+  bool show_multiplicity = (used_settings.show_members_multiplicity == UmlYes);
   bool show_dir = (used_settings.show_parameter_dir == UmlYes);
   bool show_name = (used_settings.show_parameter_name == UmlYes);
   bool hide_attrs = (used_settings.hide_attributes == UmlYes);
   bool hide_opers = (used_settings.hide_operations == UmlYes);
+  int max_member_width = used_settings.member_max_width;
+  
+  if (max_member_width == UmlUnlimitedMemberWidth)
+    max_member_width = 1000000;
 
   if (used_settings.class_drawing_mode == Natural) {
     const char * st = data->get_stereotype();
@@ -245,10 +250,13 @@ void CdClassCanvas::compute_size() {
 	    continue;
 	  
 	  s = ((AttributeData *) child_data)
-	    ->definition(full_members, used_settings.drawing_language);
+	    ->definition(full_members, show_multiplicity, used_settings.drawing_language);
 	  
 	  if (s.isEmpty())
 	    continue;
+	  
+	  if ((int) s.length() >= max_member_width)
+	    s = s.left(max_member_width) + "...";
 	  
 	  natt += 1;
 	  wa = fm.width(s);
@@ -274,6 +282,9 @@ void CdClassCanvas::compute_size() {
 
 	  if (s.isEmpty())
 	    continue;
+	  
+	  if ((int) s.length() >= max_member_width)
+	    s = s.left(max_member_width) + "...";
 	  
 	  noper += 1;
 	  if (((OperationData *) child_data)->get_is_abstract())
@@ -785,8 +796,13 @@ void CdClassCanvas::draw(QPainter & p) {
   bool full_members = (used_settings.show_full_members_definition == UmlYes);
   bool show_visibility = (used_settings.show_members_visibility == UmlYes);
   bool show_stereotype = (used_settings.show_members_stereotype == UmlYes);
+  bool show_multiplicity = (used_settings.show_members_multiplicity == UmlYes);
   bool show_dir = (used_settings.show_parameter_dir == UmlYes);
   bool show_name = (used_settings.show_parameter_name == UmlYes);
+  int max_member_width = used_settings.member_max_width;
+  
+  if (max_member_width == UmlUnlimitedMemberWidth)
+    max_member_width = 1000000;
   
   r.setTop(r.top() + two);
   
@@ -800,7 +816,7 @@ void CdClassCanvas::draw(QPainter & p) {
 	   : (hidden_visible_attributes.findIndex((BrowserNode *) child) == -1))) {
 	AttributeData * data =
 	  ((AttributeData *) ((BrowserNode *) child)->get_data());
-	QString s = data->definition(full_members, used_settings.drawing_language);
+	QString s = data->definition(full_members, show_multiplicity, used_settings.drawing_language);
 	
 	if (s.isEmpty())
 	  continue;
@@ -834,7 +850,9 @@ void CdClassCanvas::draw(QPainter & p) {
 	  }
 	}
 	p.setFont((data->get_isa_class_attribute()) ? the_canvas()->get_font(UmlNormalUnderlinedFont)
-						    : the_canvas()->get_font(UmlNormalFont));
+						    : the_canvas()->get_font(UmlNormalFont));  
+	if ((int) s.length() >= max_member_width)
+	  s = s.left(max_member_width) + "...";
 	p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, s);
 	if (fp != 0)
 	  draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, s, p.font(), fp);
@@ -907,6 +925,8 @@ void CdClassCanvas::draw(QPainter & p) {
 	    p.setFont(the_canvas()->get_font(UmlNormalItalicFont));
 	  else
 	    p.setFont(the_canvas()->get_font(UmlNormalFont));
+	  if ((int) s.length() >= max_member_width)
+	    s = s.left(max_member_width) + "...";
 	  p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, s);
 	  if (fp != 0)
 	    draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, s, p.font(), fp);

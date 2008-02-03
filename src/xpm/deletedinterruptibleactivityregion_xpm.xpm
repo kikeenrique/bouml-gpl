@@ -1,5 +1,5 @@
 /* XPM */
-static char * deletedinterruptibleactivityregion_xpm[] = {
+static const char * deletedinterruptibleactivityregion_xpm[] = {
 "16 16 3 1",
 "* c #000000",
 ". c #ffffff",

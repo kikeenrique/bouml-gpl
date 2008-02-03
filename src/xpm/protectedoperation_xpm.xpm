@@ -1,5 +1,5 @@
 /* XPM */
-static char*protectedoperation_xpm[]={
+static const char*protectedoperation_xpm[]={
 "16 16 3 1",
 "_ c #00ffff",
 "# c #000000",

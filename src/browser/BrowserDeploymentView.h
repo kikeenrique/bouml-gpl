@@ -94,7 +94,7 @@ class BrowserDeploymentView : public BrowserNode, public Labeled<BrowserDeployme
     static void save_stereotypes(QTextStream &);
 
     static BrowserDeploymentView * read(char * &, char *, BrowserNode *, bool);
-    static BrowserDeploymentView * read_ref(char * &, char *);
+    static BrowserDeploymentView * read_ref(char * &, const char *);
     static BrowserNode * get_it(const char * k, int id);
 
     static BrowserNodeList & instances(BrowserNodeList &);

@@ -1,5 +1,5 @@
 /* XPM */
-static char*protectedembeddedclass_xpm[]={
+static const char*protectedembeddedclass_xpm[]={
 "16 16 2 1",
 "# c #000000",
 ". c #ffffff",

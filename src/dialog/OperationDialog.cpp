@@ -470,7 +470,7 @@ void OperationDialog::init_cpp() {
     else
       connect(edcppdef, SIGNAL(textChanged()), this, SLOT(cpp_update_def()));
     
-    QVBox * vtab = vtab = new QVBox(grid);
+    QVBox * vtab = new QVBox(grid);
 
     new QLabel("Result after\nsubstitution : ", vtab);
     if (!visit && !oper->is_get_or_set) {
@@ -584,7 +584,7 @@ void OperationDialog::init_java() {
     else
       connect(edjavadef, SIGNAL(textChanged()), this, SLOT(java_update_def()));
     
-    QVBox * vtab = vtab = new QVBox(grid);
+    QVBox * vtab = new QVBox(grid);
 
     new QLabel("Result after\nsubstitution : ", vtab);
     if (!visit && !oper->is_get_or_set) {
@@ -691,7 +691,7 @@ void OperationDialog::init_php() {
     else
       connect(edphpdef, SIGNAL(textChanged()), this, SLOT(php_update_def()));
     
-    QVBox * vtab = vtab = new QVBox(grid);
+    QVBox * vtab = new QVBox(grid);
 
     new QLabel("Result after\nsubstitution : ", vtab);
     if (!visit && !oper->is_get_or_set) {
@@ -780,7 +780,7 @@ void OperationDialog::init_python() {
     else
       connect(edpythondef, SIGNAL(textChanged()), this, SLOT(python_update_def()));
     
-    QVBox * vtab = vtab = new QVBox(grid);
+    QVBox * vtab = new QVBox(grid);
 
     new QLabel("Result after\nsubstitution : ", vtab);
     if (!visit && !oper->is_get_or_set) {

@@ -1,5 +1,5 @@
 /* XPM */
-static char*darkmagenta_xpm[]={
+static const char*darkmagenta_xpm[]={
 "40 16 3 1",
 "# c #000000",
 "_ c #800080",

@@ -445,15 +445,20 @@ void Tool::read(char * & st, char * & k, bool new_format)
     
     for (;;) {
       // old format
-      if (!strcmp(k, "Attribut"))
-	k = "Attribute";
+      const char * kc;
       
-      if (((index = strlen(k)) > 4) && 
-	  !strcmp(k+index-4, "Icon"))
+      if (!strcmp(k, "Attribut"))
+	kc = "Attribute";
+      else if (((index = strlen(k)) > 4) && 
+	       !strcmp(k+index-4, "Icon")) {
 	k[index-4] = 0;
+	kc = k;
+      }
+      else
+	kc = k;
       
       for (index = 0; index != sizeof(ToolCase) / sizeof(*ToolCase); index += 1) {
-	if (!strcmp(k, ToolCase[index].key))
+	if (!strcmp(kc, ToolCase[index].key))
 	  break;
       }
       

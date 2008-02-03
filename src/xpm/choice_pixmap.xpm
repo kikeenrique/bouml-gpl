@@ -1,5 +1,5 @@
 /* XPM */
-static char*choice_pixmap[]={
+static const char*choice_pixmap[]={
 "17 25 3 1",
 "# c #000000",
 "_ c #ffffff",

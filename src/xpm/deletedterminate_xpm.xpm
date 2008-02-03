@@ -1,5 +1,5 @@
 /* XPM */
-static char*deletedterminate_xpm[]={
+static const char*deletedterminate_xpm[]={
 "16 16 3 1",
 "# c #000000",
 ". c #ffffff",

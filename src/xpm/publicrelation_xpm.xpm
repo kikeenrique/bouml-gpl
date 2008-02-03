@@ -1,5 +1,5 @@
 /* XPM */
-static char*publicrelation_xpm[]={
+static const char*publicrelation_xpm[]={
 "16 16 3 1",
 "a c #000000",
 "# c #ffffc0",

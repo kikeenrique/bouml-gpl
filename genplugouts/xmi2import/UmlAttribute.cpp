@@ -27,6 +27,8 @@ void UmlAttribute::importIt(FileIn & in, Token & token, UmlItem * where)
 	
 	s.sprintf("anonymous_attribute_%u", ++n);
       }
+      else
+        s = legalName(s);
       
       UmlAttribute * att = create((UmlClass *) where, s);
       

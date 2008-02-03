@@ -1,5 +1,5 @@
 /* XPM */
-static char*deletedseqdiagram_xpm[]={
+static const char*deletedseqdiagram_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "a c #ffffff",

@@ -358,3 +358,13 @@ class UmlItem
   
   if (! token.closed())
     in.finish(token.what());
+!!!240770.cpp!!!	legalName(in s : string) : string
+  int index = 0;
+  int index2;
+  
+  while ((index2 = s.find(' ', index)) != -1) {
+    s.replace(index2, 1, "_");
+    index = index2 + 1;
+  }
+
+  return s;

@@ -1,5 +1,5 @@
 /* XPM */
-static char*entrypoint_big_pixmap[]={
+static const char*entrypoint_big_pixmap[]={
 "19 19 3 1",
 "# c #000000",
 "_ c #ffffff",

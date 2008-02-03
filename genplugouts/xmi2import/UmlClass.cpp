@@ -74,6 +74,8 @@ void UmlClass::importIt(FileIn & in, Token & token, UmlItem * where)
     
     s.sprintf("anonymous_%u", ++n);
   }
+  else
+    s = legalName(s);
     
   UmlClass * cl = create(where, s);
   Association * assocclass = 0;

@@ -1,5 +1,5 @@
 /* XPM */
-static char*mediumgreen_xpm[]={
+static const char*mediumgreen_xpm[]={
 "40 16 3 1",
 "# c #000000",
 "_ c #60d460",

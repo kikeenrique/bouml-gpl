@@ -1,5 +1,5 @@
 /* XPM */
-static char*deletedattribute_xpm[]={
+static const char*deletedattribute_xpm[]={
 "16 16 4 1",
 "a c #00ff00",
 "b c #000000",

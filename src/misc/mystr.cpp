@@ -31,6 +31,7 @@
 
 #include "mystr.h"
 
+char SharedStr::Empty[1] = { 0 };
 QStrList SharedStr::shared[SHAREDDICTSIZE];
 
 unsigned int SharedStr::length() const {
@@ -53,7 +54,7 @@ int SharedStr::find(int c, int index) const
 
 SharedStr & SharedStr::operator=(const char * s) {
   if ((s == 0) || (*s == 0))
-    p = "";
+    p = Empty;
   else
     assign(s, strlen(s));
   
@@ -62,7 +63,7 @@ SharedStr & SharedStr::operator=(const char * s) {
 
 SharedStr & SharedStr::operator=(const QString & s) {
   if (s.isEmpty())
-    p = "";
+    p = Empty;
   else
     assign((const char *) s, s.length());
   
@@ -71,7 +72,7 @@ SharedStr & SharedStr::operator=(const QString & s) {
 
 SharedStr & SharedStr::operator=(const QCString & s) {
   if (s.isEmpty())
-    p = "";
+    p = Empty;
   else
     assign((const char *) s, s.length());
   
@@ -207,7 +208,7 @@ char * MayBeSharedStr::assign(const char * s, int len, bool share) {
     delete [] p;
   
   if ((s == 0) || (*s == 0))
-    p = "";
+    p = Empty;
   else if (share)
     SharedStr::assign(s, len);
   else {

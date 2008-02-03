@@ -1,5 +1,5 @@
 /* XPM */
-static char*syncmsg_button[]={
+static const char*syncmsg_button[]={
 "16 16 2 1",
 "# c #000000",
 ". c None",

@@ -1,5 +1,5 @@
 /* XPM */
-static char*componentdiagram_xpm[]={
+static const char*componentdiagram_xpm[]={
 "16 16 2 1",
 ". c #ffffff",
 "# c #000000",

@@ -1,5 +1,5 @@
 /* XPM */
-static char*magenta_xpm[]={
+static const char*magenta_xpm[]={
 "40 16 3 1",
 "# c #000000",
 "_ c #ff00ff",

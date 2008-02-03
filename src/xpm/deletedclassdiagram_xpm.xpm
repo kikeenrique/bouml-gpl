@@ -1,5 +1,5 @@
 /* XPM */
-static char*deletedclassdiagram_xpm[]={
+static const char*deletedclassdiagram_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "a c #ffffff",

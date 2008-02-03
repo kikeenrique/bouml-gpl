@@ -31,7 +31,7 @@
 class StateSpec {
   public:
     enum kind {
-      is3states, isClassDrawingMode, isDrawingLanguage, isShowContextMode
+      is3states, isClassDrawingMode, isDrawingLanguage, isShowContextMode, isMemberWidth
     };
   
     const char * name;
@@ -58,6 +58,11 @@ class StateSpec {
       state = s;
       who = isShowContextMode;
     };
+    void set(const char * n, char * s) {
+      name = n;
+      state = s;
+      who = isMemberWidth;
+    };
     
     void set_state(int v) {
       switch (who) {
@@ -70,8 +75,11 @@ class StateSpec {
       case isDrawingLanguage:
 	*((DrawingLanguage *) state) = (DrawingLanguage) v;
 	break;
-      default:
+      case isShowContextMode:
 	*((ShowContextMode *) state) = (ShowContextMode) v;
+	break;
+      default:
+	*((char *) state) = v;
       };
     };
 };

@@ -155,10 +155,19 @@ QString AttributeData::definition(bool full) const {
       + QString(" : ") + ((const char *) type.get_type());
 }
 
-QString AttributeData::definition(bool full, DrawingLanguage language) const {
+QString AttributeData::definition(bool full, bool mult, DrawingLanguage language) const {
   switch (language) {
   case UmlView:
-    return definition(full);
+    if (! full)
+      return browser_node->get_name();
+    else {
+      QString r = ((const char *) browser_node->get_name())
+	+ QString(" : ") + ((const char *) type.get_type());
+      
+      return (mult && !multiplicity.isEmpty())
+	? r + " [" + (const char *) multiplicity + "]"
+	: r;
+    }
   case CppView:
     if (full)
       return AttributeDialog::cpp_decl((BrowserAttribute *) browser_node);

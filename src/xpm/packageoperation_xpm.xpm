@@ -1,5 +1,5 @@
 /* XPM */
-static char*packageoperation_xpm[]={
+static const char*packageoperation_xpm[]={
 "16 16 3 1",
 "_ c #00ffff",
 "# c #000000",

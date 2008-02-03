@@ -743,7 +743,7 @@ void BrowserDeploymentView::save(QTextStream & st, bool ref, QString & warning) 
   }
 }
 
-BrowserDeploymentView * BrowserDeploymentView::read_ref(char * & st, char * k)
+BrowserDeploymentView * BrowserDeploymentView::read_ref(char * & st, const char * k)
 {
   if (strcmp(k, "deploymentview_ref") &&
       ((read_file_format() >= 20) || strcmp(k, "componentview_ref")))

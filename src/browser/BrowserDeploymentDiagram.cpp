@@ -528,7 +528,7 @@ void BrowserDeploymentDiagram::save(QTextStream & st, bool ref, QString & warnin
   }
 }
 
-BrowserDeploymentDiagram * BrowserDeploymentDiagram::read_ref(char * & st, char * k)
+BrowserDeploymentDiagram * BrowserDeploymentDiagram::read_ref(char * & st, const char * k)
 {
   if (strcmp(k, "deploymentdiagram_ref") &&
       ((read_file_format() >= 20) || strcmp(k, "componentdiagram_ref")))

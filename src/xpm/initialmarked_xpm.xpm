@@ -1,5 +1,5 @@
 /* XPM */
-static char*initialmarked_xpm[]={
+static const char*initialmarked_xpm[]={
 "16 16 2 1",
 "# c #000000",
 ". c #ff0000",

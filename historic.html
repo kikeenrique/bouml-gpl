@@ -1,3 +1,41 @@
+<h3>4.1</h3>February, 3th 2008<br /><br />
+    <ul>
+	<li> When several <i>artifacts</i> have the same name and you edit a class,
+		the shown <i>artifact</i> may not the right one, and if you change it
+		the class may not be associated to the desired one, fixed.
+		<br /><br /></li>
+
+	<li> New <i>drawing setting</i> named <i>show members multiplicity</i>
+		allowing to write attribute multiplicity in a
+		class picture in a class diagram. This setting have sense only
+		when you also ask for to show the full members definition
+		and when the <i>drawing language</i> is UML.
+		By default this setting	is set to false.
+		<br /><br /></li>
+
+	<li> New <i>drawing setting</i> named <i>max members width</i>
+		allowing to limit attribute and operation width to a given
+		number of characters. When the number of
+		characters needed by an attribute or an operation is greater
+		than <i>max members width</i>, the string is cut to
+		<i>max members width</i> characters and "..." is added.
+		Note : the optionally written visibility and stereotype
+		are not taken into in the member width.
+		<br /><br /></li>
+
+	<li> <b>XMI2 Import 1.2.5</b><br />
+		Spaces are replaced by '_' in the name of an imported class,
+		attribute or relation.<br />
+		Fixe bug on operation parameter multiplicity reading.
+		<br /><br /></li>
+
+	<li> Because the format of the BOUML files is changed,
+	     the previous releases of BOUML cannot read a project
+	     saved with this version. Obviously this release is
+	     able to read the projects made by previous releases of BOUML.</li>
+    </ul>
+<br /><br />
+
 <h3>4.0</h3>January, 27th 2008<br /><br />
     <ul>
 	<li> In the previous releases the position of the

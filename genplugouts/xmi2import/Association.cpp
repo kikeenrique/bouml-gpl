@@ -160,7 +160,7 @@ void Association::solve(QCString id) {
 	  ra->set_RoleName(s);
 	}
 	else
-	  ra->set_RoleName(a.name);
+	  ra->set_RoleName(UmlItem::legalName(a.name));
 	ra->setVisibility(a.visibility);
 	if (a.readOnly)
 	  ra->set_isReadOnly(TRUE);
@@ -183,7 +183,7 @@ void Association::solve(QCString id) {
 	    rb->set_RoleName(s);
 	  }
 	  else
-	    rb->set_RoleName(b.name);
+	    rb->set_RoleName(UmlItem::legalName(b.name));
 	  rb->setVisibility(b.visibility);
 	  if (b.readOnly)
 	    rb->set_isReadOnly(TRUE);

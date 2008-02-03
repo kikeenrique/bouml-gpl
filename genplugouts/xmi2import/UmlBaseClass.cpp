@@ -332,7 +332,6 @@ void UmlBaseClass::read_cpp_() {
 #ifdef WITHJAVA
 void UmlBaseClass::read_java_() {
   UmlBaseClassMember::read_java_();
-  ;
   _java_final = UmlCom::read_bool();
   _java_external = UmlCom::read_bool();
 }

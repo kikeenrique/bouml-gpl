@@ -1,5 +1,5 @@
 /* XPM */
-static char*deletedextramember_xpm[]={
+static const char*deletedextramember_xpm[]={
 "16 16 4 1",
 "# c #000000",
 ". c None",

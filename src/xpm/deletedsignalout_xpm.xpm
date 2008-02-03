@@ -1,5 +1,5 @@
 /* XPM */
-static char*deletedsignalout_xpm[]={
+static const char*deletedsignalout_xpm[]={
 "16 16 3 1",
 "# c #000000",
 ". c #ffffff",

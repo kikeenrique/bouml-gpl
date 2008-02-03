@@ -1,5 +1,5 @@
 /* XPM */
-static char*deploymentnode_xpm[]={
+static const char*deploymentnode_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "_ c #ffffff",

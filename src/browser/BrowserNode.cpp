@@ -1542,8 +1542,10 @@ void BrowserNodeList::search_ddb(BrowserNode * bn, UmlCode k, const QString & s,
 
 int BrowserNodeList::compareItems(QCollection::Item item1, QCollection::Item item2)
 {
-  return QString(((BrowserNode *) item1)->get_name())
-    .compare(((BrowserNode *) item2)->get_name());
+  QString s1 = ((BrowserNode *) item1)->full_name(TRUE);
+  QString s2 = ((BrowserNode *) item2)->full_name(TRUE);
+  
+  return s1.compare(s2);
 }
 
 void BrowserNodeList::names(QStringList & list) const {

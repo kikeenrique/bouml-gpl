@@ -55,7 +55,7 @@ AboutDialog::AboutDialog() : QDialog(0, "About BOUML", TRUE) {
   hbox->addWidget(lbp);
   hbox->addWidget(new QLabel("  ", this));
 
-  const char * htmltext = ("BOUML release <b>4.0</b><br>\n"
+  const char * htmltext = ("BOUML release <b>4.1</b><br>\n"
 			   "<br>\n"
 			   "<i>http://bouml.free.fr</i><br>\n"
 			   "<i>http://sourceforge.net/projects/bouml</i><br>\n"

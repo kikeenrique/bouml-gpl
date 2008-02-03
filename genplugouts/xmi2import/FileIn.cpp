@@ -335,18 +335,38 @@ char FileIn::read_special_char() {
     error("premature end of file");
       
   if (c == '#') {
-    int c;
+    int c = fgetc(_fp);
     int r = 0;
     
-    while ((c = fgetc(_fp)) != ';') {
-      if (c == EOF)
-	// doesn't return
-	error("premature end of file");
-      if ((c >= '0') && (c <= '9'))
-	r = r*10 + c - '0';
-      else
-	// doesn't return
-	error("not a valid special character");
+    if ((c == 'x') || (c == 'X')) {
+      while ((c = fgetc(_fp)) != ';') {
+	if (c == EOF)
+	  // doesn't return
+	  error("premature end of file");
+	if ((c >= '0') && (c <= '9'))
+	  r = r*16 + c - '0';
+	else if ((c >= 'A') && (c <= 'F'))
+	  r = r*16 + c - 'A' + 10;
+	else if ((c >= 'a') && (c <= 'f'))
+	  r = r*16 + c - 'a' + 10;
+	else
+	  // doesn't return
+	  error("not a valid special character");
+      }
+    }
+    else {
+      while (c != ';') {
+	if (c == EOF)
+	  // doesn't return
+	  error("premature end of file");
+	if ((c >= '0') && (c <= '9'))
+	  r = r*10 + c - '0';
+	else
+	  // doesn't return
+	  error("not a valid special character");
+	
+	c = fgetc(_fp);
+      }
     }
     return r;
   }

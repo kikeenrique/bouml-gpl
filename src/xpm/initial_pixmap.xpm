@@ -1,5 +1,5 @@
 /* XPM */
-static char*initial_pixmap[]={
+static const char*initial_pixmap[]={
 "15 15 2 1",
 "# c #000000",
 ". c None",

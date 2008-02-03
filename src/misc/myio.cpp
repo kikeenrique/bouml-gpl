@@ -1081,6 +1081,9 @@ unsigned read_file_format()
 
 //
 
+static char EmptyString[] = { 0 };
+static char UnvalidString[] = { '?', '?', '?', 0 };
+
 static void set_previous_word(char * s)
 {
   if (Context.previous_word_allocated) {
@@ -1143,7 +1146,7 @@ int open_file(QFile & fp, int mode, bool silent)
   }
   
   if (mode == IO_ReadOnly) {
-    set_previous_word("");
+    set_previous_word(EmptyString);
     Context.linenum = 1;
     Context.removed_char = ' ';
   }
@@ -1425,7 +1428,7 @@ void delete_definition(int id, const char * ext)
 
 void read_in(const QString & s)
 {
-  set_previous_word("");
+  set_previous_word(EmptyString);
   Context.linenum = 1;
   Context.removed_char = ' ';
   Context.filename = s;
@@ -1745,7 +1748,7 @@ void unread_keyword(char * keyword, char * & st)
   Context.removed_char = ' ';
 
   st = keyword;
-  set_previous_word("???");	// to free Context.previous_word if necessary
+  set_previous_word(UnvalidString);	// to free Context.previous_word if necessary
 }
 
 

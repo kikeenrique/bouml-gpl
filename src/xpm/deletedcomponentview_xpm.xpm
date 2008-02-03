@@ -1,5 +1,5 @@
 /* XPM */
-static char*deletedcomponentview_xpm[]={
+static const char*deletedcomponentview_xpm[]={
 "16 16 4 1",
 "# c #000000",
 "_ c #ffffc0",

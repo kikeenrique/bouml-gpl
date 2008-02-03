@@ -33,7 +33,7 @@
 
 class SharedStr {
   public:
-    SharedStr() { p = ""; };
+    SharedStr() { p = Empty; };
     SharedStr(const SharedStr & s) { p = s.p; };
     bool isEmpty() const { return *p == 0; };
     unsigned int length() const;
@@ -52,6 +52,7 @@ class SharedStr {
     
   protected:
     char * p;
+    static char Empty[1];
 #define SHAREDDICTSIZE 128
     static QStrList shared[SHAREDDICTSIZE];
     

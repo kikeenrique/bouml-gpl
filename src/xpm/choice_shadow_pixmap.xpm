@@ -1,5 +1,5 @@
 /* XPM */
-static char*choice_shadow_pixmap[]={
+static const char*choice_shadow_pixmap[]={
 "17 25 4 1",
 "# c #000000",
 "_ c #ffffff",

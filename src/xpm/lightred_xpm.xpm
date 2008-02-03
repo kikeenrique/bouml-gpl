@@ -1,5 +1,5 @@
 /* XPM */
-static char*lightred_xpm[]={
+static const char*lightred_xpm[]={
 "40 16 3 1",
 "# c #000000",
 "_ c #ffc0c0",

@@ -1,5 +1,5 @@
 /* XPM */
-static char*shallowhistory_button[]={
+static const char*shallowhistory_button[]={
 "16 16 2 1",
 "# c #000000",
 ". c None",

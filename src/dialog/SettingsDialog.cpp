@@ -45,6 +45,7 @@ class ComboStates : public QComboBox {
     ComboStates(QWidget * parent, ClassDrawingMode v, bool nodefault, bool unchanged);
     ComboStates(QWidget * parent, DrawingLanguage v, bool nodefault, bool unchanged);
     ComboStates(QWidget * parent, ShowContextMode v, bool nodefault, bool unchanged);
+    ComboStates(QWidget * parent, char v, bool nodefault, bool unchanged);
 };
 
 ComboStates::ComboStates(QWidget * parent, Uml3States v,
@@ -122,6 +123,40 @@ ComboStates::ComboStates(QWidget * parent, ShowContextMode v,
   }
   else
     setCurrentItem(v);
+}
+
+
+ComboStates::ComboStates(QWidget * parent, char v,
+			 bool nodefault, bool unchanged) 
+    : QComboBox(FALSE, parent) {
+  int i;
+  
+  for (i = MinMemberWidthValue; i != SupMemberWidthValue; i += 1) {
+    char s[4];
+    
+    sprintf(s, "%d", i);
+    insertItem(s);
+  }
+  insertItem("unlimited");
+  if (!nodefault)
+    insertItem("default");
+  if (unchanged) {
+    insertItem("<unchanged>");
+    setCurrentItem(count() - 1); 
+  }
+  else {
+    switch (v) {
+    case UmlDefaultMaxMemberWidth:
+      setCurrentItem(SupMemberWidthValue-MinMemberWidthValue+1);
+      break;
+    case UmlUnlimitedMemberWidth:
+      setCurrentItem(SupMemberWidthValue-MinMemberWidthValue);
+      break;
+    default:
+      setCurrentItem(v-MinMemberWidthValue);
+      break;
+    }
+  }
 }
 
 class ComboColor : public QComboBox {
@@ -310,8 +345,12 @@ SettingsDialog::SettingsDialog(QArray<StateSpec> * st, QArray<ColorSpec> * co,
 	cbstates->insert(i, new ComboStates(hb, *((DrawingLanguage *) st.state),
 					    nodefault, unchanged));
 	break;
-      default:
+      case StateSpec::isShowContextMode:
 	cbstates->insert(i, new ComboStates(hb, *((ShowContextMode *) st.state),
+					    nodefault, unchanged));
+	break;
+      default:
+	cbstates->insert(i, new ComboStates(hb, *((char *) st.state),
 					    nodefault, unchanged));
       }
       new QLabel("", hb);
@@ -376,10 +415,21 @@ void SettingsDialog::accept() {
     n = states->count();
     
     for (i = 0; i != n; i += 1) {
-      if (cbstates->at(i)->currentText() == "<unchanged>")
-	states->at(i).name = 0;
+      StateSpec & st = states->at(i);
+      QString s = cbstates->at(i)->currentText();
+      
+      if (s == "<unchanged>")
+	st.name = 0;
+      else if (st.who == StateSpec::isMemberWidth) {
+	if (s == "default")
+	  st.set_state(UmlDefaultMaxMemberWidth);
+	else if (s == "unlimited")
+	  st.set_state(UmlUnlimitedMemberWidth);
+	else
+	  st.set_state(cbstates->at(i)->currentItem() + MinMemberWidthValue);
+      }
       else
-	states->at(i).set_state(cbstates->at(i)->currentItem());
+	st.set_state(cbstates->at(i)->currentItem());
     }
   }
   

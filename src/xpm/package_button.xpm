@@ -1,5 +1,5 @@
 /* XPM */
-static char*package_button[]={
+static const char*package_button[]={
 "16 16 2 1",
 "# c #000000",
 ". c None",

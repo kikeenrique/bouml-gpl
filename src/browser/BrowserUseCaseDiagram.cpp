@@ -575,7 +575,7 @@ void BrowserUseCaseDiagram::save(QTextStream & st, bool ref, QString & warning) 
 }
 
 
-BrowserUseCaseDiagram * BrowserUseCaseDiagram::read_ref(char * & st, char * k)
+BrowserUseCaseDiagram * BrowserUseCaseDiagram::read_ref(char * & st, const char * k)
 {
   if (strcmp(k, "usecasediagram_ref"))
     wrong_keyword(k, "usecasediagram_ref");

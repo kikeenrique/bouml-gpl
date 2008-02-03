@@ -1,5 +1,5 @@
 /* XPM */
-static char*final_pixmap[]={
+static const char*final_pixmap[]={
 "17 17 3 1",
 "# c #000000",
 "_ c #ffffff",

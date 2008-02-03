@@ -1,5 +1,5 @@
 /* XPM */
-static char *bp_256[]={
+static const char *bp_256[]={
 "110 150 244 2",
 ".A c #180808",
 ".M c #180c00",

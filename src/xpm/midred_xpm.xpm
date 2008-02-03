@@ -1,5 +1,5 @@
 /* XPM */
-static char*midred_xpm[]={
+static const char*midred_xpm[]={
 "40 16 3 1",
 "# c #000000",
 "_ c #c00000",

@@ -1,5 +1,5 @@
 /* XPM */
-static char*deletedusecases_xpm[]={
+static const char*deletedusecases_xpm[]={
 "16 16 4 1",
 "# c #000000",
 "b c #ffffc0",

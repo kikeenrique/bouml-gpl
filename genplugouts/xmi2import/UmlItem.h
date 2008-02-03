@@ -180,6 +180,8 @@ class UmlItem : public UmlBaseItem {
     
     static void outgoing(FileIn & in, Token & token, UmlItem * where);
 
+    static QCString legalName(QCString s);
+
     static QMap<QCString, QCString> OpaqueDefs;
 
 

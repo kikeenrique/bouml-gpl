@@ -1,5 +1,5 @@
 /* XPM */
-static char*usecases_xpm[]={
+static const char*usecases_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "_ c #ffffc0",

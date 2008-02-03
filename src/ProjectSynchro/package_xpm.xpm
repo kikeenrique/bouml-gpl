@@ -1,5 +1,5 @@
 /* XPM */
-static char*uptodate_package_xpm[]={
+static const char*uptodate_package_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "_ c #c0ffc0",
@@ -21,7 +21,7 @@ static char*uptodate_package_xpm[]={
 "#______________#",
 "################"};
 
-static char*young_package_xpm[]={
+static const char*young_package_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "_ c #60aaff",
@@ -43,7 +43,7 @@ static char*young_package_xpm[]={
 "#______________#",
 "################"};
 
-static char*old_package_xpm[]={
+static const char*old_package_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "_ c #ff8000",
@@ -66,7 +66,7 @@ static char*old_package_xpm[]={
 "################"};
 
 /* XPM */
-static char*deleted_package_xpm[]={
+static const char*deleted_package_xpm[]={
 "16 16 3 1",
 "# c #000000",
 "_ c #ededed",
@@ -88,7 +88,7 @@ static char*deleted_package_xpm[]={
 "#______________#",
 "################"};
 
-static char*package_xpm[]={
+static const char*package_xpm[]={
 "16 16 2 1",
 "# c #000000",
 ". c None",

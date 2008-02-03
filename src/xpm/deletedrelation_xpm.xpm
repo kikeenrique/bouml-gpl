@@ -1,5 +1,5 @@
 /* XPM */
-static char*deletedrelation_xpm[]={
+static const char*deletedrelation_xpm[]={
 "16 16 4 1",
 "b c #000000",
 "a c #ffffc0",

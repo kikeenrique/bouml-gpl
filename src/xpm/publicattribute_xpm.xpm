@@ -1,5 +1,5 @@
 /* XPM */
-static char*publicattribute_xpm[]={
+static const char*publicattribute_xpm[]={
 "16 16 3 1",
 "_ c #00ff00",
 "# c #000000",

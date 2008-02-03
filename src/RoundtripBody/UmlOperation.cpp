@@ -137,7 +137,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
       if (op == 0) {
 	QCString n;
 	
-	n.sprintf("%x", id);
+	n.sprintf("%x", (unsigned) id);
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
 		      " : unvalid operation id " + n + "</font><br>");
 	UmlCom::bye();

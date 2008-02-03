@@ -1,5 +1,5 @@
 /* XPM */
-static char*darkorange_xpm[]={
+static const char*darkorange_xpm[]={
 "40 16 3 1",
 "# c #000000",
 "_ c #c05800",

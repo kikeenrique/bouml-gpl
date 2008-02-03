@@ -87,7 +87,7 @@ class BrowserDeploymentDiagram : public BrowserDiagram {
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserDeploymentDiagram * read(char * &, char *, BrowserNode *);
-    static BrowserDeploymentDiagram * read_ref(char * &, char *);
+    static BrowserDeploymentDiagram * read_ref(char * &, const char *);
     static BrowserNode * get_it(const char * k, int id);
     
     void edit_settings();

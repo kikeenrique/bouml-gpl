@@ -495,6 +495,19 @@ void UmlItem::outgoing(FileIn & in, Token & token, UmlItem * where)
     in.finish(token.what());
 }
 
+QCString UmlItem::legalName(QCString s)
+{
+  int index = 0;
+  int index2;
+  
+  while ((index2 = s.find(' ', index)) != -1) {
+    s.replace(index2, 1, "_");
+    index = index2 + 1;
+  }
+
+  return s;
+}
+
 QMap<QCString, QCString> UmlItem::OpaqueDefs;
 
 bool UmlItem::FromBouml;

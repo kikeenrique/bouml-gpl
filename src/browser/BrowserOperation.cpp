@@ -607,7 +607,7 @@ QString BrowserOperation::python_init_self(BrowserNode * cl)
   
   for (child = cl->firstChild(); child; child = child->nextSibling()) {
     if ((((BrowserNode *) child)->get_type() == UmlOperation) &&
-	(((BrowserNode *) child)->get_name() == "__init__")) {
+	!strcmp(((BrowserNode *) child)->get_name(), "__init__")) {
       return (((BrowserOperation *) child)->def->get_n_params() != 0)
 	? ((BrowserOperation *) child)->def->get_param_name(0)
 	: "self";

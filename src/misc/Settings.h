@@ -63,6 +63,12 @@ class ClassSettings {
     void read(char * &, char * &);
 };
 
+#define MinMemberWidthValue 10
+#define SupMemberWidthValue 100
+
+#define UmlDefaultMaxMemberWidth 0
+#define UmlUnlimitedMemberWidth 127
+
 class ClassDiagramSettings {
   public:
     Uml3States hide_attributes;
@@ -70,6 +76,8 @@ class ClassDiagramSettings {
     Uml3States show_full_members_definition;
     Uml3States show_members_visibility;
     Uml3States show_members_stereotype;
+    Uml3States show_members_multiplicity;
+    char member_max_width;
     Uml3States show_parameter_dir;
     Uml3States show_parameter_name;
     Uml3States package_name_in_tab;

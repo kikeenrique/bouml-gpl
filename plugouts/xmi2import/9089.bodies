@@ -96,18 +96,13 @@ class UmlOperation
     while (in.read(), !token.close(kstr)) {
       s = token.what();
       
-      if (s == "type") {
+      if (s == "type")
 	typeref = token.xmiIdref();
-	if (! token.closed())
-	  in.finish(s);
-      }
-      else if (s == "defaultvalue") {
+      else if (s == "defaultvalue")
 	p.default_value = token.valueOf("value");
-	if (! token.closed())
-	  in.finish(s);
-      }
-      else
-	in.finish(token.what());
+      
+      if (! token.closed())
+	in.finish(s);
     }
   }
 
