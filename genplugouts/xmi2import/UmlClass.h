@@ -11,6 +11,7 @@
 class UmlItem;
 class Token;
 class FileIn;
+class UmlTypeSpec;
 
 // This class manages 'classes', notes that the class 'ClassItem'
 // is a mother class of the class's children.
@@ -62,6 +63,8 @@ class UmlClass : public UmlBaseClass {
     // return FALSE on error
     
     bool bind(UmlClass * tmpl);
+
+    static bool isPrimitiveType(Token & token, UmlTypeSpec & ts);
 
 
   protected:

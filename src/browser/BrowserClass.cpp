@@ -69,6 +69,7 @@
 #include "ReferenceDialog.h"
 #include "DialogUtil.h"
 #include "mu.h"
+#include "GenerationSettings.h"
 
 IdDict<BrowserClass> BrowserClass::all(257, __FILE__);
 
@@ -418,14 +419,26 @@ a double click with the left mouse button does the same thing");
     m.setWhatsThis(m.insertItem("Referenced by", 15),
 		   "to know who reference the <i>class</i>");
     mark_menu(m, "class", 90);
-    if (! nestedp()) {
+
+    bool cpp = GenerationSettings::cpp_get_default_defs();
+    bool java = GenerationSettings::java_get_default_defs();
+    bool php = GenerationSettings::php_get_default_defs();
+    bool python = GenerationSettings::python_get_default_defs();
+    bool idl = GenerationSettings::idl_get_default_defs();
+    
+    if (! nestedp() && (cpp || java || php || python || idl)) {
       m.insertSeparator();
       m.insertItem("Generate", &gensubm);    
-      gensubm.insertItem("C++", 10);
-      gensubm.insertItem("Java", 11);
-      gensubm.insertItem("Php", 22);
-      gensubm.insertItem("Python", 25);
-      gensubm.insertItem("Idl", 12);
+      if (cpp)
+	gensubm.insertItem("C++", 10);
+      if (java)
+	gensubm.insertItem("Java", 11);
+      if (php)
+	gensubm.insertItem("Php", 22);
+      if (python)
+	gensubm.insertItem("Python", 25);
+      if (idl)
+	gensubm.insertItem("Idl", 12);
     }
     if ((edition_number == 0) && 
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -2173,21 +2186,21 @@ static const char * component2artifact(const char * b)
 
 void BrowserClass::plug_out_conversion()
 {
-  BrowserClass * baseArtifact;
-  BrowserClass * artifact;
-  BrowserArtifact * baseArtifactArtifact;
-  BrowserArtifact * artifactArtifact;
-  BrowserClass * deploymentView;
-  BrowserClass * deploymentDiagram;
-  BrowserClass * baseClass;
-  BrowserClass * baseClassView;
-  BrowserClass * baseItem;
-  BrowserClass * item;
-  BrowserArtifact * baseItemArtifact;
-  BrowserClass * onInstanceCmd;
-  BrowserClass * anItemKind;
-  BrowserClass * com;
-  BrowserArtifact * comArtifact;
+  BrowserClass * baseArtifact = 0;	// all vars set to 0 to avoid 
+  BrowserClass * artifact = 0;		// stupid g++ 4 warnings
+  BrowserArtifact * baseArtifactArtifact = 0;
+  BrowserArtifact * artifactArtifact = 0;
+  BrowserClass * deploymentView = 0;
+  BrowserClass * deploymentDiagram = 0;
+  BrowserClass * baseClass = 0;
+  BrowserClass * baseClassView = 0;
+  BrowserClass * baseItem = 0;
+  BrowserClass * item = 0;
+  BrowserArtifact * baseItemArtifact = 0;
+  BrowserClass * onInstanceCmd = 0;
+  BrowserClass * anItemKind = 0;
+  BrowserClass * com = 0;
+  BrowserArtifact * comArtifact = 0;
   
   if (((baseArtifact = find("UmlBaseComponent")) != 0) &&
       (find("UmlBaseArtifact") == 0) &&

@@ -288,49 +288,64 @@ Note that you can undelete it after");
     }
     
     bool a_text = !strcmp(def->get_stereotype(), "text");
+    bool cpp = GenerationSettings::cpp_get_default_defs();
+    bool java = GenerationSettings::java_get_default_defs();
+    bool php = GenerationSettings::php_get_default_defs();
+    bool python = GenerationSettings::python_get_default_defs();
+    bool idl = GenerationSettings::idl_get_default_defs();
     
-    if (a_text || !strcmp(def->get_stereotype(), "source")) {
+    if ((a_text || !strcmp(def->get_stereotype(), "source")) &&
+	(cpp || java || php || python || idl)) {
       m.insertSeparator();
       m.insertItem("Generate", &gensubm);
-      gensubm.insertItem("C++", 10);
-      gensubm.insertItem("Java", 11);
-      gensubm.insertItem("Php", 22);
-      gensubm.insertItem("Python", 25);
-      gensubm.insertItem("Idl", 12);
+      if (cpp)
+	gensubm.insertItem("C++", 10);
+      if (java)
+	gensubm.insertItem("Java", 11);
+      if (php)
+	gensubm.insertItem("Php", 22);
+      if (python)
+	gensubm.insertItem("Python", 25);
+      if (idl)
+	gensubm.insertItem("Idl", 12);
       
-      if (!a_text && preserve_bodies()) {
+      if (!a_text && preserve_bodies() && (cpp || java || php || python)) {
 	m.insertItem("Roundtrip body", &roundtripbodysubm);
 	
-	roundtripbodysubm.insertItem("C++", 30);
-	roundtripbodysubm.insertItem("Java", 31);
-	roundtripbodysubm.insertItem("Php", 32);
-	roundtripbodysubm.insertItem("Python", 33);
+	if (cpp)
+	  roundtripbodysubm.insertItem("C++", 30);
+	if (java)
+	  roundtripbodysubm.insertItem("Java", 31);
+	if (php)
+	  roundtripbodysubm.insertItem("Php", 32);
+	if (python)
+	  roundtripbodysubm.insertItem("Python", 33);
       }
       
       get_paths(cpp_h_path, cpp_src_path, java_path, php_path, python_path, idl_path);
-      if (!a_text && !cpp_h_edited && !cpp_h_path.isEmpty()) {
+      if (cpp && !a_text && !cpp_h_edited && !cpp_h_path.isEmpty()) {
 	//if (! cpp_src_path.isEmpty())
 	  //roundtripsubm.insertItem("C++ header & source files", 13);
 	editsubm.insertItem("C++ header file", 14);
 	//roundtripsubm.insertItem("C++ header file", 15);
       }
-      if (!cpp_src_edited && !cpp_src_path.isEmpty()) {
+      if (cpp && !cpp_src_edited && !cpp_src_path.isEmpty()) {
 	editsubm.insertItem("C++ source file", 16);
 	//roundtripsubm.insertItem("C++ source file", 17);
       }
-      if (!java_edited && !java_path.isEmpty()) {
+      if (java && !java_edited && !java_path.isEmpty()) {
 	editsubm.insertItem("Java source file", 18);
 	//roundtripsubm.insertItem("Java source file", 19);
       }
-      if (!php_edited && !php_path.isEmpty()) {
+      if (php && !php_edited && !php_path.isEmpty()) {
 	editsubm.insertItem("Php source file", 23);
 	//roundtripsubm.insertItem("Php source file", 24);
       }
-      if (!python_edited && !python_path.isEmpty()) {
+      if (python && !python_edited && !python_path.isEmpty()) {
 	editsubm.insertItem("Python source file", 26);
 	//roundtripsubm.insertItem("Python source file", 27);
       }
-      if (!idl_edited && !idl_path.isEmpty()) {
+      if (idl && !idl_edited && !idl_path.isEmpty()) {
 	editsubm.insertItem("Idl source file", 20);
 	//roundtripsubm.insertItem("Idl source file", 21);
       }

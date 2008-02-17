@@ -79,7 +79,7 @@ class AttributeDialog : public QTabDialog {
     // C++ tab
     QWidget * cpptab;
     bool cpp_in_enum;
-    bool cpp_in_typedef;
+    bool cpp_ignored;
     VisibilityGroup cpp_visibility;
     QCheckBox * mutable_cb;
     QCheckBox * volatile_cb;
@@ -137,10 +137,10 @@ class AttributeDialog : public QTabDialog {
     AttributeDialog(AttributeData * a);
     virtual ~AttributeDialog();
   
-    static QString cpp_decl(const BrowserAttribute * at);
-    static QString java_decl(const BrowserAttribute * at);
-    static QString php_decl(const BrowserAttribute * at);
-    static QString python_decl(const BrowserAttribute * at);
+    static QString cpp_decl(const BrowserAttribute * at, bool init = FALSE);
+    static QString java_decl(const BrowserAttribute * at, bool init = FALSE);
+    static QString php_decl(const BrowserAttribute * at, bool init = FALSE);
+    static QString python_decl(const BrowserAttribute * at, bool init = FALSE);
     static QString idl_decl(const BrowserAttribute * at);
   
   protected slots:

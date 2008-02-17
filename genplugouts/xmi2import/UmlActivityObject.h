@@ -24,6 +24,8 @@ class UmlActivityObject : public UmlBaseActivityObject {
   protected:
     void setType(QCString idref);
 
+    void setType(Token & token);
+
     void setOrdering(QCString s, FileIn & in);
 
     void setSelection(QCString idref);

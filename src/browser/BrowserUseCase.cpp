@@ -179,8 +179,8 @@ void BrowserUseCase::menu() {
 		     "to add a <em>use case diagram</em>");
       m.setWhatsThis(m.insertItem("New sequence diagram", 1),
 		     "to add a <em>sequence diagram</em>");
-      m.setWhatsThis(m.insertItem("New collaboration diagram", 2),
-		     "to add a <em>collaboration diagram</em>");
+      m.setWhatsThis(m.insertItem("New communication diagram", 2),
+		     "to add a <em>communication diagram</em>");
       m.setWhatsThis(m.insertItem("New object diagram", 13),
 		     "to add a <em>object diagram</em>");
       m.insertSeparator();
@@ -433,7 +433,7 @@ void BrowserUseCase::apply_shortcut(QString s) {
 	choice = 0;
       else if (s == "New sequence diagram")
 	choice = 1;
-      else if (s == "New collaboration diagram")
+      else if (s == "New communication diagram")
 	choice = 2;
       else if (s == "New object diagram")
 	choice = 13;

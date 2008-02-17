@@ -398,6 +398,27 @@ bool need_equal(const char * p, QString v, bool cpp)
    }
 }
 
+// remark : v is not empty and doesn't start by spaces
+bool need_equal(const char * p, const char * v, bool cpp)
+{
+   if ((*v == '=') || (cpp && (*v == '(')))
+     return FALSE;
+
+   for (;;) {
+     switch (*--p) {
+     case '=':
+       return FALSE;
+     case ' ':
+     case '\t':
+     case '\n':
+     case '\r':
+       break;
+     default:
+       return TRUE;
+     }
+   }
+}
+
 //
 
 static QTextCodec * Codec;

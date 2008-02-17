@@ -56,7 +56,7 @@ void Tool::defaults()
   unsigned index;
   
   already_read = FALSE;
-  set_ntools(16);
+  set_ntools(17);
   
   tools[0].display = "HTML documentation";
   tools[0].cmd = "ghtml";
@@ -133,6 +133,17 @@ void Tool::defaults()
   tools[15].applicable[UmlClassView] = TRUE;
   tools[15].applicable[UmlDeploymentView] = TRUE;
   tools[15].applicable[UmlClass] = TRUE;
+  
+  tools[16].display = "Uml projection";
+  tools[16].cmd = "uml_proj";
+  tools[16].applicable[UmlProject] = TRUE;
+  tools[16].applicable[UmlPackage] = TRUE;
+  tools[16].applicable[UmlClassView] = TRUE;
+  tools[16].applicable[UmlClass] = TRUE;
+  tools[16].applicable[UmlAttribute] = TRUE;
+  tools[16].applicable[UmlOperation] = TRUE;
+  for (index = UmlAssociation; index != UmlRelations; index += 1)
+    tools[16].applicable[index] = TRUE;
 }
 
 bool Tool::menu_insert(QPopupMenu * tool, UmlCode target, 

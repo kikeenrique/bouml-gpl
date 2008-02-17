@@ -118,7 +118,7 @@ BrowserColDiagram * BrowserColDiagram::add_collaboration_diagram(BrowserNode * f
 {
   QString name;
   
-  if (future_parent->enter_child_name(name, "enter collaboration diagram's name : ",
+  if (future_parent->enter_child_name(name, "enter communication diagram's name : ",
 				      UmlColDiagram, TRUE, FALSE))
     return new BrowserColDiagram(name, future_parent);
   else
@@ -197,16 +197,16 @@ void BrowserColDiagram::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     m.setWhatsThis(m.insertItem("Show", 0),
-		   "to show and edit the <em>collaboration diagram</em>");
+		   "to show and edit the <em>communication diagram</em>");
     if (!is_edited) {
       m.setWhatsThis(m.insertItem("Edit", 1), 
-		     "to edit the <em>collaboration diagram</em>");
+		     "to edit the <em>communication diagram</em>");
       if (!is_read_only) {
 	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
-		       "to set how the <em>collaboration diagram</em>'s items must be drawed");
+		       "to set how the <em>communication diagram</em>'s items must be drawed");
 	m.insertSeparator();
 	m.setWhatsThis(m.insertItem("Duplicate", 3),
-		       "to duplicate the <em>collaboration diagram</em>");
+		       "to duplicate the <em>communication diagram</em>");
 	if (edition_number == 0) {
 	  item_above = (BrowserNode *) parent()->firstChild();
 	  if (item_above == this)
@@ -239,12 +239,12 @@ void BrowserColDiagram::menu() {
       
 	  m.insertSeparator();
 	  m.setWhatsThis(m.insertItem("Delete", 4),
-			 "to delete the <em>collaboration diagram</em>. \
+			 "to delete the <em>communication diagram</em>. \
 Note that you can undelete it after");
 	}
       }
     }
-    mark_menu(m, "collaboration diagram", 90);
+    mark_menu(m, "communication diagram", 90);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
@@ -253,7 +253,7 @@ Note that you can undelete it after");
   }
   else if (!is_read_only && (edition_number == 0))
     m.setWhatsThis(m.insertItem("Undelete", 5),
-		   "to undelete the <em>collaboration diagram</em>");
+		   "to undelete the <em>communication diagram</em>");
   
   exec_menu_choice(m.exec(QCursor::pos()), item_above);
 }
@@ -265,7 +265,7 @@ void BrowserColDiagram::exec_menu_choice(int rank,
     open(FALSE);
     break;
   case 1:
-    edit("Collaboration diagram", its_default_stereotypes);
+    edit("Communication diagram", its_default_stereotypes);
     return;
   case 2:
     edit_settings();
@@ -274,7 +274,7 @@ void BrowserColDiagram::exec_menu_choice(int rank,
     {
       QString name;
       
-      if (((BrowserNode *)parent())->enter_child_name(name, "enter collaboration diagram's name : ",
+      if (((BrowserNode *)parent())->enter_child_name(name, "enter communication diagram's name : ",
 						      UmlColDiagram, TRUE, FALSE))
 	duplicate((BrowserNode *) parent(), name)->select_in_browser();
       else
@@ -578,7 +578,7 @@ BrowserColDiagram * BrowserColDiagram::read(char * & st, char * k,
       r = new BrowserColDiagram(s, parent, id);
 
       already_exist->must_change_id(all);
-      already_exist->unconsistent_fixed("collaboration diagram", r);
+      already_exist->unconsistent_fixed("communication diagram", r);
     }
     else {
       r->set_parent(parent);

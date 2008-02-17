@@ -906,7 +906,9 @@ void ArtifactDialog::compute_cpp_namespace(QString & nasp,
       ->get_cpp_namespace();
     
   if (! nasp.isEmpty()) {
-    int index = 0;
+    int index =
+      // bypass :: at beginning allowing ::a...
+      ((nasp.at(0) == ':') && (nasp != "::")) ? 2 : 0;
     int index2;
     
     while ((index2 = nasp.find(':', index)) != -1) {

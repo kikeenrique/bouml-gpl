@@ -16,3 +16,4 @@ tool "html (flat, svg, C++)" "ghtml -flat -svg" Project Package UseCaseView Clas
 tool "generate xmi" "gxmi" Project
 tool "generate xmi 2.1" "gxmi2" Project
 tool "plug out upgrade" "plug_out_upgrade" Project
+tool "Uml projection" "uml_proj" Project Package ClassView

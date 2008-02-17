@@ -37,7 +37,7 @@ void UmlActivityParameter::readParameter(FileIn & in, Token & token) {
       s = token.what();
 	
       if (s == "type") {
-	setType(token.xmiIdref());
+	setType(token);
 	if (! token.closed())
 	  in.finish(s);
       }
@@ -77,12 +77,7 @@ void UmlActivityParameter::readParameterNode(FileIn & in, Token & token) {
     while (in.read(), !token.close(kstr)) {
       s = token.what();
       
-      if (s == "ordering") {
-	setType(token.xmiIdref());
-	if (! token.closed())
-	  in.finish(s);
-      }
-      else if (s == "selection") {
+      if (s == "selection") {
 	setSelection(token.xmiIdref());
 	if (! token.closed())
 	  in.finish(s);
@@ -93,7 +88,7 @@ void UmlActivityParameter::readParameterNode(FileIn & in, Token & token) {
 	  in.finish(s);
       }
       else if (s == "type") {
-	setType(token.xmiIdref());
+	setType(token);
 	if (! token.closed())
 	  in.finish(s);
       }

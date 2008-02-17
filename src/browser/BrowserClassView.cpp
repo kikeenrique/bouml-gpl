@@ -53,6 +53,7 @@
 #include "MenuTitle.h"
 #include "DialogUtil.h"
 #include "mu.h"
+#include "GenerationSettings.h"
 
 IdDict<BrowserClassView> BrowserClassView::all(__FILE__);
 QStringList BrowserClassView::its_default_stereotypes;	// unicode
@@ -182,8 +183,8 @@ void BrowserClassView::menu() {
 		     "to add a <em>class diagram</em>");
       m.setWhatsThis(m.insertItem("New sequence diagram", 1),
 		     "to add a <em>sequence diagram</em>");
-      m.setWhatsThis(m.insertItem("New collaboration diagram", 2),
-		     "to add a <em>collaboration diagram</em>");
+      m.setWhatsThis(m.insertItem("New communication diagram", 2),
+		     "to add a <em>communication diagram</em>");
       m.setWhatsThis(m.insertItem("New object diagram", 15),
 		     "to add a <em>object diagram</em>");
       m.setWhatsThis(m.insertItem("New class", 3),
@@ -213,14 +214,28 @@ Note that you can undelete them after");
 	}
       }
     }
-    mark_menu(m, "use case view", 90);
-    m.insertSeparator();
-    m.insertItem("Generate", &subm);
-    subm.insertItem("C++", 11);
-    subm.insertItem("Java", 12);
-    subm.insertItem("Php", 22);
-    subm.insertItem("Python", 25);
-    subm.insertItem("Idl", 13);
+    mark_menu(m, "class view", 90);
+
+    bool cpp = GenerationSettings::cpp_get_default_defs();
+    bool java = GenerationSettings::java_get_default_defs();
+    bool php = GenerationSettings::php_get_default_defs();
+    bool python = GenerationSettings::python_get_default_defs();
+    bool idl = GenerationSettings::idl_get_default_defs();
+    
+    if (cpp || java || php || python || idl) {
+      m.insertSeparator();
+      m.insertItem("Generate", &subm);
+      if (cpp)
+	subm.insertItem("C++", 11);
+      if (java)
+	subm.insertItem("Java", 12);
+      if (php)
+	subm.insertItem("Php", 22);
+      if (python)
+	subm.insertItem("Python", 25);
+      if (idl)
+	subm.insertItem("Idl", 13);
+    }
     
     if ((edition_number == 0) &&
 	(Tool::menu_insert(&toolm, get_type(), 100))) {
@@ -437,7 +452,7 @@ void BrowserClassView::apply_shortcut(QString s) {
 	choice = 0;
       else if (s == "New sequence diagram")
 	choice = 1;
-      else if (s == "New collaboration diagram")
+      else if (s == "New communication diagram")
 	choice = 2;
       else if (s == "New object diagram")
 	choice = 15;

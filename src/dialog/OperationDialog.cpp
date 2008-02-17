@@ -93,13 +93,13 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   cpp_undef = (st == "enum") || (st == "typedef") || (st == "ignored");
   
   st = GenerationSettings::java_class_stereotype(stereotype);
-  java_undef = (st == "enum_pattern") || (st == "typedef") || (st == "ignored");
+  java_undef = (st == "enum_pattern") || (st == "ignored");
   
   st = GenerationSettings::php_class_stereotype(stereotype);
-  php_undef = (st == "enum") || (st == "typedef") || (st == "ignored");
+  php_undef = (st == "enum") || (st == "ignored");
   
   st = GenerationSettings::python_class_stereotype(stereotype);
-  python_undef = (st == "enum") || (st == "typedef") || (st == "ignored");
+  python_undef = (st == "enum") || (st == "ignored");
   
   st = GenerationSettings::idl_class_stereotype(stereotype);
   idl_undef = (st == "enum") || (st == "typedef") || (st == "ignored");
@@ -3570,7 +3570,7 @@ ParamsTable::ParamsTable(OperationData * o, QWidget * parent,
       setText(index, 4, QString::null);
     }
     
-    setItem(index, 0, new ComboItem(this, stringify(UmlInOut), DirList, FALSE));
+    setItem(index, 0, new ComboItem(this, stringify(UmlIn), DirList, FALSE));
     setText(index, 1, QString::null);
     setItem(index, 2, new ComboItem(this, QString::null, alltypes));
     setText(index, 3, QString::null);
@@ -3604,7 +3604,7 @@ void ParamsTable::activateNextCell() {
     if (++row == numRows()) {
       // adds a new line
       setNumRows(row + 1);
-      setItem(row, 0, new ComboItem(this, stringify(UmlInOut), DirList, FALSE));
+      setItem(row, 0, new ComboItem(this, stringify(UmlIn), DirList, FALSE));
       setText(row, 1, QString::null);
       setItem(row, 2, new ComboItem(this, QString::null, alltypes));
       setText(row, 3, QString::null);
@@ -3695,7 +3695,7 @@ void ParamsTable::insert_row_before(int row) {
     setText(index, 3, text(index - 1, 3));
   }
   
-  setItem(row, 0, new ComboItem(this, stringify(UmlInOut), DirList, FALSE));
+  setItem(row, 0, new ComboItem(this, stringify(UmlIn), DirList, FALSE));
   setText(row, 1, QString::null);
   setItem(row, 2, new ComboItem(this, QString::null, alltypes));
   setText(row, 3, QString::null);
@@ -3721,7 +3721,7 @@ void ParamsTable::insert_row_after(int row) {
     setText(index, 3, text(index - 1, 3));
   }
   
-  setItem(row + 1, 0, new ComboItem(this, stringify(UmlInOut), DirList, FALSE));
+  setItem(row + 1, 0, new ComboItem(this, stringify(UmlIn), DirList, FALSE));
   setText(row + 1, 1, QString::null);
   setItem(row + 1, 2, new ComboItem(this, QString::null, alltypes));
   setText(row + 1, 3, QString::null);
@@ -3736,7 +3736,7 @@ void ParamsTable::delete_row(int row) {
     
   if (row == (n - 1)) {
     // the last line : empty it
-    setItem(row, 0, new ComboItem(this, stringify(UmlInOut), DirList, FALSE));
+    setItem(row, 0, new ComboItem(this, stringify(UmlIn), DirList, FALSE));
     setText(row, 1, QString::null);
     setItem(row, 2, new ComboItem(this, QString::null, alltypes));
     setText(row, 3, QString::null);

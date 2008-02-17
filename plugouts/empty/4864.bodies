@@ -118,13 +118,13 @@ class IdlSettings
   
   UmlStereotype * b = UmlSettings::_map_class_stereotypes.find(s);
   
-  return (b) ? b->idl : s;
+  return (b) ? b->idl : "valuetype";
 !!!56064.java!!!	classStereotype(in s : string) : string
   read_if_needed_();
   
   UmlStereotype b = (UmlStereotype) UmlSettings._map_class_stereotypes.get(s);
   
-  return (b != null) ? b.idl : s;
+  return (b != null) ? b.idl : "valuetype";
 !!!56192.cpp!!!	set_ClassStereotype(in s : string, in v : string) : bool
   UmlCom::send_cmd(idlSettingsCmd, setIdlClassStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
@@ -738,20 +738,18 @@ class IdlSettings
   _union_decl = UmlCom::read_string();
   _enum_decl = UmlCom::read_string();
   _external_class_decl = UmlCom::read_string();
-  for (index = 0; index != 3; index += 1)
-    _attr_decl[index] = UmlCom::read_string();
-  for (index = 0; index != 3; index += 1)
-    _valuetype_attr_decl[index] = UmlCom::read_string();
-  for (index = 0; index != 3; index += 1)
-    _union_item_decl[index] = UmlCom::read_string();
+  
   _enum_item_decl = UmlCom::read_string();
-  for (index = 0; index != 3; index += 1)
-    _const_decl[index] = UmlCom::read_string();
   for (index = 0; index != 3; index += 1) {
+    _attr_decl[index] = UmlCom::read_string();
+    _valuetype_attr_decl[index] = UmlCom::read_string();
+    _union_item_decl[index] = UmlCom::read_string();
+    _const_decl[index] = UmlCom::read_string();
     _rel_decl[index] = UmlCom::read_string();
     _valuetype_rel_decl[index] = UmlCom::read_string();
     _union_rel_decl[index] = UmlCom::read_string();
   }
+
   _oper_decl = UmlCom::read_string();
   _get_name = UmlCom::read_string();
   _set_name = UmlCom::read_string();
@@ -799,26 +797,25 @@ class IdlSettings
   _union_decl = UmlCom.read_string();
   _enum_decl = UmlCom.read_string();
   _external_class_decl = UmlCom.read_string();
+  
+  _enum_item_decl = UmlCom.read_string();
   _attr_decl = new String[3];
   _valuetype_attr_decl = new String[3];
   _union_item_decl = new String[3];
-  for (index = 0; index != 3; index += 1)
-    _attr_decl[index] = UmlCom.read_string();
-  for (index = 0; index != 3; index += 1)
-    _valuetype_attr_decl[index] = UmlCom.read_string();
-  for (index = 0; index != 3; index += 1)
-    _union_item_decl[index] = UmlCom.read_string();
-  _enum_item_decl = UmlCom.read_string();
   _const_decl = new String[3];
-  for (index = 0; index != 3; index += 1)
-    _const_decl[index] = UmlCom.read_string();
   _rel_decl = new String[3];
+  _valuetype_rel_decl = new String[3];
   _union_rel_decl = new String[3];
   for (index = 0; index != 3; index += 1) {
+    _attr_decl[index] = UmlCom.read_string();
+    _valuetype_attr_decl[index] = UmlCom.read_string();
+    _union_item_decl[index] = UmlCom.read_string();
+    _const_decl[index] = UmlCom.read_string();
     _rel_decl[index] = UmlCom.read_string();
     _valuetype_rel_decl[index] = UmlCom.read_string();
     _union_rel_decl[index] = UmlCom.read_string();
   }
+
   _oper_decl = UmlCom.read_string();
   _get_name = UmlCom.read_string();
   _set_name = UmlCom.read_string();

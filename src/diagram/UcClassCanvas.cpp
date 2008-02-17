@@ -111,7 +111,7 @@ void UcClassCanvas::compute_size() {
 
   full_name = browser_node->get_name();
   
-  const MyStr & (PackageData::*f)() const;
+  const MyStr & (PackageData::*f)() const = 0;
   const char * sep = 0;	// to avoid warning
   
   switch (used_settings.show_context_mode) {
@@ -138,7 +138,7 @@ void UcClassCanvas::compute_size() {
     break;
   }
   
-  if (used_settings.show_context_mode > umlContext) {
+  if (f != 0) {
     BrowserClass * cl = (BrowserClass *) browser_node;
     
     while (cl->nestedp())

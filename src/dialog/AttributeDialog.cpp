@@ -77,12 +77,12 @@ AttributeDialog::AttributeDialog(AttributeData * a)
   
   lang_st = GenerationSettings::cpp_class_stereotype(stereotype);
   cpp_in_enum = in_enum || (lang_st == "enum");
-  cpp_in_typedef = !cpp_in_enum && (lang_st == "typedef");
+  cpp_ignored = !cpp_in_enum && ((lang_st == "typedef") || (lang_st == "ignored"));
   
   lang_st = GenerationSettings::java_class_stereotype(stereotype);
   java_in_enum = in_enum || (lang_st == "enum");
   java_in_enum_pattern = !java_in_enum && (lang_st == "enum_pattern");
-  java_ignored = !java_in_enum && (lang_st == "ignored");
+  java_ignored = (lang_st == "ignored");
   
   lang_st = GenerationSettings::php_class_stereotype(stereotype);
   php_in_enum = in_enum || (lang_st == "enum");
@@ -262,7 +262,7 @@ AttributeDialog::AttributeDialog(AttributeData * a)
   
   // C++
   
-  if (! cpp_in_typedef) {
+  if (! cpp_ignored) {
     grid = new QGrid(2, this);
     cpptab = grid;
     grid->setMargin(5);
@@ -676,7 +676,7 @@ void AttributeDialog::accept() {
     
     att->init_value = edinit->text();
     
-    if (cpp_in_typedef)
+    if (cpp_ignored)
       att->cpp_decl = QString::null;
     else {
       att->cpp_decl = edcppdecl->text();
@@ -684,7 +684,7 @@ void AttributeDialog::accept() {
 	att->cpp_visibility = cpp_visibility.value();
     }
     
-    att->cpp_mutable = (cpp_in_enum || cpp_in_typedef)
+    att->cpp_mutable = (cpp_in_enum || cpp_ignored)
       ? FALSE
       : mutable_cb->isChecked();
     
@@ -911,7 +911,7 @@ void AttributeDialog::cpp_update() {
   showcppdecl->setText(s);
 }
 
-QString AttributeDialog::cpp_decl(const BrowserAttribute * at) 
+QString AttributeDialog::cpp_decl(const BrowserAttribute * at, bool init) 
 {
   QString s;
   AttributeData * d = (AttributeData *) at->get_data();
@@ -934,8 +934,18 @@ QString AttributeDialog::cpp_decl(const BrowserAttribute * at)
       p += 7;
       s += at->get_name();
     }
-    else if (!strncmp(p, "${value}", 8) || !strncmp(p, "${h_value}", 10))
+    else if (!strncmp(p, "${value}", 8) || !strncmp(p, "${h_value}", 10)) {
+      if (init) {
+	const char * v = d->get_init_value();
+	
+	if (*v) {
+	  if (need_equal(p, v, TRUE))
+	    s += " = ";
+	  s += v;
+	}
+      }
       break;
+    }
     else if (!strncmp(p, "${static}", 9))
       p += 9;
     else if (!strncmp(p, "${const}", 8))
@@ -953,7 +963,8 @@ QString AttributeDialog::cpp_decl(const BrowserAttribute * at)
       
       QString m = d->get_multiplicity();
       
-      s += (*m == '[') ? m : QString("[") + m + "]";
+      if (!m.isEmpty())
+	s += (*m == '[') ? m : QString("[") + m + "]";
     }
     else if (!strncmp(p, "${stereotype}", 13)) {
       p += 13;
@@ -1120,7 +1131,7 @@ void AttributeDialog::java_update() {
   showjavadecl->setText(s);
 }
 
-QString AttributeDialog::java_decl(const BrowserAttribute * at)
+QString AttributeDialog::java_decl(const BrowserAttribute * at, bool init)
 {
   QString s;
   AttributeData * d = (AttributeData *) at->get_data();
@@ -1142,8 +1153,18 @@ QString AttributeDialog::java_decl(const BrowserAttribute * at)
       p += 7;
       s += at->get_name();
     }
-    else if (!strncmp(p, "${value}", 8))
+    else if (!strncmp(p, "${value}", 8)) {
+      if (init) {
+	const char * v = d->get_init_value();
+	
+	if (*v) {
+	  if (need_equal(p, v, FALSE))
+	    s += " = ";
+	  s += v;
+	}
+      }
       break;
+    }
     else if (!strncmp(p, "${class}", 8)) {
       p += 8;
       s += ((BrowserNode *) at->parent())->get_name();
@@ -1316,7 +1337,7 @@ void AttributeDialog::php_update() {
   showphpdecl->setText(s);
 }
 
-QString AttributeDialog::php_decl(const BrowserAttribute * at)
+QString AttributeDialog::php_decl(const BrowserAttribute * at, bool init)
 {
   QString s;
   AttributeData * d = (AttributeData *) at->get_data();
@@ -1350,8 +1371,18 @@ QString AttributeDialog::php_decl(const BrowserAttribute * at)
 	s += "$";
       s += at->get_name();
     }
-    else if (!strncmp(p, "${value}", 8))
+    else if (!strncmp(p, "${value}", 8)) {
+      if (init) {
+	const char * v = d->get_init_value();
+	
+	if (*v) {
+	  if (need_equal(p, v, FALSE))
+	    s += " = ";
+	  s += v;
+	}
+      }
       break;
+    }
     else if (!strncmp(p, "${const}", 8))
       p += 8;
     else if (!strncmp(p, "${visibility}", 13))
@@ -1464,7 +1495,7 @@ void AttributeDialog::python_update() {
 }
 
 // produced out of __init__
-QString AttributeDialog::python_decl(const BrowserAttribute * at)
+QString AttributeDialog::python_decl(const BrowserAttribute * at, bool init)
 {
   QString s;
   AttributeData * d = (AttributeData *) at->get_data();
@@ -1486,6 +1517,15 @@ QString AttributeDialog::python_decl(const BrowserAttribute * at)
       s += at->get_name();
     }
     else if (!strncmp(p, "${value}", 8)) {
+      if (init) {
+	const char * v = d->get_init_value();
+	
+	if (*v) {
+	  if (need_equal(p, v, FALSE))
+	    s += " = ";
+	  s += v;
+	}
+      }
       break;
     }
     else if (!strncmp(p, "${self}", 7)) {
@@ -1497,8 +1537,12 @@ QString AttributeDialog::python_decl(const BrowserAttribute * at)
     else if (!strncmp(p, "${type}", 7)) {
       p += 7;
     }
-    else if (*p == '=')
-      break;
+    else if (*p == '=') {
+      if (!init)
+	break;
+      else 
+	s += *p++;
+    }
     else if (*p == '\n') {
       s += ' ';
       do

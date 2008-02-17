@@ -417,32 +417,40 @@ void Package::reverse_toplevel_forms(QCString f, bool sub_block) {
       else if (s == "namespace") {
 	s = Lex::read_word();
 	
-	QCString s2 = Lex::read_word();
-	
-	if (s2.isEmpty()) {
-	  if (!Scan)
-	    Lex::premature_eof();
-	  return;
-	}
-	else if (s2 == "{") {
-	  Namespace::enter(s);
-	  UmlClass::save_using_scope();
+	if (s == "{") {
+	  // anonymous namespace
+	  Namespace::enter_anonymous();
 	  reverse_toplevel_forms(f, TRUE);
-	  UmlClass::restore_using_scope();
-	  Namespace::exit();
+	  Namespace::exit_anonymous();
 	}
-	else if (Scan)
-	  UmlOperation::skip_body();
-	else if (s2 != "=") {
-	  Lex::error_near(s2);
-	  UmlOperation::skip_body();
+	else {
+	  QCString s2 = Lex::read_word();
+	  
+	  if (s2.isEmpty()) {
+	    if (!Scan)
+	      Lex::premature_eof();
+	    return;
+	  }
+	  else if (s2 == "{") {
+	    Namespace::enter(s);
+	    UmlClass::save_using_scope();
+	    reverse_toplevel_forms(f, TRUE);
+	    UmlClass::restore_using_scope();
+	    Namespace::exit();
+	  }
+	  else if (Scan)
+	    UmlOperation::skip_body();
+	  else if (s2 != "=") {
+	    Lex::error_near(s2);
+	    UmlOperation::skip_body();
+	  }
+	  else if ((s2 = Lex::read_word()).isEmpty()) {
+	    Lex::premature_eof();
+	    return;
+	  }
+	  else
+	    Namespace::add_alias(s, s2);
 	}
-	else if ((s2 = Lex::read_word()).isEmpty()) {
-	  Lex::premature_eof();
-	  return;
-	}
-	else
-	  Namespace::add_alias(s, s2);
       }
       else if (s == "using") {
 	if ((s = Lex::read_word()).isEmpty()) {

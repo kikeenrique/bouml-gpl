@@ -147,7 +147,7 @@ void Shortcut::init()
     "New class diagram",
     "New class instance",
     "New class view",
-    "New collaboration diagram",
+    "New communication diagram",
     "New component",
     "New component diagram",
     "New component view",
@@ -397,9 +397,14 @@ void Shortcut::load()
 	
 	int index2 = ln.find(' ', index);
 	
-	if (index2 != -1)
-	  Shortcuts[flags + ln.mid(index, index2 - index)] =
-	    ln.mid(index2 + 1);
+	if (index2 != -1) {
+	  QString s = ln.mid(index2 + 1);
+	  
+	  if (s == "New collaboration diagram")
+	    s = "New communication diagram";
+	  
+	  Shortcuts[flags + ln.mid(index, index2 - index)] = s;
+	}
       }
       return;
     }

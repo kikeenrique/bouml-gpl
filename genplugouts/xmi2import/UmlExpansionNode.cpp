@@ -51,12 +51,7 @@ void UmlExpansionNode::importIt(FileIn & in, Token & token, UmlItem * where)
       while (in.read(), !token.close(kstr)) {
 	s = token.what();
 	
-	if (s == "ordering") {
-	  e->setType(token.valueOf("idref"));
-	  if (! token.closed())
-	    in.finish(s);
-	}
-	else if (s == "selection") {
+	if (s == "selection") {
 	  e->setSelection(token.valueOf("idref"));
 	  if (! token.closed())
 	    in.finish(s);
@@ -67,7 +62,7 @@ void UmlExpansionNode::importIt(FileIn & in, Token & token, UmlItem * where)
 	    in.finish(s);
 	}
 	else if (s == "type") {
-	  e->setType(token.valueOf("idref"));
+	  e->setType(token);
 	  if (! token.closed())
 	    in.finish(s);
 	}

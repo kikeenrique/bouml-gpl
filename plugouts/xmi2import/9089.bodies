@@ -81,13 +81,27 @@ class UmlOperation
     p.dir = InputOutputDirection;
   else if ((s == "return") || (s == "pk_return"))
     p.dir = ReturnDirection;
-  else if (! s.isEmpty())
-    in.warning("wrong direction");
+  else {
+    p.dir = InputDirection;
+    if (! s.isEmpty())
+      in.warning("wrong direction");
+  }
     
   if (!(s = token.valueOf("defaultvalue")).isEmpty())
     p.default_value = s;
     
   QCString typeref = token.valueOf("type");
+  
+  if (! typeref.isEmpty()) {
+    if (p.dir == ReturnDirection) {
+      UmlTypeSpec ts;
+    
+      if (setType(typeref, 0, ts))
+	set_ReturnType(ts);
+    }
+    else
+      (void) setType(typeref, params().count() + 1, p.type);
+  }
     
   if (! token.closed()) {
     QCString k = token.what();
@@ -96,30 +110,27 @@ class UmlOperation
     while (in.read(), !token.close(kstr)) {
       s = token.what();
       
-      if (s == "type")
-	typeref = token.xmiIdref();
+      if (s == "type") {
+	if (p.dir == ReturnDirection) {
+	  UmlTypeSpec ts;
+	  
+	  if (setType(token, 0, ts))
+	    set_ReturnType(ts);
+	}
+	else
+	  (void) setType(token, params().count() + 1, p.type);
+      }
       else if (s == "defaultvalue")
-	p.default_value = token.valueOf("value");
+        p.default_value = token.valueOf("value");
       
       if (! token.closed())
-	in.finish(s);
+        in.finish(s);
     }
   }
 
-  if (! typeref.isEmpty()) {
-    UmlTypeSpec ts;
-    
-    if (p.dir == ReturnDirection) {
-      if (setType(typeref, 0, ts))
-	set_ReturnType(ts);
-    }
-    else {
-      int n = params().count();
-      
-      (void) setType(typeref, n+1, p.type);
-      UmlBaseOperation::addParameter(n, p);
-    }
-  }
+  if (p.dir != ReturnDirection)
+    UmlBaseOperation::addParameter(params().count(), p);
+
 !!!210946.cpp!!!	solve(in context : int, in idref : string) : void
   UmlTypeSpec ts;
   

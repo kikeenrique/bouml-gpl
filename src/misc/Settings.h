@@ -77,6 +77,7 @@ class ClassDiagramSettings {
     Uml3States show_members_visibility;
     Uml3States show_members_stereotype;
     Uml3States show_members_multiplicity;
+    Uml3States show_members_initialization;
     char member_max_width;
     Uml3States show_parameter_dir;
     Uml3States show_parameter_name;

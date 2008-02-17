@@ -64,7 +64,7 @@ void UmlAttribute::importIt(FileIn & in, Token & token, UmlItem * where)
 	  if (s == "type") {
 	    UmlTypeSpec ts;
 	    
-	    if (att->setType(token.xmiIdref(), ts))
+	    if (att->setType(token, ts))
 	      att->set_Type(ts);
 	    if (! token.closed())
 	      in.finish(s);

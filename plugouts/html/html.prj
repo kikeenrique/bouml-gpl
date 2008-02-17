@@ -1,6 +1,6 @@
-format 46
+format 55
 "html"
-  revision 18
+  revision 19
   modified_by 2 "bruno"
   cpp_root_dir "/tmp/html/cpp/"
   java_root_dir "/tmp/html/java/"
@@ -10,9 +10,9 @@ format 46
   // class settings
   default_attribute_visibility protected default_relation_visibility protected default_operation_visibility public
   //class diagram settings
-  draw_all_relations yes hide_attributes no hide_operations no show_members_full_definition no show_members_visibility no show_members_stereotype no show_parameter_dir yes show_parameter_name yes package_name_in_tab no class_drawing_mode natural drawing_language uml show_context_mode no auto_label_position yes show_infonote no shadow yes
+  draw_all_relations yes hide_attributes no hide_operations no show_members_full_definition no show_members_visibility no show_members_stereotype no show_members_multiplicity no show_members_initialization no member_max_width 127 show_parameter_dir yes show_parameter_name yes package_name_in_tab no class_drawing_mode natural drawing_language uml show_context_mode no auto_label_position yes show_infonote no shadow yes
   //use case diagram settings
-  package_name_in_tab no show_context no auto_label_position yes draw_all_relations yes shadow yes
+  package_name_in_tab no show_context no auto_label_position yes draw_all_relations yes class_drawing_mode actor shadow yes
   //sequence diagram settings
   show_full_operations_definition no write_horizontally no class_drawing_mode natural drawing_language uml draw_all_relations yes shadow yes
   //collaboration diagram settings

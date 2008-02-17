@@ -56,7 +56,7 @@
 
 ColDiagramView::ColDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
     : DiagramView(parent, canvas, id) {
-  load("Collaboration");
+  load("Communication");
   update_msgs();
 }
 
@@ -92,7 +92,7 @@ void ColDiagramView::update_msg_supports() {
 void ColDiagramView::menu(const QPoint&) {
   QPopupMenu m(0);
   
-  m.insertItem(new MenuTitle("Collaboration diagram menu", m.font()), -1);
+  m.insertItem(new MenuTitle("Communication diagram menu", m.font()), -1);
   m.insertSeparator();
   m.insertItem("Edit all the messages", 29);
  
@@ -104,7 +104,7 @@ void ColDiagramView::menu(const QPoint&) {
     // pure drawing modifications are lost
     // mark the diagram modified because the undid modifications
     // may be saved in the file are not saved in memory
-    load("Collaboration");
+    load("Communication");
     update_msgs();
     window()->package_modified();
     break;

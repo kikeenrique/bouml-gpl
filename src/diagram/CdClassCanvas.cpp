@@ -58,6 +58,7 @@
 #include "OperationListDialog.h"
 #include "BrowserClassDiagram.h"
 #include "strutil.h"
+#include "GenerationSettings.h"
 
 CdClassCanvas::CdClassCanvas(BrowserNode * bn, UmlCanvas * canvas,
 			     int x, int y)
@@ -144,7 +145,7 @@ void CdClassCanvas::compute_size() {
     
   full_name = browser_node->get_name();
   
-  const MyStr & (PackageData::*f)() const;
+  const MyStr & (PackageData::*f)() const = 0;
   const char * sep = 0;	// to avoid warning
   
   switch (used_settings.show_context_mode) {
@@ -171,7 +172,7 @@ void CdClassCanvas::compute_size() {
     break;
   }
   
-  if (used_settings.show_context_mode > umlContext) {
+  if (f != 0) {
     BrowserClass * cl = (BrowserClass *) browser_node;
     
     while (cl->nestedp())
@@ -206,6 +207,7 @@ void CdClassCanvas::compute_size() {
   bool show_visibility = (used_settings.show_members_visibility == UmlYes);
   bool show_stereotype = (used_settings.show_members_stereotype == UmlYes);
   bool show_multiplicity = (used_settings.show_members_multiplicity == UmlYes);
+  bool show_initialization = (used_settings.show_members_initialization == UmlYes);
   bool show_dir = (used_settings.show_parameter_dir == UmlYes);
   bool show_name = (used_settings.show_parameter_name == UmlYes);
   bool hide_attrs = (used_settings.hide_attributes == UmlYes);
@@ -250,7 +252,8 @@ void CdClassCanvas::compute_size() {
 	    continue;
 	  
 	  s = ((AttributeData *) child_data)
-	    ->definition(full_members, show_multiplicity, used_settings.drawing_language);
+	    ->definition(full_members, show_multiplicity,
+			 show_initialization, used_settings.drawing_language);
 	  
 	  if (s.isEmpty())
 	    continue;
@@ -797,6 +800,7 @@ void CdClassCanvas::draw(QPainter & p) {
   bool show_visibility = (used_settings.show_members_visibility == UmlYes);
   bool show_stereotype = (used_settings.show_members_stereotype == UmlYes);
   bool show_multiplicity = (used_settings.show_members_multiplicity == UmlYes);
+  bool show_initialization = (used_settings.show_members_initialization == UmlYes);
   bool show_dir = (used_settings.show_parameter_dir == UmlYes);
   bool show_name = (used_settings.show_parameter_name == UmlYes);
   int max_member_width = used_settings.member_max_width;
@@ -816,7 +820,8 @@ void CdClassCanvas::draw(QPainter & p) {
 	   : (hidden_visible_attributes.findIndex((BrowserNode *) child) == -1))) {
 	AttributeData * data =
 	  ((AttributeData *) ((BrowserNode *) child)->get_data());
-	QString s = data->definition(full_members, show_multiplicity, used_settings.drawing_language);
+	QString s = data->definition(full_members, show_multiplicity,
+				     show_initialization, used_settings.drawing_language);
 	
 	if (s.isEmpty())
 	  continue;
@@ -1073,15 +1078,28 @@ void CdClassCanvas::menu(const QPoint&) {
   if (browser_node->is_writable())
     m.insertItem("Delete from model", 13);
   m.insertSeparator();
-  m.insertItem("Generate", &gensubm);
+  bool cpp = GenerationSettings::cpp_get_default_defs();
+  bool java = GenerationSettings::java_get_default_defs();
+  bool php = GenerationSettings::php_get_default_defs();
+  bool python = GenerationSettings::python_get_default_defs();
+  bool idl = GenerationSettings::idl_get_default_defs();
+
+  if (cpp || java || php || python || idl)
+    m.insertItem("Generate", &gensubm);
+  
   if (Tool::menu_insert(&toolm, UmlClass, 30))
     m.insertItem("Tool", &toolm);
   
-  gensubm.insertItem("C++", 14);
-  gensubm.insertItem("Java", 15);
-  gensubm.insertItem("Php", 19);
-  gensubm.insertItem("Python", 20);
-  gensubm.insertItem("Idl", 16);
+  if (cpp)
+    gensubm.insertItem("C++", 14);
+  if (java)
+    gensubm.insertItem("Java", 15);
+  if (php)
+    gensubm.insertItem("Php", 19);
+  if (python)
+    gensubm.insertItem("Python", 20);
+  if (idl)
+    gensubm.insertItem("Idl", 16);
   
   QStringList::Iterator it;
   

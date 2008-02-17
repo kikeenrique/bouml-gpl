@@ -405,10 +405,10 @@ bool Class::manage_implements(ClassContainer * container, aRelationKind k,
 bool Class::add_inherit(aRelationKind k, UmlTypeSpec & typespec,
 			QValueList<UmlTypeSpec> & actuals, 
 			QCString & str_actuals) {
-  unsigned actual_rank;
-  
-  if (typespec.explicit_type.isEmpty() && !actuals.isEmpty())
-    actual_rank = uml->actuals().count();
+  unsigned actual_rank = 
+    (typespec.explicit_type.isEmpty() && !actuals.isEmpty())
+      ? uml->actuals().count()
+      : 0;
     
   UmlRelation * rel =
     UmlRelation::create((actuals.isEmpty()) ? k : aRealization,

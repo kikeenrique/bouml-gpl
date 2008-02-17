@@ -148,6 +148,14 @@ class UmlItem : public UmlBaseItem {
     //  else memorize unsolved couple if needed and return false
     bool setType(QCString idref, int context, UmlTypeSpec & type);
 
+    //  try to solve token being <type ..>, return true is type already known
+    //  else memorize unsolved couple if needed and return false
+    bool setType(Token & token, UmlTypeSpec & type);
+
+    //  try to solve type, return true is type already known
+    //  else memorize unsolved couple if needed and return false
+    bool setType(Token & token, int context, UmlTypeSpec & type);
+
     //  try to solve type, return true if type already known
     //  and set 'type', else return false
     static bool getType(QCString idref, UmlTypeSpec & type);

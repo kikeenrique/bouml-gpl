@@ -33,7 +33,7 @@ class UmlActivityParameter
       s = token.what();
 	
       if (s == "type") {
-	setType(token.xmiIdref());
+	setType(token);
 	if (! token.closed())
 	  in.finish(s);
       }
@@ -71,12 +71,7 @@ class UmlActivityParameter
     while (in.read(), !token.close(kstr)) {
       s = token.what();
       
-      if (s == "ordering") {
-	setType(token.xmiIdref());
-	if (! token.closed())
-	  in.finish(s);
-      }
-      else if (s == "selection") {
+      if (s == "selection") {
 	setSelection(token.xmiIdref());
 	if (! token.closed())
 	  in.finish(s);
@@ -87,7 +82,7 @@ class UmlActivityParameter
 	  in.finish(s);
       }
       else if (s == "type") {
-	setType(token.xmiIdref());
+	setType(token);
 	if (! token.closed())
 	  in.finish(s);
       }

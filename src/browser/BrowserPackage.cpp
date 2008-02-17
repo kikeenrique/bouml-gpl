@@ -101,6 +101,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   classdiagram_settings.show_members_visibility = UmlNo;
   classdiagram_settings.show_members_stereotype = UmlNo;
   classdiagram_settings.show_members_multiplicity = UmlNo;
+  classdiagram_settings.show_members_initialization = UmlNo;
   classdiagram_settings.member_max_width = UmlUnlimitedMemberWidth;
   classdiagram_settings.show_parameter_dir = UmlYes;
   classdiagram_settings.show_parameter_name = UmlYes;
@@ -449,31 +450,54 @@ Note that you can undelete it after");
 		   "to know who reference the <i>package</i> \
 through a relation");
     mark_menu(m, "package", 90);
-    m.insertSeparator();
-    m.insertItem("Generate", &genm);
-    genm.insertItem("C++", 20);
-    genm.insertItem("Java", 21);
-    genm.insertItem("Php", 22);
-    genm.insertItem("Python", 34);
-    genm.insertItem("Idl", 23);
+
+    bool cpp = GenerationSettings::cpp_get_default_defs();
+    bool java = GenerationSettings::java_get_default_defs();
+    bool php = GenerationSettings::php_get_default_defs();
+    bool python = GenerationSettings::python_get_default_defs();
+    bool idl = GenerationSettings::idl_get_default_defs();
+
+    if (cpp || java || php || python || idl) {
+      m.insertSeparator();
+      m.insertItem("Generate", &genm);
+      if (cpp)
+	genm.insertItem("C++", 20);
+      if (java)
+	genm.insertItem("Java", 21);
+      if (php)
+	genm.insertItem("Php", 22);
+      if (python)
+	genm.insertItem("Python", 34);
+      if (idl)
+	genm.insertItem("Idl", 23);
+    }
     
     if (edition_number == 0) {
-      if (!is_read_only) {
+      if (!is_read_only && (cpp || java || php || python)) {
 	m.insertItem("Reverse", &revm);
 	
-	revm.insertItem("C++", 24);
-	revm.insertItem("Java", 25);
-	revm.insertItem("Java Catalog", 26);
-	revm.insertItem("Php", 32);
-	revm.insertItem("Python", 35);
+	if (cpp)
+	  revm.insertItem("C++", 24);
+	if (java) {
+	  revm.insertItem("Java", 25);
+	  revm.insertItem("Java Catalog", 26);
+	}
+	if (php)
+	  revm.insertItem("Php", 32);
+	if (python)
+	  revm.insertItem("Python", 35);
 	
 	if (preserve_bodies()) {
 	  m.insertItem("Roundtrip body", &roundtripm);
 	
-	  roundtripm.insertItem("C++", 30);
-	  roundtripm.insertItem("Java", 31);
-	  roundtripm.insertItem("Php", 33);
-	  roundtripm.insertItem("Python", 36);
+	  if (cpp)
+	    roundtripm.insertItem("C++", 30);
+	  if (java)
+	    roundtripm.insertItem("Java", 31);
+	  if (php)
+	    roundtripm.insertItem("Php", 33);
+	  if (python)
+	    roundtripm.insertItem("Python", 36);
 	}
       }
 

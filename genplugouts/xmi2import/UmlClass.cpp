@@ -3,6 +3,7 @@
 #include "UmlItem.h"
 #include "Token.h"
 #include "FileIn.h"
+#include "UmlTypeSpec.h"
 
 #include "UmlAttribute.h"
 #include "UmlRelation.h"
@@ -12,6 +13,7 @@
 #include "UmlCom.h"
 #include "Binding.h"
 #include "ClassInstance.h"
+#include "CppSettings.h"
 
 UmlItem * UmlClass::container(anItemKind kind, const Token & token, FileIn & in) {
   switch (kind) {
@@ -198,7 +200,7 @@ void UmlClass::importPrimitiveType(FileIn & in, Token & token, UmlItem *)
   UmlTypeSpec t;
   
   t.explicit_type = token.valueOf("name");
-
+    
   if (FromBouml) {
     if (! token.closed()) {
       bool dummy;
@@ -208,8 +210,8 @@ void UmlClass::importPrimitiveType(FileIn & in, Token & token, UmlItem *)
       in.readWord(FALSE, dummy);	// basedOn
       t.type = dynamic_cast<UmlClass *>(All[in.readWord(FALSE, dummy)]);
       if (t.type != 0)
-        // forget modifiers
-        t.explicit_type = "";
+	// forget modifiers
+	t.explicit_type = "";
       in.readWord(FALSE, dummy);	// /
       in.readWord(FALSE, dummy);	// >
       in.read(); 	// </xmi:Extension>
@@ -322,6 +324,37 @@ bool UmlClass::bind(UmlClass * tmpl) {
   }
 
   r->set_Stereotype("bind");
+  return TRUE;
+}
+
+bool UmlClass::isPrimitiveType(Token & token, UmlTypeSpec & ts)
+{
+  if (token.xmiType() != "uml:PrimitiveType")
+    return FALSE;
+    
+  QCString href = token.valueOf("href");
+  int index;
+  
+  if (href.isEmpty() || ((index = href.find('#')) == -1))
+    return FALSE;
+    
+  ts.explicit_type = href.mid(index + 1);
+  
+  if ((CppSettings::type(ts.explicit_type) == ts.explicit_type) &&
+      CppSettings::umlType(ts.explicit_type).isEmpty()) {
+    // not defined
+    href = ts.explicit_type.lower();
+    
+    if (href == "integer")
+      ts.explicit_type = "int";
+    else if (href == "boolean")
+      ts.explicit_type = "bool";
+    else if (href == "string")
+      ts.explicit_type = "string";
+    else if (href == "unlimitednatural")
+      ts.explicit_type = "long";
+  }
+
   return TRUE;
 }
 

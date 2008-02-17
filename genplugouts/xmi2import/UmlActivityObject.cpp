@@ -64,6 +64,14 @@ void UmlActivityObject::setType(QCString idref) {
 
 }
 
+void UmlActivityObject::setType(Token & token) {
+  UmlTypeSpec ts;
+  
+  if (UmlItem::setType(token, 0, ts))
+    set_Type(ts);
+
+}
+
 void UmlActivityObject::setOrdering(QCString s, FileIn & in) {
  if (s == "unordered")
    set_Ordering(unordered);
@@ -146,23 +154,18 @@ void UmlActivityObject::import_it(FileIn & in, Token & token) {
     while (in.read(), !token.close(kstr)) {
       s = token.what();
       
-      if (s == "ordering") {
-	setType(token.valueOf("idref"));
-	if (! token.closed())
-	  in.finish(s);
-      }
-      else if (s == "selection") {
-	setSelection(token.valueOf("idref"));
+      if (s == "selection") {
+	setSelection(token.xmiIdref());
 	if (! token.closed())
 	  in.finish(s);
       }
       else if (s == "instate") {
-	setInState(token.valueOf("idref"));
+	setInState(token.xmiIdref());
 	if (! token.closed())
 	  in.finish(s);
       }
       else if (s == "type") {
-	setType(token.valueOf("idref"));
+	setType(token);
 	if (! token.closed())
 	  in.finish(s);
       }

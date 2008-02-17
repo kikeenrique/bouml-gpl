@@ -1,12 +1,12 @@
-format 48
+format 53
 "API USER" // API USER
-  revision 47
+  revision 48
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default
   //sequence diagram settings
   show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
   //collaboration diagram settings
@@ -29,7 +29,7 @@ format 48
   comment " 'your' API classes and components, modify them !"
   classview 385 "API USER class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
     //collaboration diagram settings
     show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
@@ -56,6 +56,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -75,17 +76,17 @@ ${members}};
     end
 
     classdiagram 129 "Inheritance Diagram of classes for Package and Views"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A2
     end
 
     classdiagram 257 "Inheritance Diagram of classes for Diagrams"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A2
     end
 
     classdiagram 513 "Inheritance Diagram of classes for Classes"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
@@ -100,6 +101,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -127,6 +129,7 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
@@ -141,6 +144,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -168,6 +172,7 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
@@ -182,6 +187,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -209,6 +215,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 128352 "sKind"
@@ -222,6 +229,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -238,6 +246,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -260,6 +269,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -279,6 +289,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 204290 "generate_index"
@@ -294,6 +305,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -315,6 +327,7 @@ ${body}}
 "
 	
 	
+	
 	comment "produce the definition in C++"
       end
 
@@ -332,6 +345,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "produce the definition in Java"
@@ -353,6 +367,7 @@ ${body}}
 "
 	
 	
+	
 	comment "produce the definition in Php"
       end
 
@@ -371,6 +386,7 @@ ${body}}
 "
 	
 	
+	
 	comment "produce the definition in Uml"
       end
 
@@ -381,6 +397,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -389,6 +406,7 @@ ${body}}
 	cpp "" ""
 	java "  static { attrs = new Vector(); }"
 	php ""
+	python ""
 	idl ""
       end
     end
@@ -404,6 +422,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -431,6 +450,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 128480 "sKind"
@@ -444,6 +464,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -460,6 +481,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "set he html ref
@@ -486,6 +508,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -503,6 +526,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "generate the html definition in an own file
@@ -527,6 +551,7 @@ ${body}}
 "
 	
 	
+	
 	comment "generate the html definition except header/chapter in the current file
 "
       end
@@ -544,6 +569,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "write a html ref to the class"
@@ -565,6 +591,7 @@ ${body}}
 "
 	
 	
+	
 	comment "write a html ref to the class going to an other html file"
       end
 
@@ -581,6 +608,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -600,6 +628,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128111 "add_inherited_opers"
@@ -616,6 +645,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128111 "inherited_opers"
@@ -625,6 +655,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -635,6 +666,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -644,6 +676,7 @@ ${body}}
 	java "  static { classes = new Vector(); }
 "
 	php ""
+	python ""
 	idl ""
       end
 
@@ -662,6 +695,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "produce the definition in C++"
@@ -683,6 +717,7 @@ ${body}}
 "
 	
 	
+	
 	comment "produce the definition in Java"
       end
 
@@ -700,6 +735,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "produce the definition in Php"
@@ -723,6 +759,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128449 "generate"
@@ -739,6 +776,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0}[] ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -758,6 +796,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 130803 "generate"
@@ -775,6 +814,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128060 "subClasses"
@@ -784,6 +824,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -793,6 +834,7 @@ ${body}}
 	java "{ subClasses = new Vector(); }
 "
 	php ""
+	python ""
 	idl ""
       end
 
@@ -809,6 +851,7 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
@@ -823,6 +866,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -850,6 +894,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }"
 	
 	
+	
       end
 
       operation 128608 "sKind"
@@ -863,6 +908,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -879,6 +925,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "set he html ref
@@ -900,6 +947,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128892 "generate_index"
@@ -917,6 +965,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128124 "diagrams"
@@ -926,6 +975,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -935,6 +985,7 @@ ${body}}
 	java "  static { diagrams = new Vector(); }
 "
 	php ""
+	python ""
 	idl ""
       end
     end
@@ -950,6 +1001,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -981,6 +1033,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -997,6 +1050,7 @@ ${body}}
 "
 	
 	
+	
 	comment "returns a string indicating the king of the element"
       end
 
@@ -1011,6 +1065,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "set he html ref
@@ -1032,6 +1087,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 152066 "generate_index"
@@ -1049,6 +1105,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 129026 "diagrams"
@@ -1058,6 +1115,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1066,6 +1124,7 @@ ${body}}
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
 	php ""
+	python ""
 	idl ""
       end
     end
@@ -1081,6 +1140,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1107,6 +1167,7 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
@@ -1121,6 +1182,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1137,6 +1199,7 @@ ${members}}
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
+	
 	
 	
       end
@@ -1165,6 +1228,7 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
@@ -1179,6 +1243,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1205,6 +1270,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 128736 "sKind"
@@ -1218,6 +1284,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -1241,6 +1308,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -1258,6 +1326,7 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
@@ -1272,6 +1341,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1300,6 +1370,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 128864 "sKind"
@@ -1313,6 +1384,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -1329,6 +1401,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "set he html ref
@@ -1350,6 +1423,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 129660 "generate_index"
@@ -1367,6 +1441,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128764 "diagrams"
@@ -1376,6 +1451,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1384,6 +1460,7 @@ ${body}}
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
 	php ""
+	python ""
 	idl ""
       end
     end
@@ -1399,6 +1476,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1427,6 +1505,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 128992 "sKind"
@@ -1440,6 +1519,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -1456,6 +1536,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "set he html ref
@@ -1477,6 +1558,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 129020 "generate_index"
@@ -1494,6 +1576,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128380 "diagrams"
@@ -1503,6 +1586,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1511,6 +1595,7 @@ ${body}}
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
 	php ""
+	python ""
 	idl ""
       end
     end
@@ -1526,6 +1611,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1552,6 +1638,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 129120 "sKind"
@@ -1565,6 +1652,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -1588,6 +1676,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -1605,6 +1694,7 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
@@ -1619,6 +1709,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1645,6 +1736,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 128213 "html"
@@ -1665,6 +1757,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -1682,6 +1775,7 @@ ${body}}
 "
 	
 	
+	
 	comment "returns a string indicating the king of the element"
       end
     end
@@ -1697,6 +1791,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1721,6 +1816,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -1736,6 +1832,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -1760,6 +1857,7 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
@@ -1774,6 +1872,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1802,6 +1901,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 129376 "sKind"
@@ -1815,6 +1915,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -1831,6 +1932,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "set he html ref
@@ -1852,6 +1954,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 129148 "generate_index"
@@ -1869,6 +1972,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128508 "diagrams"
@@ -1878,6 +1982,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1886,6 +1991,7 @@ ${body}}
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
 	php ""
+	python ""
 	idl ""
       end
     end
@@ -1901,6 +2007,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1927,6 +2034,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 129395 "html"
@@ -1947,6 +2055,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -1962,6 +2071,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -1980,6 +2090,7 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
@@ -1994,6 +2105,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2020,6 +2132,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 128852 "html"
@@ -2040,6 +2153,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -2056,6 +2170,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2085,6 +2200,7 @@ ${members}}
 "
 	
 	
+	
       end
 
       operation 130656 "sKind"
@@ -2098,6 +2214,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -2121,6 +2238,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -2137,6 +2255,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2164,6 +2283,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 74369 "~UmlItem"
@@ -2174,6 +2294,7 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	
@@ -2192,6 +2313,7 @@ ${body}}
 "
 	
 	
+	
 	comment "returns a string indicating the king of the element"
       end
 
@@ -2208,6 +2330,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1}[] ${p1}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "  Set the directory where the files will be generated
@@ -2230,6 +2353,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 129060 "define"
@@ -2245,6 +2369,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -2267,6 +2392,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128724 "end_file"
@@ -2282,6 +2408,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -2301,6 +2428,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 129520 "generate_indexes"
@@ -2316,6 +2444,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -2335,6 +2464,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128084 "html"
@@ -2352,6 +2482,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -2367,6 +2498,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -2391,6 +2523,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128341 "html"
@@ -2408,6 +2541,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -2430,6 +2564,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 152578 "write_dependencies"
@@ -2447,6 +2582,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 212866 "write_properties"
@@ -2462,6 +2598,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -2486,6 +2623,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128261 "bypass_comment"
@@ -2500,6 +2638,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}int ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "bypass the comments at the beginning of the form
@@ -2521,6 +2660,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128883 "write"
@@ -2536,6 +2676,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -2556,6 +2697,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128340 "writeq"
@@ -2574,6 +2716,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 147970 "writeq"
@@ -2590,6 +2733,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -2611,6 +2755,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 203778 "write"
@@ -2627,6 +2772,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -2648,6 +2794,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 203650 "write"
@@ -2664,6 +2811,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -2684,6 +2832,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 197890 "write"
@@ -2702,6 +2851,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 198018 "write"
@@ -2718,6 +2868,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -2740,6 +2891,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128065 "sort"
@@ -2754,6 +2906,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -2774,6 +2927,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128112 "gt"
@@ -2788,6 +2942,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -2805,6 +2960,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128011 "all"
@@ -2814,6 +2970,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2823,6 +2980,7 @@ ${body}}
 	java "  static { all = new Vector(); }
 "
 	php ""
+	python ""
 	idl ""
       end
 
@@ -2833,6 +2991,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2843,6 +3002,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2853,6 +3013,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2864,6 +3025,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2874,6 +3036,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2883,6 +3046,7 @@ ${body}}
 	java "{ letters = new String(); }
 "
 	php ""
+	python ""
 	idl ""
       end
 
@@ -2893,6 +3057,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
 	comment "true => use SVG picture rather than PNG"
       end
@@ -2904,6 +3069,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
 	comment "true => classes and tables are generated in index.html, else an own files are generated"
       end
@@ -2920,6 +3086,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2946,6 +3113,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 129632 "sKind"
@@ -2959,6 +3127,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -2982,6 +3151,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -2998,6 +3168,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3025,6 +3196,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 129760 "sKind"
@@ -3038,6 +3210,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -3054,6 +3227,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -3076,6 +3250,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -3095,6 +3270,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128240 "generate_index"
@@ -3112,6 +3288,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 203522 "gen_uml_decl"
@@ -3127,6 +3304,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "produce the definition in Uml"
@@ -3149,6 +3327,7 @@ ${body}}
 "
 	
 	
+	
 	comment "produce the definition in C++"
       end
 
@@ -3166,6 +3345,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "produce the definition in Java"
@@ -3187,6 +3367,7 @@ ${body}}
 "
 	
 	
+	
 	comment "produce the definition in Php"
       end
 
@@ -3204,6 +3385,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128112 "opers"
@@ -3213,6 +3395,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3221,6 +3404,7 @@ ${body}}
 	cpp "" ""
 	java "  static { opers = new Vector(); }"
 	php ""
+	python ""
 	idl ""
       end
     end
@@ -3236,6 +3420,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3262,6 +3447,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3288,6 +3474,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 129888 "sKind"
@@ -3301,6 +3488,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -3324,6 +3512,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -3339,6 +3528,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "set the html ref
@@ -3360,6 +3550,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 150402 "generate_index"
@@ -3377,6 +3568,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 149378 "chapterp"
@@ -3392,6 +3584,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128898 "packages"
@@ -3401,6 +3594,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3410,6 +3604,7 @@ ${body}}
 	java "  static { packages = new Vector(); }
 "
 	php ""
+	python ""
 	idl ""
       end
     end
@@ -3425,6 +3620,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3452,6 +3648,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 130016 "sKind"
@@ -3465,6 +3662,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -3481,6 +3679,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -3501,6 +3700,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -3524,6 +3724,7 @@ ${body}}
 "
 	
 	
+	
 	comment "produce the definition in C++"
       end
 
@@ -3541,6 +3742,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "produce the definition in Java"
@@ -3562,6 +3764,7 @@ ${body}}
 "
 	
 	
+	
 	comment "produce the definition in Java"
       end
 
@@ -3580,6 +3783,7 @@ ${body}}
 "
 	
 	
+	
 	comment "produce the definition in Uml"
       end
 
@@ -3596,6 +3800,7 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
@@ -3610,6 +3815,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3636,6 +3842,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 148354 "sKind"
@@ -3649,6 +3856,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -3672,6 +3880,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -3689,6 +3898,7 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
@@ -3703,6 +3913,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3730,6 +3941,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }"
 	
 	
+	
       end
 
       operation 130144 "sKind"
@@ -3743,6 +3955,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -3759,6 +3972,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "set he html ref
@@ -3780,6 +3994,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 129276 "generate_index"
@@ -3797,6 +4012,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128636 "diagrams"
@@ -3806,6 +4022,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3814,6 +4031,7 @@ ${body}}
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
 	php ""
+	python ""
 	idl ""
       end
     end
@@ -3829,6 +4047,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3855,6 +4074,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 130272 "sKind"
@@ -3868,6 +4088,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -3891,6 +4112,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -3906,6 +4128,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "set the html ref
@@ -3927,6 +4150,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 150658 "generate_index"
@@ -3944,6 +4168,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 149506 "chapterp"
@@ -3959,6 +4184,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128770 "usecases"
@@ -3968,6 +4194,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3977,6 +4204,7 @@ ${body}}
 	java "  static { usecases = new Vector(); }
 "
 	php ""
+	python ""
 	idl ""
       end
     end
@@ -3992,6 +4220,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4020,6 +4249,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 130400 "sKind"
@@ -4033,6 +4263,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -4049,6 +4280,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "set he html ref
@@ -4070,6 +4302,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 129404 "generate_index"
@@ -4087,6 +4320,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128252 "diagrams"
@@ -4096,6 +4330,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -4104,6 +4339,7 @@ ${body}}
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
 	php ""
+	python ""
 	idl ""
       end
     end
@@ -4119,6 +4355,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4145,6 +4382,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 130528 "sKind"
@@ -4158,6 +4396,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -4181,6 +4420,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -4198,6 +4438,7 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
@@ -4212,6 +4453,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4228,6 +4470,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4263,6 +4506,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -4277,6 +4521,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -4300,6 +4545,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -4315,6 +4561,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "set the html ref
@@ -4336,6 +4583,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 151042 "generate_index"
@@ -4353,6 +4601,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 149762 "chapterp"
@@ -4368,6 +4617,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128642 "states"
@@ -4377,6 +4627,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -4386,6 +4637,7 @@ ${body}}
 	java "  static { states = new Vector(); }
 "
 	php ""
+	python ""
 	idl ""
       end
     end
@@ -4401,6 +4653,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4415,6 +4668,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "set he html ref
@@ -4432,6 +4686,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -4452,6 +4707,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 147458 "generate_index"
@@ -4469,6 +4725,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128386 "diagrams"
@@ -4478,6 +4735,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -4486,6 +4744,7 @@ ${body}}
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
 	php ""
+	python ""
 	idl ""
       end
 
@@ -4521,6 +4780,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -4536,6 +4796,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4557,6 +4818,7 @@ ${body}}
 "
 	
 	
+	
 	comment "set he html ref
 set the diagrams list"
       end
@@ -4572,6 +4834,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -4592,6 +4855,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 193026 "generate_index"
@@ -4609,6 +4873,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 129154 "diagrams"
@@ -4618,6 +4883,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -4626,6 +4892,7 @@ ${body}}
 	cpp "" ""
 	java "  static { diagrams = new Vector(); }"
 	php ""
+	python ""
 	idl ""
       end
 
@@ -4661,6 +4928,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -4676,6 +4944,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4690,6 +4959,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -4711,6 +4981,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -4749,6 +5020,7 @@ path, rank in the mother and level in the browser tree"
 "
 	
 	
+	
       end
     end
 
@@ -4763,6 +5035,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4778,6 +5051,7 @@ ${members}}
   super(id, s);
 }
 "
+	
 	
 	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
@@ -4814,6 +5088,7 @@ ${body}}
 "
 	
 	
+	
 	comment "returns a string indicating the king of the element"
       end
 
@@ -4835,6 +5110,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -4852,6 +5128,7 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
@@ -4866,6 +5143,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4880,6 +5158,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -4901,6 +5180,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -4938,6 +5218,7 @@ path, rank in the mother and level in the browser tree"
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -4953,6 +5234,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4968,6 +5250,7 @@ ${members}}
   super(id, s);
 }
 "
+	
 	
 	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
@@ -4989,6 +5272,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -5025,6 +5309,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5039,6 +5324,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -5066,6 +5352,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5081,6 +5368,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5095,6 +5383,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -5123,6 +5412,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5138,6 +5428,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5152,6 +5443,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -5179,6 +5471,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5194,6 +5487,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5208,6 +5502,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -5235,6 +5530,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5250,6 +5546,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5264,6 +5561,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -5292,6 +5590,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5307,6 +5606,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5321,6 +5621,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -5348,6 +5649,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5363,6 +5665,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5377,6 +5680,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -5404,6 +5708,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5419,6 +5724,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5433,6 +5739,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -5460,6 +5767,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5475,6 +5783,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5489,6 +5798,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -5516,6 +5826,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5531,6 +5842,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5545,6 +5857,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -5572,6 +5885,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5587,6 +5901,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5601,6 +5916,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -5628,6 +5944,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5643,6 +5960,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5659,6 +5977,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5685,6 +6004,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5699,6 +6019,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -5722,6 +6043,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -5737,6 +6059,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "set the html ref
@@ -5758,6 +6081,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 193666 "generate_index"
@@ -5775,6 +6099,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 193538 "chapterp"
@@ -5790,6 +6115,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 129282 "activities"
@@ -5799,6 +6125,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -5808,6 +6135,7 @@ ${body}}
 	java "  static { activities = new Vector(); }
 "
 	php ""
+	python ""
 	idl ""
       end
     end
@@ -5823,6 +6151,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5858,6 +6187,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -5873,6 +6203,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5887,6 +6218,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -5908,6 +6240,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -5946,6 +6279,7 @@ path, rank in the mother and level in the browser tree"
 "
 	
 	
+	
       end
     end
 
@@ -5960,6 +6294,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5995,6 +6330,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -6011,6 +6347,7 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
@@ -6025,6 +6362,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6051,6 +6389,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -6065,6 +6404,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -6088,6 +6428,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -6104,6 +6445,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6130,6 +6472,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -6144,6 +6487,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -6167,6 +6511,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -6183,6 +6528,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6199,6 +6545,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -6228,6 +6575,7 @@ path, rank in the mother and level in the browser tree"
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6243,6 +6591,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6257,6 +6606,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -6278,6 +6628,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -6307,6 +6658,7 @@ path, rank in the mother and level in the browser tree"
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6322,6 +6674,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6336,6 +6689,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -6357,6 +6711,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -6386,6 +6741,7 @@ path, rank in the mother and level in the browser tree"
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6401,6 +6757,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6420,6 +6777,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -6449,6 +6807,7 @@ path, rank in the mother and level in the browser tree"
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6464,6 +6823,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6478,6 +6838,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -6506,6 +6867,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6521,6 +6883,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6535,6 +6898,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -6563,6 +6927,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6578,6 +6943,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6592,6 +6958,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -6613,6 +6980,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -6642,6 +7010,7 @@ path, rank in the mother and level in the browser tree"
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6657,6 +7026,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6671,6 +7041,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -6692,6 +7063,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -6721,6 +7093,7 @@ path, rank in the mother and level in the browser tree"
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6736,6 +7109,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6750,6 +7124,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -6771,6 +7146,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -6800,6 +7176,7 @@ path, rank in the mother and level in the browser tree"
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6815,6 +7192,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6829,6 +7207,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -6850,6 +7229,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -6879,6 +7259,7 @@ path, rank in the mother and level in the browser tree"
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6894,6 +7275,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6908,6 +7290,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -6929,6 +7312,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -6958,6 +7342,7 @@ path, rank in the mother and level in the browser tree"
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -6973,6 +7358,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6992,6 +7378,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -7021,6 +7408,7 @@ path, rank in the mother and level in the browser tree"
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -7036,6 +7424,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7050,6 +7439,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -7078,6 +7468,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -7093,6 +7484,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7107,6 +7499,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -7135,6 +7528,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -7150,6 +7544,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7164,6 +7559,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -7192,6 +7588,7 @@ ${body}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -7207,6 +7604,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7221,6 +7619,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -7242,6 +7641,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -7271,6 +7671,7 @@ path, rank in the mother and level in the browser tree"
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -7286,6 +7687,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7300,6 +7702,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -7321,6 +7724,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -7350,6 +7754,7 @@ path, rank in the mother and level in the browser tree"
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -7365,6 +7770,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7391,6 +7797,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7412,6 +7819,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -7428,6 +7836,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7454,6 +7863,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7468,6 +7878,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -7485,6 +7896,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7511,6 +7923,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7525,6 +7938,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -7542,6 +7956,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7568,6 +7983,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7582,6 +7998,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -7599,6 +8016,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7625,6 +8043,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7639,6 +8058,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -7656,6 +8076,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7682,6 +8103,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7696,6 +8118,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -7713,6 +8136,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7739,6 +8163,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7753,6 +8178,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -7770,6 +8196,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7796,6 +8223,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7810,6 +8238,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -7827,6 +8256,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7853,6 +8283,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -7867,6 +8298,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -7888,6 +8320,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -7912,6 +8345,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -7928,6 +8362,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7954,6 +8389,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -7969,6 +8405,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -7995,6 +8432,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -8016,6 +8454,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -8032,6 +8471,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -8058,6 +8498,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -8072,6 +8513,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -8095,6 +8537,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -8111,6 +8554,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -8137,6 +8581,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -8151,6 +8596,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -8174,6 +8620,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -8190,6 +8637,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -8216,6 +8664,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -8230,6 +8679,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -8251,6 +8701,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "entry to produce the html code receiving chapter number
@@ -8278,6 +8729,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -8304,6 +8756,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -8318,6 +8771,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	comment "returns a string indicating the king of the element"
@@ -8341,6 +8795,7 @@ ${body}}
 "
 	
 	
+	
 	comment "entry to produce the html code receiving chapter number
 path, rank in the mother and level in the browser tree"
       end
@@ -8357,6 +8812,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -8381,6 +8837,7 @@ ${members}}
   super(id, s);
 }
 "
+	
 	
 	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
@@ -8424,179 +8881,179 @@ ${definition}"
     artifact 4737 "executable"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 128130 // ConfirmBox
-	artifact_ref 134272 // FlowBehavior
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 129922 // UmlPseudoState
-	artifact_ref 128258 // UmlStateItem
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 128640 // UmlBaseStateDiagram
-	artifact_ref 133378 // UmlActivity
-	artifact_ref 137986 // UmlActivityPin
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 140544 // UmlBaseView
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 129408 // UmlBaseRegion
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 138242 // UmlActivityParameter
-	artifact_ref 140032 // UmlBaseParameter
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 136450 // UmlActivityControlNode
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 134656 // UmlBaseExpansionRegion
-	artifact_ref 133504 // UmlBaseActivityDiagram
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 134146 // UmlFlow
-	artifact_ref 130434 // UmlEntryPointPseudoState
-	artifact_ref 134786 // UmlExpansionRegion
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 135682 // UmlActivityActionClasses
-	artifact_ref 137602 // UmlPinParameter
-	artifact_ref 133760 // UmlBaseActivityNode
-	artifact_ref 130304 // UmlBaseEntryPointPseudoState
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 137728 // aParameterEffectKind
-	artifact_ref 137088 // anOrdering
-	artifact_ref 136576 // UmlBaseActivityControlNodeClasses
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 140418 // UmlTypeSpec
-	artifact_ref 135938 // UmlOnSignalAction
-	artifact_ref 129664 // UmlBaseStateAction
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 138882 // UmlClassInstance
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 132864 // UmlBaseObjectDiagram
-	artifact_ref 136962 // UmlActivityObject
-	artifact_ref 131714 // UmlShallowHistoryPseudoState
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 131072 // UmlBaseExitPointPseudoState
-	artifact_ref 136194 // UmlAccessVariableValueAction
-	artifact_ref 141824 // PhpSettings
-	artifact_ref 132352 // UmlBaseForkPseudoState
-	artifact_ref 138752 // UmlBaseClassInstance
-	artifact_ref 138624 // aLanguage
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 4865 // Main
-	artifact_ref 130816 // UmlBaseTerminatePseudoState
-	artifact_ref 128164 // FileWriter
-	artifact_ref 133634 // UmlActivityDiagram
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 133890 // UmlActivityNode
-	artifact_ref 4480 // UmlCom
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 131840 // UmlBaseJunctionPseudoState
-	artifact_ref 128896 // StateBehavior
-	artifact_ref 129154 // UmlTransition
-	artifact_ref 136064 // UmlBaseAccessVariableValueAction
-	artifact_ref 128180 // UmlNcRelation
-	artifact_ref 7169 // UmlItem
-	artifact_ref 140288 // UmlBaseTypeSpec
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 135552 // UmlBaseActivityActionClasses
-	artifact_ref 136320 // UmlBaseActivityControlNode
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 135808 // UmlBaseOnSignalAction
-	artifact_ref 130690 // UmlFinalState
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 132482 // UmlForkPseudoState
-	artifact_ref 137856 // UmlBaseActivityPin
-	artifact_ref 136832 // UmlBaseActivityObject
-	artifact_ref 138112 // UmlBaseActivityParameter
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 131458 // UmlDeepHistoryPseudoState
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 129024 // UmlBaseTransition
-	artifact_ref 138368 // UmlBaseParameterSet
-	artifact_ref 4864 // aDirection
-	artifact_ref 140674 // UmlView
-	artifact_ref 134530 // UmlActivityRegion
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 137216 // UmlBaseExpansionNode
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 135170 // UmlInterruptibleActivityRegion
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 135040 // UmlBaseInterruptibleActivityRegion
-	artifact_ref 134912 // anExpansionKind
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 139008 // SlotAttribute
-	artifact_ref 141952 // PhpSettingsCmd
-	artifact_ref 131970 // UmlJunctionPseudoState
-	artifact_ref 131584 // UmlBaseShallowHistoryPseudoState
-	artifact_ref 6529 // UmlComponentView
-	artifact_ref 130560 // UmlBaseFinalState
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 135426 // UmlActivityAction
-	artifact_ref 132738 // UmlJoinPseudoState
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 140162 // UmlParameter
-	artifact_ref 131328 // UmlBaseDeepHistoryPseudoState
-	artifact_ref 130946 // UmlTerminatePseudoState
-	artifact_ref 5633 // UmlClass
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 134400 // UmlBaseActivityRegion
-	artifact_ref 129538 // UmlRegion
-	artifact_ref 133248 // UmlBaseActivity
-	artifact_ref 6272 // IdlSettingsCmd
 	artifact_ref 7297 // UmlNode
-	artifact_ref 4992 // aVisibility
-	artifact_ref 128514 // UmlState
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 136706 // UmlActivityControlNodeClasses
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 139136 // SlotRelation
-	artifact_ref 128384 // UmlBaseState
-	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 132608 // UmlBaseJoinPseudoState
-	artifact_ref 128036 // Vector
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 131202 // UmlExitPointPseudoState
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 130048 // UmlBaseInitialPseudoState
-	artifact_ref 128770 // UmlStateDiagram
-	artifact_ref 134016 // UmlBaseFlow
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 130178 // UmlInitialPseudoState
-	artifact_ref 132096 // UmlBaseChoicePseudoState
-	artifact_ref 129794 // UmlStateAction
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 132226 // UmlChoicePseudoState
-	artifact_ref 135296 // UmlBaseActivityAction
-	artifact_ref 5120 // anItemKind
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 133122 // UmlActivityItem
-	artifact_ref 137346 // UmlExpansionNode
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 768 // CppSettings
-	artifact_ref 138498 // UmlParameterSet
-	artifact_ref 129280 // TransitionBehavior
-	artifact_ref 132994 // UmlObjectDiagram
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
 	artifact_ref 137472 // UmlBasePinParameter
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 132994 // UmlObjectDiagram
+	artifact_ref 128770 // UmlStateDiagram
+	artifact_ref 136706 // UmlActivityControlNodeClasses
+	artifact_ref 5633 // UmlClass
+	artifact_ref 136320 // UmlBaseActivityControlNode
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 4865 // Main
+	artifact_ref 136194 // UmlAccessVariableValueAction
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 4992 // aVisibility
+	artifact_ref 130946 // UmlTerminatePseudoState
+	artifact_ref 131328 // UmlBaseDeepHistoryPseudoState
+	artifact_ref 135040 // UmlBaseInterruptibleActivityRegion
+	artifact_ref 137216 // UmlBaseExpansionNode
+	artifact_ref 136832 // UmlBaseActivityObject
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 130816 // UmlBaseTerminatePseudoState
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 135296 // UmlBaseActivityAction
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 134656 // UmlBaseExpansionRegion
+	artifact_ref 140544 // UmlBaseView
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 129538 // UmlRegion
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 129024 // UmlBaseTransition
+	artifact_ref 131458 // UmlDeepHistoryPseudoState
+	artifact_ref 129154 // UmlTransition
+	artifact_ref 138624 // aLanguage
+	artifact_ref 131072 // UmlBaseExitPointPseudoState
+	artifact_ref 129664 // UmlBaseStateAction
+	artifact_ref 130304 // UmlBaseEntryPointPseudoState
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 128258 // UmlStateItem
+	artifact_ref 5120 // anItemKind
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 131202 // UmlExitPointPseudoState
+	artifact_ref 133248 // UmlBaseActivity
+	artifact_ref 130560 // UmlBaseFinalState
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 132352 // UmlBaseForkPseudoState
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 133760 // UmlBaseActivityNode
+	artifact_ref 129922 // UmlPseudoState
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 130178 // UmlInitialPseudoState
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 128514 // UmlState
+	artifact_ref 131970 // UmlJunctionPseudoState
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 133634 // UmlActivityDiagram
+	artifact_ref 134786 // UmlExpansionRegion
+	artifact_ref 136450 // UmlActivityControlNode
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 138242 // UmlActivityParameter
+	artifact_ref 137346 // UmlExpansionNode
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 132738 // UmlJoinPseudoState
+	artifact_ref 135170 // UmlInterruptibleActivityRegion
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 4480 // UmlCom
+	artifact_ref 128164 // FileWriter
+	artifact_ref 135938 // UmlOnSignalAction
+	artifact_ref 136576 // UmlBaseActivityControlNodeClasses
+	artifact_ref 130434 // UmlEntryPointPseudoState
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 133122 // UmlActivityItem
+	artifact_ref 128036 // Vector
+	artifact_ref 139136 // SlotRelation
+	artifact_ref 135426 // UmlActivityAction
+	artifact_ref 141952 // PhpSettingsCmd
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 137088 // anOrdering
+	artifact_ref 134146 // UmlFlow
+	artifact_ref 133504 // UmlBaseActivityDiagram
 	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 129280 // TransitionBehavior
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 7169 // UmlItem
+	artifact_ref 128896 // StateBehavior
+	artifact_ref 141824 // PhpSettings
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 134272 // FlowBehavior
+	artifact_ref 128130 // ConfirmBox
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 132096 // UmlBaseChoicePseudoState
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 135808 // UmlBaseOnSignalAction
+	artifact_ref 128180 // UmlNcRelation
+	artifact_ref 132864 // UmlBaseObjectDiagram
+	artifact_ref 140418 // UmlTypeSpec
+	artifact_ref 129408 // UmlBaseRegion
+	artifact_ref 768 // CppSettings
+	artifact_ref 134016 // UmlBaseFlow
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 137856 // UmlBaseActivityPin
+	artifact_ref 132482 // UmlForkPseudoState
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 140288 // UmlBaseTypeSpec
+	artifact_ref 138882 // UmlClassInstance
+	artifact_ref 137602 // UmlPinParameter
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 138498 // UmlParameterSet
+	artifact_ref 129794 // UmlStateAction
+	artifact_ref 130048 // UmlBaseInitialPseudoState
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 132608 // UmlBaseJoinPseudoState
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 134400 // UmlBaseActivityRegion
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 134912 // anExpansionKind
+	artifact_ref 134530 // UmlActivityRegion
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 133890 // UmlActivityNode
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 135682 // UmlActivityActionClasses
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 128384 // UmlBaseState
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 140162 // UmlParameter
+	artifact_ref 140674 // UmlView
+	artifact_ref 138368 // UmlBaseParameterSet
+	artifact_ref 131714 // UmlShallowHistoryPseudoState
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 132226 // UmlChoicePseudoState
+	artifact_ref 131584 // UmlBaseShallowHistoryPseudoState
+	artifact_ref 136064 // UmlBaseAccessVariableValueAction
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 136962 // UmlActivityObject
+	artifact_ref 137728 // aParameterEffectKind
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 140032 // UmlBaseParameter
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 131840 // UmlBaseJunctionPseudoState
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 138752 // UmlBaseClassInstance
+	artifact_ref 137986 // UmlActivityPin
+	artifact_ref 128640 // UmlBaseStateDiagram
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 139008 // SlotAttribute
+	artifact_ref 4864 // aDirection
+	artifact_ref 138112 // UmlBaseActivityParameter
+	artifact_ref 130690 // UmlFinalState
+	artifact_ref 135552 // UmlBaseActivityActionClasses
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 133378 // UmlActivity
       end
       ncouples 10
       key "genpro pro" value "/tmp/html/cpp/html.pro"

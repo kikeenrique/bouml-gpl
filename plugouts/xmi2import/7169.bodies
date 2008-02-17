@@ -173,7 +173,7 @@ class UmlClass
   UmlTypeSpec t;
   
   t.explicit_type = token.valueOf("name");
-
+    
   if (FromBouml) {
     if (! token.closed()) {
       bool dummy;
@@ -183,8 +183,8 @@ class UmlClass
       in.readWord(FALSE, dummy);	// basedOn
       t.type = dynamic_cast<UmlClass *>(All[in.readWord(FALSE, dummy)]);
       if (t.type != 0)
-        // forget modifiers
-        t.explicit_type = "";
+	// forget modifiers
+	t.explicit_type = "";
       in.readWord(FALSE, dummy);	// /
       in.readWord(FALSE, dummy);	// >
       in.read(); 	// </xmi:Extension>
@@ -286,4 +286,32 @@ class UmlClass
   }
 
   r->set_Stereotype("bind");
+  return TRUE;
+!!!241922.cpp!!!	isPrimitiveType(inout token : Token, inout ts : UmlTypeSpec) : bool
+  if (token.xmiType() != "uml:PrimitiveType")
+    return FALSE;
+    
+  QCString href = token.valueOf("href");
+  int index;
+  
+  if (href.isEmpty() || ((index = href.find('#')) == -1))
+    return FALSE;
+    
+  ts.explicit_type = href.mid(index + 1);
+  
+  if ((CppSettings::type(ts.explicit_type) == ts.explicit_type) &&
+      CppSettings::umlType(ts.explicit_type).isEmpty()) {
+    // not defined
+    href = ts.explicit_type.lower();
+    
+    if (href == "integer")
+      ts.explicit_type = "int";
+    else if (href == "boolean")
+      ts.explicit_type = "bool";
+    else if (href == "string")
+      ts.explicit_type = "string";
+    else if (href == "unlimitednatural")
+      ts.explicit_type = "long";
+  }
+
   return TRUE;

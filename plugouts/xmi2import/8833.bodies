@@ -83,6 +83,28 @@ class UmlItem
     UnresolvedWithContext::add(this, idref, context);
     return FALSE;
   }
+!!!243074.cpp!!!	setType(inout token : Token, inout type : UmlTypeSpec) : bool
+  QCString idref = token.xmiIdref();
+  
+  if (idref.isEmpty())
+    return UmlClass::isPrimitiveType(token, type);
+  else if (getType(idref, type))
+    return TRUE;
+  else {
+    Unresolved::addRef(this, idref);
+    return FALSE;
+  }
+!!!243202.cpp!!!	setType(inout token : Token, in context : int, inout type : UmlTypeSpec) : bool
+  QCString idref = token.xmiIdref();
+  
+  if (idref.isEmpty())
+    return UmlClass::isPrimitiveType(token, type);
+  else if (getType(idref, type))
+    return TRUE;
+  else {
+    UnresolvedWithContext::add(this, idref, context);
+    return FALSE;
+  }
 !!!209794.cpp!!!	getType(in idref : string, inout type : UmlTypeSpec) : bool
   QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
   

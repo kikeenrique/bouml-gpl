@@ -26,11 +26,13 @@
 #ifndef NAMESPACE_H
 #define NAMESPACE_H
 
-#include "qvaluelist.h"
-#include "qstringlist.h"
-#include "qcstring.h"
-#include "qdict.h"
-#include "qmap.h"
+#include <qvaluelist.h>
+#include <qstringlist.h>
+#include <qcstring.h>
+#include <qdict.h>
+#include <qmap.h>
+
+#include "Lex.h"
 
 // it is a singleton but I prefer static members
 // Namespace::instance() is too long to hit
@@ -39,6 +41,10 @@ class Namespace {
   public:
     static void enter(const QCString & s);
     static void exit();
+    static void enter_anonymous() { AnonymousLevel += 1; }
+    static void exit_anonymous() { AnonymousLevel -= 1; }
+    static bool underAnonymous() { return AnonymousLevel != 0; }
+    
     static void save_using_scope() {
       UsingScope.prepend(Usings);
     }
@@ -56,11 +62,12 @@ class Namespace {
     }
     static void clear_aliases() { Aliases.clear(); }
     
-    static QString namespacify(QCString s);
+    static QString namespacify(QCString s, bool local);
     static QCString current();
     
   private:
     static QStringList Stack;
+    static int AnonymousLevel;
     static QStringList Usings;
     static QValueList<QStringList> UsingScope;
     static QMap<QCString,QCString> Aliases;
@@ -73,8 +80,8 @@ class Namespace {
 template<class T>
 class NDict {
   public:
-    NDict() {}
-    NDict(unsigned n) { d.resize(n); }
+    NDict() : hasAnonymous(FALSE) {}
+    NDict(unsigned n) : hasAnonymous(FALSE) { d.resize(n); }
   
     void insert(const QCString & key, const T * item);
     void replace(const QCString & key, const T * item);
@@ -82,33 +89,42 @@ class NDict {
     T * operator[] (const QCString & key) const;
       
   private:
+    bool hasAnonymous;
     QDict<T> d;
 };
 
 template<class T>
 void NDict<T>::insert(const QCString & key, const T * item) {
-  d.insert(Namespace::namespacify(key), item);
+  hasAnonymous |= Namespace::underAnonymous();
+  d.insert(Namespace::namespacify(key, Namespace::underAnonymous()), item);
 }
 
 template<class T>
 void NDict<T>::replace(const QCString & key, const T * item) {
-  d.replace(Namespace::namespacify(key), item);
+  hasAnonymous |= Namespace::underAnonymous();
+  d.replace(Namespace::namespacify(key, Namespace::underAnonymous()), item);
 }
 
 template<class T>
 bool NDict<T>::remove(const QCString & key) {
-  return d.remove(Namespace::namespacify(key));
+  return d.remove(Namespace::namespacify(key, Namespace::underAnonymous()));
 }
 
 template<class T>
 T * NDict<T>::operator[] (const QCString & key) const {
-  T * r = d[Namespace::namespacify(key)];
+  QString k = Namespace::namespacify(key, FALSE);
+  T * r = d[k];
   
-  if ((r == 0) && 
-      ((((const char *) key)[0] != ':') ||
-       (((const char *) key)[1] != ':'))) {
+  if (r != 0)
+    return r;
+  
+  QString s;
+  
+  if ((((const char *) key)[0] != ':') ||
+      (((const char *) key)[1] != ':')) {
     QStringList::ConstIterator it;
-    const QString s = key;
+    
+    s = key;
     
     for (it = Namespace::usings().begin();
 	 it != Namespace::usings().end();
@@ -122,7 +138,32 @@ T * NDict<T>::operator[] (const QCString & key) const {
       if ((r = d[*it + s]) != 0)
 	return r;
   }
+  
+  if (hasAnonymous) {
+    k += "\n" + Lex::filename();
+    r = d[k];
+    
+    if ((r == 0) && 
+	((((const char *) key)[0] != ':') ||
+	 (((const char *) key)[1] != ':'))) {
+      QStringList::ConstIterator it;
       
+      s += "\n" + Lex::filename();
+      
+      for (it = Namespace::usings().begin();
+	   it != Namespace::usings().end();
+	   ++it)
+	if ((r = d[*it + s]) != 0)
+	  return r;
+      
+      for (it = Namespace::stack().begin();
+	   it != Namespace::stack().end();
+	   ++it)
+	if ((r = d[*it + s]) != 0)
+	  return r;
+    }
+  }
+  
   return r;
 }
 

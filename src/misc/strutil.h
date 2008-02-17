@@ -51,6 +51,7 @@ extern void remove_python_comments(QString & s);
 extern void remove_preprocessor(QCString & s);
 extern QString java_multiplicity(QString m);
 extern bool need_equal(const char * p, QString v, bool cpp);
+extern bool need_equal(const char * p, const char * v, bool cpp);
 
 extern void initCodec();
 extern QString toUnicode(const char *);

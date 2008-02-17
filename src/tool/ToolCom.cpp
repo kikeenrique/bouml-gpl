@@ -27,10 +27,9 @@
 
 #ifdef WIN32
 # include <process.h>
-#endif
-
-#ifdef WIN32
 #pragma warning (disable: 4150)
+#else
+#include <errno.h>
 #endif
 
 #ifdef DEBUGCOM
@@ -147,7 +146,6 @@ int ToolCom::run(const char * cmd, BrowserNode * bn, bool exit)
 
 #ifdef WIN32
   QString ports = QString::number(port);
-#if 1
   QStringList l = QStringList::split(' ', cmd);
   const char ** v = new const char*[l.count() + 2];
   
@@ -164,17 +162,20 @@ int ToolCom::run(const char * cmd, BrowserNode * bn, bool exit)
   
   delete v;
 #else
-  if (_spawnlp(_P_DETACH, cmd, cmd, (const char *) ports, 0) == -1)
-    ......error;
-#endif
-#else
   QString s = cmd;
   
   s += ' ';
   s += QString::number(port);
   s += '&';
   
-  system(s);
+  errno = 0;
+  (void) system(s);
+  
+  if (errno != 0)
+    msg_critical("Bouml",
+		 "error while executing '" + QString(cmd) +"'\n"
+		 "perhaps you must specify its absolute path"
+		 "or set the environment variable PATH ?");
 #endif
   
   com->target = bn;

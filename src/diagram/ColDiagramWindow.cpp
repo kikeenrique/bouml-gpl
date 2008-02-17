@@ -54,8 +54,8 @@ extern const char * textText;
 // id is an old ident in case of an import
 ColDiagramWindow::ColDiagramWindow(const QString & s, BrowserColDiagram * b, int id)
     : DiagramWindow(b, s), view(0) {
-  QToolBar * toolbar = new QToolBar(this, "collaboration diagram operations");
-  addToolBar(toolbar, "Collaboration Diagram Operations", Top, TRUE);
+  QToolBar * toolbar = new QToolBar(this, "communication diagram operations");
+  addToolBar(toolbar, "Communication Diagram Operations", Top, TRUE);
   
   add_edit_button(toolbar);
   

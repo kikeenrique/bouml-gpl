@@ -1197,7 +1197,8 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       k = read_keyword(st);
       
       if ((label = LabelCanvas::read(st, canvas, k)) != 0) {
-	if (unamed || s.isEmpty() || (s == RelationData::default_name(t))) {
+	if ((t != UmlRealize) &&
+	    (unamed || s.isEmpty() || (s == RelationData::default_name(t)))) {
 	  // relation does not have name or 'true' name
 	  canvas->del(label);
 	  label = 0;
@@ -1270,7 +1271,7 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
 	  RelsToCheck.append(result);
       }
       if (label != 0)
-	result->label = label;
+	(result->label = label)->show();
       if (stereotype != 0)
 	(result->stereotype = stereotype)->show();
       result->show();
@@ -1360,9 +1361,11 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
    
     // to add label, stereotype ... if needed
     
+    result->hide();
     first->update(FALSE);
     if (first != result)
       result->update(FALSE);
+    result->show();
     
     // manage case where the relation is deleted but present in the browser
     if (result->data->get_start()->deletedp())

@@ -404,7 +404,12 @@ const QCString & CppSettings::in()
 
 bool CppSettings::set_In(QCString v)
 {
-  UmlCom::send_cmd(cppSettingsCmd, setCppInCmd, v);
+  UmlCom::send_cmd(cppSettingsCmd, setCppInCmd, v
+#if APIVERSION == 40
+		   , ""
+#error idem sur les autres set y compris return
+#endif
+		   );
   if (UmlCom::read_bool()) {
     _in = v;
     return TRUE;

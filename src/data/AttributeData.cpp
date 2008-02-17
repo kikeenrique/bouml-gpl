@@ -155,7 +155,8 @@ QString AttributeData::definition(bool full) const {
       + QString(" : ") + ((const char *) type.get_type());
 }
 
-QString AttributeData::definition(bool full, bool mult, DrawingLanguage language) const {
+QString AttributeData::definition(bool full, bool mult, bool init,
+				  DrawingLanguage language) const {
   switch (language) {
   case UmlView:
     if (! full)
@@ -164,34 +165,45 @@ QString AttributeData::definition(bool full, bool mult, DrawingLanguage language
       QString r = ((const char *) browser_node->get_name())
 	+ QString(" : ") + ((const char *) type.get_type());
       
-      return (mult && !multiplicity.isEmpty())
-	? r + " [" + (const char *) multiplicity + "]"
-	: r;
+      if (mult && !multiplicity.isEmpty())
+	r += " [" + QString((const char *) multiplicity) + "]";
+	  
+      if (init && !init_value.isEmpty()) {
+	if (*init_value != '=')
+	  r += " = ";
+	r += (const char *) init_value;
+      }
+      
+      return r;
     }
   case CppView:
     if (full)
-      return AttributeDialog::cpp_decl((BrowserAttribute *) browser_node);
+      return AttributeDialog::cpp_decl((BrowserAttribute *) browser_node,
+				       init);
     else if (!cpp_decl.isEmpty())
       return definition(FALSE);
     else
       return QString::null;
   case JavaView:
     if (full)
-      return AttributeDialog::java_decl((BrowserAttribute *) browser_node);
+      return AttributeDialog::java_decl((BrowserAttribute *) browser_node,
+					init);
     else if (!java_decl.isEmpty())
       return definition(FALSE);
     else
       return QString::null;
   case PhpView:
     if (full)
-      return AttributeDialog::php_decl((BrowserAttribute *) browser_node);
+      return AttributeDialog::php_decl((BrowserAttribute *) browser_node,
+				       init);
     else if (!php_decl.isEmpty())
       return definition(FALSE);
     else
       return QString::null;
   case PythonView:
     if (full)
-      return AttributeDialog::python_decl((BrowserAttribute *) browser_node);
+      return AttributeDialog::python_decl((BrowserAttribute *) browser_node,
+					  init);
     else if (!python_decl.isEmpty())
       return definition(FALSE);
     else

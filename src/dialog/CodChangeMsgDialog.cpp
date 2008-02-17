@@ -48,8 +48,8 @@
 QSize CodChangeMsgDialog::previous_size;
 
 CodChangeMsgDialog::CodChangeMsgDialog(ColMsg * m)
-    : QDialog(0, "Collaboration message dialog", TRUE), msg(m) {
-  setCaption("Collaboration message dialog");
+    : QDialog(0, "Communication message dialog", TRUE), msg(m) {
+  setCaption("Communicationg message dialog");
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
   QHBoxLayout * hbox;

@@ -49,6 +49,7 @@ PLUGOUT_DIRS = genplugouts/html/cpp \
 	genplugouts/sm/cpp \
 	genplugouts/usecasewizard/cpp \
 	genplugouts/sort/cpp \
+	genplugouts/uml_projection/cpp \
 	genplugouts/file_control \
 	genplugouts/deploy/cpp \
 	genplugouts/global_change
@@ -77,6 +78,7 @@ PROGS = src/bouml \
 	genplugouts/sm/cpp/stmgen \
 	genplugouts/usecasewizard/cpp/usecasewizard \
 	genplugouts/sort/cpp/browsersort \
+	genplugouts/uml_projection/cpp/uml_proj \
 	genplugouts/file_control/file_control \
 	genplugouts/deploy/cpp/deplcl \
 	genplugouts/global_change/global_change
@@ -106,7 +108,7 @@ install:
 		done \
 	fi
 	for i in $(PROGS); do cp -p $$i "$(DESTDIR)$(BOUML_LIB)" ; done
-	cd plugouts ; tar cf - empty genpro html rose singleton cpp_utilities xmi xmi2 xmi2import sm_generator usecase_wizard sort FileControl deploy GlobalChange | (cd $(DESTDIR)$(BOUML_LIB); tar xf -)
+	cd plugouts ; tar cf - empty genpro html rose singleton cpp_utilities xmi xmi2 xmi2import sm_generator usecase_wizard sort uml_projection FileControl deploy GlobalChange | (cd $(DESTDIR)$(BOUML_LIB); tar xf -)
 	echo "#!/bin/sh" >$(DESTDIR)$(BOUML_DIR)/bouml
 	echo "PATH=$(BOUML_LIB):$$"PATH >>$(DESTDIR)$(BOUML_DIR)/bouml
 	echo "export PATH" >>$(DESTDIR)$(BOUML_DIR)/bouml

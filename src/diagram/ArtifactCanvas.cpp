@@ -46,6 +46,7 @@
 #include "MenuTitle.h"
 #include "Settings.h"
 #include "strutil.h"
+#include "GenerationSettings.h"
 
 ArtifactCanvas::ArtifactCanvas(BrowserNode * bn, UmlCanvas * canvas,
 				 int x, int y)
@@ -502,15 +503,29 @@ void ArtifactCanvas::menu(const QPoint&) {
   if (browser_node->is_writable())
     m.insertItem("Delete from model", 8);
   m.insertSeparator();
-  m.insertItem("Generate", &gensubm);
+
+  bool cpp = GenerationSettings::cpp_get_default_defs();
+  bool java = GenerationSettings::java_get_default_defs();
+  bool php = GenerationSettings::php_get_default_defs();
+  bool python = GenerationSettings::python_get_default_defs();
+  bool idl = GenerationSettings::idl_get_default_defs();
+
+  if (cpp || java || php || python || idl)
+    m.insertItem("Generate", &gensubm);
+  
   if (Tool::menu_insert(&toolm, UmlArtifact, 20))
     m.insertItem("Tool", &toolm);
   
-  gensubm.insertItem("C++", 9);
-  gensubm.insertItem("Java", 10);
-  gensubm.insertItem("Php", 13);
-  gensubm.insertItem("Python", 14);
-  gensubm.insertItem("Idl", 11);
+  if (cpp)
+    gensubm.insertItem("C++", 9);
+  if (java)
+    gensubm.insertItem("Java", 10);
+  if (php)
+    gensubm.insertItem("Php", 13);
+  if (python)
+    gensubm.insertItem("Python", 14);
+  if (idl)
+    gensubm.insertItem("Idl", 11);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:

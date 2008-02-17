@@ -233,7 +233,7 @@ void edit(const QString & s, QString name, void * id, EditType k,
       }
 #else
       ed += " \"" + path + "\"&";
-      system(ed);
+      (void) system(ed);
 #endif
       if (d->hasOkButton() && (pf != 0))
 	(new DialogTimer(s, path, d, pf))->start(1000);

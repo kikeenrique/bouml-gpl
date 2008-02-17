@@ -44,6 +44,7 @@
 #include "MenuTitle.h"
 #include "DialogUtil.h"
 #include "mu.h"
+#include "GenerationSettings.h"
 
 IdDict<BrowserDeploymentView> BrowserDeploymentView::all(__FILE__);
 QStringList BrowserDeploymentView::its_default_stereotypes;	// unicode
@@ -184,22 +185,40 @@ Note that you can undelete them after");
       }
     }
     mark_menu(m, "deployment view", 90);
-    m.insertSeparator();
-    m.insertItem("Generate", &subm);
-    subm.insertItem("C++", 10);
-    subm.insertItem("Java", 11);
-    subm.insertItem("Php", 12);
-    subm.insertItem("Python", 14);
-    subm.insertItem("Idl", 13);
+
+    bool cpp = GenerationSettings::cpp_get_default_defs();
+    bool java = GenerationSettings::java_get_default_defs();
+    bool php = GenerationSettings::php_get_default_defs();
+    bool python = GenerationSettings::python_get_default_defs();
+    bool idl = GenerationSettings::idl_get_default_defs();
+
+    if (cpp || java || php || python || idl) {
+      m.insertSeparator();
+      m.insertItem("Generate", &subm);
+      if (cpp)
+	subm.insertItem("C++", 10);
+      if (java)
+	subm.insertItem("Java", 11);
+      if (php)
+	subm.insertItem("Php", 12);
+      if (python)
+	subm.insertItem("Python", 14);
+      if (idl)
+	subm.insertItem("Idl", 13);
+    }
     
     if (edition_number == 0) {
-      if (preserve_bodies()) {
+      if (preserve_bodies() && (cpp || java || php || python)) {
 	m.insertItem("Roundtrip body", &roundtripm);
 	
-	roundtripm.insertItem("C++", 30);
-	roundtripm.insertItem("Java", 31);
-	roundtripm.insertItem("Php", 32);
-	roundtripm.insertItem("Python", 33);
+	if (cpp)
+	  roundtripm.insertItem("C++", 30);
+	if (java)
+	  roundtripm.insertItem("Java", 31);
+	if (php)
+	  roundtripm.insertItem("Php", 32);
+	if (python)
+	  roundtripm.insertItem("Python", 33);
       }
       
       if (Tool::menu_insert(&toolm, get_type(), 100)) {

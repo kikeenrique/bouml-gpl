@@ -2113,6 +2113,31 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
       case setJavaFrozenCmd:
 	java_get_set_frozen = (*args != 0);
 	break;
+      case setPhpDeclCmd:
+        php_def.assign(args, (strstr(args, "${body}") != 0));
+	break;
+      case setPhpBodyCmd:
+	{
+	  char * b = get_body('y');
+	  
+	  if (b != 0) {
+	    if (strcmp(b, args))
+	      new_body(args, 'y');
+	    delete [] b;
+	  }
+	  else if (*args)
+	    new_body(args, 'y');
+	}
+	break;
+      case setPhpNameSpecCmd:
+	php_name_spec = args;
+	break;
+      case setPhpFrozenCmd:
+	php_get_set_frozen = (*args != 0);
+	break;
+      case setPhpFinalCmd:
+	php_final = (*args != 0);
+	break;
       case setPythonDeclCmd:
         python_def.assign(args, (strstr(args, "${body}") != 0));
 	break;

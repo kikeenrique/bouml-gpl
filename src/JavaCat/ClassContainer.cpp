@@ -56,8 +56,8 @@ bool ClassContainer::read_type(UmlTypeSpec & typespec, Class ** cl,
   QCString path; // type without <..>
   QCString type; // real type form
   bool internal_template = FALSE;	// true if type is ...<...>...
-  int pfixdef_length;			// generic form including first class
-  int first_actual_class_length;	// first class's name length
+  int pfixdef_length = 0;		// generic form including first class
+  int first_actual_class_length = 0;	// first class's name length
   
   genericname = s;
   
@@ -81,7 +81,7 @@ bool ClassContainer::read_type(UmlTypeSpec & typespec, Class ** cl,
       
       int level = 0;
       QCString firstword;	// first element in current actual
-      int pfixlen;		// type length including firstword
+      int pfixlen = 0;		// type length including firstword
       
       for (;;) {
 	s = Lex::read_word(TRUE);

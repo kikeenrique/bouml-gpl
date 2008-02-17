@@ -32,6 +32,9 @@ QStringList Namespace::Stack;
 // using list, each element ended by "::"
 QStringList Namespace::Usings;
 
+// level of nested anonymous namespace
+int Namespace::AnonymousLevel;
+
 // to lost usings defined under a namespace/class block
 QValueList<QStringList> Namespace::UsingScope;
 
@@ -58,23 +61,29 @@ void Namespace::restore_using_scope()
   UsingScope.remove(UsingScope.begin());
 }
 
-QString Namespace::namespacify(QCString s) {
+QString Namespace::namespacify(QCString s, bool local) {
+  QString r;
   int index = s.find("::");
   
   if (index == 0)
-    return ((const char *) s) + 2;
-  
-  if (index != -1) {
-    QMap<QCString,QCString>::ConstIterator it = 
-      Aliases.find(s.left(index));
+    r = ((const char *) s) + 2;
+  else {
+    if (index != -1) {
+      QMap<QCString,QCString>::ConstIterator it = 
+	Aliases.find(s.left(index));
+      
+      if (it != Aliases.end())
+	s.replace(0, index, *it);
+    }
     
-    if (it != Aliases.end())
-      s.replace(0, index, *it);
+    r = (Stack.isEmpty())
+      ? QString(s)
+      : Stack.last() + QString(s);
   }
-
-  return (Stack.isEmpty())
-    ? QString(s)
-    : Stack.last() + QString(s);
+  
+  return (local)
+    ? r + "\n" + Lex::filename()
+    : r;
 }
 
 QCString Namespace::current() {

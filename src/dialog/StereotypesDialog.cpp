@@ -233,7 +233,7 @@ StereotypesDialog::StereotypesDialog()
   objectdiagram_list = new LineEdit(grid);
   objectdiagram_list->setTheText(BrowserObjectDiagram::its_default_stereotypes.join(space));
 
-  new QLabel("collaboration diagram\nstereotypes : ", grid);
+  new QLabel("communication diagram\nstereotypes : ", grid);
   coldiagram_list = new LineEdit(grid);
   coldiagram_list->setTheText(BrowserColDiagram::its_default_stereotypes.join(space));
 

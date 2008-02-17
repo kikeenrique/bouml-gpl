@@ -4,6 +4,7 @@
 #include "Token.h"
 
 #include "UmlCom.h"
+#include "UmlClass.h"
 #include "UmlNcRelation.h"
 
 void Unresolved::addGeneralization(UmlItem * e, QCString & id)
@@ -176,6 +177,32 @@ bool UmlItem::setType(QCString idref, UmlTypeSpec & type) {
 bool UmlItem::setType(QCString idref, int context, UmlTypeSpec & type) {
   if (idref.isEmpty())
     return FALSE;
+  else if (getType(idref, type))
+    return TRUE;
+  else {
+    UnresolvedWithContext::add(this, idref, context);
+    return FALSE;
+  }
+}
+
+bool UmlItem::setType(Token & token, UmlTypeSpec & type) {
+  QCString idref = token.xmiIdref();
+  
+  if (idref.isEmpty())
+    return UmlClass::isPrimitiveType(token, type);
+  else if (getType(idref, type))
+    return TRUE;
+  else {
+    Unresolved::addRef(this, idref);
+    return FALSE;
+  }
+}
+
+bool UmlItem::setType(Token & token, int context, UmlTypeSpec & type) {
+  QCString idref = token.xmiIdref();
+  
+  if (idref.isEmpty())
+    return UmlClass::isPrimitiveType(token, type);
   else if (getType(idref, type))
     return TRUE;
   else {

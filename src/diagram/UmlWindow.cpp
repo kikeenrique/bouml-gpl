@@ -498,29 +498,55 @@ void UmlWindow::clear()
 void UmlWindow::toolMenuAboutToShow() {
   abort_line_construction();
   
+  bool cpp = GenerationSettings::cpp_get_default_defs();
+  bool java = GenerationSettings::java_get_default_defs();
+  bool php = GenerationSettings::php_get_default_defs();
+  bool python = GenerationSettings::python_get_default_defs();
+  bool idl = GenerationSettings::idl_get_default_defs();
+  bool lang_except_idl = cpp || java || php || python;
+  
   toolMenu->clear();
   toolMenu->insertItem("Show &Trace Window", this, SLOT(show_trace()));
   if (browser->get_project() != 0) {
-    toolMenu->insertSeparator();
-    toolMenu->insertItem("Generate C++", this, SLOT(cpp_generate()), ::Qt::CTRL+::Qt::Key_G);
-    toolMenu->insertItem("Generate Java", this, SLOT(java_generate()), ::Qt::CTRL+::Qt::Key_J);
-    toolMenu->insertItem("Generate Php", this, SLOT(php_generate()), ::Qt::CTRL+::Qt::Key_P);
-    toolMenu->insertItem("Generate Python", this, SLOT(python_generate()), ::Qt::CTRL+::Qt::Key_Y);
-    toolMenu->insertItem("Generate Idl", this, SLOT(idl_generate()), ::Qt::CTRL+::Qt::Key_I);
+    if (lang_except_idl | idl) {
+      toolMenu->insertSeparator();
+      if (cpp)
+	toolMenu->insertItem("Generate C++", this, SLOT(cpp_generate()), ::Qt::CTRL+::Qt::Key_G);
+      if (java)
+	toolMenu->insertItem("Generate Java", this, SLOT(java_generate()), ::Qt::CTRL+::Qt::Key_J);
+      if (php)
+	toolMenu->insertItem("Generate Php", this, SLOT(php_generate()), ::Qt::CTRL+::Qt::Key_P);
+      if (python)
+	toolMenu->insertItem("Generate Python", this, SLOT(python_generate()), ::Qt::CTRL+::Qt::Key_Y);
+      if (idl)
+	toolMenu->insertItem("Generate Idl", this, SLOT(idl_generate()), ::Qt::CTRL+::Qt::Key_I);
+    }
     if (!BrowserNode::edition_active()) {
-      toolMenu->insertSeparator();
-      toolMenu->insertItem("Reverse C++", this, SLOT(cpp_reverse()));
-      toolMenu->insertItem("Reverse Java", this, SLOT(java_reverse()));
-      toolMenu->insertItem("Reverse Php", this, SLOT(php_reverse()));
-      toolMenu->insertItem("Reverse Python", this, SLOT(python_reverse()));
-      toolMenu->insertSeparator();
-      toolMenu->insertItem("Java Catalog", this, SLOT(java_catalog()));
-      if (preserve_bodies()) {
+      if (lang_except_idl) {
 	toolMenu->insertSeparator();
-	toolMenu->insertItem("Roundtrip C++ bodies", this, SLOT(cpp_roundtrip()));
-	toolMenu->insertItem("Roundtrip Java bodies", this, SLOT(java_roundtrip()));
-	toolMenu->insertItem("Roundtrip Php bodies", this, SLOT(php_roundtrip()));
-	toolMenu->insertItem("Roundtrip Python bodies", this, SLOT(python_roundtrip()));
+	if (cpp)
+	  toolMenu->insertItem("Reverse C++", this, SLOT(cpp_reverse()));
+	if (java)
+	  toolMenu->insertItem("Reverse Java", this, SLOT(java_reverse()));
+	if (php)
+	  toolMenu->insertItem("Reverse Php", this, SLOT(php_reverse()));
+	if (python)
+	  toolMenu->insertItem("Reverse Python", this, SLOT(python_reverse()));
+	if (java) {
+	  toolMenu->insertSeparator();
+	  toolMenu->insertItem("Java Catalog", this, SLOT(java_catalog()));
+	}
+	if (preserve_bodies()) {
+	  toolMenu->insertSeparator();
+	  if (cpp)
+	    toolMenu->insertItem("Roundtrip C++ bodies", this, SLOT(cpp_roundtrip()));
+	  if (java)
+	    toolMenu->insertItem("Roundtrip Java bodies", this, SLOT(java_roundtrip()));
+	  if (php)
+	    toolMenu->insertItem("Roundtrip Php bodies", this, SLOT(php_roundtrip()));
+	  if (python)
+	    toolMenu->insertItem("Roundtrip Python bodies", this, SLOT(python_roundtrip()));
+	}
       }
       if (BrowserClass::find("UmlBaseItem") != 0) {
 	toolMenu->insertSeparator();

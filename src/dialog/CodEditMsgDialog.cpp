@@ -37,9 +37,9 @@
 
 void CodEditMsgDialog::exec(ColDiagramView * view, ColMsgList & msgs)
 {
-  QDialog d(0, "Collaboration diagram message dialog", TRUE, 0);
+  QDialog d(0, "Communication diagram message dialog", TRUE, 0);
   
-  d.setCaption("Collaboration diagram message dialog");
+  d.setCaption("Communication diagram message dialog");
   
   QVBoxLayout vbox(&d);
   

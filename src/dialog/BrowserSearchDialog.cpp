@@ -71,7 +71,7 @@ static const struct {
   { "class instance", UmlClassInstance },
   { "class diagram", UmlClassDiagram },
   { "class view", UmlClassView },
-  { "collaboration diagram", UmlColDiagram },
+  { "communication diagram", UmlColDiagram },
   { "component", UmlComponent },
   { "component diagram", UmlComponentDiagram },
   { "component view", UmlComponentView },

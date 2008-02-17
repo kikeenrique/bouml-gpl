@@ -461,7 +461,9 @@ QCString UmlClass::decl() {
     ->cppNamespace();
     
   if (! nasp.isEmpty()) {
-    int index = 0;
+    int index = 
+      // bypass :: allowing ::a...
+      ((nasp.at(0) == ':') && (nasp != "::")) ? 2 : 0;
     int index2 = 0;
     
     while ((index2 = nasp.find("::", index)) != -1) {

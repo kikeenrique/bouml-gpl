@@ -448,13 +448,13 @@ void RelationDialog::init_uml_role(RoleDialog & role, const RoleData & rel,
   role.cpp_undef = undef || (st == "enum") || (st == "typedef") || (st == "ignored");
   
   st = ClassDialog::java_stereotype(stereotype);
-  role.java_undef = undef || (st == "enum") || (st == "typedef") || (st == "ignored");
+  role.java_undef = undef || (st == "enum") || (st == "ignored");
   
   st = ClassDialog::php_stereotype(stereotype);
-  role.php_undef = undef || (st == "enum") || (st == "typedef") || (st == "ignored");
+  role.php_undef = undef || (st == "enum") || (st == "ignored");
   
   st = ClassDialog::python_stereotype(stereotype);
-  role.python_undef = undef || (st == "enum") || (st == "typedef") || (st == "ignored");
+  role.python_undef = undef || (st == "enum") || (st == "ignored");
   
   st = ClassDialog::idl_stereotype(stereotype);
   role.idl_undef = undef || (st == "enum") || (st == "typedef") || (st == "ignored");

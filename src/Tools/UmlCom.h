@@ -1,6 +1,7 @@
 #ifndef _UMLCOM_H
 #define _UMLCOM_H
 
+#define APIVERSION 39
 
 #include <qsocketdevice.h>
 #include "CmdFamily.h"
@@ -132,6 +133,9 @@ class UmlCom {
     //internal, do NOT use it
     
     static void send_cmd(CmdFamily f, unsigned int cmd, const char * s);
+    //internal, do NOT use it
+    
+    static void send_cmd(CmdFamily f, unsigned int cmd, const char * s, bool b);
     //internal, do NOT use it
     
     static void send_cmd(CmdFamily f, unsigned int cmd, void * id, const char * n);
