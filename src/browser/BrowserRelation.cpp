@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -46,9 +46,10 @@
 #include "AType.h"
 #include "MenuTitle.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
 #include "mu.h"
 
-IdDict<BrowserRelation> BrowserRelation::all(1023, __FILE__);
+IdDict<BrowserRelation> BrowserRelation::all(1021, __FILE__);
 static QList<BrowserRelation> Unconsistent;
 
 BrowserRelation::BrowserRelation(BrowserNode * p, RelationData * d, int id)
@@ -100,7 +101,7 @@ void BrowserRelation::delete_it() {
   BrowserNode::delete_it();
   
   // warning, def may be 0 in case the relation was a
-  // temporary unvalidated
+  // temporary invalidated
   if (def != 0) {
     BrowserRelation * b = def->get_start();
 
@@ -149,6 +150,11 @@ bool BrowserRelation::undelete(bool, QString & warning, QString & renamed) {
     renamed += QString("<li><b>") + full_name() + "</b>\n";
     modified();
   }
+
+  if (RelationData::isa_inherit(get_type()) &&
+      !strcmp(def->get_start_class()->get_data()->get_stereotype(), "stereotype") &&
+      !strcmp(def->get_end_class()->get_data()->get_stereotype(), "stereotype"))
+    ProfiledStereotypes::recompute(TRUE);
 
   package_modified();
   repaint();
@@ -300,29 +306,33 @@ void BrowserRelation::add_set_oper() {
 }
 
 void BrowserRelation::update_stereotype(bool) {
-  BasicData * data = get_data();
-  
-  if (data != 0) {
-    QString s;
+  if (def != 0) {
+    QString n;
     
     switch (get_type()) {
     case UmlGeneralisation:
     case UmlDependency:
     case UmlRealize:
-      s = def->get_name(this) + " " +
+      n = def->get_name(this) + " " +
 	((def->is_a(this)) ? def->get_end_class()
 			   : def->get_start_class())->get_name();
       break;
     default:
-      s = (const char *) name;
+      n = (const char *) name;
     }
     
-    const char * stereotype = data->get_stereotype();
+    const char * stereotype = def->get_stereotype();
     
-    setText(0,
-	    (show_stereotypes && stereotype[0])
-	    ? QString("<<") + stereotype + ">> " + s
-	    : s);
+    if (show_stereotypes && stereotype[0]) {
+      QString s = toUnicode(stereotype);
+      int index = s.find(':');
+      
+      setText(0,
+	      "<<" + ((index == -1) ? s : s.mid(index + 1))
+	      + ">> " + n);
+    }
+    else
+      setText(0, n);
   }
 }
 
@@ -422,6 +432,7 @@ Note that you can undelete it after");
 				7),
 		   "to select the destination class");
     mark_menu(m, "relation", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) 
 	&& Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
@@ -450,9 +461,19 @@ void BrowserRelation::exec_menu_choice(int rank) {
     return;
   case 2:
     delete_it();
+    if (RelationData::isa_inherit(get_type()) &&
+        !strcmp(def->get_start_class()->get_data()->get_stereotype(),
+	        "stereotype") &&
+	!strcmp(def->get_end_class()->get_data()->get_stereotype(),
+		"stereotype"))
+      ProfiledStereotypes::recompute(TRUE);
     break;
   case 3:
     BrowserNode::undelete(FALSE);
+    if (RelationData::isa_inherit(get_type()) &&
+        !strcmp(def->get_start_class()->get_data()->get_stereotype(), "stereotype") &&
+	!strcmp(def->get_end_class()->get_data()->get_stereotype(), "stereotype"))
+      ProfiledStereotypes::recompute(TRUE);
     break;
   case 4:
     add_get_oper();
@@ -471,7 +492,9 @@ void BrowserRelation::exec_menu_choice(int rank) {
     ReferenceDialog::show(this);
     return;
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);
@@ -800,7 +823,7 @@ void BrowserRelation::post_load()
 // Created for a relation data ref read before its definition
 // The browser node become useless when the data definition
 // is read
-void BrowserRelation::unvalidate() {
+void BrowserRelation::invalidate() {
   def = 0;
 }
 

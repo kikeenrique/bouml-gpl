@@ -4,7 +4,7 @@
 #include "Token.h"
 #include "FileIn.h"
 
-UmlItem * UmlDeploymentView::container(anItemKind kind, const Token & token, FileIn & in) {
+UmlItem * UmlDeploymentView::container(anItemKind kind, Token & token, FileIn & in) {
   switch (kind) {
   case aNode:
   case anArtifact:

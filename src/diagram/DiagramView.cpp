@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #ifndef QT_NO_PRINTER
 #include <qpainter.h>
@@ -686,10 +686,10 @@ void DiagramView::relation_to_simplerelation(UmlCode k) {
 }
 
 
-#ifdef WIN32
-#pragma optimize("", off)
-// generated code is wrong if optimize speed
-#endif
+
+
+
+
 void DiagramView::delete_them(bool in_model) {
   if (!in_model)
     history_save();
@@ -714,9 +714,9 @@ void DiagramView::delete_them(bool in_model) {
   
   window()->package_modified();
 }
-#ifdef WIN32
-#pragma optimize("", on)
-#endif
+
+
+
 
 void DiagramView::alignLeft() {
   const QCanvasItemList selected = selection();
@@ -1222,6 +1222,7 @@ void DiagramView::set_zoom(double zoom) {
   if (draw_line)
     abort_line_construction();
   
+  ((UmlCanvas *) canvas())->show_limits(FALSE);
   ((UmlCanvas *) canvas())->set_zoom(zoom);
   
   QCanvasItemList all = canvas()->allItems();
@@ -1255,6 +1256,7 @@ void DiagramView::set_zoom(double zoom) {
     select(*cit);
   
   ((UmlCanvas *) canvas())->zoom_end();
+  ((UmlCanvas *) canvas())->show_limits(TRUE);
   
   canvas()->update();
 }
@@ -1584,7 +1586,7 @@ void DiagramView::load(const char * pfix) {
   }
   POST_TRY;
   
-  BrowserNode::post_load();
+  BrowserNode::post_load(TRUE);
   DiagramItem::post_load();
   
   // to managed deleted items present in the browser
@@ -1802,10 +1804,10 @@ bool DiagramView::save_in(const char * f, bool optimal, bool temporary) {
     if ((visibleWidth() >= (maxx + 90)) && (visibleHeight() >= (maxy + 90)))
       r = QPixmap::grabWidget(viewport(), 0, 0, maxx, maxy).save(f, "PNG");
     else {
-#ifndef WIN32
+
       int saved_w;
       int saved_h;
-#endif
+
       saved_w = window()->width();
       saved_h = window()->height();
       
@@ -1814,11 +1816,11 @@ bool DiagramView::save_in(const char * f, bool optimal, bool temporary) {
       r = QPixmap::grabWidget(viewport(), 0, 0, maxx, maxy).save(f, "PNG");
 
       if (! temporary) {
-#ifdef WIN32
-	QTimer::singleShot(1, this, SLOT(restore_window_size()));
-#else
+
+
+
 	window()->resize(saved_w, saved_h);
-#endif
+
       }
     }
     if (! temporary)
@@ -1863,10 +1865,10 @@ bool DiagramView::svg_save_in(const char * f, bool optimal, bool temporary) {
       }
     }
     else {
-  #ifndef WIN32
+
       int saved_w;
       int saved_h;
-  #endif
+
       saved_w = window()->width();
       saved_h = window()->height();
       
@@ -1880,11 +1882,11 @@ bool DiagramView::svg_save_in(const char * f, bool optimal, bool temporary) {
         end_svg();
       }
       if (! temporary) {
-  #ifdef WIN32
-	QTimer::singleShot(1, this, SLOT(restore_window_size()));
-  #else
+
+
+
 	window()->resize(saved_w, saved_h);
-  #endif
+
       }
     }
     if (! temporary)
@@ -1927,10 +1929,10 @@ void DiagramView::copy_in_clipboard(bool optimal, bool temporary) {
       QApplication::clipboard()
 	->setPixmap(QPixmap::grabWidget(viewport(), 0, 0, maxx, maxy));
     else {
-#ifndef WIN32
+
       int saved_w;
       int saved_h;
-#endif
+
       saved_w = window()->width();
       saved_h = window()->height();
       
@@ -1940,11 +1942,11 @@ void DiagramView::copy_in_clipboard(bool optimal, bool temporary) {
       QApplication::clipboard()
 	->setPixmap(QPixmap::grabWidget(viewport(), 0, 0, maxx, maxy));
       if (! temporary) {
-#ifdef WIN32
-	QTimer::singleShot(1, this, SLOT(restore_window_size()));
-#else
+
+
+
 	window()->resize(saved_w, saved_h);
-#endif
+
       }
     }
     if (! temporary)
@@ -1959,9 +1961,9 @@ void DiagramView::copy_in_clipboard(bool optimal, bool temporary) {
 // not used out of windows, but must be defined because
 // this is a 'slot'
 void DiagramView::restore_window_size() {
-#ifdef WIN32
-  window()->resize(saved_w, saved_h);
-#endif
+
+
+
 }
 
 void DiagramView::save_picture(bool optimal, bool svg) {

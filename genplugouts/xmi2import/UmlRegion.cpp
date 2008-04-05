@@ -4,7 +4,7 @@
 #include "Token.h"
 #include "FileIn.h"
 
-UmlItem * UmlRegion::container(anItemKind kind, const Token & token, FileIn & in) {
+UmlItem * UmlRegion::container(anItemKind kind, Token & token, FileIn & in) {
   switch (kind) {
   case aState:
   case aRegion:

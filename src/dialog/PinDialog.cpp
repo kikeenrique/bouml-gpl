@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qgrid.h> 
 #include <qvbox.h>
@@ -50,6 +50,7 @@
 #include "GenerationSettings.h"
 #include "strutil.h"
 #include "BodyDialog.h"
+#include "ProfiledStereotypes.h"
 
 QSize PinDialog::previous_size;
 
@@ -92,6 +93,7 @@ PinDialog::PinDialog(PinData * pi)
   edstereotype->insertItem(toUnicode(pi->stereotype));
   if (! visit) {
     edstereotype->insertStringList(BrowserPin::default_stereotypes());
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlActivityPin));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -346,7 +348,7 @@ void PinDialog::menu_type() {
       nodes.at(index)->select_in_browser();
       break;
     case 2:
-      bn = BrowserClass::add_class(view);
+      bn = BrowserClass::add_class(FALSE, view);
       if (bn == 0)
 	return;
       bn->select_in_browser();
@@ -432,8 +434,8 @@ void PinDialog::accept() {
       msg_critical("Error", err);
     else {
       bn->set_name(s);
-      pin->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
       
+      bool newst = pin->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
       AType t;
       
       s = edtype->currentText().stripWhiteSpace();
@@ -470,6 +472,7 @@ void PinDialog::accept() {
       pin->modified();
       
       QTabDialog::accept();
+      ProfiledStereotypes::modified(bn, newst);
     }
   }
 }

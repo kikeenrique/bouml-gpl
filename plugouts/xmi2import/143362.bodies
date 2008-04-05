@@ -140,6 +140,8 @@ class FileIn
     
     if (c == '&')
       c = read_special_char();
+    else if (c == '\n')
+      _linenum += 1;
     
     if ((index + 1) == _length) {
       _buffer[index] = 0;
@@ -193,9 +195,52 @@ class FileIn
      return;
    else if (tk.close())
      error("'&lt;/" + tk.what() + "&gt;' while wait for '&lt;/" + what + "&gt;'");
-   else if (! tk.closed())
-     finish(tk.what());
+   else {
+     QCString s = tk.xmiId();
+     
+     if (! s.isEmpty())
+       BypassedIds.insert(QString(s), "");
+     
+     if (! tk.closed())
+       finish(tk.what());
+   }
  }
+!!!257026.cpp!!!	bypass(inout tk : Token) : void
+  static QDict<char> bypassed;
+  
+  QCString s = tk.xmiType();
+  
+  if (s.isEmpty()) {
+    QString k = QString(tk.what());
+    
+    if (bypassed[k] == 0) {
+      warning("bypass &lt;" + tk.what() + "...&gt; (other cases not signaled)");
+      bypassed.insert(k, "");
+    }
+  }
+  else {
+    QString k = QString(tk.what()) + " " + QString(s);
+    
+    if (bypassed[k] == 0) {
+      warning("bypass &lt;" + tk.what() + 
+	      " xmi:type=\"" + s + "\"...&gt; (other cases not signaled)");
+      bypassed.insert(k, "");
+    }
+  }
+
+  s = tk.xmiId();
+  if (! s.isEmpty())
+    BypassedIds.insert(QString(s), "");
+    
+  if (! tk.closed())
+    finish(tk.what());
+
+!!!258434.cpp!!!	bypassedId(inout tk : Token) : void
+  QCString s = tk.xmiId();
+  
+  if (! s.isEmpty())
+    BypassedIds.insert(QString(s), "");
+
 !!!190978.cpp!!!	error(in s : string) : void
   QCString num;
   QCString err = QCString("error in ") + _path + " line " +
@@ -282,6 +327,9 @@ class FileIn
     case '&':
       // special char
       c = read_special_char();
+      break;
+    case '\n':
+      _linenum += 1;
       break;
     default:
       if (_utf8 && (((unsigned char) c) > 127))

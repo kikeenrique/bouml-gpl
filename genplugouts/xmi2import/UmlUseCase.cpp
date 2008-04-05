@@ -6,7 +6,7 @@
 
 #include "UmlNcRelation.h"
 #include "UmlCom.h"
-UmlItem * UmlUseCase::container(anItemKind kind, const Token & token, FileIn & in) {
+UmlItem * UmlUseCase::container(anItemKind kind, Token & token, FileIn & in) {
   switch (kind) {
   case aClass:
   case aClassInstance:
@@ -23,8 +23,10 @@ UmlItem * UmlUseCase::container(anItemKind kind, const Token & token, FileIn & i
 void UmlUseCase::solve(int context, QCString idref) {
   QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
       
-  if (it == All.end())
-    UmlCom::trace("extend/include : unknown use case reference '" + idref + "'<br>");
+  if (it == All.end()) {
+    if (!FileIn::isBypassedId(idref))
+      UmlCom::trace("extend/include : unknown use case reference '" + idref + "'<br>");
+  }
   else if ((*it)->kind() != anUseCase)
     UmlCom::trace("'" + idref + "' is not a use case<br>");
   else {

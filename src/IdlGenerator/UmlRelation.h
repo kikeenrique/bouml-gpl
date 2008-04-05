@@ -39,7 +39,8 @@ class UmlRelation : public UmlBaseRelation {
   
     void generate_inherit(const char *& sep, QTextOStream & f, 
 			  const QCString & cl_stereotype, bool & already);
-    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype);
+    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype,
+			       bool = FALSE);
 };
 
 #endif

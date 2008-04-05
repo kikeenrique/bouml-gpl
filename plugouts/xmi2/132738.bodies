@@ -65,7 +65,7 @@ class FileOut
        ++it) {
     indent();
     (*this) << pfix << " xmi:id=\"BOUML_datatype_"
-      << it.data() << "\" name = \"";
+      << it.data() << "\" name=\"";
     quote(it.key());
     (*this) << "\"/>\n";
   }

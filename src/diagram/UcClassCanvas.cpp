@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpainter.h>
 #include <qcursor.h>
@@ -166,7 +166,7 @@ void UcClassCanvas::compute_size() {
     (data->get_is_abstract()) ? fim.width(full_name) : fm.width(full_name);
 
   if (used_settings.class_drawing_mode == Natural) {
-    const char * st = data->get_stereotype();
+    const char * st = data->get_short_stereotype();
     
     if (!strcmp(st, "control"))
       used_view_mode = asControl;
@@ -196,7 +196,7 @@ void UcClassCanvas::compute_size() {
     he += (int) (12 * zoom);
     
     if (data->get_stereotype()[0]) {
-      int stw = fm.width(QString("<<") + toUnicode(data->get_stereotype()) + ">>");
+      int stw = fm.width(QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
       
       if (wi < stw)
 	wi = stw;
@@ -364,10 +364,10 @@ void UcClassCanvas::draw(QPainter & p) {
     if (data->get_stereotype()[0]) {
       p.setFont(the_canvas()->get_font(UmlNormalFont));
       p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, 
-		 QString("<<") + toUnicode(data->get_stereotype()) + ">>");
+		 QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
       if (fp != 0)
 	draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, 
-		  QString("<<") + toUnicode(data->get_stereotype()) + ">>",
+		  QString("<<") + toUnicode(data->get_short_stereotype()) + ">>",
 		  p.font(), fp);
       r.setTop(r.top() + he + two);
     }
@@ -687,7 +687,7 @@ void UcClassCanvas::draw_all_depend_gene(UcClassCanvas * end) {
       if ((def->get_start_class() == browser_node) && 	// rel begins by this
 	  ((end == 0) || (def->get_end_class() == end->browser_node)) &&
 	  !has_relation(def)) {
-	// adds it in case the other class is drawed
+	// adds it in case the other class is drawn
 	BrowserClass * end_class = 
 	  ((BrowserClass *) def->get_end_class());
 	DiagramItem * di;

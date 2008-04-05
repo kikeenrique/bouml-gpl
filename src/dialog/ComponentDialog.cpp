@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qgrid.h> 
 #include <qvbox.h>
@@ -46,6 +46,7 @@
 #include "strutil.h"
 #include "UmlPixmap.h"
 #include "BodyDialog.h"
+#include "ProfiledStereotypes.h"
 
 QSize ComponentDialog::previous_size;
 
@@ -135,6 +136,7 @@ void ComponentDialog::init_uml_tab() {
   edstereotype->insertItem(toUnicode(data->get_stereotype()));
   if (! visit) {
     edstereotype->insertStringList(BrowserComponent::default_stereotypes());
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlComponent));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -181,6 +183,7 @@ void ComponentDialog::init_l_tab(QVBox *& page, QComboBox *& stereotypefilter,
     stereotypefilter->setAutoCompletion(TRUE);
     stereotypefilter->insertItem("");
     stereotypefilter->insertStringList(BrowserClass::default_stereotypes());
+    stereotypefilter->insertStringList(ProfiledStereotypes::defaults(UmlComponent));
     stereotypefilter->setCurrentItem(0);
     QSizePolicy sp = stereotypefilter->sizePolicy();
     sp.setHorData(QSizePolicy::Expanding);
@@ -428,8 +431,7 @@ void ComponentDialog::accept() {
     bn->set_comment(comment->text());
     UmlWindow::update_comment_if_needed(bn);
             
-    data->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
-    
+    bool newst = data->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
     QValueList<BrowserClass *> rq;
     QValueList<BrowserClass *> rz;
     QValueList<BrowserClass *> pr;
@@ -452,6 +454,7 @@ void ComponentDialog::accept() {
     bn->package_modified();
     data->modified();
     
+    ProfiledStereotypes::modified(bn, newst);
     QTabDialog::accept();
   }
 }

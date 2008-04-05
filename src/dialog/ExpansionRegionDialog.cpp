@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qgrid.h> 
 #include <qlabel.h>
@@ -43,6 +43,7 @@
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
 
 QSize ExpansionRegionDialog::previous_size;
 
@@ -79,6 +80,7 @@ ExpansionRegionDialog::ExpansionRegionDialog(ExpansionRegionData * nd)
   edstereotype->insertItem(toUnicode(data->get_stereotype()));
   if (! visit) {
     edstereotype->insertStringList(BrowserExpansionRegion::default_stereotypes());
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlExpansionRegion));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -195,7 +197,8 @@ void ExpansionRegionDialog::accept() {
   data->must_isolate = must_isolate_cb->isChecked();
   data->mode = expansion_mode_kind(edmode->currentText());
 
-  data->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+  bool newst = data->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+  
   bn->set_comment(comment->text());
   UmlWindow::update_comment_if_needed(bn);
     
@@ -204,5 +207,6 @@ void ExpansionRegionDialog::accept() {
   bn->package_modified();
   data->modified();
     
+  ProfiledStereotypes::modified(bn, newst);
   QTabDialog::accept();
 }

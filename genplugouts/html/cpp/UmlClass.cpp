@@ -13,7 +13,8 @@
 #include "UmlCom.h"
 
 QCString UmlClass::sKind() {
-  return "class";
+  return (stereotype() == "stereotype") 
+    ? "stereotype" : "class";
 }
 
 void UmlClass::memo_ref() {
@@ -41,12 +42,18 @@ void UmlClass::memo_ref() {
 void UmlClass::html(QCString pfix, unsigned int rank, unsigned int level) {
   if (flat) {
     define();
-    chapter("Class", pfix, rank, "class", level);
+    if (stereotype() == "stereotype")
+      chapter("Stereotype", pfix, rank, "stereotype", level);
+    else
+      chapter("Class", pfix, rank, "class", level);
     gen_html(pfix, rank, level);
     unload(FALSE, FALSE);
   }
   else {
-    fw.write("<table><tr><td><div class=\"element\">Class <b>");
+    if (stereotype() == "stereotype")
+      fw.write("<table><tr><td><div class=\"element\">Stereotype <b>");
+    else
+      fw.write("<table><tr><td><div class=\"element\">Class <b>");
     write();
     fw.write("</b></div></td></tr></table>\n");
   }
@@ -57,7 +64,10 @@ void UmlClass::html() {
   
   UmlCom::message(name());
   
-  start_file("class" + s.setNum((unsigned) getIdentifier()), "Class " + name(), TRUE);
+  if (stereotype() == "stereotype")
+    start_file("stereotype" + s.setNum((unsigned) getIdentifier()), "Stereotype " + name(), TRUE);
+  else
+    start_file("class" + s.setNum((unsigned) getIdentifier()), "Class " + name(), TRUE);
   define();
   gen_html("", 0, 0);
   end_file();
@@ -246,10 +256,12 @@ void UmlClass::write() {
     if (flat)
       fw.write("<a href=\"index");
     else {
-      fw.write("<a href=\"class");
+      fw.write((stereotype() == "stereotype")
+	       ? "<a href=\"stereotype" : "<a href=\"class");
       fw.write((unsigned) getIdentifier());
     }
-    fw.write(".html#refclass");
+    fw.write((stereotype() == "stereotype")
+	     ? ".html#refstereotype" : ".html#refclass");
     fw.write((unsigned) getIdentifier());
     fw.write("\"><b>");
     writeq(name());
@@ -262,10 +274,12 @@ void UmlClass::write(QCString target) {
     if (flat)
       fw.write("<a href=\"index");
     else {
-      fw.write("<a href=\"class");
+      fw.write((stereotype() == "stereotype")
+	       ? "<a href=\"stereotype" : "<a href=\"class");
       fw.write((unsigned) getIdentifier());
     }
-    fw.write(".html#refclass");
+    fw.write((stereotype() == "stereotype")
+	       ? ".html#refstereotype" : ".html#refclass");
     fw.write((unsigned) getIdentifier());
     fw.write("\" target = \"");
     fw.write(target);

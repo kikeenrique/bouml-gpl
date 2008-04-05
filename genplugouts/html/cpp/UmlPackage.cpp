@@ -4,13 +4,17 @@
 #include "UmlClassDiagram.h"
 
 QCString UmlPackage::sKind() {
-  return "package";
+  return (stereotype() == "profile")
+    ? "profile" : "package";
 }
 
 void UmlPackage::html(QCString pfix, unsigned int rank, unsigned int level) {
   define();
   
-  chapter("Package", pfix, rank, "package", level);
+  if (stereotype() == "profile")
+    chapter("Profile", pfix, rank, "profile", level);
+  else
+    chapter("Package", pfix, rank, "package", level);
 
   QCString s = description();
   

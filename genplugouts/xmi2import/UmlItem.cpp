@@ -70,7 +70,7 @@ void UnresolvedRelation::solveThem()
     
     if (from != UmlItem::All.end())
       (*from)->solveGeneralizationDependencyRealization((*it).context, (*it).to, (*it).name);
-    else
+    else if (!FileIn::isBypassedId((*it).from))
       UmlCom::trace("relation : unknown source reference '" + (*it).from + "'<br>");
   }
   All.clear();
@@ -100,19 +100,12 @@ void UmlItem::import(FileIn & in, Token & tk) {
   
   if (pf != 0)
     pf(in, tk, this);
-  else {
-    if (tk.xmiType().isEmpty())
-      in.warning("bypass &lt;" + tk.what() + "...&gt;");
-    else
-      in.warning("bypass &lt;" + tk.what() + 
-		 " xmi:type=\"" + tk.xmiType() + "\"...&gt;");
-    
-    if (! tk.closed())
-      in.finish(tk.what());
-  }
+  else
+    in.bypass(tk);
+
 }
 
-UmlItem * UmlItem::container(anItemKind kind, const Token & token, FileIn & in) {
+UmlItem * UmlItem::container(anItemKind kind, Token & token, FileIn & in) {
   return parent()->container(kind, token, in);
 }
 
@@ -129,7 +122,8 @@ void UmlItem::generalizeDependRealize(UmlItem * target, FileIn & in, int context
   } r[] = {
     { aGeneralisation, "cannot create generalization from '" },
     { aDependency, "cannot create dependency from '" },
-    { aRealization, "cannot create realization from '" }
+    { aRealization, "cannot create realization from '" },
+    { aDependency, "cannot create usage from '" }
   };
   UmlItem * rel = UmlNcRelation::create(r[context].rk, this, target);
   
@@ -137,30 +131,37 @@ void UmlItem::generalizeDependRealize(UmlItem * target, FileIn & in, int context
     in.warning(r[context].err + name() + "' to '" + target->name() + "'");
   else if (!label.isEmpty())
     rel->set_Name(label);
+
 }
 
 void UmlItem::solveGeneralizationDependencyRealization(int context, QCString idref, QCString label) {
   QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
   
-  if (it == All.end())
-    UmlCom::trace("relation : unknown target reference '" + idref + "'<br>");
-  else {
+  if (it != All.end()) {
     static const struct {
       aRelationKind rk;
       const char * err;
     } r[] = {
       { aGeneralisation, "cannot create generalization from '" },
       { aDependency, "cannot create dependency from '" },
-      { aRealization, "cannot create realization from '" }
+      { aRealization, "cannot create realization from '" },
+      { aDependency, "cannot create usage from '" }
     };
     UmlItem * target = *it;
     UmlItem * rel = UmlNcRelation::create(r[context].rk, this, target);
     
     if (rel == 0)
-      UmlCom::trace(r[context].err + name() + "' to '" + target->name() + "'");
-    else if (! label.isEmpty())
-      rel->set_Name(label);
+      UmlCom::trace(r[context].err + name() + "' to '" + target->name() + "'<br>");
+    else {
+      if (! label.isEmpty())
+	rel->set_Name(label);
+      if (context == 3)
+	rel->set_Stereotype("use");
+    }
   }
+  else if (!FileIn::isBypassedId(idref))
+    UmlCom::trace("relation : unknown target reference '" + idref + "'<br>");
+
 }
 
 bool UmlItem::setType(QCString idref, UmlTypeSpec & type) {
@@ -243,6 +244,38 @@ void UmlItem::declareFct(QCString what, QCString type, PFunc fct)
   Functions[what + " " + type] = fct;
 }
 
+PFunc UmlItem::getFct(const Token & tk)
+{
+  QCString key = tk.what() + " " + tk.xmiType();
+    
+  return Functions[key];
+}
+
+QCString UmlItem::readComment(FileIn & in, Token & token)
+{
+  in.bypassedId(token);
+
+  QCString doc = token.valueOf("body");
+
+  if (! token.closed()) {
+    QCString k = token.what();
+    const char * kstr = k;
+    
+    while (in.read(), !token.close(kstr)) {
+      if (token.what() == "body") {
+	if (! doc.isEmpty())
+	  doc += "\n";
+	doc += in.body("body");
+      }
+      else if (! token.closed())
+	in.finish(token.what());
+    }
+  }
+
+  return doc;
+
+}
+
 void UmlItem::init()
 {
   declareFct("xmi:documentation", "", &importDocumentation);
@@ -264,10 +297,15 @@ void UmlItem::init()
   declareFct("ownedmember", "uml:Dependency", &importDependency);
   declareFct("packagedelement", "uml:Dependency", &importDependency);
   
+  declareFct("ownedelement", "uml:Usage", &importDependency);
+  declareFct("ownedmember", "uml:Usage", &importDependency);
+  declareFct("packagedelement", "uml:Usage", &importDependency);
+  
   declareFct("ownedelement", "uml:Realization", &importRealization);
   declareFct("ownedmember", "uml:Realization", &importRealization);
   declareFct("packagedelement", "uml:Realization", &importRealization);
   declareFct("interfacerealization", "uml:InterfaceRealization", &importRealization);
+
 }
 
 void UmlItem::importDocumentation(FileIn & in, Token & token, UmlItem *)
@@ -288,22 +326,7 @@ void UmlItem::importDocumentation(FileIn & in, Token & token, UmlItem *)
 
 void UmlItem::importComment(FileIn & in, Token & token, UmlItem * where)
 {
-  QCString doc = token.valueOf("body");
-
-  if (! token.closed()) {
-    QCString k = token.what();
-    const char * kstr = k;
-    
-    while (in.read(), !token.close(kstr)) {
-      if (token.what() == "body") {
-	if (! doc.isEmpty())
-	  doc += "\n";
-	doc += in.body("body");
-      }
-      else if (! token.closed())
-	in.finish(token.what());
-    }
-  }
+  QCString doc = readComment(in, token);
 
   if (! doc.isEmpty())
     where->set_Description(doc);
@@ -394,6 +417,7 @@ void UmlItem::importOpaqueDef(FileIn & in, Token & token, UmlItem *)
 void UmlItem::importGeneralization(FileIn & in, Token & token, UmlItem * where)
 {
   QCString id = token.valueOf("general");
+  bool href = FALSE;
   
   if (! token.closed()) {
     QCString k = token.what();
@@ -402,17 +426,26 @@ void UmlItem::importGeneralization(FileIn & in, Token & token, UmlItem * where)
     while (in.read(), !token.close(kstr)) {
       QCString s = token.what();
       
-      if (s == "general")
+      if (s == "general") {
 	id = token.xmiIdref();
+	
+	if (id.isEmpty() && !token.valueOf("href").isEmpty()) {
+	  static bool already = FALSE;
+	  
+	  if (! already) {
+	    in.warning("referencing not yet implemented (next cases not signaled)");
+	    already = TRUE;
+	  }
+	  href = TRUE;
+	}
+      }
       
       if (! token.closed())
 	in.finish(s);
     }
   }
 
-  if (id.isEmpty())
-    in.warning("'general' is missing");
-  else {
+  if (!id.isEmpty()) {
     QMap<QCString, UmlItem *>::ConstIterator iter = All.find(id);
   
     if (iter != All.end())
@@ -420,6 +453,8 @@ void UmlItem::importGeneralization(FileIn & in, Token & token, UmlItem * where)
     else
       Unresolved::addGeneralization(where, id);
   }
+  else if (!href)
+    in.warning("'general' is missing");
 }
 
 void UmlItem::importDependency(FileIn & in, Token & token, UmlItem * where)
@@ -427,6 +462,7 @@ void UmlItem::importDependency(FileIn & in, Token & token, UmlItem * where)
   QCString client = token.valueOf("client");
   QCString supplier = token.valueOf("supplier");
   QCString label = token.valueOf("name");
+  int kind = (token.xmiType() == "uml:Usage") ? 3 : 1;
   
   if (! token.closed()) {
     QCString k = token.what();
@@ -456,9 +492,9 @@ void UmlItem::importDependency(FileIn & in, Token & token, UmlItem * where)
     QMap<QCString, UmlItem *>::ConstIterator to = All.find(supplier);
   
     if ((from != All.end()) && (to != All.end()))
-      (*from)->generalizeDependRealize(*to, in, 1, label);
+      (*from)->generalizeDependRealize(*to, in, kind, label);
     else
-      UnresolvedRelation::add(1, client, supplier, label);
+      UnresolvedRelation::add(kind, client, supplier, label);
   }
 }
 
@@ -535,9 +571,16 @@ QCString UmlItem::legalName(QCString s)
   return s;
 }
 
+bool UmlItem::fromEclipse()
+{
+  return FromEclipse;
+}
+
 QMap<QCString, QCString> UmlItem::OpaqueDefs;
 
 bool UmlItem::FromBouml;
+
+bool UmlItem::FromEclipse;
 
 QMap<QCString, UmlItem *> UmlItem::All;
 

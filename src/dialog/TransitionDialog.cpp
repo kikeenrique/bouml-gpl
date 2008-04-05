@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qgrid.h> 
 #include <qvbox.h>
@@ -44,6 +44,7 @@
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
 #include "GenerationSettings.h"
+#include "ProfiledStereotypes.h"
 
 QSize TransitionDialog::previous_size;
 
@@ -83,6 +84,7 @@ TransitionDialog::TransitionDialog(TransitionData * r)
   if (!visit) {
     //edstereotype->insertStringList(rel->get_start()->default_stereotypes(type));
     edstereotype->setAutoCompletion(TRUE);
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlTransition));
   }
   edstereotype->setCurrentItem(0);
   QSizePolicy sp = edstereotype->sizePolicy();
@@ -271,7 +273,8 @@ void TransitionDialog::accept() {
     msg_critical("Error", s + "\n\nillegal name or already used");
   else {  
     bn->set_name(s);
-    rel->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+    
+    bool newst = rel->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
     
     if (internal_cb != 0)
       rel->set_internal(internal_cb->isChecked());
@@ -289,6 +292,7 @@ void TransitionDialog::accept() {
     bn->package_modified();
     rel->modified();
     
+    ProfiledStereotypes::modified(bn, newst);
     QTabDialog::accept();
   }
 }

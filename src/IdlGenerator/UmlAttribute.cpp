@@ -32,7 +32,8 @@
 #include "UmlCom.h"
 #include "util.h"
 
-void UmlAttribute::generate_decl(QTextOStream & f, const QCString & cl_stereotype) {
+void UmlAttribute::generate_decl(QTextOStream & f, const QCString & cl_stereotype,
+				 bool islast) {
   if (!idlDecl().isEmpty()) {
     if (cl_stereotype == "typedef") {
       write_trace_header();
@@ -79,7 +80,8 @@ void UmlAttribute::generate_decl(QTextOStream & f, const QCString & cl_stereotyp
       else if (!strncmp(p, "${description}", 14))
 	manage_description(p, pp);
       else if (!strncmp(p, "${name}", 7)) {
-	p += 7;
+	p += (in_enum && islast && (p[7] == ','))
+	  ? 8 : 7;
 	f << name();
       }
       else if (!strncmp(p, "${stereotype}", 13)) {

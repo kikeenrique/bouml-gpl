@@ -437,9 +437,9 @@ UmlItem * UmlBaseItem::read_()
   anItemKind kind = (anItemKind) UmlCom::read_char();
   const char * name = UmlCom::read_string();
   
-#ifndef WIN32
+
   //cout << "UmlBaseItem::read id " << id << " kind " << kind << " name " << name << '\n';
-#endif
+
   
   UmlItem * result = _all[id];
   

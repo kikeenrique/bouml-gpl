@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -133,7 +133,7 @@ void ComponentCanvas::compute_size() {
     min_width = fm.width(browser_node->get_name());
     
     if (data->get_stereotype()[0]) {
-      int stw = fm.width(QString("<<") + toUnicode(data->get_stereotype()) + ">>");
+      int stw = fm.width(QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
       
       if (min_width < stw)
 	min_width = stw;
@@ -163,7 +163,7 @@ void ComponentCanvas::compute_size() {
     min_width = fm.width(browser_node->get_name());
     
     int w = fm.width((data->get_stereotype()[0])
-		     ? (QString("<<") + toUnicode(data->get_stereotype()) + ">>")
+		     ? (QString("<<") + toUnicode(data->get_short_stereotype()) + ">>")
 		     : QString("<<component>>"))
       + 16*fm.height()/5;
     
@@ -447,10 +447,10 @@ void ComponentCanvas::draw(QPainter & p) {
       r.setHeight(he/2);
       p.setFont(the_canvas()->get_font(UmlNormalFont));
       p.drawText(r, ::Qt::AlignCenter,
-		 QString("<<") + toUnicode(data->get_stereotype()) + ">>");
+		 QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
       if (fp != 0)
 	draw_text(r, ::Qt::AlignCenter,
-		  QString("<<") + toUnicode(data->get_stereotype()) + ">>",
+		  QString("<<") + toUnicode(data->get_short_stereotype()) + ">>",
 		  p.font(), fp);
       r.moveBy(0, he/2);
     }
@@ -537,10 +537,10 @@ void ComponentCanvas::draw(QPainter & p) {
     p.setFont(the_canvas()->get_font(UmlNormalFont));
     if (data->get_stereotype()[0]) {
       p.drawText(r, ::Qt::AlignCenter,
-		 QString("<<") + toUnicode(data->get_stereotype()) + ">>");
+		 QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
       if (fp != 0)
 	draw_text(r, ::Qt::AlignCenter,
-		  QString("<<") + toUnicode(data->get_stereotype()) + ">>",
+		  QString("<<") + toUnicode(data->get_short_stereotype()) + ">>",
 		  p.font(), fp);
     }
     else {

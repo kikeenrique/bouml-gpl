@@ -18,7 +18,7 @@ class UmlComponentView : public UmlBaseComponentView {
     UmlComponentView(void * id, const QCString & n) : UmlBaseComponentView(id, n) {};
 
     //returns the first container for a 'kind', going up in the browser tree
-    virtual UmlItem * container(anItemKind kind, const Token & token, FileIn & in);
+    virtual UmlItem * container(anItemKind kind, Token & token, FileIn & in);
 
 };
 

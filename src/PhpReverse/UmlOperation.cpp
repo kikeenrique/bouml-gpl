@@ -294,7 +294,7 @@ bool UmlOperation::read_param(Class * container, unsigned rank,
     refp = FALSE;
   
   if (((const char *) s)[0] != '$') {
-    Lex::syntax_error("unvalid parameter name : " + s);
+    Lex::syntax_error("invalid parameter name : " + s);
     return FALSE;
   }
   

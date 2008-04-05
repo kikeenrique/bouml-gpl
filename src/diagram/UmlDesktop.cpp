@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -118,11 +118,11 @@ void UmlDesktop::limitsize_move(QWidget * who, QSize & previous,
   
   if (fixedp)
     tocenter(who);
-#ifndef WIN32
+
   // under Windows the dialog may go out of the screen
   else
     who->move(QCursor::pos());
-#endif
+
 }
 
 void UmlDesktop::init()

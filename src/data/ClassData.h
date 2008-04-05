@@ -26,9 +26,9 @@
 #ifndef CLASSDATA_H
 #define CLASSDATA_H
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include "AType.h"
 #include "UmlEnum.h"

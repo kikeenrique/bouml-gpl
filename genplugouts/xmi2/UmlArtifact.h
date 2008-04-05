@@ -6,6 +6,7 @@
 #include <qcstring.h>
 
 class FileOut;
+class UmlItem;
 
 // This class manages 'artifacts'
 //
@@ -15,6 +16,10 @@ class UmlArtifact : public UmlBaseArtifact {
     UmlArtifact(void * id, const QCString & n) : UmlBaseArtifact(id, n) {};
 
     virtual void write(FileOut & out);
+
+
+  private:
+    virtual void write_manifest(FileOut & out, UmlItem * x, const char * name);
 
 };
 

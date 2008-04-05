@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -54,6 +54,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 #include "GenerationSettings.h"
+#include "ProfiledStereotypes.h"
 
 IdDict<BrowserClassView> BrowserClassView::all(__FILE__);
 QStringList BrowserClassView::its_default_stereotypes;	// unicode
@@ -174,11 +175,16 @@ void BrowserClassView::menu() {
   QPopupMenu m(0);
   QPopupMenu subm(0);
   QPopupMenu toolm(0);
+  bool isprofile = (strcmp(((BrowserNode *) parent())->get_data()->get_stereotype(),
+			   "profile")
+		    == 0);
   
   m.insertItem(new MenuTitle(name, m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
+      m.setWhatsThis(m.insertItem("New stereotype", 18),
+		     "to add a <em>stereotype</em>");
       m.setWhatsThis(m.insertItem("New class diagram", 0),
 		     "to add a <em>class diagram</em>");
       m.setWhatsThis(m.insertItem("New sequence diagram", 1),
@@ -205,7 +211,7 @@ void BrowserClassView::menu() {
 	m.setWhatsThis(m.insertItem("Edit class settings", 6),
 		       "to set the sub classes's settings");
 	m.setWhatsThis(m.insertItem("Edit drawing settings", 7),
-		       "to set how the sub <em>class diagrams</em>'s items must be drawed");
+		       "to set how the sub <em>class diagrams</em>'s items must be drawn");
 	if (edition_number == 0) {
 	  m.insertSeparator();
 	  m.setWhatsThis(m.insertItem("Delete", 8),
@@ -215,26 +221,29 @@ Note that you can undelete them after");
       }
     }
     mark_menu(m, "class view", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
 
-    bool cpp = GenerationSettings::cpp_get_default_defs();
-    bool java = GenerationSettings::java_get_default_defs();
-    bool php = GenerationSettings::php_get_default_defs();
-    bool python = GenerationSettings::python_get_default_defs();
-    bool idl = GenerationSettings::idl_get_default_defs();
-    
-    if (cpp || java || php || python || idl) {
-      m.insertSeparator();
-      m.insertItem("Generate", &subm);
-      if (cpp)
-	subm.insertItem("C++", 11);
-      if (java)
-	subm.insertItem("Java", 12);
-      if (php)
-	subm.insertItem("Php", 22);
-      if (python)
-	subm.insertItem("Python", 25);
-      if (idl)
-	subm.insertItem("Idl", 13);
+    if (! isprofile) {
+      bool cpp = GenerationSettings::cpp_get_default_defs();
+      bool java = GenerationSettings::java_get_default_defs();
+      bool php = GenerationSettings::php_get_default_defs();
+      bool python = GenerationSettings::python_get_default_defs();
+      bool idl = GenerationSettings::idl_get_default_defs();
+      
+      if (cpp || java || php || python || idl) {
+	m.insertSeparator();
+	m.insertItem("Generate", &subm);
+	if (cpp)
+	  subm.insertItem("C++", 11);
+	if (java)
+	  subm.insertItem("Java", 12);
+	if (php)
+	  subm.insertItem("Php", 22);
+	if (python)
+	  subm.insertItem("Python", 25);
+	if (idl)
+	  subm.insertItem("Idl", 13);
+      }
     }
     
     if ((edition_number == 0) &&
@@ -251,7 +260,7 @@ Do not undelete its sub items");
 		   "undelete the <em>class view</em> and its sub items");
   }
   
-  if (associated_deployment_view != 0) {
+  if (!isprofile && (associated_deployment_view != 0)) {
     m.insertSeparator();
     m.setWhatsThis(m.insertItem("Select associated deployment view", 14),
 		   "to select the associated <em>deployment view</em>");
@@ -261,6 +270,11 @@ Do not undelete its sub items");
 }
 
 void BrowserClassView::exec_menu_choice(int rank) {
+  bool isprofile =
+    (strcmp(((BrowserNode *) parent())->get_data()->get_stereotype(),
+	    "profile")
+     == 0);
+  
   switch (rank) {
   case 0:
     {
@@ -294,7 +308,7 @@ void BrowserClassView::exec_menu_choice(int rank) {
     break;
   case 3:
     {
-      BrowserClass * cl = BrowserClass::add_class(this);
+      BrowserClass * cl = BrowserClass::add_class(FALSE, this);
       
       if (cl == 0)
 	return;
@@ -352,15 +366,19 @@ void BrowserClassView::exec_menu_choice(int rank) {
     break;
   case 8:
     delete_it();
+    if (ProfiledStereotypes::hasStereotype())
+      ProfiledStereotypes::recompute(FALSE);
     break;
   case 9:
     undelete(FALSE);
+    ProfiledStereotypes::recompute(FALSE);
     break;
   case 10:
     undelete(TRUE);
+    ProfiledStereotypes::recompute(FALSE);
     break;
   case 11:
-    {
+    if (! isprofile) {
       bool preserve = preserve_bodies();
       
       ToolCom::run((verbose_generation()) 
@@ -370,7 +388,7 @@ void BrowserClassView::exec_menu_choice(int rank) {
     }
     return;
   case 12:
-    {
+    if (! isprofile) {
       bool preserve = preserve_bodies();
       
       ToolCom::run((verbose_generation()) 
@@ -380,7 +398,7 @@ void BrowserClassView::exec_menu_choice(int rank) {
     }
     return;
   case 22:
-    {
+    if (! isprofile) {
       bool preserve = preserve_bodies();
       
       ToolCom::run((verbose_generation()) 
@@ -390,7 +408,7 @@ void BrowserClassView::exec_menu_choice(int rank) {
     }
     return;
   case 25:
-    {
+    if (! isprofile) {
       bool preserve = preserve_bodies();
       
       ToolCom::run((verbose_generation()) 
@@ -400,10 +418,12 @@ void BrowserClassView::exec_menu_choice(int rank) {
     }
     return;
   case 13:
-    ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
+    if (! isprofile) 
+      ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
     return;
   case 14:
-    associated_deployment_view->select_in_browser();
+    if (! isprofile) 
+      associated_deployment_view->select_in_browser();
     return;
   case 15:
     {
@@ -432,8 +452,19 @@ void BrowserClassView::exec_menu_choice(int rank) {
 	c->select_in_browser();
     }
     return; // package_modified called
+  case 18:
+    {
+      BrowserClass * cl = BrowserClass::add_class(TRUE, this);
+      
+      if (cl == 0)
+	return;
+      cl->select_in_browser();
+    }
+    break;
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);
@@ -890,7 +921,7 @@ bool BrowserClassView::tool_cmd(ToolCom * com, const char * args) {
 	  if (wrong_child_name(args, UmlClass, FALSE, FALSE))
 	    ok = FALSE;
 	  else
-	    (BrowserClass::add_class(this, args))->write_id(com);
+	    (BrowserClass::add_class(FALSE, this, args))->write_id(com);
 	  break;
 	case UmlClassInstance:
 	  BrowserClassInstance::add_from_tool(this, com, args);
@@ -1016,21 +1047,34 @@ void BrowserClassView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
       (bn != after) && (bn != this)) {
     if (may_contains(bn, FALSE)) {
       BrowserNode * old_parent = (BrowserNode *) bn->parent();
-      
+
+      if ((old_parent->parent() != parent()) &&
+	  (bn->get_type() == UmlClass) &&
+	  !strcmp(bn->get_data()->get_stereotype(), "stereotype") &&
+	  (((BrowserNode *) old_parent->parent())->get_type() == UmlPackage) &&
+	  !strcmp(((BrowserNode *) old_parent->parent())->get_data()->get_stereotype(), "profile"))
+	ProfiledStereotypes::deleted((BrowserClass *) bn);
+
       if (after)
 	bn->moveItem(after);
       else {
 	bn->parent()->takeItem(bn);
 	insertItem(bn);
       }
-      package_modified();
+
       if (old_parent != this) {
+	if (!strcmp(bn->get_data()->get_stereotype(), "stereotype") &&
+	    !strcmp(((BrowserNode *) parent())->get_data()->get_stereotype(), "profile"))
+	  ProfiledStereotypes::added((BrowserClass *) bn);
+
 	old_parent->package_modified();
 	bn->modified();
       }
+
+      package_modified();
     }
     else {
-      msg_critical("Error", "Forbiden");
+      msg_critical("Error", "Forbidden");
       e->ignore();
     }
   }
@@ -1038,6 +1082,37 @@ void BrowserClassView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     ((BrowserNode *) parent())->DropAfterEvent(e, this);
   else
     e->ignore();
+}
+
+bool BrowserClassView::extract_from_profile() {
+  QListViewItem * bn = firstChild();
+  bool has_stereotypes = FALSE;
+  
+  while (bn != 0) {
+    if (!((BrowserNode *) bn)->deletedp() &&
+        (((BrowserNode *) bn)->get_type() == UmlClass) &&
+	!strcmp(((BrowserNode *) bn)->get_data()->get_stereotype(), "stereotype")) {
+      has_stereotypes = TRUE;
+      ProfiledStereotypes::deleted((BrowserClass *) bn);
+    }
+    
+    bn = bn->nextSibling();
+  }
+
+  return has_stereotypes;
+}
+
+void BrowserClassView::insert_in_profile() {
+  QListViewItem * bn = firstChild();
+  
+  while (bn != 0) {
+    if (!((BrowserNode *) bn)->deletedp() &&
+        (((BrowserNode *) bn)->get_type() == UmlClass) &&
+	!strcmp(((BrowserNode *) bn)->get_data()->get_stereotype(), "stereotype"))
+      ProfiledStereotypes::added((BrowserClass *) bn);
+    
+    bn = bn->nextSibling();
+  }
 }
 
 // unicode

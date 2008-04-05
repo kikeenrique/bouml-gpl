@@ -14,8 +14,10 @@ class UmlUseCase
 !!!218498.cpp!!!	solve(in context : int, in idref : string) : void
   QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
       
-  if (it == All.end())
-    UmlCom::trace("extend/include : unknown use case reference '" + idref + "'<br>");
+  if (it == All.end()) {
+    if (!FileIn::isBypassedId(idref))
+      UmlCom::trace("extend/include : unknown use case reference '" + idref + "'<br>");
+  }
   else if ((*it)->kind() != anUseCase)
     UmlCom::trace("'" + idref + "' is not a use case<br>");
   else {

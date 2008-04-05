@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qpainter.h>
@@ -40,6 +40,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
 #include "mu.h"
 
 IdDict<BrowserExtraMember> BrowserExtraMember::all(__FILE__);
@@ -131,6 +132,7 @@ Note that you can undelete it after");
       }
     }
     mark_menu(m, "extra member", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
@@ -159,7 +161,9 @@ void BrowserExtraMember::exec_menu_choice(int rank) {
     ((BrowserClass *) parent())->add_extra_member(this);
     return;
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);

@@ -372,7 +372,7 @@ class CppParamsDialog : public QDialog {
     static QSize previous_size;
   
   public:
-    CppParamsDialog(ParamsTable * params, MultiLineEdit * form);
+    CppParamsDialog(QWidget * parent, ParamsTable * params, MultiLineEdit * form);
     virtual ~CppParamsDialog();
   
   protected slots:
@@ -390,7 +390,7 @@ class PhpParamsTable : public MyTable {
     static QString copied[5];		// copy/cut/paste
   
   public:
-    PhpParamsTable(ParamsTable * p, MultiLineEdit * f, QWidget * parent);
+    PhpParamsTable(QWidget * parent, ParamsTable * p, MultiLineEdit * f);
     void update_edform();
   
   protected:
@@ -423,7 +423,7 @@ class PhpParamsDialog : public QDialog {
     static QSize previous_size;
   
   public:
-    PhpParamsDialog(ParamsTable * params, MultiLineEdit * form);
+    PhpParamsDialog(QWidget * parent, ParamsTable * params, MultiLineEdit * form);
     virtual ~PhpParamsDialog();
   
   protected slots:
@@ -441,7 +441,7 @@ class PythonParamsTable : public MyTable {
     static QString copied[4];		// copy/cut/paste
   
   public:
-    PythonParamsTable(ParamsTable * p, MultiLineEdit * f, QWidget * parent);
+    PythonParamsTable(QWidget * parent, ParamsTable * p, MultiLineEdit * f);
     void update_edform();
   
   protected:
@@ -474,7 +474,7 @@ class PythonParamsDialog : public QDialog {
     static QSize previous_size;
   
   public:
-    PythonParamsDialog(ParamsTable * params, MultiLineEdit * form);
+    PythonParamsDialog(QWidget * parent, ParamsTable * params, MultiLineEdit * form);
     virtual ~PythonParamsDialog();
   
   protected slots:

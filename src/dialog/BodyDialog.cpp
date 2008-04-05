@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qlabel.h> 
 #include <qlayout.h> 
@@ -40,7 +40,7 @@ QSize BodyDialog::previous_size;
 
 BodyDialog::BodyDialog(QString t, QTabDialog * d, post_edit pf,
 		       EditType k, QString what, QList<BodyDialog> & edits)
-    : QDialog(0, what, d->isModal(), WDestructiveClose), dlg(d), f(pf), eds(edits) {
+    : QDialog(d, what, d->isModal(), WDestructiveClose), dlg(d), f(pf), eds(edits) {
   eds.append(this);
   what.replace(what.findRev('_'), 1, " ");
   switch (k) {

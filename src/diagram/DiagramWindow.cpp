@@ -24,9 +24,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qworkspace.h>
 #include <qnamespace.h>
@@ -37,9 +37,9 @@
 #include <qwhatsthis.h>
 #include <qlabel.h>
 #include <qcursor.h>
-#ifdef WIN32
-#include <qtimer.h>
-#endif
+
+
+
 
 #include "BrowserDiagram.h"
 #include "DiagramWindow.h"
@@ -155,24 +155,24 @@ void DiagramWindow::save_session(QTextStream & st) {
 }
 
 void DiagramWindow::read_session(char * & st) {
-#ifdef WIN32
-  // else have an infinite loop when all is ready
-  desired_w = read_unsigned(st);
-  desired_h = read_unsigned(st);
-  QTimer::singleShot(1, this, SLOT(session_window_size()));
-#else
+
+
+
+
+
+
   unsigned w = read_unsigned(st);
 	
   resize(w, read_unsigned(st));
-#endif
+
   new_scale(read_unsigned(st));
   get_view()->read_session(st);
 }
 
 void DiagramWindow::session_window_size() {
-#ifdef WIN32
-  resize(desired_w, desired_h);
-#endif
+
+
+
 }
 
 void DiagramWindow::save(const char * ext, QString & warning,

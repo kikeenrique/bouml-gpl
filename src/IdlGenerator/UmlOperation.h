@@ -33,7 +33,8 @@ class UmlOperation : public UmlBaseOperation {
     UmlOperation(void * id, const QCString & n)
       : UmlBaseOperation(id, n) {};
   
-    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype);
+    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype,
+			       bool = FALSE);
     
     QCString compute_name();
 };

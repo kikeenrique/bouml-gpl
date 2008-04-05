@@ -14,13 +14,8 @@ void UmlExpansionNode::init()
 
 void UmlExpansionNode::importIt(FileIn & in, Token & token, UmlItem * where)
 {
-  if (where->kind() != anExpansionRegion) {
-    in.warning("bypass &lt;" + token.what() + 
-	       " xmi:type=\"" + token.xmiType() + "\"...&gt;");
-    
-    if (! token.closed())
-      in.finish(token.what());
-  }
+  if (where->kind() != anExpansionRegion) 
+    in.bypass(token);
   else {
     QCString s = token.valueOf("name");
     UmlExpansionNode * e =

@@ -49,7 +49,9 @@ class HaveKeyValueData {
     const char * get_value(const char * k) const;
     void set_value(int rank, const char * v);
     unsigned get_n_keys() const { return nkeyvalues; };
+    void remove_key_value(unsigned index);
     void set_n_keys(unsigned n);	// the old key-values are lost
+    void resize_n_keys(unsigned n, bool realloc); // the old key-values are not lost
     
     void send_def(ToolCom * com) const;
     void set_value(const char * k, const char * v);

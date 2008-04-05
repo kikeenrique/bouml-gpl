@@ -97,7 +97,7 @@ class BrowserRelation : public BrowserNode, public Labeled<BrowserRelation> {
     static BrowserRelation * temporary(RelationData * d);
     static BrowserNode * get_it(const char * k, int id);
     static void post_load();
-    void unvalidate();
+    void invalidate();
     
     static void clear(bool old);
     static void update_idmax_for_root();

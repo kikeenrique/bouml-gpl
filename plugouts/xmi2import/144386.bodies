@@ -1,5 +1,8 @@
 class Role
-!!!215042.cpp!!!	setMultiplicity(in v : string, in upper : bool) : void
+!!!215042.cpp!!!	setMultiplicity(in v : string, in upper : bool, in dflt : str) : void
+  if (v.isEmpty())
+    v = dflt;
+    
   if (!v.isEmpty() && 
       (v != "Unspecified")) {	// VP
     if (multiplicity.isEmpty())

@@ -520,6 +520,12 @@ void UmlItem::write_dependencies() {
 }
 
 void UmlItem::write_properties() {
+  if (! stereotype().isEmpty()) {
+    fw.write("<p>Stereotype: ");
+    writeq(stereotype());
+    fw.write("</p>\n");
+  }
+    
   const QDict<QCString> d = properties();
   
   if (! d.isEmpty()) {

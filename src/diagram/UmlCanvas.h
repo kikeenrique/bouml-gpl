@@ -26,9 +26,9 @@
 #ifndef UMLCANVAS
 #define UMLCANVAS
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qcanvas.h>
 #include <qfont.h>

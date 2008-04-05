@@ -26,9 +26,9 @@
 #ifndef ACTIVITYOBJECTDIALOG_H
 #define ACTIVITYOBJECTDIALOG_H
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qstringlist.h>
 #include <qtabdialog.h>

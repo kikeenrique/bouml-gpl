@@ -27,7 +27,7 @@
 
 #include "UmlExtraClassMember.h"
 
-void UmlExtraClassMember::generate_decl(QTextOStream & f, const QCString &) {
+void UmlExtraClassMember::generate_decl(QTextOStream & f, const QCString &, bool) {
   f << idlDecl();
 }
 

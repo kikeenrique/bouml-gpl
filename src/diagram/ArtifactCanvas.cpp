@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -107,7 +107,7 @@ void ArtifactCanvas::compute_size() {
   int wi = fm.width(browser_node->get_name());
   const BasicData * data = browser_node->get_data();
   int stw = fm.width((data->get_stereotype()[0])
-		     ? (QString("<<") + toUnicode(data->get_stereotype()) + ">>")
+		     ? (QString("<<") + toUnicode(data->get_short_stereotype()) + ">>")
 		     : QString("<<artifact>>"))
     + 3*fm.height();
   
@@ -295,7 +295,7 @@ void ArtifactCanvas::update_relations() {
     
     while (it.current()) {
       if (associations.find(it.current()) == 0) {
-	// the association to 'it.current()' is not yet drawed
+	// the association to 'it.current()' is not yet drawn
 	
 	// search 'it.current()' cancas
 	QCanvasItemList all = canvas()->allItems();
@@ -396,10 +396,10 @@ void ArtifactCanvas::draw(QPainter & p) {
   p.setFont(the_canvas()->get_font(UmlNormalFont));
   if (data->get_stereotype()[0]) {
     p.drawText(r, ::Qt::AlignCenter,
-	       QString("<<") + toUnicode(data->get_stereotype()) + ">>");
+	       QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
     if (fp != 0)
       draw_text(r, ::Qt::AlignCenter,
-		QString("<<") + toUnicode(data->get_stereotype()) + ">>",
+		QString("<<") + toUnicode(data->get_short_stereotype()) + ">>",
 		p.font(), fp);
   }
   else {

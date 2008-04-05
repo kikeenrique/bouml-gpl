@@ -6,7 +6,12 @@
 #include "UmlCom.h"
 void UmlClass::write(FileOut & out) {
   QCString st = stereotype();
-  bool is_actor = (stereotype() == "actor");
+  bool is_actor = (st == "actor");
+  bool is_enum = (st == "enum");
+  bool is_stereotype =
+    (st == "stereotype") && 
+    (parent()->parent()->kind() == aPackage) &&
+    (parent()->parent()->stereotype() == "profile");
   
   if (!is_actor) {
     switch (_lang) {
@@ -24,7 +29,9 @@ void UmlClass::write(FileOut & out) {
 
   const char * k = (parent()->kind() == aClass)
     ? "nestedClassifier"
-    : ((_uml_20) ? "ownedMember" : "packagedElement");
+    : ((!_uml_20)
+       ? "packagedElement"
+       : ((is_stereotype) ? "ownedStereotype" : "ownedMember"));
   bool is_assoc_class = (_assoc != 0);
   
   out.indent();
@@ -33,15 +40,17 @@ void UmlClass::write(FileOut & out) {
 	? "Actor"
 	: ((is_assoc_class)
 	   ? "AssociationClass"
-	   : ((st == "interface") ? "Interface" : "Class")))
+	   : ((st == "interface")
+	      ? "Interface" 
+	      : ((is_enum)
+		 ?"Enumeration"
+		 : ((is_stereotype) ? "Stereotype" : "Class")))))
     << "\" name=\"";
   out.quote(name());
   out << '"';
   out.id(this);
   write_visibility(out);
-  out << " isAbstract=\""
-    << ((isAbstract()) ? "true" : "false")
-      << "\" >\n";
+  out << " isAbstract=\"" << ((isAbstract()) ? "true" : "false") << "\" >\n";
   
   if (is_assoc_class)
     _assoc->write_ends(out);
@@ -54,6 +63,32 @@ void UmlClass::write(FileOut & out) {
   write_formals(out);
   write_actuals(out);
   
+  QCString extending;
+  QCString extname;
+  
+  if (is_stereotype) {
+    propertyValue("stereotypeExtension", extending);
+    if (extending.isEmpty())
+      extending = (_uml_20) ? "http://schema.omg.org/spec/UML/2.0/uml.xml#Element"
+			    : "http://schema.omg.org/spec/UML/2.1/uml.xml#Element";
+    extname = extending.mid(extending.findRev('#') + 1);
+    
+    out.indent();
+    out << "<ownedAttribute xmi:type=\"uml:Property\" name=\"base_";
+    out.quote(extname);
+    out << '"';
+    out.id_prefix(this, "BASE_");
+    out.ref(this, "association", "EXT_");
+    out << ">\n";
+    out.indent();
+#ifndef WIN32
+#warning have to add management of stereotype/class extension
+#endif
+    out << "\t<type xmi:type=\"uml:Class\" href=\"" << extending << "\"/>\n";
+    out.indent();
+    out << "</ownedAttribute>\n";
+  }
+
   const QVector<UmlItem> ch = children();
   unsigned n = ch.size();
   
@@ -63,6 +98,29 @@ void UmlClass::write(FileOut & out) {
   out.indent(-1);
   out.indent();
   out << "</" << k << ">\n";
+  
+  if (is_stereotype) {
+    k = (_uml_20) ? "ownedMember" : "packagedElement";
+    
+    out.indent();
+    out << "<" << k << " xmi:type=\"uml:Extension\" name=\"A_";
+    out.quote(extname);
+    out  << '_';
+    out.quote(name());
+    out << '"';
+    out.id_prefix(this, "EXT_");
+    out.ref(this, "memberEnd", "BASE_");
+    out << ">\n";
+    out.indent();
+    out << "\t<ownedEnd xmi:type=\"uml:ExtensionEnd\" name=\"extension_";
+    out.quote(name());
+    out << '"';
+    out.id_prefix(this, "EXTEND_");
+    out.ref(this, "type");
+    out << " aggregation=\"composite\"/>\n";
+    out.indent();
+    out << "</" << k << ">\n";
+  }
   
   unload();
 }

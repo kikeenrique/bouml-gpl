@@ -22,7 +22,9 @@ class UmlNcRelation
   const char * k = (_uml_20) ? "ownedElement" : "packagedElement";
 
   out.indent();
-  out << '<' << k << " xmi:type=\"uml:Dependency\"";
+  out << '<' << k <<
+    (((parent()->kind() == anArtifact) && (stereotype() == "manifest"))
+     ?  " xmi:type=\"uml:Manifestation\"" : " xmi:type=\"uml:Dependency\"");
   out.id(this);
   out.ref(parent(), "client");
   out.ref(target(), "supplier");

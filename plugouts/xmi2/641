@@ -1,12 +1,12 @@
-format 42
+format 55
 "API USER" // API USER
-  revision 105
+  revision 131
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default
   //sequence diagram settings
   show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
   //collaboration diagram settings
@@ -29,7 +29,7 @@ format 42
   comment " 'your' API classes and components, modify them !"
   classview 641 "Diagrams"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
     //collaboration diagram settings
     show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
@@ -43,36 +43,35 @@ format 42
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
-    
     comment "Some diagrams describing the API classes organisation
 "
     classdiagram 129 "Package and Views classes inheritance diagram"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 257 "Class and class members classes inheritance diagram"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 128002 "State (1)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 128130 "State (2)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 128258 "State (3)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 385 "Diagrams classes inheritance diagram"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
@@ -85,6 +84,8 @@ format 42
       visibility package stereotype "actor"
       cpp_decl ""
       java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -100,25 +101,27 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
     end
 
     classdiagram 128514 "State Diagram Auxil"
-      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
 
     classdiagram 128386 "Activity Diagram Auxil"
-      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
       size A4
     end
   end
 
   classview 769 "API USER class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
     //collaboration diagram settings
     show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
@@ -132,7 +135,6 @@ ${members}}
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
-    
     associated_deployment_view deploymentview_ref 641 // API USER Deployment view
     comment "'your' API classes, modify them !"
     class 145794 "UmlTypeSpec"
@@ -145,6 +147,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -173,6 +177,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -199,6 +205,8 @@ ${members}};
 ${body}}
 "
 	
+	
+	
       end
 
       operation 132483 "write"
@@ -214,6 +222,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
     end
 
@@ -227,6 +237,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -253,6 +265,8 @@ ${members}};
 ${body}}
 "
 	
+	
+	
       end
 
       operation 132227 "write"
@@ -269,6 +283,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
     end
 
@@ -282,6 +298,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -308,6 +326,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 145922 "write"
@@ -322,6 +342,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
       end
 
@@ -338,6 +360,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 149378 "write_java_type"
@@ -353,6 +377,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
     end
 
@@ -366,6 +392,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -393,6 +421,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 145538 "write"
@@ -408,6 +438,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 131971 "write_formals"
@@ -419,6 +451,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -434,6 +468,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 217346 "search_class_assoc"
@@ -444,6 +480,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -459,6 +497,8 @@ ${body}}
 "
 	
 	
+	
+	
 	comment "return 0 in case the class is already an association class "
       end
 
@@ -467,6 +507,8 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
 	comment "relation when the class is an association class"
       end
@@ -482,6 +524,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -508,6 +552,8 @@ ${members}};
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }"
 	
+	
+	
       end
     end
 
@@ -521,6 +567,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -551,6 +599,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -565,6 +615,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -590,6 +642,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
     end
 
@@ -603,6 +657,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -619,6 +675,8 @@ ${members}}
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
+	
+	
 	
       end
 
@@ -644,6 +702,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 148354 "write_visibility"
@@ -659,6 +719,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 150658 "write_annotation"
@@ -670,6 +732,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -688,6 +752,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "  return the true name of the item
 "
       end
@@ -704,6 +770,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
       end
 
@@ -724,6 +792,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "The keyword link to the language are removed/replaced
 Have to remove the name and type keywords given in argument,
 and to remove the initial value.
@@ -743,6 +813,8 @@ t.type != 0 or t.explicit_type != \"\""
 ${body}}
 "
 	
+	
+	
       end
     end
 
@@ -756,6 +828,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -781,6 +855,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 129155 "write"
@@ -796,6 +872,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 219522 "search_class_assoc"
@@ -806,6 +884,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -821,6 +901,8 @@ ${body}}
 "
 	
 	
+	
+	
 	comment "Memorize the relation in the package (or the view in case the views
 are generated as package) containing the current element, to generate
 the relation at the package/view level
@@ -832,6 +914,8 @@ the relation at the package/view level
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}QList<${type}> ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -846,6 +930,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -873,6 +959,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
     end
 
@@ -886,6 +974,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -913,6 +1003,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
     end
 
@@ -926,6 +1018,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -951,6 +1045,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 131587 "write"
@@ -966,6 +1062,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 131075 "memo_relation"
@@ -979,6 +1077,8 @@ ${body}}
 "
 	
 	
+	
+	
 	comment "Memorize the relation in the package (or the view in case the views
 are generated as package) containing the current element, to generate
 the relation at the package/view level
@@ -990,6 +1090,8 @@ the relation at the package/view level
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}QList<${type}> ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -1004,6 +1106,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1029,6 +1133,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 195458 "write"
@@ -1044,6 +1150,27 @@ ${body}}
 ${body}}
 "
 	
+	
+	
+      end
+
+      operation 222722 "write_manifest"
+	cpp_virtual private explicit_return_type "void"
+	nparams 3
+	  param inout name "out" explicit_type "FileOut"
+	  param in name "x" type class_ref 8833 // UmlItem
+	  param in name "name" explicit_type "str"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, ${t1} * ${p1}, const ${t2} ${p2}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} * ${p1}, const ${t2} ${p2}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
       end
     end
 
@@ -1057,6 +1184,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1082,6 +1211,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 195586 "write"
@@ -1096,6 +1227,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
       end
 
@@ -1114,6 +1247,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
     end
 
@@ -1127,6 +1262,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1154,6 +1291,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
     end
 
@@ -1167,6 +1306,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1192,6 +1333,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 131715 "write"
@@ -1207,6 +1350,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 131203 "memo_relation"
@@ -1220,6 +1365,8 @@ ${body}}
 "
 	
 	
+	
+	
 	comment "Memorize the relation in the package (or the view in case the views
 are generated as package) containing the current element, to generate
 the relation at the package/view level
@@ -1231,6 +1378,8 @@ the relation at the package/view level
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}QList<${type}> ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -1245,6 +1394,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1273,6 +1424,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
     end
 
@@ -1286,6 +1439,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1314,6 +1469,8 @@ ${members}}
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws} { super(id, n); }
 "
 	
+	
+	
       end
     end
 
@@ -1327,6 +1484,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1354,6 +1513,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 78977 "~UmlItem"
@@ -1364,6 +1525,8 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1382,6 +1545,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 144130 "write"
@@ -1396,6 +1561,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "write the definition if it is not empty for the target language"
       end
@@ -1414,6 +1581,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "inside is true when the generation is done inside the parent definition
 does nothing at this level"
       end
@@ -1431,6 +1600,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 217474 "search_class_assoc"
@@ -1441,6 +1612,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1454,6 +1627,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "Memorize the relation in the package (or the view in case the views
@@ -1474,6 +1649,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 202242 "write_type"
@@ -1490,6 +1667,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "if the type is specified write it in a form <type ... />"
       end
 
@@ -1505,6 +1684,23 @@ ${body}}
 "
 	
 	
+	
+	
+      end
+
+      operation 223874 "write_stereotyped"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param inout name "out" type class_ref 132738 // FileOut
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	
+	
+	
+	
       end
 
       attribute 128258 "_written"
@@ -1513,6 +1709,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1522,6 +1720,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1531,6 +1731,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1540,15 +1742,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
-	idl_decl ""
-      end
-
-      attribute 132738 "_use_profile"
-	class_attribute protected explicit_type "bool"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1558,6 +1753,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1567,6 +1764,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1576,6 +1775,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1585,6 +1786,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1594,14 +1797,29 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 138882 "_gen_eclipse"
+	class_attribute protected explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
       attribute 133890 "_stereotypes"
-	protected explicit_type "QMap"
+	class_attribute protected explicit_type "QMap"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type}<QCString, QList<UmlItem> > ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -1616,6 +1834,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1641,6 +1861,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 131204 "write"
@@ -1656,6 +1878,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
     end
 
@@ -1669,6 +1893,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1695,6 +1921,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 147202 "write"
@@ -1710,6 +1938,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 201090 "write_exceptions"
@@ -1721,6 +1951,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1739,6 +1971,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 150274 "write_cpp_returntype"
@@ -1754,6 +1988,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
       end
 
@@ -1771,6 +2007,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 150018 "write_uml_params"
@@ -1785,6 +2023,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
       end
 
@@ -1801,6 +2041,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
       end
 
@@ -1822,6 +2064,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       attribute 129922 "param_id"
@@ -1830,6 +2074,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -1844,6 +2090,8 @@ ${inlines}
       final java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1869,6 +2117,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1894,6 +2144,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 144898 "xmi"
@@ -1910,6 +2162,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 145154 "write"
@@ -1925,6 +2179,23 @@ ${body}}
 ${body}}
 "
 	
+	
+	
+      end
+
+      operation 225026 "search_profiles"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "l" type class_ref 9217 // UmlPackage
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}QList<${t0}> & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}QList<${t0}> & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	
+	
+	
+	
       end
 
       operation 219650 "search_class_assoc"
@@ -1935,6 +2206,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1950,6 +2223,8 @@ ${body}}
 "
 	
 	
+	
+	
 	comment "Memorize the relation in the package (or the view in case the views
 are generated as package) containing the current element, to generate
 the relation at the package/view level
@@ -1961,6 +2236,8 @@ the relation at the package/view level
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}QList<${type}> ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -1975,6 +2252,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2001,6 +2280,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 130819 "write"
@@ -2015,6 +2296,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "called inside class definition
 "
@@ -2034,6 +2317,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "inside is true when the generation is done inside the class definition"
       end
 
@@ -2049,6 +2334,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "write definition inside the class"
       end
@@ -2066,6 +2353,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write definition outside the class"
       end
 
@@ -2082,6 +2371,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write definition outside the class"
       end
 
@@ -2097,6 +2388,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "write definition outside the class
 "
@@ -2115,6 +2408,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write member ends
 "
       end
@@ -2132,6 +2427,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write definition inside the class"
       end
 
@@ -2145,6 +2442,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       attribute 136450 "_assoc_class"
@@ -2152,6 +2451,8 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
 	comment "the association class,
 to replace association() and manage unconsistencies when the same class is part of several association classes"
@@ -2168,6 +2469,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2193,6 +2496,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 195330 "write"
@@ -2207,6 +2512,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "called inside element definition
 "
@@ -2226,6 +2533,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "inside is true when the generation is done inside the element definition"
       end
 
@@ -2241,6 +2550,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "write definition inside the element"
       end
@@ -2258,6 +2569,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write definition outside the element"
       end
     end
@@ -2272,6 +2585,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2298,6 +2613,8 @@ ${members}};
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }"
 	
+	
+	
       end
     end
 
@@ -2311,6 +2628,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2336,6 +2655,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 130436 "write"
@@ -2351,6 +2672,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
     end
 
@@ -2364,6 +2687,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2391,6 +2716,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
     end
 
@@ -2404,6 +2731,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2429,6 +2758,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 131843 "write"
@@ -2444,6 +2775,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 131331 "memo_relation"
@@ -2457,6 +2790,8 @@ ${body}}
 "
 	
 	
+	
+	
 	comment "Memorize the relation in the package (or the view in case the views
 are generated as package) containing the current element, to generate
 the relation at the package/view level
@@ -2468,6 +2803,8 @@ the relation at the package/view level
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}QList<${type}> ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -2482,6 +2819,8 @@ ${inlines}
       java_decl "${comment}${public}interface ${name}${extends} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2496,6 +2835,8 @@ ${body}}
 "
 	
 	
+	
+	
 	comment "memorize trans starting in sub elements to produce them later
 does nothing at this level"
       end
@@ -2508,6 +2849,8 @@ does nothing at this level"
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "goes among tree to memorize incoming transitions
@@ -2525,6 +2868,8 @@ ${body}}
 "
 	
 	
+	
+	
 	comment "memorize a new incoming transition
 does nothing at this level"
       end
@@ -2537,6 +2882,8 @@ does nothing at this level"
 	cpp_def "${inline}${class}::${name}${(}${)}${volatile} {
 ${body}}
 "
+	
+	
 	
 	
 	comment "just to not have warning at compile time"
@@ -2553,6 +2900,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2588,6 +2937,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -2604,6 +2955,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 198658 "memo_incoming_trans"
@@ -2614,6 +2967,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "goes among tree to memorize incoming transitions
@@ -2631,6 +2986,8 @@ ${body}}
 "
 	
 	
+	
+	
 	comment "memorize trans starting in sub elements to produce them later
 "
       end
@@ -2646,6 +3003,8 @@ ${body}}
 "
 	
 	
+	
+	
 	comment "memorize a new incoming transition"
       end
 
@@ -2658,6 +3017,8 @@ ${body}}
 	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "Return a state from its name.
@@ -2706,6 +3067,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2740,6 +3103,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2754,6 +3119,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2788,6 +3155,8 @@ ${members}}
 }
 "
 	
+	
+	
       end
 
       operation 197762 "memo_incoming_trans"
@@ -2798,6 +3167,8 @@ ${members}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "target memorize this transition as incoming"
@@ -2816,6 +3187,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the outgoing transition and memorize it in the upper level"
       end
 
@@ -2831,6 +3204,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "write the transition definition"
       end
@@ -2848,6 +3223,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "indicate the incoming transition"
       end
     end
@@ -2862,6 +3239,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2896,6 +3275,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -2907,6 +3288,8 @@ ${members}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "goes among tree to memorize incoming transitions
@@ -2922,6 +3305,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "to ask parent to memorize trans starting in sub elements to produce them later
@@ -2941,6 +3326,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
       end
 
@@ -2968,6 +3355,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3001,6 +3390,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3012,6 +3403,8 @@ ${members}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "goes among tree to memorize incoming transitions
@@ -3030,6 +3423,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
       end
 
@@ -3054,6 +3449,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3069,6 +3466,8 @@ ${members}}
   super(id, s);
 }
 "
+	
+	
 	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
@@ -3101,6 +3500,8 @@ ${body}}
 "
 	
 	
+	
+	
 	comment "goes among tree to memorize incoming transitions
 "
       end
@@ -3114,6 +3515,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "memorize a new incoming transition"
@@ -3132,6 +3535,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 206466 "sKind"
@@ -3139,6 +3544,8 @@ ${body}}
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}const ${type} ${name}${(}${)}${const}${volatile}${abstract};
 "
+	
+	
 	
 	
       end
@@ -3164,6 +3571,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3188,6 +3597,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3199,6 +3610,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -3214,6 +3627,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3239,6 +3654,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3250,6 +3667,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -3265,6 +3684,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3289,6 +3710,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3305,6 +3728,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 206850 "sKind"
@@ -3315,6 +3740,8 @@ ${body}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "not used at this level"
@@ -3331,6 +3758,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3355,6 +3784,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3366,6 +3797,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -3381,6 +3814,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3406,6 +3841,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3417,6 +3854,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -3432,6 +3871,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3456,6 +3897,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3467,6 +3910,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -3482,6 +3927,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3506,6 +3953,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3517,6 +3966,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -3532,6 +3983,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3556,6 +4009,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3567,6 +4022,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -3582,6 +4039,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3606,6 +4065,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3617,6 +4078,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -3632,6 +4095,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3656,6 +4121,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3667,6 +4134,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -3682,6 +4151,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3706,6 +4177,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3719,6 +4192,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
     end
 
@@ -3730,6 +4205,8 @@ ${members}};
 ${inlines}
 "
       java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3741,6 +4218,8 @@ ${inlines}
 	cpp_def "${inline}${class}::${name}${(}${)}${volatile} {
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -3756,6 +4235,8 @@ ${body}}
 "
 	
 	
+	
+	
 	comment "memorize flow starting in sub elements to produce them later"
       end
 
@@ -3768,6 +4249,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "write flows outside their source element
@@ -3796,6 +4279,8 @@ ${inlines}
       java_decl "${comment}${public}interface ${name}${extends} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3804,6 +4289,8 @@ ${members}}
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
 "
+	
+	
 	
 	
 	comment "goes among tree to memorize incoming flow
@@ -3822,6 +4309,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 209154 "activity"
@@ -3832,6 +4321,8 @@ ${body}}
 	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -3847,6 +4338,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3886,6 +4379,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3897,6 +4392,8 @@ ${members}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "goes among tree to memorize incoming flow
@@ -3914,6 +4411,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3947,6 +4446,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3962,6 +4463,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "write the definition if it is not empty for the target language"
       end
@@ -3979,6 +4482,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 209282 "add_opaque_behavior"
@@ -3990,6 +4495,8 @@ ${body}}
 	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -4005,6 +4512,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       attribute 134018 "_opaque_behavior"
@@ -4012,6 +4521,8 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}QMap<QCString, ${type} *> ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -4020,6 +4531,8 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}QMap<QCString, ${type} *> ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -4034,6 +4547,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4068,6 +4583,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -4079,6 +4596,8 @@ ${members}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "goes among tree to memorize incoming flow
@@ -4096,6 +4615,8 @@ ${body}}
 "
 	
 	
+	
+	
 	comment "memorize a new incoming flow
 "
       end
@@ -4109,6 +4630,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "
@@ -4137,6 +4660,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4171,6 +4696,8 @@ ${members}}
 }
 "
 	
+	
+	
       end
 
       operation 203394 "write"
@@ -4186,6 +4713,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
 
@@ -4197,6 +4726,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "goes among tree to memorize incoming flow :
@@ -4215,6 +4746,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 203522 "is_control_flow"
@@ -4225,6 +4758,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -4240,6 +4775,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4282,6 +4819,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -4293,6 +4832,8 @@ ${members}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "goes among tree to memorize incoming flow
@@ -4310,6 +4851,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4335,6 +4878,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -4351,6 +4896,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -4365,6 +4912,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4390,6 +4939,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -4406,6 +4957,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -4420,6 +4973,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4445,6 +5000,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -4461,6 +5018,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "write start of definition, don't close the element list"
       end
@@ -4479,6 +5038,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "close the element list and write end of definition without closing it
 "
       end
@@ -4496,6 +5057,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "close the element definition"
       end
 
@@ -4512,6 +5075,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
     end
 
@@ -4525,6 +5090,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4550,6 +5117,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -4566,6 +5135,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -4580,6 +5151,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4605,6 +5178,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -4621,6 +5196,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -4635,6 +5212,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4660,6 +5239,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -4676,6 +5257,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "
 "
       end
@@ -4691,6 +5274,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4716,6 +5301,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -4732,6 +5319,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -4746,6 +5335,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4771,6 +5362,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -4787,6 +5380,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -4801,6 +5396,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4826,6 +5423,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -4842,6 +5441,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -4856,6 +5457,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4881,6 +5484,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -4897,6 +5502,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -4911,6 +5518,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4936,6 +5545,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -4952,6 +5563,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -4966,6 +5579,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -4991,6 +5606,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5007,6 +5624,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -5021,6 +5640,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5046,6 +5667,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5062,6 +5685,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -5076,6 +5701,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5101,6 +5728,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5113,6 +5742,8 @@ ${members}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -5128,6 +5759,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5153,6 +5786,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5169,6 +5804,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -5183,6 +5820,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5208,6 +5847,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5224,6 +5865,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -5238,6 +5881,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5263,6 +5908,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5279,6 +5926,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -5293,6 +5942,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5318,6 +5969,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5334,6 +5987,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -5348,6 +6003,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5373,6 +6030,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5389,6 +6048,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -5403,6 +6064,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5428,6 +6091,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5444,6 +6109,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
 
@@ -5452,6 +6119,8 @@ ${body}}
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}const ${type} ${name}${(}${)}${const}${volatile}${abstract};
 "
+	
+	
 	
 	
       end
@@ -5467,6 +6136,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5492,6 +6163,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5503,6 +6176,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -5518,6 +6193,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5543,6 +6220,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5554,6 +6233,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -5569,6 +6250,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5594,6 +6277,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5605,6 +6290,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -5620,6 +6307,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5645,6 +6334,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5656,6 +6347,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -5671,6 +6364,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5696,6 +6391,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5707,6 +6404,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -5722,6 +6421,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5747,6 +6448,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5758,6 +6461,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -5773,6 +6478,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5798,6 +6505,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5809,6 +6518,8 @@ ${members}}
 	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -5824,6 +6535,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5849,6 +6562,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5865,6 +6580,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
 
@@ -5877,6 +6594,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -5892,6 +6611,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 202498 "write_selection"
@@ -5903,6 +6624,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -5918,6 +6641,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5943,6 +6668,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -5959,6 +6686,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -5973,6 +6702,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -5998,6 +6729,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -6010,6 +6743,8 @@ ${members}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -6025,6 +6760,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
     end
 
@@ -6038,6 +6775,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6063,6 +6802,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -6079,6 +6820,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
     end
@@ -6093,6 +6836,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6118,6 +6863,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -6134,6 +6881,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language"
       end
 
@@ -6146,6 +6895,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -6161,6 +6912,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6194,6 +6947,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -6210,6 +6965,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "write the definition if it is not empty for the target language
 does nothing at this level, parameterset is defined at activity level in the norme"
       end
@@ -6222,6 +6979,8 @@ does nothing at this level, parameterset is defined at activity level in the nor
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "goes among tree to memorize incoming flow
@@ -6240,6 +6999,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6265,6 +7026,8 @@ ${members}}
 }
 "
 	
+	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -6281,6 +7044,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
     end
 
@@ -6294,6 +7059,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -6318,6 +7085,8 @@ ${members}}
   super(id, s);
 }
 "
+	
+	
 	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
@@ -6360,179 +7129,206 @@ ${definition}"
     artifact 6529 "executable"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 9857 // UmlUseCaseDiagram
-	artifact_ref 5120 // UmlSettings
-	artifact_ref 6400 // IdlSettingsCmd
-	artifact_ref 5888 // PackageGlobalCmd
-	artifact_ref 4736 // CppSettings
-	artifact_ref 135810 // UmlActivityAction
-	artifact_ref 9473 // UmlNcRelation
-	artifact_ref 8449 // UmlDeploymentView
-	artifact_ref 134144 // UmlBaseActivityNode
-	artifact_ref 135554 // UmlInterruptibleActivityRegion
-	artifact_ref 4224 // anItemKind
-	artifact_ref 134274 // UmlActivityNode
-	artifact_ref 128130 // UmlStateItem
-	artifact_ref 384 // UmlBaseClassItem
-	artifact_ref 6913 // UmlClassItem
-	artifact_ref 139010 // FlowContainer
-	artifact_ref 134018 // UmlActivityDiagram
-	artifact_ref 132480 // UmlBaseJoinPseudoState
-	artifact_ref 133762 // UmlActivity
-	artifact_ref 2944 // UmlBasePackage
-	artifact_ref 1408 // UmlBaseCollaborationDiagram
-	artifact_ref 7681 // UmlClassView
-	artifact_ref 135296 // anExpansionKind
-	artifact_ref 134400 // UmlBaseFlow
-	artifact_ref 4608 // UmlStereotype
-	artifact_ref 128386 // UmlState
-	artifact_ref 7937 // UmlArtifact
-	artifact_ref 7041 // UmlFormalParameter
-	artifact_ref 2560 // UmlBaseItem
-	artifact_ref 8321 // UmlDeploymentDiagram
 	artifact_ref 134784 // UmlBaseActivityRegion
-	artifact_ref 134656 // FlowBehavior
-	artifact_ref 131330 // UmlDeepHistoryPseudoState
-	artifact_ref 6016 // UmlSettingsCmd
-	artifact_ref 9985 // UmlUseCaseView
-	artifact_ref 138882 // UmlParameterSet
-	artifact_ref 3072 // UmlBaseRelation
-	artifact_ref 9089 // UmlOperation
-	artifact_ref 133632 // UmlBaseActivity
-	artifact_ref 136448 // UmlBaseAccessVariableValueAction
-	artifact_ref 132098 // UmlChoicePseudoState
-	artifact_ref 3584 // UmlBaseUseCaseDiagram
-	artifact_ref 132610 // UmlJoinPseudoState
-	artifact_ref 140930 // UmlTypeSpec
-	artifact_ref 8833 // UmlItem
-	artifact_ref 132994 // SmallPushButton
-	artifact_ref 129152 // TransitionBehavior
-	artifact_ref 8577 // UmlDiagram
-	artifact_ref 768 // UmlBaseAttribute
-	artifact_ref 138370 // UmlActivityPin
-	artifact_ref 135680 // UmlBaseActivityAction
-	artifact_ref 6785 // UmlActualParameter
-	artifact_ref 138752 // UmlBaseParameterSet
-	artifact_ref 129410 // UmlRegion
-	artifact_ref 137986 // UmlPinParameter
-	artifact_ref 130432 // UmlBaseFinalState
-	artifact_ref 131586 // UmlShallowHistoryPseudoState
-	artifact_ref 256 // UmlBaseActualParameter
-	artifact_ref 5248 // UmlCom
-	artifact_ref 131968 // UmlBaseChoicePseudoState
-	artifact_ref 130688 // UmlBaseTerminatePseudoState
-	artifact_ref 8705 // UmlExtraClassMember
-	artifact_ref 2304 // UmlBaseDiagram
-	artifact_ref 140544 // UmlBaseParameter
-	artifact_ref 137216 // UmlBaseActivityObject
-	artifact_ref 4480 // UmlBuiltin
-	artifact_ref 135040 // UmlBaseExpansionRegion
-	artifact_ref 138496 // UmlBaseActivityParameter
-	artifact_ref 139520 // SlotAttribute
-	artifact_ref 136322 // UmlOnSignalAction
-	artifact_ref 130944 // UmlBaseExitPointPseudoState
-	artifact_ref 7809 // UmlCollaborationDiagram
-	artifact_ref 512 // UmlBaseFormalParameter
-	artifact_ref 4864 // IdlSettings
-	artifact_ref 6144 // CppSettingsCmd
-	artifact_ref 129026 // UmlTransition
-	artifact_ref 129920 // UmlBaseInitialPseudoState
-	artifact_ref 135170 // UmlExpansionRegion
-	artifact_ref 130050 // UmlInitialPseudoState
-	artifact_ref 128256 // UmlBaseState
-	artifact_ref 130562 // UmlFinalState
-	artifact_ref 137346 // UmlActivityObject
-	artifact_ref 140800 // UmlBaseTypeSpec
-	artifact_ref 2048 // UmlBaseDeploymentDiagram
-	artifact_ref 896 // UmlBaseClass
-	artifact_ref 141186 // UmlView
-	artifact_ref 129794 // UmlPseudoState
-	artifact_ref 138112 // aParameterEffectKind
-	artifact_ref 133248 // UmlBaseObjectDiagram
-	artifact_ref 129280 // UmlBaseRegion
 	artifact_ref 136834 // UmlActivityControlNode
-	artifact_ref 5632 // OnInstanceCmd
-	artifact_ref 139136 // aLanguage
-	artifact_ref 140674 // UmlParameter
-	artifact_ref 141056 // UmlBaseView
-	artifact_ref 132866 // Dialog
-	artifact_ref 128512 // UmlBaseStateDiagram
-	artifact_ref 7553 // UmlClassMember
-	artifact_ref 128642 // UmlStateDiagram
-	artifact_ref 137090 // UmlActivityControlNodeClasses
-	artifact_ref 9217 // UmlPackage
-	artifact_ref 1152 // UmlBaseClassMember
-	artifact_ref 2816 // UmlBaseOperation
-	artifact_ref 137600 // UmlBaseExpansionNode
-	artifact_ref 137472 // anOrdering
-	artifact_ref 128768 // StateBehavior
-	artifact_ref 132354 // UmlForkPseudoState
-	artifact_ref 6657 // Main
-	artifact_ref 131074 // UmlExitPointPseudoState
-	artifact_ref 9729 // UmlUseCase
-	artifact_ref 1664 // UmlBaseComponentDiagram
-	artifact_ref 132224 // UmlBaseForkPseudoState
-	artifact_ref 2176 // UmlBaseDeploymentView
-	artifact_ref 136704 // UmlBaseActivityControlNode
-	artifact_ref 138240 // UmlBaseActivityPin
-	artifact_ref 136960 // UmlBaseActivityControlNodeClasses
-	artifact_ref 135936 // UmlBaseActivityActionClasses
-	artifact_ref 133122 // Language
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 6272 // JavaSettingsCmd
-	artifact_ref 5504 // MiscGlobalCmd
-	artifact_ref 129536 // UmlBaseStateAction
-	artifact_ref 138626 // UmlActivityParameter
-	artifact_ref 2688 // UmlBaseNode
-	artifact_ref 6528 // UmlBaseComponent
-	artifact_ref 131842 // UmlJunctionPseudoState
 	artifact_ref 3456 // UmlBaseUseCase
-	artifact_ref 3328 // UmlBaseSequenceDiagram
-	artifact_ref 5376 // CmdFamily
-	artifact_ref 137730 // UmlExpansionNode
-	artifact_ref 3712 // UmlBaseUseCaseView
-	artifact_ref 1024 // UmlBaseClassDiagram
-	artifact_ref 4096 // aVisibility
+	artifact_ref 384 // UmlBaseClassItem
+	artifact_ref 8193 // UmlComponentView
+	artifact_ref 133248 // UmlBaseObjectDiagram
+	artifact_ref 131074 // UmlExitPointPseudoState
+	artifact_ref 135810 // UmlActivityAction
+	artifact_ref 2176 // UmlBaseDeploymentView
+	artifact_ref 144256 // UmlBaseMessage
+	artifact_ref 896 // UmlBaseClass
 	artifact_ref 139648 // SlotRelation
-	artifact_ref 3200 // UmlBaseNcRelation
-	artifact_ref 137856 // UmlBasePinParameter
+	artifact_ref 142594 // UmlFragment
+	artifact_ref 136192 // UmlBaseOnSignalAction
+	artifact_ref 9089 // UmlOperation
+	artifact_ref 128768 // StateBehavior
+	artifact_ref 5632 // OnInstanceCmd
+	artifact_ref 138370 // UmlActivityPin
+	artifact_ref 8705 // UmlExtraClassMember
+	artifact_ref 140930 // UmlTypeSpec
+	artifact_ref 131842 // UmlJunctionPseudoState
+	artifact_ref 1536 // UmlBaseArtifact
+	artifact_ref 2816 // UmlBaseOperation
+	artifact_ref 130050 // UmlInitialPseudoState
+	artifact_ref 145538 // UmlCollaborationDiagramDefinition
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 7937 // UmlArtifact
+	artifact_ref 132354 // UmlForkPseudoState
+	artifact_ref 143618 // UmlUseCaseAssociation
+	artifact_ref 134400 // UmlBaseFlow
+	artifact_ref 3328 // UmlBaseSequenceDiagram
+	artifact_ref 131330 // UmlDeepHistoryPseudoState
+	artifact_ref 140544 // UmlBaseParameter
+	artifact_ref 128386 // UmlState
+	artifact_ref 135680 // UmlBaseActivityAction
 	artifact_ref 128896 // UmlBaseTransition
-	artifact_ref 7169 // UmlAttribute
-	artifact_ref 5760 // ClassGlobalCmd
-	artifact_ref 130176 // UmlBaseEntryPointPseudoState
-	artifact_ref 7425 // UmlClassDiagram
-	artifact_ref 139394 // UmlClassInstance
-	artifact_ref 9345 // UmlRelation
-	artifact_ref 1920 // UmlBaseDeployment
-	artifact_ref 130818 // UmlTerminatePseudoState
+	artifact_ref 132480 // UmlBaseJoinPseudoState
+	artifact_ref 144130 // UmlMessage
+	artifact_ref 256 // UmlBaseActualParameter
+	artifact_ref 6785 // UmlActualParameter
+	artifact_ref 1024 // UmlBaseClassDiagram
+	artifact_ref 2688 // UmlBaseNode
+	artifact_ref 1280 // UmlBaseClassView
+	artifact_ref 9601 // UmlSequenceDiagram
+	artifact_ref 4224 // anItemKind
+	artifact_ref 129794 // UmlPseudoState
+	artifact_ref 7681 // UmlClassView
 	artifact_ref 139264 // UmlBaseClassInstance
+	artifact_ref 139394 // UmlClassInstance
+	artifact_ref 4608 // UmlStereotype
+	artifact_ref 2432 // UmlBaseExtraClassMember
+	artifact_ref 134914 // UmlActivityRegion
+	artifact_ref 131968 // UmlBaseChoicePseudoState
+	artifact_ref 1664 // UmlBaseComponentDiagram
+	artifact_ref 6913 // UmlClassItem
+	artifact_ref 5760 // ClassGlobalCmd
+	artifact_ref 1920 // UmlBaseDeployment
+	artifact_ref 134656 // FlowBehavior
+	artifact_ref 137346 // UmlActivityObject
+	artifact_ref 130944 // UmlBaseExitPointPseudoState
+	artifact_ref 142464 // PhpSettingsCmd
+	artifact_ref 133122 // Language
+	artifact_ref 143488 // UmlBaseUseCaseReference
+	artifact_ref 8833 // UmlItem
+	artifact_ref 139136 // aLanguage
+	artifact_ref 9345 // UmlRelation
+	artifact_ref 5504 // MiscGlobalCmd
+	artifact_ref 4864 // IdlSettings
+	artifact_ref 8449 // UmlDeploymentView
+	artifact_ref 134530 // UmlFlow
+	artifact_ref 139010 // FlowContainer
+	artifact_ref 136448 // UmlBaseAccessVariableValueAction
+	artifact_ref 132610 // UmlJoinPseudoState
+	artifact_ref 139520 // SlotAttribute
+	artifact_ref 130432 // UmlBaseFinalState
+	artifact_ref 7297 // UmlClass
+	artifact_ref 130688 // UmlBaseTerminatePseudoState
+	artifact_ref 143744 // UmlBaseUseCaseAssociation
+	artifact_ref 145026 // UmlUseCaseDiagramDefinition
+	artifact_ref 135040 // UmlBaseExpansionRegion
+	artifact_ref 128642 // UmlStateDiagram
+	artifact_ref 2560 // UmlBaseItem
+	artifact_ref 6400 // IdlSettingsCmd
+	artifact_ref 133632 // UmlBaseActivity
+	artifact_ref 1408 // UmlBaseCollaborationDiagram
+	artifact_ref 144386 // UmlSequenceMessage
+	artifact_ref 4736 // CppSettings
+	artifact_ref 8577 // UmlDiagram
+	artifact_ref 133888 // UmlBaseActivityDiagram
+	artifact_ref 145282 // UmlSequenceDiagramDefinition
+	artifact_ref 137600 // UmlBaseExpansionNode
+	artifact_ref 132098 // UmlChoicePseudoState
+	artifact_ref 768 // UmlBaseAttribute
+	artifact_ref 9217 // UmlPackage
+	artifact_ref 144000 // UmlBaseClassInstanceReference
+	artifact_ref 8321 // UmlDeploymentDiagram
+	artifact_ref 5248 // UmlCom
+	artifact_ref 8065 // UmlComponentDiagram
+	artifact_ref 145664 // UmlBaseCollaborationDiagramDefinition
+	artifact_ref 145152 // UmlBaseUseCaseDiagramDefinition
+	artifact_ref 134274 // UmlActivityNode
+	artifact_ref 134144 // UmlBaseActivityNode
+	artifact_ref 142848 // UmlBaseFragment
+	artifact_ref 129920 // UmlBaseInitialPseudoState
+	artifact_ref 144512 // aMessageKind
+	artifact_ref 129410 // UmlRegion
+	artifact_ref 3584 // UmlBaseUseCaseDiagram
+	artifact_ref 143106 // UmlSubject
+	artifact_ref 143874 // UmlClassInstanceReference
+	artifact_ref 5888 // PackageGlobalCmd
+	artifact_ref 4480 // UmlBuiltin
+	artifact_ref 134018 // UmlActivityDiagram
+	artifact_ref 9857 // UmlUseCaseDiagram
+	artifact_ref 138112 // aParameterEffectKind
+	artifact_ref 128256 // UmlBaseState
+	artifact_ref 1792 // UmlBaseComponentView
+	artifact_ref 128130 // UmlStateItem
+	artifact_ref 142976 // UmlBaseFragmentCompartment
+	artifact_ref 140674 // UmlParameter
+	artifact_ref 6016 // UmlSettingsCmd
+	artifact_ref 7041 // UmlFormalParameter
+	artifact_ref 137730 // UmlExpansionNode
+	artifact_ref 132866 // Dialog
+	artifact_ref 135936 // UmlBaseActivityActionClasses
+	artifact_ref 129666 // UmlStateAction
 	artifact_ref 133378 // UmlObjectDiagram
 	artifact_ref 3840 // aRelationKind
-	artifact_ref 8193 // UmlComponentView
-	artifact_ref 1280 // UmlBaseClassView
-	artifact_ref 136066 // UmlActivityActionClasses
-	artifact_ref 134530 // UmlFlow
-	artifact_ref 133888 // UmlBaseActivityDiagram
-	artifact_ref 131200 // UmlBaseDeepHistoryPseudoState
-	artifact_ref 4992 // JavaSettings
+	artifact_ref 132994 // SmallPushButton
+	artifact_ref 129152 // TransitionBehavior
+	artifact_ref 7809 // UmlCollaborationDiagram
+	artifact_ref 143232 // UmlBaseSubject
 	artifact_ref 131456 // UmlBaseShallowHistoryPseudoState
-	artifact_ref 129666 // UmlStateAction
-	artifact_ref 1536 // UmlBaseArtifact
-	artifact_ref 136578 // UmlAccessVariableValueAction
-	artifact_ref 136192 // UmlBaseOnSignalAction
-	artifact_ref 132738 // FileOut
-	artifact_ref 8961 // UmlNode
-	artifact_ref 8065 // UmlComponentDiagram
-	artifact_ref 2432 // UmlBaseExtraClassMember
-	artifact_ref 7297 // UmlClass
-	artifact_ref 9601 // UmlSequenceDiagram
-	artifact_ref 135424 // UmlBaseInterruptibleActivityRegion
-	artifact_ref 3968 // aDirection
-	artifact_ref 1792 // UmlBaseComponentView
-	artifact_ref 133506 // UmlActivityItem
-	artifact_ref 134914 // UmlActivityRegion
+	artifact_ref 132224 // UmlBaseForkPseudoState
+	artifact_ref 131586 // UmlShallowHistoryPseudoState
+	artifact_ref 2944 // UmlBasePackage
+	artifact_ref 4992 // JavaSettings
+	artifact_ref 5376 // CmdFamily
 	artifact_ref 130306 // UmlEntryPointPseudoState
+	artifact_ref 128512 // UmlBaseStateDiagram
+	artifact_ref 145408 // UmlBaseSequenceDiagramDefinition
+	artifact_ref 6144 // CppSettingsCmd
+	artifact_ref 2304 // UmlBaseDiagram
+	artifact_ref 142722 // UmlFragmentCompartment
+	artifact_ref 144770 // UmlCollaborationMessage
+	artifact_ref 8961 // UmlNode
+	artifact_ref 3200 // UmlBaseNcRelation
+	artifact_ref 130562 // UmlFinalState
+	artifact_ref 3072 // UmlBaseRelation
+	artifact_ref 141186 // UmlView
+	artifact_ref 144640 // UmlBaseSequenceMessage
+	artifact_ref 143362 // UmlUseCaseReference
+	artifact_ref 9729 // UmlUseCase
+	artifact_ref 133506 // UmlActivityItem
+	artifact_ref 138240 // UmlBaseActivityPin
+	artifact_ref 144896 // UmlBaseCollaborationMessage
 	artifact_ref 131712 // UmlBaseJunctionPseudoState
+	artifact_ref 131200 // UmlBaseDeepHistoryPseudoState
+	artifact_ref 136960 // UmlBaseActivityControlNodeClasses
+	artifact_ref 129280 // UmlBaseRegion
+	artifact_ref 6657 // Main
+	artifact_ref 141056 // UmlBaseView
+	artifact_ref 136322 // UmlOnSignalAction
+	artifact_ref 136066 // UmlActivityActionClasses
+	artifact_ref 142336 // PhpSettings
+	artifact_ref 138752 // UmlBaseParameterSet
+	artifact_ref 137856 // UmlBasePinParameter
+	artifact_ref 137986 // UmlPinParameter
+	artifact_ref 132738 // FileOut
+	artifact_ref 130818 // UmlTerminatePseudoState
+	artifact_ref 7169 // UmlAttribute
+	artifact_ref 9473 // UmlNcRelation
+	artifact_ref 137472 // anOrdering
+	artifact_ref 512 // UmlBaseFormalParameter
+	artifact_ref 9985 // UmlUseCaseView
+	artifact_ref 7425 // UmlClassDiagram
+	artifact_ref 140800 // UmlBaseTypeSpec
+	artifact_ref 6528 // UmlBaseComponent
+	artifact_ref 129536 // UmlBaseStateAction
+	artifact_ref 130176 // UmlBaseEntryPointPseudoState
+	artifact_ref 137090 // UmlActivityControlNodeClasses
+	artifact_ref 135296 // anExpansionKind
+	artifact_ref 136704 // UmlBaseActivityControlNode
+	artifact_ref 135424 // UmlBaseInterruptibleActivityRegion
+	artifact_ref 133762 // UmlActivity
+	artifact_ref 138882 // UmlParameterSet
+	artifact_ref 3712 // UmlBaseUseCaseView
+	artifact_ref 136578 // UmlAccessVariableValueAction
+	artifact_ref 7553 // UmlClassMember
+	artifact_ref 135554 // UmlInterruptibleActivityRegion
+	artifact_ref 138496 // UmlBaseActivityParameter
+	artifact_ref 138626 // UmlActivityParameter
+	artifact_ref 137216 // UmlBaseActivityObject
+	artifact_ref 4096 // aVisibility
+	artifact_ref 2048 // UmlBaseDeploymentDiagram
+	artifact_ref 5120 // UmlSettings
+	artifact_ref 6272 // JavaSettingsCmd
+	artifact_ref 1152 // UmlBaseClassMember
+	artifact_ref 3968 // aDirection
+	artifact_ref 135170 // UmlExpansionRegion
+	artifact_ref 129026 // UmlTransition
       end
       ncouples 10
       key "genpro pro" value "/tmp/xmi2/xmi2.pro"
@@ -6540,7 +7336,7 @@ ${definition}"
       key "genpro target" value "/tmp/xmi2/gxmi2"
       key "genpro tmplt" value "app"
       key "genpro config" value "debug warn_on qt"
-      key "genpro defines" value "WITHCPP WITHJAVA WITHIDL"
+      key "genpro defines" value "WITHCPP WITHJAVA WITHIDL WITHPHP"
       key "genpro includepath" value ""
       key "genpro dependpath" value ""
       key "genpro objectsdir" value ""
@@ -6569,7 +7365,7 @@ int main(int argc, char ** argv)
   if (UmlCom::connect(QString(argv[argc - 1]).toUInt())) {
     try {
       // warning : update release number in UmlPackage::xmi !
-      UmlCom::trace(\"<b>Xmi 2.1 generator</b> release 1.5.3<br>\");
+      UmlCom::trace(\"<b>Xmi 2.1 generator</b> release 1.5.4<br>\");
       UmlCom::targetItem()->xmi(argc - 2, argv + 1);
     }
     catch (...) {
@@ -6842,12 +7638,10 @@ ${namespace_end}
 "
       cpp_src "${comment}
 ${includes}
+#include \"UmlNcRelation.h\"
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      java_src "${comment}
-${package}
-${definition}"
       associated_classes
 	class_ref 8193 // UmlArtifact
       end
@@ -7054,12 +7848,11 @@ ${namespace_end}
 ${includes}
 #include \"UmlCom.h\"
 #include \"UmlClass.h\"
+
+#include \"PackageGlobalCmd.h\"
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      java_src "${comment}
-${package}
-${definition}"
       associated_classes
 	class_ref 8833 // UmlItem
       end
@@ -7847,12 +8640,10 @@ ${namespace_end}
 "
       cpp_src "${comment}
 ${includes}
+#include \"UmlFlow.h\"
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      java_src "${comment}
-${package}
-${definition}"
       associated_classes
 	class_ref 133506 // UmlActivityItem
       end
@@ -7873,13 +8664,11 @@ ${namespace_end}
 "
       cpp_src "${comment}
 #include \"UmlActivityItem.h\"
+#include \"UmlFlow.h\"
 ${includes}
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      java_src "${comment}
-${package}
-${definition}"
       associated_classes
 	class_ref 133762 // UmlActivity
       end
@@ -7983,12 +8772,10 @@ ${namespace_end}
 "
       cpp_src "${comment}
 ${includes}
+#include \"UmlFlow.h\"
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      java_src "${comment}
-${package}
-${definition}"
       associated_classes
 	class_ref 134914 // UmlActivityRegion
       end
@@ -8009,12 +8796,10 @@ ${namespace_end}
 "
       cpp_src "${comment}
 ${includes}
+#include \"UmlFlow.h\"
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      java_src "${comment}
-${package}
-${definition}"
       associated_classes
 	class_ref 135170 // UmlExpansionRegion
       end
@@ -8035,12 +8820,10 @@ ${namespace_end}
 "
       cpp_src "${comment}
 ${includes}
+#include \"UmlFlow.h\"
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      java_src "${comment}
-${package}
-${definition}"
       associated_classes
 	class_ref 135554 // UmlInterruptibleActivityRegion
       end
@@ -8239,12 +9022,10 @@ ${namespace_end}
       cpp_src "${comment}
 ${includes}
 #include \"UmlState.h\"
+#include \"UmlTransition.h\"
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      java_src "${comment}
-${package}
-${definition}"
       associated_classes
 	class_ref 142210 // UmlActivityObject
       end
@@ -8459,4 +9240,6 @@ ${definition}"
       end
     end
   end
+
+  package_ref 129154 // Diagram
 end

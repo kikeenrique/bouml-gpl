@@ -28,11 +28,15 @@ void UmlFlow::solveThem()
     QMap<QCString, UmlItem*>::Iterator itgt = UmlItem::All.find(flow.target);
     
     if ((isrc == UmlItem::All.end()) && 
-	((isrc = Outgoings.find(flow.id)) == Outgoings.end()))
-      UmlCom::trace("flow '" + flow.id + "' : unknown source reference '" + flow.source + "'<br>");
+	((isrc = Outgoings.find(flow.id)) == Outgoings.end())) {
+      if (!FileIn::isBypassedId(flow.source))
+	UmlCom::trace("flow '" + flow.id + "' : unknown source reference '" + flow.source + "'<br>");
+    }
     else if ((itgt == UmlItem::All.end()) && 
-	     ((itgt = Incomings.find(flow.id)) == Incomings.end()))
-      UmlCom::trace("flow '" + flow.id + "' : unknown target reference '" + flow.target + "'<br>");
+	     ((itgt = Incomings.find(flow.id)) == Incomings.end())) {
+      if (!FileIn::isBypassedId(flow.target))
+	UmlCom::trace("flow '" + flow.id + "' : unknown target reference '" + flow.target + "'<br>");
+    }
     else {
       UmlActivityNode * src = dynamic_cast<UmlActivityNode*>(*isrc);
       UmlActivityNode * tgt = dynamic_cast<UmlActivityNode*>(*itgt);
@@ -57,8 +61,10 @@ void UmlFlow::solveThem()
 	    QMap<QCString, QCString>::Iterator iter =
 	      OpaqueDefs.find(flow.selection);
 	    
-	    if (iter == OpaqueDefs.end())
-	      UmlCom::trace("flow '" + flow.id + "' : unknown selection reference '" + flow.selection + "'<br>");
+	    if (iter == OpaqueDefs.end()) {
+	      if (!FileIn::isBypassedId(flow.selection))
+		UmlCom::trace("flow '" + flow.id + "' : unknown selection reference '" + flow.selection + "'<br>");
+	    }
 	    else
 	      f->set_Selection(*iter);
 	  }
@@ -66,8 +72,10 @@ void UmlFlow::solveThem()
 	    QMap<QCString, QCString>::Iterator iter =
 	      OpaqueDefs.find(flow.transformation);
 	    
-	    if (iter == OpaqueDefs.end())
-	      UmlCom::trace("flow '" + flow.id + "' : unknown transformation reference '" + flow.transformation + "'<br>");
+	    if (iter == OpaqueDefs.end()) {
+	      if (!FileIn::isBypassedId(flow.transformation))
+		UmlCom::trace("flow '" + flow.id + "' : unknown transformation reference '" + flow.transformation + "'<br>");
+	    }
 	    else
 	      f->set_Transformation(*iter);
 	  }

@@ -47,10 +47,6 @@ template <class X> class IdDict;
 extern void set_in_import(bool y);
 extern bool in_import();
 
-// internal, not in the template to not define them several
-// times for nothing
-extern void update_idmax_for_root(QIntDict<void> & d, int & idmax);
-
 extern int place(IdDict<void> & d, int id, void *);
 extern int new_place(IdDict<void> & d, int user_id, void *);
 extern void will_change_id(IdDict<void> & d, int &, void *);
@@ -101,7 +97,17 @@ template <class X> class IdDict {
     }
     
     void update_idmax_for_root() {
-      ::update_idmax_for_root((QIntDict<void> &) dict[0], idmax);
+      QIntDictIterator<X> it(dict[0]); 
+      
+      while (it.current()) {
+	int id = it.currentKey();
+	
+	if ((((unsigned) (id & ~127)) > ((unsigned) idmax)) &&
+	    ((id & 127) == 0))
+	  idmax = id & ~127;
+	
+	++it;
+      }
     }
     
     void read_old_diagram(bool y) { old_diagram = y; }

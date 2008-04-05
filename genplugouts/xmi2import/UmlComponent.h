@@ -4,6 +4,7 @@
 
 #include "UmlBaseComponent.h"
 #include <qcstring.h>
+#include "anItemKind.h"
 
 class FileIn;
 class Token;
@@ -23,14 +24,27 @@ class UmlComponent : public UmlBaseComponent {
 
     void manageInterface(Token & token, FileIn & in);
 
+    //returns the first container for a 'kind', going up in the browser tree
+    virtual UmlItem * container(anItemKind kind, Token & token, FileIn & in);
+
     //  call at end of import : try to solve interfaces
     virtual void solve(int context, QCString idref);
+
+    //  call at end of import : try to solve generalization dependencies and realization
+    //  not from a class
+    virtual void generalizeDependRealize(UmlComponent * target, FileIn & in, int context, QCString label);
+
+    //  call at end of import : try to solve generalization dependencies and realization,
+    //  not from a class
+    virtual void solveGeneralizationDependencyRealization(int context, QCString idref, QCString label);
 
     static int numberOf() { return NumberOf; };
 
 
   protected:
     static int NumberOf;
+
+    static bool WarningAlreadyProduced;
 
 };
 

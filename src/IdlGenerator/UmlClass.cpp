@@ -30,6 +30,7 @@
 #include "UmlRelation.h"
 #include "IdlSettings.h"
 #include "UmlArtifact.h"
+#include "UmlPackage.h"
 #include "UmlCom.h"
 #include "util.h"
 
@@ -153,10 +154,17 @@ void UmlClass::generate(QTextOStream & f) {
 	
 	// items declaration
 	
+	unsigned n = 0;
+	
 	for (index = 0; index != ch.size(); index += 1)
 	  if ((ch[index]->kind() != aNcRelation) &&
 	      !((UmlClassItem *) ch[index])->idlDecl().isEmpty())
-	    ((UmlClassItem *) ch[index])->generate_decl(f, stereotype);
+	    n += 1;
+	
+	for (index = 0; n != 0; index += 1)
+	  if ((ch[index]->kind() != aNcRelation) &&
+	      !((UmlClassItem *) ch[index])->idlDecl().isEmpty())
+	    ((UmlClassItem *) ch[index])->generate_decl(f, stereotype, --n == 0);
       }
       else
 	// strange
@@ -198,7 +206,7 @@ void UmlClass::generate(QTextOStream & f) {
   }
 }
 
-void UmlClass::generate_decl(QTextOStream &, const QCString &) {
+void UmlClass::generate_decl(QTextOStream &, const QCString &, bool) {
   write_trace_header();
   UmlCom::trace(QCString("<font color=\"red\"><b>Embedded class <it>")
 		+ name() + "</it> not generated</b></font><br>");
@@ -214,6 +222,20 @@ void UmlClass::write(QTextOStream & f, const UmlTypeSpec & t)
 }
 
 void UmlClass::write(QTextOStream & f) {
+  UmlItem * p = associatedArtifact();
+  
+  if (p == 0)
+    p = this;
+  
+  do {
+    p = p->parent();
+  } while (p->kind() != aPackage);
+  
+  QCString module = ((UmlPackage *) p)->idlModule();
+  
+  if (module != UmlArtifact::generation_package()->idlModule())
+    f << module << "::";
+  
   if (isIdlExternal()) {
     QCString s = idlDecl();
     int index = s.find('\n');

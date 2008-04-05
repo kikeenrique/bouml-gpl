@@ -172,6 +172,7 @@ void UmlArtifact::generate() {
 	
 	for (index = 0; index != n; index += 1)
 	  cls[index]->generate_imports(f, imports);
+	
 	p +=9;
       }
       else

@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -114,7 +114,7 @@ void StateActionCanvas::compute_size() {
   min_height = fm.height() + sz.height();
   min_width = sz.width();
     
-  const char * st = data->get_stereotype();
+  const char * st = data->get_short_stereotype();
   int mn = (int) (STATE_ACTION_CANVAS_MIN_SIZE*zoom);
   
   if (!strcmp(st, "receive-signal") ||
@@ -124,7 +124,7 @@ void StateActionCanvas::compute_size() {
     min_width += ((height() > min_height) ? height() : min_height) / 2;
   }
   else if (st[0] != 0) {
-    int w = fm.width(QString("<<") + toUnicode(data->get_stereotype()) + ">>");
+    int w = fm.width(QString("<<") + toUnicode(st) + ">>");
     
     if (min_width < w)
       min_width = w;
@@ -147,7 +147,7 @@ void StateActionCanvas::compute_size() {
     : itscolor;
 
   if (used_color != UmlTransparent) {
-    const char * st = data->get_stereotype();
+    const char * st = data->get_short_stereotype();
     
     if (strcmp(st, "send-signal") && strcmp(st, "receive-signal")) {
       const int shadow = the_canvas()->shadow();
@@ -227,7 +227,7 @@ void StateActionCanvas::draw(QPainter & p) {
   QBrush brsh = p.brush();
   QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
   const BasicData * data = browser_node->get_data();
-  const char * st = data->get_stereotype();
+  const char * st = data->get_short_stereotype();
   const int shadow = the_canvas()->shadow();
   
   p.setBackgroundMode((used_color == UmlTransparent)

@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qpainter.h>
@@ -42,9 +42,9 @@
 #include "BrowserExpansionRegion.h"
 #include "BrowserInterruptibleActivityRegion.h"
 #include "ActivityActionData.h"
-#ifndef WIN32
+
 #warning
-#endif
+
 /*
 #include "BrowserPartition.h"
 */
@@ -58,6 +58,7 @@
 #include "MenuTitle.h"
 #include "strutil.h"
 #include "DialogUtil.h"
+#include "ProfiledStereotypes.h"
 #include "mu.h"
 
 IdDict<BrowserActivity> BrowserActivity::all(__FILE__);
@@ -246,6 +247,7 @@ Note that you can undelete it after");
     m.setWhatsThis(m.insertItem("Referenced by", 12),
 		   "to know who reference the <i>activity</i>");
     mark_menu(m, "activity", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
@@ -292,9 +294,9 @@ void BrowserActivity::exec_menu_choice(int rank) {
     BrowserExpansionRegion::add_expansionregion(this);
     break;
   case 4:
-#ifndef WIN32
+
 #warning
-#endif
+
     //add_partition(this);
     return;
   case 5:
@@ -340,7 +342,9 @@ void BrowserActivity::exec_menu_choice(int rank) {
     ReferenceDialog::show(this);
     return;
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);
@@ -552,9 +556,9 @@ bool BrowserActivity::tool_cmd(ToolCom * com, const char * args) {
 	case UmlActivityObject:
 	  (new BrowserActivityObject(args, this))->write_id(com);
 	  break;
-#ifndef WIN32
+
 #warning
-#endif
+
 	  /*
 	case UmlPartition:
 	  (BrowserRegion::add_partition(this, args))->write_id(com);
@@ -650,9 +654,9 @@ void BrowserActivity::DragMoveEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, BrowserInterruptibleActivityRegion::drag_key(this)) ||
       UmlDrag::canDecode(e, BrowserExpansionRegion::drag_key(this)) ||
       UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)) ||
-#ifndef WIN32
+
 #warning
-#endif
+
   /*
       UmlDrag::canDecode(e, BrowserPartition::drag_key(this)) ||
       */
@@ -679,9 +683,9 @@ void BrowserActivity::DragMoveInsideEvent(QDragMoveEvent * e) {
        UmlDrag::canDecode(e, BrowserInterruptibleActivityRegion::drag_key(this)) ||
        UmlDrag::canDecode(e, BrowserExpansionRegion::drag_key(this)) ||
        UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)) ||
-#ifndef WIN32
+
 #warning
-#endif
+
   /*
        UmlDrag::canDecode(e, BrowserPartition::drag_key(this)) ||
       */
@@ -701,9 +705,9 @@ void BrowserActivity::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
        ((bn = UmlDrag::decode(e, BrowserInterruptibleActivityRegion::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserExpansionRegion::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserSimpleRelation::drag_key(this))) != 0) ||
-#ifndef WIN32
+
 #warning
-#endif
+
   /*
        ((bn = UmlDrag::decode(e, BrowserPartition::drag_key(this))) != 0) ||
        */
@@ -712,7 +716,7 @@ void BrowserActivity::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     if (may_contains(bn, FALSE)) 
       move(bn, after);
     else {
-      msg_critical("Error", "Forbiden");
+      msg_critical("Error", "Forbidden");
       e->ignore();
     }
   }
@@ -854,9 +858,9 @@ BrowserActivity * BrowserActivity::read(char * & st, char * k,
 	     BrowserActivityObject::read(st, k, result) ||
 	     BrowserInterruptibleActivityRegion::read(st, k, result) ||
 	     BrowserExpansionRegion::read(st, k, result) ||
-#ifndef WIN32
+
 #warning
-#endif
+
 	     /*
 	     BrowserPartition::read(st, k, result) ||
 	     */
@@ -888,9 +892,9 @@ BrowserNode * BrowserActivity::get_it(const char * k, int id)
       ((r = BrowserExpansionRegion::get_it(k, id)) == 0) &&
       ((r = BrowserFlow::get_it(k, id)) == 0) &&
       ((r = BrowserSimpleRelation::get_it(k, id)) == 0)
-#ifndef WIN32
+
 #warning
-#endif
+
   /*
       ((r = BrowserPartition::get_it(k, id)) == 0) &&
   */

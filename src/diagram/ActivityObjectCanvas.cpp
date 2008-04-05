@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -146,9 +146,9 @@ void ActivityObjectCanvas::compute_size() {
 
   if (data->get_stereotype()[0]) {
     if (str.isEmpty())
-      str = QString("<<") + toUnicode(data->get_stereotype()) + ">>";
+      str = QString("<<") + toUnicode(data->get_short_stereotype()) + ">>";
     else
-      str = QString("<<") + toUnicode(data->get_stereotype()) + ">>\n" + str;
+      str = QString("<<") + toUnicode(data->get_short_stereotype()) + ">>\n" + str;
   }
 
   QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));

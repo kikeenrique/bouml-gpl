@@ -26,9 +26,9 @@
 #ifndef ACTIVITYOBJECTCANVAS_H
 #define ACTIVITYOBJECTCANVAS_H
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qobject.h>
 

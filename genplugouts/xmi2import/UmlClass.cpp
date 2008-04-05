@@ -15,7 +15,9 @@
 #include "ClassInstance.h"
 #include "CppSettings.h"
 
-UmlItem * UmlClass::container(anItemKind kind, const Token & token, FileIn & in) {
+#include "PackageGlobalCmd.h"
+
+UmlItem * UmlClass::container(anItemKind kind, Token & token, FileIn & in) {
   switch (kind) {
   case aClass:
   case anAttribute:
@@ -49,6 +51,9 @@ void UmlClass::init()
   declareFct("ownedmember", "uml:Actor", &importIt);
   declareFct("packagedelement", "uml:Actor", &importIt);
   declareFct("nestedclassifier", "uml:Actor", &importIt);
+  
+  declareFct("ownedmember", "uml:Stereotype", &importIt);
+  declareFct("packagedelement", "uml:Stereotype", &importIt);
 
   //
   
@@ -94,6 +99,11 @@ void UmlClass::importIt(FileIn & in, Token & token, UmlItem * where)
     cl->set_Stereotype("interface");
   else if (token.xmiType() == "uml:Enumeration")
     cl->set_Stereotype("enum");
+  else if (token.xmiType() == "uml:Stereotype") {
+    cl->set_Stereotype("stereotype");
+    NumberOf -= 1;
+    NumberOfStereotype += 1;
+  }
   else if (token.xmiType() == "uml:AssociationClass") {
     assocclass = &Association::get(token.xmiId(), token.valueOf("name"));
     assocclass->set_class_association();
@@ -232,7 +242,8 @@ void UmlClass::generalizeDependRealize(UmlItem * target, FileIn & in, int contex
   } r[] = {
     { aGeneralisation, "cannot create generalization from '" },
     { aDependency, "cannot create dependency from '" },
-    { aRealization, "cannot create realization from '" }
+    { aRealization, "cannot create realization from '" },
+    { aDependency, "cannot create usage from '" }
   };
   UmlItem * rel;
   
@@ -245,21 +256,21 @@ void UmlClass::generalizeDependRealize(UmlItem * target, FileIn & in, int contex
     in.warning(r[context].err + name() + "' to '" + target->name() + "'");
   else if (! label.isEmpty())
     rel->set_Name(label);
+
 }
 
 void UmlClass::solveGeneralizationDependencyRealization(int context, QCString idref, QCString label) {
   QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
   
-  if (it == All.end())
-    UmlCom::trace("relation : unknown target reference '" + idref + "'<br>");
-  else {
+  if (it != All.end()) {
     static const struct {
       aRelationKind rk;
       const char * err;
     } r[] = {
       { aGeneralisation, "cannot create generalization from '" },
       { aDependency, "cannot create dependency from '" },
-      { aRealization, "cannot create realization from '" }
+      { aRealization, "cannot create realization from '" },
+      { aDependency, "cannot create usage from '" }
     };
     UmlItem * target = *it;
     UmlItem * rel;
@@ -270,10 +281,16 @@ void UmlClass::solveGeneralizationDependencyRealization(int context, QCString id
       rel = UmlNcRelation::create(r[context].rk, this, target);
     
     if (rel == 0)
-      UmlCom::trace(r[context].err + name() + "' to '" + target->name() + "'");
-    else if (!label.isEmpty())
-      rel->set_Name(label);
+      UmlCom::trace(r[context].err + name() + "' to '" + target->name() + "'<br>");
+    else {
+      if (!label.isEmpty())
+	rel->set_Name(label);
+      if (context == 3)
+	rel->set_Stereotype("use");
+    }
   }
+  else if (!FileIn::isBypassedId(idref))
+    UmlCom::trace("relation : unknown target reference '" + idref + "'<br>");
 }
 
 UmlClass * UmlClass::signature(QCString id)
@@ -286,7 +303,7 @@ UmlClass * UmlClass::signature(QCString id)
 int UmlClass::formalRank(QCString id) {
   int r = formalsId.findIndex(id);
   
-  if (r == -1)
+  if ((r == -1) && !FileIn::isBypassedId(r))
     UmlCom::trace("unknown template formal reference '" + id + "'<br>");
 
   return r;
@@ -327,6 +344,53 @@ bool UmlClass::bind(UmlClass * tmpl) {
   return TRUE;
 }
 
+bool UmlClass::isAppliedStereotype(Token & tk, QCString & prof_st, QCString & base_v)
+{
+  static QDict<QCString> stereotypes;
+  static QDict<QCString> bases;
+  
+  QString s = tk.what();
+  QCString * st = stereotypes[s];
+  
+  if (st != 0) {
+    prof_st = *st;
+    base_v = *bases[s];
+    return TRUE;
+  }
+      
+  if (tk.xmiType().isEmpty() && (getFct(tk) == 0))  {
+    int index = s.find(':');
+    
+    if ((index != -1) &&
+	((index != 3) || ((s.left(3) != "uml") && (s.left(3) != "xmi")))) {
+#ifndef WIN32
+#warning must use UmlPackage::findStereotype(s, FALSE)
+#endif
+      UmlCom::send_cmd(packageGlobalCmd, saveProjectCmd + 3, (void *) 0, (const char *) s);
+      UmlClass * cl = (UmlClass *) UmlBaseItem::read_();
+      
+      if (cl != 0) {
+	QCString ext;
+	
+	cl->propertyValue("stereotypeExtension", ext);
+	
+	if (ext.isEmpty())
+	  ext = "base_element";
+	else
+	  ext = "base_" + ext.mid(ext.findRev('#') + 1).lower();
+	
+	base_v = ext;
+	prof_st = cl->parent()->parent()->name() + ":" + cl->name();
+	stereotypes.insert(s, new QCString(prof_st));
+	bases.insert(s, new QCString(base_v));
+	return TRUE;
+      }
+    }
+  }
+
+  return FALSE;
+}
+
 bool UmlClass::isPrimitiveType(Token & token, UmlTypeSpec & ts)
 {
   if (token.xmiType() != "uml:PrimitiveType")
@@ -359,6 +423,8 @@ bool UmlClass::isPrimitiveType(Token & token, UmlTypeSpec & ts)
 }
 
 int UmlClass::NumberOf;
+
+int UmlClass::NumberOfStereotype;
 
 //associate the class owning the template signature with the signature id
 QMap<QCString, UmlClass *> UmlClass::signatures;

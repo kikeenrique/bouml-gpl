@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <stdio.h>
 
@@ -67,6 +67,7 @@
 #include "AnnotationDialog.h"
 #include "DecoratorDialog.h"
 #include "Tool.h"
+#include "ProfiledStereotypes.h"
 
 QSize OperationDialog::previous_size;
 
@@ -240,6 +241,7 @@ void OperationDialog::init_uml() {
     edstereotype->setEnabled(FALSE);
   else if (! visit) {
     edstereotype->insertStringList(BrowserOperation::default_stereotypes());
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlOperation));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -450,12 +452,12 @@ void OperationDialog::init_cpp() {
     if (! visit) {
       new QLabel(grid);
       htab = new QHBox(grid);  
-      connect(new QPushButton("Default declaration", htab), SIGNAL(pressed()),
+      connect(new QPushButton("Default declaration", htab), SIGNAL(clicked()),
 	      this, SLOT(cpp_default_decl()));
       if (!oper->is_get_or_set)
-	connect(new QPushButton("From definition", htab), SIGNAL(pressed()),
+	connect(new QPushButton("From definition", htab), SIGNAL(clicked()),
 		this, SLOT(cpp_decl_from_def()));
-      connect(new QPushButton("Not generated in C++", htab), SIGNAL(pressed()),
+      connect(new QPushButton("Not generated in C++", htab), SIGNAL(clicked()),
 	      this, SLOT(cpp_unmapped_decl()));
       connect(new QPushButton("Edit parameters", htab), SIGNAL(clicked()),
 	      this, SLOT(cpp_edit_param_decl()));
@@ -500,12 +502,12 @@ void OperationDialog::init_cpp() {
         
     if (! visit) {
       htab = new QHBox(grid);  
-      connect(new QPushButton("Default definition", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Default definition", htab), SIGNAL(clicked ()),
 	      this, SLOT(cpp_default_def()));
       if (!oper->is_get_or_set)
-	connect(new QPushButton("From declaration", htab), SIGNAL(pressed ()),
+	connect(new QPushButton("From declaration", htab), SIGNAL(clicked ()),
 		this, SLOT(cpp_def_from_decl()));
-      connect(new QPushButton("Not generated in C++", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Not generated in C++", htab), SIGNAL(clicked ()),
 	      this, SLOT(cpp_unmapped_def()));
       connect(new QPushButton("Edit parameters", htab), SIGNAL(clicked()),
 	      this, SLOT(cpp_edit_param_def()));
@@ -615,9 +617,9 @@ void OperationDialog::init_java() {
     htab = new QHBox(grid);  
 
     if (! visit) {
-      connect(new QPushButton("Default definition", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Default definition", htab), SIGNAL(clicked ()),
 	      this, SLOT(java_default_def()));
-      connect(new QPushButton("Not generated in Java", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Not generated in Java", htab), SIGNAL(clicked ()),
 	      this, SLOT(java_unmapped_def()));
       
     }
@@ -722,9 +724,9 @@ void OperationDialog::init_php() {
     htab = new QHBox(grid);  
 
     if (! visit) {
-      connect(new QPushButton("Default definition", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Default definition", htab), SIGNAL(clicked ()),
 	      this, SLOT(php_default_def()));
-      connect(new QPushButton("Not generated in Php", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Not generated in Php", htab), SIGNAL(clicked ()),
 	      this, SLOT(php_unmapped_def()));
       connect(new QPushButton("Edit parameters", htab), SIGNAL(clicked()),
 	      this, SLOT(php_edit_param()));      
@@ -810,9 +812,9 @@ void OperationDialog::init_python() {
     htab = new QHBox(grid);  
 
     if (! visit) {
-      connect(new QPushButton("Default definition", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Default definition", htab), SIGNAL(clicked ()),
 	      this, SLOT(python_default_def()));
-      connect(new QPushButton("Not generated in Python", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Not generated in Python", htab), SIGNAL(clicked ()),
 	      this, SLOT(python_unmapped_def()));
       connect(new QPushButton("Edit parameters", htab), SIGNAL(clicked()),
 	      this, SLOT(python_edit_param()));      
@@ -895,9 +897,9 @@ void OperationDialog::init_idl() {
     if (! visit) {
       new QLabel(grid);
       htab = new QHBox(grid);  
-      connect(new QPushButton("Default declaration", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Default declaration", htab), SIGNAL(clicked ()),
 	      this, SLOT(idl_default_def()));
-      connect(new QPushButton("Not generated in Idl", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Not generated in Idl", htab), SIGNAL(clicked ()),
 	      this, SLOT(idl_unmapped_def()));
     }
     
@@ -940,7 +942,7 @@ void OperationDialog::menu_returntype() {
       nodes.at(index)->select_in_browser();
       break;
     case 2:
-      bn = BrowserClass::add_class(view);
+      bn = BrowserClass::add_class(FALSE, view);
       if (bn == 0)
 	return;
       bn->select_in_browser();
@@ -1008,6 +1010,8 @@ void OperationDialog::accept() {
   else {  
     bn->set_name(s);
     
+    bool newst = FALSE;
+    
     if (!oper->is_get_or_set) {
       AType t;
       
@@ -1023,7 +1027,7 @@ void OperationDialog::accept() {
       }
       oper->set_return_type(t);
       
-      oper->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+      newst = oper->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
     }
     
     oper->uml_visibility = uml_visibility.value();
@@ -1192,6 +1196,7 @@ void OperationDialog::accept() {
     bn->package_modified();
     oper->modified();
     
+    ProfiledStereotypes::modified(bn, newst);
     QTabDialog::accept();
   }
 }
@@ -1215,17 +1220,25 @@ void OperationDialog::abstract_toggled(bool on) {
 void OperationDialog::forcegenbody_toggled(bool on) {
   bool ro = (visit || (preserve_bodies() && !on));
   const char * lbl = (ro) ? "Show body" : "Edit body";
-			       
-  editcppbody->setText(lbl);
-  editjavabody->setText(lbl);
-  editphpbody->setText(lbl);
-  editpythonbody->setText(lbl);
+
+  if (!cpp_undef)
+    editcppbody->setText(lbl);
+  if (!java_undef)
+    editjavabody->setText(lbl);
+  if (!php_undef)
+    editphpbody->setText(lbl);
+  if (!python_undef)
+    editpythonbody->setText(lbl);
   
   if (!visit && !oper->is_get_or_set) {
-    indentcppbody_cb->setEnabled(editcppbody->isEnabled() && !ro);
-    indentjavabody_cb->setEnabled(editjavabody->isEnabled() && !ro);
-    indentphpbody_cb->setEnabled(editphpbody->isEnabled() && !ro);
-    indentpythonbody_cb->setEnabled(editpythonbody->isEnabled() && !ro);
+    if (!cpp_undef)
+      indentcppbody_cb->setEnabled(editcppbody->isEnabled() && !ro);
+    if (!java_undef)
+      indentjavabody_cb->setEnabled(editjavabody->isEnabled() && !ro);
+    if (!php_undef)
+      indentphpbody_cb->setEnabled(editphpbody->isEnabled() && !ro);
+    if (!python_undef)
+      indentpythonbody_cb->setEnabled(editpythonbody->isEnabled() && !ro);
   }
 }
 
@@ -1430,7 +1443,7 @@ void OperationDialog::cpp_edit_param_decl() {
 
   if (((index = form.find("${(}")) != 0) &&
       (form.find("${)}", index + 4) != 0)) {
-    CppParamsDialog d(table, edcppdecl);
+    CppParamsDialog d(this, table, edcppdecl);
     
     if (d.exec() == QDialog::Accepted)
       cpp_update_decl();
@@ -1873,7 +1886,7 @@ void OperationDialog::cpp_edit_param_def() {
 
   if (((index = form.find("${(}")) != 0) &&
       (form.find("${)}", index + 4) != 0)) {
-    CppParamsDialog d(table, edcppdef);
+    CppParamsDialog d(this, table, edcppdef);
     
     d.raise();
     if (d.exec() == QDialog::Accepted)
@@ -2090,35 +2103,20 @@ void OperationDialog::cpp_update_def() {
   forcegenbody_toggled(forcegenbody_cb->isChecked());	// update indent*body_cb
 }
 
-static QString add_profile(QString b)
+static QString Marker = " ---- these lines will be automatically removed ----\n";
+
+static QString add_profile(QString b, const char * comment = "//")
 {
-  b.insert(0, "#| ");
-
-  int index = 3;
-  int index2;
-
-  while ((index2 = b.find('\n', index)) != -1) {
-    b.insert(index2 + 1, "#| ");
-    index = index2 + 4;
-  }
-
-  b += "\n#| ---- these lines will be automatically removed ----\n";
-
-  return b;
+  return b.left(b.find("${body}")) + comment + Marker;
 }
 
 static QString remove_profile(QString b)
 {
-  while ((b.length() > 3) && (b.mid(0, 3) == "#| ")) {
-    int index = b.find('\n', 3);
-
-    if (index == -1)
-      return QString::null;
-
-    b.remove(0, index + 1);
-  }
-
-  return b;
+  int index = b.find(Marker);
+  
+  return (index == -1)
+    ? b
+    : b.mid(index + Marker.length());
 }
 
 void OperationDialog::cpp_edit_body() {
@@ -2516,7 +2514,7 @@ void OperationDialog::post_java_edit_body(OperationDialog * d, QString s)
 }
 
 void OperationDialog::java_edit_annotation() {
-  AnnotationDialog dialog(javaannotation, !hasOkButton());
+  AnnotationDialog dialog(this, javaannotation, !hasOkButton());
   
   if (dialog.exec() == QDialog::Accepted)
     java_update_def();
@@ -2823,7 +2821,7 @@ void OperationDialog::php_edit_param() {
 
   if (((index = form.find("${(}")) != 0) &&
       (form.find("${)}", index + 4) != 0)) {
-    PhpParamsDialog d(table, edphpdef);
+    PhpParamsDialog d(this, table, edphpdef);
     
     if (d.exec() == QDialog::Accepted)
       php_update_def();
@@ -3139,7 +3137,7 @@ void OperationDialog::python_edit_body() {
   QString b;
 
   if (add_operation_profile())
-    b = add_profile(showpythondef->text()) + pythonbody;
+    b = add_profile(showpythondef->text(), "#") + pythonbody;
   else
     b = pythonbody;
 
@@ -3162,7 +3160,7 @@ void OperationDialog::python_edit_param() {
 
   if (((index = form.find("${(}")) != 0) &&
       (form.find("${)}", index + 4) != 0)) {
-    PythonParamsDialog d(table, edpythondef);
+    PythonParamsDialog d(this, table, edpythondef);
     
     if (d.exec() == QDialog::Accepted)
       python_update_def();
@@ -3172,7 +3170,7 @@ void OperationDialog::python_edit_param() {
 }
 
 void OperationDialog::python_edit_decorator() {
-  DecoratorDialog dialog(pythondecorator, !hasOkButton());
+  DecoratorDialog dialog(this, pythondecorator, !hasOkButton());
   
   if (dialog.exec() == QDialog::Accepted)
     python_update_def();
@@ -4706,8 +4704,8 @@ void CppParamsTable::update_edform() {
 
 QSize CppParamsDialog::previous_size;
 
-CppParamsDialog::CppParamsDialog(ParamsTable * params, MultiLineEdit * form)
-    : QDialog(0, "C++ parameters dialog", TRUE) {
+CppParamsDialog::CppParamsDialog(QWidget * parent, ParamsTable * params, MultiLineEdit * form)
+    : QDialog(parent, "C++ parameters dialog", TRUE) {
   setCaption("C++ parameters dialog");
 
   QVBoxLayout * vbox = new QVBoxLayout(this); 
@@ -4761,7 +4759,7 @@ static QStringList PhpTypeRankList;
 static QStringList PhpRefList;
 static QStringList PhpParamRankList;
 
-PhpParamsTable::PhpParamsTable(ParamsTable * p, MultiLineEdit * f, QWidget * parent)
+PhpParamsTable::PhpParamsTable(QWidget * parent, ParamsTable * p, MultiLineEdit * f)
     : MyTable(0, 5, parent), params(p), edform(f) {
     
   setSorting(FALSE);
@@ -5185,15 +5183,15 @@ void PhpParamsTable::update_edform() {
 
 QSize PhpParamsDialog::previous_size;
 
-PhpParamsDialog::PhpParamsDialog(ParamsTable * params, MultiLineEdit * form)
-    : QDialog(0, "Php parameters dialog", TRUE) {
+PhpParamsDialog::PhpParamsDialog(QWidget * parent, ParamsTable * params, MultiLineEdit * form)
+    : QDialog(parent, "Php parameters dialog", TRUE) {
   setCaption("Php parameters dialog");
 
   QVBoxLayout * vbox = new QVBoxLayout(this); 
   
   vbox->setMargin(5);
 
-  tbl = new PhpParamsTable(params, form, this);
+  tbl = new PhpParamsTable(this, params, form);
   vbox->addWidget(tbl);
   
   QHBoxLayout * hbox = new QHBoxLayout(vbox); 
@@ -5240,7 +5238,7 @@ static QStringList PythonTypeRankList;
 static QStringList PythonModList;
 static QStringList PythonParamRankList;
 
-PythonParamsTable::PythonParamsTable(ParamsTable * p, MultiLineEdit * f, QWidget * parent)
+PythonParamsTable::PythonParamsTable(QWidget * parent, ParamsTable * p, MultiLineEdit * f)
     : MyTable(0, 4, parent), params(p), edform(f) {
     
   setSorting(FALSE);
@@ -5599,15 +5597,15 @@ void PythonParamsTable::update_edform() {
 
 QSize PythonParamsDialog::previous_size;
 
-PythonParamsDialog::PythonParamsDialog(ParamsTable * params, MultiLineEdit * form)
-    : QDialog(0, "Python parameters dialog", TRUE) {
+PythonParamsDialog::PythonParamsDialog(QWidget * parent, ParamsTable * params, MultiLineEdit * form)
+    : QDialog(parent, "Python parameters dialog", TRUE) {
   setCaption("Python parameters dialog");
 
   QVBoxLayout * vbox = new QVBoxLayout(this); 
   
   vbox->setMargin(5);
 
-  tbl = new PythonParamsTable(params, form, this);
+  tbl = new PythonParamsTable(this, params, form);
   vbox->addWidget(tbl);
   
   QHBoxLayout * hbox = new QHBoxLayout(vbox); 

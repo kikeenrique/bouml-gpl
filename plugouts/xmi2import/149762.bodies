@@ -49,9 +49,11 @@ class ClassInstance
     QMap<QCString, UmlItem *>::Iterator it;
     
     it = UmlItem::All.find(cli->classifierId);
-    if (it == UmlItem::All.end())
-      UmlCom::trace("class instance : unknown classifier reference '" +
-		    cli->classifierId + "'<br>");
+    if (it == UmlItem::All.end()) {
+      if (!FileIn::isBypassedId(cli->classifierId))
+	UmlCom::trace("class instance : unknown classifier reference '" +
+		      cli->classifierId + "'<br>");
+    }
     else if ((*it)->kind() != aClass)
       UmlCom::trace("class instance : classifier '" + cli->classifierId +
 		    "' is not a class<br>");
@@ -85,10 +87,12 @@ class ClassInstance
 	Slot & slot = *itsl;
 	
 	it = UmlItem::All.find(slot.featureId);
-	if (it == UmlItem::All.end())
-	  UmlCom::trace("class instance reference '" + cli->id +
-			"' : unknown slot feature reference '" +
-			slot.featureId + "'<br>");
+	if (it == UmlItem::All.end()) {
+	  if (!FileIn::isBypassedId(slot.featureId))
+	    UmlCom::trace("class instance reference '" + cli->id +
+			  "' : unknown slot feature reference '" +
+			  slot.featureId + "'<br>");
+	}
 	else if ((*it)->kind() == anAttribute) {
 	  if (! inst->set_AttributeValue((UmlAttribute *) *it, slot.value))
 	    UmlCom::trace("class instance reference '" + cli->id +
@@ -98,10 +102,12 @@ class ClassInstance
 	  UmlRelation * rel = (UmlRelation *) *it;
 	  
 	  it = UmlItem::All.find(slot.valueId);
-	  if (it == UmlItem::All.end())
-	    UmlCom::trace("class instance reference '" + cli->id +
-			  "': unknown class instance reference '" +
-			  slot.valueId + "'<br>");
+	  if (it == UmlItem::All.end()) {
+	    if (!FileIn::isBypassedId(slot.valueId))
+	      UmlCom::trace("class instance reference '" + cli->id +
+			    "': unknown class instance reference '" +
+			    slot.valueId + "'<br>");
+	  }
 	  else if ((*it)->kind() != aClassInstance)
 	    UmlCom::trace("class instance reference '" + cli->id +
 			  "': value reference '" + slot.valueId + 

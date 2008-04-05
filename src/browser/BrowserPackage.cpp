@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qfile.h> 
@@ -78,6 +78,8 @@
 #include "SaveProgress.h"
 #include "DialogUtil.h"
 #include "err.h"
+#include "strutil.h"
+#include "ProfiledStereotypes.h"
 
 IdDict<BrowserPackage> BrowserPackage::all(__FILE__);
 QList<BrowserPackage> BrowserPackage::removed;
@@ -348,9 +350,39 @@ void BrowserPackage::referenced_by(QList<BrowserNode> & l) {
 }
 
 const QPixmap* BrowserPackage::pixmap(int) const {
-  return (this != BrowserView::get_project())
-    ? ((deletedp()) ? DeletedPackageIcon : PackageIcon)
-    : 0;
+  if (this == BrowserView::get_project())
+    return 0;
+  
+  if (strcmp(def->get_stereotype(), "profile") == 0)
+    return ((deletedp()) ? DeletedProfileIcon : ProfileIcon);
+      
+  return ((deletedp()) ? DeletedPackageIcon : PackageIcon);
+}
+
+void BrowserPackage::update_stereotype(bool rec) {
+  if (def != 0) {
+    const char * stereotype = def->get_stereotype();
+    
+    if (show_stereotypes &&
+	stereotype[0] &&
+	(strcmp(stereotype, "profile") != 0)) {
+      QString s = toUnicode(stereotype);
+      int index = s.find(':');
+      
+      setText(0,
+	      "<<" + ((index == -1) ? s : s.mid(index + 1))
+	      + ">> " + name);
+    }
+    else
+      setText(0, (const char *) name);
+  }
+  
+  if (rec) {
+    QListViewItem * child;
+    
+    for (child = firstChild(); child != 0; child = child->nextSibling())
+      ((BrowserNode *) child)->update_stereotype(TRUE);
+  }
 }
 
 QString BrowserPackage::full_name(bool rev, bool) const {
@@ -392,6 +424,7 @@ void BrowserPackage::menu() {
   QPopupMenu roundtripm(0);
   QPopupMenu toolm(0);
   QPopupMenu importm(0);
+  bool isprofile = (strcmp(def->get_stereotype(), "profile") == 0);
   
   m.insertItem(new MenuTitle(name, m.font()), -1);
   m.insertSeparator();
@@ -401,12 +434,19 @@ void BrowserPackage::menu() {
 		     "to add a new sub <em>package</em>");
       m.setWhatsThis(m.insertItem("New use case view", 1),
 		     "to add a new <em>use case view</em>");
-      m.setWhatsThis(m.insertItem("New class view", 2),
-		     "to add a new <em>class view</em>");
-      m.setWhatsThis(m.insertItem("New component view", 3),
-		     "to add a new <em>class view</em>");
-      m.setWhatsThis(m.insertItem("New deployment view", 4),
-		     "to add a new <em>deployment view</em>");
+      if (isprofile)
+	m.setWhatsThis(m.insertItem("New class/stereotype view", 2),
+		       "to add a new <em>class/stereotype view</em>");
+      else {
+	m.setWhatsThis(m.insertItem("New class view", 2),
+		       "to add a new <em>class view</em>");
+	m.setWhatsThis(m.insertItem("New component view", 3),
+		       "to add a new <em>class view</em>");
+	m.setWhatsThis(m.insertItem("New deployment view", 4),
+		       "to add a new <em>deployment view</em>");
+      }
+      m.setWhatsThis(m.insertItem("New profile", 15),
+		     "to add a new <em>profile</em>");
       m.setWhatsThis(m.insertItem("Import project", 14),
 		     "to import the contents of a <em>project</em> under \
 the current <em>package</em>");
@@ -428,7 +468,7 @@ produced for an attribute etc..., and to set the root directories");
 	m.setWhatsThis(m.insertItem("Edit class settings", 7),
 		       "to set the sub classes's settings");
 	m.setWhatsThis(m.insertItem("Edit drawing settings", 9),
-		       "to set how the sub <em>diagrams</em>'s items must be drawed");
+		       "to set how the sub <em>diagrams</em>'s items must be drawn");
 	if (this == BrowserView::get_project()) {
 	  m.insertItem("Import", &importm);
 	  m.setWhatsThis(importm.insertItem("Generation settings", 28),
@@ -450,57 +490,65 @@ Note that you can undelete it after");
 		   "to know who reference the <i>package</i> \
 through a relation");
     mark_menu(m, "package", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
 
-    bool cpp = GenerationSettings::cpp_get_default_defs();
-    bool java = GenerationSettings::java_get_default_defs();
-    bool php = GenerationSettings::php_get_default_defs();
-    bool python = GenerationSettings::python_get_default_defs();
-    bool idl = GenerationSettings::idl_get_default_defs();
-
-    if (cpp || java || php || python || idl) {
-      m.insertSeparator();
-      m.insertItem("Generate", &genm);
-      if (cpp)
-	genm.insertItem("C++", 20);
-      if (java)
-	genm.insertItem("Java", 21);
-      if (php)
-	genm.insertItem("Php", 22);
-      if (python)
-	genm.insertItem("Python", 34);
-      if (idl)
-	genm.insertItem("Idl", 23);
-    }
-    
-    if (edition_number == 0) {
-      if (!is_read_only && (cpp || java || php || python)) {
-	m.insertItem("Reverse", &revm);
-	
+    if (! isprofile) {
+      bool cpp = GenerationSettings::cpp_get_default_defs();
+      bool java = GenerationSettings::java_get_default_defs();
+      bool php = GenerationSettings::php_get_default_defs();
+      bool python = GenerationSettings::python_get_default_defs();
+      bool idl = GenerationSettings::idl_get_default_defs();
+      
+      if (cpp || java || php || python || idl) {
+	m.insertSeparator();
+	m.insertItem("Generate", &genm);
 	if (cpp)
-	  revm.insertItem("C++", 24);
-	if (java) {
-	  revm.insertItem("Java", 25);
-	  revm.insertItem("Java Catalog", 26);
-	}
+	  genm.insertItem("C++", 20);
+	if (java)
+	  genm.insertItem("Java", 21);
 	if (php)
-	  revm.insertItem("Php", 32);
+	  genm.insertItem("Php", 22);
 	if (python)
-	  revm.insertItem("Python", 35);
-	
-	if (preserve_bodies()) {
-	  m.insertItem("Roundtrip body", &roundtripm);
-	
+	  genm.insertItem("Python", 34);
+	if (idl)
+	  genm.insertItem("Idl", 23);
+      }
+      
+      if (edition_number == 0) {
+	if (!is_read_only && (cpp || java || php || python)) {
+	  m.insertItem("Reverse", &revm);
+	  
 	  if (cpp)
-	    roundtripm.insertItem("C++", 30);
-	  if (java)
-	    roundtripm.insertItem("Java", 31);
+	    revm.insertItem("C++", 24);
+	  if (java) {
+	    revm.insertItem("Java", 25);
+	    revm.insertItem("Java Catalog", 26);
+	  }
 	  if (php)
-	    roundtripm.insertItem("Php", 33);
+	    revm.insertItem("Php", 32);
+
+#warning reverse python
+
+#if 0
 	  if (python)
-	    roundtripm.insertItem("Python", 36);
+	    revm.insertItem("Python", 35);
+#endif
+	  
+	  if (preserve_bodies()) {
+	    m.insertItem("Roundtrip body", &roundtripm);
+	    
+	    if (cpp)
+	      roundtripm.insertItem("C++", 30);
+	    if (java)
+	      roundtripm.insertItem("Java", 31);
+	    if (php)
+	      roundtripm.insertItem("Php", 33);
+	    if (python)
+	      roundtripm.insertItem("Python", 36);
+	  }
 	}
       }
-
+      
       if (Tool::menu_insert(&toolm, 
 			    (this == BrowserView::get_project()) ? UmlProject : UmlPackage,
 			    100)) {
@@ -540,12 +588,30 @@ through a relation");
   exec_menu_choice(m.exec(QCursor::pos()));
 }
 
+static bool contain_profile(BrowserPackage * p)
+{
+  QListViewItem * child;
+  
+  for (child = p->firstChild(); child != 0; child = child->nextSibling()) {
+    if (!((BrowserNode *) child)->deletedp() &&
+	(((BrowserNode *) child)->get_type() == UmlPackage)) {
+      if (!strcmp(((BrowserNode *) child)->get_data()->get_stereotype(), "profile"))
+	return TRUE;
+      else if (contain_profile((BrowserPackage *) child))
+	return TRUE;
+    }
+  }
+  
+  return FALSE;
+}
+
 void BrowserPackage::exec_menu_choice(int rank) {
   bool preserve = preserve_bodies();
+  bool isprofile = (strcmp(def->get_stereotype(), "profile") == 0);
       
   switch (rank) {
   case 0:
-    add_package();
+    add_package(FALSE);
     break;
   case 1:
     {
@@ -568,6 +634,8 @@ void BrowserPackage::exec_menu_choice(int rank) {
     }
     break;
   case 3:
+    if (isprofile)
+      return;
     {
       BrowserComponentView * v = 
 	BrowserComponentView::add_component_view(this);
@@ -578,6 +646,8 @@ void BrowserPackage::exec_menu_choice(int rank) {
     }
     break;
   case 4:
+    if (isprofile)
+      return;
     {
       BrowserDeploymentView * v = 
 	BrowserDeploymentView::add_deployment_view(this);
@@ -586,9 +656,6 @@ void BrowserPackage::exec_menu_choice(int rank) {
 	return;
       v->select_in_browser();
     }
-    break;
-  case 14:
-    import_project();
     break;
   case 5:
     def->edit();
@@ -606,20 +673,44 @@ void BrowserPackage::exec_menu_choice(int rank) {
     edit_drawing_settings();
     return;
   case 10:
-    delete_it();
+    if (!strcmp(get_data()->get_stereotype(), "profile")) {
+      bool propag = (msg_warning("Question",
+				 "Propagate the removal of the profile ?",
+				 1, 2)
+		     == 1);
+      ProfiledStereotypes::deleted(this, propag);
+      delete_it();
+    }
+    else {
+      bool recomp = ProfiledStereotypes::hasStereotype() &&
+	contain_profile(this);
+      
+      delete_it();
+      if (recomp)
+	ProfiledStereotypes::recompute(FALSE);
+    }
+    
     ((BrowserNode *) parent())->package_modified();
     break;
   case 11:
     undelete(FALSE);
+    ProfiledStereotypes::recompute(FALSE);
     break;
   case 12:
     undelete(TRUE);
+    ProfiledStereotypes::recompute(FALSE);
     break;
   case 13:
     ReferenceDialog::show(this);
     return;
+  case 14:
+    import_project();
+    break;
+  case 15:
+    add_package(TRUE);
+    break;
   case 20:
-    {
+    if (!isprofile) {
       ToolCom::run((verbose_generation()) 
 		   ? ((preserve) ? "cpp_generator -v -p" : "cpp_generator -v")
 		   : ((preserve) ? "cpp_generator -p" : "cpp_generator"),
@@ -627,7 +718,7 @@ void BrowserPackage::exec_menu_choice(int rank) {
     }
     return;
   case 21:
-    {
+    if (!isprofile) {
       ToolCom::run((verbose_generation()) 
 		   ? ((preserve) ? "java_generator -v -p" : "java_generator -v")
 		   : ((preserve) ? "java_generator -p" : "java_generator"), 
@@ -635,7 +726,7 @@ void BrowserPackage::exec_menu_choice(int rank) {
     }
     return;
   case 22:
-    {
+    if (!isprofile) {
       ToolCom::run((verbose_generation()) 
 		   ? ((preserve) ? "php_generator -v -p" : "php_generator -v")
 		   : ((preserve) ? "php_generator -p" : "php_generator"), 
@@ -643,7 +734,7 @@ void BrowserPackage::exec_menu_choice(int rank) {
     }
     return;
   case 34:
-    {
+    if (!isprofile) {
       ToolCom::run((verbose_generation()) 
 		   ? ((preserve) ? "python_generator -v -p" : "python_generator -v")
 		   : ((preserve) ? "python_generator -p" : "python_generator"), 
@@ -651,22 +742,28 @@ void BrowserPackage::exec_menu_choice(int rank) {
     }
     return;
   case 23:
-    ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
+    if (!isprofile)
+      ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
     return;
   case 24:
-    ToolCom::run("cpp_reverse", this);
+    if (!isprofile)
+      ToolCom::run("cpp_reverse", this);
     return;
   case 25:
-    ToolCom::run("java_reverse", this);
+    if (!isprofile)
+      ToolCom::run("java_reverse", this);
     return;
   case 26:
-    ToolCom::run("java_catalog", this);
+    if (!isprofile)
+      ToolCom::run("java_catalog", this);
     return;
   case 32:
-    ToolCom::run("php_reverse", this);
+    if (!isprofile)
+      ToolCom::run("php_reverse", this);
     return;
   case 35:
-    ToolCom::run("python_reverse", this);
+    if (!isprofile)
+      ToolCom::run("python_reverse", this);
     return;
   case 27:
     renumber(phase_renumerotation++);
@@ -691,19 +788,25 @@ void BrowserPackage::exec_menu_choice(int rank) {
       return;
     break;
   case 30:
-    ToolCom::run((verbose_generation()) ? "roundtrip_body -v c++" : "roundtrip_body c++", this);
+    if (!isprofile)
+      ToolCom::run((verbose_generation()) ? "roundtrip_body -v c++" : "roundtrip_body c++", this);
     return;
   case 31:
-    ToolCom::run((verbose_generation()) ? "roundtrip_body -v java" : "roundtrip_body java", this);
+    if (!isprofile)
+      ToolCom::run((verbose_generation()) ? "roundtrip_body -v java" : "roundtrip_body java", this);
     return;
   case 33:
-    ToolCom::run((verbose_generation()) ? "roundtrip_body -v php" : "roundtrip_body php", this);
+    if (!isprofile)
+      ToolCom::run((verbose_generation()) ? "roundtrip_body -v php" : "roundtrip_body php", this);
     return;
   case 36:
-    ToolCom::run((verbose_generation()) ? "roundtrip_body -v python" : "roundtrip_body python", this);
+    if (!isprofile)
+      ToolCom::run((verbose_generation()) ? "roundtrip_body -v python" : "roundtrip_body python", this);
     return;
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);
@@ -882,13 +985,17 @@ BrowserPackage * BrowserPackage::get_package()
   return ((BrowserPackage *) old);
 }
 
-void BrowserPackage::add_package() {
+void BrowserPackage::add_package(bool profile) {
   QString name;
   
-  if (enter_child_name(name, "enter package's name : ",
+  if (enter_child_name(name, 
+		       (profile) ? "enter profile's name : "
+				 : "enter package's name : ",
 		       UmlPackage, TRUE, FALSE)) {
     BrowserPackage * p = new BrowserPackage(name, this);
     
+    if (profile)
+      p->def->set_stereotype("profile");
     p->select_in_browser();
     if ((owner != -1) &&
 	(msg_warning("Bouml",
@@ -923,6 +1030,7 @@ void BrowserPackage::import_project() {
     
     BrowserPackage * p = new BrowserPackage(bname, this);
     bool err = FALSE;
+    unsigned fileformat;
     
     set_in_import(TRUE);
     BrowserView::set_imported_project(di, p);
@@ -930,14 +1038,19 @@ void BrowserPackage::import_project() {
 
     PRE_TRY;
     try {
-      p->load(TRUE);
+      fileformat = p->load(TRUE);
     }
     catch (int) {
       err = TRUE;
     }
     POST_TRY;
 
-    BrowserNode::post_load();
+    if (! err) {
+      if (GenerationSettings::add_class_rel_correspondences(fileformat))
+	Tool::add();
+    }
+    
+    BrowserNode::post_load(FALSE);
     idmax_add_margin();
     BrowserDiagram::import();
     BrowserView::set_imported_project(di, 0);
@@ -1544,6 +1657,9 @@ bool BrowserPackage::tool_global_cmd(ToolCom * com, const char * args)
   case findIdlModuleCmd:
     pf = &PackageData::get_idl_module;
     break;
+  case findPythonPackageCmd:
+    pf = &PackageData::get_python_package;
+    break;
   case getProjectCmd:
     BrowserView::get_project()->write_id(com);
     return TRUE;
@@ -1552,6 +1668,20 @@ bool BrowserPackage::tool_global_cmd(ToolCom * com, const char * args)
     return TRUE;
   case saveProjectCmd:
     UmlWindow::save_it();
+    return TRUE;
+  case updateProfileCmd:
+    ProfiledStereotypes::recompute(FALSE);
+    return TRUE;
+  case findStereotypeCmd:
+    {
+      bool case_sensitive = (com->get_id(args) != 0);
+      BrowserClass * r = ProfiledStereotypes::isModeled(args, case_sensitive);
+      
+      if (r == 0)
+	com->write_id(0);
+      else
+	r->write_id(com);
+    }
     return TRUE;
   default:
     return FALSE;
@@ -1670,7 +1800,9 @@ void BrowserPackage::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
        ((bn = UmlDrag::decode(e, UmlDeploymentView)) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserSimpleRelation::drag_key(this))) != 0)) &&
       (bn != after) && (bn != this)) {
-    if (may_contains(bn, bn->get_type() == UmlPackage)) {
+    UmlCode what = bn->get_type();
+
+    if (may_contains(bn, what == UmlPackage)) {
       BrowserNode * x = this;
       
       if ((after == 0) &&
@@ -1698,24 +1830,38 @@ void BrowserPackage::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	  return;
 	}
       }
+
       BrowserNode * old_parent = (BrowserNode *) bn->parent();
-      
+      bool stereotype_moved = FALSE;
+
+      if ((what == UmlClassView) &&
+	  (x != old_parent) && 
+	  !strcmp(old_parent->get_data()->get_stereotype(), "profile"))
+	stereotype_moved = ((BrowserClassView *) bn)->extract_from_profile();
+
       if (after)
 	bn->moveItem(after);
       else {
 	old_parent->takeItem(bn);
 	x->insertItem(bn);
       }
-      x->package_modified();
+
       if (old_parent != x) {
+	if (stereotype_moved &&
+	    (what == UmlClassView) &&
+	    !strcmp(x->get_data()->get_stereotype(), "profile"))
+	  ((BrowserClassView *) bn)->insert_in_profile();
+
 	old_parent->package_modified();
 	bn->modified();
       }
+
+      x->package_modified();
     }
     else if ((parent() != 0) && (after == 0))
       ((BrowserNode *) parent())->DropAfterEvent(e, this);
     else {
-      msg_critical("Error", "Forbiden");
+      msg_critical("Error", "Forbidden");
       e->ignore();
     }
   }
@@ -1744,6 +1890,7 @@ void BrowserPackage::init()
   its_default_stereotypes.append("model library");
   its_default_stereotypes.append("stub");
   its_default_stereotypes.append("toplevel");
+  its_default_stereotypes.append("profile");
   
   relation_default_stereotypes.clear();
   relation_default_stereotypes.append("access");
@@ -1806,6 +1953,10 @@ void BrowserPackage::read_stereotypes(char * & st, char * & k)
     read_unicode_string_list(relation_default_stereotypes, st);
     read_keyword(st, "end");
     k = read_keyword(st);
+
+    // force profile
+    if (its_default_stereotypes.findIndex("profile") == -1)
+      its_default_stereotypes.append("profile");
   }
   else
     init();

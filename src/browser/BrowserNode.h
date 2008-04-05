@@ -223,7 +223,7 @@ class BrowserNode : public QListViewItem,
     static void signal_unconsistencies();
     
     static void pre_load();
-    static void post_load();
+    static void post_load(bool light);
     
     virtual void renumber(int phase);
 

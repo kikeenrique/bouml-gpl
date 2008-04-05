@@ -22,9 +22,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include "ObjectData.h"
 #include "BrowserClass.h"

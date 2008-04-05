@@ -26,9 +26,9 @@
 #ifndef TABLEITEM_H
 #define TABLEITEM_H
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qtable.h>
 

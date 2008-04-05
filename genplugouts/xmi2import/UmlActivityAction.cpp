@@ -4,7 +4,7 @@
 #include "Token.h"
 #include "FileIn.h"
 
-UmlItem * UmlActivityAction::container(anItemKind kind, const Token & token, FileIn & in) {
+UmlItem * UmlActivityAction::container(anItemKind kind, Token & token, FileIn & in) {
   switch (kind) {
   case anActivityPin:
     return this;

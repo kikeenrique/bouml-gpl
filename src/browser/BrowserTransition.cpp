@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -42,9 +42,10 @@
 #include "AType.h"
 #include "MenuTitle.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
 #include "mu.h"
 
-IdDict<BrowserTransition> BrowserTransition::all(1023, __FILE__);
+IdDict<BrowserTransition> BrowserTransition::all(1021, __FILE__);
 
 BrowserTransition::BrowserTransition(BrowserNode * p, BrowserNode * end)
     : BrowserNode("<transition>", p), Labeled<BrowserTransition>(all, 0),
@@ -139,19 +140,23 @@ void BrowserTransition::renumber(int phase) {
 }
 
 void BrowserTransition::update_stereotype(bool) {
-  BasicData * data = get_data();
-  
-  if (data != 0) {
-    QString s = name;
-    const char * stereotype = data->get_stereotype();
+  if (def != 0) {
+    QString n = name;
+    const char * stereotype = def->get_stereotype();
     
-    if (s.isEmpty())
-      s = "<transition>";
+    if (n.isEmpty())
+      n = "<transition>";
     
-    setText(0,
-	    (show_stereotypes && stereotype[0])
-	    ? QString("<<") + stereotype + ">> " + s
-	    : s);
+    if (show_stereotypes && stereotype[0]) {
+      QString s = toUnicode(stereotype);
+      int index = s.find(':');
+      
+      setText(0,
+	      "<<" + ((index == -1) ? s : s.mid(index + 1))
+	      + ">> " + n);
+    }
+    else
+      setText(0, n);
   }
 }
 
@@ -196,6 +201,7 @@ Note that you can undelete it after");
     m.setWhatsThis(m.insertItem("Select " + s, 7),
 		   "to select the destination");
     mark_menu(m, "transition", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) 
 	&& Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
@@ -229,7 +235,9 @@ void BrowserTransition::exec_menu_choice(int rank) {
     def->get_end_node()->select_in_browser();
     return;
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);

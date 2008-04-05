@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include "ToolDialog.h"
 #include "Tool.h"
@@ -113,9 +113,9 @@ static const ToolColumnDef Others[] = {
 
 struct Tbl {
   const ToolColumnDef * cd;
-#ifndef WIN32
+
   const
-#endif
+
   unsigned ncol;
   const char * label;
   ToolTable * tbl;
@@ -210,6 +210,7 @@ ToolTable::ToolTable(QWidget * parent,
   setColumnStretchable(ncols + 2, FALSE);
   
   nrows = 0;
+  init_row(0);
   
   for (rank = 0; rank != Tool::ntools; rank += 1) {
     ATool & tool = Tool::tools[rank];
@@ -223,11 +224,11 @@ ToolTable::ToolTable(QWidget * parent,
 	  if (tool.applicable[cd[col].kind])
 	    setText(nrows, col + 2, " X");
 	nrows += 1;
+	init_row(nrows);
 	break;
       }
     }
   }
-  init_row(nrows);
   
   adjustColumn(0);
   adjustColumn(1);
@@ -237,8 +238,12 @@ void ToolTable::init_row(int row) {
   int index;
   int n = numCols();
   
-  for (index = 0; index != n; index += 1)
-    setText(row, index, QString::null);
+  setText(row, 0, QString::null);
+  setText(row, 1, QString::null);
+  
+  for (index = 2; index != n; index += 1)
+    setItem(row, index,
+	    new TableItem(this, QTableItem::Never, ""));
 }
 
 void ToolTable::button_pressed(int row, int col, int b, const QPoint & p) {

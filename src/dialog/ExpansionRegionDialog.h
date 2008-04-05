@@ -26,9 +26,9 @@
 #ifndef EXPANSIONREGIONDIALOG_H
 #define EXPANSIONREGIONDIALOG_H
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qlist.h>
 #include <qtabdialog.h>

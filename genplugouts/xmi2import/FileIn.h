@@ -4,6 +4,7 @@
 
 #include <qstring.h>
 #include <qcstring.h>
+#include <qdict.h>
 
 #include <stdio.h>
 #include <qmap.h>
@@ -39,10 +40,18 @@ class FileIn {
 
     void finish(QCString what);
 
+    void bypass(Token & tk);
+
+    void bypassedId(Token & tk);
+
     //doesn't return
     void error(QCString s);
 
     void warning(QCString s);
+
+    static bool isBypassedId(QCString id) {
+      return BypassedIds[QString(id)] != 0;
+    }
 
 
   protected:
@@ -59,6 +68,8 @@ class FileIn {
     char * _buffer;
 
     QMap<QCString, char> _special_chars;
+
+    static QDict<char> BypassedIds;
 
 
   private:

@@ -235,6 +235,10 @@ class UmlBaseAttribute
 !!!5120.java!!!	read_java_() : void
   super.read_java_();
   _java_transient = UmlCom.read_bool();
+!!!231808.cpp!!!	read_php_() : void
+  UmlBaseClassMember::read_php_();
+!!!231808.java!!!	read_php_() : void
+  super.read_php_();
 !!!5248.cpp!!!	read_idl_() : void
   UmlBaseClassItem::read_idl_();
   _idl_case = (UmlAttribute *) UmlBaseItem::read_();

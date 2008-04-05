@@ -70,24 +70,31 @@ void Token::read(FileIn & in, bool any) {
       return;
     }
     
-    if (! any) {
-      if (str)
+    if (str) {
+      if (!any)
 	in.error("syntax error near '" + QCString(k) + "'");
-      
+    }
+    else {
       Couple cpl;
       
       cpl.key = k;
       
-      if (!valueOf(k).isNull())
-	in.error("'" + cpl.key + "' duplicated");
-      
-      if ((*in.readWord(FALSE, str) != '=') || str)
-	in.error("syntax error near '" + QCString(k) + "', '=' expected");
-      
-      cpl.value = in.readWord(FALSE, str);
-      if (!str)
-	in.error("syntax error after '='");
-      _couples.append(cpl);
+      if (!any || !strcmp(k, "xmi:id")) {
+	if (!any && !valueOf(k).isNull())
+	  in.error("'" + cpl.key + "' duplicated");
+	
+	if ((*in.readWord(FALSE, str) != '=') || str) {
+	  if (! any)
+	    in.error("syntax error near '" + QCString(k) + "', '=' expected");
+	}
+	else {
+	  cpl.value = in.readWord(FALSE, str);
+	  if (str)
+	    _couples.append(cpl);
+	  else if (! any)
+	    in.error("syntax error after '='");
+	}
+      }
     }
   }
 
@@ -108,5 +115,18 @@ const QCString & Token::valueOf(QCString key) const {
   static QCString null;
   
   return null;
+}
+
+bool Token::valueOf(QCString key, QCString & v) const {
+  QValueList<Couple>::ConstIterator iter;
+  
+  for (iter = _couples.begin(); iter != _couples.end(); ++iter) {
+    if ((*iter).key == key) {
+      v = (*iter).value;
+      return TRUE;
+    }
+  }
+			  
+  return FALSE;
 }
 

@@ -26,9 +26,9 @@
 #ifndef STATEACTIONCANVAS_H
 #define STATEACTIONCANVAS_H
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qobject.h>
 

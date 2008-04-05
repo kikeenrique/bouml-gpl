@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -112,7 +112,7 @@ void StateCanvas::compute_size() {
   min_width = fm.width(browser_node->get_name());
     
   if (data->get_stereotype()[0] != 0) {
-    int w = fm.width(QString("<<") + toUnicode(data->get_stereotype()) + ">>");
+    int w = fm.width(QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
     
     if (min_width < w)
       min_width = w;
@@ -465,10 +465,10 @@ void StateCanvas::draw(QPainter & p) {
   
   if (data->get_stereotype()[0] != 0) {
     p.drawText(r, ::Qt::AlignHCenter,
-	       QString("<<") + toUnicode(data->get_stereotype()) + ">>");
+	       QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
     if (fp != 0)
       draw_text(r, ::Qt::AlignHCenter,
-		QString("<<") + toUnicode(data->get_stereotype()) + ">>",
+		QString("<<") + toUnicode(data->get_short_stereotype()) + ">>",
 		p.font(), fp);
     r.setTop(r.top() + fm.height());
   }

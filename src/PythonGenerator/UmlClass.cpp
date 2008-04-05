@@ -256,18 +256,16 @@ void UmlClass::write(QTextOStream & f) {
     f << s;
   }
   else {
-    // package != current one andc not empty ?
     UmlArtifact * cl_art = associatedArtifact();
     UmlArtifact * gen_art = UmlArtifact::generated_one();
     
     if ((cl_art != gen_art) && (cl_art != 0)) {
-      QCString s_cl_art =
+      QCString cl_pack =
 	((UmlPackage *) cl_art->parent()->parent())->pythonPackage();
       
-      if (!s_cl_art.isEmpty() && 
-	  (s_cl_art != ((UmlPackage *) gen_art->parent()->parent())->pythonPackage())) {
-	// imported ?
-	QCString s = "from " + s_cl_art + "." + cl_art->name() + " import ";
+      if (!cl_pack.isEmpty() && 
+	  (cl_pack != ((UmlPackage *) gen_art->parent()->parent())->pythonPackage())) {
+	QCString s = "from " + cl_pack + "." + cl_art->name() + " import ";
 	const QCString & imports = UmlArtifact::all_imports();
 	QCString importit = s + name();
 	QCString importstar = s + "*";
@@ -276,15 +274,29 @@ void UmlClass::write(QTextOStream & f) {
 	    (imports.find(importstar) == -1) &&
 	    (gen_art->pythonSource().find(importit) == -1) &&
 	    (gen_art->pythonSource().find(importstar) == -1))
-	  f << s_cl_art << "." << name();
+	  f << cl_pack << "." << cl_art->name() << "." << name();
 	else
 	  // imported
 	  f << name();
       }
-      else
-	f << name();
+      else {
+	QCString s = "from " + cl_art->name() + " import ";
+	const QCString & imports = UmlArtifact::all_imports();
+	QCString importit = s + name();
+	QCString importstar = s + "*";
+	
+	if ((imports.find(importit) == -1) &&
+	    (imports.find(importstar) == -1) &&
+	    (gen_art->pythonSource().find(importit) == -1) &&
+	    (gen_art->pythonSource().find(importstar) == -1))
+	  f << cl_art->name() << "." << name();
+	else
+	  // imported
+	  f << name();
+      }
     }
     else
+      // same artifact
       f << name();
   }
 }

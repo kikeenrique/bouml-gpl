@@ -120,7 +120,7 @@ class UmlItem : public UmlBaseItem {
     virtual void import(FileIn & in, Token & tk);
 
     //returns the first container for a 'kind', going up in the browser tree
-    virtual UmlItem * container(anItemKind kind, const Token & token, FileIn & in);
+    virtual UmlItem * container(anItemKind kind, Token & token, FileIn & in);
 
     //  call at end of import : try to solve reference
     //  does nothing at this level : never called
@@ -134,7 +134,7 @@ class UmlItem : public UmlBaseItem {
     //  not from a class
     virtual void generalizeDependRealize(UmlItem * target, FileIn & in, int context, QCString label);
 
-    //  call at end of import : try to solve generalization dependencies and realization
+    //  call at end of import : try to solve generalization dependencies and realization,
     //  not from a class
     virtual void solveGeneralizationDependencyRealization(int context, QCString idref, QCString label);
 
@@ -164,6 +164,10 @@ class UmlItem : public UmlBaseItem {
   public:
     static void declareFct(QCString what, QCString type, PFunc fct);
 
+    static PFunc getFct(const Token & tk);
+
+    static QCString readComment(FileIn & in, Token & token);
+
     static void init();
 
     static void importDocumentation(FileIn & in, Token & token, UmlItem * where);
@@ -190,11 +194,15 @@ class UmlItem : public UmlBaseItem {
 
     static QCString legalName(QCString s);
 
+    static bool fromEclipse();
+
     static QMap<QCString, QCString> OpaqueDefs;
 
 
   protected:
     static bool FromBouml;
+
+    static bool FromEclipse;
 
 
   public:

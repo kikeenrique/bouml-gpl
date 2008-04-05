@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qcursor.h>
 #include <qpainter.h>
@@ -137,7 +137,7 @@ int PackageCanvas::min_width() {
   }
   
   if (data->get_stereotype()[0]) {
-    int stw = fm.width(QString("<<") + toUnicode(data->get_stereotype()) + ">>") + eight;
+    int stw = fm.width(QString("<<") + toUnicode(data->get_short_stereotype()) + ">>") + eight;
     
     if (wi < stw)
       wi = stw;
@@ -307,10 +307,10 @@ void PackageCanvas::draw(QPainter & p) {
   
   if (data->get_stereotype()[0]) {
     p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, 
-	       QString("<<") + toUnicode(data->get_stereotype()) + ">>");
+	       QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
     if (fp != 0)
       draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, 
-		QString("<<") + toUnicode(data->get_stereotype()) + ">>",
+		QString("<<") + toUnicode(data->get_short_stereotype()) + ">>",
 		p.font(), fp);
     r.setTop(r.top() + he + three);
   }

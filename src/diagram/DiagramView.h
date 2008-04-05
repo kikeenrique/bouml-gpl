@@ -68,10 +68,10 @@ class DiagramView : public QCanvasView {
     bool decenter_horiz;
     QList<QByteArray> history;
     unsigned history_index;
-#ifdef WIN32
-    int saved_w;
-    int saved_h;
-#endif
+
+
+
+
     static QCString clipboard;
     static UmlCode copied_from;
     

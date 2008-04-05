@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <stdlib.h>
 
@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
     int uid = atoi(v);
     
     if ((uid < 2) || (uid > 127))
-      QMessageBox::critical(0, "Control project", "unvalid BOUML_ID");
+      QMessageBox::critical(0, "Control project", "invalid BOUML_ID");
     else {
       set_user_id(uid, QDir::home().dirName());
       app->connect(app, SIGNAL(lastWindowClosed()), SLOT(quit()) );

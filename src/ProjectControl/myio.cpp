@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qfile.h>
 #include <qstring.h>
@@ -137,7 +137,7 @@ static int open_file(QFile & fp, bool & ro)
   
   while (! fp.open(IO_ReadOnly)) {
     if (QMessageBox::critical(0, "Uml",
-			      filename + "\ncannot be openned for read, retry ?\n",
+			      filename + "\ncannot be opened for read, retry ?\n",
 			      "yes", "no", 0, 0, 0) != 0)
       return -1;
   }

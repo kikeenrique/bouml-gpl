@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qcursor.h>
 #include <qfile.h>
@@ -1184,7 +1184,7 @@ static QCString cpp_copy(const QCString attr_full_name, const QCString param_nam
     
     if ((*((const char *) multiplicity) != '[') ||
 	((index = multiplicity.find("]")) == -1))
-      return "#error unvalid multiplicity part \"" + QCString(multiplicity) + "\"\n";
+      return "#error invalid multiplicity part \"" + QCString(multiplicity) + "\"\n";
     
     QCString n = "(" + multiplicity.mid(1, index - 1) + ")";
     
@@ -2118,15 +2118,15 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
 	break;
       case setPhpBodyCmd:
 	{
-	  char * b = get_body('y');
+	  char * b = get_body('p');
 	  
 	  if (b != 0) {
 	    if (strcmp(b, args))
-	      new_body(args, 'y');
+	      new_body(args, 'p');
 	    delete [] b;
 	  }
 	  else if (*args)
-	    new_body(args, 'y');
+	    new_body(args, 'p');
 	}
 	break;
       case setPhpNameSpecCmd:

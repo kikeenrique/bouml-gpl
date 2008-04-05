@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qlabel.h> 
 #include <qlayout.h> 
@@ -43,8 +43,8 @@ static const char * DefaultAnnotations[] = {
   "SuppressWarnings", "Target"
 };
 
-AnnotationDialog::AnnotationDialog(QString & s, bool visit)
-    : QDialog(0, "annotation editor", TRUE), value(s) {
+AnnotationDialog::AnnotationDialog(QWidget * parent, QString & s, bool visit)
+    : QDialog(parent, "annotation editor", TRUE), value(s) {
   QVBoxLayout * vbox = new QVBoxLayout(this);
 
   vbox->setMargin(5);
@@ -73,7 +73,7 @@ AnnotationDialog::AnnotationDialog(QString & s, bool visit)
     hbox->setMargin(5);
     add_button = new QPushButton("Add ", this);
     hbox->addWidget(add_button);  
-    connect(add_button, SIGNAL(pressed()), this, SLOT(add_annotation()));
+    connect(add_button, SIGNAL(clicked()), this, SLOT(add_annotation()));
     
     cb = new QComboBox(FALSE, this);
     

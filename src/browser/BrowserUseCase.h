@@ -70,7 +70,7 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
   
     BrowserUseCase(int id);
     void make();
-    void exec_menu_choice(int rank, BrowserNode * item_above);
+    void exec_menu_choice(int rank);
     
   public:
     BrowserUseCase(QString s, BrowserNode * p, int id = 0);

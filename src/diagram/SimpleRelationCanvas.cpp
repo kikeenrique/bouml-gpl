@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qcursor.h>
 #include <math.h>
@@ -340,7 +340,7 @@ void SimpleRelationCanvas::update(bool updatepos) {
     
     // manages relation's stereotype
     
-    QString s = data->get_stereotype();
+    QString s = data->get_short_stereotype();
     
     if (s.isEmpty()) {
       // relation does not have stereotype
@@ -393,7 +393,7 @@ void SimpleRelationCanvas::drop(BrowserNode * bn, UmlCanvas * canvas)
   QCanvasItemList all = canvas->allItems();
   QCanvasItemList::Iterator cit;
 
-  // the two classes are drawed ?
+  // the two classes are drawn ?
   for (cit = all.begin(); cit != all.end(); ++cit) {
     if ((*cit)->visible()) {
       DiagramItem * adi = QCanvasItemToDiagramItem(*cit);
@@ -531,7 +531,7 @@ SimpleRelationCanvas * SimpleRelationCanvas::read(char * & st, UmlCanvas * canva
 	  read_double(st);	// z
 	}
 	else {
-	  QString s = toUnicode(rd->get_stereotype());
+	  QString s = toUnicode(rd->get_short_stereotype());
 	  
 	  if (s[0] != '{')
 	    s = QString("<<") + s + ">>";

@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <stdio.h>
 
@@ -47,6 +47,7 @@
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
 
 static const char * Relative = "Set it relative";
 static const char * Absolute = "Set it absolute";
@@ -83,14 +84,17 @@ PackageDialog::PackageDialog(PackageData * da)
   new QLabel("name : ", grid);
   edname = new LineEdit(pa->name(), grid);
   edname->setReadOnly(!da->browser_node->is_writable() ||
-		      (pa->get_browser_node() == BrowserView::get_project()));
+		      (da->browser_node == BrowserView::get_project()));
   
   new QLabel("stereotype : ", grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(pa->stereotype));
   if (! visit) {
     edstereotype->insertStringList(BrowserPackage::default_stereotypes());
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlPackage));
     edstereotype->setAutoCompletion(TRUE);
+    connect(edstereotype, SIGNAL(activated(const QString &)),
+	    this, SLOT(edStereotypeActivated(const QString &)));
   }
   edstereotype->setCurrentItem(0);
   QSizePolicy sp = edstereotype->sizePolicy();
@@ -104,7 +108,7 @@ PackageDialog::PackageDialog(PackageData * da)
 	    this, SLOT(edit_description()));
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
-  comment->setText(pa->get_browser_node()->get_comment());
+  comment->setText(da->browser_node->get_comment());
   QFont font = comment->font();
   if (! hasCodec())
     font.setFamily("Courier");
@@ -386,14 +390,52 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   if (!GenerationSettings::idl_get_default_defs())
     removePage(vtab);
   
+  // Profile
+  
+  vtab = new QVBox(this);
+  profiletab = vtab;
+  vtab->setMargin(5);
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(5);
+  new QLabel("", htab);
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(5);
+  lbl1 = new QLabel("meta model : \nreference", htab);
+  edmetamodelReference =
+    new LineEdit(pa->browser_node->get_value("metamodelReference"), htab);
+  edmetamodelReference->setReadOnly(visit);
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(5);
+  new QLabel("", htab);
+  
+  htab = new QHBox(vtab);
+  htab->setMargin(5);
+  lbl2 = new QLabel("meta class : \nreference", htab);
+  edmetaclassreference =
+    new LineEdit(pa->browser_node->get_value("metaclassreference"), htab);
+  edidlmodule->setReadOnly(visit);
+  
+  same_width(lbl1, lbl2);
+  
+  vtab->setStretchFactor(new QHBox(vtab), 1000);
+  
+  addTab(vtab, "Profile");
+
   // USER : list key - value
   
   vtab = new QVBox(this);
-  kvtable = new KeyValuesTable(pa->get_browser_node(), vtab, visit);
+  kvtable = new KeyValuesTable(da->browser_node, vtab, visit);
+  kvtable->remove("metamodelReference");
+  kvtable->remove("metaclassreference");
   addTab(vtab, "Properties");
   
   //
     
+  edStereotypeActivated(edstereotype->currentText());
+
   connect(this, SIGNAL(currentChanged(QWidget *)),
 	  this, SLOT(change_tabs(QWidget *)));
 }
@@ -409,6 +451,26 @@ PackageDialog::~PackageDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+}
+
+void PackageDialog::edStereotypeActivated(const QString & s) {
+  bool np = (s.stripWhiteSpace() != "profile");
+  
+  if (GenerationSettings::cpp_get_default_defs())
+    setTabEnabled(cpptab, np);
+  if (GenerationSettings::java_get_default_defs())
+    setTabEnabled(javatab, np);
+  if (GenerationSettings::idl_get_default_defs())
+    setTabEnabled(idltab, np);
+  if (GenerationSettings::php_get_default_defs())
+    setTabEnabled(phptab, np);
+  if (GenerationSettings::python_get_default_defs())
+    setTabEnabled(pythontab, np);
+  setTabEnabled(profiletab, !np);    
+  if (!np &&
+      edmetamodelReference->text().simplifyWhiteSpace().isEmpty() &&
+      edmetaclassreference->text().simplifyWhiteSpace().isEmpty())
+    edmetamodelReference->setText("http://schema.omg.org/spec/UML/2.1/uml.xml");
 }
     
 void PackageDialog::change_tabs(QWidget * w) {
@@ -442,39 +504,80 @@ void PackageDialog::accept() {
   if (!check_edits(edits))
     return;
     
-  BrowserNode * bn = pa->browser_node;
+  BrowserPackage * bn = (BrowserPackage *) pa->browser_node;
+  QString oldname = pa->name();
+  bool was_pr = !strcmp(pa->get_stereotype(), "profile");
+  QString st = fromUnicode(edstereotype->currentText().stripWhiteSpace());
   QString s;
   
   s = edname->text().stripWhiteSpace();
-  if ((s != pa->name()) &&
-      ((BrowserNode *) bn->parent())->wrong_child_name(s, UmlPackage,
-								     bn->allow_spaces(),
-								     bn->allow_empty()))
-    msg_critical("Error", s + "\n\nillegal name or already used");
-  else {  
+  if (s != oldname) {
+    if (((BrowserNode *) bn->parent())->wrong_child_name(s, UmlPackage,
+							 bn->allow_spaces(),
+							 bn->allow_empty())) {
+      msg_critical("Error", s + "\n\nillegal name or already used");
+      return;
+    }
+    
+    if ((st == "profile") && !ProfiledStereotypes::canAddPackage(bn, s)) {
+      msg_critical("Error", "conflict on stereotypes");
+      return;
+    }
+  
     bn->set_name(s);
-    pa->set_stereotype(fromUnicode(edstereotype->currentText().simplifyWhiteSpace()));
-    pa->cpp_h_dir = edcpphdir->text().simplifyWhiteSpace();
-    pa->cpp_src_dir = edcppsrcdir->text().simplifyWhiteSpace();
-    pa->cpp_namespace = edcppnamespace->text().simplifyWhiteSpace();
-    pa->java_dir = edjavadir->text().simplifyWhiteSpace();
-    pa->java_package = edjavapackage->text().simplifyWhiteSpace();
-    pa->php_dir = edphpdir->text().simplifyWhiteSpace();
-    pa->python_dir = edpythondir->text().simplifyWhiteSpace();
-    pa->python_package = edpythonpackage->text().simplifyWhiteSpace();
-    pa->idl_dir = edidldir->text().simplifyWhiteSpace();
-    pa->idl_module = edidlmodule->text().simplifyWhiteSpace();
-    
-    bn->set_comment(comment->text());
-    UmlWindow::update_comment_if_needed(bn);
-    
-    kvtable->update(bn);
-    
-    bn->package_modified();
-    pa->modified();
-    
-    QTabDialog::accept();
   }
+  else if ((st == "profile") &&
+	   !was_pr &&
+	   !ProfiledStereotypes::canAddPackage(bn, s)) {
+    msg_critical("Error", "conflict on stereotypes");
+    return;
+  }
+  
+  bool newst = pa->set_stereotype(st);
+  
+  pa->cpp_h_dir = edcpphdir->text().simplifyWhiteSpace();
+  pa->cpp_src_dir = edcppsrcdir->text().simplifyWhiteSpace();
+  pa->cpp_namespace = edcppnamespace->text().simplifyWhiteSpace();
+  pa->java_dir = edjavadir->text().simplifyWhiteSpace();
+  pa->java_package = edjavapackage->text().simplifyWhiteSpace();
+  pa->php_dir = edphpdir->text().simplifyWhiteSpace();
+  pa->python_dir = edpythondir->text().simplifyWhiteSpace();
+  pa->python_package = edpythonpackage->text().simplifyWhiteSpace();
+  pa->idl_dir = edidldir->text().simplifyWhiteSpace();
+  pa->idl_module = edidlmodule->text().simplifyWhiteSpace();
+  
+  bn->set_comment(comment->text());
+  UmlWindow::update_comment_if_needed(bn);
+  
+  kvtable->update(bn);
+  
+  if (st == "profile") {
+    unsigned n = bn->get_n_keys();
+    
+    bn->set_n_keys(n + 2);
+    bn->set_key(n, "metamodelReference");
+    bn->set_value(n, fromUnicode(edmetamodelReference->text().simplifyWhiteSpace()));
+    bn->set_key(n+1, "metaclassreference");
+    bn->set_value(n+1, fromUnicode(edmetaclassreference->text().simplifyWhiteSpace()));
+    
+    if (was_pr && (oldname != bn->get_name()))
+      ProfiledStereotypes::renamed(bn, oldname);
+  }
+  else if (was_pr) {
+    bool propag = (msg_warning("Question",
+			       "Propagate the removal of the profile ?",
+			       1, 2)
+		   == 1);
+    
+    ProfiledStereotypes::deleted(bn, propag);
+  }
+  
+  bn->package_modified();
+  pa->modified();
+  
+  ProfiledStereotypes::modified(bn, newst);
+  
+  QTabDialog::accept();
 }
 
 void PackageDialog::browse(LineEdit * ed, QPushButton * button,
@@ -546,11 +649,11 @@ void PackageDialog::relative(LineEdit * ed, QPushButton * button,
     unsigned len = root.length();
       
     if (
-#ifdef WIN32
-	(s.lower().find(root.lower()) == 0) &&
-#else
+
+
+
 	(s.find(root) == 0) &&
-#endif
+
 	(s.length() >= len)) {
       ed->setText(s.mid(len));
       button->setText(Absolute);

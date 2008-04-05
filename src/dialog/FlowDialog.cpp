@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qgrid.h> 
 #include <qvbox.h>
@@ -43,6 +43,7 @@
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
 #include "GenerationSettings.h"
+#include "ProfiledStereotypes.h"
 
 QSize FlowDialog::previous_size;
 
@@ -81,6 +82,7 @@ FlowDialog::FlowDialog(FlowData * d)
   edstereotype->insertItem(toUnicode(flow->get_stereotype()));
   if (!visit) {
     edstereotype->insertStringList(BrowserFlow::default_stereotypes());
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlFlow));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -253,7 +255,8 @@ void FlowDialog::accept() {
     msg_critical("Error", s + "\n\nillegal name or already used");
   else {  
     bn->set_name(s);
-    flow->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+    
+    bool newst = flow->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
     
     uml.accept(flow->uml);  
     cpp.accept(flow->cpp);  
@@ -268,6 +271,7 @@ void FlowDialog::accept() {
     bn->package_modified();
     flow->modified();
     
+    ProfiledStereotypes::modified(bn, newst);
     QTabDialog::accept();
   }
 }

@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -61,7 +61,7 @@ int user_id()
 			    "\
 The project is open in read-only mode because it is\n\
 under the control of 'Project control' or 'Project merge'\n\
-(the directory 'all.lock' exists)");
+(the directory '" + dir.absFilePath("all.lock") + "' exists)");
       force_read_only(TRUE);
     }
     else
@@ -77,12 +77,15 @@ under the control of 'Project control' or 'Project merge'\n\
       
       for (;;) {
 	Uid = Uid % 125 + 2;
-	if (dir.mkdir(QString::number(Uid) + ".lock"))
+	
+	QString fn = QString::number(Uid) + ".lock";
+	
+	if (dir.mkdir(fn))
 	  break;
-	if (!dir.exists(QString::number(Uid) + ".lock")) {
-	  msg_critical("BOUML_ID", "Can't create directory "
-		       + QString::number(Uid) +
-		       ".lock,\nthe project is open in read-only mode");
+	if (!dir.exists(fn)) {
+	  msg_critical("BOUML_ID", "Can't create directory\n"
+		       + dir.absFilePath(fn) +
+		       ",\nthe project is open in read-only mode");
 	  force_read_only(TRUE);
 	  break;
 	}
@@ -98,23 +101,27 @@ identifier is " + QString::number(Uid) +
 You must to define the environment variable BOUML_ID valuing between 2 up to 127\n\
 not used by an other person working at the same time on a project with you.");
     }
-    else if (! dir.mkdir(QString::number(Uid) + ".lock")) {
-      if (!dir.exists(QString::number(Uid) + ".lock")) {
-	msg_critical("BOUML_ID", "Can't create directory "
-		     + QString::number(Uid) +
-		     ".lock,\nthe project is open in read-only mode");
-	force_read_only(TRUE);
-      }
-      else {
-	msg_critical("BOUML_ID", 
+    else {
+      QString fn = QString::number(Uid) + ".lock";
+      
+      if (! dir.mkdir(fn)) {
+	if (!dir.exists(fn)) {
+	  msg_critical("BOUML_ID", "Can't create directory "
+		       + dir.absFilePath(fn) +
+		       ",\nthe project is open in read-only mode");
+	  force_read_only(TRUE);
+	}
+	else {
+	  msg_critical("BOUML_ID", 
 		     "\
-It seems that you are already editing the project.\n\
-If you're SURE that this is not the case\n\
-and another user does not have an identifier\n\
-equal to yours, remove the directory "
-		     + QString::number(Uid) + ".lock\n\
+It seems that you are already editing the project.\n\n\
+If you're SURE that this is not the case and\n\
+another user does not have an identifier equal\n\
+to yours, remove the directory\n"
+		       + dir.absFilePath(fn) + "\n\
 an restart BOUML");
-	exit(1);
+	  exit(1);
+	}
       }
     }
   }

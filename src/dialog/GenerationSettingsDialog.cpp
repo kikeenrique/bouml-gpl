@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qcursor.h>
 #include <qgrid.h> 
@@ -2022,11 +2022,11 @@ void GenerationSettingsDialog::relative(LineEdit * ed, QPushButton * button) {
     unsigned len = root.length();
       
     if (
-#ifdef WIN32
-	(s.lower().find(root.lower()) == 0) &&
-#else
+
+
+
 	(s.find(root) == 0) &&
-#endif
+
 	(s.length() >= len)) {
       ed->setText(s.mid(len));
       button->setText(Absolute);

@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -46,6 +46,7 @@
 #include "UmlDrag.h"
 #include "ReferenceDialog.h"
 #include "DialogUtil.h"
+#include "ProfiledStereotypes.h"
 #include "mu.h"
 #include "strutil.h"
 
@@ -166,15 +167,21 @@ QString BrowserClassInstance::full_name(bool rev, bool) const {
 void BrowserClassInstance::update_stereotype(bool) {
   if (def != 0) {
     const char * stereotype = def->get_stereotype();
-    QString s = get_name() + QString(" : ");
+    QString n = get_name() + QString(" : ");
     
     if (def->get_class() != 0)
-      s += def->get_class()->get_name();
+      n += def->get_class()->get_name();
     
-    setText(0,
-	    (show_stereotypes && stereotype[0])
-	    ? QString("<<") + toUnicode(stereotype) + ">> " + s
-	    : s);
+    if (show_stereotypes && stereotype[0]) {
+      QString s = toUnicode(stereotype);
+      int index = s.find(':');
+      
+      setText(0,
+	      "<<" + ((index == -1) ? s : s.mid(index + 1))
+	      + ">> " + n);
+    }
+    else
+      setText(0, n);
   }
 }
 
@@ -263,6 +270,7 @@ Note that you can undelete it after");
 		   "to know who reference the <i>class instance</i> \
 through a relation");
     mark_menu(m, "class instance", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
@@ -297,7 +305,9 @@ void BrowserClassInstance::exec_menu_choice(int rank) {
     duplicate((BrowserNode *) parent(), "")->select_in_browser();
     break;
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);

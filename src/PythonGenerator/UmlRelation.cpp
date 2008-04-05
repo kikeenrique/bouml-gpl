@@ -36,38 +36,49 @@
 
 
 void UmlRelation::generate_imports(QTextOStream & f, QCString & made) {
-  if ((relationKind() == aDependency) && !pythonDecl().isEmpty()) {
-    QCString s;
-    UmlClass * other_cl = roleType();
+  switch (relationKind()) {
+  case aGeneralisation:
+  case aRealization:
+  case aDependency:
+    if (pythonDecl().isEmpty())
+      return;
+    break;
+  default:
+    return;
+  }
     
-    if (other_cl->isPythonExternal()) {
-      // get def after first line
-      int index;
-      
-      s = other_cl->pythonDecl();
-      if ((index = s.find('\n')) == -1)
-	return;
-      s = s.mid(index + 1).stripWhiteSpace();
-      if (s.isEmpty())
-	return;
-    }
-    else {
-      UmlArtifact * other_art = other_cl->associatedArtifact();
-      
-      if ((other_art == 0) ||
-	  (other_art == ((UmlClass *) parent())->associatedArtifact()))
-	return;
-      
-      QCString s_art =
-	((UmlPackage *) other_art->parent()->parent())->pythonPackage();
-      
-      if (! s_art.isEmpty())
-	s_art += "." + other_art->name();
-      else
-	s_art = other_art->name();
-      
+  QCString s;
+  UmlClass * other_cl = roleType();
+  
+  if (other_cl->isPythonExternal()) {
+    // get def after first line
+    int index;
+    
+    s = other_cl->pythonDecl();
+    if ((index = s.find('\n')) == -1)
+      return;
+    s = s.mid(index + 1).stripWhiteSpace();
+    if (s.isEmpty())
+      return;
+  }
+  else {
+    UmlArtifact * other_art = other_cl->associatedArtifact();
+    
+    if ((other_art == 0) ||
+	(other_art == ((UmlClass *) parent())->associatedArtifact()))
+      return;
+    
+    QCString s_art =
+      ((UmlPackage *) other_art->parent()->parent())->pythonPackage();
+    
+    if (! s_art.isEmpty())
+      s_art += "." + other_art->name();
+    else
+      s_art = other_art->name();
+    
+    if (relationKind() == aDependency) {
       s = stereotype();
-    
+      
       if (s == "import")
 	s = "import " + s_art;
       else if (s == "from")
@@ -75,11 +86,15 @@ void UmlRelation::generate_imports(QTextOStream & f, QCString & made) {
       else
 	return;
     }
-    
-    if (made.find(s) == -1) {
-      made += s + "\n";
-      f << s << '\n';
-    }
+    else
+      s = "import " + s_art;
+  }
+  
+  s += "\n";
+  
+  if (made.find(s) == -1) {
+    made += s;
+    f << s;
   }
 }
 

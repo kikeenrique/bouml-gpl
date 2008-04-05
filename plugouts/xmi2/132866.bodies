@@ -1,5 +1,5 @@
 class Dialog
-!!!147330.cpp!!!	Dialog(inout path : string, inout encoding : string, inout genview : string, inout uml20 : string, inout profile : string, inout pk : string, inout vis : string, inout primitivetype : string, inout genextension : string, inout linefeed : string, inout lang : Language)
+!!!147330.cpp!!!	Dialog(inout path : string, inout encoding : string, inout genview : string, inout uml20 : string, inout pk : string, inout vis : string, inout primitivetype : string, inout genextension : string, inout geneclipse : string, inout commentexporter : string, inout linefeed : string, inout lang : Language)
   QVBoxLayout * vbox = new QVBoxLayout(this);
   QHBox * htab;
   
@@ -81,20 +81,9 @@ class Dialog
   htab->setMargin(5);
   vbox->addWidget(htab);
   
-  genview_cb = new QCheckBox("Generate views as package", htab);
+  genview_cb = new QCheckBox("Generate views as package (non compatible with profile generation)", htab);
   if (_genview == "yes")
     genview_cb->setChecked(TRUE);
-    
-  // generate profile
-  
-  htab = new QHBox(this);
-  htab->setMargin(5);
-  vbox->addWidget(htab);
-  
-  profile_cb = new QCheckBox("Use profile (stereotype)", htab);
-  if (_profile == "yes")
-    profile_cb->setChecked(TRUE);
-  profile_cb->setEnabled(FALSE);	// !!!!!!!!!!!!!!!!!
     
   // generate pk_ prefix
   
@@ -135,6 +124,26 @@ class Dialog
   genextension_cb = new QCheckBox("Generate extensions", htab);
   if (_genextension == "yes")
     genextension_cb->setChecked(TRUE);
+    
+  // generate for Eclipse
+  
+  htab = new QHBox(this);
+  htab->setMargin(5);
+  vbox->addWidget(htab);
+  
+  geneclipse_cb = new QCheckBox("Generate for Eclipse (aggregation set on other relation side)", htab);
+  if (_geneclipse == "yes")
+    geneclipse_cb->setChecked(TRUE);
+    
+  // comment exporter
+  
+  htab = new QHBox(this);
+  htab->setMargin(5);
+  vbox->addWidget(htab);
+  
+  commentexporter_cb = new QCheckBox("Comment exporter indication (needed to import in some tools like Rsa)", htab);
+  if (_commentexporter == "yes")
+    commentexporter_cb->setChecked(TRUE);
     
   // generate &#10; rather than linefeed
   
@@ -206,11 +215,12 @@ class Dialog
   _encoding = encoding_cb->currentText();
   _genview = (genview_cb->isChecked()) ? "yes" : "no";
   _uml20 = (uml20_rb->isChecked()) ? "yes" : "no";
-  _profile = (profile_cb->isChecked()) ? "yes" : "no";
   _pk = (pk_cb->isChecked()) ? "yes" : "no";
   _vis = (vis_cb->isChecked()) ? "yes" : "no";
   _primitivetype = (primitivetype_cb->isChecked()) ? "yes" : "no";
   _genextension = (genextension_cb->isChecked()) ? "yes" : "no";
+  _geneclipse = (geneclipse_cb->isChecked()) ? "yes" : "no";
+  _commentexporter = (commentexporter_cb->isChecked()) ? "yes" : "no";
   _linefeed = (linefeed_cb->isChecked()) ? "yes" : "no";
   
   QDialog::accept();

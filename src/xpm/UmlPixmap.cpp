@@ -69,6 +69,8 @@ QPixmap * ActorIcon;
 QPixmap * DeletedActorIcon;
 QPixmap * ClassIcon;
 QPixmap * DeletedClassIcon;
+QPixmap * StereotypeIcon;
+QPixmap * DeletedStereotypeIcon;
 QPixmap * ClassInstanceIcon;
 QPixmap * DeletedClassInstanceIcon;
 QPixmap * PublicEmbeddedClassIcon;
@@ -91,6 +93,8 @@ QPixmap * DeploymentNodeIcon;
 QPixmap * DeletedDeploymentNodeIcon;
 QPixmap * PackageIcon;
 QPixmap * DeletedPackageIcon;
+QPixmap * ProfileIcon;
+QPixmap * DeletedProfileIcon;
 QPixmap * SeqDiagramIcon;
 QPixmap * DeletedSeqDiagramIcon;
 QPixmap * ColDiagramIcon;
@@ -426,8 +430,10 @@ void init_pixmaps()
 #include "deletedactor_xpm.xpm"
 #include "class_xpm.xpm"
 #include "deletedclass_xpm.xpm"
-#include "deletedclassinstance_xpm.xpm"
+#include "stereotype_xpm.xpm"
+#include "deletedstereotype_xpm.xpm"
 #include "classinstance_xpm.xpm"
+#include "deletedclassinstance_xpm.xpm"
 #include "publicembeddedclass_xpm.xpm"
 #include "protectedembeddedclass_xpm.xpm"
 #include "packageembeddedclass_xpm.xpm"
@@ -440,6 +446,8 @@ void init_pixmaps()
 #include "privateembeddedtemplate_xpm.xpm"
 #include "package_xpm.xpm"
 #include "deletedpackage_xpm.xpm"
+#include "profile_xpm.xpm"
+#include "deletedprofile_xpm.xpm"
 #include "seqdiagram_xpm.xpm"
 #include "deletedseqdiagram_xpm.xpm"
 #include "coldiagram_xpm.xpm"
@@ -579,6 +587,8 @@ void init_pixmaps()
   DeletedActorIcon = new QPixmap((const char **) deletedactor_xpm);
   ClassIcon = new QPixmap((const char **) class_xpm);
   DeletedClassIcon = new QPixmap((const char **) deletedclass_xpm);
+  StereotypeIcon = new QPixmap((const char **) stereotype_xpm);
+  DeletedStereotypeIcon = new QPixmap((const char **) deletedstereotype_xpm);
   ClassInstanceIcon = new QPixmap((const char **) classinstance_xpm);
   DeletedClassInstanceIcon = new QPixmap((const char **) deletedclassinstance_xpm);
   PublicEmbeddedClassIcon = new QPixmap((const char **) publicembeddedclass_xpm);
@@ -593,6 +603,8 @@ void init_pixmaps()
   PrivateEmbeddedTemplateIcon = new QPixmap((const char **) privateembeddedtemplate_xpm);
   PackageIcon = new QPixmap((const char **) package_xpm);
   DeletedPackageIcon = new QPixmap((const char **) deletedpackage_xpm);
+  ProfileIcon = new QPixmap((const char **) profile_xpm);
+  DeletedProfileIcon = new QPixmap((const char **) deletedprofile_xpm);
   UseCaseIcon = new QPixmap((const char **) usecase_xpm);
   DeletedUseCaseIcon = new QPixmap((const char **) deletedusecase_xpm);
   ClassViewIcon = new QPixmap((const char **) classes_xpm);

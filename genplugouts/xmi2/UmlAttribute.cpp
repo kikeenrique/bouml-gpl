@@ -6,77 +6,78 @@
 #include "CppSettings.h"
 #include "JavaSettings.h"
 void UmlAttribute::write(FileOut & out) {
+  QCString stp = parent()->stereotype();
+  bool enum_item = (stp == "enum_pattern") ||
+    ((stp == "enum") && (stereotype() != "attribute"));
+  const char * k;
+  const char * kk;
+  
+  if (enum_item) {
+    k = "ownedLiteral";
+    kk = " xmi:type=\"uml:EnumerationLiteral\" name=\"";
+  }
+  else {
+    k = "ownedAttribute";
+    kk = " xmi:type=\"uml:Property\" name=\"";
+  }
+  
   switch (_lang) {
   case Uml:
     out.indent();
-    out << "<ownedAttribute xmi:type=\"uml:Property\" name=\"" << name() << '"';
+    out << "<" << k << kk << name() << '"';
     break;
   case Cpp:
     if (cppDecl().isEmpty())
       return;
     
     out.indent();
-    out << "<ownedAttribute xmi:type=\"uml:Property\" name=\"" << true_name(name(), cppDecl()) << '"';
+    out << "<" << k << kk << true_name(name(), cppDecl()) << '"';
     break;
   default: // Java
     if (javaDecl().isEmpty())
       return;
     
     out.indent();
-    out << "<ownedAttribute xmi:type=\"uml:Property\" name=\"" << true_name(name(), javaDecl()) << '"';
+    out << "<" << k << kk << true_name(name(), javaDecl()) << '"';
     break;
   }
   out.id(this);
-  write_visibility(out);
-  write_scope(out);
-  if (isReadOnly())
-	out << " isReadOnly=\"true\"";
+  
+  if (! enum_item) {
+    write_visibility(out);
+    write_scope(out);
+    if (isReadOnly())
+      out << " isReadOnly=\"true\"";
+  }
+
   out << ">\n";
   out.indent(+1);
   
-  const UmlTypeSpec & t = type();
-  QCString stp = parent()->stereotype();
-
-  switch (_lang) {
-  case Uml:
-    if ((stp == "enum") || (stp == "enum_pattern")) {
-      UmlTypeSpec ts;
-      
-      ts.type = (UmlClass *) parent();
-      UmlItem::write_type(out, ts);
-    }
-    else
+  if (! enum_item) {
+    const UmlTypeSpec & t = type();
+    
+    switch (_lang) {
+    case Uml:
       UmlItem::write_type(out, t);
-    break;
-  case Cpp:
-    if ((t.type != 0) || !t.explicit_type.isEmpty())
-      write_cpp_type(out);
-    else if ((stp == "enum") || (stp == "enum_pattern")) {
-      UmlTypeSpec ts;
-      
-      ts.type = (UmlClass *) parent();
-      UmlItem::write_type(out, ts);
+      break;
+    case Cpp:
+      if ((t.type != 0) || !t.explicit_type.isEmpty())
+	write_cpp_type(out);
+      break;
+    default: // java
+      if ((t.type != 0) || !t.explicit_type.isEmpty())
+	write_java_type(out);
     }
-    break;
-  default: // java
-    if ((t.type != 0) || !t.explicit_type.isEmpty())
-      write_java_type(out);
-    else if ((stp == "enum") || (stp == "enum_pattern")) {
-      UmlTypeSpec ts;
-      
-      ts.type = (UmlClass *) parent();
-      UmlItem::write_type(out, ts);
-    }
+    
+    write_multiplicity(out, multiplicity());
   }
-
-  write_multiplicity(out, multiplicity());
   write_default_value(out, defaultValue());
   write_annotation(out);
   write_description_properties(out);
 
   out.indent(-1);
   out.indent();
-  out << "</ownedAttribute>\n";
+  out << "</" << k << ">\n";
 
   unload();
 }
@@ -110,7 +111,7 @@ void UmlAttribute::write_cpp_type(FileOut & out) {
     t.explicit_type = CppSettings::type(t.explicit_type);
   
   out.indent();
-  out << "<type";
+  out << "<type xmi:type=\"uml:Class\"";
   write_type(out, t, s, "${name}", "${type}");
   out << "/>\n";
 }
@@ -143,7 +144,7 @@ void UmlAttribute::write_java_type(FileOut & out) {
     t.explicit_type = JavaSettings::type(t.explicit_type);
   
   out.indent();
-  out << "<type";
+  out << "<type xmi:type=\"uml:Class\"";
   write_type(out, t, s, "${name}", "${type}");
   out << "/>\n";
   

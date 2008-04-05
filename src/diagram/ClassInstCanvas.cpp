@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpainter.h>
 
@@ -61,7 +61,7 @@ QString ClassInstCanvas::full_name() const {
 BrowserNode * ClassInstCanvas::new_type() {
   BrowserNode * bn = container(UmlClass);
   
-  return (bn->is_writable()) ? BrowserClass::add_class(bn) : 0;
+  return (bn->is_writable()) ? BrowserClass::add_class(FALSE, bn) : 0;
 }
 
 bool ClassInstCanvas::new_type_available() {

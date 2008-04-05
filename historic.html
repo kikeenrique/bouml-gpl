@@ -1,3 +1,82 @@
+<h3>4.2.1</h3>April, 5th 2008<br /><br />
+    <ul>
+	<li> In the previous release the python body of an operation
+		was set when a <i>plug-out</i> asked for to set the Php
+		body. Of course this was also the case for <i>php reverse</i>
+		and <i>roundtrip body</i>. Fixed.
+		<br /><br /></li>
+
+	<li> In all the previous releases, when Bouml was compiled with a Qt3,
+		when you opened a dialog from an other one, the first dialog was
+		lowered, bypassed.
+		<br /><br /></li>
+		
+	<li> Add <i>profile</i> management, refer to the
+		<a href="doc/index_profile.html">documentation</a>.<br />
+		The package imports are not yet managed.<br />
+		<font color="#C05800">Warning : only the properties associated
+		to the profile can have a name containing two ':', the others
+		will be removed</color>.
+		<br /><br /></li>
+
+	<li> When you import a project into an other one, the <i>plug-outs</i>,
+		attribute and relation stereotype correspondences and the class
+		stereotype correspondences are now also added in the <i>plug-out</i>
+		when they don't yet exist.
+		<br /><br /></li>
+
+	<li> In the shortcut definition the key <i>Suppr</i> is renamed
+		<i>Delete</i>. In the previous releases some shortcut
+		definitions may be lost when you reload a project, fixed.		
+		<br /><br /></li>
+
+	<li> Modify the header added (then remove) when you set <i>add operation
+		profile on body edition</i> through the menu languages to
+		help external editor to compute the indent.		
+		<br /><br /></li>
+
+	<li> <b>Idl Generator 2.9.1</b><br />
+		To prefix the class names by their module if necessary.<br />
+		To not produce the ',' after the name of the last enumeration item
+		<br /><br /></li>
+
+	<li> <b>Python Generator 1.0.1</b><br />
+		Artifact's name was missing in some cases in the code
+			generated to reference classes, fixed.<br />
+		Auto generation of import forms based on generalization, this
+			means a generalization is also implicitly a dependency
+			stereotyped <i>import</i>.
+		<br /><br /></li>
+
+	<li> <b>XMI2 Import 1.2.7</b><br />
+		In the previous releases nested components was imported out of the container
+		component, fixed.<br />
+		To import <i>profiles</i> and <i>stereotypes</i>.<br />
+		To import <i>manifestations</i>.<br />
+		To manage files produced by Eclipse (aggregate definition on
+			other relation side)
+		<br /><br /></li>
+
+	<li> <b>XMI2 Generator 1.5.4</b><br />
+		To produce <i>profiles</i> and <i>stereotypes</i>.<br />
+		To produce the associations between <i>artifacts</i> and
+			other <i>artifact</i> or classes
+			through <i>manifestations</i>.<br />
+		To optionaly generate relation as Eclipse
+			(aggregate definition on other relation side)<br />
+		To allow to place <i>&lt;xmi:Documentation exporter="Bouml" ...&gt</i>
+			in comment else some tools refuse to import produced XMI
+			or have problem after the import(for instance
+			<i>Rational Software Architech</i>)
+		<br /><br /></li>
+
+	<li> <b>Html documentation Generator 2.13.3</b><br />
+		To produce <i>Profile/Stereotype</i> rather than
+			<i>Package/Class</i> if needed.
+		</li>
+    </ul>
+<br /><br />
+
 <h3>4.2</h3>February, 17th 2008<br /><br />
     <ul>
 	<li> Since the 4.0 it was not possible to modify the Php definition

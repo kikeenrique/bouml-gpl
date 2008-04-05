@@ -4,7 +4,7 @@
 #include "Token.h"
 #include "FileIn.h"
 
-UmlItem * UmlClassView::container(anItemKind kind, const Token & token, FileIn & in) {
+UmlItem * UmlClassView::container(anItemKind kind, Token & token, FileIn & in) {
   switch (kind) {
   case aClass:
   case aClassInstance:

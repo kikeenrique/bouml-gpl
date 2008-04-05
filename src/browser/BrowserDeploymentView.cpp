@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -45,6 +45,7 @@
 #include "DialogUtil.h"
 #include "mu.h"
 #include "GenerationSettings.h"
+#include "ProfiledStereotypes.h"
 
 IdDict<BrowserDeploymentView> BrowserDeploymentView::all(__FILE__);
 QStringList BrowserDeploymentView::its_default_stereotypes;	// unicode
@@ -175,7 +176,7 @@ void BrowserDeploymentView::menu() {
 	//m.setWhatsThis(m.insertItem("Edit node settings", 4),
 	//		   "to set the sub node's settings");
 	m.setWhatsThis(m.insertItem("Edit drawing settings", 5),
-		       "to set how the sub <em>deployment diagrams</em>'s items must be drawed");
+		       "to set how the sub <em>deployment diagrams</em>'s items must be drawn");
 	if (edition_number == 0) {
 	  m.insertSeparator();
 	  m.setWhatsThis(m.insertItem("Delete", 6),
@@ -185,6 +186,7 @@ Note that you can undelete them after");
       }
     }
     mark_menu(m, "deployment view", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
 
     bool cpp = GenerationSettings::cpp_get_default_defs();
     bool java = GenerationSettings::java_get_default_defs();
@@ -360,7 +362,9 @@ void BrowserDeploymentView::exec_menu_choice(int rank) {
     ToolCom::run((verbose_generation()) ? "roundtrip_body -v python" : "roundtrip_body python", this);
     return;
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);
@@ -675,7 +679,7 @@ void BrowserDeploymentView::DropAfterEvent(QDropEvent * e, BrowserNode * after) 
       }
     }
     else {
-      msg_critical("Error", "Forbiden");
+      msg_critical("Error", "Forbidden");
       e->ignore();
     }
   }

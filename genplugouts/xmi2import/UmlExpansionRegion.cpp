@@ -5,7 +5,7 @@
 #include "FileIn.h"
 
 #include "UmlExpansionNode.h"
-UmlItem * UmlExpansionRegion::container(anItemKind kind, const Token & token, FileIn & in) {
+UmlItem * UmlExpansionRegion::container(anItemKind kind, Token & token, FileIn & in) {
   switch (kind) {
   case anExpansionRegion:
   case anInterruptibleActivityRegion:

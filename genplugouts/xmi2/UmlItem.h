@@ -49,6 +49,8 @@ class UmlItem : public UmlBaseItem {
 
     static void write_default_value(FileOut & out, QCString v);
 
+    static void write_stereotyped(FileOut & out);
+
 
   protected:
     bool _written;
@@ -58,8 +60,6 @@ class UmlItem : public UmlBaseItem {
     static Language _lang;
 
     static bool _uml_20;
-
-    static bool _use_profile;
 
     static bool _pk_prefix;
 
@@ -71,7 +71,9 @@ class UmlItem : public UmlBaseItem {
 
     static bool _gen_extension;
 
-    QMap<QCString, QList<UmlItem> > _stereotypes;
+    static bool _gen_eclipse;
+
+    static QMap<QCString, QList<UmlItem> > _stereotypes;
 
 };
 

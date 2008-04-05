@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h>
 #include <qvalidator.h>
@@ -225,7 +225,7 @@ void ColMsgTable::refresh(ColMsgList & m) {
 void ColMsgTable::edit_msg(int row) {
   ColMsg * msg = flat_msg_list[row];
   
-  CodChangeMsgDialog d(msg);
+  CodChangeMsgDialog d(this, msg);
   
   if (d.exec() == QDialog::Accepted) {
     QString def = msg->def(FALSE, TRUE, UmlView);

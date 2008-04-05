@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qcursor.h>
 #include <math.h>
@@ -456,7 +456,7 @@ void TransitionCanvas::update(bool updatepos) {
     
     // manages relation's stereotype
     
-    QString s = data->get_stereotype();
+    QString s = data->get_short_stereotype();
     bool update_label = FALSE;
     
     if (s.isEmpty()) {
@@ -558,7 +558,7 @@ void TransitionCanvas::drop(BrowserNode * bn, UmlCanvas * canvas)
   QCanvasItemList all = canvas->allItems();
   QCanvasItemList::Iterator cit;
 
-  // the two extremities are drawed ?
+  // the two extremities are drawn ?
   for (cit = all.begin(); cit != all.end(); ++cit) {
     if ((*cit)->visible()) {
       DiagramItem * di = QCanvasItemToDiagramItem(*cit);
@@ -704,7 +704,7 @@ TransitionCanvas * TransitionCanvas::read(char * & st, UmlCanvas * canvas, char 
 	}
 	else {
 	  stereotype = 
-	    new LabelCanvas(QString("<<") + toUnicode(tr->get_stereotype()) + ">>",
+	    new LabelCanvas(QString("<<") + toUnicode(tr->get_short_stereotype()) + ">>",
 			    canvas, x, y);
 	  stereotype->setZ(read_double(st));
 	}

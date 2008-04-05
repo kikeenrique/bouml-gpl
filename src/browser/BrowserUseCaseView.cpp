@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -49,6 +49,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "DialogUtil.h"
+#include "ProfiledStereotypes.h"
 #include "mu.h"
 
 IdDict<BrowserUseCaseView> BrowserUseCaseView::all(__FILE__);
@@ -186,7 +187,7 @@ void BrowserUseCaseView::menu() {
       if (!is_read_only) {
 	m.insertSeparator();
 	m.setWhatsThis(m.insertItem("Edit drawing settings", 9),
-		       "to set how the sub <em>diagrams</em>'s items must be drawed");
+		       "to set how the sub <em>diagrams</em>'s items must be drawn");
 	if (edition_number == 0) {
 	  m.insertSeparator();
 	  m.setWhatsThis(m.insertItem("Delete", 10),
@@ -196,6 +197,7 @@ Note that you can undelete them after");
       }
     }
     mark_menu(m, "use case view", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
@@ -256,7 +258,7 @@ void BrowserUseCaseView::exec_menu_choice(int rank) {
     break;
   case 4:
     {
-      BrowserClass * a = BrowserClass::add_class(this);
+      BrowserClass * a = BrowserClass::add_class(FALSE, this);
       
       if (a == 0)
 	return;
@@ -267,7 +269,7 @@ void BrowserUseCaseView::exec_menu_choice(int rank) {
     break;
   case 5:
     {
-      BrowserClass * c = BrowserClass::add_class(this);
+      BrowserClass * c = BrowserClass::add_class(FALSE, this);
       
       if (c != 0)
 	c->select_in_browser();
@@ -367,7 +369,9 @@ void BrowserUseCaseView::exec_menu_choice(int rank) {
     }
     return; // package_modified called
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);
@@ -809,7 +813,7 @@ bool BrowserUseCaseView::tool_cmd(ToolCom * com, const char * args) {
 	  if (wrong_child_name(args, UmlClass, FALSE, FALSE))
 	    ok = FALSE;
 	  else
-	    (BrowserClass::add_class(this, args))->write_id(com);
+	    (BrowserClass::add_class(FALSE, this, args))->write_id(com);
 	  break;
 	case UmlClassInstance:
 	  BrowserClassInstance::add_from_tool(this, com, args);
@@ -982,7 +986,7 @@ void BrowserUseCaseView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     else if (after == 0)
       ((BrowserNode *) parent())->DropAfterEvent(e, this);
     else {
-      msg_critical("Error", "Forbiden");
+      msg_critical("Error", "Forbidden");
       e->ignore();
     }
   }

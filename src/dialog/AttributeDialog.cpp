@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qgrid.h> 
 #include <qvbox.h>
@@ -53,6 +53,7 @@
 #include "strutil.h"
 #include "BodyDialog.h"
 #include "AnnotationDialog.h"
+#include "ProfiledStereotypes.h"
 
 QSize AttributeDialog::previous_size;
 
@@ -126,10 +127,12 @@ AttributeDialog::AttributeDialog(AttributeData * a)
   
   if (!java_in_enum_pattern) {
     new QLabel("stereotype :", grid);
-    edstereotype = new QComboBox(!visit, grid);
+    htab = new QHBox(grid);
+    edstereotype = new QComboBox(!visit, htab);
     edstereotype->insertItem(toUnicode(a->get_stereotype()));
     if (!visit) {
       edstereotype->insertStringList(BrowserAttribute::default_stereotypes());
+      edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlAttribute));
       if (java_in_enum) {
 	int n = edstereotype->count();
 	
@@ -158,6 +161,16 @@ AttributeDialog::AttributeDialog(AttributeData * a)
     sp.setHorData(QSizePolicy::Expanding);
     edstereotype->setSizePolicy(sp);
     
+    new QLabel("    multiplicity :  ", htab);
+    multiplicity = new QComboBox(!visit, htab);
+    multiplicity->setSizePolicy(sp);
+    multiplicity->insertItem(a->get_multiplicity());
+    if (!visit) {
+      multiplicity->insertItem("1");
+      multiplicity->insertItem("0..1");
+      multiplicity->insertItem("*");
+      multiplicity->insertItem("1..*");
+    }
     connect(new SmallPushButton("type :", grid), SIGNAL(clicked()),
 	    this, SLOT(menu_type()));
     
@@ -174,19 +187,6 @@ AttributeDialog::AttributeDialog(AttributeData * a)
     }
     edtype->setCurrentItem(0);
     edtype->setSizePolicy(sp);
-
-    new QLabel("multiplicity : ", grid);
-    htab = new QHBox(grid);
-    htab->setMargin(0);
-    multiplicity = new QComboBox(!visit, htab);
-    multiplicity->setSizePolicy(sp);
-    multiplicity->insertItem(a->get_multiplicity());
-    if (!visit) {
-      multiplicity->insertItem("1");
-      multiplicity->insertItem("0..1");
-      multiplicity->insertItem("*");
-      multiplicity->insertItem("1..*");
-    }
 
     new QLabel("initial value :", grid);
   }
@@ -306,9 +306,9 @@ AttributeDialog::AttributeDialog(AttributeData * a)
     if (! visit) {
       new QLabel(grid);
       htab = new QHBox(grid);
-      connect(new QPushButton("Default declaration", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Default declaration", htab), SIGNAL(clicked ()),
 	      this, SLOT(cpp_default()));
-      connect(new QPushButton("Not generated in C++", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Not generated in C++", htab), SIGNAL(clicked ()),
 	      this, SLOT(cpp_unmapped()));
     }
     
@@ -358,15 +358,15 @@ AttributeDialog::AttributeDialog(AttributeData * a)
 
     if (! visit) {
       if (java_in_enum) {
-	connect(new QPushButton("Default item declaration", htab), SIGNAL(pressed ()),
+	connect(new QPushButton("Default item declaration", htab), SIGNAL(clicked ()),
 		this, SLOT(java_default_item()));
-	connect(new QPushButton("Default attribute declaration", htab), SIGNAL(pressed ()),
+	connect(new QPushButton("Default attribute declaration", htab), SIGNAL(clicked ()),
 		this, SLOT(java_default()));
       }
       else
-	connect(new QPushButton("Default declaration", htab), SIGNAL(pressed ()),
+	connect(new QPushButton("Default declaration", htab), SIGNAL(clicked ()),
 		this, SLOT(java_default()));
-      connect(new QPushButton("Not generated in Java", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Not generated in Java", htab), SIGNAL(clicked ()),
 	      this, SLOT(java_unmapped()));
       
     }
@@ -415,9 +415,9 @@ AttributeDialog::AttributeDialog(AttributeData * a)
     htab = new QHBox(grid);
 
     if (! visit) {
-      connect(new QPushButton("Default declaration", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Default declaration", htab), SIGNAL(clicked ()),
 	      this, SLOT(php_default()));
-      connect(new QPushButton("Not generated in Php", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Not generated in Php", htab), SIGNAL(clicked ()),
 	      this, SLOT(php_unmapped())); 
     }
     
@@ -455,9 +455,9 @@ AttributeDialog::AttributeDialog(AttributeData * a)
     htab = new QHBox(grid);
 
     if (! visit) {
-      connect(new QPushButton("Default declaration", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Default declaration", htab), SIGNAL(clicked ()),
 	      this, SLOT(python_default()));
-      connect(new QPushButton("Not generated in Python", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Not generated in Python", htab), SIGNAL(clicked ()),
 	      this, SLOT(python_unmapped())); 
     }
     
@@ -522,15 +522,15 @@ AttributeDialog::AttributeDialog(AttributeData * a)
       connect(new QPushButton((idl_in_enum) ? "Default declaration"
 					    : "Default Attribute declaration",
 			      htab),
-	      SIGNAL(pressed ()), this, SLOT(idl_default()));
+	      SIGNAL(clicked ()), this, SLOT(idl_default()));
       if (!idl_in_enum && !idl_in_union) {
 	if (!idl_in_struct)
-	  connect(new QPushButton("Default State declaration", htab), SIGNAL(pressed ()),
+	  connect(new QPushButton("Default State declaration", htab), SIGNAL(clicked ()),
 		  this, SLOT(idl_default_state()));
-	connect(new QPushButton("Default constant declaration", htab), SIGNAL(pressed ()),
+	connect(new QPushButton("Default constant declaration", htab), SIGNAL(clicked ()),
 		this, SLOT(idl_default_constant()));
       }
-      connect(new QPushButton("Not generated in Idl", htab), SIGNAL(pressed ()),
+      connect(new QPushButton("Not generated in Idl", htab), SIGNAL(clicked ()),
 	      this, SLOT(idl_unmapped()));
     }
     
@@ -600,7 +600,7 @@ void AttributeDialog::menu_type() {
       nodes.at(index)->select_in_browser();
       break;
     case 2:
-      bn = BrowserClass::add_class(view);
+      bn = BrowserClass::add_class(FALSE, view);
       if (bn == 0)
 	return;
       bn->select_in_browser();
@@ -637,16 +637,19 @@ void AttributeDialog::accept() {
     return;
     
   BrowserNode * bn = att->browser_node;
+  QString oldname = att->name();
   QString s;
   
   s = edname->text().stripWhiteSpace();
-  if ((s != att->name()) &&
+  if ((s != oldname) &&
       ((BrowserNode *) bn->parent())->wrong_child_name(s, UmlAttribute,
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
     msg_critical("Error", s + "\n\nillegal name or already used");
   else {  
     bn->set_name(s);
+
+    bool newst = FALSE;
     
     if (!java_in_enum_pattern) {
       AType t;
@@ -671,7 +674,7 @@ void AttributeDialog::accept() {
 
       att->multiplicity = multiplicity->currentText().stripWhiteSpace();
 
-      att->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+      newst = att->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
     }
     
     att->init_value = edinit->text();
@@ -720,6 +723,9 @@ void AttributeDialog::accept() {
     bn->package_modified();
     att->modified();
     
+    ProfiledStereotypes::modified(bn, newst);
+    if (!strcmp(((BrowserNode *) bn->parent())->get_data()->get_stereotype(), "stereotype"))
+      ProfiledStereotypes::changed((BrowserAttribute *) bn, oldname);
     QDialog::accept();
   }
 }
@@ -1228,7 +1234,7 @@ QString AttributeDialog::java_decl(const BrowserAttribute * at, bool init)
 }
 
 void AttributeDialog::java_edit_annotation() {  
-  AnnotationDialog dialog(javaannotation, !hasOkButton());
+  AnnotationDialog dialog(this, javaannotation, !hasOkButton());
   
   if (dialog.exec() == QDialog::Accepted)
     java_update();

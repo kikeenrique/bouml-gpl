@@ -1,5 +1,6 @@
 
 #include "UmlActivityItem.h"
+#include "UmlFlow.h"
 #include "UmlActivity.h"
 #include "FileOut.h"
 #include "UmlItem.h"

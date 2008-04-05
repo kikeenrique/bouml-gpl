@@ -46,7 +46,7 @@ class AnnotationDialog : public QDialog {
     static QSize previous_size;
   
   public:
-    AnnotationDialog(QString & s, bool visit);
+    AnnotationDialog(QWidget * parent, QString & s, bool visit);
     virtual ~AnnotationDialog();
   
   protected slots:

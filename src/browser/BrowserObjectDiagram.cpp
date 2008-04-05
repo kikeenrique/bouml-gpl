@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -42,6 +42,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "BrowserView.h"
+#include "ProfiledStereotypes.h"
 #include "mu.h"
 
 QList<BrowserObjectDiagram> BrowserObjectDiagram::imported;
@@ -187,7 +188,6 @@ void BrowserObjectDiagram::draw_svg() const {
 void BrowserObjectDiagram::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
-  BrowserNode * item_above = 0;
   
   m.insertItem(new MenuTitle(name, m.font()), -1);
   m.insertSeparator();
@@ -199,40 +199,11 @@ void BrowserObjectDiagram::menu() {
 		     "to edit the <em>object diagram</em>");
       if (!is_read_only) {
 	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
-		       "to set how the <em>object diagram</em>'s items must be drawed");
+		       "to set how the <em>object diagram</em>'s items must be drawn");
 	m.insertSeparator();
 	m.setWhatsThis(m.insertItem("Duplicate", 3),
 		       "to duplicate the <em>object diagram</em>");
 	if (edition_number == 0) {
-	  item_above = (BrowserNode *) parent()->firstChild();
-	  if (item_above == this)
-	    item_above = 0;
-	  else {
-	    for (;;) {
-	      BrowserNode * next = (BrowserNode *) item_above->nextSibling();
-	      
-	      if (next == this)
-		break;
-	      item_above = (BrowserNode *) next;
-	    }
-	  }
-	  
-	  if (item_above != 0) {
-	    switch (item_above->get_type()) {
-	    case UmlUseCase:
-	    case UmlUseCaseView:
-	      if (!((BrowserNode *) item_above)->wrong_child_name(get_name(), UmlObjectDiagram, TRUE, FALSE)) {
-		m.insertSeparator();
-		m.setWhatsThis(m.insertItem(QString("set it nested in ")
-					    + item_above->get_name(),
-					    6),
-			       "to set it nested in the item above");
-	      }
-	    default:
-	      break;
-	    }
-	  }
-      
 	  m.insertSeparator();
 	  m.setWhatsThis(m.insertItem("Delete", 4),
 			 "to delete the <em>object diagram</em>. \
@@ -241,6 +212,7 @@ Note that you can undelete it after");
       }
     }
     mark_menu(m, "object diagram", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
@@ -251,11 +223,10 @@ Note that you can undelete it after");
     m.setWhatsThis(m.insertItem("Undelete", 5),
 		   "to undelete the <em>object diagram</em>");
   
-  exec_menu_choice(m.exec(QCursor::pos()), item_above);
+  exec_menu_choice(m.exec(QCursor::pos()));
 }
 
-void BrowserObjectDiagram::exec_menu_choice(int rank,
-					    BrowserNode * item_above) {
+void BrowserObjectDiagram::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
     open(FALSE);
@@ -283,13 +254,10 @@ void BrowserObjectDiagram::exec_menu_choice(int rank,
   case 5:
     undelete(FALSE);
     break;
-  case 6:
-    parent()->takeItem(this);
-    item_above->insertItem(this);
-    item_above->setOpen(TRUE);
-    break;
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);
@@ -327,7 +295,7 @@ void BrowserObjectDiagram::apply_shortcut(QString s) {
     if (s == "Undelete")
       choice = 5;
   
-  exec_menu_choice(choice, 0);
+  exec_menu_choice(choice);
 }
 
 void BrowserObjectDiagram::open(bool) {

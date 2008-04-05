@@ -47,8 +47,10 @@ void UmlAccessVariableValueAction::setVariable(QCString idref) {
 void UmlAccessVariableValueAction::solve(QCString idref) {
   QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
   
-  if (it == All.end())
-    UmlCom::trace("activity action : unknown variable reference '" + idref + "'<br>");
+  if (it == All.end()) {
+    if (!FileIn::isBypassedId(idref))
+      UmlCom::trace("activity action : unknown variable reference '" + idref + "'<br>");
+  }
   else {
     switch ((*it)->kind()) {
     case anAttribute:

@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h>
 #include <qtextstream.h>
@@ -212,9 +212,20 @@ QStringList Tool::all_display()
   return r;
 }
 
-const char * Tool::command(int param)
+const char * Tool::command(int rank)
 {
-  return tools[param].cmd;
+  return tools[rank].cmd;
+}
+
+const char * Tool::command(const char * d)
+{
+  unsigned index;
+  
+  for (index = 0; index != ntools; index += 1)
+    if (strcmp(d, tools[index].display) == 0)
+      return tools[index].cmd;
+  
+  return 0;
 }
 
 void Tool::set_ntools(unsigned n) {
@@ -383,6 +394,75 @@ bool Tool::import()
   }
   
   return FALSE;
+}
+
+// try to add tools from an other project
+
+void Tool::add()
+{
+  char * s = read_file("tools");
+  
+  if (s != 0) {
+    unsigned oldn = ntools;
+    ATool * olds = tools;
+    
+    ntools = 0;
+    tools = 0;
+    
+    PRE_TRY;
+    try {
+      char * st = s;
+      char * k;
+      
+      read(st, k, TRUE);
+    }
+    catch (int) {
+      ;
+    }
+    POST_TRY;
+    delete [] s;
+    
+    if (olds != 0) {
+      // reset to old tools
+      ATool * newt = new ATool[ntools + oldn /*worst case*/];
+      unsigned newn = ntools;
+      unsigned index;
+      
+      for (index = 0; index != oldn; index += 1)
+	newt[index] = olds[index];
+      
+      delete [] olds;
+      ntools = oldn;
+      
+      // add imported tools if missing
+      for (index = 0; index != newn; index += 1) {
+	ATool & t = tools[index];
+	
+	unsigned index2;
+	  
+	for (index2 = 0; index2 != oldn; index2 += 1) {
+	  if (newt[index2].display == t.display) {
+	    // add cases
+	    unsigned index3;
+	    bool * na = &newt[index2].applicable[0];
+	    bool * a = &t.applicable[0];
+	    
+	    for (index3 = 0; index3 != UmlCodeSup; index3 += 1)
+	      *na++ |= *a++;
+		
+	    break;
+	  }
+	}
+	
+	if (index2 == oldn)
+	  // add tool
+	  newt[ntools++] = t;
+      }
+      
+      delete [] tools;
+      tools = newt;
+    }
+  }
 }
 
 // for all cases

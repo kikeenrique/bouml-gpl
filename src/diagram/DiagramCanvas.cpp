@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <math.h>
 #include <qpainter.h>
@@ -585,7 +585,7 @@ void DiagramCanvas::draw_all_simple_relations(DiagramCanvas * end) {
       if ((def->get_start_node() == browser_node) && 	// rel begins by this
 	  ((end == 0) || (def->get_end_node() == end->browser_node)) &&
 	  !has_simple_relation(def)) {
-	// adds it in case the target is drawed
+	// adds it in case the target is drawn
 	BrowserNode * end_node = def->get_end_node();
 	DiagramItem * di;
 	
@@ -658,7 +658,7 @@ void DiagramCanvas::draw_all_flows(DiagramCanvas * end) {
       if ((def->get_start_node() == browser_node) && 	// rel begins by this
 	  ((end == 0) || (def->get_end_node() == end->browser_node)) &&
 	  !has_flow(def)) {
-	// adds it in case the target is drawed
+	// adds it in case the target is drawn
 	BrowserNode * end_node = def->get_end_node();
 	DiagramItem * di;
 	
@@ -730,7 +730,7 @@ void DiagramCanvas::draw_all_transitions(DiagramCanvas * end) {
       if ((def->get_start_node() == browser_node) && 	// rel begins by this
 	  ((end == 0) || (def->get_end_node() == end->browser_node)) &&
 	  !has_transition(def)) {
-	// adds it in case the target is drawed
+	// adds it in case the target is drawn
 	BrowserNode * end_node = def->get_end_node();
 	DiagramItem * di;
 	

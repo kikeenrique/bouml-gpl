@@ -77,9 +77,10 @@ class BasicData : public QObject {
     static void resignal_deleted();
         
     const char * get_stereotype() const { return stereotype; };
-    virtual void set_stereotype(const QString &);
-    virtual void set_stereotype(const QCString &);
-    virtual void set_stereotype(const char *);
+    const char * get_short_stereotype() const;
+    virtual bool set_stereotype(const QString &);
+    virtual bool set_stereotype(const QCString &);
+    virtual bool set_stereotype(const char *);
     
     virtual void set_browser_node(BrowserNode * bn);
     BrowserNode * get_browser_node() const { return browser_node; };

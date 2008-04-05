@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -58,7 +58,7 @@ void Shortcut::init()
   MEMOKEY(Return, 0x1004);
   MEMOKEY(Enter, 0x1005);
   MEMOKEY(Insert, 0x1006);
-  MEMOKEY(Suppr, 0x1007);
+  MEMOKEY(Delete, 0x1007);
   MEMOKEY(Pause, 0x1008);
   MEMOKEY(Print, 0x1009);
   MEMOKEY(SysReq, 0x100a);
@@ -360,58 +360,8 @@ void Shortcut::save()
 
 void Shortcut::load()
 {
-  QString f = shortcut_file_path();
-  
-  if (!f.isEmpty()) {
-    QFile fp(QDir::home().absFilePath(f));
-    
-    if (fp.open(IO_ReadOnly)) {
-      QTextStream ts(&fp);
-      
-      ts.setEncoding(QTextStream::Latin1);
-      
-      QString ln;
-      
-      while (!(ln = ts.readLine()).isEmpty()) {
-	char flags[2];
-	int index = 0;
-	const char * p = ln;
-  
-	flags[0] = ' ';
-	flags[1] = 0;
-	
-	if (!strncmp(p, "shift ", 6)) {
-	  flags[0] += 1;
-	  index = 6;
-	}
-	
-	if (!strncmp(p+index, "control ", 8)) {
-	  flags[0] += 2;
-	  index += 8;
-	}
-	
-	if (!strncmp(p+index, "alt ", 4)) {
-	  flags[0] += 4;
-	  index += 4;
-	}
-	
-	int index2 = ln.find(' ', index);
-	
-	if (index2 != -1) {
-	  QString s = ln.mid(index2 + 1);
-	  
-	  if (s == "New collaboration diagram")
-	    s = "New communication diagram";
-	  
-	  Shortcuts[flags + ln.mid(index, index2 - index)] = s;
-	}
-      }
-      return;
-    }
-  }
-  
   // default shortcuts
-  add("Suppr", 	FALSE, FALSE, FALSE, "Remove from view");
+  add("Delete", FALSE, FALSE, FALSE, "Remove from view");
   add("Left",	FALSE, FALSE, FALSE, "Move left");
   add("Right",	FALSE, FALSE, FALSE, "Move right");
   add("Down",	FALSE, FALSE, FALSE, "Move down");
@@ -428,4 +378,59 @@ void Shortcut::load()
   add("Y",	FALSE, TRUE, FALSE, "Redo");
   add("S",	FALSE, TRUE, FALSE, "Save");
   add("L",	FALSE, TRUE, FALSE, "Arrow geometry");
+  
+  QString f = shortcut_file_path();
+  
+  if (!f.isEmpty()) {
+    QFile fp(QDir::home().absFilePath(f));
+    
+    if (fp.open(IO_ReadOnly)) {
+      QTextStream ts(&fp);
+      
+      ts.setEncoding(QTextStream::Latin1);
+      
+      QString ln;
+      
+      while (!(ln = ts.readLine()).isEmpty()) {
+	bool shift = FALSE;
+	bool control = FALSE;
+	bool alt = FALSE;
+	int index = 0;
+	const char * p = ln;
+  
+	if (!strncmp(p, "shift ", 6)) {
+	  shift = TRUE;
+	  index = 6;
+	}
+	
+	if (!strncmp(p+index, "control ", 8)) {
+	  control = TRUE;
+	  index += 8;
+	}
+	
+	if (!strncmp(p+index, "alt ", 4)) {
+	  alt = TRUE;
+	  index += 4;
+	}
+	
+	int index2 = ln.find(' ', index);
+	
+	if (index2 != -1) {
+	  QString s = ln.mid(index2 + 1);
+	  QString k = ln.mid(index, index2 - index);
+	  
+	  if (s == "New collaboration diagram")
+	    // old
+	    s = "New communication diagram";
+	  
+	  if (k == "Suppr")
+	    // old
+	    k = "Delete";
+	  
+	  add(k, shift, control, alt, s);
+	}
+      }
+      return;
+    }
+  }
 }

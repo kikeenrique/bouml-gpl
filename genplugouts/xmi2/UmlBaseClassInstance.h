@@ -60,12 +60,12 @@ class UmlBaseClassInstance : public UmlItem {
     // Add the slot (does nothing if it already exist)
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    bool add_Relation(UmlAttribute * relation, UmlClassInstance * other);
+    bool add_Relation(UmlRelation * relation, UmlClassInstance * other);
 
     // Remove the slot (does nothing if it doesn't exist)
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    bool remove_Relation(UmlAttribute * relation, UmlClassInstance * other);
+    bool remove_Relation(UmlRelation * relation, UmlClassInstance * other);
 
     // returns the optional associated diagram
     UmlObjectDiagram * associatedDiagram();

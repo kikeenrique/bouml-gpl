@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qcursor.h>
 #include <qpopupmenu.h> 
@@ -102,7 +102,7 @@ void SdClassInstCanvas::compute_size() {
   used_drawing_mode = dflt.instances_drawing_mode;
     
   if (used_drawing_mode == Natural) {
-    const char * st = get_class()->get_stereotype();
+    const char * st = get_class()->get_data()->get_short_stereotype();
     
     if (!strcmp(st, "control"))
       used_drawing_mode = asControl;

@@ -19,7 +19,7 @@ class UmlActivityAction : public UmlBaseActivityAction {
 
   public:
     //returns the first container for a 'kind', going up in the browser tree
-    virtual UmlItem * container(anItemKind kind, const Token & token, FileIn & in);
+    virtual UmlItem * container(anItemKind kind, Token & token, FileIn & in);
 
     //import the body of the activity action starting by 'tk'
     

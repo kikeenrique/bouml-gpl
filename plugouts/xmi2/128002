@@ -1,12 +1,12 @@
-format 42
+format 55
 "Aux" // Aux
-  revision 27
-  modified_by 2 "bruno"
+  revision 34
+  modified_by 2 "pages4"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default
   //sequence diagram settings
   show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
   //collaboration diagram settings
@@ -28,7 +28,7 @@ format 42
   
   classview 128002 "Aux"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
     //collaboration diagram settings
     show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
@@ -42,7 +42,6 @@ format 42
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
-    
     associated_deployment_view deploymentview_ref 128002 // Aux
     class 132738 "FileOut"
       visibility package 
@@ -54,6 +53,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -73,6 +74,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 144642 "indent"
@@ -87,6 +90,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 144770 "indent"
@@ -99,6 +104,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 145410 "id"
@@ -110,6 +117,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -126,6 +135,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 144514 "idref"
@@ -137,6 +148,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -151,6 +164,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, const ${t1} * ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "for C++/Java types"
@@ -168,6 +183,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 146434 "idref_datatype"
@@ -183,6 +200,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 129795 "ref"
@@ -197,6 +216,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, const ${t1} ${p1}, const ${t2} ${p2}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "output <space><pfix1>=\"<pfix2>BOUML_<x>\""
@@ -217,6 +238,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 147970 "quote"
@@ -232,6 +255,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       attribute 133378 "_lf"
@@ -239,6 +264,8 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -248,6 +275,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -257,6 +286,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -266,6 +297,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -280,6 +313,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -287,29 +322,34 @@ ${members}}
 	
 	cpp "  Q_OBJECT" ""
 	java ""
+	php ""
+	python ""
 	idl ""
       end
 
       operation 147330 "Dialog"
 	public explicit_return_type ""
-	nparams 11
+	nparams 12
 	  param inout name "path" explicit_type "string"
 	  param inout name "encoding" explicit_type "string"
 	  param inout name "genview" explicit_type "string"
 	  param inout name "uml20" explicit_type "string"
-	  param inout name "profile" explicit_type "string"
 	  param inout name "pk" explicit_type "string"
 	  param inout name "vis" explicit_type "string"
 	  param inout name "primitivetype" explicit_type "string"
 	  param inout name "genextension" explicit_type "string"
+	  param inout name "geneclipse" explicit_type "string"
+	  param inout name "commentexporter" explicit_type "string"
 	  param inout name "linefeed" explicit_type "string"
 	  param inout name "lang" type class_ref 133122 // Language
-	cpp_decl "    ${comment}${name}${(}${t0} & ${p0}, ${t1} & ${p1}, ${t2} & ${p2}, ${t3} & ${p3}, ${t4} & ${p4}, ${t5} & ${p5}, ${t6} & ${p6}, ${t7} & ${p7}, ${t8} & ${p8}, ${t9} & ${p9}, ${t10} & ${p10}${)}${volatile};
+	cpp_decl "    ${comment}${name}${(}${t0} & ${p0}, ${t1} & ${p1}, ${t2} & ${p2}, ${t3} & ${p3}, ${t4} & ${p4}, ${t5} & ${p5}, ${t6} & ${p6}, ${t7} & ${p7}, ${t8} & ${p8}, ${t9} & ${p9}, ${t10} & ${p10}, ${t11} & ${p11}${)}${volatile};
 "
-	cpp_def "${inline}${class}::${name}${(}${t0} & ${p0}, ${t1} & ${p1}, ${t2} & ${p2}, ${t3} & ${p3}, ${t4} & ${p4}, ${t5} & ${p5}, ${t6} & ${p6}, ${t7} & ${p7}, ${t8} & ${p8}, ${t9} & ${p9}, ${t10} & ${p10}${)}
-  : QDialog(0, 0, TRUE), _${p0}(${p0}), _${p1}(${p1}), _${p2}(${p2}), _${p3}(${p3}), _${p4}(${p4}), _${p5}(${p5}), _${p6}(${p6}), _${p7}(${p7}), _${p8}(${p8}), _${p9}(${p9}), _${p10}(${p10}) {
+	cpp_def "${inline}${class}::${name}${(}${t0} & ${p0}, ${t1} & ${p1}, ${t2} & ${p2}, ${t3} & ${p3}, ${t4} & ${p4}, ${t5} & ${p5}, ${t6} & ${p6}, ${t7} & ${p7}, ${t8} & ${p8}, ${t9} & ${p9}, ${t10} & ${p10}, ${t11} & ${p11}${)}
+  : QDialog(0, 0, TRUE), _${p0}(${p0}), _${p1}(${p1}), _${p2}(${p2}), _${p3}(${p3}), _${p4}(${p4}), _${p5}(${p5}), _${p6}(${p6}), _${p7}(${p7}), _${p8}(${p8}), _${p9}(${p9}), _${p10}(${p10}), _${p11}(${p11}) {
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -320,6 +360,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -329,6 +371,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -338,6 +382,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -347,18 +393,10 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
 	comment "yes => generate pk_ prefix"
-      end
-
-      attribute 131586 "_profile"
-	protected explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} & ${name}${value};
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
-	idl_decl ""
-	comment "yes => generate profile for stereotype"
       end
 
       attribute 131074 "_pk"
@@ -367,6 +405,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
 	comment "yes => generate pk_ prefix"
       end
@@ -377,6 +417,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
 	comment "yes => generate vis_ prefix"
       end
@@ -387,6 +429,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
 	comment "yes => use primitiveType rather than dataType for int ..."
       end
@@ -397,6 +441,30 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 139010 "_geneclipse"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} & ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 140418 "_commentexporter"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} & ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -406,6 +474,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
 	comment "yes => generate linefeed inside string, else &#10;"
       end
@@ -416,6 +486,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -425,6 +497,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -434,6 +508,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -443,6 +519,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -451,6 +529,8 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -459,15 +539,8 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	java_decl ""
-	idl_decl ""
-      end
-
-      attribute 128770 "profile_cb"
-	protected explicit_type "QCheckBox"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -477,6 +550,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -486,6 +561,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -495,6 +572,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -503,6 +582,28 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 139138 "geneclipse_cb"
+	protected explicit_type "QCheckBox"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 140290 "commentexporter_cb"
+	protected explicit_type "QCheckBox"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -512,6 +613,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -520,6 +623,8 @@ ${body}}
 	cpp "  protected slots:
 " ""
 	java ""
+	php ""
+	python ""
 	idl ""
       end
 
@@ -535,6 +640,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 147458 "accept_cpp"
@@ -548,6 +655,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
       end
 
@@ -563,6 +672,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 148226 "accept_java"
@@ -576,6 +687,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
       end
 
@@ -591,6 +704,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
     end
 
@@ -604,6 +719,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -617,6 +734,8 @@ ${members}}
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
 ${body}}
 "
+	
+	
 	
       end
 
@@ -632,6 +751,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
     end
 
@@ -642,6 +763,8 @@ ${items}
 };
 "
       java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl "${comment}enum ${name} {
 ${items}};
 "
@@ -653,6 +776,8 @@ ${items}};
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -662,6 +787,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -671,6 +798,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end

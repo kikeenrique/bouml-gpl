@@ -16,8 +16,7 @@ void UmlOperation::importIt(FileIn & in, Token & token, UmlItem * where)
   where = where->container(anOperation, token, in);
   
   if (where == 0) {
-    if (! token.closed())
-      in.finish(token.what());
+    in.bypass(token);
     return;
   }
     
@@ -136,6 +135,12 @@ void UmlOperation::addParameter(Token & token, FileIn & in) {
       }
       else if (s == "defaultvalue")
         p.default_value = token.valueOf("value");
+      else if (s == "ownedcomment")
+	in.bypassedId(token);
+      else {
+	in.bypass(token);
+	continue;
+      }
       
       if (! token.closed())
         in.finish(s);
@@ -162,7 +167,7 @@ void UmlOperation::solve(int context, QCString idref) {
     else
       replaceException(- context + 1, ts);
   }
-  else
+  else if (!FileIn::isBypassedId(idref))
     UmlCom::trace("operation : unknown type reference '" + idref + "'<br>");
 }
 

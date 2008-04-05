@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qcursor.h>
 #include <math.h>
@@ -464,7 +464,7 @@ void FlowCanvas::update(bool updatepos) {
     
     // manages relation's stereotype
     
-    QString s = data->get_stereotype();
+    QString s = data->get_short_stereotype();
     bool update_label = FALSE;
     
     if (s.isEmpty()) {
@@ -808,7 +808,7 @@ FlowCanvas * FlowCanvas::read(char * & st, UmlCanvas * canvas, char * k)
 	  read_double(st);	// z
 	}
 	else {
-	  QString s = tr->get_stereotype();
+	  QString s = tr->get_short_stereotype();
 	 
 	  if (s == "interrupt")
 	    s = LabelCanvas::Zigzag;

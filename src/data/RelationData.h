@@ -132,9 +132,9 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     QString get_name(BrowserRelation *) const;
     void set_name(const QString &);
     virtual QString definition(bool full) const;
-    virtual void set_stereotype(const QString &);
-    virtual void set_stereotype(const QCString &);
-    virtual void set_stereotype(const char *);
+    virtual bool set_stereotype(const QString &);
+    virtual bool set_stereotype(const QCString &);
+    virtual bool set_stereotype(const char *);
     
     virtual bool decldefbody_contain(const QString & s, bool cs, BrowserNode *);
     
@@ -204,6 +204,7 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     static bool uni_directional(UmlCode);
     static const QString & default_name(UmlCode e);
     static bool isa_association(UmlCode e);
+    static bool isa_inherit(UmlCode e);
     
     bool tool_cmd(ToolCom * com, BrowserRelation * rel, const char * args);
     

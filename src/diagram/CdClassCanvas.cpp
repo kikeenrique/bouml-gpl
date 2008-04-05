@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -59,6 +59,7 @@
 #include "BrowserClassDiagram.h"
 #include "strutil.h"
 #include "GenerationSettings.h"
+#include "ProfiledStereotypes.h"
 
 CdClassCanvas::CdClassCanvas(BrowserNode * bn, UmlCanvas * canvas,
 			     int x, int y)
@@ -218,7 +219,7 @@ void CdClassCanvas::compute_size() {
     max_member_width = 1000000;
 
   if (used_settings.class_drawing_mode == Natural) {
-    const char * st = data->get_stereotype();
+    const char * st = data->get_short_stereotype();
     
     if (!strcmp(st, "control"))
       used_view_mode = asControl;
@@ -323,7 +324,7 @@ void CdClassCanvas::compute_size() {
 	}
 	
 	if (show_stereotype) {
-	  QString st = child_data->get_stereotype();
+	  QString st = child_data->get_short_stereotype();
 	  
 	  if (! st.isEmpty()) 
 	    wa += fm.width("<<" + st + ">>_");
@@ -358,7 +359,7 @@ void CdClassCanvas::compute_size() {
     he += six;
   
   if ((used_view_mode == asClass) && data->get_stereotype()[0]) {
-    int stw = fm.width(QString("<<") + toUnicode(data->get_stereotype()) + ">>");
+    int stw = fm.width(QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
     
     if (wi < stw)
       wi = stw;
@@ -514,7 +515,7 @@ void CdClassCanvas::draw_all_relations(CdClassCanvas * end) {
 	if ((def->get_start_class() == browser_node) && 	// rel begins by this
 	    ((end == 0) || (def->get_end_class() == end->browser_node)) &&
 	    !has_relation(def)) {
-	  // adds it in case the other class is drawed
+	  // adds it in case the other class is drawn
 	  BrowserClass * end_class = 
 	    ((BrowserClass *) def->get_end_class());
 	  DiagramItem * di;
@@ -759,10 +760,10 @@ void CdClassCanvas::draw(QPainter & p) {
     if (data->get_stereotype()[0]) {
       p.setFont(the_canvas()->get_font(UmlNormalFont));
       p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, 
-		 QString("<<") + toUnicode(data->get_stereotype()) + ">>");
+		 QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
       if (fp != 0)
 	draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, 
-		  QString("<<") + toUnicode(data->get_stereotype()) + ">>",
+		  QString("<<") + toUnicode(data->get_short_stereotype()) + ">>",
 		  p.font(), fp);
       r.setTop(r.top() + he + two);
     }
@@ -843,7 +844,7 @@ void CdClassCanvas::draw(QPainter & p) {
 	  r.setLeft(left2);
 	}
 	if (show_stereotype) {
-	  QString st = data->get_stereotype();
+	  QString st = data->get_short_stereotype();
 	  
 	  if (! st.isEmpty()) {
 	    st = "<<" + st + ">>";
@@ -913,7 +914,7 @@ void CdClassCanvas::draw(QPainter & p) {
 	    r.setLeft(left2);
 	  }
 	  if (show_stereotype) {
-	    QString st = data->get_stereotype();
+	    QString st = data->get_short_stereotype();
 	    
 	    if (! st.isEmpty()) {
 	      st = "<<" + st + ">>";
@@ -1337,8 +1338,19 @@ const char * CdClassCanvas::may_connect(UmlCode & l, const DiagramItem * dest) c
 }
 
 void CdClassCanvas::post_connexion(UmlCode l, DiagramItem * dest) {
-  if ((l == UmlAnchor) && IsaRelation(dest->type()))
-    ((RelationCanvas *) dest)->post_connexion(l, this);
+  switch (l) {
+  case UmlAnchor:
+    if (IsaRelation(dest->type()))
+      ((RelationCanvas *) dest)->post_connexion(l, this);
+    break;
+  case UmlGeneralisation:
+  case UmlRealize:
+    if (!strcmp(browser_node->get_data()->get_stereotype(), "stereotype"))
+      ProfiledStereotypes::recompute(TRUE);
+    break;
+  default:
+    break;
+  }
 }
 
 void CdClassCanvas::connexion(UmlCode action, DiagramItem * dest,

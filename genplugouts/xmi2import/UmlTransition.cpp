@@ -25,11 +25,15 @@ void UmlTransition::solveThem()
     QMap<QCString, UmlItem*>::Iterator itgt = UmlItem::All.find(transition.target);
     
     if ((isrc == UmlItem::All.end()) /*&& 
-	((isrc = Outgoings.find(transition.id)) == Outgoings.end())*/)
-      UmlCom::trace("transition '" + transition.id + "' : unknown source reference '" + transition.source + "'<br>");
+	((isrc = Outgoings.find(transition.id)) == Outgoings.end())*/) {
+      if (!FileIn::isBypassedId(transition.source))
+	UmlCom::trace("transition '" + transition.id + "' : unknown source reference '" + transition.source + "'<br>");
+    }
     else if ((itgt == UmlItem::All.end()) /*&& 
-	     ((itgt = Incomings.find(transition.id)) == Incomings.end())*/)
-      UmlCom::trace("transition '" + transition.id + "' : unknown target reference '" + transition.target + "'<br>");
+	     ((itgt = Incomings.find(transition.id)) == Incomings.end())*/) {
+      if (!FileIn::isBypassedId(transition.target))
+	UmlCom::trace("transition '" + transition.id + "' : unknown target reference '" + transition.target + "'<br>");
+    }
     else {
       UmlTransition * t = UmlTransition::create(*isrc, *itgt);
       
@@ -49,10 +53,10 @@ void UmlTransition::solveThem()
 	else if (! transition.triggerRef.isEmpty()) {
 	  QCString trig = Trigger::get(transition.triggerRef);
 	  
-	  if (trig.isNull())
-	    UmlCom::trace("transition '" + transition.id + "' : unknown trigger reference '" + transition.triggerRef + "'<br>");
-	  else
+	  if (!trig.isNull())
 	    t->set_Trigger(trig);
+	  else if (!FileIn::isBypassedId(transition.triggerRef))
+	    UmlCom::trace("transition '" + transition.id + "' : unknown trigger reference '" + transition.triggerRef + "'<br>");
 	}
 	
 	if (! transition.guard.isEmpty())

@@ -50,6 +50,8 @@ class UmlArtifact : public UmlBaseArtifact {
     virtual void generate();
     
     UmlPackage * package();
+    
+    static UmlPackage * generation_package();
 };
 
 #endif

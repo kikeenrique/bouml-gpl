@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -50,6 +50,7 @@
 #include "mu.h"
 #include "ComponentDialog.h"
 #include "DialogUtil.h"
+#include "ProfiledStereotypes.h"
 
 IdDict<BrowserComponent> BrowserComponent::all(257, __FILE__);
 QStringList BrowserComponent::its_default_stereotypes;	// unicode
@@ -239,7 +240,6 @@ void BrowserComponent::menu() {
   QPopupMenu prsubm(0);
   QPopupMenu rzsubm(0);
   QPopupMenu toolm(0);
-  BrowserNode * item_above = 0;
   
   m.insertItem(new MenuTitle(name, m.font()), -1);
   m.insertSeparator();
@@ -252,33 +252,6 @@ void BrowserComponent::menu() {
 		     "to edit the <em>component</em>, \
 a double click with the left mouse button does the same thing");
       
-      item_above = (BrowserNode *) parent()->firstChild();
-      if (item_above == this)
-	item_above = 0;
-      else {
-	for (;;) {
-	  BrowserNode * next = (BrowserNode *) item_above->nextSibling();
-	  
-	  if (next == this)
-	    break;
-	  item_above = (BrowserNode *) next;
-	}
-      }
-      
-      if ((item_above != 0) && 
-	  (item_above->get_type() == UmlComponent) &&
-	  !((BrowserNode *) item_above)->wrong_child_name(get_name(), UmlClass, TRUE, FALSE))
-	m.setWhatsThis(m.insertItem(QString("Set it nested in ")
-				    + item_above->get_name(),
-				    5),
-		       "to set it a <em>sub component</em> of the <em>component</em> above");
-      if (nestedp() &&
-	  !((BrowserNode *) parent()->parent())->wrong_child_name(get_name(), UmlClass, TRUE, FALSE))
-	m.setWhatsThis(m.insertItem(QString("Extract it from ")
-				    + ((BrowserNode *) parent())->get_name(),
-				    6),
-		       "to stop to be a <em>sub component</em> of its <em>super component</em>");
-
       if (!is_read_only && (edition_number == 0)) {
 	m.insertSeparator();
 	m.setWhatsThis(m.insertItem("Delete", 1),
@@ -291,6 +264,7 @@ Note that you can undelete it after");
 		   "to know who reference the <i>component</i> \
 through a relation");
     mark_menu(m, "component", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
@@ -320,11 +294,10 @@ nexted <em>components</em> and <em>relations</em> \
   make_clsubm(m, prsubm, provided_classes, 19999, need_sep, "provided");
   make_clsubm(m, rzsubm, realizing_classes, 29999, need_sep, "realization");
     
-  exec_menu_choice(m.exec(QCursor::pos()), item_above);
+  exec_menu_choice(m.exec(QCursor::pos()));
 }
 
-void BrowserComponent::exec_menu_choice(int rank,
-					BrowserNode * item_above) { 
+void BrowserComponent::exec_menu_choice(int rank) { 
   switch (rank) {
   case 0:
     open(TRUE);
@@ -349,25 +322,14 @@ void BrowserComponent::exec_menu_choice(int rank,
 	cp->select_in_browser();
     }
     break;
-  case 5:
-    parent()->takeItem(this);
-    item_above->insertItem(this);
-    item_above->setOpen(TRUE);
-    break;
-  case 6:
-    {
-      QListViewItem * p = parent();
-      
-      p->takeItem(this);
-      moveItem(p);
-    }
-    break;
   default:
     if (select_associated(rank, 29999, realizing_classes) ||
 	select_associated(rank, 19999, provided_classes) ||
 	select_associated(rank, 9999, required_classes))
       return;
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);
@@ -413,7 +375,7 @@ void BrowserComponent::apply_shortcut(QString s) {
     }
   }
 
-  exec_menu_choice(choice, 0);
+  exec_menu_choice(choice);
 }
 
 void BrowserComponent::open(bool force_edit) {
@@ -443,7 +405,8 @@ int BrowserComponent::get_identifier() const {
 }
 
 void BrowserComponent::DragMoveEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))) {
+  if (UmlDrag::canDecode(e, UmlComponent) ||
+      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))) {
     if (!is_read_only)
       e->accept();
     else
@@ -455,7 +418,8 @@ void BrowserComponent::DragMoveEvent(QDragMoveEvent * e) {
 
 void BrowserComponent::DragMoveInsideEvent(QDragMoveEvent * e) {
   if (!is_read_only &&
-      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)))
+      (UmlDrag::canDecode(e, UmlComponent) ||
+       UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))))
     e->accept();
   else
     e->ignore();
@@ -468,11 +432,37 @@ void BrowserComponent::DropEvent(QDropEvent * e) {
 void BrowserComponent::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
   BrowserNode * bn;
   
-  if (((bn = UmlDrag::decode(e, BrowserSimpleRelation::drag_key(this))) != 0) &&
+  if ((((bn = UmlDrag::decode(e, UmlComponent)) != 0) ||
+       ((bn = UmlDrag::decode(e, BrowserSimpleRelation::drag_key(this))) != 0)) &&
       (bn != after) && (bn != this)) {
-    if (may_contains(bn, FALSE)) {
+    bool a_comp = (bn->get_type() == UmlComponent);
+    
+    if (may_contains(bn, a_comp)) {
       BrowserNode * old = ((BrowserNode *) bn->parent());
       
+      if ((after == 0) &&
+	  a_comp &&
+	  old->may_contains(bn, TRUE)) {
+	// have choice
+	QPopupMenu m(0);
+  
+	m.insertItem(new MenuTitle(bn->get_name() + QString(" moving"),
+				   m.font()), -1);
+	m.insertSeparator();
+	m.insertItem("In " + QString(get_name()), 1);
+	m.insertItem("After " + QString(get_name()), 2);
+	
+	switch (m.exec(QCursor::pos())) {
+	case 1:
+	  break;
+	case 2:
+	  ((BrowserNode *) parent())->DropAfterEvent(e, this);
+	  return;
+	default:
+	  e->ignore();
+	  return;
+	}
+      }
       if (after)
 	bn->moveItem(after);
       else {
@@ -490,7 +480,7 @@ void BrowserComponent::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
       package_modified();
     }
     else {
-      msg_critical("Error", "Forbiden");
+      msg_critical("Error", "Forbidden");
       e->ignore();
     }
   }
@@ -899,6 +889,12 @@ bool BrowserComponent::tool_cmd(ToolCom * com, const char * args) {
 		  }
 		}
 	      }
+	      break;
+	    case UmlComponent:
+	      if (wrong_child_name(args, UmlComponent, FALSE, FALSE))
+		ok = FALSE;
+	      else
+		(new BrowserComponent(args, this))->write_id(com);
 	      break;
 	    default:
 	      ok = FALSE;

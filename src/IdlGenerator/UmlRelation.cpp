@@ -97,7 +97,8 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f,
 }
 
 void UmlRelation::generate_decl(QTextOStream & f,
-				const QCString & cl_stereotype) {
+				const QCString & cl_stereotype,
+				bool) {
   if ((relationKind() != aGeneralisation) && 
       (relationKind() != aRealization) && 
       (relationKind() != aDependency)) {

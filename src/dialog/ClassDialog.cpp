@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <stdio.h>
 
@@ -60,6 +60,8 @@
 #include "strutil.h"
 #include "BodyDialog.h"
 #include "AnnotationDialog.h"
+#include "ProfiledStereotypes.h"
+#include "Tool.h"
 
 QSize ClassDialog::previous_size;
 
@@ -110,7 +112,18 @@ ClassDialog::ClassDialog(ClassData * c)
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(cl->get_stereotype()));
   if (! visit) {
-    edstereotype->insertStringList(BrowserClass::default_stereotypes());
+    BrowserNode * gp = (BrowserNode *) bn->parent()->parent();
+    
+    if ((gp->get_type() == UmlPackage) &&
+	!strcmp(gp->get_data()->get_stereotype(), "profile"))
+      edstereotype->insertStringList(BrowserClass::default_stereotypes());
+    else {
+      QStringList l = BrowserClass::default_stereotypes();
+      
+      l.remove("stereotype");
+      edstereotype->insertStringList(l);
+    }
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlClass));
     edstereotype->setAutoCompletion(TRUE);
     connect(edstereotype, SIGNAL(activated(const QString &)),
 	    this, SLOT(edStereotypeActivated(const QString &)));
@@ -119,8 +132,7 @@ ClassDialog::ClassDialog(ClassData * c)
   QSizePolicy sp = edstereotype->sizePolicy();
   sp.setHorData(QSizePolicy::Expanding);
   edstereotype->setSizePolicy(sp);
-  
-  
+    
   new QLabel(grid);
   htab = new QHBox(grid);
   opt_bg = new QGroupBox(3, Qt::Horizontal, QString::null, htab);
@@ -234,20 +246,20 @@ ClassDialog::ClassDialog(ClassData * c)
   
   addTab(grid, "Uml");
   
-  // parametrized tab
+  // parameterized tab
   
   parametrized_vtab = new QVBox(this);
   
   parametrized_vtab->setMargin(5);
   
-  (new QLabel("\nEnter formals in case the class is parametrized\n", 
+  (new QLabel("\nEnter formals in case the class is parameterized\n", 
 	      parametrized_vtab))
     ->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
   
   formals_table =
     new FormalParamsTable(c, parametrized_vtab, node_names, visit);
   
-  addTab(parametrized_vtab, "Parametrized");
+  addTab(parametrized_vtab, "Parameterized");
   
   // instantiate tab
   
@@ -326,9 +338,9 @@ ClassDialog::ClassDialog(ClassData * c)
   else {
     htab = new QHBox(vtab); 
     lbl4 = new QLabel(htab);
-    connect(new QPushButton("Default declaration", htab), SIGNAL(pressed ()),
+    connect(new QPushButton("Default declaration", htab), SIGNAL(clicked ()),
 	    this, SLOT(cpp_default_decl()));
-    connect(new QPushButton("Not generated in C++", htab), SIGNAL(pressed ()),
+    connect(new QPushButton("Not generated in C++", htab), SIGNAL(clicked ()),
 	    this, SLOT(cpp_unmapped_decl()));
   
     same_width(lbl1, lbl2, lbl3, lbl4);
@@ -392,9 +404,9 @@ ClassDialog::ClassDialog(ClassData * c)
   lbl4 = new QLabel(htab);
 
   if (!visit) {
-    connect(new QPushButton("Default definition", htab), SIGNAL(pressed ()),
+    connect(new QPushButton("Default definition", htab), SIGNAL(clicked ()),
 	    this, SLOT(java_default_decl()));
-    connect(new QPushButton("Not generated in Java", htab), SIGNAL(pressed ()),
+    connect(new QPushButton("Not generated in Java", htab), SIGNAL(clicked ()),
 	    this, SLOT(java_unmapped_decl()));
           
   }
@@ -465,9 +477,9 @@ ClassDialog::ClassDialog(ClassData * c)
   lbl4 = new QLabel(htab);
 
   if (!visit) {
-    connect(new QPushButton("Default definition", htab), SIGNAL(pressed ()),
+    connect(new QPushButton("Default definition", htab), SIGNAL(clicked ()),
 	    this, SLOT(php_default_decl()));
-    connect(new QPushButton("Not generated in Php", htab), SIGNAL(pressed ()),
+    connect(new QPushButton("Not generated in Php", htab), SIGNAL(clicked ()),
 	    this, SLOT(php_unmapped_decl()));
           
   }
@@ -532,9 +544,9 @@ ClassDialog::ClassDialog(ClassData * c)
   lbl4 = new QLabel(htab);
 
   if (!visit) {
-    connect(new QPushButton("Default definition", htab), SIGNAL(pressed ()),
+    connect(new QPushButton("Default definition", htab), SIGNAL(clicked ()),
 	    this, SLOT(python_default_decl()));
-    connect(new QPushButton("Not generated in Python", htab), SIGNAL(pressed ()),
+    connect(new QPushButton("Not generated in Python", htab), SIGNAL(clicked ()),
 	    this, SLOT(python_unmapped_decl()));
           
   }
@@ -628,11 +640,11 @@ ClassDialog::ClassDialog(ClassData * c)
   if (visit)
     same_width(lbl1, lbl2, lbl3);
   else {
-    htab = new QHBox(vtab); 
+   htab = new QHBox(vtab); 
     lbl4 = new QLabel(htab);
-    connect(new QPushButton("Default declaration", htab), SIGNAL(pressed ()),
+    connect(new QPushButton("Default declaration", htab), SIGNAL(clicked ()),
 	    this, SLOT(idl_default_decl()));
-    connect(new QPushButton("Not generated in IDL", htab), SIGNAL(pressed ()),
+    connect(new QPushButton("Not generated in IDL", htab), SIGNAL(clicked ()),
 	    this, SLOT(idl_unmapped_decl()));
     
     same_width(lbl1, lbl2, lbl3, lbl4);
@@ -643,10 +655,75 @@ ClassDialog::ClassDialog(ClassData * c)
   if (!GenerationSettings::idl_get_default_defs())
     removePage(split);
   
+  // profiled stereotype
+  
+  BrowserNode * gp = (BrowserNode *) (bn->parent()->parent());
+  
+  if ((gp->get_type() == UmlPackage) &&
+      !strcmp(gp->get_data()->get_stereotype(), "profile")) {
+    grid = new QGrid(2, this);
+    stereotypetab = grid;
+    grid->setSpacing(5);
+    grid->setMargin(5);
+    
+    QStringList tools = Tool::all_display();
+    QString s;
+    
+    new QLabel("Extending :", grid);
+    edextending = new LineEdit(bn->get_value("stereotypeExtension"), grid);
+    edextending->setReadOnly(visit);
+    
+    new QLabel("Initialization \nplug-out :", grid);
+    htab = new QHBox(grid);
+    stereo_init_cb = new QComboBox(FALSE, htab);
+    s = bn->get_value("stereotypeSet");
+    stereo_init_cb->insertItem(s);
+    if (!visit) {
+      if (! s.isEmpty())
+	stereo_init_cb->insertItem("");
+      stereo_init_cb->insertStringList(tools);
+    }
+    stereo_init_cb->setCurrentItem(0);
+    
+    new QLabel("  parameter(s) : ", htab);
+    edinitparam = new LineEdit(bn->get_value("stereotypeSetParameters"), htab);
+    edinitparam->setReadOnly(visit);
+    
+    new QLabel("Check \nplug-out :", grid);
+    htab = new QHBox(grid);
+    stereo_check_cb = new QComboBox(FALSE, htab);
+    s = bn->get_value("stereotypeCheck");
+    stereo_check_cb->insertItem(s);
+    if (! visit) {
+      if (! s.isEmpty())
+	stereo_check_cb->insertItem("");
+      stereo_check_cb->insertStringList(tools);
+    }
+    stereo_check_cb->setCurrentItem(0);
+    
+    new QLabel("  parameter(s) : ", htab);
+    edcheckparam = new LineEdit(bn->get_value("stereotypeCheckParameters"), htab);
+    edcheckparam->setReadOnly(visit);
+    
+    new QLabel("Apply on : ", grid);
+    applicableon_table =
+      new ApplicableOnTable(grid, bn->get_value("stereotypeApplyOn"), visit);
+    
+    addTab(grid, "Stereotype");
+  }
+  else
+    stereotypetab = 0;
+  
   // USER : list key - value
   
   vtab = new QVBox(this);
   kvtable = new KeyValuesTable(bn, vtab, visit);
+  kvtable->remove("stereotypeExtension");
+  kvtable->remove("stereotypeSet");
+  kvtable->remove("stereotypeCheck");
+  kvtable->remove("stereotypeSetParameters");
+  kvtable->remove("stereotypeCheckParameters");
+  kvtable->remove("stereotypeApplyOn");
   addTab(vtab, "Properties");
   
   //
@@ -749,43 +826,75 @@ void ClassDialog::post_edit_constraint(ClassDialog * d, QString s)
 void ClassDialog::edStereotypeActivated(const QString & s) {
   QString stereotype = s.stripWhiteSpace();
   
-  if (stereotype == "typedef") {
-    basetypelbl->show();
-    edbasetype->show();
-    opt_bg->hide();
+  if (stereotype == "stereotype") {
+    if (GenerationSettings::cpp_get_default_defs())
+      setTabEnabled(cpptab, FALSE);
+    if (GenerationSettings::java_get_default_defs())
+      setTabEnabled(javatab, FALSE);
+    if (GenerationSettings::idl_get_default_defs())
+      setTabEnabled(idltab, FALSE);
+    if (GenerationSettings::php_get_default_defs())
+      setTabEnabled(phptab, FALSE);
+    if (GenerationSettings::python_get_default_defs())
+      setTabEnabled(pythontab, FALSE);
+    if (stereotypetab != 0) {
+      setTabEnabled(stereotypetab, TRUE);
+      if (edextending->text().stripWhiteSpace().isEmpty())
+	edextending->setText("http://schema.omg.org/spec/UML/2.1/uml.xml#Element");
+    }
   }
   else {
-    basetypelbl->hide();
-    edbasetype->hide();
-    if ((stereotype != "enum") && (stereotype != "enum_pattern"))
-      opt_bg->show();
-    else
+    if (GenerationSettings::cpp_get_default_defs())
+      setTabEnabled(cpptab, TRUE);
+    if (GenerationSettings::java_get_default_defs())
+      setTabEnabled(javatab, TRUE);
+    if (GenerationSettings::idl_get_default_defs())
+      setTabEnabled(idltab, TRUE);
+    if (GenerationSettings::php_get_default_defs())
+      setTabEnabled(phptab, TRUE);
+    if (GenerationSettings::python_get_default_defs())
+      setTabEnabled(pythontab, TRUE);
+    if (stereotypetab != 0)
+      setTabEnabled(stereotypetab, FALSE);
+    
+    if (stereotype == "typedef") {
+      basetypelbl->show();
+      edbasetype->show();
       opt_bg->hide();
+    }
+    else {
+      basetypelbl->hide();
+      edbasetype->hide();
+      if ((stereotype != "enum") && (stereotype != "enum_pattern"))
+	opt_bg->show();
+      else
+	opt_bg->hide();
+    }
+    parametrized_vtab->setEnabled((stereotype != "enum") && (stereotype != "enum_pattern") && (stereotype != "typedef"));
+    if (instantiate_vtab)
+      instantiate_vtab->setEnabled((stereotype != "enum") && (stereotype != "enum_pattern") && (stereotype != "union"));
+    
+    if (current_cpp_stereotype != cpp_stereotype(stereotype))
+      cpp_default_decl();
+    
+    if (current_java_stereotype != java_stereotype(stereotype))
+      java_default_decl();
+    
+    if (current_php_stereotype != php_stereotype(stereotype))
+      php_default_decl();
+    
+    if (current_python_stereotype != python_stereotype(stereotype))
+      python_default_decl();
+    
+    QString idl_st = idl_stereotype(stereotype);
+    
+    switch_bg->setEnabled(idl_st == "union");
+    idl_local_cb->setEnabled(idl_st == "interface");
+    idl_custom_cb->setEnabled(idl_st == "valuetype");
+    
+    if (idl_st != current_idl_stereotype)
+      idl_default_decl();
   }
-  parametrized_vtab->setEnabled((stereotype != "enum") && (stereotype != "enum_pattern") && (stereotype != "typedef"));
-  if (instantiate_vtab)
-    instantiate_vtab->setEnabled((stereotype != "enum") && (stereotype != "enum_pattern") && (stereotype != "union"));
-  
-  if (current_cpp_stereotype != cpp_stereotype(stereotype))
-    cpp_default_decl();
-  
-  if (current_java_stereotype != java_stereotype(stereotype))
-    java_default_decl();
-  
-  if (current_php_stereotype != php_stereotype(stereotype))
-    php_default_decl();
-  
-  if (current_python_stereotype != python_stereotype(stereotype))
-    python_default_decl();
-  
-  QString idl_st = idl_stereotype(stereotype);
-  
-  switch_bg->setEnabled(idl_st == "union");
-  idl_local_cb->setEnabled(idl_st == "interface");
-  idl_custom_cb->setEnabled(idl_st == "valuetype");
-  
-  if (idl_st != current_idl_stereotype)
-    idl_default_decl();
 }
 
 void ClassDialog::update_all_tabs(QWidget * w) {
@@ -1581,7 +1690,7 @@ void ClassDialog::java_unmapped_decl() {
 }
 
 void ClassDialog::java_edit_annotation() {
-  AnnotationDialog dialog(javaannotation, !hasOkButton());
+  AnnotationDialog dialog(this, javaannotation, !hasOkButton());
   
   if (dialog.exec() == QDialog::Accepted)
     java_update_decl();
@@ -2207,10 +2316,14 @@ void ClassDialog::accept() {
     return;
     
   BrowserClass * bn = (BrowserClass *) cl->get_browser_node();
+  QString oldname = cl->name();
+  bool was_st = !strcmp(cl->get_stereotype(), "stereotype");
+  QString st = fromUnicode(edstereotype->currentText().stripWhiteSpace());
+  const char * err;
   QString s;
   
   s = edname->text().stripWhiteSpace();
-  if (s != cl->name()) {
+  if (s != oldname) {
     if (((BrowserNode *) bn->parent())->wrong_child_name(s, UmlClass,
 							 bn->allow_spaces(),
 							 bn->allow_empty())) {
@@ -2218,13 +2331,24 @@ void ClassDialog::accept() {
       return;
     }
     
+    if ((st == "stereotype") && 
+	((err = ProfiledStereotypes::canAddStereotype(bn, s)) != 0)) {
+      msg_critical("Error", s + " " + err);
+      return;
+    }
+    
     bn->set_name(s);
   }
+  else if ((st == "stereotype") &&
+	   !was_st &&
+	   ((err = ProfiledStereotypes::canAddStereotype(bn, s)) != 0)) {
+    msg_critical("Error", oldname + " " + err);
+    return;
+  }
   
-  s = fromUnicode(edstereotype->currentText().stripWhiteSpace());
-  cl->set_stereotype(s);
+  bool newst = cl->set_stereotype(st);
   
-  if (s == "typedef")
+  if (st == "typedef")
     cl->set_base_type(the_type(edbasetype->currentText().stripWhiteSpace(),
 			       node_names, nodes));
   
@@ -2290,6 +2414,35 @@ void ClassDialog::accept() {
   }
   
   kvtable->update(bn);
+  
+  if (stereotypetab != 0) {
+    if (st == "stereotype") {
+      unsigned n = bn->get_n_keys();
+      
+      bn->set_n_keys(n + 6);
+      bn->set_key(n, "stereotypeExtension");
+      bn->set_value(n, edextending->text().simplifyWhiteSpace());
+      bn->set_key(++n, "stereotypeSet");
+      bn->set_value(n, stereo_init_cb->currentText());
+      bn->set_key(++n, "stereotypeCheck");
+      bn->set_value(n, stereo_check_cb->currentText());
+      bn->set_key(++n, "stereotypeSetParameters");
+      bn->set_value(n, fromUnicode(edinitparam->text().simplifyWhiteSpace()));
+      bn->set_key(++n, "stereotypeCheckParameters");
+      bn->set_value(n, fromUnicode(edcheckparam->text().simplifyWhiteSpace()));
+      bn->set_key(++n, "stereotypeApplyOn");
+      bn->set_value(n, applicableon_table->targets());
+      
+      if (newst)
+	ProfiledStereotypes::added(bn);
+      else
+	ProfiledStereotypes::changed(bn, oldname);
+    }
+    else if (was_st)
+      ProfiledStereotypes::deleted(bn);
+  }
+  
+  ProfiledStereotypes::modified(bn, newst);
   
   bn->modified();
   bn->package_modified();
@@ -2755,4 +2908,60 @@ void ActualParamsTable::generate(QString & s, ClassData * cl,
   
   if (nth != 0)
     s += '>';
+}
+
+//
+// Stereotype target
+//
+
+ApplicableOnTable::ApplicableOnTable(QWidget * parent, QString s, bool visit)
+    : MyTable(ProfiledStereotypes::availableTargets().count(), 2, parent),
+      ro(visit) {
+  setSorting(FALSE);
+  setSelectionMode(NoSelection);	// single does not work
+  setRowMovingEnabled(FALSE);
+  horizontalHeader()->setLabel(0, "element kind");
+  horizontalHeader()->setLabel(1, "applicable");
+	
+  const QStringList & available = ProfiledStereotypes::availableTargets();
+  QStringList l = QStringList::split(" ", s);
+  QStringList::ConstIterator it;
+  int row = 0;
+  
+  for (it = available.begin(); it != available.end(); ++it) {
+    setItem(row, 0,
+	    new TableItem(this, QTableItem::Never,
+			  ProfiledStereotypes::pretty(*it)));
+    setItem(row, 1, 
+	    new TableItem(this, QTableItem::Never,
+			  (l.findIndex(*it) == -1) ? "" : "yes"));
+    row += 1;
+  }
+  
+  connect(this, SIGNAL(pressed(int, int, int, const QPoint &)),
+	  this, SLOT(button_pressed(int, int, int, const QPoint &)));
+  
+  adjustColumn(0);
+  adjustColumn(1);
+}
+
+void ApplicableOnTable::button_pressed(int row, int col, int, const QPoint &) {
+  if (!ro && (col == 1))
+    setText(row, col, (text(row, col).isEmpty()) ? "yes" : "");
+}
+
+QString ApplicableOnTable::targets() {
+  forceUpdateCells();
+  
+  QString s;
+  int row;
+  
+  for (row = 0; row != numRows(); row += 1)
+    if (!text(row, 1).isEmpty())
+      s += ProfiledStereotypes::unpretty(text(row, 0)) + " ";
+  
+  if (! s.isEmpty())
+    s.truncate(s.length() - 1);
+  
+  return s;
 }

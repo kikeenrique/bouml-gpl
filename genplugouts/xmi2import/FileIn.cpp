@@ -151,6 +151,8 @@ QCString FileIn::body(QCString what) {
     
     if (c == '&')
       c = read_special_char();
+    else if (c == '\n')
+      _linenum += 1;
     
     if ((index + 1) == _length) {
       _buffer[index] = 0;
@@ -208,9 +210,56 @@ void FileIn::finish(QCString what) {
      return;
    else if (tk.close())
      error("'&lt;/" + tk.what() + "&gt;' while wait for '&lt;/" + what + "&gt;'");
-   else if (! tk.closed())
-     finish(tk.what());
+   else {
+     QCString s = tk.xmiId();
+     
+     if (! s.isEmpty())
+       BypassedIds.insert(QString(s), "");
+     
+     if (! tk.closed())
+       finish(tk.what());
+   }
  }
+}
+
+void FileIn::bypass(Token & tk) {
+  static QDict<char> bypassed;
+  
+  QCString s = tk.xmiType();
+  
+  if (s.isEmpty()) {
+    QString k = QString(tk.what());
+    
+    if (bypassed[k] == 0) {
+      warning("bypass &lt;" + tk.what() + "...&gt; (other cases not signaled)");
+      bypassed.insert(k, "");
+    }
+  }
+  else {
+    QString k = QString(tk.what()) + " " + QString(s);
+    
+    if (bypassed[k] == 0) {
+      warning("bypass &lt;" + tk.what() + 
+	      " xmi:type=\"" + s + "\"...&gt; (other cases not signaled)");
+      bypassed.insert(k, "");
+    }
+  }
+
+  s = tk.xmiId();
+  if (! s.isEmpty())
+    BypassedIds.insert(QString(s), "");
+    
+  if (! tk.closed())
+    finish(tk.what());
+
+}
+
+void FileIn::bypassedId(Token & tk) {
+  QCString s = tk.xmiId();
+  
+  if (! s.isEmpty())
+    BypassedIds.insert(QString(s), "");
+
 }
 
 void FileIn::error(QCString s) {
@@ -230,6 +279,8 @@ void FileIn::warning(QCString s) {
   UmlCom::trace(warn);
 
 }
+
+QDict<char> FileIn::BypassedIds;
 
 const char * FileIn::read_word(int c, bool any) {
   if (((c >= 'a') && (c <= 'z')) ||
@@ -305,6 +356,9 @@ const char * FileIn::read_string() {
     case '&':
       // special char
       c = read_special_char();
+      break;
+    case '\n':
+      _linenum += 1;
       break;
     default:
       if (_utf8 && (((unsigned char) c) > 127))

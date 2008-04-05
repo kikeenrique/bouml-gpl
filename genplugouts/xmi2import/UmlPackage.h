@@ -35,18 +35,34 @@ class UmlPackage : public UmlBasePackage {
 
   public:
     //returns the first container for a 'kind', going up in the browser tree
-    virtual UmlItem * container(anItemKind kind, const Token & token, FileIn & in);
+    virtual UmlItem * container(anItemKind kind, Token & token, FileIn & in);
 
     //import the package starting by 'tk' inside 'where'
     static void importIt(FileIn & in, Token & token, UmlItem * where);
+
+    static void appliedProfile(FileIn & in, Token & token, UmlItem * where);
 
     static void init();
 
     static int numberOf() { return NumberOf; };
 
+    static int numberOfProfile() { return NumberOfProfile; };
+
+
+  private:
+    virtual void packageImport(FileIn & in, Token & tk);
+
+    void solveRefs();
+
+
+  public:
+    void applyStereotype(FileIn & in, Token & token);
+
 
   protected:
     static int NumberOf;
+
+    static int NumberOfProfile;
 
     UmlClassView * _classview;
 

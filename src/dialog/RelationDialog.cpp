@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qvbox.h>
 #include <qlabel.h>
@@ -54,6 +54,7 @@
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
 #include "AnnotationDialog.h"
+#include "ProfiledStereotypes.h"
 
 QSize RelationDialog::previous_size;
 
@@ -112,6 +113,10 @@ RelationDialog::RelationDialog(RelationData * r)
   }
   
   r->start->edit_start();
+
+  onstereotype = 
+    !strcmp(r->get_start_class()->get_data()->get_stereotype(), "stereotype") &&
+    !strcmp(r->get_end_class()->get_data()->get_stereotype(), "stereotype");
   
   UmlCode type = rel->get_type();
   
@@ -192,6 +197,7 @@ RelationDialog::RelationDialog(RelationData * r)
     edstereotype->insertStringList(rel->get_start_class()
 				   ->default_stereotypes(type,
 							 rel->get_end_class()));
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlRelations));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -273,7 +279,7 @@ RelationDialog::RelationDialog(RelationData * r)
 
   addTab(vtab, "C++");
   
-  if (!GenerationSettings::cpp_get_default_defs())
+  if (onstereotype || !GenerationSettings::cpp_get_default_defs())
     removePage(vtab);
   
   //
@@ -299,7 +305,7 @@ RelationDialog::RelationDialog(RelationData * r)
 
   addTab(vtab, "Java");
   
-  if (!GenerationSettings::java_get_default_defs())
+  if (onstereotype || !GenerationSettings::java_get_default_defs())
     removePage(vtab);
   
   //
@@ -325,7 +331,7 @@ RelationDialog::RelationDialog(RelationData * r)
 
   addTab(vtab, "Php");
   
-  if (!GenerationSettings::php_get_default_defs())
+  if (onstereotype || !GenerationSettings::php_get_default_defs())
     removePage(vtab);
   
   //
@@ -352,7 +358,7 @@ RelationDialog::RelationDialog(RelationData * r)
 
   addTab(vtab, "Python");
   
-  if (!GenerationSettings::python_get_default_defs())
+  if (onstereotype || !GenerationSettings::python_get_default_defs())
     removePage(vtab);
   
   //
@@ -398,7 +404,7 @@ RelationDialog::RelationDialog(RelationData * r)
 
   addTab(vtab, "IDL");
   
-  if (!GenerationSettings::idl_get_default_defs())
+  if (onstereotype || !GenerationSettings::idl_get_default_defs())
     removePage(vtab);
   
   //
@@ -694,15 +700,15 @@ void RelationDialog::init_cpp_role(RoleDialog & role, const RoleData & rel,
     htab->setMargin(5);
     
     role.cpp_default_decl_bt = new QPushButton("Default declaration", htab);
-    connect(role.cpp_default_decl_bt, SIGNAL(pressed()),
+    connect(role.cpp_default_decl_bt, SIGNAL(clicked()),
 	    this, cpp_default_slot);
     if (cpp_include_in_header_slot != 0) {
       role.cpp_include_in_header = new QPushButton("#include in header", htab);
-      connect(role.cpp_include_in_header , SIGNAL(pressed()),
+      connect(role.cpp_include_in_header , SIGNAL(clicked()),
 	      this, cpp_include_in_header_slot);
     }
     role.cpp_unmapped_decl_bt = new QPushButton("Not generated in C++", htab);
-    connect(role.cpp_unmapped_decl_bt, SIGNAL(pressed()),
+    connect(role.cpp_unmapped_decl_bt, SIGNAL(clicked()),
 	    this, cpp_unmapped_slot);
   }
 }
@@ -751,10 +757,10 @@ void RelationDialog::init_java_role(RoleDialog & role, const RoleData & rel,
   
   if (! role.visit) {
     role.java_default_decl_bt = new QPushButton("Default declaration", htab);
-    connect(role.java_default_decl_bt, SIGNAL(pressed()),
+    connect(role.java_default_decl_bt, SIGNAL(clicked()),
 	    this, java_default_slot);
     role.java_unmapped_decl_bt = new QPushButton("Not generated in Java", htab);
-    connect(role.java_unmapped_decl_bt, SIGNAL(pressed()),
+    connect(role.java_unmapped_decl_bt, SIGNAL(clicked()),
 	    this, java_unmapped_slot);
   }
   
@@ -797,10 +803,10 @@ void RelationDialog::init_php_role(RoleDialog & role, const RoleData & rel,
   
   if (! role.visit) {
     role.php_default_decl_bt = new QPushButton("Default declaration", htab);
-    connect(role.php_default_decl_bt, SIGNAL(pressed()),
+    connect(role.php_default_decl_bt, SIGNAL(clicked()),
 	    this, php_default_slot);
     role.php_unmapped_decl_bt = new QPushButton("Not generated in Php", htab);
-    connect(role.php_unmapped_decl_bt, SIGNAL(pressed()),
+    connect(role.php_unmapped_decl_bt, SIGNAL(clicked()),
 	    this, php_unmapped_slot);
   }
 }
@@ -839,10 +845,10 @@ void RelationDialog::init_python_role(RoleDialog & role, const RoleData & rel,
   
   if (! role.visit) {
     role.python_default_decl_bt = new QPushButton("Default declaration", htab);
-    connect(role.python_default_decl_bt, SIGNAL(pressed()),
+    connect(role.python_default_decl_bt, SIGNAL(clicked()),
 	    this, python_default_slot);
     role.python_unmapped_decl_bt = new QPushButton("Not generated in Python", htab);
-    connect(role.python_unmapped_decl_bt, SIGNAL(pressed()),
+    connect(role.python_unmapped_decl_bt, SIGNAL(clicked()),
 	    this, python_unmapped_slot);
   }
 }
@@ -903,10 +909,10 @@ void RelationDialog::init_idl_role(RoleDialog & role, const RoleData & rel,
     QHBox * htab = new QHBox(bg);
     htab->setMargin(5);
     role.idl_default_decl_bt = new QPushButton("Default declaration", htab);
-    connect(role.idl_default_decl_bt, SIGNAL(pressed()),
+    connect(role.idl_default_decl_bt, SIGNAL(clicked()),
 	    this, idl_default_slot);
     role.idl_unmapped_decl_bt = new QPushButton("Not generated in Idl", htab);
-    connect(role.idl_unmapped_decl_bt, SIGNAL(pressed()),
+    connect(role.idl_unmapped_decl_bt, SIGNAL(clicked()),
 	    this, idl_unmapped_slot);
   }
 }
@@ -1008,6 +1014,7 @@ void RelationDialog::edTypeActivated(int r)
       edstereotype->insertStringList(rel->get_start_class()
 				     ->default_stereotypes(type,
 							   rel->get_end_class()));
+      edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlRelations));
       edstereotype->setCurrentItem(0);
     
       if (!a.edcppdecl->text().isEmpty())
@@ -1070,7 +1077,7 @@ void RelationDialog::menu_assoc() {
       nodes.at(index)->select_in_browser();
       break;
     case 2:
-      bn = BrowserClass::add_class(view);
+      bn = BrowserClass::add_class(FALSE, view);
       if (bn == 0)
 	return;
       bn->select_in_browser();
@@ -1587,14 +1594,14 @@ void RelationDialog::java_unmapped_b() {
 }
 
 void RelationDialog::java_edit_annotation_a() {
-  AnnotationDialog dialog(a.javaannotation, !hasOkButton());
+  AnnotationDialog dialog(this, a.javaannotation, !hasOkButton());
   
   if (dialog.exec() == QDialog::Accepted)
     java_update_a();
 }
 
 void RelationDialog::java_edit_annotation_b() {
-  AnnotationDialog dialog(b.javaannotation, !hasOkButton());
+  AnnotationDialog dialog(this, b.javaannotation, !hasOkButton());
   
   if (dialog.exec() == QDialog::Accepted)
     java_update_b();
@@ -2154,13 +2161,14 @@ void RelationDialog::accept() {
 
     int index = 0;
     QString s = edtype->currentText();
-    
+    bool wasinherit = RelationData::isa_inherit(rel->type);
+
     while (RelTypes[index].lbl != s)
       index += 1;
     rel->type = RelTypes[index].type;
     
-    rel->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
-    
+    bool isinherit = RelationData::isa_inherit(rel->type);
+    bool newst = rel->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
     bool assoc = RelationData::isa_association(rel->get_type());
     
     if (assoc) {
@@ -2199,6 +2207,14 @@ void RelationDialog::accept() {
     rel->start->package_modified();
     rel->modified();
     
+    if (onstereotype && (isinherit || wasinherit))
+      ProfiledStereotypes::recompute(TRUE);
+    else {
+      ProfiledStereotypes::modified(rel->start, newst);
+      if (rel->end)
+	ProfiledStereotypes::modified(rel->end, newst);
+    }
+
     QTabDialog::accept();
   }
 }

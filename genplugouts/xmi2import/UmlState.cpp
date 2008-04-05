@@ -8,7 +8,7 @@
 #include "UmlPseudoState.h"
 #include "UmlFinalState.h"
 #include "UmlTransition.h"
-UmlItem * UmlState::container(anItemKind kind, const Token & token, FileIn & in) {
+UmlItem * UmlState::container(anItemKind kind, Token & token, FileIn & in) {
   switch (kind) {
   case aState:
   case aRegion:

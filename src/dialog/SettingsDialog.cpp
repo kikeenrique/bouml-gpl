@@ -24,9 +24,9 @@
 // *************************************************************************
 
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qhbox.h>
 #include <qgrid.h>
@@ -281,11 +281,11 @@ ComboColor::ComboColor(QWidget * parent, UmlColor v,
   else
     setCurrentItem(v);    
   
-#ifdef WIN32
-  setSizeLimit(34);	// yes !, don't set it to count() !
-#else
+
+
+
   setSizeLimit(25);	// yes !, don't set it to count() !
-#endif
+
 }
 
 QSize SettingsDialog::previous_size;

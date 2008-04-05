@@ -46,7 +46,7 @@ class DecoratorDialog : public QDialog {
     static QSize previous_size;
   
   public:
-    DecoratorDialog(QString & s, bool visit);
+    DecoratorDialog(QWidget * parent, QString & s, bool visit);
     virtual ~DecoratorDialog();
   
   protected slots:

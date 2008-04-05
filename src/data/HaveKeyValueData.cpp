@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qtextstream.h> 
 
@@ -68,11 +68,34 @@ void HaveKeyValueData::set_value(int rank, const char * v) {
   keyvalues[rank].set_value(v);
 }
 
+void HaveKeyValueData::remove_key_value(unsigned index) {
+  nkeyvalues -= 1;
+  keyvalues[index].set_key(keyvalues[nkeyvalues].get_key());
+  keyvalues[index].set_value(keyvalues[nkeyvalues].get_value());
+}
+
 void HaveKeyValueData::set_n_keys(unsigned n) {
   if (n > nkeyvalues) {
     if (keyvalues)
       delete [] keyvalues;
     keyvalues = new KeyValueData[n];
+  }
+  
+  nkeyvalues = n;
+}
+
+void HaveKeyValueData::resize_n_keys(unsigned n, bool realloc) {
+  if (realloc) {
+    KeyValueData * kv = new KeyValueData[n];
+    
+    if (keyvalues) {
+      for (unsigned index = 0; index != nkeyvalues; index += 1) {
+	kv[index].set_key(keyvalues[index].get_key());
+	kv[index].set_value(keyvalues[index].get_value());
+      }
+      delete [] keyvalues;
+    }
+    keyvalues = kv;
   }
   
   nkeyvalues = n;

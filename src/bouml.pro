@@ -231,6 +231,7 @@ HEADERS		= browser/BrowserAttribute.h \
 		  misc/Labeled.h \
 		  misc/myio.h \
 		  misc/mu.h \
+		  misc/ProfiledStereotypes.h \
 		  tool/Tool.h \
 		  tool/Socket.h \
 		  tool/ToolCom.h \
@@ -475,6 +476,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  misc/mystr.cpp \
 		  misc/strutil.cpp \
 		  misc/Shortcut.cpp \
+		  misc/ProfiledStereotypes.cpp \
 		  tool/Tool.cpp \
 		  tool/ToolCom.cpp \
 		  xpm/UmlPixmap.cpp

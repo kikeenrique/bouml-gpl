@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qcursor.h>
 #include <qfont.h>
@@ -288,9 +288,9 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	}
       }
       break;
-#ifndef WIN32
+
 #warning
-#endif
+
 /*
     case UmlPartition:
       {

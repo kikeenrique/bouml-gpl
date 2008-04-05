@@ -88,7 +88,7 @@ void FileOut::define_datatypes(bool uml_20, bool primitive_type, bool gen_extens
        ++it) {
     indent();
     (*this) << pfix << " xmi:id=\"BOUML_datatype_"
-      << it.data() << "\" name = \"";
+      << it.data() << "\" name=\"";
     quote(it.key());
     (*this) << "\"/>\n";
   }

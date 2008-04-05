@@ -33,7 +33,8 @@ class UmlAttribute : public UmlBaseAttribute {
     UmlAttribute(void * id, const QCString & n)
       :  UmlBaseAttribute(id, n) {};
 
-    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype);
+    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype,
+			       bool = FALSE);
 };
 
 #endif

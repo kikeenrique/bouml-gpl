@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qintdict.h> 
 #include <qdatetime.h> 
@@ -49,23 +49,6 @@ void set_in_import(bool y)
 bool in_import()
 {
   return NeedRenumber;
-}
-
-//
-
-void update_idmax_for_root(QIntDict<void> & d, int & idmax)
-{
-  QIntDictIterator<void> it(d); 
-  
-  while (it.current()) {
-    int id = it.currentKey();
-    
-    if ((((unsigned) (id & ~127)) > ((unsigned) idmax)) &&
-        ((id & 127) == 0))
-      idmax = id & ~127;
-    
-    ++it;
-  }
 }
 
 //

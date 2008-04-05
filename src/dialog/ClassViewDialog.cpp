@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qgrid.h> 
 #include <qlabel.h>
@@ -43,6 +43,7 @@
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
 
 QSize ClassViewDialog::previous_size;
 
@@ -79,6 +80,7 @@ ClassViewDialog::ClassViewDialog(BasicData * nd)
   edstereotype->insertItem(toUnicode(data->get_stereotype()));
   if (!visit) {
     edstereotype->insertStringList(BrowserClassView::default_stereotypes());
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlClassView));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -202,7 +204,9 @@ void ClassViewDialog::accept() {
     msg_critical("Error", edname->text() + "\n\nillegal name or already used");
   else {  
     bn->set_name(s);
-    data->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+    
+    bool newst = data->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+    
     if (deploymentview != 0) {
       int index = deploymentview->currentItem();
       
@@ -219,6 +223,7 @@ void ClassViewDialog::accept() {
     data->modified();
     bn->package_modified();
     
+    ProfiledStereotypes::modified(bn, newst);
     QTabDialog::accept();
   }
 }

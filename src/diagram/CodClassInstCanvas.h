@@ -26,9 +26,9 @@
 #ifndef CODCLASSINSTCANVAS_H
 #define CODCLASSINSTCANVAS_H
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qobject.h>
 

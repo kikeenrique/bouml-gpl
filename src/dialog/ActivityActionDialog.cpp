@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qgrid.h> 
 #include <qvbox.h>
@@ -53,6 +53,7 @@
 #include "UmlWindow.h"
 #include "BrowserView.h"
 #include "GenerationSettings.h"
+#include "ProfiledStereotypes.h"
 
 QSize ActivityActionDialog::previous_size;
 
@@ -113,6 +114,7 @@ ActivityActionDialog::ActivityActionDialog(ActivityActionData * a)
   edstereotype->insertItem(toUnicode(action->get_stereotype()));
   if (!visit) {
     edstereotype->insertStringList(BrowserActivityAction::default_stereotypes());
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlActivityAction));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -294,7 +296,8 @@ void ActivityActionDialog::accept() {
   else {  
     act->undepend();
     bn->set_name(s);
-    act->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+
+    bool newst = act->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
     
     QString ocl_pre;
     QString ocl_post;
@@ -355,6 +358,7 @@ void ActivityActionDialog::accept() {
     bn->modified();   // call action->modified()
     bn->package_modified();
     
+    ProfiledStereotypes::modified(bn, newst);
     QTabDialog::accept();
   }
 }

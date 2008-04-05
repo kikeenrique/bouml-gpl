@@ -3,6 +3,7 @@
 #include "FileOut.h"
 #include "UmlActivity.h"
 
+#include "UmlFlow.h"
 void UmlActivityItem::write_selection(FileOut & out, QCString s) {
   if (! s.isEmpty())
     out.ref(activity()->add_opaque_behavior(s), "selection", "OPAQUE_BEHAVIOR_");

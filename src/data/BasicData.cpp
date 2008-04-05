@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include "BasicData.h"
 #include "BrowserNode.h"
@@ -90,22 +90,41 @@ void BasicData::modified() {
 
 //
 
-void BasicData::set_stereotype(const QString & s) {
-  stereotype = s;
-  if (browser_node != 0)
-    browser_node->update_stereotype();
+const char * BasicData::get_short_stereotype() const {
+  const char * s = stereotype;
+  const char * p = strchr(s, ':');
+  
+  return (p != 0) ? p+1 : s;
 }
 
-void BasicData::set_stereotype(const QCString & s) {
+bool BasicData::set_stereotype(const QString & s) {
+  bool result = ((const char *) stereotype != s);
+  
   stereotype = s;
   if (browser_node != 0)
     browser_node->update_stereotype();
+  
+  return result;
 }
 
-void BasicData::set_stereotype(const char * s) {
+bool BasicData::set_stereotype(const QCString & s) {
+  bool result = ((const char *) stereotype != s);
+  
   stereotype = s;
   if (browser_node != 0)
     browser_node->update_stereotype();
+  
+  return result;
+}
+
+bool BasicData::set_stereotype(const char * s) {
+  bool result = ((const char *) stereotype != s);
+  
+  stereotype = s;
+  if (browser_node != 0)
+    browser_node->update_stereotype();
+  
+  return result;
 }
 
 void BasicData::set_browser_node(BrowserNode * bn) {

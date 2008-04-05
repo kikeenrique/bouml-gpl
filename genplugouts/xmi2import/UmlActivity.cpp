@@ -11,7 +11,7 @@
 #include "UmlActivityParameter.h"
 #include "UmlFlow.h"
 
-UmlItem * UmlActivity::container(anItemKind kind, const Token & token, FileIn & in) {
+UmlItem * UmlActivity::container(anItemKind kind, Token & token, FileIn & in) {
   switch (kind) {
   case anExpansionRegion:
   case anInterruptibleActivityRegion:

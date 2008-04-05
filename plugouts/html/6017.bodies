@@ -1,8 +1,10 @@
 class UmlClass
 !!!128480.cpp!!!	sKind() : string
-  return "class";
+  return (stereotype() == "stereotype") 
+    ? "stereotype" : "class";
 !!!128480.java!!!	sKind() : string
-  return "class";
+  return (stereotype() == "stereotype") 
+    ? "stereotype" : "class";
 !!!128129.cpp!!!	memo_ref() : void
   classes.addElement(this);
   UmlItem::memo_ref();
@@ -47,24 +49,36 @@ class UmlClass
 !!!128499.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   if (flat) {
     define();
-    chapter("Class", pfix, rank, "class", level);
+    if (stereotype() == "stereotype")
+      chapter("Stereotype", pfix, rank, "stereotype", level);
+    else
+      chapter("Class", pfix, rank, "class", level);
     gen_html(pfix, rank, level);
     unload(FALSE, FALSE);
   }
   else {
-    fw.write("<table><tr><td><div class=\"element\">Class <b>");
+    if (stereotype() == "stereotype")
+      fw.write("<table><tr><td><div class=\"element\">Stereotype <b>");
+    else
+      fw.write("<table><tr><td><div class=\"element\">Class <b>");
     write();
     fw.write("</b></div></td></tr></table>\n");
   }
 !!!128499.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   if (flat) {
     define();
-    chapter("Class", pfix, rank, "class", level);
+    if (stereotype() == "stereotype")
+      chapter("Stereotype", pfix, rank, "stereotype", level);
+    else
+      chapter("Class", pfix, rank, "class", level);
     gen_html(pfix, rank, level);
     unload(false, false);
   }
   else {
-    fw.write("<table><tr><td><div class=\"element\">Class <b>");
+    if (stereotype() == "stereotype")
+      fw.write("<table><tr><td><div class=\"element\">Stereotype <b>");
+    else
+      fw.write("<table><tr><td><div class=\"element\">Class <b>");
     write();
     fw.write("</b></div></td></tr></table>\n");
   }
@@ -73,7 +87,10 @@ class UmlClass
   
   UmlCom::message(name());
   
-  start_file("class" + s.setNum((unsigned) getIdentifier()), "Class " + name(), TRUE);
+  if (stereotype() == "stereotype")
+    start_file("stereotype" + s.setNum((unsigned) getIdentifier()), "Stereotype " + name(), TRUE);
+  else
+    start_file("class" + s.setNum((unsigned) getIdentifier()), "Class " + name(), TRUE);
   define();
   gen_html("", 0, 0);
   end_file();
@@ -84,7 +101,10 @@ class UmlClass
   
   UmlCom.message(name());
   
-  start_file("class" + String.valueOf(getIdentifier()), "Class " + name(), true);
+  if (stereotype() == "stereotype")
+    start_file("stereotype" + String.valueOf(getIdentifier()), "Stereotype " + name(), true);
+  else
+    start_file("class" + String.valueOf(getIdentifier()), "Class " + name(), true);
   define();
   gen_html(null, 0, 0);
   end_file();
@@ -441,10 +461,12 @@ class UmlClass
     if (flat)
       fw.write("<a href=\"index");
     else {
-      fw.write("<a href=\"class");
+      fw.write((stereotype() == "stereotype")
+	       ? "<a href=\"stereotype" : "<a href=\"class");
       fw.write((unsigned) getIdentifier());
     }
-    fw.write(".html#refclass");
+    fw.write((stereotype() == "stereotype")
+	     ? ".html#refstereotype" : ".html#refclass");
     fw.write((unsigned) getIdentifier());
     fw.write("\"><b>");
     writeq(name());
@@ -471,10 +493,12 @@ class UmlClass
     if (flat)
       fw.write("<a href=\"index");
     else {
-      fw.write("<a href=\"class");
+      fw.write((stereotype() == "stereotype")
+	       ? "<a href=\"stereotype" : "<a href=\"class");
       fw.write((unsigned) getIdentifier());
     }
-    fw.write(".html#refclass");
+    fw.write((stereotype() == "stereotype")
+	       ? ".html#refstereotype" : ".html#refclass");
     fw.write((unsigned) getIdentifier());
     fw.write("\" target = \"");
     fw.write(target);
@@ -489,10 +513,12 @@ class UmlClass
     if (flat)
       fw.write("<a href=\"index");
     else {
-      fw.write("<a href=\"class");
+      fw.write((stereotype() == "stereotype")
+	       ? "<a href=\"stereotype" : "<a href=\"class");
       fw.write(String.valueOf(getIdentifier()));
     }
-    fw.write(".html#refclass");
+    fw.write((stereotype() == "stereotype")
+	       ? ".html#refstereotype" : ".html#refclass");
     fw.write(String.valueOf(getIdentifier()));
     fw.write("\" target = \"");
     fw.write(target);

@@ -9,7 +9,7 @@ class UnresolvedRelation
     
     if (from != UmlItem::All.end())
       (*from)->solveGeneralizationDependencyRealization((*it).context, (*it).to, (*it).name);
-    else
+    else if (!FileIn::isBypassedId((*it).from))
       UmlCom::trace("relation : unknown source reference '" + (*it).from + "'<br>");
   }
   All.clear();

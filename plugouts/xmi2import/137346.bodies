@@ -51,7 +51,9 @@ class UmlAcceptEventAction
 !!!221058.cpp!!!	solve(in idref : string) : void
   QCString tr = Trigger::get(idref);
   
-  if (tr.isNull())
-    UmlCom::trace("accept event activity action : unknown trigger reference '" + idref + "'<br>");
+  if (tr.isNull()) {
+    if (!FileIn::isBypassedId(idref))
+      UmlCom::trace("accept event activity action : unknown trigger reference '" + idref + "'<br>");
+  }
   else
     set_Trigger(tr);

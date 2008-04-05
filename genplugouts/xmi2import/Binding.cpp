@@ -97,12 +97,16 @@ void Binding::solveThem()
     QMap<QCString, UmlItem *>::Iterator it = UmlItem::All.find(b->boundId);
     UmlClass * tmpl = UmlClass::signature(b->signatureId);
     
-    if (it == UmlItem::All.end())
-      UmlCom::trace("templateBinding : unknown boundElement reference '" + b->boundId + "'<br>");
+    if (it == UmlItem::All.end()) {
+      if (!FileIn::isBypassedId(b->boundId))
+	UmlCom::trace("templateBinding : unknown boundElement reference '" + b->boundId + "'<br>");
+    }
     else if ((*it)->kind() != aClass)
       UmlCom::trace("templateBinding : boundElement reference '" + b->boundId + "' is not a class<br>");
-    else if (tmpl == 0)
-      UmlCom::trace("templateBinding : unknown signature reference '" + b->signatureId + "'<br>");
+    else if (tmpl == 0) {
+      if (!FileIn::isBypassedId(b->signatureId))
+	UmlCom::trace("templateBinding : unknown signature reference '" + b->signatureId + "'<br>");
+    }
     else if (((UmlClass *) *it)->bind(tmpl)) {
       UmlClass * cl = (UmlClass *) *it;
       
@@ -121,8 +125,10 @@ void Binding::solveThem()
 	  
 	  if (opit != UmlItem::OpaqueDefs.end())
 	    typespec.explicit_type = *opit;
-	  else if ((it = UmlItem::All.find(b->actualId)) == UmlItem::All.end())
-	    UmlCom::trace("templateBinding : unknown actual reference '" + b->actualId + "'<br>");
+	  else if ((it = UmlItem::All.find(b->actualId)) == UmlItem::All.end()) {
+	    if (!FileIn::isBypassedId(b->actualId))
+	      UmlCom::trace("templateBinding : unknown actual reference '" + b->actualId + "'<br>");
+	  }
 	  else if ((*it)->kind() != aClass)
 	    UmlCom::trace("templateBinding : actual reference '" + b->actualId + "' kind not managed<br>");
 	  else {

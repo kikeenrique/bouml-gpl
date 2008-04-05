@@ -2,6 +2,7 @@
 #include "UmlInterruptibleActivityRegion.h"
 #include "FileOut.h"
 
+#include "UmlFlow.h"
 void UmlInterruptibleActivityRegion::write(FileOut & out) {
   out.indent();
   out << "<group xmi:type=\"uml:InterruptibleActivityRegion\"";

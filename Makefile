@@ -15,6 +15,11 @@ BOUML_DESKTOP_DIR = /usr/share/applications
 # The copy is not done if you comment the definition
 BOUML_ICONS_PREFIX_DIR = /usr/share/icons/hicolor
 
+# On several Unix systems, the icons used inside the
+# menus must be stored inside the pixmaps' directory.
+# The copy is done if you uncomment the definition.
+#BOUML_UNIX_PIXMAPS_DIR = /usr/share/pixmaps
+
 # for packaging purpose, useless by default
 # DESTDIR = 
 
@@ -105,7 +110,13 @@ install:
 			cp -p bouml.$$i.png "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/bouml.png"; \
 			cp -p projectControl.$$i.png "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/projectControl.png"; \
 			cp -p projectSynchro.$$i.png "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/projectSynchro.png"; \
-		done \
+		done; \
+	fi
+	if test -n "$(BOUML_UNIX_PIXMAPS_DIR)"; then \
+		mkdir -p "$(DESTDIR)$(BOUML_UNIX_PIXMAPS_DIR)"; \
+		cp -f bouml.48.png "$(DESTDIR)$(BOUML_UNIX_PIXMAPS_DIR)/bouml.png"; \
+		cp -f projectControl.48.png "$(DESTDIR)$(BOUML_UNIX_PIXMAPS_DIR)/projectControl.png"; \
+		cp -f projectSynchro.48.png "$(DESTDIR)$(BOUML_UNIX_PIXMAPS_DIR)/projectSynchro.png"; \
 	fi
 	for i in $(PROGS); do cp -p $$i "$(DESTDIR)$(BOUML_LIB)" ; done
 	cd plugouts ; tar cf - empty genpro html rose singleton cpp_utilities xmi xmi2 xmi2import sm_generator usecase_wizard sort uml_projection FileControl deploy GlobalChange | (cd $(DESTDIR)$(BOUML_LIB); tar xf -)
@@ -157,7 +168,12 @@ uninstall:
 			rm "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/bouml.png"; \
 			rm "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/projectControl.png"; \
 			rm "$(DESTDIR)$(BOUML_ICONS_PREFIX_DIR)/$$i"x"$$i/apps/projectSynchro.png"; \
-		done \
+		done; \
+	fi
+	if test -n "$(BOUML_UNIX_PIXMAPS_DIR)"; then \
+		rm "$(DESTDIR)$(BOUML_UNIX_PIXMAPS_DIR)/bouml.png"; \
+		rm "$(DESTDIR)$(BOUML_UNIX_PIXMAPS_DIR)/projectControl.png"; \
+		rm "$(DESTDIR)$(BOUML_UNIX_PIXMAPS_DIR)/projectSynchro.png"; \
 	fi
 	if test -n "$(BOUML_DESKTOP_DIR)" ; \
 	then \

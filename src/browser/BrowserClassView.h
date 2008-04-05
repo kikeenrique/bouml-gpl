@@ -117,7 +117,10 @@ class BrowserClassView : public BrowserNode, public Labeled<BrowserClassView> {
     virtual void DropEvent(QDropEvent * e);
     virtual void DragMoveInsideEvent(QDragMoveEvent * e);
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
-    
+
+    bool extract_from_profile();
+    void insert_in_profile();
+
     static const QStringList & default_stereotypes();
     static void read_stereotypes(char * &, char * & k);
     static void save_stereotypes(QTextStream &);

@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -43,6 +43,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "BrowserView.h"
+#include "ProfiledStereotypes.h"
 #include "mu.h"
 
 QList<BrowserDeploymentDiagram> BrowserDeploymentDiagram::imported;
@@ -206,7 +207,7 @@ void BrowserDeploymentDiagram::menu() {
 		     "to edit the <em>deployment diagram</em>");
       if (!is_read_only) {
 	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
-		       "to set how the <em>deployment diagram</em>'s items must be drawed");
+		       "to set how the <em>deployment diagram</em>'s items must be drawn");
 	m.insertSeparator();
 	m.setWhatsThis(m.insertItem("Duplicate", 3),
 		       "to duplicate the <em>class diagram</em>");
@@ -219,6 +220,7 @@ Note that you can undelete it after");
       }
     }
     mark_menu(m, "deployment diagram", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
@@ -261,7 +263,9 @@ void BrowserDeploymentDiagram::exec_menu_choice(int rank) {
     undelete(FALSE);
     break;
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);

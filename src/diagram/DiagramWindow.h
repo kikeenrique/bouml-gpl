@@ -59,11 +59,11 @@ class DiagramWindow : public QMainWindow {
     QToolButton * optwinsize;
     QComboBox * viewmode;
     QToolButton * edit;
-#ifdef WIN32
-    // to restore session window size
-    unsigned desired_w;
-    unsigned desired_h;
-#endif
+
+
+
+
+
 
   public:
     DiagramWindow(BrowserDiagram * br, const QString & s);

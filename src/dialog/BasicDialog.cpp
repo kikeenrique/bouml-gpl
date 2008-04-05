@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qgrid.h> 
 #include <qlabel.h>
@@ -42,6 +42,7 @@
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
 
 BasicDialog::BasicDialog(BasicData * nd, QString s,
 			 const QStringList & default_stereotypes,
@@ -79,6 +80,7 @@ BasicDialog::BasicDialog(BasicData * nd, QString s,
   edstereotype->insertItem(toUnicode(data->get_stereotype()));
   if (! visit) {
     edstereotype->insertStringList(default_stereotypes);
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(bn->get_type()));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -157,7 +159,8 @@ void BasicDialog::accept() {
       bn->set_name(s);
   }
 
-  data->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+  bool newst = data->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+  
   bn->set_comment(comment->text());
   UmlWindow::update_comment_if_needed(bn);
     
@@ -166,5 +169,6 @@ void BasicDialog::accept() {
   bn->package_modified();
   data->modified();
     
- QTabDialog::accept();
+  ProfiledStereotypes::modified(bn, newst);
+  QTabDialog::accept();
 }

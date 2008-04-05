@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -51,6 +51,7 @@
 #include "UmlDrag.h"
 #include "DialogUtil.h"
 #include "BrowserView.h"
+#include "ProfiledStereotypes.h"
 #include "mu.h"
 
 IdDict<BrowserArtifact> BrowserArtifact::all(257, __FILE__);
@@ -359,6 +360,7 @@ Note that you can undelete it after");
 		   "to know who reference the <i>artifact</i> \
 through a relation");
     mark_menu(m, "artifact", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
@@ -530,7 +532,9 @@ void BrowserArtifact::exec_menu_choice(int rank,
     }
     // no break
   default:
-    if (rank >= 10000) {
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 10000) {
       int n;
       QValueList<BrowserClass *>::ConstIterator it;
       
@@ -722,7 +726,7 @@ void BrowserArtifact::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
       package_modified();
     }
     else {
-      msg_critical("Error", "Forbiden");
+      msg_critical("Error", "Forbidden");
       e->ignore();
     }
   }
@@ -1030,17 +1034,19 @@ bool BrowserArtifact::tool_cmd(ToolCom * com, const char * args) {
 	    {
 	      UmlCode c;
 	      
-	      if (!com->get_relation_kind(c, args) ||
-		  (c != UmlDependency))
+	      if (!com->get_relation_kind(c, args))
 		ok = FALSE;
 	      else {
-		BrowserNode * end = (BrowserNode *) com->get_id(args);
+		BrowserNode * end;
 		
 		switch (c) {
 		case UmlDependency:
+		  end = (BrowserNode *) com->get_id(args);
 		  switch (end->get_type()) {
 		  case UmlPackage:
 		  case UmlArtifact:
+		  case UmlComponent:
+		  case UmlDeploymentNode:
 		    add_relation(UmlDependOn, end)->get_browser_node()->write_id(com);
 		    break;
 		  default:
@@ -1048,6 +1054,7 @@ bool BrowserArtifact::tool_cmd(ToolCom * com, const char * args) {
 		  }
 		  break;
 		case UmlGeneralisation:
+		  end = (BrowserNode *) com->get_id(args);
 		  if ((end->get_type() == UmlArtifact) &&
 		      (check_inherit(end) == 0))
 		    add_relation(UmlInherit, end)->get_browser_node()->write_id(com);

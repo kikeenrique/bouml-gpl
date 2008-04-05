@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qsplitter.h> 
 #include <qgrid.h> 
@@ -50,6 +50,7 @@
 #include "strutil.h"
 #include "UmlPixmap.h"
 #include "BodyDialog.h"
+#include "ProfiledStereotypes.h"
 
 QSize ArtifactDialog::previous_size;
 
@@ -126,6 +127,7 @@ void ArtifactDialog::init_uml_tab() {
   edstereotype->insertItem(toUnicode(data->get_stereotype()));
   if (! visit) {
     edstereotype->insertStringList(BrowserArtifact::default_stereotypes());
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlArtifact));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -189,9 +191,9 @@ void ArtifactDialog::init_cpp_tab() {
     hbox = new QHBox(vbox); 
     edit = new SmallPushButton("Editor", hbox);
     connect(edit, SIGNAL(clicked()), this, SLOT(cpp_edit_h()));
-    connect(new QPushButton("Default definition", hbox), SIGNAL(pressed ()),
+    connect(new QPushButton("Default definition", hbox), SIGNAL(clicked ()),
 	    this, SLOT(cpp_default_h()));
-    connect(new QPushButton("Not generated in C++", hbox), SIGNAL(pressed ()),
+    connect(new QPushButton("Not generated in C++", hbox), SIGNAL(clicked ()),
 	    this, SLOT(cpp_unmapped_h()));
   }
   
@@ -233,9 +235,9 @@ void ArtifactDialog::init_cpp_tab() {
     hbox = new QHBox(vbox); 
     edit = new SmallPushButton("Editor", hbox);
     connect(edit, SIGNAL(clicked()), this, SLOT(cpp_edit_src()));
-    connect(new QPushButton("Default definition", hbox), SIGNAL(pressed ()),
+    connect(new QPushButton("Default definition", hbox), SIGNAL(clicked ()),
 	    this, SLOT(cpp_default_src()));
-    connect(new QPushButton("Not generated in C++", hbox), SIGNAL(pressed ()),
+    connect(new QPushButton("Not generated in C++", hbox), SIGNAL(clicked ()),
 	    this, SLOT(cpp_unmapped_src()));
   }
 
@@ -288,9 +290,9 @@ void ArtifactDialog::init_java_tab() {
     hbox = new QHBox(vbox); 
     edit = new SmallPushButton("Editor", hbox);
     connect(edit, SIGNAL(clicked()), this, SLOT(java_edit()));
-    connect(new QPushButton("Default definition", hbox), SIGNAL(pressed ()),
+    connect(new QPushButton("Default definition", hbox), SIGNAL(clicked ()),
 	    this, SLOT(java_default_src()));
-    connect(new QPushButton("Not generated in Java", hbox), SIGNAL(pressed ()),
+    connect(new QPushButton("Not generated in Java", hbox), SIGNAL(clicked ()),
 	    this, SLOT(java_unmapped_src()));
   }
 
@@ -343,9 +345,9 @@ void ArtifactDialog::init_php_tab() {
     hbox = new QHBox(vbox); 
     edit = new SmallPushButton("Editor", hbox);
     connect(edit, SIGNAL(clicked()), this, SLOT(php_edit()));
-    connect(new QPushButton("Default definition", hbox), SIGNAL(pressed ()),
+    connect(new QPushButton("Default definition", hbox), SIGNAL(clicked ()),
 	    this, SLOT(php_default_src()));
-    connect(new QPushButton("Not generated in Php", hbox), SIGNAL(pressed ()),
+    connect(new QPushButton("Not generated in Php", hbox), SIGNAL(clicked ()),
 	    this, SLOT(php_unmapped_src()));
   }
 
@@ -398,9 +400,9 @@ void ArtifactDialog::init_python_tab() {
     hbox = new QHBox(vbox); 
     edit = new SmallPushButton("Editor", hbox);
     connect(edit, SIGNAL(clicked()), this, SLOT(python_edit()));
-    connect(new QPushButton("Default definition", hbox), SIGNAL(pressed ()),
+    connect(new QPushButton("Default definition", hbox), SIGNAL(clicked ()),
 	    this, SLOT(python_default_src()));
-    connect(new QPushButton("Not generated in Python", hbox), SIGNAL(pressed ()),
+    connect(new QPushButton("Not generated in Python", hbox), SIGNAL(clicked ()),
 	    this, SLOT(python_unmapped_src()));
   }
 
@@ -453,9 +455,9 @@ void ArtifactDialog::init_idl_tab() {
     hbox = new QHBox(vbox); 
     edit = new SmallPushButton("Editor", hbox);
     connect(edit, SIGNAL(clicked()), this, SLOT(idl_edit()));
-    connect(new QPushButton("Default definition", hbox), SIGNAL(pressed ()),
+    connect(new QPushButton("Default definition", hbox), SIGNAL(clicked ()),
 	    this, SLOT(idl_default_src()));
-    connect(new QPushButton("Not generated in Idl", hbox), SIGNAL(pressed ()),
+    connect(new QPushButton("Not generated in Idl", hbox), SIGNAL(clicked ()),
 	    this, SLOT(idl_unmapped_src()));
   }
   
@@ -587,6 +589,7 @@ void ArtifactDialog::init_assoc_artifacts_tab() {
     stereotypefilter->setAutoCompletion(TRUE);
     stereotypefilter->insertItem("");
     stereotypefilter->insertStringList(BrowserArtifact::default_stereotypes());
+    stereotypefilter->insertStringList(ProfiledStereotypes::defaults(UmlArtifact));
     stereotypefilter->setCurrentItem(0);
     QSizePolicy sp = stereotypefilter->sizePolicy();
     sp.setHorData(QSizePolicy::Expanding);
@@ -900,15 +903,16 @@ static void show_result(QSplitter * spl)
 void ArtifactDialog::compute_cpp_namespace(QString & nasp,
 					   QString & nasp_start,
 					   QString & nasp_end) {
-  nasp = (const char *)
+  const char * cnasp = (const char *)
     ((PackageData *) 
      ((BrowserNode *) data->browser_node->parent()->parent())->get_data())
       ->get_cpp_namespace();
+  
+  nasp = ((cnasp[0] == ':') && (cnasp[1] == ':'))
+    ? cnasp + 2 : cnasp;
     
   if (! nasp.isEmpty()) {
-    int index =
-      // bypass :: at beginning allowing ::a...
-      ((nasp.at(0) == ':') && (nasp != "::")) ? 2 : 0;
+    int index = 0;
     int index2;
     
     while ((index2 = nasp.find(':', index)) != -1) {
@@ -1726,8 +1730,7 @@ void ArtifactDialog::accept() {
     QString stereotype = 
       fromUnicode(edstereotype->currentText().stripWhiteSpace());
     bool a_text = (stereotype == "text");
-    
-    data->set_stereotype(stereotype);
+    bool newst = data->set_stereotype(stereotype);
     
     if (a_text || (stereotype == "source")) {
       QValueList<BrowserClass *> l;
@@ -1788,6 +1791,7 @@ void ArtifactDialog::accept() {
     bn->package_modified();
     data->modified();
     
+    ProfiledStereotypes::modified(bn, newst);
     QTabDialog::accept();
   }
 }

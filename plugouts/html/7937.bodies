@@ -1,12 +1,17 @@
 class UmlPackage
 !!!129888.cpp!!!	sKind() : string
-  return "package";
+  return (stereotype() == "profile")
+    ? "profile" : "package";
 !!!129888.java!!!	sKind() : string
-  return "package";
+  return (stereotype() == "profile")
+    ? "profile" : "package";
 !!!128088.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   define();
   
-  chapter("Package", pfix, rank, "package", level);
+  if (stereotype() == "profile")
+    chapter("Profile", pfix, rank, "profile", level);
+  else
+    chapter("Package", pfix, rank, "package", level);
 
   QCString s = description();
   
@@ -60,7 +65,10 @@ class UmlPackage
 !!!128088.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   define();
   
-  chapter("Package", pfix, rank, "package", level);
+  if (stereotype() == "profile")
+    chapter("Profile", pfix, rank, "profile", level);
+  else
+    chapter("Package", pfix, rank, "package", level);
 
   String s = description();
   

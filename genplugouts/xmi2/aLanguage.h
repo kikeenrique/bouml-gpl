@@ -6,7 +6,8 @@ enum aLanguage {
   umlLanguage,
   cppLanguage,
   javaLanguage,
-  idlLanguage
+  idlLanguage,
+  phpLanguage
 
 };
 #endif

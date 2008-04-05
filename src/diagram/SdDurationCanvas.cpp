@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpainter.h>
 #include <qcursor.h>
@@ -128,18 +128,18 @@ void SdDurationCanvas::draw(QPainter & p) {
   p.fillRect(r, co);
   if (coregion) {
     p.drawLine(x, y + w, x, y);
-#ifdef WIN32
-    p.moveTo(x, y);
-#endif
+
+
+
     p.lineTo(x + w, y);
     p.lineTo(x + w, y + w);
     
     int b = r.bottom();
     
     p.drawLine(x, b - w, x, b);
-#ifdef WIN32
-    p.moveTo(x, b);
-#endif
+
+
+
     p.lineTo(x + w, b);
     p.lineTo(x + w, b - w);
   }

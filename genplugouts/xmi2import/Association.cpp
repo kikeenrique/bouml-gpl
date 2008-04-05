@@ -6,7 +6,10 @@
 #include "UmlCom.h"
 #include "UmlRelation.h"
 #include "UmlClass.h"
-void Role::setMultiplicity(QCString v, bool upper) {
+void Role::setMultiplicity(QCString v, bool upper, const char * dflt) {
+  if (v.isEmpty())
+    v = dflt;
+    
   if (!v.isEmpty() && 
       (v != "Unspecified")) {	// VP
     if (multiplicity.isEmpty())
@@ -22,11 +25,12 @@ void Role::setMultiplicity(QCString v, bool upper) {
 
 void Association::import(FileIn & in, Token & token) {
   QCString s = token.xmiId();
-  Role & r = ((roles[0].id == s)
-	      ? roles[0]
-	      : ((roles[1].id == s)
-		 ? roles[1]
-		 : roles[(roles[0].id.isEmpty()) ? 0 : 1]));
+  int index = ((roles[0].id == s)
+	       ? 0
+	       : ((roles[1].id == s)
+		  ? 1
+		  : ((roles[0].id.isEmpty()) ? 0 : 1)));
+  Role & r = roles[index];
     
   r.id = s;
   if (!(s = token.valueOf("name")).isEmpty())
@@ -35,18 +39,18 @@ void Association::import(FileIn & in, Token & token) {
     r.idref = s;
   if (!(s = token.valueOf("visibility")).isEmpty())
     r.visibility = s;
-  if (token.valueOf("isnavigable") == "false")
-    r.navigable = FALSE;
-  if (token.valueOf("isreadonly") == "true")
-    r.readOnly = TRUE;
-  if (token.valueOf("isstatic") == "true")
-    r.isStatic = TRUE;
+  s = token.valueOf("isnavigable");
+  r.navigable = (s.isEmpty())
+    ? (token.what() != "ownedend")
+    : (s == "true");
+  r.readOnly = (token.valueOf("isreadonly") == "true");
+  r.isStatic = (token.valueOf("isstatic") == "true");
     
   s = token.valueOf("aggregation");
   if (s == "shared")
-    r.aggregate = anAggregation;
+    roles[(UmlItem::fromEclipse()) ? 1 - index : index].aggregate = anAggregation;
   else if ((s == "composite") || (s == "aggregate"))
-    r.aggregate = anAggregationByValue;
+    roles[(UmlItem::fromEclipse()) ? 1 - index : index].aggregate = anAggregationByValue;
 
   if (! token.closed()) {
     QCString k = token.what();
@@ -58,9 +62,19 @@ void Association::import(FileIn & in, Token & token) {
       if (s == "type")
 	r.idref = token.xmiIdref();
       else if (s == "lowervalue")
-	r.setMultiplicity(token.valueOf("value"), FALSE);
+	r.setMultiplicity(token.valueOf("value"), FALSE,
+			  (UmlItem::fromEclipse()) ? "0" : "");
       else if (s == "uppervalue")
-	r.setMultiplicity(token.valueOf("value"), TRUE);
+	r.setMultiplicity(token.valueOf("value"), TRUE,
+			  (UmlItem::fromEclipse()) ? "0" : "");
+      else if (s == "ownedcomment") {
+	r.comment = UmlItem::readComment(in, token);
+	continue;
+      }
+      else {
+	in.bypass(token);
+	continue;
+      }
       
       if (! token.closed())
 	in.finish(s);
@@ -78,7 +92,8 @@ Association & Association::get(QCString id, QCString s)
     it = All.insert(id, a);
   }
 
-  if (! s.isEmpty())
+  if (!s.isEmpty() &&
+      (!UmlItem::fromEclipse() || (s.find("Association_") != 0)))
     (*it).name = s;
     
   return *it;
@@ -116,15 +131,19 @@ void Association::solve(QCString id) {
     Role & b = roles[1 - rank];
     QMap<QCString, UmlItem *>::Iterator it;
     
-    if ((it = UmlItem::All.find(a.idref)) == UmlItem::All.end())
-      UmlCom::trace("association : unknown type reference '" + a.idref + "'<br>");
+    if ((it = UmlItem::All.find(a.idref)) == UmlItem::All.end()) {
+      if (!FileIn::isBypassedId(a.idref))
+	UmlCom::trace("association : unknown type reference '" + a.idref + "'<br>");
+    }
     else if ((*it)->kind() != aClass)
       UmlCom::trace("'" + a.idref + "' is not a class<br>");
     else {
       UmlClass * cla = (UmlClass *) *it;
       
-      if ((it = UmlItem::All.find(b.idref)) == UmlItem::All.end())
-	UmlCom::trace("association : unknown type reference '" + b.idref + "'<br>");
+      if ((it = UmlItem::All.find(b.idref)) == UmlItem::All.end()) {
+	if (!FileIn::isBypassedId(b.idref))
+	  UmlCom::trace("association : unknown type reference '" + b.idref + "'<br>");
+      }
       else if ((*it)->kind() != aClass)
 	UmlCom::trace("'" + b.idref + "' is not a class<br>");
       else {
@@ -168,6 +187,8 @@ void Association::solve(QCString id) {
 	  ra->set_isClassMember(TRUE);
 	if (! a.multiplicity.isEmpty())
 	  ra->set_Multiplicity(a.multiplicity);
+	if (! a.comment.isEmpty())
+	  ra->set_Description(a.comment);
 	
  	if (is_class_association) {
  	  UmlTypeSpec t;
@@ -191,6 +212,8 @@ void Association::solve(QCString id) {
 	    rb->set_isClassMember(TRUE);
 	  if (! b.multiplicity.isEmpty())
 	    rb->set_Multiplicity(b.multiplicity);
+	  if (! b.comment.isEmpty())
+	    rb->set_Description(b.comment);
 	}
       }
     }

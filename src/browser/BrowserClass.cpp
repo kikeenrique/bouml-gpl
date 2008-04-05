@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qpainter.h>
@@ -70,6 +70,8 @@
 #include "DialogUtil.h"
 #include "mu.h"
 #include "GenerationSettings.h"
+#include "strutil.h"
+#include "ProfiledStereotypes.h"
 
 IdDict<BrowserClass> BrowserClass::all(257, __FILE__);
 
@@ -118,6 +120,54 @@ void BrowserClass::delete_it() {
        it++)
     if ((*it)->is_writable())
       (*it)->remove_associated_class(this);
+}
+
+// undelete internal processing
+
+bool BrowserClass::undelete(bool rec, QString & warning, QString & renamed) {
+  bool result;
+  bool ste = (strcmp(def->get_stereotype(), "stereotype") == 0);
+  
+  if (deletedp()) {
+    // undelete the node
+    QString s = name;
+    bool ren = FALSE;
+    
+    while (((BrowserNode *) parent())
+	   ->wrong_child_name(s, get_type(),
+			      allow_spaces(), allow_empty()) ||
+	   (ste && (ProfiledStereotypes::canAddStereotype(this, s) != 0))) {
+      s = "_" + s;
+      ren = TRUE;
+    }
+    
+    is_deleted = FALSE;
+    is_modified = TRUE;
+    get_data()->undelete(warning, renamed);
+    
+    if (ren) {
+      set_name(s);
+      renamed += QString("<li><b>") + full_name() + "</b>\n";
+    }
+    
+    result = TRUE;
+    package_modified();
+  }
+  else 
+    result = FALSE;
+    
+  if (rec) {
+    // undelete the sub elts
+    QListViewItem * child;
+    
+    for (child = firstChild(); child != 0; child = child->nextSibling())
+      result |= ((BrowserNode *) child)->undelete(rec, warning, renamed);
+  }
+  
+  if (result)
+    repaint();
+  
+  return result;
 }
 
 void BrowserClass::clear(bool old)
@@ -205,12 +255,16 @@ bool BrowserClass::new_java_enums(QString new_st)
 }
 
 const QPixmap* BrowserClass::pixmap(int) const {
-  bool actor = (strcmp(def->get_stereotype(), "actor") == 0);
+  const char * st = def->get_stereotype();
+  bool actor = (strcmp(st, "actor") == 0);
+  bool stereotype = (strcmp(st, "stereotype") == 0);
   bool tmplt = def->get_n_formalparams();
   
   if (deletedp()) {
     if (actor)
       return DeletedActorIcon;
+    else if (stereotype)
+      return DeletedStereotypeIcon;
     else if (tmplt)
       return DeletedTemplateIcon;
     else
@@ -219,6 +273,8 @@ const QPixmap* BrowserClass::pixmap(int) const {
   
   if (actor)
     return ActorIcon;
+  else if (stereotype)
+    return StereotypeIcon;
   else if (! nestedp())
     return (tmplt) ? TemplateIcon : ClassIcon;
   else {
@@ -236,6 +292,32 @@ const QPixmap* BrowserClass::pixmap(int) const {
       return (tmplt) ? PackageEmbeddedTemplateIcon
 		     : PackageEmbeddedClassIcon;
     }
+  }
+}
+
+void BrowserClass::update_stereotype(bool rec) {
+  if (def != 0) {
+    const char * stereotype = def->get_stereotype();
+    
+    if (show_stereotypes &&
+	stereotype[0] &&
+	(strcmp(stereotype, "stereotype") != 0)) {
+      QString s = toUnicode(stereotype);
+      int index = s.find(':');
+      
+      setText(0,
+	      "<<" + ((index == -1) ? s : s.mid(index + 1))
+	      + ">> " + name);
+    }
+    else
+      setText(0, (const char *) name);
+  }
+  
+  if (rec) {
+    QListViewItem * child;
+    
+    for (child = firstChild(); child != 0; child = child->nextSibling())
+      ((BrowserNode *) child)->update_stereotype(TRUE);
   }
 }
 
@@ -282,6 +364,8 @@ void BrowserClass::menu() {
   QPopupMenu inhopersubm(0);
   QPopupMenu compsubm(0);
   QPopupMenu toolm(0);
+  bool isstereotype = (strcmp(def->get_stereotype(), "stereotype") == 0);
+  QString what = (isstereotype) ? "<em>stereotype</em>" : "<em>class</em>";
   int index;
   
   m.insertItem(new MenuTitle(name, m.font()), -1);
@@ -298,10 +382,10 @@ void BrowserClass::menu() {
 	
 	if (strcmp(stereotype, "typedef") && strcmp(stereotype, "enum_pattern")) {
 	  m.setWhatsThis(m.insertItem("Add attribute", 0),
-			 "to add an <em>attribute</em> to the <em>class</em>");
+			 "to add an <em>attribute</em> to the " + what);
 
 	  m.setWhatsThis(m.insertItem("Add operation", 1),
-			 "to add an <em>operation</em> to the <em>class</em>");
+			 "to add an <em>operation</em> to the " + what);
 	  if ((l.count() != 0) && strcmp(stereotype, "union")) {
 	    if (l.count() > 20)
 	      m.setWhatsThis(m.insertItem("Add inherited operation", 9999),
@@ -330,7 +414,7 @@ void BrowserClass::menu() {
 			     "to redefine an inherited <em>operation</em> in the <em>class</em>");
 	    }
 	  }
-	  if (strcmp(stereotype, "enum") && strcmp(stereotype, "enum_pattern")) {
+	  if (!isstereotype && strcmp(stereotype, "enum") && strcmp(stereotype, "enum_pattern")) {
 	    m.setWhatsThis(m.insertItem("Add nested class", 14),
 			   "to add an <em>nested class</em> to the <em>class</em>");
 	  }
@@ -339,16 +423,17 @@ void BrowserClass::menu() {
 	}
 	m.insertSeparator();
 	m.setWhatsThis(m.insertItem("Edit", 3),
-		       "to edit the <em>class</em>, \
+		       "to edit the " + what + ", \
 a double click with the left mouse button does the same thing");
 	m.setWhatsThis(m.insertItem("Duplicate", 13),
-		       "to duplicate the <em>class</em>");
+		       "to duplicate the " + what);
 	m.insertSeparator();
 	m.setWhatsThis(m.insertItem("Delete", 4),
-		       "to delete the <em>class</em>. \
+		       "to delete the " + what + ". \
 Note that you can undelete it after");
 	
-	if ((associated_artifact == 0) &&
+	if (!isstereotype &&
+	    (associated_artifact == 0) &&
 	    (((BrowserNode *) parent())->get_type() == UmlClassView)) {
 	  BrowserNode * bcv = ((BrowserClassView *) parent())->get_associated();
 	  
@@ -374,22 +459,22 @@ the <em>class view</em>, this artifact will contain the generated code of the cl
     }
     else {
       m.setWhatsThis(m.insertItem("Edit", 3),
-		     "to edit the <em>class</em>, \
+		     "to edit the " + what + ", \
 a double click with the left mouse button does the same thing");
       m.setWhatsThis(m.insertItem("Duplicate", 13),
-		     "to duplicate the <em>class</em>");
+		     "to duplicate the " + what);
     }
     
     bool have_sep = FALSE;
     
-    if ((associated_artifact != 0) && !associated_artifact->deletedp()) {
+    if (!isstereotype && (associated_artifact != 0) && !associated_artifact->deletedp()) {
       m.insertSeparator();
       have_sep = TRUE;
       m.setWhatsThis(m.insertItem("Select associated artifact", 5),
 		     "to select the associated <em>&lt;&lt;source&gt;&gt; artifact</em>");
     }
     
-    if (! associated_components.isEmpty()) {
+    if (!isstereotype && !associated_components.isEmpty()) {
       if (! have_sep)
 	m.insertSeparator();
       
@@ -417,28 +502,31 @@ a double click with the left mouse button does the same thing");
     
     m.insertSeparator();
     m.setWhatsThis(m.insertItem("Referenced by", 15),
-		   "to know who reference the <i>class</i>");
+		   "to know who reference the " + what);
     mark_menu(m, "class", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
 
-    bool cpp = GenerationSettings::cpp_get_default_defs();
-    bool java = GenerationSettings::java_get_default_defs();
-    bool php = GenerationSettings::php_get_default_defs();
-    bool python = GenerationSettings::python_get_default_defs();
-    bool idl = GenerationSettings::idl_get_default_defs();
-    
-    if (! nestedp() && (cpp || java || php || python || idl)) {
-      m.insertSeparator();
-      m.insertItem("Generate", &gensubm);    
-      if (cpp)
-	gensubm.insertItem("C++", 10);
-      if (java)
-	gensubm.insertItem("Java", 11);
-      if (php)
-	gensubm.insertItem("Php", 22);
-      if (python)
-	gensubm.insertItem("Python", 25);
-      if (idl)
-	gensubm.insertItem("Idl", 12);
+    if (!isstereotype) {
+      bool cpp = GenerationSettings::cpp_get_default_defs();
+      bool java = GenerationSettings::java_get_default_defs();
+      bool php = GenerationSettings::php_get_default_defs();
+      bool python = GenerationSettings::python_get_default_defs();
+      bool idl = GenerationSettings::idl_get_default_defs();
+      
+      if (! nestedp() && (cpp || java || php || python || idl)) {
+	m.insertSeparator();
+	m.insertItem("Generate", &gensubm);    
+	if (cpp)
+	  gensubm.insertItem("C++", 10);
+	if (java)
+	  gensubm.insertItem("Java", 11);
+	if (php)
+	  gensubm.insertItem("Php", 22);
+	if (python)
+	  gensubm.insertItem("Python", 25);
+	if (idl)
+	  gensubm.insertItem("Idl", 12);
+      }
     }
     if ((edition_number == 0) && 
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -448,7 +536,7 @@ a double click with the left mouse button does the same thing");
   }
   else if (!is_read_only && (edition_number == 0)) {
     m.setWhatsThis(m.insertItem("Undelete", 6),
-		   "undelete the <em>class</em>. \
+		   "undelete the " + what + ". \
 Do not undelete its <em>attributes</em>, <em>operations</em> and <em>relations</em>");
  
     QListViewItem * child;
@@ -456,7 +544,11 @@ Do not undelete its <em>attributes</em>, <em>operations</em> and <em>relations</
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
 	m.setWhatsThis(m.insertItem("Undelete recursively", 7),
-		       "undelete the <em>class</em> and its \
+		       (isstereotype)
+		       ? "undelete the <em>stereotype</em> and its \
+<em>attributes</em>, <em>operations</em> and \
+<em>relations</em> (except if the stereotype at the other side is also deleted)"
+		       : "undelete the <em>class</em> and its \
 nested <em>classes</em>, <em>attributes</em>, <em>operations</em> and \
 <em>relations</em> (except if the class at the other side is also deleted)");
 	break;
@@ -467,13 +559,15 @@ nested <em>classes</em>, <em>attributes</em>, <em>operations</em> and \
   exec_menu_choice(m.exec(QCursor::pos()), l);
 }
 
-void BrowserClass::exec_menu_choice(int index,
+void BrowserClass::exec_menu_choice(int rank,
 				    QList<BrowserOperation> & l) {
-  switch (index) {
+  bool isstereotype = (strcmp(def->get_stereotype(), "stereotype") == 0);
+  
+  switch (rank) {
   case 0:
   case 8:
     {
-      BrowserNode * bn = add_attribute(0, index == 8);
+      BrowserNode * bn = add_attribute(0, rank == 8);
       
       if (bn != 0)
 	bn->open(TRUE);
@@ -500,9 +594,12 @@ void BrowserClass::exec_menu_choice(int index,
     def->edit();
     return;
   case 4:
+    ProfiledStereotypes::deleted(this);
     delete_it();
     break;
   case 5:
+    if (isstereotype)
+      return;
     if (associated_artifact == 0) {
       BrowserArtifact * ba = 
 	new BrowserArtifact(name,
@@ -518,12 +615,16 @@ void BrowserClass::exec_menu_choice(int index,
     break;
   case 6:
     BrowserNode::undelete(FALSE);
+    if (!strcmp(get_data()->get_stereotype(), "stereotype"))
+      ProfiledStereotypes::recompute(FALSE);
     break;
   case 7:
     BrowserNode::undelete(TRUE);
+    if (!strcmp(get_data()->get_stereotype(), "stereotype"))
+      ProfiledStereotypes::recompute(FALSE);
     break;
   case 10:
-    {
+    if (! isstereotype) {
       bool preserve = preserve_bodies();
       
       ToolCom::run((verbose_generation()) 
@@ -533,7 +634,7 @@ void BrowserClass::exec_menu_choice(int index,
     }
     return;
   case 11:
-    {
+    if (! isstereotype) {
       bool preserve = preserve_bodies();
       
       ToolCom::run((verbose_generation()) 
@@ -543,7 +644,7 @@ void BrowserClass::exec_menu_choice(int index,
     }
     return;
   case 22:
-    {
+    if (! isstereotype) {
       bool preserve = preserve_bodies();
       
       ToolCom::run((verbose_generation()) 
@@ -553,7 +654,7 @@ void BrowserClass::exec_menu_choice(int index,
     }
     return;
   case 25:
-    {
+    if (! isstereotype) {
       bool preserve = preserve_bodies();
       
       ToolCom::run((verbose_generation()) 
@@ -563,7 +664,8 @@ void BrowserClass::exec_menu_choice(int index,
     }
     return;
   case 12:
-    ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
+    if (! isstereotype) 
+      ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
     return;
   case 13:
     {
@@ -577,8 +679,8 @@ void BrowserClass::exec_menu_choice(int index,
     }
     break;
   case 14: 
-    {
-      BrowserClass * cl = add_class(this);
+    if (! isstereotype) {
+      BrowserClass * cl = add_class(FALSE, this);
       
       if (cl != 0)
 	cl->select_in_browser();
@@ -606,20 +708,22 @@ void BrowserClass::exec_menu_choice(int index,
       dialog.raise();
       if (dialog.exec() != QDialog::Accepted)
 	return;
-      index = dialog.choosen() + 10000;
+      rank = dialog.choosen() + 10000;
     }
     // no break
   default:
-    if (index >= 100000)
+    if (rank >= 100000)
       // assoc comp
-      associated_components[index - 100000]->select_in_browser();
-    else if (index >= 10000)
+      associated_components[rank - 100000]->select_in_browser();
+    else if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 10000)
       // inherited operation
-      add_inherited_operation(l.at(index - 10000));
-    else if (index >= 100)
-      ToolCom::run(Tool::command(index - 100), this);
+      add_inherited_operation(l.at(rank - 10000));
+    else if (rank >= 100)
+      ToolCom::run(Tool::command(rank - 100), this);
     else
-      mark_management(index - 90);
+      mark_management(rank - 90);
     return;
   }
   package_modified();
@@ -818,7 +922,9 @@ BrowserNode * BrowserClass::add_attribute(BrowserAttribute * attr,
     attr->select_in_browser();
     if (enum_item)
       ((AttributeData *) attr->get_data())->set_visibility(UmlPublic);
-    
+    else if (!strcmp(def->get_stereotype(), "stereotype"))
+      ProfiledStereotypes::added(attr);
+
     return attr;
   }
   
@@ -1335,13 +1441,13 @@ void BrowserClass::move(BrowserNode * bn, BrowserNode * after) {
     ((BrowserClass *) bn)->set_associated_artifact(0);
   }
 
-  BrowserNode * old = ((BrowserNode *) bn->parent());
+  BrowserNode * old_parent = ((BrowserNode *) bn->parent());
   char * cpp;
   char * java;
   char * php;
   char * python;
   
-  if ((old != this) && (what == UmlOperation)) {
+  if ((old_parent != this) && (what == UmlOperation)) {
     OperationData * d = (OperationData *) bn->get_data();
     
     cpp = d->get_body('c');
@@ -1352,7 +1458,14 @@ void BrowserClass::move(BrowserNode * bn, BrowserNode * after) {
   }
   else
     cpp = java = php = python = 0;
-  
+
+  if ((old_parent != this) &&
+      (what == UmlAttribute) &&
+      (old_parent->get_type() == UmlClass) &&
+      !strcmp(old_parent->get_data()->get_stereotype(), "stereotype") &&
+      strcmp(get_data()->get_stereotype(), "stereotype")) // else recompute called
+    ProfiledStereotypes::deleted((BrowserAttribute *) bn);
+
   if (after)
     bn->moveItem(after);
   else {
@@ -1360,9 +1473,9 @@ void BrowserClass::move(BrowserNode * bn, BrowserNode * after) {
     insertItem(bn);
   }
   
-  if (old != this) {
-    old->modified();
-    old->package_modified();
+  if (old_parent != this) {
+    old_parent->modified();
+    old_parent->package_modified();
     
     if (what == UmlOperation) {
       OperationData * d = (OperationData *) bn->get_data();
@@ -1387,6 +1500,9 @@ void BrowserClass::move(BrowserNode * bn, BrowserNode * after) {
       if (d->get_is_abstract())
 	def->set_is_abstract(TRUE);
     }
+    else if ((what == UmlAttribute) &&
+	     !strcmp(get_data()->get_stereotype(), "stereotype"))
+      ProfiledStereotypes::added((BrowserAttribute *) bn);
     
     bn->modified();
   }
@@ -1441,7 +1557,7 @@ void BrowserClass::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     else if (after == 0)
       ((BrowserNode *) parent())->DropAfterEvent(e, this);
     else {
-      msg_critical("Error", "Forbiden");
+      msg_critical("Error", "Forbidden");
       e->ignore();
     }
   }
@@ -1479,18 +1595,36 @@ BrowserClass * BrowserClass::get_class(BrowserNode * future_parent,
   return r;
 }
 
-BrowserClass * BrowserClass::add_class(BrowserNode * future_parent, QString name)
+BrowserClass * BrowserClass::add_class(bool stereotypep,
+				       BrowserNode * future_parent,
+				       QString name)
 {
-  if (name.isEmpty() &&
-      !future_parent->enter_child_name(name, "enter class's name : ",
-				       UmlClass, FALSE, FALSE))
+  if (name.isEmpty()) {
+    if (!future_parent->enter_child_name(name, 
+					 (stereotypep) ? "enter stereotype's name : "
+						       : "enter class's name : ",
+					 UmlClass, FALSE, FALSE))
+      return 0;
     
-    return 0;
+    const char * err;
+    
+    if (stereotypep && 
+	((err = ProfiledStereotypes::canAddStereotype((BrowserClassView *) future_parent,
+						      name)) != 0)){
+      msg_critical("Error", name + " " + err);
+      return 0;
+    }
+  }
   
   ClassData * cd = new ClassData();
   BrowserClass * r = new BrowserClass(name, future_parent, cd);
   
   cd->set_browser_node(r);
+  if (stereotypep) {
+    cd->set_stereotype("stereotype");
+    ProfiledStereotypes::added(r);
+  }
+	
   return r;
 }
 
@@ -1529,7 +1663,12 @@ const char * BrowserClass::check_inherit(const BrowserNode * new_parent) const {
   
   const char * parent_stereotype = 
     new_parent->get_data()->get_stereotype();
-  
+
+  if ((!strcmp(parent_stereotype, "stereotype"))
+      ? strcmp(def->get_stereotype(), "stereotype")
+      : !strcmp(def->get_stereotype(), "stereotype"))
+    return "one of the two classes is not a stereotype";
+    
   return (!strcmp(parent_stereotype, "union"))
     ? "union can't generalize / realize"
     : BrowserNode::check_inherit(new_parent);
@@ -1787,6 +1926,7 @@ void BrowserClass::init()
   its_default_stereotypes.append("interface");
   its_default_stereotypes.append("@interface");
   its_default_stereotypes.append("metaclass");
+  its_default_stereotypes.append("stereotype");
   its_default_stereotypes.append("struct");
   its_default_stereotypes.append("type");
   its_default_stereotypes.append("typedef");
@@ -1823,6 +1963,7 @@ void BrowserClass::init()
   }
   
   BrowserAttribute::init();
+  ProfiledStereotypes::init();
 }
 
 bool BrowserClass::tool_cmd(ToolCom * com, const char * args) {
@@ -1889,7 +2030,7 @@ bool BrowserClass::tool_cmd(ToolCom * com, const char * args) {
 	  if (wrong_child_name(args, UmlClass, FALSE, FALSE))
 	    ok = FALSE;
 	  else {
-	    (BrowserClass::add_class(this, args))->write_id(com);
+	    (BrowserClass::add_class(FALSE, this, args))->write_id(com);
 	    package_modified();
 	    // def unmodified
 	    return TRUE;
@@ -2027,6 +2168,10 @@ void BrowserClass::read_stereotypes(char * & st, char * & k)
     read_unicode_string_list(its_default_stereotypes, st);
     BrowserNode::read_stereotypes(st, relations_default_stereotypes);
     k = read_keyword(st);
+
+    // force stereotype
+    if (its_default_stereotypes.findIndex("stereotype") == -1)
+      its_default_stereotypes.append("stereotype");
   }
   else
     init();

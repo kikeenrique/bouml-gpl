@@ -22,7 +22,7 @@ class UmlClass : public UmlBaseClass {
     UmlClass(void * id, const QCString & n) : UmlBaseClass(id, n) { NumberOf += 1; };
 
     //returns the first container for a 'kind', going up in the browser tree
-    virtual UmlItem * container(anItemKind kind, const Token & token, FileIn & in);
+    virtual UmlItem * container(anItemKind kind, Token & token, FileIn & in);
 
     static void init();
 
@@ -42,11 +42,14 @@ class UmlClass : public UmlBaseClass {
     
     virtual void generalizeDependRealize(UmlItem * target, FileIn & in, int context, QCString label);
 
-    //  call at end of import : try to solve generalization dependencies or realization
+    //  call at end of import : try to solve generalization dependencies, realization
+    //
     
     virtual void solveGeneralizationDependencyRealization(int context, QCString idref, QCString label);
 
     static int numberOf() { return NumberOf; };
+
+    static int numberOfStereotype() { return NumberOfStereotype; };
 
     //return the class owing the signature whose id is given in parameter,
     //may return 0
@@ -64,11 +67,17 @@ class UmlClass : public UmlBaseClass {
     
     bool bind(UmlClass * tmpl);
 
+    //if the token is a stereotype application give prof:st and the name of the attribute
+    //specifying the element on which the stereotype is applied and return TRUE
+    static bool isAppliedStereotype(Token & tk, QCString & prof_st, QCString & base_v);
+
     static bool isPrimitiveType(Token & token, UmlTypeSpec & ts);
 
 
   protected:
     static int NumberOf;
+
+    static int NumberOfStereotype;
 
     //xmiId of the formals following formals order
     QValueList<QCString> formalsId;

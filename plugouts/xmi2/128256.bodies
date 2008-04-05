@@ -132,6 +132,18 @@ class UmlBaseState
   read_if_needed_();
 
   return _assoc_diagram;
+!!!235392.cpp!!!	set_AssociatedDiagram(in d : UmlStateDiagram) : bool
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  if (UmlCom::read_bool()) {
+    _assoc_diagram = d;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!235392.java!!!	set_AssociatedDiagram(in d : UmlStateDiagram) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, d.identifier_());
+  UmlCom.check();
+  _assoc_diagram = d;
 !!!131584.cpp!!!	unload(in rec : bool, in del : bool) : void
   _uml.unload();
 #ifdef WITHCPP

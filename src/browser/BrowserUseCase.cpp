@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -51,6 +51,7 @@
 #include "MenuTitle.h"
 #include "ReferenceDialog.h"
 #include "DialogUtil.h"
+#include "ProfiledStereotypes.h"
 #include "mu.h"
 
 IdDict<BrowserUseCase> BrowserUseCase::all(257, __FILE__);
@@ -169,7 +170,6 @@ QString BrowserUseCase::full_name(bool rev, bool) const {
 void BrowserUseCase::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
-  BrowserNode * item_above = 0;
   
   m.insertItem(new MenuTitle(name, m.font()), -1);
   m.insertSeparator();
@@ -204,36 +204,8 @@ void BrowserUseCase::menu() {
       if (!is_read_only) {
 	m.insertSeparator();
 	m.setWhatsThis(m.insertItem("Edit drawing settings", 7),
-		       "to set how the sub <em>diagrams</em>'s items must be drawed");
+		       "to set how the sub <em>diagrams</em>'s items must be drawn");
 	if (edition_number == 0) {
-	  item_above = (BrowserNode *) parent()->firstChild();
-	  if (item_above == this)
-	    item_above = 0;
-	  else {
-	    for (;;) {
-	      BrowserNode * next = (BrowserNode *) item_above->nextSibling();
-	      
-	      if (next == this)
-		break;
-	      item_above = (BrowserNode *) next;
-	    }
-	  }
-	  
-	  if (item_above != 0) {
-	    switch (item_above->get_type()) {
-	    case UmlUseCase:
-	    case UmlUseCaseView:
-	      if (!((BrowserNode *) item_above)->wrong_child_name(get_name(), UmlUseCase, TRUE, FALSE)) {
-		m.insertSeparator();
-		m.setWhatsThis(m.insertItem(QString("set it nested in ")
-					    + item_above->get_name(),
-					    11),
-			       "to set it nested in the item above");
-	      }
-	    default:
-	      break;
-	    }
-	  }
 	  m.insertSeparator();
 	  m.setWhatsThis(m.insertItem("Delete", 8),
 			 "to delete the <em>use case and its sub items</em>. \
@@ -246,6 +218,7 @@ Note that you can undelete them after");
 		   "to know who reference the <i>use case</i> \
 through a relation");
     mark_menu(m, "use case", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
@@ -260,10 +233,10 @@ Do not undelete its sub items");
 		   "undelete the <em>use case</em> and its sub items");
   }
   
-  exec_menu_choice(m.exec(QCursor::pos()), item_above);
+  exec_menu_choice(m.exec(QCursor::pos()));
 }
 
-void BrowserUseCase::exec_menu_choice(int rank, BrowserNode * item_above) {
+void BrowserUseCase::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
     {
@@ -305,7 +278,7 @@ void BrowserUseCase::exec_menu_choice(int rank, BrowserNode * item_above) {
     break;
   case 4:
     {
-      BrowserClass * a = BrowserClass::add_class(this);
+      BrowserClass * a = BrowserClass::add_class(FALSE, this);
       
       if (a == 0)
 	return;
@@ -316,7 +289,7 @@ void BrowserUseCase::exec_menu_choice(int rank, BrowserNode * item_above) {
     break;
   case 5:
     {
-      BrowserClass * cl = BrowserClass::add_class(this);
+      BrowserClass * cl = BrowserClass::add_class(FALSE, this);
       
       if (cl != 0)
 	cl->select_in_browser();
@@ -369,11 +342,6 @@ void BrowserUseCase::exec_menu_choice(int rank, BrowserNode * item_above) {
   case 10:
     undelete(TRUE);
     break;
-  case 11:
-    parent()->takeItem(this);
-    item_above->insertItem(this);
-    item_above->setOpen(TRUE);
-    break;
   case 12:
     ReferenceDialog::show(this);
     return;
@@ -414,7 +382,9 @@ void BrowserUseCase::exec_menu_choice(int rank, BrowserNode * item_above) {
     }
     return; // package_modified called
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);
@@ -475,7 +445,7 @@ void BrowserUseCase::apply_shortcut(QString s) {
       choice = 10;
   }
   
-  exec_menu_choice(choice, 0);
+  exec_menu_choice(choice);
 }
 
 BrowserNodeList & BrowserUseCase::instances(BrowserNodeList & result) {
@@ -831,7 +801,7 @@ bool BrowserUseCase::tool_cmd(ToolCom * com, const char * args) {
 	  if (wrong_child_name(args, UmlClass, FALSE, FALSE))
 	    ok = FALSE;
 	  else
-	    (BrowserClass::add_class(this, args))->write_id(com);
+	    (BrowserClass::add_class(FALSE, this, args))->write_id(com);
 	  break;
 	case UmlClassInstance:
 	  BrowserClassInstance::add_from_tool(this, com, args);
@@ -1029,7 +999,7 @@ void BrowserUseCase::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     else if (after == 0)
       ((BrowserNode *) parent())->DropAfterEvent(e, this);
     else {
-      msg_critical("Error", "Forbiden");
+      msg_critical("Error", "Forbidden");
       e->ignore();
     }
   }

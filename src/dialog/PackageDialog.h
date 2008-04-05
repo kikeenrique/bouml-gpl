@@ -81,6 +81,11 @@ class PackageDialog : public QTabDialog {
     LineEdit * edidldir;
     LineEdit * edidlmodule;
     QPushButton * idlbutton;
+    
+    // Profile
+    QWidget * profiletab;
+    LineEdit * edmetamodelReference;
+    LineEdit * edmetaclassreference;
 
     // User
     KeyValuesTable * kvtable;
@@ -102,6 +107,7 @@ class PackageDialog : public QTabDialog {
     virtual void polish();
     virtual void accept();
     void edit_description();
+    void edStereotypeActivated(const QString &);
     void cppsrc_browse();
     void cpph_browse();
     void java_browse();

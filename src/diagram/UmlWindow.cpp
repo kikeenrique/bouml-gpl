@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qcursor.h>
 #include <qworkspace.h>
@@ -450,7 +450,7 @@ produced for an attribute etc..., and to set the root directories");
       ed->setItemEnabled(id, writable);
       
       id = ed->insertItem("Edit drawing settings", this, SLOT(edit_drawing_settings()));
-      ed->setWhatsThis(id, "to set how the sub <em>diagrams</em>'s items must be drawed");
+      ed->setWhatsThis(id, "to set how the sub <em>diagrams</em>'s items must be drawn");
       ed->setItemEnabled(id, writable);
     }
     
@@ -469,7 +469,7 @@ produced for an attribute etc..., and to set the root directories");
   }
   else
     msg_warning("Bouml",
-		"Nothing available while a dialog is openned");
+		"Nothing available while a dialog is opened");
 }
 
 void UmlWindow::historicActivated(int id) {
@@ -530,8 +530,13 @@ void UmlWindow::toolMenuAboutToShow() {
 	  toolMenu->insertItem("Reverse Java", this, SLOT(java_reverse()));
 	if (php)
 	  toolMenu->insertItem("Reverse Php", this, SLOT(php_reverse()));
+
+#warning reverse python
+
+#if 0
 	if (python)
 	  toolMenu->insertItem("Reverse Python", this, SLOT(python_reverse()));
+#endif
 	if (java) {
 	  toolMenu->insertSeparator();
 	  toolMenu->insertItem("Java Catalog", this, SLOT(java_catalog()));
@@ -758,7 +763,7 @@ void UmlWindow::load(QString fn, bool forcesaveas) {
   }
   POST_TRY;
   
-  BrowserNode::post_load();
+  BrowserNode::post_load(FALSE);
   idmax_add_margin();
   browser->get_project()->setOpen(TRUE);
   QApplication::restoreOverrideCursor();
@@ -835,7 +840,7 @@ void UmlWindow::save() {
     }
     else
       msg_warning("Bouml",
-		  "Saving can't be done while a dialog is openned");
+		  "Saving can't be done while a dialog is opened");
   }
 }
 

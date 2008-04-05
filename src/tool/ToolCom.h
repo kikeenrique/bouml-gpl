@@ -47,6 +47,7 @@ class ToolCom  :public QObject {
     //bool with_ack;
     bool exit_bouml;
     BrowserNode * target;
+    void (*cont)();
     Socket * listen_sock;
     Socket * sock;
     unsigned api_version;
@@ -72,7 +73,8 @@ class ToolCom  :public QObject {
   public:
     unsigned api_format() const { return api_version; }
   
-    static int run(const char * cmd, BrowserNode *, bool exit = FALSE);
+    static int run(const char * cmd, BrowserNode *,
+		   bool exit = FALSE, void (*pf)() = 0);
   
     void data_received(Socket * who);
     

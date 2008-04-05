@@ -26,9 +26,9 @@
 #ifndef PARAMETERSETDIALOG_H
 #define PARAMETERSETDIALOG_H
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qptrdict.h>
 #include <qmap.h>

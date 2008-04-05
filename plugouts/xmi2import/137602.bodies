@@ -45,7 +45,9 @@ class UmlCallOperationAction
 !!!211714.cpp!!!	solve(in idref : string) : void
   QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
   
-  if (it == All.end())
-    UmlCom::trace("call operation action : unknown operation reference '" + idref + "'<br>");
+  if (it == All.end()) {
+    if (!FileIn::isBypassedId(idref))
+      UmlCom::trace("call operation action : unknown operation reference '" + idref + "'<br>");
+  }
   else if ((*it)->kind() == anOperation)
     set_Operation((UmlOperation *) *it);

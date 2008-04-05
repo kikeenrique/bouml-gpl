@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qpainter.h>
@@ -45,6 +45,7 @@
 #include "MenuTitle.h"
 #include "strutil.h"
 #include "DialogUtil.h"
+#include "ProfiledStereotypes.h"
 #include "mu.h"
 
 IdDict<BrowserStateAction> BrowserStateAction::all(257, __FILE__);
@@ -187,6 +188,7 @@ Note that you can undelete it after");
 		   "to know who reference the <i>" + s + "</i> \
 through a transition");
     mark_menu(m, s, 90);
+    ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
@@ -219,7 +221,9 @@ void BrowserStateAction::exec_menu_choice(int rank) {
     ReferenceDialog::show(this);
     return;
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);
@@ -389,7 +393,7 @@ void BrowserStateAction::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     if (may_contains(bn, FALSE)) 
       move(bn, after);
     else {
-      msg_critical("Error", "Forbiden");
+      msg_critical("Error", "Forbidden");
       e->ignore();
     }
   }

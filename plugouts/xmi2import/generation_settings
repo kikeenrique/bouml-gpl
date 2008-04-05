@@ -24,13 +24,14 @@
     "sbyte" "char" "byte" "octet" "${type}" "${type} &" "${type} &" "${type}"
     "Socket" "QSocketDevice" "Socket" "Socket" "${type}" "${type} &" "${type} &" "${type}"
   
-  relations_stereotypes 6 // uml cpp java pythonidl
+  relations_stereotypes 7 // uml cpp java pythonidl
     "sequence" "QVector" "Vector" "list" "sequence"
     "vector" "QVector" "Vector" "list" "sequence"
     "list" "QList" "Vector" "list" "sequence"
     "set" "QSet" "Vector" "set" "sequence"
     "dict" "QDict" "Hashtable" "list" "sequence"
     "map" "QMap" "HashTable" "dict" "sequence"
+    "vlist" "QValueList" "Vector" "list" "sequence"
   
   classes_stereotypes 11 // uml cpp java php python idl
     "class" "class" "class" "class" "class" "valuetype"

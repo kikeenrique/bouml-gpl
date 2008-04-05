@@ -50,6 +50,10 @@ void UmlActivityParameter::readParameter(FileIn & in, Token & token) {
 	if (! token.closed())
 	  in.finish(s);
       }
+      else if (s == "upperbound") {
+	if (! token.closed())
+	  in.finish(s);
+      }
       else
 	UmlItem::import(in, token);
     }

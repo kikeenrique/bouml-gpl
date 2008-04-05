@@ -93,6 +93,7 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
     void remove_associated_component(BrowserComponent *);
 
     virtual void delete_it();
+    virtual bool undelete(bool rec, QString & warning, QString & renamed);
     virtual bool may_contains_them(const QList<BrowserNode> &,
 				   bool & duplicable) const;
     virtual void move(BrowserNode *, BrowserNode * after);
@@ -131,7 +132,8 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
     static BrowserNodeList & instances(BrowserNodeList &, const char * st = 0, bool non_nested = FALSE);
     static BrowserClass * get_class(BrowserNode * future_parent,
 				    const char * stereotype = 0);
-    static BrowserClass * add_class(BrowserNode * future_parent,
+    static BrowserClass * add_class(bool stereotypep,
+				    BrowserNode * future_parent,
 				    QString name = QString::null);
     static BrowserClass * find(const char * s);
 
@@ -148,6 +150,7 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
     static bool new_java_enums(QString new_st);
 
     virtual const QPixmap* pixmap (int) const;
+    virtual void update_stereotype(bool rec = FALSE);
     virtual void paintCell(QPainter * p, const QColorGroup & cg, int column,
 			   int width, int alignment);
     

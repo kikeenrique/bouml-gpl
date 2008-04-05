@@ -9,6 +9,7 @@
 void UmlAttribute::init()
 {
   declareFct("ownedattribute", "uml:Property", &importIt);
+  declareFct("ownedattribute", "", &importIt);	// Eclipse .uml
   declareFct("ownedliteral", "uml:EnumerationLiteral", &importIt);
 }
 
@@ -38,7 +39,10 @@ void UmlAttribute::importIt(FileIn & in, Token & token, UmlItem * where)
       
       att->addItem(token.xmiId(), in);
       
-      att->setVisibility(token.valueOf("visibility"));
+      if (token.what() == "ownedliteral")
+	att->set_Visibility(PublicVisibility);
+      else
+	att->setVisibility(token.valueOf("visibility"));
       
       if (token.valueOf("isreadonly") == "true")
 	 att->set_isReadOnly(TRUE);
@@ -49,8 +53,10 @@ void UmlAttribute::importIt(FileIn & in, Token & token, UmlItem * where)
 	if (att->setType(s, ts))
 	  att->set_Type(ts);
       }
+      
       if (!(s = token.valueOf("defaultvalue")).isEmpty())
 	att->set_DefaultValue(s);
+      
       if (token.valueOf("isstatic") == "true")
 	att->set_isClassMember(TRUE);
 	  
@@ -78,11 +84,21 @@ void UmlAttribute::importIt(FileIn & in, Token & token, UmlItem * where)
 	    att->importMultiplicity(in, token, FALSE);
 	  else if (s == "uppervalue")
 	    att->importMultiplicity(in, token, TRUE);
+	  else if (s == "upperbound") {
+	    if (! token.closed())
+	      in.finish(s);
+	  }
+	  else if ((s == "specification") && (k == "ownedliteral")) {
+	    if (! token.closed())
+	      in.finish(s);
+	  }
 	  else
 	    att->UmlItem::import(in, token);
 	}
       }
     }
+    else
+      in.bypass(token);
   }
 }
 
@@ -91,7 +107,7 @@ void UmlAttribute::solve(QCString idref) {
   
   if (getType(idref, ts))
     set_Type(ts);
-  else
+  else if (!FileIn::isBypassedId(idref))
     UmlCom::trace("attribute : unknown type reference '" + idref + "'<br>");
 }
 

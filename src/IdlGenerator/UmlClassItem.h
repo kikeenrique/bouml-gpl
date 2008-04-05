@@ -42,7 +42,8 @@ class UmlClassItem : public UmlBaseClassItem {
     static void remove_arrays(QCString & s);
     static void remove_preprocessor(QCString & s);
 
-    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype) = 0;
+    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype,
+			       bool = FALSE) = 0;
 };
 
 #endif

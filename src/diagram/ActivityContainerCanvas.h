@@ -26,9 +26,9 @@
 #ifndef ACTIVITYCONTAINERCANVAS_H
 #define ACTIVITYCONTAINERCANVAS_H
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include "DiagramCanvas.h"
 

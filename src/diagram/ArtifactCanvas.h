@@ -26,9 +26,9 @@
 #ifndef ARTIFACTCANVAS_H
 #define ARTIFACTCANVAS_H
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qobject.h>
 

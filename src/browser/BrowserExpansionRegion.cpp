@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qpainter.h>
@@ -39,9 +39,9 @@
 #include "BrowserActivityObject.h"
 #include "BrowserInterruptibleActivityRegion.h"
 #include "ActivityActionData.h"
-#ifndef WIN32
+
 #warning
-#endif
+
 /*
 #include "BrowserPartition.h"
 */
@@ -54,6 +54,7 @@
 #include "MenuTitle.h"
 #include "strutil.h"
 #include "DialogUtil.h"
+#include "ProfiledStereotypes.h"
 #include "mu.h"
 
 IdDict<BrowserExpansionRegion> BrowserExpansionRegion::all(__FILE__);
@@ -176,7 +177,6 @@ void BrowserExpansionRegion::menu() {
   
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
-  BrowserNode * item_above = 0;
   
   m.insertItem(new MenuTitle(s, m.font()), -1);
   m.insertSeparator();
@@ -188,9 +188,9 @@ void BrowserExpansionRegion::menu() {
 		     "to add a nested <em>expansion region</em>");
       m.setWhatsThis(m.insertItem("New interruptible activity region", 2),
 		     "to add an <em>interruptible expansion region Region</em>");
-#ifndef WIN32
+
 #warning partition
-#endif
+
       /*
       m.setWhatsThis(m.insertItem("Add partition", 3),
 		     "to add a <em>Partition</em> to the <em>region</em>");
@@ -208,26 +208,6 @@ a double click with the left mouse button does the same thing");
       m.setWhatsThis(m.insertItem("Duplicate", 5),
 		     "to copy the <em>expansion region</em> in a new one");
       
-      
-      item_above = (BrowserNode *) parent()->firstChild();
-      if (item_above == this)
-	item_above = 0;
-      else {
-	for (;;) {
-	  BrowserNode * next = (BrowserNode *) item_above->nextSibling();
-	  
-	  if (next == this)
-	    break;
-	  item_above = (BrowserNode *) next;
-	}
-      }
-      
-      if ((item_above != 0) &&
-	  ((item_above->get_type() == UmlInterruptibleActivityRegion) ||
-	  (item_above->get_type() == UmlExpansionRegion)))
-	m.setWhatsThis(m.insertItem("Set it nested in region above", 12),
-		       "to set it a <em>sub region</em> of the <em>region</em> above");
-      
       if ((((BrowserNode *) parent())->get_type() == UmlInterruptibleActivityRegion) ||
 	  (((BrowserNode *) parent())->get_type() == UmlExpansionRegion))
 	m.setWhatsThis(m.insertItem("Extract it from current parent region", 13),
@@ -240,6 +220,7 @@ a double click with the left mouse button does the same thing");
 Note that you can undelete it after");
     }
     mark_menu(m, "expansion region", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
@@ -261,11 +242,10 @@ Note that you can undelete it after");
     }
   }
   
-  exec_menu_choice(m.exec(QCursor::pos()), item_above);
+  exec_menu_choice(m.exec(QCursor::pos()));
 }
 
-void BrowserExpansionRegion::exec_menu_choice(int rank,
-					      BrowserNode * item_above) {
+void BrowserExpansionRegion::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
     add_expansionnode();
@@ -277,9 +257,9 @@ void BrowserExpansionRegion::exec_menu_choice(int rank,
     BrowserInterruptibleActivityRegion::add_interruptibleactivityregion(this);
     break;
   case 3:
-#ifndef WIN32
+
 #warning
-#endif
+
     //add_partition(this);
     return;
   case 4:
@@ -326,11 +306,6 @@ void BrowserExpansionRegion::exec_menu_choice(int rank,
   case 11:
     BrowserNode::undelete(TRUE);
     break;
-  case 12:
-    parent()->takeItem(this);
-    item_above->insertItem(this);
-    item_above->setOpen(TRUE);
-    break;
   case 13:
     {
       QListViewItem * p = parent();
@@ -340,7 +315,9 @@ void BrowserExpansionRegion::exec_menu_choice(int rank,
     }
     break;
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);
@@ -361,9 +338,9 @@ void BrowserExpansionRegion::apply_shortcut(QString s) {
 	choice = 1;
       else if (s == "New interruptible activity region")
 	choice = 2;
-#ifndef WIN32
+
 #warning partition
-#endif
+
       /*
       m.setWhatsThis(m.insertItem("Add partition", 3),
 		     "to add a <em>Partition</em> to the <em>region</em>");
@@ -401,7 +378,7 @@ void BrowserExpansionRegion::apply_shortcut(QString s) {
     }
   }
   
-  exec_menu_choice(choice, 0);
+  exec_menu_choice(choice);
 }
 
 BrowserNode *
@@ -549,9 +526,9 @@ bool BrowserExpansionRegion::tool_cmd(ToolCom * com, const char * args) {
 	case UmlActivityObject:
 	  (new BrowserActivityObject(args, this))->write_id(com);
 	  break;
-#ifndef WIN32
+
 #warning
-#endif
+
 	  /*
 	case UmlPartition:
 	  (BrowserRegion::add_partition(this, args))->write_id(com);
@@ -630,9 +607,9 @@ void BrowserExpansionRegion::DragMoveEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, BrowserActivityNode::drag_key(this)) ||
       UmlDrag::canDecode(e, BrowserActivityAction::drag_key(this)) ||
       UmlDrag::canDecode(e, BrowserInterruptibleActivityRegion::drag_key(this)) ||
-#ifndef WIN32
+
 #warning
-#endif
+
   /*
       UmlDrag::canDecode(e, BrowserPartition::drag_key(this)) ||
       */
@@ -656,9 +633,9 @@ void BrowserExpansionRegion::DragMoveInsideEvent(QDragMoveEvent * e) {
        UmlDrag::canDecode(e, BrowserActivityNode::drag_key(this)) ||
        UmlDrag::canDecode(e, BrowserActivityAction::drag_key(this)) ||
        UmlDrag::canDecode(e, BrowserInterruptibleActivityRegion::drag_key(this)) ||
-#ifndef WIN32
+
 #warning
-#endif
+
   /*
        UmlDrag::canDecode(e, BrowserPartition::drag_key(this)) ||
       */
@@ -675,9 +652,9 @@ void BrowserExpansionRegion::DropAfterEvent(QDropEvent * e, BrowserNode * after)
        ((bn = UmlDrag::decode(e, BrowserActivityNode::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserActivityAction::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserInterruptibleActivityRegion::drag_key(this))) != 0) ||
-#ifndef WIN32
+
 #warning
-#endif
+
   /*
        ((bn = UmlDrag::decode(e, BrowserPartition::drag_key(this))) != 0) ||
        */
@@ -686,7 +663,7 @@ void BrowserExpansionRegion::DropAfterEvent(QDropEvent * e, BrowserNode * after)
     if (may_contains(bn, FALSE)) 
       move(bn, after);
     else {
-      msg_critical("Error", "Forbiden");
+      msg_critical("Error", "Forbidden");
       e->ignore();
     }
   }
@@ -842,9 +819,9 @@ BrowserExpansionRegion * BrowserExpansionRegion::read(char * & st, char * k,
 	     BrowserActivityObject::read(st, k, result) ||
 	     BrowserActivityAction::read(st, k, result) ||
 	     BrowserInterruptibleActivityRegion::read(st, k, result) ||
-#ifndef WIN32
+
 #warning
-#endif
+
 	     /*
 	     BrowserPartition::read(st, k, result) ||
 	     */

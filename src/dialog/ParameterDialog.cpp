@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qgrid.h> 
 #include <qvbox.h>
@@ -51,6 +51,7 @@
 #include "strutil.h"
 #include "BodyDialog.h"
 #include "GenerationSettings.h"
+#include "ProfiledStereotypes.h"
 
 QSize ParameterDialog::previous_size;
 
@@ -93,6 +94,7 @@ ParameterDialog::ParameterDialog(ParameterData * pa)
   edstereotype->insertItem(toUnicode(pa->stereotype));
   if (! visit) {
     edstereotype->insertStringList(BrowserParameter::default_stereotypes());
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlParameter));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -357,7 +359,7 @@ void ParameterDialog::menu_type() {
       nodes.at(index)->select_in_browser();
       break;
     case 2:
-      bn = BrowserClass::add_class(view);
+      bn = BrowserClass::add_class(FALSE, view);
       if (bn == 0)
 	return;
       bn->select_in_browser();
@@ -443,8 +445,8 @@ void ParameterDialog::accept() {
       msg_critical("Error", err);
     else {
       bn->set_name(s);
-      param->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
       
+      bool newst = param->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
       AType t;
       
       s = edtype->currentText().stripWhiteSpace();
@@ -481,6 +483,7 @@ void ParameterDialog::accept() {
       bn->package_modified();
       param->modified();
       
+      ProfiledStereotypes::modified(bn, newst);
       QTabDialog::accept();
     }
   }

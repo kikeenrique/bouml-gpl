@@ -415,6 +415,10 @@ class UmlBaseRelation
 !!!41472.java!!!	read_java_() : void
   super.read_java_();
   _java_transient = UmlCom.read_bool();
+!!!264448.cpp!!!	read_php_() : void
+  UmlBaseClassMember::read_php_();
+!!!264448.java!!!	read_php_() : void
+  super.read_php_();
 !!!41600.cpp!!!	read_idl_() : void
   UmlBaseClassItem::read_idl_();
   _idl_truncatable = UmlCom::read_bool();

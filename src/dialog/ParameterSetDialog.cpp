@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qsplitter.h> 
 #include <qgrid.h> 
@@ -47,6 +47,7 @@
 #include "strutil.h"
 #include "UmlPixmap.h"
 #include "BodyDialog.h"
+#include "ProfiledStereotypes.h"
 
 QSize ParameterSetDialog::previous_size;
 
@@ -122,6 +123,7 @@ void ParameterSetDialog::init_uml_tab() {
   edstereotype->insertItem(toUnicode(data->get_stereotype()));
   if (! visit) {
     edstereotype->insertStringList(BrowserParameterSet::default_stereotypes());
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlParameterSet));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -263,9 +265,7 @@ void ParameterSetDialog::accept() {
         
     QString stereotype = 
       fromUnicode(edstereotype->currentText().stripWhiteSpace());
-    
-    data->set_stereotype(stereotype);
-    
+    bool newst = data->set_stereotype(stereotype);
     QValueList<BrowserPin *> l;
     unsigned n = lb_member->count();
 
@@ -282,6 +282,7 @@ void ParameterSetDialog::accept() {
     bn->package_modified();
     data->modified();
     
+    ProfiledStereotypes::modified(bn, newst);
     QTabDialog::accept();
   }
 }

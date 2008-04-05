@@ -52,7 +52,7 @@ class BrowserObjectDiagram : public BrowserDiagram {
     BrowserObjectDiagram(BrowserObjectDiagram * model, BrowserNode * p);
     BrowserObjectDiagram(int id);
     void make();
-    void exec_menu_choice(int rank, BrowserNode * item_above);
+    void exec_menu_choice(int rank);
 
   public:
     BrowserObjectDiagram(QString s, BrowserNode * p, int id = 0);

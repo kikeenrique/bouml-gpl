@@ -28,9 +28,9 @@
 // and waiting for its end, and I use a timer which get each
 // second the edit file content
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <stdio.h>
 #include <qtextstream.h> 
@@ -50,16 +50,16 @@ void DialogTimer::readfile() {
   if ((fp = fopen((const char *) path, "rb")) != 0) {  
     QString result;
     
-#ifdef WIN32
-    // QTextStream::read() bugged on windows
-    char b[4096];
-    int n;
-    
-    while ((n = fread(b, 1, sizeof(b) - 1, fp)) > 0) {
-      b[n] = 0;
-      result += b;
-    }
-#else
+
+
+
+
+
+
+
+
+
+
     QFile fi;
     
     fi.open(IO_ReadOnly, fp);
@@ -70,7 +70,7 @@ void DialogTimer::readfile() {
     
     result = ts.read();
     fi.close();
-#endif
+
     fclose(fp);
     
     if (result != current) {

@@ -151,12 +151,13 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     void edit_drawing_settings();
     
     virtual const QPixmap* pixmap (int) const;
+    virtual void update_stereotype(bool rec = FALSE);
     virtual void DragMoveEvent(QDragMoveEvent * e);
     virtual void DropEvent(QDropEvent * e);
     virtual void DragMoveInsideEvent(QDragMoveEvent * e);
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
     
-    void add_package();
+    void add_package(bool profile);
     unsigned load(bool recursive, int id = -1);
     void import_project();
     

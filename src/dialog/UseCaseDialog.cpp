@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qgrid.h> 
 #include <qlabel.h>
@@ -42,6 +42,7 @@
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
 
 QSize UseCaseDialog::previous_size;
 
@@ -77,6 +78,7 @@ UseCaseDialog::UseCaseDialog(UseCaseData * u)
   edstereotype->insertItem(toUnicode(uc->get_stereotype()));
   if (! visit) {
     edstereotype->insertStringList(BrowserUseCase::default_stereotypes());
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlUseCase));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -157,7 +159,8 @@ void UseCaseDialog::accept() {
   else
     bn->set_name(s);
 
-  uc->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+  bool newst = uc->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+  
   bn->set_comment(comment->text());
   UmlWindow::update_comment_if_needed(bn);
     
@@ -169,5 +172,6 @@ void UseCaseDialog::accept() {
   bn->package_modified();
   uc->modified();
     
+  ProfiledStereotypes::modified(bn, newst);
   QTabDialog::accept();
 }

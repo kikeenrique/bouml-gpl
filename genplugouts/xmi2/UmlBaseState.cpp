@@ -104,6 +104,16 @@ UmlStateDiagram * UmlBaseState::associatedDiagram() {
   return _assoc_diagram;
 }
 
+bool UmlBaseState::set_AssociatedDiagram(UmlStateDiagram * d) {
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  if (UmlCom::read_bool()) {
+    _assoc_diagram = d;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 void UmlBaseState::unload(bool rec, bool del) {
   _uml.unload();
 #ifdef WITHCPP

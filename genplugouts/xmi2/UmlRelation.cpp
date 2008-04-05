@@ -149,17 +149,21 @@ void UmlRelation::write_ends(FileOut & out) {
     out << " visibility=\"" << ((_vis_prefix) ? "vis_private\"" : "private\"");
     out.ref(parent(), "type");
     out << " aggregation=\"";
-    switch (relationKind()) {
-    case anAggregation:
-    case aDirectionalAggregation:
-      out << "shared";
-      break;
-    case anAggregationByValue:
-    case aDirectionalAggregationByValue:
-      out << "composite";
-      break;
-    default:
+    if (_gen_eclipse)
       out << "none";
+    else {
+      switch (relationKind()) {
+      case anAggregation:
+      case aDirectionalAggregation:
+	out << "shared";
+	break;
+      case anAggregationByValue:
+      case aDirectionalAggregationByValue:
+	out << "composite";
+	break;
+      default:
+	out << "none";
+      }
     }
     out << "\" isNavigable=\"false\"/>\n";
 
@@ -208,8 +212,25 @@ void UmlRelation::write_relation_as_attribute(FileOut & out) {
   out << " aggregation=\"";
   if (this == first) {
     parent()->memo_relation(this);
-    out << "none";
+    if (_gen_eclipse) {
+      switch (relationKind()) {
+      case anAggregation:
+      case aDirectionalAggregation:
+	out << "shared";
+	break;
+      case anAggregationByValue:
+      case aDirectionalAggregationByValue:
+	out << "composite";
+	break;
+      default:
+	out << "none";
+      }
+    }
+    else
+      out << "none";
   }
+  else if (_gen_eclipse)
+    out << "none";
   else {
     switch (relationKind()) {
     case anAggregation:
@@ -229,7 +250,7 @@ void UmlRelation::write_relation_as_attribute(FileOut & out) {
   out.indent(+1);
   
   out.indent();
-  out << "<type";
+  out << "<type xmi:type=\"uml:Class\"";
   out.idref(roleType());
   out << "/>\n";
   write_multiplicity(out, multiplicity());

@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qcursor.h>
@@ -42,6 +42,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "DialogUtil.h"
+#include "ProfiledStereotypes.h"
 #include "mu.h"
 
 IdDict<BrowserComponentView> BrowserComponentView::all(__FILE__);
@@ -165,7 +166,7 @@ void BrowserComponentView::menu() {
 	/*m.setWhatsThis(m.insertItem("Edit component settings", 4),
 		       "to set the sub components's settings");*/
 	m.setWhatsThis(m.insertItem("Edit drawing settings", 5),
-		       "to set how the sub <em>component diagrams</em>'s items must be drawed");
+		       "to set how the sub <em>component diagrams</em>'s items must be drawn");
 	if (edition_number == 0) {
 	  m.insertSeparator();
 	  m.setWhatsThis(m.insertItem("Delete", 6),
@@ -175,6 +176,7 @@ Note that you can undelete them after");
       }
     }
     mark_menu(m, "component view", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
     
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
@@ -249,7 +251,9 @@ void BrowserComponentView::exec_menu_choice(int rank) {
     undelete(TRUE);
     break;
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);
@@ -516,7 +520,7 @@ void BrowserComponentView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
       }
     }
     else {
-      msg_critical("Error", "Forbiden");
+      msg_critical("Error", "Forbidden");
       e->ignore();
     }
   }

@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qcursor.h>
 #include <qpainter.h>
@@ -131,7 +131,7 @@ int DeploymentNodeCanvas::min_width() {
       wi = iw;
   }
   
-  const char * st = browser_node->get_data()->get_stereotype();
+  const char * st = browser_node->get_data()->get_short_stereotype();
   
   if (st[0]) {
     int stw = fm.width(QString("<<") + toUnicode(st) + ">>");
@@ -153,7 +153,7 @@ int DeploymentNodeCanvas::min_height() {
   QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
   int three = (int) (3 * the_canvas()->zoom());
   int h = fm.height() + three;
-  const char * st = browser_node->get_data()->get_stereotype();
+  const char * st = browser_node->get_data()->get_short_stereotype();
   int he = h;
   
   if (st[0]) 
@@ -272,7 +272,7 @@ void DeploymentNodeCanvas::draw(QPainter & p) {
 
   const int three = (int) (3 * the_canvas()->zoom());  
   QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
-  const char * st = browser_node->get_data()->get_stereotype();
+  const char * st = browser_node->get_data()->get_short_stereotype();
   QString s;
     
   r.setTop(r.top() + three);

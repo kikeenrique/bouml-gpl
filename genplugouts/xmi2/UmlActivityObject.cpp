@@ -3,6 +3,7 @@
 #include "FileOut.h"
 
 #include "UmlState.h"
+#include "UmlTransition.h"
 void UmlActivityObject::write(FileOut & out) {
   const char * k = (parent()->kind() == anActivity)
     ? "node" : "containedNode";

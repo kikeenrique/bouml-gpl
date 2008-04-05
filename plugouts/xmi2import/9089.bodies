@@ -6,8 +6,7 @@ class UmlOperation
   where = where->container(anOperation, token, in);
   
   if (where == 0) {
-    if (! token.closed())
-      in.finish(token.what());
+    in.bypass(token);
     return;
   }
     
@@ -122,6 +121,12 @@ class UmlOperation
       }
       else if (s == "defaultvalue")
         p.default_value = token.valueOf("value");
+      else if (s == "ownedcomment")
+	in.bypassedId(token);
+      else {
+	in.bypass(token);
+	continue;
+      }
       
       if (! token.closed())
         in.finish(s);
@@ -146,5 +151,5 @@ class UmlOperation
     else
       replaceException(- context + 1, ts);
   }
-  else
+  else if (!FileIn::isBypassedId(idref))
     UmlCom::trace("operation : unknown type reference '" + idref + "'<br>");

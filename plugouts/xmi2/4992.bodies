@@ -765,6 +765,7 @@ class JavaSettings
   _enum_decl = UmlCom.read_string();
   _enum_pattern_decl = UmlCom.read_string();
   _interface_decl = UmlCom.read_string();
+  _attr_decl = new String[3];
   for (index = 0; index != 3; index += 1)
     _attr_decl[index] = UmlCom.read_string();
   _enum_item_decl = UmlCom.read_string();

@@ -26,9 +26,9 @@
 #ifndef CLASSDIALOG_H
 #define  CLASSDIALOG_H
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qtabdialog.h>
 
@@ -48,6 +48,7 @@ class ClassData;
 class BrowserNode;
 class FormalParamsTable;
 class ActualParamsTable;
+class ApplicableOnTable;
 class KeyValuesTable;
 class BodyDialog;
 
@@ -122,6 +123,15 @@ class ClassDialog : public QTabDialog {
     QCheckBox * idl_local_cb;
     QCheckBox * idl_custom_cb;
     
+    // profiled stereotype
+    LineEdit * edextending;
+    QWidget * stereotypetab;
+    QComboBox * stereo_init_cb;
+    LineEdit * edinitparam;
+    QComboBox * stereo_check_cb;
+    LineEdit * edcheckparam;
+    ApplicableOnTable * applicableon_table;
+      
     // user
     KeyValuesTable * kvtable;
     
@@ -263,6 +273,22 @@ class ActualParamsTable : public MyTable {
     
   public:
     void update(ClassData * c, BrowserNodeList & nodes);
+};
+
+class ApplicableOnTable : public MyTable {
+  Q_OBJECT
+  
+  protected:
+    bool ro;
+  
+  public:
+    ApplicableOnTable(QWidget * parent, QString, bool visit);
+  
+  public:
+    QString targets();
+  
+  protected slots:
+    void button_pressed(int row, int col, int, const QPoint &);
 };
 
 #endif

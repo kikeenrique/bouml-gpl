@@ -20,6 +20,12 @@ class UmlPackage : public UmlBasePackage {
 
     virtual void write(FileOut & out);
 
+
+  private:
+    void search_profiles(QList<UmlPackage> & l);
+
+
+  public:
     virtual void search_class_assoc();
 
     //Memorize the relation in the package (or the view in case the views

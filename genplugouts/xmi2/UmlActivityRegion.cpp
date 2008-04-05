@@ -1,6 +1,7 @@
 
 #include "UmlActivityRegion.h"
 
+#include "UmlFlow.h"
 void UmlActivityRegion::memo_incoming_flow() {
   const QVector<UmlItem> ch = children(); 
   unsigned n = ch.size();

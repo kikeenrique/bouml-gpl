@@ -1,12 +1,12 @@
-format 41
+format 55
 "Com" // API BASE::Com
-  revision 5
-  modified_by 2 "bruno"
+  revision 6
+  modified_by 2 "pages4"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default
   //sequence diagram settings
   show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
   //collaboration diagram settings
@@ -32,7 +32,7 @@ DO NOT MODIFY THEM !!!
 "
   classview 512 "Com Class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
     //collaboration diagram settings
     show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
     //object diagram settings
@@ -46,7 +46,6 @@ DO NOT MODIFY THEM !!!
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default
-    
     associated_deployment_view deploymentview_ref 512 // Com Deployment view
     comment "The API system classes concerning the communication with BOUML
 
@@ -62,6 +61,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -105,6 +106,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment " does the connexion
  
  On error return FALSE in C++, produce a RuntimeException in Java"
@@ -122,6 +125,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "  returns the item on which the tool is applied"
       end
 
@@ -136,6 +141,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment " to write messages in the tool window,
  use Qt rich text : allows HTML like formatting"
@@ -152,6 +159,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "to show the trace window
 "
@@ -170,6 +179,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "to automatically raise the trace window
 each time trace() is called
 "
@@ -187,6 +198,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment " to write a message in the status bar line
  does not use Qt rich text"
       end
@@ -202,6 +215,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment " must be called just before the disconnexion"
       end
 
@@ -216,6 +231,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment " disconnexion"
       end
 
@@ -225,6 +242,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -233,6 +252,8 @@ ${body}}
 	cpp_decl ""
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -241,6 +262,8 @@ ${body}}
 	cpp_decl ""
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -250,6 +273,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -259,6 +284,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -268,6 +295,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}int ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -277,6 +306,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}int ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -286,6 +317,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}[] ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -295,6 +328,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}int ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -304,6 +339,8 @@ ${body}}
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -312,6 +349,8 @@ ${body}}
 	cpp_decl ""
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -320,6 +359,8 @@ ${body}}
 	cpp_decl ""
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -327,6 +368,8 @@ ${body}}
 	
 	cpp "" ""
 	java "  static { empty_string = new String(); }"
+	php ""
+	python ""
 	idl ""
       end
 
@@ -342,6 +385,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -356,6 +401,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -373,6 +420,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -388,6 +437,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -405,6 +456,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -420,6 +473,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -437,6 +492,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -452,6 +509,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -469,6 +528,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment " internal, do NOT use it
 "
@@ -488,6 +549,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -506,6 +569,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -523,6 +588,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -543,6 +610,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -562,6 +631,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -584,6 +655,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -600,6 +673,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -619,6 +694,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -636,6 +713,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -655,6 +734,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -672,6 +753,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -692,6 +775,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -710,6 +795,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -731,6 +818,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -748,6 +837,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -768,6 +859,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -786,6 +879,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -806,6 +901,8 @@ ${body}}
 ${body}}"
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}${)}${throws}${staticnl}{
 ${body}}"
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -829,6 +926,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -846,6 +945,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2}[] ${p2}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -868,6 +969,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 144128 "send_cmd"
@@ -886,6 +989,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -900,6 +1005,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -916,6 +1023,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -930,6 +1039,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -946,6 +1057,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -960,6 +1073,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -976,6 +1091,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}UmlItem[] ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment " internal, do NOT use it
 "
@@ -997,6 +1114,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -1012,6 +1131,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
 	comment "internal, do NOT use it
 "
       end
@@ -1023,6 +1144,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	comment "internal, do NOT use it
 "
@@ -1052,6 +1175,8 @@ ${cases}    default: throw new Error();
   private ${name}(int v) { value = v; }; 
 }
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1062,6 +1187,8 @@ ${cases}    default: throw new Error();
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1071,6 +1198,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1080,6 +1209,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1089,6 +1220,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1098,6 +1231,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1107,6 +1242,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1116,6 +1253,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1125,6 +1264,19 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 154496 "phpSettingsCmd"
+	public type class_ref 5376 // CmdFamily
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -1152,6 +1304,8 @@ ${cases}    default: throw new Error();
   private ${name}(int v) { value = v; }; 
 }
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1162,6 +1316,8 @@ ${cases}    default: throw new Error();
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1171,6 +1327,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1180,6 +1338,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1189,6 +1349,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1198,6 +1360,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1207,6 +1371,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1216,6 +1382,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1225,6 +1393,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1234,6 +1404,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -1261,6 +1433,8 @@ ${cases}    default: throw new Error();
   private ${name}(int v) { value = v; }; 
 }
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1271,6 +1445,8 @@ ${cases}    default: throw new Error();
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1280,6 +1456,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1289,6 +1467,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1298,6 +1478,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1307,6 +1489,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1316,6 +1500,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1325,6 +1511,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1334,6 +1522,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1343,6 +1533,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1352,6 +1544,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1361,6 +1555,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1370,6 +1566,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1379,6 +1577,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1388,6 +1588,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1397,6 +1599,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1406,6 +1610,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1415,6 +1621,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1424,6 +1632,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1433,6 +1643,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1442,6 +1654,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1451,6 +1665,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1460,6 +1676,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1469,6 +1687,30 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 155776 "getPhpDefCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 155904 "phpBodyCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1479,6 +1721,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
 	comment " just a mark"
       end
@@ -1489,6 +1733,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1498,6 +1744,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1507,6 +1755,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1516,6 +1766,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1525,6 +1777,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1534,6 +1788,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1543,6 +1799,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1552,6 +1810,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1561,6 +1821,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1570,6 +1832,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1579,6 +1843,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1588,6 +1854,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1597,6 +1865,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1606,6 +1876,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1615,6 +1887,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1624,6 +1898,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1633,6 +1909,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1642,6 +1920,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1651,6 +1931,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1660,6 +1942,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1669,6 +1953,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1678,6 +1964,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1687,6 +1975,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1696,6 +1986,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1705,6 +1997,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1714,6 +2008,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1723,6 +2019,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1732,6 +2030,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1741,6 +2041,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1750,6 +2052,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1759,6 +2063,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1768,6 +2074,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1777,6 +2085,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1786,6 +2096,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1795,6 +2107,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1804,6 +2118,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1813,6 +2129,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1822,6 +2140,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1831,6 +2151,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1840,6 +2162,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1849,6 +2173,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1858,6 +2184,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1867,6 +2195,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1876,6 +2206,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1885,6 +2217,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1894,6 +2228,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1903,6 +2239,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1912,6 +2250,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1921,6 +2261,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1930,6 +2272,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1939,6 +2283,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1948,6 +2294,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1957,6 +2305,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1966,6 +2316,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1975,6 +2327,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1984,6 +2338,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1993,6 +2349,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2002,6 +2360,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2011,6 +2371,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2020,6 +2382,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2029,6 +2393,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2038,6 +2404,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2047,6 +2415,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2056,6 +2426,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2065,6 +2437,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2074,6 +2448,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2083,6 +2459,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2092,6 +2470,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2101,6 +2481,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2110,6 +2492,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2119,6 +2503,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2128,6 +2514,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2137,6 +2525,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2146,6 +2536,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2155,6 +2547,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2164,6 +2558,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2173,6 +2569,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2182,6 +2580,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2191,6 +2591,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2200,6 +2602,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2209,6 +2613,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2218,6 +2624,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2227,6 +2635,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2236,6 +2646,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2245,6 +2657,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2254,6 +2668,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2263,6 +2679,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2272,6 +2690,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2281,6 +2701,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2290,6 +2712,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2299,6 +2723,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2308,6 +2734,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2317,6 +2745,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2326,6 +2756,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2335,6 +2767,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2344,6 +2778,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2353,6 +2789,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2362,6 +2800,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2371,6 +2811,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2380,6 +2822,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2389,6 +2833,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2398,6 +2844,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2407,6 +2855,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2416,6 +2866,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2425,6 +2877,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2434,6 +2888,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2443,6 +2899,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2452,6 +2910,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2461,6 +2921,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2470,6 +2932,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2479,6 +2943,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2488,6 +2954,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2497,6 +2965,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2506,6 +2976,118 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 154624 "setPhpDeclCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 154752 "setIsPhpExternalCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 154880 "setIsPhpFinalCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 155008 "setPhpSrcCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 155136 "setPhpFinalCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 155264 "setPhpBodyCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 155392 "setPhpNameSpecCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 155520 "setPhpDirCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 155648 "setPhpFrozenCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 157440 "setIsForceBodyGenCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -2533,6 +3115,8 @@ ${cases}    default: throw new Error();
   private ${name}(int v) { value = v; }; 
 }
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2543,6 +3127,8 @@ ${cases}    default: throw new Error();
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -2570,6 +3156,8 @@ ${cases}    default: throw new Error();
   private ${name}(int v) { value = v; }; 
 }
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2580,6 +3168,8 @@ ${cases}    default: throw new Error();
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2589,6 +3179,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2598,6 +3190,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2607,6 +3201,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2616,6 +3212,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2625,6 +3223,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -2652,6 +3252,8 @@ ${cases}    default: throw new Error();
   private ${name}(int v) { value = v; }; 
 }
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2662,6 +3264,8 @@ ${cases}    default: throw new Error();
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2670,6 +3274,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	init_value "= 50"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2680,6 +3286,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2689,6 +3297,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2698,6 +3308,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2707,6 +3319,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2716,6 +3330,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2725,6 +3341,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2734,6 +3352,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -2761,6 +3381,8 @@ ${cases}    default: throw new Error();
   private ${name}(int v) { value = v; }; 
 }
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2771,6 +3393,8 @@ ${cases}    default: throw new Error();
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2780,6 +3404,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2789,6 +3415,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2798,6 +3426,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2807,6 +3437,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2816,6 +3448,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2825,6 +3459,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2834,6 +3470,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2843,6 +3481,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2852,6 +3492,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2861,6 +3503,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2870,6 +3514,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2879,6 +3525,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2888,6 +3536,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2897,6 +3547,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2906,6 +3558,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2915,6 +3569,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2924,6 +3580,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2933,6 +3591,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2942,6 +3602,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2951,6 +3613,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2960,6 +3624,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2969,6 +3635,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2978,6 +3646,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2987,6 +3657,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -2996,6 +3668,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3005,6 +3679,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3014,6 +3690,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3023,6 +3701,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3032,6 +3712,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3041,6 +3723,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3050,6 +3734,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3059,6 +3745,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3068,6 +3756,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3077,6 +3767,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3086,6 +3778,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3095,6 +3789,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3104,6 +3800,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3113,6 +3811,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3122,6 +3822,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3131,6 +3833,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3140,6 +3844,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3149,6 +3855,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3158,6 +3866,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3167,6 +3877,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3176,6 +3888,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3185,6 +3899,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -3212,6 +3928,8 @@ ${cases}    default: throw new Error();
   private ${name}(int v) { value = v; }; 
 }
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3222,6 +3940,8 @@ ${cases}    default: throw new Error();
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3231,6 +3951,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3240,6 +3962,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3249,6 +3973,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3258,6 +3984,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3267,6 +3995,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3276,6 +4006,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3285,6 +4017,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3294,6 +4028,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3303,6 +4039,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3312,6 +4050,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3321,6 +4061,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3330,6 +4072,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3339,6 +4083,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3348,6 +4094,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3357,6 +4105,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3366,6 +4116,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3375,6 +4127,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3384,6 +4138,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3393,6 +4149,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3402,6 +4160,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3411,6 +4171,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3420,6 +4182,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3429,6 +4193,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3438,6 +4204,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3447,6 +4215,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3456,6 +4226,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3465,6 +4237,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3474,6 +4248,257 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 152320 "PhpSettingsCmd"
+      visibility package stereotype "enum_pattern"
+      cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+      java_decl "${comment}${public}final class ${name} {
+${members}
+  private int value;
+
+  public int value() {
+    return value;
+  }
+
+  public static ${name} fromInt(int value) {
+    switch (value) {
+${cases}    default: throw new Error();
+    }
+  }
+
+  private ${name}(int v) { value = v; }; 
+}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 151936 "getPhpSettingsCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 152064 "getPhpUseDefaultsCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 152192 "setPhpUseDefaultsCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 152320 "setPhpClassStereotypeCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 152448 "setPhpRootdirCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 152576 "setPhpSourceContentCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 152704 "setPhpSourceExtensionCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 152832 "setPhpClassDeclCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 152960 "setPhpEnumDeclCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 153088 "setPhpExternalClassDeclCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 153216 "setPhpInterfaceDeclCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 153344 "setPhpAttributeDeclCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 153472 "setPhpEnumItemDeclCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 153600 "setPhpRelationDeclCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 153728 "setPhpOperationDefCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 153856 "setPhpGetNameCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 153984 "setPhpSetNameCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 154112 "setPhpIsGetFinalCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 154240 "setPhpIsSetFinalCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 154368 "setPhpIsSetParamFinalCmd"
+	public type class_ref 152320 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -3501,6 +4526,8 @@ ${cases}    default: throw new Error();
   private ${name}(int v) { value = v; }; 
 }
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3511,6 +4538,8 @@ ${cases}    default: throw new Error();
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3520,6 +4549,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3529,6 +4560,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3538,6 +4571,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3547,6 +4582,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3556,6 +4593,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3565,6 +4604,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3574,6 +4615,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3583,6 +4626,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3592,6 +4637,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3601,6 +4648,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3610,6 +4659,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3619,6 +4670,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3628,6 +4681,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3637,6 +4692,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3646,6 +4703,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3655,6 +4714,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3664,6 +4725,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3673,6 +4736,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3682,6 +4747,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3691,6 +4758,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3700,6 +4769,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3709,6 +4780,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3718,6 +4791,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3727,6 +4802,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3736,6 +4813,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3745,6 +4824,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3754,6 +4835,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3763,6 +4846,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -3772,6 +4857,8 @@ public static final ${class} ${name} = new ${class}(_${name});
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -4034,6 +5121,32 @@ ${package}
 ${definition}"
       associated_classes
 	class_ref 6272 // JavaSettingsCmd
+      end
+    end
+
+    artifact 146176 "PhpSettingsCmd"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 152320 // PhpSettingsCmd
       end
     end
 

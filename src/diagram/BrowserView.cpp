@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qapplication.h>
 #include <qpopupmenu.h> 
@@ -283,10 +283,8 @@ void BrowserView::keyPressEvent(QKeyEvent * e) {
 	  rightPressed(bn);
 	else if (s == "Delete") {
 	  QApplication::setOverrideCursor(::Qt::waitCursor);
-	  bn->delete_it();
+	  bn->apply_shortcut("Delete");
 	  QApplication::restoreOverrideCursor();
-	  ((BrowserNode *) bn->parent())->modified();
-	  bn->package_modified();
 	}
 	else if ((s != "Move left") && (s != "Move right") &&
 		 (s != "Move up") && (s != "Move down"))

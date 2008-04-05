@@ -5,13 +5,8 @@ class UmlExpansionNode
 
   UmlActivityObject::init();
 !!!205954.cpp!!!	importIt(inout in : FileIn, inout token : Token, inout where : UmlItem) : void
-  if (where->kind() != anExpansionRegion) {
-    in.warning("bypass &lt;" + token.what() + 
-	       " xmi:type=\"" + token.xmiType() + "\"...&gt;");
-    
-    if (! token.closed())
-      in.finish(token.what());
-  }
+  if (where->kind() != anExpansionRegion) 
+    in.bypass(token);
   else {
     QCString s = token.valueOf("name");
     UmlExpansionNode * e =

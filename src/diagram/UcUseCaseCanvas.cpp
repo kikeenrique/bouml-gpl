@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpainter.h>
 #include <qcursor.h>
@@ -93,7 +93,7 @@ void UcUseCaseCanvas::draw(QPainter & p) {
   QColor col = color(used_color);
   QBrush brsh = p.brush();
   bool realizationp =
-    !strcmp(data->get_stereotype(), "realization");
+    !strcmp(data->get_short_stereotype(), "realization");
   FILE * fp = svg();
   int rx = width()/2 - 1;
   int ry = height()/2 - 1;
@@ -222,7 +222,7 @@ void UcUseCaseCanvas::open() {
 
 void UcUseCaseCanvas::update_name() {
   QString oldname = label->get_name();
-  const char * st = browser_node->get_data()->get_stereotype();
+  const char * st = browser_node->get_data()->get_short_stereotype();
   QString newname;
   
   if ((*st == 0) || !strcmp(st, "realization"))

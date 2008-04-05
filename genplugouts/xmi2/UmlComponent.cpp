@@ -31,7 +31,7 @@ void UmlComponent::write(FileOut & out) {
   
   write(out, providedClasses(), prov_rank, "provided", "PROVIDED_");
   write(out, requiredClasses(), req_rank, "required", "REQUIRED_");
-  write(out, realizedClasses(), real_rank, "realization", "REALIZATION_");
+  write(out, realizingClasses(), real_rank, "realization", "REALIZATION_");
 
   out.indent(-1); 
   out.indent(); 

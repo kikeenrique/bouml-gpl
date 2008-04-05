@@ -18,7 +18,7 @@ class UmlUseCase : public UmlBaseUseCase {
     UmlUseCase(void * id, const QCString & n) : UmlBaseUseCase(id, n) { NumberOf += 1; };
 
     //returns the first container for a 'kind', going up in the browser tree
-    virtual UmlItem * container(anItemKind kind, const Token & token, FileIn & in);
+    virtual UmlItem * container(anItemKind kind, Token & token, FileIn & in);
 
     //  call at end of import : try to solve extend or include dependency
     virtual void solve(int context, QCString idref);

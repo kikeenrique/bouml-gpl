@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qgrid.h> 
 #include <qvbox.h>
@@ -48,6 +48,7 @@
 #include "UmlDesktop.h"
 #include "KeyValueTable.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
 
 RelTable::RelTable(QWidget * parent, ClassInstanceData * inst, bool visit)
     : MyTable(parent) {
@@ -152,7 +153,10 @@ ClassInstanceDialog::ClassInstanceDialog(ClassInstanceData * i)
   new QLabel("stereotype :", grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(bn->get_stereotype()));
-  
+  if (! visit) {
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlActivityObject));
+    edstereotype->setAutoCompletion(TRUE);
+  }
   SmallPushButton *  b = new SmallPushButton("class :", grid);
   
   connect(b, SIGNAL(clicked()), this, SLOT(menu_class()));
@@ -293,7 +297,7 @@ void ClassInstanceDialog::menu_class() {
       nodes.at(index)->select_in_browser();
       break;
     case 2:
-      bn = BrowserClass::add_class(cl_container);
+      bn = BrowserClass::add_class(FALSE, cl_container);
       if (bn == 0)
 	return;
       bn->select_in_browser();
@@ -374,8 +378,8 @@ void ClassInstanceDialog::accept() {
   BrowserClassInstance * bn = (BrowserClassInstance *) inst->get_browser_node();
   
   bn->set_name(edname->text().stripWhiteSpace());
-  bn->get_data()->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
-  
+
+  bool newst = bn->get_data()->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
   BrowserClass * new_cl = (BrowserClass *) nodes.at(edtype->currentItem());
   
   if (new_cl != inst->cl)
@@ -416,5 +420,6 @@ void ClassInstanceDialog::accept() {
   bn->package_modified();
   inst->modified();
   
+  ProfiledStereotypes::modified(bn, newst);
   QDialog::accept();
 }

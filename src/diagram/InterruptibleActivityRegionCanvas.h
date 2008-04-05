@@ -26,9 +26,9 @@
 #ifndef INTERRUPTIBLEACTIVITYREGIONCANVAS_H
 #define INTERRUPTIBLEACTIVITYREGIONCANVAS_H
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qobject.h>
 #include <qvaluelist.h>

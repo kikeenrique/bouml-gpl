@@ -112,7 +112,8 @@ QCString UmlOperation::compute_name() {
 }
 
 void UmlOperation::generate_decl(QTextOStream & f,
-				 const QCString & cl_stereotype) {
+				 const QCString & cl_stereotype,
+				 bool) {
   if (!idlDecl().isEmpty()) {
     if ((cl_stereotype != "interface") &&
 	(cl_stereotype != "valuetype")) {

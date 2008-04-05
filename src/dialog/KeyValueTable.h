@@ -26,6 +26,7 @@
 #ifndef KEYVALUETABLE_H
 #define KEYVALUETABLE_H
 
+#include <qdict.h>
 #include "StringTable.h"
 
 class HaveKeyValueData;
@@ -38,6 +39,10 @@ class KeyValuesTable : public StringTable {
 							   
     void update(HaveKeyValueData * h);
     bool get_value(const char * key, QString & value);
+    void remove(const char * key);
+
+  private:
+    QDict<QStringList> props;
 };
 
 #endif

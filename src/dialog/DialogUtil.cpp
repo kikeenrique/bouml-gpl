@@ -23,13 +23,13 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-# include <process.h>
-#endif
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
+
+
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -219,22 +219,22 @@ void edit(const QString & s, QString name, void * id, EditType k,
       if (!s.isEmpty())
 	fputs((const char *) s, fp);
       fclose(fp);
-#ifdef WIN32
-      QString arg0 = "\"" + ed + "\"";
-      QString arg =	// convert separators else PsPad doesn't work !
-	"\"" + QDir::convertSeparators(path) + "\"";
-      
-      if (_spawnlp(_P_DETACH, ed, arg0, (const char *) arg, 0) == -1) {
-	msg_critical("Bouml",
-		     "can't start the editor '" + ed +"'\n"
-		     "perhaps you have to redefine BOUML_EDITOR\n"
-		     "to give the absolute path ?");
-	return;
-      }
-#else
+
+
+
+
+
+
+
+
+
+
+
+
+
       ed += " \"" + path + "\"&";
       (void) system(ed);
-#endif
+
       if (d->hasOkButton() && (pf != 0))
 	(new DialogTimer(s, path, d, pf))->start(1000);
       return;

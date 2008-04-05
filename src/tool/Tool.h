@@ -60,12 +60,14 @@ class Tool {
     static bool menu_insert(QPopupMenu * tool, UmlCode target, int first_id);
     static void shortcut(QString s, int & choice, UmlCode target, int first_id);
     static QStringList all_display();
-    static const char * command(int param);
+    static const char * command(int rank);
+    static const char * command(const char *);
     
     static void save();
     static bool read(const char * = 0);
     static void read(char * & st, char * & k);
     static bool import();
+    static void add();
     
     static void init();
     static void defaults();

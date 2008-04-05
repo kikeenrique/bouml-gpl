@@ -141,7 +141,7 @@ void UmlValueSpecificationAction::solve(QCString idref) {
   
   if (it != OpaqueDefs.end())
     set_Value(*it);
-  else
+  else if (!FileIn::isBypassedId(idref))
     UmlCom::trace("value specification action : unknown opaque definition reference '" + idref + "'<br>");
 
 }
@@ -241,8 +241,10 @@ void UmlAcceptEventAction::importIt(FileIn & in, Token & token, UmlItem * where)
 void UmlAcceptEventAction::solve(QCString idref) {
   QCString tr = Trigger::get(idref);
   
-  if (tr.isNull())
-    UmlCom::trace("accept event activity action : unknown trigger reference '" + idref + "'<br>");
+  if (tr.isNull()) {
+    if (!FileIn::isBypassedId(idref))
+      UmlCom::trace("accept event activity action : unknown trigger reference '" + idref + "'<br>");
+  }
   else
     set_Trigger(tr);
 }
@@ -301,8 +303,10 @@ void UmlCallOperationAction::setOperation(QCString idref) {
 void UmlCallOperationAction::solve(QCString idref) {
   QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
   
-  if (it == All.end())
-    UmlCom::trace("call operation action : unknown operation reference '" + idref + "'<br>");
+  if (it == All.end()) {
+    if (!FileIn::isBypassedId(idref))
+      UmlCom::trace("call operation action : unknown operation reference '" + idref + "'<br>");
+  }
   else if ((*it)->kind() == anOperation)
     set_Operation((UmlOperation *) *it);
 }
@@ -369,8 +373,10 @@ void UmlCallBehaviorAction::setBehavior(QCString idref) {
 void UmlCallBehaviorAction::solve(QCString idref) {
   QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
   
-  if (it == All.end())
-    UmlCom::trace("call behavior action : unknown behavior reference '" + idref + "'<br>");
+  if (it == All.end()) {
+    if (!FileIn::isBypassedId(idref))
+      UmlCom::trace("call behavior action : unknown behavior reference '" + idref + "'<br>");
+  }
   else {
     switch ((*it)->kind()) {
     case anActivity:

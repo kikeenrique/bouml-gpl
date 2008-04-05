@@ -36,6 +36,9 @@ class Token {
     //return the value associated to a key, "" if the couple doesn't exist
      const QCString & valueOf(QCString key) const;
 
+    //return TRUE if the couple exist and set v with the value associated to a key
+    bool valueOf(QCString key, QCString & v) const;
+
 
   private:
     //associate a key and a value

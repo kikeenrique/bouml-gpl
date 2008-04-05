@@ -1,7 +1,9 @@
 
 #include "UmlArtifact.h"
 #include "FileOut.h"
+#include "UmlItem.h"
 
+#include "UmlNcRelation.h"
 void UmlArtifact::write(FileOut & out) {
   const char * k = (_uml_20) ? "ownedMember" : "packagedElement";
 
@@ -16,15 +18,56 @@ void UmlArtifact::write(FileOut & out) {
   write_description_properties(out); 
  
   const QVector<UmlItem> ch = children(); 
+  unsigned i;
   unsigned n = ch.size(); 
      
-  for (unsigned i = 0; i != n; i += 1) 
-    ch[i]->write(out); 
+  for (i = 0; i != n; i += 1) {
+    UmlItem * x = ch[i];
+    
+    if ((x->kind() == aNcRelation) &&
+	(x->stereotype() == "manifest") &&
+	(((UmlNcRelation *) x)->relationKind() == aDependency))
+      write_manifest(out, ((UmlNcRelation *) x)->target(), "dependency");
+    else
+      ch[i]->write(out); 
+  }
+
+  if (stereotype() == "source") {
+    const QVector<UmlClass> & cls = associatedClasses();
+    
+    n = cls.size();
+    
+    for (i = 0; i != n; i += 1)
+      write_manifest(out, cls[i], "source");
+  }
+  else {
+    const QVector<UmlArtifact> & arts = associatedArtifacts();
+    
+    n = arts.size();
+    
+    for (i = 0; i != n; i += 1)
+      write_manifest(out, arts[i], 0);
+  }
  
   out.indent(-1); 
   out.indent(); 
   out << "</" << k << ">\n"; 
 
   unload(); 
+
+}
+
+void UmlArtifact::write_manifest(FileOut & out, UmlItem * x, const char * name) {
+  static UmlItem * rank = 0;
+  
+  out.indent();
+  out << "<manifestation xmi:type=\"uml:Manifestation\"";
+  out.id_prefix(++rank, "Manifestation_");
+  out.ref(this, "client");
+  out.ref(x, "supplier");
+  out.ref(x, "utilizedElement");
+  if (name != 0)
+    out << " name=\"" << name << '"';
+  out << "/>\n";
 }
 

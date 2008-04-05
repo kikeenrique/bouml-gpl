@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qtextstream.h> 
 #include <qdir.h>
@@ -1138,8 +1138,8 @@ int open_file(QFile & fp, int mode, bool silent)
 	(msg_critical("Uml",
 		      Context.filename +
 		      ((mode != IO_ReadOnly)
-		       ? "\ncannot be openned for write, retry ?\n"
-		       : "\ncannot be openned for read, retry ?\n"),
+		       ? "\ncannot be opened for write, retry ?\n"
+		       : "\ncannot be opened for read, retry ?\n"),
 		      QMessageBox::Yes, QMessageBox::No)
 	 != QMessageBox::Yes))
       return -1;
@@ -1191,7 +1191,7 @@ bool copy_file(QFileInfo * src, const QDir & dest)
     if (fwrite(b, 1, n, fp_dest) != n) {
       QString err;
       
-      err.sprintf("error when writting %s", (const char *) dest_path);
+      err.sprintf("error when writing %s", (const char *) dest_path);
       
       msg_critical("Error", err);
       fclose(fp_src);

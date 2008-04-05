@@ -47,7 +47,7 @@ class CodChangeMsgDialog : public QDialog {
     static QSize previous_size;
   
   public:
-    CodChangeMsgDialog(ColMsg * m);
+    CodChangeMsgDialog(QWidget * parent, ColMsg * m);
     virtual ~CodChangeMsgDialog();
   
   protected slots:

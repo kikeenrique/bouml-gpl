@@ -12,25 +12,18 @@ void UmlOnSignalAction::import(FileIn & in, Token & tk) {
   
   if (pf != 0)
     pf(in, tk, this);
-  else {
-    if (tk.xmiType().isEmpty())
-      in.warning("bypass &lt;" + tk.what() + "...&gt;");
-    else
-      in.warning("bypass &lt;" + tk.what() + 
-		 " xmi:type=\"" + tk.xmiType() + "\"...&gt;");
-    
-    if (! tk.closed())
-      in.finish(tk.what());
-  }
+  else
+    in.bypass(tk);
 }
 
 void UmlOnSignalAction::solve(QCString idref) {
   QCString sig = Signal::get(idref);
   
-  if (sig.isNull())
-    UmlCom::trace("activity action : unknown signal reference '" + idref + "'<br>");
-  else
+  if (!sig.isNull())
     set_Signal(sig);
+  else if (!FileIn::isBypassedId(idref))
+    UmlCom::trace("activity action : unknown signal reference '" + idref + "'<br>");
+
 }
 
 void UmlOnSignalAction::import_it(FileIn & in, Token & token) {

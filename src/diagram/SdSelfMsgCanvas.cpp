@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpainter.h>
 #include <qcursor.h>
@@ -108,9 +108,9 @@ void SdSelfMsgCanvas::draw(QPainter & p) {
     p.setPen(::Qt::DotLine);
   
   p.drawLine(r.left() + 1, r.top() + 1, r.right() - 1, r.top() + 1);
-#ifdef WIN32
-  p.moveTo(r.right() - 1, r.top() + 1);
-#endif
+
+
+
   p.lineTo(r.right() - 1, he);
   p.lineTo(r.left() + 1, he);
 

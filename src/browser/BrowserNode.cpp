@@ -27,9 +27,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qdragobject.h>
 #include <qcursor.h>
@@ -57,10 +57,11 @@
 #include "strutil.h"
 #include "DialogUtil.h"
 #include "mu.h"
+#include "ProfiledStereotypes.h"
 
-#ifdef WIN32
-#define strcasecmp _stricmp
-#endif
+
+
+
 
 QList<BrowserNode> BrowserNode::marked_list;
 
@@ -126,10 +127,11 @@ void BrowserNode::delete_it() {
 	
 	warn(warning);
       }
-      else
+      else {
 	// mark modified to not delete the associated file(s)
 	// on exit if no save was done before
 	is_modified = TRUE;
+      }
     }
     else {
       // during a read : no check
@@ -359,10 +361,16 @@ void BrowserNode::update_stereotype(bool rec) {
   if (data != 0) {
     const char * stereotype = data->get_stereotype();
     
-    setText(0,
-	    (show_stereotypes && stereotype[0])
-	    ? QString("<<") + toUnicode(stereotype) + ">> " + name
-	    : QString((const char *) name));
+    if (show_stereotypes && stereotype[0]) {
+      QString s = toUnicode(stereotype);
+      int index = s.find(':');
+      
+      setText(0,
+	      "<<" + ((index == -1) ? s : s.mid(index + 1))
+	      + ">> " + name);
+    }
+    else
+      setText(0, (const char *) name);
   }
   
   if (rec) {
@@ -413,7 +421,7 @@ void BrowserNode::pre_load()
     new BrowserPackage("<temporary package>", BrowserView::get_project(), -1);
 }
 
-void BrowserNode::post_load()
+void BrowserNode::post_load(bool light)
 {
   signal_unconsistencies();
   
@@ -433,7 +441,10 @@ void BrowserNode::post_load()
   delete UndefinedNodePackage;
   UndefinedNodePackage = 0;
   
-  BrowserView::get_project()->update_stereotype(TRUE);
+  if (! light) {
+    ProfiledStereotypes::post_load();
+    BrowserView::get_project()->update_stereotype(TRUE);
+  }
 }
 
 void BrowserNode::must_be_deleted() {
@@ -612,7 +623,7 @@ void BrowserNode::DragMoveInsideEvent(QDragMoveEvent * e) {
 
 void BrowserNode::DropAfterEvent(QDropEvent * e, BrowserNode *) {
   e->ignore();
-  msg_critical("Error", "Forbiden");
+  msg_critical("Error", "Forbidden");
 }
 
 //
@@ -634,7 +645,7 @@ BasicData * BrowserNode::add_relation(UmlCode t, BrowserNode * end) {
 
 void BrowserNode::edit(const char * s, const QStringList & default_stereotypes) {
   if (!is_edited) {
-    static QSize previous_size[UmlCodeSup];
+    static QSize previous_size[BrowserNodeSup];
     
     (new BasicDialog(get_data(), s, default_stereotypes,
 		     previous_size[get_type()]))
@@ -693,6 +704,25 @@ const char * BrowserNode::check_inherit(const BrowserNode * new_parent) const {
   } while (! notyet.isEmpty());
   
   return 0;
+}
+
+bool BrowserNode::may_contains_them(const QList<BrowserNode> &,
+				    bool &) const {
+  return FALSE;
+}
+
+bool BrowserNode::may_contains_it(BrowserNode * bn) const {
+  // for the type point of view bn is legal for 'this'
+  UmlCode type = bn->get_type();
+  QString s = (const char *) bn->name;
+  
+  for (QListViewItem * child = firstChild(); child; child = child->nextSibling()) {
+    if (!((BrowserNode *) child)->deletedp() &&
+	((BrowserNode *) child)->same_name(s, type))
+      return FALSE;
+  }
+
+  return TRUE;
 }
 
 //
@@ -798,25 +828,6 @@ void BrowserNode::mark_shortcut(QString s, int & index, int bias) {
   }
   if (s == "Unmark all")
     index = bias + 2;
-}
-
-bool BrowserNode::may_contains_them(const QList<BrowserNode> &,
-				    bool &) const {
-  return FALSE;
-}
-
-bool BrowserNode::may_contains_it(BrowserNode * bn) const {
-  // for the type point of view bn is legal for 'this'
-  UmlCode type = bn->get_type();
-  QString s = (const char *) bn->name;
-  
-  for (QListViewItem * child = firstChild(); child; child = child->nextSibling()) {
-    if (!((BrowserNode *) child)->deletedp() &&
-	((BrowserNode *) child)->same_name(s, type))
-      return FALSE;
-  }
-
-  return TRUE;
 }
 
 void BrowserNode::mark_management(int choice) {
@@ -1118,7 +1129,7 @@ bool BrowserNode::tool_cmd(ToolCom * com, const char * args) {
     com->write_unsigned(ToolCom::run(args, this));
     break;
   case createCmd:
-    // unvalid creation
+    // invalid creation
     com->write_id(0);
     break;
   case parentCmd:
@@ -1304,6 +1315,14 @@ bool BrowserNode::tool_cmd(ToolCom * com, const char * args) {
       com->write_ack(TRUE);
     }
     break;
+  case applyStereotypeCmd:
+    if (is_read_only && !root_permission())
+      com->write_ack(FALSE);
+    else {
+      ProfiledStereotypes::applyStereotype(this); // call package_modified() if needed
+      com->write_ack(TRUE);
+    }
+    break;
   default:
     return FALSE;
   }
@@ -1455,7 +1474,7 @@ void BrowserNode::signal_unconsistencies()
     if (UnconsistencyDeletedMsg.isEmpty())
       msg = pfix;
     msg += "<p>The internal identifier of these elements was changed,\n"
-      "but <u>I can't garanty the references to them are the right one</u>,\n"
+      "but <u>I can't garantee the references to them are the right one</u>,\n"
 	"check your model :</p>\n<ul>" + UnconsistencyFixedMsg + "</ul>\n";
 
     do_change_shared_ids();

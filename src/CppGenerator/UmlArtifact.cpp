@@ -66,12 +66,12 @@ void UmlArtifact::generate() {
     QCString src_path = pack->source_path(name);
     QCString nasp_start;
     QCString nasp_end;
-    QCString nasp = pack->cppNamespace();
+    const char * cnasp = pack->cppNamespace();
+    QCString nasp = ((cnasp[0] == ':') && (cnasp[1] == ':'))
+      ? cnasp + 2 : cnasp;
     
     if (!nasp.isEmpty()) {
-      int index = 
-	// bypass :: allowing ::a...
-	((nasp.at(0) == ':') && (nasp != "::")) ? 2 : 0;
+      int index = 0;
       int index2;
       QCString closed = "\n} // namespace ";
       

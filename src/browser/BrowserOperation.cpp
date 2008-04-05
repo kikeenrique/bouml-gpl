@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qpopupmenu.h> 
 #include <qfileinfo.h> 
@@ -46,9 +46,10 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
 #include "mu.h"
 
-IdDict<BrowserOperation> BrowserOperation::all(1023, __FILE__);
+IdDict<BrowserOperation> BrowserOperation::all(1021, __FILE__);
 QStringList BrowserOperation::its_default_stereotypes;	// unicode
 
 BrowserOperation::BrowserOperation(int id)
@@ -448,6 +449,7 @@ Note that you can undelete it after");
       }
     }
     mark_menu(m, "operation", 90);
+    ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
@@ -488,7 +490,9 @@ void BrowserOperation::exec_menu_choice(int rank) {
     def->edit(PythonView);
     return;
   default:
-    if (rank >= 100)
+    if (rank >= 99990)
+      ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
     else
       mark_management(rank - 90);

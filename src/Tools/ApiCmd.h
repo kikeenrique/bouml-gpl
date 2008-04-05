@@ -262,6 +262,9 @@ enum OnInstanceCmd {
   setPythonDecoratorsCmd,
   setPythonPackageCmd,
   setPythonContextualBodyIndent,
+  
+  // api 40 a faire
+  applyStereotypeCmd,
     
   setUserCmd = 252, // not in plug-outs managed through bouml
   moveInCmd = 253,  // not in plug-outs managed through bouml
@@ -283,7 +286,11 @@ enum PackageGlobalCmd {
   getProjectCmd,
   isProjectModifiedCmd,
   saveProjectCmd,
+  
+  // Api 40 a faire
   findPythonPackageCmd,
+  updateProfileCmd,
+  findStereotypeCmd
 };
 
 enum UmlSettingsCmd {

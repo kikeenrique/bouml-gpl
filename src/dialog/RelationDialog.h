@@ -124,6 +124,7 @@ class RelationDialog : public QTabDialog {
   Q_OBJECT
     
   protected:
+    bool onstereotype;
     QWidget * umltab;
     QWidget * cpptab;
     QWidget * javatab;

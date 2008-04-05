@@ -16,7 +16,7 @@ class QRadioButton;
 class Dialog : public QDialog {
   Q_OBJECT
   public:
-    Dialog(QCString & path, QCString & encoding, QCString & genview, QCString & uml20, QCString & profile, QCString & pk, QCString & vis, QCString & primitivetype, QCString & genextension, QCString & linefeed, Language & lang);
+    Dialog(QCString & path, QCString & encoding, QCString & genview, QCString & uml20, QCString & pk, QCString & vis, QCString & primitivetype, QCString & genextension, QCString & geneclipse, QCString & commentexporter, QCString & linefeed, Language & lang);
 
 
   protected:
@@ -29,9 +29,6 @@ class Dialog : public QDialog {
     //yes => generate pk_ prefix
     QCString & _uml20;
 
-    //yes => generate profile for stereotype
-    QCString & _profile;
-
     //yes => generate pk_ prefix
     QCString & _pk;
 
@@ -42,6 +39,10 @@ class Dialog : public QDialog {
     QCString & _primitivetype;
 
     QCString & _genextension;
+
+    QCString & _geneclipse;
+
+    QCString & _commentexporter;
 
     //yes => generate linefeed inside string, else &#10;
     QCString & _linefeed;
@@ -58,8 +59,6 @@ class Dialog : public QDialog {
 
     QCheckBox * genview_cb;
 
-    QCheckBox * profile_cb;
-
     QCheckBox * pk_cb;
 
     QCheckBox * vis_cb;
@@ -67,6 +66,10 @@ class Dialog : public QDialog {
     QCheckBox * primitivetype_cb;
 
     QCheckBox * genextension_cb;
+
+    QCheckBox * geneclipse_cb;
+
+    QCheckBox * commentexporter_cb;
 
     QCheckBox * linefeed_cb;
 

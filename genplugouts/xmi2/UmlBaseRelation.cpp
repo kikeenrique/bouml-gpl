@@ -302,6 +302,12 @@ void UmlBaseRelation::read_java_() {
 }
 #endif
 
+#ifdef WITHPHP
+void UmlBaseRelation::read_php_() {
+  UmlBaseClassMember::read_php_();
+}
+#endif
+
 #ifdef WITHIDL
 void UmlBaseRelation::read_idl_() {
   UmlBaseClassItem::read_idl_();

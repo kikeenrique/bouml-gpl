@@ -173,6 +173,10 @@ void UmlActivityObject::import_it(FileIn & in, Token & token) {
 	importMultiplicity(in, token, FALSE);
       else if (s == "uppervalue")
 	importMultiplicity(in, token, TRUE);
+      else if (s == "upperbound") {
+	if (! token.closed())
+	  in.finish(s);
+      }
       else
 	UmlItem::import(in, token);
     }
@@ -188,7 +192,7 @@ void UmlActivityObject::solve(int context, QCString idref) {
       
       if (getType(idref, ts))
 	set_Type(ts);
-      else
+      else if (!FileIn::isBypassedId(idref))
 	UmlCom::trace("activity object : unknown type reference '" + idref + "'<br>");
     }
     break;
@@ -201,7 +205,7 @@ void UmlActivityObject::solve(int context, QCString idref) {
 	if ((*it)->kind() == aState)
 	  set_InState((*it)->name());
       }
-      else
+      else if (!FileIn::isBypassedId(idref))
 	UmlCom::trace("activity object : unknown state reference '" + idref + "'<br>");
     }
     break;
@@ -212,7 +216,7 @@ void UmlActivityObject::solve(int context, QCString idref) {
       
       if (it != OpaqueDefs.end())
 	set_Selection(*it);
-      else
+      else if (!FileIn::isBypassedId(idref))
 	UmlCom::trace("activity object : unknown opaque definition reference '" + idref + "'<br>");
     }
     break;

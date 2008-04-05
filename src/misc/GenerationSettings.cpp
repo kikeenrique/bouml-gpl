@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qcursor.h>
 #include <qfiledialog.h>
@@ -310,7 +310,7 @@ ${module_end}\n\
   if (class_stereotypes != 0)
     delete [] class_stereotypes;
   
-  nclassstereotypes = 13;
+  nclassstereotypes = 14;
   class_stereotypes = new Stereotype[nclassstereotypes];
   
   class_stereotypes[0].set("class", "class", "class", "class", "class", "valuetype");
@@ -326,6 +326,7 @@ ${module_end}\n\
   class_stereotypes[10].set("entity", "class", "class", "class", "class", "valuetype");
   class_stereotypes[11].set("actor", "ignored", "ignored", "ignored", "ignored", "ignored");
   class_stereotypes[12].set("@interface", "ignored", "@interface", "ignored", "ignored", "ignored");
+  class_stereotypes[13].set("stereotype", "ignored", "ignored", "ignored", "ignored", "ignored");
   
   cpp_enum_in = "${type}";
   cpp_enum_out = "${type} &";
@@ -2821,9 +2822,61 @@ void GenerationSettings::read_descriptions(char * & st, char * & k)
   }
 }
 
+static void read_rel_att_st(char * & st, Stereotype & s, unsigned fileformat)
+{
+  s.uml = read_string(st);
+  s.cpp = read_string(st);
+  s.java = read_string(st);
+  if (fileformat >= 51)
+    s.python = read_string(st);
+  else if (s.uml == "set")
+    s.python = "set";
+  else if (s.uml == "map")
+    s.python = "dict";
+  else
+    s.python = "list";
+  s.idl = read_string(st);
+}
+
+static void read_class_st(char * & st, Stereotype & s, unsigned fileformat)
+{
+  s.uml = read_string(st);
+  s.cpp = read_string(st);
+  s.java = read_string(st);
+  
+  if (fileformat < 44) {
+    if (s.uml == "interface") {
+      s.php = "interface";
+      s.python = "class";
+    }
+    else if ((s.uml == "enum") || (s.uml == "enum_pattern"))
+      s.php = s.python = "enum";
+    else if ((s.uml == "typedef") || (s.uml == "actor") || (s.uml == "@interface"))
+      s.php = s.python = "ignored";
+    else 
+      s.php = s.python = "class";
+    s.idl = read_string(st);
+  }
+  else if (fileformat < 51) {
+    s.php = read_string(st);
+    if ((s.uml == "enum") || (s.uml == "enum_pattern"))
+      s.python = "enum";
+    else if ((s.uml == "typedef") || (s.uml == "actor") || (s.uml == "@interface"))
+      s.python = "ignored";
+    else 
+      s.python = "class";
+    s.idl = read_string(st);
+  }
+  else {
+    s.php = read_string(st);
+    s.python = read_string(st);
+    s.idl = read_string(st);
+  }
+}
+
 void GenerationSettings::read(char * & st, char * & k)
 {
-  int fileformat = read_file_format();
+  unsigned fileformat = read_file_format();
 
   if (!strcmp(k, "cpp_default_defs")) {
     cpp_default_defs = TRUE;
@@ -2977,18 +3030,7 @@ void GenerationSettings::read(char * & st, char * & k)
     for (index = 0; index != nrelattrstereotypes; index += 1) {
       Stereotype & s = relattr_stereotypes[index];
       
-      s.uml = read_string(st);
-      s.cpp = read_string(st);
-      s.java = read_string(st);
-      if (fileformat >= 51)
-	s.python = read_string(st);
-      else if (s.uml == "set")
-	s.python = "set";
-      else if (s.uml == "map")
-	s.python = "dict";
-      else
-	s.python = "list";
-      s.idl = read_string(st);
+      read_rel_att_st(st, s, fileformat);
     }
         
     read_keyword(st, "classes_stereotypes");
@@ -2998,54 +3040,10 @@ void GenerationSettings::read(char * & st, char * & k)
     nclassstereotypes = (int) read_unsigned(st);
     class_stereotypes = new Stereotype[nclassstereotypes];
 
-    if (fileformat < 44) {
-      for (index = 0; index != nclassstereotypes; index += 1) {
-	Stereotype & s = class_stereotypes[index];
+    for (index = 0; index != nclassstereotypes; index += 1) {
+      Stereotype & s = class_stereotypes[index];
 	
-	s.uml = read_string(st);
-	s.cpp = read_string(st);
-	s.java = read_string(st);
-	if (s.uml == "interface") {
-	  s.php = "interface";
-	  s.python = "class";
-	}
-	else if ((s.uml == "enum") || (s.uml == "enum_pattern"))
-	  s.php = s.python = "enum";
-	else if ((s.uml == "typedef") || (s.uml == "actor") || (s.uml == "@interface"))
-	  s.php = s.python = "ignored";
-	else 
-	  s.php = s.python = "class";
-	s.idl = read_string(st);
-      }
-    }
-    else if (fileformat < 51) {
-      for (index = 0; index != nclassstereotypes; index += 1) {
-	Stereotype & s = class_stereotypes[index];
-	
-	s.uml = read_string(st);
-	s.cpp = read_string(st);
-	s.java = read_string(st);
-	s.php = read_string(st);
-	if ((s.uml == "enum") || (s.uml == "enum_pattern"))
-	  s.python = "enum";
-	else if ((s.uml == "typedef") || (s.uml == "actor") || (s.uml == "@interface"))
-	  s.python = "ignored";
-	else 
-	  s.python = "class";
-	s.idl = read_string(st);
-      }
-    }
-    else {
-      for (index = 0; index != nclassstereotypes; index += 1) {
-	Stereotype & s = class_stereotypes[index];
-	
-	s.uml = read_string(st);
-	s.cpp = read_string(st);
-	s.java = read_string(st);
-	s.php = read_string(st);
-	s.python = read_string(st);
-	s.idl = read_string(st);
-      }
+      read_class_st(st, s, fileformat);
     }
      
     if (new_types)
@@ -3680,6 +3678,112 @@ bool GenerationSettings::import()
   }
   
   return FALSE;
+}
+
+bool GenerationSettings::add_class_rel_correspondences(unsigned fileformat)
+{
+  bool result = TRUE;
+  char * s = read_file("generation_settings");
+  
+  if (s != 0) {
+    PRE_TRY;
+    try {
+      char * st = s;
+      int index;
+      int n;
+      
+      skip_until(st, "relations_stereotypes");
+
+      n = (int) read_unsigned(st);
+      if (n != 0) {
+	if (relattr_stereotypes == 0) {
+	  nrelattrstereotypes = n;
+	  relattr_stereotypes = new Stereotype[nrelattrstereotypes];
+	  
+	  for (index = 0; index != nrelattrstereotypes; index += 1) {
+	    Stereotype & ste = relattr_stereotypes[index];
+	    
+	    read_rel_att_st(st, ste, fileformat);
+	  }
+	}
+	else {
+	  int oldn = nrelattrstereotypes;
+	  Stereotype * oldst = relattr_stereotypes;
+	  
+	  relattr_stereotypes = new Stereotype[oldn + n /*worst case*/];
+	  
+	  for (index = 0; index != oldn; index += 1)
+	    relattr_stereotypes[index] = oldst[index];
+	  delete [] oldst;
+	  
+	  for (index = 0; index != n; index += 1) {
+	    Stereotype & ste = relattr_stereotypes[nrelattrstereotypes];
+	
+	    read_rel_att_st(st, ste, fileformat);
+	    
+	    int index2;
+	      
+	    for (index2 = 0; index2 != oldn; index2 += 1)
+	      if (relattr_stereotypes[index2].uml == ste.uml)
+		break;
+	    
+	    if (index2 == oldn)
+	      // add it
+	      nrelattrstereotypes += 1;
+	  }
+	}
+      }
+      
+      read_keyword(st, "classes_stereotypes");
+      
+      n = (int) read_unsigned(st);
+      if (n != 0) {
+	if (class_stereotypes == 0) {
+	  nclassstereotypes = n;
+	  class_stereotypes = new Stereotype[nclassstereotypes];
+	  
+	  for (index = 0; index != nclassstereotypes; index += 1) {
+	    Stereotype & ste = class_stereotypes[index];
+	    
+	    read_class_st(st, ste, fileformat);
+	  }
+	}
+	else {
+	  int oldn = nclassstereotypes;
+	  Stereotype * oldst = class_stereotypes;
+	  
+	  class_stereotypes = new Stereotype[oldn + n /*worst case*/];
+	  
+	  for (index = 0; index != oldn; index += 1)
+	    class_stereotypes[index] = oldst[index];
+	  delete [] oldst;
+	  
+	  for (index = 0; index != n; index += 1) {
+	    Stereotype & ste = class_stereotypes[nclassstereotypes];
+	
+	    read_class_st(st, ste, fileformat);
+	    
+	    int index2;
+	      
+	    for (index2 = 0; index2 != oldn; index2 += 1)
+	      if (class_stereotypes[index2].uml == ste.uml)
+		break;
+	    
+	    if (index2 == oldn)
+	      // add it
+	      nclassstereotypes += 1;
+	  }
+	}
+      }      
+    }
+    catch (int) {
+      result = FALSE;
+    }
+    POST_TRY;
+    delete [] s;
+  }
+  
+  return result;
 }
 
 static bool read_incl(IncludesSpec & sp, const char * filename)

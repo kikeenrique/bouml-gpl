@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qlayout.h>
 #include <qlabel.h>
@@ -47,8 +47,8 @@
 
 QSize CodChangeMsgDialog::previous_size;
 
-CodChangeMsgDialog::CodChangeMsgDialog(ColMsg * m)
-    : QDialog(0, "Communication message dialog", TRUE), msg(m) {
+CodChangeMsgDialog::CodChangeMsgDialog(QWidget * parent, ColMsg * m)
+    : QDialog(parent, "Communication message dialog", TRUE), msg(m) {
   setCaption("Communicationg message dialog");
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  

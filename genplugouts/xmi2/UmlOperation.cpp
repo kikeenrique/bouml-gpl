@@ -101,22 +101,24 @@ void UmlOperation::write_return_type(FileOut & out, QCString decl) {
       out << "pk_";
     out << "return\">\n";
 
-    out.indent();
-    out << "\t<type";
     switch (_lang) {
     case Uml:
-      if (t.type != 0)
-	out.idref(t.type);
-      else
-	out.idref_datatype(t.explicit_type);
+      out.indent(+1);
+      UmlItem::write_type(out, t);
+      out.indent(-1);
       break;
     case Cpp:
+      out.indent();
+      out << "\t<type xmi:type=\"uml:Class\"";
       write_cpp_returntype(out, decl);
+      out << "/>\n";
       break;
     default: // java
+      out.indent();
+      out << "\t<type xmi:type=\"uml:Class\"";
       write_java_returntype(out, decl);
+      out << "/>\n";
     }
-    out << "/>\n";
 
     out.indent();
     out << "</ownedParameter>\n";
@@ -256,7 +258,7 @@ void UmlOperation::write_cpp_java_params(FileOut & out, QCString decl) {
 	    ? CppSettings::type(t.explicit_type)
 	    : JavaSettings::type(t.explicit_type)).isEmpty()) {
 	out.indent();
-	out << "\t<type";
+	out << "\t<type xmi:type=\"uml:Class\"";
 	write_type(out, t, sparam, kname, ktype);
 	out << "/>\n";
       }

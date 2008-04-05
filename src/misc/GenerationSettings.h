@@ -32,6 +32,7 @@
 #include "UmlEnum.h"
 #include "mystr.h"
 
+class QDir;
 class AType;
 class ToolCom;
 
@@ -408,6 +409,7 @@ class GenerationSettings {
     static void read();
     static bool import();
     static void read_includes_imports();
+    static bool add_class_rel_correspondences(unsigned fileformat);
     
     static QString new_java_enums();
 };

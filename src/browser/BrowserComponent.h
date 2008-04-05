@@ -49,7 +49,7 @@ class BrowserComponent : public BrowserNode, public Labeled<BrowserComponent> {
     QValueList<BrowserClass *> required_classes;
     
     void associate_class(BrowserClass * c);
-    void exec_menu_choice(int rank, BrowserNode * item_above);
+    void exec_menu_choice(int rank);
   
     void get_all_provided_classes(QValueList<BrowserClass *> &) const;
     void get_all_required_classes(QValueList<BrowserClass *> &) const;

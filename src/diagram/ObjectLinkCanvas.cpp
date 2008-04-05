@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qcursor.h>
 #include <math.h>
@@ -369,11 +369,11 @@ void ObjectLinkCanvas::remove(bool from_model) {
   delete_it();
 }
 
-#ifdef WIN32
-#pragma optimize("", off)
-// generated code is wrong if optimize speed
-// because 'this' is changed to a wrong value inside the operation
-#endif
+
+
+
+
+
 void ObjectLinkCanvas::menu(const QPoint & lpos) {
   ObjectLinkCanvas * plabel;
   ObjectLinkCanvas * pstereotype;
@@ -512,9 +512,9 @@ void ObjectLinkCanvas::menu(const QPoint & lpos) {
   
   package_modified();
 }
-#ifdef WIN32
-#pragma optimize("", on)
-#endif
+
+
+
 
 
 ArrowPointCanvas * ObjectLinkCanvas::brk(const QPoint & p) {
@@ -658,7 +658,7 @@ void ObjectLinkCanvas::update(bool updatepos) {
     
     // manages relation's stereotype
     
-    s = data->get_stereotype();
+    s = data->get_short_stereotype();
     
     if (s.isEmpty()) {
       // relation does not have stereotype
@@ -947,7 +947,7 @@ ObjectLinkCanvas * ObjectLinkCanvas::read(char * & st, UmlCanvas * canvas, char 
 	  read_double(st);	// z
 	}
 	else {
-	  QString s = toUnicode(rd->get_stereotype());
+	  QString s = toUnicode(rd->get_short_stereotype());
 	  
 	  if (s[0] != '{')
 	    s = QString("<<") + s + ">>";

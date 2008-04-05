@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <stdio.h>
 #include <qpopupmenu.h> 
@@ -34,6 +34,8 @@
 #include "HaveKeyValueData.h"
 #include "KeyValueData.h"
 #include "MLinesItem.h"
+#include "ComboItem.h"
+#include "ProfiledStereotypes.h"
 #include "strutil.h"
 
 KeyValuesTable::KeyValuesTable(HaveKeyValueData * hv, QWidget * parent, bool visit)
@@ -69,9 +71,28 @@ KeyValuesTable::KeyValuesTable(HaveKeyValueData * hv, QWidget * parent, bool vis
     }
   }
   else {
+    props.setAutoDelete(TRUE);
+    
+    QStringList items;
+    
     for (index = 0; index < sup; index += 1){
-      setText(index, 0, toUnicode(hv->get_key(index)));
-      setItem(index, 1, new MLinesItem(this, toUnicode(hv->get_value(index))));
+      QString k = toUnicode(hv->get_key(index));
+      QString v = toUnicode(hv->get_value(index));
+      QStringList * psl = props[k];
+      
+      setText(index, 0, k);
+      
+      if (psl != 0)
+	setItem(index, 1, new ComboItem(this, v, *psl, FALSE));
+      if ((k.contains(':') == 2) &&
+	  ProfiledStereotypes::enumerated(k, items)) {
+	psl = new QStringList(items);
+	props.insert(k, psl);
+	setItem(index, 1, new ComboItem(this, v, *psl, FALSE));
+      }
+      else
+	setItem(index, 1, new MLinesItem(this, v));
+
       setText(index, 2, QString::null);
       setRowStretchable(index, TRUE);
     }
@@ -115,14 +136,27 @@ void KeyValuesTable::update(HaveKeyValueData * oper) {
 }
 
 bool KeyValuesTable::get_value(const char * key, QString & value) {
+  QString ks = toUnicode(key);
   int index;
   
   for (index = 0; index != numRows(); index += 1) {
-    if (text(index, 0) == toUnicode(key)) {
+    if (text(index, 0) == ks) {
       value = text(index, 1);
       return TRUE;
     }
   }
   
   return FALSE;
+}
+
+void KeyValuesTable::remove(const char * key) {
+  QString ks = toUnicode(key);
+  int index;
+  
+  for (index = 0; index != numRows(); index += 1) {
+    if (text(index, 0) == ks) {
+      delete_row(index);
+      break;
+    }
+  }  
 }

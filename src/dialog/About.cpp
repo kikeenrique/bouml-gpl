@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qlayout.h>
 #include <qlabel.h>
@@ -55,7 +55,7 @@ AboutDialog::AboutDialog() : QDialog(0, "About BOUML", TRUE) {
   hbox->addWidget(lbp);
   hbox->addWidget(new QLabel("  ", this));
 
-  const char * htmltext = ("BOUML release <b>4.2</b><br>\n"
+  const char * htmltext = ("BOUML release <b>4.2.1</b><br>\n"
 			   "<br>\n"
 			   "<i>http://bouml.free.fr</i><br>\n"
 			   "<i>http://sourceforge.net/projects/bouml</i><br>\n"

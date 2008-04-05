@@ -25,12 +25,12 @@
 
 //#define DEBUGCOM
 
-#ifdef WIN32
-# include <process.h>
-#pragma warning (disable: 4150)
-#else
+
+
+
+
 #include <errno.h>
-#endif
+
 
 #ifdef DEBUGCOM
 #include <iostream>
@@ -126,7 +126,8 @@ ToolCom::ToolCom() {
   id = 0;
 }
 
-int ToolCom::run(const char * cmd, BrowserNode * bn, bool exit)
+int ToolCom::run(const char * cmd, BrowserNode * bn,
+		 bool exit, void (*pf)())
 {
   TraceDialog::trace_auto_raise(TRUE);
   TraceDialog::clear();
@@ -144,24 +145,24 @@ int ToolCom::run(const char * cmd, BrowserNode * bn, bool exit)
   
   unsigned port = com->bind(1024);
 
-#ifdef WIN32
-  QString ports = QString::number(port);
-  QStringList l = QStringList::split(' ', cmd);
-  const char ** v = new const char*[l.count() + 2];
-  
-  for (unsigned i = 0; i != l.count(); i += 1)
-    v[i] = (const char *) l[i];
-  v[i] = (const char *) ports;
-  v[i + 1] = 0;
 
-  if (_spawnvp(_P_DETACH, v[0], v) == -1)
-    msg_critical("Bouml",
-		 "can't start the plug-out '" +l[0] +"'\n"
-		 "perhaps you must specify its absolute path"
-		 "or set the environment variable PATH ?");
-  
-  delete v;
-#else
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   QString s = cmd;
   
   s += ' ';
@@ -176,9 +177,10 @@ int ToolCom::run(const char * cmd, BrowserNode * bn, bool exit)
 		 "error while executing '" + QString(cmd) +"'\n"
 		 "perhaps you must specify its absolute path"
 		 "or set the environment variable PATH ?");
-#endif
+
   
   com->target = bn;
+  com->cont = pf;
   com->start = TRUE;
   //com->with_ack = TRUE;
   com->exit_bouml = exit;
@@ -252,9 +254,9 @@ const char * ToolCom::read_buffer()
     char s[4];
     
     if (sock->readBlock(s, 4) != 4) {
-#ifdef WIN32
-      if (sock->error() != 0)
-#endif
+
+
+
 	fatal_error("ToolCom read error");
       return 0;
     }
@@ -276,9 +278,9 @@ const char * ToolCom::read_buffer()
   int nread = sock->readBlock(buffer_in + already_read, wanted);
     
   if (nread == -1) {
-#ifdef WIN32
-    if (sock->error() != 0)
-#endif
+
+
+
       fatal_error("ToolCom read error");
     return 0;
   }
@@ -515,6 +517,7 @@ void ToolCom::fatal_error(const char *
 
 void ToolCom::data_received(Socket * who) {
   bool do_exit = FALSE;
+  void (*pf)() = 0;
   
   if (who == listen_sock) {
     if (sock == 0) {
@@ -533,6 +536,7 @@ void ToolCom::data_received(Socket * who) {
     // can't connect or comm closed on client side
     close();
     do_exit = exit_bouml;
+    pf = cont;
   }
   else if (sock != 0) {
     PRE_TRY;
@@ -625,6 +629,7 @@ void ToolCom::data_received(Socket * who) {
 #endif
 	    if (exit_bouml)
 	      do_exit = true;
+	    pf = cont;
 	    throw 0;
 	  case traceCmd:
 	    TraceDialog::add(p+1);
@@ -832,4 +837,7 @@ void ToolCom::data_received(Socket * who) {
 
     THROW_ERROR 0;
   }
+  
+  if (pf != 0)
+    pf();
 }

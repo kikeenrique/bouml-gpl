@@ -16,6 +16,9 @@ class UmlArtifact : public UmlBaseArtifact {
   public:
     UmlArtifact(void * id, const QCString & n) : UmlBaseArtifact(id, n) { NumberOf += 1; };
 
+    //  call at end of import : try to manifestation
+    virtual void solveManifestation(QCString s, QCString idref);
+
     static void init();
 
     //import the artifact starting by 'tk' inside 'where'

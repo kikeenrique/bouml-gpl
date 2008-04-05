@@ -30,6 +30,17 @@ class UmlBaseClassItem : public UmlItem {
     bool set_JavaDecl(const char * s);
 #endif
 
+#ifdef WITHPHP
+    //  return the Php defininition
+    
+    const QCString & phpDecl();
+
+    //  to set the Php definition
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PhpDecl(const char * s);
+#endif
+
 #ifdef WITHIDL
     //  return the IDL declaration
     
@@ -43,9 +54,6 @@ class UmlBaseClassItem : public UmlItem {
 
     virtual void unload(bool = FALSE, bool = FALSE);
 
-  friend class UmlBaseAttribute;
-  friend class UmlBaseOperation;
-  friend class UmlBaseRelation;
 
   private:
 #ifdef WITHCPP
@@ -54,6 +62,10 @@ class UmlBaseClassItem : public UmlItem {
 
 #ifdef WITHJAVA
     QCString _java_decl;
+#endif
+
+#ifdef WITHPHP
+    QCString _php_decl;
 #endif
 
 #ifdef WITHIDL
@@ -76,15 +88,24 @@ class UmlBaseClassItem : public UmlItem {
     virtual void read_java_();
 #endif
 
+#ifdef WITHPHP
+    //internal, do NOT use it
+    
+    virtual void read_php_();
+#endif
+
 #ifdef WITHIDL
     //internal, do NOT use it
     
     virtual void read_idl_();
 #endif
 
-  friend class UmlBaseClassMember;
-  friend class UmlBaseExtraClassMember;
   friend class UmlBaseClass;
+  friend class UmlBaseExtraClassMember;
+  friend class UmlBaseClassMember;
+  friend class UmlBaseRelation;
+  friend class UmlBaseOperation;
+  friend class UmlBaseAttribute;
 };
 
 #endif

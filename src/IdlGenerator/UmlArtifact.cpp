@@ -272,6 +272,11 @@ UmlPackage * UmlArtifact::package() {
   return (UmlPackage *) parent;
 }
   
+UmlPackage * UmlArtifact::generation_package()
+{
+  return package_of_generated_artifact;
+}
+
 bool UmlArtifact::must_be_saved(const char * path, const char * new_contains)
 {
   FILE * fp = fopen(path, "rb");

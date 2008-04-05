@@ -43,7 +43,8 @@ class UmlClass : public UmlBaseClass {
     QCString idl_stereotype();
     void generate();
     virtual void generate(QTextOStream & f);
-    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype);
+    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype,
+			       bool = FALSE);
 
     void write(QTextOStream & f);
     static void write(QTextOStream & f, const UmlTypeSpec & t);

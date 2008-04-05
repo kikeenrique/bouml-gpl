@@ -17,8 +17,8 @@
 
 #include "SmallPushButton.h"
 
-Dialog::Dialog(QCString & path, QCString & encoding, QCString & genview, QCString & uml20, QCString & profile, QCString & pk, QCString & vis, QCString & primitivetype, QCString & genextension, QCString & linefeed, Language & lang)
-  : QDialog(0, 0, TRUE), _path(path), _encoding(encoding), _genview(genview), _uml20(uml20), _profile(profile), _pk(pk), _vis(vis), _primitivetype(primitivetype), _genextension(genextension), _linefeed(linefeed), _lang(lang) {
+Dialog::Dialog(QCString & path, QCString & encoding, QCString & genview, QCString & uml20, QCString & pk, QCString & vis, QCString & primitivetype, QCString & genextension, QCString & geneclipse, QCString & commentexporter, QCString & linefeed, Language & lang)
+  : QDialog(0, 0, TRUE), _path(path), _encoding(encoding), _genview(genview), _uml20(uml20), _pk(pk), _vis(vis), _primitivetype(primitivetype), _genextension(genextension), _geneclipse(geneclipse), _commentexporter(commentexporter), _linefeed(linefeed), _lang(lang) {
   QVBoxLayout * vbox = new QVBoxLayout(this);
   QHBox * htab;
   
@@ -100,20 +100,9 @@ Dialog::Dialog(QCString & path, QCString & encoding, QCString & genview, QCStrin
   htab->setMargin(5);
   vbox->addWidget(htab);
   
-  genview_cb = new QCheckBox("Generate views as package", htab);
+  genview_cb = new QCheckBox("Generate views as package (non compatible with profile generation)", htab);
   if (_genview == "yes")
     genview_cb->setChecked(TRUE);
-    
-  // generate profile
-  
-  htab = new QHBox(this);
-  htab->setMargin(5);
-  vbox->addWidget(htab);
-  
-  profile_cb = new QCheckBox("Use profile (stereotype)", htab);
-  if (_profile == "yes")
-    profile_cb->setChecked(TRUE);
-  profile_cb->setEnabled(FALSE);	// !!!!!!!!!!!!!!!!!
     
   // generate pk_ prefix
   
@@ -154,6 +143,26 @@ Dialog::Dialog(QCString & path, QCString & encoding, QCString & genview, QCStrin
   genextension_cb = new QCheckBox("Generate extensions", htab);
   if (_genextension == "yes")
     genextension_cb->setChecked(TRUE);
+    
+  // generate for Eclipse
+  
+  htab = new QHBox(this);
+  htab->setMargin(5);
+  vbox->addWidget(htab);
+  
+  geneclipse_cb = new QCheckBox("Generate for Eclipse (aggregation set on other relation side)", htab);
+  if (_geneclipse == "yes")
+    geneclipse_cb->setChecked(TRUE);
+    
+  // comment exporter
+  
+  htab = new QHBox(this);
+  htab->setMargin(5);
+  vbox->addWidget(htab);
+  
+  commentexporter_cb = new QCheckBox("Comment exporter indication (needed to import in some tools like Rsa)", htab);
+  if (_commentexporter == "yes")
+    commentexporter_cb->setChecked(TRUE);
     
   // generate &#10; rather than linefeed
   
@@ -235,11 +244,12 @@ void Dialog::accept() {
   _encoding = encoding_cb->currentText();
   _genview = (genview_cb->isChecked()) ? "yes" : "no";
   _uml20 = (uml20_rb->isChecked()) ? "yes" : "no";
-  _profile = (profile_cb->isChecked()) ? "yes" : "no";
   _pk = (pk_cb->isChecked()) ? "yes" : "no";
   _vis = (vis_cb->isChecked()) ? "yes" : "no";
   _primitivetype = (primitivetype_cb->isChecked()) ? "yes" : "no";
   _genextension = (genextension_cb->isChecked()) ? "yes" : "no";
+  _geneclipse = (geneclipse_cb->isChecked()) ? "yes" : "no";
+  _commentexporter = (commentexporter_cb->isChecked()) ? "yes" : "no";
   _linefeed = (linefeed_cb->isChecked()) ? "yes" : "no";
   
   QDialog::accept();

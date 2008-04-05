@@ -2,6 +2,7 @@
 #include "UmlExpansionRegion.h"
 #include "FileOut.h"
 
+#include "UmlFlow.h"
 void UmlExpansionRegion::write(FileOut & out) {
   out.indent();
   out << "<group xmi:type=\"uml:ExpansionRegion\" name=\"";

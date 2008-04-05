@@ -39,7 +39,8 @@ class UmlExtraClassMember : public UmlBaseExtraClassMember {
     UmlExtraClassMember(void * id, const QCString & n)
       : UmlBaseExtraClassMember(id, n) {};
 	
-    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype);
+    virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype,
+			       bool = FALSE);
 };
 
 #endif

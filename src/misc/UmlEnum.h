@@ -70,6 +70,8 @@ enum UmlCode {
   DecisionAN, MergeAN, ForkAN, JoinAN,
   UmlClassInstance, // api >= 31
   
+  BrowserNodeSup,
+  
   // the followings are unknown by api.h
   UmlDependOn, UmlInherit, UmlObjectLink,	// not between classes
   UmlArrowPoint,

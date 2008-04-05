@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qgrid.h> 
 #include <qlabel.h>
@@ -43,6 +43,7 @@
 #include "strutil.h"
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
+#include "ProfiledStereotypes.h"
 
 QSize SimpleRelationDialog::previous_size;
 
@@ -90,6 +91,7 @@ SimpleRelationDialog::SimpleRelationDialog(SimpleRelationData * r)
     edstereotype->insertStringList(rel->get_start_node()
 				   ->default_stereotypes(rel->get_type(),
 							 rel->get_end_node()));
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlRelations));
     edstereotype->setAutoCompletion(TRUE);
   }
   edstereotype->setCurrentItem(0);
@@ -151,8 +153,8 @@ void SimpleRelationDialog::accept() {
     return;
     
   BrowserNode * bn = rel->get_browser_node();
+  bool newst = rel->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
   
-  rel->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
   bn->set_comment(comment->text());
   UmlWindow::update_comment_if_needed(bn);
   
@@ -161,5 +163,6 @@ void SimpleRelationDialog::accept() {
   bn->package_modified();
   rel->modified();
   
+  ProfiledStereotypes::modified(bn, newst);
   QTabDialog::accept();
 }

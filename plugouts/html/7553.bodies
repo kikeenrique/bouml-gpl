@@ -919,6 +919,12 @@ h4.activity { background: #87ceff; }\n");
     }
   }
 !!!212866.cpp!!!	write_properties() : void
+  if (! stereotype().isEmpty()) {
+    fw.write("<p>Stereotype: ");
+    writeq(stereotype());
+    fw.write("</p>\n");
+  }
+    
   const QDict<QCString> d = properties();
   
   if (! d.isEmpty()) {
@@ -938,6 +944,12 @@ h4.activity { background: #87ceff; }\n");
     fw.write("</ul></p>\n");
   }
 !!!212866.java!!!	write_properties() : void
+  if (! stereotype().isEmpty()) {
+    fw.write("<p>Stereotype: ");
+    writeq(stereotype());
+    fw.write("</p>\n");
+  }
+    
   Hashtable d = properties();
   
   if (! d.isEmpty()) {

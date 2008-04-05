@@ -805,7 +805,7 @@ static void read_bodies(const char * path, QIntDict<char> & bodies)
       
       if (body != (p2 + 8)) {
 	UmlCom::trace(QCString("<font color =\"red\"> Error in ") + path +
-		      " : unvalid preserve body identifier</font><br>");
+		      " : invalid preserve body identifier</font><br>");
 	UmlCom::bye();
 	UmlCom::fatal_error("read_bodies 1");
       }
@@ -823,7 +823,7 @@ static void read_bodies(const char * path, QIntDict<char> & bodies)
 	body += 1;
       else {
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
-		      " : unvalid preserve body block, end of line expected</font><br>");
+		      " : invalid preserve body block, end of line expected</font><br>");
 	UmlCom::bye();
 	UmlCom::fatal_error("read_bodies 3");
       }
@@ -831,7 +831,7 @@ static void read_bodies(const char * path, QIntDict<char> & bodies)
       if (((p1 = strstr(body, BodyPostfix)) == 0) ||
 	  (strncmp(p1 + BodyPostfixLength, p2, 8) != 0)) {
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
-		      " : unvalid preserve body block, wrong balanced</font><br>");
+		      " : invalid preserve body block, wrong balanced</font><br>");
 	UmlCom::bye();
 	UmlCom::fatal_error("read_bodies 4");
       }

@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qgrid.h> 
 #include <qvbox.h>
@@ -46,6 +46,7 @@
 #include "BodyDialog.h"
 #include "GenerationSettings.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
 
 QSize ExtraMemberDialog::previous_size;
 
@@ -85,8 +86,10 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(ex->get_stereotype()));
   edstereotype->setCurrentItem(0);
-  if (! visit)
+  if (! visit) {
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlExtraMember));
     edstereotype->setAutoCompletion(TRUE);
+  }
   
   QSizePolicy sp = edstereotype->sizePolicy();
   
@@ -198,7 +201,7 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
 	    this, SLOT(edit_python_decl()));
   edpython_decl = new MultiLineEdit(grid);
   edpython_decl->setReadOnly(visit);
-  edpython_decl->setText(ex->php_decl);
+  edpython_decl->setText(ex->python_decl);
   edpython_decl->setFont(font);
     
   addTab(grid, "Python");
@@ -260,7 +263,8 @@ void ExtraMemberDialog::accept() {
   s = edname->text().stripWhiteSpace();
   bn->set_name(s);
   
-  emd->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+  bool newst = emd->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+  
   emd->cpp_decl = edcpp_decl->text();
   emd->cpp_def = edcpp_def->text();
   emd->cpp_inline = inline_cb->isChecked();
@@ -278,6 +282,7 @@ void ExtraMemberDialog::accept() {
   bn->package_modified();
   emd->modified();
   
+  ProfiledStereotypes::modified(bn, newst);
   QTabDialog::accept();
 }
 

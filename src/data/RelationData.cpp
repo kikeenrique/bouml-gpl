@@ -23,9 +23,9 @@
 //
 // *************************************************************************
 
-#ifdef WIN32
-#pragma warning (disable: 4150)
-#endif
+
+
+
 
 #include <qtextstream.h>
 #include <qcursor.h>
@@ -358,31 +358,43 @@ void RelationData::on_delete() {
   modified();
 }
 						     
-void RelationData::set_stereotype(const QString & s) {
+bool RelationData::set_stereotype(const QString & s) {
+  bool result = ((const char *) stereotype != s);
+  
   stereotype = s;
   
   if (start != 0)
     start->update_stereotype();
   if (end != 0)
     end->update_stereotype();
+  
+  return result;
 }
 
-void RelationData::set_stereotype(const QCString & s) {
+bool RelationData::set_stereotype(const QCString & s) {
+  bool result = ((const char *) stereotype != s);
+  
   stereotype = s;
   
   if (start != 0)
     start->update_stereotype();
   if (end != 0)
     end->update_stereotype();
+  
+  return result;
 }
 
-void RelationData::set_stereotype(const char * s) {
+bool RelationData::set_stereotype(const char * s) {
+  bool result = ((const char *) stereotype != s);
+  
   stereotype = s;
   
   if (start != 0)
     start->update_stereotype();
   if (end != 0)
     end->update_stereotype();
+  
+  return result;
 }
 
 bool RelationData::decldefbody_contain(const QString & s, bool cs,
@@ -457,6 +469,17 @@ bool RelationData::isa_association(UmlCode type)
     return FALSE;
   default:
     return TRUE;
+  }
+}
+
+bool RelationData::isa_inherit(UmlCode type)
+{
+  switch (type) {
+  case UmlGeneralisation:
+  case UmlRealize:
+    return TRUE;
+  default:
+    return FALSE;
   }
 }
 
@@ -1288,10 +1311,10 @@ RelationData * RelationData::read(char * & st, char * & k,
       result->name = default_name(result->type);
       if (result->start != 0) {
 	// Created by RelationData::read_ref()
-	// unvalidate start/end to not delete result
+	// invalidate start/end to not delete result
 	// when start/end will be deleted
-	result->start->unvalidate();
-	result->end->unvalidate();
+	result->start->invalidate();
+	result->end->invalidate();
       }
     }
     

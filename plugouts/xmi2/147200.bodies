@@ -1,0 +1,510 @@
+class PhpSettings
+!!!226176.cpp!!!	useDefaults() : bool
+  UmlCom::send_cmd(phpSettingsCmd, getPhpUseDefaultsCmd);
+  return UmlCom::read_bool();
+!!!226176.java!!!	useDefaults() : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._getPhpUseDefaultsCmd);
+  return UmlCom.read_bool();
+!!!226304.cpp!!!	set_UseDefaults(in y : bool) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpUseDefaultsCmd, (char) y);
+  return UmlCom::read_bool();
+!!!226304.java!!!	set_UseDefaults(in y : bool) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpUseDefaultsCmd,
+		  (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+!!!226432.cpp!!!	classStereotype(in s : string) : string
+  read_if_needed_();
+  
+  UmlStereotype * b = UmlSettings::_map_class_stereotypes.find(s);
+  
+  return (b) ? b->php : s;
+!!!226432.java!!!	classStereotype(in s : string) : string
+  read_if_needed_();
+  
+  UmlStereotype b = (UmlStereotype) UmlSettings._map_class_stereotypes.get(s);
+  
+  return (b != null) ? b.php : s;
+!!!226560.cpp!!!	set_ClassStereotype(in s : string, in v : string) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpClassStereotypeCmd, s, v);
+  if (UmlCom::read_bool()) {
+    UmlStereotype * st = UmlSettings::_map_class_stereotypes.find(s);
+
+    if (st == 0)
+      st = UmlSettings::add_class_stereotype(s);
+    st->php = v;
+    
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!226560.java!!!	set_ClassStereotype(in s : string, in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpClassStereotypeCmd, s, v);
+  UmlCom.check();
+
+  UmlStereotype st = (UmlStereotype) UmlSettings._map_class_stereotypes.get(s);
+
+  if (st == null)
+    st = UmlSettings.add_class_stereotype(s);
+  st.php = v;
+!!!235264.cpp!!!	classUmlStereotype(in s : string) : string
+  read_if_needed_();
+  
+  return UmlSettings::uml_class_stereotype(s, &UmlStereotype::php);
+!!!235264.java!!!	classUmlStereotype(in s : string) : string
+  read_if_needed_();
+  
+  int index = _class_stereotypes.length;
+  
+  while (index-- != 0)
+    if (_class_stereotypes[index].php.equals(s))
+      return _class_stereotypes[index].uml;
+  
+  return null;
+!!!226688.cpp!!!	rootDir() : string
+  read_if_needed_();
+  
+  return _root;
+!!!226688.java!!!	rootDir() : string
+  read_if_needed_();
+  
+  return _root;
+!!!226816.cpp!!!	set_RootDir(in v : string) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpRootdirCmd, v);
+  if (UmlCom::read_bool()) {
+    _root = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!226816.java!!!	set_RootDir(in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpRootdirCmd, v);
+  UmlCom.check();
+
+  _root = v;
+!!!226944.cpp!!!	sourceContent() : string
+  read_if_needed_();
+  
+  return _src_content;
+!!!226944.java!!!	sourceContent() : string
+  read_if_needed_();
+  
+  return _src_content;
+!!!227072.cpp!!!	set_SourceContent(in v : string) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpSourceContentCmd, v);
+  if (UmlCom::read_bool()) {
+    _src_content = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!227072.java!!!	set_SourceContent(in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpSourceContentCmd, v);
+  UmlCom.check();
+  
+  _src_content = v;
+
+!!!227200.cpp!!!	sourceExtension() : string
+  read_if_needed_();
+  
+  return _ext; 
+!!!227200.java!!!	sourceExtension() : string
+  read_if_needed_();
+  
+  return _ext; 
+!!!227328.cpp!!!	set_SourceExtension(in v : string) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpSourceExtensionCmd, v);
+  if (UmlCom::read_bool()) {
+    _ext = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!227328.java!!!	set_SourceExtension(in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpSourceExtensionCmd, v);
+  UmlCom.check();
+  
+  _ext = v;
+
+!!!227456.cpp!!!	classDecl() : string
+  read_if_needed_();
+  
+  return _class_decl;
+!!!227456.java!!!	classDecl() : string
+  read_if_needed_();
+  
+  return _class_decl;
+!!!227584.cpp!!!	set_ClassDecl(in v : string) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpClassDeclCmd, v);
+  if (UmlCom::read_bool()) {
+    _class_decl = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!227584.java!!!	set_ClassDecl(in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpClassDeclCmd, v);
+  UmlCom.check();
+  
+  _class_decl = v;
+
+!!!227712.cpp!!!	externalClassDecl() : string
+  read_if_needed_();
+  
+  return _external_class_decl;
+!!!227712.java!!!	externalClassDecl() : string
+  read_if_needed_();
+  
+  return _external_class_decl;
+!!!227840.cpp!!!	set_ExternalClassDecl(in v : string) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpExternalClassDeclCmd, v);
+  if (UmlCom::read_bool()) {
+    _external_class_decl = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!227840.java!!!	set_ExternalClassDecl(in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpExternalClassDeclCmd, v);
+  UmlCom.check();
+  
+  _external_class_decl = v;
+
+!!!227968.cpp!!!	enumDecl() : string
+  read_if_needed_();
+  
+  return _enum_decl;
+!!!227968.java!!!	enumDecl() : string
+  read_if_needed_();
+  
+  return _enum_decl;
+!!!228096.cpp!!!	set_EnumDecl(in v : string) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpEnumDeclCmd, v);
+  if (UmlCom::read_bool()) {
+    _enum_decl = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!228096.java!!!	set_EnumDecl(in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpEnumDeclCmd, v);
+  UmlCom.check();
+  
+  _enum_decl = v;
+!!!228224.cpp!!!	interfaceDecl() : string
+  read_if_needed_();
+  
+  return _interface_decl;
+!!!228224.java!!!	interfaceDecl() : string
+  read_if_needed_();
+  
+  return _interface_decl;
+!!!228352.cpp!!!	set_InterfaceDecl(in v : string) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpInterfaceDeclCmd, v);
+  if (UmlCom::read_bool()) {
+    _interface_decl = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!228352.java!!!	set_InterfaceDecl(in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpInterfaceDeclCmd, v);
+  UmlCom.check();
+  
+  _interface_decl = v;
+
+!!!228480.cpp!!!	attributeDecl() : string
+  read_if_needed_();
+
+  return _attr_decl;
+!!!228480.java!!!	attributeDecl() : string
+  read_if_needed_();
+
+  return _attr_decl;
+!!!228608.cpp!!!	set_AttributeDecl(in v : string) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpAttributeDeclCmd, v);
+  if (UmlCom::read_bool()) {
+    _attr_decl = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!228608.java!!!	set_AttributeDecl(in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpAttributeDeclCmd, v);
+  UmlCom.check();
+
+  _attr_decl = v;
+!!!228736.cpp!!!	enumItemDecl() : string
+  read_if_needed_();
+  
+  return _enum_item_decl;
+!!!228736.java!!!	enumItemDecl() : string
+  read_if_needed_();
+  
+  return _enum_item_decl;
+!!!228864.cpp!!!	set_EnumItemDecl(in v : string) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpEnumItemDeclCmd, v);
+  if (UmlCom::read_bool()) {
+    _enum_item_decl = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!228864.java!!!	set_EnumItemDecl(in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpEnumItemDeclCmd, v);
+  UmlCom.check();
+    
+  _enum_item_decl = v;
+!!!228992.cpp!!!	relationDecl() : string
+  read_if_needed_();
+
+  return _rel_decl;
+!!!228992.java!!!	relationDecl() : string
+  read_if_needed_();
+
+  return _rel_decl;
+!!!229120.cpp!!!	set_RelationDecl(in v : string) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpRelationDeclCmd, v);
+  if (UmlCom::read_bool()) {
+    _rel_decl = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!229120.java!!!	set_RelationDecl(in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpRelationDeclCmd, v);
+  UmlCom.check();
+
+  _rel_decl = v;
+!!!229248.cpp!!!	operationDef() : string
+  read_if_needed_();
+  
+  return _oper_def;
+!!!229248.java!!!	operationDef() : string
+  read_if_needed_();
+  
+  return _oper_def;
+!!!229376.cpp!!!	set_OperationDef(in v : string) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpOperationDefCmd, v);
+  if (UmlCom::read_bool()) {
+    _oper_def = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!229376.java!!!	set_OperationDef(in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpOperationDefCmd, v);
+  UmlCom.check();
+  
+  _oper_def = v;
+
+!!!229504.cpp!!!	getVisibility() : aVisibility
+#ifdef WITHJAVA
+  return JavaSettings::getVisibility();
+#else
+  read_if_needed_();
+  
+  return _get_visibility;
+#endif
+!!!229504.java!!!	getVisibility() : aVisibility
+  return JavaSettings.getVisibility();
+!!!229632.cpp!!!	set_GetVisibility(in v : aVisibility) : bool
+#ifdef WITHJAVA
+  return JavaSettings::set_GetVisibility(v);
+#else
+  UmlCom::send_cmd(phpSettingsCmd, setJavaGetvisibilityCmd, v);
+  if (UmlCom::read_bool()) {
+    _get_visibility = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+#endif
+!!!229632.java!!!	set_GetVisibility(in v : aVisibility) : bool
+  JavaSettings.set_GetVisibility(v);
+!!!229760.cpp!!!	getName() : string
+  read_if_needed_();
+  
+  return _get_name;
+!!!229760.java!!!	getName() : string
+  read_if_needed_();
+  
+  return _get_name;
+!!!229888.cpp!!!	set_GetName(in v : string) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpGetNameCmd, v);
+  if (UmlCom::read_bool()) {
+    _get_name = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!229888.java!!!	set_GetName(in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpGetNameCmd, v);
+  UmlCom.check();
+  
+  _get_name = v;
+
+!!!230016.cpp!!!	setName() : string
+  read_if_needed_();
+  
+  return _set_name;
+!!!230016.java!!!	setName() : string
+  read_if_needed_();
+  
+  return _set_name;
+!!!230144.cpp!!!	set_SetName(in v : string) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpSetNameCmd, v);
+  if (UmlCom::read_bool()) {
+    _set_name = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!230144.java!!!	set_SetName(in v : string) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpSetNameCmd, v);
+  UmlCom.check();
+
+  _set_name = v;
+!!!230272.cpp!!!	isGetFinal() : bool
+  read_if_needed_();
+  
+  return _is_get_final;
+!!!230272.java!!!	isGetFinal() : bool
+  read_if_needed_();
+  
+  return _is_get_final;
+!!!230400.cpp!!!	set_IsGetFinal(in v : bool) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpIsGetFinalCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_get_final = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!230400.java!!!	set_IsGetFinal(in v : bool) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpIsGetFinalCmd,
+		  (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _is_get_final = v;
+!!!230528.cpp!!!	isSetFinal() : bool
+  read_if_needed_();
+  
+  return _is_set_final;
+!!!230528.java!!!	isSetFinal() : bool
+  read_if_needed_();
+  
+  return _is_set_final;
+!!!230656.cpp!!!	set_IsSetFinal(in v : bool) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpIsSetFinalCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_set_final = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!230656.java!!!	set_IsSetFinal(in v : bool) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpIsSetFinalCmd,
+		  (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _is_set_final = v;
+!!!230784.cpp!!!	setVisibility() : aVisibility
+#ifdef WITHJAVA
+  return JavaSettings::setVisibility();
+#else
+  read_if_needed_();
+  
+  return _set_visibility;
+#endif
+!!!230784.java!!!	setVisibility() : aVisibility
+  return JavaSettings.setVisibility();
+!!!230912.cpp!!!	set_SetVisibility(in v : aVisibility) : bool
+#ifdef WITHJAVA
+  return JavaSettings::set_SetVisibility(v);
+#else
+  UmlCom::send_cmd(phpSettingsCmd, setJavaSetVisibilityCmd, v);
+  if (UmlCom::read_bool()) {
+    _set_visibility = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+#endif
+!!!230912.java!!!	set_SetVisibility(in v : aVisibility) : bool
+  JavaSettings.set_SetVisibility(v);
+!!!231168.cpp!!!	read_() : void
+  _root = UmlCom::read_string();
+  
+  unsigned n;
+  unsigned index;
+  
+  n = UmlCom::read_unsigned();
+  
+  for (index = 0; index != n; index += 1)
+    UmlSettings::_class_stereotypes[index].php = UmlCom::read_string();
+  
+  _src_content = UmlCom::read_string();
+  _ext = UmlCom::read_string();
+
+  _class_decl = UmlCom::read_string();
+  _external_class_decl = UmlCom::read_string();
+  _enum_decl = UmlCom::read_string();
+  _interface_decl = UmlCom::read_string();
+  _attr_decl = UmlCom::read_string();
+  _enum_item_decl = UmlCom::read_string();
+  _rel_decl = UmlCom::read_string();
+  _oper_def = UmlCom::read_string();
+#ifndef WITHJAVA
+  _get_visibility =
+#endif
+    (aVisibility) UmlCom::read_char();
+  _get_name = UmlCom::read_string();
+  _is_get_final = UmlCom::read_bool();
+#ifndef WITHJAVA
+  _set_visibility =
+#endif
+    (aVisibility) UmlCom::read_char();
+  _set_name = UmlCom::read_string();
+  _is_set_final = UmlCom::read_bool();
+!!!231168.java!!!	read_() : void
+  _root = UmlCom.read_string();
+  
+  int n;
+  int index;
+  
+  n = UmlCom.read_unsigned();
+  
+  for (index = 0; index != n; index += 1)
+    UmlSettings._class_stereotypes[index].php = UmlCom.read_string();
+  
+  _src_content = UmlCom.read_string();
+  _ext = UmlCom.read_string();
+
+  _class_decl = UmlCom.read_string();
+  _external_class_decl = UmlCom.read_string();
+  _enum_decl = UmlCom.read_string();
+  _interface_decl = UmlCom.read_string();
+  _attr_decl = UmlCom.read_string();
+  _enum_item_decl = UmlCom.read_string();
+  _rel_decl = UmlCom.read_string();
+  _oper_def = UmlCom.read_string();
+  UmlCom.read_char(); // getter visibility
+  _get_name = UmlCom.read_string();
+  _is_get_final = UmlCom.read_bool();
+  UmlCom.read_char(); // setter visibility
+  _set_name = UmlCom.read_string();
+  _is_set_final = UmlCom.read_bool();
+!!!231296.cpp!!!	read_if_needed_() : void
+  UmlSettings::read_if_needed_();
+  if (!_defined) {
+    UmlCom::send_cmd(phpSettingsCmd, getPhpSettingsCmd);
+    read_();
+    _defined = TRUE;
+  }
+!!!231296.java!!!	read_if_needed_() : void
+  UmlSettings.read_if_needed_();
+  if (!_defined) {
+    UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._getPhpSettingsCmd);
+    read_();
+    _defined = true;
+  }
