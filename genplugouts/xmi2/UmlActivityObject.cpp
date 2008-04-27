@@ -34,7 +34,7 @@ void UmlActivityObject::write(FileOut & out) {
   out.indent(+1);
   
   write_description_properties(out);
-  write_multiplicity(out, multiplicity());
+  write_multiplicity(out, multiplicity(), this);
   UmlItem::write_type(out, type());
 
   const QVector<UmlItem> ch = children();

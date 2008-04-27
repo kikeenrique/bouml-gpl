@@ -156,7 +156,7 @@ const QPixmap* BrowserActivityNode::pixmap(int) const {
   }
 }
 
-bool BrowserActivityNode::target_of_flow() {
+bool BrowserActivityNode::target_of_flow() const {
   QList<BrowserNode> l;
 
   BrowserFlow::compute_referenced_by(l, this);
@@ -230,6 +230,28 @@ const char * BrowserActivityNode::may_connect(const BrowserNode * dest) const {
   case DecisionAN:
   case MergeAN:	      // theo all input and output must
   case JoinAN:	      // be control/data exclusively
+    return 0;
+  default:
+    return "illegal";
+  }
+}
+
+const char * BrowserActivityNode::connexion_from(bool control) const {
+  switch (get_type()) {
+  case ForkAN:  // theo all input and output must be control/data exclusively
+    if (target_of_flow())
+      return "fork can't have several incoming flow";
+    else
+      return 0;
+  case FlowFinalAN:
+  case ActivityFinalAN:
+    if (! control)
+      return "can't have incoming data flow";
+    else
+      return 0;
+  case DecisionAN:    // theo all input and
+  case MergeAN:	      // output must be
+  case JoinAN:	      // control/data exclusively
     return 0;
   default:
     return "illegal";

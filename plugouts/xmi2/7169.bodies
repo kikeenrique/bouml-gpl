@@ -52,6 +52,7 @@ class UmlClass
     
   out.indent(+1);
   
+  write_constraint(out);
   write_annotation(out);
   write_description_properties(out);
   
@@ -147,7 +148,7 @@ class UmlClass
   QValueList<UmlActualParameter> actual_params = actuals();
   QValueList<UmlActualParameter>::ConstIterator iter;
   int rank;
-  UmlItem * idtb = 0;
+  char s[32];
   UmlClass * super = 0;
 
   for (iter = actual_params.begin(), rank = 0;
@@ -164,7 +165,8 @@ class UmlClass
       
       out.indent();
       out << "<templateBinding xmi:type=\"uml:TemplateBinding\"";
-      out.id_prefix(++idtb, "ACTUALS_");
+      sprintf(s, "ACTUAL%d_", rank);
+      out.id_prefix(this, s);
       out << ">\n";
       out.indent(+1);
       

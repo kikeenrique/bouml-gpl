@@ -16,21 +16,21 @@ void FileOut::indent() {
     ts << '\t';
 }
 
-void FileOut::id(const UmlItem * x) {
-  ((QTextStream &) *this) << " xmi:id=\"BOUML_" << ((void *) x) << '"';
+void FileOut::id(UmlItem * x) {
+  ((QTextStream &) *this) << " xmi:id=\"BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 
 }
 
-void FileOut::id_prefix(const UmlItem * x, const char * pfix) {
-  ((QTextStream &) *this) << " xmi:id=\"" << pfix << "BOUML_" << ((void *) x) << '"';
+void FileOut::id_prefix(UmlItem * x, const char * pfix) {
+  ((QTextStream &) *this) << " xmi:id=\"" << pfix << "BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 }
 
-void FileOut::idref(const UmlItem * x) {
-  ((QTextStream &) *this) << " xmi:idref=\"BOUML_" << ((void *) x) << '"';
+void FileOut::idref(UmlItem * x) {
+  ((QTextStream &) *this) << " xmi:idref=\"BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 
 }
 
-void FileOut::idref(QCString s, const UmlItem * x) {
+void FileOut::idref(QCString s, UmlItem * x) {
   QString keys;
   {
     QTextStream keyst(&keys, IO_WriteOnly);
@@ -49,9 +49,9 @@ void FileOut::idref(QCString s, const UmlItem * x) {
 
 }
 
-void FileOut::idref_prefix(const UmlItem * x, const char * pfix) {
+void FileOut::idref_prefix(UmlItem * x, const char * pfix) {
   ((QTextStream &) *this) << " xmi:idref=\""
-	  << pfix << "BOUML_" << ((void *) x) << '"';
+	  << pfix << "BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 
 }
 
@@ -69,9 +69,9 @@ void FileOut::idref_datatype(const QCString & t) {
 
 }
 
-void FileOut::ref(const UmlItem * x, const char * pfix1, const char * pfix2) {
+void FileOut::ref(UmlItem * x, const char * pfix1, const char * pfix2) {
   ((QTextStream &) *this) << ' ' << pfix1 << "=\"" 
-	  << pfix2 << "BOUML_" << ((void *) x) << '"';
+	  << pfix2 << "BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 }
 
 void FileOut::define_datatypes(bool uml_20, bool primitive_type, bool gen_extension) {
@@ -137,6 +137,18 @@ void FileOut::quote(const char * s) {
    default: (*this) << *s; break;
    }
    s += 1;
+ }
+}
+
+void FileOut::quote(char c) {
+ switch (c) {
+ case '<': (*this) << "&lt;"; break;
+ case '>': (*this) << "&gt;"; break;
+ case '"': (*this) << "&quot;"; break;
+ case '&': (*this) << "&amp;"; break;
+ case '\n': if (_lf) (*this) << c; else (*this) << "&#10;"; break;
+ case '\r': if (_lf) (*this) << c; else (*this) << "&#13;"; break;
+ default: (*this) << c; break;
  }
 }
 

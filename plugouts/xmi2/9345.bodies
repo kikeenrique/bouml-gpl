@@ -43,7 +43,16 @@ class UmlRelation
   out << "<generalization xmi:type=\"uml:Generalization\"";
   out.id(this);
   out.ref(roleType(), "general");
-  out << "/>\n";
+  if (!constraint().isEmpty()) {
+    out << ">\n";
+    out.indent(+1);
+    write_constraint(out);
+    out.indent(-1);
+    out.indent();
+    out << "</generalization>\n";
+  }
+  else
+    out << "/>\n";
 !!!128388.cpp!!!	write_dependency(inout out : FileOut) : void
   const char * k = (_uml_20) ? "ownedElement" : "packagedElement";
 
@@ -54,6 +63,7 @@ class UmlRelation
   out.ref(roleType(), "supplier");
   out << ">\n";
   out.indent(+1); 
+  write_constraint(out);
   write_description_properties(out);
   out.indent(-1);
   out.indent();
@@ -69,6 +79,7 @@ class UmlRelation
   out.ref(roleType(), "realizingClassifier");
   out << ">\n";
   out.indent(+1); 
+  write_constraint(out);
   write_description_properties(out);
   out.indent(-1);
   out.indent();
@@ -162,7 +173,7 @@ class UmlRelation
 
   switch (_lang) {
   case Uml:
-	s = roleName();
+    s = roleName();
     break;
   case Cpp:
     if (cppDecl().isEmpty())
@@ -235,8 +246,9 @@ class UmlRelation
   out << "<type xmi:type=\"uml:Class\"";
   out.idref(roleType());
   out << "/>\n";
-  write_multiplicity(out, multiplicity());
-  write_default_value(out, defaultValue());
+  write_multiplicity(out, multiplicity(), this);
+  write_default_value(out, defaultValue(), this);
+  write_constraint(out);
   write_annotation(out);
   write_description_properties(out);
 

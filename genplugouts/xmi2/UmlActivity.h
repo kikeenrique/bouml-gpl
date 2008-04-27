@@ -21,13 +21,27 @@ class UmlActivity : public UmlBaseActivity, public FlowContainer {
 
     void write_condition(FileOut & out, QCString cond, bool pre);
 
-    UmlItem * add_opaque_behavior(QCString beh);
+    UmlItem * add_opaque_behavior(QCString beh, UmlItem * who, const char * k);
 
-    UmlItem * add_opaque_expression(QCString val);
+    UmlItem * add_opaque_expression(QCString val, UmlItem * who);
 
+
+  private:
+    struct Opaque {
+        UmlItem * item;
+
+        const char * kind;
+
+        Opaque(){}
+
+        Opaque(UmlItem * i, const char * k) : item(i), kind(k) {}
+
+    };
+    
+    
 
   protected:
-    QMap<QCString, UmlItem *> _opaque_behavior;
+    QMap<QCString, Opaque> _opaque_behavior;
 
     QMap<QCString, UmlItem *> _opaque_expression;
 

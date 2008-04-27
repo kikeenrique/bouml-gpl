@@ -246,11 +246,11 @@ enum OnInstanceCmd {
   setIsForceBodyGenCmd,
   
   // api 37
-  setCppContextualBodyIndent,
-  setJavaContextualBodyIndent,
-  setPhpContextualBodyIndent,
+  setCppContextualBodyIndentCmd,
+  setJavaContextualBodyIndentCmd,
+  setPhpContextualBodyIndentCmd,
   
-  // api 39
+  // api 39 a faire
   setPythonDeclCmd,
   setIsPythonExternalCmd,
   setPythonSrcCmd,
@@ -261,9 +261,9 @@ enum OnInstanceCmd {
   setIsPython2_2Cmd,
   setPythonDecoratorsCmd,
   setPythonPackageCmd,
-  setPythonContextualBodyIndent,
+  setPythonContextualBodyIndentCmd,
   
-  // api 40 a faire
+  // api 40
   applyStereotypeCmd,
     
   setUserCmd = 252, // not in plug-outs managed through bouml

@@ -20,27 +20,30 @@ class UmlComponent
   for (index = 0; index != n; index += 1) 
     ch[index]->write(out); 
     
-  static UmlItem * prov_rank = 0;
-  static UmlItem * req_rank = 0;
-  static UmlItem * real_rank = 0;
-  
-  write(out, providedClasses(), prov_rank, "provided", "PROVIDED_");
-  write(out, requiredClasses(), req_rank, "required", "REQUIRED_");
-  write(out, realizingClasses(), real_rank, "realization", "REALIZATION_");
+  write(out, providedClasses(), "provided", "PROVIDED");
+  write(out, requiredClasses(), "required", "REQUIRED");
+  write(out, realizingClasses(), "realization", "REALIZATION");
 
   out.indent(-1); 
   out.indent(); 
   out << "</" << k << ">\n"; 
  
   unload(); 
-!!!195714.cpp!!!	write(inout out : FileOut, in v : UmlClass, inout rank : UmlItem, in k1 : str, in k2 : str) : void
+!!!195714.cpp!!!	write(inout out : FileOut, in v : UmlClass, in k1 : str, in k2 : str) : void
   unsigned n = v.size();
   unsigned index;
+  char s[64];
+  
+  strcpy(s, k2);
+  
+  char * p = s + strlen(s);
   
   for (index = 0; index != n; index += 1) {
+    sprintf(p, "%u_", index);
+    
     out.indent();
     out << "<" << k1;
-    out.id_prefix(++rank, k2);
+    out.id_prefix(this, s);
     
     UmlClass * cl = v[index];
     

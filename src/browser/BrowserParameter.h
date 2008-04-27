@@ -31,8 +31,9 @@ class ParameterData;
 
 #include "BrowserNode.h"
 #include "Labeled.h"
+#include "BrowserActivityElement.h"
 
-class BrowserParameter : public BrowserNode, public Labeled<BrowserParameter> {
+class BrowserParameter : public BrowserNode, public Labeled<BrowserParameter>, public BrowserActivityElement {
   friend class StereotypesDialog;
   
   protected:
@@ -57,6 +58,7 @@ class BrowserParameter : public BrowserNode, public Labeled<BrowserParameter> {
     virtual BasicData * add_relation(UmlCode, BrowserNode * end);
     const char * may_start() const;
     const char * may_connect(const BrowserNode * dest) const;
+    virtual const char * connexion_from(bool control) const;
 
     virtual const QPixmap* pixmap (int) const;
 

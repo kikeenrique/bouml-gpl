@@ -32,8 +32,9 @@ class BrowserFlow;
 
 #include "BrowserNode.h"
 #include "Labeled.h"
+#include "BrowserActivityElement.h"
 
-class BrowserActivityNode : public BrowserNode, public Labeled<BrowserActivityNode> {
+class BrowserActivityNode : public BrowserNode, public Labeled<BrowserActivityNode>, public BrowserActivityElement {
   friend class StereotypesDialog;
   
   protected:
@@ -61,6 +62,7 @@ class BrowserActivityNode : public BrowserNode, public Labeled<BrowserActivityNo
     virtual BasicData * add_relation(UmlCode, BrowserNode * end);
     const char * may_start() const;
     const char * may_connect(const BrowserNode * dest) const;
+    virtual const char * connexion_from(bool control) const;
     
     virtual const QPixmap* pixmap (int) const;
 
@@ -86,7 +88,7 @@ class BrowserActivityNode : public BrowserNode, public Labeled<BrowserActivityNo
     virtual bool api_compatible(unsigned v) const;
     
     virtual void referenced_by(QList<BrowserNode> &);
-    bool target_of_flow();
+    bool target_of_flow() const;
     
     virtual bool allow_empty() const;
 

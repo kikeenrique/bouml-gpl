@@ -1143,9 +1143,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 80768 "aClassInstance"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});

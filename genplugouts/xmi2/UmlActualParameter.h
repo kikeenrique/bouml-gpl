@@ -16,7 +16,7 @@ class UmlActualParameter : public UmlBaseActualParameter {
   public:
     UmlActualParameter() {};
 
-    void write(FileOut & out, const UmlClass * cl, int actualrank) const;
+    void write(FileOut & out, UmlClass * cl, int actualrank) const;
 
 };
 

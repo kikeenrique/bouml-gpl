@@ -8,12 +8,12 @@ class FileOut
   for (int n = _indent; n > 0; n -= 1)
     ts << '\t';
 !!!145410.cpp!!!	id(in x : UmlItem) : void
-  ((QTextStream &) *this) << " xmi:id=\"BOUML_" << ((void *) x) << '"';
+  ((QTextStream &) *this) << " xmi:id=\"BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 
 !!!129667.cpp!!!	id_prefix(in x : UmlItem, in pfix : str) : void
-  ((QTextStream &) *this) << " xmi:id=\"" << pfix << "BOUML_" << ((void *) x) << '"';
+  ((QTextStream &) *this) << " xmi:id=\"" << pfix << "BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 !!!144514.cpp!!!	idref(in x : UmlItem) : void
-  ((QTextStream &) *this) << " xmi:idref=\"BOUML_" << ((void *) x) << '"';
+  ((QTextStream &) *this) << " xmi:idref=\"BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 
 !!!149250.cpp!!!	idref(in s : string, in x : UmlItem) : void
   QString keys;
@@ -34,7 +34,7 @@ class FileOut
 
 !!!132099.cpp!!!	idref_prefix(in x : UmlItem, in pfix : str) : void
   ((QTextStream &) *this) << " xmi:idref=\""
-	  << pfix << "BOUML_" << ((void *) x) << '"';
+	  << pfix << "BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 
 !!!146434.cpp!!!	idref_datatype(in t : string) : void
   if (t.isEmpty())
@@ -50,7 +50,7 @@ class FileOut
 
 !!!129795.cpp!!!	ref(in x : UmlItem, in pfix1 : str, in pfix2 : str = "") : void
   ((QTextStream &) *this) << ' ' << pfix1 << "=\"" 
-	  << pfix2 << "BOUML_" << ((void *) x) << '"';
+	  << pfix2 << "BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 !!!146946.cpp!!!	define_datatypes(in uml_20 : bool, in primitive_type : bool, in gen_extension : bool) : void
   const char * pfix = (primitive_type) 
 	? ((uml_20) ? "<ownedMember xmi:type=\"uml:PrimitiveType\""
@@ -112,4 +112,14 @@ class FileOut
    default: (*this) << *s; break;
    }
    s += 1;
+ }
+!!!226306.cpp!!!	quote(in c : char) : void
+ switch (c) {
+ case '<': (*this) << "&lt;"; break;
+ case '>': (*this) << "&gt;"; break;
+ case '"': (*this) << "&quot;"; break;
+ case '&': (*this) << "&amp;"; break;
+ case '\n': if (_lf) (*this) << c; else (*this) << "&#10;"; break;
+ case '\r': if (_lf) (*this) << c; else (*this) << "&#13;"; break;
+ default: (*this) << c; break;
  }

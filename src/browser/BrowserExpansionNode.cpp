@@ -143,44 +143,29 @@ const char * BrowserExpansionNode::may_start() const {
 
 // connexion by a flow
 const char * BrowserExpansionNode::may_connect(const BrowserNode * dest) const {
-  BrowserNode * bn = dest->get_container(UmlActivity);
+  BrowserNode * container = dest->get_container(UmlActivity);
   
-  if ((bn != 0) && (get_container(UmlActivity) != bn))
-    return "not in the same activity";
-
-  switch (dest->get_type()) {
-  case InitialAN:
-    return "initial node can't have incoming flow";
-  case ForkAN:  // theo all input and output must be control/data exclusively
-    if (((BrowserActivityNode *) dest)->target_of_flow())
-      return "fork can't have several incoming flow";
-    else
-      return 0;
-  case FlowFinalAN:
-  case ActivityFinalAN:
-    if (! def->get_is_control())
-      return "can't have outgoing control flow (not 'is_control')";
-    else
-      return 0;
-  case UmlActivityPin:
-    {
-      PinData * data = (PinData *) dest->get_data();
-
-      if (data->get_is_control() != def->get_is_control())
-	return (def->get_is_control())
-	  ? "pin can't accept control flow (not 'is_control')"
-	  : "pin can't accept data flow (is 'is_control')";
-      else
-	return 0;
-    }
-  case UmlActivityAction:
-  case DecisionAN:    // theo all input and
-  case MergeAN:	      // output must be
-  case JoinAN:	      // control/data exclusively
-    return 0;
-  default:
+  if (container == 0)
     return "illegal";
-  }
+  
+  if (get_container(UmlActivity) != container)
+    return "not in the same activity";
+  
+  const BrowserActivityElement * elt =
+    dynamic_cast<const BrowserActivityElement *>(dest);
+  
+  return (elt == 0)
+    ? "illegal"
+    : elt->connexion_from(def->get_is_control());
+}
+
+const char * BrowserExpansionNode::connexion_from(bool control) const {
+  if (control != def->get_is_control())
+    return (control)
+      ? "expansion node can't accept control flow (not 'is_control')"
+      : "expansion node can't accept data flow (is 'is_control')";
+  else
+    return 0;
 }
 
 void BrowserExpansionNode::menu() {

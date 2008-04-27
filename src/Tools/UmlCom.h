@@ -129,6 +129,9 @@ class UmlCom {
     static void send_cmd(CmdFamily f, unsigned int cmd, char arg);
     //internal, do NOT use it
     
+    static void send_cmd(CmdFamily f, unsigned int cmd, int arg, const char * dummy);
+    //internal, do NOT use it
+    
     static void send_cmd(CmdFamily f, unsigned int cmd, void * id);
     //internal, do NOT use it
     

@@ -89,6 +89,10 @@ void UmlClass::compute_dependency(QList<CppRefType> & dependencies,
   const QValueList<UmlFormalParameter> formals = this->formals();
   const QValueList<UmlActualParameter> actuals = this->actuals();  
   
+  if (!formals.isEmpty())
+    // template class, force depend in h
+    all_in_h = TRUE;
+  
   for (unsigned index = 0; index != ch.size(); index += 1) {
     if (ch[index]->kind() != aNcRelation) {
       UmlClassItem * it = (UmlClassItem *) ch[index];

@@ -40,12 +40,12 @@ class UmlClass : public UmlBaseClass {
 
     //  call at end of import : try to solve generalization dependencies and realization
     
-    virtual void generalizeDependRealize(UmlItem * target, FileIn & in, int context, QCString label);
+    virtual void generalizeDependRealize(UmlItem * target, FileIn & in, int context, QCString label, QCString constraint);
 
     //  call at end of import : try to solve generalization dependencies, realization
     //
     
-    virtual void solveGeneralizationDependencyRealization(int context, QCString idref, QCString label);
+    virtual void solveGeneralizationDependencyRealization(int context, QCString idref, QCString label, QCString constraint);
 
     static int numberOf() { return NumberOf; };
 

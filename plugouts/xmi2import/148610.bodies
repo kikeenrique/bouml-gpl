@@ -67,7 +67,7 @@ class Binding
   }
 
   if (signatureid.isEmpty())
-    in.warning("templateBinding : signature reference is missing<br>");
+    in.warning("templateBinding : signature reference is missing");
   else if (! l.isEmpty()) {
     if (boundid.isEmpty())
       boundid = where->id();

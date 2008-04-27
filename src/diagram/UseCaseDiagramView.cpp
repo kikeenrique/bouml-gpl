@@ -58,7 +58,6 @@ UseCaseDiagramView::UseCaseDiagramView(QWidget * parent, UmlCanvas * canvas, int
 
 void UseCaseDiagramView::menu(const QPoint&) {
   QPopupMenu m(0);
-  QPopupMenu formatm(0);
   
   m.insertItem(new MenuTitle("Use case diagram menu", m.font()), -1);
  
@@ -143,6 +142,8 @@ void UseCaseDiagramView::contentsMousePressEvent(QMouseEvent * e) {
     canvas()->update();
     history_protected = FALSE;
   }
+  else
+    DiagramView::contentsMousePressEvent(e);
 }
 
 void UseCaseDiagramView::dragEnterEvent(QDragEnterEvent * e) {

@@ -6,7 +6,9 @@
 #include "UmlFlow.h"
 void UmlActivityItem::write_selection(FileOut & out, QCString s) {
   if (! s.isEmpty())
-    out.ref(activity()->add_opaque_behavior(s), "selection", "OPAQUE_BEHAVIOR_");
+    out.ref(activity()->add_opaque_behavior(s, dynamic_cast<UmlItem *>(this),
+					    "OPAQUE_SELECTION_BEHAVIOR_"),
+	    "selection", "OPAQUE_SELECTION_BEHAVIOR_");
 }
 
 UmlActivity * UmlActivityItem::activity() {

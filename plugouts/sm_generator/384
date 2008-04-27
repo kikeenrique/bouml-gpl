@@ -6731,9 +6731,6 @@ ${cases}    default: throw new Error();
       
       attribute 145664 "umlLanguage"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -6744,9 +6741,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 145792 "cppLanguage"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -6757,9 +6751,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 145920 "javaLanguage"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -6770,9 +6761,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 146048 "idlLanguage"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});

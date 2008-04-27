@@ -1672,9 +1672,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 81280 "attributesCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -1686,9 +1683,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 81408 "relationsCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -2934,9 +2928,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 80256 "setConstraintCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -2948,9 +2939,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 80384 "deleteCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -2962,9 +2950,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 80896 "setAttributeCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -2976,9 +2961,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 81024 "addRelationCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -2990,9 +2972,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 81152 "removeRelationCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -3916,9 +3895,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 79744 "setCppJavadocStyleCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -4268,9 +4244,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 80000 "setJavaJavadocStyleCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});

@@ -51,7 +51,16 @@ void UmlRelation::write_generalization(FileOut & out) {
   out << "<generalization xmi:type=\"uml:Generalization\"";
   out.id(this);
   out.ref(roleType(), "general");
-  out << "/>\n";
+  if (!constraint().isEmpty()) {
+    out << ">\n";
+    out.indent(+1);
+    write_constraint(out);
+    out.indent(-1);
+    out.indent();
+    out << "</generalization>\n";
+  }
+  else
+    out << "/>\n";
 }
 
 void UmlRelation::write_dependency(FileOut & out) {
@@ -64,6 +73,7 @@ void UmlRelation::write_dependency(FileOut & out) {
   out.ref(roleType(), "supplier");
   out << ">\n";
   out.indent(+1); 
+  write_constraint(out);
   write_description_properties(out);
   out.indent(-1);
   out.indent();
@@ -81,6 +91,7 @@ void UmlRelation::write_realization(FileOut & out) {
   out.ref(roleType(), "realizingClassifier");
   out << ">\n";
   out.indent(+1); 
+  write_constraint(out);
   write_description_properties(out);
   out.indent(-1);
   out.indent();
@@ -180,7 +191,7 @@ void UmlRelation::write_relation_as_attribute(FileOut & out) {
 
   switch (_lang) {
   case Uml:
-	s = roleName();
+    s = roleName();
     break;
   case Cpp:
     if (cppDecl().isEmpty())
@@ -253,8 +264,9 @@ void UmlRelation::write_relation_as_attribute(FileOut & out) {
   out << "<type xmi:type=\"uml:Class\"";
   out.idref(roleType());
   out << "/>\n";
-  write_multiplicity(out, multiplicity());
-  write_default_value(out, defaultValue());
+  write_multiplicity(out, multiplicity(), this);
+  write_default_value(out, defaultValue(), this);
+  write_constraint(out);
   write_annotation(out);
   write_description_properties(out);
 

@@ -32,8 +32,9 @@ struct PinParamData;
 
 #include "BrowserNode.h"
 #include "Labeled.h"
+#include "BrowserActivityElement.h"
 
-class BrowserPin : public BrowserNode, public Labeled<BrowserPin> {
+class BrowserPin : public BrowserNode, public Labeled<BrowserPin>, public BrowserActivityElement  {
   friend class StereotypesDialog;
   
   protected:
@@ -78,6 +79,7 @@ class BrowserPin : public BrowserNode, public Labeled<BrowserPin> {
     virtual BasicData * add_relation(UmlCode, BrowserNode * end);
     const char * may_start() const;
     const char * may_connect(const BrowserNode * dest) const;
+    virtual const char * connexion_from(bool control) const;
     
     static void clear(bool old);
     static void update_idmax_for_root();

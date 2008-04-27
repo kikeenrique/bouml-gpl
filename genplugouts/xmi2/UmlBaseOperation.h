@@ -169,6 +169,16 @@ class UmlBaseOperation : public UmlClassMember {
     bool set_CppGetSetFrozen(bool v);
 #endif
 
+#ifdef WITHCPP
+    // indicate if the indent of the C++ body is contextual or absolute
+    bool cppContextualBodyIndent();
+
+    // set if the indent of the C++ body is contextual or absolute
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_CppContextualBodyIndent(bool v);
+#endif
+
 #ifdef WITHJAVA
     // returns TRUE if the operation is declared final in JAVA
     bool isJavaFinal();
@@ -228,6 +238,16 @@ class UmlBaseOperation : public UmlClassMember {
     bool set_JavaGetSetFrozen(bool v);
 #endif
 
+#ifdef WITHJAVA
+    // indicate if the indent of the Java body is contextual or absolute
+    bool javaContextualBodyIndent();
+
+    // set if the indent of the Java body is contextual or absolute
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_JavaContextualBodyIndent(bool v);
+#endif
+
 #ifdef WITHPHP
     // returns TRUE if the operation is declared final in PHP
     bool isPhpFinal();
@@ -277,6 +297,16 @@ class UmlBaseOperation : public UmlClassMember {
     //
     // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_PhpGetSetFrozen(bool v);
+#endif
+
+#ifdef WITHIDL
+    // indicate if the indent of the PHP body is contextual or absolute
+    bool phpContextualBodyIndent();
+
+    // set if the indent of the PHP body is contextual or absolute
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PhpContextualBodyIndent(bool v);
 #endif
 
 #ifdef WITHIDL
@@ -357,6 +387,18 @@ class UmlBaseOperation : public UmlClassMember {
 
 #ifdef WITHCPP
     bool _idl_get_set_frozen : 1;
+#endif
+
+#ifdef WITHCPP
+    bool _cpp_contextual_body_indent : 1;
+#endif
+
+#ifdef WITHJAVA
+    bool _java_contextual_body_indent : 1;
+#endif
+
+#ifdef WITHPHP
+    bool _php_contextual_body_indent : 1;
 #endif
 
     UmlTypeSpec _return_type;

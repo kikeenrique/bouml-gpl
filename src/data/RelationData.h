@@ -217,6 +217,7 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     void set_unconsistent();
     static bool has_unconsistencies();
     static void delete_unconsistent();
+    static void post_load();
     
   protected slots:
     void end_deleted();

@@ -9,6 +9,7 @@
 
 #include "UmlCom.h"
 #include "ClassGlobalCmd.h"
+#include "PackageGlobalCmd.h"
 UmlClass * UmlBaseClass::create(UmlItem * parent, const char * s)
 {
   return (UmlClass *) parent->create_(aClass, s);
@@ -303,6 +304,13 @@ UmlClass * UmlBaseClass::get(const QCString & n, const UmlPackage * p)
   UmlCom::send_cmd(classGlobalCmd, findClassCmd,
 		   (p) ? p->_identifier : 0, n);
   
+  return (UmlClass *) UmlBaseItem::read_();
+}
+
+UmlClass * UmlBaseClass::findStereotype(QCString s, bool caseSensitive)
+{
+  UmlCom::send_cmd(packageGlobalCmd, findStereotypeCmd,
+                   (caseSensitive) ? "y" : "n", (const char *) s);
   return (UmlClass *) UmlBaseItem::read_();
 }
 

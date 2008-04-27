@@ -74,7 +74,7 @@ void Binding::import(FileIn & in, Token & token, UmlClass * where)
   }
 
   if (signatureid.isEmpty())
-    in.warning("templateBinding : signature reference is missing<br>");
+    in.warning("templateBinding : signature reference is missing");
   else if (! l.isEmpty()) {
     if (boundid.isEmpty())
       boundid = where->id();

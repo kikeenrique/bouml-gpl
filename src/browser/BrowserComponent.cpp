@@ -799,7 +799,7 @@ void BrowserComponent::set_associated_classes(const QValueList<BrowserClass *> &
 void BrowserComponent::init()
 {
   its_default_stereotypes.clear();
-  its_default_stereotypes.append("build component");
+  its_default_stereotypes.append("buildComponent");
   its_default_stereotypes.append("entity");
   its_default_stereotypes.append("implement");
   its_default_stereotypes.append("process");

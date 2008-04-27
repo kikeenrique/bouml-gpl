@@ -651,20 +651,18 @@ void IdlSettings::read_()
   _union_decl = UmlCom::read_string();
   _enum_decl = UmlCom::read_string();
   _external_class_decl = UmlCom::read_string();
-  for (index = 0; index != 3; index += 1)
-    _attr_decl[index] = UmlCom::read_string();
-  for (index = 0; index != 3; index += 1)
-    _valuetype_attr_decl[index] = UmlCom::read_string();
-  for (index = 0; index != 3; index += 1)
-    _union_item_decl[index] = UmlCom::read_string();
+  
   _enum_item_decl = UmlCom::read_string();
-  for (index = 0; index != 3; index += 1)
-    _const_decl[index] = UmlCom::read_string();
   for (index = 0; index != 3; index += 1) {
+    _attr_decl[index] = UmlCom::read_string();
+    _valuetype_attr_decl[index] = UmlCom::read_string();
+    _union_item_decl[index] = UmlCom::read_string();
+    _const_decl[index] = UmlCom::read_string();
     _rel_decl[index] = UmlCom::read_string();
     _valuetype_rel_decl[index] = UmlCom::read_string();
     _union_rel_decl[index] = UmlCom::read_string();
   }
+
   _oper_decl = UmlCom::read_string();
   _get_name = UmlCom::read_string();
   _set_name = UmlCom::read_string();

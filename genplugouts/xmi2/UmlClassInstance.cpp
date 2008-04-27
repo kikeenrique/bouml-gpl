@@ -20,26 +20,31 @@ void UmlClassInstance::write(FileOut & out) {
   out << "<classifier ";
   out.idref(type());
   out << "/>\n"; 
-  
-  static UmlItem * slot_rank = 0;
-  static UmlItem * value_rank = 0;
-  
+    
   QValueList<SlotAttribute> attrs;
   QValueList<SlotAttribute>::Iterator a_iter;
+  char sslot[32];
+  char svalue[32];
+  unsigned rank;
   
   attributesValue(attrs);
-  for (a_iter = attrs.begin(); a_iter != attrs.end(); ++a_iter) {
+  for (a_iter = attrs.begin(), rank = 0;
+       a_iter != attrs.end();
+       ++a_iter, rank += 1) {
     SlotAttribute & slot = *a_iter;
+    
+    sprintf(sslot, "ASLOT%u_", rank);
+    sprintf(svalue, "ASLOT_VALUE%u_", rank);
     
     out.indent();
     out << "<slot";
     out.ref(slot.attribute, "definingFeature");
-    out.id_prefix(++slot_rank, "SLOT_");
+    out.id_prefix(this, sslot);
     out << " xmi:type=\"uml:Slot\">\n";
 
     out.indent();
     out << "\t<value xmi:type=\"uml:LiteralString\"";
-    out.id_prefix(++value_rank, "SLOT_VALUE_");
+    out.id_prefix(this, svalue);
     out << " value=\"";
     out.quote(slot.value);
     out << "\"/>\n";
@@ -52,13 +57,17 @@ void UmlClassInstance::write(FileOut & out) {
   QValueList<SlotRelation>::Iterator r_iter;
   
   relationsValue(rels);
-  for (r_iter = rels.begin(); r_iter != rels.end(); ++r_iter) {
+  for (r_iter = rels.begin(), rank = 0;
+       r_iter != rels.end();
+       ++r_iter, rank += 1) {
     SlotRelation & slot = *r_iter;
+    
+    sprintf(sslot, "RSLOT%u_", rank);
     
     out.indent();
     out << "<slot";
     out.ref(slot.relation, "definingFeature");
-    out.id_prefix(++slot_rank, "SLOT_");
+    out.id_prefix(this, sslot);
     out << " xmi:type=\"uml:Slot\"";
     out.ref(slot.value, "value");
     out << "/>\n";

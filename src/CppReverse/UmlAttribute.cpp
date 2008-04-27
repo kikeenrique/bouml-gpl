@@ -87,7 +87,11 @@ bool UmlAttribute::new_one(Class * cl, const QCString & name,
   }
   else {
     typespec.explicit_type = type.simplifyWhiteSpace();
-    typespec.explicit_type.remove(typespec.explicit_type.find("${name}"), 7);
+    
+    int index = typespec.explicit_type.find("${name}");
+    
+    if (index != -1)
+      typespec.explicit_type.remove(index, 7);
   }
   at->set_Type(typespec);
   at->set_Visibility(visibility);

@@ -32,6 +32,10 @@ struct Role {
 
     QCString comment;
 
+    QCString constraint;
+
+    QCString defaultValue;
+
     Role() : aggregate(anAssociation), navigable(TRUE), readOnly(FALSE), isStatic(FALSE) {}
 
     void setMultiplicity(QCString v, bool upper, const char * dflt);

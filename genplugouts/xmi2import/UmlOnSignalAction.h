@@ -16,11 +16,6 @@ class UmlOnSignalAction : public UmlBaseOnSignalAction {
 
 
   public:
-    //look at the token kind to call the function managing
-    //this case or bypass the token
-    
-    virtual void import(FileIn & in, Token & tk);
-
     //  call at end of import : try to solve signal
     
     virtual void solve(QCString idref);

@@ -205,6 +205,10 @@ class UmlBaseClass : public UmlClassMember {
     
     static UmlClass * get(const QCString & n, const UmlPackage * p);
 
+    // Return the class supporting the stereotype corresponding to
+    // the first parameter being 'profile_name:stereotype_name', or 0/null
+    static UmlClass * findStereotype(QCString s, bool caseSensitive);
+
     // to unload the object to free memory, it will be reloaded automatically
     // if needed. Recursively done for the sub items if 'rec' is TRUE. 
     //

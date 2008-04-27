@@ -58,6 +58,8 @@ void UmlOperation::importIt(FileIn & in, Token & token, UmlItem * where)
 	op->addException(token, in);
       else if (s == "ownedparameter")
 	op->addParameter(token, in);
+      else if (s == "ownedrule")
+	op->set_Constraint(UmlClassMember::readConstraint(in, token));
       else
         op->UmlItem::import(in, token);
     }

@@ -1,7 +1,7 @@
-format 55
+format 56
 "Settings" // API BASE::Settings
-  revision 11
-  modified_by 2 "pages4"
+  revision 14
+  modified_by 2 "bruno"
   // class settings
   //class diagram settings
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
@@ -5703,6 +5703,43 @@ ${body}}
  On error : return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 245632 "isGenerateJavadocStyleComment"
+	class_operation public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return if ${comment} generate Javadoc style comment"
+      end
+
+      operation 245760 "set_IsGenerateJavadocStyleComment"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set if ${comment} generate Javadoc style comment
+
+ On error : return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 227456 "classDecl"
 	class_operation public explicit_return_type "string"
 	nparams 0
@@ -6479,6 +6516,17 @@ ${body}}
 	idl_decl ""
       end
 
+      attribute 164992 "_is_generate_javadoc_comment"
+	class_attribute private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
       operation 231168 "read_"
 	class_operation protected explicit_return_type "void"
 	nparams 0
@@ -7151,9 +7199,6 @@ ${cases}    default: throw new Error();
       
       attribute 149120 "umlLanguage"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -7165,9 +7210,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 149248 "cppLanguage"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -7179,9 +7221,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 149376 "javaLanguage"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -7193,9 +7232,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 149504 "idlLanguage"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});

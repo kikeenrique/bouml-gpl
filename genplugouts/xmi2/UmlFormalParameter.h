@@ -16,7 +16,7 @@ class UmlFormalParameter : public UmlBaseFormalParameter {
   public:
     UmlFormalParameter() {};
 
-    void write(FileOut & out, const UmlClass * cl, int rank, bool uml20) const;
+    void write(FileOut & out, UmlClass * cl, int rank, bool uml20) const;
 
 };
 

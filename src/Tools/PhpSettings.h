@@ -65,7 +65,7 @@ class PhpSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_SourceExtension(QCString v);
 
-    // return if  generate Javadoc style comment
+    // return if generate Javadoc style comment
     static bool isGenerateJavadocStyleComment();
 
     // set if  generate Javadoc style comment

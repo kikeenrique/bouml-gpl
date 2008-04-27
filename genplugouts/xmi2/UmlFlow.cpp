@@ -84,7 +84,8 @@ void UmlFlow::write_it(FileOut & out) {
   write_selection(out, s);
 
   if (! t.isEmpty())
-    out.ref(activity()->add_opaque_behavior(t), "transformation", "OPAQUE_BEHAVIOR_");
+    out.ref(activity()->add_opaque_behavior(t, this, "OPAQUE_TRANS_BEHAVIOR_"),
+	    "transformation", "OPAQUE_TRANS_BEHAVIOR_");
 
   out << ">\n";
   out.indent(+1);

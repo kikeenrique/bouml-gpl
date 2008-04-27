@@ -81,7 +81,7 @@ class BrowserFlow : public BrowserNode, public Labeled<BrowserFlow> {
     static void update_idmax_for_root();
     virtual void renumber(int phase);
     
-    static void compute_referenced_by(QList<BrowserNode> &, BrowserNode *);
+    static void compute_referenced_by(QList<BrowserNode> &, const BrowserNode *);
     
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual bool api_compatible(unsigned v) const;

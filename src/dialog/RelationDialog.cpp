@@ -1117,9 +1117,9 @@ void RelationDialog::update_all_tabs(QWidget * w) {
 	!= "friend") {
       if (! a.visit) {
 	a.cpp_include_in_header->show();
+	a.cpp_default_decl_bt->setText("#include in source");
 	a.cpp_default_decl_bt->setEnabled(TRUE);
 	a.cpp_unmapped_decl_bt->setEnabled(TRUE);
-	a.cpp_default_decl_bt->setText("#include in source");
       }
       if (!s.isEmpty() &&
 	  (s != "#include in source") &&
@@ -1142,6 +1142,7 @@ void RelationDialog::update_all_tabs(QWidget * w) {
   else if (! a.visit) {
     a.cpp_include_in_header->hide();
     a.cpp_default_decl_bt->setText("Default declaration");
+    a.cpp_default_decl_bt->setEnabled(TRUE);
   }
   
   a.edrole->setText(a.edrole->text().stripWhiteSpace());

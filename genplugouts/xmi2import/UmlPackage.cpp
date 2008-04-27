@@ -7,7 +7,9 @@
 #include "UmlUseCaseView.h"
 
 #include <stdio.h>
+#include <unistd.h>
 #include <qfiledialog.h> 
+#include <qapplication.h>
 
 #include "UmlCom.h"
 #include "FileIn.h"
@@ -24,11 +26,13 @@
 #include "Binding.h"
 #include "ClassInstance.h"
 #include "Manifestation.h"
+#include "UmlNcRelation.h"
 
-#include "PackageGlobalCmd.h"
-
-void UmlPackage::import() {
-  QString path = QFileDialog::getOpenFileName(QString::null, QString::null, 0, 0, "open xmi/xml file");
+void UmlPackage::import(QString path) {
+  bool manual = path.isEmpty();
+  
+  if (manual)
+    path = QFileDialog::getOpenFileName(QString::null, QString::null, 0, 0, "open xmi/xml file");
   
   if (! path.isEmpty()) {
     // note : QTextStream(FILE *) bugged under windows
@@ -37,6 +41,10 @@ void UmlPackage::import() {
     if (fp == 0)
       UmlCom::trace("cannot open " + path);
     else {
+      QString s = "import " + path + "<br>";
+      
+      UmlCom::trace(s);
+      
       FileIn in(path, fp);
       
       getProject()->set_childrenVisible(FALSE);
@@ -64,9 +72,10 @@ void UmlPackage::import() {
 		    QCString("<font face=helvetica> ") +
 		    QCString().setNum(UmlPackage::numberOfProfile()) + QCString(" profiles </font><br>") +
 		    QCString("<font face=helvetica> ") +
-		    QCString().setNum(UmlClass::numberOfStereotype()) + QCString(" stereotypes </font><br>"));
+		    QCString().setNum(UmlClass::numberOfStereotype()) + QCString(" stereotypes </font><br><br>"));
       
-      getProject()->set_childrenVisible(TRUE);
+      if (manual)
+	getProject()->set_childrenVisible(TRUE);
     }
   }
 }
@@ -113,17 +122,15 @@ void UmlPackage::importHeader(FileIn & in) {
     
     solveRefs();
     
+    if (NumberOfProfile != 0)
+      // to take into account inheritances
+      updateProfiles();
+    
     // read stereotype use
     while (!tk.close("xmi:xmi")) {
       applyStereotype(in, tk);
       (void) in.read();
     }
-    
-    if (NumberOfProfile != 0)
-#ifndef WIN32
-#warning must be replaced by updateProfiles()
-#endif
-      UmlCom::send_cmd(packageGlobalCmd, saveProjectCmd + 2);
   }
   else if ((tk.what() == "uml:model") || (tk.what() == "uml:profile")) {
     // Borland Together 2006 for Eclipse
@@ -147,10 +154,7 @@ void UmlPackage::importHeader(FileIn & in) {
     solveRefs();
     
     if (NumberOfProfile != 0)
-#ifndef WIN32
-#warning must be replaced by updateProfiles()
-#endif
-      UmlCom::send_cmd(packageGlobalCmd, saveProjectCmd + 2);
+      updateProfiles();
   }
   else
     in.error("uml:model or xmi:xmi expected, nothing imported");
@@ -209,6 +213,7 @@ void UmlPackage::importIt(FileIn & in, Token & token, UmlItem * where)
     
   if (profile) {
     pack->set_Stereotype("profile");
+    pack->set_PropertyValue("xmiId", token.xmiId());
     NumberOf -= 1;
     NumberOfProfile += 1;
     
@@ -237,10 +242,7 @@ void UmlPackage::importIt(FileIn & in, Token & token, UmlItem * where)
 	else
 	  pack->UmlItem::import(in, token);
       }
-#ifndef WIN32
-#warning must be replaced by updateProfiles()
-#endif
-      UmlCom::send_cmd(packageGlobalCmd, saveProjectCmd + 2);
+      updateProfiles();
     }
     else
       while (in.read(), !token.close(kstr))
@@ -260,13 +262,7 @@ void UmlPackage::appliedProfile(FileIn & in, Token & token, UmlItem *)
       if (token.what() == "appliedprofile") {
 	QCString s = token.valueOf("href");
 	
-	if (! s.isEmpty()) {
-	  int index = s.find('#');
-	  
-#ifndef WIN32
-#warning lire((index == -1) ? s : s.left(index));
-#endif
-	}
+	importProfile(in, s);
       }
       
       if (! token.closed())
@@ -304,67 +300,6 @@ void UmlPackage::init()
   UmlArtifact::init();
 }
 
-void UmlPackage::packageImport(FileIn & in, Token & tk) {
-  if (! tk.closed()) {
-    QCString id = tk.xmiId();
-    QCString k = tk.what();
-    const char * kstr = k;
-    
-    while (in.read(), !tk.close(kstr)) {
-      if (tk.what() == "importedpackage") {
-	if (tk.xmiType() == "uml:Model") {
-	  QCString v;
-	  
-	  if (propertyValue("metamodelReference", v) && (v == id)) {
-	    QCString href = tk.valueOf("href");
-	    int index = href.find('#');
-	    
-	    set_PropertyValue("metamodelReference",
-			      (index == -1)
-			      ? href : href.left(index));
-	  }
-	}
-	else if (tk.xmiType() == "uml:Profile") {
-	  in.warning("Profile import not yet implemented");
-#ifndef WIN32
-#warning import profile to be done
-#endif
-	}
-      }
-      else if (tk.what() == "importedelement") {
-	QCString v;
-	  
-	if (propertyValue("metaclassReference", v) && (v == id)) {
-	  QCString href = tk.valueOf("href");
-	  int index = href.find('#');
-	    
-	  set_PropertyValue("metaclassReference",
-			    (index == -1)
-			    ? href : href.left(index));
-	}
-      }
-      
-      if (! tk.closed())
-	in.finish(tk.what());
-    }
-  }
-}
-
-void UmlPackage::solveRefs() {
-  UmlCom::trace("<br><font face=helvetica>solve references<br>");
-      
-  UnresolvedWithContext::solveThem();
-  Unresolved::solveThem();
-  UnresolvedRelation::solveThem();
-  Association::solveThem();	// must be done after UnresolvedRelation::solveThem();
-  UmlFlow::solveThem();
-  UmlTransition::solveThem();
-  Binding::solveThem(); // must be done when all classes and realization or generalization are done
-  ClassInstance::solveThem(); // must be done when all classes are done
-  Manifestation::solveThem(); // must be done when all artifact, class, component and node exist
-
-}
-
 void UmlPackage::applyStereotype(FileIn & in, Token & token) {
   QCString prof_st;
   QCString base_v;
@@ -372,13 +307,13 @@ void UmlPackage::applyStereotype(FileIn & in, Token & token) {
   
   if (UmlClass::isAppliedStereotype(token, prof_st, base_v)) {
     if (!token.valueOf(base_v, s))
-      in.warning("value of '" + base_v + "' is missing<br>");
+      in.warning("value of '" + base_v + "' is missing");
     else {
       UmlItem * elt = All[s];
       
       if (elt == 0) {
 	if (!FileIn::isBypassedId(s))
-	  in.warning("unknown reference '" + s + "'<br>");
+	  in.warning("unknown reference '" + s + "'");
       }
       else {
 	elt->set_Stereotype(prof_st);
@@ -404,6 +339,151 @@ void UmlPackage::applyStereotype(FileIn & in, Token & token) {
   else
     in.bypass(token);
 
+}
+
+UmlPackage * UmlPackage::importProfile(FileIn & in, QCString href)
+{
+  if (!href.isEmpty() && (href.left(5) != "http:") && (href.left(8) != "pathmap:")) {
+    int index = href.find('#');
+    
+    if (index != -1) {
+      QCString id = href.mid(index + 1);
+      QMap<QCString, UmlItem *>::Iterator it = All.find(id);
+      
+      if (it == All.end()) {
+	UmlPackage * pf = getProject()->findProfile(id);
+	
+	if (pf == 0) {
+	  QFileInfo fi(in.path());
+	  QDir d(fi.dir(TRUE));
+	  QString fn = d.absFilePath(href.left(index));
+	  
+	  if (QFile::exists(fn)) {
+	    QCString cmd = qApp->argv()[0] + QCString(" ") + QCString(fn);
+	    int pid = UmlCom::targetItem()->apply(cmd);
+	    
+	    while (isToolRunning(pid))   
+	      sleep(1);
+	    
+	    UmlCom::targetItem()->unload(FALSE, FALSE); // to reread children
+	    
+	    if ((pf = ((UmlPackage *) UmlCom::targetItem())->findProfile(id)) != 0)
+	      // not in Bouml case
+	      pf->loadFromProfile();
+	  }
+	  else
+	    in.warning("can't open " + href.left(index));
+	}
+	else
+	  // not in Bouml case
+	  pf->loadFromProfile();
+	
+	return pf;
+      }
+      else if ((*it)->kind() == aPackage)
+	return (UmlPackage *) *it;
+    }
+  }
+
+  return 0;
+}
+
+void UmlPackage::packageImport(FileIn & in, Token & tk) {
+  if (! tk.closed()) {
+    QCString id = tk.xmiId();
+    QCString k = tk.what();
+    const char * kstr = k;
+    
+    while (in.read(), !tk.close(kstr)) {
+      if (tk.what() == "importedpackage") {
+	if (tk.xmiType() == "uml:Model") {
+	  QCString v;
+	  
+	  if (propertyValue("metamodelReference", v) && (v == id)) {
+	    QCString href = tk.valueOf("href");
+	    int index = href.find('#');
+	    
+	    set_PropertyValue("metamodelReference",
+			      (index == -1)
+			      ? href : href.left(index));
+	  }
+	}
+	else if (tk.xmiType() == "uml:Profile") {
+	  QCString s = tk.xmiIdref();
+	  UmlPackage * pf = 0;
+	  
+	  if (!s.isEmpty()) {
+	    QMap<QCString, UmlItem *>::Iterator it = All.find(s);
+	    
+	    if (it == All.end())
+	      UnresolvedRelation::add(4, this->id(), s, "", "");
+	    else if ((*it)->kind() == aPackage)
+	      pf = (UmlPackage *) *it;
+	  }
+	  else
+	    pf = importProfile(in, tk.valueOf("href"));
+	  
+	  if (pf != 0) {
+	    UmlNcRelation * ncr = UmlNcRelation::create(aDependency, this, pf);
+	    
+	    if (ncr != 0)
+	      ncr->set_Stereotype("import");
+	  }
+	}
+      }
+      else if (tk.what() == "importedelement") {
+	QCString v;
+	  
+	if (propertyValue("metaclassReference", v) && (v == id)) {
+	  QCString href = tk.valueOf("href");
+	  int index = href.find('#');
+	    
+	  set_PropertyValue("metaclassReference",
+			    (index == -1)
+			    ? href : href.left(index));
+	}
+      }
+      
+      if (! tk.closed())
+	in.finish(tk.what());
+    }
+  }
+}
+
+void UmlPackage::solveRefs() {
+  UmlCom::trace("<br><font face=helvetica>solve references<br>");
+      
+  UnresolvedWithContext::solveThem();
+  UnresolvedRelation::solveThem();
+  Association::solveThem();	// must be done after UnresolvedRelation::solveThem();
+  Unresolved::solveThem();	// must be done when all relations are done for activity read/write var=rel
+  UmlFlow::solveThem();
+  UmlTransition::solveThem();
+  Binding::solveThem(); // must be done when all classes and realization or generalization are done
+  ClassInstance::solveThem(); // must be done when all classes are done
+  Manifestation::solveThem(); // must be done when all artifact, class, component and node exist
+
+}
+
+UmlPackage * UmlPackage::findProfile(QCString xmiId) {
+  if (stereotype() == "profile") {
+    QCString id;
+    
+    if (propertyValue("xmiId", id) && (id == xmiId))
+      return this;
+  }
+  
+  const QVector<UmlItem> ch = children();
+  unsigned n = ch.size();
+  UmlPackage * r;
+  
+  for (unsigned u = 0; u != n; u += 1) {
+    if ((ch[u]->kind() == aPackage) && 
+	((r = ((UmlPackage *) ch[u])->findProfile(xmiId)) != 0))
+      return r;
+  }
+  
+  return 0;
 }
 
 int UmlPackage::NumberOf;

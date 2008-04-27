@@ -3,7 +3,7 @@
 #include "FileOut.h"
 #include "UmlClass.h"
 
-void UmlActualParameter::write(FileOut & out, const UmlClass * cl, int actualrank) const {
+void UmlActualParameter::write(FileOut & out, UmlClass * cl, int actualrank) const {
   char ps[32];
   char tp[32];
 
@@ -27,15 +27,17 @@ void UmlActualParameter::write(FileOut & out, const UmlClass * cl, int actualran
   }
   else {
     // produce an opaque expression, even in case of primitive type
-    static UmlItem * opaqueactual = 0;
+    char oa[32];
+    
+    sprintf(oa, "OPAQUE_ACTUAL%d_", actualrank);
     
     out << "\t<actual";
-    out.idref_prefix(++opaqueactual, "OPAQUE_ACTUAL_");
+    out.idref_prefix(cl, oa);
     out << "/>\n";
     
     out.indent();
     out << "\t<ownedActual xmi:type=\"uml:OpaqueExpression\"";
-    out.id_prefix(opaqueactual, "OPAQUE_ACTUAL_");
+    out.id_prefix(cl, oa);
     out << " body=\"";
     out.quote(value().explicit_type);
     out << "\"/>\n";

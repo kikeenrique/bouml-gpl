@@ -427,16 +427,20 @@ void BrowserOperation::menu() {
       m.setWhatsThis(m.insertItem("Edit", 0),
 		     "to edit the <em>operation</em>, \
 a double click with the left mouse button does the same thing");
-      if (strstr(def->get_cppdef(), "${body}") != 0)
+      if (GenerationSettings::cpp_get_default_defs() &&
+	  (strstr(def->get_cppdef(), "${body}") != 0))
 	m.setWhatsThis(m.insertItem("Edit C++ body", 4),
 		       "to edit the <em>operation</em> and its C++ body");
-      if (strstr(def->get_javadef(), "${body}") != 0)
+      if (GenerationSettings::java_get_default_defs() &&
+	  (strstr(def->get_javadef(), "${body}") != 0))
 	m.setWhatsThis(m.insertItem("Edit Java body", 5),
 		       "to edit the <em>operation</em> and its Java body");
-      if (strstr(def->get_phpdef(), "${body}") != 0)
+      if (GenerationSettings::php_get_default_defs() &&
+	  (strstr(def->get_phpdef(), "${body}") != 0))
 	m.setWhatsThis(m.insertItem("Edit Php body", 6),
 		       "to edit the <em>operation</em> and its Php body");
-      if (strstr(def->get_pythondef(), "${body}") != 0)
+      if (GenerationSettings::python_get_default_defs() &&
+	  (strstr(def->get_pythondef(), "${body}") != 0))
 	m.setWhatsThis(m.insertItem("Edit Python body", 7),
 		       "to edit the <em>operation</em> and its Python body");
       m.setWhatsThis(m.insertItem("Duplicate", 1),

@@ -12,7 +12,9 @@ class UmlActivityItem
   }
 !!!203266.cpp!!!	write_selection(inout out : FileOut, in s : string) : void
   if (! s.isEmpty())
-    out.ref(activity()->add_opaque_behavior(s), "selection", "OPAQUE_BEHAVIOR_");
+    out.ref(activity()->add_opaque_behavior(s, dynamic_cast<UmlItem *>(this),
+					    "OPAQUE_SELECTION_BEHAVIOR_"),
+	    "selection", "OPAQUE_SELECTION_BEHAVIOR_");
 !!!209154.cpp!!!	activity() : UmlActivity
   UmlItem * r = dynamic_cast<UmlItem *>(this);
   

@@ -395,6 +395,14 @@ class UmlBaseClass
 		  (p != null) ? ((UmlBaseItem) p).identifier_() : 0, n);
   
   return (UmlClass) UmlBaseItem.read_();
+!!!217088.cpp!!!	findStereotype(in s : string, in caseSensitive : bool) : UmlClass
+  UmlCom::send_cmd(packageGlobalCmd, findStereotypeCmd,
+                   (caseSensitive) ? "y" : "n", (const char *) s);
+  return (UmlClass *) UmlBaseItem::read_();
+!!!217088.java!!!	findStereotype(in s : string, in caseSensitive : bool) : UmlClass
+  UmlCom.send_cmd(CmdFamily.packageGlobalCmd, PackageGlobalCmd._findStereotypeCmd,
+                   (caseSensitive) ? "y" : "n", s);
+  return (UmlClass) UmlBaseItem.read_();
 !!!9472.cpp!!!	unload(in rec : bool, in del : bool) : void
   _base_type.explicit_type = 0;
   

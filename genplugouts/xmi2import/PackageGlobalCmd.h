@@ -4,12 +4,15 @@
 
 // Internal enum
 enum PackageGlobalCmd {
-  findNamespaceCmd,
-  findPackageCmd,
-  findModuleCmd,
+  findCppNamespaceCmd,
+  findJavaPackageCmd,
+  findIdlModuleCmd,
   getProjectCmd,
   isProjectModifiedCmd,
-  saveProjectCmd
+  saveProjectCmd,
+  findPythonPackageCmd,
+  updateProfileCmd,
+  findStereotypeCmd
 
 };
 #endif

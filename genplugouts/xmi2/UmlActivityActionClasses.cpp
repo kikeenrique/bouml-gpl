@@ -45,7 +45,8 @@ void UmlValueSpecificationAction::write(FileOut & out) {
     val = javaValue();
   }
   if (! val.isEmpty())
-    out.ref(activity()->add_opaque_expression(val), "value", "OPAQUE_EXPRESSION_");
+    out.ref(activity()->add_opaque_expression(val, this),
+	    "value", "OPAQUE_EXPRESSION_");
 
   write_end(out);
 }

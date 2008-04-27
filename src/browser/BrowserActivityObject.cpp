@@ -150,66 +150,20 @@ const char * BrowserActivityObject::may_connect(UmlCode & l, const BrowserNode *
   switch (l) {
   case UmlFlow:
     {
-      BrowserNode * bn = dest->get_container(UmlActivity);
+      BrowserNode * container = dest->get_container(UmlActivity);
       
-      if ((bn != 0) && (get_container(UmlActivity) != bn))
+      if (container == 0)
+	return "illegal";
+      
+      if (get_container(UmlActivity) != container)
 	return "not in the same activity";
-    }
-    
-    switch (dest->get_type()) {
-    case InitialAN:
-      return "initial node can't have incoming flow";
-    case ForkAN:  // theo all input and output must be control/data exclusively
-      return (((BrowserActivityNode *) dest)->target_of_flow())
-	? "fork can't have several incoming flow"
-	: 0;
-    case FlowFinalAN:
-    case ActivityFinalAN:
-      return (! def->get_is_control())
-	? "object can't have outgoing control flow (not 'is_control')"
-	: 0;
-    case UmlParameter:
-      {
-	ParameterData * data = (ParameterData *) dest->get_data();
-
-	if (data->get_dir() == UmlIn)
-	  return "an input parameter can't have incoming flows";
-	else if (data->get_is_control() != def->get_is_control())
-	  return (def->get_is_control())
-	    ? "parameter can't accept control flow (not 'is_control')"
-	    : "parameter can't accept data flow (is 'is_control')";
-	else
-	  return 0;
-      }
-    case UmlActivityPin:
-      {
-	PinData * data = (PinData *) dest->get_data();
-
-	if (data->get_is_control() != def->get_is_control())
-	  return (def->get_is_control())
-	    ? "pin can't accept control flow (not 'is_control')"
-	    : "pin can't accept data flow (is 'is_control')";
-	else
-	  return 0;
-      }
-    case UmlExpansionNode:
-      {
-	ActivityObjectData * data = (ActivityObjectData *) dest->get_data();
-
-	if (data->get_is_control() != def->get_is_control())
-	  return (def->get_is_control())
-	    ? "expansion node can't accept control flow (not 'is_control')"
-	    : "expansion node can't accept data flow (is 'is_control')";
-	else
-	  return 0;
-      }
-    case UmlActivityAction:
-    case DecisionAN:	      // theo all input and
-    case MergeAN:	      // output must be
-    case JoinAN:	      // control/data exclusively
-      return 0;
-    default:
-      return "illegal";
+      
+      const BrowserActivityElement * elt =
+	dynamic_cast<const BrowserActivityElement *>(dest);
+      
+      return (elt == 0)
+	? "illegal"
+	: elt->connexion_from(def->get_is_control());  
     }
   case UmlDependency:
     l = UmlDependOn;
@@ -227,6 +181,15 @@ const char * BrowserActivityObject::may_connect(UmlCode & l, const BrowserNode *
   default:
       return "illegal";
   }
+}
+
+const char * BrowserActivityObject::connexion_from(bool control) const {
+  if (control != def->get_is_control())
+    return (control)
+      ? "activity object can't accept control flow (not 'is_control')"
+      : "activity object can't accept data flow (is 'is_control')";
+  else
+    return 0;
 }
 
 BrowserActivityObject *

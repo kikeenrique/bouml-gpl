@@ -1,7 +1,7 @@
-format 55
+format 56
 "xmi2import"
-  revision 14
-  modified_by 2 "pages4"
+  revision 19
+  modified_by 2 "bruno"
   cpp_root_dir "/tmp/xmi2import/"
 
 
@@ -54,4 +54,6 @@ format 55
   package_ref 641 // API USER
 
   package_ref 128130 // Aux
+add_operation_profile
+
 end

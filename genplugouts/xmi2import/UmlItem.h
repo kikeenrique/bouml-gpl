@@ -5,6 +5,7 @@
 #include <qcstring.h>
 #include <qvaluelist.h>
 #include "UmlBaseItem.h"
+#include <qstring.h>
 #include "anItemKind.h"
 #include <qmap.h>
 
@@ -18,7 +19,7 @@ typedef void (*PFunc)(FileIn &, Token &, UmlItem *);
 //  'element' has an unresolved reference
 class Unresolved {
   public:
-    static void addGeneralization(UmlItem * e, QCString & id);
+    static void addGeneralization(UmlItem * e, QCString & id, QCString cstr);
 
     static void addRef(UmlItem * e, QCString & id);
 
@@ -27,11 +28,13 @@ class Unresolved {
 
 
   protected:
-    Unresolved(UmlItem * e, QCString id) : element(e), idref(id) {}
+    Unresolved(UmlItem * e, QCString id, QCString cstr) : element(e), idref(id), constraint(cstr) {}
 
     UmlItem * element;
 
     QCString idref;
+
+    QCString constraint;
 
     static QValueList<Unresolved> Generalizations;
 
@@ -69,15 +72,15 @@ class UnresolvedWithContext {
 
 class UnresolvedRelation {
   public:
-    static void add(int ctx, QCString idFrom, QCString idTo, QCString label);
+    static void add(int ctx, QCString idFrom, QCString idTo, QCString label, QCString constraint);
 
     //  for QValueList
     UnresolvedRelation();
 
 
   protected:
-    UnresolvedRelation(int ctx, QCString idFrom, QCString idTo, QCString label)
-      : context(ctx), from(idFrom), to(idTo), name(label) {}
+    UnresolvedRelation(int ctx, QCString idFrom, QCString idTo, QCString label, QCString cnst)
+      : context(ctx), from(idFrom), to(idTo), name(label), constraint(cnst) {}
 
     int context;
 
@@ -86,6 +89,8 @@ class UnresolvedRelation {
     QCString to;
 
     QCString name;
+
+    QCString constraint;
 
     static QValueList<UnresolvedRelation> All;
 
@@ -110,7 +115,7 @@ class UmlItem : public UmlBaseItem {
     }
 
     //Import an xmi file, only allowed in a package
-    virtual void import();
+    virtual void import(QString path);
 
     void addItem(QCString id, FileIn & in);
 
@@ -132,11 +137,11 @@ class UmlItem : public UmlBaseItem {
 
     //  call at end of import : try to solve generalization dependencies and realization
     //  not from a class
-    virtual void generalizeDependRealize(UmlItem * target, FileIn & in, int context, QCString label);
+    virtual void generalizeDependRealize(UmlItem * target, FileIn & in, int context, QCString label, QCString constraint);
 
     //  call at end of import : try to solve generalization dependencies and realization,
     //  not from a class
-    virtual void solveGeneralizationDependencyRealization(int context, QCString idref, QCString label);
+    virtual void solveGeneralizationDependencyRealization(int context, QCString idref, QCString label, QCString constraint);
 
 
   protected:
@@ -156,6 +161,14 @@ class UmlItem : public UmlBaseItem {
     //  else memorize unsolved couple if needed and return false
     bool setType(Token & token, int context, UmlTypeSpec & type);
 
+
+  public:
+    //  element defined in a profile, if xmiId property defined update All
+    
+    void loadFromProfile();
+
+
+  protected:
     //  try to solve type, return true if type already known
     //  and set 'type', else return false
     static bool getType(QCString idref, UmlTypeSpec & type);

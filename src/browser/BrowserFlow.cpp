@@ -113,7 +113,7 @@ bool BrowserFlow::undelete(bool, QString & warning, QString & renamed) {
 }
 
 void BrowserFlow::compute_referenced_by(QList<BrowserNode> & l,
-					BrowserNode * target)
+					const BrowserNode * target)
 {
   IdIterator<BrowserFlow> it(all);
   

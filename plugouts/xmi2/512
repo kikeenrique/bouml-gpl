@@ -1,7 +1,7 @@
-format 55
+format 56
 "Com" // API BASE::Com
-  revision 11
-  modified_by 2 "pages4"
+  revision 14
+  modified_by 2 "bruno"
   // class settings
   //class diagram settings
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
@@ -546,6 +546,28 @@ ${body}}
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "internal, do NOT use it
+"
+      end
+
+      operation 246272 "send_cmd"
+	class_operation public explicit_return_type "void"
+	nparams 4
+	  param in name "f" explicit_type "CmdFamily"
+	  param in name "cmd" explicit_type "uint"
+	  param in name "arg" explicit_type "int"
+	  param in name "dummy" explicit_type "str"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, const ${t3} ${p3}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, const ${t3}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${throws}${staticnl}{
 ${body}}
 "
 	
@@ -1672,9 +1694,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 151936 "attributesCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -1686,9 +1705,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 152064 "relationsCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -2901,9 +2917,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 147840 "setCppFrozenCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -2915,9 +2928,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 147968 "setJavaFrozenCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -2929,9 +2939,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 148096 "setIdlFrozenCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -2943,9 +2950,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 150912 "setConstraintCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -2957,9 +2961,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 151040 "deleteCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -2971,9 +2972,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 151552 "setAttributeCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -2985,9 +2983,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 151680 "addRelationCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -2999,9 +2994,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 151808 "removeRelationCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -3120,6 +3112,171 @@ public static final ${class} ${name} = new ${class}(_${name});
 	python_decl ""
 	idl_decl ""
       end
+
+      attribute 164608 "setCppContextualBodyIndentCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 164736 "setJavaContextualBodyIndentCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 164864 "setPhpContextualBodyIndentCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 165632 "setPythonDeclCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 165760 "setIsPythonExternalCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 165888 "setPythonSrcCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 166016 "setPythonBodyCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 166144 "setPythonNameSpecCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 166272 "setPythonDirCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 166400 "setPythonFrozenCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 166528 "setIsPython2_2Cmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 166656 "setPythonDecoratorsCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 166784 "setPythonPackageCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 166912 "setPythonContextualBodyIndentCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 167040 "applyStereotypeCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
     end
 
     class 5760 "ClassGlobalCmd"
@@ -3192,7 +3349,7 @@ ${cases}    default: throw new Error();
       explicit_switch_type ""
       
       comment " Internal enum"
-      attribute 41472 "findNamespaceCmd"
+      attribute 41472 "findCppNamespaceCmd"
 	public explicit_type ""
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
@@ -3203,7 +3360,7 @@ public static final ${class} ${name} = new ${class}(_${name});
 	idl_decl ""
       end
 
-      attribute 41600 "findPackageCmd"
+      attribute 41600 "findJavaPackageCmd"
 	public explicit_type ""
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
@@ -3214,7 +3371,7 @@ public static final ${class} ${name} = new ${class}(_${name});
 	idl_decl ""
       end
 
-      attribute 41728 "findModuleCmd"
+      attribute 41728 "findIdlModuleCmd"
 	public explicit_type ""
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
@@ -3249,6 +3406,39 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 42112 "saveProjectCmd"
 	public explicit_type ""
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 165248 "findPythonPackageCmd"
+	public type class_ref 5888 // PackageGlobalCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 165376 "updateProfileCmd"
+	public type class_ref 5888 // PackageGlobalCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 165504 "findStereotypeCmd"
+	public type class_ref 5888 // PackageGlobalCmd
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -3357,9 +3547,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 149632 "setUmlDefaultGetNameCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -3371,9 +3558,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 149760 "setUmlDefaultSetNameCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -3877,9 +4061,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 147712 "setCppIsSetParamRefCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -3891,9 +4072,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 148864 "setCppRelativePathCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -3905,9 +4083,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 148992 "setCppForceNamespaceGenCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -3919,9 +4094,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 150144 "setCppRootRelativePathCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -3933,9 +4105,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 150400 "setCppJavadocStyleCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -4285,9 +4454,6 @@ public static final ${class} ${name} = new ${class}(_${name});
 
       attribute 150656 "setJavaJavadocStyleCmd"
 	public explicit_type ""
-	constraint " ${comment}public static final int _${name}${value};
-public static final ${class} ${name} = new ${class}(_${name});
-"
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
@@ -4536,6 +4702,17 @@ public static final ${class} ${name} = new ${class}(_${name});
       end
 
       attribute 156928 "setPhpIsSetParamFinalCmd"
+	public type class_ref 147328 // PhpSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 165120 "setPhpJavadocStyleCmd"
 	public type class_ref 147328 // PhpSettingsCmd
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};

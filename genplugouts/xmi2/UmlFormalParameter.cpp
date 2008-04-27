@@ -3,7 +3,7 @@
 #include "FileOut.h"
 #include "UmlClass.h"
 
-void UmlFormalParameter::write(FileOut & out, const UmlClass * cl, int rank, bool uml20) const {
+void UmlFormalParameter::write(FileOut & out, UmlClass * cl, int rank, bool uml20) const {
   char tp[32];
   char te[32];
 
@@ -33,9 +33,9 @@ void UmlFormalParameter::write(FileOut & out, const UmlClass * cl, int rank, boo
   out << "/>\n";
 
   if (defaultValue().type != 0)
-    UmlItem::write_default_value(out, defaultValue().type->name());
+    UmlItem::write_default_value(out, defaultValue().type->name(), cl, rank);
   else
-    UmlItem::write_default_value(out, defaultValue().explicit_type);
+    UmlItem::write_default_value(out, defaultValue().explicit_type, cl, rank);
 
   out.indent(-1);
   out.indent();

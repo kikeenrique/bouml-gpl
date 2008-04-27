@@ -54,7 +54,6 @@ ComponentDiagramView::ComponentDiagramView(QWidget * parent, UmlCanvas * canvas,
 
 void ComponentDiagramView::menu(const QPoint&) {
   QPopupMenu m(0);
-  QPopupMenu formatm(0);
   
   m.insertItem(new MenuTitle("Component diagram menu", m.font()), -1);
  
@@ -104,6 +103,8 @@ void ComponentDiagramView::contentsMousePressEvent(QMouseEvent * e) {
       break;
     }
   }
+  else
+    DiagramView::contentsMousePressEvent(e);
 }
 
 void ComponentDiagramView::dragEnterEvent(QDragEnterEvent * e) {

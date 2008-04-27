@@ -11,6 +11,7 @@ void UmlAttribute::init()
   declareFct("ownedattribute", "uml:Property", &importIt);
   declareFct("ownedattribute", "", &importIt);	// Eclipse .uml
   declareFct("ownedliteral", "uml:EnumerationLiteral", &importIt);
+  declareFct("ownedliteral", "", &importIt);	// eclipse
 }
 
 void UmlAttribute::importIt(FileIn & in, Token & token, UmlItem * where)
@@ -92,6 +93,8 @@ void UmlAttribute::importIt(FileIn & in, Token & token, UmlItem * where)
 	    if (! token.closed())
 	      in.finish(s);
 	  }
+	  else if (s == "ownedrule")
+	    att->set_Constraint(UmlClassMember::readConstraint(in, token));
 	  else
 	    att->UmlItem::import(in, token);
 	}

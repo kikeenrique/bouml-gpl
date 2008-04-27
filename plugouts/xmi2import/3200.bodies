@@ -27,20 +27,15 @@ class UmlBaseItem
   
   if (_defined) _stereotype = s;
 
-!!!233088.cpp!!!	applyStereotype() : bool
-  UmlCom::send_cmd(_identifier, (OnInstanceCmd) (setIsForceBodyGenCmd + 15));
-  if (UmlCom::read_bool()) {
-    unload();
-    return TRUE;
-  }
-  else
-    return FALSE;
-!!!233088.java!!!	applyStereotype() : bool
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setStereotypeCmd, s);
+!!!275584.cpp!!!	applyStereotype() : bool
+  UmlCom::send_cmd(_identifier, applyStereotypeCmd);
+  if (UmlCom::read_bool() == 0) return FALSE;
+  unload(false, false);
+  return TRUE;
+!!!275584.java!!!	applyStereotype() : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.applyStereotypeCmd);
   UmlCom.check();
-  
-  if (_defined) _stereotype = s;
-
+  unload(false, false);
 !!!21760.cpp!!!	description() : string
   read_if_needed_();
   
@@ -260,10 +255,10 @@ class UmlBaseItem
   UmlCom.check();
   parent().unload(true, false);
 !!!23808.cpp!!!	isToolRunning(in id : int) : bool
-  UmlCom::send_cmd(miscGlobalCmd, toolRunningCmd, id);
+  UmlCom::send_cmd(miscGlobalCmd, toolRunningCmd, id, "");
   return UmlCom::read_bool();
 !!!23808.java!!!	isToolRunning(in id : int) : bool
-  UmlCom.send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._toolRunningCmd);
+  UmlCom.send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._toolRunningCmd, id, "");
   return UmlCom.read_bool();
 !!!23936.cpp!!!	markedItems() : UmlItem
   UmlCom::send_cmd(miscGlobalCmd, allMarkedCmd);

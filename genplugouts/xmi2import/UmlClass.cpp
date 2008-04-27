@@ -15,8 +15,6 @@
 #include "ClassInstance.h"
 #include "CppSettings.h"
 
-#include "PackageGlobalCmd.h"
-
 UmlItem * UmlClass::container(anItemKind kind, Token & token, FileIn & in) {
   switch (kind) {
   case aClass:
@@ -93,6 +91,13 @@ void UmlClass::importIt(FileIn & in, Token & token, UmlItem * where)
   
   cl->addItem(token.xmiId(), in);
   
+  do
+    where = where->parent();
+  while (where->kind() != aPackage);
+  
+  if (where->stereotype() == "profile")
+    cl->set_PropertyValue("xmiId", token.xmiId());
+  
   if (token.xmiType() == "uml:Actor")
     cl->set_Stereotype("actor");
   else if (token.xmiType() == "uml:Interface")
@@ -143,6 +148,8 @@ void UmlClass::importIt(FileIn & in, Token & token, UmlItem * where)
 	       (s == "ownedend") && 
 	       (token.xmiType() == "uml:Property"))
 	assocclass->import(in, token);
+      else if (s == "ownedrule")
+	cl->set_Constraint(UmlClassMember::readConstraint(in, token));
       else
 	cl->UmlItem::import(in, token);
     }
@@ -235,7 +242,7 @@ void UmlClass::importPrimitiveType(FileIn & in, Token & token, UmlItem *)
     PrimitiveTypes[id] = t;
 }
 
-void UmlClass::generalizeDependRealize(UmlItem * target, FileIn & in, int context, QCString label) {
+void UmlClass::generalizeDependRealize(UmlItem * target, FileIn & in, int context, QCString label, QCString constraint) {
   static const struct {
     aRelationKind rk;
     const char * err;
@@ -243,7 +250,8 @@ void UmlClass::generalizeDependRealize(UmlItem * target, FileIn & in, int contex
     { aGeneralisation, "cannot create generalization from '" },
     { aDependency, "cannot create dependency from '" },
     { aRealization, "cannot create realization from '" },
-    { aDependency, "cannot create usage from '" }
+    { aDependency, "cannot create usage from '" },
+    { aDependency, "cannot create import from '" }
   };
   UmlItem * rel;
   
@@ -254,12 +262,15 @@ void UmlClass::generalizeDependRealize(UmlItem * target, FileIn & in, int contex
     
   if (rel == 0)
     in.warning(r[context].err + name() + "' to '" + target->name() + "'");
-  else if (! label.isEmpty())
-    rel->set_Name(label);
-
+  else {
+    if (! label.isEmpty())
+      rel->set_Name(label);
+    if (! constraint.isEmpty() && (target->kind() == aClass))
+      ((UmlRelation *) rel)->set_Constraint(constraint);
+  }
 }
 
-void UmlClass::solveGeneralizationDependencyRealization(int context, QCString idref, QCString label) {
+void UmlClass::solveGeneralizationDependencyRealization(int context, QCString idref, QCString label, QCString constraint) {
   QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
   
   if (it != All.end()) {
@@ -270,7 +281,8 @@ void UmlClass::solveGeneralizationDependencyRealization(int context, QCString id
       { aGeneralisation, "cannot create generalization from '" },
       { aDependency, "cannot create dependency from '" },
       { aRealization, "cannot create realization from '" },
-      { aDependency, "cannot create usage from '" }
+      { aDependency, "cannot create usage from '" },
+      { aDependency, "cannot create import from '" }
     };
     UmlItem * target = *it;
     UmlItem * rel;
@@ -285,6 +297,8 @@ void UmlClass::solveGeneralizationDependencyRealization(int context, QCString id
     else {
       if (!label.isEmpty())
 	rel->set_Name(label);
+      if (!constraint.isEmpty() && (target->kind() == aClass))
+	((UmlRelation *) rel)->set_Constraint(constraint);
       if (context == 3)
 	rel->set_Stereotype("use");
     }
@@ -349,7 +363,7 @@ bool UmlClass::isAppliedStereotype(Token & tk, QCString & prof_st, QCString & ba
   static QDict<QCString> stereotypes;
   static QDict<QCString> bases;
   
-  QString s = tk.what();
+  QCString s = tk.what();
   QCString * st = stereotypes[s];
   
   if (st != 0) {
@@ -363,11 +377,7 @@ bool UmlClass::isAppliedStereotype(Token & tk, QCString & prof_st, QCString & ba
     
     if ((index != -1) &&
 	((index != 3) || ((s.left(3) != "uml") && (s.left(3) != "xmi")))) {
-#ifndef WIN32
-#warning must use UmlPackage::findStereotype(s, FALSE)
-#endif
-      UmlCom::send_cmd(packageGlobalCmd, saveProjectCmd + 3, (void *) 0, (const char *) s);
-      UmlClass * cl = (UmlClass *) UmlBaseItem::read_();
+      UmlClass * cl = findStereotype(s, FALSE);
       
       if (cl != 0) {
 	QCString ext;

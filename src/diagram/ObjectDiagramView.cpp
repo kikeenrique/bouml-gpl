@@ -136,6 +136,8 @@ void ObjectDiagramView::contentsMousePressEvent(QMouseEvent * e) {
       }
     }
   }
+  else
+    DiagramView::contentsMousePressEvent(e);
 }
 
 void ObjectDiagramView::dragEnterEvent(QDragEnterEvent * e) {

@@ -1,13 +1,4 @@
 class UmlOnSignalAction
-!!!221698.cpp!!!	import(inout in : FileIn, inout tk : Token) : void
-  QCString key = tk.what() + " " + tk.xmiType();
-    
-  PFunc pf = Functions[key];
-  
-  if (pf != 0)
-    pf(in, tk, this);
-  else
-    in.bypass(tk);
 !!!221570.cpp!!!	solve(in idref : string) : void
   QCString sig = Signal::get(idref);
   

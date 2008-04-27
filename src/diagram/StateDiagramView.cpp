@@ -60,7 +60,6 @@ StateDiagramView::StateDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
 
 void StateDiagramView::menu(const QPoint&) {
   QPopupMenu m(0);
-  QPopupMenu formatm(0);
   
   m.insertItem(new MenuTitle("State diagram menu", m.font()), -1);
  
@@ -225,6 +224,8 @@ void StateDiagramView::contentsMousePressEvent(QMouseEvent * e) {
     canvas()->update();
     history_protected = FALSE;
   }
+  else
+    DiagramView::contentsMousePressEvent(e);
 }
 
 void StateDiagramView::dragEnterEvent(QDragEnterEvent * e) {

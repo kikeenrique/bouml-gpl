@@ -1,7 +1,7 @@
-format 55
+format 56
 "API BASE" // API BASE
-  revision 9
-  modified_by 0 "pages4"
+  revision 14
+  modified_by 2 "bruno"
   // class settings
   //class diagram settings
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
@@ -3020,6 +3020,26 @@ ${body}}
 exist, else 0/null. In case the package is specified (not 0/null), 
 the returned class will be defined in a sub-level of the package.
 "
+      end
+
+      operation 275456 "findStereotype"
+	class_operation public explicit_return_type "UmlClass"
+	nparams 2
+	  param in name "s" explicit_type "string"
+	  param in name "caseSensitive" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " Return the class supporting the stereotype corresponding to
+ the first parameter being 'profile_name:stereotype_name', or 0/null"
       end
 
       operation 9472 "unload"
@@ -6473,8 +6493,8 @@ ${body}}
   On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
-      operation 233088 "applyStereotype"
-	cpp_virtual public explicit_return_type "bool"
+      operation 275584 "applyStereotype"
+	public explicit_return_type "bool"
 	nparams 0
 	nexceptions 1
 	  explicit_exception "RuntimeException"
@@ -6483,14 +6503,16 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
 	
 	
 	
-	comment " to consider the stereotype regarding on the profiles
-"
+	comment " If the current stereotype is part of a profile add needed properties.
+ In all cases remove extra properties whose keys contain two ':'.
+
+ If the element is read-only, return FALSE in C++, produce a RuntimeException in Java"
       end
 
       operation 21760 "description"
@@ -8403,6 +8425,49 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 274304 "cppContextualBodyIndent"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHCPP
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " indicate if the indent of the C++ body is contextual or absolute"
+      end
+
+      operation 274432 "set_CppContextualBodyIndent"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set if the indent of the C++ body is contextual or absolute
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 30976 "isJavaFinal"
 	public explicit_return_type "bool"
 	nparams 0
@@ -8652,6 +8717,49 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 274560 "javaContextualBodyIndent"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    #ifdef WITHJAVA
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHJAVA
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " indicate if the indent of the Java body is contextual or absolute"
+      end
+
+      operation 274688 "set_JavaContextualBodyIndent"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set if the indent of the Java body is contextual or absolute
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 262656 "isPhpFinal"
 	public explicit_return_type "bool"
 	nparams 0
@@ -8858,6 +8966,49 @@ ${body}}
 	
 	
 	comment " set the if the Php definition is frozen, only for getter/setter operation
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 274816 "phpContextualBodyIndent"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    #ifdef WITHIDL
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHIDL
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " indicate if the indent of the PHP body is contextual or absolute"
+      end
+
+      operation 274944 "set_PhpContextualBodyIndent"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set if the indent of the PHP body is contextual or absolute
 
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
@@ -9162,6 +9313,45 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
       attribute 137600 "_idl_get_set_frozen"
 	private explicit_type "bool"
 	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 161664 "_cpp_contextual_body_indent"
+	private explicit_type "bool"
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 161792 "_java_contextual_body_indent"
+	private explicit_type "bool"
+	cpp_decl "    #ifdef WITHJAVA
+${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 161920 "_php_contextual_body_indent"
+	private explicit_type "bool"
+	cpp_decl "    #ifdef WITHPHP
 ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 #endif
 "
@@ -9727,7 +9917,7 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
-      operation 34816 "findNamespace"
+      operation 34816 "findCppNamespace"
 	const public return_type class_ref 9217 // UmlPackage
 	nparams 1
 	  param in name "n" explicit_type "string"
@@ -9831,7 +10021,7 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
-      operation 35456 "findPackage"
+      operation 35456 "findJavaPackage"
 	const public return_type class_ref 9217 // UmlPackage
 	nparams 1
 	  param in name "n" explicit_type "string"
@@ -9981,7 +10171,7 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
-      operation 36096 "findModule"
+      operation 36096 "findIdlModule"
 	const public return_type class_ref 9217 // UmlPackage
 	nparams 1
 	  param in name "n" explicit_type "string"
@@ -10073,6 +10263,24 @@ ${body}}
 close the current project (in case it is not saved the last modifications are lost),
 load the specified one, and all the communications with the plug-outs including the
 current one are closed.
+"
+      end
+
+      operation 275328 "updateProfiles"
+	class_operation public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " Force consistency concerning the profiles and their stereotypes
 "
       end
 
@@ -23257,6 +23465,7 @@ ${namespace_end}
 ${includes}
 #include \"UmlCom.h\"
 #include \"ClassGlobalCmd.h\"
+#include \"PackageGlobalCmd.h\"
 ${namespace_start}
 ${members}
 ${namespace_end}"

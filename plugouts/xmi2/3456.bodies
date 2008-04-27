@@ -395,6 +395,26 @@ class UmlBaseOperation
   UmlCom.check();
 
   _cpp_get_set_frozen = v;
+!!!244864.cpp!!!	cppContextualBodyIndent() : bool
+  read_if_needed_();
+  return _cpp_contextual_body_indent;
+!!!244864.java!!!	cppContextualBodyIndent() : bool
+  read_if_needed_();
+  return _cpp_contextual_body_indent;
+!!!244992.cpp!!!	set_CppContextualBodyIndent(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setCppContextualBodyIndentCmd)) {
+    _cpp_contextual_body_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!244992.java!!!	set_CppContextualBodyIndent(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setCppContextualBodyIndentCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _cpp_contextual_body_indent = v;
 !!!30976.cpp!!!	isJavaFinal() : bool
   read_if_needed_();
     
@@ -498,6 +518,26 @@ class UmlBaseOperation
   UmlCom.check();
 
   _java_get_set_frozen = v;
+!!!245120.cpp!!!	javaContextualBodyIndent() : bool
+  read_if_needed_();
+  return _java_contextual_body_indent;
+!!!245120.java!!!	javaContextualBodyIndent() : bool
+  read_if_needed_();
+  return _java_contextual_body_indent;
+!!!245248.cpp!!!	set_JavaContextualBodyIndent(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setJavaContextualBodyIndentCmd)) {
+    _java_contextual_body_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!245248.java!!!	set_JavaContextualBodyIndent(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setJavaContextualBodyIndentCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _java_contextual_body_indent = v;
 !!!233088.cpp!!!	isPhpFinal() : bool
   read_if_needed_();
     
@@ -579,6 +619,26 @@ class UmlBaseOperation
   UmlCom.check();
 
   _php_get_set_frozen = v;
+!!!245376.cpp!!!	phpContextualBodyIndent() : bool
+  read_if_needed_();
+  return _idl_get_set_frozen;
+!!!245376.java!!!	phpContextualBodyIndent() : bool
+  read_if_needed_();
+  return _idl_get_set_frozen;
+!!!245504.cpp!!!	set_PhpContextualBodyIndent(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setPhpContextualBodyIndentCmd)) {
+    _php_contextual_body_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!245504.java!!!	set_PhpContextualBodyIndent(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpContextualBodyIndentCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _php_contextual_body_indent = v;
 !!!32256.cpp!!!	isIdlOneway() : bool
   read_if_needed_();
     
@@ -751,6 +811,7 @@ class UmlBaseOperation
   _cpp_def = UmlCom::read_string();
   _cpp_name_spec = UmlCom::read_string();
   _cpp_get_set_frozen = UmlCom::read_bool();
+  _cpp_contextual_body_indent = UmlCom::read_bool();
 !!!33152.java!!!	read_cpp_() : void
   super.read_cpp_();
   _cpp_const = UmlCom.read_bool();
@@ -760,28 +821,33 @@ class UmlBaseOperation
   _cpp_def = UmlCom.read_string();
   _cpp_name_spec = UmlCom.read_string();
   _cpp_get_set_frozen = UmlCom.read_bool();
+  _cpp_contextual_body_indent = UmlCom.read_bool();
 !!!33280.cpp!!!	read_java_() : void
   UmlBaseClassMember::read_java_();
   _java_final = UmlCom::read_bool();
   _java_synchronized = UmlCom::read_bool();
   _java_name_spec = UmlCom::read_string();
   _java_get_set_frozen = UmlCom::read_bool();
+  _java_contextual_body_indent = UmlCom::read_bool();
 !!!33280.java!!!	read_java_() : void
   super.read_java_();
   _java_final = UmlCom.read_bool();
   _java_synchronized = UmlCom.read_bool();
   _java_name_spec = UmlCom.read_string();
   _java_get_set_frozen = UmlCom.read_bool();
+  _java_contextual_body_indent = UmlCom.read_bool();
 !!!234368.cpp!!!	read_php_() : void
   UmlBaseClassMember::read_php_();
   _php_final = UmlCom::read_bool();
   _php_name_spec = UmlCom::read_string();
   _php_get_set_frozen = UmlCom::read_bool();
+  _php_contextual_body_indent = UmlCom::read_bool();
 !!!234368.java!!!	read_php_() : void
   super.read_php_();
   _php_final = UmlCom.read_bool();
   _php_name_spec = UmlCom.read_string();
   _php_get_set_frozen = UmlCom.read_bool();
+  _php_contextual_body_indent = UmlCom.read_bool();
 !!!33408.cpp!!!	read_idl_() : void
   UmlBaseClassMember::read_idl_();
   _idl_oneway = UmlCom::read_bool();

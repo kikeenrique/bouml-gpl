@@ -66,10 +66,8 @@ class UmlItem
     _stereotypes[ste].append(this);
 !!!130051.cpp!!!	memo_relation(inout r : UmlItem) : void
   parent()->memo_relation(r);
-!!!202114.cpp!!!	write_multiplicity(inout out : FileOut, in s : string) : void
+!!!202114.cpp!!!	write_multiplicity(inout out : FileOut, in s : string, in who : UmlItem) : void
   if (!s.isEmpty()) {
-    static UmlItem * rank = 0;
-    
     QCString min;
     QCString max;
     int index = s.find("..");
@@ -83,12 +81,12 @@ class UmlItem
     
     out.indent();
     out << "<lowerValue xmi:type=\"uml:LiteralString\"";
-    out.id_prefix(++rank, "MULTIPLICITY_");
+    out.id_prefix(who, "MULTIPLICITY_L_");
     out << " value=\"" << min << "\"/>\n";
     
     out.indent();
     out << "<upperValue xmi:type=\"uml:LiteralString\"";
-    out.id_prefix(++rank, "MULTIPLICITY_");
+    out.id_prefix(who, "MULTIPLICITY_U_");
     out << " value=\"" << max << "\"/>\n";
   }
 !!!202242.cpp!!!	write_type(inout out : FileOut, in t : UmlTypeSpec) : void
@@ -123,7 +121,7 @@ class UmlItem
     }
   }
 
-!!!129923.cpp!!!	write_default_value(inout out : FileOut, in v : string) : void
+!!!129923.cpp!!!	write_default_value(inout out : FileOut, in v : string, in who : UmlItem, in rank : int) : void
   if (! v.isEmpty()) {
     if (v[0] == '=') {
       v = v.mid(1);
@@ -131,11 +129,16 @@ class UmlItem
 	return;
     }
 
-    static UmlItem * rank = 0;
-
     out.indent();
     out << "<defaultValue xmi:type=\"uml:LiteralString\"";
-    out.id_prefix(rank, "VALUE_");
+    if (rank == -1)
+      out.id_prefix(who, "VALUE_");
+    else {
+      char s[32];
+      
+      sprintf(s, "VALUE%d_", rank);
+      out.id_prefix(who, s);
+    }
     out << " value=\"";
     out.quote(v);
     out << "\"/>\n";
@@ -144,12 +147,8 @@ class UmlItem
   QMap<QCString, QList<UmlItem> >::Iterator it;
   
   for (it = _stereotypes.begin(); it != _stereotypes.end(); ++it) {
-#ifndef WIN32
-#warning must use UmlPackage::findStereotype(itmap.key(), TRUE)
-#endif
     const char * st = it.key();
-    UmlCom::send_cmd(packageGlobalCmd, saveProjectCmd + 3, (void *) 1, st);
-    UmlClass * cl = (UmlClass *) UmlBaseItem::read_();
+    UmlClass * cl = UmlClass::findStereotype(it.key(), TRUE);
 		     
     if (cl != 0) {
       QList<UmlItem> & l = it.data();

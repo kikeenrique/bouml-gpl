@@ -43,7 +43,8 @@ void UmlRelation::compute_dependency(QList<CppRefType> & dependencies,
   case aDependency:
     if (stereotype() == "friend")
       break;
-    CppRefType::add(roleType(), dependencies, cppDecl() != "#include in source");
+    CppRefType::add(roleType(), dependencies, cppDecl() != "#include in source",
+		    roleType()->isCppExternal());
     break;
   case aGeneralisation:
   case aRealization:

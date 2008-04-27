@@ -752,6 +752,8 @@ void BrowserRelation::save(QTextStream & st, bool ref, QString & warning) {
 
 void BrowserRelation::post_load()
 {
+  RelationData::post_load();
+  
   IdIterator<BrowserRelation> it(all);
   BrowserRelation * br;
   

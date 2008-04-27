@@ -98,7 +98,7 @@ This one allows several users to work on the same project, this time your\n\
 identifier is " + QString::number(Uid) +
 		   " but BOUML declines all the responsabilies of this random choice.\n\
 \n\
-You must to define the environment variable BOUML_ID valuing between 2 up to 127\n\
+You must define the environment variable BOUML_ID valuing between 2 up to 127\n\
 not used by an other person working at the same time on a project with you.");
     }
     else {

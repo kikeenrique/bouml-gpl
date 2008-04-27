@@ -69,6 +69,13 @@ class UmlClass
   
   cl->addItem(token.xmiId(), in);
   
+  do
+    where = where->parent();
+  while (where->kind() != aPackage);
+  
+  if (where->stereotype() == "profile")
+    cl->set_PropertyValue("xmiId", token.xmiId());
+  
   if (token.xmiType() == "uml:Actor")
     cl->set_Stereotype("actor");
   else if (token.xmiType() == "uml:Interface")
@@ -119,6 +126,8 @@ class UmlClass
 	       (s == "ownedend") && 
 	       (token.xmiType() == "uml:Property"))
 	assocclass->import(in, token);
+      else if (s == "ownedrule")
+	cl->set_Constraint(UmlClassMember::readConstraint(in, token));
       else
 	cl->UmlItem::import(in, token);
     }
@@ -204,7 +213,7 @@ class UmlClass
 
   if (!id.isEmpty())
     PrimitiveTypes[id] = t;
-!!!214658.cpp!!!	generalizeDependRealize(inout target : UmlItem, inout in : FileIn, in context : int, in label : string) : void
+!!!214658.cpp!!!	generalizeDependRealize(inout target : UmlItem, inout in : FileIn, in context : int, in label : string, in constraint : string) : void
   static const struct {
     aRelationKind rk;
     const char * err;
@@ -212,7 +221,8 @@ class UmlClass
     { aGeneralisation, "cannot create generalization from '" },
     { aDependency, "cannot create dependency from '" },
     { aRealization, "cannot create realization from '" },
-    { aDependency, "cannot create usage from '" }
+    { aDependency, "cannot create usage from '" },
+    { aDependency, "cannot create import from '" }
   };
   UmlItem * rel;
   
@@ -223,10 +233,13 @@ class UmlClass
     
   if (rel == 0)
     in.warning(r[context].err + name() + "' to '" + target->name() + "'");
-  else if (! label.isEmpty())
-    rel->set_Name(label);
-
-!!!213506.cpp!!!	solveGeneralizationDependencyRealization(in context : int, in idref : string, in label : string) : void
+  else {
+    if (! label.isEmpty())
+      rel->set_Name(label);
+    if (! constraint.isEmpty() && (target->kind() == aClass))
+      ((UmlRelation *) rel)->set_Constraint(constraint);
+  }
+!!!213506.cpp!!!	solveGeneralizationDependencyRealization(in context : int, in idref : string, in label : string, in constraint : string) : void
   QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
   
   if (it != All.end()) {
@@ -237,7 +250,8 @@ class UmlClass
       { aGeneralisation, "cannot create generalization from '" },
       { aDependency, "cannot create dependency from '" },
       { aRealization, "cannot create realization from '" },
-      { aDependency, "cannot create usage from '" }
+      { aDependency, "cannot create usage from '" },
+      { aDependency, "cannot create import from '" }
     };
     UmlItem * target = *it;
     UmlItem * rel;
@@ -252,6 +266,8 @@ class UmlClass
     else {
       if (!label.isEmpty())
 	rel->set_Name(label);
+      if (!constraint.isEmpty() && (target->kind() == aClass))
+	((UmlRelation *) rel)->set_Constraint(constraint);
       if (context == 3)
 	rel->set_Stereotype("use");
     }
@@ -306,7 +322,7 @@ class UmlClass
   static QDict<QCString> stereotypes;
   static QDict<QCString> bases;
   
-  QString s = tk.what();
+  QCString s = tk.what();
   QCString * st = stereotypes[s];
   
   if (st != 0) {
@@ -320,11 +336,7 @@ class UmlClass
     
     if ((index != -1) &&
 	((index != 3) || ((s.left(3) != "uml") && (s.left(3) != "xmi")))) {
-#ifndef WIN32
-#warning must use UmlPackage::findStereotype(s, FALSE)
-#endif
-      UmlCom::send_cmd(packageGlobalCmd, saveProjectCmd + 3, (void *) 0, (const char *) s);
-      UmlClass * cl = (UmlClass *) UmlBaseItem::read_();
+      UmlClass * cl = findStereotype(s, FALSE);
       
       if (cl != 0) {
 	QCString ext;

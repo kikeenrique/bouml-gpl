@@ -50,6 +50,7 @@ void UmlOperation::write(FileOut & out) {
   
   out.indent(+1);
 
+  write_constraint(out);
   write_annotation(out);
   write_description_properties(out);
   write_exceptions(out);

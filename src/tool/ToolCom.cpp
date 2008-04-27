@@ -127,10 +127,11 @@ ToolCom::ToolCom() {
 }
 
 int ToolCom::run(const char * cmd, BrowserNode * bn,
-		 bool exit, void (*pf)())
+		 bool exit, bool clr, void (*pf)())
 {
   TraceDialog::trace_auto_raise(TRUE);
-  TraceDialog::clear();
+  if (clr)
+    TraceDialog::clear();
   
   ToolCom * com = (unused.isEmpty())
     ? new ToolCom
@@ -163,6 +164,8 @@ int ToolCom::run(const char * cmd, BrowserNode * bn,
 
 
 
+
+
   QString s = cmd;
   
   s += ' ';
@@ -172,11 +175,13 @@ int ToolCom::run(const char * cmd, BrowserNode * bn,
   errno = 0;
   (void) system(s);
   
-  if (errno != 0)
+  if (errno != 0) {
     msg_critical("Bouml",
 		 "error while executing '" + QString(cmd) +"'\n"
 		 "perhaps you must specify its absolute path"
 		 "or set the environment variable PATH ?");
+    return -1;
+  }
 
   
   com->target = bn;
@@ -184,7 +189,7 @@ int ToolCom::run(const char * cmd, BrowserNode * bn,
   com->start = TRUE;
   //com->with_ack = TRUE;
   com->exit_bouml = exit;
-  
+
   return com->id;
 }
 
@@ -237,6 +242,7 @@ void ToolCom::close()
       sock = 0;
     }
     
+    used.remove(this);
     unused.append(this);
   }
 }
@@ -244,7 +250,7 @@ void ToolCom::close()
 void ToolCom::close_all()
 {
   while (! used.isEmpty())
-    used.take(0)->close();
+    used.at(0)->close();
 }
 
 const char * ToolCom::read_buffer()
@@ -687,7 +693,7 @@ void ToolCom::data_received(Socket * who) {
 	    set_user_id((int) ((unsigned char *) p)[1]);
 	    break;
 	  case setRootPermissionCmd:
-	    if (p[1]) {
+	    if (p[1] != 0) {
 	      // enter
 	      if (BrowserNode::edition_active())
 		write_bool(FALSE);

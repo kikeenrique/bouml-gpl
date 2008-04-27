@@ -63,7 +63,7 @@ class UmlBasePackage : public UmlItem {
 
     // returns a sub package of the current one having the c++ namespace 'n'
     // (including the current one), else 0/null
-    UmlPackage * findNamespace(const QCString & n) const;
+    UmlPackage * findCppNamespace(const QCString & n) const;
 #endif
 
 #ifdef WITHJAVA
@@ -88,7 +88,7 @@ class UmlBasePackage : public UmlItem {
 
     // returns a sub package of the current one having the Java package 'n'
     // (including the current one), else 0/null
-    UmlPackage * findPackage(const QCString & n) const;
+    UmlPackage * findJavaPackage(const QCString & n) const;
 #endif
 
 #ifdef WITHPHP
@@ -126,7 +126,7 @@ class UmlBasePackage : public UmlItem {
 
     // returns a sub package of the current one having the IDL module 'n'
     // (including the current one), else 0/null
-    UmlPackage * findModule(const QCString & n) const;
+    UmlPackage * findIdlModule(const QCString & n) const;
 #endif
 
     //  Returns the project
@@ -145,6 +145,10 @@ class UmlBasePackage : public UmlItem {
     //current one are closed.
     
     static void loadProject(QCString p);
+
+    // Force consistency concerning the profiles and their stereotypes
+    
+    static void updateProfiles();
 
     // to unload the object to free memory, it will be reloaded automatically
     // if needed. Recursively done for the sub items if 'rec' is TRUE. 

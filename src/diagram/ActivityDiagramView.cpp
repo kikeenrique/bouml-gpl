@@ -72,7 +72,6 @@ ActivityDiagramView::ActivityDiagramView(QWidget * parent, UmlCanvas * canvas, i
 
 void ActivityDiagramView::menu(const QPoint&) {
   QPopupMenu m(0);
-  QPopupMenu formatm(0);
   
   m.insertItem(new MenuTitle("Activity diagram menu", m.font()), -1);
  
@@ -313,6 +312,8 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
     canvas()->update();
     history_protected = FALSE;
   }
+  else
+    DiagramView::contentsMousePressEvent(e);
 }
 
 void ActivityDiagramView::dragEnterEvent(QDragEnterEvent * e) {

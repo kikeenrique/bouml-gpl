@@ -564,6 +564,22 @@ bool BrowserActivity::tool_cmd(ToolCom * com, const char * args) {
 	  (BrowserRegion::add_partition(this, args))->write_id(com);
 	  break;
 	  */
+	case UmlSimpleRelations:
+	  {
+	    UmlCode c;
+	    
+	    if (!com->get_relation_kind(c, args))
+	      ok = FALSE;
+	    else {
+	      BrowserNode * end = (BrowserNode *) com->get_id(args);
+	      
+	      if (may_connect(end) == 0)
+		add_relation(c, end)->get_browser_node()->write_id(com);
+	      else
+		ok = FALSE;
+	    }
+	  }
+	  break;
 	default:
 	  if (IsaActivityNode(k))
 	    (new BrowserActivityNode(k, args, this))->write_id(com);

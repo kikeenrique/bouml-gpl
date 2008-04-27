@@ -22,7 +22,8 @@ enum PhpSettingsCmd {
   setPhpSetNameCmd,
   setPhpIsGetFinalCmd,
   setPhpIsSetFinalCmd,
-  setPhpIsSetParamFinalCmd
+  setPhpIsSetParamFinalCmd,
+  setPhpJavadocStyleCmd
 
 };
 #endif

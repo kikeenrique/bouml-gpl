@@ -8,7 +8,6 @@
 
 class FileOut;
 class UmlClass;
-class UmlItem;
 
 // This class manages 'components'
 //
@@ -19,7 +18,7 @@ class UmlComponent : public UmlBaseComponent {
 
     virtual void write(FileOut & out);
 
-    void write(FileOut & out, const QVector< UmlClass > & v, UmlItem *& rank, const char * k1, const char * k2);
+    void write(FileOut & out, const QVector< UmlClass > & v, const char * k1, const char * k2);
 
 };
 

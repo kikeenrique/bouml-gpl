@@ -57,52 +57,55 @@ ClassDiagramView::ClassDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
 
 void ClassDiagramView::menu(const QPoint& p) {
   QPopupMenu m(0);
-  QPopupMenu formatm(0);
   
   m.insertItem(new MenuTitle("Class diagram menu", m.font()),  -1);
- 
-  BrowserNode * bn = BrowserView::selected_item();
-  DiagramItemList items(canvas()->allItems());
-  QPtrDict<DiagramItem> drawn;
-  
-  if ((bn != 0) && (bn->get_type() == UmlClassView)) {
-    // memoryze drawn classes
-    DiagramItem * di;
-    
-    for (di = items.first(); di != 0; di = items.next())
-      if (di->type() == UmlClass)
-	drawn.insert(di->get_bn(), di);
 
-    // class view contains class not already drawn ?
-    QListViewItem * child;
+  if ((((UmlCanvas *) canvas())->browser_diagram())->is_writable()) {
+    BrowserNode * bn = BrowserView::selected_item();
+    DiagramItemList items(canvas()->allItems());
+    QPtrDict<DiagramItem> drawn;
+    
+    if ((bn != 0) && (bn->get_type() == UmlClassView)) {
+      // memoryze drawn classes
+      DiagramItem * di;
       
-    for (child = bn->firstChild(); child != 0; child = child->nextSibling()) {
-      if (!((BrowserNode *) child)->deletedp() &&
-	  (((BrowserNode *) child)->get_type() == UmlClass) &&
-	  (drawn[(BrowserNode *) child] == 0)) {
-	// not already shown
-	m.insertItem("Add classes of the selected class view", 29);
-	m.insertSeparator();
-	break;
+      for (di = items.first(); di != 0; di = items.next())
+	if (di->type() == UmlClass)
+	  drawn.insert(di->get_bn(), di);
+      
+      // class view contains class not already drawn ?
+      QListViewItem * child;
+      
+      for (child = bn->firstChild(); child != 0; child = child->nextSibling()) {
+	if (!((BrowserNode *) child)->deletedp() &&
+	    (((BrowserNode *) child)->get_type() == UmlClass) &&
+	    (drawn[(BrowserNode *) child] == 0)) {
+	  // not already shown
+	  m.insertItem("Add classes of the selected class view", 29);
+	  m.insertSeparator();
+	  break;
+	}
       }
     }
+    
+    switch (default_menu(m, 30)) {
+    case EDIT_DRAWING_SETTING_CMD:
+      ((BrowserClassDiagram *) ((UmlCanvas *) canvas())->browser_diagram())->edit_settings();
+      break;
+    case RELOAD_CMD:
+      // pure drawing modifications are lost
+      // mark the diagram modified because the undid modifications
+      // may be saved in the file are not saved in memory
+      load("Class");
+      window()->package_modified();
+      break;
+    case 29:
+      add_classview_classes(bn, p, drawn);
+      break;
+    }
   }
-  
-  switch (default_menu(m, 30)) {
-  case EDIT_DRAWING_SETTING_CMD:
-    ((BrowserClassDiagram *) ((UmlCanvas *) canvas())->browser_diagram())->edit_settings();
-    break;
-  case RELOAD_CMD:
-    // pure drawing modifications are lost
-    // mark the diagram modified because the undid modifications
-    // may be saved in the file are not saved in memory
-    load("Class");
-    window()->package_modified();
-    break;
-  case 29:
-    add_classview_classes(bn, p, drawn);
-    break;
-  }
+  else
+    (void) default_menu(m, 30);
 }
 
 void ClassDiagramView::add_classview_classes(BrowserNode * cv, const QPoint& p,
@@ -183,6 +186,8 @@ void ClassDiagramView::contentsMousePressEvent(QMouseEvent * e) {
       break;
     }
   }
+  else
+    DiagramView::contentsMousePressEvent(e);
 }
 
 void ClassDiagramView::dragEnterEvent(QDragEnterEvent * e) {

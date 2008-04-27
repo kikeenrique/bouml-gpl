@@ -59,7 +59,6 @@ DeploymentDiagramView::DeploymentDiagramView(QWidget * parent, UmlCanvas * canva
 
 void DeploymentDiagramView::menu(const QPoint&) {
   QPopupMenu m(0);
-  QPopupMenu formatm(0);
   
   m.insertItem(new MenuTitle("Deployment diagram menu", m.font()), -1);
  
@@ -166,6 +165,8 @@ void DeploymentDiagramView::contentsMousePressEvent(QMouseEvent * e) {
     canvas()->update();
     history_protected = FALSE;
   }
+  else
+    DiagramView::contentsMousePressEvent(e);
 }
 
 void DeploymentDiagramView::dragEnterEvent(QDragEnterEvent * e) {

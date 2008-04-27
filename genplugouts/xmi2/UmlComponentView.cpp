@@ -9,7 +9,7 @@ void UmlComponentView::write(FileOut & out) {
     out << ((_uml_20) ? "<ownedMember" : "<packagedElement") 
       << " xmi:type=\"uml:Package\""; 
     out.id(this); 
-    out << " name =\"";
+    out << " name =\"component view ";
     out.quote(name());
     out << "\">\n"; 
     out.indent(+1); 

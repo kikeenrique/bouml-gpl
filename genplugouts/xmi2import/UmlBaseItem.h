@@ -50,9 +50,11 @@ class UmlBaseItem {
     //  On error return FALSE in C++, produce a RuntimeException in Java
     virtual bool set_Stereotype(const QCString & s);
 
-    // to consider the stereotype regarding on the profiles
-    
-    virtual bool applyStereotype();
+    // If the current stereotype is part of a profile add needed properties.
+    // In all cases remove extra properties whose keys contain two ':'.
+    //
+    // If the element is read-only, return FALSE in C++, produce a RuntimeException in Java
+    bool applyStereotype();
 
     // returns the description
     const QCString & description();

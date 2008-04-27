@@ -559,7 +559,8 @@ bool BrowserState::tool_cmd(ToolCom * com, const char * args) {
 	  if (wrong_child_name(args, UmlState, TRUE, FALSE))
 	    ok = FALSE;
 	  else
-	    (BrowserState::add_state(this, args))->write_id(com);
+	    // force QString(args) else call add_state(BrowserNode, bool) !
+	    (BrowserState::add_state(this, QString(args)))->write_id(com);
 	  break;
 	case UmlRegion:
 	  (BrowserRegion::add_region(this, args))->write_id(com);

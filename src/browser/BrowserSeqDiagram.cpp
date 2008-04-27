@@ -211,9 +211,9 @@ void BrowserSeqDiagram::menu() {
     if (!is_edited) {
       m.setWhatsThis(m.insertItem("Edit", 1),
 		     "to edit the <em>sequence diagram</em>");
-      m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
-		   "to set how the <em>sequence diagram</em>'s items must be drawn");
       if (!is_read_only) {
+	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
+		       "to set how the <em>sequence diagram</em>'s items must be drawn");
 	m.insertSeparator();
 	m.setWhatsThis(m.insertItem("Duplicate", 3),
 		       "to duplicate the <em>sequence diagram</em>");

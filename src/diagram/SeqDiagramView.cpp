@@ -60,38 +60,43 @@ SeqDiagramView::SeqDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
 
 void SeqDiagramView::menu(const QPoint&) {
   QPopupMenu m(0);
-  QPopupMenu formatm(0);
-  BrowserSeqDiagram * sd = (BrowserSeqDiagram *) window()->browser_diagram();
-  bool overlapping = sd->is_overlapping_bars();
   
   m.insertItem(new MenuTitle("Sequence diagram menu", m.font()), -1);
-  m.insertItem((overlapping) ? "Transform to flat activity bars"
-			     : "Transform to overlapping activity bars",
-	       29);
-  m.insertSeparator();
- 
-  switch (default_menu(m, 30)) {
-  case EDIT_DRAWING_SETTING_CMD:
-    ((BrowserSeqDiagram *) the_canvas()->browser_diagram())->edit_settings();
-    return;
-  case RELOAD_CMD:
-    // pure drawing modifications are lost
-    // mark the diagram modified because the undid modifications
-    // may be saved in the file are not saved in memory
-    load("Sequence");
-    window()->package_modified();
-    break;
-  case 29:
-    unselect_all();
-    sd->set_overlapping_bars(!overlapping);
-    if (overlapping)
-      toFlat();
-    else
-      toOverlapping();
-    canvas()->update();
-    window()->package_modified();
-    break;
+  
+  if ((((UmlCanvas *) canvas())->browser_diagram())->is_writable()) {
+    BrowserSeqDiagram * sd = (BrowserSeqDiagram *) window()->browser_diagram();
+    bool overlapping = sd->is_overlapping_bars();
+    
+    m.insertItem((overlapping) ? "Transform to flat activity bars"
+			       : "Transform to overlapping activity bars",
+		 29);
+    m.insertSeparator();
+    
+    switch (default_menu(m, 30)) {
+    case EDIT_DRAWING_SETTING_CMD:
+      ((BrowserSeqDiagram *) the_canvas()->browser_diagram())->edit_settings();
+      return;
+    case RELOAD_CMD:
+      // pure drawing modifications are lost
+      // mark the diagram modified because the undid modifications
+      // may be saved in the file are not saved in memory
+      load("Sequence");
+      window()->package_modified();
+      break;
+    case 29:
+      unselect_all();
+      sd->set_overlapping_bars(!overlapping);
+      if (overlapping)
+	toFlat();
+      else
+	toOverlapping();
+      canvas()->update();
+      window()->package_modified();
+      break;
+    }
   }
+  else
+    (void) default_menu(m, 30);
 }
 
 void SeqDiagramView::toFlat() {
@@ -227,6 +232,8 @@ void SeqDiagramView::contentsMousePressEvent(QMouseEvent * e) {
       history_protected = FALSE;
     }
   }
+  else
+    DiagramView::contentsMousePressEvent(e);
 }
 
 void SeqDiagramView::contentsMouseMoveEvent(QMouseEvent * e) {

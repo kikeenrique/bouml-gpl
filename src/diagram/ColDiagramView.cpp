@@ -93,8 +93,11 @@ void ColDiagramView::menu(const QPoint&) {
   QPopupMenu m(0);
   
   m.insertItem(new MenuTitle("Communication diagram menu", m.font()), -1);
-  m.insertSeparator();
-  m.insertItem("Edit all the messages", 29);
+  
+  if ((((UmlCanvas *) canvas())->browser_diagram())->is_writable()) {
+    m.insertSeparator();
+    m.insertItem("Edit all the messages", 29);
+  }
  
   switch (default_menu(m, 30)) {
   case EDIT_DRAWING_SETTING_CMD:
@@ -203,6 +206,8 @@ void ColDiagramView::contentsMousePressEvent(QMouseEvent * e) {
       }
     }
   }
+  else
+    DiagramView::contentsMousePressEvent(e);
 }
 
 void ColDiagramView::dragEnterEvent(QDragEnterEvent * e) {

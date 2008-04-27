@@ -125,6 +125,27 @@ class PhpSettings
   
   _ext = v;
 
+!!!245632.cpp!!!	isGenerateJavadocStyleComment() : bool
+  read_if_needed_();
+
+  return _is_generate_javadoc_comment;
+!!!245632.java!!!	isGenerateJavadocStyleComment() : bool
+  read_if_needed_();
+
+  return _is_generate_javadoc_comment;
+!!!245760.cpp!!!	set_IsGenerateJavadocStyleComment(in v : bool) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpJavadocStyleCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_generate_javadoc_comment = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!245760.java!!!	set_IsGenerateJavadocStyleComment(in v : bool) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpJavadocStyleCmd,
+		   (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+  _is_generate_javadoc_comment = v;
 !!!227456.cpp!!!	classDecl() : string
   read_if_needed_();
   
@@ -466,6 +487,7 @@ class PhpSettings
     (aVisibility) UmlCom::read_char();
   _set_name = UmlCom::read_string();
   _is_set_final = UmlCom::read_bool();
+  _is_generate_javadoc_comment = UmlCom::read_bool();
 !!!231168.java!!!	read_() : void
   _root = UmlCom.read_string();
   
@@ -494,6 +516,7 @@ class PhpSettings
   UmlCom.read_char(); // setter visibility
   _set_name = UmlCom.read_string();
   _is_set_final = UmlCom.read_bool();
+  _is_generate_javadoc_comment = UmlCom.read_bool();
 !!!231296.cpp!!!	read_if_needed_() : void
   UmlSettings::read_if_needed_();
   if (!_defined) {

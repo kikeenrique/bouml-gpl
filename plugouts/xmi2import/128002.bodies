@@ -142,7 +142,7 @@ class UmlComponent
   }
   else if (!FileIn::isBypassedId(idref))
     UmlCom::trace("component : unknown class reference '" + idref + "'<br>");
-!!!255874.cpp!!!	generalizeDependRealize(inout target : UmlComponent, inout in : FileIn, in context : int, in label : string) : void
+!!!255874.cpp!!!	generalizeDependRealize(inout target : UmlComponent, inout in : FileIn, in context : int, in label : string, in constraint : string) : void
   if ((context == 3) && (target->kind() == aClass)) {
     if (! WarningAlreadyProduced) {
       WarningAlreadyProduced = TRUE;
@@ -157,8 +157,8 @@ class UmlComponent
     set_AssociatedClasses(realizingClasses(), providedClasses(), required);
   }
   else
-    UmlItem::generalizeDependRealize(target, in, context, label);
-!!!255746.cpp!!!	solveGeneralizationDependencyRealization(in context : int, in idref : string, in label : string) : void
+    UmlItem::generalizeDependRealize(target, in, context, label, constraint);
+!!!255746.cpp!!!	solveGeneralizationDependencyRealization(in context : int, in idref : string, in label : string, in constraint : string) : void
   QMap<QCString, UmlItem *>::Iterator it;
   
   if ((context == 3) &&
@@ -177,4 +177,4 @@ class UmlComponent
     set_AssociatedClasses(realizingClasses(), providedClasses(), required);
   }
   else
-    UmlItem::solveGeneralizationDependencyRealization(context, idref, label);
+    UmlItem::solveGeneralizationDependencyRealization(context, idref, label, constraint);

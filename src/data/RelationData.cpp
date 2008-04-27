@@ -46,6 +46,9 @@
 IdDict<RelationData> RelationData::all(1023, __FILE__);
 QList<RelationData> RelationData::Unconsistent;
 
+// file format < 56
+static QList<RelationData> IncludeToHeaderIfExternal;
+
 RelationData::RelationData(UmlCode e, int id)
     : Labeled<RelationData>(all, id), is_deleted(FALSE), is_unconsistent(FALSE), type(e) {
   a.isa_class_relation = b.isa_class_relation = FALSE; 
@@ -1376,6 +1379,9 @@ RelationData * RelationData::read(char * & st, char * & k,
 	  else if ((result->a.cpp_decl == "Generated") ||
 		   (result->a.cpp_decl == "${type}"))
 	    result->a.cpp_decl = "#include in header";
+	  else if ((result->a.cpp_decl == "#include in source") &&
+		   (read_file_format() < 56))
+	    IncludeToHeaderIfExternal.append(result);
 	}
 	break;
       default:
@@ -1423,5 +1429,20 @@ void RelationData::delete_unconsistent()
     if (!d->deletedp())
       d->BasicData::delete_it();
     delete d;
+  }
+}
+
+// for file < 56, modify import from source to header
+// if the target class is external
+
+void RelationData::post_load()
+{
+  while (! IncludeToHeaderIfExternal.isEmpty()) {
+    RelationData * rd = IncludeToHeaderIfExternal.take(0);
+    
+    if ((rd->end_removed_from != 0) &&
+	(rd->end_removed_from->get_type() == UmlClass) &&
+	((ClassData *) rd->end_removed_from->get_data())->cpp_is_external())
+      rd->a.cpp_decl = "#include in header";
   }
 }

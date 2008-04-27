@@ -31,8 +31,9 @@ class ActivityObjectData;
 
 #include "BrowserNode.h"
 #include "Labeled.h"
+#include "BrowserActivityElement.h"
 
-class BrowserExpansionNode : public BrowserNode, public Labeled<BrowserExpansionNode> {
+class BrowserExpansionNode : public BrowserNode, public Labeled<BrowserExpansionNode>, public BrowserActivityElement {
   friend class StereotypesDialog;
   
   protected:
@@ -70,6 +71,7 @@ class BrowserExpansionNode : public BrowserNode, public Labeled<BrowserExpansion
     virtual BasicData * add_relation(UmlCode, BrowserNode * end);
     const char * may_start() const;
     const char * may_connect(const BrowserNode * dest) const;
+    virtual const char * connexion_from(bool control) const;
 
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserExpansionNode * read_ref(char * &);

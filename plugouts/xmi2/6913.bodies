@@ -29,9 +29,9 @@ class UmlFormalParameter
   out << "/>\n";
 
   if (defaultValue().type != 0)
-    UmlItem::write_default_value(out, defaultValue().type->name());
+    UmlItem::write_default_value(out, defaultValue().type->name(), cl, rank);
   else
-    UmlItem::write_default_value(out, defaultValue().explicit_type);
+    UmlItem::write_default_value(out, defaultValue().explicit_type, cl, rank);
 
   out.indent(-1);
   out.indent();

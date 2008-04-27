@@ -32,17 +32,20 @@
 #include "UmlCom.h"
 #include "util.h"
 
-bool CppRefType::add(const UmlTypeSpec & t, QList<CppRefType> & l, bool incl)
+bool CppRefType::add(const UmlTypeSpec & t, QList<CppRefType> & l,
+		     bool incl)
 {
   return (t.type)
     ? add(t.type, l, incl)
     : add(t.explicit_type, l, incl);
 }
 
-bool CppRefType::add(UmlClass * cl, QList<CppRefType> & l, bool incl)
+bool CppRefType::add(UmlClass * cl, QList<CppRefType> & l,
+		     bool incl, bool hight)
 {
   CppRefType * ref;
   QCString t = cl->name();
+  Weight w;
   
   if (cl->parent()->kind() == aClass) {
     // nested => need include parent
@@ -51,7 +54,12 @@ bool CppRefType::add(UmlClass * cl, QList<CppRefType> & l, bool incl)
     while (cl->parent()->kind() == aClass);
     
     incl = TRUE;
+    w = Strong;
   }
+  else if (incl)
+    w = (hight) ? Strong : Medium;
+  else
+    w = (hight) ? High : Low;
   
   for (ref = l.first(); ref; ref = l.next()) {
     // don't use ref->type.toString() because of synonymous
@@ -59,13 +67,13 @@ bool CppRefType::add(UmlClass * cl, QList<CppRefType> & l, bool incl)
     if ((ref->type.type != 0)
 	? (ref->type.type == cl)
 	: (ref->type.explicit_type == t)) {
-      if (incl)
-	ref->included = TRUE;
+      if (w > ref->weight)
+	ref->included = incl;
       return TRUE;
     }
   }
   
-  l.append(new CppRefType(cl, incl));
+  l.append(new CppRefType(cl, incl, w));
   return TRUE;
 }
 
@@ -93,16 +101,17 @@ bool CppRefType::add(const QCString & t, QList<CppRefType> & l, bool incl)
     return TRUE;
   
   CppRefType * ref;
+  Weight w = (incl) ? Medium : Low;
   
   for (ref = l.first(); ref; ref = l.next()) {
     if (ref->type.toString() == t) {
-      if (incl)
-	ref->included = TRUE;
+      if (w > ref->weight)
+	ref->included = incl;
       return TRUE;
     }
   }
   
-  l.append(new CppRefType(t, incl));
+  l.append(new CppRefType(t, incl, w));
   return TRUE;
 }
 
@@ -258,25 +267,26 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
 	h_incl += hform;
     }
     else if ((cl != 0) &&
-	     !cl->isCppExternal() &&
 	     (cl->parent()->kind() != aClass)) {	// else too complicated
       // #include useless in header file, place it in the source file
       if ((src_incl.find(srcform) == -1) && (h_incl.find(hform) == -1) &&
 	  (hdef.find(hform) == -1) && (srcdef.find(srcform) == -1))
 	src_incl += srcform;
       
-      // header file must contains the declaration
-      hform = cl->decl();
-      
-      if (decl.find(hform) == -1)
-	decl += hform;
-
-      if ((cl->associatedArtifact() == 0) &&
-	  (cl->parent()->kind() != aClass)) {
-	write_trace_header();
-      	UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b> class<i> ") + cl->name() +
-		      "</i> referenced but does not have associated <i>artifact</i></b></font><br>");
-	incr_warning();
+      if (!cl->isCppExternal()) {
+	// header file must contains the declaration
+	hform = cl->decl();
+	
+	if (decl.find(hform) == -1)
+	  decl += hform;
+	
+	if ((cl->associatedArtifact() == 0) &&
+	    (cl->parent()->kind() != aClass)) {
+	  write_trace_header();
+	  UmlCom::trace(QCString("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b> class<i> ") + cl->name() +
+			"</i> referenced but does not have associated <i>artifact</i></b></font><br>");
+	  incr_warning();
+	}
       }
     }
     else if (!hform.isEmpty()) {
@@ -289,6 +299,4 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
 	h_incl += hform;
     }
   }
-  
-  // trier !
 }

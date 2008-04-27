@@ -283,7 +283,7 @@ bool UmlBaseOperation::cppContextualBodyIndent() {
 bool UmlBaseOperation::set_CppContextualBodyIndent(bool v) {
   bool vv;
 
-  if (set_it_(vv, v, setCppContextualBodyIndent)) {
+  if (set_it_(vv, v, setCppContextualBodyIndentCmd)) {
     _cpp_contextual_body_indent = v;
     return TRUE;
   }
@@ -386,7 +386,7 @@ bool UmlBaseOperation::javaContextualBodyIndent() {
 bool UmlBaseOperation::set_JavaContextualBodyIndent(bool v) {
   bool vv;
 
-  if (set_it_(vv, v, setJavaContextualBodyIndent)) {
+  if (set_it_(vv, v, setJavaContextualBodyIndentCmd)) {
     _java_contextual_body_indent = v;
     return TRUE;
   }
@@ -472,7 +472,7 @@ bool UmlBaseOperation::phpContextualBodyIndent() {
 bool UmlBaseOperation::set_PhpContextualBodyIndent(bool v) {
   bool vv;
 
-  if (set_it_(vv, v, setPhpContextualBodyIndent)) {
+  if (set_it_(vv, v, setPhpContextualBodyIndentCmd)) {
     _php_contextual_body_indent = v;
     return TRUE;
   }
@@ -541,7 +541,7 @@ bool UmlBaseOperation::pythonContextualBodyIndent() {
 bool UmlBaseOperation::set_PythonContextualBodyIndent(bool v) {
   bool vv;
 
-  if (set_it_(vv, v, setPythonContextualBodyIndent)) {
+  if (set_it_(vv, v, setPythonContextualBodyIndentCmd)) {
     _python_contextual_body_indent = v;
     return TRUE;
   }

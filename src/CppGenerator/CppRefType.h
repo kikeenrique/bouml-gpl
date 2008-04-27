@@ -34,15 +34,10 @@ class QTextOStream;
 class UmlArtifact;
 
 class CppRefType {
-  protected:
-    UmlTypeSpec type;
-    bool included;
-    
-    CppRefType(UmlClass * cl, bool i) : included(i) { type.type = cl; };
-    CppRefType(const QCString & t, bool i) : included(i) { type.explicit_type = t; };
-    
   public:
-    static bool add(UmlClass *, QList<CppRefType> &, bool incl);
+    enum Weight { Low, Medium, High, Strong };
+      
+    static bool add(UmlClass *, QList<CppRefType> &, bool incl, bool hight = FALSE);
     static bool add(const QCString &, QList<CppRefType> &, bool incl);
     static bool add(const UmlTypeSpec & t, QList<CppRefType> & l, bool incl);
     static void remove(UmlClass *, QList<CppRefType> & l);
@@ -52,6 +47,17 @@ class CppRefType {
 			const QCString & hdef, const QCString & srcdef,
 			QCString & h_incl,  QCString & decl, QCString & src_incl,
 			UmlArtifact * who);
+    
+  protected:
+    UmlTypeSpec type;
+    bool included;
+    Weight weight;
+    
+    CppRefType(UmlClass * cl, bool i, Weight w)
+      : included(i), weight(w) { type.type = cl; };
+    CppRefType(const QCString & t, bool i, Weight w)
+      : included(i), weight(w) { type.explicit_type = t; };
+    
 };
 
 #endif

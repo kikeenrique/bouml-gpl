@@ -19,7 +19,7 @@ class UmlArtifact : public UmlBaseArtifact {
 
 
   private:
-    virtual void write_manifest(FileOut & out, UmlItem * x, const char * name);
+    virtual void write_manifest(FileOut & out, UmlItem * x, const char * name, unsigned rank);
 
 };
 

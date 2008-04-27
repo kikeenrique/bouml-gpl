@@ -351,6 +351,13 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
     canvas()->update();
     history_protected = FALSE;
   }
+  else if ((e->button() == ::Qt::RightButton) &&
+	   ! BrowserNode::popupMenuActive()) {	// Qt bug
+    BrowserNode::setPopupMenuActive(TRUE);
+    
+    menu(e->pos());
+    BrowserNode::setPopupMenuActive(FALSE);
+  } 
 }
 
 void DiagramView::contentsMouseReleaseEvent(QMouseEvent * e) {
@@ -1396,16 +1403,21 @@ static bool find_browser_element(QCanvas * canvas, QCanvasItemList & r)
 }
 
 int DiagramView::default_menu(QPopupMenu & m, int f) {
+  bool wr = (((UmlCanvas *) canvas())->browser_diagram())->is_writable();
+  
   if (draw_line)
     abort_line_construction();
 
   QPopupMenu formatm(0);
   QCanvasItemList l;
   
-  m.insertItem("Edit drawing settings", EDIT_DRAWING_SETTING_CMD);
-  m.insertSeparator();
+  if (wr) {
+    m.insertItem("Edit drawing settings", EDIT_DRAWING_SETTING_CMD);
+    m.insertSeparator();
+  }
   m.insertItem("Select diagram in browser", 1);
-  m.insertItem("Select all (Ctrl+a)", 2);
+  if (wr)
+    m.insertItem("Select all (Ctrl+a)", 2);
   if (find_browser_element(canvas(), l))
     m.insertItem("Find selected browser element", 19);
   m.insertSeparator();
@@ -1415,32 +1427,34 @@ int DiagramView::default_menu(QPopupMenu & m, int f) {
   m.insertItem("Save visible picture part (png)", 10);
   m.insertItem("Save optimal picture part (svg)", 15);
   m.insertItem("Save visible picture part (svg)", 16);
-  if (!clipboard.isEmpty() &&
+  if (wr && !clipboard.isEmpty() &&
       (copied_from == window()->browser_diagram()->get_type()))
     m.insertItem("Paste copied items (Ctrl+v)", 9);
   m.insertSeparator();
   m.insertItem("Optimal scale", 7);
   m.insertItem("Optimal window size", 8);
-  m.insertItem("Set preferred size and scale", 4);
-  m.insertItem("Set preferred scale (size unset)", 17);
-  if (preferred_zoom != 0) {
-    if (preferred_size.width() != 0) {
-      m.insertItem("Restore preferred size and scale", 5);
-      m.insertItem("Unset preferred size and scale", 18);
+  if (wr) {
+    m.insertItem("Set preferred size and scale", 4);
+    m.insertItem("Set preferred scale (size unset)", 17);
+    if (preferred_zoom != 0) {
+      if (preferred_size.width() != 0) {
+	m.insertItem("Restore preferred size and scale", 5);
+	m.insertItem("Unset preferred size and scale", 18);
+      }
+      else {
+	m.insertItem("Restore preferred scale", 5);
+	m.insertItem("Unset preferred scale", 18);
+      }
     }
-    else {
-      m.insertItem("Restore preferred scale", 5);
-      m.insertItem("Unset preferred scale", 18);
-    }
+    init_format_menu(formatm, f);
+    m.insertItem("Format", &formatm);
+    m.insertSeparator();
+    m.insertItem("Undo all changes", RELOAD_CMD);
+    if (available_undo())
+      m.insertItem("Undo (Ctrl+z or Ctrl+u)", 11);
+    if (available_redo())
+      m.insertItem("Redo (Ctrl+y or Ctrl+r)", 12);
   }
-  init_format_menu(formatm, f);
-  m.insertItem("Format", &formatm);
-  m.insertSeparator();
-  m.insertItem("Undo all changes", RELOAD_CMD);
-  if (available_undo())
-    m.insertItem("Undo (Ctrl+z or Ctrl+u)", 11);
-  if (available_redo())
-    m.insertItem("Redo (Ctrl+y or Ctrl+r)", 12);
 
   int choice = m.exec(QCursor::pos());
   

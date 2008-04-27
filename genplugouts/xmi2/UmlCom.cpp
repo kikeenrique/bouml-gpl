@@ -28,7 +28,7 @@ bool UmlCom::connect(unsigned int port)
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(36);
+    write_unsigned(38);
     flush();
     return TRUE;
   }
@@ -234,6 +234,18 @@ void UmlCom::send_cmd(CmdFamily f, unsigned int cmd, char arg)
   write_char(f);
   write_char(cmd);
   write_char(arg);
+  flush();
+}
+
+void UmlCom::send_cmd(CmdFamily f, unsigned int cmd, int arg, const char *)
+{
+#ifdef TRACE
+  cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << arg << ", dummy)\n";
+#endif
+  
+  write_char(f);
+  write_char(cmd);
+  write_unsigned(arg);
   flush();
 }
 

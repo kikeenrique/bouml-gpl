@@ -23,36 +23,12 @@
 //
 // *************************************************************************
 
-#include <qapplication.h>
-#include <qmessagebox.h>
+#ifndef BROWSER_ACTIVITYELEMENT_H
+#define BROWSER_ACTIVITYELEMENT_H
 
-#include "UmlCom.h"
-#include "UmlPackage.h"
+class BrowserActivityElement {
+  public:
+    virtual const char * connexion_from(bool control) const = 0;
+};
 
-// the program is called with the socket port number in argument
-
-int main(int argc, char ** argv)
-{
-  if (argc != 2)
-    return 0;
-
-  QApplication a(argc, argv);
-  
-  if (UmlCom::connect(QString(argv[1]).toUInt())) {
-    try {
-      UmlCom::trace("<b>Plug-out Upgrade</b> release 1.12.1<br><hr>");
-      if (UmlPackage::getProject()->upgrade())
-	UmlCom::trace("<br><hr>Done<br>");
-    }
-    catch (...) {
-      QMessageBox::critical(0, "Upgrade", 
-			    "Error, close the project WITHOUT saving it");
-    }
-
-    UmlCom::message("");
-    UmlCom::bye();
-  }
-  
-  UmlCom::close();
-  return 0;
-}
+#endif

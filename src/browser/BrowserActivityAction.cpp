@@ -214,58 +214,20 @@ const char * BrowserActivityAction::may_connect(UmlCode & l, const BrowserNode *
   switch (l) {
   case UmlFlow:
     {
-      BrowserNode * bn = dest->get_container(UmlActivity);
+      BrowserNode * container = dest->get_container(UmlActivity);
       
-      if ((bn != 0) && (get_container(UmlActivity) != bn))
+      if (container == 0)
+	return "illegal";
+      
+      if (get_container(UmlActivity) != container)
 	return "not in the same activity";
-    }
-    
-    switch (dest->get_type()) {
-    case InitialAN:
-      return "initial node can't have incoming flow";
-    case ForkAN:  // theo all input and output must be control/data exclusively
-      return (((BrowserActivityNode *) dest)->target_of_flow())
-	? "fork can't have several incoming flow"
-	: 0;
-    case UmlParameter:
-      {
-	ParameterData * data = (ParameterData *) dest->get_data();
-
-	if (data->get_dir() == UmlIn)
-	  return "an input parameter can't have incoming flows";
-	else if (!data->get_is_control())
-	  return "parameter can't accept control flow (not 'is_control')";
-	else
-	  return 0;
-      }
-    case UmlActivityPin:
-      {
-	PinData * data = (PinData *) dest->get_data();
-
-	if (!data->get_is_control())
-	  return "pin can't accept control flow (not 'is_control')";
-	else
-	  return 0;
-      }
-    case UmlActivityObject:
-    case UmlExpansionNode:
-      {
-	ActivityObjectData * data = (ActivityObjectData *) dest->get_data();
-
-	if (!data->get_is_control())
-	  return "can't accept control flow (not 'is_control')";
-	else
-	  return 0;
-      }
-    case FlowFinalAN:
-    case ActivityFinalAN:
-    case UmlActivityAction:
-    case DecisionAN:	      // theo all input and
-    case MergeAN:	      // output must be
-    case JoinAN:	      // control/data exclusively
-      return 0;
-    default:
-      return "illegal";
+      
+      const BrowserActivityElement * elt =
+	dynamic_cast<const BrowserActivityElement *>(dest);
+      
+      return (elt == 0)
+	? "illegal"
+	: elt->connexion_from(TRUE);  
     }
   case UmlDependency:
     l = UmlDependOn;
@@ -283,6 +245,11 @@ const char * BrowserActivityAction::may_connect(UmlCode & l, const BrowserNode *
   default:
       return "illegal";
   }
+}
+
+const char * BrowserActivityAction::connexion_from(bool) const {
+  // theo all input and output must be control/data exclusively
+  return 0;
 }
 
 BrowserActivityAction *

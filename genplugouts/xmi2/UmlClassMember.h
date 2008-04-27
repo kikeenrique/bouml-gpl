@@ -22,6 +22,8 @@ class UmlClassMember : public UmlBaseClassMember {
 
     void write_annotation(FileOut & out);
 
+    void write_constraint(FileOut & out);
+
     //  return the true name of the item
     
     QCString true_name(QCString name, QCString decl);

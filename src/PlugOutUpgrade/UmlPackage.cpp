@@ -8839,7 +8839,7 @@ void add_fragment(UmlClassView * base_class_view, UmlClassView * user_class_view
   op = base_fragment_compart->add_op("texts", PublicVisibility, "string");
   op->set_isCppConst(TRUE);
   op->set_Description(" the texts placed in the compartment");
-  op->set_cpp("const QVector<const char> &", "", "  return (const QVector<const char> &) _texts;\n", TRUE, 0, 0);
+  op->set_cpp("const QVector<char> &", "", "  return _texts;\n", TRUE, 0, 0);
   op->set_java("${type}[]", "", "  return _texts;\n", TRUE);
   
   op = base_fragment_compart->add_op("contained", PublicVisibility, user_fragment);
@@ -10392,6 +10392,640 @@ void UmlPackage::replace_friend() {
     ch[i]->replace_friend();
 }
 
+
+//
+//
+//
+
+void update_pack_global(UmlClass * uml_base_package)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("update UmlBasePackage : find namespace/module/namespace<br>\n");
+
+  //
+
+  UmlOperation * op;
+  QCString body;
+  int index;
+  
+  if ((op = uml_base_package->get_operation("findNamespace")) != 0) {
+    op->set_Name("findCppNamespace");
+    body = op->cppBody();
+    if ((index = body.find("findNamespaceCmd")) != -1)
+      op->set_CppBody(body.replace(index, 16, "findCppNamespaceCmd"));
+    body = op->javaBody();
+    if ((index = body.find("findNamespaceCmd")) != -1)
+      op->set_JavaBody(body.replace(index, 16, "findCppNamespaceCmd"));
+  }
+  
+  if ((op = uml_base_package->get_operation("findPackage")) != 0) {
+    op->set_Name("findJavaPackage");
+    body = op->cppBody();
+    if ((index = body.find("findPackageCmd")) != -1)
+      op->set_CppBody(body.replace(index, 14, "findJavaPackageCmd"));
+    body = op->javaBody();
+    if ((index = body.find("findPackageCmd")) != -1)
+      op->set_JavaBody(body.replace(index, 14, "findJavaPackageCmd"));
+  }
+  
+  if ((op = uml_base_package->get_operation("findModule")) != 0) {
+    op->set_Name("findIdlModule");
+    body = op->cppBody();
+    if ((index = body.find("findModuleCmd")) != -1)
+      op->set_CppBody(body.replace(index, 13, "findIdlModuleCmd"));
+    body = op->javaBody();
+    if ((index = body.find("findModuleCmd")) != -1)
+      op->set_JavaBody(body.replace(index, 13, "findIdlModuleCmd"));
+  }
+  
+  UmlClass * packageglobalcmd = UmlClass::get("PackageGlobalCmd", 0);
+  UmlAttribute * at;
+  
+  if ((at = packageglobalcmd->get_attribute("findNamespaceCmd")) != 0)
+    at->set_Name("findCppNamespaceCmd");
+  
+  if ((at = packageglobalcmd->get_attribute("findPackageCmd")) != 0)
+    at->set_Name("findJavaPackageCmd");
+  
+  if ((at = packageglobalcmd->get_attribute("findModuleCmd")) != 0)
+    at->set_Name("findIdlModuleCmd");
+
+  //
+
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
+void add_contextual_body_indent()
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("update UmlBaseOperation : contextual body indent<br>\n");
+
+  //
+  
+  UmlClass * baseoper = UmlClass::get("UmlBaseOperation", 0);
+  QCString s;
+  int index;
+  
+  UmlAttribute * at1 =
+    baseoper->add_attribute("_cpp_contextual_body_indent", PrivateVisibility, "bool",
+			    "WITHCPP", "endif");
+  s = at1->cppDecl();
+  index = s.find("${type} ${name}");
+  if (index != -1) {
+    s.insert(index + 15, " : 1");
+    at1->set_CppDecl(s);
+  }
+  at1->moveAfter(baseoper->get_attribute("_idl_get_set_frozen"));
+  
+  UmlAttribute * at2 =
+    baseoper->add_attribute("_java_contextual_body_indent", PrivateVisibility, "bool",
+			    "WITHJAVA", "endif");
+  s = at2->cppDecl();
+  index = s.find("${type} ${name}");
+  if (index != -1) {
+    s.insert(index + 15, " : 1");
+    at2->set_CppDecl(s);
+  }
+  at2->moveAfter(at1);
+  
+  UmlAttribute * at3 =
+    baseoper->add_attribute("_php_contextual_body_indent", PrivateVisibility, "bool",
+			    "WITHPHP", "endif");
+  s = at3->cppDecl();
+  index = s.find("${type} ${name}");
+  if (index != -1) {
+    s.insert(index + 15, " : 1");
+    at3->set_CppDecl(s);
+  }
+  at3->moveAfter(at2);
+  
+  //
+  
+  UmlOperation * op;
+  UmlOperation * pos;
+  
+  pos = baseoper->get_operation("set_CppGetSetFrozen");
+  defGetBool(baseoper, _cpp_contextual_body_indent, cppContextualBodyIndent, "WITHCPP", 0,
+	     " indicate if the indent of the C++ body is contextual or absolute");
+  op->moveAfter(pos);
+  pos = op;
+  defSetBoolBitField(baseoper, _cpp_contextual_body_indent,
+		     set_CppContextualBodyIndent, setCppContextualBodyIndentCmd, 0, "endif",
+		     " set if the indent of the C++ body is contextual or absolute");
+  op->moveAfter(pos);
+
+  pos = baseoper->get_operation("set_JavaGetSetFrozen");
+  defGetBool(baseoper, _java_contextual_body_indent, javaContextualBodyIndent, "WITHJAVA", 0,
+	     " indicate if the indent of the Java body is contextual or absolute");
+  op->moveAfter(pos);
+  pos = op;
+  defSetBoolBitField(baseoper, _java_contextual_body_indent,
+		     set_JavaContextualBodyIndent, setJavaContextualBodyIndentCmd, 0, "endif",
+		     " set if the indent of the Java body is contextual or absolute");
+  op->moveAfter(pos);
+
+  pos = baseoper->get_operation("set_PhpGetSetFrozen");
+  defGetBool(baseoper, _idl_get_set_frozen, phpContextualBodyIndent, "WITHIDL", 0,
+	     " indicate if the indent of the PHP body is contextual or absolute");
+  op->moveAfter(pos);
+  pos = op;
+  defSetBoolBitField(baseoper, _php_contextual_body_indent,
+		     set_PhpContextualBodyIndent, setPhpContextualBodyIndentCmd, 0, "endif",
+		     " set if the indent of the PHP body is contextual or absolute");
+  op->moveAfter(pos);
+
+  //
+
+  op = baseoper->get_operation("read_cpp_");
+  op->set_CppBody(op->cppBody() + "  _cpp_contextual_body_indent = UmlCom::read_bool();\n");
+  op->set_JavaBody(op->javaBody() + "  _cpp_contextual_body_indent = UmlCom.read_bool();\n");
+
+  op = baseoper->get_operation("read_java_");
+  op->set_CppBody(op->cppBody() + "  _java_contextual_body_indent = UmlCom::read_bool();\n");
+  op->set_JavaBody(op->javaBody() + "  _java_contextual_body_indent = UmlCom.read_bool();\n");
+
+  op = baseoper->get_operation("read_php_");
+  op->set_CppBody(op->cppBody() + "  _php_contextual_body_indent = UmlCom::read_bool();\n");
+  op->set_JavaBody(op->javaBody() + "  _php_contextual_body_indent = UmlCom.read_bool();\n");
+
+  //
+  
+  UmlClass * itcmd = UmlClass::get("OnInstanceCmd", 0);
+  
+  itcmd->add_enum_item("setCppContextualBodyIndentCmd");
+  itcmd->add_enum_item("setJavaContextualBodyIndentCmd");
+  itcmd->add_enum_item("setPhpContextualBodyIndentCmd");
+  
+  //
+
+  UmlCom::set_user_id(uid);
+}
+
+  
+//
+//
+//
+
+void php_javadocstylecomment()
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("update PhpSettings : add javadoc style<br>\n");
+  
+  //
+  
+  UmlClass * php_settings = UmlClass::get("PhpSettings", 0);
+  UmlAttribute * at =
+    php_settings->add_attribute("_is_generate_javadoc_comment", PrivateVisibility,
+				"bool",	0, 0);
+
+  at->moveAfter(php_settings->get_attribute("_ext"));
+  at->set_isClassMember(TRUE);
+
+  // get
+  
+  UmlOperation * op = php_settings->add_op("isGenerateJavadocStyleComment", PublicVisibility, "bool");
+   
+  op->set_isClassMember(TRUE);
+  op->set_Description(" return if ${comment} generate Javadoc style comment");
+  op->set_cpp("${type}", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _is_generate_javadoc_comment;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _is_generate_javadoc_comment;\n",
+	       FALSE);
+  op->moveAfter(php_settings->get_operation("set_SourceExtension"));
+
+  // set
+  
+  UmlOperation * op2 = php_settings->add_op("set_IsGenerateJavadocStyleComment", PublicVisibility, "bool");
+  
+  op2->set_isClassMember(TRUE);
+  op2->set_Description(" set if ${comment} generate Javadoc style comment\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java");
+  op2->add_param(0, InputDirection, "v", "bool"); 
+  op2->set_cpp("${type}", "${t0} ${p0}",
+		"  UmlCom::send_cmd(phpSettingsCmd, setPhpJavadocStyleCmd, v);\n"
+		"  if (UmlCom::read_bool()) {\n"
+		"    _is_generate_javadoc_comment = v;\n"
+		"    return TRUE;\n"
+		"  }\n"
+		"  else\n"
+		"    return FALSE;\n",
+		FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}",
+		"  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpJavadocStyleCmd,\n"
+		"		   (v) ? (byte) 1 : (byte) 0);\n"
+		"  UmlCom.check();\n"
+		"  _is_generate_javadoc_comment = v;\n",
+		FALSE);
+  op2->moveAfter(op);  
+  
+  //
+
+  op = php_settings->get_operation("read_");
+  op->set_CppBody(op->cppBody() + "  _is_generate_javadoc_comment = UmlCom::read_bool();\n");
+  op->set_JavaBody(op->javaBody() + "  _is_generate_javadoc_comment = UmlCom.read_bool();\n");
+
+  //
+
+  UmlClass * stcmd = UmlClass::get("PhpSettingsCmd", 0);
+  
+  stcmd->add_enum_item("setPhpJavadocStyleCmd");
+  
+  //
+
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
+void add_profile()
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("update PhpSettings adding javadoc style<br>\n");
+  
+  //
+  
+  UmlClass * packageglobalcmd = UmlClass::get("PackageGlobalCmd", 0);
+
+  packageglobalcmd->add_enum_item("findPythonPackageCmd");
+  packageglobalcmd->add_enum_item("updateProfileCmd");
+  packageglobalcmd->add_enum_item("findStereotypeCmd");
+  
+  //
+  
+  UmlClass * base_package = UmlClass::get("UmlBasePackage", 0);
+  UmlOperation * op;
+  
+  op = base_package->add_op("updateProfiles", PublicVisibility, "void");
+  op->set_Description(" Force consistency concerning the profiles and their stereotypes\n");
+  op->set_cpp("${type}", "",
+	      "  UmlCom::send_cmd(packageGlobalCmd, updateProfileCmd);\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  UmlCom.send_cmd(CmdFamily.packageGlobalCmd, PackageGlobalCmd._updateProfileCmd);\n",
+	       FALSE);
+  op->set_isClassMember(TRUE);
+  op->moveAfter(base_package->get_operation("loadProject"));
+  
+  UmlClass * base_class = UmlClass::get("UmlBaseClass", 0);
+  
+  op = base_class->add_op("findStereotype", PublicVisibility, "UmlClass");
+  op->add_param(0, InputDirection, "s", "string");
+  op->add_param(1, InputDirection, "caseSensitive", "bool");
+  op->set_Description(" Return the class supporting the stereotype corresponding to\n"
+		       " the first parameter being 'profile_name:stereotype_name', or 0/null");
+  op->set_cpp("${type} *", "${t0} ${p0}, ${t1} ${p1}",
+	       "  UmlCom::send_cmd(packageGlobalCmd, findStereotypeCmd,\n"
+	       "                   (caseSensitive) ? \"y\" : \"n\", (const char *) s);\n"
+	       "  return (UmlClass *) UmlBaseItem::read_();\n",
+	       FALSE, 0, 0);
+  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}", \
+		"  UmlCom.send_cmd(CmdFamily.packageGlobalCmd, PackageGlobalCmd._findStereotypeCmd,\n"
+		"                   (caseSensitive) ? \"y\" : \"n\", s);\n"
+		"  return (UmlClass) UmlBaseItem.read_();\n",
+		FALSE);
+  op->set_isClassMember(TRUE);
+  op->moveAfter(base_class->get_operation("get"));
+  
+  UmlArtifact * art = base_class->associatedArtifact();
+  QCString s = art->cppSource();
+  
+  art->set_CppSource(s.insert(s.find("${namespace_start}"),
+			      "#include \"PackageGlobalCmd.h\"\n"));
+  
+  //
+  
+  UmlClass * itcmd = UmlClass::get("OnInstanceCmd", 0);
+  static const char * const cmds[] = {
+    // used by api 39 but define them to add applyStereotypeCmd
+    // before adding python management
+    "setPythonDeclCmd",
+    "setIsPythonExternalCmd",
+    "setPythonSrcCmd",
+    "setPythonBodyCmd",
+    "setPythonNameSpecCmd",
+    "setPythonDirCmd",
+    "setPythonFrozenCmd",
+    "setIsPython2_2Cmd",
+    "setPythonDecoratorsCmd",
+    "setPythonPackageCmd",
+    "setPythonContextualBodyIndentCmd",
+    
+    "applyStereotypeCmd"
+  };
+  
+  for (int i = 0; i != sizeof(cmds)/sizeof(cmds[0]); i += 1)
+    itcmd->add_enum_item(cmds[i]);
+  
+  //
+  
+  UmlClass * base_item = UmlClass::get("UmlBaseItem", 0);
+  
+  op = base_item->add_op("applyStereotype", PublicVisibility, "bool", TRUE);
+  op->set_Description(" If the current stereotype is part of a profile add needed properties.\n"
+		      " In all cases remove extra properties whose keys contain two ':'.\n"
+		      "\n"
+		      " If the element is read-only, return FALSE in C++, produce a RuntimeException in Java");
+  op->set_cpp("${type}", "",
+	      "  UmlCom::send_cmd(_identifier, applyStereotypeCmd);\n"
+	      "  if (UmlCom::read_bool() == 0) return FALSE;\n"
+	      "  unload(false, false);\n"
+	      "  return TRUE;\n",
+	      FALSE, 0, 0);
+  op->set_java("void", "",
+	       "  UmlCom.send_cmd(identifier_(), OnInstanceCmd.applyStereotypeCmd);\n"
+	       "  UmlCom.check();\n"
+	       "  unload(false, false);\n",
+	       FALSE);
+  op->moveAfter(base_item->get_operation("set_Stereotype"));
+  
+  //
+
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
+void modify_texts()
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("modify <i>UmlBaseFragmentCompartment::texts()</i> to bypass Microsoft Visual C++ bug<br>");
+  
+  //
+  
+  UmlClass * base_frc = UmlClass::get("UmlBaseFragmentCompartment", 0);
+  UmlOperation * op = base_frc->get_operation("texts");
+  
+  op->set_cpp("const QVector<char> &", "", "  return _texts;\n", TRUE, 0, 0);
+  
+  //
+
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
+void fixe_idlsetting_read()
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("fixe <i>IdlSetting::read_()<br>");
+  
+  //
+  
+  UmlClass * idlsetting = UmlClass::get("IdlSettings", 0);
+  UmlOperation * op = idlsetting->get_operation("read_");
+  
+  op->set_CppBody("\
+  _root = UmlCom::read_string();\n\
+  \n\
+  unsigned n;\n\
+  unsigned index;\n\
+  \n\
+  n = UmlCom::read_unsigned();\n\
+  \n\
+  for (index = 0; index != n; index += 1) {\n\
+    UmlSettings::_builtins[index].idl = UmlCom::read_string();\n\
+  }\n\
+  \n\
+  n = UmlCom::read_unsigned();\n\
+  \n\
+  for (index = 0; index != n; index += 1)\n\
+    UmlSettings::_relation_attribute_stereotypes[index].idl = UmlCom::read_string();\n\
+  \n\
+  n = UmlCom::read_unsigned();\n\
+  \n\
+  for (index = 0; index != n; index += 1)\n\
+    UmlSettings::_class_stereotypes[index].idl = UmlCom::read_string();\n\
+  \n\
+  n = UmlCom::read_unsigned();\n\
+  _map_includes.clear();\n\
+  if (n > _map_includes.size())\n\
+    _map_includes.resize(n);\n\
+  \n\
+  for (index = 0; index != n; index += 1) {\n\
+    QCString t = UmlCom::read_string();\n\
+    QCString i = UmlCom::read_string();\n\
+    \n\
+    _map_includes.insert(t, new QCString(i));\n\
+  }\n\
+  \n\
+  _src_content = UmlCom::read_string();\n\
+  _ext = UmlCom::read_string();\n\
+\n\
+  _interface_decl = UmlCom::read_string();\n\
+  _valuetype_decl = UmlCom::read_string();\n\
+  _struct_decl = UmlCom::read_string();\n\
+  _typedef_decl = UmlCom::read_string();\n\
+  _exception_decl = UmlCom::read_string();\n\
+  _union_decl = UmlCom::read_string();\n\
+  _enum_decl = UmlCom::read_string();\n\
+  _external_class_decl = UmlCom::read_string();\n\
+  \n\
+  _enum_item_decl = UmlCom::read_string();\n\
+  for (index = 0; index != 3; index += 1) {\n\
+    _attr_decl[index] = UmlCom::read_string();\n\
+    _valuetype_attr_decl[index] = UmlCom::read_string();\n\
+    _union_item_decl[index] = UmlCom::read_string();\n\
+    _const_decl[index] = UmlCom::read_string();\n\
+    _rel_decl[index] = UmlCom::read_string();\n\
+    _valuetype_rel_decl[index] = UmlCom::read_string();\n\
+    _union_rel_decl[index] = UmlCom::read_string();\n\
+  }\n\
+\n\
+  _oper_decl = UmlCom::read_string();\n\
+  _get_name = UmlCom::read_string();\n\
+  _set_name = UmlCom::read_string();\n\
+  _is_set_oneway = UmlCom::read_bool();\n");  
+  
+  op->set_JavaBody("\
+  _root = UmlCom.read_string();\n\
+  \n\
+  int n;\n\
+  int index;\n\
+  \n\
+  n = UmlCom.read_unsigned();\n\
+  \n\
+  for (index = 0; index != n; index += 1) {\n\
+    UmlSettings._builtins[index].idl = UmlCom.read_string();\n\
+  }\n\
+  \n\
+  n = UmlCom.read_unsigned();\n\
+  \n\
+  for (index = 0; index != n; index += 1)\n\
+    UmlSettings._relation_attribute_stereotypes[index].idl = UmlCom.read_string();\n\
+  \n\
+  n = UmlCom.read_unsigned();\n\
+  \n\
+  for (index = 0; index != n; index += 1)\n\
+    UmlSettings._class_stereotypes[index].idl = UmlCom.read_string();\n\
+  \n\
+  n = UmlCom.read_unsigned();\n\
+  _map_includes = new Hashtable((n == 0) ? 1 : n);\n\
+  \n\
+  for (index = 0; index != n; index += 1) {\n\
+    String t = UmlCom.read_string();\n\
+    String i = UmlCom.read_string();\n\
+    \n\
+    _map_includes.put(t, i);\n\
+  }\n\
+  \n\
+  _src_content = UmlCom.read_string();\n\
+  _ext = UmlCom.read_string();\n\
+  \n\
+  _interface_decl = UmlCom.read_string();\n\
+  _valuetype_decl = UmlCom.read_string();\n\
+  _struct_decl = UmlCom.read_string();\n\
+  _typedef_decl = UmlCom.read_string();\n\
+  _exception_decl = UmlCom.read_string();\n\
+  _union_decl = UmlCom.read_string();\n\
+  _enum_decl = UmlCom.read_string();\n\
+  _external_class_decl = UmlCom.read_string();\n\
+  \n\
+  _enum_item_decl = UmlCom.read_string();\n\
+  _attr_decl = new String[3];\n\
+  _valuetype_attr_decl = new String[3];\n\
+  _union_item_decl = new String[3];\n\
+  _const_decl = new String[3];\n\
+  _rel_decl = new String[3];\n\
+  _valuetype_rel_decl = new String[3];\n\
+  _union_rel_decl = new String[3];\n\
+  for (index = 0; index != 3; index += 1) {\n\
+    _attr_decl[index] = UmlCom.read_string();\n\
+    _valuetype_attr_decl[index] = UmlCom.read_string();\n\
+    _union_item_decl[index] = UmlCom.read_string();\n\
+    _const_decl[index] = UmlCom.read_string();\n\
+    _rel_decl[index] = UmlCom.read_string();\n\
+    _valuetype_rel_decl[index] = UmlCom.read_string();\n\
+    _union_rel_decl[index] = UmlCom.read_string();\n\
+  }\n\
+  \n\
+  _oper_decl = UmlCom.read_string();\n\
+  _get_name = UmlCom.read_string();\n\
+  _set_name = UmlCom.read_string();\n\
+  _is_set_oneway = UmlCom.read_bool();\n");
+
+  //
+
+  UmlCom::set_user_id(uid);
+}
+
+//
+
+UmlOperation * wrong_umlcom_send_cmd(UmlClass * uml_com)
+{
+  const QVector<UmlItem> ch = uml_com->children();
+  UmlOperation * r = 0;
+
+  for (unsigned i = 0; i != ch.size(); i += 1) {
+    if ((ch[i]->kind() == anOperation)  && (ch[i]->name() == "send_cmd")) {
+      UmlOperation * op = (UmlOperation *) ch[i];
+      const QValueList<UmlParameter> p = op->params();
+      
+      if ((p.count() == 3) && 
+	  ((p[0].type.type == UmlClass::get("CmdFamily", 0)) ||
+	   (p[0].type.explicit_type == "CmdFamily")) &&
+	  (CppSettings::type(p[2].type.explicit_type) == "char"))
+	r = op;
+      else if ((p.count() == 4) && 
+	       ((p[0].type.type == UmlClass::get("CmdFamily", 0)) ||
+		(p[0].type.explicit_type == "CmdFamily")) &&
+	       (CppSettings::type(p[2].type.explicit_type) == "int"))
+	return 0;
+    }
+  }
+  
+  return r;
+}
+   
+void fixe_umlcom_send_cmd(UmlOperation * op0)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("fixe <i>UmlItem::isToolRunning</i> adding <i>UmlCom::send_cmd(,,int,dummy)</i><br>");
+  
+  UmlOperation * op =
+    ((UmlClass *) op0->parent())->add_op("send_cmd", PublicVisibility, "void");
+  
+  op->add_param(0, InputDirection, "f", "CmdFamily");
+  op->add_param(1, InputDirection, "cmd", "uint");
+  op->add_param(2, InputDirection, "arg", "int");
+  op->add_param(3, InputDirection, "dummy", "str");
+  op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, const ${t3} ${p3}",
+	      "#ifdef TRACE\n"
+	      "  cout << \"UmlCom::send_cmd((CmdFamily) \" << f << \", \" << cmd << \", \" << arg << \", dummy)\\n\";\n"
+	      "#endif\n"
+	      "  \n"
+	      "  write_char(f);\n"
+	      "  write_char(cmd);\n"
+	      "  write_unsigned(arg);\n"
+	      "  flush();\n",
+	      FALSE, 0, 0);
+  
+  QCString s = op->cppDef();
+  
+  s.remove(s.find(" ${p3}"), 6);
+  op->set_CppDef(s);
+  
+  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}",
+	       "  //cout << \"UmlCom.send_cmd((CmdFamily) \" << f << \", \" << cmd << \", \" << arg << \", dummy)\\n\";\n"
+	       "  \n"
+	       "  write_char((byte) f.value());\n"
+	       "  write_char((byte) cmd);\n"
+	       "  write_unsigned(arg);\n"
+	       "  flush();\n",
+	       FALSE);
+
+  op->set_Description("internal, do NOT use it\n");
+  op->set_isClassMember(TRUE);
+  op->moveAfter(op0);
+  
+  //
+  op = UmlClass::get("UmlBaseItem", 0)->get_operation("isToolRunning");
+  
+  op->set_CppBody("  UmlCom::send_cmd(miscGlobalCmd, toolRunningCmd, id, \"\");\n"
+		  "  return UmlCom::read_bool();\n");
+  op->set_JavaBody("  UmlCom.send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._toolRunningCmd, id, \"\");\n"
+		   "  return UmlCom.read_bool();\n");
+
+  UmlCom::set_user_id(uid);
+}
+
 //
 
 bool ask_for_upgrade()
@@ -10709,9 +11343,32 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
     
+    UmlClass * uml_base_package = UmlClass::get("UmlBasePackage", 0);
+      
+    if (uml_base_package->get_operation("findCppNamespace") == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      update_pack_global(uml_base_package);
+      add_contextual_body_indent();
+      php_javadocstylecomment();
+      add_profile();	// theo Api 40 but compatible api 38
+      modify_texts();
+      fixe_idlsetting_read();
+      work = TRUE;
+    }
+    
+    op = wrong_umlcom_send_cmd(uml_com);
+    
+    if (op != 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      fixe_umlcom_send_cmd(op);
+      work = TRUE;
+    }
+      
     if (work) {
       UmlCom::trace("update api version<br>\n");
-      update_api_version("36");
+      update_api_version("38");
       UmlCom::message("ask for save-as");
       QMessageBox::information(0, "Upgrade", 
 			       "Upgrade done\n\n"

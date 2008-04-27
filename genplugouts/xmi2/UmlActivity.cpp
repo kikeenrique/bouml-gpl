@@ -55,16 +55,16 @@ void UmlActivity::write(FileOut & out) {
 
   write_flows(out);
   
-  QMap<QCString, UmlItem*>::ConstIterator iter;
+  QMap<QCString, Opaque>::ConstIterator ito;
   
-  for (iter = _opaque_behavior.begin(); iter != _opaque_behavior.end(); ++iter) {
+  for (ito = _opaque_behavior.begin(); ito != _opaque_behavior.end(); ++ito) {
     out.indent();
     out << "<ownedBehavior xmi:type=\"uml:OpaqueBehavior\"";
-    out.id_prefix(iter.data(), "OPAQUE_BEHAVIOR_");
+    out.id_prefix(ito.data().item, ito.data().kind);
     out << ">\n";
     out.indent();
     out << "\t<body>";
-    out.quote(iter.key());
+    out.quote(ito.key());
     out << "</body>\n";
     out.indent();
     out << "</ownedBehavior>\n";
@@ -74,14 +74,16 @@ void UmlActivity::write(FileOut & out) {
   out.indent(); 
   out << "</" << k << ">\n"; 
 
-  for (iter = _opaque_expression.begin(); iter != _opaque_expression.end(); ++iter) {
+  QMap<QCString, UmlItem *>::ConstIterator ite;
+  
+  for (ite = _opaque_expression.begin(); ite != _opaque_expression.end(); ++ite) {
     out.indent();
     out << '<' << k << " xmi:type=\"uml:OpaqueExpression\"";
-    out.id_prefix(iter.data(), "OPAQUE_EXPRESSION_");
+    out.id_prefix(ite.data(), "OPAQUE_EXPRESSION_");
     out << ">\n";
     out.indent();
     out << "\t<body>";
-    out.quote(iter.key());
+    out.quote(ite.key());
     out << "</body>\n";
     out.indent();
     out << "</" << k << ">\n"; 
@@ -122,27 +124,23 @@ void UmlActivity::write_condition(FileOut & out, QCString cond, bool pre) {
   }
 }
 
-UmlItem * UmlActivity::add_opaque_behavior(QCString beh) {
-  QMap<QCString, UmlItem*>::Iterator iter = _opaque_behavior.find(beh);
+UmlItem * UmlActivity::add_opaque_behavior(QCString beh, UmlItem * who, const char * k) {
+  QMap<QCString, Opaque>::Iterator iter = _opaque_behavior.find(beh);
   
   if (iter == _opaque_behavior.end()) {
-    static UmlItem * i = 0;
-    
-    _opaque_behavior.insert(beh, ++i);
-    return i;
+    _opaque_behavior.insert(beh, Opaque(who, k));
+    return who;
   }
   else
-    return iter.data();
+    return iter.data().item;
 }
 
-UmlItem * UmlActivity::add_opaque_expression(QCString val) {
-  QMap<QCString, UmlItem*>::Iterator iter = _opaque_expression.find(val);
+UmlItem * UmlActivity::add_opaque_expression(QCString val, UmlItem * who) {
+  QMap<QCString, UmlItem *>::Iterator iter = _opaque_expression.find(val);
   
   if (iter == _opaque_expression.end()) {
-    static UmlItem * i = 0;
-    
-    _opaque_expression.insert(val, ++i);
-    return i;
+    _opaque_expression.insert(val, who);
+    return who;
   }
   else
     return iter.data();

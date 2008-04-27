@@ -4,6 +4,7 @@
 
 #include "UmlBasePackage.h"
 #include <qcstring.h>
+#include <qstring.h>
 #include "anItemKind.h"
 
 class FileIn;
@@ -26,7 +27,7 @@ class UmlPackage : public UmlBasePackage {
     };
 
     //Import an xmi file under the current package
-    virtual void import();
+    virtual void import(QString path);
 
 
   private:
@@ -48,15 +49,17 @@ class UmlPackage : public UmlBasePackage {
 
     static int numberOfProfile() { return NumberOfProfile; };
 
+    void applyStereotype(FileIn & in, Token & token);
+
+    static UmlPackage * importProfile(FileIn & in, QCString href);
+
 
   private:
     virtual void packageImport(FileIn & in, Token & tk);
 
     void solveRefs();
 
-
-  public:
-    void applyStereotype(FileIn & in, Token & token);
+    UmlPackage * findProfile(QCString xmiId);
 
 
   protected:

@@ -32,11 +32,11 @@ class UmlComponent : public UmlBaseComponent {
 
     //  call at end of import : try to solve generalization dependencies and realization
     //  not from a class
-    virtual void generalizeDependRealize(UmlComponent * target, FileIn & in, int context, QCString label);
+    virtual void generalizeDependRealize(UmlComponent * target, FileIn & in, int context, QCString label, QCString constraint);
 
     //  call at end of import : try to solve generalization dependencies and realization,
     //  not from a class
-    virtual void solveGeneralizationDependencyRealization(int context, QCString idref, QCString label);
+    virtual void solveGeneralizationDependencyRealization(int context, QCString idref, QCString label, QCString constraint);
 
     static int numberOf() { return NumberOf; };
 

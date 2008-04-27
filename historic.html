@@ -1,3 +1,116 @@
+<h3>4.3.1</h3>April, 27th 2008<br /><br />
+    <ul>
+	<li> When a <i>plug-out</i> is launch from an other one the trace is
+		not cleared. It is also not cleared before the executions
+		of the <i>check/init plug-out</i> associated to the stereotype.
+		<br /><br /></li>
+
+	<li> When an element stop to be stereotyped by a stereotype
+		part of a profile, the properties associated to the stereotype
+		are now removed.
+		<br /><br /></li>
+
+	<li> <b>XMI2 Generator 1.5.6</b><br />
+		To generate profile imports associated to dependencies
+		stereotyped <i>import</i> between profiles.<br />
+		Upgraded by Plug-out upgrade.
+		<br /><br /></li>
+
+	<li> <b>XMI2 Import 1.2.9</b><br />
+		To manage import of profiles defined in another XMI file.<br />
+		Other little improvements.<br />
+		Upgraded by Plug-out upgrade.
+		<br /><br /></li>
+
+	<li> <b>C++ Generator 2.12.3</b><br />
+		Except if you explicitly ask for, the code generator tries to produce
+		declarations in the header files and includes in the source files.
+		Unfortunatelly this was also true for the template classes, fixed.
+		<br /><br /></li>
+
+	<li> <b>Plug-out upgrade 1.12.1</b><br />
+		Fixe operation <i>isToolRunning</i> defined on <i>UmlBaseItem</i>.
+		<br /><br /></li>
+
+	<li> <i>Plug-out</i> <b>empty</b><br />
+		Upgraded by <i>plug-out upgrade</i>.
+		<br /><br /></li>
+    </ul>
+<br /><br />
+
+<h3>4.3</h3>April, 20th 2008<br /><br />
+    <ul>
+	<li> When a diagram is read-only it is now possible to do
+		some operations like to save it in a picture.
+		<br /><br /></li>
+
+	<li> In the previous releases the header file of a C++
+		class declared external in C++ was always included in the header
+		file of the other classes whatever it is used (by reference	
+		or pointer, or by value).
+		Now it is included in the source file if you explicitly ask for
+		through a dependency, whatever it is used.
+		Note this is the reverse for the classes non declared external.<br />
+		To not modify the behavior of the already existing
+		dependencies to classes	declared external, their definition
+		is forced to <i>#include in header</i>.
+		<br /><br /></li>
+
+	<li> <b>XMI2 Generator 1.5.5</b><br />
+		To produce <i>constraints</i>
+		<br /><br /></li>
+
+	<li> <b>XMI2 Import 1.2.8</b><br />
+		To import <i>constraints</i>
+		<br /><br /></li>
+
+	<li> <b>C++ Generator 2.12.2</b><br />
+		To manage new behavior of dependencies to classes
+		declared external.
+		<br /><br /></li>
+
+	<li> <b>Plug-out upgrade 1.12</b><br />
+		In the class <i>UmlBasePackage</i>
+		the operation <i>findNamespace</i> is renamed <i>findCppNamespace</i>,
+		the operation <i>findPackage</i> is renamed <i>findJavaPackage</i> and
+		the operation <i>findModule</i> is renamed <i>findIdlModule</i>,
+		<font color="#C05800">
+		If you call these operations you have to modify
+		your code to use the new names</font>.<br />
+
+		In the class <i>UmlBaseOperation</i> add the operations
+		<i>cppContextualBodyIndent, set_CppContextualBodyIndent,
+		javaContextualBodyIndent, set_JavaContextualBodyIndent,
+		phpContextualBodyIndent</i> and
+		<i>set_PhpContextualBodyIndent</i>.<br />
+
+		In the class <i>PhpSettings</i> add the static operations
+		<i>isGenerateJavadocStyleComment</i> and
+		<i>set_IsGenerateJavadocStyleComment</i>.<br />
+
+		In the class <i>UmlBaseClass</i> add the static operation
+		<i>findStereotype</i>.<br />
+
+		In the class <i>UmlBasePackage</i> add the static operation
+		<i>updateProfiles</i>.<br />
+
+		In the class <i>UmlBaseItem</i> add the operation
+		<i>applyStereotype</i>.<br />
+
+		In the class <i>UmlBaseFragmentCompartment</i> modify the C++ definition
+			<i>texts()</i> to bypass Microsoft Visual C++ limitation.
+		<br /><br /></li>
+
+	<li> <i>Plug-out</i> <b>empty</b><br />
+		Upgraded by <i>plug-out upgrade</i>.
+		<br /><br /></li>
+
+	<li> The previous releases of BOUML cannot read a project
+	     saved with this version. Obviously this release is
+	     able to read the projects made by previous releases of BOUML.</li>
+    </ul>
+<br /><br />
+
 <h3>4.2.1</h3>April, 5th 2008<br /><br />
     <ul>
 	<li> In the previous release the python body of an operation
@@ -13,16 +126,16 @@
 		
 	<li> Add <i>profile</i> management, refer to the
 		<a href="doc/index_profile.html">documentation</a>.<br />
-		The package imports are not yet managed.<br />
+		The profile imports from an other one are not yet managed.<br />
 		<font color="#C05800">Warning : only the properties associated
 		to the profile can have a name containing two ':', the others
-		will be removed</color>.
+		will be removed</font>.
 		<br /><br /></li>
 
 	<li> When you import a project into an other one, the <i>plug-outs</i>,
 		attribute and relation stereotype correspondences and the class
-		stereotype correspondences are now also added in the <i>plug-out</i>
-		when they don't yet exist.
+		stereotype correspondences between the languages are now also
+		added when they don't yet exist.
 		<br /><br /></li>
 
 	<li> In the shortcut definition the key <i>Suppr</i> is renamed
@@ -32,7 +145,7 @@
 
 	<li> Modify the header added (then remove) when you set <i>add operation
 		profile on body edition</i> through the menu languages to
-		help external editor to compute the indent.		
+		help external editor (BOUML_EDITOR) to compute the indent.		
 		<br /><br /></li>
 
 	<li> <b>Idl Generator 2.9.1</b><br />
@@ -64,7 +177,7 @@
 			through <i>manifestations</i>.<br />
 		To optionaly generate relation as Eclipse
 			(aggregate definition on other relation side)<br />
-		To allow to place <i>&lt;xmi:Documentation exporter="Bouml" ...&gt</i>
+		To allow to place <i>&lt;xmi:Documentation exporter="Bouml" ...&gt;</i>
 			in comment else some tools refuse to import produced XMI
 			or have problem after the import(for instance
 			<i>Rational Software Architech</i>)

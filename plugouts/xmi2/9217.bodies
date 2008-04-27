@@ -166,7 +166,7 @@ class UmlPackage
 	out << ">\n\t";
 	if (comment_exporter)
 	  out << "<!-- ";
-	out << "<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.5.4\"/>";
+	out << "<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.5.6\"/>";
 	if (comment_exporter)
 	  out << " -->";
 	out << "\n\t<uml:Model xmi:type=\"uml:Model\" xmi:id=\"themodel\" name=\""
@@ -250,7 +250,6 @@ class UmlPackage
     out << "<packageImport xmi:type=\"uml:PackageImport\"";
     out.id_prefix(this, "MMR_");
     out << ">\n";
-    
     out.indent(); 
     out << "\t<importedPackage xmi:type=\"uml:Model\" href=\"" << mmr << "#1\"/>\n";
     out.indent(); 
@@ -260,9 +259,36 @@ class UmlPackage
   const QVector<UmlItem> ch = children();
   unsigned n = ch.size();
   
-  for (unsigned i = 0; i != n; i += 1)
-    ch[i]->write(out);
-    
+  if (is_profile) {
+    for (unsigned i = 0; i != n; i += 1) {
+      UmlItem * elt = ch[i];
+      UmlNcRelation * ncr = dynamic_cast<UmlNcRelation *>(elt);
+      
+      if ((ncr == 0) ||
+	  (ncr->relationKind() != aDependency) ||
+	  (ncr->stereotype() != "import") ||
+	  (ncr->target()->kind() != aPackage) ||
+	  (ncr->target()->stereotype() != "profile"))
+	elt->write(out);
+      else {
+	out.indent(); 
+	out << "<packageImport xmi:type=\"uml:PackageImport\"";
+	out.id_prefix(this, "PI_");
+	out << ">\n";
+	out.indent(); 
+	out << "\t<importedPackage xmi:type=\"uml:Profile\"";
+	out.idref(ncr->target());
+	out << "/>\n";
+	out.indent(); 
+	out << "</packageImport>\n";
+      }
+    }
+  }
+  else {
+    for (unsigned i = 0; i != n; i += 1)
+      ch[i]->write(out);
+  }
+
   while (! _relations.isEmpty())
     _relations.take(0)->write(out, FALSE);
 

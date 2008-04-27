@@ -61,6 +61,14 @@ void UmlExpansionNode::importIt(FileIn & in, Token & token, UmlItem * where)
 	  if (! token.closed())
 	    in.finish(s);
 	}
+	else if (s == "lowervalue")
+	  e->importMultiplicity(in, token, FALSE);
+	else if (s == "uppervalue")
+	  e->importMultiplicity(in, token, TRUE);
+	else if (s == "upperbound") {
+	  if (! token.closed())
+	    in.finish(s);
+	}
 	else
 	  e->UmlItem::import(in, token);
       }

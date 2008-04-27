@@ -1,8 +1,8 @@
 class Unresolved
-!!!217474.cpp!!!	addGeneralization(inout e : UmlItem, inout id : string) : void
-  Generalizations.append(Unresolved(e, id));
+!!!217474.cpp!!!	addGeneralization(inout e : UmlItem, inout id : string, in cstr : string) : void
+  Generalizations.append(Unresolved(e, id, cstr));
 !!!217602.cpp!!!	addRef(inout e : UmlItem, inout id : string) : void
-  Refs.append(Unresolved(e, id));
+  Refs.append(Unresolved(e, id, ""));
 !!!217730.cpp!!!	solveThem() : void
   QValueList<Unresolved>::Iterator it;
       
@@ -11,5 +11,5 @@ class Unresolved
   Refs.clear();
   
   for (it = Generalizations.begin(); it != Generalizations.end(); ++it)
-    (*it).element->solveGeneralizationDependencyRealization(0, (*it).idref, "");
+    (*it).element->solveGeneralizationDependencyRealization(0, (*it).idref, "", (*it).constraint);
   Generalizations.clear();

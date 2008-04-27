@@ -1674,7 +1674,22 @@ bool BrowserPackage::tool_global_cmd(ToolCom * com, const char * args)
     return TRUE;
   case findStereotypeCmd:
     {
-      bool case_sensitive = (com->get_id(args) != 0);
+      bool case_sensitive;
+      
+      switch (*args) {
+      case 'y':
+	case_sensitive = TRUE;
+	args += 2;
+	break;
+      case 'n':
+	case_sensitive = FALSE;
+	args += 2;
+	break;
+      default:
+	// first pseudo definition for 4.2.1
+	case_sensitive = (com->get_id(args) != 0);
+      }
+      
       BrowserClass * r = ProfiledStereotypes::isModeled(args, case_sensitive);
       
       if (r == 0)

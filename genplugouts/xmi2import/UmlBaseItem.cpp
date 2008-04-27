@@ -78,13 +78,10 @@ bool UmlBaseItem::set_Stereotype(const QCString & s) {
 }
 
 bool UmlBaseItem::applyStereotype() {
-  UmlCom::send_cmd(_identifier, (OnInstanceCmd) (setIsForceBodyGenCmd + 15));
-  if (UmlCom::read_bool()) {
-    unload();
-    return TRUE;
-  }
-  else
-    return FALSE;
+  UmlCom::send_cmd(_identifier, applyStereotypeCmd);
+  if (UmlCom::read_bool() == 0) return FALSE;
+  unload(false, false);
+  return TRUE;
 }
 
 const QCString & UmlBaseItem::description() {
@@ -242,7 +239,7 @@ bool UmlBaseItem::deleteIt() {
 
 bool UmlBaseItem::isToolRunning(int id)
 {
-  UmlCom::send_cmd(miscGlobalCmd, toolRunningCmd, id);
+  UmlCom::send_cmd(miscGlobalCmd, toolRunningCmd, id, "");
   return UmlCom::read_bool();
 }
 

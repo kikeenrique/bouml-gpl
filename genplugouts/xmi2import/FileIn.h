@@ -49,6 +49,8 @@ class FileIn {
 
     void warning(QCString s);
 
+    const QCString & path() const { return _path; }
+
     static bool isBypassedId(QCString id) {
       return BypassedIds[QString(id)] != 0;
     }

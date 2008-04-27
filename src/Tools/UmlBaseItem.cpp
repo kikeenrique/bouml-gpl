@@ -227,7 +227,7 @@ void UmlBaseItem::unload(bool rec, bool del) {
 
 bool UmlBaseItem::isToolRunning(int id)
 {
-  UmlCom::send_cmd(miscGlobalCmd, toolRunningCmd, id);
+  UmlCom::send_cmd(miscGlobalCmd, toolRunningCmd, id, "");
   return UmlCom::read_bool();
 }
 

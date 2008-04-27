@@ -7,14 +7,14 @@
 #include "UmlClass.h"
 #include "UmlNcRelation.h"
 
-void Unresolved::addGeneralization(UmlItem * e, QCString & id)
+void Unresolved::addGeneralization(UmlItem * e, QCString & id, QCString cstr)
 {
-  Generalizations.append(Unresolved(e, id));
+  Generalizations.append(Unresolved(e, id, cstr));
 }
 
 void Unresolved::addRef(UmlItem * e, QCString & id)
 {
-  Refs.append(Unresolved(e, id));
+  Refs.append(Unresolved(e, id, ""));
 }
 
 QValueList<Unresolved> Unresolved::Generalizations;
@@ -30,7 +30,7 @@ void Unresolved::solveThem()
   Refs.clear();
   
   for (it = Generalizations.begin(); it != Generalizations.end(); ++it)
-    (*it).element->solveGeneralizationDependencyRealization(0, (*it).idref, "");
+    (*it).element->solveGeneralizationDependencyRealization(0, (*it).idref, "", (*it).constraint);
   Generalizations.clear();
 }
 
@@ -51,9 +51,9 @@ void UnresolvedWithContext::solveThem()
 
 QValueList<UnresolvedWithContext> UnresolvedWithContext::All;
 
-void UnresolvedRelation::add(int ctx, QCString idFrom, QCString idTo, QCString label)
+void UnresolvedRelation::add(int ctx, QCString idFrom, QCString idTo, QCString label, QCString constraint)
 {
-  All.append(UnresolvedRelation(ctx, idFrom, idTo, label));
+  All.append(UnresolvedRelation(ctx, idFrom, idTo, label, constraint));
 }
 
 UnresolvedRelation::UnresolvedRelation() {
@@ -69,7 +69,7 @@ void UnresolvedRelation::solveThem()
     QMap<QCString, UmlItem *>::Iterator from = UmlItem::All.find((*it).from);
     
     if (from != UmlItem::All.end())
-      (*from)->solveGeneralizationDependencyRealization((*it).context, (*it).to, (*it).name);
+      (*from)->solveGeneralizationDependencyRealization((*it).context, (*it).to, (*it).name, (*it).constraint);
     else if (!FileIn::isBypassedId((*it).from))
       UmlCom::trace("relation : unknown source reference '" + (*it).from + "'<br>");
   }
@@ -79,7 +79,7 @@ void UnresolvedRelation::solveThem()
  UmlItem::~UmlItem() {
 }
 
-void UmlItem::import() {
+void UmlItem::import(QString) {
   UmlCom::trace("Error : must be applied on a package<br>");
 }
 
@@ -115,7 +115,7 @@ void UmlItem::solve(QCString) {
 void UmlItem::solve(int, QCString) {
 }
 
-void UmlItem::generalizeDependRealize(UmlItem * target, FileIn & in, int context, QCString label) {
+void UmlItem::generalizeDependRealize(UmlItem * target, FileIn & in, int context, QCString label, QCString) {
   static const struct {
     aRelationKind rk;
     const char * err;
@@ -123,7 +123,8 @@ void UmlItem::generalizeDependRealize(UmlItem * target, FileIn & in, int context
     { aGeneralisation, "cannot create generalization from '" },
     { aDependency, "cannot create dependency from '" },
     { aRealization, "cannot create realization from '" },
-    { aDependency, "cannot create usage from '" }
+    { aDependency, "cannot create usage from '" },
+    { aDependency, "cannot create import from '" }
   };
   UmlItem * rel = UmlNcRelation::create(r[context].rk, this, target);
   
@@ -134,7 +135,7 @@ void UmlItem::generalizeDependRealize(UmlItem * target, FileIn & in, int context
 
 }
 
-void UmlItem::solveGeneralizationDependencyRealization(int context, QCString idref, QCString label) {
+void UmlItem::solveGeneralizationDependencyRealization(int context, QCString idref, QCString label, QCString) {
   QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
   
   if (it != All.end()) {
@@ -145,7 +146,8 @@ void UmlItem::solveGeneralizationDependencyRealization(int context, QCString idr
       { aGeneralisation, "cannot create generalization from '" },
       { aDependency, "cannot create dependency from '" },
       { aRealization, "cannot create realization from '" },
-      { aDependency, "cannot create usage from '" }
+      { aDependency, "cannot create usage from '" },
+      { aDependency, "cannot create import from '" }
     };
     UmlItem * target = *it;
     UmlItem * rel = UmlNcRelation::create(r[context].rk, this, target);
@@ -155,8 +157,16 @@ void UmlItem::solveGeneralizationDependencyRealization(int context, QCString idr
     else {
       if (! label.isEmpty())
 	rel->set_Name(label);
-      if (context == 3)
+      switch (context) {
+      case 3:
 	rel->set_Stereotype("use");
+	break;
+      case 4:
+	rel->set_Stereotype("import");
+	break;
+      default:
+	break;
+      }
     }
   }
   else if (!FileIn::isBypassedId(idref))
@@ -210,6 +220,19 @@ bool UmlItem::setType(Token & token, int context, UmlTypeSpec & type) {
     UnresolvedWithContext::add(this, idref, context);
     return FALSE;
   }
+}
+
+void UmlItem::loadFromProfile() {
+  QCString id;
+    
+  if (propertyValue("xmiId", id) && (All.find(id) == All.end()))
+    All.insert(id, this);
+  
+  const QVector<UmlItem> ch = children();
+  unsigned n = ch.size();
+  
+  for (unsigned u = 0; u != n; u += 1)
+    ch[u]->loadFromProfile();
 }
 
 bool UmlItem::getType(QCString idref, UmlTypeSpec & type)
@@ -292,6 +315,7 @@ void UmlItem::init()
   declareFct("packagedelement", "uml:OpaqueExpression", &importOpaqueDef);
 
   declareFct("generalization", "uml:Generalization", &importGeneralization);
+  declareFct("generalization", "", &importGeneralization);	// eclipse
   
   declareFct("ownedelement", "uml:Dependency", &importDependency);
   declareFct("ownedmember", "uml:Dependency", &importDependency);
@@ -417,7 +441,7 @@ void UmlItem::importOpaqueDef(FileIn & in, Token & token, UmlItem *)
 void UmlItem::importGeneralization(FileIn & in, Token & token, UmlItem * where)
 {
   QCString id = token.valueOf("general");
-  bool href = FALSE;
+  QCString constraint;
   
   if (! token.closed()) {
     QCString k = token.what();
@@ -429,15 +453,16 @@ void UmlItem::importGeneralization(FileIn & in, Token & token, UmlItem * where)
       if (s == "general") {
 	id = token.xmiIdref();
 	
-	if (id.isEmpty() && !token.valueOf("href").isEmpty()) {
-	  static bool already = FALSE;
+	if (id.isEmpty() && !(id = token.valueOf("href")).isEmpty()) {
+	  int index = id.find('#');
 	  
-	  if (! already) {
-	    in.warning("referencing not yet implemented (next cases not signaled)");
-	    already = TRUE;
-	  }
-	  href = TRUE;
+	  if (index != -1)
+	    id = id.mid(index + 1);
 	}
+      }
+      else if (s == "ownedrule") {
+	constraint = UmlClassMember::readConstraint(in, token);
+	continue;
       }
       
       if (! token.closed())
@@ -449,11 +474,11 @@ void UmlItem::importGeneralization(FileIn & in, Token & token, UmlItem * where)
     QMap<QCString, UmlItem *>::ConstIterator iter = All.find(id);
   
     if (iter != All.end())
-      where->generalizeDependRealize(*iter, in, 0, "");
+      where->generalizeDependRealize(*iter, in, 0, "", constraint);
     else
-      Unresolved::addGeneralization(where, id);
+      Unresolved::addGeneralization(where, id, constraint);
   }
-  else if (!href)
+  else
     in.warning("'general' is missing");
 }
 
@@ -462,6 +487,7 @@ void UmlItem::importDependency(FileIn & in, Token & token, UmlItem * where)
   QCString client = token.valueOf("client");
   QCString supplier = token.valueOf("supplier");
   QCString label = token.valueOf("name");
+  QCString constraint;
   int kind = (token.xmiType() == "uml:Usage") ? 3 : 1;
   
   if (! token.closed()) {
@@ -475,6 +501,10 @@ void UmlItem::importDependency(FileIn & in, Token & token, UmlItem * where)
 	client = token.xmiIdref();
       else if (s == "supplier")
 	supplier = token.xmiIdref();
+      else if (s == "ownedrule") {
+	constraint = UmlClassMember::readConstraint(in, token);
+	continue;
+      }
       
       if (! token.closed())
 	in.finish(s);
@@ -492,9 +522,9 @@ void UmlItem::importDependency(FileIn & in, Token & token, UmlItem * where)
     QMap<QCString, UmlItem *>::ConstIterator to = All.find(supplier);
   
     if ((from != All.end()) && (to != All.end()))
-      (*from)->generalizeDependRealize(*to, in, kind, label);
+      (*from)->generalizeDependRealize(*to, in, kind, label, constraint);
     else
-      UnresolvedRelation::add(kind, client, supplier, label);
+      UnresolvedRelation::add(kind, client, supplier, label, constraint);
   }
 }
 
@@ -503,6 +533,7 @@ void UmlItem::importRealization(FileIn & in, Token & token, UmlItem * where)
   QCString client = token.valueOf("client");
   QCString supplier = token.valueOf("supplier");
   QCString label = token.valueOf("name");
+  QCString constraint;
   
   if (! token.closed()) {
     QCString k = token.what();
@@ -515,6 +546,10 @@ void UmlItem::importRealization(FileIn & in, Token & token, UmlItem * where)
 	client = token.xmiIdref();
       else if (s == "supplier")
 	supplier = token.xmiIdref();
+      else if (s == "ownedrule") {
+	constraint = UmlClassMember::readConstraint(in, token);
+	continue;
+      }
       
       if (! token.closed())
 	in.finish(s);
@@ -532,9 +567,9 @@ void UmlItem::importRealization(FileIn & in, Token & token, UmlItem * where)
     QMap<QCString, UmlItem *>::ConstIterator to = All.find(supplier);
   
     if ((from != All.end()) && (to != All.end()))
-      (*from)->generalizeDependRealize(*to, in, 2, label);
+      (*from)->generalizeDependRealize(*to, in, 2, label, constraint);
     else
-      UnresolvedRelation::add(2, client, supplier, label);
+      UnresolvedRelation::add(2, client, supplier, label, constraint);
   }
 }
 
@@ -560,14 +595,19 @@ void UmlItem::outgoing(FileIn & in, Token & token, UmlItem * where)
 
 QCString UmlItem::legalName(QCString s)
 {
-  int index = 0;
-  int index2;
+  unsigned index;
+  unsigned n = s.length();
   
-  while ((index2 = s.find(' ', index)) != -1) {
-    s.replace(index2, 1, "_");
-    index = index2 + 1;
+  for (index = 0; index != n; index += 1) {
+    char c = s[index];
+    
+    if (!(((c >= 'a') && (c <= 'z')) ||
+	  ((c >= 'A') && (c <= 'Z')) ||
+	  ((c >= '0') && (c <= '9')) ||
+	  (c == '_')))
+      s.replace(index, 1, "_");
   }
-
+  
   return s;
 }
 

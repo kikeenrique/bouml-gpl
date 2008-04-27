@@ -7,15 +7,23 @@
 
 int main(int argc, char ** argv)
 {
-  if (argc != 2)
-    return 0;
-
   QApplication a(argc, argv);
+  QString file;
  
-  if (UmlCom::connect(QString(argv[1]).toUInt())) {
+  switch (argc) {
+  case 2:
+    break;
+  case 3:
+    file = argv[1];
+    break;
+  default:
+    return 0;
+  }
+
+  if (UmlCom::connect(QString(argv[argc - 1]).toUInt())) {
     try {
-      UmlCom::trace("<b>Xmi 2.1 import</b> release 1.2.7<br>");
-      UmlCom::targetItem()->import();
+      UmlCom::trace("<b>Xmi 2.1 import</b> release 1.2.9<br>");
+      UmlCom::targetItem()->import(file);
     }
     catch (...) {
     }

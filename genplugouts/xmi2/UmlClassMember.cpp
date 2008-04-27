@@ -62,6 +62,30 @@ void UmlClassMember::write_annotation(FileOut & out) {
   }
 }
 
+void UmlClassMember::write_constraint(FileOut & out) {
+  QCString s = constraint();
+  
+  if (! s.isEmpty()) {
+    out.indent();
+    out << "<ownedRule xmi:type=\"uml:Constraint\"";
+    out.id_prefix(this, "CONSTRAINT_");
+    out.ref(this, "constrainedElement");
+    out << ">\n";
+    out.indent();
+    out << "\t<specification xmi:type=\"uml:OpaqueExpression\"";
+    out.id_prefix(this, "CSPEC_");
+    out << ">\n";
+    out.indent();
+    out << "\t\t<body>";
+    out.quote(s);
+    out << "</body>\n";
+    out.indent();
+    out << "\t</specification>\n";
+    out.indent();
+    out << "</ownedRule>\n";
+  }
+}
+
 QCString UmlClassMember::true_name(QCString name, QCString decl) {
 int index = decl.find("${name}", 0, FALSE);
 

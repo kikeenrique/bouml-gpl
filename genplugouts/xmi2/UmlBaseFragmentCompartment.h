@@ -26,8 +26,8 @@ class UmlBaseFragmentCompartment {
     }
 
     // the texts placed in the compartment
-    const QVector<const char> & texts() const {
-        return (const QVector<const char> &) _texts;
+    const QVector<char> & texts() const {
+        return _texts;
     }
 
     // return the fragments contained in the compartment,

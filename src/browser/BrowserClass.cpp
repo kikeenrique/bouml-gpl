@@ -1922,7 +1922,7 @@ void BrowserClass::init()
   its_default_stereotypes.append("enum_pattern");
   its_default_stereotypes.append("exception");
   its_default_stereotypes.append("focus");
-  its_default_stereotypes.append("implementation class");
+  its_default_stereotypes.append("implementationClass");
   its_default_stereotypes.append("interface");
   its_default_stereotypes.append("@interface");
   its_default_stereotypes.append("metaclass");
@@ -1947,8 +1947,9 @@ void BrowserClass::init()
       break;
     case UmlDependency:
       relations_default_stereotypes[r].append("friend");
-      relations_default_stereotypes[r].append("import");
       relations_default_stereotypes[r].append("from");
+      relations_default_stereotypes[r].append("import");
+      relations_default_stereotypes[r].append("instantiate");
       break;
     case UmlRealize:
       relations_default_stereotypes[r].append("bind");

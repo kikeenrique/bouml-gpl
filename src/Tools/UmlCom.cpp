@@ -244,6 +244,18 @@ void UmlCom::send_cmd(CmdFamily f, unsigned int cmd, char arg)
   flush();
 }
 
+void UmlCom::send_cmd(CmdFamily f, unsigned int cmd, int arg, const char *)
+{
+#ifdef TRACE
+  cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << arg << ")\n";
+#endif
+  
+  write_char(f);
+  write_char(cmd);
+  write_unsigned((unsigned) arg);
+  flush();
+}
+
 void UmlCom::send_cmd(CmdFamily f, unsigned int cmd, void * id)
 {
 #ifdef TRACE

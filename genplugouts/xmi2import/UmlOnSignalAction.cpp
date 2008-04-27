@@ -5,17 +5,6 @@
 
 #include "UmlCom.h"
 #include "Sgnl.h"
-void UmlOnSignalAction::import(FileIn & in, Token & tk) {
-  QCString key = tk.what() + " " + tk.xmiType();
-    
-  PFunc pf = Functions[key];
-  
-  if (pf != 0)
-    pf(in, tk, this);
-  else
-    in.bypass(tk);
-}
-
 void UmlOnSignalAction::solve(QCString idref) {
   QCString sig = Signal::get(idref);
   

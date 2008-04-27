@@ -2310,16 +2310,16 @@ bool OperationData::tool_cmd(ToolCom * com, const char * args,
 	  nexceptions -= 1;
 	}
 	break;
-      case setCppContextualBodyIndent:
+      case setCppContextualBodyIndentCmd:
 	cpp_indent_body = (*args != 0);
 	break;
-      case setJavaContextualBodyIndent:
+      case setJavaContextualBodyIndentCmd:
 	java_indent_body = (*args != 0);
 	break;
-      case setPhpContextualBodyIndent:
+      case setPhpContextualBodyIndentCmd:
 	php_indent_body = (*args != 0);
 	break;
-      case setPythonContextualBodyIndent:
+      case setPythonContextualBodyIndentCmd:
 	python_indent_body = (*args != 0);
 	break;
       default:

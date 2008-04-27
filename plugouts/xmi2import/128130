@@ -1,6 +1,6 @@
-format 55
+format 56
 "Aux" // Aux
-  revision 68
+  revision 77
   modified_by 2 "bruno"
   // class settings
   //class diagram settings
@@ -242,6 +242,17 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
+	
+	
+      end
+
+      operation 262274 "path"
+	const public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const} { return _path; }
+"
+	
 	
 	
 	
@@ -860,12 +871,13 @@ ${members}};
       comment "  'element' has an unresolved reference"
       operation 217474 "addGeneralization"
 	class_operation public explicit_return_type "void"
-	nparams 2
+	nparams 3
 	  param inout name "e" type class_ref 8833 // UmlItem
 	  param inout name "id" explicit_type "string"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+	  param in name "cstr" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} & ${p1}, ${t2} ${p2}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} & ${p1}, ${t2} ${p2}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -910,10 +922,11 @@ ${body}}
 
       operation 211202 "Unresolved"
 	protected explicit_return_type ""
-	nparams 2
+	nparams 3
 	  param inout name "e" type class_ref 8833 // UmlItem
 	  param inout name "id" explicit_type "string"
-	cpp_decl "    ${comment}${name}${(}${t0} * ${p0}, ${t1} ${p1}${)} : element(e), idref(id) {}
+	  param in name "cstr" explicit_type "string"
+	cpp_decl "    ${comment}${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}${)} : element(e), idref(id), constraint(cstr) {}
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
 ${body}}
@@ -935,6 +948,17 @@ ${body}}
       end
 
       attribute 129922 "idref"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 153474 "constraint"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -1003,14 +1027,15 @@ ${members}}
       
       operation 217090 "add"
 	class_operation public explicit_return_type "void"
-	nparams 4
+	nparams 5
 	  param in name "ctx" explicit_type "int"
 	  param in name "idFrom" explicit_type "string"
 	  param in name "idTo" explicit_type "string"
 	  param in name "label" explicit_type "string"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${abstract};
+	  param in name "constraint" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -1040,13 +1065,14 @@ ${body}}
 
       operation 214146 "UnresolvedRelation"
 	protected explicit_return_type ""
-	nparams 4
+	nparams 5
 	  param in name "ctx" explicit_type "int"
 	  param in name "idFrom" explicit_type "string"
 	  param in name "idTo" explicit_type "string"
 	  param in name "label" explicit_type "string"
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}
-  : context(ctx), from(idFrom), to(idTo), name(label) {}
+	  param in name "cnst" explicit_type "string"
+	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}
+  : context(ctx), from(idFrom), to(idTo), name(label), constraint(cnst) {}
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
 ${body}}
@@ -1090,6 +1116,17 @@ ${body}}
       end
 
       attribute 130562 "name"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 153602 "constraint"
 	protected explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -1530,6 +1567,26 @@ ${members}}
       end
 
       attribute 152194 "comment"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 153346 "constraint"
+	public explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 154754 "defaultValue"
 	public explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "

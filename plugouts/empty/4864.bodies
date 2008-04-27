@@ -788,7 +788,7 @@ class IdlSettings
   
   _src_content = UmlCom.read_string();
   _ext = UmlCom.read_string();
-
+  
   _interface_decl = UmlCom.read_string();
   _valuetype_decl = UmlCom.read_string();
   _struct_decl = UmlCom.read_string();
@@ -815,7 +815,7 @@ class IdlSettings
     _valuetype_rel_decl[index] = UmlCom.read_string();
     _union_rel_decl[index] = UmlCom.read_string();
   }
-
+  
   _oper_decl = UmlCom.read_string();
   _get_name = UmlCom.read_string();
   _set_name = UmlCom.read_string();

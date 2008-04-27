@@ -1,7 +1,7 @@
-format 55
+format 56
 "xmi2"
-  revision 14
-  modified_by 2 "pages4"
+  revision 17
+  modified_by 2 "bruno"
   cpp_root_dir "/tmp/xmi2/"
 
 

@@ -1,7 +1,7 @@
-format 55
+format 56
 "Aux" // Aux
-  revision 34
-  modified_by 2 "pages4"
+  revision 40
+  modified_by 2 "bruno"
   // class settings
   //class diagram settings
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
@@ -112,9 +112,9 @@ ${body}}
 	public explicit_return_type "void"
 	nparams 1
 	  param in name "x" type class_ref 8833 // UmlItem
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	
@@ -128,9 +128,9 @@ ${body}}
 	nparams 2
 	  param in name "x" type class_ref 8833 // UmlItem
 	  param in name "pfix" explicit_type "str"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	
@@ -143,9 +143,9 @@ ${body}}
 	public explicit_return_type "void"
 	nparams 1
 	  param in name "x" type class_ref 8833 // UmlItem
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	
@@ -159,9 +159,9 @@ ${body}}
 	nparams 2
 	  param in name "s" explicit_type "string"
 	  param in name "x" type class_ref 8833 // UmlItem
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} * ${p1}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} * ${p1}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, const ${t1} * ${p1}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} * ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	
@@ -176,9 +176,9 @@ ${body}}
 	nparams 2
 	  param in name "x" type class_ref 8833 // UmlItem
 	  param in name "pfix" explicit_type "str"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	
@@ -211,9 +211,9 @@ ${body}}
 	  param in name "pfix1" explicit_type "str"
 	  param in name "pfix2" explicit_type "str"
 	    defaultvalue "\"\""
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} * ${p0}, const ${t1} ${p1}, const ${t2} ${p2} = \"\"${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}, const ${t1} ${p1}, const ${t2} ${p2} = \"\"${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} * ${p0}, const ${t1} ${p1}, const ${t2} ${p2}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}, const ${t1} ${p1}, const ${t2} ${p2}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	
@@ -249,6 +249,23 @@ ${body}}
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
 "
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+      end
+
+      operation 226306 "quote"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "c" explicit_type "char"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{

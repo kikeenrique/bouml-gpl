@@ -656,82 +656,77 @@ void ProfiledStereotypes::recompute(BrowserNode * bn)
 {
   QString s_st = bn->get_data()->get_stereotype();
   bool modified = FALSE;
+  ProfiledStereotype * st;
   
-  if (!s_st.isEmpty()) {
-    ProfiledStereotype * st = All[s_st];
+  if (!s_st.isEmpty() && ((st = All[s_st]) != 0)) {
+    ProfiledStereotyped.replace(bn, st);
     
-    if (st != 0) {
-      ProfiledStereotyped.replace(bn, st);
+    // search for extra properties
+    unsigned nprop = bn->get_n_keys();
+    unsigned findprop = 0;
+    unsigned removed = 0;
+    unsigned index = 0;
+    
+    while (index != nprop) {
+      const char * k = bn->get_key(index);
+      int nseps = 0;
       
-      // search for extra properties
-      unsigned nprop = bn->get_n_keys();
-      unsigned findprop = 0;
-      unsigned removed = 0;
-      unsigned index = 0;
+      for (const char * p = k; *p; p += 1)
+	if (*p == ':')
+	  nseps += 1;
       
-      while (index != nprop) {
-	const char * k = bn->get_key(index);
-	int nseps = 0;
-	
-	for (const char * p = k; *p; p += 1)
-	  if (*p == ':')
-	    nseps += 1;
-	
-	if (nseps == 2) {
-	  if (st->propertiesFullName.findIndex(k) == -1) {
-	    // extra property, remove it
-	    bn->remove_key_value(index);
-	    nprop -= 1;
-	    removed += 1;
-	    modified = TRUE;
-	  }
-	  else {
-	    findprop += 1;
-	    index += 1;
-	  }
+      if (nseps == 2) {
+	if (st->propertiesFullName.findIndex(k) == -1) {
+	  // extra property, remove it
+	  bn->remove_key_value(index);
+	  nprop -= 1;
+	  removed += 1;
+	  modified = TRUE;
 	}
-	else
+	else {
+	  findprop += 1;
 	  index += 1;
-      }
-      
-      unsigned ndesired = st->properties.count();
-      unsigned missing = ndesired - findprop;
-      
-      if (missing != 0) {
-	// some properties are missing, add them
-	bn->resize_n_keys(nprop + missing, removed < missing);
-	
-	unsigned insertindex = nprop;
-	QStringList::Iterator its = 
-	  st->propertiesFullName.begin();
-	QValueList<BrowserAttribute *>::Iterator ita = 
-	  st->properties.begin();
-	
-	for (;;) {
-	  QString s = *its;
-	  const char * k = s;
-	  
-	  for (index = 0; index != nprop; index += 1)
-	    if (strcmp(k, bn->get_key(index)) == 0)
-	      break;
-	  
-	  if (index == nprop) {
-	    // missing
-	    modified = TRUE;
-	    bn->set_key(insertindex, k);
-	    bn->set_value(insertindex,
-			  ((AttributeData *) (*ita)->get_data())->get_init_value());
-	    if (--missing == 0)
-	      break;
-	    insertindex += 1;
-	  }
-	  ++its;
-	  ++ita;
 	}
+      }
+      else
+	index += 1;
+    }
+    
+    unsigned ndesired = st->properties.count();
+    unsigned missing = ndesired - findprop;
+    
+    if (missing != 0) {
+      // some properties are missing, add them
+      bn->resize_n_keys(nprop + missing, removed < missing);
+      
+      unsigned insertindex = nprop;
+      QStringList::Iterator its = 
+	st->propertiesFullName.begin();
+      QValueList<BrowserAttribute *>::Iterator ita = 
+	st->properties.begin();
+      
+      for (;;) {
+	QString s = *its;
+	const char * k = s;
+	
+	for (index = 0; index != nprop; index += 1)
+	  if (strcmp(k, bn->get_key(index)) == 0)
+	    break;
+	
+	if (index == nprop) {
+	  // missing
+	  modified = TRUE;
+	  bn->set_key(insertindex, k);
+	  bn->set_value(insertindex,
+			((AttributeData *) (*ita)->get_data())->get_init_value());
+	  if (--missing == 0)
+	    break;
+	  insertindex += 1;
+	}
+	++its;
+	++ita;
       }
     }
-    else
-      ProfiledStereotyped.remove(bn);
   }
   else {
     ProfiledStereotyped.remove(bn);
@@ -868,10 +863,10 @@ void ProfiledStereotypes::modified(BrowserNode * bn, bool newst)
       st->cl->get_value((newst) ? "stereotypeSet" : "stereotypeCheck");
     
     if ((s != 0) && ((s = Tool::command(s)) != 0))
-      ToolCom::run(s, bn, FALSE);
+      ToolCom::run(s, bn, FALSE, FALSE);
   }
   else if (newst)
-    ProfiledStereotyped.remove(bn);
+    recompute(bn);
 
   // call check on parent
   if ((bn = (BrowserNode *) bn->parent()) != 0)
@@ -926,7 +921,7 @@ void ProfiledStereotypes::callCheck(BrowserNode * bn, bool rec)
     const char * s = st->cl->get_value("stereotypeCheck");
     
     if ((s != 0) && ((s = Tool::command(s)) != 0)) {
-      ToolCom::run(s, bn, FALSE, (rec) ? &callCheckCont : 0);
+      ToolCom::run(s, bn, FALSE, FALSE, (rec) ? &callCheckCont : 0);
       applied = TRUE;
     }
   }
