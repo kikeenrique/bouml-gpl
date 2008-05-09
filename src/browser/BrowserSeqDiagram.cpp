@@ -359,6 +359,10 @@ int BrowserSeqDiagram::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserSeqDiagram::help_topic() const  {
+  return "sequencediagram";
+}
+
 void BrowserSeqDiagram::get_sequencediagramsettings(SequenceDiagramSettings & r) const {
   if (! settings.complete(r))
     ((BrowserNode *) parent())->get_sequencediagramsettings(r);

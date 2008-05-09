@@ -323,8 +323,8 @@ SettingsDialog::SettingsDialog(QArray<StateSpec> * st, QArray<ColorSpec> * co,
 	if (grid != 0)
 	  addTab(grid, tabname);
 	grid = new QGrid(5, this);
-	grid->setMargin(10);
-	grid->setSpacing(10);
+	grid->setMargin(2);
+	grid->setSpacing(2);
 	tabname = tbn;
       }
       
@@ -367,16 +367,16 @@ SettingsDialog::SettingsDialog(QArray<StateSpec> * st, QArray<ColorSpec> * co,
     n = colors->count();
     cbcolors = new QVector<ComboColor>(n);
     grid = new QGrid(5, this);
-    grid->setMargin(10);
-    grid->setSpacing(10);
+    grid->setMargin(2);
+    grid->setSpacing(2);
     
     for (i = 0; i != n; i += 1) {
       if (i == 11) {
 	addTab(grid, "color [1]");
 	lbl = "color [2]";
 	grid = new QGrid(5, this);
-	grid->setMargin(10);
-	grid->setSpacing(10);
+	grid->setMargin(2);
+	grid->setSpacing(2);
       }
       new QLabel("", grid);
       QString s = (own) ? "" : "default ";

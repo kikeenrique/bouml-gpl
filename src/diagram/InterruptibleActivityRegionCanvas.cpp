@@ -224,6 +224,8 @@ void InterruptibleActivityRegionCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
+  m.insertItem("Go up", 13);
+  m.insertItem("Go down", 14);
   m.insertSeparator();
   m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
@@ -244,7 +246,7 @@ void InterruptibleActivityRegionCanvas::menu(const QPoint&) {
   if (browser_node->is_writable())
     m.insertItem("Delete from model", 8);
   m.insertSeparator();
-  if (Tool::menu_insert(&toolm, UmlInterruptibleActivityRegion, 10))
+  if (Tool::menu_insert(&toolm, UmlInterruptibleActivityRegion, 20))
     m.insertItem("Tool", &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
@@ -254,6 +256,14 @@ void InterruptibleActivityRegionCanvas::menu(const QPoint&) {
     return;
   case 1:
     lower();
+    modified();	// call package_modified()
+    return;
+  case 13:
+    z_up();
+    modified();	// call package_modified()
+    return;
+  case 14:
+    z_down();
     modified();	// call package_modified()
     return;
   case 2:
@@ -287,8 +297,8 @@ void InterruptibleActivityRegionCanvas::menu(const QPoint&) {
     browser_node->delete_it();	// will delete the canvas
     break;
   default:
-    if (index >= 10)
-      ToolCom::run(Tool::command(index - 10), browser_node);
+    if (index >= 20)
+      ToolCom::run(Tool::command(index - 20), browser_node);
     return;
   }
   
@@ -304,6 +314,10 @@ void InterruptibleActivityRegionCanvas::apply_shortcut(QString s) {
     upper();
   else if (s == "Lower")
     lower();
+  else if (s == "Go up")
+    z_up();
+  else if (s == "Go down")
+    z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
     return;

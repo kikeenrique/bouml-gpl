@@ -68,6 +68,8 @@
 #include "DiagramView.h"
 #include "GenerationSettings.h"
 #include "TraceDialog.h"
+#include "EnvDialog.h"
+#include "HelpDialog.h"
 #include "Tool.h"
 #include "ToolDialog.h"
 #include "BrowserSearchDialog.h"
@@ -88,6 +90,20 @@
 #include "fileopen.xpm"
 #include "fileprint.xpm"
 #include "browsersearch.xpm"
+
+static QString TemplateProject;
+
+QString template_project()
+{
+  return TemplateProject;
+}
+
+void set_template_project(QString s)
+{
+  TemplateProject = s;
+}
+
+//
 
 UmlWindow * UmlWindow::the;
 
@@ -304,12 +320,16 @@ UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
     miscMenu->insertItem("Edit shortcuts", this, SLOT(edit_shortcuts()));
   
   menuBar()->insertSeparator();
+  
+  miscMenu->insertItem("Set environment", this, SLOT(edit_env()));
+  
   QPopupMenu * help = new QPopupMenu(this);
   menuBar()->insertItem("&Help", help);
   
-  help->insertItem("&About", this, SLOT(about()), ::Qt::Key_F1);
+  help->insertItem("&About", this, SLOT(about()), ::Qt::Key_F2);
   help->insertItem("About&Qt", this, SLOT(aboutQt()));
   help->insertSeparator();
+  help->insertItem("&Help", this, SLOT(help()), ::Qt::Key_F1);
   help->insertItem("What's This", this, SLOT(whatsThis()), ::Qt::SHIFT+::Qt::Key_F1);
     
   //
@@ -401,7 +421,7 @@ void UmlWindow::projectMenuAboutToShow() {
     id = projectMenu->insertItem("&New", this, SLOT(newProject()));
     projectMenu->setWhatsThis(id, projectNewText);
     
-    if (getenv("BOUML_TEMPLATE") != 0) {
+    if (TemplateProject.isEmpty()) {
       id = projectMenu->insertItem("Create from &Template", this, SLOT(newFromTemplate()));
       projectMenu->setWhatsThis(id, projectNewFromTemplateText);
     }
@@ -663,7 +683,7 @@ void UmlWindow::newFromTemplate() {
   abort_line_construction();
   if (!BrowserNode::edition_active()) {
     close();
-    load(getenv("BOUML_TEMPLATE"), true);
+    load(TemplateProject, true);
   }
 }
 
@@ -988,9 +1008,7 @@ void UmlWindow::quit() {
 }
 
 void UmlWindow::save_session() {
-  if ((browser->get_project() == 0) ||
-      (user_id() == 0) ||
-      (getenv("BOUML_ID") == 0))
+  if ((browser->get_project() == 0) || (user_id() <= 0))
     return;
   
   QDir d = BrowserView::get_dir();
@@ -1036,7 +1054,7 @@ void UmlWindow::save_session() {
 }
 
 void UmlWindow::read_session() {
-  if ((user_id() == 0) || (getenv("BOUML_ID") == 0))
+  if (user_id() <= 0)
     return;
   
   QDir d = BrowserView::get_dir();
@@ -1253,6 +1271,15 @@ void UmlWindow::edit_shortcuts() {
   ShortcutDialog d;
   
   d.exec();
+}
+
+void UmlWindow::edit_env() {
+  EnvDialog::edit(FALSE);
+  
+  if (BrowserView::get_project() == 0)
+    // id was set by reading boumlrc
+    set_user_id(-1);else
+      read_boumlrc();
 }
 
 void UmlWindow::langMenuAboutToShow() {
@@ -1584,6 +1611,24 @@ void UmlWindow::tool_settings() {
 void UmlWindow::import_tool_settings() {
   if (Tool::import())
     browser->get_project()->modified();
+}
+
+void UmlWindow::help() {
+  if (BrowserView::get_project() == 0)
+    read_boumlrc();
+  
+  const char * topic = 
+    (browser->get_project() == 0)
+      ? "starting"
+      : ((BrowserView::selected_item() == 0)
+	 ? "browseritems"
+	 : BrowserView::selected_item()->help_topic());
+  
+  HelpDialog::show(topic);
+  
+  if (BrowserView::get_project() == 0)
+    // id was set by reading boumlrc
+    set_user_id(-1);
 }
 
 void UmlWindow::about() {

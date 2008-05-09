@@ -88,6 +88,8 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f,
 	role_type->write(f);
 	p += 7;
       }
+      else if (*p == '@')
+	manage_alias(p, f);
       else
 	f << *p++;
     }

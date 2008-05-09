@@ -23,6 +23,8 @@
 //
 // *************************************************************************
 
+#error not used anymore
+
 #ifndef CLASSLISTDIALOG_H
 #define CLASSLISTDIALOG_H
 

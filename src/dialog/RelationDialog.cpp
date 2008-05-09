@@ -1228,6 +1228,8 @@ void RelationDialog::cpp_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	  s += get_cpp_name(cl);
 	  p += 7;
 	}
+	else if (*p == '@')
+	  manage_alias(rl, p, s, role.kvtable);
 	else
 	  s += *p++;
       }
@@ -1424,9 +1426,11 @@ void RelationDialog::java_update(RoleDialog & role, BrowserClass * cl, BrowserNo
       
       while (*p) {
 	if (!strncmp(p, "${type}", 7)) {
-	  s = get_java_name(cl);
+	  s += get_java_name(cl);
 	  p += 7;
 	}
+	else if (*p == '@')
+	  manage_alias(rl, p, s, role.kvtable);
 	else
 	  s += *p++;
       }
@@ -1625,9 +1629,11 @@ void RelationDialog::php_update(RoleDialog & role, BrowserClass * cl, BrowserNod
       
       while (*p) {
 	if (!strncmp(p, "${type}", 7)) {
-	  s = get_php_name(cl);
+	  s += get_php_name(cl);
 	  p += 7;
 	}
+	else if (*p == '@')
+	  manage_alias(rl, p, s, role.kvtable);
 	else
 	  s += *p++;
       }
@@ -1786,9 +1792,11 @@ void RelationDialog::python_update(RoleDialog & role, BrowserClass * cl, Browser
       
       while (*p) {
 	if (!strncmp(p, "${type}", 7)) {
-	  s = get_python_name(cl);
+	  s += get_python_name(cl);
 	  p += 7;
 	}
+	else if (*p == '@')
+	  manage_alias(rl, p, s, role.kvtable);
 	else
 	  s += *p++;
       }
@@ -1930,10 +1938,12 @@ void RelationDialog::idl_update(RoleDialog & role, BrowserClass * cl, BrowserNod
 	if (!strncmp(p, "${type}", 7)) {
 	  if ((role.idl_truncatable_inheritance_cb != 0) &&
 	      role.idl_truncatable_inheritance_cb->isChecked())
-	    s = "truncatable ";
+	    s += "truncatable ";
 	  s += get_idl_name(cl);
 	  p += 7;
 	}
+	else if (*p == '@')
+	  manage_alias(rl, p, s, role.kvtable);
 	else
 	  s += *p++;
       }

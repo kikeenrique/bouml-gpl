@@ -86,6 +86,7 @@ class BrowserClassView : public BrowserNode, public Labeled<BrowserClassView> {
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual const char * help_topic() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,
 				   bool & duplicable) const;
     virtual BrowserNode * container(UmlCode) const; // container for class, state machine and activity

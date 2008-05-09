@@ -53,7 +53,8 @@ extern QString java_multiplicity(QString m);
 extern bool need_equal(const char * p, QString v, bool cpp);
 extern bool need_equal(const char * p, const char * v, bool cpp);
 
-extern void initCodec();
+extern QString codec();
+extern void set_codec(QString);
 extern QString toUnicode(const char *);
 extern QCString fromUnicode(const QString &);
 extern bool hasCodec();

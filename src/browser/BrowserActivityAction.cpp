@@ -659,6 +659,10 @@ int BrowserActivityAction::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserActivityAction::help_topic() const  {
+  return "activityaction";
+}
+
 BasicData * BrowserActivityAction::get_data() const {
   return def;
 }

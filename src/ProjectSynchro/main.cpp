@@ -31,6 +31,7 @@
 
 #include <qapplication.h>
 #include <qmessagebox.h>
+#include <qtextstream.h>
 #include <qdir.h>
 
 #include "SynchroWindow.h"
@@ -41,31 +42,45 @@ int main(int argc, char ** argv)
 {
   QApplication * app = new QApplication(argc, argv);
   
-  char * v = getenv("BOUML_ID");
-    
-  if (v == 0)
-    QMessageBox::critical(0, "Synchro project", "BOUML_ID is not defined");
-  else {
-    int uid = atoi(v);
-    
-    if ((uid < 2) || (uid > 127))
-      QMessageBox::critical(0, "Synchro project", "invalid BOUML_ID");
-    else {
-      set_user_id(uid, QDir::home().dirName());
-      app->connect(app, SIGNAL(lastWindowClosed()), SLOT(quit()) );
-      init_pixmaps();
-	
-      SynchroWindow * w = new SynchroWindow();
-      
-      w->resize((QApplication::desktop()->width() * 3)/5,
-		(QApplication::desktop()->height() * 3)/5);
+  QFile fp(QDir::home().absFilePath(".boumlrc"));
+  int uid = -1;
   
-      w->show();
-      if (argc > 1)
-	w->load(argc - 1, argv + 1);
-      
-      app->exec();
+  if (fp.open(IO_ReadOnly)) {
+    QTextStream ts(&fp);
+    
+    ts.setEncoding(QTextStream::Latin1);
+    
+    QString ln;
+    
+    while (!(ln = ts.readLine()).isEmpty()) {
+      const char * p = ln;
+
+      if (!strncmp(p, "ID ", 3)) {
+	sscanf(p+3, "%d", &uid);
+	break;
+      }
     }
+  }
+    
+  if (uid == -1)
+    QMessageBox::critical(0, "Synchro project", "Own identifier not defined");
+  else if ((uid < 2) || (uid > 127))
+    QMessageBox::critical(0, "Synchro project", "invalid Identifier");
+  else {
+    set_user_id(uid, QDir::home().dirName());
+    app->connect(app, SIGNAL(lastWindowClosed()), SLOT(quit()) );
+    init_pixmaps();
+    
+    SynchroWindow * w = new SynchroWindow();
+    
+    w->resize((QApplication::desktop()->width() * 3)/5,
+	      (QApplication::desktop()->height() * 3)/5);
+    
+    w->show();
+    if (argc > 1)
+      w->load(argc - 1, argv + 1);
+    
+    app->exec();
   }
 
   return 0;

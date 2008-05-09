@@ -65,6 +65,7 @@ class BrowserStateAction : public BrowserNode, public Labeled<BrowserStateAction
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual const char * help_topic() const;
     virtual void modified();
     virtual BasicData * get_data() const;
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;

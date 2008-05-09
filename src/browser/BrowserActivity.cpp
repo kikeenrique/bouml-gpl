@@ -433,6 +433,10 @@ int BrowserActivity::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserActivity::help_topic() const  {
+  return "activity";
+}
+
 BasicData * BrowserActivity::get_data() const {
   return def;
 }

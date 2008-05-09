@@ -366,6 +366,80 @@ void DiagramCanvas::lower() {
   }
 }
 
+void DiagramCanvas::z_up() {
+  double next_z = 2e100;
+  QCanvasItemList l = collisions(FALSE);
+  QCanvasItemList::Iterator it;
+
+  // search for the lowest z > this->z
+  for (it = l.begin(); it != l.end(); it++) {
+    if (!isa_alien(*it) &&
+	(*it)->visible() &&
+	((*it)->z() > z()) &&
+	((*it)->z() < next_z)) {
+      DiagramCanvas * e = QCanvasItemToDiagramCanvas(*it);
+      
+      if ((e != 0) && e->primaryItem())
+	next_z = (*it)->z();
+    }
+  }
+  
+  if (next_z != 2e100) {
+    // not at top, echange z with elements at next_z
+    for (it = l.begin(); it != l.end(); it++) {
+      if (!isa_alien(*it) &&
+	  (*it)->visible() &&
+	  ((*it)->z() == next_z)) {
+	DiagramCanvas * e = QCanvasItemToDiagramCanvas(*it);
+	
+	if ((e != 0) && e->primaryItem())
+	  e->set_z(z());
+      }
+    }
+    
+    set_z(next_z);
+  }
+}
+
+void DiagramCanvas::z_down() {
+  double next_z = 0;
+  QCanvasItemList l = collisions(FALSE);
+  QCanvasItemList::Iterator it;
+
+  // search for the highest z < this->z
+  for (it = l.begin(); it != l.end(); it++) {
+    if (!isa_alien(*it) &&
+	(*it)->visible() &&
+	((*it)->z() < z()) &&
+	((*it)->z() > next_z)) {
+      DiagramCanvas * e = QCanvasItemToDiagramCanvas(*it);
+      
+      if ((e != 0) && e->primaryItem())
+	next_z = (*it)->z();
+    }
+  }
+  
+  if (next_z != 2e100) {
+    // not at bottom, echange z with elements at next_z
+    for (it = l.begin(); it != l.end(); it++) {
+      if (!isa_alien(*it) &&
+	  (*it)->visible() &&
+	  ((*it)->z() == next_z)) {
+	DiagramCanvas * e = QCanvasItemToDiagramCanvas(*it);
+	
+	if ((e != 0) && e->primaryItem())
+	  e->set_z(z());
+      }
+    }
+    
+    set_z(next_z);
+  }
+}
+    
+bool DiagramCanvas::primaryItem() const {
+  return TRUE;
+}
+
 double DiagramCanvas::get_z() const {
   return z();
 }

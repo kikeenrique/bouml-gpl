@@ -44,11 +44,8 @@ class UmlArtifact
 !!!196482.cpp!!!	importIt(inout in : FileIn, inout token : Token, inout where : UmlItem) : void
   where = where->container(anArtifact, token, in);
   
-  if (where == 0) {
-    if (! token.closed())
-      in.finish(token.what());
+  if (where == 0)
     return;
-  }
     
   QCString s = token.valueOf("name");
   

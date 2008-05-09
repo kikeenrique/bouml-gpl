@@ -210,7 +210,6 @@ HEADERS		= browser/BrowserAttribute.h \
 		  dialog/DialogTimer.h \
 		  dialog/SaveProgress.h \
 		  dialog/AnnotationDialog.h \
-		  dialog/CharSetDialog.h \
 		  dialog/ObjectLinkDialog.h \
 		  dialog/ActivityDialog.h \
 		  dialog/ParameterDialog.h \
@@ -224,6 +223,8 @@ HEADERS		= browser/BrowserAttribute.h \
 		  dialog/UseCaseDialog.h \
 		  dialog/ConstraintDialog.h \
 		  dialog/DecoratorDialog.h \
+		  dialog/HelpDialog.h \
+		  dialog/EnvDialog.h \
 		  misc/Settings.h \
 		  misc/UmlDrag.h \
 		  misc/UmlEnum.h \
@@ -451,7 +452,6 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  dialog/About.cpp \
 		  dialog/SaveProgress.cpp \
 		  dialog/AnnotationDialog.cpp \
-		  dialog/CharSetDialog.cpp \
 		  dialog/ObjectLinkDialog.cpp \
 		  dialog/ActivityDialog.cpp \
 		  dialog/ParameterDialog.cpp \
@@ -465,6 +465,8 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  dialog/UseCaseDialog.cpp \
 		  dialog/ConstraintDialog.cpp \
 		  dialog/DecoratorDialog.cpp \
+		  dialog/HelpDialog.cpp \
+		  dialog/EnvDialog.cpp \
 		  misc/Settings.cpp \
 		  misc/UmlDrag.cpp \
 		  misc/UmlGlobal.cpp \

@@ -352,6 +352,10 @@ int BrowserDeploymentDiagram::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserDeploymentDiagram::help_topic() const  {
+  return "deploymentdiagram";
+}
+
 void BrowserDeploymentDiagram::get_deploymentdiagramsettings(DeploymentDiagramSettings & r) const {
   if (! settings.complete(r))
     ((BrowserNode *) parent())->get_deploymentdiagramsettings(r);

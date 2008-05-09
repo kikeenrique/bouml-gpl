@@ -224,6 +224,10 @@ void ParameterCanvas::do_moveBy(double dx, double dy) {
   if (!the_canvas()->do_zoom())
     set_center100();
 }
+    
+bool ParameterCanvas::primaryItem() const {
+  return FALSE;
+}
 
 void ParameterCanvas::draw(QPainter & p) {
   if (! visible()) return;
@@ -305,6 +309,8 @@ void ParameterCanvas::menu(const QPoint &) {
   m.insertSeparator();
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
+  m.insertItem("Go up", 13);
+  m.insertItem("Go down", 14);
   m.insertSeparator();
   m.insertItem("Edit drawing settings", 2);
   if (params.count() > 1)
@@ -321,7 +327,7 @@ void ParameterCanvas::menu(const QPoint &) {
   if (browser_node->is_writable())
     m.insertItem("Delete from model", 8);
   m.insertSeparator();
-  if (Tool::menu_insert(&toolm, UmlParameter, 10))
+  if (Tool::menu_insert(&toolm, UmlParameter, 20))
     m.insertItem("Tool", &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
@@ -331,6 +337,14 @@ void ParameterCanvas::menu(const QPoint &) {
     return;
   case 1:
     act->lower();
+    modified();	// call package_modified()
+    return;
+  case 13:
+    act->z_up();
+    modified();	// call package_modified()
+    return;
+  case 14:
+    act->z_down();
     modified();	// call package_modified()
     return;
   case 2:
@@ -370,8 +384,8 @@ void ParameterCanvas::menu(const QPoint &) {
     cl->select_in_browser();
     return;
   default:
-    if (index >= 10)
-      ToolCom::run(Tool::command(index - 10), browser_node);
+    if (index >= 20)
+      ToolCom::run(Tool::command(index - 20), browser_node);
     return;
   }
   
@@ -384,9 +398,13 @@ void ParameterCanvas::apply_shortcut(QString s) {
     return;
   }
   else if (s == "Upper")
-    upper();
+    act->upper();
   else if (s == "Lower")
-    lower();
+    act->lower();
+  else if (s == "Go up")
+    act->z_up();
+  else if (s == "Go down")
+    act->z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
     return;

@@ -15,11 +15,8 @@ void UmlComponent::importIt(FileIn & in, Token & token, UmlItem * where)
 {
   where = where->container(aComponent, token, in);
   
-  if (where == 0) {
-    if (! token.closed())
-      in.finish(token.what());
+  if (where == 0)
     return;
-  }
     
   QCString s = token.valueOf("name");
   

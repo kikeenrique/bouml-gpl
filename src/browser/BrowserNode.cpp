@@ -251,6 +251,10 @@ const char * BrowserNode::constraint() const {
   return "";
 }
 
+const char * BrowserNode::help_topic() const  {
+  return ((BrowserNode *) parent())->help_topic();
+}
+
 // undelete entry operation
 
 void BrowserNode::undelete(bool rec) {
@@ -1461,7 +1465,7 @@ void BrowserNode::signal_unconsistencies()
   QString pfix = 
     "<p><b>Warning, the model is not consistent because some elements have\n"
       "the same internal identifier.</b></p>\n"
-	"<p>Users working on the sale project have the same BOUML_ID,\n"
+	"<p>Users working on the same project have the same BOUML_ID,\n"
 	  "or you had change the model files, or used Project synchro\n"
 	    "without following the mandatory rules</p>\n";
   QString msg;

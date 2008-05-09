@@ -74,6 +74,7 @@ class BrowserDeploymentDiagram : public BrowserDiagram {
     virtual void read_session(char * & st);
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual const char * help_topic() const;
     virtual BasicData * get_data() const;
     virtual void set_name(const char * s);
     virtual void package_settings(bool & name_in_tab, ShowContextMode & show_context) const;

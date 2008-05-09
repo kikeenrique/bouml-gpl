@@ -69,6 +69,7 @@ class BrowserComponentView : public BrowserNode, public Labeled<BrowserComponent
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual const char * help_topic() const;
     virtual bool may_contains_them(const QList<BrowserNode> &,
 				   bool & duplicable) const;
     virtual BasicData * get_data() const;

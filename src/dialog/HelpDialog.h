@@ -23,30 +23,34 @@
 //
 // *************************************************************************
 
-// all is static ... I don't like singleton
+#ifndef HELPDIALOG_H
+#define HELPDIALOG_H
 
-class UmlDesktop {
+#include <qdialog.h>
+
+class QTextBrowser;
+
+// singleton
+
+class HelpDialog : public QDialog {
+  Q_OBJECT
+    
   public:
-    static void init();
-    static void limits(int & l, int & t, int & r, int & b);
-    static void set_limits(int l, int t, int r, int b);
-    static int width();
-    static int height();
-    static void tocenter(QWidget * who);
-    static void limitsize_center(QWidget * who, QSize & previous, double max_w, double max_h);
-    static void limitsize_move(QWidget * who, QSize & previous, 
-			       double max_w, double max_h);
-    static void setsize_center(QWidget * who, QSize & previous, 
-			       double pw, double ph);
-    static bool fixed();
-        
+    static void show(QString);
+    
   private:
-    static int left;
-    static int top;
-    static int right;
-    static int bottom;
-    static int w;
-    static int h;
-    static QPoint c;
-    static bool fixedp;
+    HelpDialog();
+    virtual ~HelpDialog();
+    
+    static HelpDialog * the;
+  
+    QTextBrowser * br;
 };
+
+extern QString manual_dir();
+extern void set_manual_dir(QString);
+
+extern QString navigator_path();
+extern void set_navigator_path(QString);
+
+#endif

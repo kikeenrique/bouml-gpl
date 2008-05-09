@@ -7,7 +7,12 @@
 #include "UmlUseCaseView.h"
 
 #include <stdio.h>
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
+
 #include <qfiledialog.h> 
 #include <qapplication.h>
 
@@ -362,8 +367,13 @@ UmlPackage * UmlPackage::importProfile(FileIn & in, QCString href)
 	    QCString cmd = qApp->argv()[0] + QCString(" ") + QCString(fn);
 	    int pid = UmlCom::targetItem()->apply(cmd);
 	    
-	    while (isToolRunning(pid))   
+	    while (isToolRunning(pid)) {
+#ifdef WIN32
+	      Sleep(1000);
+#else
 	      sleep(1);
+#endif
+	    }
 	    
 	    UmlCom::targetItem()->unload(FALSE, FALSE); // to reread children
 	    

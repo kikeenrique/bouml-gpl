@@ -1094,6 +1094,15 @@ int BrowserClass::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserClass::help_topic() const  {
+  return (!strcmp(def->get_stereotype(), "stereotype") &&
+	  (((BrowserNode *) parent()->parent())->get_type() == UmlPackage) &&
+	  !strcmp(((BrowserNode *) parent()->parent())->get_data()->get_stereotype(),
+		  "profile"))
+    ? "profile"
+    : "class";
+}
+
 void BrowserClass::modified() {
   repaint();
   def->modified();

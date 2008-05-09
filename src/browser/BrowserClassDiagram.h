@@ -72,6 +72,7 @@ class BrowserClassDiagram : public BrowserDiagram {
     virtual void read_session(char * & st);
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual const char * help_topic() const;
     virtual BasicData * get_data() const;
     virtual void set_name(const char * s);
     virtual void get_classdiagramsettings(ClassDiagramSettings &) const;

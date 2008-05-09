@@ -37,25 +37,33 @@
 #include "BrowserView.h"
 #include "BrowserPackage.h"
 #include "Shortcut.h"
-#include "strutil.h"
+//#include "strutil.h"
 #include "DialogUtil.h"
 #include "mu.h"
 #include "err.h"
+#include "EnvDialog.h"
 
 bool ExitOnError = FALSE;
 QApplication * theApp;
+
+//
 
 int main(int argc, char **argv)
 {
   ExitOnError = FALSE;
 
   theApp = new QApplication (argc, argv);
+
+  UmlDesktop::init();
   
-  initCodec();
+  bool conv_env = !QDir::home().exists(".boumlrc");
+  
+  if (conv_env)
+    EnvDialog::edit(TRUE);
+  
   init_pixmaps();
   init_font();
-  Shortcut::init();
-  UmlDesktop::init();
+  Shortcut::init(conv_env);
   
   UmlWindow * uw = new UmlWindow();
   
@@ -73,6 +81,7 @@ int main(int argc, char **argv)
 			QMessageBox::Yes, QMessageBox::No)
 	   == QMessageBox::Yes)) {
 	set_user_id(0);
+	set_editor(getenv("BOUML_EDITOR")); // no environment file
 	argc = 1;
       }
       

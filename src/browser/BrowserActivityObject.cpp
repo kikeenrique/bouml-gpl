@@ -401,6 +401,10 @@ int BrowserActivityObject::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserActivityObject::help_topic() const  {
+  return "activityobject";
+}
+
 BasicData * BrowserActivityObject::get_data() const {
   return def;
 }

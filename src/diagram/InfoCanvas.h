@@ -45,6 +45,7 @@ class InfoCanvas : public NoteCanvas {
     virtual void open();
     virtual void menu(const QPoint&);
     
+    virtual void apply_shortcut(QString s);
     virtual bool has_drawing_settings() const;
     virtual void edit_drawing_settings(QList<DiagramItem> &);
 

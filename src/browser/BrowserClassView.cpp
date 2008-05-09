@@ -552,6 +552,10 @@ int BrowserClassView::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserClassView::help_topic() const  {
+  return "classview";
+}
+
 BasicData * BrowserClassView::get_data() const {
   return def;
 }

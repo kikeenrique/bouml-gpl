@@ -88,6 +88,7 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
     virtual void open(bool force_edit);
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual const char * help_topic() const;
     virtual void modified();
     virtual bool may_contains_them(const QList<BrowserNode> &,
 				   bool & duplicable) const;

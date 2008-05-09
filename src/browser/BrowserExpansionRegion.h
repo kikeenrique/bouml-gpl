@@ -71,6 +71,7 @@ class BrowserExpansionRegion : public BrowserNode, public Labeled<BrowserExpansi
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual const char * help_topic() const;
     virtual void modified();
     virtual void on_delete();
     virtual BasicData * get_data() const;

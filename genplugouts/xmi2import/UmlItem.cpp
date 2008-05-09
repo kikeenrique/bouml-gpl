@@ -599,7 +599,7 @@ QCString UmlItem::legalName(QCString s)
   unsigned n = s.length();
   
   for (index = 0; index != n; index += 1) {
-    char c = s[index];
+    char c = s.at(index);
     
     if (!(((c >= 'a') && (c <= 'z')) ||
 	  ((c >= 'A') && (c <= 'Z')) ||

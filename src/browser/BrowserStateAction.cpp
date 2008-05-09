@@ -285,6 +285,10 @@ BasicData * BrowserStateAction::get_data() const {
   return def;
 }
 
+const char * BrowserStateAction::help_topic() const  {
+  return "stateaction";
+}
+
 bool BrowserStateAction::allow_empty() const {
   return TRUE;
 }

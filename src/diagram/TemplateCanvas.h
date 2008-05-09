@@ -52,6 +52,9 @@ class TemplateCanvas : public DiagramCanvas {
     virtual void change_scale();
     virtual void upper();
     virtual void lower();
+    virtual void z_up();
+    virtual void z_down();
+    virtual bool primaryItem() const;
     virtual void set_z(double z);	// only called by upper() & lower()
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     

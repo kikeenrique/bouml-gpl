@@ -91,6 +91,8 @@ void UmlRelation::generate_extends(const char *& sep, QTextOStream & f,
 	role_type->write(f);
 	p += 7;
       }
+      else if (*p == '@')
+	manage_alias(p, f);
       else
 	f << *p++;
     }
@@ -128,6 +130,8 @@ void UmlRelation::generate_implements(const char *& sep, QTextOStream & f,
 	    role_type->write(f);
 	    p += 7;
 	  }
+	  else if (*p == '@')
+	    manage_alias(p, f);
 	  else
 	    f << *p++;
 	}

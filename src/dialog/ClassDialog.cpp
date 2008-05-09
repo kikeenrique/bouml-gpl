@@ -161,7 +161,7 @@ ClassDialog::ClassDialog(ClassData * c)
     edbasetype->insertItem(((RelationData *) inh.at(0)->get_data())->get_end_class()->full_name(TRUE));
     edbasetype->setEnabled(FALSE);
   }
-  else if (! visit) {
+  else {
     QString bt = cl->get_base_type().get_full_type();
     
     if (bt.isEmpty() &&		// no base_type, try with a dependency
@@ -169,9 +169,12 @@ ClassDialog::ClassDialog(ClassData * c)
       bt = ((RelationData *) inh.at(0)->get_data())->get_end_class()->full_name(TRUE);
     
     edbasetype->insertItem(bt);
-    edbasetype->insertStringList(GenerationSettings::basic_types());
-    edbasetype->insertStringList(node_names);
-    edbasetype->setAutoCompletion(TRUE);
+    
+    if (!visit) {
+      edbasetype->insertStringList(GenerationSettings::basic_types());
+      edbasetype->insertStringList(node_names);
+      edbasetype->setAutoCompletion(TRUE);
+    }
   }
   edbasetype->setCurrentItem(0);
   edbasetype->setSizePolicy(sp);

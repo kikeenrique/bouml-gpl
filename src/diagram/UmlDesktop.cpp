@@ -36,6 +36,10 @@
 #include "UmlDesktop.h"
 #include "DialogUtil.h"
 
+int UmlDesktop::left;
+int UmlDesktop::top;
+int UmlDesktop::right;
+int UmlDesktop::bottom;
 int UmlDesktop::w;
 int UmlDesktop::h;
 QPoint UmlDesktop::c;
@@ -125,49 +129,35 @@ void UmlDesktop::limitsize_move(QWidget * who, QSize & previous,
 
 }
 
+void UmlDesktop::limits(int & l, int & t, int & r, int & b)
+{
+  l = left;
+  t = top;
+  r = right;
+  b = bottom;
+}
+
+void UmlDesktop::set_limits(int l, int t, int r, int b)
+{
+  if ((r <= l) || (b <= t))
+    fixedp = FALSE;
+  else {
+    left = l;
+    top = t;
+    right = r;
+    bottom = b;
+    
+    w = right - left + 1;
+    h = bottom - top + 1;
+    c.setX((right + left) /2);
+    c.setY((top+bottom) / 2);
+    fixedp = TRUE;
+  }
+}
+
+
 void UmlDesktop::init()
 {
-  QString limits = getenv("BOUML_LIMIT_DESKTOP");
-  
-  if (!limits.isEmpty()) {
-    int top, left, bottom, right;
-    
-    if (sscanf((const char *) limits, "%d,%d,%d,%d",
-	       &left, &top, &right, &bottom)
-	!= 4)
-      msg_warning("Bouml",
-		  "BOUML_LIMIT_DESKTOP wrong defined\n\n"
-		  "must be '{left},{top},{right},{bottom}'");
-    else {
-      w = right - left + 1;
-      h = bottom - top + 1;
-      c.setX((right + left) /2);
-      c.setY((top+bottom) / 2);
-      fixedp = TRUE;
-      return;
-    }
-  }
-  else if ((QApplication::desktop()->width() > 2000) ||
-	   (QApplication::desktop()->width() > 
-	    2*QApplication::desktop()->height())) {
-    QString def;
-    
-    def.sprintf("0,0,%d,%d",
-		QApplication::desktop()->width() - 1,
-		QApplication::desktop()->height() - 1);
-    
-    msg_warning("Bouml",
-		"You probably have a multiple screens configuration.\n\n"
-		"You can ask Bouml to use by default one screen defining\n"
-		"the environment variable BOUML_LIMIT_DESKTOP (refer\n"
-		"to the reference manual chapter 'Troubleshootings')\n\n"
-		"To not see this warning each time you start Bouml without\n"
-		"modifying the screen usage, define the environment variable\n"
-		"BOUML_LIMIT_DESKTOP to value " + def);
-  }
-  
-  // default case or error
-  
   fixedp = FALSE;
   w = QApplication::desktop()->width();
   h = QApplication::desktop()->height();

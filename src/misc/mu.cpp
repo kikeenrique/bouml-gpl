@@ -30,19 +30,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <qdatetime.h>
-#include <qapplication.h>
 
 #include "mu.h"
 #include "myio.h"
 #include "BrowserView.h"
 #include "DialogUtil.h"
+#include "EnvDialog.h"
 
 static int Uid = -1;
 static int RootPermission;	// old Uid or 0
 
 void set_user_id(int i)
 {
-  if (Uid > 0) {
+  if ((Uid > 0) && BrowserView::get_project()) {
     QDir dir = BrowserView::get_dir();
     
     dir.rmdir(QString::number(Uid) + ".lock");
@@ -67,53 +67,21 @@ under the control of 'Project control' or 'Project merge'\n\
     else
       force_read_only(FALSE);
     
-    char * v = getenv("BOUML_ID");
+    Uid = read_boumlrc();
     
-    if ((v == 0) ||
-	(sscanf(v, "%d", &Uid) != 1) ||
-	(Uid < 2) ||
-	(Uid > 127)) {
-      Uid = QTime::currentTime().msec();
-      
-      for (;;) {
-	Uid = Uid % 125 + 2;
-	
-	QString fn = QString::number(Uid) + ".lock";
-	
-	if (dir.mkdir(fn))
-	  break;
-	if (!dir.exists(fn)) {
-	  msg_critical("BOUML_ID", "Can't create directory\n"
-		       + dir.absFilePath(fn) +
-		       ",\nthe project is open in read-only mode");
-	  force_read_only(TRUE);
-	  break;
-	}
-      }
-      
-      msg_critical("BOUML_ID", 
-		   "The BOUML_ID environment variable is not or wrong defined.\n\
-\n\
-This one allows several users to work on the same project, this time your\n\
-identifier is " + QString::number(Uid) +
-		   " but BOUML declines all the responsabilies of this random choice.\n\
-\n\
-You must define the environment variable BOUML_ID valuing between 2 up to 127\n\
-not used by an other person working at the same time on a project with you.");
-    }
-    else {
+    if (BrowserView::get_project()) {
       QString fn = QString::number(Uid) + ".lock";
       
       if (! dir.mkdir(fn)) {
 	if (!dir.exists(fn)) {
-	  msg_critical("BOUML_ID", "Can't create directory "
+	  msg_critical("User Own Identifier", "Can't create directory "
 		       + dir.absFilePath(fn) +
 		       ",\nthe project is open in read-only mode");
-	  force_read_only(TRUE);
+	force_read_only(TRUE);
 	}
 	else {
-	  msg_critical("BOUML_ID", 
-		     "\
+	  msg_critical("User Own Identifier", 
+		       "\
 It seems that you are already editing the project.\n\n\
 If you're SURE that this is not the case and\n\
 another user does not have an identifier equal\n\

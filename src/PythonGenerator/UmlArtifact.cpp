@@ -168,6 +168,7 @@ void UmlArtifact::generate() {
 	  p += 1;
       }
       else if (!strncmp(p, "${import}", 9)) {
+	imports = "";
 	generate_imports(f, imports);
 	
 	for (index = 0; index != n; index += 1)

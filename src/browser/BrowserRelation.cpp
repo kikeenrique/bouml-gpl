@@ -579,6 +579,10 @@ int BrowserRelation::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserRelation::help_topic() const  {
+  return "relation";
+}
+
 BasicData * BrowserRelation::get_data() const {
   return def;
 }

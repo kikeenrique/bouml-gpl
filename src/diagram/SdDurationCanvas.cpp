@@ -633,6 +633,8 @@ void SdDurationCanvas::menu(const QPoint & p) {
   m.insertSeparator();
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
+  m.insertItem("Go up", 9);
+  m.insertItem("Go down", 10);
   m.insertSeparator();
   m.insertItem((coregion) ? "Draw as activity bar" :  "Draw as a coregion", 7);
   m.insertItem("Edit drawing settings", 2);
@@ -655,6 +657,14 @@ void SdDurationCanvas::menu(const QPoint & p) {
   case 1:
     lower();
     modified();
+    return;
+  case 9:
+    z_up();
+    modified();	// call package_modified()
+    return;
+  case 10:
+    z_down();
+    modified();	// call package_modified()
     return;
   case 2:
     edit_drawing_settings();
@@ -700,6 +710,10 @@ void SdDurationCanvas::apply_shortcut(QString s) {
     upper();
   else if (s == "Lower")
     lower();
+  else if (s == "Go up")
+    z_up();
+  else if (s == "Go down")
+    z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
     return;

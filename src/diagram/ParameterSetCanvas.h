@@ -65,6 +65,7 @@ class ParameterSetCanvas : public QObject, public DiagramCanvas {
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     virtual void change_scale();
     virtual void moveBy(double dx, double dy);
+    virtual bool primaryItem() const;
     void do_moveBy(double dx, double dy);
     void do_change_scale();
     

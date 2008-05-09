@@ -274,6 +274,10 @@ void PinCanvas::do_moveBy(double dx, double dy) {
   if (!the_canvas()->do_zoom())
     set_center100();
 }
+    
+bool PinCanvas::primaryItem() const {
+  return FALSE;
+}
 
 void PinCanvas::draw(QPainter & p) {
   if (! visible()) return;
@@ -339,6 +343,8 @@ void PinCanvas::menu(const QPoint &) {
   m.insertSeparator();
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
+  m.insertItem("Go up", 13);
+  m.insertItem("Go down", 14);
   m.insertSeparator();
   m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
@@ -354,7 +360,7 @@ void PinCanvas::menu(const QPoint &) {
     m.insertItem("Delete from model", 8);
     m.insertSeparator();
   }
-  if (Tool::menu_insert(&toolm, UmlActivityPin, 10))
+  if (Tool::menu_insert(&toolm, UmlActivityPin, 20))
     m.insertItem("Tool", &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
@@ -364,6 +370,14 @@ void PinCanvas::menu(const QPoint &) {
     return;
   case 1:
     act->lower();
+    modified();	// call package_modified()
+    return;
+  case 13:
+    act->z_up();
+    modified();	// call package_modified()
+    return;
+  case 14:
+    act->z_down();
     modified();	// call package_modified()
     return;
   case 2:
@@ -387,8 +401,8 @@ void PinCanvas::menu(const QPoint &) {
     cl->select_in_browser();
     return;
   default:
-    if (index >= 10)
-      ToolCom::run(Tool::command(index - 10), browser_node);
+    if (index >= 20)
+      ToolCom::run(Tool::command(index - 20), browser_node);
     return;
   }
   
@@ -401,9 +415,13 @@ void PinCanvas::apply_shortcut(QString s) {
     return;
   }
   else if (s == "Upper")
-    upper();
+    act->upper();
   else if (s == "Lower")
-    lower();
+    act->lower();
+  else if (s == "Go up")
+    act->z_up();
+  else if (s == "Go down")
+    act->z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
     return;

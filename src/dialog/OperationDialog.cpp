@@ -3645,7 +3645,10 @@ void ParamsTable::button_pressed(int row, int col, int, const QPoint &) {
       if (rank != row)
 	mv.insertItem(QString::number(rank + 1), 10 + rank);
     
-    m.insertItem("Move param", &mv);
+    if (mv.count() != 0) {
+      m.insertSeparator();
+      m.insertItem("Move param", &mv);
+    }
     
     switch (rank = m.exec(QCursor::pos())) {
     case 0:

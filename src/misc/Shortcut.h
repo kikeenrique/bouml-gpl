@@ -31,7 +31,7 @@
 
 class Shortcut {
   public:
-    static void init();
+    static void init(bool conv);
     static const QStringList & cmds();
     static const QStringList & keys();
 
@@ -46,7 +46,7 @@ class Shortcut {
     static void save();
     
   private:
-    static void load();
+    static void load(bool conv);
 };
 
 

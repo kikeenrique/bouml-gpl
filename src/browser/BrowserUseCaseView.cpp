@@ -448,6 +448,10 @@ int BrowserUseCaseView::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserUseCaseView::help_topic() const  {
+  return "usecaseview";
+}
+
 BasicData * BrowserUseCaseView::get_data() const {
   return def;
 }

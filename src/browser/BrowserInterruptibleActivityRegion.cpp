@@ -404,6 +404,10 @@ int BrowserInterruptibleActivityRegion::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserInterruptibleActivityRegion::help_topic() const  {
+  return "activityregion";
+}
+
 BasicData * BrowserInterruptibleActivityRegion::get_data() const {
   return def;
 }

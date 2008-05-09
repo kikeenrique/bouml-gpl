@@ -31,7 +31,6 @@
 #include <qtextcodec.h>
 
 #include "strutil.h"
-#include "CharSetDialog.h"
 
 bool manage_comment(QString comment, const char *& p,
 		    const char *& pp, bool javadoc)
@@ -421,28 +420,35 @@ bool need_equal(const char * p, const char * v, bool cpp)
 
 //
 
-static QTextCodec * Codec;
+static QTextCodec * Codec = 0;
 
 bool hasCodec() 
 {
   return Codec != 0;
 }
 
-
-void initCodec()
+QString codec()
 {
-  // QApplication::font().charSet() returns 'AnyCharSet'
-  // whose don't have a codec => use BOUML_CHARSET
-  QString cs = getenv("BOUML_CHARSET");
-  
-  if (cs.isEmpty()) 
-    Codec = 0;
-  else if ((Codec = QTextCodec::codecForName(cs)) == 0) {
-    CharSetDialog d(cs);
+  if (Codec != 0) {
+    QString na = Codec->name();
+    int pos = 0;  
     
-    if (d.exec() == QDialog::Accepted)
-      Codec = QTextCodec::codecForName(d.choosen());
-  } 
+    while ((pos = na.find(' ', pos)) != -1)
+      na.replace(pos, 1, "_");
+    
+    if (QTextCodec::codecForName(na) == Codec)
+      return na;
+  }
+  
+  return "";
+}
+
+void set_codec(QString s)
+{
+  if (s.isEmpty()) 
+    Codec = 0;
+  else
+    Codec = QTextCodec::codecForName(s);
 }
 
 QString toUnicode(const char * str)

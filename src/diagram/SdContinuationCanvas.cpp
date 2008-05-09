@@ -175,6 +175,8 @@ void SdContinuationCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
+  m.insertItem("Go up", 6);
+  m.insertItem("Go down", 7);
   m.insertSeparator();
   m.insertItem("Edit", 2);
   m.insertSeparator();
@@ -195,6 +197,14 @@ void SdContinuationCanvas::menu(const QPoint&) {
     return;
   case 1:
     lower();
+    modified();	// call package_modified()
+    return;
+  case 6:
+    z_up();
+    modified();	// call package_modified()
+    return;
+  case 7:
+    z_down();
     modified();	// call package_modified()
     return;
   case 2:
@@ -223,6 +233,10 @@ void SdContinuationCanvas::apply_shortcut(QString s) {
     upper();
   else if (s == "Lower")
     lower();
+  else if (s == "Go up")
+    z_up();
+  else if (s == "Go down")
+    z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
     return;

@@ -995,6 +995,8 @@ void CdClassCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
+  m.insertItem("Go up", 21);
+  m.insertItem("Go down", 22);
   m.insertSeparator();
   m.insertItem("Edit drawing settings", 2);
   if (attributes.count() != 0)
@@ -1127,6 +1129,12 @@ void CdClassCanvas::menu(const QPoint&) {
   case 1:
     lower();
     break;
+  case 21:
+    z_up();
+    break;
+  case 22:
+    z_down();
+    break;
   case 2:
     edit_drawing_settings();
     return;
@@ -1251,6 +1259,10 @@ void CdClassCanvas::apply_shortcut(QString s) {
     upper();
   else if (s == "Lower")
     lower();
+  else if (s == "Go up")
+    z_up();
+  else if (s == "Go down")
+    z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
     return;

@@ -223,9 +223,12 @@ unsigned ToolCom::bind(unsigned port)
   
   ha.setAddress("127.0.0.1");
   
-  while (!listen_sock->bind (ha, port))
-    port += 1;
-  
+  if (listen_sock->bind (ha, 0))
+    port = listen_sock->port();
+  else
+    while (!listen_sock->bind (ha, port))
+      port += 1;
+
   listen_sock->listen(1);
   
   return port;

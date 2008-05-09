@@ -66,6 +66,7 @@ class BrowserFlow : public BrowserNode, public Labeled<BrowserFlow> {
     virtual bool in_edition() const;
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual const char * help_topic() const;
     virtual void modified();
     virtual BasicData * get_data() const;
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;

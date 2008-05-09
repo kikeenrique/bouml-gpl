@@ -23,30 +23,46 @@
 //
 // *************************************************************************
 
-// all is static ... I don't like singleton
+#ifndef ENVDIALOG_H
+#define ENVDIALOG_H
 
-class UmlDesktop {
+#include <qdialog.h>
+
+class QLineEdit;
+class QComboBox;
+
+// singleton
+
+class EnvDialog : public QDialog {
+  Q_OBJECT
+    
   public:
-    static void init();
-    static void limits(int & l, int & t, int & r, int & b);
-    static void set_limits(int l, int t, int r, int b);
-    static int width();
-    static int height();
-    static void tocenter(QWidget * who);
-    static void limitsize_center(QWidget * who, QSize & previous, double max_w, double max_h);
-    static void limitsize_move(QWidget * who, QSize & previous, 
-			       double max_w, double max_h);
-    static void setsize_center(QWidget * who, QSize & previous, 
-			       double pw, double ph);
-    static bool fixed();
-        
+    static void edit(bool conv);
+    
   private:
-    static int left;
-    static int top;
-    static int right;
-    static int bottom;
-    static int w;
-    static int h;
-    static QPoint c;
-    static bool fixedp;
+    EnvDialog(bool conv);
+  
+    bool conversion;
+    QLineEdit * ed_id;
+    QLineEdit * ed_doc;
+    QLineEdit * ed_navigator; 
+    QLineEdit * ed_template;
+    QLineEdit * ed_editor;
+    QComboBox * cb_charset;
+    QLineEdit * ed_xmin;
+    QLineEdit * ed_xmax;
+    QLineEdit * ed_ymin;
+    QLineEdit * ed_ymax;
+    
+  private slots:
+    virtual void accept();
+    virtual void reject();
+    void doc_browse();
+    void navigator_browse();
+    void template_browse();
+    void editor_browse();
 };
+
+extern int read_boumlrc();
+
+#endif

@@ -511,6 +511,20 @@ void OperationData::set_is_abstract(bool yes) {
     if (strcmp(d->get_stereotype(), "enum"))
       d->set_is_abstract(TRUE);
   }
+  else {
+    QString d = get_phpdef();
+    int index;
+    
+    if (!d.isEmpty() && ((index = d.find("${)};")) != -1)) {
+      QString dd = GenerationSettings::php_default_oper_def();
+      int index2 = dd.find("${)}");
+	
+      if (index2 != -1) {
+	d = d.left(index) + dd.mid(index2);
+	php_def.assign(d, TRUE);
+      }
+    }
+  }
 }
 
 void OperationData::set_return_type(const AType & t) {

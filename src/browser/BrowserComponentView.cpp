@@ -314,6 +314,10 @@ int BrowserComponentView::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserComponentView::help_topic() const  {
+  return "componentview";
+}
+
 BasicData * BrowserComponentView::get_data() const {
   return def;
 }

@@ -217,6 +217,10 @@ int BrowserExtraMember::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserExtraMember::help_topic() const  {
+  return "extramember";
+}
+
 BasicData * BrowserExtraMember::get_data() const {
   return def;
 }

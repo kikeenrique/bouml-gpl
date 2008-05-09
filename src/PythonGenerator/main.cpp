@@ -50,7 +50,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QCString(argv[port_index]).toUInt())) {
     try {
-      UmlCom::trace("<b>Python generator</b> release 1.0.1<br>");
+      UmlCom::trace("<b>Python generator</b> release 1.0.2<br>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlCom::targetItem()->generate();

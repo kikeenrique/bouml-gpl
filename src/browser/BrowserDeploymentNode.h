@@ -64,6 +64,7 @@ class BrowserDeploymentNode : public BrowserNode, public Labeled<BrowserDeployme
     virtual void open(bool force_edit);
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual const char * help_topic() const;
     virtual BasicData * get_data() const;
     virtual void on_delete();
     

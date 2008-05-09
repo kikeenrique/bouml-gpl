@@ -678,6 +678,10 @@ int BrowserArtifact::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserArtifact::help_topic() const  {
+  return "artifact";
+}
+
 void BrowserArtifact::DragMoveEvent(QDragMoveEvent * e) {
   if (UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))) {
     if (!is_read_only)

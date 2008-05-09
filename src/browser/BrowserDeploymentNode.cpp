@@ -281,6 +281,10 @@ int BrowserDeploymentNode::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserDeploymentNode::help_topic() const  {
+  return "node";
+}
+
 BrowserDeploymentNode * BrowserDeploymentNode::get_deploymentnode(BrowserNode * future_parent)
 {
   BrowserNode * old;

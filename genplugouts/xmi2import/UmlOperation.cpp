@@ -15,10 +15,8 @@ void UmlOperation::importIt(FileIn & in, Token & token, UmlItem * where)
 {
   where = where->container(anOperation, token, in);
   
-  if (where == 0) {
-    in.bypass(token);
+  if (where == 0)
     return;
-  }
     
   QCString s = token.valueOf("name");
   

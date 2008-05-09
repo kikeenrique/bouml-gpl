@@ -361,6 +361,10 @@ int BrowserClassInstance::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserClassInstance::help_topic() const  {
+  return "classinstance";
+}
+
 BrowserClassInstance * BrowserClassInstance::get_classinstance(BrowserNode * future_parent)
 {
   BrowserNode * old;

@@ -109,6 +109,8 @@ void InfoCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
+  m.insertItem("Go up", 5);
+  m.insertItem("Go down", 6);
   m.insertSeparator();
   m.insertItem("Edit", 2);
   m.insertSeparator();
@@ -130,6 +132,14 @@ void InfoCanvas::menu(const QPoint&) {
     return;
   case 1:
     lower();
+    modified();	// call package_modified()
+    return;
+  case 5:
+    z_up();
+    modified();	// call package_modified()
+    return;
+  case 6:
+    z_down();
     modified();	// call package_modified()
     return;
   case 2:
@@ -161,6 +171,22 @@ void InfoCanvas::menu(const QPoint&) {
     return;
   }
   
+  package_modified();
+}
+
+void InfoCanvas::apply_shortcut(QString s) {
+  if (s == "Upper")
+    upper();
+  else if (s == "Lower")
+    lower();
+  else if (s == "Go up")
+    z_up();
+  else if (s == "Go down")
+    z_down();
+  else
+    return;
+
+  modified();
   package_modified();
 }
 

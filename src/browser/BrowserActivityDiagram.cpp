@@ -355,6 +355,10 @@ int BrowserActivityDiagram::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserActivityDiagram::help_topic() const  {
+  return "activitydiagram";
+}
+
 void BrowserActivityDiagram::get_activitydiagramsettings(ActivityDiagramSettings & r) const {
   if (! settings.complete(r))
     ((BrowserNode *) parent())->get_activitydiagramsettings(r);

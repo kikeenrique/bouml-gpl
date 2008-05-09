@@ -344,6 +344,10 @@ int BrowserObjectDiagram::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserObjectDiagram::help_topic() const  {
+  return "objectdiagram";
+}
+
 void BrowserObjectDiagram::get_objectdiagramsettings(ObjectDiagramSettings & r) const {
   if (! settings.complete(r))
     ((BrowserNode *) parent())->get_objectdiagramsettings(r);

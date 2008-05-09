@@ -253,6 +253,8 @@ void FragmentCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
+  m.insertItem("Go up", 7);
+  m.insertItem("Go down", 8);
   m.insertSeparator();
   m.insertItem("Edit", 2);
   m.insertItem("Add separator", 6);
@@ -274,6 +276,14 @@ void FragmentCanvas::menu(const QPoint&) {
     return;
   case 1:
     lower();
+    modified();	// call package_modified()
+    return;
+  case 7:
+    z_up();
+    modified();	// call package_modified()
+    return;
+  case 8:
+    z_down();
     modified();	// call package_modified()
     return;
   case 2:
@@ -312,6 +322,10 @@ void FragmentCanvas::apply_shortcut(QString s) {
     upper();
   else if (s == "Lower")
     lower();
+  else if (s == "Go up")
+    z_up();
+  else if (s == "Go down")
+    z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
     return;

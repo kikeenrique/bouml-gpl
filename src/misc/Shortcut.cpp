@@ -44,7 +44,7 @@ static QStringList ShortcutCmds;
 static QStringList ShortcutKeys;
 static QMap<QString, QString> Shortcuts;
 
-void Shortcut::init()
+void Shortcut::init(bool conv)
 {
 #define MEMOKEY(name, code) \
 	NameToCode[#name] = code; \
@@ -130,6 +130,8 @@ void Shortcut::init()
     "Generate Java",
     "Generate Php",
     "Generate Python",
+    "Go up",
+    "Go down",
     "Lower",
     "Mark",
     "Menu",
@@ -212,7 +214,7 @@ void Shortcut::init()
   for (i = 0; i != sizeof(cmds)/sizeof(cmds[0]); i += 1)
     ShortcutCmds.append(cmds[i]);
 			    
-  load();
+  load(conv);
 }
 
 int codeToIndex(int c)
@@ -310,9 +312,42 @@ void Shortcut::add(QString k, bool shift, bool ctrl, bool alt, QString s)
 
 //
 
-static QString shortcut_file_path()
+void Shortcut::save()
 {
-  char * v = getenv("BOUML_ID");
+  QFile fp(QDir::home().absFilePath(".bouml_shortcuts"));
+  
+  if (fp.open(IO_WriteOnly)) {
+    QTextStream ts(&fp);
+    
+    ts.setEncoding(QTextStream::Latin1);
+    
+    QMap<QString, QString>::ConstIterator it;
+    
+    for (it = Shortcuts.begin(); it != Shortcuts.end(); ++it) {
+      QString k = it.key();
+      QString d = it.data();
+      const char * p = k;
+      
+      if (p[0] & 1)
+	ts.writeRawBytes("shift ", 6);
+      if (p[0] & 2)
+	ts.writeRawBytes("control ", 8);
+      if (p[0] & 4)
+	ts.writeRawBytes("alt ", 4);
+      ts.writeRawBytes(p+1, k.length() - 1);
+      ts.writeRawBytes(" ", 1);
+      ts.writeRawBytes((const char *) d, d.length());
+      ts.writeRawBytes("\n", 1);
+    }
+  }
+}
+
+static QString shortcut_file_path(bool conv)
+{
+  if (! conv)
+    return ".bouml_shortcuts";
+  
+  char * v = getenv("BOUML_ID");	// yes !
   int uid;
   
   if ((v == 0) || (sscanf(v, "%d", &uid) != 1))
@@ -324,41 +359,7 @@ static QString shortcut_file_path()
   return f;
 }
 
-void Shortcut::save()
-{
-  QString f = shortcut_file_path();
-  
-  if (!f.isEmpty()) {
-    QFile fp(QDir::home().absFilePath(f));
-    
-    if (fp.open(IO_WriteOnly)) {
-      QTextStream ts(&fp);
-      
-      ts.setEncoding(QTextStream::Latin1);
-      
-      QMap<QString, QString>::ConstIterator it;
-      
-      for (it = Shortcuts.begin(); it != Shortcuts.end(); ++it) {
-	QString k = it.key();
-	QString d = it.data();
-	const char * p = k;
-	
-	if (p[0] & 1)
-	  ts.writeRawBytes("shift ", 6);
-	if (p[0] & 2)
-	  ts.writeRawBytes("control ", 8);
-	if (p[0] & 4)
-	  ts.writeRawBytes("alt ", 4);
-	ts.writeRawBytes(p+1, k.length() - 1);
-	ts.writeRawBytes(" ", 1);
-	ts.writeRawBytes((const char *) d, d.length());
-	ts.writeRawBytes("\n", 1);
-      }
-    }
-  }
-}
-
-void Shortcut::load()
+void Shortcut::load(bool conv)
 {
   // default shortcuts
   add("Delete", FALSE, FALSE, FALSE, "Remove from view");
@@ -379,11 +380,11 @@ void Shortcut::load()
   add("S",	FALSE, TRUE, FALSE, "Save");
   add("L",	FALSE, TRUE, FALSE, "Arrow geometry");
   
-  QString f = shortcut_file_path();
+  QString f = shortcut_file_path(conv);
   
-  if (!f.isEmpty()) {
+  if (!f.isEmpty())  {
     QFile fp(QDir::home().absFilePath(f));
-    
+  
     if (fp.open(IO_ReadOnly)) {
       QTextStream ts(&fp);
       
@@ -397,7 +398,7 @@ void Shortcut::load()
 	bool alt = FALSE;
 	int index = 0;
 	const char * p = ln;
-  
+	
 	if (!strncmp(p, "shift ", 6)) {
 	  shift = TRUE;
 	  index = 6;
@@ -430,7 +431,12 @@ void Shortcut::load()
 	  add(k, shift, control, alt, s);
 	}
       }
+      
+      if (conv)
+	save();
+      
       return;
     }
   }
 }
+

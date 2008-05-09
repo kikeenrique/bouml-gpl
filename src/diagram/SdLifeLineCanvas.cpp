@@ -278,6 +278,8 @@ void SdLifeLineCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
+  m.insertItem("Go up", 2);
+  m.insertItem("Go down", 3);
 
   int index = m.exec(QCursor::pos());
   
@@ -287,6 +289,12 @@ void SdLifeLineCanvas::menu(const QPoint&) {
     break;
   case 1:
     lower();
+    break;
+  case 2:
+    z_up();
+    break;
+  case 3:
+    z_down();
     break;
   default:
     return;

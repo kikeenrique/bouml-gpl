@@ -136,4 +136,7 @@ extern int msg_information(QString caption, QString text,
 			   int button0=QMessageBox::Ok,
 			   int button1=0, int button2=0);
 
+extern QString editor();
+extern void set_editor(QString);
+
 #endif

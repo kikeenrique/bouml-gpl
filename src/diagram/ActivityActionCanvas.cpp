@@ -747,6 +747,8 @@ void ActivityActionCanvas::menu(const QPoint&) {
   }
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
+  m.insertItem("Go up", 13);
+  m.insertItem("Go down", 14);
   m.insertSeparator();
   m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
@@ -795,6 +797,14 @@ void ActivityActionCanvas::menu(const QPoint&) {
     return;
   case 1:
     lower();
+    modified();	// call package_modified()
+    return;
+  case 13:
+    z_up();
+    modified();	// call package_modified()
+    return;
+  case 14:
+    z_down();
     modified();	// call package_modified()
     return;
   case 2:
@@ -852,6 +862,10 @@ void ActivityActionCanvas::apply_shortcut(QString s) {
     upper();
   else if (s == "Lower")
     lower();
+  else if (s == "Go up")
+    z_up();
+  else if (s == "Go down")
+    z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
     return;

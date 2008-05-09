@@ -347,6 +347,10 @@ int BrowserComponentDiagram::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserComponentDiagram::help_topic() const  {
+  return "componentdiagram";
+}
+
 void BrowserComponentDiagram::get_componentdiagramsettings(ComponentDiagramSettings & r) const {
   if (! settings.complete(r))
     ((BrowserNode *) parent())->get_componentdiagramsettings(r);

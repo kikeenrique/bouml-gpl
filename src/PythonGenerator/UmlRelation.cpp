@@ -117,6 +117,12 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f) {
 	roleType()->write(f);
 	p += 7;
       }
+      else if (*p == '@') {
+	QCString indent;
+	bool indent_needed = FALSE;
+	
+	manage_alias(p, f, indent, indent_needed);
+      }
       else
 	f << *p++;
     }

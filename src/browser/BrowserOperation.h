@@ -85,6 +85,7 @@ class BrowserOperation : public BrowserNode, public Labeled<BrowserOperation> {
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual const char * help_topic() const;
     virtual void modified();
     virtual BasicData * get_data() const;
     virtual bool allow_spaces() const;

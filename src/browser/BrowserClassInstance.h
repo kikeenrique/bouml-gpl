@@ -69,6 +69,7 @@ class BrowserClassInstance : public BrowserNode, public Labeled<BrowserClassInst
     virtual void open(bool force_edit);
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual const char * help_topic() const;
     virtual BasicData * get_data() const;
     virtual void on_delete();
     static void post_load();

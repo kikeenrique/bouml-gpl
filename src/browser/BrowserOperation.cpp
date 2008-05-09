@@ -567,6 +567,10 @@ BasicData * BrowserOperation::get_data() const {
   return def;
 }
 
+const char * BrowserOperation::help_topic() const  {
+  return "operation";
+}
+
 bool BrowserOperation::allow_spaces() const {
   return FALSE;
 }

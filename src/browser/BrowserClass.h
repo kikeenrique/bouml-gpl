@@ -107,6 +107,7 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
     virtual void open(bool force_edit);
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual const char * help_topic() const;
     virtual void modified();
     virtual void on_delete();
     virtual BasicData * get_data() const;

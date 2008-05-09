@@ -517,6 +517,10 @@ int BrowserUseCase::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserUseCase::help_topic() const  {
+  return "usecase";
+}
+
 BasicData * BrowserUseCase::get_data() const {
   return def;
 }

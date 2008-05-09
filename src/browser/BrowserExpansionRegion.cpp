@@ -424,6 +424,10 @@ int BrowserExpansionRegion::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserExpansionRegion::help_topic() const  {
+  return "activityregion";
+}
+
 BasicData * BrowserExpansionRegion::get_data() const {
   return def;
 }

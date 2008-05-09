@@ -58,6 +58,7 @@ class BrowserExtraMember : public BrowserNode, public Labeled<BrowserExtraMember
     virtual void open(bool);
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual const char * help_topic() const;
     virtual void modified();
     virtual BasicData * get_data() const;
     virtual void set_name(const char * s);

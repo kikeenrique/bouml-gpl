@@ -267,6 +267,8 @@ void UcUseCaseCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
+  m.insertItem("Go up", 13);
+  m.insertItem("Go down", 14);
   m.insertSeparator();
   m.insertItem("Edit", 2);
   m.insertSeparator();
@@ -287,7 +289,7 @@ void UcUseCaseCanvas::menu(const QPoint&) {
   if (browser_node->is_writable())
     m.insertItem("Delete from model", 8);
   m.insertSeparator();
-  if (Tool::menu_insert(&toolm, UmlUseCase, 10))
+  if (Tool::menu_insert(&toolm, UmlUseCase, 20))
     m.insertItem("Tool", &toolm);
 
   int rank = m.exec(QCursor::pos());
@@ -299,6 +301,14 @@ void UcUseCaseCanvas::menu(const QPoint&) {
     return;
   case 1:
     lower();
+    modified();
+    return;
+  case 13:
+    z_up();
+    modified();
+    return;
+  case 14:
+    z_down();
     modified();
     return;
   case 2:
@@ -331,8 +341,8 @@ void UcUseCaseCanvas::menu(const QPoint&) {
     browser_node->delete_it();	// will remove canvas
     break;
   default:
-    if (rank >= 10)
-      ToolCom::run(Tool::command(rank - 10), browser_node);
+    if (rank >= 20)
+      ToolCom::run(Tool::command(rank - 20), browser_node);
     return;
   }
   
@@ -348,6 +358,10 @@ void UcUseCaseCanvas::apply_shortcut(QString s) {
     upper();
   else if (s == "Lower")
     lower();
+  else if (s == "Go up")
+    z_up();
+  else if (s == "Go down")
+    z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
     return;

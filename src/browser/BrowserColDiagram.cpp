@@ -348,6 +348,10 @@ int BrowserColDiagram::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserColDiagram::help_topic() const  {
+  return "collaborationdiagram";
+}
+
 void BrowserColDiagram::get_collaborationdiagramsettings(CollaborationDiagramSettings & r) const {
   if (! settings.complete(r))
     ((BrowserNode *) parent())->get_collaborationdiagramsettings(r);

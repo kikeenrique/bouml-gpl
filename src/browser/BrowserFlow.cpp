@@ -291,6 +291,10 @@ int BrowserFlow::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserFlow::help_topic() const  {
+  return "flow";
+}
+
 BasicData * BrowserFlow::get_data() const {
   return def;
 }

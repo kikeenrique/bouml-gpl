@@ -409,6 +409,10 @@ int BrowserActivityNode::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserActivityNode::help_topic() const  {
+  return "activitycontrolnode";
+}
+
 BasicData * BrowserActivityNode::get_data() const {
   return def;
 }

@@ -457,6 +457,10 @@ int BrowserDeploymentView::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserDeploymentView::help_topic() const  {
+  return "deploymentview";
+}
+
 BasicData * BrowserDeploymentView::get_data() const {
   return def;
 }

@@ -353,6 +353,10 @@ int BrowserUseCaseDiagram::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserUseCaseDiagram::help_topic() const  {
+  return "usecasediagram";
+}
+
 void BrowserUseCaseDiagram::get_usecasediagramsettings(UseCaseDiagramSettings & r) const {
   if (! settings.complete(r))
     ((BrowserNode *) parent())->get_usecasediagramsettings(r);

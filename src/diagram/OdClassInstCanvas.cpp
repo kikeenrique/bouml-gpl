@@ -477,6 +477,8 @@ void OdClassInstCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
+  m.insertItem("Go up", 9);
+  m.insertItem("Go down", 10);
   m.insertSeparator();
   m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
@@ -499,6 +501,14 @@ void OdClassInstCanvas::menu(const QPoint&) {
   case 1:
     lower();
     modified();	// call package_modified
+    return;
+  case 9:
+    z_up();
+    modified();	// call package_modified()
+    return;
+  case 10:
+    z_down();
+    modified();	// call package_modified()
     return;
   case 2:
     edit_drawing_settings();
@@ -539,6 +549,10 @@ void OdClassInstCanvas::apply_shortcut(QString s) {
     upper();
   else if (s == "Lower")
     lower();
+  else if (s == "Go up")
+    z_up();
+  else if (s == "Go down")
+    z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
     return;

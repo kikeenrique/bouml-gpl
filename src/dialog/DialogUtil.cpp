@@ -55,6 +55,8 @@
 #include "strutil.h"
 #include "UmlDesktop.h"
 
+static QString BoumlEditor;
+
 QSize SmallPushButton::sizeHint() const {
   QFontMetrics fm = fontMetrics();
   QSize sz = fm.size(Qt::ShowPrefix, text());
@@ -180,7 +182,7 @@ void same_width(QWidget * l1, QWidget * l2, QWidget * l3,
 void edit(const QString & s, QString name, void * id, EditType k,
 	  QTabDialog * d, post_edit pf, QList<BodyDialog> & edits)
 {
-  QString ed = getenv("BOUML_EDITOR");
+  QString ed = BoumlEditor;
   
   if (!ed.isEmpty() && (pf != 0)) {
     // try to use it
@@ -528,3 +530,14 @@ int msg_information(QString caption, QString text,
   return msg_msg(QMessageBox::Information, caption, text, button0, button1, button2);
 }
 
+//
+
+QString editor()
+{
+  return BoumlEditor;
+}
+
+void set_editor(QString s)
+{
+  BoumlEditor = s;
+}

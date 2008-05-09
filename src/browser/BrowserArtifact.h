@@ -84,6 +84,7 @@ class BrowserArtifact : public BrowserNode, public Labeled<BrowserArtifact> {
     virtual void open(bool force_edit);
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual const char * help_topic() const;
     virtual void modified();
     virtual BasicData * get_data() const;
     virtual const QStringList & default_stereotypes(UmlCode, const BrowserNode *) const; // non class rel

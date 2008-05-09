@@ -93,6 +93,18 @@ void TemplateCanvas::lower() {
   cl->lower(); // will update the template z
 }
 
+void TemplateCanvas::z_up() {
+  cl->z_up(); // will update the template z
+}
+
+void TemplateCanvas::z_down() {
+  cl->z_down(); // will update the template z
+}
+    
+bool TemplateCanvas::primaryItem() const {
+  return FALSE;
+}
+
 void TemplateCanvas::set_z(double) {
   // does nothing, cl z modification call update
 }

@@ -404,6 +404,10 @@ int BrowserComponent::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserComponent::help_topic() const  {
+  return "component";
+}
+
 void BrowserComponent::DragMoveEvent(QDragMoveEvent * e) {
   if (UmlDrag::canDecode(e, UmlComponent) ||
       UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))) {

@@ -136,6 +136,7 @@ class UmlWindow : public QMainWindow {
     void preserve();
     void addoperationprofile();
     void edit_shortcuts();
+    void edit_env();
     
     void motif_style();
     void motifplus_style();
@@ -147,6 +148,7 @@ class UmlWindow : public QMainWindow {
 
     void about();
     void aboutQt();
+    void help();
     
     void show_trace();
     void cpp_generate();
@@ -192,5 +194,8 @@ class UmlWindow : public QMainWindow {
     virtual void keyPressEvent(QKeyEvent * e);
 
 };
+
+extern QString template_project();
+extern void set_template_project(QString s);
 
 #endif

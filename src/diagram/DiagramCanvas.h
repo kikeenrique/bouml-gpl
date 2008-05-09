@@ -58,6 +58,9 @@ class DiagramCanvas : public QCanvasRectangle, public DiagramItem {
   
     virtual void upper();
     virtual void lower();
+    virtual void z_up();
+    virtual void z_down();
+    virtual bool primaryItem() const;
     virtual double get_z() const;
     virtual void set_z(double z);	// only called by upper() & lower()
     

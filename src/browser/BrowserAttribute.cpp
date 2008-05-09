@@ -391,6 +391,10 @@ int BrowserAttribute::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserAttribute::help_topic() const  {
+  return "attribute";
+}
+
 BasicData * BrowserAttribute::get_data() const {
   return def;
 }

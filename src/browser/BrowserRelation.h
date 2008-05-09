@@ -79,6 +79,7 @@ class BrowserRelation : public BrowserNode, public Labeled<BrowserRelation> {
     virtual bool in_edition() const;
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
+    virtual const char * help_topic() const;
     virtual void modified();
     virtual BasicData * get_data() const;
     virtual bool same_name(const QString & s, UmlCode type) const;

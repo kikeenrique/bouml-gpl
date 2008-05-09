@@ -293,7 +293,7 @@ void ControlWindow::windows_style() {
 }
 
 void ControlWindow::about() {
-  QMessageBox::about(this, "Project control", "<p>Version <b>1.1.1</b></p>" );
+  QMessageBox::about(this, "Project control", "<p>Version <b>1.2</b></p>" );
 }
 
 void ControlWindow::aboutQt() {

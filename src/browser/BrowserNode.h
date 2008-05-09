@@ -153,6 +153,7 @@ class BrowserNode : public QListViewItem,
     virtual void on_close();
     virtual UmlCode get_type() const = 0;
     virtual int get_identifier() const = 0;
+    virtual const char * help_topic() const;
     virtual void modified();
     bool modifiedp() { return is_modified; }
     void unmodified() { is_modified = FALSE; }

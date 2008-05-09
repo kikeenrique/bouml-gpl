@@ -353,6 +353,10 @@ int BrowserStateDiagram::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserStateDiagram::help_topic() const  {
+  return "statediagram";
+}
+
 void BrowserStateDiagram::get_statediagramsettings(StateDiagramSettings & r) const {
   if (! settings.complete(r))
     ((BrowserNode *) parent())->get_statediagramsettings(r);

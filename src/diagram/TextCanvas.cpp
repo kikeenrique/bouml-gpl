@@ -134,6 +134,8 @@ void TextCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
+  m.insertItem("Go up", 6);
+  m.insertItem("Go down", 7);
   m.insertSeparator();
   m.insertItem("Edit", 2);
   m.insertSeparator();
@@ -159,6 +161,20 @@ void TextCanvas::menu(const QPoint&) {
     break;
   case 1:
     lower();
+    // force son reaffichage
+    hide();
+    show();
+    canvas()->update();
+    break;
+  case 6:
+    z_up();
+    // force son reaffichage
+    hide();
+    show();
+    canvas()->update();
+    break;
+  case 7:
+    z_down();
     // force son reaffichage
     hide();
     show();
@@ -216,6 +232,10 @@ void TextCanvas::apply_shortcut(QString s) {
     upper();
   else if (s == "Lower")
     lower();
+  else if (s == "Go up")
+    z_up();
+  else if (s == "Go down")
+    z_down();
   else if (s == "Edit") {
     open();  // call package_modified
     return;

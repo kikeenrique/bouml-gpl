@@ -1073,6 +1073,12 @@ int BrowserPackage::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserPackage::help_topic() const  {
+  return (!strcmp(def->get_stereotype(), "profile"))
+    ? "profile"
+    : "package";
+}
+
 BasicData * BrowserPackage::get_data() const {
   return def;
 }

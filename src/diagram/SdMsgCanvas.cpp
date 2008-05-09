@@ -196,6 +196,8 @@ void SdMsgCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
+  m.insertItem("Go up", 13);
+  m.insertItem("Go down", 14);
   m.insertSeparator();
   m.insertItem("Edit", 2);
   m.insertItem("Edit drawing settings", 3);
@@ -230,6 +232,18 @@ void SdMsgCanvas::menu(const QPoint&) {
     break;
   case 1:
     lower();
+    // force son reaffichage
+    hide();
+    show();
+    break;
+  case 13:
+    z_up();
+    // force son reaffichage
+    hide();
+    show();
+    break;
+  case 14:
+    z_down();
     // force son reaffichage
     hide();
     show();
@@ -281,6 +295,10 @@ void SdMsgCanvas::apply_shortcut(QString s) {
     upper();
   else if (s == "Lower")
     lower();
+  else if (s == "Go up")
+    z_up();
+  else if (s == "Go down")
+    z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
     return;

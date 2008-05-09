@@ -342,6 +342,10 @@ int BrowserClassDiagram::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserClassDiagram::help_topic() const  {
+  return "classdiagram";
+}
+
 void BrowserClassDiagram::get_classdiagramsettings(ClassDiagramSettings & r) const {
   if (! settings.complete(r))
     ((BrowserNode *) parent())->get_classdiagramsettings(r);

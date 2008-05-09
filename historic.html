@@ -1,3 +1,96 @@
+<h3>4.3.3</h3>May, 9th 2008<br /><br />
+    <ul>
+	<li> To set the screen dimension through the environment dialog 
+		in case of a multiple screens usage wasn't effect, fixed
+		<br /><br /></li>
+
+	<li> Fixe problem in the help dialog.
+		<br /><br /></li>
+
+	<li> When a class stereotyped <i>typedef</i> is read-only
+		and you edit it the base type is empty in the
+		tab UML and the	code preview in C++ tab
+		doesn't show the base type too. Fixed
+		<br /><br /></li>
+
+	<li> The forms <i>@{...}</i> are now substituted in the
+		code generated for the <i>generalizations/realizations</i>.
+		<br /><br /></li>
+
+	<li> <b>Python Generator 1.0.2</b><br />
+		Fixe a bug in the computation of the dependencies to
+			generate the <i>import</i> forms.<br />
+		To substitute forms <i>@{...}</i> in the code generated
+			for the <i>generalizations/realizations</i>.
+		<br /><br /></li>
+
+	<li> <b>C++ Generator 2.12.4</b><br />
+		<b>Java Generator 2.15.1</b><br />
+		<b>Php Generator 1.4.1</b><br />
+		<b>Idl Generator 2.9.2</b><br />
+		To substitute forms <i>@{...}</i> in the code generated
+			for the <i>generalizations/realizations</i>.
+		</li>
+
+    </ul>
+<br /><br />
+
+<h3>4.3.2</h3>May, 5th 2008<br /><br />
+    <ul>
+	<li> Modify the attribution of the socket port number used 
+		to exchange data between the modeler and the <i>plug-outs</i>.
+		The goal is to solve problems with firewall sometimes blocking
+		the <i>plug-outs</i>.
+		<br /><br /></li>
+
+	<li> In the previous releases some information was get from environment
+		variables, for instance <i>BOUML_ID</i>. Now these informations
+		are memorized in the file <i>.boumlrc</i> placed into the home 
+		directory, and set through a dedicated dialog called through the
+		entry <i>Set environment</i> in the menu <i>Miscellaneous</i>.<br />
+		This dialog is automatically called in case <i>.boumlrc</i> doesn't
+		exist, and of course the values set through the defined environment
+		variables are proposed.<br />
+		The shortcuts are now saved in the file <i>.bouml_shortcuts</i>
+		<br /><br /></li>
+
+	<li> The chapter of the reference manual corresponding to the type of the
+		element	selected in the <i>browser</i> is now shown by using the
+		<i>F1</i> key or the help menu (<i>About</i> dialog is now
+		associated to the <i>F2</i> key).<br />
+		The chapter <i>starting</i> is used if no project is load,
+		if nothing is selected in the <i>browser</i> the chapter
+		<i>browser items</i> is used.<br />
+		The directory where the documentation is placed can be specified
+		by setting the environment (see above), you can also indicate which
+		navigator will be used to show the HTML pages.<br />
+		Two <i>setups</i> are now distributed for Windows, one of 
+		them install the documentation.
+		<br /><br /></li>
+
+	<li> When you add an inherited operation the new operation is set not abtract.
+		If it is not empty the Php definition is now forced to contain
+		<i>${body}</i>, to help in case the inherited operation is abstract.
+		<br /><br /></li>
+
+	<li> In the diagrams add <i>go up/down</i> to change a little the level of
+		an element contrarilly to <i>upper</i> and <i>lower</i>.<br />
+		Of course you can define shortcuts to these new commands.
+		<br /><br /></li>
+
+	<li> <b>XMI2 Import 1.2.10</b><br />
+		Little improvements.
+		<br /><br /></li>
+
+	<li> <b>Project synchro 1.2</b><br />
+	     <b>Project control 1.2</b><br />
+		To not use environment variables. You must use the new release of
+		the modeler to create the file <i>.boumlrc</i> before using these
+		tools.
+		</li>
+    </ul>
+<br /><br />
+
 <h3>4.3.1</h3>April, 27th 2008<br /><br />
     <ul>
 	<li> When a <i>plug-out</i> is launch from an other one the trace is
@@ -34,7 +127,7 @@
 
 	<li> <i>Plug-out</i> <b>empty</b><br />
 		Upgraded by <i>plug-out upgrade</i>.
-		<br /><br /></li>
+		</li>
     </ul>
 <br /><br />
 

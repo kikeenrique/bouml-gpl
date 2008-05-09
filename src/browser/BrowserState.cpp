@@ -463,6 +463,10 @@ int BrowserState::get_identifier() const {
   return get_ident();
 }
 
+const char * BrowserState::help_topic() const  {
+  return "state";
+}
+
 BasicData * BrowserState::get_data() const {
   return def;
 }

@@ -100,8 +100,6 @@ void UmlAttribute::importIt(FileIn & in, Token & token, UmlItem * where)
 	}
       }
     }
-    else
-      in.bypass(token);
   }
 }
 

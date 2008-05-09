@@ -486,6 +486,8 @@ void UcClassCanvas::menu(const QPoint&) {
   m.insertSeparator();
   m.insertItem("Upper", 0);
   m.insertItem("Lower", 1);
+  m.insertItem("Go up", 8);
+  m.insertItem("Go down", 9);
   m.insertSeparator();
   m.insertItem("Edit drawing settings", 4);
   m.insertSeparator();
@@ -514,6 +516,16 @@ void UcClassCanvas::menu(const QPoint&) {
     break;
   case 1:
     lower();
+    hide();
+    show();
+    break;
+  case 8:
+    z_up();
+    hide();
+    show();
+    break;
+  case 9:
+    z_down();
     hide();
     show();
     break;
@@ -556,6 +568,10 @@ void UcClassCanvas::apply_shortcut(QString s) {
     upper();
   else if (s == "Lower")
     lower();
+  else if (s == "Go up")
+    z_up();
+  else if (s == "Go down")
+    z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
     return;
