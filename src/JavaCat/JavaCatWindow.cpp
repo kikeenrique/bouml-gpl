@@ -182,19 +182,39 @@ JavaCatWindow::JavaCatWindow() : QMainWindow(0, "Java Catalog", WDestructiveClos
   setCentralWidget(spl);
 }
 
+void remove_crlf(char * s)
+{
+  int len = strlen(s);
+  
+  if (len != 0) {
+    if (s[len - 1] == '\n')
+      s[--len] = 0;
+    
+    if ((len != 0) && (s[len - 1] == '\r'))
+      s[len - 1] = 0;
+  }
+}
+
 void JavaCatWindow::load() {
   QString here = QDir::currentDirPath();
   QString start;
   
-  QFile fp(QDir::home().absFilePath(".boumlcat"));
+  // note : QFile fp(QDir::home().absFilePath(".boumlcat")) doesn't work
+  // if the path contains non latin1 characters, for instance cyrillic !
+  QString s = QDir::home().absFilePath(".boumlcat");
+  FILE * fp = fopen((const char *) s, "r");
   
-  if (fp.open(IO_ReadOnly)) {
-    QTextStream ts(&fp);
-
-    start = ts.readLine();
-    fp.close();
+  if (fp != 0) {
+    char line[512];
+ 
+    if (fgets(line, sizeof(line) - 1, fp) != 0) {
+      remove_crlf(line);
+      start = line;
+    }
+    
+    fclose(fp);
   }
-  
+
   QString path =
     QFileDialog::getOpenFileName(start, "*.cat", this);
   
@@ -204,11 +224,10 @@ void JavaCatWindow::load() {
     QFile f(path);
     
     if (f.open(IO_ReadOnly)) {
-      if (fp.open(IO_WriteOnly)) {
-	QTextStream ts(&fp);
-
-	ts.writeRawBytes((const char *) path, path.length());
-	ts.writeRawBytes("\n", 1);
+      if ((fp = fopen((const char *) s, "w")) != 0) {
+	fwrite((const char *) path, 1, path.length(), fp);
+	fputc('\n', fp);
+	fclose(fp);
       }
       
       QDataStream dt(&f);
@@ -287,7 +306,7 @@ void JavaCatWindow::windows_style() {
 }
 
 void JavaCatWindow::about() {
-  QMessageBox::about(this, "Java Catalog", "<p>Version <b>2.7</b></p>" );
+  QMessageBox::about(this, "Java Catalog", "<p>Version <b>2.11.1</b></p>" );
 }
 
 void JavaCatWindow::aboutQt() {

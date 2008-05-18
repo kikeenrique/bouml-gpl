@@ -36,6 +36,7 @@
 #include <qtextstream.h>
 
 #include "Shortcut.h"
+#include "strutil.h"
 #include "mu.h"
 
 static QMap<QString, int> NameToCode;
@@ -314,13 +315,12 @@ void Shortcut::add(QString k, bool shift, bool ctrl, bool alt, QString s)
 
 void Shortcut::save()
 {
-  QFile fp(QDir::home().absFilePath(".bouml_shortcuts"));
+  // note : QFile fp(QDir::home().absFilePath(".bouml_shortcuts")) doesn't work
+  // if the path contains non latin1 characters, for instance cyrillic !
+  QString s = QDir::home().absFilePath(".bouml_shortcuts");
+  FILE * fp = fopen((const char *) s, "w");
   
-  if (fp.open(IO_WriteOnly)) {
-    QTextStream ts(&fp);
-    
-    ts.setEncoding(QTextStream::Latin1);
-    
+  if (fp != 0) {
     QMap<QString, QString>::ConstIterator it;
     
     for (it = Shortcuts.begin(); it != Shortcuts.end(); ++it) {
@@ -329,16 +329,18 @@ void Shortcut::save()
       const char * p = k;
       
       if (p[0] & 1)
-	ts.writeRawBytes("shift ", 6);
+	fwrite("shift ", 1, 6, fp);
       if (p[0] & 2)
-	ts.writeRawBytes("control ", 8);
+	fwrite("control ", 1, 8, fp);
       if (p[0] & 4)
-	ts.writeRawBytes("alt ", 4);
-      ts.writeRawBytes(p+1, k.length() - 1);
-      ts.writeRawBytes(" ", 1);
-      ts.writeRawBytes((const char *) d, d.length());
-      ts.writeRawBytes("\n", 1);
+	fwrite("alt ", 1, 4, fp);
+      fwrite(p+1, 1, k.length() - 1, fp);
+      fputc(' ', fp);
+      fwrite((const char *) d, 1, d.length(), fp);
+      fputc('\n', fp);
     }
+    
+    fclose(fp);
   }
 }
 
@@ -383,33 +385,34 @@ void Shortcut::load(bool conv)
   QString f = shortcut_file_path(conv);
   
   if (!f.isEmpty())  {
-    QFile fp(QDir::home().absFilePath(f));
-  
-    if (fp.open(IO_ReadOnly)) {
-      QTextStream ts(&fp);
+    // note : QFile fp(QDir::home().absFilePath(f)) doesn't work
+    // if the path contains non latin1 characters, for instance cyrillic !
+    QString s = QDir::home().absFilePath(f);
+    FILE * fp = fopen((const char *) s, "r");
+    
+    if (fp != 0) {
+      char line[512];
       
-      ts.setEncoding(QTextStream::Latin1);
-      
-      QString ln;
-      
-      while (!(ln = ts.readLine()).isEmpty()) {
+      while (fgets(line, sizeof(line) - 1, fp) != 0) {
+	remove_crlf(line);
+
 	bool shift = FALSE;
 	bool control = FALSE;
 	bool alt = FALSE;
 	int index = 0;
-	const char * p = ln;
+	QString ln = line;
 	
-	if (!strncmp(p, "shift ", 6)) {
+	if (!strncmp(line, "shift ", 6)) {
 	  shift = TRUE;
 	  index = 6;
 	}
 	
-	if (!strncmp(p+index, "control ", 8)) {
+	if (!strncmp(line+index, "control ", 8)) {
 	  control = TRUE;
 	  index += 8;
 	}
 	
-	if (!strncmp(p+index, "alt ", 4)) {
+	if (!strncmp(line+index, "alt ", 4)) {
 	  alt = TRUE;
 	  index += 4;
 	}
@@ -431,6 +434,8 @@ void Shortcut::load(bool conv)
 	  add(k, shift, control, alt, s);
 	}
       }
+      
+      fclose(fp);
       
       if (conv)
 	save();

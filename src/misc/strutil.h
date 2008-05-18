@@ -59,4 +59,6 @@ extern QString toUnicode(const char *);
 extern QCString fromUnicode(const QString &);
 extern bool hasCodec();
 
+extern void remove_crlf(char *);
+
 #endif

@@ -31,9 +31,13 @@ class QDir;
 char * read_file(QDir & dir, QString fn, bool & ro);
 char * read_token(char *&);
 char * read_string(char *&);
+
 void set_user_name(int owner, QString s);
 QString user_name(int id);
+
 int user_id();
 void set_user_id(int, QString);
+
+void remove_crlf(char * s);
 
 #endif

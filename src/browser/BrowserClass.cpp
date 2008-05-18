@@ -567,10 +567,10 @@ void BrowserClass::exec_menu_choice(int rank,
   case 0:
   case 8:
     {
-      BrowserNode * bn = add_attribute(0, rank == 8);
+      BrowserAttribute * bn = (BrowserAttribute *) add_attribute(0, rank == 8);
       
       if (bn != 0)
-	bn->open(TRUE);
+	bn->open_new_ste_attr();
     }
     return;
   case 1:
@@ -913,8 +913,10 @@ BrowserNode * BrowserClass::add_attribute(BrowserAttribute * attr,
   if (enter_child_name(name, (enum_item) ? "enter item's name : "
 					 : "enter attribute's name : ",
 		       UmlAttribute, FALSE, FALSE)) {
-    attr = (attr == 0) ? BrowserAttribute::new_one(name, this, enum_item)
-		       : (BrowserAttribute *) attr->duplicate(this, name);
+    bool newone = (attr == 0);
+    
+    attr = (newone) ? BrowserAttribute::new_one(name, this, enum_item)
+		    : (BrowserAttribute *) attr->duplicate(this, name);
     
     setOpen(TRUE);
     def->modified();
@@ -922,7 +924,8 @@ BrowserNode * BrowserClass::add_attribute(BrowserAttribute * attr,
     attr->select_in_browser();
     if (enum_item)
       ((AttributeData *) attr->get_data())->set_visibility(UmlPublic);
-    else if (!strcmp(def->get_stereotype(), "stereotype"))
+    else if (!newone && 	// ProfiledStereotypes::added called later
+	     !strcmp(def->get_stereotype(), "stereotype"))
       ProfiledStereotypes::added(attr);
 
     return attr;

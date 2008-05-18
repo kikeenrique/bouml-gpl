@@ -57,8 +57,9 @@
 
 QSize AttributeDialog::previous_size;
 
-AttributeDialog::AttributeDialog(AttributeData * a)
-    : QTabDialog(0, 0, FALSE, WDestructiveClose), att(a) {
+AttributeDialog::AttributeDialog(AttributeData * a, bool new_st_attr)
+    : QTabDialog(0, 0, FALSE, WDestructiveClose),
+      new_in_st(new_st_attr), att(a) {
   a->browser_node->edit_start();
   
   if (a->browser_node->is_writable())
@@ -563,6 +564,10 @@ AttributeDialog::~AttributeDialog() {
   
   while (!edits.isEmpty())
     edits.take(0)->close();
+  
+  if (new_in_st)
+    // new_in_st cleared by accept
+    ProfiledStereotypes::added((BrowserAttribute *) att->browser_node);
 }
 
 void AttributeDialog::polish() {
@@ -724,7 +729,11 @@ void AttributeDialog::accept() {
     att->modified();
     
     ProfiledStereotypes::modified(bn, newst);
-    if (!strcmp(((BrowserNode *) bn->parent())->get_data()->get_stereotype(), "stereotype"))
+    if (new_in_st) {
+      ProfiledStereotypes::added((BrowserAttribute *) bn);
+      new_in_st = FALSE;
+    }
+    else if (!strcmp(((BrowserNode *) bn->parent())->get_data()->get_stereotype(), "stereotype"))
       ProfiledStereotypes::changed((BrowserAttribute *) bn, oldname);
     QDialog::accept();
   }

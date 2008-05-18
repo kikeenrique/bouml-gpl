@@ -57,7 +57,7 @@
 		      " On error return FALSE in C++, produce a RuntimeException in Java"); \
   op->add_param(0, InputDirection, "v", type); \
   op->set_cpp("${type}", "const ${t0} ${p0}", \
-	      "  return set_it_("#where"."#field", v, "#cmd");", \
+	      "  return set_it_("#where"."#field", v, "#cmd");\n", \
 	      FALSE, if_def, end_if); \
   op->set_java("void", "${t0} ${p0}", \
 	       "\
@@ -8310,6 +8310,8 @@ void add_php()
 }
 
 //
+//
+//
 
 void add_force_body_gen()
 {
@@ -10665,7 +10667,7 @@ void add_profile()
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update PhpSettings adding javadoc style<br>\n");
+  UmlCom::trace("Add profiles<br>\n");
   
   //
   
@@ -11365,6 +11367,16 @@ bool UmlPackage::upgrade() {
       fixe_umlcom_send_cmd(op);
       work = TRUE;
     }
+    
+    /*
+    if (UmlClass::get("PythonSettings", 0) == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      
+      add_python();
+      work = TRUE;
+    }
+    */
       
     if (work) {
       UmlCom::trace("update api version<br>\n");

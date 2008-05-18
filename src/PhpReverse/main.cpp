@@ -65,6 +65,8 @@ int main(int argc, char ** argv)
 	Package::init((UmlPackage *) item, app);
 	
 	QString here = QDir::currentDirPath();
+	
+	/*
 	QString path;
 	QFile fp(QDir::home().absFilePath(".boumlcat"));
 	
@@ -75,7 +77,6 @@ int main(int argc, char ** argv)
 	  fp.close();
 	}
 	
-	/*
 	while (!(path = 
 		 QFileDialog::getOpenFileName(path, "*.cat",
 					      0, 0,

@@ -83,6 +83,7 @@
 #include "MenuTitle.h"
 #include "Shortcut.h"
 #include "myio.h"
+#include "strutil.h"
 #include "mu.h"
 #include "err.h"
 
@@ -379,17 +380,20 @@ UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
   // read historic
   //
   
-  QFile fp(QDir::home().absFilePath(".bouml"));
+  // note : QFile fp(QDir::home().absFilePath(".bouml")) doesn't work
+  // if the path contains non latin1 characters, for instance cyrillic !
+  QString s = QDir::home().absFilePath(".bouml");
+  FILE * fp = fopen((const char *) s, "r");
   
-  if (fp.open(IO_ReadOnly)) {
-    QTextStream ts(&fp);
+  if (fp != 0) {
+    char line[512];
+ 
+    while (fgets(line, sizeof(line) - 1, fp) != 0) {
+      remove_crlf(line);
+      historic.append(line);
+    }
     
-    ts.setEncoding(QTextStream::Latin1);
-    
-    QString ln;
-    
-    while (!(ln = ts.readLine()).isEmpty())
-      historic.append(ln);
+    fclose(fp);
   }
   
   //
@@ -714,20 +718,22 @@ void UmlWindow::historic_add(QString fn)
   
   the->historic.prepend(fn);
   
-  QFile fp(QDir::home().absFilePath(".bouml"));
+  // note : QFile fp(QDir::home().absFilePath(".bouml")) doesn't work
+  // if the path contains non latin1 characters, for instance cyrillic !
+  QString s = QDir::home().absFilePath(".bouml");
+  FILE * fp = fopen((const char *) s, "w");
   
-  if (fp.open(IO_WriteOnly)) {
+  if (fp != 0) {
     int rank;
-    QTextStream ts(&fp);
-    
-    ts.setEncoding(QTextStream::Latin1);
 
     for (it = the->historic.begin(), rank = 0;
 	 (it != the->historic.end()) && (rank != 10);
 	 ++it, rank += 1) {
-      ts.writeRawBytes((const char *) *it, (*it).length());
-      ts.writeRawBytes("\n", 1);
+      fwrite((const char *) *it, 1, (*it).length(), fp);
+      fputc('\n', fp);
     }
+    
+    fclose(fp);
   }
 }
 
@@ -1278,8 +1284,9 @@ void UmlWindow::edit_env() {
   
   if (BrowserView::get_project() == 0)
     // id was set by reading boumlrc
-    set_user_id(-1);else
-      read_boumlrc();
+    set_user_id(-1);
+  else
+    read_boumlrc();
 }
 
 void UmlWindow::langMenuAboutToShow() {

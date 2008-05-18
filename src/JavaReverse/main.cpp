@@ -40,6 +40,19 @@
 #include "JavaSettings.h"
 #include "Statistic.h"
 
+void remove_crlf(char * s)
+{
+  int len = strlen(s);
+  
+  if (len != 0) {
+    if (s[len - 1] == '\n')
+      s[--len] = 0;
+    
+    if ((len != 0) && (s[len - 1] == '\r'))
+      s[len - 1] = 0;
+  }
+}
+
 int main(int argc, char ** argv)
 {
   if (argc != 2)
@@ -49,7 +62,7 @@ int main(int argc, char ** argv)
     try {
       //UmlCom::with_ack(FALSE);
       
-      UmlCom::trace("<b>Java reverse</b> release 2.12<br><hr>");
+      UmlCom::trace("<b>Java reverse</b> release 2.12.1<br><hr>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlItem * item = UmlCom::targetItem();
@@ -66,13 +79,20 @@ int main(int argc, char ** argv)
 	
 	QString here = QDir::currentDirPath();
 	QString path;
-	QFile fp(QDir::home().absFilePath(".boumlcat"));
+	// note : QFile fp(QDir::home().absFilePath(".boumlcat")) doesn't work
+	// if the path contains non latin1 characters, for instance cyrillic !
+	QString s = QDir::home().absFilePath(".boumlcat");
+	FILE * fp = fopen((const char *) s, "r");
 	
-	if (fp.open(IO_ReadOnly)) {
-	  QTextStream ts(&fp);
+	if (fp != 0) {
+	  char line[512];
 	  
-	  path = ts.readLine();
-	  fp.close();
+	  if (fgets(line, sizeof(line) - 1, fp) != 0) {
+	    remove_crlf(line);
+	    path = line;
+	  }
+	  
+	  fclose(fp);
 	}
 	
 	while (!(path = 
@@ -83,11 +103,10 @@ int main(int argc, char ** argv)
 	  QFile f(path);
 	  
 	  if (f.open(IO_ReadOnly)) {
-	    if (fp.open(IO_WriteOnly)) {
-	      QTextStream ts(&fp);
-	      
-	      ts.writeRawBytes((const char *) path, path.length());
-	      ts.writeRawBytes("\n", 1);
+	    if ((fp = fopen((const char *) s, "w")) != 0) {
+	      fwrite((const char *) path, 1, path.length(), fp);
+	      fputc('\n', fp);
+	      fclose(fp);
 	    }
 	    
 	    QDataStream dt(&f);

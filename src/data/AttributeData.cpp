@@ -286,10 +286,10 @@ void AttributeData::on_delete_idlcase() {
   modified();
 }
 
-void AttributeData::edit() {
+void AttributeData::edit(bool new_st_attr) {
   setName(browser_node->get_name());
   
-  (new AttributeDialog(this))->show();
+  (new AttributeDialog(this, new_st_attr))->show();
 }
 
 //

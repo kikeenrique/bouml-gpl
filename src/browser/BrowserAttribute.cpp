@@ -370,7 +370,11 @@ void BrowserAttribute::apply_shortcut(QString s) {
 
 void BrowserAttribute::open(bool) {
   if (!is_edited)
-    def->edit();
+    def->edit(FALSE);
+}
+
+void BrowserAttribute::open_new_ste_attr() {
+  def->edit(TRUE);
 }
 
 void BrowserAttribute::modified() {

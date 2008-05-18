@@ -122,7 +122,7 @@ class AttributeData : public ClassMemberData {
     const char * get_idlcase() const;
     void set_idlcase(BrowserAttribute * a, const char * e);
     
-    void edit();
+    void edit(bool new_st_attr);
     
     virtual bool tool_cmd(ToolCom * com, const char * args,
 			  BrowserNode * bn, const QString & comment);

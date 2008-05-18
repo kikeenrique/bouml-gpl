@@ -42,24 +42,25 @@ int main(int argc, char ** argv)
 {
   QApplication * app = new QApplication(argc, argv);
   
-  QFile fp(QDir::home().absFilePath(".boumlrc"));
   int uid = -1;
+  // note : QFile fp(QDir::home().absFilePath(".boumlrc")) doesn't work
+  // if the path contains non latin1 characters, for instance cyrillic !
+  QString s = QDir::home().absFilePath(".boumlrc");
+  FILE * fp = fopen((const char *) s, "r");
   
-  if (fp.open(IO_ReadOnly)) {
-    QTextStream ts(&fp);
-    
-    ts.setEncoding(QTextStream::Latin1);
-    
-    QString ln;
-    
-    while (!(ln = ts.readLine()).isEmpty()) {
-      const char * p = ln;
+  if (fp != 0) {
+    char line[512];
+ 
+    while (fgets(line, sizeof(line) - 1, fp) != 0) {
+      remove_crlf(line);
 
-      if (!strncmp(p, "ID ", 3)) {
-	sscanf(p+3, "%d", &uid);
+      if (!strncmp(line, "ID ", 3)) {
+	sscanf(line+3, "%d", &uid);
 	break;
       }
     }
+    
+    fclose(fp);
   }
     
   if (uid == -1)

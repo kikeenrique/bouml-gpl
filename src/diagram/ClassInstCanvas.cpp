@@ -49,13 +49,7 @@ ClassInstCanvas::~ClassInstCanvas() {
 }
 
 QString ClassInstCanvas::full_name() const {
-  BrowserNode * cl = get_type();
-  QString iname = get_name();
-  
-  if (iname.isEmpty())
-    return cl->get_name();
-  else
-    return iname + ":" + cl->get_name();
+  return get_name() + ":" + get_type()->get_name();
 }
 
 BrowserNode * ClassInstCanvas::new_type() {

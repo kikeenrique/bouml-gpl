@@ -56,10 +56,16 @@ int main(int argc, char **argv)
 
   UmlDesktop::init();
   
-  bool conv_env = !QDir::home().exists(".boumlrc");
+  // note : bool conv_env = !QDir::home().exists(".boumlrc") doesn't work
+  // if the path contains non latin1 characters, for instance cyrillic !
+  QString s = QDir::home().absFilePath(".boumlrc");
+  FILE * fp = fopen((const char *) s, "r");
+  bool conv_env = (fp == 0);
   
   if (conv_env)
     EnvDialog::edit(TRUE);
+  else
+    fclose(fp);
   
   init_pixmaps();
   init_font();

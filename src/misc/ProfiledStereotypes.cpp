@@ -120,7 +120,7 @@ void ProfiledStereotype::renamed(BrowserAttribute * at) {
   
   QString prop_oldname = propertiesFullName[rank];
   QString prop_newname = 
-    prop_oldname.left(prop_oldname.findRev(':')) + at->get_name();
+    prop_oldname.left(prop_oldname.findRev(':') + 1) + at->get_name();
   const char * oldprop = (const char *) prop_oldname;
   const char * newprop = (const char *) prop_newname;
   
@@ -172,8 +172,8 @@ void ProfiledStereotype::deleted(BrowserAttribute * at) {
 	bn->modified();
 	break;
       }
-      ++it;
     }
+    ++it;
   }
 }
 

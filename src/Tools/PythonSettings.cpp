@@ -19,7 +19,12 @@ bool PythonSettings::isPython_2_2()
 bool PythonSettings::set_IsPython_2_2(bool y)
 {
   UmlCom::send_cmd(pythonSettingsCmd, setPython22Cmd, (char) y);
-  return UmlCom::read_bool();  
+  if (UmlCom::read_bool()) {
+    _2_2 = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 QCString PythonSettings::indentStep()
@@ -32,7 +37,12 @@ QCString PythonSettings::indentStep()
 bool PythonSettings::set_IndentStep(const char * v)
 {
   UmlCom::send_cmd(pythonSettingsCmd, setPythonIndentStepCmd, v);
-  return UmlCom::read_bool();  
+  if (UmlCom::read_bool()) {
+    _indent_step = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 bool PythonSettings::useDefaults()

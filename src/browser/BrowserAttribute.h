@@ -74,6 +74,7 @@ class BrowserAttribute : public BrowserNode, public Labeled<BrowserAttribute> {
     virtual void menu();
     virtual void apply_shortcut(QString s);
     virtual void open(bool);
+    void open_new_ste_attr();
     virtual UmlCode get_type() const;
     virtual int get_identifier() const;
     virtual const char * help_topic() const;

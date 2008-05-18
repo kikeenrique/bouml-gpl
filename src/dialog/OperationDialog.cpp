@@ -519,6 +519,9 @@ void OperationDialog::init_cpp() {
       removePage(grid);
     
     cl->get_class_spec(templates, cl_names, templates_tmplop, cl_names_tmplop);
+    
+    if (!templates.isEmpty())
+      inline_cb->setDisabled(TRUE);
   }
   else
     cpptab = 0;

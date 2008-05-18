@@ -46,4 +46,6 @@ QString user_name(int id);
 int user_id();
 void set_user_id(int, QString);
 
+void remove_crlf(char * s);
+
 #endif

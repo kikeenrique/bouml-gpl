@@ -54,6 +54,7 @@ class AttributeDialog : public QTabDialog {
   protected:
     bool visit;
     bool in_enum;
+    bool new_in_st;
     AttributeData * att;
     QStringList list;
     BrowserNodeList nodes;
@@ -134,7 +135,7 @@ class AttributeDialog : public QTabDialog {
     static void post_edit_constraint(AttributeDialog *, QString);
     
   public:
-    AttributeDialog(AttributeData * a);
+    AttributeDialog(AttributeData * a, bool new_st_attr);
     virtual ~AttributeDialog();
   
     static QString cpp_decl(const BrowserAttribute * at, bool init = FALSE);

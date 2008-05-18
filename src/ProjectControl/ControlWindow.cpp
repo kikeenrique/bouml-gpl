@@ -111,17 +111,20 @@ ControlWindow::ControlWindow() : QMainWindow(0, "Project control", WDestructiveC
   
   // historic
 
-  QFile fp(QDir::home().absFilePath(".bouml"));
+  // note : QFile fp(QDir::home().absFilePath(".bouml")) doesn't work
+  // if the path contains non latin1 characters, for instance cyrillic !
+  QString s = QDir::home().absFilePath(".bouml");
+  FILE * fp = fopen((const char *) s, "r");
   
-  if (fp.open(IO_ReadOnly)) {
-    QTextStream ts(&fp);
+  if (fp != 0) {
+    char line[512];
+ 
+    while (fgets(line, sizeof(line) - 1, fp) != 0) {
+      remove_crlf(line);
+      historic.append(line);
+    }
     
-    ts.setEncoding(QTextStream::Latin1);
-    
-    QString ln;
-    
-    while (!(ln = ts.readLine()).isEmpty())
-      historic.append(ln);
+    fclose(fp);
   }
   
   menu->insertSeparator();
@@ -293,7 +296,7 @@ void ControlWindow::windows_style() {
 }
 
 void ControlWindow::about() {
-  QMessageBox::about(this, "Project control", "<p>Version <b>1.2</b></p>" );
+  QMessageBox::about(this, "Project control", "<p>Version <b>1.2.1</b></p>" );
 }
 
 void ControlWindow::aboutQt() {

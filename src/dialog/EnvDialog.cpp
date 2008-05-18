@@ -259,6 +259,8 @@ EnvDialog::EnvDialog(bool conv)
 }
 
 void EnvDialog::accept() {
+  // note : QFile fp(QDir::home().absFilePath(".boumlrc")) doesn't work
+  // if the path contains non latin1 characters, for instance cyrillic !
   QString s = QDir::home().absFilePath(".boumlrc");
   FILE * fp = fopen((const char *) s, "w");
   
@@ -373,55 +375,55 @@ void EnvDialog::editor_browse() {
 
 int read_boumlrc()
 {
-  QFile fp(QDir::home().absFilePath(".boumlrc"));
-  int id = -1;
-  
-  if (fp.open(IO_ReadOnly)) {
-    QTextStream ts(&fp);
-    
-    ts.setEncoding(QTextStream::Latin1);
-    
-    set_manual_dir("");
-    set_navigator_path("");
-    set_template_project("");
-    set_editor("");
-    set_codec("");
-    UmlDesktop::set_limits(-1, -1, -1, -1);
-    
-    QString ln;
-    
-    while (!(ln = ts.readLine()).isEmpty()) {
-      const char * p = ln;
+  // note : QFile fp(QDir::home().absFilePath(".boumlrc")) doesn't work
+  // if the path contains non latin1 characters, for instance cyrillic !
+  QString s = QDir::home().absFilePath(".boumlrc");
+  FILE * fp = fopen((const char *) s, "r");
 
-      if (!strncmp(p, "ID ", 3))
-	sscanf(p+3, "%d", &id);
-      else if (!strncmp(p, "MANUAL ", 7))
-	set_manual_dir(p+7);
-      else if (!strncmp(p, "NAVIGATOR ", 10))
-	set_navigator_path(p+10);
-      else if (!strncmp(p, "TEMPLATE ",9 ))
-	set_template_project(p+9);
-      else if (!strncmp(p, "EDITOR ", 7))
-	set_editor(p+7);
-      else if (!strncmp(p, "CHARSET ", 8))
-	set_codec(p+8);
-      else if (!strncmp(p, "DESKTOP ", 8)) {
-	int l, t, r, b;
-    
-	if (sscanf(p+8, "%d %d %d %d", &l, &t, &r, &b) == 4)
-	  UmlDesktop::set_limits(l, t, r, b);
-      }
-    }
-    
-    if (id == -1) {
-      QMessageBox::critical(0, "Bouml", 
-			    "Own identifier missing or invalid\n\n"
-			    "Recall Bouml and immediatly choose 'Set environment' in the menu 'Miscellaneous'");
-      exit(-1);
+  if (fp == 0) {
+    QMessageBox::critical(0, "Bouml", "cannot read '" + s + "'");
+    exit(-1);
+  }
+
+  set_manual_dir("");
+  set_navigator_path("");
+  set_template_project("");
+  set_editor("");
+  set_codec("");
+  UmlDesktop::set_limits(-1, -1, -1, -1);
+        
+  int id = -1;
+  char line[512];
+      
+  while (fgets(line, sizeof(line) - 1, fp) != 0) {
+    remove_crlf(line);
+
+    if (!strncmp(line, "ID ", 3))
+      sscanf(line+3, "%d", &id);
+    else if (!strncmp(line, "MANUAL ", 7))
+      set_manual_dir(line+7);
+    else if (!strncmp(line, "NAVIGATOR ", 10))
+      set_navigator_path(line+10);
+    else if (!strncmp(line, "TEMPLATE ",9 ))
+      set_template_project(line+9);
+    else if (!strncmp(line, "EDITOR ", 7))
+      set_editor(line+7);
+    else if (!strncmp(line, "CHARSET ", 8))
+      set_codec(line+8);
+    else if (!strncmp(line, "DESKTOP ", 8)) {
+      int l, t, r, b;
+      
+      if (sscanf(line+8, "%d %d %d %d", &l, &t, &r, &b) == 4)
+	UmlDesktop::set_limits(l, t, r, b);
     }
   }
-  else {
-    QMessageBox::critical(0, "Bouml", "cannot read '" + fp.name() + "'");
+  
+  fclose(fp);
+  
+  if (id == -1) {
+    QMessageBox::critical(0, "Bouml", 
+			  "Own identifier missing or invalid\n\n"
+			  "Recall Bouml and immediatly choose 'Set environment' in the menu 'Miscellaneous'");
     exit(-1);
   }
     

@@ -367,7 +367,7 @@ void OdClassInstCanvas::draw(QPainter & p) {
     const int two = (int) (2 * zoom);
     int he = fm.height() + two;
     
-    p.setFont(the_canvas()->get_font(UmlNormalFont));
+    p.setFont(the_canvas()->get_font(UmlNormalUnderlinedFont));
 
     r.setTop(r.top() + two);
     if (horiz) {
@@ -398,6 +398,8 @@ void OdClassInstCanvas::draw(QPainter & p) {
 		  p.font(), fp);
     }
     
+    p.setFont(the_canvas()->get_font(UmlNormalFont));
+
     const QValueList<SlotAttr> & attributes = 
       ((ClassInstanceData *) browser_node->get_data())->get_attributes();
 
