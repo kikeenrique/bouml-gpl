@@ -274,6 +274,8 @@ void UmlClass::write(QTextOStream & f) {
       s.replace(index, 7, capitalize(name()));
     else if ((index = s.find("${NAME}")) != -1)
       s.replace(index, 7, name().upper());
+    else if ((index = s.find("${nAME}")) != -1)
+      s.replace(index, 7, name().lower());
     
     f << s;
   }
@@ -307,6 +309,12 @@ void UmlClass::import(QTextOStream & f, const QCString & indent) {
     UmlPackage * pack = (UmlPackage *)
       ((cp != 0) ? (UmlItem *) cp : (UmlItem *) this)->package();
     QCString s = pack->javaPackage();
+    
+    if (!s.isEmpty())
+      f << indent << "import " << s << '.' << name() << ";\n";
+  }
+  else {
+    QCString s = package()->javaPackage();
     
     if (!s.isEmpty())
       f << indent << "import " << s << '.' << name() << ";\n";

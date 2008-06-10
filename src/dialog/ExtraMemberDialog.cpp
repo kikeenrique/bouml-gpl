@@ -278,11 +278,12 @@ void ExtraMemberDialog::accept() {
   
   kvtable->update(bn);
   
+  ProfiledStereotypes::modified(bn, newst);
+  
   bn->modified();
   bn->package_modified();
   emd->modified();
   
-  ProfiledStereotypes::modified(bn, newst);
   QTabDialog::accept();
 }
 

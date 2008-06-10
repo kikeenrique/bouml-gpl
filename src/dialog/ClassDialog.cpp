@@ -2900,6 +2900,12 @@ void ActualParamsTable::generate(QString & s, ClassData * cl,
   while (actual && (nth < n) && (actual->get_class() == parent)) {
     QString t = type(text(index, 1).stripWhiteSpace(), node_names, nodes);
     
+    if (t.isEmpty()) {
+      if (nth == 0)
+	s += "<>";
+      break;
+    }
+    
     s += sep;
     s += (cpp) ? GenerationSettings::cpp_type(t) 
 	       : GenerationSettings::java_type(t);

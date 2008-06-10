@@ -479,11 +479,12 @@ void ParameterDialog::accept() {
       
       kvtable->update(bn);
       
+      ProfiledStereotypes::modified(bn, newst);
+      
       bn->modified();
       bn->package_modified();
       param->modified();
       
-      ProfiledStereotypes::modified(bn, newst);
       QTabDialog::accept();
     }
   }

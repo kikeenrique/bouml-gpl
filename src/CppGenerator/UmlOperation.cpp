@@ -321,6 +321,8 @@ QCString UmlOperation::compute_name() {
       get_set_spec.replace(index, 7, capitalize(s));
     else if ((index = s.find("${NAME}")) != -1)
       get_set_spec.replace(index, 7, s.upper());
+    else if ((index = s.find("${nAME}")) != -1)
+      get_set_spec.replace(index, 7, s.lower());
     
     return get_set_spec;
   }

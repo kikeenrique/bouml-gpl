@@ -520,6 +520,17 @@ bool BrowserDeploymentView::get_draw_all_relations(UmlCode who) const {
   }  
 }
 
+bool BrowserDeploymentView::get_show_stereotype_properties(UmlCode who) const {
+  switch (deploymentdiagram_settings.componentdrawingsettings.show_stereotype_properties) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_show_stereotype_properties(who);
+  }
+}
+
 bool BrowserDeploymentView::get_auto_label_position(UmlCode who) const {
   Uml3States v;
   

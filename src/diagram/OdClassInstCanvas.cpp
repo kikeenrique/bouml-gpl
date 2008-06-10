@@ -67,6 +67,9 @@ OdClassInstCanvas::OdClassInstCanvas(BrowserClassInstance * bn, UmlCanvas * canv
     // not on read
     compute_size();	// update used_settings
     
+    if (browser_node->get_type() != UmlClass)
+      check_stereotypeproperties();
+    
     if (canvas->must_draw_all_relations())
       draw_all_relations();
   }
@@ -103,6 +106,18 @@ void OdClassInstCanvas::compute_size() {
   used_color = (itscolor == UmlDefaultColor)
     ? canvas->browser_diagram()->get_color(UmlClass)
     : itscolor;
+  
+  switch (show_stereotype_properties) {
+  case UmlYes:
+    show_properties = TRUE;
+    break;
+  case UmlNo:
+    show_properties = FALSE;
+    break;
+  default:
+    // right arg set by the diagram itself
+    show_properties = canvas->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+  }
   
   QFontMetrics fm(canvas->get_font(UmlNormalUnderlinedFont));
   double zoom = canvas->zoom();
@@ -185,6 +200,8 @@ void OdClassInstCanvas::modified() {
     compute_size();
     show();
     update_show_lines();
+    if (browser_node->get_type() != UmlClass)
+      check_stereotypeproperties();
     
     if (the_canvas()->must_draw_all_relations())
       draw_all_relations();
@@ -570,10 +587,12 @@ void OdClassInstCanvas::apply_shortcut(QString s) {
 }
 
 void OdClassInstCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(1);
+  QArray<StateSpec> st((browser_node->get_type() != UmlClass) ? 2 : 1);
   QArray<ColorSpec> co(1);
   
   st[0].set("write name:type \nhorizontally", &write_horizontally);
+  if (browser_node->get_type() != UmlClass)
+    st[1].set("show stereotypes \nproperties", &show_stereotype_properties);
   co[0].set("class instance color", &itscolor);
   
   SettingsDialog dialog(&st, &co, FALSE, TRUE);
@@ -612,6 +631,10 @@ void OdClassInstCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
       ((OdClassInstCanvas *) it.current())->modified();	// call package_modified()
     }
   }
+}
+
+bool OdClassInstCanvas::get_show_stereotype_properties() const {
+  return (browser_node->get_type() != UmlClass) && show_properties;
 }
 
 BrowserClassInstance * OdClassInstCanvas::get_instance() const {
@@ -678,10 +701,10 @@ void OdClassInstCanvas::save(QTextStream & st, bool ref, QString & warning) cons
     nl_indent(st);
     save_xyz(st, this, "xyz");
     ClassInstCanvas::save(st);
-    nl_indent(st);
-    st << "end";
-    
+    save_stereotype_property(st, warning);
     indent(-1);
+    nl_indent(st);
+    st << "end";    
   }
 }
 
@@ -768,6 +791,8 @@ OdClassInstCanvas * OdClassInstCanvas::read(char * & st, UmlCanvas * canvas,
         
     result->ClassInstCanvas::read(st, k);
     
+    result->read_stereotype_property(st, k);	// updates k
+    
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");
 
@@ -776,6 +801,7 @@ OdClassInstCanvas * OdClassInstCanvas::read(char * & st, UmlCanvas * canvas,
       result->compute_size();
       result->set_center100();
       result->show();
+      result->check_stereotypeproperties();
     }
     return result;
   }

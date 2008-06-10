@@ -220,10 +220,11 @@ void ClassViewDialog::accept() {
     
     kvtable->update(bn);
   
+    ProfiledStereotypes::modified(bn, newst);
+    
     data->modified();
     bn->package_modified();
     
-    ProfiledStereotypes::modified(bn, newst);
     QTabDialog::accept();
   }
 }

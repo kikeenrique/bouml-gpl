@@ -164,7 +164,9 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
 	if (! (op->*set_body)(body)) {
 	  write_trace_header();
 	  UmlCom::trace("&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\"><b>cannot update body of <i>"
-			+ op->name() + "</i></b></font><br>");
+			+ op->name() + 
+			((op->isWritable()) ? "</i>, it is probably deleted</b></font><br>"
+					    : "</i>, it is read-only</b></font><br>"));
 	  incr_error();
 	}
 	else {

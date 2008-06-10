@@ -1481,11 +1481,9 @@ int DiagramView::default_menu(QPopupMenu & m, int f) {
     canvas()->update();
     break;    
   case 3:
-    history_protected = TRUE;
     copy_in_clipboard(FALSE, FALSE);
     break;
   case 13:
-    history_protected = TRUE;
     copy_in_clipboard(TRUE, FALSE);
     break;
   case 4:
@@ -1921,6 +1919,15 @@ bool DiagramView::svg_save_in(const char * f, bool optimal, bool temporary) {
 }
 
 void DiagramView::copy_in_clipboard(bool optimal, bool temporary) {
+  if (the_canvas()->selection().count() != 0) {
+    // unselect element and redraw them to remove selection mark
+    history_protected = TRUE;
+    unselect_all();
+    the_canvas()->setAllChanged();
+    canvas()->update();
+  }
+  
+  history_protected = TRUE;
   the_canvas()->show_limits(FALSE);
   
   if (optimal) {

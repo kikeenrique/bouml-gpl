@@ -55,6 +55,7 @@ InterruptibleActivityRegionCanvas::InterruptibleActivityRegionCanvas(BrowserNode
   itscolor = UmlDefaultColor;
 
   update();
+  check_stereotypeproperties();
   
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
@@ -104,6 +105,7 @@ void InterruptibleActivityRegionCanvas::modified() {
   update();
   show();
   update_show_lines();
+  check_stereotypeproperties();
   canvas()->update();
   force_sub_inside();
   package_modified();
@@ -397,6 +399,7 @@ void InterruptibleActivityRegionCanvas::save(QTextStream & st, bool ref, QString
       nl_indent(st);
       st << "color " << stringify(itscolor);
     }
+    save_stereotype_property(st, warning);
     nl_indent(st);
     save_xyzwh(st, this, "xyzwh");
 
@@ -426,17 +429,20 @@ InterruptibleActivityRegionCanvas *
     k = read_keyword(st);
     
     read_color(st, "color", result->itscolor, k);	// updates k
+    result->read_stereotype_property(st, k);	// updates k
     
     if (!strcmp(k, "xyzwh"))
       read_xyzwh(st, result);
     else
       wrong_keyword(k, "xyzwh");
+    
     result->width_scale100 = result->width();
     result->height_scale100 = result->height();
     result->set_center100();
     
     result->update();
     result->show();
+    result->check_stereotypeproperties();
     
     read_keyword(st, "end");
     

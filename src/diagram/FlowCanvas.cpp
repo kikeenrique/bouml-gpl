@@ -39,6 +39,7 @@
 #include "BrowserFlow.h"
 #include "BrowserDiagram.h"
 #include "FlowData.h"
+#include "StereotypePropertiesCanvas.h"
 #include "UmlGlobal.h"
 #include "myio.h"
 #include "ToolCom.h"
@@ -53,13 +54,17 @@ FlowCanvas::FlowCanvas(UmlCanvas * canvas, DiagramItem * b,
 		       DiagramItem * e, BrowserNode * bb, int id,
 		       float d_start, float d_end, FlowData * d)
       : ArrowCanvas(canvas, b, e, UmlFlow, id, TRUE, d_start, d_end),
-        br_begin(bb), data(d), selection(0), transformation(0),
+        br_begin(bb), data(d), selection(0),
+  	transformation(0), stereotypeproperties(0),
   	write_horizontally(UmlDefaultState) {
   if ((e->type() != UmlArrowPoint) && (bb == 0)) {
     // end of line construction
     update_begin(e);
   }
   else if (d != 0) {
+    if (e->type() != UmlArrowPoint)
+#warning bien place ?
+      check_stereotypeproperties();
     connect(d, SIGNAL(changed()), this, SLOT(modified()));
     connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
   }
@@ -91,6 +96,8 @@ void FlowCanvas::delete_it() {
     selection->delete_it();
   if (transformation != 0)
     transformation->delete_it();
+  if (stereotypeproperties != 0)
+    ((UmlCanvas *) canvas())->del(stereotypeproperties);
 }
 
 void FlowCanvas::deleted() {
@@ -442,6 +449,8 @@ void FlowCanvas::modified() {
     update(TRUE);
     show();
     check_sel_trans();
+    if (begin->type() != UmlArrowPoint)
+      check_stereotypeproperties();
     canvas()->update();
     package_modified();
   }
@@ -683,6 +692,51 @@ void FlowCanvas::drop(BrowserNode * bn, UmlCanvas * canvas)
   }
 }
 
+//
+
+void FlowCanvas::setVisible(bool yes) {
+  ArrowCanvas::setVisible(yes);
+
+  if (stereotypeproperties)
+    stereotypeproperties->setVisible(yes);
+}
+
+void FlowCanvas::moveBy(double dx, double dy) {
+  ArrowCanvas::moveBy(dx, dy);
+
+  if ((stereotypeproperties != 0) && !stereotypeproperties->selected())
+    stereotypeproperties->moveBy(dx, dy);
+}
+
+void FlowCanvas::select_associated() {
+  if (!selected()) {
+    if ((stereotypeproperties != 0) && !stereotypeproperties->selected())
+      the_canvas()->select(stereotypeproperties);
+    ArrowCanvas::select_associated();
+  }
+}
+
+void FlowCanvas::check_stereotypeproperties() {
+  // the note is memorized by the first segment
+  if (begin->type() == UmlArrowPoint)
+    ((FlowCanvas *) ((ArrowPointCanvas *) begin)->get_other(this))
+      ->check_stereotypeproperties();
+  else {
+    QString s = data->get_start()->stereotypes_properties();
+    
+    if (!s.isEmpty() &&
+	(used_settings.show_stereotype_properties == UmlYes))
+      StereotypePropertiesCanvas::needed(the_canvas(), this, s,
+					 stereotypeproperties, center());
+    else if (stereotypeproperties != 0) {
+      stereotypeproperties->delete_it();
+      stereotypeproperties = 0;
+    }
+  }
+}
+
+//
+
 void FlowCanvas::save(QTextStream & st, bool ref, QString & warning) const {
   if (ref)
     st << "flowcanvas_ref " << get_ident();
@@ -718,11 +772,15 @@ void FlowCanvas::save(QTextStream & st, bool ref, QString & warning) const {
       st << "selection ";
       selection->save(st, FALSE, warning);
     }
+    
     if (transformation != 0) {
       nl_indent(st);
       st << "transformation ";
       transformation->save(st, FALSE, warning);
     }
+    
+    if (stereotypeproperties != 0)
+      stereotypeproperties->save(st, FALSE, warning);
     
     indent(-1);
     nl_indent(st);
@@ -890,7 +948,15 @@ FlowCanvas * FlowCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       first->transformation = InfoCanvas::read(st, canvas, k, first);
       k = read_keyword(st);
     }
+
+    first->stereotypeproperties = 
+      StereotypePropertiesCanvas::read(st,  canvas, k, first);
+    
+    if (first->stereotypeproperties != 0)
+      k = read_keyword(st);
+    
     first->check_sel_trans();
+    first->check_stereotypeproperties();
 
     // manage case where the relation is deleted but present in the browser
     if (result->data->get_start()->deletedp())

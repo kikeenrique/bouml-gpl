@@ -47,8 +47,10 @@ class ClassDiagramView : public DiagramView {
     ClassDiagramWindow * window() {
       return (ClassDiagramWindow *) parent();
     };
-    void add_classview_classes(BrowserNode * cv, const QPoint& p,
+    void add_classview_classes(BrowserNode *, const QPoint& p,
 			       QPtrDict<DiagramItem> & drawn);
+    void add_classview_classes(BrowserNode *, QPtrDict<DiagramItem> & drawn,
+			       int & x, int & y, int & future_y);
   
   protected:
     virtual void contentsMousePressEvent(QMouseEvent *);

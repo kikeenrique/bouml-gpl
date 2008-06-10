@@ -50,6 +50,7 @@ ActivityNodeCanvas::ActivityNodeCanvas(BrowserNode * bn, UmlCanvas * canvas,
     : DiagramCanvas(0, canvas, x, y, 16, 16, 0), horiz(FALSE) {
   browser_node = bn;
   set_xpm();
+  check_stereotypeproperties();
    
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
@@ -164,6 +165,7 @@ void ActivityNodeCanvas::modified() {
   show();
   update_show_lines();
   force_self_rel_visible();
+  check_stereotypeproperties();
   if (the_canvas()->must_draw_all_relations())
     draw_all_flows();
   canvas()->update();
@@ -468,7 +470,10 @@ void ActivityNodeCanvas::save(QTextStream & st, bool ref, QString & warning) con
     if (horiz)
       st << "horizontal ";
     save_xyz(st, this, "xyz");
+    save_stereotype_property(st, warning);
     indent(-1);
+    nl_indent(st);
+    st << "end";
   }
 }
 
@@ -506,9 +511,19 @@ ActivityNodeCanvas * ActivityNodeCanvas::read(char * & st, UmlCanvas * canvas,
       wrong_keyword(k, "xyz");
     
     read_xyz(st, result);
+
+    if (read_file_format() >= 58) {
+      k = read_keyword(st);
+      result->read_stereotype_property(st, k);	// updates k
+      
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
+    
     result->set_xpm();
     result->set_center100();
     result->show();
+    result->check_stereotypeproperties();
     
     if (canvas->paste())
       result->remove_if_already_present();

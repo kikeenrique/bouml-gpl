@@ -336,6 +336,27 @@ void BrowserRelation::update_stereotype(bool) {
   }
 }
 
+QString BrowserRelation::stereotypes_properties() const {
+  if (def->uni_directional(def->get_type()))
+    return BrowserNode::stereotypes_properties();
+
+  QString sta = def->get_start()->BrowserNode::stereotypes_properties();
+  QString stb = def->get_end()->BrowserNode::stereotypes_properties();
+
+  if (!sta.isEmpty()) {
+    sta += "\n";
+    
+    return (!stb.isEmpty()) 
+      ? sta + stb
+      : sta + QString("<<") + def->get_short_stereotype() + QString(">>");
+  }
+  else if (!stb.isEmpty())
+    return QString("<<") + def->get_short_stereotype() +
+      QString(">>\n") + stb;
+  else
+    return QString::null;
+}
+
 AType BrowserRelation::class_association() const {
   return def->get_association();
 }

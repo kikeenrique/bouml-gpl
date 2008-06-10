@@ -1016,6 +1016,10 @@ void ArtifactDialog::cpp_update_h() {
 	p += 7;
 	s += edname->text().stripWhiteSpace().upper();
       }
+      else if (!strncmp(p, "${nAME}", 7)) {
+	p += 7;
+	s += edname->text().stripWhiteSpace().lower();
+      }
       else if (!strncmp(p, "${namespace}", 12)) {
 	p += 12;
 	s += nasp;
@@ -1158,6 +1162,10 @@ void ArtifactDialog::cpp_update_src() {
 	p += 7;
 	s += edname->text().stripWhiteSpace().upper();
       }
+      else if (!strncmp(p, "${nAME}", 7)) {
+	p += 7;
+	s += edname->text().stripWhiteSpace().lower();
+      }
       else if (!strncmp(p, "${namespace}", 12)) {
 	p += 12;
 	s += nasp;
@@ -1241,6 +1249,10 @@ void ArtifactDialog::java_update_src() {
       else if (!strncmp(p, "${NAME}", 7)) {
 	p += 7;
 	s += edname->text().stripWhiteSpace().upper();
+      }
+      else if (!strncmp(p, "${nAME}", 7)) {
+	p += 7;
+	s += edname->text().stripWhiteSpace().lower();
       }
       else if (!strncmp(p, "${package}", 10)) {
 	p += 10;
@@ -1339,6 +1351,10 @@ void ArtifactDialog::php_update_src() {
 	p += 7;
 	s += edname->text().stripWhiteSpace().upper();
       }
+      else if (!strncmp(p, "${nAME}", 7)) {
+	p += 7;
+	s += edname->text().stripWhiteSpace().lower();
+      }
       else if (!strncmp(p, "${definition}", 13)) {
 	p += 13;
 	if (*p == '\n')
@@ -1410,6 +1426,10 @@ void ArtifactDialog::python_update_src() {
       else if (!strncmp(p, "${NAME}", 7)) {
 	p += 7;
 	s += edname->text().stripWhiteSpace().upper();
+      }
+      else if (!strncmp(p, "${nAME}", 7)) {
+	p += 7;
+	s += edname->text().stripWhiteSpace().lower();
       }
       else if (!strncmp(p, "${definition}", 13)) {
 	p += 13;
@@ -1491,6 +1511,10 @@ void ArtifactDialog::idl_update_src() {
       else if (!strncmp(p, "${NAME}", 7)) {
 	p += 7;
 	s += edname->text().stripWhiteSpace().upper();
+      }
+      else if (!strncmp(p, "${nAME}", 7)) {
+	p += 7;
+	s += edname->text().stripWhiteSpace().lower();
       }
       else if (!strncmp(p, "${module}", 9)) {
 	p += 9;
@@ -1787,11 +1811,12 @@ void ArtifactDialog::accept() {
     
     kvtable->update(bn);
   
+    ProfiledStereotypes::modified(bn, newst);
+    
     bn->modified();
     bn->package_modified();
     data->modified();
     
-    ProfiledStereotypes::modified(bn, newst);
     QTabDialog::accept();
   }
 }

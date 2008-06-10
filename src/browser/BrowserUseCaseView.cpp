@@ -626,6 +626,41 @@ bool BrowserUseCaseView::get_draw_all_relations(UmlCode who) const {
   }
 }
 
+bool BrowserUseCaseView::get_show_stereotype_properties(UmlCode who) const {
+  Uml3States v;
+  
+  switch (who) {
+  case UmlUseCaseDiagram:
+    v = usecasediagram_settings.show_stereotype_properties;
+    break;
+  case UmlSeqDiagram:
+    v = sequencediagram_settings.show_stereotype_properties;
+    break;
+  case UmlColDiagram:
+    v = collaborationdiagram_settings.show_stereotype_properties;
+    break;
+  case UmlObjectDiagram:
+    v = objectdiagram_settings.show_stereotype_properties;
+    break;
+  case UmlStateDiagram:
+    v = statediagram_settings.statedrawingsettings.show_stereotype_properties;
+    break;
+  default:
+    //UmlActivityDiagram
+    v = activitydiagram_settings.activitydrawingsettings.show_stereotype_properties;
+    break;
+  }
+  
+  switch (v) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_show_stereotype_properties(who);
+  }
+}
+
 bool BrowserUseCaseView::get_classinstwritehorizontally(UmlCode k) const {
   Uml3States h;
   

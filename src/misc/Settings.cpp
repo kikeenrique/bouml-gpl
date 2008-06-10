@@ -150,6 +150,7 @@ ClassDiagramSettings::ClassDiagramSettings() {
   draw_all_relations = UmlDefaultState;
   show_infonote = UmlDefaultState;
   shadow = UmlDefaultState;
+  show_stereotype_properties = UmlDefaultState;
 }
 
 void ClassDiagramSettings::save(QTextStream & st) const {
@@ -171,7 +172,8 @@ void ClassDiagramSettings::save(QTextStream & st) const {
 			      << " show_context_mode " << stringify(show_context_mode)
 				<< " auto_label_position " << stringify(auto_label_position)
 				  << " show_infonote " << stringify(show_infonote)
-				    << " shadow " << stringify(shadow);
+				    << " shadow " << stringify(shadow)
+				      << " show_stereotype_properties " << stringify(show_stereotype_properties);
 }
 
 void ClassDiagramSettings::read(char * & st, char * & k) {
@@ -282,6 +284,10 @@ void ClassDiagramSettings::read(char * & st, char * & k) {
     shadow = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "show_stereotype_properties")) {
+    show_stereotype_properties = state(read_keyword(st));
+    k = read_keyword(st);
+  }
 }
 
 
@@ -306,8 +312,9 @@ bool ClassDiagramSettings::complete(ClassDiagramSettings & result) const {
   check_default(auto_label_position, UmlDefaultState);
   check_default(show_infonote, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
+  check_default(show_stereotype_properties, UmlDefaultState);
   
-  return done == 18;
+  return done == 19;
 }
 
 void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
@@ -316,7 +323,7 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
   switch (who) {
   case UmlClass:
     // order known by ClassDiagramSettings::set
-    a.resize(i + 14);
+    a.resize(i + 15);
   
     a[i].set("drawing language", &drawing_language);
     a[i + 1].set("drawing mode", &class_drawing_mode);
@@ -341,15 +348,18 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
 		  &show_parameter_name);
     a[i + 13].set("show information note",
 		  &show_infonote);
+    a[i + 14].set("show stereotype properties",
+		  &show_stereotype_properties);
     break;
   case UmlPackage:
-    a.resize(i + 2);
+    a.resize(i + 3);
   
     a[i].set("name in tab", &package_name_in_tab);
     a[i + 1].set("show context", &show_context_mode);
+    a[i + 2].set("show stereotype properties", &show_stereotype_properties);
     break;
   case UmlClassDiagram:
-    a.resize(i + 18);
+    a.resize(i + 19);
   
     a[i].set("drawing language", &drawing_language);
     a[i + 1].set("classes drawing mode", &class_drawing_mode);
@@ -376,10 +386,12 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
     a[i + 14].set("show classes and packages context", &show_context_mode);
     a[i + 15].set("automatic labels position", &auto_label_position);
     a[i + 16].set("show information note", &show_infonote);
-    a[i + 17].set("draw shadow", &shadow);
+    a[i + 17].set("show stereotype properties",
+		  &show_stereotype_properties);
+    a[i + 18].set("draw shadow", &shadow);
     break;
   default:
-    a.resize(i + 18);
+    a.resize(i + 19);
   
     a[i].set("class#drawing language", &drawing_language);
     a[i + 1].set("class#classes drawing mode", &class_drawing_mode);
@@ -406,7 +418,9 @@ void ClassDiagramSettings::complete(QArray<StateSpec> & a, UmlCode who) {
     a[i + 14].set("class#show classes and packages context", &show_context_mode);
     a[i + 15].set("class#automatic labels position", &auto_label_position);
     a[i + 16].set("class#show information note", &show_infonote);
-    a[i + 17].set("class#draw shadow", &shadow);
+    a[i + 17].set("class#show stereotype properties",
+		  &show_stereotype_properties);
+    a[i + 18].set("class#draw shadow", &shadow);
   }
 }
 
@@ -440,6 +454,8 @@ void ClassDiagramSettings::set(QArray<StateSpec> & a, int index) {
     show_parameter_name = (Uml3States) *((Uml3States *) a[index + 12].state);
   if (a[index + 13].name != 0)
     show_infonote = (Uml3States) *((Uml3States *) a[index + 13].state);
+  if (a[index + 14].name != 0)
+    show_stereotype_properties = (Uml3States) *((Uml3States *) a[index + 14].state);
 }
 
 
@@ -448,12 +464,14 @@ void ClassDiagramSettings::set(QArray<StateSpec> & a, int index) {
 SimpleClassDiagramSettings::SimpleClassDiagramSettings() {
   class_drawing_mode = DefaultClassDrawingMode;
   show_context_mode = DefaultShowContextMode;
+  show_stereotype_properties = UmlDefaultState;
 }
 
 void SimpleClassDiagramSettings::save(QTextStream & st) const {
   nl_indent(st);
   st << "class_drawing_mode " << stringify(class_drawing_mode)
-    << " show_context_mode " << stringify(show_context_mode);
+    << " show_context_mode " << stringify(show_context_mode)
+      << " show_stereotype_properties " << stringify(show_stereotype_properties);
 }
 
 void SimpleClassDiagramSettings::read(char * & st, char * & k) {
@@ -466,15 +484,20 @@ void SimpleClassDiagramSettings::read(char * & st, char * & k) {
     show_context_mode = context_mode(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "show_stereotype_properties")) {
+    show_stereotype_properties = state(read_keyword(st));
+    k = read_keyword(st);
+  }
 }
 
 void SimpleClassDiagramSettings::complete(QArray<StateSpec> & a) {
   int i = a.size();
   
-  a.resize(i + 2);
+  a.resize(i + 3);
   
   a[i].set("drawing mode", &class_drawing_mode);
   a[i + 1].set("show context", &show_context_mode);
+  a[i + 2].set("show stereotype properties", &show_stereotype_properties);
 }
 
 // to update class canvas settings
@@ -483,6 +506,8 @@ void SimpleClassDiagramSettings::set(QArray<StateSpec> & a, int index) {
     class_drawing_mode = (ClassDrawingMode) *((ClassDrawingMode *) a[index].state);
   if (a[index + 1].name != 0)
     show_context_mode = (ShowContextMode) *((ShowContextMode *) a[index + 1].state);
+  if (a[index + 2].name != 0)
+    show_stereotype_properties = (Uml3States) *((Uml3States *) a[index + 2].state);
 }
 
 
@@ -495,6 +520,7 @@ SequenceDiagramSettings::SequenceDiagramSettings() {
   drawing_language = DefaultDrawingLanguage;
   draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
+  show_stereotype_properties = UmlDefaultState;
 }
 
 void SequenceDiagramSettings::save(QTextStream & st) const {
@@ -504,7 +530,8 @@ void SequenceDiagramSettings::save(QTextStream & st) const {
       << " class_drawing_mode " << stringify(instances_drawing_mode)
 	<< " drawing_language " << stringify(drawing_language)
 	  << " draw_all_relations " << stringify(draw_all_relations)
-	    << " shadow " << stringify(shadow);
+	    << " shadow " << stringify(shadow)
+	      << " show_stereotype_properties " << stringify(show_stereotype_properties);
 }
 
 void SequenceDiagramSettings::read(char * & st, char * & k) {
@@ -533,6 +560,10 @@ void SequenceDiagramSettings::read(char * & st, char * & k) {
     shadow = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "show_stereotype_properties")) {
+    show_stereotype_properties = state(read_keyword(st));
+    k = read_keyword(st);
+  }
 }
 
 bool SequenceDiagramSettings::complete(SequenceDiagramSettings & result) const {
@@ -544,14 +575,15 @@ bool SequenceDiagramSettings::complete(SequenceDiagramSettings & result) const {
   check_default(drawing_language, DefaultDrawingLanguage);
   check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
+  check_default(show_stereotype_properties, UmlDefaultState);
   
-  return done == 6;
+  return done == 7;
 }
 
 void SequenceDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 6);
+  a.resize(i + 7);
 
   if (local) {
     a[i].set("drawing language", &drawing_language);
@@ -559,7 +591,8 @@ void SequenceDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
     a[i + 2].set("show operations full definition", &show_full_operations_definition);
     a[i + 3].set("write name:type horizontally", &write_horizontally);
     a[i + 4].set("draw all relations", &draw_all_relations);
-    a[i + 5].set("draw shadow", &shadow);
+    a[i + 5].set("show stereotype properties", &show_stereotype_properties);
+    a[i + 6].set("draw shadow", &shadow);
   }
   else {
     a[i].set("sequence#drawing language", &drawing_language);
@@ -567,7 +600,8 @@ void SequenceDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
     a[i + 2].set("sequence#show operations full definition", &show_full_operations_definition);
     a[i + 3].set("sequence#write name:type horizontally", &write_horizontally);
     a[i + 4].set("sequence#draw all relations", &draw_all_relations);
-    a[i + 5].set("sequence#draw shadow", &shadow);
+    a[i + 5].set("sequence#show stereotype properties", &show_stereotype_properties);
+    a[i + 6].set("sequence#draw shadow", &shadow);
   }
 }
 
@@ -582,6 +616,7 @@ CollaborationDiagramSettings::CollaborationDiagramSettings() {
   show_context_mode = DefaultShowContextMode;
   draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
+  show_stereotype_properties = UmlDefaultState;
 }
 
 void CollaborationDiagramSettings::save(QTextStream & st) const {
@@ -593,7 +628,8 @@ void CollaborationDiagramSettings::save(QTextStream & st) const {
 	    << " package_name_in_tab " << stringify(package_name_in_tab)
 	      << " show_context " << stringify(show_context_mode)
 		<< " draw_all_relations " << stringify(draw_all_relations)
-		  << " shadow " << stringify(shadow);
+		  << " shadow " << stringify(shadow)
+		    << " show_stereotype_properties " << stringify(show_stereotype_properties);
 }
 
 void CollaborationDiagramSettings::read(char * & st, char * & k) {
@@ -630,6 +666,10 @@ void CollaborationDiagramSettings::read(char * & st, char * & k) {
     shadow = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "show_stereotype_properties")) {
+    show_stereotype_properties = state(read_keyword(st));
+    k = read_keyword(st);
+  }
 }
 
 bool CollaborationDiagramSettings::complete(CollaborationDiagramSettings & result) const {
@@ -643,14 +683,15 @@ bool CollaborationDiagramSettings::complete(CollaborationDiagramSettings & resul
   check_default(show_context_mode, DefaultShowContextMode);
   check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
+  check_default(show_stereotype_properties, UmlDefaultState);
   
-  return done == 8;
+  return done == 9;
 }
 
 void CollaborationDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 8);
+  a.resize(i + 9);
   if (local) {
     a[i].set("drawing language", &drawing_language);
     a[i+1].set("show operations full definition",
@@ -662,7 +703,8 @@ void CollaborationDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
     a[i+4].set("packages name in tab", &package_name_in_tab);
     a[i+5].set("show package context", &show_context_mode);
     a[i+6].set("draw all relations", &draw_all_relations);
-    a[i+7].set("draw shadow", &shadow);
+    a[i+7].set("show stereotype properties", &show_stereotype_properties);
+    a[i+8].set("draw shadow", &shadow);
   }
   else {
     a[i].set("communication#drawing language",
@@ -676,7 +718,8 @@ void CollaborationDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
     a[i+4].set("communication#show packages name in tab", &package_name_in_tab);
     a[i+5].set("communication#show packages context", &show_context_mode);
     a[i+6].set("communication#draw all relations", &draw_all_relations);
-    a[i+7].set("communication#draw shadow", &shadow);
+    a[i+7].set("communication#show stereotype properties", &show_stereotype_properties);
+    a[i+8].set("communication#draw shadow", &shadow);
   }
 }
 
@@ -689,6 +732,7 @@ ObjectDiagramSettings::ObjectDiagramSettings() {
   auto_label_position = UmlDefaultState;
   draw_all_relations = UmlDefaultState;
   shadow = UmlDefaultState;
+  show_stereotype_properties = UmlDefaultState;
 }
 
 void ObjectDiagramSettings::save(QTextStream & st) const {
@@ -698,7 +742,8 @@ void ObjectDiagramSettings::save(QTextStream & st) const {
 	<< " show_context " << stringify(show_context_mode)
 	  << " auto_label_position " << stringify(auto_label_position)
 	    << " draw_all_relations " << stringify(draw_all_relations)
-	      << " shadow " << stringify(shadow);
+	      << " shadow " << stringify(shadow)
+		<< " show_stereotype_properties " << stringify(show_stereotype_properties);
 }
 
 void ObjectDiagramSettings::read(char * & st, char * & k) {
@@ -727,6 +772,10 @@ void ObjectDiagramSettings::read(char * & st, char * & k) {
     shadow = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "show_stereotype_properties")) {
+    show_stereotype_properties = state(read_keyword(st));
+    k = read_keyword(st);
+  }
 }
 
 bool ObjectDiagramSettings::complete(ObjectDiagramSettings & result) const {
@@ -738,21 +787,23 @@ bool ObjectDiagramSettings::complete(ObjectDiagramSettings & result) const {
   check_default(auto_label_position, UmlDefaultState);
   check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
+  check_default(show_stereotype_properties, UmlDefaultState);
   
-  return done == 6;
+  return done == 7;
 }
 
 void ObjectDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 6);
+  a.resize(i + 7);
   if (local) {
     a[i].set("write name:type horizontally", &write_horizontally);
     a[i+1].set("packages name in tab", &package_name_in_tab);
     a[i+2].set("show package context", &show_context_mode);
     a[i+3].set("automatic labels position", &auto_label_position);
     a[i+4].set("draw all relations", &draw_all_relations);
-    a[i+5].set("draw shadow", &shadow);
+    a[i+5].set("show stereotype properties", &show_stereotype_properties);
+    a[i+6].set("draw shadow", &shadow);
   }
   else {
     a[i].set("object#write name:type horizontally", &write_horizontally);
@@ -760,7 +811,8 @@ void ObjectDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
     a[i+2].set("object#show packages context", &show_context_mode);
     a[i+3].set("object#automatic labels position", &auto_label_position);
     a[i+4].set("object#draw all relations", &draw_all_relations);
-    a[i+5].set("object#draw shadow", &shadow);
+    a[i+5].set("object#show stereotype properties", &show_stereotype_properties);
+    a[i+6].set("object#draw shadow", &shadow);
   }
 }
 
@@ -773,6 +825,7 @@ UseCaseDiagramSettings::UseCaseDiagramSettings() {
   draw_all_relations = UmlDefaultState;
   class_drawing_mode = DefaultClassDrawingMode;
   shadow = UmlDefaultState;
+  show_stereotype_properties = UmlDefaultState;
 }
 
 void UseCaseDiagramSettings::save(QTextStream & st) const {
@@ -782,7 +835,8 @@ void UseCaseDiagramSettings::save(QTextStream & st) const {
       << " auto_label_position " << stringify(auto_label_position)
 	<< " draw_all_relations " << stringify(draw_all_relations)
 	  << " class_drawing_mode " << stringify(class_drawing_mode)
-	    << " shadow " << stringify(shadow);
+	    << " shadow " << stringify(shadow)
+	      << " show_stereotype_properties " << stringify(show_stereotype_properties);
 }
 
 void UseCaseDiagramSettings::read(char * & st, char * & k) {
@@ -810,6 +864,10 @@ void UseCaseDiagramSettings::read(char * & st, char * & k) {
     shadow = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "show_stereotype_properties")) {
+    show_stereotype_properties = state(read_keyword(st));
+    k = read_keyword(st);
+  }
 }
 
 bool UseCaseDiagramSettings::complete(UseCaseDiagramSettings & result) const {
@@ -821,8 +879,9 @@ bool UseCaseDiagramSettings::complete(UseCaseDiagramSettings & result) const {
   check_default(draw_all_relations, UmlDefaultState);
   check_default(shadow, UmlDefaultState);
   check_default(class_drawing_mode, DefaultClassDrawingMode);
+  check_default(show_stereotype_properties, UmlDefaultState);
   
-  return done == 6;
+  return done == 7;
 }
 
 bool UseCaseDiagramSettings::complete(SimpleClassDiagramSettings & result) const {
@@ -830,21 +889,23 @@ bool UseCaseDiagramSettings::complete(SimpleClassDiagramSettings & result) const
   
   check_default(show_context_mode, DefaultShowContextMode);
   check_default(class_drawing_mode, DefaultClassDrawingMode);
+  check_default(show_stereotype_properties, UmlDefaultState);
   
-  return done == 2;
+  return done == 3;
 }
 
 void UseCaseDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 6);
+  a.resize(i + 7);
   if (local) {
     a[i].set("packages name in tab", &package_name_in_tab);
     a[i + 1].set("show package context", &show_context_mode);
     a[i + 2].set("automatic labels position", &auto_label_position);
     a[i + 3].set("draw all relations", &draw_all_relations);
     a[i + 4].set("class drawing mode", &class_drawing_mode);
-    a[i + 5].set("draw shadow", &shadow);
+    a[i + 5].set("show stereotype properties", &show_stereotype_properties);
+    a[i + 6].set("draw shadow", &shadow);
   }
   else {
     a[i].set("use case#show packages name in tab", &package_name_in_tab);
@@ -852,7 +913,8 @@ void UseCaseDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
     a[i + 2].set("use case#automatic labels position", &auto_label_position);
     a[i + 3].set("use case#draw all relations", &draw_all_relations);
     a[i + 4].set("use case#class drawing mode", &class_drawing_mode);
-    a[i + 5].set("use case#draw shadow", &shadow);
+    a[i + 5].set("use case#show stereotype properties", &show_stereotype_properties);
+    a[i + 6].set("use case#draw shadow", &shadow);
   }
 }
 
@@ -1029,13 +1091,15 @@ ComponentDrawingSettings::ComponentDrawingSettings() {
   draw_component_as_icon = UmlDefaultState;
   show_component_req_prov = UmlDefaultState;
   show_component_rea = UmlDefaultState;
+  show_stereotype_properties = UmlDefaultState;
 }
 
 void ComponentDrawingSettings::save(QTextStream & st) const {
   nl_indent(st);
   st << "draw_component_as_icon " << stringify(draw_component_as_icon)
     << " show_component_req_prov " << stringify(show_component_req_prov)
-      << " show_component_rea " << stringify(show_component_rea);
+      << " show_component_rea " << stringify(show_component_rea)
+	<< " show_stereotype_properties " << stringify(show_stereotype_properties);
 }
   
 void ComponentDrawingSettings::read(char * & st, char * & k) {
@@ -1052,6 +1116,10 @@ void ComponentDrawingSettings::read(char * & st, char * & k) {
     show_component_rea = state(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "show_stereotype_properties")) {
+    show_stereotype_properties = state(read_keyword(st));
+    k = read_keyword(st);
+  }
 }
 
 bool ComponentDrawingSettings::complete(ComponentDrawingSettings & result) const {
@@ -1060,15 +1128,16 @@ bool ComponentDrawingSettings::complete(ComponentDrawingSettings & result) const
   check_default(draw_component_as_icon, UmlDefaultState);
   check_default(show_component_req_prov, UmlDefaultState);
   check_default(show_component_rea, UmlDefaultState);
+  check_default(show_stereotype_properties, UmlDefaultState);
   
- return (done == 3);
+ return (done == 4);
 }
 
 void ComponentDrawingSettings::complete(QArray<StateSpec> & a,
 					bool local, bool depl) {
   int i = a.size();
   
-  a.resize(i + 3);
+  a.resize(i + 4);
   a[i].set((local) ? "draw component as icon"
 		   : ((depl) ? "deployment#draw component as icon"
 			     : "component#draw component as icon"),
@@ -1081,6 +1150,10 @@ void ComponentDrawingSettings::complete(QArray<StateSpec> & a,
 		       : ((depl) ? "deployment#show component's realizations"
 				 : "component#show component's realizations"),
 	       &show_component_rea);
+  a[i + 3].set((local) ? "show stereotype properties"
+		       : ((depl) ? "deployment#show stereotype properties"
+				 : "component#show stereotype properties"),
+	       &show_stereotype_properties);
 }
 
 //
@@ -1185,13 +1258,15 @@ StateDrawingSettings::StateDrawingSettings() {
   show_activities = UmlDefaultState;
   region_horizontally = UmlDefaultState;
   drawing_language = DefaultDrawingLanguage;
+  show_stereotype_properties = UmlDefaultState;
 }
 
 void StateDrawingSettings::save(QTextStream & st) const {
   nl_indent(st);
   st << "show_activities " << stringify(show_activities)
     << " region_horizontally " << stringify(region_horizontally)
-      << " drawing_language " << stringify(drawing_language);
+      << " drawing_language " << stringify(drawing_language)
+	<< " show_stereotype_properties " << stringify(show_stereotype_properties);
 }
   
 void StateDrawingSettings::read(char * & st, char * & k) {
@@ -1207,6 +1282,10 @@ void StateDrawingSettings::read(char * & st, char * & k) {
     drawing_language = ::drawing_language(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "show_stereotype_properties")) {
+    show_stereotype_properties = state(read_keyword(st));
+    k = read_keyword(st);
+  }
 }
 
 bool StateDrawingSettings::complete(StateDrawingSettings & result) const {
@@ -1215,24 +1294,27 @@ bool StateDrawingSettings::complete(StateDrawingSettings & result) const {
   check_default(show_activities, UmlDefaultState);
   check_default(region_horizontally, UmlDefaultState);
   check_default(drawing_language, DefaultDrawingLanguage);
+  check_default(show_stereotype_properties, UmlDefaultState);
   
- return (done == 3);
+ return (done == 4);
 }
 
 void StateDrawingSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 3);
+  a.resize(i + 4);
 
   if (local) {
     a[i].set("show state activities", &show_activities);
     a[i + 1].set("draw state's regions horizontally", &region_horizontally);
     a[i + 2].set("drawing language", &drawing_language);
+    a[i + 3].set("show stereotype properties", &show_stereotype_properties);
     }
   else {
     a[i].set("state#show state activities", &show_activities);
     a[i + 1].set("state#draw state's regions horizontally", &region_horizontally);
     a[i + 2].set("state#drawing language", &drawing_language);
+    a[i + 3].set("state#show stereotype properties", &show_stereotype_properties);
   }
 }
 
@@ -1337,12 +1419,14 @@ void ActivityDiagramSettings::complete(QArray<StateSpec> & a, bool local) {
 ActivityDrawingSettings::ActivityDrawingSettings() {
   show_infonote = UmlDefaultState;
   drawing_language = DefaultDrawingLanguage;
+  show_stereotype_properties = UmlDefaultState;
 }
 
 void ActivityDrawingSettings::save(QTextStream & st) const {
   nl_indent(st);
   st << "show_infonote " << stringify(show_infonote)
-    << " drawing_language " << stringify(drawing_language);
+    << " drawing_language " << stringify(drawing_language)
+      << " show_stereotype_properties " << stringify(show_stereotype_properties);
 }
   
 void ActivityDrawingSettings::read(char * & st, char * & k) {
@@ -1354,6 +1438,10 @@ void ActivityDrawingSettings::read(char * & st, char * & k) {
     drawing_language = ::drawing_language(read_keyword(st));
     k = read_keyword(st);
   }
+  if (!strcmp(k, "show_stereotype_properties")) {
+    show_stereotype_properties = state(read_keyword(st));
+    k = read_keyword(st);
+  }
 }
 
 bool ActivityDrawingSettings::complete(ActivityDrawingSettings & result) const {
@@ -1361,22 +1449,25 @@ bool ActivityDrawingSettings::complete(ActivityDrawingSettings & result) const {
   
   check_default(show_infonote, UmlDefaultState);
   check_default(drawing_language, DefaultDrawingLanguage);
+  check_default(show_stereotype_properties, UmlDefaultState);
   
- return (done == 2);
+ return (done == 3);
 }
 
 void ActivityDrawingSettings::complete(QArray<StateSpec> & a, bool local) {
   int i = a.size();
   
-  a.resize(i + 2);
+  a.resize(i + 3);
 
   if (local) {
     a[i].set("show information note", &show_infonote);
     a[i + 1].set("drawing language", &drawing_language);
+    a[i + 2].set("show stereotype properties", &show_stereotype_properties);
   }
   else {
     a[i].set("activity#show information note", &show_infonote);
     a[i + 1].set("activity#drawing language", &drawing_language);
+    a[i + 2].set("activity#show stereotype properties", &show_stereotype_properties);
   }
 }
 
@@ -1387,4 +1478,6 @@ void ActivityDrawingSettings::set(QArray<StateSpec> & a, int index) {
     show_infonote = (Uml3States) *((Uml3States *) a[index].state);
   if (a[index + 1].name != 0)
     drawing_language = (DrawingLanguage) *((DrawingLanguage *) a[index + 1].state);
+  if (a[index + 2].name != 0)
+    show_stereotype_properties = (Uml3States) *((Uml3States *) a[index + 2].state);
 }

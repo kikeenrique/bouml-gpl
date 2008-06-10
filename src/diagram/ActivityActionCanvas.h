@@ -105,9 +105,10 @@ class ActivityActionCanvas : public QObject, public DiagramCanvas {
     
     virtual bool has_drawing_settings() const;
     virtual void edit_drawing_settings(QList<DiagramItem> &);
+    void edit_drawing_settings();
+    virtual bool get_show_stereotype_properties() const;
     
     virtual void apply_shortcut(QString s);
-    void edit_drawing_settings();
   
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;
     static ActivityActionCanvas * read(char * &, UmlCanvas *, char *);

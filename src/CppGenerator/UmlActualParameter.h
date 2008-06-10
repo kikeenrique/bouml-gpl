@@ -40,7 +40,7 @@ class UmlActualParameter : public UmlBaseActualParameter {
   public:
     UmlActualParameter() {};
 
-    void generate(QTextOStream & f_h) const;
+    bool generate(QTextOStream & f_h) const;
 
 };
 

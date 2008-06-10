@@ -40,6 +40,7 @@
 #include "FlowData.h"
 #include "TransitionCanvas.h"
 #include "TransitionData.h"
+#include "StereotypePropertiesCanvas.h"
 #include "UmlWindow.h"
 #include "Settings.h"
 #include "UmlGlobal.h"
@@ -48,7 +49,7 @@
 DiagramCanvas::DiagramCanvas(BrowserNode * bn, UmlCanvas * canvas,
 			     int x, int y, int wi, int he, int id)
     : QCanvasRectangle(canvas), DiagramItem(id, canvas), 
-      browser_node(bn), label(0) {
+      browser_node(bn), label(0), stereotypeproperties(0) {
   double zoom = canvas->zoom();
   
   if (wi >= 0) {
@@ -95,7 +96,7 @@ DiagramCanvas::DiagramCanvas(BrowserNode * bn, UmlCanvas * canvas,
 
 DiagramCanvas::DiagramCanvas(UmlCanvas * canvas, int id)
   : QCanvasRectangle(canvas), DiagramItem(id, canvas),
-    browser_node(0), label(0) {
+    browser_node(0), label(0), stereotypeproperties(0) {
   
   if (canvas->paste())
     canvas->select(this);
@@ -110,6 +111,9 @@ void DiagramCanvas::delete_it() {
   
   if (label != 0)
     ((UmlCanvas *) canvas())->del(label);
+  
+  if (stereotypeproperties != 0)
+    ((UmlCanvas *) canvas())->del(stereotypeproperties);
   
   ((UmlCanvas *) canvas())->del(this);
 }
@@ -126,6 +130,8 @@ void DiagramCanvas::setVisible(bool yes) {
   QCanvasRectangle::setVisible(yes);
   if (label)
     label->setVisible(yes);
+  if (stereotypeproperties)
+    stereotypeproperties->setVisible(yes);
 }
 
 void DiagramCanvas::change_scale() {
@@ -164,6 +170,9 @@ void DiagramCanvas::moveBy(double dx, double dy) {
   if ((label != 0) && !label->selected())
     label->moveBy(dx, dy);
 
+  if ((stereotypeproperties != 0) && !stereotypeproperties->selected())
+    stereotypeproperties->moveBy(dx, dy);
+
   update_show_lines();
 }
 
@@ -182,6 +191,8 @@ void DiagramCanvas::select_associated() {
     the_canvas()->select(this);
     if ((label != 0) && !label->selected())
       the_canvas()->select(label);
+    if ((stereotypeproperties != 0) && !stereotypeproperties->selected())
+      the_canvas()->select(stereotypeproperties);
     DiagramItem::select_associated();
   }
 }
@@ -850,6 +861,42 @@ void DiagramCanvas::draw_all_transitions(DiagramCanvas * end) {
 }
 
 
+//
+
+// redefined on element having drawing setting for stereotype properties
+bool DiagramCanvas::get_show_stereotype_properties() const {
+  return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+}
+
+void DiagramCanvas::check_stereotypeproperties() {
+  if (browser_node != 0) {
+    QString s = browser_node->stereotypes_properties();
+    
+    if (!s.isEmpty() && get_show_stereotype_properties())
+      StereotypePropertiesCanvas::needed(the_canvas(), this, s,
+					 stereotypeproperties, center());
+    else if (stereotypeproperties != 0) {
+      stereotypeproperties->delete_it();
+      stereotypeproperties = 0;
+    }
+  }
+}
+
+void DiagramCanvas::save_stereotype_property(QTextStream & st, QString & warning) const {
+  if (stereotypeproperties != 0)
+    stereotypeproperties->save(st, FALSE, warning);
+}
+
+void DiagramCanvas::read_stereotype_property(char * & st, char *& k) {
+  stereotypeproperties = 
+    StereotypePropertiesCanvas::read(st, the_canvas(), k, this);
+  
+  if (stereotypeproperties != 0)
+    k = read_keyword(st);
+}
+
+//
+
 void DiagramCanvas::history_save(QBuffer & b) const {
   ::save(this, b);
   ::save(center_x_scale100, b);
@@ -875,4 +922,3 @@ void DiagramCanvas::history_load(QBuffer & b) {
 void DiagramCanvas::history_hide() {
   QCanvasItem::setVisible(FALSE);
 }
-

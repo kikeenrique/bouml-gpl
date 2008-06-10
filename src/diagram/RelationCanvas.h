@@ -32,6 +32,7 @@ class BrowserClass;
 class RelationData;
 class DiagramItem;
 class CdClassCanvas;
+class StereotypePropertiesCanvas;
 
 class RelationCanvas : public ArrowCanvas {
   Q_OBJECT
@@ -43,6 +44,7 @@ class RelationCanvas : public ArrowCanvas {
     LabelCanvas * role_b;
     LabelCanvas * multiplicity_a;
     LabelCanvas * multiplicity_b;
+    StereotypePropertiesCanvas * stereotypeproperties; // in the first segment
     
   public:
     RelationCanvas(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
@@ -90,6 +92,8 @@ class RelationCanvas : public ArrowCanvas {
     
     void show_assoc_class(CdClassCanvas *);
     void hide_assoc_class();
+    
+    virtual void check_stereotypeproperties();
     
     static void drop(BrowserNode *, UmlCanvas *);
     

@@ -53,7 +53,14 @@ DeploymentNodeCanvas::DeploymentNodeCanvas(BrowserNode * bn, UmlCanvas * canvas,
       itscolor(UmlDefaultColor), used_color(UmlDefaultColor) {
   browser_node = bn;
   write_horizontally = UmlDefaultState;
+  show_stereotype_properties = UmlDefaultState;
   check_size();
+  
+  if (id == 0) {
+    // not on read
+    check_stereotypeproperties();
+  }
+  
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
@@ -177,6 +184,7 @@ void DeploymentNodeCanvas::check_size() {
   dflt.write_horizontally = write_horizontally;
   the_canvas()->browser_diagram()->get_deploymentdiagramsettings(dflt);
   horiz = (dflt.write_horizontally == UmlYes);
+  show_properties = (dflt.componentdrawingsettings.show_stereotype_properties == UmlYes);
   
   int wi = min_width();
   int he = min_height();
@@ -346,6 +354,7 @@ void DeploymentNodeCanvas::modified() {
   check_size();
   show();
   force_self_rel_visible();
+  check_stereotypeproperties();
   canvas()->update();
   package_modified();
 }
@@ -452,10 +461,11 @@ void DeploymentNodeCanvas::apply_shortcut(QString s) {
 }
 
 void DeploymentNodeCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(1);
+  QArray<StateSpec> st(2);
   QArray<ColorSpec> co(1);
   
   st[0].set("write node instance \nhorizontally", &write_horizontally);
+  st[1].set("show stereotype \nproperties", &show_stereotype_properties);
   co[0].set("Node color", &itscolor);
   
   SettingsDialog dialog(&st, &co, FALSE, TRUE);
@@ -470,12 +480,14 @@ bool DeploymentNodeCanvas::has_drawing_settings() const {
 }
 
 void DeploymentNodeCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(1);
+  QArray<StateSpec> st(2);
   QArray<ColorSpec> co(1);
   Uml3States write_horizontally;
+  Uml3States show_stereotype_properties;
   UmlColor itscolor;
   
   st[0].set("write node instance \nhorizontally", &write_horizontally);
+  st[1].set("show stereotype \nproperties", &show_stereotype_properties);
   co[0].set("Node color", &itscolor);
   
   SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
@@ -488,11 +500,25 @@ void DeploymentNodeCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
       if (st[0].name != 0)
 	((DeploymentNodeCanvas *) it.current())->write_horizontally =
 	  write_horizontally;
+      if (st[1].name != 0)
+	((DeploymentNodeCanvas *) it.current())->show_stereotype_properties =
+	  show_stereotype_properties;
       if (co[0].name != 0)
 	((DeploymentNodeCanvas *) it.current())->itscolor = itscolor;
       ((DeploymentNodeCanvas *) it.current())->modified();	// call package_modified()
     }
   } 
+}
+
+bool DeploymentNodeCanvas::get_show_stereotype_properties() const {
+  switch (show_stereotype_properties) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+  }
 }
 
 const char * DeploymentNodeCanvas::may_start(UmlCode & l) const {
@@ -563,10 +589,15 @@ void DeploymentNodeCanvas::save(QTextStream & st, bool ref, QString & warning) c
     nl_indent(st);
     if (write_horizontally != UmlDefaultState)
       st << "write_horizontally " << stringify(write_horizontally) << ' ';
+    if (show_stereotype_properties != UmlDefaultState)
+      st << "show_stereotype_properties " << stringify(show_stereotype_properties) << ' ';
     if (itscolor != UmlDefaultColor)
       st << "color " << stringify(itscolor) << ' ';
     save_xyzwh(st, this, "xyzwh");
+    save_stereotype_property(st, warning);
     indent(-1);
+    nl_indent(st);
+    st << "end";
   }
 }
 
@@ -578,6 +609,7 @@ DeploymentNodeCanvas * DeploymentNodeCanvas::read(char * & st, UmlCanvas * canva
     BrowserNode * br = BrowserDeploymentNode::read_ref(st);
     QString iname;
     Uml3States write_horizontally = UmlDefaultState;
+    Uml3States show_stereotype_properties = UmlDefaultState;
     
     k = read_keyword(st);
     
@@ -588,6 +620,10 @@ DeploymentNodeCanvas * DeploymentNodeCanvas::read(char * & st, UmlCanvas * canva
     if (!strcmp(k, "write_horizontally") ||
 	!strcmp(k, "write_horizontaly")) {
       write_horizontally = state(read_keyword(st));
+      k = read_keyword(st);
+    }
+    if (!strcmp(k, "show_stereotype_properties")) {
+      show_stereotype_properties = state(read_keyword(st));
       k = read_keyword(st);
     }
     
@@ -602,14 +638,24 @@ DeploymentNodeCanvas * DeploymentNodeCanvas::read(char * & st, UmlCanvas * canva
     DeploymentNodeCanvas * result =
       new DeploymentNodeCanvas(br, canvas, x, (int) read_double(st), id);
     
+    read_zwh(st, result);
+    
+    if (read_file_format() >= 58) {
+      k = read_keyword(st);
+      result->read_stereotype_property(st, k);	// updates k
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
+    
     result->iname = iname;
     result->write_horizontally = write_horizontally;
+    result->show_stereotype_properties = show_stereotype_properties;
     result->itscolor = color;
-    read_zwh(st, result);
     result->check_size();
     result->set_center100();
-
     result->show();
+    result->check_stereotypeproperties();
+    
     return result;
   }
   else

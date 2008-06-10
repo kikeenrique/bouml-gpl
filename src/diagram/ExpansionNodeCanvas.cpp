@@ -66,6 +66,8 @@ ExpansionNodeCanvas::ExpansionNodeCanvas(BrowserNode * bn, UmlCanvas * canvas,
       
     if (canvas->must_draw_all_relations())
       draw_all_flows();
+    
+    check_stereotypeproperties();
   }
 
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
@@ -435,6 +437,7 @@ void ExpansionNodeCanvas::modified() {
   update_show_lines();
   if (the_canvas()->must_draw_all_relations())
     draw_all_flows();
+  check_stereotypeproperties();
   canvas()->update();
   package_modified();
 }
@@ -473,6 +476,7 @@ void ExpansionNodeCanvas::save(QTextStream & st, bool ref, QString & warning) co
     save_xyzwh(st, this, "  xyzwh");
     if (label != 0)
       save_xy(st, label, " label_xy");
+    save_stereotype_property(st, warning);
     indent(-1);
     nl_indent(st);
     st << "end";
@@ -515,10 +519,14 @@ ExpansionNodeCanvas * ExpansionNodeCanvas::read(char * & st, UmlCanvas * canvas,
       
       k = read_keyword(st);
     }
+    
+    result->read_stereotype_property(st, k);	// updates k
 
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");
 
+    result->check_stereotypeproperties();
+    
     return result;
   }
   else 

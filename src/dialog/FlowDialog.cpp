@@ -267,11 +267,12 @@ void FlowDialog::accept() {
     
     kvtable->update(bn);
     
+    ProfiledStereotypes::modified(bn, newst);
+    
     bn->modified();
     bn->package_modified();
     flow->modified();
     
-    ProfiledStereotypes::modified(bn, newst);
     QTabDialog::accept();
   }
 }

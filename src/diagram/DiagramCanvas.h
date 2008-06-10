@@ -34,11 +34,13 @@
 
 class BrowserNode;
 class LabelCanvas;
+class StereotypePropertiesCanvas;
 
 class DiagramCanvas : public QCanvasRectangle, public DiagramItem {
   protected:
     BrowserNode * browser_node;
     LabelCanvas * label;
+    StereotypePropertiesCanvas * stereotypeproperties;
     int width_scale100;
     int height_scale100;
     int center_x_scale100;
@@ -99,6 +101,11 @@ class DiagramCanvas : public QCanvasRectangle, public DiagramItem {
     virtual void history_save(QBuffer &) const;
     virtual void history_load(QBuffer &);
     virtual void history_hide();
+    
+    virtual void check_stereotypeproperties();
+    virtual bool get_show_stereotype_properties() const;
+    void save_stereotype_property(QTextStream & st, QString &) const;
+    void read_stereotype_property(char * & st, char *& k);
     
     static void draw_actor(QPainter * p, QRect r);
     static void draw_entity_icon(QPainter & p, QRect & r,

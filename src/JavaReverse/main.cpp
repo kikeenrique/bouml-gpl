@@ -62,7 +62,7 @@ int main(int argc, char ** argv)
     try {
       //UmlCom::with_ack(FALSE);
       
-      UmlCom::trace("<b>Java reverse</b> release 2.12.1<br><hr>");
+      UmlCom::trace("<b>Java reverse</b> release 2.12.2<br><hr>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlItem * item = UmlCom::targetItem();

@@ -66,9 +66,9 @@ class UcUseCaseCanvas : public QObject, public DiagramCanvas {
     
     virtual bool has_drawing_settings() const;
     virtual void edit_drawing_settings(QList<DiagramItem> &);
+    void edit_drawing_settings();
     
     virtual void apply_shortcut(QString s);
-    void edit_drawing_settings();
   
     virtual void history_save(QBuffer &) const;
     virtual void history_load(QBuffer &);

@@ -400,6 +400,43 @@ bool BrowserNode::toggle_show_stereotypes() {
   return show_stereotypes;
 }
 
+QString BrowserNode::stereotypes_properties() const {
+  const char * stereotype = get_data()->get_stereotype();
+    
+  if (show_stereotypes &&
+      stereotype[0] &&
+      ProfiledStereotypes::isModeled(stereotype)) {
+    int nk = (int) get_n_keys();
+    QString nl("\n");
+    QString result;
+    
+    for (int ik = 0; ik != nk; ik += 1) {
+      const char * k =  get_key(ik);
+      const char * p;
+      unsigned nseps = 0;
+      
+      for (p = k; *p; p += 1) {
+	if (*p == ':') {
+	  nseps += 1;
+	  k = p + 1;
+	}
+      }
+      
+      if (nseps == 2) {
+	p = get_value(ik);
+	if (p && *p)
+	  result += nl + k + QString("=") + p;
+      }
+    }
+    
+    if (! result.isEmpty())
+      return QString("<<") + get_data()->get_short_stereotype() +
+	QString(">>") + result;
+  }
+
+  return QString::null;
+}
+
 void BrowserNode::paintCell(QPainter * p, const QColorGroup & cg, int column,
 			    int width, int alignment) {
   const QColor & bg = p->backgroundColor();
@@ -557,6 +594,10 @@ bool BrowserNode::get_shadow(UmlCode who) const {
 
 bool BrowserNode::get_draw_all_relations(UmlCode who) const {
   return ((BrowserNode *) parent())->get_draw_all_relations(who);
+}
+
+bool BrowserNode::get_show_stereotype_properties(UmlCode who) const {
+  return ((BrowserNode *) parent())->get_show_stereotype_properties(who);
 }
 
 UmlVisibility BrowserNode::get_visibility(UmlCode who) const {
@@ -1206,6 +1247,7 @@ bool BrowserNode::tool_cmd(ToolCom * com, const char * args) {
     else {
       set_value(args, args + strlen(args) + 1);
       package_modified();
+      get_data()->modified();
       com->write_ack(TRUE);
     }
     break;

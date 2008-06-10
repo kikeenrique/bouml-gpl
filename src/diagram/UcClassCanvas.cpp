@@ -64,10 +64,13 @@ UcClassCanvas::UcClassCanvas(BrowserNode * bn, UmlCanvas * canvas,
 
   compute_size();	// update used_settings
 
-  if ((id == 0) &&	// not old read
-      canvas->must_draw_all_relations()) {
-    draw_all_depend_gene();
-    draw_all_simple_relations();
+  if (id == 0) {	
+    // not on old read
+    if (canvas->must_draw_all_relations()) {
+      draw_all_depend_gene();
+      draw_all_simple_relations();
+    }
+    check_stereotypeproperties();
   }
 }
 
@@ -423,8 +426,20 @@ void UcClassCanvas::modified() {
       draw_all_depend_gene();    
       draw_all_simple_relations();
     }
+    check_stereotypeproperties();
     canvas()->update();
     package_modified();
+  }
+}
+
+bool UcClassCanvas::get_show_stereotype_properties() const {
+  switch (used_settings.show_stereotype_properties) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
   }
 }
 
@@ -777,13 +792,14 @@ void UcClassCanvas::save(QTextStream & st, bool ref, QString & warning) const {
     browser_node->save(st, TRUE, warning);
     indent(+1);
     settings.save(st);
-    if (itscolor != UmlDefaultColor) {
-      nl_indent(st);
-      st << "color " << stringify(itscolor);
-    }
     nl_indent(st);
+    if (itscolor != UmlDefaultColor)
+      st << "color " << stringify(itscolor) << ' ';
     save_xyz(st, this, "xyz");
+    save_stereotype_property(st, warning);
     indent(-1);
+    nl_indent(st);
+    st << "end";
   }
 }
 
@@ -827,7 +843,6 @@ UcClassCanvas * UcClassCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       connect(br->get_data(), SIGNAL(deleted()), result, SLOT(deleted()));
 
       k = read_keyword(st);
-    
       result->settings.read(st, k);	// updates k
       read_color(st, "color", result->itscolor, k);	// updates k
     
@@ -836,10 +851,18 @@ UcClassCanvas * UcClassCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       read_xyz(st, result);
 
       result->compute_size();
+      
+      if (read_file_format() >= 58) {
+	k = read_keyword(st);
+	result->read_stereotype_property(st, k);
+	if (strcmp(k, "end"))
+	  wrong_keyword(k, "end");
+      }
     }
     result->set_center100();
 
     result->show();
+    result->check_stereotypeproperties();
     return result;
   }
   else

@@ -467,12 +467,13 @@ void PinDialog::accept() {
       
       kvtable->update(bn);
       
+      ProfiledStereotypes::modified(bn, newst);
+      
       bn->modified();
       bn->package_modified();
       pin->modified();
       
       QTabDialog::accept();
-      ProfiledStereotypes::modified(bn, newst);
     }
   }
 }

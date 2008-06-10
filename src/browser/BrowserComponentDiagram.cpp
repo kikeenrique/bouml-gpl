@@ -413,6 +413,17 @@ void BrowserComponentDiagram::dont_draw_all_relations() {
   settings.draw_all_relations = UmlNo;
 }
 
+bool BrowserComponentDiagram::get_show_stereotype_properties(UmlCode) const {
+  switch (settings.componentdrawingsettings.show_stereotype_properties) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_show_stereotype_properties(UmlComponentDiagram);
+  }
+}
+
 bool BrowserComponentDiagram::get_auto_label_position(UmlCode who) const {
   switch (settings.auto_label_position) {
   case UmlYes:

@@ -216,7 +216,9 @@ void UmlClass::generate_decl(QTextOStream & f_h, QCString indent) {
     
 	  for (ita = actuals.begin(); ita != actuals.end(); ++ita)
 	    if ((*ita).superClass() == cl)
-	      (*ita).generate(f_h);
+	      if (! (*ita).generate(f_h))
+		// no specified value
+		break;
 	  
 	  f_h << '>';
 	}
@@ -536,6 +538,8 @@ void UmlClass::write(QTextOStream & f, bool with_formals,
       s.replace(index, 7, capitalize(name()));
     else if ((index = s.find("${NAME}")) != -1)
       s.replace(index, 7, name().upper());
+    else if ((index = s.find("${nAME}")) != -1)
+      s.replace(index, 7, name().lower());
     
     f << s;
   }

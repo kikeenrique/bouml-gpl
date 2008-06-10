@@ -160,9 +160,10 @@ void SimpleRelationDialog::accept() {
   
   kvtable->update(bn);
   
+  ProfiledStereotypes::modified(bn, newst);
+  
   bn->package_modified();
   rel->modified();
   
-  ProfiledStereotypes::modified(bn, newst);
   QTabDialog::accept();
 }

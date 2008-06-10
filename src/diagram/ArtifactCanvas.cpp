@@ -55,6 +55,7 @@ ArtifactCanvas::ArtifactCanvas(BrowserNode * bn, UmlCanvas * canvas,
   itscolor = UmlDefaultColor;
   
   compute_size();
+  check_stereotypeproperties();
   
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
@@ -149,6 +150,7 @@ void ArtifactCanvas::modified() {
   compute_size();
   show();
   update_show_lines();
+  check_stereotypeproperties();
   if (the_canvas()->must_draw_all_relations()) {
     draw_all_relations();
     draw_all_simple_relations();
@@ -722,13 +724,14 @@ void ArtifactCanvas::save(QTextStream & st, bool ref, QString & warning) const {
     st << "artifactcanvas " << get_ident() << ' ';
     browser_node->save(st, TRUE, warning);
     indent(+1);
-    if (itscolor != UmlDefaultColor) {
-      nl_indent(st);
-      st << "color " << stringify(itscolor);
-    }
     nl_indent(st);
+    if (itscolor != UmlDefaultColor)
+      st << "color " << stringify(itscolor) << ' ';
     save_xyz(st, this, "xyz");
+    save_stereotype_property(st, warning);
     indent(-1);
+    nl_indent(st);
+    st << "end";
   }
 }
 
@@ -756,9 +759,18 @@ ArtifactCanvas * ArtifactCanvas::read(char * & st, UmlCanvas * canvas,
       wrong_keyword(k, "xyz");
     read_xyz(st, result);
     
+    if (read_file_format() >= 58) {
+      k = read_keyword(st);
+      result->read_stereotype_property(st, k);	// updates k
+      
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
+    
     result->compute_size();
     result->set_center100();
     result->show();
+    result->check_stereotypeproperties();
     return result;
   }
   else 

@@ -43,6 +43,7 @@
 ClassInstCanvas::ClassInstCanvas() {
   itscolor = UmlDefaultColor;
   write_horizontally = UmlDefaultState;
+  show_stereotype_properties = UmlDefaultState;
 }
 
 ClassInstCanvas::~ClassInstCanvas() {
@@ -90,6 +91,18 @@ void ClassInstCanvas::compute_size(int & w, int & h, UmlCanvas * canvas) {
       // right get_classinstwritehorizontally arg set by the diagram itself
       horiz = canvas->browser_diagram()->get_classinstwritehorizontally(UmlCodeSup);
     }
+  }
+  
+  switch (show_stereotype_properties) {
+  case UmlYes:
+    show_properties = TRUE;
+    break;
+  case UmlNo:
+    show_properties = FALSE;
+    break;
+  default:
+    // right arg set by the diagram itself
+    show_properties = canvas->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
   }
   
   if (used_color != UmlTransparent) {
@@ -210,6 +223,8 @@ void ClassInstCanvas::save(QTextStream & st) const {
     st << " color " << stringify(itscolor);
   if (write_horizontally != UmlDefaultState)
     st << " write_horizontally " << stringify(write_horizontally);
+  if (show_stereotype_properties != UmlDefaultState)
+    st << " show_stereotype_properties " << stringify(show_stereotype_properties);
 }
 
 void ClassInstCanvas::read(char *& st, char *& k) {
@@ -224,5 +239,12 @@ void ClassInstCanvas::read(char *& st, char *& k) {
   }
   else
     write_horizontally = UmlDefaultState;
+  
+  if (!strcmp(k, "show_stereotype_properties")) {
+    show_stereotype_properties = state(read_keyword(st));
+    k = read_keyword(st);
+  }
+  else
+    show_stereotype_properties = UmlDefaultState;
 }
 

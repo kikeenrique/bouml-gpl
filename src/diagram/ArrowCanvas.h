@@ -147,6 +147,8 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     
     void write_uc_rel(ToolCom * com) const;
     
+    virtual void check_stereotypeproperties();
+    
   protected:
     void search_supports(ArrowCanvas *& plabel, 
 			 ArrowCanvas *& pstereotype) const;

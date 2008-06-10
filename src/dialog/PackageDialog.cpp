@@ -572,10 +572,10 @@ void PackageDialog::accept() {
     ProfiledStereotypes::deleted(bn, propag);
   }
   
+  ProfiledStereotypes::modified(bn, newst);
+  
   bn->package_modified();
   pa->modified();
-  
-  ProfiledStereotypes::modified(bn, newst);
   
   QTabDialog::accept();
 }

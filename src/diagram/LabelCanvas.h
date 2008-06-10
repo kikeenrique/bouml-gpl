@@ -91,6 +91,8 @@ class LabelCanvas : public QCanvasText, public DiagramItem {
     virtual void history_save(QBuffer &) const;
     virtual void history_load(QBuffer &);
     virtual void history_hide();
+    
+    virtual void check_stereotypeproperties();
 };
 
 #endif

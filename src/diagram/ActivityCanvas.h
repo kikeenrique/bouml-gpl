@@ -99,6 +99,7 @@ class ActivityCanvas : public QObject, public ActivityContainerCanvas {
     
     virtual void apply_shortcut(QString s);
     void edit_drawing_settings();
+    virtual bool get_show_stereotype_properties() const;
   
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;
     static ActivityCanvas * read(char * &, UmlCanvas *, char *);

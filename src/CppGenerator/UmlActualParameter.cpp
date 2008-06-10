@@ -28,7 +28,18 @@
 #include "UmlActualParameter.h"
 #include "UmlClass.h"
 
-void UmlActualParameter::generate(QTextOStream & f_h) const {
+bool UmlActualParameter::generate(QTextOStream & f_h) const {
+  const UmlTypeSpec & v = value();
+  
+  if ((v.type == 0) && v.explicit_type.isEmpty()) {
+    if (rank() == 0)
+      f_h << '<';
+    
+    return FALSE;
+  }
+  
   f_h << ((rank() == 0) ? "<" : ", ");
   UmlClass::write(f_h, value());
+  
+  return TRUE;
 }

@@ -56,6 +56,7 @@ StateCanvas::StateCanvas(BrowserNode * bn, UmlCanvas * canvas,
   itscolor = UmlDefaultColor;
   
   compute_size();
+  check_stereotypeproperties();
   
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
@@ -286,6 +287,7 @@ void StateCanvas::modified() {
     //draw_all_simple_relations();
     draw_all_transitions();
   }
+  check_stereotypeproperties();
   canvas()->update();
   force_sub_inside();
   package_modified();
@@ -813,6 +815,17 @@ void StateCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }
 }
 
+bool StateCanvas::get_show_stereotype_properties() const {
+  switch (settings.show_stereotype_properties) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+  }
+}
+
 const char * StateCanvas::may_start(UmlCode & l) const {
   switch (l) {
   case UmlAnchor:
@@ -857,13 +870,14 @@ void StateCanvas::save(QTextStream & st, bool ref, QString & warning) const {
     browser_node->save(st, TRUE, warning);
     indent(+1);
     settings.save(st);
-    if (itscolor != UmlDefaultColor) {
-      nl_indent(st);
-      st << "color " << stringify(itscolor);
-    }
     nl_indent(st);
+    if (itscolor != UmlDefaultColor)
+      st << "color " << stringify(itscolor) << ' ' ;
     save_xyzwh(st, this, "xyzwh");
+    save_stereotype_property(st, warning);
     indent(-1);
+    nl_indent(st);
+    st << "end";
   }
 }
 
@@ -892,9 +906,19 @@ StateCanvas * StateCanvas::read(char * & st, UmlCanvas * canvas,
       read_xyzwh(st, result);
     else
       wrong_keyword(k, "xyzwh");
+    
+    if (read_file_format() >= 58) {
+      k = read_keyword(st);
+      result->read_stereotype_property(st, k);	// updates k
+      
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
+    
     result->compute_size();
     result->set_center100();
     result->show();
+    result->check_stereotypeproperties();
     
     if (canvas->paste())
       result->remove_if_already_present();

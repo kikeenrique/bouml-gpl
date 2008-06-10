@@ -54,9 +54,12 @@ CodClassInstCanvas::CodClassInstCanvas(BrowserNode * bn, UmlCanvas * canvas,
   browser_node = bn;
   itscolor = UmlDefaultColor;
   
-  if (id == 0)
+  if (id == 0) {
     // not on read
     compute_size();
+    if (browser_node->get_type() != UmlClass)
+      check_stereotypeproperties();
+  }
   
   BasicData * d = bn->get_data();
   
@@ -108,6 +111,8 @@ void CodClassInstCanvas::modified() {
     update_show_lines();
     if (self_link)
       self_link->update_pos();
+    if (browser_node->get_type() != UmlClass)
+      check_stereotypeproperties();
     canvas()->update();
     package_modified();
   }
@@ -349,10 +354,12 @@ void CodClassInstCanvas::apply_shortcut(QString s) {
 }
 
 void CodClassInstCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(1);
+  QArray<StateSpec> st((browser_node->get_type() != UmlClass) ? 2 : 1);
   QArray<ColorSpec> co(1);
   
   st[0].set("write name:type \nhorizontally", &write_horizontally);
+  if (browser_node->get_type() != UmlClass)
+    st[1].set("show stereotypes \nproperties", &show_stereotype_properties);
   co[0].set("class instance color", &itscolor);
   
   SettingsDialog dialog(&st, &co, FALSE, TRUE);
@@ -393,6 +400,10 @@ void CodClassInstCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }  
 }
 
+bool CodClassInstCanvas::get_show_stereotype_properties() const {
+  return (browser_node->get_type() != UmlClass) && show_properties;
+}
+
 bool CodClassInstCanvas::alignable() const {
   return TRUE;
 }
@@ -422,14 +433,14 @@ void CodClassInstCanvas::save(QTextStream & st, bool ref, QString & warning) con
     browser_node->save(st, TRUE, warning);
 
     indent(+1);
-    
     nl_indent(st);
     save_xyz(st, this, "xyz");
     ClassInstCanvas::save(st);
+    save_stereotype_property(st, warning);    
+    indent(-1);
+    
     nl_indent(st);
     st << "end";
-    
-    indent(-1);
   }
 }
 
@@ -476,7 +487,9 @@ CodClassInstCanvas * CodClassInstCanvas::read(char * & st, UmlCanvas * canvas,
 
     result->setZ(read_double(st));
    
-    result->ClassInstCanvas::read(st, k);
+    result->ClassInstCanvas::read(st, k);	// update k
+    
+    result->read_stereotype_property(st, k);	// updates k
     
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");
@@ -486,6 +499,7 @@ CodClassInstCanvas * CodClassInstCanvas::read(char * & st, UmlCanvas * canvas,
       result->compute_size();
       result->set_center100();
       result->show();
+      result->check_stereotypeproperties();
     }
     return result;    
   }

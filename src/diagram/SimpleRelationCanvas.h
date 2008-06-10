@@ -31,6 +31,7 @@
 class BrowserNode;
 class SimpleRelationData;
 class DiagramItem;
+class StereotypePropertiesCanvas;
 
 class SimpleRelationCanvas : public ArrowCanvas {
   Q_OBJECT
@@ -38,6 +39,7 @@ class SimpleRelationCanvas : public ArrowCanvas {
   protected:
     BrowserNode * br_begin;
     SimpleRelationData * data;
+    StereotypePropertiesCanvas * stereotypeproperties; // in the first segment
     
   public:
     SimpleRelationCanvas(UmlCanvas * canvas, DiagramItem * b,
@@ -69,6 +71,11 @@ class SimpleRelationCanvas : public ArrowCanvas {
     
     virtual void open();
     virtual void menu(const QPoint&);
+    
+    virtual void setVisible( bool yes);
+    virtual void moveBy(double dx, double dy);
+    virtual void select_associated();
+    virtual void check_stereotypeproperties();
     
     static void drop(BrowserNode *, UmlCanvas *);
     

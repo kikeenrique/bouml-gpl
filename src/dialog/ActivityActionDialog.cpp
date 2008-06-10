@@ -355,10 +355,11 @@ void ActivityActionDialog::accept() {
     
     kvtable->update(bn);
     
+    ProfiledStereotypes::modified(bn, newst);
+    
     bn->modified();   // call action->modified()
     bn->package_modified();
     
-    ProfiledStereotypes::modified(bn, newst);
     QTabDialog::accept();
   }
 }

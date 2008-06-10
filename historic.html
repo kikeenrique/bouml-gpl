@@ -1,3 +1,80 @@
+<h3>4.4</h3>June, 10th 2008<br /><br />
+    <ul>
+	<li> To manage case of users strangly killing Bouml execution
+		the first time it asks for environment definition.
+		Yes, some users did that ... sigh.
+		<br /><br /></li>
+
+	<li> New <i>drawing setting</i> named <i>Show stereotype properties</i>
+		allowing to show or not the <i>tagged values</i> associated to
+		a stereotype. By default they are not shown.<br />
+		The values are shown in a note attached to the stereotyped element,
+		except for the attributes and operations of classes in a class diagram
+		whose are shown inside the class itself.
+		<br /><br /></li>
+
+	<li> new macro <i>${nAME}</i> producing <i>artifact</i>'s name
+		converted to lower case.
+		<br /><br /></li>
+
+	<li> <b>Php Generator 1.4.2</b><br />
+	     <b>Python Generator 1.0.3</b><br />
+	     <b>Idl Generator 2.9.3</b><br />
+		To manage <i>${nAME}</i>
+		<br /><br /></li>
+
+	<li> <b>Java Generator 2.15.2</b><br />
+		To manage <i>${nAME}</i>.<br />
+		Now the dependencies stereotyped <i>import</i> also
+		apply on the classes declared <i>external</i>.
+		<br /><br /></li>
+
+	<li> <b>C++ Generator 2.12.6</b><br />
+	     	To manage <i>${nAME}</i>.<br />
+		To not generate extra ',' when actual(s) are missing
+		for parameterized class binding (formal(s) have default value)
+		<br /><br /></li>
+
+	<li> <b>Java Reverse 2.12.2</b><br />
+	     <b>Java Catalog 2.11.2</b><br />
+	     	In the previous release a form <i>T&lt;...X...&gt</i>
+		produces a relation to the generic <i>T</i> when it is
+		part of the reverse classes or known through a
+		catalog. Now the form produces a relation to <i>X</i>
+		if <i>X</i> is a known class and <i>T</i> is defined through
+		the <i>generation setting</i> as the translation in Java
+		of a relation/attribute stereotype (this is the case
+		by default for <i>List</i> for instance)
+		<br /><br /></li>
+
+	<li> <b>Roundtrip body 1.7.1</b><br />
+		Explain why the body of an operation can't be updated.
+		<br /><br /></li>
+
+	<li> The previous releases of BOUML cannot read a project
+	     saved with this version. Obviously this release is
+	     able to read the projects made by previous releases of BOUML.</li>
+    </ul>
+<br /><br />	
+
+
+<h3>4.3.5</h3>May, 26th 2008<br /><br />
+    <ul>
+	<li> The class diagram menu entry <i>Add classes of the selected class view</i>
+		now also add the nested classes.
+		<br /><br /></li>
+
+	<li> Unselect elements in diagram before a copy
+		into the clipboard.
+		<br /><br /></li>
+
+	<li> <b>C++ Generator 2.12.5</b><br />
+		fixe bug concerning classes declared external.
+		</li>
+    </ul>
+<br /><br />
+
+
 <h3>4.3.4</h3>May, 18th 2008<br /><br />
     <ul>
 	<li> Bugs fixing concerning the attribute in class-stereotype.

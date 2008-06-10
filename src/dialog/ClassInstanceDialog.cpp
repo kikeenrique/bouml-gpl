@@ -416,10 +416,11 @@ void ClassInstanceDialog::accept() {
       
   kvtable->update(bn);
   
+  ProfiledStereotypes::modified(bn, newst);
+  
   bn->modified();
   bn->package_modified();
   inst->modified();
   
-  ProfiledStereotypes::modified(bn, newst);
   QDialog::accept();
 }

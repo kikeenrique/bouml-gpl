@@ -70,6 +70,7 @@ ActivityActionCanvas::ActivityActionCanvas(BrowserNode * bn, UmlCanvas * canvas,
   check_pins();
   check_parametersets();
   check_conditions();
+  check_stereotypeproperties();
 
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
@@ -250,6 +251,7 @@ void ActivityActionCanvas::modified() {
     draw_all_simple_relations();
   }
   check_conditions();
+  check_stereotypeproperties();
   canvas()->update();
   package_modified();
 }
@@ -929,6 +931,17 @@ void ActivityActionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }
 }
 
+bool ActivityActionCanvas::get_show_stereotype_properties() const {
+  switch (settings.show_stereotype_properties) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+  }
+}
+
 const char * ActivityActionCanvas::may_start(UmlCode & l) const {
   return (l == UmlFlow)
     ? ((BrowserActivityAction *) browser_node)->may_start()
@@ -1019,6 +1032,8 @@ void ActivityActionCanvas::save(QTextStream & st, bool ref, QString & warning) c
       st << "post ";
       post->save(st, FALSE, warning);
     }
+    
+    save_stereotype_property(st, warning);
 
     indent(-1);
     nl_indent(st);
@@ -1085,12 +1100,15 @@ ActivityActionCanvas * ActivityActionCanvas::read(char * & st, UmlCanvas * canva
       k = read_keyword(st);
     }
 
+    result->read_stereotype_property(st, k);	// updates k
+    
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");
 
     result->check_pins();
     result->check_parametersets();
     result->check_conditions();
+    result->check_stereotypeproperties();
     
     if (canvas->paste())
       result->remove_if_already_present();

@@ -51,19 +51,24 @@
 #include "DialogUtil.h"
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
+#include "StereotypePropertiesCanvas.h"
 
 RelationCanvas::RelationCanvas(UmlCanvas * canvas, DiagramItem * b,
 			       DiagramItem * e, BrowserClass * bb,
 			       UmlCode t, int id, float d_start, float d_end,
 			       RelationData * d)
       : ArrowCanvas(canvas, b, e, t, id, TRUE, d_start, d_end), br_begin(bb),
-        data(d), role_a(0), role_b(0), multiplicity_a(0), multiplicity_b(0) {
+        data(d), role_a(0), role_b(0), multiplicity_a(0), multiplicity_b(0),
+	stereotypeproperties(0) {
   if ((e->type() != UmlArrowPoint) && (bb == 0)) {
     // end of line construction, update all the line bb & be
     // adds browser relation 2 times
     update_begin(e);
   }
   else if (d != 0) {
+    if (e->type() != UmlArrowPoint)
+#warning bien place ?
+      check_stereotypeproperties();
     connect(d, SIGNAL(changed()), this, SLOT(modified()));
     connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
     connect(br_begin->get_data(), SIGNAL(actuals_changed()),
@@ -85,6 +90,9 @@ void RelationCanvas::delete_it() {
   disconnect(data, 0, this, 0);
   disconnect(br_begin->get_data(), SIGNAL(actuals_changed()),
 	     this, SLOT(actuals_modified()));
+  
+  if (stereotypeproperties != 0)
+    ((UmlCanvas *) canvas())->del(stereotypeproperties);
   
   ArrowCanvas::delete_it();
 }
@@ -201,6 +209,8 @@ void RelationCanvas::setVisible(bool yes) {
     multiplicity_a->setVisible(yes);
   if (multiplicity_b != 0)
     multiplicity_b->setVisible(yes);
+  if (stereotypeproperties)
+    stereotypeproperties->setVisible(yes);
 }
 
 void RelationCanvas::moveBy(double dx, double dy) {
@@ -214,6 +224,8 @@ void RelationCanvas::moveBy(double dx, double dy) {
     multiplicity_a->moveBy(dx, dy);
   if ((multiplicity_b != 0) && !multiplicity_b->selected())
     multiplicity_b->moveBy(dx, dy);
+  if ((stereotypeproperties != 0) && !stereotypeproperties->selected())
+    stereotypeproperties->moveBy(dx, dy);
 }
 
 void RelationCanvas::set_z(double z) {
@@ -247,6 +259,8 @@ void RelationCanvas::select_associated() {
     rel = ((RelationCanvas *) ((ArrowPointCanvas *) rel->begin)->get_other(rel));
   
   rel->begin->select_associated();
+  if ((rel->stereotypeproperties != 0) && !rel->stereotypeproperties->selected())
+    the_canvas()->select(rel->stereotypeproperties);
   
   for (;;) {
     // select labels
@@ -485,6 +499,8 @@ ArrowPointCanvas * RelationCanvas::brk(const QPoint & p) {
 ArrowCanvas * RelationCanvas::join(ArrowCanvas * other, ArrowPointCanvas * ap) {
   // has already check is join is possible (self relation must have two points)
   ArrowCanvas * result = ArrowCanvas::join(other, ap);
+  
+  ((result == this) ? other : this)->disconnect();
 
   ((RelationCanvas *) result)->modified();
   
@@ -502,13 +518,16 @@ void RelationCanvas::modified() {
 	show_assoc_class(0);
       else
 	hide_assoc_class();
+      
+      check_stereotypeproperties();
     }
     package_modified();
   }
 }
 
 void RelationCanvas::actuals_modified() {
-  if (data->get_type() == UmlRealize) {
+  if ((begin != 0) && (end != 0) &&	// not removed because of a join
+      (data->get_type() == UmlRealize)) {
     ArrowCanvas * aplabel;
     ArrowCanvas * apstereotype;
     
@@ -1082,6 +1101,25 @@ void RelationCanvas::post_connexion(UmlCode l, DiagramItem * dest) {
   }
 }
 
+void RelationCanvas::check_stereotypeproperties() {
+  // the note is memorized by the first segment
+  if (begin->type() == UmlArrowPoint)
+    ((RelationCanvas *) ((ArrowPointCanvas *) begin)->get_other(this))
+      ->check_stereotypeproperties();
+  else {
+    QString s = data->get_start()->stereotypes_properties();
+    
+    if (!s.isEmpty() &&
+	the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup))
+      StereotypePropertiesCanvas::needed(the_canvas(), this, s,
+					 stereotypeproperties, center());
+    else if (stereotypeproperties != 0) {
+      stereotypeproperties->delete_it();
+      stereotypeproperties = 0;
+    }
+  }
+}
+
 void RelationCanvas::save(QTextStream & st, bool ref, QString & warning) const {
   if (ref)
     st << "relationcanvas_ref " << get_ident()
@@ -1131,7 +1169,13 @@ void RelationCanvas::save(QTextStream & st, bool ref, QString & warning) const {
       save_xyz(st, multiplicity_b, " multiplicity_b_pos");
     else
       st << " no_multiplicity_b";
+    
+    if (stereotypeproperties != 0)
+      stereotypeproperties->save(st, FALSE, warning);
+    
     indent(-1);
+    nl_indent(st);
+    st << "end";    
   }
 }
 
@@ -1263,6 +1307,7 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
 
       // do not give rd to not call update()
       result = new RelationCanvas(canvas, bi, di, b, t, id, dbegin, dend);
+      
       result->geometry = geo;
       result->fixed_geometry = fixed;
       result->set_z(z);
@@ -1296,7 +1341,7 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
     // roles & multiplicity
     
     int x, y;
-    
+
     k = read_keyword(st);
     if (!strcmp(k, "role_a_pos")) {
       x = (int) read_double(st);
@@ -1366,7 +1411,22 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
     }
     else if (strcmp(k, "no_multiplicity_b"))
       wrong_keyword(k, "no_multiplicity_b");
-   
+
+    if (read_file_format() >= 58) {
+      // stereotype property
+      
+      k = read_keyword(st);
+      
+      first->stereotypeproperties = 
+	StereotypePropertiesCanvas::read(st,  canvas, k, first);
+      
+      if (first->stereotypeproperties != 0)
+	k = read_keyword(st);
+      
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
+    
     // to add label, stereotype ... if needed
     
     result->hide();
@@ -1374,6 +1434,8 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
     if (first != result)
       result->update(FALSE);
     result->show();
+    
+    first->check_stereotypeproperties();
     
     // manage case where the relation is deleted but present in the browser
     if (result->data->get_start()->deletedp())

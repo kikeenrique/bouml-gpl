@@ -33,6 +33,7 @@ class BrowserNode;
 class FlowData;
 class InfoCanvas;
 class DiagramItem;
+class StereotypePropertiesCanvas;
 
 class FlowCanvas : public ArrowCanvas {
   Q_OBJECT
@@ -42,6 +43,7 @@ class FlowCanvas : public ArrowCanvas {
     FlowData * data;
     InfoCanvas * selection;
     InfoCanvas * transformation;
+    StereotypePropertiesCanvas * stereotypeproperties; // in the first segment
     ActivityDrawingSettings settings;
     ActivityDrawingSettings used_settings;
     Uml3States write_horizontally;
@@ -71,15 +73,20 @@ class FlowCanvas : public ArrowCanvas {
     
     virtual bool has_drawing_settings() const;
     virtual void edit_drawing_settings(QList<DiagramItem> &);
+    void edit_drawing_settings();
     
     virtual void apply_shortcut(QString s);
-    void edit_drawing_settings();
   
     static FlowCanvas * read(char * & st, UmlCanvas * canvas, char *);
     virtual BasicData * get_data() const;
     
     virtual void open();
     virtual void menu(const QPoint&);
+    
+    virtual void setVisible( bool yes);
+    virtual void moveBy(double dx, double dy);
+    virtual void select_associated();
+    virtual void check_stereotypeproperties();
     
     static void drop(BrowserNode *, UmlCanvas *);
     

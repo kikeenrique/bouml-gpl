@@ -38,6 +38,8 @@
 #include "BrowserSimpleRelation.h"
 #include "BrowserClass.h"
 #include "SimpleRelationData.h"
+#include "StereotypePropertiesCanvas.h"
+#include "BrowserDiagram.h"
 #include "UmlWindow.h"
 #include "UmlGlobal.h"
 #include "myio.h"
@@ -53,12 +55,15 @@ SimpleRelationCanvas::SimpleRelationCanvas(UmlCanvas * canvas,
 					   float d_start, float d_end,
 					   SimpleRelationData * d)
       : ArrowCanvas(canvas, b, e, t, id, TRUE, d_start, d_end),
-        br_begin(bb), data(d) {
+        br_begin(bb), data(d), stereotypeproperties(0) {
   if ((e->type() != UmlArrowPoint) && (bb == 0)) {
     // end of line construction
     update_begin(e);
   }
   else if (d != 0) {
+    if (e->type() != UmlArrowPoint)
+#warning bien place ?
+      check_stereotypeproperties();
     connect(d, SIGNAL(changed()), this, SLOT(modified()));
     connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
   }
@@ -76,6 +81,9 @@ SimpleRelationCanvas::~SimpleRelationCanvas() {
 
 void SimpleRelationCanvas::delete_it() {
   disconnect(data, 0, this, 0);
+  
+  if (stereotypeproperties != 0)
+    ((UmlCanvas *) canvas())->del(stereotypeproperties);
   
   ArrowCanvas::delete_it();
 }
@@ -312,6 +320,8 @@ void SimpleRelationCanvas::modified() {
     hide();
     update(TRUE);
     show();
+    if (begin->type() != UmlArrowPoint)
+      check_stereotypeproperties();
     canvas()->update();
     package_modified();
   }
@@ -427,6 +437,51 @@ void SimpleRelationCanvas::drop(BrowserNode * bn, UmlCanvas * canvas)
   }
 }
 
+//
+
+void SimpleRelationCanvas::setVisible(bool yes) {
+  ArrowCanvas::setVisible(yes);
+
+  if (stereotypeproperties)
+    stereotypeproperties->setVisible(yes);
+}
+
+void SimpleRelationCanvas::moveBy(double dx, double dy) {
+  ArrowCanvas::moveBy(dx, dy);
+
+  if ((stereotypeproperties != 0) && !stereotypeproperties->selected())
+    stereotypeproperties->moveBy(dx, dy);
+}
+
+void SimpleRelationCanvas::select_associated() {
+  if (!selected()) {
+    if ((stereotypeproperties != 0) && !stereotypeproperties->selected())
+      the_canvas()->select(stereotypeproperties);
+    ArrowCanvas::select_associated();
+  }
+}
+
+void SimpleRelationCanvas::check_stereotypeproperties() {
+  // the note is memorized by the first segment
+  if (begin->type() == UmlArrowPoint)
+    ((SimpleRelationCanvas *) ((ArrowPointCanvas *) begin)->get_other(this))
+      ->check_stereotypeproperties();
+  else {
+    QString s = data->get_start()->stereotypes_properties();
+    
+    if (!s.isEmpty() &&
+	the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup))
+      StereotypePropertiesCanvas::needed(the_canvas(), this, s,
+					 stereotypeproperties, center());
+    else if (stereotypeproperties != 0) {
+      stereotypeproperties->delete_it();
+      stereotypeproperties = 0;
+    }
+  }
+}
+
+//
+
 void SimpleRelationCanvas::save(QTextStream & st, bool ref, QString & warning) const {
   if (ref)
     st << "simplerelationcanvas_ref " << get_ident();
@@ -453,7 +508,13 @@ void SimpleRelationCanvas::save(QTextStream & st, bool ref, QString & warning) c
       st << "decenter_end " << ((int) (decenter_end * 1000));
     }
     (const SimpleRelationCanvas *) ArrowCanvas::save_lines(st, TRUE, TRUE, warning);
+    
+    if (stereotypeproperties != 0)
+      stereotypeproperties->save(st, FALSE, warning);
+    
     indent(-1);
+    nl_indent(st);
+    st << "end";    
   }
 }
 
@@ -585,12 +646,33 @@ SimpleRelationCanvas * SimpleRelationCanvas::read(char * & st, UmlCanvas * canva
       read_keyword(st, "line");
       id = read_id(st);
     }
+
+    if (read_file_format() >= 58) {
+      // stereotype property
+      
+      k = read_keyword(st);
+      
+      first->stereotypeproperties = 
+	StereotypePropertiesCanvas::read(st,  canvas, k, first);
+      
+      if (first->stereotypeproperties != 0)
+	k = read_keyword(st);
+      
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
     
     // to add stereotype ... if needed
     
     first->update(FALSE);
     if (first != result)
       result->update(FALSE);
+    
+    first->check_stereotypeproperties();
+
+    // manage case where the relation is deleted but present in the browser
+    if (result->data->get_start()->deletedp())
+      result->delete_it();
     
     return result;
   }

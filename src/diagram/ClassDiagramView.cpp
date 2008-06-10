@@ -55,6 +55,22 @@ ClassDiagramView::ClassDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
   load("Class");
 }
 
+// class view contains class not already drawn ?
+bool not_yet_drawn(BrowserNode * container, QPtrDict<DiagramItem> & drawn)
+{
+  QListViewItem * child;
+  
+  for (child = container->firstChild(); child != 0; child = child->nextSibling()) {
+    if (!((BrowserNode *) child)->deletedp() &&
+	(((BrowserNode *) child)->get_type() == UmlClass))
+      if ((drawn[(BrowserNode *) child] == 0) ||
+	  not_yet_drawn((BrowserNode *) child, drawn))
+	return TRUE;
+  }
+  
+  return FALSE;
+}
+
 void ClassDiagramView::menu(const QPoint& p) {
   QPopupMenu m(0);
   
@@ -73,18 +89,9 @@ void ClassDiagramView::menu(const QPoint& p) {
 	if (di->type() == UmlClass)
 	  drawn.insert(di->get_bn(), di);
       
-      // class view contains class not already drawn ?
-      QListViewItem * child;
-      
-      for (child = bn->firstChild(); child != 0; child = child->nextSibling()) {
-	if (!((BrowserNode *) child)->deletedp() &&
-	    (((BrowserNode *) child)->get_type() == UmlClass) &&
-	    (drawn[(BrowserNode *) child] == 0)) {
-	  // not already shown
-	  m.insertItem("Add classes of the selected class view", 29);
-	  m.insertSeparator();
-	  break;
-	}
+      if (not_yet_drawn(bn, drawn)) {
+	m.insertItem("Add classes of the selected class view", 29);
+	m.insertSeparator();
       }
     }
     
@@ -108,51 +115,61 @@ void ClassDiagramView::menu(const QPoint& p) {
     (void) default_menu(m, 30);
 }
 
-void ClassDiagramView::add_classview_classes(BrowserNode * cv, const QPoint& p,
+const int Add_Classview_Classes_Margin = 20;
+
+void ClassDiagramView::add_classview_classes(BrowserNode * container, const QPoint& p,
 					     QPtrDict<DiagramItem> & drawn) {
   history_save();
   history_protected = TRUE;
   
-  DiagramItemList items(canvas()->allItems());
-  QListViewItem * child;
-  const int margin = 20;
   int x = p.x();
   int y = p.y();
-  int future_y = margin;
-  int xmax = canvas()->width() - margin;
-  int ymax = canvas()->height() - margin;
+  int future_y = Add_Classview_Classes_Margin;
   
-  for (child = cv->firstChild(); child != 0; child = child->nextSibling()) {
-    if (!((BrowserNode *) child)->deletedp() &&
-	(((BrowserNode *) child)->get_type() == UmlClass) &&
-	(drawn[(BrowserNode *) child] == 0)) {
-      CdClassCanvas * cl = 
-	new CdClassCanvas((BrowserNode *) child, the_canvas(), x, y);
-
-      if ((x + cl->width()) > xmax)
-	cl->move(x = margin, y = future_y);
-      
-      if (y + cl->height() > ymax) {
-	cl->move(x = margin, y = margin);
-	future_y = y + cl->height() + margin;
-      }
-      else {
-	int bot = y + cl->height() + margin;
-      
-	if (bot > future_y)
-	  future_y = bot;
-      }
-	      
-      x = x + cl->width() + margin;
-      
-      cl->show();
-      cl->upper();
-    }
-  }
+  add_classview_classes(container, drawn, x, y, future_y);
   
   canvas()->update();
   history_protected = FALSE;
   window()->package_modified();
+}
+
+void ClassDiagramView::add_classview_classes(BrowserNode * container,
+					     QPtrDict<DiagramItem> & drawn,
+					     int & x, int & y, int & future_y) {
+  QListViewItem * child;
+  int xmax = canvas()->width() - Add_Classview_Classes_Margin;
+  int ymax = canvas()->height() - Add_Classview_Classes_Margin;
+  
+  for (child = container->firstChild(); child != 0; child = child->nextSibling()) {
+    if (!((BrowserNode *) child)->deletedp() &&
+	(((BrowserNode *) child)->get_type() == UmlClass)) {
+      if (drawn[(BrowserNode *) child] == 0) {
+	CdClassCanvas * cl = 
+	  new CdClassCanvas((BrowserNode *) child, the_canvas(), x, y);
+	
+	if ((x + cl->width()) > xmax)
+	  cl->move(x = Add_Classview_Classes_Margin, y = future_y);
+	
+	if (y + cl->height() > ymax) {
+	  cl->move(x = Add_Classview_Classes_Margin, y = Add_Classview_Classes_Margin);
+	  future_y = y + cl->height() + Add_Classview_Classes_Margin;
+	}
+	else {
+	  int bot = y + cl->height() + Add_Classview_Classes_Margin;
+	  
+	  if (bot > future_y)
+	    future_y = bot;
+	}
+	
+	x = x + cl->width() + Add_Classview_Classes_Margin;
+	
+	cl->show();
+	cl->upper();
+      }
+      
+      add_classview_classes((BrowserNode *) child, drawn, x, y, future_y);
+    }
+  }
 }
 
 void ClassDiagramView::contentsMousePressEvent(QMouseEvent * e) {

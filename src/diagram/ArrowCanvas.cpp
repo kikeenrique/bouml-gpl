@@ -1068,6 +1068,7 @@ ArrowCanvas * ArrowCanvas::join(ArrowCanvas * other, ArrowPointCanvas * ap) {
     other->stereotype = 0;
     ap->remove_line(this);
     ap->remove_line(other);
+    other->disconnect();
     the_canvas()->del(other);
     the_canvas()->del(ap);
     hide();
@@ -1909,4 +1910,10 @@ void ArrowCanvas::write_uc_rel(ToolCom * com) const {
     s = fromUnicode(pstereotype->stereotype->text());
     com->write_string(s);
   }
+}
+
+//
+
+void ArrowCanvas::check_stereotypeproperties() {
+  // does nothing
 }

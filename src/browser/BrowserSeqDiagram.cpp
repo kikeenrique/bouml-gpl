@@ -419,6 +419,17 @@ void BrowserSeqDiagram::dont_draw_all_relations() {
   settings.draw_all_relations = UmlNo;
 }
 
+bool BrowserSeqDiagram::get_show_stereotype_properties(UmlCode) const {
+  switch (settings.show_stereotype_properties) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_show_stereotype_properties(UmlSeqDiagram);
+  }
+}
+
 bool BrowserSeqDiagram::get_classinstwritehorizontally(UmlCode) const {
   Uml3States h = settings.write_horizontally;
   

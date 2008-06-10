@@ -89,6 +89,7 @@ class ClassDiagramSettings {
     Uml3States draw_all_relations;
     Uml3States show_infonote;
     Uml3States shadow;
+    Uml3States show_stereotype_properties;
     
     ClassDiagramSettings();
     
@@ -103,6 +104,7 @@ class SimpleClassDiagramSettings {
   public:
     ClassDrawingMode class_drawing_mode;
     ShowContextMode show_context_mode;
+    Uml3States show_stereotype_properties;
     
     SimpleClassDiagramSettings();
     
@@ -120,6 +122,7 @@ class SequenceDiagramSettings {
     DrawingLanguage drawing_language;
     Uml3States draw_all_relations;
     Uml3States shadow;
+    Uml3States show_stereotype_properties;
   
     SequenceDiagramSettings();
     
@@ -139,6 +142,7 @@ class CollaborationDiagramSettings {
     ShowContextMode show_context_mode;
     Uml3States draw_all_relations;
     Uml3States shadow;
+    Uml3States show_stereotype_properties;
   
     CollaborationDiagramSettings();
     
@@ -156,6 +160,7 @@ class ObjectDiagramSettings {
     Uml3States auto_label_position;
     Uml3States draw_all_relations;
     Uml3States shadow;
+    Uml3States show_stereotype_properties;
   
     ObjectDiagramSettings();
     
@@ -173,6 +178,7 @@ class UseCaseDiagramSettings {
     Uml3States draw_all_relations;
     Uml3States shadow;
     ClassDrawingMode class_drawing_mode;
+    Uml3States show_stereotype_properties;
 
     UseCaseDiagramSettings();
     
@@ -188,6 +194,7 @@ class ComponentDrawingSettings {
     Uml3States draw_component_as_icon;
     Uml3States show_component_req_prov;
     Uml3States show_component_rea;
+    Uml3States show_stereotype_properties;
     
     ComponentDrawingSettings();
     
@@ -237,6 +244,7 @@ class StateDrawingSettings {
     Uml3States show_activities;
     Uml3States region_horizontally;
     DrawingLanguage drawing_language;
+    Uml3States show_stereotype_properties;
     
     StateDrawingSettings();
     
@@ -269,6 +277,7 @@ class ActivityDrawingSettings {
   public:
     Uml3States show_infonote;
     DrawingLanguage drawing_language;
+    Uml3States show_stereotype_properties;
     
     ActivityDrawingSettings();
     

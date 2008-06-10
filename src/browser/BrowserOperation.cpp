@@ -248,6 +248,8 @@ static QString substr_name(QString s, const QString & a)
     s.replace(index, 7, capitalize(a));
   else if ((index = s.find("${NAME}")) != -1)
     s.replace(index, 7, a.upper());
+  else if ((index = s.find("${nAME}")) != -1)
+    s.replace(index, 7, a.lower());
   
   return s;
 }

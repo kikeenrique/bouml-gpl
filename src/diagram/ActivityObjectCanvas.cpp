@@ -62,6 +62,7 @@ ActivityObjectCanvas::ActivityObjectCanvas(BrowserNode * bn, UmlCanvas * canvas,
 
   compute_size();
   check_selection();
+  check_stereotypeproperties();
   
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
@@ -278,6 +279,7 @@ void ActivityObjectCanvas::modified() {
   show();
   update_show_lines();
   check_selection();
+  check_stereotypeproperties();
   force_self_rel_visible();
   if (the_canvas()->must_draw_all_relations()) {
     draw_all_simple_relations();
@@ -570,6 +572,17 @@ void ActivityObjectCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }
 }
 
+bool ActivityObjectCanvas::get_show_stereotype_properties() const {
+  switch (settings.show_stereotype_properties) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+  }
+}
+
 void ActivityObjectCanvas::delete_available(bool & in_model, bool & out_model) const {
   out_model |= TRUE;
   in_model |= TRUE;
@@ -639,6 +652,7 @@ void ActivityObjectCanvas::save(QTextStream & st, bool ref, QString & warning) c
       st << "selection ";
       selection->save(st, FALSE, warning);
     }
+    save_stereotype_property(st, warning);
 
     indent(-1);
     nl_indent(st);
@@ -695,11 +709,14 @@ ActivityObjectCanvas *
       result->selection = InfoCanvas::read(st, canvas, k, result);
       k = read_keyword(st);
     }
+    
+    result->read_stereotype_property(st, k);	// updates k
 
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");
 
     result->check_selection();
+    result->check_stereotypeproperties();
     
     if (canvas->paste())
       result->remove_if_already_present();

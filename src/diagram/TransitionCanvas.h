@@ -31,6 +31,7 @@
 class BrowserNode;
 class TransitionData;
 class DiagramItem;
+class StereotypePropertiesCanvas;
 
 class TransitionCanvas : public ArrowCanvas {
   Q_OBJECT
@@ -38,6 +39,7 @@ class TransitionCanvas : public ArrowCanvas {
   protected:
     BrowserNode * br_begin;
     TransitionData * data;
+    StereotypePropertiesCanvas * stereotypeproperties; // in the first segment
     DrawingLanguage drawing_language;
     Uml3States write_horizontally;
     Uml3States show_definition;
@@ -75,6 +77,11 @@ class TransitionCanvas : public ArrowCanvas {
     
     virtual void open();
     virtual void menu(const QPoint&);
+    
+    virtual void setVisible( bool yes);
+    virtual void moveBy(double dx, double dy);
+    virtual void select_associated();
+    virtual void check_stereotypeproperties();
     
     static void drop(BrowserNode *, UmlCanvas *);
     

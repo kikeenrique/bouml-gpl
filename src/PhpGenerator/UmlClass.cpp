@@ -219,6 +219,8 @@ void UmlClass::write(QTextOStream & f) {
       s.replace(index, 7, capitalize(name()));
     else if ((index = s.find("${NAME}")) != -1)
       s.replace(index, 7, name().upper());
+    else if ((index = s.find("${nAME}")) != -1)
+      s.replace(index, 7, name().lower());
     
     f << s;
   }

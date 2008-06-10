@@ -477,6 +477,17 @@ void BrowserStateDiagram::dont_draw_all_relations() {
   settings.draw_all_relations = UmlNo;
 }
 
+bool BrowserStateDiagram::get_show_stereotype_properties(UmlCode) const {
+  switch (settings.statedrawingsettings.show_stereotype_properties) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_show_stereotype_properties(UmlStateDiagram);
+  }
+}
+
 BasicData * BrowserStateDiagram::get_data() const {
   return def;
 }

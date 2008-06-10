@@ -309,6 +309,8 @@ QString get_cpp_name(const BrowserClass * cl)
     s.replace(index, 7, capitalize(name));
   else if ((index = s.find("${NAME}")) != -1)
     s.replace(index, 7, name.upper());
+  else if ((index = s.find("${nAME}")) != -1)
+    s.replace(index, 7, name.lower());
   
   return s;
 }
@@ -332,6 +334,8 @@ QString get_java_name(const BrowserClass * cl)
     s.replace(index, 7, capitalize(name));
   else if ((index = s.find("${NAME}")) != -1)
     s.replace(index, 7, name.upper());
+  else if ((index = s.find("${nAME}")) != -1)
+    s.replace(index, 7, name.lower());
   
   return s;
 }
@@ -355,6 +359,8 @@ QString get_php_name(const BrowserClass * cl)
     s.replace(index, 7, capitalize(name));
   else if ((index = s.find("${NAME}")) != -1)
     s.replace(index, 7, name.upper());
+  else if ((index = s.find("${nAME}")) != -1)
+    s.replace(index, 7, name.lower());
   
   return s;
 }
@@ -378,6 +384,8 @@ QString get_python_name(const BrowserClass * cl)
     s.replace(index, 7, capitalize(name));
   else if ((index = s.find("${NAME}")) != -1)
     s.replace(index, 7, name.upper());
+  else if ((index = s.find("${nAME}")) != -1)
+    s.replace(index, 7, name.lower());
   
   return s;
 }
@@ -401,6 +409,8 @@ QString get_idl_name(const BrowserClass * cl)
     s.replace(index, 7, capitalize(name));
   else if ((index = s.find("${NAME}")) != -1)
     s.replace(index, 7, name.upper());
+  else if ((index = s.find("${nAME}")) != -1)
+    s.replace(index, 7, name.lower());
   
   return s;
 }

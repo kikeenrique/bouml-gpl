@@ -168,10 +168,11 @@ void UseCaseDialog::accept() {
   
   uc->set_extension_points(extension_points->text().stripWhiteSpace());
   
+  ProfiledStereotypes::modified(bn, newst);
+  
   bn->modified();
   bn->package_modified();
   uc->modified();
     
-  ProfiledStereotypes::modified(bn, newst);
   QTabDialog::accept();
 }

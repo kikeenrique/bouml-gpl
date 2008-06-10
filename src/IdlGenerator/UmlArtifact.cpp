@@ -142,6 +142,10 @@ void UmlArtifact::generate() {
 	p += 7;
 	f << name.upper();
       }
+      else if (!strncmp(p, "${nAME}", 7)) {
+	p += 7;
+	f << name.lower();
+      }
       else if (!strncmp(p, "${module}", 9)) {
 	p += 9;
 	f << mod;

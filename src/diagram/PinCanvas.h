@@ -71,9 +71,9 @@ class PinCanvas : public QObject, public DiagramCanvas {
     
     virtual bool has_drawing_settings() const;
     virtual void edit_drawing_settings(QList<DiagramItem> &);
+    void edit_drawing_settings();
     
     virtual void apply_shortcut(QString s);
-    void edit_drawing_settings();
   
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static PinCanvas * read(char * &, UmlCanvas *, char *, ActivityActionCanvas *);

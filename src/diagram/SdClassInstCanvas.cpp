@@ -56,9 +56,12 @@ SdClassInstCanvas::SdClassInstCanvas(BrowserNode * bn, UmlCanvas * canvas,
   itscolor = UmlDefaultColor;
   drawing_mode = DefaultClassDrawingMode;
   
-  if (id == 0)
+  if (id == 0) {
     // not on read
     compute_size();
+    if (browser_node->get_type() != UmlClass)
+      check_stereotypeproperties();
+  }
   
   BasicData * d = bn->get_data();
   
@@ -172,6 +175,8 @@ void SdClassInstCanvas::modified() {
     compute_size();
     DiagramCanvas::moveBy((w-width())/2, 0);
     show();
+    if (browser_node->get_type() != UmlClass)
+      check_stereotypeproperties();
     canvas()->update();
     package_modified();
   }
@@ -466,11 +471,13 @@ void SdClassInstCanvas::apply_shortcut(QString s) {
 }
 
 void SdClassInstCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(2);
+  QArray<StateSpec> st((browser_node->get_type() != UmlClass) ? 3: 2);
   QArray<ColorSpec> co(1);
   
   st[0].set("drawing mode", &drawing_mode);
   st[1].set("write name:type \nhorizontally", &write_horizontally);
+  if (browser_node->get_type() != UmlClass)
+    st[2].set("show stereotypes \nproperties", &show_stereotype_properties);
   co[0].set("class instance color", &itscolor);
   
   SettingsDialog dialog(&st, &co, FALSE, TRUE);
@@ -510,6 +517,10 @@ void SdClassInstCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }
 }
 
+bool SdClassInstCanvas::get_show_stereotype_properties() const {
+  return (browser_node->get_type() != UmlClass) && show_properties;
+}
+
 void SdClassInstCanvas::save(QTextStream & st, bool ref, QString & warning) const {
   if (ref)
     st << "classinstance_ref " << get_ident() << " // "
@@ -536,6 +547,11 @@ void SdClassInstCanvas::save(QTextStream & st, bool ref, QString & warning) cons
     if (drawing_mode != DefaultClassDrawingMode)
       st << "  drawing_mode " << stringify(drawing_mode);
     SdObjCanvas::save(st);
+    indent(+1);
+    save_stereotype_property(st, warning);
+    indent(-1);
+    nl_indent(st);
+    st << "end";
   }
 }
 
@@ -582,14 +598,23 @@ SdClassInstCanvas * SdClassInstCanvas::read(char * & st, UmlCanvas * canvas, cha
       k = read_keyword(st);
     }
 
+    result->SdObjCanvas::read(st, k);
+    
+    if (read_file_format() >= 58) {
+      k = read_keyword(st);
+      result->read_stereotype_property(st, k);	// updates k
+      
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
+    
     if (result->get_type() != 0) {
       // not a deleted instance
       result->compute_size();
-      result->SdObjCanvas::read(st, k);
+      result->set_center100();
       result->show();
+      result->check_stereotypeproperties();
     }
-    else
-      result->SdObjCanvas::read(st, k);
     
     return result;
   }

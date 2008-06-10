@@ -50,16 +50,16 @@
 #include "strutil.h"
 #include "mu.h"
 
-void EnvDialog::edit(bool conv)
+void EnvDialog::edit(bool conv, bool noid)
 {
-  EnvDialog d(conv);
+  EnvDialog d(conv, noid);
   
   if ((d.exec() != QDialog::Accepted) && conv)
     // user close the window
     exit(-1);
 }
 
-EnvDialog::EnvDialog(bool conv)
+EnvDialog::EnvDialog(bool conv, bool noid)
     : QDialog(0, "Environment dialog", TRUE), conversion(conv) {
   setCaption("Environment dialog");
   
@@ -82,7 +82,7 @@ EnvDialog::EnvDialog(bool conv)
   htab = new QHBox(grid);
   if (conv)
     s = getenv("BOUML_ID");	// yes !
-  else
+  else if (! noid)
     s.setNum(user_id());
   ed_id = new QLineEdit(s, htab);
   if (BrowserView::get_project() != 0) {
@@ -259,6 +259,16 @@ EnvDialog::EnvDialog(bool conv)
 }
 
 void EnvDialog::accept() {
+  int id;
+  
+  if (ed_id->text().isEmpty() ||
+      (sscanf((const char *) ed_id->text(), "%d", &id) != 1) ||
+      (id < 2) ||
+      (id > 127)) {
+    QMessageBox::critical(this, "Bouml", "Invalid identifier, must be an integer between 2 and 127");
+    return;
+  }
+  
   // note : QFile fp(QDir::home().absFilePath(".boumlrc")) doesn't work
   // if the path contains non latin1 characters, for instance cyrillic !
   QString s = QDir::home().absFilePath(".boumlrc");
@@ -270,16 +280,6 @@ void EnvDialog::accept() {
       exit(-1);
     else
       return;
-  }
-  
-  int id;
-  
-  if (ed_id->text().isEmpty() ||
-      (sscanf((const char *) ed_id->text(), "%d", &id) != 1) ||
-      (id < 2) ||
-      (id > 127)) {
-    QMessageBox::critical(this, "Bouml", "Invalid identifier, must be an integer between 2 and 127");
-    return;
   }
   
   fprintf(fp, "ID %d\n", id);
@@ -421,10 +421,9 @@ int read_boumlrc()
   fclose(fp);
   
   if (id == -1) {
-    QMessageBox::critical(0, "Bouml", 
-			  "Own identifier missing or invalid\n\n"
-			  "Recall Bouml and immediatly choose 'Set environment' in the menu 'Miscellaneous'");
-    exit(-1);
+    QMessageBox::critical(0, "Bouml", "Own identifier missing or invalid");
+    EnvDialog::edit(FALSE, TRUE);
+    return read_boumlrc();
   }
     
   return id;

@@ -488,6 +488,17 @@ void BrowserActivityDiagram::dont_draw_all_relations() {
   settings.draw_all_relations = UmlNo;
 }
 
+bool BrowserActivityDiagram::get_show_stereotype_properties(UmlCode) const {
+  switch (settings.activitydrawingsettings.show_stereotype_properties) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_show_stereotype_properties(UmlActivityDiagram);
+  }
+}
+
 BasicData * BrowserActivityDiagram::get_data() const {
   return def;
 }

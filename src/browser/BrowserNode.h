@@ -125,6 +125,7 @@ class BrowserNode : public QListViewItem,
     virtual const char * get_comment() const;
     virtual void set_comment(const char * c);
     const char * get_stereotype() const;
+    virtual QString stereotypes_properties() const;
     bool may_contains(BrowserNode *, bool rec) const;
     virtual bool may_contains_them(const QList<BrowserNode> &,
 				   bool & duplicable) const;
@@ -174,6 +175,7 @@ class BrowserNode : public QListViewItem,
     virtual void get_statediagramsettings(StateDiagramSettings &) const;
     virtual void get_activitydiagramsettings(ActivityDiagramSettings &) const;
     virtual bool get_draw_all_relations(UmlCode) const;
+    virtual bool get_show_stereotype_properties(UmlCode k) const;
     virtual bool get_classinstwritehorizontally(UmlCode k) const;
     virtual void get_componentdrawingsettings(bool depl, ComponentDrawingSettings & r) const;
     virtual void get_statedrawingsettings(StateDrawingSettings &) const;

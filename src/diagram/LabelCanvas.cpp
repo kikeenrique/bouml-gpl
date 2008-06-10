@@ -390,3 +390,6 @@ void LabelCanvas::history_hide() {
   QCanvasItem::setVisible(FALSE);
 }
 
+void LabelCanvas::check_stereotypeproperties() {
+  // do nothing
+}

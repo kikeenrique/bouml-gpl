@@ -48,6 +48,8 @@ class ClassInstCanvas : public Instance {
     UmlColor used_color;
     Uml3States write_horizontally;
     bool horiz;
+    Uml3States show_stereotype_properties;
+    bool show_properties;
   
   public:
     ClassInstCanvas();

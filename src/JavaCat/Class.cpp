@@ -757,7 +757,12 @@ bool Class::manage_member(QCString s, QCString & path) {
 	return FALSE;
       }
       
-      if (type.type != 0) {
+      // in case of a generic and at least an actual is a known class
+      // force the use of a operation to the actual stereotyped by the
+      // generic, typically for List ...
+      if ((type.type != 0) &&
+	  ((first_actual_class == 0) ||
+	   JavaSettings::umlType(genericname).isEmpty())) {
 	if (!UmlRelation::new_one(this, name, type, str_actuals, visibility,
 				  m_staticp, m_finalp, m_transientp, m_volatilep,
 				  array, value, comment, description, annotation))

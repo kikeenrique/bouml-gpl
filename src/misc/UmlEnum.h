@@ -95,6 +95,7 @@ enum UmlCode {
   UmlFragmentSeparator,
   UmlConstraint,
   UmlInner,
+  UmlStereotypeProperties,
 
   UmlCodeSup
 };

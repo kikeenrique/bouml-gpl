@@ -1195,11 +1195,12 @@ void OperationDialog::accept() {
     
     kvtable->update(bn);
     
+    ProfiledStereotypes::modified(bn, newst);
+    
     bn->modified();
     bn->package_modified();
     oper->modified();
     
-    ProfiledStereotypes::modified(bn, newst);
     QTabDialog::accept();
   }
 }

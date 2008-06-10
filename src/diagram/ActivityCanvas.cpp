@@ -59,6 +59,7 @@ ActivityCanvas::ActivityCanvas(BrowserNode * bn, UmlCanvas * canvas,
 
   compute_size();
   check_params();
+  check_stereotypeproperties();
   
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
@@ -228,6 +229,7 @@ void ActivityCanvas::modified() {
   show();
   update_show_lines();
   check_params();
+  check_stereotypeproperties();
   canvas()->update();
   force_sub_inside();
   package_modified();
@@ -681,6 +683,17 @@ void ActivityCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }
 }
 
+bool ActivityCanvas::get_show_stereotype_properties() const {
+  switch (settings.show_stereotype_properties) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+  }
+}
+
 const char * ActivityCanvas::may_start(UmlCode & l) const {
   return (l == UmlFlow) ? "illegal" : 0;
 }
@@ -740,6 +753,8 @@ void ActivityCanvas::save(QTextStream & st, bool ref, QString & warning) const {
       nl_indent(st);
       st << "end";
     }
+    
+    save_stereotype_property(st, warning);
 
     indent(-1);
     nl_indent(st);
@@ -781,11 +796,14 @@ ActivityCanvas * ActivityCanvas::read(char * & st, UmlCanvas * canvas,
 	result->params.append(ParameterCanvas::read(st, canvas, k, result));
       k = read_keyword(st);
     }
+    
+    result->read_stereotype_property(st, k);	// updates k
 
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");
     
     result->check_params();
+    result->check_stereotypeproperties();
     
     // result->force_sub_inside() useless : may only grow
     

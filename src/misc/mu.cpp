@@ -67,9 +67,13 @@ under the control of 'Project control' or 'Project merge'\n\
     else
       force_read_only(FALSE);
     
-    Uid = read_boumlrc();
+    int uid = read_boumlrc();
     
+    // when loading the project file itself and creating the
+    // BrowserPackage for it, BrowserView::get_project() return 0
     if (BrowserView::get_project()) {
+      Uid = uid;
+      
       QString fn = QString::number(Uid) + ".lock";
       
       if (! dir.mkdir(fn)) {
@@ -77,7 +81,7 @@ under the control of 'Project control' or 'Project merge'\n\
 	  msg_critical("User Own Identifier", "Can't create directory "
 		       + dir.absFilePath(fn) +
 		       ",\nthe project is open in read-only mode");
-	force_read_only(TRUE);
+	  force_read_only(TRUE);
 	}
 	else {
 	  msg_critical("User Own Identifier", 
@@ -92,9 +96,11 @@ an restart BOUML");
 	}
       }
     }
+    
+    return uid;
   }
-  
-  return Uid;
+  else
+    return Uid;
 }
 
 void set_root_permission(bool y)

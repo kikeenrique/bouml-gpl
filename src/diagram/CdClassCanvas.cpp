@@ -74,6 +74,7 @@ CdClassCanvas::CdClassCanvas(BrowserNode * bn, UmlCanvas * canvas,
   
   compute_size();	// update used_settings
   check_constraint();
+  check_stereotypeproperties();
   
   subscribe(bn->get_data());	// = TRUE
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
@@ -207,6 +208,7 @@ void CdClassCanvas::compute_size() {
   bool full_members = (used_settings.show_full_members_definition == UmlYes);
   bool show_visibility = (used_settings.show_members_visibility == UmlYes);
   bool show_stereotype = (used_settings.show_members_stereotype == UmlYes);
+  bool show_stereotype_properties = (used_settings.show_stereotype_properties == UmlYes);
   bool show_multiplicity = (used_settings.show_members_multiplicity == UmlYes);
   bool show_initialization = (used_settings.show_members_initialization == UmlYes);
   bool show_dir = (used_settings.show_parameter_dir == UmlYes);
@@ -214,6 +216,7 @@ void CdClassCanvas::compute_size() {
   bool hide_attrs = (used_settings.hide_attributes == UmlYes);
   bool hide_opers = (used_settings.hide_operations == UmlYes);
   int max_member_width = used_settings.member_max_width;
+  int offset_visi = fbim.width("#_");
   
   if (max_member_width == UmlUnlimitedMemberWidth)
     max_member_width = 1000000;
@@ -265,13 +268,14 @@ void CdClassCanvas::compute_size() {
 	  natt += 1;
 	  wa = fm.width(s);
 	  
-	  if (full_members) {
+	  if (full_members || show_stereotype_properties) {
 	    BrowserClass * t = ((AttributeData *) child_data)->get_type().type;
 	    
 	    if (t && subscribe(t->get_data()))
 	      connect(t->get_data(), SIGNAL(changed()),
 		      this, SLOT(modified()));
 	  }
+	  
 	  break;
 	case UmlOperation:
 	  if (hide_opers ||
@@ -296,7 +300,7 @@ void CdClassCanvas::compute_size() {
 	  else
 	    wa = fm.width(s);
 	  
-	  if (full_members) {
+	  if (full_members || show_stereotype_properties) {
 	    BrowserClass * t =
 	      ((OperationData *) child_data)->get_return_type().type;
 	    
@@ -304,39 +308,81 @@ void CdClassCanvas::compute_size() {
 	      connect(t->get_data(), SIGNAL(changed()),
 		      this, SLOT(modified()));
 	    
-	    int n = (int) ((OperationData *) child_data)->get_n_params();
-	    
-	    for (int i = 0; i != n; i += 1)
-	      if (((t = ((OperationData *) child_data)->get_param_type(i).type) != 0) &&
-		  subscribe(t->get_data()))
-		connect(t->get_data(), SIGNAL(changed()),
-			this, SLOT(modified()));
+	    if (full_members) {
+	      int n = (int) ((OperationData *) child_data)->get_n_params();
+	      
+	      for (int i = 0; i != n; i += 1)
+		if (((t = ((OperationData *) child_data)->get_param_type(i).type) != 0) &&
+		    subscribe(t->get_data()))
+		  connect(t->get_data(), SIGNAL(changed()),
+			  this, SLOT(modified()));
+	    }
 	  }
 	  break;
 	default:
 	  continue;
 	}
 	
-	if (show_visibility) {
-	  wa += fbim.width("#_");
-	  if (subscribe(child_data))
-	    connect(child_data, SIGNAL(changed()), this, SLOT(modified()));
-	}
+	if (show_visibility)
+	  wa += offset_visi;
 	
-	if (show_stereotype) {
-	  QString st = child_data->get_short_stereotype();
-	  
-	  if (! st.isEmpty()) 
-	    wa += fm.width("<<" + st + ">>_");
-	}
+	QString st = child_data->get_short_stereotype();
+	
+	if (show_stereotype && !st.isEmpty())
+	  wa += fm.width("<<" + st + ">>_");
 	
 	if ((full_members || show_visibility || show_stereotype) &&
 	    subscribe(child_data))
 	  connect(child_data, SIGNAL(changed()), this, SLOT(modified()));
 	
-	
 	if (wa > wi)
 	  wi = wa;
+	
+	if (show_stereotype_properties &&
+	    !st.isEmpty() &&
+	    (ProfiledStereotypes::isModeled(child_data->get_stereotype()) != 0)) {
+	  int & nmember = (((BrowserNode *) child)->get_type() == UmlAttribute)
+	    ? natt : noper;
+	  
+	  const HaveKeyValueData * kv =
+	    dynamic_cast<HaveKeyValueData *>((BrowserNode *) child);
+	  int nk = (int) kv->get_n_keys();
+	  bool have_stprop = FALSE;
+	  
+	  for (int ik = 0; ik != nk; ik += 1) {
+	    const char * k =  kv->get_key(ik);
+	    const char * p;
+	    unsigned nseps = 0;
+	    
+	    for (p = k; *p; p += 1) {
+	      if (*p == ':') {
+		nseps += 1;
+		k = p + 1;
+	      }
+	    }
+	    
+	    if (nseps == 2) {
+	      p = kv->get_value(ik);
+	      if (p && *p) {
+		s = k + QString("=") + p;
+		if ((int) s.length() >= max_member_width)
+		  s = s.left(max_member_width) + "...";
+		wa = offset_visi + fm.width(s);
+		if (wa > wi)
+		  wi = wa;
+		nmember += 1;
+		have_stprop = TRUE;
+	      }
+	    }
+	  }
+	  
+	  if (!show_stereotype && have_stprop) {
+	    wa = offset_visi + fm.width("<<" + st + ">>_");
+	    if (wa > wi)
+	      wi = wa;
+	    nmember += 1;
+	  }
+	}
       }
     }
   }
@@ -440,6 +486,7 @@ void CdClassCanvas::modified() {
       draw_all_simple_relations();
     }
     check_constraint();
+    check_stereotypeproperties();
     canvas()->update();
     package_modified();
   }
@@ -630,6 +677,17 @@ void CdClassCanvas::check_constraint() {
   }
 }
 
+bool CdClassCanvas::get_show_stereotype_properties() const {
+  switch (used_settings.show_stereotype_properties) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+  }
+}
+
 void CdClassCanvas::change_scale() {
   QCanvasRectangle::setVisible(FALSE);
   compute_size();
@@ -656,6 +714,51 @@ void CdClassCanvas::set_z(double z) {
   if (templ)
     templ->update();
 }
+
+void write_member_st_prop(QPainter & p, FILE * fp, QRect & r,
+			  const HaveKeyValueData * kv,
+			  QString st, int he, int max_member_width,
+			  bool stwritten)
+{
+  int nk = (int) kv->get_n_keys();
+  
+  for (int ik = 0; ik != nk; ik += 1) {
+    const char * k =  kv->get_key(ik);
+    const char * ps;
+    unsigned nseps = 0;
+    
+    for (ps = k; *ps; ps += 1) {
+      if (*ps == ':') {
+	nseps += 1;
+	k = ps + 1;
+      }
+    }
+    
+    if (nseps == 2) {
+      ps = kv->get_value(ik);
+      if (ps && *ps) {
+	if (!stwritten) {
+	  stwritten = TRUE;
+	  st = "<<" + st + ">>";
+	  p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, st);
+	  if (fp != 0)
+	    draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, st, p.font(), fp);
+	  r.setTop(r.top() + he);
+	}
+	
+	QString s = k + QString("=") + ps;
+	
+	if ((int) s.length() >= max_member_width)
+	  s = s.left(max_member_width) + "...";
+	
+	p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, s);
+	if (fp != 0)
+	  draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, s, p.font(), fp);
+	r.setTop(r.top() + he);
+      }
+    }
+  }
+}	
 
 void CdClassCanvas::draw(QPainter & p) {
   if (! visible()) return;
@@ -800,6 +903,7 @@ void CdClassCanvas::draw(QPainter & p) {
   bool full_members = (used_settings.show_full_members_definition == UmlYes);
   bool show_visibility = (used_settings.show_members_visibility == UmlYes);
   bool show_stereotype = (used_settings.show_members_stereotype == UmlYes);
+  bool show_stereotype_properties = (used_settings.show_stereotype_properties == UmlYes);
   bool show_multiplicity = (used_settings.show_members_multiplicity == UmlYes);
   bool show_initialization = (used_settings.show_members_initialization == UmlYes);
   bool show_dir = (used_settings.show_parameter_dir == UmlYes);
@@ -843,17 +947,16 @@ void CdClassCanvas::draw(QPainter & p) {
 	    draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, v[vi], p.font(), fp);
 	  r.setLeft(left2);
 	}
-	if (show_stereotype) {
-	  QString st = data->get_short_stereotype();
-	  
-	  if (! st.isEmpty()) {
-	    st = "<<" + st + ">>";
-	    p.setFont(the_canvas()->get_font(UmlNormalFont));
-	    p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, st);
-	    if (fp != 0)
-	      draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, st, p.font(), fp);
-	    r.setLeft(r.left() + fm.width(st) + space);
-	  }
+	
+	QString st = data->get_short_stereotype();
+	
+	if (show_stereotype && !st.isEmpty()) {
+	  st = "<<" + st + ">>";
+	  p.setFont(the_canvas()->get_font(UmlNormalFont));
+	  p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, st);
+	  if (fp != 0)
+	    draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, st, p.font(), fp);
+	  r.setLeft(r.left() + fm.width(st) + space);
 	}
 	p.setFont((data->get_isa_class_attribute()) ? the_canvas()->get_font(UmlNormalUnderlinedFont)
 						    : the_canvas()->get_font(UmlNormalFont));  
@@ -864,6 +967,15 @@ void CdClassCanvas::draw(QPainter & p) {
 	  draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, s, p.font(), fp);
 	r.setTop(r.top() + he);
 	have = TRUE;
+	
+	if (show_stereotype_properties &&
+	    !st.isEmpty() &&
+	    (ProfiledStereotypes::isModeled(data->get_stereotype()) != 0)) {
+	  r.setLeft(left2);
+	  p.setFont(the_canvas()->get_font(UmlNormalFont));
+	  write_member_st_prop(p, fp, r, (BrowserAttribute *) child,
+			       st, he, max_member_width, show_stereotype);
+	}
       }
     }
     r.setLeft(left0);
@@ -896,47 +1008,58 @@ void CdClassCanvas::draw(QPainter & p) {
 	QString s = data->definition(full_members, used_settings.drawing_language,
 				     show_dir, show_name);
 	
-	if (!s.isEmpty()) {
-	  r.setLeft(left1);
-	  if (show_visibility) {
-	    int vi = ((used_settings.drawing_language == CppView) &&
-		      (data->get_cpp_visibility() != UmlDefaultVisibility))
-	      ? data->get_cpp_visibility() : data->get_uml_visibility();
-	    
-	    if ((vi == UmlPackageVisibility) &&
-		((used_settings.drawing_language == CppView) || (used_settings.drawing_language == IdlView)))
-	      vi = UmlPublic;
-	    
-	    p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
-	    p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, v[vi]);
-	    if (fp != 0)
-	      draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, v[vi], p.font(), fp);
-	    r.setLeft(left2);
-	  }
-	  if (show_stereotype) {
-	    QString st = data->get_short_stereotype();
-	    
-	    if (! st.isEmpty()) {
-	      st = "<<" + st + ">>";
-	      p.setFont(the_canvas()->get_font(UmlNormalFont));
-	      p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, st);
-	      if (fp != 0)
-		draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, st, p.font(), fp);
-	      r.setLeft(r.left() + fm.width(st) + space);
-	    }
-	  }
-	  if (data->get_isa_class_operation())
-	    p.setFont(the_canvas()->get_font(UmlNormalUnderlinedFont));
-	  else if (data->get_is_abstract())
-	    p.setFont(the_canvas()->get_font(UmlNormalItalicFont));
-	  else
-	    p.setFont(the_canvas()->get_font(UmlNormalFont));
-	  if ((int) s.length() >= max_member_width)
-	    s = s.left(max_member_width) + "...";
-	  p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, s);
+	if (s.isEmpty())
+	  continue;
+	
+	r.setLeft(left1);
+	if (show_visibility) {
+	  int vi = ((used_settings.drawing_language == CppView) &&
+		    (data->get_cpp_visibility() != UmlDefaultVisibility))
+	    ? data->get_cpp_visibility() : data->get_uml_visibility();
+	  
+	  if ((vi == UmlPackageVisibility) &&
+	      ((used_settings.drawing_language == CppView) || (used_settings.drawing_language == IdlView)))
+	    vi = UmlPublic;
+	  
+	  p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
+	  p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, v[vi]);
 	  if (fp != 0)
-	    draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, s, p.font(), fp);
-	  r.setTop(r.top() + he);
+	    draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, v[vi], p.font(), fp);
+	  r.setLeft(left2);
+	}
+	
+	QString st = data->get_short_stereotype();
+	
+	if (show_stereotype) {
+	  if (! st.isEmpty()) {
+	    st = "<<" + st + ">>";
+	    p.setFont(the_canvas()->get_font(UmlNormalFont));
+	    p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, st);
+	    if (fp != 0)
+	      draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, st, p.font(), fp);
+	    r.setLeft(r.left() + fm.width(st) + space);
+	  }
+	}
+	if (data->get_isa_class_operation())
+	  p.setFont(the_canvas()->get_font(UmlNormalUnderlinedFont));
+	else if (data->get_is_abstract())
+	  p.setFont(the_canvas()->get_font(UmlNormalItalicFont));
+	else
+	  p.setFont(the_canvas()->get_font(UmlNormalFont));
+	if ((int) s.length() >= max_member_width)
+	  s = s.left(max_member_width) + "...";
+	p.drawText(r, ::Qt::AlignLeft + ::Qt::AlignTop, s);
+	if (fp != 0)
+	  draw_text(r, ::Qt::AlignLeft + ::Qt::AlignTop, s, p.font(), fp);
+	r.setTop(r.top() + he);
+	
+	if (show_stereotype_properties &&
+	    !st.isEmpty() &&
+	    (ProfiledStereotypes::isModeled(data->get_stereotype()) != 0)) {
+	  r.setLeft(left2);
+	  p.setFont(the_canvas()->get_font(UmlNormalFont));
+	  write_member_st_prop(p, fp, r, (BrowserOperation *) child,
+			       st, he, max_member_width, show_stereotype);
 	}
       }
     }
@@ -1438,11 +1561,12 @@ void CdClassCanvas::save(QTextStream & st, bool ref, QString & warning) const {
     
     if (constraint != 0)
       constraint->save(st, FALSE, warning);
+    
+    save_stereotype_property(st, warning);
 
+    indent(-1);
     nl_indent(st);
     st << "end";
-    
-    indent(-1);
   }
 }
 
@@ -1513,6 +1637,7 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
 	result->constraint = ConstraintCanvas::read(st, canvas, k, result);
 	k = read_keyword(st);
       }
+      result->read_stereotype_property(st, k);
       if (strcmp(k, "end"))
 	wrong_keyword(k, "end");
     }
@@ -1521,6 +1646,7 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
     result->set_center100();
     result->show();
     result->check_constraint();
+    result->check_stereotypeproperties();
     return result;
   }
   else 

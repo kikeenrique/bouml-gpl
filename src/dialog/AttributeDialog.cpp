@@ -724,10 +724,6 @@ void AttributeDialog::accept() {
     
     kvtable->update(bn);
     
-    bn->modified();
-    bn->package_modified();
-    att->modified();
-    
     ProfiledStereotypes::modified(bn, newst);
     if (new_in_st) {
       ProfiledStereotypes::added((BrowserAttribute *) bn);
@@ -735,6 +731,11 @@ void AttributeDialog::accept() {
     }
     else if (!strcmp(((BrowserNode *) bn->parent())->get_data()->get_stereotype(), "stereotype"))
       ProfiledStereotypes::changed((BrowserAttribute *) bn, oldname);
+    
+    bn->modified();
+    bn->package_modified();
+    att->modified();
+    
     QDialog::accept();
   }
 }

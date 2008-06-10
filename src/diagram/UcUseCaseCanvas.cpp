@@ -55,9 +55,12 @@ UcUseCaseCanvas::UcUseCaseCanvas(BrowserNode * bn, UmlCanvas * canvas,
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
   
-  if ((id == 0) && // not on read
-      canvas->must_draw_all_relations())
-    draw_all_simple_relations();
+  if (id == 0) {
+    // not on read
+    if (canvas->must_draw_all_relations())
+      draw_all_simple_relations();
+    check_stereotypeproperties();
+  }
 }
 
 UcUseCaseCanvas::~UcUseCaseCanvas() {
@@ -249,6 +252,7 @@ void UcUseCaseCanvas::modified() {
   force_self_rel_visible();
   if (the_canvas()->must_draw_all_relations())
     draw_all_simple_relations();
+  check_stereotypeproperties();
   canvas()->update();
   package_modified();
 }
@@ -485,9 +489,14 @@ void UcUseCaseCanvas::save(QTextStream & st, bool ref, QString & warning) const 
       nl_indent(st);
       st << "  color " << stringify(itscolor);
     }
+    indent(+1);
     nl_indent(st);
-    save_xyzwh(st, this, "  xyzwh");
+    save_xyzwh(st, this, "xyzwh");
     save_xy(st, label, " label_xy");
+    save_stereotype_property(st, warning);
+    indent(-1);
+    nl_indent(st);
+    st << "end";
   }
 }
 
@@ -521,6 +530,7 @@ UcUseCaseCanvas * UcUseCaseCanvas::read(char * & st, UmlCanvas * canvas, char * 
     result->set_center100();
 
     k = read_keyword(st);
+    result->update_name();
     read_xy(st, result->label);
     result->label->setZ(result->z() + 0.5);
     result->label->set_center100();
@@ -531,8 +541,16 @@ UcUseCaseCanvas * UcUseCaseCanvas::read(char * & st, UmlCanvas * canvas, char * 
     else if (strcmp(k, "label_xy"))
       wrong_keyword(k, "label_xy/label_xyz");
     
-    result->update_name();
+    if (read_file_format() >= 58) {
+      k = read_keyword(st);
+      result->read_stereotype_property(st, k);	// updates k
+      
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
+    
     result->show();
+    result->check_stereotypeproperties();
     return result;
   }
   else

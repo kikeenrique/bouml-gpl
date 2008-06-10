@@ -50,6 +50,7 @@ PseudoStateCanvas::PseudoStateCanvas(BrowserNode * bn, UmlCanvas * canvas,
     : DiagramCanvas(0, canvas, x, y, 16, 16, 0), horiz(FALSE) {
   browser_node = bn;
   set_xpm();
+  check_stereotypeproperties();
    
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
@@ -166,6 +167,7 @@ void PseudoStateCanvas::modified() {
     //draw_all_simple_relations();
     draw_all_transitions();
   }
+  check_stereotypeproperties();
   canvas()->update();
   if (label != 0)
     label->set_name(browser_node->get_name());
@@ -588,10 +590,13 @@ void PseudoStateCanvas::save(QTextStream & st, bool ref, QString & warning) cons
     nl_indent(st);
     if (horiz)
       st << "horizontal ";
-    save_xyz(st, this, "xyz");
+    save_xyz(st, this, " xyz");
     if (label != 0)
       save_xy(st, label, " label_xy");
+    save_stereotype_property(st, warning);
     indent(-1);
+    nl_indent(st);
+    st << "end";
   }
 }
 
@@ -608,8 +613,7 @@ PseudoStateCanvas * PseudoStateCanvas::read(char * & st, UmlCanvas * canvas,
     result->browser_node = ps;
     connect(ps->get_data(), SIGNAL(changed()), result, SLOT(modified()));
     connect(ps->get_data(), SIGNAL(deleted()), result, SLOT(deleted()));
-    if (ps->get_type() == ChoicePS)
-      connect(DrawingSettings::instance(), SIGNAL(changed()), result, SLOT(modified()));
+    connect(DrawingSettings::instance(), SIGNAL(changed()), result, SLOT(modified()));
 
     k = read_keyword(st);
     
@@ -630,10 +634,19 @@ PseudoStateCanvas * PseudoStateCanvas::read(char * & st, UmlCanvas * canvas,
       result->label->setZ(result->z());
       result->label->set_center100();
     }
+
+    if (read_file_format() >= 58) {
+      k = read_keyword(st);
+      result->read_stereotype_property(st, k);	// updates k
+      
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
     
     result->set_xpm();
     result->set_center100();
     result->show();
+    result->check_stereotypeproperties();
     
     if (canvas->paste())
       result->remove_if_already_present();

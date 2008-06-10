@@ -56,6 +56,7 @@ ComponentCanvas::ComponentCanvas(BrowserNode * bn, UmlCanvas * canvas,
   itscolor = UmlDefaultColor;
   
   compute_size();
+  check_stereotypeproperties();
   
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
@@ -295,6 +296,7 @@ void ComponentCanvas::modified() {
   show();
   update_show_lines();
   force_self_rel_visible();
+  check_stereotypeproperties();
   
   // remove required/provided arrow if needed
   ArrowCanvas * a = lines.first();
@@ -839,12 +841,13 @@ void ComponentCanvas::apply_shortcut(QString s) {
 }
 
 void ComponentCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(3);
+  QArray<StateSpec> st(4);
   QArray<ColorSpec> co(1);
   
   st[0].set("drawn as icon", &settings.draw_component_as_icon);
   st[1].set("show required and provided interfaces", &settings.show_component_req_prov);
   st[2].set("show realizations", &settings.show_component_rea);
+  st[3].set("show stereotype properties", &settings.show_stereotype_properties);
   co[0].set("component color", &itscolor);
   
   SettingsDialog dialog(&st, &co, FALSE, TRUE);
@@ -858,16 +861,18 @@ bool ComponentCanvas::has_drawing_settings() const {
 }
 
 void ComponentCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(3);
+  QArray<StateSpec> st(4);
   QArray<ColorSpec> co(1);
   Uml3States draw_component_as_icon;
   Uml3States show_component_req_prov;
   Uml3States show_component_rea;
+  Uml3States show_stereotype_properties;
   UmlColor itscolor;
   
   st[0].set("drawn as icon", &draw_component_as_icon);
   st[1].set("show required and provided interfaces", &show_component_req_prov);
   st[2].set("show realizations", &show_component_rea);
+  st[3].set("show stereotype properties", &show_stereotype_properties);
   co[0].set("component color", &itscolor);
   
   SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
@@ -882,10 +887,23 @@ void ComponentCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
 	((ComponentCanvas *) it.current())->settings.show_component_req_prov = show_component_req_prov;
       if (st[2].name != 0)
 	((ComponentCanvas *) it.current())->settings.show_component_rea = show_component_rea;
+      if (st[3].name != 0)
+	((ComponentCanvas *) it.current())->settings.show_stereotype_properties = show_stereotype_properties;
       if (co[0].name != 0)
 	((ComponentCanvas *) it.current())->itscolor = itscolor;
       ((ComponentCanvas *) it.current())->modified();	// call package_modified()
     }
+  }
+}
+
+bool ComponentCanvas::get_show_stereotype_properties() const {
+  switch (settings.show_stereotype_properties) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
   }
 }
 
@@ -981,13 +999,14 @@ void ComponentCanvas::save(QTextStream & st, bool ref, QString & warning) const 
     browser_node->save(st, TRUE, warning);
     indent(+1);
     settings.save(st);
-    if (itscolor != UmlDefaultColor) {
-      nl_indent(st);
-      st << "color " << stringify(itscolor);
-    }
     nl_indent(st);
+    if (itscolor != UmlDefaultColor)
+      st << "color " << stringify(itscolor) << ' ';
     save_xyzwh(st, this, "xyzwh");
+    save_stereotype_property(st, warning);
     indent(-1);
+    nl_indent(st);
+    st << "end";
   }
 }
 
@@ -1016,9 +1035,20 @@ ComponentCanvas * ComponentCanvas::read(char * & st, UmlCanvas * canvas,
       read_xyzwh(st, result);
     else
       wrong_keyword(k, "xyzwh");
+    
+    if (read_file_format() >= 58) {
+      k = read_keyword(st);
+      result->read_stereotype_property(st, k);	// updates k
+      
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
+    
     result->compute_size();
     result->set_center100();
     result->show();
+    result->check_stereotypeproperties();
+    
     return result;
   }
   else 

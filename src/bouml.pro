@@ -159,6 +159,7 @@ HEADERS		= browser/BrowserAttribute.h \
 		  diagram/FlowCanvas.h \
 		  diagram/FragmentSeparatorCanvas.h \
 		  diagram/ConstraintCanvas.h \
+		  diagram/StereotypePropertiesCanvas.h \
 		  dialog/AttributeDialog.h \
 		  dialog/ExtraMemberDialog.h \
 		  dialog/BasicDialog.h \
@@ -399,6 +400,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  diagram/FlowCanvas.cpp \
 		  diagram/FragmentSeparatorCanvas.cpp \
 		  diagram/ConstraintCanvas.cpp \
+		  diagram/StereotypePropertiesCanvas.cpp \
 		  dialog/AttributeDialog.cpp \
 		  dialog/ExtraMemberDialog.cpp \
 		  dialog/BasicDialog.cpp \

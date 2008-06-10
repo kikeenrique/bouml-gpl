@@ -114,6 +114,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   classdiagram_settings.auto_label_position = UmlYes;
   classdiagram_settings.show_infonote = UmlNo;
   classdiagram_settings.shadow = UmlYes;
+  classdiagram_settings.show_stereotype_properties = UmlNo;
     
   class_settings.attribute_visibility = UmlProtected;
   class_settings.relation_visibility = UmlProtected;
@@ -125,6 +126,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   usecasediagram_settings.draw_all_relations = UmlYes;
   usecasediagram_settings.class_drawing_mode = asActor;
   usecasediagram_settings.shadow = UmlYes;
+  usecasediagram_settings.show_stereotype_properties = UmlNo;
   
   sequencediagram_settings.show_full_operations_definition = UmlNo;
   sequencediagram_settings.write_horizontally = UmlYes;
@@ -132,6 +134,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   sequencediagram_settings.drawing_language = UmlView;
   sequencediagram_settings.draw_all_relations = UmlYes;
   sequencediagram_settings.shadow = UmlYes;
+  sequencediagram_settings.show_stereotype_properties = UmlNo;
   
   collaborationdiagram_settings.show_full_operations_definition = UmlNo;
   collaborationdiagram_settings.show_hierarchical_rank = UmlNo;
@@ -141,6 +144,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   collaborationdiagram_settings.show_context_mode = noContext;
   collaborationdiagram_settings.draw_all_relations = UmlYes;
   collaborationdiagram_settings.shadow = UmlYes;
+  collaborationdiagram_settings.show_stereotype_properties = UmlNo;
   
   objectdiagram_settings.write_horizontally = UmlYes;
   objectdiagram_settings.package_name_in_tab = UmlNo;
@@ -148,6 +152,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   objectdiagram_settings.auto_label_position = UmlYes;
   objectdiagram_settings.draw_all_relations = UmlYes;
   objectdiagram_settings.shadow = UmlYes;
+  objectdiagram_settings.show_stereotype_properties = UmlNo;
   
   componentdiagram_settings.package_name_in_tab = UmlNo;
   componentdiagram_settings.show_context_mode = noContext;
@@ -157,6 +162,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   componentdiagram_settings.componentdrawingsettings.draw_component_as_icon = UmlNo;
   componentdiagram_settings.componentdrawingsettings.show_component_req_prov = UmlNo;
   componentdiagram_settings.componentdrawingsettings.show_component_rea = UmlNo;
+  componentdiagram_settings.componentdrawingsettings.show_stereotype_properties = UmlNo;
   
   deploymentdiagram_settings.package_name_in_tab = UmlNo;
   deploymentdiagram_settings.show_context_mode = noContext;
@@ -167,6 +173,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   deploymentdiagram_settings.componentdrawingsettings.draw_component_as_icon = UmlNo;
   deploymentdiagram_settings.componentdrawingsettings.show_component_req_prov = UmlNo;
   deploymentdiagram_settings.componentdrawingsettings.show_component_rea = UmlNo;
+  deploymentdiagram_settings.componentdrawingsettings.show_stereotype_properties = UmlNo;
   
   statediagram_settings.package_name_in_tab = UmlNo;
   statediagram_settings.show_context_mode = noContext;
@@ -178,6 +185,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   statediagram_settings.statedrawingsettings.show_activities = UmlYes;
   statediagram_settings.statedrawingsettings.region_horizontally = UmlYes;
   statediagram_settings.statedrawingsettings.drawing_language = UmlView;
+  statediagram_settings.statedrawingsettings.show_stereotype_properties = UmlNo;
   
   activitydiagram_settings.package_name_in_tab = UmlNo;
   activitydiagram_settings.show_context_mode = noContext;
@@ -188,6 +196,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   activitydiagram_settings.shadow = UmlYes;
   activitydiagram_settings.activitydrawingsettings.show_infonote = UmlYes;
   activitydiagram_settings.activitydrawingsettings.drawing_language = UmlView;
+  activitydiagram_settings.activitydrawingsettings.show_stereotype_properties = UmlNo;
   
   class_color = UmlYellow;
   package_color = UmlTransparent;
@@ -1006,6 +1015,7 @@ void BrowserPackage::add_package(bool profile) {
       p->owner = owner;
   }
 }
+#include "UmlDesktop.h"
 
 void BrowserPackage::import_project() {
   QString fn = QFileDialog::getOpenFileName(last_used_directory(), "*.prj");
@@ -1278,6 +1288,50 @@ bool BrowserPackage::get_draw_all_relations(UmlCode who) const {
     return FALSE;
   default:
     return ((BrowserNode *) parent())->get_draw_all_relations(who);
+  }
+}
+
+bool BrowserPackage::get_show_stereotype_properties(UmlCode who) const {
+  Uml3States v;
+  
+  switch (who) {
+  case UmlClassDiagram:
+    v = classdiagram_settings.show_stereotype_properties;
+    break;
+  case UmlUseCaseDiagram:
+    v = usecasediagram_settings.show_stereotype_properties;
+    break;
+  case UmlSeqDiagram:
+    v = sequencediagram_settings.show_stereotype_properties;
+    break;
+  case UmlColDiagram:
+    v = collaborationdiagram_settings.show_stereotype_properties;
+    break;
+  case UmlObjectDiagram:
+    v = objectdiagram_settings.show_stereotype_properties;
+    break;
+  case UmlComponentDiagram:
+    v = componentdiagram_settings.componentdrawingsettings.show_stereotype_properties;
+    break;
+  case UmlDeploymentDiagram:
+    v = deploymentdiagram_settings.componentdrawingsettings.show_stereotype_properties;
+    break;
+  case UmlStateDiagram:
+    v = statediagram_settings.statedrawingsettings.show_stereotype_properties;
+    break;
+  default:
+    //UmlActivityDiagram
+    v = activitydiagram_settings.activitydrawingsettings.show_stereotype_properties;
+    break;
+  }
+  
+  switch (v) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return ((BrowserNode *) parent())->get_show_stereotype_properties(who);
   }
 }
 
@@ -1751,13 +1805,16 @@ BrowserPackage *
 
 
 void BrowserPackage::DragMoveEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, UmlPackage) ||
+  bool pack = UmlDrag::canDecode(e, UmlPackage);
+  
+  if (pack ||
       UmlDrag::canDecode(e, UmlUseCaseView) ||
       UmlDrag::canDecode(e, UmlClassView) ||
       UmlDrag::canDecode(e, UmlComponentView) ||
       UmlDrag::canDecode(e, UmlDeploymentView) ||
       UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))) {
-    if (!is_read_only)
+    if (!is_read_only ||
+	(pack && (parent() != 0) && !((BrowserPackage *) parent())->is_read_only))
       e->accept();
     else
       e->ignore();
@@ -1836,7 +1893,8 @@ void BrowserPackage::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	m.insertItem(new MenuTitle(bn->get_name() + QString(" moving"),
 				   m.font()), -1);
 	m.insertSeparator();
-	m.insertItem("In " + QString(get_name()), 1);
+	if (!is_read_only)
+	  m.insertItem("In " + QString(get_name()), 1);
 	m.insertItem("After " + QString(get_name()), 2);
 	
 	switch (m.exec(QCursor::pos())) {

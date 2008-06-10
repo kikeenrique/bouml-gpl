@@ -80,6 +80,7 @@ class BrowserDeploymentView : public BrowserNode, public Labeled<BrowserDeployme
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_shadow(UmlCode) const;
     virtual bool get_draw_all_relations(UmlCode) const;
+    virtual bool get_show_stereotype_properties(UmlCode k) const;
     virtual bool get_auto_label_position(UmlCode who) const;
     virtual void save(QTextStream &, bool ref, QString & warning);
     

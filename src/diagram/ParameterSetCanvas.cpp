@@ -60,6 +60,7 @@ ParameterSetCanvas::ParameterSetCanvas(BrowserNode * bn, UmlCanvas * canvas,
     // not on read
     update();
     setZ(a->z());  // note : pins have z+2 to be upper the parameter sets with their lines
+    check_stereotypeproperties();
   }
   
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
@@ -402,6 +403,7 @@ void ParameterSetCanvas::modified() {
   hide();
   update();
   show();
+  check_stereotypeproperties();
   canvas()->update();
   package_modified();
 }
@@ -424,6 +426,7 @@ void ParameterSetCanvas::save(QTextStream & st, bool ref, QString & warning) con
     if (itscolor != UmlDefaultColor)
       st << "  color " << stringify(itscolor);
     save_xyz(st, this, "  xyz");
+    save_stereotype_property(st, warning);
     nl_indent(st);
     st << "end";
   }
@@ -451,10 +454,15 @@ ParameterSetCanvas * ParameterSetCanvas::read(char * & st, UmlCanvas * canvas,
     result->update();
     result->show();
 
-    k = read_keyword(st);    
+    k = read_keyword(st);   
+    
+    result->read_stereotype_property(st, k);	// updates k
+    
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");
 
+    result->check_stereotypeproperties();
+    
     return result;
   }
   else 

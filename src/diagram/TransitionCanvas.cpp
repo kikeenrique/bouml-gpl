@@ -38,6 +38,7 @@
 #include "BrowserTransition.h"
 #include "BrowserDiagram.h"
 #include "TransitionData.h"
+#include "StereotypePropertiesCanvas.h"
 #include "UmlGlobal.h"
 #include "myio.h"
 #include "ToolCom.h"
@@ -54,12 +55,15 @@ TransitionCanvas::TransitionCanvas(UmlCanvas * canvas,
 				   float d_begin, float d_end,
 				   TransitionData * d)
       : ArrowCanvas(canvas, b, e, UmlTransition, id, TRUE, d_begin, d_end),
-  	br_begin(bb), data(d) {
+  	br_begin(bb), data(d), stereotypeproperties(0) {
   if ((e->type() != UmlArrowPoint) && (bb == 0)) {
     // end of line construction
     update_begin(e);
   }
   else if (d != 0) {
+    if (e->type() != UmlArrowPoint)
+#warning bien place ?
+      check_stereotypeproperties();
     connect(d, SIGNAL(changed()), this, SLOT(modified()));
     connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
   }
@@ -86,6 +90,9 @@ void TransitionCanvas::delete_it() {
   disconnect(data, 0, this, 0);
   disconnect(DrawingSettings::instance(), SIGNAL(changed()),
 	     this, SLOT(modified()));
+  
+  if (stereotypeproperties != 0)
+    ((UmlCanvas *) canvas())->del(stereotypeproperties);
   
   ArrowCanvas::delete_it();
 }
@@ -434,6 +441,8 @@ void TransitionCanvas::modified() {
     hide();
     update(TRUE);
     show();
+    if (begin->type() != UmlArrowPoint)
+      check_stereotypeproperties();
     canvas()->update();
     package_modified();
   }
@@ -591,6 +600,50 @@ void TransitionCanvas::drop(BrowserNode * bn, UmlCanvas * canvas)
   }
 }
 
+//
+
+void TransitionCanvas::setVisible(bool yes) {
+  ArrowCanvas::setVisible(yes);
+
+  if (stereotypeproperties)
+    stereotypeproperties->setVisible(yes);
+}
+
+void TransitionCanvas::moveBy(double dx, double dy) {
+  ArrowCanvas::moveBy(dx, dy);
+
+  if ((stereotypeproperties != 0) && !stereotypeproperties->selected())
+    stereotypeproperties->moveBy(dx, dy);
+}
+
+void TransitionCanvas::select_associated() {
+  if (!selected()) {
+    if ((stereotypeproperties != 0) && !stereotypeproperties->selected())
+      the_canvas()->select(stereotypeproperties);
+    ArrowCanvas::select_associated();
+  }
+}
+
+void TransitionCanvas::check_stereotypeproperties() {
+  // the note is memorized by the first segment
+  if (begin->type() == UmlArrowPoint)
+    ((TransitionCanvas *) ((ArrowPointCanvas *) begin)->get_other(this))
+      ->check_stereotypeproperties();
+  else {
+    QString s = data->get_start()->stereotypes_properties();
+    
+    if (!s.isEmpty() &&
+	the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup))
+      StereotypePropertiesCanvas::needed(the_canvas(), this, s,
+					 stereotypeproperties, center());
+    else if (stereotypeproperties != 0) {
+      stereotypeproperties->delete_it();
+      stereotypeproperties = 0;
+    }
+  }
+}
+
+//
 void TransitionCanvas::save(QTextStream & st, bool ref, QString & warning) const {
   if (ref)
     st << "transitioncanvas_ref " << get_ident();
@@ -622,7 +675,13 @@ void TransitionCanvas::save(QTextStream & st, bool ref, QString & warning) const
     st << "write_horizontally " << stringify(write_horizontally)
       << " show_definition " << stringify(show_definition)
 	<< " drawing_language " << stringify(drawing_language);
+    
+    if (stereotypeproperties != 0)
+      stereotypeproperties->save(st, FALSE, warning);
+    
     indent(-1);
+    nl_indent(st);
+    st << "end";
   }
 }
 
@@ -770,11 +829,28 @@ TransitionCanvas * TransitionCanvas::read(char * & st, UmlCanvas * canvas, char 
     result->drawing_language = ::drawing_language(read_keyword(st));
     
     result->propagate_drawing_settings();
+
+    if (read_file_format() >= 58) {
+      // stereotype property
+      
+      k = read_keyword(st);
+      
+      first->stereotypeproperties = 
+	StereotypePropertiesCanvas::read(st,  canvas, k, first);
+      
+      if (first->stereotypeproperties != 0)
+	k = read_keyword(st);
+      
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
     
     // to add label, stereotype ... if needed    
     first->update(FALSE);
     if (first != result)
       result->update(FALSE);
+    
+    first->check_stereotypeproperties();
 
     // manage case where the relation is deleted but present in the browser
     if (result->data->get_start()->deletedp())

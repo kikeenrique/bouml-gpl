@@ -2214,9 +2214,6 @@ void RelationDialog::accept() {
       rel->end->modified();
       b.kvtable->update(rel->end);
     }
-    rel->start->modified();
-    rel->start->package_modified();
-    rel->modified();
     
     if (onstereotype && (isinherit || wasinherit))
       ProfiledStereotypes::recompute(TRUE);
@@ -2226,6 +2223,10 @@ void RelationDialog::accept() {
 	ProfiledStereotypes::modified(rel->end, newst);
     }
 
+    rel->start->modified();
+    rel->start->package_modified();
+    rel->modified();
+    
     QTabDialog::accept();
   }
 }

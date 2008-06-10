@@ -174,6 +174,10 @@ void UmlArtifact::generate() {
 	  p += 7;
 	  f_h << name.upper();
 	}
+	else if (!strncmp(p, "${nAME}", 7)) {
+	  p += 7;
+	  f_h << name.lower();
+	}
 	else if (!strncmp(p, "${namespace}", 12)) {
 	  p += 12;
 	  f_h << nasp;

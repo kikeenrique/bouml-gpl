@@ -32,11 +32,12 @@
 #include "UmlCom.h"
 #include "util.h"
 
+// not in case of a dependency => external class in h
 bool CppRefType::add(const UmlTypeSpec & t, QList<CppRefType> & l,
 		     bool incl)
 {
   return (t.type)
-    ? add(t.type, l, incl)
+    ? add(t.type, l, incl || t.type->isCppExternal())
     : add(t.explicit_type, l, incl);
 }
 
@@ -225,6 +226,8 @@ void CppRefType::compute(QList<CppRefType> & dependencies,
 	  hform.replace(index, 7, capitalize(cl->name()));
 	else if ((index = hform.find("${NAME}")) != -1)
 	  hform.replace(index, 7, cl->name().upper());
+	else if ((index = hform.find("${nAME}")) != -1)
+	  hform.replace(index, 7, cl->name().lower());
 	else
 	  break;
       }

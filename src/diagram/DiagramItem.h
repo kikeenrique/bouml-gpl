@@ -123,6 +123,8 @@ class DiagramItem : public Labeled<DiagramItem> {
     
     virtual void apply_shortcut(QString);
     
+    virtual void check_stereotypeproperties() = 0;
+    
     static void post_load();
     void remove_if_already_present();
 };

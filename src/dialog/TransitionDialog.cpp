@@ -288,11 +288,12 @@ void TransitionDialog::accept() {
     
     kvtable->update(bn);
     
+    ProfiledStereotypes::modified(bn, newst);
+    
     bn->modified();
     bn->package_modified();
     rel->modified();
     
-    ProfiledStereotypes::modified(bn, newst);
     QTabDialog::accept();
   }
 }

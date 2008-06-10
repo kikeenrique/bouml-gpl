@@ -37,10 +37,10 @@ class EnvDialog : public QDialog {
   Q_OBJECT
     
   public:
-    static void edit(bool conv);
+    static void edit(bool conv, bool noid = FALSE);
     
   private:
-    EnvDialog(bool conv);
+    EnvDialog(bool conv, bool noid);
   
     bool conversion;
     QLineEdit * ed_id;

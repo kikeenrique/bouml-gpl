@@ -53,8 +53,10 @@ StateActionCanvas::StateActionCanvas(BrowserNode * bn, UmlCanvas * canvas,
   browser_node = bn;
   itscolor = UmlDefaultColor;
   language = DefaultDrawingLanguage;
+  show_stereotype_properties = UmlDefaultState;
   
   compute_size();
+  check_stereotypeproperties();
   
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
@@ -72,6 +74,7 @@ StateActionCanvas::StateActionCanvas(UmlCanvas * canvas, int id)
   browser_node = 0;
   itscolor = UmlDefaultColor;
   language = DefaultDrawingLanguage;
+  show_stereotype_properties = UmlDefaultState;
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
 
@@ -182,6 +185,7 @@ void StateActionCanvas::modified() {
     //draw_all_simple_relations();
     draw_all_transitions();
   }
+  check_stereotypeproperties();
   canvas()->update();
   package_modified();
 }
@@ -544,10 +548,11 @@ void StateActionCanvas::apply_shortcut(QString s) {
 }
 
 void StateActionCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(1);
+  QArray<StateSpec> st(2);
   QArray<ColorSpec> co(1);
   
   st[0].set("drawing language", &language);
+  st[1].set("show stereotype \nproperties", &show_stereotype_properties);
   
   co[0].set("state action color", &itscolor);
   
@@ -563,12 +568,13 @@ bool StateActionCanvas::has_drawing_settings() const {
 }
 
 void StateActionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(1);
+  QArray<StateSpec> st(2);
   QArray<ColorSpec> co(1);
   DrawingLanguage language;
   UmlColor itscolor;
   
   st[0].set("drawing language", &language);
+  st[1].set("show stereotype \nproperties", &show_stereotype_properties);
   
   co[0].set("state action color", &itscolor);
   
@@ -581,10 +587,23 @@ void StateActionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
     for (; it.current(); ++it) {
       if (st[0].name != 0)
 	((StateActionCanvas *) it.current())->language = language;
+      if (st[1].name != 0)
+	((StateActionCanvas *) it.current())->show_stereotype_properties = show_stereotype_properties;
       if (co[0].name != 0)
 	((StateActionCanvas *) it.current())->itscolor = itscolor;
       ((StateActionCanvas *) it.current())->modified();	// call package_modified()
     }
+  }
+}
+
+bool StateActionCanvas::get_show_stereotype_properties() const {
+  switch (show_stereotype_properties) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
   }
 }
 
@@ -630,17 +649,18 @@ void StateActionCanvas::save(QTextStream & st, bool ref, QString & warning) cons
     st << "stateactioncanvas " << get_ident() << ' ';
     browser_node->save(st, TRUE, warning);
     indent(+1);
-    if (language != DefaultDrawingLanguage) {
       nl_indent(st);
-      st << "language " << stringify(language);
-    }
-    if (itscolor != UmlDefaultColor) {
-      nl_indent(st);
-      st << "color " << stringify(itscolor);
-    }
-    nl_indent(st);
+    if (language != DefaultDrawingLanguage)
+      st << "language " << stringify(language) << ' ';
+    if (show_stereotype_properties != UmlDefaultState)
+      st << "show_stereotype_properties " << stringify(show_stereotype_properties) << ' ';
+    if (itscolor != UmlDefaultColor)
+      st << "color " << stringify(itscolor) << ' ';
     save_xyzwh(st, this, "xyzwh");
+    save_stereotype_property(st, warning);
     indent(-1);
+    nl_indent(st);
+    st << "end";
   }
 }
 
@@ -664,15 +684,29 @@ StateActionCanvas * StateActionCanvas::read(char * & st, UmlCanvas * canvas,
       result->language = drawing_language(read_keyword(st));
       k = read_keyword(st);
     }
+    if (!strcmp(k, "show_stereotype_properties")) {
+      result->show_stereotype_properties = state(read_keyword(st));
+      k = read_keyword(st);
+    }
     read_color(st, "color", result->itscolor, k);	// updates k
     
     if (!strcmp(k, "xyzwh"))
       read_xyzwh(st, result);
     else
       wrong_keyword(k, "xyzwh");
+    
+    if (read_file_format() >= 58) {
+      k = read_keyword(st);
+      result->read_stereotype_property(st, k);	// updates k
+      
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
+    
     result->compute_size();
     result->set_center100();
     result->show();
+    result->check_stereotypeproperties();
     return result;
   }
   else 

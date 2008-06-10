@@ -100,6 +100,7 @@ class BrowserUseCaseView : public BrowserNode, public Labeled<BrowserUseCaseView
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_shadow(UmlCode) const;
     virtual bool get_draw_all_relations(UmlCode) const;
+    virtual bool get_show_stereotype_properties(UmlCode k) const;
     virtual bool get_classinstwritehorizontally(UmlCode k) const;
     virtual bool get_auto_label_position(UmlCode who) const;
     virtual bool get_write_label_horizontally(UmlCode who) const;

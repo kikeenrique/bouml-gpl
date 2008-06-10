@@ -41,6 +41,8 @@ class DeploymentNodeCanvas
     UmlColor used_color;
     Uml3States write_horizontally;
     bool horiz;
+    Uml3States show_stereotype_properties;
+    bool show_properties;
     QString iname;
   
   public:
@@ -87,9 +89,10 @@ class DeploymentNodeCanvas
     
     virtual bool has_drawing_settings() const;
     virtual void edit_drawing_settings(QList<DiagramItem> &);
+    void edit_drawing_settings();
+    virtual bool get_show_stereotype_properties() const;
     
     virtual void apply_shortcut(QString s);
-    void edit_drawing_settings();
   
   private slots:
     void modified();	// canvas must be updated

@@ -87,6 +87,7 @@ class BrowserRelation : public BrowserNode, public Labeled<BrowserRelation> {
     virtual void member_cpp_def(const QString & prefix, const QString &, 
 				QString & s, bool templ) const;
     virtual void update_stereotype(bool = FALSE);
+    virtual QString stereotypes_properties() const;
     virtual AType class_association() const;
     virtual const char * constraint() const;
     

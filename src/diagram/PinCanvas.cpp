@@ -68,6 +68,8 @@ PinCanvas::PinCanvas(BrowserNode * bn, UmlCanvas * canvas,
     
     if (canvas->must_draw_all_relations())
       draw_all_flows();
+    
+    check_stereotypeproperties();
   }
 }
 
@@ -498,6 +500,7 @@ void PinCanvas::modified() {
   update_show_lines();
   if (the_canvas()->must_draw_all_relations())
     draw_all_flows();
+  check_stereotypeproperties();
   canvas()->update();
   package_modified();
 }
@@ -535,6 +538,7 @@ void PinCanvas::save(QTextStream & st, bool ref, QString & warning) const {
     save_xyzwh(st, this, "  xyzwh");
     if (label != 0)
       save_xy(st, label, " label_xy");
+    save_stereotype_property(st, warning);
     nl_indent(st);
     st << "end";
   }
@@ -574,9 +578,13 @@ PinCanvas * PinCanvas::read(char * & st, UmlCanvas * canvas,
       k = read_keyword(st);
     }
     
+    result->read_stereotype_property(st, k);	// updates k
+    
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");
 
+    result->check_stereotypeproperties();
+    
     return result;
   }
   else 

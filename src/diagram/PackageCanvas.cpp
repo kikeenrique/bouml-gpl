@@ -51,15 +51,19 @@ PackageCanvas::PackageCanvas(BrowserNode * bn, UmlCanvas * canvas,
   browser_node = bn;
   show_context_mode = DefaultShowContextMode;
   name_in_tab = UmlDefaultState;
+  show_stereotype_properties = UmlDefaultState;
   itscolor = UmlDefaultColor;
   check_size();
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
   
-  if ((id == 0) &&  // not from read
-      canvas->must_draw_all_relations())
-    draw_all_simple_relations();
+  if (id == 0) {
+    // not from read
+    if (canvas->must_draw_all_relations())
+      draw_all_simple_relations();
+    check_stereotypeproperties();
+  }
 }
 
 PackageCanvas::~PackageCanvas() {
@@ -359,6 +363,7 @@ void PackageCanvas::modified() {
   hide();
   check_size();
   show();
+  check_stereotypeproperties();
   force_self_rel_visible();
   if (the_canvas()->must_draw_all_relations())
     draw_all_simple_relations();
@@ -490,11 +495,12 @@ void PackageCanvas::apply_shortcut(QString s) {
 }
 
 void PackageCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(2);
+  QArray<StateSpec> st(3);
   QArray<ColorSpec> co(1);
   
   st[0].set("name in tab", &name_in_tab);
   st[1].set("show context", &show_context_mode);
+  st[2].set("show stereotype \nproperties", &show_stereotype_properties);
   co[0].set("Package color", &itscolor);
   
   SettingsDialog dialog(&st, &co, FALSE, TRUE);
@@ -509,14 +515,16 @@ bool PackageCanvas::has_drawing_settings() const {
 }
 
 void PackageCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(2);
+  QArray<StateSpec> st(3);
   QArray<ColorSpec> co(1);
   Uml3States name_in_tab;
+  Uml3States show_stereotype_properties;
   ShowContextMode show_context_mode;
   UmlColor itscolor;
   
   st[0].set("name in tab", &name_in_tab);
   st[1].set("show context", &show_context_mode);
+  st[2].set("show stereotype \nproperties", &show_stereotype_properties);
   co[0].set("Package color", &itscolor);
   
   SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
@@ -530,10 +538,23 @@ void PackageCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
 	((PackageCanvas *) it.current())->name_in_tab = name_in_tab;
       if (st[1].name != 0)
 	((PackageCanvas *) it.current())->show_context_mode = show_context_mode;
+      if (st[2].name != 0)
+	((PackageCanvas *) it.current())->show_stereotype_properties = show_stereotype_properties;
       if (co[0].name != 0)
 	((PackageCanvas *) it.current())->itscolor = itscolor;
       ((PackageCanvas *) it.current())->modified();	// call package_modified()
     }
+  }
+}
+
+bool PackageCanvas::get_show_stereotype_properties() const {
+  switch (show_stereotype_properties) {
+  case UmlYes:
+    return TRUE;
+  case UmlNo:
+    return FALSE;
+  default:
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
   }
 }
 
@@ -630,10 +651,15 @@ void PackageCanvas::save(QTextStream & st, bool ref, QString & warning) const {
       st << "name_in_tab " << stringify(name_in_tab);
     if (show_context_mode != DefaultShowContextMode)
       st << " show_context_mode " << stringify(show_context_mode);
+    if (show_stereotype_properties != UmlDefaultState)
+      st << " show_stereotype_properties " << stringify(show_stereotype_properties);
     if (itscolor != UmlDefaultColor)
       st << " color " << stringify(itscolor);
     save_xyzwh(st, this, "  xyzwh");
+    save_stereotype_property(st, warning);
     indent(-1);
+    nl_indent(st);
+    st << "end";
   }
 }
 
@@ -646,6 +672,7 @@ PackageCanvas * PackageCanvas::read(char * & st, UmlCanvas * canvas, char * k) {
     UmlColor color = UmlDefaultColor;
     Uml3States in_tab = UmlDefaultState;
     ShowContextMode context = DefaultShowContextMode;
+    Uml3States show_stereotype_properties = UmlDefaultState;;
     
     k = read_keyword(st);
     
@@ -659,6 +686,11 @@ PackageCanvas * PackageCanvas::read(char * & st, UmlCanvas * canvas, char * k) {
       k = read_keyword(st);
     }
 
+    if (!strcmp(k, "show_stereotype_properties")) {
+      show_stereotype_properties = state(read_keyword(st));
+      k = read_keyword(st);
+    }
+
     read_color(st, "color", color, k);
     
     if (strcmp(k, "xyzwh"))
@@ -668,14 +700,24 @@ PackageCanvas * PackageCanvas::read(char * & st, UmlCanvas * canvas, char * k) {
     PackageCanvas * result =
       new PackageCanvas(br, canvas, x, (int) read_double(st), id);
     
+    read_zwh(st, result);
+    
+    if (read_file_format() >= 58) {
+      k = read_keyword(st);
+      result->read_stereotype_property(st, k);	// updates k
+      if (strcmp(k, "end"))
+	wrong_keyword(k, "end");
+    }
+    
     result->name_in_tab = in_tab;
     result->show_context_mode = context;
+    result->show_stereotype_properties = show_stereotype_properties;
     result->itscolor = color;
-    read_zwh(st, result);
     result->check_size();
     result->set_center100();
-
     result->show();
+    result->check_stereotypeproperties();
+    
     return result;
   }
   else

@@ -81,6 +81,7 @@ class BrowserUseCaseDiagram : public BrowserDiagram {
     virtual bool get_shadow() const;
     virtual bool get_draw_all_relations() const;
     virtual void dont_draw_all_relations();
+    virtual bool get_show_stereotype_properties(UmlCode k) const;
     virtual void get_usecasediagramsettings(UseCaseDiagramSettings & r) const;
     virtual void get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const;
     virtual bool get_auto_label_position(UmlCode who) const ;    

@@ -58,6 +58,7 @@ ExpansionRegionCanvas::ExpansionRegionCanvas(BrowserNode * bn, UmlCanvas * canva
 
   compute_size();
   check_nodes();
+  check_stereotypeproperties();
   
   connect(bn->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(bn->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
@@ -178,6 +179,7 @@ void ExpansionRegionCanvas::modified() {
   show();
   update_show_lines();
   check_nodes();
+  check_stereotypeproperties();
   canvas()->update();
   force_sub_inside();
   package_modified();
@@ -614,6 +616,8 @@ void ExpansionRegionCanvas::save(QTextStream & st, bool ref, QString & warning) 
       nl_indent(st);
       st << "end";
     }
+    
+    save_stereotype_property(st, warning);
 
     indent(-1);
     nl_indent(st);
@@ -655,11 +659,14 @@ ExpansionRegionCanvas *
 	result->nodes.append(ExpansionNodeCanvas::read(st, canvas, k, result));
       k = read_keyword(st);
     }
+    
+    result->read_stereotype_property(st, k);	// updates k
 
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");
     
     result->check_nodes();
+    result->check_stereotypeproperties();
     
     // result->force_sub_inside() useless
     
