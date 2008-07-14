@@ -78,6 +78,7 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     bool is_imported;
     unsigned revision;
     int owner;
+    mutable QString full_path;
     
   protected:
     BrowserPackage(int id);
@@ -135,7 +136,6 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     virtual void on_delete();
     virtual const char * check_inherit(const BrowserNode * parent) const;
     const char * may_connect(UmlCode & l, const BrowserNode * dest) const;
-    virtual void referenced_by(QList<BrowserNode> &);
     
     virtual bool tool_cmd(ToolCom * com, const char * args);
     static bool tool_global_cmd(ToolCom * com, const char * args);
@@ -183,6 +183,8 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
+    
+    static void prepare_for_sort();
 };
 
 #endif

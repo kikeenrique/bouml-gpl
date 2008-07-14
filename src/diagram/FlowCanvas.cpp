@@ -63,7 +63,6 @@ FlowCanvas::FlowCanvas(UmlCanvas * canvas, DiagramItem * b,
   }
   else if (d != 0) {
     if (e->type() != UmlArrowPoint)
-#warning bien place ?
       check_stereotypeproperties();
     connect(d, SIGNAL(changed()), this, SLOT(modified()));
     connect(d, SIGNAL(deleted()), this, SLOT(deleted()));

@@ -76,6 +76,7 @@ BrowserComponentView::BrowserComponentView(int id)
 
 BrowserComponentView::~BrowserComponentView() {
   all.remove(get_ident());
+  delete def;
 }
 
 BrowserNode * BrowserComponentView::duplicate(BrowserNode * p, QString name) {
@@ -138,9 +139,9 @@ QString BrowserComponentView::full_name(bool rev, bool itself) const {
   else if (p.isEmpty()) 
     return QString((const char *) name);
   else if (rev)
-    return name + "   [" + p + "]";
+    return name + (FullPathPrefix + p + FullPathPostfix);
   else
-    return p + "::" + name;
+    return p + (FullPathDotDot + name);
 }
 
 void BrowserComponentView::menu() {
@@ -419,7 +420,7 @@ BrowserNodeList & BrowserComponentView::instances(BrowserNodeList & result)
     ++it;
   }
 
-  result.sort();
+  result.sort_it();
   
   return result;
 }

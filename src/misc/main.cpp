@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 	argc = 1;
       }
       
-      uw->load(argv[1]);
+      uw->load_it(argv[1]);
     }
     catch (...) {
       // cannot read a file

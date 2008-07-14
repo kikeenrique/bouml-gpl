@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
     try {
       //UmlCom::with_ack(FALSE);
       
-      UmlCom::trace("<b>Php reverse</b> release 1.2<br><hr>");
+      UmlCom::trace("<b>Php reverse</b> release 1.2.1<br><hr>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlItem * item = UmlCom::targetItem();

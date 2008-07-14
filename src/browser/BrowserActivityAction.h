@@ -122,7 +122,7 @@ class BrowserActivityAction : public BrowserNode, public Labeled<BrowserActivity
     virtual void write_id(ToolCom * com);
     virtual bool api_compatible(unsigned v) const;
     
-    virtual void referenced_by(QList<BrowserNode> &);
+    virtual void referenced_by(QList<BrowserNode> &, bool ondelete = FALSE);
     static void compute_referenced_by(QList<BrowserNode> &, BrowserNode *);
     
     static void init();

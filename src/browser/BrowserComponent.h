@@ -112,7 +112,6 @@ class BrowserComponent : public BrowserNode, public Labeled<BrowserComponent> {
     
     virtual const QPixmap* pixmap (int) const;
     
-    virtual void referenced_by(QList<BrowserNode> &);
     static void compute_referenced_by(QList<BrowserNode> &, BrowserClass *);
     
     static void init();

@@ -437,14 +437,12 @@ bool BrowserExpansionRegion::allow_empty() const {
 }
 
 QString BrowserExpansionRegion::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
   QString s = name;
 
   if (s.isEmpty())
     s = "<anonymous expansion region>";
 
-  return (rev) ? s + "   [" + p + "]"
-	       : p + "::" + s;
+  return fullname(s, rev);
 }
 
 BrowserNode * BrowserExpansionRegion::get_associated() const {

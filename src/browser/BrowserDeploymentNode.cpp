@@ -107,14 +107,7 @@ const QPixmap* BrowserDeploymentNode::pixmap(int) const {
 }
 
 QString BrowserDeploymentNode::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
-
-  if (p.isEmpty()) 
-    return QString((const char *) name);
-  else if (rev)
-    return name + "   [" + p + "]";
-  else
-    return p + "::" + name;
+  return fullname(rev);
 }
 
 void BrowserDeploymentNode::menu() {
@@ -342,7 +335,7 @@ BrowserNodeList & BrowserDeploymentNode::instances(BrowserNodeList & result,
     }
   }
   
-  result.sort();
+  result.sort_it();
   
   return result;
 }

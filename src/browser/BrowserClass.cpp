@@ -188,28 +188,30 @@ void BrowserClass::update_idmax_for_root()
   BrowserExtraMember::update_idmax_for_root();
 }
     
-void BrowserClass::referenced_by(QList<BrowserNode> & l) {
+void BrowserClass::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   IdIterator<BrowserClass> it(all);
+  BrowserClass * c;
   
-  while (it.current()) {
-    if (!it.current()->deletedp() &&
-	(it.current() != this) &&
-	it.current()->def->reference(this))
-      l.append(it.current());
+  while ((c = it.current()) != 0) {
+    if (!c->deletedp() &&
+	(c != this) &&
+	c->def->reference(this))
+      l.append(c);
     ++it;
   }
   
-  BrowserNode::referenced_by(l);
   BrowserRelation::compute_referenced_by(l, this);
   BrowserSimpleRelation::compute_referenced_by(l, this);
-  BrowserAttribute::compute_referenced_by(l, this);
-  BrowserOperation::compute_referenced_by(l, this);
   BrowserArtifact::compute_referenced_by(l, this);
   BrowserComponent::compute_referenced_by(l, this);
-  BrowserActivityObject::compute_referenced_by(l, this);
-  BrowserPin::compute_referenced_by(l, this);
-  BrowserParameter::compute_referenced_by(l, this);
-  BrowserExpansionNode::compute_referenced_by(l, this);
+  if (! ondelete) {
+    BrowserAttribute::compute_referenced_by(l, this);
+    BrowserOperation::compute_referenced_by(l, this);
+    BrowserActivityObject::compute_referenced_by(l, this);
+    BrowserPin::compute_referenced_by(l, this);
+    BrowserParameter::compute_referenced_by(l, this);
+    BrowserExpansionNode::compute_referenced_by(l, this);
+  }
 }
 
 void BrowserClass::renumber(int phase) {
@@ -342,14 +344,7 @@ void BrowserClass::paintCell(QPainter * p, const QColorGroup & cg, int column,
 }
 
 QString BrowserClass::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
-
-  if (p.isEmpty()) 
-    return QString((const char *) name);
-  else if (rev)
-    return name + "   [" + p + "]";
-  else
-    return p + "::" + name;
+  return fullname(rev);
 }
 
 void BrowserClass::member_cpp_def(const QString &, const QString &, 
@@ -1836,7 +1831,7 @@ BrowserNodeList & BrowserClass::instances(BrowserNodeList & result,
     }
   }
   
-  result.sort();
+  result.sort_it();
   
   return result;
 }

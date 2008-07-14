@@ -64,6 +64,18 @@ static bool generate_var(const QValueList<UmlParameter> & params,
   return TRUE;
 }
 
+static bool generate_init(const QValueList<UmlParameter> & params, 
+			  unsigned rank, QTextOStream & f)
+{
+  if (rank >= params.count())
+    return FALSE;
+  
+  if (! params[rank].default_value.isEmpty())
+    f << " = " << params[rank].default_value;
+  
+  return TRUE;
+}
+
 static void param_error(const QCString & parent, const QCString & name, unsigned rank)
 {
   write_trace_header();
@@ -273,6 +285,11 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
       }
       else if (sscanf(p, "${p%u}", &rank) == 1) {
 	if (!generate_var(params, rank, f))
+	  param_error(parent()->name(), name(), rank);
+	p = strchr(p, '}') + 1;
+      }
+      else if (sscanf(p, "${v%u}", &rank) == 1) {
+	if (!generate_init(params, rank, f))
 	  param_error(parent()->name(), name(), rank);
 	p = strchr(p, '}') + 1;
       }

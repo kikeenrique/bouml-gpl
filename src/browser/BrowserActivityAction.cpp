@@ -112,8 +112,7 @@ void BrowserActivityAction::update_idmax_for_root()
   BrowserPin::update_idmax_for_root();
 }
     
-void BrowserActivityAction::referenced_by(QList<BrowserNode> & l) {
-  BrowserNode::referenced_by(l);
+void BrowserActivityAction::referenced_by(QList<BrowserNode> & l, bool) {
   BrowserFlow::compute_referenced_by(l, this);
   BrowserSimpleRelation::compute_referenced_by(l, this);
 }
@@ -672,14 +671,12 @@ bool BrowserActivityAction::allow_empty() const {
 }
 
 QString BrowserActivityAction::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
   QString s = name;
 
   if (s.isEmpty())
     s = stringify(def->get_action_kind());
-
-  return (rev) ? s + "   [" + p + "]"
-	       : p + "::" + s;
+  
+  return fullname(s, rev);
 }
 
 BrowserNode * BrowserActivityAction::get_associated() const {

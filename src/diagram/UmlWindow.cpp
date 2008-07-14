@@ -979,6 +979,7 @@ void UmlWindow::close_it()
   the->clear();
   
   // empty the browser
+  set_commented(0);
   the->browser->clear();
   
   // remove tools

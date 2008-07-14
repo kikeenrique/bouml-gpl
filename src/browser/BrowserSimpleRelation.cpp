@@ -297,11 +297,7 @@ BasicData * BrowserSimpleRelation::get_data() const {
 }
 
 QString BrowserSimpleRelation::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
-  QString n = (const char *) name;
-
-  return (rev) ? n + "   [" + p + "]"
-	       : p + "::" + n;
+  return fullname(rev);
 }
 
 void BrowserSimpleRelation::write_id(ToolCom * com) {

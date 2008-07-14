@@ -53,7 +53,7 @@ QCString UmlParameter::cpp(unsigned rank) const {
   
   QCString p;
   
-  p.sprintf(" ${p%u}", rank);
+  p.sprintf(" ${p%u}${v%u}", rank, rank);
   return s + p;
 }
 

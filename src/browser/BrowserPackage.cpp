@@ -353,11 +353,6 @@ void BrowserPackage::update_idmax_for_root()
   BrowserDiagram::update_idmax_for_root();
 }
     
-void BrowserPackage::referenced_by(QList<BrowserNode> & l) {
-  BrowserNode::referenced_by(l);
-  BrowserSimpleRelation::compute_referenced_by(l, this);
-}
-
 const QPixmap* BrowserPackage::pixmap(int) const {
   if (this == BrowserView::get_project())
     return 0;
@@ -395,17 +390,32 @@ void BrowserPackage::update_stereotype(bool rec) {
 }
 
 QString BrowserPackage::full_name(bool rev, bool) const {
+  if (!rev && !full_path.isEmpty())
+    return full_path;
+  
   if (this == BrowserView::get_project())
     return QString::null;
   
   QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
 
   if (p.isEmpty()) 
-    return QString((const char *) name);
+    full_path = (const char *) name;
   else if (rev)
-    return name + "   [" + p + "]";
+    return name + (FullPathPrefix + p + FullPathPostfix);
   else
-    return p + "::" + name;
+    full_path = p + (FullPathDotDot + name);
+  
+  return full_path;
+}
+
+void BrowserPackage::prepare_for_sort()
+{
+  IdIterator<BrowserPackage> it(all);
+  
+  while (it.current() != 0) {
+    it.current()->full_path = QString::null;
+    ++it;
+  } 
 }
 
 // just check if the inheritance already exist
@@ -967,12 +977,14 @@ BrowserNodeList & BrowserPackage::instances(BrowserNodeList & result) {
   IdIterator<BrowserPackage> it(all);
   
   while (it.current() != 0) {
-    if (!it.current()->deletedp())
+    if (!it.current()->deletedp()) {
+      it.current()->full_path = QString::null;
       result.append(it.current());
+    }
     ++it;
   }
 
-  result.sort();
+  result.sort_it();
   
   return result;
 }

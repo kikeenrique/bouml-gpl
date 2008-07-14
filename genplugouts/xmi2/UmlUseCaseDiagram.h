@@ -5,6 +5,8 @@
 #include "UmlBaseUseCaseDiagram.h"
 #include <qcstring.h>
 
+class FileOut;
+
 // This class manages 'use case diagrams', notes that the class 'UmlDiagram'
 // is a mother class of all the diagrams, allowing to generalize their
 // management
@@ -13,6 +15,10 @@
 class UmlUseCaseDiagram : public UmlBaseUseCaseDiagram {
   public:
     UmlUseCaseDiagram(void * id, const QCString & n) : UmlBaseUseCaseDiagram(id, n) {};
+
+    virtual void write(FileOut & out);
+
+    virtual void write_it(FileOut & out);
 
 };
 

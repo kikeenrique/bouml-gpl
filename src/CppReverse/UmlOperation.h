@@ -68,7 +68,7 @@ class UmlOperation : public UmlBaseOperation {
     static bool read_param(ClassContainer * container, unsigned rank, 
 			   UmlParameter & param, QCString & decl,
 			   const QValueList<FormalParameterList> & tmplt,
-			   bool & on_error);
+			   bool & on_error, bool add_defaultvalue);
     static void friend_operations(QList<UmlOperation> & candidates,
 				  const QValueList<FormalParameterList> & tmplt,
 				  const QCString & name);

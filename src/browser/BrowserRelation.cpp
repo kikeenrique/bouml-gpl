@@ -179,19 +179,20 @@ void BrowserRelation::compute_referenced_by(QList<BrowserNode> & l,
 					    BrowserClass * target)
 {
   IdIterator<BrowserRelation> it(all);
+  BrowserRelation * r;
   
-  while (it.current()) {
-    if (!it.current()->deletedp() &&
-	((it.current()->def->is_a(it.current()))
-	 ? (it.current()->def->get_end_class() == target)
-	 : (it.current()->def->get_start_class() == target)))
-      l.append(it.current());
+  while ((r = it.current()) != 0) {
+    if (!r->deletedp() &&
+	((r->def->is_a(it.current()))
+	 ? (r->def->get_end_class() == target)
+	 : (r->def->get_start_class() == target)))
+      l.append(r);
     ++it;
   }
 }
 
-void BrowserRelation::referenced_by(QList<BrowserNode> & l) {
-  BrowserNode::referenced_by(l);
+void BrowserRelation::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
   BrowserClassInstance::compute_referenced_by(l, this);
 }
 
@@ -622,14 +623,12 @@ bool BrowserRelation::same_name(const QString & s, UmlCode t) const {
 }
 
 QString BrowserRelation::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
-  QString n = (def->is_a(this)) ? def->get_role_a() : def->get_role_b();
+  QString s = (def->is_a(this)) ? def->get_role_a() : def->get_role_b();
   
-  if (n.isEmpty())
-    n = (const char *) name;
+  if (s.isEmpty())
+    s = (const char *) name;
 
-  return (rev) ? n + "   [" + p + "]"
-	       : p + "::" + n;
+  return fullname(s, rev);
 }
 
 void BrowserRelation::member_cpp_def(const QString & prefix, const QString &,

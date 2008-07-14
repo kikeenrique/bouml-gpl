@@ -98,8 +98,7 @@ void BrowserActivityObject::update_idmax_for_root()
   all.update_idmax_for_root();
 }
     
-void BrowserActivityObject::referenced_by(QList<BrowserNode> & l) {
-  BrowserNode::referenced_by(l);
+void BrowserActivityObject::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserFlow::compute_referenced_by(l, this);
   BrowserSimpleRelation::compute_referenced_by(l, this);
 }
@@ -414,14 +413,12 @@ bool BrowserActivityObject::allow_empty() const {
 }
 
 QString BrowserActivityObject::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
   QString s = name;
 
   if (s.isEmpty())
     s = "<anonymous activity object>";
-
-  return (rev) ? s + "   [" + p + "]"
-	       : p + "::" + s;
+  
+  return fullname(s, rev);
 }
 
 BrowserNode * BrowserActivityObject::get_associated() const {

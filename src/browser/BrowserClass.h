@@ -146,7 +146,7 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
     static void read_stereotypes(char * &, char * &);
     static void save_stereotypes(QTextStream &);
     
-    virtual void referenced_by(QList<BrowserNode> &);
+    virtual void referenced_by(QList<BrowserNode> &, bool ondelete = FALSE);
     
     static bool new_java_enums(QString new_st);
 

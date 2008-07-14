@@ -334,14 +334,12 @@ bool BrowserPin::allow_empty() const {
 }
 
 QString BrowserPin::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
   QString s = name;
 
   if (s.isEmpty())
     s = "<anonymous pin>";
 
-  return (rev) ? s + "   [" + p + "]"
-	       : p + "::" + s;
+  return fullname(s, rev);
 }
 
 bool BrowserPin::api_compatible(unsigned v) const {

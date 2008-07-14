@@ -9,6 +9,7 @@
 #include "UmlPackage.h"
 #include "FileOut.h"
 #include "UmlItem.h"
+#include "UmlUseCaseDiagram.h"
 
 void UmlPackage::xmi(int argc, char ** argv) {
   if (parent() != 0) {
@@ -177,7 +178,7 @@ void UmlPackage::xmi(int argc, char ** argv) {
 	out << ">\n\t";
 	if (comment_exporter)
 	  out << "<!-- ";
-	out << "<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.5.6\"/>";
+	out << "<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.5.7\"/>";
 	if (comment_exporter)
 	  out << " -->";
 	out << "\n\t<uml:Model xmi:type=\"uml:Model\" xmi:id=\"themodel\" name=\""
@@ -304,6 +305,9 @@ void UmlPackage::write(FileOut & out) {
 
   while (! _relations.isEmpty())
     _relations.take(0)->write(out, FALSE);
+    
+  while (! _assocs.isEmpty())
+    _assocs.take(0)->write_it(out);
 
   out.indent(-1); 
   out.indent(); 
@@ -332,5 +336,9 @@ void UmlPackage::search_class_assoc() {
 
 void UmlPackage::memo_relation(UmlItem * r) {
   _relations.append(r);
+}
+
+void UmlPackage::memo_ac_uc_assoc(UmlUseCaseDiagram * d) {
+  _assocs.append(d);
 }
 

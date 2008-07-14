@@ -66,6 +66,8 @@ class UmlItem
     _stereotypes[ste].append(this);
 !!!130051.cpp!!!	memo_relation(inout r : UmlItem) : void
   parent()->memo_relation(r);
+!!!134020.cpp!!!	memo_ac_uc_assoc(inout d : UmlUseCaseDiagram) : void
+  parent()->memo_ac_uc_assoc(d);
 !!!202114.cpp!!!	write_multiplicity(inout out : FileOut, in s : string, in who : UmlItem) : void
   if (!s.isEmpty()) {
     QCString min;

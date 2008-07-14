@@ -86,7 +86,7 @@ class BrowserPseudoState : public BrowserNode, public Labeled<BrowserPseudoState
     
     virtual bool tool_cmd(ToolCom * com, const char * args);
     
-    virtual void referenced_by(QList<BrowserNode> &);
+    virtual void referenced_by(QList<BrowserNode> &, bool ondelete = FALSE);
     static void compute_referenced_by(QList<BrowserNode> &, BrowserPseudoState *);
     
     bool allow_empty() const;

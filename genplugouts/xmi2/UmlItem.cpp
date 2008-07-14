@@ -1,6 +1,7 @@
 
 #include "UmlItem.h"
 #include "FileOut.h"
+#include "UmlUseCaseDiagram.h"
 #include "UmlTypeSpec.h"
 
 #include "UmlCom.h"
@@ -88,6 +89,10 @@ void UmlItem::search_class_assoc() {
 
 void UmlItem::memo_relation(UmlItem * r) {
   parent()->memo_relation(r);
+}
+
+void UmlItem::memo_ac_uc_assoc(UmlUseCaseDiagram * d) {
+  parent()->memo_ac_uc_assoc(d);
 }
 
 void UmlItem::write_multiplicity(FileOut & out, QCString s, UmlItem * who)

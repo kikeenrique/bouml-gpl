@@ -109,7 +109,7 @@ class BrowserArtifact : public BrowserNode, public Labeled<BrowserArtifact> {
     
     virtual const QPixmap* pixmap (int) const;
     
-    virtual void referenced_by(QList<BrowserNode> &);
+    virtual void referenced_by(QList<BrowserNode> &, bool ondelete = FALSE);
     static void compute_referenced_by(QList<BrowserNode> &, BrowserArtifact *);
     static void compute_referenced_by(QList<BrowserNode> &, BrowserClass *);
     

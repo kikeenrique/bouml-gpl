@@ -11,7 +11,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
     try {
-      UmlCom::trace("<b>Use case wizard</b> release 1.1 (C++ version)<br>");
+      UmlCom::trace("<b>Use case wizard</b> release 1.1.1 (C++ version)<br>");
       UmlCom::targetItem()->wizard();
     }
     catch (...) {

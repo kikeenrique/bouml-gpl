@@ -67,6 +67,7 @@ QSize ClassDialog::previous_size;
 
 ClassDialog::ClassDialog(ClassData * c)
     : QTabDialog(0, 0, TRUE), cl(c) {
+  // take time in case of many classes and artifacts
   if (c->browser_node->is_writable())
     setCancelButton();
   else {

@@ -154,14 +154,7 @@ bool BrowserClassInstance::allow_empty() const {
 }
 
 QString BrowserClassInstance::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
-
-  if (p.isEmpty()) 
-    return QString((const char *) name);
-  else if (rev)
-    return name + "   [" + p + "]";
-  else
-    return p + "::" + name;
+  return fullname(rev);
 }
 
 void BrowserClassInstance::update_stereotype(bool) {
@@ -185,8 +178,8 @@ void BrowserClassInstance::update_stereotype(bool) {
   }
 }
 
-void BrowserClassInstance::referenced_by(QList<BrowserNode> & l) {
-  BrowserNode::referenced_by(l);
+void BrowserClassInstance::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
   BrowserClassInstance::compute_referenced_by(l, this);
 }
 
@@ -407,7 +400,7 @@ BrowserClassInstance * BrowserClassInstance::get_classinstance(BrowserClass * cl
       nodes.append(it.current());
     ++it;
   }
-  nodes.sort();
+  nodes.sort_it();
   
   // use cl here but any element is good for
   return (! cl->enter_child_name(dummy, "choose existing instance : ",
@@ -480,7 +473,7 @@ BrowserNodeList & BrowserClassInstance::instances(BrowserNodeList & result,
     }
   }
   
-  result.sort();
+  result.sort_it();
   
   return result;
 }

@@ -16,7 +16,7 @@ int main(int argc, char ** argv)
     try {
       // does something on the target, here suppose that a virtual
       // operation exist at UmlItem level (and probably sub_level !)
-      UmlCom::trace("<b>Uml projection</b> 1.0<br>");
+      UmlCom::trace("<b>Uml projection</b> 1.0.1<br>");
       UmlCom::targetItem()->projection();
       UmlCom::trace("Done");
     }

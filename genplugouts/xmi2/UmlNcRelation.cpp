@@ -3,7 +3,38 @@
 #include "FileOut.h"
 
 void UmlNcRelation::write(FileOut & out) {
-  write(out, TRUE);
+  if ((relationKind() == aDependency) &&
+      (parent()->kind() == anUseCase) &&
+      (target()->kind() == anUseCase)) {
+    const char * t;
+    const char * r;
+    
+    if (stereotype() == "include") {
+      t = "Include";
+      r = "addition";
+    }
+    else if (stereotype() == "extend") {
+      t = "Extend";
+      r = "extendedCase";
+    }
+    else {
+      write(out, TRUE);
+      return;
+    }
+      
+    out.indent();
+    out << "<" << stereotype() << " xmi:type=\"uml:" << t << "\"";
+    out.id(this);
+    out.ref(target(), r);
+    out << ">\n";
+    out.indent(+1); 
+    write_description_properties(out);
+    out.indent(-1);
+    out.indent();
+    out << "</" << stereotype() << ">\n";
+  }
+  else
+    write(out, TRUE);
 }
 
 void UmlNcRelation::write(FileOut & out, bool inside) {

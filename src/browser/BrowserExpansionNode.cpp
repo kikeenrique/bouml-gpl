@@ -299,18 +299,16 @@ bool BrowserExpansionNode::allow_empty() const {
 }
 
 QString BrowserExpansionNode::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
   QString s = name;
 
   if (s.isEmpty())
     s = "<anonymous expansion node>";
 
-  return (rev) ? s + "   [" + p + "]"
-	       : p + "::" + s;
+  return fullname(s, rev);
 }
 
-void BrowserExpansionNode::referenced_by(QList<BrowserNode> & l) {
-  BrowserNode::referenced_by(l);
+void BrowserExpansionNode::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
   BrowserFlow::compute_referenced_by(l, this);
 }
 

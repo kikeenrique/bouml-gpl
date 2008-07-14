@@ -157,14 +157,7 @@ const QPixmap* BrowserUseCase::pixmap(int) const {
 }
 
 QString BrowserUseCase::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
-
-  if (p.isEmpty()) 
-    return QString((const char *) name);
-  else if (rev)
-    return name + "   [" + p + "]";
-  else
-    return p + "::" + name;
+  return fullname(rev);
 }
 
 void BrowserUseCase::menu() {
@@ -457,7 +450,7 @@ BrowserNodeList & BrowserUseCase::instances(BrowserNodeList & result) {
     ++it;
   }
 
-  result.sort();
+  result.sort_it();
   
   return result;
 }

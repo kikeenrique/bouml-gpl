@@ -274,14 +274,11 @@ BasicData * BrowserParameter::get_data() const {
 }
 
 QString BrowserParameter::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
-
-  return (rev) ? name + "   [" + p + "]"
-	       : p + "::" + name;
+  return fullname(rev);
 }
 
-void BrowserParameter::referenced_by(QList<BrowserNode> & l) {
-  BrowserNode::referenced_by(l);
+void BrowserParameter::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
   BrowserFlow::compute_referenced_by(l, this);
 }
 

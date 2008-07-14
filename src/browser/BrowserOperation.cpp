@@ -583,10 +583,7 @@ bool BrowserOperation::same_name(const QString &, UmlCode) const {
 }
 
 QString BrowserOperation::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
-
-  return (rev) ? name + "   [" + p + "]"
-	       : p + "::" + name;
+  return fullname(rev);
 }
 
 void BrowserOperation::member_cpp_def(const QString & prefix,

@@ -315,16 +315,14 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
   unsigned rank = 0;
   UmlParameter param;
   bool on_error;
-  QValueList<QCString> defaultvalues;
   
-  while (read_param(cl, rank, param, decl, tmplts, on_error)) {
+  while (read_param(cl, rank, param, decl, tmplts, on_error, TRUE)) {
     if ((op != 0) && !op->addParameter(rank++, param)) {
 #ifdef DEBUG_BOUML
       cout << "ERROR cannot add param '" << param.name << "' type '" << param.type.toString() << '\n';
 #endif
       return FALSE;
     }
-    defaultvalues.append(param.default_value);
   }
   
   QCString s;
@@ -525,19 +523,6 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
 			       decl.find("${const}", start + 4) - start + 4));
 	}
 	
-	// remove params default value
-	QValueList<QCString>::Iterator iter;
-	int index2 = 0;
-	
-	for (iter = defaultvalues.begin(); iter != defaultvalues.end(); ++iter) {
-	  QCString & v = *iter;
-	  
-	  if (! v.isEmpty()) {
-	    index2 = def.find(" =" + v, index2);   
-	    def.remove(index2, v.length() + 2);
-	  }
-	}
-	
 	if (typenamep) {
 	  def.insert(index, "typename ");
 	  index += 9;
@@ -563,6 +548,18 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
 	  index = def.find("${type}");
 	  def.remove(index, (((const char *) def)[index + 7] == ' ') ? 8 : 7);
 	}
+	
+	// remove params default value
+	int index2 = def.find("${(}");
+	int index3;
+	int index4 = def.find("${)}", index2 + 4);
+	
+	while (((index = def.find("${v", index2)) != -1) &&
+	       (index < index4) &&
+	       ((index3 = def.find('}', index + 3)) != -1)) {
+	  def.remove(index, index3 - index + 1);
+	  index2 = index;
+	}
       }
       op->set_CppDef(def);
     }
@@ -578,7 +575,7 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
 bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
 			      UmlParameter & param, QCString & decl,
 			      const QValueList<FormalParameterList> & tmplt,
-			      bool & on_error)
+			      bool & on_error, bool add_defaultvalue)
 {
 #ifdef DEBUG_BOUML
   cout << "UmlOperation::manage_param " << rank << "\n";
@@ -690,13 +687,15 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
       if (typenamep)
 	s2 += "typename ";
       
+      QCString n_close = QCString().setNum(rank) + "}";
+      
       // note : doesn't add the pretype (class ...) else
       // this will be a problem if this one is not used both
       // in the declaration and definition, furthermore Bouml
       // add needed declaration/includes
       
       if (!pfct) {
-	QCString typeform = QCString("${t") + QCString().setNum(rank) + '}';
+	QCString typeform = QCString("${t") + n_close;
 	
 	container->compute_type(type, param.type, typeform, FALSE, tmplt);
 	
@@ -715,8 +714,8 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
 					pn.length());
       }
 	
-      if (!param.default_value.isEmpty())
-	s2 += " =" + param.default_value;
+      if (add_defaultvalue)
+	s2 += QCString("${v") + n_close;
       
       if (s == "...")
 	s2 += " ...";
@@ -732,6 +731,8 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
       skip_expr("),", TRUE);
       Lex::unread_word();	// ')' or ','
       param.default_value = Lex::region();
+      if (*((const char *) param.default_value) == ' ')
+	param.default_value = param.default_value.mid(1);
     }
     else if ((s == "struct") ||
 	     (s == "union") ||
@@ -1151,7 +1152,7 @@ bool UmlOperation::reverse_if_def(Package * pack,
   
   param_names.setAutoDelete(TRUE);
   
-  while (read_param(pack /* yes ! */, rank, param, decl, tmplts, on_error)) {
+  while (read_param(pack /*yes !*/, rank, param, decl, tmplts, on_error, FALSE)) {
     param_names.append(new QCString(param.name));
 
     if ((params.count() <= rank) ||

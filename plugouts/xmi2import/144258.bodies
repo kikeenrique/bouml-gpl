@@ -116,20 +116,16 @@ class Association
     
     if ((it = UmlItem::All.find(a.idref)) == UmlItem::All.end()) {
       if (!FileIn::isBypassedId(a.idref))
-	UmlCom::trace("association : unknown type reference '" + a.idref + "'<br>");
+	UmlCom::trace("association : unknown reference '" + a.idref + "'<br>");
     }
-    else if ((*it)->kind() != aClass)
-      UmlCom::trace("'" + a.idref + "' is not a class<br>");
-    else {
+    else if ((*it)->kind() == aClass) {
       UmlClass * cla = (UmlClass *) *it;
       
       if ((it = UmlItem::All.find(b.idref)) == UmlItem::All.end()) {
 	if (!FileIn::isBypassedId(b.idref))
-	  UmlCom::trace("association : unknown type reference '" + b.idref + "'<br>");
+	  UmlCom::trace("association : unknown reference '" + b.idref + "'<br>");
       }
-      else if ((*it)->kind() != aClass)
-	UmlCom::trace("'" + b.idref + "' is not a class<br>");
-      else {
+      else if ((*it)->kind() == aClass) {
 	UmlClass * clb = (UmlClass *) *it;
 	aRelationKind k;
 	

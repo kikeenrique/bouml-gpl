@@ -241,14 +241,12 @@ bool BrowserExtraMember::allow_empty() const {
 }
 
 QString BrowserExtraMember::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
   QString s = name;
 
   if (s.isEmpty())
     s = "<anonymous extra member>";
 
-  return (rev) ? s + "   [" + p + "]"
-	       : p + "::" + s;
+  return fullname(s, rev);
 }
 
 void BrowserExtraMember::member_cpp_def(const QString &, const QString &, 

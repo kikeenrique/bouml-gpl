@@ -300,14 +300,12 @@ BasicData * BrowserFlow::get_data() const {
 }
 
 QString BrowserFlow::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
   QString s = (const char *) name;
 
   if (s.isEmpty())
     s = "<anonymous flow>";
 
-  return (rev) ? s + "   [" + p + "]"
-	       : p + "::" + s;
+  return fullname(s, rev);
 }
 
 bool BrowserFlow::allow_empty() const {

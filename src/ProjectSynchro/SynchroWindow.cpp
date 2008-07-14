@@ -165,7 +165,7 @@ The project is already locked by 'Project control' or 'Project syncho'\n\
     
     if (! ids.isEmpty()) {
       QMessageBox::critical(0, "Synchro project", 
-			    "The project " + path + " is edited by the users having these BOUML_ID :" + ids);
+			    "The project " + path + " is edited by the users having these IDs :" + ids);
       dir.rmdir("all.lock");
     }
     else {

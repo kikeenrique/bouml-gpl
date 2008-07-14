@@ -299,6 +299,8 @@ bool UmlOperation::read_param(Class * container, unsigned rank,
   }
   
   if (! bypass) {
+    QCString n_close = QCString().setNum(rank) + "}";
+    
     param.name = s.mid(1);
 	
     s = (rank == 0) ? "" : ", ";
@@ -306,17 +308,14 @@ bool UmlOperation::read_param(Class * container, unsigned rank,
     if (arrayp)
       s += "array ";
     else if ((param.type.type != 0) || !param.type.explicit_type.isEmpty()) {
-      s += "${t";
-      s += QCString().setNum(rank);
-      s += "} ";
+      s += "${t" + n_close + " ";
     }
     
     if (refp)
       s += "& ";
 
-    s += "${p";
-    s += QCString().setNum(rank);
-    s += "}";
+    s += "${p" + n_close + "${v" + n_close;
+    
     def.insert(def.find("${)}"), 	// cannot be -1
 	       s);
   }
@@ -328,8 +327,8 @@ bool UmlOperation::read_param(Class * container, unsigned rank,
     s = skip_expr(0);
     param.default_value = Lex::region();
     param.default_value.truncate(param.default_value.length() - s.length());
-    def.insert(def.find("${)}"), 	// cannot be -1
-	       "=" + param.default_value);
+    if (*((const char *) param.default_value) == ' ')
+      param.default_value = param.default_value.mid(1);
   }    
   else if (s.isEmpty()) {
     Lex::premature_eof();

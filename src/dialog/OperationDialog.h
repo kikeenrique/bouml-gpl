@@ -181,6 +181,7 @@ class OperationDialog : public QTabDialog {
     void manage_cpp_type(unsigned rank, QString & s);
     void manage_cpp_exceptions(QString & s);
     void manage_var(unsigned rank, QString & s);
+    void manage_init(unsigned rank, QString & s);
     void manage_java_type(unsigned rank, QString & s);
     void manage_java_exceptions(QString & s);
     void manage_php_type(unsigned rank, QString & s);
@@ -335,11 +336,13 @@ class CppParamsTable : public MyTable {
   protected:
     ParamsTable * params;
     MultiLineEdit * edform;
+    bool dcl;
   
-    static QString copied[7];		// copy/cut/paste
+    static QString copied[8];		// copy/cut/paste
   
   public:
-    CppParamsTable(ParamsTable * p, MultiLineEdit * f, QWidget * parent);
+    CppParamsTable(ParamsTable * p, MultiLineEdit * f, 
+		   QWidget * parent, bool dcl);
     void update_edform();
   
   protected:
@@ -372,7 +375,8 @@ class CppParamsDialog : public QDialog {
     static QSize previous_size;
   
   public:
-    CppParamsDialog(QWidget * parent, ParamsTable * params, MultiLineEdit * form);
+    CppParamsDialog(QWidget * parent, ParamsTable * params,
+		    MultiLineEdit * form, bool decl);
     virtual ~CppParamsDialog();
   
   protected slots:
@@ -387,10 +391,11 @@ class PhpParamsTable : public MyTable {
     ParamsTable * params;
     MultiLineEdit * edform;
   
-    static QString copied[5];		// copy/cut/paste
+    static QString copied[6];		// copy/cut/paste
   
   public:
-    PhpParamsTable(QWidget * parent, ParamsTable * p, MultiLineEdit * f);
+    PhpParamsTable(QWidget * parent, ParamsTable * p,
+		   MultiLineEdit * f);
     void update_edform();
   
   protected:
@@ -423,7 +428,8 @@ class PhpParamsDialog : public QDialog {
     static QSize previous_size;
   
   public:
-    PhpParamsDialog(QWidget * parent, ParamsTable * params, MultiLineEdit * form);
+    PhpParamsDialog(QWidget * parent, ParamsTable * params,
+		    MultiLineEdit * form);
     virtual ~PhpParamsDialog();
   
   protected slots:

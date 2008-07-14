@@ -60,6 +60,14 @@ void UmlOperation::uml2cpp(bool) {
   if (isAbstract())
     set_CppDef("");
   else {
+    int index1 = 0;
+    int index2;
+      
+    while ((index2 = sparams.find("${v", index1)) != -1) {
+      sparams.remove(index2, sparams.find('}', index2 + 3) - index2 + 1);
+      index1 = index2;
+    }
+    
     d = CppSettings::operationDef();
     d.insert(d.find("${)}"), sparams);
     d.replace(d.find("${type}"), 7, returntypeform);
@@ -194,7 +202,7 @@ void UmlOperation::uml2php(bool) {
     for (rank = 0; rank != nparams; rank += 1) {
       char s[16];
       
-      sprintf(s, "%s${p%u}", sep, rank);
+      sprintf(s, "%s${p%u}${v%u}", sep, rank, rank);
       sparams += s;
       sep = ", ";
     }

@@ -10,6 +10,7 @@
 
 class FileOut;
 class FileOut;
+class UmlUseCaseDiagram;
 class UmlTypeSpec;
 
 // This class is a mother class for all the other Uml* classes, this
@@ -41,6 +42,12 @@ class UmlItem : public UmlBaseItem {
     //the relation at the package/view level
     
     virtual void memo_relation(UmlItem * r);
+
+    //Memorize the use case diagram in the package (or the view in case the views
+    //are generated as package) containing the current element, to generate
+    //the association use case / actor at the package/view level
+    
+    virtual void memo_ac_uc_assoc(UmlUseCaseDiagram * d);
 
     static void write_multiplicity(FileOut & out, QCString s, UmlItem * who);
 

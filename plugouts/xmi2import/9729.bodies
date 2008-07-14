@@ -35,9 +35,8 @@ class UmlUseCase
 
   declareFct("extend", "uml:Extend", &importExtendInclude);
   declareFct("include", "uml:Include", &importExtendInclude);
-  
-  // not yet managed in Bouml
-  declareFct("extensionpoint", "uml:ExtensionPoint", &ignore);
+
+  declareFct("extensionpoint", "uml:ExtensionPoint", &importExtensionPoint);
 
 !!!195970.cpp!!!	importIt(inout in : FileIn, inout token : Token, inout where : UmlItem) : void
   where = where->container(anUseCase, token, in);
@@ -88,7 +87,21 @@ class UmlUseCase
 
   if (! token.closed())
     in.finish(token.what());
-!!!218626.cpp!!!	ignore(inout in : FileIn, inout token : Token, inout where : UmlItem) : void
+!!!129156.cpp!!!	importExtensionPoint(inout in : FileIn, inout token : Token, inout where : UmlItem) : void
+  if (where->kind() == anUseCase) {
+    QCString ep = token.valueOf("name");
+    
+    if (!ep.isEmpty()) {
+      QCString eps = ((UmlUseCase *) where)->extensionPoints();
+      
+      if (! eps.isEmpty())
+	eps += "\n" + ep;
+      else
+	eps = ep;
+      
+      ((UmlUseCase *) where)->set_ExtensionPoints(eps);
+    }
+  }
+
   if (! token.closed())
     in.finish(token.what());
-

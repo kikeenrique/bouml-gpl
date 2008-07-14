@@ -254,6 +254,16 @@ void UmlOperation::gen_cpp_decl(QCString s, bool descr) {
       else
 	fw.write("???");
     }
+    else if (sscanf(p, "${v%u}", &rank) == 1) {
+      p = strchr(p, '}') + 1;
+      
+      if (rank >= pa.count())
+	fw.write("???");
+      else if (! pa[rank].default_value.isEmpty()) {
+	fw.write(" = ");
+	writeq(pa[rank].default_value);
+      }
+    }
     else if (!strncmp(p, "${abstract}", 11)) {
       if (isAbstract())
 	fw.write("= 0 ");
@@ -484,6 +494,16 @@ void UmlOperation::gen_php_decl(QCString s) {
       }
       else
 	fw.write("???");
+    }
+    else if (sscanf(p, "${v%u}", &rank) == 1) {
+      p = strchr(p, '}') + 1;
+
+      if (rank >= npa)
+	fw.write("???");
+      else if (! pa[rank].default_value.isEmpty()) {
+	fw.write(" = ");
+	writeq(pa[rank].default_value);
+      }
     }
     else if (*p == '\r')
       p += 1;

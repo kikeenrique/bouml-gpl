@@ -108,6 +108,7 @@ BrowserClassView::BrowserClassView(const BrowserClassView * model,
 
 BrowserClassView::~BrowserClassView() {
   all.remove(get_ident());
+  delete def;
 }
 
 BrowserNode * BrowserClassView::duplicate(BrowserNode * p, QString name) {
@@ -166,9 +167,9 @@ QString BrowserClassView::full_name(bool rev, bool itself) const {
   else if (p.isEmpty()) 
     return QString((const char *) name);
   else if (rev)
-    return name + "   [" + p + "]";
+    return name + (FullPathPrefix + p + FullPathPostfix);
   else
-    return p + "::" + name;
+    return p + (FullPathDotDot + name);
 }
 
 void BrowserClassView::menu() {

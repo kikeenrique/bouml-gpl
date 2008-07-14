@@ -36,6 +36,7 @@
 #include <qptrdict.h>
 #include <qpainter.h>
 #include <qpopupmenu.h> 
+#include <qapplication.h> 
 
 #include "BrowserView.h"
 #include "BrowserNode.h"
@@ -78,6 +79,13 @@ SaveProgress * BrowserNode::save_progress;
 int BrowserNode::must_be_saved_counter;
 int BrowserNode::already_saved;
 
+// to accelerate sorting
+QPtrDict<QString> SynonymousPath(259);
+
+// to accelerate full_name
+QString BrowserNode::FullPathPrefix = "   [";
+QString BrowserNode::FullPathPostfix = "]";
+QString BrowserNode::FullPathDotDot = "::";
 
 BrowserNode::BrowserNode(QString s, BrowserView * parent)
     : QListViewItem(parent, s),
@@ -110,8 +118,6 @@ BrowserNode::BrowserNode()
 }
 
 BrowserNode::~BrowserNode() {
-  // in case it is the current commented object
-  UmlWindow::set_commented(0);
   if (is_marked)
     marked_list.removeRef(this);
 }
@@ -175,7 +181,7 @@ bool BrowserNode::delete_internal(QString & warning) {
   if (!made) {
     made = TRUE;
     made_here = TRUE;
-    referenced_by(targetof);
+    referenced_by(targetof, TRUE);
   }
   else
     made_here = FALSE;
@@ -189,11 +195,19 @@ bool BrowserNode::delete_internal(QString & warning) {
     while ((r = it.current()) != 0) {
       if (!r->is_writable()) {
 	ro = TRUE;
-	warning += "\n    " + full_name() +
-	  ((r->get_type() == UmlComponent)
-	   ? " referenced bu the read-only component "
-	   : " is the target of the read-only relation ") +
-	     r->full_name();
+	warning += "\n    " + full_name();
+	switch (r->get_type()) {
+	case UmlComponent:
+	  warning += " referenced by the read-only component ";
+	  break;
+	case UmlArtifact:
+	  warning += " referenced by the read-only artifact ";
+	  break;
+	default:
+	  warning += " is the target of the read-only relation ";
+	  break;
+	}
+	warning += r->full_name();
       }
       
       ++it;
@@ -237,7 +251,7 @@ void BrowserNode::set_comment(const char * c) {
   comment = c;
 }
 
-void BrowserNode::referenced_by(QList<BrowserNode> & l) {
+void BrowserNode::referenced_by(QList<BrowserNode> & l, bool) {
   BrowserSimpleRelation::compute_referenced_by(l, this);
 }
 
@@ -464,6 +478,8 @@ void BrowserNode::pre_load()
 
 void BrowserNode::post_load(bool light)
 {
+  UmlWindow::set_commented(0);
+  
   signal_unconsistencies();
   
   QList<BrowserRelation> wrong;
@@ -1039,7 +1055,7 @@ bool BrowserNode::enter_child_name(QString & r, const QString & msg, UmlCode typ
 }
 
 bool BrowserNode::enter_child_name(QString & r, const QString & msg, UmlCode type,
-				   BrowserNodeList nodes,
+				   BrowserNodeList & nodes,
 				   BrowserNode ** old, bool allow_spaces,
 				   bool allow_empty, bool existing) {
   
@@ -1222,11 +1238,11 @@ bool BrowserNode::tool_cmd(ToolCom * com, const char * args) {
     break;
   case referencedByCmd:
     {
-      QList<BrowserNode> targetof;
+      BrowserNodeList targetof;
       
       referenced_by(targetof);
       // remove duplicats
-      targetof.sort();
+      targetof.sort_it();
       
       BrowserNode * bn;
       
@@ -1560,6 +1576,21 @@ void BrowserNode::unconsistent_removed(const char * what, BrowserNode * newone) 
 
 //
 
+void BrowserNodeList::sort_it() {
+  if (count() > 1000)
+    QApplication::setOverrideCursor(Qt::waitCursor);
+  
+  BrowserPackage::prepare_for_sort();
+
+  sort();
+
+  SynonymousPath.setAutoDelete(TRUE);
+  SynonymousPath.clear();
+  
+  if (count() > 1000)
+    QApplication::restoreOverrideCursor();
+}
+
 void BrowserNodeList::search(BrowserNode * bn, UmlCode k, const QString & s,
 			     bool cs, bool even_deleted, bool for_name)
 {
@@ -1607,8 +1638,35 @@ void BrowserNodeList::search_ddb(BrowserNode * bn, UmlCode k, const QString & s,
 
 int BrowserNodeList::compareItems(QCollection::Item item1, QCollection::Item item2)
 {
-  QString s1 = ((BrowserNode *) item1)->full_name(TRUE);
-  QString s2 = ((BrowserNode *) item2)->full_name(TRUE);
+  QString s1 = ((BrowserNode *) item1)->get_name();
+  QString s2 = ((BrowserNode *) item2)->get_name();
+
+  if (s1 != s2) {
+    s1 += " ";
+    s2 += " ";
+  }
+  else {
+    QString * ps1 = SynonymousPath[(BrowserNode *) item1];
+    QString * ps2 = SynonymousPath[(BrowserNode *) item2];
+
+    if (ps1 == 0) {
+      s1 = ((BrowserNode *) item1)->full_name(TRUE);
+      ps1 = new QString(s1);
+
+      SynonymousPath.insert((BrowserNode *) item1, ps1);
+    }
+    else
+      s1 = *ps1;
+
+    if (ps2 == 0) {
+      s2 = ((BrowserNode *) item2)->full_name(TRUE);
+      ps2 = new QString(s2);
+
+      SynonymousPath.insert((BrowserNode *) item2, ps2);
+    }
+    else
+      s2 = *ps2;
+  }
   
   return s1.compare(s2);
 }

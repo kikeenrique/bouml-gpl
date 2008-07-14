@@ -105,7 +105,7 @@ class BrowserRelation : public BrowserNode, public Labeled<BrowserRelation> {
     static void update_idmax_for_root();
     virtual void renumber(int phase);
     
-    virtual void referenced_by(QList<BrowserNode> &);
+    virtual void referenced_by(QList<BrowserNode> &, bool ondelete = FALSE);
     static void compute_referenced_by(QList<BrowserNode> &, BrowserClass *);
     
     virtual bool tool_cmd(ToolCom * com, const char * args);

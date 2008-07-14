@@ -240,7 +240,7 @@ The project is already locked by 'Project control' or 'Project syncho'\n\
     
     if (! ids.isEmpty()) {
       QMessageBox::critical(0, "Control project", 
-			    "The project is edited by the users having these BOUML_ID :" + ids);
+			    "The project is edited by the users having these IDs :" + ids);
       dir.rmdir("all.lock");
     }
     else {

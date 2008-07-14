@@ -79,6 +79,7 @@ BrowserDeploymentView::BrowserDeploymentView(int id)
 
 BrowserDeploymentView::~BrowserDeploymentView() {
   all.remove(get_ident());
+  delete def;
 }
 
 BrowserNode * BrowserDeploymentView::duplicate(BrowserNode * p, QString name) {
@@ -145,9 +146,9 @@ QString BrowserDeploymentView::full_name(bool rev, bool itself) const {
   else if (p.isEmpty()) 
     return QString((const char *) name);
   else if (rev)
-    return name + "   [" + p + "]";
+    return name + (FullPathPrefix + p + FullPathPostfix);
   else
-    return p + "::" + name;
+    return p + (FullPathDotDot + name);
 }
 
 void BrowserDeploymentView::menu() {
@@ -568,7 +569,7 @@ BrowserNodeList & BrowserDeploymentView::instances(BrowserNodeList & result)
     ++it;
   }
 
-  result.sort();
+  result.sort_it();
   
   return result;
 }

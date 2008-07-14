@@ -84,7 +84,11 @@ class BrowserNode : public QListViewItem,
     static SaveProgress * save_progress;
     static int must_be_saved_counter;
     static int already_saved;
-  
+    
+    static QString FullPathPrefix;
+    static QString FullPathPostfix;
+    static QString FullPathDotDot;
+
     BrowserNode();
     
     void set_parent(QListViewItem * parent);
@@ -134,7 +138,7 @@ class BrowserNode : public QListViewItem,
     bool enter_child_name(QString & r, const QString & msg, UmlCode type,
 			  bool allow_spaces, bool allow_empty);
     bool enter_child_name(QString & r, const QString & msg, UmlCode type,
-			  BrowserNodeList nodes, BrowserNode ** old,
+			  BrowserNodeList & nodes, BrowserNode ** old,
 			  bool allow_spaces, bool allow_empty, 
 			  bool exiting = FALSE);
     bool wrong_child_name(const QString & s, UmlCode type,
@@ -148,6 +152,8 @@ class BrowserNode : public QListViewItem,
 		  UmlCode kind1, UmlCode kind2 = UmlRelations) const;
     
     virtual QString full_name(bool rev = FALSE, bool itself = TRUE) const;
+    QString fullname(bool rev) const;
+    QString fullname(QString & s, bool rev) const;
     virtual void menu() = 0;
     virtual void apply_shortcut(QString s) = 0;
     virtual void open(bool force_edit);
@@ -203,7 +209,7 @@ class BrowserNode : public QListViewItem,
     virtual void member_cpp_def(const QString & prefix,
 				const QString & prefix_tmplop, 
 				QString & s, bool templ) const;
-    virtual void referenced_by(QList<BrowserNode> &);
+    virtual void referenced_by(QList<BrowserNode> &, bool ondelete = FALSE);
     virtual AType class_association() const;
     virtual const char * constraint() const;
     
@@ -240,6 +246,28 @@ class BrowserNode : public QListViewItem,
     static void setPopupMenuActive(bool y) { popup_menu_active = y; }
 };
 
+inline QString BrowserNode::fullname(bool rev) const {
+  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
+  
+  if (p.isEmpty()) 
+    return QString((const char *) name);
+  else if (rev)
+    return name + (FullPathPrefix + p + FullPathPostfix);
+  else
+    return p + (FullPathDotDot + name);
+}
+
+inline QString BrowserNode::fullname(QString & s, bool rev) const {
+  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
+  
+  if (p.isEmpty()) 
+    return s;
+  else if (rev)
+    return s + (FullPathPrefix + p + FullPathPostfix);
+  else
+    return p + (FullPathDotDot + s);
+}
+
 // a sortable list of BrowserNode
 
 class BrowserNodeList : public QList<BrowserNode> {
@@ -255,6 +283,7 @@ class BrowserNodeList : public QList<BrowserNode> {
     void names(QStringList & list) const;
     void full_names(QStringList & list) const;
     void full_defs(QStringList & list) const;
+    void sort_it();
 };
 
 

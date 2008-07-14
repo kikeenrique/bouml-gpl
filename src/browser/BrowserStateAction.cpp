@@ -94,8 +94,8 @@ void BrowserStateAction::update_idmax_for_root()
   all.update_idmax_for_root();
 }
     
-void BrowserStateAction::referenced_by(QList<BrowserNode> & l) {
-  BrowserNode::referenced_by(l);
+void BrowserStateAction::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
   BrowserTransition::compute_referenced_by(l, this);
 }
 
@@ -294,7 +294,6 @@ bool BrowserStateAction::allow_empty() const {
 }
 
 QString BrowserStateAction::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
   QString s = name;
 
   if (s.isEmpty()) {
@@ -306,8 +305,7 @@ QString BrowserStateAction::full_name(bool rev, bool) const {
       s = "<anonymous " + s + ">";
   }
 
-  return (rev) ? s + "   [" + p + "]"
-	       : p + "::" + s;
+  return fullname(s, rev);
 }
 
 void BrowserStateAction::init()

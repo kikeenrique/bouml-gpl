@@ -104,6 +104,7 @@ BrowserUseCaseView::BrowserUseCaseView(const BrowserUseCaseView * model,
 
 BrowserUseCaseView::~BrowserUseCaseView() {
   all.remove(get_ident());
+  delete def;
 }
 
 BrowserNode * BrowserUseCaseView::duplicate(BrowserNode * p, QString name) {

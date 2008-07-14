@@ -96,8 +96,8 @@ void BrowserPseudoState::update_idmax_for_root()
   all.update_idmax_for_root();
 }
     
-void BrowserPseudoState::referenced_by(QList<BrowserNode> & l) {
-  BrowserNode::referenced_by(l);
+void BrowserPseudoState::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
   BrowserTransition::compute_referenced_by(l, this);
 }
 
@@ -482,14 +482,12 @@ bool BrowserPseudoState::allow_empty() const {
 }
 
 QString BrowserPseudoState::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
   QString s = name;
 
   if (s.isEmpty())
     s = stringify(kind);
 
-  return (rev) ? s + "   [" + p + "]"
-	       : p + "::" + s;
+  return fullname(s, rev);
 }
 
 void BrowserPseudoState::init()

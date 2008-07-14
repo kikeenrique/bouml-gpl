@@ -127,8 +127,8 @@ void BrowserArtifact::update_idmax_for_root()
   all.update_idmax_for_root();
 }
     
-void BrowserArtifact::referenced_by(QList<BrowserNode> & l) {
-  BrowserNode::referenced_by(l);
+void BrowserArtifact::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
   compute_referenced_by(l, this);
 }
 
@@ -136,11 +136,12 @@ void BrowserArtifact::compute_referenced_by(QList<BrowserNode> & l,
 					    BrowserClass * target)
 {
   IdIterator<BrowserArtifact> it(all);
+  BrowserArtifact * a;
   
-  while (it.current()) {
-    if (!it.current()->deletedp() &&
-	(it.current()->associated_classes.findIndex(target) != -1))
-      l.append(it.current());
+  while ((a = it.current()) != 0) {
+    if (!a->deletedp() &&
+	(a->associated_classes.findIndex(target) != -1))
+      l.append(a);
     ++it;
   }
 }
@@ -169,14 +170,7 @@ const QPixmap* BrowserArtifact::pixmap(int) const {
 }
 
 QString BrowserArtifact::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
-
-  if (p.isEmpty()) 
-    return QString((const char *) name);
-  else if (rev)
-    return name + "   [" + p + "]";
-  else
-    return p + "::" + name;
+  return fullname(rev);
 }
 
 QString BrowserArtifact::get_path(QString path, QString root,
@@ -799,7 +793,7 @@ BrowserNodeList & BrowserArtifact::instances(BrowserNodeList & result, const cha
     }
   }
   
-  result.sort();
+  result.sort_it();
   
   return result;
 }

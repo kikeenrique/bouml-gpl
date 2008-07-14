@@ -1,10 +1,12 @@
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <qvbox.h>
 #include <qlabel.h>
 #include <qmultilineedit.h>
 #include <qgroupbox.h> 
 #include <qtextcodec.h>
+#include <qdir.h>
 
 #include "UmlCom.h"
 
@@ -35,7 +37,37 @@ TabDialog::TabDialog(UmlUseCase * u) : QTabDialog(0, ""), uc(u) {
 
   setCancelButton();
   
-  QString cs = getenv("BOUML_CHARSET");
+  QString cs;
+  
+  // note : QFile fp(QDir::home().absFilePath(".boumlrc")) doesn't work
+  // if the path contains non latin1 characters, for instance cyrillic !
+  QString s = QDir::home().absFilePath(".boumlrc");
+  FILE * fp = fopen((const char *) s, "r");
+
+  if (fp == 0)
+    cs = getenv("BOUML_CHARSET");
+  else {
+    char line[512];
+    
+    while (fgets(line, sizeof(line) - 1, fp) != 0) {
+      if (!strncmp(line, "CHARSET ", 8)) {
+	int len = strlen(line);
+	
+	if (len != 0) {
+	  if (line[len - 1] == '\n')
+	    line[--len] = 0;
+	  
+	  if ((len != 0) && (line[len - 1] == '\r'))
+	    line[len - 1] = 0;
+	}
+	
+	cs = line+8;
+	break;
+      }
+    }
+    
+    fclose(fp);
+  }
   
   Codec = 0;
   

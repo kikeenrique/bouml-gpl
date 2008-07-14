@@ -1371,7 +1371,8 @@ void OperationDialog::cpp_default_decl() {
     for (index = 0; index != nparams; index += 1, sep = ", ")
       params += sep + GenerationSettings::cpp(the_type(table->type(index),
 						       list, nodes),
-					      table->dir(index), index);
+					      table->dir(index), index)
+	+ "${v" + QString().setNum(index) + "}";
     
     if ((index = s.find("${)}")) != -1)
       s.insert(index, params);
@@ -1436,6 +1437,14 @@ void OperationDialog::cpp_decl_from_def() {
     // remove throw
     dcl.remove(index1, 8);
 
+  //add default param value
+  index1 = 0;
+  while (((index2 = dcl.find("${p", index1)) != -1) &&
+	 ((index3 = dcl.find('}', index2 + 3)) != -1)) {
+    dcl.insert(index3 + 1, "${v" + dcl.mid(index2 + 3, index3 - index2 - 2));
+    index1 = index3 + index3 - index2 + 2;
+  }
+  
   // update decl
   edcppdecl->setText(dcl);
   cpp_update_decl();
@@ -1447,7 +1456,7 @@ void OperationDialog::cpp_edit_param_decl() {
 
   if (((index = form.find("${(}")) != 0) &&
       (form.find("${)}", index + 4) != 0)) {
-    CppParamsDialog d(this, table, edcppdecl);
+    CppParamsDialog d(this, table, edcppdecl, TRUE);
     
     if (d.exec() == QDialog::Accepted)
       cpp_update_decl();
@@ -1492,6 +1501,21 @@ QString OperationDialog::compute_name(LineEdit * spec) {
   }
   else
     return edname->text();
+}
+
+void OperationDialog::manage_init(unsigned rank, QString & s)
+{
+  if (rank < table->nparams()) {
+    QString v = table->value(rank).stripWhiteSpace();
+    
+    if (! v.isEmpty())
+      s += " = " + v;
+  }
+  else {
+    s += "${v";
+    s += QString::number(rank);
+    s += '}';
+  }
 }
 
 void OperationDialog::manage_cpp_exceptions(QString & s)
@@ -1619,6 +1643,10 @@ void OperationDialog::cpp_update_decl() {
       manage_var(rank, s);
       p = strchr(p, '}') + 1;
     }
+    else if (sscanf(p, "${v%u}", &rank) == 1) {
+      manage_init(rank, s);
+      p = strchr(p, '}') + 1;
+    }
     else if (oper->is_get_or_set && !strncmp(p, "${stereotype}", 13)) {
       p += 13;
       // get/set with multiplicity > 1
@@ -1717,6 +1745,20 @@ QString OperationDialog::cpp_decl(const BrowserOperation * op, bool withname)
 	  s += QString::number(rank);
 	  s += '}';
 	}
+      }
+      p = strchr(p, '}') + 1;
+    }
+    else if (sscanf(p, "${v%u}", &rank) == 1) {
+      if (rank < d->nparams) {
+	QCString v = d->params[rank].get_default_value();
+	
+	if (!v.isEmpty())
+	  s += " = " + v;
+      }
+      else {
+	s += "${v";
+	s += QString::number(rank);
+	s += '}';
       }
       p = strchr(p, '}') + 1;
     }
@@ -1877,6 +1919,17 @@ void OperationDialog::cpp_def_from_decl() {
 	((index1 = def.find("${throw}")) != -1))
       // remove throw
       def.remove(index1, 8);
+    
+    // remove inits
+    index1 = def.find("${(}");
+    index4 = def.find("${)}", index1 + 4);
+    
+    while (((index2 = def.find("${v", index1)) != -1) &&
+	   (index2 < index4) &&
+	   ((index3 = def.find('}', index2 + 3)) != -1)) {
+      def.remove(index2, index3 - index2 + 1);
+      index1 = index2;
+    }
   }
   
   // update def
@@ -1890,7 +1943,7 @@ void OperationDialog::cpp_edit_param_def() {
 
   if (((index = form.find("${(}")) != 0) &&
       (form.find("${)}", index + 4) != 0)) {
-    CppParamsDialog d(this, table, edcppdef);
+    CppParamsDialog d(this, table, edcppdef, FALSE);
     
     d.raise();
     if (d.exec() == QDialog::Accepted)
@@ -2583,7 +2636,7 @@ void OperationDialog::php_default_def() {
     for (index = 0, sep = ""; index != nparams; index += 1, sep = ", ") {
       QString p;
       
-      p.sprintf("%s${p%d}", sep, index);
+      p.sprintf("%s${p%d}${v%d}", sep, index, index);
       params += p;
     }
     
@@ -2690,6 +2743,10 @@ void OperationDialog::php_update_def() {
       manage_var(rank, s);
       p = strchr(p, '}') + 1;
     }
+    else if (sscanf(p, "${v%u}", &rank) == 1) {
+      manage_init(rank, s);
+      p = strchr(p, '}') + 1;
+    }
     else if (*p == '\n') {
       s += *p++;
       if (*p)
@@ -2778,6 +2835,20 @@ QString OperationDialog::php_decl(const BrowserOperation * op, bool withname)
 	  s += QString::number(rank);
 	  s += '}';
 	}
+      }
+      p = strchr(p, '}') + 1;
+    }
+    else if (sscanf(p, "${v%u}", &rank) == 1) {
+      if (rank < d->nparams) {
+	QCString v = d->params[rank].get_default_value();
+	
+	if (!v.isEmpty())
+	  s += " = " + v;
+      }
+      else {
+	s += "${v";
+	s += QString::number(rank);
+	s += '}';
       }
       p = strchr(p, '}') + 1;
     }
@@ -4111,15 +4182,17 @@ QString ExceptionsTable::type(unsigned rank) const {
 //
 
 // copy/cut/paste
-QString CppParamsTable::copied[7];	// copy/cut/paste
+QString CppParamsTable::copied[8];	// copy/cut/paste
 
 static QStringList SpecifierList;
 static QStringList TypeRankList;
 static QStringList PtrList;
 static QStringList ParamRankList;
+static QStringList ValueRankList;
 
-CppParamsTable::CppParamsTable(ParamsTable * p, MultiLineEdit * f, QWidget * parent)
-    : MyTable(0, 7, parent), params(p), edform(f) {
+CppParamsTable::CppParamsTable(ParamsTable * p, MultiLineEdit * f,
+			       QWidget * parent, bool decl)
+    : MyTable(0, (decl) ? 8 : 7, parent), params(p), edform(f), dcl(decl) {
     
   setSorting(FALSE);
   setSelectionMode(NoSelection);	// single does not work
@@ -4129,16 +4202,30 @@ CppParamsTable::CppParamsTable(ParamsTable * p, MultiLineEdit * f, QWidget * par
   horizontalHeader()->setLabel(2, "${t<i>}");
   horizontalHeader()->setLabel(3, "Pointer");
   horizontalHeader()->setLabel(4, "${p<i>}");
-  horizontalHeader()->setLabel(5, "Modifier");
-  horizontalHeader()->setLabel(6, "do");
+  if (decl) {
+    horizontalHeader()->setLabel(5, "${v<i>}");
+    horizontalHeader()->setLabel(6, "Modifier");
+    horizontalHeader()->setLabel(7, "do");
+  }
+  else {
+    horizontalHeader()->setLabel(5, "Modifier");
+    horizontalHeader()->setLabel(6, "do");
+  }
   setColumnStretchable (0, TRUE);
   setColumnStretchable (1, TRUE);
   setColumnStretchable (2, TRUE);
   adjustColumn(3);
   setColumnStretchable (4, TRUE);
   setColumnStretchable (5, TRUE);
-  adjustColumn(6);
-  setColumnStretchable (6, FALSE);
+  if (decl) {
+    setColumnStretchable (6, TRUE);
+    adjustColumn(7);
+    setColumnStretchable (7, FALSE);
+  }
+  else {
+    adjustColumn(6);
+    setColumnStretchable (6, FALSE);
+  }
   
   QString form = edform->text();
   //the presence of ${(} and ${)} was checked
@@ -4146,7 +4233,7 @@ CppParamsTable::CppParamsTable(ParamsTable * p, MultiLineEdit * f, QWidget * par
   int tbl_index = 0;
     
   while (extract(tbl_index, form_index, form)) {
-    setText(tbl_index, 6, QString::null);
+    setText(tbl_index, (decl) ? 7 : 6, QString::null);
     tbl_index += 1;
   }
   
@@ -4171,6 +4258,7 @@ CppParamsTable::CppParamsTable(ParamsTable * p, MultiLineEdit * f, QWidget * par
   
   TypeRankList.clear();
   ParamRankList.clear();
+  ValueRankList.clear();
   
   for (int rank = 0; rank != params->numRows(); rank += 1) {
     if (!params->name(rank).isEmpty() || !params->type(rank).isEmpty()) {
@@ -4180,6 +4268,8 @@ CppParamsTable::CppParamsTable(ParamsTable * p, MultiLineEdit * f, QWidget * par
       TypeRankList.append(s);
       s.sprintf("${p%u}", rank);
       ParamRankList.append(s);
+      s.sprintf("${v%u}", rank);
+      ValueRankList.append(s);
     }
   }
 }
@@ -4190,8 +4280,15 @@ void CppParamsTable::init_row(int row) {
   setItem(row, 2, new ComboItem(this, QString::null, TypeRankList));
   setItem(row, 3, new ComboItem(this, QString::null, PtrList));
   setItem(row, 4, new ComboItem(this, QString::null, ParamRankList));
-  setText(row, 5, QString::null);
-  setText(row, 6, QString::null);
+  if (dcl) {
+    setItem(row, 5, new ComboItem(this, QString::null, ValueRankList));
+    setText(row, 6, QString::null);
+    setText(row, 7, QString::null);
+  }
+  else {
+    setText(row, 5, QString::null);
+    setText(row, 6, QString::null);
+  }
 }
 
 static int bypass_string(const char * s, int index)
@@ -4404,7 +4501,24 @@ bool CppParamsTable::extract(int tblindex, int & strindex, QString s) {
   setItem(tblindex, 2, new ComboItem(this, t_i, TypeRankList));
   setItem(tblindex, 3, new ComboItem(this, ptr, PtrList));
   setItem(tblindex, 4, new ComboItem(this, p_i, ParamRankList));
-  setText(tblindex, 5, modifier);
+  if (dcl) {
+    QString v_i;
+    
+    if ((modifier.length() >= 5) && (modifier.left(3) == "${v")) {
+      if ((strindex = modifier.find('}', 3)) == -1)
+	return FALSE;
+      else {
+	strindex += 1;
+	v_i = modifier.left(strindex);
+	modifier = modifier.mid(strindex);
+      }
+    }
+
+    setItem(tblindex, 5, new ComboItem(this, v_i, ValueRankList));  
+    setText(tblindex, 6, modifier);
+  }
+  else
+    setText(tblindex, 5, modifier);
   
   strindex = (s.at(sup) == QChar(',')) ? sup + 1 : sup;
     
@@ -4469,7 +4583,7 @@ void CppParamsTable::update_name(int row) {
 }
 
 void CppParamsTable::button_pressed(int row, int col, int, const QPoint &) {
-  if (col == 6) {
+  if (col == ((dcl) ? 7 : 6)) {
     char s[16];
     
     sprintf(s, "param %d", row + 1);
@@ -4500,6 +4614,7 @@ void CppParamsTable::button_pressed(int row, int col, int, const QPoint &) {
     QPopupMenu rk;
     int t_i;
     int p_i;
+    int v_i;
     
     if (text(row, 2).isEmpty() ||
 	(sscanf((const char *) text(row, 2), "${t%d}", &t_i) != 1))
@@ -4507,6 +4622,10 @@ void CppParamsTable::button_pressed(int row, int col, int, const QPoint &) {
     if (text(row, 4).isEmpty() ||
 	(sscanf((const char *) text(row, 4), "${p%d}", &p_i) != 1))
       p_i = -1;
+    if (!dcl ||
+	text(row, 5).isEmpty() ||
+	(sscanf((const char *) text(row, 5), "${v%d}", &v_i) != 1))
+      v_i = -1;
     
     for (rank = 0; rank != params->numRows(); rank += 1)
       if ((!params->name(rank).isEmpty() || !params->type(rank).isEmpty()) &&
@@ -4547,6 +4666,11 @@ void CppParamsTable::button_pressed(int row, int col, int, const QPoint &) {
 	  sprintf(s, "${p%d}", rank - 100);
 	  setItem(row, 4, new ComboItem(this, s, ParamRankList));
 	}
+	
+	if (v_i != -1) {
+	  sprintf(s, "${v%d}", rank - 100);
+	  setItem(row, 5, new ComboItem(this, s, ParamRankList));
+	}
       }
       else if (rank >= 10)
 	move_row(row, rank - 10);
@@ -4559,18 +4683,19 @@ void CppParamsTable::insert_row_before(int row) {
   int n = numRows();
   int index;
   int col;
+  int mcol = ((dcl) ? 6 : 5);
   
   setNumRows(n + 1);
   
   for (index = n; index != row; index -= 1) {
-    for (col = 0; col != 5; col += 1) {
+    for (col = 0; col != mcol; col += 1) {
       QTableItem * it = item(index - 1, col);
       
       takeItem(it);
       setItem(index, col, it);
     }
-    setText(index, 5, text(index - 1, 5));
-    setText(index, 6, text(index - 1, 6));
+    setText(index, mcol, text(index - 1, mcol));
+    setText(index, mcol+1, text(index - 1, mcol+1));
   }
 
   init_row(row);
@@ -4580,18 +4705,19 @@ void CppParamsTable::insert_row_after(int row) {
   int n = numRows();
   int index;
   int col;
+  int mcol = ((dcl) ? 6 : 5);
   
   setNumRows(n + 1);
   
   for (index = n; index > row + 1; index -= 1) {
-    for (col = 0; col != 5; col += 1) {
+    for (col = 0; col != mcol; col += 1) {
       QTableItem * it = item(index - 1, col);
       
       takeItem(it);
       setItem(index, col, it);
     }
-    setText(index, 5, text(index - 1, col));
-    setText(index, 6, text(index - 1, col));
+    setText(index, mcol, text(index - 1, col));
+    setText(index, mcol+1, text(index - 1, col));
   }
 
   init_row(row + 1);
@@ -4609,15 +4735,17 @@ void CppParamsTable::delete_row(int row) {
     init_row(row);
   }
   else {
+    int mcol = ((dcl) ? 6 : 5);
+    
     for (index = row; index != n - 1; index += 1) {
-      for (col = 0; col != 5; col += 1) {
+      for (col = 0; col != mcol; col += 1) {
 	QTableItem * it = item(index + 1, col);
 	
 	takeItem(it);
 	setItem(index, col, it);
       }
-      setText(index, 5, text(index + 1, col));
-      setText(index, 6, text(index + 1, col));
+      setText(index, mcol, text(index + 1, col));
+      setText(index, mcol+1, text(index + 1, col));
     }
     
     setNumRows(n - 1);
@@ -4626,8 +4754,9 @@ void CppParamsTable::delete_row(int row) {
 
 void CppParamsTable::copy_row(int row) {
   int col;
+  int mcol = ((dcl) ? 8 : 7);
   
-  for (col = 0; col != 7; col += 1)
+  for (col = 0; col != mcol; col += 1)
     copied[col] = text(row, col);
 }
 
@@ -4638,16 +4767,18 @@ void CppParamsTable::cut_row(int row) {
 
 void CppParamsTable::paste_row(int row) {
   int col;
+  int mcol = ((dcl) ? 8 : 7);
   
-  for (col = 0; col != 7; col += 1)
+  for (col = 0; col != mcol; col += 1)
     setText(row, col, copied[col]);
 }
 
 void CppParamsTable::move_row(int from, int to) {
   int col;
-  QString save_copied[7];
+  int mcol = ((dcl) ? 8 : 7);
+  QString save_copied[8];
   
-  for (col = 0; col != 7; col += 1)
+  for (col = 0; col != mcol; col += 1)
     save_copied[col] = copied[col];
   
   cut_row(from);
@@ -4657,7 +4788,7 @@ void CppParamsTable::move_row(int from, int to) {
     insert_row_before(to);
   paste_row(to);
   
-  for (col = 0; col != 7; col += 1)
+  for (col = 0; col != mcol; col += 1)
     copied[col] = save_copied[col];
 }
 
@@ -4669,25 +4800,30 @@ void CppParamsTable::update_edform() {
   
   int n = numRows();
   int index;
+  int mcol = ((dcl) ? 6 : 5);
   
   for (index = 0; index != n; index += 1) {
     QString p;
     int col;
     
-    for (col = 1; col != 5; col += 1) {
+    for (col = 1; col != mcol; col += 1) {
       if (!text(index, col).isEmpty()) {
-	if (p.isEmpty())
+	switch (col) {
+	case 1:
+	case 5:
 	  p += text(index, col);
-	else
+	  break;
+	default:
 	  p += " " + text(index, col);
+	}
       }
     }
     
-    if (!text(index, 5).isEmpty()) {
-      if (p.isEmpty() || (text(index, 5).at(0) == QChar('[')))
-	p += text(index, 5);
+    if (!text(index, mcol).isEmpty()) {
+      if (p.isEmpty() || (text(index, mcol).at(0) == QChar('[')))
+	p += text(index, mcol);
       else
-	p += " " + text(index, 5);
+	p += " " + text(index, mcol);
     }
     
     p = p.stripWhiteSpace();
@@ -4711,7 +4847,8 @@ void CppParamsTable::update_edform() {
 
 QSize CppParamsDialog::previous_size;
 
-CppParamsDialog::CppParamsDialog(QWidget * parent, ParamsTable * params, MultiLineEdit * form)
+CppParamsDialog::CppParamsDialog(QWidget * parent, ParamsTable * params,
+				 MultiLineEdit * form, bool decl)
     : QDialog(parent, "C++ parameters dialog", TRUE) {
   setCaption("C++ parameters dialog");
 
@@ -4719,7 +4856,7 @@ CppParamsDialog::CppParamsDialog(QWidget * parent, ParamsTable * params, MultiLi
   
   vbox->setMargin(5);
 
-  tbl = new CppParamsTable(params, form, this);
+  tbl = new CppParamsTable(params, form, this, decl);
   vbox->addWidget(tbl);
   
   QHBoxLayout * hbox = new QHBoxLayout(vbox); 
@@ -4760,14 +4897,15 @@ void CppParamsDialog::accept() {
 //
 
 // copy/cut/paste
-QString PhpParamsTable::copied[5];	// copy/cut/paste
+QString PhpParamsTable::copied[6];	// copy/cut/paste
 
 static QStringList PhpTypeRankList;
 static QStringList PhpRefList;
 static QStringList PhpParamRankList;
+static QStringList PhpValueRankList;
 
 PhpParamsTable::PhpParamsTable(QWidget * parent, ParamsTable * p, MultiLineEdit * f)
-    : MyTable(0, 5, parent), params(p), edform(f) {
+    : MyTable(0, 6, parent), params(p), edform(f) {
     
   setSorting(FALSE);
   setSelectionMode(NoSelection);	// single does not work
@@ -4776,12 +4914,14 @@ PhpParamsTable::PhpParamsTable(QWidget * parent, ParamsTable * p, MultiLineEdit 
   horizontalHeader()->setLabel(1, "${t<i>}/array");
   horizontalHeader()->setLabel(2, "Ref.");
   horizontalHeader()->setLabel(3, "${p<i>}");
-  horizontalHeader()->setLabel(4, "do");
+  horizontalHeader()->setLabel(4, "${v<i>}");
+  horizontalHeader()->setLabel(5, "do");
   setColumnStretchable (0, TRUE);
   setColumnStretchable (1, TRUE);
   adjustColumn(2);
   setColumnStretchable (3, TRUE);
-  adjustColumn(4);
+  setColumnStretchable (4, TRUE);
+  adjustColumn(5);
 
   
   QString form = edform->text();
@@ -4790,7 +4930,7 @@ PhpParamsTable::PhpParamsTable(QWidget * parent, ParamsTable * p, MultiLineEdit 
   int tbl_index = 0;
     
   while (extract(tbl_index, form_index, form)) {
-    setText(tbl_index, 4, QString::null);
+    setText(tbl_index, 5, QString::null);
     tbl_index += 1;
   }
   
@@ -4807,6 +4947,7 @@ PhpParamsTable::PhpParamsTable(QWidget * parent, ParamsTable * p, MultiLineEdit 
   
   PhpTypeRankList.clear();
   PhpParamRankList.clear();
+  PhpValueRankList.clear();
   
   for (int rank = 0; rank != params->numRows(); rank += 1) {
     if (!params->name(rank).isEmpty() || !params->type(rank).isEmpty()) {
@@ -4816,6 +4957,8 @@ PhpParamsTable::PhpParamsTable(QWidget * parent, ParamsTable * p, MultiLineEdit 
       PhpTypeRankList.append(s);
       s.sprintf("${p%u}", rank);
       PhpParamRankList.append(s);
+      s.sprintf("${v%u}", rank);
+      PhpValueRankList.append(s);
     }
   }
   PhpTypeRankList.append("array");
@@ -4826,7 +4969,8 @@ void PhpParamsTable::init_row(int row) {
   setItem(row, 1, new ComboItem(this, QString::null, PhpTypeRankList));
   setItem(row, 2, new ComboItem(this, QString::null, PhpRefList));
   setItem(row, 3, new ComboItem(this, QString::null, PhpParamRankList));
-  setText(row, 4, QString::null);
+  setItem(row, 4, new ComboItem(this, QString::null, PhpValueRankList));
+  setText(row, 5, QString::null);
 }
 
 bool PhpParamsTable::extract(int tblindex, int & strindex, QString s) {
@@ -4842,6 +4986,7 @@ bool PhpParamsTable::extract(int tblindex, int & strindex, QString s) {
   QString t_i;
   QString ptr;
   QString p_i;
+  QString v_i;
   int index = s.find("${t", strindex);
   
   if ((index == -1) || (index >= sup)) {
@@ -4865,6 +5010,7 @@ bool PhpParamsTable::extract(int tblindex, int & strindex, QString s) {
       else {
 	strindex += 1;
 	p_i = s.mid(index, strindex - index);
+	v_i = s.mid(strindex);
       }
     }
   }
@@ -4885,15 +5031,26 @@ bool PhpParamsTable::extract(int tblindex, int & strindex, QString s) {
       else {
 	strindex += 1;
 	p_i = s.mid(index, strindex - index);
+	v_i = s.mid(strindex);
       }
     }
   }
   
+  if ((v_i.length() >= 5) && (v_i.left(3) == "${v")) {
+    if ((strindex = v_i.find('}', 3)) == -1)
+      return FALSE;
+    else
+      v_i = v_i.left(strindex + 1);
+  }
+  else
+    v_i = "";
+
   setNumRows(tblindex + 1);
 
   setItem(tblindex, 1, new ComboItem(this, t_i, PhpTypeRankList));
   setItem(tblindex, 2, new ComboItem(this, ptr, PhpRefList));
   setItem(tblindex, 3, new ComboItem(this, p_i, PhpParamRankList));
+  setItem(tblindex, 4, new ComboItem(this, v_i, PhpValueRankList));
   
   strindex = (s.at(sup) == QChar(',')) ? sup + 1 : sup;
     
@@ -4958,7 +5115,7 @@ void PhpParamsTable::update_name(int row) {
 }
 
 void PhpParamsTable::button_pressed(int row, int col, int, const QPoint &) {
-  if (col == 4) {
+  if (col == 5) {
     char s[16];
     
     sprintf(s, "param %d", row + 1);
@@ -4989,6 +5146,7 @@ void PhpParamsTable::button_pressed(int row, int col, int, const QPoint &) {
     QPopupMenu rk;
     int t_i;
     int p_i;
+    int v_i;
     
     if (text(row, 1).isEmpty() ||
 	(sscanf((const char *) text(row, 1), "${t%d}", &t_i) != 1))
@@ -4996,6 +5154,9 @@ void PhpParamsTable::button_pressed(int row, int col, int, const QPoint &) {
     if (text(row, 3).isEmpty() ||
 	(sscanf((const char *) text(row, 3), "${p%d}", &p_i) != 1))
       p_i = -1;
+    if (text(row, 4).isEmpty() ||
+	(sscanf((const char *) text(row, 4), "${v%d}", &v_i) != 1))
+      v_i = -1;
     
     for (rank = 0; rank != params->numRows(); rank += 1)
       if ((!params->name(rank).isEmpty() || !params->type(rank).isEmpty()) &&
@@ -5036,6 +5197,11 @@ void PhpParamsTable::button_pressed(int row, int col, int, const QPoint &) {
 	  sprintf(s, "${p%d}", rank - 100);
 	  setItem(row, 3, new ComboItem(this, s, PhpParamRankList));
 	}
+	
+	if (v_i != -1) {
+	  sprintf(s, "${v%d}", rank - 100);
+	  setItem(row, 4, new ComboItem(this, s, PhpValueRankList));
+	}
       }
       else if (rank >= 10)
 	move_row(row, rank - 10);
@@ -5052,13 +5218,13 @@ void PhpParamsTable::insert_row_before(int row) {
   setNumRows(n + 1);
   
   for (index = n; index != row; index -= 1) {
-    for (col = 0; col != 4; col += 1) {
+    for (col = 0; col != 5; col += 1) {
       QTableItem * it = item(index - 1, col);
       
       takeItem(it);
       setItem(index, col, it);
     }
-    setText(index, 4, text(index - 1, 4));
+    setText(index, 5, text(index - 1, 5));
   }
 
   init_row(row);
@@ -5072,13 +5238,13 @@ void PhpParamsTable::insert_row_after(int row) {
   setNumRows(n + 1);
   
   for (index = n; index > row + 1; index -= 1) {
-    for (col = 0; col != 4; col += 1) {
+    for (col = 0; col != 5; col += 1) {
       QTableItem * it = item(index - 1, col);
       
       takeItem(it);
       setItem(index, col, it);
     }
-    setText(index, 4, text(index - 1, col));
+    setText(index, 5, text(index - 1, col));
   }
 
   init_row(row + 1);
@@ -5097,13 +5263,13 @@ void PhpParamsTable::delete_row(int row) {
   }
   else {
     for (index = row; index != n - 1; index += 1) {
-      for (col = 0; col != 4; col += 1) {
+      for (col = 0; col != 5; col += 1) {
 	QTableItem * it = item(index + 1, col);
 	
 	takeItem(it);
 	setItem(index, col, it);
       }
-      setText(index, 4, text(index + 1, col));
+      setText(index, 5, text(index + 1, col));
     }
     
     setNumRows(n - 1);
@@ -5113,7 +5279,7 @@ void PhpParamsTable::delete_row(int row) {
 void PhpParamsTable::copy_row(int row) {
   int col;
   
-  for (col = 0; col != 5; col += 1)
+  for (col = 0; col != 6; col += 1)
     copied[col] = text(row, col);
 }
 
@@ -5125,15 +5291,15 @@ void PhpParamsTable::cut_row(int row) {
 void PhpParamsTable::paste_row(int row) {
   int col;
   
-  for (col = 0; col != 5; col += 1)
+  for (col = 0; col != 6; col += 1)
     setText(row, col, copied[col]);
 }
 
 void PhpParamsTable::move_row(int from, int to) {
   int col;
-  QString save_copied[5];
+  QString save_copied[6];
   
-  for (col = 0; col != 5; col += 1)
+  for (col = 0; col != 6; col += 1)
     save_copied[col] = copied[col];
   
   cut_row(from);
@@ -5143,7 +5309,7 @@ void PhpParamsTable::move_row(int from, int to) {
     insert_row_before(to);
   paste_row(to);
   
-  for (col = 0; col != 5; col += 1)
+  for (col = 0; col != 6; col += 1)
     copied[col] = save_copied[col];
 }
 
@@ -5160,12 +5326,16 @@ void PhpParamsTable::update_edform() {
     QString p;
     int col;
     
-    for (col = 1; col != 4; col += 1) {
-      if (!text(index, col).isEmpty()) {
-	if (p.isEmpty())
+    for (col = 1; col != 5; col += 1) {
+      if (! text(index, col).isEmpty()) {
+	switch (col) {
+	case 1:
+	case 4:
 	  p += text(index, col);
-	else
+	  break;
+	default:
 	  p += " " + text(index, col);
+	}
       }
     }
     

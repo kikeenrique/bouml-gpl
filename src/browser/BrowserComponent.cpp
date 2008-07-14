@@ -105,11 +105,6 @@ void BrowserComponent::update_idmax_for_root()
   all.update_idmax_for_root();
 }
     
-void BrowserComponent::referenced_by(QList<BrowserNode> & l) {
-  BrowserNode::referenced_by(l);
-  BrowserSimpleRelation::compute_referenced_by(l, this);
-}
-
 void BrowserComponent::compute_referenced_by(QList<BrowserNode> & l,
 					     BrowserClass * target)
 {
@@ -135,14 +130,7 @@ const QPixmap* BrowserComponent::pixmap(int) const {
 }
 
 QString BrowserComponent::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
-
-  if (p.isEmpty()) 
-    return QString((const char *) name);
-  else if (rev)
-    return name + "   [" + p + "]";
-  else
-    return p + "::" + name;
+  return fullname(rev);
 }
 
 // just check if the inheritance already exist
@@ -556,7 +544,7 @@ BrowserNodeList & BrowserComponent::instances(BrowserNodeList & result,
     }
   }
   
-  result.sort();
+  result.sort_it();
   
   return result;
 }
@@ -666,7 +654,7 @@ void BrowserComponent::get_all_provided_classes(QValueList<BrowserClass *> & r,
       nl.append(*it);
 
     r.clear();
-    nl.sort();
+    nl.sort_it();
 
     while (! nl.isEmpty())
       r.append((BrowserClass *) nl.take(0));
@@ -705,7 +693,7 @@ void BrowserComponent::get_all_required_classes(QValueList<BrowserClass *> & r,
       nl.append(*it);
 
     r.clear();
-    nl.sort();
+    nl.sort_it();
 
     while (! nl.isEmpty())
       r.append((BrowserClass *) nl.take(0));

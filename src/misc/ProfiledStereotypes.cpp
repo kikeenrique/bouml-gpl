@@ -226,6 +226,10 @@ void ProfiledStereotypes::init()
   All.setAutoDelete(FALSE);
   
   if (UnPretty2Code.isEmpty()) {
+    UnPretty2Code.setAutoDelete(TRUE); // for valgrind
+    Pretty.setAutoDelete(TRUE); // for valgrind
+    UnPretty.setAutoDelete(TRUE); // for valgrind
+    
     UmlCode * pcode;
   
 #define ADD(c, unp, p) \

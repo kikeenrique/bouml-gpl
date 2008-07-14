@@ -28,10 +28,9 @@ class UmlUseCase : public UmlBaseUseCase {
     //import the use case starting by 'tk' inside 'where'
     static void importIt(FileIn & in, Token & token, UmlItem * where);
 
-    //import the use case starting by 'tk' inside 'where'
     static void importExtendInclude(FileIn & in, Token & token, UmlItem * where);
 
-    static void ignore(FileIn & in, Token & token, UmlItem * where);
+    static void importExtensionPoint(FileIn & in, Token & token, UmlItem * where);
 
     static int numberOf() { return NumberOf; };
 

@@ -1,12 +1,5 @@
-
-#include "UmlUseCaseAssociation.h"
-#include "FileOut.h"
-#include "UmlItem.h"
-
-#include "UmlClass.h"
-#include "UmlUseCase.h"
-#include "UmlUseCaseReference.h"
-void UmlUseCaseAssociation::write(FileOut & out, UmlItem * d, int rank, const char * k) {
+class UmlUseCaseAssociation
+!!!132484.cpp!!!	write(inout out : FileOut, in d : UmlItem, in rank : int, in k : str) : void
   char s[16];
   
   out.indent();
@@ -41,5 +34,3 @@ void UmlUseCaseAssociation::write(FileOut & out, UmlItem * d, int rank, const ch
   out.indent(-1);
   out.indent();
   out << "</" << k << ">\n";
-}
-

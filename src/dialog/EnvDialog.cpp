@@ -74,7 +74,7 @@ EnvDialog::EnvDialog(bool conv, bool noid)
   grid->setSpacing(5);
   
   new QLabel(grid);  
-  new QLabel("Mandatory, choose a value between 2 and 127 not used by an other person working at the same time on a project with you.\n"
+  new QLabel("MANDATORY, choose a value between 2 and 127 not used by an other person working at the same time on a project with you.\n"
 	     "To be safe, if possible choose a value not used by an other person even not working on a given project with you",
 	     grid);
   

@@ -412,10 +412,7 @@ bool BrowserAttribute::same_name(const QString & s, UmlCode t) const {
 }
     
 QString BrowserAttribute::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
-
-  return (rev) ? name + "   [" + p + "]"
-	       : p + "::" + name;
+  return fullname(rev);
 }
 
 void BrowserAttribute::member_cpp_def(const QString & prefix, const QString &, 
@@ -447,10 +444,12 @@ void BrowserAttribute::compute_referenced_by(QList<BrowserNode> & l,
   }
 }
 
-void BrowserAttribute::referenced_by(QList<BrowserNode> & l) {
-  BrowserNode::referenced_by(l);
-  BrowserActivityAction::compute_referenced_by(l, this);
-  BrowserClassInstance::compute_referenced_by(l, this);
+void BrowserAttribute::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
+  if (! ondelete) {
+    BrowserActivityAction::compute_referenced_by(l, this);
+    BrowserClassInstance::compute_referenced_by(l, this);
+  }
 }
 
 bool BrowserAttribute::tool_cmd(ToolCom * com, const char * args) {

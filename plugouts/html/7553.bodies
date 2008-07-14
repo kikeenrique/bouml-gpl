@@ -944,7 +944,7 @@ h4.activity { background: #87ceff; }\n");
     fw.write("</ul></p>\n");
   }
 !!!212866.java!!!	write_properties() : void
-  if (! stereotype().isEmpty()) {
+  if (stereotype() != "") {
     fw.write("<p>Stereotype: ");
     writeq(stereotype());
     fw.write("</p>\n");

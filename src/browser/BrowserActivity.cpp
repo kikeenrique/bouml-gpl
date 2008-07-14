@@ -121,9 +121,10 @@ void BrowserActivity::update_idmax_for_root()
   BrowserFlow::update_idmax_for_root();
 }
     
-void BrowserActivity::referenced_by(QList<BrowserNode> & l) {
-  BrowserNode::referenced_by(l);
-  BrowserActivityAction::compute_referenced_by(l, this);
+void BrowserActivity::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
+  if (! ondelete)
+    BrowserActivityAction::compute_referenced_by(l, this);
 }
 
 void BrowserActivity::renumber(int phase) {
@@ -442,10 +443,7 @@ BasicData * BrowserActivity::get_data() const {
 }
 
 QString BrowserActivity::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
-
-  return (rev) ? name + "   [" + p + "]"
-	       : p + "::" + name;
+  return fullname(rev);
 }
 
 BrowserNodeList & BrowserActivity::instances(BrowserNodeList & result, bool sort)
@@ -460,7 +458,7 @@ BrowserNodeList & BrowserActivity::instances(BrowserNodeList & result, bool sort
   }
   
   if (sort)
-    result.sort();
+    result.sort_it();
   
   return result;
 }

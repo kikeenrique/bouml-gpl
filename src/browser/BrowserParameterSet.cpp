@@ -228,14 +228,12 @@ bool BrowserParameterSet::allow_empty() const {
 }
 
 QString BrowserParameterSet::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
   QString s = name;
 
   if (s.isEmpty())
     s = "<anonymous parameter set>";
 
-  return (rev) ? s + "   [" + p + "]"
-	       : p + "::" + s;
+  return fullname(s, rev);
 }
 
 bool BrowserParameterSet::tool_cmd(ToolCom * com, const char * args) {

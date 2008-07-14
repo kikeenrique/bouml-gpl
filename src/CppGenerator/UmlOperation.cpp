@@ -172,7 +172,8 @@ void UmlOperation::compute_dependency(QList<CppRefType> & dependencies,
 	  }
 	}
       }
-      else if (sscanf(p, "${p%u}", &index) == 1)
+      else if ((sscanf(p, "${p%u}", &index) == 1) ||
+	       (sscanf(p, "${v%u}", &index) == 1))
 	p = strchr(p, '}') + 1;
       else if (!strncmp(p, "${throw}", 8)) {
 	p += 8;
@@ -287,6 +288,18 @@ static bool generate_var(const QValueList<UmlParameter> & params,
     return FALSE;
   
   f_h << params[rank].name;
+  return TRUE;
+}
+
+static bool generate_init(const QValueList<UmlParameter> & params, 
+			  unsigned rank, QTextOStream & f_h)
+{
+  if (rank >= params.count())
+    return FALSE;
+  
+  if (! params[rank].default_value.isEmpty())
+    f_h << " = " << params[rank].default_value;
+  
   return TRUE;
 }
 
@@ -460,6 +473,11 @@ void UmlOperation::generate_decl(aVisibility & current_visibility, QTextOStream 
       }
       else if (sscanf(p, "${p%u}", &rank) == 1) {
 	if (!generate_var(params, rank, f_h))
+	  param_error(parent()->name(), name(), rank, "declaration");
+	p = strchr(p, '}') + 1;
+      }
+      else if (sscanf(p, "${v%u}", &rank) == 1) {
+	if (!generate_init(params, rank, f_h))
 	  param_error(parent()->name(), name(), rank, "declaration");
 	p = strchr(p, '}') + 1;
       }

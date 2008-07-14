@@ -261,14 +261,12 @@ BasicData * BrowserRegion::get_data() const {
 }
 
 QString BrowserRegion::full_name(bool rev, bool) const {
-  QString p = ((BrowserNode *) parent())->full_name(FALSE, FALSE);
   QString s = name;
 
   if (s.isEmpty())
     s = "<anonymous region>";
 
-  return (rev) ? s + "   [" + p + "]"
-	       : p + "::" + s;
+  return fullname(s, rev);
 }
 
 bool BrowserRegion::allow_empty() const {
