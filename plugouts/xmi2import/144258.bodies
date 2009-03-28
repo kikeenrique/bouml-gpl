@@ -20,6 +20,10 @@ class Association
     ? (token.what() != "ownedend")
     : (s == "true");
   r.readOnly = (token.valueOf("isreadonly") == "true");
+  r.isDerived = (token.valueOf("isderived") == "true");
+  r.isDerivedUnion = (token.valueOf("isderivedunion") == "true");
+  r.isOrdered = (token.valueOf("isordered") == "true");
+  r.isUnique = (token.valueOf("isunique") == "true");
   r.isStatic = (token.valueOf("isstatic") == "true");
   r.defaultValue = token.valueOf("defaultvalue");
     
@@ -147,21 +151,22 @@ class Association
 	UmlRelation * ra = UmlRelation::create(k, clb, cla);
 	UmlRelation * rb = ra->side(FALSE);
 	QCString s;
-	static unsigned n = 0;
 	
 	if (!name.isEmpty())
 	  ra->set_Name(name);
 	
 	UmlItem::All.insert(a.id, ra);
-	if (a.name.isEmpty()) {
-	  s.sprintf("anonymous_role_%u", ++n);
-	  ra->set_RoleName(s);
-	}
-	else
+	if (!a.name.isEmpty())
 	  ra->set_RoleName(UmlItem::legalName(a.name));
 	ra->setVisibility(a.visibility);
 	if (a.readOnly)
 	  ra->set_isReadOnly(TRUE);
+	if (a.isDerived)
+	  ra->set_isDerived(TRUE, a.isDerivedUnion);
+	if (a.isOrdered)
+	  ra->set_isOrdered(TRUE);
+	if (a.isUnique)
+	  ra->set_isUnique(TRUE);
 	if (a.isStatic)
 	  ra->set_isClassMember(TRUE);
 	if (! a.multiplicity.isEmpty())
@@ -182,15 +187,17 @@ class Association
 	
 	if (rb != 0) {
 	  UmlItem::All.insert(b.id, rb);
-	  if (b.name.isEmpty()) {
-	    s.sprintf("anonymous_role_%u", ++n);
-	    rb->set_RoleName(s);
-	  }
-	  else
+	  if (!b.name.isEmpty())
 	    rb->set_RoleName(UmlItem::legalName(b.name));
 	  rb->setVisibility(b.visibility);
 	  if (b.readOnly)
 	    rb->set_isReadOnly(TRUE);
+	  if (b.isDerived)
+	    rb->set_isDerived(TRUE, b.isDerivedUnion);
+	  if (b.isOrdered)
+	    rb->set_isOrdered(TRUE);
+	  if (b.isUnique)
+	    rb->set_isUnique(TRUE);
 	  if (b.isStatic)
 	    rb->set_isClassMember(TRUE);
 	  if (! b.multiplicity.isEmpty())

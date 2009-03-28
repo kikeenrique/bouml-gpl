@@ -162,6 +162,26 @@ class UmlBaseClass : public UmlClassMember {
     bool set_isPhpFinal(bool y);
 #endif
 
+#ifdef WITHPYTHON
+    // returns TRUE if the class is external, its definition
+    // must contain how the name is made on the first line
+    // (isPythonExternal by default), the other lines are ignored
+    bool isPythonExternal();
+
+    // set if the class is external
+    // 
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isPythonExternal(bool y);
+
+    // returns TRUE is the class is a Python 2.2 class
+    bool isPython_2_2();
+
+    // set if the class is a Python 2.2 class
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isPython_2_2(bool v);
+#endif
+
 #ifdef WITHIDL
     // returns the switch's type, significant in case the class
     // is an union in IDL
@@ -244,6 +264,12 @@ class UmlBaseClass : public UmlClassMember {
     bool _php_final : 1;
 #endif
 
+#ifdef WITHPYTHON
+    bool _python_external : 1;
+
+    bool _python_2_2 : 1;
+#endif
+
 #ifdef WITHIDL
     bool _idl_external : 1;
 
@@ -287,6 +313,12 @@ class UmlBaseClass : public UmlClassMember {
     //internal, do NOT use it
     
     virtual void read_php_();
+#endif
+
+#ifdef WITHPYTHON
+    //internal, do NOT use it
+    
+    virtual void read_python_();
 #endif
 
 #ifdef WITHIDL

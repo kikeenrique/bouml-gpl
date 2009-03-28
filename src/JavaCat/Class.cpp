@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -206,7 +206,7 @@ bool Class::reverse(ClassContainer * container, QCString stereotype,
     
     if (! comment.isEmpty())
       cl_uml->set_Description((cl_uml->javaDecl().find("${description}") != -1)
-			      ? description : comment);
+			      ? description : Lex::simplify_comment(comment));
     
     cl_uml->set_Visibility(visibility);
     

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -26,7 +26,9 @@
 #ifndef BROWSER_SIMPLE_RELATION_H
 #define BROWSER_SIMPLE_RELATION_H
 
+template <class K> class QPtrDict;
 class QPixmap;
+
 class SimpleRelationData;
 
 #include "BrowserNode.h"
@@ -75,6 +77,7 @@ class BrowserSimpleRelation : public BrowserNode, public Labeled<BrowserSimpleRe
     static void update_idmax_for_root();
     virtual void renumber(int phase);
     
+    virtual void referenced_by(QList<BrowserNode> & l, bool ondelete);
     static void compute_referenced_by(QList<BrowserNode> &, BrowserNode *);
     
     virtual bool tool_cmd(ToolCom * com, const char * args);
@@ -83,6 +86,10 @@ class BrowserSimpleRelation : public BrowserNode, public Labeled<BrowserSimpleRe
     virtual QString drag_key() const;
     virtual QString drag_postfix() const;
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
+    
+    static void get_relating(BrowserNode *, QPtrDict<BrowserNode> & d,
+			     BrowserNodeList & newones, bool inh,
+			     bool dep, bool sametype, UmlCode k);
 };
 
 #endif

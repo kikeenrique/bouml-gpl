@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -251,6 +251,9 @@ void UmlClass::generate_decl(QTextOStream & f_h, QCString indent) {
 						   first, index == max);
 	  }
 	}
+      
+	if (*p == '}')
+	  f_h << indent;
       }
       else
 	// strange
@@ -317,7 +320,7 @@ void UmlClass::generate_decl(QTextOStream & f_h, QCString indent) {
 					       first, index == last);
       }
       
-      if ((parent()->kind() == aClass) && (*p == '}'))
+      if (*p == '}')
 	f_h << indent;
     }
     else if (!strncmp(p, "${inlines}", 10)) {

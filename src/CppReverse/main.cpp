@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,7 +41,7 @@ int main(int argc, char ** argv)
   if (UmlCom::connect(QCString(argv[1]).toUInt())) {
     try {
       //UmlCom::with_ack(FALSE);
-      UmlCom::trace("<b>C++ reverse</b> release 2.9.2<br>");
+      UmlCom::trace("<b>C++ reverse</b> release 2.9.3<br>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlItem * item = UmlCom::targetItem();

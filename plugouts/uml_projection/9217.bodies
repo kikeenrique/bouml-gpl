@@ -31,3 +31,11 @@ class UmlPackage
     for (unsigned i = 0; i != n; i += 1)
       ch[i]->uml2php(rec);
   }
+!!!130051.cpp!!!	uml2python(in rec : bool) : void
+  if (rec) {
+    const QVector<UmlItem> ch = children();
+    unsigned n = ch.size();
+    
+    for (unsigned i = 0; i != n; i += 1)
+      ch[i]->uml2python(rec);
+  }

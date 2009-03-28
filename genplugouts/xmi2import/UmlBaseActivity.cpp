@@ -3,6 +3,7 @@
 #include "UmlBaseActivity.h"
 #include "UmlActivity.h"
 #include "UmlClassView.h"
+#include "UmlOperation.h"
 #include "UmlActivityDiagram.h"
 
 UmlActivity * UmlBaseActivity::create(UmlClassView * parent, const char * s)
@@ -90,6 +91,21 @@ bool UmlBaseActivity::set_isSingleExecution(bool v) {
   return set_it_(_single_execution, v, setSingleExecutionCmd);
 }
 
+UmlOperation * UmlBaseActivity::specification() {
+  read_if_needed_();
+  return _specification;
+}
+
+bool UmlBaseActivity::set_Specification(UmlOperation * v) {
+  UmlCom::send_cmd(_identifier, setDefCmd, (v == 0) ? (void *) v : ((UmlBaseItem *) v)->_identifier);
+  if (UmlCom::read_bool()) {
+    _specification = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 UmlActivityDiagram * UmlBaseActivity::associatedDiagram() {
   read_if_needed_();
 
@@ -97,7 +113,7 @@ UmlActivityDiagram * UmlBaseActivity::associatedDiagram() {
 }
 
 bool UmlBaseActivity::set_AssociatedDiagram(UmlActivityDiagram * d) {
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -127,6 +143,7 @@ void UmlBaseActivity::read_uml_() {
   _post_condition = UmlCom::read_string();
   _read_only = UmlCom::read_bool();
   _single_execution = UmlCom::read_bool();
+  _specification = (UmlOperation *) UmlBaseItem::read_();
 }
 
 #ifdef WITHCPP

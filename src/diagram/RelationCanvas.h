@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@ class RelationCanvas : public ArrowCanvas {
     LabelCanvas * multiplicity_a;
     LabelCanvas * multiplicity_b;
     StereotypePropertiesCanvas * stereotypeproperties; // in the first segment
+    bool show_modifier;
     
   public:
     RelationCanvas(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
@@ -55,6 +56,7 @@ class RelationCanvas : public ArrowCanvas {
     virtual void delete_it();
     virtual void delete_available(bool & in_model, bool & out_model) const;
     virtual void remove(bool from_model);
+    virtual void unconnect();
     
     virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual void post_connexion(UmlCode, DiagramItem *);
@@ -96,6 +98,10 @@ class RelationCanvas : public ArrowCanvas {
     virtual void check_stereotypeproperties();
     
     static void drop(BrowserNode *, UmlCanvas *);
+    static void drop(BrowserNode *, UmlCanvas *,
+		     QPtrDict<DiagramItem> & drawn);
+    
+    virtual bool represents(BrowserNode *);
     
   protected:
     BrowserClass * update_begin(DiagramItem * cnend);
@@ -106,6 +112,7 @@ class RelationCanvas : public ArrowCanvas {
     void modified();	// canvas must be updated
     void actuals_modified();	// label may be modified
     void deleted();	// the relation is deleted
+    void drawing_settings_modified();
 };
 
 #endif

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -59,6 +59,7 @@ class FlowCanvas : public ArrowCanvas {
     virtual void delete_it();
     virtual void delete_available(bool & in_model, bool & out_model) const;
     virtual void remove(bool from_model);
+    virtual void unconnect();
     
     virtual ArrowPointCanvas * brk(const QPoint &);
     virtual ArrowCanvas * join(ArrowCanvas * other, ArrowPointCanvas * ap);
@@ -89,6 +90,8 @@ class FlowCanvas : public ArrowCanvas {
     virtual void check_stereotypeproperties();
     
     static void drop(BrowserNode *, UmlCanvas *);
+    
+    virtual bool represents(BrowserNode *);
     
   protected:
     BrowserNode * update_begin(DiagramItem * cnend);

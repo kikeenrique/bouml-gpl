@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -170,6 +170,24 @@ const char * UmlOperation::generate_body(QTextOStream & f,
   return p + 7;
 }
 
+static const char * bypass_body(const char * p)
+{
+  // p point to '{'
+  
+  p += 1;
+  
+  const char * pb = strstr(p, "${body}");
+  
+  if (pb != 0) {
+    pb += 7;
+    while (*pb)
+      if (*pb++ == '}')
+	return pb;
+  }
+  
+  return p;
+}
+
 void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
 			    QCString indent) {
   if (!javaDecl().isEmpty()) {
@@ -182,7 +200,7 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
     
     if (body_indent != 0) {
       while ((body_indent != p) &&
-	     (body_indent[-1] == ' ') || (body_indent[-1] == '\t'))
+	     ((body_indent[-1] == ' ') || (body_indent[-1] == '\t')))
 	body_indent -= 1;
     }
     
@@ -213,24 +231,25 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
 	  f << indent;
       }
       else if (*p == '{') {
-	if (cl_stereotype == "@interface") {
-	  if ((afterparam != 0) && (strstr(afterparam, "default") != 0)) {
-	    f << '{';
-	    p += 1;
+	if (afterparam != 0) {
+	  if (cl_stereotype == "@interface") {
+	    if (strstr(afterparam, "default") != 0)
+	      afterparam = 0;
+	    else {
+	      f << ";";
+	      p = bypass_body(p);
+	      continue;
+	    }
 	  }
-	  else {
+	  else if (isAbstract() || (cl_stereotype == "interface")) {
 	    f << ";";
-	    break;
+	    p = bypass_body(p);
+	    continue;
 	  }
 	}
-	else if (isAbstract() || (cl_stereotype == "interface")) {
-	  f << ";";
-	  break;
-	}
-	else {
-	  f << '{';
-	  p += 1;
-	}
+	
+	f << '{';
+	p += 1;
       }
       else if (*p == '@')
 	manage_alias(p, f);

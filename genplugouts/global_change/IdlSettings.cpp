@@ -31,6 +31,7 @@ QCString IdlSettings::type(QCString s)
 
 bool IdlSettings::set_Type(QCString s, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(idlSettingsCmd, setIdlTypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
@@ -63,6 +64,7 @@ QCString IdlSettings::relationAttributeStereotype(const QCString & s)
 
 bool IdlSettings::set_RelationAttributeStereotype(QCString s, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(idlSettingsCmd, setIdlRelationAttributeStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlStereotype * st = UmlSettings::_map_relation_attribute_stereotypes.find(s);
@@ -95,6 +97,7 @@ QCString IdlSettings::classStereotype(QCString s)
 
 bool IdlSettings::set_ClassStereotype(QCString s, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(idlSettingsCmd, setIdlClassStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlStereotype * st = UmlSettings::_map_class_stereotypes.find(s);
@@ -127,6 +130,7 @@ QCString IdlSettings::include(QCString s)
 
 bool IdlSettings::set_Include(QCString s, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(idlSettingsCmd, setIdlIncludeCmd, s, v);
   if (UmlCom::read_bool()) {
     QCString * r = _map_includes.take(s);
@@ -348,6 +352,7 @@ const QCString & IdlSettings::attributeDecl(const char * multiplicity)
 
 bool IdlSettings::set_AttributeDecl(const char * multiplicity, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(idlSettingsCmd, setIdlAttributeDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
     _attr_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
@@ -366,6 +371,7 @@ const QCString & IdlSettings::valuetypeAttributeDecl(const char * multiplicity)
 
 bool IdlSettings::set_ValuetypeAttributeDecl(const char * multiplicity, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(idlSettingsCmd, setIdlValuetypeAttributeDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
     _valuetype_attr_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
@@ -384,6 +390,7 @@ const QCString & IdlSettings::unionItemDecl(const char * multiplicity)
 
 bool IdlSettings::set_UnionItemDecl(const char * multiplicity, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(idlSettingsCmd, setIdlUnionItemDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
     _union_item_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
@@ -420,6 +427,7 @@ const QCString & IdlSettings::constDecl(const char * multiplicity)
 
 bool IdlSettings::set_ConstDecl(const char * multiplicity, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(idlSettingsCmd, setIdlConstDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
     _const_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
@@ -438,6 +446,7 @@ const QCString & IdlSettings::relationDecl(const char * multiplicity)
 
 bool IdlSettings::set_RelationDecl(const char * multiplicity, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(idlSettingsCmd, setIdlRelationDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
     _rel_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
@@ -456,6 +465,7 @@ const QCString & IdlSettings::valuetypeRelationDecl(const char * multiplicity)
 
 bool IdlSettings::set_ValuetypeRelationDecl(const char * multiplicity, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(idlSettingsCmd, setIdlValuetypeRelationDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
     _valuetype_rel_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
@@ -474,6 +484,7 @@ const QCString & IdlSettings::unionRelationDecl(const char * multiplicity)
 
 bool IdlSettings::set_UnionRelationDecl(const char * multiplicity, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(idlSettingsCmd, setIdlUnionRelationDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
     _union_rel_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
@@ -651,20 +662,18 @@ void IdlSettings::read_()
   _union_decl = UmlCom::read_string();
   _enum_decl = UmlCom::read_string();
   _external_class_decl = UmlCom::read_string();
-  for (index = 0; index != 3; index += 1)
-    _attr_decl[index] = UmlCom::read_string();
-  for (index = 0; index != 3; index += 1)
-    _valuetype_attr_decl[index] = UmlCom::read_string();
-  for (index = 0; index != 3; index += 1)
-    _union_item_decl[index] = UmlCom::read_string();
+  
   _enum_item_decl = UmlCom::read_string();
-  for (index = 0; index != 3; index += 1)
-    _const_decl[index] = UmlCom::read_string();
   for (index = 0; index != 3; index += 1) {
+    _attr_decl[index] = UmlCom::read_string();
+    _valuetype_attr_decl[index] = UmlCom::read_string();
+    _union_item_decl[index] = UmlCom::read_string();
+    _const_decl[index] = UmlCom::read_string();
     _rel_decl[index] = UmlCom::read_string();
     _valuetype_rel_decl[index] = UmlCom::read_string();
     _union_rel_decl[index] = UmlCom::read_string();
   }
+
   _oper_decl = UmlCom::read_string();
   _get_name = UmlCom::read_string();
   _set_name = UmlCom::read_string();

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,6 +33,7 @@
 class QComboBox;
 class QCheckBox;
 class QRadioButton;
+class QPushButton;
 class LineEdit;
 
 class BrowserSearchDialog : public QDialog {
@@ -48,7 +49,12 @@ class BrowserSearchDialog : public QDialog {
     QRadioButton * for_name;
     QRadioButton * for_comment;
     QRadioButton * for_decldefbody;
+    QPushButton * select_b;
+    QPushButton * mark_unmark_b;
+    QPushButton * mark_them_b;
+    QPushButton * unmark_all_b;
     
+    static BrowserSearchDialog * the;
     static int saved_kind;
     static QString saved_ed;
     static bool saved_case_sensitive;
@@ -62,11 +68,19 @@ class BrowserSearchDialog : public QDialog {
   public:
     BrowserSearchDialog();
     virtual ~BrowserSearchDialog();
+
+    void update();
+    
+    static BrowserSearchDialog * get() { return the; }
     
   protected slots:
     virtual void polish();
     void search();
     void select();
+    void selected(int);
+    void mark_unmark();
+    void mark_them();
+    void unmark_all();
 };
 
 #endif

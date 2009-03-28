@@ -1,6 +1,7 @@
 class UmlAcceptEventAction
 !!!204546.cpp!!!	write(inout out : FileOut) : void
   write_begin(out, "AcceptEventAction");
+  
   if (isUnmarshall())
     out << " isUnmarshall=\"true\"";
   
@@ -18,9 +19,10 @@ class UmlAcceptEventAction
     trig = javaTrigger();
   }
 
-  write_end(out);
-
   if (! trig.isEmpty()) {
+    out.ref(this, "trigger", "TRIGGER_");
+    write_end(out);
+    
     out.indent();
     out << "<trigger xmi:type=\"uml:Trigger\"";
     out.id_prefix(this, "TRIGGER_");
@@ -28,3 +30,6 @@ class UmlAcceptEventAction
     out.quote(trig);
     out << "\"/>\n";
   }
+  else
+    write_end(out);
+

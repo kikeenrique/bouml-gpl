@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -242,8 +242,17 @@ UmlArtifact * UmlArtifact::generated_one()
   return current;
 }
 
+void UmlArtifact::imported(QCString s) {
+  if (!JavaSettings::isForcePackagePrefixGeneration()) {
+    if (imports == 0)
+      // init it
+      (void) is_imported("", "");
+    
+    imports->insert(s, this);
+  }
+}
 
-bool UmlArtifact::imported(QCString pack_name, QCString class_name) {
+bool UmlArtifact::is_imported(QCString path, QCString class_name) {
   if (imports == 0) {
     imports = new QAsciiDict<UmlArtifact>(17);
     
@@ -260,15 +269,7 @@ bool UmlArtifact::imported(QCString pack_name, QCString class_name) {
 	if ((index2 != (index + 6)) &&
 	    ((index = s.find(';', index2)) != -1) &&
 	    (index != index2)) {
-	 QCString p;
-	 
-	 if (s[index - 1] == '*') {
-	   if ((index - 2) <= index2)
-	     continue;
-	   p = s.mid(index2, index - index2 - 2);
-	 }
-	 else
-	   p = s.mid(index2, index - index2);
+	 QCString p = s.mid(index2, index - index2);
 	 
 	 imports->insert(p, this);
 	}
@@ -280,8 +281,8 @@ bool UmlArtifact::imported(QCString pack_name, QCString class_name) {
     }
   }
   
-  return ((imports->find(pack_name) != 0) ||
-	  (imports->find(pack_name + '.' + class_name) != 0));
+  return ((imports->find(path + '.' + class_name) != 0) ||
+	  (imports->find(path + ".*") != 0));
 }
 
 bool UmlArtifact::must_be_saved(const char * path, const char * new_contains)

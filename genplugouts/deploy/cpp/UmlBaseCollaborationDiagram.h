@@ -8,6 +8,7 @@
 
 class UmlCollaborationDiagram;
 class UmlItem;
+class UmlCollaborationDiagramDefinition;
 
 //  Manage the collaboration diagrams
 class UmlBaseCollaborationDiagram : public UmlDiagram {
@@ -25,7 +26,20 @@ class UmlBaseCollaborationDiagram : public UmlDiagram {
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseCollaborationDiagram(void * id, const QCString & n) : UmlDiagram(id, n) {};
+    UmlBaseCollaborationDiagram(void * id, const QCString & n) : UmlDiagram(id, n), _def(0) {};
+
+
+  public:
+    // return the semantic part of the diagram not present in the model
+    UmlCollaborationDiagramDefinition * definition();
+
+    // to unload the object to free memory, it will be reloaded automatically
+    // if needed. args unused
+    virtual void unload(bool = FALSE, bool = FALSE);
+
+
+  private:
+    UmlCollaborationDiagramDefinition * _def;
 
 };
 

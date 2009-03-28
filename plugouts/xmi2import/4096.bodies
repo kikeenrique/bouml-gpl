@@ -16,7 +16,7 @@ class UmlBaseUseCase
   
   return _assoc_diagram;
 !!!43392.cpp!!!	set_AssociatedDiagram(inout d : UmlUseCaseDiagram) : bool
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -24,7 +24,7 @@ class UmlBaseUseCase
   else
     return FALSE;
 !!!43392.java!!!	set_AssociatedDiagram(inout d : UmlUseCaseDiagram) : bool
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, d.identifier_());
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, (d == null) ? (long) 0 : d.identifier_());
   UmlCom.check();
   
   _assoc_diagram = d;

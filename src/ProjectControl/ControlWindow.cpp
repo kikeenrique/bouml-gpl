@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -59,7 +59,7 @@ const char * OpenText = "To load a project";
 const char * SearchText = "To search a <em>package</em> in the <em>browser</em>.";
 const char * ChangeUserText = "To be an other user.";
 
-ControlWindow::ControlWindow() : QMainWindow(0, "Project control", WDestructiveClose) {
+ControlWindow::ControlWindow(QDir & homeDir) : QMainWindow(0, "Project control", WDestructiveClose) {
   the = this;
   setCaption("Project control");
   
@@ -113,7 +113,7 @@ ControlWindow::ControlWindow() : QMainWindow(0, "Project control", WDestructiveC
 
   // note : QFile fp(QDir::home().absFilePath(".bouml")) doesn't work
   // if the path contains non latin1 characters, for instance cyrillic !
-  QString s = QDir::home().absFilePath(".bouml");
+  QString s = homeDir.absFilePath(".bouml");
   FILE * fp = fopen((const char *) s, "r");
   
   if (fp != 0) {
@@ -129,7 +129,7 @@ ControlWindow::ControlWindow() : QMainWindow(0, "Project control", WDestructiveC
   
   menu->insertSeparator();
   QString whats = QString("to open this project.<br><br>The historic is saved in <i>")
-    + QDir::home().absFilePath(".bouml") + "</i>";
+    + homeDir.absFilePath(".bouml") + "</i>";
   
   for (int i = 0; i < int(historic.count()); i += 1) {
     int id = menu->insertItem(*historic.at(i),
@@ -296,7 +296,7 @@ void ControlWindow::windows_style() {
 }
 
 void ControlWindow::about() {
-  QMessageBox::about(this, "Project control", "<p>Version <b>1.2.1</b></p>" );
+  QMessageBox::about(this, "Project control", "<p>Version <b>1.2.2</b></p>" );
 }
 
 void ControlWindow::aboutQt() {

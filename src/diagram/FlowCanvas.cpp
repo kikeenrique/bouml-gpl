@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,7 +37,7 @@
 #include "LabelCanvas.h"
 #include "InfoCanvas.h"
 #include "BrowserFlow.h"
-#include "BrowserDiagram.h"
+#include "BrowserActivityDiagram.h"
 #include "FlowData.h"
 #include "StereotypePropertiesCanvas.h"
 #include "UmlGlobal.h"
@@ -85,11 +85,7 @@ FlowCanvas::~FlowCanvas() {
 }
 
 void FlowCanvas::delete_it() {
-  disconnect(data, 0, this, 0);
-  disconnect(DrawingSettings::instance(), SIGNAL(changed()),
-	     this, SLOT(modified()));
-  
-  ArrowCanvas::delete_it();
+  ArrowCanvas::delete_it();	// call unconnect
 
   if (selection != 0)
     selection->delete_it();
@@ -97,6 +93,14 @@ void FlowCanvas::delete_it() {
     transformation->delete_it();
   if (stereotypeproperties != 0)
     ((UmlCanvas *) canvas())->del(stereotypeproperties);
+}
+
+void FlowCanvas::unconnect() {
+  disconnect(data, 0, this, 0);
+  disconnect(DrawingSettings::instance(), SIGNAL(changed()),
+	     this, SLOT(modified()));
+  
+  ArrowCanvas::unconnect();
 }
 
 void FlowCanvas::deleted() {
@@ -196,7 +200,7 @@ void FlowCanvas::open() {
 }
 
 void FlowCanvas::menu(const QPoint &) {
-  if (!data->get_start()->in_edition()) {
+  if ((data != 0) && !data->get_start()->in_edition()) {
     FlowCanvas * plabel;
     FlowCanvas * pstereotype;
     
@@ -219,11 +223,9 @@ void FlowCanvas::menu(const QPoint &) {
 			       m.font()),
 		 -1);
     m.insertSeparator();
-    if (data) {
-      m.insertItem("Edit", 0);
-      m.insertSeparator();
-    }
-    
+    m.insertItem("Edit", 0);
+    m.insertSeparator();
+
     m.insertItem("Select in browser", 2);
     if (plabel || pstereotype) {
       m.insertSeparator();
@@ -398,7 +400,7 @@ ArrowPointCanvas * FlowCanvas::brk(const QPoint & p) {
   ArrowPointCanvas * ap =
     new ArrowPointCanvas(the_canvas(), p.x(), p.y());
   
-  ap->setZ(z() + 1);	// + 1 else point can't be selected
+  ap->setZ(z());
   
   FlowCanvas * other =
     // do not give data to not call update()
@@ -413,7 +415,7 @@ ArrowPointCanvas * FlowCanvas::brk(const QPoint & p) {
   connect(data, SIGNAL(deleted()), other, SLOT(deleted()));
 
   ap->add_line(this);
-  end->remove_line(this);
+  end->remove_line(this, TRUE);
   end = ap;
   
   if ((p - beginp).manhattanLength() < (p - endp).manhattanLength()) {
@@ -508,11 +510,13 @@ void FlowCanvas::update(bool updatepos) {
     // manages relation's name, guard and weight
   
     bool horiz = (write_horizontally == UmlDefaultState)
-      ? the_canvas()->browser_diagram()->get_write_label_horizontally(UmlActivityDiagram)
+      ? ((BrowserActivityDiagram *) the_canvas()->browser_diagram())
+	->get_write_label_horizontally()
       : (write_horizontally == UmlYes);
 
     used_settings = settings;
-    the_canvas()->browser_diagram()->get_activitydrawingsettings(used_settings);
+    ((BrowserActivityDiagram *) the_canvas()->browser_diagram())
+      ->get_activitydrawingsettings(used_settings);
       
     s = data->str(horiz, used_settings.drawing_language);
     
@@ -732,6 +736,10 @@ void FlowCanvas::check_stereotypeproperties() {
       stereotypeproperties = 0;
     }
   }
+}
+
+bool FlowCanvas::represents(BrowserNode * bn) {
+  return (data == bn->get_data());
 }
 
 //
@@ -960,6 +968,8 @@ FlowCanvas * FlowCanvas::read(char * & st, UmlCanvas * canvas, char * k)
     // manage case where the relation is deleted but present in the browser
     if (result->data->get_start()->deletedp())
       result->delete_it();
+    else
+      result->update_geometry();
     
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");
@@ -972,9 +982,7 @@ FlowCanvas * FlowCanvas::read(char * & st, UmlCanvas * canvas, char * k)
 
 void FlowCanvas::history_hide() {
   QCanvasItem::setVisible(FALSE);
-  disconnect(data, 0, this, 0);
-  disconnect(DrawingSettings::instance(), SIGNAL(changed()),
-	     this, SLOT(modified()));
+  unconnect();
 }
 
 void FlowCanvas::history_load(QBuffer & b) {

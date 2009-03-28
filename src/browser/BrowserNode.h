@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -72,7 +72,6 @@ class BrowserNode : public QListViewItem,
     bool is_read_only : 1;
     bool is_edited : 1;
     bool is_marked : 1;
-    bool is_saveable : 1;
     bool is_defined : 1;	// to indicate unconsistency due to projectSynchro
     				// pre condition not followed
     
@@ -99,6 +98,8 @@ class BrowserNode : public QListViewItem,
     BrowserNode(QString s, BrowserNode * parent);
     virtual ~BrowserNode();
     
+    bool is_undefined() const;
+    
     const char * get_name() const { return name; };
     virtual void set_name(const char * s);
     virtual void update_stereotype(bool rec = FALSE);
@@ -114,9 +115,9 @@ class BrowserNode : public QListViewItem,
     void toggle_mark();
     bool markedp() const { return is_marked; }
     static const QList<BrowserNode> & marked_nodes() { return marked_list; }
+    static void unmark_all();
     
     virtual bool is_writable() const;	// file writable & not api base
-    bool saveable() { return is_saveable; } // file writable
     virtual void delete_it();
     bool deletedp() const { return is_deleted; };
     void undelete(bool rec);
@@ -180,23 +181,10 @@ class BrowserNode : public QListViewItem,
     virtual void get_deploymentdiagramsettings(DeploymentDiagramSettings &) const;
     virtual void get_statediagramsettings(StateDiagramSettings &) const;
     virtual void get_activitydiagramsettings(ActivityDiagramSettings &) const;
-    virtual bool get_draw_all_relations(UmlCode) const;
-    virtual bool get_show_stereotype_properties(UmlCode k) const;
-    virtual bool get_classinstwritehorizontally(UmlCode k) const;
-    virtual void get_componentdrawingsettings(bool depl, ComponentDrawingSettings & r) const;
-    virtual void get_statedrawingsettings(StateDrawingSettings &) const;
-    virtual void get_activitydrawingsettings(ActivityDrawingSettings &) const;
-    virtual void get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const;
-    virtual bool get_shadow(UmlCode) const;
     virtual UmlColor get_color(UmlCode) const;
     virtual UmlVisibility get_visibility(UmlCode) const;
     virtual void package_settings(bool & name_in_tab, ShowContextMode & show_context) const;
     virtual const QStringList & default_stereotypes(UmlCode, const BrowserNode *) const; // non class rel
-    virtual bool get_auto_label_position(UmlCode who) const ;
-    virtual bool get_write_label_horizontally(UmlCode who) const ;
-    virtual bool get_show_trans_definition(UmlCode who) const;
-    virtual bool get_show_opaque_action_definition(UmlCode who) const;
-    virtual DrawingLanguage get_language(UmlCode who) const;
     virtual BrowserNode * get_associated() const;
     virtual BasicData * add_relation(UmlCode, BrowserNode *);
     virtual QList<BrowserNode> parents() const;
@@ -218,12 +206,14 @@ class BrowserNode : public QListViewItem,
     static void save_progress_closed();
     virtual void init_save_counter();
     void read(char * &, char * & k);
+    static BrowserNode * read_any_ref(char * &, char *);
     static void save_stereotypes(QTextStream & st, 
 				 QStringList relations_stereotypes[]);
     static void read_stereotypes(char * &,
 				 QStringList relations_stereotypes[]);
 
     static bool toggle_show_stereotypes();
+    virtual void iconChanged();
     virtual void paintCell(QPainter * p, const QColorGroup & cg, int column,
 			   int width, int alignment);
     

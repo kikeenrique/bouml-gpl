@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -55,13 +55,13 @@ AboutDialog::AboutDialog() : QDialog(0, "About BOUML", TRUE) {
   hbox->addWidget(lbp);
   hbox->addWidget(new QLabel("  ", this));
 
-  const char * htmltext = ("BOUML release <b>4.4.2</b><br>\n"
+  const char * htmltext = ("BOUML release <b>4.12.1</b><br>\n"
 			   "<br>\n"
 			   "<i>http://bouml.free.fr</i><br>\n"
 			   "<i>http://bouml.sourceforge.net/</i><br>\n"
 			   "<br>\n"
 			   "Bruno Pages (<i>bouml@free.fr</i>)");
-  const char * sizetext = ("BOUML release 4.0\n"
+  const char * sizetext = ("BOUML release <b>4.8 patch 1</b>\n"
 			   "\n"
 			   "http://bouml.free.fr\n"
 			   "http://bouml.sourceforge.net/____\n"

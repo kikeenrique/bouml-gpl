@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,6 +42,7 @@ class ArrowJunctionCanvas : public QObject, public DiagramCanvas {
     virtual ~ArrowJunctionCanvas();
     
     virtual void delete_it();
+    virtual void unconnect();
 
     virtual void draw(QPainter & p);
     
@@ -54,7 +55,7 @@ class ArrowJunctionCanvas : public QObject, public DiagramCanvas {
     //virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     //virtual void delete_available(bool & in_model, bool & out_model) const;
     virtual bool alignable() const;
-    virtual void remove_line(ArrowCanvas * l);
+    virtual void remove_line(ArrowCanvas * l, bool onbrkjoin);
     BrowserClass * get_interface() const { return interface; }
     virtual void history_load(QBuffer &);
     virtual void history_hide();

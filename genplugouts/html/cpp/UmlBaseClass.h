@@ -162,6 +162,26 @@ class UmlBaseClass : public UmlClassMember {
     bool set_isPhpFinal(bool y);
 #endif
 
+#ifdef WITHPYTHON
+    // returns TRUE if the class is external, its definition
+    // must contain how the name is made on the first line
+    // (isPythonExternal by default), the other lines are ignored
+    bool isPythonExternal();
+
+    // set if the class is external
+    // 
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isPythonExternal(bool y);
+
+    // returns TRUE is the class is a Python 2.2 class
+    bool isPython_2_2();
+
+    // set if the class is a Python 2.2 class
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isPython_2_2(bool v);
+#endif
+
 #ifdef WITHIDL
     // returns the switch's type, significant in case the class
     // is an union in IDL
@@ -205,6 +225,10 @@ class UmlBaseClass : public UmlClassMember {
     
     static UmlClass * get(const QCString & n, const UmlPackage * p);
 
+    // Return the class supporting the stereotype corresponding to
+    // the first parameter being 'profile_name:stereotype_name', or 0/null
+    static UmlClass * findStereotype(QCString s, bool caseSensitive);
+
     // to unload the object to free memory, it will be reloaded automatically
     // if needed. Recursively done for the sub items if 'rec' is TRUE. 
     //
@@ -213,8 +237,6 @@ class UmlBaseClass : public UmlClassMember {
     // you will have to call Children() to re-access to them
     virtual void unload(bool rec = FALSE, bool del = FALSE);
 
-  friend class UmlBaseRelation;
-  friend class UmlBaseArtifact;
 
   private:
     //key includes package/class-container
@@ -236,6 +258,12 @@ class UmlBaseClass : public UmlClassMember {
     bool _php_external : 1;
 
     bool _php_final : 1;
+#endif
+
+#ifdef WITHPYTHON
+    bool _python_external : 1;
+
+    bool _python_2_2 : 1;
 #endif
 
 #ifdef WITHIDL
@@ -275,6 +303,12 @@ class UmlBaseClass : public UmlClassMember {
     virtual void read_php_();
 #endif
 
+#ifdef WITHPYTHON
+    //internal, do NOT use it
+    
+    virtual void read_python_();
+#endif
+
 #ifdef WITHIDL
     virtual void read_idl_();
 #endif
@@ -288,6 +322,8 @@ class UmlBaseClass : public UmlClassMember {
     // On error return FALSE in C++, produce a RuntimeException in Java
     virtual bool set_Name(const QCString & s);
 
+  friend class UmlBaseArtifact;
+  friend class UmlBaseRelation;
 };
 
 #endif

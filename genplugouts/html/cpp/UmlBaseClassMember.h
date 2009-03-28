@@ -102,10 +102,10 @@ class UmlBaseClassMember : public UmlClassItem {
     virtual void read_java_();
 #endif
 
-  friend class UmlBaseOperation;
-  friend class UmlBaseAttribute;
-  friend class UmlBaseRelation;
   friend class UmlBaseClass;
+  friend class UmlBaseRelation;
+  friend class UmlBaseAttribute;
+  friend class UmlBaseOperation;
 };
 
 #endif

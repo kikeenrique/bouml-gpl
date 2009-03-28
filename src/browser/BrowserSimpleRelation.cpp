@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,6 +35,16 @@
 #include "BrowserSimpleRelation.h"
 #include "SimpleRelationData.h"
 #include "BrowserUseCase.h"
+#include "ReferenceDialog.h"
+#include "BrowserActivityDiagram.h"
+#include "BrowserClassDiagram.h"
+#include "BrowserColDiagram.h"
+#include "BrowserComponentDiagram.h"
+#include "BrowserDeploymentDiagram.h"
+#include "BrowserObjectDiagram.h"
+#include "BrowserSeqDiagram.h"
+#include "BrowserStateDiagram.h"
+#include "BrowserUseCaseDiagram.h"
 #include "UmlPixmap.h"
 #include "UmlGlobal.h"
 #include "myio.h"
@@ -123,6 +133,21 @@ bool BrowserSimpleRelation::undelete(bool, QString & warning, QString & renamed)
   return TRUE;
 }
 
+void BrowserSimpleRelation::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
+  if (! ondelete) {
+    BrowserActivityDiagram::compute_referenced_by(l, this, "simplerelationcanvas", "simplerelation_ref");
+    BrowserClassDiagram::compute_referenced_by(l, this, "simplerelationcanvas", "simplerelation_ref");
+    BrowserColDiagram::compute_referenced_by(l, this, "simplerelationcanvas", "simplerelation_ref");
+    BrowserComponentDiagram::compute_referenced_by(l, this, "simplerelationcanvas", "simplerelation_ref");
+    BrowserDeploymentDiagram::compute_referenced_by(l, this, "simplerelationcanvas", "simplerelation_ref");
+    BrowserObjectDiagram::compute_referenced_by(l, this, "simplerelationcanvas", "simplerelation_ref");
+    BrowserSeqDiagram::compute_referenced_by(l, this, "simplerelationcanvas", "simplerelation_ref");
+    BrowserStateDiagram::compute_referenced_by(l, this, "simplerelationcanvas", "simplerelation_ref");
+    BrowserUseCaseDiagram::compute_referenced_by(l, this, "simplerelationcanvas", "simplerelation_ref");
+  }
+}
+
 void BrowserSimpleRelation::compute_referenced_by(QList<BrowserNode> & l,
 						  BrowserNode * target)
 {
@@ -171,8 +196,12 @@ void BrowserSimpleRelation::update_stereotype(bool) {
 }
 
 const QPixmap* BrowserSimpleRelation::pixmap(int) const {
-  return (deletedp()) ? DeletedRelationIcon
-		      : SimpleRelationIcon;
+  if (deletedp())
+    return DeletedRelationIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : SimpleRelationIcon;
 }
 
 void BrowserSimpleRelation::menu() {
@@ -193,6 +222,10 @@ Note that you can undelete it after");
       }
       m.insertSeparator();
     }
+  
+    m.setWhatsThis(m.insertItem("Referenced by", 8),
+		   "to know who reference the <i>relation</i>");
+    
     m.setWhatsThis(m.insertItem(QString("select ") + def->get_end_node()->get_name(),
 				7),
 		   "to select the destination");
@@ -219,7 +252,7 @@ Note that you can undelete it after");
 void BrowserSimpleRelation::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
-    open(FALSE);
+    open(TRUE);
     break;
   case 2:
     delete_it();
@@ -229,6 +262,9 @@ void BrowserSimpleRelation::exec_menu_choice(int rank) {
     break;
   case 7:
     def->get_end_node()->select_in_browser();
+    return;
+  case 8:
+    ReferenceDialog::show(this);
     return;
   default:
     if (rank >= 99990)
@@ -257,7 +293,10 @@ void BrowserSimpleRelation::apply_shortcut(QString s) {
     }
     if (s == "Select target")
       choice = 7;
-    mark_shortcut(s, choice, 90);
+    else if (s == "Referenced by")
+      choice = 8;
+    else
+      mark_shortcut(s, choice, 90);
     if (edition_number == 0)
       Tool::shortcut(s, choice, get_type(), 100);
   }
@@ -370,7 +409,15 @@ BrowserSimpleRelation *
   BrowserSimpleRelation::read(char * & st, char * k,
 			      BrowserNode * parent)
 {
-  if (!strcmp(k, "simplerelation")) {
+  if (!strcmp(k, "simplerelation_ref")) {
+    int id = read_id(st);
+    BrowserSimpleRelation * result = all[id];
+    
+    return (result == 0)
+      ? new BrowserSimpleRelation(id)
+      : result;  
+  }
+  else if (!strcmp(k, "simplerelation")) {
     int id = read_id(st);
     
     SimpleRelationData * d = SimpleRelationData::read(st);
@@ -397,8 +444,8 @@ BrowserSimpleRelation *
     
     result->is_defined = TRUE;
 
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     k = read_keyword(st);
     
@@ -418,4 +465,37 @@ BrowserSimpleRelation *
 BrowserNode * BrowserSimpleRelation::get_it(const char * k, int id)
 {
   return (!strcmp(k, "simplerelation_ref")) ? all[id] : 0;
+}
+
+void BrowserSimpleRelation::get_relating(BrowserNode * elt, QPtrDict<BrowserNode> & d,
+					 BrowserNodeList & newones, bool inh,
+					 bool dep, bool sametype, UmlCode k)
+{
+  IdIterator<BrowserSimpleRelation> it(all);
+  BrowserSimpleRelation * r;
+  
+  for (; (r = it.current()) != 0; ++it) {
+    if (!r->deletedp() &&
+	(r->def->get_end_node() == elt)) {
+      BrowserNode * src = r->def->get_start_node();
+      
+      if ((!sametype || (src->get_type() == k)) && (d[src] == 0)) {
+	switch (r->get_type()) {
+	case UmlDependOn:
+	  if (! dep)
+	    continue;
+	  break;
+	case UmlInherit:
+	  if (! inh)
+	    continue;
+	  break;
+	default:
+	  continue;
+	}
+	
+	d.insert(src, src);
+	newones.append(src);
+      }
+    }
+  }
 }

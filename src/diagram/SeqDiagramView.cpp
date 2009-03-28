@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -464,9 +464,12 @@ void SeqDiagramView::read(char * st, char * k) {
 
 void SeqDiagramView::send(ToolCom * com) {
   QCanvasItemList l = canvas()->allItems();
+  QList<FragmentCanvas> fragments;
+  QList<FragmentCanvas> refs;
   
-  FragmentCanvas::send(com, l);
+  FragmentCanvas::send(com, l, fragments, refs);
   SdClassInstCanvas::send(com, l);
-  SdLifeLineCanvas::send(com, l);
+  SdLifeLineCanvas::send(com, l, fragments, refs);
   TextCanvas::send(com, l);
+  SdContinuationCanvas::send(com, l);
 }

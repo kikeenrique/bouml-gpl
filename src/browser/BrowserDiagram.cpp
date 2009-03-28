@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,6 +39,7 @@
 #include "BrowserObjectDiagram.h"
 #include "BrowserActivityDiagram.h"
 #include "BrowserView.h"
+#include "Settings.h"
 #include "UmlWindow.h"
 #include "myio.h"
 
@@ -68,15 +69,28 @@ BrowserDiagram::BrowserDiagram(int id)
 BrowserDiagram::~BrowserDiagram() {
 }
 
+BrowserNodeList & BrowserDiagram::instances(BrowserNodeList & result, bool sort)
+{
+  IdIterator<BrowserDiagram> it(all);
+  BrowserDiagram * d;
+
+  while ((d = it.current()) != 0) {
+    if (!d->deletedp())
+      result.append(d);
+    ++it;
+  }
+
+  if (sort)
+    result.sort_it();
+
+  return result;
+}
+
 void BrowserDiagram::package_modified() {
   if (!on_load_diagram()) {
     is_modified = TRUE;
     BrowserNode::package_modified();
   }
-}
-
-bool BrowserDiagram::get_auto_label_position(UmlCode) const {
-  return TRUE;
 }
 
 void BrowserDiagram::read_stereotypes(char * & st, char * & k)
@@ -139,11 +153,9 @@ void BrowserDiagram::import()
   BrowserActivityDiagram::import();
 }
 
-BrowserNode * BrowserDiagram::read_diagram_ref(char * & st)
-{
+BrowserNode * BrowserDiagram::read_any_ref(char * & st, char * k) {
   BrowserNode * bn;
-  char * k = read_keyword(st);
-  
+
   if (((bn = BrowserClassDiagram::read(st, k, 0)) == 0) &&
       ((bn = BrowserColDiagram::read(st, k, 0)) == 0) &&
       ((bn = BrowserSeqDiagram::read(st, k, 0)) == 0) &&
@@ -151,9 +163,28 @@ BrowserNode * BrowserDiagram::read_diagram_ref(char * & st)
       ((bn = BrowserComponentDiagram::read(st, k, 0)) == 0) &&
       ((bn = BrowserDeploymentDiagram::read(st, k, 0)) == 0) &&
       ((bn = BrowserStateDiagram::read(st, k, 0)) == 0) &&
-      ((bn = BrowserObjectDiagram::read(st, k, 0)) == 0) &&
-      ((bn = BrowserActivityDiagram::read(st, k, 0)) == 0))
+      ((bn = BrowserObjectDiagram::read(st, k, 0)) == 0))
+    bn = BrowserActivityDiagram::read(st, k, 0);
+
+  return bn;
+}
+
+BrowserNode * BrowserDiagram::read_diagram_ref(char * & st)
+{
+  char * k = read_keyword(st);
+  BrowserNode * bn = read_any_ref(st, k);
+  
+  if (bn == 0)
     unknown_keyword(k);
   
   return bn;  
+}
+
+void BrowserDiagram::get_componentdrawingsettings(ComponentDrawingSettings &) const {
+  // never called
+}
+
+bool BrowserDiagram::get_classinstwritehorizontally() const {
+  // never called
+  return FALSE;
 }

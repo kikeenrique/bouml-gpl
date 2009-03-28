@@ -161,4 +161,81 @@ class UmlRemoveVariableValueAction : public UmlBaseRemoveVariableValueAction {
 
 };
 
+class UmlAcceptCallAction : public UmlBaseAcceptCallAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlAcceptCallAction(void * id, const QCString & s) : UmlBaseAcceptCallAction(id, s) {
+    }
+
+    //write the definition if it is not empty for the target language
+    virtual void write(FileOut & out);
+
+};
+
+class UmlReplyAction : public UmlBaseReplyAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlReplyAction(void * id, const QCString & s) : UmlBaseReplyAction(id, s) {
+    }
+
+    //write the definition if it is not empty for the target language
+    virtual void write(FileOut & out);
+
+};
+
+class UmlCreateObjectAction : public UmlBaseCreateObjectAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlCreateObjectAction(void * id, const QCString & s) : UmlBaseCreateObjectAction(id, s) {
+    }
+
+    //write the definition if it is not empty for the target language
+    virtual void write(FileOut & out);
+
+};
+
+class UmlDestroyObjectAction : public UmlBaseDestroyObjectAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlDestroyObjectAction(void * id, const QCString & s) : UmlBaseDestroyObjectAction(id, s) {
+    }
+
+    //write the definition if it is not empty for the target language
+    virtual void write(FileOut & out);
+
+};
+
+class UmlTestIdentityAction : public UmlBaseTestIdentityAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlTestIdentityAction(void * id, const QCString & s) : UmlBaseTestIdentityAction(id, s) {
+    }
+
+    //write the definition if it is not empty for the target language
+    virtual void write(FileOut & out);
+
+};
+
+class UmlRaiseExceptionAction : public UmlBaseRaiseExceptionAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlRaiseExceptionAction(void * id, const QCString & s) : UmlBaseRaiseExceptionAction(id, s) {
+    }
+
+    //write the definition if it is not empty for the target language
+    virtual void write(FileOut & out);
+
+};
+
+class UmlReduceAction : public UmlBaseReduceAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlReduceAction(void * id, const QCString & s) : UmlBaseReduceAction(id, s) {
+    }
+
+    //write the definition if it is not empty for the target language
+    virtual void write(FileOut & out);
+
+};
+
 #endif

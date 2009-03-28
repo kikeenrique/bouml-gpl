@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,6 +34,7 @@
 #include "UcUseCaseCanvas.h"
 #include "UcClassCanvas.h"
 #include "SimpleRelationCanvas.h"
+#include "DiagramView.h"
 #include "BasicData.h"
 #include "BrowserUseCase.h"
 #include "UseCaseData.h"
@@ -274,6 +275,8 @@ void UcUseCaseCanvas::menu(const QPoint&) {
   m.insertItem("Go up", 13);
   m.insertItem("Go down", 14);
   m.insertSeparator();
+  m.insertItem("Add related elements", 10);
+  m.insertSeparator();
   m.insertItem("Edit", 2);
   m.insertSeparator();
   m.insertItem("Edit drawing settings", 3);
@@ -283,7 +286,9 @@ void UcUseCaseCanvas::menu(const QPoint&) {
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("Set associated diagram",6);
+    if (browser_node->get_associated() !=
+	(BrowserNode *) the_canvas()->browser_diagram())
+      m.insertItem("Set associated diagram",6);
     
     if (browser_node->get_associated())
       m.insertItem("Remove diagram association",9);
@@ -344,6 +349,10 @@ void UcUseCaseCanvas::menu(const QPoint&) {
     // delete from model
     browser_node->delete_it();	// will remove canvas
     break;
+  case 10:
+    ((UmlCanvas *) canvas())->get_view()
+      ->add_related_elements(this, "use case", TRUE, FALSE);
+    return;
   default:
     if (rank >= 20)
       ToolCom::run(Tool::command(rank - 20), browser_node);
@@ -368,6 +377,11 @@ void UcUseCaseCanvas::apply_shortcut(QString s) {
     z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
+    return;
+  }
+  else if (s == "Add related elements") {
+    ((UmlCanvas *) canvas())->get_view()
+      ->add_related_elements(this, "use case", TRUE, FALSE);
     return;
   }
   else {

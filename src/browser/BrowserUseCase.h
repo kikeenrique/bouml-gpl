@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -64,6 +64,7 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
     UmlColor stateaction_color;
     UmlColor activity_color;
     UmlColor activityregion_color;
+    UmlColor activitypartition_color;
     UmlColor activityaction_color;
     UmlColor parameterpin_color;
     UmlColor class_color;
@@ -99,13 +100,7 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
     virtual void get_objectdiagramsettings(ObjectDiagramSettings &) const;
     virtual void get_statediagramsettings(StateDiagramSettings &) const;
     virtual void get_activitydiagramsettings(ActivityDiagramSettings &) const;
-    virtual void get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const;
     virtual UmlColor get_color(UmlCode) const;
-    virtual bool get_auto_label_position(UmlCode who) const;
-    virtual bool get_write_label_horizontally(UmlCode who) const;
-    virtual bool get_show_trans_definition(UmlCode who) const;
-    virtual bool get_show_opaque_action_definition(UmlCode who) const;
-    virtual DrawingLanguage get_language(UmlCode who) const;
     virtual const QStringList & default_stereotypes(UmlCode, const BrowserNode *) const; // non class rel
     virtual void on_delete();
     virtual bool tool_cmd(ToolCom * com, const char * args);
@@ -122,6 +117,8 @@ class BrowserUseCase : public BrowserNode, public Labeled<BrowserUseCase> {
     static const QStringList & default_stereotypes();
     static void read_stereotypes(char * &, char * & k);
     static void save_stereotypes(QTextStream &);
+    
+    virtual void referenced_by(QList<BrowserNode> & l, bool ondelete);
     
     static void clear(bool old);
     static void update_idmax_for_root();

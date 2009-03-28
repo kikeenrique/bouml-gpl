@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -225,10 +225,61 @@ bool UmlOperation::new_one(Class * container, aVisibility visibility,
   
   Lex::clear_comments();	// params & body comments
   Lex::finish_line();
-  if (!comment.isEmpty())
-    if (op != 0) 
-      op->set_Description((def.find("${description}") != -1)
-			  ? description : comment);
+  
+  if ((op != 0) && !comment.isEmpty()) {
+    s = (def.find("${description}") != -1) ? description : comment;
+    
+    UmlTypeSpec t;
+    int index1;
+    
+    if (! (t.explicit_type = value_of(s, "@return", index1)).isEmpty()) {
+      op->set_ReturnType(t);
+      s.replace(index1, t.explicit_type.length(), "${type}");
+    }
+    
+    QValueList<UmlParameter> l = op->params();
+    unsigned nparams = l.count();
+
+    if (nparams != 0) {
+      QCString varname;
+      int index2;
+      char xn[16];
+
+      index1 = 0;
+      rank = 0;
+      
+      while (!((t.explicit_type = value_of(s, "@param", index1, varname, index2))
+	       .isEmpty())) {
+	if (varname.isEmpty() || (varname[0] != '$')) {
+	  if (rank < nparams) {
+	    UmlParameter & p = l[rank];
+	    
+	    p.type = t;
+	    op->replaceParameter(rank, p);
+	  }
+	}
+	else {
+	  varname = varname.mid(1);
+	  
+	  QValueList<UmlParameter>::Iterator it;
+	  
+	  for (it = l.begin(), rank = 0; it != l.end(); ++it, rank += 1) {
+	    if ((*it).name == varname) {
+	      (*it).type = t;
+	      op->replaceParameter(rank, *it);
+	      sprintf(xn, "${p%d}", rank);
+	      s.replace(index2, varname.length() + 1, xn);
+	      break;
+	    }
+	  }
+	}
+	sprintf(xn, "${t%d}", rank++);
+	s.replace(index1, t.explicit_type.length(), xn);
+      }
+    }
+    op->set_Description(s);
+  }
+  
   return TRUE;
 }
 

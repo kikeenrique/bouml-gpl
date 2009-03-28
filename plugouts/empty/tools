@@ -15,3 +15,4 @@ tool "Check-in" "file_control ci" Project Package
 tool "Check-out" "file_control co" Project Package
 tool "Deploy classes" "deplcl" ClassView
 tool "Global Change" "global_change" Class Project Package ClassView DeploymentView
+tool "Uml projection" "uml_proj" Class Operation Attribute Generalisation Realize Dependency Association DirectionalAssociation Aggregation AggregationByValue DirectionalAggregation DirectionalAggregationByValue Project Package ClassView

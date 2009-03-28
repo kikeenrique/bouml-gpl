@@ -1,6 +1,6 @@
 // *************************************************************************cr();
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -28,13 +28,17 @@
 
 #include "SimpleData.h"
 #include "InfoData.h"
+#include "UmlEnum.h"
 
 class QTextStream;
 
 class BrowserActivity;
 class ActivityDialog;
+class BrowserOperation;
 
 class ActivityData : public SimpleData {
+  Q_OBJECT
+    
   friend class ActivityDialog;
     
   protected:
@@ -43,6 +47,7 @@ class ActivityData : public SimpleData {
     InfoData java_condition;
     bool read_only;
     bool single_execution;
+    BrowserOperation * specification;
     
     virtual void send_uml_def(ToolCom * com, BrowserNode * bn,
 			      const QString & comment);
@@ -58,6 +63,8 @@ class ActivityData : public SimpleData {
     QString get_postcond(DrawingLanguage) const;
     bool get_is_read_only() const { return read_only; }
     bool get_is_single_execution() const { return single_execution; }
+    BrowserOperation * get_specification() const { return specification; }
+    void set_specification(BrowserOperation *);
     
     void edit();
     
@@ -66,6 +73,9 @@ class ActivityData : public SimpleData {
     
     void save(QTextStream &, QString & warning) const;
     void read(char * & st, char * & k);
+    
+  protected slots:
+    void on_delete();
 };
   
 #endif

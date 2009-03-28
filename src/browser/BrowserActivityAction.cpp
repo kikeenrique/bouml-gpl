@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -112,9 +112,11 @@ void BrowserActivityAction::update_idmax_for_root()
   BrowserPin::update_idmax_for_root();
 }
     
-void BrowserActivityAction::referenced_by(QList<BrowserNode> & l, bool) {
+void BrowserActivityAction::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
   BrowserFlow::compute_referenced_by(l, this);
-  BrowserSimpleRelation::compute_referenced_by(l, this);
+  if (! ondelete)
+    BrowserActivityDiagram::compute_referenced_by(l, this, "activityactioncanvas", "activityaction_ref");
 }
 
 void BrowserActivityAction::compute_referenced_by(QList<BrowserNode> & l,
@@ -141,6 +143,13 @@ void BrowserActivityAction::renumber(int phase) {
 }
 
 const QPixmap * BrowserActivityAction::pixmap(int) const {
+  if (! deletedp()) {
+    const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+    if (px != 0)
+      return px;
+  }
+  
   switch (def->get_action_kind()) {
   case UmlAcceptEventAction:
     if (((AcceptEventAction *) def->get_action())->timeevent) {
@@ -718,7 +727,9 @@ const QStringList & BrowserActivityAction::default_stereotypes()
 }
 
 bool BrowserActivityAction::api_compatible(unsigned v) const {
-  return (v > 24);
+  return ((v > 43) ||
+	  ((v > 24) &&
+	   (def->get_action_kind() <= UmlValueSpecificationAction)));
 }
 
 QValueList<BrowserPin *> BrowserActivityAction::get_pins() const {
@@ -1076,8 +1087,8 @@ BrowserActivityAction * BrowserActivityAction::read(char * & st, char * k,
     result->update_stereotype(FALSE);
 
     
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     if (strcmp(k, "end")) {
       while (BrowserPin::read(st, k, result) ||

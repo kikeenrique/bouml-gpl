@@ -29,6 +29,8 @@ enum OnInstanceCmd {
   relationsCmd,
   getPhpDefCmd,
   phpBodyCmd,
+  getPythonDefCmd,
+  pythonBodyCmd,
   firstSetCmd= 50,// just a mark
   createCmd,
   setCoupleValueCmd,
@@ -153,7 +155,23 @@ enum OnInstanceCmd {
   setPhpNameSpecCmd,
   setPhpDirCmd,
   setPhpFrozenCmd,
-  setIsForceBodyGenCmd
+  setIsForceBodyGenCmd,
+  setCppContextualBodyIndentCmd,
+  setJavaContextualBodyIndentCmd,
+  setPhpContextualBodyIndentCmd,
+  setPythonDeclCmd,
+  setIsPythonExternalCmd,
+  setPythonSrcCmd,
+  setPythonBodyCmd,
+  setPythonNameSpecCmd,
+  setPythonDirCmd,
+  setPythonFrozenCmd,
+  setIsPython2_2Cmd,
+  setPythonDecoratorsCmd,
+  setPythonPackageCmd,
+  setPythonContextualBodyIndentCmd,
+  applyStereotypeCmd,
+  setDerivedCmd
 
 };
 #endif

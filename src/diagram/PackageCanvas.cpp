@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,6 +33,7 @@
 
 #include "PackageCanvas.h"
 #include "SimpleRelationCanvas.h"
+#include "DiagramView.h"
 #include "PackageData.h"
 #include "BrowserPackage.h"
 #include "BrowserDiagram.h"
@@ -43,6 +44,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
 
 PackageCanvas::PackageCanvas(BrowserNode * bn, UmlCanvas * canvas,
 			     int x, int y, int id)
@@ -167,22 +169,38 @@ int PackageCanvas::min_height() {
     min_h += the_canvas()->shadow();
   
   return (he < min_h) ? min_h : he;
-  
 }
 
 void PackageCanvas::check_size() {
   used_color = (itscolor == UmlDefaultColor)
     ? the_canvas()->browser_diagram()->get_color(UmlPackage)
     : itscolor;
+
+  const QPixmap * px = 
+    ProfiledStereotypes::diagramPixmap(browser_node->get_data()->get_stereotype(),
+				       the_canvas()->zoom());
   
-  int wi = min_width();
-  int he = min_height();
-  
-  // warning : do NOT check if ((width() < wi) || (height() < he))
-  // because te resize must be done to set data on scale change
-  // Force odd width and height for line alignment
-  DiagramCanvas::resize((width() > wi) ? width() : wi | 1,
-			(height() > he) ? height() : he | 1);
+  if (px != 0) {
+    QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
+    int wi = fm.width(browser_node->get_name());
+    
+    if (wi < px->width())
+      wi = px->width();
+
+    // force odd width and height for line alignment
+    DiagramCanvas::resize(wi | 1, (px->height() + fm.height()) | 1);
+    
+  }
+  else {
+    int wi = min_width();
+    int he = min_height();
+    
+    // warning : do NOT check if ((width() < wi) || (height() < he))
+    // because te resize must be done to set data on scale change
+    // Force odd width and height for line alignment
+    DiagramCanvas::resize((width() > wi) ? width() : wi | 1,
+			  (height() > he) ? height() : he | 1);
+  }
 }
 				    
 void PackageCanvas::change_scale() {
@@ -198,140 +216,165 @@ void PackageCanvas::change_scale() {
 void PackageCanvas::draw(QPainter & p) {
   if (! visible()) return;
   
-  QColor bckgrnd = p.backgroundColor();
-
-  p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
-
-  QColor co = color(used_color);
-  
-  p.setBackgroundColor(co);
-  p.setFont(the_canvas()->get_font(UmlNormalFont));
-  
-  QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
-  const int four = (int) (4 * the_canvas()->zoom());
-  const int he = fm.height();
   QRect r = rect();
-  const int shadow = the_canvas()->shadow();
+  const BasicData * data = browser_node->get_data();  
+  const QPixmap * px = 
+    ProfiledStereotypes::diagramPixmap(data->get_stereotype(),
+				       the_canvas()->zoom());
   FILE * fp = svg();
-
+  
   if (fp != 0)
     fputs("<g>\n", fp);
 
-  if ((used_color != UmlTransparent) && (shadow != 0)) {
-    r.setRight(r.right() - shadow);
-    r.setBottom(r.bottom() - shadow);
-  }
-  
-  r.setWidth(r.width() * 2 / 5);
-  r.setHeight(he + four);
-  if (used_color != UmlTransparent)
-    p.fillRect(r, co);
-  
-  if (fp != 0)
-    fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	    svg_color(used_color), 
-	    r.x(), r.y(), r.width() - 1, r.height() - 1);
-
-  p.drawRect(r);
-  
-  if ((used_color != UmlTransparent) && (shadow != 0)) {
-    p.fillRect (r.right(), r.top() + shadow,
-		shadow, r.height() - 1 - shadow,
-		::Qt::darkGray);
-
+  if (px != 0) {
+    p.setBackgroundMode(::Qt::TransparentMode);
+    
+    
+    int lft = (px->width() < width()) ? r.x() + (width() - px->width())/2 : r.x();
+    
+    p.drawPixmap(lft, r.y(), *px);
     if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+      // pixmap not really exported in SVG
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      ::Qt::darkGray.rgb()&0xffffff,
-	      r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - shadow - 1);
-  }
-
-  const char * name = browser_node->get_name();
-  
-  if (in_tab) {
-    p.drawText(r, ::Qt::AlignCenter, name);
+	      svg_color(UmlBlack), lft, r.y(), px->width() - 1, px->height() - 1);
+    
+    r.moveBy(0, px->height());
+    p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
+    p.drawText(r, ::Qt::AlignHCenter, browser_node->get_name());
+    
+    // pixmap not yet exported in SVG
     if (fp != 0)
-      draw_text(r, ::Qt::AlignCenter, name,
-		p.font(), fp);
-  }
-  
-  r = rect();
-  if ((used_color != UmlTransparent) && (shadow != 0)) {
-    r.setRight(r.right() - shadow);
-    r.setBottom(r.bottom() - shadow);
-  }
-  
-  r.setTop(r.top() + he + four - 1);
-  if (used_color != UmlTransparent)
-    p.fillRect(r, co);
-  
-  if (fp != 0)
-    fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	    svg_color(used_color),
-	    r.x(), r.y(), r.width() - 1, r.height() - 1);
-
-  p.drawRect(r);
-  
-  if ((used_color != UmlTransparent) && (shadow != 0)) {
-    p.fillRect (r.right(), r.top() + shadow,
-		shadow, r.height() - 1,
-		::Qt::darkGray);
-    p.fillRect (r.left() + shadow, r.bottom(),
-		r.width() - 1, shadow,
-		::Qt::darkGray);
-
-    if (fp != 0) {
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      ::Qt::darkGray.rgb()&0xffffff,
-	      r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
-
-      fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      ::Qt::darkGray.rgb()&0xffffff,
-	      r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
-    }
-  }
-  
-  const int three = (int) (3 * the_canvas()->zoom());
-  
-  r.setTop(r.top() + three);
-  
-  if (! in_tab) {
-    p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, name);
-    if (fp != 0)
-      draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, name,
-		p.font(), fp);
-    r.setTop(r.top() + he + three);
-  }
-  
-  const BasicData * data = browser_node->get_data();
-  
-  if (data->get_stereotype()[0]) {
-    p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, 
-	       QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
-    if (fp != 0)
-      draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, 
-		QString("<<") + toUnicode(data->get_short_stereotype()) + ">>",
-		p.font(), fp);
-    r.setTop(r.top() + he + three);
-  }
-  
-  if (full_name != name) {
-    p.setFont(the_canvas()->get_font(UmlNormalItalicFont));
-    p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, full_name);
-    if (fp != 0)
-      draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, full_name,
+      draw_text(r, ::Qt::AlignHCenter, browser_node->get_name(),
 		p.font(), fp);
     p.setFont(the_canvas()->get_font(UmlNormalFont));
   }
-
+  else {
+    QColor bckgrnd = p.backgroundColor();
+    QColor co = color(used_color);
+    
+    p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
+    p.setBackgroundColor(co);
+    p.setFont(the_canvas()->get_font(UmlNormalFont));
+    
+    QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
+    const int four = (int) (4 * the_canvas()->zoom());
+    const int he = fm.height();
+    const int shadow = the_canvas()->shadow();
+    if ((used_color != UmlTransparent) && (shadow != 0)) {
+      r.setRight(r.right() - shadow);
+      r.setBottom(r.bottom() - shadow);
+    }
+    
+    r.setWidth(r.width() * 2 / 5);
+    r.setHeight(he + four);
+    if (used_color != UmlTransparent)
+      p.fillRect(r, co);
+    
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      svg_color(used_color), 
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+    
+    p.drawRect(r);
+    
+    if ((used_color != UmlTransparent) && (shadow != 0)) {
+      p.fillRect (r.right(), r.top() + shadow,
+		  shadow, r.height() - 1 - shadow,
+		  ::Qt::darkGray);
+      
+      if (fp != 0)
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		::Qt::darkGray.rgb()&0xffffff,
+		r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - shadow - 1);
+    }
+    
+    const char * name = browser_node->get_name();
+    
+    if (in_tab) {
+      p.drawText(r, ::Qt::AlignCenter, name);
+      if (fp != 0)
+	draw_text(r, ::Qt::AlignCenter, name,
+		  p.font(), fp);
+    }
+    
+    r = rect();
+    if ((used_color != UmlTransparent) && (shadow != 0)) {
+      r.setRight(r.right() - shadow);
+      r.setBottom(r.bottom() - shadow);
+    }
+    
+    r.setTop(r.top() + he + four - 1);
+    if (used_color != UmlTransparent)
+      p.fillRect(r, co);
+    
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      svg_color(used_color),
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+    
+    p.drawRect(r);
+    
+    if ((used_color != UmlTransparent) && (shadow != 0)) {
+      p.fillRect (r.right(), r.top() + shadow,
+		  shadow, r.height() - 1,
+		  ::Qt::darkGray);
+      p.fillRect (r.left() + shadow, r.bottom(),
+		  r.width() - 1, shadow,
+		  ::Qt::darkGray);
+      
+      if (fp != 0) {
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		::Qt::darkGray.rgb()&0xffffff,
+		r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
+	
+	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		::Qt::darkGray.rgb()&0xffffff,
+		r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
+      }
+    }
+    
+    const int three = (int) (3 * the_canvas()->zoom());
+    
+    r.setTop(r.top() + three);
+    
+    if (! in_tab) {
+      p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, name);
+      if (fp != 0)
+	draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, name,
+		  p.font(), fp);
+      r.setTop(r.top() + he + three);
+    }
+    
+    if (data->get_stereotype()[0]) {
+      p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, 
+		 QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
+      if (fp != 0)
+	draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, 
+		  QString("<<") + toUnicode(data->get_short_stereotype()) + ">>",
+		  p.font(), fp);
+      r.setTop(r.top() + he + three);
+    }
+    
+    if (full_name != name) {
+      p.setFont(the_canvas()->get_font(UmlNormalItalicFont));
+      p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, full_name);
+      if (fp != 0)
+	draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, full_name,
+		  p.font(), fp);
+      p.setFont(the_canvas()->get_font(UmlNormalFont));
+    }
+  
+    p.setBackgroundColor(bckgrnd);
+  }
+  
   if (fp != 0)
     fputs("</g>\n", fp);
-  
-  p.setBackgroundColor(bckgrnd);
   
   if (selected())
     show_mark(p, rect());
@@ -388,6 +431,8 @@ void PackageCanvas::menu(const QPoint&) {
   m.insertItem("Go up", 13);
   m.insertItem("Go down", 14);
   m.insertSeparator();
+  m.insertItem("Add related elements", 10);
+  m.insertSeparator();
   m.insertItem("Edit", 2);
   m.insertSeparator();
   m.insertItem("Edit drawing settings", 3);
@@ -397,7 +442,9 @@ void PackageCanvas::menu(const QPoint&) {
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("Set associated diagram", 6);
+    if (browser_node->get_associated() !=
+	(BrowserNode *) the_canvas()->browser_diagram())
+      m.insertItem("Set associated diagram", 6);
     
     if (browser_node->get_associated())
       m.insertItem("Remove diagram association",9);
@@ -447,10 +494,6 @@ void PackageCanvas::menu(const QPoint&) {
       ->set_associated_diagram((BrowserNode *)
 			       the_canvas()->browser_diagram());
     return;
-  case 9:
-    ((BrowserPackage *) browser_node)
-      ->set_associated_diagram(0);
-    return;
   case 7:
     // remove from view
     delete_it();
@@ -459,6 +502,14 @@ void PackageCanvas::menu(const QPoint&) {
     // delete from model
     browser_node->delete_it();	// will remove canvas
     break;
+  case 9:
+    ((BrowserPackage *) browser_node)
+      ->set_associated_diagram(0);
+    return;
+  case 10:
+    ((UmlCanvas *) canvas())->get_view()
+      ->add_related_elements(this, "package", TRUE, FALSE);
+    return;
   default:
     if (rank >= 20)
       ToolCom::run(Tool::command(rank - 20), browser_node);
@@ -483,6 +534,11 @@ void PackageCanvas::apply_shortcut(QString s) {
     z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
+    return;
+  }
+  else if (s == "Add related elements") {
+    ((UmlCanvas *) canvas())->get_view()
+      ->add_related_elements(this, "package", TRUE, FALSE);
     return;
   }
   else {
@@ -554,7 +610,7 @@ bool PackageCanvas::get_show_stereotype_properties() const {
   case UmlNo:
     return FALSE;
   default:
-    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties();
   }
 }
 
@@ -597,7 +653,11 @@ void PackageCanvas::connexion(UmlCode action, DiagramItem * dest,
 }
 
 aCorner PackageCanvas::on_resize_point(const QPoint & p) {
-  return ::on_resize_point(p, rect());
+  return (ProfiledStereotypes::diagramPixmap(browser_node->get_data()->get_stereotype(),
+					     the_canvas()->zoom())
+	  != 0)
+    ? NoCorner
+    : ::on_resize_point(p, rect());
 }
 
 void PackageCanvas::resize(aCorner c, int dx, int dy) {

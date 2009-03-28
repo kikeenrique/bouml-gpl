@@ -14,6 +14,8 @@
 #include "Binding.h"
 #include "ClassInstance.h"
 #include "CppSettings.h"
+#include "UmlClassView.h"
+#include "UmlPackage.h"
 
 UmlItem * UmlClass::container(anItemKind kind, Token & token, FileIn & in) {
   switch (kind) {
@@ -84,6 +86,7 @@ void UmlClass::importIt(FileIn & in, Token & token, UmlItem * where)
     
   UmlClass * cl = create(where, s);
   Association * assocclass = 0;
+  bool stereotype = FALSE;
   
   if (cl == 0)
     in.error("cannot create classe '" + s +
@@ -108,6 +111,7 @@ void UmlClass::importIt(FileIn & in, Token & token, UmlItem * where)
     cl->set_Stereotype("stereotype");
     NumberOf -= 1;
     NumberOfStereotype += 1;
+    stereotype = TRUE;
   }
   else if (token.xmiType() == "uml:AssociationClass") {
     assocclass = &Association::get(token.xmiId(), token.valueOf("name"));
@@ -150,65 +154,23 @@ void UmlClass::importIt(FileIn & in, Token & token, UmlItem * where)
 	assocclass->import(in, token);
       else if (s == "ownedrule")
 	cl->set_Constraint(UmlClassMember::readConstraint(in, token));
+      else if (stereotype &&
+	       (s == "icon") &&
+	       (token.xmiType() == "uml:Image")) {
+	QCString path = token.valueOf("location");
+	
+	if (! path.isEmpty())
+	  cl->set_PropertyValue("stereotypeIconPath", path);
+	
+	if (! token.closed())
+	  in.finish(s);
+      }
       else
 	cl->UmlItem::import(in, token);
     }
   }
   
   cl->unload(TRUE, FALSE);
-}
-
-void UmlClass::readFormal(FileIn & in, Token & token) {
-  if (! token.closed()) {
-    signatures[token.xmiId()] = this;
-    
-    QCString k = token.what();
-    const char * kstr = k;
-    unsigned int rank = 0;
-    
-    while (in.read(), !token.close(kstr)) {
-      QCString s = token.what();
-      
-      if (s == "parameter") {
-	// useless
-	if (! token.closed())
-	  in.finish(token.what());
-      }
-      else if ((s == "ownedparameter") &&
-	       (token.xmiType() == "uml:ClassifierTemplateParameter")) {
-	QCString idparam = token.xmiId();
-	QCString pname = token.valueOf("name");	// at least for VP
-	QCString value;
-	
-	if (! token.closed()) {
-	  while (in.read(), !token.close("ownedparameter")) {
-	    s = token.what();
-	    
-	    if ((s == "ownedparameteredelement") ||
-		(s == "ownedelement")) {
-	      s = token.valueOf("name");
-	      if (! s.isEmpty())
-		pname = s;
-	    }
-	    else if (s == "defaultvalue")
-	      value = token.valueOf("value");
-	    
-	    if (! token.closed())
-	      in.finish(token.what());
-	  }
-	}
-	
-	if (! pname.isEmpty()) {
-	  UmlFormalParameter f(pname, value);
-	  
-	  addFormal(rank++, f);
-	  formalsId.append(idparam);
-	}
-      }
-      else if (! token.closed())
-	in.finish(token.what());
-    }
-  }
 }
 
 void UmlClass::importPrimitiveType(FileIn & in, Token & token, UmlItem *)
@@ -358,10 +320,68 @@ bool UmlClass::bind(UmlClass * tmpl) {
   return TRUE;
 }
 
-bool UmlClass::isAppliedStereotype(Token & tk, QCString & prof_st, QCString & base_v)
+void UmlClass::extend(QCString mcl) {
+  if (parent()->parent()->kind() != aPackage)
+    return;
+  
+  int index = mcl.find('#');
+  
+  if (index == -1)
+    return;
+  
+  QCString path = mcl.left(index);
+  const char * defltpath0 = "http://schema.omg.org/spec/UML/2.0/uml.xml";
+  const char * defltpath1 = "http://schema.omg.org/spec/UML/2.1/uml.xml";
+  bool dflt = ((path == defltpath0) || (path == defltpath1));
+  
+  mcl = mcl.mid(index + 1);
+  
+  static QList<UmlClass> metaclasses;
+  
+  QListIterator<UmlClass> it(metaclasses);
+  UmlClass * metacl = UmlClass::get(mcl, 0);
+  QCString s;
+    
+  if ((metacl == 0) ||
+      (metacl->stereotype() != "metaclass") ||
+      !((dflt) ? (!metacl->propertyValue("metaclassPath", s) ||
+		  (s == defltpath0) ||
+		  (s == defltpath1))
+	       : (metacl->propertyValue("metaclassPath", s) &&
+		  (path == s)))) {
+    metacl = 0;
+    
+    if (dflt) {
+      for ( ; (metacl = it.current()) != 0; ++it ) {
+	if (!strcmp(mcl, metacl->name()) &&
+	    (!metacl->propertyValue("metaclassPath", s) ||
+	     (s == defltpath0) ||
+	     (s == defltpath1)))
+	  break;
+      }
+    }
+    else {
+      for ( ; (metacl = it.current()) != 0; ++it ) {
+	if (!strcmp(mcl, metacl->name()) &&
+	    metacl->propertyValue("metaclassPath", s) &&
+	    (path == s))
+	  break;
+      }
+    }
+    
+    if (metacl == 0) {
+      metacl = addMetaclass(mcl, (dflt) ? 0 : path);
+      metaclasses.append(metacl);
+    }
+  }
+  
+  UmlRelation::create(aDirectionalAssociation, this, metacl);
+}
+
+bool UmlClass::isAppliedStereotype(Token & tk, QCString & prof_st, QValueList<QCString> & base_v)
 {
   static QDict<QCString> stereotypes;
-  static QDict<QCString> bases;
+  static QDict<QValueList<QCString> > bases;
   
   QCString s = tk.what();
   QCString * st = stereotypes[s];
@@ -372,6 +392,8 @@ bool UmlClass::isAppliedStereotype(Token & tk, QCString & prof_st, QCString & ba
     return TRUE;
   }
       
+  base_v.clear();
+  
   if (tk.xmiType().isEmpty() && (getFct(tk) == 0))  {
     int index = s.find(':');
     
@@ -380,19 +402,24 @@ bool UmlClass::isAppliedStereotype(Token & tk, QCString & prof_st, QCString & ba
       UmlClass * cl = findStereotype(s, FALSE);
       
       if (cl != 0) {
-	QCString ext;
+	const QVector<UmlItem> ch = cl->children();
+	unsigned n = ch.size();
 	
-	cl->propertyValue("stereotypeExtension", ext);
+	for (unsigned i = 0; i != n; i += 1) {
+	  UmlItem * x = ch[i];
+    
+	  if ((x->kind() == aRelation) &&
+	      (((UmlRelation *) x)->relationKind() == aDirectionalAssociation) &&
+	      (((UmlRelation *) x)->roleType()->stereotype() == "metaclass"))
+	    base_v.append("base_" + ((UmlRelation *) x)->roleType()->name().lower());
+	}
 	
-	if (ext.isEmpty())
-	  ext = "base_element";
-	else
-	  ext = "base_" + ext.mid(ext.findRev('#') + 1).lower();
+	if (base_v.isEmpty())
+	  base_v.append("base_element");
 	
-	base_v = ext;
 	prof_st = cl->parent()->parent()->name() + ":" + cl->name();
 	stereotypes.insert(s, new QCString(prof_st));
-	bases.insert(s, new QCString(base_v));
+	bases.insert(s, new QValueList<QCString>(base_v));
 	return TRUE;
       }
     }
@@ -430,6 +457,92 @@ bool UmlClass::isPrimitiveType(Token & token, UmlTypeSpec & ts)
   }
 
   return TRUE;
+}
+
+void UmlClass::readFormal(FileIn & in, Token & token) {
+  if (! token.closed()) {
+    signatures[token.xmiId()] = this;
+    
+    QCString k = token.what();
+    const char * kstr = k;
+    unsigned int rank = 0;
+    
+    while (in.read(), !token.close(kstr)) {
+      QCString s = token.what();
+      
+      if (s == "parameter") {
+	// useless
+	if (! token.closed())
+	  in.finish(token.what());
+      }
+      else if ((s == "ownedparameter") &&
+	       (token.xmiType() == "uml:ClassifierTemplateParameter")) {
+	QCString idparam = token.xmiId();
+	QCString pname = token.valueOf("name");	// at least for VP
+	QCString value;
+	
+	if (! token.closed()) {
+	  while (in.read(), !token.close("ownedparameter")) {
+	    s = token.what();
+	    
+	    if ((s == "ownedparameteredelement") ||
+		(s == "ownedelement")) {
+	      s = token.valueOf("name");
+	      if (! s.isEmpty())
+		pname = s;
+	    }
+	    else if (s == "defaultvalue")
+	      value = token.valueOf("value");
+	    
+	    if (! token.closed())
+	      in.finish(token.what());
+	  }
+	}
+	
+	if (! pname.isEmpty()) {
+	  UmlFormalParameter f(pname, value);
+	  
+	  addFormal(rank++, f);
+	  formalsId.append(idparam);
+	}
+      }
+      else if (! token.closed())
+	in.finish(token.what());
+    }
+  }
+}
+
+UmlClass * UmlClass::addMetaclass(QCString mclname, const char * mclpath) {
+  UmlPackage * pack = (UmlPackage *) parent()->parent();	// is a package
+  const QVector<UmlItem> ch = pack->children();
+  unsigned n = ch.size();
+  UmlClass * r = 0;
+  
+  for (unsigned i = 0; i != n; i += 1) {
+    UmlItem * x = ch[i];
+    
+    if ((x->kind() == aClassView) &&
+	!strncmp(x->name(), "meta classes", 12) &&
+	((r = UmlClass::create(x, mclname)) != 0))
+      break;
+  }
+  
+  if (r == 0) {
+    QCString s = "meta classes";
+    UmlItem * v = 0;
+    
+    while ((v = UmlClassView::create(pack, s)) == 0)
+      s += "_";
+    
+    r = UmlClass::create(v, mclname);
+  }
+  
+  r->set_Stereotype("metaclass");
+  
+  if (mclpath != 0)
+    r->set_PropertyValue("metaclassPath", mclpath);
+  
+  return r;
 }
 
 int UmlClass::NumberOf;

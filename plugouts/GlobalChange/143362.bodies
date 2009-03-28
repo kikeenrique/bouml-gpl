@@ -14,7 +14,7 @@ htab = new QHBox(gbox);
 //htab->setMargin(5);
 
 new QLabel("filter 1 : ", htab);
-filter1_le = new QLineEdit(htab);
+filter1_le = new LineEdit(htab);
 
 new QLabel("  ", htab);
 
@@ -46,7 +46,7 @@ htab = new QHBox(gbox);
 //htab->setMargin(5);
 
 new QLabel("filter 2 : ", htab);
-filter2_le = new QLineEdit(htab);
+filter2_le = new LineEdit(htab);
 
 new QLabel("  ", htab);
 
@@ -78,7 +78,7 @@ htab = new QHBox(gbox);
 //htab->setMargin(5);
 
 new QLabel("filter 3 : ", htab);
-filter3_le = new QLineEdit(htab);
+filter3_le = new LineEdit(htab);
 
 new QLabel("  ", htab);
 
@@ -134,6 +134,7 @@ htab = new QHBox(gbox);
 cpp_cb = new QCheckBox("C++", htab);
 java_cb = new QCheckBox("Java", htab);
 php_cb = new QCheckBox("Php", htab);
+python_cb = new QCheckBox("Python", htab);
 idl_cb = new QCheckBox("Idl", htab);
 
 //
@@ -145,10 +146,10 @@ grid->setMargin(5);
 grid->setSpacing(5);
 
 new QLabel("current : ", grid);
-current_le  = new QLineEdit(grid);
+current_le  = new LineEdit(grid);
 
 new QLabel("new : ", grid);
-new_le  = new QLineEdit(grid);
+new_le  = new LineEdit(grid);
 
 //
 //
@@ -184,7 +185,8 @@ else {
   ctx.set_stereotype(QCString(stereotype_le->text()), is_rb->isChecked(), isnot_rb->isChecked());
   ctx.set_targets(artifact_cb->isChecked(), class_cb->isChecked(),
 		  operation_cb->isChecked(), attribute_cb->isChecked(), relation_cb->isChecked());
-  ctx.set_language(cpp_cb->isChecked(), java_cb->isChecked(), php_cb->isChecked(), idl_cb->isChecked());
+  ctx.set_language(cpp_cb->isChecked(), java_cb->isChecked(), php_cb->isChecked(),
+		   python_cb->isChecked(), idl_cb->isChecked());
   
   UmlCom::targetItem()->change(ctx);
   
@@ -204,13 +206,21 @@ else {
 }
 !!!189186.cpp!!!	digest(in s : QString) : QCString
 QCString c = (const char *) s;
-int index = 0;
+int index;
 
+index = 0;
 while ((index = c.find("\\n", index)) != -1) {
   c.replace(index, 2, "\n");
   index += 1;
 }
 
+index = 0;
+while ((index = c.find("\\t", index)) != -1) {
+  c.replace(index, 2, "\t");
+  index += 1;
+}
+
+index = 0;
 while ((index = c.find("\r", index)) != -1) {
   c.remove(index, 1);
 }

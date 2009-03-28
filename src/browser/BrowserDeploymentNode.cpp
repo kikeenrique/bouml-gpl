@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -96,14 +96,30 @@ void BrowserDeploymentNode::update_idmax_for_root()
 {
   all.update_idmax_for_root();
 }
-    
+
+void BrowserDeploymentNode::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
+  if (! ondelete)
+    BrowserDeploymentDiagram::compute_referenced_by(l, this, "deploymentnodecanvas", "deploymentnode_ref");
+}
+
 void BrowserDeploymentNode::renumber(int phase) {
   if (phase != -1)
     new_ident(phase, all);
 }
 
 const QPixmap* BrowserDeploymentNode::pixmap(int) const {
-  return (deletedp()) ? DeletedDeploymentNodeIcon : DeploymentNodeIcon;
+  if (deletedp()) 
+    return DeletedDeploymentNodeIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : DeploymentNodeIcon;
+}
+
+void BrowserDeploymentNode::iconChanged() {
+  repaint();
+  def->modified();
 }
 
 QString BrowserDeploymentNode::full_name(bool rev, bool) const {
@@ -542,8 +558,8 @@ BrowserDeploymentNode * BrowserDeploymentNode::read(char * & st, char * k,
     
     result->is_defined = TRUE;
 
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     k = read_keyword(st);
     

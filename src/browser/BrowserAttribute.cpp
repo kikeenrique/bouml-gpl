@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,7 +37,6 @@
 #include "AttributeData.h"
 #include "ClassData.h"
 #include "BrowserActivityAction.h"
-#include "BrowserClassInstance.h"
 #include "UmlPixmap.h"
 #include "UmlGlobal.h"
 #include "myio.h"
@@ -188,6 +187,11 @@ const char * BrowserAttribute::constraint() const {
 const QPixmap* BrowserAttribute::pixmap(int) const {
   if (deletedp())
     return DeletedAttributeIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+  
+  if (px != 0)
+    return px;
   else {
     switch (def->get_uml_visibility()) {
     case UmlPublic:
@@ -224,8 +228,8 @@ void BrowserAttribute::paintCell(QPainter * p, const QColorGroup & cg, int colum
 
 void BrowserAttribute::menu() {
   const char * st = ((BrowserClass *) parent())->get_stereotype();
-  bool item = !strcmp(st, "enum_pattern") ||
-    !strcmp(st, "enum") && strcmp(get_stereotype(), "attribute");
+  bool item = (!strcmp(st, "enum_pattern") || !strcmp(st, "enum")) &&
+    strcmp(get_stereotype(), "attribute");
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   
@@ -283,7 +287,7 @@ Note that you can undelete it after");
 void BrowserAttribute::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
-    open(FALSE);
+    open(TRUE);
     return;
   case 1:
     if (!strcmp(((BrowserNode *) parent())->get_data()->get_stereotype(),
@@ -329,8 +333,8 @@ void BrowserAttribute::exec_menu_choice(int rank) {
 void BrowserAttribute::apply_shortcut(QString s) {
   int choice = -1;
   const char * st = ((BrowserClass *) parent())->get_stereotype();
-  bool item = !strcmp(st, "enum_pattern") ||
-    !strcmp(st, "enum") && strcmp(get_stereotype(), "attribute");
+  bool item = (!strcmp(st, "enum_pattern") || !strcmp(st, "enum")) &&
+    strcmp(get_stereotype(), "attribute");
   
   if (!deletedp()) {
     if (!is_edited)
@@ -446,10 +450,9 @@ void BrowserAttribute::compute_referenced_by(QList<BrowserNode> & l,
 
 void BrowserAttribute::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
-  if (! ondelete) {
+  
+  if (! ondelete)
     BrowserActivityAction::compute_referenced_by(l, this);
-    BrowserClassInstance::compute_referenced_by(l, this);
-  }
 }
 
 bool BrowserAttribute::tool_cmd(ToolCom * com, const char * args) {
@@ -474,16 +477,15 @@ void BrowserAttribute::post_load()
 {
   // to manage deleted get/set operation
   IdIterator<BrowserAttribute> it(all);
+  BrowserAttribute * at;
   
-  while (it.current()) {
-    if ((it.current()->get_oper != 0) && 
-	(((BrowserNode *) it.current()->get_oper->parent())->get_type() != UmlClass))
+  while ((at = it.current()) != 0) {
+    if ((at->get_oper != 0) && at->get_oper->is_undefined())
       // operation was deleted
-      it.current()->get_oper = 0;
-    if ((it.current()->set_oper != 0) && 
-	(((BrowserNode *) it.current()->set_oper->parent())->get_type() != UmlClass))
+      at->get_oper = 0;
+    if ((at->set_oper != 0) && at->set_oper->is_undefined())
       // operation was deleted
-      it.current()->set_oper = 0;      
+      at->set_oper = 0;      
     
     ++it;  
   }
@@ -588,7 +590,7 @@ BrowserAttribute * BrowserAttribute::read(char * & st, char * k,
     result->is_defined = TRUE;
 
     result->is_read_only = (!in_import() && read_only_file()) || 
-      (user_id() != 0) && result->is_api_base();
+      ((user_id() != 0) && result->is_api_base());
     result->def->set_browser_node(result, FALSE, FALSE);
     
     if (!strcmp(k, "get_oper")) {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -63,6 +63,26 @@ static char * read_file(const char * filename)
     return 0;
 }
 
+static QCString linenumber(char * all, char * here)
+{
+  char c = *here;
+  int n = 1;
+  
+  *here = 0;
+  
+  while ((all = strchr(all, '\n')) != 0) {
+    all += 1;
+    n += 1;
+  }
+  
+  *here = c;
+  
+  char sn[24];
+  
+  sprintf(sn, " line %d", n);
+  return sn;
+}
+		      
 void UmlOperation::roundtrip(const char * path, aLanguage who)
 {
   char * s = read_file(path);
@@ -115,6 +135,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
       
       if (body != (p2 + 8)) {
 	UmlCom::trace(QCString("<font color =\"red\"> Error in ") + path +
+		      linenumber(s, p2 - BodyPrefixLength) +
 		      " : invalid preserve body identifier</font><br>");
 	UmlCom::bye();
 	UmlCom::fatal_error("read_bodies 1");
@@ -126,6 +147,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
 	body += 1;
       else {
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
+		      linenumber(s, p2 - BodyPrefixLength) +
 		      " : invalid preserve body block, end of line expected</font><br>");
 	UmlCom::bye();
 	UmlCom::fatal_error("read_bodies 2");
@@ -139,6 +161,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
 	
 	n.sprintf("%x", (unsigned) id);
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
+		      linenumber(s, p2 - BodyPrefixLength) +
 		      " : invalid operation id " + n + "</font><br>");
 	UmlCom::bye();
 	UmlCom::fatal_error("read_bodies 3");
@@ -148,6 +171,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
       if (((p1 = strstr(body, postfix)) == 0) ||
 	  (strncmp(p1 + BodyPostfixLength, p2, 8) != 0)) {
 	UmlCom::trace(QCString("<font  color =\"red\"> Error in ") + path + 
+		      linenumber(s, p2 - BodyPrefixLength) +
 		      " : invalid preserve body block, wrong balanced</font><br>");
 	UmlCom::bye();
 	UmlCom::fatal_error("read_bodies 4");
@@ -156,6 +180,9 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
       p2 = p1;
       while ((p2 != body) && (p2[-1] != '\n'))
 	p2 -= 1;
+      
+      char c = *p2;
+      
       *p2 = 0;
       
       QCString previous = (op->*get_body)();
@@ -183,6 +210,7 @@ void UmlOperation::roundtrip(const char * path, aLanguage who)
 		      + op->name() + "</i> unchanged<br>");
       }
       
+      *p2 = c;
       p1 += BodyPostfixLength + 8;
     }
     

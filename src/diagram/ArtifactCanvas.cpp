@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,6 +35,7 @@
 #include "AssocContainCanvas.h"
 #include "SimpleRelationCanvas.h"
 #include "ArtifactData.h"
+#include "DiagramView.h"
 #include "BrowserArtifact.h"
 #include "BrowserDeploymentDiagram.h"
 #include "UmlPixmap.h"
@@ -47,6 +48,7 @@
 #include "Settings.h"
 #include "strutil.h"
 #include "GenerationSettings.h"
+#include "ProfiledStereotypes.h"
 
 ArtifactCanvas::ArtifactCanvas(BrowserNode * bn, UmlCanvas * canvas,
 				 int x, int y)
@@ -98,39 +100,57 @@ void ArtifactCanvas::remove(bool from_model) {
 }
 
 void ArtifactCanvas::compute_size() {
-  // <<artifact>>/stereotype on 2*font_height with the icon on the right
-  // the icon height = 2*font_height
-  // the icon width = 3*height/4
-  // name on font_height+4 points
-  const int four = (int) (4 * the_canvas()->zoom());
-  QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
-  int he = 3*fm.height() + four;
-  int wi = fm.width(browser_node->get_name());
-  const BasicData * data = browser_node->get_data();
-  int stw = fm.width((data->get_stereotype()[0])
-		     ? (QString("<<") + toUnicode(data->get_short_stereotype()) + ">>")
-		     : QString("<<artifact>>"))
-    + 3*fm.height();
-  
-  if (wi < stw)
-    wi = stw;
-  
-  wi += four*2;
-  
-  int min_w = (int) (ARTIFACT_CANVAS_MIN_SIZE * the_canvas()->zoom());
-  
-  if (wi <min_w) 
-    wi = min_w;
-  
   used_color = (itscolor == UmlDefaultColor)
     ? the_canvas()->browser_diagram()->get_color(UmlArtifact)
     : itscolor;
   
-  if (used_color != UmlTransparent) {
-    const int shadow = the_canvas()->shadow();
+  const BasicData * data = browser_node->get_data();
+  QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
+  int he;
+  int wi;
+  
+  const QPixmap * px = 
+    ProfiledStereotypes::diagramPixmap(data->get_stereotype(),
+				       the_canvas()->zoom());
+  
+  if (px != 0) {
+    wi = fm.width(browser_node->get_name());
+    if (wi < px->width())
+      wi = px->width();
     
-    wi += shadow;
-    he += shadow;
+    he = px->height() + fm.height();
+  }
+  else {
+    // <<artifact>>/stereotype on 2*font_height with the icon on the right
+    // the icon height = 2*font_height
+    // the icon width = 3*height/4
+    // name on font_height+4 points
+    const int four = (int) (4 * the_canvas()->zoom());
+    int stw = fm.width((data->get_stereotype()[0])
+		       ? (QString("<<") + toUnicode(data->get_short_stereotype()) + ">>")
+		       : QString("<<artifact>>"))
+      + 3*fm.height();
+    
+    
+    he = 3*fm.height() + four;
+    wi = fm.width(browser_node->get_name());
+    
+    if (wi < stw)
+      wi = stw;
+    
+    wi += four*2;
+    
+    int min_w = (int) (ARTIFACT_CANVAS_MIN_SIZE * the_canvas()->zoom());
+    
+    if (wi <min_w) 
+      wi = min_w;
+    
+    if (used_color != UmlTransparent) {
+      const int shadow = the_canvas()->shadow();
+      
+      wi += shadow;
+      he += shadow;
+    }
   }
   
   // force odd width and height for line alignment
@@ -326,21 +346,6 @@ void ArtifactCanvas::update_relations() {
 void ArtifactCanvas::draw(QPainter & p) {
   if (! visible()) return;
   
-  QColor bckgrnd = p.backgroundColor();
-
-  p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
-
-  QColor co = color(used_color);
-
-  p.setBackgroundColor(co);
-  
-  // <<artifact>>/stereotype on 2*font_height with the icon on the right
-  // the icon height = 2*font_height
-  // the icon width = 3*height/4
-  // name on font_height+4 points
-  const int four = (int) (4 * the_canvas()->zoom());
-  QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
-  const int he = fm.height();
   QRect r = rect();
   const BasicData * data = browser_node->get_data();
   FILE * fp = svg();
@@ -348,107 +353,148 @@ void ArtifactCanvas::draw(QPainter & p) {
   if (fp != 0)
     fputs("<g>\n", fp);
   
-  if (used_color != UmlTransparent) {
-    const int shadow = the_canvas()->shadow();
+  const QPixmap * px = 
+    ProfiledStereotypes::diagramPixmap(browser_node->get_data()->get_stereotype(), the_canvas()->zoom());
+  
+  if (px != 0) {
+    p.setBackgroundMode(::Qt::TransparentMode);
     
-    if (shadow != 0) {
-      r.setRight(r.right() - shadow);
-      r.setBottom(r.bottom() - shadow);
-      
-      p.fillRect (r.right(), r.top() + shadow,
-		  shadow, r.height() - 1,
-		  ::Qt::darkGray);
-      p.fillRect (r.left() + shadow, r.bottom(),
-		  r.width() - 1, shadow,
-		  ::Qt::darkGray);
-
-      if (fp != 0) {
-	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
-		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		::Qt::darkGray.rgb()&0xffffff,
-		r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
-
-	fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
-		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		::Qt::darkGray.rgb()&0xffffff,
-		r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
-      }
-    }
-  }
-  
-  QRect re = r;
-  
-  if (used_color != UmlTransparent) {
-    p.fillRect(r, co);
-
+    int lft = (px->width() < width()) ? r.x() + (width() - px->width())/2 : r.x();
+    
+    p.drawPixmap(lft, r.y(), *px);
     if (fp != 0)
+      // pixmap not really exported in SVG
       fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      svg_color(used_color), 
+	      svg_color(UmlBlack), lft, r.y(), px->width() - 1, px->height() - 1);
+    
+    r.moveBy(0, px->height());
+    p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
+    p.drawText(r, ::Qt::AlignHCenter, browser_node->get_name());
+    
+    if (fp != 0) {
+      draw_text(r, ::Qt::AlignHCenter, browser_node->get_name(), p.font(), fp);
+      fputs("</g>\n", fp);
+    }
+  }
+  else {  
+    QColor bckgrnd = p.backgroundColor();
+    
+    p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
+    
+    QColor co = color(used_color);
+    
+    p.setBackgroundColor(co);
+    
+    // <<artifact>>/stereotype on 2*font_height with the icon on the right
+    // the icon height = 2*font_height
+    // the icon width = 3*height/4
+    // name on font_height+4 points
+    const int four = (int) (4 * the_canvas()->zoom());
+    QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
+    const int he = fm.height();
+    if (used_color != UmlTransparent) {
+      const int shadow = the_canvas()->shadow();
+      
+      if (shadow != 0) {
+	r.setRight(r.right() - shadow);
+	r.setBottom(r.bottom() - shadow);
+	
+	p.fillRect (r.right(), r.top() + shadow,
+		    shadow, r.height() - 1,
+		    ::Qt::darkGray);
+	p.fillRect (r.left() + shadow, r.bottom(),
+		    r.width() - 1, shadow,
+		    ::Qt::darkGray);
+	
+	if (fp != 0) {
+	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		  ::Qt::darkGray.rgb()&0xffffff,
+		  r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
+	  
+	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		  ::Qt::darkGray.rgb()&0xffffff,
+		  r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
+	}
+      }
+    }
+    
+    QRect re = r;
+    
+    if (used_color != UmlTransparent) {
+      p.fillRect(r, co);
+      
+      if (fp != 0)
+	fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		svg_color(used_color), 
+		r.x(), r.y(), r.width() - 1, r.height() - 1);
+    }
+    else if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
 	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-  }
-  else if (fp != 0)
-    fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	    r.x(), r.y(), r.width() - 1, r.height() - 1);
-  
-  p.drawRect(r);
-
-  r.setHeight(he*2);
-  p.setFont(the_canvas()->get_font(UmlNormalFont));
-  if (data->get_stereotype()[0]) {
-    p.drawText(r, ::Qt::AlignCenter,
-	       QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
+    
+    p.drawRect(r);
+    
+    r.setHeight(he*2);
+    p.setFont(the_canvas()->get_font(UmlNormalFont));
+    if (data->get_stereotype()[0]) {
+      p.drawText(r, ::Qt::AlignCenter,
+		 QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
+      if (fp != 0)
+	draw_text(r, ::Qt::AlignCenter,
+		  QString("<<") + toUnicode(data->get_short_stereotype()) + ">>",
+		  p.font(), fp);
+    }
+    else {
+      p.drawText(r, ::Qt::AlignCenter, "<<artifact>>");
+      if (fp != 0)
+	draw_text(r, ::Qt::AlignCenter, "<<artifact>>",
+		  p.font(), fp);
+    }
+    
+    r.moveBy(0, r.height());
+    r.setHeight(he+four);
+    p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
+    p.drawText(r, ::Qt::AlignCenter, browser_node->get_name());
     if (fp != 0)
-      draw_text(r, ::Qt::AlignCenter,
-		QString("<<") + toUnicode(data->get_short_stereotype()) + ">>",
+      draw_text(r, ::Qt::AlignCenter, browser_node->get_name(),
 		p.font(), fp);
+    p.setFont(the_canvas()->get_font(UmlNormalFont));
+    
+    // draw icon
+    re.setLeft(re.right() - 6*he/4 + four);
+    re.setRight(re.right() - four);
+    re.setTop(re.top() + four);
+    re.setHeight(2*(he - four));
+    
+    QPointArray a(7);
+    const int corner_size = re.width()/3;
+    
+    a.setPoint(0, re.left(), re.top());
+    a.setPoint(1, re.right() - corner_size, re.top());
+    a.setPoint(2, re.right() - corner_size, re.top() + corner_size);
+    a.setPoint(3, re.right(), re.top() + corner_size);
+    a.setPoint(4, re.right(), re.bottom());
+    a.setPoint(5, re.left(), re.bottom());
+    a.setPoint(6, re.left(), re.top());
+    p.drawPolyline(a);
+    p.moveTo(re.right() - corner_size, re.top());
+    p.lineTo(re.right(), re.top() + corner_size);
+    
+    if (fp != 0) {
+      draw_poly(fp, a, UmlTransparent);
+      fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n"
+	      "</g>\n",
+	      re.right() - corner_size, re.top(), re.right(), re.top() + corner_size);
+    }
+    
+    p.setBackgroundColor(bckgrnd);
   }
-  else {
-    p.drawText(r, ::Qt::AlignCenter, "<<artifact>>");
-    if (fp != 0)
-      draw_text(r, ::Qt::AlignCenter, "<<artifact>>",
-		p.font(), fp);
-  }
-  
-  r.moveBy(0, r.height());
-  r.setHeight(he+four);
-  p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
-  p.drawText(r, ::Qt::AlignCenter, browser_node->get_name());
-  if (fp != 0)
-    draw_text(r, ::Qt::AlignCenter, browser_node->get_name(),
-	      p.font(), fp);
-  p.setFont(the_canvas()->get_font(UmlNormalFont));
-  
-  // draw icon
-  re.setLeft(re.right() - 6*he/4 + four);
-  re.setRight(re.right() - four);
-  re.setTop(re.top() + four);
-  re.setHeight(2*(he - four));
-  
-  QPointArray a(7);
-  const int corner_size = re.width()/3;
-  
-  a.setPoint(0, re.left(), re.top());
-  a.setPoint(1, re.right() - corner_size, re.top());
-  a.setPoint(2, re.right() - corner_size, re.top() + corner_size);
-  a.setPoint(3, re.right(), re.top() + corner_size);
-  a.setPoint(4, re.right(), re.bottom());
-  a.setPoint(5, re.left(), re.bottom());
-  a.setPoint(6, re.left(), re.top());
-  p.drawPolyline(a);
-  p.moveTo(re.right() - corner_size, re.top());
-  p.lineTo(re.right(), re.top() + corner_size);
-
-  if (fp != 0) {
-    draw_poly(fp, a, UmlTransparent);
-    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
-	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n"
-	    "</g>\n",
-	    re.right() - corner_size, re.top(), re.right(), re.top() + corner_size);
-  }
-  
-  p.setBackgroundColor(bckgrnd);
   
   if (selected())
     show_mark(p, rect());
@@ -488,6 +534,8 @@ void ArtifactCanvas::menu(const QPoint&) {
   m.insertItem("Go up", 15);
   m.insertItem("Go down", 16);
   m.insertSeparator();
+  m.insertItem("Add related elements", 17);
+  m.insertSeparator();
   m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
   m.insertItem("Edit artifact", 3);
@@ -497,7 +545,9 @@ void ArtifactCanvas::menu(const QPoint&) {
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("Set associated diagram",6);
+    if (browser_node->get_associated() !=
+	(BrowserNode *) the_canvas()->browser_diagram())
+      m.insertItem("Set associated diagram",6);
     
     if (browser_node->get_associated())
       m.insertItem("Remove diagram association",12);
@@ -593,6 +643,10 @@ void ArtifactCanvas::menu(const QPoint&) {
   case 14:
     browser_node->apply_shortcut("Generate Python");
     return;
+  case 17:
+    ((UmlCanvas *) canvas())->get_view()
+      ->add_related_elements(this, "artifact", TRUE, FALSE);
+    return;
   default:
     if (index >= 20)
       ToolCom::run(Tool::command(index - 20), browser_node);
@@ -617,6 +671,11 @@ void ArtifactCanvas::apply_shortcut(QString s) {
     z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
+    return;
+  }
+  else if (s == "Add related elements") {
+    ((UmlCanvas *) canvas())->get_view()
+      ->add_related_elements(this, "artifact", TRUE, FALSE);
     return;
   }
   else {

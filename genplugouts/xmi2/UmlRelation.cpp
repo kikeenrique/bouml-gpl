@@ -35,12 +35,22 @@ void UmlRelation::write(FileOut & out, bool inside) {
       do {
 	p = p->parent();
       } while (p->kind() == aClass);
-      if (p->kind() == aClassView)
+      
+      UmlItem * op = roleType();
+      
+      if (op->stereotype() == "actor")
+	return;
+      do {
+	op = op->parent();
+      } while (op->kind() == aClass);
+      
+      if ((p->kind() == aClassView) && (op->kind() == aClassView)) {
 	if (inside)
 	  write_relation_as_attribute(out);
 	else
-      // note : it is the first side
+	  // note : it is the first side
 	  write_relation(out);
+      }
     }
     break;
   }
@@ -187,43 +197,86 @@ void UmlRelation::write_ends(FileOut & out) {
 }
 
 void UmlRelation::write_relation_as_attribute(FileOut & out) {
-  QCString s;
+  UmlRelation * first = side(TRUE);
+  QCString s;  
+  UmlClass * base;
 
-  switch (_lang) {
-  case Uml:
-    s = roleName();
-    break;
-  case Cpp:
-    if (cppDecl().isEmpty())
+  if ((first->parent()->stereotype() == "stereotype") &&
+      (first->roleType()->stereotype() == "metaclass")) {
+    if (this != first)
       return;
-    s = true_name(roleName(), cppDecl());
-    break;
-  default: // Java
-    if (javaDecl().isEmpty())
-      return;
-    s = true_name(roleName(), javaDecl());
-    break;
+    
+    base = first->roleType();
+    s = "base_" + base->name();
   }
+  else {
+    base = 0;
+      
+    switch (_lang) {
+    case Uml:
+      s = roleName();
+      break;
+    case Cpp:
+      if (cppDecl().isEmpty())
+	return;
+      s = true_name(roleName(), cppDecl());
+      break;
+    default: // Java
+      if (javaDecl().isEmpty())
+	return;
+      s = true_name(roleName(), javaDecl());
+    }
+  }
+  
   out.indent();
   out << "<ownedAttribute xmi:type=\"uml:Property\" name=\"" << s << '"';
   out.id(this);
-
-  write_visibility(out);
-  write_scope(out);
-  if (isReadOnly())
-    out << " isReadOnly=\"true\"";
   
-  UmlRelation * first = side(TRUE);
-
-  if (first->_assoc_class != 0)
-    out.ref(first->_assoc_class, "association");
-  else
-    out.ref(first, "association", "ASSOC_");
-
-  out << " aggregation=\"";
-  if (this == first) {
-    parent()->memo_relation(this);
-    if (_gen_eclipse) {
+  if (base != 0)
+    out.ref(first, "association", "EXT_");
+  else {
+    write_visibility(out);
+    write_scope(out);
+    if (isReadOnly())
+      out << " isReadOnly=\"true\"";
+    if (isDerived()) {
+      out << " isDerived=\"true\"";
+      if (isDerivedUnion())
+	out << " isDerivedUnion=\"true\"";
+    }
+    if (isOrdered())
+      out << " isOrdered=\"true\"";
+    if (isUnique())
+      out << " isUnique=\"true\"";
+  
+    if (first->_assoc_class != 0)
+      out.ref(first->_assoc_class, "association");
+    else
+      out.ref(first, "association", "ASSOC_");
+  
+    out << " aggregation=\"";
+    if (this == first) {
+      parent()->memo_relation(this);
+      if (_gen_eclipse) {
+	switch (relationKind()) {
+	case anAggregation:
+	case aDirectionalAggregation:
+	  out << "shared";
+	  break;
+	case anAggregationByValue:
+	case aDirectionalAggregationByValue:
+	  out << "composite";
+	  break;
+	default:
+	  out << "none";
+	}
+      }
+      else
+	out << "none";
+    }
+    else if (_gen_eclipse)
+      out << "none";
+    else {
       switch (relationKind()) {
       case anAggregation:
       case aDirectionalAggregation:
@@ -237,42 +290,61 @@ void UmlRelation::write_relation_as_attribute(FileOut & out) {
 	out << "none";
       }
     }
-    else
-      out << "none";
+    out << '"';
   }
-  else if (_gen_eclipse)
-    out << "none";
-  else {
-    switch (relationKind()) {
-    case anAggregation:
-    case aDirectionalAggregation:
-      out << "shared";
-      break;
-    case anAggregationByValue:
-    case aDirectionalAggregationByValue:
-      out << "composite";
-      break;
-    default:
-      out << "none";
-    }
-  }
-
-  out << "\">\n";
+  
+  out << ">\n";
   out.indent(+1);
   
   out.indent();
   out << "<type xmi:type=\"uml:Class\"";
-  out.idref(roleType());
+  if (base != 0) {
+    if (! base->propertyValue("metaclassPath", s))
+      s = (_uml_20) ? "http://schema.omg.org/spec/UML/2.0/uml.xml"
+		    : "http://schema.omg.org/spec/UML/2.1/uml.xml";
+    out << " href=\"" << s << '#' << base->name() << '"';
+  }
+  else
+    out.idref(roleType());
   out << "/>\n";
   write_multiplicity(out, multiplicity(), this);
   write_default_value(out, defaultValue(), this);
   write_constraint(out);
   write_annotation(out);
   write_description_properties(out);
-
+  
   out.indent(-1);
   out.indent();
   out << "</ownedAttribute>\n";
+
+  unload();
+}
+
+void UmlRelation::write_extension(FileOut & out) {
+  if ((side(TRUE) == this) && 
+      (parent()->stereotype() == "stereotype") &&
+      (roleType()->stereotype() == "metaclass")) {
+    const char * k = (_uml_20) ? "ownedMember" : "packagedElement";
+    
+    out.indent();
+    out << "<" << k << " xmi:type=\"uml:Extension\" name=\"A_";
+    out.quote(roleType()->name());
+    out  << '_';
+    out.quote(parent()->name());
+    out << '"';
+    out.id_prefix(this, "EXT_");
+    out.ref(this, "memberEnd", "BASE_");
+    out << ">\n";
+    out.indent();
+    out << "\t<ownedEnd xmi:type=\"uml:ExtensionEnd\" name=\"extension_";
+    out.quote(parent()->name());
+    out << '"';
+    out.id_prefix(this, "EXTEND_");
+    out.ref(this, "type");
+    out << " aggregation=\"composite\"/>\n";
+    out.indent();
+    out << "</" << k << ">\n";
+  }
 
   unload();
 }

@@ -19,19 +19,29 @@ class UmlBaseFragmentCompartment
   _texts = new String[n + 1];
   System.arraycopy(v, 0, _texts, 0, n);
   _texts[n] = x;
+!!!279168.cpp!!!	add_cont_(in s : string, in cy : int) : void
+  if (cy < _fragment->vcenter_(_rank))
+    _start_continuation = s;
+  else
+    _end_continuation = s;
+!!!279168.java!!!	add_cont_(in s : string, in cy : int) : void
+  if (cy < _fragment.vcenter_(_rank))
+    _start_continuation = s;
+  else
+    _end_continuation = s;
 !!!267008.cpp!!!	smaller(in x : UmlBaseFragmentCompartment) : bool
   return ((_fragment->w() < x->_fragment->w()) &&
           (_fragment->h() < x->_fragment->h()));
 !!!267008.java!!!	smaller(in x : UmlBaseFragmentCompartment) : bool
   return ((_fragment.w() < x._fragment.w()) &&
           (_fragment.h() < x._fragment.h()));
-!!!267136.cpp!!!	init(in fragment : UmlBaseFragment, in rank : int, in y : int) : void
- _fragment = (UmlFragment *) fragment;
- _rank = rank;
- _y = y;
-!!!267136.java!!!	init(in fragment : UmlBaseFragment, in rank : int, in y : int) : void
- _fragment = (UmlFragment) fragment;
- _rank = rank;
- _y = y;
- _contained = new UmlFragment[0];
- _texts = new String[0];
+!!!267136.cpp!!!	read_(in fragment : UmlBaseFragment, in rank : int) : void
+  _fragment = (UmlFragment *) fragment;
+  _rank = rank;
+  _y = UmlCom::read_unsigned();
+!!!267136.java!!!	read_(in fragment : UmlBaseFragment, in rank : int) : void
+  _fragment = (UmlFragment) fragment;
+  _rank = rank;
+  _y = UmlCom.read_unsigned();
+  _contained = new UmlFragment[0];
+  _texts = new String[0];

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,6 +35,7 @@ class QString;
 class QTextStream;
 
 class CodObjCanvas;
+class BrowserNode;
 
 class CodMsgSupport {
   protected:
@@ -54,6 +55,8 @@ class CodMsgSupport {
 			     bool forward) = 0;
     virtual void update_msgs() = 0;
     virtual bool copyable() const = 0;
+    
+    bool supports(BrowserNode *);
 };
 
 #endif

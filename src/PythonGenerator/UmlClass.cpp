@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -94,6 +94,7 @@ void UmlClass::generate(QTextOStream & f, QCString indent,
   const char * pp = 0;
   QCString saved_indent = indent;
   QCString indent_step = PythonSettings::indentStep();
+  bool inherits = FALSE;
   
   for (;;) {
     if (*p == 0) {
@@ -151,9 +152,11 @@ void UmlClass::generate(QTextOStream & f, QCString indent,
 	  r->generate_inherit(sep, f);
       }
 
-      if (*sep != '(')
+      if (*sep != '(') {
 	f << ")";
-      else if (PythonSettings::isPython_2_2())
+	inherits = TRUE;
+      }
+      else if (isPython_2_2())
 	f << "(object)";
     }
     else if (! strncmp(p, "${members}", 10)) {
@@ -183,6 +186,8 @@ void UmlClass::generate(QTextOStream & f, QCString indent,
 	QCString ind = indent;
 	
 	indent += PythonSettings::indentStep();
+	if (inherits)
+	  f << indent << "super(" << name() << ", self).__init__()\n";
 	generate_instance_att_rel(f, indent, indent_needed, "self.");
 	if (indent_needed)
 	  f << indent;
@@ -265,21 +270,25 @@ void UmlClass::write(QTextOStream & f) {
       QCString cl_pack =
 	((UmlPackage *) cl_art->parent()->parent())->pythonPackage();
       
-      if (!cl_pack.isEmpty() && 
-	  (cl_pack != ((UmlPackage *) gen_art->parent()->parent())->pythonPackage())) {
-	QCString s = "from " + cl_pack + "." + cl_art->name() + " import ";
+      if (!cl_pack.isEmpty()) {
+	bool is__init__ = (cl_art->name() == "__init__");
+	QCString s = (is__init__)
+	  ? "from " + cl_pack + " import "
+	  : "from " + cl_pack + "." + cl_art->name() + " import ";
 	const QCString & imports = UmlArtifact::all_imports();
 	QCString importit = s + name();
 	QCString importstar = s + "*";
 	
-	if ((imports.find(importit) == -1) &&
-	    (imports.find(importstar) == -1) &&
-	    (gen_art->pythonSource().find(importit) == -1) &&
-	    (gen_art->pythonSource().find(importstar) == -1))
-	  f << cl_pack << "." << cl_art->name() << "." << name();
-	else
+	if ((imports.find(importit) != -1) ||
+	    (imports.find(importstar) != -1) ||
+	    (gen_art->pythonSource().find(importit) != -1) ||
+	    (gen_art->pythonSource().find(importstar) != -1))
 	  // imported
 	  f << name();
+	else if (is__init__)
+	  f << cl_pack << "." << name();
+	else
+	  f << cl_pack << "." << cl_art->name() << "." << name();
       }
       else {
 	QCString s = "from " + cl_art->name() + " import ";

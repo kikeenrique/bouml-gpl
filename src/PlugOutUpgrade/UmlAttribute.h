@@ -15,6 +15,14 @@ class UmlAttribute : public UmlBaseAttribute {
     static UmlAttribute * java2Php(UmlClass * php, UmlClass * java,
 				   const char * javaname,
 				   const char * phpname = 0);
+    
+    static UmlAttribute * java2Python(UmlClass * python, UmlClass * java,
+				      const char * javaname,
+				      const char * pythonname = 0);
+    
+    static UmlAttribute * cpp2Python(UmlClass * python, UmlClass * cpp,
+				     const char * javaname,
+				     const char * pythonname = 0);
 };
 
 #endif

@@ -26,6 +26,30 @@ bool UmlBaseClassItem::set_JavaDecl(const char * s) {
 }
 #endif
 
+#ifdef WITHPHP
+const QCString & UmlBaseClassItem::phpDecl() {
+  read_if_needed_();
+  
+  return _php_decl;
+}
+
+bool UmlBaseClassItem::set_PhpDecl(const char * s) {
+  return set_it_(_php_decl, s, setPhpDeclCmd);
+}
+#endif
+
+#ifdef WITHPYTHON
+const QCString & UmlBaseClassItem::pythonDecl() {
+  read_if_needed_();
+  
+  return _python_decl;
+}
+
+bool UmlBaseClassItem::set_PythonDecl(const char * s) {
+  return set_it_(_python_decl, s, setPythonDeclCmd);
+}
+#endif
+
 #ifdef WITHIDL
 const QCString & UmlBaseClassItem::idlDecl() {
   read_if_needed_();
@@ -45,6 +69,12 @@ void UmlBaseClassItem::unload(bool rec, bool del) {
 #ifdef WITHJAVA
   _java_decl = 0;
 #endif
+#ifdef WITHPHP
+  _php_decl = 0;
+#endif
+#ifdef WITHPYTHON
+  _python_decl = 0;
+#endif
 #ifdef WITHIDL
   _idl_decl = 0;
 #endif
@@ -60,6 +90,18 @@ void UmlBaseClassItem::read_cpp_() {
 #ifdef WITHJAVA
 void UmlBaseClassItem::read_java_() {
   _java_decl = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBaseClassItem::read_php_() {
+  _php_decl = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHPYTHON
+void UmlBaseClassItem::read_python_() {
+  _python_decl = UmlCom::read_string();
 }
 #endif
 

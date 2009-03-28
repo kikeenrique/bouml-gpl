@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -121,7 +121,7 @@ void CodSelfLinkCanvas::compute_pos(QPoint p) {
   QPoint center;
   QRect r = rect();
     
-  obj->shift(center, p);
+  obj->shift(center, p, FALSE);
   r.moveCenter(center);
   moveBy(r.x() - x() + 100000, r.y() - y());
   
@@ -301,6 +301,10 @@ const char * CodSelfLinkCanvas::may_connect(UmlCode & l, const DiagramItem * des
     
 bool CodSelfLinkCanvas::copyable() const {
   return selected() && obj->copyable();
+}
+
+bool CodSelfLinkCanvas::represents(BrowserNode * bn) {
+  return supports(bn);
 }
 
 void CodSelfLinkCanvas::save(QTextStream & st, bool ref, QString & warning) const {

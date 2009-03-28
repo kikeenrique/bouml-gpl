@@ -23,6 +23,15 @@ UmlItem * UmlBaseTransition::target() {
   return _target;
 }
 
+bool UmlBaseTransition::isExternal() {
+  read_if_needed_();
+  return _is_external;
+}
+
+bool UmlBaseTransition::set_IsExternal(bool v) {
+  return set_it_(_is_external, v, setIsCppExternalCmd);
+}
+
 const QCString & UmlBaseTransition::trigger() {
   read_if_needed_();
   return _uml.trigger;
@@ -123,6 +132,7 @@ void UmlBaseTransition::read_uml_() {
   UmlBaseItem::read_uml_();
   _target = UmlBaseItem::read_();
   _uml.read();
+  _is_external = !UmlCom::read_bool();
 }
 
 #ifdef WITHCPP

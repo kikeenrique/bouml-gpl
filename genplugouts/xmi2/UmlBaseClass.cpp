@@ -98,7 +98,7 @@ UmlClassDiagram * UmlBaseClass::associatedDiagram() {
 }
 
 bool UmlBaseClass::set_AssociatedDiagram(UmlClassDiagram * d) {
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -226,6 +226,40 @@ bool UmlBaseClass::set_isPhpFinal(bool y) {
   else
     return FALSE;
 
+}
+#endif
+
+#ifdef WITHPYTHON
+bool UmlBaseClass::isPythonExternal() {
+  read_if_needed_();
+  
+  return _python_external;
+}
+
+bool UmlBaseClass::set_isPythonExternal(bool y) {
+  bool r;
+  
+  if (set_it_(r, y, setIsPythonExternalCmd)) {
+    _python_external = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool UmlBaseClass::isPython_2_2() {
+  read_if_needed_();
+  return _python_2_2;
+}
+
+bool UmlBaseClass::set_isPython_2_2(bool v) {
+  UmlCom::send_cmd(_identifier, setIsPython2_2Cmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _python_2_2 = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 #endif
 
@@ -389,6 +423,14 @@ void UmlBaseClass::read_php_() {
   ;
   _php_final = UmlCom::read_bool();
   _php_external = UmlCom::read_bool();
+}
+#endif
+
+#ifdef WITHPYTHON
+void UmlBaseClass::read_python_() {
+  UmlBaseClassMember::read_python_();
+  _python_2_2 = UmlCom::read_bool();
+  _python_external = UmlCom::read_bool();
 }
 #endif
 

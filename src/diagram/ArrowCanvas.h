@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -81,6 +81,7 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     virtual ~ArrowCanvas();
     
     virtual void delete_it();
+    virtual void unconnect();
     
     virtual void setVisible( bool yes);
     virtual void moveBy(double dx, double dy);

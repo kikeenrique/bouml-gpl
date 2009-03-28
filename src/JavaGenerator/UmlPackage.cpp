@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,6 +29,7 @@
 #include "UmlPackage.h"
 #include "UmlCom.h"
 #include "JavaSettings.h"
+#include "UmlArtifact.h"
 
 UmlPackage::UmlPackage(void * id, const QCString & n)
     : UmlBasePackage(id, n) {
@@ -132,6 +133,10 @@ UmlPackage * UmlPackage::package() {
 void UmlPackage::import(QTextOStream & f, const QCString & indent) {
   QCString s = javaPackage();
   
-  if (!s.isEmpty())
-    f << indent << "import " << s << ".*;\n";
+  if (!s.isEmpty()) {
+    s += ".*";
+    
+    f << indent << "import " << s << ";\n";
+    UmlArtifact::generated_one()->imported(s);
+  }
 }

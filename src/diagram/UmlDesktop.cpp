@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -139,8 +139,25 @@ void UmlDesktop::limits(int & l, int & t, int & r, int & b)
 
 void UmlDesktop::set_limits(int l, int t, int r, int b)
 {
-  if ((r <= l) || (b <= t))
+  left = top = right = bottom = 0;
+    
+  if ((r == 0) && (t == 0) && (r == 0) && (b == 0))
     fixedp = FALSE;
+  else if ((r < 0) || (t < 0) || (r < 0) || (b < 0)) {
+    fixedp = FALSE;
+    QMessageBox::critical(0, "Bouml",
+			  "Invalid DEFAULT SCREEN, values not taken into account\n"
+			  "\n"
+			  "coordinates can't be negative");
+  }
+  else if ((r <= l) || (b <= t)) {
+    fixedp = FALSE;
+    
+    QMessageBox::critical(0, "Bouml",
+			  "Invalid DEFAULT SCREEN, values not taken into account\n"
+			  "\n"
+			  "right must be greater than left, and bottom must be greater than top");
+  }
   else {
     left = l;
     top = t;

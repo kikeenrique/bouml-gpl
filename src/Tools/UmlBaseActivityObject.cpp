@@ -87,9 +87,8 @@ bool UmlBaseActivityObject::isControlType() {
 }
 
 bool UmlBaseActivityObject::set_IsControlType(bool v) {
-  bool vv;
-
-  if (set_it_(vv, v, setFlagCmd)) {
+  UmlCom::send_cmd(_identifier, setFlagCmd, (char) v);
+  if (UmlCom::read_bool()) {
     _is_control = v;
     return TRUE;
   }

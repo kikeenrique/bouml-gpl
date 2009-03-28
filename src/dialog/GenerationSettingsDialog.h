@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -101,6 +101,7 @@ class GenerationSettingsDialog : public QTabDialog {
     MultiLineEdit * edjava_src_content;
     QComboBox * edjava_extension;
     QCheckBox * java_javadoc_cb;
+    QCheckBox * java_force_package_gen_cb;
     MultiLineEdit * edjava_class_decl;
     LineEdit * edjava_external_class_decl;
     MultiLineEdit * edjava_interface_decl;
@@ -156,6 +157,7 @@ class GenerationSettingsDialog : public QTabDialog {
     MultiLineEdit * edpython_enum_item_decl;
     MultiLineEdit * edpython_rel_decl[2][2];
     MultiLineEdit * edpython_oper_def;
+    MultiLineEdit * edpython_initoper_def;
     VisibilityGroup python_get_visibility;
     LineEdit * edpython_get_name;
     QCheckBox * uml_follow_python_get_name;

@@ -29,6 +29,8 @@ enum OnInstanceCmd {
   relationsCmd,
   getPhpDefCmd,
   phpBodyCmd,
+  getPythonDefCmd,
+  pythonBodyCmd,
   firstSetCmd= 50,// just a mark
   createCmd,
   setCoupleValueCmd,
@@ -168,7 +170,8 @@ enum OnInstanceCmd {
   setPythonDecoratorsCmd,
   setPythonPackageCmd,
   setPythonContextualBodyIndentCmd,
-  applyStereotypeCmd
+  applyStereotypeCmd,
+  setDerivedCmd
 
 };
 #endif

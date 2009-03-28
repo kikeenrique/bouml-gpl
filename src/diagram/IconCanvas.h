@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,6 +49,7 @@ class IconCanvas : public QObject, public DiagramCanvas {
     virtual void delete_available(bool & in_model, bool & out_model) const;
     virtual bool alignable() const;
     virtual bool copyable() const;
+    virtual bool represents(BrowserNode *);
     virtual void apply_shortcut(QString s);
     virtual void history_load(QBuffer &);
     virtual void history_hide();

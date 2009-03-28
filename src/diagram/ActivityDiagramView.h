@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,7 +39,7 @@ class ActivityDiagramView : public DiagramView {
   public:
     ActivityDiagramView(QWidget * parent, UmlCanvas * canvas, int id);
   
-    BrowserNode * container(const QPoint & p);
+    BrowserNode * container(const QPoint & p, bool part = FALSE);
     virtual void menu(const QPoint&);
     virtual void read(char *, char * k);
     virtual void save(QTextStream & st, QString & warning, bool copy) const;

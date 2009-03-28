@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -47,6 +47,10 @@ void AType::send_def(ToolCom * com) const {
   if (type == 0) {
     com->write_id(0);
     com->write_string(explicit_type);
+  }
+  else if (type->deletedp()) {
+    com->write_id(0);
+    com->write_string(0);
   }
   else
     type->write_id(com);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,6 +39,7 @@
 #include "SettingsDialog.h"
 #include "DiagramView.h"
 #include "myio.h"
+#include "strutil.h"
 #include "ToolCom.h"
 #include "Tool.h"
 #include "MenuTitle.h"
@@ -51,19 +52,20 @@ QValueList<int> BrowserActivityDiagram::imported_ids;
 QStringList BrowserActivityDiagram::its_default_stereotypes;	// unicode
 
 BrowserActivityDiagram::BrowserActivityDiagram(QString s, BrowserNode * p, int id)
-    : BrowserDiagram(s, p, id), window(0) {
+    : BrowserDiagram(s, p, id), window(0), used_settings(0) {
   make();
   is_modified = (id == 0);
 }
 
 BrowserActivityDiagram::BrowserActivityDiagram(BrowserActivityDiagram * model, BrowserNode * p)
-    : BrowserDiagram(p->get_name(), p, 0), window(0) {
+    : BrowserDiagram(p->get_name(), p, 0), window(0), used_settings(0) {
   def = new SimpleData(model->def);
   def->set_browser_node(this);
   comment = model->comment;
   settings = model->settings;
   activity_color = model->activity_color;
   activityregion_color = model->activityregion_color;
+  activitypartition_color = model->activitypartition_color;
   activityaction_color = model->activityaction_color;
   parameterpin_color = model->parameterpin_color;
   note_color = model->note_color;
@@ -89,7 +91,7 @@ bool BrowserActivityDiagram::api_compatible(unsigned v) const {
 }
 
 BrowserActivityDiagram::BrowserActivityDiagram(int id)
-    : BrowserDiagram(id), window(0) {
+    : BrowserDiagram(id), window(0), used_settings(0) {
   // not yet read
   make();
   is_modified = (id == 0);
@@ -119,6 +121,7 @@ void BrowserActivityDiagram::make() {
   def->set_browser_node(this);
   activity_color = UmlDefaultColor;
   activityregion_color = UmlDefaultColor;
+  activitypartition_color = UmlDefaultColor;
   activityaction_color = UmlDefaultColor;
   parameterpin_color = UmlDefaultColor;
   note_color = UmlDefaultColor;
@@ -183,7 +186,12 @@ BrowserNode * BrowserActivityDiagram::duplicate(BrowserNode * p, QString name) {
 }
 
 const QPixmap* BrowserActivityDiagram::pixmap(int) const {
-  return (deletedp()) ? DeletedActivityDiagramIcon : ActivityDiagramIcon;
+  if (deletedp()) 
+    return DeletedActivityDiagramIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : ActivityDiagramIcon;
 }
 
 void BrowserActivityDiagram::draw_svg() const {
@@ -318,17 +326,18 @@ void BrowserActivityDiagram::open(bool) {
 
 void BrowserActivityDiagram::edit_settings() {
   QArray<StateSpec> st;
-  QArray<ColorSpec> co(7);
+  QArray<ColorSpec> co(8);
   
   settings.complete(st, TRUE);
   
   co[0].set("activity color", &activity_color);
   co[1].set("activity region color", &activityregion_color);
-  co[2].set("activity action color", &activityaction_color);
-  co[3].set("parameter and pin color", &parameterpin_color);
-  co[4].set("note color", &note_color);
-  co[5].set("package color", &package_color);
-  co[6].set("fragment color", &fragment_color);
+  co[2].set("activity partition color", &activitypartition_color);
+  co[3].set("activity action color", &activityaction_color);
+  co[4].set("parameter and pin color", &parameterpin_color);
+  co[5].set("note color", &note_color);
+  co[6].set("package color", &package_color);
+  co[7].set("fragment color", &fragment_color);
   
   SettingsDialog dialog(&st, &co, FALSE, FALSE);
   
@@ -341,6 +350,10 @@ void BrowserActivityDiagram::edit_settings() {
 
 void BrowserActivityDiagram::on_close() {
   window = 0;
+  if (used_settings != 0) {
+    delete used_settings;
+    used_settings = 0;
+  }
 }
 
 void BrowserActivityDiagram::read_session(char * & st) {
@@ -359,73 +372,41 @@ const char * BrowserActivityDiagram::help_topic() const  {
   return "activitydiagram";
 }
 
-void BrowserActivityDiagram::get_activitydiagramsettings(ActivityDiagramSettings & r) const {
-  if (! settings.complete(r))
-    ((BrowserNode *) parent())->get_activitydiagramsettings(r);
+void BrowserActivityDiagram::update_drawing_settings() {
+  if (used_settings == 0)
+    used_settings = new ActivityDiagramSettings;
+  *used_settings = settings;
+  ((BrowserNode *) parent())->get_activitydiagramsettings(*used_settings);
 }
 
-void BrowserActivityDiagram::get_activitydrawingsettings(ActivityDrawingSettings & result) const {
-  if (!settings.activitydrawingsettings.complete(result))
-    ((BrowserNode *) parent())->get_activitydrawingsettings(result);
+void BrowserActivityDiagram::get_activitydiagramsettings(ActivityDiagramSettings & r) const {
+  r.assign(*used_settings);
+}
+
+void BrowserActivityDiagram::get_activitydrawingsettings(ActivityDrawingSettings & r) const {
+  r.assign(used_settings->activitydrawingsettings);
 }
 
 void BrowserActivityDiagram::package_settings(bool & name_in_tab,
-					   ShowContextMode & show_context) const {
-  ActivityDiagramSettings st;
-  
-  get_activitydiagramsettings(st);
-  name_in_tab = st.package_name_in_tab == UmlYes;
-  show_context = st.show_context_mode;
+					      ShowContextMode & show_context) const {
+  name_in_tab = used_settings->package_name_in_tab == UmlYes;
+  show_context = used_settings->show_context_mode;
 }
 
-bool BrowserActivityDiagram::get_auto_label_position(UmlCode who) const {
-  switch (settings.auto_label_position) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_auto_label_position(who);
-  }
+bool BrowserActivityDiagram::get_auto_label_position() const {
+  return used_settings->auto_label_position == UmlYes;
 }
 
-bool BrowserActivityDiagram::get_write_label_horizontally(UmlCode who) const {
-  switch (settings.write_label_horizontally) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_write_label_horizontally(who);
-  }
+bool BrowserActivityDiagram::get_write_label_horizontally() const {
+  return used_settings->write_label_horizontally == UmlYes;
 }
 
-bool BrowserActivityDiagram::get_show_opaque_action_definition(UmlCode who) const {
-  switch (settings.show_opaque_action_definition) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_opaque_action_definition(who);
-  }
+bool BrowserActivityDiagram::get_show_opaque_action_definition() const {
+  return used_settings->show_opaque_action_definition == UmlYes;
 }
 
-DrawingLanguage BrowserActivityDiagram::get_language(UmlCode who) const {
-  DrawingLanguage v;
-  
-  switch (who) {
-  case UmlActivityDiagram:
-    v = settings.activitydrawingsettings.drawing_language;
-    break;
-  default:
-    // error
-    return UmlView;
-  }
-  
-  return (v != DefaultDrawingLanguage)
-    ? v
-    : ((BrowserNode *) parent())->get_language(who);
+DrawingLanguage BrowserActivityDiagram::get_language() const {
+  return used_settings->activitydrawingsettings.drawing_language;
 }
 
 UmlColor BrowserActivityDiagram::get_color(UmlCode who) const {
@@ -438,6 +419,9 @@ UmlColor BrowserActivityDiagram::get_color(UmlCode who) const {
   case UmlInterruptibleActivityRegion:
   case UmlExpansionRegion:
     c = activityregion_color;
+    break;
+  case UmlActivityPartition:
+    c = activitypartition_color;
     break;
   case UmlActivityAction:
     c = activityaction_color;
@@ -463,40 +447,21 @@ UmlColor BrowserActivityDiagram::get_color(UmlCode who) const {
 }
 
 bool BrowserActivityDiagram::get_shadow() const {
-  switch (settings.shadow) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_shadow(UmlActivityDiagram);
-  }  
+  return used_settings->shadow == UmlYes;
 }
 
 bool BrowserActivityDiagram::get_draw_all_relations() const {
-  switch (settings.draw_all_relations) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_draw_all_relations(UmlActivityDiagram);
-  }  
+  return used_settings->draw_all_relations == UmlYes;
 }
 
 void BrowserActivityDiagram::dont_draw_all_relations() {
-  settings.draw_all_relations = UmlNo;
+  settings.draw_all_relations = 
+    used_settings->draw_all_relations = UmlNo;
 }
 
-bool BrowserActivityDiagram::get_show_stereotype_properties(UmlCode) const {
-  switch (settings.activitydrawingsettings.show_stereotype_properties) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_stereotype_properties(UmlActivityDiagram);
-  }
+bool BrowserActivityDiagram::get_show_stereotype_properties() const {
+  return used_settings->activitydrawingsettings.show_stereotype_properties
+    == UmlYes;
 }
 
 BasicData * BrowserActivityDiagram::get_data() const {
@@ -561,6 +526,26 @@ const QStringList & BrowserActivityDiagram::default_stereotypes() {
   return its_default_stereotypes;
 }
 
+void BrowserActivityDiagram::compute_referenced_by(QList<BrowserNode> & l,
+						   BrowserNode * bn,
+						   char const * kc,
+						   char const * kr)
+{
+  int id = bn->get_identifier();
+  IdIterator<BrowserDiagram> it(all);
+  BrowserDiagram * d;
+
+  while ((d = it.current()) != 0) {
+    if (!d->deletedp() && (d->get_type() == UmlActivityDiagram)) {
+      if ((((BrowserActivityDiagram *) d)->window != 0)
+	  ? ((BrowserActivityDiagram *) d)->window->get_view()->is_present(bn)
+	  : is_referenced(read_definition(d->get_ident(), "diagram"), id, kc, kr))
+	l.append((BrowserActivityDiagram *) d);
+    }
+    ++it;
+  }
+}
+
 void BrowserActivityDiagram::save_stereotypes(QTextStream & st)
 {
   nl_indent(st);
@@ -591,6 +576,7 @@ void BrowserActivityDiagram::save(QTextStream & st, bool ref, QString & warning)
     
     save_color(st, "activity_color", activity_color, nl);
     save_color(st, "activityregion_color", activityregion_color, nl);
+    save_color(st, "activitypartition_color", activitypartition_color, nl);
     save_color(st, "activityaction_color", activityaction_color, nl);
     save_color(st, "parameterpin_color", parameterpin_color, nl);
     save_color(st, "note_color", note_color, nl);
@@ -667,8 +653,8 @@ BrowserActivityDiagram * BrowserActivityDiagram::read(char * & st, char * k,
     
     r->is_defined = TRUE;
 
-    r->is_read_only = (!in_import() && read_only_file()) || 
-      (user_id() != 0) && r->is_api_base();
+    r->is_read_only = ((!in_import() && read_only_file())) || 
+      ((user_id() != 0) && r->is_api_base());
     
     QFileInfo fi(BrowserView::get_dir(), QString::number(id) + ".diagram");
     if (!in_import() && fi.exists() && !fi.isWritable())
@@ -682,6 +668,7 @@ BrowserActivityDiagram * BrowserActivityDiagram::read(char * & st, char * k,
       r->settings.draw_all_relations = UmlNo;
     read_color(st, "activity_color", r->activity_color, k);		// updates k
     read_color(st, "activityregion_color", r->activityregion_color, k);		// updates k
+    read_color(st, "activitypartition_color", r->activitypartition_color, k);		// updates k
     read_color(st, "activityaction_color", r->activityaction_color, k);		// updates k
     read_color(st, "parameterpin_color", r->parameterpin_color, k);		// updates k
     read_color(st, "note_color", r->note_color, k);		// updates k

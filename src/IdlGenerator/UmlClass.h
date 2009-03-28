@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,7 +44,7 @@ class UmlClass : public UmlBaseClass {
     void generate();
     virtual void generate(QTextOStream & f);
     virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype,
-			       bool = FALSE);
+			       QCString indent, bool = FALSE);
 
     void write(QTextOStream & f);
     static void write(QTextOStream & f, const UmlTypeSpec & t);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,6 +34,7 @@
 
 #include "BrowserFlow.h"
 #include "FlowData.h"
+#include "ReferenceDialog.h"
 #include "UmlPixmap.h"
 #include "UmlGlobal.h"
 #include "myio.h"
@@ -44,6 +45,7 @@
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "BrowserActivityDiagram.h"
 
 IdDict<BrowserFlow> BrowserFlow::all(1021, __FILE__);
 QStringList BrowserFlow::its_default_stereotypes;	// unicode
@@ -111,6 +113,12 @@ bool BrowserFlow::undelete(bool, QString & warning, QString & renamed) {
   
   return TRUE;
 }
+    
+void BrowserFlow::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
+  if (! ondelete)
+    BrowserActivityDiagram::compute_referenced_by(l, this, "flowcanvas", "flow_ref");
+}
 
 void BrowserFlow::compute_referenced_by(QList<BrowserNode> & l,
 					const BrowserNode * target)
@@ -162,8 +170,12 @@ void BrowserFlow::update_stereotype(bool) {
 }
 
 const QPixmap* BrowserFlow::pixmap(int) const {
-  return (deletedp()) ? DeletedRelationIcon
-		      : SimpleRelationIcon;
+  if (deletedp())
+    return DeletedRelationIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : SimpleRelationIcon;
 }
 
 void BrowserFlow::menu() {
@@ -197,6 +209,8 @@ Note that you can undelete it after");
     
     m.setWhatsThis(m.insertItem("Select " + s, 7),
 		   "to select the destination");
+    m.setWhatsThis(m.insertItem("Referenced by", 4),
+		   "to know who reference the <i>region</i>");
     mark_menu(m, "flow", 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) 
@@ -220,7 +234,7 @@ Note that you can undelete it after");
 void BrowserFlow::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
-    open(FALSE);
+    open(TRUE);
     break;
   case 2:
     delete_it();
@@ -228,6 +242,9 @@ void BrowserFlow::exec_menu_choice(int rank) {
   case 3:
     BrowserNode::undelete(FALSE);
     break;
+  case 4:
+    ReferenceDialog::show(this);
+    return;
   case 7:
     def->get_end_node()->select_in_browser();
     return;
@@ -256,9 +273,12 @@ void BrowserFlow::apply_shortcut(QString s) {
 	  choice = 2;
       }
     }
-    if (s == "Select target")
+    if (s == "Referenced by")
+      choice = 4;
+    else if (s == "Select target")
       choice = 7;
-    mark_shortcut(s, choice, 90);
+    else
+      mark_shortcut(s, choice, 90);
     if (edition_number == 0)
       Tool::shortcut(s, choice, get_type(), 100);
   }
@@ -334,7 +354,9 @@ const QStringList & BrowserFlow::default_stereotypes()
 }
 
 bool BrowserFlow::api_compatible(unsigned v) const {
-  return (v > 24);
+  return ((v > 24) && 
+	  ((BrowserNode *) parent())->api_compatible(v) &&
+	  def->get_end_node()->api_compatible(v));
 }
 
 bool BrowserFlow::tool_cmd(ToolCom * com, const char * args) {
@@ -450,8 +472,8 @@ BrowserFlow * BrowserFlow::read(char * & st, char * k, BrowserNode * parent)
     
     result->is_defined = TRUE;
     
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     result->BrowserNode::read(st, k);
     

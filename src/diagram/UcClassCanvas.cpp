@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,6 +34,7 @@
 #include "UcClassCanvas.h"
 #include "TemplateCanvas.h"
 #include "RelationCanvas.h"
+#include "DiagramView.h"
 #include "RelationData.h"
 #include "BasicData.h"
 #include "UmlPixmap.h"
@@ -110,7 +111,8 @@ void UcClassCanvas::remove(bool from_model) {
 
 void UcClassCanvas::compute_size() {
   used_settings = settings;
-  the_canvas()->browser_diagram()->get_simpleclassdiagramsettings(used_settings);
+  ((BrowserUseCaseDiagram *) the_canvas()->browser_diagram())
+    ->get_simpleclassdiagramsettings(used_settings);
 
   full_name = browser_node->get_name();
   
@@ -439,7 +441,7 @@ bool UcClassCanvas::get_show_stereotype_properties() const {
   case UmlNo:
     return FALSE;
   default:
-    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties();
   }
 }
 
@@ -504,6 +506,8 @@ void UcClassCanvas::menu(const QPoint&) {
   m.insertItem("Go up", 8);
   m.insertItem("Go down", 9);
   m.insertSeparator();
+  m.insertItem("Add related elements", 10);
+  m.insertSeparator();
   m.insertItem("Edit drawing settings", 4);
   m.insertSeparator();
   if (browser_node->is_writable()) {
@@ -518,7 +522,7 @@ void UcClassCanvas::menu(const QPoint&) {
   if (browser_node->is_writable())
     m.insertItem("Delete from model", 6);
   m.insertSeparator();
-  if (Tool::menu_insert(&toolm, UmlClass, 10))
+  if (Tool::menu_insert(&toolm, UmlClass, 20))
     m.insertItem("Tool", &toolm);
 
   int rank = m.exec(QCursor::pos());
@@ -531,16 +535,6 @@ void UcClassCanvas::menu(const QPoint&) {
     break;
   case 1:
     lower();
-    hide();
-    show();
-    break;
-  case 8:
-    z_up();
-    hide();
-    show();
-    break;
-  case 9:
-    z_down();
     hide();
     show();
     break;
@@ -565,9 +559,23 @@ void UcClassCanvas::menu(const QPoint&) {
   case 7:
     browser_node->open(TRUE);
     break;
+  case 8:
+    z_up();
+    hide();
+    show();
+    break;
+  case 9:
+    z_down();
+    hide();
+    show();
+    break;
+  case 10:
+    ((UmlCanvas *) canvas())->get_view()
+      ->add_related_elements(this, "class/actor", TRUE, FALSE);
+    return;
   default:
-    if (rank >= 10)
-      ToolCom::run(Tool::command(rank - 10), browser_node);
+    if (rank >= 20)
+      ToolCom::run(Tool::command(rank - 20), browser_node);
     return;
   }
   
@@ -589,6 +597,11 @@ void UcClassCanvas::apply_shortcut(QString s) {
     z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
+    return;
+  }
+  else if (s == "Add related elements") {
+    ((UmlCanvas *) canvas())->get_view()
+      ->add_related_elements(this, "class/actor", TRUE, FALSE);
     return;
   }
   else {

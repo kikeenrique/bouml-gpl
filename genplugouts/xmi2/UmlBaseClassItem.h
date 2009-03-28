@@ -41,6 +41,17 @@ class UmlBaseClassItem : public UmlItem {
     bool set_PhpDecl(const char * s);
 #endif
 
+#ifdef WITHPYTHON
+    //  return the Python defininition
+    
+    const QCString & pythonDecl();
+
+    //  to set the Python definition
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PythonDecl(const char * s);
+#endif
+
 #ifdef WITHIDL
     //  return the IDL declaration
     
@@ -68,6 +79,10 @@ class UmlBaseClassItem : public UmlItem {
     QCString _php_decl;
 #endif
 
+#ifdef WITHPYTHON
+    QCString _python_decl;
+#endif
+
 #ifdef WITHIDL
     QCString _idl_decl;
 #endif
@@ -92,6 +107,12 @@ class UmlBaseClassItem : public UmlItem {
     //internal, do NOT use it
     
     virtual void read_php_();
+#endif
+
+#ifdef WITHPYTHON
+    //internal, do NOT use it
+    
+    virtual void read_python_();
 #endif
 
 #ifdef WITHIDL

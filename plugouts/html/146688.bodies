@@ -25,6 +25,7 @@ class PhpSettings
   
   return (b != null) ? b.php : s;
 !!!211968.cpp!!!	set_ClassStereotype(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom::send_cmd(phpSettingsCmd, setPhpClassStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlStereotype * st = UmlSettings::_map_class_stereotypes.find(s);
@@ -38,6 +39,7 @@ class PhpSettings
   else
     return FALSE;
 !!!211968.java!!!	set_ClassStereotype(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpClassStereotypeCmd, s, v);
   UmlCom.check();
 
@@ -125,6 +127,27 @@ class PhpSettings
   
   _ext = v;
 
+!!!231936.cpp!!!	isGenerateJavadocStyleComment() : bool
+  read_if_needed_();
+
+  return _is_generate_javadoc_comment;
+!!!231936.java!!!	isGenerateJavadocStyleComment() : bool
+  read_if_needed_();
+
+  return _is_generate_javadoc_comment;
+!!!232064.cpp!!!	set_IsGenerateJavadocStyleComment(in v : bool) : bool
+  UmlCom::send_cmd(phpSettingsCmd, setPhpJavadocStyleCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_generate_javadoc_comment = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!232064.java!!!	set_IsGenerateJavadocStyleComment(in v : bool) : bool
+  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpJavadocStyleCmd,
+		   (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+  _is_generate_javadoc_comment = v;
 !!!212864.cpp!!!	classDecl() : string
   read_if_needed_();
   
@@ -466,6 +489,7 @@ class PhpSettings
     (aVisibility) UmlCom::read_char();
   _set_name = UmlCom::read_string();
   _is_set_final = UmlCom::read_bool();
+  _is_generate_javadoc_comment = UmlCom::read_bool();
 !!!216576.java!!!	read_() : void
   _root = UmlCom.read_string();
   
@@ -494,6 +518,7 @@ class PhpSettings
   UmlCom.read_char(); // setter visibility
   _set_name = UmlCom.read_string();
   _is_set_final = UmlCom.read_bool();
+  _is_generate_javadoc_comment = UmlCom.read_bool();
 !!!216704.cpp!!!	read_if_needed_() : void
   UmlSettings::read_if_needed_();
   if (!_defined) {

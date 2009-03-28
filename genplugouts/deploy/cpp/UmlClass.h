@@ -17,6 +17,8 @@ class UmlClass : public UmlBaseClass {
 
     virtual void deploy(UmlDeploymentView * view);
 
+    virtual int deployable();
+
 };
 
 #endif

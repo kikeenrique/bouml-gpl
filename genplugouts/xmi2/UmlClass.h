@@ -4,6 +4,7 @@
 
 #include "UmlBaseClass.h"
 #include <qcstring.h>
+#include <qvaluelist.h>
 
 class FileOut;
 class UmlRelation;
@@ -31,6 +32,9 @@ class UmlClass : public UmlBaseClass {
 
     //return 0 in case the class is already an association class 
     UmlClass * set_assoc(UmlRelation * rel);
+
+    //  the class is a stereotype, computes the list of extended meta classes
+    void get_extended(QValueList<QCString> & r);
 
 
   protected:

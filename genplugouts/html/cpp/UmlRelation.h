@@ -26,10 +26,13 @@ class UmlRelation : public UmlBaseRelation {
     void gen_cpp_decl(QCString s, bool descr);
 
     //produce the definition in Java
-    void gen_java_decl(QCString s);
+    void gen_java_decl(QCString s, bool descr);
 
-    //produce the definition in Java
-    void gen_php_decl(QCString s);
+    //produce the definition in Php
+    void gen_php_decl(QCString s, bool descr);
+
+    //produce the definition in Python
+    void gen_python_decl(QCString s);
 
 
   private:

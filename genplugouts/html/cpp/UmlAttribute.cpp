@@ -4,6 +4,7 @@
 #include "CppSettings.h"
 #include "JavaSettings.h"
 #include "PhpSettings.h"
+#include "PythonSettings.h"
 QCString UmlAttribute::sKind() {
   return "attribute";
 }
@@ -22,7 +23,7 @@ void UmlAttribute::memo_ref() {
 void UmlAttribute::html(QCString, unsigned int, unsigned int) {
   define();
 
-  fw.write("<table><tr><td><div class=\"element\">Attribut <b>");
+  fw.write("<table><tr><td><div class=\"element\">Attribute <b>");
   writeq(name());
   fw.write("</b></div></td></tr></table>\n");
 
@@ -30,7 +31,14 @@ void UmlAttribute::html(QCString, unsigned int, unsigned int) {
   
   if (!s.isEmpty()) {
     fw.write("<p>");
-    gen_cpp_decl(s, TRUE);
+    if (! javaDecl().isEmpty())
+      gen_java_decl(s, TRUE);
+    else if (! phpDecl().isEmpty())
+      gen_php_decl(s, TRUE);
+    else if (! pythonDecl().isEmpty())
+      gen_python_decl(s);
+    else
+      gen_cpp_decl(s, TRUE);
     fw.write("<br /></p>");
   }
 
@@ -52,7 +60,7 @@ void UmlAttribute::html(QCString, unsigned int, unsigned int) {
 
   if (!s.isEmpty()) {
     fw.write("<li>Java : ");
-    gen_java_decl(s);
+    gen_java_decl(s, FALSE);
     fw.write("</li>");
   }
 
@@ -60,7 +68,15 @@ void UmlAttribute::html(QCString, unsigned int, unsigned int) {
 
   if (!s.isEmpty()) {
     fw.write("<li>Php : ");
-    gen_php_decl(s);
+    gen_php_decl(s, FALSE);
+    fw.write("</li>");
+  }
+
+  s = pythonDecl();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Python : ");
+    gen_python_decl(s);
     fw.write("</li>");
   }
 
@@ -196,7 +212,11 @@ void UmlAttribute::gen_cpp_decl(QCString s, bool descr) {
       }
       break;
     case ';':
-      return;
+      if (descr)
+	fw.write(*p++);
+      else
+	return;
+      break;
     case '@':
       manage_alias(p);
       break;
@@ -206,7 +226,7 @@ void UmlAttribute::gen_cpp_decl(QCString s, bool descr) {
   }
 }
 
-void UmlAttribute::gen_java_decl(QCString s) {
+void UmlAttribute::gen_java_decl(QCString s, bool descr) {
   const char * p = bypass_comment(s);
 
   while (*p) {
@@ -292,8 +312,12 @@ void UmlAttribute::gen_java_decl(QCString s) {
 	p += 1;
       while ((*p != 0) && (*p <= ' '));
     }
-    else if ((*p == '{') || (*p == ';'))
-      break;
+    else if ((*p == '{') || (*p == ';')) {
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
     else if (*p == '@')
       manage_alias(p);
     else
@@ -301,7 +325,7 @@ void UmlAttribute::gen_java_decl(QCString s) {
   }
 }
 
-void UmlAttribute::gen_php_decl(QCString s) {
+void UmlAttribute::gen_php_decl(QCString s, bool descr) {
   QCString st = PhpSettings::classStereotype(stereotype());
   const char * p = bypass_comment(s);
 
@@ -353,8 +377,51 @@ void UmlAttribute::gen_php_decl(QCString s) {
 	p += 1;
       while ((*p != 0) && (*p <= ' '));
     }
-    else if ((*p == '{') || (*p == ';'))
-      break;
+    else if ((*p == '{') || (*p == ';')){
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
+    else if (*p == '@')
+      manage_alias(p);
+    else
+      writeq(*p++);
+  }
+}
+
+void UmlAttribute::gen_python_decl(QCString s) {
+  QCString st = PythonSettings::classStereotype(stereotype());
+  const char * p = bypass_comment(s);
+
+  while (*p) {
+    if (!strncmp(p, "${comment}", 10))
+      p += 10;
+    else if (!strncmp(p, "${description}", 14))
+      p += 14;
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      writeq(name());
+    }
+    else if (!strncmp(p, "${value}", 8)) {
+      p += 8;
+      writeq((defaultValue().isEmpty()) ? "None" : defaultValue());
+    }
+    else if (!strncmp(p, "${self}", 7)) {
+      p += 7;
+      if (!isClassMember())
+	fw.write("self.");
+    }
+    else if (!strncmp(p, "${type}", 7)) {
+      p += 7;
+      write(type(), pythonLanguage);
+    }
+    else if (!strncmp(p, "${stereotype}", 13)) {
+      p += 13;
+      writeq(st);
+    }
+    else if (*p == '\r')
+      p += 1;
     else if (*p == '@')
       manage_alias(p);
     else
@@ -369,13 +436,33 @@ void UmlAttribute::gen_uml_decl() {
   writeq(name());
   fw.write(" : ");
   write(type());
-
-  QCString s = multiplicity();
   
+  QCString s;
+  
+  s = defaultValue();
+  if (!s.isEmpty()) {
+    if (s[0] != '=')
+      fw.write(" = ");
+    writeq(s);
+  }
+
+  s = multiplicity();
   if (!s.isEmpty()) {
     fw.write(", multiplicity : ");
     writeq(s);
   }
+
+  if (isDerived())
+    fw.write((isDerivedUnion()) ? ", derived union" : ", derived");
+    
+  if (isReadOnly())
+    fw.write(", read only");
+    
+  if (isOrdered())
+    fw.write(", ordered");
+    
+  if (isUnique())
+    fw.write(", unique");
 }
 
 Vector UmlAttribute::attrs;

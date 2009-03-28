@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -43,6 +43,8 @@ class FragmentCanvas : public QObject, public DiagramCanvas {
     int min_width;
     int min_height;
     QList<FragmentSeparatorCanvas> separators;
+    BrowserNode * refer;
+    QString form;
   
     void check_size();
     
@@ -83,7 +85,11 @@ class FragmentCanvas : public QObject, public DiagramCanvas {
     
     virtual void apply_shortcut(QString s);
     
-    static void send(ToolCom * com, QCanvasItemList & all);
+    QString arguments() { return form; }
+    
+    static void send(ToolCom * com, QCanvasItemList & all,
+		     QList<FragmentCanvas> & fragments,
+		     QList<FragmentCanvas> & refs);
   
   private slots:
     void modified();

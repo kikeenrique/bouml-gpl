@@ -5,7 +5,9 @@ enum UmlMessageKind {
   aSynchronousCall,
   anAsynchronousCall,
   anExplicitReturn,
-  anImplicitReturn
+  anImplicitReturn,
+  aDestruction,
+  anInteractionUse
 };
 
 #endif

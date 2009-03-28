@@ -38,6 +38,8 @@ Dialog::Dialog(bool & rec, char & lang) : QDialog(0, 0, TRUE), _rec(rec), _lang(
   new QLabel(htab);
   QPushButton * php = new QPushButton("P&hp", htab);
   new QLabel(htab);
+  QPushButton * python = new QPushButton("P&ython", htab);
+  new QLabel(htab);
   QPushButton * cancel = new QPushButton("&Cancel", htab);
   new QLabel(htab);
   QSize bs(cancel->sizeHint());
@@ -49,6 +51,7 @@ Dialog::Dialog(bool & rec, char & lang) : QDialog(0, 0, TRUE), _rec(rec), _lang(
   connect(java, SIGNAL(clicked()), this, SLOT(accept_java()));
   connect(idl, SIGNAL(clicked()), this, SLOT(accept_idl()));
   connect(php, SIGNAL(clicked()), this, SLOT(accept_php()));
+  connect(python, SIGNAL(clicked()), this, SLOT(accept_python()));
   connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
 
   // help
@@ -81,6 +84,11 @@ void Dialog::accept_idl() {
 
 void Dialog::accept_php() {
   _lang = 'h';
+  accept();
+}
+
+void Dialog::accept_python() {
+  _lang = 'y';
   accept();
 }
 

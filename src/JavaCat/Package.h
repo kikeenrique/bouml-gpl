@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -63,7 +63,7 @@ class Package : public BrowserNode, public ClassContainer {
 #ifdef REVERSE
     void send_dir(bool rec);
     const QStringList get_imports() { return imports; }
-    const bool is_java_lang_added() { return java_lang_added; }
+    bool is_java_lang_added() { return java_lang_added; }
     const QStringList get_static_imports() { return static_imports; }
 #endif
     

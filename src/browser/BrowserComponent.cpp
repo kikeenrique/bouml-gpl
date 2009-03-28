@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,6 +34,7 @@
 #include "BrowserComponent.h"
 #include "SimpleData.h"
 #include "BrowserComponentDiagram.h"
+#include "BrowserDeploymentDiagram.h"
 #include "BrowserSimpleRelation.h"
 #include "SimpleRelationData.h"
 #include "BrowserClass.h"
@@ -104,6 +105,14 @@ void BrowserComponent::update_idmax_for_root()
 {
   all.update_idmax_for_root();
 }
+
+void BrowserComponent::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
+  if (! ondelete) {
+    BrowserComponentDiagram::compute_referenced_by(l, this, "componentcanvas", "component_ref");
+    BrowserDeploymentDiagram::compute_referenced_by(l, this, "componentcanvas", "component_ref");
+  }  
+}
     
 void BrowserComponent::compute_referenced_by(QList<BrowserNode> & l,
 					     BrowserClass * target)
@@ -126,7 +135,17 @@ void BrowserComponent::renumber(int phase) {
 }
 
 const QPixmap* BrowserComponent::pixmap(int) const {
-  return (deletedp()) ? DeletedComponentIcon : ComponentIcon;
+  if (deletedp()) 
+    return DeletedComponentIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+  
+  return (px != 0) ? px : ComponentIcon;
+}
+
+void BrowserComponent::iconChanged() {
+  repaint();
+  def->modified();
 }
 
 QString BrowserComponent::full_name(bool rev, bool) const {
@@ -569,37 +588,51 @@ void BrowserComponent::set_associated_diagram(BrowserComponentDiagram * dg,
 }
 
 void BrowserComponent::on_delete() {
-  if (associated_diagram && associated_diagram->deletedp())
+  bool modif = FALSE;
+  
+  if (associated_diagram && associated_diagram->deletedp()) {
     associated_diagram = 0;
+    modif = TRUE;
+  }
   
   QValueList<BrowserClass *>::Iterator it;
   
   it = realizing_classes.begin();
   while (it != realizing_classes.end()) {
-    if ((*it)->deletedp())
+    if ((*it)->deletedp()) {
       it = realizing_classes.remove(it);
+      modif = TRUE;
+    }
     else
       ++it;
   }
   
   it = provided_classes.begin();
   while (it != provided_classes.end()) {
-    if ((*it)->deletedp())
+    if ((*it)->deletedp()) {
       it = provided_classes.remove(it);
+      modif = TRUE;
+    }
     else
       ++it;
   }
   
   it = required_classes.begin();
   while (it != required_classes.end()) {
-    if ((*it)->deletedp())
+    if ((*it)->deletedp()) {
       it = required_classes.remove(it);
+      modif = TRUE;
+    }
     else
       ++it;
   }
+  
+  if (modif)
+    package_modified();
 }
 
 void BrowserComponent::remove_associated_class(BrowserClass * c) {
+  bool done = FALSE;
   QValueList<BrowserClass *>::Iterator it;
   
   if ((it = realizing_classes.find(c)) != realizing_classes.end()) {
@@ -607,18 +640,26 @@ void BrowserComponent::remove_associated_class(BrowserClass * c) {
     QObject::disconnect(c->get_data(), SIGNAL(deleted()),
 			def, SLOT(on_delete()));
     package_modified();
+    done = TRUE;
   }
-  else if ((it = provided_classes.find(c)) != provided_classes.end()) {
+  
+  if ((it = provided_classes.find(c)) != provided_classes.end()) {
     provided_classes.remove(it);
-    QObject::disconnect(c->get_data(), SIGNAL(deleted()),
-			def, SLOT(on_delete()));
-    package_modified();
+    if (! done) {
+      QObject::disconnect(c->get_data(), SIGNAL(deleted()),
+			  def, SLOT(on_delete()));
+      package_modified();
+      done = TRUE;
+    }
   } 
-  else if ((it = required_classes.find(c)) != required_classes.end()) {
+
+  if ((it = required_classes.find(c)) != required_classes.end()) {
     required_classes.remove(it);
-    QObject::disconnect(c->get_data(), SIGNAL(deleted()),
-			def, SLOT(on_delete()));
-    package_modified();
+    if (! done) {
+      QObject::disconnect(c->get_data(), SIGNAL(deleted()),
+			  def, SLOT(on_delete()));
+      package_modified();
+    }
   }
 }
 
@@ -711,10 +752,11 @@ void BrowserComponent::set_associated_classes(const QValueList<BrowserClass *> &
     it = realizing_classes.begin();
     
     while (it != realizing_classes.end()) {
+      QObject::disconnect((*it)->get_data(), SIGNAL(deleted()),
+			  def, SLOT(on_delete()));
+      
       if (rz.findIndex(*it) == -1) {
 	// stop to be realizing
-	QObject::disconnect((*it)->get_data(), SIGNAL(deleted()),
-			    def, SLOT(on_delete()));
 	it = realizing_classes.remove(it);
       }
       else
@@ -724,14 +766,11 @@ void BrowserComponent::set_associated_classes(const QValueList<BrowserClass *> &
     it = provided_classes.begin();
     
     while (it != provided_classes.end()) {
+      QObject::disconnect((*it)->get_data(), SIGNAL(deleted()),
+			  def, SLOT(on_delete()));
+      
       if (pr.findIndex(*it) == -1) {
 	// stop to be provided
-	BrowserClass * cl = *it;
-	
-	cl->remove_associated_component(this);
-	  
-	QObject::disconnect(cl->get_data(), SIGNAL(deleted()),
-			    def, SLOT(on_delete()));
 	it = provided_classes.remove(it);
       }
       else
@@ -741,10 +780,11 @@ void BrowserComponent::set_associated_classes(const QValueList<BrowserClass *> &
     it = required_classes.begin();
     
     while (it != required_classes.end()) {
+      QObject::disconnect((*it)->get_data(), SIGNAL(deleted()),
+			  def, SLOT(on_delete()));
+      
       if (rq.findIndex(*it) == -1) {
 	// stop to be required
-	QObject::disconnect((*it)->get_data(), SIGNAL(deleted()),
-			    def, SLOT(on_delete()));
 	it = required_classes.remove(it);
       }
       else
@@ -757,11 +797,10 @@ void BrowserComponent::set_associated_classes(const QValueList<BrowserClass *> &
   for (it = realizing_classes.begin(); it != realizing_classes.end(); ++it) {
     BrowserClass * cl = *it;
     
-    if ((pr.findIndex(cl) == -1) && (rq.findIndex(cl) == -1)) {
-      QObject::connect(cl->get_data(), SIGNAL(deleted()),
-		       def, SLOT(on_delete()));
-    }
+    QObject::connect(cl->get_data(), SIGNAL(deleted()),
+		     def, SLOT(on_delete()));
   }
+  
   provided_classes = pr;
   for (it = provided_classes.begin(); it != provided_classes.end(); ++it) {
     BrowserClass * cl = *it;
@@ -769,11 +808,12 @@ void BrowserComponent::set_associated_classes(const QValueList<BrowserClass *> &
     if (cl->get_associated_components().findIndex(this) == -1)
       cl->add_associated_component(this);
     
-    if ((rz.findIndex(cl) == -1) && (rq.findIndex(cl) == -1)) {
+    if (rz.findIndex(cl) == -1) {
       QObject::connect(cl->get_data(), SIGNAL(deleted()),
 		       def, SLOT(on_delete()));
     }
   }
+  
   required_classes = rq;
   for (it = required_classes.begin(); it != required_classes.end(); ++it) {
     BrowserClass * cl = *it;
@@ -1134,8 +1174,8 @@ BrowserComponent * BrowserComponent::read(char * & st, char * k,
     
     result->is_defined = TRUE;
 
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     if (!strcmp(k, "associated_diagram")) {
       result->set_associated_diagram(BrowserComponentDiagram::read_ref(st, read_keyword(st)),

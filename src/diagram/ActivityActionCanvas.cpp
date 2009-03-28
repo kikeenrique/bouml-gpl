@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -149,12 +149,15 @@ void ActivityActionCanvas::update() {
     ? the_canvas()->browser_diagram()->get_color(UmlActivityAction)
     : itscolor;
 
+  BrowserActivityDiagram * diagram = 
+    (BrowserActivityDiagram *) the_canvas()->browser_diagram();
+  
   used_settings = settings;
-  the_canvas()->browser_diagram()->get_activitydrawingsettings(used_settings);
+  diagram->get_activitydrawingsettings(used_settings);
   
   s = data->str(((data->get_action_kind() == UmlOpaqueAction) &&
 		 ((show_opaque_action_definition == UmlDefaultState)
-		  ? the_canvas()->browser_diagram()->get_show_opaque_action_definition(UmlActivityDiagram)
+		  ? diagram->get_show_opaque_action_definition()
 		  : (show_opaque_action_definition == UmlYes)))
 		? used_settings.drawing_language
 		: DefaultDrawingLanguage);
@@ -769,14 +772,17 @@ void ActivityActionCanvas::menu(const QPoint&) {
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("Set associated diagram",6);
+    if (browser_node->get_associated() !=
+	(BrowserNode *) the_canvas()->browser_diagram())
+      m.insertItem("Set associated diagram",6);
 
     if (data->get_action_kind() == UmlCallBehaviorAction) {
       BasicData * d = data->get_action()->depend_on();
 
       if (d != 0) {
 	diag = d->get_browser_node()->get_associated();
-	if (diag != 0)
+	if ((diag != 0) &&
+	    (diag != (BrowserNode *) the_canvas()->browser_diagram()))
 	  m.insertItem("Set associated diagram from behavior", 11);
       }
     }
@@ -938,7 +944,7 @@ bool ActivityActionCanvas::get_show_stereotype_properties() const {
   case UmlNo:
     return FALSE;
   default:
-    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties();
   }
 }
 

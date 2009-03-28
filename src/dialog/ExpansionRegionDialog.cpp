@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -175,7 +175,7 @@ void ExpansionRegionDialog::post_edit_description(ExpansionRegionDialog * d, QSt
 }
 
 void ExpansionRegionDialog::accept() {
-  if (!check_edits(edits))
+  if (!check_edits(edits) || !kvtable->check_unique())
     return;
     
   BrowserNode * bn = data->get_browser_node();

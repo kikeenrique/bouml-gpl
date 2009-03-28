@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,6 +37,8 @@
 #include "JavaSettings.h"
 #include "UmlCom.h"
 #include "util.h"
+
+static QCString dot(".");
 
 QCString UmlClass::java_stereotype()
 {
@@ -94,7 +96,10 @@ void UmlClass::generate(QTextOStream & f, QCString indent) {
 
     if (*p == '\n') {
       f << *p++;
-      if (*p && strncmp(p, "${members}", 10) && strncmp(p, "${items}", 8))
+      if (*p &&
+	  strncmp(p, "${members}", 10) &&
+	  strncmp(p, "${items}", 8) &&
+	  strncmp(p, "${cases}", 8))
 	f << indent;
     }
     else if (*p == '@')
@@ -150,6 +155,9 @@ void UmlClass::generate(QTextOStream & f, QCString indent) {
 	      !((UmlClassItem *) ch[index])->javaDecl().isEmpty())
 	    ((UmlClassItem *) ch[index])->
 	      generate_enum_pattern_item(f, current_value, name, indent);
+      
+	if (*p == '}')
+	  f << indent;
       }
       else if (!strncmp(p, "${cases}", 8)) {
 	p += 8;
@@ -225,7 +233,7 @@ void UmlClass::generate(QTextOStream & f, QCString indent) {
 	}
       }
       
-      if ((parent()->kind() == aClass) && (*p == '}'))
+      if (*p == '}')
 	f << indent;
     }
     else if (an_enum && ! strncmp(p, "${items}", 8)) {
@@ -243,6 +251,9 @@ void UmlClass::generate(QTextOStream & f, QCString indent) {
 	    it->generate_enum_item(f, indent, first);
 	}
       }
+      
+      if (*p == '}')
+	f << indent;
     }
     else
       // strange
@@ -280,45 +291,58 @@ void UmlClass::write(QTextOStream & f) {
     f << s;
   }
   else {
-    if (parent()->kind() == aClass){
-      ((UmlClass *) parent())->write(f);
-      f << '.';
-    }
-    else {
-      UmlArtifact * cp = associatedArtifact();
-      UmlPackage * pack = (UmlPackage *)
-	((cp != 0) ? (UmlItem *) cp : (UmlItem *) this)->package();
-      
-      if (pack != UmlArtifact::generation_package()) {
-	QCString s = pack->javaPackage();
+    UmlArtifact * cp = associatedArtifact();
+    UmlPackage * pack = (UmlPackage *)
+      ((cp != 0) ? (UmlItem *) cp : (UmlItem *) this)->package();
+    
+    if (pack != UmlArtifact::generation_package()) {
+      QCString s = pack->javaPackage();
+
+      if (! s.isEmpty() && (s != "java.lang") && (s.left(10) != "java.lang.")) {
+	QCString s2;
+	UmlItem * p = this;
 	
-	if (!s.isEmpty() && (s != "java.lang") && (s.left(10) != "java.lang.") &&
-	    !UmlArtifact::generated_one()->imported(s, name()))
+	while ((p = p->parent())->kind() == aClass)
+	  s2 = dot + p->name() + s2;
+	
+	s += s2;
+	
+	if (JavaSettings::isForcePackagePrefixGeneration() ||
+	    !UmlArtifact::generated_one()->is_imported(s, name()))
 	  f << s << '.';
       }
     }
+    
     f << name();
   }
 }
 
 void UmlClass::import(QTextOStream & f, const QCString & indent) {
-  if (parent()->kind() == aClass)
-    ((UmlClass *) parent())->import(f, indent);
-  else if (!isJavaExternal()) {
+  QCString s;
+  
+  if (!isJavaExternal()) {
     UmlArtifact * cp = associatedArtifact();
     UmlPackage * pack = (UmlPackage *)
       ((cp != 0) ? (UmlItem *) cp : (UmlItem *) this)->package();
-    QCString s = pack->javaPackage();
     
-    if (!s.isEmpty())
-      f << indent << "import " << s << '.' << name() << ";\n";
-  }
-  else {
-    QCString s = package()->javaPackage();
+    if ((s = pack->javaPackage()).isEmpty())
+      return;
     
-    if (!s.isEmpty())
-      f << indent << "import " << s << '.' << name() << ";\n";
+    QCString s2 = name();
+    UmlItem * p = this;
+    
+    while ((p = p->parent())->kind() == aClass)
+      s2 = p->name() + dot + s2;
+    
+    s += dot + s2;
   }
+  else if ((s = package()->javaPackage()).isEmpty())
+    return;
+  else
+    s += dot + name();
+  
+  f << indent << "import " << s << ";\n";
+  UmlArtifact::generated_one()->imported(s);
 }
 
 void UmlClass::generate_enum_pattern_item(QTextOStream &, int &,

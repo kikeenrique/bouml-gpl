@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -32,11 +32,12 @@
 #include "BrowserState.h"
 #include "StateData.h"
 #include "StateDialog.h"
+#include "BrowserOperation.h"
 #include "myio.h"
 #include "ToolCom.h"
 #include "mu.h"
 
-StateData::StateData() {
+StateData::StateData() : specification(0) {
 }
 
 StateData::StateData(StateData * model, BrowserNode * bn)
@@ -45,6 +46,7 @@ StateData::StateData(StateData * model, BrowserNode * bn)
   uml = model->uml;
   cpp = model->cpp;
   java = model->java;
+  set_specification(model->specification);
 }
 
 StateData::~StateData() {
@@ -61,6 +63,26 @@ const StateBehavior & StateData::get_behavior(DrawingLanguage ln) const {
   }
 }
 
+void StateData::set_specification(BrowserOperation * op) {
+  if (op != specification) {
+    if (specification != 0)
+      disconnect(specification->get_data(), SIGNAL(deleted()),
+		 this, SLOT(on_delete()));
+    if ((specification = op) != 0) {
+      connect(specification->get_data(), SIGNAL(deleted()),
+	      this, SLOT(on_delete()));
+    }
+  }
+}
+
+void StateData::on_delete() {
+  if ((specification != 0) && specification->deletedp()) {
+    disconnect(specification->get_data(), SIGNAL(deleted()),
+	       this, SLOT(on_delete()));
+    specification = 0;
+  }
+}
+
 void StateData::edit() {
   setName(browser_node->get_name());
     
@@ -73,6 +95,12 @@ void StateData::send_uml_def(ToolCom * com, BrowserNode * bn,
 			     const QString & comment) {
   SimpleData::send_uml_def(com, bn, comment);
   uml.send_def(com);
+  if (com->api_format() >= 45) {
+    if (specification == 0)
+      com->write_id(0);
+    else
+      specification->write_id(com);
+  }
 }
 
 void StateData::send_cpp_def(ToolCom * com) {
@@ -118,6 +146,9 @@ bool StateData::tool_cmd(ToolCom * com, const char * args,
       case setJavaActivityCmd:
 	java.do_activity = args;
 	break;
+      case setDefCmd:
+	set_specification((BrowserOperation *) com->get_id(args));
+        break;
       default:
 	return BasicData::tool_cmd(com, args, bn, comment);
       }
@@ -141,6 +172,12 @@ void StateData::save(QTextStream & st, QString & warning) const {
   uml.save(st, "uml");
   cpp.save(st, "cpp");
   java.save(st, "java");
+  
+  if (specification != 0) {
+    nl_indent(st);
+    st << "specification ";
+    specification->save(st, TRUE, warning);
+  }
 }
 
 void StateData::read(char * & st, char * & k) {
@@ -148,6 +185,10 @@ void StateData::read(char * & st, char * & k) {
   uml.read(st, k, "uml");	// updates k
   cpp.read(st, k, "cpp");	// updates k
   java.read(st, k, "java");	// updates k
+  if (! strcmp(k, "specification")) {
+    set_specification(BrowserOperation::read_ref(st));
+    k = read_keyword(st);
+  }
 }
 
 //

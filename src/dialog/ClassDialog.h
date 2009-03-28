@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -124,12 +124,13 @@ class ClassDialog : public QTabDialog {
     QCheckBox * idl_custom_cb;
     
     // profiled stereotype
-    LineEdit * edextending;
     QWidget * stereotypetab;
     QComboBox * stereo_init_cb;
     LineEdit * edinitparam;
     QComboBox * stereo_check_cb;
     LineEdit * edcheckparam;
+    LineEdit * ediconpath;
+    
     ApplicableOnTable * applicableon_table;
       
     // user
@@ -201,6 +202,7 @@ class ClassDialog : public QTabDialog {
     void edit_description();
     void edit_constraint();
     void edStereotypeActivated(const QString &);
+    void icon_browse();
     void update_all_tabs(QWidget *);
     void cpp_update_decl();
     void cpp_default_decl();

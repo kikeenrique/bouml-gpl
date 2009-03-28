@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -47,6 +47,7 @@
 #include "BrowserActivityNode.h"
 #include "BrowserActivityAction.h"
 #include "BrowserActivityObject.h"
+#include "BrowserActivityPartition.h"
 #include "BrowserPin.h"
 #include "BrowserFlow.h"
 #include "BrowserParameter.h"
@@ -281,6 +282,10 @@ StereotypesDialog::StereotypesDialog()
   expansionregion_list = new LineEdit(grid);
   expansionregion_list->setTheText(BrowserExpansionRegion::its_default_stereotypes.join(space));
 
+  new QLabel("partition\nstereotypes : ", grid);
+  activitypartition_list = new LineEdit(grid);
+  activitypartition_list->setTheText(BrowserActivityPartition::its_default_stereotypes.join(space));
+
   new QLabel("parameter\nstereotypes : ", grid);
   parameter_list = new LineEdit(grid);
   parameter_list->setTheText(BrowserParameter::its_default_stereotypes.join(space));
@@ -428,6 +433,9 @@ void StereotypesDialog::accept() {
   
   BrowserExpansionRegion::its_default_stereotypes =
     QStringList::split(space, expansionregion_list->theText());
+  
+  BrowserActivityPartition::its_default_stereotypes =
+    QStringList::split(space, activitypartition_list->theText());
   
   BrowserParameter::its_default_stereotypes =
     QStringList::split(space, parameter_list->theText());

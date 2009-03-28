@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -36,7 +36,7 @@
 #include "UmlCanvas.h"
 #include "LabelCanvas.h"
 #include "BrowserTransition.h"
-#include "BrowserDiagram.h"
+#include "BrowserStateDiagram.h"
 #include "TransitionData.h"
 #include "StereotypePropertiesCanvas.h"
 #include "UmlGlobal.h"
@@ -86,14 +86,18 @@ TransitionCanvas::~TransitionCanvas() {
 }
 
 void TransitionCanvas::delete_it() {
-  disconnect(data, 0, this, 0);
-  disconnect(DrawingSettings::instance(), SIGNAL(changed()),
-	     this, SLOT(modified()));
-  
   if (stereotypeproperties != 0)
     ((UmlCanvas *) canvas())->del(stereotypeproperties);
   
-  ArrowCanvas::delete_it();
+  ArrowCanvas::delete_it(); // call unconnect
+}
+
+void TransitionCanvas::unconnect() {
+  disconnect(data, 0, this, 0);
+  disconnect(DrawingSettings::instance(), SIGNAL(changed()),
+	     this, SLOT(modified())); 
+  
+  ArrowCanvas::unconnect();
 }
 
 void TransitionCanvas::deleted() {
@@ -193,7 +197,7 @@ void TransitionCanvas::open() {
 }
 
 void TransitionCanvas::menu(const QPoint &) {
-  if (!data->get_start()->in_edition()) {
+  if ((data != 0) && !data->get_start()->in_edition()) {
     TransitionCanvas * plabel;
     TransitionCanvas * pstereotype;
     
@@ -216,11 +220,9 @@ void TransitionCanvas::menu(const QPoint &) {
 			       m.font()),
 		 -1);
     m.insertSeparator();
-    if (data) {
-      m.insertItem("Edit", 0);
-      m.insertSeparator();
-    }
-    
+    m.insertItem("Edit", 0);
+    m.insertSeparator();
+
     m.insertItem("Select in browser", 2);
     if (plabel || pstereotype) {
       m.insertSeparator();
@@ -391,7 +393,7 @@ ArrowPointCanvas * TransitionCanvas::brk(const QPoint & p) {
   ArrowPointCanvas * ap =
     new ArrowPointCanvas(the_canvas(), p.x(), p.y());
   
-  ap->setZ(z() + 1);	// + 1 else point can't be selected
+  ap->setZ(z());
   
   TransitionCanvas * other =
     // do not give data to not call update()
@@ -406,7 +408,7 @@ ArrowPointCanvas * TransitionCanvas::brk(const QPoint & p) {
   connect(data, SIGNAL(deleted()), other, SLOT(deleted()));
 
   ap->add_line(this);
-  end->remove_line(this);
+  end->remove_line(this, TRUE);
   end = ap;
   
   if ((p - beginp).manhattanLength() < (p - endp).manhattanLength()) {
@@ -495,14 +497,17 @@ void TransitionCanvas::update(bool updatepos) {
     
     // manages relation's name
     
+    BrowserStateDiagram * diagram = 
+      (BrowserStateDiagram *) the_canvas()->browser_diagram();
+    
     if ((show_definition == UmlDefaultState)
-	? the_canvas()->browser_diagram()->get_show_trans_definition(UmlStateDiagram)
+	? diagram->get_show_trans_definition()
 	: (show_definition == UmlYes)) {
       s = data->str((write_horizontally == UmlDefaultState)
-		    ? the_canvas()->browser_diagram()->get_write_label_horizontally(UmlStateDiagram)
+		    ? diagram->get_write_label_horizontally()
 		    : (write_horizontally == UmlYes),
 		    (drawing_language == DefaultDrawingLanguage)
-		    ? the_canvas()->browser_diagram()->get_language(UmlStateDiagram)
+		    ? diagram->get_language()
 		    : drawing_language);
       s = toUnicode(s);
     }
@@ -632,7 +637,7 @@ void TransitionCanvas::check_stereotypeproperties() {
     QString s = data->get_start()->stereotypes_properties();
     
     if (!s.isEmpty() &&
-	the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup))
+	the_canvas()->browser_diagram()->get_show_stereotype_properties())
       StereotypePropertiesCanvas::needed(the_canvas(), this, s,
 					 stereotypeproperties, center());
     else if (stereotypeproperties != 0) {
@@ -640,6 +645,10 @@ void TransitionCanvas::check_stereotypeproperties() {
       stereotypeproperties = 0;
     }
   }
+}
+
+bool TransitionCanvas::represents(BrowserNode * bn) {
+  return (data == bn->get_data());
 }
 
 //
@@ -854,6 +863,8 @@ TransitionCanvas * TransitionCanvas::read(char * & st, UmlCanvas * canvas, char 
     // manage case where the relation is deleted but present in the browser
     if (result->data->get_start()->deletedp())
       result->delete_it();
+    else
+      result->update_geometry();
     
     return result;
   }
@@ -863,9 +874,7 @@ TransitionCanvas * TransitionCanvas::read(char * & st, UmlCanvas * canvas, char 
 
 void TransitionCanvas::history_hide() {
   QCanvasItem::setVisible(FALSE);
-  disconnect(data, 0, this, 0);
-  disconnect(DrawingSettings::instance(), SIGNAL(changed()),
-	     this, SLOT(modified()));
+  unconnect();
 }
 
 void TransitionCanvas::history_load(QBuffer & b) {

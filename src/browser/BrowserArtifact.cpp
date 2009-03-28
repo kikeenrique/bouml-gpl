@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -130,6 +130,9 @@ void BrowserArtifact::update_idmax_for_root()
 void BrowserArtifact::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
   compute_referenced_by(l, this);
+  
+  if (! ondelete)
+    BrowserDeploymentDiagram::compute_referenced_by(l, this, "artifactcanvas", "artifact_ref");
 }
 
 void BrowserArtifact::compute_referenced_by(QList<BrowserNode> & l,
@@ -166,7 +169,17 @@ void BrowserArtifact::renumber(int phase) {
 }
 
 const QPixmap* BrowserArtifact::pixmap(int) const {
-  return (deletedp()) ? DeletedArtifactIcon : ArtifactIcon;
+  if (deletedp()) 
+    return DeletedArtifactIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : ArtifactIcon;
+}
+
+void BrowserArtifact::iconChanged() {
+  repaint();
+  def->modified();
 }
 
 QString BrowserArtifact::full_name(bool rev, bool) const {
@@ -1239,8 +1252,8 @@ BrowserArtifact * BrowserArtifact::read(char * & st, char * k,
     
     result->is_defined = TRUE;
 
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     if ((read_file_format() < 20) && !strcmp(k, "associated_component_diagram")) {
       // old format && component -> artifact

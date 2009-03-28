@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -70,11 +70,12 @@ void UmlRelation::generate_imports(QTextOStream & f, QCString & made) {
     
     QCString s_art =
       ((UmlPackage *) other_art->parent()->parent())->pythonPackage();
+    QCString other_art_name = other_art->name();
     
-    if (! s_art.isEmpty())
-      s_art += "." + other_art->name();
-    else
-      s_art = other_art->name();
+    if (s_art.isEmpty())
+      s_art = other_art_name;
+    else if (other_art_name != "__init__")
+      s_art += "." + other_art_name;
     
     if (relationKind() == aDependency) {
       s = stereotype();
@@ -230,6 +231,14 @@ void UmlRelation::generate(QTextOStream & f, const QCString &,
       }
       p += 7;
       roleType()->write(f);
+    }
+    else if (!strncmp(p, "${association}", 14)) {
+      if (indent_needed) {
+	indent_needed = FALSE;
+	f << indent;
+      }
+      p += 14;
+      UmlClass::write(f, association());
     }
     else {
       // strange

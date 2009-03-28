@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -194,7 +194,7 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
     
     if (body_indent != 0) {
       while ((body_indent != p) &&
-	     (body_indent[-1] == ' ') || (body_indent[-1] == '\t'))
+	     ((body_indent[-1] == ' ') || (body_indent[-1] == '\t')))
 	body_indent -= 1;
     }
     
@@ -306,6 +306,10 @@ void UmlOperation::generate(QTextOStream & f, const QCString & cl_stereotype,
       else if (!strncmp(p, "${body}", 7) &&
 	       (pp == 0))	// not in comment
 	p = generate_body(f, indent, p);
+      else if (!strncmp(p, "${type}", 7)) {
+	p += 7;
+	UmlClass::write(f, returnType());
+      }
       else
 	f << *p++;
     }

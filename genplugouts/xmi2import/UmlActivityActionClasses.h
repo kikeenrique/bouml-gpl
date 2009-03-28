@@ -222,4 +222,111 @@ class UmlRemoveVariableValueAction : public UmlBaseRemoveVariableValueAction {
 
 };
 
+class UmlAcceptCallAction : public UmlBaseAcceptCallAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlAcceptCallAction(void * id, const QCString & s) : UmlBaseAcceptCallAction(id, s) {
+    }
+
+    static void init();
+
+    //import the activity node starting by 'tk' inside 'where'
+    static void importIt(FileIn & in, Token & token, UmlItem * where);
+
+    //  call at end of import : try to solve trigger
+    
+    virtual void solve(QCString idref);
+
+};
+
+class UmlReplyAction : public UmlBaseReplyAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlReplyAction(void * id, const QCString & s) : UmlBaseReplyAction(id, s) {
+    }
+
+    static void init();
+
+    //import the activity node starting by 'tk' inside 'where'
+    static void importIt(FileIn & in, Token & token, UmlItem * where);
+
+    //  call at end of import : try to solve trigger
+    
+    virtual void solve(QCString idref);
+
+};
+
+class UmlCreateObjectAction : public UmlBaseCreateObjectAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlCreateObjectAction(void * id, const QCString & s) : UmlBaseCreateObjectAction(id, s) {
+    }
+
+    static void init();
+
+    //import the activity node starting by 'tk' inside 'where'
+    static void importIt(FileIn & in, Token & token, UmlItem * where);
+
+    //  call at end of import : try to solve trigger
+    
+    virtual void solve(QCString idref);
+
+};
+
+class UmlDestroyObjectAction : public UmlBaseDestroyObjectAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlDestroyObjectAction(void * id, const QCString & s) : UmlBaseDestroyObjectAction(id, s) {
+    }
+
+    static void init();
+
+    //import the activity node starting by 'tk' inside 'where'
+    static void importIt(FileIn & in, Token & token, UmlItem * where);
+
+};
+
+class UmlTestIdentityAction : public UmlBaseTestIdentityAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlTestIdentityAction(void * id, const QCString & s) : UmlBaseTestIdentityAction(id, s) {
+    }
+
+    static void init();
+
+    //import the activity node starting by 'tk' inside 'where'
+    static void importIt(FileIn & in, Token & token, UmlItem * where);
+
+};
+
+class UmlRaiseExceptionAction : public UmlBaseRaiseExceptionAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlRaiseExceptionAction(void * id, const QCString & s) : UmlBaseRaiseExceptionAction(id, s) {
+    }
+
+    static void init();
+
+    //import the activity node starting by 'tk' inside 'where'
+    static void importIt(FileIn & in, Token & token, UmlItem * where);
+
+};
+
+class UmlReduceAction : public UmlBaseReduceAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlReduceAction(void * id, const QCString & s) : UmlBaseReduceAction(id, s) {
+    }
+
+    static void init();
+
+    //import the activity node starting by 'tk' inside 'where'
+    static void importIt(FileIn & in, Token & token, UmlItem * where);
+
+    //  call at end of import : try to solve trigger
+    
+    virtual void solve(QCString idref);
+
+};
+
 #endif

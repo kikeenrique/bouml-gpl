@@ -25,6 +25,7 @@ class CppSettings
   
   return (b != null) ? b.cpp : s;
 !!!1280.cpp!!!	set_Type(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom::send_cmd(cppSettingsCmd, setCppTypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
@@ -38,6 +39,7 @@ class CppSettings
   else
     return FALSE;
 !!!1280.java!!!	set_Type(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppTypeCmd, s, v);
   UmlCom.check();
   
@@ -74,6 +76,7 @@ class CppSettings
   
   return (b != null) ? b.cpp : s;
 !!!1664.cpp!!!	set_RelationAttributeStereotype(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom::send_cmd(cppSettingsCmd, setCppRelationAttributeStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlStereotype * st = UmlSettings::_map_relation_attribute_stereotypes.find(s);
@@ -87,6 +90,7 @@ class CppSettings
   else
     return FALSE;
 !!!1664.java!!!	set_RelationAttributeStereotype(in s : string, in v : string) : bool
+  read_if_needed_();
  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppRelationAttributeStereotypeCmd, s, v);
  UmlCom.check();
  
@@ -123,6 +127,7 @@ class CppSettings
   
   return (b != null) ? b.cpp : s;
 !!!2048.cpp!!!	set_ClassStereotype(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom::send_cmd(cppSettingsCmd, setCppClassStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlStereotype * st = UmlSettings::_map_class_stereotypes.find(s);
@@ -136,6 +141,7 @@ class CppSettings
   else
     return FALSE;
 !!!2048.java!!!	set_ClassStereotype(in s : string, in v : string) : bool
+  read_if_needed_();
  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppClassStereotypeCmd, s, v);
  UmlCom.check();
  
@@ -170,6 +176,7 @@ class CppSettings
   
   return (String) _map_includes.get(s);
 !!!2432.cpp!!!	set_Include(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom::send_cmd(cppSettingsCmd, setCppIncludeCmd, s, v);
   if (UmlCom::read_bool()) {
     QCString * r = _map_includes.take(s);
@@ -183,6 +190,7 @@ class CppSettings
   else
     return FALSE;
 !!!2432.java!!!	set_Include(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppIncludeCmd, s, v);
   UmlCom.check();
   
@@ -497,6 +505,150 @@ class CppSettings
   UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppEnumReturnCmd, v);
   UmlCom.check();
   _enum_return = v;
+!!!233984.cpp!!!	builtinIn(in s : string) : string
+  read_if_needed_();
+
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
+
+  return (b) ? b->cpp_in : QCString();
+!!!233984.java!!!	builtinIn(in s : string) : string
+  read_if_needed_();
+
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(s);
+    
+  return b.cpp_in;
+!!!234112.cpp!!!	set_BuiltinIn(in type : string, in form : string) : bool
+  read_if_needed_();
+  UmlCom::send_cmd(cppSettingsCmd, setCppInCmd, type, form);
+  if (UmlCom::read_bool()) {
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
+
+    if (b == 0)
+      b = UmlSettings::add_type(type);
+    b->cpp_in = form;
+    
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!234112.java!!!	set_BuiltinIn(in type : string, in form : string) : bool
+  read_if_needed_();
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppInCmd, type, form);
+  UmlCom.check();
+    
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(type);
+  
+  if (b == null)
+    b = UmlSettings.add_type(type);
+  b.cpp_in = form;
+!!!234240.cpp!!!	builtinOut(in s : string) : string
+  read_if_needed_();
+
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
+
+  return (b) ? b->cpp_out : QCString();
+!!!234240.java!!!	builtinOut(in s : string) : string
+  read_if_needed_();
+
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(s);
+    
+  return b.cpp_out;
+!!!234368.cpp!!!	set_BuiltinOut(in type : string, in form : string) : bool
+  read_if_needed_();
+  UmlCom::send_cmd(cppSettingsCmd, setCppOutCmd, type, form);
+  if (UmlCom::read_bool()) {
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
+
+    if (b == 0)
+      b = UmlSettings::add_type(type);
+    b->cpp_out = form;
+    
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!234368.java!!!	set_BuiltinOut(in type : string, in form : string) : bool
+  read_if_needed_();
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppOutCmd, type, form);
+  UmlCom.check();
+    
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(type);
+  
+  if (b == null)
+    b = UmlSettings.add_type(type);
+  b.cpp_out = form;
+!!!234496.cpp!!!	builtinInOut(in s : string) : string
+  read_if_needed_();
+
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
+
+  return (b) ? b->cpp_inout : QCString();
+!!!234496.java!!!	builtinInOut(in s : string) : string
+  read_if_needed_();
+
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(s);
+    
+  return b.cpp_inout;
+!!!234624.cpp!!!	set_BuiltinInOut(in type : string, in form : string) : bool
+  read_if_needed_();
+  UmlCom::send_cmd(cppSettingsCmd, setCppInOutCmd, type, form);
+  if (UmlCom::read_bool()) {
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
+
+    if (b == 0)
+      b = UmlSettings::add_type(type);
+    b->cpp_inout = form;
+    
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!234624.java!!!	set_BuiltinInOut(in type : string, in form : string) : bool
+  read_if_needed_();
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppInOutCmd, type, form);
+  UmlCom.check();
+    
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(type);
+  
+  if (b == null)
+    b = UmlSettings.add_type(type);
+  b.cpp_inout = form;
+!!!234752.cpp!!!	builtinReturn(in s : string) : string
+  read_if_needed_();
+
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
+
+  return (b) ? b->cpp_return : QCString();
+!!!234752.java!!!	builtinReturn(in s : string) : string
+  read_if_needed_();
+
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(s);
+    
+  return b.cpp_return;
+!!!234880.cpp!!!	set_BuiltinReturn(in type : string, in form : string) : bool
+  read_if_needed_();
+  UmlCom::send_cmd(cppSettingsCmd, setCppReturnCmd, type, form);
+  if (UmlCom::read_bool()) {
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
+
+    if (b == 0)
+      b = UmlSettings::add_type(type);
+    b->cpp_return = form;
+    
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!234880.java!!!	set_BuiltinReturn(in type : string, in form : string) : bool
+  read_if_needed_();
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppReturnCmd, type, form);
+  UmlCom.check();
+    
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(type);
+  
+  if (b == null)
+    b = UmlSettings.add_type(type);
+  b.cpp_return = form;
 !!!4864.cpp!!!	in() : string
   read_if_needed_();
   
@@ -506,7 +658,7 @@ class CppSettings
   
   return _in;
 !!!4992.cpp!!!	set_In(in v : string) : bool
-  UmlCom::send_cmd(cppSettingsCmd, setCppInCmd, v);
+  UmlCom::send_cmd(cppSettingsCmd, setCppInCmd, v, "");
   if (UmlCom::read_bool()) {
     _in = v;
     return TRUE;
@@ -514,7 +666,7 @@ class CppSettings
   else
     return FALSE;
 !!!4992.java!!!	set_In(in v : string) : bool
-  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppInCmd, v);
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppInCmd, v, "");
   UmlCom.check();
   
   _in = v;
@@ -528,7 +680,7 @@ class CppSettings
   
   return _out;
 !!!5248.cpp!!!	set_Out(in v : string) : bool
-  UmlCom::send_cmd(cppSettingsCmd, setCppOutCmd, v);
+  UmlCom::send_cmd(cppSettingsCmd, setCppOutCmd, v, "");
   if (UmlCom::read_bool()) {
     _out = v;
     return TRUE;
@@ -536,7 +688,7 @@ class CppSettings
   else
     return FALSE;
 !!!5248.java!!!	set_Out(in v : string) : bool
-  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppOutCmd, v);
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppOutCmd, v, "");
   UmlCom.check();
   
   _out = v;
@@ -550,7 +702,7 @@ class CppSettings
   
   return _inout;
 !!!5504.cpp!!!	set_Inout(in v : string) : bool
-  UmlCom::send_cmd(cppSettingsCmd, setCppInOutCmd, v);
+  UmlCom::send_cmd(cppSettingsCmd, setCppInOutCmd, v, "");
   if (UmlCom::read_bool()) {
     _inout = v;
     return TRUE;
@@ -558,7 +710,7 @@ class CppSettings
   else
     return FALSE;
 !!!5504.java!!!	set_Inout(in v : string) : bool
-  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppInOutCmd, v);
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppInOutCmd, v, "");
   UmlCom.check();
   
   _inout = v;
@@ -572,7 +724,7 @@ class CppSettings
 
   return _return;
 !!!149504.cpp!!!	set_Return(in v : string) : bool
-  UmlCom::send_cmd(cppSettingsCmd, setCppReturnCmd, v);
+  UmlCom::send_cmd(cppSettingsCmd, setCppReturnCmd, v, "");
   if (UmlCom::read_bool()) {
     _return = v;
     return TRUE;
@@ -580,7 +732,7 @@ class CppSettings
   else
     return FALSE;
 !!!149504.java!!!	set_Return(in v : string) : bool
-  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppReturnCmd, v);
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppReturnCmd, v, "");
   UmlCom.check();
   _return = v;
 !!!5632.cpp!!!	classDecl() : string
@@ -724,6 +876,7 @@ class CppSettings
 
   return _attr_decl[UmlSettings.multiplicity_column(multiplicity)];
 !!!7296.cpp!!!	set_AttributeDecl(in multiplicity : str, in v : string) : bool
+  read_if_needed_();
   UmlCom::send_cmd(cppSettingsCmd, setCppAttributeDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
     _attr_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
@@ -732,6 +885,7 @@ class CppSettings
   else
     return FALSE;
 !!!7296.java!!!	set_AttributeDecl(in multiplicity : str, in v : string) : bool
+  read_if_needed_();
   UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppAttributeDeclCmd, multiplicity, v);
   UmlCom.check();
 
@@ -767,6 +921,7 @@ class CppSettings
   
   return _rel_decl[(by_value) ? 1 : 0][UmlSettings.multiplicity_column(multiplicity)];
 !!!7808.cpp!!!	set_RelationDecl(in by_value : bool, in multiplicity : str, in v : str) : bool
+  read_if_needed_();
   UmlCom::send_cmd(cppSettingsCmd, setCppRelationDeclCmd, by_value, multiplicity, v);
   if (UmlCom::read_bool()) {
     _rel_decl[(by_value) ? 1 : 0][UmlSettings::multiplicity_column(multiplicity)] = v;
@@ -775,6 +930,7 @@ class CppSettings
   else
     return FALSE;
 !!!7808.java!!!	set_RelationDecl(in by_value : bool, in multiplicity : str, in v : str) : bool
+  read_if_needed_();
   UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppRelationDeclCmd, by_value, multiplicity, v);
   UmlCom.check();
   

@@ -32,7 +32,7 @@ class UmlComponent : public UmlBaseComponent {
 
     //  call at end of import : try to solve generalization dependencies and realization
     //  not from a class
-    virtual void generalizeDependRealize(UmlComponent * target, FileIn & in, int context, QCString label, QCString constraint);
+    virtual void generalizeDependRealize(UmlItem * target, FileIn & in, int context, QCString label, QCString constraint);
 
     //  call at end of import : try to solve generalization dependencies and realization,
     //  not from a class
@@ -43,8 +43,6 @@ class UmlComponent : public UmlBaseComponent {
 
   protected:
     static int NumberOf;
-
-    static bool WarningAlreadyProduced;
 
 };
 

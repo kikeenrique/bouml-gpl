@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -84,6 +84,7 @@ class Lex {
     static QCString quote(QCString);
     static void push_context();
     static void pop_context();
+    static QCString simplify_comment(QCString &);
 };
 
 #endif

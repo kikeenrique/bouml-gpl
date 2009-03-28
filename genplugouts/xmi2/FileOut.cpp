@@ -22,7 +22,11 @@ void FileOut::id(UmlItem * x) {
 }
 
 void FileOut::id_prefix(UmlItem * x, const char * pfix) {
-  ((QTextStream &) *this) << " xmi:id=\"" << pfix << "BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
+  ((QTextStream &) *this) << " xmi:id=\"BOUML_" << pfix << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
+}
+
+void FileOut::id_prefix(UmlItem * x, const char * pfix, int n) {
+  ((QTextStream &) *this) << " xmi:id=\"BOUML_" << pfix << n << "_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 }
 
 void FileOut::idref(UmlItem * x) {
@@ -50,8 +54,14 @@ void FileOut::idref(QCString s, UmlItem * x) {
 }
 
 void FileOut::idref_prefix(UmlItem * x, const char * pfix) {
-  ((QTextStream &) *this) << " xmi:idref=\""
-	  << pfix << "BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
+  ((QTextStream &) *this) << " xmi:idref=\"BOUML_"
+	  << pfix << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
+
+}
+
+void FileOut::idref_prefix(UmlItem * x, const char * pfix, int n) {
+  ((QTextStream &) *this) << " xmi:idref=\"BOUML_"
+	  << pfix << n << "_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 
 }
 
@@ -70,8 +80,18 @@ void FileOut::idref_datatype(const QCString & t) {
 }
 
 void FileOut::ref(UmlItem * x, const char * pfix1, const char * pfix2) {
-  ((QTextStream &) *this) << ' ' << pfix1 << "=\"" 
-	  << pfix2 << "BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
+  ((QTextStream &) *this) << ' ' << pfix1 << "=\"BOUML_" 
+	  << pfix2 << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
+}
+
+void FileOut::ref(UmlItem * x, const char * pfix1, const char * pfix2, int n) {
+  ((QTextStream &) *this) << ' ' << pfix1 << "=\"BOUML_" 
+	  << pfix2 << n << "_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
+}
+
+void FileOut::ref_only(UmlItem * x, const char * pfix) {
+  ((QTextStream &) *this) << "BOUML_" << pfix << ((void *) x->getIdentifier())
+    << "_" << x->kind();
 }
 
 void FileOut::define_datatypes(bool uml_20, bool primitive_type, bool gen_extension) {

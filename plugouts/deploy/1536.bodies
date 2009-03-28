@@ -29,6 +29,36 @@ class UmlBaseClassItem
   UmlCom.check();
 
   _java_decl = s;
+!!!202880.cpp!!!	phpDecl() : string
+  read_if_needed_();
+  
+  return _php_decl;
+!!!202880.java!!!	phpDecl() : string
+  read_if_needed_();
+  
+  return _php_decl;
+!!!203008.cpp!!!	set_PhpDecl(in s : str) : bool
+  return set_it_(_php_decl, s, setPhpDeclCmd);
+!!!203008.java!!!	set_PhpDecl(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpDeclCmd, s);
+  UmlCom.check();
+
+  _php_decl = s;
+!!!228096.cpp!!!	pythonDecl() : string
+  read_if_needed_();
+  
+  return _python_decl;
+!!!228096.java!!!	pythonDecl() : string
+  read_if_needed_();
+  
+  return _python_decl;
+!!!228224.cpp!!!	set_PythonDecl(in s : str) : bool
+  return set_it_(_python_decl, s, setPythonDeclCmd);
+!!!228224.java!!!	set_PythonDecl(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonDeclCmd, s);
+  UmlCom.check();
+
+  _python_decl = s;
 !!!10880.cpp!!!	idlDecl() : string
   read_if_needed_();
   
@@ -51,6 +81,12 @@ class UmlBaseClassItem
 #ifdef WITHJAVA
   _java_decl = 0;
 #endif
+#ifdef WITHPHP
+  _php_decl = 0;
+#endif
+#ifdef WITHPYTHON
+  _python_decl = 0;
+#endif
 #ifdef WITHIDL
   _idl_decl = 0;
 #endif
@@ -58,6 +94,8 @@ class UmlBaseClassItem
 !!!11136.java!!!	unload(in rec : bool, in del : bool) : void
   _cpp_decl = null;
   _java_decl = null;
+  _php_decl = null;
+  _python_decl = null;
   _idl_decl = null;
   super.unload(rec, del);
 !!!11392.cpp!!!	read_cpp_() : void
@@ -68,6 +106,14 @@ class UmlBaseClassItem
   _java_decl = UmlCom::read_string();
 !!!11520.java!!!	read_java_() : void
   _java_decl = UmlCom.read_string();
+!!!203136.cpp!!!	read_php_() : void
+  _php_decl = UmlCom::read_string();
+!!!203136.java!!!	read_php_() : void
+  _php_decl = UmlCom.read_string();
+!!!216960.cpp!!!	read_python_() : void
+  _python_decl = UmlCom::read_string();
+!!!216960.java!!!	read_python_() : void
+  _python_decl = UmlCom.read_string();
 !!!11648.cpp!!!	read_idl_() : void
   _idl_decl = UmlCom::read_string();
 !!!11648.java!!!	read_idl_() : void

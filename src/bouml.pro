@@ -1,50 +1,7 @@
 TEMPLATE	= app
 INCLUDEPATH	= browser data diagram dialog misc tool xpm
 CONFIG		+= qt warn_on release
-HEADERS		= browser/BrowserAttribute.h \
-		  browser/BrowserExtraMember.h \
-		  browser/BrowserClass.h \
-		  browser/BrowserClassDiagram.h \
-		  browser/BrowserClassView.h \
-		  browser/BrowserDiagram.h \
-		  browser/BrowserNode.h \
-		  browser/BrowserOperation.h \
-		  browser/BrowserPackage.h \
-		  browser/BrowserRelation.h \
-		  browser/BrowserSimpleRelation.h \
-		  browser/BrowserTransition.h \
-		  browser/BrowserSeqDiagram.h \
-		  browser/BrowserUseCase.h \
-		  browser/BrowserUseCaseDiagram.h \
-		  browser/BrowserUseCaseView.h \
-		  browser/BrowserColDiagram.h \
-		  browser/BrowserObjectDiagram.h \
-		  browser/BrowserComponent.h \
-		  browser/BrowserComponentView.h \
-		  browser/BrowserComponentDiagram.h \
-		  browser/BrowserDeploymentNode.h \
-		  browser/BrowserDeploymentView.h \
-		  browser/BrowserDeploymentDiagram.h \
-		  browser/BrowserArtifact.h \
-		  browser/BrowserState.h \
-		  browser/BrowserRegion.h \
-		  browser/BrowserPseudoState.h \
-		  browser/BrowserStateAction.h \
-		  browser/BrowserStateDiagram.h \
-		  browser/BrowserActivity.h \
-		  browser/BrowserActivityNode.h \
-		  browser/BrowserActivityDiagram.h \
-		  browser/BrowserParameter.h \
-		  browser/BrowserParameterSet.h \
-		  browser/BrowserActivityAction.h \
-		  browser/BrowserPin.h \
-		  browser/BrowserInterruptibleActivityRegion.h \
-		  browser/BrowserExpansionRegion.h \
-		  browser/BrowserExpansionNode.h \
-		  browser/BrowserActivityObject.h \
-		  browser/BrowserFlow.h \
-		  browser/BrowserClassInstance.h \
-		  data/ActualParamData.h \
+HEADERS		= data/ActualParamData.h \
 		  data/BasicData.h \
 		  data/SimpleData.h \
 		  data/ClassMemberData.h \
@@ -74,6 +31,7 @@ HEADERS		= browser/BrowserAttribute.h \
 		  data/PinData.h \
 		  data/ExpansionRegionData.h \
 		  data/ActivityObjectData.h \
+		  data/ActivityPartitionData.h \
 		  data/FlowData.h \
 		  data/ClassInstanceData.h \
 		  data/UseCaseData.h \
@@ -155,6 +113,7 @@ HEADERS		= browser/BrowserAttribute.h \
 		  diagram/InterruptibleActivityRegionCanvas.h \
 		  diagram/ExpansionRegionCanvas.h \
 		  diagram/ActivityObjectCanvas.h \
+		  diagram/ActivityPartitionCanvas.h \
 		  diagram/ExpansionNodeCanvas.h \
 		  diagram/FlowCanvas.h \
 		  diagram/FragmentSeparatorCanvas.h \
@@ -219,6 +178,7 @@ HEADERS		= browser/BrowserAttribute.h \
 		  dialog/ActivityActionDialog.h \
 		  dialog/ExpansionRegionDialog.h \
 		  dialog/ActivityObjectDialog.h \
+		  dialog/ActivityPartitionDialog.h \
 		  dialog/FlowDialog.h \
 		  dialog/ShortcutDialog.h \
 		  dialog/UseCaseDialog.h \
@@ -226,6 +186,8 @@ HEADERS		= browser/BrowserAttribute.h \
 		  dialog/DecoratorDialog.h \
 		  dialog/HelpDialog.h \
 		  dialog/EnvDialog.h \
+		  dialog/GreetingsDialog.h \
+		  dialog/RelatedElementsDialog.h \
 		  misc/Settings.h \
 		  misc/UmlDrag.h \
 		  misc/UmlEnum.h \
@@ -279,6 +241,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  browser/BrowserExpansionRegion.cpp \
 		  browser/BrowserExpansionNode.cpp \
 		  browser/BrowserActivityObject.cpp \
+		  browser/BrowserActivityPartition.cpp \
 		  browser/BrowserFlow.cpp \
 		  browser/BrowserClassInstance.cpp \
 		  data/ActualParamData.cpp \
@@ -312,6 +275,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  data/PinData.cpp \
 		  data/ExpansionRegionData.cpp \
 		  data/ActivityObjectData.cpp \
+		  data/ActivityPartitionData.cpp \
 		  data/FlowData.cpp \
 		  data/ClassInstanceData.cpp \
 		  data/UseCaseData.cpp \
@@ -396,6 +360,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  diagram/InterruptibleActivityRegionCanvas.cpp \
 		  diagram/ExpansionRegionCanvas.cpp \
 		  diagram/ActivityObjectCanvas.cpp \
+		  diagram/ActivityPartitionCanvas.cpp \
 		  diagram/ExpansionNodeCanvas.cpp \
 		  diagram/FlowCanvas.cpp \
 		  diagram/FragmentSeparatorCanvas.cpp \
@@ -462,6 +427,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  dialog/ActivityActionDialog.cpp \
 		  dialog/ExpansionRegionDialog.cpp \
 		  dialog/ActivityObjectDialog.cpp \
+		  dialog/ActivityPartitionDialog.cpp \
 		  dialog/FlowDialog.cpp \
 		  dialog/ShortcutDialog.cpp \
 		  dialog/UseCaseDialog.cpp \
@@ -469,6 +435,8 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  dialog/DecoratorDialog.cpp \
 		  dialog/HelpDialog.cpp \
 		  dialog/EnvDialog.cpp \
+		  dialog/GreetingsDialog.cpp \
+		  dialog/RelatedElementsDialog.cpp \
 		  misc/Settings.cpp \
 		  misc/UmlDrag.cpp \
 		  misc/UmlGlobal.cpp \

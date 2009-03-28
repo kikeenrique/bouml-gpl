@@ -22,7 +22,7 @@ UmlComponentDiagram * UmlBaseComponent::associatedDiagram() {
 }
 
 bool UmlBaseComponent::set_AssociatedDiagram(UmlComponentDiagram * d) {
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;

@@ -16,7 +16,7 @@ class UmlBaseNode
   
   return _assoc_diagram;
 !!!26752.cpp!!!	set_AssociatedDiagram(inout d : UmlDeploymentDiagram) : bool
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -25,7 +25,7 @@ class UmlBaseNode
     return FALSE;
 !!!26752.java!!!	set_AssociatedDiagram(inout d : UmlDeploymentDiagram) : bool
   UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd,
-		  (d == null) ? 0 : d.identifier_());
+		  (d == null) ? 0 : (d == null) ? (long) 0 : d.identifier_());
   UmlCom.check();
   
   _assoc_diagram = d;

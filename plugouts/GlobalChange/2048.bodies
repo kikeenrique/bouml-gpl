@@ -269,6 +269,21 @@ class UmlBaseArtifact
   UmlCom.check();
 
   _php_src = s;
+!!!232704.cpp!!!	pythonSource() : string
+  read_if_needed_();
+  
+  return _python_src;
+!!!232704.java!!!	pythonSource() : string
+  read_if_needed_();
+  
+  return _python_src;
+!!!232832.cpp!!!	set_PythonSource(in s : string) : bool
+  return set_it_(_python_src, s, setPythonSrcCmd);
+!!!232832.java!!!	set_PythonSource(in s : string) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonSrcCmd, s);
+  UmlCom.check();
+
+  _python_src = s;
 !!!16640.cpp!!!	idlSource() : string
   read_if_needed_();
   
@@ -297,6 +312,9 @@ class UmlBaseArtifact
 #ifdef WITHPHP
   _php_src = 0;
 #endif
+#ifdef WITHPYTHON
+  _python_src = 0;
+#endif
 #ifdef WITHIDL
   _idl_src = 0;
 #endif
@@ -308,6 +326,7 @@ class UmlBaseArtifact
   _cpp_src = null;
   _java_src = null;
   _php_src = null;
+  _python_src = null;
   _idl_src = null;
   super.unload(rec, del);
 !!!17024.cpp!!!	read_uml_() : void
@@ -360,6 +379,10 @@ class UmlBaseArtifact
   _php_src = UmlCom::read_string();
 !!!207488.java!!!	read_php_() : void
   _php_src = UmlCom.read_string();
+!!!222080.cpp!!!	read_python_() : void
+  _python_src = UmlCom::read_string();
+!!!222080.java!!!	read_python_() : void
+  _python_src = UmlCom.read_string();
 !!!17408.cpp!!!	read_idl_() : void
   _idl_src = UmlCom::read_string();
 !!!17408.java!!!	read_idl_() : void

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,6 +46,7 @@
 #include "DiagramWindow.h"
 #include "DiagramCanvas.h"
 #include "BrowserView.h"
+#include "RelationData.h"
 #include "RelationCanvas.h"
 #include "SimpleRelationCanvas.h"
 #include "TransitionCanvas.h"
@@ -521,6 +522,8 @@ void DiagramView::add_point(QMouseEvent * e) {
 }
 
 void DiagramView::contentsMouseMoveEvent(QMouseEvent * e) {
+  ensureVisible (e->x(), e->y(), 30, 30);
+  
   if (!window()->frozen()) {
     if (e->button() != ::Qt::RightButton) {
       history_protected = TRUE;
@@ -1054,6 +1057,10 @@ void DiagramView::keyPressEvent(QKeyEvent * e) {
 	history_protected = TRUE;
 	UmlWindow::save_it();
       }
+      else if (s == "Browser search") {
+	history_protected = TRUE;
+	UmlWindow::browser_search_it();
+      }
       else if (s == "Arrow geometry") {
 	history_protected = TRUE;
 
@@ -1409,6 +1416,7 @@ int DiagramView::default_menu(QPopupMenu & m, int f) {
     abort_line_construction();
 
   QPopupMenu formatm(0);
+  QPopupMenu formatlandscapem(0);
   QCanvasItemList l;
   
   if (wr) {
@@ -1446,7 +1454,7 @@ int DiagramView::default_menu(QPopupMenu & m, int f) {
 	m.insertItem("Unset preferred scale", 18);
       }
     }
-    init_format_menu(formatm, f);
+    init_format_menu(formatm, formatlandscapem, f);
     m.insertItem("Format", &formatm);
     m.insertSeparator();
     m.insertItem("Undo all changes", RELOAD_CMD);
@@ -1553,14 +1561,40 @@ int DiagramView::default_menu(QPopupMenu & m, int f) {
   return choice;
 }
 
-void DiagramView::init_format_menu(QPopupMenu & m, int f) const {
+void DiagramView::init_format_menu(QPopupMenu & m, QPopupMenu & lm,
+				   int f) const {
   m.setCheckable(TRUE);
+  lm.setCheckable(TRUE);
   
-  for (int i = 0; i != CanvasFormatSup; i += 1)
+  int i;
+  
+  for (i = 0; i <= IsoA5; i += 1)
+    m.insertItem(QString("Iso ") + stringify((CanvasFormat) i), f + i);
+  
+  for (; i <= UsE; i += 1)
+    m.insertItem(QString("Ansi ") + stringify((CanvasFormat) i), f + i);
+  
+  for (; i != IsoA0Landscape; i += 1)
     m.insertItem(stringify((CanvasFormat) i), f + i);
   
-  m.setItemChecked(f + (int) window()->browser_diagram()->get_format(),
-		   TRUE);
+  m.insertSeparator();
+  m.insertItem("Landscape formats", &lm);
+    
+  for (; i <= IsoA5Landscape; i += 1)
+    lm.insertItem(QString("Iso ") + stringify((CanvasFormat) i), f + i);
+  
+  for (; i <= UsELandscape; i += 1)
+    lm.insertItem(QString("Ansi ") + stringify((CanvasFormat) i), f + i);
+  
+  for (; i != CanvasFormatSup; i += 1)
+    lm.insertItem(stringify((CanvasFormat) i), f + i);
+  
+  int current = (int) window()->browser_diagram()->get_format();
+  
+  if (current < (int) IsoA0Landscape)
+    m.setItemChecked(f + current, TRUE);
+  else
+    lm.setItemChecked(f + current, TRUE);
 }
 
 void DiagramView::load(const char * pfix) {
@@ -1668,8 +1702,9 @@ void DiagramView::read() {
     set_read_file_format(format);
     the_canvas()->clear_old_ids();
     
-    if (error)
+    if (error) {
       THROW_ERROR 0;
+    }
   }
 }
 
@@ -1775,6 +1810,26 @@ void DiagramView::paste() {
   window()->package_modified();
 }
 
+bool DiagramView::is_present(BrowserNode * bn) {
+  QCanvasItemList all = canvas()->allItems();
+  QCanvasItemList::Iterator it;
+  
+  for (it = all.begin(); it != all.end(); ++it) {
+    if ((*it)->visible()) {
+      DiagramItem * di = QCanvasItemToDiagramItem(*it);
+      
+      if ((di != 0) && di->represents(bn))
+	return TRUE;
+    }
+  }
+  
+  return FALSE;
+}
+
+void DiagramView::add_related_elements(DiagramItem *, const char *, bool, bool) {
+  // do nothing
+}
+
 bool DiagramView::save_pict(const char * f, bool optimal, bool temporary) {
   QFileInfo fi(f);
 
@@ -1796,7 +1851,7 @@ bool DiagramView::save_in(const char * f, bool optimal, bool temporary) {
   the_canvas()->show_limits(FALSE);
   
   bool r;
-  
+    
   if (optimal) {
     int x0 = contentsX();
     int y0 = contentsY();
@@ -2070,7 +2125,7 @@ void DiagramView::renumber(int ident) {
 
 void DiagramView::save_session(QTextStream & st) {
   st << (int) (((UmlCanvas *) canvas())->zoom() * 100)
-     << ' ' << (int) window()->browser_diagram()->get_format()
+     << ' ' << (int) window()->browser_diagram()->get_format() // useless
      << ' ' << verticalScrollBar()->value()
      << ' ' << horizontalScrollBar()->value() << '\n';
 }
@@ -2078,7 +2133,7 @@ void DiagramView::save_session(QTextStream & st) {
 void DiagramView::read_session(char * & st) {
   // zoom managed by DiagramWindow
   canvas()->update();
-  set_format((int) read_unsigned(st));
+  (void) read_unsigned(st); // set_format((int) read_unsigned(st));
   {
     extern QApplication * theApp;
     theApp->processEvents(/*500*/);

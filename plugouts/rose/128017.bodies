@@ -26,6 +26,7 @@ class Role
   for (;;) {
     switch (k) {
     case ')':
+      target = 0;
       return;
     case ATOM:
       break;

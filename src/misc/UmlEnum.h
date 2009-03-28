@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,6 +29,7 @@
 #define RTTI_ARROW	1000
 #define RTTI_COL_MSG	1001
 #define RTTI_LABEL	1002
+#define RTTI_ARROWPOINT	1003
 
 // warning : enums items order are linked with the ones in api.h
 // and known by ToolCom.cpp
@@ -54,7 +55,7 @@ enum UmlCode {
   DeepHistoryPS, ShallowHistoryPS, 
   JunctionPS, ChoicePS, ForkPS, JoinPS,
   UmlActivity, UmlFlow, UmlParameter, UmlParameterSet,
-  UmlPartition, UmlExpansionRegion, UmlInterruptibleActivityRegion,
+  UmlActivityPartition, UmlExpansionRegion, UmlInterruptibleActivityRegion,
   UmlActivityAction,
   // only for plug-out exchange, api know the order ...
   umlOpaqueAction = UmlActivityAction, umlAcceptEventAction,
@@ -64,6 +65,9 @@ enum UmlCode {
   umlCallBehaviorAction, umlCallOperationAction,
   umlSendObjectAction, umlSendSignalAction, umlBroadcastSignalAction,
   umlUnmarshallAction, umlValueSpecificationAction,
+  umlAcceptCallAction, umlReplyAction, umlCreateObjectAction,  // api >= 44
+  umlDestroyObjectAction, umlTestIdentityAction,  // api >= 44
+  umlRaiseExceptionAction, umlReduceAction,  // api >= 44
   // ... end of only for plug-out exchange
   UmlActivityObject, UmlExpansionNode, UmlActivityPin, 
   InitialAN, FlowFinalAN, ActivityFinalAN,	// warning : ActivityNode order used
@@ -105,15 +109,17 @@ enum UmlCode {
 #define IsaActivityNode(x) ((x >= InitialAN) && (x <= JoinAN))
 
 // warning : only from plug-out
-#define IsaActivityAction(x) ((x >= umlOpaqueAction) && (x <= umlValueSpecificationAction))
+#define IsaActivityAction(x) ((x >= umlOpaqueAction) && (x <= umlReduceAction))
 
-inline bool IsaActivityContainer(UmlCode k)
+inline bool IsaActivityContainer(UmlCode k, bool part = FALSE)
 {
   switch (k) {
   case UmlActivity:
   case UmlExpansionRegion:
   case UmlInterruptibleActivityRegion:
     return TRUE;
+  case UmlActivityPartition:
+    return part;
   default:
     return FALSE;
   }
@@ -140,7 +146,11 @@ enum UmlActionKind {
   UmlAddVariableValueAction, UmlRemoveVariableValueAction,
   UmlCallBehaviorAction, UmlCallOperationAction,
   UmlSendObjectAction, UmlSendSignalAction, UmlBroadcastSignalAction,
-  UmlUnmarshallAction, UmlValueSpecificationAction
+  UmlUnmarshallAction, UmlValueSpecificationAction,
+  // api >= 44
+  UmlAcceptCallAction, UmlReplyAction, UmlCreateObjectAction,
+  UmlDestroyObjectAction, UmlTestIdentityAction,
+  UmlRaiseExceptionAction, UmlReduceAction,
 };		     
 
 enum Uml3States { UmlYes, UmlNo, UmlDefaultState };
@@ -195,13 +205,17 @@ enum UmlFont {
   UmlFontNumber
 };
 
+// warning : order known by DiagramView::init_format_menu()
+// and UmlWindow::init_format_menu() and UmlWindow::formatMenuAboutToShow()
 enum CanvasFormat {
   IsoA0, IsoA1, IsoA2, IsoA3, IsoA4, IsoA5,
   UsA, UsB, UsC, UsD, UsE,
+  UsLetter, UsLegal, UsTabloid,
   IsoA0Landscape, IsoA1Landscape, IsoA2Landscape,
   IsoA3Landscape, IsoA4Landscape, IsoA5Landscape,
   UsALandscape, UsBLandscape, UsCLandscape,
   UsDLandscape, UsELandscape,
+  UsLetterLandscape, UsLegalLandscape, UsLedger, // ledger =  tabloid lanscape
   CanvasFormatSup
 };
 

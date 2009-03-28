@@ -105,7 +105,15 @@ class UmlCom {
   public:
     // do NOT call the followings yourself !!!!
     static void send_cmd(CmdFamily f, unsigned int cmd);
+    //internal, do NOT use it
+    
+    static void send_cmd(CmdFamily f, unsigned int cmd, const char * s, bool b);
+
     static void send_cmd(CmdFamily f, unsigned int cmd, char arg);
+    //internal, do NOT use it
+    
+    static void send_cmd(CmdFamily f, unsigned int cmd, int arg, const char * dummy);
+
     static void send_cmd(CmdFamily f, unsigned int cmd, void * id);
     static void send_cmd(CmdFamily f, unsigned int cmd, const char * s);
     static void send_cmd(CmdFamily f, unsigned int cmd, void * id, const char * n);

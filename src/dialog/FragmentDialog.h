@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,24 +29,34 @@
 #include <qdialog.h>
 #include <qstringlist.h>
 
+#include "BrowserNode.h"
+
 class QComboBox;
+class LineEdit;
 
 class FragmentDialog : public QDialog {
   Q_OBJECT
     
   protected:
     QString & name;
-    QComboBox * cb;
+    QString & form;
+    BrowserNode *& refer;
+    QComboBox * name_cb;
+    QComboBox * diag_cb;
+    LineEdit * ed_form;
+    BrowserNodeList nodes;
     
     static QSize previous_size;
   
   public:
-    FragmentDialog(const QStringList &defaults, QString & na);
+    FragmentDialog(const QStringList &defaults, QString & na,
+		   QString & fo, BrowserNode *& d);
     virtual ~FragmentDialog();
   
   protected slots:
     virtual void polish();
     void accept();
+    void menu_refer();
 };
 
 #endif

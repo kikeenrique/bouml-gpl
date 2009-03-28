@@ -18,6 +18,9 @@ class UmlItem
     case 'h':
       uml2php(rec);
       break;
+    case 'y':
+      uml2python(rec);
+      break;
     default:
       break;
     }

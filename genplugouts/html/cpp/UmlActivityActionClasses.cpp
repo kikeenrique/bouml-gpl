@@ -259,3 +259,167 @@ void UmlRemoveVariableValueAction::html(QCString pfix, unsigned int rank, unsign
   unload(FALSE, FALSE);
 }
 
+QCString UmlAcceptCallAction::sKind() {
+  return "accept call activity action";
+}
+
+void UmlAcceptCallAction::html(QCString pfix, unsigned int rank, unsigned int level) {
+  UmlActivityAction::html();
+
+  QCString s = trigger();
+
+  fw.write("<p>Trigger :</p><ul>");
+  
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppTrigger();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaTrigger();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  write_children(pfix, rank, level);
+
+  unload(FALSE, FALSE);
+}
+
+QCString UmlReplyAction::sKind() {
+  return "reply activity action";
+}
+
+void UmlReplyAction::html(QCString pfix, unsigned int rank, unsigned int level) {
+  UmlActivityAction::html();
+
+  QCString s = replyToCall();
+
+  fw.write("<p>replyToCall :</p><ul>");
+  
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppReplyToCall();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaReplyToCall();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  write_children(pfix, rank, level);
+
+  unload(FALSE, FALSE);
+}
+
+QCString UmlCreateObjectAction::sKind() {
+  return "create object activity action";
+}
+
+void UmlCreateObjectAction::html(QCString pfix, unsigned int rank, unsigned int level) {
+  UmlActivityAction::html();
+
+  if (!classifier().isEmpty()){
+    fw.write("<p>Classifier : ");
+    writeq(classifier());
+    fw.write("</p>");
+  }
+
+  write_children(pfix, rank, level);
+
+  unload(FALSE, FALSE);
+}
+
+QCString UmlDestroyObjectAction::sKind() {
+  return "destroy object activity action";
+}
+
+void UmlDestroyObjectAction::html(QCString pfix, unsigned int rank, unsigned int level) {
+  UmlActivityAction::html();
+
+  if (isDestroyLinks()) {
+    if (isDestroyOwnedObjects())
+      fw.write("<p>Destroy links, destroy owned objects</p>");
+    else
+      fw.write("<p>Destroy links</p>");
+  }
+  else if (isDestroyOwnedObjects())
+    fw.write("<p>Destroy owned objects</p>");
+
+  write_children(pfix, rank, level);
+
+  unload(FALSE, FALSE);
+}
+
+QCString UmlTestIdentityAction::sKind() {
+  return "test identity activity action";
+}
+
+void UmlTestIdentityAction::html(QCString pfix, unsigned int rank, unsigned int level) {
+  UmlActivityAction::html();
+
+  write_children(pfix, rank, level);
+
+  unload(FALSE, FALSE);
+}
+
+QCString UmlRaiseExceptionAction::sKind() {
+  return "raise exception activity action";
+}
+
+void UmlRaiseExceptionAction::html(QCString pfix, unsigned int rank, unsigned int level) {
+  UmlActivityAction::html();
+
+  write_children(pfix, rank, level);
+
+  unload(FALSE, FALSE);
+}
+
+QCString UmlReduceAction::sKind() {
+  return "reduce activity action";
+}
+
+void UmlReduceAction::html(QCString pfix, unsigned int rank, unsigned int level) {
+  UmlActivityAction::html();
+
+  if (isOrdered())
+    fw.write("<p>Ordered</p>");
+
+  if (reducer() != 0){
+    fw.write("<p>Reducer : ");
+    reducer()->write();
+    fw.write("</p>");
+  }
+
+  write_children(pfix, rank, level);
+
+  unload(FALSE, FALSE);
+}
+

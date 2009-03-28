@@ -2,6 +2,7 @@
 #include <qdict.h>
 #include <qpopupmenu.h>
 #include <qstack.h>
+#include <qimage.h>
 
 #include "ProfiledStereotypes.h"
 #include "BrowserClass.h"
@@ -17,18 +18,23 @@
 #include "DialogUtil.h"
 
 struct ProfiledStereotype {
-  ProfiledStereotype() : cl(0), properties_set(FALSE) {}
+  ProfiledStereotype() : cl(0), properties_set(FALSE),browser_icon(0) {}
 				
   BrowserClass * cl;
   QStringList propertiesFullName; // profile:stereotype:property
   QValueList<BrowserAttribute *> properties;
   bool properties_set;
+  QPixmap * browser_icon;
   
   void clear_properties();
   void set_properties();
   void renamed(BrowserAttribute * at);
   void deleted(BrowserAttribute * at);
   bool enumerated(QString, QStringList & l) const;
+  void setIcon();
+  void updateStereotypedIcon();
+  const QPixmap * browserPixmap() { return browser_icon; }
+  const QPixmap * diagramPixmap(double zoom);
 };
 
 // stereotypable element kind form -> code
@@ -51,6 +57,16 @@ static QPtrDict<ProfiledStereotype> ProfiledStereotyped(257);
 
 // all the stereotype, key = profile:stereotype
 static QDict<ProfiledStereotype> All;
+
+// all the pixmap for browser, key = path
+static QDict<QPixmap> BrowserPixmap;
+
+// all the pixmap for diagram with scale 100, key = path,
+static QDict<QPixmap> DiagramPixmap;
+
+// all the pixmap for diagram, key = path,
+// value is QPtrDict with key = width
+static QDict<QPtrDict<QPixmap> > DiagramScaledPixmap;
 
 // to continue to apply check recursively
 struct CheckCell {
@@ -206,6 +222,101 @@ bool ProfiledStereotype::enumerated(QString k, QStringList & l) const {
   return !l.isEmpty();
 }
 
+void ProfiledStereotype::setIcon() {
+  browser_icon = 0;
+  
+  const char * path = cl->get_value("stereotypeIconPath");
+  
+  if ((path == 0) || (*path == 0))
+    return;
+  
+  QPixmap * px = DiagramPixmap.find(path);
+  
+  if (px != 0) {
+    if (px->isNull())
+      return;
+    
+    browser_icon = BrowserPixmap[path];
+  }
+  
+  px = new QPixmap(path);
+    
+  DiagramPixmap.insert(path, px);
+    
+  if (px->isNull()) {
+    msg_critical("Error",
+		 QString(path) + "\ndoesn't exist or is not a know image format");
+    return;
+  }
+    
+  //
+    
+  DiagramScaledPixmap.insert(path, new QPtrDict<QPixmap>());
+  
+  //
+  
+  int w = px->width();
+  int h = px->height();
+  
+  if (w > h) {
+    h = (int) (h * 16.0 / w);
+    w = 16;
+  }
+  else {
+    w = (int) (w * 16.0 / h);
+    h = 16;
+  }
+  
+  QImage img = px->convertToImage().smoothScale(w, h);
+  
+  browser_icon = new QPixmap();
+  browser_icon->convertFromImage(img);
+  BrowserPixmap.insert(path, browser_icon);
+}
+
+void ProfiledStereotype::updateStereotypedIcon() {
+  QPtrDictIterator<ProfiledStereotype> it(ProfiledStereotyped);
+  ProfiledStereotype * pst;
+  
+  while ((pst = it.current()) != 0) {
+    if (pst == this)
+      ((BrowserNode *) it.currentKey())->iconChanged();
+    
+    ++it;
+  }
+}
+
+const QPixmap * ProfiledStereotype::diagramPixmap(double zoom) {
+  const char * path = cl->get_value("stereotypeIconPath");
+  
+  if (path == 0)
+    return 0;
+  
+  QPixmap * px = DiagramPixmap.find(path);
+  
+  if ((px == 0) || px->isNull())
+    return 0;
+    
+  if (((int) (zoom * 100)) == 100)
+    return px;
+  
+  QPtrDict<QPixmap> * d = DiagramScaledPixmap[path]; // != 0
+  int scaled_w = (int) (px->width() * zoom);
+  void * k = (void *) scaled_w;
+  QPixmap * scaled_px = d->find(k);
+  
+  if (scaled_px == 0) {
+    QImage img = 
+      px->convertToImage().smoothScale(scaled_w, (int) (px->height() * zoom));
+
+    scaled_px = new QPixmap();
+    scaled_px->convertFromImage(img);
+    d->insert(k, scaled_px);
+  }
+  
+  return scaled_px;
+}
+
 //
   
 void ProfiledStereotypes::init()
@@ -224,6 +335,15 @@ void ProfiledStereotypes::init()
   All.setAutoDelete(TRUE);
   All.clear();
   All.setAutoDelete(FALSE);
+  
+  BrowserPixmap.setAutoDelete(TRUE);
+  BrowserPixmap.clear();
+  
+  DiagramPixmap.setAutoDelete(TRUE);
+  DiagramPixmap.clear();
+  
+  DiagramScaledPixmap.setAutoDelete(TRUE);
+  DiagramScaledPixmap.clear();
   
   if (UnPretty2Code.isEmpty()) {
     UnPretty2Code.setAutoDelete(TRUE); // for valgrind
@@ -282,12 +402,14 @@ void ProfiledStereotypes::init()
     ADD(UmlFlow, "Flow", "Flow");
     ADD(UmlParameter, "Parameter", "Parameter");
     ADD(UmlParameterSet, "ParameterSet", "Parameter Set");
-    //ADD(UmlPartition, "Partition", "Partition");
     ADD(UmlExpansionRegion, "ExpansionRegion", "Expansion Region");
     ADD(UmlInterruptibleActivityRegion, "InterruptibleActivityRegion", "Interruptible Activity Region");
     ADD(UmlActivityAction, "ActivityAction", "Activity Action");
     ADD(UmlActivityObject, "ActivityObject", "Activity Object");
     ADD(UmlExpansionNode, "ExpansionNode", "Expansion Node");
+    ADD(UmlExpansionRegion, "ActivityExpansionRegion", "Activity Expansion Region");
+    ADD(UmlInterruptibleActivityRegion, "ActivityInterruptibleRegion", "Activity Interruptible Region");
+    ADD(UmlActivityPartition, "ActivityPartition", "Activity Partition");
     ADD(UmlActivityPin, "ActivityPin", "Activity Pin");
     ADD(InitialAN, "InitialAN", "Initial Activity Node");
     ADD(FlowFinalAN, "FlowFinalAN", "Flow Final Activity Node");
@@ -565,12 +687,13 @@ void ProfiledStereotypes::added(BrowserClass * cl)
       setDefault(s, cl->get_value("stereotypeApplyOn"));
       st->clear_properties();
       st->set_properties();
+      st->setIcon();
     }
   }
 }
 
 // cl is and was a profiled stereotype, it was edited
-void ProfiledStereotypes::changed(BrowserClass * cl, QString oldname)
+void ProfiledStereotypes::changed(BrowserClass * cl, QString oldname, bool newicon)
 {
   QString pkname = ((BrowserNode *) cl->parent()->parent())->get_name();
   
@@ -586,6 +709,13 @@ void ProfiledStereotypes::changed(BrowserClass * cl, QString oldname)
       Defaults[index].remove(oldst);
     
     setDefault(newst, cl->get_value("stereotypeApplyOn"));
+  }
+  
+  if (newicon) {
+    ProfiledStereotype * pst = All[pkname + QString(":") + cl->get_name()];
+    
+    pst->setIcon();
+    pst->updateStereotypedIcon();
   }
 }
 
@@ -649,6 +779,20 @@ BrowserClass * ProfiledStereotypes::isModeled(QString s, bool case_sensitive)
   }
   
   return 0;
+}
+
+const QPixmap * ProfiledStereotypes::browserPixmap(const char * s)
+{
+  ProfiledStereotype * st = All[s];
+  
+  return (st == 0) ? 0 : st->browserPixmap();
+}
+
+const QPixmap * ProfiledStereotypes::diagramPixmap(const char * s, double zoom)
+{
+  ProfiledStereotype * st = All[s];
+  
+  return (st == 0) ? 0 : st->diagramPixmap(zoom);
 }
 
 void ProfiledStereotypes::post_load()
@@ -760,6 +904,9 @@ void ProfiledStereotypes::recompute(BrowserNode * bn)
   
   if (modified)
     bn->modified();
+  else
+    // in case stereotype icon was changed by plug-out
+    bn->iconChanged();
 }
 
 static void recompute_recur(BrowserNode * bn)
@@ -808,6 +955,7 @@ static void recompute_st_list()
 	st->cl = cl;
 	All.insert(s, st);
 	setDefault(s, cl->get_value("stereotypeApplyOn"));
+	st->setIcon();
       }
     }
   }
@@ -887,8 +1035,8 @@ void ProfiledStereotypes::applyStereotype(BrowserNode * bn)
     ProfiledStereotyped.replace(bn, st);	// add it if needed
     recompute(bn);
   }
-  else
-    ProfiledStereotyped.remove(bn);
+  else if (ProfiledStereotyped.remove(bn))
+    bn->iconChanged();
 }
 
 // continue to apply check

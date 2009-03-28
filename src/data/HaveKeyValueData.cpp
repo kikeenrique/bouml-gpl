@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -72,6 +72,19 @@ void HaveKeyValueData::remove_key_value(unsigned index) {
   nkeyvalues -= 1;
   keyvalues[index].set_key(keyvalues[nkeyvalues].get_key());
   keyvalues[index].set_value(keyvalues[nkeyvalues].get_value());
+}
+
+void HaveKeyValueData::remove_key_value(const char * k) {
+  unsigned index;
+  
+  for (index = 0; index != nkeyvalues; index += 1) {
+    if (strcmp(keyvalues[index].get_key(), k) == 0) {
+      nkeyvalues -= 1;
+      keyvalues[index].set_key(keyvalues[nkeyvalues].get_key());
+      keyvalues[index].set_value(keyvalues[nkeyvalues].get_value());
+      break;
+    }
+  }
 }
 
 void HaveKeyValueData::set_n_keys(unsigned n) {

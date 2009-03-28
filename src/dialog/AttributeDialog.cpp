@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -142,7 +142,7 @@ AttributeDialog::AttributeDialog(AttributeData * a, bool new_st_attr)
 	    break;
 	     
 	if (attribute_st_rank == n) {
-	  edstereotype->insertItem("Attribute");
+	  edstereotype->insertItem("attribute");
 	  n += 1;
 	}
 	
@@ -172,9 +172,9 @@ AttributeDialog::AttributeDialog(AttributeData * a, bool new_st_attr)
       multiplicity->insertItem("*");
       multiplicity->insertItem("1..*");
     }
-    connect(new SmallPushButton("type :", grid), SIGNAL(clicked()),
-	    this, SLOT(menu_type()));
     
+    connect(new SmallPushButton("type :", grid), SIGNAL(clicked()),
+	    this, SLOT(menu_type()));    
     edtype = new QComboBox(!visit, grid);
     edtype->insertItem(a->get_type().get_full_type());
     BrowserClass::instances(nodes);
@@ -213,25 +213,44 @@ AttributeDialog::AttributeDialog(AttributeData * a, bool new_st_attr)
     bg = uml_visibility.init(htab, a->get_uml_visibility(), TRUE);
     if (visit)
       bg->setEnabled(FALSE);
-    htab->setStretchFactor(bg, 1000);
     
-    htab->setStretchFactor(new QLabel("      ", htab), 0);
-    
-    bg = new QButtonGroup(3, Qt::Horizontal, QString::null, htab);
-    htab->setStretchFactor(bg, 1000);
+    bg = new QButtonGroup(7, Qt::Horizontal, QString::null, htab);
     bg->setExclusive(FALSE);
-    classattribute_cb = new QCheckBox("static attribute", bg);
+    classattribute_cb = new QCheckBox("static", bg);
     if (a->get_isa_class_attribute())
       classattribute_cb->setChecked(TRUE);
+    classattribute_cb->setDisabled(visit);
+    
     volatile_cb = new QCheckBox("volatile", bg);
     if (a->isa_volatile_attribute)
       volatile_cb->setChecked(TRUE);
+    volatile_cb->setDisabled(visit);
+    
     constattribute_cb = new QCheckBox("read-only", bg);
     if (a->get_isa_const_attribute())
       constattribute_cb->setChecked(TRUE);
-    classattribute_cb->setDisabled(visit);
-    volatile_cb->setDisabled(visit);
     constattribute_cb->setDisabled(visit);
+    
+    derived_cb = new QCheckBox("derived", bg);
+    if (a->get_is_derived())
+      derived_cb->setChecked(TRUE);
+    derived_cb->setDisabled(visit);
+    connect(derived_cb, SIGNAL(toggled(bool)), SLOT(derived_changed(bool)));
+    
+    derivedunion_cb = new QCheckBox("union", bg);
+    if (a->get_is_derivedunion())
+      derivedunion_cb->setChecked(TRUE);
+    derivedunion_cb->setDisabled(visit || !derived_cb->isChecked());
+    
+    ordered_cb = new QCheckBox("ordered", bg);
+    if (a->get_is_ordered())
+      ordered_cb->setChecked(TRUE);
+    ordered_cb->setDisabled(visit);
+    
+    unique_cb = new QCheckBox("unique", bg);
+    if (a->get_is_unique())
+      unique_cb->setChecked(TRUE);
+    unique_cb->setDisabled(visit);
   }
   
   QVBox * vtab = new QVBox(grid);
@@ -636,9 +655,13 @@ void AttributeDialog::menu_type() {
     }
   }
 }
+   
+void AttributeDialog::derived_changed(bool on) {
+  derivedunion_cb->setEnabled(on);
+}
 
 void AttributeDialog::accept() {
-  if (!check_edits(edits))
+  if (!check_edits(edits) || !kvtable->check_unique())
     return;
     
   BrowserNode * bn = att->browser_node;
@@ -674,9 +697,12 @@ void AttributeDialog::accept() {
       
       att->isa_class_attribute = classattribute_cb->isChecked();
       att->isa_volatile_attribute = volatile_cb->isChecked();
-    
       att->isa_const_attribute = constattribute_cb->isChecked();
-
+      att->is_derived = derived_cb->isChecked();
+      att->is_derivedunion = derivedunion_cb->isChecked();
+      att->is_ordered = ordered_cb->isChecked();
+      att->is_unique = unique_cb->isChecked();
+      
       att->multiplicity = multiplicity->currentText().stripWhiteSpace();
 
       newst = att->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
@@ -1067,9 +1093,14 @@ void AttributeDialog::java_update() {
       QString i = edinit->text().stripWhiteSpace();
 
       if (!i.isEmpty()) {
-	if (need_equal(p, i, FALSE))
-	  s += " = ";
-	s += edinit->text();
+	if (java_in_enum &&
+	    (edstereotype->currentText().stripWhiteSpace() != "attribute"))
+	  s += '(' + edinit->text() + ')';
+	else {
+	  if (need_equal(p, i, FALSE))
+	    s += " = ";
+	  s += edinit->text();
+	}
       }
       else if (java_in_enum_pattern)
 	s += (need_equal(p, "", FALSE)) ? " = ..." : "...";
@@ -1346,6 +1377,12 @@ void AttributeDialog::php_update() {
       if (classattribute_cb->isChecked())
 	s += "static ";
     }
+    else if (!strncmp(p, "${type}", 7)) {
+      // for comment
+      p += 7;
+      s += get_php_name(the_type(edtype->currentText().stripWhiteSpace(),
+				 list, nodes));
+    }
     else
       s += *p++;
   }
@@ -1417,6 +1454,11 @@ QString AttributeDialog::php_decl(const BrowserAttribute * at, bool init)
       break;
     else if (*p == '@')
       manage_alias(at, p, s, 0);
+    else if (!strncmp(p, "${type}", 7)) {
+      // for comment
+      p += 7;
+      s += get_php_name(d->type);
+    }
     else
       s += *p++;
   }

@@ -117,20 +117,16 @@ class UmlBaseAttribute : public UmlClassMember {
 
 
   private:
-    bool _read_only;
+    bool _read_only : 1;
 
-
-  public:
-    QCString _multiplicity;
-
-
-  private:
 #ifdef WITHCPP
-    bool _cpp_mutable;
+    bool _cpp_mutable : 1;
 #endif
 #ifdef WITHJAVA
-    bool _java_transient;
+    bool _java_transient : 1;
 #endif
+
+    QCString _multiplicity;
 
     QCString _default_value;
 

@@ -39,12 +39,6 @@ void UmlRegion::importIt(FileIn & in, Token & token, UmlItem * where)
   if (where != 0) {
     QCString s = token.valueOf("name");
     
-    if (s.isEmpty()) {
-      static unsigned n = 0;
-      
-      s.sprintf("anonymous_region_%u", ++n);
-    }
-    
     UmlRegion * st = create((UmlState *) where, s);
     
     if (st == 0)

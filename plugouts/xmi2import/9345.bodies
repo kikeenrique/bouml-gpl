@@ -10,8 +10,12 @@ class UmlRelation
 	while (in.read(), !token.close(kstr)) {
 	  QCString s = token.what();
 	  
-	  if (s == "type")
-	    where->set_PropertyValue("stereotypeExtension", token.valueOf("href"));
+	  if (s == "type") {
+	    QCString ext = token.valueOf("href");
+	    
+	    if (! ext.isEmpty())
+	      ((UmlClass *) where)->extend(ext);
+	  }
       
 	  if (! token.closed())
 	    in.finish(s);

@@ -48,6 +48,15 @@ void UmlAttribute::importIt(FileIn & in, Token & token, UmlItem * where)
       if (token.valueOf("isreadonly") == "true")
 	 att->set_isReadOnly(TRUE);
       
+      if (token.valueOf("isderived") == "true")
+	 att->set_isDerived(TRUE, (token.valueOf("isderivedunion") == "true"));
+      
+      if (token.valueOf("isordered") == "true")
+	 att->set_isOrdered(TRUE);
+      
+      if (token.valueOf("isunique") == "true")
+	 att->set_isUnique(TRUE);
+      
       if (!(s = token.valueOf("type")).isEmpty()) {
 	UmlTypeSpec ts;
 	

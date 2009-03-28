@@ -35,6 +35,6 @@ bool UmlComponent::write_if_needed(FileOut & out) {
   return TRUE; 
 }
 
-void UmlComponent::write(FileOut & out) {
+void UmlComponent::write(FileOut &) {
 }
 

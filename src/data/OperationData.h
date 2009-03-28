@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -219,6 +219,7 @@ class OperationData : public ClassMemberData,
 
     void edit(DrawingLanguage);
     
+    bool get_or_set() const { return is_get_or_set; }
     void update_get_of(const QString & attr_name,
 		       QString cpp_decl, QString java_decl,
 		       QString php_decl, QString python_decl,
@@ -233,6 +234,7 @@ class OperationData : public ClassMemberData,
 		       bool cpp_const, bool is_class_member,
 		       const AType & cl, QString multiplicity,
 		       QString stereotype, bool create);
+    void copy_getset(const OperationData * model);
     
     virtual bool tool_cmd(ToolCom * com, const char * args,
 			  BrowserNode * bn, const QString & comment);
@@ -242,7 +244,8 @@ class OperationData : public ClassMemberData,
     void new_body(QString, int who);
     char * get_body(int who);
     void create_modified_body_file();
-    void save_body(QFile & qf, char * modified_bodies, int who);
+    void save_body(QFile & qf, QString & filename, bool dobackup,
+		   char * modified_bodies, int who);
     void save(QTextStream &, bool ref, QString & warning) const;
     void raz_body();
     static OperationData * read_ref(char * &);

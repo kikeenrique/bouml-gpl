@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -96,7 +96,9 @@ void UmlClass::generate(QTextOStream & f) {
     
     if (*p == '\n') {
       f << *p++;
-      if (*p && (*p != '#'))
+      if (*p && (*p != '#') &&
+	  strncmp(p, "${items}", 8) &&
+	  strncmp(p, "${members}", 10))
 	f << indent;
     }
     else if (*p == '@')
@@ -165,6 +167,9 @@ void UmlClass::generate(QTextOStream & f) {
 	  if ((ch[index]->kind() != aNcRelation) &&
 	      !((UmlClassItem *) ch[index])->idlDecl().isEmpty())
 	    ((UmlClassItem *) ch[index])->generate_decl(f, stereotype, --n == 0);
+      
+	if (*p == '}')
+	  f << indent;
       }
       else
 	// strange
@@ -194,7 +199,10 @@ void UmlClass::generate(QTextOStream & f) {
       for (index = 0; index != ch.size(); index += 1)
 	if ((ch[index]->kind() != aNcRelation) &&
 	    !((UmlClassItem *) ch[index])->idlDecl().isEmpty())
-	  ((UmlClassItem *) ch[index])->generate_decl(f, stereotype);
+	  ((UmlClassItem *) ch[index])->generate_decl(f, stereotype, indent);
+      
+      if (*p == '}')
+	f << indent;
     }
     else if (!strncmp(p, "${switch}", 9) && an_union) {
       p += 9;
@@ -206,7 +214,8 @@ void UmlClass::generate(QTextOStream & f) {
   }
 }
 
-void UmlClass::generate_decl(QTextOStream &, const QCString &, bool) {
+void UmlClass::generate_decl(QTextOStream &, const QCString &, 
+			     QCString, bool) {
   write_trace_header();
   UmlCom::trace(QCString("<font color=\"red\"><b>Embedded class <it>")
 		+ name() + "</it> not generated</b></font><br>");

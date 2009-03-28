@@ -41,7 +41,7 @@ void UmlComponent::importIt(FileIn & in, Token & token, UmlItem * where)
     while (in.read(), !token.close(kstr)) {
       QCString ks = token.what();
       
-      if ((ks == "provided") || (ks == "required") || (ks == "realization"))
+      if ((ks == "interfacerealization") || (ks == "realization"))
 	component->manageInterface(token, in);
       else
 	component->UmlItem::import(in, token);
@@ -52,46 +52,30 @@ void UmlComponent::importIt(FileIn & in, Token & token, UmlItem * where)
 }
 
 void UmlComponent::manageInterface(Token & token, FileIn & in) {
-  QCString idref = token.xmiIdref();
+  QCString idref = token.valueOf("supplier");
+  
   QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
-  char c = ((const char *) token.what())[2];
+  int c = ((const char *) token.what())[0];
   
   if (it != All.end()) {
     if ((*it)->kind() == aClass) {
-      switch (c) {
-      case 'o':
+      if (c == 'i') {
 	// provided
-	{
-	  QVector<UmlClass> provided = providedClasses();
-	  unsigned sz = provided.size();
-	  
-	  provided.resize(sz + 1);
-	  provided.insert(sz, (UmlClass *) *it);
-	  set_AssociatedClasses(realizingClasses(), provided, requiredClasses());
-	}
-	break;
-      case 'q':
-	// required:
-	{
-	  QVector<UmlClass> required = requiredClasses();
-	  unsigned sz = required.size();
-	  
-	  required.resize(sz + 1);
-	  required.insert(sz, (UmlClass *) *it);
-	  set_AssociatedClasses(realizingClasses(), providedClasses(), required);
-	}
-	break;
-      default:
+	QVector<UmlClass> provided = providedClasses();
+	unsigned sz = provided.size();
+	
+	provided.resize(sz + 1);
+	provided.insert(sz, (UmlClass *) *it);
+	set_AssociatedClasses(realizingClasses(), provided, requiredClasses());
+      }
+      else {
 	// realization
-	{
-	  QVector<UmlClass> realizing = realizingClasses();
-	  unsigned sz = realizing.size();
-	  
-	  realizing.resize(sz + 1);
-	  realizing.insert(sz, (UmlClass *) *it);
-	  set_AssociatedClasses(realizing, providedClasses(), requiredClasses());
-	}
-	break;
+	QVector<UmlClass> realizing = realizingClasses();
+	unsigned sz = realizing.size();
+	
+	realizing.resize(sz + 1);
+	realizing.insert(sz, (UmlClass *) *it);
+	set_AssociatedClasses(realizing, providedClasses(), requiredClasses());
       }
     }
   }
@@ -116,54 +100,33 @@ void UmlComponent::solve(int context, QCString idref) {
   
   if (it != All.end()) {
     if ((*it)->kind() == aClass) {
-      switch (context) {
-      case 'o':
+      if (context == 'i') {
 	// provided
-	{
-	  QVector<UmlClass> provided = providedClasses();
-	  unsigned sz = provided.size();
-	  
-	  provided.resize(sz + 1);
-	  provided.insert(sz, (UmlClass *) *it);
-	  set_AssociatedClasses(realizingClasses(), provided, requiredClasses());
-	}
-	break;
-      case 'q':
-	// required:
-	{
-	  QVector<UmlClass> required = requiredClasses();
-	  unsigned sz = required.size();
-	  
-	  required.resize(sz + 1);
-	  required.insert(sz, (UmlClass *) *it);
-	  set_AssociatedClasses(realizingClasses(), providedClasses(), required);
-	}
-	break;
-      default:
+	QVector<UmlClass> provided = providedClasses();
+	unsigned sz = provided.size();
+	
+	provided.resize(sz + 1);
+	provided.insert(sz, (UmlClass *) *it);
+	set_AssociatedClasses(realizingClasses(), provided, requiredClasses());
+      }
+      else {
 	// realization
-	{
-	  QVector<UmlClass> realizing = realizingClasses();
-	  unsigned sz = realizing.size();
-	  
-	  realizing.resize(sz + 1);
-	  realizing.insert(sz, (UmlClass *) *it);
-	  set_AssociatedClasses(realizing, providedClasses(), requiredClasses());
-	}
-	break;
+	QVector<UmlClass> realizing = realizingClasses();
+	unsigned sz = realizing.size();
+	
+	realizing.resize(sz + 1);
+	realizing.insert(sz, (UmlClass *) *it);
+	set_AssociatedClasses(realizing, providedClasses(), requiredClasses());
       }
     }
   }
   else if (!FileIn::isBypassedId(idref))
-    UmlCom::trace("component : unknown class reference '" + idref + "'<br>");
+    UmlCom::trace("component : unknown reference '" + idref + "'<br>");
 }
 
-void UmlComponent::generalizeDependRealize(UmlComponent * target, FileIn & in, int context, QCString label, QCString constraint) {
+void UmlComponent::generalizeDependRealize(UmlItem * target, FileIn & in, int context, QCString label, QCString constraint) {
   if ((context == 3) && (target->kind() == aClass)) {
-    if (! WarningAlreadyProduced) {
-      WarningAlreadyProduced = TRUE;
-      in.warning("consider 'usage' between a component and a class to be a 'required' (next cases not signaled)");
-    }
-    
+    // usage indicate a required interface
     QVector<UmlClass> required = requiredClasses();
     unsigned sz = required.size();
     
@@ -181,11 +144,7 @@ void UmlComponent::solveGeneralizationDependencyRealization(int context, QCStrin
   if ((context == 3) &&
       ((it = All.find(idref)) != All.end()) &&
       ((*it)->kind() == aClass)) {
-    if (! WarningAlreadyProduced) {
-      WarningAlreadyProduced = TRUE;
-      UmlCom::trace("consider 'usage' between a component and a class to be a 'required' (next cases not signaled)<br>");
-    }
-    
+    // usage indicate resuired interface
     QVector<UmlClass> required = requiredClasses();
     unsigned sz = required.size();
     
@@ -198,6 +157,4 @@ void UmlComponent::solveGeneralizationDependencyRealization(int context, QCStrin
 }
 
 int UmlComponent::NumberOf;
-
-bool UmlComponent::WarningAlreadyProduced;
 

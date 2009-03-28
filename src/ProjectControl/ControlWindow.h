@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -31,6 +31,7 @@
 
 class BrowserView;
 class BrowserNode;
+class QDir;
  
 // singleton
 
@@ -38,7 +39,7 @@ class ControlWindow : public QMainWindow {
   Q_OBJECT
     
   public:
-    ControlWindow();
+    ControlWindow(QDir & homeDir);
     ~ControlWindow();
   
   protected:

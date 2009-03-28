@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -83,5 +83,9 @@ class Lex {
     static void push_context();
     static void pop_context();
 };
+
+QCString value_of(QCString s, QCString k, int & index);
+QCString value_of(QCString s, QCString k, int & index,
+		  QCString & next, int & index2);
 
 #endif

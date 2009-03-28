@@ -25,8 +25,7 @@ enum OnInstanceCmd {
   applyCmd,
   referencedByCmd,
   sideCmd,
-  firstSetCmd = 50,// just a mark
-
+  firstSetCmd= 50,// just a mark
   createCmd,
   setCoupleValueCmd,
   setDescriptionCmd,

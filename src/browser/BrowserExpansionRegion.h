@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -89,6 +89,8 @@ class BrowserExpansionRegion : public BrowserNode, public Labeled<BrowserExpansi
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
+    
+    virtual void referenced_by(QList<BrowserNode> & l, bool ondelete);
     
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual bool api_compatible(unsigned v) const;

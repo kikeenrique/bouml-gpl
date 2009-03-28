@@ -5,13 +5,13 @@
 #include "UmlItem.h"
 #include "anItemKind.h"
 #include <qvector.h>
-#include "UmlClass.h"
 #include <qcstring.h>
 
 #include "UmlClass.h"	// to avoid destructor problem
 class UmlComponent;
 class UmlComponentView;
 class UmlComponentDiagram;
+class UmlClass;
 
 //  Manage the components.
 class UmlBaseComponent : public UmlItem {
@@ -34,8 +34,8 @@ class UmlBaseComponent : public UmlItem {
     // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_AssociatedDiagram(UmlComponentDiagram * d);
 
-    // returns (in Java a copy of) the optional realized classes
-    const QVector<UmlClass> & realizedClasses();
+    // returns (in Java a copy of) the optional realizing classes
+    const QVector<UmlClass> & realizingClasses();
 
     // returns (in Java a copy of) the optional provided classes
     const QVector<UmlClass> & providedClasses();
@@ -43,10 +43,10 @@ class UmlBaseComponent : public UmlItem {
     // returns (in Java a copy of) the optional required classes
     const QVector<UmlClass> & requiredClasses();
 
-    // set the realized, provided and required classes lists
+    // set the realizing, provided and required classes lists
     //
     // On error return FALSE in C++, produce a RuntimeException in Java
-    bool set_AssociatedClasses(const QVector<UmlClass> & realized, const QVector<UmlClass> & provided, const QVector<UmlClass> & required);
+    bool set_AssociatedClasses(const QVector<UmlClass> & realizing, const QVector<UmlClass> & provided, const QVector<UmlClass> & required);
 
     // to unload the object to free memory, it will be reloaded
     // automatically if needed. args unused
@@ -56,7 +56,7 @@ class UmlBaseComponent : public UmlItem {
   private:
     UmlComponentDiagram * _assoc_diagram;
 
-    QVector<UmlClass> _realized;
+    QVector<UmlClass> _realizing;
 
     QVector<UmlClass> _provided;
 

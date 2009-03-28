@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,6 +42,7 @@
 #include "UmlPixmap.h"
 #include "myio.h"
 
+extern const char * addmodeledclassinstanceText;
 extern const char * addclassinstanceText;
 extern const char * addpackageText;
 extern const char * addfragmentText;
@@ -78,10 +79,11 @@ ObjectDiagramWindow::ObjectDiagramWindow(const QString & s, BrowserObjectDiagram
   QWhatsThis::add(addFragment, addfragmentText);
   
   addClassInstance
-    = new QToolButton(*classinstanceButton, "Add Class instance", QString::null,
-		      this, SLOT(hit_classinstance()), toolbar, "add class instance");
+    = new QToolButton(*classinstanceButton, "Add modeled Class instance", QString::null,
+		      this, SLOT(hit_classinstance()), toolbar,
+		      "add modeled class instance");
   addClassInstance->setToggleButton(TRUE);
-  QWhatsThis::add(addClassInstance, addclassinstanceText);
+  QWhatsThis::add(addClassInstance, addmodeledclassinstanceText);
   
   addClass
     = new QToolButton(*classButton, "Add Class instance", QString::null,

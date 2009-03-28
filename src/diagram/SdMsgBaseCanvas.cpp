@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,7 +44,6 @@
 #include "BrowserDiagram.h"
 #include "myio.h"
 #include "ToolCom.h"
-#include "../Tools/aMessageKind.h"
 
 SdMsgBaseCanvas::SdMsgBaseCanvas(UmlCanvas * canvas, SdDurationCanvas * d,
 				 UmlCode l, int v, int id)
@@ -291,6 +290,10 @@ bool SdMsgBaseCanvas::copyable() const {
   return selected() && dest->selected();
 }
 
+bool SdMsgBaseCanvas::represents(BrowserNode * bn) {
+  return ((BasicData *) msg == bn->get_data());
+}
+
 void SdMsgBaseCanvas::save(QTextStream & st, QString & warning) const {
   nl_indent(st);
   st << "to ";
@@ -413,16 +416,18 @@ void SdMsgBaseCanvas::history_load(QBuffer & b) {
 
 // for plug out
 
-void SdMsgBaseCanvas::send_implicit_return(ToolCom * com, int fromid,
-					   unsigned x, unsigned y)
+void SdMsgBaseCanvas::send(ToolCom * com, int fromid,
+			   unsigned x, unsigned y,
+			   UmlMessageKind k,
+			   const char * m, const char * a)
 {
   com->write_id(0);
-  com->write_string("");
+  com->write_string(m);
   com->write_unsigned((unsigned) fromid);
   com->write_unsigned((unsigned) fromid);
   
-  com->write_char(anImplicitReturn);
-  com->write_string("");
+  com->write_char(k);
+  com->write_string(a);
   com->write_unsigned(x);
   com->write_unsigned(y);
   com->write_unsigned(y);
@@ -464,3 +469,4 @@ void SdMsgBaseCanvas::send(ToolCom * com, int fromid) const {
   com->write_unsigned(v);
   com->write_unsigned(v);
 }
+

@@ -31,6 +31,15 @@ if (ctx.onAttribute() && ctx.match_stereotype(stereotype())) {
     }
   }
   
+  if (ctx.python()) {
+    const QCString & c = pythonDecl();
+    
+    if (!c.isEmpty() && ctx.match(c)) {
+      if (!set_PythonDecl(ctx.replace(c)))
+	ctx.err();
+    }
+  }
+  
   if (ctx.idl()) {
     const QCString & c = idlDecl();
     

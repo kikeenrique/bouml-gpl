@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -93,6 +93,10 @@ void ArrowPointCanvas::draw(QPainter & p) {
 
 UmlCode ArrowPointCanvas::type() const {
   return UmlArrowPoint;
+}
+
+int ArrowPointCanvas::rtti() const {
+  return RTTI_ARROWPOINT;
 }
 
 void ArrowPointCanvas::connexion(UmlCode action, DiagramItem * dest,
@@ -212,6 +216,10 @@ void ArrowPointCanvas::prepare_for_move(bool) {
 
 ArrowCanvas * ArrowPointCanvas::get_other(const ArrowCanvas * l) const {
   return (lines.getFirst() == l) ? lines.getLast() : lines.getFirst();
+}
+
+bool ArrowPointCanvas::attached_to(const ArrowCanvas * l) const {
+  return ((lines.getFirst() == l) || (lines.getLast() == l));
 }
 
 void ArrowPointCanvas::save(QTextStream & st, bool, QString &) const {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -26,8 +26,10 @@
 #ifndef SDMSGBASECANVAS_H
 #define SDMSGBASECANVAS_H
 
+
 #include "DiagramCanvas.h"
 #include "mystr.h"
+#include "../Tools/aMessageKind.h"
 
 class SdDurationCanvas;
 class OperationData;
@@ -89,12 +91,14 @@ class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
     
     virtual void moveBy(double dx, double dy);
     
+    virtual bool represents(BrowserNode *);
+    
     void save(QTextStream & st, QString & warning) const;
     void read(char * &);
     
     void send(ToolCom * com, int fromid) const;
-    static void send_implicit_return(ToolCom * com, int fromid,
-				     unsigned x, unsigned y);
+    static void send(ToolCom * com, int fromid, unsigned x, unsigned y,
+		     UmlMessageKind k, const char * m, const char * a);
   
   protected slots:
     void modified();	// canvas must be updated

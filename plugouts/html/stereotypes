@@ -1,9 +1,9 @@
 
-  package_stereotypes  4 "facade" "framework" "stub" "toplevel"
+  package_stereotypes  5 "facade" "framework" "stub" "toplevel" "profile"
     -_-> 2 "access" "import"
   end
   
-  class_stereotypes  11 "actor" "boundary" "control" "entity" "enum" "exception" "interface" "struct" "typedef" "union" "enum_pattern"
+  class_stereotypes  12 "actor" "boundary" "control" "entity" "enum" "exception" "interface" "struct" "typedef" "union" "enum_pattern" "stereotype"
     ---- 3 "vector" "list" "set"
     ---> 5 "vector" "list" "set" "Vector" "ptrDict"
     o--- 3 "vector" "list" "set"
@@ -36,6 +36,8 @@
   activitynode_stereotypes  0
   activityaction_stereotypes  0
   activityobject_stereotypes  2 "datastore" "centralBuffer"
+  expansionregion_stereotypes  0
+  activitypartition_stereotypes  0
   pin_stereotypes  0
   component_stereotypes  3 "source" "library" "executable"
   deploymentnode_stereotypes  2 "cpu" "device"

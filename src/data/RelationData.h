@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,10 +45,14 @@ struct RoleData {
   MyStr comment;
   MyStr constraint;	// 
   UmlVisibility uml_visibility : 8;	// : 4 useless here, : 8 faster than : 4 ?
-  UmlVisibility cpp_visibility : 8;	// : 4 useless here, : 8 faster than : 4 ?
+  UmlVisibility cpp_visibility : 8;	// : 4 useless here, : 8 faster than : 4 
   bool isa_class_relation : 1;
   bool isa_volatile_relation: 1;
   bool isa_const_relation : 1;
+  bool is_derived : 1;
+  bool is_derivedunion : 1;
+  bool is_ordered : 1;
+  bool is_unique : 1;
   bool java_transient : 1;		// java
   bool idl_truncatable_inheritance : 1;	// idl inheritance
   
@@ -121,14 +125,14 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     bool navigable(BrowserRelation *) const;
     BrowserClass * get_start_class() const;
     BrowserClass * get_end_class() const;
-    BrowserRelation * get_start() const { return start; };
-    BrowserRelation * get_end() const { return end; };
+    BrowserRelation * get_start() const { return start; }
+    BrowserRelation * get_end() const { return end; }
     void unidir_change_dest(BrowserNode * e);
     
-    UmlCode get_type() const { return type; };
+    UmlCode get_type() const { return type; }
     void set_type(UmlCode e);
     
-    const char * get_name() const { return name; };
+    const char * get_name() const { return name; }
     QString get_name(BrowserRelation *) const;
     void set_name(const QString &);
     virtual QString definition(bool full) const;
@@ -138,61 +142,73 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     
     virtual bool decldefbody_contain(const QString & s, bool cs, BrowserNode *);
     
-    bool is_a(const BrowserRelation * br) const { return br == start; };
+    bool is_a(const BrowserRelation * br) const { return br == start; }
     
-    const char * get_role_a() const { return a.role; };
-    const char * get_role_b() const { return b.role; };
+    const char * get_role_a() const { return a.role; }
+    const char * get_role_b() const { return b.role; }
     bool wrong_role_a_name(const QString &);
     bool wrong_role_b_name(const QString &);
     
     AType get_association() const { return association; }
     void set_association(const AType & t);
     
-    const char * get_multiplicity_a() const { return a.multiplicity; };
-    const char * get_multiplicity_b() const { return b.multiplicity; };
+    const char * get_multiplicity_a() const { return a.multiplicity; }
+    const char * get_multiplicity_b() const { return b.multiplicity; }
       
-    bool get_isa_class_relation_a() const { return a.isa_class_relation; };
-    bool get_isa_class_relation_b() const { return b.isa_class_relation; };
+    bool get_isa_class_relation_a() const { return a.isa_class_relation; }
+    bool get_isa_class_relation_b() const { return b.isa_class_relation; }
     
-    bool get_isa_const_relation_a() const { return a.isa_const_relation; };
-    bool get_isa_const_relation_b() const { return b.isa_const_relation; };
+    bool get_isa_const_relation_a() const { return a.isa_const_relation; }
+    bool get_isa_const_relation_b() const { return b.isa_const_relation; }
     
-    UmlVisibility get_uml_visibility_a() const { return a.uml_visibility; };
-    UmlVisibility get_uml_visibility_b() const { return b.uml_visibility; };
+    bool get_is_derived_a() const { return a.is_derived; }
+    bool get_is_derived_b() const { return b.is_derived; }
+    
+    bool get_is_derivedunion_a() const { return a.is_derivedunion; }
+    bool get_is_derivedunion_b() const { return b.is_derivedunion; }
+    
+    bool get_is_ordered_a() const { return a.is_ordered; }
+    bool get_is_ordered_b() const { return b.is_ordered; }
+    
+    bool get_is_unique_a() const { return a.is_unique; }
+    bool get_is_unique_b() const { return b.is_unique; }
+    
+    UmlVisibility get_uml_visibility_a() const { return a.uml_visibility; }
+    UmlVisibility get_uml_visibility_b() const { return b.uml_visibility; }
     virtual UmlVisibility get_visibility(BrowserNode *);
     
-    const char * get_comment_a() const { return a.comment; };
-    const char * get_comment_b() const { return b.comment; };
-    void  set_comment_a(const char * s) { a.comment = s; };
-    void set_comment_b(const char * s) { b.comment = s; };
+    const char * get_comment_a() const { return a.comment; }
+    const char * get_comment_b() const { return b.comment; }
+    void  set_comment_a(const char * s) { a.comment = s; }
+    void set_comment_b(const char * s) { b.comment = s; }
     
-    const char * get_constraint_a() const { return a.constraint; };
-    const char * get_constraint_b() const { return b.constraint; };
-    void  set_constraint_a(const char * s) { a.constraint = s; };
-    void set_constraint_b(const char * s) { b.constraint = s; };
+    const char * get_constraint_a() const { return a.constraint; }
+    const char * get_constraint_b() const { return b.constraint; }
+    void  set_constraint_a(const char * s) { a.constraint = s; }
+    void set_constraint_b(const char * s) { b.constraint = s; }
     
-    bool get_cpp_virtual_inheritance() const { return a.cpp_virtual_inheritance; };
+    bool get_cpp_virtual_inheritance() const { return a.cpp_virtual_inheritance; }
     
-    UmlVisibility get_cpp_visibility_a() const { return a.cpp_visibility; };
-    UmlVisibility get_cpp_visibility_b() const { return b.cpp_visibility; };
+    UmlVisibility get_cpp_visibility_a() const { return a.cpp_visibility; }
+    UmlVisibility get_cpp_visibility_b() const { return b.cpp_visibility; }
     
-    const char * get_cppdecl_a() const { return a.cpp_decl; };
-    const char * get_cppdecl_b() const { return b.cpp_decl; };
+    const char * get_cppdecl_a() const { return a.cpp_decl; }
+    const char * get_cppdecl_b() const { return b.cpp_decl; }
     
-    const char * get_javadecl_a() const { return a.java_decl; };
-    const char * get_javadecl_b() const { return b.java_decl; };
+    const char * get_javadecl_a() const { return a.java_decl; }
+    const char * get_javadecl_b() const { return b.java_decl; }
     
-    const char * get_phpdecl_a() const { return a.php_decl; };
-    const char * get_phpdecl_b() const { return b.php_decl; };
+    const char * get_phpdecl_a() const { return a.php_decl; }
+    const char * get_phpdecl_b() const { return b.php_decl; }
     
-    const char * get_pythondecl_a() const { return a.python_decl; };
-    const char * get_pythondecl_b() const { return b.python_decl; };
+    const char * get_pythondecl_a() const { return a.python_decl; }
+    const char * get_pythondecl_b() const { return b.python_decl; }
     
-    const char * get_idldecl_a() const { return a.idl_decl; };
-    const char * get_idldecl_b() const { return b.idl_decl; };
+    const char * get_idldecl_a() const { return a.idl_decl; }
+    const char * get_idldecl_b() const { return b.idl_decl; }
     static const char * get_idlcase(const RoleData & role);
     void set_idlcase(RoleData & role, BrowserAttribute * a, const char * e);
-    bool get_idl_truncatable() const { return a.idl_truncatable_inheritance; };
+    bool get_idl_truncatable() const { return a.idl_truncatable_inheritance; }
     
     void select_in_browser(bool prefer_start) const;
     

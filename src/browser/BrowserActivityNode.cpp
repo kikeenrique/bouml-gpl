@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -32,6 +32,7 @@
 #include <qcursor.h>
 
 #include "BrowserActivityNode.h"
+#include "BrowserActivityDiagram.h"
 #include "BrowserFlow.h"
 #include "FlowData.h"
 #include "ParameterData.h"
@@ -100,6 +101,8 @@ void BrowserActivityNode::update_idmax_for_root()
 void BrowserActivityNode::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
   BrowserFlow::compute_referenced_by(l, this);
+  if (! ondelete)
+    BrowserActivityDiagram::compute_referenced_by(l, this, "activitynodecanvas", "activitynode_ref");
 }
 
 void BrowserActivityNode::renumber(int phase) {
@@ -108,6 +111,13 @@ void BrowserActivityNode::renumber(int phase) {
 }
 
 const QPixmap* BrowserActivityNode::pixmap(int) const {
+  if (! deletedp()) {
+    const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+    if (px != 0)
+      return px;
+  }
+  
   switch (kind) {
   case InitialAN:
     if (deletedp()) 
@@ -655,8 +665,8 @@ BrowserActivityNode * BrowserActivityNode::read(char * & st, char * k,
     
     result->BrowserNode::read(st, k);
     
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     if (strcmp(k, "end")) {
       while (BrowserFlow::read(st, k, result))

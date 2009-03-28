@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,6 +44,7 @@ class BrowserColDiagram : public BrowserDiagram {
     SimpleData * def;
     ColDiagramWindow * window;
     CollaborationDiagramSettings settings;
+    CollaborationDiagramSettings * used_settings;
     UmlColor note_color;
     UmlColor fragment_color;
     UmlColor package_color;
@@ -75,14 +76,16 @@ class BrowserColDiagram : public BrowserDiagram {
     virtual const char * help_topic() const;
     virtual BasicData * get_data() const;
     virtual void set_name(const char * s);
+    virtual void update_drawing_settings();
     virtual void get_collaborationdiagramsettings(CollaborationDiagramSettings &) const;
     virtual void package_settings(bool & name_in_tab, ShowContextMode & show_context) const;
     virtual UmlColor get_color(UmlCode) const;
     virtual bool get_shadow() const;
     virtual bool get_draw_all_relations() const;
     virtual void dont_draw_all_relations();
-    virtual bool get_show_stereotype_properties(UmlCode k) const;
-    virtual bool get_classinstwritehorizontally(UmlCode k) const;
+    virtual bool get_auto_label_position() const;    
+    virtual bool get_show_stereotype_properties() const;
+    virtual bool get_classinstwritehorizontally() const;
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserColDiagram * read(char * &, char *, BrowserNode *);
@@ -99,6 +102,9 @@ class BrowserColDiagram : public BrowserDiagram {
     virtual void renumber(int phase);
     static void open_all();
     static void import();
+    
+    static void compute_referenced_by(QList<BrowserNode> & l, BrowserNode *,
+				      const char * kc, char const * kr);
 };
 
 #endif

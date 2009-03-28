@@ -22,6 +22,8 @@ class FileOut : public QTextStream {
 
     void id_prefix(UmlItem * x, const char * pfix);
 
+    void id_prefix(UmlItem * x, const char * pfix, int n);
+
     void idref(UmlItem * x);
 
     //for C++/Java types
@@ -29,10 +31,18 @@ class FileOut : public QTextStream {
 
     void idref_prefix(UmlItem * x, const char * pfix);
 
+    void idref_prefix(UmlItem * x, const char * pfix, int n);
+
     void idref_datatype(const QCString & t);
 
-    //output <space><pfix1>="<pfix2>BOUML_<x>"
+    //output <space><pfix1>="BOUML_<pfix2><x>"
     void ref(UmlItem * x, const char * pfix1, const char * pfix2 = "");
+
+    //output <space><pfix1>="BOUML_<pfix2><n><x>"
+    void ref(UmlItem * x, const char * pfix1, const char * pfix2, int n);
+
+    //output BOUML_<pfix><x>
+    void ref_only(UmlItem * x, const char * pfix);
 
     void define_datatypes(bool uml_20, bool primitive_type, bool gen_extension);
 

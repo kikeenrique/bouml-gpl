@@ -33,6 +33,7 @@ QCString PhpSettings::classStereotype(const QCString & s)
 
 bool PhpSettings::set_ClassStereotype(QCString s, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(phpSettingsCmd, setPhpClassStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlStereotype * st = UmlSettings::_map_class_stereotypes.find(s);
@@ -102,6 +103,24 @@ bool PhpSettings::set_SourceExtension(QCString v)
   UmlCom::send_cmd(phpSettingsCmd, setPhpSourceExtensionCmd, v);
   if (UmlCom::read_bool()) {
     _ext = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool PhpSettings::isGenerateJavadocStyleComment()
+{
+  read_if_needed_();
+
+  return _is_generate_javadoc_comment;
+}
+
+bool PhpSettings::set_IsGenerateJavadocStyleComment(bool v)
+{
+  UmlCom::send_cmd(phpSettingsCmd, setPhpJavadocStyleCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_generate_javadoc_comment = v;
     return TRUE;
   }
   else
@@ -416,6 +435,8 @@ QCString PhpSettings::_src_content;
 
 QCString PhpSettings::_ext;
 
+bool PhpSettings::_is_generate_javadoc_comment;
+
 void PhpSettings::read_()
 {
   _root = UmlCom::read_string();
@@ -451,6 +472,7 @@ void PhpSettings::read_()
     (aVisibility) UmlCom::read_char();
   _set_name = UmlCom::read_string();
   _is_set_final = UmlCom::read_bool();
+  _is_generate_javadoc_comment = UmlCom::read_bool();
 }
 
 void PhpSettings::read_if_needed_()

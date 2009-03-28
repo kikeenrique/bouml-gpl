@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -305,7 +305,7 @@ bool UmlOperation::new_one(Class * container, const QCString & name,
   if (!comment.isEmpty())
     if (op != 0) 
       op->set_Description((def.find("${description}") != -1)
-			  ? description : comment);
+			  ? description : Lex::simplify_comment(comment));
   return TRUE;
 }
 

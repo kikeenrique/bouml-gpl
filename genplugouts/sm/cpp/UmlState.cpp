@@ -72,6 +72,8 @@ void UmlState::init(UmlClass * mother, QCString path, QCString pretty_path, UmlS
   _class->set_Visibility((mother->parent()->kind() == aClass)
 			 ? PublicVisibility // for friend
 			 : ProtectedVisibility);
+  
+  _class->addDestructor();
 
   // create if needed the attribute memorizing the class instance
   // implementing the state
@@ -160,6 +162,7 @@ void UmlState::generate() {
       anystate->defaultDef();
       anystate->setComment("Mother class of all the classes representing states");
       anystate->set_Visibility(ProtectedVisibility);
+      anystate->addDestructor();
       
       // add abstract operation _upper
       UmlOperation * upper;
@@ -198,6 +201,8 @@ void UmlState::generate() {
       machine_constr->setType("", "");
       if (machine_constr->cppBody().isEmpty())
 	machine_constr->set_CppBody("  _current_state = 0;\n");
+      
+      machine->addDestructor();
       
       // generate the machine
       generate(machine, anystate, this);

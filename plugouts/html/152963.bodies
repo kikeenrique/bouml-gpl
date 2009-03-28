@@ -1,0 +1,75 @@
+class UmlReplyAction
+!!!258307.cpp!!!	sKind() : string
+  return "reply activity action";
+!!!258307.java!!!	sKind() : string
+  return "reply activity action";
+!!!258179.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  UmlActivityAction::html();
+
+  QCString s = replyToCall();
+
+  fw.write("<p>replyToCall :</p><ul>");
+  
+  if (!s.isEmpty()) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppReplyToCall();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaReplyToCall();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  write_children(pfix, rank, level);
+
+  unload(FALSE, FALSE);
+!!!258179.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  super.html();
+
+  String s;
+  
+  fw.write("<p>replyToCall :</p><ul>");
+  
+  s = replyToCall ();
+
+  if (s.length() != 0) {
+    fw.write("<li>OCL : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = cppReplyToCall();
+
+  if (s.length() != 0) {
+    fw.write("<li>C++ : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  s = javaReplyToCall();
+
+  if (s.length() != 0) {
+    fw.write("<li>Java : <pre>\n");
+    writeq(s);
+    fw.write("</pre></li>");
+  }
+
+  fw.write("</ul>");
+
+  write_children(pfix, rank, level);
+
+  unload(false, false);

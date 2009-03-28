@@ -161,12 +161,12 @@ class UmlBaseRelation : public UmlClassMember {
 
 
   private:
-    bool _read_only;
+    bool _read_only : 1;
 
 #ifdef WITHCPP
     bool _cpp_virtual_inheritance : 1;
 
-    bool _cpp_mutable;
+    bool _cpp_mutable : 1;
 #endif
 
 #ifdef WITHJAVA

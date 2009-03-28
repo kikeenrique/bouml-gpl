@@ -21,7 +21,13 @@ bool UmlBaseAttribute::isReadOnly() {
 }
 
 bool UmlBaseAttribute::set_isReadOnly(bool y) {
-  return set_it_(_read_only, y, setIsReadOnlyCmd);
+  UmlCom::send_cmd(_identifier, setIsReadOnlyCmd, (char) y);
+  if (UmlCom::read_bool()) {
+    _read_only = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 const QCString & UmlBaseAttribute::defaultValue() {
@@ -94,7 +100,13 @@ bool UmlBaseAttribute::isCppMutable() {
 }
 
 bool UmlBaseAttribute::set_isCppMutable(bool y) {
-  return set_it_(_cpp_mutable, y, setIsCppMutableCmd);
+  UmlCom::send_cmd(_identifier, setIsCppMutableCmd, (char) y);
+  if (UmlCom::read_bool()) {
+    _cpp_mutable = y;
+    return TRUE;
+  }
+ else
+   return FALSE;
 }
 #endif
 
@@ -106,8 +118,13 @@ bool UmlBaseAttribute::isJavaTransient() {
 }
 
 bool UmlBaseAttribute::set_isJavaTransient(bool y) {
-  return set_it_(_java_transient, y, setIsJavaTransientCmd);
-
+  UmlCom::send_cmd(_identifier, setIsJavaTransientCmd, (char) y);
+  if (UmlCom::read_bool()) {
+    _java_transient = y;
+    return TRUE;
+  }
+ else
+   return FALSE;
 }
 #endif
 
@@ -159,6 +176,12 @@ void UmlBaseAttribute::read_uml_() {
   _multiplicity = UmlCom::read_string();
   _default_value = UmlCom::read_string();
   _read_only = UmlCom::read_bool();
+#if APIVERSION > 41
+  /*_is_derived =*/ UmlCom::read_bool();
+  /*_is_derivedunion =*/ UmlCom::read_bool();
+  /*_is_ordered =*/ UmlCom::read_bool();
+  /*_is_unique =*/ UmlCom::read_bool();
+#endif
   _get_oper = (UmlOperation *) UmlBaseItem::read_();
   _set_oper = (UmlOperation *) UmlBaseItem::read_();
 }

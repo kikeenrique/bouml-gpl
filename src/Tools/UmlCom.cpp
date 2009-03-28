@@ -280,9 +280,6 @@ void UmlCom::send_cmd(CmdFamily f, unsigned int cmd, const char * s)
   flush();
 }
 
-#if APIVERSION == 40
-#error a ajouter via plugout upgrade
-#endif
 void UmlCom::send_cmd(CmdFamily f, unsigned int cmd, const char * s, bool b)
 {
 #ifdef TRACE

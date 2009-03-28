@@ -7,7 +7,6 @@
 #include <qcstring.h>
 
 class UmlStateAction;
-class UmlState;
 
 class UmlBaseStateAction : public UmlItem {
   public:
@@ -16,7 +15,7 @@ class UmlBaseStateAction : public UmlItem {
     // In case it cannot be created ('parent' cannot contain it etc ...)
     // return 0 in C++ and produce a RuntimeException in Java
     
-    static UmlStateAction * create(UmlState * parent);
+    static UmlStateAction * create(UmlItem * parent);
 
     // returns the kind of the item
     virtual anItemKind kind();

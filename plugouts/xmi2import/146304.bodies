@@ -111,14 +111,14 @@ class UmlBaseClassInstance
 !!!228608.cpp!!!	set_AttributeValue(in attribute : UmlAttribute, in value : str) : bool
   UmlCom::send_cmd(_identifier, setAttributeCmd, attribute->_identifier, value);
   return UmlCom::read_bool();
-!!!228736.cpp!!!	add_Relation(in relation : UmlAttribute, in other : UmlClassInstance) : bool
+!!!228736.cpp!!!	add_Relation(in relation : UmlRelation, in other : UmlClassInstance) : bool
   QVector<UmlItem> v(2);
 
   v.insert(0, relation);
   v.insert(1, other);
   UmlCom::send_cmd(_identifier, addRelationCmd, v);
   return UmlCom::read_bool();
-!!!228864.cpp!!!	remove_Relation(in relation : UmlAttribute, in other : UmlClassInstance) : bool
+!!!228864.cpp!!!	remove_Relation(in relation : UmlRelation, in other : UmlClassInstance) : bool
   QVector<UmlItem> v(2);
 
   v.insert(0, relation);
@@ -134,7 +134,7 @@ class UmlBaseClassInstance
 
   return _assoc_diagram;
 !!!229120.cpp!!!	set_AssociatedDiagram(in d : UmlObjectDiagram) : bool
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -142,7 +142,7 @@ class UmlBaseClassInstance
   else
     return FALSE;
 !!!229120.java!!!	set_AssociatedDiagram(in d : UmlObjectDiagram) : bool
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, d.identifier_());
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, (d == null) ? (long) 0 : d.identifier_());
   UmlCom.check();
   _assoc_diagram = d;
 !!!229248.cpp!!!	read_uml_() : void

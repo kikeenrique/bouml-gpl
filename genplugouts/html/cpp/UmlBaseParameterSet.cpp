@@ -22,7 +22,8 @@ const QVector<UmlActivityPin> & UmlBaseParameterSet::pins() {
 bool UmlBaseParameterSet::set_Pins(const QVector<UmlActivityPin> & v) {
   UmlCom::send_cmd(_identifier, replaceParameterCmd, (const QVector<UmlItem> &) v);
   if (UmlCom::read_bool()) {
-    if (_defined) _pins = v;
+      // tests != to bypass Qt 2.3 bug
+    if (_defined && (&_pins != &v)) _pins = v;
     return TRUE;
   }
   else

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@
 #include "UmlEnum.h"
 #include "DialogUtil.h"
 
+BrowserSearchDialog * BrowserSearchDialog::the;
 int BrowserSearchDialog::saved_kind;
 QString BrowserSearchDialog::saved_ed;
 bool BrowserSearchDialog::saved_case_sensitive;
@@ -62,9 +63,12 @@ static const struct {
   { "activity", UmlActivity },
   { "activity action", UmlActivityAction },
   { "activity diagram", UmlActivityDiagram },
+  { "activity expansion region", UmlExpansionRegion },
+  { "activity interruptible region", UmlInterruptibleActivityRegion },
   { "activity node", UmlActivityNode },
   { "activity object", UmlActivityObject },
   { "activity parameter", UmlParameter },
+  { "activity partition", UmlActivityPartition },
   { "attribute", UmlAttribute },
   { "artifact ", UmlArtifact },
   { "class ", UmlClass },
@@ -100,7 +104,8 @@ static const struct {
 };
 
 BrowserSearchDialog::BrowserSearchDialog()
-    : QDialog(0, "Browser search", TRUE) {
+    : QDialog(0, "Browser search", FALSE, WDestructiveClose) {
+  the = this;
   setCaption("Browser search");
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
@@ -148,23 +153,31 @@ BrowserSearchDialog::BrowserSearchDialog()
   gl->addWidget(results, 3, 1);
 
   QHBoxLayout * hbox = new QHBoxLayout(vbox); 
-  hbox->setMargin(5);
   QPushButton * search_b = new QPushButton("Search", this);
-  QPushButton * select_b = new QPushButton("Select", this);
   QPushButton * close_b = new QPushButton("Close", this);
   
-  search_b->setDefault(TRUE);
-  
+  hbox->setMargin(5);
   hbox->addWidget(search_b);
-  hbox->addWidget(select_b);
+  hbox->addWidget(select_b = new QPushButton("Select", this));
+  hbox->addWidget(mark_unmark_b = new QPushButton("Unmark", this));
+  hbox->addWidget(mark_them_b = new QPushButton("Mark them", this));
+  hbox->addWidget(unmark_all_b = new QPushButton("Unmark all", this));
   hbox->addWidget(close_b);
+  
+  search_b->setDefault(TRUE);
   
   connect(search_b, SIGNAL(clicked()), this, SLOT(search()));
   connect(select_b, SIGNAL(clicked()), this, SLOT(select()));
   connect(close_b, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(mark_unmark_b, SIGNAL(clicked()), this, SLOT(mark_unmark()));
+  connect(mark_them_b, SIGNAL(clicked()), this, SLOT(mark_them()));
+  connect(unmark_all_b, SIGNAL(clicked()), this, SLOT(unmark_all()));
+  connect(results, SIGNAL(activated(int)), this, SLOT(selected(int)));
   
   if ((saved_kind != 0) || !saved_ed.isEmpty())
     search();
+  else
+    selected(-1);
 }
 
 void BrowserSearchDialog::polish() {
@@ -175,6 +188,7 @@ void BrowserSearchDialog::polish() {
 }
 
 BrowserSearchDialog::~BrowserSearchDialog() {
+  the = 0;
   saved_kind = kind->currentItem();
   saved_ed = ed->text();
   saved_case_sensitive = case_sensitive->isChecked();
@@ -188,6 +202,8 @@ BrowserSearchDialog::~BrowserSearchDialog() {
 void BrowserSearchDialog::search() {
   QApplication::setOverrideCursor(Qt::waitCursor);
 
+  results->clear();
+  
   nodes.clear();
   if (for_name->isChecked())
     nodes.search(BrowserView::get_project(), Kinds[kind->currentItem()].k,
@@ -201,16 +217,60 @@ void BrowserSearchDialog::search() {
     nodes.search_ddb(BrowserView::get_project(), Kinds[kind->currentItem()].k,
 		     ed->text(), case_sensitive->isChecked(),
 		     even_deleted->isChecked());
-  nodes.sort();
   
-  results->clear();
-  
-  BrowserNode * bn;
-  
-  for (bn = nodes.first(); bn != 0; bn = nodes.next())
-    results->insertItem(*(bn->pixmap(0)), bn->full_name(TRUE));
+  if (! nodes.isEmpty()) {
+    nodes.sort();
+    
+    BrowserNode * bn;
+    
+    for (bn = nodes.first(); bn != 0; bn = nodes.next())
+      results->insertItem(*(bn->pixmap(0)), bn->full_name(TRUE));
+    
+    selected(0);
+  }
+  else
+    selected(-1);
 
   QApplication::restoreOverrideCursor();
+}
+
+void BrowserSearchDialog::selected(int index) {
+  if (index == -1) {
+    select_b->setEnabled(FALSE);
+    mark_unmark_b->setEnabled(FALSE);
+    mark_them_b->setEnabled(FALSE);
+  }
+  else {
+    select_b->setEnabled(TRUE);
+    mark_unmark_b->setEnabled(TRUE);
+    mark_unmark_b->setText((nodes.at(index)->markedp())
+			   ? "Unmark" : "Mark");
+    mark_them_b->setEnabled(TRUE);
+  }
+  
+  unmark_all_b->setEnabled(!BrowserNode::marked_nodes().isEmpty());
+}
+
+void BrowserSearchDialog::mark_unmark() {
+  BrowserNode * bn = nodes.at(results->currentItem());
+  
+  bn->toggle_mark();  	// call update
+  BrowserView::force_visible(bn);
+}
+
+void BrowserSearchDialog::mark_them() {
+  BrowserNode * bn;
+    
+  for (bn = nodes.first(); bn != 0; bn = nodes.next()) {
+    if (! bn->markedp()) {
+      bn->toggle_mark();  	// call update
+      BrowserView::force_visible(bn);
+    }
+  }
+}
+
+void BrowserSearchDialog::unmark_all() {
+  BrowserNode::unmark_all();  	// call update
 }
 
 void BrowserSearchDialog::select() {
@@ -218,3 +278,6 @@ void BrowserSearchDialog::select() {
     nodes.at(results->currentItem())->select_in_browser();
 }
 
+void BrowserSearchDialog::update() {
+  selected((results->count() != 0) ? results->currentItem() : -1);
+}

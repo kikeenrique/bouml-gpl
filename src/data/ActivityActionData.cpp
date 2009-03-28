@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -235,10 +235,33 @@ void ActivityActionData::set_action_kind(UmlActionKind k) {
   case UmlUnmarshallAction:
     action = new UnmarshallAction;
     break;
-  default:
-    // UmlValueSpecificationAction
+  case UmlValueSpecificationAction:
     action = new ValueSpecificationAction;
     break;
+  case UmlAcceptCallAction:
+    action = new AcceptCallAction;
+    break;
+  case UmlReplyAction:
+    action = new ReplyAction;
+    break;
+  case UmlCreateObjectAction:
+    action = new CreateObjectAction;
+    break;
+  case UmlDestroyObjectAction:
+    action = new DestroyObjectAction;
+    break;
+  case UmlTestIdentityAction:
+    action = new TestIdentityAction;
+    break;
+  case UmlRaiseExceptionAction:
+    action = new RaiseExceptionAction;
+    break;
+  case UmlReduceAction:
+    action = new ReduceAction;
+    break;
+  default:
+    // error
+    action = 0;
   }
 }
 
@@ -308,10 +331,33 @@ void ActivityActionData::read(char * & st, char * & k) {
   case UmlUnmarshallAction:
     (action = new UnmarshallAction())->read(st, k);	// update k
     break;
-  default:
-    // UmlValueSpecificationAction
+  case UmlValueSpecificationAction:
     (action = new ValueSpecificationAction())->read(st, k);	// update k
     break;
+  case UmlAcceptCallAction:
+    (action = new AcceptCallAction())->read(st, k);	// update k
+    break;
+  case UmlReplyAction:
+    (action = new ReplyAction())->read(st, k);	// update k
+    break;
+  case UmlCreateObjectAction:
+    (action = new CreateObjectAction())->read(st, k);	// update k
+    break;
+  case UmlDestroyObjectAction:
+    (action = new DestroyObjectAction())->read(st, k);	// update k
+    break;
+  case UmlTestIdentityAction:
+    (action = new TestIdentityAction())->read(st, k);	// update k
+    break;
+  case UmlRaiseExceptionAction:
+    (action = new RaiseExceptionAction())->read(st, k);	// update k
+    break;
+  case UmlReduceAction:
+    (action = new ReduceAction())->read(st, k);	// update k
+    break;
+  default:
+    // error
+    action = 0;
   }
 
   update_depend();
@@ -410,10 +456,6 @@ QString OpaqueAction::str(DrawingLanguage lang, QString name) const {
   return (s.isEmpty()) 
     ? AnyAction::str(lang, name)
     : toUnicode(s);
-}
-
-bool OpaqueAction::may_add_pin() const {
-  return TRUE;
 }
 
 void OpaqueAction::save(QTextStream & st, QString &) const {
@@ -943,10 +985,6 @@ UmlActionKind CallBehaviorAction::kind() const {
   return UmlCallBehaviorAction;
 }
 
-bool CallBehaviorAction::may_add_pin() const {
-  return TRUE;
-}
-
 QValueList<PinDescr> CallBehaviorAction::pins() const {
   QValueList<PinDescr> r;
 
@@ -1117,7 +1155,7 @@ QValueList<PinDescr> CallOperationAction::pins() const {
     const AType & rt = d->get_return_type();
 
     if ((rt.type != 0) ||
-	!rt.explicit_type.isEmpty() && (rt.explicit_type != "void")) {
+	(!rt.explicit_type.isEmpty() && (rt.explicit_type != "void"))) {
       PinDescr p;
 
       p.dir = UmlReturn;
@@ -1158,10 +1196,6 @@ QValueList<PinDescr> CallOperationAction::pins() const {
   return r;
 }
   
-bool CallOperationAction::may_add_pin() const {
-  return TRUE;
-}
-
 QString CallOperationAction::str(DrawingLanguage lang, QString name) const {
   if (operation == 0)
     return AnyAction::str(lang, name);
@@ -1256,10 +1290,6 @@ UmlActionKind SendObjectAction::kind() const {
   return UmlSendObjectAction;
 }
 
-bool SendObjectAction::may_add_pin() const {
-  return TRUE;
-}
-
 QValueList<PinDescr> SendObjectAction::pins() const {
   // [in] "request" : the sent object
   // [in] "target" : target object,
@@ -1309,10 +1339,6 @@ AnyAction * SendSignalAction::duplicate() const {
 
 UmlActionKind SendSignalAction::kind() const {
   return UmlSendSignalAction;
-}
-
-bool SendSignalAction::may_add_pin() const {
-  return TRUE;
 }
 
 QValueList<PinDescr> SendSignalAction::pins() const {
@@ -1443,10 +1469,6 @@ UmlActionKind UnmarshallAction::kind() const {
   return UmlUnmarshallAction;
 }
 
-bool UnmarshallAction::may_add_pin() const {
-  return TRUE;
-}
-
 QValueList<PinDescr> UnmarshallAction::pins() const {
   // [in] "object" : the unmashalled object
   // [out]* : the objects (pin addable et removables)
@@ -1503,6 +1525,10 @@ QValueList<PinDescr> ValueSpecificationAction::pins() const {
   r.append(p);
 
   return r;
+}
+
+bool ValueSpecificationAction::may_add_pin() const {
+  return FALSE;
 }
 
 void ValueSpecificationAction::save(QTextStream & st, QString &) const {
@@ -1565,6 +1591,603 @@ bool ValueSpecificationAction::tool_cmd(ToolCom *, const char * args) {
     break;
   case setJavaActivityCmd:
     java_value = args;
+    break;
+  default:
+    // cmd not managed at this level
+    return FALSE;
+  }
+      
+  // ok case
+  return TRUE;
+}
+
+// AcceptCallAction
+
+AcceptCallAction::AcceptCallAction() {
+}
+
+AcceptCallAction::~AcceptCallAction() {
+}
+
+AnyAction * AcceptCallAction::duplicate() const {
+  AcceptCallAction * r = new AcceptCallAction;
+  
+  r->uml_trigger = uml_trigger;
+  r->cpp_trigger = cpp_trigger;
+  r->java_trigger = java_trigger; 
+  
+  return r;
+}
+
+UmlActionKind AcceptCallAction::kind() const {
+  return UmlAcceptCallAction;
+}
+
+QValueList<PinDescr> AcceptCallAction::pins() const {
+  // [out] : returnInformation
+  QValueList<PinDescr> r;
+  PinDescr p;
+
+  p.dir = UmlOut;
+  p.name = "returnInformation";
+  r.append(p);
+
+  return r;
+}
+
+void AcceptCallAction::save(QTextStream & st, QString &) const {
+  if (! uml_trigger.isEmpty()) {
+    nl_indent(st);
+    st << "uml_trigger ";
+    save_string(uml_trigger, st);
+  }
+  
+  if (! cpp_trigger.isEmpty()) {
+    nl_indent(st);
+    st << "cpp_trigger ";
+    save_string(cpp_trigger, st);
+  }
+  
+  if (! java_trigger.isEmpty()) {
+    nl_indent(st);
+    st << "java_trigger ";
+    save_string(java_trigger, st);
+  }
+}
+
+void AcceptCallAction::read(char * & st, char * & k) {
+  if (! strcmp(k, "uml_trigger")) {
+    uml_trigger = read_string(st);
+    k = read_keyword(st);
+  }
+  if (! strcmp(k, "cpp_trigger")) {
+    cpp_trigger = read_string(st);
+    k = read_keyword(st);
+  }
+  if (! strcmp(k, "java_trigger")) {
+    java_trigger = read_string(st);
+    k = read_keyword(st);
+  }
+}
+
+void AcceptCallAction::send_def(ToolCom * com, DrawingLanguage lang) {
+  switch (lang) {
+  case UmlView:
+    com->write_string(uml_trigger);
+    break;
+  case CppView:
+    com->write_string(cpp_trigger);
+    break;
+  case JavaView:
+    com->write_string(java_trigger);
+    break;
+  default:
+    break;
+  }
+}
+
+bool AcceptCallAction::tool_cmd(ToolCom *, const char * args) {
+  // note : write access already check
+  switch ((unsigned char) args[-1]) {
+  case setUmlTriggerCmd:
+    uml_trigger = args;
+    break;
+  case setCppTriggerCmd:
+    cpp_trigger = args;
+    break;
+  case setJavaTriggerCmd:
+    java_trigger = args;
+    break;
+  default:
+    // cmd not managed at this level
+    return FALSE;
+  }
+      
+  // ok case
+  return TRUE;
+}
+
+// ReplyAction
+
+ReplyAction::ReplyAction() {
+}
+
+ReplyAction::~ReplyAction() {
+}
+
+AnyAction * ReplyAction::duplicate() const {
+  ReplyAction * r = new ReplyAction;
+  
+  r->uml_trigger = uml_trigger;
+  r->cpp_trigger = cpp_trigger;
+  r->java_trigger = java_trigger; 
+  
+  return r;
+}
+
+UmlActionKind ReplyAction::kind() const {
+  return UmlReplyAction;
+}
+
+QValueList<PinDescr> ReplyAction::pins() const {
+  // [in] : returnInformation
+  QValueList<PinDescr> r;
+  PinDescr p;
+
+  p.dir = UmlIn;
+  p.name = "returnInformation";
+  r.append(p);
+
+  return r;
+}
+
+void ReplyAction::save(QTextStream & st, QString &) const {
+  if (! uml_trigger.isEmpty()) {
+    nl_indent(st);
+    st << "uml_trigger ";
+    save_string(uml_trigger, st);
+  }
+  
+  if (! cpp_trigger.isEmpty()) {
+    nl_indent(st);
+    st << "cpp_trigger ";
+    save_string(cpp_trigger, st);
+  }
+  
+  if (! java_trigger.isEmpty()) {
+    nl_indent(st);
+    st << "java_trigger ";
+    save_string(java_trigger, st);
+  }
+}
+
+void ReplyAction::read(char * & st, char * & k) {
+  if (! strcmp(k, "uml_trigger")) {
+    uml_trigger = read_string(st);
+    k = read_keyword(st);
+  }
+  if (! strcmp(k, "cpp_trigger")) {
+    cpp_trigger = read_string(st);
+    k = read_keyword(st);
+  }
+  if (! strcmp(k, "java_trigger")) {
+    java_trigger = read_string(st);
+    k = read_keyword(st);
+  }
+}
+
+void ReplyAction::send_def(ToolCom * com, DrawingLanguage lang) {
+  switch (lang) {
+  case UmlView:
+    com->write_string(uml_trigger);
+    break;
+  case CppView:
+    com->write_string(cpp_trigger);
+    break;
+  case JavaView:
+    com->write_string(java_trigger);
+    break;
+  default:
+    break;
+  }
+}
+
+bool ReplyAction::tool_cmd(ToolCom *, const char * args) {
+  // note : write access already check
+  switch ((unsigned char) args[-1]) {
+  case setUmlTriggerCmd:
+    uml_trigger = args;
+    break;
+  case setCppTriggerCmd:
+    cpp_trigger = args;
+    break;
+  case setJavaTriggerCmd:
+    java_trigger = args;
+    break;
+  default:
+    // cmd not managed at this level
+    return FALSE;
+  }
+      
+  // ok case
+  return TRUE;
+}
+
+// CreateObjectAction
+
+CreateObjectAction::CreateObjectAction() {
+}
+
+CreateObjectAction::~CreateObjectAction() {
+}
+
+AnyAction * CreateObjectAction::duplicate() const {
+  CreateObjectAction * r = new CreateObjectAction;
+  
+  r->classifier = classifier;
+  
+  return r;
+}
+
+UmlActionKind CreateObjectAction::kind() const {
+  return UmlCreateObjectAction;
+}
+
+QValueList<PinDescr> CreateObjectAction::pins() const {
+  // [out] : return
+  QValueList<PinDescr> r;
+  PinDescr p;
+
+  p.dir = UmlOut;
+  p.name = "return";
+  r.append(p);
+
+  return r;
+}
+
+void CreateObjectAction::save(QTextStream & st, QString &) const {
+  if (! classifier.isEmpty()) {
+    nl_indent(st);
+    st << "classifier ";
+    save_string(classifier, st);
+  }
+}
+
+void CreateObjectAction::read(char * & st, char * & k) {
+  if (! strcmp(k, "classifier")) {
+    classifier = read_string(st);
+    k = read_keyword(st);
+  }
+}
+
+void CreateObjectAction::send_def(ToolCom * com, DrawingLanguage lang) {
+  if (lang == UmlView) {
+    com->write_string(classifier);
+  }
+}
+
+bool CreateObjectAction::tool_cmd(ToolCom *, const char * args) {
+  // note : write access already check
+  switch ((unsigned char) args[-1]) {
+  case setDefCmd:
+    classifier = args;
+    break;
+  default:
+    // cmd not managed at this level
+    return FALSE;
+  }
+      
+  // ok case
+  return TRUE;
+}
+
+// DestroyObjectAction
+
+DestroyObjectAction::DestroyObjectAction()
+    : is_destroy_links(FALSE), is_destroy_owned_objects(FALSE) {
+}
+
+DestroyObjectAction::~DestroyObjectAction() {
+}
+
+AnyAction * DestroyObjectAction::duplicate() const {
+  DestroyObjectAction * r = new DestroyObjectAction;
+  
+  r->is_destroy_links = is_destroy_links;
+  r->is_destroy_owned_objects = is_destroy_owned_objects;
+  
+  return r;
+}
+
+UmlActionKind DestroyObjectAction::kind() const {
+  return UmlDestroyObjectAction;
+}
+
+QValueList<PinDescr> DestroyObjectAction::pins() const {
+  // [in] : target
+  QValueList<PinDescr> r;
+  PinDescr p;
+
+  p.dir = UmlIn;
+  p.name = "target";
+  r.append(p);
+
+  return r;
+}
+
+bool DestroyObjectAction::may_add_pin() const {
+  return FALSE;
+}
+
+void DestroyObjectAction::save(QTextStream & st, QString &) const {  
+  if (is_destroy_links) {
+    nl_indent(st);
+    st << "is_destroy_links ";
+    if (is_destroy_owned_objects)
+      st << "is_destroy_owned_objects";
+  }
+  else if (is_destroy_owned_objects) {
+    nl_indent(st);
+    st << "is_destroy_owned_objects";
+  }
+}
+
+void DestroyObjectAction::read(char * & st, char * & k) {
+  if (! strcmp(k, "is_destroy_links")) {
+    is_destroy_links = TRUE;
+    k = read_keyword(st);
+  }
+  if (! strcmp(k, "is_destroy_owned_objects")) {
+    is_destroy_owned_objects = TRUE;
+    k = read_keyword(st);
+  }
+}
+
+void DestroyObjectAction::send_def(ToolCom * com, DrawingLanguage lang) {
+  if (lang == UmlView) {
+    com->write_bool(is_destroy_links);
+    com->write_bool(is_destroy_owned_objects);
+  }
+}
+
+bool DestroyObjectAction::tool_cmd(ToolCom *, const char * args) {
+  // note : write access already check
+  switch ((unsigned char) args[-1]) {
+  case setTypeCmd:
+    is_destroy_links = (*args != 0);
+    break;
+  case setFlagCmd:
+    is_destroy_owned_objects = (*args != 0);
+    break;
+  default:
+    // cmd not managed at this level
+    return FALSE;
+  }
+      
+  // ok case
+  return TRUE;
+}
+
+// TestIdentityAction
+
+TestIdentityAction::TestIdentityAction() {
+}
+
+TestIdentityAction::~TestIdentityAction() {
+}
+
+AnyAction * TestIdentityAction::duplicate() const {
+  return new TestIdentityAction;
+}
+
+UmlActionKind TestIdentityAction::kind() const {
+  return UmlTestIdentityAction;
+}
+
+QValueList<PinDescr> TestIdentityAction::pins() const {
+  // [in] : first
+  // [in] : second
+  // [out] : result
+  QValueList<PinDescr> r;
+  PinDescr p;
+
+  p.dir = UmlIn;
+  p.name = "first";
+  r.append(p);
+
+  p.dir = UmlIn;
+  p.name = "second";
+  r.append(p);
+
+  p.dir = UmlOut;
+  p.name = "result";
+  r.append(p);
+
+  return r;
+}
+  
+bool TestIdentityAction::may_add_pin() const {
+  return FALSE;
+}
+
+void TestIdentityAction::save(QTextStream &, QString &) const {
+  // does nothing
+}
+
+void TestIdentityAction::read(char * &, char * &) {
+  // does nothing
+}
+
+void TestIdentityAction::send_def(ToolCom *, DrawingLanguage) {
+  // does nothing
+}
+
+// RaiseExceptionAction
+
+RaiseExceptionAction::RaiseExceptionAction() {
+}
+
+RaiseExceptionAction::~RaiseExceptionAction() {
+}
+
+AnyAction * RaiseExceptionAction::duplicate() const {
+  return new RaiseExceptionAction;
+}
+
+UmlActionKind RaiseExceptionAction::kind() const {
+  return UmlRaiseExceptionAction;
+}
+
+QValueList<PinDescr> RaiseExceptionAction::pins() const {
+  // [in] : exception
+  QValueList<PinDescr> r;
+  PinDescr p;
+
+  p.dir = UmlIn;
+  p.name = "exception";
+  r.append(p);
+
+  return r;
+}
+  
+bool RaiseExceptionAction::may_add_pin() const {
+  return FALSE;
+}
+
+void RaiseExceptionAction::save(QTextStream &, QString &) const {
+  // does nothing
+}
+
+void RaiseExceptionAction::read(char * &, char * &) {
+  // does nothing
+}
+
+void RaiseExceptionAction::send_def(ToolCom *, DrawingLanguage) {
+  // does nothing
+}
+
+// ReduceObjectAction
+
+ReduceAction::ReduceAction()
+    : is_ordered(FALSE), reducer(0) {
+}
+
+ReduceAction::~ReduceAction() {
+}
+
+AnyAction * ReduceAction::duplicate() const {
+  ReduceAction * r = new ReduceAction;
+  
+  r->is_ordered = is_ordered;
+  r->reducer = reducer;
+  
+  return r;
+}
+
+UmlActionKind ReduceAction::kind() const {
+  return UmlReduceAction;
+}
+
+bool ReduceAction::may_add_pin() const {
+  return FALSE;
+}
+
+QValueList<PinDescr> ReduceAction::pins() const {
+  // [in] : collection
+  // [out] : result
+  QValueList<PinDescr> r;
+  PinDescr p;
+
+  p.dir = UmlIn;
+  p.name = "collection";
+  r.append(p);
+
+  p.dir = UmlOut;
+  p.name = "result";
+  r.append(p);
+
+  return r;
+}
+
+BasicData * ReduceAction::depend_on() {
+  return (reducer) ? reducer->get_data() : 0;
+}
+
+void ReduceAction::on_delete() {
+  reducer = 0;
+}
+
+BrowserNode * ReduceAction::referenced(const char *& s) const {
+  if (reducer != 0)
+    s = "reducer";
+  return reducer;
+}
+
+void ReduceAction::save(QTextStream & st, QString & warning) const {
+  nl_indent(st);
+  
+  if (is_ordered)
+    st << "is_ordered ";
+  
+  if (reducer == 0)
+    st << "no_reducer";
+  else {
+    switch (reducer->get_type()) {
+    case UmlActivity:
+      ((BrowserActivity *) reducer)->save(st, TRUE, warning);
+      break;
+    default:
+      // a state machine
+      ((BrowserState *) reducer)->save(st, TRUE, warning);
+      break;
+    }
+  }
+}
+
+void ReduceAction::read(char * & st, char * & k) {
+  if (!strcmp(k, "is_ordered")) {
+    is_ordered = TRUE;
+    k = read_keyword(st);
+  }
+  
+  if (strcmp(k, "no_reducer")) {
+    if (((reducer = BrowserActivity::read(st, k, 0)) == 0) &&
+	((reducer = BrowserState::read(st, k, 0)) == 0))
+      wrong_keyword(k, "no_reducer or activity_ref or state_ref");
+  }
+   
+  k = read_keyword(st);
+}
+
+void ReduceAction::send_def(ToolCom * com, DrawingLanguage lang) {
+  if (lang == UmlView) {
+    com->write_bool(is_ordered);
+    if (reducer != 0)
+      reducer->write_id(com);
+    else
+      com->write_id(0);
+  }
+}
+
+bool ReduceAction::tool_cmd(ToolCom * com, const char * args) {
+  // note : write access already check
+  switch ((unsigned char) args[-1]) {
+  case setDefCmd:
+    {
+      BrowserNode * bn = (BrowserNode *) com->get_id(args);
+      
+      switch (bn->get_type()) {
+      case UmlActivity:
+      case UmlState:
+	reducer = bn;
+	break;
+      default:
+	return FALSE;
+      }
+    }
+    break;
+  case setFlagCmd:
+    is_ordered = *args != 0;
     break;
   default:
     // cmd not managed at this level

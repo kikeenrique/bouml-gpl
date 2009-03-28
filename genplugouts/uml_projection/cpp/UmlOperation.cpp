@@ -7,6 +7,7 @@
 #include "JavaSettings.h"
 #include "IdlSettings.h"
 #include "PhpSettings.h"
+#include "PythonSettings.h"
 void UmlOperation::uml2cpp(bool) {
   QCString st = CppSettings::classStereotype(parent()->stereotype());
       
@@ -219,5 +220,38 @@ void UmlOperation::uml2php(bool) {
     
     set_ReturnType(t);
   }
+}
+
+void UmlOperation::uml2python(bool) {
+  QCString st = PythonSettings::classStereotype(parent()->stereotype());
+      
+  if ((st == "enum") || (st == "ignored")) {
+    set_PythonDef("");
+    return;
+  }
+
+  if (getOf() || setOf())
+    return;
+    
+  QCString def = PythonSettings::operationDef();
+  unsigned nparams = params().count();
+  
+  if (nparams != 0) {
+    const char * sep = "";
+    QCString sparams;
+    unsigned rank;
+    
+    for (rank = 0; rank != nparams; rank += 1) {
+      char s[16];
+      
+      sprintf(s, "%s${p%u}${v%u}", sep, rank, rank);
+      sparams += s;
+      sep = ", ";
+    }
+    
+    def.insert(def.find("${)}"), sparams);
+  }
+  
+  set_PythonDef(def);
 }
 

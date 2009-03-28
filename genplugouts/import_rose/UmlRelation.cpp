@@ -34,6 +34,7 @@ void UmlRelation::Role::import(File & f) {
   for (;;) {
     switch (k) {
     case ')':
+      target = 0;
       return;
     case ATOM:
       break;

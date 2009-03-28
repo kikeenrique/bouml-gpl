@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -72,6 +72,7 @@ BrowserUseCaseView::BrowserUseCaseView(QString s, BrowserNode * p, int id)
   stateaction_color = UmlDefaultColor;
   activity_color = UmlDefaultColor;
   activityregion_color = UmlDefaultColor;
+  activitypartition_color = UmlDefaultColor;
   activityaction_color = UmlDefaultColor;
   parameterpin_color = UmlDefaultColor;
 }
@@ -98,6 +99,7 @@ BrowserUseCaseView::BrowserUseCaseView(const BrowserUseCaseView * model,
   stateaction_color = model->stateaction_color;
   activity_color = model->activity_color;
   activityregion_color = model->activityregion_color;
+  activitypartition_color = model->activitypartition_color;
   activityaction_color = model->activityaction_color;
   parameterpin_color = model->parameterpin_color;
 }
@@ -146,7 +148,12 @@ void BrowserUseCaseView::renumber(int phase) {
 }
 
 const QPixmap* BrowserUseCaseView::pixmap(int) const {
-  return (deletedp()) ? DeletedUseCaseViewIcon : UseCaseViewIcon;
+  if (deletedp())
+    return DeletedUseCaseViewIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : UseCaseViewIcon;
 }
 
 void BrowserUseCaseView::menu() {
@@ -292,7 +299,7 @@ void BrowserUseCaseView::exec_menu_choice(int rank) {
   case 9:
     {
       QArray<StateSpec> st;
-      QArray<ColorSpec> co(14);
+      QArray<ColorSpec> co(15);
       
       usecasediagram_settings.complete(st, FALSE);
       objectdiagram_settings.complete(st, FALSE);
@@ -313,8 +320,9 @@ void BrowserUseCaseView::exec_menu_choice(int rank) {
       co[9].set("state action color", &stateaction_color);
       co[10].set("activity color", &activity_color);
       co[11].set("activity region color", &activityregion_color);
-      co[12].set("activity action color", &activityaction_color);
-      co[13].set("parameter and pin color", &parameterpin_color);
+      co[12].set("activity partition color", &activitypartition_color);
+      co[13].set("activity action color", &activityaction_color);
+      co[14].set("parameter and pin color", &parameterpin_color);
 
       SettingsDialog dialog(&st, &co, FALSE, FALSE);
       
@@ -482,24 +490,9 @@ void BrowserUseCaseView::get_statediagramsettings(StateDiagramSettings & r) cons
     ((BrowserNode *) parent())->get_statediagramsettings(r);
 }
 
-void BrowserUseCaseView::get_statedrawingsettings(StateDrawingSettings & result) const {
-  if (!statediagram_settings.statedrawingsettings.complete(result))
-    ((BrowserNode *) parent())->get_statedrawingsettings(result);
-}
-
 void BrowserUseCaseView::get_activitydiagramsettings(ActivityDiagramSettings & r) const {
   if (! activitydiagram_settings.complete(r))
     ((BrowserNode *) parent())->get_activitydiagramsettings(r);
-}
-
-void BrowserUseCaseView::get_activitydrawingsettings(ActivityDrawingSettings & result) const {
-  if (!activitydiagram_settings.activitydrawingsettings.complete(result))
-    ((BrowserNode *) parent())->get_activitydrawingsettings(result);
-}
-
-void BrowserUseCaseView::get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const {
-  if (!usecasediagram_settings.complete(r))
-    ((BrowserNode *) parent())->get_simpleclassdiagramsettings(r);
 }
 
 UmlColor BrowserUseCaseView::get_color(UmlCode who) const {
@@ -540,6 +533,9 @@ UmlColor BrowserUseCaseView::get_color(UmlCode who) const {
   case UmlExpansionRegion:
     c = activityregion_color;
     break;
+  case UmlActivityPartition:
+    c = activitypartition_color;
+    break;
   case UmlActivityAction:
     c = activityaction_color;
     break;
@@ -555,252 +551,6 @@ UmlColor BrowserUseCaseView::get_color(UmlCode who) const {
   return (c != UmlDefaultColor)
     ? c
     : ((BrowserNode *) parent())->get_color(who);
-}
-
-bool BrowserUseCaseView::get_shadow(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlUseCaseDiagram:
-    v = usecasediagram_settings.shadow;
-    break;
-  case UmlSeqDiagram:
-    v = sequencediagram_settings.shadow;
-    break;
-  case UmlColDiagram:
-    v = collaborationdiagram_settings.shadow;
-    break;
-  case UmlObjectDiagram:
-    v = objectdiagram_settings.shadow;
-    break;
-  case UmlStateDiagram:
-    v = statediagram_settings.shadow;
-    break;
-  default:
-    //UmlActivityDiagram
-    v = activitydiagram_settings.shadow;
-    break;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_shadow(who);
-  }
-}
-
-bool BrowserUseCaseView::get_draw_all_relations(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlUseCaseDiagram:
-    v = usecasediagram_settings.draw_all_relations;
-    break;
-  case UmlSeqDiagram:
-    v = sequencediagram_settings.draw_all_relations;
-    break;
-  case UmlColDiagram:
-    v = collaborationdiagram_settings.draw_all_relations;
-    break;
-  case UmlObjectDiagram:
-    v = objectdiagram_settings.draw_all_relations;
-    break;
-  case UmlStateDiagram:
-    v = statediagram_settings.draw_all_relations;
-    break;
-  default:
-    //UmlActivityDiagram
-    v = activitydiagram_settings.draw_all_relations;
-    break;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_draw_all_relations(who);
-  }
-}
-
-bool BrowserUseCaseView::get_show_stereotype_properties(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlUseCaseDiagram:
-    v = usecasediagram_settings.show_stereotype_properties;
-    break;
-  case UmlSeqDiagram:
-    v = sequencediagram_settings.show_stereotype_properties;
-    break;
-  case UmlColDiagram:
-    v = collaborationdiagram_settings.show_stereotype_properties;
-    break;
-  case UmlObjectDiagram:
-    v = objectdiagram_settings.show_stereotype_properties;
-    break;
-  case UmlStateDiagram:
-    v = statediagram_settings.statedrawingsettings.show_stereotype_properties;
-    break;
-  default:
-    //UmlActivityDiagram
-    v = activitydiagram_settings.activitydrawingsettings.show_stereotype_properties;
-    break;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_stereotype_properties(who);
-  }
-}
-
-bool BrowserUseCaseView::get_classinstwritehorizontally(UmlCode k) const {
-  Uml3States h;
-  
-  switch (k) {
-  case UmlSeqDiagram:
-    h = sequencediagram_settings.write_horizontally;
-    break;
-  case UmlColDiagram:
-    h = collaborationdiagram_settings.write_horizontally;
-    break;
-  default:
-    // UmlObjectDiagram
-    h = objectdiagram_settings.write_horizontally;
-    break;
-  }
-  
-  return (h == UmlDefaultState)
-    ? ((BrowserNode *) parent())->get_classinstwritehorizontally(k)
-    : (h == UmlYes);
-}
-
-bool BrowserUseCaseView::get_auto_label_position(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlUseCaseDiagram:
-    v = usecasediagram_settings.auto_label_position;
-    break;
-  case UmlObjectDiagram:
-    v = objectdiagram_settings.auto_label_position;
-    break;
-  case UmlStateDiagram:
-    v = statediagram_settings.auto_label_position;
-    break;
-  case UmlActivityDiagram:
-    v = activitydiagram_settings.auto_label_position;
-    break;
-  default:
-    // error
-    return FALSE;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_auto_label_position(who);
-  }
-}
-
-bool BrowserUseCaseView::get_write_label_horizontally(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlStateDiagram:
-    v = statediagram_settings.write_label_horizontally;
-    break;
-  case UmlActivityDiagram:
-    v = activitydiagram_settings.write_label_horizontally;
-    break;
-  default:
-    // error
-    return FALSE;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_write_label_horizontally(who);
-  }
-}
-
-bool BrowserUseCaseView::get_show_trans_definition(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlStateDiagram:
-    v = statediagram_settings.show_trans_definition;
-    break;
-  default:
-    // error
-    return FALSE;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_trans_definition(who);
-  }
-}
-
-bool BrowserUseCaseView::get_show_opaque_action_definition(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlActivityDiagram:
-    v = activitydiagram_settings.show_opaque_action_definition;
-    break;
-  default:
-    // error
-    return FALSE;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_opaque_action_definition(who);
-  }
-}
-
-DrawingLanguage BrowserUseCaseView::get_language(UmlCode who) const {
-  DrawingLanguage v;
-  
-  switch (who) {
-  case UmlStateDiagram:
-    v = statediagram_settings.statedrawingsettings.drawing_language;
-    break;
-  case UmlActivityDiagram:
-    v = activitydiagram_settings.activitydrawingsettings.drawing_language;
-    break;
-  default:
-    // error
-    return UmlView;
-  }
-  
-  return (v != DefaultDrawingLanguage)
-    ? v
-    : ((BrowserNode *) parent())->get_language(who);
 }
 
 bool BrowserUseCaseView::tool_cmd(ToolCom * com, const char * args) {
@@ -891,17 +641,21 @@ bool BrowserUseCaseView::tool_cmd(ToolCom * com, const char * args) {
 }
 
 void BrowserUseCaseView::DragMoveEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, UmlClass) ||
+  bool ucv = UmlDrag::canDecode(e, UmlUseCaseView);
+  
+  if (ucv ||
+      UmlDrag::canDecode(e, UmlClass) ||
       UmlDrag::canDecode(e, UmlClassInstance) ||
       UmlDrag::canDecode(e, UmlUseCase) ||
       UmlDrag::canDecode(e, UmlUseCaseDiagram) ||
       UmlDrag::canDecode(e, UmlSeqDiagram) ||
       UmlDrag::canDecode(e, UmlColDiagram) ||
       UmlDrag::canDecode(e, UmlObjectDiagram) ||
-      UmlDrag::canDecode(e, UmlUseCaseView) ||
       UmlDrag::canDecode(e, UmlState) ||
       UmlDrag::canDecode(e, UmlActivity)) {
-    if (!is_read_only)
+    if (!is_read_only ||
+	(((BrowserNode *) parent())->is_writable() &&
+	 (ucv || (((BrowserNode *) parent())->get_type() == UmlUseCaseView))))
       e->accept();
     else
       e->ignore();
@@ -983,12 +737,14 @@ void BrowserUseCaseView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
        ((bn = UmlDrag::decode(e, UmlState)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlActivity)) != 0)) &&
       (bn != this) && (bn != this)) {
-    if (may_contains(bn, bn->get_type() == UmlUseCaseView)) {
+    bool ucv = bn->get_type() == UmlUseCaseView;
+    
+    if (may_contains(bn, ucv)) {
       BrowserNode * x = this;
       
       if ((after == 0) &&
-	  (bn->get_type() == UmlUseCaseView) &&
-	  ((BrowserNode *) parent())->may_contains(bn, TRUE)) {
+	  (((BrowserNode *) parent())->get_type() == UmlUseCaseView) &&
+	  ((BrowserNode *) parent())->may_contains(bn, ucv)) {
 	// have choice
 	QPopupMenu m(0);
   
@@ -1095,6 +851,7 @@ void BrowserUseCaseView::save(QTextStream & st, bool ref, QString & warning) {
     save_color(st, "stateaction_color", stateaction_color, nl);
     save_color(st, "activity_color", activity_color, nl);
     save_color(st, "activityregion_color", activityregion_color, nl);
+    save_color(st, "activitypartition_color", activitypartition_color, nl);
     save_color(st, "activityaction_color", activityaction_color, nl);
     save_color(st, "parameterpin_color", parameterpin_color, nl);
     
@@ -1148,8 +905,8 @@ BrowserUseCaseView * BrowserUseCaseView::read(char * & st, char * k,
       already_exist->unconsistent_fixed("use case views", result);
     }
     
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
       
     k = read_keyword(st);
       
@@ -1180,6 +937,7 @@ BrowserUseCaseView * BrowserUseCaseView::read(char * & st, char * k,
       read_color(st, "stateaction_color", result->stateaction_color, k);		// updates k
       read_color(st, "activity_color", result->activity_color, k);		// updates k
       read_color(st, "activityregion_color", result->activityregion_color, k);		// updates k
+      read_color(st, "activitypartition_color", result->activitypartition_color, k);		// updates k
       read_color(st, "activityaction_color", result->activityaction_color, k);		// updates k
       read_color(st, "parameterpin_color", result->parameterpin_color, k);		// updates k
     }    

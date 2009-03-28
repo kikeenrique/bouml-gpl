@@ -5,6 +5,7 @@
 
 #include "JavaSettings.h"
 #include "PhpSettings.h"
+#include "PythonSettings.h"
 #include "UmlArtifact.h"
 #include "UmlComponent.h"
 #include "UmlClassDiagram.h"
@@ -40,18 +41,24 @@ void UmlClass::memo_ref() {
 }
 
 void UmlClass::html(QCString pfix, unsigned int rank, unsigned int level) {
+  QCString s = stereotype();
+  
   if (flat) {
     define();
-    if (stereotype() == "stereotype")
+    if (s == "stereotype")
       chapter("Stereotype", pfix, rank, "stereotype", level);
+    else if (s == "metaclass")
+      chapter("Metaclass", pfix, rank, "metaclass", level);
     else
       chapter("Class", pfix, rank, "class", level);
     gen_html(pfix, rank, level);
     unload(FALSE, FALSE);
   }
   else {
-    if (stereotype() == "stereotype")
+    if (s == "stereotype")
       fw.write("<table><tr><td><div class=\"element\">Stereotype <b>");
+    else if (s == "metaclass")
+      fw.write("<table><tr><td><div class=\"element\">Metaclass <b>");
     else
       fw.write("<table><tr><td><div class=\"element\">Class <b>");
     write();
@@ -66,6 +73,8 @@ void UmlClass::html() {
   
   if (stereotype() == "stereotype")
     start_file("stereotype" + s.setNum((unsigned) getIdentifier()), "Stereotype " + name(), TRUE);
+  else if (stereotype() == "metaclass")
+    start_file("metaclass" + s.setNum((unsigned) getIdentifier()), "Metaclass " + name(), TRUE);
   else
     start_file("class" + s.setNum((unsigned) getIdentifier()), "Class " + name(), TRUE);
   define();
@@ -84,7 +93,14 @@ void UmlClass::gen_html(QCString pfix, unsigned int rank, unsigned int level) {
   
   if (!s.isEmpty()) {
     fw.write("<p>");
-    gen_cpp_decl(s, TRUE);
+    if (! javaDecl().isEmpty())
+      gen_java_decl(s, TRUE);
+    else if (! phpDecl().isEmpty())
+      gen_php_decl(s, TRUE);
+    else if (! pythonDecl().isEmpty())
+      gen_python_decl(s, TRUE);
+    else
+      gen_cpp_decl(s, TRUE);
     fw.write("<br /></p>");
   }
   
@@ -102,7 +118,7 @@ void UmlClass::gen_html(QCString pfix, unsigned int rank, unsigned int level) {
 
   if (!s.isEmpty()) {
     fw.write("<li>Java : ");
-    gen_java_decl(s);
+    gen_java_decl(s, FALSE);
     fw.write("</li>");
   }
 
@@ -110,7 +126,15 @@ void UmlClass::gen_html(QCString pfix, unsigned int rank, unsigned int level) {
 
   if (!s.isEmpty()) {
     fw.write("<li>Php : ");
-    gen_php_decl(s);
+    gen_php_decl(s, FALSE);
+    fw.write("</li>");
+  }
+
+  s = pythonDecl();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Python : ");
+    gen_python_decl(s, FALSE);
     fw.write("</li>");
   }
 
@@ -253,15 +277,20 @@ void UmlClass::write() {
   if (!known)
     writeq(name());
   else {
+    QCString s = stereotype();
+    
+    if ((s != "stereotype") && (s != "metaclass"))
+      s = "class";
+    
     if (flat)
       fw.write("<a href=\"index");
     else {
-      fw.write((stereotype() == "stereotype")
-	       ? "<a href=\"stereotype" : "<a href=\"class");
+      fw.write("<a href=\"");
+      fw.write(s);
       fw.write((unsigned) getIdentifier());
     }
-    fw.write((stereotype() == "stereotype")
-	     ? ".html#refstereotype" : ".html#refclass");
+    fw.write(".html#ref");
+    fw.write(s);
     fw.write((unsigned) getIdentifier());
     fw.write("\"><b>");
     writeq(name());
@@ -271,15 +300,20 @@ void UmlClass::write() {
 
 void UmlClass::write(QCString target) {
   if (known) {
+    QCString s = stereotype();
+    
+    if ((s != "stereotype") && (s != "metaclass"))
+      s = "class";
+    
     if (flat)
       fw.write("<a href=\"index");
     else {
-      fw.write((stereotype() == "stereotype")
-	       ? "<a href=\"stereotype" : "<a href=\"class");
+      fw.write("<a href=\"");
+      fw.write(s);
       fw.write((unsigned) getIdentifier());
     }
-    fw.write((stereotype() == "stereotype")
-	       ? ".html#refstereotype" : ".html#refclass");
+    fw.write(".html#ref");
+    fw.write(s);
     fw.write((unsigned) getIdentifier());
     fw.write("\" target = \"");
     fw.write(target);
@@ -431,8 +465,12 @@ void UmlClass::gen_cpp_decl(QCString s, bool descr) {
 	}
       }
     }
-    else if (*p == '{')
-      break;
+    else if (*p == '{') {
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
     else if (*p == '\r')
       p += 1;
     else if (*p == '\n') {
@@ -456,7 +494,7 @@ void UmlClass::gen_cpp_decl(QCString s, bool descr) {
 
 }
 
-void UmlClass::gen_java_decl(QCString s) {
+void UmlClass::gen_java_decl(QCString s, bool descr) {
   const char * p = bypass_comment(s);
   UmlRelation * extend = 0;
 
@@ -548,8 +586,12 @@ void UmlClass::gen_java_decl(QCString s) {
 	p += 1;
       while ((*p != 0) && (*p <= ' '));
     }
-    else if ((*p == '{') || (*p == ';'))
-      break;
+    else if ((*p == '{') || (*p == ';')) {
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
     else if (*p == '@')
       manage_alias(p);
     else
@@ -557,7 +599,7 @@ void UmlClass::gen_java_decl(QCString s) {
   }
 }
 
-void UmlClass::gen_php_decl(QCString s) {
+void UmlClass::gen_php_decl(QCString s, bool descr) {
   QCString st = PhpSettings::classStereotype(stereotype());
   
   if (st == "ignored")
@@ -645,7 +687,69 @@ void UmlClass::gen_php_decl(QCString s) {
 	p += 1;
       while ((*p != 0) && (*p <= ' '));
     }
-    else if ((*p == '{') || (*p == ';'))
+    else if ((*p == '{') || (*p == ';')) {
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
+    else if (*p == '@')
+      manage_alias(p);
+    else
+      writeq(*p++);
+  }
+}
+
+void UmlClass::gen_python_decl(QCString s, bool descr) {
+  QCString st = PythonSettings::classStereotype(stereotype());
+  
+  if (st == "ignored")
+    return;
+    
+  const char * p = bypass_comment(s);
+
+  while (*p != 0) {
+    if (!strncmp(p, "${comment}", 10))
+      p += 10;
+    else if (!strncmp(p, "${description}", 14))
+      p += 14;
+    else if (!strncmp(p, "${docstring}", 12))
+      p += 12;
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      writeq(name());
+    }
+    else if (!strncmp(p, "${inherit}", 10)) {
+      p += 10;
+
+      const QVector<UmlItem> ch = children();
+      bool inh = FALSE;
+
+      for (unsigned i = 0; i != ch.size(); i += 1) {
+	if (ch[i]->kind() == aRelation) {
+	  UmlRelation * rel = (UmlRelation *) ch[i];
+	  aRelationKind k = rel->relationKind();
+	  
+	  if (((k == aGeneralisation) || (k == aRealization)) &&
+	      !rel->pythonDecl().isEmpty()) {
+	    if (inh)
+	      fw.write(", ");
+	    else  {
+	      inh = TRUE;
+	      fw.write('(');
+	    }
+	    rel->roleType()->write();
+	  }
+	}
+      }
+      
+      if (inh)
+	fw.write(')');
+      else if (isPython_2_2())
+	fw.write("(object)");
+      break;
+    }
+    else if (!descr && ((*p == '\r') || (*p == '\n') || (*p == ':')))
       break;
     else if (*p == '@')
       manage_alias(p);

@@ -104,3 +104,19 @@ UmlOperation * UmlClass::trigger(QCString s, UmlClass * machine, UmlClass * anys
   return tr;
 }
 
+void UmlClass::addDestructor() {
+  QCString s = "~" + name();
+  UmlOperation * destr = (UmlOperation *) getChild(anOperation, s);
+  
+  if (destr == 0) {
+    if ((destr = UmlBaseOperation::create(this, s)) == 0) {
+      UmlCom::trace("Error : can't create destructor in class '"
+		    + name() + "'<br>");
+      return;
+    }
+  }
+  destr->defaultDef();
+  destr->setType("", "");
+  destr->set_isCppVirtual(TRUE);
+}
+

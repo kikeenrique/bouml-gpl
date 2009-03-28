@@ -21,6 +21,10 @@ struct UmlStereotype {
     QCString php;
 #endif
 
+#ifdef WITHPHP
+    QCString python;
+#endif
+
 #ifdef WITHIDL
     QCString idl;
 #endif

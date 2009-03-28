@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -27,7 +27,8 @@
 
 #include "UmlExtraClassMember.h"
 
-void UmlExtraClassMember::generate_decl(QTextOStream & f, const QCString &, bool) {
-  f << idlDecl();
+void UmlExtraClassMember::generate_decl(QTextOStream & f, const QCString &,
+					QCString indent, bool) {
+  f << indent << idlDecl();
 }
 

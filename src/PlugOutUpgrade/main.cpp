@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,7 +40,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
     try {
-      UmlCom::trace("<b>Plug-out Upgrade</b> release 1.12.1<br><hr>");
+      UmlCom::trace("<b>Plug-out Upgrade</b> release 1.12.10<br><hr>");
       if (UmlPackage::getProject()->upgrade())
 	UmlCom::trace("<br><hr>Done<br>");
     }

@@ -33,6 +33,7 @@ QCString PhpSettings::classStereotype(const QCString & s)
 
 bool PhpSettings::set_ClassStereotype(QCString s, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(phpSettingsCmd, setPhpClassStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlStereotype * st = UmlSettings::_map_class_stereotypes.find(s);

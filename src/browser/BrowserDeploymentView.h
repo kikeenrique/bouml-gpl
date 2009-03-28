@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -75,13 +75,8 @@ class BrowserDeploymentView : public BrowserNode, public Labeled<BrowserDeployme
 				   bool & duplicable) const;
     virtual BasicData * get_data() const;
     virtual void get_deploymentdiagramsettings(DeploymentDiagramSettings &) const;
-    virtual void get_componentdrawingsettings(bool depl, ComponentDrawingSettings & r) const;
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual UmlColor get_color(UmlCode) const;
-    virtual bool get_shadow(UmlCode) const;
-    virtual bool get_draw_all_relations(UmlCode) const;
-    virtual bool get_show_stereotype_properties(UmlCode k) const;
-    virtual bool get_auto_label_position(UmlCode who) const;
     virtual void save(QTextStream &, bool ref, QString & warning);
     
     virtual void DragMoveEvent(QDragMoveEvent * e);

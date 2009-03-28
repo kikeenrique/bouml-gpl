@@ -58,7 +58,65 @@ bool UmlBaseRelation::isReadOnly() {
 }
 
 bool UmlBaseRelation::set_isReadOnly(bool y) {
-  return set_it_(_read_only, y, setIsReadOnlyCmd);
+  UmlCom::send_cmd(_identifier, setIsReadOnlyCmd, (char) y);
+  if (UmlCom::read_bool()) {
+    _read_only = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool UmlBaseRelation::isDerived() {
+  read_if_needed_();
+  return _derived;
+}
+
+bool UmlBaseRelation::isDerivedUnion() {
+  read_if_needed_();
+  return _derived_union;
+}
+
+bool UmlBaseRelation::set_isDerived(bool is_derived, bool is_union) {
+  UmlCom::send_cmd(_identifier, setDerivedCmd,
+                   (char) (((is_derived) ? 1 : 0) + ((is_union) ? 2 : 0)));
+  if (UmlCom::read_bool()) {
+    _derived = is_derived;
+    _derived_union = is_union;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool UmlBaseRelation::isOrdered() {
+  read_if_needed_();
+  return _ordered;
+}
+
+bool UmlBaseRelation::set_isOrdered(bool v) {
+  UmlCom::send_cmd(_identifier, setOrderingCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _ordered = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool UmlBaseRelation::isUnique() {
+  read_if_needed_();
+  return _unique;
+}
+
+bool UmlBaseRelation::set_isUnique(bool v) {
+  UmlCom::send_cmd(_identifier, setUniqueCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _unique = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 const QCString & UmlBaseRelation::defaultValue() {
@@ -184,9 +242,8 @@ bool UmlBaseRelation::isCppMutable() {
 }
 
 bool UmlBaseRelation::set_isCppMutable(bool y) {
-  bool b;
-  
-  if (set_it_(b, y, setIsCppMutableCmd)) {
+  UmlCom::send_cmd(_identifier, setIsCppMutableCmd, (char) y);
+  if (UmlCom::read_bool()) {
     _cpp_mutable = y;
     return TRUE;
   }
@@ -283,6 +340,10 @@ void UmlBaseRelation::read_uml_() {
   _multiplicity = UmlCom::read_string();
   _default_value = UmlCom::read_string();
   _read_only = UmlCom::read_bool();
+  _derived = UmlCom::read_bool();
+  _derived_union = UmlCom::read_bool();
+  _ordered = UmlCom::read_bool();
+  _unique = UmlCom::read_bool();
   _get_oper = (UmlOperation *) UmlBaseItem::read_();
   _set_oper = (UmlOperation *) UmlBaseItem::read_();
 }
@@ -299,6 +360,18 @@ void UmlBaseRelation::read_cpp_() {
 void UmlBaseRelation::read_java_() {
   UmlBaseClassMember::read_java_();
   _java_transient = UmlCom::read_bool();
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBaseRelation::read_php_() {
+  UmlBaseClassMember::read_php_();
+}
+#endif
+
+#ifdef WITHPYTHON
+void UmlBaseRelation::read_python_() {
+  UmlBaseClassMember::read_python_();
 }
 #endif
 

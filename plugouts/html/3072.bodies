@@ -7,3 +7,21 @@ class UmlBaseCollaborationDiagram
   return aCollaborationDiagram;
 !!!42752.java!!!	kind() : anItemKind
   return anItemKind.aCollaborationDiagram;
+!!!230784.cpp!!!	definition() : UmlCollaborationDiagramDefinition
+  if (_def == 0) {
+    UmlCom::send_cmd(_identifier, sideCmd);
+    (_def = new UmlCollaborationDiagramDefinition())->read_();
+  }
+  return _def;
+!!!230784.java!!!	definition() : UmlCollaborationDiagramDefinition
+  if (_def == null) {
+    UmlCom.send_cmd(identifier_(), OnInstanceCmd.sideCmd);
+    (_def = new UmlCollaborationDiagramDefinition()).read_();
+  }
+  return _def;
+!!!230912.cpp!!!	unload(in rec : bool, in del : bool) : void
+  if (_def != 0) { delete _def; _def = 0; }
+  UmlBaseDiagram::unload(rec, del);
+!!!230912.java!!!	unload(in rec : bool, in del : bool) : void
+  _def = null;
+  super.unload(rec, del);

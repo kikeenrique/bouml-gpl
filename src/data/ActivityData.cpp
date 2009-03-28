@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -32,22 +32,24 @@
 #include "BrowserActivity.h"
 #include "ActivityData.h"
 #include "ActivityDialog.h"
+#include "BrowserOperation.h"
 #include "myio.h"
 #include "ToolCom.h"
 #include "mu.h"
 
 ActivityData::ActivityData()
-    : read_only(FALSE), single_execution(FALSE) {
+    : read_only(FALSE), single_execution(FALSE), specification(0) {
 }
 
 ActivityData::ActivityData(ActivityData * model, BrowserNode * bn)
-    : SimpleData(model) {
+    : SimpleData(model), specification(0) {
   browser_node = bn;
   uml_condition = model->uml_condition;
   cpp_condition = model->cpp_condition;
   java_condition = model->java_condition;
   read_only = model->read_only;
   single_execution = model->single_execution;
+  set_specification(model->specification);
 }
 
 ActivityData::~ActivityData() {
@@ -75,6 +77,26 @@ QString ActivityData::get_postcond(DrawingLanguage ln) const {
   }
 }
 
+void ActivityData::set_specification(BrowserOperation * op) {
+  if (op != specification) {
+    if (specification != 0)
+      disconnect(specification->get_data(), SIGNAL(deleted()),
+		 this, SLOT(on_delete()));
+    if ((specification = op) != 0) {
+      connect(specification->get_data(), SIGNAL(deleted()),
+	      this, SLOT(on_delete()));
+    }
+  }
+}
+
+void ActivityData::on_delete() {
+  if ((specification != 0) && specification->deletedp()) {
+    disconnect(specification->get_data(), SIGNAL(deleted()),
+	       this, SLOT(on_delete()));
+    specification = 0;
+  }
+}
+
 void ActivityData::edit() {
   setName(browser_node->get_name());
     
@@ -89,6 +111,12 @@ void ActivityData::send_uml_def(ToolCom * com, BrowserNode * bn,
   uml_condition.send_def(com);
   com->write_bool(read_only);
   com->write_bool(single_execution);
+  if (com->api_format() >= 45) {
+    if (specification == 0)
+      com->write_id(0);
+    else
+      specification->write_id(com);
+  }
 }
 
 void ActivityData::send_cpp_def(ToolCom * com) {
@@ -131,6 +159,9 @@ bool ActivityData::tool_cmd(ToolCom * com, const char * args,
       case setSingleExecutionCmd:
 	single_execution = (*args != 0);
 	break;
+      case setDefCmd:
+	set_specification((BrowserOperation *) com->get_id(args));
+        break;
       default:
 	return BasicData::tool_cmd(com, args, bn, comment);
       }
@@ -170,6 +201,15 @@ void ActivityData::save(QTextStream & st, QString & warning) const {
       nl_indent(st);
     st << "single_execution";
   }
+  
+  if (specification != 0) {
+    if (nl)
+      st << " ";
+    else
+      nl_indent(st);
+    st << "specification ";
+    specification->save(st, TRUE, warning);
+  }
 }
 
 void ActivityData::read(char * & st, char * & k) {
@@ -183,6 +223,10 @@ void ActivityData::read(char * & st, char * & k) {
   }
   if (! strcmp(k, "single_execution")) {
     single_execution = TRUE;
+    k = read_keyword(st);
+  }
+  if (! strcmp(k, "specification")) {
+    set_specification(BrowserOperation::read_ref(st));
     k = read_keyword(st);
   }
 }

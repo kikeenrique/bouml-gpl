@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -63,6 +63,7 @@ class BrowserUseCaseView : public BrowserNode, public Labeled<BrowserUseCaseView
     UmlColor stateaction_color;
     UmlColor activity_color;
     UmlColor activityregion_color;
+    UmlColor activitypartition_color;
     UmlColor activityaction_color;
     UmlColor parameterpin_color;
     
@@ -92,21 +93,9 @@ class BrowserUseCaseView : public BrowserNode, public Labeled<BrowserUseCaseView
     virtual void get_sequencediagramsettings(SequenceDiagramSettings &) const;
     virtual void get_collaborationdiagramsettings(CollaborationDiagramSettings &) const;
     virtual void get_objectdiagramsettings(ObjectDiagramSettings &) const;
-    virtual void get_statedrawingsettings(StateDrawingSettings & r) const;
     virtual void get_statediagramsettings(StateDiagramSettings &) const;
-    virtual void get_activitydrawingsettings(ActivityDrawingSettings &) const;
     virtual void get_activitydiagramsettings(ActivityDiagramSettings &) const;
-    virtual void get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const;
     virtual UmlColor get_color(UmlCode) const;
-    virtual bool get_shadow(UmlCode) const;
-    virtual bool get_draw_all_relations(UmlCode) const;
-    virtual bool get_show_stereotype_properties(UmlCode k) const;
-    virtual bool get_classinstwritehorizontally(UmlCode k) const;
-    virtual bool get_auto_label_position(UmlCode who) const;
-    virtual bool get_write_label_horizontally(UmlCode who) const;
-    virtual bool get_show_trans_definition(UmlCode who) const;
-    virtual bool get_show_opaque_action_definition(UmlCode who) const;
-    virtual DrawingLanguage get_language(UmlCode who) const;
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual void save(QTextStream &, bool ref, QString & warning);
     

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -105,8 +105,7 @@ void StateCanvas::compute_size() {
   const BasicData * data = browser_node->get_data();
   StateDrawingSettings st = settings;
   
-  the_canvas()->browser_diagram()
-    ->get_statedrawingsettings(st);
+  ((BrowserStateDiagram *) the_canvas()->browser_diagram())->get_statedrawingsettings(st);
   region_horizontally = st.region_horizontally == UmlYes;
   
   min_height = 2*fm.height();
@@ -662,7 +661,9 @@ void StateCanvas::menu(const QPoint&) {
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("Set associated diagram",6);
+    if (browser_node->get_associated() !=
+	(BrowserNode *) the_canvas()->browser_diagram())
+      m.insertItem("Set associated diagram",6);
     
     if (browser_node->get_associated())
       m.insertItem("Remove diagram association",9);
@@ -822,7 +823,7 @@ bool StateCanvas::get_show_stereotype_properties() const {
   case UmlNo:
     return FALSE;
   default:
-    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties();
   }
 }
 

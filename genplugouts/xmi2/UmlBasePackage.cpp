@@ -22,7 +22,7 @@ UmlDiagram * UmlBasePackage::associatedDiagram() {
 }
 
 bool UmlBasePackage::set_AssociatedDiagram(UmlDiagram * d) {
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -109,6 +109,34 @@ bool UmlBasePackage::set_PhpDir(const QCString & s) {
 }
 #endif
 
+#ifdef WITHPYTHON
+const QCString & UmlBasePackage::pythonDir() {
+  read_if_needed_();
+  
+  return _python_dir;
+}
+
+bool UmlBasePackage::set_PythonDir(const QCString & s) {
+  return set_it_(_python_dir, s, setPythonDirCmd);
+}
+
+QCString UmlBasePackage::pythonPackage() {
+  read_if_needed_();
+  
+  return _python_package;
+}
+
+bool UmlBasePackage::set_PythonPackage(const QCString & s) {
+  return set_it_(_python_package, s, setPythonPackageCmd);
+}
+
+UmlPackage * UmlBasePackage::findPythonPackage(const QCString & n) const {
+  UmlCom::send_cmd(packageGlobalCmd, findPythonPackageCmd, _identifier, n);
+  
+  return (UmlPackage *) UmlBaseItem::read_();  
+}
+#endif
+
 #ifdef WITHIDL
 const QCString & UmlBasePackage::idlDir() {
   read_if_needed_();
@@ -137,7 +165,7 @@ UmlPackage * UmlBasePackage::findIdlModule(const QCString & n) const {
 }
 #endif
 
-UmlBasePackage * UmlBasePackage::getProject()
+UmlPackage * UmlBasePackage::getProject()
 {
   UmlCom::send_cmd(packageGlobalCmd, getProjectCmd);
   
@@ -180,6 +208,10 @@ void UmlBasePackage::unload(bool rec, bool del) {
 #ifdef WITHPHP
   _php_dir = 0;
 #endif
+#ifdef WITHPYTHON
+  _python_dir = 0;
+  _python_package = 0;
+#endif
 #ifdef WITHIDL
   _idl_dir = 0;
   _idl_module = 0;
@@ -210,6 +242,13 @@ void UmlBasePackage::read_java_() {
 #ifdef WITHPHP
 void UmlBasePackage::read_php_() {
   _php_dir = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHPYTHON
+void UmlBasePackage::read_python_() {
+  _python_dir = UmlCom::read_string();
+  _python_package = UmlCom::read_string();
 }
 #endif
 

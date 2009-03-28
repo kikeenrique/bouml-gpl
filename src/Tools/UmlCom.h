@@ -1,7 +1,7 @@
 #ifndef _UMLCOM_H
 #define _UMLCOM_H
 
-#define APIVERSION 39
+#define APIVERSION 40
 
 #include <qsocketdevice.h>
 #include "CmdFamily.h"

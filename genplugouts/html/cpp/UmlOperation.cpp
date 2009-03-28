@@ -4,6 +4,7 @@
 #include "CppSettings.h"
 #include "JavaSettings.h"
 #include "PhpSettings.h"
+#include "PythonSettings.h"
 #include "UmlRelation.h"
 
 QCString UmlOperation::sKind() {
@@ -27,7 +28,14 @@ void UmlOperation::html(QCString, unsigned int, unsigned int) {
   
   if (! s.isEmpty()) {
     fw.write("<p>");
-    gen_cpp_decl(s, TRUE);
+    if (! javaDecl().isEmpty())
+      gen_java_decl(s, TRUE);
+    else if (! phpDecl().isEmpty())
+      gen_php_decl(s, TRUE);
+    else if (! pythonDecl().isEmpty())
+      gen_python_decl(s, TRUE);
+    else
+      gen_cpp_decl(s, TRUE);
     fw.write("<br /></p>");
   }
 
@@ -49,7 +57,7 @@ void UmlOperation::html(QCString, unsigned int, unsigned int) {
 
   if (!s.isEmpty()) {
     fw.write("<li>Java : ");
-    gen_java_decl(s);
+    gen_java_decl(s, FALSE);
     fw.write("</li>");
   }
 
@@ -57,7 +65,15 @@ void UmlOperation::html(QCString, unsigned int, unsigned int) {
 
   if (!s.isEmpty()) {
     fw.write("<li>Php : ");
-    gen_php_decl(s);
+    gen_php_decl(s, FALSE);
+    fw.write("</li>");
+  }
+
+  s = pythonDecl();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Python : ");
+    gen_python_decl(s, FALSE);
     fw.write("</li>");
   }
 
@@ -119,10 +135,12 @@ void UmlOperation::gen_uml_decl() {
   const char * sep = "(";
   
   for (rank = 0; rank != npa; rank += 1) {
+    const UmlParameter & p = pa[rank];
+    
     fw.write(sep);
     sep = ", ";
     
-    switch (pa[rank].dir) {
+    switch (p.dir) {
     case InputOutputDirection:
       fw.write("inout ");
       break;
@@ -133,10 +151,19 @@ void UmlOperation::gen_uml_decl() {
       // OutputDirection
       fw.write("out ");
     }
-    writeq(pa[rank].name);
+    writeq(p.name);
     fw.write(" : ");
-    write(pa[rank].type);
+    write(p.type);
+    
+    QCString s = p.default_value;
+    
+    if (!s.isEmpty()) {
+      if (s[0] != '=')
+	fw.write(" = ");
+      writeq(s);
+    }
   }
+
   fw.write((rank == 0) ? "() : " : ") : ");
   write(returnType());
   
@@ -301,8 +328,12 @@ void UmlOperation::gen_cpp_decl(QCString s, bool descr) {
 	while ((*p != 0) && (*p <= ' '));
       }
     }
-    else if ((*p == '{') || (*p == ';'))
-      break;
+    else if ((*p == '{') || (*p == ';')) {
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
     else if (*p == '@')
       manage_alias(p);
     else
@@ -310,7 +341,7 @@ void UmlOperation::gen_cpp_decl(QCString s, bool descr) {
   }
 }
 
-void UmlOperation::gen_java_decl(QCString s) {
+void UmlOperation::gen_java_decl(QCString s, bool descr) {
   const char * p = bypass_comment(s);
   const QValueList<UmlParameter> & pa = params();
   unsigned npa = pa.count();
@@ -421,8 +452,12 @@ void UmlOperation::gen_java_decl(QCString s) {
 	p += 1;
       while ((*p != 0) && (*p <= ' '));
     }
-    else if ((*p == '{') || (*p == ';'))
-      break;
+    else if ((*p == '{') || (*p == ';')) {
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
     else if (*p == '@')
       manage_alias(p);
     else
@@ -430,7 +465,7 @@ void UmlOperation::gen_java_decl(QCString s) {
   }
 }
 
-void UmlOperation::gen_php_decl(QCString s) {
+void UmlOperation::gen_php_decl(QCString s, bool descr) {
   QCString cl_stereotype = 
      PhpSettings::classStereotype(parent()->stereotype());
   const char * p = bypass_comment(s);
@@ -514,8 +549,100 @@ void UmlOperation::gen_php_decl(QCString s) {
 	p += 1;
       while ((*p != 0) && (*p <= ' '));
     }
-    else if ((*p == '{') || (*p == ';'))
-      break;
+    else if ((*p == '{') || (*p == ';')) {
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
+    else if (*p == '@')
+      manage_alias(p);
+    else
+      writeq(*p++);
+  }
+}
+
+void UmlOperation::gen_python_decl(QCString s, bool descr) {
+  QCString cl_stereotype = 
+     PythonSettings::classStereotype(parent()->stereotype());
+  const char * p = bypass_comment(s);
+  const QValueList<UmlParameter> & pa = params();
+  unsigned npa = pa.count();
+  unsigned rank;
+
+  while (*p) {
+    if (!strncmp(p, "${comment}", 10))
+      p += 10;
+    else if (!strncmp(p, "${description}", 14))
+      p += 14;
+    else if (!strncmp(p, "${docstring}", 12))
+      p += 12;
+    else if (!strncmp(p, "${static}", 9)) {
+      p += 9;
+      if (isClassMember())
+	fw.write("@staticmethod<br />");
+    }
+    else if (!strncmp(p, "${abstract}", 11)) {
+      p += 11;
+      if (isAbstract())
+	fw.write("@abstractmethod<br />");
+    }
+    else if (!strncmp(p, "${@}", 4)) {
+      p += 4;
+      writeq(pythonDecorators());
+    }
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      writeq(compute_name(pythonNameSpec()));
+    }
+    else if (!strncmp(p, "${class}", 8)) {
+      p += 8;
+      parent()->write();
+    }
+    else if (!strncmp(p, "${(}", 4)) {
+      p += 4;
+      fw.write('(');
+    }
+    else if (!strncmp(p, "${)}", 4)) {
+      p += 4;
+      fw.write(')');
+    }
+    else if (sscanf(p, "${t%u}", &rank) == 1) {
+      p = strchr(p, '}') + 1;
+
+      if (rank < npa)
+	write(pa[rank].type, pythonLanguage);
+      else
+	fw.write("???");
+    }
+    else if (sscanf(p, "${p%u}", &rank) == 1) {
+      p = strchr(p, '}') + 1;
+
+      if (rank < npa) {
+	fw.write('$');
+	writeq(pa[rank].name);
+      }
+      else
+	fw.write("???");
+    }
+    else if (sscanf(p, "${v%u}", &rank) == 1) {
+      p = strchr(p, '}') + 1;
+
+      if (rank >= npa)
+	fw.write("???");
+      else if (! pa[rank].default_value.isEmpty()) {
+	fw.write(" = ");
+	writeq(pa[rank].default_value);
+      }
+    }
+    else if (*p == ':') {
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
+    else if (*p == '\r')
+      p += 1;
     else if (*p == '@')
       manage_alias(p);
     else

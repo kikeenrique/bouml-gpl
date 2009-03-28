@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -219,6 +219,10 @@ bool IconCanvas::alignable() const {
 
 bool IconCanvas::copyable() const {
   return selected();
+}
+
+bool IconCanvas::represents(BrowserNode * bn) {
+  return (bn == browser_node);
 }
 
 void IconCanvas::save(QTextStream & st, bool, QString & warning) const {

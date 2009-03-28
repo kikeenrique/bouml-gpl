@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -241,7 +241,7 @@ DEF_EDIT(transformation, cpp, CppEdit)
 DEF_EDIT(transformation, java, JavaEdit)
 
 void FlowDialog::accept() {
-  if (!check_edits(edits))
+  if (!check_edits(edits) || !kvtable->check_unique())
     return;
     
   BrowserNode * bn = flow->browser_node;

@@ -17,7 +17,7 @@ class UmlCom
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(23);
+    write_unsigned(42);
     flush();
     return TRUE;
   }
@@ -38,7 +38,7 @@ class UmlCom
     p_buffer_out = 4/*bytes for length*/;
 
     // send API version
-    write_unsigned(23);
+    write_unsigned(42);
     flush();
   }
   catch (Exception e) {
@@ -54,6 +54,14 @@ class UmlCom
   send_cmd(miscGlobalCmd, traceCmd, s);
 !!!71424.java!!!	trace(in s : str) : void
   send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._traceCmd, s);
+!!!189056.cpp!!!	showTrace() : void
+  send_cmd(miscGlobalCmd, showTraceCmd);
+!!!189056.java!!!	showTrace() : void
+  send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._showTraceCmd);
+!!!189184.cpp!!!	traceAutoRaise(in y : bool) : void
+  send_cmd(miscGlobalCmd, traceAutoRaiseCmd, (y == 0) ? 0 : 1);
+!!!189184.java!!!	traceAutoRaise(in y : bool) : void
+  send_cmd(CmdFamily.miscGlobalCmd, MiscGlobalCmd._traceAutoRaiseCmd, (y) ? (byte) 1 : (byte) 0);
 !!!71552.cpp!!!	message(in s : str) : void
   send_cmd(miscGlobalCmd, messageCmd, s);
 !!!71552.java!!!	message(in s : str) : void
@@ -206,8 +214,8 @@ class UmlCom
   *p_buffer_out++ = (b == 0) ? 0 : 1;
 !!!72320.java!!!	write_bool(in b : bool) : void
   check_size_out(1);
-  
-  buffer_out[p_buffer_out++] = (b) ? (byte) 0 : (byte) 1;
+
+  buffer_out[p_buffer_out++] = (b) ? (byte) 1 : (byte) 0;
 !!!72448.cpp!!!	write_char(in c : sbyte) : void
   check_size_out(1);
   
@@ -297,6 +305,22 @@ class UmlCom
   write_char((byte) f.value());
   write_char((byte) cmd);
   flush();
+!!!219008.cpp!!!	send_cmd(in f : CmdFamily, in cmd : uint, in s : str, in b : bool) : void
+#ifdef TRACE
+  cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << ((s) ? s : "") << b << ")\n";
+#endif
+  
+  write_char(f);
+  write_char(cmd);
+  write_string(s);
+  write_bool(b);
+  flush();
+!!!219008.java!!!	send_cmd(in f : CmdFamily, in cmd : uint, in s : str, in b : bool) : void
+  write_char((byte) f.value());
+  write_char((byte) cmd);
+  write_string(s);
+  write_bool(b);
+  flush();
 !!!73088.cpp!!!	send_cmd(in f : CmdFamily, in cmd : uint, in arg : sbyte) : void
 #ifdef TRACE
   cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << (int) arg << ")\n";
@@ -312,6 +336,22 @@ class UmlCom
   write_char((byte) f.value());
   write_char((byte) cmd);
   write_char(arg);
+  flush();
+!!!216576.cpp!!!	send_cmd(in f : CmdFamily, in cmd : uint, in arg : int, in dummy : str) : void
+#ifdef TRACE
+  cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << arg << ", dummy)\n";
+#endif
+  
+  write_char(f);
+  write_char(cmd);
+  write_unsigned(arg);
+  flush();
+!!!216576.java!!!	send_cmd(in f : CmdFamily, in cmd : uint, in arg : int, in dummy : str) : void
+  //cout << "UmlCom.send_cmd((CmdFamily) " << f << ", " << cmd << ", " << arg << ", dummy)\n";
+  
+  write_char((byte) f.value());
+  write_char((byte) cmd);
+  write_unsigned(arg);
   flush();
 !!!73216.cpp!!!	send_cmd(in f : CmdFamily, in cmd : uint, in id : item_id) : void
 #ifdef TRACE
@@ -729,9 +769,9 @@ class UmlCom
     write_string(arg5.explicit_type);
   }
   flush();
-!!!75520.cpp!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, in l : UmlClass) : void
+!!!75520.cpp!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, in l : UmlItem) : void
 #ifdef TRACE
-  cout << "UmlCom::send_cmd(id, " << cmd << ", const QVector<UmlClass> & l)\n";
+  cout << "UmlCom::send_cmd(id, " << cmd << ", const QVector<UmlItem> & l)\n";
 #endif
   
   write_char(onInstanceCmd);
@@ -746,8 +786,8 @@ class UmlCom
     write_id(((UmlBaseItem *) l[i])->_identifier);
   
   flush();
-!!!75520.java!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, in l : UmlClass) : void
-  //cout << "UmlCom.send_cmd(id, " << cmd << ", const QVector<UmlClass> & l)\n";
+!!!75520.java!!!	send_cmd(in id : item_id, in cmd : OnInstanceCmd, in l : UmlItem) : void
+  //cout << "UmlCom.send_cmd(id, " << cmd << ", const QVector<UmlItem> & l)\n";
   
   write_char((byte) CmdFamily._onInstanceCmd);
   write_id(id);

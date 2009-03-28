@@ -271,8 +271,10 @@ UmlBuiltin * UmlSettings::add_type(const QCString & s)
   if (n/2 > _map_builtins.size())
     _map_builtins.resize(_map_builtins.size() * 2 - 1);
   
-  for (index = 0; index != n; index += 1)
+  for (index = 0; index != n; index += 1) {
     builtins[index] = _builtins[index];
+    _map_builtins.replace(builtins[index].uml, &builtins[index]);
+  }
     
   builtins[index].uml = s;
 #ifdef WITHCPP
@@ -294,7 +296,6 @@ UmlBuiltin * UmlSettings::add_type(const QCString & s)
   _builtins = builtins;
   
   return &_builtins[index];
-
 }
 
 UmlStereotype * UmlSettings::add_rel_attr_stereotype(const QCString & s)
@@ -302,32 +303,34 @@ UmlStereotype * UmlSettings::add_rel_attr_stereotype(const QCString & s)
   unsigned n = _map_relation_attribute_stereotypes.count();
   unsigned index;
 
-  UmlStereotype * relation_stereotypes = new UmlStereotype[n + 1];
+  UmlStereotype * relation_attribute_stereotypes = new UmlStereotype[n + 1];
 
   if (n/2 > _map_relation_attribute_stereotypes.size())
     _map_relation_attribute_stereotypes.resize(_map_relation_attribute_stereotypes.size() * 2 - 1);
   
-  for (index = 0; index != n; index += 1)
-    relation_stereotypes[index] = _relation_attribute_stereotypes[index];
+  for (index = 0; index != n; index += 1) {
+    relation_attribute_stereotypes[index] = _relation_attribute_stereotypes[index];
+    _map_relation_attribute_stereotypes.replace(relation_attribute_stereotypes[index].uml,
+						&relation_attribute_stereotypes[index]);
+  }
     
-  relation_stereotypes[index].uml = s;
+  relation_attribute_stereotypes[index].uml = s;
 #ifdef WITHCPP
-  relation_stereotypes[index].cpp = s;
+  relation_attribute_stereotypes[index].cpp = s;
 #endif
 #ifdef WITHJAVA
-  relation_stereotypes[index].java = s;
+  relation_attribute_stereotypes[index].java = s;
 #endif
 #ifdef WITGIDL
-  relation_stereotypes[index].idl = s;
+  relation_attribute_stereotypes[index].idl = s;
 #endif
 
   _map_relation_attribute_stereotypes.insert(s, &_relation_attribute_stereotypes[index]);
 
   delete [] _relation_attribute_stereotypes;
-  _relation_attribute_stereotypes = relation_stereotypes;
+  _relation_attribute_stereotypes = relation_attribute_stereotypes;
 
   return &_relation_attribute_stereotypes[index];
-
 }
 
 UmlStereotype * UmlSettings::add_class_stereotype(const QCString & s)
@@ -340,8 +343,10 @@ UmlStereotype * UmlSettings::add_class_stereotype(const QCString & s)
   if (n/2 > _map_class_stereotypes.size())
     _map_class_stereotypes.resize(_map_class_stereotypes.size() * 2 - 1);
   
-  for (index = 0; index != n; index += 1)
+  for (index = 0; index != n; index += 1) {
     class_stereotypes[index] = _class_stereotypes[index];
+    _map_class_stereotypes.replace(class_stereotypes[index].uml, &class_stereotypes[index]);
+  }
     
   class_stereotypes[index].uml = s;
 #ifdef WITHCPP
@@ -360,6 +365,5 @@ UmlStereotype * UmlSettings::add_class_stereotype(const QCString & s)
   _class_stereotypes = class_stereotypes;
 
   return &_class_stereotypes[index];
-
 }
 

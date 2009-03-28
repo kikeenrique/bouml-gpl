@@ -10,6 +10,10 @@
 //
 // - an explicit type
 class UmlTypeSpec : public UmlBaseTypeSpec {
+  public:
+    UmlTypeSpec() {}
+    UmlTypeSpec(const char * t) { explicit_type = t; }
+    UmlTypeSpec(UmlClass * t) { type = t; }
 };
 
 #endif

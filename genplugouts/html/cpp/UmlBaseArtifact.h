@@ -118,6 +118,16 @@ class UmlBaseArtifact : public UmlItem {
     bool set_PhpSource(const QCString & s);
 #endif
 
+#ifdef WITHPYTHON
+    // returns the Python file definition
+    const QCString & pythonSource();
+
+    // to set the Python file definition
+    // 
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_PythonSource(const QCString & s);
+#endif
+
 #ifdef WITHIDL
     // returns the Idl file definition
     const QCString & idlSource();
@@ -132,7 +142,6 @@ class UmlBaseArtifact : public UmlItem {
     // automatically if needed. args unused
     virtual void unload(bool = FALSE, bool = FALSE);
 
-  friend class UmlBaseClass;
 
   private:
     UmlDeploymentDiagram * _assoc_diagram;
@@ -155,6 +164,10 @@ class UmlBaseArtifact : public UmlItem {
     QCString _php_src;
 #endif
 
+#ifdef WITHPYTHON
+    QCString _python_src;
+#endif
+
 #ifdef WITHIDL
     QCString _idl_src;
 #endif
@@ -175,6 +188,12 @@ class UmlBaseArtifact : public UmlItem {
     virtual void read_php_();
 #endif
 
+#ifdef WITHPYTHON
+    //internal, do NOT use it
+    
+    virtual void read_python_();
+#endif
+
 #ifdef WITHIDL
     virtual void read_idl_();
 #endif
@@ -182,6 +201,7 @@ class UmlBaseArtifact : public UmlItem {
     // the constructor, do not call it yourself !!!!!!!!!!
     UmlBaseArtifact(void * id, const QCString & n);
 
+  friend class UmlBaseClass;
 };
 
 inline UmlBaseArtifact::UmlBaseArtifact(void * id, const QCString & n) : UmlItem(id, n) {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -250,7 +250,7 @@ enum OnInstanceCmd {
   setJavaContextualBodyIndentCmd,
   setPhpContextualBodyIndentCmd,
   
-  // api 39 a faire
+  // api 39
   setPythonDeclCmd,
   setIsPythonExternalCmd,
   setPythonSrcCmd,
@@ -265,6 +265,9 @@ enum OnInstanceCmd {
   
   // api 40
   applyStereotypeCmd,
+  
+  // api 42
+  setDerivedCmd,
     
   setUserCmd = 252, // not in plug-outs managed through bouml
   moveInCmd = 253,  // not in plug-outs managed through bouml
@@ -397,7 +400,10 @@ enum JavaSettingsCmd {
   setJavaEnumItemDeclCmd,
   
   // api 30
-  setJavaJavadocStyleCmd
+  setJavaJavadocStyleCmd,
+    
+  // api 40
+  setJavaForcePackageGenCmd
 };
 
 // api 34
@@ -452,6 +458,9 @@ enum PythonSettingsCmd {
   setPythonOperationDefCmd,
   setPythonGetNameCmd,
   setPythonSetNameCmd,
+  
+  // api 44
+  setPythonInitOperationDefCmd,
 };
 
 enum IdlSettingsCmd {

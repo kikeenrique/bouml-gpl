@@ -272,40 +272,47 @@ class UmlBaseItem
   return UmlCom.read_item_list();
 !!!24064.cpp!!!	read_if_needed_() : void
   if (!_defined) {
-#if defined(WITHCPP) & defined(WITHJAVA) & defined(WITHPHP) & defined(WITHIDL)
+#if defined(WITHCPP) & defined(WITHJAVA) & defined(WITHPHP) & defined(WITHPYTHON) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getDefCmd);
     read_uml_();
     read_cpp_();
     read_java_();
     read_php_();
+    read_python_();
     read_idl_();
 #else
-# if defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
+# if defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getCppDefCmd);
     read_uml_();
     read_cpp_();
 # else
-#  if !defined(WITHCPP) & defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
+#  if !defined(WITHCPP) & defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getJavaDefCmd);
     read_uml_();
     read_java_();
 #  else
-#   if !defined(WITHCPP) & !defined(WITHJAVA) & defined(WITHPHP) & !defined(WITHIDL)
+#   if !defined(WITHCPP) & !defined(WITHJAVA) & defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getPhpDefCmd);
     read_uml_();
     read_php_();
 #   else
-#    if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & defined(WITHIDL)
+#    if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & defined(WITHPYTHON) & !defined(WITHIDL)
+    UmlCom::send_cmd(_identifier, getPythonDefCmd);
+    read_uml_();
+    read_python_();
+#    else
+#     if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getIdlDefCmd);
     read_uml_();
     read_idl_();
-#    else
-#     if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
+#     else
+#      if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getUmlDefCmd);
     read_uml_();
-#     else
-    ... WITHCPP and WITHJAVA and WITHPHP and WITHIDL must be both defined or undefined
+#      else
+    ... WITHCPP and WITHJAVA and WITHPHP and WITHPYTHON and WITHIDL must be both defined or undefined
     ... or only one of them must be defined
+#      endif
 #     endif
 #    endif
 #   endif
@@ -322,6 +329,7 @@ class UmlBaseItem
     read_cpp_();
     read_java_();
     read_php_();
+    read_python_();
     read_idl_();
     
     _defined = true;
@@ -663,9 +671,23 @@ class UmlBaseItem
     case aJoinActivityNode:
       return new UmlJoinActivityNode(id, name);
     case aPartition:
-      //return new UmlPartition(id, name);
+      return new UmlActivityPartition(id, name);
     case aClassInstance:
       return new UmlClassInstance(id, name);
+    case anAcceptCallAction:
+      return new UmlAcceptCallAction(id, name);
+    case aReplyAction:
+      return new UmlReplyAction(id, name);
+    case aCreateObjectAction:
+      return new UmlCreateObjectAction(id, name);
+    case aDestroyObjectAction:
+      return new UmlDestroyObjectAction(id, name);
+    case aTestIdentityAction:
+      return new UmlTestIdentityAction(id, name);
+    case aRaiseExceptionAction:
+      return new UmlRaiseExceptionAction(id, name);
+    case aReduceAction:
+      return new UmlReduceAction(id, name);
     default:
       UmlCom::bye();
       UmlCom::fatal_error(QCString("unknown item type ") + QCString().setNum(kind));
@@ -825,9 +847,23 @@ class UmlBaseItem
     case anItemKind._aJoinActivityNode:
       return new UmlJoinActivityNode(id, name);
     case anItemKind._aPartition:
-      //return new UmlPartition(id, name);
+      return new UmlActivityPartition(id, name);
     case anItemKind._aClassInstance:
       return new UmlClassInstance(id, name);
+    case anItemKind._anAcceptCallAction:
+      return new UmlAcceptCallAction(id, name);
+    case anItemKind._aReplyAction:
+      return new UmlReplyAction(id, name);
+    case anItemKind._aCreateObjectAction:
+      return new UmlCreateObjectAction(id, name);
+    case anItemKind._aDestroyObjectAction:
+      return new UmlDestroyObjectAction(id, name);
+    case anItemKind._aTestIdentityAction:
+      return new UmlTestIdentityAction(id, name);
+    case anItemKind._aRaiseExceptionAction:
+      return new UmlRaiseExceptionAction(id, name);
+    case anItemKind._aReduceAction:
+      return new UmlReduceAction(id, name);
     default:
       UmlCom.bye();
       UmlCom.fatal_error(new String("unknown item type ") + String.valueOf(kind));

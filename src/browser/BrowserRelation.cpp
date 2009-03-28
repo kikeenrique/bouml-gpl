@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,6 +33,9 @@
 #include <qptrdict.h>
 
 #include "BrowserRelation.h"
+#include "BrowserClassDiagram.h"
+#include "BrowserObjectDiagram.h"
+#include "BrowserUseCaseDiagram.h"
 #include "BrowserOperation.h"
 #include "BrowserClass.h"
 #include "RelationData.h"
@@ -183,9 +186,10 @@ void BrowserRelation::compute_referenced_by(QList<BrowserNode> & l,
   
   while ((r = it.current()) != 0) {
     if (!r->deletedp() &&
-	((r->def->is_a(it.current()))
-	 ? (r->def->get_end_class() == target)
-	 : (r->def->get_start_class() == target)))
+	(((r->def->is_a(it.current()))
+	  ? (r->def->get_end_class() == target)
+	  : (r->def->get_start_class() == target))
+	 || (r->def->get_association().type == target)))
       l.append(r);
     ++it;
   }
@@ -194,10 +198,15 @@ void BrowserRelation::compute_referenced_by(QList<BrowserNode> & l,
 void BrowserRelation::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
   BrowserClassInstance::compute_referenced_by(l, this);
+  if (! ondelete) {
+    BrowserClassDiagram::compute_referenced_by(l, this, "relationcanvas", "relation_ref");
+    BrowserUseCaseDiagram::compute_referenced_by(l, this, "relationcanvas", "relation_ref");
+    BrowserObjectDiagram::compute_referenced_by(l, this, "objectlinkcanvas", "rel relation_ref");
+  }
 }
 
 BrowserRelation * BrowserRelation::temporary(RelationData * d) {
-  BrowserRelation * result = new BrowserRelation(0);
+  BrowserRelation * result = new BrowserRelation(-1);
   
   result->def = d;
   return result;
@@ -370,18 +379,23 @@ const char * BrowserRelation::constraint() const {
 const QPixmap* BrowserRelation::pixmap(int) const {
   if (deletedp())
     return DeletedRelationIcon;
-  else {
-    switch (def->is_a(this) ? def->get_uml_visibility_a()
-			    : def->get_uml_visibility_b()) {
-    case UmlPublic:
-      return PublicRelationIcon;
-    case UmlProtected:
-      return ProtectedRelationIcon;
-    case UmlPrivate:
-      return PrivateRelationIcon;
-    default:
-      return PackageRelationIcon;
-    }
+  
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  if (px != 0)
+    return px ;
+    
+  switch (def->is_a(this) ? def->get_uml_visibility_a()
+			  : def->get_uml_visibility_b()) {
+  case UmlPublic:
+    return PublicRelationIcon;
+  case UmlProtected:
+    return ProtectedRelationIcon;
+  case UmlPrivate:
+    return PrivateRelationIcon;
+  default:
+    return PackageRelationIcon;
   }
 }
 
@@ -476,7 +490,7 @@ Note that you can undelete it after");
 void BrowserRelation::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
-    open(FALSE);
+    open(TRUE);
     return;
   case 1:
     ((BrowserClass *) parent())->add_relation(this);
@@ -553,11 +567,10 @@ void BrowserRelation::apply_shortcut(QString s) {
     }
     if (s == "Select target")
       choice = 7;
-  
-    if (s == "Referenced by")
+    else if (s == "Referenced by")
       choice = 8;
-    
-    mark_shortcut(s, choice, 90);
+    else
+      mark_shortcut(s, choice, 90);
     if (edition_number == 0)
       Tool::shortcut(s, choice, get_type(), 100);
   }
@@ -782,7 +795,7 @@ void BrowserRelation::post_load()
   BrowserRelation * br;
   
   while ((br = it.current()) != 0) {
-    if (((BrowserNode *) br->parent())->get_type() == UmlClass) {
+    if (!br->is_undefined()) {
       // not yet moved in UndefinedNodePackage
       
       RelationData * d;
@@ -811,14 +824,12 @@ void BrowserRelation::post_load()
       }
       else {
 	// not a temporary or unconsistent relation
-	if ((it.current()->get_oper != 0) && 
-	    (((BrowserNode *) it.current()->get_oper->parent())->get_type() != UmlClass))
+	if ((br->get_oper != 0) && br->get_oper->is_undefined())
 	  // operation was deleted
-	  it.current()->get_oper = 0;
-	if ((it.current()->set_oper != 0) && 
-	    (((BrowserNode *) it.current()->set_oper->parent())->get_type() != UmlClass))
+	  br->get_oper = 0;
+	if ((br->set_oper != 0) && br->set_oper->is_undefined())
 	  // operation was deleted
-	  it.current()->set_oper = 0;
+	  br->set_oper = 0;
       }
     }
     ++it;
@@ -917,8 +928,8 @@ BrowserRelation * BrowserRelation::read(char * & st, char * k,
       result->unconsistent_removed("relation", unconsistent);
 
     result->is_defined = TRUE;
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     if (!strcmp(k, "get_oper")) {
       BrowserOperation * oper = BrowserOperation::read_ref(st);
@@ -953,4 +964,41 @@ BrowserRelation * BrowserRelation::read(char * & st, char * k,
 BrowserNode * BrowserRelation::get_it(const char * k, int id)
 {
   return (!strcmp(k, "classrelation_ref")) ? all[id] : 0;
+}
+
+//elt isa class
+void BrowserRelation::get_relating(BrowserNode * elt, QPtrDict<BrowserNode> & d,
+				   BrowserNodeList & newones, 
+				   bool inh, bool dep, bool assoc)
+{
+  IdIterator<BrowserRelation> it(all);
+  BrowserRelation * r;
+  
+  for (; (r = it.current()) != 0; ++it) {
+    if (!r->deletedp() &&
+	(r->def->get_end_class() == elt)) {
+      BrowserNode * src = r->def->get_start_class();
+      
+      if (d[src] == 0) {
+	switch (r->get_type()) {
+	case UmlDependency:
+	  if (! dep)
+	    continue;
+	  break;
+	case UmlGeneralisation:
+	case UmlRealize:
+	  if (! inh)
+	    continue;
+	  break;
+	default:
+	  if (! assoc)
+	    continue;
+	  break;
+	}
+	
+	d.insert(src, src);
+	newones.append(src);
+      }
+    }
+  }
 }

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,6 +34,11 @@
 
 void UmlAttribute::generate(QTextOStream & f, const QCString & cl_stereotype,
 			    QCString indent) {
+  generate(f, cl_stereotype, indent, FALSE);
+}
+
+void UmlAttribute::generate(QTextOStream & f, const QCString & cl_stereotype,
+			    QCString indent, bool enumitem) {
   if (!javaDecl().isEmpty()) {
     const char * p = javaDecl();
     const char * pp = 0;
@@ -128,9 +133,13 @@ void UmlAttribute::generate(QTextOStream & f, const QCString & cl_stereotype,
       }
       else if (!strncmp(p, "${value}", 8)) {
 	if (!defaultValue().isEmpty()) {
-	  if (need_equal(p, defaultValue()))
-	    f << " = ";
-	  f << defaultValue();
+	  if (enumitem)
+	    f << '(' << defaultValue() << ')';
+	  else {
+	    if (need_equal(p, defaultValue()))
+	      f << " = ";
+	    f << defaultValue();
+	  }
 	}
 	p += 8;
       }
@@ -289,13 +298,13 @@ void UmlAttribute::generate_enum_item(QTextOStream & f,
     else
       f << '\n';
     
-    generate(f, "enum", indent);
+    generate(f, "enum", indent, TRUE);
   }
 }
 
 void UmlAttribute::generate_enum_member(QTextOStream & f,
 					QCString indent) {
   if (stereotype() == "attribute")
-    generate(f, "enum", indent);
+    generate(f, "enum", indent, FALSE);
 }
 

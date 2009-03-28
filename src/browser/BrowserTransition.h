@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -79,6 +79,7 @@ class BrowserTransition : public BrowserNode, public Labeled<BrowserTransition> 
     static void update_idmax_for_root();
     virtual void renumber(int phase);
     
+    virtual void referenced_by(QList<BrowserNode> & l, bool ondelete);
     static void compute_referenced_by(QList<BrowserNode> &, BrowserNode *);
     
     virtual bool tool_cmd(ToolCom * com, const char * args);

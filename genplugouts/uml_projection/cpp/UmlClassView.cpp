@@ -43,6 +43,16 @@ void UmlClassView::uml2php(bool rec) {
   }
 }
 
+void UmlClassView::uml2python(bool rec) {
+  if (rec) {
+    const QVector<UmlItem> ch = children();
+    unsigned n = ch.size();
+    
+    for (unsigned i = 0; i != n; i += 1)
+      ch[i]->uml2python(rec);
+  }
+}
+
 UmlDeploymentView * UmlClassView::deploymentView() {
   UmlDeploymentView * depl = associatedDeploymentView();
   

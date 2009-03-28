@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -31,26 +31,78 @@
 #include <qlayout.h>
 #include <qcombobox.h> 
 #include <qpushbutton.h>
+#include <qapplication.h>
 
 #include "ReferenceDialog.h"
+#include "BrowserView.h"
 #include "UmlDesktop.h"
 
-void ReferenceDialog::show(BrowserNode * target)
-{
-  ReferenceDialog d(target);
-  
-  d.exec();
-}
-
+ReferenceDialog * ReferenceDialog::the;
 QSize ReferenceDialog::previous_size;
 
-ReferenceDialog::ReferenceDialog(BrowserNode * target)
-    : QDialog(0, "Referenced By dialog", TRUE) {
-  setCaption("Referenced By dialog");
+ReferenceDialog::ReferenceDialog(BrowserNode * bn)
+    : QDialog(0, "Referenced By dialog", FALSE, WDestructiveClose) {
+  the = this;
+  target = bn;
   
+  setCaption("Referenced By dialog");
+    
+  QVBoxLayout * vbox = new QVBoxLayout(this);
+ 
+  vbox->setMargin(5);
+ 
+  QString s = target->get_name();
+  
+  s += " is referenced by :";
+  
+  vbox->addWidget(new QLabel(s, this));
+  
+  results = new QComboBox(FALSE, this);
+  vbox->addWidget(results);
+  
+  QHBoxLayout * hbox = new QHBoxLayout(vbox); 
+  QPushButton * search_b = new QPushButton("Recompute", this);
+  QPushButton * close_b = new QPushButton("Close", this);
+  
+  hbox->setMargin(5);
+  hbox->addWidget(search_b);
+  hbox->addWidget(select_b = new QPushButton("Select", this));
+  hbox->addWidget(mark_unmark_b = new QPushButton("Unmark", this));
+  hbox->addWidget(mark_them_b = new QPushButton("Mark them", this));
+  hbox->addWidget(unmark_all_b = new QPushButton("Unmark all", this));
+  hbox->addWidget(close_b);
+    
+  search_b->setDefault(TRUE);
+  
+  connect(search_b, SIGNAL(clicked()), this, SLOT(compute()));
+  connect(select_b, SIGNAL(clicked()), this, SLOT(select()));
+  connect(close_b, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(mark_unmark_b, SIGNAL(clicked()), this, SLOT(mark_unmark()));
+  connect(mark_them_b, SIGNAL(clicked()), this, SLOT(mark_them()));
+  connect(unmark_all_b, SIGNAL(clicked()), this, SLOT(unmark_all()));
+  connect(results, SIGNAL(activated(int)), this, SLOT(selected(int)));
+
+  compute();
+}
+
+ReferenceDialog::~ReferenceDialog() {
+  the = 0;
+  previous_size = size();
+}
+
+void ReferenceDialog::polish() {
+  QDialog::polish();
+  UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
+}
+
+void ReferenceDialog::compute() {
+  QApplication::setOverrideCursor(Qt::waitCursor);
+
   QList<BrowserNode> l;
   BrowserNode * bn;
   
+  nodes.clear();
+  results->clear();
   target->referenced_by(l);
   for (bn = l.first(); bn; bn = l.next())
     nodes.append(bn);
@@ -67,58 +119,70 @@ ReferenceDialog::ReferenceDialog(BrowserNode * target)
   
   nodes.full_names(names);
   
-  QVBoxLayout * vbox = new QVBoxLayout(this);
-  QHBoxLayout * hbox;
- 
-  vbox->setMargin(5);
- 
-  QString s = target->get_name();
+  QStringList::Iterator it;
   
-  if (nodes.isEmpty())
-    s += (nodes.isEmpty()) ? " is not referenced" : " is referenced by :";
+  for (bn = nodes.first(), it = names.begin();
+       bn;
+       bn = nodes.next(), ++it)
+    results->insertItem(*(bn->pixmap(0)), *it);
   
-  vbox->addWidget(new QLabel(s, this));
-  
-  QPushButton * cancel;
-  
-  if (!nodes.isEmpty()) {
-    items = new QComboBox(FALSE, this);
-    vbox->addWidget(items);
-    
-    QStringList::Iterator it;
-    
-    for (bn = nodes.first(), it = names.begin();
-	 bn;
-	 bn = nodes.next(), ++it)
-      items->insertItem(*(bn->pixmap(0)), *it);
-  
-    hbox = new QHBoxLayout(vbox); 
-    hbox->setMargin(5);
-    QPushButton * select = new QPushButton("&Select", this);
-    
-    select->setDefault(TRUE);
-    hbox->addWidget(select);
-    connect(select, SIGNAL(clicked()), this, SLOT(select()));
+  selected((nodes.isEmpty()) ? -1 : 0);
+
+  QApplication::restoreOverrideCursor();
+}
+
+void ReferenceDialog::selected(int index) {
+  if (index == -1) {
+    select_b->setEnabled(FALSE);
+    mark_unmark_b->setEnabled(FALSE);
+    mark_them_b->setEnabled(FALSE);
   }
   else {
-    hbox = new QHBoxLayout(vbox); 
-    hbox->setMargin(5);
+    select_b->setEnabled(TRUE);
+    mark_unmark_b->setEnabled(TRUE);
+    mark_unmark_b->setText((nodes.at(index)->markedp())
+			   ? "Unmark" : "Mark");
+    mark_them_b->setEnabled(TRUE);
   }
   
-  cancel = new QPushButton("&Close", this);
-  hbox->addWidget(cancel);
-  connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+  unmark_all_b->setEnabled(!BrowserNode::marked_nodes().isEmpty());
 }
 
-ReferenceDialog::~ReferenceDialog() {
-  previous_size = size();
+void ReferenceDialog::mark_unmark() {
+  BrowserNode * bn = nodes.at(results->currentItem());
+  
+  bn->toggle_mark();  	// call update
+  BrowserView::force_visible(bn);
 }
 
-void ReferenceDialog::polish() {
-  QDialog::polish();
-  UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
+void ReferenceDialog::mark_them() {
+  BrowserNode * bn;
+    
+  for (bn = nodes.first(); bn != 0; bn = nodes.next()) {
+    if (! bn->markedp()) {
+      bn->toggle_mark();  	// call update
+      BrowserView::force_visible(bn);
+    }
+  }
+}
+
+void ReferenceDialog::unmark_all() {
+  BrowserNode::unmark_all();  	// call update
 }
 
 void ReferenceDialog::select() {
-  nodes.at(items->currentItem())->select_in_browser();
+  if (!nodes.isEmpty())
+    nodes.at(results->currentItem())->select_in_browser();
+}
+
+void ReferenceDialog::update() {
+  selected((results->count() != 0) ? results->currentItem() : -1);
+}
+
+void ReferenceDialog::show(BrowserNode * target)
+{
+  if (the != 0)
+    the->close(TRUE);
+  
+  (new ReferenceDialog(target))->QDialog::show();
 }

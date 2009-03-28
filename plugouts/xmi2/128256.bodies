@@ -124,6 +124,25 @@ class UmlBaseState
   UmlCom.check();
 
   _java.do_activity = s;
+!!!273664.cpp!!!	specification() : UmlItem
+  read_if_needed_();
+  return _specification;
+!!!273664.java!!!	specification() : UmlItem
+  read_if_needed_();
+  return _specification;
+!!!273792.cpp!!!	set_Specification(in v : UmlOperation) : bool
+  UmlCom::send_cmd(_identifier, setDefCmd, (v == 0) ? (void *) v : ((UmlBaseItem *) v)->_identifier);
+  if (UmlCom::read_bool()) {
+    _specification = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!273792.java!!!	set_Specification(in v : UmlOperation) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setDefCmd, (v == null) ? (long) 0 : v.identifier_());
+  UmlCom.check();
+
+  _specification = v;
 !!!131456.cpp!!!	associatedDiagram() : UmlStateDiagram
   read_if_needed_();
 
@@ -133,7 +152,7 @@ class UmlBaseState
 
   return _assoc_diagram;
 !!!235392.cpp!!!	set_AssociatedDiagram(in d : UmlStateDiagram) : bool
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -141,7 +160,7 @@ class UmlBaseState
   else
     return FALSE;
 !!!235392.java!!!	set_AssociatedDiagram(in d : UmlStateDiagram) : bool
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, d.identifier_());
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, (d == null) ? (long) 0 : d.identifier_());
   UmlCom.check();
   _assoc_diagram = d;
 !!!131584.cpp!!!	unload(in rec : bool, in del : bool) : void
@@ -162,11 +181,13 @@ class UmlBaseState
   _assoc_diagram = (UmlStateDiagram *) UmlBaseItem::read_();
   UmlBaseItem::read_uml_();
   _uml.read();
+  _specification = (UmlOperation *) UmlBaseItem::read_();
 !!!131968.java!!!	read_uml_() : void
   _assoc_diagram = (UmlStateDiagram) UmlBaseItem.read_();
   super.read_uml_();
   _uml = new StateBehavior();
   _uml.read();
+  _specification = (UmlOperation) UmlBaseItem.read_();
 !!!132096.cpp!!!	read_cpp_() : void
   _cpp.read();
 !!!132096.java!!!	read_cpp_() : void

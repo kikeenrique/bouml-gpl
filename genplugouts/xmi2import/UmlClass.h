@@ -29,12 +29,6 @@ class UmlClass : public UmlBaseClass {
     //import the class starting by 'tk' inside 'where'
     static void importIt(FileIn & in, Token & token, UmlItem * where);
 
-
-  private:
-    void readFormal(FileIn & in, Token & token);
-
-
-  public:
     //import the primitive type starting by 'tk' inside 'where'
     static void importPrimitiveType(FileIn & in, Token & token, UmlItem * where);
 
@@ -67,11 +61,20 @@ class UmlClass : public UmlBaseClass {
     
     bool bind(UmlClass * tmpl);
 
-    //if the token is a stereotype application give prof:st and the name of the attribute
+    // the class is a stereotype extending mcl
+    void extend(QCString mcl);
+
+    //if the token is a stereotype application give prof:st and the names of the attribute
     //specifying the element on which the stereotype is applied and return TRUE
-    static bool isAppliedStereotype(Token & tk, QCString & prof_st, QCString & base_v);
+    static bool isAppliedStereotype(Token & tk, QCString & prof_st, QValueList<QCString> & base_v);
 
     static bool isPrimitiveType(Token & token, UmlTypeSpec & ts);
+
+
+  private:
+    void readFormal(FileIn & in, Token & token);
+
+    UmlClass * addMetaclass(QCString mclname, const char * mclpath);
 
 
   protected:

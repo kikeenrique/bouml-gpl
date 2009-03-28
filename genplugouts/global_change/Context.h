@@ -25,7 +25,7 @@ class Context {
 
     void set_targets(bool art, bool cl, bool op, bool att, bool rel);
 
-    void set_language(bool c, bool j, bool p, bool i);
+    void set_language(bool c, bool j, bool p, bool y, bool i);
 
     bool match_stereotype(const QCString & s);
 
@@ -35,27 +35,29 @@ class Context {
 
     QCString replace(QCString s);
 
-    const bool onArtifact() const;
+    bool onArtifact() const;
 
-    const bool onClass() const;
+    bool onClass() const;
 
-    const bool onOperation() const;
+    bool onOperation() const;
 
-    const bool onAttribute() const;
+    bool onAttribute() const;
 
-    const bool onRelation() const;
+    bool onRelation() const;
 
-    const bool cpp() const;
+    bool cpp() const;
 
-    const bool java() const;
+    bool java() const;
 
-    const bool php() const;
+    bool php() const;
 
-    const bool idl() const;
+    bool python() const;
 
-    const int n_match() const;
+    bool idl() const;
 
-    const int n_err() const;
+    int n_match() const;
+
+    int n_err() const;
 
 
   protected:
@@ -93,6 +95,8 @@ class Context {
 
     bool _php;
 
+    bool _python;
+
     bool _idl;
 
     QCString _old;
@@ -123,54 +127,59 @@ _onAttribute = att;
 _onRelation = rel;
 }
 
-inline void Context::set_language(bool c, bool j, bool p, bool i) {
+inline void Context::set_language(bool c, bool j, bool p, bool y, bool i) {
 _cpp = c;
 _java = j;
 _php = p;
+_python = y;
 _idl = i;
 }
 
-inline const bool Context::onArtifact() const {
+inline bool Context::onArtifact() const {
   return _onArtifact;
 }
 
-inline const bool Context::onClass() const {
+inline bool Context::onClass() const {
   return _onClass;
 }
 
-inline const bool Context::onOperation() const {
+inline bool Context::onOperation() const {
   return _onOperation;
 }
 
-inline const bool Context::onAttribute() const {
+inline bool Context::onAttribute() const {
   return _onAttribute;
 }
 
-inline const bool Context::onRelation() const {
+inline bool Context::onRelation() const {
   return _onRelation;
 }
 
-inline const bool Context::cpp() const {
+inline bool Context::cpp() const {
   return _cpp;
 }
 
-inline const bool Context::java() const {
+inline bool Context::java() const {
   return _java;
 }
 
-inline const bool Context::php() const {
+inline bool Context::php() const {
   return _php;
 }
 
-inline const bool Context::idl() const {
+inline bool Context::python() const {
+  return _python;
+}
+
+inline bool Context::idl() const {
   return _idl;
 }
 
-inline const int Context::n_match() const {
+inline int Context::n_match() const {
   return _n_match;
 }
 
-inline const int Context::n_err() const {
+inline int Context::n_err() const {
   return _n_err;
 }
 

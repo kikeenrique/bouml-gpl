@@ -106,7 +106,7 @@ class UmlBaseArtifact
     _assoc_classes = a;
   }
 !!!15232.cpp!!!	set_AssociatedClasses(inout l : UmlClass) : bool
-  UmlCom::send_cmd(_identifier, setAssocClassesCmd, l);
+  UmlCom::send_cmd(_identifier, setAssocClassesCmd, (const QVector<UmlItem> &) l);
   if (UmlCom::read_bool()) {
     if (_defined)
       _assoc_classes = l;
@@ -254,6 +254,36 @@ class UmlBaseArtifact
   UmlCom.check();
 
   _java_src = s;
+!!!201728.cpp!!!	phpSource() : string
+  read_if_needed_();
+  
+  return _php_src;
+!!!201728.java!!!	phpSource() : string
+  read_if_needed_();
+  
+  return _php_src;
+!!!201856.cpp!!!	set_PhpSource(in s : string) : bool
+  return set_it_(_php_src, s, setPhpSrcCmd);
+!!!201856.java!!!	set_PhpSource(in s : string) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpSrcCmd, s);
+  UmlCom.check();
+
+  _php_src = s;
+!!!227328.cpp!!!	pythonSource() : string
+  read_if_needed_();
+  
+  return _python_src;
+!!!227328.java!!!	pythonSource() : string
+  read_if_needed_();
+  
+  return _python_src;
+!!!227456.cpp!!!	set_PythonSource(in s : string) : bool
+  return set_it_(_python_src, s, setPythonSrcCmd);
+!!!227456.java!!!	set_PythonSource(in s : string) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonSrcCmd, s);
+  UmlCom.check();
+
+  _python_src = s;
 !!!16640.cpp!!!	idlSource() : string
   read_if_needed_();
   
@@ -279,6 +309,12 @@ class UmlBaseArtifact
 #ifdef WITHJAVA
   _java_src = 0;
 #endif
+#ifdef WITHPHP
+  _php_src = 0;
+#endif
+#ifdef WITHPYTHON
+  _python_src = 0;
+#endif
 #ifdef WITHIDL
   _idl_src = 0;
 #endif
@@ -289,6 +325,8 @@ class UmlBaseArtifact
   _cpp_h = null;
   _cpp_src = null;
   _java_src = null;
+  _php_src = null;
+  _python_src = null;
   _idl_src = null;
   super.unload(rec, del);
 !!!17024.cpp!!!	read_uml_() : void
@@ -337,6 +375,14 @@ class UmlBaseArtifact
   _java_src = UmlCom::read_string();
 !!!17280.java!!!	read_java_() : void
   _java_src = UmlCom.read_string();
+!!!201984.cpp!!!	read_php_() : void
+  _php_src = UmlCom::read_string();
+!!!201984.java!!!	read_php_() : void
+  _php_src = UmlCom.read_string();
+!!!216704.cpp!!!	read_python_() : void
+  _python_src = UmlCom::read_string();
+!!!216704.java!!!	read_python_() : void
+  _python_src = UmlCom.read_string();
 !!!17408.cpp!!!	read_idl_() : void
   _idl_src = UmlCom::read_string();
 !!!17408.java!!!	read_idl_() : void

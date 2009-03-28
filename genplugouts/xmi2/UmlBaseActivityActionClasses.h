@@ -24,6 +24,13 @@ class UmlReadVariableValueAction;
 class UmlWriteVariableValueAction;
 class UmlAddVariableValueAction;
 class UmlRemoveVariableValueAction;
+class UmlAcceptCallAction;
+class UmlReplyAction;
+class UmlCreateObjectAction;
+class UmlDestroyObjectAction;
+class UmlTestIdentityAction;
+class UmlRaiseExceptionAction;
+class UmlReduceAction;
 
 class UmlBaseSendObjectAction : public UmlActivityAction {
   public:
@@ -596,6 +603,352 @@ class UmlBaseRemoveVariableValueAction : public UmlAccessVariableValueAction {
 
   private:
     bool _remove_duplicates;
+
+
+  protected:
+    virtual void read_uml_();
+
+};
+
+class UmlBaseAcceptCallAction : public UmlActivityAction {
+  public:
+    //  returns a new accept call action named 's' created under 'parent'
+    //
+    // In case it cannot be created (the name is already used or
+    // invalid, 'parent' cannot contain it etc ...) return 0 in C++
+    // and produce a RuntimeException in Java
+    static UmlAcceptCallAction * create(UmlItem * parent, const char * s);
+
+    // returns the kind of the item
+    virtual anItemKind kind();
+
+
+  protected:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlBaseAcceptCallAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+    }
+
+
+  public:
+    // return the trigger
+    const QCString & trigger();
+
+    // set the trigger
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_Trigger(const char * v);
+
+#ifdef WITHCPP
+    // return the trigger in C++
+    const QCString & cppTrigger();
+
+    // set the trigger in C++
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_CppTrigger(const char * v);
+#endif
+
+#ifdef WITHJAVA
+    // return the trigger in Java
+    const QCString & javaTrigger();
+
+    // set the trigger in Java
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_JavaTrigger(const char * v);
+#endif
+
+    // to unload the object to free memory, it will be reloaded automatically
+    // if needed. Recursively done for the sub items if 'rec' is TRUE.
+    //
+    // if 'del' is true the sub items are deleted in C++, and removed from the
+    // internal dictionnary in C++ and Java (to allow it to be garbaged),
+    // you will have to call Children() to re-access to them
+    virtual void unload(bool = FALSE, bool = FALSE);
+
+
+  private:
+    QCString _trigger;
+
+#ifdef WITHCPP
+    QCString _cpp_trigger;
+#endif
+
+#ifdef WITHJAVA
+    QCString _java_trigger;
+#endif
+
+
+  protected:
+    virtual void read_uml_();
+
+#ifdef WITHCPP
+    virtual void read_cpp_();
+#endif
+
+#ifdef WITHJAVA
+    virtual void read_java_();
+#endif
+
+};
+
+class UmlBaseReplyAction : public UmlActivityAction {
+  public:
+    //  returns a new reply action named 's' created under 'parent'
+    //
+    // In case it cannot be created (the name is already used or
+    // invalid, 'parent' cannot contain it etc ...) return 0 in C++
+    // and produce a RuntimeException in Java
+    static UmlReplyAction * create(UmlItem * parent, const char * s);
+
+    // returns the kind of the item
+    virtual anItemKind kind();
+
+
+  protected:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlBaseReplyAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+    }
+
+
+  public:
+    // return the replyToCall trigger
+    const QCString & replyToCall();
+
+    // set the replyToCall trigger
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_ReplyToCall(const char * v);
+
+#ifdef WITHCPP
+    // return the replyToCall trigger in C++
+    const QCString & cppReplyToCall();
+
+    // set the replyToCall trigger in C++
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_CppReplyToCall(const char * v);
+#endif
+
+#ifdef WITHJAVA
+    // return the replyToCall trigger in Java
+    const QCString & javaReplyToCall();
+
+    // set the replyToCall trigger in Java
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_JavaReplyToCall(const char * v);
+#endif
+
+    // to unload the object to free memory, it will be reloaded automatically
+    // if needed. Recursively done for the sub items if 'rec' is TRUE.
+    //
+    // if 'del' is true the sub items are deleted in C++, and removed from the
+    // internal dictionnary in C++ and Java (to allow it to be garbaged),
+    // you will have to call Children() to re-access to them
+    virtual void unload(bool = FALSE, bool = FALSE);
+
+
+  private:
+    QCString _trigger;
+
+#ifdef WITHCPP
+    QCString _cpp_trigger;
+#endif
+
+#ifdef WITHJAVA
+    QCString _java_trigger;
+#endif
+
+
+  protected:
+    virtual void read_uml_();
+
+#ifdef WITHCPP
+    virtual void read_cpp_();
+#endif
+
+#ifdef WITHJAVA
+    virtual void read_java_();
+#endif
+
+};
+
+class UmlBaseCreateObjectAction : public UmlActivityAction {
+  public:
+    //  returns a new create object action named 's' created under 'parent'
+    //
+    // In case it cannot be created (the name is already used or
+    // invalid, 'parent' cannot contain it etc ...) return 0 in C++
+    // and produce a RuntimeException in Java
+    static UmlCreateObjectAction * create(UmlItem * parent, const char * s);
+
+    // returns the kind of the item
+    virtual anItemKind kind();
+
+
+  protected:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlBaseCreateObjectAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+    }
+
+
+  public:
+    // return the classifier
+    const QCString & classifier();
+
+    // set the classifier
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_Classifier(const char * v);
+
+    // to unload the object to free memory, it will be reloaded automatically
+    // if needed. Recursively done for the sub items if 'rec' is TRUE.
+    //
+    // if 'del' is true the sub items are deleted in C++, and removed from the
+    // internal dictionnary in C++ and Java (to allow it to be garbaged),
+    // you will have to call Children() to re-access to them
+    virtual void unload(bool = FALSE, bool = FALSE);
+
+
+  private:
+    QCString _classifier;
+
+
+  protected:
+    virtual void read_uml_();
+
+};
+
+class UmlBaseDestroyObjectAction : public UmlActivityAction {
+  public:
+    //  returns a new destroy object action named 's' created under 'parent'
+    //
+    // In case it cannot be created (the name is already used or
+    // invalid, 'parent' cannot contain it etc ...) return 0 in C++
+    // and produce a RuntimeException in Java
+    static UmlDestroyObjectAction * create(UmlItem * parent, const char * s);
+
+    // returns the kind of the item
+    virtual anItemKind kind();
+
+
+  protected:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlBaseDestroyObjectAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+    }
+
+
+  public:
+    // return the  return the isDestroyLinks attribute.
+    bool isDestroyLinks();
+
+    // set the isDestroyLinks attribute
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isDestroyLinks(bool v);
+
+    // return the  return the isDestroyOwnedObjects attribute
+    bool isDestroyOwnedObjects();
+
+    // set the isDestroyOwnedObjects attribute
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isDestroyOwnedObjects(bool v);
+
+
+  private:
+    bool _links;
+
+    bool _owned_objects;
+
+
+  protected:
+    virtual void read_uml_();
+
+};
+
+class UmlBaseTestIdentityAction : public UmlActivityAction {
+  public:
+    //  returns a new test identity action named 's' created under 'parent'
+    //
+    // In case it cannot be created (the name is already used or
+    // invalid, 'parent' cannot contain it etc ...) return 0 in C++
+    // and produce a RuntimeException in Java
+    static UmlTestIdentityAction * create(UmlItem * parent, const char * s);
+
+    // returns the kind of the item
+    virtual anItemKind kind();
+
+
+  protected:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlBaseTestIdentityAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+    }
+
+};
+
+class UmlBaseRaiseExceptionAction : public UmlActivityAction {
+  public:
+    //  returns a new raise exception action named 's' created under 'parent'
+    //
+    // In case it cannot be created (the name is already used or
+    // invalid, 'parent' cannot contain it etc ...) return 0 in C++
+    // and produce a RuntimeException in Java
+    static UmlRaiseExceptionAction * create(UmlItem * parent, const char * s);
+
+    // returns the kind of the item
+    virtual anItemKind kind();
+
+
+  protected:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlBaseRaiseExceptionAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+    }
+
+};
+
+class UmlBaseReduceAction : public UmlActivityAction {
+  public:
+    //  returns a new reduce action named 's' created under 'parent'
+    //
+    // In case it cannot be created (the name is already used or
+    // invalid, 'parent' cannot contain it etc ...) return 0 in C++
+    // and produce a RuntimeException in Java
+    static UmlReduceAction * create(UmlItem * parent, const char * s);
+
+    // returns the kind of the item
+    virtual anItemKind kind();
+
+
+  protected:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlBaseReduceAction(void * id, const QCString & s) : UmlActivityAction(id, s) {
+    }
+
+
+  public:
+    // return the  return the isOrdered attribute
+    bool isOrdered();
+
+    // set the isOrdered attribute
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isOrdered(bool v);
+
+    // return the reducer, may be an activity or a state machine
+    UmlItem * reducer();
+
+    // set the reducer
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_Reducer(UmlItem * v);
+
+
+  private:
+    bool _ordered;
+
+    UmlItem * _reducer;
 
 
   protected:

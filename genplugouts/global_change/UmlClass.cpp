@@ -31,6 +31,15 @@ void UmlClass::change(Context & ctx) {
       }
     }
     
+    if (ctx.python()) {
+      const QCString & c = pythonDecl();
+      
+      if (!c.isEmpty() && ctx.match(c)) {
+        if (!set_PythonDecl(ctx.replace(c)))
+  	ctx.err();
+      }
+    }
+    
     if (ctx.idl()) {
       const QCString & c = idlDecl();
       

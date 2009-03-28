@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -96,7 +96,7 @@ void ActivityContainerCanvas::prepare_for_move(bool on_resize) {
 	  switch (di->type()) {
 	  case UmlActivityObject:
 	  case UmlActivityAction:
-	  case UmlPartition:
+	  case UmlActivityPartition:
 	  case InitialAN:
 	  case FlowFinalAN:
 	  case ActivityFinalAN:

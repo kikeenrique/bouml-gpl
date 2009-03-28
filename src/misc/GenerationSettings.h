@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -164,6 +164,7 @@ class GenerationSettings {
     static SharedStr python_enum_item_decl;
     static SharedStr python_rel_decl[2/*relation kind*/][2/*multiplicity*/];
     static SharedStr python_oper_def;
+    static SharedStr python_initoper_def;
     static SharedStr python_get_name;
     static SharedStr python_set_name;
     
@@ -201,6 +202,7 @@ class GenerationSettings {
     static bool cpp_force_namespace_gen;
     static IncludesSpec cpp_includes;
     static QString java_extension;
+    static bool java_force_package_gen;
     static IncludesSpec java_imports;
     static IncludesSpec python_imports;
     static QString php_extension;
@@ -331,6 +333,7 @@ class GenerationSettings {
     static const char * python_default_enum_item_decl() { return python_enum_item_decl; };
     static const char * python_default_rel_decl(UmlCode rel, const QString & mult);
     static const char * python_default_oper_def() { return python_oper_def; };
+    static const char * python_default_initoper_def() { return python_initoper_def; };
     static const char * python_default_get_name() { return python_get_name; };
     static const char * python_default_set_name() { return python_set_name; };
 

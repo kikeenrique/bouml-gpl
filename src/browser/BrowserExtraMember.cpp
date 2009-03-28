@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -104,6 +104,11 @@ void BrowserExtraMember::renumber(int phase) {
 const QPixmap* BrowserExtraMember::pixmap(int) const {
   if (deletedp())
     return DeletedExtraMemberIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  if (px != 0)
+    return px;
   else if (is_marked && text(0).isEmpty())
     return ExtraMemberMarkedIcon;
   else
@@ -149,7 +154,7 @@ Note that you can undelete it after");
 void BrowserExtraMember::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
-    open(FALSE);
+    open(TRUE);
     return;
   case 1:
     delete_it();
@@ -316,8 +321,8 @@ BrowserExtraMember * BrowserExtraMember::read(char * & st, char * k,
 
     result->is_defined = TRUE;
     
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     result->def->set_browser_node(result);
     

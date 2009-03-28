@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -93,6 +93,7 @@ class Class : public BrowserNode, public ClassContainer {
     virtual QString get_path() const;
 #ifdef REVERSE
     static void new_artifact() { CurrentArtifact = 0; }
+    static UmlArtifact * current_artifact() { return CurrentArtifact; }
     bool from_libp() const { return from_lib; };
 #else
     const QCString & get_description() const { return description; };

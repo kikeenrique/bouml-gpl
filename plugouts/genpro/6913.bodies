@@ -63,7 +63,7 @@ class UmlArtifact
   if (!propertyValue("genpro config", config))
     config = "debug warn_on qt";
   if (!propertyValue("genpro defines", defines))
-    defines = "WITHCPP WITHJAVA WITHPHP WITHIDL";
+    defines = "WITHCPP WITHJAVA WITHPHP WITHPYTHON WITHIDL";
   else if (defines.find("WITHPHP") == -1) {
     int n = 0;
     
@@ -77,7 +77,25 @@ class UmlArtifact
       n += 1;
     
     if (n > 1)
-      defines += " WITHPHP";
+      defines += " WITHPHP WITHPYTHON";
+  }
+  else if (defines.find("WITHPYTHON") == -1) {
+    int n = 0;
+    
+    if (defines.find("WITHCPP") != -1)
+      n += 1;
+    
+    if (defines.find("WITHJAVA") != -1)
+      n += 1;
+    
+    if (defines.find("WITHIDL") != -1)
+      n += 1;
+    
+    if (defines.find("WITHPHP") != -1)
+      n += 1;
+    
+    if (n > 1)
+      defines += " WITHPYTHON";
   }
   propertyValue("genpro includepath", includepath);
   propertyValue("genpro dependpath", dependpath);

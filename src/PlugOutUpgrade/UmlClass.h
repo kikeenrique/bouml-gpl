@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -80,17 +80,21 @@ class UmlClass : public UmlBaseClass {
 			  UmlTypeSpec & return_type, bool excpt = FALSE);
     UmlAttribute * add_attribute(const char * name, aVisibility v,
 				 UmlClass * type,
-				 const char * if_def, const char * end_if);
+				 const char * if_def, const char * end_if,
+				 const char * bitfield = 0);
     UmlAttribute * add_attribute(const char * name, aVisibility v,
 				 const char * type,
-				 const char * if_def, const char * end_if);
+				 const char * if_def, const char * end_if,
+				 const char * bitfield = 0);
     UmlAttribute * add_attribute(const char * name, aVisibility v,
 				 UmlTypeSpec & type,
-				 const char * if_def, const char * end_if);
+				 const char * if_def, const char * end_if,
+				 const char * bitfield = 0);
     UmlAttribute * add_enum_item(const char * name);
     UmlRelation * add_relation(aRelationKind k, const char * name,
 			       aVisibility v, UmlClass * type,
-			       const char * if_def, const char * end_if);
+			       const char * if_def, const char * end_if,
+			       const char * bitfield = 0);
     UmlRelation * add_vect_assoc(const char * name, aVisibility v, UmlClass * type,
 				 const char * if_def, const char * end_if);
     UmlOperation * get_operation(const char *);

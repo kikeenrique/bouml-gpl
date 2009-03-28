@@ -4,10 +4,8 @@
 
 #include "UmlBaseComponent.h"
 #include <qcstring.h>
-#include <qvector.h>
 
 class FileOut;
-class UmlClass;
 
 // This class manages 'components'
 //
@@ -17,8 +15,6 @@ class UmlComponent : public UmlBaseComponent {
     UmlComponent(void * id, const QCString & n) : UmlBaseComponent(id, n) {};
 
     virtual void write(FileOut & out);
-
-    void write(FileOut & out, const QVector< UmlClass > & v, const char * k1, const char * k2);
 
 };
 

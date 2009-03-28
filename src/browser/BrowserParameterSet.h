@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -72,6 +72,8 @@ class BrowserParameterSet : public BrowserNode, public Labeled<BrowserParameterS
     static BrowserNode * get_it(const char * k, int id);
 
     static BrowserParameterSet * new_one(const char *, BrowserNode * p);
+    
+    virtual void referenced_by(QList<BrowserNode> & l, bool ondelete);
     
     static void clear(bool old);
     static void update_idmax_for_root();

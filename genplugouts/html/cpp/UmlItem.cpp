@@ -67,6 +67,26 @@ void UmlItem::set_dir(int argc, char ** argv) {
     if (d.isEmpty())
       throw 0;
     
+#ifdef WIN32
+    QDir dir(d);
+    
+    if (! dir.exists()) {
+      int index = d.length() - 1;
+      
+      if (d.at(index) == QChar('/'))
+	index -= 1;
+      
+      QString d2 = d;
+	
+      d2.remove(index, 1);
+	
+      QDir dir2(d2);
+	
+      if (dir2.exists())
+	d = d2;
+    }
+#endif
+    
     ask = TRUE;
     rem = FALSE;
     replace_css = TRUE;

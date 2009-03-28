@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -189,7 +189,7 @@ int SdSelfMsgCanvas::overlap_dir(SdDurationCanvas *) const {
     return 1;
   default:
     // async
-    return 0;
+    return 2;
   }
 }
 

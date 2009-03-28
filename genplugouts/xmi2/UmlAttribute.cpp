@@ -48,6 +48,15 @@ void UmlAttribute::write(FileOut & out) {
     write_scope(out);
     if (isReadOnly())
       out << " isReadOnly=\"true\"";
+    if (isDerived()) {
+      out << " isDerived=\"true\"";
+      if (isDerivedUnion())
+	out << " isDerivedUnion=\"true\"";
+    }
+    if (isOrdered())
+      out << " isOrdered=\"true\"";
+    if (isUnique())
+      out << " isUnique=\"true\"";
   }
 
   out << ">\n";

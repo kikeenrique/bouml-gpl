@@ -50,6 +50,12 @@ class UmlBaseItem {
     //  On error return FALSE in C++, produce a RuntimeException in Java
     virtual bool set_Stereotype(const QCString & s);
 
+    // If the current stereotype is part of a profile add needed properties.
+    // In all cases remove extra properties whose keys contain two ':'.
+    //
+    // If the element is read-only, return FALSE in C++, produce a RuntimeException in Java
+    bool applyStereotype();
+
     // returns the description
     const QCString & description();
 
@@ -180,34 +186,6 @@ class UmlBaseItem {
 
     static const QVector<UmlItem> markedItems();
 
-  friend class UmlBaseClassItem;
-  friend class UmlBaseAttribute;
-  friend class UmlBaseClass;
-  friend class UmlBaseClassDiagram;
-  friend class UmlBaseClassView;
-  friend class UmlBaseCollaborationDiagram;
-  friend class UmlBaseArtifact;
-  friend class UmlBaseComponentDiagram;
-  friend class UmlBaseComponentView;
-  friend class UmlBaseDeployment;
-  friend class UmlBaseDeploymentDiagram;
-  friend class UmlBaseDeploymentView;
-  friend class UmlBaseNode;
-  friend class UmlBaseOperation;
-  friend class UmlBasePackage;
-  friend class UmlBaseRelation;
-  friend class UmlBaseNcRelation;
-  friend class UmlBaseSequenceDiagram;
-  friend class UmlBaseUseCase;
-  friend class UmlBaseUseCaseDiagram;
-  friend class UmlBaseUseCaseView;
-  friend class UmlBaseDiagram;
-  friend class UmlBaseFormalParameter;
-  friend class UmlBaseActualParameter;
-  friend class UmlCom;
-  friend class UmlBaseClassMember;
-  friend class UmlBaseExtraClassMember;
-  friend class UmlBaseComponent;
 
   private:
     bool _defined;
@@ -270,6 +248,12 @@ class UmlBaseItem {
     virtual void read_php_();
 #endif
 
+#ifdef WITHPYTHON
+    //internal, do NOT use it
+    
+    virtual void read_python_();
+#endif
+
 #ifdef WITHIDL
     //internal, do NOT use it
     
@@ -316,63 +300,99 @@ class UmlBaseItem {
     // the destructor, do not delete objects yourself !!!!!!!!!!
     virtual ~UmlBaseItem();
 
-  friend class UmlBaseState;
-  friend class UmlBaseStateDiagram;
-  friend class UmlBaseTransition;
-  friend class UmlBaseRegion;
-  friend class UmlBaseStateAction;
-  friend class UmlBaseInitialPseudoState;
-  friend class UmlBaseEntryPointPseudoState;
-  friend class UmlBaseFinalState;
-  friend class UmlBaseTerminatePseudoState;
-  friend class UmlBaseExitPointPseudoState;
-  friend class UmlBaseDeepHistoryPseudoState;
-  friend class UmlBaseShallowHistoryPseudoState;
-  friend class UmlBaseJunctionPseudoState;
-  friend class UmlBaseChoicePseudoState;
-  friend class UmlBaseForkPseudoState;
-  friend class UmlBaseJoinPseudoState;
-  friend class UmlBaseObjectDiagram;
-  friend class UmlBaseActivity;
-  friend class UmlBaseActivityDiagram;
-  friend class UmlBaseActivityNode;
-  friend class UmlBaseFlow;
-  friend class UmlBaseActivityRegion;
-  friend class UmlBaseExpansionRegion;
-  friend class UmlBaseInterruptibleActivityRegion;
-  friend class UmlBaseActivityAction;
-  friend class UmlBaseSendObjectAction;
-  friend class UmlBaseUnmarshallAction;
-  friend class UmlBaseOnSignalAction;
-  friend class UmlBaseSendSignalAction;
-  friend class UmlBaseBroadcastSignalAction;
-  friend class UmlBaseValueSpecificationAction;
-  friend class UmlBaseOpaqueAction;
-  friend class UmlBaseAcceptEventAction;
-  friend class UmlBaseCallOperationAction;
-  friend class UmlBaseCallBehaviorAction;
-  friend class UmlBaseAccessVariableValueAction;
-  friend class UmlBaseClearVariableValueAction;
-  friend class UmlBaseReadVariableValueAction;
-  friend class UmlBaseWriteVariableValueAction;
-  friend class UmlBaseAddVariableValueAction;
-  friend class UmlBaseRemoveVariableValueAction;
-  friend class UmlBaseActivityControlNode;
-  friend class UmlBaseInitialActivityNode;
-  friend class UmlBaseFlowFinalActivityNode;
-  friend class UmlBaseActivityFinalActivityNode;
-  friend class UmlBaseDecisionActivityNode;
-  friend class UmlBaseMergeActivityNode;
-  friend class UmlBaseForkActivityNode;
-  friend class UmlBaseJoinActivityNode;
-  friend class UmlBaseActivityObject;
-  friend class UmlBaseExpansionNode;
-  friend class UmlBasePinParameter;
-  friend class UmlBaseActivityPin;
-  friend class UmlBaseActivityParameter;
-  friend class UmlBaseParameterSet;
-  friend class UmlBaseClassInstance;
   friend class UmlBaseView;
+  friend class UmlBaseClassInstance;
+  friend class UmlBaseParameterSet;
+  friend class UmlBaseActivityParameter;
+  friend class UmlBaseActivityPin;
+  friend class UmlBasePinParameter;
+  friend class UmlBaseExpansionNode;
+  friend class UmlBaseActivityObject;
+  friend class UmlBaseJoinActivityNode;
+  friend class UmlBaseForkActivityNode;
+  friend class UmlBaseMergeActivityNode;
+  friend class UmlBaseDecisionActivityNode;
+  friend class UmlBaseActivityFinalActivityNode;
+  friend class UmlBaseFlowFinalActivityNode;
+  friend class UmlBaseInitialActivityNode;
+  friend class UmlBaseActivityControlNode;
+  friend class UmlBaseRemoveVariableValueAction;
+  friend class UmlBaseAddVariableValueAction;
+  friend class UmlBaseWriteVariableValueAction;
+  friend class UmlBaseReadVariableValueAction;
+  friend class UmlBaseClearVariableValueAction;
+  friend class UmlBaseAccessVariableValueAction;
+  friend class UmlBaseCallBehaviorAction;
+  friend class UmlBaseCallOperationAction;
+  friend class UmlBaseAcceptEventAction;
+  friend class UmlBaseOpaqueAction;
+  friend class UmlBaseValueSpecificationAction;
+  friend class UmlBaseBroadcastSignalAction;
+  friend class UmlBaseSendSignalAction;
+  friend class UmlBaseOnSignalAction;
+  friend class UmlBaseUnmarshallAction;
+  friend class UmlBaseSendObjectAction;
+  friend class UmlBaseActivityAction;
+  friend class UmlBaseInterruptibleActivityRegion;
+  friend class UmlBaseExpansionRegion;
+  friend class UmlBaseActivityRegion;
+  friend class UmlBaseFlow;
+  friend class UmlBaseActivityNode;
+  friend class UmlBaseActivityDiagram;
+  friend class UmlBaseActivity;
+  friend class UmlBaseObjectDiagram;
+  friend class UmlBaseJoinPseudoState;
+  friend class UmlBaseForkPseudoState;
+  friend class UmlBaseChoicePseudoState;
+  friend class UmlBaseJunctionPseudoState;
+  friend class UmlBaseShallowHistoryPseudoState;
+  friend class UmlBaseDeepHistoryPseudoState;
+  friend class UmlBaseExitPointPseudoState;
+  friend class UmlBaseTerminatePseudoState;
+  friend class UmlBaseFinalState;
+  friend class UmlBaseEntryPointPseudoState;
+  friend class UmlBaseInitialPseudoState;
+  friend class UmlBaseStateAction;
+  friend class UmlBaseRegion;
+  friend class UmlBaseTransition;
+  friend class UmlBaseStateDiagram;
+  friend class UmlBaseState;
+  friend class UmlBaseComponent;
+  friend class UmlBaseExtraClassMember;
+  friend class UmlBaseClassMember;
+  friend class UmlCom;
+  friend class UmlBaseActualParameter;
+  friend class UmlBaseFormalParameter;
+  friend class UmlBaseDiagram;
+  friend class UmlBaseUseCaseView;
+  friend class UmlBaseUseCaseDiagram;
+  friend class UmlBaseUseCase;
+  friend class UmlBaseSequenceDiagram;
+  friend class UmlBaseNcRelation;
+  friend class UmlBaseRelation;
+  friend class UmlBasePackage;
+  friend class UmlBaseOperation;
+  friend class UmlBaseNode;
+  friend class UmlBaseDeploymentView;
+  friend class UmlBaseDeploymentDiagram;
+  friend class UmlBaseDeployment;
+  friend class UmlBaseComponentView;
+  friend class UmlBaseComponentDiagram;
+  friend class UmlBaseArtifact;
+  friend class UmlBaseCollaborationDiagram;
+  friend class UmlBaseClassView;
+  friend class UmlBaseClassDiagram;
+  friend class UmlBaseClass;
+  friend class UmlBaseAttribute;
+  friend class UmlBaseClassItem;
+  friend class UmlBaseUseCaseReference;
+  friend class UmlBaseUseCaseAssociation;
+  friend class UmlBaseClassInstanceReference;
+  friend class UmlBaseMessage;
+  friend class UmlBaseUseCaseDiagramDefinition;
+  friend class UmlBaseSequenceDiagramDefinition;
+  friend class UmlBaseCollaborationDiagramDefinition;
+  friend class UmlBaseFragment;
 };
 
 #endif

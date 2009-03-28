@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,6 +46,7 @@
 #include "BrowserView.h"
 #include "mu.h"
 #include "err.h"
+#include "DialogUtil.h"
 
 IdDict<OperationData> OperationData::all(1023, __FILE__);
 
@@ -79,29 +80,26 @@ OperationData::OperationData(OperationData * model, BrowserNode * bn)
       cpp_friend(model->cpp_friend),
       cpp_virtual(model->cpp_virtual),
       cpp_inline(model->cpp_inline),
-      cpp_get_set_frozen(model->cpp_get_set_frozen),
+      cpp_get_set_frozen(FALSE),
       cpp_indent_body(model->cpp_indent_body),
       java_final(model->java_final),
       java_synchronized(model->java_synchronized),
-      java_get_set_frozen(model->java_get_set_frozen),
+      java_get_set_frozen(FALSE),
       java_indent_body(model->java_indent_body),
       php_final(model->php_final),
-      php_get_set_frozen(model->php_get_set_frozen),
+      php_get_set_frozen(FALSE),
       php_indent_body(model->php_indent_body),
-      python_get_set_frozen(model->python_get_set_frozen),
+      python_get_set_frozen(FALSE),
       python_indent_body(model->python_indent_body),
       idl_oneway(model->idl_oneway),
-      idl_get_set_frozen(model->idl_get_set_frozen), 
+      idl_get_set_frozen(FALSE), 
       nparams(model->nparams),
       nexceptions(model->nexceptions),
       constraint(model->constraint),
       cpp_decl(model->cpp_decl),
-      cpp_name_spec(model->cpp_name_spec),
-      java_name_spec(model->java_name_spec),
       java_annotation(model->java_annotation),
-      python_name_spec(model->python_name_spec),
       python_decorator(model->python_decorator),
-      idl_decl(model->idl_decl), idl_name_spec(model->idl_name_spec) {
+      idl_decl(model->idl_decl) {
   browser_node = bn;
   
   cpp_def.assign((const char *) model->cpp_def, FALSE);
@@ -335,7 +333,31 @@ QString OperationData::default_php_def(const QString & name, bool nobody) {
   return s;
 }
 
-QString OperationData::default_python_def(const QString &) {
+QString OperationData::default_python_def(const QString & name) {
+  if (name == "__init__") {
+    QListViewItem * child;
+    
+    for (child = ((BrowserNode *) browser_node->parent())->firstChild();
+	 child != 0;
+	 child = child->nextSibling()) {
+      switch (((BrowserNode *) child)->get_type()) {
+      case UmlGeneralisation:
+      case UmlRealize:
+	return GenerationSettings::python_default_initoper_def();
+      default:
+	break;
+      }
+    }
+    
+    QString s = GenerationSettings::python_default_oper_def();
+    int index = s.find("${(}");
+    
+    if (index != -1) {
+      s.insert(index+4, "${p0}${v0}");
+      return s;
+    }
+  }
+  
   return GenerationSettings::python_default_oper_def();
 }
 
@@ -398,9 +420,15 @@ void OperationData::set_browser_node(BrowserOperation * o, bool update) {
 				     ClassDialog::php_stereotype(st) == "interface"),
 		     TRUE);
     
-    if (GenerationSettings::python_get_default_defs())
+    if (GenerationSettings::python_get_default_defs()) {
       python_def.assign(default_python_def(browser_node->get_name()),
 			TRUE);
+      if (!strcmp(browser_node->get_name(), "__init__")) {
+	nparams = 1;
+	params = new ParamData[1];
+	params[0].set_name("self");
+      }
+    }
     
     if (GenerationSettings::idl_get_default_defs()) {
       if (ClassDialog::idl_stereotype(st) != "enum")
@@ -620,6 +648,20 @@ void OperationData::edit(DrawingLanguage l) {
 }
 
 //
+
+void OperationData::copy_getset(const OperationData * model) {
+  cpp_get_set_frozen = model->cpp_get_set_frozen;
+  java_get_set_frozen = model->java_get_set_frozen;
+  php_get_set_frozen = model->php_get_set_frozen;
+  python_get_set_frozen = model->python_get_set_frozen;
+  idl_get_set_frozen = model->idl_get_set_frozen;
+  
+  cpp_name_spec = model->cpp_name_spec;
+  java_name_spec = model->java_name_spec;
+  php_name_spec = model->php_name_spec;
+  python_name_spec = model->python_name_spec;
+  idl_name_spec = model->idl_name_spec;
+}
 
 void OperationData::update_cpp_get_of(QCString & decl, QCString & def,
 				      const QString & attr_name,
@@ -2543,27 +2585,41 @@ void OperationData::create_modified_body_file() {
   BrowserClass * cl = (BrowserClass *) browser_node->parent();
   
   if (! cl->get_bodies_modified()) {
-    QFile fp(abs_file_path(cl->get_ident(), "b"));
-    
-    if (open_file(fp, IO_WriteOnly) == -1)
-      return;
-  
-    cl->set_bodies_modified(TRUE);
-    
-    if (! cl->get_bodies_read())
-      set_bodies_info();
-    
-    char * old = read_file(QString::number(cl->get_ident()) + ".bodies");
+    for (;;) {
+      QString fn = abs_file_path(cl->get_ident(), "b");
+      QFile fp(fn);
+	
+      while (!fp.open(IO_WriteOnly))
+	(void) msg_critical("Error", QString("Cannot create file\n") + fn,
+			    QMessageBox::Retry);
       
-    if (old != 0) {
-      fp.writeBlock(old, strlen(old));
-      delete [] old;
-    }
-    else {
-      QString header =
-	QString("class ") + cl->get_data()->definition(TRUE) + '\n';
+      cl->set_bodies_modified(TRUE);
       
-      fp.writeBlock(header, header.length());
+      if (! cl->get_bodies_read())
+	set_bodies_info();
+      
+      char * old = read_file(QString::number(cl->get_ident()) + ".bodies");
+      
+      if (old != 0) {
+	fp.writeBlock(old, strlen(old));
+	delete [] old;
+      }
+      else {
+	QString header =
+	  QString("class ") + cl->get_data()->definition(TRUE) + '\n';
+	
+	fp.writeBlock(header, header.length());
+      }
+      
+      fp.close();
+      
+      if (fp.status() == IO_Ok)
+	// all is ok
+	return;
+      
+      (void) msg_critical("Error", QString("Error while writting in\n") + fn +
+			  "\nmay be your disk is full",
+			  QMessageBox::Retry);
     }
   }
 }
@@ -2623,47 +2679,62 @@ void OperationData::new_body(QString s, int who) {
     set_bodies_info();
   
   BrowserClass * cl = (BrowserClass *) browser_node->parent();
-  QFile fp(abs_file_path(cl->get_ident(), "b"));
-
-  if (open_file(fp, IO_WriteOnly | IO_Append) == -1)
-    return;
-
-  cl->set_bodies_modified(TRUE);
+  QString fn = abs_file_path(cl->get_ident(), "b");
   
-  if (fp.at() == 0) {
-    char * old = read_file(QString::number(cl->get_ident()) + ".bodies");
+  for (;;) {
+    QFile fp(fn);
     
-    if (old != 0) {
-      fp.writeBlock(old, strlen(old));
-      delete [] old;
-    }
-    else {
-      QString header =
-	QString("class ") + cl->get_data()->definition(TRUE) + '\n';
+    while (!fp.open(IO_WriteOnly | IO_Append))
+      (void) msg_critical("Error", QString("Cannot create file\n") + fn,
+			  QMessageBox::Retry);
+  
+    cl->set_bodies_modified(TRUE);
+    
+    if (fp.at() == 0) {
+      char * old = read_file(QString::number(cl->get_ident()) + ".bodies");
       
-      fp.writeBlock(header, header.length());
+      if (old != 0) {
+	fp.writeBlock(old, strlen(old));
+	delete [] old;
+      }
+      else {
+	QString header =
+	  QString("class ") + cl->get_data()->definition(TRUE) + '\n';
+	
+	fp.writeBlock(header, header.length());
+      }
     }
+    
+    if (!s.isEmpty()) {
+      if (s.at(s.length() - 1) != QChar('\n'))
+	s += '\n';
+      
+      QString op_header = QString("!!!") + QString::number(get_ident()) +
+	key + definition(TRUE) + "\n";
+      
+      fp.writeBlock(op_header, op_header.length());
+      
+      body_info->offset = fp.at();
+      body_info->length = s.length();
+      
+      fp.writeBlock(s, s.length());
+    }
+    else
+      body_info->length = 0;
+   
+    if (fp.status() == IO_Ok)
+      // all is ok
+      return;
+    
+    (void) msg_critical("Error", QString("Error while writting in\n") + fn +
+			"\nmay be your disk is full",
+			QMessageBox::Retry);
   }
-  
-  if (!s.isEmpty()) {
-    if (s.at(s.length() - 1) != QChar('\n'))
-      s += '\n';
-    
-    QString op_header = QString("!!!") + QString::number(get_ident()) +
-      key + definition(TRUE) + "\n";
-    
-    fp.writeBlock(op_header, op_header.length());
-    
-    body_info->offset = fp.at();
-    body_info->length = s.length();
-    
-    fp.writeBlock(s, s.length());
-  }
-  else
-    body_info->length = 0;
 }
 	
-void OperationData::save_body(QFile & qf, char * modified_bodies, int who) {
+void OperationData::save_body(QFile & qf, QString & filename,
+			      bool dobackup, char * modified_bodies,
+			      int who) {
   OperationBody * body_info;
   QString key;
   
@@ -2689,13 +2760,18 @@ void OperationData::save_body(QFile & qf, char * modified_bodies, int who) {
     if (!qf.isOpen()) {
       BrowserClass * cl = (BrowserClass *) browser_node->parent();
       QDir d = BrowserView::get_dir();
-      QString filename = abs_file_path(cl->get_ident(),
-				       (in_import()) ? "b" : "bodies");
       
-      backup(d, filename);
+      filename = abs_file_path(cl->get_ident(),
+			       (in_import()) ? "b" : "bodies");
+      
+      if (dobackup) 
+	backup(d, filename);
+      
       qf.setName(filename);
-      if (open_file(qf, IO_WriteOnly) == -1)
-	THROW_ERROR 0;
+      
+      while (!qf.open(IO_WriteOnly))
+	(void) msg_critical("Error", QString("Cannot create file\n") + filename,
+			    QMessageBox::Retry);
       
       QString header =
 	QString("class ") + cl->get_data()->definition(TRUE) + '\n';
@@ -2731,17 +2807,37 @@ void OperationData::import(BrowserClass * cl, int id)
   if (s == 0)
     return;
    
-  QFile qf;
+  bool dobackup = TRUE;
   
-  for (QListViewItem * child = cl->firstChild(); child; child = child->nextSibling()) {
-    if (((BrowserNode *) child)->get_type() == UmlOperation) {
-      OperationData * d = (OperationData *) ((BrowserNode *) child)->get_data();
-
-      d->save_body(qf, s, 'c');
-      d->save_body(qf, s, 'j');
-      d->save_body(qf, s, 'p');
-      d->save_body(qf, s, 'y');
+  for (;;) {
+    QFile qf;
+    QString filename;
+    
+    for (QListViewItem * child = cl->firstChild(); child; child = child->nextSibling()) {
+      if (((BrowserNode *) child)->get_type() == UmlOperation) {
+	OperationData * d = (OperationData *) ((BrowserNode *) child)->get_data();
+	
+	d->save_body(qf, filename, dobackup, s, 'c');
+	d->save_body(qf, filename, dobackup, s, 'j');
+	d->save_body(qf, filename, dobackup, s, 'p');
+	d->save_body(qf, filename, dobackup, s, 'y');
+      }
     }
+    
+    if (filename.isEmpty())
+      // no body
+      break;
+    
+    qf.close();
+    
+    if (qf.status() == IO_Ok)
+      // all is ok
+      break;
+    
+    (void) msg_critical("Error", QString("Error while writting in\n") + filename +
+			"\nmay be your disk is full",
+			QMessageBox::Retry);
+    dobackup = FALSE;
   }
 
   delete [] s;  

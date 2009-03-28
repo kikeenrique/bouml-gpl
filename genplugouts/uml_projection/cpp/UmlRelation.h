@@ -21,6 +21,8 @@ class UmlRelation : public UmlBaseRelation {
 
     virtual void uml2php(bool rec);
 
+    virtual void uml2Python(bool rec);
+
 };
 
 #endif

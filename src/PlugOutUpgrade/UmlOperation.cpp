@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,28 +48,11 @@ void UmlOperation::remove_cpp_throw() {
 }
 
 void UmlOperation::add_param(int rank, aDirection dir,
-			     const char * name, const char * type) {
+			     const char * name, UmlTypeSpec type) {
   UmlParameter p;
   
   p.dir = dir;
-  p.type.explicit_type = type;
-  p.name = name;
-  
-  if (!addParameter(rank, p)) {
-    QCString msg = QCString("can't add parameter '") + name +
-      "' to " + parent()->name() + "::" + this->name() + "<br>\n";
-
-    UmlCom::trace(msg);
-    throw 0;
-  }
-}
-
-void UmlOperation::add_param(int rank, aDirection dir,
-			     const char * name, UmlClass * type) {
-  UmlParameter p;
-  
-  p.dir = dir;
-  p.type.type = type;
+  p.type = type;
   p.name = name;
   
   if (!addParameter(rank, p)) {
@@ -367,6 +350,126 @@ UmlOperation * UmlOperation::java2Php(UmlClass * php, UmlClass * java,
   to->set_isJavaFinal(from->isJavaFinal());
   to->set_JavaDef(from->javaDef());
   to->set_JavaBody(::java2Php(from->javaBody()));
+  
+  return to;
+}
+
+UmlOperation * UmlOperation::java2Python(UmlClass * python, UmlClass * java,
+					 const char * javaname,
+					 const char * pythonname)
+{
+  if (pythonname == 0)
+    pythonname = javaname;
+  
+  UmlOperation * from = java->get_operation(javaname);
+  
+  if (from == 0) {
+    QCString err = QCString("cannot find operation '") + 
+      javaname + QCString("' in class '") + java->name()
+	+ QCString("'<br>\n");
+    UmlCom::trace(err);
+    throw 0;
+  }
+  
+  UmlOperation * to = UmlBaseOperation::create(python, pythonname);
+  
+  if (to == 0) {
+    QCString err = QCString("cannot create operation '") + 
+      pythonname + QCString("' in class '") + python->name()
+	+ QCString("'<br>\n");
+    UmlCom::trace(err);
+    throw 0;
+  }
+  
+  UmlCom::trace("add operation " + python->name() + "::" + pythonname + "<br>\n");
+
+  to->set_Description(::java2Python(from->description()));
+  to->set_ReturnType(from->returnType());
+  to->set_isClassMember(from->isClassMember());
+  to->set_Visibility(from->visibility());
+  to->set_CppVisibility(from->cppVisibility());
+  
+  const QValueList<UmlParameter> params = from->params();
+  unsigned index;
+  
+  for (index = 0; index != params.count(); index += 1)
+    to->addParameter(index, params[index]);
+  
+  const QValueList<UmlTypeSpec> exceptions = from->exceptions();
+  
+  for (index = 0; index != exceptions.count(); index += 1)
+    to->addException(index, exceptions[index]);
+  
+  to->set_isCppVirtual(from->isCppVirtual());
+  to->set_isCppConst(from->isCppConst());
+  to->set_isCppInline(from->isCppInline());
+  to->set_CppDecl(::java2Python(from->cppDecl()));
+  to->set_CppDef(::java2Python(from->cppDef()));
+  to->set_CppBody(::java2Python(from->cppBody()));
+  
+  to->set_isJavaFinal(from->isJavaFinal());
+  to->set_JavaDef(from->javaDef());
+  to->set_JavaBody(::java2Python(from->javaBody()));
+  
+  return to;
+}
+
+UmlOperation * UmlOperation::cpp2Python(UmlClass * python, UmlClass * cpp,
+					 const char * cppname,
+					 const char * pythonname)
+{
+  if (pythonname == 0)
+    pythonname = cppname;
+  
+  UmlOperation * from = cpp->get_operation(cppname);
+  
+  if (from == 0) {
+    QCString err = QCString("cannot find operation '") + 
+      cppname + QCString("' in class '") + cpp->name()
+	+ QCString("'<br>\n");
+    UmlCom::trace(err);
+    throw 0;
+  }
+  
+  UmlOperation * to = UmlBaseOperation::create(python, pythonname);
+  
+  if (to == 0) {
+    QCString err = QCString("cannot create operation '") + 
+      pythonname + QCString("' in class '") + python->name()
+	+ QCString("'<br>\n");
+    UmlCom::trace(err);
+    throw 0;
+  }
+  
+  UmlCom::trace("add operation " + python->name() + "::" + pythonname + "<br>\n");
+
+  to->set_Description(::cpp2Python(from->description()));
+  to->set_ReturnType(from->returnType());
+  to->set_isClassMember(from->isClassMember());
+  to->set_Visibility(from->visibility());
+  to->set_CppVisibility(from->cppVisibility());
+  
+  const QValueList<UmlParameter> params = from->params();
+  unsigned index;
+  
+  for (index = 0; index != params.count(); index += 1)
+    to->addParameter(index, params[index]);
+  
+  const QValueList<UmlTypeSpec> exceptions = from->exceptions();
+  
+  for (index = 0; index != exceptions.count(); index += 1)
+    to->addException(index, exceptions[index]);
+  
+  to->set_isCppVirtual(from->isCppVirtual());
+  to->set_isCppConst(from->isCppConst());
+  to->set_isCppInline(from->isCppInline());
+  to->set_CppDecl(::cpp2Python(from->cppDecl()));
+  to->set_CppDef(::cpp2Python(from->cppDef()));
+  to->set_CppBody(::cpp2Python(from->cppBody()));
+  
+  to->set_isJavaFinal(from->isJavaFinal());
+  to->set_JavaDef(from->javaDef());
+  to->set_JavaBody(::cpp2Python(from->javaBody()));
   
   return to;
 }

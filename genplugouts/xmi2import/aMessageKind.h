@@ -7,7 +7,9 @@ enum aMessageKind {
   aSynchronousCall,
   anAsynchronousCall,
   anExplicitReturn,
-  anImplicitReturn//  message added to indicate the end of a duration bar
+  anImplicitReturn,//  message added to indicate the end of a duration bar
+  aDestruction,
+  anInteractionUse
 
 };
 #endif

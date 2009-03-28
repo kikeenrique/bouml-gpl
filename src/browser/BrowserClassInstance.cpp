@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,6 +33,8 @@
 #include "BrowserClassInstance.h"
 #include "BrowserClass.h"
 #include "ClassInstanceData.h"
+#include "BrowserSeqDiagram.h"
+#include "BrowserColDiagram.h"
 #include "BrowserObjectDiagram.h"
 #include "BrowserPackage.h"
 #include "BrowserAttribute.h"
@@ -146,7 +148,12 @@ void BrowserClassInstance::renumber(int phase) {
 }
 
 const QPixmap* BrowserClassInstance::pixmap(int) const {
-  return (deletedp()) ? DeletedClassInstanceIcon : ClassInstanceIcon;
+  if (deletedp()) 
+    return DeletedClassInstanceIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : ClassInstanceIcon;
 }
 
 bool BrowserClassInstance::allow_empty() const {
@@ -181,6 +188,11 @@ void BrowserClassInstance::update_stereotype(bool) {
 void BrowserClassInstance::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
   BrowserClassInstance::compute_referenced_by(l, this);
+  if (! ondelete) {
+    BrowserSeqDiagram::compute_referenced_by(l, this, "classinstancecanvas", "classinstance_ref");
+    BrowserColDiagram::compute_referenced_by(l, this, "classinstancecanvas", "classinstance_ref");
+    BrowserObjectDiagram::compute_referenced_by(l, this, "classinstancecanvas", "classinstance_ref");
+  }  
 }
 
 void BrowserClassInstance::compute_referenced_by(QList<BrowserNode> & l,
@@ -613,8 +625,8 @@ BrowserClassInstance * BrowserClassInstance::read(char * & st, char * k,
     
     result->is_defined = TRUE;
 
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     k = read_keyword(st);
     

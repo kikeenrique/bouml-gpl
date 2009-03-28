@@ -25,6 +25,7 @@ class JavaSettings
   
   return (b != null) ? b.java : s;
 !!!63360.cpp!!!	set_Type(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom::send_cmd(javaSettingsCmd, setJavaTypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
@@ -38,6 +39,7 @@ class JavaSettings
   else
     return FALSE;
 !!!63360.java!!!	set_Type(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom.send_cmd(CmdFamily.javaSettingsCmd, JavaSettingsCmd._setJavaTypeCmd, s, v);
   UmlCom.check();
 
@@ -73,6 +75,7 @@ class JavaSettings
   
   return (b != null) ? b.java : s;
 !!!63744.cpp!!!	set_RelationAttributeStereotype(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom::send_cmd(javaSettingsCmd, setJavaRelationAttributeStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlStereotype * st = UmlSettings::_map_relation_attribute_stereotypes.find(s);
@@ -86,6 +89,7 @@ class JavaSettings
   else
     return FALSE;
 !!!63744.java!!!	set_RelationAttributeStereotype(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom.send_cmd(CmdFamily.javaSettingsCmd, JavaSettingsCmd._setJavaRelationAttributeStereotypeCmd, s, v);
   UmlCom.check();
 
@@ -121,6 +125,7 @@ class JavaSettings
   
   return (b != null) ? b.java : s;
 !!!64128.cpp!!!	set_ClassStereotype(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom::send_cmd(javaSettingsCmd, setJavaClassStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlStereotype * st = UmlSettings::_map_class_stereotypes.find(s);
@@ -134,6 +139,7 @@ class JavaSettings
   else
     return FALSE;
 !!!64128.java!!!	set_ClassStereotype(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom.send_cmd(CmdFamily.javaSettingsCmd, JavaSettingsCmd._setJavaClassStereotypeCmd, s, v);
   UmlCom.check();
 
@@ -168,6 +174,7 @@ class JavaSettings
   return (String) _map_imports.get(s);
 
 !!!64512.cpp!!!	set_Import(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom::send_cmd(javaSettingsCmd, setJavaImportCmd, s, v);
   if (UmlCom::read_bool()) {
     QCString * r = _map_imports.take(s);
@@ -181,6 +188,7 @@ class JavaSettings
   else
     return FALSE;
 !!!64512.java!!!	set_Import(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom.send_cmd(CmdFamily.javaSettingsCmd, JavaSettingsCmd._setJavaImportCmd, s, v);
   UmlCom.check();
     
@@ -274,6 +282,26 @@ class JavaSettings
 		   (v) ? (byte) 1 : (byte) 0);
   UmlCom.check();
   _is_generate_javadoc_comment = v;
+!!!276864.cpp!!!	isForcePackagePrefixGeneration() : bool
+  read_if_needed_();
+
+  return _is_force_package_gen;
+!!!276864.java!!!	isForcePackagePrefixGeneration() : bool
+  read_if_needed_();
+
+  return _is_force_package_gen;
+!!!276992.cpp!!!	set_IsForcePackagePrefixGeneration(in v : bool) : bool
+  UmlCom::send_cmd(javaSettingsCmd, setJavaForcePackageGenCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_force_package_gen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!276992.java!!!	set_IsForcePackagePrefixGeneration(in v : bool) : bool
+  UmlCom.send_cmd(CmdFamily.javaSettingsCmd, JavaSettingsCmd._setJavaForcePackageGenCmd, (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+  _is_force_package_gen = v;
 !!!65408.cpp!!!	classDecl() : string
   read_if_needed_();
   
@@ -392,6 +420,7 @@ class JavaSettings
 
   return _attr_decl[UmlSettings.multiplicity_column(multiplicity)];
 !!!66560.cpp!!!	set_AttributeDecl(in multiplicity : str, in v : string) : bool
+  read_if_needed_();
   UmlCom::send_cmd(javaSettingsCmd, setJavaAttributeDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
     _attr_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
@@ -400,6 +429,7 @@ class JavaSettings
   else
     return FALSE;
 !!!66560.java!!!	set_AttributeDecl(in multiplicity : str, in v : string) : bool
+  read_if_needed_();
   UmlCom.send_cmd(CmdFamily.javaSettingsCmd, JavaSettingsCmd._setJavaAttributeDeclCmd, multiplicity, v);
   UmlCom.check();
 
@@ -478,6 +508,7 @@ class JavaSettings
   
   return _rel_decl[UmlSettings.multiplicity_column(multiplicity)];
 !!!67328.cpp!!!	set_RelationDecl(in multiplicity : str, in v : string) : bool
+  read_if_needed_();
   UmlCom::send_cmd(javaSettingsCmd, setJavaRelationDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
     _rel_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
@@ -486,6 +517,7 @@ class JavaSettings
   else
     return FALSE;
 !!!67328.java!!!	set_RelationDecl(in multiplicity : str, in v : string) : bool
+  read_if_needed_();
   UmlCom.send_cmd(CmdFamily.javaSettingsCmd, JavaSettingsCmd._setJavaRelationDeclCmd, multiplicity, v);
   UmlCom.check();
   
@@ -725,6 +757,7 @@ class JavaSettings
   _is_set_final = UmlCom::read_bool();
   _is_set_param_final = UmlCom::read_bool();
   _is_generate_javadoc_comment = UmlCom::read_bool();
+  _is_force_package_gen = UmlCom::read_bool();
 !!!69632.java!!!	read_() : void
   _root = UmlCom.read_string();
   
@@ -783,6 +816,7 @@ class JavaSettings
   _is_set_final = UmlCom.read_bool();
   _is_set_param_final = UmlCom.read_bool();
   _is_generate_javadoc_comment = UmlCom.read_bool();
+  _is_force_package_gen = UmlCom.read_bool();
 !!!69760.cpp!!!	read_if_needed_() : void
   UmlSettings::read_if_needed_();
   if (!_defined) {

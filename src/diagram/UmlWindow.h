@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -62,6 +62,7 @@ class UmlWindow : public QMainWindow {
     QPopupMenu * miscMenu;
     QPopupMenu * fontSizeMenu;
     QPopupMenu * formatMenu;
+    QPopupMenu * formatLandscapeMenu;
     int use_cpp_id;
     int use_java_id;
     int use_php_id;
@@ -82,7 +83,7 @@ class UmlWindow : public QMainWindow {
     QValueList<BrowserNode *> select_historic;
 
   public:
-    UmlWindow();
+    UmlWindow(bool batch);
     ~UmlWindow();
   
     void load(QString fn, bool forcesaveas = FALSE);
@@ -94,6 +95,7 @@ class UmlWindow : public QMainWindow {
     static QWorkspace * get_workspace();
     static void clear();
     static void historic_add(QString fn);
+    static void historic_forget(BrowserNode *);
     static void save_it();
     static bool saveas_it();
     static void close_it();
@@ -102,8 +104,10 @@ class UmlWindow : public QMainWindow {
     static void set_default_format(CanvasFormat);
     static void abort_line_construction();
     static void clear_select_historic();
+    static void browser_search_it();
     
   protected:
+    void init_format_menu(QPopupMenu * m, QPopupMenu * lm);
     void is_selected(BrowserNode *);
     virtual void closeEvent(QCloseEvent *);
     void save_session();

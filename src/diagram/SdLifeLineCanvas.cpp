@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -30,10 +30,13 @@
 #include <qpainter.h>
 #include <qcursor.h>
 #include <qpopupmenu.h> 
+#include <qptrdict.h> 
 
 #include "SdLifeLineCanvas.h"
 #include "SdObjCanvas.h"
 #include "SdDurationCanvas.h"
+#include "SdMsgBaseCanvas.h"
+#include "FragmentCanvas.h"
 #include "MenuTitle.h"
 #include "ToolCom.h"
 #include "myio.h"
@@ -270,28 +273,22 @@ double SdLifeLineCanvas::getZ() const {
 void SdLifeLineCanvas::open() {
 }
 
-void SdLifeLineCanvas::menu(const QPoint&) {
-  // delete must call SdObjCanvas->delete_it() NOT the own delete_it !
-  QPopupMenu m(0);
+void SdLifeLineCanvas::exec_menu(int rank) {
+  double old_z = z();
   
-  m.insertItem(new MenuTitle("Message", m.font()), -1);
-  m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 2);
-  m.insertItem("Go down", 3);
-
-  int index = m.exec(QCursor::pos());
-  
-  switch (index) {
+  switch (rank) {
   case 0:
+    SdDurationCanvas::propag_visible(durations, FALSE);
     upper();
+    SdDurationCanvas::propag_visible(durations, TRUE);
     break;
   case 1:
     lower();
     break;
   case 2:
+    SdDurationCanvas::propag_visible(durations, FALSE);
     z_up();
+    SdDurationCanvas::propag_visible(durations, TRUE);
     break;
   case 3:
     z_down();
@@ -300,11 +297,44 @@ void SdLifeLineCanvas::menu(const QPoint&) {
     return;
   }
   
-  // force son reaffichage
-  hide();
-  show();
-  canvas()->update();
-  package_modified();
+  double dz = z() - old_z;
+  
+  if (dz != 0) {
+    SdDurationCanvas::propag_dz(durations, dz);
+  
+    // force son reaffichage
+    hide();
+    show();
+    canvas()->update();
+    package_modified();
+  }
+}
+
+void SdLifeLineCanvas::menu(const QPoint&) {
+  // delete must call SdObjCanvas->delete_it() NOT the own delete_it !
+  QPopupMenu m(0);
+  
+  m.insertItem(new MenuTitle("Life line", m.font()), -1);
+  m.insertSeparator();
+  m.insertItem("Upper", 0);
+  m.insertItem("Lower", 1);
+  m.insertItem("Go up", 2);
+  m.insertItem("Go down", 3);
+
+  exec_menu(m.exec(QCursor::pos()));
+}
+
+void SdLifeLineCanvas::apply_shortcut(QString s) {
+  if (s == "Upper")
+    exec_menu(0);
+  else if (s == "Lower")
+    exec_menu(1);
+  else if (s == "Go up")
+    exec_menu(2);
+  else if (s == "Go down")
+    exec_menu(3);
+  else 
+    return;
 }
 
 bool SdLifeLineCanvas::copyable() const {
@@ -345,37 +375,104 @@ void SdLifeLineCanvas::history_load(QBuffer & b) {
     durations.append((SdDurationCanvas *) ::load_item(b));
 }
 
-void SdLifeLineCanvas::send(ToolCom * com, const QCanvasItemList & l)
+void SdLifeLineCanvas::send(ToolCom * com, const QCanvasItemList & l,
+			    QList<FragmentCanvas> & fragments,
+			    QList<FragmentCanvas> & refs)
 {
+  QPtrDict<SdLifeLineCanvas> used_refs; // the key is the fragment ref
+  QList<SdLifeLineCanvas> lls;
   QCanvasItemList::ConstIterator cit;
   unsigned n = 0;
   
+  // count msgs
+  
   for (cit = l.begin(); cit != l.end(); ++cit) {
     DiagramItem * it = QCanvasItemToDiagramItem(*cit);
       
     if ((it != 0) && // an uml canvas item
 	(*cit)->visible() &&
 	(it->type() == UmlLifeLine)) {
-      QListIterator<SdDurationCanvas> iter(((SdLifeLineCanvas *) it)->durations);
+      SdLifeLineCanvas * ll = (SdLifeLineCanvas *) it;
+      lls.append(ll);
       
+      QListIterator<SdDurationCanvas> iter(ll->durations);
+      
+      // standard msgs
       for (; iter.current(); ++iter)
 	n += iter.current()->count_msg();
+      
+      if (com->api_format() >= 41) {
+	if (ll->end != LIFE_LINE_HEIGHT)
+	  // deletion message
+	  n += 1;
+      
+	FragmentCanvas * f;
+	
+	for (f = refs.first(); f != 0; f = refs.next()) {
+	  if (f->collidesWith(ll)) {
+	    // interaction use message
+	    if (used_refs.find((void *) f) == 0) {
+	      n += 1;
+	      used_refs.insert((void *) f, ll);
+	    }
+	  }
+	}
+      }
     }
   }
   
+  // write messages
+  
   com->write_unsigned(n);
   
-  for (cit = l.begin(); cit != l.end(); ++cit) {
-    DiagramItem * it = QCanvasItemToDiagramItem(*cit);
+  SdLifeLineCanvas * ll;
+  
+  for (ll = lls.first(); ll != 0; ll = lls.next()) {
+    int id = ll->obj->get_ident();
+    QListIterator<SdDurationCanvas> iter(ll->durations);
+  
+    // write standard messages
+    for (; iter.current(); ++iter)
+      iter.current()->send(com, id);
+    
+    if ((ll->end != LIFE_LINE_HEIGHT) && (com->api_format() >= 41)) {
+      // deletion message
+      int m = ll->width()/2;
       
-    if ((it != 0) && // an uml canvas item
-	(*cit)->visible() &&
-	(it->type() == UmlLifeLine)) {
-      int id = ((SdLifeLineCanvas *) it)->obj->get_ident();
-      QListIterator<SdDurationCanvas> iter(((SdLifeLineCanvas *) it)->durations);
+      SdMsgBaseCanvas::send(com, id, (unsigned) ll->x() + m,
+			    (unsigned) ll->end + m, aDestruction, "", "");
+    }
+  }
+  
+  if (com->api_format() >= 41) {
+    // interaction use messages
+    QPtrDictIterator<SdLifeLineCanvas>itref(used_refs);
+    
+    while ((ll = itref.current()) != 0) {
+      FragmentCanvas * f = (FragmentCanvas *) itref.currentKey();
+      int m = ll->width()/2;
       
-      for (; iter.current(); ++iter)
-	iter.current()->send(com, id);
+      SdMsgBaseCanvas::send(com, ll->obj->get_ident(),
+			    (unsigned) ll->x() + m, (unsigned) f->center().y(),
+			    anInteractionUse, "", f->arguments());
+      
+      ++itref;
+    }
+    
+    // send life lines covered by fragment
+    FragmentCanvas * f;
+    
+    for (f = fragments.first(); f != 0; f = fragments.next()) {
+      QList<SdLifeLineCanvas> covered;
+      
+      for (ll = lls.first(); ll != 0; ll = lls.next())
+	if (f->collidesWith(ll))
+	  covered.append(ll);
+      
+      com->write_unsigned(covered.count());
+      
+      for (ll = covered.first(); ll != 0; ll = covered.next())
+	com->write_unsigned((unsigned) ll->obj->get_ident());
     }
   }
 }

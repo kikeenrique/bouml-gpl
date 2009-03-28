@@ -1,7 +1,6 @@
 
 #include "Dialog.h"
 
-#include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qlabel.h>
@@ -18,6 +17,31 @@
 #include "Context.h"
 #include "UmlItem.h"
 
+LineEdit::LineEdit(QWidget * parent) : QLineEdit(parent) {
+}
+
+bool LineEdit::focusNextPrevChild(bool) {
+  return FALSE;
+}
+
+void LineEdit::keyPressEvent(QKeyEvent * e) {
+  if (!e->text().length())
+    QLineEdit::keyPressEvent(e);
+  else {
+    switch (e->key()) {
+    case Key_Return:
+    case Key_Enter:
+      insert("\\n");
+      break;
+    case Key_Tab:
+      insert("\\t");
+      break;
+    default:
+      QLineEdit::keyPressEvent(e);
+    }
+  }
+}
+
 Dialog::Dialog() : QDialog(0, 0, TRUE) {
   QVBoxLayout * vbox = new QVBoxLayout(this);
   QVGroupBox * gbox;
@@ -33,7 +57,7 @@ Dialog::Dialog() : QDialog(0, 0, TRUE) {
   //htab->setMargin(5);
   
   new QLabel("filter 1 : ", htab);
-  filter1_le = new QLineEdit(htab);
+  filter1_le = new LineEdit(htab);
   
   new QLabel("  ", htab);
   
@@ -65,7 +89,7 @@ Dialog::Dialog() : QDialog(0, 0, TRUE) {
   //htab->setMargin(5);
   
   new QLabel("filter 2 : ", htab);
-  filter2_le = new QLineEdit(htab);
+  filter2_le = new LineEdit(htab);
   
   new QLabel("  ", htab);
   
@@ -97,7 +121,7 @@ Dialog::Dialog() : QDialog(0, 0, TRUE) {
   //htab->setMargin(5);
   
   new QLabel("filter 3 : ", htab);
-  filter3_le = new QLineEdit(htab);
+  filter3_le = new LineEdit(htab);
   
   new QLabel("  ", htab);
   
@@ -153,6 +177,7 @@ Dialog::Dialog() : QDialog(0, 0, TRUE) {
   cpp_cb = new QCheckBox("C++", htab);
   java_cb = new QCheckBox("Java", htab);
   php_cb = new QCheckBox("Php", htab);
+  python_cb = new QCheckBox("Python", htab);
   idl_cb = new QCheckBox("Idl", htab);
   
   //
@@ -164,10 +189,10 @@ Dialog::Dialog() : QDialog(0, 0, TRUE) {
   grid->setSpacing(5);
   
   new QLabel("current : ", grid);
-  current_le  = new QLineEdit(grid);
+  current_le  = new LineEdit(grid);
   
   new QLabel("new : ", grid);
-  new_le  = new QLineEdit(grid);
+  new_le  = new LineEdit(grid);
   
   //
   //
@@ -205,7 +230,8 @@ void Dialog::do_replace() {
     ctx.set_stereotype(QCString(stereotype_le->text()), is_rb->isChecked(), isnot_rb->isChecked());
     ctx.set_targets(artifact_cb->isChecked(), class_cb->isChecked(),
   		  operation_cb->isChecked(), attribute_cb->isChecked(), relation_cb->isChecked());
-    ctx.set_language(cpp_cb->isChecked(), java_cb->isChecked(), php_cb->isChecked(), idl_cb->isChecked());
+    ctx.set_language(cpp_cb->isChecked(), java_cb->isChecked(), php_cb->isChecked(),
+  		   python_cb->isChecked(), idl_cb->isChecked());
     
     UmlCom::targetItem()->change(ctx);
     
@@ -227,13 +253,21 @@ void Dialog::do_replace() {
 
 QCString Dialog::digest(const QString s) {
   QCString c = (const char *) s;
-  int index = 0;
+  int index;
   
+  index = 0;
   while ((index = c.find("\\n", index)) != -1) {
     c.replace(index, 2, "\n");
     index += 1;
   }
   
+  index = 0;
+  while ((index = c.find("\\t", index)) != -1) {
+    c.replace(index, 2, "\t");
+    index += 1;
+  }
+  
+  index = 0;
   while ((index = c.find("\r", index)) != -1) {
     c.remove(index, 1);
   }

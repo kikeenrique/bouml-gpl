@@ -22,7 +22,6 @@ class UmlBaseActualParameter {
     // returns the actual's value
     const UmlTypeSpec & value() const;
 
-  friend class UmlBaseClass;
 
   protected:
     UmlClass * _superClass;
@@ -33,6 +32,7 @@ class UmlBaseActualParameter {
 
     void read_();
 
+  friend class UmlBaseClass;
 };
 
 #endif

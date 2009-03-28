@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -50,7 +50,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QCString(argv[port_index]).toUInt())) {
     try {
-      UmlCom::trace("<b>C++ generator</b> release 2.12.7<br>");
+      UmlCom::trace("<b>C++ generator</b> release 2.12.9<br>");
       UmlCom::traceAutoRaise(FALSE);
       UmlCom::targetItem()->generate();      
       

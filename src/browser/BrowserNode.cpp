@@ -1,10 +1,10 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,11 +40,18 @@
 
 #include "BrowserView.h"
 #include "BrowserNode.h"
-#include "BrowserRelation.h"
+#include "BrowserUseCase.h"
+#include "BrowserState.h"
+#include "BrowserDiagram.h"
+#include "BrowserActivity.h"
+#include "BrowserArtifact.h"
+#include "BrowserComponent.h"
+#include "BrowserDeploymentNode.h"
 #include "BrowserSimpleRelation.h"
 #include "SimpleRelationData.h"
-#include "BrowserAttribute.h"
+#include "BrowserClass.h"
 #include "BrowserClassInstance.h"
+#include "BrowserActivityPartition.h"
 #include "BasicData.h"
 #include "BrowserPackage.h"
 #include "BrowserView.h"
@@ -59,6 +66,8 @@
 #include "DialogUtil.h"
 #include "mu.h"
 #include "ProfiledStereotypes.h"
+#include "BrowserSearchDialog.h"
+#include "ReferenceDialog.h"
 
 
 
@@ -91,14 +100,14 @@ BrowserNode::BrowserNode(QString s, BrowserView * parent)
     : QListViewItem(parent, s),
       name(s), is_deleted(FALSE), is_modified(FALSE), is_new(TRUE),
       is_read_only(FALSE), is_edited(FALSE), is_marked(FALSE),
-      is_saveable(TRUE), is_defined(FALSE) {
+      is_defined(FALSE) {
 }
 
 BrowserNode::BrowserNode(QString s, BrowserNode * parent)
     : QListViewItem(parent, s),
       name(s), is_deleted(FALSE), is_modified(FALSE), is_new(TRUE),
       is_read_only(FALSE), is_edited(FALSE), is_marked(FALSE),
-      is_saveable(TRUE), is_defined(FALSE) {
+      is_defined(FALSE) {
   
   // move it at end
   QListViewItem * child = parent->firstChild();
@@ -114,12 +123,16 @@ BrowserNode::BrowserNode()
     : QListViewItem(UndefinedNodePackage, "<not yet read>"),
       is_deleted(FALSE), is_modified(FALSE), is_new(TRUE),
       is_read_only(FALSE), is_edited(FALSE), is_marked(FALSE),
-      is_saveable(TRUE), is_defined(FALSE) {
+      is_defined(FALSE) {
 }
 
 BrowserNode::~BrowserNode() {
   if (is_marked)
     marked_list.removeRef(this);
+}
+
+bool BrowserNode::is_undefined() const {
+  return (parent() == UndefinedNodePackage);
 }
 
 void BrowserNode::delete_it() {
@@ -138,6 +151,12 @@ void BrowserNode::delete_it() {
 	// on exit if no save was done before
 	is_modified = TRUE;
       }
+      
+      if (BrowserSearchDialog::get() != 0)
+	BrowserSearchDialog::get()->update();
+      
+      if (ReferenceDialog::get() != 0)
+	ReferenceDialog::get()->update();
     }
     else {
       // during a read : no check
@@ -414,6 +433,10 @@ bool BrowserNode::toggle_show_stereotypes() {
   return show_stereotypes;
 }
 
+void BrowserNode::iconChanged() {
+  // do nothing
+}
+
 QString BrowserNode::stereotypes_properties() const {
   const char * stereotype = get_data()->get_stereotype();
     
@@ -482,32 +505,46 @@ void BrowserNode::post_load(bool light)
   
   signal_unconsistencies();
   
-  QList<BrowserRelation> wrong;
+  bool redo;
   
-  BrowserRelation::post_load();
-  BrowserAttribute::post_load();
-  BrowserClassInstance::post_load();
+  do {
+    BrowserClass::post_load();
+    BrowserClassInstance::post_load();
+    BrowserActivityPartition::post_load(); // must be call after other ones
   
-  QListViewItem * child;
-  
-  for (child = UndefinedNodePackage->firstChild();
-       child;
-       child = child->nextSibling())
-    ((BrowserNode *) child)->delete_it();
+    QListViewItem * child;
+    
+    redo = FALSE;
+    
+    for (child = UndefinedNodePackage->firstChild();
+	 child;
+	 child = child->nextSibling()) {
+      if (! ((BrowserNode *) child)->deletedp()) {
+	((BrowserNode *) child)->delete_it();
+	redo = TRUE;
+      }
+    }
+  } while (redo);
 
-  delete UndefinedNodePackage;
+  // note : don't delete UndefinedNodePackage because of QT bug :
+  // deleted elements are find among old parent children !
+  BrowserPackage * undefpack = UndefinedNodePackage;
+  
   UndefinedNodePackage = 0;
   
   if (! light) {
     ProfiledStereotypes::post_load();
     BrowserView::get_project()->update_stereotype(TRUE);
   }
+
+  delete undefpack;
 }
 
 void BrowserNode::must_be_deleted() {
   if (parent() != UndefinedNodePackage) {
     parent()->takeItem(this);
     UndefinedNodePackage->insertItem(this);
+    UmlWindow::historic_forget(this);
   }
 }
 
@@ -596,64 +633,12 @@ void BrowserNode::get_deploymentdiagramsettings(DeploymentDiagramSettings & d) c
   ((BrowserNode *) parent())->get_deploymentdiagramsettings(d);
 }
 
-void BrowserNode::get_simpleclassdiagramsettings(SimpleClassDiagramSettings & d) const {
-  ((BrowserNode *) parent())->get_simpleclassdiagramsettings(d);
-}
-
 UmlColor BrowserNode::get_color(UmlCode who) const {
   return ((BrowserNode *) parent())->get_color(who);
 }
 
-bool BrowserNode::get_shadow(UmlCode who) const {
-  return ((BrowserNode *) parent())->get_shadow(who);
-}
-
-bool BrowserNode::get_draw_all_relations(UmlCode who) const {
-  return ((BrowserNode *) parent())->get_draw_all_relations(who);
-}
-
-bool BrowserNode::get_show_stereotype_properties(UmlCode who) const {
-  return ((BrowserNode *) parent())->get_show_stereotype_properties(who);
-}
-
 UmlVisibility BrowserNode::get_visibility(UmlCode who) const {
   return ((BrowserNode *) parent())->get_visibility(who);
-}
-
-bool BrowserNode::get_classinstwritehorizontally(UmlCode k) const {
-  return ((BrowserNode *) parent())->get_classinstwritehorizontally(k);
-}
-
-void BrowserNode::get_componentdrawingsettings(bool depl, ComponentDrawingSettings & result) const {
-  ((BrowserNode *) parent())->get_componentdrawingsettings(depl, result);
-}
-
-void BrowserNode::get_statedrawingsettings(StateDrawingSettings & result) const {
-  ((BrowserNode *) parent())->get_statedrawingsettings(result);
-}
-
-void BrowserNode::get_activitydrawingsettings(ActivityDrawingSettings & result) const {
-  ((BrowserNode *) parent())->get_activitydrawingsettings(result);
-}
-
-bool BrowserNode::get_auto_label_position(UmlCode who) const {
-  return ((BrowserNode *) parent())->get_auto_label_position(who);
-}
-
-bool BrowserNode::get_write_label_horizontally(UmlCode who) const {
-  return ((BrowserNode *) parent())->get_write_label_horizontally(who);
-}
-
-bool BrowserNode::get_show_trans_definition(UmlCode who) const {
-  return ((BrowserNode *) parent())->get_show_trans_definition(who);
-}
-
-bool BrowserNode::get_show_opaque_action_definition(UmlCode who) const {
-  return ((BrowserNode *) parent())->get_show_opaque_action_definition(who);
-}
-
-DrawingLanguage BrowserNode::get_language(UmlCode who) const {
-  return ((BrowserNode *) parent())->get_language(who);
 }
 
 void BrowserNode::package_settings(bool &, ShowContextMode &) const {
@@ -896,26 +881,13 @@ void BrowserNode::mark_management(int choice) {
   
   switch (choice) {
   case 0:
-    // mark
-    is_marked = TRUE;
-    marked_list.append(this);
-    repaint();
-    return;
   case 1:
-    // unmark
-    is_marked = FALSE;
-    marked_list.removeRef(this);
-    repaint();
+    // mark / unmark
+    toggle_mark();
     return;
   case 2:
     // unmark all
-    for (bn = marked_list.first();
-	 bn != 0;
-	 bn = marked_list.next()) {
-      bn->is_marked = FALSE;
-      bn->repaint();
-    }
-    marked_list.clear();
+    unmark_all();
     return;
   case 3:	// move into
     for (bn = marked_list.last();
@@ -960,6 +932,25 @@ void BrowserNode::mark_management(int choice) {
   }
 }
 
+void BrowserNode::unmark_all()
+{
+  BrowserNode * bn;
+  
+  for (bn = marked_list.first();
+       bn != 0;
+       bn = marked_list.next()) {
+    bn->is_marked = FALSE;
+    bn->repaint();
+  }
+  marked_list.clear();
+  
+  if (BrowserSearchDialog::get() != 0)
+    BrowserSearchDialog::get()->update();
+      
+  if (ReferenceDialog::get() != 0)
+    ReferenceDialog::get()->update();
+}
+
 void BrowserNode::move(BrowserNode * bn, BrowserNode * after) {
   BrowserNode * old_parent = (BrowserNode *) bn->parent();
   
@@ -986,6 +977,12 @@ void BrowserNode::toggle_mark() {
     marked_list.append(this);
   }
   repaint();
+  
+  if (BrowserSearchDialog::get() != 0)
+    BrowserSearchDialog::get()->update();
+      
+  if (ReferenceDialog::get() != 0)
+    ReferenceDialog::get()->update();
 }
 
 //
@@ -1002,7 +999,7 @@ bool BrowserNode::may_contains(BrowserNode * bn, bool rec) const {
     
     for (QListViewItem * child = firstChild(); child; child = child->nextSibling()) {
       if (!((BrowserNode *) child)->deletedp() &&
-	  (child != bn) &&
+	  // case already check : (child != bn) &&
 	  ((BrowserNode *) child)->same_name(s, type))
 	return FALSE;
     }
@@ -1322,28 +1319,27 @@ bool BrowserNode::tool_cmd(ToolCom * com, const char * args) {
     if (is_read_only && !root_permission())
       com->write_ack(FALSE);
     else {
+      BrowserNode * p = (BrowserNode *) parent();
       BrowserNode * after = (BrowserNode *) com->get_id(args);
       
       if (after == 0) {
-	QListViewItem * it = parent();
-	
-	if (it == 0)
+	if (p == 0)
 	  com->write_ack(FALSE);
 	else {
-	  it->takeItem(this);
-	  it->insertItem(this);
+	  p->takeItem(this);
+	  p->insertItem(this);
 	  com->write_ack(TRUE);
-	  package_modified();
+	  p->package_modified();
 	}
       }
-      else if ((after->parent() != parent()) ||
+      else if ((after->parent() != p) ||
 	       (after == this)) {
 	com->write_ack(FALSE);
       }
       else {
 	moveItem(after);
 	com->write_ack(TRUE);
-	package_modified();
+	p->package_modified();
       }
     }
     break;
@@ -1363,7 +1359,7 @@ bool BrowserNode::tool_cmd(ToolCom * com, const char * args) {
 	newparent->insertItem(this);
 	com->write_ack(TRUE);
 	oldparent->package_modified();
-	package_modified();
+	newparent->package_modified();
       }
     }
     break;
@@ -1464,6 +1460,24 @@ void BrowserNode::read(char * & st, char * & k) {
   }
   
   is_new = FALSE;
+}
+
+BrowserNode * BrowserNode::read_any_ref(char * & st, char * k) {
+  BrowserNode * r;
+  
+  if (((r = BrowserActivity::read_any_ref(st, k)) == 0) &&
+      ((r = BrowserState::read_any_ref(st, k)) == 0) &&
+      ((r = BrowserClass::read_any_ref(st, k)) == 0) &&
+      ((r = BrowserDiagram::read_any_ref(st, k)) == 0) &&
+      ((r = BrowserPackage::read(st, k, 0, FALSE)) == 0) &&
+      ((r = BrowserUseCase::read(st, k, 0)) == 0) &&
+      ((r = BrowserClassInstance::read(st, k, 0)) == 0) &&
+      ((r = BrowserComponent::read(st, k, 0)) == 0) &&
+      ((r = BrowserArtifact::read(st, k, 0)) == 0) &&
+      ((r = BrowserDeploymentNode::read(st, k, 0)) == 0))
+    r = BrowserSimpleRelation::read(st, k, 0);
+
+  return r;
 }
 
 void BrowserNode::save_stereotypes(QTextStream & st, 

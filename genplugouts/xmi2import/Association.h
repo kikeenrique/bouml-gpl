@@ -20,11 +20,19 @@ struct Role {
 
     aRelationKind aggregate;
 
-    bool navigable;
+    bool navigable : 1;
 
-    bool readOnly;
+    bool readOnly : 1;
 
-    bool isStatic;
+    bool isDerived : 1;
+
+    bool isDerivedUnion : 1;
+
+    bool isOrdered : 1;
+
+    bool isUnique : 1;
+
+    bool isStatic : 1;
 
     QCString multiplicity;
 

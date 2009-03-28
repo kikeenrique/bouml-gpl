@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -60,5 +60,7 @@ extern QCString fromUnicode(const QString &);
 extern bool hasCodec();
 
 extern void remove_crlf(char *);
+
+extern bool is_referenced(const char * s, int id, const char * kc, const char * kr);
 
 #endif

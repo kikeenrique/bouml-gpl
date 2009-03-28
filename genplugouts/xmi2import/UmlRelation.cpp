@@ -4,6 +4,7 @@
 #include "Token.h"
 #include "UmlItem.h"
 
+#include "UmlClass.h"
 void UmlRelation::importAsAttribute(FileIn & in, Token & token, UmlItem * where)
 {
   if (where->kind() == aClass) {
@@ -16,8 +17,12 @@ void UmlRelation::importAsAttribute(FileIn & in, Token & token, UmlItem * where)
 	while (in.read(), !token.close(kstr)) {
 	  QCString s = token.what();
 	  
-	  if (s == "type")
-	    where->set_PropertyValue("stereotypeExtension", token.valueOf("href"));
+	  if (s == "type") {
+	    QCString ext = token.valueOf("href");
+	    
+	    if (! ext.isEmpty())
+	      ((UmlClass *) where)->extend(ext);
+	  }
       
 	  if (! token.closed())
 	    in.finish(s);

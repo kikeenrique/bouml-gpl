@@ -30,6 +30,8 @@ class Dialog
   new QLabel(htab);
   QPushButton * php = new QPushButton("P&hp", htab);
   new QLabel(htab);
+  QPushButton * python = new QPushButton("P&ython", htab);
+  new QLabel(htab);
   QPushButton * cancel = new QPushButton("&Cancel", htab);
   new QLabel(htab);
   QSize bs(cancel->sizeHint());
@@ -41,6 +43,7 @@ class Dialog
   connect(java, SIGNAL(clicked()), this, SLOT(accept_java()));
   connect(idl, SIGNAL(clicked()), this, SLOT(accept_idl()));
   connect(php, SIGNAL(clicked()), this, SLOT(accept_php()));
+  connect(python, SIGNAL(clicked()), this, SLOT(accept_python()));
   connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
 
   // help
@@ -65,6 +68,9 @@ class Dialog
   accept();
 !!!205186.cpp!!!	accept_php() : void
   _lang = 'h';
+  accept();
+!!!129155.cpp!!!	accept_python() : void
+  _lang = 'y';
   accept();
 !!!203010.cpp!!!	accept() : void
   _rec = (rec_cb) ? rec_cb->isChecked() : FALSE;

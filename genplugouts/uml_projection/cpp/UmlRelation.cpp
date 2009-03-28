@@ -6,6 +6,7 @@
 #include "JavaSettings.h"
 #include "IdlSettings.h"
 #include "PhpSettings.h"
+#include "PythonSettings.h"
 void UmlRelation::uml2cpp(bool) {
   bool composition = FALSE;
   
@@ -94,6 +95,31 @@ void UmlRelation::uml2php(bool) {
 	set_PhpDecl("");
       else
 	set_PhpDecl(PhpSettings::relationDecl());
+    }
+  }
+}
+
+void UmlRelation::uml2Python(bool) {
+  bool composition = FALSE;
+  
+  switch (relationKind()) {
+  case aGeneralisation:
+  case aRealization:
+  case aDependency:
+    set_PythonDecl("${type}");
+    break;
+  case anAggregationByValue:
+  case aDirectionalAggregationByValue:
+    composition = TRUE;
+    // no break
+  default:
+    {
+      QCString st = PythonSettings::classStereotype(parent()->stereotype());
+      
+      if ((st == "enum") || (st == "ignored"))
+	set_PythonDecl("");
+      else
+	set_PythonDecl(PythonSettings::relationDecl(composition, multiplicity()));
     }
   }
 }

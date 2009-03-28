@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -91,6 +91,9 @@ class DiagramView : public QCanvasView {
     bool has_preferred_size_zoom() { return preferred_zoom != 0; }
     void multiple_selection_menu(bool in_model, bool out_model, bool alignable,
 				 QList<DiagramItem> &);
+    bool is_present(BrowserNode * bn);
+    virtual void add_related_elements(DiagramItem *, const char * what,
+				      bool inh, bool assoc);
     
     virtual UmlCanvas * the_canvas() const;
 
@@ -144,7 +147,7 @@ class DiagramView : public QCanvasView {
     void add_point(QMouseEvent * e);
     
     void set_format(int);
-    void init_format_menu(QPopupMenu &, int) const;
+    void init_format_menu(QPopupMenu &, QPopupMenu &, int) const;
     int default_menu(QPopupMenu & m, int f);
     void needed_width_height(int & maxx, int & maxy) const;
     

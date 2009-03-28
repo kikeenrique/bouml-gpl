@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -188,7 +188,7 @@ void CodLinkCanvas::menu(const QPoint&) {
   
   package_modified();
   
-  if (new_dirs) {
+  if (new_dirs && (dirs != 0)) {
     if (dirs->get_msgs().count() == 0) {
       dirs->delete_it();
       dirs = 0;
@@ -203,13 +203,13 @@ ArrowPointCanvas * CodLinkCanvas::brk(const QPoint & p) {
   ArrowPointCanvas * ap =
     new ArrowPointCanvas(the_canvas(), p.x(), p.y());
   
-  ap->setZ(z() + 1);	// + 1 else point can't be selected
+  ap->setZ(z());
   
   CodLinkCanvas * other =
     new CodLinkCanvas(the_canvas(), ap, end, 0, decenter_begin, decenter_end);
 
   ap->add_line(this);
-  end->remove_line(this);
+  end->remove_line(this, TRUE);
   end = ap;
   
   //update_pos();

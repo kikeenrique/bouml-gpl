@@ -8,6 +8,7 @@
 
 class UmlActivity;
 class UmlClassView;
+class UmlOperation;
 class UmlActivityDiagram;
 
 class UmlBaseActivity : public UmlItem {
@@ -98,6 +99,14 @@ class UmlBaseActivity : public UmlItem {
     // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_isSingleExecution(bool v);
 
+    // return the specification
+    UmlOperation * specification();
+
+    // set the specification
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_Specification(UmlOperation * v);
+
     // returns the optional associated diagram
     UmlActivityDiagram * associatedDiagram();
 
@@ -149,6 +158,10 @@ class UmlBaseActivity : public UmlItem {
 #ifdef WITHJAVA
     virtual void read_java_();
 #endif
+
+
+  private:
+    UmlOperation * _specification;
 
 };
 

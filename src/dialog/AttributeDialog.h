@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -74,6 +74,10 @@ class AttributeDialog : public QTabDialog {
     VisibilityGroup uml_visibility;
     QCheckBox * classattribute_cb;
     QCheckBox * constattribute_cb;
+    QCheckBox * derived_cb;
+    QCheckBox * derivedunion_cb;
+    QCheckBox * ordered_cb;
+    QCheckBox * unique_cb;
     MultiLineEdit * comment;
     MultiLineEdit * constraint;
     
@@ -153,6 +157,7 @@ class AttributeDialog : public QTabDialog {
     void edit_description();
     void edit_constraint();
     void menu_type();
+    void derived_changed(bool);
     void cpp_default();
     void cpp_unmapped();
     void cpp_update();

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -76,6 +76,8 @@ class CodDirsCanvas : public QObject, public DiagramCanvas, public CodMsgSupport
 
     virtual void draw(QPainter & p);
     virtual void setVisible(bool yes);
+    
+    virtual bool represents(BrowserNode *);
     
     virtual void save(QTextStream & st, bool, QString & warning) const;
     static CodDirsCanvas * read(char * & st, UmlCanvas * canvas, char * & k);

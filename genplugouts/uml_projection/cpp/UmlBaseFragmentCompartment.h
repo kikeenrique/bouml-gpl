@@ -36,6 +36,16 @@ class UmlBaseFragmentCompartment {
         return _contained;
     }
 
+    // return the continuation ('label' case), or an empty string/null
+    QCString startContinuation() const {
+        return _start_continuation;
+    }
+
+    // return the continuation ('goto' case), or an empty string/null
+    QCString endContinuation() const {
+        return _end_continuation;
+    }
+
 
   private:
     UmlFragment * _fragment;
@@ -48,11 +58,19 @@ class UmlBaseFragmentCompartment {
 
     int _y;
 
+    QCString _start_continuation;
+
+    QCString _end_continuation;
+
 
   public:
     void add_contained_(UmlFragment * x);
 
     void add_text_(QCString x);
+
+    //internal, do NOT use it
+    
+    void add_cont_(QCString s, int cy);
 
     int b() const {
         return _y;
@@ -63,7 +81,7 @@ class UmlBaseFragmentCompartment {
 
   private:
     // internal, don't call it
-    void init(UmlBaseFragment * fragment, int rank, int y);
+    void read_(UmlBaseFragment * fragment, int rank);
 
 
   public:

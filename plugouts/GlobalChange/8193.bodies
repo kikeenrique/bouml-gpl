@@ -35,6 +35,15 @@ if (ctx.onArtifact() && ctx.match_stereotype(stereotype())) {
     }
   }
   
+  if (ctx.python()) {
+    const QCString & c = pythonSource();
+    
+    if (!c.isEmpty() && ctx.match(c)) {
+      if (!set_PythonSource(ctx.replace(c)))
+	ctx.err();
+    }
+  }
+  
   if (ctx.idl()) {
     const QCString & c = idlSource();
     

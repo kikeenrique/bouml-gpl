@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -74,6 +74,7 @@
 #include "ToolDialog.h"
 #include "BrowserSearchDialog.h"
 #include "ShortcutDialog.h"
+#include "GreetingsDialog.h"
 #include "BasicData.h"
 #include "ToolCom.h"
 #include "About.h"
@@ -105,6 +106,8 @@ void set_template_project(QString s)
 }
 
 //
+
+static int Counter;
 
 UmlWindow * UmlWindow::the;
 
@@ -144,7 +147,7 @@ const char * formatMenuText = "To set the default format of the diagrams.";
 static const char * prevText = "To select the previously selected element in the <em>browser</em>.";
 static const char * nextText = "To select the next selected element in the <em>browser</em>.";
 
-UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
+UmlWindow::UmlWindow(bool batch) : QMainWindow(0, "Bouml", WDestructiveClose) {
   setCaption("Bouml");
   
   the = this;
@@ -305,12 +308,10 @@ UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
   miscMenu->setWhatsThis(id, fontSizeMenuText);
   
   formatMenu = new QPopupMenu(this);
-  formatMenu->setCheckable(TRUE);
+  formatLandscapeMenu = new QPopupMenu(this);  
   connect(formatMenu, SIGNAL(aboutToShow()),
 	  this, SLOT(formatMenuAboutToShow()));
-  for (int f = IsoA0; f != CanvasFormatSup; f += 1)
-    formatMenu->insertItem(stringify((CanvasFormat) f), this,
-			   SLOT(setFormat(int)), 0, f);
+  init_format_menu(formatMenu, formatLandscapeMenu);
 
   id = miscMenu->insertItem("Diagram default format", formatMenu);
   miscMenu->setWhatsThis(id, formatMenuText);
@@ -382,7 +383,7 @@ UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
   
   // note : QFile fp(QDir::home().absFilePath(".bouml")) doesn't work
   // if the path contains non latin1 characters, for instance cyrillic !
-  QString s = QDir::home().absFilePath(".bouml");
+  QString s = homeDir().absFilePath(".bouml");
   FILE * fp = fopen((const char *) s, "r");
   
   if (fp != 0) {
@@ -390,12 +391,23 @@ UmlWindow::UmlWindow() : QMainWindow(0, "Bouml", WDestructiveClose) {
  
     while (fgets(line, sizeof(line) - 1, fp) != 0) {
       remove_crlf(line);
-      historic.append(line);
+      if (!strncmp(line, "compteur d utilisation ", 23)) {
+	Counter = atoi(line + 23);
+	break;
+      }
+      else
+	historic.append(line);
     }
     
     fclose(fp);
   }
-  
+    
+  if (!batch && ((Counter++ % 30) == 0)) {
+    GreetingsDialog d;
+    
+    d.exec();
+  }
+    
   //
   
   clear_select_historic();
@@ -411,12 +423,49 @@ UmlWindow::~UmlWindow() {
   exit(0);
 }
 
+void UmlWindow::init_format_menu(QPopupMenu * m, QPopupMenu * lm)
+{
+  m->setCheckable(TRUE);
+  lm->setCheckable(TRUE);
+  
+  int i;
+  
+  for (i = 0; i <= IsoA5; i += 1)
+    m->insertItem(QString("Iso ") + stringify((CanvasFormat) i), this,
+		  SLOT(setFormat(int)), 0, i);
+  
+  for (; i <= UsE; i += 1)
+    m->insertItem(QString("Ansi ") + stringify((CanvasFormat) i), this,
+		  SLOT(setFormat(int)), 0, i);
+  
+  for (; i != IsoA0Landscape; i += 1)
+    m->insertItem(stringify((CanvasFormat) i), this,
+		  SLOT(setFormat(int)), 0, i);
+  
+  m->insertSeparator();
+  m->insertItem("Landscape formats", lm);
+    
+  for (; i <= IsoA5Landscape; i += 1)
+    lm->insertItem(QString("Iso ") + stringify((CanvasFormat) i), this,
+		   SLOT(setFormat(int)), 0, i);
+  
+  for (; i <= UsELandscape; i += 1)
+    lm->insertItem(QString("Ansi ") + stringify((CanvasFormat) i), this,
+		   SLOT(setFormat(int)), 0, i);
+  
+  for (; i != CanvasFormatSup; i += 1)
+    lm->insertItem(stringify((CanvasFormat) i), this,
+		   SLOT(setFormat(int)), 0, i);
+}
+
 void UmlWindow::projectMenuAboutToShow() {
   abort_line_construction();
   
   projectMenu->clear();
   
   if (!BrowserNode::edition_active()) {
+    (void) user_id(); // force boumlrc read to have TemplateProject
+    
     int id;
     bool enabled =  (browser->get_project() != 0);
     QPixmap openIcon = QPixmap(fileopen);
@@ -425,7 +474,7 @@ void UmlWindow::projectMenuAboutToShow() {
     id = projectMenu->insertItem("&New", this, SLOT(newProject()));
     projectMenu->setWhatsThis(id, projectNewText);
     
-    if (TemplateProject.isEmpty()) {
+    if (!TemplateProject.isEmpty()) {
       id = projectMenu->insertItem("Create from &Template", this, SLOT(newFromTemplate()));
       projectMenu->setWhatsThis(id, projectNewFromTemplateText);
     }
@@ -482,7 +531,7 @@ produced for an attribute etc..., and to set the root directories");
     
     projectMenu->insertSeparator();
     QString whats = QString("to open this project.<br><br>The historic is saved in <i>")
-      + QDir::home().absFilePath(".bouml") + "</i>";
+      + homeDir().absFilePath(".bouml") + "</i>";
     
     for (int i = 0; i < int(historic.count()); i += 1) {
       id = projectMenu->insertItem(*historic.at(i),
@@ -517,6 +566,9 @@ void UmlWindow::clear()
     w->dont_save();
     w->close(TRUE);
   }
+  
+  if (BrowserSearchDialog::get() != 0)
+    BrowserSearchDialog::get()->close(TRUE);
 }
 
 void UmlWindow::toolMenuAboutToShow() {
@@ -720,7 +772,7 @@ void UmlWindow::historic_add(QString fn)
   
   // note : QFile fp(QDir::home().absFilePath(".bouml")) doesn't work
   // if the path contains non latin1 characters, for instance cyrillic !
-  QString s = QDir::home().absFilePath(".bouml");
+  QString s = homeDir().absFilePath(".bouml");
   FILE * fp = fopen((const char *) s, "w");
   
   if (fp != 0) {
@@ -729,9 +781,11 @@ void UmlWindow::historic_add(QString fn)
     for (it = the->historic.begin(), rank = 0;
 	 (it != the->historic.end()) && (rank != 10);
 	 ++it, rank += 1) {
-      fwrite((const char *) *it, 1, (*it).length(), fp);
+      (void) fwrite((const char *) *it, 1, (*it).length(), fp);
       fputc('\n', fp);
     }
+    
+    fprintf(fp, "compteur d utilisation %d\n", Counter);
     
     fclose(fp);
   }
@@ -966,28 +1020,30 @@ void UmlWindow::closeEvent(QCloseEvent * e) {
 
 void UmlWindow::close_it()
 {
-  clear_select_historic();
+  if (user_id() != 0) {
+    clear_select_historic();
+    
+    ToolCom::close_all();
+    
+    the->save_session();
+    
+    QApplication::setOverrideCursor(::Qt::waitCursor);
+    
+    // close all diagram windows
+    // do not hide ws, else a future diagram window opening will crash !
+    the->clear();
+    
+    // empty the browser
+    set_commented(0);
+    the->browser->clear();
+    
+    // remove tools
+    the->toolMenu->clear();
+    
+    QApplication::restoreOverrideCursor();
+    the->setCaption("Bouml");
+  }
   
-  ToolCom::close_all();
-  
-  the->save_session();
-  
-  QApplication::setOverrideCursor(::Qt::waitCursor);
-  
-  // close all diagram windows
-  // do not hide ws, else a future diagram window opening will crash !
-  the->clear();
-  
-  // empty the browser
-  set_commented(0);
-  the->browser->clear();
-  
-  // remove tools
-  the->toolMenu->clear();
-  
-  QApplication::restoreOverrideCursor();
-  the->setCaption("Bouml");
-
   Tool::init();
   GenerationSettings::init();
   BrowserPackage::init();
@@ -1388,9 +1444,16 @@ void UmlWindow::setFontSize(int i) {
 void UmlWindow::formatMenuAboutToShow() {
   abort_line_construction();
   
-  for (int i = IsoA0; i != CanvasFormatSup; i += 1) {
+  int i;
+  
+  for (i = IsoA0; i != IsoA0Landscape; i += 1) {
     formatMenu->setItemChecked(i, i == (int) format);
     formatMenu->setWhatsThis(i, formatMenuText);
+  }
+  
+  for (; i != CanvasFormatSup; i += 1) {
+    formatLandscapeMenu->setItemChecked(i, i == (int) format);
+    formatLandscapeMenu->setWhatsThis(i, formatMenuText);
   }
 }
 
@@ -1421,10 +1484,15 @@ void UmlWindow::set_default_format(CanvasFormat f)
 void UmlWindow::browser_search() {
   abort_line_construction();
   if (browser->get_project() != 0) {
-    BrowserSearchDialog dialog;
-    
-    dialog.exec();
+    if (BrowserSearchDialog::get() == 0)
+      (new BrowserSearchDialog())->show();
+    else
+      BrowserSearchDialog::get()->raise();
   }
+}
+
+void UmlWindow::browser_search_it() {
+  the->browser_search();
 }
 
 void UmlWindow::show_stereotypes() {
@@ -1711,6 +1779,8 @@ void UmlWindow::keyPressEvent(QKeyEvent * e) {
 
     if (s == "Save")
       UmlWindow::save_it();
+    else if (s == "Browser search")
+      UmlWindow::browser_search_it();
   }
   else
     QMainWindow::keyPressEvent(e);
@@ -1775,4 +1845,8 @@ void UmlWindow::prev_select() {
 			 ? *leftPixmap : *leftUnavailablePixmap);
     the->next->setPixmap(*rightPixmap);  
   }
+}
+
+void UmlWindow::historic_forget(BrowserNode * bn) {
+  the->select_historic.remove(bn);
 }

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -78,6 +78,10 @@ void ClassInstanceData::delete_it() {
 }
 
 void ClassInstanceData::edit() {
+  // to take into account deleted class instances being
+  // the value of relations
+  check_rels();
+  
   setName(browser_node->get_name());
   
   (new ClassInstanceDialog(this))->show();
@@ -263,7 +267,12 @@ void ClassInstanceData::check_rels() {
 	? rd->get_end_class() : rd->get_start_class();
       BrowserClass * cl = ((ClassInstanceData *) d)->get_class();
       
-      if (cl != other) {
+      if (cl == 0) {
+	// instance doesn't exist
+	// note : its brower_node will be deleted
+	remove = TRUE;
+      }
+      else if (cl != other) {
 	QList<BrowserClass> l;
 	
 	cl->get_all_parents(l);
@@ -703,7 +712,7 @@ void ClassInstanceData::save(QTextStream & st, QString & warning) const {
   while (it_rel != relations.end()) {
     const SlotRel & slot_rel = *it_rel;
     
-    if (slot_rel.is_a) {
+    if (slot_rel.is_a && !slot_rel.value->deletedp()) {
       // to not have unconsistency on load,
       // other side remade at load time
       nl_indent(st);

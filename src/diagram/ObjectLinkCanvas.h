@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,6 +48,7 @@ class ObjectLinkCanvas : public ArrowCanvas {
     virtual ~ObjectLinkCanvas();
     
     virtual void delete_it();
+    virtual void unconnect();
     
     virtual void history_save(QBuffer & b) const;
     virtual void history_load(QBuffer &);
@@ -79,6 +80,8 @@ class ObjectLinkCanvas : public ArrowCanvas {
     
     bool is(const SlotRel &, bool isa) const;
     RelationData * get_rel() const { return data; }
+    
+    virtual bool represents(BrowserNode *);
     
   protected:
     void internal_set_relation(RelationData * d);

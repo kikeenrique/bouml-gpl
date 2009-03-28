@@ -7,18 +7,24 @@ class UmlClassInstance
   out.id(this); 
   out << " name=\"";
   out.quote(name());
-  out << "\">\n"; 
+  if (_gen_eclipse) { 
+    out << '"';
+    out.ref(type(), "classifier");
+    out << ">\n"; 
+  }
+  else
+    out << "\">\n"; 
   out.indent(+1); 
   
-  out.indent();
-  out << "<classifier ";
-  out.idref(type());
-  out << "/>\n"; 
+  if (! _gen_eclipse) {
+    out.indent();
+    out << "<classifier ";
+    out.idref(type());
+    out << "/>\n"; 
+  }
     
   QValueList<SlotAttribute> attrs;
   QValueList<SlotAttribute>::Iterator a_iter;
-  char sslot[32];
-  char svalue[32];
   unsigned rank;
   
   attributesValue(attrs);
@@ -27,18 +33,15 @@ class UmlClassInstance
        ++a_iter, rank += 1) {
     SlotAttribute & slot = *a_iter;
     
-    sprintf(sslot, "ASLOT%u_", rank);
-    sprintf(svalue, "ASLOT_VALUE%u_", rank);
-    
     out.indent();
     out << "<slot";
     out.ref(slot.attribute, "definingFeature");
-    out.id_prefix(this, sslot);
+    out.id_prefix(this, "ASLOT", rank);
     out << " xmi:type=\"uml:Slot\">\n";
 
     out.indent();
     out << "\t<value xmi:type=\"uml:LiteralString\"";
-    out.id_prefix(this, svalue);
+    out.id_prefix(this, "ASLOT_VALUE", rank);
     out << " value=\"";
     out.quote(slot.value);
     out << "\"/>\n";
@@ -56,12 +59,10 @@ class UmlClassInstance
        ++r_iter, rank += 1) {
     SlotRelation & slot = *r_iter;
     
-    sprintf(sslot, "RSLOT%u_", rank);
-    
     out.indent();
     out << "<slot";
     out.ref(slot.relation, "definingFeature");
-    out.id_prefix(this, sslot);
+    out.id_prefix(this, "RSLOT", rank);
     out << " xmi:type=\"uml:Slot\"";
     out.ref(slot.value, "value");
     out << "/>\n";

@@ -1,30 +1,30 @@
-format 56
+format 65
 "API BASE" // API BASE
-  revision 14
-  modified_by 2 "bruno"
+  revision 18
+  modified_by 3 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
   //object diagram settings
-   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
   //component diagram settings
   package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
-  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
   //deployment diagram settings
   package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
-  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
   //state diagram settings
   package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-  show_activities default region_horizontally default drawing_language default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
   //activity diagram settings
   package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-  show_infonote default drawing_language default
+  show_infonote default drawing_language default show_stereotype_properties default
   
   comment "The API system classes and components
 
@@ -32,20 +32,20 @@ DO NOT MODIFY THEM !!!
 "
   classview 256 "API BASE class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
     //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
     //object diagram settings
-     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
     //state diagram settings
     package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-    show_activities default region_horizontally default drawing_language default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
     //class settings
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-    show_infonote default drawing_language default
+    show_infonote default drawing_language default show_stereotype_properties default
     associated_deployment_view deploymentview_ref 256 // API BASE Deployment view
     comment "The API system classes
 
@@ -1031,6 +1031,83 @@ public static final ${class} ${name} = new ${class}(_${name});
 	idl_decl ""
       end
 
+      attribute 174848 "anAcceptCallAction"
+	public type class_ref 640 // anItemKind
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 174976 "aReplyAction"
+	public type class_ref 640 // anItemKind
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 175104 "aCreateObjectAction"
+	public type class_ref 640 // anItemKind
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 175232 "aDestroyObjectAction"
+	public type class_ref 640 // anItemKind
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 175360 "aTestIdentityAction"
+	public type class_ref 640 // anItemKind
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 175488 "aRaiseExceptionAction"
+	public type class_ref 640 // anItemKind
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 175616 "aReduceAction"
+	public type class_ref 640 // anItemKind
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
       attribute 74112 "anActivityObject"
 	protected explicit_type ""
 	cpp_decl "  ${name}${value},${comment}"
@@ -1629,6 +1706,141 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 279296 "isDerived"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the property 'derived'"
+      end
+
+      operation 279424 "isDerivedUnion"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the property 'derived union'"
+      end
+
+      operation 279552 "set_isDerived"
+	public explicit_return_type "bool"
+	nparams 2
+	  param in name "is_derived" explicit_type "bool"
+	  param in name "is_union" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " Set the properties 'derived' and 'union'
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 279680 "isOrdered"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the property 'ordered'"
+      end
+
+      operation 279808 "set_isOrdered"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the property 'ordered'
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 279936 "isUnique"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the property 'unique'"
+      end
+
+      operation 280064 "set_isUnique"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the property 'unique'
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 2688 "defaultValue"
 	public explicit_return_type "string"
 	nparams 0
@@ -1850,7 +2062,8 @@ ${body}}
 	nexceptions 1
 	  explicit_exception "RuntimeException"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
-#endif"
+#endif
+"
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 #endif
@@ -1999,7 +2212,7 @@ ${body}}
 
       attribute 5632 "_read_only"
 	private explicit_type "bool"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	php_decl ""
@@ -2007,11 +2220,45 @@ ${body}}
 	idl_decl ""
       end
 
-      attribute 141312 "_multiplicity"
-	public explicit_type "string"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+      attribute 166784 "_derived"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 "
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 166912 "_derived_union"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 167040 "_ordered"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 167168 "_unique"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
 	php_decl ""
 	python_decl ""
 	idl_decl ""
@@ -2020,7 +2267,7 @@ ${body}}
       attribute 5760 "_cpp_mutable"
 	private explicit_type "bool"
 	cpp_decl "    #ifdef WITHCPP
-${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 #endif"
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
@@ -2032,11 +2279,21 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
       attribute 5888 "_java_transient"
 	private explicit_type "bool"
 	cpp_decl "    #ifdef WITHJAVA
-${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 #endif
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 141312 "_multiplicity"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
 	php_decl ""
 	python_decl ""
 	idl_decl ""
@@ -2194,6 +2451,28 @@ ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstrac
 #endif
 "
 	cpp_def "#ifdef WITHPHP
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "internal, do NOT use it
+"
+      end
+
+      operation 275968 "read_python_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "#ifdef WITHPYTHON
 ${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 #endif
@@ -2838,6 +3117,90 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 286720 "isPythonExternal"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHPYTHON
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns TRUE if the class is external, its definition
+ must contain how the name is made on the first line
+ (${name} by default), the other lines are ignored"
+      end
+
+      operation 286848 "set_isPythonExternal"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "y" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set if the class is external
+ 
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 286976 "isPython_2_2"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns TRUE is the class is a Python 2.2 class"
+      end
+
+      operation 287104 "set_isPython_2_2"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set if the class is a Python 2.2 class
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 8320 "switchType"
 	public return_type class_ref 147202 // UmlTypeSpec
 	nparams 0
@@ -3178,6 +3541,30 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 	idl_decl ""
       end
 
+      attribute 164864 "_python_external"
+	private explicit_type "bool"
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 164992 "_python_2_2"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
       attribute 7040 "_idl_external"
 	private explicit_type "bool"
 	cpp_decl "    #ifdef WITHIDL
@@ -3337,6 +3724,28 @@ ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstrac
 #endif
 "
 	cpp_def "#ifdef WITHPHP
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "internal, do NOT use it
+"
+      end
+
+      operation 276224 "read_python_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "#ifdef WITHPYTHON
 ${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 #endif
@@ -3560,6 +3969,50 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 287232 "pythonDecl"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHPYTHON
+${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "  return the Python defininition
+"
+      end
+
+      operation 287360 "set_PythonDecl"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "s" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "  to set the Python definition
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 10880 "idlDecl"
 	public explicit_return_type "string"
 	nparams 0
@@ -3658,6 +4111,19 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	idl_decl ""
       end
 
+      attribute 164736 "_python_decl"
+	private explicit_type "string"
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
       attribute 7680 "_idl_decl"
 	private explicit_type "string"
 	cpp_decl "    #ifdef WITHIDL
@@ -3736,6 +4202,28 @@ ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstrac
 #endif
 "
 	cpp_def "#ifdef WITHPHP
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "internal, do NOT use it
+"
+      end
+
+      operation 276096 "read_python_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "#ifdef WITHPYTHON
 ${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 #endif
@@ -5000,6 +5488,49 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 286464 "pythonSource"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHPYTHON
+${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns the Python file definition"
+      end
+
+      operation 286592 "set_PythonSource"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "s" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " to set the Python file definition
+ 
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 16640 "idlSource"
 	public explicit_return_type "string"
 	nparams 0
@@ -5142,6 +5673,19 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	idl_decl ""
       end
 
+      attribute 164608 "_python_src"
+	private explicit_type "string"
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
       attribute 8448 "_idl_src"
 	private explicit_type "string"
 	cpp_decl "    #ifdef WITHIDL
@@ -5224,6 +5768,28 @@ ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstrac
 #endif
 "
 	cpp_def "#ifdef WITHPHP
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "internal, do NOT use it
+"
+      end
+
+      operation 275840 "read_python_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "#ifdef WITHPYTHON
 ${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 #endif
@@ -7224,6 +7790,28 @@ ${body}}
 "
       end
 
+      operation 276736 "read_python_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "#ifdef WITHPYTHON
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "internal, do NOT use it
+"
+      end
+
       operation 24704 "read_idl_"
 	cpp_virtual protected explicit_return_type "void"
 	nparams 0
@@ -7550,6 +8138,15 @@ ${body}}
   friend class UmlBaseUseCaseDiagramDefinition;
   friend class UmlBaseSequenceDiagramDefinition;
   friend class UmlBaseCollaborationDiagramDefinition;
+  friend class UmlBaseFragment;
+  friend class UmlBaseReduceAction;
+  friend class UmlBaseRaiseExceptionAction;
+  friend class UmlBaseTestIdentityAction;
+  friend class UmlBaseDestroyObjectAction;
+  friend class UmlBaseCreateObjectAction;
+  friend class UmlBaseReplyAction;
+  friend class UmlBaseAcceptCallAction;
+  friend class UmlBaseActivityPartition;
 " ""
 	java ""
 	php ""
@@ -8060,6 +8657,23 @@ ${body}}
 	comment " replaces the exception at the given rank (0...)
 
  On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 306816 "methods"
+	const public return_type class_ref 8833 // UmlItem
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const QVector<${type}> ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const QVector<${type}> ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type}[] ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the behaviors (state and activities) implementing the operation"
       end
 
       operation 28928 "getOf"
@@ -8973,10 +9587,10 @@ ${body}}
       operation 274816 "phpContextualBodyIndent"
 	public explicit_return_type "bool"
 	nparams 0
-	cpp_decl "    #ifdef WITHIDL
+	cpp_decl "    #ifdef WITHPHP
 ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
 "
-	cpp_def "#ifdef WITHIDL
+	cpp_def "#ifdef WITHPHP
 ${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
@@ -9009,6 +9623,263 @@ ${body}}
 	
 	
 	comment " set if the indent of the PHP body is contextual or absolute
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 287488 "pythonDef"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHPYTHON
+${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns the operation's definition in Python, notes that it is
+ already made by the inherited PythonDecl operation"
+      end
+
+      operation 287616 "set_PythonDef"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "s" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " sets the operation's definition in Python, notes that it is
+ already made by the inherited set_PythonDecl operation
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 287744 "pythonBody"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns the operation's body in Python++, useless if the def does
+ not contains ${body} Note that the body is get each time from BOUML
+ for memory size reason"
+      end
+
+      operation 287872 "set_PythonBody"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "s" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " sets the operation's body in Python, useless if the def does not 
+ contains ${body}
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 288000 "pythonNameSpec"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " in case the operation is a 'get' or 'set' operation, returns how
+ the operation's PYTHON name must be generated"
+      end
+
+      operation 288128 "set_PythonNameSpec"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "s" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " in case the operation is a 'get' or 'set' operation, returns how
+ the operation's PYTHON name must be generated
+ 
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 288256 "pythonGetSetFrozen"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHPYTHON
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the if the Python definition is frozen, only for getter/setter operation"
+      end
+
+      operation 288384 "set_PythonGetSetFrozen"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the if the Python definition is frozen, only for getter/setter operation
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 288512 "pythonContextualBodyIndent"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHPYTHON
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " indicate if the indent of the Python body is contextual or absolute"
+      end
+
+      operation 288640 "set_PythonContextualBodyIndent"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set if the indent of the Python body is contextual or absolute
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 288768 "pythonDecorators"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHPYTHON
+${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the  decorators"
+      end
+
+      operation 288896 "set_PythonDecorators"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the  decorators
 
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
@@ -9286,7 +10157,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 
       attribute 137472 "_java_get_set_frozen"
 	private explicit_type "bool"
-	cpp_decl "    #ifdef WITHCPP
+	cpp_decl "    #ifdef WITHJAVA
 ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 #endif
 "
@@ -9299,7 +10170,20 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 
       attribute 156800 "_php_get_set_frozen"
 	private explicit_type "bool"
-	cpp_decl "    #ifdef WITHCPP
+	cpp_decl "    #ifdef WITHPHP
+${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 165120 "_python_get_set_frozen"
+	private explicit_type "bool"
+	cpp_decl "    #ifdef WITHPYTHON
 ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 #endif
 "
@@ -9312,7 +10196,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 
       attribute 137600 "_idl_get_set_frozen"
 	private explicit_type "bool"
-	cpp_decl "    #ifdef WITHCPP
+	cpp_decl "    #ifdef WITHIDL
 ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 #endif
 "
@@ -9352,6 +10236,19 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
       attribute 161920 "_php_contextual_body_indent"
 	private explicit_type "bool"
 	cpp_decl "    #ifdef WITHPHP
+${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 165248 "_python_contextual_body_indent"
+	private explicit_type "bool"
+	cpp_decl "    #ifdef WITHPYTHON
 ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 #endif
 "
@@ -9437,6 +10334,30 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 #endif
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 165376 "_python_name_spec"
+	private explicit_type "string"
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 165504 "_python_decorators"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
 	php_decl ""
 	python_decl ""
 	idl_decl ""
@@ -9566,6 +10487,28 @@ ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstrac
 #endif
 "
 	cpp_def "#ifdef WITHPHP
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "internal, do NOT use it
+"
+      end
+
+      operation 276352 "read_python_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "#ifdef WITHPYTHON
 ${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 #endif
@@ -10088,6 +11031,110 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 289024 "pythonDir"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHPYTHON
+${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns the path where the PYTHON files are generated by the
+ PYTHON generator."
+      end
+
+      operation 289152 "set_PythonDir"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "s" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " to set the path where the PYTHON files are generated by the
+ PYTHON generator, may be relative even the 'root' path is not
+ (already) an absolute path
+ 
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 289280 "pythonPackage"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "returns the python package name associed to the package"
+      end
+
+      operation 289408 "set_PythonPackage"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "s" explicit_type "string"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " to set the python package name associed to the package.
+ 
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 289536 "findPythonPackage"
+	const public return_type class_ref 9217 // UmlPackage
+	nparams 1
+	  param in name "n" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns a sub package of the current one having the Python package 'n'
+ (including the current one), else 0/null"
+      end
+
       operation 35584 "idlDir"
 	public explicit_return_type "string"
 	nparams 0
@@ -10388,6 +11435,30 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	idl_decl ""
       end
 
+      attribute 165632 "_python_dir"
+	private explicit_type "string"
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 165760 "_python_package"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
       attribute 12160 "_idl_dir"
 	private explicit_type "string"
 	cpp_decl "    #ifdef WITHIDL
@@ -10482,6 +11553,28 @@ ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstrac
 #endif
 "
 	cpp_def "#ifdef WITHPHP
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "internal, do NOT use it
+"
+      end
+
+      operation 276480 "read_python_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "#ifdef WITHPYTHON
 ${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 #endif
@@ -10678,6 +11771,141 @@ ${body}}
 	
 	comment " to set the 'read only' state of the relation
  
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 280192 "isDerived"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the property 'derived'"
+      end
+
+      operation 280320 "isDerivedUnion"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the property 'derived union'"
+      end
+
+      operation 280448 "set_isDerived"
+	public explicit_return_type "bool"
+	nparams 2
+	  param in name "is_derived" explicit_type "bool"
+	  param in name "is_union" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " Set the properties 'derived' and 'union'
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 280576 "isOrdered"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the property 'ordered'"
+      end
+
+      operation 280704 "set_isOrdered"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the property 'ordered'
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 280832 "isUnique"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the property 'unique'"
+      end
+
+      operation 280960 "set_isUnique"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the property 'unique'
+
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
@@ -11207,11 +12435,65 @@ ${body}}
  automatically if needed. args unused"
       end
 
+      classrelation 11648 // _rel_kind (<directional composition>)
+	relation 11648 *-->
+	  a role_name "_rel_kind" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 8;
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	    classrelation_ref 11648 // _rel_kind (<directional composition>)
+	  b parent class_ref 256 // aRelationKind
+      end
+
       attribute 12416 "_read_only"
 	private explicit_type "bool"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 167296 "_derived"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 167424 "_derived_union"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 167552 "_ordered"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 167680 "_unique"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
 	php_decl ""
 	python_decl ""
 	idl_decl ""
@@ -11230,7 +12512,7 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 
       attribute 12672 "_cpp_mutable"
 	private explicit_type "bool"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name} : 1${value};
 #endif
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -11264,16 +12546,6 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 1;
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-      end
-
-      classrelation 11648 // _rel_kind (<directional composition>)
-	relation 11648 *-->
-	  a role_name "_rel_kind" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value} : 8;
-"
-	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
-	    classrelation_ref 11648 // _rel_kind (<directional composition>)
-	  b parent class_ref 256 // aRelationKind
       end
 
       attribute 13056 "_default_value"
@@ -11441,6 +12713,28 @@ ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstrac
 #endif
 "
 	cpp_def "#ifdef WITHPHP
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "internal, do NOT use it
+"
+      end
+
+      operation 276608 "read_python_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    #ifdef WITHPYTHON
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "#ifdef WITHPYTHON
 ${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 #endif
@@ -12648,6 +13942,45 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 306944 "specification"
+	public return_type class_ref 9089 // UmlOperation
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the specification"
+      end
+
+      operation 307072 "set_Specification"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 9089 // UmlOperation
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the specification
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 131456 "associatedDiagram"
 	public return_type class_ref 128642 // UmlStateDiagram
 	nparams 0
@@ -12824,6 +14157,17 @@ ${body}}
 "
 	    classrelation_ref 136320 // <dependency>
 	  b parent class_ref 128768 // StateBehavior
+      end
+
+      classrelation 179328 // _specification (<unidirectional association>)
+	relation 179072 --->
+	  a role_name "_specification" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 179328 // _specification (<unidirectional association>)
+	  b parent class_ref 9089 // UmlOperation
       end
     end
 
@@ -13918,7 +15262,7 @@ ${members}}
       operation 136704 "create"
 	class_operation public return_type class_ref 129666 // UmlStateAction
 	nparams 1
-	  param inout name "parent" type class_ref 128386 // UmlState
+	  param inout name "parent" type class_ref 8833 // UmlItem
 	nexceptions 1
 	  explicit_exception "RuntimeException"
 	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
@@ -15312,6 +16656,18 @@ ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 	idl_decl ""
       end
 
+      attribute 173184 "python"
+	public explicit_type "string"
+	cpp_decl "    #ifdef WITHPHP
+${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
       attribute 14848 "idl"
 	public explicit_type "string"
 	cpp_decl "    #ifdef WITHIDL
@@ -15729,6 +17085,45 @@ ${body}}
  On error return FALSE in C++, produce a RuntimeException in Java"
       end
 
+      operation 307200 "specification"
+	public return_type class_ref 9089 // UmlOperation
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the specification"
+      end
+
+      operation 307328 "set_Specification"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 9089 // UmlOperation
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the specification
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
       operation 151296 "associatedDiagram"
 	public return_type class_ref 133506 // UmlActivityDiagram
 	nparams 0
@@ -15949,6 +17344,17 @@ ${body}}
 	
 	
 	
+      end
+
+      classrelation 179456 // _specification (<unidirectional association>)
+	relation 179200 --->
+	  a role_name "_specification" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 179456 // _specification (<unidirectional association>)
+	  b parent class_ref 9089 // UmlOperation
       end
     end
 
@@ -20507,6 +21913,1407 @@ ${body}}
       end
     end
 
+    class 157184 "UmlBaseAcceptCallAction"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 175616 // <generalisation>
+	relation 175360 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 175616 // <generalisation>
+	  b parent class_ref 135298 // UmlActivityAction
+      end
+
+      operation 295040 "create"
+	class_operation public return_type class_ref 157315 // UmlAcceptCallAction
+	nparams 2
+	  param inout name "parent" type class_ref 8833 // UmlItem
+	  param inout name "s" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "  returns a new accept call action named 's' created under 'parent'
+
+ In case it cannot be created (the name is already used or
+ invalid, 'parent' cannot contain it etc ...) return 0 in C++
+ and produce a RuntimeException in Java"
+      end
+
+      operation 295168 "kind"
+	cpp_virtual public return_type class_ref 640 // anItemKind
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns the kind of the item"
+      end
+
+      operation 295296 "UmlBaseAcceptCallAction"
+	protected explicit_return_type ""
+	nparams 2
+	  param in name "id" explicit_type "item_id"
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlActivityAction(id, s) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  super(id, s);
+}
+"
+	
+	
+	
+	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      operation 295552 "trigger"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the trigger"
+      end
+
+      operation 295680 "set_Trigger"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the trigger
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 295808 "cppTrigger"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHCPP
+${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the trigger in C++"
+      end
+
+      operation 295936 "set_CppTrigger"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the trigger in C++
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 296064 "javaTrigger"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    #ifdef WITHJAVA
+${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHJAVA
+${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the trigger in Java"
+      end
+
+      operation 296192 "set_JavaTrigger"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the trigger in Java
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 296320 "unload"
+	cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param in name "rec" explicit_type "bool"
+	  param in name "del" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} = FALSE, ${t1} = FALSE${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " to unload the object to free memory, it will be reloaded automatically
+ if needed. Recursively done for the sub items if 'rec' is TRUE.
+
+ if 'del' is true the sub items are deleted in C++, and removed from the
+ internal dictionnary in C++ and Java (to allow it to be garbaged),
+ you will have to call Children() to re-access to them"
+      end
+
+      attribute 173568 "_trigger"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 173696 "_cpp_trigger"
+	private explicit_type "string"
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 173824 "_java_trigger"
+	private explicit_type "string"
+	cpp_decl "    #ifdef WITHJAVA
+${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 296448 "read_uml_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+      end
+
+      operation 296576 "read_cpp_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "#ifdef WITHCPP
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+      end
+
+      operation 296704 "read_java_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    #ifdef WITHJAVA
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "#ifdef WITHJAVA
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 157440 "UmlBaseReplyAction"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 176000 // <generalisation>
+	relation 175744 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 176000 // <generalisation>
+	  b parent class_ref 135298 // UmlActivityAction
+      end
+
+      operation 296832 "create"
+	class_operation public return_type class_ref 157571 // UmlReplyAction
+	nparams 2
+	  param inout name "parent" type class_ref 8833 // UmlItem
+	  param inout name "s" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "  returns a new reply action named 's' created under 'parent'
+
+ In case it cannot be created (the name is already used or
+ invalid, 'parent' cannot contain it etc ...) return 0 in C++
+ and produce a RuntimeException in Java"
+      end
+
+      operation 296960 "kind"
+	cpp_virtual public return_type class_ref 640 // anItemKind
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns the kind of the item"
+      end
+
+      operation 297088 "UmlBaseReplyAction"
+	protected explicit_return_type ""
+	nparams 2
+	  param in name "id" explicit_type "item_id"
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlActivityAction(id, s) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  super(id, s);
+}
+"
+	
+	
+	
+	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      operation 297344 "replyToCall"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the replyToCall trigger"
+      end
+
+      operation 297472 "set_ReplyToCall"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the replyToCall trigger
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 297600 "cppReplyToCall"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHCPP
+${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the replyToCall trigger in C++"
+      end
+
+      operation 297728 "set_CppReplyToCall"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the replyToCall trigger in C++
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 297856 "javaReplyToCall"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    #ifdef WITHJAVA
+${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "#ifdef WITHJAVA
+${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the replyToCall trigger in Java"
+      end
+
+      operation 297984 "set_JavaReplyToCall"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the replyToCall trigger in Java
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 298112 "unload"
+	cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param in name "rec" explicit_type "bool"
+	  param in name "del" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} = FALSE, ${t1} = FALSE${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " to unload the object to free memory, it will be reloaded automatically
+ if needed. Recursively done for the sub items if 'rec' is TRUE.
+
+ if 'del' is true the sub items are deleted in C++, and removed from the
+ internal dictionnary in C++ and Java (to allow it to be garbaged),
+ you will have to call Children() to re-access to them"
+      end
+
+      attribute 173952 "_trigger"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 174080 "_cpp_trigger"
+	private explicit_type "string"
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 174208 "_java_trigger"
+	private explicit_type "string"
+	cpp_decl "    #ifdef WITHJAVA
+${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+#endif
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 298240 "read_uml_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+      end
+
+      operation 298368 "read_cpp_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    #ifdef WITHCPP
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "#ifdef WITHCPP
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+      end
+
+      operation 298496 "read_java_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    #ifdef WITHJAVA
+${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+#endif
+"
+	cpp_def "#ifdef WITHJAVA
+${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 157696 "UmlBaseCreateObjectAction"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 176384 // <generalisation>
+	relation 176128 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 176384 // <generalisation>
+	  b parent class_ref 135298 // UmlActivityAction
+      end
+
+      operation 298624 "create"
+	class_operation public return_type class_ref 157827 // UmlCreateObjectAction
+	nparams 2
+	  param inout name "parent" type class_ref 8833 // UmlItem
+	  param inout name "s" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "  returns a new create object action named 's' created under 'parent'
+
+ In case it cannot be created (the name is already used or
+ invalid, 'parent' cannot contain it etc ...) return 0 in C++
+ and produce a RuntimeException in Java"
+      end
+
+      operation 298752 "kind"
+	cpp_virtual public return_type class_ref 640 // anItemKind
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns the kind of the item"
+      end
+
+      operation 298880 "UmlBaseCreateObjectAction"
+	protected explicit_return_type ""
+	nparams 2
+	  param in name "id" explicit_type "item_id"
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlActivityAction(id, s) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  super(id, s);
+}
+"
+	
+	
+	
+	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      operation 299136 "classifier"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the classifier"
+      end
+
+      operation 299264 "set_Classifier"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the classifier
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 299392 "unload"
+	cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param in name "rec" explicit_type "bool"
+	  param in name "del" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} = FALSE, ${t1} = FALSE${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " to unload the object to free memory, it will be reloaded automatically
+ if needed. Recursively done for the sub items if 'rec' is TRUE.
+
+ if 'del' is true the sub items are deleted in C++, and removed from the
+ internal dictionnary in C++ and Java (to allow it to be garbaged),
+ you will have to call Children() to re-access to them"
+      end
+
+      attribute 174336 "_classifier"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 299520 "read_uml_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 157952 "UmlBaseDestroyObjectAction"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 176768 // <generalisation>
+	relation 176512 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 176768 // <generalisation>
+	  b parent class_ref 135298 // UmlActivityAction
+      end
+
+      operation 299648 "create"
+	class_operation public return_type class_ref 158083 // UmlDestroyObjectAction
+	nparams 2
+	  param inout name "parent" type class_ref 8833 // UmlItem
+	  param inout name "s" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "  returns a new destroy object action named 's' created under 'parent'
+
+ In case it cannot be created (the name is already used or
+ invalid, 'parent' cannot contain it etc ...) return 0 in C++
+ and produce a RuntimeException in Java"
+      end
+
+      operation 299776 "kind"
+	cpp_virtual public return_type class_ref 640 // anItemKind
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns the kind of the item"
+      end
+
+      operation 299904 "UmlBaseDestroyObjectAction"
+	protected explicit_return_type ""
+	nparams 2
+	  param in name "id" explicit_type "item_id"
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlActivityAction(id, s) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  super(id, s);
+}
+"
+	
+	
+	
+	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      operation 300160 "isDestroyLinks"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the  return the isDestroyLinks attribute."
+      end
+
+      operation 300288 "set_isDestroyLinks"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the isDestroyLinks attribute
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 300416 "isDestroyOwnedObjects"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the  return the isDestroyOwnedObjects attribute"
+      end
+
+      operation 300544 "set_isDestroyOwnedObjects"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the isDestroyOwnedObjects attribute
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      attribute 174464 "_links"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 174592 "_owned_objects"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 300672 "read_uml_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+      end
+    end
+
+    class 158208 "UmlBaseTestIdentityAction"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 177152 // <generalisation>
+	relation 176896 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 177152 // <generalisation>
+	  b parent class_ref 135298 // UmlActivityAction
+      end
+
+      operation 300800 "create"
+	class_operation public return_type class_ref 158339 // UmlTestIdentityAction
+	nparams 2
+	  param inout name "parent" type class_ref 8833 // UmlItem
+	  param inout name "s" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "  returns a new test identity action named 's' created under 'parent'
+
+ In case it cannot be created (the name is already used or
+ invalid, 'parent' cannot contain it etc ...) return 0 in C++
+ and produce a RuntimeException in Java"
+      end
+
+      operation 300928 "kind"
+	cpp_virtual public return_type class_ref 640 // anItemKind
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns the kind of the item"
+      end
+
+      operation 301056 "UmlBaseTestIdentityAction"
+	protected explicit_return_type ""
+	nparams 2
+	  param in name "id" explicit_type "item_id"
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlActivityAction(id, s) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  super(id, s);
+}
+"
+	
+	
+	
+	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+    end
+
+    class 158464 "UmlBaseRaiseExceptionAction"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 177536 // <generalisation>
+	relation 177280 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 177536 // <generalisation>
+	  b parent class_ref 135298 // UmlActivityAction
+      end
+
+      operation 301312 "create"
+	class_operation public return_type class_ref 158595 // UmlRaiseExceptionAction
+	nparams 2
+	  param inout name "parent" type class_ref 8833 // UmlItem
+	  param inout name "s" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "  returns a new raise exception action named 's' created under 'parent'
+
+ In case it cannot be created (the name is already used or
+ invalid, 'parent' cannot contain it etc ...) return 0 in C++
+ and produce a RuntimeException in Java"
+      end
+
+      operation 301440 "kind"
+	cpp_virtual public return_type class_ref 640 // anItemKind
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns the kind of the item"
+      end
+
+      operation 301568 "UmlBaseRaiseExceptionAction"
+	protected explicit_return_type ""
+	nparams 2
+	  param in name "id" explicit_type "item_id"
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlActivityAction(id, s) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  super(id, s);
+}
+"
+	
+	
+	
+	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+    end
+
+    class 158720 "UmlBaseReduceAction"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 177920 // <generalisation>
+	relation 177664 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 177920 // <generalisation>
+	  b parent class_ref 135298 // UmlActivityAction
+      end
+
+      operation 301824 "create"
+	class_operation public return_type class_ref 158851 // UmlReduceAction
+	nparams 2
+	  param inout name "parent" type class_ref 8833 // UmlItem
+	  param inout name "s" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "  returns a new reduce action named 's' created under 'parent'
+
+ In case it cannot be created (the name is already used or
+ invalid, 'parent' cannot contain it etc ...) return 0 in C++
+ and produce a RuntimeException in Java"
+      end
+
+      operation 301952 "kind"
+	cpp_virtual public return_type class_ref 640 // anItemKind
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns the kind of the item"
+      end
+
+      operation 302080 "UmlBaseReduceAction"
+	protected explicit_return_type ""
+	nparams 2
+	  param in name "id" explicit_type "item_id"
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlActivityAction(id, s) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  super(id, s);
+}
+"
+	
+	
+	
+	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      operation 302336 "isOrdered"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the  return the isOrdered attribute"
+      end
+
+      operation 302464 "set_isOrdered"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the isOrdered attribute
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 302592 "reducer"
+	public return_type class_ref 8833 // UmlItem
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the reducer, may be an activity or a state machine"
+      end
+
+      operation 302720 "set_Reducer"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 8833 // UmlItem
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the reducer
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      attribute 174720 "_ordered"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 178304 // _reducer (<unidirectional association>)
+	relation 178048 --->
+	  a role_name "_reducer" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 178304 // _reducer (<unidirectional association>)
+	  b parent class_ref 8833 // UmlItem
+      end
+
+      operation 302848 "read_uml_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+      end
+    end
+
     class 139520 "UmlBaseActivityControlNode"
       abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -22765,6 +25572,307 @@ ${body}}
       end
     end
 
+    class 155904 "UmlBaseActivityPartition"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 174080 // <generalisation>
+	relation 173824 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 174080 // <generalisation>
+	  b parent class_ref 8833 // UmlItem
+      end
+
+      operation 289664 "create"
+	class_operation public return_type class_ref 156035 // UmlActivityPartition
+	nparams 2
+	  param inout name "parent" type class_ref 8833 // UmlItem
+	  param inout name "s" explicit_type "str"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} * ${p0}, const ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "  returns a new activity partition named 's' created under 'parent'
+
+ In case it cannot be created (the name is already used or
+ invalid, 'parent' cannot contain it etc ...) return 0 in C++
+ and produce a RuntimeException in Java"
+      end
+
+      operation 289792 "kind"
+	cpp_virtual public return_type class_ref 640 // anItemKind
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns the kind of the item"
+      end
+
+      operation 289920 "UmlBaseActivityPartition"
+	protected explicit_return_type ""
+	nparams 2
+	  param in name "id" explicit_type "item_id"
+	  param in name "s" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)} : UmlItem(id, s) {
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}${staticnl}{
+  super(id, s);
+}
+"
+	
+	
+	
+	comment "  the constructor, do not call it yourself !!!!!!!!!!"
+      end
+
+      operation 290176 "associatedDiagram"
+	public return_type class_ref 133506 // UmlActivityDiagram
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " returns the optional associated diagram"
+      end
+
+      operation 290304 "set_AssociatedDiagram"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "d" type class_ref 133506 // UmlActivityDiagram
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " sets the associated diagram, arg may be null to unset it
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 290432 "isDimension"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the  return the isDimension attribute"
+      end
+
+      operation 290560 "set_isDimension"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the isDimension attribute
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 290688 "isExternal"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the  return the isExternal attribute"
+      end
+
+      operation 290816 "set_isExternal"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" explicit_type "bool"
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the isExternal attribute
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      operation 290944 "represents"
+	public return_type class_ref 8833 // UmlItem
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " return the represents"
+      end
+
+      operation 291072 "set_Represents"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "v" type class_ref 8833 // UmlItem
+	nexceptions 1
+	  explicit_exception "RuntimeException"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}void ${name}${(}${t0} ${p0}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment " set the represents
+
+ On error return FALSE in C++, produce a RuntimeException in Java"
+      end
+
+      classrelation 174592 // _assoc_diagram (<unidirectional association>)
+	relation 174336 --->
+	  a role_name "_assoc_diagram" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 174592 // _assoc_diagram (<unidirectional association>)
+	  b parent class_ref 133506 // UmlActivityDiagram
+      end
+
+      attribute 173312 "_dimension"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 173440 "_external"
+	private explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 174720 // _represents (<unidirectional association>)
+	relation 174464 --->
+	  a role_name "_represents" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 174720 // _represents (<unidirectional association>)
+	  b parent class_ref 8833 // UmlItem
+      end
+
+      operation 291200 "read_uml_"
+	cpp_virtual protected explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+      end
+    end
+
     class 146304 "UmlBaseClassInstance"
       abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -23306,7 +26414,7 @@ ${members}}
   deploymentview 256 "API BASE Deployment view"
     //deployment diagram settings
     package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
-    draw_component_as_icon default show_component_req_prov default show_component_rea default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
     comment "The API system artifacts
 
 DO NOT MODIFY THEM !!!
@@ -23892,6 +27000,7 @@ ${includes}
 #include \"UmlExpansionNode.h\"
 #include \"UmlActivityPin.h\"
 #include \"UmlActivityControlNodeClasses.h\"
+#include \"UmlActivityPartition.h\"
 #include \"MiscGlobalCmd.h\"
 
 ${namespace_start}
@@ -25137,6 +28246,13 @@ ${definition}"
 	class_ref 138752 // UmlBaseWriteVariableValueAction
 	class_ref 139008 // UmlBaseAddVariableValueAction
 	class_ref 139264 // UmlBaseRemoveVariableValueAction
+	class_ref 157184 // UmlBaseAcceptCallAction
+	class_ref 157440 // UmlBaseReplyAction
+	class_ref 157696 // UmlBaseCreateObjectAction
+	class_ref 157952 // UmlBaseDestroyObjectAction
+	class_ref 158208 // UmlBaseTestIdentityAction
+	class_ref 158464 // UmlBaseRaiseExceptionAction
+	class_ref 158720 // UmlBaseReduceAction
       end
     end
 
@@ -25569,6 +28685,33 @@ ${package}
 ${definition}"
       associated_classes
 	class_ref 147328 // UmlBaseView
+      end
+    end
+
+    artifact 149760 "UmlBaseActivityPartition"
+      stereotype "source"
+      cpp_h "#ifndef _${NAME}_H
+#define _${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#include \"UmlCom.h\"
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 155904 // UmlBaseActivityPartition
       end
     end
   end

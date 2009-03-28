@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -345,7 +345,7 @@ bool Class::add_inherit(aRelationKind k, UmlTypeSpec & typespec) {
 
 // not in scanning phase
 //
-// default visibility is 'public'
+// default visibility is 'package'
 //
 // [<visibility>] ['static'] ['var'] '$'<varname> ['=' <value>] ';'
 // [<visibility>] 'const' ctename '=' value ';'
@@ -354,7 +354,26 @@ bool Class::add_inherit(aRelationKind k, UmlTypeSpec & typespec) {
 bool Class::manage_member(QCString s) {
   QCString comment = Lex::get_comments();
   QCString description = Lex::get_description();
-  aVisibility visibility = PackageVisibility;
+  int index;
+  QCString access = value_of(description, "@access", index);
+  aVisibility visibility;
+  
+  if (access == "public")
+    visibility = PublicVisibility;
+  else if (access == "protected")
+    visibility = ProtectedVisibility;
+  else if (access == "private")
+    visibility = PrivateVisibility;
+  else
+    visibility = PackageVisibility;
+  
+  if (visibility != PackageVisibility) {
+    description.replace(index, access.length(), "${visibility}");
+    
+    access = value_of(comment, "@access", index);
+    comment.replace(index, access.length(), "${visibility}");
+  }
+  
   bool m_staticp = FALSE;
   bool m_constp = FALSE;
   bool m_abstractp = FALSE;

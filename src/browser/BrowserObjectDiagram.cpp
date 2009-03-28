@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,11 +33,13 @@
 
 #include "BrowserObjectDiagram.h"
 #include "SimpleData.h"
+#include "RelationData.h"
 #include "ObjectDiagramWindow.h"
 #include "DiagramView.h"
 #include "UmlPixmap.h"
 #include "SettingsDialog.h"
 #include "myio.h"
+#include "strutil.h"
 #include "ToolCom.h"
 #include "Tool.h"
 #include "MenuTitle.h"
@@ -50,20 +52,20 @@ QValueList<int> BrowserObjectDiagram::imported_ids;
 QStringList BrowserObjectDiagram::its_default_stereotypes;	// unicode
 
 BrowserObjectDiagram::BrowserObjectDiagram(QString s, BrowserNode * p, int id)
-    : BrowserDiagram(s, p, id), window(0) {
+    : BrowserDiagram(s, p, id), window(0), used_settings(0) {
   make();
   is_modified = (id == 0);
 }
 
 BrowserObjectDiagram::BrowserObjectDiagram(int id)
-    : BrowserDiagram(id), window(0) {
+    : BrowserDiagram(id), window(0), used_settings(0) {
   // not yet read
   make();
   is_modified = (id == 0);
 }
 
 BrowserObjectDiagram::BrowserObjectDiagram(BrowserObjectDiagram * model, BrowserNode * p)
-    : BrowserDiagram(p->get_name(), p, 0), window(0) {
+    : BrowserDiagram(p->get_name(), p, 0), window(0), used_settings(0) {
   def = new SimpleData(model->def);
   def->set_browser_node(this);
   comment = model->comment;
@@ -173,7 +175,12 @@ BrowserNode * BrowserObjectDiagram::duplicate(BrowserNode * p, QString name) {
 }
 
 const QPixmap* BrowserObjectDiagram::pixmap(int) const {
-  return (deletedp()) ? DeletedObjectDiagramIcon : ObjectDiagramIcon;
+  if (deletedp())
+    return DeletedObjectDiagramIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : ObjectDiagramIcon;
 }
 
 void BrowserObjectDiagram::draw_svg() const {
@@ -330,6 +337,10 @@ void BrowserObjectDiagram::edit_settings() {
 
 void BrowserObjectDiagram::on_close() {
   window = 0;
+  if (used_settings != 0) {
+    delete used_settings;
+    used_settings = 0;
+  }
 }
 
 void BrowserObjectDiagram::read_session(char * & st) {
@@ -348,18 +359,21 @@ const char * BrowserObjectDiagram::help_topic() const  {
   return "objectdiagram";
 }
 
+void BrowserObjectDiagram::update_drawing_settings() {
+  if (used_settings == 0)
+    used_settings = new ObjectDiagramSettings;
+  *used_settings = settings;
+  ((BrowserNode *) parent())->get_objectdiagramsettings(*used_settings);
+}
+
 void BrowserObjectDiagram::get_objectdiagramsettings(ObjectDiagramSettings & r) const {
-  if (! settings.complete(r))
-    ((BrowserNode *) parent())->get_objectdiagramsettings(r);
+  r.assign(*used_settings);
 }
 
 void BrowserObjectDiagram::package_settings(bool & name_in_tab,
 					    ShowContextMode & show_context) const {
-  ObjectDiagramSettings st;
-  
-  get_objectdiagramsettings(st);
-  name_in_tab = st.package_name_in_tab == UmlYes;
-  show_context = st.show_context_mode;
+  name_in_tab = used_settings->package_name_in_tab == UmlYes;
+  show_context = used_settings->show_context_mode;
 }
 
 UmlColor BrowserObjectDiagram::get_color(UmlCode who) const {
@@ -384,60 +398,29 @@ UmlColor BrowserObjectDiagram::get_color(UmlCode who) const {
     : ((BrowserNode *) parent())->get_color(who);
 }
 
-bool BrowserObjectDiagram::get_auto_label_position(UmlCode who) const {
-  switch (settings.auto_label_position) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_auto_label_position(who);
-  }
+bool BrowserObjectDiagram::get_auto_label_position() const {
+  return used_settings->auto_label_position == UmlYes;
 }
 
 bool BrowserObjectDiagram::get_shadow() const {
-  switch (settings.shadow) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_shadow(UmlObjectDiagram);
-  }  
+  return used_settings->shadow == UmlYes;
 }
 
 bool BrowserObjectDiagram::get_draw_all_relations() const {
-  switch (settings.draw_all_relations) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_draw_all_relations(UmlObjectDiagram);
-  }  
+  return used_settings->draw_all_relations == UmlYes;
 }
 
 void BrowserObjectDiagram::dont_draw_all_relations() {
-  settings.draw_all_relations = UmlNo;
+  settings.draw_all_relations = 
+    used_settings->draw_all_relations = UmlNo;
 }
 
-bool BrowserObjectDiagram::get_show_stereotype_properties(UmlCode) const {
-  switch (settings.show_stereotype_properties) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_stereotype_properties(UmlObjectDiagram);
-  }
+bool BrowserObjectDiagram::get_show_stereotype_properties() const {
+  return used_settings->show_stereotype_properties == UmlYes;
 }
 
-bool BrowserObjectDiagram::get_classinstwritehorizontally(UmlCode) const {
-  Uml3States h = settings.write_horizontally;
-  
-  return (h == UmlDefaultState)
-    ? ((BrowserNode *) parent())->get_classinstwritehorizontally(UmlObjectDiagram)
-    : (h == UmlYes);
+bool BrowserObjectDiagram::get_classinstwritehorizontally() const {
+  return used_settings->write_horizontally == UmlYes;
 }
 
 BasicData * BrowserObjectDiagram::get_data() const {
@@ -473,6 +456,29 @@ bool BrowserObjectDiagram::tool_cmd(ToolCom * com, const char * args) {
   default:
     return (def->tool_cmd(com, args, this, comment) ||
 	    BrowserNode::tool_cmd(com, args));
+  }
+}
+
+void BrowserObjectDiagram::compute_referenced_by(QList<BrowserNode> & l,
+						 BrowserNode * bn,
+						 char const * kc,
+						 char const * kr)
+{
+  int id = (IsaRelation(bn->get_type()))
+    ? ((RelationData *) bn->get_data())->get_ident()
+    : bn->get_identifier();
+  
+  IdIterator<BrowserDiagram> it(all);
+  BrowserDiagram * d;
+
+  while ((d = it.current()) != 0) {
+    if (!d->deletedp() && (d->get_type() == UmlObjectDiagram)) {
+      if ((((BrowserObjectDiagram *) d)->window != 0)
+	  ? ((BrowserObjectDiagram *) d)->window->get_view()->is_present(bn)
+	  : is_referenced(read_definition(d->get_ident(), "diagram"), id, kc, kr))
+	l.append((BrowserObjectDiagram *) d);
+    }
+    ++it;
   }
 }
 
@@ -585,7 +591,7 @@ BrowserObjectDiagram * BrowserObjectDiagram::read(char * & st, char * k,
     r->is_defined = TRUE;
 
     r->is_read_only = (!in_import() && read_only_file()) || 
-      (user_id() != 0) && r->is_api_base();
+      ((user_id() != 0) && r->is_api_base());
     
     QFileInfo fi(BrowserView::get_dir(), QString::number(id) + ".diagram");
     if (!in_import() && fi.exists() && !fi.isWritable())

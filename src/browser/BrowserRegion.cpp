@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -107,7 +107,12 @@ void BrowserRegion::renumber(int phase) {
 }
 
 const QPixmap* BrowserRegion::pixmap(int) const {
-  return (deletedp()) ? DeletedRegionIcon : RegionIcon;
+  if (deletedp())
+    return DeletedRegionIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : RegionIcon;
 }
 
 BrowserRegion * BrowserRegion::add_region(BrowserNode * future_parent,
@@ -178,7 +183,7 @@ void BrowserRegion::exec_menu_choice(int rank) {
       return;
     break;
   case 3:
-    open(FALSE);
+    open(TRUE);
     return;
   case 7:
     delete_it();
@@ -347,8 +352,22 @@ bool BrowserRegion::may_contains_them(const QList<BrowserNode> & l,
   QListIterator<BrowserNode> it(l);
   
   for (; it.current(); ++it) {
-    if (it.current()->get_type() != UmlState) {
-      duplicable = FALSE;
+    switch (it.current()->get_type()) {
+    case UmlState:
+      break;
+    case InitialPS:
+    case EntryPointPS:
+    case FinalPS:
+    case TerminatePS:
+    case ExitPointPS:
+    case DeepHistoryPS:
+    case ShallowHistoryPS:
+    case JunctionPS:
+    case ChoicePS:
+    case ForkPS:
+    case JoinPS:
+      return (((const BrowserNode *) it.current()->parent()) == this);
+    default:
       return FALSE;
     }
     
@@ -362,7 +381,9 @@ bool BrowserRegion::may_contains_them(const QList<BrowserNode> & l,
 }
 
 void BrowserRegion::DragMoveEvent(QDragMoveEvent * e) {
-  if (UmlDrag::canDecode(e, BrowserState::drag_key(this))) {
+  if (UmlDrag::canDecode(e, BrowserState::drag_key(this)) ||
+      UmlDrag::canDecode(e, BrowserPseudoState::drag_key(this)) ||
+      UmlDrag::canDecode(e, BrowserStateAction::drag_key(this))) {
     if (!is_read_only)
       e->accept();
     else
@@ -378,7 +399,9 @@ void BrowserRegion::DropEvent(QDropEvent * e) {
 
 void BrowserRegion::DragMoveInsideEvent(QDragMoveEvent * e) {
   if (!is_read_only &&
-      UmlDrag::canDecode(e, BrowserState::drag_key(this)))
+      (UmlDrag::canDecode(e, BrowserState::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserPseudoState::drag_key(this)) ||
+       UmlDrag::canDecode(e, BrowserStateAction::drag_key(this))))
     e->accept();
   else
     e->ignore();
@@ -387,7 +410,9 @@ void BrowserRegion::DragMoveInsideEvent(QDragMoveEvent * e) {
 void BrowserRegion::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
   BrowserNode * bn;
   
-  if (((bn = UmlDrag::decode(e, BrowserState::drag_key(this))) != 0) &&
+  if ((((bn = UmlDrag::decode(e, BrowserPseudoState::drag_key(this))) != 0) ||
+       ((bn = UmlDrag::decode(e, BrowserStateAction::drag_key(this))) != 0) ||
+       ((bn = UmlDrag::decode(e, BrowserState::drag_key(this))) != 0)) &&
       (bn != after) && (bn != this)) {
     if (may_contains(bn, FALSE)) 
       move(bn, after);
@@ -527,11 +552,13 @@ BrowserRegion * BrowserRegion::read(char * & st, char * k,
 
     result->BrowserNode::read(st, k);
     
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     if (strcmp(k, "end")) {
-      while (BrowserState::read(st, k, result))
+      while (BrowserState::read(st, k, result) ||
+	     BrowserPseudoState::read(st, k, result) ||
+	     BrowserStateAction::read(st, k, result))
 	k = read_keyword(st);
       
       if (strcmp(k, "end"))

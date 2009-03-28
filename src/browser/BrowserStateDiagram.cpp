@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,6 +39,7 @@
 #include "SettingsDialog.h"
 #include "DiagramView.h"
 #include "myio.h"
+#include "strutil.h"
 #include "ToolCom.h"
 #include "Tool.h"
 #include "MenuTitle.h"
@@ -51,13 +52,13 @@ QValueList<int> BrowserStateDiagram::imported_ids;
 QStringList BrowserStateDiagram::its_default_stereotypes;	// unicode
 
 BrowserStateDiagram::BrowserStateDiagram(QString s, BrowserNode * p, int id)
-    : BrowserDiagram(s, p, id), window(0) {
+    : BrowserDiagram(s, p, id), window(0), used_settings(0) {
   make();
   is_modified = (id == 0);
 }
 
 BrowserStateDiagram::BrowserStateDiagram(BrowserStateDiagram * model, BrowserNode * p)
-    : BrowserDiagram(p->get_name(), p, 0), window(0) {
+    : BrowserDiagram(p->get_name(), p, 0), window(0), used_settings(0) {
   def = new SimpleData(model->def);
   def->set_browser_node(this);
   comment = model->comment;
@@ -83,7 +84,7 @@ BrowserStateDiagram::BrowserStateDiagram(BrowserStateDiagram * model, BrowserNod
 }
 
 BrowserStateDiagram::BrowserStateDiagram(int id)
-    : BrowserDiagram(id), window(0) {
+    : BrowserDiagram(id), window(0), used_settings(0) {
   // not yet read
   make();
   is_modified = (id == 0);
@@ -99,11 +100,6 @@ BrowserStateDiagram::~BrowserStateDiagram() {
     
     QFile::remove(d.absFilePath(fn));
   }
-#if 0
-  // already done before browser->clear
-  if (window)
-    delete window;
-#endif
   all.remove(get_ident());
   delete def;
 }
@@ -175,7 +171,12 @@ BrowserNode * BrowserStateDiagram::duplicate(BrowserNode * p, QString name) {
 }
 
 const QPixmap* BrowserStateDiagram::pixmap(int) const {
-  return (deletedp()) ? DeletedStateDiagramIcon : StateDiagramIcon;
+  if (deletedp())
+    return DeletedStateDiagramIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : StateDiagramIcon;
 }
 
 void BrowserStateDiagram::draw_svg() const {
@@ -339,6 +340,10 @@ void BrowserStateDiagram::edit_settings() {
 
 void BrowserStateDiagram::on_close() {
   window = 0;
+  if (used_settings != 0) {
+    delete used_settings;
+    used_settings = 0;
+  }
 }
 
 void BrowserStateDiagram::read_session(char * & st) {
@@ -357,73 +362,41 @@ const char * BrowserStateDiagram::help_topic() const  {
   return "statediagram";
 }
 
-void BrowserStateDiagram::get_statediagramsettings(StateDiagramSettings & r) const {
-  if (! settings.complete(r))
-    ((BrowserNode *) parent())->get_statediagramsettings(r);
+void BrowserStateDiagram::update_drawing_settings() {
+  if (used_settings == 0)
+    used_settings = new StateDiagramSettings;
+  *used_settings = settings;
+  ((BrowserNode *) parent())->get_statediagramsettings(*used_settings);
 }
 
-void BrowserStateDiagram::get_statedrawingsettings(StateDrawingSettings & result) const {
-  if (!settings.statedrawingsettings.complete(result))
-    ((BrowserNode *) parent())->get_statedrawingsettings(result);
+void BrowserStateDiagram::get_statediagramsettings(StateDiagramSettings & r) const {
+  r.assign(*used_settings);
+}
+
+void BrowserStateDiagram::get_statedrawingsettings(StateDrawingSettings & r) const {
+  r.assign(used_settings->statedrawingsettings);
 }
 
 void BrowserStateDiagram::package_settings(bool & name_in_tab,
 					   ShowContextMode & show_context) const {
-  StateDiagramSettings st;
-  
-  get_statediagramsettings(st);
-  name_in_tab = st.package_name_in_tab == UmlYes;
-  show_context = st.show_context_mode;
+  name_in_tab = used_settings->package_name_in_tab == UmlYes;
+  show_context = used_settings->show_context_mode;
 }
 
-bool BrowserStateDiagram::get_auto_label_position(UmlCode who) const {
-  switch (settings.auto_label_position) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_auto_label_position(who);
-  }
+bool BrowserStateDiagram::get_auto_label_position() const {
+  return used_settings->auto_label_position == UmlYes;
 }
 
-bool BrowserStateDiagram::get_write_label_horizontally(UmlCode who) const {
-  switch (settings.write_label_horizontally) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_write_label_horizontally(who);
-  }
+bool BrowserStateDiagram::get_write_label_horizontally() const {
+  return used_settings->write_label_horizontally == UmlYes;
 }
 
-bool BrowserStateDiagram::get_show_trans_definition(UmlCode who) const {
-  switch (settings.show_trans_definition) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_trans_definition(who);
-  }
+bool BrowserStateDiagram::get_show_trans_definition() const {
+  return used_settings->show_trans_definition == UmlYes;
 }
 
-DrawingLanguage BrowserStateDiagram::get_language(UmlCode who) const {
-  DrawingLanguage v;
-  
-  switch (who) {
-  case UmlStateDiagram:
-    v = settings.statedrawingsettings.drawing_language;
-    break;
-  default:
-    // error
-    return UmlView;
-  }
-  
-  return (v != DefaultDrawingLanguage)
-    ? v
-    : ((BrowserNode *) parent())->get_language(who);
+DrawingLanguage BrowserStateDiagram::get_language() const {
+  return used_settings->statedrawingsettings.drawing_language;
 }
 
 UmlColor BrowserStateDiagram::get_color(UmlCode who) const {
@@ -452,40 +425,20 @@ UmlColor BrowserStateDiagram::get_color(UmlCode who) const {
 }
 
 bool BrowserStateDiagram::get_shadow() const {
-  switch (settings.shadow) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_shadow(UmlStateDiagram);
-  }  
+  return used_settings->shadow == UmlYes;
 }
 
 bool BrowserStateDiagram::get_draw_all_relations() const {
-  switch (settings.draw_all_relations) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_draw_all_relations(UmlStateDiagram);
-  }  
+  return used_settings->draw_all_relations == UmlYes;
 }
 
 void BrowserStateDiagram::dont_draw_all_relations() {
-  settings.draw_all_relations = UmlNo;
+  settings.draw_all_relations = 
+    used_settings->draw_all_relations = UmlNo;
 }
 
-bool BrowserStateDiagram::get_show_stereotype_properties(UmlCode) const {
-  switch (settings.statedrawingsettings.show_stereotype_properties) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_stereotype_properties(UmlStateDiagram);
-  }
+bool BrowserStateDiagram::get_show_stereotype_properties() const {
+  return used_settings->statedrawingsettings.show_stereotype_properties == UmlYes;
 }
 
 BasicData * BrowserStateDiagram::get_data() const {
@@ -548,6 +501,26 @@ QString BrowserStateDiagram::drag_key(BrowserNode * p)
 
 const QStringList & BrowserStateDiagram::default_stereotypes() {
   return its_default_stereotypes;
+}
+
+void BrowserStateDiagram::compute_referenced_by(QList<BrowserNode> & l,
+						BrowserNode * bn,
+						char const * kc,
+						char const * kr)
+{
+  int id = bn->get_identifier();
+  IdIterator<BrowserDiagram> it(all);
+  BrowserDiagram * d;
+
+  while ((d = it.current()) != 0) {
+    if (!d->deletedp() && (d->get_type() == UmlStateDiagram)) {
+      if ((((BrowserStateDiagram *) d)->window != 0)
+	  ? ((BrowserStateDiagram *) d)->window->get_view()->is_present(bn)
+	  : is_referenced(read_definition(d->get_ident(), "diagram"), id, kc, kr))
+	l.append((BrowserStateDiagram *) d);
+    }
+    ++it;
+  }
 }
 
 void BrowserStateDiagram::save_stereotypes(QTextStream & st)
@@ -655,7 +628,7 @@ BrowserStateDiagram * BrowserStateDiagram::read(char * & st, char * k,
     r->is_defined = TRUE;
 
     r->is_read_only = (!in_import() && read_only_file()) || 
-      (user_id() != 0) && r->is_api_base();
+      ((user_id() != 0) && r->is_api_base());
     
     QFileInfo fi(BrowserView::get_dir(), QString::number(id) + ".diagram");
     if (!in_import() && fi.exists() && !fi.isWritable())

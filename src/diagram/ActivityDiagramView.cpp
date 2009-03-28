@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,6 +39,7 @@
 #include "ActivityNodeCanvas.h"
 #include "ActivityActionCanvas.h"
 #include "ActivityObjectCanvas.h"
+#include "ActivityPartitionCanvas.h"
 #include "SimpleRelationCanvas.h"
 #include "BrowserActivityDiagram.h"
 #include "PackageCanvas.h"
@@ -52,10 +53,10 @@
 #include "BrowserActivity.h"
 #include "BrowserInterruptibleActivityRegion.h"
 #include "BrowserExpansionRegion.h"
-//#include "BrowserPartition.h"
 #include "BrowserActivityNode.h"
 #include "BrowserActivityObject.h"
 #include "BrowserActivityAction.h"
+#include "BrowserActivityPartition.h"
 #include "ActivityActionData.h"
 #include "ActivityObjectData.h"
 #include "ClassInstanceData.h"
@@ -89,13 +90,13 @@ void ActivityDiagramView::menu(const QPoint&) {
   }
 }
 
-BrowserNode * ActivityDiagramView::container(const QPoint & p) {
+BrowserNode * ActivityDiagramView::container(const QPoint & p, bool part) {
   QCanvasItem * ci = the_canvas()->collision(p);
   DiagramItem * di;
 
   return ((ci != 0) && 
 	  ((di = QCanvasItemToDiagramItem(ci)) != 0) &&
-	  IsaActivityContainer(di->type()))
+	  IsaActivityContainer(di->type(), part))    
     ? ((ActivityContainerCanvas *) di)->get_bn()
     : (BrowserNode *) window()->browser_diagram()->parent();
 }
@@ -107,7 +108,6 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
     switch (action) {
     case UmlActivity:
       {
-	
 	history_protected = TRUE;
 	unselect_all();
 	window()->selectOn();
@@ -136,7 +136,6 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
       break;
     case UmlInterruptibleActivityRegion:
       {
-	
 	history_protected = TRUE;
 	unselect_all();
 	window()->selectOn();
@@ -168,7 +167,6 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
       break;
     case UmlExpansionRegion:
       {
-	
 	history_protected = TRUE;
 	unselect_all();
 	window()->selectOn();
@@ -287,23 +285,37 @@ void ActivityDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	}
       }
       break;
-
-#warning
-
-/*
-    case UmlPartition:
+    case UmlActivityPartition:
       {
 	history_protected = TRUE;
 	unselect_all();
 	window()->selectOn();
 	history_save();
 	
-	BrowserNode * parent = container(e->pos());
-	BrowserPartition::add_partition(parent);
-	window()->package_modified();
+	BrowserNode * parent = container(e->pos(), TRUE);
+	BrowserNode * b =
+	  BrowserActivityPartition::get_activitypartition(parent);
+	
+	if (b != 0) {
+	  if (the_canvas()->already_drawn(b)) {
+	    msg_information("Bouml", "already drawn");
+	    history_protected = FALSE;
+	    return;
+	  }
+	  
+	  ActivityPartitionCanvas * c =
+	    new ActivityPartitionCanvas(b, the_canvas(), e->x(), e->y());
+	  
+	  c->show();
+	  c->upper();
+	  history_protected = TRUE;
+	  c->force_inside();
+	  history_protected = TRUE;
+	  c->force_sub_inside();
+	  window()->package_modified();
+	}
       }
       break;
-      */
     default:
       DiagramView::contentsMousePressEvent(e);
       return;
@@ -321,6 +333,7 @@ void ActivityDiagramView::dragEnterEvent(QDragEnterEvent * e) {
       (UmlDrag::canDecode(e, UmlActivity, TRUE, TRUE) ||
        UmlDrag::canDecode(e, UmlInterruptibleActivityRegion, TRUE, TRUE) ||
        UmlDrag::canDecode(e, UmlExpansionRegion, TRUE, TRUE) ||
+       UmlDrag::canDecode(e, UmlActivityPartition, TRUE, TRUE) ||
        UmlDrag::canDecode(e, UmlPackage, FALSE, TRUE) ||
        UmlDrag::canDecode(e, UmlFlow, TRUE, TRUE) ||
        UmlDrag::canDecode(e, UmlSimpleRelations, TRUE, TRUE) ||
@@ -475,6 +488,30 @@ void ActivityDiagramView::dropEvent(QDropEvent * e) {
       
       ExpansionRegionCanvas * c = 
 	new ExpansionRegionCanvas(bn, the_canvas(), p.x(), p.y());
+      
+      history_protected = TRUE;
+      c->show();
+      c->force_inside();
+      history_protected = TRUE;
+      c->force_sub_inside();
+      history_protected = TRUE;
+      c->upper();
+      
+      canvas()->update();
+      history_protected = FALSE;
+      window()->package_modified();
+    }
+  }
+  else if ((bn = UmlDrag::decode(e, UmlActivityPartition, TRUE)) != 0) {
+    if (the_canvas()->already_drawn(bn))
+      msg_information("Bouml", "already drawn");
+    else {
+      history_save();
+      
+      history_protected = TRUE;
+      
+      ActivityPartitionCanvas * c = 
+	new ActivityPartitionCanvas(bn, the_canvas(), p.x(), p.y());
       
       history_protected = TRUE;
       c->show();
@@ -736,6 +773,7 @@ void ActivityDiagramView::save(QTextStream & st, QString & warning,
     case UmlActivity:
     case UmlInterruptibleActivityRegion:
     case UmlExpansionRegion:
+    case UmlActivityPartition:
     case InitialAN:
     case ActivityFinalAN:
     case FlowFinalAN:
@@ -796,6 +834,7 @@ void ActivityDiagramView::read(char * st, char * k) {
   while (ActivityCanvas::read(st, canvas, k) ||
 	 InterruptibleActivityRegionCanvas::read(st, canvas, k) ||
 	 ExpansionRegionCanvas::read(st, canvas, k) ||
+	 ActivityPartitionCanvas::read(st, canvas, k) ||
 	 ActivityActionCanvas::read(st, canvas, k) ||
 	 ActivityObjectCanvas::read(st, canvas, k) ||
 	 ActivityNodeCanvas::read(st, canvas, k) ||

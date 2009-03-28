@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,6 +46,7 @@
 #include "MenuTitle.h"
 #include "Settings.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
 
 StateActionCanvas::StateActionCanvas(BrowserNode * bn, UmlCanvas * canvas,
 			 int x, int y)
@@ -103,65 +104,77 @@ void StateActionCanvas::remove(bool from_model) {
 
 void StateActionCanvas::compute_size() {
   double zoom = the_canvas()->zoom();
-  QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
   const StateActionData * data =
     (const StateActionData *) browser_node->get_data();
+  const QPixmap * px = 
+    ProfiledStereotypes::diagramPixmap(data->get_stereotype(), zoom);
   
-  s = data->get_action((language == DefaultDrawingLanguage)
-		       ? the_canvas()->browser_diagram()->get_language(UmlStateAction)
-		       : language);
-  s = toUnicode(s);
-   
-  QSize sz = fm.size(0, s);
-  
-  min_height = fm.height() + sz.height();
-  min_width = sz.width();
+  if (px != 0) {
+    // force odd width and height for line alignment
+    min_width = px->width() | 1;
+    min_height = px->height() | 1;
     
-  const char * st = data->get_short_stereotype();
-  int mn = (int) (STATE_ACTION_CANVAS_MIN_SIZE*zoom);
-  
-  if (!strcmp(st, "receive-signal") ||
-      !strcmp(st, "send-signal")) {
-    if (min_height < mn)
-      min_height = mn;
-    min_width += ((height() > min_height) ? height() : min_height) / 2;
+    DiagramCanvas::resize(min_width, min_height);
   }
-  else if (st[0] != 0) {
-    int w = fm.width(QString("<<") + toUnicode(st) + ">>");
+  else {
+    QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
     
-    if (min_width < w)
-      min_width = w;
+    s = data->get_action((language == DefaultDrawingLanguage)
+			 ? ((BrowserStateDiagram *) the_canvas()->browser_diagram())->get_language()
+			 : language);
+    s = toUnicode(s);
     
-    min_height += 2*fm.height();
+    QSize sz = fm.size(0, s);
     
-    if (min_height < mn)
-    min_height = mn;
-  }
+    min_height = fm.height() + sz.height();
+    min_width = sz.width();
     
-  min_width += (int) (8 * zoom);
-  
-  if (min_width < mn)
-    min_width = mn;
-  
-  min_width += 2;
-
-  used_color = (itscolor == UmlDefaultColor)
-    ? the_canvas()->browser_diagram()->get_color(UmlStateAction)
-    : itscolor;
-
-  if (used_color != UmlTransparent) {
     const char * st = data->get_short_stereotype();
+    int mn = (int) (STATE_ACTION_CANVAS_MIN_SIZE*zoom);
     
-    if (strcmp(st, "send-signal") && strcmp(st, "receive-signal")) {
-      const int shadow = the_canvas()->shadow();
-    
-      min_width += shadow;
-      min_height += shadow;
+    if (!strcmp(st, "receive-signal") ||
+	!strcmp(st, "send-signal")) {
+      if (min_height < mn)
+	min_height = mn;
+      min_width += ((height() > min_height) ? height() : min_height) / 2;
     }
+    else if (st[0] != 0) {
+      int w = fm.width(QString("<<") + toUnicode(st) + ">>");
+      
+      if (min_width < w)
+	min_width = w;
+      
+      min_height += 2*fm.height();
+      
+      if (min_height < mn)
+	min_height = mn;
+    }
+    
+    min_width += (int) (8 * zoom);
+    
+    if (min_width < mn)
+      min_width = mn;
+    
+    min_width += 2;
+    
+    used_color = (itscolor == UmlDefaultColor)
+      ? the_canvas()->browser_diagram()->get_color(UmlStateAction)
+      : itscolor;
+    
+    if (used_color != UmlTransparent) {
+      const char * st = data->get_short_stereotype();
+      
+      if (strcmp(st, "send-signal") && strcmp(st, "receive-signal")) {
+	const int shadow = the_canvas()->shadow();
+	
+	min_width += shadow;
+	min_height += shadow;
+      }
+    }
+    
+    DiagramCanvas::resize((width() > min_width) ? width() : min_width,
+			  (height() > min_height) ? height() : min_height);
   }
-
-  DiagramCanvas::resize((width() > min_width) ? width() : min_width,
-			(height() > min_height) ? height() : min_height);
 }
 
 void StateActionCanvas::change_scale() {
@@ -214,7 +227,11 @@ void StateActionCanvas::connexion(UmlCode action, DiagramItem * dest,
 }
 
 aCorner StateActionCanvas::on_resize_point(const QPoint & p) {
-  return ::on_resize_point(p, rect());
+  return (ProfiledStereotypes::diagramPixmap(browser_node->get_data()->get_stereotype(),
+					     the_canvas()->zoom())
+	  != 0)
+    ? NoCorner
+    : ::on_resize_point(p, rect());
 }
 
 void StateActionCanvas::resize(aCorner c, int dx, int dy) {
@@ -226,193 +243,206 @@ void StateActionCanvas::draw(QPainter & p) {
   if (! visible()) return;
   
   QRect r = rect();
-  int mw = min_width;
-  QColor bckgrnd = p.backgroundColor();
-  QBrush brsh = p.brush();
-  QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
   const BasicData * data = browser_node->get_data();
-  const char * st = data->get_short_stereotype();
-  const int shadow = the_canvas()->shadow();
-  
-  p.setBackgroundMode((used_color == UmlTransparent)
-		      ? ::Qt::TransparentMode
-		      : ::Qt::OpaqueMode);
-
-  QColor co = color(used_color);
+  double zoom = the_canvas()->zoom();
+  const QPixmap * px = 
+    ProfiledStereotypes::diagramPixmap(data->get_stereotype(),
+				       the_canvas()->zoom());
   FILE * fp = svg();
 
   if (fp != 0)
     fputs("<g>\n", fp);
-  
-  p.setBackgroundColor(co);
-  
-  p.setBackgroundMode((used_color != UmlTransparent)
-		      ? ::Qt::OpaqueMode
-		      : ::Qt::TransparentMode);
-  
-  p.setFont(the_canvas()->get_font(UmlNormalFont));
-  
-  if (!strcmp(st, "send-signal")) {
-    QPointArray a(6);
-  
-    if ((used_color != UmlTransparent) && (shadow != 0)) {
-      r.setRight(r.right() - shadow);
-      r.setBottom(r.bottom() - shadow);
-    }
-  
-    const int hh = r.height()/2;
-
-    a.setPoint(0, r.left(), r.top());
-    a.setPoint(1, r.right() - hh, r.top());
-    a.setPoint(2, r.right(), r.top() + hh);
-    a.setPoint(3, r.right() - hh, r.bottom());
-    a.setPoint(4, r.left(), r.bottom());
-    a.setPoint(5, r.left(), r.top());
     
-    if (used_color == UmlTransparent) {
-      p.drawPolyline(a);
-      if (fp != 0)
-	draw_poly(fp, a, UmlTransparent);
-    }
-    else {
-      if (shadow != 0) {
-	QPointArray b(6);
-	
-	b.setPoint(0, r.left() + shadow, r.top() + shadow);
-	b.setPoint(1, r.right() - hh + shadow, r.top() + shadow);
-	b.setPoint(2, r.right() + shadow, r.top() + hh + shadow);
-	b.setPoint(3, r.right() - hh + shadow, r.bottom() + shadow);
-	b.setPoint(4, r.left() + shadow, r.bottom() + shadow);
-	b.setPoint(5, r.left() + shadow, r.top() + shadow);
-	p.setBrush(::Qt::darkGray);
-	p.setPen(::Qt::NoPen);
-	p.drawPolygon(b, TRUE, 0, 5);
-	p.setPen(::Qt::SolidLine);
-
-	if (fp != 0)
-	  draw_shadow(fp, b);
-      }
-      
-      p.setBrush(co);
-      p.drawPolygon(a, TRUE, 0, 5);
-
-      if (fp != 0)
-	draw_poly(fp, a, used_color);
-    }
-
-    r.setRight(r.right() - hh);
-    mw -= hh;
-  }
-  else if (!strcmp(st, "receive-signal")) {
-    QPointArray a(6);
-  
-    if ((used_color != UmlTransparent) && (shadow != 0)) {
-      r.setRight(r.right() - shadow);
-      r.setBottom(r.bottom() - shadow);
-    }
-  
-    const int hh = r.height()/2;
-
-    a.setPoint(0, r.left(), r.top());
-    a.setPoint(1, r.right(), r.top());
-    a.setPoint(2, r.right() - hh, r.top() + hh);
-    a.setPoint(3, r.right(), r.bottom());
-    a.setPoint(4, r.left(), r.bottom());
-    a.setPoint(5, r.left(), r.top());
+  if (px != 0) {
+    p.setBackgroundMode(::Qt::TransparentMode);
     
-    if (used_color == UmlTransparent) {
-      p.drawPolyline(a);
-
-      if (fp != 0)
-	draw_poly(fp, a, UmlTransparent);
-    }
-    else {
-      if (shadow != 0) {
-	QPointArray b(6);
-	
-	b.setPoint(0, r.left() + shadow, r.top() + shadow);
-	b.setPoint(1, r.right() + shadow, r.top() + shadow);
-	b.setPoint(2, r.right() - hh + shadow, r.top() + hh + shadow);
-	b.setPoint(3, r.right() + shadow, r.bottom() + shadow);
-	b.setPoint(4, r.left() + shadow, r.bottom() + shadow);
-	b.setPoint(5, r.left() + shadow, r.top() + shadow);
-	p.setBrush(::Qt::darkGray);
-	p.setPen(::Qt::NoPen);
-	p.drawPolygon(b, TRUE, 0, 5);
-	p.setPen(::Qt::SolidLine);
-
-	if (fp != 0)
-	  draw_shadow(fp, b);
-      }
-      
-      p.setBrush(co);
-      p.drawPolygon(a, TRUE, 0, 5);
-
-      if (fp != 0)
-	draw_poly(fp, a, used_color);
-    }
-
-    r.setRight(r.right() - hh);
-    mw -= hh;
-  }
-  else {
-    if (used_color != UmlTransparent) {
-      if (shadow != 0) {
-	r.setRight(r.right() - shadow);
-	r.setBottom(r.bottom() - shadow);
-      
-	p.fillRect (r.right(), r.top() + shadow,
-		    shadow, r.height() - 1,
-		    ::Qt::darkGray);
-	p.fillRect (r.left() + shadow, r.bottom(),
-		    r.width() - 1, shadow,
-		    ::Qt::darkGray);
-
-	if (fp != 0) {
-	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
-		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		  ::Qt::darkGray.rgb()&0xffffff,
-		  r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
-
-	  fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
-		  " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-		  ::Qt::darkGray.rgb()&0xffffff,
-		  r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
-	}
-      }
-    }
+    int lft = (px->width() < width()) ? r.x() + (width() - px->width())/2 : r.x();
     
-    p.setBrush(co);
-    p.drawRect(r);
-    
+    p.drawPixmap(lft, r.y(), *px);
     if (fp != 0)
+      // pixmap not really exported in SVG
       fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      svg_color(used_color), 
-	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-
-    if (st[0] != 0) {
-      r.setTop(r.top() + fm.height() / 2);
-      p.drawText(r, ::Qt::AlignHCenter, QString("<<") + toUnicode(st) + ">>");
-      if (fp != 0)
-	draw_text(r, ::Qt::AlignHCenter, QString("<<") + toUnicode(st) + ">>",
-		  p.font(), fp);
-      r.setTop(r.top() + 3*fm.height()/2);
-    }
+	      svg_color(UmlBlack), lft, r.y(), px->width() - 1, px->height() - 1);
   }
-  
-  r.setLeft(r.left() + (r.width()
-			+ (int) (8 * the_canvas()->zoom())
-			- mw)/2 + 1);
-  p.drawText(r, ::Qt::AlignVCenter, s);
-  if (fp != 0) {
-    draw_text(r, ::Qt::AlignVCenter, s,
-	      p.font(), fp);
-    fputs("</g>\n", fp);
-  }
+  else {
+    QColor bckgrnd = p.backgroundColor();
+    int mw = min_width;
+    QBrush brsh = p.brush();
+    QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
+    const char * st = data->get_short_stereotype();
+    const int shadow = the_canvas()->shadow();
     
-  p.setBackgroundColor(bckgrnd);
-  p.setBrush(brsh);
+    QColor co = color(used_color);
+    
+    p.setBackgroundMode((used_color == UmlTransparent)
+			? ::Qt::TransparentMode
+			: ::Qt::OpaqueMode);
+
+    p.setBackgroundColor(co);
+    
+    p.setFont(the_canvas()->get_font(UmlNormalFont));
+    
+    if (!strcmp(st, "send-signal")) {
+      QPointArray a(6);
+      
+      if ((used_color != UmlTransparent) && (shadow != 0)) {
+	r.setRight(r.right() - shadow);
+	r.setBottom(r.bottom() - shadow);
+      }
+      
+      const int hh = r.height()/2;
+      
+      a.setPoint(0, r.left(), r.top());
+      a.setPoint(1, r.right() - hh, r.top());
+      a.setPoint(2, r.right(), r.top() + hh);
+      a.setPoint(3, r.right() - hh, r.bottom());
+      a.setPoint(4, r.left(), r.bottom());
+      a.setPoint(5, r.left(), r.top());
+      
+      if (used_color == UmlTransparent) {
+	p.drawPolyline(a);
+	if (fp != 0)
+	  draw_poly(fp, a, UmlTransparent);
+      }
+      else {
+	if (shadow != 0) {
+	  QPointArray b(6);
+	  
+	  b.setPoint(0, r.left() + shadow, r.top() + shadow);
+	  b.setPoint(1, r.right() - hh + shadow, r.top() + shadow);
+	  b.setPoint(2, r.right() + shadow, r.top() + hh + shadow);
+	  b.setPoint(3, r.right() - hh + shadow, r.bottom() + shadow);
+	  b.setPoint(4, r.left() + shadow, r.bottom() + shadow);
+	  b.setPoint(5, r.left() + shadow, r.top() + shadow);
+	  p.setBrush(::Qt::darkGray);
+	  p.setPen(::Qt::NoPen);
+	  p.drawPolygon(b, TRUE, 0, 5);
+	  p.setPen(::Qt::SolidLine);
+	  
+	  if (fp != 0)
+	    draw_shadow(fp, b);
+	}
+	
+	p.setBrush(co);
+	p.drawPolygon(a, TRUE, 0, 5);
+	
+	if (fp != 0)
+	  draw_poly(fp, a, used_color);
+      }
+      
+      r.setRight(r.right() - hh);
+      mw -= hh;
+    }
+    else if (!strcmp(st, "receive-signal")) {
+      QPointArray a(6);
+      
+      if ((used_color != UmlTransparent) && (shadow != 0)) {
+	r.setRight(r.right() - shadow);
+	r.setBottom(r.bottom() - shadow);
+      }
+      
+      const int hh = r.height()/2;
+      
+      a.setPoint(0, r.left(), r.top());
+      a.setPoint(1, r.right(), r.top());
+      a.setPoint(2, r.right() - hh, r.top() + hh);
+      a.setPoint(3, r.right(), r.bottom());
+      a.setPoint(4, r.left(), r.bottom());
+      a.setPoint(5, r.left(), r.top());
+      
+      if (used_color == UmlTransparent) {
+	p.drawPolyline(a);
+	
+	if (fp != 0)
+	  draw_poly(fp, a, UmlTransparent);
+      }
+      else {
+	if (shadow != 0) {
+	  QPointArray b(6);
+	  
+	  b.setPoint(0, r.left() + shadow, r.top() + shadow);
+	  b.setPoint(1, r.right() + shadow, r.top() + shadow);
+	  b.setPoint(2, r.right() - hh + shadow, r.top() + hh + shadow);
+	  b.setPoint(3, r.right() + shadow, r.bottom() + shadow);
+	  b.setPoint(4, r.left() + shadow, r.bottom() + shadow);
+	  b.setPoint(5, r.left() + shadow, r.top() + shadow);
+	  p.setBrush(::Qt::darkGray);
+	  p.setPen(::Qt::NoPen);
+	  p.drawPolygon(b, TRUE, 0, 5);
+	  p.setPen(::Qt::SolidLine);
+	  
+	  if (fp != 0)
+	    draw_shadow(fp, b);
+	}
+	
+	p.setBrush(co);
+	p.drawPolygon(a, TRUE, 0, 5);
+	
+	if (fp != 0)
+	  draw_poly(fp, a, used_color);
+      }
+      
+      r.setRight(r.right() - hh);
+      mw -= hh;
+    }
+    else {
+      if (used_color != UmlTransparent) {
+	if (shadow != 0) {
+	  r.setRight(r.right() - shadow);
+	  r.setBottom(r.bottom() - shadow);
+	  
+	  p.fillRect (r.right(), r.top() + shadow,
+		      shadow, r.height() - 1,
+		      ::Qt::darkGray);
+	  p.fillRect (r.left() + shadow, r.bottom(),
+		      r.width() - 1, shadow,
+		      ::Qt::darkGray);
+	  
+	  if (fp != 0) {
+	    fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		    ::Qt::darkGray.rgb()&0xffffff,
+		    r.right(), r.top() + shadow, shadow - 1, r.height() - 1 - 1);
+	    
+	    fprintf(fp, "\t<rect fill=\"#%06x\" stroke=\"none\" stroke-opacity=\"1\""
+		    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		    ::Qt::darkGray.rgb()&0xffffff,
+		    r.left() + shadow, r.bottom(), r.width() - 1 - 1, shadow - 1);
+	  }
+	}
+      }
+      
+      p.setBrush(co);
+      p.drawRect(r);
+      
+      if (fp != 0)
+	fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		svg_color(used_color), 
+		r.x(), r.y(), r.width() - 1, r.height() - 1);
+      
+      if (st[0] != 0) {
+	r.setTop(r.top() + fm.height() / 2);
+	p.drawText(r, ::Qt::AlignHCenter, QString("<<") + toUnicode(st) + ">>");
+	if (fp != 0)
+	  draw_text(r, ::Qt::AlignHCenter, QString("<<") + toUnicode(st) + ">>",
+		    p.font(), fp);
+	r.setTop(r.top() + 3*fm.height()/2);
+      }
+    }
+    
+    r.setLeft(r.left() + (r.width() + (int) (8 * zoom) - mw)/2 + 1);
+    p.drawText(r, ::Qt::AlignVCenter, s);
+    if (fp != 0) {
+      draw_text(r, ::Qt::AlignVCenter, s,
+		p.font(), fp);
+      fputs("</g>\n", fp);
+    }
+      
+    p.setBrush(brsh);
+    p.setBackgroundColor(bckgrnd);
+  }
   
   if (selected())
     show_mark(p, rect());
@@ -603,7 +633,7 @@ bool StateActionCanvas::get_show_stereotype_properties() const {
   case UmlNo:
     return FALSE;
   default:
-    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties();
   }
 }
 

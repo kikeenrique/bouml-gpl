@@ -1,47 +1,47 @@
-format 45
+format 63
 "Aux" // Aux
-  revision 2
-  modified_by 2 "bruno"
+  revision 7
+  modified_by 3 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
   //object diagram settings
-   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
   //component diagram settings
   package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
-  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
   //deployment diagram settings
   package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
-  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
   //state diagram settings
   package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-  show_activities default region_horizontally default drawing_language default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
   //activity diagram settings
   package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-  show_infonote default drawing_language default
+  show_infonote default drawing_language default show_stereotype_properties default
   
   classview 128002 "Aux"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
     //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
     //object diagram settings
-     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
     //state diagram settings
     package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-    show_activities default region_horizontally default drawing_language default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
     //class settings
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-    show_infonote default drawing_language default
+    show_infonote default drawing_language default show_stereotype_properties default
     associated_deployment_view deploymentview_ref 128002 // Aux
     class 143362 "Dialog"
       visibility package 
@@ -52,6 +52,7 @@ ${inlines}
 "
       java_decl ""
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -60,6 +61,7 @@ ${inlines}
 	cpp "Q_OBJECT" ""
 	java ""
 	php ""
+	python ""
 	idl ""
       end
 
@@ -74,6 +76,7 @@ ${inlines}
 	
 	
 	
+	
       end
 
       attribute 128130 "filter1_le"
@@ -82,6 +85,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -91,6 +95,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -100,6 +105,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -109,6 +115,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -118,6 +125,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -127,6 +135,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -136,6 +145,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -145,6 +155,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -154,6 +165,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -163,6 +175,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -172,6 +185,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -181,6 +195,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -190,6 +205,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -199,6 +215,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -208,6 +225,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -217,6 +235,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -226,6 +245,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -235,6 +255,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -244,6 +265,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -253,6 +275,17 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 129155 "python_cb"
+	protected explicit_type "QCheckBox"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -262,6 +295,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -271,6 +305,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -280,6 +315,7 @@ ${inlines}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -289,6 +325,7 @@ ${inlines}
 " ""
 	java ""
 	php ""
+	python ""
 	idl ""
       end
 
@@ -300,6 +337,7 @@ ${inlines}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
+	
 	
 	
 	
@@ -317,6 +355,7 @@ ${inlines}
 	
 	
 	
+	
       end
 
       operation 193410 "polish"
@@ -327,6 +366,7 @@ ${inlines}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
+	
 	
 	
 	
@@ -342,6 +382,7 @@ ${inlines}
 "
       java_decl ""
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -356,6 +397,7 @@ ${inlines}
   : _old(o), _future(f), _n_match(0), _n_err(0) {
 ${body}}
 "
+	
 	
 	
 	
@@ -380,6 +422,7 @@ ${body}}
 	
 	
 	
+	
       end
 
       operation 191618 "set_stereotype"
@@ -393,6 +436,7 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
+	
 	
 	
 	
@@ -414,20 +458,23 @@ ${body}}
 	
 	
 	
+	
       end
 
       operation 191874 "set_language"
 	cpp_inline public explicit_return_type "void"
-	nparams 4
+	nparams 5
 	  param in name "c" explicit_type "bool"
 	  param in name "j" explicit_type "bool"
 	  param in name "p" explicit_type "bool"
+	  param in name "y" explicit_type "bool"
 	  param in name "i" explicit_type "bool"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	
@@ -445,6 +492,7 @@ ${body}}
 	
 	
 	
+	
       end
 
       operation 189314 "match"
@@ -456,6 +504,7 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
+	
 	
 	
 	
@@ -473,6 +522,7 @@ ${body}}
 	
 	
 	
+	
       end
 
       operation 191106 "replace"
@@ -487,20 +537,22 @@ ${body}}
 	
 	
 	
+	
       end
 
       operation 192002 "get_onArtifact"
 	const cpp_inline public explicit_return_type "bool"
 	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}const ${type} ${name}${(}${)}${const}${volatile};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile};
 "
-	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
   return _onArtifact;
 }
 "
 	cpp_name_spec "${name}"
 	final 
 	java_name_spec "get_${name}"
+	
 	
 	
 	idl_name_spec "get_${name}"
@@ -510,15 +562,16 @@ ${body}}
       operation 192130 "get_onClass"
 	const cpp_inline public explicit_return_type "bool"
 	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}const ${type} ${name}${(}${)}${const}${volatile};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile};
 "
-	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
   return _onClass;
 }
 "
 	cpp_name_spec "${name}"
 	final 
 	java_name_spec "get_${name}"
+	
 	
 	
 	idl_name_spec "get_${name}"
@@ -528,15 +581,16 @@ ${body}}
       operation 192258 "get_onOperation"
 	const cpp_inline public explicit_return_type "bool"
 	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}const ${type} ${name}${(}${)}${const}${volatile};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile};
 "
-	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
   return _onOperation;
 }
 "
 	cpp_name_spec "${name}"
 	final 
 	java_name_spec "get_${name}"
+	
 	
 	
 	idl_name_spec "get_${name}"
@@ -546,15 +600,16 @@ ${body}}
       operation 192386 "get_onAttribute"
 	const cpp_inline public explicit_return_type "bool"
 	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}const ${type} ${name}${(}${)}${const}${volatile};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile};
 "
-	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
   return _onAttribute;
 }
 "
 	cpp_name_spec "${name}"
 	final 
 	java_name_spec "get_${name}"
+	
 	
 	
 	idl_name_spec "get_${name}"
@@ -564,15 +619,16 @@ ${body}}
       operation 192514 "get_onRelation"
 	const cpp_inline public explicit_return_type "bool"
 	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}const ${type} ${name}${(}${)}${const}${volatile};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile};
 "
-	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
   return _onRelation;
 }
 "
 	cpp_name_spec "${name}"
 	final 
 	java_name_spec "get_${name}"
+	
 	
 	
 	idl_name_spec "get_${name}"
@@ -582,15 +638,16 @@ ${body}}
       operation 192642 "get_cpp"
 	const cpp_inline public explicit_return_type "bool"
 	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}const ${type} ${name}${(}${)}${const}${volatile};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile};
 "
-	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
   return _cpp;
 }
 "
 	cpp_name_spec "${name}"
 	final 
 	java_name_spec "get_${name}"
+	
 	
 	
 	idl_name_spec "get_${name}"
@@ -600,15 +657,16 @@ ${body}}
       operation 192770 "get_java"
 	const cpp_inline public explicit_return_type "bool"
 	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}const ${type} ${name}${(}${)}${const}${volatile};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile};
 "
-	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
   return _java;
 }
 "
 	cpp_name_spec "${name}"
 	final 
 	java_name_spec "get_${name}"
+	
 	
 	
 	idl_name_spec "get_${name}"
@@ -618,9 +676,9 @@ ${body}}
       operation 202498 "get_php"
 	const cpp_inline public explicit_return_type "bool"
 	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}const ${type} ${name}${(}${)}${const}${volatile};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile};
 "
-	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
   return _php;
 }
 "
@@ -630,22 +688,45 @@ ${body}}
 	php_final 
 	php_name_spec "get${Name}"
 	
+	
 	idl_name_spec "get_${name}"
 	get_of_attribute attribute_ref 143490 // php
+      end
+
+      operation 129283 "get_python"
+	force_body_gen const cpp_inline public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+  return _python;
+}
+"
+	cpp_name_spec "${name}"
+	final 
+	java_name_spec "get_${name}"
+	php_final 
+	php_name_spec "get${Name}"
+	
+	python_name_spec "get${Name}"
+	
+	idl_name_spec "get_${name}"
+	get_of_attribute attribute_ref 129283 // python
       end
 
       operation 192898 "get_idl"
 	const cpp_inline public explicit_return_type "bool"
 	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}const ${type} ${name}${(}${)}${const}${volatile};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile};
 "
-	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
   return _idl;
 }
 "
 	cpp_name_spec "${name}"
 	final 
 	java_name_spec "get_${name}"
+	
 	
 	
 	idl_name_spec "get_${name}"
@@ -655,15 +736,16 @@ ${body}}
       operation 193026 "get_n_match"
 	const cpp_inline public explicit_return_type "int"
 	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}const ${type} ${name}${(}${)}${const}${volatile};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile};
 "
-	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
   return _n_match;
 }
 "
 	cpp_name_spec "${name}"
 	final 
 	java_name_spec "get_${name}"
+	
 	
 	
 	idl_name_spec "get_${name}"
@@ -673,15 +755,16 @@ ${body}}
       operation 193282 "get_n_err"
 	const cpp_inline public explicit_return_type "int"
 	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}const ${type} ${name}${(}${)}${const}${volatile};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile};
 "
-	cpp_def "${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
   return _n_err;
 }
 "
 	cpp_name_spec "${name}"
 	final 
 	java_name_spec "get_${name}"
+	
 	
 	
 	idl_name_spec "get_${name}"
@@ -694,6 +777,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -703,6 +787,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -712,6 +797,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -721,6 +807,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -730,6 +817,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -739,6 +827,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -748,6 +837,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -757,6 +847,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -766,6 +857,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -775,6 +867,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
 	get_oper operation_ref 192002 // get_onArtifact
       end
@@ -785,6 +878,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
 	get_oper operation_ref 192130 // get_onClass
       end
@@ -795,6 +889,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
 	get_oper operation_ref 192258 // get_onOperation
       end
@@ -805,6 +900,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
 	get_oper operation_ref 192386 // get_onAttribute
       end
@@ -815,6 +911,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
 	get_oper operation_ref 192514 // get_onRelation
       end
@@ -825,6 +922,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
 	get_oper operation_ref 192642 // get_cpp
       end
@@ -835,6 +933,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
 	get_oper operation_ref 192770 // get_java
       end
@@ -845,8 +944,20 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
 	get_oper operation_ref 202498 // get_php
+      end
+
+      attribute 129283 "python"
+	protected explicit_type "bool"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} _${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	get_oper operation_ref 129283 // get_python
       end
 
       attribute 133378 "idl"
@@ -855,6 +966,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
 	get_oper operation_ref 192898 // get_idl
       end
@@ -865,6 +977,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -874,6 +987,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -883,6 +997,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -892,6 +1007,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
 	get_oper operation_ref 193026 // get_n_match
       end
@@ -902,6 +1018,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
 	get_oper operation_ref 193282 // get_n_err
       end
@@ -920,6 +1037,7 @@ ${body}}
 	
 	
 	
+	
       end
     end
 
@@ -931,6 +1049,7 @@ ${items}
 "
       java_decl ""
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -939,6 +1058,7 @@ ${items}
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -947,6 +1067,7 @@ ${items}
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -955,6 +1076,7 @@ ${items}
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -963,6 +1085,7 @@ ${items}
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -971,6 +1094,7 @@ ${items}
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -979,6 +1103,7 @@ ${items}
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -987,6 +1112,7 @@ ${items}
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -995,7 +1121,67 @@ ${items}
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
+      end
+    end
+
+    class 147202 "LineEdit"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name} : public QLineEdit {
+${members}};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 203906 "LineEdit"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "parent" explicit_type "QWidget"
+	cpp_decl "    ${comment}${name}${(}${t0} * ${p0}${v0}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}${t0} * ${p0}${)} : QLineEdit(${p0}) {
+${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 203650 "focusNextPrevChild"
+	protected explicit_return_type "bool"
+	nparams 1
+	  param in name "next" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 203778 "keyPressEvent"
+	protected explicit_return_type "void"
+	nparams 1
+	  param inout name "e" explicit_type "QKeyEvent"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	
+	
+	
+	
       end
     end
   end
@@ -1003,7 +1189,7 @@ ${items}
   deploymentview 128002 "Aux"
     //deployment diagram settings
     package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
-    draw_component_as_icon default show_component_req_prov default show_component_rea default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
     artifact 138498 "Dialog"
       stereotype "source"
       cpp_h "#ifndef _${NAME}_H
@@ -1012,6 +1198,7 @@ ${items}
 ${comment}
 ${includes}
 #include <qdialog.h>
+#include <qlineedit.h>
 
 class QLineEdit;
 class QRadioButton;
@@ -1025,7 +1212,6 @@ ${namespace_end}
 "
       cpp_src "${comment}
 ${includes}
-#include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qlabel.h>
@@ -1046,6 +1232,7 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_classes
+	class_ref 147202 // LineEdit
 	class_ref 143362 // Dialog
       end
     end

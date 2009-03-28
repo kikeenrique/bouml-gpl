@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,6 +34,8 @@
 #include "BrowserParameterSet.h"
 #include "ParameterSetData.h"
 #include "BrowserActivityAction.h"
+#include "BrowserActivityDiagram.h"
+#include "ReferenceDialog.h"
 #include "UmlPixmap.h"
 #include "UmlGlobal.h"
 #include "myio.h"
@@ -99,6 +101,12 @@ void BrowserParameterSet::update_idmax_for_root()
   all.update_idmax_for_root();
 }
     
+void BrowserParameterSet::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
+  if (! ondelete)
+    BrowserActivityDiagram::compute_referenced_by(l, this, "parametersetcanvas", "parameterset_ref");
+}
+    
 void BrowserParameterSet::renumber(int phase) {
   if (phase != -1)
     new_ident(phase, all);
@@ -107,6 +115,11 @@ void BrowserParameterSet::renumber(int phase) {
 const QPixmap* BrowserParameterSet::pixmap(int) const {
   if (deletedp())
     return DeletedParameterSetIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  if (px != 0)
+    return px;
   else if (is_marked)
     return ParameterSetMarkedIcon;
   else
@@ -136,6 +149,8 @@ a double click with the left mouse button does the same thing");
 		     "to delete the <em>parameter set</em>. \
 Note that you can undelete it after");
     }
+    m.setWhatsThis(m.insertItem("Referenced by", 4),
+		   "to know who reference the <i>parameter set</i>");
     mark_menu(m, "parameter set", 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
@@ -154,7 +169,7 @@ Note that you can undelete it after");
 void BrowserParameterSet::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
-    open(FALSE);
+    open(TRUE);
     return;
   case 1:
     ((BrowserActivityAction *) parent())->add_parameter_set(this, 0);
@@ -165,6 +180,9 @@ void BrowserParameterSet::exec_menu_choice(int rank) {
   case 3:
     undelete(FALSE);
     break;
+  case 4:
+    ReferenceDialog::show(this);
+    return;
   default:
     if (rank >= 99990)
       ProfiledStereotypes::choiceManagement(this, rank - 99990);
@@ -184,6 +202,8 @@ void BrowserParameterSet::apply_shortcut(QString s) {
     if (!is_edited)
       if (s == "Edit")
 	choice = 0;
+    if (s == "Referenced by")
+      choice = 4;
     if (!is_read_only && (edition_number == 0)) {
       if (s == "Duplicate")
 	choice = 1;
@@ -361,7 +381,7 @@ BrowserParameterSet * BrowserParameterSet::read(char * & st, char * k,
     result->is_defined = TRUE;
 
     result->is_read_only = (!in_import() && read_only_file()) || 
-      (user_id() != 0) && result->is_api_base();
+      ((user_id() != 0) && result->is_api_base());
     result->def->set_browser_node(result);
     
     result->BrowserNode::read(st, k);

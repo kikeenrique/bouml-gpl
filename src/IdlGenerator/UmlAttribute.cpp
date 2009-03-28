@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,7 +33,7 @@
 #include "util.h"
 
 void UmlAttribute::generate_decl(QTextOStream & f, const QCString & cl_stereotype,
-				 bool islast) {
+				 QCString indent, bool islast) {
   if (!idlDecl().isEmpty()) {
     if (cl_stereotype == "typedef") {
       write_trace_header();
@@ -43,7 +43,6 @@ void UmlAttribute::generate_decl(QTextOStream & f, const QCString & cl_stereotyp
     }
     const char * p = idlDecl();
     const char * pp = 0;
-    QCString indent = "";
     bool in_enum = (cl_stereotype == "enum");
     
     while ((*p == ' ') || (*p == '\t'))

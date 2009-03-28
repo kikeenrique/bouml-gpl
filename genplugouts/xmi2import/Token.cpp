@@ -25,7 +25,7 @@ void Token::read(FileIn & in, bool any) {
     int minus = 0;
     
     for (;;) {
-      char c = *in.readWord(any, str);
+      char c = *in.readWord(TRUE, str);
       
       if (! str) {
 	if (c == '-')

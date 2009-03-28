@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -77,6 +77,7 @@ class BrowserView : public QListView  {
     }
     static void select(QListViewItem *);
     static BrowserNode * selected_item();
+    static void force_visible(QListViewItem *);
     static void remove_temporary_files();
       
   protected:

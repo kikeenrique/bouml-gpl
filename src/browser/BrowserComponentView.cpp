@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -128,7 +128,12 @@ void BrowserComponentView::renumber(int phase) {
 }
 
 const QPixmap* BrowserComponentView::pixmap(int) const {
-  return (deletedp()) ? DeletedComponentViewIcon : ComponentViewIcon;
+  if (deletedp()) 
+    return DeletedComponentViewIcon;
+    
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : ComponentViewIcon;
 }
 
 QString BrowserComponentView::full_name(bool rev, bool itself) const {
@@ -348,66 +353,6 @@ UmlColor BrowserComponentView::get_color(UmlCode who) const {
   return (c != UmlDefaultColor)
     ? c
     : ((BrowserNode *) parent())->get_color(who);
-}
-
-bool BrowserComponentView::get_shadow(UmlCode who) const {
-  switch (componentdiagram_settings.shadow) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_shadow(who);
-  }
-}
-
-bool BrowserComponentView::get_draw_all_relations(UmlCode who) const {
-  switch (componentdiagram_settings.draw_all_relations) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_draw_all_relations(who);
-  }  
-}
-
-bool BrowserComponentView::get_show_stereotype_properties(UmlCode who) const {
-  switch (componentdiagram_settings.componentdrawingsettings.show_stereotype_properties) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_stereotype_properties(who);
-  }
-}
-
-bool BrowserComponentView::get_auto_label_position(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlComponentDiagram:
-    v = componentdiagram_settings.auto_label_position;
-    break;
-  default:
-    // error
-    return FALSE;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_auto_label_position(who);
-  }
-}
-
-void BrowserComponentView::get_componentdrawingsettings(bool, ComponentDrawingSettings & result) const {
-  if (!componentdiagram_settings.componentdrawingsettings.complete(result))
-    ((BrowserNode *) parent())->get_componentdrawingsettings(FALSE, result);
 }
 
 BrowserNodeList & BrowserComponentView::instances(BrowserNodeList & result)
@@ -660,8 +605,8 @@ BrowserComponentView * BrowserComponentView::read(char * & st, char * k,
     
     r->is_defined = TRUE;
 
-    r->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && r->is_api_base();
+    r->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && r->is_api_base());
     
     k = read_keyword(st);
     

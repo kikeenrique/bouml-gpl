@@ -32,7 +32,8 @@ enum JavaSettingsCmd {
   setJavaIsSetParamFinalCmd,
   setJavaEnumDeclCmd,
   setJavaEnumItemDeclCmd,
-  setJavaJavadocStyleCmd
+  setJavaJavadocStyleCmd,
+  setJavaForcePackageGenCmd
 
 };
 #endif

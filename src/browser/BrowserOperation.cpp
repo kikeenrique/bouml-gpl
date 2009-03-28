@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,7 +37,14 @@
 #include "BrowserAttribute.h"
 #include "BrowserRelation.h"
 #include "BrowserClass.h"
+#include "BrowserActivity.h"
+#include "BrowserState.h"
+#include "BrowserActivityAction.h"
+#include "BrowserSeqDiagram.h"
+#include "BrowserColDiagram.h"
 #include "OperationData.h"
+#include "ActivityData.h"
+#include "StateData.h"
 #include "GenerationSettings.h"
 #include "UmlPixmap.h"
 #include "UmlGlobal.h"
@@ -46,6 +53,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "strutil.h"
+#include "ReferenceDialog.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
 
@@ -103,11 +111,48 @@ BrowserNode * BrowserOperation::duplicate(BrowserNode * p, QString n) {
     
     result->def->replace((BrowserClass *) parent(), (BrowserClass *) p);
   }
+  
+  // get_of/set_of re-updated later by post_duplicate
+  if (((result->get_of = get_of) != 0) ||
+      ((result->set_of = set_of) != 0))
+    result->def->copy_getset(def);
 
   result->set_name(n);
   result->update_stereotype();
   
   return result;
+}
+
+void BrowserOperation::post_duplicate() {
+  BrowserNode * x_of;
+  void (BrowserOperation::*set_x_of)(BrowserNode *);
+  
+  if (get_of != 0) {
+    x_of = get_of;
+    get_of = 0;
+    set_x_of = &BrowserOperation::set_get_of;
+  }
+  else if (set_of != 0) {
+    x_of = set_of;
+    set_of = 0;
+    set_x_of = &BrowserOperation::set_set_of;
+  }
+  else
+    return;
+  
+  // search for attribute/relation
+  const char * s = x_of->get_name();
+  UmlCode k = x_of->get_type();
+  QListViewItem * child;
+  
+  for (child = parent()->firstChild(); child != 0; child = child->nextSibling()) {
+    if ((((BrowserNode *) child)->get_type() == k) &&
+	!strcmp(((BrowserNode *) child)->get_name(), s)) {
+      // this one
+      (this->*set_x_of)((BrowserNode *) child);
+      break;
+    }
+  }
 }
 
 BrowserOperation::~BrowserOperation() {
@@ -214,6 +259,20 @@ BrowserOperation * BrowserOperation::new_one(QString s, BrowserNode * p)
   d->set_browser_node(result, TRUE);
   
   return result;
+}
+
+void BrowserOperation::instances(BrowserNodeList & result)
+{
+  IdIterator<BrowserOperation> it(all);
+  BrowserOperation * op;
+  
+  while ((op = it.current()) != 0) {
+    if (!op->deletedp())
+      result.append(op);
+    ++it;
+  }
+  
+  result.sort_it();
 }
 
 void BrowserOperation::set_get_of(BrowserNode * o) {
@@ -381,17 +440,21 @@ const char * BrowserOperation::constraint() const {
 const QPixmap* BrowserOperation::pixmap(int) const {
   if (deletedp())
     return DeletedOperationIcon;
-  else {
-    switch (def->get_uml_visibility()) {
-    case UmlPublic:
-      return PublicOperationIcon;
-    case UmlProtected:
-      return ProtectedOperationIcon;
-    case UmlPrivate:
-      return PrivateOperationIcon;
-    default:
-      return PackageOperationIcon;
-    }
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+  
+  if (px != 0)
+    return px;
+  
+  switch (def->get_uml_visibility()) {
+  case UmlPublic:
+    return PublicOperationIcon;
+  case UmlProtected:
+    return ProtectedOperationIcon;
+  case UmlPrivate:
+    return PrivateOperationIcon;
+  default:
+    return PackageOperationIcon;
   }
 }
 
@@ -418,8 +481,11 @@ void BrowserOperation::paintCell(QPainter * p, const QColorGroup & cg, int colum
   }
 }
 
+static QList<BrowserNode> ImplBy;
+      
 void BrowserOperation::menu() {
   QPopupMenu m(0, name);
+  QPopupMenu implbym(0);
   QPopupMenu toolm(0);
   
   m.insertItem(new MenuTitle(name, m.font()), -1);
@@ -445,8 +511,38 @@ a double click with the left mouse button does the same thing");
 	  (strstr(def->get_pythondef(), "${body}") != 0))
 	m.setWhatsThis(m.insertItem("Edit Python body", 7),
 		       "to edit the <em>operation</em> and its Python body");
-      m.setWhatsThis(m.insertItem("Duplicate", 1),
-		     "to copy the <em>operation</em> in a new one");
+      if (((BrowserClass *) parent())->is_writable()) {
+	if ((get_of == 0) && (set_of == 0))
+	  m.setWhatsThis(m.insertItem("Duplicate", 1),
+			 "to copy the <em>operation</em> in a new one");
+
+	m.setWhatsThis(m.insertItem("Add implementing activity", 9),
+		       "to add a new <em>activity</i> simplementing the <em>operation</em>");
+	m.setWhatsThis(m.insertItem("Add implementing state", 10),
+		       "to add a new <em>state</i> simplementing the <em>operation</em>");
+      }
+  
+      m.insertSeparator();
+      m.setWhatsThis(m.insertItem("Referenced by", 8),
+		     "to know who reference the <i>operation</i>");
+
+      ImplBy.clear();
+      BrowserActivity::compute_referenced_by(ImplBy, this);
+      BrowserState::compute_referenced_by(ImplBy, this);
+      if (! ImplBy.isEmpty()) {
+	m.setWhatsThis(m.insertItem("Select implementing behavior", &implbym),
+		       "to select a <em>state</em> or <em>activity</em> implementing the <em>operation</em>");
+	
+	implbym.insertItem(new MenuTitle("Choose behavior", m.font()), -1);
+	implbym.insertSeparator();
+	
+	BrowserNode * beh;
+	int rank = 10000;
+	
+	for (beh = ImplBy.first(); beh != 0; beh = ImplBy.next())
+	  implbym.insertItem(beh->full_name(TRUE), rank);
+      }
+      
       if (!is_read_only && (edition_number == 0)) {
 	m.insertSeparator();
 	m.setWhatsThis(m.insertItem("Delete", 2),
@@ -462,7 +558,9 @@ Note that you can undelete it after");
       m.insertItem("Tool", &toolm);
     }
   }
-  else if (!is_read_only && (edition_number == 0))
+  else if (!is_read_only && (edition_number == 0) && 
+	   ((get_of == 0) || !get_of->deletedp()) &&
+	   ((set_of == 0) || !set_of->deletedp()))
     m.setWhatsThis(m.insertItem("Undelete", 3),
 		   "to undelete the <em>operation</em>");
   
@@ -472,10 +570,13 @@ Note that you can undelete it after");
 void BrowserOperation::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
-    open(FALSE);
+    open(TRUE);
+    ImplBy.clear();
     return;
   case 1:
-    ((BrowserClass *) parent())->add_operation(this);
+    if ((get_of == 0) && (set_of == 0))
+      ((BrowserClass *) parent())->add_operation(this);
+    ImplBy.clear();
     return;
   case 2:
     delete_it();
@@ -485,27 +586,74 @@ void BrowserOperation::exec_menu_choice(int rank) {
     break;
   case 4:
     def->edit(CppView);
+    ImplBy.clear();
     return;
   case 5:
     def->edit(JavaView);
+    ImplBy.clear();
     return;
   case 6:
     def->edit(PhpView);
+    ImplBy.clear();
     return;
   case 7:
     def->edit(PythonView);
+    ImplBy.clear();
+    return;
+  case 8:
+    ReferenceDialog::show(this);
+    ImplBy.clear();
+    return;
+  case 9:
+    {
+      BrowserNode * bn = this;
+      
+      do {
+	bn = (BrowserNode *) bn->parent();
+      } while (bn->get_type() == UmlClass);
+      
+      BrowserActivity * a = BrowserActivity::add_activity(bn);
+      
+      if (a != 0) {
+	((ActivityData *) a->get_data())->set_specification(this);
+	package_modified();
+      }
+    }
+    ImplBy.clear();
+    return;
+  case 10:
+    {
+      BrowserNode * bn = this;
+      
+      do {
+	bn = (BrowserNode *) bn->parent();
+      } while (bn->get_type() == UmlClass);
+      
+      BrowserState * st = BrowserState::add_state(bn, TRUE);
+      
+      if (st != 0) {
+	((StateData *) st->get_data())->set_specification(this);
+	package_modified();
+      }
+    }
+    ImplBy.clear();
     return;
   default:
     if (rank >= 99990)
       ProfiledStereotypes::choiceManagement(this, rank - 99990);
+    else if (rank >= 10000)
+      ImplBy.at(rank - 10000)->select_in_browser();
     else if (rank >= 100)
       ToolCom::run(Tool::command(rank - 100), this);
-    else
+    else if (rank >= 90)
       mark_management(rank - 90);
+    
+    ImplBy.clear();
     return;
   }
   ((BrowserNode *) parent())->modified();
   package_modified();
+  ImplBy.clear();
 }
 
 void BrowserOperation::apply_shortcut(QString s) {
@@ -536,6 +684,10 @@ void BrowserOperation::apply_shortcut(QString s) {
 	  choice = 2;
       }
     }
+  
+    if (s == "Referenced by")
+      choice = 8;
+    
     mark_shortcut(s, choice, 90);
     if (edition_number == 0)
       Tool::shortcut(s, choice, get_type(), 100);
@@ -583,7 +735,9 @@ bool BrowserOperation::same_name(const QString &, UmlCode) const {
 }
 
 QString BrowserOperation::full_name(bool rev, bool) const {
-  return fullname(rev);
+  QString s = def->definition(TRUE, TRUE, FALSE);
+  
+  return fullname(s, rev);
 }
 
 void BrowserOperation::member_cpp_def(const QString & prefix,
@@ -612,6 +766,18 @@ void BrowserOperation::compute_referenced_by(QList<BrowserNode> & l,
   }
 }
 
+void BrowserOperation::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
+  
+  if (! ondelete) {
+    BrowserActivityAction::compute_referenced_by(l, this);
+    BrowserActivity::compute_referenced_by(l, this);
+    BrowserState::compute_referenced_by(l, this);
+    BrowserSeqDiagram::compute_referenced_by(l, this, 0, "operation_ref");
+    BrowserColDiagram::compute_referenced_by(l, this, 0, "operation_ref");
+  }  
+}
+
 QString BrowserOperation::python_init_self(BrowserNode * cl)
 {
   QListViewItem * child;
@@ -633,6 +799,21 @@ bool BrowserOperation::tool_cmd(ToolCom * com, const char * args) {
   switch ((unsigned char) args[-1]) {
   case supportFileCmd:
     com->write_string(((BrowserClass *) parent())->bodies_file());
+    return TRUE;
+  case sideCmd:
+    {
+      QList<BrowserNode> l;
+      
+      BrowserActivity::compute_referenced_by(l, this);
+      BrowserState::compute_referenced_by(l, this);
+      
+      com->write_unsigned(l.count());
+      
+      BrowserNode * bn;
+      
+      for (bn = l.first(); bn != 0; bn = l.next())
+	bn->write_id(com);
+    }
     return TRUE;
   case getIdCmd:
     // not for a user, old plug-out
@@ -684,6 +865,30 @@ void BrowserOperation::read_stereotypes(char * & st, char * & k)
   if (!strcmp(k, "operation_stereotypes")) {
     read_unicode_string_list(its_default_stereotypes, st);
     k = read_keyword(st);
+  }
+}
+
+void BrowserOperation::post_load()
+{
+  // to manage unconsistent get/set
+  IdIterator<BrowserOperation> it(all);
+  BrowserOperation * op;
+  
+  while ((op = it.current()) != 0) {
+    if (op->def->get_or_set()) {
+      if (op->get_of != 0) {
+	if (op->get_of->deletedp() || op->get_of->is_undefined())
+	  op->delete_it();
+      }
+      else if (op->set_of != 0) {
+	if (op->set_of->deletedp() || op->set_of->is_undefined())
+	  op->delete_it();
+      }
+      else
+	op->delete_it();
+    }
+    
+    ++it;  
   }
 }
 
@@ -768,8 +973,8 @@ BrowserOperation * BrowserOperation::read(char * & st, char * k,
     result->is_defined = TRUE;
     result->def->read(st, k);	// updates k
     
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     result->def->set_browser_node(result, FALSE);
     

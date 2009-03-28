@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -38,6 +38,14 @@
 #include "BrowserClassView.h"
 #include "BrowserUseCaseView.h"
 #include "BrowserClassDiagram.h"
+#include "BrowserActivityDiagram.h"
+#include "BrowserColDiagram.h"
+#include "BrowserComponentDiagram.h"
+#include "BrowserDeploymentDiagram.h"
+#include "BrowserObjectDiagram.h"
+#include "BrowserSeqDiagram.h"
+#include "BrowserStateDiagram.h"
+#include "BrowserUseCaseDiagram.h"
 #include "BrowserClass.h"
 #include "BrowserUseCase.h"
 #include "BrowserView.h"
@@ -55,6 +63,8 @@
 #include "BrowserActivity.h"
 #include "BrowserFlow.h"
 #include "BrowserInterruptibleActivityRegion.h"
+#include "BrowserExpansionRegion.h"
+#include "BrowserActivityPartition.h"
 #include "BrowserParameter.h"
 #include "BrowserParameterSet.h"
 #include "BrowserActivityNode.h"
@@ -96,7 +106,6 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   revision = 1;
   owner = -1;
   
-  classdiagram_settings.draw_all_relations = UmlYes;
   classdiagram_settings.hide_attributes = UmlNo;
   classdiagram_settings.hide_operations = UmlNo;
   classdiagram_settings.show_full_members_definition = UmlNo;
@@ -104,6 +113,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   classdiagram_settings.show_members_stereotype = UmlNo;
   classdiagram_settings.show_members_multiplicity = UmlNo;
   classdiagram_settings.show_members_initialization = UmlNo;
+  classdiagram_settings.show_attribute_modifiers = UmlNo;
   classdiagram_settings.member_max_width = UmlUnlimitedMemberWidth;
   classdiagram_settings.show_parameter_dir = UmlYes;
   classdiagram_settings.show_parameter_name = UmlYes;
@@ -112,12 +122,14 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   classdiagram_settings.drawing_language = UmlView;
   classdiagram_settings.show_context_mode = noContext;
   classdiagram_settings.auto_label_position = UmlYes;
+  classdiagram_settings.draw_all_relations = UmlYes;
+  classdiagram_settings.show_relation_modifiers = UmlNo;
   classdiagram_settings.show_infonote = UmlNo;
   classdiagram_settings.shadow = UmlYes;
   classdiagram_settings.show_stereotype_properties = UmlNo;
     
-  class_settings.attribute_visibility = UmlProtected;
-  class_settings.relation_visibility = UmlProtected;
+  class_settings.attribute_visibility = UmlPrivate;
+  class_settings.relation_visibility = UmlPrivate;
   class_settings.operation_visibility = UmlPublic;
     
   usecasediagram_settings.package_name_in_tab = UmlNo;
@@ -213,6 +225,7 @@ BrowserPackage::BrowserPackage(QString s, BrowserView * parent, int id)
   stateaction_color = UmlTransparent;
   activity_color = UmlTransparent;
   activityregion_color = UmlTransparent;
+  activitypartition_color = UmlTransparent;
   activityaction_color = UmlTransparent;
   parameterpin_color = UmlWhite;
 }
@@ -257,6 +270,7 @@ BrowserPackage::BrowserPackage(const BrowserPackage * model,
   stateaction_color = model->stateaction_color;
   activity_color = model->activity_color;
   activityregion_color = model->activityregion_color;
+  activitypartition_color = model->activitypartition_color;
   activityaction_color = model->activityaction_color;
   parameterpin_color = model->parameterpin_color;
   
@@ -314,6 +328,7 @@ void BrowserPackage::make() {
   stateaction_color = UmlDefaultColor;
   activity_color = UmlDefaultColor;
   activityregion_color = UmlDefaultColor;
+  activitypartition_color = UmlDefaultColor;
   activityaction_color = UmlDefaultColor;
   parameterpin_color = UmlDefaultColor;
 }
@@ -352,15 +367,42 @@ void BrowserPackage::update_idmax_for_root()
   BrowserDeploymentView::update_idmax_for_root();
   BrowserDiagram::update_idmax_for_root();
 }
+
+void BrowserPackage::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
+  if (! ondelete) {
+    BrowserActivityDiagram::compute_referenced_by(l, this, "packagecanvas", "package_ref");
+    BrowserClassDiagram::compute_referenced_by(l, this, "packagecanvas", "package_ref");
+    BrowserColDiagram::compute_referenced_by(l, this, "packagecanvas", "package_ref");
+    BrowserComponentDiagram::compute_referenced_by(l, this, "packagecanvas", "package_ref");
+    BrowserDeploymentDiagram::compute_referenced_by(l, this, "packagecanvas", "package_ref");
+    BrowserObjectDiagram::compute_referenced_by(l, this, "packagecanvas", "package_ref");
+    BrowserSeqDiagram::compute_referenced_by(l, this, "packagecanvas", "package_ref");
+    BrowserStateDiagram::compute_referenced_by(l, this, "packagecanvas", "package_ref");
+    BrowserUseCaseDiagram::compute_referenced_by(l, this, "packagecanvas", "package_ref");
+  }
+}
     
 const QPixmap* BrowserPackage::pixmap(int) const {
   if (this == BrowserView::get_project())
     return 0;
   
-  if (strcmp(def->get_stereotype(), "profile") == 0)
+  const char * st = def->get_stereotype();
+  
+  if (strcmp(st, "profile") == 0)
     return ((deletedp()) ? DeletedProfileIcon : ProfileIcon);
       
-  return ((deletedp()) ? DeletedPackageIcon : PackageIcon);
+  if (deletedp()) 
+    return DeletedPackageIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(st);
+  
+  return (px != 0) ? px : PackageIcon;
+}
+
+void BrowserPackage::iconChanged() {
+  repaint();
+  def->modified();
 }
 
 void BrowserPackage::update_stereotype(bool rec) {
@@ -933,7 +975,7 @@ void BrowserPackage::edit_class_settings() {
 
 void BrowserPackage::edit_drawing_settings() {
   QArray<StateSpec> st;
-  QArray<ColorSpec> co(17);
+  QArray<ColorSpec> co(18);
   
   classdiagram_settings.complete(st, UmlClassView);
   sequencediagram_settings.complete(st, FALSE);
@@ -960,8 +1002,9 @@ void BrowserPackage::edit_drawing_settings() {
   co[12].set("state action color", &stateaction_color);
   co[13].set("activity color", &activity_color);
   co[14].set("activity region color", &activityregion_color);
-  co[15].set("activity action color", &activityaction_color);
-  co[16].set("parameter and pin color", &parameterpin_color);
+  co[15].set("activity partition color", &activitypartition_color);
+  co[16].set("activity action color", &activityaction_color);
+  co[17].set("parameter and pin color", &parameterpin_color);
   
   SettingsDialog dialog(&st, &co, this == BrowserView::get_project(), FALSE);
   
@@ -1052,7 +1095,7 @@ void BrowserPackage::import_project() {
     
     BrowserPackage * p = new BrowserPackage(bname, this);
     bool err = FALSE;
-    unsigned fileformat;
+    unsigned fileformat = 0;
     
     set_in_import(TRUE);
     BrowserView::set_imported_project(di, p);
@@ -1197,6 +1240,9 @@ UmlColor BrowserPackage::get_color(UmlCode who) const {
   case UmlExpansionRegion:
     c = activityregion_color;
     break;
+  case UmlActivityPartition:
+    c = activitypartition_color;
+    break;
   case UmlActivityAction:
     c = activityaction_color;
     break;
@@ -1213,181 +1259,6 @@ UmlColor BrowserPackage::get_color(UmlCode who) const {
   return (c != UmlDefaultColor)
     ? c
     : ((BrowserNode *) parent())->get_color(who);
-}
-
-bool BrowserPackage::get_shadow(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlClassDiagram:
-    v = classdiagram_settings.shadow;
-    break;
-  case UmlUseCaseDiagram:
-    v = usecasediagram_settings.shadow;
-    break;
-  case UmlSeqDiagram:
-    v = sequencediagram_settings.shadow;
-    break;
-  case UmlColDiagram:
-    v = collaborationdiagram_settings.shadow;
-    break;
-  case UmlObjectDiagram:
-    v = objectdiagram_settings.shadow;
-    break;
-  case UmlComponentDiagram:
-    v = componentdiagram_settings.shadow;
-    break;
-  case UmlDeploymentDiagram:
-    v = deploymentdiagram_settings.shadow;
-    break;
-  case UmlStateDiagram:
-    v = statediagram_settings.shadow;
-    break;
-  default:
-    //UmlActivityDiagram
-    v = activitydiagram_settings.shadow;
-    break;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_shadow(who);
-  }
-}
-
-bool BrowserPackage::get_draw_all_relations(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlClassDiagram:
-    v = classdiagram_settings.draw_all_relations;
-    break;
-  case UmlUseCaseDiagram:
-    v = usecasediagram_settings.draw_all_relations;
-    break;
-  case UmlSeqDiagram:
-    v = sequencediagram_settings.draw_all_relations;
-    break;
-  case UmlColDiagram:
-    v = collaborationdiagram_settings.draw_all_relations;
-    break;
-  case UmlObjectDiagram:
-    v = objectdiagram_settings.draw_all_relations;
-    break;
-  case UmlComponentDiagram:
-    v = componentdiagram_settings.draw_all_relations;
-    break;
-  case UmlDeploymentDiagram:
-    v = deploymentdiagram_settings.draw_all_relations;
-    break;
-  case UmlStateDiagram:
-    v = statediagram_settings.draw_all_relations;
-    break;
-  default:
-    //UmlActivityDiagram
-    v = activitydiagram_settings.draw_all_relations;
-    break;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_draw_all_relations(who);
-  }
-}
-
-bool BrowserPackage::get_show_stereotype_properties(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlClassDiagram:
-    v = classdiagram_settings.show_stereotype_properties;
-    break;
-  case UmlUseCaseDiagram:
-    v = usecasediagram_settings.show_stereotype_properties;
-    break;
-  case UmlSeqDiagram:
-    v = sequencediagram_settings.show_stereotype_properties;
-    break;
-  case UmlColDiagram:
-    v = collaborationdiagram_settings.show_stereotype_properties;
-    break;
-  case UmlObjectDiagram:
-    v = objectdiagram_settings.show_stereotype_properties;
-    break;
-  case UmlComponentDiagram:
-    v = componentdiagram_settings.componentdrawingsettings.show_stereotype_properties;
-    break;
-  case UmlDeploymentDiagram:
-    v = deploymentdiagram_settings.componentdrawingsettings.show_stereotype_properties;
-    break;
-  case UmlStateDiagram:
-    v = statediagram_settings.statedrawingsettings.show_stereotype_properties;
-    break;
-  default:
-    //UmlActivityDiagram
-    v = activitydiagram_settings.activitydrawingsettings.show_stereotype_properties;
-    break;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_stereotype_properties(who);
-  }
-}
-
-bool BrowserPackage::get_classinstwritehorizontally(UmlCode k) const {
-  Uml3States h;
-  
-  switch (k) {
-  case UmlSeqDiagram:
-    h = sequencediagram_settings.write_horizontally;
-    break;
-  case UmlColDiagram:
-    h = collaborationdiagram_settings.write_horizontally;
-    break;
-  default:
-    // UMlObjDiagram
-    h = objectdiagram_settings.write_horizontally;
-    break;
-  }
-  
-  return (h == UmlDefaultState)
-    ? ((BrowserNode *) parent())->get_classinstwritehorizontally(k)
-    : (h == UmlYes);
-}
-
-void BrowserPackage::get_componentdrawingsettings(bool depl, ComponentDrawingSettings & result) const {
-  if ((depl) 
-      ? !deploymentdiagram_settings.componentdrawingsettings.complete(result)
-      : !componentdiagram_settings.componentdrawingsettings.complete(result))
-    ((BrowserNode *) parent())->get_componentdrawingsettings(depl, result);
-}
-
-void BrowserPackage::get_statedrawingsettings(StateDrawingSettings & result) const {
-  if (!statediagram_settings.statedrawingsettings.complete(result))
-    ((BrowserNode *) parent())->get_statedrawingsettings(result);
-}
-
-void BrowserPackage::get_activitydrawingsettings(ActivityDrawingSettings & result) const {
-  if (!activitydiagram_settings.activitydrawingsettings.complete(result))
-    ((BrowserNode *) parent())->get_activitydrawingsettings(result);
-}
-
-void BrowserPackage::get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const {
-  if (!usecasediagram_settings.complete(r))
-    ((BrowserNode *) parent())->get_simpleclassdiagramsettings(r);
 }
 
 UmlVisibility BrowserPackage::get_visibility(UmlCode who) const {
@@ -1408,135 +1279,6 @@ UmlVisibility BrowserPackage::get_visibility(UmlCode who) const {
   return (v != UmlDefaultVisibility)
     ? v
     : ((BrowserNode *) parent())->get_visibility(who);
-}
-
-bool BrowserPackage::get_auto_label_position(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlClassDiagram:
-    v = classdiagram_settings.auto_label_position;
-    break;
-  case UmlUseCaseDiagram:
-    v = usecasediagram_settings.auto_label_position;
-    break;
-  case UmlStateDiagram:
-    v = statediagram_settings.auto_label_position;
-    break;
-  case UmlActivityDiagram:
-    v = activitydiagram_settings.auto_label_position;
-    break;
-  case UmlComponentDiagram:
-    v = componentdiagram_settings.auto_label_position;
-    break;
-  case UmlDeploymentDiagram:
-    v = deploymentdiagram_settings.auto_label_position;
-    break;
-  case UmlObjectDiagram:
-    v = objectdiagram_settings.auto_label_position;
-    break;
-  default:
-    // error
-    return FALSE;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_auto_label_position(who);
-  }
-}
-
-bool BrowserPackage::get_write_label_horizontally(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlStateDiagram:
-    v = statediagram_settings.write_label_horizontally;
-    break;
-  case UmlActivityDiagram:
-    v = activitydiagram_settings.write_label_horizontally;
-    break;
-  default:
-    // error
-    return FALSE;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_write_label_horizontally(who);
-  }
-}
-
-bool BrowserPackage::get_show_trans_definition(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlStateDiagram:
-    v = statediagram_settings.show_trans_definition;
-    break;
-  default:
-    // error
-    return FALSE;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_trans_definition(who);
-  }
-}
-
-bool BrowserPackage::get_show_opaque_action_definition(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlActivityDiagram:
-    v = activitydiagram_settings.show_opaque_action_definition;
-    break;
-  default:
-    // error
-    return FALSE;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_opaque_action_definition(who);
-  }
-}
-
-DrawingLanguage BrowserPackage::get_language(UmlCode who) const {
-  DrawingLanguage v;
-  
-  switch (who) {
-  case UmlStateDiagram:
-    v = statediagram_settings.statedrawingsettings.drawing_language;
-    break;
-  case UmlActivityDiagram:
-    v = activitydiagram_settings.activitydrawingsettings.drawing_language;
-    break;
-  default:
-    // error
-    return UmlView;
-  }
-  
-  return (v != DefaultDrawingLanguage)
-    ? v
-    : ((BrowserNode *) parent())->get_language(who);
 }
 
 void BrowserPackage::open(bool force_edit) {
@@ -1817,16 +1559,16 @@ BrowserPackage *
 
 
 void BrowserPackage::DragMoveEvent(QDragMoveEvent * e) {
-  bool pack = UmlDrag::canDecode(e, UmlPackage);
+  bool rel = UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this));
   
-  if (pack ||
+  if (rel ||
+      UmlDrag::canDecode(e, UmlPackage) ||
       UmlDrag::canDecode(e, UmlUseCaseView) ||
       UmlDrag::canDecode(e, UmlClassView) ||
       UmlDrag::canDecode(e, UmlComponentView) ||
-      UmlDrag::canDecode(e, UmlDeploymentView) ||
-      UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this))) {
+      UmlDrag::canDecode(e, UmlDeploymentView)) {
     if (!is_read_only ||
-	(pack && (parent() != 0) && !((BrowserPackage *) parent())->is_read_only))
+	(!rel && (parent() != 0) && !((BrowserPackage *) parent())->is_read_only))
       e->accept();
     else
       e->ignore();
@@ -1881,14 +1623,15 @@ void BrowserPackage::DropEvent(QDropEvent * e) {
 }
 
 void BrowserPackage::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
-  BrowserNode * bn;
-  
-  if ((((bn = UmlDrag::decode(e, UmlPackage)) != 0) ||
+  BrowserNode * bn = UmlDrag::decode(e, BrowserSimpleRelation::drag_key(this));
+  bool rel = (bn != 0);
+    
+  if ((rel ||
+       ((bn = UmlDrag::decode(e, UmlPackage)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlUseCaseView)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlClassView)) != 0) ||
        ((bn = UmlDrag::decode(e, UmlComponentView)) != 0) ||
-       ((bn = UmlDrag::decode(e, UmlDeploymentView)) != 0) ||
-       ((bn = UmlDrag::decode(e, BrowserSimpleRelation::drag_key(this))) != 0)) &&
+       ((bn = UmlDrag::decode(e, UmlDeploymentView)) != 0)) &&
       (bn != after) && (bn != this)) {
     UmlCode what = bn->get_type();
 
@@ -1896,9 +1639,9 @@ void BrowserPackage::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
       BrowserNode * x = this;
       
       if ((after == 0) &&
-	  (bn->get_type() == UmlPackage) &&
+	  !rel &&
 	  (parent() != 0) &&
-	  ((BrowserNode *) parent())->may_contains(bn, TRUE)) {
+	  ((BrowserNode *) parent())->may_contains(bn, what == UmlPackage)) {
 	// have choice
 	QPopupMenu m(0);
   
@@ -2022,6 +1765,8 @@ void BrowserPackage::save_stereotypes()
   BrowserActivityNode::save_stereotypes(st);
   BrowserActivityAction::save_stereotypes(st);
   BrowserActivityObject::save_stereotypes(st);
+  BrowserExpansionRegion::save_stereotypes(st);
+  BrowserActivityPartition::save_stereotypes(st);
   BrowserPin::save_stereotypes(st);
   BrowserComponent::save_stereotypes(st);
   BrowserDeploymentNode::save_stereotypes(st);
@@ -2080,6 +1825,8 @@ bool BrowserPackage::read_stereotypes(const char * f)
       BrowserActivityNode::read_stereotypes(st, k);	// updates k
       BrowserActivityAction::read_stereotypes(st, k);	// updates k
       BrowserActivityObject::read_stereotypes(st, k);	// updates k
+      BrowserExpansionRegion::read_stereotypes(st, k);	// updates k
+      BrowserActivityPartition::read_stereotypes(st, k);// updates k
       BrowserPin::read_stereotypes(st, k);		// updates k
       BrowserComponent::read_stereotypes(st, k);	// updates k
       BrowserDeploymentNode::read_stereotypes(st, k);	// updates k
@@ -2171,10 +1918,14 @@ void BrowserPackage::save_all(bool modified_only)
 	     (pack->is_modified && 
 	      (pack->is_imported || !pack->is_read_only))) {
       backup(d, fn);
-      
-      QFile fp(d.absFilePath(fn));
-      
-      if (open_file(fp, IO_WriteOnly) != -1) {
+
+      for (;;) {
+	QFile fp(d.absFilePath(fn));
+	
+	while (!fp.open(IO_WriteOnly))
+	  (void) msg_critical("Error", QString("Cannot create file\n") + fn,
+			      QMessageBox::Retry);
+	
 	if (prj)
 	  UmlWindow::historic_add(fp.name());
 	
@@ -2266,6 +2017,7 @@ void BrowserPackage::save_all(bool modified_only)
 	save_color(st, "stateaction_color", pack->stateaction_color, nl);
 	save_color(st, "activity_color", pack->activity_color, nl);
 	save_color(st, "activityregion_color", pack->activityregion_color, nl);
+	save_color(st, "activitypartition_color", pack->activitypartition_color, nl);
 	save_color(st, "activityaction_color", pack->activityaction_color, nl);
 	save_color(st, "parameterpin_color", pack->parameterpin_color, nl);
 	
@@ -2318,14 +2070,23 @@ void BrowserPackage::save_all(bool modified_only)
 
 	st << "\nend\n";
 	
-	pack->is_imported = pack->is_modified = FALSE;
-    
-	// for saveAs
-	if (!modified_only && !pack->is_api_base())
-	  pack->is_read_only = FALSE;
+	fp.close();
+	
+	if (fp.status() == IO_Ok) {
+	  pack->is_imported = pack->is_modified = FALSE;
+	  
+	  // for saveAs
+	  if (!modified_only && !pack->is_api_base())
+	    pack->is_read_only = FALSE;
+	  
+	  // all done
+	  break;
+	}
+	
+	(void) msg_critical("Error", QString("Error while writting in\n") + fn +
+			    "\nmay be your disk is full",
+			    QMessageBox::Retry);
       }
-      else
-	THROW_ERROR 0;
     }
     ++it;
   }
@@ -2523,9 +2284,8 @@ unsigned BrowserPackage::load(bool recursive, int id) {
     int offset = 0;
     int nread;
     
-    is_read_only = !in_import() && read_only_file() || 
+    is_read_only = (!in_import() && read_only_file()) || 
       ((user_id() != 0) && is_api_base());
-    is_saveable = in_import() || !read_only_file();
       
     do {
       if ((nread = fp.readBlock(s + offset, sz - offset)) == -1) {
@@ -2586,7 +2346,6 @@ To change its format : load this project and save it.");
 	    owner = read_unsigned(st);
 	    if (owner != user_id()) {
 	      is_read_only = TRUE;
-	      is_saveable = FALSE;
 	      set_read_only_file();
 	    }
 	    if (owner > 1)
@@ -2664,6 +2423,7 @@ To change its format : load this project and save it.");
 	read_color(st, "stateaction_color", stateaction_color, k);		// updates k
 	read_color(st, "activity_color", activity_color, k);		// updates k
 	read_color(st, "activityregion_color", activityregion_color, k);		// updates k
+	read_color(st, "activitypartition_color", activitypartition_color, k);		// updates k
 	read_color(st, "activityaction_color", activityaction_color, k);		// updates k
 	read_color(st, "parameterpin_color", parameterpin_color, k);		// updates k
       }
@@ -2760,11 +2520,13 @@ To change its format : load this project and save it.");
     
     restore_context(context);
     
-    if (err)
+    if (err) {
       THROW_ERROR 0;
+    }
   }
-  else
+  else {
     THROW_ERROR 0;
+  }
   
   is_imported = is_modified = in_import();
   

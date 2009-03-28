@@ -11,7 +11,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
     try {
-      UmlCom::trace("<b>State Machine C++ generator</b> release 1.4<br>");
+      UmlCom::trace("<b>State Machine C++ generator</b> release 1.4.1<br>");
       UmlCom::targetItem()->generate();
     }
     catch (...) {

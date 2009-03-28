@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,6 +39,7 @@
 #include "UmlPixmap.h"
 #include "SettingsDialog.h"
 #include "myio.h"
+#include "strutil.h"
 #include "ToolCom.h"
 #include "Tool.h"
 #include "MenuTitle.h"
@@ -51,20 +52,20 @@ QValueList<int> BrowserDeploymentDiagram::imported_ids;
 QStringList BrowserDeploymentDiagram::its_default_stereotypes;	// unicode
 
 BrowserDeploymentDiagram::BrowserDeploymentDiagram(QString s, BrowserNode * p, int id)
-    : BrowserDiagram(s, p, id), window(0) {
+    : BrowserDiagram(s, p, id), window(0), used_settings(0) {
   make();
   is_modified = (id == 0);
 }
 
 BrowserDeploymentDiagram::BrowserDeploymentDiagram(int id)
-    : BrowserDiagram(id), window(0) {
+    : BrowserDiagram(id), window(0), used_settings(0) {
   // not yet read
   make();
   is_modified = (id == 0);
 }
 
 BrowserDeploymentDiagram::BrowserDeploymentDiagram(BrowserDeploymentDiagram * model, BrowserNode * p)
-    : BrowserDiagram(p->get_name(), p, 0), window(0) {
+    : BrowserDiagram(p->get_name(), p, 0), window(0), used_settings(0) {
   def = new SimpleData(model->def);
   def->set_browser_node(this);
   comment = model->comment;
@@ -178,7 +179,12 @@ BrowserNode * BrowserDeploymentDiagram::duplicate(BrowserNode * p, QString name)
 }
 
 const QPixmap* BrowserDeploymentDiagram::pixmap(int) const {
-  return (deletedp()) ? DeletedDeploymentDiagramIcon : DeploymentDiagramIcon;
+  if (deletedp()) 
+    return DeletedDeploymentDiagramIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : DeploymentDiagramIcon;
 }
 
 void BrowserDeploymentDiagram::draw_svg() const {
@@ -338,6 +344,10 @@ void BrowserDeploymentDiagram::edit_settings() {
 
 void BrowserDeploymentDiagram::on_close() {
   window = 0;
+  if (used_settings != 0) {
+    delete used_settings;
+    used_settings = 0;
+  }
 }
 
 void BrowserDeploymentDiagram::read_session(char * & st) {
@@ -356,19 +366,25 @@ const char * BrowserDeploymentDiagram::help_topic() const  {
   return "deploymentdiagram";
 }
 
-void BrowserDeploymentDiagram::get_deploymentdiagramsettings(DeploymentDiagramSettings & r) const {
-  if (! settings.complete(r))
-    ((BrowserNode *) parent())->get_deploymentdiagramsettings(r);
+void BrowserDeploymentDiagram::update_drawing_settings() {
+  if (used_settings == 0)
+    used_settings = new DeploymentDiagramSettings;
+  *used_settings = settings;
+  ((BrowserNode *) parent())->get_deploymentdiagramsettings(*used_settings);
 }
 
+void BrowserDeploymentDiagram::get_deploymentdiagramsettings(DeploymentDiagramSettings & r) const {
+  r.assign(*used_settings);
+}
+
+void BrowserDeploymentDiagram::get_componentdrawingsettings(ComponentDrawingSettings & r) const {
+  r.assign(used_settings->componentdrawingsettings);
+}
 
 void BrowserDeploymentDiagram::package_settings(bool & name_in_tab,
 						ShowContextMode & show_context) const {
-  DeploymentDiagramSettings st;
-  
-  get_deploymentdiagramsettings(st);
-  name_in_tab = st.package_name_in_tab == UmlYes;
-  show_context = st.show_context_mode;
+  name_in_tab = used_settings->package_name_in_tab == UmlYes;
+  show_context = used_settings->show_context_mode;
 }
 
 UmlColor BrowserDeploymentDiagram::get_color(UmlCode who) const {
@@ -400,56 +416,25 @@ UmlColor BrowserDeploymentDiagram::get_color(UmlCode who) const {
 }
 
 bool BrowserDeploymentDiagram::get_shadow() const {
-  switch (settings.shadow) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_shadow(UmlDeploymentDiagram);
-  }  
+  return used_settings->shadow == UmlYes;
 }
 
 bool BrowserDeploymentDiagram::get_draw_all_relations() const {
-  switch (settings.draw_all_relations) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_draw_all_relations(UmlDeploymentDiagram);
-  }  
+  return used_settings->draw_all_relations == UmlYes;
 }
 
 void BrowserDeploymentDiagram::dont_draw_all_relations() {
-  settings.draw_all_relations = UmlNo;
+  settings.draw_all_relations = 
+    used_settings->draw_all_relations = UmlNo;
 }
 
-bool BrowserDeploymentDiagram::get_show_stereotype_properties(UmlCode) const {
-  switch (settings.componentdrawingsettings.show_stereotype_properties) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_stereotype_properties(UmlDeploymentDiagram);
-  }
+bool BrowserDeploymentDiagram::get_show_stereotype_properties() const {
+  return used_settings->componentdrawingsettings.show_stereotype_properties
+    == UmlYes;
 }
 
-bool BrowserDeploymentDiagram::get_auto_label_position(UmlCode who) const {
-  switch (settings.auto_label_position) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_auto_label_position(who);
-  }
-}
-
-void BrowserDeploymentDiagram::get_componentdrawingsettings(bool, ComponentDrawingSettings & result) const {
-  if (!settings.componentdrawingsettings.complete(result))
-    ((BrowserNode *) parent())->get_componentdrawingsettings(TRUE, result);
+bool BrowserDeploymentDiagram::get_auto_label_position() const {
+  return used_settings->auto_label_position == UmlYes;
 }
 
 BasicData * BrowserDeploymentDiagram::get_data() const {
@@ -485,6 +470,26 @@ bool BrowserDeploymentDiagram::tool_cmd(ToolCom * com, const char * args) {
   default:
     return (def->tool_cmd(com, args, this, comment) ||
 	    BrowserNode::tool_cmd(com, args));
+  }
+}
+
+void BrowserDeploymentDiagram::compute_referenced_by(QList<BrowserNode> & l,
+						     BrowserNode * bn,
+						     char const * kc,
+						     char const * kr)
+{
+  int id = bn->get_identifier();
+  IdIterator<BrowserDiagram> it(all);
+  BrowserDiagram * d;
+
+  while ((d = it.current()) != 0) {
+    if (!d->deletedp() && (d->get_type() == UmlDeploymentDiagram)) {
+      if ((((BrowserDeploymentDiagram *) d)->window != 0)
+	  ? ((BrowserDeploymentDiagram *) d)->window->get_view()->is_present(bn)
+	  : is_referenced(read_definition(d->get_ident(), "diagram"), id, kc, kr))
+	l.append((BrowserDeploymentDiagram *) d);
+    }
+    ++it;
   }
 }
 
@@ -602,8 +607,8 @@ BrowserDeploymentDiagram *
     
     r->is_defined = TRUE;
 
-    r->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && r->is_api_base();
+    r->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && r->is_api_base());
     
     QFileInfo fi(BrowserView::get_dir(), QString::number(id) + ".diagram");
     if (!in_import() && fi.exists() && !fi.isWritable())

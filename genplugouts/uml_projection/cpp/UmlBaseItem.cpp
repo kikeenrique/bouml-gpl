@@ -77,6 +77,13 @@ bool UmlBaseItem::set_Stereotype(const QCString & s) {
   return set_it_(_stereotype, s, setStereotypeCmd);
 }
 
+bool UmlBaseItem::applyStereotype() {
+  UmlCom::send_cmd(_identifier, applyStereotypeCmd);
+  if (UmlCom::read_bool() == 0) return FALSE;
+  unload(false, false);
+  return TRUE;
+}
+
 const QCString & UmlBaseItem::description() {
   read_if_needed_();
   
@@ -232,7 +239,7 @@ bool UmlBaseItem::deleteIt() {
 
 bool UmlBaseItem::isToolRunning(int id)
 {
-  UmlCom::send_cmd(miscGlobalCmd, toolRunningCmd, id);
+  UmlCom::send_cmd(miscGlobalCmd, toolRunningCmd, id, "");
   return UmlCom::read_bool();
 }
 
@@ -250,40 +257,47 @@ QPtrDict<UmlItem> UmlBaseItem::_all(997);
 
 void UmlBaseItem::read_if_needed_() {
   if (!_defined) {
-#if defined(WITHCPP) & defined(WITHJAVA) & defined(WITHPHP) & defined(WITHIDL)
+#if defined(WITHCPP) & defined(WITHJAVA) & defined(WITHPHP) & defined(WITHPYTHON) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getDefCmd);
     read_uml_();
     read_cpp_();
     read_java_();
     read_php_();
+    read_python_();
     read_idl_();
 #else
-# if defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
+# if defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getCppDefCmd);
     read_uml_();
     read_cpp_();
 # else
-#  if !defined(WITHCPP) & defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
+#  if !defined(WITHCPP) & defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getJavaDefCmd);
     read_uml_();
     read_java_();
 #  else
-#   if !defined(WITHCPP) & !defined(WITHJAVA) & defined(WITHPHP) & !defined(WITHIDL)
+#   if !defined(WITHCPP) & !defined(WITHJAVA) & defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getPhpDefCmd);
     read_uml_();
     read_php_();
 #   else
-#    if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & defined(WITHIDL)
+#    if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & defined(WITHPYTHON) & !defined(WITHIDL)
+    UmlCom::send_cmd(_identifier, getPythonDefCmd);
+    read_uml_();
+    read_python_();
+#    else
+#     if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getIdlDefCmd);
     read_uml_();
     read_idl_();
-#    else
-#     if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
+#     else
+#      if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getUmlDefCmd);
     read_uml_();
-#     else
-    ... WITHCPP and WITHJAVA and WITHPHP and WITHIDL must be both defined or undefined
+#      else
+    ... WITHCPP and WITHJAVA and WITHPHP and WITHPYTHON and WITHIDL must be both defined or undefined
     ... or only one of them must be defined
+#      endif
 #     endif
 #    endif
 #   endif
@@ -342,6 +356,11 @@ void UmlBaseItem::read_java_() {
 
 #ifdef WITHPHP
 void UmlBaseItem::read_php_() {
+}
+#endif
+
+#ifdef WITHPYTHON
+void UmlBaseItem::read_python_() {
 }
 #endif
 

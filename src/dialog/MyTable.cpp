@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -58,10 +58,15 @@ void MyTable::forceUpdateCells() {
     for (int col = 0; col != numCols(); col += 1) {
       QWidget * w = cellWidget(row, col);
       
-      if (w != 0)
-	item(row, col)->setContentFromEditor(w);
+      if (w != 0) {
+	QString s = item(row, col)->text();
 	
-      // warning : may have other edited cells
+	item(row, col)->setContentFromEditor(w);
+	if (item(row, col)->text() != s)
+	  emit valueChanged(row, col);
+	
+	// warning : may have other edited cells
+      }
     }
   }
 }

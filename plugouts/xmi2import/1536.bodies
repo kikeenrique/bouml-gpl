@@ -44,6 +44,21 @@ class UmlBaseClassItem
   UmlCom.check();
 
   _php_decl = s;
+!!!287232.cpp!!!	pythonDecl() : string
+  read_if_needed_();
+  
+  return _python_decl;
+!!!287232.java!!!	pythonDecl() : string
+  read_if_needed_();
+  
+  return _python_decl;
+!!!287360.cpp!!!	set_PythonDecl(in s : str) : bool
+  return set_it_(_python_decl, s, setPythonDeclCmd);
+!!!287360.java!!!	set_PythonDecl(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonDeclCmd, s);
+  UmlCom.check();
+
+  _python_decl = s;
 !!!10880.cpp!!!	idlDecl() : string
   read_if_needed_();
   
@@ -69,6 +84,9 @@ class UmlBaseClassItem
 #ifdef WITHPHP
   _php_decl = 0;
 #endif
+#ifdef WITHPYTHON
+  _python_decl = 0;
+#endif
 #ifdef WITHIDL
   _idl_decl = 0;
 #endif
@@ -77,6 +95,7 @@ class UmlBaseClassItem
   _cpp_decl = null;
   _java_decl = null;
   _php_decl = null;
+  _python_decl = null;
   _idl_decl = null;
   super.unload(rec, del);
 !!!11392.cpp!!!	read_cpp_() : void
@@ -91,6 +110,10 @@ class UmlBaseClassItem
   _php_decl = UmlCom::read_string();
 !!!262400.java!!!	read_php_() : void
   _php_decl = UmlCom.read_string();
+!!!276096.cpp!!!	read_python_() : void
+  _python_decl = UmlCom::read_string();
+!!!276096.java!!!	read_python_() : void
+  _python_decl = UmlCom.read_string();
 !!!11648.cpp!!!	read_idl_() : void
   _idl_decl = UmlCom::read_string();
 !!!11648.java!!!	read_idl_() : void

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -38,7 +38,9 @@
 #include "Class.h"
 #include "UmlPackage.h"
 #include "UmlClass.h"
-#ifndef REVERSE
+#ifdef REVERSE
+#include "UmlArtifact.h"
+#else
 #include "BrowserView.h"
 #include "Pixmap.h"
 #endif
@@ -289,8 +291,19 @@ void Package::reverse_file(QCString f) {
       UmlCom::message(((scan) ? "scan " : "reverse ") + f);
       
       QCString s = Lex::read_word();
+#ifdef REVERSE
+      QCString art_comment;
+      QCString art_description;
+#endif
       
       if (s == "package") {
+#ifdef REVERSE
+	if (! scan) {
+	  art_comment = Lex::get_comments();
+	  art_description = Lex::get_description();
+	}
+#endif
+
 	if ((s = Lex::read_word()).isEmpty()) {
 	  Lex::premature_eof();
 	  break;
@@ -308,6 +321,12 @@ void Package::reverse_file(QCString f) {
 	Lex::clear_comments();
 	s = Lex::read_word();
       }
+#ifdef REVERSE
+      else if (!scan && (s == "import")) {
+	art_comment = Lex::get_comments();
+	art_description = Lex::get_description();
+      }
+#endif
       
       imports.clear();
       static_imports.clear();
@@ -363,6 +382,15 @@ void Package::reverse_file(QCString f) {
 	}
 	s = Lex::read_word();
       }
+#ifdef REVERSE
+      if (! scan) {
+	UmlArtifact * art = Class::current_artifact();
+	
+	if ((art != 0) && !art_comment.isEmpty())
+	  art->set_Description((art->javaSource().find("${description}") != -1)
+			       ? art_description : Lex::simplify_comment(art_comment));
+      }
+#endif
       
       break;
     }

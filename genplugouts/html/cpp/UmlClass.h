@@ -65,10 +65,13 @@ class UmlClass : public UmlBaseClass {
     void gen_cpp_decl(QCString s, bool descr);
 
     //produce the definition in Java
-    void gen_java_decl(QCString s);
+    void gen_java_decl(QCString s, bool descr);
 
     //produce the definition in Php
-    void gen_php_decl(QCString s);
+    void gen_php_decl(QCString s, bool descr);
+
+    //produce the definition in Python
+    void gen_python_decl(QCString s, bool descr);
 
     void generate(const QValueList<UmlActualParameter> a, UmlClass * mother, bool cpp);
 

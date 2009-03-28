@@ -304,6 +304,7 @@ void UmlItem::init()
   declareFct("xmi:documentation", "", &importDocumentation);
 
   declareFct("ownedcomment", "uml:Comment", &importComment);
+  declareFct("ownedcomment", "", &importComment); // andromda emf
   
   declareFct("xmi:extension", "", &importExtension);
 

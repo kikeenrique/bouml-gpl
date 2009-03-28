@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,6 +37,7 @@
 #include "ComboItem.h"
 #include "ProfiledStereotypes.h"
 #include "strutil.h"
+#include "DialogUtil.h"
 
 KeyValuesTable::KeyValuesTable(HaveKeyValueData * hv, QWidget * parent, bool visit)
     : StringTable(((hv == 0) ? 0 : hv->get_n_keys()) + ((visit) ? 0 : 1),
@@ -116,6 +117,34 @@ void KeyValuesTable::init_row(int index) {
   setItem(index, 1, new MLinesItem(this, QString::null));
   setText(index, 2, QString::null);
   setRowStretchable(index, TRUE);
+}
+
+bool KeyValuesTable::check_unique() {
+  forceUpdateCells();
+  
+  unsigned n = numRows();
+  
+  if (n != 0) {
+    unsigned index;
+    
+    if (text(n - 1, 0).isEmpty())
+      n -= 1;
+    
+    QStringList l;
+    
+    for (index = 0; index != n; index += 1) {
+      const QString & s = text(index, 0);
+      
+      if (l.findIndex(s) != -1) {
+	msg_critical("Error", "key '" + s + "' used several times");
+	return FALSE;
+      }
+      else
+	l.append(s);
+    }
+  }
+  
+  return TRUE;
 }
 
 void KeyValuesTable::update(HaveKeyValueData * oper) {

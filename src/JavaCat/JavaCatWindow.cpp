@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -23,6 +23,7 @@
 //
 // *************************************************************************
 
+#include <stdlib.h>
 #include <qapplication.h>
 #include <qmessagebox.h>
 #include <qpopupmenu.h>
@@ -204,6 +205,21 @@ void JavaCatWindow::load() {
   QString s = QDir::home().absFilePath(".boumlcat");
   FILE * fp = fopen((const char *) s, "r");
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   if (fp != 0) {
     char line[512];
  
@@ -306,7 +322,7 @@ void JavaCatWindow::windows_style() {
 }
 
 void JavaCatWindow::about() {
-  QMessageBox::about(this, "Java Catalog", "<p>Version <b>2.11.1</b></p>" );
+  QMessageBox::about(this, "Java Catalog", "<p>Version <b>2.11.5</b></p>" );
 }
 
 void JavaCatWindow::aboutQt() {

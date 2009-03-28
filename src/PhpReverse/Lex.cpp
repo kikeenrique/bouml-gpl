@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -591,3 +591,88 @@ QCString Lex::quote(QCString s)
     p += 1;
   }
 }
+
+//
+
+static QCString get_next_word(QCString s, int & index, int & index2)
+{
+  QCString result;
+  const char * p = ((const char *)  s) + index;
+  
+  for (;;) {
+    // bypass spaces before word
+    switch (*p) {
+    case ' ':
+    case '\t':
+      index += 1;
+      p += 1;
+      break;
+    case '\r':
+    case '\n':
+    case 0:
+      index2 = index;
+      return result;
+    default:
+      {
+	index2 = index;
+	
+	for (;;) {
+	  // search for end of word
+	  switch (*p) {
+	  case ' ':
+	  case '\t':
+	  case '\r':
+	  case '\n':
+	  case 0:
+	    if (index2 != index)
+	      result = s.mid(index, index2 - index);
+	    return result;
+	  default:
+	    index2 += 1;
+	    p += 1;
+	    break;
+	  }
+	}
+      }
+    }
+  }
+}
+
+QCString value_of(QCString s, QCString k, int & index)
+{
+  index = s.find(k);
+  
+  if (index == -1) {
+    QCString result;
+    
+    return result;
+  }
+  else {
+    int index2;
+    
+    index += k.length();
+    return get_next_word(s, index, index2);
+  }
+}
+
+QCString value_of(QCString s, QCString k, int & index,
+		  QCString & next, int & index2)
+{
+  QCString result;
+  
+  index = s.find(k, index);
+  
+  if (index != -1) {
+    index += k.length();
+    result = get_next_word(s, index, index2);
+    
+    if (! result.isEmpty()) {
+      int index3;
+      
+      next = get_next_word(s, index2, index3);
+    }
+  }
+  
+  return result;
+}
+

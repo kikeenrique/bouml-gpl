@@ -17,3 +17,5 @@
 
 "QMap" "#include <qmap.h>"
 
+"QAsciiDict" "#include <qasciidict.h>"
+

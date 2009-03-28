@@ -20,10 +20,7 @@ void UmlUseCase::write(FileOut & out) {
   
   if (! eps.isEmpty()) {
     int index0 = 0;
-    char s[16];
     int rank = 0;
-    
-    strcpy(s, "EXTPOINT");
     
     for (;;) {
       int index1 = eps.find('\n', index0);
@@ -32,11 +29,10 @@ void UmlUseCase::write(FileOut & out) {
       if (! ep.isEmpty()) {
 	out.indent();
 	out << "<extensionPoint xmi:type=\"uml:ExtensionPoint\"";
-	sprintf(s+8, "%d_", ++rank);
-	out.id_prefix(this, s);
+	out.id_prefix(this, "EXTPOINT", ++rank);
 	out << " name=\"";
 	out.quote(ep);
-	out << "\">\n";
+	out << "\"/>\n";
       }
       
       if (index1 == -1)

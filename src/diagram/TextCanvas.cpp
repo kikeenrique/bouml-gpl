@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -265,6 +265,10 @@ bool TextCanvas::alignable() const {
 
 bool TextCanvas::copyable() const {
   return selected();
+}
+
+bool TextCanvas::move_with(UmlCode k) const {
+  return (k == UmlFragment) || DiagramCanvas::move_with(k);
 }
 
 aCorner TextCanvas::on_resize_point(const QPoint & p) {

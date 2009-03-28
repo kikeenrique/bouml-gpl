@@ -13,3 +13,7 @@ void UmlItem::deploy() {
 void UmlItem::deploy(UmlDeploymentView *) {
 }
 
+int UmlItem::deployable() {
+return 0;
+}
+

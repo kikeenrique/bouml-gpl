@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -87,7 +87,8 @@ class BrowserPin : public BrowserNode, public Labeled<BrowserPin>, public Browse
     
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual bool api_compatible(unsigned v) const;
-    
+        
+    virtual void referenced_by(QList<BrowserNode> & l, bool ondelete);
     static void compute_referenced_by(QList<BrowserNode> &, BrowserNode *);
     
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);

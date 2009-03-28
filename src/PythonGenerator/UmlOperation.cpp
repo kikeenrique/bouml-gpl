@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -61,6 +61,18 @@ static bool generate_var(const QValueList<UmlParameter> & params,
     return FALSE;
   
   f << params[rank].name;
+  return TRUE;
+}
+
+static bool generate_init(const QValueList<UmlParameter> & params, 
+			  unsigned rank, QTextOStream & f)
+{
+  if (rank >= params.count())
+    return FALSE;
+  
+  if (! params[rank].default_value.isEmpty())
+    f << " = " << params[rank].default_value;
+  
   return TRUE;
 }
 
@@ -291,6 +303,14 @@ void UmlOperation::generate(QTextOStream & f, const QCString &,
       p += 7;
       f << compute_name();
     }
+    else if (!strncmp(p, "${class}", 8)) {
+      if (indent_needed) {
+	indent_needed = FALSE;
+	f << indent;
+      }
+      p += 8;
+      f << parent()->name();
+    }
     else if (!strncmp(p, "${(}", 4)) {
       p += 4;
       f << '(';
@@ -318,10 +338,29 @@ void UmlOperation::generate(QTextOStream & f, const QCString &,
 	param_error(parent()->name(), name(), rank);
       p = strchr(p, '}') + 1;
     }
+    else if (sscanf(p, "${v%u}", &rank) == 1) {
+      if (!generate_init(params, rank, f))
+	param_error(parent()->name(), name(), rank);
+      p = strchr(p, '}') + 1;
+    }
     else if (!strncmp(p, "${body}", 7) &&
 	     (pp == 0))	{// not in comment
       isinline = FALSE;
       p = generate_body(f, indent, indent_needed, p);
+    }
+    else if (!strncmp(p, "${association}", 14)) {
+      p += 14;
+      
+      UmlClassMember * m;
+      
+      if ((((m = getOf()) != 0) || ((m = setOf()) != 0)) &&
+	  (m->kind() == aRelation)) {
+	if (indent_needed) {
+	  indent_needed = FALSE;
+	  f << indent;
+	}
+	UmlClass::write(f, ((UmlRelation *) m)->association());
+      }
     }
     else {
       // strange

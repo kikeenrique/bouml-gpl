@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -52,31 +52,26 @@ void ParamData::set_default_value(const char * str) {
 }
 
 QString ParamData::definition(bool withdir, bool withname) const {
-  QString r;
-  
   if (withdir) {
+    QString r = stringify(dir) + QString(" ");
+    
     if (withname)
-      r.sprintf("%s %s : %s", stringify(dir), 
-		(const char *) name, (const char *) type.get_type());
-    else
-      r.sprintf("%s %s", stringify(dir), (const char *) type.get_type());
-  }
-  else if (withname) {
-    r.sprintf("%s : %s", (const char *) name, (const char *) type.get_type());
-    return r;
-  }
-  else {
-    r = (const char *) type.get_type();
-    return r;
-  }
+      r += name + " : ";
   
-  QString v = default_value;
-  
-  v = v.simplifyWhiteSpace();
-  
-  return ((dir == UmlOut) || v.isEmpty())
-    ? r
-    : r + " = " + v;
+    r += type.get_type();
+    
+    QString v = default_value;
+    
+    v = v.simplifyWhiteSpace();
+    
+    return ((dir == UmlOut) || v.isEmpty())
+      ? r
+      : r + " = " + v;
+  }
+  else if (withname)
+    return name + QString(" : ") + type.get_type();
+  else
+    return type.get_type();
 }
 
 void ParamData::send_uml_def(ToolCom * com) {

@@ -21,6 +21,16 @@ class UmlState : public UmlBaseState, public UmlStateItem {
     //returns the first container for a 'kind', going up in the browser tree
     virtual UmlItem * container(anItemKind kind, Token & token, FileIn & in);
 
+
+  private:
+    void importActivity(FileIn & in, Token & token);
+
+
+  public:
+    //  call at end of import : try to solve reference to operation
+    
+    virtual void solve(int context, QCString idref);
+
     static void init();
 
     //import the state [machine] starting by 'tk' inside 'where'

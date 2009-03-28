@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include "UmlEnum.h"
 
-#define FILEFORMAT 58
+#define FILEFORMAT 66
 
 class QDir;
 class QFile;
@@ -173,5 +173,15 @@ extern void draw_text(const QRect & r, int align, QString s, const QFont &, FILE
 extern void draw_text(int x, int y, int w, int h, int align, QString s,
 		      const QFont &, FILE *, UmlColor fg = UmlBlack,
 		      UmlColor bg = UmlTransparent);
+extern void draw_rotate_text(int cx, int cy, int angle, QString s, 
+			     const QFont &, FILE *, UmlColor fg = UmlBlack);
+
+// windows wrong home dir
+
+
+
+
+#define homeDir() QDir::home()
+
 
 #endif

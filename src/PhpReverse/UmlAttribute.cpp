@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -72,9 +72,20 @@ bool UmlAttribute::new_one(Class * container, QCString name,
   Statistic::one_attribute_more();
 #endif
   
-  if (!comment.isEmpty())
-    at->set_Description((at->phpDecl().find("${description}") != -1)
-			? description : comment);
+  if (!comment.isEmpty()) {
+    QCString s = (at->phpDecl().find("${description}") != -1)
+      ? description : comment;
+    UmlTypeSpec t;
+    int index;
+    
+    if (! (t.explicit_type = value_of(s, "@var", index)).isEmpty()) {
+      at->set_Type(t);
+      s.replace(index, t.explicit_type.length(), "${type}");
+    }
+    
+    at->set_Description(s);
+    
+  }
   
   if (constp)
     at->set_isReadOnly(TRUE);

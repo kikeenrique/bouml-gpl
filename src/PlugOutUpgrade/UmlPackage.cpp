@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -38,1206 +38,14 @@
 #include "CppSettings.h"
 #include "JavaSettings.h"
 #include "UmlExtraClassMember.h"
-
-#define defGetField(base, where, oper, field, type, if_def, end_if, descr) \
-  op = base->add_op(#oper, PublicVisibility, type); \
-  op->set_Description(" return the " descr); \
-  op->set_cpp("const ${type} &", "", \
-	      "  read_if_needed_();\n" \
-	      "  return "#where"."#field";\n", \
-	      FALSE, if_def, end_if); \
-  op->set_java("${type}", "", \
-	       "  read_if_needed_();\n" \
-	       "  return "#where"."#field";\n", FALSE)
-	      
-#define defSetField(base, where, oper, field, type, cmd, if_def, end_if, descr) \
-  op = base->add_op(#oper, PublicVisibility, "bool", TRUE); \
-  op->set_Description(" set the " descr "\n" \
-		      "\n" \
-		      " On error return FALSE in C++, produce a RuntimeException in Java"); \
-  op->add_param(0, InputDirection, "v", type); \
-  op->set_cpp("${type}", "const ${t0} ${p0}", \
-	      "  return set_it_("#where"."#field", v, "#cmd");\n", \
-	      FALSE, if_def, end_if); \
-  op->set_java("void", "${t0} ${p0}", \
-	       "\
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd."#cmd", v);\n\
-  UmlCom.check();\n\
-\n\
-  "#where"."#field" = v;\n", \
-	      FALSE)
-
-#define defGet(base, where, oper, type, if_def, end_if, descr) \
-  op = base->add_op(#oper, PublicVisibility, type); \
-  op->set_Description(" return the " descr); \
-  op->set_cpp("const ${type} &", "", \
-	      "  read_if_needed_();\n" \
-	      "  return "#where";\n", \
-	      FALSE, if_def, end_if); \
-  op->set_java("${type}", "", \
-	       "  read_if_needed_();\n" \
-	       "  return "#where";\n", FALSE)
-	      
-#define defSet(base, where, oper, type, cmd, if_def, end_if, descr) \
-  op = base->add_op(#oper, PublicVisibility, "bool", TRUE); \
-  op->set_Description(" set the " descr "\n" \
-		      "\n" \
-		      " On error return FALSE in C++, produce a RuntimeException in Java"); \
-  op->add_param(0, InputDirection, "v", type); \
-  op->set_cpp("${type}", "const ${t0} ${p0}", \
-	      "  return set_it_("#where", v, "#cmd");", \
-	      FALSE, if_def, end_if); \
-  op->set_java("void", "${t0} ${p0}", \
-	       "\
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd."#cmd", v);\n\
-  UmlCom.check();\n\
-\n\
-  "#where" = v;\n", \
-	      FALSE)
-
-#define defGetPtr(base, where, oper, type, if_def, end_if, descr) \
-  op = base->add_op(#oper, PublicVisibility, type); \
-  op->set_Description(" return the " descr); \
-  op->set_cpp("${type} *", "", \
-	      "  read_if_needed_();\n" \
-	      "  return "#where";\n", \
-	      FALSE, if_def, end_if); \
-  op->set_java("${type}", "", \
-	       "  read_if_needed_();\n" \
-	       "  return "#where";\n", FALSE)
-	      
-#define defSetPtr(base, where, oper, type, cmd, if_def, end_if, descr) \
-  op = base->add_op(#oper, PublicVisibility, "bool", TRUE); \
-  op->set_Description(" set the " descr "\n" \
-		      "\n" \
-		      " On error return FALSE in C++, produce a RuntimeException in Java"); \
-  op->add_param(0, InputDirection, "v", type); \
-  op->set_cpp("${type}", "${t0} * ${p0}", \
-	       "\
-  UmlCom::send_cmd(_identifier, "#cmd", ((UmlBaseItem *) v)->_identifier); \
-  if (UmlCom::read_bool()) { \
-    "#where" = v; \
-    return TRUE; \
-  } \
-  else \
-    return FALSE;", \
-	      FALSE, if_def, end_if); \
-  op->set_java("void", "${t0} ${p0}", \
-	       "\
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd."#cmd", v.identifier_());\n\
-  UmlCom.check();\n\
-\n\
-  "#where" = v;\n", \
-	      FALSE)
-
-#define defSetRefType(base, where, oper, type, cmd, if_def, end_if, descr) \
-  op = base->add_op(#oper, PublicVisibility, "bool", TRUE); \
-  op->set_Description(" set the " descr "\n" \
-		      "\n" \
-		      " On error return FALSE in C++, produce a RuntimeException in Java"); \
-  op->add_param(0, InputDirection, "v", type); \
-  op->set_cpp("${type}", "const ${t0} & ${p0}", \
-	      "  return set_it_("#where", v, "#cmd");", \
-	      FALSE, if_def, end_if); \
-  op->set_java("void", "${t0} ${p0}", \
-	       "\
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd."#cmd", v);\n\
-  UmlCom.check();\n\
-\n\
-  "#where" = v;\n", \
-	      FALSE)
-
-#define defGetBool(base, where, oper, if_def, end_if, descr) \
-  op = base->add_op(#oper, PublicVisibility, "bool"); \
-  op->set_Description(descr); \
-  op->set_cpp("${type}", "", \
-	      "  read_if_needed_();\n" \
-	      "  return "#where";\n", \
-	      FALSE, if_def, end_if); \
-  op->set_java("${type}", "", \
-	       "  read_if_needed_();\n" \
-	       "  return "#where";\n", FALSE)
-	      
-#define defSetBool(base, where, oper, cmd, if_def, end_if, descr) \
-  op = base->add_op(#oper, PublicVisibility, "bool", TRUE); \
-  op->set_Description(descr "\n" \
-		      "\n" \
-		      " On error return FALSE in C++, produce a RuntimeException in Java"); \
-  op->add_param(0, InputDirection, "v", "bool"); \
-  op->set_cpp("${type}", "${t0} ${p0}", \
-	      "  return set_it_("#where", v, "#cmd");", \
-	      FALSE, if_def, end_if); \
-  op->set_java("void", "${t0} ${p0}", \
-	       "\
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd."#cmd", (v) ? (byte) 1 : (byte) 0);\n\
-  UmlCom.check();\n\
-\n\
-  "#where" = v;\n", \
-	      FALSE)
-
-#define defGetEnum(base, where, oper, type, if_def, end_if, descr) \
-  op = base->add_op(#oper, PublicVisibility, type); \
-  op->set_Description(" return the " descr); \
-  op->set_cpp("${type}", "", \
-	      "  read_if_needed_();\n" \
-	      "  return "#where";\n", \
-	      FALSE, if_def, end_if); \
-  op->set_java("${type}", "", \
-	       "  read_if_needed_();\n" \
-	       "  return "#where";\n", FALSE)
-	      
-#define defSetEnum(base, where, oper, type, cmd, if_def, end_if, descr) \
-  op = base->add_op(#oper, PublicVisibility, "bool", TRUE); \
-  op->set_Description(" set the " descr "\n" \
-		      "\n" \
-		      " On error return FALSE in C++, produce a RuntimeException in Java"); \
-  op->add_param(0, InputDirection, "v", type); \
-  op->set_cpp("${type}", "${t0} ${p0}", \
-	       "\
-  UmlCom::send_cmd(_identifier, "#cmd", (char) v); \
-  if (UmlCom::read_bool()) { \
-    "#where" = v; \
-    return TRUE; \
-  } \
-  else \
-    return FALSE;", \
-	      FALSE, if_def, end_if); \
-  op->set_java("void", "${t0} ${p0}", \
-	       "\
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd."#cmd", (byte) v.value());\n\
-  UmlCom.check();\n\
-\n\
-  "#where" = v;\n", \
-	      FALSE)
-
-#define defSetBoolBitField(base, where, oper, cmd, if_def, end_if, descr) \
-  op = base->add_op(#oper, PublicVisibility, "bool", TRUE); \
-  op->set_Description(descr "\n" \
-		      "\n" \
-		      " On error return FALSE in C++, produce a RuntimeException in Java"); \
-  op->add_param(0, InputDirection, "v", "bool"); \
-  op->set_cpp("${type}", "${t0} ${p0}", \
-	      "  bool vv;\n" \
-	      "\n" \
-	      "  if (set_it_(vv, v, "#cmd")) {\n" \
-	      "    "#where" = v;\n" \
-	      "    return TRUE;\n" \
-	      "  }\n" \
-	      "  else\n" \
-	      "    return FALSE;\n", \
-	      FALSE, if_def, end_if); \
-  op->set_java("void", "${t0} ${p0}", \
-	       "\
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd."#cmd", (v) ? 1 : 0);\n\
-  UmlCom.check();\n\
-\n\
-  "#where" = v;\n", \
-	      FALSE)
-
-//
-// add all concerning states
-//
-
-void include_umlcom(UmlClass * cl)
-{
-  UmlArtifact * art = cl->associatedArtifact();
-  QCString s = art->cppSource();
-  
-  s.insert(s.find("${includes}"), "#include \"UmlCom.h\"\n");
-  art->set_CppSource(s);
-}
-
-void include_umlcom(UmlArtifact * art)
-{
-  QCString s = art->cppSource();
-  
-  s.insert(s.find("${includes}"), "#include \"UmlCom.h\"\n");
-  art->set_CppSource(s);
-}
-
-UmlClass * add_state_behavior(UmlClassView * base_class_view,
-			      UmlDeploymentView * base_depl_view)
-{
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  UmlClass * state_behavior = 
-    UmlClass::made(base_class_view, base_depl_view, "StateBehavior");
-  
-  include_umlcom(state_behavior);
-  
-  state_behavior->add_attribute("on_entry", PublicVisibility, "string", 0, 0);
-  state_behavior->add_attribute("on_exit", PublicVisibility, "string", 0, 0);
-  state_behavior->add_attribute("do_activity", PublicVisibility, "string", 0, 0);
-  
-  UmlOperation * op;
-  
-  op = state_behavior->add_op("read", PublicVisibility, "void");
-  op->set_cpp("${type}", "", "\
-  on_entry = UmlCom::read_string();\n\
-  on_exit = UmlCom::read_string();\n\
-  do_activity = UmlCom::read_string();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "", "\
-  on_entry = UmlCom.read_string();\n\
-  on_exit = UmlCom.read_string();\n\
-  do_activity = UmlCom.read_string();\n",
-	       FALSE);
-  
-  op = state_behavior->add_op("unload", PublicVisibility, "void");
-  op->set_cpp("${type}", "", "\
-  on_entry = 0;\n\
-  on_exit = 0;\n\
-  do_activity = 0;\n",
-	      FALSE, 0, 0);
-  op->set_JavaDecl("");
-  
-  UmlCom::set_user_id(uid);
-  
-  return state_behavior;
-}
-
-UmlClass * add_state_diagram(UmlClassView * base_class_view, UmlClassView * user_class_view,
-			     UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-			     UmlClass * base_item, UmlClass * user_stateitem, UmlClass * user_state)
-{
-  UmlClass * user_diagram = UmlClass::get("UmlDiagram", 0);
-  UmlClass * base_statediagram;
-  UmlClass * user_statediagram;
-  
-  user_diagram->made(base_class_view, user_class_view,
-		     base_depl_view, user_depl_view,
-		     base_item, "StateDiagram",
-		     base_statediagram, user_statediagram,
-		     user_stateitem);
-  base_statediagram->add_default_base_op(user_diagram, user_statediagram, user_state,
-					 "state diagram", "aStateDiagram");
-  user_statediagram->add_constr(base_statediagram, PublicVisibility);
-  
-  user_statediagram->set_Description(" This class manages 'class diagrams', notes that the class 'UmlDiagram'\n"
-				     " is a mother class of all the diagrams, allowing to generalize their\n"
-				     " management\n"
-				     "\n"
-				     " You can modify it as you want (except the constructor)");
-  return user_statediagram;
-}
-
-void add_assoc_diag_ops(UmlClass * base, UmlClass * diag)
-{
-  UmlOperation * op;
-  
-  op = base->add_op("associatedDiagram", PublicVisibility, diag);
-  
-  op->set_cpp("${type} *", "",
-	      "  read_if_needed_();\n\n"
-	      "  return _assoc_diagram;\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	      "  read_if_needed_();\n\n"
-	      "  return _assoc_diagram;\n",
-	      FALSE);
-  op->set_Description(" returns the optional associated diagram");
-  
-  //
-  
-  op = base->add_op("set_AssociatedDiagram", PublicVisibility, "bool", TRUE);
-  op->add_param(0, InputDirection, "d", diag);
-  
-  op->set_cpp("${type}", "${t0} * ${p0}",
-	      "  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);\n"
-	      "  if (UmlCom::read_bool()) {\n"
-	      "    _assoc_diagram = d;\n"
-	      "    return TRUE;\n"
-	      "  }\n"
-	      "  else\n"
-	      "    return FALSE;\n",
-	      FALSE, 0, 0);
-  op->set_java("void", "${t0} ${p0}",
-	       "  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, d.identifier_());\n"
-	       "  UmlCom.check();\n"
-	       "  _assoc_diagram = d;\n",
-	      FALSE);
-  op->set_Description(" sets the associated diagram, arg may be null to unset it\n\n"
-		      " On error return FALSE in C++, produce a RuntimeException in Java");
-}
-
-UmlClass * add_state(UmlClassView * base_class_view, UmlClassView * user_class_view,
-		     UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-		     UmlClass * base_item, UmlClass * user_item, UmlClass * user_stateitem)
-{
-  UmlClass * base_state;
-  UmlClass * user_state;
-  UmlOperation * op;
-  
-  user_item->made(base_class_view, user_class_view,
-		  base_depl_view, user_depl_view,
-		  base_item, "State", base_state, user_state,
-		  user_stateitem);
-  base_state->add_default_base_op(user_item, user_state,
-				  UmlClass::get("UmlClassView", 0),
-				  "state", "aState");
-  user_state->add_constr(base_state, PublicVisibility);
-  
-  UmlClass * user_statediagram = 
-    add_state_diagram(base_class_view, user_class_view,
-		      base_depl_view, user_depl_view,
-		      base_item, user_stateitem, user_state);
-  
-    
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-    
-  include_umlcom(base_state);
-  
-  defGetField(base_state, _uml, entryBehavior, on_entry, "string", 0, 0,
-	      "entry behavior in OCL");
-  defSetField(base_state, _uml, set_EntryBehavior, on_entry, "str", setUmlEntryBehaviorCmd, 0, 0,
-	      "entry behavior in OCL");
-  defGetField(base_state, _uml, exitBehavior, on_exit, "string", 0, 0,
-	      "exit behavior in OCL");
-  defSetField(base_state, _uml, set_ExitBehavior, on_exit, "str", setUmlExitBehaviorCmd, 0, 0,
-	      "exit behavior in OCL");
-  defGetField(base_state, _uml, doActivity, do_activity, "string", 0, 0, 
-	      "activity in OCL");
-  defSetField(base_state, _uml, set_DoActivity, do_activity, "str", setUmlActivityCmd, 0, 0,
-	      "activity in OCL");
-
-  defGetField(base_state, _cpp, cppEntryBehavior, on_entry, "string", "WITHCPP", 0,
-	      "entry behavior in C++");
-  defSetField(base_state, _cpp, set_CppEntryBehavior, on_entry, "str", setCppEntryBehaviorCmd, 0, 0,
-	      "entry behavior in C++");
-  defGetField(base_state, _cpp, cppExitBehavior, on_exit, "string", 0, 0,
-	      "exit behavior in C++");
-  defSetField(base_state, _cpp, set_CppExitBehavior, on_exit, "str", setCppExitBehaviorCmd, 0, 0,
-	      "exit behavior in C++");
-  defGetField(base_state, _cpp, cppDoActivity, do_activity, "string", 0, 0,
-	      "activity in C++");
-  defSetField(base_state, _cpp, set_CppDoActivity, do_activity, "str", setCppActivityCmd, 0, "endif",
-	      "activity in C++");
-
-  defGetField(base_state, _java, javaEntryBehavior, on_entry, "string", "WITHJAVA", 0,
-	      "entry behavior in Java");
-  defSetField(base_state, _java, set_JavaEntryBehavior, on_entry, "str", setJavaEntryBehaviorCmd, 0, 0,
-	      "entry behavior in Java");
-  defGetField(base_state, _java, javaExitBehavior, on_exit, "string", 0, 0,
-	      "exit behavior in Java");
-  defSetField(base_state, _java, set_JavaExitBehavior, on_exit, "str", setJavaExitBehaviorCmd, 0, 0,
-	      "exit behavior in Java");
-  defGetField(base_state, _java, javaDoActivity, do_activity, "string", 0, 0,
-	      "activity in Java");
-  defSetField(base_state, _java, set_JavaDoActivity, do_activity, "str", setJavaActivityCmd, 0, "endif",
-	      "activity in Java");
-
-  add_assoc_diag_ops(base_state, user_statediagram);
-  include_umlcom(base_state);
-  
-  op = base_state->add_op("unload", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "rec", "bool");
-  op->add_param(1, InputDirection, "del", "bool");
-  op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	      "  _uml.unload();\n"
-	      "#ifdef WITHCPP\n"
-	      "  _cpp.unload();\n"
-	      "#endif\n"
-	      "#ifdef WITHJAVA\n"
-	      "  _java.unload();\n"
-	      "#endif\n"
-	      "  UmlBaseItem::unload(rec, del);\n",
-	      FALSE, 0, 0);
-  QCString s = op->cppDecl();
-  
-  s.replace(s.find("${p0}"), 5, "= FALSE");
-  s.replace(s.find("${p1}"), 5, "= FALSE");
-  op->set_CppDecl(s);
-  
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  _uml = null;\n"
-	       "  _cpp = null;\n"
-	       "  _java = null;\n"
-	       "  super.unload(rec, del);\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" to unload the object to free memory, it will be reloaded automatically\n\
- if needed. Recursively done for the sub items if 'rec' is TRUE. \n\
-\n\
- if 'del' is true the sub items are deleted in C++, and removed from the\n\
- internal dictionnary in C++ and Java (to allow it to be garbaged),\n\
- you will have to call Children() to re-access to them");
-  
-  UmlClass * state_behavior =
-    add_state_behavior(base_class_view, base_depl_view);
-  
-  base_state->add_relation(aDirectionalAggregationByValue,
-			   "_uml", PrivateVisibility,
-			   state_behavior, 0, 0);
-  base_state->add_relation(aDirectionalAggregationByValue,
-			   "_cpp", PrivateVisibility,
-			   state_behavior, "WITHCPP", "endif");
-  base_state->add_relation(aDirectionalAggregationByValue,
-			   "_java", PrivateVisibility,
-			   state_behavior, "WITHJAVA", "endif");
-  base_state->add_relation(aDirectionalAssociation,
-			   "_assoc_diagram", PrivateVisibility,
-			   user_statediagram, 0, 0);
-  
-  op = base_state->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  _assoc_diagram = (UmlStateDiagram *) UmlBaseItem::read_();\n"
-	      "  UmlBaseItem::read_uml_();\n"
-	      "  _uml.read();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  _assoc_diagram = (UmlStateDiagram) UmlBaseItem.read_();\n"
-	       "  super.read_uml_();\n"
-	       "  _uml = new StateBehavior();\n"
-	       "  _uml.read();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_state->add_op("read_cpp_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "", "  _cpp.read();\n", FALSE, "WITHCPP", "endif");
-  op->set_java("${type}", "", "  _cpp = new StateBehavior();\n  _cpp.read();\n", FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_state->add_op("read_java_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "", "  _java.read();\n", FALSE, "WITHJAVA", "endif");
-  op->set_java("${type}", "", "  _java = new StateBehavior();\n  _java.read();\n", FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-  
-  return user_state;
-}
-
-UmlClass * add_transition_behavior(UmlClassView * base_class_view,
-				   UmlDeploymentView * base_depl_view)
-{
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  UmlClass * transition_behavior = 
-    UmlClass::made(base_class_view, base_depl_view, "TransitionBehavior");
-  
-  include_umlcom(transition_behavior);
-  
-  transition_behavior->add_attribute("trigger", PublicVisibility, "string", 0, 0);
-  transition_behavior->add_attribute("guard", PublicVisibility, "string", 0, 0);
-  transition_behavior->add_attribute("activity", PublicVisibility, "string", 0, 0);
-  
-  UmlOperation * op;
-  
-  op = transition_behavior->add_op("read", PublicVisibility, "void");
-  op->set_cpp("${type}", "", "\
-  trigger = UmlCom::read_string();\n\
-  guard = UmlCom::read_string();\n\
-  activity = UmlCom::read_string();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "", "\
-  trigger = UmlCom.read_string();\n\
-  guard = UmlCom.read_string();\n\
-  activity = UmlCom.read_string();\n",
-	       FALSE);
-  
-  op = transition_behavior->add_op("unload", PublicVisibility, "void");
-  op->set_cpp("${type}", "", "\
-  trigger = 0;\n\
-  guard = 0;\n\
-  activity = 0;\n",
-	      FALSE, 0, 0);
-  op->set_JavaDecl("");
-  
-  UmlCom::set_user_id(uid);
-  
-  return transition_behavior;
-}
-
-void add_transition(UmlClassView * base_class_view, UmlClassView * user_class_view,
-		    UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-		    UmlClass * base_item, UmlClass * user_item, UmlClass * user_stateitem)
-{
-  UmlClass * base_transition;
-  UmlClass * user_transition;
-  UmlOperation * op;
-  
-  user_item->made(base_class_view, user_class_view,
-		  base_depl_view, user_depl_view,
-		  base_item, "Transition", base_transition,
-		  user_transition, user_stateitem);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  include_umlcom(base_transition);
-  
-  base_transition->add_kind("aTransition");
-  
-  op = base_transition->add_op("create", PublicVisibility, user_transition, TRUE);
-  op->set_isClassMember(TRUE);
-  op->add_param(0, InputOutputDirection, "start", user_item);
-  op->add_param(1, InputOutputDirection, "end", user_item);
-  op->set_cpp("${type} *", 
-	      "${t0} * ${p0}, ${t1} * ${p1}",
-	      "  UmlCom::send_cmd(start->_identifier, createCmd, aTransition,\n"
-	      "\t\t   end->_identifier);\n"
-	      "  UmlTransition * result = (UmlTransition *) UmlBaseItem::read_();\n"
-	      "\n"
-	      "  if (result != 0)\n"
-	      "    start->reread_children_if_needed_();\n"
-	      "  return result;\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  UmlCom.send_cmd(start.identifier_(), OnInstanceCmd.createCmd, anItemKind.aTransition,\n"
-	       "\t\t   end.identifier_());\n"
-	       "  UmlTransition result = (UmlTransition) UmlBaseItem.read_();\n"
-	       "  \n"
-	       "  if (result != null)\n"
-	       "    start.reread_children_if_needed_();\n"
-	       "  else\n"
-	       "    throw new RuntimeException(\"Cannot create the Transition\");\n"
-	       "  return result;\n",
-	      FALSE);
-  op->set_Description(" Returns a new Transition from 'start' to 'end'\n\
-\n\
- In case it cannot be created ('parent' cannot contain it etc ...) return 0\n\
-  in C++ and produce a RuntimeException in Java\n");
-  
-  op = base_transition->add_op("target", PublicVisibility, user_item);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" returns the 'end' object (the 'start' object is the parent of the transition) no set !");
-  op->set_cpp("${type} *", "",
-	      "  read_if_needed_();\n"
-	      "  return _target;\n",
-	      FALSE, 0, 0); \
-  op->set_java("${type}", "",
-	       "  read_if_needed_();\n"
-	       "  return _target;\n", FALSE);
-  
-  defGetField(base_transition, _uml, trigger, trigger, "string", 0, 0,
-	      "trigger in OCL");
-  defSetField(base_transition, _uml, set_Trigger, trigger, "str", setUmlTriggerCmd, 0, 0,
-	      "trigger in OCL");
-  defGetField(base_transition, _uml, guard, guard, "string", 0, 0,
-	      "guard in OCL");
-  defSetField(base_transition, _uml, set_Guard, guard, "str", setUmlGuardCmd, 0, 0,
-	      "guard in OCL");
-  defGetField(base_transition, _uml, activity, activity, "string", 0, 0, 
-	      "activity in OCL");
-  defSetField(base_transition, _uml, set_Activity, activity, "str", setUmlActivityCmd, 0, 0,
-	      "activity in OCL");
-
-  defGetField(base_transition, _cpp, cppTrigger, trigger, "string", "WITHCPP", 0,
-	      "trigger in C++");
-  defSetField(base_transition, _cpp, set_CppTrigger, trigger, "str", setCppTriggerCmd, 0, 0,
-         "trigger in C++");
-  defGetField(base_transition, _cpp, cppGuard, guard, "string", 0, 0,
-	      "guard in C++");
-  defSetField(base_transition, _cpp, set_CppGuard, guard, "str", setCppGuardCmd, 0, 0,
-	      "guard in C++");
-  defGetField(base_transition, _cpp, cppActivity, activity, "string", 0, 0,
-	      "activity in C++");
-  defSetField(base_transition, _cpp, set_CppActivity, activity, "str", setCppActivityCmd, 0, "endif",
-	      "activity in C++");
-
-  defGetField(base_transition, _java, javaTrigger, trigger, "string", "WITHJAVA", 0,
-	      "trigger in Java");
-  defSetField(base_transition, _java, set_JavaTrigger, trigger, "str", setJavaTriggerCmd, 0, 0,
-	      "trigger in Java");
-  defGetField(base_transition, _java, javaGuard, guard, "string", 0, 0,
-	      "guard in Java");
-  defSetField(base_transition, _java, set_JavaGuard, guard, "str", setJavaGuardCmd, 0, 0,
-	      "guard in Java");
-  defGetField(base_transition, _java, javaActivity, activity, "string", 0, 0,
-	      "activity in Java");
-  defSetField(base_transition, _java, set_JavaActivity, activity, "str", setJavaActivityCmd, 0, "endif",
-	      "activity in Java");
-  
-  op = base_transition->add_op("unload", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "rec", "bool");
-  op->add_param(1, InputDirection, "del", "bool");
-  op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	      "  _uml.unload();\n"
-	      "#ifdef WITHCPP\n"
-	      "  _cpp.unload();\n"
-	      "#endif\n"
-	      "#ifdef WITHJAVA\n"
-	      "  _java.unload();\n"
-	      "#endif\n"
-	      "  UmlBaseItem::unload(rec, del);\n",
-	      FALSE, 0, 0);
-
-  QCString s = op->cppDecl();
-  
-  s.replace(s.find("${p0}"), 5, "= FALSE");
-  s.replace(s.find("${p1}"), 5, "= FALSE");
-  op->set_CppDecl(s);
-  
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  _uml = null;\n"
-	       "  _cpp = null;\n"
-	       "  _java = null;\n"
-	       "  super.unload(rec, del);\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" to unload the object to free memory, it will be reloaded automatically\n\
- if needed. Recursively done for the sub items if 'rec' is TRUE. \n\
-\n\
- if 'del' is true the sub items are deleted in C++, and removed from the\n\
- internal dictionnary in C++ and Java (to allow it to be garbaged),\n\
- you will have to call Children() to re-access to them");
-  
-  base_transition->add_relation(aDirectionalAssociation,
-				"_target", PrivateVisibility,
-				user_item, 0, 0);
-			  
-  UmlClass * transition_behavior =
-    add_transition_behavior(base_class_view, base_depl_view);
-  
-  base_transition->add_relation(aDirectionalAggregationByValue,
-				"_uml", PrivateVisibility,
-				transition_behavior, 0, 0);
-  base_transition->add_relation(aDirectionalAggregationByValue,
-				"_cpp", PrivateVisibility,
-				transition_behavior, "WITHCPP", "endif");
-  base_transition->add_relation(aDirectionalAggregationByValue,
-				"_java", PrivateVisibility,
-				transition_behavior, "WITHJAVA", "endif");
-  
-  op = base_transition->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseItem::read_uml_();\n"
-	      "  _target = UmlBaseItem::read_();\n"
-	      "  _uml.read();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  super.read_uml_();\n"
-	       "  _target = UmlBaseItem.read_();\n"
-	       "  _uml = new TransitionBehavior();\n"
-	       "  _uml.read();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_transition->add_op("read_cpp_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "", "  _cpp.read();\n", FALSE, "WITHCPP", "endif");
-  op->set_java("${type}", "", "  _cpp = new TransitionBehavior();\n  _cpp.read();\n", FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_transition->add_op("read_java_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "", "  _java.read();\n", FALSE, "WITHJAVA", "endif");
-  op->set_java("${type}", "", "  _java = new TransitionBehavior();\n  _java.read();\n", FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  base_transition->add_constr(user_item, ProtectedVisibility);
-  
-  UmlCom::set_user_id(uid);
-  
-  op = user_transition->add_op("UmlTransition", PublicVisibility,
-			       (UmlClass *) 0, FALSE);
-  op->add_param(0, InputDirection, "id", "item_id");
-  op->add_param(1, InputDirection, "n", "string");
-  op->set_cpp(": UmlBaseTransition(id, n)",
-	      "${t0} ${p0}, const ${t1} & ${p1}",
-	      "", TRUE, 0, 0);
-  op->set_java("", "${t0} ${p0}, ${t1} ${p1}",
-	       "  super(id, n);\n", TRUE);
-}
-
-void add_region(UmlClassView * base_class_view, UmlClassView * user_class_view,
-		UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-		UmlClass * base_item, UmlClass * user_item,
-		UmlClass * user_stateitem, UmlClass * user_state)
-{
-  UmlClass * base_region;
-  UmlClass * user_region;
-  
-  user_item->made(base_class_view, user_class_view,
-		  base_depl_view, user_depl_view,
-		  base_item, "Region", base_region, user_region, user_stateitem);
-  base_region->add_default_base_op(user_item, user_region, user_state, "region", "aRegion");
-  user_region->add_constr(base_region, PublicVisibility);
-}
-
-void add_stateaction(UmlClassView * base_class_view, UmlClassView * user_class_view,
-		     UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-		     UmlClass * base_item, UmlClass * user_item,
-		     UmlClass * user_stateitem, UmlClass * user_state)
-{
-  UmlClass * base_stateaction;
-  UmlClass * user_stateaction;
-  UmlOperation * op;
-  
-  user_item->made(base_class_view, user_class_view,
-		  base_depl_view, user_depl_view,
-		  base_item, "StateAction", base_stateaction,
-		  user_stateaction, user_stateitem);
-
-  user_stateaction->add_constr(base_stateaction, PublicVisibility, TRUE);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  include_umlcom(base_stateaction);
-  
-  base_stateaction->add_default_base_op(user_item, user_stateaction, user_state,
-					"state action", "aStateAction", TRUE);
-    
-  defGet(base_stateaction, _uml, expression, "string", 0, 0,
-         "expression in OCL");
-  defSet(base_stateaction, _uml, set_Expression, "str", setDefCmd, 0, 0,
-         "expression in OCL");
-  defGet(base_stateaction, _cpp, cppExpression, "string", "WITHCPP", 0,
-         "expression in C++");
-  defSet(base_stateaction, _cpp, set_CppExpression, "str", setCppDeclCmd, 0, "endif",
-         "expression in C++");
-  defGet(base_stateaction, _java, javaExpression, "string", "WITHJAVA", 0,
-         "expression in Java");
-  defSet(base_stateaction, _java, set_JavaExpression, "str", setJavaDeclCmd, 0, "endif",
-         "expression in Java");
-
-  op = base_stateaction->add_op("unload", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "rec", "bool");
-  op->add_param(1, InputDirection, "del", "bool");
-  op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	      "  _uml = 0;\n"
-	      "#ifdef WITHCPP\n"
-	      "  _cpp = 0;\n"
-	      "#endif\n"
-	      "#ifdef WITHJAVA\n"
-	      "  _java = 0;\n"
-	      "#endif\n"
-	      "  UmlBaseItem::unload(rec, del);\n",
-	      FALSE, 0, 0);
-  
-  QCString s = op->cppDecl();
-  
-  s.replace(s.find("${p0}"), 5, "= FALSE");
-  s.replace(s.find("${p1}"), 5, "= FALSE");
-  op->set_CppDecl(s);
-  
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  _uml = null;\n"
-	       "  _cpp = null;\n"
-	       "  _java = null;\n"
-	       "  super.unload(rec, del);\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" to unload the object to free memory, it will be reloaded automatically\n\
- if needed. Recursively done for the sub items if 'rec' is TRUE. \n\
-\n\
- if 'del' is true the sub items are deleted in C++, and removed from the\n\
- internal dictionnary in C++ and Java (to allow it to be garbaged),\n\
- you will have to call Children() to re-access to them");
-  
-  base_stateaction->add_attribute("_uml", PrivateVisibility, "string",
-				  0, 0);
-  base_stateaction->add_attribute("_cpp", PrivateVisibility, "string",
-				  "WITHCPP", "endif");
-  base_stateaction->add_attribute("_java", PrivateVisibility, "string",
-				  "WITHJAVA", "endif");
-  
-  op = base_stateaction->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseItem::read_uml_();\n"
-	      "  _uml = UmlCom::read_string();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  super.read_uml_();\n"
-	       "  _uml = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_stateaction->add_op("read_cpp_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "", "  _cpp = UmlCom::read_string();\n", FALSE, "WITHCPP", "endif");
-  op->set_java("${type}", "", "  _cpp  = UmlCom.read_string();\n", FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_stateaction->add_op("read_java_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "", "  _java = UmlCom::read_string();\n", FALSE, "WITHJAVA", "endif");
-  op->set_java("${type}", "", "  _java = UmlCom.read_string();\n", FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-}
-
-  
-void add_pseudostates(UmlClassView * base_class_view, UmlClassView * user_class_view,
-		      UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-		      UmlClass * base_item, UmlClass * user_item, UmlClass * user_stateitem)
-{
-  UmlClass * user_pseudostate =
-    UmlClass::made(user_class_view, user_depl_view, "UmlPseudoState");
-  
-  user_pseudostate->set_isAbstract(TRUE);
-  user_pseudostate->add_constr(user_item, PublicVisibility);
-    
-  UmlRelation * rel;
-  
-  if ((rel = UmlBaseRelation::create(aGeneralisation, user_pseudostate, user_stateitem)) == 0) {
-    QCString msg = user_pseudostate->name() + " can't inherit " + user_stateitem->name() + "<br>\n";
-    
-    UmlCom::trace(msg);
-    throw 0;
-  }
-  else {
-    rel->set_CppDecl("${type}");
-    rel->set_JavaDecl("${type}");
-  }
-  
-  if ((rel = UmlBaseRelation::create(aGeneralisation, user_pseudostate, user_item)) == 0) {
-    QCString msg = user_pseudostate->name() + " can't inherit " + user_item->name() + "<br>\n";
-    
-    UmlCom::trace(msg);
-    throw 0;
-  }
-  else {
-    rel->set_CppDecl("${type}");
-    rel->set_JavaDecl("${type}");
-  }
-    
-  const struct {
-    const char * name;
-    const char * what;
-    const char * kind;
-  } ps[] = {
-    { "InitialPseudoState", "initial pseudo state", "anInitialPseudoState" },
-    { "EntryPointPseudoState", "entry point pseudo state", "anEntryPointPseudoState" },
-    { "FinalState", "final state", "aFinalState" },
-    { "TerminatePseudoState", "terminate pseudo state", "aTerminatePseudoState" },
-    { "ExitPointPseudoState", "exit point pseudo state", "anExitPointPseudoState" },
-    { "DeepHistoryPseudoState", "deep history pseudo state", "aDeepHistoryPseudoState" },
-    { "ShallowHistoryPseudoState", "shallow history pseudo state", "aShallowHistoryPseudoState" },
-    { "JunctionPseudoState", "junction pseudo state", "aJunctionPseudoState" },
-    { "ChoicePseudoState", "choice pseudo state", "aChoicePseudoState" },
-    { "ForkPseudoState", "fork pseudo state", "aForkPseudoState" },
-    { "JoinPseudoState", "join pseudo state", "aJoinPseudoState" }
-  };
-#define N_PS (sizeof(ps)/sizeof(ps[0]))
-  UmlClass * base_ps[N_PS];
-  UmlClass * user_ps[N_PS];
-  int i;
-  
-  for (i = 0; i != N_PS; i += 1) {
-    user_pseudostate->made(base_class_view, user_class_view,
-			   base_depl_view, user_depl_view,
-			   base_item, ps[i].name, base_ps[i], user_ps[i]);
-    
-    bool unnamed = 
-      (strcmp(ps[i].kind, "anEntryPointPseudoState") != 0) &&
-      (strcmp(ps[i].kind, "anExitPointPseudoState") != 0);
-    
-    base_ps[i]->add_default_base_op(user_pseudostate, user_ps[i], user_item,
-				    ps[i].what, ps[i].kind, unnamed);
-    user_ps[i]->add_constr(base_ps[i], PublicVisibility, unnamed);
-  }
-}
-
-void add_state_item_kind()
-{
-  // already root
-  static const char * const kinds[] = {
-    "aState", 
-    "aTransition", 
-    "aRegion", 
-    "aStateDiagram", 
-    "aStateAction", 
-    "anInitialPseudoState", 
-    "anEntryPointPseudoState", 
-    "aFinalState", 
-    "aTerminatePseudoState", 
-    "anExitPointPseudoState", 
-    "aDeepHistoryPseudoState", 
-    "aShallowHistoryPseudoState", 
-    "aJunctionPseudoState", 
-    "aChoicePseudoState", 
-    "aForkPseudoState", 
-    "aJoinPseudoState", 
-  };
-  UmlClass * itkind = UmlClass::get("anItemKind", 0);
-  
-  for (int i = 0; i != sizeof(kinds)/sizeof(kinds[0]); i += 1)
-    itkind->add_enum_item(kinds[i]);
-}
-
-void add_state_on_instance_cmd()
-{
-  // already root
-  static const char * const cmds[] = {
-  "setMarkedCmd",
-  
-  "setUmlEntryBehaviorCmd",
-  "setUmlExitBehaviorCmd",
-  "setUmlActivityCmd",
-  "setCppEntryBehaviorCmd",
-  "setCppExitBehaviorCmd",
-  "setCppActivityCmd",
-  "setJavaEntryBehaviorCmd",
-  "setJavaExitBehaviorCmd",
-  "setJavaActivityCmd",
-  "setUmlTriggerCmd",
-  "setUmlGuardCmd",
-  "setCppTriggerCmd",
-  "setCppGuardCmd",
-  "setJavaGuardCmd",
-  "setJavaTriggerCmd",
-  "setDefCmd"
-  };
-  UmlClass * itcmd = UmlClass::get("OnInstanceCmd", 0);
-  QCString cpp = CppSettings::enumItemDecl();
-  QCString java = JavaSettings::enumPatternItemDecl();
-  QCString m = "add enum item OnInstanceCmd::";
-  
-  for (int i = 0; i != sizeof(cmds)/sizeof(cmds[0]); i += 1) {
-    UmlAttribute * at;
-    
-    if ((at = UmlBaseAttribute::create(itcmd, cmds[i])) == 0) {
-      // setMarkedCmd may alreadu exist
-      if (i != 0) {
-	QCString msg = "cannot add enum item '" + QCString(cmds[i]) +
-	  "' in 'OnInstanceCmd'<br>\n";
-	
-	UmlCom::trace(msg);
-	throw 0;
-      }
-    }
-    else {
-      UmlCom::trace(m + cmds[i] + "<br>\n");
-      at->set_CppDecl(cpp);
-      at->set_JavaDecl(java);
-    }
-  }
-}
-
-void baseitem_read_state(UmlClass * base_item) {
-  // update read_()'s body
-  UmlOperation * op = base_item->get_operation("read_");
-  
-  if (op != 0) {
-    QCString body;
-    
-    body = op->cppBody();
-    body.insert(body.findRev("default:"),
-		"case aState:\n\
-      return new UmlState(id, name);\n\
-    case aTransition:\n\
-      return new UmlTransition(id, name);\n\
-    case aRegion:\n\
-      return new UmlRegion(id, name);\n\
-    case aStateDiagram:\n\
-      return new UmlStateDiagram(id, name);\n\
-    case aStateAction:\n\
-      return new UmlStateAction(id);\n\
-    case anInitialPseudoState:\n\
-      return new UmlInitialPseudoState(id);\n\
-    case anEntryPointPseudoState:\n\
-      return new UmlEntryPointPseudoState(id, name);\n\
-    case aFinalState:\n\
-      return new UmlFinalState(id);\n\
-    case aTerminatePseudoState:\n\
-      return new UmlTerminatePseudoState(id);\n\
-    case anExitPointPseudoState:\n\
-      return new UmlExitPointPseudoState(id, name);\n\
-    case aDeepHistoryPseudoState:\n\
-      return new UmlDeepHistoryPseudoState(id);\n\
-    case aShallowHistoryPseudoState:\n\
-      return new UmlShallowHistoryPseudoState(id);\n\
-    case aJunctionPseudoState:\n\
-      return new UmlJunctionPseudoState(id);\n\
-    case aChoicePseudoState:\n\
-      return new UmlChoicePseudoState(id);\n\
-    case aForkPseudoState:\n\
-      return new UmlForkPseudoState(id);\n\
-    case aJoinPseudoState:\n\
-      return new UmlJoinPseudoState(id);\n\
-    ");
-    op->set_CppBody(body);
-      
-    body = op->javaBody();
-    body.insert(body.findRev("default:"),
-		"case anItemKind._aState:\n\
-      return new UmlState(id, name);\n\
-    case anItemKind._aTransition:\n\
-      return new UmlTransition(id, name);\n\
-    case anItemKind._aRegion:\n\
-      return new UmlRegion(id, name);\n\
-    case anItemKind._aStateDiagram:\n\
-      return new UmlStateDiagram(id, name);\n\
-    case anItemKind._aStateAction:\n\
-      return new UmlStateAction(id);\n\
-    case anItemKind._anInitialPseudoState:\n\
-      return new UmlInitialPseudoState(id);\n\
-    case anItemKind._anEntryPointPseudoState:\n\
-      return new UmlEntryPointPseudoState(id, name);\n\
-    case anItemKind._aFinalState:\n\
-      return new UmlFinalState(id);\n\
-    case anItemKind._aTerminatePseudoState:\n\
-      return new UmlTerminatePseudoState(id);\n\
-    case anItemKind._anExitPointPseudoState:\n\
-      return new UmlExitPointPseudoState(id, name);\n\
-    case anItemKind._aDeepHistoryPseudoState:\n\
-      return new UmlDeepHistoryPseudoState(id);\n\
-    case anItemKind._aShallowHistoryPseudoState:\n\
-      return new UmlShallowHistoryPseudoState(id);\n\
-    case anItemKind._aJunctionPseudoState:\n\
-      return new UmlJunctionPseudoState(id);\n\
-    case anItemKind._aChoicePseudoState:\n\
-      return new UmlChoicePseudoState(id);\n\
-    case anItemKind._aForkPseudoState:\n\
-      return new UmlForkPseudoState(id);\n\
-    case anItemKind._aJoinPseudoState:\n\
-      return new UmlJoinPseudoState(id);\n\
-    ");
-    op->set_JavaBody(body);
-  }
-  
-  // update artifact
-  UmlArtifact * art = base_item->associatedArtifact();
-  QCString s;
-  
-  s = art->cppSource();
-  s.insert(s.find("#include \"MiscGlobalCmd.h\""),
-	   "#include \"UmlState.h\"\n"
-	   "#include \"UmlTransition.h\"\n"
-	   "#include \"UmlRegion.h\"\n"
-	   "#include \"UmlStateDiagram.h\"\n"
-	   "#include \"UmlStateAction.h\"\n"
-	   "#include \"UmlInitialPseudoState.h\"\n"
-	   "#include \"UmlEntryPointPseudoState.h\"\n"
-	   "#include \"UmlFinalState.h\"\n"
-	   "#include \"UmlTerminatePseudoState.h\"\n"
-	   "#include \"UmlExitPointPseudoState.h\"\n"
-	   "#include \"UmlDeepHistoryPseudoState.h\"\n"
-	   "#include \"UmlShallowHistoryPseudoState.h\"\n"
-	   "#include \"UmlJunctionPseudoState.h\"\n"
-	   "#include \"UmlChoicePseudoState.h\"\n"
-	   "#include \"UmlForkPseudoState.h\"\n"
-	   "#include \"UmlJoinPseudoState.h\"\n");
-  art->set_CppSource(s);
-}
-
-void update_uml_com()
-{
-  // already root
-  UmlClass * uml_com = UmlClass::get("UmlCom", 0);
-  UmlOperation * op =
-    uml_com->add_op("send_cmd", PublicVisibility, "void", FALSE);
-  
-  op->add_param(0, InputDirection, "id", "item_id");
-  op->add_param(1, InputDirection, "cmd", UmlClass::get("OnInstanceCmd", 0));
-  op->add_param(2, InputOutputDirection, "arg", UmlClass::get("anItemKind", 0));
-  op->add_param(3, InputOutputDirection, "id2", "item_id");
-
-  op->set_Description("internal, do NOT use it\n");
-  op->set_isClassMember(TRUE);
-  
-  op->set_cpp("${type}", 
-	      "const ${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, const ${t3} ${p3}",
-	      "\
-#ifdef TRACE\n\
-  cout << \"UmlCom::send_cmd(id, \" << cmd << \", \" << arg << \", \" << id2 << \")\\n\";\n\
-#endif\n\
-  \n\
-  write_char(onInstanceCmd);\n\
-  write_id(id);\n\
-  write_char(cmd);\n\
-  write_char(arg);\n\
-  write_id(id2);\n\
-  flush();\n",
-	      FALSE, 0, 0);
-
-  op->set_java("${type}",
-	       "${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}",
-	       "\
-  //cout << \"UmlCom.send_cmd(id, \" << cmd << \", \" << arg << \", \" << id2 << \")\\n\";\n\
-  \n\
-  write_char((byte) CmdFamily._onInstanceCmd);\n\
-  write_id(id);\n\
-  write_char((byte) cmd.value());\n\
-  write_char((byte) arg.value());\n\
-  write_id(id2);\n\
-  flush();\n",
-	       FALSE);
-}
-
-void upgrade_states(UmlClass * base_item,
-		    UmlClass * user_item)
-{
-  UmlClassView * base_class_view = (UmlClassView *) base_item->parent();
-  UmlClassView * user_class_view = (UmlClassView *) user_item->parent();
-  UmlDeploymentView * base_depl_view = (UmlDeploymentView *)
-    base_item->associatedArtifact()->parent();
-  UmlDeploymentView * user_depl_view = (UmlDeploymentView *)
-    user_item->associatedArtifact()->parent();
-  
-  UmlCom::trace("State<br>\n");
-  
-  UmlClass * user_stateitem = 
-    UmlClass::made(user_class_view, user_depl_view, "UmlStateItem", TRUE);
-  UmlClass * user_state =
-    add_state(base_class_view, user_class_view,
-	      base_depl_view, user_depl_view,
-	      base_item, user_item, user_stateitem);
-  
-  UmlCom::trace("Transition<br>\n");
-  
-  add_transition(base_class_view, user_class_view,
-		 base_depl_view, user_depl_view,
-		 base_item, user_item, user_stateitem);
-  
-  UmlCom::trace("Region<br>\n");
-  
-  add_region(base_class_view, user_class_view,
-	     base_depl_view, user_depl_view,
-	     base_item, user_item, user_stateitem, user_state);
-  
-  UmlCom::trace("Action<br>\n");
-  
-  add_stateaction(base_class_view, user_class_view,
-		  base_depl_view, user_depl_view,
-		  base_item, user_item, user_stateitem, user_state);
-
-  UmlCom::trace("Pseudo States<br>\n");
-  
-  add_pseudostates(base_class_view, user_class_view,
-		  base_depl_view, user_depl_view,
-		  base_item, user_item, user_stateitem);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  UmlCom::trace("update anItemKind<br>\n");
-  
-  add_state_item_kind();
-  
-  UmlCom::trace("update cmd list<br>\n");
-  
-  add_state_on_instance_cmd();
-  
-  UmlCom::trace("update item read<br>\n");
-  
-  baseitem_read_state(base_item);
-  
-  UmlCom::trace("update com<br>\n");
-  
-  update_uml_com();
-  
-  UmlCom::set_user_id(uid);
-}
-
-void base_state_include_umlcom()
-{
-  UmlArtifact * art = UmlClass::get("UmlBaseState", 0)->associatedArtifact();
-  QCString s = art->cppSource();
-  
-  if (s.find("#include \"UmlCom.h\"\n") == -1) {
-    s.insert(s.find("${includes}"), "#include \"UmlCom.h\"\n");
-    art->set_CppSource(s);
-  }
-}
+#include "util.h"
+#include "state.h"
+#include "activity.h"
+#include "insertbase.h"
+#include "instance.h"
+#include "diagdef.h"
+#include "python.h"
+#include "php.h"
 
 //
 // define set_Name on UmlBaseClass to rename 
@@ -1337,8 +145,8 @@ void add_move_after(UmlClass * base_item, UmlClass * uml_item)
 		      "  else\n"
 		      "    return FALSE;\n",
 		      FALSE, 0, 0);
-  move_after->set_java("void", "${t0} ${p0}", \
-		       "  UmlCom.send_cmd(identifier_(), OnInstanceCmd.moveAfterCmd, \n"
+  move_after->set_java("void", "${t0} ${p0}",
+		       "  UmlCom.send_cmd(identifier_(), OnInstanceCmd.moveAfterCmd,\n"
 		       "                  (x != null) ? x.identifier_() : 0);\n"
 		       "  UmlCom.check();\n"
 		       "  parent().reread_children_if_needed_();\n",
@@ -1384,7 +192,7 @@ void upgrade_UmlSettings()
   cl->set_Description(" This class manages settings not linked with a language, configured through\n"
 		      " the 'Generation settings' dialog.\n"
 		      "\n"
-		      " This class may be defined as a 'singleton', but I prefer to use static \n"
+		      " This class may be defined as a 'singleton', but I prefer to use static\n"
 		      " members allowing to just write 'UmlSettings::member' rather than\n"
 		      " 'UmlSettings::instance()->member' or other long sentence like this.\n");
   
@@ -1720,6 +528,8 @@ bool java_jdk1_4(UmlClass * javasettings)
 
 void upgrade_jdk5(UmlClass * javasettings)
 {
+  UmlCom::trace("<b>upgrade to manage jdk5</b><br>\n");
+  
   unsigned uid = UmlCom::user_id();
   
   UmlCom::set_user_id(0);
@@ -2188,19 +998,19 @@ void upgrade_jdk5(UmlClass * javasettings)
   
   UmlCom::trace("update UmlBaseClass::addFormal()<br>\n");
   op1 = baseclass->get_operation("addFormal");
-  op1->set_CppBody("  UmlCom::send_cmd(_identifier, addFormalCmd, rank, formal._name, \n"
+  op1->set_CppBody("  UmlCom::send_cmd(_identifier, addFormalCmd, rank, formal._name,\n"
 		   "		   formal._type, formal._default_value, formal._extends);\n"
 		   "  return UmlCom::read_bool();\n");
-  op1->set_JavaBody("  UmlCom.send_cmd(identifier_(), OnInstanceCmd.addFormalCmd, rank, formal._name, \n"
+  op1->set_JavaBody("  UmlCom.send_cmd(identifier_(), OnInstanceCmd.addFormalCmd, rank, formal._name,\n"
 		    "		   formal._type, formal._default_value, formal._extends);\n"
 		    "  UmlCom.check();\n");
   
   UmlCom::trace("update UmlBaseClass::replaceFormal()<br>\n");
   op1 = baseclass->get_operation("replaceFormal");
-  op1->set_CppBody("  UmlCom::send_cmd(_identifier, replaceFormalCmd, rank, formal._name, \n"
+  op1->set_CppBody("  UmlCom::send_cmd(_identifier, replaceFormalCmd, rank, formal._name,\n"
 		   "		   formal._type, formal._default_value, formal._extends);\n"
 		   "  return UmlCom::read_bool();\n");
-  op1->set_JavaBody("  UmlCom.send_cmd(identifier_(), OnInstanceCmd.replaceFormalCmd, rank, formal._name, \n"
+  op1->set_JavaBody("  UmlCom.send_cmd(identifier_(), OnInstanceCmd.replaceFormalCmd, rank, formal._name,\n"
 		    "		   formal._type, formal._default_value, formal._extends);\n"
 		    "  UmlCom.check();\n");
   
@@ -2306,6 +1116,8 @@ void upgrade_jdk5(UmlClass * javasettings)
 
 void fixe_package_diagram()
 {
+  UmlCom::trace("<b>fixe operations on UmlBasePackage</b><br>\n");
+  
   UmlClass * basepackage = UmlClass::get("UmlBasePackage", 0);
   UmlOperation * op;
   UmlTypeSpec t;
@@ -2390,6 +1202,8 @@ void fixe_umlbaseactualparameter_read()
 
 void add_class_association(UmlClass * baserelation)
 {
+  UmlCom::trace("<b>add class association</b><br>\n");
+  
   unsigned uid = UmlCom::user_id();
   
   UmlCom::set_user_id(0);
@@ -2530,7 +1344,7 @@ void add_side(UmlClass * baserelation)
   return (UmlRelation *) UmlBaseItem::read_();\n",
 	       FALSE, 0, 0);
   op->set_java("${type}", "${t0} ${p0}", "\
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd.sideCmd, \n\
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.sideCmd,\n\
 		  (first) ? (byte) 1 : (byte) 0);\n\
   \n\
   return (UmlRelation) UmlBaseItem.read_();\n",
@@ -2619,7 +1433,7 @@ void add_objectdiagram(UmlClass * base_item, UmlClass * user_item)
   UmlClass * base_objectdiagram;
   UmlClass * user_objectdiagram;
   
-  UmlCom::trace("Object diagram<br>\n");
+  UmlCom::trace("<b>Object diagram</b><br>\n");
   
   user_diagram->made(base_class_view, user_class_view,
 		     base_depl_view, user_depl_view,
@@ -2661,2514 +1475,6 @@ void add_objectdiagram(UmlClass * base_item, UmlClass * user_item)
 }
 
 //
-// add all concerning activities
-//
-
-UmlClass * add_activity_diagram(UmlClassView * base_class_view, UmlClassView * user_class_view,
-				UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-				UmlClass * base_item, UmlClass * user_activity,
-				UmlClass * user_activityitem)
-{
-  UmlClass * user_diagram = UmlClass::get("UmlDiagram", 0);
-  UmlClass * base_activitydiagram;
-  UmlClass * user_activitydiagram;
-    
-  user_diagram->made(base_class_view, user_class_view,
-		     base_depl_view, user_depl_view,
-		     base_item, "ActivityDiagram",
-		     base_activitydiagram, user_activitydiagram,
-		     user_activityitem);
-  base_activitydiagram->add_default_base_op(user_diagram, user_activitydiagram, user_activity,
-					    "activity diagram", "anActivityDiagram");
-  user_activitydiagram->add_constr(base_activitydiagram, PublicVisibility);
-
-  user_activitydiagram->set_Description(" This class manages 'activity diagrams', notes that the class 'UmlDiagram'\n"
-					" is a mother class of all the diagrams, allowing to generalize their\n"
-					" management\n"
-					"\n"
-					" You can modify it as you want (except the constructor)");
-  UmlClass * cl;
-  
-  if ((cl = UmlClass::get("UmlBaseStateDiagram", 0)) != 0)
-    base_activitydiagram->moveAfter(cl);
-  
-  if ((cl = UmlClass::get("UmlStateDiagram", 0)) != 0)
-    user_activitydiagram->moveAfter(cl);
-
-  return user_activitydiagram;
-}
-
-void add_pre_post_conditions(UmlClass * base_class)
-{
-  // uid is already 0
-  UmlOperation * op;
-
-  defGet(base_class, _pre_condition, preCondition, "string", 0, 0,
-	 "pre condition");
-  defSet(base_class, _pre_condition, set_PreCondition, "str", setUmlEntryBehaviorCmd, 0, 0,
-	 "pre condition");
-  defGet(base_class, _post_condition, postCondition, "string", 0, 0,
-	 "post condition");
-  defSet(base_class, _post_condition, set_PostCondition, "str", setUmlExitBehaviorCmd, 0, 0,
-	 "post condition");
-
-  defGet(base_class, _cpp_pre_condition, cppPreCondition, "string", "WITHCPP", 0,
-	 "pre condition in C++");
-  defSet(base_class, _cpp_pre_condition, set_CppPreCondition, "str", setCppEntryBehaviorCmd, 0, 0,
-	 "pre condition in C++");
-  defGet(base_class, _cpp_post_condition, cppPostCondition, "string", 0, 0,
-	 "post condition in C++");
-  defSet(base_class, _cpp_post_condition, set_CppPostCondition, "str", setCppExitBehaviorCmd, 0, "#endif",
-	 "post condition in C++");
-
-  defGet(base_class, _java_pre_condition, javaPreCondition, "string", "WITHJAVA", 0,
-	 "pre condition in Java");
-  defSet(base_class, _java_pre_condition, set_JavaPreCondition, "str", setJavaEntryBehaviorCmd, 0, 0,
-	 "pre condition in Java");
-  defGet(base_class, _java_post_condition, javaPostCondition, "string", 0, 0,
-	 "post condition in Java");
-  defSet(base_class, _java_post_condition, set_JavaPostCondition, "str", setJavaExitBehaviorCmd, 0, "#endif",
-	 "post condition in Java");
-}
-
-void add_activity(UmlClassView * base_class_view, UmlClassView * user_class_view,
-		  UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-		  UmlClass * base_item, UmlClass * user_item, UmlClass * user_activityitem)
-{
-  UmlClass * base_activity;
-  UmlClass * user_activity;
-  UmlOperation * op;
-  
-  user_item->made(base_class_view, user_class_view,
-		  base_depl_view, user_depl_view,
-		  base_item, "Activity", base_activity, user_activity,
-		  0);
-  base_activity->add_default_base_op(user_item, user_activity,
-				     UmlClass::get("UmlClassView", 0),
-				     "activity", "anActivity");
-  user_activity->add_constr(base_activity, PublicVisibility);  
-    
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-    
-  add_pre_post_conditions(base_activity);
-  include_umlcom(base_activity);
-
-  defGetBool(base_activity, _read_only, isReadOnly, 0, 0,
-	     " return the isReadOnly attribute, if TRUE the activity must not made any changes to variables ouside the activity or to objects.");
-  defSetBool(base_activity, _read_only, set_isReadOnly, setReadOnlyCmd, 0, 0,
-	     " set the isReadOnly attribute");
-  defGetBool(base_activity, _single_execution, isSingleExecution, 0, 0,
-	     " return the isSingleExecution attribute, if TRUE all invocations of the activity are handle by the same execution");
-  defSetBool(base_activity, _single_execution, set_isSingleExecution, setSingleExecutionCmd, 0, 0,
-	     " set the isSingleExecution attribute");
-
-  UmlCom::set_user_id(uid);
-    
-  UmlClass * user_activitydiagram = 
-    add_activity_diagram(base_class_view, user_class_view,
-			 base_depl_view, user_depl_view,
-			 base_item, user_item, user_activityitem);
-  
-  UmlCom::set_user_id(0);
-    
-  add_assoc_diag_ops(base_activity, user_activitydiagram);
-
-  op = base_activity->add_op("unload", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "rec", "bool");
-  op->add_param(1, InputDirection, "del", "bool");
-  op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	      "  _pre_condition = 0;\n"
-	      "  _post_condition = 0;\n"
-	      "#ifdef WITHCPP\n"
-	      "  _cpp_pre_condition = 0;\n"
-	      "  _cpp_post_condition = 0;\n"
-	      "#endif\n"
-	      "#ifdef WITHJAVA\n"
-	      "  _java_pre_condition = 0;\n"
-	      "  _java_post_condition = 0;\n"
-	      "#endif\n"
-	      "  UmlBaseItem::unload(rec, del);\n",
-	      FALSE, 0, 0);
-  QCString s = op->cppDecl();
-  
-  s.replace(s.find("${p0}"), 5, "= FALSE");
-  s.replace(s.find("${p1}"), 5, "= FALSE");
-  op->set_CppDecl(s);
-  
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  _pre_condition = null;\n"
-	       "  _post_condition = null;\n"
-	       "  _cpp_pre_condition = null;\n"
-	       "  _cpp_post_condition = null;\n"
-	       "  _java_pre_condition = null;\n"
-	       "  _java_post_condition = null;\n"
-	       "  super.unload(rec, del);\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" to unload the object to free memory, it will be reloaded automatically\n\
- if needed. Recursively done for the sub items if 'rec' is TRUE. \n\
-\n\
- if 'del' is true the sub items are deleted in C++, and removed from the\n\
- internal dictionnary in C++ and Java (to allow it to be garbaged),\n\
- you will have to call Children() to re-access to them");
-    
-  base_activity->add_attribute("_pre_condition", PrivateVisibility, "string",
-			       0, 0);
-  base_activity->add_attribute("_post_condition", PrivateVisibility, "string",
-			       0, 0);
-  base_activity->add_attribute("_cpp_pre_condition", PrivateVisibility, "string",
-			       "WITHCPP", 0);
-  base_activity->add_attribute("_cpp_post_condition", PrivateVisibility, "string",
-			       0, "endif");
-  base_activity->add_attribute("_java_pre_condition", PrivateVisibility, "string",
-				  "WITHJAVA", 0);
-  base_activity->add_attribute("_java_post_condition", PrivateVisibility, "string",
-			       0, "endif");
-  base_activity->add_attribute("_read_only", PrivateVisibility, "bool",
-			       0, 0);
-  base_activity->add_attribute("_single_execution", PrivateVisibility, "bool",
-			       0, 0);
-  base_activity->add_relation(aDirectionalAssociation,
-			      "_assoc_diagram", PrivateVisibility,
-			      user_activitydiagram, 0, 0);  
-  
-  op = base_activity->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  _assoc_diagram = (UmlActivityDiagram *) UmlBaseItem::read_();\n"
-	      "  UmlBaseItem::read_uml_();\n"
-	      "  _pre_condition = UmlCom::read_string();\n"
-	      "  _post_condition = UmlCom::read_string();\n"
-	      "  _read_only = UmlCom::read_bool();\n"
-	      "  _single_execution = UmlCom::read_bool();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  _assoc_diagram = (UmlActivityDiagram) UmlBaseItem.read_();\n"
-	       "  super.read_uml_();\n"
-	       "  _pre_condition = UmlCom.read_string();\n"
-	       "  _post_condition = UmlCom.read_string();\n"
-	       "  _read_only = UmlCom.read_bool();\n"
-	       "  _single_execution = UmlCom.read_bool();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_activity->add_op("read_cpp_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  _cpp_pre_condition = UmlCom::read_string();\n"
-	      "  _cpp_post_condition = UmlCom::read_string();\n",
-	      FALSE, "WITHCPP", "endif");
-  op->set_java("${type}", "",
-	       "  _cpp_pre_condition = UmlCom.read_string();\n"
-	       "  _cpp_post_condition = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_activity->add_op("read_java_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	       "  _java_pre_condition = UmlCom::read_string();\n"
-	       "  _java_post_condition = UmlCom::read_string();\n",
-	      FALSE, "WITHJAVA", "endif");
-  op->set_java("${type}", "",
-	       "  _java_pre_condition = UmlCom.read_string();\n"
-	       "  _java_post_condition = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-}
-
-UmlClass * add_activitynode(UmlClassView * base_class_view, UmlClassView * user_class_view,
-			    UmlDeploymentView * base_depl_view,
-			    UmlDeploymentView * user_depl_view,
-			    UmlClass * base_item, UmlClass * user_item,
-			    UmlClass * user_activityitem)
-{
-  UmlClass * base_activitynode;
-  UmlClass * user_activitynode;
-  
-  user_item->made(base_class_view, user_class_view,
-		  base_depl_view, user_depl_view,
-		  base_item, "ActivityNode", base_activitynode, user_activitynode,
-		  user_activityitem);
-
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-    
-  base_activitynode->add_constr(user_item, ProtectedVisibility); 
-  
-  UmlCom::set_user_id(uid);
-  
-  user_activitynode->add_constr(base_activitynode, ProtectedVisibility);
-  user_activitynode->set_isAbstract(TRUE);
-
-  return user_activitynode;
-}
-
-UmlClass * add_flow_behavior(UmlClassView * base_class_view,
-			     UmlDeploymentView * base_depl_view)
-{
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  UmlClass * flow_behavior = 
-    UmlClass::made(base_class_view, base_depl_view, "FlowBehavior");
-  
-  include_umlcom(flow_behavior);
-  
-  flow_behavior->add_attribute("weight", PublicVisibility, "string", 0, 0);
-  flow_behavior->add_attribute("guard", PublicVisibility, "string", 0, 0);
-  flow_behavior->add_attribute("selection", PublicVisibility, "string", 0, 0);
-  flow_behavior->add_attribute("transformation", PublicVisibility, "string", 0, 0);
-  
-  UmlOperation * op;
-  
-  op = flow_behavior->add_op("read", PublicVisibility, "void");
-  op->set_cpp("${type}", "", "\
-  weight = UmlCom::read_string();\n\
-  guard = UmlCom::read_string();\n\
-  selection = UmlCom::read_string();\n\
-  transformation = UmlCom::read_string();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "", "\
-  weight = UmlCom.read_string();\n\
-  guard = UmlCom.read_string();\n\
-  selection = UmlCom.read_string();\n\
-  transformation = UmlCom.read_string();\n",
-	       FALSE);
-  
-  op = flow_behavior->add_op("unload", PublicVisibility, "void");
-  op->set_cpp("${type}", "", "\
-  weight = 0;\n\
-  guard = 0;\n\
-  selection = 0;\n\
-  transformation = 0;\n",
-	      FALSE, 0, 0);
-  op->set_JavaDecl("");
-  
-  UmlCom::set_user_id(uid);
-  
-  return flow_behavior;
-}
-
-void add_flow(UmlClassView * base_class_view, UmlClassView * user_class_view,
-	      UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-	      UmlClass * base_item, UmlClass * user_item,
-	      UmlClass * user_activityitem, UmlClass * user_activitynode)
-{
-  UmlClass * base_flow;
-  UmlClass * user_flow;
-  UmlOperation * op;
-  
-  user_item->made(base_class_view, user_class_view,
-		  base_depl_view, user_depl_view,
-		  base_item, "Flow", base_flow,
-		  user_flow, user_activityitem);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  include_umlcom(base_flow);
-  
-  base_flow->add_kind("aFlow");
-  
-  op = base_flow->add_op("create", PublicVisibility, user_flow, TRUE);
-  op->set_isClassMember(TRUE);
-  op->add_param(0, InputOutputDirection, "start", user_activitynode);
-  op->add_param(1, InputOutputDirection, "end", user_activitynode);
-  op->set_cpp("${type} *", 
-	      "${t0} * ${p0}, ${t1} * ${p1}",
-	      "  UmlCom::send_cmd(start->_identifier, createCmd, aFlow,\n"
-	      "\t\t   end->_identifier);\n"
-	      "  UmlFlow * result = (UmlFlow *) UmlBaseItem::read_();\n"
-	      "\n"
-	      "  if (result != 0)\n"
-	      "    start->reread_children_if_needed_();\n"
-	      "  return result;\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  UmlCom.send_cmd(start.identifier_(), OnInstanceCmd.createCmd, anItemKind.aFlow,\n"
-	       "\t\t   end.identifier_());\n"
-	       "  UmlFlow result = (UmlFlow) UmlBaseItem.read_();\n"
-	       "  \n"
-	       "  if (result != null)\n"
-	       "    start.reread_children_if_needed_();\n"
-	       "  else\n"
-	       "    throw new RuntimeException(\"Cannot create the flow\");\n"
-	       "  return result;\n",
-	      FALSE);
-  op->set_Description(" Returns a new flow from 'start' to 'end'\n\
-\n\
- In case it cannot be created ('parent' cannot contain it etc ...) return 0\n\
-  in C++ and produce a RuntimeException in Java\n");
-  
-  op = base_flow->add_op("target", PublicVisibility, user_activitynode);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" returns the 'end' object (the 'start' object is the parent of the flow) no set !");
-  op->set_cpp("${type} *", "",
-	      "  read_if_needed_();\n"
-	      "  return _target;\n",
-	      FALSE, 0, 0); \
-  op->set_java("${type}", "",
-	       "  read_if_needed_();\n"
-	       "  return _target;\n", FALSE);
-  
-  defGetField(base_flow, _uml, weight, weight, "string", 0, 0,
-	      "weight in OCL");
-  defSetField(base_flow, _uml, set_Weight, weight, "str", setUmlActivityCmd, 0, 0,
-	      "weight in OCL");
-  defGetField(base_flow, _uml, guard, guard, "string", 0, 0,
-	      "guard in OCL");
-  defSetField(base_flow, _uml, set_Guard, guard, "str", setUmlGuardCmd, 0, 0,
-	      "guard in OCL");
-  defGetField(base_flow, _uml, selection, selection, "string", 0, 0, 
-	      "selection in OCL");
-  defSetField(base_flow, _uml, set_Selection, selection, "str", setUmlEntryBehaviorCmd, 0, 0,
-	      "selection in OCL");
-  defGetField(base_flow, _uml, transformation, transformation, "string", 0, 0, 
-	      "transformation in OCL");
-  defSetField(base_flow, _uml, set_Transformation, transformation, "str", setUmlExitBehaviorCmd, 0, 0,
-	      "transformation in OCL");
-
-  defGetField(base_flow, _cpp, cppWeight, weight, "string", "WITHCPP", 0,
-	      "weight in C++");
-  defSetField(base_flow, _cpp, set_CppWeight, weight, "str", setCppActivityCmd, 0, 0,
-	      "weight in C++");
-  defGetField(base_flow, _cpp, cppGuard, guard, "string", 0, 0,
-	      "guard in C++");
-  defSetField(base_flow, _cpp, set_CppGuard, guard, "str", setCppGuardCmd, 0, 0,
-	      "guard in C++");
-  defGetField(base_flow, _cpp, cppSelection, selection, "string", 0, 0,
-	      "selection in C++");
-  defSetField(base_flow, _cpp, set_CppSelection, selection, "str", setCppEntryBehaviorCmd, 0, 0,
-	      "selection in C++");
-  defGetField(base_flow, _cpp, cppTransformation, transformation, "string", 0, 0,
-	      "transformation in C++");
-  defSetField(base_flow, _cpp, set_CppTransformation, transformation, "str", setCppExitBehaviorCmd, 0, "endif",
-	      "transformation in C++");
-
-  defGetField(base_flow, _java, javaWeight, weight, "string", "WITHJAVA", 0,
-	      "weight in Java");
-  defSetField(base_flow, _java, set_JavaWeight, weight, "str", setJavaActivityCmd, 0, 0,
-	      "weight in Java");
-  defGetField(base_flow, _java, javaGuard, guard, "string", 0, 0,
-	      "guard in Java");
-  defSetField(base_flow, _java, set_JavaGuard, guard, "str", setJavaGuardCmd, 0, 0,
-	      "guard in Java");
-  defGetField(base_flow, _java, javaSelection, selection, "string", 0, 0,
-	      "selection in Java");
-  defSetField(base_flow, _java, set_JavaSelection, selection, "str", setJavaEntryBehaviorCmd, 0, 0,
-	      "selection in Java");
-  defGetField(base_flow, _java, javaTransformation, transformation, "string", 0, 0,
-	      "transformation in Java");
-  defSetField(base_flow, _java, set_JavaTransformation, transformation, "str", setJavaExitBehaviorCmd, 0, "endif",
-	      "transformation in Java");
-  
-  op = base_flow->add_op("unload", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "rec", "bool");
-  op->add_param(1, InputDirection, "del", "bool");
-  op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	      "  _uml.unload();\n"
-	      "#ifdef WITHCPP\n"
-	      "  _cpp.unload();\n"
-	      "#endif\n"
-	      "#ifdef WITHJAVA\n"
-	      "  _java.unload();\n"
-	      "#endif\n"
-	      "  UmlBaseItem::unload(rec, del);\n",
-	      FALSE, 0, 0);
-
-  QCString s = op->cppDecl();
-  
-  s.replace(s.find("${p0}"), 5, "= FALSE");
-  s.replace(s.find("${p1}"), 5, "= FALSE");
-  op->set_CppDecl(s);
-  
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  _uml = null;\n"
-	       "  _cpp = null;\n"
-	       "  _java = null;\n"
-	       "  super.unload(rec, del);\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" to unload the object to free memory, it will be reloaded automatically\n\
- if needed. Recursively done for the sub items if 'rec' is TRUE. \n\
-\n\
- if 'del' is true the sub items are deleted in C++, and removed from the\n\
- internal dictionnary in C++ and Java (to allow it to be garbaged),\n\
- you will have to call Children() to re-access to them");
-  
-  base_flow->add_relation(aDirectionalAssociation, "_target", PrivateVisibility,
-			  user_activitynode, 0, 0);
-			  
-  UmlClass * flow_behavior =
-    add_flow_behavior(base_class_view, base_depl_view);
-  
-  base_flow->add_relation(aDirectionalAggregationByValue, "_uml", PrivateVisibility,
-			  flow_behavior, 0, 0);
-  base_flow->add_relation(aDirectionalAggregationByValue, "_cpp", PrivateVisibility,
-			  flow_behavior, "WITHCPP", "endif");
-  base_flow->add_relation(aDirectionalAggregationByValue, "_java", PrivateVisibility,
-			  flow_behavior, "WITHJAVA", "endif");
-  
-  op = base_flow->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseItem::read_uml_();\n"
-	      "  _target = (UmlActivityNode *) UmlBaseItem::read_();\n"
-	      "  _uml.read();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  super.read_uml_();\n"
-	       "  _target = (UmlActivityNode) UmlBaseItem.read_();\n"
-	       "  _uml = new FlowBehavior();\n"
-	       "  _uml.read();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_flow->add_op("read_cpp_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "", "  _cpp.read();\n", FALSE, "WITHCPP", "endif");
-  op->set_java("${type}", "", "  _cpp = new FlowBehavior();\n  _cpp.read();\n", FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_flow->add_op("read_java_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "", "  _java.read();\n", FALSE, "WITHJAVA", "endif");
-  op->set_java("${type}", "", "  _java = new FlowBehavior();\n  _java.read();\n", FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  base_flow->add_constr(user_item, ProtectedVisibility);
-  
-  UmlCom::set_user_id(uid);
-  
-  op = user_flow->add_op("UmlFlow", PublicVisibility, (UmlClass *) 0, FALSE);
-  op->add_param(0, InputDirection, "id", "item_id");
-  op->add_param(1, InputDirection, "n", "string");
-  op->set_cpp(": UmlBaseFlow(id, n)",
-	      "${t0} ${p0}, const ${t1} & ${p1}",
-	      "", TRUE, 0, 0);
-  op->set_java("", "${t0} ${p0}, ${t1} ${p1}",
-	       "  super(id, n);\n", TRUE);
-}
-
-void add_return_direction()
-{
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  UmlClass * dir = UmlClass::get("aDirection", 0);
-  
-  dir->add_enum_item("ReturnDirection");
-  
-  UmlCom::set_user_id(uid);
-}
-
-void add_activityregion(UmlClassView * base_class_view, UmlClassView * user_class_view,
-			UmlDeploymentView * base_depl_view,
-			UmlDeploymentView * user_depl_view,
-			UmlClass * base_item, UmlClass * user_item,
-			UmlClass * user_activityitem, UmlClass * user_activitydiagram)
-{
-  // region
-  
-  UmlClass * base_activityregion;
-  UmlClass * user_activityregion;
-  
-  user_item->made(base_class_view, user_class_view,
-		  base_depl_view, user_depl_view,
-		  base_item, "ActivityRegion",
-		  base_activityregion, user_activityregion,
-		  user_activityitem);
-
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  base_activityregion->add_constr(user_item, ProtectedVisibility);
-  include_umlcom(base_activityregion);
-  
-  UmlCom::set_user_id(uid);
-  
-  user_activityregion->add_constr(base_activityregion, ProtectedVisibility);
-  user_activityregion->set_isAbstract(TRUE);
-  
-  UmlCom::set_user_id(0);
-  
-  UmlOperation * op;
-  
-  add_assoc_diag_ops(base_activityregion, user_activitydiagram);
-  
-  base_activityregion->add_relation(aDirectionalAssociation,
-				    "_assoc_diagram", PrivateVisibility,
-				    user_activitydiagram, 0, 0); 
-  
-  op = base_activityregion->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  _assoc_diagram = (UmlActivityDiagram *) UmlBaseItem::read_();\n"
-	      "  UmlBaseItem::read_uml_();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  _assoc_diagram = (UmlActivityDiagram) UmlBaseItem.read_();\n"
-	       "  super.read_uml_();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-  
-  // expansion region
-  
-  UmlClass * base_expansionregion;
-  UmlClass * user_expansionregion;
-  
-  user_activityregion->made(base_class_view, user_class_view,
-			    base_depl_view, user_depl_view,
-			    base_item, "ExpansionRegion",
-			    base_expansionregion, user_expansionregion,
-			    0);
-  
-  base_expansionregion->add_default_base_op(user_activityregion, user_expansionregion,
-					    user_item, "expansion region", "anExpansionRegion");
-  user_expansionregion->add_constr(base_expansionregion, PublicVisibility);
-  
-  UmlCom::set_user_id(0);
-  
-  include_umlcom(base_expansionregion);
-  
-  defGetBool(base_expansionregion, _must_isolate, isMustIsolate, 0, 0,
-	     " return the isMustIsolate attribute, if TRUE the actions in the region execute in isolation from actions outside the region.");
-  defSetBool(base_expansionregion, _must_isolate, set_isMustIsolate, setFlagCmd, 0, 0,
-	     " set the isMustIsolate attribute");
-  
-  UmlClass * expansionkind = 
-    UmlClass::made(base_class_view, base_depl_view, "anExpansionKind");
-
-  expansionkind->set_Stereotype("enum_pattern");
-  expansionkind->set_CppDecl(CppSettings::enumDecl());
-  expansionkind->set_JavaDecl(JavaSettings::enumPatternDecl());
-  expansionkind->add_enum_item("parallelExecution");
-  expansionkind->add_enum_item("iterativeExecution");
-  expansionkind->add_enum_item("streamExecution");
-  
-  defGetEnum(base_expansionregion, _mode, mode, expansionkind, 0, 0,
-		   "mode attribute, the way in which the execution interact.");
-  defSetEnum(base_expansionregion, _mode, set_Mode, expansionkind, setDefCmd, 0, 0,
-		   "mode attribute");
-  
-  base_expansionregion->add_attribute("_must_isolate", PrivateVisibility, "bool", 0, 0);  
-  base_expansionregion->add_relation(aDirectionalAggregationByValue,
-				     "_mode", PrivateVisibility,
-				     expansionkind, 0, 0);
-  
-  op = base_expansionregion->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityRegion::read_uml_();\n"
-	      "  _must_isolate = UmlCom::read_bool();\n"
-	      "  _mode = (anExpansionKind) UmlCom::read_char();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  super.read_uml_();\n"
-	      "  _must_isolate = UmlCom.read_bool();\n"
-	      "  _mode = anExpansionKind.fromInt(UmlCom.read_char());\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-  
-  // interruptible region
-  
-  UmlClass * base_interruptibleregion;
-  UmlClass * user_interruptibleregion;
-  
-  user_activityregion->made(base_class_view, user_class_view,
-			    base_depl_view, user_depl_view,
-			    base_item, "InterruptibleActivityRegion",
-			    base_interruptibleregion, user_interruptibleregion,
-			    0);
-  
-  base_interruptibleregion->add_default_base_op(user_activityregion, user_interruptibleregion,
-						user_item, "interruptible activity region", "anInterruptibleActivityRegion");
-  user_interruptibleregion->add_constr(base_interruptibleregion, PublicVisibility);
-}
-
-void add_activityaction(UmlClassView * base_class_view, UmlClassView * user_class_view,
-			UmlDeploymentView * base_depl_view,
-			UmlDeploymentView * user_depl_view,
-			UmlClass * base_item, UmlClass * user_item, 
-			UmlClass * user_activitynode)
-{
-  UmlClass * user_diagram = UmlClass::get("UmlDiagram", 0);
-  UmlClass * base_activityaction;
-  UmlClass * user_activityaction;
-  
-  user_activitynode->made(base_class_view, user_class_view,
-			  base_depl_view, user_depl_view,
-			  base_item, "ActivityAction",
-			  base_activityaction, user_activityaction,
-			  0);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  base_activityaction->add_constr(user_activitynode, ProtectedVisibility);
-  include_umlcom(base_activityaction);
-  
-  UmlCom::set_user_id(uid);
-  
-  user_activityaction->add_constr(base_activityaction, ProtectedVisibility);
-  user_activityaction->set_isAbstract(TRUE);
-  
-  UmlCom::set_user_id(0);
-  
-  add_pre_post_conditions(base_activityaction);
-  
-  add_assoc_diag_ops(base_activityaction, user_diagram);
-
-  UmlOperation * op;
-  
-  op = base_activityaction->add_op("unload", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "rec", "bool");
-  op->add_param(1, InputDirection, "del", "bool");
-  op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	      "  _pre_condition = 0;\n"
-	      "  _post_condition = 0;\n"
-	      "#ifdef WITHCPP\n"
-	      "  _cpp_pre_condition = 0;\n"
-	      "  _cpp_post_condition = 0;\n"
-	      "#endif\n"
-	      "#ifdef WITHJAVA\n"
-	      "  _java_pre_condition = 0;\n"
-	      "  _java_post_condition = 0;\n"
-	      "#endif\n"
-	      "  UmlBaseItem::unload(rec, del);\n",
-	      FALSE, 0, 0);
-  QCString s = op->cppDecl();
-  
-  s.replace(s.find("${p0}"), 5, "= FALSE");
-  s.replace(s.find("${p1}"), 5, "= FALSE");
-  op->set_CppDecl(s);
-  
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  _pre_condition = null;\n"
-	       "  _post_condition = null;\n"
-	       "  _cpp_pre_condition = null;\n"
-	       "  _cpp_post_condition = null;\n"
-	       "  _java_pre_condition = null;\n"
-	       "  _java_post_condition = null;\n"
-	       "  super.unload(rec, del);\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" to unload the object to free memory, it will be reloaded automatically\n\
- if needed. Recursively done for the sub items if 'rec' is TRUE. \n\
-\n\
- if 'del' is true the sub items are deleted in C++, and removed from the\n\
- internal dictionnary in C++ and Java (to allow it to be garbaged),\n\
- you will have to call Children() to re-access to them");
-    
-  base_activityaction->add_attribute("_pre_condition", PrivateVisibility, "string",
-				     0, 0);
-  base_activityaction->add_attribute("_post_condition", PrivateVisibility, "string",
-				     0, 0);
-  base_activityaction->add_attribute("_cpp_pre_condition", PrivateVisibility, "string",
-				     "WITHCPP", 0);
-  base_activityaction->add_attribute("_cpp_post_condition", PrivateVisibility, "string",
-				     0, "endif");
-  base_activityaction->add_attribute("_java_pre_condition", PrivateVisibility, "string",
-				     "WITHJAVA", 0);
-  base_activityaction->add_attribute("_java_post_condition", PrivateVisibility, "string",
-				     0, "endif");
-  base_activityaction->add_relation(aDirectionalAssociation,
-				    "_assoc_diagram", PrivateVisibility,
-				    user_diagram, 0, 0);  
-  
-  op = base_activityaction->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  _assoc_diagram = (UmlDiagram *) UmlBaseItem::read_();\n"
-	      "  UmlBaseItem::read_uml_();\n"
-	      "  _pre_condition = UmlCom::read_string();\n"
-	      "  _post_condition = UmlCom::read_string();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  _assoc_diagram = (UmlDiagram) UmlBaseItem.read_();\n"
-	       "  super.read_uml_();\n"
-	       "  _pre_condition = UmlCom.read_string();\n"
-	       "  _post_condition = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_activityaction->add_op("read_cpp_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  _cpp_pre_condition = UmlCom::read_string();\n"
-	      "  _cpp_post_condition = UmlCom::read_string();\n",
-	      FALSE, "WITHCPP", "endif");
-  op->set_java("${type}", "",
-	       "  _cpp_pre_condition = UmlCom.read_string();\n"
-	       "  _cpp_post_condition = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_activityaction->add_op("read_java_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	       "  _java_pre_condition = UmlCom::read_string();\n"
-	       "  _java_post_condition = UmlCom::read_string();\n",
-	      FALSE, "WITHJAVA", "endif");
-  op->set_java("${type}", "",
-	       "  _java_pre_condition = UmlCom.read_string();\n"
-	       "  _java_post_condition = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-  
-  // the artifacts containing all
-  
-  UmlCom::set_user_id(0);
-  
-  UmlArtifact * base_art = UmlArtifact::made(base_depl_view, "UmlBaseActivityActionClasses");
-  
-  UmlCom::set_user_id(uid);
-  
-  UmlArtifact * user_art = UmlArtifact::made(user_depl_view, "UmlActivityActionClasses");
-  
-  include_umlcom(base_art);
-  
-  // send object
-  
-  UmlClass * base_sendobject;
-  UmlClass * user_sendobject;
-  
-  user_activityaction->made(base_class_view, user_class_view,
-			    base_art, user_art,
-			    base_item, "SendObjectAction",
-			    base_sendobject, user_sendobject,
-			    0);
-  
-  base_sendobject->add_default_base_op(user_activityaction, user_sendobject,
-				       user_item,
-				       "send object action", "aSendObjectAction");
-  user_sendobject->add_constr(base_sendobject, PublicVisibility);
-
-  // unmarshall action
-  
-  UmlClass * base_unmarshall;
-  UmlClass * user_unmarshall;
-  
-  user_activityaction->made(base_class_view, user_class_view,
-			    base_art, user_art,
-			    base_item, "UnmarshallAction",
-			    base_unmarshall, user_unmarshall,
-			    0);
-  
-  base_unmarshall->add_default_base_op(user_activityaction, user_unmarshall,
-				       user_item,
-				       "unmarshall action", "anUnmarshallAction");
-  user_unmarshall->add_constr(base_unmarshall, PublicVisibility);
-
-  // on signal action
-  
-  UmlClass * base_onsignal;
-  UmlClass * user_onsignal;
-  
-  user_activityaction->made(base_class_view, user_class_view,
-			    base_depl_view, user_depl_view,
-			    base_item, "OnSignalAction",
-			    base_onsignal, user_onsignal,
-			    0);
-  
-  UmlCom::set_user_id(0);
-  
-  base_onsignal->add_constr(user_activityaction, ProtectedVisibility);
-  include_umlcom(base_onsignal);
-  
-  UmlCom::set_user_id(uid);
-  
-  user_onsignal->add_constr(base_onsignal, ProtectedVisibility);
-  user_onsignal->set_isAbstract(TRUE);
-
-  UmlCom::set_user_id(0);
-  
-  defGet(base_onsignal, _signal, signal, "string", 0, 0,
-	 "signal");
-  defSet(base_onsignal, _signal, set_Signal, "str", setUmlActivityCmd, 0, 0,
-	 "signal");
-  defGet(base_onsignal, _cpp_signal, cppSignal, "string", "WITHCPP", 0,
-	 "signal in C++");
-  defSet(base_onsignal, _cpp_signal, set_CppSignal, "str", setCppActivityCmd, 0, "#endif",
-	 "signal in C++");
-  defGet(base_onsignal, _java_signal, javaSignal, "string", "WITHJAVA", 0,
-	 "signal in Java");
-  defSet(base_onsignal, _java_signal, set_JavaSignal, "str", setJavaActivityCmd, 0, "#endif",
-	 "signal in Java");
-
-  op = base_onsignal->add_op("unload", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "rec", "bool");
-  op->add_param(1, InputDirection, "del", "bool");
-  op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	      "  _signal = 0;\n"
-	      "#ifdef WITHCPP\n"
-	      "  _cpp_signal = 0;\n"
-	      "#endif\n"
-	      "#ifdef WITHJAVA\n"
-	      "  _java_signal = 0;\n"
-	      "#endif\n"
-	      "  UmlBaseActivityAction::unload(rec, del);\n",
-	      FALSE, 0, 0);
-  s = op->cppDecl();
-  s.replace(s.find("${p0}"), 5, "= FALSE");
-  s.replace(s.find("${p1}"), 5, "= FALSE");
-  op->set_CppDecl(s);
-  
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  _signal = null;\n"
-	       "  _cpp_signal = null;\n"
-	       "  _java_signal = null;\n"
-	       "  super.unload(rec, del);\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" to unload the object to free memory, it will be reloaded automatically\n\
- if needed. Recursively done for the sub items if 'rec' is TRUE. \n\
-\n\
- if 'del' is true the sub items are deleted in C++, and removed from the\n\
- internal dictionnary in C++ and Java (to allow it to be garbaged),\n\
- you will have to call Children() to re-access to them");
-    
-  base_onsignal->add_attribute("_signal", PrivateVisibility, "string",
-				 0, 0);
-  base_onsignal->add_attribute("_cpp_signal", PrivateVisibility, "string",
-				 "WITHCPP", "endif");
-  base_onsignal->add_attribute("_java_signal", PrivateVisibility, "string",
-				 "WITHJAVA", "endif");
-
-  op = base_onsignal->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityAction::read_uml_();\n"
-	      "  _signal = UmlCom::read_string();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  super.read_uml_();\n"
-	       "  _signal = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_onsignal->add_op("read_cpp_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityAction::read_cpp_();\n"
-	      "  _cpp_signal = UmlCom::read_string();\n",
-	      FALSE, "WITHCPP", "endif");
-  op->set_java("${type}", "",
-	       "  super.read_cpp_();\n"
-	       "  _cpp_signal = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_onsignal->add_op("read_java_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityAction::read_java_();\n"
-	      "  _java_signal = UmlCom::read_string();\n",
-	      FALSE, "WITHJAVA", "endif");
-  op->set_java("${type}", "",
-	       "  super.read_java_();\n"
-	       "  _java_signal = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-  
-  // send signal action
-  
-  UmlClass * base_sendsignal;
-  UmlClass * user_sendsignal;
-
-  
-  user_onsignal->made(base_class_view, user_class_view,
-		      base_art, user_art,
-		      base_item, "SendSignalAction",
-		      base_sendsignal, user_sendsignal,
-		      0);
-  
-  base_sendsignal->add_default_base_op(user_onsignal, user_sendsignal,
-				       user_item,
-				       "send signal action", "aSendSignalAction");
-  user_sendsignal->add_constr(base_sendsignal, PublicVisibility);
-  
-  // broadcast signal action
-  
-  UmlClass * base_broadcastsignal;
-  UmlClass * user_broadcastsignal;
-
-  
-  user_onsignal->made(base_class_view, user_class_view,
-		      base_art, user_art,
-		      base_item, "BroadcastSignalAction",
-		      base_broadcastsignal, user_broadcastsignal,
-		      0);
-  
-  base_broadcastsignal->add_default_base_op(user_onsignal, user_broadcastsignal,
-					    user_item,
-					    "broadcast signal action", "aBroadcastSignalAction");
-  user_broadcastsignal->add_constr(base_broadcastsignal, PublicVisibility);
-  
-  // value specification action
-  
-  UmlClass * base_valuespecification;
-  UmlClass * user_valuespecification;
-  
-  user_activityaction->made(base_class_view, user_class_view,
-			    base_art, user_art,
-			    base_item, "ValueSpecificationAction",
-			    base_valuespecification, user_valuespecification,
-			    0);
-  
-  base_valuespecification->add_default_base_op(user_activityaction, user_valuespecification,
-					       user_item,
-					       "value specification action", "aValueSpecificationAction");
-  user_valuespecification->add_constr(base_valuespecification, PublicVisibility);
-
-  UmlCom::set_user_id(0);
-  
-  defGet(base_valuespecification, _value, value, "string", 0, 0,
-	 "value");
-  defSet(base_valuespecification, _value, set_Value, "str", setUmlActivityCmd, 0, 0,
-	 "value");
-  defGet(base_valuespecification, _cpp_value, cppValue, "string", "WITHCPP", 0,
-	 "value in C++");
-  defSet(base_valuespecification, _cpp_value, set_CppValue, "str", setCppActivityCmd, 0, "#endif",
-	 "value in C++");
-  defGet(base_valuespecification, _java_value, javaValue, "string", "WITHJAVA", 0,
-	 "value in Java");
-  defSet(base_valuespecification, _java_value, set_JavaValue, "str", setJavaActivityCmd, 0, "#endif",
-	 "value in Java");
-
-  op = base_valuespecification->add_op("unload", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "rec", "bool");
-  op->add_param(1, InputDirection, "del", "bool");
-  op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	      "  _value = 0;\n"
-	      "#ifdef WITHCPP\n"
-	      "  _cpp_value = 0;\n"
-	      "#endif\n"
-	      "#ifdef WITHJAVA\n"
-	      "  _java_value = 0;\n"
-	      "#endif\n"
-	      "  UmlBaseActivityAction::unload(rec, del);\n",
-	      FALSE, 0, 0);
-  s = op->cppDecl();
-  s.replace(s.find("${p0}"), 5, "= FALSE");
-  s.replace(s.find("${p1}"), 5, "= FALSE");
-  op->set_CppDecl(s);
-  
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  _value = null;\n"
-	       "  _cpp_value = null;\n"
-	       "  _java_value = null;\n"
-	       "  super.unload(rec, del);\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" to unload the object to free memory, it will be reloaded automatically\n\
- if needed. Recursively done for the sub items if 'rec' is TRUE. \n\
-\n\
- if 'del' is true the sub items are deleted in C++, and removed from the\n\
- internal dictionnary in C++ and Java (to allow it to be garbaged),\n\
- you will have to call Children() to re-access to them");
-    
-  base_valuespecification->add_attribute("_value", PrivateVisibility, "string",
-					 0, 0);
-  base_valuespecification->add_attribute("_cpp_value", PrivateVisibility, "string",
-					 "WITHCPP", "endif");
-  base_valuespecification->add_attribute("_java_value", PrivateVisibility, "string",
-					 "WITHJAVA", "endif");
-
-  op = base_valuespecification->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityAction::read_uml_();\n"
-	      "  _value = UmlCom::read_string();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  super.read_uml_();\n"
-	       "  _value = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_valuespecification->add_op("read_cpp_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityAction::read_cpp_();\n"
-	      "  _cpp_value = UmlCom::read_string();\n",
-	      FALSE, "WITHCPP", "endif");
-  op->set_java("${type}", "",
-	       "  super.read_cpp_();\n"
-	       "  _cpp_value = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_valuespecification->add_op("read_java_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityAction::read_java_();\n"
-	      "  _java_value = UmlCom::read_string();\n",
-	      FALSE, "WITHJAVA", "endif");
-  op->set_java("${type}", "",
-	       "  super.read_java_();\n"
-	       "  _java_value = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-  
-  // opaque action
-  
-  UmlClass * base_opaque;
-  UmlClass * user_opaque;
-  
-  user_activityaction->made(base_class_view, user_class_view,
-			    base_art, user_art,
-			    base_item, "OpaqueAction",
-			    base_opaque, user_opaque,
-			    0);
-  
-  base_opaque->add_default_base_op(user_activityaction, user_opaque,
-				   user_item,
-				   "opaque action", "anOpaqueAction");
-  user_opaque->add_constr(base_opaque, PublicVisibility);
-
-  UmlCom::set_user_id(0);
-  
-  defGet(base_opaque, _behavior, behavior, "string", 0, 0,
-	 "behavior");
-  defSet(base_opaque, _behavior, set_Behavior, "str", setUmlActivityCmd, 0, 0,
-	 "behavior");
-  defGet(base_opaque, _cpp_behavior, cppBehavior, "string", "WITHCPP", 0,
-	 "behavior in C++");
-  defSet(base_opaque, _cpp_behavior, set_CppBehavior, "str", setCppActivityCmd, 0, "#endif",
-	 "behavior in C++");
-  defGet(base_opaque, _java_behavior, javaBehavior, "string", "WITHJAVA", 0,
-	 "behavior in Java");
-  defSet(base_opaque, _java_behavior, set_JavaBehavior, "str", setJavaActivityCmd, 0, "#endif",
-	 "behavior in Java");
-
-  op = base_opaque->add_op("unload", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "rec", "bool");
-  op->add_param(1, InputDirection, "del", "bool");
-  op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	      "  _behavior = 0;\n"
-	      "#ifdef WITHCPP\n"
-	      "  _cpp_behavior = 0;\n"
-	      "#endif\n"
-	      "#ifdef WITHJAVA\n"
-	      "  _java_behavior = 0;\n"
-	      "#endif\n"
-	      "  UmlBaseActivityAction::unload(rec, del);\n",
-	      FALSE, 0, 0);
-  s = op->cppDecl();
-  s.replace(s.find("${p0}"), 5, "= FALSE");
-  s.replace(s.find("${p1}"), 5, "= FALSE");
-  op->set_CppDecl(s);
-  
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  _behavior = null;\n"
-	       "  _cpp_behavior = null;\n"
-	       "  _java_behavior = null;\n"
-	       "  super.unload(rec, del);\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" to unload the object to free memory, it will be reloaded automatically\n\
- if needed. Recursively done for the sub items if 'rec' is TRUE. \n\
-\n\
- if 'del' is true the sub items are deleted in C++, and removed from the\n\
- internal dictionnary in C++ and Java (to allow it to be garbaged),\n\
- you will have to call Children() to re-access to them");
-    
-  base_opaque->add_attribute("_behavior", PrivateVisibility, "string",
-			     0, 0);
-  base_opaque->add_attribute("_cpp_behavior", PrivateVisibility, "string",
-			     "WITHCPP", "endif");
-  base_opaque->add_attribute("_java_behavior", PrivateVisibility, "string",
-			     "WITHJAVA", "endif");
-
-  op = base_opaque->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityAction::read_uml_();\n"
-	      "  _behavior = UmlCom::read_string();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  super.read_uml_();\n"
-	       "  _behavior = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_opaque->add_op("read_cpp_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityAction::read_cpp_();\n"
-	      "  _cpp_behavior = UmlCom::read_string();\n",
-	      FALSE, "WITHCPP", "endif");
-  op->set_java("${type}", "",
-	       "  super.read_cpp_();\n"
-	       "  _cpp_behavior = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_opaque->add_op("read_java_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityAction::read_java_();\n"
-	      "  _java_behavior = UmlCom::read_string();\n",
-	      FALSE, "WITHJAVA", "endif");
-  op->set_java("${type}", "",
-	       "  super.read_java_();\n"
-	       "  _java_behavior = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-  
-  // accept event action
-  
-  UmlClass * base_acceptevent;
-  UmlClass * user_acceptevent;
-  
-  user_activityaction->made(base_class_view, user_class_view,
-			    base_art, user_art,
-			    base_item, "AcceptEventAction",
-			    base_acceptevent, user_acceptevent,
-			    0);
-  
-  base_acceptevent->add_default_base_op(user_activityaction, user_acceptevent,
-					user_item,
-					"accept event action", "anAcceptEventAction");
-  user_acceptevent->add_constr(base_acceptevent, PublicVisibility);
-
-  UmlCom::set_user_id(0);
-  
-  defGetBool(base_acceptevent, _unmarshall, isUnmarshall, 0, 0,
-	     " return the isUnmarshall attribute, if TRUE there are multiple output pins for attributes or the event.");
-  defSetBool(base_acceptevent, _unmarshall, set_isUnmarshall, setUnmarshallCmd, 0, 0,
-	     " set the isUnmarshall attribute");
-  
-  defGetBool(base_acceptevent, _timeevent, isTimeEvent, 0, 0,
-	     " return the isTimeEvent attribute, if TRUE the event is a time event");
-  defSetBool(base_acceptevent, _timeevent, set_isTimeEvent, setTimeEventCmd, 0, 0,
-	     " set the isTimeEvent attribute");
-  
-  defGet(base_acceptevent, _trigger, trigger, "string", 0, 0,
-	 "trigger");
-  defSet(base_acceptevent, _trigger, set_Trigger, "str", setUmlTriggerCmd, 0, 0,
-	 "trigger");
-  defGet(base_acceptevent, _cpp_trigger, cppTrigger, "string", "WITHCPP", 0,
-	 "trigger in C++");
-  defSet(base_acceptevent, _cpp_trigger, set_CppTrigger, "str", setCppTriggerCmd, 0, "#endif",
-	 "trigger in C++");
-  defGet(base_acceptevent, _java_trigger, javaTrigger, "string", "WITHJAVA", 0,
-	 "trigger in Java");
-  defSet(base_acceptevent, _java_trigger, set_JavaTrigger, "str", setJavaTriggerCmd, 0, "#endif",
-	 "trigger in Java");
-
-  op = base_acceptevent->add_op("unload", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "rec", "bool");
-  op->add_param(1, InputDirection, "del", "bool");
-  op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	      "  _trigger = 0;\n"
-	      "#ifdef WITHCPP\n"
-	      "  _cpp_trigger = 0;\n"
-	      "#endif\n"
-	      "#ifdef WITHJAVA\n"
-	      "  _java_trigger = 0;\n"
-	      "#endif\n"
-	      "  UmlBaseActivityAction::unload(rec, del);\n",
-	      FALSE, 0, 0);
-  s = op->cppDecl();
-  s.replace(s.find("${p0}"), 5, "= FALSE");
-  s.replace(s.find("${p1}"), 5, "= FALSE");
-  op->set_CppDecl(s);
-  
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  _trigger = null;\n"
-	       "  _cpp_trigger = null;\n"
-	       "  _java_trigger = null;\n"
-	       "  super.unload(rec, del);\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" to unload the object to free memory, it will be reloaded automatically\n\
- if needed. Recursively done for the sub items if 'rec' is TRUE. \n\
-\n\
- if 'del' is true the sub items are deleted in C++, and removed from the\n\
- internal dictionnary in C++ and Java (to allow it to be garbaged),\n\
- you will have to call Children() to re-access to them");
-    
-  base_acceptevent->add_attribute("_unmarshall", PrivateVisibility, "bool",
-				  0, 0);
-  base_acceptevent->add_attribute("_timeevent", PrivateVisibility, "bool",
-				  0, 0);
-  
-  base_acceptevent->add_attribute("_trigger", PrivateVisibility, "string",
-				  0, 0);
-  base_acceptevent->add_attribute("_cpp_trigger", PrivateVisibility, "string",
-				  "WITHCPP", "endif");
-  base_acceptevent->add_attribute("_java_trigger", PrivateVisibility, "string",
-				  "WITHJAVA", "endif");
-
-  op = base_acceptevent->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityAction::read_uml_();\n"
-	      "  _unmarshall = UmlCom::read_bool();\n"
-	      "  _timeevent = UmlCom::read_bool();\n"
-	      "  _trigger = UmlCom::read_string();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  super.read_uml_();\n"
-	       "  _unmarshall = UmlCom.read_bool();\n"
-	       "  _timeevent = UmlCom.read_bool();\n"
-	       "  _trigger = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_acceptevent->add_op("read_cpp_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityAction::read_cpp_();\n"
-	      "  _cpp_trigger = UmlCom::read_string();\n",
-	      FALSE, "WITHCPP", "endif");
-  op->set_java("${type}", "",
-	       "  super.read_cpp_();\n"
-	       "  _cpp_trigger = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_acceptevent->add_op("read_java_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityAction::read_java_();\n"
-	      "  _java_trigger = UmlCom::read_string();\n",
-	      FALSE, "WITHJAVA", "endif");
-  op->set_java("${type}", "",
-	       "  super.read_java_();\n"
-	       "  _java_trigger = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-  
-  // call operation action
-  
-  UmlClass * base_calloperation;
-  UmlClass * user_calloperation;
-  
-  user_activityaction->made(base_class_view, user_class_view,
-			    base_art, user_art,
-			    base_item, "CallOperationAction",
-			    base_calloperation, user_calloperation,
-			    0);
-  
-  base_calloperation->add_default_base_op(user_activityaction, user_calloperation,
-					  user_item,
-					  "call operation action", "aCallOperationAction");
-  user_calloperation->add_constr(base_calloperation, PublicVisibility);
-
-  UmlCom::set_user_id(0);
-  
-  defGetBool(base_calloperation, _synchronous, isSynchronous, 0, 0,
-	     " return the isSynchronous attribute, if TRUE the caller waits for the completion of the invoked behavior");
-  defSetBool(base_calloperation, _synchronous, set_isSynchronous, setFlagCmd, 0, 0,
-	     " set the isSynchronous attribute");
-  
-  UmlClass * user_operation = UmlClass::get("UmlOperation", 0);
-  
-  defGetPtr(base_calloperation, _operation, operation, user_operation, 0, 0,
-	    "operation");
-  defSetPtr(base_calloperation, _operation, set_Operation, user_operation, setDefCmd, 0, 0,
-	    "operation");
-
-  base_calloperation->add_attribute("_synchronous", PrivateVisibility, "bool",
-				    0, 0);
-
-  base_calloperation->add_relation(aDirectionalAssociation,
-				   "_operation", PrivateVisibility,
-				   user_operation, 0, 0);  
-  
-  op = base_calloperation->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityAction::read_uml_();\n"
-	      "  _synchronous = UmlCom::read_bool();\n"
-	      "  _operation = (UmlOperation *) UmlBaseItem::read_();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  super.read_uml_();\n"
-	       "  _synchronous = UmlCom.read_bool();\n"
-	       "  _operation = (UmlOperation) UmlBaseItem.read_();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-  
-  // call behavior action
-  
-  UmlClass * base_callbehavior;
-  UmlClass * user_callbehavior;
-  
-  user_activityaction->made(base_class_view, user_class_view,
-			    base_art, user_art,
-			    base_item, "CallBehaviorAction",
-			    base_callbehavior, user_callbehavior,
-			    0);
-  
-  base_callbehavior->add_default_base_op(user_activityaction, user_callbehavior,
-					 user_item,
-					 "call behavior action", "aCallBehaviorAction");
-  user_callbehavior->add_constr(base_callbehavior, PublicVisibility);
-
-  UmlCom::set_user_id(0);
-  
-  defGetBool(base_callbehavior, _synchronous, isSynchronous, 0, 0,
-	     " return the isSynchronous attribute, if TRUE the caller waits for the completion of the invoked behavior");
-  defSetBool(base_callbehavior, _synchronous, set_isSynchronous, setFlagCmd, 0, 0,
-	     " set the isSynchronous attribute");
-  
-  defGetPtr(base_callbehavior, _behavior, behavior, user_item, 0, 0,
-	    "behavior, may be an activity or a state machine");
-  defSetPtr(base_callbehavior, _behavior, set_Behavior, user_item, setDefCmd, 0, 0,
-	    "behavior");
-
-  base_callbehavior->add_attribute("_synchronous", PrivateVisibility, "bool",
-				   0, 0);
-
-  base_callbehavior->add_relation(aDirectionalAssociation,
-				  "_behavior", PrivateVisibility,
-				  user_item, 0, 0);  
-  
-  op = base_callbehavior->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityAction::read_uml_();\n"
-	      "  _synchronous = UmlCom::read_bool();\n"
-	      "  _behavior = UmlBaseItem::read_();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  super.read_uml_();\n"
-	       "  _synchronous = UmlCom.read_bool();\n"
-	       "  _behavior = UmlBaseItem.read_();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-  
-  // access variable value action
-  
-  UmlClass * base_accessvariablevalue;
-  UmlClass * user_accessvariablevalue;
-  
-  user_activityaction->made(base_class_view, user_class_view,
-			    base_depl_view, user_depl_view,
-			    base_item, "AccessVariableValueAction",
-			    base_accessvariablevalue, user_accessvariablevalue,
-			    0);
-  
-
-  UmlCom::set_user_id(0);
-  
-  base_accessvariablevalue->add_constr(user_activityaction, ProtectedVisibility);
-  include_umlcom(base_accessvariablevalue);
-
-  UmlCom::set_user_id(uid);
-  
-  user_accessvariablevalue->add_constr(base_accessvariablevalue, ProtectedVisibility);
-  user_accessvariablevalue->set_isAbstract(TRUE);
-
-  UmlCom::set_user_id(0);
-  
-  defGetPtr(base_accessvariablevalue, _variable, variable, user_item, 0, 0,
-	    "variable, may be an attribute or a relation");
-  defSetPtr(base_accessvariablevalue, _variable, set_Variable, user_item, setDefCmd, 0, 0,
-	    "variable");
-
-  base_accessvariablevalue->add_relation(aDirectionalAssociation,
-					 "_variable", PrivateVisibility,
-					 user_item, 0, 0);  
-  
-  op = base_accessvariablevalue->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityAction::read_uml_();\n"
-	      "  _variable = UmlBaseItem::read_();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  super.read_uml_();\n"
-	       "  _variable = UmlBaseItem.read_();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-  
-  // clear variable value action
-  
-  UmlClass * base_clearvariablevalue;
-  UmlClass * user_clearvariablevalue;
-  
-  user_accessvariablevalue->made(base_class_view, user_class_view,
-				 base_art, user_art,
-				 base_item, "ClearVariableValueAction",
-				 base_clearvariablevalue, user_clearvariablevalue,
-				 0);
-  
-  base_clearvariablevalue->add_default_base_op(user_accessvariablevalue, user_clearvariablevalue,
-					       user_item,
-					       "clear variable value action", "aClearVariableValueAction");
-  user_clearvariablevalue->add_constr(base_clearvariablevalue, PublicVisibility);
-  
-  // read variable value action
-  
-  UmlClass * base_readvariablevalue;
-  UmlClass * user_readvariablevalue;
-  
-  user_accessvariablevalue->made(base_class_view, user_class_view,
-				 base_art, user_art,
-				 base_item, "ReadVariableValueAction",
-				 base_readvariablevalue, user_readvariablevalue,
-				 0);
-  
-  base_readvariablevalue->add_default_base_op(user_accessvariablevalue, user_readvariablevalue,
-					      user_item,
-					      "read variable value action", "aReadVariableValueAction");
-  user_readvariablevalue->add_constr(base_readvariablevalue, PublicVisibility);
-  
-  // write variable value action
-  
-  UmlClass * base_writevariablevalue;
-  UmlClass * user_writevariablevalue;
-  
-  user_accessvariablevalue->made(base_class_view, user_class_view,
-				 base_art, user_art,
-				 base_item, "WriteVariableValueAction",
-				 base_writevariablevalue, user_writevariablevalue,
-				 0);
-  
-  base_writevariablevalue->add_default_base_op(user_accessvariablevalue, user_writevariablevalue,
-					       user_item,
-					       "write variable value action", "aWriteVariableValueAction");
-  user_writevariablevalue->add_constr(base_writevariablevalue, PublicVisibility);
-  
-  // add variable value action
-  
-  UmlClass * base_addvariablevalue;
-  UmlClass * user_addvariablevalue;
-  
-  user_accessvariablevalue->made(base_class_view, user_class_view,
-				 base_art, user_art,
-				 base_item, "AddVariableValueAction",
-				 base_addvariablevalue, user_addvariablevalue,
-				 0);
-  
-  base_addvariablevalue->add_default_base_op(user_accessvariablevalue, user_addvariablevalue,
-					     user_item,
-					     "add variable value action", "anAddVariableValueAction");
-  user_addvariablevalue->add_constr(base_addvariablevalue, PublicVisibility);
-
-  UmlCom::set_user_id(0);
-  
-  defGetBool(base_addvariablevalue, _replace_all, isReplaceAll, 0, 0,
-	     " return the isReplaceAll attribute, if TRUE existing values of the variable must be removed before adding the new value");
-  defSetBool(base_addvariablevalue, _replace_all, set_isReplaceAll, setFlagCmd, 0, 0,
-	     " set the isReplaceAll attribute");
-  
-  base_addvariablevalue->add_attribute("_replace_all", PrivateVisibility, "bool",
-				  0, 0);
-
-  op = base_addvariablevalue->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  _replace_all = UmlCom::read_bool();\n"
-	      "  UmlBaseAccessVariableValueAction::read_uml_();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	      "  _replace_all = UmlCom.read_bool();\n"
-	       "  super.read_uml_();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-  
-  // remove variable value action
-  
-  UmlClass * base_removevariablevalue;
-  UmlClass * user_removevariablevalue;
-  
-  user_accessvariablevalue->made(base_class_view, user_class_view,
-				 base_art, user_art,
-				 base_item, "RemoveVariableValueAction",
-				 base_removevariablevalue, user_removevariablevalue,
-				 0);
-  
-  base_removevariablevalue->add_default_base_op(user_accessvariablevalue, user_removevariablevalue,
-						user_item,
-						"remove variable value action", "aRemoveVariableValueAction");
-  user_removevariablevalue->add_constr(base_removevariablevalue, PublicVisibility);
-
-  UmlCom::set_user_id(0);
-  
-  defGetBool(base_removevariablevalue, _remove_duplicates, isRemoveDuplicates, 0, 0,
-	     " return the isRemoveDuplicates attribute, if TRUE remove duplicates of the value if non-unique");
-  defSetBool(base_removevariablevalue, _remove_duplicates, set_isRemoveDuplicates, setFlagCmd, 0, 0,
-	     " set the isRemoveDuplicates attribute");
-  
-  base_removevariablevalue->add_attribute("_remove_duplicates", PrivateVisibility, "bool",
-					  0, 0);
-
-  op = base_removevariablevalue->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  _remove_duplicates = UmlCom::read_bool();\n"
-	      "  UmlBaseAccessVariableValueAction::read_uml_();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	      "  _remove_duplicates = UmlCom.read_bool();\n"
-	       "  super.read_uml_();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-}
-
-void add_activitycontrolnode(UmlClassView * base_class_view, UmlClassView * user_class_view,
-			     UmlDeploymentView * base_depl_view,
-			     UmlDeploymentView * user_depl_view,
-			     UmlClass * base_item, UmlClass * user_item, 
-			     UmlClass * user_activitynode)
-{
-  UmlClass * base_activitycontrolnode;
-  UmlClass * user_activitycontrolnode;
-  
-  user_activitynode->made(base_class_view, user_class_view,
-			  base_depl_view, user_depl_view,
-			  base_item, "ActivityControlNode",
-			  base_activitycontrolnode, user_activitycontrolnode,
-			  0);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  base_activitycontrolnode->add_constr(user_activitynode, ProtectedVisibility);
-  
-  UmlCom::set_user_id(uid);
-  
-  user_activitycontrolnode->add_constr(base_activitycontrolnode, ProtectedVisibility);
-  user_activitycontrolnode->set_isAbstract(TRUE);
-  
-  // the artifacts containing all
-  UmlCom::set_user_id(0);
-  
-  UmlArtifact * base_art = UmlArtifact::made(base_depl_view, "UmlBaseActivityControlNodeClasses");
-  
-  UmlCom::set_user_id(uid);
-  
-  UmlArtifact * user_art = UmlArtifact::made(user_depl_view, "UmlActivityControlNodeClasses");
-  
-  include_umlcom(base_art);
-  
-#define DefControlNode(n, k, s)	\
-  UmlClass * base_##n;	\
-  UmlClass * user_##n;	\
-  	\
-  user_activitycontrolnode->made(base_class_view, user_class_view,	\
-				 base_art, user_art,	\
-				 base_item, #n,	\
-				 base_##n, user_##n,	\
-				 0);	\
-  	\
-  base_##n->add_default_base_op(user_activitycontrolnode, user_##n,	\
-  			       user_item,	\
-			       s " activity control node", #k);	\
-  user_##n->add_constr(base_##n, PublicVisibility)
-
-  DefControlNode(InitialActivityNode, anInitialActivityNode, "initial");
-  DefControlNode(FlowFinalActivityNode, aFlowFinalActivityNode, "flow final");
-  DefControlNode(ActivityFinalActivityNode, anActivityFinalActivityNode, "activity final");
-  DefControlNode(DecisionActivityNode, aDecisionActivityNode, "decision");
-  DefControlNode(MergeActivityNode, aMergeActivityNode, "merge");
-  DefControlNode(ForkActivityNode, aForkActivityNode, "fork");
-  DefControlNode(JoinActivityNode, aJoinActivityNode, "join");
-}
-  
-UmlClass * add_activityobject(UmlClassView * base_class_view, UmlClassView * user_class_view,
-			      UmlDeploymentView * base_depl_view,
-			      UmlDeploymentView * user_depl_view,
-			      UmlClass * base_item, UmlClass * user_item,
-			      UmlClass * user_activitynode,
-			      UmlClass * user_activitydiagram)
-{
-  UmlClass * base_activityobject;
-  UmlClass * user_activityobject;
-  
-  user_activitynode->made(base_class_view, user_class_view,
-			  base_depl_view, user_depl_view,
-			  base_item, "ActivityObject",
-			  base_activityobject, user_activityobject,
-			  0);
-  base_activityobject->add_default_base_op(user_activitynode, user_activityobject,
-					   user_item, "activity object", "anActivityObject");
-  user_activityobject->add_constr(base_activityobject, PublicVisibility);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  include_umlcom(base_activityobject);
-  
-  UmlClass * ordering = 
-    UmlClass::made(base_class_view, base_depl_view, "anOrdering");
-
-  ordering->set_Stereotype("enum_pattern");
-  ordering->set_CppDecl(CppSettings::enumDecl());
-  ordering->set_JavaDecl(JavaSettings::enumPatternDecl());
-  ordering->add_enum_item("unordered");
-  ordering->add_enum_item("ordered");
-  ordering->add_enum_item("lifo");
-  ordering->add_enum_item("fifo");
-  
-  UmlClass * typespec = UmlClass::get("UmlTypeSpec", 0);
-  UmlOperation * op;
-  
-  defGet(base_activityobject, _type, type, typespec, 0, 0,
-         "type");
-  defSetRefType(base_activityobject, _type, set_Type, typespec, setTypeCmd, 0, 0,
-		"type");
-  
-  defGet(base_activityobject, _multiplicity, multiplicity, "string", 0, 0,
-	 "multiplicity");
-  defSet(base_activityobject, _multiplicity, set_Multiplicity, "str", setMultiplicityCmd, 0, 0,
-	 "multiplicity");
-
-  defGet(base_activityobject, _in_state, inState, "string", 0, 0,
-	 "inState attribute");
-  defSet(base_activityobject, _in_state, set_InState, "str", setInStateCmd, 0, 0,
-	 "inState attribute");
-
-  defGet(base_activityobject, _selection, selection, "string", 0, 0,
-	 "selection in OCL");
-  defSet(base_activityobject, _selection, set_Selection, "str", setUmlActivityCmd, 0, 0,
-	 "selection in OCL");
-  defGet(base_activityobject, _cpp_selection, cppSelection, "string", "WITHCPP", 0,
-	 "selection in C++");
-  defSet(base_activityobject, _cpp_selection, set_CppSelection, "str", setCppActivityCmd, 0, "endif",
-	 "selection in C++");
-  defGet(base_activityobject, _java_selection, javaSelection, "string", "WITHJAVA", 0,
-	 "selection in Java");
-  defSet(base_activityobject, _java_selection, set_JavaSelection, "str", setJavaActivityCmd, 0, "endif",
-	 "selection in Java");
-
-  defGetEnum(base_activityobject, _ordering, ordering, ordering, 0, 0,
-		   "ordering");
-  defSetEnum(base_activityobject, _ordering, set_Ordering, ordering,
-	     setOrderingCmd, 0, 0, "ordering");
-  
-  defGetBool(base_activityobject, _is_control, isControlType, 0, 0,
-	     " return the isControlType attribute, tells whether the type of the object node is to be treated as control");
-  defSetBoolBitField(base_activityobject, _is_control, set_IsControlType,
-		     setFlagCmd, 0, 0, " set the isControlType attribute");
-  
-  add_assoc_diag_ops(base_activityobject, user_activitydiagram);
-
-  op = base_activityobject->add_op("unload", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "rec", "bool");
-  op->add_param(1, InputDirection, "del", "bool");
-  op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	      "  _type.explicit_type = 0;\n"
-	      "  _multiplicity = 0;\n"
-	      "  _in_state = 0;\n"
-	      "  _selection = 0;\n"
-	      "#ifdef WINCPP\n"
-	      "  _cpp_selection = 0;\n"
-	      "#endif\n"
-	      "#ifdef WITHJAVA\n"
-	      "  _java_selection = 0;\n"
-	      "#endif\n"
-	      "  UmlBaseActivityNode::unload(rec, del);\n",
-	      FALSE, 0, 0);
-
-  QCString s = op->cppDecl();
-  
-  s.replace(s.find("${p0}"), 5, "= FALSE");
-  s.replace(s.find("${p1}"), 5, "= FALSE");
-  op->set_CppDecl(s);
-  
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  _type = null;\n"
-	       "  _multiplicity = null;\n"
-	       "  _in_state = null;\n"
-	       "  _selection = null;\n"
-	       "  _cpp_selection = null;\n"
-	       "  _java_selection = null;\n"
-	       "  super.unload(rec, del);\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" to unload the object to free memory, it will be reloaded automatically\n\
- if needed. Recursively done for the sub items if 'rec' is TRUE. \n\
-\n\
- if 'del' is true the sub items are deleted in C++, and removed from the\n\
- internal dictionnary in C++ and Java (to allow it to be garbaged),\n\
- you will have to call Children() to re-access to them");
-  
-  base_activityobject->add_relation(aDirectionalAssociation,
-				    "_assoc_diagram", PrivateVisibility,
-				    user_activitydiagram, 0, 0);
-  
-  base_activityobject->add_relation(aDirectionalAggregationByValue,
-				     "_type", PrivateVisibility,
-				     typespec, 0, 0);
-  base_activityobject->add_attribute("_multiplicity", PrivateVisibility, "string", 0, 0);  
-  base_activityobject->add_attribute("_in_state", PrivateVisibility, "string", 0, 0);  
-  base_activityobject->add_attribute("_selection", PrivateVisibility, "string", 0, 0);  
-  base_activityobject->add_attribute("_cpp_selection", PrivateVisibility, "string", "WITHCPP", "endif");  
-  base_activityobject->add_attribute("_java_selection", PrivateVisibility, "string", "WITHJAVA", "endif");  
-  
-  UmlRelation * rel = 
-    base_activityobject->add_relation(aDirectionalAggregationByValue,
-				     "_ordering", PrivateVisibility,
-				     ordering, 0, 0);
-  s = rel->cppDecl();
-  int index = s.find("${type} ${name}");
-  
-  if (index != -1) {
-    s.insert(index + 15, " : 8");
-    rel->set_CppDecl(s);
-  }
-  
-  UmlAttribute * att =
-    base_activityobject->add_attribute("_is_control", PrivateVisibility, "bool", 0, 0);  
-  
-  s = att->cppDecl();
-  index = s.find("${type} ${name}");
-  if (index != -1) {
-    s.insert(index + 15, " : 1");
-    att->set_CppDecl(s);
-  }
-  
-  op = base_activityobject->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  _assoc_diagram = (kind() == anActivityObject) ? (UmlActivityDiagram *) UmlBaseItem::read_() : (UmlActivityDiagram *) 0;\n"
-	      "  UmlBaseActivityNode::read_uml_();\n"
-	      "  _type.type = (UmlClass *) UmlBaseItem::read_();\n"
-	      "  if (_type.type == 0)\n"
-	      "    _type.explicit_type = UmlCom::read_string();\n"
-	      "  _multiplicity = UmlCom::read_string();\n"
-	      "  _in_state = UmlCom::read_string();\n"
-	      "  _selection = UmlCom::read_string();\n"
-	      "  _ordering = (anOrdering) UmlCom::read_char();\n"
-	      "  _is_control = UmlCom::read_bool();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  _assoc_diagram = (kind() == anItemKind.anActivityObject) ? (UmlActivityDiagram) UmlBaseItem.read_() : null;\n"
-	       "  super.read_uml_();\n"
-	       "  _type = new UmlTypeSpec();\n"
-	       "  _type.type = (UmlClass) UmlBaseItem.read_();\n"
-	       "  if (_type.type == null)\n"
-	       "    _type.explicit_type = UmlCom.read_string();\n"
-	       "  _multiplicity = UmlCom.read_string();\n"
-	       "  _in_state = UmlCom.read_string();\n"
-	       "  _selection = UmlCom.read_string();\n"
-	       "  _ordering = anOrdering.fromInt(UmlCom.read_char());\n"
-	       "  _is_control = UmlCom.read_bool();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-
-  op = base_activityobject->add_op("read_cpp_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "", "  _cpp_selection = UmlCom::read_string();\n", FALSE, "WITHCPP", "endif");
-  op->set_java("${type}", "", "  _cpp_selection  = UmlCom.read_string();\n", FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  op = base_activityobject->add_op("read_java_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "", "  _java_selection = UmlCom::read_string();\n", FALSE, "WITHJAVA", "endif");
-  op->set_java("${type}", "", "  _java_selection = UmlCom.read_string();\n", FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-  
-  return user_activityobject;
-}
-
-void add_expansionnode(UmlClassView * base_class_view, UmlClassView * user_class_view,
-		       UmlDeploymentView * base_depl_view,
-		       UmlDeploymentView * user_depl_view,
-		       UmlClass * base_item, UmlClass * user_activityobject)
-{
-  UmlClass * base_expansionnode;
-  UmlClass * user_expansionnode;
-  
-  user_activityobject->made(base_class_view, user_class_view,
-			    base_depl_view, user_depl_view,
-			    base_item, "ExpansionNode",
-			    base_expansionnode, user_expansionnode,
-			    0);
-  base_expansionnode->add_default_base_op(user_activityobject, user_expansionnode,
-					  UmlClass::get("UmlExpansionRegion", 0), 
-					  "expansion node", "anExpansionNode");
-  user_expansionnode->add_constr(base_expansionnode, PublicVisibility);
-}
-
-void add_pinparam(UmlClassView * base_class_view, UmlClassView * user_class_view,
-		  UmlDeploymentView * base_depl_view,
-		  UmlDeploymentView * user_depl_view,
-		  UmlClass * base_item, UmlClass * user_item, 
-		  UmlClass * user_activityobject)
-{
-  // UmlPinParameter
-  
-  UmlClass * base_pinparam;
-  UmlClass * user_pinparam;
-  
-  user_activityobject->made(base_class_view, user_class_view,
-			    base_depl_view, user_depl_view,
-			    base_item, "PinParameter",
-			    base_pinparam, user_pinparam,
-			    0);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  base_pinparam->add_constr(user_activityobject, ProtectedVisibility);
-  include_umlcom(base_pinparam);
-  
-  UmlCom::set_user_id(uid);
-  
-  user_pinparam->add_constr(base_pinparam, ProtectedVisibility);
-  user_pinparam->set_isAbstract(TRUE);
-  
-  UmlCom::set_user_id(0);
-  
-  UmlClass * effect = 
-    UmlClass::made(base_class_view, base_depl_view, "aParameterEffectKind");
-
-  effect->set_Stereotype("enum_pattern");
-  effect->set_CppDecl(CppSettings::enumDecl());
-  effect->set_JavaDecl(JavaSettings::enumPatternDecl());
-  effect->add_enum_item("noEffect");
-  effect->add_enum_item("createEffect");
-  effect->add_enum_item("readEffect");
-  effect->add_enum_item("updateEffect");
-  effect->add_enum_item("deleteEffect");
-  
-  UmlOperation * op;
-  
-  defGetBool(base_pinparam, _unique, isUnique, 0, 0,
-	     " return the isUnique attribute");
-  defSetBoolBitField(base_pinparam, _unique, set_IsUnique, 
-		     setUniqueCmd, 0, 0, " set the isUnique attribute");
-
-  defGetBool(base_pinparam, _exception, isException, 0, 0,
-	     " return the isException attribute, exclusive with isStream");
-  defSetBoolBitField(base_pinparam, _exception, set_IsException,
-		     replaceExceptionCmd, 0, 0,
-		     " set the isException attribute, exclusive with isStream");
-
-  UmlClass * dir = UmlClass::get("aDirection", 0);
-  
-  defGetEnum(base_pinparam, _dir, direction, dir, 0, 0, "direction");
-  defSetEnum(base_pinparam, _dir, set_Direction, dir, setIdlDirCmd, 0, 0, "direction");
-
-  defGetEnum(base_pinparam, _effect, effect, effect, 0, 0,
-		   "effect");
-  defSetEnum(base_pinparam, _effect, set_Effect, effect, replaceParameterCmd, 0, 0, "effect");
-
-  UmlAttribute * att;
-  QCString s;
-  int index;
-  
-  att = base_pinparam->add_attribute("_unique", PrivateVisibility, "bool", 0, 0);  
-  s = att->cppDecl();
-  index = s.find("${type} ${name}");
-  if (index != -1) {
-    s.insert(index + 15, " : 1");
-    att->set_CppDecl(s);
-  }
-  
-  att = base_pinparam->add_attribute("_exception", PrivateVisibility, "bool", 0, 0);  
-  s = att->cppDecl();
-  index = s.find("${type} ${name}");
-  if (index != -1) {
-    s.insert(index + 15, " : 1");
-    att->set_CppDecl(s);
-  }
-  
-  att = base_pinparam->add_attribute("_stream", PrivateVisibility, "bool", 0, 0);  
-  s = att->cppDecl();
-  index = s.find("${type} ${name}");
-  if (index != -1) {
-    s.insert(index + 15, " : 1");
-    att->set_CppDecl(s);
-  }
-  
-  att = base_pinparam->add_attribute("_dummy", PrivateVisibility, "int", 0, 0);  
-  att->set_JavaDecl("");
-  s = att->cppDecl();
-  index = s.find("${type} ${name}");
-  if (index != -1) {
-    s.insert(index + 15, " : 4");
-    att->set_CppDecl(s);
-  }
-  
-  UmlRelation * rel;
-  
-  rel = base_pinparam->add_relation(aDirectionalAggregationByValue,
-				    "_dir", PrivateVisibility, dir, 0, 0);
-  s = rel->cppDecl();
-  index = s.find("${type} ${name}");
-  if (index != -1) {
-    s.insert(index + 15, " : 8");
-    rel->set_CppDecl(s);
-  }
-  
-  rel = base_pinparam->add_relation(aDirectionalAggregationByValue,
-				    "_effect", PrivateVisibility, effect, 0, 0);
-  s = rel->cppDecl();
-  index = s.find("${type} ${name}");
-  if (index != -1) {
-    s.insert(index + 15, " : 8");
-    rel->set_CppDecl(s);
-  }
-  
-  op = base_pinparam->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseActivityObject::read_uml_();\n"
-	      "  _unique = UmlCom::read_bool();\n"
-	      "  _exception = UmlCom::read_bool();\n"
-	      "  _stream = UmlCom::read_bool();\n"
-	      "  _dir = (aDirection) UmlCom::read_char();\n"
-	      "  _effect = (aParameterEffectKind) UmlCom::read_char();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  super.read_uml_();\n"
-	       "  _unique = UmlCom.read_bool();\n"
-	       "  _exception = UmlCom.read_bool();\n"
-	       "  _stream = UmlCom.read_bool();\n"
-	       "  _dir = aDirection.fromInt(UmlCom.read_char());\n"
-	       "  _effect = aParameterEffectKind.fromInt(UmlCom.read_char());\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-  
-  // pin
-  
-  UmlClass * base_activitypin;
-  UmlClass * user_activitypin;
-  UmlClass * user_activityaction = UmlClass::get("UmlActivityAction", 0);
-  
-  user_pinparam->made(base_class_view, user_class_view,
-		      base_depl_view, user_depl_view,
-		      base_item, "ActivityPin",
-		      base_activitypin, user_activitypin,
-		      0);
-  
-  base_activitypin->add_default_base_op(user_pinparam, user_activitypin,
-					user_activityaction,
-					"activity action pin", "anActivityPin");
-  user_activitypin->add_constr(base_activitypin, PublicVisibility);
-  
-  // activity parameter
-  
-  UmlClass * base_activityparameter;
-  UmlClass * user_activityparameter;
-  
-  user_pinparam->made(base_class_view, user_class_view,
-		      base_depl_view, user_depl_view,
-		      base_item, "ActivityParameter",
-		      base_activityparameter, user_activityparameter,
-		      0);
-  
-  base_activityparameter->add_default_base_op(user_pinparam, user_activityparameter,
-					UmlClass::get("UmlActivity", 0),
-					"activity parameter", "anActivityParameter");
-  user_activityparameter->add_constr(base_activityparameter, PublicVisibility);
-  
-  UmlCom::set_user_id(0);
-  
-  include_umlcom(base_activityparameter);
-  
-  defGet(base_activityparameter, _default_value, defaultValue, "string", 0, 0,
-	 "default value");
-  defSet(base_activityparameter, _default_value, set_DefaultValue, "str",
-	 setDefaultValueCmd, 0, 0, "default value");
-  
-  op = base_activityparameter->add_op("unload", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "rec", "bool");
-  op->add_param(1, InputDirection, "del", "bool");
-  op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	      "  _default_value = 0;\n"
-	      "  UmlBaseActivityObject::unload(rec, del);\n",
-	      FALSE, 0, 0);
-
-  s = op->cppDecl();
-  
-  s.replace(s.find("${p0}"), 5, "= FALSE");
-  s.replace(s.find("${p1}"), 5, "= FALSE");
-  op->set_CppDecl(s);
-  
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  _default_value = null;\n"
-	       "  super.unload(rec, del);\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" to unload the object to free memory, it will be reloaded automatically\n\
- if needed. Recursively done for the sub items if 'rec' is TRUE. \n\
-\n\
- if 'del' is true the sub items are deleted in C++, and removed from the\n\
- internal dictionnary in C++ and Java (to allow it to be garbaged),\n\
- you will have to call Children() to re-access to them");
-  
-  base_activityparameter->add_attribute("_default_value", PrivateVisibility, "string", 0, 0);  
-  
-  op = base_activityparameter->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBasePinParameter::read_uml_();\n"
-	      "  _default_value = UmlCom::read_string();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  super.read_uml_();\n"
-	       "  _default_value = UmlCom.read_string();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  UmlCom::set_user_id(uid);
-  
-  // parameter set
-
-  UmlClass * base_parameterset;
-  UmlClass * user_parameterset;
-  
-  user_item->made(base_class_view, user_class_view,
-		  base_depl_view, user_depl_view,
-		  base_item, "ParameterSet",
-		  base_parameterset, user_parameterset,
-		  0);
-  
-  base_parameterset->add_default_base_op(user_item, user_activityparameter,
-					 user_activityaction,
-					 "parameter set", "aParameterSet");
-  user_parameterset->add_constr(base_parameterset, PublicVisibility);
-  
-  UmlCom::set_user_id(0);
-  
-  include_umlcom(base_parameterset);
-  
-  op = base_parameterset->add_op("pins", PublicVisibility, user_activitypin);
-  op->set_Description(" return the pins part of the parameter set");
-  op->set_cpp("const QVector<${type}> &", "",
-	      "  read_if_needed_();\n"
-	      "  return _pins;\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}[]", "",
-	       "  read_if_needed_();\n"
-	       "  return (UmlActivityPin[]) _pins.clone();\n", FALSE);
-
-  op = base_parameterset->add_op("set_Pins", PublicVisibility, "bool");
-  op->set_Description(" set the pins");
-  op->add_param(0, InputDirection, "v", user_activitypin);
-  op->set_cpp("${type}", "const QVector<${t0}> & ${p0}",
-	      "  UmlCom::send_cmd(_identifier, replaceParameterCmd, (const QVector<UmlItem> &) v);\n"
-	      "  if (UmlCom::read_bool()) {\n"
-	      "    if (_defined) _pins = v;\n"
-	      "    return TRUE;\n"
-	      "  }\n"
-	      "  else\n"
-	      "    return FALSE;\n",
-	      FALSE, 0, 0);
-  op->set_java("void", "${t0}[] ${p0}",
-	      "  UmlCom.send_cmd(identifier_(), OnInstanceCmd.replaceParameterCmd, v);\n"
-	      "  UmlCom.check();\n"
-	      "  _pins = (UmlActivityPin[]) v.clone();\n",
-	      FALSE);
-  
-  op = base_parameterset->add_op("unload", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "rec", "bool");
-  op->add_param(1, InputDirection, "del", "bool");
-  op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	      "  _pins.resize(0);\n"
-	      "  UmlBaseItem::unload(rec, del);\n",
-	      FALSE, 0, 0);
-  s = op->cppDecl();
-  s.replace(s.find("${p0}"), 5, "= FALSE");
-  s.replace(s.find("${p1}"), 5, "= FALSE");
-  op->set_CppDecl(s);
-  
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  _pins = null;\n"
-	       "  super.unload(rec, del);\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" to unload the object to free memory, it will be reloaded automatically\n\
- if needed. Recursively done for the sub items if 'rec' is TRUE. \n\
-\n\
- if 'del' is true the sub items are deleted in C++, and removed from the\n\
- internal dictionnary in C++ and Java (to allow it to be garbaged),\n\
- you will have to call Children() to re-access to them");
-  
-  rel = base_parameterset->add_relation(aDirectionalAssociation,
-					"_pins", PrivateVisibility,
-					user_activitypin, 0, 0);  
-  rel->set_Stereotype("vector");
-  rel->set_Multiplicity("*");
-  rel->set_CppDecl(CppSettings::relationDecl(TRUE, "*"));
-
-  s = rel->javaDecl();
-  index = s.find("${type} ${name}");
-  if (index != -1) {
-    s.insert(index + 7,"[]");
-    rel->set_JavaDecl(s);
-  }
-
-  op = base_parameterset->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  UmlBaseItem::read_uml_();\n"
-	      "  UmlCom::read_item_list((QVector<UmlItem> &) _pins);\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  super.read_uml_();\n"
-	       "  _pins = (UmlActivityPin[]) UmlCom.read_item_list();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  // update an UmlCom::send_cmd
-
-  const QVector<UmlItem> ch = UmlClass::get("UmlCom", 0)->children();
-  UmlClass * cl = UmlClass::get("UmlClass", 0);
-  
-  UmlCom::trace("update UmlCom::send_cmd(...)<br>\n");
-  
-  for (index = 0; index != (int) ch.size(); index += 1) {
-    if ((ch[index]->kind() == anOperation) &&
-	(ch[index]->name() == "send_cmd")) {
-      op = (UmlOperation *) ch[index];
-      
-      QValueList<UmlParameter> params = op->params();
-      
-      if (params.count() == 3) {
-	UmlParameter p = params.last();
-	
-	if ((p.name == "l") && (p.type.type == cl)) {
-	  p.type.type = user_item;
-	  op->replaceParameter(2, p);
-	  
-	  s = op->cppBody();
-	  if ((index = s.find("UmlClass")) != -1) {
-	    s.replace(index+3, 5, "Item");
-	    op->set_CppBody(s);
-	  }
-	  
-	  s = op->javaBody();
-	  if ((index = s.find("UmlClass")) != -1) {
-	    s.replace(index+3, 5, "Item");
-	    op->set_JavaBody(s);
-	  }
-	  break;
-	}
-      }
-    }
-  }
-  
-  // update UmlBaseArtifact::set_AssociatedClasses
-  
-  op = UmlClass::get("UmlBaseArtifact", 0)->get_operation("set_AssociatedClasses");
-  if (op != 0) {
-    UmlCom::trace("update UmlBaseArtifact::set_AssociatedClasses(...)<br>\n");
-    s = op->cppBody();
-    if ((index = s.find("l);")) != -1) {
-      s.insert(index, "(const QVector<UmlItem> &) ");
-      op->set_CppBody(s);
-    }
-  }
-  
-  UmlCom::set_user_id(uid);
-}
-
-void add_activities_item_kind()
-{
-  // warning : anActivityDiagram already exist
-  // already root
-  static const char * const kinds[] = {
-    "anActivity", 
-    "aFlow", 
-    "anActivityParameter", 
-    "aParameterSet", 
-    "aPartition", 
-    "anExpansionRegion", 
-    "anInterruptibleActivityRegion", 
-    "anOpaqueAction",
-    "anAcceptEventAction",
-    "aReadVariableValueAction",
-    "aClearVariableValueAction",
-    "aWriteVariableValueAction",
-    "anAddVariableValueAction",
-    "aRemoveVariableValueAction",
-    "aCallBehaviorAction",
-    "aCallOperationAction",
-    "aSendObjectAction",
-    "aSendSignalAction",
-    "aBroadcastSignalAction",
-    "anUnmarshallAction",
-    "aValueSpecificationAction",
-    "anActivityObject", 
-    "anExpansionNode", 
-    "anActivityPin", 
-    "anInitialActivityNode", 
-    "aFlowFinalActivityNode", 
-    "anActivityFinalActivityNode", 
-    "aDecisionActivityNode", 
-    "aMergeActivityNode", 
-    "aForkActivityNode", 
-    "aJoinActivityNode", 
-  };
-  UmlClass * itkind = UmlClass::get("anItemKind", 0);
-  
-  for (int i = 0; i != sizeof(kinds)/sizeof(kinds[0]); i += 1)
-    itkind->add_enum_item(kinds[i]);
-}
-
-void add_activity_on_instance_cmd()
-{
-  // already root
-  UmlClass * itcmd = UmlClass::get("OnInstanceCmd", 0);
-  
-  itcmd->add_enum_item("setReadOnlyCmd");
-  itcmd->add_enum_item("setSingleExecutionCmd");
-  itcmd->add_enum_item("setUnmarshallCmd");
-  itcmd->add_enum_item("setTimeEventCmd");
-  itcmd->add_enum_item("setFlagCmd");
-  itcmd->add_enum_item("setUniqueCmd");
-  itcmd->add_enum_item("setStreamCmd");
-  itcmd->add_enum_item("setInStateCmd");
-  itcmd->add_enum_item("setOrderingCmd");
-}    
-
-void baseitem_read_activities(UmlClass * base_item)
-{
-  // update read_()'s body
-  UmlOperation * op = base_item->get_operation("read_");
-  
-  if (op != 0) {
-    QCString body;
-    
-    body = op->cppBody();
-    body.remove(body.findRev("//return new UmlActivityDiagram(id, name);"), 2);
-    body.insert(body.findRev("default:"),
-		"    case anActivity:\n"
-		"      return new UmlActivity(id, name);\n"
-		"    case aFlow:\n"
-		"      return new UmlFlow(id, name);\n"
-		"    case anActivityParameter:\n"
-		"      return new UmlActivityParameter(id, name);\n"
-		"    case aParameterSet:\n"
-		"      return new UmlParameterSet(id, name);\n"
-		"    case anExpansionRegion:\n"
-		"      return new UmlExpansionRegion(id, name);\n"
-		"    case anInterruptibleActivityRegion:\n"
-		"      return new UmlInterruptibleActivityRegion(id, name);\n"
-		"    case anOpaqueAction:\n"
-		"      return new UmlOpaqueAction(id, name);\n"
-		"    case anAcceptEventAction:\n"
-		"      return new UmlAcceptEventAction(id, name);\n"
-		"    case aReadVariableValueAction:\n"
-		"      return new UmlReadVariableValueAction(id, name);\n"
-		"    case aClearVariableValueAction:\n"
-		"      return new UmlClearVariableValueAction(id, name);\n"
-		"    case aWriteVariableValueAction:\n"
-		"      return new UmlWriteVariableValueAction(id, name);\n"
-		"    case anAddVariableValueAction:\n"
-		"      return new UmlAddVariableValueAction(id, name);\n"
-		"    case aRemoveVariableValueAction:\n"
-		"      return new UmlRemoveVariableValueAction(id, name);\n"
-		"    case aCallBehaviorAction:\n"
-		"      return new UmlCallBehaviorAction(id, name);\n"
-		"    case aCallOperationAction:\n"
-		"      return new UmlCallOperationAction(id, name);\n"
-		"    case aSendObjectAction:\n"
-		"      return new UmlSendObjectAction(id, name);\n"
-		"    case aSendSignalAction:\n"
-		"      return new UmlSendSignalAction(id, name);\n"
-		"    case aBroadcastSignalAction:\n"
-		"      return new UmlBroadcastSignalAction(id, name);\n"
-		"    case anUnmarshallAction:\n"
-		"      return new UmlUnmarshallAction(id, name);\n"
-		"    case aValueSpecificationAction:\n"
-		"      return new UmlValueSpecificationAction(id, name);\n"
-		"    case anActivityObject:\n"
-		"      return new UmlActivityObject(id, name);\n"
-		"    case anExpansionNode:\n"
-		"      return new UmlExpansionNode(id, name);\n"
-		"    case anActivityPin:\n"
-		"      return new UmlActivityPin(id, name);\n"
-		"    case anInitialActivityNode:\n"
-		"      return new UmlInitialActivityNode(id, name);\n"
-		"    case aFlowFinalActivityNode:\n"
-		"      return new UmlFlowFinalActivityNode(id, name);\n"
-		"    case anActivityFinalActivityNode:\n"
-		"      return new UmlActivityFinalActivityNode(id, name);\n"
-		"    case aDecisionActivityNode:\n"
-		"      return new UmlDecisionActivityNode(id, name);\n"
-		"    case aMergeActivityNode:\n"
-		"      return new UmlMergeActivityNode(id, name);\n"
-		"    case aForkActivityNode:\n"
-		"      return new UmlForkActivityNode(id, name);\n"
-		"    case aJoinActivityNode:\n"
-		"      return new UmlJoinActivityNode(id, name);\n"
-		"    case aPartition:\n"
-		"      //return new UmlPartition(id, name);\n"
-		"    ");
-    op->set_CppBody(body);
-      
-    body = op->javaBody();
-    body.remove(body.findRev("//return new UmlActivityDiagram(id, name);"), 2);
-    body.insert(body.findRev("default:"),
-		"    case anItemKind._anActivity:\n"
-		"      return new UmlActivity(id, name);\n"
-		"    case anItemKind._aFlow:\n"
-		"      return new UmlFlow(id, name);\n"
-		"    case anItemKind._anActivityParameter:\n"
-		"      return new UmlActivityParameter(id, name);\n"
-		"    case anItemKind._aParameterSet:\n"
-		"      return new UmlParameterSet(id, name);\n"
-		"    case anItemKind._anExpansionRegion:\n"
-		"      return new UmlExpansionRegion(id, name);\n"
-		"    case anItemKind._anInterruptibleActivityRegion:\n"
-		"      return new UmlInterruptibleActivityRegion(id, name);\n"
-		"    case anItemKind._anOpaqueAction:\n"
-		"      return new UmlOpaqueAction(id, name);\n"
-		"    case anItemKind._anAcceptEventAction:\n"
-		"      return new UmlAcceptEventAction(id, name);\n"
-		"    case anItemKind._aReadVariableValueAction:\n"
-		"      return new UmlReadVariableValueAction(id, name);\n"
-		"    case anItemKind._aClearVariableValueAction:\n"
-		"      return new UmlClearVariableValueAction(id, name);\n"
-		"    case anItemKind._aWriteVariableValueAction:\n"
-		"      return new UmlWriteVariableValueAction(id, name);\n"
-		"    case anItemKind._anAddVariableValueAction:\n"
-		"      return new UmlAddVariableValueAction(id, name);\n"
-		"    case anItemKind._aRemoveVariableValueAction:\n"
-		"      return new UmlRemoveVariableValueAction(id, name);\n"
-		"    case anItemKind._aCallBehaviorAction:\n"
-		"      return new UmlCallBehaviorAction(id, name);\n"
-		"    case anItemKind._aCallOperationAction:\n"
-		"      return new UmlCallOperationAction(id, name);\n"
-		"    case anItemKind._aSendObjectAction:\n"
-		"      return new UmlSendObjectAction(id, name);\n"
-		"    case anItemKind._aSendSignalAction:\n"
-		"      return new UmlSendSignalAction(id, name);\n"
-		"    case anItemKind._aBroadcastSignalAction:\n"
-		"      return new UmlBroadcastSignalAction(id, name);\n"
-		"    case anItemKind._anUnmarshallAction:\n"
-		"      return new UmlUnmarshallAction(id, name);\n"
-		"    case anItemKind._aValueSpecificationAction:\n"
-		"      return new UmlValueSpecificationAction(id, name);\n"
-		"    case anItemKind._anActivityObject:\n"
-		"      return new UmlActivityObject(id, name);\n"
-		"    case anItemKind._anExpansionNode:\n"
-		"      return new UmlExpansionNode(id, name);\n"
-		"    case anItemKind._anActivityPin:\n"
-		"      return new UmlActivityPin(id, name);\n"
-		"    case anItemKind._anInitialActivityNode:\n"
-		"      return new UmlInitialActivityNode(id, name);\n"
-		"    case anItemKind._aFlowFinalActivityNode:\n"
-		"      return new UmlFlowFinalActivityNode(id, name);\n"
-		"    case anItemKind._anActivityFinalActivityNode:\n"
-		"      return new UmlActivityFinalActivityNode(id, name);\n"
-		"    case anItemKind._aDecisionActivityNode:\n"
-		"      return new UmlDecisionActivityNode(id, name);\n"
-		"    case anItemKind._aMergeActivityNode:\n"
-		"      return new UmlMergeActivityNode(id, name);\n"
-		"    case anItemKind._aForkActivityNode:\n"
-		"      return new UmlForkActivityNode(id, name);\n"
-		"    case anItemKind._aJoinActivityNode:\n"
-		"      return new UmlJoinActivityNode(id, name);\n"
-		"    case anItemKind._aPartition:\n"
-		"      //return new UmlPartition(id, name);\n"
-		"    ");
-    op->set_JavaBody(body);
-  }
-  
-  // update UmlBaseItem artifact
-  UmlArtifact * art = base_item->associatedArtifact();
-  QCString s;
-  
-  s = art->cppSource();
-  s.insert(s.find("#include \"MiscGlobalCmd.h\""),
-	   "#include \"UmlActivityDiagram.h\"\n"
-	   "#include \"UmlActivity.h\"\n"
-	   "#include \"UmlFlow.h\"\n"
-	   "#include \"UmlActivityParameter.h\"\n"
-	   "#include \"UmlParameterSet.h\"\n"
-	   "#include \"UmlExpansionRegion.h\"\n"
-	   "#include \"UmlInterruptibleActivityRegion.h\"\n"
-	   "#include \"UmlActivityActionClasses.h\"\n"
-	   "#include \"UmlActivityObject.h\"\n"
-	   "#include \"UmlExpansionNode.h\"\n"
-	   "#include \"UmlActivityPin.h\"\n"
-	   "#include \"UmlActivityControlNodeClasses.h\"\n"
-	   );
-  art->set_CppSource(s);
-}
-
-void add_activity(UmlClass * base_item, UmlClass * user_item)
-{
-  UmlClassView * base_class_view = (UmlClassView *) base_item->parent();
-  UmlClassView * user_class_view = (UmlClassView *) user_item->parent();
-  UmlDeploymentView * base_depl_view = (UmlDeploymentView *)
-    base_item->associatedArtifact()->parent();
-  UmlDeploymentView * user_depl_view = (UmlDeploymentView *)
-    user_item->associatedArtifact()->parent();
-
-  UmlCom::trace("Activity<br>\n");
-  
-  UmlClass * user_activityitem = 
-    UmlClass::made(user_class_view, user_depl_view, "UmlActivityItem", TRUE);
-
-  add_activity(base_class_view, user_class_view, base_depl_view, user_depl_view,
-	       base_item, user_item, user_activityitem);
-
-  UmlClass * user_activitynode = 
-    add_activitynode(base_class_view, user_class_view, base_depl_view, user_depl_view,
-		     base_item, user_item, user_activityitem);
-
-  add_flow(base_class_view, user_class_view, base_depl_view, user_depl_view,
-	   base_item, user_item, user_activityitem, user_activitynode);
-  
-  UmlClass * user_diagram = UmlClass::get("UmlActivityDiagram", 0);
-  
-  add_activityregion(base_class_view, user_class_view, base_depl_view, user_depl_view,
-		     base_item, user_item, user_activityitem, user_diagram);
-
-  add_activityaction(base_class_view, user_class_view, base_depl_view, user_depl_view,
-		     base_item, user_item, user_activitynode);
-  
-  add_activitycontrolnode(base_class_view, user_class_view, base_depl_view, user_depl_view,
-			  base_item, user_item, user_activitynode);
-  
-  UmlClass * user_activityobject =
-    add_activityobject(base_class_view, user_class_view, base_depl_view, user_depl_view,
-		     base_item, user_item, user_activitynode, user_diagram);
-  
-  add_expansionnode(base_class_view, user_class_view, base_depl_view, user_depl_view,
-		    base_item, user_activityobject);
-  
-  add_pinparam(base_class_view, user_class_view, base_depl_view, user_depl_view,
-	       base_item, user_item, user_activityobject);
-  
-  //
-
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  UmlCom::trace("update anItemKind<br>\n");
-  
-  add_activities_item_kind();
-  
-  UmlCom::trace("update cmd list<br>\n");
-  
-  add_activity_on_instance_cmd();
-  
-  UmlCom::trace("update item read<br>\n");
-  
-  baseitem_read_activities(base_item);
-  
-  UmlCom::trace("update aDirection<br>\n");
-  
-  add_return_direction();
-  
-  UmlCom::set_user_id(uid);
-}
-
-//
 // add void UmlCom::showTrace() and
 // void UmlCom::traceAutoRaise(bool y)
 //
@@ -5181,7 +1487,7 @@ void add_new_trace_operations(UmlClass * uml_com)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update UmlCom<br>\n");
+  UmlCom::trace("<b>add trace operations on UmlCom</b><br>\n");
   
   UmlOperation * op1 =
     uml_com->add_op("showTrace", PublicVisibility, "void", FALSE);
@@ -5242,7 +1548,7 @@ void add_new_trace_operations(UmlClass * uml_com)
   uml_com->set_Description(
 			   " This class manages the communications\n"
 			   "\n"
-			   " This class may be defined as a 'singleton', but I prefer to use static \n"
+			   " This class may be defined as a 'singleton', but I prefer to use static\n"
 			   " members allowing to just write 'UmlCom::member' rather than\n"
 			   " 'UmlCom::instance()->member' or other long sentence like this.\n"
 			   "\n"
@@ -5275,95 +1581,13 @@ void add_new_trace_operations(UmlClass * uml_com)
 //
 //
 
-void fixe_activity(UmlClass * base_pinparam)
-{
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  UmlCom::trace("update UmlBasePinParameter<br>\n");
-  
-  UmlOperation * op;
-  
-  defGetBool(base_pinparam, _stream, isStream, 0, 0,
-	     " return the isStream attribute");
-  op->moveAfter(base_pinparam->get_operation("set_IsException"));
-  
-  UmlOperation * op1 = op;
-  
-  
-  defSetBoolBitField(base_pinparam, _stream, set_IsStream, 
-		     setStreamCmd, 0, 0, " set the isStream attribute");
-  op->moveAfter(op1);
- 
-  // dummy must have 5 bits rather than 4
-  UmlAttribute * dummy = base_pinparam->get_attribute("_dummy");
-  QCString cppdecl = dummy->cppDecl();
-  int index = cppdecl.find(": 4");
-  
-  if (index != -1) {
-    cppdecl[index + 2] = '5';
-    dummy->set_CppDecl(cppdecl);
-  }
-  
-  //
-  
-  UmlCom::trace("fixe UmlBaseAddVariableValueAction::read_uml_()<br>\n");
-  
-  op = UmlClass::get("UmlBaseAddVariableValueAction", 0)->get_operation("read_uml_");
-  
-  op->set_CppBody("  UmlBaseAccessVariableValueAction::read_uml_();\n"
-		  "  _replace_all = UmlCom::read_bool();\n");
-  
-  op->set_JavaBody("  super.read_uml_();\n"
-		   "  _replace_all = UmlCom.read_bool();\n");
-  
-  //
-  
-  UmlCom::trace("fixe UmlBaseRemoveVariableValueAction::read_uml_()<br>\n");
-  
-  op = UmlClass::get("UmlBaseRemoveVariableValueAction", 0)->get_operation("read_uml_");
-  
-  op->set_CppBody("  UmlBaseAccessVariableValueAction::read_uml_();\n"
-		  "  _remove_duplicates = UmlCom::read_bool();\n");
-  
-  op->set_JavaBody("  super.read_uml_();\n"
-		   "  _remove_duplicates = UmlCom.read_bool();\n");
-  
-  //
-  
-  UmlCom::set_user_id(uid);
-  
-  //
-  
-  UmlRelation * rel = 
-    UmlBaseRelation::create(aGeneralisation, 
-			    UmlClass::get("UmlParameterSet", 0),
-			    UmlClass::get("UmlActivityItem", 0));
-  
-  if (rel == 0) {
-    QCString msg = "UmlParameterSet can't inherit UmlActivityItem<br>\n";
-    
-    UmlCom::trace(msg);
-    throw 0;
-  }
-  else {
-    rel->set_CppDecl("${type}");
-    rel->set_JavaDecl("${type}");
-  }
-}
-
-//
-//
-//
-
 void add_cpp_set_param_ref(UmlClass * cppsetting)
 {
   unsigned uid = UmlCom::user_id();
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update CppSettings<br>\n");
+  UmlCom::trace("<b>update CppSettings</b><br>\n");
 
   UmlAttribute * att = 
     cppsetting->add_attribute("_is_set_param_ref", PrivateVisibility, "bool", 0, 0);
@@ -5437,7 +1661,7 @@ void upgrade_setter_getter()
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update UmlBaseOperation setter and getter<br>\n");
+  UmlCom::trace("<b>update UmlBaseOperation setter and getter</b><br>\n");
 
   //
 
@@ -5449,23 +1673,14 @@ void upgrade_setter_getter()
   UmlAttribute * att;
   UmlAttribute * att2;
   QCString s;
-  int index;
   
-  att = baseoper->add_attribute("_cpp_get_set_frozen", PrivateVisibility, "bool", "WITHCPP", "endif");  
-  s = att->cppDecl();
-  index = s.find("${type} ${name}");
-  if (index != -1) {
-    s.insert(index + 15, " : 1");
-    att->set_CppDecl(s);
-  }
+  att = baseoper->add_attribute("_cpp_get_set_frozen", PrivateVisibility, "bool", "WITHCPP", "endif", " : 1");  
   att->moveAfter(baseoper->get_attribute("_idl_oneway"));
 
-  att2 = baseoper->add_attribute("_java_get_set_frozen", PrivateVisibility, "bool", "WITHJAVA", "endif");  
-  att2->set_CppDecl(s);
+  att2 = baseoper->add_attribute("_java_get_set_frozen", PrivateVisibility, "bool", "WITHJAVA", "endif", " : 1");  
   att2->moveAfter(att);
 
-  att = baseoper->add_attribute("_idl_get_set_frozen", PrivateVisibility, "bool", "WITHIDL", "endif");  
-  att->set_CppDecl(s);
+  att = baseoper->add_attribute("_idl_get_set_frozen", PrivateVisibility, "bool", "WITHIDL", "endif", " : 1");  
   att->moveAfter(att2);
 
   //
@@ -5529,7 +1744,7 @@ void add_cpp_relative_path_force_namespace(UmlClass * cppsetting)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update CppSettings<br>\n");
+  UmlCom::trace("<b>update CppSettings</b><br>\n");
 
   //
 
@@ -5696,7 +1911,7 @@ void add_getter_setter_rules(UmlClass * umlsetting)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update UmlSettings<br>\n");
+  UmlCom::trace("<b>update UmlSettings</b><br>\n");
   
   //
   
@@ -5852,7 +2067,7 @@ void add_extension_points()
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update use case<br>\n");
+  UmlCom::trace("<b>update use case</b><br>\n");
   
   //
   
@@ -5898,7 +2113,7 @@ void remove_java_public(UmlClass * uml_base_class)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("new class visibility<br>\n");
+  UmlCom::trace("<b>new class visibility</b><br>\n");
   
   //
 
@@ -5941,7 +2156,7 @@ void add_cpp_root_relative_path(UmlClass * cppsetting)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update UmlSettings<br>\n");
+  UmlCom::trace("<b>update UmlSettings</b><br>\n");
   
   //
   // add root relative
@@ -6052,7 +2267,7 @@ void add_cpp_generate_javadoc_comment(UmlClass * cppsetting)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update CppSettings<br>\n");
+  UmlCom::trace("<b>update CppSettings</b><br>\n");
   
   //
   // add _is_generate_javadoc_comment
@@ -6134,7 +2349,7 @@ void add_java_generate_javadoc_comment(UmlClass * javasetting)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("update JavaSettings<br>\n");
+  UmlCom::trace("<b>update JavaSettings</b><br>\n");
   
   //
   // add _is_generate_javadoc_comment
@@ -6220,7 +2435,7 @@ void add_constraint(UmlClass * baseclassmember)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("Upgrade class members<br>\n");
+  UmlCom::trace("<b>Upgrade class members</b><br>\n");
   
   //
   
@@ -6262,7 +2477,7 @@ void add_deleteit(UmlClass * uml_base_item)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("Upgrade UmlBaseItem<br>\n");
+  UmlCom::trace("<b>Upgrade UmlBaseItem</b><br>\n");
  
   //
   
@@ -6301,7 +2516,7 @@ void add_get_id(UmlClass * uml_base_item)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("Upgrade UmlBaseItem<br>\n");
+  UmlCom::trace("<b>Upgrade UmlBaseItem</b><br>\n");
  
   //
   
@@ -6309,7 +2524,7 @@ void add_get_id(UmlClass * uml_base_item)
   
   op->set_Description(" return a constant identifier, it is unique within a given\n"
 		      " kind of element (two classes can't have the same identifiers, but\n"
-		      " a class and a component may have the same identifier) \n"
+		      " a class and a component may have the same identifier)\n"
 		      " except for the diagrams (a class diagram can't have the identifier\n"
 		      " of a component diagram)");
   op->set_CppBody("  read_if_needed_();\n"
@@ -6348,451 +2563,6 @@ void add_get_id(UmlClass * uml_base_item)
   UmlCom::set_user_id(uid);
 }
 
-// 
-// add class instance
-//
-
-void add_class_instance(UmlClassView * base_class_view, UmlClassView * user_class_view,
-			UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-			UmlClass * base_item, UmlClass * user_item)
-{
-  UmlClass * base_class_instance;
-  UmlClass * user_class_instance;
-  
-  user_item->made(base_class_view, user_class_view, base_depl_view, user_depl_view,
-		  base_item, "ClassInstance", base_class_instance, user_class_instance,
-		  0);
-  
-  user_class_instance->add_constr(base_class_instance, PublicVisibility);  
-    
-  //
-  // SlotAttribute
-  //
-  
-  UmlClass * user_class = UmlClass::get("UmlClass", 0);
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  UmlClass * slotattr = UmlClass::create(base_class_view, "SlotAttribute");
-  UmlClass * attr = UmlClass::get("UmlAttribute", 0);
-  UmlArtifact * art;
-  UmlOperation * op;
-  
-  slotattr->set_Stereotype("struct");
-  slotattr->set_CppDecl(CppSettings::structDecl());
-  slotattr->set_JavaDecl(JavaSettings::classDecl());
-  slotattr->add_relation(aDirectionalAssociation, "attribute",
-			 PublicVisibility, attr, 0, 0);
-  slotattr->add_attribute("value", PublicVisibility, "string", 0, 0);
-  op = slotattr->add_op("SlotAttribute", PublicVisibility, "", FALSE);
-  op->set_Description(" because of QValueList use");
-  op->set_cpp(": attribute(0)", "", "", TRUE, 0, 0);
-  op->set_JavaDef("");
-  op = slotattr->add_op("SlotAttribute", PublicVisibility, "", FALSE);
-  op->add_param(0, InputOutputDirection, "a", attr);
-  op->add_param(1, InputOutputDirection, "v", "string");
-  op->set_cpp(": attribute(a), value(v)", "${t0} * ${p0}, ${t1} ${p1}",
-	      "", TRUE, 0, 0);
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  attribute = a;\n"
-	       "  value = v;\n",
-	       FALSE);
-  
-  art = UmlArtifact::made(base_depl_view, "SlotAttribute");
-  art->set_CppSource("");
-  art->addAssociatedClass(slotattr);
-  
-  //
-  // SlotRelation
-  //
-  
-  UmlClass * slotrel = UmlClass::create(base_class_view, "SlotRelation");
-  UmlClass * rel = UmlClass::get("UmlRelation", 0);
-  
-  slotrel->set_Stereotype("struct");
-  slotrel->set_CppDecl(CppSettings::structDecl());
-  slotrel->set_JavaDecl(JavaSettings::classDecl());
-  slotrel->add_relation(aDirectionalAssociation, "relation",
-			PublicVisibility, rel, 0, 0); 
-  slotrel->add_relation(aDirectionalAssociation,
-			"value", PublicVisibility, user_class_instance, 0, 0); 
-  op = slotrel->add_op("SlotRelation", PublicVisibility, "", FALSE);
-  op->set_Description(" because of QValueList use");
-  op->set_cpp(": relation(0), value(0)",  "", "", TRUE, 0, 0);
-  op->set_JavaDef("");
-  op = slotrel->add_op("SlotRelation", PublicVisibility, "", FALSE);
-  op->add_param(0, InputOutputDirection, "r", rel);
-  op->add_param(1, InputOutputDirection, "v", user_class_instance);
-  op->set_cpp(": relation(r), value(v)",  "${t0} * ${p0}, ${t1} * ${p1}",
-	      "", TRUE, 0, 0);
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  relation = r;\n"
-	       "  value = v;\n",
-	       FALSE);
-  
-  art = UmlArtifact::made(base_depl_view, "SlotRelation");
-  art->set_CppSource("");
-  art->addAssociatedClass(slotrel);
-  
-  //
-  // ClassInstance members
-  //
-  
-  include_umlcom(base_class_instance);
-  
-  base_class_instance->add_kind("aClassInstance");
-  
-  // create()
-  
-  op = base_class_instance->add_op("create", PublicVisibility, user_class_instance, TRUE);
-  op->set_isClassMember(TRUE);
-  op->add_param(0, InputOutputDirection, "parent", user_item);
-  op->add_param(1, InputOutputDirection, "name", "str");
-  op->add_param(2, InputOutputDirection, "type", user_class);
-  op->set_cpp("${type} *", 
-	      "${t0} * ${p0}, const ${t1} ${p1}, ${t2} * ${p2}",
-	      "  UmlCom::send_cmd(parent->_identifier, createCmd, aClassInstance,\n"
-	      "\t\t   type->_identifier);\n"
-	      "  UmlClassInstance * result = (UmlClassInstance *) UmlBaseItem::read_();\n"
-	      "\n"
-	      "  if (result != 0) {\n"
-	      "    parent->reread_children_if_needed_();\n"
-	      "    if (name != 0) result->set_Name(name);\n"
-	      "  }\n"
-	      "  return result;\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}",
-	       "  UmlCom.send_cmd(parent.identifier_(), OnInstanceCmd.createCmd, anItemKind.aClassInstance,\n"
-	       "\t\t   type.identifier_());\n"
-	       "  UmlClassInstance result = (UmlClassInstance) UmlBaseItem.read_();\n"
-	       "  \n"
-	       "  if (result != null) {\n"
-	       "    parent.reread_children_if_needed_();\n"
-	       "    if (name != null) result.set_Name(name);\n"
-	      "  }\n"
-	       "  else\n"
-	       "    throw new RuntimeException(\"Cannot create the class instance\");\n"
-	       "  return result;\n",
-	      FALSE);
-  op->set_Description(" Returns a new class instance\n\
-\n\
- In case it cannot be created ('parent' cannot contain it etc ...) return 0\n\
-  in C++ and produce a RuntimeException in Java\n");
-  
-  // type(), set_Type()
-    
-  defGetPtr(base_class_instance, _type, type, user_class, 0, 0, "type");
-  defSetPtr(base_class_instance, _type, set_Type, user_class, setTypeCmd, 0, 0, "type");
-    
-  // attributesValue()
-  
-  op = base_class_instance->add_op("attributesValue", PublicVisibility, slotattr);
-  op->add_param(0, OutputDirection, "result", slotattr);
-  op->set_cpp("void", "QValueList<${t0}> & ${p0}",
-	      "  UmlCom::send_cmd(_identifier, attributesCmd, (char) 0);\n"
-	      "\n"
-	      "  unsigned n = UmlCom::read_unsigned();\n"
-	      "\n"
-	      "  result.clear();\n"
-	      "  while (n--) {\n"
-	      "    UmlAttribute * at = (UmlAttribute *) UmlBaseItem::read_();\n"
-	      "\n"
-	      "    result.append(SlotAttribute(at, UmlCom::read_string()));\n"
-	      "  }\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}[]", "",
-	       "  UmlCom.send_cmd(identifier_(), OnInstanceCmd.attributesCmd, (byte) 0);\n"
-	      "\n"
-	       "  int n = UmlCom.read_unsigned();\n"
-	       "  SlotAttribute[] v = new SlotAttribute[n];\n"
-	       "\n"
-	       "  for (int index = 0; index != n; index += 1) {\n"
-	       "    UmlAttribute at = (UmlAttribute) UmlBaseItem.read_();\n"
-	       "\n"
-	       "    v[index] = new SlotAttribute(at, UmlCom.read_string());\n"
-	       "  }\n"
-	       "  return v;\n",
-	      FALSE);
-  op->set_Description(" Returns the attributes having a value");
-  
-  // relationsValue()
-  
-  op = base_class_instance->add_op("relationsValue", PublicVisibility, slotrel);
-  op->add_param(0, OutputDirection, "result", slotrel);
-  op->set_cpp("void", "QValueList<${t0}> & ${p0}",
-	      "  UmlCom::send_cmd(_identifier, relationsCmd, (void *) 0);\n"
-	      "\n"
-	      "  unsigned n = UmlCom::read_unsigned();\n"
-	      "\n"
-	      "  result.clear();\n"
-	      "  while (n--) {\n"
-	      "    UmlRelation * r = (UmlRelation *) UmlBaseItem::read_();\n"
-	      "\n"
-	      "    result.append(SlotRelation(r, (UmlClassInstance *) UmlBaseItem::read_()));\n"
-	      "  }\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}[]", "",
-	       "  UmlCom.send_cmd(identifier_(), OnInstanceCmd.relationsCmd, (long) 0);\n"
-	      "\n"
-	       "  int n = UmlCom.read_unsigned();\n"
-	       "  SlotRelation[] v = new SlotRelation[n];\n"
-	       "\n"
-	       "  for (int index = 0; index != n; index += 1) {\n"
-	       "    UmlRelation rel = (UmlRelation) UmlBaseItem.read_();\n"
-	       "\n"
-	       "    v[index] = new SlotRelation(rel, (UmlClassInstance) UmlBaseItem.read_());\n"
-	       "  }\n"
-	       "  return v;\n",
-	      FALSE);
-  op->set_Description(" Returns the attributes having a value");
-  
-  // availableAttributes()
-  
-  op = base_class_instance->add_op("availableAttributes", PublicVisibility, attr);
-  op->add_param(0, OutputDirection, "result", attr);
-  op->set_cpp("void", "QVector<${t0}> & ${p0}",
-	      "  UmlCom::send_cmd(_identifier, attributesCmd, (char) 1);\n"
-	      "  UmlCom::read_item_list((QVector<UmlItem> &) result);\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}[]", "",
-	       "  UmlCom.send_cmd(identifier_(), OnInstanceCmd.attributesCmd, (byte) 1);\n"
-	      "\n"
-	       "  int n = UmlCom.read_unsigned();\n"
-	       "  UmlAttribute[] v = new UmlAttribute[n];\n"
-	       "\n"
-	       "  for (int index = 0; index != n; index += 1)\n"
-	       "    v[index] = (UmlAttribute) UmlBaseItem.read_();\n"
-	       "  return v;\n",
-	      FALSE);
-  op->set_Description(" Returns all the attributes of the class instance,\n"
-		      " including the inherited");
-  
-  // availableRelations()
-  
-  op = base_class_instance->add_op("availableRelations", PublicVisibility, rel);
-  op->add_param(0, OutputDirection, "other", user_class_instance);
-  op->add_param(1, OutputDirection, "result", rel);
-  op->set_cpp("void", 
-	      "${t0} * ${p0}, QVector<${t1}> & ${p1}",
-	      "  UmlCom::send_cmd(_identifier, relationsCmd, other->_identifier);\n"
-	      "  UmlCom::read_item_list((QVector<UmlItem> &) result);\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}[]", "${t0} ${p0}",
-	       "  UmlCom.send_cmd(identifier_(), OnInstanceCmd.relationsCmd, other.identifier_());\n"
-	      "\n"
-	       "  int n = UmlCom.read_unsigned();\n"
-	       "  UmlRelation[] v = new UmlRelation[n];\n"
-	       "\n"
-	       "  for (int index = 0; index != n; index += 1)\n"
-	       "    v[index] = (UmlRelation) UmlBaseItem.read_();\n"
-	       "  return v;\n",
-	      FALSE);
-  op->set_Description(" Returns all the possible relations from the current instance"
-		      " to 'other', including the inherited");
-  
-  // set_AttributeValue()
-  
-  op = base_class_instance->add_op("set_AttributeValue", PublicVisibility, "bool", TRUE);
-  op->add_param(0, InputDirection, "attribute", attr);
-  op->add_param(1, InputDirection, "value", "str");
-  op->set_cpp("bool", "${t0} * ${p0}, const ${t1} ${p1}",
-	      "  UmlCom::send_cmd(_identifier, setAttributeCmd, attribute->_identifier, value);\n"
-	      "  return UmlCom::read_bool();\n",
-	      FALSE, 0, 0);
-  op->set_java("void", "${t0} ${p0}, ${t1} ${p1}",
-	       "  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAttributeCmd, attribute.identifier_(), value);\n"
-	       "  UmlCom.check();\n",
-	      TRUE);
-  op->set_Description(" Remove the slot if the value is an empty string.\n"
-		      " Else set the value for the given attribute, replacing it\n"
-		      " if the slot already exist."
-		      "\n"
-		      " On error : return FALSE in C++, produce a RuntimeException in Java");
-  
-  // add_Relation()
-  
-  op = base_class_instance->add_op("add_Relation", PublicVisibility, "bool", TRUE);
-  op->add_param(0, InputDirection, "relation", attr);
-  op->add_param(1, InputDirection, "other", user_class_instance);
-  op->set_cpp("bool", "${t0} * ${p0}, ${t1} * ${p1}",
-	      "  QVector<UmlItem> v(2);\n"
-	      "\n"
-	      "  v.insert(0, relation);\n"
-	      "  v.insert(1, other);\n"
-	      "  UmlCom::send_cmd(_identifier, addRelationCmd, v);\n"
-	      "  return UmlCom::read_bool();\n",
-	      FALSE, 0, 0);
-  op->set_java("void", "${t0} ${p0}, ${t1} ${p1}",
-	       "  UmlItem[] v = new UmlItem[2];\n"
-	       "\n"
-	       "  v[0] = relation;\n"
-	       "  v[1] = other;\n"
-	       "  UmlCom.send_cmd(identifier_(), OnInstanceCmd.addRelationCmd, v);\n"
-	       "  UmlCom.check();\n",
-	      TRUE);
-  op->set_Description(" Add the slot (does nothing if it already exist)\n"
-		      "\n"
-		      " On error : return FALSE in C++, produce a RuntimeException in Java");
-  
-  // remove_Relation()
-  
-  op = base_class_instance->add_op("remove_Relation", PublicVisibility, "bool", TRUE);
-  op->add_param(0, InputDirection, "relation", attr);
-  op->add_param(1, InputDirection, "other", user_class_instance);
-  op->set_cpp("bool", "${t0} * ${p0}, ${t1} * ${p1}",
-	      "  QVector<UmlItem> v(2);\n"
-	      "\n"
-	      "  v.insert(0, relation);\n"
-	      "  v.insert(1, other);\n"
-	      "  UmlCom::send_cmd(_identifier, removeRelationCmd, v);\n"
-	      "  return UmlCom::read_bool();\n",
-	      FALSE, 0, 0);
-  op->set_java("void", "${t0} ${p0}, ${t1} ${p1}",
-	       "  UmlItem[] v = new UmlItem[2];\n"
-	       "\n"
-	       "  v[0] = relation;\n"
-	       "  v[1] = other;\n"
-	       "  UmlCom.send_cmd(identifier_(), OnInstanceCmd.removeRelationCmd, v);\n"
-	       "  UmlCom.check();\n",
-	      TRUE);
-  op->set_Description(" Remove the slot (does nothing if it doesn't exist)\n"
-		      "\n"
-		      " On error : return FALSE in C++, produce a RuntimeException in Java");
-  
-  // assoc diagram
-  
-  UmlClass * user_objectdiagram = UmlClass::get("UmlObjectDiagram", 0);
-  
-  add_assoc_diag_ops(base_class_instance, user_objectdiagram);
-
-  // attributes and relations
-  
-  base_class_instance->add_relation(aDirectionalAssociation,
-				    "_type", PrivateVisibility,
-				    user_class, 0, 0);  
-  
-  base_class_instance->add_relation(aDirectionalAssociation,
-				    "_assoc_diagram", PrivateVisibility,
-				    user_objectdiagram, 0, 0);  
-  
-  // read_uml
-  
-  op = base_class_instance->add_op("read_uml_", ProtectedVisibility, "void");
-  op->set_cpp("${type}", "",
-	      "  _assoc_diagram = (UmlObjectDiagram *) UmlBaseItem::read_();\n"
-	      "  UmlBaseItem::read_uml_();\n"
-	      "  _type = (UmlClass *) UmlBaseItem::read_();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  _assoc_diagram = (UmlObjectDiagram) UmlBaseItem.read_();\n"
-	       "  super.read_uml_();\n"
-	       "  _type = (UmlClass) UmlBaseItem.read_();\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  
-  // constructor
-  
-  base_class_instance->add_constr(user_item, ProtectedVisibility);
-
-  //
-  
-  QCString s;
-  
-  art = base_class_instance->associatedArtifact();
-  s = art->cppHeader();
-  s.insert(s.find("${includes}"),
-	   "#include \"SlotAttribute.h\"\n"
-	   "#include \"SlotRelation.h\"\n");
-  art->set_CppHeader(s);
-  UmlCom::set_user_id(uid);
-}
-
-void add_class_instance_on_instance_cmd()
-{
-  // already root
-  UmlClass * itcmd = UmlClass::get("OnInstanceCmd", 0);
-  
-  itcmd->add_enum_item("setAttributeCmd");
-  itcmd->add_enum_item("addRelationCmd");
-  itcmd->add_enum_item("removeRelationCmd");
-  
-  UmlAttribute * at = itcmd->add_enum_item("attributesCmd");
-  
-  at->moveAfter(itcmd->get_attribute("sideCmd"));
-  itcmd->add_enum_item("relationsCmd")->moveAfter(at);
-}
-
-void baseitem_read_class_instance(UmlClass * base_item)
-{
-  // update read_()'s body
-  UmlOperation * op = base_item->get_operation("read_");
-  
-  if (op != 0) {
-    QCString body;
-    
-    body = op->cppBody();
-    body.insert(body.findRev("default:"),
-		"case aClassInstance:\n\
-      return new UmlClassInstance(id, name);\n\
-    ");
-    op->set_CppBody(body);
-      
-    body = op->javaBody();
-    body.insert(body.findRev("default:"),
-		"case anItemKind._aClassInstance:\n\
-      return new UmlClassInstance(id, name);\n\
-    ");
-    op->set_JavaBody(body);
-  }
-  
-  // update BaseUmlItem artifact
-  UmlArtifact * art = base_item->associatedArtifact();
-  QCString s;
-  
-  s = art->cppSource();
-  s.insert(s.find("#include \"UmlUseCase.h\""),
-	   "#include \"UmlClassInstance.h\"\n");
-  art->set_CppSource(s);
-}
-
-void add_class_instance(UmlClass * base_item, UmlClass * user_item)
-{
-  UmlClassView * base_class_view = (UmlClassView *) base_item->parent();
-  UmlClassView * user_class_view = (UmlClassView *) user_item->parent();
-  UmlDeploymentView * base_depl_view = (UmlDeploymentView *)
-    base_item->associatedArtifact()->parent();
-  UmlDeploymentView * user_depl_view = (UmlDeploymentView *)
-    user_item->associatedArtifact()->parent();
-
-  UmlCom::trace("Class instance<br>\n");
-  
-  add_class_instance(base_class_view, user_class_view, base_depl_view, user_depl_view,
-		     base_item, user_item);
-
-  //
-
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  UmlCom::trace("update anItemKind<br>\n");
-  
-  UmlClass * itkind = UmlClass::get("anItemKind", 0);
-  
-  itkind->add_enum_item("aClassInstance");
-  
-  UmlCom::trace("update cmd list<br>\n");
-  
-  add_class_instance_on_instance_cmd();
-  
-  UmlCom::trace("update item read<br>\n");
-  
-  baseitem_read_class_instance(base_item);
-  
-  UmlCom::set_user_id(uid);
-}
-
 //
 // fixe UmlBaseParameterSet::read_uml_() in java
 //
@@ -6814,279 +2584,6 @@ void fixe_parameterset_read_uml()
 		   "  for (int index = 0; index != n; index += 1)\n"
 		   "    _pins[index] = (UmlActivityPin) UmlBaseItem.read_();\n");
   
-  UmlCom::set_user_id(uid);
-}
-
-//
-// add UmlBaseParameter, move UmlParameter members into it
-// add add inheritance
-//
-
-void add_umlbaseparameter(UmlClass * uml_base_item, UmlClass * uml_item)
-{
-  UmlClassView * base_class_view = (UmlClassView *) uml_base_item->parent();
-  UmlClassView * user_class_view = (UmlClassView *) uml_item->parent();
-  UmlDeploymentView * base_depl_view = (UmlDeploymentView *)
-    uml_base_item->associatedArtifact()->parent();
-  UmlDeploymentView * user_depl_view = (UmlDeploymentView *)
-    uml_item->associatedArtifact()->parent();
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  UmlClass * uml_parameter = UmlClass::get("UmlParameter", 0);
-  UmlClass * uml_base_parameter = 
-    UmlClass::made(base_class_view, base_depl_view, "UmlBaseParameter");
-
-  uml_base_parameter->set_Stereotype("struct");
-  uml_base_parameter->set_Description(uml_parameter->description());
-  uml_base_parameter->set_CppDecl(uml_parameter->cppDecl());
-  uml_base_parameter->set_JavaDecl(uml_parameter->javaDecl());
-
-  UmlClass * oper;
-
-  oper = UmlClass::get("UmlBaseOperation", 0);
-  uml_base_parameter->moveAfter(oper);
-  uml_base_parameter->associatedArtifact()->moveAfter(oper->associatedArtifact());
-
-  uml_parameter->moveIn(user_class_view);
-  oper = UmlClass::get("UmlOperation", 0);
-  uml_parameter->moveAfter(oper);
-
-  UmlArtifact * art = uml_parameter->associatedArtifact();
-  
-  art->moveIn(user_depl_view);
-  art->moveAfter(oper->associatedArtifact());
-  art->setUser(uid);
-
-  //
-
-  uml_parameter->get_attribute("default_value")->moveIn(uml_base_parameter);
-  uml_parameter->get_attribute("name")->moveIn(uml_base_parameter);
-
-  UmlRelation * rel;
-  UmlRelation * old;
-
-  old = uml_parameter->get_relation(aDirectionalAggregationByValue, "type");
-  rel = UmlBaseRelation::create(aDirectionalAggregationByValue,
-				uml_base_parameter, 
-				UmlClass::get("UmlTypeSpec", 0));
-  rel->set_CppDecl(old->cppDecl());
-  rel->set_JavaDecl(old->javaDecl());
-  rel->set_RoleName("type");
-  rel->set_Visibility(PublicVisibility);
-  old->deleteIt();
-
-  old = uml_parameter->get_relation(aDirectionalAggregationByValue, "dir");
-  rel = UmlBaseRelation::create(aDirectionalAggregationByValue,
-				uml_base_parameter, 
-				UmlClass::get("aDirection", 0));
-  rel->set_CppDecl(old->cppDecl());
-  rel->set_JavaDecl(old->javaDecl());
-  rel->set_RoleName("dir");
-  rel->set_Visibility(PublicVisibility);
-  old->deleteIt();
-
-  UmlOperation * op;
-  QCString cpp_body;
-  QCString java_body;
-  
-  op = uml_parameter->get_operation("clone_it");
-  cpp_body = op->cppBody();
-  java_body = op->javaBody();
-  op->moveIn(uml_base_parameter);
-  op->set_CppBody(cpp_body);
-  op->set_JavaBody(java_body);
-
-  op = uml_parameter->get_operation("UmlParameter");
-  cpp_body = op->cppBody();
-  java_body = op->javaBody();  
-  op->moveIn(uml_base_parameter);
-  op->set_CppBody(cpp_body);
-  op->set_JavaBody(java_body);
-  op->set_Name("UmlBaseParameter");
-
-  // must not be done before else .body not find
-  uml_parameter->setUser(uid);
-  
-  //
-
-  UmlCom::set_user_id(uid);
-
-  rel = UmlBaseRelation::create(aGeneralisation, uml_parameter, uml_base_parameter);
-
-  if (rel == 0) {
-    QCString msg = "UmlParameter can't inherit UmlBaseParameter<br>\n";
-    
-    UmlCom::trace(msg);
-    throw 0;
-  }
-  else {
-    rel->set_CppDecl("${type}");
-    rel->set_JavaDecl("${type}");
-  }
-}
-
-//
-// add UmlBaseTypeSpec, move UmlTypeSpec members into it
-// add add inheritance
-//
-
-void add_umlbasetypespec(UmlClass * uml_base_item, UmlClass * uml_item)
-{
-  UmlClassView * base_class_view = (UmlClassView *) uml_base_item->parent();
-  UmlClassView * user_class_view = (UmlClassView *) uml_item->parent();
-  UmlDeploymentView * base_depl_view = (UmlDeploymentView *)
-    uml_base_item->associatedArtifact()->parent();
-  UmlDeploymentView * user_depl_view = (UmlDeploymentView *)
-    uml_item->associatedArtifact()->parent();
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  UmlClass * uml_typespec = UmlClass::get("UmlTypeSpec", 0);
-  UmlClass * uml_base_typespec = 
-    UmlClass::made(base_class_view, base_depl_view, "UmlBaseTypeSpec");
-
-  uml_base_typespec->set_Description(uml_typespec->description());
-  uml_base_typespec->set_CppDecl(uml_typespec->cppDecl());
-  uml_base_typespec->set_JavaDecl(uml_typespec->javaDecl());
-
-  uml_base_typespec->moveAfter(uml_typespec);
-  uml_base_typespec->associatedArtifact()->moveAfter(uml_typespec->associatedArtifact());
-
-  uml_typespec->moveIn(user_class_view);
-
-  UmlArtifact * art = uml_typespec->associatedArtifact();
-  
-  art->moveIn(user_depl_view);
-  art->setUser(uid);
-
-  //
-
-  uml_typespec->get_attribute("explicit_type")->moveIn(uml_base_typespec);
-
-  UmlRelation * rel;
-  UmlRelation * old;
-
-  old = uml_typespec->get_relation(aDirectionalAssociation, "type");
-  rel = UmlBaseRelation::create(aDirectionalAssociation,
-				uml_base_typespec, 
-				UmlClass::get("UmlClass", 0));
-  rel->set_CppDecl(old->cppDecl());
-  rel->set_JavaDecl(old->javaDecl());
-  rel->set_RoleName("type");
-  rel->set_Visibility(PublicVisibility);
-  old->deleteIt();
-
-  UmlOperation * op;
-  QCString cpp_body;
-  QCString java_body;
-  
-  op = uml_typespec->get_operation("clone_it");
-  cpp_body = op->cppBody();
-  java_body = op->javaBody();  
-  op->moveIn(uml_base_typespec);
-  op->set_CppBody(cpp_body);
-  op->set_JavaBody(java_body);
-  
-  op = uml_typespec->get_operation("toString");
-  cpp_body = op->cppBody();
-  java_body = op->javaBody();  
-  op->moveIn(uml_base_typespec);
-  op->set_CppBody(cpp_body);
-  op->set_JavaBody(java_body);
-
-  op = uml_typespec->get_operation("UmlTypeSpec");
-  cpp_body = op->cppBody();
-  java_body = op->javaBody();  
-  op->moveIn(uml_base_typespec);
-  op->set_CppBody(cpp_body);
-  op->set_JavaBody(java_body);
-  op->set_Name("UmlBaseTypeSpec");
-
-  // must not be done before else .body not find
-  uml_typespec->setUser(uid);
-  
-  //
-
-  UmlCom::set_user_id(uid);
-
-  rel = UmlBaseRelation::create(aGeneralisation, uml_typespec, uml_base_typespec);
-
-  if (rel == 0) {
-    QCString msg = "UmlTypeSpec can't inherit UmlBaseTypeSpec<br>\n";
-    
-    UmlCom::trace(msg);
-    throw 0;
-  }
-  else {
-    rel->set_CppDecl("${type}");
-    rel->set_JavaDecl("${type}");
-  }
-}
-
-//
-// add UmlBaseView and UmlView classes between base view
-// classes and UmlItem
-//
-
-void add_umlbaseview_umlview(UmlClass * base_item, UmlClass * user_item)
-{
-  UmlClassView * base_class_view = (UmlClassView *) base_item->parent();
-  UmlClassView * user_class_view = (UmlClassView *) user_item->parent();
-  UmlDeploymentView * base_depl_view = (UmlDeploymentView *)
-    base_item->associatedArtifact()->parent();
-  UmlDeploymentView * user_depl_view = (UmlDeploymentView *)
-    user_item->associatedArtifact()->parent();
-  UmlClass * base_view;
-  UmlClass * user_view;
-  
-  user_item->made(base_class_view, user_class_view,
-		  base_depl_view, user_depl_view,
-		  base_item, "View", base_view, user_view,
-		  0);
-
-  user_view->add_constr(base_view, ProtectedVisibility);
-  user_view->set_isAbstract(TRUE);
-
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-    
-  base_view->add_constr(user_item, ProtectedVisibility); 
-  
-  const char * views[] = {
-    "UmlBaseClassView",
-    "UmlBaseComponentView",
-    "UmlBaseDeploymentView",
-    "UmlBaseUseCaseView"
-  };
-  
-  for (unsigned i = 0; i != sizeof(views)/sizeof(views[0]); i += 1) {
-    UmlClass * bview = UmlClass::get(views[i], 0);
-    UmlRelation * rel =
-      UmlBaseRelation::create(aGeneralisation, bview, user_view);
-    
-    if (rel == 0) {
-      QCString msg = QCString(views[i]) + " can't inherit UmlView<br>\n";
-      
-      UmlCom::trace(msg);
-      throw 0;
-    }
-    rel->set_CppDecl("${type}");
-    rel->set_JavaDecl("${type}");
-    bview->get_relation(aGeneralisation, 0)->deleteIt(); // old gene
-    rel->moveAfter(0);	// after old gene del
-    
-    UmlOperation * op = bview->get_operation(views[i]);
-    QCString s = op->cppDecl();
-    
-    op->set_CppDecl(s.replace(s.find(": UmlItem"), 9, ": UmlView"));
-  }
-  
-  //
-
   UmlCom::set_user_id(uid);
 }
 
@@ -7169,7 +2666,7 @@ void add_multiplicity(UmlClass * settings, QCString attr,
 
 void add_attribute_multiplicity(UmlClass * settings, QCString who, QCString Who)
 {  
-  UmlCom::trace("upgrade " + Who + "Settings<br>");
+  UmlCom::trace("<b>upgrade " + Who + "Settings</b><br>");
   
   settings->get_operation("relationStereotype")->set_Name("relationAttributeStereotype");
   settings->get_operation("set_RelationStereotype")->set_Name("set_RelationAttributeStereotype");
@@ -7209,7 +2706,7 @@ void rename_in(UmlOperation * op)
 void add_attribute_multiplicity(UmlClass * umlsettings, UmlClass * cppsettings, 
 				UmlClass * javasettings, UmlClass * idlsettings)
 {
-  UmlCom::trace("Add multiplicity on attribute<br>\n");
+  UmlCom::trace("<b>Add multiplicity on attribute</b><br>\n");
   
   unsigned uid = UmlCom::user_id();
   
@@ -7293,7 +2790,7 @@ void add_attribute_multiplicity(UmlClass * umlsettings, UmlClass * cppsettings,
 
   // rename cmds
   
-  UmlCom::trace("rename settings cmds<br>\n");
+  UmlCom::trace("<b>rename settings cmds</b><br>\n");
   
   UmlClass::get("CppSettingsCmd", 0)->get_attribute("setCppRelationStereotypeCmd")
     ->set_Name("setCppRelationAttributeStereotypeCmd");
@@ -7304,7 +2801,7 @@ void add_attribute_multiplicity(UmlClass * umlsettings, UmlClass * cppsettings,
 
   //
   
-  UmlCom::trace("upgrade UmlSettings<br>\n");
+  UmlCom::trace("<b>upgrade UmlSettings</b><br>\n");
   
   umlsettings->get_attribute("_map_relation_stereotypes")
     ->set_Name("_map_relation_attribute_stereotypes");
@@ -7316,7 +2813,7 @@ void add_attribute_multiplicity(UmlClass * umlsettings, UmlClass * cppsettings,
 
   //
   
-  UmlCom::trace("upgrade body to take into account renamings<br>\n");
+  UmlCom::trace("<b>upgrade body to take into account renamings</b><br>\n");
   
   rename_in(cppsettings->get_operation("set_RelationAttributeStereotype"));
   rename_in(cppsettings->get_operation("relationAttributeStereotype"));
@@ -7417,902 +2914,6 @@ void add_external(UmlClass * transition)
 //
 //
 
-void fixe_classinstance(UmlClass * bci)
-{
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-
-  //
-  
-  UmlCom::trace("Fixe UmlBaseClassInstance operation profiles<br>\n");
-  
-  UmlClass * rel = UmlClass::get("UmlRelation", 0);
-  UmlOperation * op = bci->get_operation("add_Relation");
-  QValueList<UmlParameter> params = op->params();
-  UmlParameter param = params.first();
-    
-  param.type.type = rel;
-  op->replaceParameter(0, param);
-  
-  //
-  
-  op = bci->get_operation("remove_Relation");
-  params = op->params();
-  param = params.first();
-    
-  param.type.type = rel;
-  op->replaceParameter(0, param);
-  
-  //
-
-  UmlCom::set_user_id(uid);
-}
-
-//
-//
-//
-
-UmlArtifact * add_php_settings()
-{
-  // already root
-  UmlClass * umlsettings = UmlClass::get("UmlSettings", 0);
-  UmlClass * javasettings = UmlClass::get("JavaSettings", 0);
-  UmlArtifact * base_art =
-    UmlArtifact::made((UmlDeploymentView *)
-		      umlsettings->associatedArtifact()->parent(),
-		      "PhpSettings");
-  
-  base_art->moveAfter(javasettings->associatedArtifact());
-  
-  base_art->set_CppHeader("#ifndef _${NAME}_H\n"
-			  "#define _${NAME}_H\n"
-			  "\n"
-			  "#ifdef WITHPHP\n"
-			  "\n"
-			  "${comment}\n"
-			  "${includes}\n"
-			  "${declarations}\n"
-			  "${namespace_start}\n"
-			  "${definition}\n"
-			  "${namespace_end}\n"
-			  "\n"
-			  "#endif\n"
-			  "\n"
-			  "#endif\n");
-
-  base_art->set_CppSource("#ifdef WITHPHP\n"
-			  "\n"
-			  "${comment}\n"
-			  "${includes}\n"
-			  "#include \"UmlCom.h\"\n"
-			  "#include \"PhpSettingsCmd.h\"\n"
-			  "#include \"JavaSettingsCmd.h\"\n"
-			  "#include \"UmlStereotype.h\"\n"
-			  "#ifdef WITHJAVA\n"
-			  "#include \"JavaSettings.h\"\n"
-			  "#endif\n"
-			  "${namespace_start}\n"
-			  "${members}\n"
-			  "${namespace_end}\n"
-			  "\n"
-			  "#endif\n");
-  
-  UmlClass * phpsettings = UmlClass::create(umlsettings->parent(), "PhpSettings");
-  
-  phpsettings->moveAfter(javasettings);
-  
-  base_art->addAssociatedClass(phpsettings);
-  phpsettings->set_CppDecl(CppSettings::classDecl());
-  phpsettings->set_JavaDecl(JavaSettings::classDecl());
-  phpsettings->set_Description(" This class manages settings concerning PHP, configured through\n"
-			       " the 'Generation settings' dialog.\n"
-			       "\n"
-			       " This class may be defined as a 'singleton', but I prefer to use static \n"
-			       " members allowing to just write 'PhpSettings::member' rather than\n"
-			       " 'PhpSettings::instance()->member' or other long sentence like this.");
-
-  int index;
-
-  {
-    const char * opers[] = {
-      "useDefaults", "set_UseDefaults",
-      "classStereotype", "set_ClassStereotype",
-      "rootDir", "set_RootDir",
-      "sourceContent", "set_SourceContent",
-      "sourceExtension", "set_SourceExtension",
-      "classDecl", "set_ClassDecl",
-      "externalClassDecl", "set_ExternalClassDecl",
-      "enumDecl", "set_EnumDecl",
-      "interfaceDecl", "set_InterfaceDecl"
-    };
-    
-    for (index = 0; index != sizeof(opers)/sizeof(opers[0]); index += 1)
-      UmlOperation::java2Php(phpsettings, javasettings, opers[index]);
-  }
-  
-  UmlOperation * op;
-  QCString s;
-  
-  op = UmlOperation::java2Php(phpsettings, javasettings, "attributeDecl");
-  op->set_Description(" returns the default definition of an attribute");
-  op->removeParameter(0);
-  s = op->cppDecl();
-  s.remove(s.find("const ${t0} ${p0}"), 17);
-  op->set_CppDecl(s);
-  s = op->cppDef();
-  s.remove(s.find("const ${t0} ${p0}"), 17);
-  op->set_CppDef(s);
-  s = op->javaDecl();
-  s.remove(s.find("${t0} ${p0}"), 11);
-  op->set_JavaDecl(s);
-  op->set_CppBody("  read_if_needed_();\n"
-		  "\n"
-		  "  return _attr_decl;\n");
-  op->set_JavaBody("  read_if_needed_();\n"
-		  "\n"
-		  "  return _attr_decl;\n");
-
-  op = UmlOperation::java2Php(phpsettings, javasettings, "set_AttributeDecl");
-  op->set_Description(" set the default definition of an attribute\n"
-		      "\n"
-		      " On error : return FALSE in C++, produce a RuntimeException in Java");
-  op->removeParameter(0);
-  s = op->cppDecl();
-  s.replace(s.find("const ${t0} ${p0}, ${t1} ${p1}"), 30, "${t0} ${p0}");
-  op->set_CppDecl(s);
-  s = op->cppDef();
-  s.replace(s.find("const ${t0} ${p0}, ${t1} ${p1}"), 30, "${t0} ${p0}");
-  op->set_CppDef(s);
-  s = op->javaDecl();
-  s.remove(s.find(", ${t1} ${p1}"), 13);
-  op->set_JavaDecl(s);
-  op->set_CppBody("  UmlCom::send_cmd(phpSettingsCmd, setPhpAttributeDeclCmd, v);\n"
-		  "  if (UmlCom::read_bool()) {\n"
-		  "    _attr_decl = v;\n"
-		  "    return TRUE;\n"
-		  "  }\n"
-		  "  else\n"
-		  "    return FALSE;\n");
-  op->set_JavaBody("  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpAttributeDeclCmd, v);\n"
-		   "  UmlCom.check();\n"
-		   "\n"
-		   "  _attr_decl = v;\n");
-
-  {
-    const char * opers[] = {
-      "enumItemDecl", "set_EnumItemDecl"
-    };
-    
-    for (index = 0; index != sizeof(opers)/sizeof(opers[0]); index += 1)
-      UmlOperation::java2Php(phpsettings, javasettings, opers[index]);
-  }
-
-  op = UmlOperation::java2Php(phpsettings, javasettings, "relationDecl");
-  op->set_Description(" returns the default definition of an relation");
-  op->removeParameter(0);
-  s = op->cppDecl();
-  s.remove(s.find("const ${t0} ${p0}"), 17);
-  op->set_CppDecl(s);
-  s = op->cppDef();
-  s.remove(s.find("const ${t0} ${p0}"), 17);
-  op->set_CppDef(s);
-  s = op->javaDecl();
-  s.remove(s.find("${t0} ${p0}"), 11);
-  op->set_JavaDecl(s);
-  op->set_CppBody("  read_if_needed_();\n"
-		  "\n"
-		  "  return _rel_decl;\n");
-  op->set_JavaBody("  read_if_needed_();\n"
-		  "\n"
-		  "  return _rel_decl;\n");
-
-  op = UmlOperation::java2Php(phpsettings, javasettings, "set_RelationDecl");
-  op->set_Description(" set the default definition of an relation\n"
-		      "\n"
-		      " On error : return FALSE in C++, produce a RuntimeException in Java");
-  op->removeParameter(0);
-  s = op->cppDecl();
-  s.replace(s.find("const ${t0} ${p0}, ${t1} ${p1}"), 30, "${t0} ${p0}");
-  op->set_CppDecl(s);
-  s = op->cppDef();
-  s.replace(s.find("const ${t0} ${p0}, ${t1} ${p1}"), 30, "${t0} ${p0}");
-  op->set_CppDef(s);
-  s = op->javaDecl();
-  s.remove(s.find(", ${t1} ${p1}"), 13);
-  op->set_JavaDecl(s);
-  op->set_CppBody("  UmlCom::send_cmd(phpSettingsCmd, setPhpRelationDeclCmd, v);\n"
-		  "  if (UmlCom::read_bool()) {\n"
-		  "    _rel_decl = v;\n"
-		  "    return TRUE;\n"
-		  "  }\n"
-		  "  else\n"
-		  "    return FALSE;\n");
-  op->set_JavaBody("  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpRelationDeclCmd, v);\n"
-		   "  UmlCom.check();\n"
-		   "\n"
-		   "  _rel_decl = v;\n");
-
-  {
-    const char * opers[] = {
-      "operationDef", "set_OperationDef"
-    };
-    
-    for (index = 0; index != sizeof(opers)/sizeof(opers[0]); index += 1)
-      UmlOperation::java2Php(phpsettings, javasettings, opers[index]);
-  }
-
-  op = UmlOperation::java2Php(phpsettings, javasettings, "getVisibility");
-  op->set_CppBody("#ifdef WITHJAVA\n"
-		  "  return JavaSettings::getVisibility();\n"
-		  "#else\n"
-		  "  read_if_needed_();\n"
-		  "  \n"
-		  "  return _get_visibility;\n"
-		  "#endif\n");
-  op->set_JavaBody("  return JavaSettings.getVisibility();\n");
-  op->set_Description(op->description() + 
-		      "\n\n note : visibility shared with Java");
-  
-  op = UmlOperation::java2Php(phpsettings, javasettings, "set_GetVisibility");
-  op->set_CppBody("#ifdef WITHJAVA\n"
-		  "  return JavaSettings::set_GetVisibility(v);\n"
-		  "#else\n"
-		  "  UmlCom::send_cmd(phpSettingsCmd, setJavaGetvisibilityCmd, v);\n"
-		  "  if (UmlCom::read_bool()) {\n"
-		  "    _get_visibility = v;\n"
-		  "    return TRUE;\n"
-		  "  }\n"
-		  "  else\n"
-		  "    return FALSE;\n"
-		  "#endif\n");
-  op->set_JavaBody("  JavaSettings.set_GetVisibility(v);\n");
-  op->set_Description(op->description() + 
-		      "\n\n note : visibility shared with Java");
-
-  {
-    const char * opers[] = {
-      "getName", "set_GetName",
-      "setName", "set_SetName",
-      "isGetFinal", "set_IsGetFinal",
-      "isSetFinal", "set_IsSetFinal"
-    };
-    
-    for (index = 0; index != sizeof(opers)/sizeof(opers[0]); index += 1)
-      UmlOperation::java2Php(phpsettings, javasettings, opers[index]);
-  }
-
-  op = UmlOperation::java2Php(phpsettings, javasettings, "setVisibility");
-  op->set_CppBody("#ifdef WITHJAVA\n"
-		  "  return JavaSettings::setVisibility();\n"
-		  "#else\n"
-		  "  read_if_needed_();\n"
-		  "  \n"
-		  "  return _set_visibility;\n"
-		  "#endif\n");
-  op->set_JavaBody("  return JavaSettings.setVisibility();\n");
-  op->set_Description(op->description() + 
-		      "\n\n   note : visibility shared with Java");
-  
-  op = UmlOperation::java2Php(phpsettings, javasettings, "set_SetVisibility");
-  op->set_CppBody("#ifdef WITHJAVA\n"
-		  "  return JavaSettings::set_SetVisibility(v);\n"
-		  "#else\n"
-		  "  UmlCom::send_cmd(phpSettingsCmd, setJavaSetVisibilityCmd, v);\n"
-		  "  if (UmlCom::read_bool()) {\n"
-		  "    _set_visibility = v;\n"
-		  "    return TRUE;\n"
-		  "  }\n"
-		  "  else\n"
-		  "    return FALSE;\n"
-		  "#endif\n");
-  op->set_JavaBody("  JavaSettings.set_SetVisibility(v);\n");
-  op->set_Description(op->description() + 
-		      "\n\n   note : visibility shared with Java");
-
-  UmlOperation::java2Php(phpsettings, javasettings, "JavaSettings", "PhpSettings");
-
-  UmlRelation * rel;
-  
-  if ((rel = UmlBaseRelation::create(aGeneralisation, phpsettings, umlsettings)) == 0) {
-    QCString msg = "PhpSettings can't inherit UmlSettings<br>\n";
-    
-    UmlCom::trace(msg);
-    throw 0;
-  }
-  else {
-    rel->set_CppDecl("${type}");
-    rel->set_JavaDecl("${type}");
-  }
-  
-  {
-    const char * attrs[] = {
-      "_defined", 
-      "_root", 
-      "_class_decl", 
-      "_external_class_decl", 
-      "_enum_decl", 
-      "_interface_decl"
-    };
-    
-    for (index = 0; index != sizeof(attrs)/sizeof(attrs[0]); index += 1)
-      UmlAttribute::java2Php(phpsettings, javasettings, attrs[index]);
-  }
-
-  phpsettings->add_attribute("_attr_decl", PrivateVisibility, "string", 0, 0)
-    ->set_isClassMember(TRUE);
-  
-  UmlAttribute::java2Php(phpsettings, javasettings, "_enum_item_decl");
-  
-  phpsettings->add_attribute("_rel_decl", PrivateVisibility, "string", 0, 0)
-    ->set_isClassMember(TRUE);
-  
-  UmlAttribute::java2Php(phpsettings, javasettings, "_oper_def");
-
-  rel = UmlRelation::java2Php(phpsettings, javasettings, "_get_visibility");
-  rel->set_CppDecl("#ifndef WITHJAVA\n" + rel->cppDecl() + "#endif\n");
-  rel->set_JavaDecl("");
-
-  UmlAttribute::java2Php(phpsettings, javasettings, "_get_name");
-  UmlAttribute::java2Php(phpsettings, javasettings, "_is_get_final");
-
-  rel = UmlRelation::java2Php(phpsettings, javasettings, "_set_visibility");
-  rel->set_CppDecl("#ifndef WITHJAVA\n" + rel->cppDecl() + "#endif\n");
-  rel->set_JavaDecl("");
-  
-  {
-    const char * attrs[] = {
-      "_set_name", 
-      "_is_set_final", 
-      "_src_content", 
-      "_ext"
-    };
-    
-    for (index = 0; index != sizeof(attrs)/sizeof(attrs[0]); index += 1)
-      UmlAttribute::java2Php(phpsettings, javasettings, attrs[index]);
-  }
-  
-  op = phpsettings->add_op("read_", ProtectedVisibility, "void");
-  op->set_isClassMember(TRUE);
-  op->set_cpp("${type}", "",
-	      "  _root = UmlCom::read_string();\n"
-	      "  \n"
-	      "  unsigned n;\n"
-	      "  unsigned index;\n"
-	      "  \n"
-	      "  n = UmlCom::read_unsigned();\n"
-	      "  \n"
-	      "  for (index = 0; index != n; index += 1)\n"
-	      "    UmlSettings::_class_stereotypes[index].php = UmlCom::read_string();\n"
-	      "  \n"
-	      "  _src_content = UmlCom::read_string();\n"
-	      "  _ext = UmlCom::read_string();\n"
-	      "\n"
-	      "  _class_decl = UmlCom::read_string();\n"
-	      "  _external_class_decl = UmlCom::read_string();\n"
-	      "  _enum_decl = UmlCom::read_string();\n"
-	      "  _interface_decl = UmlCom::read_string();\n"
-	      "  _attr_decl = UmlCom::read_string();\n"
-	      "  _enum_item_decl = UmlCom::read_string();\n"
-	      "  _rel_decl = UmlCom::read_string();\n"
-	      "  _oper_def = UmlCom::read_string();\n"
-	      "#ifndef WITHJAVA\n"
-	      "  _get_visibility =\n"
-	      "#endif\n"
-	      "    (aVisibility) UmlCom::read_char();\n"
-	      "  _get_name = UmlCom::read_string();\n"
-	      "  _is_get_final = UmlCom::read_bool();\n"
-	      "#ifndef WITHJAVA\n"
-	      "  _set_visibility =\n"
-	      "#endif\n"
-	      "    (aVisibility) UmlCom::read_char();\n"
-	      "  _set_name = UmlCom::read_string();\n"
-	      "  _is_set_final = UmlCom::read_bool();\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	      "  _root = UmlCom.read_string();\n"
-	      "  \n"
-	      "  int n;\n"
-	      "  int index;\n"
-	      "  \n"
-	      "  n = UmlCom.read_unsigned();\n"
-	      "  \n"
-	      "  for (index = 0; index != n; index += 1)\n"
-	      "    UmlSettings._class_stereotypes[index].php = UmlCom.read_string();\n"
-	      "  \n"
-	      "  _src_content = UmlCom.read_string();\n"
-	      "  _ext = UmlCom.read_string();\n"
-	      "\n"
-	      "  _class_decl = UmlCom.read_string();\n"
-	      "  _external_class_decl = UmlCom.read_string();\n"
-	      "  _enum_decl = UmlCom.read_string();\n"
-	      "  _interface_decl = UmlCom.read_string();\n"
-	      "  _attr_decl = UmlCom.read_string();\n"
-	      "  _enum_item_decl = UmlCom.read_string();\n"
-	      "  _rel_decl = UmlCom.read_string();\n"
-	      "  _oper_def = UmlCom.read_string();\n"
-	      "  UmlCom.read_char(); // getter visibility\n"
-	      "  _get_name = UmlCom.read_string();\n"
-	      "  _is_get_final = UmlCom.read_bool();\n"
-	      "  UmlCom.read_char(); // setter visibility\n"
-	      "  _set_name = UmlCom.read_string();\n"
-	      "  _is_set_final = UmlCom.read_bool();\n",
-	       FALSE);
-  
-  op = phpsettings->add_op("read_if_needed_", ProtectedVisibility, "void");
-  op->set_isClassMember(TRUE);
-  op->set_cpp("${type}", "",
-	      "  UmlSettings::read_if_needed_();\n"
-	      "  if (!_defined) {\n"
-	      "    UmlCom::send_cmd(phpSettingsCmd, getPhpSettingsCmd);\n"
-	      "    read_();\n"
-	      "    _defined = TRUE;\n"
-	      "  }\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  UmlSettings.read_if_needed_();\n"
-	       "  if (!_defined) {\n"
-	       "    UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._getPhpSettingsCmd);\n"
-	       "    read_();\n"
-	       "    _defined = true;\n"
-	       "  }\n",
-	       FALSE);
-  
-  return base_art;
-}
-
-UmlArtifact *  add_php_settings_cmd()
-{
-  // already root
-  UmlClass * javasettingscmd = UmlClass::get("JavaSettingsCmd", 0);
-  UmlArtifact * base_art =
-    UmlArtifact::made((UmlDeploymentView *)
-		      javasettingscmd->associatedArtifact()->parent(),
-		      "PhpSettingsCmd");
-  
-  base_art->moveAfter(javasettingscmd->associatedArtifact());
-  
-  UmlClass * phpsettingscmd =
-    UmlClass::create(javasettingscmd->parent(), "PhpSettingsCmd");
-  
-  phpsettingscmd->moveAfter(javasettingscmd);
-  
-  base_art->addAssociatedClass(phpsettingscmd);
-  phpsettingscmd->set_Stereotype(javasettingscmd->stereotype());
-  phpsettingscmd->set_CppDecl(javasettingscmd->cppDecl());
-  phpsettingscmd->set_JavaDecl(javasettingscmd->javaDecl());
-
-  unsigned index;
-  const char * items[] = {
-    "getPhpSettingsCmd",
-    "getPhpUseDefaultsCmd",
-  
-    "setPhpUseDefaultsCmd",
-    "setPhpClassStereotypeCmd",
-    "setPhpRootdirCmd",
-    "setPhpSourceContentCmd",
-    "setPhpSourceExtensionCmd",
-    "setPhpClassDeclCmd",
-    "setPhpEnumDeclCmd",
-    "setPhpExternalClassDeclCmd",
-    "setPhpInterfaceDeclCmd",
-    "setPhpAttributeDeclCmd",
-    "setPhpEnumItemDeclCmd",
-    "setPhpRelationDeclCmd",
-    "setPhpOperationDefCmd",
-    "setPhpGetNameCmd",
-    "setPhpSetNameCmd",
-    "setPhpIsGetFinalCmd",
-    "setPhpIsSetFinalCmd",
-    "setPhpIsSetParamFinalCmd",
-  };
-  
-  for (index = 0; index != sizeof(items)/sizeof(items[0]); index += 1)
-    phpsettingscmd->add_enum_item(items[index]);
-  
-  UmlClass::get("CmdFamily", 0)->add_enum_item("phpSettingsCmd");
-  
-  return base_art;
-}
-
-void add_php_on_enums()
-{
-  // already root
-  UmlClass * itcmd = UmlClass::get("OnInstanceCmd", 0);
-  
-  unsigned index;
-  const char * items[] = {
-    "setPhpDeclCmd",
-    "setIsPhpExternalCmd",
-    "setIsPhpFinalCmd",
-    "setPhpSrcCmd",
-    "setPhpFinalCmd",
-    "setPhpBodyCmd",
-    "setPhpNameSpecCmd",
-    "setPhpDirCmd",
-    "setPhpFrozenCmd",
-  };
-  
-  for (index = 0; index != sizeof(items)/sizeof(items[0]); index += 1)
-    itcmd->add_enum_item(items[index]);
-  
-  UmlAttribute * at = itcmd->add_enum_item("getPhpDefCmd");
-  
-  at->moveAfter(itcmd->get_attribute("relationsCmd"));
-  itcmd->add_enum_item("phpBodyCmd")->moveAfter(at);
-  
-  //
-  
-  UmlClass::get("aLanguage", 0)->add_enum_item("phpLanguage");
-}
-
-void artifact_add_php()
-{
-  // already root
-  UmlClass * cl = UmlClass::get("UmlBaseArtifact", 0);
-  
-  UmlOperation * op =
-    UmlOperation::java2Php(cl, cl, "javaSource", "phpSource");
-  
-  op->moveAfter(cl->get_operation("set_JavaSource"));
-  UmlOperation::java2Php(cl, cl, "set_JavaSource", "set_PhpSource")
-    ->moveAfter(op);
-  
-  UmlAttribute::java2Php(cl, cl, "_java_src", "_php_src")
-    ->moveAfter(cl->get_attribute("_java_src"));
-  
-  UmlOperation::java2Php(cl, cl, "read_java_", "read_php_")
-    ->moveAfter(cl->get_operation("read_java_"));
-  
-  QCString s;
-  
-  op = cl->get_operation("unload");
-  
-  s = op->cppBody();
-  s.insert(s.find("#ifdef WITHIDL"),
-	   "#ifdef WITHPHP\n"
-	   "  _php_src = 0;\n"
-	   "#endif\n");
-  op->set_CppBody(s);
-  
-  s = op->javaBody();
-  s.insert(s.find("  _idl_src = null;"),
-	   "  _php_src = null;\n");
-  op->set_JavaBody(s);
-}
-
-void attribute_add_php()
-{
-  // already root
-  UmlClass * cl = UmlClass::get("UmlBaseAttribute", 0);
-  UmlOperation * op = 
-    UmlOperation::java2Php(cl, cl, "read_java_", "read_php_");
-  
-  op->moveAfter(cl->get_operation("read_java_"));
-  
-  op->set_CppBody("  UmlBaseClassMember::read_php_();\n");
-  op->set_JavaBody("  super.read_php_();\n");
-}
-
-void class_add_php()
-{
-  // already root
-  UmlClass * cl = UmlClass::get("UmlBaseClass", 0);
-  UmlOperation * prev = cl->get_operation("set_isJavaFinal");
-  int index;
-  const struct {
-    const char * java;
-    const char * php;
-  } opers[] = {
-    { "isJavaExternal", "isPhpExternal" },
-    { "set_isJavaExternal", "set_isPhpExternal" },
-    { "isJavaFinal", "isPhpFinal" },
-    { "set_isJavaFinal", "set_isPhpFinal" },
-  };
-  
-  for (index = 0; index != sizeof(opers)/sizeof(opers[0]); index += 1) {
-    UmlOperation * op = 
-      UmlOperation::java2Php(cl, cl, opers[index].java, opers[index].php);
-    
-    op->moveAfter(prev);
-    prev = op;
-  }
-
-  UmlAttribute * att = 
-    UmlAttribute::java2Php(cl, cl, "_java_external", "_php_external");
-  
-  att->moveAfter(cl->get_attribute("_java_final"));
-  
-  UmlAttribute::java2Php(cl, cl, "_java_final", "_php_final")
-    ->moveAfter(att);
-  
-  UmlOperation::java2Php(cl, cl, "read_java_", "read_php_")
-    ->moveAfter(cl->get_operation("read_java_"));
-}
-
-void classitem_add_php()
-{
-  // already root
-  UmlClass * cl = UmlClass::get("UmlBaseClassItem", 0);
-  UmlOperation * op = 
-    UmlOperation::java2Php(cl, cl, "javaDecl", "phpDecl");
-    
-  op->moveAfter(cl->get_operation("set_JavaDecl"));
-  UmlOperation::java2Php(cl, cl, "set_JavaDecl", "set_PhpDecl")
-    ->moveAfter(op);
-
-  UmlAttribute::java2Php(cl, cl, "_java_decl", "_php_decl")
-    ->moveAfter(cl->get_attribute("_java_decl"));
-  
-  UmlOperation::java2Php(cl, cl, "read_java_", "read_php_")
-    ->moveAfter(cl->get_operation("read_java_"));
-
-  QCString s;
-  
-  op = cl->get_operation("unload");
-  
-  s = op->cppBody();
-  s.insert(s.find("#ifdef WITHIDL"),
-	   "#ifdef WITHPHP\n"
-	   "  _php_decl = 0;\n"
-	   "#endif\n");
-  op->set_CppBody(s);
-  
-  s = op->javaBody();
-  s.insert(s.find("  _idl_decl = null;"),
-	   "  _php_decl = null;\n");
-  op->set_JavaBody(s);
-}
-
-void item_add_php()
-{
-  // already root
-  UmlClass * cl = UmlClass::get("UmlBaseItem", 0);
-  
-  UmlOperation::java2Php(cl, cl, "read_java_", "read_php_")
-    ->moveAfter(cl->get_operation("read_java_"));
-
-  UmlOperation * op = cl->get_operation("read_if_needed_");
-  op->set_CppBody("  if (!_defined) {\n"
-		  "#if defined(WITHCPP) & defined(WITHJAVA) & defined(WITHPHP) & defined(WITHIDL)\n"
-		  "    UmlCom::send_cmd(_identifier, getDefCmd);\n"
-		  "    read_uml_();\n"
-		  "    read_cpp_();\n"
-		  "    read_java_();\n"
-		  "    read_php_();\n"
-		  "    read_idl_();\n"
-		  "#else\n"
-		  "# if defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)\n"
-		  "    UmlCom::send_cmd(_identifier, getCppDefCmd);\n"
-		  "    read_uml_();\n"
-		  "    read_cpp_();\n"
-		  "# else\n"
-		  "#  if !defined(WITHCPP) & defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)\n"
-		  "    UmlCom::send_cmd(_identifier, getJavaDefCmd);\n"
-		  "    read_uml_();\n"
-		  "    read_java_();\n"
-		  "#  else\n"
-		  "#   if !defined(WITHCPP) & !defined(WITHJAVA) & defined(WITHPHP) & !defined(WITHIDL)\n"
-		  "    UmlCom::send_cmd(_identifier, getPhpDefCmd);\n"
-		  "    read_uml_();\n"
-		  "    read_php_();\n"
-		  "#   else\n"
-		  "#    if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & defined(WITHIDL)\n"
-		  "    UmlCom::send_cmd(_identifier, getIdlDefCmd);\n"
-		  "    read_uml_();\n"
-		  "    read_idl_();\n"
-		  "#    else\n"
-		  "#     if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)\n"
-		  "    UmlCom::send_cmd(_identifier, getUmlDefCmd);\n"
-		  "    read_uml_();\n"
-		  "#     else\n"
-		  "    ... WITHCPP and WITHJAVA and WITHPHP and WITHIDL must be both defined or undefined\n"
-		  "    ... or only one of them must be defined\n"
-		  "#     endif\n"
-		  "#    endif\n"
-		  "#   endif\n"
-		  "#  endif\n"
-		  "# endif\n"
-		  "#endif\n"
-		  "    \n"
-		  "    _defined = TRUE;\n"
-		  "  }\n");
-
-  op->set_JavaBody("  if (!_defined) {\n"
-		   "    UmlCom.send_cmd(identifier_(), OnInstanceCmd.getDefCmd);\n"
-		   "    read_uml_();\n"
-		   "    read_cpp_();\n"
-		   "    read_java_();\n"
-		   "    read_php_();\n"
-		   "    read_idl_();\n"
-		   "    \n"
-		   "    _defined = true;\n"
-		   "  }\n");
-}
-
-void operation_add_php()
-{
-  // already root
-  UmlClass * cl = UmlClass::get("UmlBaseOperation", 0);
-  UmlOperation * prev = cl->get_operation("set_JavaGetSetFrozen");
-  UmlOperation * op;
-  int index;
-  const struct {
-    const char * java;
-    const char * php;
-  } opers[] = {
-    { "isJavaFinal", "isPhpFinal" },
-    { "set_isJavaFinal", "set_isPhpFinal" },
-    { "javaDef", "phpDef" },
-    { "set_JavaDef", "set_PhpDef" },
-    { "javaBody", "phpBody" },
-    { "set_JavaBody", "set_PhpBody" },
-    { "javaNameSpec", "phpNameSpec" },
-    { "set_JavaNameSpec", "set_PhpNameSpec" },
-    { "javaGetSetFrozen", "phpGetSetFrozen" },
-    { "set_JavaGetSetFrozen", "set_PhpGetSetFrozen" }
-  };
-  
-  for (index = 0; index != sizeof(opers)/sizeof(opers[0]); index += 1) {
-    op = UmlOperation::java2Php(cl, cl, opers[index].java, opers[index].php);
-    op->moveAfter(prev);
-    prev = op;
-  }
-
-  UmlAttribute * att = 
-    UmlAttribute::java2Php(cl, cl, "_java_final", "_php_final");
-  
-  att->moveAfter(cl->get_attribute("_java_synchronized"));
-  att->set_CppDecl(att->cppDecl() + "#endif\n");
-  
-  UmlAttribute::java2Php(cl, cl, "_java_get_set_frozen", "_php_get_set_frozen")
-    ->moveAfter(cl->get_attribute("_java_get_set_frozen"));
-  
-  UmlAttribute::java2Php(cl, cl, "_java_name_spec", "_php_name_spec")
-    ->moveAfter(cl->get_attribute("_java_name_spec"));
-  
-  op = UmlOperation::java2Php(cl, cl, "read_java_", "read_php_");
-  op->moveAfter(cl->get_operation("read_java_"));
-  op->set_CppBody("  UmlBaseClassMember::read_php_();\n"
-		  "  _php_final = UmlCom::read_bool();\n"
-		  "  _php_name_spec = UmlCom::read_string();\n"
-		  "  _php_get_set_frozen = UmlCom::read_bool();\n");
-  op->set_JavaBody("  super.read_php_();\n"
-		  "  _php_final = UmlCom.read_bool();\n"
-		  "  _php_name_spec = UmlCom.read_string();\n"
-		  "  _php_get_set_frozen = UmlCom.read_bool();\n");
-
-  QCString s;
-  
-  op = cl->get_operation("unload");
-  
-  s = op->cppBody();
-  s.insert(s.find("#ifdef WITHIDL"),
-	   "#ifdef WITHPHP\n"
-	   "  _php_name_spec = 0;\n"
-	   "#endif\n");
-  op->set_CppBody(s);
-  
-  s = op->javaBody();
-  s.insert(s.find("  _idl_name_spec = null;"),
-	   "  _php_name_spec = null;\n");
-  op->set_JavaBody(s);  
-}
-
-void package_add_php()
-{
-  // already root
-  UmlClass * cl = UmlClass::get("UmlBasePackage", 0);
-  UmlOperation * op1 = 
-    UmlOperation::java2Php(cl, cl, "javaDir", "phpDir");
-    
-  op1->moveAfter(cl->get_operation("findPackage"));
-  
-  UmlOperation * op2 = 
-    UmlOperation::java2Php(cl, cl, "set_JavaDir", "set_PhpDir");
-  
-  op2->moveAfter(op1);
-  op2->set_CppDecl(op2->cppDecl() + "#endif\n");
-  op2->set_CppDef(op2->cppDef() + "#endif\n");
-
-  UmlAttribute * att = 
-    UmlAttribute::java2Php(cl, cl, "_java_dir", "_php_dir");
-  
-  att->moveAfter(cl->get_attribute("_java_package"));
-  att->set_CppDecl(att->cppDecl() + "#endif\n");
-  
-  op1 = UmlOperation::java2Php(cl, cl, "read_java_", "read_php_");
-  op1->moveAfter(cl->get_operation("read_java_"));
-  op1->set_CppBody("  _php_dir = UmlCom::read_string();\n");
-  op1->set_JavaBody("  _php_dir = UmlCom.read_string();\n");
-
-  QCString s;
-  
-  op1 = cl->get_operation("unload");
-  
-  s = op1->cppBody();
-  s.insert(s.find("#ifdef WITHIDL"),
-	   "#ifdef WITHPHP\n"
-	   "  _php_dir = 0;\n"
-	   "#endif\n");
-  op1->set_CppBody(s);
-  
-  s = op1->javaBody();
-  s.insert(s.find("  _idl_dir = null;"),
-	   "  _php_dir = null;\n");
-  op1->set_JavaBody(s);
-}
-
-void relation_add_php()
-{
-  // already root
-  UmlClass * cl = UmlClass::get("UmlBaseRelation", 0);
-  UmlOperation * op = 
-    UmlOperation::java2Php(cl, cl, "read_java_", "read_php_");
-  
-  op->moveAfter(cl->get_operation("read_java_"));
-  
-  op->set_CppBody("  UmlBaseClassMember::read_php_();\n");
-  op->set_JavaBody("  super.read_php_();\n");
-}
-
-void stereotype_add_php()
-{
-  // already root
-  UmlClass * cl = UmlClass::get("UmlStereotype", 0);
-  
-  UmlAttribute::java2Php(cl, cl, "java", "php")
-    ->moveAfter(cl->get_attribute("java"));
-}
-
-void associate_php_artifacts(UmlArtifact * phpsettingsart,
-			     UmlArtifact * phpsettingscmdart)
-{
-  UmlDeploymentView * dv = (UmlDeploymentView *)
-    UmlClass::get("UmlArtifact", 0)->associatedArtifact()->parent();
-  const QVector<UmlItem> ch = dv->children();
-    
-  for (unsigned i = 0; i != ch.size(); i += 1) {
-    if ((ch[i]->kind() == anArtifact) && (ch[i]->name() == "executable")) {
-      ((UmlArtifact *) ch[i])->addAssociatedArtifact(phpsettingsart);
-      ((UmlArtifact *) ch[i])->addAssociatedArtifact(phpsettingscmdart);
-      return;
-    }
-  }
-}
-
-void add_php()
-{
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-
-  //
-
-  UmlArtifact * phpsettingsart = add_php_settings();
-  UmlArtifact * phpsettingscmdart = add_php_settings_cmd();
-  
-  add_php_on_enums();
-  artifact_add_php();
-  attribute_add_php();
-  class_add_php();
-  classitem_add_php();
-  item_add_php();
-  operation_add_php();
-  package_add_php();
-  relation_add_php();
-  stereotype_add_php();
-  associate_php_artifacts(phpsettingsart, phpsettingscmdart);
-  
-  //
-
-  UmlCom::set_user_id(uid);
-}
-
-//
-//
-//
-
 void add_force_body_gen()
 {
   unsigned uid = UmlCom::user_id();
@@ -8321,18 +2922,10 @@ void add_force_body_gen()
 
   //
   
-  UmlCom::trace("add force operation body generation management<br>\n");
+  UmlCom::trace("<b>add force operation body generation management</b><br>\n");
   UmlClass * base_oper = UmlClass::get("UmlBaseOperation", 0);
   UmlAttribute * att =
-    base_oper->add_attribute("_force_body_generation", PrivateVisibility, "bool", 0, 0);  
-  
-  QCString s = att->cppDecl();
-  int index = s.find("${type} ${name}");
-  
-  if (index != -1) {
-    s.insert(index + 15, " : 1");
-    att->set_CppDecl(s);
-  }
+    base_oper->add_attribute("_force_body_generation", PrivateVisibility, "bool", 0, 0, " : 1");  
   
   att->moveAfter(base_oper->get_operation("unload"));
 
@@ -8351,6 +2944,7 @@ void add_force_body_gen()
   op->moveAfter(get);
   
   QCString body;
+  int index;
     
   op = base_oper->get_operation("read_uml_");
   body = op->cppBody();
@@ -8441,7 +3035,7 @@ void fixe_java_alloc()
 
 void realization(UmlClass * uml_base_component)
 {
-  UmlCom::trace("replace 'realized' by 'realizing' in UmlBaseComponent<br>\n");
+  UmlCom::trace("<b>replace 'realized' by 'realizing' in UmlBaseComponent</b><br>\n");
   
   unsigned uid = UmlCom::user_id();
   
@@ -8538,9 +3132,10 @@ void realization(UmlClass * uml_base_component)
 		    "		   realizing, provided, required);\n"
 		    "  if (UmlCom::read_bool()) {\n"
 		    "    if (_defined) {\n"
-		    "      _realizing = realizing;\n"
-		    "      _provided = provided;\n"
-		    "      _required = required;\n"
+		    "      // tests != to bypass Qt 2.3 bug\n"
+		    "      if (&_realizing != &realizing) _realizing = realizing;\n"
+		    "      if (&_provided != &provided) _provided = provided;\n"
+		    "      if (&_required != &required) _required = required;\n"
 		    "    }\n"
 		    "    return TRUE;\n"
 		    "  }\n"
@@ -8773,1607 +3368,6 @@ void add_missing_opers()
 }
 
 //
-// add access to use case, collaboration and sequence diagram 'machine'
-//
-
-void add_fragment(UmlClassView * base_class_view, UmlClassView * user_class_view,
-		  UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-		  UmlClass *& user_fragment, UmlClass *& user_fragment_compart)
-{
-  user_fragment = 
-    UmlClass::made(user_class_view, user_depl_view, "UmlFragment", FALSE);
-  user_fragment_compart = 
-    UmlClass::made(user_class_view, user_depl_view, "UmlFragmentCompartment", FALSE);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-
-  UmlClass * base_fragment = 
-    UmlClass::made(base_class_view, base_depl_view, "UmlBaseFragment", FALSE);
-  UmlClass * base_fragment_compart = 
-    UmlClass::made(base_class_view, base_depl_view, "UmlBaseFragmentCompartment", FALSE);
-  
-  base_fragment->set_Description(" this class manages fragments");
-  user_fragment->set_Description(" this class manages fragments, you can modify it");
-
-  base_fragment_compart->set_Description(" this class manages fragments compartments,\n"
-					 " a fragment without separator contains one compartment");
-  user_fragment_compart->set_Description(" this class manages fragments compartments,\n"
-					 " a fragment without separator contains one compartment"
-					 " you can modify it");
-
-  UmlOperation * op;
-  
-  op = base_fragment->add_op("name", PublicVisibility, "string");
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the name");
-  op->set_cpp("const ${type} &", "", "  return _name;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _name;\n", TRUE);
-
-  op = base_fragment->add_op("compartments", PublicVisibility, user_fragment_compart);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the compartments, at least one compartment exists");
-  op->set_cpp("const QVector<${type}> &", "", "  return _compartments;\n", TRUE, 0, 0);
-  op->set_java("${type}[]", "", "  return _compartments;\n", TRUE);
-  
-  op = base_fragment->add_op("container", PublicVisibility, user_fragment_compart);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the fragment compartment containing the fragment,\n"
-		      " or 0/null");
-  op->set_cpp("${type} *", "", "  return _container;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _container;\n", TRUE);
-  
-  //
-  
-  op = base_fragment_compart->add_op("fragment", PublicVisibility, user_fragment);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the fragment owning the compartment");
-  op->set_cpp("${type} *", "", "  return _fragment;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _fragment;\n", TRUE);
-  
-  op = base_fragment_compart->add_op("rank", PublicVisibility, "int");
-  op->set_isCppConst(TRUE);
-  op->set_Description(" the rank of the compartment in the fragment (0..)");
-  op->set_cpp("${type}", "", "  return _rank;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _rank;\n", TRUE);
-  
-  op = base_fragment_compart->add_op("texts", PublicVisibility, "string");
-  op->set_isCppConst(TRUE);
-  op->set_Description(" the texts placed in the compartment");
-  op->set_cpp("const QVector<char> &", "", "  return _texts;\n", TRUE, 0, 0);
-  op->set_java("${type}[]", "", "  return _texts;\n", TRUE);
-  
-  op = base_fragment_compart->add_op("contained", PublicVisibility, user_fragment);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the fragments contained in the compartment,\n"
-		      " may be none");
-  op->set_cpp("const QVector<${type}> &", "", "  return _contained;\n", TRUE, 0, 0);
-  op->set_java("${type}[]", "", "  return _contained;\n", TRUE);
-  
-  //
-  
-  base_fragment_compart->add_relation(aDirectionalAssociation, "_fragment", PrivateVisibility,
-				      user_fragment, 0, 0);
-  base_fragment_compart->add_vect_assoc("_contained", PrivateVisibility, user_fragment, 0, 0);
-  base_fragment->add_relation(aDirectionalAssociation, "_container", PrivateVisibility,
-			      user_fragment_compart, 0, 0);
-  base_fragment->add_vect_assoc("_compartments", PrivateVisibility, user_fragment_compart, 0, 0);
-  
-  UmlAttribute * att;
-  QCString s;
-  
-  base_fragment->add_attribute("_name", PrivateVisibility, "string", 0, 0);
-  base_fragment_compart->add_attribute("_rank", PrivateVisibility, "int", 0, 0);
-  att = base_fragment_compart->add_attribute("_texts", PrivateVisibility, "string", 0, 0);
-  s = att->cppDecl();
-  att->set_CppDecl(s.replace(s.find("${type}"), 7, "QVector<char>"));
-  s = att->javaDecl();
-  att->set_JavaDecl(s.insert(s.find("${type}") + 7, "[]"));
-  base_fragment->add_attribute("_x", PrivateVisibility, "int", 0, 0);
-  base_fragment->add_attribute("_y", PrivateVisibility, "int", 0, 0);
-  base_fragment->add_attribute("_w", PrivateVisibility, "int", 0, 0);
-  base_fragment->add_attribute("_h", PrivateVisibility, "int", 0, 0);
-  base_fragment_compart->add_attribute("_y", PrivateVisibility, "int", 0, 0);
-  
-  op = base_fragment->add_op("read_", PublicVisibility, "void");
-  op->set_Description(" internal, don't call it");
-  op->set_cpp("${type}", "",
-	      "  _name = UmlCom::read_string();\n"
-	      "  _x = (int) UmlCom::read_unsigned();\n"
-	      "  _y = (int) UmlCom::read_unsigned();\n"
-	      "  _w = (int) UmlCom::read_unsigned();\n"
-	      "  _h = (int) UmlCom::read_unsigned();\n"
-	      "\n"
-	      "  unsigned n = UmlCom::read_unsigned();\n"
-	      "\n"
-	      "  _compartments.resize(n);\n"
-	      "  for (unsigned rank = 0; rank != n; rank += 1) {\n"
-	      "    UmlFragmentCompartment * fc = new UmlFragmentCompartment();\n"
-	      "\n"
-	      "    _compartments.insert(rank, fc);\n"
-	      "    fc->init(this, rank, UmlCom::read_unsigned());\n"
-	      "  }\n"
-	      "  _compartments.setAutoDelete(TRUE);\n",
-	      FALSE, 0, 0);
-  op->set_CppVisibility(PrivateVisibility);
-  op->set_java("${type}", "",
-	       "  _name = UmlCom.read_string();\n"
-	       "  _x = UmlCom.read_unsigned();\n"
-	       "  _y = UmlCom.read_unsigned();\n"
-	       "  _w = UmlCom.read_unsigned();\n"
-	       "  _h = UmlCom.read_unsigned();\n"
-	       "\n"
-	       "  int n = UmlCom.read_unsigned();\n"
-	       "  int rank;\n"
-	       "\n"
-	       "  _compartments = new UmlFragmentCompartment[n];\n"
-	       "  for (rank = 0; rank != n; rank += 1) {\n"
-	       "    UmlFragmentCompartment fc = new UmlFragmentCompartment();\n"
-	       "\n"
-	       "    _compartments[rank] = fc;\n"
-	       "    fc.init(this, rank, UmlCom.read_unsigned());\n"
-	       "  }\n",
-	       FALSE);
-  
-  op = base_fragment->add_op("get_container_", PublicVisibility, user_fragment_compart);
-  op->set_isClassMember(TRUE);
-  op->set_Description(" internal");
-  op->add_param(0, InputDirection, "x", "int");
-  op->add_param(1, InputDirection, "y", "int");
-  op->add_param(2, InputDirection, "w", "int");
-  op->add_param(3, InputDirection, "h", "int");
-  op->add_param(4, InputDirection, "fragments", user_fragment);
-  op->set_cpp("${type} *", "${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, const QVector<${t4}> & ${p4}",
-	      "  UmlFragmentCompartment * r = 0;\n"
-	      "  int nf = fragments.count();\n"
-	      "  int frank;\n"
-	      "\n"
-	      "  for (frank = 0; frank != nf; frank += 1) {\n"
-	      "    const UmlBaseFragment * f = fragments[frank];\n"
-	      "\n"
-	      "    if ((x > f->_x) && (y > f->_y) &&\n"
-	      "        ((x + w) < (f->_x + f->_w)) && ((y + h) < (f->_y + f->_h))) {\n"
-	      "      int y0 = f->_y;\n"
-	      "      int nfc = f->_compartments.count();\n"
-	      "      int fcrank;\n"
-	      "\n"
-	      "      for (fcrank = 0; fcrank != nfc; fcrank += 1) {\n"
-	      "        UmlFragmentCompartment * fc = f->_compartments[fcrank];\n"
-	      "\n"
-	      "        if ((y > y0) &&\n"
-	      "            ((y + h) < fc->b()) &&\n"
-	      "            ((r == 0) || fc->smaller(r))) {\n"
-	      "          r = fc;\n"
-	      "          break;\n"
-	      "        }\n"
-	      "        y0 = fc->b();\n"
-	      "      }\n"
-	      "    }\n"
-	      "  }\n"
-	      "  return r;\n"
-	      , FALSE, 0, 0);
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4}[] ${p4}",
-	       "  UmlFragmentCompartment r = null;\n"
-	       "  int nf = fragments.length;\n"
-	       "  int frank;\n"
-	       "\n"
-	       "  for (frank = 0; frank != nf; frank += 1) {\n"
-	       "    UmlBaseFragment f = fragments[frank];\n"
-	       "\n"
-	       "    if ((x > f._x) && (y > f._y) &&\n"
-	       "        ((x + w) < (f._x + f._w)) && ((y + h) < (f._y + f._h))) {\n"
-	       "      int y0 = f._y;\n"
-	       "      int nfc = f._compartments.length;\n"
-	       "      int fcrank;\n"
-	       "\n"
-	       "      for (fcrank = 0; fcrank != nfc; fcrank += 1) {\n"
-	       "        UmlBaseFragmentCompartment fc = f._compartments[fcrank];\n"
-	       "\n"
-	       "        if ((y > y0) &&\n"
-	       "            ((y + h) < fc.b()) &&\n"
-	       "            ((r == null) || fc.smaller(r))) {\n"
-	       "          r = f._compartments[fcrank];\n"
-	       "          break;\n"
-	       "        }\n"
-	       "        y0 = fc.b();\n"
-	       "      }\n"
-	       "    }\n"
-	       "  }\n"
-	       "  return r;\n"
-	       , FALSE);
-  
-  op = base_fragment->add_op("compute_container_", PublicVisibility, "void");
-  op->set_isClassMember(TRUE);
-  op->set_Description(" internal");
-  op->add_param(0, InputDirection, "fragments", user_fragment);
-  op->set_cpp("${type}", "QVector<${t0}> & ${p0}",
-	      "  int rank = fragments.count();\n"
-	      "\n"
-	      "  while (rank-- != 0) {\n"
-	      "    UmlBaseFragment * f = fragments[rank];\n"
-	      "    UmlFragmentCompartment * fc = get_container_(f->_x, f->_y, f->_w, f->_h, fragments);\n"
-	      "\n"
-	      "    if (fc != 0) {\n"
-	      "      f->_container = fc;\n"
-	      "      fc->add_contained_((UmlFragment *) f);\n"
-	      "    }\n"
-	      "  }\n"
-	      , FALSE, 0, 0);
-  op->set_CppVisibility(PrivateVisibility);
-  op->set_java("${type}", "${t0}[] ${p0}",
-	       "  int rank = fragments.length;\n"
-	       "\n"
-	       "  while (rank-- != 0) {\n"
-	       "    UmlBaseFragment f = fragments[rank];\n"
-	       "    UmlFragmentCompartment fc = get_container_(f._x, f._y, f._w, f._h, fragments);\n"
-	       "\n"
-	       "    if (fc != null) {\n"
-	       "      f._container = fc;\n"
-	       "      fc.add_contained_((UmlFragment) f);\n"
-	       "    }\n"
-	       "  }\n"
-	       , FALSE);
-  
-  op = base_fragment->add_op("w", PublicVisibility, "int");
-  op->set_isCppConst(TRUE);
-  op->set_cpp("${type}", "", "  return _w;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _w;\n", TRUE);
-  
-  op = base_fragment->add_op("h", PublicVisibility, "int");
-  op->set_isCppConst(TRUE);
-  op->set_cpp("${type}", "", "  return _h;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _h;\n", TRUE);
-  
-  base_fragment->add_destr(PublicVisibility, "  to avoid compiler warning, don't call it");
-  base_fragment->add_friend("UmlBaseUseCaseDiagramDefinition");
-  base_fragment->add_friend("UmlBaseSequenceDiagramDefinition");
-  include_umlcom(base_fragment);
-  
-  op = base_fragment_compart->add_op("add_contained_", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "x", user_fragment);
-  op->set_cpp("${type}", "${t0} * ${p0}",
-	      "  _contained.resize(_contained.size() + 1);\n"
-	      "  _contained.insert(_contained.size() - 1, x);\n"
-	      , FALSE, 0, 0);
-  op->set_java("${type}", "${t0} ${p0}",
-	       "  UmlFragment[] v = _contained;\n"
-	       "  int n = _contained.length;\n"
-	       "\n"
-	       "  _contained = new UmlFragment[n + 1];\n"
-	       "  System.arraycopy(v, 0, _contained, 0, n);\n"
-	       "  _contained[n] = x;\n"
-	       , FALSE);
-  
-  op = base_fragment_compart->add_op("add_text_", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "x", "string");
-  op->set_cpp("${type}", "${t0} ${p0}",
-	      "  _texts.resize(_texts.size() + 1);\n"
-	      "  _texts.insert(_texts.size() - 1, strdup(x));\n"
-	      , FALSE, 0, 0);
-  op->set_java("${type}", "${t0} ${p0}",
-	       "  String[] v = _texts;\n"
-	       "  int n = _texts.length;\n"
-	       "\n"
-	       "  _texts = new String[n + 1];\n"
-	       "  System.arraycopy(v, 0, _texts, 0, n);\n"
-	       "  _texts[n] = x;\n"
-	       , FALSE);
-  
-  op = base_fragment_compart->add_op("b", PublicVisibility, "int");
-  op->set_isCppConst(TRUE);
-  op->set_cpp("${type}", "", "  return _y;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _y;\n", TRUE);
-  
-  op = base_fragment_compart->add_op("smaller", PublicVisibility, "bool");
-  op->set_isCppConst(TRUE);
-  op->add_param(0, InputDirection, "x", base_fragment_compart);
-  op->set_cpp("${type}", "const ${t0} * ${p0}",
-	      "  return ((_fragment->w() < x->_fragment->w()) &&\n"
-	      "          (_fragment->h() < x->_fragment->h()));\n"
-	      , FALSE, 0, 0);
-  op->set_java("${type}", "${t0} ${p0}",
-	      "  return ((_fragment.w() < x._fragment.w()) &&\n"
-	      "          (_fragment.h() < x._fragment.h()));\n"
-	       , FALSE);
-  
-  op = base_fragment_compart->add_op("init", PublicVisibility, "void");
-  op->set_CppVisibility(PrivateVisibility);
-  op->set_Description(" internal, don't call it");
-  op->add_param(0, InputDirection, "fragment", base_fragment);
-  op->add_param(1, InputDirection, "rank", "int");
-  op->add_param(2, InputDirection, "y", "int");
-  op->set_cpp("${type}", "${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}",
-	      " _fragment = (UmlFragment *) fragment;\n"
-	      " _rank = rank;\n"
-	      " _y = y;\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}",
-	       " _fragment = (UmlFragment) fragment;\n"
-	       " _rank = rank;\n"
-	       " _y = y;\n"
-	       " _contained = new UmlFragment[0];\n"
-	       " _texts = new String[0];\n"
-	       , FALSE);
-  
-  base_fragment_compart->add_destr(PublicVisibility, "  to avoid compiler warning, don't call it");
-  base_fragment_compart->add_friend("UmlBaseFragment");
-  base_fragment_compart->add_friend("UmlBaseUseCaseDiagramDefinition");
-  base_fragment_compart->add_friend("UmlBaseSequenceDiagramDefinition");
-  base_fragment_compart->associatedArtifact()->add_includes("// to avoid compiler warning\n"
-							    "#include \"UmlFragment.h\"\n"
-							    "\n");
-  
-  UmlCom::set_user_id(uid);
-  
-  UmlRelation * rel;
-  
-  rel = UmlBaseRelation::create(aGeneralisation, user_fragment, base_fragment);
-  rel->set_CppDecl("${type}");
-  rel->set_JavaDecl("${type}");
-  
-  rel = UmlBaseRelation::create(aGeneralisation, user_fragment_compart, base_fragment_compart);
-  rel->set_CppDecl("${type}");
-  rel->set_JavaDecl("${type}");
-}
-
-UmlClass * add_subject(UmlClassView * base_class_view, UmlClassView * user_class_view,
-		       UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view)
-{
-  UmlClass * user_subject = 
-    UmlClass::made(user_class_view, user_depl_view, "UmlSubject", FALSE);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-
-  UmlClass * base_subject = 
-    UmlClass::made(base_class_view, base_depl_view, "UmlBaseSubject", FALSE);  
-  
-  base_subject->set_Description(" this class manages subjects");
-  user_subject->set_Description(" this class manages subjects, you can modify it");
-
-  UmlOperation * op;
-  
-  op = base_subject->add_op("name", PublicVisibility, "string");
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the name");
-  op->set_cpp("const ${type} &", "", "  return _name;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _name;\n", TRUE);
-
-  base_subject->add_attribute("_name", PrivateVisibility, "string", 0, 0);
-  base_subject->add_attribute("_x", PrivateVisibility, "int", 0, 0);
-  base_subject->add_attribute("_y", PrivateVisibility, "int", 0, 0);
-  base_subject->add_attribute("_w", PrivateVisibility, "int", 0, 0);
-  base_subject->add_attribute("_h", PrivateVisibility, "int", 0, 0);
-  
-  op = base_subject->add_op("read_", PublicVisibility, "void");
-  op->set_Description(" internal, don't call it");
-  op->set_cpp("${type}", "",
-	      "  _name = UmlCom::read_string();\n"
-	      "  _x = (int) UmlCom::read_unsigned();\n"
-	      "  _y = (int) UmlCom::read_unsigned();\n"
-	      "  _w = (int) UmlCom::read_unsigned();\n"
-	      "  _h = (int) UmlCom::read_unsigned();\n",
-	      FALSE, 0, 0);
-  op->set_CppVisibility(PrivateVisibility);
-  op->set_java("${type}", "",
-	       "  _name = UmlCom.read_string();\n"
-	       "  _x = UmlCom.read_unsigned();\n"
-	       "  _y = UmlCom.read_unsigned();\n"
-	       "  _w = UmlCom.read_unsigned();\n"
-	       "  _h = UmlCom.read_unsigned();\n",
-	       FALSE);
-
-  op = base_subject->add_op("get_container_", PublicVisibility, user_subject);
-  op->set_isClassMember(TRUE);
-  op->set_Description(" internal");
-  op->add_param(0, InputDirection, "x", "int");
-  op->add_param(1, InputDirection, "y", "int");
-  op->add_param(2, InputDirection, "w", "int");
-  op->add_param(3, InputDirection, "h", "int");
-  op->add_param(4, InputDirection, "subjects", user_subject);
-  op->set_cpp("${type} *", "${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, const QVector<${t4}> & ${p4}",
-	      "  int rank = subjects.count();\n"
-	      "\n"
-	      "  while (rank-- != 0) {\n"
-	      "    UmlBaseSubject * s = subjects[rank];\n"
-	      "\n"
-	      "    if ((x > s->_x) && (y > s->_y) &&\n"
-	      "        ((x + w) < (s->_x + s->_w)) && ((y + h) < (s->_y + s->_h)))\n"
-	      "      return (UmlSubject  *) s;\n"
-	      "  }\n"
-	      "  return 0;\n"
-	      , FALSE, 0, 0);
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4}[] ${p4}",
-	       "  int rank = subjects.length;\n"
-	       "\n"
-	       "  while (rank-- != 0) {\n"
-	       "    UmlBaseSubject s = subjects[rank];\n"
-	       "\n"
-	       "    if ((x > s._x) && (y > s._y) &&\n"
-	       "        ((x + w) < (s._x + s._w)) && ((y + h) < (s._y + s._h)))\n"
-	       "      return subjects[rank];\n"
-	       "  }\n"
-	       "  return null;\n"
-	       , FALSE);
-  
-  base_subject->add_friend("UmlBaseUseCaseDiagramDefinition");
-  include_umlcom(base_subject);
-  
-  UmlCom::set_user_id(uid);
-  
-  UmlRelation * rel = UmlBaseRelation::create(aGeneralisation, user_subject, base_subject);
-  
-  rel->set_CppDecl("${type}");
-  rel->set_JavaDecl("${type}");
-  
-  return user_subject;
-}
-
-UmlClass * add_ucref(UmlClassView * base_class_view, UmlClassView * user_class_view,
-		     UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-		     UmlClass * user_fragment, UmlClass * user_fragment_compart,
-		     UmlClass * user_subject)
-{
-  UmlClass * user_ucref = 
-    UmlClass::made(user_class_view, user_depl_view, "UmlUseCaseReference", FALSE);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-
-  UmlClass * base_ucref = 
-    UmlClass::made(base_class_view, base_depl_view, "UmlBaseUseCaseReference", FALSE);
-  
-  base_ucref->set_Description(" this class manages use case references");
-  user_ucref->set_Description(" this class manages use case references, you can modify it");
-
-  UmlOperation * op;
-  
-  op = base_ucref->add_op("useCase", PublicVisibility, UmlClass::get("UmlUseCase", 0));
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the use case");
-  op->set_cpp("${type} *", "", "  return _use_case;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _use_case;\n", TRUE);
-  
-  op = base_ucref->add_op("fragment", PublicVisibility, user_fragment_compart);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the fragment compartment containing the\n"
-		      " use case, or 0/null");
-  op->set_cpp("${type} *", "", "  return _fragment;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _fragment;\n", TRUE);
-  
-  op = base_ucref->add_op("subject", PublicVisibility, user_subject);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the subject containing the use case, or 0/null");
-  op->set_cpp("${type} *", "", "  return _subject;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _subject;\n", TRUE);
-  
-  base_ucref->add_relation(aDirectionalAssociation, "_use_case", PrivateVisibility,
-			   UmlClass::get("UmlUseCase", 0), 0, 0);
-  base_ucref->add_relation(aDirectionalAssociation, "_fragment", PrivateVisibility,
-			   user_fragment_compart, 0, 0);
-  base_ucref->add_relation(aDirectionalAssociation, "_subject", PrivateVisibility,
-			   user_subject, 0, 0);
-  base_ucref->add_attribute("_x", PrivateVisibility, "int", 0, 0);
-  base_ucref->add_attribute("_y", PrivateVisibility, "int", 0, 0);
-  base_ucref->add_attribute("_w", PrivateVisibility, "int", 0, 0);
-  base_ucref->add_attribute("_h", PrivateVisibility, "int", 0, 0);
- 
-  op = base_ucref->add_op("read_", PublicVisibility, "void");
-  op->set_Description(" internal, don't call it");
-  op->add_param(0, InputDirection, "fragments", user_fragment);
-  op->add_param(1, InputDirection, "subjects", user_subject);
-  op->set_cpp("${type}", "const QVector<${t0}> & ${p0}, const QVector<${t1}> & ${p1}",
-	      "  _use_case = (UmlUseCase *) UmlBaseItem::read_();\n"
-	      "  _x = (int) UmlCom::read_unsigned();\n"
-	      "  _y = (int) UmlCom::read_unsigned();\n"
-	      "  _w = (int) UmlCom::read_unsigned();\n"
-	      "  _h = (int) UmlCom::read_unsigned();\n"
-	      "  _fragment = UmlBaseFragment::get_container_(_x, _y, _w, _h, fragments);\n"
-	      "  _subject = UmlBaseSubject::get_container_(_x, _y, _w, _h, subjects);\n"
-	      , FALSE, 0, 0);
-  op->set_CppVisibility(PrivateVisibility);
-  op->set_java("${type}", "${t0}[] ${p0}, ${t1}[] ${p1}",
-	       "  _use_case = (UmlUseCase) UmlBaseItem.read_();\n"
-	       "  _x = UmlCom.read_unsigned();\n"
-	       "  _y = UmlCom.read_unsigned();\n"
-	       "  _w = UmlCom.read_unsigned();\n"
-	       "  _h = UmlCom.read_unsigned();\n"
-	       "  _fragment = UmlBaseFragment.get_container_(_x, _y, _w, _h, fragments);\n"
-	       "  _subject = UmlBaseSubject.get_container_(_x, _y, _w, _h, subjects);\n"
-	       , FALSE);
-  base_ucref->add_friend("UmlBaseUseCaseDiagramDefinition");
-  UmlClass::get("UmlBaseItem", 0)->add_friend("UmlBaseUseCaseReference");
-  include_umlcom(base_ucref);
-  base_ucref->associatedArtifact()->add_import("import java.util.*;\n");
-  
-  UmlCom::set_user_id(uid);
-  
-  UmlRelation * rel = UmlBaseRelation::create(aGeneralisation, user_ucref, base_ucref);
-  
-  rel->set_CppDecl("${type}");
-  rel->set_JavaDecl("${type}");
-  
-  return user_ucref;
-}
-
-UmlClass * add_ucassoc(UmlClassView * base_class_view, UmlClassView * user_class_view,
-		       UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-		       UmlClass * user_ucref)
-{
-  UmlClass * user_ucassoc = 
-    UmlClass::made(user_class_view, user_depl_view, "UmlUseCaseAssociation", FALSE);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-
-  UmlClass * base_ucassoc = 
-    UmlClass::made(base_class_view, base_depl_view, "UmlBaseUseCaseAssociation", FALSE);  
-  
-  base_ucassoc->set_Description(" this class manages association between use case and actor");
-  user_ucassoc->set_Description(" this class manages association between use case and actor,\n"
-				" you can modify it");
-
-  UmlOperation * op;
-  
-  op = base_ucassoc->add_op("name", PublicVisibility, "string");
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the name");
-  op->set_cpp("const ${type} &", "", "  return _name;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _name;\n", TRUE);
-
-  op = base_ucassoc->add_op("stereotype", PublicVisibility, "string");
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the stereotype");
-  op->set_cpp("const ${type} &", "", "  return _stereotype;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _stereotype;\n", TRUE);
-
-  op = base_ucassoc->add_op("useCase", PublicVisibility, user_ucref);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the use case");
-  op->set_cpp("${type} *", "", "  return _use_case;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _use_case;\n", TRUE);
-  
-  op = base_ucassoc->add_op("actor", PublicVisibility, UmlClass::get("UmlClass", 0));
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the actor");
-  op->set_cpp("${type} *", "", "  return _actor;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _actor;\n", TRUE);
-  
-  op = base_ucassoc->add_op("primary", PublicVisibility, "bool");
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return true if the actor is a primary actor for the use case ");
-  op->set_cpp("${type}", "", "  return _primary;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _primary;\n", TRUE);
-  
-  base_ucassoc->add_relation(aDirectionalAssociation, "_use_case", PrivateVisibility,
-			     user_ucref, 0, 0);
-  base_ucassoc->add_relation(aDirectionalAssociation, "_actor", PrivateVisibility,
-			     UmlClass::get("UmlClass", 0), 0, 0);
-  base_ucassoc->add_attribute("_name", PrivateVisibility, "string", 0, 0);
-  base_ucassoc->add_attribute("_stereotype", PrivateVisibility, "string", 0, 0);
-  base_ucassoc->add_attribute("_primary", PrivateVisibility, "bool", 0, 0);
-
-  op = base_ucassoc->add_op("read_", PublicVisibility, "void");
-  op->set_Description(" internal, don't call it");
-  op->add_param(0, InputDirection, "useCases", user_ucref);
-  op->set_cpp("${type}", "const QPtrDict<${t0}> & ${p0}",
-	      "  _use_case = (UmlUseCaseReference *) useCases[(void *) UmlCom::read_unsigned()];\n"
-	      "  _actor = (UmlClass *) UmlBaseItem::read_();\n"
-	      "  _primary = UmlCom::read_bool();\n"
-	      "  _name = UmlCom::read_string();\n"
-	      "  _stereotype = UmlCom::read_string();\n",
-	      FALSE, 0, 0);
-  op->set_CppVisibility(PrivateVisibility);
-  op->set_java("${type}", "Hashtable ${p0}",
-	       "  _use_case = (UmlUseCaseReference) useCases.get(new Integer(UmlCom.read_unsigned()));\n"
-	       "  _actor = (UmlClass) UmlBaseItem.read_();\n"
-	       "  _primary = UmlCom.read_bool();\n"
-	       "  _name = UmlCom.read_string();\n"
-	       "  _stereotype = UmlCom.read_string();\n",
-	       FALSE);
-  base_ucassoc->add_friend("UmlBaseUseCaseDiagramDefinition");
-  UmlClass::get("UmlBaseItem", 0)->add_friend("UmlBaseUseCaseAssociation");
-  include_umlcom(base_ucassoc);
-  base_ucassoc->associatedArtifact()->add_import("import java.util.*;\n");
-
-  UmlCom::set_user_id(uid);
-  
-  UmlRelation * rel = UmlBaseRelation::create(aGeneralisation, user_ucassoc, base_ucassoc);
-  
-  rel->set_CppDecl("${type}");
-  rel->set_JavaDecl("${type}");
-  
-  return user_ucassoc;
-}
-
-void add_ddef(UmlClass * cl, UmlClass * user_ddef)
-{
-  UmlOperation * def = cl->add_op("definition", PublicVisibility, user_ddef);
-  QCString s;
-  
-  def->set_Description(" return the semantic part of the diagram not present in the model");
-  s = 
-    "  if (_def == 0) {\n"
-    "    UmlCom::send_cmd(_identifier, sideCmd);\n"
-    "    (_def = new " + user_ddef->name() + "())->read_();\n"
-    "  }\n"
-    "  return _def;\n";
-  def->set_cpp("${type} *", "", s, FALSE, 0, 0);
-  s = 
-    "  if (_def == null) {\n"
-    "    UmlCom.send_cmd(identifier_(), OnInstanceCmd.sideCmd);\n"
-    "    (_def = new " + user_ddef->name() + "()).read_();\n"
-    "  }\n"
-    "  return _def;\n";
-  def->set_java("${type}", "", s, FALSE);
-  
-  UmlOperation * op;
-  
-  op = cl->add_op("unload", PublicVisibility, "void");
-  op->add_param(0, InputDirection, "rec", "bool");
-  op->add_param(1, InputDirection, "del", "bool");
-  op->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	      "  if (_def != 0) { delete _def; _def = 0; }\n"
-	      "  UmlBaseDiagram::unload(rec, del);\n",
-	      FALSE, 0, 0);
-
-  s = op->cppDecl();
-  s.replace(s.find("${p0}"), 5, "= FALSE");
-  s.replace(s.find("${p1}"), 5, "= FALSE");
-  op->set_CppDecl(s);
-  
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
-	       "  _def = null;\n"
-	       "  super.unload(rec, del);\n",
-	       FALSE);
-  op->set_isCppVirtual(TRUE);
-  op->set_Description(" to unload the object to free memory, it will be reloaded automatically\n\
- if needed. args unused");
-  
-  cl->add_relation(aDirectionalAssociation, "_def", PrivateVisibility,
-		   user_ddef, 0, 0);
-
-  op = cl->get_operation(cl->name());
-  s = op->cppDecl();
-  s.insert(s.findRev(")") + 1, ", _def(0)");
-  op->set_CppDecl(s);
-  s = op->javaDecl();
-  s.insert(s.findRev("}"), "  _def = null;\n");
-  op->set_JavaDecl(s);
-}
-
-void add_ucdiagdef(UmlClassView * base_class_view, UmlClassView * user_class_view,
-		   UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-		   UmlClass * user_ucref, UmlClass * user_ucassoc, 
-		   UmlClass * user_fragment, UmlClass * user_subject)
-{
-  UmlClass * user_ddef = 
-    UmlClass::made(user_class_view, user_depl_view, "UmlUseCaseDiagramDefinition", FALSE);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-
-  UmlClass * base_ddef = 
-    UmlClass::made(base_class_view, base_depl_view, "UmlBaseUseCaseDiagramDefinition", FALSE);
-  
-  base_ddef->set_Description(" this class manages use case diagram definition");
-  user_ddef->set_Description(" this class manages use case diagram definition,\n"
-			     " you can modify it");
-
-  UmlOperation * op;
-  
-  op = base_ddef->add_op("useCases", PublicVisibility, user_ucref);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the use cases present in the diagram");
-  op->set_cpp("const QVector<${type}> &", "", "  return _use_cases;\n", TRUE, 0, 0);
-  op->set_java("${type}[]", "", "  return _use_cases;\n", TRUE);
-
-  op = base_ddef->add_op("actors", PublicVisibility, UmlClass::get("UmlClass", 0));
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the actors present in the diagram");
-  op->set_cpp("const QVector<${type}> &", "", "  return _actors;\n", TRUE, 0, 0);
-  op->set_java("${type}[]", "", "  return _actors;\n", TRUE);
-
-  op = base_ddef->add_op("associations", PublicVisibility, user_ucassoc);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the associations between actor and use case present in the diagram");
-  op->set_cpp("const QVector<${type}> &", "", "  return _rels;\n", TRUE, 0, 0);
-  op->set_java("${type}[]", "", "  return _rels;\n", TRUE);
-  
-  op = base_ddef->add_op("fragments", PublicVisibility, user_fragment);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the fragments present in the diagram");
-  op->set_cpp("const QVector<${type}> &", "", "  return _fragments;\n", TRUE, 0, 0);
-  op->set_java("${type}[]", "", "  return _fragments;\n", TRUE);
-
-  op = base_ddef->add_op("subjects", PublicVisibility, user_subject);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the subjects present in the diagram");
-  op->set_cpp("const QVector<${type}> &", "", "  return _subjects;\n", TRUE, 0, 0);
-  op->set_java("${type}[]", "", "  return _subjects;\n", TRUE);
-  
-  base_ddef->add_vect_assoc("_use_cases", PrivateVisibility, user_ucref, 0, 0);
-  base_ddef->add_vect_assoc("_actors", PrivateVisibility, UmlClass::get("UmlClass", 0), 0, 0);
-  base_ddef->add_vect_assoc("_rels", PrivateVisibility, user_ucassoc, 0, 0);
-  base_ddef->add_vect_assoc("_fragments", PrivateVisibility, user_fragment, 0, 0);
-  base_ddef->add_vect_assoc("_subjects", PrivateVisibility, user_subject, 0, 0);
-
-  op = base_ddef->add_op("read_", PublicVisibility, "void");
-  op->set_Description(" internal, don't call it");
-  op->set_cpp("${type}", "",
-	      "  QPtrDict<UmlUseCaseReference> ucrefs;\n"
-	      "  unsigned n;\n"
-	      "  unsigned rank;\n"
-	      "\n"
-	      "  n = UmlCom::read_unsigned();\n"
-	      "  _fragments.resize(n);\n"
-	      "  for (rank = 0; rank != n; rank += 1) {\n"
-	      "    UmlFragment * f = new UmlFragment();\n"
-	      "\n"
-	      "    _fragments.insert(rank, f);\n"
-	      "    f->read_();\n"
-	      "  }\n"
-	      "  _fragments.setAutoDelete(TRUE);\n"
-	      "  UmlBaseFragment::compute_container_(_fragments);\n"
-	      "\n"
-	      "  n = UmlCom::read_unsigned();\n"
-	      "  _subjects.resize(n);\n"
-	      "  for (rank = 0; rank != n; rank += 1) {\n"
-	      "    UmlSubject * sb = new UmlSubject();\n"
-	      "\n"
-	      "    _subjects.insert(rank, sb);\n"
-	      "    sb->read_();\n"
-	      "  }\n"
-	      "  _subjects.setAutoDelete(TRUE);\n"
-	      "\n"
-	      "  n = UmlCom::read_unsigned();\n"
-	      "  _use_cases.resize(n);\n"
-	      "  for (rank = 0; rank != n; rank += 1) {\n"
-	      "    UmlUseCaseReference * uc = new UmlUseCaseReference();\n"
-	      "\n"
-	      "    _use_cases.insert(rank, uc);\n"
-	      "    ucrefs.insert((void *) UmlCom::read_unsigned(), uc);\n"
-	      "    uc->read_(_fragments, _subjects);\n"
-	      "  }\n"
-	      "  _use_cases.setAutoDelete(TRUE);\n"
-	      "\n"
-	      "  n = UmlCom::read_unsigned();\n"
-	      "  _actors.resize(n);\n"
-	      "  for (rank = 0; rank != n; rank += 1)\n"
-	      "    _actors.insert(rank, (UmlClass *) UmlBaseItem::read_());\n"
-	      "\n"
-	      "  n = UmlCom::read_unsigned();\n"
-	      "  _rels.resize(n);\n"
-	      "  for (rank = 0; rank != n; rank += 1) {\n"
-	      "    UmlUseCaseAssociation * r = new UmlUseCaseAssociation();\n"
-	      "\n"
-	      "    _rels.insert(rank, r);\n"
-	      "    r->read_(ucrefs);\n"
-	      "  }\n"
-	      "  _rels.setAutoDelete(TRUE);\n"
-	      , FALSE, 0, 0);
-  op->set_CppVisibility(PrivateVisibility);
-  op->set_java("${type}", "",
-	       "  Hashtable ucrefs;\n"
-	       "  int n;\n"
-	       "  int rank;\n"
-	       "\n"
-	       "  n = UmlCom.read_unsigned();\n"
-	       "  _fragments = new UmlFragment[n];\n"
-	       "  for (rank = 0; rank != n; rank += 1) {\n"
-	       "    UmlFragment f = new UmlFragment();\n"
-	       "\n"
-	       "    _fragments[rank] = f;\n"
-	       "    f.read_();\n"
-	       "  }\n"
-	      "  UmlBaseFragment.compute_container_(_fragments);\n"
-	       "\n"
-	       "  n = UmlCom.read_unsigned();\n"
-	       "  _subjects = new UmlSubject[n];\n"
-	       "  for (rank = 0; rank != n; rank += 1) {\n"
-	       "    UmlSubject sb = new UmlSubject();\n"
-	       "\n"
-	       "    _subjects[rank] = sb;\n"
-	       "    sb.read_();\n"
-	       "  }\n"
-	       "\n"
-	       "  n = UmlCom.read_unsigned();\n"
-	       "  _use_cases = new UmlUseCaseReference[n];\n"
-	       "  ucrefs = new Hashtable((n == 0) ? 1 : n);\n"
-	       "  for (rank = 0; rank != n; rank += 1) {\n"
-	       "    UmlUseCaseReference uc = new UmlUseCaseReference();\n"
-	       "\n"
-	       "    _use_cases[rank] = uc;\n"
-	       "    ucrefs.put(new Integer(UmlCom.read_unsigned()), uc);\n"
-	       "    uc.read_(_fragments, _subjects);\n"
-	       "  }\n"
-	       "\n"
-	       "  n = UmlCom.read_unsigned();\n"
-	       "  _actors = new UmlClass[n];\n"
-	       "  for (rank = 0; rank != n; rank += 1)\n"
-	       "    _actors[rank] = (UmlClass) UmlBaseItem.read_();\n"
-	       "\n"
-	       "  n = UmlCom.read_unsigned();\n"
-	       "  _rels = new UmlUseCaseAssociation[n];\n"
-	       "  for (rank = 0; rank != n; rank += 1) {\n"
-	       "    UmlUseCaseAssociation r = new UmlUseCaseAssociation();\n"
-	       "\n"
-	       "    _rels[rank] = r;\n"
-	       "    r.read_(ucrefs);\n"
-	       "  }\n"
-	       , FALSE);
-
-  UmlClass * d = UmlClass::get("UmlBaseUseCaseDiagram", 0);
-  
-  add_ddef(d, user_ddef);
-  base_ddef->add_destr(PublicVisibility, "  to avoid compiler warning, don't call it");
-  base_ddef->add_friend("UmlBaseUseCaseDiagram");
-  UmlClass::get("UmlBaseItem", 0)->add_friend("UmlBaseUseCaseDiagramDefinition");
-  include_umlcom(base_ddef);
-  include_umlcom(d);
-  base_ddef->associatedArtifact()->add_includes("// to avoid compiler warning\n"
-						"#include \"UmlClass.h\"\n"
-						"#include \"UmlSubject.h\"\n"
-						"#include \"UmlFragment.h\"\n"
-						"#include \"UmlFragmentCompartment.h\"\n"
-						"#include \"UmlUseCaseReference.h\"\n"
-						"#include \"UmlUseCaseAssociation.h\"\n"
-						"\n");
-  base_ddef->associatedArtifact()->add_import("import java.util.*;\n");
-
-  UmlCom::set_user_id(uid);
-  
-  UmlRelation * rel = UmlBaseRelation::create(aGeneralisation, user_ddef, base_ddef);
-  
-  rel->set_CppDecl("${type}");
-  rel->set_JavaDecl("${type}");
-}
-
-UmlClass * add_instanceref(UmlClassView * base_class_view, UmlClassView * user_class_view,
-			   UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view)
-{
-  UmlClass * user_instref = 
-    UmlClass::made(user_class_view, user_depl_view, "UmlClassInstanceReference", FALSE);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-
-  UmlClass * base_instref = 
-    UmlClass::made(base_class_view, base_depl_view, "UmlBaseClassInstanceReference", FALSE);
-  
-  base_instref->set_Description(" this class manages class instance reference");
-  user_instref->set_Description(" this class manages class instance reference,\n"
-				" you can modify it");
-
-  UmlOperation * op;
-  
-  op = base_instref->add_op("type", PublicVisibility, UmlClass::get("UmlClass", 0));
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the type of the instance");
-  op->set_cpp("${type} *", "", 
-	      "  return (_instance) ? _instance->type() : _class;\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "", 
-	       "  return (_instance != null) ? _instance.type() : _class;\n",
-	       FALSE);
-
-  op = base_instref->add_op("instance", PublicVisibility, UmlClass::get("UmlClassInstance", 0));
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the corresponding instance in the model, or 0/null");
-  op->set_cpp("${type} *", "", "  return _instance;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _instance;\n", TRUE);
-
-  op = base_instref->add_op("name", PublicVisibility, "string");
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the name of the instance");
-  op->set_cpp("const ${type} &", "",
-	      "  return (_instance) ? _instance->name() : _name;\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  return (_instance != null) ? _instance.name() : _name;\n",
-	       FALSE);
-  
-  base_instref->add_relation(aDirectionalAssociation, "_class", PrivateVisibility,
-			     UmlClass::get("UmlClass", 0), 0, 0);
-  base_instref->add_relation(aDirectionalAssociation, "_instance", PrivateVisibility,
-			     UmlClass::get("UmlClassInstance", 0), 0, 0);
-  base_instref->add_attribute("_name", PrivateVisibility, "string", 0, 0);
-  
-  op = base_instref->add_op("read_", PublicVisibility, "void");
-  op->set_Description(" internal, don't call it");
-  op->set_cpp("${type}", "",
-	      "  _instance = (UmlClassInstance *) UmlBaseItem::read_();\n"
-	      "  if (_instance == 0) {\n"
-	      "    _name = UmlCom::read_string();\n"
-	      "    _class = (UmlClass *) UmlBaseItem::read_();\n"
-	      "  }\n",
-	      FALSE, 0, 0);
-  op->set_CppVisibility(PrivateVisibility);
-  op->set_java("${type}", "",
-	       "  _instance = (UmlClassInstance) UmlBaseItem.read_();\n"
-	       "  if (_instance == null) {\n"
-	       "    _name = UmlCom.read_string();\n"
-	       "    _class = (UmlClass) UmlBaseItem.read_();\n"
-	       "  }\n",
-	       FALSE);
-  base_instref->add_friend("UmlBaseSequenceDiagramDefinition");
-  base_instref->add_friend("UmlBaseCollaborationDiagramDefinition");
-  UmlClass::get("UmlBaseItem", 0)->add_friend("UmlBaseClassInstanceReference");
-  include_umlcom(base_instref);
-
-  UmlCom::set_user_id(uid);
-  
-  UmlRelation * rel = UmlBaseRelation::create(aGeneralisation, user_instref, base_instref);
-  
-  rel->set_CppDecl("${type}");
-  rel->set_JavaDecl("${type}");
-  
-  return user_instref;
-}
-
-UmlClass * add_message(UmlClassView * base_class_view, UmlClassView * user_class_view,
-		       UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-		       UmlClass * user_instanceref)
-{
-  UmlClass * user_message = 
-    UmlClass::made(user_class_view, user_depl_view, "UmlMessage", FALSE);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-
-  UmlClass * base_message = 
-    UmlClass::made(base_class_view, base_depl_view, "UmlBaseMessage", FALSE);
-  
-  base_message->set_Description(" this class manages messages indenpendently of the diagram");
-  user_message->set_Description(" this class manages messages indenpendently of the diagram,\n"
-				" you can modify it");
-
-  UmlOperation * op;
-  
-  op = base_message->add_op("from", PublicVisibility, user_instanceref);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the instance sending the message");
-  op->set_cpp("${type} *", "", "  return _from;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _from;\n", TRUE);
-  
-  op = base_message->add_op("to", PublicVisibility, user_instanceref);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the instance receiving the message");
-  op->set_cpp("${type} *", "", "  return _to;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _to;\n", TRUE);
-  
-  op = base_message->add_op("operation", PublicVisibility, UmlClass::get("UmlOperation", 0));
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the operation or 0/null,\n"
-		      " exclusive with form()");
-  op->set_cpp("${type} *", "", "  return _operation;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _operation;\n", TRUE);
-  
-  op = base_message->add_op("form", PublicVisibility, "string");
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return message as a string, may be empty/null,\n"
-		      " exclusive with operation()");
-  op->set_cpp("const ${type} &", "", "  return _form;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _form;\n", TRUE);
-  
-  base_message->add_relation(aDirectionalAssociation, "_from", PrivateVisibility,
-			     user_instanceref, 0, 0);
-  base_message->add_relation(aDirectionalAssociation, "_to", PrivateVisibility,
-			     user_instanceref, 0, 0);
-  base_message->add_relation(aDirectionalAssociation, "_operation", PrivateVisibility,
-			     UmlClass::get("UmlOperation", 0), 0, 0);
-  base_message->add_attribute("_form", PrivateVisibility, "string", 0, 0);
-  
-  op = base_message->add_op("read_", PublicVisibility, "void");
-  op->set_Description(" internal, don't call it");
-  op->add_param(0, InputDirection, "instances", user_instanceref);
-  op->set_cpp("${type}", "const QPtrDict<${t0}> & ${p0}",
-	      "  _operation = (UmlOperation *) UmlBaseItem::read_();\n"
-	      "  if (_operation == 0) _form = UmlCom::read_string();\n"
-	      "  _from = instances[(void *) UmlCom::read_unsigned()];\n"
-	      "  _to = instances[(void *) UmlCom::read_unsigned()];\n"
-	      , FALSE, 0, 0);
-  op->set_CppVisibility(PrivateVisibility);
-  op->set_java("${type}", "Hashtable ${p0}",
-	       "  _operation = (UmlOperation) UmlBaseItem.read_();\n"
-	       "  if (_operation == null) _form = UmlCom.read_string();\n"
-	       "  _from = (UmlClassInstanceReference) instances.get(new Integer(UmlCom.read_unsigned()));\n"
-	       "  _to = (UmlClassInstanceReference) instances.get(new Integer(UmlCom.read_unsigned()));\n"
-	       , FALSE);
-  base_message->add_friend("UmlBaseSequenceMessage");
-  base_message->add_friend("UmlBaseCollaborationMessage");
-  UmlClass::get("UmlBaseItem", 0)->add_friend("UmlBaseMessage");
-  include_umlcom(base_message);
-  base_message->associatedArtifact()->add_import("import java.util.*;\n");
-
-  UmlCom::set_user_id(uid);
-  
-  UmlRelation * rel = UmlBaseRelation::create(aGeneralisation, user_message, base_message);
-  
-  rel->set_CppDecl("${type}");
-  rel->set_JavaDecl("${type}");
-  
-  return user_message;
-}
-
-UmlClass * add_msg_kind(UmlClassView * base_class_view, UmlDeploymentView * base_depl_view)
-{
-  // already root
-  UmlClass * msgkind = 
-    UmlClass::made(base_class_view, base_depl_view, "aMessageKind", FALSE);
-  
-  msgkind->set_Description(" indicate the kind of a message");
-  
-  msgkind->set_Stereotype("enum_pattern");
-  msgkind->set_CppDecl(CppSettings::enumDecl());
-  msgkind->set_JavaDecl(JavaSettings::enumPatternDecl());
-  msgkind->add_enum_item("aSynchronousCall");
-  msgkind->add_enum_item("anAsynchronousCall");
-  msgkind->add_enum_item("anExplicitReturn");
-  msgkind->add_enum_item("anImplicitReturn")
-    ->set_Description("  message added to indicate the end of a duration bar");
-  
-  return msgkind;
-}
-
-UmlClass * add_seqmessage(UmlClassView * base_class_view, UmlClassView * user_class_view,
-			  UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-			  UmlClass * user_message, UmlClass * user_instances,
-			  UmlClass * user_fragment, UmlClass * user_fragment_compart)
-{
-  UmlClass * user_seqmessage = 
-    UmlClass::made(user_class_view, user_depl_view, "UmlSequenceMessage", FALSE);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-
-  UmlClass * msgkind = add_msg_kind(base_class_view, base_depl_view);
-  UmlClass * base_seqmessage = 
-    UmlClass::made(base_class_view, base_depl_view, "UmlBaseSequenceMessage", FALSE);
-  
-  base_seqmessage->set_Description(" this class manages messages in a sequence diagram");
-  user_seqmessage->set_Description(" this class manages messages in a sequence diagram,\n"
-				   " you can modify it");
-
-  QCString s = base_seqmessage->javaDecl();
-  
-  s.replace(s.find("${implements}"), 13, " implements java.lang.Comparable");
-  base_seqmessage->set_JavaDecl(s);
-  
-  UmlOperation * op;
-  
-  op = base_seqmessage->add_op("kind", PublicVisibility, msgkind);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return kind of the message");
-  op->set_cpp("${type}", "", "  return _kind;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _kind;\n", TRUE);
-  
-  op = base_seqmessage->add_op("fragment", PublicVisibility, user_fragment_compart);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the fragment compartment containing the message");
-  op->set_cpp("${type} *", "", "  return _fragment;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _fragment;\n", TRUE);
-  
-  op = base_seqmessage->add_op("sentAt", PublicVisibility, "int");
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return when the message is sent (arbitrary unit)");
-  op->set_cpp("${type}", "", "  return _send_at;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _send_at;\n", TRUE);
-  
-  op = base_seqmessage->add_op("receivedAt", PublicVisibility, "int");
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return when the message is received (arbitrary unit)");
-  op->set_cpp("${type}", "", "  return _received_at;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _received_at;\n", TRUE);
-  
-  op = base_seqmessage->add_op("arguments", PublicVisibility, "string");
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the arguments of the operation, may be empty");
-  op->set_cpp("const ${type} &", "", "  return _args;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _args;\n", TRUE);
-  
-  op = base_seqmessage->add_op("compareTo", PublicVisibility, "int");
-  op->set_isJavaFinal(TRUE);
-  op->add_param(0, InputDirection, "other", "Object");
-  op->set_CppDecl("");
-  op->set_CppDef("");
-  op->set_java("${type}", "${t0} ${p0}",
-	       "  return _send_at - ((UmlBaseSequenceMessage) other)._send_at;\n"
-	       , TRUE);
-  
-  base_seqmessage->add_relation(aDirectionalAggregationByValue, "_kind", PrivateVisibility,
-				msgkind, 0, 0);
-  base_seqmessage->add_relation(aDirectionalAssociation, "_fragment", PrivateVisibility,
-				user_fragment_compart, 0, 0);
-  base_seqmessage->add_attribute("_x", PrivateVisibility, "int", 0, 0);
-  base_seqmessage->add_attribute("_send_at", PrivateVisibility, "int", 0, 0);
-  base_seqmessage->add_attribute("_received_at", PrivateVisibility, "int", 0, 0);
-  base_seqmessage->add_attribute("_args", PrivateVisibility, "string", 0, 0);
-  
-  op = base_seqmessage->add_op("read_", PublicVisibility, "void");
-  op->set_Description(" internal, don't call it");
-  op->add_param(0, InputDirection, "instances", user_instances);
-  op->add_param(1, InputDirection, "fragments", user_fragment);
-  op->set_cpp("${type}", "const QPtrDict<${t0}> & ${p0}, const QVector<${t1}> & ${p1}",
-	      "  UmlBaseMessage::read_(instances);\n"
-	      "  _kind = (aMessageKind) UmlCom::read_char();\n"
-	      "  _args = UmlCom::read_string();\n"
-	      "  _x = (int) UmlCom::read_unsigned();\n"
-	      "  _send_at = (int) UmlCom::read_unsigned();\n"
-	      "  _received_at = (int) UmlCom::read_unsigned();\n"
-	      "  _fragment = UmlBaseFragment::get_container_(_x, _send_at, 1, 1, fragments);\n"
-	      , FALSE, 0, 0);
-  op->set_CppVisibility(PrivateVisibility);
-  op->set_java("${type}", "Hashtable ${p0}, ${t1}[] ${p1}", 
-	       "  super.read_(instances);\n"
-	       "  _kind = aMessageKind.fromInt((int) UmlCom.read_char());\n"
-	       "  _args = UmlCom.read_string();\n"
-	       "  _x = UmlCom.read_unsigned();\n"
-	       "  _send_at = UmlCom.read_unsigned();\n"
-	       "  _received_at = UmlCom.read_unsigned();\n"
-	       "  _fragment = UmlBaseFragment.get_container_(_x, _send_at, 1, 1, fragments);\n"
-	       , FALSE);
-  base_seqmessage->add_friend("UmlBaseSequenceDiagramDefinition");
-  include_umlcom(base_seqmessage);
-  base_seqmessage->associatedArtifact()->add_import("import java.util.*;\n");
-
-  UmlCom::set_user_id(uid);
-  
-  UmlRelation * rel;
-  
-  rel = UmlBaseRelation::create(aGeneralisation, user_seqmessage, base_seqmessage);
-  rel->set_CppDecl("${type}");
-  rel->set_JavaDecl("${type}");
-  
-  rel = UmlBaseRelation::create(aGeneralisation, base_seqmessage, user_message);
-  rel->set_CppDecl("${type}");
-  rel->set_JavaDecl("${type}");
-  
-  return user_seqmessage;
-}
-
-void add_seqdiagdef(UmlClassView * base_class_view, UmlClassView * user_class_view,
-		    UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-		    UmlClass * user_instref, UmlClass * user_seqmsg, UmlClass * user_fragment)
-{
-  UmlClass * user_ddef = 
-    UmlClass::made(user_class_view, user_depl_view, "UmlSequenceDiagramDefinition", FALSE);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-
-  UmlClass * base_ddef = 
-    UmlClass::made(base_class_view, base_depl_view, "UmlBaseSequenceDiagramDefinition", FALSE);
-  
-  base_ddef->set_Description(" this class manages sequence diagram definition");
-  user_ddef->set_Description(" this class manages sequence diagram definition,\n"
-			     " you can modify it");
-
-  UmlOperation * op;
-  
-  op = base_ddef->add_op("instances", PublicVisibility, user_instref);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the instances present in the diagram");
-  op->set_cpp("const QVector<${type}> &", "", "  return _instances;\n", TRUE, 0, 0);
-  op->set_java("${type}[]", "", "  return _instances;\n", TRUE);
-
-  op = base_ddef->add_op("messages", PublicVisibility, user_seqmsg);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the messages present in the diagram,\n"
-		      " ordonned following the sending time");
-  op->set_cpp("const QVector<${type}> &", "", "  return _messages;\n", TRUE, 0, 0);
-  op->set_java("${type}[]", "", "  return _messages;\n", TRUE);
-
-  op = base_ddef->add_op("fragments", PublicVisibility, user_fragment);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the fragments present in the diagram");
-  op->set_cpp("const QVector<${type}> &", "", "  return _fragments;\n", TRUE, 0, 0);
-  op->set_java("${type}[]", "", "  return _fragments;\n", TRUE);
-
-  base_ddef->add_vect_assoc("_instances", PrivateVisibility, user_instref, 0, 0);
-  base_ddef->add_vect_assoc("_messages", PrivateVisibility, user_seqmsg, 0, 0);
-  base_ddef->add_vect_assoc("_fragments", PrivateVisibility, user_fragment, 0, 0);
-
-  UmlExtraClassMember::create(base_ddef, "qsort")
-    ->set_CppDef("static void qsort(UmlSequenceMessage ** v, int low, int high)\n"
-		 "{\n"
-		 "  if (low < high) {\n"
-		 "    int lo = low;\n"
-		 "    int hi = high + 1;\n"
-		 "    int e = v[low]->sentAt();\n"
-		 "    \n"
-		 "    for (;;) {\n"
-		 "      while ((++lo < hi) && (v[lo]->sentAt() <= e))\n"
-		 "	;\n"
-		 "      while (v[--hi]->sentAt() > e);\n"
-		 "	;\n"
-		 "      \n"
-		 "      if (lo < hi) {\n"
-		 "	UmlSequenceMessage * x = v[lo];\n"
-		 "	\n"
-		 "	v[lo] = v[hi];\n"
-		 "	v[hi] = x;\n"
-		 "      }\n"
-		 "      else\n"
-		 "	break;\n"
-		 "    }\n"
-		 "    \n"
-		 "    UmlSequenceMessage * x = v[low];\n"
-		 "	\n"
-		 "    v[low] = v[hi];\n"
-		 "    v[hi] = x;\n"
-		 "    \n"
-		 "    qsort(v, low, hi - 1);\n"
-		 "    qsort(v, hi + 1, high);\n"
-		 "  }\n"
-		 "}\n");
-
-  op = base_ddef->add_op("read_", PublicVisibility, "void");
-  op->set_Description(" internal, don't call it");
-  op->set_cpp("${type}", "",
-	      "  QPtrDict<UmlClassInstanceReference> instances;\n"
-	      "  unsigned n;\n"
-	      "  unsigned rank;\n"
-	      "\n"
-	      "  n = UmlCom::read_unsigned();\n"
-	      "  _fragments.resize(n);\n"
-	      "  for (rank = 0; rank != n; rank += 1) {\n"
-	      "    UmlFragment * f = new UmlFragment();\n"
-	      "\n"
-	      "    _fragments.insert(rank, f);\n"
-	      "    f->read_();\n"
-	      "  }\n"
-	      "  _fragments.setAutoDelete(TRUE);\n"
-	      "  UmlBaseFragment::compute_container_(_fragments);\n"
-	      "\n"
-	      "  n = UmlCom::read_unsigned();\n"
-	      "  _instances.resize(n);\n"
-	      "  for (rank = 0; rank != n; rank += 1) {\n"
-	      "    UmlClassInstanceReference * i = new UmlClassInstanceReference();\n"
-	      "\n"
-	      "    _instances.insert(rank, i);\n"
-	      "    instances.insert((void *) UmlCom::read_unsigned(), i);\n"
-	      "    i->read_();\n"
-	      "  }\n"
-	      "  _instances.setAutoDelete(TRUE);\n"
-	      "\n"
-	      "  n = UmlCom::read_unsigned();\n"
-	      "  _messages.resize(n);\n"
-	      "  if (n != 0) {\n"
-	      "    for (rank = 0; rank != n; rank += 1) {\n"
-	      "      UmlSequenceMessage * m = new UmlSequenceMessage();\n"
-	      "\n"
-	      "      _messages.insert(rank, m);\n"
-	      "      m->read_(instances, _fragments);\n"
-	      "    }\n"
-	      "    ::qsort(_messages.data(), 0, n - 1);\n"
-	      "    _messages.setAutoDelete(TRUE);\n"
-	      "  }\n"
-	      "\n"
-	      "  while (UmlCom::read_bool()) {\n"
-	      "    QCString s = UmlCom::read_string();\n"
-	      "    int x = (int) UmlCom::read_unsigned();\n"
-	      "    int y = (int) UmlCom::read_unsigned();\n"
-	      "    int w = (int) UmlCom::read_unsigned();\n"
-	      "    int h = (int) UmlCom::read_unsigned();\n"
-	      "    UmlFragmentCompartment * cp = UmlBaseFragment::get_container_(x, y, w, h, _fragments);\n"
-	      "\n"
-	      "    if (cp != 0) cp->add_text_(s);\n"
-	      "  }\n"
-	      , FALSE, 0, 0);
-  op->set_CppVisibility(PrivateVisibility);
-  op->set_java("${type}", "",
-	       "  Hashtable instances;\n"
-	       "  int n;\n"
-	       "  int rank;\n"
-	       "\n"
-	       "  n = UmlCom.read_unsigned();\n"
-	       "  _fragments = new UmlFragment[n];\n"
-	       "  for (rank = 0; rank != n; rank += 1) {\n"
-	       "    UmlFragment f = new UmlFragment();\n"
-	       "\n"
-	       "    _fragments[rank] = f;\n"
-	       "    f.read_();\n"
-	       "  }\n"
-	      "  UmlBaseFragment.compute_container_(_fragments);\n"
-	       "\n"
-	       "  n = UmlCom.read_unsigned();\n"
-	       "  _instances = new UmlClassInstanceReference[n];\n"
-	       "  instances = new Hashtable((n == 0) ? 1 : n);\n"
-	       "  for (rank = 0; rank != n; rank += 1) {\n"
-	       "    UmlClassInstanceReference i = new UmlClassInstanceReference();\n"
-	       "\n"
-	       "    _instances[rank] = i;\n"
-	       "    instances.put(new Integer(UmlCom.read_unsigned()), i);\n"
-	       "    i.read_();\n"
-	       "  }\n"
-	       "\n"
-	       "  n = UmlCom.read_unsigned();\n"
-	       "  _messages = new UmlSequenceMessage[n];\n"
-	       "  for (rank = 0; rank != n; rank += 1) {\n"
-	       "    UmlSequenceMessage m = new UmlSequenceMessage();\n"
-	       "\n"
-	       "    _messages[rank] = m;\n"
-	       "    m.read_(instances, _fragments);\n"
-	       "  }\n"
-	       "  Arrays.sort(_messages);\n"
-	       "\n"
-	       "  while (UmlCom.read_bool()) {\n"
-	       "    String s = UmlCom.read_string();\n"
-	       "    int x = (int) UmlCom.read_unsigned();\n"
-	       "    int y = (int) UmlCom.read_unsigned();\n"
-	       "    int w = (int) UmlCom.read_unsigned();\n"
-	       "    int h = (int) UmlCom.read_unsigned();\n"
-	      "    UmlFragmentCompartment cp = UmlBaseFragment.get_container_(x, y, w, h, _fragments);\n"
-	      "\n"
-	      "    if (cp != null) cp.add_text_(s);\n"
-	       "  }\n"
-	       , FALSE);
-
-  UmlClass * d = UmlClass::get("UmlBaseSequenceDiagram", 0);
-  
-  add_ddef(d, user_ddef);
-  base_ddef->add_destr(PublicVisibility, "  to avoid compiler warning, don't call it");
-  base_ddef->add_friend("UmlBaseSequenceDiagram");
-  UmlClass::get("UmlBaseItem", 0)->add_friend("UmlBaseSequenceDiagramDefinition");
-  include_umlcom(base_ddef);
-  include_umlcom(d);
-  base_ddef->associatedArtifact()->add_includes("// to avoid compiler warning\n"
-						"#include \"UmlFragment.h\"\n"
-						"#include \"UmlFragmentCompartment.h\"\n"
-						"#include \"UmlClassInstanceReference.h\"\n"
-						"#include \"UmlSequenceMessage.h\"\n"
-						"\n");
-  base_ddef->associatedArtifact()->add_import("import java.util.*;\n");
-
-  UmlCom::set_user_id(uid);
-  
-  UmlRelation * rel = UmlBaseRelation::create(aGeneralisation, user_ddef, base_ddef);
-  
-  rel->set_CppDecl("${type}");
-  rel->set_JavaDecl("${type}");
-}
-
-UmlClass * add_colmessage(UmlClassView * base_class_view, UmlClassView * user_class_view,
-			  UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-			  UmlClass * user_message, UmlClass * user_instanceref)
-{
-  UmlClass * user_colmessage = 
-    UmlClass::made(user_class_view, user_depl_view, "UmlCollaborationMessage", FALSE);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-
-  UmlClass * base_colmessage = 
-    UmlClass::made(base_class_view, base_depl_view, "UmlBaseCollaborationMessage", FALSE);
-  
-  base_colmessage->set_Description(" this class manages messages in a collaboration diagram");
-  user_colmessage->set_Description(" this class manages messages in a collaboration diagram,\n"
-				   " you can modify it");
-
-  UmlOperation * op;
-  
-  op = base_colmessage->add_op("rank", PublicVisibility, "int");
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the global rank of the message");
-  op->set_cpp("${type}", "", "  return _rank;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _rank;\n", TRUE);
-  
-  op = base_colmessage->add_op("hrank", PublicVisibility, "string");
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the hierarchical rank of the message");
-  op->set_cpp("const ${type} &", "", "  return _hrank;\n", TRUE, 0, 0);
-  op->set_java("${type}", "", "  return _hrank;\n", TRUE);
-  
-  base_colmessage->add_attribute("_rank", PrivateVisibility, "int", 0, 0);
-  base_colmessage->add_attribute("_hrank", PrivateVisibility, "string", 0, 0);
-  
-  op = base_colmessage->add_op("read_", PublicVisibility, "void");
-  op->set_Description(" internal, don't call it");
-  op->add_param(0, InputDirection, "instances", user_instanceref);
-  op->set_cpp("${type}", "const QPtrDict<${t0}> & ${p0}",
-	      "  UmlBaseMessage::read_(instances);\n"
-	      "  _rank = (int) UmlCom::read_unsigned();\n"
-	      "  _hrank = UmlCom::read_string();\n",
-	      FALSE, 0, 0);
-  op->set_CppVisibility(PrivateVisibility);
-  op->set_java("${type}", "Hashtable ${p0}",
-	      "  super.read_(instances);\n"
-	      "  _rank = UmlCom.read_unsigned();\n"
-	      "  _hrank = UmlCom.read_string();\n",
-	       FALSE);
-  base_colmessage->add_friend("UmlBaseCollaborationDiagramDefinition");
-  include_umlcom(base_colmessage);
-  base_colmessage->associatedArtifact()->add_import("import java.util.*;\n");
-
-  UmlCom::set_user_id(uid);
-  
-  UmlRelation * rel;
-  
-  rel = UmlBaseRelation::create(aGeneralisation, user_colmessage, base_colmessage);
-  rel->set_CppDecl("${type}");
-  rel->set_JavaDecl("${type}");
-  
-  rel = UmlBaseRelation::create(aGeneralisation, base_colmessage, user_message);
-  rel->set_CppDecl("${type}");
-  rel->set_JavaDecl("${type}");
-  
-  return user_colmessage;
-}
-
-UmlClass * add_coldiagdef(UmlClassView * base_class_view, UmlClassView * user_class_view,
-			  UmlDeploymentView * base_depl_view, UmlDeploymentView * user_depl_view,
-			  UmlClass * user_instref, UmlClass * user_colmsg)
-{
-  UmlClass * user_ddef = 
-    UmlClass::made(user_class_view, user_depl_view, "UmlCollaborationDiagramDefinition", FALSE);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-
-  UmlClass * base_ddef = 
-    UmlClass::made(base_class_view, base_depl_view, "UmlBaseCollaborationDiagramDefinition", FALSE);
-  
-  base_ddef->set_Description(" this class manages collaboration diagram definition");
-  user_ddef->set_Description(" this class manages collaboration diagram definition,\n"
-			     " you can modify it");
-
-  UmlOperation * op;
-  
-  op = base_ddef->add_op("instances", PublicVisibility, user_instref);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the instances present in the diagram");
-  op->set_cpp("const QVector<${type}> &", "", "  return _instances;\n", TRUE, 0, 0);
-  op->set_java("${type}[]", "", "  return _instances;\n", TRUE);
-
-  op = base_ddef->add_op("messages", PublicVisibility, user_colmsg);
-  op->set_isCppConst(TRUE);
-  op->set_Description(" return the messages present in the diagram,\n"
-		      " ordonned following their rank");
-  op->set_cpp("const QVector<${type}> &", "", "  return _messages;\n", TRUE, 0, 0);
-  op->set_java("${type}[]", "", "  return _messages;\n", TRUE);
-
-  base_ddef->add_vect_assoc("_instances", PrivateVisibility, user_instref, 0, 0);
-  base_ddef->add_vect_assoc("_messages", PrivateVisibility, user_colmsg, 0, 0);
-
-  op = base_ddef->add_op("read_", PublicVisibility, "void");
-  op->set_Description(" internal, don't call it");
-  op->set_cpp("${type}", "",
-	      "  QPtrDict<UmlClassInstanceReference> instances;\n"
-	      "  unsigned n;\n"
-	      "  unsigned rank;\n"
-	      "\n"
-	      "  n = UmlCom::read_unsigned();\n"
-	      "  _instances.resize(n);\n"
-	      "  for (rank = 0; rank != n; rank += 1) {\n"
-	      "    UmlClassInstanceReference * i = new UmlClassInstanceReference();\n"
-	      "\n"
-	      "    _instances.insert(rank, i);\n"
-	      "    instances.insert((void *) UmlCom::read_unsigned(), i);\n"
-	      "    i->read_();\n"
-	      "  }\n"
-	      "  _instances.setAutoDelete(TRUE);\n"
-	      "\n"
-	      "  n = UmlCom::read_unsigned();\n"
-	      "  _messages.resize(n);\n"
-	      "  for (rank = 0; rank != n; rank += 1) {\n"
-	      "    UmlCollaborationMessage * m = new UmlCollaborationMessage();\n"
-	      "\n"
-	      "    _messages.insert(rank, m);\n"
-	      "    m->read_(instances);\n"
-	      "  }\n"
-	      "  _messages.setAutoDelete(TRUE);\n"
-	      , FALSE, 0, 0);
-  op->set_CppVisibility(PrivateVisibility);
-  op->set_java("${type}", "",
-	       "  Hashtable instances;\n"
-	       "  int n;\n"
-	       "  int rank;\n"
-	       "\n"
-	       "  n = UmlCom.read_unsigned();\n"
-	       "  _instances = new UmlClassInstanceReference[n];\n"
-	       "  instances = new Hashtable((n == 0) ? 1 : n);\n"
-	       "  for (rank = 0; rank != n; rank += 1) {\n"
-	       "    UmlClassInstanceReference i = new UmlClassInstanceReference();\n"
-	       "\n"
-	       "    _instances[rank] = i;\n"
-	       "    instances.put(new Integer(UmlCom.read_unsigned()), i);\n"
-	       "    i.read_();\n"
-	       "  }\n"
-	       "\n"
-	       "  n = UmlCom.read_unsigned();\n"
-	       "  _messages = new UmlCollaborationMessage[n];\n"
-	       "  for (rank = 0; rank != n; rank += 1) {\n"
-	       "    UmlCollaborationMessage m = new UmlCollaborationMessage();\n"
-	       "\n"
-	       "    _messages[rank] = m;\n"
-	       "    m.read_(instances);\n"
-	       "  }\n"
-	       , FALSE);
-
-  UmlClass * d = UmlClass::get("UmlBaseCollaborationDiagram", 0);
-  
-  add_ddef(d, user_ddef);
-  base_ddef->add_destr(PublicVisibility, "  to avoid compiler warning, don't call it");
-  base_ddef->add_friend("UmlBaseCollaborationDiagram");
-  UmlClass::get("UmlBaseItem", 0)->add_friend("UmlBaseCollaborationDiagramDefinition");
-  include_umlcom(base_ddef);
-  include_umlcom(d);
-  base_ddef->associatedArtifact()->add_includes("// to avoid compiler warning\n"
-						"#include \"UmlCollaborationMessage.h\"\n"
-						"#include \"UmlClassInstanceReference.h\"\n"
-						"\n");
-  base_ddef->associatedArtifact()->add_import("import java.util.*;\n");  
-
-  UmlCom::set_user_id(uid);
-  
-  UmlRelation * rel = UmlBaseRelation::create(aGeneralisation, user_ddef, base_ddef);
-  
-  rel->set_CppDecl("${type}");
-  rel->set_JavaDecl("${type}");
-  
-  return user_ddef;
-}
-
-void add_diagram_def()
-{
-  UmlPackage * apiuser = (UmlPackage *) UmlClass::get("UmlItem", 0)->parent()->parent();
-  UmlPackage * p_user = UmlPackage::create(apiuser, "Diagram");
-  UmlClassView * cv_user = UmlClassView::create(p_user, "Diagram Class view");
-  UmlDeploymentView * dv_user = UmlDeploymentView::create(p_user, "Diagram Deployment view");
-  
-  cv_user->set_AssociatedDeploymentView(dv_user);
-  
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-
-  UmlPackage * apibase = (UmlPackage *) UmlClass::get("UmlBaseItem", 0)->parent()->parent();
-  UmlPackage * p_base = UmlPackage::create(apibase, "Diagram");
-  UmlClassView * cv_base = UmlClassView::create(p_base, "Diagram Class view");
-  UmlDeploymentView * dv_base = UmlDeploymentView::create(p_base, "Diagram Deployment view");
-  
-  cv_base->set_AssociatedDeploymentView(dv_base);
-
-  UmlCom::set_user_id(uid);
-
-  UmlClass * user_fragment;
-  UmlClass * user_fragment_compart;
-  
-  add_fragment(cv_base, cv_user, dv_base, dv_user, user_fragment, user_fragment_compart);
-  
-  UmlClass * user_subject = add_subject(cv_base, cv_user, dv_base, dv_user);
-  UmlClass * user_ucref = add_ucref(cv_base, cv_user, dv_base, dv_user,
-				    user_fragment, user_fragment_compart, user_subject);
-  UmlClass * user_ucassoc = add_ucassoc(cv_base, cv_user, dv_base, dv_user, user_ucref);
-  UmlClass * user_instanceref = add_instanceref(cv_base, cv_user, dv_base, dv_user);
-  UmlClass * user_message = add_message(cv_base, cv_user, dv_base, dv_user, user_instanceref);
-  UmlClass * user_seqmessage = add_seqmessage(cv_base, cv_user, dv_base, dv_user,
-					      user_message, user_instanceref,
-					      user_fragment, user_fragment_compart);
-  UmlClass * user_colmessage = add_colmessage(cv_base, cv_user, dv_base, dv_user,
-					      user_message, user_instanceref);
-  
-  add_ucdiagdef(cv_base, cv_user, dv_base, dv_user,
-		user_ucref, user_ucassoc, user_fragment, user_subject);
-  add_seqdiagdef(cv_base, cv_user, dv_base, dv_user,
-		 user_instanceref, user_seqmessage, user_fragment);
-  add_coldiagdef(cv_base, cv_user, dv_base, dv_user,
-		 user_instanceref, user_colmessage);
-}
-
-//
 //
 //
 
@@ -10401,13 +3395,9 @@ void UmlPackage::replace_friend() {
 
 void update_pack_global(UmlClass * uml_base_package)
 {
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  UmlCom::trace("update UmlBasePackage : find namespace/module/namespace<br>\n");
+  // already root
 
-  //
+  UmlCom::trace("<b>update UmlBasePackage : find namespace/module/namespace</b><br>\n");
 
   UmlOperation * op;
   QCString body;
@@ -10455,9 +3445,7 @@ void update_pack_global(UmlClass * uml_base_package)
   if ((at = packageglobalcmd->get_attribute("findModuleCmd")) != 0)
     at->set_Name("findIdlModuleCmd");
 
-  //
-
-  UmlCom::set_user_id(uid);
+  // stay root
 }
 
 //
@@ -10466,49 +3454,24 @@ void update_pack_global(UmlClass * uml_base_package)
 
 void add_contextual_body_indent()
 {
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  UmlCom::trace("update UmlBaseOperation : contextual body indent<br>\n");
+  // already root
+  UmlCom::trace("<b>update UmlBaseOperation : contextual body indent</b><br>\n");
 
-  //
-  
   UmlClass * baseoper = UmlClass::get("UmlBaseOperation", 0);
-  QCString s;
-  int index;
   
   UmlAttribute * at1 =
     baseoper->add_attribute("_cpp_contextual_body_indent", PrivateVisibility, "bool",
-			    "WITHCPP", "endif");
-  s = at1->cppDecl();
-  index = s.find("${type} ${name}");
-  if (index != -1) {
-    s.insert(index + 15, " : 1");
-    at1->set_CppDecl(s);
-  }
+			    "WITHCPP", "endif", " : 1");
   at1->moveAfter(baseoper->get_attribute("_idl_get_set_frozen"));
   
   UmlAttribute * at2 =
     baseoper->add_attribute("_java_contextual_body_indent", PrivateVisibility, "bool",
-			    "WITHJAVA", "endif");
-  s = at2->cppDecl();
-  index = s.find("${type} ${name}");
-  if (index != -1) {
-    s.insert(index + 15, " : 1");
-    at2->set_CppDecl(s);
-  }
+			    "WITHJAVA", "endif", " : 1");
   at2->moveAfter(at1);
   
   UmlAttribute * at3 =
     baseoper->add_attribute("_php_contextual_body_indent", PrivateVisibility, "bool",
-			    "WITHPHP", "endif");
-  s = at3->cppDecl();
-  index = s.find("${type} ${name}");
-  if (index != -1) {
-    s.insert(index + 15, " : 1");
-    at3->set_CppDecl(s);
-  }
+			    "WITHPHP", "endif", " : 1");
   at3->moveAfter(at2);
   
   //
@@ -10568,108 +3531,18 @@ void add_contextual_body_indent()
   itcmd->add_enum_item("setJavaContextualBodyIndentCmd");
   itcmd->add_enum_item("setPhpContextualBodyIndentCmd");
   
-  //
-
-  UmlCom::set_user_id(uid);
+  // stay root
 }
 
   
-//
-//
-//
-
-void php_javadocstylecomment()
-{
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  UmlCom::trace("update PhpSettings : add javadoc style<br>\n");
-  
-  //
-  
-  UmlClass * php_settings = UmlClass::get("PhpSettings", 0);
-  UmlAttribute * at =
-    php_settings->add_attribute("_is_generate_javadoc_comment", PrivateVisibility,
-				"bool",	0, 0);
-
-  at->moveAfter(php_settings->get_attribute("_ext"));
-  at->set_isClassMember(TRUE);
-
-  // get
-  
-  UmlOperation * op = php_settings->add_op("isGenerateJavadocStyleComment", PublicVisibility, "bool");
-   
-  op->set_isClassMember(TRUE);
-  op->set_Description(" return if ${comment} generate Javadoc style comment");
-  op->set_cpp("${type}", "",
-	      "  read_if_needed_();\n"
-	      "\n"
-	      "  return _is_generate_javadoc_comment;\n",
-	      FALSE, 0, 0);
-  op->set_java("${type}", "",
-	       "  read_if_needed_();\n"
-	       "\n"
-	       "  return _is_generate_javadoc_comment;\n",
-	       FALSE);
-  op->moveAfter(php_settings->get_operation("set_SourceExtension"));
-
-  // set
-  
-  UmlOperation * op2 = php_settings->add_op("set_IsGenerateJavadocStyleComment", PublicVisibility, "bool");
-  
-  op2->set_isClassMember(TRUE);
-  op2->set_Description(" set if ${comment} generate Javadoc style comment\n"
-		       "\n"
-		       " On error : return FALSE in C++, produce a RuntimeException in Java");
-  op2->add_param(0, InputDirection, "v", "bool"); 
-  op2->set_cpp("${type}", "${t0} ${p0}",
-		"  UmlCom::send_cmd(phpSettingsCmd, setPhpJavadocStyleCmd, v);\n"
-		"  if (UmlCom::read_bool()) {\n"
-		"    _is_generate_javadoc_comment = v;\n"
-		"    return TRUE;\n"
-		"  }\n"
-		"  else\n"
-		"    return FALSE;\n",
-		FALSE, 0, 0);
-  op2->set_java("void", "${t0} ${p0}",
-		"  UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpJavadocStyleCmd,\n"
-		"		   (v) ? (byte) 1 : (byte) 0);\n"
-		"  UmlCom.check();\n"
-		"  _is_generate_javadoc_comment = v;\n",
-		FALSE);
-  op2->moveAfter(op);  
-  
-  //
-
-  op = php_settings->get_operation("read_");
-  op->set_CppBody(op->cppBody() + "  _is_generate_javadoc_comment = UmlCom::read_bool();\n");
-  op->set_JavaBody(op->javaBody() + "  _is_generate_javadoc_comment = UmlCom.read_bool();\n");
-
-  //
-
-  UmlClass * stcmd = UmlClass::get("PhpSettingsCmd", 0);
-  
-  stcmd->add_enum_item("setPhpJavadocStyleCmd");
-  
-  //
-
-  UmlCom::set_user_id(uid);
-}
-
 //
 //
 //
 
 void add_profile()
 {
-  unsigned uid = UmlCom::user_id();
-  
-  UmlCom::set_user_id(0);
-  
-  UmlCom::trace("Add profiles<br>\n");
-  
-  //
+  // already root
+  UmlCom::trace("<b>Add profiles</b><br>\n");
   
   UmlClass * packageglobalcmd = UmlClass::get("PackageGlobalCmd", 0);
 
@@ -10705,7 +3578,7 @@ void add_profile()
 	       "                   (caseSensitive) ? \"y\" : \"n\", (const char *) s);\n"
 	       "  return (UmlClass *) UmlBaseItem::read_();\n",
 	       FALSE, 0, 0);
-  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}", \
+  op->set_java("${type}", "${t0} ${p0}, ${t1} ${p1}",
 		"  UmlCom.send_cmd(CmdFamily.packageGlobalCmd, PackageGlobalCmd._findStereotypeCmd,\n"
 		"                   (caseSensitive) ? \"y\" : \"n\", s);\n"
 		"  return (UmlClass) UmlBaseItem.read_();\n",
@@ -10765,9 +3638,7 @@ void add_profile()
 	       FALSE);
   op->moveAfter(base_item->get_operation("set_Stereotype"));
   
-  //
-
-  UmlCom::set_user_id(uid);
+  // stay root
 }
 
 //
@@ -10776,22 +3647,16 @@ void add_profile()
 
 void modify_texts()
 {
-  unsigned uid = UmlCom::user_id();
+  // already root
   
-  UmlCom::set_user_id(0);
-  
-  UmlCom::trace("modify <i>UmlBaseFragmentCompartment::texts()</i> to bypass Microsoft Visual C++ bug<br>");
-  
-  //
+  UmlCom::trace("<b>modify <i>UmlBaseFragmentCompartment::texts()</i> to bypass Microsoft Visual C++ bug</b><br>");
   
   UmlClass * base_frc = UmlClass::get("UmlBaseFragmentCompartment", 0);
   UmlOperation * op = base_frc->get_operation("texts");
   
   op->set_cpp("const QVector<char> &", "", "  return _texts;\n", TRUE, 0, 0);
   
-  //
-
-  UmlCom::set_user_id(uid);
+  // stay root
 }
 
 //
@@ -10800,13 +3665,9 @@ void modify_texts()
 
 void fixe_idlsetting_read()
 {
-  unsigned uid = UmlCom::user_id();
+  // already root
   
-  UmlCom::set_user_id(0);
-  
-  UmlCom::trace("fixe <i>IdlSetting::read_()<br>");
-  
-  //
+  UmlCom::trace("<b>fixe <i>IdlSetting::read_()</b><br>");
   
   UmlClass * idlsetting = UmlClass::get("IdlSettings", 0);
   UmlOperation * op = idlsetting->get_operation("read_");
@@ -10940,9 +3801,7 @@ void fixe_idlsetting_read()
   _set_name = UmlCom.read_string();\n\
   _is_set_oneway = UmlCom.read_bool();\n");
 
-  //
-
-  UmlCom::set_user_id(uid);
+  // stay root
 }
 
 //
@@ -10979,7 +3838,7 @@ void fixe_umlcom_send_cmd(UmlOperation * op0)
   
   UmlCom::set_user_id(0);
   
-  UmlCom::trace("fixe <i>UmlItem::isToolRunning</i> adding <i>UmlCom::send_cmd(,,int,dummy)</i><br>");
+  UmlCom::trace("<b>fixe <i>UmlItem::isToolRunning</i> adding <i>UmlCom::send_cmd(,,int,dummy)</i></b><br>");
   
   UmlOperation * op =
     ((UmlClass *) op0->parent())->add_op("send_cmd", PublicVisibility, "void");
@@ -11029,6 +3888,890 @@ void fixe_umlcom_send_cmd(UmlOperation * op0)
 }
 
 //
+//
+//
+
+void add_javasettings_forcepackageprefixgeneration(UmlClass * javasettings)
+{
+  // already root
+  UmlCom::trace("<b>Upgrade JavaSettings</b><br>");
+  UmlAttribute * att;
+  UmlOperation * op;
+  UmlOperation * op2;
+  QString s;
+  
+  //
+  
+  att = javasettings->add_attribute("_is_force_package_gen", PrivateVisibility, "bool",
+				    0, 0);
+  att->set_isClassMember(TRUE);
+  att->moveAfter(javasettings->get_attribute("_is_generate_javadoc_comment"));
+  
+  op = javasettings->add_op("isForcePackagePrefixGeneration",
+			    PublicVisibility, "bool");
+  op->set_isClassMember(TRUE);
+  op->set_cpp("${type}", "", "\
+  read_if_needed_();\n\
+\n\
+  return _is_force_package_gen;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "", "\
+  read_if_needed_();\n\
+\n\
+  return _is_force_package_gen;\n",
+	       FALSE);
+  op->moveAfter(javasettings->get_operation("set_IsGenerateJavadocStyleComment"));
+  op->set_Description(" return if the package prefix must be\n"
+		      " always generated before class's names\n");
+  
+  op2 = javasettings->add_op("set_IsForcePackagePrefixGeneration",
+			     PublicVisibility, "bool", TRUE);
+  op2->add_param(0, InputDirection, "v", "bool");   
+  op2->set_isClassMember(TRUE);
+  op2->set_cpp("${type}", "${t0} ${p0}", "\
+  UmlCom::send_cmd(javaSettingsCmd, setJavaForcePackageGenCmd, v);\n\
+  if (UmlCom::read_bool()) {\n\
+    _is_force_package_gen = v;\n\
+    return TRUE;\n\
+  }\n\
+  else\n\
+    return FALSE;\n",
+	      FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}", "\
+  UmlCom.send_cmd(CmdFamily.javaSettingsCmd, JavaSettingsCmd._setJavaForcePackageGenCmd, (v) ? (byte) 1 : (byte) 0);\n\
+  UmlCom.check();\n\
+  _is_force_package_gen = v;\n",
+	       FALSE);
+  op2->moveAfter(op);
+  op2->set_Description(" set if the package prefix must be always generated before class's names\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java\n");
+  
+  op = javasettings->get_operation("read_");
+  op->set_CppBody(op->cppBody() + "  _is_force_package_gen = UmlCom::read_bool();\n");
+  op->set_JavaBody(op->javaBody() + "  _is_force_package_gen = UmlCom.read_bool();\n");
+    
+  UmlClass * javasettingcmd = UmlClass::get("JavaSettingsCmd", 0);
+  
+  javasettingcmd->add_enum_item("setJavaForcePackageGenCmd");
+  
+  // stay root
+}
+
+//
+
+void add_cppsettings_builtindir()
+{
+  // already root
+  UmlCom::trace("<b>Upgrade CppSettings</b><br>");
+    
+  UmlClass * cppsettings = UmlClass::get("CppSettings", 0);
+  UmlOperation * op, * op2;
+  
+  op = cppsettings->get_operation("builtinIn");
+  if (op == 0) {
+    op = cppsettings->add_op("builtinIn", PublicVisibility, "string");
+    op->set_isClassMember(TRUE);
+    op->add_param(0, InputDirection, "s", "string");   
+    op->set_cpp("${type}", "${t0} ${p0}", "\
+  read_if_needed_();\n\
+\n\
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);\n\
+\n\
+  return (b) ? b->cpp_in : QCString("");\n",
+	      FALSE, 0, 0);
+    op->set_java("${type}", "${t0} ${p0}", "\
+  read_if_needed_();\n\
+\n\
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(s);\n\
+    \n\
+  return b.cpp_in;\n",
+	       FALSE);
+    op->set_Description(" returns the default operation 'in' parameter specification\n"
+			" in case its type is specified in the first 'Generation\n"
+			" settings' tab, else an empty string/null\n");
+  }
+  op->moveAfter(cppsettings->get_operation("set_EnumReturn"));
+
+  op2 = cppsettings->add_op("set_BuiltinIn", PublicVisibility, "bool", TRUE);
+  op2->set_isClassMember(TRUE);
+  op2->add_param(0, InputDirection, "type", "string");  
+  op2->add_param(1, InputDirection, "form", "string");   
+  op2->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}", "\
+  UmlCom::send_cmd(cppSettingsCmd, setCppInCmd, type, form);\n\
+  if (UmlCom::read_bool()) {\n\
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);\n\
+\n\
+    if (b == 0)\n\
+      b = UmlSettings::add_type(type);\n\
+    b->cpp_in = form;\n\
+    \n\
+    return TRUE;\n\
+  }\n\
+  else\n\
+    return FALSE;\n",
+	       FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}, ${t1} ${p1}", "\
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppInCmd, type, form);\n\
+  UmlCom.check();\n\
+    \n\
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(type);\n\
+  \n\
+  if (b == null)\n\
+    b = UmlSettings.add_type(type);\n\
+  b.cpp_in = form;\n",
+		FALSE);
+  op2->set_Description(" set the default operation 'in' parameter specification\n"
+		       " in case its type is specified in the first 'Generation\n"
+		       " settings' tab\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java\n");
+  op2->moveAfter(op);
+
+  //
+  
+  op = cppsettings->get_operation("builtinOut");
+  if (op == 0) {
+    op = cppsettings->add_op("builtinOut", PublicVisibility, "string");
+    op->set_isClassMember(TRUE);
+    op->add_param(0, InputDirection, "s", "string");   
+    op->set_cpp("${type}", "${t0} ${p0}", "\
+  read_if_needed_();\n\
+\n\
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);\n\
+\n\
+  return (b) ? b->cpp_out : QCString("");\n",
+	      FALSE, 0, 0);
+    op->set_java("${type}", "${t0} ${p0}", "\
+  read_if_needed_();\n\
+\n\
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(s);\n\
+    \n\
+  return b.cpp_out;\n",
+	       FALSE);
+    op->set_Description(" returns the default operation 'out' parameter specification\n"
+			" in case its type is specified in the first 'Generation\n"
+			" settings' tab, else an empty string/null\n");
+  }
+  op->moveAfter(op2);
+
+  op2 = cppsettings->add_op("set_BuiltinOut", PublicVisibility, "bool", TRUE);
+  op2->set_isClassMember(TRUE);
+  op2->add_param(0, InputDirection, "type", "string");  
+  op2->add_param(1, InputDirection, "form", "string");   
+  op2->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}", "\
+  UmlCom::send_cmd(cppSettingsCmd, setCppOutCmd, type, form);\n\
+  if (UmlCom::read_bool()) {\n\
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);\n\
+\n\
+    if (b == 0)\n\
+      b = UmlSettings::add_type(type);\n\
+    b->cpp_out = form;\n\
+    \n\
+    return TRUE;\n\
+  }\n\
+  else\n\
+    return FALSE;\n",
+	       FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}, ${t1} ${p1}", "\
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppOutCmd, type, form);\n\
+  UmlCom.check();\n\
+    \n\
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(type);\n\
+  \n\
+  if (b == null)\n\
+    b = UmlSettings.add_type(type);\n\
+  b.cpp_out = form;\n",
+		FALSE);
+  op2->set_Description(" set the default operation 'out' parameter specification\n"
+		       " in case its type is specified in the first 'Generation\n"
+		       " settings' tab\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java\n");
+  op2->moveAfter(op);
+  
+  //
+
+  op = cppsettings->get_operation("builtinInOut");
+  if (op == 0) {
+    op = cppsettings->add_op("builtinInOut", PublicVisibility, "string");
+    op->set_isClassMember(TRUE);
+    op->add_param(0, InputDirection, "s", "string");   
+    op->set_cpp("${type}", "${t0} ${p0}", "\
+  read_if_needed_();\n\
+\n\
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);\n\
+\n\
+  return (b) ? b->cpp_inout : QCString("");\n",
+	      FALSE, 0, 0);
+    op->set_java("${type}", "${t0} ${p0}", "\
+  read_if_needed_();\n\
+\n\
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(s);\n\
+    \n\
+  return b.cpp_inout;\n",
+	       FALSE);
+    op->set_Description(" returns the default operation 'inout' parameter specification\n"
+			" in case its type is specified in the first 'Generation\n"
+			" settings' tab, else an empty string/null\n");
+  }
+  op->moveAfter(op2);
+
+  op2 = cppsettings->add_op("set_BuiltinInOut", PublicVisibility, "bool", TRUE);
+  op2->set_isClassMember(TRUE);
+  op2->add_param(0, InputDirection, "type", "string");  
+  op2->add_param(1, InputDirection, "form", "string");   
+  op2->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}", "\
+  UmlCom::send_cmd(cppSettingsCmd, setCppInOutCmd, type, form);\n\
+  if (UmlCom::read_bool()) {\n\
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);\n\
+\n\
+    if (b == 0)\n\
+      b = UmlSettings::add_type(type);\n\
+    b->cpp_inout = form;\n\
+    \n\
+    return TRUE;\n\
+  }\n\
+  else\n\
+    return FALSE;\n",
+	       FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}, ${t1} ${p1}", "\
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppInOutCmd, type, form);\n\
+  UmlCom.check();\n\
+    \n\
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(type);\n\
+  \n\
+  if (b == null)\n\
+    b = UmlSettings.add_type(type);\n\
+  b.cpp_inout = form;\n",
+	       FALSE);
+  op2->set_Description(" set the default operation 'inout' parameter specification\n"
+		       " in case its type is specified in the first 'Generation\n"
+		       " settings' tab\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java\n");
+  op2->moveAfter(op);
+
+  //
+  
+  op = cppsettings->get_operation("builtinReturn");
+  if (op == 0) {
+    op = cppsettings->add_op("builtinReturn", PublicVisibility, "string");
+    op->set_isClassMember(TRUE);
+    op->add_param(0, InputDirection, "s", "string");   
+    op->set_cpp("${type}", "${t0} ${p0}", "\
+  read_if_needed_();\n\
+\n\
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);\n\
+\n\
+  return (b) ? b->cpp_return : QCString("");\n",
+	      FALSE, 0, 0);
+    op->set_java("${type}", "${t0} ${p0}", "\
+  read_if_needed_();\n\
+\n\
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(s);\n\
+    \n\
+  return b.cpp_return;\n",
+	       FALSE);
+    op->set_Description(" returns the default operation 'return' parameter specification\n"
+			" in case its type is specified in the first 'Generation\n"
+			" settings' tab, else an empty string/null\n");
+  }
+  op->moveAfter(op2);
+
+  op2 = cppsettings->add_op("set_BuiltinReturn", PublicVisibility, "bool", TRUE);
+  op2->set_isClassMember(TRUE);
+  op2->add_param(0, InputDirection, "type", "string");  
+  op2->add_param(1, InputDirection, "form", "string");   
+  op2->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}", "\
+  UmlCom::send_cmd(cppSettingsCmd, setCppReturnCmd, type, form);\n\
+  if (UmlCom::read_bool()) {\n\
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);\n\
+\n\
+    if (b == 0)\n\
+      b = UmlSettings::add_type(type);\n\
+    b->cpp_return = form;\n\
+    \n\
+    return TRUE;\n\
+  }\n\
+  else\n\
+    return FALSE;\n",
+	       FALSE, 0, 0);
+  op2->set_java("void", "${t0} ${p0}, ${t1} ${p1}", "\
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppReturnCmd, type, form);\n\
+  UmlCom.check();\n\
+    \n\
+  UmlBuiltin b = (UmlBuiltin) _map_builtins.get(type);\n\
+  \n\
+  if (b == null)\n\
+    b = UmlSettings.add_type(type);\n\
+  b.cpp_return = form;\n",
+		FALSE);
+  op2->set_Description(" set the default operation 'return' parameter specification\n"
+		       " in case its type is specified in the first 'Generation\n"
+		       " settings' tab\n"
+		       "\n"
+		       " On error : return FALSE in C++, produce a RuntimeException in Java\n");
+  op2->moveAfter(op);
+
+  //
+ 
+  QString s;
+  
+  op = cppsettings->get_operation("set_In");
+  s = op->cppBody();
+  op->set_CppBody(s.insert(s.find(")"), ", \"\""));
+  s = op->javaBody();
+  op->set_JavaBody(s.insert(s.find(")"), ", \"\""));
+  
+  op = cppsettings->get_operation("set_Out");
+  s = op->cppBody();
+  op->set_CppBody(s.insert(s.find(")"), ", \"\""));
+  s = op->javaBody();
+  op->set_JavaBody(s.insert(s.find(")"), ", \"\""));
+  
+  op = cppsettings->get_operation("set_Inout");
+  s = op->cppBody();
+  op->set_CppBody(s.insert(s.find(")"), ", \"\""));
+  s = op->javaBody();
+  op->set_JavaBody(s.insert(s.find(")"), ", \"\""));
+  
+  op = cppsettings->get_operation("set_Return");
+  s = op->cppBody();
+  op->set_CppBody(s.insert(s.find(")"), ", \"\""));
+  s = op->javaBody();
+  op->set_JavaBody(s.insert(s.find(")"), ", \"\""));
+  
+  //stay root
+}
+
+//
+  
+void update_uml_com2()
+{
+  // already root
+
+  UmlClass * uml_com = UmlClass::get("UmlCom", 0);
+  UmlOperation * prev = uml_com->get_operation("send_cmd");
+  UmlOperation * op =
+    uml_com->add_op("send_cmd", PublicVisibility, "void", FALSE);
+  
+  op->add_param(0, InputDirection, "f", "CmdFamily");
+  op->add_param(1, InputDirection, "cmd", "uint");
+  op->add_param(2, InputDirection, "s", "str");
+  op->add_param(3, InputDirection, "b", "bool");
+
+  op->set_Description("internal, do NOT use it\n");
+  op->set_isClassMember(TRUE);
+  op->moveAfter(prev);
+  
+  op->set_cpp("${type}", 
+	      "${t0} ${p0}, ${t1} ${p1}, const ${t2} ${p2}, ${t3} ${p3}",
+	      "\
+#ifdef TRACE\n\
+  cout << \"UmlCom::send_cmd((CmdFamily) \" << f << \", \" << cmd << \", \" << ((s) ? s : \"\") << b << \")\\n\";\n\
+#endif\n\
+  \n\
+  write_char(f);\n\
+  write_char(cmd);\n\
+  write_string(s);\n\
+  write_bool(b);\n\
+  flush();\n",
+	      FALSE, 0, 0);
+
+  op->set_java("${type}",
+	       "${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}",
+	       "\
+  write_char((byte) f.value());\n\
+  write_char((byte) cmd);\n\
+  write_string(s);\n\
+  write_bool(b);\n\
+  flush();\n",
+	       FALSE);
+  
+  // stay root
+}
+
+//
+//
+//
+
+void oneBit(UmlClass * cl, QCString attname, const char * opname,
+	    QCString cmd, const char * end_if)
+{
+  UmlAttribute * att = cl->get_attribute(attname);
+  QCString s;
+  int index;
+  
+  s = att->cppDecl();
+  index = s.find("${type} ${name}");
+  if (index != -1) {
+    s.insert(index + 15, " : 1");
+    att->set_CppDecl(s);
+  }
+
+  UmlOperation * op = cl->get_operation(opname);
+  QCString v = op->params()[0].name;
+  
+  s = "  UmlCom::send_cmd(_identifier, " + cmd + ", (char) " + v + ");\n"
+      "  if (UmlCom::read_bool()) {\n"
+      "    " + attname + " = " + v + ";\n"
+      "    return TRUE;\n"
+      "  }\n"
+      "  else\n"
+      "    return FALSE;\n";
+  
+  op->set_cpp("${type}", "${t0} ${p0}", s, FALSE, 0, end_if);
+}
+
+void add_property_modifiers(UmlClass * cl)
+{
+  UmlAttribute * att, * att1;
+  
+  att = cl->add_attribute("_derived", PrivateVisibility, "bool", 0, 0, " : 1");
+  att->moveAfter(cl->get_attribute("_read_only"));
+  
+  att1 = cl->add_attribute("_derived_union", PrivateVisibility, "bool", 0, 0, " : 1");
+  att1->moveAfter(att);
+  
+  att = cl->add_attribute("_ordered", PrivateVisibility, "bool", 0, 0, " : 1");
+  att->moveAfter(att1);
+  
+  att1 = cl->add_attribute("_unique", PrivateVisibility, "bool", 0, 0, " : 1");
+  att1->moveAfter(att);
+  
+  //
+  
+  UmlOperation * op, * op1;
+  
+  defGetBool(cl, _derived, isDerived, 0, 0,
+	     " return the property 'derived'");
+  op->moveAfter(cl->get_operation("set_isReadOnly"));
+  op1 = op;
+  
+  defGetBool(cl, _derived_union, isDerivedUnion, 0, 0,
+	     " return the property 'derived union'");
+  op->moveAfter(op1);
+  
+  op1 = cl->add_op("set_isDerived", PublicVisibility, "bool", TRUE);
+  op1->set_Description(" Set the properties 'derived' and 'union'\n"
+		       "\n"
+		       " On error return FALSE in C++, produce a RuntimeException in Java");
+  op1->add_param(0, InputDirection, "is_derived", "bool");
+  op1->add_param(1, InputDirection, "is_union", "bool");
+  op1->set_cpp("${type}", "${t0} ${p0}, ${t1} ${p1}",
+	       "  UmlCom::send_cmd(_identifier, setDerivedCmd,\n"
+	       "                   (char) (((is_derived) ? 1 : 0) + ((is_union) ? 2 : 0)));\n"
+	       "  if (UmlCom::read_bool()) {\n"
+	       "    _derived = is_derived;\n"
+	       "    _derived_union = is_union;\n"
+	       "    return TRUE;\n"
+	       "  }\n"
+	       "  else\n"
+	       "    return FALSE;\n",
+	       FALSE, 0, 0);
+  op1->set_java("void", "${t0} ${p0}, ${t1} ${p1}",
+		"  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setDerivedCmd,\n"
+		"                  (byte) (((is_derived) ? 1 : 0) + ((is_union) ? 2 : 0)));\n"
+		"  UmlCom.check();\n"
+		"\n"
+		"  _derived = is_derived;\n"
+		"  _derived_union = is_union;\n",
+		FALSE);
+  op1->moveAfter(op);
+
+  defGetBool(cl, _ordered, isOrdered, 0, 0,
+	     " return the property 'ordered'");
+  op->moveAfter(op1);
+  op1 = op;
+  defSetBoolBitField(cl, _ordered, set_isOrdered, setOrderingCmd, 0, 0,
+		     " set the property 'ordered'");
+  op->moveAfter(op1);
+  op1 = op;
+  
+  defGetBool(cl, _unique, isUnique, 0, 0,
+	     " return the property 'unique'");
+  op->moveAfter(op1);
+  op1 = op;
+  defSetBoolBitField(cl, _unique, set_isUnique, setUniqueCmd, 0, 0,
+		     " set the property 'unique'");
+  op->moveAfter(op1);
+  
+  //
+  
+  op = cl->get_operation("read_uml_");
+  
+  QCString s;
+  
+  s = op->cppBody();
+  s.insert(s.find("_get_oper = "),
+	   "_derived = UmlCom::read_bool();\n"
+	   "  _derived_union = UmlCom::read_bool();\n"
+	   "  _ordered = UmlCom::read_bool();\n"
+	   "  _unique = UmlCom::read_bool();\n  ");
+  op->set_CppBody(s);
+  
+  s = op->javaBody();
+  s.insert(s.find("_get_oper = "),
+	   "_derived = UmlCom.read_bool();\n"
+	   "  _derived_union = UmlCom.read_bool();\n"
+	   "  _ordered = UmlCom.read_bool();\n"
+	   "  _unique = UmlCom.read_bool();\n  ");
+  op->set_JavaBody(s);
+}
+
+void add_property_modifiers()
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  //
+  
+  UmlCom::trace("<b>Add property modifiers</b><br>");
+    
+  UmlClass * baseatt = UmlClass::get("UmlBaseAttribute", 0);
+  UmlClass * baserel = UmlClass::get("UmlBaseRelation", 0);
+
+  UmlAttribute * att = baseatt->get_attribute("_multiplicity");
+  
+  att->set_Visibility(PrivateVisibility);
+  att->moveAfter(baseatt->get_attribute("_java_transient"));
+  
+  oneBit(baseatt, "_read_only", "set_isReadOnly", "setIsReadOnlyCmd", 0);
+  oneBit(baseatt, "_cpp_mutable", "set_isCppMutable", "setIsCppMutableCmd", "endif");
+  oneBit(baseatt, "_java_transient", "set_isJavaTransient", "setIsJavaTransientCmd", "endif");
+  
+  oneBit(baserel, "_read_only", "set_isReadOnly", "setIsReadOnlyCmd", 0);
+  oneBit(baserel, "_cpp_mutable", "set_isCppMutable", "setIsCppMutableCmd", "endif");
+  
+  baserel->get_relation(aDirectionalAggregationByValue, "_rel_kind")
+    ->moveAfter(baserel->get_operation("unload"));
+  
+  add_property_modifiers(baseatt);
+  add_property_modifiers(baserel);
+  
+  //
+
+  UmlClass::get("OnInstanceCmd", 0)->add_enum_item("setDerivedCmd");
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
+void add_read(UmlClass * cl, const char * opname)
+{
+  UmlOperation * op = cl->get_operation(opname);
+  QString s;
+  
+  s = "  read_if_needed_();\n" + op->cppBody();
+  op->set_CppBody(s);
+  
+  s = "  read_if_needed_();\n" + op->javaBody();
+  op->set_JavaBody(s);
+}
+
+void fixe_settings(UmlClass * umlsettings, UmlClass * cppsettings, UmlClass * javasettings) 
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  //
+  
+  UmlCom::trace("<b>fixe Uml/Cpp/Java/Idl/PhpSettings</b><br>");
+    
+  UmlClass * idlsettings = UmlClass::get("IdlSettings", 0);
+  UmlClass * phpsettings = UmlClass::get("PhpSettings", 0);
+  
+  umlsettings->get_operation("add_type")->set_CppBody("\
+  unsigned n = _map_builtins.count();\n\
+  unsigned index;\n\
+\n\
+  UmlBuiltin * builtins = new UmlBuiltin[n + 1];\n\
+\n\
+  if (n/2 > _map_builtins.size())\n\
+    _map_builtins.resize(_map_builtins.size() * 2 - 1);\n\
+  \n\
+  for (index = 0; index != n; index += 1) {\n\
+    builtins[index] = _builtins[index];\n\
+    _map_builtins.replace(builtins[index].uml, &builtins[index]);\n\
+  }\n\
+    \n\
+  builtins[index].uml = s;\n\
+#ifdef WITHCPP\n\
+  builtins[index].cpp = s;\n\
+  builtins[index].cpp_in = \"const ${type}\";\n\
+  builtins[index].cpp_out = \"${type} &\";\n\
+  builtins[index].cpp_inout = \"${type} &\";\n\
+#endif\n\
+#ifdef WITHJAVA\n\
+  builtins[index].java = s;\n\
+#endif\n\
+#ifdef WITHIDL\n\
+  builtins[index].idl = s;\n\
+#endif\n\
+\n\
+  _map_builtins.insert(s, &_builtins[index]);\n\
+\n\
+  delete [] _builtins;\n\
+  _builtins = builtins;\n\
+  \n\
+  return &_builtins[index];\n");
+  
+  umlsettings->get_operation("add_rel_attr_stereotype")->set_CppBody("\
+  unsigned n = _map_relation_attribute_stereotypes.count();\n\
+  unsigned index;\n\
+\n\
+  UmlStereotype * relation_attribute_stereotypes = new UmlStereotype[n + 1];\n\
+\n\
+  if (n/2 > _map_relation_attribute_stereotypes.size())\n\
+    _map_relation_attribute_stereotypes.resize(_map_relation_attribute_stereotypes.size() * 2 - 1);\n\
+  \n\
+  for (index = 0; index != n; index += 1) {\n\
+    relation_attribute_stereotypes[index] = _relation_attribute_stereotypes[index];\n\
+    _map_relation_attribute_stereotypes.replace(relation_attribute_stereotypes[index].uml,\n\
+						&relation_attribute_stereotypes[index]);\n\
+  }\n\
+    \n\
+  relation_attribute_stereotypes[index].uml = s;\n\
+#ifdef WITHCPP\n\
+  relation_attribute_stereotypes[index].cpp = s;\n\
+#endif\n\
+#ifdef WITHJAVA\n\
+  relation_attribute_stereotypes[index].java = s;\n\
+#endif\n\
+#ifdef WITGIDL\n\
+  relation_attribute_stereotypes[index].idl = s;\n\
+#endif\n\
+\n\
+  _map_relation_attribute_stereotypes.insert(s, &_relation_attribute_stereotypes[index]);\n\
+\n\
+  delete [] _relation_attribute_stereotypes;\n\
+  _relation_attribute_stereotypes = relation_attribute_stereotypes;\n\
+\n\
+  return &_relation_attribute_stereotypes[index];\n");
+  
+  umlsettings->get_operation("add_class_stereotype")->set_CppBody("\
+  unsigned n = _map_class_stereotypes.count();\n\
+  unsigned index;\n\
+\n\
+  UmlStereotype * class_stereotypes = new UmlStereotype[n + 1];\n\
+\n\
+  if (n/2 > _map_class_stereotypes.size())\n\
+    _map_class_stereotypes.resize(_map_class_stereotypes.size() * 2 - 1);\n\
+  \n\
+  for (index = 0; index != n; index += 1) {\n\
+    class_stereotypes[index] = _class_stereotypes[index];\n\
+    _map_class_stereotypes.replace(class_stereotypes[index].uml, &class_stereotypes[index]);\n\
+  }\n\
+    \n\
+  class_stereotypes[index].uml = s;\n\
+#ifdef WITHCPP\n\
+  class_stereotypes[index].cpp = s;\n\
+#endif\n\
+#ifdef WITHJAVA\n\
+  class_stereotypes[index].java = s;\n\
+#endif\n\
+#ifdef WITHIDL\n\
+  class_stereotypes[index].idl = s;\n\
+#endif\n\
+\n\
+  _map_class_stereotypes.insert(s, &_class_stereotypes[index]);\n\
+\n\
+  delete [] _class_stereotypes;\n\
+  _class_stereotypes = class_stereotypes;\n\
+\n\
+  return &_class_stereotypes[index];\n");
+  
+  //
+  
+  add_read(cppsettings, "set_Type");
+  add_read(cppsettings, "set_RelationAttributeStereotype");
+  add_read(cppsettings, "set_ClassStereotype");
+  add_read(cppsettings, "set_Include");
+  add_read(cppsettings, "set_BuiltinIn");
+  add_read(cppsettings, "set_BuiltinOut");
+  add_read(cppsettings, "set_BuiltinInOut");
+  add_read(cppsettings, "set_BuiltinReturn");
+  add_read(cppsettings, "set_AttributeDecl");
+  add_read(cppsettings, "set_RelationDecl");
+  
+  add_read(idlsettings, "set_Type");
+  add_read(idlsettings, "set_RelationAttributeStereotype");
+  add_read(idlsettings, "set_ClassStereotype");
+  add_read(idlsettings, "set_Include");
+  add_read(idlsettings, "set_AttributeDecl");
+  add_read(idlsettings, "set_ValuetypeAttributeDecl");
+  add_read(idlsettings, "set_UnionItemDecl");
+  add_read(idlsettings, "set_ConstDecl");
+  add_read(idlsettings, "set_RelationDecl");
+  add_read(idlsettings, "set_ValuetypeRelationDecl");
+  add_read(idlsettings, "set_UnionRelationDecl");
+  
+  add_read(javasettings, "set_Type");
+  add_read(javasettings, "set_RelationAttributeStereotype");
+  add_read(javasettings, "set_ClassStereotype");
+  add_read(javasettings, "set_Import");
+  add_read(javasettings, "set_AttributeDecl");
+  add_read(javasettings, "set_RelationDecl");
+  
+  
+  add_read(phpsettings, "set_ClassStereotype");
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
+void fixe_set_associateddiagram(UmlItem * v)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  //
+  
+  UmlCom::trace("<b>fixe operations <i>set_AssociatedDiagram</i></b><br>");
+  
+  const QVector<UmlItem> ch1 = v->children();
+
+  for (unsigned i1 = 0; i1 != ch1.size(); i1 += 1) {
+    if (ch1[i1]->kind() == aClass) {
+      const QVector<UmlItem> ch2 = ch1[i1]->children();
+      
+      for (unsigned i2 = 0; i2 != ch2.size(); i2 += 1) {
+	if ((ch2[i2]->kind() == anOperation) &&
+	    (ch2[i2]->name() == "set_AssociatedDiagram")) {
+	  UmlOperation * op = (UmlOperation *) ch2[i2];
+	  QCString b;
+	  
+	  b = op->cppBody();
+	  if (b.find("(d == 0) ? (void *) 0 : ") == -1) {
+	    b.insert(b.find("((UmlBaseItem *) d)"), "(d == 0) ? (void *) 0 : ");
+	    op->set_CppBody(b);
+	  }
+	  
+	  b = op->javaBody();
+	  if (b.find("(d == null) ? (long) 0 : ") == -1) {
+	    b.insert(b.find("d.identifier_()"), "(d == null) ? (long) 0 : ");
+	    op->set_JavaBody(b);
+	  }
+	}
+      }
+    }
+  }
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
+void bypass_qvector_bug()
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  //
+  
+  UmlCom::trace("<b>bypass Qt 2.3 bug concerning QVector assignment</b><br>");
+  UmlOperation * op;
+  
+  op = UmlClass::get("UmlBaseComponent", 0)
+    ->get_operation("set_AssociatedClasses");
+  
+  if (op != 0)
+    op->set_CppBody("  UmlCom::send_cmd(_identifier, setAssocClassesCmd,\n"
+		    "		   realizing, provided, required);\n"
+		    "  if (UmlCom::read_bool()) {\n"
+		    "    if (_defined) {\n"
+		    "      // tests != to bypass Qt 2.3 bug\n"
+		    "      if (&_realizing != &realizing) _realizing = realizing;\n"
+		    "      if (&_provided != &provided) _provided = provided;\n"
+		    "      if (&_required != &required) _required = required;\n"
+		    "    }\n"
+		    "    return TRUE;\n"
+		    "  }\n"
+		    "  else\n"
+		    "    return FALSE;\n");
+  
+  UmlClass::get("UmlBaseArtifact", 0)
+    ->get_operation("set_AssociatedClasses")
+      ->set_CppBody("  UmlCom::send_cmd(_identifier, setAssocClassesCmd, (const QVector<UmlItem> &) l);\n"
+		    "  if (UmlCom::read_bool()) {\n"
+		  "      // tests != to bypass Qt 2.3 bug\n"
+		    "    if (_defined && (&_assoc_classes != &l))\n"
+		    "      _assoc_classes = l;\n"
+		    "    return TRUE;\n"
+		    "  }\n"
+		    "  else\n"
+		    "    return FALSE;\n");
+  
+  UmlClass::get("UmlBaseParameterSet", 0)
+    ->get_operation("set_Pins")
+      ->set_CppBody("  UmlCom::send_cmd(_identifier, replaceParameterCmd, (const QVector<UmlItem> &) v);\n"
+		    "  if (UmlCom::read_bool()) {\n"
+		  "      // tests != to bypass Qt 2.3 bug\n"
+		    "    if (_defined && (&_pins != &v)) _pins = v;\n"
+		    "    return TRUE;\n"
+		    "  }\n"
+		    "  else\n"
+		    "    return FALSE;\n");
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
+void add_methods(UmlClass * opercl, UmlClass * uml_item)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  //
+    
+  UmlOperation * op = 
+    opercl->add_op("methods", PublicVisibility, uml_item);
+  
+  op->set_isCppConst(TRUE);
+  op->set_cpp("const QVector<${type}>", "",
+	      "  QVector<UmlItem> l;\n"
+	      "\n"
+	      "  UmlCom::send_cmd(_identifier, sideCmd);\n"
+	      "  UmlCom::read_item_list(l);\n"
+	      "  return l;\n"
+	      , FALSE, 0, 0);
+  op->set_java("${type}[]", "",
+	       "  UmlCom.send_cmd(identifier_(), OnInstanceCmd.sideCmd);\n"
+	       "  return UmlCom.read_item_list();\n"
+	       , FALSE);
+  op->set_Description(" return the behaviors (state and activities) implementing the operation");
+  op->moveAfter(opercl->get_operation("replaceException"));
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
+//
 
 bool ask_for_upgrade()
 {
@@ -11047,6 +4790,9 @@ bool ask_for_upgrade()
     return FALSE;
   }
    
+  CppSettings::set_UseDefaults(TRUE);
+  JavaSettings::set_UseDefaults(TRUE);
+      
   return TRUE;
 }
 
@@ -11092,6 +4838,9 @@ void update_api_version(const char * v)
 //
 
 bool UmlPackage::upgrade() {
+  bool cpp_default = CppSettings::useDefaults();
+  bool java_default = JavaSettings::useDefaults();
+  
   UmlClass * uml_base_item = UmlClass::get("UmlBaseItem", 0);
   UmlClass * uml_item = UmlClass::get("UmlItem", 0);
   
@@ -11197,31 +4946,31 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
 
-    UmlClass * cppsetting = UmlClass::get("CppSettings", 0);
+    UmlClass * cppsettings = UmlClass::get("CppSettings", 0);
 
-    if (cppsetting->get_attribute("_is_set_param_ref") == 0)  {
+    if (cppsettings->get_attribute("_is_set_param_ref") == 0)  {
       if (!work && !ask_for_upgrade())
 	return FALSE;
-      add_cpp_set_param_ref(cppsetting);
+      add_cpp_set_param_ref(cppsettings);
       upgrade_setter_getter();
 
       work = TRUE;
     }
 
-    if (cppsetting->get_attribute("_is_relative_path") == 0) {
+    if (cppsettings->get_attribute("_is_relative_path") == 0) {
       if (!work && !ask_for_upgrade())
 	return FALSE;
-      add_cpp_relative_path_force_namespace(cppsetting);
+      add_cpp_relative_path_force_namespace(cppsettings);
 
       work = TRUE;
     }
 
-    UmlClass * umlsetting = UmlClass::get("UmlSettings", 0);
+    UmlClass * umlsettings = UmlClass::get("UmlSettings", 0);
 
-    if (umlsetting->get_operation("umlGetName") == 0) {
+    if (umlsettings->get_operation("umlGetName") == 0) {
       if (!work && !ask_for_upgrade())
 	return FALSE;
-      add_getter_setter_rules(umlsetting);
+      add_getter_setter_rules(umlsettings);
       add_extension_points();
 
       work = TRUE;
@@ -11231,16 +4980,16 @@ bool UmlPackage::upgrade() {
       if (!work && !ask_for_upgrade())
 	return FALSE;
       remove_java_public(uml_base_class);
-      add_cpp_root_relative_path(cppsetting);
+      add_cpp_root_relative_path(cppsettings);
 
       work = TRUE;
     }
     
-    if (cppsetting->get_attribute("_is_generate_javadoc_comment") == 0)  {
+    if (cppsettings->get_attribute("_is_generate_javadoc_comment") == 0)  {
       if (!work && !ask_for_upgrade())
 	return FALSE;
-      add_cpp_generate_javadoc_comment(cppsetting);
-      add_java_generate_javadoc_comment(UmlClass::get("JavaSettings", 0));
+      add_cpp_generate_javadoc_comment(cppsettings);
+      add_java_generate_javadoc_comment(javasettings);
 
       work = TRUE;
     }    
@@ -11283,11 +5032,11 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
     
-    if (cppsetting->get_operation("relationAttributeStereotype") == 0) {
+    if (cppsettings->get_operation("relationAttributeStereotype") == 0) {
       if (!work && !ask_for_upgrade())
 	return FALSE;
       fixe_set_name(uml_base_item);
-      add_attribute_multiplicity(umlsetting, cppsetting, javasettings,
+      add_attribute_multiplicity(umlsettings, cppsettings, javasettings,
 				 UmlClass::get("IdlSettings", 0));
 
       work = TRUE;
@@ -11350,12 +5099,20 @@ bool UmlPackage::upgrade() {
     if (uml_base_package->get_operation("findCppNamespace") == 0) {
       if (!work && !ask_for_upgrade())
 	return FALSE;
+      
+      unsigned uid = UmlCom::user_id();
+      
+      UmlCom::set_user_id(0);
+      
       update_pack_global(uml_base_package);
       add_contextual_body_indent();
       php_javadocstylecomment();
       add_profile();	// theo Api 40 but compatible api 38
       modify_texts();
       fixe_idlsetting_read();
+      
+      UmlCom::set_user_id(uid);
+      
       work = TRUE;
     }
     
@@ -11368,19 +5125,147 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
     
-    /*
-    if (UmlClass::get("PythonSettings", 0) == 0) {
+    // fixe UmlBaseFragment::read_()
+    
+    UmlClass * base_frg = UmlClass::get("UmlBaseFragment", 0);
+    
+    op = base_frg->get_operation("read_");
+    
+    QCString s = op->cppBody();
+    
+    if (s.find("_container = 0;") == -1) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      
+      unsigned uid = UmlCom::user_id();
+      
+      UmlCom::set_user_id(0);
+      
+      UmlCom::trace("<b>fixe <i>UmlBaseFragment::read_()</i></b><br>\n");
+      s += "  _container = 0;\n";
+      op->set_CppBody(s);
+      
+      UmlCom::set_user_id(uid);
+      
+      work = TRUE;
+    }
+
+    if (javasettings->get_operation("isForcePackagePrefixGeneration") == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      
+      unsigned uid = UmlCom::user_id();
+  
+      UmlCom::set_user_id(0);
+  
+      add_bypass_python();
+      add_javasettings_forcepackageprefixgeneration(javasettings);
+      add_cppsettings_builtindir();
+      update_uml_com2();
+      
+      UmlCom::set_user_id(uid);
+      
+      upgrade_interaction();
+      
+      work = TRUE;
+    }
+    
+    {
+      UmlOperation * createstateaction = 
+	UmlClass::get("UmlBaseStateAction", 0)->get_operation("create");
+      UmlParameter p = createstateaction->params().first();
+    
+      if (p.type.type != uml_item) {
+	if (!work && !ask_for_upgrade())
+	  return FALSE;
+	
+	UmlCom::trace("<b>fixe <i>UmlBaseStateAction::create()</i> first parameter type</b><br>\n");
+	
+	unsigned uid = UmlCom::user_id();
+	
+	UmlCom::set_user_id(0);
+	p.type.type = uml_item;
+	createstateaction->replaceParameter(0, p);
+	UmlCom::set_user_id(uid);
+      
+	work = TRUE;
+      }
+    }
+    
+    if (UmlClass::get("UmlBaseAttribute", 0)->get_operation("isDerived") == 0) {
+      if (!work && !ask_for_upgrade())
+	  return FALSE;
+	
+      add_property_modifiers();
+      
+      work = TRUE;
+    }
+    
+    if (umlsettings->get_operation("add_type")->cppBody().find("replace")
+	== -1) {
+      if (!work && !ask_for_upgrade())
+	  return FALSE;
+	
+      fixe_settings(umlsettings, cppsettings, javasettings);
+      
+      work = TRUE;
+    }
+    
+    UmlClass * pythonsettings = UmlClass::get("PythonSettings", 0);
+    
+    if (pythonsettings == 0) {
       if (!work && !ask_for_upgrade())
 	return FALSE;
       
       add_python();
+
       work = TRUE;
     }
-    */
+    
+    if (UmlClass::get("UmlBaseActivityPartition", 0) == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
       
+      fixe_set_associateddiagram(uml_base_item->parent());
+      add_partition(uml_base_item, uml_item);
+
+      work = TRUE;
+    }
+    
+    if (UmlClass::get("UmlBaseAcceptCallAction", 0) == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      
+      bypass_qvector_bug();
+      add_additionalactions(uml_base_item, uml_item);
+
+      work = TRUE;
+    }
+
+    if (pythonsettings->get_operation("initOperationDef") == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      add_default_initoper(pythonsettings);
+      work = TRUE;
+    }
+    
+    UmlClass * baseoper = UmlClass::get("UmlBaseOperation", 0);
+    
+    if (baseoper->get_operation("methods") == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      add_methods(baseoper, uml_item);
+      add_state_specification();
+      add_activity_specification();
+      work = TRUE;
+    }
+    
     if (work) {
+      CppSettings::set_UseDefaults(cpp_default);
+      JavaSettings::set_UseDefaults(java_default);
+
       UmlCom::trace("update api version<br>\n");
-      update_api_version("38");
+      update_api_version("45");
       UmlCom::message("ask for save-as");
       QMessageBox::information(0, "Upgrade", 
 			       "Upgrade done\n\n"

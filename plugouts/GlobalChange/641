@@ -1,112 +1,112 @@
-format 45
+format 62
 "API USER" // API USER
-  revision 2
-  modified_by 2 "bruno"
+  revision 6
+  modified_by 3 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
   //object diagram settings
-   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
   //component diagram settings
   package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
-  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
   //deployment diagram settings
   package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
-  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
   //state diagram settings
   package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-  show_activities default region_horizontally default drawing_language default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
   //activity diagram settings
   package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-  show_infonote default drawing_language default
+  show_infonote default drawing_language default show_stereotype_properties default
   
   comment " 'your' API classes and components, modify them !"
   classview 641 "Diagrams"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
     //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
     //object diagram settings
-     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
     //state diagram settings
     package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-    show_activities default region_horizontally default drawing_language default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
     //class settings
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-    show_infonote default drawing_language default
+    show_infonote default drawing_language default show_stereotype_properties default
     comment "Some diagrams describing the API classes organisation
 "
     classdiagram 129 "Package and Views classes inheritance diagram"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
     classdiagram 257 "Class and class members classes inheritance diagram"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
     classdiagram 128002 "State (1)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
     classdiagram 128130 "State (2)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
     classdiagram 128258 "State (3)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
     classdiagram 385 "Diagrams classes inheritance diagram"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
     classdiagram 128 "Activity (1)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
     classdiagram 256 "Activity (2)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
     classdiagram 384 "Activity (3)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
     classdiagram 512 "Activity (4)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
     classdiagram 640 "Activity (5)"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
     classdiagram 768 "Activity (6)"
-      draw_all_relations yes hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+      draw_all_relations yes hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
     sequencediagram 513 "Typical Execution"
-      show_full_operations_definition no write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
+      show_full_operations_definition no write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
       size A4
     end
 
@@ -115,6 +115,7 @@ format 45
       cpp_decl ""
       java_decl ""
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -131,6 +132,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -139,20 +141,20 @@ ${members}}
 
   classview 769 "API USER class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
     //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
     //object diagram settings
-     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
     //state diagram settings
     package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-    show_activities default region_horizontally default drawing_language default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
     //class settings
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-    show_infonote default drawing_language default
+    show_infonote default drawing_language default show_stereotype_properties default
     associated_deployment_view deploymentview_ref 641 // API USER Deployment view
     comment "'your' API classes, modify them !"
     class 145794 "UmlTypeSpec"
@@ -166,6 +168,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -195,6 +198,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -222,6 +226,7 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
@@ -236,6 +241,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -263,6 +269,7 @@ ${body}}
 "
 	
 	
+	
       end
     end
 
@@ -277,6 +284,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -304,6 +312,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 190466 "change"
@@ -315,6 +324,7 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	
@@ -332,6 +342,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -359,6 +370,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 190338 "change"
@@ -370,6 +382,7 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
+	
 	
 	
 	
@@ -387,6 +400,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -414,6 +428,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }"
 	
 	
+	
       end
     end
 
@@ -428,6 +443,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -459,6 +475,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -474,6 +491,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -500,6 +518,7 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
@@ -514,6 +533,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -530,6 +550,7 @@ ${members}}
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
+	
 	
 	
       end
@@ -555,6 +576,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -581,6 +603,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 190594 "change"
@@ -592,6 +615,7 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
+	
 	
 	
 	
@@ -609,6 +633,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -637,6 +662,7 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
@@ -651,6 +677,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -679,6 +706,7 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
@@ -693,6 +721,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -719,6 +748,7 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
@@ -733,6 +763,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -759,6 +790,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 190722 "change"
@@ -770,6 +802,7 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	
@@ -787,6 +820,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -813,6 +847,7 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
@@ -827,6 +862,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -855,6 +891,7 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
@@ -869,6 +906,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -895,6 +933,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 190850 "change"
@@ -906,6 +945,7 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
+	
 	
 	
 	
@@ -923,6 +963,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -952,6 +993,7 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
@@ -966,6 +1008,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -995,6 +1038,7 @@ ${members}}
 "
 	
 	
+	
       end
     end
 
@@ -1009,6 +1053,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1036,6 +1081,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 78977 "~UmlItem"
@@ -1046,6 +1092,7 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	
@@ -1063,6 +1110,7 @@ ${body}}
 	
 	
 	
+	
       end
     end
 
@@ -1077,6 +1125,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1103,6 +1152,7 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
@@ -1117,6 +1167,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1144,6 +1195,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 189698 "change"
@@ -1155,6 +1207,7 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	
@@ -1172,6 +1225,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1198,6 +1252,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1224,6 +1279,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 189826 "change"
@@ -1235,6 +1291,7 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	
@@ -1252,6 +1309,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1279,6 +1337,7 @@ ${members}};
 "
 	
 	
+	
       end
 
       operation 189954 "change"
@@ -1290,6 +1349,7 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	
@@ -1307,6 +1367,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1333,6 +1394,7 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
@@ -1347,6 +1409,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1374,6 +1437,7 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }"
 	
 	
+	
       end
     end
 
@@ -1388,6 +1452,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1414,6 +1479,7 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
@@ -1428,6 +1494,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1456,6 +1523,7 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
@@ -1470,6 +1538,7 @@ ${inlines}
 ${members}};
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1496,6 +1565,7 @@ ${members}};
 "
 	
 	
+	
       end
     end
 
@@ -1510,6 +1580,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1526,6 +1597,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1561,6 +1633,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -1576,6 +1649,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1611,6 +1685,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -1626,6 +1701,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1666,6 +1742,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -1681,6 +1758,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1716,6 +1794,7 @@ ${members}}
 "
 	
 	
+	
       end
     end
 
@@ -1730,6 +1809,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1765,6 +1845,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -1780,6 +1861,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1814,6 +1896,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -1829,6 +1912,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1844,6 +1928,7 @@ ${members}}
   super(id, s);
 }
 "
+	
 	
 	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
@@ -1879,6 +1964,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1904,6 +1990,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -1919,6 +2006,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1945,6 +2033,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -1960,6 +2049,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1985,6 +2075,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2000,6 +2091,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2025,6 +2117,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2040,6 +2133,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2066,6 +2160,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2081,6 +2176,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2106,6 +2202,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2121,6 +2218,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2146,6 +2244,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2161,6 +2260,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2186,6 +2286,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2201,6 +2302,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2226,6 +2328,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2241,6 +2344,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2266,6 +2370,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2281,6 +2386,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2306,6 +2412,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2321,6 +2428,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2337,6 +2445,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2363,6 +2472,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2378,6 +2488,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2413,6 +2524,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2428,6 +2540,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2463,6 +2576,7 @@ ${members}}
 "
 	
 	
+	
       end
     end
 
@@ -2477,6 +2591,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2512,6 +2627,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2527,6 +2643,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2553,6 +2670,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2568,6 +2686,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2594,6 +2713,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2609,6 +2729,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2635,6 +2756,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2650,6 +2772,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2676,6 +2799,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2691,6 +2815,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2717,6 +2842,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2732,6 +2858,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2758,6 +2885,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2773,6 +2901,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2799,6 +2928,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2814,6 +2944,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2840,6 +2971,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2855,6 +2987,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2881,6 +3014,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2896,6 +3030,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2922,6 +3057,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2937,6 +3073,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2963,6 +3100,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -2978,6 +3116,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3004,6 +3143,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3019,6 +3159,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3045,6 +3186,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3060,6 +3202,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3086,6 +3229,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3101,6 +3245,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3127,6 +3272,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3142,6 +3288,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3168,6 +3315,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3183,6 +3331,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3209,6 +3358,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3224,6 +3374,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3250,6 +3401,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3265,6 +3417,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3291,6 +3444,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3306,6 +3460,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3332,6 +3487,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3347,6 +3503,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3373,6 +3530,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3388,6 +3546,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3414,6 +3573,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3429,6 +3589,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3455,6 +3616,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3470,6 +3632,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3496,6 +3659,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3511,6 +3675,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3537,6 +3702,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3552,6 +3718,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3578,6 +3745,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3593,6 +3761,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3619,6 +3788,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3634,6 +3804,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3660,6 +3831,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3675,6 +3847,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3701,6 +3874,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3716,6 +3890,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3742,6 +3917,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3757,6 +3933,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3783,6 +3960,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3798,6 +3976,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3824,6 +4003,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3839,6 +4019,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3865,6 +4046,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
 
@@ -3889,6 +4071,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3915,6 +4098,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3930,6 +4114,7 @@ ${inlines}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -3956,6 +4141,7 @@ ${members}}
 "
 	
 	
+	
 	comment "  the constructor, do not call it yourself !!!!!!!!!!"
       end
     end
@@ -3964,7 +4150,7 @@ ${members}}
   deploymentview 641 "API USER Deployment view"
     //deployment diagram settings
     package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
-    draw_component_as_icon default show_component_req_prov default show_component_rea default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
     comment "'your' API artifacts modify them !
 
 Do not forget to modify Main !"
@@ -3997,177 +4183,205 @@ ${definition}"
     artifact 6529 "executable"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 140672 // UmlBaseTypeSpec
-	artifact_ref 141058 // UmlView
-	artifact_ref 6400 // IdlSettingsCmd
-	artifact_ref 130562 // UmlFinalState
-	artifact_ref 133632 // UmlBaseActivityNode
-	artifact_ref 7425 // UmlClassDiagram
-	artifact_ref 133888 // UmlBaseFlow
-	artifact_ref 6528 // UmlBaseComponent
-	artifact_ref 1024 // UmlBaseClassDiagram
-	artifact_ref 140160 // SlotAttribute
-	artifact_ref 131074 // UmlExitPointPseudoState
-	artifact_ref 132098 // UmlChoicePseudoState
-	artifact_ref 131712 // UmlBaseJunctionPseudoState
-	artifact_ref 131330 // UmlDeepHistoryPseudoState
-	artifact_ref 136192 // UmlBaseActivityControlNode
-	artifact_ref 137728 // UmlBaseActivityPin
-	artifact_ref 3840 // aRelationKind
-	artifact_ref 138370 // UmlParameterSet
-	artifact_ref 136704 // UmlBaseActivityObject
-	artifact_ref 137984 // UmlBaseActivityParameter
-	artifact_ref 138498 // Dialog
-	artifact_ref 3200 // UmlBaseNcRelation
-	artifact_ref 9729 // UmlUseCase
-	artifact_ref 134018 // UmlFlow
-	artifact_ref 136066 // UmlAccessVariableValueAction
-	artifact_ref 129666 // UmlStateAction
-	artifact_ref 2432 // UmlBaseExtraClassMember
-	artifact_ref 1664 // UmlBaseComponentDiagram
-	artifact_ref 138240 // UmlBaseParameterSet
-	artifact_ref 140802 // UmlTypeSpec
-	artifact_ref 8449 // UmlDeploymentView
+	artifact_ref 142592 // UmlBaseUseCaseAssociation
 	artifact_ref 133506 // UmlActivityDiagram
-	artifact_ref 128896 // UmlBaseTransition
-	artifact_ref 5888 // PackageGlobalCmd
-	artifact_ref 2944 // UmlBasePackage
-	artifact_ref 7169 // UmlAttribute
-	artifact_ref 128130 // UmlStateItem
-	artifact_ref 5120 // UmlSettings
-	artifact_ref 1920 // UmlBaseDeployment
-	artifact_ref 138114 // UmlActivityParameter
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 137088 // UmlBaseExpansionNode
-	artifact_ref 8321 // UmlDeploymentDiagram
-	artifact_ref 7809 // UmlCollaborationDiagram
-	artifact_ref 6016 // UmlSettingsCmd
-	artifact_ref 128512 // UmlBaseStateDiagram
-	artifact_ref 135042 // UmlInterruptibleActivityRegion
-	artifact_ref 135554 // UmlActivityActionClasses
-	artifact_ref 134402 // UmlActivityRegion
-	artifact_ref 135168 // UmlBaseActivityAction
-	artifact_ref 131842 // UmlJunctionPseudoState
-	artifact_ref 134272 // UmlBaseActivityRegion
-	artifact_ref 7041 // UmlFormalParameter
-	artifact_ref 3584 // UmlBaseUseCaseDiagram
-	artifact_ref 135424 // UmlBaseActivityActionClasses
-	artifact_ref 134658 // UmlExpansionRegion
-	artifact_ref 137218 // UmlExpansionNode
-	artifact_ref 129280 // UmlBaseRegion
-	artifact_ref 134144 // FlowBehavior
-	artifact_ref 2560 // UmlBaseItem
-	artifact_ref 8705 // UmlExtraClassMember
-	artifact_ref 6144 // CppSettingsCmd
-	artifact_ref 256 // UmlBaseActualParameter
-	artifact_ref 4224 // anItemKind
-	artifact_ref 5248 // UmlCom
-	artifact_ref 9601 // UmlSequenceDiagram
-	artifact_ref 4992 // JavaSettings
-	artifact_ref 3072 // UmlBaseRelation
-	artifact_ref 6913 // UmlClassItem
-	artifact_ref 130432 // UmlBaseFinalState
-	artifact_ref 132480 // UmlBaseJoinPseudoState
-	artifact_ref 130176 // UmlBaseEntryPointPseudoState
-	artifact_ref 9473 // UmlNcRelation
-	artifact_ref 136578 // UmlActivityControlNodeClasses
-	artifact_ref 9089 // UmlOperation
-	artifact_ref 136322 // UmlActivityControlNode
-	artifact_ref 137474 // UmlPinParameter
-	artifact_ref 7297 // UmlClass
-	artifact_ref 9217 // UmlPackage
-	artifact_ref 131200 // UmlBaseDeepHistoryPseudoState
-	artifact_ref 133120 // UmlBaseActivity
-	artifact_ref 1152 // UmlBaseClassMember
-	artifact_ref 7937 // UmlArtifact
-	artifact_ref 1792 // UmlBaseComponentView
-	artifact_ref 132610 // UmlJoinPseudoState
-	artifact_ref 131586 // UmlShallowHistoryPseudoState
-	artifact_ref 129536 // UmlBaseStateAction
-	artifact_ref 8577 // UmlDiagram
-	artifact_ref 130050 // UmlInitialPseudoState
-	artifact_ref 137858 // UmlActivityPin
-	artifact_ref 6272 // JavaSettingsCmd
-	artifact_ref 3328 // UmlBaseSequenceDiagram
-	artifact_ref 4736 // CppSettings
-	artifact_ref 3456 // UmlBaseUseCase
-	artifact_ref 137344 // UmlBasePinParameter
-	artifact_ref 9985 // UmlUseCaseView
-	artifact_ref 133250 // UmlActivity
+	artifact_ref 132354 // UmlForkPseudoState
 	artifact_ref 140288 // SlotRelation
-	artifact_ref 129410 // UmlRegion
-	artifact_ref 3968 // aDirection
-	artifact_ref 130818 // UmlTerminatePseudoState
-	artifact_ref 2304 // UmlBaseDiagram
+	artifact_ref 4736 // CppSettings
+	artifact_ref 129026 // UmlTransition
+	artifact_ref 7937 // UmlArtifact
+	artifact_ref 2560 // UmlBaseItem
+	artifact_ref 1408 // UmlBaseCollaborationDiagram
+	artifact_ref 129280 // UmlBaseRegion
+	artifact_ref 8321 // UmlDeploymentDiagram
+	artifact_ref 8065 // UmlComponentDiagram
+	artifact_ref 5888 // PackageGlobalCmd
+	artifact_ref 143104 // UmlBaseMessage
+	artifact_ref 142336 // UmlBaseUseCaseReference
 	artifact_ref 130688 // UmlBaseTerminatePseudoState
-	artifact_ref 133762 // UmlActivityNode
-	artifact_ref 134912 // UmlBaseInterruptibleActivityRegion
-	artifact_ref 134784 // anExpansionKind
 	artifact_ref 8833 // UmlItem
-	artifact_ref 8193 // UmlComponentView
-	artifact_ref 5632 // OnInstanceCmd
-	artifact_ref 131456 // UmlBaseShallowHistoryPseudoState
-	artifact_ref 132224 // UmlBaseForkPseudoState
-	artifact_ref 6785 // UmlActualParameter
-	artifact_ref 135936 // UmlBaseAccessVariableValueAction
-	artifact_ref 140416 // UmlBaseParameter
-	artifact_ref 2688 // UmlBaseNode
-	artifact_ref 128386 // UmlState
-	artifact_ref 9345 // UmlRelation
-	artifact_ref 1280 // UmlBaseClassView
-	artifact_ref 129794 // UmlPseudoState
-	artifact_ref 135680 // UmlBaseOnSignalAction
 	artifact_ref 132866 // UmlObjectDiagram
-	artifact_ref 139904 // UmlBaseClassInstance
-	artifact_ref 135810 // UmlOnSignalAction
-	artifact_ref 138626 // Context
-	artifact_ref 768 // UmlBaseAttribute
-	artifact_ref 136448 // UmlBaseActivityControlNodeClasses
+	artifact_ref 132098 // UmlChoicePseudoState
+	artifact_ref 140416 // UmlBaseParameter
+	artifact_ref 135424 // UmlBaseActivityActionClasses
+	artifact_ref 134018 // UmlFlow
+	artifact_ref 3840 // aRelationKind
+	artifact_ref 3200 // UmlBaseNcRelation
+	artifact_ref 6016 // UmlSettingsCmd
+	artifact_ref 9473 // UmlNcRelation
+	artifact_ref 143235 // UmlSequenceMessage
+	artifact_ref 142467 // UmlUseCaseAssociation
+	artifact_ref 128642 // UmlStateDiagram
+	artifact_ref 6913 // UmlClassItem
+	artifact_ref 7169 // UmlAttribute
 	artifact_ref 137600 // aParameterEffectKind
-	artifact_ref 136960 // anOrdering
-	artifact_ref 130944 // UmlBaseExitPointPseudoState
-	artifact_ref 5376 // CmdFamily
-	artifact_ref 140928 // UmlBaseView
-	artifact_ref 132994 // UmlActivityItem
-	artifact_ref 129152 // TransitionBehavior
-	artifact_ref 133376 // UmlBaseActivityDiagram
-	artifact_ref 2048 // UmlBaseDeploymentDiagram
-	artifact_ref 384 // UmlBaseClassItem
-	artifact_ref 6657 // Main
+	artifact_ref 9345 // UmlRelation
+	artifact_ref 2816 // UmlBaseOperation
+	artifact_ref 131842 // UmlJunctionPseudoState
+	artifact_ref 136322 // UmlActivityControlNode
+	artifact_ref 9089 // UmlOperation
+	artifact_ref 141955 // UmlSubject
+	artifact_ref 139776 // aLanguage
+	artifact_ref 137474 // UmlPinParameter
+	artifact_ref 256 // UmlBaseActualParameter
+	artifact_ref 144640 // PythonSettings
+	artifact_ref 136834 // UmlActivityObject
+	artifact_ref 1792 // UmlBaseComponentView
+	artifact_ref 3712 // UmlBaseUseCaseView
+	artifact_ref 1152 // UmlBaseClassMember
+	artifact_ref 139904 // UmlBaseClassInstance
+	artifact_ref 136066 // UmlAccessVariableValueAction
+	artifact_ref 135298 // UmlActivityAction
+	artifact_ref 4480 // UmlBuiltin
+	artifact_ref 6144 // CppSettingsCmd
+	artifact_ref 138370 // UmlParameterSet
+	artifact_ref 128256 // UmlBaseState
+	artifact_ref 4608 // UmlStereotype
 	artifact_ref 129920 // UmlBaseInitialPseudoState
-	artifact_ref 4864 // IdlSettings
-	artifact_ref 7553 // UmlClassMember
+	artifact_ref 143619 // UmlCollaborationMessage
+	artifact_ref 140928 // UmlBaseView
+	artifact_ref 6400 // IdlSettingsCmd
+	artifact_ref 132610 // UmlJoinPseudoState
+	artifact_ref 8961 // UmlNode
 	artifact_ref 132736 // UmlBaseObjectDiagram
-	artifact_ref 141184 // PhpSettings
-	artifact_ref 140034 // UmlClassInstance
+	artifact_ref 137218 // UmlExpansionNode
+	artifact_ref 130818 // UmlTerminatePseudoState
+	artifact_ref 131200 // UmlBaseDeepHistoryPseudoState
+	artifact_ref 131074 // UmlExitPointPseudoState
+	artifact_ref 137858 // UmlActivityPin
+	artifact_ref 143875 // UmlUseCaseDiagramDefinition
+	artifact_ref 132994 // UmlActivityItem
+	artifact_ref 2304 // UmlBaseDiagram
+	artifact_ref 137344 // UmlBasePinParameter
+	artifact_ref 136578 // UmlActivityControlNodeClasses
+	artifact_ref 7809 // UmlCollaborationDiagram
+	artifact_ref 134784 // anExpansionKind
+	artifact_ref 140546 // UmlParameter
+	artifact_ref 133376 // UmlBaseActivityDiagram
+	artifact_ref 8449 // UmlDeploymentView
+	artifact_ref 134912 // UmlBaseInterruptibleActivityRegion
+	artifact_ref 7425 // UmlClassDiagram
+	artifact_ref 3072 // UmlBaseRelation
+	artifact_ref 8577 // UmlDiagram
+	artifact_ref 7297 // UmlClass
+	artifact_ref 138114 // UmlActivityParameter
+	artifact_ref 132480 // UmlBaseJoinPseudoState
+	artifact_ref 130306 // UmlEntryPointPseudoState
+	artifact_ref 128768 // StateBehavior
+	artifact_ref 141824 // UmlBaseFragmentCompartment
+	artifact_ref 4992 // JavaSettings
+	artifact_ref 135810 // UmlOnSignalAction
+	artifact_ref 134272 // UmlBaseActivityRegion
+	artifact_ref 6272 // JavaSettingsCmd
+	artifact_ref 134402 // UmlActivityRegion
+	artifact_ref 128386 // UmlState
+	artifact_ref 131456 // UmlBaseShallowHistoryPseudoState
+	artifact_ref 135936 // UmlBaseAccessVariableValueAction
+	artifact_ref 142848 // UmlBaseClassInstanceReference
+	artifact_ref 144512 // UmlBaseCollaborationDiagramDefinition
+	artifact_ref 142979 // UmlMessage
+	artifact_ref 142211 // UmlUseCaseReference
+	artifact_ref 140160 // SlotAttribute
+	artifact_ref 135680 // UmlBaseOnSignalAction
+	artifact_ref 9601 // UmlSequenceDiagram
+	artifact_ref 134658 // UmlExpansionRegion
+	artifact_ref 7041 // UmlFormalParameter
+	artifact_ref 135042 // UmlInterruptibleActivityRegion
+	artifact_ref 129536 // UmlBaseStateAction
+	artifact_ref 768 // UmlBaseAttribute
+	artifact_ref 130562 // UmlFinalState
+	artifact_ref 137728 // UmlBaseActivityPin
+	artifact_ref 137984 // UmlBaseActivityParameter
+	artifact_ref 144000 // UmlBaseUseCaseDiagramDefinition
+	artifact_ref 8193 // UmlComponentView
+	artifact_ref 129152 // TransitionBehavior
+	artifact_ref 384 // UmlBaseClassItem
+	artifact_ref 133888 // UmlBaseFlow
+	artifact_ref 136448 // UmlBaseActivityControlNodeClasses
+	artifact_ref 136960 // anOrdering
+	artifact_ref 6785 // UmlActualParameter
+	artifact_ref 2048 // UmlBaseDeploymentDiagram
+	artifact_ref 3328 // UmlBaseSequenceDiagram
+	artifact_ref 5632 // OnInstanceCmd
+	artifact_ref 133632 // UmlBaseActivityNode
+	artifact_ref 3584 // UmlBaseUseCaseDiagram
+	artifact_ref 4224 // anItemKind
+	artifact_ref 141058 // UmlView
+	artifact_ref 138240 // UmlBaseParameterSet
+	artifact_ref 143360 // aMessageKind
+	artifact_ref 5248 // UmlCom
 	artifact_ref 2176 // UmlBaseDeploymentView
+	artifact_ref 130944 // UmlBaseExitPointPseudoState
+	artifact_ref 896 // UmlBaseClass
+	artifact_ref 7681 // UmlClassView
+	artifact_ref 135168 // UmlBaseActivityAction
+	artifact_ref 140034 // UmlClassInstance
+	artifact_ref 3968 // aDirection
+	artifact_ref 128130 // UmlStateItem
+	artifact_ref 132224 // UmlBaseForkPseudoState
+	artifact_ref 512 // UmlBaseFormalParameter
+	artifact_ref 7553 // UmlClassMember
+	artifact_ref 5376 // CmdFamily
+	artifact_ref 129666 // UmlStateAction
+	artifact_ref 138626 // Context
+	artifact_ref 8705 // UmlExtraClassMember
+	artifact_ref 128512 // UmlBaseStateDiagram
+	artifact_ref 142723 // UmlClassInstanceReference
+	artifact_ref 144387 // UmlCollaborationDiagramDefinition
+	artifact_ref 141571 // UmlFragmentCompartment
+	artifact_ref 140672 // UmlBaseTypeSpec
+	artifact_ref 130050 // UmlInitialPseudoState
+	artifact_ref 6528 // UmlBaseComponent
+	artifact_ref 135554 // UmlActivityActionClasses
+	artifact_ref 134144 // FlowBehavior
+	artifact_ref 1024 // UmlBaseClassDiagram
+	artifact_ref 142080 // UmlBaseSubject
+	artifact_ref 144131 // UmlSequenceDiagramDefinition
+	artifact_ref 140802 // UmlTypeSpec
+	artifact_ref 3456 // UmlBaseUseCase
 	artifact_ref 5760 // ClassGlobalCmd
 	artifact_ref 141312 // PhpSettingsCmd
-	artifact_ref 896 // UmlBaseClass
-	artifact_ref 128642 // UmlStateDiagram
-	artifact_ref 8961 // UmlNode
-	artifact_ref 134528 // UmlBaseExpansionRegion
-	artifact_ref 136834 // UmlActivityObject
-	artifact_ref 130306 // UmlEntryPointPseudoState
-	artifact_ref 140546 // UmlParameter
-	artifact_ref 128768 // StateBehavior
-	artifact_ref 1536 // UmlBaseArtifact
 	artifact_ref 5504 // MiscGlobalCmd
-	artifact_ref 7681 // UmlClassView
-	artifact_ref 4096 // aVisibility
-	artifact_ref 8065 // UmlComponentDiagram
-	artifact_ref 132354 // UmlForkPseudoState
+	artifact_ref 138498 // Dialog
+	artifact_ref 2688 // UmlBaseNode
+	artifact_ref 129410 // UmlRegion
+	artifact_ref 1280 // UmlBaseClassView
+	artifact_ref 143744 // UmlBaseCollaborationMessage
+	artifact_ref 144256 // UmlBaseSequenceDiagramDefinition
+	artifact_ref 143488 // UmlBaseSequenceMessage
+	artifact_ref 129794 // UmlPseudoState
+	artifact_ref 134528 // UmlBaseExpansionRegion
+	artifact_ref 130432 // UmlBaseFinalState
+	artifact_ref 136192 // UmlBaseActivityControlNode
+	artifact_ref 133250 // UmlActivity
+	artifact_ref 131330 // UmlDeepHistoryPseudoState
+	artifact_ref 128896 // UmlBaseTransition
+	artifact_ref 9985 // UmlUseCaseView
+	artifact_ref 131712 // UmlBaseJunctionPseudoState
+	artifact_ref 2432 // UmlBaseExtraClassMember
+	artifact_ref 1664 // UmlBaseComponentDiagram
+	artifact_ref 9729 // UmlUseCase
+	artifact_ref 136704 // UmlBaseActivityObject
+	artifact_ref 130176 // UmlBaseEntryPointPseudoState
+	artifact_ref 5120 // UmlSettings
+	artifact_ref 133762 // UmlActivityNode
+	artifact_ref 141184 // PhpSettings
 	artifact_ref 9857 // UmlUseCaseDiagram
-	artifact_ref 4608 // UmlStereotype
-	artifact_ref 512 // UmlBaseFormalParameter
-	artifact_ref 3712 // UmlBaseUseCaseView
-	artifact_ref 1408 // UmlBaseCollaborationDiagram
-	artifact_ref 2816 // UmlBaseOperation
-	artifact_ref 129026 // UmlTransition
-	artifact_ref 4480 // UmlBuiltin
+	artifact_ref 144768 // PythonSettingsCmd
+	artifact_ref 131586 // UmlShallowHistoryPseudoState
+	artifact_ref 1920 // UmlBaseDeployment
+	artifact_ref 4864 // IdlSettings
+	artifact_ref 141696 // UmlBaseFragment
+	artifact_ref 141443 // UmlFragment
+	artifact_ref 6657 // Main
+	artifact_ref 2944 // UmlBasePackage
+	artifact_ref 4096 // aVisibility
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 133120 // UmlBaseActivity
+	artifact_ref 9217 // UmlPackage
+	artifact_ref 137088 // UmlBaseExpansionNode
+	artifact_ref 1536 // UmlBaseArtifact
 	artifact_ref 131968 // UmlBaseChoicePseudoState
-	artifact_ref 135298 // UmlActivityAction
-	artifact_ref 128256 // UmlBaseState
       end
       ncouples 10
       key "genpro pro" value "/tmp/global_change/global_change.pro"
@@ -4175,7 +4389,7 @@ ${definition}"
       key "genpro target" value "/tmp/global_change/global_change"
       key "genpro tmplt" value "app"
       key "genpro config" value "debug warn_on qt"
-      key "genpro defines" value "WITHCPP WITHJAVA WITHIDL WITHPHP"
+      key "genpro defines" value "WITHCPP WITHJAVA WITHIDL WITHPHP WITHPYTHON"
       key "genpro includepath" value ""
       key "genpro dependpath" value ""
       key "genpro objectsdir" value ""
@@ -4206,7 +4420,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
     try {
-      UmlCom::trace(\"<b>Global change</b> release 1.1<br>\");
+      UmlCom::trace(\"<b>Global change</b> release 1.2<br>\");
       
       Dialog dialog;
 
@@ -6042,4 +6256,6 @@ ${definition}"
       end
     end
   end
+
+  package_ref 128003 // Diagram
 end

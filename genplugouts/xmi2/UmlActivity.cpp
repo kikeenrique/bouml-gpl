@@ -1,6 +1,7 @@
 
 #include "UmlActivityItem.h"
 #include "UmlFlow.h"
+#include "UmlOperation.h"
 #include "UmlActivity.h"
 #include "FileOut.h"
 #include "UmlItem.h"
@@ -18,6 +19,8 @@ void UmlActivity::write(FileOut & out) {
     out << " isReadOnly=\"true\"";
   if (isSingleExecution())
     out << " isSingleExecution=\"true\"";
+  if (specification() != 0)
+    out.ref(specification(), "specification");
   out << ">\n";
   out.indent(+1); 
   

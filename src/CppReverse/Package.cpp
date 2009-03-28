@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -160,7 +160,7 @@ bool Package::scan_dirs() {
       QCString s;
       
       dirs.append(path);
-      s.sprintf("<font face=helvetica>%dth directory to reverse : <b>", dirs.count());
+      s.sprintf("<font face=helvetica>%dth directory to reverse : <b>", (int) dirs.count());
       s += QCString(path) + "</b><br></font>\n";
       UmlCom::trace(s);
 

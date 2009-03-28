@@ -20,6 +20,10 @@ class UmlActivity : public UmlBaseActivity {
     //returns the first container for a 'kind', going up in the browser tree
     virtual UmlItem * container(anItemKind kind, Token & token, FileIn & in);
 
+    //  call at end of import : try to solve reference to operation
+    
+    virtual void solve(QCString idref);
+
     static void init();
 
     //import the activity starting by 'tk' inside 'where'

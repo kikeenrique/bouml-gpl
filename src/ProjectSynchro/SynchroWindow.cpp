@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -291,7 +291,7 @@ void SynchroWindow::windows_style() {
 }
 
 void SynchroWindow::about() {
-  QMessageBox::about(this, "Project synchro", "<p>Version <b>1.2.1</b></p>" );
+  QMessageBox::about(this, "Project synchro", "<p>Version <b>1.2.2</b></p>" );
 }
 
 void SynchroWindow::aboutQt() {

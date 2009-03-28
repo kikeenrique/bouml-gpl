@@ -3,6 +3,7 @@ class UmlActivity
   switch (kind) {
   case anExpansionRegion:
   case anInterruptibleActivityRegion:
+  case aPartition:
   case anOpaqueAction:
   case anAcceptEventAction:
   case aReadVariableValueAction:
@@ -17,6 +18,13 @@ class UmlActivity
   case aBroadcastSignalAction:
   case anUnmarshallAction:
   case aValueSpecificationAction:
+  case anAcceptCallAction:
+  case aReplyAction:
+  case aCreateObjectAction:
+  case aDestroyObjectAction:
+  case aTestIdentityAction:
+  case aRaiseExceptionAction:
+  case aReduceAction:
   case anActivityObject:
   case anInitialActivityNode:
   case aFlowFinalActivityNode:
@@ -30,12 +38,22 @@ class UmlActivity
     return parent()->container(kind, token, in);
   }
 
+!!!306819.cpp!!!	solve(in idref : string) : void
+  QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
+  
+  if (it == All.end()) {
+    if (!FileIn::isBypassedId(idref))
+      UmlCom::trace("state : unknown operation reference '" + idref + "'<br>");
+  }
+  else if ((*it)->kind() == anOperation)
+    set_Specification((UmlOperation *) *it);
 !!!192130.cpp!!!	init() : void
   declareFct("ownedmember", "uml:Activity", &importIt);
   declareFct("packagedelement", "uml:Activity", &importIt);
 
   UmlExpansionRegion::init();
   UmlInterruptibleActivityRegion::init();
+  UmlActivityPartition::init();
   UmlOpaqueAction::init();
   UmlAcceptEventAction::init();
   UmlReadVariableValueAction::init();
@@ -50,6 +68,13 @@ class UmlActivity
   UmlBroadcastSignalAction::init();
   UmlUnmarshallAction::init();
   UmlValueSpecificationAction::init();
+  UmlAcceptCallAction::init();
+  UmlReplyAction::init();
+  UmlCreateObjectAction::init();
+  UmlDestroyObjectAction::init();
+  UmlTestIdentityAction::init();
+  UmlRaiseExceptionAction::init();
+  UmlReduceAction::init();
   UmlActivityControlNode::init();
   UmlFlow::init();
 !!!198274.cpp!!!	importIt(inout in : FileIn, inout token : Token, inout where : UmlItem) : void
@@ -78,6 +103,8 @@ class UmlActivity
     if (token.valueOf("issingleexecution") == "true")
       a->set_isSingleExecution(TRUE);
     
+    QCString spec = token.valueOf("specification");
+    
     if (! token.closed()) {
       QCString k = token.what();
       const char * kstr = k;
@@ -93,9 +120,23 @@ class UmlActivity
 	else if ((s == "node") &&
 		 (token.xmiType() == "uml:ActivityParameterNode"))
 	  a->readParameterNode(in, token);
+	else if (s == "specification") {
+	  spec = token.xmiIdref();
+	  if (! token.closed())
+	    in.finish(s);
+	}
 	else
 	  a->UmlItem::import(in, token);
       }
+    }
+    
+    if (! spec.isEmpty()) {
+      QMap<QCString, UmlItem *>::Iterator it = All.find(spec);
+      
+      if (it == All.end())
+	Unresolved::addRef(a, spec);
+      else if ((*it)->kind() == anOperation)
+	a->set_Specification((UmlOperation *) *it);
     }
 
     a->unload(TRUE, FALSE);

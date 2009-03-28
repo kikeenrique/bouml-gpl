@@ -25,6 +25,7 @@ class PhpSettings
   
   return (b != null) ? b.php : s;
 !!!256128.cpp!!!	set_ClassStereotype(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom::send_cmd(phpSettingsCmd, setPhpClassStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlStereotype * st = UmlSettings::_map_class_stereotypes.find(s);
@@ -38,6 +39,7 @@ class PhpSettings
   else
     return FALSE;
 !!!256128.java!!!	set_ClassStereotype(in s : string, in v : string) : bool
+  read_if_needed_();
   UmlCom.send_cmd(CmdFamily.phpSettingsCmd, PhpSettingsCmd._setPhpClassStereotypeCmd, s, v);
   UmlCom.check();
 

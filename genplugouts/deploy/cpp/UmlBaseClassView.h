@@ -2,7 +2,7 @@
 #define _UMLBASECLASSVIEW_H
 
 
-#include "UmlItem.h"
+#include "UmlView.h"
 #include "anItemKind.h"
 #include <qcstring.h>
 
@@ -11,7 +11,7 @@ class UmlPackage;
 class UmlDeploymentView;
 
 // Manage the class views
-class UmlBaseClassView : public UmlItem {
+class UmlBaseClassView : public UmlView {
   public:
     // returns a new class view named 's' created under 'parent'
     //
@@ -43,7 +43,7 @@ class UmlBaseClassView : public UmlItem {
     virtual void read_uml_();
 
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseClassView(void * id, const QCString & n) : UmlItem(id, n) {};
+    UmlBaseClassView(void * id, const QCString & n) : UmlView(id, n) {};
 
 };
 

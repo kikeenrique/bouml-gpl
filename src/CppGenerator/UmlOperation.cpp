@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -636,7 +636,7 @@ void UmlOperation::generate_def(QTextOStream & fs, QCString indent, bool h,
       
       if (body_indent != 0) {
 	while ((body_indent != p) &&
-	       (body_indent[-1] == ' ') || (body_indent[-1] == '\t'))
+	       ((body_indent[-1] == ' ') || (body_indent[-1] == '\t')))
 	  body_indent -= 1;
       }
       

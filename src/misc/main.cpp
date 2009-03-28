@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -43,6 +43,9 @@
 #include "err.h"
 #include "EnvDialog.h"
 
+
+
+
 bool ExitOnError = FALSE;
 QApplication * theApp;
 
@@ -62,16 +65,34 @@ int main(int argc, char **argv)
   FILE * fp = fopen((const char *) s, "r");
   bool conv_env = (fp == 0);
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   if (conv_env)
     EnvDialog::edit(TRUE);
   else
     fclose(fp);
   
+  read_boumlrc();	// for virtual desktop
   init_pixmaps();
   init_font();
   Shortcut::init(conv_env);
   
-  UmlWindow * uw = new UmlWindow();
+  UmlWindow * uw = new UmlWindow((argc > 3) && !strcmp(argv[2], "-exec"));
   
   uw->show();
   

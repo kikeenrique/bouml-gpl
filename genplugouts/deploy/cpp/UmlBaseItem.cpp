@@ -9,6 +9,7 @@
 #include "UmlAttribute.h"
 #include "UmlOperation.h"
 #include "UmlClass.h"
+#include "UmlClassInstance.h"
 #include "UmlUseCase.h"
 #include "UmlNode.h"
 #include "UmlArtifact.h"
@@ -18,6 +19,7 @@
 #include "UmlSequenceDiagram.h"
 #include "UmlCollaborationDiagram.h"
 #include "UmlComponentDiagram.h"
+#include "UmlObjectDiagram.h"
 #include "UmlDeploymentDiagram.h"
 #include "UmlClassView.h"
 #include "UmlUseCaseView.h"
@@ -41,10 +43,28 @@
 #include "UmlChoicePseudoState.h"
 #include "UmlForkPseudoState.h"
 #include "UmlJoinPseudoState.h"
+#include "UmlActivityDiagram.h"
+#include "UmlActivity.h"
+#include "UmlFlow.h"
+#include "UmlActivityParameter.h"
+#include "UmlParameterSet.h"
+#include "UmlExpansionRegion.h"
+#include "UmlInterruptibleActivityRegion.h"
+#include "UmlActivityActionClasses.h"
+#include "UmlActivityObject.h"
+#include "UmlExpansionNode.h"
+#include "UmlActivityPin.h"
+#include "UmlActivityControlNodeClasses.h"
 #include "MiscGlobalCmd.h"
 
 bool UmlBaseItem::set_Name(const QCString & s) {
-  return set_it_(_name, s, setNameCmd);
+  UmlCom::send_cmd(_identifier, setNameCmd, s);
+  if (UmlCom::read_bool()) {
+    _name = s;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 const QCString & UmlBaseItem::stereotype() {
@@ -55,6 +75,13 @@ const QCString & UmlBaseItem::stereotype() {
 
 bool UmlBaseItem::set_Stereotype(const QCString & s) {
   return set_it_(_stereotype, s, setStereotypeCmd);
+}
+
+bool UmlBaseItem::applyStereotype() {
+  UmlCom::send_cmd(_identifier, applyStereotypeCmd);
+  if (UmlCom::read_bool() == 0) return FALSE;
+  unload(false, false);
+  return TRUE;
 }
 
 const QCString & UmlBaseItem::description() {
@@ -177,6 +204,12 @@ const QVector<UmlItem> UmlBaseItem::referencedBy() {
   return result;
 }
 
+int UmlBaseItem::getIdentifier() {
+  read_if_needed_();
+
+  return _modeler_id;
+}
+
 void UmlBaseItem::unload(bool rec, bool del) {
   _defined = FALSE;
   _stereotype = 0;
@@ -197,9 +230,16 @@ void UmlBaseItem::unload(bool rec, bool del) {
   }
 }
 
+bool UmlBaseItem::deleteIt() {
+  UmlCom::send_cmd(_identifier, deleteCmd);
+  if (UmlCom::read_bool() == 0) return FALSE;
+  parent()->unload(TRUE);
+  return TRUE;
+}
+
 bool UmlBaseItem::isToolRunning(int id)
 {
-  UmlCom::send_cmd(miscGlobalCmd, toolRunningCmd, id);
+  UmlCom::send_cmd(miscGlobalCmd, toolRunningCmd, id, "");
   return UmlCom::read_bool();
 }
 
@@ -217,43 +257,50 @@ QPtrDict<UmlItem> UmlBaseItem::_all(997);
 
 void UmlBaseItem::read_if_needed_() {
   if (!_defined) {
-#ifdef WITHCPP
-# ifdef WITHJAVA
-#  ifdef WITHIDL
+#if defined(WITHCPP) & defined(WITHJAVA) & defined(WITHPHP) & defined(WITHPYTHON) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getDefCmd);
     read_uml_();
     read_cpp_();
     read_java_();
+    read_php_();
+    read_python_();
     read_idl_();
-#  else
-    ... WITHIDL must be defined when WITHCPP and WITHJAVA are both defined
-#  endif
-# else
-#  ifdef WITHIDL
-    ... WITHJAVA must be defined when WITHCPP and WITHIDL are both defined
-#  else
+#else
+# if defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getCppDefCmd);
     read_uml_();
     read_cpp_();
-#  endif
-# endif
-#else
-# ifdef WITHJAVA
-#  ifdef WITHIDL
-    ... WITHCPP must be defined when WITHIDL and WITHJAVA are both defined
-#  else
+# else
+#  if !defined(WITHCPP) & defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getJavaDefCmd);
     read_uml_();
     read_java_();
-#  endif
-# else
-#  ifdef WITHIDL
+#  else
+#   if !defined(WITHCPP) & !defined(WITHJAVA) & defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
+    UmlCom::send_cmd(_identifier, getPhpDefCmd);
+    read_uml_();
+    read_php_();
+#   else
+#    if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & defined(WITHPYTHON) & !defined(WITHIDL)
+    UmlCom::send_cmd(_identifier, getPythonDefCmd);
+    read_uml_();
+    read_python_();
+#    else
+#     if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getIdlDefCmd);
     read_uml_();
     read_idl_();
-#  else
+#     else
+#      if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getUmlDefCmd);
     read_uml_();
+#      else
+    ... WITHCPP and WITHJAVA and WITHPHP and WITHPYTHON and WITHIDL must be both defined or undefined
+    ... or only one of them must be defined
+#      endif
+#     endif
+#    endif
+#   endif
 #  endif
 # endif
 #endif
@@ -294,6 +341,7 @@ void UmlBaseItem::read_uml_() {
   _description = UmlCom::read_string();
   
   _marked = UmlCom::read_bool();
+  _modeler_id = (int) UmlCom::read_unsigned();
 }
 
 #ifdef WITHCPP
@@ -303,6 +351,16 @@ void UmlBaseItem::read_cpp_() {
 
 #ifdef WITHJAVA
 void UmlBaseItem::read_java_() {
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBaseItem::read_php_() {
+}
+#endif
+
+#ifdef WITHPYTHON
+void UmlBaseItem::read_python_() {
 }
 #endif
 
@@ -472,6 +530,74 @@ UmlItem * UmlBaseItem::read_()
       return new UmlForkPseudoState(id);
     case aJoinPseudoState:
       return new UmlJoinPseudoState(id);
+    case anObjectDiagram:
+      return new UmlObjectDiagram(id, name);
+    case anActivityDiagram:
+      return new UmlActivityDiagram(id, name);
+        case anActivity:
+      return new UmlActivity(id, name);
+    case aFlow:
+      return new UmlFlow(id, name);
+    case anActivityParameter:
+      return new UmlActivityParameter(id, name);
+    case aParameterSet:
+      return new UmlParameterSet(id, name);
+    case anExpansionRegion:
+      return new UmlExpansionRegion(id, name);
+    case anInterruptibleActivityRegion:
+      return new UmlInterruptibleActivityRegion(id, name);
+    case anOpaqueAction:
+      return new UmlOpaqueAction(id, name);
+    case anAcceptEventAction:
+      return new UmlAcceptEventAction(id, name);
+    case aReadVariableValueAction:
+      return new UmlReadVariableValueAction(id, name);
+    case aClearVariableValueAction:
+      return new UmlClearVariableValueAction(id, name);
+    case aWriteVariableValueAction:
+      return new UmlWriteVariableValueAction(id, name);
+    case anAddVariableValueAction:
+      return new UmlAddVariableValueAction(id, name);
+    case aRemoveVariableValueAction:
+      return new UmlRemoveVariableValueAction(id, name);
+    case aCallBehaviorAction:
+      return new UmlCallBehaviorAction(id, name);
+    case aCallOperationAction:
+      return new UmlCallOperationAction(id, name);
+    case aSendObjectAction:
+      return new UmlSendObjectAction(id, name);
+    case aSendSignalAction:
+      return new UmlSendSignalAction(id, name);
+    case aBroadcastSignalAction:
+      return new UmlBroadcastSignalAction(id, name);
+    case anUnmarshallAction:
+      return new UmlUnmarshallAction(id, name);
+    case aValueSpecificationAction:
+      return new UmlValueSpecificationAction(id, name);
+    case anActivityObject:
+      return new UmlActivityObject(id, name);
+    case anExpansionNode:
+      return new UmlExpansionNode(id, name);
+    case anActivityPin:
+      return new UmlActivityPin(id, name);
+    case anInitialActivityNode:
+      return new UmlInitialActivityNode(id, name);
+    case aFlowFinalActivityNode:
+      return new UmlFlowFinalActivityNode(id, name);
+    case anActivityFinalActivityNode:
+      return new UmlActivityFinalActivityNode(id, name);
+    case aDecisionActivityNode:
+      return new UmlDecisionActivityNode(id, name);
+    case aMergeActivityNode:
+      return new UmlMergeActivityNode(id, name);
+    case aForkActivityNode:
+      return new UmlForkActivityNode(id, name);
+    case aJoinActivityNode:
+      return new UmlJoinActivityNode(id, name);
+    case aPartition:
+      //return new UmlPartition(id, name);
+    case aClassInstance:
+      return new UmlClassInstance(id, name);
     default:
       UmlCom::bye();
       UmlCom::fatal_error(QCString("unknown item type ") + QCString().setNum(kind));

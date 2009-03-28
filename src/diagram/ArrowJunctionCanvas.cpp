@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -64,8 +64,12 @@ ArrowJunctionCanvas::~ArrowJunctionCanvas() {
 }
 
 void ArrowJunctionCanvas::delete_it() {
-  disconnect();
+  unconnect();
   DiagramCanvas::delete_it();
+}
+
+void ArrowJunctionCanvas::unconnect() {
+  disconnect(interface->get_data(), 0, this, 0);
 }
 
 void ArrowJunctionCanvas::modified() {
@@ -141,9 +145,9 @@ UmlCode ArrowJunctionCanvas::type() const {
   return UmlArrowJunction;
 }
 
-void ArrowJunctionCanvas::remove_line(ArrowCanvas * l) {
-  DiagramItem::remove_line(l);
-  if (lines.isEmpty())
+void ArrowJunctionCanvas::remove_line(ArrowCanvas * l, bool onbrkjoin) {
+  DiagramItem::remove_line(l, onbrkjoin);
+  if (!onbrkjoin && lines.isEmpty())
     delete_it();
 }
 
@@ -227,6 +231,6 @@ void ArrowJunctionCanvas::history_load(QBuffer & b) {
 
 void ArrowJunctionCanvas::history_hide() {
   DiagramCanvas::setVisible(FALSE);
-  disconnect(interface->get_data(), 0, this, 0);
+  unconnect();
 }
 

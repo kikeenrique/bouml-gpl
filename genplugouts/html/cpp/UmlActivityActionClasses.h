@@ -195,4 +195,109 @@ class UmlRemoveVariableValueAction : public UmlBaseRemoveVariableValueAction {
 
 };
 
+class UmlAcceptCallAction : public UmlBaseAcceptCallAction {
+  public:
+    //returns a string indicating the king of the element
+    virtual QCString sKind();
+
+    //entry to produce the html code receiving chapter number
+    //path, rank in the mother and level in the browser tree
+    virtual void html(QCString pfix, unsigned int rank, unsigned int level);
+
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlAcceptCallAction(void * id, const QCString & s) : UmlBaseAcceptCallAction(id, s) {
+    }
+
+};
+
+class UmlReplyAction : public UmlBaseReplyAction {
+  public:
+    //returns a string indicating the king of the element
+    virtual QCString sKind();
+
+    //entry to produce the html code receiving chapter number
+    //path, rank in the mother and level in the browser tree
+    virtual void html(QCString pfix, unsigned int rank, unsigned int level);
+
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlReplyAction(void * id, const QCString & s) : UmlBaseReplyAction(id, s) {
+    }
+
+};
+
+class UmlCreateObjectAction : public UmlBaseCreateObjectAction {
+  public:
+    //returns a string indicating the king of the element
+    virtual QCString sKind();
+
+    //entry to produce the html code receiving chapter number
+    //path, rank in the mother and level in the browser tree
+    virtual void html(QCString pfix, unsigned int rank, unsigned int level);
+
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlCreateObjectAction(void * id, const QCString & s) : UmlBaseCreateObjectAction(id, s) {
+    }
+
+};
+
+class UmlDestroyObjectAction : public UmlBaseDestroyObjectAction {
+  public:
+    //returns a string indicating the king of the element
+    virtual QCString sKind();
+
+    //entry to produce the html code receiving chapter number
+    //path, rank in the mother and level in the browser tree
+    virtual void html(QCString pfix, unsigned int rank, unsigned int level);
+
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlDestroyObjectAction(void * id, const QCString & s) : UmlBaseDestroyObjectAction(id, s) {
+    }
+
+};
+
+class UmlTestIdentityAction : public UmlBaseTestIdentityAction {
+  public:
+    //returns a string indicating the king of the element
+    virtual QCString sKind();
+
+    //entry to produce the html code receiving chapter number
+    //path, rank in the mother and level in the browser tree
+    virtual void html(QCString pfix, unsigned int rank, unsigned int level);
+
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlTestIdentityAction(void * id, const QCString & s) : UmlBaseTestIdentityAction(id, s) {
+    }
+
+};
+
+class UmlRaiseExceptionAction : public UmlBaseRaiseExceptionAction {
+  public:
+    //returns a string indicating the king of the element
+    virtual QCString sKind();
+
+    //entry to produce the html code receiving chapter number
+    //path, rank in the mother and level in the browser tree
+    virtual void html(QCString pfix, unsigned int rank, unsigned int level);
+
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlRaiseExceptionAction(void * id, const QCString & s) : UmlBaseRaiseExceptionAction(id, s) {
+    }
+
+};
+
+class UmlReduceAction : public UmlBaseReduceAction {
+  public:
+    //returns a string indicating the king of the element
+    virtual QCString sKind();
+
+    //entry to produce the html code receiving chapter number
+    //path, rank in the mother and level in the browser tree
+    virtual void html(QCString pfix, unsigned int rank, unsigned int level);
+
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlReduceAction(void * id, const QCString & s) : UmlBaseReduceAction(id, s) {
+    }
+
+};
+
 #endif

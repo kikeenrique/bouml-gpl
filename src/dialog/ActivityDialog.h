@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -31,6 +31,7 @@
 #include <qtabdialog.h>
 
 #include "UmlEnum.h"
+#include "BrowserNode.h"
 
 class QPushButton;
 class QComboBox;
@@ -56,8 +57,11 @@ class ActivityDialog : public QTabDialog {
   protected:
     bool visit;
     ActivityData * activity;
+    QStringList list;
+    BrowserNodeList opers;
     LineEdit * edname;
     QComboBox * edstereotype;
+    QComboBox * edspecification;
     MultiLineEdit * comment;
     QList<BodyDialog> edits;
     QCheckBox * readonly_cb;
@@ -84,6 +88,7 @@ class ActivityDialog : public QTabDialog {
     virtual void polish();
     virtual void accept();
   
+    void menu_specification();
     void edit_description();
 
     void change_tabs(QWidget *);

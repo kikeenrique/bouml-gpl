@@ -128,7 +128,7 @@ class UmlBaseClass
   
   return _assoc_diagram;
 !!!7040.cpp!!!	set_AssociatedDiagram(inout d : UmlClassDiagram) : bool
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -137,7 +137,7 @@ class UmlBaseClass
     return FALSE;
 
 !!!7040.java!!!	set_AssociatedDiagram(inout d : UmlClassDiagram) : bool
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, d.identifier_());
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, (d == null) ? (long) 0 : d.identifier_());
   UmlCom.check();
   _assoc_diagram = d;
 !!!7168.cpp!!!	associatedArtifact() : UmlArtifact
@@ -290,6 +290,47 @@ class UmlBaseClass
   UmlCom.check();
 
   _php_final = y;
+!!!257280.cpp!!!	isPythonExternal() : bool
+  read_if_needed_();
+  
+  return _python_external;
+!!!257280.java!!!	isPythonExternal() : bool
+  read_if_needed_();
+  
+  return _python_external;
+!!!257408.cpp!!!	set_isPythonExternal(in y : bool) : bool
+  bool r;
+  
+  if (set_it_(r, y, setIsPythonExternalCmd)) {
+    _python_external = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!257408.java!!!	set_isPythonExternal(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsPythonExternalCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _python_external = y;
+!!!257536.cpp!!!	isPython_2_2() : bool
+  read_if_needed_();
+  return _python_2_2;
+!!!257536.java!!!	isPython_2_2() : bool
+  read_if_needed_();
+  return _python_2_2;
+!!!257664.cpp!!!	set_isPython_2_2(in v : bool) : bool
+  UmlCom::send_cmd(_identifier, setIsPython2_2Cmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _python_2_2 = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!257664.java!!!	set_isPython_2_2(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsPython2_2Cmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _python_2_2 = v;
 !!!8320.cpp!!!	switchType() : UmlTypeSpec
   read_if_needed_();
   
@@ -501,6 +542,14 @@ class UmlBaseClass
   
   _php_final = UmlCom.read_bool();
   _php_external = UmlCom.read_bool();
+!!!246784.cpp!!!	read_python_() : void
+  UmlBaseClassMember::read_python_();
+  _python_2_2 = UmlCom::read_bool();
+  _python_external = UmlCom::read_bool();
+!!!246784.java!!!	read_python_() : void
+  super.read_python_();
+  _python_2_2 = UmlCom.read_bool();
+  _python_external = UmlCom.read_bool();
 !!!10112.cpp!!!	read_idl_() : void
   UmlBaseClassItem::read_idl_();
   _switch_type.type = (UmlClass *) UmlBaseItem::read_();

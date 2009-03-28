@@ -3,6 +3,7 @@
 #include "FileOut.h"
 #include "UmlTransition.h"
 
+#include "UmlOperation.h"
 void UmlState::write(FileOut & out) {
   anItemKind pkind = parent()->kind();
   bool mach = (pkind != aState) && (pkind != aRegion);
@@ -22,10 +23,74 @@ void UmlState::write(FileOut & out) {
   out.id(this); 
   out << " name=\"";
   out.quote(name());
-  out << "\">\n";
+  out << '"';
+  if (specification() != 0)
+    out.ref(specification(), "specification");
+  out << ">\n";
   out.indent(+1); 
   
   write_description_properties(out); 
+  
+  QCString doentry;
+  QCString doactivity;
+  QCString doexit;
+  
+  switch (_lang) {
+  case Uml:
+    doentry = entryBehavior();
+    doactivity = doActivity();
+    doexit = exitBehavior();
+    break;
+  case Cpp:
+    doentry = cppEntryBehavior();
+    doactivity = cppDoActivity();
+    doexit = cppExitBehavior();
+    break;
+  default: // Java
+    doentry = javaEntryBehavior();
+    doactivity = javaDoActivity();
+    doexit = javaExitBehavior();
+    break;
+  }
+  
+  if (! doentry.isEmpty()) {
+    out.indent();
+    out << "<entry xmi:type=\"uml:Activity\"";
+    out.id_prefix(this, "ENTRY_");
+    out << ">\n";
+    out.indent();
+    out << "\t<body>";
+    out.quote(doentry);
+    out << "</body>\n";
+    out.indent();
+    out << "</entry>\n";
+  }
+  
+  if (! doactivity.isEmpty()) {
+    out.indent();
+    out << "<doActivity xmi:type=\"uml:Activity\"";
+    out.id_prefix(this, "DOACTIVITY_");
+    out << ">\n";
+    out.indent();
+    out << "\t<body>";
+    out.quote(doactivity);
+    out << "</body>\n";
+    out.indent();
+    out << "</doActivity>\n";
+  }
+  
+  if (! doexit.isEmpty()) {
+    out.indent();
+    out << "<exit xmi:type=\"uml:Activity\"";
+    out.id_prefix(this, "EXIT_");
+    out << ">\n";
+    out.indent();
+    out << "\t<body>";
+    out.quote(doexit);
+    out << "</body>\n";
+    out.indent();
+    out << "</exit>\n";
+  }
      
   while (! _incoming_trans.isEmpty())
     _incoming_trans.take(0)->write_in(out);

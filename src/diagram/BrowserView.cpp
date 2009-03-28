@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -89,7 +89,8 @@ void BrowserView::remove_temporary_files()
       QFileInfo *fi;
       
       while ((fi = it.current()) != 0) {
-	QFile::remove(fi->absFilePath());
+	if (fi->extension(FALSE).lower() != "prj")
+	  QFile::remove(fi->absFilePath());
 	++it;
       }
     }
@@ -171,6 +172,10 @@ bool BrowserView::save_as(const QDir & new_dir) {
 void BrowserView::select(QListViewItem * i) {
   the->ensureItemVisible(i);
   the->setSelected(i, TRUE);
+}
+
+void BrowserView::force_visible(QListViewItem * i) {
+  the->ensureItemVisible(i);
 }
 
 BrowserNode * BrowserView::selected_item()
@@ -275,6 +280,8 @@ void BrowserView::keyPressEvent(QKeyEvent * e) {
 
     if (s == "Save")
       UmlWindow::save_it();
+    else if (s == "Browser search")
+      UmlWindow::browser_search_it();
     else {
       BrowserNode * bn = (BrowserNode *) selectedItem();
       
@@ -302,10 +309,10 @@ void BrowserView::keyPressEvent(QKeyEvent * e) {
 
 void BrowserView::menu() {
   if (project != 0) {
-    BrowserSearchDialog dialog;
-    
-    dialog.raise();
-    dialog.exec();
+    if (BrowserSearchDialog::get() == 0)
+      (new BrowserSearchDialog())->show();
+    else
+      BrowserSearchDialog::get()->raise();
   }
 }
 

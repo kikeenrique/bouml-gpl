@@ -55,6 +55,7 @@
 #include "UmlExpansionNode.h"
 #include "UmlActivityPin.h"
 #include "UmlActivityControlNodeClasses.h"
+#include "UmlActivityPartition.h"
 #include "MiscGlobalCmd.h"
 
 bool UmlBaseItem::set_Name(const QCString & s) {
@@ -257,40 +258,47 @@ QPtrDict<UmlItem> UmlBaseItem::_all(997);
 
 void UmlBaseItem::read_if_needed_() {
   if (!_defined) {
-#if defined(WITHCPP) & defined(WITHJAVA) & defined(WITHPHP) & defined(WITHIDL)
+#if defined(WITHCPP) & defined(WITHJAVA) & defined(WITHPHP) & defined(WITHPYTHON) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getDefCmd);
     read_uml_();
     read_cpp_();
     read_java_();
     read_php_();
+    read_python_();
     read_idl_();
 #else
-# if defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
+# if defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getCppDefCmd);
     read_uml_();
     read_cpp_();
 # else
-#  if !defined(WITHCPP) & defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
+#  if !defined(WITHCPP) & defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getJavaDefCmd);
     read_uml_();
     read_java_();
 #  else
-#   if !defined(WITHCPP) & !defined(WITHJAVA) & defined(WITHPHP) & !defined(WITHIDL)
+#   if !defined(WITHCPP) & !defined(WITHJAVA) & defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getPhpDefCmd);
     read_uml_();
     read_php_();
 #   else
-#    if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & defined(WITHIDL)
+#    if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & defined(WITHPYTHON) & !defined(WITHIDL)
+    UmlCom::send_cmd(_identifier, getPythonDefCmd);
+    read_uml_();
+    read_python_();
+#    else
+#     if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getIdlDefCmd);
     read_uml_();
     read_idl_();
-#    else
-#     if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHIDL)
+#     else
+#      if !defined(WITHCPP) & !defined(WITHJAVA) & !defined(WITHPHP) & !defined(WITHPYTHON) & !defined(WITHIDL)
     UmlCom::send_cmd(_identifier, getUmlDefCmd);
     read_uml_();
-#     else
-    ... WITHCPP and WITHJAVA and WITHPHP and WITHIDL must be both defined or undefined
+#      else
+    ... WITHCPP and WITHJAVA and WITHPHP and WITHPYTHON and WITHIDL must be both defined or undefined
     ... or only one of them must be defined
+#      endif
 #     endif
 #    endif
 #   endif
@@ -349,6 +357,11 @@ void UmlBaseItem::read_java_() {
 
 #ifdef WITHPHP
 void UmlBaseItem::read_php_() {
+}
+#endif
+
+#ifdef WITHPYTHON
+void UmlBaseItem::read_python_() {
 }
 #endif
 
@@ -583,9 +596,23 @@ UmlItem * UmlBaseItem::read_()
     case aJoinActivityNode:
       return new UmlJoinActivityNode(id, name);
     case aPartition:
-      //return new UmlPartition(id, name);
+      return new UmlActivityPartition(id, name);
     case aClassInstance:
       return new UmlClassInstance(id, name);
+    case anAcceptCallAction:
+      return new UmlAcceptCallAction(id, name);
+    case aReplyAction:
+      return new UmlReplyAction(id, name);
+    case aCreateObjectAction:
+      return new UmlCreateObjectAction(id, name);
+    case aDestroyObjectAction:
+      return new UmlDestroyObjectAction(id, name);
+    case aTestIdentityAction:
+      return new UmlTestIdentityAction(id, name);
+    case aRaiseExceptionAction:
+      return new UmlRaiseExceptionAction(id, name);
+    case aReduceAction:
+      return new UmlReduceAction(id, name);
     default:
       UmlCom::bye();
       UmlCom::fatal_error(QCString("unknown item type ") + QCString().setNum(kind));

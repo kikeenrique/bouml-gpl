@@ -8,6 +8,7 @@
 #include "StateBehavior.h"
 
 class UmlState;
+class UmlOperation;
 class UmlStateDiagram;
 
 class UmlBaseState : public UmlItem {
@@ -106,6 +107,14 @@ class UmlBaseState : public UmlItem {
     bool set_JavaDoActivity(const char * s);
 #endif
 
+    // return the specification
+    UmlOperation * specification();
+
+    // set the specification
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_Specification(UmlOperation * v);
+
     // returns the optional associated diagram
     UmlStateDiagram * associatedDiagram();
 
@@ -147,6 +156,10 @@ class UmlBaseState : public UmlItem {
 #ifdef WITHJAVA
     virtual void read_java_();
 #endif
+
+
+  private:
+    UmlOperation * _specification;
 
 };
 

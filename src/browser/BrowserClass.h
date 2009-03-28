@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -118,7 +118,9 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserClass * read_ref(char * &, const char * k = 0);
     static BrowserClass * read(char * &, char *, BrowserNode *, bool force = TRUE);
+    static BrowserNode * read_any_ref(char * &, char *);
     static BrowserNode * get_it(const char * k, int id);
+    static void post_load();
     
     static void plug_out_conversion();
     bool get_bodies_read();
@@ -152,6 +154,7 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
 
     virtual const QPixmap* pixmap (int) const;
     virtual void update_stereotype(bool rec = FALSE);
+    virtual void iconChanged();
     virtual void paintCell(QPainter * p, const QColorGroup & cg, int column,
 			   int width, int alignment);
     

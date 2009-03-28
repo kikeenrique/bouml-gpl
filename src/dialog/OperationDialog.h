@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -67,6 +67,7 @@ class OperationDialog : public QTabDialog {
     RelationData * get_of_rel;
     RelationData * set_of_rel;
     bool is_rel_a;
+    DrawingLanguage unique;
     
     // uml tab
     QWidget * umltab;
@@ -189,6 +190,12 @@ class OperationDialog : public QTabDialog {
     void manage_idl_type(unsigned rank, QString & s);
     void manage_dir(unsigned rank, QString & s);
     void manage_idl_exceptions(QString & s);
+    
+    void add_param(QString & form, int rank, QString s);
+    void replace_param(QString & form, int rank, QString s);
+    void insert_param(int rank, MultiLineEdit * ed);
+    QString delete_param(int rank, MultiLineEdit * ed);
+    void move_param(int old_rank, int new_rank, MultiLineEdit * ed);
   
     static void post_edit_description(OperationDialog * d, QString s);
     static void post_edit_constraint(OperationDialog * d, QString s);
@@ -206,6 +213,11 @@ class OperationDialog : public QTabDialog {
     static QString php_decl(const BrowserOperation * op, bool withname);
     static QString python_decl(const BrowserOperation * op, bool withname);
     static QString idl_decl(const BrowserOperation * op, bool withdir, bool withname);
+    
+    void force_param(int rank, bool recompute);
+    void insert_param(int rank);
+    void delete_param(int rank);
+    void move_param(int old_rank, int new_rank);
   
   protected slots:
     virtual void polish();
@@ -261,6 +273,7 @@ class ParamsTable : public MyTable {
   Q_OBJECT
 
   protected:
+    OperationDialog * dialog;
     const QStringList & types;
     QStringList alltypes;
   
@@ -271,7 +284,8 @@ class ParamsTable : public MyTable {
   
   public:
     ParamsTable(OperationData * a, QWidget * parent,
-		const QStringList & list, bool visit);
+		const QStringList & list,
+		OperationDialog * d, bool visit);
   
   protected:
     virtual void activateNextCell();
@@ -444,7 +458,7 @@ class PythonParamsTable : public MyTable {
     ParamsTable * params;
     MultiLineEdit * edform;
   
-    static QString copied[4];		// copy/cut/paste
+    static QString copied[5];		// copy/cut/paste
   
   public:
     PythonParamsTable(QWidget * parent, ParamsTable * p, MultiLineEdit * f);

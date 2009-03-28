@@ -59,13 +59,9 @@ void UmlArtifact::write(FileOut & out) {
 }
 
 void UmlArtifact::write_manifest(FileOut & out, UmlItem * x, const char * name, unsigned rank) {
-  char s[32];
-  
-  sprintf(s, "Manifestation%u_", rank);
-  
   out.indent();
   out << "<manifestation xmi:type=\"uml:Manifestation\"";
-  out.id_prefix(this, s);
+  out.id_prefix(this, "MANIFESTATION", rank);
   out.ref(this, "client");
   out.ref(x, "supplier");
   out.ref(x, "utilizedElement");

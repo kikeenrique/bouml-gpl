@@ -503,3 +503,340 @@ void UmlRemoveVariableValueAction::importIt(FileIn & in, Token & token, UmlItem 
   }
 }
 
+void UmlAcceptCallAction::init()
+{
+  declareFct("node", "uml:AcceptCallAction", &importIt);
+  declareFct("containednode", "uml:AcceptCallAction", &importIt);
+}
+
+void UmlAcceptCallAction::importIt(FileIn & in, Token & token, UmlItem * where)
+{
+  where = where->container(anAcceptCallAction, token, in);
+    
+  if (where != 0) {
+    QCString s = token.valueOf("name");
+    UmlAcceptCallAction * a = create(where, s);
+    
+    if (a == 0)
+      in.error("cannot create accept call action '"
+	       + s + "' in '" + where->name() + "'");
+    
+    a->addItem(token.xmiId(), in);
+    
+    if (!(s = token.valueOf("trigger")).isEmpty()) {
+      QCString tr = Trigger::get(s);
+      
+      if (!tr.isNull())
+	a->set_Trigger(tr);
+      else
+	Unresolved::addRef(a, s);
+    }
+    
+    if (! token.closed()) {
+      QCString k = token.what();
+      const char * kstr = k;
+      
+      while (in.read(), !token.close(kstr)) {
+	if (token.what() == "trigger") {
+	  QCString tr_name;
+	  QCString tr_ref;
+	  
+	  Trigger::add(in, token, tr_name, tr_ref);
+      
+	  if (!tr_name.isNull())
+	    a->set_Trigger(tr_name);
+	  else
+	    Unresolved::addRef(a, tr_ref);
+	}
+	else if (token.what() == "isunmarshall") {
+	  // not memorized : always true
+	  if (! token.closed())
+	    in.finish(token.what());
+	}
+	else
+	  a->import(in, token);
+      }
+    }
+  }
+}
+
+void UmlAcceptCallAction::solve(QCString idref) {
+  QCString tr = Trigger::get(idref);
+  
+  if (tr.isNull()) {
+    if (!FileIn::isBypassedId(idref))
+      UmlCom::trace("accept call activity action : unknown trigger reference '" + idref + "'<br>");
+  }
+  else
+    set_Trigger(tr);
+}
+
+void UmlReplyAction::init()
+{
+  declareFct("node", "uml:ReplyAction", &importIt);
+  declareFct("containednode", "uml:ReplyAction", &importIt);
+}
+
+void UmlReplyAction::importIt(FileIn & in, Token & token, UmlItem * where)
+{
+  where = where->container(aReplyAction, token, in);
+    
+  if (where != 0) {
+    QCString s = token.valueOf("name");
+    UmlReplyAction * a = create(where, s);
+    
+    if (a == 0)
+      in.error("cannot create reply action '"
+	       + s + "' in '" + where->name() + "'");
+    
+    a->addItem(token.xmiId(), in);
+    
+    if (!(s = token.valueOf("trigger")).isEmpty()) {
+      QCString tr = Trigger::get(s);
+      
+      if (!tr.isNull())
+	a->set_ReplyToCall(tr);
+      else
+	Unresolved::addRef(a, s);
+    }
+    
+    if (! token.closed()) {
+      QCString k = token.what();
+      const char * kstr = k;
+      
+      while (in.read(), !token.close(kstr)) {
+	if (token.what() == "trigger") {
+	  QCString tr_name;
+	  QCString tr_ref;
+	  
+	  Trigger::add(in, token, tr_name, tr_ref);
+      
+	  if (!tr_name.isNull())
+	    a->set_ReplyToCall(tr_name);
+	  else
+	    Unresolved::addRef(a, tr_ref);
+	}
+	else
+	  a->import(in, token);
+      }
+    }
+  }
+}
+
+void UmlReplyAction::solve(QCString idref) {
+  QCString tr = Trigger::get(idref);
+  
+  if (tr.isNull()) {
+    if (!FileIn::isBypassedId(idref))
+      UmlCom::trace("reply activity action : unknown trigger reference '" + idref + "'<br>");
+  }
+  else
+    set_ReplyToCall(tr);
+}
+
+void UmlCreateObjectAction::init()
+{
+  declareFct("node", "uml:CreateObjectAction", &importIt);
+  declareFct("containednode", "uml:CreateObjectAction", &importIt);
+}
+
+void UmlCreateObjectAction::importIt(FileIn & in, Token & token, UmlItem * where)
+{
+  where = where->container(aCreateObjectAction, token, in);
+    
+  if (where != 0) {
+    QCString s = token.valueOf("name");
+    UmlCreateObjectAction * a = create(where, s);
+    
+    if (a == 0)
+      in.error("cannot create create object action '"
+	       + s + "' in '" + where->name() + "'");
+    
+    a->addItem(token.xmiId(), in);
+    
+    s = token.valueOf("classifier");
+        
+    if (! token.closed()) {
+      QCString k = token.what();
+      const char * kstr = k;
+      
+      while (in.read(), !token.close(kstr)) {
+	if (token.what() == "classifier") {
+	  s = token.xmiIdref();
+	  if (! token.closed())
+	    in.finish(token.what());
+	}
+	else
+	  a->import(in, token);
+      }
+    }
+    
+    if (!s.isEmpty()) {
+      QMap<QCString, UmlItem *>::Iterator it = All.find(s);
+      
+      if (it == All.end())
+	Unresolved::addRef(a, s);
+      else
+	a->set_Classifier((*it)->name());
+    }
+  }
+}
+
+void UmlCreateObjectAction::solve(QCString idref) {
+  QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
+      
+  if (it != All.end())
+    set_Classifier((*it)->name());
+}
+
+void UmlDestroyObjectAction::init()
+{
+  declareFct("node", "uml:DestroyObjectAction", &importIt);
+  declareFct("containednode", "uml:DestroyObjectAction", &importIt);
+}
+
+void UmlDestroyObjectAction::importIt(FileIn & in, Token & token, UmlItem * where)
+{
+  where = where->container(aDestroyObjectAction, token, in);
+    
+  if (where != 0) {
+    QCString s = token.valueOf("name");
+    UmlDestroyObjectAction * a = create(where, s);
+    
+    if (a == 0)
+      in.error("cannot create destroy object action '"
+	       + s + "' in '" + where->name() + "'");
+    
+    a->addItem(token.xmiId(), in);
+    
+    if (token.valueOf("isdestroylinks") == "true")
+      a->set_isDestroyLinks(TRUE);
+    if (token.valueOf("isdestroyownedobjects") == "true")
+      a->set_isDestroyOwnedObjects(TRUE);
+        
+    a->import_it(in, token);
+  }
+}
+
+void UmlTestIdentityAction::init()
+{
+  declareFct("node", "uml:TestIdentityAction", &importIt);
+  declareFct("containednode", "uml:TestIdentityAction", &importIt);
+}
+
+void UmlTestIdentityAction::importIt(FileIn & in, Token & token, UmlItem * where)
+{
+  where = where->container(aTestIdentityAction, token, in);
+    
+  if (where != 0) {
+    QCString s = token.valueOf("name");
+    UmlTestIdentityAction * a = create(where, s);
+    
+    if (a == 0)
+      in.error("cannot create test identity action '"
+	       + s + "' in '" + where->name() + "'");
+    
+    a->addItem(token.xmiId(), in);
+        
+    a->import_it(in, token);
+  }
+}
+
+void UmlRaiseExceptionAction::init()
+{
+  declareFct("node", "uml:RaiseExceptionAction", &importIt);
+  declareFct("containednode", "uml:RaiseExceptionAction", &importIt);
+}
+
+void UmlRaiseExceptionAction::importIt(FileIn & in, Token & token, UmlItem * where)
+{
+  where = where->container(aRaiseExceptionAction, token, in);
+    
+  if (where != 0) {
+    QCString s = token.valueOf("name");
+    UmlRaiseExceptionAction * a = create(where, s);
+    
+    if (a == 0)
+      in.error("cannot create raise exception action '"
+	       + s + "' in '" + where->name() + "'");
+    
+    a->addItem(token.xmiId(), in);
+        
+    a->import_it(in, token);
+  }
+}
+
+void UmlReduceAction::init()
+{
+  declareFct("node", "uml:ReduceAction", &importIt);
+  declareFct("containednode", "uml:ReduceAction", &importIt);
+}
+
+void UmlReduceAction::importIt(FileIn & in, Token & token, UmlItem * where)
+{
+  where = where->container(aReduceAction, token, in);
+    
+  if (where != 0) {
+    QCString s = token.valueOf("name");
+    UmlReduceAction * a = create(where, s);
+    
+    if (a == 0)
+      in.error("cannot create reduce action '"
+	       + s + "' in '" + where->name() + "'");
+    
+    a->addItem(token.xmiId(), in);
+    
+    if (token.valueOf("isordered") == "true")
+      a->set_isOrdered(TRUE);
+    
+    s = token.valueOf("reducer");
+        
+    if (! token.closed()) {
+      QCString k = token.what();
+      const char * kstr = k;
+      
+      while (in.read(), !token.close(kstr)) {
+	if (token.what() == "reducer") {
+	  s = token.xmiIdref();
+	  if (! token.closed())
+	    in.finish(token.what());
+	}
+	else
+	  a->import(in, token);
+      }
+    }
+    
+    if (!s.isEmpty()) {
+      QMap<QCString, UmlItem *>::Iterator it = All.find(s);
+      
+      if (it == All.end())
+	Unresolved::addRef(a, s);
+      else {
+	switch ((*it)->kind()) {
+	case anActivity:
+	case aState:
+	  a->set_Reducer(*it);
+	  break;
+	default:
+	  break;
+	}
+      }
+    }
+  }
+}
+
+void UmlReduceAction::solve(QCString idref) {
+  QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
+      
+  if (it != All.end()) {
+    switch ((*it)->kind()) {
+    case anActivity:
+    case aState:
+      set_Reducer(*it);
+      break;
+    default:
+      break;
+    }
+  }
+}
+

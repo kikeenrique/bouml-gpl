@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -51,6 +51,7 @@
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "BrowserActivityDiagram.h"
 
 IdDict<BrowserParameter> BrowserParameter::all(257, __FILE__);
 QStringList BrowserParameter::its_default_stereotypes;	// unicode
@@ -104,8 +105,12 @@ void BrowserParameter::renumber(int phase) {
 }
 
 const QPixmap* BrowserParameter::pixmap(int) const {
-  return (deletedp())
-    ? DeletedParameterIcon : ParameterIcon;
+  if (deletedp())
+    return DeletedParameterIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : ParameterIcon;
 }
 
 // add flow (dependency not allowed)
@@ -198,7 +203,7 @@ through a flow");
 void BrowserParameter::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
-    open(FALSE);
+    open(TRUE);
     return;
   case 1:
     ((BrowserActivity *) parent())->add_parameter(this);
@@ -280,6 +285,8 @@ QString BrowserParameter::full_name(bool rev, bool) const {
 void BrowserParameter::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
   BrowserFlow::compute_referenced_by(l, this);
+  if (! ondelete)
+    BrowserActivityDiagram::compute_referenced_by(l, this, "parametercanvas", "parameter_ref");
 }
 
 void BrowserParameter::compute_referenced_by(QList<BrowserNode> & l,
@@ -526,7 +533,7 @@ BrowserParameter * BrowserParameter::read(char * & st, char * k,
     }
     
     result->is_read_only = (!in_import() && read_only_file()) || 
-      (user_id() != 0) && result->is_api_base();
+      ((user_id() != 0) && result->is_api_base());
     result->def->set_browser_node(result);
     
     if (strcmp(k, "end"))

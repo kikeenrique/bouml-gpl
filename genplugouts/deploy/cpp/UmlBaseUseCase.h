@@ -30,8 +30,18 @@ class UmlBaseUseCase : public UmlItem {
     // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_AssociatedDiagram(UmlUseCaseDiagram * d);
 
+    // return the extension points
+    const QCString & extensionPoints();
+
+    // set the extension points
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_ExtensionPoints(const char * v);
+
 
   private:
+    QCString _extension_points;
+
     UmlUseCaseDiagram * _assoc_diagram;
 
 

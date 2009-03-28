@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -115,7 +115,7 @@ QCString UmlOperation::compute_name() {
 
 void UmlOperation::generate_decl(QTextOStream & f,
 				 const QCString & cl_stereotype,
-				 bool) {
+				 QCString indent, bool) {
   if (!idlDecl().isEmpty()) {
     if ((cl_stereotype != "interface") &&
 	(cl_stereotype != "valuetype")) {
@@ -130,7 +130,6 @@ void UmlOperation::generate_decl(QTextOStream & f,
     const QValueList<UmlParameter> & params = this->params();
     const QValueList<UmlTypeSpec> & exceptions = this->exceptions();
     unsigned rank;
-    QCString indent = "";
     
     while ((*p == ' ') || (*p == '\t'))
       indent += *p++;

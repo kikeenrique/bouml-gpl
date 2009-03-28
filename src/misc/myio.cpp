@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -187,6 +187,20 @@ const char * stringify(UmlActionKind a)
     return "unmarshall_action";
   case UmlValueSpecificationAction:
     return "value_specification_action";
+  case UmlAcceptCallAction:
+    return "accept_call_action";
+  case UmlReplyAction:
+    return "reply_action";
+  case UmlCreateObjectAction:
+    return "create_object_action";
+  case UmlDestroyObjectAction:
+    return "destroy_object_action";
+  case UmlTestIdentityAction:
+    return "test_identity_action";
+  case UmlRaiseExceptionAction:
+    return "raise_exception_action";
+  case UmlReduceAction:
+    return "reduce_action";
 
   default:
     return "WRONG CODE";
@@ -522,6 +536,12 @@ const char * stringify(CanvasFormat v)
     return "D";
   case UsE: 
     return "E";
+  case UsLetter:
+    return "Letter";
+  case UsLegal:
+    return "Legal";
+  case UsTabloid:
+    return "Tabloid";
   case IsoA0Landscape: 
     return "A0-Landscape";
   case IsoA1Landscape: 
@@ -544,6 +564,12 @@ const char * stringify(CanvasFormat v)
     return "D-Landscape";
   case UsELandscape: 
     return "E-Landscape";
+  case UsLetterLandscape:
+    return "Letter-Landscape";
+  case UsLegalLandscape:
+    return "Legal-Landscape";
+  case UsLedger:
+    return "Ledger";
   default:
     return "WRONG CanvasFormat";
   }
@@ -716,6 +742,20 @@ UmlActionKind activity_action_kind(const char * s)
     return UmlUnmarshallAction;
   if (!strcmp(s, "value_specification_action"))
     return UmlValueSpecificationAction;
+  if (!strcmp(s, "accept_call_action"))
+    return UmlAcceptCallAction;
+  if (!strcmp(s, "reply_action"))
+    return UmlReplyAction;
+  if (!strcmp(s, "create_object_action"))
+    return UmlCreateObjectAction;
+  if (!strcmp(s, "destroy_object_action"))
+    return UmlDestroyObjectAction;
+  if (!strcmp(s, "test_identity_action"))
+    return UmlTestIdentityAction;
+  if (!strcmp(s, "raise_exception_action"))
+    return UmlRaiseExceptionAction;
+  if (!strcmp(s, "reduce_action"))
+    return UmlReduceAction;
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not an activity action kind");
@@ -965,6 +1005,12 @@ CanvasFormat canvas_format(const char * s)
     return UsD;
   if (! strcmp(s, "E"))
     return UsE;
+  if (! strcmp(s, "Letter"))
+    return UsLetter;
+  if (! strcmp(s, "Legal"))
+    return UsLegal;
+  if (! strcmp(s, "Tabloid"))
+    return UsTabloid;
   
   if (! strcmp(s, "A0-Landscape"))
     return IsoA0Landscape;
@@ -988,6 +1034,12 @@ CanvasFormat canvas_format(const char * s)
     return UsDLandscape;
   if (! strcmp(s, "E-Landscape"))
     return UsELandscape;
+  if (! strcmp(s, "Letter-Landscape"))
+    return UsLetterLandscape;
+  if (! strcmp(s, "Legal-Landscape"))
+    return UsLegalLandscape;
+  if (! strcmp(s, "Ledger"))
+    return UsLedger;
   
   msg_critical("Error",
 	       Context.filename + " : " + s + " is not a canvas format");
@@ -1246,12 +1298,28 @@ void save_if_needed(const char * filename, const char * newdef)
   if (needed) {
     backup(d, filename);
     
-    if ((fp = fopen((const char *) path, "wb")) == 0)
-      msg_warning("Uml", path + " can't be modified");
-    else {
-      fputs(newdef, fp);
-      fclose(fp);
+    for (;;) {
+      while ((fp = fopen((const char *) path, "wb")) == 0)
+	(void) msg_critical("Error", QString("Cannot create file\n") + path,
+			    QMessageBox::Retry);
+      
+      if ((newdef != 0) && *newdef) {
+	if (fputs(newdef, fp) < 0) {
+	  fclose(fp);
+	  (void) msg_critical("Error", QString("Error while writting in\n") + path +
+			      "\nmay be your disk is full",
+			      QMessageBox::Retry);
+	}
+	else
+	  // ok
+	  break;
+      }
+      else
+	// ok
+	break;
     }
+    
+    fclose(fp);
   }
 }
 
@@ -1393,18 +1461,26 @@ void save_definition(int id, const char * ext, const char * def,
   
   s = d.absFilePath(s);
   
-  while ((fp = fopen((const char *) s, "wb")) == 0)
-    if (msg_critical("Error", QString("Cannot save definition in\n") + s,
-		     QMessageBox::Retry, QMessageBox::Abort)
-	== QMessageBox::Abort) {
-    if (ext[1] != 0)
-      exit(1);
+  for (;;) {
+    while ((fp = fopen((const char *) s, "wb")) == 0)
+      (void) msg_critical("Error", QString("Cannot create file\n") + s,
+			  QMessageBox::Retry);
+    
+    if ((def != 0) && *def) {
+      if (fputs(def, fp) < 0) {
+	fclose(fp);
+	(void) msg_critical("Error", QString("Cannot save definition in\n") + s +
+			    "\nmay be your disk is full",
+			    QMessageBox::Retry);
+      }
+      else
+	// ok
+	break;
+    }
     else
-      return;
+      // ok
+      break;
   }
-
-  if ((def != 0) && *def)
-    fputs(def, fp);
   
   fclose(fp);
 }
@@ -2197,12 +2273,12 @@ bool start_svg(const char * f, int w, int h)
   if (svg_fp == 0)
     return FALSE;
 
-  fprintf(svg_fp, 
-	  "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-	  "<!-- Created with Bouml (http://bouml.free.fr/) -->\n"
-	  "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n"
-	  "<svg width=\"%d\" height=\"%d\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n",
-	  w, h);
+  (void) fprintf(svg_fp, 
+		 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+		 "<!-- Created with Bouml (http://bouml.free.fr/) -->\n"
+		 "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n"
+		 "<svg width=\"%d\" height=\"%d\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n",
+		 w, h);
 
   pict_height = h;
 
@@ -2211,7 +2287,7 @@ bool start_svg(const char * f, int w, int h)
 
 void end_svg()
 {
-  fputs("</svg>\n", svg_fp);
+  (void) fputs("</svg>\n", svg_fp);
 
   fclose(svg_fp);
   svg_fp = 0;
@@ -2248,37 +2324,37 @@ const char * svg_color(UmlColor c)
 
 void draw_poly(FILE * fp, QPointArray & poly, UmlColor color, bool stroke)
 {
-  fprintf(fp, (stroke) ? "\t<polygon fill=\"%s\" stroke=\"black\" stroke-opacity=\"1\""
-		       : "\t<polygon fill=\"%s\" stroke=\"none\"",
-	  svg_color(color));
+  (void) fprintf(fp, (stroke) ? "\t<polygon fill=\"%s\" stroke=\"black\" stroke-opacity=\"1\""
+			      : "\t<polygon fill=\"%s\" stroke=\"none\"",
+		 svg_color(color));
 
   const char * sep = " points=\"";
   int n = poly.size();
   int i;
 
   for (i = 0; i != n; i += 1) {
-    fprintf(fp, "%s%d,%d", sep, poly.point(i).x(), poly.point(i).y());
+    (void) fprintf(fp, "%s%d,%d", sep, poly.point(i).x(), poly.point(i).y());
     sep = " ";
   }
 
-  fputs("\" />\n", fp);
+  (void) fputs("\" />\n", fp);
 }
 
 void draw_shadow(FILE * fp, QPointArray & poly)
 {
-  fprintf(fp, "\t<polygon fill=\"#%06x\" stroke=\"none\"",
-	  ::Qt::darkGray.rgb()&0xffffff);
+  (void) fprintf(fp, "\t<polygon fill=\"#%06x\" stroke=\"none\"",
+		 ::Qt::darkGray.rgb()&0xffffff);
 
   const char * sep = " points=\"";
   int n = poly.size();
   int i;
 
   for (i = 0; i != n; i += 1) {
-    fprintf(fp, "%s%d,%d", sep, poly.point(i).x(), poly.point(i).y());
+    (void) fprintf(fp, "%s%d,%d", sep, poly.point(i).x(), poly.point(i).y());
     sep = " ";
   }
 
-  fputs("\" />\n", fp);
+  (void) fputs("\" />\n", fp);
 }
 
 void draw_text(const QRect & r, int align, QString s, const QFont & fn, FILE * fp)
@@ -2298,19 +2374,19 @@ static void xml_text(FILE * fp, QString s)
     switch (c) {
     case 0: return;
     case '<':
-      fputs("&lt;", fp);
+      (void) fputs("&lt;", fp);
       break;
     case '>':
-      fputs("&gt;", fp);
+      (void) fputs("&gt;", fp);
       break;
     case '"':
-      fputs("&quot;", fp);
+      (void) fputs("&quot;", fp);
       break;
     case '&':
-      fputs("&amp;", fp);
+      (void) fputs("&amp;", fp);
       break;
     default:
-      fputc(c, fp);
+      (void) fputc(c, fp);
     }
     
     p += 1;
@@ -2325,9 +2401,9 @@ void draw_text(int x, int y, int w, int h, int align,
     return;
 
   if (bg != UmlTransparent)
-    fprintf(fp, "\t<rect fill=\"%s\" stroke=\"none\" stroke-opacity=\"1\""
-	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	    svg_color(bg), x, y, w, h);
+    (void) fprintf(fp, "\t<rect fill=\"%s\" stroke=\"none\" stroke-opacity=\"1\""
+		   " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		   svg_color(bg), x, y, w, h);
 
   if (fg == UmlTransparent)
     fg = UmlBlack;
@@ -2357,10 +2433,10 @@ void draw_text(int x, int y, int w, int h, int align,
   
   if ((s.find('\n') == -1) && !wb) {
     // one line
-    fputs(header, fp);
+    (void) fputs(header, fp);
     
     if ((align & ::Qt::AlignHCenter) != 0) {
-      fputs(" text-anchor=\"middle\"", fp);
+      (void) fputs(" text-anchor=\"middle\"", fp);
       x += w/2;
     }
     if ((align & ::Qt::AlignVCenter) != 0)
@@ -2368,9 +2444,9 @@ void draw_text(int x, int y, int w, int h, int align,
     else
       y += ps;
 
-    fprintf(fp, " x=\"%d\" y=\"%d\">", x, y);
+    (void) fprintf(fp, " x=\"%d\" y=\"%d\">", x, y);
     xml_text(fp, s);
-    fputs("</text>\n", fp);
+    (void) fputs("</text>\n", fp);
   }
   else {
     // several lines
@@ -2452,23 +2528,61 @@ void draw_text(int x, int y, int w, int h, int align,
 
       for (iter = l.begin(); iter != l.end(); ++iter) {
 	y += ps;
-	fputs(header, fp);
-	fputs(" text-anchor=\"middle\"", fp);
-	fprintf(fp, " x=\"%d\" y=\"%d\">", x, y);
+	(void) fputs(header, fp);
+	(void) fputs(" text-anchor=\"middle\"", fp);
+	(void) fprintf(fp, " x=\"%d\" y=\"%d\">", x, y);
 	xml_text(fp, *iter);
-	fputs("</text>\n", fp);
+	(void) fputs("</text>\n", fp);
       }	
     }
     else {
       for (iter = l.begin(); iter != l.end(); ++iter) {
 	y += ps;
-	fputs(header, fp);
-	fprintf(fp, " x=\"%d\" y=\"%d\">", x, y);
+	(void) fputs(header, fp);
+	(void) fprintf(fp, " x=\"%d\" y=\"%d\">", x, y);
 	xml_text(fp, *iter);
-	fputs("</text>\n", fp);
+	(void) fputs("</text>\n", fp);
       }	
     }
   }
+}
+
+void draw_rotate_text(int cx, int cy, int angle, QString s,
+		      const QFont & fn, FILE * fp, UmlColor fg)
+{
+  if (s.isEmpty())
+    return;
+
+  int ps = fn.pixelSize();
+  int pts = fn.pointSize();
+
+  (void) fprintf(fp, "\t<text font-family=\"%s\" font-size=\"%d\" fill=\"%s\" xml:space=\"preserve\"",
+		 (const char *) fn.family(),
+		 // decrease size to help to have enough area
+		 (ps == -1) ? /* Qt3 */ pts : ps - 1,
+		 svg_color(fg));
+
+  if (ps == -1)
+    /* Qt3 */
+    ps = pts;
+  
+  cx += ps/2;
+  
+  if (fn.bold())
+    (void) fputs(" font-weight=\"bold\"", fp);
+  if (fn.italic())
+    (void) fputs(" font-style=\"italic\"", fp);
+  if (fn.underline())
+    (void) fputs(" text-decoration=\"underline\"", fp);
+
+  (void) fputs(" text-anchor=\"middle\"", fp);
+  
+  (void) fprintf(fp, " x=\"%d\" y=\"%d\" transform=\"rotate(%d %d %d)\">",
+		 cx, cy, angle, cx, cy);
+  
+  xml_text(fp, s);
+  
+  (void) fputs("</text>\n", fp);
 }
 
 //
@@ -2486,3 +2600,23 @@ void set_last_used_directory(QString s)
   
   Last_Used_Directory = fi.dirPath();
 }
+
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

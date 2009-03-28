@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,13 +48,13 @@ void UmlClassMember::remove_comments(QCString & s)
       if ((index2 = s.find('\n', index1 + 2)) != -1)
 	s.remove(index1, index2 - index1 + 1);
       else
-	s.remove(index1, ~0);
+	s.truncate(index1);
       break;
     case '*':
       if ((index2 = s.find("*/", index1 + 2)) != -1)
 	s.replace(index1, index2 - index1 + 1, " ");
       else
-	s.remove(index1, ~0);
+	s.truncate(index1);
       break;
     default:
       index1 += 1;
@@ -70,7 +70,7 @@ void UmlClassMember::remove_arrays(QCString & s)
     int index2 = index1 = s.find(']', index1 + 1);
     
     if (index2 == -1) {
-      s.remove(index1, ~0);
+      s.truncate(index1);
       return;
     }
     else

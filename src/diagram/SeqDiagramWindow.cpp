@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,6 +42,8 @@
 #include "UmlPixmap.h"
 #include "myio.h"
 
+const char * addmodeledclassinstanceText = "Click this button to add a modeled <em>class instance</em> in the diagram. <br><br>"
+"You can also drop the class instance from the <b>browser</b>.";
 const char * addclassinstanceText = "Click this button to add a <em>class instance</em> in the diagram. <br><br>"
 "You can also drop the class from the <b>browser</b>.";
 extern const char * addfragmentText;
@@ -66,86 +68,100 @@ SeqDiagramWindow::SeqDiagramWindow(const QString & s, BrowserSeqDiagram * b, int
   
   select =
     new QToolButton(*selectButton, "Select", QString::null,
-		    this, SLOT(hit_select()), toolbar, "select");
+		    this, SLOT(hit_select()), toolbar, 
+		    "select");
   select->setToggleButton(TRUE);
   select->setOn(TRUE);
   current_button = UmlSelect;
   
   addFragment
     = new QToolButton(*fragmentButton, "Add Fragment", QString::null,
-		      this, SLOT(hit_fragment()), toolbar, "add fragment");
+		      this, SLOT(hit_fragment()), toolbar,
+		      "add fragment");
   addFragment->setToggleButton(TRUE);
   QWhatsThis::add(addFragment, addfragmentText);
   
   addClassInstance
-    = new QToolButton(*classinstanceButton, "Add Class instance", QString::null,
-		      this, SLOT(hit_classinstance()), toolbar, "add class instance");
+    = new QToolButton(*classinstanceButton, "Add modeled Class instance", QString::null,
+		      this, SLOT(hit_classinstance()), toolbar,
+		      "add modeled class instance");
   addClassInstance->setToggleButton(TRUE);
-  QWhatsThis::add(addClassInstance, addclassinstanceText);
+  QWhatsThis::add(addClassInstance, addmodeledclassinstanceText);
   
   addClass
     = new QToolButton(*classButton, "Add Class instance", QString::null,
-		      this, SLOT(hit_class()), toolbar, "add class");
+		      this, SLOT(hit_class()), toolbar,
+		      "add class");
   addClass->setToggleButton(TRUE);
   QWhatsThis::add(addClass, addclassinstanceText);
   
   addContinuation
     = new QToolButton(*continuationButton, "Add Continuation", QString::null,
-		      this, SLOT(hit_continuation()), toolbar, "add continuation");
+		      this, SLOT(hit_continuation()), toolbar,
+		      "add continuation");
   addContinuation->setToggleButton(TRUE);
   QWhatsThis::add(addContinuation, addcontinuationText);
   
   syncMsg =
     new QToolButton(*syncmsgButton, "Synchronous message", QString::null,
-		    this, SLOT(hit_syncmsg()), toolbar, "synchronous message");
+		    this, SLOT(hit_syncmsg()), toolbar,
+		    "synchronous message");
   syncMsg->setToggleButton(TRUE);
   QWhatsThis::add(syncMsg, syncmsgText);
   
   asyncMsg =
     new QToolButton(*directionalAssociationButton, "Asynchronous message", QString::null,
-		    this, SLOT(hit_asyncmsg()), toolbar, "asynchronous message");
+		    this, SLOT(hit_asyncmsg()), toolbar,
+		    "asynchronous message");
   asyncMsg->setToggleButton(TRUE);
   QWhatsThis::add(asyncMsg, asyncmsgText);
   
   syncSelfMsg =
     new QToolButton(*syncselfmsgButton, "Synchronous Reflexive message", QString::null,
-		    this, SLOT(hit_syncselfmsg()), toolbar, "synchronous reflexive message");
+		    this, SLOT(hit_syncselfmsg()), toolbar,
+		    "synchronous reflexive message");
   syncSelfMsg->setToggleButton(TRUE);
   QWhatsThis::add(syncSelfMsg, syncselfmsgText);
   
   asyncSelfMsg =
     new QToolButton(*asyncselfmsgButton, "Asynchronous Reflexive message", QString::null,
-		    this, SLOT(hit_asyncselfmsg()), toolbar, "asynchronous reflexive message");
+		    this, SLOT(hit_asyncselfmsg()), toolbar,
+		    "asynchronous reflexive message");
   asyncSelfMsg->setToggleButton(TRUE);
   QWhatsThis::add(asyncSelfMsg, asyncselfmsgText);
   
   returnMsg =
     new QToolButton(*returnmsgButton, "Explicit return", QString::null,
-		    this, SLOT(hit_returnmsg()), toolbar, "explicit return");
+		    this, SLOT(hit_returnmsg()), toolbar,
+		    "explicit return");
   returnMsg->setToggleButton(TRUE);
   QWhatsThis::add(returnMsg, returnmsgText);
   
   selfreturnMsg =
     new QToolButton(*selfreturnmsgButton, "Explicit reflexive return", QString::null,
-		    this, SLOT(hit_selfreturnmsg()), toolbar, "explicit reflexive return");
+		    this, SLOT(hit_selfreturnmsg()), toolbar,
+		    "explicit reflexive return");
   selfreturnMsg->setToggleButton(TRUE);
   QWhatsThis::add( selfreturnMsg,  selfreturnmsgText);
   
   note =
     new QToolButton(*noteButton, "Note", QString::null,
-		    this, SLOT(hit_note()), toolbar, "note");
+		    this, SLOT(hit_note()), toolbar, 
+		    "note");
   note->setToggleButton(TRUE);
   QWhatsThis::add(note, noteText);
   
   anchor =
     new QToolButton(*anchorButton, "Anchor", QString::null,
-		    this, SLOT(hit_anchor()), toolbar, "anchor");
+		    this, SLOT(hit_anchor()), toolbar,
+		    "anchor");
   anchor->setToggleButton(TRUE);
   QWhatsThis::add(anchor, anchorText);
   
   text =
     new QToolButton(*textButton, "Text", QString::null,
-		    this, SLOT(hit_text()), toolbar, "text");
+		    this, SLOT(hit_text()), toolbar,
+		    "text");
   text->setToggleButton(TRUE);
   QWhatsThis::add(text, textText);
   

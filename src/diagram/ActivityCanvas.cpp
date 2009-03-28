@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -114,7 +114,7 @@ void ActivityCanvas::compute_size() {
   const ActivityData * data = (ActivityData *) browser_node->get_data();
   ActivityDrawingSettings st = settings;
   
-  the_canvas()->browser_diagram()->get_activitydrawingsettings(st);
+  ((BrowserActivityDiagram *) the_canvas()->browser_diagram())->get_activitydrawingsettings(st);
   min_width = fm.width(browser_node->get_name()) + 2*margin;
     
   int x0 = min_width;
@@ -282,7 +282,7 @@ void ActivityCanvas::force_sub_inside() {
 	  break;
 	case UmlActivityObject:
 	case UmlActivityAction:
-	case UmlPartition:
+	case UmlActivityPartition:
 	case UmlExpansionRegion:
 	case UmlInterruptibleActivityRegion:
 	case InitialAN:
@@ -536,7 +536,9 @@ void ActivityCanvas::menu(const QPoint&) {
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("Set associated diagram",6);
+    if (browser_node->get_associated() !=
+	(BrowserNode *) the_canvas()->browser_diagram())
+      m.insertItem("Set associated diagram",6);
     if (browser_node->get_associated())
       m.insertItem("Remove diagram association",10);
   }
@@ -690,7 +692,7 @@ bool ActivityCanvas::get_show_stereotype_properties() const {
   case UmlNo:
     return FALSE;
   default:
-    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties();
   }
 }
 

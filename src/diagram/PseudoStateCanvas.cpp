@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,9 +45,13 @@
 #include "MenuTitle.h"
 #include "Settings.h"
 
+#define MIN_FORK_JOIN_LARGESIDE 19
+#define FORK_JOIN_SMALLSIDE 15
+
 PseudoStateCanvas::PseudoStateCanvas(BrowserNode * bn, UmlCanvas * canvas,
 				     int x, int y)
-    : DiagramCanvas(0, canvas, x, y, 16, 16, 0), horiz(FALSE) {
+    : DiagramCanvas(0, canvas, x, y, 16, 16, 0),
+      horiz(FALSE), manual_size(FALSE) {
   browser_node = bn;
   set_xpm();
   check_stereotypeproperties();
@@ -72,7 +76,7 @@ PseudoStateCanvas::PseudoStateCanvas(BrowserNode * bn, UmlCanvas * canvas,
 }
 
 PseudoStateCanvas::PseudoStateCanvas(UmlCanvas * canvas, int id)
-    : DiagramCanvas(canvas, id), horiz(FALSE) {
+    : DiagramCanvas(canvas, id), horiz(FALSE), manual_size(FALSE) {
   // for read operation
   browser_node = 0;
   xpm = 0;
@@ -135,10 +139,13 @@ void PseudoStateCanvas::set_xpm() {
     break;
   case ForkPS:
   case JoinPS:
-    xpm = (horiz)
-      ? ((big) ? joinForkHorizBigPixmap : joinForkHorizPixmap)
-      : ((big) ? joinForkBigPixmap : joinForkPixmap);
-    break;
+    if (!manual_size) {
+      xpm = (horiz)
+	? ((big) ? joinForkHorizBigPixmap : joinForkHorizPixmap)
+	: ((big) ? joinForkBigPixmap : joinForkPixmap);
+      break;
+    }
+    // no break
   default:
     xpm = 0;
     return;
@@ -148,11 +155,63 @@ void PseudoStateCanvas::set_xpm() {
 }
 
 void PseudoStateCanvas::change_scale() {
-  // defined to not change size
   QCanvasRectangle::setVisible(FALSE);
-  set_xpm();
+  
+  if (manual_size) {
+    double scale = the_canvas()->zoom();
+    
+    if (horiz) {
+      int w = (int) (width_scale100*scale);
+      
+      if (w < MIN_FORK_JOIN_LARGESIDE)
+	w = MIN_FORK_JOIN_LARGESIDE;
+      
+      setSize(w | 1, FORK_JOIN_SMALLSIDE);
+    }
+    else {
+      int h = (int) (height_scale100*scale);
+      
+      if (h < MIN_FORK_JOIN_LARGESIDE)
+	h = MIN_FORK_JOIN_LARGESIDE;
+      
+      setSize(FORK_JOIN_SMALLSIDE, h | 1);
+    }
+    
+    DiagramCanvas::resize(width(), height());
+    recenter();
+  }
+  else
+    set_xpm();
+  
   recenter();
   QCanvasRectangle::setVisible(TRUE);
+}
+
+aCorner PseudoStateCanvas::on_resize_point(const QPoint & p) {
+  switch (browser_node->get_type()) {
+  case ForkPS:
+  case JoinPS:
+    return ::on_resize_point(p, rect());
+  default:
+    return NoCorner;
+  }
+}
+
+void PseudoStateCanvas::resize(aCorner c, int dx, int dy) {
+  switch (browser_node->get_type()) {
+  case ForkPS:
+  case JoinPS:
+    manual_size = TRUE;
+    xpm = 0;
+    
+    if (horiz)
+      DiagramCanvas::resize(c, dx, 0, MIN_FORK_JOIN_LARGESIDE, FORK_JOIN_SMALLSIDE);
+    else
+      DiagramCanvas::resize(c, 0, dy, FORK_JOIN_SMALLSIDE, MIN_FORK_JOIN_LARGESIDE);
+    break;
+  default:
+    break;
+  }
 }
 
 void PseudoStateCanvas::modified() {
@@ -198,13 +257,31 @@ void PseudoStateCanvas::connexion(UmlCode action, DiagramItem * dest,
 }
 
 void PseudoStateCanvas::draw(QPainter & p) {
-  if (!visible() || (xpm == 0)) return;
+  if (!visible() || ((xpm == 0) && !manual_size)) return;
 
   QRect r = rect();
+  QRect intern_r;
   
   p.setBackgroundMode(::Qt::OpaqueMode);
   
-  p.drawPixmap(r.topLeft(), *xpm);
+  if (xpm != 0)
+    p.drawPixmap(r.topLeft(), *xpm);
+  else {
+    // jork join manually sized
+    if (horiz) {
+      intern_r.setX(r.x() + 1);
+      intern_r.setWidth(r.width() - 2);
+      intern_r.setY(r.y() + 6);
+      intern_r.setHeight(3);
+    }
+    else {
+      intern_r.setX(r.x() + 6);
+      intern_r.setWidth(3);
+      intern_r.setY(r.y() + 1);
+      intern_r.setHeight(r.height() - 2);
+    }
+    p.fillRect(intern_r, ::Qt::black);
+  }
     
   if (selected())
     show_mark(p, r);
@@ -379,15 +456,21 @@ void PseudoStateCanvas::draw(QPainter & p) {
     case ForkPS:
     case JoinPS:
       if (horiz) {
-	if (big)
+	if (manual_size)
 	  fprintf(fp, "<line stroke=\"black\" stroke-width=\"3\" stroke-opacity=\"1\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
-		  px + 1, py + 7, px + 23, py + 7);
+		  intern_r.x(), intern_r.y(), intern_r.x() + intern_r.width() - 1, intern_r.y());
+	else if (big)
+	  fprintf(fp, "<line stroke=\"black\" stroke-width=\"3\" stroke-opacity=\"1\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		  px + 1, py + 6, px + 23, py + 6);
 	else
 	  fprintf(fp, "<line stroke=\"black\" stroke-width=\"3\" stroke-opacity=\"1\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
-		  px + 1, py + 7, px + 16, py + 7);
+		  px + 1, py + 6, px + 16, py + 6);
       }
       else {
-	if (big)
+	if (manual_size)
+	  fprintf(fp, "<line stroke=\"black\" stroke-width=\"3\" stroke-opacity=\"1\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		  intern_r.x(), intern_r.y(), intern_r.x(), intern_r.y() + intern_r.height() - 1);
+	else if (big)
 	  fprintf(fp, "<line stroke=\"black\" stroke-width=\"3\" stroke-opacity=\"1\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
 		  px + 6, py + 1, px + 6, py + 24);
 	else
@@ -461,7 +544,9 @@ void PseudoStateCanvas::menu(const QPoint&) {
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
   /*if (browser_node->is_writable())
-    m.insertItem("Set associated diagram",6);
+    if (browser_node->get_associated() !=
+	(BrowserNode *) the_canvas()->browser_diagram())
+      m.insertItem("Set associated diagram",6);
   m.insertSeparator();*/
   m.insertItem("Remove from view", 7);
   if (browser_node->is_writable())
@@ -489,7 +574,12 @@ void PseudoStateCanvas::menu(const QPoint&) {
     return;
   case 2:
     horiz ^= TRUE;
-    set_xpm();
+    if (!manual_size)
+      set_xpm();
+    else {
+      setSize(height(), width());
+      DiagramCanvas::resize(width(), height());
+    }
     modified();	// call package_modified()
     return;
   case 3:
@@ -590,7 +680,10 @@ void PseudoStateCanvas::save(QTextStream & st, bool ref, QString & warning) cons
     nl_indent(st);
     if (horiz)
       st << "horizontal ";
-    save_xyz(st, this, " xyz");
+    if (manual_size)
+      save_xyzwh(st, this, " xyzwh");
+    else
+      save_xyz(st, this, " xyz");
     if (label != 0)
       save_xy(st, label, " label_xy");
     save_stereotype_property(st, warning);
@@ -622,10 +715,14 @@ PseudoStateCanvas * PseudoStateCanvas::read(char * & st, UmlCanvas * canvas,
       k = read_keyword(st);
     }
     
-    if (strcmp(k, "xyz"))
+    if (!strcmp(k, "xyzwh")) {
+      read_xyzwh(st, result);
+      result->manual_size = TRUE;
+    }
+    else if (strcmp(k, "xyz"))
       wrong_keyword(k, "xyz");
-    
-    read_xyz(st, result);
+    else
+      read_xyz(st, result);
     
     if (!ps->allow_empty()) {
       result->label = new LabelCanvas(ps->get_name(), canvas, 0, 0);
@@ -644,6 +741,10 @@ PseudoStateCanvas * PseudoStateCanvas::read(char * & st, UmlCanvas * canvas,
     }
     
     result->set_xpm();
+    if (result->manual_size) {
+      result->width_scale100 = result->width();
+      result->height_scale100 = result->height();
+    }
     result->set_center100();
     result->show();
     result->check_stereotypeproperties();
@@ -662,8 +763,36 @@ void PseudoStateCanvas::history_hide() {
   disconnect(browser_node->get_data(), 0, this, 0);
 }
 
+void PseudoStateCanvas::history_save(QBuffer & b) const {
+  DiagramCanvas::history_save(b);
+  ::save((int) manual_size, b);
+  if (manual_size) {
+    ::save(width_scale100, b);
+    ::save(height_scale100, b);
+    ::save(width(), b);
+    ::save(height(), b);
+  }
+}
+
 void PseudoStateCanvas::history_load(QBuffer & b) {
   DiagramCanvas::history_load(b);
+  
+  int ms;
+  
+  ::load(ms, b);
+  manual_size = (ms != 0);
+  
+  if (manual_size) {
+    ::load(width_scale100, b);
+    ::load(height_scale100, b);
+    
+    int w, h;
+    
+    ::load(w, b);
+    ::load(h, b);
+    QCanvasRectangle::setSize(w, h);
+  }
+  
   connect(browser_node->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(browser_node->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
 }

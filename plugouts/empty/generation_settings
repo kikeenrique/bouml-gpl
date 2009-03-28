@@ -1,5 +1,5 @@
 
-  cpp_default_defs java_default_defs 
+  
   cpp_h_extension "h" cpp_src_extension "cpp" java_extension "java" php_extension "php" python_extension "py" idl_extension "idl"
 
   type_forms 20 // uml cpp java idl cpp_in cpp_out cpp_inout cpp_return
@@ -24,14 +24,15 @@
     "sbyte" "char" "byte" "octet" "${type}" "${type} &" "${type} &" "${type}"
     "Socket" "QSocketDevice" "Socket" "Socket" "${type}" "${type} &" "${type} &" "${type}"
   
-  relations_stereotypes 5 // uml cpp java pythonidl
+  relations_stereotypes 6 // uml cpp java pythonidl
     "sequence" "QVector" "Vector" "list" "sequence"
     "vector" "QVector" "Vector" "list" "sequence"
     "list" "QList" "Vector" "list" "sequence"
     "set" "QSet" "Vector" "set" "sequence"
     "dict" "QDict" "Hashtable" "list" "sequence"
+    "map" "QMap" "HashTable" "dict" "sequence"
   
-  classes_stereotypes 11 // uml cpp java php python idl
+  classes_stereotypes 14 // uml cpp java php python idl
     "class" "class" "class" "class" "class" "valuetype"
     "interface" "class" "interface" "interface" "class" "interface"
     "exception" "class" "class" "class" "class" "exception"
@@ -43,12 +44,15 @@
     "boundary" "class" "class" "class" "class" "interface"
     "control" "class" "class" "class" "class" "valuetype"
     "entity" "class" "class" "class" "class" "valuetype"
+    "actor" "ignored" "ignored" "ignored" "ignored" "ignored"
+    "@interface" "ignored" "@interface" "ignored" "ignored" "ignored"
+    "stereotype" "ignored" "ignored" "ignored" "ignored" "ignored"
   
   cpp_enum_default_type_forms "${type}" "${type} &" "${type} &" "${type}" // in out inout return
   other_cpp_types_default_type_forms "const ${type} &" "${type} &" "${type} &" "${type}" // in out inout return
 
-  cpp_default_h_content "#ifndef _${NAME}_H
-#define _${NAME}_H
+  cpp_default_h_content "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
 
 ${comment}
 ${includes}
@@ -65,7 +69,6 @@ ${members}
 ${namespace_end}"
   cpp_default_class_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
-
 ${inlines}
 "
   cpp_default_external_class_decl "${name}
@@ -73,12 +76,10 @@ ${inlines}
 "
   cpp_default_struct_decl "${comment}${template}struct ${name}${inherit} {
 ${members}};
-
 ${inlines}
 "
   cpp_default_union_decl "${comment}${template}union ${name} {
 ${members}};
-
 ${inlines}
 "
   cpp_default_enum_decl "${comment}enum ${name} {
@@ -110,29 +111,29 @@ ${items}
 " // multiplicity [..]
   cpp_get "get_${name}" inline const value_const public
   cpp_set "set_${name}" public
-  cpp_default_operation_declaration "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+  cpp_default_operation_declaration "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
-  cpp_default_operation_definition "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
-${body}}
+  cpp_default_operation_definition "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
 "
   java_default_src_content "${comment}
 ${package}
+${imports}
 ${definition}"
-  java_default_class_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+  java_default_class_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
-  java_default_external_class_decl "${name}
-"
-  java_default_interface_decl "${comment}${public}interface ${name}${extends} {
+  java_default_external_class_decl "${name}"
+  java_default_interface_decl "${comment}${@}${visibility}interface ${name}${extends} {
 ${members}}
 "
-  java5_default_enum_decl "${comment}${public}${final}${abstract}enum ${name}${implements} {
+  java5_default_enum_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
 ${items};
 ${members}}
 "
-  java_default_enum_decl "${comment}${public}final class ${name} {
+  java_default_enum_decl "${comment}${@}${visibility}final class ${name} {
 ${members}
-  private int value;
+  private final int value;
 
   public int value() {
     return value;
@@ -142,34 +143,34 @@ ${members}
     switch (value) {
 ${cases}    default: throw new Error();
     }
-  }
 
-  private ${name}(int v) { value = v; }; 
+  }
+  private ${name}(int v) { value = v; };
 }
 "
-  java_default_attribute_declaration "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+  java_default_attribute_declaration "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 " // multiplicity 1
-  "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype} ${name}${value};
+  "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
 " // multiplicity * a..b
   "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
 " // multiplicity N
-  java5_default_enum_item_declaration "  ${name}${value},${comment}"
-  java_default_enum_item_declaration "  ${comment}public static final int _${name}${value};
+  java5_default_enum_item_declaration "  ${@}${name}${value},${comment}"
+  java_default_enum_item_declaration "  ${comment}${@}public static final int _${name}${value};
 public static final ${class} ${name} = new ${class}(_${name});
 "
   java_default_enum_case "    case _${name}: return ${name};
 "
   java_association_aggregation_declaration
-    "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+    "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 " // multiplicity 1
-    "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+    "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${stereotype}<${type}> ${name}${value};
 " // multiplicity * a..b
-    "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+    "  ${comment}${@}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
 " // multiplicity N
-  java_get "get_${name}" final public
-  java_set "set_${name}" public
-  java_default_operation_definition "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
+  java_get "get${Name}" final public
+  java_set "set${Name}" public
+  java_default_operation_definition "  ${comment}${@}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+  ${body}}
 "
   php_default_src_content "<?php
 ${comment}
@@ -179,7 +180,7 @@ ${definition}
   php_default_class_decl "${comment}${final}${visibility}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
-  php_default_enum_decl "${comment}final ${visibility}class ${name} {
+  php_default_enum_decl "${comment}${visibility}final class ${name} {
 ${items}}
 "
   php_default_external_class_decl "${name}"
@@ -227,10 +228,14 @@ ${docstring}${members}
   python_default_operation_definition "${@}${static}${abstract}def ${name}${(}${)}:
 ${docstring}${body}
 "
+  python_default_initoperation_definition "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}super(${class}, ${p0}).__init__()
+${body}
+"
   python_get "get${Name}"
   python_set "set${Name}"
-  idl_default_src_content "#ifndef _${NAME}_H
-#define _${NAME}_H
+  idl_default_src_content "#ifndef ${MODULE}_${NAME}_H
+#define ${MODULE}_${NAME}_H
 
 ${comment}
 ${includes}
@@ -262,7 +267,7 @@ ${items}};
   idl_default_external_class_decl "${name}
 #include \"${name}.idl\"
 "
-  idl_default_attribute_declaration "  ${comment}${readonly}${attribut} ${type} ${name};
+  idl_default_attribute_declaration "  ${comment}${readonly}${attribute}${type} ${name};
 " // multiplicity 1
   "  ${comment}${readonly}${attribute}${stereotype}<${type}> ${name};
 " // multiplicity * a..b
@@ -285,11 +290,11 @@ ${items}};
   "  ${comment}case ${case} : ${readonly}${stereotype}<${type}> ${name};" // multiplicity * a..b
   "  ${comment}case ${case} : ${readonly}${stereotype}<${type},${multiplicity}> ${name};" // multiplicity N
   idl_association_aggregation_declaration
-    "  ${comment}${readonly}${attribut}${type} ${name};
+    "  ${comment}${readonly}${attribute}${type} ${name};
 " // multiplicity 1
-    "  ${comment}${readonly}${attribut}${stereotype}<${type}> ${name};
+    "  ${comment}${readonly}${attribute}${stereotype}<${type}> ${name};
 " // multiplicity * a..b
-    "  ${comment}${readonly}${attribut}${stereotype}<${type},${multiplicity}> ${name};
+    "  ${comment}${readonly}${attribute}${stereotype}<${type},${multiplicity}> ${name};
 " // multiplicity N
   idl_valuetype_association_aggregation_declaration
     "  ${comment}${visibility}${type} ${name};

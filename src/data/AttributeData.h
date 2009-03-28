@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,13 +45,17 @@ class AttributeData : public ClassMemberData {
     bool isa_class_attribute : 1;
     bool isa_volatile_attribute : 1;
     bool isa_const_attribute : 1;
+    bool is_derived : 1;
+    bool is_derivedunion : 1;
+    bool is_ordered : 1;
+    bool is_unique : 1;
     bool cpp_mutable: 1;
     bool java_transient: 1;
-    bool dummy : 2;
-    UmlVisibility uml_visibility : 8;	// : 3 useless here, : 8 faster than : 3 ?
+    bool dummy : 6;
+    UmlVisibility uml_visibility : 8;	// : 4 useless here, : 8 faster than : 3 ?
     
     // C++
-    UmlVisibility cpp_visibility : 8;	// : 3 useless here, : 8 faster than : 3 ?
+    UmlVisibility cpp_visibility : 8;	// : 4 useless here, : 8 faster than : 3 ?
     SharedStr cpp_decl;
     
     // Java
@@ -88,37 +92,45 @@ class AttributeData : public ClassMemberData {
     void set_browser_node(BrowserAttribute *, bool update, bool enum_item);
   
     virtual QString definition(bool full) const;
-    QString definition(bool full, bool mult, bool init, DrawingLanguage language) const;
+    QString definition(bool full, bool mult, bool init, bool modif, DrawingLanguage language) const;
     
     virtual bool decldefbody_contain(const QString & s, bool cs, BrowserNode *);
     
-    const char * get_constraint() const { return constraint; };
+    const char * get_constraint() const { return constraint; }
     
-    const char * get_multiplicity() const { return multiplicity; };
+    const char * get_multiplicity() const { return multiplicity; }
 
-    bool get_isa_class_attribute() const { return isa_class_attribute; };
+    bool get_isa_class_attribute() const { return isa_class_attribute; }
     
-    bool get_isa_const_attribute() const { return isa_const_attribute; };
+    bool get_isa_const_attribute() const { return isa_const_attribute; }
     
-    UmlVisibility get_uml_visibility() const { return uml_visibility; };
+    bool get_is_derived() const { return is_derived; }
+    
+    bool get_is_derivedunion() const { return is_derivedunion; }
+    
+    bool get_is_ordered() const { return is_ordered; }
+    
+    bool get_is_unique() const { return is_unique; }
+    
+    UmlVisibility get_uml_visibility() const { return uml_visibility; }
     virtual UmlVisibility get_visibility(BrowserNode *);
-    UmlVisibility get_cpp_visibility() const { return cpp_visibility; };
+    UmlVisibility get_cpp_visibility() const { return cpp_visibility; }
     void set_visibility(UmlVisibility v);
     
-    const AType & get_type() const { return type; };
+    const AType & get_type() const { return type; }
     void set_type(const AType & t);
     
-    const char * get_init_value() const { return init_value; };
+    const char * get_init_value() const { return init_value; }
 
-    const char * get_cppdecl() const { return cpp_decl; };
+    const char * get_cppdecl() const { return cpp_decl; }
         
-    const char * get_javadecl() const { return java_decl; };
+    const char * get_javadecl() const { return java_decl; }
         
-    const char * get_phpdecl() const { return php_decl; };
+    const char * get_phpdecl() const { return php_decl; }
     
-    const char * get_pythondecl() const { return python_decl; };
+    const char * get_pythondecl() const { return python_decl; }
     
-    const char * get_idldecl() const { return idl_decl; };
+    const char * get_idldecl() const { return idl_decl; }
     const char * get_idlcase() const;
     void set_idlcase(BrowserAttribute * a, const char * e);
     

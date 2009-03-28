@@ -39,6 +39,16 @@ class UmlClassView
   }
 !!!206722.java!!!	uml2php(in rec : bool) : void
 
+!!!129923.cpp!!!	uml2python(in rec : bool) : void
+  if (rec) {
+    const QVector<UmlItem> ch = children();
+    unsigned n = ch.size();
+    
+    for (unsigned i = 0; i != n; i += 1)
+      ch[i]->uml2python(rec);
+  }
+!!!129923.java!!!	uml2python(in rec : bool) : void
+
 !!!199426.cpp!!!	deploymentView() : UmlDeploymentView
   UmlDeploymentView * depl = associatedDeploymentView();
   

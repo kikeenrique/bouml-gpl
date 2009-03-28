@@ -22,7 +22,7 @@ UmlDeploymentDiagram * UmlBaseArtifact::associatedDiagram() {
 }
 
 bool UmlBaseArtifact::set_AssociatedDiagram(UmlDeploymentDiagram * d) {
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -78,7 +78,8 @@ bool UmlBaseArtifact::removeAssociatedClass(UmlClass * cl) {
 bool UmlBaseArtifact::set_AssociatedClasses(const QVector<UmlClass> & l) {
   UmlCom::send_cmd(_identifier, setAssocClassesCmd, (const QVector<UmlItem> &) l);
   if (UmlCom::read_bool()) {
-    if (_defined)
+      // tests != to bypass Qt 2.3 bug
+    if (_defined && (&_assoc_classes != &l))
       _assoc_classes = l;
     return TRUE;
   }
@@ -186,6 +187,18 @@ bool UmlBaseArtifact::set_PhpSource(const QCString & s) {
 }
 #endif
 
+#ifdef WITHPYTHON
+const QCString & UmlBaseArtifact::pythonSource() {
+  read_if_needed_();
+  
+  return _python_src;
+}
+
+bool UmlBaseArtifact::set_PythonSource(const QCString & s) {
+  return set_it_(_python_src, s, setPythonSrcCmd);
+}
+#endif
+
 #ifdef WITHIDL
 const QCString & UmlBaseArtifact::idlSource() {
   read_if_needed_();
@@ -210,6 +223,9 @@ void UmlBaseArtifact::unload(bool rec, bool del) {
 #endif
 #ifdef WITHPHP
   _php_src = 0;
+#endif
+#ifdef WITHPYTHON
+  _python_src = 0;
 #endif
 #ifdef WITHIDL
   _idl_src = 0;
@@ -253,6 +269,12 @@ void UmlBaseArtifact::read_java_() {
 #ifdef WITHPHP
 void UmlBaseArtifact::read_php_() {
   _php_src = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHPYTHON
+void UmlBaseArtifact::read_python_() {
+  _python_src = UmlCom::read_string();
 }
 #endif
 

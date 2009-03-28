@@ -12,7 +12,8 @@ enum CmdFamily {
   cppSettingsCmd,
   javaSettingsCmd,
   idlSettingsCmd,
-  phpSettingsCmd
+  phpSettingsCmd,
+  pythonSettingsCmd
 
 };
 #endif

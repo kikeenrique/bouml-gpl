@@ -50,6 +50,12 @@ class UmlBaseItem {
     //  On error return FALSE in C++, produce a RuntimeException in Java
     virtual bool set_Stereotype(const QCString & s);
 
+    // If the current stereotype is part of a profile add needed properties.
+    // In all cases remove extra properties whose keys contain two ':'.
+    //
+    // If the element is read-only, return FALSE in C++, produce a RuntimeException in Java
+    bool applyStereotype();
+
     // returns the description
     const QCString & description();
 
@@ -242,6 +248,12 @@ class UmlBaseItem {
     virtual void read_php_();
 #endif
 
+#ifdef WITHPYTHON
+    //internal, do NOT use it
+    
+    virtual void read_python_();
+#endif
+
 #ifdef WITHIDL
     //internal, do NOT use it
     
@@ -380,6 +392,7 @@ class UmlBaseItem {
   friend class UmlBaseUseCaseDiagramDefinition;
   friend class UmlBaseSequenceDiagramDefinition;
   friend class UmlBaseCollaborationDiagramDefinition;
+  friend class UmlBaseFragment;
 };
 
 #endif

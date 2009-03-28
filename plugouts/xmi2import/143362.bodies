@@ -179,8 +179,9 @@ class FileIn
     str = FALSE;
     return _buffer;
   case '"':
+  case '\'':
     str = TRUE;
-    return read_string();
+    return read_string(c);
   default:
     str = FALSE;
     return read_word(c, any);
@@ -307,7 +308,7 @@ class FileIn
     
     _buffer[index++] = c;
   }
-!!!190594.cpp!!!	read_string() : str
+!!!190594.cpp!!!	read_string(in marker : int) : str
   // " already read
   int index = 0;
   int c;
@@ -320,10 +321,6 @@ class FileIn
       // doesn't return
       error("premature end of file");
       break;
-    case '"':
-      // may add 0 without size check
-      _buffer[index] = 0;
-      return _buffer;
     case '&':
       // special char
       c = read_special_char();
@@ -332,6 +329,11 @@ class FileIn
       _linenum += 1;
       break;
     default:
+      if (c == marker) {
+	// can add 0 without size check
+	_buffer[index] = 0;
+	return _buffer;
+      }
       if (_utf8 && (((unsigned char) c) > 127))
 	c = ((c & 3) << 6) + (fgetc(_fp) & 0x3f);
       break;

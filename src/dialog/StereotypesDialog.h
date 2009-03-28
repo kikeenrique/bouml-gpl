@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -60,6 +60,7 @@ class StereotypesDialog : public QTabDialog {
     LineEdit * activitynode_list;
     LineEdit * activityaction_list;
     LineEdit * activityobject_list;
+    LineEdit * activitypartition_list;
     LineEdit * pin_list;
     LineEdit * expansionnode_list;
     LineEdit * flow_list;

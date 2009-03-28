@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -58,8 +58,11 @@ class StateDialog : public QTabDialog {
     QWidget * umltab;
     bool visit;
     StateData * state;
+    QStringList list;
+    BrowserNodeList opers;
     LineEdit * edname;
     QComboBox * edstereotype;
+    QComboBox * edspecification;
     MultiLineEdit * comment;
     QList<BodyDialog> edits;
     
@@ -98,6 +101,7 @@ class StateDialog : public QTabDialog {
     virtual void polish();
     virtual void accept();
   
+    void menu_specification();
     void edit_description();
     void edit_uml_entry();
     void edit_uml_exit();

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -31,6 +31,8 @@
 #include "UmlGlobal.h"
 #include "DiagramView.h"
 #include "CodDirsCanvas.h"
+#include "ArrowCanvas.h"
+#include "ArrowPointCanvas.h"
 #include "BrowserDiagram.h"
 
 static QList<UmlCanvas> All;
@@ -50,6 +52,9 @@ static const struct {
   {432 * 4, 559 * 4},	// UsC
   {559 * 4, 864 * 4},	// UsD
   {864 * 4, 1118 * 4},	// UsE
+  {216 * 4, 279 * 4},	// Us letter
+  {216 * 4, 356 * 4},	// Us legal
+  {279 * 4, 432 * 4},	// Us tabloid
   
   {1189 * 4, 841 * 4},	// landscape IsoA0
   {841 * 4, 594 * 4},	// landscape IsoA1
@@ -61,7 +66,10 @@ static const struct {
   {432 * 4, 279 * 4},	// landscape UsB
   {559 * 4, 432 * 4},	// landscape UsC
   {864 * 4, 559 * 4},	// landscape UsD
-  {1118 * 4, 864 * 4}	// landscape UsE
+  {1118 * 4, 864 * 4},	// landscape UsE
+  {279 * 4, 216 * 4},	// landscape Us letter
+  {356 * 4, 216 * 4},	// landscape Us legal
+  {432 * 4, 279 * 4},	// Us ledger = lanscape Us tabloid
 };
 
 UmlCanvas::UmlCanvas(CanvasFormat f, BrowserDiagram * br_diag)
@@ -74,6 +82,7 @@ UmlCanvas::UmlCanvas(CanvasFormat f, BrowserDiagram * br_diag)
   vlimit = 0;
   set_zoom(1);	// set do_scale
   do_scale = FALSE;
+  br_diag->update_drawing_settings();
   show_shadow = br_diag->get_shadow();
   draw_all_relations = br_diag->get_draw_all_relations();
   
@@ -124,29 +133,56 @@ QCanvasItem * UmlCanvas::collision(const QPoint & p) const {
   QCanvasItemList l = collisions(p);
   QCanvasItemList::ConstIterator it;
   QCanvasItemList::ConstIterator end = l.end();
+  ArrowCanvas * arrow = 0;
   
   for (it = l.begin(); it != end; ++it)
     if (((*it)->visible()) && // at least not deleted
 	!isa_alien(*it) &&
-	!isa_col_msg_dirs(*it))
-      return *it;
+	!isa_col_msg_dirs(*it)) {
+    switch ((*it)->rtti()) {
+    case RTTI_ARROW:
+      if (arrow == 0)
+	arrow = (ArrowCanvas *) *it;
+      break;
+    case RTTI_ARROWPOINT:
+      return ((arrow == 0) || ((ArrowPointCanvas *) *it)->attached_to(arrow))
+	? *it : arrow;
+    default:
+      return (arrow == 0) ? *it : arrow;
+    }
+  }
   
-  return 0;
+  return arrow;
 }
 
 QCanvasItem * UmlCanvas::collision(const QPoint & p, int except) const {
   QCanvasItemList l = collisions(p);
   QCanvasItemList::ConstIterator it;
   QCanvasItemList::ConstIterator end = l.end();
+  ArrowCanvas * arrow = 0;
   
   for (it = l.begin(); it != end; ++it)
     if (((*it)->visible()) && // at least not deleted
 	!isa_alien(*it) &&
-	!isa_col_msg_dirs(*it) &&
-	((*it)->rtti() != except))
-      return *it;
+	!isa_col_msg_dirs(*it)) {
+    int k = (*it)->rtti();
+    
+    if (k != except) {
+      switch (k) {
+      case RTTI_ARROW:
+	if (arrow == 0)
+	  arrow = (ArrowCanvas *) *it;
+	break;
+      case RTTI_ARROWPOINT:
+	return ((arrow == 0) || ((ArrowPointCanvas *) *it)->attached_to(arrow))
+	  ? *it : arrow;
+      default:
+	return (arrow == 0) ? *it : arrow;
+      }
+    }
+  }
   
-  return 0;
+  return arrow;
 }
 
 void UmlCanvas::del(QCanvasItem * i) {
@@ -233,6 +269,7 @@ void UmlCanvas::update_global_settings()
   UmlCanvas * c;
   
   for (c = All.first(); c != 0; c = All.next()) {
+    c->br_diagram->update_drawing_settings();
     c->show_shadow = c->br_diagram->get_shadow();
     c->draw_all_relations = c->br_diagram->get_draw_all_relations();
   }

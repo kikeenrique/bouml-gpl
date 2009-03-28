@@ -1,47 +1,47 @@
-format 46
+format 65
 "Aux" // Aux
-  revision 10
-  modified_by 2 "bruno"
+  revision 16
+  modified_by 3 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
   //object diagram settings
-   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
   //component diagram settings
   package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
-  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
   //deployment diagram settings
   package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
-  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
   //state diagram settings
   package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-  show_activities default region_horizontally default drawing_language default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
   //activity diagram settings
   package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-  show_infonote default drawing_language default
+  show_infonote default drawing_language default show_stereotype_properties default
   
   classview 128036 "Aux"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
     //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
     //object diagram settings
-     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
     //state diagram settings
     package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-    show_activities default region_horizontally default drawing_language default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
     //class settings
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-    show_infonote default drawing_language default
+    show_infonote default drawing_language default show_stereotype_properties default
     associated_deployment_view deploymentview_ref 128036 // Aux
     class 128036 "Vector"
       visibility package 
@@ -52,6 +52,7 @@ ${inlines}
 "
       java_decl ""
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -68,6 +69,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128164 "size"
@@ -75,6 +77,7 @@ ${body}}
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} { return v.count(); }
 "
+	
 	
 	
 	
@@ -92,6 +95,7 @@ ${body}}
 	
 	
 	
+	
       end
 
       operation 128292 "elementAt"
@@ -100,6 +104,7 @@ ${body}}
 	  param in name "i" explicit_type "uint"
 	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract} { return v[i]; }
 "
+	
 	
 	
 	
@@ -115,6 +120,7 @@ ${body}}
 	
 	
 	
+	
       end
 
       operation 128239 "contains"
@@ -123,6 +129,7 @@ ${body}}
 	  param in name "x" type class_ref 7553 // UmlItem
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} * ${p0}${)}${const}${volatile}${abstract} { return (!v.isEmpty() && (v.findRef(x) != -1)); }
 "
+	
 	
 	
 	
@@ -148,6 +155,7 @@ ${inlines}
 "
       java_decl ""
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -166,6 +174,7 @@ ${body}}
 	
 	
 	
+	
       end
 
       operation 129316 "close"
@@ -176,6 +185,7 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	
@@ -193,6 +203,7 @@ ${body}}
 	
 	
 	
+	
       end
 
       operation 128548 "write"
@@ -204,6 +215,7 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
 	
 	
 	
@@ -221,6 +233,7 @@ ${body}}
 	
 	
 	
+	
       end
 
       operation 128804 "write"
@@ -235,6 +248,7 @@ ${body}}
 	
 	
 	
+	
       end
 
       attribute 128420 "ts"
@@ -243,6 +257,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -252,6 +267,7 @@ ${body}}
 "
 	java_decl ""
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -263,6 +279,7 @@ ${body}}
 ${members}}
 "
       php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -279,6 +296,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       operation 128386 "ok"
@@ -288,6 +306,7 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
 "
+	
 	
 	
       end
@@ -302,6 +321,7 @@ ${body}}
 "
 	
 	
+	
       end
 
       attribute 128002 "choice"
@@ -310,6 +330,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -319,6 +340,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -328,6 +350,7 @@ ${body}}
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
 "
 	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -336,7 +359,7 @@ ${body}}
   deploymentview 128036 "Aux"
     //deployment diagram settings
     package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
-    draw_component_as_icon default show_component_req_prov default show_component_rea default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
     artifact 128036 "Vector"
       stereotype "source"
       cpp_h "#ifndef _${NAME}_H

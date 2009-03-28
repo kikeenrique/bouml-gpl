@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,6 +37,7 @@
 
 #include "Shortcut.h"
 #include "strutil.h"
+#include "myio.h"
 #include "mu.h"
 
 static QMap<QString, int> NameToCode;
@@ -104,6 +105,7 @@ void Shortcut::init(bool conv)
   //
   
   static const char * cmds[] = {
+    "Add related elements",
     "Align bottom",
     "Align center",
     "Align center horizontaly",
@@ -112,6 +114,7 @@ void Shortcut::init(bool conv)
     "Align right",
     "Align top",
     "Arrow geometry",
+    "Browser search",
     "Copy",
     "Create source artifact",
     "Cut",
@@ -317,7 +320,7 @@ void Shortcut::save()
 {
   // note : QFile fp(QDir::home().absFilePath(".bouml_shortcuts")) doesn't work
   // if the path contains non latin1 characters, for instance cyrillic !
-  QString s = QDir::home().absFilePath(".bouml_shortcuts");
+  QString s = homeDir().absFilePath(".bouml_shortcuts");
   FILE * fp = fopen((const char *) s, "w");
   
   if (fp != 0) {
@@ -387,7 +390,7 @@ void Shortcut::load(bool conv)
   if (!f.isEmpty())  {
     // note : QFile fp(QDir::home().absFilePath(f)) doesn't work
     // if the path contains non latin1 characters, for instance cyrillic !
-    QString s = QDir::home().absFilePath(f);
+    QString s = homeDir().absFilePath(f);
     FILE * fp = fopen((const char *) s, "r");
     
     if (fp != 0) {

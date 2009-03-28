@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -466,9 +466,10 @@ void manage_alias(const BrowserNode * node,
     static char st[256];
     char * key = ((pclosed - p) > 255) ? new char[pclosed - p - 1] : st;
     QString qsvalue;
+    int keylen = pclosed - p - 2;
     
-    strncpy(key, p + 2, pclosed - p - 2);
-    key[pclosed - p - 2] = 0;
+    strncpy(key, p + 2, keylen);
+    key[keylen] = 0;
 
     if ((kvt != 0) && kvt->get_value(key, qsvalue)) {
       // find in dialog, insert the value
@@ -495,13 +496,13 @@ void manage_alias(const BrowserNode * node,
 	s += key;
 	s += "}";
       }
-      
-      if (key != st)
-	delete [] key;
     }
     
     // bypass the key
-    p += strlen(key) + 3;
+    p += keylen + 3;
+      
+    if (key != st)
+      delete [] key;
   }
   else
     // bypass '@'

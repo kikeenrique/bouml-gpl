@@ -8,9 +8,8 @@ bool UmlBasePinParameter::isUnique() {
 }
 
 bool UmlBasePinParameter::set_IsUnique(bool v) {
-  bool vv;
-
-  if (set_it_(vv, v, setUniqueCmd)) {
+  UmlCom::send_cmd(_identifier, setUniqueCmd, (char) v);
+  if (UmlCom::read_bool()) {
     _unique = v;
     return TRUE;
   }
@@ -24,9 +23,8 @@ bool UmlBasePinParameter::isException() {
 }
 
 bool UmlBasePinParameter::set_IsException(bool v) {
-  bool vv;
-
-  if (set_it_(vv, v, replaceExceptionCmd)) {
+  UmlCom::send_cmd(_identifier, replaceExceptionCmd, (char) v);
+  if (UmlCom::read_bool()) {
     _exception = v;
     return TRUE;
   }
@@ -40,9 +38,8 @@ bool UmlBasePinParameter::isStream() {
 }
 
 bool UmlBasePinParameter::set_IsStream(bool v) {
-  bool vv;
-
-  if (set_it_(vv, v, setStreamCmd)) {
+  UmlCom::send_cmd(_identifier, setStreamCmd, (char) v);
+  if (UmlCom::read_bool()) {
     _stream = v;
     return TRUE;
   }

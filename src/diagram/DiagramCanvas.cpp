@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -865,7 +865,7 @@ void DiagramCanvas::draw_all_transitions(DiagramCanvas * end) {
 
 // redefined on element having drawing setting for stereotype properties
 bool DiagramCanvas::get_show_stereotype_properties() const {
-  return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+  return the_canvas()->browser_diagram()->get_show_stereotype_properties();
 }
 
 void DiagramCanvas::check_stereotypeproperties() {

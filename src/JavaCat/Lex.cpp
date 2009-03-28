@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -675,5 +675,55 @@ QCString Lex::quote(QCString s)
     }
 
     p += 1;
+  }
+}
+
+// remove first and last line in comment if non significant
+QCString Lex::simplify_comment(QCString & comment)
+{
+  const char * s = comment;
+  const char * p = s;
+  
+  for (;;) {
+    switch (*p) {
+    case 0:
+      return comment;
+    case ' ':
+    case '\t':
+    case '\r':
+      p += 1;
+      break;
+    case '\n':
+      comment.remove(0, p - s + 1);
+      
+      if (comment.isEmpty())
+	return comment;
+      
+      s = comment;
+      // no break
+    default:
+      p = s + comment.length() - 1;
+
+      while (p != s) {
+	switch(*p) {
+	case ' ':
+	case '\t':
+	  p -= 1;
+	  break;
+	case '\n':
+	  if (*(p - 1) == '\r') 
+	    comment.resize(p - s);
+	  else
+	    comment.resize(p - s + 1);
+	  // no break
+	default:
+	  return comment;
+	}
+      }
+      
+      if (*p == '\n')
+	comment = "";
+      return comment;
+    }
   }
 }

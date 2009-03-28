@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -36,6 +36,7 @@
 #include "SimpleData.h"
 #include "BrowserDeploymentNode.h"
 #include "BrowserDiagram.h"
+#include "DiagramView.h"
 #include "UmlGlobal.h"
 #include "Settings.h"
 #include "SettingsDialog.h"
@@ -45,6 +46,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
 
 DeploymentNodeCanvas::DeploymentNodeCanvas(BrowserNode * bn, UmlCanvas * canvas,
 					   int x, int y, int id)
@@ -185,14 +187,44 @@ void DeploymentNodeCanvas::check_size() {
   the_canvas()->browser_diagram()->get_deploymentdiagramsettings(dflt);
   horiz = (dflt.write_horizontally == UmlYes);
   show_properties = (dflt.componentdrawingsettings.show_stereotype_properties == UmlYes);
+    
+  const QPixmap * px = 
+    ProfiledStereotypes::diagramPixmap(browser_node->get_data()->get_stereotype(),
+				       the_canvas()->zoom());
   
-  int wi = min_width();
-  int he = min_height();
-  
-  // warning : do NOT check if ((width() < wi) || (height() < he))
-  // because te resize must be done to set data on scale change
-  DiagramCanvas::resize((width() < wi) ? wi : width(),
-			(height() < he) ? he : height());
+  if (px != 0) {
+    QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
+    int w;
+    int h = px->height() + fm.height();
+    
+    if (horiz)
+      w = fm.width(iname + ":" + browser_node->get_name());
+    else {
+      w = fm.width(browser_node->get_name());
+      
+      int iw = fm.width(iname + ":");
+      
+      if (iw > w)
+	w = iw;
+      
+      h += fm.height() + (int) (3 * the_canvas()->zoom());
+    }
+    
+    if (w < px->width())
+      w = px->width();
+    
+    // force odd width and height for line alignment
+    DiagramCanvas::resize(w | 1, h | 1);
+  }
+  else {
+    int wi = min_width();
+    int he = min_height();
+    
+    // warning : do NOT check if ((width() < wi) || (height() < he))
+    // because te resize must be done to set data on scale change
+    DiagramCanvas::resize((width() < wi) ? wi : width(),
+			  (height() < he) ? he : height());
+  }
 }
 
 void DeploymentNodeCanvas::change_scale() {
@@ -208,100 +240,125 @@ void DeploymentNodeCanvas::change_scale() {
 void DeploymentNodeCanvas::draw(QPainter & p) {
   if (! visible()) return;
   
-  QBrush brsh = p.brush();
-  QColor bckgrnd = p.backgroundColor();
-  UmlColor c;
-  
-  if (itscolor != UmlDefaultColor)
-    c = itscolor;
-  else {
-    if (used_color == UmlDefaultColor)
-      used_color = the_canvas()->browser_diagram()->get_color(UmlDeploymentNode);
-    c = used_color;
-  }
-  
-  QColor co = color(c);
+  QRect r = rect();
   FILE * fp = svg();
 
   if (fp != 0)
     fputs("<g>\n", fp);
 
-  const int added = (int) (DEPLOYMENTNODE_CANVAS_ADDED * the_canvas()->zoom());
-  QRect r = rect();
-  QPointArray a(7);
+  const int three = (int) (3 * the_canvas()->zoom());  
+  QColor bckgrnd = p.backgroundColor();
+  const QPixmap * px = 
+    ProfiledStereotypes::diagramPixmap(browser_node->get_data()->get_stereotype(), the_canvas()->zoom());
   
-  r.setTop(r.top() + added);
-  r.setRight(r.right() - added);
-  
-  a.setPoint(0, r.left(), r.top());
-  a.setPoint(1, r.left() + added, r.top() - added);
-  a.setPoint(2, r.right() + added, r.top() - added);
-  a.setPoint(3, r.right() + added, r.bottom() - added);
-  a.setPoint(4, r.right(), r.bottom());
-  a.setPoint(5, r.right(), r.top());
-  a.setPoint(6, r.left(), r.top());
-  
-  if (c == UmlTransparent) {
+  if (px != 0) {
     p.setBackgroundMode(::Qt::TransparentMode);
-    p.setBackgroundColor(co);
-    p.drawPolyline(a);
-
-    if (fp != 0) {
-      fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-      draw_poly(fp, a, UmlTransparent);
-    }
-  }
-  else {
-    p.setBackgroundMode(::Qt::OpaqueMode);
-    p.fillRect(r, co);
-    p.setBrush(co);
-    p.drawPolygon(a, TRUE, 0, 6);
-    p.setBrush(brsh);
-    p.setBackgroundColor(co);
-
-    if (fp != 0) {
+    
+    int lft = (px->width() < width()) ? r.x() + (width() - px->width())/2 : r.x();
+    
+    p.drawPixmap(lft, r.y(), *px);
+    if (fp != 0)
+      // pixmap not really exported in SVG
       fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
 	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      svg_color(c),
-	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-      draw_poly(fp, a, c);
+	      svg_color(UmlBlack), lft, r.y(), px->width() - 1, px->height() - 1);
+    
+    r.setTop(r.top() + px->height());
+    p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
+  }
+  else {  
+    UmlColor c;
+    
+    if (itscolor != UmlDefaultColor)
+      c = itscolor;
+    else {
+      if (used_color == UmlDefaultColor)
+	used_color = the_canvas()->browser_diagram()->get_color(UmlDeploymentNode);
+      c = used_color;
+    }
+    
+    QColor co = color(c);
+    const int added = (int) (DEPLOYMENTNODE_CANVAS_ADDED * the_canvas()->zoom());
+    QPointArray a(7);
+    
+    r.setTop(r.top() + added);
+    r.setRight(r.right() - added);
+    
+    a.setPoint(0, r.left(), r.top());
+    a.setPoint(1, r.left() + added, r.top() - added);
+    a.setPoint(2, r.right() + added, r.top() - added);
+    a.setPoint(3, r.right() + added, r.bottom() - added);
+    a.setPoint(4, r.right(), r.bottom());
+    a.setPoint(5, r.right(), r.top());
+    a.setPoint(6, r.left(), r.top());
+    
+    if (c == UmlTransparent) {
+      p.setBackgroundMode(::Qt::TransparentMode);
+      p.setBackgroundColor(co);
+      p.drawPolyline(a);
+      
+      if (fp != 0) {
+	fprintf(fp, "\t<rect fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		r.x(), r.y(), r.width() - 1, r.height() - 1);
+	draw_poly(fp, a, UmlTransparent);
+      }
+    }
+    else {
+      QBrush brsh = p.brush();
+      
+      p.setBackgroundMode(::Qt::OpaqueMode);
+      p.fillRect(r, co);
+      p.setBrush(co);
+      p.drawPolygon(a, TRUE, 0, 6);
+      p.setBrush(brsh);
+      p.setBackgroundColor(co);
+      
+      if (fp != 0) {
+	fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		svg_color(c),
+		r.x(), r.y(), r.width() - 1, r.height() - 1);
+	draw_poly(fp, a, c);
+      }
+    }
+    
+    p.drawRect(r);
+    p.drawLine(r.topRight(), a.point(2));
+    
+    if (fp != 0)
+      fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	      r.right(), r.top(), a.point(2).x(), a.point(2).y());
+    
+    QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
+    const char * st = browser_node->get_data()->get_short_stereotype();
+    QString s;
+    
+    r.setTop(r.top() + three);
+    p.setFont(the_canvas()->get_font(UmlNormalFont));  
+    
+    if (st[0]) {
+      s = QString("<<") + toUnicode(st) + ">>";
+      p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s);
+      if (fp != 0)
+	draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s, p.font(), fp);
+      r.setTop(r.top() + fm.height() + three);
     }
   }
-
-  p.drawRect(r);
-  p.drawLine(r.topRight(), a.point(2));
-
-  if (fp != 0)
-    fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
-	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
-	    r.right(), r.top(), a.point(2).x(), a.point(2).y());
-
-  const int three = (int) (3 * the_canvas()->zoom());  
-  QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
-  const char * st = browser_node->get_data()->get_short_stereotype();
-  QString s;
     
-  r.setTop(r.top() + three);
-  p.setFont(the_canvas()->get_font(UmlNormalFont));  
-  
-  if (st[0]) {
-    s = QString("<<") + toUnicode(st) + ">>";
-    p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s);
-    if (fp != 0)
-      draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s, p.font(), fp);
-    r.setTop(r.top() + fm.height() + three);
-  }
+  QFontMetrics fm(p.font());
   
   if (horiz) {
-    s = iname + ":" + browser_node->get_name();
+    QString s = iname + ":" + browser_node->get_name();
+    
     p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s);
     if (fp != 0)
       draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s, p.font(), fp);
   }
   else {
-    s = iname + ":";
+    QString s = iname + ":";
+    
     p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s);
     if (fp != 0)
       draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s, p.font(), fp);
@@ -312,10 +369,11 @@ void DeploymentNodeCanvas::draw(QPainter & p) {
       draw_text(r, ::Qt::AlignHCenter + ::Qt::AlignTop, s, p.font(), fp);
   }
   
+  p.setFont(the_canvas()->get_font(UmlNormalFont));  
+  p.setBackgroundColor(bckgrnd);
+  
   if (fp != 0)
     fputs("</g>\n", fp);
-  
-  p.setBackgroundColor(bckgrnd);
   
   if (selected())
     show_mark(p, rect());
@@ -369,6 +427,8 @@ void DeploymentNodeCanvas::menu(const QPoint&) {
   m.insertItem("Lower", 1);
   m.insertItem("Go up", 13);
   m.insertItem("Go down", 14);
+  m.insertSeparator();
+  m.insertItem("Add related elements", 10);
   m.insertSeparator();
   m.insertItem("Edit", 2);
   m.insertSeparator();
@@ -426,6 +486,10 @@ void DeploymentNodeCanvas::menu(const QPoint&) {
     // remove from view
     delete_it();
     break;
+  case 10:
+    ((UmlCanvas *) canvas())->get_view()
+      ->add_related_elements(this, "node", FALSE, FALSE);
+    return;
   default:
     if (rank >= 20)
       ToolCom::run(Tool::command(rank - 20), browser_node);
@@ -450,6 +514,11 @@ void DeploymentNodeCanvas::apply_shortcut(QString s) {
     z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
+    return;
+  }
+  else if (s == "Add related elements") {
+    ((UmlCanvas *) canvas())->get_view()
+      ->add_related_elements(this, "node", FALSE, FALSE);
     return;
   }
   else {
@@ -517,7 +586,7 @@ bool DeploymentNodeCanvas::get_show_stereotype_properties() const {
   case UmlNo:
     return FALSE;
   default:
-    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties();
   }
 }
 
@@ -562,7 +631,11 @@ void DeploymentNodeCanvas::connexion(UmlCode action, DiagramItem * dest,
 }
 
 aCorner DeploymentNodeCanvas::on_resize_point(const QPoint & p) {
-  return ::on_resize_point(p, rect());
+  return (ProfiledStereotypes::diagramPixmap(browser_node->get_data()->get_stereotype(),
+					     the_canvas()->zoom())
+	  != 0)
+    ? NoCorner
+    : ::on_resize_point(p, rect());
 }
 
 void DeploymentNodeCanvas::resize(aCorner c, int dx, int dy) {

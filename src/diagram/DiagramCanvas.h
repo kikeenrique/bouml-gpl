@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -85,7 +85,7 @@ class DiagramCanvas : public QCanvasRectangle, public DiagramItem {
     
     void resize(aCorner c, int dx, int dy, int min_width, int min_height,
 		bool odd = FALSE, bool stay_centered = FALSE);
-    void resize(int w, int h);
+    virtual void resize(int w, int h);
     virtual UmlCanvas * the_canvas() const;
     void package_modified() const;
 

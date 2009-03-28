@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -36,20 +36,34 @@ class ReferenceDialog : public QDialog {
   Q_OBJECT
  
   protected:
+    BrowserNode * target;
     BrowserNodeList nodes;
-    QComboBox * items;
+    QComboBox * results;
+    QPushButton * select_b;
+    QPushButton * mark_unmark_b;
+    QPushButton * mark_them_b;
+    QPushButton * unmark_all_b;
     
+    static ReferenceDialog * the;
     static QSize previous_size;
   
-    ReferenceDialog(BrowserNode * target);
-    virtual ~ReferenceDialog();
-
   public:
+    ReferenceDialog(BrowserNode * bn);
+    virtual ~ReferenceDialog();
+    
+    static ReferenceDialog * get() { return the; }
     static void show(BrowserNode * target);
     
+    void update();
+
   protected slots:
     virtual void polish();
+    void compute();
     void select();
+    void selected(int);
+    void mark_unmark();
+    void mark_them();
+    void unmark_all();
 };
 
 #endif

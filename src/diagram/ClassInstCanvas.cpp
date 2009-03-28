@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -89,7 +89,7 @@ void ClassInstCanvas::compute_size(int & w, int & h, UmlCanvas * canvas) {
       break;
     default:
       // right get_classinstwritehorizontally arg set by the diagram itself
-      horiz = canvas->browser_diagram()->get_classinstwritehorizontally(UmlCodeSup);
+      horiz = canvas->browser_diagram()->get_classinstwritehorizontally();
     }
   }
   
@@ -102,7 +102,7 @@ void ClassInstCanvas::compute_size(int & w, int & h, UmlCanvas * canvas) {
     break;
   default:
     // right arg set by the diagram itself
-    show_properties = canvas->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+    show_properties = canvas->browser_diagram()->get_show_stereotype_properties();
   }
   
   if (used_color != UmlTransparent) {

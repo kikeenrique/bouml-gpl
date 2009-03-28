@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,6 +34,7 @@ class StateData;
 
 class BrowserStateDiagram;
 class BrowserTransition;
+class BrowserOperation;
 
 class BrowserState : public BrowserNode, public Labeled<BrowserState> {
   friend class StereotypesDialog;
@@ -85,6 +86,7 @@ class BrowserState : public BrowserNode, public Labeled<BrowserState> {
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserState * read(char * &, char *, BrowserNode *);
     static BrowserState * read_ref(char * & st);
+    static BrowserNode * read_any_ref(char * &, char *);
     static BrowserNode * get_it(const char * k, int id);
 
     static void clear(bool old);
@@ -95,7 +97,7 @@ class BrowserState : public BrowserNode, public Labeled<BrowserState> {
     virtual bool api_compatible(unsigned v) const;
     
     virtual void referenced_by(QList<BrowserNode> &, bool ondelete = FALSE);
-    static void compute_referenced_by(QList<BrowserNode> &, BrowserState *);
+    static void compute_referenced_by(QList<BrowserNode> &, BrowserOperation *);
     
     static void init();
     static const QStringList & default_stereotypes();

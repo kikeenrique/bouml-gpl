@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,6 +42,7 @@ class ActivityDiagramWindow : public DiagramWindow {
     QToolButton * addActivity;
     QToolButton * addInterruptibleActivityRegion;
     QToolButton * addExpansionRegion;
+    QToolButton * addActivityPartition;
     QToolButton * addInitial;
     QToolButton * addActivityFinal;
     QToolButton * addFlowFinal;
@@ -71,6 +72,7 @@ class ActivityDiagramWindow : public DiagramWindow {
     void hit_activity();
     void hit_interruptibleactivityregion();
     void hit_expansionregion();
+    void hit_activitypartition();
     void hit_initial();
     void hit_activityfinal();
     void hit_flowfinal();

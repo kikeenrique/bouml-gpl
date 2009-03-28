@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,6 +34,7 @@
 #include "BrowserExpansionNode.h"
 #include "ActivityObjectData.h"
 #include "BrowserExpansionRegion.h"
+#include "BrowserActivityDiagram.h"
 #include "BrowserFlow.h"
 #include "BrowserClass.h"
 #include "BrowserActivityNode.h"
@@ -125,6 +126,11 @@ void BrowserExpansionNode::renumber(int phase) {
 const QPixmap* BrowserExpansionNode::pixmap(int) const {
   if (deletedp())
     return DeletedExpansionNodeIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+  
+  if (px != 0)
+    return px;
   else if (is_marked)
     return ExpansionNodeMarkedIcon;
   else
@@ -213,7 +219,7 @@ through a flow");
 void BrowserExpansionNode::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
-    open(FALSE);
+    open(TRUE);
     return;
   case 1:
     {
@@ -310,6 +316,8 @@ QString BrowserExpansionNode::full_name(bool rev, bool) const {
 void BrowserExpansionNode::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
   BrowserFlow::compute_referenced_by(l, this);
+  if (! ondelete)
+    BrowserActivityDiagram::compute_referenced_by(l, this, "expansionnodecanvas", "expansionnode_ref");
 }
 
 void BrowserExpansionNode::compute_referenced_by(QList<BrowserNode> & l,
@@ -522,7 +530,7 @@ BrowserExpansionNode *
     }
     
     result->is_read_only = (!in_import() && read_only_file()) || 
-      (user_id() != 0) && result->is_api_base();
+      ((user_id() != 0) && result->is_api_base());
     result->def->set_browser_node(result);
     
     return result;

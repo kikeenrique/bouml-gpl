@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -842,7 +842,7 @@ void ClassData::send_php_def(ToolCom * com) {
 void ClassData::send_python_def(ToolCom * com) {
   com->write_string(python_decl);
   com->write_bool(python_2_2);
-  com->write_bool(php_external);
+  com->write_bool(python_external);
 }
 
 void ClassData::send_idl_def(ToolCom * com) {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -100,7 +100,7 @@ void UmlRelation::generate_inherit(const char *& sep, QTextOStream & f,
 
 void UmlRelation::generate_decl(QTextOStream & f,
 				const QCString & cl_stereotype,
-				bool) {
+				QCString indent, bool) {
   if ((relationKind() != aGeneralisation) && 
       (relationKind() != aRealization) && 
       (relationKind() != aDependency)) {
@@ -120,7 +120,6 @@ void UmlRelation::generate_decl(QTextOStream & f,
       const char * p = idlDecl();
       const char * pp = 0;
       QCString s;
-      QCString indent = "";
       
       while ((*p == ' ') || (*p == '\t'))
 	indent += *p++;

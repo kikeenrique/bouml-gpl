@@ -24,6 +24,9 @@ void UmlItem::projection() {
     case 'h':
       uml2php(rec);
       break;
+    case 'y':
+      uml2python(rec);
+      break;
     default:
       break;
     }
@@ -40,5 +43,8 @@ void UmlItem::uml2idl(bool) {
 }
 
 void UmlItem::uml2php(bool) {
+}
+
+void UmlItem::uml2python(bool) {
 }
 

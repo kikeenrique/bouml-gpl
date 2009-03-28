@@ -41,3 +41,13 @@ void UmlPackage::uml2php(bool rec) {
   }
 }
 
+void UmlPackage::uml2python(bool rec) {
+  if (rec) {
+    const QVector<UmlItem> ch = children();
+    unsigned n = ch.size();
+    
+    for (unsigned i = 0; i != n; i += 1)
+      ch[i]->uml2python(rec);
+  }
+}
+

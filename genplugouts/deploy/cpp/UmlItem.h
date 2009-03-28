@@ -21,6 +21,8 @@ class UmlItem : public UmlBaseItem {
 
     virtual void deploy(UmlDeploymentView * view);
 
+    virtual int deployable();
+
 };
 
 #endif

@@ -1,5 +1,6 @@
 
 #include "UmlStateDiagram.h"
+#include "UmlOperation.h"
 #include "UmlState.h"
 
 QCString UmlState::sKind() {
@@ -20,6 +21,14 @@ void UmlState::html(QCString pfix, unsigned int rank, unsigned int level) {
     fw.write("<p>");
     writeq(description());
     fw.write("<br /></p>");
+  }
+
+  UmlOperation * beh = specification();
+  
+  if (beh != 0) {
+    fw.write("<p>Implements ");
+    beh->write();
+    fw.write("</p>");
   }
 
   fw.write("<p>Entry Behavior :</p><ul>");

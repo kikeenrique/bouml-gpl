@@ -6,6 +6,10 @@
 #include "UmlCom.h"
 void UmlClass::write(FileOut & out) {
   QCString st = stereotype();
+  
+  if (st == "metaclass")
+    return;
+  
   bool is_actor = (st == "actor");
   bool is_enum = (st == "enum");
   bool is_stereotype =
@@ -64,64 +68,32 @@ void UmlClass::write(FileOut & out) {
   write_formals(out);
   write_actuals(out);
   
-  QCString extending;
-  QCString extname;
-  
-  if (is_stereotype) {
-    propertyValue("stereotypeExtension", extending);
-    if (extending.isEmpty())
-      extending = (_uml_20) ? "http://schema.omg.org/spec/UML/2.0/uml.xml#Element"
-			    : "http://schema.omg.org/spec/UML/2.1/uml.xml#Element";
-    extname = extending.mid(extending.findRev('#') + 1);
-    
-    out.indent();
-    out << "<ownedAttribute xmi:type=\"uml:Property\" name=\"base_";
-    out.quote(extname);
-    out << '"';
-    out.id_prefix(this, "BASE_");
-    out.ref(this, "association", "EXT_");
-    out << ">\n";
-    out.indent();
-#ifndef WIN32
-#warning have to add management of stereotype/class extension
-#endif
-    out << "\t<type xmi:type=\"uml:Class\" href=\"" << extending << "\"/>\n";
-    out.indent();
-    out << "</ownedAttribute>\n";
-  }
-
   const QVector<UmlItem> ch = children();
   unsigned n = ch.size();
+  unsigned i;
   
-  for (unsigned i = 0; i != n; i += 1)
+  for (i = 0; i != n; i += 1)
     ch[i]->write(out);
+  
+  if (is_stereotype) {
+    QCString path;
+    
+    if (propertyValue("stereotypeIconPath", path) && !path.isEmpty()) {
+      out.indent();
+      out << "<icon xmi:type=\"uml:Image\"";
+      out.id_prefix(this, "Icon_");
+      out << " location=\"" << path << "\"/>\n";
+    }
+  }
   
   out.indent(-1);
   out.indent();
   out << "</" << k << ">\n";
   
-  if (is_stereotype) {
-    k = (_uml_20) ? "ownedMember" : "packagedElement";
-    
-    out.indent();
-    out << "<" << k << " xmi:type=\"uml:Extension\" name=\"A_";
-    out.quote(extname);
-    out  << '_';
-    out.quote(name());
-    out << '"';
-    out.id_prefix(this, "EXT_");
-    out.ref(this, "memberEnd", "BASE_");
-    out << ">\n";
-    out.indent();
-    out << "\t<ownedEnd xmi:type=\"uml:ExtensionEnd\" name=\"extension_";
-    out.quote(name());
-    out << '"';
-    out.id_prefix(this, "EXTEND_");
-    out.ref(this, "type");
-    out << " aggregation=\"composite\"/>\n";
-    out.indent();
-    out << "</" << k << ">\n";
-  }
+  if (is_stereotype)
+    for (i = 0; i != n; i += 1)
+      if (ch[i]->kind() == aRelation)
+	((UmlRelation *) ch[i])->write_extension(out);
   
   unload();
 }
@@ -157,7 +129,6 @@ void UmlClass::write_actuals(FileOut & out) {
   QValueList<UmlActualParameter> actual_params = actuals();
   QValueList<UmlActualParameter>::ConstIterator iter;
   int rank;
-  char s[32];
   UmlClass * super = 0;
 
   for (iter = actual_params.begin(), rank = 0;
@@ -174,8 +145,7 @@ void UmlClass::write_actuals(FileOut & out) {
       
       out.indent();
       out << "<templateBinding xmi:type=\"uml:TemplateBinding\"";
-      sprintf(s, "ACTUAL%d_", rank);
-      out.id_prefix(this, s);
+      out.id_prefix(this, "ACTUAL", rank);
       out << ">\n";
       out.indent(+1);
       
@@ -221,5 +191,25 @@ UmlClass * UmlClass::set_assoc(UmlRelation * rel) {
     UmlCom::trace(msg);
     return 0;
   }
+}
+
+void UmlClass::get_extended(QValueList<QCString> & r) {
+  r.clear();
+  
+  const QVector<UmlItem> ch = children();
+  unsigned n = ch.size();
+  unsigned i;
+  
+  for (i = 0; i != n; i += 1) {
+    UmlItem * x = ch[i];
+    
+    if ((x->kind() == aRelation) &&
+	(((UmlRelation *) x)->relationKind() == aDirectionalAssociation) &&
+	(((UmlRelation *) x)->roleType()->stereotype() == "metaclass"))
+      r.append(((UmlRelation *) x)->roleType()->name());
+  }
+  
+  if (r.isEmpty())
+    r.append("Element");
 }
 

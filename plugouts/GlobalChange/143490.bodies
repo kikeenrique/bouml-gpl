@@ -41,10 +41,11 @@ _onClass = cl;
 _onOperation = op;
 _onAttribute = att;
 _onRelation = rel;
-!!!191874.cpp!!!	set_language(in c : bool, in j : bool, in p : bool, in i : bool) : void
+!!!191874.cpp!!!	set_language(in c : bool, in j : bool, in p : bool, in y : bool, in i : bool) : void
 _cpp = c;
 _java = j;
 _php = p;
+_python = y;
 _idl = i;
 !!!191234.cpp!!!	match_stereotype(in s : QCString) : bool
 if (_is)

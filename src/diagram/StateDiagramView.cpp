@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -158,12 +158,18 @@ void StateDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	
 	QCanvasItem * ci = the_canvas()->collision(e->pos());
 	DiagramItem * di;
-
-	BrowserState * parent = ((ci != 0) && 
-				 ((di = QCanvasItemToDiagramItem(ci)) != 0) &&
-				 (di->type() == UmlState))
-	  ? (BrowserState *) ((StateCanvas *) di)->get_bn()
-	  : (BrowserState *) window()->browser_diagram()->parent();
+	bool specified = ((ci != 0) && 
+			  ((di = QCanvasItemToDiagramItem(ci)) != 0) &&
+			  (di->type() == UmlState));
+	BrowserNode * parent;
+	
+	if (specified) {
+	  if ((parent = ((StateCanvas *) di)->pointed_region(e->pos())) == 0)
+	    parent = ((StateCanvas *) di)->get_bn();
+	}
+	else
+	  parent = (BrowserNode *) window()->browser_diagram()->parent();
+	
 	BrowserNode * b = BrowserPseudoState::get_pseudostate(parent, action);
 	
 	if (b != 0) {
@@ -188,12 +194,18 @@ void StateDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	
 	QCanvasItem * ci = the_canvas()->collision(e->pos());
 	DiagramItem * di;
-
-	BrowserState * parent = ((ci != 0) && 
-				 ((di = QCanvasItemToDiagramItem(ci)) != 0) &&
-				 (di->type() == UmlState))
-	  ? (BrowserState *) ((StateCanvas *) di)->get_bn()
-	  : (BrowserState *) window()->browser_diagram()->parent();
+	bool specified = ((ci != 0) && 
+			  ((di = QCanvasItemToDiagramItem(ci)) != 0) &&
+			  (di->type() == UmlState));
+	BrowserNode * parent;
+	
+	if (specified) {
+	  if ((parent = ((StateCanvas *) di)->pointed_region(e->pos())) == 0)
+	    parent = ((StateCanvas *) di)->get_bn();
+	}
+	else
+	  parent = (BrowserNode *) window()->browser_diagram()->parent();
+	
 	BrowserNode * b = BrowserStateAction::add_stateaction(parent);
 
 	switch (action) {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -135,7 +135,12 @@ void BrowserDeploymentView::renumber(int phase) {
 }
 
 const QPixmap* BrowserDeploymentView::pixmap(int) const {
-  return (deletedp()) ? DeletedDeploymentViewIcon : DeploymentViewIcon;
+  if (deletedp()) 
+    return DeletedDeploymentViewIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : DeploymentViewIcon;
 }
 
 QString BrowserDeploymentView::full_name(bool rev, bool itself) const {
@@ -499,66 +504,6 @@ UmlColor BrowserDeploymentView::get_color(UmlCode who) const {
     : ((BrowserNode *) parent())->get_color(who);
 }
 
-bool BrowserDeploymentView::get_shadow(UmlCode who) const {
-  switch (deploymentdiagram_settings.shadow) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_shadow(who);
-  }
-}
-
-bool BrowserDeploymentView::get_draw_all_relations(UmlCode who) const {
-  switch (deploymentdiagram_settings.draw_all_relations) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_draw_all_relations(who);
-  }  
-}
-
-bool BrowserDeploymentView::get_show_stereotype_properties(UmlCode who) const {
-  switch (deploymentdiagram_settings.componentdrawingsettings.show_stereotype_properties) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_stereotype_properties(who);
-  }
-}
-
-bool BrowserDeploymentView::get_auto_label_position(UmlCode who) const {
-  Uml3States v;
-  
-  switch (who) {
-  case UmlDeploymentDiagram:
-    v = deploymentdiagram_settings.auto_label_position;
-    break;
-  default:
-    // error
-    return FALSE;
-  }
-  
-  switch (v) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_auto_label_position(who);
-  }
-}
-
-void BrowserDeploymentView::get_componentdrawingsettings(bool, ComponentDrawingSettings & result) const {
-  if (!deploymentdiagram_settings.componentdrawingsettings.complete(result))
-    ((BrowserNode *) parent())->get_componentdrawingsettings(TRUE, result);
-}
-
 BrowserNodeList & BrowserDeploymentView::instances(BrowserNodeList & result)
 {
   IdIterator<BrowserDeploymentView> it(all);
@@ -826,8 +771,8 @@ BrowserDeploymentView * BrowserDeploymentView::read(char * & st, char * k,
     
     r->is_defined = TRUE;
 
-    r->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && r->is_api_base();
+    r->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && r->is_api_base());
     
     k = read_keyword(st);
     

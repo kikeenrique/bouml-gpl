@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -47,6 +47,7 @@
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "BrowserStateDiagram.h"
 
 IdDict<BrowserStateAction> BrowserStateAction::all(257, __FILE__);
 QStringList BrowserStateAction::its_default_stereotypes;	// unicode
@@ -97,6 +98,8 @@ void BrowserStateAction::update_idmax_for_root()
 void BrowserStateAction::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
   BrowserTransition::compute_referenced_by(l, this);
+  if (! ondelete)
+    BrowserStateDiagram::compute_referenced_by(l, this, "stateactioncanvas", "stateaction_ref");
 }
 
 void BrowserStateAction::renumber(int phase) {
@@ -106,6 +109,13 @@ void BrowserStateAction::renumber(int phase) {
 
 const QPixmap* BrowserStateAction::pixmap(int) const {
   const char * st = def->get_stereotype();
+  
+  if (! deletedp()) {
+    const QPixmap * px = ProfiledStereotypes::browserPixmap(st);
+    
+    if (px != 0) 
+      return px;
+  }
   
   if (!strcmp(st, "receive-signal")) {
     if (deletedp())
@@ -129,6 +139,11 @@ const QPixmap* BrowserStateAction::pixmap(int) const {
     return ActionMarkedIcon;
   else
     return ActionIcon;
+}
+
+void BrowserStateAction::iconChanged() {
+  repaint();
+  def->modified();
 }
 
 BrowserTransition * BrowserStateAction::add_transition(BrowserNode * end) {
@@ -529,8 +544,8 @@ BrowserStateAction * BrowserStateAction::read(char * & st, char * k,
     result->is_defined = TRUE;
     result->BrowserNode::read(st, k);
     
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     if (strcmp(k, "end")) {
       while (BrowserTransition::read(st, k, result))

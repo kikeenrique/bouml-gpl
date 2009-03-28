@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -99,7 +99,7 @@ Class * Class::reverse(ClassContainer * container, QCString stereotype,
   
   if (s == ";") {
     if (!Package::scanning()) {
-      s = stereotype + ' ' + name + ";\n";
+      s = "    " + stereotype + ' ' + name + ";\n";
       container->declaration(name, stereotype, s);
     }
     Lex::finish_line();
@@ -694,7 +694,13 @@ void Class::manage_member(QCString s, aVisibility visibility,
 	  Lex::error_near(s2);
 	return;	
       }
-      else if (((s2 = Lex::read_word()) != "{") && (s2 != ":")) {
+      else if ((s2 = Lex::read_word()) == ";") {
+	// form like 'struct X;'
+	Lex::come_back();
+	reverse(this, s, tmplts, path);
+	return;
+      }
+      else if ((s2 != "{") && (s2 != ":")) {
 	// form like 'struct X Y'
 	pretype = s;
 	Lex::come_back();

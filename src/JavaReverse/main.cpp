@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -62,7 +62,7 @@ int main(int argc, char ** argv)
     try {
       //UmlCom::with_ack(FALSE);
       
-      UmlCom::trace("<b>Java reverse</b> release 2.12.2<br><hr>");
+      UmlCom::trace("<b>Java reverse</b> release 2.12.5<br><hr>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlItem * item = UmlCom::targetItem();
@@ -83,6 +83,21 @@ int main(int argc, char ** argv)
 	// if the path contains non latin1 characters, for instance cyrillic !
 	QString s = QDir::home().absFilePath(".boumlcat");
 	FILE * fp = fopen((const char *) s, "r");
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 	if (fp != 0) {
 	  char line[512];

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,6 +34,7 @@
 class SdDead;
 class SdObjCanvas;
 class SdDurationCanvas;
+class FragmentCanvas;
 class ToolCom;
 
 class SdLifeLineCanvas : public DiagramCanvas, public SdDurationSupport {
@@ -41,6 +42,8 @@ class SdLifeLineCanvas : public DiagramCanvas, public SdDurationSupport {
     QList<SdDurationCanvas> durations;
     SdObjCanvas * obj;
     int end;
+    
+    void exec_menu(int rank);
   
   public:
     SdLifeLineCanvas(UmlCanvas * canvas, SdObjCanvas * o);
@@ -77,11 +80,15 @@ class SdLifeLineCanvas : public DiagramCanvas, public SdDurationSupport {
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     virtual LineDirection allowed_direction(UmlCode);
     virtual bool copyable() const;
+    virtual void apply_shortcut(QString s);
+    
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     virtual void history_save(QBuffer &) const;
     virtual void history_load(QBuffer &);
     
-    static void send(ToolCom * com, const QCanvasItemList & l);
+    static void send(ToolCom * com, const QCanvasItemList & l,
+		     QList<FragmentCanvas> & fragments,
+		     QList<FragmentCanvas> & refs);
 };
 
 #endif

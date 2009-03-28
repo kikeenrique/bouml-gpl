@@ -16,7 +16,7 @@ class UmlBaseComponent
   
   return _assoc_diagram;
 !!!77184.cpp!!!	set_AssociatedDiagram(inout d : UmlComponentDiagram) : bool
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -24,7 +24,7 @@ class UmlBaseComponent
   else
     return FALSE;
 !!!77184.java!!!	set_AssociatedDiagram(inout d : UmlComponentDiagram) : bool
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, d.identifier_());
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, (d == null) ? (long) 0 : d.identifier_());
   UmlCom.check();
   
   _assoc_diagram = d;
@@ -58,9 +58,10 @@ class UmlBaseComponent
 		   realizing, provided, required);
   if (UmlCom::read_bool()) {
     if (_defined) {
-      _realizing = realizing;
-      _provided = provided;
-      _required = required;
+      // tests != to bypass Qt 2.3 bug
+      if (&_realizing != &realizing) _realizing = realizing;
+      if (&_provided != &provided) _provided = provided;
+      if (&_required != &required) _required = required;
     }
     return TRUE;
   }

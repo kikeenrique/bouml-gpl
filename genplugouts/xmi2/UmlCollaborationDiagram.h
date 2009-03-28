@@ -5,6 +5,8 @@
 #include "UmlBaseCollaborationDiagram.h"
 #include <qcstring.h>
 
+class FileOut;
+
 // This class manages 'collaboration diagrams', notes that the class 'UmlDiagram'
 // is a mother class of all the diagrams, allowing to generalize their
 // management
@@ -13,6 +15,8 @@
 class UmlCollaborationDiagram : public UmlBaseCollaborationDiagram {
   public:
     UmlCollaborationDiagram(void * id, const QCString & n) : UmlBaseCollaborationDiagram(id, n) {};
+
+    virtual void write(FileOut & out);
 
 };
 

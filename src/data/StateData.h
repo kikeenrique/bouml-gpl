@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -27,11 +27,13 @@
 #define STATEDATA_H
 
 #include "SimpleData.h"
+#include "UmlEnum.h"
 
 class QTextStream;
 
 class BrowserState;
 class StateDialog;
+class BrowserOperation;
 
 struct StateBehavior {
   MyStr on_entry;
@@ -45,12 +47,15 @@ struct StateBehavior {
 };
 
 class StateData : public SimpleData {
+  Q_OBJECT
+    
   friend class StateDialog;
     
   protected:
     StateBehavior uml;
     StateBehavior cpp;
     StateBehavior java;
+    BrowserOperation * specification;
     
     virtual void send_uml_def(ToolCom * com, BrowserNode * bn,
 			      const QString & comment);
@@ -63,6 +68,8 @@ class StateData : public SimpleData {
     virtual ~StateData();
     
     const StateBehavior & get_behavior(DrawingLanguage) const;
+    BrowserOperation * get_specification() const { return specification; }
+    void set_specification(BrowserOperation *);
     
     void edit();
     
@@ -71,6 +78,9 @@ class StateData : public SimpleData {
     
     void save(QTextStream &, QString & warning) const;
     void read(char * & st, char * & k);
+    
+  protected slots:
+    void on_delete();
 };
   
 #endif

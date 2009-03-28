@@ -225,6 +225,15 @@ class UmlBaseOperation
   if (defined_())
     _exceptions[rank] = t.clone_it();
 
+!!!273536.cpp!!!	methods() : UmlItem
+  QVector<UmlItem> l;
+
+  UmlCom::send_cmd(_identifier, sideCmd);
+  UmlCom::read_item_list(l);
+  return l;
+!!!273536.java!!!	methods() : UmlItem
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.sideCmd);
+  return UmlCom.read_item_list();
 !!!28928.cpp!!!	getOf() : UmlClassMember
   read_if_needed_();
     
@@ -621,10 +630,10 @@ class UmlBaseOperation
   _php_get_set_frozen = v;
 !!!245376.cpp!!!	phpContextualBodyIndent() : bool
   read_if_needed_();
-  return _idl_get_set_frozen;
+  return _php_contextual_body_indent;
 !!!245376.java!!!	phpContextualBodyIndent() : bool
   read_if_needed_();
-  return _idl_get_set_frozen;
+  return _php_contextual_body_indent;
 !!!245504.cpp!!!	set_PhpContextualBodyIndent(in v : bool) : bool
   bool vv;
 
@@ -639,6 +648,98 @@ class UmlBaseOperation
   UmlCom.check();
 
   _php_contextual_body_indent = v;
+!!!258048.cpp!!!	pythonDef() : string
+  return pythonDecl();
+!!!258048.java!!!	pythonDef() : string
+  return pythonDecl();
+!!!258176.cpp!!!	set_PythonDef(in s : str) : bool
+  return set_PythonDecl(s);
+!!!258176.java!!!	set_PythonDef(in s : str) : bool
+ set_PythonDecl(s);
+!!!258304.cpp!!!	pythonBody() : string
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, pythonBodyCmd);
+  return UmlCom::read_string();
+!!!258304.java!!!	pythonBody() : string
+  // not memorized in the instance for memory size reason
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.pythonBodyCmd);
+  return UmlCom.read_string();
+!!!258432.cpp!!!	set_PythonBody(in s : str) : bool
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, setPythonBodyCmd, s);
+  return UmlCom::read_bool();
+!!!258432.java!!!	set_PythonBody(in s : str) : bool
+  // not memorized in the instance for memory size reason
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonBodyCmd, s);
+  UmlCom.check();
+!!!258560.cpp!!!	pythonNameSpec() : string
+  read_if_needed_();
+    
+  return _python_name_spec;
+!!!258560.java!!!	pythonNameSpec() : string
+  read_if_needed_();
+    
+  return _python_name_spec;
+!!!258688.cpp!!!	set_PythonNameSpec(in s : str) : bool
+  return set_it_(_python_name_spec, s, setPythonNameSpecCmd);
+!!!258688.java!!!	set_PythonNameSpec(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonNameSpecCmd, s);
+  UmlCom.check();
+
+  _python_name_spec = s;
+!!!258816.cpp!!!	pythonGetSetFrozen() : bool
+  read_if_needed_();
+  return _python_get_set_frozen;
+!!!258816.java!!!	pythonGetSetFrozen() : bool
+  read_if_needed_();
+  return _python_get_set_frozen;
+!!!258944.cpp!!!	set_PythonGetSetFrozen(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setPythonFrozenCmd)) {
+    _python_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!258944.java!!!	set_PythonGetSetFrozen(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonFrozenCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _python_get_set_frozen = v;
+!!!259072.cpp!!!	pythonContextualBodyIndent() : bool
+  read_if_needed_();
+  return _python_contextual_body_indent;
+!!!259072.java!!!	pythonContextualBodyIndent() : bool
+  read_if_needed_();
+  return _python_contextual_body_indent;
+!!!259200.cpp!!!	set_PythonContextualBodyIndent(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setPythonContextualBodyIndentCmd)) {
+    _python_contextual_body_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!259200.java!!!	set_PythonContextualBodyIndent(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonContextualBodyIndentCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _python_contextual_body_indent = v;
+!!!259328.cpp!!!	pythonDecorators() : string
+  read_if_needed_();
+  return _python_decorators;
+!!!259328.java!!!	pythonDecorators() : string
+  read_if_needed_();
+  return _python_decorators;
+!!!259456.cpp!!!	set_PythonDecorators(in v : str) : bool
+  return set_it_(_python_decorators, v, setPythonDecoratorsCmd);
+!!!259456.java!!!	set_PythonDecorators(in v : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonDecoratorsCmd, v);
+  UmlCom.check();
+
+  _python_decorators = v;
 !!!32256.cpp!!!	isIdlOneway() : bool
   read_if_needed_();
     
@@ -710,6 +811,10 @@ class UmlBaseOperation
 #ifdef WITHPHP
   _php_name_spec = 0;
 #endif
+#ifdef WITHPYTHON
+  _python_name_spec = 0;
+  _python_decorators = 0;
+#endif
 #ifdef WITHIDL
   _idl_name_spec = 0;
 #endif
@@ -722,6 +827,8 @@ class UmlBaseOperation
   _cpp_name_spec = null;
   _java_name_spec = null;
   _php_name_spec = null;
+  _python_name_spec = null;
+  _python_decorators = null;
   _idl_name_spec = null;
   super.unload(rec, del);
 !!!32896.cpp!!!	UmlBaseOperation(in id : item_id, in n : string)
@@ -848,6 +955,18 @@ class UmlBaseOperation
   _php_name_spec = UmlCom.read_string();
   _php_get_set_frozen = UmlCom.read_bool();
   _php_contextual_body_indent = UmlCom.read_bool();
+!!!246912.cpp!!!	read_python_() : void
+  UmlBaseClassMember::read_python_();
+  _python_decorators = UmlCom::read_string();
+  _python_name_spec = UmlCom::read_string();
+  _python_get_set_frozen = UmlCom::read_bool();
+  _python_contextual_body_indent = UmlCom::read_bool();
+!!!246912.java!!!	read_python_() : void
+  super.read_python_();
+  _python_decorators = UmlCom.read_string();
+  _python_name_spec = UmlCom.read_string();
+  _python_get_set_frozen = UmlCom.read_bool();
+  _python_contextual_body_indent = UmlCom.read_bool();
 !!!33408.cpp!!!	read_idl_() : void
   UmlBaseClassMember::read_idl_();
   _idl_oneway = UmlCom::read_bool();

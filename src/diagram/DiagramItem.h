@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -30,6 +30,7 @@
 #include <qstring.h>
 #include <qpoint.h>
 #include <qtextstream.h>
+#include <qptrdict.h> 
 
 #include "Labeled.h"
 #include "UmlEnum.h"
@@ -66,7 +67,7 @@ class DiagramItem : public Labeled<DiagramItem> {
     void add_line(ArrowCanvas * l) {
       lines.append(l);
     }
-    virtual void remove_line(ArrowCanvas * l);
+    virtual void remove_line(ArrowCanvas * l, bool onbrkjoin = FALSE);
     virtual void check_line(ArrowCanvas * l);
     
     virtual UmlCode type() const = 0;
@@ -113,7 +114,7 @@ class DiagramItem : public Labeled<DiagramItem> {
     
     static DiagramItem * dict_get(int id, const char *, UmlCanvas *);
     
-    void shift(QPoint & p, QPoint other) const;
+    void shift(QPoint & p, QPoint other, bool contains_other) const;
     
     bool linked() { return !lines.isEmpty(); }
     void post_history_hide() { lines.clear(); }
@@ -127,6 +128,8 @@ class DiagramItem : public Labeled<DiagramItem> {
     
     static void post_load();
     void remove_if_already_present();
+    
+    virtual bool represents(BrowserNode *);
 };
 
 class DiagramItemList : public QList<DiagramItem> {

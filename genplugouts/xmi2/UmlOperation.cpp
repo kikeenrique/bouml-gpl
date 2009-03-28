@@ -7,6 +7,7 @@
 #include "UmlClass.h"
 #include "CppSettings.h"
 #include "JavaSettings.h"
+#include "UmlPackage.h"
 void UmlOperation::write(FileOut & out) {
   QCString decl;
 
@@ -339,5 +340,107 @@ else
 return TRUE;
 }
 
+const char * UmlOperation::event(bool rec) {
+  int n = (int) ((long) SentReceived[this]);
+  
+  if (n == 0) {
+    static unsigned rank = 0;
+    
+    n = ++rank;
+    
+    SentReceived.insert(this, (char *) n);
+  }
+  
+  static char s[24];
+    
+  sprintf(s, (rec) ? "RECOPEREVT%u_" : "SENDOPEREVT%u_", n);
+  return s;
+}
+
+const char * UmlOperation::event(const char * pfix, QCString msg)
+{
+  int index0 = 0;
+  int index1;
+  
+  while ((index1 = msg.find('\n', index0)) != -1){
+    msg[index1] = ' ';
+    index0 = index1 + 1;
+  }
+  
+  msg = *pfix + msg.simplifyWhiteSpace();
+  
+  char * presult = Events[msg];
+  
+  if (presult == 0) {
+    static unsigned rank = 0;
+    char s[16];
+    
+    sprintf(s, "%sEVT%u_", pfix, ++rank);
+    presult = strdup(s);
+    Events.insert(msg, presult);
+  }
+  
+  return presult;
+}
+
+void UmlOperation::write_events(FileOut & out)
+{
+  const char * k = (_uml_20) ? "ownedMember" : "packagedElement";
+  UmlItem * prj = UmlPackage::getProject();
+  QPtrDictIterator<char> it_oper(SentReceived);
+
+  while (it_oper.current()) {
+    out.indent();
+    out << "<" << k <<" xmi:type=\"uml:SendOperationEvent\"";
+    out.id_prefix(prj, "SENDOPEREVT", (int) ((long) it_oper.current()));
+    out << " name=\"";
+    out.quote(((UmlOperation *)it_oper.currentKey())->name());
+    out << '"';
+    out.ref((UmlOperation *)it_oper.currentKey(), "operation");
+    out << "/>\n";
+    
+    out.indent();
+    out << "<" << k <<" xmi:type=\"uml:ReceiveOperationEvent\"";
+    out.id_prefix(prj, "RECOPEREVT", (int) ((long) it_oper.current()));
+    out << " name=\"";
+    out.quote(((UmlOperation *)it_oper.currentKey())->name());
+    out << '"';
+    out.ref((UmlOperation *)it_oper.currentKey(), "operation");
+    out << "/>\n";
+    
+    ++it_oper;
+  }
+  
+  QAsciiDictIterator<char> it_evt(Events);
+
+  while (it_evt.current()) {
+    out.indent();
+    
+    if (it_evt.currentKey()[0] == 'D') {
+      out << "<" << k <<" xmi:type=\"uml:DestructionEvent\"";
+      out.id_prefix(prj, it_evt.current());
+      out << "/>\n";
+    }
+    else {
+      out << "<" << k <<" xmi:type=\"uml:ExecutionEvent\"";
+      out.id_prefix(prj, it_evt.current());
+      if (*it_evt.currentKey() != 0) {
+	out << " name=\"";
+	out.quote(it_evt.currentKey() + 1);
+	out << "\"/>\n";
+      }
+      else
+	out << "/>\n";
+    }
+    
+    free(it_evt.current());
+    ++it_evt;
+  }
+}
+
 int UmlOperation::param_id;
+
+QPtrDict<char> UmlOperation::SentReceived;
+
+QAsciiDict<char> UmlOperation::Events;
 

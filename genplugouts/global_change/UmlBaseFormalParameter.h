@@ -23,7 +23,6 @@ class UmlBaseFormalParameter {
 
   //  return the optional extend (Java)
   const UmlTypeSpec & extend() { return _extends; };
-  friend class UmlBaseClass;
 
   protected:
     QCString _name;
@@ -39,6 +38,7 @@ class UmlBaseFormalParameter {
     
     void read_();
 
+  friend class UmlBaseClass;
 };
 
 #endif

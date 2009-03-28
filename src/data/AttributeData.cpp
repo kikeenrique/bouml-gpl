@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,10 @@ AttributeData::AttributeData()
     : is_deleted(FALSE),
       isa_class_attribute(FALSE), isa_volatile_attribute(FALSE),
       isa_const_attribute(FALSE),
+      is_derived(FALSE),
+      is_derivedunion(FALSE),
+      is_ordered(FALSE),
+      is_unique(FALSE),
       cpp_mutable(FALSE),
       java_transient(FALSE),
       uml_visibility(UmlDefaultVisibility),
@@ -59,6 +63,10 @@ AttributeData::AttributeData(const AttributeData * model, BrowserNode * bn)
       is_deleted(FALSE), isa_class_attribute(model->isa_class_attribute),
       isa_volatile_attribute(model->isa_volatile_attribute),
       isa_const_attribute(model->isa_const_attribute),
+      is_derived(model->is_derived),
+      is_derivedunion(model->is_derivedunion),
+      is_ordered(model->is_ordered),
+      is_unique(model->is_unique),
       cpp_mutable(model->cpp_mutable),
       java_transient(model->java_transient),
       uml_visibility(model->uml_visibility),
@@ -156,22 +164,49 @@ QString AttributeData::definition(bool full) const {
 }
 
 QString AttributeData::definition(bool full, bool mult, bool init,
-				  DrawingLanguage language) const {
+				  bool modif, DrawingLanguage language) const {
   switch (language) {
   case UmlView:
-    if (! full)
-      return browser_node->get_name();
-    else {
-      QString r = ((const char *) browser_node->get_name())
-	+ QString(" : ") + ((const char *) type.get_type());
+    {
+      QString r = ((const char *) browser_node->get_name());
       
-      if (mult && !multiplicity.isEmpty())
-	r += " [" + QString((const char *) multiplicity) + "]";
-	  
-      if (init && !init_value.isEmpty()) {
-	if (*init_value != '=')
-	  r += " = ";
-	r += (const char *) init_value;
+      if (is_derived)
+	r = "/" + r;
+      
+      if (full) {
+	r += QString(" : ") + ((const char *) type.get_type());
+	
+	if (mult && !multiplicity.isEmpty())
+	  r += " [" + QString((const char *) multiplicity) + "]";
+	
+	if (init && !init_value.isEmpty()) {
+	  if (*init_value != '=')
+	    r += " = ";
+	  r += (const char *) init_value;
+	}
+      }
+      
+      if (modif) {
+	const char * sep = " {";
+	
+	if (isa_const_attribute) {
+	  r += QString(sep) + "readOnly";
+	  sep = ",";
+	}
+	if (is_derived && is_derivedunion) {
+	  r += QString(sep) + "union";
+	  sep = ",";
+	}
+	if (is_ordered) {
+	  r += QString(sep) + "ordered";
+	  sep = ",";
+	}
+	if (is_unique) {
+	  r += QString(sep) + "unique";
+	  sep = ",";
+	}
+	if (*sep == ',')
+	  r += "}";
       }
       
       return r;
@@ -328,6 +363,13 @@ void AttributeData::send_uml_def(ToolCom * com, BrowserNode * bn,
   com->write_string(init_value);
   com->write_bool(isa_const_attribute);
   
+  if (api > 41) {
+    com->write_bool(is_derived);
+    com->write_bool(is_derivedunion);
+    com->write_bool(is_ordered);
+    com->write_bool(is_unique);
+  }
+  
   if (((BrowserAttribute *) browser_node)->get_get_oper() != 0)
     ((BrowserAttribute *) browser_node)->get_get_oper()->write_id(com);
   else
@@ -483,6 +525,30 @@ bool AttributeData::tool_cmd(ToolCom * com, const char * args,
 	  set_idlcase(at, args);
 	}
 	break;
+      case setDerivedCmd:
+	switch (*args) {
+	case 0:
+	  is_derived = is_derivedunion = FALSE;
+	  break;
+	case 1:
+	  is_derived = TRUE;
+	  is_derivedunion = FALSE;
+	  break;
+	case 3:
+	  is_derived = is_derivedunion = TRUE;
+	  break;
+	default:
+	  // derived union but non derived
+	  com->write_ack(FALSE);
+	  return TRUE;
+	}
+	break;
+      case setOrderingCmd:
+	is_ordered = (*args != 0);
+	break;
+      case setUniqueCmd:
+	is_unique = (*args != 0);
+	break;
       default:
 	return BasicData::tool_cmd(com, args, bn, comment);
       }
@@ -509,6 +575,13 @@ void AttributeData::save(QTextStream & st, QString & warning) const {
     st << "volatile ";
   if (isa_const_attribute)
     st << "const_attribute ";
+  if (is_derived)
+    st << ((is_derivedunion) ? "derivedunion " : "derived ");
+  if (is_ordered)
+    st << "ordered ";
+  if (is_unique)
+    st << "unique ";
+
   st << stringify(uml_visibility);
   type.save(st, warning, " type ", " explicit_type ");
   if (! multiplicity.isEmpty()) {
@@ -594,6 +667,33 @@ void AttributeData::read(char * & st, char * & k) {
   }
   else
     isa_const_attribute = FALSE;
+  
+  if (!strcmp(k, "derivedunion")) {
+    is_derived = TRUE;
+    is_derivedunion = TRUE;
+    k = read_keyword(st);
+  }
+  else if (!strcmp(k, "derived")) {
+    is_derived = TRUE;
+    is_derivedunion = FALSE;
+    k = read_keyword(st);
+  }
+  else
+    is_derived = is_derivedunion = FALSE;
+  
+  if (!strcmp(k, "ordered")) {
+    is_ordered = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    is_ordered = FALSE;
+  
+  if (!strcmp(k, "unique")) {
+    is_unique = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    is_unique = FALSE;
   
   uml_visibility = ::visibility(k);
   

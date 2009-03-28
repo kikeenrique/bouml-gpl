@@ -5,6 +5,7 @@
 #include "UmlAttribute.h"
 #include "CppSettings.h"
 #include "JavaSettings.h"
+#include "PythonSettings.h"
 
 QCString UmlRelation::sKind() {
   return "relation";
@@ -25,61 +26,93 @@ void UmlRelation::memo_ref() {
 }
 
 void UmlRelation::html(QCString, unsigned int, unsigned int) {
+  bool extension;
+  
   switch (relationKind()) {
   case aGeneralisation:
   case aRealization:
   case aDependency:
     return;
-  default:
+  case aDirectionalAssociation:
+    extension = (parent()->stereotype() == "stereotype") &&
+      (roleType()->stereotype() == "metaclass");
     break;
+  default:
+    extension = FALSE;
   }
 
   define();
 
-  fw.write("<table><tr><td><div class=\"element\">Relation <b>");
-  writeq(name());
-  fw.write("</b></div></td></tr></table>");
+  if (extension)
+    fw.write("<table><tr><td><div class=\"element\">Extension</div></td></tr></table>");
+  else {
+    fw.write("<table><tr><td><div class=\"element\">Relation <b>");
+    writeq(name());
+    fw.write("</b></div></td></tr></table>");
+  }
 
   QCString s = description();
 
   if (!s.isEmpty()) {
     fw.write("<p>");
-    gen_cpp_decl(s, TRUE);
+    if (! javaDecl().isEmpty())
+      gen_java_decl(s, TRUE);
+    else if (! phpDecl().isEmpty())
+      gen_php_decl(s, TRUE);
+    else if (! pythonDecl().isEmpty())
+      gen_python_decl(s);
+    else
+      gen_cpp_decl(s, TRUE);
     fw.write("<br /></p>");
   }
 
-  fw.write("<p>Declaration :</p><ul>");
-  
-  fw.write("<li>Uml : ");
-  gen_uml_decl();
-  fw.write("</li>");
-  
-  s = cppDecl();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : ");
-    gen_cpp_decl(s, FALSE);
+  if (extension) {
+    fw.write("<p>Extend ");
+    roleType()->write();
+    fw.write("</p>");
+  }
+  else {
+    fw.write("<p>Declaration :</p><ul>");
+    
+    fw.write("<li>Uml : ");
+    gen_uml_decl();
     fw.write("</li>");
+    
+    s = cppDecl();
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>C++ : ");
+      gen_cpp_decl(s, FALSE);
+      fw.write("</li>");
+    }
+    
+    s = javaDecl();
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>Java : ");
+      gen_java_decl(s, FALSE);
+      fw.write("</li>");
+    }
+    
+    s = phpDecl();
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>Php : ");
+      gen_php_decl(s, FALSE);
+      fw.write("</li>");
+    }
+    
+    s = pythonDecl();
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>Python : ");
+      gen_python_decl(s);
+      fw.write("</li>");
+    }
+    
+    fw.write("</ul>");
   }
 
-  s = javaDecl();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : ");
-    gen_java_decl(s);
-    fw.write("</li>");
-  }
-
-  s = phpDecl();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Php : ");
-    gen_php_decl(s);
-    fw.write("</li>");
-  }
-
-  fw.write("</ul>");
-  
   annotation_constraint();
   write_properties();
  
@@ -171,8 +204,12 @@ void UmlRelation::gen_cpp_decl(QCString s, bool descr) {
 	while ((*p != 0) && (*p <= ' '));
       }
     }
-    else if (*p == ';')
-      break;
+    else if (*p == ';') {
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
     else if (*p == '@')
       manage_alias(p);
     else
@@ -180,7 +217,7 @@ void UmlRelation::gen_cpp_decl(QCString s, bool descr) {
   }
 }
 
-void UmlRelation::gen_java_decl(QCString s) {
+void UmlRelation::gen_java_decl(QCString s, bool descr) {
   const char * p = bypass_comment(s);
 
   while (*p) {
@@ -268,8 +305,12 @@ void UmlRelation::gen_java_decl(QCString s) {
 	p += 1;
       while ((*p != 0) && (*p <= ' '));
     }
-    else if (*p == ';')
-      break;
+    else if (*p == ';') {
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
     else if (*p == '@')
       manage_alias(p);
     else
@@ -277,7 +318,7 @@ void UmlRelation::gen_java_decl(QCString s) {
   }
 }
 
-void UmlRelation::gen_php_decl(QCString s) {
+void UmlRelation::gen_php_decl(QCString s, bool descr) {
   const char * p = bypass_comment(s);
 
   while (*p) {
@@ -308,6 +349,9 @@ void UmlRelation::gen_php_decl(QCString s) {
 	  (visibility() == PackageVisibility))
 	fw.write("var ");
     }
+    else if (!strncmp(p, "${value}", 8)) {
+      p += 8;
+    }
     else if (!strncmp(p, "${const}", 8)) {
       p += 8;
       if (isReadOnly())
@@ -322,8 +366,51 @@ void UmlRelation::gen_php_decl(QCString s) {
 	p += 1;
       while ((*p != 0) && (*p <= ' '));
     }
-    else if (*p == ';')
-      break;
+    else if (*p == ';') {
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
+    else if (*p == '@')
+      manage_alias(p);
+    else
+      writeq(*p++);
+  }
+}
+
+void UmlRelation::gen_python_decl(QCString s) {
+  QCString st = PythonSettings::classStereotype(stereotype());
+  const char * p = bypass_comment(s);
+
+  while (*p) {
+    if (!strncmp(p, "${comment}", 10))
+      p += 10;
+    else if (!strncmp(p, "${description}", 14))
+      p += 14;
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      writeq(roleName());
+    }
+    else if (!strncmp(p, "${value}", 8)) {
+      p += 8;
+      writeq((defaultValue().isEmpty()) ? "None" : defaultValue());
+    }
+    else if (!strncmp(p, "${self}", 7)) {
+      p += 7;
+      if (!isClassMember())
+	fw.write("self.");
+    }
+    else if (!strncmp(p, "${type}", 7)) {
+      p += 7;
+      roleType()->write();
+    }
+    else if (!strncmp(p, "${stereotype}", 13)) {
+      p += 13;
+      writeq(st);
+    }
+    else if (*p == '\r')
+      p += 1;
     else if (*p == '@')
       manage_alias(p);
     else
@@ -339,12 +426,33 @@ void UmlRelation::gen_uml_decl() {
   fw.write(" : ");
   roleType()->write();
 
-  QCString s = multiplicity();
+  QCString s;
   
+  s = defaultValue();
+  if (!s.isEmpty()) {
+    if (s[0] != '=')
+      fw.write(" = ");
+    writeq(s);
+  }
+
+  s = multiplicity();
   if (!s.isEmpty()) {
     fw.write(", multiplicity : ");
     writeq(s);
   }
+
+  if (isDerived())
+    fw.write((isDerivedUnion()) ? ", derived union" : ", derived");
+    
+  if (isReadOnly())
+    fw.write(", read only");
+    
+  if (isOrdered())
+    fw.write(", ordered");
+    
+  if (isUnique())
+    fw.write(", unique");
+
 }
 
 QCString UmlRelation::pretty_name() {

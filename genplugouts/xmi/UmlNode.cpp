@@ -29,6 +29,6 @@ bool UmlNode::write_if_needed(FileOut & out) {
   return TRUE; 
 }
 
-void UmlNode::write(FileOut & out) {
+void UmlNode::write(FileOut &) {
 }
 

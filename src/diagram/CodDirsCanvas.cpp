@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -334,6 +334,10 @@ bool CodDirsCanvas::copyable() const {
   link->get_start_end(from, to);
   
   return link->selected() && from->copyable() && to->copyable();
+}
+
+bool CodDirsCanvas::represents(BrowserNode * bn) {
+  return supports(bn);
 }
 
 void CodDirsCanvas::save(QTextStream & st, bool ref, QString & warning) const {

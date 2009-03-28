@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,6 +48,8 @@ const char * addinterruptibleactivityregionText = "Click this button to add an <
 "You can also drop the interruptible activity region from the <b>browser</b>.";
 const char * addexpansionregionText = "Click this button to add an <em>expansion region</em> in the diagram. <br><br>"
 "You can also drop the expansion region from the <b>browser</b>.";
+const char * addactivitypartitionText = "Click this button to add an <em>activity partition</em> in the diagram. <br><br>"
+"You can also drop the activity partition from the <b>browser</b>.";
 extern const char * addpackageText;
 extern const char * addfragmentText;
 extern const char * noteText;
@@ -121,6 +123,15 @@ ActivityDiagramWindow::ActivityDiagramWindow(const QString & s, BrowserActivityD
   addExpansionRegion->setToggleButton(TRUE);
   QWhatsThis::add(addExpansionRegion,
 		  addexpansionregionText);
+    
+  addActivityPartition =
+    new QToolButton(*activitypartitionButton,
+		    "New Activity Partition", QString::null,
+		    this, SLOT(hit_activitypartition()),
+		    toolbar, "add activity partition");
+  addActivityPartition->setToggleButton(TRUE);
+  QWhatsThis::add(addActivityPartition,
+		  addactivitypartitionText);
     
   addAction =
     new QToolButton(*activityactionButton, "New Action", QString::null,
@@ -261,6 +272,7 @@ void ActivityDiagramWindow::hit_button(UmlCode c, QToolButton * b) {
   addActivity->setOn(FALSE);
   addInterruptibleActivityRegion->setOn(FALSE);
   addExpansionRegion->setOn(FALSE);
+  addActivityPartition->setOn(FALSE);
   addInitial->setOn(FALSE);
   addActivityFinal->setOn(FALSE);
   addFlowFinal->setOn(FALSE);
@@ -300,6 +312,11 @@ void ActivityDiagramWindow::hit_interruptibleactivityregion() {
 void ActivityDiagramWindow::hit_expansionregion() {
   hit_button(UmlExpansionRegion,
 	     addExpansionRegion);
+}
+
+void ActivityDiagramWindow::hit_activitypartition() {
+  hit_button(UmlActivityPartition,
+	     addActivityPartition);
 }
 
 void ActivityDiagramWindow::hit_initial() {

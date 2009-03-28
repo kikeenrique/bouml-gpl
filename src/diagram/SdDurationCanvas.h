@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -98,6 +98,7 @@ class SdDurationCanvas : public QObject, public DiagramCanvas, public SdDuration
     virtual const char * may_start(UmlCode &) const;
     virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual aCorner on_resize_point(const QPoint &);
+    virtual void resize(int w, int h);
     virtual void resize(aCorner c, int dx, int dy);
     virtual void change_scale();
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
@@ -121,6 +122,9 @@ class SdDurationCanvas : public QObject, public DiagramCanvas, public SdDuration
     
     unsigned count_msg() const;
     void send(ToolCom * com, int id) const;
+    
+    static void propag_visible(QList<SdDurationCanvas> &, bool y);
+    static void propag_dz(QList<SdDurationCanvas> &, double dz);
     
   private slots:
     void modified();

@@ -22,7 +22,7 @@ UmlComponentDiagram * UmlBaseComponent::associatedDiagram() {
 }
 
 bool UmlBaseComponent::set_AssociatedDiagram(UmlComponentDiagram * d) {
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -54,9 +54,10 @@ bool UmlBaseComponent::set_AssociatedClasses(const QVector<UmlClass> & realizing
 		   realizing, provided, required);
   if (UmlCom::read_bool()) {
     if (_defined) {
-      _realizing = realizing;
-      _provided = provided;
-      _required = required;
+      // tests != to bypass Qt 2.3 bug
+      if (&_realizing != &realizing) _realizing = realizing;
+      if (&_provided != &provided) _provided = provided;
+      if (&_required != &required) _required = required;
     }
     return TRUE;
   }

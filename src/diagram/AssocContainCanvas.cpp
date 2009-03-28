@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -107,12 +107,16 @@ void AssocContainCanvas::menu(const QPoint&) {
     return;
   case 2:
     the_canvas()->unselect_all();
-    the_canvas()->select(plabel->label);
-    the_canvas()->select(pstereotype->stereotype);
+    if (plabel) 
+      the_canvas()->select(plabel->label);
+    if (pstereotype)
+      the_canvas()->select(pstereotype->stereotype);
     return;
   case 3:
-    plabel->default_label_position();
-    pstereotype->default_stereotype_position();
+    if (plabel) 
+      plabel->default_label_position();
+    if (pstereotype)
+      pstereotype->default_stereotype_position();
     break;
   case 4:
     label = plabel->label;
@@ -191,14 +195,14 @@ ArrowPointCanvas * AssocContainCanvas::brk(const QPoint & p) {
   ArrowPointCanvas * ap =
     new ArrowPointCanvas(the_canvas(), p.x(), p.y());
   
-  ap->setZ(z() + 1);
+  ap->setZ(z());
   
   AssocContainCanvas * other =
     new AssocContainCanvas(the_canvas(), ap, end, 0,
 			   decenter_begin, decenter_end);
 
   ap->add_line(this);
-  end->remove_line(this);
+  end->remove_line(this, TRUE);
   end = ap;
   
   //update_pos();

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -526,7 +526,7 @@ void GenerationSettingsDialog::init_java1() {
   vtab->setMargin(3);
   htab2->setMargin(3);
 
-  new QLabel("    generated / reversed \n    file extension : ", htab2);
+  new QLabel("    generated/reversed file extension ", htab2);
   edjava_extension = new QComboBox(TRUE, htab2);
   edjava_extension->insertItem(GenerationSettings::java_extension);
   edjava_extension->setCurrentItem(0);
@@ -534,9 +534,15 @@ void GenerationSettingsDialog::init_java1() {
 
   htab2 = new QHBox(vtab);
   htab2->setMargin(3);
-  new QLabel("    generate Javadoc \n    style comment : ", htab2);
+  new QLabel("    generate Javadoc style comment ", htab2);
   java_javadoc_cb = new QCheckBox(htab2);
   java_javadoc_cb->setChecked(GenerationSettings::java_javadoc_comment);
+
+  htab2 = new QHBox(vtab);
+  htab2->setMargin(3);
+  new QLabel("    force package prefix generation ", htab2);
+  java_force_package_gen_cb = new QCheckBox(htab2);
+  java_force_package_gen_cb->setChecked(GenerationSettings::java_force_package_gen);
   
   new QLabel("Class default \ndeclaration :", grid);
   edjava_class_decl = new MultiLineEdit(grid);
@@ -955,6 +961,11 @@ void GenerationSettingsDialog::init_python1() {
   edpython_enum_decl->setText(GenerationSettings::python_enum_decl);
   edpython_enum_decl->setFont(font);
 
+  new QLabel("Enumeration item \ndefault definition :", grid);
+  edpython_enum_item_decl = new MultiLineEdit(grid);
+  edpython_enum_item_decl->setText(GenerationSettings::python_enum_item_decl);
+  edpython_enum_item_decl->setFont(font);
+
   new QLabel("Attribute \ndefault \ndeclaration :", grid);
 
   QGrid * grid2 = new QGrid(2, grid);
@@ -1023,14 +1034,6 @@ void GenerationSettingsDialog::init_python2() {
   new QLabel(grid);
   new QLabel(grid);
 
-  new QLabel("Enumeration item \ndefault definition :", grid);
-  edpython_enum_item_decl = new MultiLineEdit(grid);
-  edpython_enum_item_decl->setText(GenerationSettings::python_enum_item_decl);
-  edpython_enum_item_decl->setFont(font);
-
-  new QLabel(grid);
-  new QLabel(grid);
-
   new QLabel("Get operation\ndefault definition : ", grid);
   htab = new QHBox(grid);
   htab->setMargin(3);
@@ -1068,6 +1071,11 @@ void GenerationSettingsDialog::init_python2() {
   edpython_oper_def = new MultiLineEdit(grid);
   edpython_oper_def->setText(GenerationSettings::python_oper_def);
   edpython_oper_def->setFont(font);
+  
+  new QLabel("Operation __init__\ndefault definition :", grid);
+  edpython_initoper_def = new MultiLineEdit(grid);
+  edpython_initoper_def->setText(GenerationSettings::python_initoper_def);
+  edpython_initoper_def->setFont(font);
   
   addTab(grid, "Python[2]");
   
@@ -1813,6 +1821,7 @@ void GenerationSettingsDialog::accept() {
       GenerationSettings::java_attr_decl[i] = edjava_attr_decl[i]->text();
     GenerationSettings::java_oper_def = edjava_oper_def->text();
     GenerationSettings::java_javadoc_comment = java_javadoc_cb->isChecked();
+    GenerationSettings::java_force_package_gen = java_force_package_gen_cb->isChecked();
     
     GenerationSettings::php_class_decl = edphp_class_decl->text();
     GenerationSettings::php_external_class_decl = edphp_external_class_decl->text();
@@ -1832,6 +1841,7 @@ void GenerationSettingsDialog::accept() {
     GenerationSettings::python_attr_decl[0] = edpython_attr_decl[0]->text();
     GenerationSettings::python_attr_decl[1] = edpython_attr_decl[1]->text();
     GenerationSettings::python_oper_def = edpython_oper_def->text();
+    GenerationSettings::python_initoper_def = edpython_initoper_def->text();
     
     GenerationSettings::idl_interface_decl = edidl_interface_decl->text();
     GenerationSettings::idl_valuetype_decl = edidl_valuetype_decl->text();

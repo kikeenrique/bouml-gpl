@@ -33,6 +33,33 @@ class UmlBaseAttribute : public UmlClassMember {
     // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_isReadOnly(bool y);
 
+    // return the property 'derived'
+    bool isDerived();
+
+    // return the property 'derived union'
+    bool isDerivedUnion();
+
+    // Set the properties 'derived' and 'union'
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isDerived(bool is_derived, bool is_union);
+
+    // return the property 'ordered'
+    bool isOrdered();
+
+    // set the property 'ordered'
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isOrdered(bool v);
+
+    // return the property 'unique'
+    bool isUnique();
+
+    // set the property 'unique'
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isUnique(bool v);
+
     // returns the default attribute value, may be an empty string
     const QCString & defaultValue();
 
@@ -83,6 +110,7 @@ class UmlBaseAttribute : public UmlClassMember {
     // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_isCppMutable(bool y);
 #endif
+
 #ifdef WITHJAVA
     // indicates if the attribute is 'transient', returns TRUE if yes
     bool isJavaTransient();
@@ -117,20 +145,24 @@ class UmlBaseAttribute : public UmlClassMember {
 
 
   private:
-    bool _read_only;
+    bool _read_only : 1;
 
+    bool _derived : 1;
 
-  public:
-    QCString _multiplicity;
+    bool _derived_union : 1;
 
+    bool _ordered : 1;
 
-  private:
+    bool _unique : 1;
+
 #ifdef WITHCPP
-    bool _cpp_mutable;
+    bool _cpp_mutable : 1;
 #endif
 #ifdef WITHJAVA
-    bool _java_transient;
+    bool _java_transient : 1;
 #endif
+
+    QCString _multiplicity;
 
     QCString _default_value;
 
@@ -166,6 +198,12 @@ class UmlBaseAttribute : public UmlClassMember {
 
 #ifdef WITHPHP
     virtual void read_php_();
+#endif
+
+#ifdef WITHPYTHON
+    //internal, do NOT use it
+    
+    virtual void read_python_();
 #endif
 
 #ifdef WITHIDL

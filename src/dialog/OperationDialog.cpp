@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -122,6 +122,30 @@ OperationDialog::OperationDialog(OperationData * o, DrawingLanguage l)
   
   kvtable = new KeyValuesTable(o->get_browser_node(), grid, visit);
   addTab(grid, "Properties");
+  
+  //
+  
+  unique = (GenerationSettings::cpp_get_default_defs())
+    ? ((cpptab != 0) ? CppView : DefaultDrawingLanguage)
+    : UmlView;
+  if (GenerationSettings::java_get_default_defs())
+    unique = ((unique == UmlView) && (javatab != 0))
+      ? JavaView
+      : DefaultDrawingLanguage;
+  if (GenerationSettings::php_get_default_defs())
+    unique = ((unique == UmlView) && (phptab != 0))
+      ? PhpView
+      : DefaultDrawingLanguage;
+  if (GenerationSettings::python_get_default_defs())
+    unique = ((unique == UmlView) && (pythontab != 0))
+      ? PythonView
+      : DefaultDrawingLanguage;
+  if (GenerationSettings::idl_get_default_defs())
+    unique = ((unique == UmlView) && (idltab != 0))
+      ? IdlView
+      : DefaultDrawingLanguage;
+  if (unique == DefaultDrawingLanguage)
+    unique = UmlView;
   
   //
   
@@ -287,7 +311,7 @@ void OperationDialog::init_uml() {
   
   bg = new QButtonGroup(2, Qt::Horizontal, QString::null, htab);
   htab->setStretchFactor(bg, 1000);
-  classoperation_cb = new QCheckBox("static operation", bg);
+  classoperation_cb = new QCheckBox("static", bg);
   classoperation_cb->setDisabled(visit);
   abstract_cb = new QCheckBox("abstract", bg);
   abstract_cb->setDisabled(visit);
@@ -317,7 +341,7 @@ void OperationDialog::init_uml() {
 	    SLOT(forcegenbody_toggled(bool)));
   
   new QLabel("parameters : ", grid);
-  table = new ParamsTable(oper, grid, list, visit);
+  table = new ParamsTable(oper, grid, list, this, visit);
   if (oper->is_get_or_set)
     table->setEnabled(FALSE);
   
@@ -999,7 +1023,7 @@ void OperationDialog::post_edit_constraint(OperationDialog * d, QString s)
 }
 
 void OperationDialog::accept() {
-  if (!check_edits(edits))
+  if (!check_edits(edits) || !kvtable->check_unique())
     return;
     
   BrowserNode * bn = oper->browser_node;
@@ -2160,7 +2184,7 @@ void OperationDialog::cpp_update_def() {
   forcegenbody_toggled(forcegenbody_cb->isChecked());	// update indent*body_cb
 }
 
-static QString Marker = " ---- these lines will be automatically removed ----\n";
+static QString Marker = " ---- header including this line will be automatically removed ----\n";
 
 static QString add_profile(QString b, const char * comment = "//")
 {
@@ -2294,6 +2318,24 @@ void OperationDialog::java_unmapped_def() {
   showjavadef->setText(QString::null);
 }
 
+static const char * bypass_body(const char * p)
+{
+  // p point to '{'
+  
+  p += 1;
+  
+  const char * pb = strstr(p, "${body}");
+  
+  if (pb != 0) {
+    pb += 7;
+    while (*pb)
+      if (*pb++ == '}')
+	return pb;
+  }
+  
+  return p;
+}
+
 void OperationDialog::java_update_def() {
   // do NOT write
   //	const char * p = edjavadef->text();
@@ -2413,16 +2455,17 @@ void OperationDialog::java_update_def() {
 	s += indent;
     }
     else if ((*p == '{') && nobody) {
-      if ((afterparam != 0) &&
-	  (ste == "@interface") &&
-	  (strstr(afterparam, "default") != 0)){
-	s += '{';
-	p += 1;
+      if (afterparam != 0) {
+	if ((ste == "@interface") &&
+	    (strstr(afterparam, "default") != 0))
+	  afterparam = 0;
+	else {
+	  s += ';';
+	  p = bypass_body(p);
+	  continue;
+	}
       }
-      else {
-	s += ";";
-	break;
-      }
+      s += *p++;
     }
     else if (!strncmp(p, "${@}", 4)) {
       p += 4;
@@ -2758,6 +2801,12 @@ void OperationDialog::php_update_def() {
     }
     else if (*p == '@')
       manage_alias(oper->browser_node, p, s, kvtable);
+    else if (!strncmp(p, "${type}", 7)) {
+      // for comment
+      p += 7;
+      s += get_php_name(the_type(edreturn_type->currentText().stripWhiteSpace(),
+				 list, nodes));
+    }
     else
       s += *p++;
   }
@@ -2862,6 +2911,10 @@ QString OperationDialog::php_decl(const BrowserOperation * op, bool withname)
       break;
     else if (*p == '@')
       manage_alias(op, p, s, 0);
+    else if (!strncmp(p, "${type}", 7)) {
+      p += 7;
+      s += get_php_name(d->return_type);
+    }
     else
       s += *p++;
   }
@@ -2965,12 +3018,18 @@ void OperationDialog::python_default_def() {
     for (index = 0, sep = ""; index != nparams; index += 1, sep = ", ") {
       QString p;
       
-      p.sprintf("%s${p%d}", sep, index);
+      p.sprintf("%s${p%d}${v%d}", sep, index, index);
       params += p;
     }
     
-    if ((index = s.find("${)}")) != -1)
+    int index2;
+    
+    if (((index = s.find("${(}")+4) != (-1+4)) &&
+	((index2 = s.find("${)}", index)) != -1)) {
+      if (index2 != index)
+	s.remove(index, index2-index);
       s.insert(index, params);
+    }
     
     edpythondef->setText(s);
   }
@@ -3076,6 +3135,14 @@ void OperationDialog::python_update_def() {
       p += 7;
       s += compute_name(edpythonnamespec);
     }
+    else if (!strncmp(p, "${class}", 8)) {
+      if (indent_needed) {
+	indent_needed = FALSE;
+	s += indent;
+      }
+      p += 8;
+      s += cl->get_browser_node()->get_name();
+    }
     else if (!strncmp(p, "${(}", 4)) {
       p += 4;
       s += '(';
@@ -3097,6 +3164,10 @@ void OperationDialog::python_update_def() {
       manage_var(rank, s);
       p = strchr(p, '}') + 1;
     }
+    else if (sscanf(p, "${v%u}", &rank) == 1) {
+      manage_init(rank, s);
+      p = strchr(p, '}') + 1;
+    }
     else if (*p == '@')
       manage_alias(oper->browser_node, p, s, kvtable);
     else if (!strncmp(p, "${body}", 7)) {
@@ -3105,6 +3176,16 @@ void OperationDialog::python_update_def() {
       s += "${body}";
       p += 7;
       indent_needed = FALSE;
+    }
+    else if (oper->is_get_or_set && !strncmp(p, "${association}", 14)) {
+      p += 14;
+      if (indent_needed) {
+	indent_needed = FALSE;
+	s += indent;
+      }
+      // get/set with multiplicity > 1
+      s += ((BrowserOperation *) oper->browser_node)
+	->get_of_association().get_type();
     }
     else {
       if (indent_needed) {
@@ -3198,6 +3279,25 @@ QString OperationDialog::python_decl(const BrowserOperation * op, bool withname)
 	}
       }
       p = strchr(p, '}') + 1;
+    }
+    else if (sscanf(p, "${v%u}", &rank) == 1) {
+      if (rank < d->nparams) {
+	QCString v = d->params[rank].get_default_value();
+	
+	if (!v.isEmpty())
+	  s += " = " + v;
+      }
+      else {
+	s += "${v";
+	s += QString::number(rank);
+	s += '}';
+      }
+      p = strchr(p, '}') + 1;
+    }
+    else if (d->is_get_or_set && !strncmp(p, "${association}", 14)) {
+      p += 14;
+      // get/set with multiplicity > 1
+      s += op->get_of_association().get_type();
     }
     else if (*p == '@')
       manage_alias(op, p, s, 0);
@@ -3583,6 +3683,488 @@ QString OperationDialog::idl_decl(const BrowserOperation * op,
   return s;
 }
 
+// automatic add / remove param when only one language is set
+
+static int bypass_string(const char * s, int index)
+{
+  // index is just after the "
+  for (;;) {
+    switch (s[index]) {
+    case '"':
+      return index + 1;
+    case '\\':
+      if (s[index + 1] == 0)
+	return index + 1;
+      index += 2;
+      break;
+    case 0:
+      return index;
+    default:
+      index += 1;
+    }
+  }
+}
+
+static int bypass_char(const char * s, int index)
+{
+  // index is just after the '
+  for (;;) {
+    switch (s[index]) {
+    case '\'':
+      return index + 1;
+    case '\\':
+      if (s[index + 1] == 0)
+	return index + 1;
+      index += 2;
+      break;
+    case 0:
+      return index;
+    default:
+      index += 1;
+    }
+  }
+}
+
+static int bypass_cpp_comment(const char * s, int index)
+{
+  // index is just after the //
+  const char * p = strchr(s, '\n');
+  
+  return (p == 0)
+    ? index + strlen(s + index)
+    : p - s;
+}
+
+static int bypass_c_comment(const char * s, int index)
+{
+  // index is just after the /*
+  for (;;) {
+    switch (s[index]) {
+    case '*':
+      if (s[index + 1] == '/')
+	return index + 2;
+      break;
+    case 0:
+      return index;
+    }
+    index += 1;
+  }
+}
+
+static int supOf(const char * s, int index)
+{
+  // return the index after of the parameter form
+  // s at least contains ${)}
+  int ouvr = 0;
+  
+  for (;;) {
+    switch (s[index]) {
+    case '$':
+      if (strncmp(s + index, "${)}", 4) == 0)
+	return index;
+      index += 1;
+      break;
+    case '(':
+    case '[':
+    case '{':
+      ouvr += 1;
+      index += 1;
+      break;
+    case ')':
+    case ']':
+    case '}':
+      ouvr -= 1;
+      index += 1;
+      break;
+    case '"':
+      index = bypass_string(s, index + 1);
+      break;
+    case '\'':
+      index = bypass_char(s, index + 1);
+      break;
+    case '/':
+      switch (s[index+1]) {
+      case '/':
+	index = bypass_cpp_comment(s, index + 2);
+	break;
+	case '*':
+	index = bypass_c_comment(s, index + 2);
+	break;
+      default:
+	index += 1;
+      }
+      break;
+    case 0:
+      // in case ${)} is in a comment etc ...
+      return index;
+    case ',':
+      if (ouvr == 0)
+	return index;
+      // no break
+    default:
+      index += 1;
+    }
+  }
+}
+
+static int param_begin(QString s, int rank)
+{
+  // return position of ',' or '}' (inside ${(}), 
+  // or '$' (inside ${)}) or -1 on error
+  const char * p = s;
+  const char * b = strstr(p, "${(}");
+  
+  if ((b == 0) || (strstr(b+4, "${)}") == 0))
+    return -1;
+  
+  int index  = (b - p) + 3;	// '}'
+  
+  while (rank != 0) {
+    int end = supOf(p, index + 1);
+    
+    switch (p[end]) {
+    case ',':
+      index = end;
+      break;
+    case '$': // ${)}
+      return (rank == 1) ? end : -1;
+    default:
+      return -1;
+    }
+    
+    rank -= 1;
+  }
+  
+  return index;
+}
+
+static void renumber(QString & form, int rank,
+		     int delta, bool equal = FALSE)
+{
+  int index = form.find("${(}");
+  
+  if (index == -1)
+    return;
+  
+  index += 4;
+  
+  int index_sup = form.find("${)}", index);
+  
+  while (index < index_sup) {
+    index = form.find("${", index);
+    if (index == -1)
+      break;
+    
+    int index2 = form.find('}', index + 3);
+    QString n = form.mid(index + 3, index2 - index - 3);
+    bool ok = FALSE;
+    int r = n.toInt(&ok);
+    
+    if (!ok || ((equal) ? (r != rank) : (r < rank)))
+      index = index2 + 1;
+    else {
+      char nn[16];
+      
+      sprintf(nn, "%d", r + delta);
+      form.replace(index + 3, n.length(), nn);
+      index = form.find('}', index + 3) + 1;
+    }
+  }
+}
+
+void OperationDialog::force_param(int rank, bool recompute) {
+  char t[16];
+  char p[16];
+  char v[16];
+  QString s;
+  
+  sprintf(t, "${t%d}", rank);
+  sprintf(p, "${p%d}", rank);
+  sprintf(v, "${v%d}", rank);
+  
+  switch (unique) {
+  case CppView:
+    {
+      QString theo =
+	GenerationSettings::cpp(the_type(table->type(rank), list, nodes),
+				table->dir(rank), rank);
+      
+      s = edcppdecl->text();
+      if ((s.find(t) == -1) && (s.find(p) == -1)) {
+	add_param(s, rank, theo+v);
+	edcppdecl->setText(s);
+      }	
+      else if (recompute) {
+	replace_param(s, rank, theo);
+	edcppdecl->setText(s);
+      }
+      
+      s = edcppdef->text();
+      if ((s.find(t) == -1) && (s.find(p) == -1)) {
+	add_param(s, rank, theo);
+	edcppdef->setText(s);
+      }	
+      else if (recompute) {
+	replace_param(s, rank, theo);
+	edcppdef->setText(s);
+      }
+    }
+    break;
+  case JavaView:
+    s = edjavadef->text();
+    if ((s.find(t) == -1) && (s.find(p) == -1)) {
+      add_param(s, rank, QString(t) + " " + p);
+      edjavadef->setText(s);
+    }
+    break;
+  case PhpView:
+    s = edphpdef->text();
+    if (s.find(p) == -1) {
+      add_param(s, rank, QString(p) + v);
+      edphpdef->setText(s);
+    }
+    break;
+  case PythonView:
+    s = edpythondef->text();
+    if (s.find(p) == -1) {
+      add_param(s, rank, QString(p) + v);
+      edpythondef->setText(s);
+    }
+    break;
+  case IdlView:
+    s = edidldecl->text();
+    if ((s.find(t) == -1) && (s.find(p) == -1)) {
+      char d[16];
+  
+      sprintf(t, "${d%d}", rank);
+      add_param(s, rank, QString(d) + " " + t + " " + p);
+      edidldecl->setText(s);
+    }
+    break;
+  default:
+    break;
+  }
+}
+
+void OperationDialog::add_param(QString & form, int rank, QString s) {
+  int index = param_begin(form, rank);
+  
+  if (index == -1)
+    return;
+  
+  if (rank == 0) {
+    // first param, index point to '}' ending ${(}
+    if (table->nparams() != 1)
+      s += ", ";
+    index += 1;
+  }
+  else
+    // index point to ',' or '$' starting ${)}
+    s = ", " + s;
+  
+  form.insert(index, s);
+}
+
+void OperationDialog::replace_param(QString & form, int rank, QString s) {
+  int index_start = param_begin(form, rank);
+  
+  if (index_start == -1)
+    return;
+  
+  const char * p = form;
+  
+  switch (p[index_start]) {
+  case '$':
+    // '$' starting ${)}, param not yet present, not first one,
+    // not possible except if user remove it in language form
+    form.insert(index_start, ", " + s);
+    return;
+  case ',':
+    index_start += (p[index_start + 1] == ' ') ? 2 : 1;
+    break;
+  default:
+    // first param, index point to '}' ending ${(}
+    index_start += 1;
+  }
+  
+  int index_sup = supOf(p, index_start);
+  
+  switch (p[index_sup]) {
+  case ',':
+  case '$': // ${)}
+    break;
+  default:
+    // error
+    return;
+  }
+  
+  form.replace(index_start, index_sup - index_start, s);
+}
+
+void OperationDialog::insert_param(int rank) {
+  // just renumber
+  switch (unique) {
+  case CppView:
+    insert_param(rank, edcppdecl);
+    insert_param(rank, edcppdef);
+    break;
+  case JavaView:
+    insert_param(rank, edjavadef);
+    break;
+  case PhpView:
+    insert_param(rank, edphpdef);
+    break;
+  case PythonView:
+    insert_param(rank, edpythondef);
+    break;
+  case IdlView:
+    insert_param(rank, edidldecl);
+    break;
+  default:
+    break;
+  }
+}
+
+void OperationDialog::insert_param(int rank, MultiLineEdit * ed) {
+  // just renumber
+  QString form = ed->text();
+  
+  renumber(form, rank, 1);
+  ed->setText(form);
+}
+
+void OperationDialog::delete_param(int rank) {
+  // remove and renumber
+  switch (unique) {
+  case CppView:
+    delete_param(rank, edcppdecl);
+    delete_param(rank, edcppdef);
+    break;
+  case JavaView:
+    delete_param(rank, edjavadef);
+    break;
+  case PhpView:
+    delete_param(rank, edphpdef);
+    break;
+  case PythonView:
+    delete_param(rank, edpythondef);
+    break;
+  case IdlView:
+    delete_param(rank, edidldecl);
+    break;
+  default:
+    break;
+  }
+}
+
+QString OperationDialog::delete_param(int rank, MultiLineEdit * ed) {
+  // remove
+  QString form = ed->text();
+  int index = param_begin(form, rank);
+  
+  if (index == -1)
+    return "";
+  
+  const char * p = form;
+  int index_sup;
+  
+  switch (p[index]) {
+  case '$':
+    // '$' starting ${)}, param not yet present, not first one,
+    // not possible except if user remove it in language form
+    return "";
+  case ',':
+    index_sup = supOf(p, index + 1);
+    break;
+  default: // first param, index point to '}' ending ${(}
+    index += 1;
+    index_sup = supOf(p, index);
+    break;
+  }
+  
+  QString result;
+  
+  switch (p[index_sup]) {
+  case ',':
+    if (p[index] == ',') {
+      if (p[index + 1] == ' ')
+	result = form.mid(index + 2, index_sup - index - 2);
+      else
+	result = form.mid(index + 1, index_sup - index - 1);
+    }
+    else {
+      // first param
+      result = form.mid(index, index_sup - index);
+      index_sup += (p[index_sup + 1] == ' ') ? 2 : 1;
+    }
+    break;
+  case '$': // ${)}
+    if (p[index] == ',') {
+      if (p[index + 1] == ' ')
+	result = form.mid(index + 2, index_sup - index - 2);
+      else
+	result = form.mid(index + 1, index_sup - index - 1);
+    }
+    else {
+      // alone param
+      result = form.mid(index, index_sup - index);
+    }
+    break;
+  default:
+    // error
+    return "";
+  }
+  
+  form.remove(index, index_sup - index);
+  
+  // renumber
+  renumber(form, rank, -1);
+  
+  ed->setText(form);
+  return result;
+}
+
+void OperationDialog::move_param(int old_rank, int new_rank) {
+  switch (unique) {
+  case CppView:
+    move_param(old_rank, new_rank, edcppdecl);
+    move_param(old_rank, new_rank, edcppdef);
+    break;
+  case JavaView:
+    move_param(old_rank, new_rank, edjavadef);
+    break;
+  case PhpView:
+    move_param(old_rank, new_rank, edphpdef);
+    break;
+  case PythonView:
+    move_param(old_rank, new_rank, edpythondef);
+    break;
+  case IdlView:
+    move_param(old_rank, new_rank, edidldecl);
+    break;
+  default:
+    break;
+  }
+}
+
+void OperationDialog::move_param(int old_rank, int new_rank,
+				 MultiLineEdit * ed) {
+  QString s = delete_param(old_rank, ed);
+  
+  if (s.isEmpty())
+    return;
+  
+  s = "${(}" + s + "${)}";
+  renumber(s, old_rank, new_rank - old_rank, TRUE);
+
+  QString form = ed->text();
+  
+  renumber(form, new_rank, 1);
+  add_param(form, new_rank, s.mid(4, s.length() - 8));
+  
+  ed->setText(form);
+}
+
 //
 // ParamTable
 //
@@ -3596,8 +4178,10 @@ QString ParamsTable::default_value_copy;
 static QStringList DirList;
 
 ParamsTable::ParamsTable(OperationData * o, QWidget * parent,
-			 const QStringList & list, bool visit)
-    : MyTable(o->get_n_params() + 1, (visit) ? 4 : 5, parent), types(list) {
+			 const QStringList & list,
+			 OperationDialog * d, bool visit)
+    : MyTable(o->get_n_params() + 1, (visit) ? 4 : 5, parent),
+      dialog(d), types(list) {
   int index;
   int sup = o->get_n_params();
     
@@ -3692,61 +4276,78 @@ void ParamsTable::activateNextCell() {
 void ParamsTable::value_changed(int row, int col) {
   if ((row == (numRows() - 1)) && (col != 0) && !text(row, col).isEmpty())
     insert_row_after(row);
+  
+  if ((col <= 2) && (!text(row, 1).isEmpty() || !text(row, 2).isEmpty()))
+    dialog->force_param(row, col != 1);
 }
 
 void ParamsTable::button_pressed(int row, int col, int, const QPoint &) {
   if (col == 4) {
-    char s[16];
+    int n = nparams();
+    char s[32];
     
     sprintf(s, "param %d", row + 1);
     
     QPopupMenu m;
     m.insertItem(s, -1);
     m.insertSeparator();
-    m.insertItem("Insert param before", 0);
-    m.insertItem("Insert param after", 1);
-    m.insertSeparator();
-    m.insertItem("Delete param", 2);
-    m.insertSeparator();
-    m.insertItem("Copy param", 3);
-    m.insertItem("Cut param", 4);
-    m.insertItem("Paste param", 5);
-    m.insertSeparator();
+    if (row < n) {
+      m.insertItem("Insert param before", 0);
+      m.insertItem("Insert param after", 1);
+      m.insertSeparator();
+      m.insertItem("Delete param", 2);
+      m.insertSeparator();
+      m.insertItem("Copy param", 3);
+      m.insertItem("Cut param", 4);
+    }
+    if (!name_copy.isEmpty() || !type_copy.isEmpty())
+      m.insertItem("Paste param", 5);
 
     QPopupMenu mv;
     int rank;
     
-    for (rank = 0; rank != numRows(); rank += 1)
-      if (rank != row)
-	mv.insertItem(QString::number(rank + 1), 10 + rank);
+    if (row < n) {
+      for (rank = 0; rank != n; rank += 1)
+	if (rank != row)
+	  mv.insertItem(QString::number(rank + 1), 10 + rank);
     
-    if (mv.count() != 0) {
-      m.insertSeparator();
-      m.insertItem("Move param", &mv);
+      if (mv.count() != 0) {
+	m.insertSeparator();
+	m.insertItem("Move param", &mv);
+      }
     }
     
     switch (rank = m.exec(QCursor::pos())) {
     case 0:
       insert_row_before(row);
+      dialog->insert_param(row);
+      dialog->force_param(row, TRUE);
       break;
     case 1:
       insert_row_after(row);
+      dialog->insert_param(row+1);
+      dialog->force_param(row+1, TRUE);
       break;
     case 2:
       delete_row(row);
+      dialog->delete_param(row);
       break;
     case 3:
       copy_row(row);
       break;
     case 4:
       cut_row(row);
+      dialog->delete_param(row);
       break;
     case 5:
       paste_row(row);
+      dialog->force_param(row, TRUE);
       break;
     default:
-      if (rank >= 10)
+      if (rank >= 10) {
 	move_row(row, rank - 10);
+	dialog->move_param(row, rank - 10);
+      }
       break;
     }
   }
@@ -3913,7 +4514,7 @@ void ParamsTable::update(OperationData * oper,
 unsigned ParamsTable::nparams() const {
   int n = numRows();
   
-  while (n && text(n - 1, 1).isEmpty())
+  while (n && text(n - 1, 1).isEmpty() && text(n - 1, 2).isEmpty())
     n -= 1;
   
   return n;
@@ -4002,31 +4603,39 @@ void ExceptionsTable::value_changed(int row, int col) {
 
 void ExceptionsTable::button_pressed(int row, int col, int, const QPoint &) {
   if (col == 1) {
-    char s[16];
+    int n = nexceptions();
+    char s[32];
     
     sprintf(s, "exception %d", row + 1);
     
     QPopupMenu m;
     m.insertItem(s, -1);
     m.insertSeparator();
-    m.insertItem("Insert exception before", 0);
-    m.insertItem("Insert exception after", 1);
-    m.insertSeparator();
-    m.insertItem("Delete exception", 2);
-    m.insertSeparator();
-    m.insertItem("Copy exception", 3);
-    m.insertItem("Cut exception", 4);
-    m.insertItem("Paste exception", 5);
-    m.insertSeparator();
+    if (row < n) {
+      m.insertItem("Insert exception before", 0);
+      m.insertItem("Insert exception after", 1);
+      m.insertSeparator();
+      m.insertItem("Delete exception", 2);
+      m.insertSeparator();
+      m.insertItem("Copy exception", 3);
+      m.insertItem("Cut exception", 4);
+    }
+    if (!type_copy.isEmpty())
+      m.insertItem("Paste exception", 5);
 
     QPopupMenu mv;
     int rank;
     
-    for (rank = 0; rank != numRows(); rank += 1)
-      if (rank != row)
-	mv.insertItem(QString::number(rank + 1), 10 + rank);
+    if (row < n) {
+      for (rank = 0; rank != n; rank += 1)
+	if (rank != row)
+	  mv.insertItem(QString::number(rank + 1), 10 + rank);
     
-    m.insertItem("Move exception", &mv);
+      if (mv.count() != 0) {
+	m.insertSeparator();
+        m.insertItem("Move exception", &mv);
+      }
+    }
     
     switch (rank = m.exec(QCursor::pos())) {
     case 0:
@@ -4291,128 +4900,6 @@ void CppParamsTable::init_row(int row) {
   }
 }
 
-static int bypass_string(const char * s, int index)
-{
-  // index is just after the "
-  for (;;) {
-    switch (s[index]) {
-    case '"':
-      return index + 1;
-    case '\\':
-      if (s[index + 1] == 0)
-	return index + 1;
-      index += 2;
-      break;
-    case 0:
-      return index;
-    default:
-      index += 1;
-    }
-  }
-}
-
-static int bypass_char(const char * s, int index)
-{
-  // index is just after the '
-  for (;;) {
-    switch (s[index]) {
-    case '\'':
-      return index + 1;
-    case '\\':
-      if (s[index + 1] == 0)
-	return index + 1;
-      index += 2;
-      break;
-    case 0:
-      return index;
-    default:
-      index += 1;
-    }
-  }
-}
-
-static int bypass_cpp_comment(const char * s, int index)
-{
-  // index is just after the //
-  char * p = strchr(s, '\n');
-  
-  return (p == 0)
-    ? index + strlen(s + index)
-    : p - s;
-}
-
-static int bypass_c_comment(const char * s, int index)
-{
-  // index is just after the /*
-  for (;;) {
-    switch (s[index]) {
-    case '*':
-      if (s[index + 1] == '/')
-	return index + 2;
-      break;
-    case 0:
-      return index;
-    }
-    index += 1;
-  }
-}
-
-static int supOf(const char * s, int index)
-{
-  // return the index after of the parameter form
-  // s at least contains ${)}
-  int ouvr = 0;
-  
-  for (;;) {
-    switch (s[index]) {
-    case '$':
-      if (strncmp(s + index, "${)}", 4) == 0)
-	return index;
-      index += 1;
-      break;
-    case '(':
-    case '[':
-    case '{':
-      ouvr += 1;
-      index += 1;
-      break;
-    case ')':
-    case ']':
-    case '}':
-      ouvr -= 1;
-      index += 1;
-      break;
-    case '"':
-      index = bypass_string(s, index + 1);
-      break;
-    case '\'':
-      index = bypass_char(s, index + 1);
-      break;
-    case '/':
-      switch (s[index+1]) {
-      case '/':
-	index = bypass_cpp_comment(s, index + 2);
-	break;
-	case '*':
-	index = bypass_c_comment(s, index + 2);
-	break;
-      default:
-	index += 1;
-      }
-      break;
-    case 0:
-      // in case ${)} is in a comment etc ...
-      return index;
-    case ',':
-      if (ouvr == 0)
-	return index;
-      // no break
-    default:
-      index += 1;
-    }
-  }
-}
-
 bool CppParamsTable::extract(int tblindex, int & strindex, QString s) {
   // s at least contains ${)}
   while (s.at(strindex).isSpace())
@@ -4584,7 +5071,7 @@ void CppParamsTable::update_name(int row) {
 
 void CppParamsTable::button_pressed(int row, int col, int, const QPoint &) {
   if (col == ((dcl) ? 7 : 6)) {
-    char s[16];
+    char s[32];
     
     sprintf(s, "param %d", row + 1);
     
@@ -4655,7 +5142,7 @@ void CppParamsTable::button_pressed(int row, int col, int, const QPoint &) {
       break;
     default:
       if (rank >= 100) {
-	char s[16];
+	char s[32];
 	
 	if (t_i != -1) {
 	  sprintf(s, "${t%d}", rank - 100);
@@ -5116,7 +5603,7 @@ void PhpParamsTable::update_name(int row) {
 
 void PhpParamsTable::button_pressed(int row, int col, int, const QPoint &) {
   if (col == 5) {
-    char s[16];
+    char s[32];
     
     sprintf(s, "param %d", row + 1);
     
@@ -5186,7 +5673,7 @@ void PhpParamsTable::button_pressed(int row, int col, int, const QPoint &) {
       break;
     default:
       if (rank >= 100) {
-	char s[16];
+	char s[32];
 	
 	if (t_i != -1) {
 	  sprintf(s, "${t%d}", rank - 100);
@@ -5409,14 +5896,15 @@ void PhpParamsDialog::accept() {
 //
 
 // copy/cut/paste
-QString PythonParamsTable::copied[4];	// copy/cut/paste
+QString PythonParamsTable::copied[5];	// copy/cut/paste
 
 static QStringList PythonTypeRankList;
 static QStringList PythonModList;
 static QStringList PythonParamRankList;
+static QStringList PythonValueRankList;
 
 PythonParamsTable::PythonParamsTable(QWidget * parent, ParamsTable * p, MultiLineEdit * f)
-    : MyTable(0, 4, parent), params(p), edform(f) {
+    : MyTable(0, 5, parent), params(p), edform(f) {
     
   setSorting(FALSE);
   setSelectionMode(NoSelection);	// single does not work
@@ -5424,11 +5912,13 @@ PythonParamsTable::PythonParamsTable(QWidget * parent, ParamsTable * p, MultiLin
   horizontalHeader()->setLabel(0, "Name");
   horizontalHeader()->setLabel(1, "Modifier");
   horizontalHeader()->setLabel(2, "${p<i>}");
-  horizontalHeader()->setLabel(3, "do");
+  horizontalHeader()->setLabel(3, "${v<i>}");
+  horizontalHeader()->setLabel(4, "do");
   setColumnStretchable (0, TRUE);
   adjustColumn(1);
   setColumnStretchable (2, TRUE);
   adjustColumn(3);
+  adjustColumn(4);
 
   
   QString form = edform->text();
@@ -5437,7 +5927,7 @@ PythonParamsTable::PythonParamsTable(QWidget * parent, ParamsTable * p, MultiLin
   int tbl_index = 0;
     
   while (extract(tbl_index, form_index, form)) {
-    setText(tbl_index, 3, QString::null);
+    setText(tbl_index, 4, QString::null);
     tbl_index += 1;
   }
   
@@ -5454,6 +5944,7 @@ PythonParamsTable::PythonParamsTable(QWidget * parent, ParamsTable * p, MultiLin
   }
   
   PythonParamRankList.clear();
+  PythonValueRankList.clear();
   
   for (int rank = 0; rank != params->numRows(); rank += 1) {
     if (!params->name(rank).isEmpty()) {
@@ -5461,6 +5952,9 @@ PythonParamsTable::PythonParamsTable(QWidget * parent, ParamsTable * p, MultiLin
       
       s.sprintf("${p%u}", rank);
       PythonParamRankList.append(s);
+      
+      s.sprintf("${v%u}", rank);
+      PythonValueRankList.append(s);
     }
   }
 }
@@ -5469,7 +5963,8 @@ void PythonParamsTable::init_row(int row) {
   setItem(row, 0, new QTableItem(this, QTableItem::Never, QString::null));
   setItem(row, 1, new ComboItem(this, QString::null, PythonModList));
   setItem(row, 2, new ComboItem(this, QString::null, PythonParamRankList));
-  setText(row, 3, QString::null);
+  setItem(row, 3, new ComboItem(this, QString::null, PythonValueRankList));
+  setText(row, 4, QString::null);
 }
 
 bool PythonParamsTable::extract(int tblindex, int & strindex, QString s) {
@@ -5483,6 +5978,7 @@ bool PythonParamsTable::extract(int tblindex, int & strindex, QString s) {
     return FALSE;
   
   QString p_i;
+  QString v_i;
   QString ptr;
   QString m_i;
   int index = s.find("${p", strindex);
@@ -5502,13 +5998,26 @@ bool PythonParamsTable::extract(int tblindex, int & strindex, QString s) {
     else {
       strindex += 1;
       p_i = s.mid(index, strindex - index);
+      v_i = s.mid(strindex);
     }
   }
+  else
+    return FALSE;
+  
+  if ((v_i.length() >= 5) && (v_i.left(3) == "${v")) {
+    if ((strindex = v_i.find('}', 3)) == -1)
+      return FALSE;
+    else
+      v_i = v_i.left(strindex + 1);
+  }
+  else
+    v_i = "";
   
   setNumRows(tblindex + 1);
 
   setItem(tblindex, 1, new ComboItem(this, m_i, PythonModList));
   setItem(tblindex, 2, new ComboItem(this, p_i, PythonParamRankList));
+  setItem(tblindex, 3, new ComboItem(this, v_i, PythonValueRankList));
   
   strindex = (s.at(sup) == QChar(',')) ? sup + 1 : sup;
     
@@ -5553,7 +6062,7 @@ void PythonParamsTable::update_name(int row) {
 
 void PythonParamsTable::button_pressed(int row, int col, int, const QPoint &) {
   if (col == 4) {
-    char s[16];
+    char s[32];
     
     sprintf(s, "param %d", row + 1);
     
@@ -5582,10 +6091,14 @@ void PythonParamsTable::button_pressed(int row, int col, int, const QPoint &) {
     
     QPopupMenu rk;
     int p_i;
+    int v_i;
     
     if (text(row, 2).isEmpty() ||
 	(sscanf((const char *) text(row, 2), "${p%d}", &p_i) != 1))
       p_i = -1;
+    if (text(row, 3).isEmpty() ||
+	(sscanf((const char *) text(row, 3), "${v%d}", &v_i) != 1))
+      v_i = -1;
     
     for (rank = 0; rank != params->numRows(); rank += 1)
       if (!params->name(rank).isEmpty() && (rank != p_i))
@@ -5614,11 +6127,16 @@ void PythonParamsTable::button_pressed(int row, int col, int, const QPoint &) {
       break;
     default:
       if (rank >= 100) {
-	char s[16];
+	char s[32];
 	
 	if (p_i != -1) {
 	  sprintf(s, "${p%d}", rank - 100);
 	  setItem(row, 2, new ComboItem(this, s, PythonParamRankList));
+	}
+	
+	if (v_i != -1) {
+	  sprintf(s, "${v%d}", rank - 100);
+	  setItem(row, 3, new ComboItem(this, s, PythonValueRankList));
 	}
       }
       else if (rank >= 10)
@@ -5636,7 +6154,7 @@ void PythonParamsTable::insert_row_before(int row) {
   setNumRows(n + 1);
   
   for (index = n; index != row; index -= 1) {
-    for (col = 0; col != 3; col += 1) {
+    for (col = 0; col != 4; col += 1) {
       QTableItem * it = item(index - 1, col);
       
       takeItem(it);
@@ -5656,7 +6174,7 @@ void PythonParamsTable::insert_row_after(int row) {
   setNumRows(n + 1);
   
   for (index = n; index > row + 1; index -= 1) {
-    for (col = 0; col != 3; col += 1) {
+    for (col = 0; col != 4; col += 1) {
       QTableItem * it = item(index - 1, col);
       
       takeItem(it);
@@ -5681,7 +6199,7 @@ void PythonParamsTable::delete_row(int row) {
   }
   else {
     for (index = row; index != n - 1; index += 1) {
-      for (col = 0; col != 3; col += 1) {
+      for (col = 0; col != 4; col += 1) {
 	QTableItem * it = item(index + 1, col);
 	
 	takeItem(it);
@@ -5697,7 +6215,7 @@ void PythonParamsTable::delete_row(int row) {
 void PythonParamsTable::copy_row(int row) {
   int col;
   
-  for (col = 0; col != 4; col += 1)
+  for (col = 0; col != 5; col += 1)
     copied[col] = text(row, col);
 }
 
@@ -5709,15 +6227,15 @@ void PythonParamsTable::cut_row(int row) {
 void PythonParamsTable::paste_row(int row) {
   int col;
   
-  for (col = 0; col != 4; col += 1)
+  for (col = 0; col != 5; col += 1)
     setText(row, col, copied[col]);
 }
 
 void PythonParamsTable::move_row(int from, int to) {
   int col;
-  QString save_copied[4];
+  QString save_copied[5];
   
-  for (col = 0; col != 4; col += 1)
+  for (col = 0; col != 5; col += 1)
     save_copied[col] = copied[col];
   
   cut_row(from);
@@ -5727,7 +6245,7 @@ void PythonParamsTable::move_row(int from, int to) {
     insert_row_before(to);
   paste_row(to);
   
-  for (col = 0; col != 4; col += 1)
+  for (col = 0; col != 5; col += 1)
     copied[col] = save_copied[col];
 }
 
@@ -5744,9 +6262,9 @@ void PythonParamsTable::update_edform() {
     QString p;
     int col;
     
-    for (col = 1; col != 3; col += 1) {
+    for (col = 1; col != 4; col += 1) {
       if (!text(index, col).isEmpty()) {
-	if (p.isEmpty())
+	if (col == 3)
 	  p += text(index, col);
 	else
 	  p += " " + text(index, col);

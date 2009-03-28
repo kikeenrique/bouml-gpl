@@ -73,6 +73,10 @@ void UmlBaseSequenceDiagramDefinition::read_() {
     ::qsort(_messages.data(), 0, n - 1);
     _messages.setAutoDelete(TRUE);
   }
+  
+  n = _fragments.count();
+  for (rank = 0; rank != n; rank += 1)
+    _fragments.at(rank)->read_covered_(instances);
 
   while (UmlCom::read_bool()) {
     QCString s = UmlCom::read_string();
@@ -83,6 +87,17 @@ void UmlBaseSequenceDiagramDefinition::read_() {
     UmlFragmentCompartment * cp = UmlBaseFragment::get_container_(x, y, w, h, _fragments);
 
     if (cp != 0) cp->add_text_(s);
+  }
+
+  while (UmlCom::read_bool()) {
+    QCString s = UmlCom::read_string();
+    int x = (int) UmlCom::read_unsigned();
+    int y = (int) UmlCom::read_unsigned();
+    int w = (int) UmlCom::read_unsigned();
+    int h = (int) UmlCom::read_unsigned();
+    UmlFragmentCompartment * cp = UmlBaseFragment::get_container_(x, y, w, h, _fragments);
+
+    if (cp != 0) cp->add_cont_(s, y + h/2);
   }
 }
 

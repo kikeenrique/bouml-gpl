@@ -4,19 +4,13 @@
 #include "UmlClass.h"
 
 void UmlActualParameter::write(FileOut & out, UmlClass * cl, int actualrank) const {
-  char ps[32];
-  char tp[32];
-
-  sprintf(ps, "ACTUALPARAM%d_", actualrank);
-  sprintf(tp, "TEMPLPARAM%d_", rank());
-
   out.indent();
   out << "<parameterSubstitution xmi:type=\"uml:TemplateParameterSubstitution\"";
-  out.id_prefix(cl, ps);
+  out.id_prefix(cl, "ACTUALPARAM", actualrank);
   out << ">\n";
   out.indent();
   out << "\t<formal";
-  out.idref_prefix(superClass(), tp);
+  out.idref_prefix(superClass(), "TEMPLPARAM", rank());
   out << "/>\n";
 
   out.indent();
@@ -27,17 +21,13 @@ void UmlActualParameter::write(FileOut & out, UmlClass * cl, int actualrank) con
   }
   else {
     // produce an opaque expression, even in case of primitive type
-    char oa[32];
-    
-    sprintf(oa, "OPAQUE_ACTUAL%d_", actualrank);
-    
     out << "\t<actual";
-    out.idref_prefix(cl, oa);
+    out.idref_prefix(cl, "OPAQUE_ACTUAL", actualrank);
     out << "/>\n";
     
     out.indent();
     out << "\t<ownedActual xmi:type=\"uml:OpaqueExpression\"";
-    out.id_prefix(cl, oa);
+    out.id_prefix(cl, "OPAQUE_ACTUAL", actualrank);
     out << " body=\"";
     out.quote(value().explicit_type);
     out << "\"/>\n";

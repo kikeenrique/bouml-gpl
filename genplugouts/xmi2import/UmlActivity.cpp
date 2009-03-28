@@ -6,15 +6,18 @@
 
 #include "UmlExpansionRegion.h"
 #include "UmlInterruptibleActivityRegion.h"
+#include "UmlActivityPartition.h"
 #include "UmlActivityActionClasses.h"
 #include "UmlActivityControlNode.h"
 #include "UmlActivityParameter.h"
 #include "UmlFlow.h"
+#include "UmlCom.h"
 
 UmlItem * UmlActivity::container(anItemKind kind, Token & token, FileIn & in) {
   switch (kind) {
   case anExpansionRegion:
   case anInterruptibleActivityRegion:
+  case aPartition:
   case anOpaqueAction:
   case anAcceptEventAction:
   case aReadVariableValueAction:
@@ -29,6 +32,13 @@ UmlItem * UmlActivity::container(anItemKind kind, Token & token, FileIn & in) {
   case aBroadcastSignalAction:
   case anUnmarshallAction:
   case aValueSpecificationAction:
+  case anAcceptCallAction:
+  case aReplyAction:
+  case aCreateObjectAction:
+  case aDestroyObjectAction:
+  case aTestIdentityAction:
+  case aRaiseExceptionAction:
+  case aReduceAction:
   case anActivityObject:
   case anInitialActivityNode:
   case aFlowFinalActivityNode:
@@ -44,6 +54,17 @@ UmlItem * UmlActivity::container(anItemKind kind, Token & token, FileIn & in) {
 
 }
 
+void UmlActivity::solve(QCString idref) {
+  QMap<QCString, UmlItem *>::Iterator it = All.find(idref);
+  
+  if (it == All.end()) {
+    if (!FileIn::isBypassedId(idref))
+      UmlCom::trace("state : unknown operation reference '" + idref + "'<br>");
+  }
+  else if ((*it)->kind() == anOperation)
+    set_Specification((UmlOperation *) *it);
+}
+
 void UmlActivity::init()
 {
   declareFct("ownedmember", "uml:Activity", &importIt);
@@ -51,6 +72,7 @@ void UmlActivity::init()
 
   UmlExpansionRegion::init();
   UmlInterruptibleActivityRegion::init();
+  UmlActivityPartition::init();
   UmlOpaqueAction::init();
   UmlAcceptEventAction::init();
   UmlReadVariableValueAction::init();
@@ -65,6 +87,13 @@ void UmlActivity::init()
   UmlBroadcastSignalAction::init();
   UmlUnmarshallAction::init();
   UmlValueSpecificationAction::init();
+  UmlAcceptCallAction::init();
+  UmlReplyAction::init();
+  UmlCreateObjectAction::init();
+  UmlDestroyObjectAction::init();
+  UmlTestIdentityAction::init();
+  UmlRaiseExceptionAction::init();
+  UmlReduceAction::init();
   UmlActivityControlNode::init();
   UmlFlow::init();
 }
@@ -96,6 +125,8 @@ void UmlActivity::importIt(FileIn & in, Token & token, UmlItem * where)
     if (token.valueOf("issingleexecution") == "true")
       a->set_isSingleExecution(TRUE);
     
+    QCString spec = token.valueOf("specification");
+    
     if (! token.closed()) {
       QCString k = token.what();
       const char * kstr = k;
@@ -111,9 +142,23 @@ void UmlActivity::importIt(FileIn & in, Token & token, UmlItem * where)
 	else if ((s == "node") &&
 		 (token.xmiType() == "uml:ActivityParameterNode"))
 	  a->readParameterNode(in, token);
+	else if (s == "specification") {
+	  spec = token.xmiIdref();
+	  if (! token.closed())
+	    in.finish(s);
+	}
 	else
 	  a->UmlItem::import(in, token);
       }
+    }
+    
+    if (! spec.isEmpty()) {
+      QMap<QCString, UmlItem *>::Iterator it = All.find(spec);
+      
+      if (it == All.end())
+	Unresolved::addRef(a, spec);
+      else if ((*it)->kind() == anOperation)
+	a->set_Specification((UmlOperation *) *it);
     }
 
     a->unload(TRUE, FALSE);

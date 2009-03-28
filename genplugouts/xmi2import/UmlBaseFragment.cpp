@@ -2,6 +2,8 @@
 #include "UmlCom.h"
 #include "UmlBaseFragment.h"
 #include "UmlFragmentCompartment.h"
+#include "UmlDiagram.h"
+#include "UmlClassInstanceReference.h"
 #include "UmlFragment.h"
 
 void UmlBaseFragment::read_() {
@@ -18,9 +20,27 @@ void UmlBaseFragment::read_() {
     UmlFragmentCompartment * fc = new UmlFragmentCompartment();
 
     _compartments.insert(rank, fc);
-    fc->init(this, rank, UmlCom::read_unsigned());
+    fc->read_(this, rank);
   }
   _compartments.setAutoDelete(TRUE);
+  _container = 0;
+  _refer = (UmlDiagram *) UmlBaseItem::read_();
+  _arguments = UmlCom::read_string();
+}
+
+int UmlBaseFragment::vcenter_(int rank) const {
+  int t = (rank == 0) ? _y : _compartments[rank - 1]->b();
+
+  return (t + _compartments[rank]->b())/2;
+}
+
+void UmlBaseFragment::read_covered_(QPtrDict<UmlClassInstanceReference> & instances) {
+  unsigned n = UmlCom::read_unsigned();
+  unsigned rank;
+
+  _covered.resize(n);
+  for (rank = 0; rank != n; rank += 1)
+    _covered.insert(rank, instances[(void *) UmlCom::read_unsigned()]);
 }
 
 UmlFragmentCompartment * UmlBaseFragment::get_container_(int x, int y, int w, int h, const QVector<UmlFragment> & fragments)

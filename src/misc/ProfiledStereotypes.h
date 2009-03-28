@@ -5,6 +5,8 @@
 
 #include "UmlEnum.h"
 
+class QPixmap;
+
 class BrowserPackage;
 class BrowserClass;
 class BrowserClassView;
@@ -28,7 +30,7 @@ class ProfiledStereotypes {
     static const char * canAddStereotype(BrowserClass *, QString name);
     static const char * canAddStereotype(BrowserClassView *, QString name);
     static void added(BrowserClass *);
-    static void changed(BrowserClass *, QString oldname);
+    static void changed(BrowserClass *, QString oldname, bool newicon);
     static void deleted(BrowserClass *);
     static void added(BrowserAttribute *);
     static void changed(BrowserAttribute *, QString oldname);
@@ -42,6 +44,8 @@ class ProfiledStereotypes {
     static void choiceManagement(BrowserNode * bn, int choice);
     static void callCheck(BrowserNode *, bool rec);
     static bool enumerated(QString st, QStringList &);
+    static const QPixmap * browserPixmap(const char * s);
+    static const QPixmap * diagramPixmap(const char * s, double zoom);
 };
 
 #endif

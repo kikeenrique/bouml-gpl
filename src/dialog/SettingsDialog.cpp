@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,6 +46,8 @@ class ComboStates : public QComboBox {
     ComboStates(QWidget * parent, DrawingLanguage v, bool nodefault, bool unchanged);
     ComboStates(QWidget * parent, ShowContextMode v, bool nodefault, bool unchanged);
     ComboStates(QWidget * parent, char v, bool nodefault, bool unchanged);
+    
+    virtual QSize sizeHint() const;
 };
 
 ComboStates::ComboStates(QWidget * parent, Uml3States v,
@@ -158,6 +160,14 @@ ComboStates::ComboStates(QWidget * parent, char v,
     }
   }
 }
+
+QSize ComboStates::sizeHint() const {
+  QSize sz = QComboBox::sizeHint();
+  
+  sz.setHeight(fontMetrics().height() + 4);
+  return sz;
+}
+
 
 class ComboColor : public QComboBox {
   public:

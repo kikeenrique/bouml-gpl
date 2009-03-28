@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -32,10 +32,14 @@
 #include <qlabel.h>
 #include <qcombobox.h> 
 #include <qpushbutton.h> 
+#include <qpopupmenu.h> 
+#include <qcursor.h> 
 
 #include "StateDialog.h"
 #include "StateData.h"
 #include "BrowserState.h"
+#include "BrowserOperation.h"
+#include "BrowserView.h"
 #include "KeyValueTable.h"
 #include "UmlWindow.h"
 #include "DialogUtil.h"
@@ -89,6 +93,27 @@ StateDialog::StateDialog(StateData * d)
   QSizePolicy sp = edstereotype->sizePolicy();
   sp.setHorData(QSizePolicy::Expanding);
   edstereotype->setSizePolicy(sp);
+    
+  connect(new SmallPushButton("specification :", grid), SIGNAL(clicked()),
+	  this, SLOT(menu_specification()));    
+  edspecification = new QComboBox(FALSE, grid);
+  edspecification->setSizePolicy(sp);
+  if (visit) {
+    if (state->get_specification() == 0)
+      edspecification->insertItem("");
+    else
+      edspecification->insertItem(state->get_specification()->full_name(TRUE));
+  }
+  else {
+    edspecification->insertItem("");
+    edspecification->setAutoCompletion(TRUE);
+    BrowserOperation::instances(opers);
+    opers.full_names(list);
+    edspecification->insertStringList(list);
+    edspecification->setCurrentItem((state->get_specification() == 0)
+				    ? 0
+				    : opers.findRef(state->get_specification()) + 1);
+  }
   
   QVBox * vtab = new QVBox(grid);
   new QLabel("description :", vtab);
@@ -154,6 +179,60 @@ void StateDialog::change_tabs(QWidget * w) {
 void StateDialog::polish() {
   QTabDialog::polish();
   UmlDesktop::limitsize_center(this, previous_size, 0.8, 0.8);
+}
+
+void StateDialog::menu_specification() {
+  QPopupMenu m(0);
+
+  m.insertItem("Choose", -1);
+  m.insertSeparator();
+  
+  int index = list.findIndex(edspecification->currentText().stripWhiteSpace());
+  
+  if (index != -1)
+    m.insertItem("Select in browser", 0);
+  
+  BrowserNode * bn = 0;
+  
+  if (! visit) {
+    bn = BrowserView::selected_item();
+    
+    if ((bn != 0) && (bn->get_type() == UmlOperation) && !bn->deletedp())
+      m.insertItem("Choose operation selected in browser", 1);
+    else
+      bn = 0;
+  }
+  
+  if ((index != -1) || (bn != 0)) {
+    switch (m.exec(QCursor::pos())) {
+    case 0:
+      opers.at(index)->select_in_browser();
+      break;
+    case 1:
+      {
+	QString s = bn->full_name(TRUE);
+	
+	if ((index = list.findIndex(s)) == -1) {
+	  // new operation, may be created through an other dialog
+	  index = 0;
+	  QStringList::Iterator iter = list.begin();
+	  QStringList::Iterator iter_end = list.end();
+	  
+	  while ((iter != iter_end) && (*iter < s)) {
+	    ++iter;
+	    index += 1;
+	  }
+	  opers.insert((unsigned) index, bn);
+	  list.insert(iter, s);
+	  edspecification->insertItem(s, index + 1);
+	}
+      }
+      edspecification->setCurrentItem(index + 1);
+      break;
+    default:
+      break;
+    }
+  }
 }
 
 void StateDialog::init_tab(QWidget *& tab, StDialog & d, StateBehavior & st,
@@ -243,7 +322,7 @@ DEF_EDIT(activity, cpp, CppEdit)
 DEF_EDIT(activity, java, JavaEdit)
 
 void StateDialog::accept() {
-  if (!check_edits(edits))
+  if (!check_edits(edits) || !kvtable->check_unique())
     return;
     
   BrowserNode * bn = state->browser_node;
@@ -259,7 +338,12 @@ void StateDialog::accept() {
     bn->set_name(s);
     
     bool newst = state->set_stereotype(fromUnicode(edstereotype->currentText().stripWhiteSpace()));
+    int index = list.findIndex(edspecification->currentText().stripWhiteSpace());
     
+    state->set_specification((index != -1)
+			     ? (BrowserOperation *) opers.at(index)
+			     : 0);
+      
     uml.accept(state->uml);  
     cpp.accept(state->cpp);  
     java.accept(state->java);    

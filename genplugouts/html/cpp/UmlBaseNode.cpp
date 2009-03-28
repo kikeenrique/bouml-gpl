@@ -20,7 +20,7 @@ UmlDeploymentDiagram * UmlBaseNode::associatedDiagram() {
 }
 
 bool UmlBaseNode::set_AssociatedDiagram(UmlDeploymentDiagram * d) {
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;

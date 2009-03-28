@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -187,6 +187,15 @@ void InterruptibleActivityRegionCanvas::draw(QPainter & p) {
   
   p.setPen(::Qt::DotLine);
   p.drawRoundRect(r, 8, 8);
+
+  FILE * fp = svg();
+
+  if (fp != 0)
+    fprintf(fp,
+	    "\t<rect fill=\"%s\" stroke=\"black\" stroke-dasharray=\"4,4\" stroke-opacity=\"1\""
+	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
+	    svg_color(used_color),
+	    r.left(), r.top(), r.width() - 1, r.height() - 1);
   
   p.setPen(::Qt::SolidLine);      
   p.setBackgroundColor(bckgrnd);
@@ -238,7 +247,9 @@ void InterruptibleActivityRegionCanvas::menu(const QPoint&) {
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("Set associated diagram",6);
+    if (browser_node->get_associated() !=
+	(BrowserNode *) the_canvas()->browser_diagram())
+      m.insertItem("Set associated diagram",6);
     
     if (browser_node->get_associated())
       m.insertItem("Remove diagram association",9);

@@ -23,6 +23,10 @@ class UmlClass : public UmlBaseClass {
     //  Don't return on error
     UmlOperation * trigger(QCString s, UmlClass * machine, UmlClass * anystate);
 
+    //add a virtual destructor if needed
+    //initial definition is empty
+    void addDestructor();
+
 };
 
 #endif

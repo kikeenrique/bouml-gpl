@@ -192,8 +192,9 @@ const char * FileIn::readWord(bool any, bool & str) {
     str = FALSE;
     return _buffer;
   case '"':
+  case '\'':
     str = TRUE;
-    return read_string();
+    return read_string(c);
   default:
     str = FALSE;
     return read_word(c, any);
@@ -336,7 +337,7 @@ const char * FileIn::read_word(int c, bool any) {
   }
 }
 
-const char * FileIn::read_string() {
+const char * FileIn::read_string(int marker) {
   // " already read
   int index = 0;
   int c;
@@ -349,10 +350,6 @@ const char * FileIn::read_string() {
       // doesn't return
       error("premature end of file");
       break;
-    case '"':
-      // may add 0 without size check
-      _buffer[index] = 0;
-      return _buffer;
     case '&':
       // special char
       c = read_special_char();
@@ -361,6 +358,11 @@ const char * FileIn::read_string() {
       _linenum += 1;
       break;
     default:
+      if (c == marker) {
+	// can add 0 without size check
+	_buffer[index] = 0;
+	return _buffer;
+      }
       if (_utf8 && (((unsigned char) c) > 127))
 	c = ((c & 3) << 6) + (fgetc(_fp) & 0x3f);
       break;

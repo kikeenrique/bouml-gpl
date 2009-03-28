@@ -4,6 +4,8 @@
 
 #include "UmlBaseOperation.h"
 #include <qcstring.h>
+#include <qptrdict.h>
+#include <qasciidict.h>
 
 class FileOut;
 
@@ -31,9 +33,22 @@ class UmlOperation : public UmlBaseOperation {
 
     bool get_param(QCString s, int & index, QCString & r, QCString & kname, QCString & ktype, int & rank);
 
+    // oper is sent/received in sequence/communication diagram, return event prefix
+    // warning a class modify previous operation results
+    const char * event(bool rec);
+
+    // explicit operation/message sent in sequence/communication diagram, return event prefix
+    static const char * event(const char * pfix, QCString msg);
+
+    static void write_events(FileOut & out);
+
 
   protected:
     static int param_id;
+
+    static QPtrDict<char> SentReceived;
+
+    static QAsciiDict<char> Events;
 
 };
 

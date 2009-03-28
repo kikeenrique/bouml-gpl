@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -54,6 +54,10 @@ RelationData::RelationData(UmlCode e, int id)
   a.isa_class_relation = b.isa_class_relation = FALSE; 
   a.isa_volatile_relation = b.isa_volatile_relation = FALSE;
   a.isa_const_relation = b.isa_const_relation = FALSE; 
+  a.is_derived = b.is_derived =  FALSE;
+  a.is_derivedunion = b.is_derivedunion =  FALSE;
+  a.is_ordered = b.is_ordered =  FALSE;
+  a.is_unique = b.is_unique =  FALSE;
   a.uml_visibility = b.uml_visibility = UmlDefaultVisibility; 
   a.cpp_virtual_inheritance = b.cpp_virtual_inheritance = FALSE;
   a.cpp_visibility = b.cpp_visibility = UmlDefaultVisibility;
@@ -610,6 +614,13 @@ void RelationData::send_uml_def(ToolCom * com, BrowserRelation * rel) {
     com->write_string(a.multiplicity);
     com->write_string(a.init_value);
     com->write_bool(a.isa_const_relation);
+  
+    if (api > 41) {
+      com->write_bool(a.is_derived);
+      com->write_bool(a.is_derivedunion);
+      com->write_bool(a.is_ordered);
+      com->write_bool(a.is_unique);
+    }
   }
   else {
     BasicData::send_uml_def(com, rel, b.comment);
@@ -629,6 +640,13 @@ void RelationData::send_uml_def(ToolCom * com, BrowserRelation * rel) {
     com->write_string(b.multiplicity);
     com->write_string(b.init_value);
     com->write_bool(b.isa_const_relation);
+  
+    if (api > 41) {
+      com->write_bool(b.is_derived);
+      com->write_bool(b.is_derivedunion);
+      com->write_bool(b.is_ordered);
+      com->write_bool(b.is_unique);
+    }
   }
   
   if (rel->get_get_oper() != 0)
@@ -893,6 +911,30 @@ bool RelationData::tool_cmd(ToolCom * com, BrowserRelation * rel,
 	  set_idlcase(r, at, args);
 	}
 	break;
+      case setDerivedCmd:
+	switch (*args) {
+	case 0:
+	  r.is_derived = r.is_derivedunion = FALSE;
+	  break;
+	case 1:
+	  r.is_derived = TRUE;
+	  r.is_derivedunion = FALSE;
+	  break;
+	case 3:
+	  r.is_derived = r.is_derivedunion = TRUE;
+	  break;
+	default:
+	  // derived union but non derived
+	  com->write_ack(FALSE);
+	  return TRUE;
+	}
+	break;
+      case setOrderingCmd:
+	r.is_ordered = (*args != 0);
+	break;
+      case setUniqueCmd:
+	r.is_unique = (*args != 0);
+	break;
       default:
 	return FALSE;
       }
@@ -993,6 +1035,12 @@ static void save_role(const RoleData & role, bool assoc, QTextStream & st,
       st << "volatile ";
     if (role.isa_const_relation)
       st << "const_relation ";
+    if (role.is_derived)
+      st << ((role.is_derivedunion) ? "derivedunion " : "derived ");
+    if (role.is_ordered)
+      st << "ordered ";
+    if (role.is_unique)
+      st << "unique ";
   }
   st << stringify(role.uml_visibility);
   if (! role.comment.isEmpty()) {
@@ -1157,35 +1205,68 @@ static void read_role(RoleData & role, bool assoc,
     }
     else
       role.multiplicity = 0;
+    
     if (!strcmp(k, "init_value")) {
       role.init_value = read_string(st);
       k = read_keyword(st);
     }
     else
       role.init_value = QString::null;
+    
     if (!strcmp(k, "class_relation")) {
       role.isa_class_relation = TRUE;
       k = read_keyword(st);
     }
     else
       role.isa_class_relation = FALSE;
+    
     if (!strcmp(k, "volatile")) {
       role.isa_volatile_relation = TRUE;
       k = read_keyword(st);
     }
     else
       role.isa_volatile_relation = FALSE;
+    
     if (!strcmp(k, "const_relation")) {
       role.isa_const_relation = TRUE;
       k = read_keyword(st);
     }
     else
       role.isa_const_relation = FALSE;
+  
+    if (!strcmp(k, "derivedunion")) {
+      role.is_derived = TRUE;
+      role.is_derivedunion = TRUE;
+      k = read_keyword(st);
+    }
+    else if (!strcmp(k, "derived")) {
+      role.is_derived = TRUE;
+      role.is_derivedunion = FALSE;
+      k = read_keyword(st);
+    }
+    else
+      role.is_derived = role.is_derivedunion = FALSE;
+    
+    if (!strcmp(k, "ordered")) {
+      role.is_ordered = TRUE;
+      k = read_keyword(st);
+    }
+    else
+      role.is_ordered = FALSE;
+    
+    if (!strcmp(k, "unique")) {
+      role.is_unique = TRUE;
+      k = read_keyword(st);
+    }
+    else
+      role.is_unique = FALSE;
   }
   else
     k = read_keyword(st);
+  
   role.uml_visibility = ::visibility(k);
   k = read_keyword(st);
+  
   if (!strcmp(k, "comment")) {
     role.comment = read_string(st);
     k = read_keyword(st);

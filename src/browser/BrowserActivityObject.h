@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -69,6 +69,7 @@ class BrowserActivityObject : public BrowserNode, public Labeled<BrowserActivity
     virtual const char * connexion_from(bool control) const;
     
     virtual const QPixmap* pixmap (int) const;
+    virtual void iconChanged();
 
     virtual void menu();
     virtual void apply_shortcut(QString s);

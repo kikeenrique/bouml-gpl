@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -91,7 +91,7 @@ bool UmlAttribute::new_one(Class * container, const QCString & name,
   
   if (!comment.isEmpty())
     at->set_Description((decl.find("${description}") != -1)
-			? description : comment);
+			? description : Lex::simplify_comment(comment));
   
   if (finalp)
     at->set_isReadOnly(TRUE);
@@ -215,7 +215,7 @@ bool UmlAttribute::manage_enum_item(QCString name, UmlClass * cl)
     
     if (!comment.isEmpty())
       item->set_Description((decl.find("${description}") != -1)
-			    ? description : comment);
+			    ? description : Lex::simplify_comment(comment));
     
     item->set_JavaDecl(decl);
   }

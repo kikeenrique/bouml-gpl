@@ -17,7 +17,7 @@ class UmlCom
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(38);
+    write_unsigned(45);
     flush();
     return TRUE;
   }
@@ -38,7 +38,7 @@ class UmlCom
     p_buffer_out = 4/*bytes for length*/;
 
     // send API version
-    write_unsigned(38);
+    write_unsigned(45);
     flush();
   }
   catch (Exception e) {
@@ -304,6 +304,24 @@ class UmlCom
   
   write_char((byte) f.value());
   write_char((byte) cmd);
+  flush();
+!!!278144.cpp!!!	send_cmd(in f : CmdFamily, in cmd : uint, in s : str, in b : bool) : void
+#ifdef TRACE
+  cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << ((s) ? s : "") << b << ")\n";
+#endif
+  
+  write_char(f);
+  write_char(cmd);
+  write_string(s);
+  write_bool(b);
+  flush();
+!!!278144.java!!!	send_cmd(in f : CmdFamily, in cmd : uint, in s : str, in b : bool) : void
+  //cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << ((s) ? s : "") << b << ")\n";
+  
+  write_char((byte) f.value());
+  write_char((byte) cmd);
+  write_string(s);
+  write_bool(b);
   flush();
 !!!73088.cpp!!!	send_cmd(in f : CmdFamily, in cmd : uint, in arg : sbyte) : void
 #ifdef TRACE

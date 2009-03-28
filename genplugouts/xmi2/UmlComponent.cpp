@@ -1,7 +1,6 @@
 
 #include "UmlComponent.h"
 #include "FileOut.h"
-#include "UmlClass.h"
 
 void UmlComponent::write(FileOut & out) {
   const char * k = (parent()->kind() == anUseCase)
@@ -23,40 +22,64 @@ void UmlComponent::write(FileOut & out) {
      
   for (index = 0; index != n; index += 1) 
     ch[index]->write(out); 
+  
+  // provided
+  
+  const QVector< UmlClass > & prov = providedClasses();
+  
+  n = prov.size();
+  
+  for (index = 0; index != n; index += 1) {
+    UmlClass * cl = prov[index];
     
-  write(out, providedClasses(), "provided", "PROVIDED");
-  write(out, requiredClasses(), "required", "REQUIRED");
-  write(out, realizingClasses(), "realization", "REALIZATION");
-
+    out.indent();
+    out << "<interfaceRealization xmi:type=\"uml:InterfaceRealization\"";
+    out.id_prefix(this, "PROV_", index);
+    out.ref(cl, "supplier");
+    out.ref(this, "client");
+    out.ref(cl, "contract");
+    out << "/>\n";
+  }
+  
+  // realizing
+  
+  const QVector< UmlClass > & rea = realizingClasses();
+  
+  n = rea.size();
+  
+  for (index = 0; index != n; index += 1) {
+    UmlClass * cl = rea[index];
+    
+    out.indent();
+    out << "<realization xmi:type=\"uml:ComponentRealization\"";
+    out.id_prefix(this, "REA_", index);
+    out.ref(cl, "supplier");
+    out.ref(this, "client");
+    out.ref(cl, "realizingClassifier");
+    out << "/>\n";
+  }
   out.indent(-1); 
   out.indent(); 
   out << "</" << k << ">\n"; 
- 
-  unload(); 
-}
-
-void UmlComponent::write(FileOut & out, const QVector< UmlClass > & v, const char * k1, const char * k2) {
-  unsigned n = v.size();
-  unsigned index;
-  char s[64];
   
-  strcpy(s, k2);
+  // required
   
-  char * p = s + strlen(s);
+  const QVector< UmlClass > & req = requiredClasses();
+  
+  n = req.size();
   
   for (index = 0; index != n; index += 1) {
-    sprintf(p, "%u_", index);
+    UmlClass * cl = req[index];
     
     out.indent();
-    out << "<" << k1;
-    out.id_prefix(this, s);
-    
-    UmlClass * cl = v[index];
-    
-    out.idref(cl);
-    out << " name=\"";
-    out.quote(cl->name());
-    out << "\"/>\n";
+    out << "<" << k << " xmi:type=\"uml:Usage\"";
+    out.id_prefix(this, "REQ_", index);
+    out.ref(cl, "supplier");
+    out.ref(this, "client");
+    out << "/>\n";
   }
+
+  unload(); 
+
 }
 

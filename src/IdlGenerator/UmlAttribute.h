@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,7 +34,7 @@ class UmlAttribute : public UmlBaseAttribute {
       :  UmlBaseAttribute(id, n) {};
 
     virtual void generate_decl(QTextOStream & f, const QCString & cl_stereotype,
-			       bool = FALSE);
+			       QCString indent, bool = FALSE);
 };
 
 #endif

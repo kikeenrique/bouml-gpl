@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -38,6 +38,7 @@
 #include "UmlPixmap.h"
 #include "SettingsDialog.h"
 #include "myio.h"
+#include "strutil.h"
 #include "ToolCom.h"
 #include "Tool.h"
 #include "MenuTitle.h"
@@ -51,20 +52,20 @@ QStringList BrowserSeqDiagram::its_default_stereotypes;	// unicode
 
 
 BrowserSeqDiagram::BrowserSeqDiagram(QString s, BrowserNode * p, int id)
-    : BrowserDiagram(s, p, id), window(0) {
+    : BrowserDiagram(s, p, id), window(0), used_settings(0) {
   make();
   is_modified = (id == 0);
 }
 
 BrowserSeqDiagram::BrowserSeqDiagram(int id)
-    : BrowserDiagram(id), window(0) {
+    : BrowserDiagram(id), window(0), used_settings(0) {
   // not yet read
   make();
   is_modified = (id == 0);
 }
 
 BrowserSeqDiagram::BrowserSeqDiagram(BrowserSeqDiagram * model, BrowserNode * p)
-    : BrowserDiagram(p->get_name(), p, 0), window(0) {
+    : BrowserDiagram(p->get_name(), p, 0), window(0), used_settings(0) {
   def = new SimpleData(model->def);
   def->set_browser_node(this);
   comment = model->comment;
@@ -178,7 +179,12 @@ BrowserNode * BrowserSeqDiagram::duplicate(BrowserNode * p, QString name) {
 }
 
 const QPixmap* BrowserSeqDiagram::pixmap(int) const {
-  return (deletedp()) ? DeletedSeqDiagramIcon : SeqDiagramIcon;
+  if (deletedp()) 
+    return DeletedSeqDiagramIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : SeqDiagramIcon;
 }
 
 void BrowserSeqDiagram::draw_svg() const {
@@ -345,6 +351,10 @@ void BrowserSeqDiagram::edit_settings() {
 
 void BrowserSeqDiagram::on_close() {
   window = 0;
+  if (used_settings != 0) {
+    delete used_settings;
+    used_settings = 0;
+  }
 }
 
 void BrowserSeqDiagram::read_session(char * & st) {
@@ -363,9 +373,15 @@ const char * BrowserSeqDiagram::help_topic() const  {
   return "sequencediagram";
 }
 
+void BrowserSeqDiagram::update_drawing_settings() {
+  if (used_settings == 0)
+    used_settings = new SequenceDiagramSettings;
+  *used_settings = settings;
+  ((BrowserNode *) parent())->get_sequencediagramsettings(*used_settings);
+}
+
 void BrowserSeqDiagram::get_sequencediagramsettings(SequenceDiagramSettings & r) const {
-  if (! settings.complete(r))
-    ((BrowserNode *) parent())->get_sequencediagramsettings(r);
+  r.assign(*used_settings);
 }
 
 UmlColor BrowserSeqDiagram::get_color(UmlCode who) const {
@@ -394,48 +410,29 @@ UmlColor BrowserSeqDiagram::get_color(UmlCode who) const {
 }
 
 bool BrowserSeqDiagram::get_shadow() const {
-  switch (settings.shadow) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_shadow(UmlSeqDiagram);
-  }  
+  return used_settings->shadow == UmlYes;
+}
+
+bool BrowserSeqDiagram::get_auto_label_position() const {
+  // never called
+  return FALSE;
 }
 
 bool BrowserSeqDiagram::get_draw_all_relations() const {
-  switch (settings.draw_all_relations) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_draw_all_relations(UmlSeqDiagram);
-  }  
+  return used_settings->draw_all_relations == UmlYes;
 }
 
 void BrowserSeqDiagram::dont_draw_all_relations() {
-  settings.draw_all_relations = UmlNo;
+  settings.draw_all_relations = 
+    used_settings->draw_all_relations = UmlNo;
 }
 
-bool BrowserSeqDiagram::get_show_stereotype_properties(UmlCode) const {
-  switch (settings.show_stereotype_properties) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_stereotype_properties(UmlSeqDiagram);
-  }
+bool BrowserSeqDiagram::get_show_stereotype_properties() const {
+  return used_settings->show_stereotype_properties == UmlYes;
 }
 
-bool BrowserSeqDiagram::get_classinstwritehorizontally(UmlCode) const {
-  Uml3States h = settings.write_horizontally;
-  
-  return (h == UmlDefaultState)
-    ? ((BrowserNode *) parent())->get_classinstwritehorizontally(UmlSeqDiagram)
-    : (h == UmlYes);
+bool BrowserSeqDiagram::get_classinstwritehorizontally() const {
+  return used_settings->write_horizontally == UmlYes;
 }
 
 BasicData * BrowserSeqDiagram::get_data() const {
@@ -482,6 +479,26 @@ bool BrowserSeqDiagram::tool_cmd(ToolCom * com, const char * args) {
   default:
     return (def->tool_cmd(com, args, this, comment) ||
 	    BrowserNode::tool_cmd(com, args));
+  }
+}
+
+void BrowserSeqDiagram::compute_referenced_by(QList<BrowserNode> & l,
+					      BrowserNode * bn,
+					      char const * kc,
+					      char const * kr)
+{
+  int id = bn->get_identifier();
+  IdIterator<BrowserDiagram> it(all);
+  BrowserDiagram * d;
+
+  while ((d = it.current()) != 0) {
+    if (!d->deletedp() && (d->get_type() == UmlSeqDiagram)) {
+      if ((((BrowserSeqDiagram *) d)->window != 0)
+	  ? ((BrowserSeqDiagram *) d)->window->get_view()->is_present(bn)
+	  : is_referenced(read_definition(d->get_ident(), "diagram"), id, kc, kr))
+	l.append((BrowserSeqDiagram *) d);
+    }
+    ++it;
   }
 }
 
@@ -578,8 +595,8 @@ BrowserSeqDiagram * BrowserSeqDiagram::read(char * & st, char * k,
     
     r->is_defined = TRUE;
 
-    r->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && r->is_api_base();
+    r->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && r->is_api_base());
     
     QFileInfo fi(BrowserView::get_dir(), QString::number(id) + ".diagram");
     if (!in_import() && fi.exists() && !fi.isWritable())

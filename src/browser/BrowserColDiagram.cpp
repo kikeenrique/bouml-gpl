@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -38,6 +38,7 @@
 #include "UmlPixmap.h"
 #include "SettingsDialog.h"
 #include "myio.h"
+#include "strutil.h"
 #include "ToolCom.h"
 #include "Tool.h"
 #include "MenuTitle.h"
@@ -50,20 +51,20 @@ QValueList<int> BrowserColDiagram::imported_ids;
 QStringList BrowserColDiagram::its_default_stereotypes;	// unicode
 
 BrowserColDiagram::BrowserColDiagram(QString s, BrowserNode * p, int id)
-    : BrowserDiagram(s, p, id), window(0) {
+    : BrowserDiagram(s, p, id), window(0), used_settings(0) {
   make();
   is_modified = (id == 0);
 }
 
 BrowserColDiagram::BrowserColDiagram(int id)
-    : BrowserDiagram(id), window(0) {
+    : BrowserDiagram(id), window(0), used_settings(0) {
   // not yet read
   make();
   is_modified = (id == 0);
 }
 
 BrowserColDiagram::BrowserColDiagram(BrowserColDiagram * model, BrowserNode * p)
-    : BrowserDiagram(p->get_name(), p, 0), window(0) {
+    : BrowserDiagram(p->get_name(), p, 0), window(0), used_settings(0) {
   def = new SimpleData(model->def);
   def->set_browser_node(this);
   comment = model->comment;
@@ -173,7 +174,12 @@ BrowserNode * BrowserColDiagram::duplicate(BrowserNode * p, QString name) {
 }
 
 const QPixmap* BrowserColDiagram::pixmap(int) const {
-  return (deletedp()) ? DeletedColDiagramIcon : ColDiagramIcon;
+  if (deletedp()) 
+    return DeletedColDiagramIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : ColDiagramIcon;
 }
 
 void BrowserColDiagram::draw_svg() const {
@@ -334,6 +340,10 @@ void BrowserColDiagram::edit_settings() {
 
 void BrowserColDiagram::on_close() {
   window = 0;
+  if (used_settings != 0) {
+    delete used_settings;
+    used_settings = 0;
+  }
 }
 
 void BrowserColDiagram::read_session(char * & st) {
@@ -352,18 +362,21 @@ const char * BrowserColDiagram::help_topic() const  {
   return "collaborationdiagram";
 }
 
+void BrowserColDiagram::update_drawing_settings() {
+  if (used_settings == 0)
+    used_settings = new CollaborationDiagramSettings;
+  *used_settings = settings;
+  ((BrowserNode *) parent())->get_collaborationdiagramsettings(*used_settings);
+}
+
 void BrowserColDiagram::get_collaborationdiagramsettings(CollaborationDiagramSettings & r) const {
-  if (! settings.complete(r))
-    ((BrowserNode *) parent())->get_collaborationdiagramsettings(r);
+  r.assign(*used_settings);
 }
 
 void BrowserColDiagram::package_settings(bool & name_in_tab,
 					 ShowContextMode & show_context) const {
-  CollaborationDiagramSettings st;
-  
-  get_collaborationdiagramsettings(st);
-  name_in_tab = st.package_name_in_tab == UmlYes;
-  show_context = st.show_context_mode;
+  name_in_tab = used_settings->package_name_in_tab == UmlYes;
+  show_context = used_settings->show_context_mode;
 }
 
 UmlColor BrowserColDiagram::get_color(UmlCode who) const {
@@ -389,48 +402,29 @@ UmlColor BrowserColDiagram::get_color(UmlCode who) const {
 }
 
 bool BrowserColDiagram::get_shadow() const {
-  switch (settings.shadow) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_shadow(UmlColDiagram);
-  }  
+  return used_settings->shadow == UmlYes;
+}
+
+bool BrowserColDiagram::get_auto_label_position() const {
+  // never called
+  return FALSE;
 }
 
 bool BrowserColDiagram::get_draw_all_relations() const {
-  switch (settings.draw_all_relations) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_draw_all_relations(UmlColDiagram);
-  }  
+  return used_settings->draw_all_relations == UmlYes;
 }
 
 void BrowserColDiagram::dont_draw_all_relations() {
-  settings.draw_all_relations = UmlNo;
+  settings.draw_all_relations = 
+    used_settings->draw_all_relations = UmlNo;
 }
 
-bool BrowserColDiagram::get_show_stereotype_properties(UmlCode) const {
-  switch (settings.show_stereotype_properties) {
-  case UmlYes:
-    return TRUE;
-  case UmlNo:
-    return FALSE;
-  default:
-    return ((BrowserNode *) parent())->get_show_stereotype_properties(UmlColDiagram);
-  }
+bool BrowserColDiagram::get_show_stereotype_properties() const {
+  return used_settings->show_stereotype_properties == UmlYes;
 }
 
-bool BrowserColDiagram::get_classinstwritehorizontally(UmlCode) const {
-  Uml3States h = settings.write_horizontally;
-  
-  return (h == UmlDefaultState)
-    ? ((BrowserNode *) parent())->get_classinstwritehorizontally(UmlColDiagram)
-    : (h == UmlYes);
+bool BrowserColDiagram::get_classinstwritehorizontally() const {
+  return used_settings->write_horizontally == UmlYes;
 }
 
 BasicData * BrowserColDiagram::get_data() const {
@@ -477,6 +471,26 @@ bool BrowserColDiagram::tool_cmd(ToolCom * com, const char * args) {
   default:
     return (def->tool_cmd(com, args, this, comment) ||
 	    BrowserNode::tool_cmd(com, args));
+  }
+}
+
+void BrowserColDiagram::compute_referenced_by(QList<BrowserNode> & l,
+					      BrowserNode * bn,
+					      char const * kc,
+					      char const * kr)
+{
+  int id = bn->get_identifier();
+  IdIterator<BrowserDiagram> it(all);
+  BrowserDiagram * d;
+
+  while ((d = it.current()) != 0) {
+    if (!d->deletedp() && (d->get_type() == UmlColDiagram)) {
+      if ((((BrowserColDiagram *) d)->window != 0)
+	  ? ((BrowserColDiagram *) d)->window->get_view()->is_present(bn)
+	  : is_referenced(read_definition(d->get_ident(), "diagram"), id, kc, kr))
+	l.append((BrowserColDiagram *) d);
+    }
+    ++it;
   }
 }
 
@@ -571,7 +585,7 @@ BrowserColDiagram * BrowserColDiagram::read(char * & st, char * k,
     r->is_defined = TRUE;
 
     r->is_read_only = (!in_import() && read_only_file()) || 
-      (user_id() != 0) && r->is_api_base();
+      ((user_id() != 0) && r->is_api_base());
     
     QFileInfo fi(BrowserView::get_dir(), QString::number(id) + ".diagram");
     if (!in_import() && fi.exists() && !fi.isWritable())

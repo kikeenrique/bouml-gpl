@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -409,25 +409,25 @@ UmlOperation * UmlClass::add_op(const char * name, aVisibility v,
 
 UmlAttribute * UmlClass::add_attribute(const char * name, aVisibility v,
 				       const char * type, const char * if_def,
-				       const char * end_if) {
+				       const char * end_if, const char * bitfield) {
   UmlTypeSpec t;
   
   t.explicit_type = type;
-  return add_attribute(name, v, t, if_def, end_if);
+  return add_attribute(name, v, t, if_def, end_if, bitfield);
 }
 
 UmlAttribute * UmlClass::add_attribute(const char * name, aVisibility v,
 				       UmlClass * type, const char * if_def,
-				       const char * end_if) {
+				       const char * end_if, const char * bitfield) {
   UmlTypeSpec t;
   
   t.type = type;
-  return add_attribute(name, v, t, if_def, end_if);
+  return add_attribute(name, v, t, if_def, end_if, bitfield);
 }
 
 UmlAttribute * UmlClass::add_attribute(const char * name, aVisibility v,
 				       UmlTypeSpec & type, const char * if_def,
-				       const char * end_if) {
+				       const char * end_if, const char * bitfield) {
   UmlAttribute * ar = UmlAttribute::create(this, name);
 
   if (ar == 0) {
@@ -445,6 +445,12 @@ UmlAttribute * UmlClass::add_attribute(const char * name, aVisibility v,
   
   QCString s = CppSettings::attributeDecl("");
   
+  if (bitfield != 0) {
+    int index = s.find("${type} ${name}");
+    
+    if (index != -1)
+      s.insert(index + 15, bitfield);
+  }
   conditional(s, if_def, end_if);
   ar->set_CppDecl(s);
   ar->set_JavaDecl(JavaSettings::attributeDecl(""));
@@ -471,7 +477,8 @@ UmlAttribute * UmlClass::add_enum_item(const char * name) {
 
 UmlRelation * UmlClass::add_relation(aRelationKind k, const char * name,
 				     aVisibility v, UmlClass * type,
-				     const char * if_def, const char * end_if)
+				     const char * if_def, const char * end_if,
+				     const char * bitfield)
 {
   UmlRelation * rel = UmlRelation::create(k, this, type);
   
@@ -500,6 +507,13 @@ UmlRelation * UmlClass::add_relation(aRelationKind k, const char * name,
   }
   
   QCString s = CppSettings::relationDecl(byValue, "");
+  
+  if (bitfield != 0) {
+    int index = s.find("${type} ${name}");
+    
+    if (index != -1)
+      s.insert(index + 15, bitfield);
+  }
   
   conditional(s, if_def, end_if);
   rel->set_CppDecl(s);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,8 +45,26 @@ int main(int argc, char ** argv)
   int uid = -1;
   // note : QFile fp(QDir::home().absFilePath(".boumlrc")) doesn't work
   // if the path contains non latin1 characters, for instance cyrillic !
-  QString s = QDir::home().absFilePath(".boumlrc");
+  QDir homeDir = QDir::home();
+  QString s = homeDir.absFilePath(".boumlrc");
   FILE * fp = fopen((const char *) s, "r");
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
   if (fp != 0) {
     char line[512];
@@ -68,11 +86,11 @@ int main(int argc, char ** argv)
   else if ((uid < 2) || (uid > 127))
     QMessageBox::critical(0, "Control project", "invalid Identifier");
   else {
-    set_user_id(uid, QDir::home().dirName());
+    set_user_id(uid, homeDir.dirName());
     app->connect(app, SIGNAL(lastWindowClosed()), SLOT(quit()) );
     init_pixmaps();
     
-    ControlWindow * w = new ControlWindow();
+    ControlWindow * w = new ControlWindow(homeDir);
     
     w->resize((QApplication::desktop()->width() * 3)/5,
 	      (QApplication::desktop()->height() * 3)/5);

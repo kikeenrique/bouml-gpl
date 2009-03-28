@@ -1,5 +1,6 @@
 
 #include "UmlActivityDiagram.h"
+#include "UmlOperation.h"
 #include "UmlActivity.h"
 
 QCString UmlActivity::sKind() {
@@ -17,6 +18,14 @@ void UmlActivity::html(QCString pfix, unsigned int rank, unsigned int level) {
     fw.write("<p>");
     writeq(description());
     fw.write("<br /></p>");
+  }
+
+  UmlOperation * beh = specification();
+  
+  if (beh != 0) {
+    fw.write("<p>Implements ");
+    beh->write();
+    fw.write("</p>");
   }
 
   if (isReadOnly()) {

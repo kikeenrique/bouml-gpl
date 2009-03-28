@@ -113,6 +113,15 @@ class JavaSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_IsGenerateJavadocStyleComment(bool v);
 
+    // return if the package prefix must be
+    // always generated before class's names
+    static bool isForcePackagePrefixGeneration();
+
+    // set if the package prefix must be always generated before class's names
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsForcePackagePrefixGeneration(bool v);
+
     // returns the default definition of a class
     static const QCString & classDecl();
 
@@ -329,6 +338,8 @@ class JavaSettings : public UmlSettings {
     static QCString _ext;
 
     static bool _is_generate_javadoc_comment;
+    
+    static bool _is_force_package_gen;
 
     static QDict<QCString> _map_imports;
 

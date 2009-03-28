@@ -4,6 +4,22 @@
 #include "UmlDeploymentView.h"
 #include "UmlCom.h"
 void UmlClassView::deploy() {
+  // deployment needed ?
+  
+  const QVector<UmlItem> ch = children();
+  unsigned i;
+  bool need = FALSE;
+    
+  for (i = 0; i != ch.size(); i += 1) {
+    if (ch[i]->deployable() != 0){
+      need = TRUE;
+      break;
+    }
+  }
+  
+  if (! need)
+    return;
+  
   UmlDeploymentView * depl = associatedDeploymentView();
   
   if (depl == 0) {
@@ -20,9 +36,7 @@ void UmlClassView::deploy() {
   
   // look at non deployed classes
   
-  const QVector<UmlItem> ch = children();
-    
-  for (unsigned i = 0; i != ch.size(); i += 1)
+  for (i = 0; i != ch.size(); i += 1)
     ch[i]->deploy(depl);
   
 }

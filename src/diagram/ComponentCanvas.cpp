@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,6 +34,7 @@
 #include "ComponentCanvas.h"
 #include "ArrowJunctionCanvas.h"
 #include "SimpleRelationCanvas.h"
+#include "DiagramView.h"
 #include "SimpleData.h"
 #include "BrowserComponent.h"
 #include "BrowserComponentDiagram.h"
@@ -48,6 +49,7 @@
 #include "Settings.h"
 #include "ClassListDialog.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
 
 ComponentCanvas::ComponentCanvas(BrowserNode * bn, UmlCanvas * canvas,
 				 int x, int y)
@@ -111,15 +113,14 @@ void ComponentCanvas::compute_size() {
   // does not unsubscribe & disconnect signals because compute_size may
   // be called during a signal management, and the signal connection list
   // cannot be modified in this case
-  double zoom = the_canvas()->zoom();
-  QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
   const BasicData * data = browser_node->get_data();
+  double zoom = the_canvas()->zoom();
+  const QPixmap * px = 0;  
+  QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
   ComponentDrawingSettings st = settings;
   int eight = (int) (8 * zoom);
   
-  the_canvas()->browser_diagram()
-    ->get_componentdrawingsettings(FALSE,	// useless here
-				   st);
+  the_canvas()->browser_diagram()->get_componentdrawingsettings(st);
   
   as_icon = (st.draw_component_as_icon == UmlYes);
   req_prov = (st.show_component_req_prov == UmlYes);
@@ -128,37 +129,14 @@ void ComponentCanvas::compute_size() {
   used_color = (itscolor == UmlDefaultColor)
     ? the_canvas()->browser_diagram()->get_color(UmlComponent)
     : itscolor;
-  
-  if (as_icon) {
-    min_height = fm.height() * 3;
-    min_width = fm.width(browser_node->get_name());
-    
-    if (data->get_stereotype()[0]) {
-      int stw = fm.width(QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
-      
-      if (min_width < stw)
-	min_width = stw;
-    }
-    
-    min_width += eight + (min_height * 5)/13;
- 
-    if (min_width < ((int) (COMPONENT_CANVAS_MIN_SIZE * zoom))) 
-      min_width = (int) (COMPONENT_CANVAS_MIN_SIZE * zoom);
-  
-    // force odd width and height for line alignment
-    min_width |= 1;
-    min_height |= 1;
-    
-    DiagramCanvas::resize(min_width, min_height);
-  }
-  else {
+        
+  if (!as_icon) {
     // <<component>>/stereotype on 2*font_height with the icon on the right
     // the icon height = 2*font_height
     // the icon width = 4*height/5
     // name on font_height+4 points
     const int four = (int) (4 * zoom);
     const int sixteen = (int) (16 * zoom);
-    QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
     
     min_height = 3*fm.height() + four;
     min_width = fm.width(browser_node->get_name());
@@ -257,6 +235,40 @@ void ComponentCanvas::compute_size() {
     
     DiagramCanvas::resize((width() > min_width) ? width() : min_width,
 			  (height() > min_height) ? height() : min_height);
+  }
+  else if ((px = ProfiledStereotypes::diagramPixmap(data->get_stereotype(), zoom))
+      != 0) {
+    min_width = fm.width(browser_node->get_name());
+    if (min_width < px->width())
+      min_width = px->width();
+
+    // force odd width and height for line alignment
+    min_width |= 1;
+    min_height = (px->height() + fm.height()) | 1;
+    
+    DiagramCanvas::resize(min_width, min_height);
+  }
+  else {
+    min_height = fm.height() * 3;
+    min_width = fm.width(browser_node->get_name());
+    
+    if (data->get_stereotype()[0]) {
+      int stw = fm.width(QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
+      
+      if (min_width < stw)
+	min_width = stw;
+    }
+    
+    min_width += eight + (min_height * 5)/13;
+ 
+    if (min_width < ((int) (COMPONENT_CANVAS_MIN_SIZE * zoom))) 
+      min_width = (int) (COMPONENT_CANVAS_MIN_SIZE * zoom);
+  
+    // force odd width and height for line alignment
+    min_width |= 1;
+    min_height |= 1;
+    
+    DiagramCanvas::resize(min_width, min_height);
   }
 }
 
@@ -412,89 +424,30 @@ bool ComponentCanvas::move_with_its_package() const {
 void ComponentCanvas::draw(QPainter & p) {
   if (! visible()) return;
   
+  const BasicData * data = browser_node->get_data();
+  QRect r = rect();  
   QColor bckgrnd = p.backgroundColor();
-
-  p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
-
   QColor co = color(used_color);
+  const QPixmap * px = 0;
+  double zoom = the_canvas()->zoom();
   FILE * fp = svg();
 
   if (fp != 0)
     fputs("<g>\n", fp);
 
-  p.setBackgroundColor(co);
+  p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
   
-  const BasicData * data = browser_node->get_data();
-  QRect r = rect();
-  
-  if (as_icon) {
-    int he = r.height();
-    
-    r.setLeft(r.left() + (he * 5)/(13*2));
-
-    if (used_color != UmlTransparent)
-      p.fillRect(r, co);
-      
-    if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      svg_color(used_color),
-	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-
-    p.drawRect(r);
-    
-    r.setLeft(r.left() + (he * 5)/(13*2));
-    
-    if (data->get_stereotype()[0]) {
-      r.setHeight(he/2);
-      p.setFont(the_canvas()->get_font(UmlNormalFont));
-      p.drawText(r, ::Qt::AlignCenter,
-		 QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
-      if (fp != 0)
-	draw_text(r, ::Qt::AlignCenter,
-		  QString("<<") + toUnicode(data->get_short_stereotype()) + ">>",
-		  p.font(), fp);
-      r.moveBy(0, he/2);
-    }
-    
-    p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
-    p.drawText(r, ::Qt::AlignCenter, browser_node->get_name());
-    if (fp != 0)
-      draw_text(r, ::Qt::AlignCenter, browser_node->get_name(),
-		p.font(), fp);
-    p.setFont(the_canvas()->get_font(UmlNormalFont));
-    
-    r = rect();
-    r.setTop(r.top() + (he * 3)/13);
-    r.setHeight((he * 3)/13);
-    r.setWidth((he * 5)/13);
-    p.fillRect(r, co);
-    p.drawRect(r);
-    if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      svg_color((used_color != UmlTransparent) ? used_color : UmlWhite),
-	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-    
-    r.moveBy(0, (he * 4)/13);
-    p.fillRect(r, co);
-    p.drawRect(r);
-    if (fp != 0)
-      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
-	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
-	      svg_color((used_color != UmlTransparent) ? used_color : UmlWhite),
-	      r.x(), r.y(), r.width() - 1, r.height() - 1);
-  }
-  else {
+  if (! as_icon) {
     // <<component>>/stereotype on 2*font_height with the icon on the right
     // the icon height = 2*font_height
     // the icon width = 4*height/5
     // name on font_height+4 points
-    const int four = (int) (4 * the_canvas()->zoom());
+    const int four = (int) (4 * zoom);
     QFontMetrics fm(the_canvas()->get_font(UmlNormalBoldFont));
     const int he = fm.height();
-    const BasicData * data = browser_node->get_data();
     
+    p.setBackgroundColor(co);
+
     if (used_color != UmlTransparent) {
       const int shadow = the_canvas()->shadow();
       
@@ -612,7 +565,7 @@ void ComponentCanvas::draw(QPainter & p) {
     
     int left0 = r.left();
     int left1 = left0 + four;
-    int left2 = left0 + (int) (16 * the_canvas()->zoom());
+    int left2 = left0 + (int) (16 * zoom);
     
     if (req_prov && (!pr.isEmpty() || !rq.isEmpty())) {
       p.drawLine(r.topLeft(), r.topRight());
@@ -693,6 +646,88 @@ void ComponentCanvas::draw(QPainter & p) {
       }
     }
   }
+  else if ((px = ProfiledStereotypes::diagramPixmap(data->get_stereotype(), zoom))
+	   != 0) {    
+    p.setBackgroundMode(::Qt::TransparentMode);
+    
+    int lft = (px->width() < width()) ? r.x() + (width() - px->width())/2 : r.x();
+    
+    p.drawPixmap(lft, r.y(), *px);
+    if (fp != 0)
+      // pixmap not really exported in SVG
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      svg_color(UmlBlack), lft, r.y(), px->width() - 1, px->height() - 1);
+    
+    r.moveBy(0, px->height());
+    p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
+    p.drawText(r, ::Qt::AlignHCenter, browser_node->get_name());
+    
+    if (fp != 0)
+      draw_text(r, ::Qt::AlignHCenter, browser_node->get_name(),
+		p.font(), fp);
+    p.setFont(the_canvas()->get_font(UmlNormalFont));
+  }
+  else {
+    p.setBackgroundColor(co);
+
+    int he = r.height();
+    
+    r.setLeft(r.left() + (he * 5)/(13*2));
+
+    if (used_color != UmlTransparent)
+      p.fillRect(r, co);
+      
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      svg_color(used_color),
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+
+    p.drawRect(r);
+    
+    r.setLeft(r.left() + (he * 5)/(13*2));
+    
+    if (data->get_stereotype()[0]) {
+      r.setHeight(he/2);
+      p.setFont(the_canvas()->get_font(UmlNormalFont));
+      p.drawText(r, ::Qt::AlignCenter,
+		 QString("<<") + toUnicode(data->get_short_stereotype()) + ">>");
+      if (fp != 0)
+	draw_text(r, ::Qt::AlignCenter,
+		  QString("<<") + toUnicode(data->get_short_stereotype()) + ">>",
+		  p.font(), fp);
+      r.moveBy(0, he/2);
+    }
+    
+    p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
+    p.drawText(r, ::Qt::AlignCenter, browser_node->get_name());
+    if (fp != 0)
+      draw_text(r, ::Qt::AlignCenter, browser_node->get_name(),
+		p.font(), fp);
+    p.setFont(the_canvas()->get_font(UmlNormalFont));
+    
+    r = rect();
+    r.setTop(r.top() + (he * 3)/13);
+    r.setHeight((he * 3)/13);
+    r.setWidth((he * 5)/13);
+    p.fillRect(r, co);
+    p.drawRect(r);
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      svg_color((used_color != UmlTransparent) ? used_color : UmlWhite),
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+    
+    r.moveBy(0, (he * 4)/13);
+    p.fillRect(r, co);
+    p.drawRect(r);
+    if (fp != 0)
+      fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+	      svg_color((used_color != UmlTransparent) ? used_color : UmlWhite),
+	      r.x(), r.y(), r.width() - 1, r.height() - 1);
+  }
 
   if (fp != 0)
     fputs("</g>\n", fp);
@@ -736,6 +771,8 @@ void ComponentCanvas::menu(const QPoint&) {
   m.insertItem("Go up", 13);
   m.insertItem("Go down", 14);
   m.insertSeparator();
+  m.insertItem("Add related elements", 10);
+  m.insertSeparator();
   m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();
   m.insertItem("Edit component", 3);
@@ -745,7 +782,9 @@ void ComponentCanvas::menu(const QPoint&) {
     m.insertItem("Select linked items", 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("Set associated diagram",6);
+    if (browser_node->get_associated() !=
+	(BrowserNode *) the_canvas()->browser_diagram())
+      m.insertItem("Set associated diagram",6);
     
     if (browser_node->get_associated())
       m.insertItem("Remove diagram association",9);
@@ -805,6 +844,10 @@ void ComponentCanvas::menu(const QPoint&) {
     //delete from model
     browser_node->delete_it();	// will delete the canvas
     break;
+  case 10:
+    ((UmlCanvas *) canvas())->get_view()
+      ->add_related_elements(this, "component", TRUE, FALSE);
+    return;
   default:
     if (index >= 20)
       ToolCom::run(Tool::command(index - 20), browser_node);
@@ -829,6 +872,11 @@ void ComponentCanvas::apply_shortcut(QString s) {
     z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
+    return;
+  }
+  else if (s == "Add related elements") {
+    ((UmlCanvas *) canvas())->get_view()
+      ->add_related_elements(this, "component", TRUE, FALSE);
     return;
   }
   else {
@@ -903,7 +951,7 @@ bool ComponentCanvas::get_show_stereotype_properties() const {
   case UmlNo:
     return FALSE;
   default:
-    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+    return the_canvas()->browser_diagram()->get_show_stereotype_properties();
   }
 }
 

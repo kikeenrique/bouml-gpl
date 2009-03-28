@@ -11,7 +11,9 @@ class FileOut
   ((QTextStream &) *this) << " xmi:id=\"BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 
 !!!129667.cpp!!!	id_prefix(in x : UmlItem, in pfix : str) : void
-  ((QTextStream &) *this) << " xmi:id=\"" << pfix << "BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
+  ((QTextStream &) *this) << " xmi:id=\"BOUML_" << pfix << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
+!!!143108.cpp!!!	id_prefix(in x : UmlItem, in pfix : str, in n : int) : void
+  ((QTextStream &) *this) << " xmi:id=\"BOUML_" << pfix << n << "_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 !!!144514.cpp!!!	idref(in x : UmlItem) : void
   ((QTextStream &) *this) << " xmi:idref=\"BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 
@@ -33,8 +35,12 @@ class FileOut
     << it.data() << '"';
 
 !!!132099.cpp!!!	idref_prefix(in x : UmlItem, in pfix : str) : void
-  ((QTextStream &) *this) << " xmi:idref=\""
-	  << pfix << "BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
+  ((QTextStream &) *this) << " xmi:idref=\"BOUML_"
+	  << pfix << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
+
+!!!144388.cpp!!!	idref_prefix(in x : UmlItem, in pfix : str, in n : int) : void
+  ((QTextStream &) *this) << " xmi:idref=\"BOUML_"
+	  << pfix << n << "_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
 
 !!!146434.cpp!!!	idref_datatype(in t : string) : void
   if (t.isEmpty())
@@ -49,8 +55,14 @@ class FileOut
     << it.data() << '"';
 
 !!!129795.cpp!!!	ref(in x : UmlItem, in pfix1 : str, in pfix2 : str = "") : void
-  ((QTextStream &) *this) << ' ' << pfix1 << "=\"" 
-	  << pfix2 << "BOUML_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
+  ((QTextStream &) *this) << ' ' << pfix1 << "=\"BOUML_" 
+	  << pfix2 << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
+!!!143236.cpp!!!	ref(in x : UmlItem, in pfix1 : str, in pfix2 : str, in n : int) : void
+  ((QTextStream &) *this) << ' ' << pfix1 << "=\"BOUML_" 
+	  << pfix2 << n << "_" << ((void *) x->getIdentifier()) << "_" << x->kind() << '"';
+!!!228738.cpp!!!	ref_only(in x : UmlItem, in pfix : str) : void
+  ((QTextStream &) *this) << "BOUML_" << pfix << ((void *) x->getIdentifier())
+    << "_" << x->kind();
 !!!146946.cpp!!!	define_datatypes(in uml_20 : bool, in primitive_type : bool, in gen_extension : bool) : void
   const char * pfix = (primitive_type) 
 	? ((uml_20) ? "<ownedMember xmi:type=\"uml:PrimitiveType\""

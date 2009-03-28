@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,6 +37,7 @@
 #include "UmlGlobal.h"
 #include "UmlCanvas.h"
 #include "BrowserDiagram.h"
+#include "BasicData.h"
 #include "Settings.h"
 #include "SettingsDialog.h"
 #include "myio.h"
@@ -50,6 +51,7 @@ FragmentCanvas::FragmentCanvas(UmlCanvas * canvas, int x, int y, int id)
 		    FRAGMENT_CANVAS_MIN_SIZE, id) {
   browser_node = canvas->browser_diagram();
   itscolor = UmlDefaultColor;
+  refer = 0;
   check_size();
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
@@ -72,7 +74,19 @@ void FragmentCanvas::remove_it(FragmentSeparatorCanvas * sp) {
 void FragmentCanvas::draw(QPainter & p) {
   if (! visible()) return;
   
+  QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
+  int w = fm.width((name.isEmpty()) ? QString("X") : name);
+  int h = fm.height() / 2;  
   QRect r = rect();
+  QRect rname = r;
+  
+  rname.setWidth(w + h);
+  rname.setHeight(fm.height() + h);
+  
+  int h1 = (fm.height() + h)/2;
+  int x1 = rname.right() + h1;
+  int y1 = rname.bottom() - h1;
+  
   QColor bckgrnd = p.backgroundColor();
 
   p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
@@ -88,6 +102,24 @@ void FragmentCanvas::draw(QPainter & p) {
   
   if (used_color != UmlTransparent)
     p.fillRect(r, co);
+  else if (!name.isEmpty()) {
+    QPointArray a(6);
+    QBrush brsh = p.brush();
+    
+    a.setPoint(0, rname.left(), rname.top());
+    a.setPoint(1, x1, rname.top());
+    a.setPoint(2, x1, y1);
+    a.setPoint(3, rname.right(), rname.bottom());
+    a.setPoint(4, rname.left(), rname.bottom());
+    a.setPoint(5, rname.left(), rname.top());
+
+    p.setBrush(UmlWhiteColor);
+    p.drawPolygon(a, TRUE, 0, 5);
+    p.setBrush(brsh);
+    
+    if (fp != 0)
+      draw_poly(fp, a, UmlWhite);
+  }
 
   if (fp != 0)
     fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
@@ -97,40 +129,45 @@ void FragmentCanvas::draw(QPainter & p) {
   
   p.drawRect(r);
   
-  QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
-  int w = fm.width((name.isEmpty()) ? QString("X") : name);
-  int h = fm.height() / 2;
+  if (refer != 0) {
+    QString s = refer->get_name() + form;
+    QRect r2(r.left(), r.top() + 2*fm.height(),
+	     r.width(), fm.height());
+
+    p.drawText(r2, ::Qt::AlignCenter, s);
+    
+    if (fp != 0)
+      draw_text(r2, ::Qt::AlignCenter, s,
+		p.font(), fp);
+  }
   
-  r.setWidth(w + h);
-  r.setHeight(fm.height() + h);
   if (!name.isEmpty())
-    p.drawText(r, ::Qt::AlignCenter, name);
+    p.drawText(rname, ::Qt::AlignCenter, name);
   if (fp != 0)
-    draw_text(r, ::Qt::AlignCenter, name,
+    draw_text(rname, ::Qt::AlignCenter, name,
 	      p.font(), fp);
   
-  h = (fm.height() + h)/2;
-  p.drawLine(r.left(), r.bottom(), r.right(), r.bottom());
-  p.drawLine(r.right(), r.bottom(), r.right() + h, r.bottom() - h);
-  p.drawLine(r.right() + h, r.bottom() - h, r.right() + h, r.top());
+  p.drawLine(rname.left(), rname.bottom(), rname.right(), rname.bottom());
+  p.drawLine(rname.right(), rname.bottom(), x1, y1);
+  p.drawLine(x1, y1, x1, rname.top());
 
   if (fp != 0) {
     fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
 	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
-	    r.left(), r.bottom(), r.right(), r.bottom());
+	    rname.left(), rname.bottom(), rname.right(), rname.bottom());
     fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
 	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
-	    r.right(), r.bottom(), r.right() + h, r.bottom() - h);
+	    rname.right(), rname.bottom(), x1, y1);
     fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
 	    " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
-	    r.right() + h, r.bottom() - h, r.right() + h, r.top());
+	    x1, y1, x1, rname.top());
     fputs("</g>\n", fp);
   }
 	       
   p.setBackgroundColor(bckgrnd);
   
   if (selected())
-    show_mark(p, rect());
+    show_mark(p, r);
 }
 
 UmlCode FragmentCanvas::type() const {
@@ -176,20 +213,33 @@ void FragmentCanvas::open() {
     dflt.append("break");
     dflt.append("consider");
     dflt.append("critical");
-    dflt.append("else");
     dflt.append("ignore");
     dflt.append("loop");
     dflt.append("neg");
     dflt.append("opt");
     dflt.append("par");
+    dflt.append("ref");
     dflt.append("seq");
     dflt.append("strict");
   }
   
-  FragmentDialog d(dflt, name);
+  BrowserNode * refered = refer;
+  FragmentDialog d(dflt, name, form, refer);
   
-  d.exec();
-  modified();
+  d.raise();
+  if (d.exec() == QDialog::Accepted) {
+    if (refer != refered) {
+      if (refered != 0) {
+	disconnect(refered->get_data(), SIGNAL(changed()), this, SLOT(modified()));
+	disconnect(refered->get_data(), SIGNAL(deleted()), this, SLOT(modified()));
+      }
+      if (refer != 0) {
+	connect(refer->get_data(), SIGNAL(changed()), this, SLOT(modified()));
+	connect(refer->get_data(), SIGNAL(deleted()), this, SLOT(modified()));
+      }
+    }
+    modified();
+  }
 }
 
 void FragmentCanvas::check_size() {
@@ -207,6 +257,16 @@ void FragmentCanvas::check_size() {
     min_width = min;
   if (min_height < min)
     min_height = min;
+  
+  
+  if (refer != 0) {
+    QString s = refer->get_name() + form + "__";
+    int w = fm.width(s);
+    
+    if (min_width < w)
+      min_width = w;
+    min_height += fm.height()/2;
+  }
   
   // force odd width and height for line alignment
   min_width |= 1;
@@ -239,6 +299,11 @@ void FragmentCanvas::change_scale() {
 
 void FragmentCanvas::modified() {
   // force son reaffichage
+  if ((refer != 0) && refer->deletedp()) {
+    disconnect(refer->get_data(), SIGNAL(changed()), this, SLOT(modified()));
+    disconnect(refer->get_data(), SIGNAL(deleted()), this, SLOT(modified()));
+    refer = 0;
+  }
   hide();
   check_size();
   show();
@@ -266,6 +331,10 @@ void FragmentCanvas::menu(const QPoint&) {
   }
   m.insertSeparator();
   m.insertItem("Remove from view",5);
+  if ((refer != 0) && !refer->deletedp()) {
+    m.insertSeparator();
+    m.insertItem("Show referenced diagram",9);
+  }
 
   int index = m.exec(QCursor::pos());
   
@@ -310,6 +379,9 @@ void FragmentCanvas::menu(const QPoint&) {
       the_canvas()->select(sp);
     }
     break;
+  case 9:
+    refer->open(FALSE);
+    return;
   default:
     return;
   }
@@ -433,6 +505,16 @@ void FragmentCanvas::save(QTextStream & st, bool ref, QString & warning) const {
     nl_indent(st);
     if (itscolor != UmlDefaultColor)
       st << "color " << stringify(itscolor) << ' ';
+    if (refer != 0) {
+      st << "refer ";
+      refer->save(st, TRUE, warning);
+      nl_indent(st);
+    }
+    if (! form.isEmpty()) {
+      st << "form ";
+      save_string(form, st);
+      st << ' ';
+    }
     save_xyzwh(st, this, "xyzwh");
     
     QListIterator<FragmentSeparatorCanvas> it(separators);
@@ -458,6 +540,18 @@ FragmentCanvas * FragmentCanvas::read(char * & st, UmlCanvas * canvas, char * k)
     
     k = read_keyword(st);
     read_color(st, "color", result->itscolor, k);
+    
+    if (!strcmp(k, "refer")) {
+      result->refer = BrowserDiagram::read_diagram_ref(st);
+      connect(result->refer->get_data(), SIGNAL(changed()), result, SLOT(modified()));
+      connect(result->refer->get_data(), SIGNAL(deleted()), result, SLOT(modified()));
+      k = read_keyword(st);
+    }
+    
+    if (! strcmp(k, "form")) {
+      result->form = read_string(st);
+      k = read_keyword(st);
+    }
     
     if (strcmp(k, "xyzwh"))
       wrong_keyword(k, "xyzwh");
@@ -520,18 +614,27 @@ void FragmentCanvas::history_load(QBuffer & b) {
     separators.append((FragmentSeparatorCanvas *) ::load_item(b));
   
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
+  if (refer != 0) {
+    connect(refer->get_data(), SIGNAL(changed()), this, SLOT(modified()));
+    connect(refer->get_data(), SIGNAL(deleted()), this, SLOT(modified()));
+  }
 }
 
 void FragmentCanvas::history_hide() {
   DiagramCanvas::setVisible(FALSE);
   disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
+  if (refer != 0) {
+    disconnect(refer->get_data(), SIGNAL(changed()), this, SLOT(modified()));
+    disconnect(refer->get_data(), SIGNAL(deleted()), this, SLOT(modified()));
+  }
 }
 
 // for plug outs
 
-void FragmentCanvas::send(ToolCom * com, QCanvasItemList & all)
+void FragmentCanvas::send(ToolCom * com, QCanvasItemList & all,
+			  QList<FragmentCanvas> & fragments,
+			  QList<FragmentCanvas> & refs)
 {
-  QList<FragmentCanvas> fragments;
   QCanvasItemList::Iterator cit;
 
   for (cit = all.begin(); cit != all.end(); ++cit) {
@@ -590,5 +693,18 @@ void FragmentCanvas::send(ToolCom * com, QCanvasItemList & all)
     }
       
     com->write_unsigned((unsigned) (f->y() + f->height() - 1));
+
+    if (com->api_format() >= 41) {
+      if (f->refer != 0)
+	f->refer->write_id(com);
+      else
+	com->write_id(0);
+      
+      s = fromUnicode(f->form);
+      com->write_string((const char *) s);
+      
+      if (f->name == "ref")
+	refs.append(f);
+    }
   }
 }

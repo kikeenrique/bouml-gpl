@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -79,12 +79,16 @@ SimpleRelationCanvas::~SimpleRelationCanvas() {
 }
 
 void SimpleRelationCanvas::delete_it() {
-  disconnect(data, 0, this, 0);
-  
   if (stereotypeproperties != 0)
     ((UmlCanvas *) canvas())->del(stereotypeproperties);
   
-  ArrowCanvas::delete_it();
+  ArrowCanvas::delete_it(); // call unconnect
+}
+
+void SimpleRelationCanvas::unconnect() {
+  disconnect(data, 0, this, 0);  
+  
+  ArrowCanvas::unconnect();
 }
 
 void SimpleRelationCanvas::deleted() {
@@ -164,7 +168,7 @@ void SimpleRelationCanvas::open() {
 }
 
 void SimpleRelationCanvas::menu(const QPoint &) {
-  if (!data->get_start()->in_edition()) {
+  if ((data != 0) && !data->get_start()->in_edition()) {
     SimpleRelationCanvas * pstereotype;
     
     {
@@ -181,10 +185,8 @@ void SimpleRelationCanvas::menu(const QPoint &) {
     
     m.insertItem(new MenuTitle(data->definition(FALSE), m.font()), -1);
     m.insertSeparator();
-    if (data) {
-      m.insertItem("Edit", 0);
-      m.insertSeparator();
-    }
+    m.insertItem("Edit", 0);
+    m.insertSeparator();
     
     m.insertItem("Select in browser", 2);
     if (pstereotype) {
@@ -273,7 +275,7 @@ ArrowPointCanvas * SimpleRelationCanvas::brk(const QPoint & p) {
   ArrowPointCanvas * ap =
     new ArrowPointCanvas(the_canvas(), p.x(), p.y());
   
-  ap->setZ(z() + 1);	// + 1 else point can't be selected
+  ap->setZ(z());
   
   SimpleRelationCanvas * other =
     // do not give data to not call update()
@@ -285,7 +287,7 @@ ArrowPointCanvas * SimpleRelationCanvas::brk(const QPoint & p) {
   connect(data, SIGNAL(deleted()), other, SLOT(deleted()));
 
   ap->add_line(this);
-  end->remove_line(this);
+  end->remove_line(this, TRUE);
   end = ap;
   
   if ((p - beginp).manhattanLength() < (p - endp).manhattanLength()) {
@@ -436,6 +438,30 @@ void SimpleRelationCanvas::drop(BrowserNode * bn, UmlCanvas * canvas)
   }
 }
 
+// the relation is not yet drawn, 
+void SimpleRelationCanvas::drop(BrowserNode * bn, UmlCanvas * canvas,
+				QPtrDict<DiagramItem> & drawn)
+{
+  SimpleRelationData * def = (SimpleRelationData *) bn->get_data();
+  BrowserNode * from = def->get_start_node();
+  BrowserNode * to = def->get_end_node();
+  DiagramItem * ccfrom = drawn[from->get_data()];
+  DiagramItem * ccto = drawn[to->get_data()];
+  
+  if ((ccfrom != 0) && (ccto != 0)) {
+    SimpleRelationCanvas * rel = 
+      new SimpleRelationCanvas(canvas, ccfrom, ccto, from,
+			       bn->get_type(), 0, -1.0, -1.0, def);
+    
+    rel->show();
+    rel->package_modified();
+    
+    drawn.replace(def, rel);
+      
+    // package set modified by caller
+  }
+}
+
 //
 
 void SimpleRelationCanvas::setVisible(bool yes) {
@@ -469,7 +495,7 @@ void SimpleRelationCanvas::check_stereotypeproperties() {
     QString s = data->get_start()->stereotypes_properties();
     
     if (!s.isEmpty() &&
-	the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup))
+	the_canvas()->browser_diagram()->get_show_stereotype_properties())
       StereotypePropertiesCanvas::needed(the_canvas(), this, s,
 					 stereotypeproperties, center());
     else if (stereotypeproperties != 0) {
@@ -477,6 +503,10 @@ void SimpleRelationCanvas::check_stereotypeproperties() {
       stereotypeproperties = 0;
     }
   }
+}
+
+bool SimpleRelationCanvas::represents(BrowserNode * bn) {
+  return (data == bn->get_data());
 }
 
 //
@@ -672,6 +702,8 @@ SimpleRelationCanvas * SimpleRelationCanvas::read(char * & st, UmlCanvas * canva
     // manage case where the relation is deleted but present in the browser
     if (result->data->get_start()->deletedp())
       result->delete_it();
+    else
+      result->update_geometry();
     
     return result;
   }
@@ -681,7 +713,7 @@ SimpleRelationCanvas * SimpleRelationCanvas::read(char * & st, UmlCanvas * canva
 
 void SimpleRelationCanvas::history_hide() {
   QCanvasItem::setVisible(FALSE);
-  disconnect(data, 0, this, 0);
+  unconnect();
 }
 
 void SimpleRelationCanvas::history_load(QBuffer & b) {

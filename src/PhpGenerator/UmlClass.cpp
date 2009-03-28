@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -173,6 +173,9 @@ void UmlClass::generate(QTextOStream & f, QCString indent) {
 	      ((UmlClassItem *) it)->generate(f, stereotype, indent, enum_item_rank);
 	  }
 	}
+      
+	if (*p == '}')
+	  f << indent;
       }
     }
     else if (an_enum && ! strncmp(p, "${items}", 8)) {
@@ -191,6 +194,9 @@ void UmlClass::generate(QTextOStream & f, QCString indent) {
 	    ((UmlClassItem *) it)->generate(f, stereotype, indent, enum_item_rank);
 	}
       }
+      
+      if (*p == '}')
+	f << indent;
     }
     else
       f << *p++;

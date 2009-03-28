@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -171,16 +171,25 @@ class RemoveVariableValueDialog : public ChangeVariableValueDialog {
 	      BrowserNodeList & nodes, QStringList &, bool visit);
 };
 
-class CallBehaviorDialog : public QObject, public AnyActionDialog {
-  Q_OBJECT
-    
-  private:
+class WithBehaviorDialog : public AnyActionDialog {
+  protected:
     BrowserNodeList * nodes;
     QStringList * node_names;
-    QCheckBox * synchronous_cb;
     QComboBox * behavior_co;
     BrowserNode * view;
     bool visit;
+    
+    void menu_behavior();
+
+  public:
+    void init(BrowserNode * beh);
+};
+
+class CallBehaviorDialog : public QObject, public WithBehaviorDialog {
+  Q_OBJECT
+    
+  private:
+    QCheckBox * synchronous_cb;
 
   public:
     void init(QTabDialog *, ActivityActionData *, CallBehaviorAction *, 
@@ -262,6 +271,74 @@ class ValueSpecificationDialog : public QObject, public AnyActionDialog {
     void edit_java();
 };
 
+class AcceptCallDialog : public AnyActionDialog {
+  private:
+    LineEdit * uml_trigger;
+    LineEdit * cpp_trigger;
+    LineEdit * java_trigger;
+
+  public:
+    void init(QTabDialog *, ActivityActionData *, AcceptCallAction *, bool visit);
+    bool update(AcceptCallAction *);
+};
+
+class ReplyDialog : public AnyActionDialog {
+  private:
+    LineEdit * uml_trigger;
+    LineEdit * cpp_trigger;
+    LineEdit * java_trigger;
+
+  public:
+    void init(QTabDialog *, ActivityActionData *, ReplyAction *, bool visit);
+    bool update(ReplyAction *);
+};
+
+class CreateObjectDialog : public AnyActionDialog {
+  private:
+    LineEdit * classifier;
+
+  public:
+    void init(QTabDialog *, ActivityActionData *, CreateObjectAction *, bool visit);
+    bool update(CreateObjectAction *);
+};
+
+class DestroyObjectDialog : public AnyActionDialog {
+  private:
+    QCheckBox * is_destroy_links_cb;
+    QCheckBox * is_destroy_owned_objects_cb;
+
+  public:
+    void init(QTabDialog *, ActivityActionData *, DestroyObjectAction *, bool visit);
+    bool update(DestroyObjectAction *);
+};
+
+class TestIdentityDialog : public AnyActionDialog {
+  public:
+    void init(QTabDialog *, ActivityActionData *, TestIdentityAction *, bool visit);
+    bool update(TestIdentityAction *);
+};
+
+class RaiseExceptionDialog : public AnyActionDialog {
+  public:
+    void init(QTabDialog *, ActivityActionData *, RaiseExceptionAction *, bool visit);
+    bool update(RaiseExceptionAction *);
+};
+
+class ReduceDialog : public QObject, public WithBehaviorDialog {
+  Q_OBJECT
+    
+  private:
+    QCheckBox * is_ordered_cb;
+
+  public:
+    void init(QTabDialog *, ActivityActionData *, ReduceAction *, 
+	      BrowserNodeList &, QStringList &, BrowserNode * v, bool visit);
+    bool update(ReduceAction *);
+    
+  public slots:
+    void menu_beh();
+};
+
 class ActivityActionDialog : public QTabDialog {
   Q_OBJECT
     
@@ -295,6 +372,13 @@ class ActivityActionDialog : public QTabDialog {
     BroadcastSignalDialog broadcastsignal;
     UnmarshallDialog unmarshall;
     ValueSpecificationDialog valuespecification;
+    AcceptCallDialog acceptcall;
+    ReplyDialog reply;
+    CreateObjectDialog createobject;
+    DestroyObjectDialog destroyobject;
+    TestIdentityDialog testidentity;
+    RaiseExceptionDialog raiseexception;
+    ReduceDialog reduce;
 
     // User
     KeyValuesTable * kvtable;

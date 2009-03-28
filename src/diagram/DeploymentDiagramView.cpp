@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -27,6 +27,7 @@
 
 
 
+#include <qapplication.h>
 #include <qfont.h>
 #include <qpopupmenu.h> 
 
@@ -51,28 +52,252 @@
 #include "UmlDrag.h"
 #include "MenuTitle.h"
 #include "myio.h"
+#include "BrowserView.h"
+#include "RelatedElementsDialog.h"
 
 DeploymentDiagramView::DeploymentDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
     : DiagramView(parent, canvas, id) {
   load("Deployment");
 }
 
-void DeploymentDiagramView::menu(const QPoint&) {
+// have marked elements not yet drawn ?
+static bool marked_not_yet_drawn(QPtrDict<DiagramItem> & drawn)
+{
+  const QList<BrowserNode> & l = BrowserNode::marked_nodes();
+  QListIterator<BrowserNode> it(l);
+  BrowserNode * bn;
+      
+  for (; (bn = it.current()) != 0; ++it) {
+    UmlCode k = bn->get_type();
+    
+    switch (k) {
+    default:
+      if (!IsaSimpleRelation(k))
+	break;
+      // no break
+    case UmlComponent:
+    case UmlDeploymentNode:
+    case UmlArtifact:
+    case UmlPackage:
+      if (drawn[bn->get_data()] == 0)
+	return TRUE;
+    }
+  }
+  
+  return FALSE;
+}
+
+static void get_drawn(DiagramItemList & items,
+		      QPtrDict<DiagramItem> & drawn)
+{
+  DiagramItem * di;
+  
+  for (di = items.first(); di != 0; di = items.next()) {
+    UmlCode k = di->type();
+    
+    switch (k) {
+    case UmlComponent:
+    case UmlDeploymentNode:
+    case UmlArtifact:
+    case UmlPackage:
+      drawn.replace(di->get_bn()->get_data(), di);
+      break;
+    default:
+      if (IsaSimpleRelation(k))
+	drawn.replace(((ArrowCanvas *) di)->get_data(), di);
+    }
+  }
+}
+
+void DeploymentDiagramView::menu(const QPoint& p) {
   QPopupMenu m(0);
   
   m.insertItem(new MenuTitle("Deployment diagram menu", m.font()), -1);
  
-  switch (default_menu(m, 20)) {
-  case EDIT_DRAWING_SETTING_CMD:
-    ((BrowserDeploymentDiagram *) the_canvas()->browser_diagram())->edit_settings();
-    break;
-  case RELOAD_CMD:
-    // pure drawing modifications are lost
-    // mark the diagram modified because the undid modifications
-    // may be saved in the file are not saved in memory
-    load("Deployment");
+  if ((((UmlCanvas *) canvas())->browser_diagram())->is_writable()) {
+    DiagramItemList items(canvas()->allItems());
+    QPtrDict<DiagramItem> drawn;
+    
+    get_drawn(items, drawn);
+    
+    if (marked_not_yet_drawn(drawn))
+      m.insertItem("Add marked elements", 28);
+    
+    switch (default_menu(m, 30)) {
+    case EDIT_DRAWING_SETTING_CMD:
+      ((BrowserDeploymentDiagram *) the_canvas()->browser_diagram())->edit_settings();
+      break;
+    case RELOAD_CMD:
+      // pure drawing modifications are lost
+      // mark the diagram modified because the undid modifications
+      // may be saved in the file are not saved in memory
+      load("Deployment");
+      window()->package_modified();
+      break;
+    case 28:
+      add_marked_elements(p, drawn);
+      break;
+    }
+  }
+  else
+    (void) default_menu(m, 30);
+}
+
+static const int Diagram_Margin = 20;
+
+void DeploymentDiagramView::add_marked_elements(const QPoint& p,
+						QPtrDict<DiagramItem> & drawn) {
+  QApplication::setOverrideCursor(Qt::waitCursor);
+  
+  history_save();
+  history_protected = TRUE;
+  
+  int xmax = canvas()->width() - Diagram_Margin;
+  int ymax = canvas()->height() - Diagram_Margin;
+  int x = p.x();
+  int y = p.y();
+  int future_y = y;
+  const QList<BrowserNode> & l = BrowserNode::marked_nodes();
+  QListIterator<BrowserNode> it(l);
+  BrowserNode * bn;
+
+  for (; (bn = it.current()) != 0; ++it) {
+    if (drawn[bn->get_data()] == 0) {
+      DiagramCanvas * dc;
+      
+      switch (bn->get_type()) {
+      case UmlComponent:
+	dc = new ComponentCanvas(bn, the_canvas(), x, y);
+	break;
+      case UmlDeploymentNode:
+	dc = new DeploymentNodeCanvas(bn, the_canvas(), x, y, 0);
+	break;
+      case UmlArtifact:
+	dc = new ArtifactCanvas(bn, the_canvas(), x, y);
+	break;
+      case UmlPackage:
+	dc = new PackageCanvas(bn, the_canvas(), x, y, 0);
+	break;
+      default:
+	continue;
+      }
+
+      drawn.replace(dc->get_bn()->get_data(), dc);
+      
+      if ((x + dc->width()) > xmax)
+	dc->move(x = Diagram_Margin, y = future_y);
+      
+      if (y + dc->height() > ymax) {
+	dc->move(x = Diagram_Margin, y = Diagram_Margin);
+	future_y = y + dc->height() + Diagram_Margin;
+      }
+      else {
+	int bot = y + dc->height() + Diagram_Margin;
+	
+	if (bot > future_y)
+	  future_y = bot;
+      }
+      
+      x = x + dc->width() + Diagram_Margin;
+      
+      dc->show();
+      dc->upper();
+    }
+  }
+  
+  UmlCanvas * cnv = (UmlCanvas *) canvas();
+  
+  if (! cnv->must_draw_all_relations()) {
+    for (it.toFirst(); (bn = it.current()) != 0; ++it) {
+      if ((drawn[bn->get_data()] == 0) &&
+	  IsaSimpleRelation(bn->get_type()))
+	SimpleRelationCanvas::drop(bn, cnv, drawn);
+    }
+  }
+  
+  canvas()->update();
+  history_protected = FALSE;
+  window()->package_modified();
+  
+  QApplication::restoreOverrideCursor();
+}
+
+void DeploymentDiagramView::add_related_elements(DiagramItem * di, const char * what,
+						 bool inh, bool assoc) {
+  BrowserNodeList l;
+  RelatedElementsDialog dialog(di->get_bn(), what, inh, assoc, l);
+  
+  dialog.raise();
+  
+  if (dialog.exec() == QDialog::Accepted) {
+    QApplication::setOverrideCursor(Qt::waitCursor);
+  
+    DiagramItemList items(canvas()->allItems());
+    QPtrDict<DiagramItem> drawn;
+    
+    get_drawn(items, drawn);
+    history_save();
+    history_protected = TRUE;
+    
+    int xmax = canvas()->width() - Diagram_Margin;
+    int ymax = canvas()->height() - Diagram_Margin;
+    QRect re = di->rect();
+    int x = re.x();
+    int y = re.bottom() + Diagram_Margin;
+    int future_y = y;
+    const QList<BrowserNode> & l = BrowserNode::marked_nodes();
+    QListIterator<BrowserNode> it(l);
+    BrowserNode * bn;
+    
+    for (; (bn = it.current()) != 0; ++it) {
+      if (drawn[bn->get_data()] == 0) {
+	DiagramCanvas * dc;
+	
+	switch (bn->get_type()) {
+	case UmlComponent:
+	  dc = new ComponentCanvas(bn, the_canvas(), x, y);
+	  break;
+	case UmlDeploymentNode:
+	  dc = new DeploymentNodeCanvas(bn, the_canvas(), x, y, 0);
+	  break;
+	case UmlArtifact:
+	  dc = new ArtifactCanvas(bn, the_canvas(), x, y);
+	  break;
+	case UmlPackage:
+	  dc = new PackageCanvas(bn, the_canvas(), x, y, 0);
+	  break;
+	default:
+	  continue;
+	}
+	
+	drawn.replace(dc->get_bn()->get_data(), dc);
+	
+	if ((x + dc->width()) > xmax)
+	  dc->move(x = Diagram_Margin, y = future_y);
+	
+	if (y + dc->height() > ymax) {
+	  dc->move(x = Diagram_Margin, y = Diagram_Margin);
+	  future_y = y + dc->height() + Diagram_Margin;
+	}
+	else {
+	  int bot = y + dc->height() + Diagram_Margin;
+	  
+	  if (bot > future_y)
+	    future_y = bot;
+	}
+	
+	x = x + dc->width() + Diagram_Margin;
+	
+	dc->show();
+	dc->upper();
+      }
+    }
+    
+    canvas()->update();
+    history_protected = FALSE;
     window()->package_modified();
-    break;
+  
+    QApplication::restoreOverrideCursor();
   }
 }
 

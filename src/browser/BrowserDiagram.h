@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -31,6 +31,7 @@
 #include "Labeled.h"
 
 class QTextStream;
+class ComponentDrawingSettings;
 
 class BrowserDiagram : public BrowserNode, public Labeled<BrowserDiagram> {
   protected:
@@ -46,16 +47,21 @@ class BrowserDiagram : public BrowserNode, public Labeled<BrowserDiagram> {
   
     virtual void package_modified();
     
-    virtual bool get_auto_label_position(UmlCode who) const;
+    virtual void update_drawing_settings() = 0;
+    virtual bool get_auto_label_position() const = 0;
     virtual bool get_shadow() const = 0;
     virtual bool get_draw_all_relations() const = 0;
+    virtual bool get_show_stereotype_properties() const = 0;
     virtual void dont_draw_all_relations() = 0;
-
     virtual void draw_svg() const = 0;
+    virtual void get_componentdrawingsettings(ComponentDrawingSettings & r) const;
+    virtual bool get_classinstwritehorizontally() const;
     
     CanvasFormat get_format() const { return canvas_size; }
     void set_format(CanvasFormat c) { canvas_size = c; }
     virtual void read_session(char * & st) = 0;
+    
+    static BrowserNodeList & instances(BrowserNodeList &, bool sort);
     
     void save();
     static void read_stereotypes(char * &, char * & k);
@@ -65,6 +71,7 @@ class BrowserDiagram : public BrowserNode, public Labeled<BrowserDiagram> {
     static void update_idmax_for_root();
     static void import();
     static BrowserNode * read_diagram_ref(char * & st);
+    static BrowserNode * read_any_ref(char * & st, char * k);
 };
 
 #endif

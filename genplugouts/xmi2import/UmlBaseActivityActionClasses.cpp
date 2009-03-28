@@ -410,3 +410,261 @@ void UmlBaseRemoveVariableValueAction::read_uml_() {
   _remove_duplicates = UmlCom::read_bool();
 }
 
+UmlAcceptCallAction * UmlBaseAcceptCallAction::create(UmlItem * parent, const char * s)
+{
+  return (UmlAcceptCallAction *) parent->create_(anAcceptCallAction, s);
+}
+
+anItemKind UmlBaseAcceptCallAction::kind() {
+  return anAcceptCallAction;
+}
+
+const QCString & UmlBaseAcceptCallAction::trigger() {
+  read_if_needed_();
+  return _trigger;
+}
+
+bool UmlBaseAcceptCallAction::set_Trigger(const char * v) {
+  return set_it_(_trigger, v, setUmlTriggerCmd);
+}
+
+#ifdef WITHCPP
+const QCString & UmlBaseAcceptCallAction::cppTrigger() {
+  read_if_needed_();
+  return _cpp_trigger;
+}
+
+bool UmlBaseAcceptCallAction::set_CppTrigger(const char * v) {
+  return set_it_(_cpp_trigger, v, setCppTriggerCmd);
+}
+#endif
+
+#ifdef WITHJAVA
+const QCString & UmlBaseAcceptCallAction::javaTrigger() {
+  read_if_needed_();
+  return _java_trigger;
+}
+
+bool UmlBaseAcceptCallAction::set_JavaTrigger(const char * v) {
+  return set_it_(_java_trigger, v, setJavaTriggerCmd);
+}
+#endif
+
+void UmlBaseAcceptCallAction::unload(bool rec, bool del) {
+  _trigger = 0;
+#ifdef WITHCPP
+  _cpp_trigger = 0;
+#endif
+#ifdef WITHJAVA
+  _java_trigger = 0;
+#endif
+  UmlBaseActivityAction::unload(rec, del);
+}
+
+void UmlBaseAcceptCallAction::read_uml_() {
+  UmlBaseActivityAction::read_uml_();
+  _trigger = UmlCom::read_string();
+}
+
+#ifdef WITHCPP
+void UmlBaseAcceptCallAction::read_cpp_() {
+  UmlBaseActivityAction::read_cpp_();
+  _cpp_trigger = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHJAVA
+void UmlBaseAcceptCallAction::read_java_() {
+  UmlBaseActivityAction::read_java_();
+  _java_trigger = UmlCom::read_string();
+}
+#endif
+
+UmlReplyAction * UmlBaseReplyAction::create(UmlItem * parent, const char * s)
+{
+  return (UmlReplyAction *) parent->create_(aReplyAction, s);
+}
+
+anItemKind UmlBaseReplyAction::kind() {
+  return aReplyAction;
+}
+
+const QCString & UmlBaseReplyAction::replyToCall() {
+  read_if_needed_();
+  return _trigger;
+}
+
+bool UmlBaseReplyAction::set_ReplyToCall(const char * v) {
+  return set_it_(_trigger, v, setUmlTriggerCmd);
+}
+
+#ifdef WITHCPP
+const QCString & UmlBaseReplyAction::cppReplyToCall() {
+  read_if_needed_();
+  return _cpp_trigger;
+}
+
+bool UmlBaseReplyAction::set_CppReplyToCall(const char * v) {
+  return set_it_(_cpp_trigger, v, setCppTriggerCmd);
+}
+#endif
+
+#ifdef WITHJAVA
+const QCString & UmlBaseReplyAction::javaReplyToCall() {
+  read_if_needed_();
+  return _java_trigger;
+}
+
+bool UmlBaseReplyAction::set_JavaReplyToCall(const char * v) {
+  return set_it_(_java_trigger, v, setJavaTriggerCmd);
+}
+#endif
+
+void UmlBaseReplyAction::unload(bool rec, bool del) {
+  _trigger = 0;
+#ifdef WITHCPP
+  _cpp_trigger = 0;
+#endif
+#ifdef WITHJAVA
+  _java_trigger = 0;
+#endif
+  UmlBaseActivityAction::unload(rec, del);
+}
+
+void UmlBaseReplyAction::read_uml_() {
+  UmlBaseActivityAction::read_uml_();
+  _trigger = UmlCom::read_string();
+}
+
+#ifdef WITHCPP
+void UmlBaseReplyAction::read_cpp_() {
+  UmlBaseActivityAction::read_cpp_();
+  _cpp_trigger = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHJAVA
+void UmlBaseReplyAction::read_java_() {
+  UmlBaseActivityAction::read_java_();
+  _java_trigger = UmlCom::read_string();
+}
+#endif
+
+UmlCreateObjectAction * UmlBaseCreateObjectAction::create(UmlItem * parent, const char * s)
+{
+  return (UmlCreateObjectAction *) parent->create_(aCreateObjectAction, s);
+}
+
+anItemKind UmlBaseCreateObjectAction::kind() {
+  return aCreateObjectAction;
+}
+
+const QCString & UmlBaseCreateObjectAction::classifier() {
+  read_if_needed_();
+  return _classifier;
+}
+
+bool UmlBaseCreateObjectAction::set_Classifier(const char * v) {
+  return set_it_(_classifier, v, setDefCmd);
+}
+
+void UmlBaseCreateObjectAction::unload(bool rec, bool del) {
+  _classifier = 0;
+  UmlBaseActivityAction::unload(rec, del);
+}
+
+void UmlBaseCreateObjectAction::read_uml_() {
+  UmlBaseActivityAction::read_uml_();
+  _classifier = UmlCom::read_string();
+}
+
+UmlDestroyObjectAction * UmlBaseDestroyObjectAction::create(UmlItem * parent, const char * s)
+{
+  return (UmlDestroyObjectAction *) parent->create_(aDestroyObjectAction, s);
+}
+
+anItemKind UmlBaseDestroyObjectAction::kind() {
+  return aDestroyObjectAction;
+}
+
+bool UmlBaseDestroyObjectAction::isDestroyLinks() {
+  read_if_needed_();
+  return _links;
+}
+
+bool UmlBaseDestroyObjectAction::set_isDestroyLinks(bool v) {
+  return set_it_(_links, v, setTypeCmd);
+}
+
+bool UmlBaseDestroyObjectAction::isDestroyOwnedObjects() {
+  read_if_needed_();
+  return _owned_objects;
+}
+
+bool UmlBaseDestroyObjectAction::set_isDestroyOwnedObjects(bool v) {
+  return set_it_(_owned_objects, v, setFlagCmd);
+}
+
+void UmlBaseDestroyObjectAction::read_uml_() {
+  UmlBaseActivityAction::read_uml_();
+  _links = UmlCom::read_bool();
+  _owned_objects = UmlCom::read_bool();
+}
+
+UmlTestIdentityAction * UmlBaseTestIdentityAction::create(UmlItem * parent, const char * s)
+{
+  return (UmlTestIdentityAction *) parent->create_(aTestIdentityAction, s);
+}
+
+anItemKind UmlBaseTestIdentityAction::kind() {
+  return aTestIdentityAction;
+}
+
+UmlRaiseExceptionAction * UmlBaseRaiseExceptionAction::create(UmlItem * parent, const char * s)
+{
+  return (UmlRaiseExceptionAction *) parent->create_(aRaiseExceptionAction, s);
+}
+
+anItemKind UmlBaseRaiseExceptionAction::kind() {
+  return aRaiseExceptionAction;
+}
+
+UmlReduceAction * UmlBaseReduceAction::create(UmlItem * parent, const char * s)
+{
+  return (UmlReduceAction *) parent->create_(aReduceAction, s);
+}
+
+anItemKind UmlBaseReduceAction::kind() {
+  return aReduceAction;
+}
+
+bool UmlBaseReduceAction::isOrdered() {
+  read_if_needed_();
+  return _ordered;
+}
+
+bool UmlBaseReduceAction::set_isOrdered(bool v) {
+  return set_it_(_ordered, v, setFlagCmd);
+}
+
+UmlItem * UmlBaseReduceAction::reducer() {
+  read_if_needed_();
+  return _reducer;
+}
+
+bool UmlBaseReduceAction::set_Reducer(UmlItem * v) {
+  UmlCom::send_cmd(_identifier, setDefCmd, (v == 0) ? (void *) v : ((UmlBaseItem *) v)->_identifier);
+  if (UmlCom::read_bool()) {
+    _reducer = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+void UmlBaseReduceAction::read_uml_() {
+  UmlBaseActivityAction::read_uml_();
+  _ordered = UmlCom::read_bool();
+  _reducer = UmlBaseItem::read_();
+}
+

@@ -2,9 +2,8 @@
 #include "UmlCom.h"
 #include "UmlBaseStateAction.h"
 #include "UmlStateAction.h"
-#include "UmlState.h"
 
-UmlStateAction * UmlBaseStateAction::create(UmlState * parent)
+UmlStateAction * UmlBaseStateAction::create(UmlItem * parent)
 {
   return (UmlStateAction *) parent->create_(aStateAction, "");
 }

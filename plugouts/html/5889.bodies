@@ -24,7 +24,7 @@ class UmlAttribute
 !!!129907.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   define();
 
-  fw.write("<table><tr><td><div class=\"element\">Attribut <b>");
+  fw.write("<table><tr><td><div class=\"element\">Attribute <b>");
   writeq(name());
   fw.write("</b></div></td></tr></table>\n");
 
@@ -32,7 +32,14 @@ class UmlAttribute
   
   if (!s.isEmpty()) {
     fw.write("<p>");
-    gen_cpp_decl(s, TRUE);
+    if (! javaDecl().isEmpty())
+      gen_java_decl(s, TRUE);
+    else if (! phpDecl().isEmpty())
+      gen_php_decl(s, TRUE);
+    else if (! pythonDecl().isEmpty())
+      gen_python_decl(s);
+    else
+      gen_cpp_decl(s, TRUE);
     fw.write("<br /></p>");
   }
 
@@ -54,7 +61,7 @@ class UmlAttribute
 
   if (!s.isEmpty()) {
     fw.write("<li>Java : ");
-    gen_java_decl(s);
+    gen_java_decl(s, FALSE);
     fw.write("</li>");
   }
 
@@ -62,7 +69,15 @@ class UmlAttribute
 
   if (!s.isEmpty()) {
     fw.write("<li>Php : ");
-    gen_php_decl(s);
+    gen_php_decl(s, FALSE);
+    fw.write("</li>");
+  }
+
+  s = pythonDecl();
+
+  if (!s.isEmpty()) {
+    fw.write("<li>Python : ");
+    gen_python_decl(s);
     fw.write("</li>");
   }
 
@@ -75,7 +90,7 @@ class UmlAttribute
 !!!129907.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
   define();
 
-  fw.write("<table><tr><td><div class=\"element\">Attribut <b>");
+  fw.write("<table><tr><td><div class=\"element\">Attribute <b>");
   writeq(name());
   fw.write("</b></div></td></tr></table>\n");
 
@@ -83,7 +98,14 @@ class UmlAttribute
   
   if (s.length() != 0) {
     fw.write("<p>");
-    gen_cpp_decl(s, true);
+    if (javaDecl().length() != 0)
+      gen_java_decl(s, true);
+    else if (phpDecl().length() != 0)
+      gen_php_decl(s, true);
+    else if (pythonDecl().length() != 0)
+      gen_python_decl(s);
+    else 
+      gen_cpp_decl(s, true);
     fw.write("<br /></p>");
   }
 
@@ -105,7 +127,7 @@ class UmlAttribute
 
   if (s.length() != 0) {
     fw.write("<li>Java : ");
-    gen_java_decl(s);
+    gen_java_decl(s, false);
     fw.write("</li>");
   }
 
@@ -113,7 +135,15 @@ class UmlAttribute
 
   if (s.length() != 0) {
     fw.write("<li>Php : ");
-    gen_php_decl(s);
+    gen_php_decl(s, false);
+    fw.write("</li>");
+  }
+
+  s = pythonDecl();
+
+  if (s.length() != 0) {
+    fw.write("<li>Python : ");
+    gen_python_decl(s);
     fw.write("</li>");
   }
 
@@ -270,7 +300,11 @@ class UmlAttribute
       }
       break;
     case ';':
-      return;
+      if (descr)
+	fw.write(*p++);
+      else
+	return;
+      break;
     case '@':
       manage_alias(p);
       break;
@@ -360,14 +394,18 @@ class UmlAttribute
 	while ((index != n) && Character.isWhitespace(s.charAt(index)));
       }
     }
-    else if (s.charAt(index) == ';')
-      break;
+    else if (s.charAt(index) == ';') {
+      if (descr)
+	fw.write(s.charAt(index++));
+      else
+	break;
+    }
     else if (s.charAt(index) == '@')
       index = manage_alias(s, index);
     else
       writeq(s.charAt(index++));
   }
-!!!130163.cpp!!!	gen_java_decl(in s : string) : void
+!!!130163.cpp!!!	gen_java_decl(in s : string, in descr : bool) : void
   const char * p = bypass_comment(s);
 
   while (*p) {
@@ -453,14 +491,18 @@ class UmlAttribute
 	p += 1;
       while ((*p != 0) && (*p <= ' '));
     }
-    else if ((*p == '{') || (*p == ';'))
-      break;
+    else if ((*p == '{') || (*p == ';')) {
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
     else if (*p == '@')
       manage_alias(p);
     else
       writeq(*p++);
   }
-!!!130163.java!!!	gen_java_decl(in s : string) : void
+!!!130163.java!!!	gen_java_decl(in s : string, in descr : bool) : void
   int n = s.length();
   int index = bypass_comment(s);
 
@@ -547,14 +589,18 @@ class UmlAttribute
 	index += 1;
       while ((index != n) && Character.isWhitespace(s.charAt(index)));
     }
-    else if ((s.charAt(index) == '{') || (s.charAt(index) == ';'))
-      break;
+    else if ((s.charAt(index) == '{') || (s.charAt(index) == ';')) {
+      if (descr)
+	fw.write(s.charAt(index++));
+      else
+	break;
+    }
     else if (s.charAt(index) == '@')
       index = manage_alias(s, index);
     else
       writeq(s.charAt(index++));
   }
-!!!211330.cpp!!!	gen_php_decl(in s : string) : void
+!!!211330.cpp!!!	gen_php_decl(in s : string, in descr : bool) : void
   QCString st = PhpSettings::classStereotype(stereotype());
   const char * p = bypass_comment(s);
 
@@ -606,14 +652,18 @@ class UmlAttribute
 	p += 1;
       while ((*p != 0) && (*p <= ' '));
     }
-    else if ((*p == '{') || (*p == ';'))
-      break;
+    else if ((*p == '{') || (*p == ';')){
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
     else if (*p == '@')
       manage_alias(p);
     else
       writeq(*p++);
   }
-!!!211330.java!!!	gen_php_decl(in s : string) : void
+!!!211330.java!!!	gen_php_decl(in s : string, in descr : bool) : void
   String st = PhpSettings.classStereotype(stereotype());
   int n = s.length();
   int index = bypass_comment(s);
@@ -666,8 +716,87 @@ class UmlAttribute
 	index += 1;
       while ((index != n) && Character.isWhitespace(s.charAt(index)));
     }
-    else if ((s.charAt(index) == '{') || (s.charAt(index) == ';'))
-      break;
+    else if ((s.charAt(index) == '{') || (s.charAt(index) == ';')) {
+      if (descr)
+	fw.write(s.charAt(index++));
+      else
+	break;
+    }
+    else if (s.charAt(index) == '@')
+      index = manage_alias(s, index);
+    else
+      writeq(s.charAt(index++));
+  }
+!!!129283.cpp!!!	gen_python_decl(in s : string) : void
+  QCString st = PythonSettings::classStereotype(stereotype());
+  const char * p = bypass_comment(s);
+
+  while (*p) {
+    if (!strncmp(p, "${comment}", 10))
+      p += 10;
+    else if (!strncmp(p, "${description}", 14))
+      p += 14;
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      writeq(name());
+    }
+    else if (!strncmp(p, "${value}", 8)) {
+      p += 8;
+      writeq((defaultValue().isEmpty()) ? "None" : defaultValue());
+    }
+    else if (!strncmp(p, "${self}", 7)) {
+      p += 7;
+      if (!isClassMember())
+	fw.write("self.");
+    }
+    else if (!strncmp(p, "${type}", 7)) {
+      p += 7;
+      write(type(), pythonLanguage);
+    }
+    else if (!strncmp(p, "${stereotype}", 13)) {
+      p += 13;
+      writeq(st);
+    }
+    else if (*p == '\r')
+      p += 1;
+    else if (*p == '@')
+      manage_alias(p);
+    else
+      writeq(*p++);
+  }
+!!!129283.java!!!	gen_python_decl(in s : string) : void
+  String st = PythonSettings.classStereotype(stereotype());
+  int n = s.length();
+  int index = bypass_comment(s);
+
+  while (index != n) {
+    if (s.startsWith("${comment}", index))
+      index += 10;
+    else if (s.startsWith("${description}", index))
+      index += 14;
+    else if (s.startsWith("${name}", index)) {
+      index += 7;
+      writeq(name());
+    }
+    else if (s.startsWith("${value}", index)) {
+      index += 8;
+      writeq((defaultValue() == "") ? "None" : defaultValue());
+    }
+    else if (s.startsWith("${self}", index)) {
+      index += 7;
+      if (!isClassMember())
+	fw.write("self.");
+    }
+    else if (s.startsWith("${type}", index)) {
+      index += 7;
+      write(type(), aLanguage.pythonLanguage);
+    }
+    else if (s.startsWith("${stereotype}")) {
+      index += 13;
+      writeq(st);
+    }
+    else if (s.charAt(index) == '\r')
+      index += 1;
     else if (s.charAt(index) == '@')
       index = manage_alias(s, index);
     else
@@ -680,13 +809,33 @@ class UmlAttribute
   writeq(name());
   fw.write(" : ");
   write(type());
-
-  QCString s = multiplicity();
   
+  QCString s;
+  
+  s = defaultValue();
+  if (!s.isEmpty()) {
+    if (s[0] != '=')
+      fw.write(" = ");
+    writeq(s);
+  }
+
+  s = multiplicity();
   if (!s.isEmpty()) {
     fw.write(", multiplicity : ");
     writeq(s);
   }
+
+  if (isDerived())
+    fw.write((isDerivedUnion()) ? ", derived union" : ", derived");
+    
+  if (isReadOnly())
+    fw.write(", read only");
+    
+  if (isOrdered())
+    fw.write(", ordered");
+    
+  if (isUnique())
+    fw.write(", unique");
 !!!203906.java!!!	gen_uml_decl() : void
   if (isClassMember())
     fw.write("static, ");
@@ -695,9 +844,30 @@ class UmlAttribute
   fw.write(" : ");
   write(type());
   
-  String s = multiplicity();
+  String s;
   
+  s = defaultValue();
+  if (s.length() != 0) {
+    if (s.charAt(0) != '=')
+      fw.write(" = ");
+    writeq(s);
+  }
+  
+  s = multiplicity();
   if (s.length() != 0) {
     fw.write(", multiplicity : ");
     writeq(s);
   }
+
+  if (isDerived())
+    fw.write((isDerivedUnion()) ? ", derived union" : ", derived");
+    
+  if (isReadOnly())
+    fw.write(", read only");
+    
+  if (isOrdered())
+    fw.write(", ordered");
+    
+  if (isUnique())
+    fw.write(", unique");
+

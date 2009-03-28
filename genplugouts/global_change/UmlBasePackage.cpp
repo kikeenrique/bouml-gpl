@@ -62,8 +62,8 @@ bool UmlBasePackage::set_CppNamespace(const QCString & s) {
   return set_it_(_cpp_namespace, s, setCppNamespaceCmd);
 }
 
-UmlPackage * UmlBasePackage::findNamespace(const QCString & n) const {
-  UmlCom::send_cmd(packageGlobalCmd, findNamespaceCmd, _identifier, n);
+UmlPackage * UmlBasePackage::findCppNamespace(const QCString & n) const {
+  UmlCom::send_cmd(packageGlobalCmd, findCppNamespaceCmd, _identifier, n);
   
   return (UmlPackage *) UmlBaseItem::read_();  
 }
@@ -90,8 +90,8 @@ bool UmlBasePackage::set_JavaPackage(const QCString & s) {
   return set_it_(_java_package, s, setJavaPackageCmd);
 }
 
-UmlPackage * UmlBasePackage::findPackage(const QCString & n) const {
-  UmlCom::send_cmd(packageGlobalCmd, findPackageCmd, _identifier, n);
+UmlPackage * UmlBasePackage::findJavaPackage(const QCString & n) const {
+  UmlCom::send_cmd(packageGlobalCmd, findJavaPackageCmd, _identifier, n);
   
   return (UmlPackage *) UmlBaseItem::read_();  
 }
@@ -106,6 +106,34 @@ const QCString & UmlBasePackage::phpDir() {
 
 bool UmlBasePackage::set_PhpDir(const QCString & s) {
   return set_it_(_php_dir, s, setPhpDirCmd);
+}
+#endif
+
+#ifdef WITHPYTHON
+const QCString & UmlBasePackage::pythonDir() {
+  read_if_needed_();
+  
+  return _python_dir;
+}
+
+bool UmlBasePackage::set_PythonDir(const QCString & s) {
+  return set_it_(_python_dir, s, setPythonDirCmd);
+}
+
+QCString UmlBasePackage::pythonPackage() {
+  read_if_needed_();
+  
+  return _python_package;
+}
+
+bool UmlBasePackage::set_PythonPackage(const QCString & s) {
+  return set_it_(_python_package, s, setPythonPackageCmd);
+}
+
+UmlPackage * UmlBasePackage::findPythonPackage(const QCString & n) const {
+  UmlCom::send_cmd(packageGlobalCmd, findPythonPackageCmd, _identifier, n);
+  
+  return (UmlPackage *) UmlBaseItem::read_();  
 }
 #endif
 
@@ -130,8 +158,8 @@ bool UmlBasePackage::set_IdlModule(const QCString & s) {
   return set_it_(_idl_module, s, setIdlModuleCmd);
 }
 
-UmlPackage * UmlBasePackage::findModule(const QCString & n) const {
-  UmlCom::send_cmd(packageGlobalCmd, findModuleCmd, _identifier, n);
+UmlPackage * UmlBasePackage::findIdlModule(const QCString & n) const {
+  UmlCom::send_cmd(packageGlobalCmd, findIdlModuleCmd, _identifier, n);
   
   return (UmlPackage *) UmlBaseItem::read_();  
 }
@@ -161,6 +189,11 @@ void UmlBasePackage::loadProject(QCString p)
   UmlCom::send_cmd(miscGlobalCmd, loadCmd, (const char *) p);
 }
 
+void UmlBasePackage::updateProfiles()
+{
+  UmlCom::send_cmd(packageGlobalCmd, updateProfileCmd);
+}
+
 void UmlBasePackage::unload(bool rec, bool del) {
   _assoc_diagram = 0;
 #ifdef WITHCPP
@@ -174,6 +207,10 @@ void UmlBasePackage::unload(bool rec, bool del) {
 #endif
 #ifdef WITHPHP
   _php_dir = 0;
+#endif
+#ifdef WITHPYTHON
+  _python_dir = 0;
+  _python_package = 0;
 #endif
 #ifdef WITHIDL
   _idl_dir = 0;
@@ -205,6 +242,13 @@ void UmlBasePackage::read_java_() {
 #ifdef WITHPHP
 void UmlBasePackage::read_php_() {
   _php_dir = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHPYTHON
+void UmlBasePackage::read_python_() {
+  _python_dir = UmlCom::read_string();
+  _python_package = UmlCom::read_string();
 }
 #endif
 

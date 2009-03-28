@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -73,6 +73,7 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     UmlColor stateaction_color;
     UmlColor activity_color;
     UmlColor activityregion_color;
+    UmlColor activitypartition_color;
     UmlColor activityaction_color;
     UmlColor parameterpin_color;
     bool is_imported;
@@ -118,24 +119,13 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     virtual void get_deploymentdiagramsettings(DeploymentDiagramSettings &) const;
     virtual void get_statediagramsettings(StateDiagramSettings & r) const;
     virtual void get_activitydiagramsettings(ActivityDiagramSettings & r) const;
-    virtual bool get_classinstwritehorizontally(UmlCode k) const;
-    virtual void get_componentdrawingsettings(bool depl, ComponentDrawingSettings & r) const;
-    virtual void get_statedrawingsettings(StateDrawingSettings & r) const;
-    virtual void get_activitydrawingsettings(ActivityDrawingSettings & r) const;
-    virtual void get_simpleclassdiagramsettings(SimpleClassDiagramSettings & r) const;
     virtual UmlColor get_color(UmlCode) const;
-    virtual bool get_shadow(UmlCode) const;
-    virtual bool get_draw_all_relations(UmlCode) const;
-    virtual bool get_show_stereotype_properties(UmlCode k) const;
     virtual UmlVisibility get_visibility(UmlCode) const;
-    virtual bool get_auto_label_position(UmlCode who) const ;
-    virtual bool get_write_label_horizontally(UmlCode who) const ;
-    virtual bool get_show_trans_definition(UmlCode who) const;
-    virtual bool get_show_opaque_action_definition(UmlCode who) const;
-    virtual DrawingLanguage get_language(UmlCode who) const;
     virtual void on_delete();
     virtual const char * check_inherit(const BrowserNode * parent) const;
     const char * may_connect(UmlCode & l, const BrowserNode * dest) const;
+    
+    virtual void referenced_by(QList<BrowserNode> & l, bool ondelete);
     
     virtual bool tool_cmd(ToolCom * com, const char * args);
     static bool tool_global_cmd(ToolCom * com, const char * args);
@@ -154,6 +144,7 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     
     virtual const QPixmap* pixmap (int) const;
     virtual void update_stereotype(bool rec = FALSE);
+    virtual void iconChanged();
     virtual void DragMoveEvent(QDragMoveEvent * e);
     virtual void DropEvent(QDropEvent * e);
     virtual void DragMoveInsideEvent(QDragMoveEvent * e);

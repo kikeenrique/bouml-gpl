@@ -249,6 +249,12 @@ class UmlBaseItem {
     virtual void read_php_();
 #endif
 
+#ifdef WITHPYTHON
+    //internal, do NOT use it
+    
+    virtual void read_python_();
+#endif
+
 #ifdef WITHIDL
     //internal, do NOT use it
     
@@ -387,6 +393,15 @@ class UmlBaseItem {
   friend class UmlBaseUseCaseDiagramDefinition;
   friend class UmlBaseSequenceDiagramDefinition;
   friend class UmlBaseCollaborationDiagramDefinition;
+  friend class UmlBaseFragment;
+  friend class UmlBaseReduceAction;
+  friend class UmlBaseRaiseExceptionAction;
+  friend class UmlBaseTestIdentityAction;
+  friend class UmlBaseDestroyObjectAction;
+  friend class UmlBaseCreateObjectAction;
+  friend class UmlBaseReplyAction;
+  friend class UmlBaseAcceptCallAction;
+  friend class UmlBaseActivityPartition;
 };
 
 #endif

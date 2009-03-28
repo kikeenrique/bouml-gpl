@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -32,6 +32,7 @@
 #include <qcursor.h>
 
 #include "BrowserExpansionRegion.h"
+#include "ReferenceDialog.h"
 #include "ExpansionRegionData.h"
 #include "BrowserExpansionNode.h"
 #include "BrowserActivityNode.h"
@@ -39,12 +40,6 @@
 #include "BrowserActivityObject.h"
 #include "BrowserInterruptibleActivityRegion.h"
 #include "ActivityActionData.h"
-
-#warning
-
-/*
-#include "BrowserPartition.h"
-*/
 #include "BrowserActivityDiagram.h"
 #include "UmlDrag.h"
 #include "UmlPixmap.h"
@@ -106,6 +101,12 @@ void BrowserExpansionRegion::update_idmax_for_root()
   all.update_idmax_for_root();
   BrowserExpansionNode::update_idmax_for_root();
 }
+
+void BrowserExpansionRegion::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
+  if (! ondelete)
+    BrowserActivityDiagram::compute_referenced_by(l, this, "expansionregioncanvas", "expansionregion_ref");
+}
     
 void BrowserExpansionRegion::renumber(int phase) {
   if (phase != -1)
@@ -115,6 +116,11 @@ void BrowserExpansionRegion::renumber(int phase) {
 const QPixmap* BrowserExpansionRegion::pixmap(int) const {
   if (deletedp()) 
     return DeletedExpansionRegionIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  if (px != 0) 
+    return px;
   else if (is_marked)
     return ExpansionRegionMarkedIcon;
   else
@@ -188,19 +194,13 @@ void BrowserExpansionRegion::menu() {
 		     "to add a nested <em>expansion region</em>");
       m.setWhatsThis(m.insertItem("New interruptible activity region", 2),
 		     "to add an <em>interruptible expansion region Region</em>");
-
-#warning partition
-
-      /*
-      m.setWhatsThis(m.insertItem("Add partition", 3),
-		     "to add a <em>Partition</em> to the <em>region</em>");
-		     */
       m.setWhatsThis(m.insertItem("Add activity action", 6),
 		     "to add an <em>activity action</em> to the <em>region</em>");
       m.setWhatsThis(m.insertItem("Add object node", 7),
 		     "to add an <em>activity object node</em> to the <em>region</em>");
       m.insertSeparator();
     }
+  
     m.setWhatsThis(m.insertItem("Edit", 4),
 		   "to edit the <em>expansion region</em>, \
 a double click with the left mouse button does the same thing");
@@ -219,6 +219,8 @@ a double click with the left mouse button does the same thing");
 		       "to delete the <em>expansion region</em>. \
 Note that you can undelete it after");
     }
+    m.setWhatsThis(m.insertItem("Referenced by", 3),
+		   "to know who reference the <i>region</i>");
     mark_menu(m, "expansion region", 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
@@ -257,13 +259,10 @@ void BrowserExpansionRegion::exec_menu_choice(int rank) {
     BrowserInterruptibleActivityRegion::add_interruptibleactivityregion(this);
     break;
   case 3:
-
-#warning
-
-    //add_partition(this);
+    ReferenceDialog::show(this);
     return;
   case 4:
-    open(FALSE);
+    open(TRUE);
     return;
   case 5:
     {
@@ -338,20 +337,17 @@ void BrowserExpansionRegion::apply_shortcut(QString s) {
 	choice = 1;
       else if (s == "New interruptible activity region")
 	choice = 2;
-
-#warning partition
-
-      /*
-      m.setWhatsThis(m.insertItem("Add partition", 3),
-		     "to add a <em>Partition</em> to the <em>region</em>");
-		     */
       else if (s == "Add activity action")
 	choice = 6;
       else if (s == "Add object node")
 	choice = 7;
     }
+    if (s == "Referenced by")
+      choice = 3;
+    
     if (s == "Edit")
       choice = 4;
+    
     if (!is_read_only) {
       if (s == "Duplicate")
 	choice = 5;
@@ -528,14 +524,6 @@ bool BrowserExpansionRegion::tool_cmd(ToolCom * com, const char * args) {
 	case UmlActivityObject:
 	  (new BrowserActivityObject(args, this))->write_id(com);
 	  break;
-
-#warning
-
-	  /*
-	case UmlPartition:
-	  (BrowserRegion::add_partition(this, args))->write_id(com);
-	  break;
-	  */
 	default:
 	  if (IsaActivityNode(k))
 	    (new BrowserActivityNode(k, args, this))->write_id(com);
@@ -575,9 +563,6 @@ bool BrowserExpansionRegion::may_contains_them(const QList<BrowserNode> & l,
   
   for (; it.current(); ++it) {
     switch (it.current()->get_type()) {
-    case UmlPartition:
-      duplicable = FALSE;
-      // no break !
     case UmlInterruptibleActivityRegion:
     case UmlExpansionRegion:
     case UmlExpansionNode:
@@ -609,12 +594,6 @@ void BrowserExpansionRegion::DragMoveEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, BrowserActivityNode::drag_key(this)) ||
       UmlDrag::canDecode(e, BrowserActivityAction::drag_key(this)) ||
       UmlDrag::canDecode(e, BrowserInterruptibleActivityRegion::drag_key(this)) ||
-
-#warning
-
-  /*
-      UmlDrag::canDecode(e, BrowserPartition::drag_key(this)) ||
-      */
       UmlDrag::canDecode(e, BrowserExpansionRegion::drag_key(this))) {
     if (!is_read_only)
       e->accept();
@@ -635,12 +614,6 @@ void BrowserExpansionRegion::DragMoveInsideEvent(QDragMoveEvent * e) {
        UmlDrag::canDecode(e, BrowserActivityNode::drag_key(this)) ||
        UmlDrag::canDecode(e, BrowserActivityAction::drag_key(this)) ||
        UmlDrag::canDecode(e, BrowserInterruptibleActivityRegion::drag_key(this)) ||
-
-#warning
-
-  /*
-       UmlDrag::canDecode(e, BrowserPartition::drag_key(this)) ||
-      */
        UmlDrag::canDecode(e, BrowserExpansionRegion::drag_key(this))))
     e->accept();
   else
@@ -654,12 +627,6 @@ void BrowserExpansionRegion::DropAfterEvent(QDropEvent * e, BrowserNode * after)
        ((bn = UmlDrag::decode(e, BrowserActivityNode::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserActivityAction::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserInterruptibleActivityRegion::drag_key(this))) != 0) ||
-
-#warning
-
-  /*
-       ((bn = UmlDrag::decode(e, BrowserPartition::drag_key(this))) != 0) ||
-       */
        ((bn = UmlDrag::decode(e, BrowserExpansionRegion::drag_key(this))) != 0)) &&
       (bn != after) && (bn != this)) {
     if (may_contains(bn, FALSE)) 
@@ -812,8 +779,8 @@ BrowserExpansionRegion * BrowserExpansionRegion::read(char * & st, char * k,
     
     result->BrowserNode::read(st, k);
     
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     if (strcmp(k, "end")) {
       while (BrowserExpansionNode::read(st, k, result) ||
@@ -821,12 +788,6 @@ BrowserExpansionRegion * BrowserExpansionRegion::read(char * & st, char * k,
 	     BrowserActivityObject::read(st, k, result) ||
 	     BrowserActivityAction::read(st, k, result) ||
 	     BrowserInterruptibleActivityRegion::read(st, k, result) ||
-
-#warning
-
-	     /*
-	     BrowserPartition::read(st, k, result) ||
-	     */
 	     BrowserExpansionRegion::read(st, k, result))
 	k = read_keyword(st);
       if (strcmp(k, "end"))

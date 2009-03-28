@@ -1,9 +1,9 @@
 
-  package_stereotypes  4 "facade" "framework" "stub" "toplevel"
+  package_stereotypes  5 "facade" "framework" "stub" "toplevel" "profile"
     -_-> 2 "access" "import"
   end
   
-  class_stereotypes  11 "actor" "boundary" "control" "entity" "enum" "exception" "interface" "struct" "typedef" "union" "enum_pattern"
+  class_stereotypes  12 "actor" "boundary" "control" "entity" "enum" "exception" "interface" "struct" "typedef" "union" "enum_pattern" "stereotype"
     ---- 4 "vector" "list" "set" "dict"
     ---> 4 "vector" "list" "set" "dict"
     o--- 4 "vector" "list" "set" "dict"

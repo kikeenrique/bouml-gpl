@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -59,19 +59,22 @@ RelationCanvas::RelationCanvas(UmlCanvas * canvas, DiagramItem * b,
 			       RelationData * d)
       : ArrowCanvas(canvas, b, e, t, id, TRUE, d_start, d_end), br_begin(bb),
         data(d), role_a(0), role_b(0), multiplicity_a(0), multiplicity_b(0),
-	stereotypeproperties(0) {
+	stereotypeproperties(0), show_modifier(FALSE) {
   if ((e->type() != UmlArrowPoint) && (bb == 0)) {
     // end of line construction, update all the line bb & be
     // adds browser relation 2 times
     update_begin(e);
   }
   else if (d != 0) {
-    if (e->type() != UmlArrowPoint)
+    if (e->type() != UmlArrowPoint) {
       check_stereotypeproperties();
+    }
     connect(d, SIGNAL(changed()), this, SLOT(modified()));
     connect(d, SIGNAL(deleted()), this, SLOT(deleted()));
     connect(br_begin->get_data(), SIGNAL(actuals_changed()),
 	    this, SLOT(actuals_modified()));
+    connect(DrawingSettings::instance(), SIGNAL(changed()),
+	    this, SLOT(drawing_settings_modified()));
   }
   
   // manages the case start == end
@@ -86,14 +89,20 @@ RelationCanvas::~RelationCanvas() {
 }
 
 void RelationCanvas::delete_it() {
-  disconnect(data, 0, this, 0);
-  disconnect(br_begin->get_data(), SIGNAL(actuals_changed()),
-	     this, SLOT(actuals_modified()));
-  
   if (stereotypeproperties != 0)
     ((UmlCanvas *) canvas())->del(stereotypeproperties);
   
-  ArrowCanvas::delete_it();
+  ArrowCanvas::delete_it(); // call unconnect
+}
+
+void RelationCanvas::unconnect() {
+  disconnect(data, 0, this, 0);
+  disconnect(br_begin->get_data(), SIGNAL(actuals_changed()),
+	     this, SLOT(actuals_modified()));
+  disconnect(DrawingSettings::instance(), SIGNAL(changed()),
+	     this, SLOT(drawing_settings_modified()));
+  
+  ArrowCanvas::unconnect();
 }
 
 void RelationCanvas::deleted() {
@@ -173,6 +182,8 @@ BrowserClass * RelationCanvas::update_begin(DiagramItem * cnend) {
   connect(data, SIGNAL(deleted()), this, SLOT(deleted()));
   connect(br_begin->get_data(), SIGNAL(actuals_changed()),
 	  this, SLOT(actuals_modified()));
+  connect(DrawingSettings::instance(), SIGNAL(changed()),
+	  this, SLOT(drawing_settings_modified()));
   
   return br_begin;
 }
@@ -302,7 +313,7 @@ void RelationCanvas::open() {
 }
 
 void RelationCanvas::menu(const QPoint & lpos) {
-  if (!data->get_start()->in_edition()) {
+  if ((data != 0) && !data->get_start()->in_edition()) {
     RelationCanvas * plabel;
     RelationCanvas * pstereotype;
     
@@ -336,10 +347,8 @@ void RelationCanvas::menu(const QPoint & lpos) {
 			       m.font()),
 		 -1);
     m.insertSeparator();
-    if (data) {
-      m.insertItem("Edit", 0);
-      m.insertSeparator();
-    }
+    m.insertItem("Edit", 0);
+    m.insertSeparator();
     
     m.insertItem("Select in browser", 2);
     if (plabel || pstereotype ||
@@ -457,23 +466,28 @@ ArrowPointCanvas * RelationCanvas::brk(const QPoint & p) {
   ArrowPointCanvas * ap =
     new ArrowPointCanvas(the_canvas(), p.x(), p.y());
   
-  ap->setZ(z() + 1);	// + 1 else point can't be selected
+  ap->setZ(z());
+  
+  DiagramItem * e = end;
+  
+  ap->add_line(this);
+  end->remove_line(this, TRUE);
+  end = ap;
   
   RelationCanvas * other =
     // do not give data to not call update()
-    new RelationCanvas(the_canvas(), ap, end, br_begin, itstype, 0,
+    new RelationCanvas(the_canvas(), ap, e, br_begin, itstype, 0,
 		       decenter_begin, decenter_end);
   
   other->data = data;
+  other->show_modifier = show_modifier;
   connect(data, SIGNAL(changed()), other, SLOT(modified()));
   connect(data, SIGNAL(deleted()), other, SLOT(deleted()));
   connect(br_begin->get_data(), SIGNAL(actuals_changed()),
 	  other, SLOT(actuals_modified()));
+  connect(DrawingSettings::instance(), SIGNAL(changed()),
+	  this, SLOT(drawing_settings_modified()));
 
-  ap->add_line(this);
-  end->remove_line(this);
-  end = ap;
-  
   if ((p - beginp).manhattanLength() < (p - endp).manhattanLength()) {
     if (label != 0) {
       other->label = label;
@@ -498,9 +512,6 @@ ArrowPointCanvas * RelationCanvas::brk(const QPoint & p) {
 ArrowCanvas * RelationCanvas::join(ArrowCanvas * other, ArrowPointCanvas * ap) {
   // has already check is join is possible (self relation must have two points)
   ArrowCanvas * result = ArrowCanvas::join(other, ap);
-  
-  ((result == this) ? other : this)->disconnect();
-
   ((RelationCanvas *) result)->modified();
   
   return result;
@@ -533,6 +544,15 @@ void RelationCanvas::actuals_modified() {
     search_supports(aplabel, apstereotype);
     update_actuals((RelationCanvas *) aplabel);
   }
+}
+
+void RelationCanvas::drawing_settings_modified() {
+  ClassDiagramSettings settings;
+  
+  the_canvas()->browser_diagram()->get_classdiagramsettings(settings);
+    
+  if (show_modifier != (settings.show_relation_modifiers == UmlYes))
+    update(TRUE);
 }
 
 void RelationCanvas::update(bool updatepos) {
@@ -614,6 +634,12 @@ void RelationCanvas::update(bool updatepos) {
     
     // manages role_a
     
+    ClassDiagramSettings settings;
+    
+    the_canvas()->browser_diagram()->get_classdiagramsettings(settings);
+    
+    show_modifier = (settings.show_relation_modifiers == UmlYes);
+    
     s = data->get_role_a();
     
     if (unamed || s.isEmpty() || (end->type() == UmlArrowPoint)) {
@@ -623,18 +649,46 @@ void RelationCanvas::update(bool updatepos) {
 	role_a = 0;
       }
     }
-    else if (role_a == 0) {
-      // adds role_a
-      role_a = new LabelCanvas(s, the_canvas(), 0, 0, FALSE, FALSE, 
-			       data->get_isa_class_relation_a());
-      role_a_default_position();
-    }
     else {
-      if (role_a->get_name() != s) {
-	role_a->set_name(s);
+      if (data->get_is_derived_a())
+	s = "/" + s;
+
+      if (show_modifier) {
+	const char * sep = " {";
+	
+	if (data->get_isa_const_relation_a()) {
+	  s += QString(sep) + "readOnly";
+	  sep = ",";
+	}
+	if (data->get_is_derived_a() && data->get_is_derivedunion_a()) {
+	  s += QString(sep) + "union";
+	  sep = ",";
+	}
+	if (data->get_is_ordered_a()) {
+	  s += QString(sep) + "ordered";
+	  sep = ",";
+	}
+	if (data->get_is_unique_a()) {
+	  s += QString(sep) + "unique";
+	  sep = ",";
+	}
+	if (*sep == ',')
+	  s += "}";
+      }
+      
+      if (role_a == 0) {
+	// adds role_a
+	role_a = new LabelCanvas(s, the_canvas(), 0, 0, FALSE, FALSE, 
+				 data->get_isa_class_relation_a());
 	role_a_default_position();
       }
-      role_a->set_underlined(data->get_isa_class_relation_a());
+      else {
+	if (role_a->get_name() != s) {
+	  role_a->set_name(s);
+	  role_a_default_position();
+	}
+	role_a->set_underlined(data->get_isa_class_relation_a());
+      }
     }
     
     
@@ -652,18 +706,46 @@ void RelationCanvas::update(bool updatepos) {
 	role_b = 0;
       }
     }
-    else if (role_b == 0) {
-      // adds role_b
-      role_b = new LabelCanvas(s, the_canvas(), 0, 0, FALSE, FALSE, 
-			       data->get_isa_class_relation_b());
-      role_b_default_position();
-    }
     else {
-      if (role_b->get_name() != s) {
-	role_b->set_name(s);
+      if (data->get_is_derived_b())
+	s = "/" + s;
+
+      if (show_modifier) {
+	const char * sep = " {";
+	
+	if (data->get_isa_const_relation_b()) {
+	  s += QString(sep) + "readOnly";
+	  sep = ",";
+	}
+	if (data->get_is_derived_b() && data->get_is_derivedunion_b()) {
+	  s += QString(sep) + "union";
+	  sep = ",";
+	}
+	if (data->get_is_ordered_b()) {
+	  s += QString(sep) + "ordered";
+	  sep = ",";
+	}
+	if (data->get_is_unique_b()) {
+	  s += QString(sep) + "unique";
+	  sep = ",";
+	}
+	if (*sep == ',')
+	  s += "}";
+      }
+
+      if (role_b == 0) {
+	// adds role_b
+	role_b = new LabelCanvas(s, the_canvas(), 0, 0, FALSE, FALSE, 
+				 data->get_isa_class_relation_b());
 	role_b_default_position();
       }
-      role_b->set_underlined(data->get_isa_class_relation_b());
+      else {
+	if (role_b->get_name() != s) {
+	  role_b->set_name(s);
+	  role_b_default_position();
+	}
+	role_b->set_underlined(data->get_isa_class_relation_b());
+      }
     }
     
     // manages multiplicity_a
@@ -766,7 +848,7 @@ void RelationCanvas::role_a_default_position() const {
     if (dx == 0) dx = 1;
   
     if (dx > 0) {
-      int w = fm.width(data->get_role_a());
+      int w = fm.width(role_a->get_name());
       
       role_a->move(endp.x() - w - ARROW_LENGTH,
 		   endp.y() - 4*h/3 + (dy * ARROW_LENGTH) / dx);
@@ -803,7 +885,7 @@ void RelationCanvas::role_b_default_position() const {
       role_b->move(beginp.x() + ARROW_LENGTH,
 		   beginp.y() - 4*h/3 + (dy * ARROW_LENGTH) / dx);
     else {
-      int w = fm.width(data->get_role_b());
+      int w = fm.width(role_b->get_name());
       
       role_b->move(beginp.x() - w - ARROW_LENGTH,
 		   beginp.y() - 4*h/3 + (dy * ARROW_LENGTH) / dx);
@@ -945,8 +1027,39 @@ void RelationCanvas::drop(BrowserNode * bn, UmlCanvas * canvas)
   }
 }
 
+// the relation is not yet drawn, 
+void RelationCanvas::drop(BrowserNode * bn, UmlCanvas * canvas,
+			  QPtrDict<DiagramItem> & drawn)
+{
+  RelationData * def = (RelationData *) bn->get_data();
+  BrowserClass * from = def->get_start_class();
+  BrowserClass * to = def->get_end_class();
+  DiagramItem * ccfrom = drawn[from->get_data()];
+  DiagramItem * ccto = drawn[to->get_data()];
+  
+  if ((ccfrom != 0) && (ccto != 0)) {
+    RelationCanvas * rel = 
+      new RelationCanvas(canvas, ccfrom, ccto, from, bn->get_type(),
+			 0, -1.0, -1.0, def);
+    
+    rel->hide();	// else self rel not fully shown
+    rel->show();
+
+    if (rel->data->get_association().type != 0) {
+      DiagramItem * ac = drawn[rel->data->get_association().type->get_data()];
+      
+      if (ac != 0)
+	rel->show_assoc_class((CdClassCanvas *) ac);
+    }
+    
+    drawn.replace(def, rel);
+      
+    // package set modified by caller
+  }
+}
+
 // the relation has association class
-// this assoc class is c or c is 0
+// this assoc class is cc or cc is 0
 
 void RelationCanvas::show_assoc_class(CdClassCanvas * cc) {
   if (cc == 0) {
@@ -971,11 +1084,7 @@ void RelationCanvas::show_assoc_class(CdClassCanvas * cc) {
       return;
     
     // check if draw_all_relations is desired
-    ClassDiagramSettings d = cc->get_settings();
-    
-    the_canvas()->browser_diagram()->get_classdiagramsettings(d);
-    
-    if (d.draw_all_relations != UmlYes)
+    if (! the_canvas()->must_draw_all_relations())
       return;
   }
   
@@ -1109,7 +1218,7 @@ void RelationCanvas::check_stereotypeproperties() {
     QString s = data->get_start()->stereotypes_properties();
     
     if (!s.isEmpty() &&
-	the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup))
+	the_canvas()->browser_diagram()->get_show_stereotype_properties())
       StereotypePropertiesCanvas::needed(the_canvas(), this, s,
 					 stereotypeproperties, center());
     else if (stereotypeproperties != 0) {
@@ -1117,6 +1226,10 @@ void RelationCanvas::check_stereotypeproperties() {
       stereotypeproperties = 0;
     }
   }
+}
+
+bool RelationCanvas::represents(BrowserNode * bn) {
+  return (data == bn->get_data());
 }
 
 void RelationCanvas::save(QTextStream & st, bool ref, QString & warning) const {
@@ -1183,6 +1296,12 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
   if (!strcmp(k, "relationcanvas_ref"))
     return ((RelationCanvas *) dict_get(read_id(st), "relationcanvas", canvas));
   else if (!strcmp(k, "relationcanvas")) {    
+    ClassDiagramSettings settings;
+    
+    canvas->browser_diagram()->get_classdiagramsettings(settings);
+    
+    bool show_modif = (settings.show_relation_modifiers == UmlYes);
+    
     int id = read_id(st);
     RelationData * rd = RelationData::read_ref(st, TRUE);
     LineGeometry geo;
@@ -1315,6 +1434,9 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       connect(rd, SIGNAL(deleted()), result, SLOT(deleted()));
       connect(b->get_data(), SIGNAL(actuals_changed()),
 	      result, SLOT(actuals_modified()));
+      connect(DrawingSettings::instance(), SIGNAL(changed()),
+	      result, SLOT(drawing_settings_modified()));
+      result->show_modifier = show_modif;
 
       if (first == 0) {
 	first = result;
@@ -1347,7 +1469,7 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       y = (int) read_double(st);
       z = (read_file_format() < 5) ? /*OLD_*/LABEL_Z : read_double(st);
       
-      s = rd->get_role_a();
+      s = rd->get_role_a();	// note : '/' added by update if needed
       
       if (!unamed && !s.isEmpty()) {
 	result->role_a = new LabelCanvas(s, canvas, x, y, FALSE, FALSE,
@@ -1365,7 +1487,7 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
       y = (int) read_double(st);
       z = (read_file_format() < 5) ? /*OLD_*/LABEL_Z : read_double(st);
       
-      s = rd->get_role_b();
+      s = rd->get_role_b();	// note : '/' added by update if needed
       
       if (!unamed && !s.isEmpty()) {
 	first->role_b = new LabelCanvas(s, canvas, x, y, FALSE, FALSE,
@@ -1439,6 +1561,8 @@ RelationCanvas * RelationCanvas::read(char * & st, UmlCanvas * canvas, char * k)
     // manage case where the relation is deleted but present in the browser
     if (result->data->get_start()->deletedp())
       result->delete_it();
+    else
+      result->update_geometry();
     
     return result;
   }
@@ -1466,11 +1590,11 @@ void RelationCanvas::history_load(QBuffer & b) {
   connect(data, SIGNAL(deleted()), this, SLOT(deleted()));
   connect(br_begin->get_data(), SIGNAL(actuals_changed()),
 	  this, SLOT(actuals_modified()));
+  connect(DrawingSettings::instance(), SIGNAL(changed()),
+	  this, SLOT(drawing_settings_modified()));
 }
 
 void RelationCanvas::history_hide() {
   QCanvasItem::setVisible(FALSE);
-  disconnect(data, 0, this, 0);
-  disconnect(br_begin->get_data(), SIGNAL(actuals_changed()),
-	     this, SLOT(actuals_modified()));
+  unconnect();
 }

@@ -14,9 +14,7 @@ class UmlOperation : public UmlBaseOperation {
   
     void remove_cpp_throw();
     void add_param(int rank, aDirection dir,
-		   const char * name, const char * type);
-    void add_param(int rank, aDirection dir,
-		   const char * name, UmlClass * type);
+		   const char * name, UmlTypeSpec type);
     void set_cpp(const char * return_form_or_inherit,
 		 const char * params, const char * body,
 		 bool inlinep, const char * if_def, const char * end_if);
@@ -28,6 +26,14 @@ class UmlOperation : public UmlBaseOperation {
     static UmlOperation * java2Php(UmlClass * php, UmlClass * java,
 				   const char * name,
 				   const char * newname = 0);
+    
+    static UmlOperation * java2Python(UmlClass * python, UmlClass * java,
+				   const char * name,
+				   const char * newname = 0);
+    
+    static UmlOperation * cpp2Python(UmlClass * python, UmlClass * cpp,
+				  const char * name,
+				  const char * newname = 0);
 };
 
 #endif

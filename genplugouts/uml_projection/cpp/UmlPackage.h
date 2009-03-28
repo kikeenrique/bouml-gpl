@@ -20,6 +20,8 @@ class UmlPackage : public UmlBasePackage {
 
     virtual void uml2php(bool rec);
 
+    virtual void uml2python(bool rec);
+
 };
 
 #endif

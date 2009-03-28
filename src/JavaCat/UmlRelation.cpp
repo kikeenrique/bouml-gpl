@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -170,7 +170,7 @@ bool UmlRelation::new_one(Class * container, const QCString & name,
   
   if (!comment.isEmpty())
     rel->set_Description((decl.find("${description}") != -1)
-			 ? description : comment);
+			 ? description : Lex::simplify_comment(comment));
   
   if (constp)
     rel->set_isReadOnly(TRUE);

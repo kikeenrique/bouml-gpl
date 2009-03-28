@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -80,10 +80,14 @@ ObjectLinkCanvas::~ObjectLinkCanvas() {
 }
 
 void ObjectLinkCanvas::delete_it() {
+  ArrowCanvas::delete_it();	// call unconnect
+}
+
+void ObjectLinkCanvas::unconnect() {
   if (data != 0)
     disconnect(data, 0, this, 0);
   
-  ArrowCanvas::delete_it();
+  ArrowCanvas::unconnect();
 }
 
 void ObjectLinkCanvas::deleted() {
@@ -521,7 +525,7 @@ ArrowPointCanvas * ObjectLinkCanvas::brk(const QPoint & p) {
   ArrowPointCanvas * ap =
     new ArrowPointCanvas(the_canvas(), p.x(), p.y());
   
-  ap->setZ(z() + 1);	// + 1 else point can't be selected
+  ap->setZ(z());
   
   ObjectLinkCanvas * other =
     // do not give data to not call update()
@@ -536,7 +540,7 @@ ArrowPointCanvas * ObjectLinkCanvas::brk(const QPoint & p) {
   }
 
   ap->add_line(this);
-  end->remove_line(this);
+  end->remove_line(this, TRUE);
   end = ap;
   ap->show();
   other->show();
@@ -793,6 +797,10 @@ void ObjectLinkCanvas::role_b_default_position() const {
 
 bool ObjectLinkCanvas::is(const SlotRel & slot_rel, bool isa) const {
   return (slot_rel.rel == data) && (slot_rel.is_a == isa);
+}
+
+bool ObjectLinkCanvas::represents(BrowserNode * bn) {
+  return (data == bn->get_data());
 }
 
 void ObjectLinkCanvas::save(QTextStream & st, bool ref, QString & warning) const {
@@ -1089,6 +1097,5 @@ void ObjectLinkCanvas::history_load(QBuffer & b) {
 
 void ObjectLinkCanvas::history_hide() {
   QCanvasItem::setVisible(FALSE);
-  if (data != 0)
-    disconnect(data, 0, this, 0);
+  unconnect();
 }

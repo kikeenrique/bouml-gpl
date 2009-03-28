@@ -17,7 +17,7 @@ int main(int argc, char ** argv)
   QApplication a(argc, argv);
 
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
-    UmlCom::trace("<b>Rose import</b> release 2.1.1 (import model only, without diagram contents)<hr>");
+    UmlCom::trace("<b>Rose import</b> release 2.1.2 (import model only, without diagram contents)<hr>");
 
     bool cpp_dflt = CppSettings::useDefaults();
     bool java_dflt = JavaSettings::useDefaults();

@@ -43,6 +43,9 @@ class UmlRelation : public UmlBaseRelation {
     //write definition inside the class
     virtual void write_relation_as_attribute(FileOut & out);
 
+    //write definition inside the class
+    virtual void write_extension(FileOut & out);
+
     virtual void search_class_assoc();
 
 

@@ -169,12 +169,8 @@ void UmlItem::write_default_value(FileOut & out, QCString v, UmlItem * who, int 
     out << "<defaultValue xmi:type=\"uml:LiteralString\"";
     if (rank == -1)
       out.id_prefix(who, "VALUE_");
-    else {
-      char s[32];
-      
-      sprintf(s, "VALUE%d_", rank);
-      out.id_prefix(who, s);
-    }
+    else
+      out.id_prefix(who, "VALUE", rank);
     out << " value=\"";
     out.quote(v);
     out << "\"/>\n";
@@ -190,6 +186,10 @@ void UmlItem::write_stereotyped(FileOut & out)
     UmlClass * cl = UmlClass::findStereotype(it.key(), TRUE);
 		     
     if (cl != 0) {
+      QValueList<QCString> extended;
+
+      cl->get_extended(extended);
+      
       QList<UmlItem> & l = it.data();
       UmlItem * elt;
       
@@ -213,15 +213,15 @@ void UmlItem::write_stereotyped(FileOut & out)
 	  ++itp;
 	}
 	
-	QCString extending;
+	QValueList<QCString>::Iterator iter_extended;
 	
-	cl->propertyValue("stereotypeExtension", extending);
-	if (extending.isEmpty())
-	  extending = "#Element";
-
-	QCString vr = "base_" + extending.mid(extending.findRev('#') + 1);
-	
-	out.ref(elt, vr);
+	for (iter_extended = extended.begin(); 
+	     iter_extended != extended.end();
+	     ++iter_extended) {
+	  QCString vr = "base_" + *iter_extended;
+	  
+	  out.ref(elt, vr);
+	}
 	
 	out << "/>\n";
 	

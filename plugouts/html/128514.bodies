@@ -20,6 +20,14 @@ class UmlState
     fw.write("<br /></p>");
   }
 
+  UmlOperation * beh = specification();
+  
+  if (beh != 0) {
+    fw.write("<p>Implements ");
+    beh->write();
+    fw.write("</p>");
+  }
+
   fw.write("<p>Entry Behavior :</p><ul>");
   
   s = entryBehavior();
@@ -130,6 +138,14 @@ class UmlState
     fw.write("<p>");
     writeq(description());
     fw.write("<br /></p>");
+  }
+
+  UmlOperation beh = specification();
+  
+  if (beh != null) {
+    fw.write("<p>Implements ");
+    beh.write();
+    fw.write("</p>");
   }
 
   fw.write("<p>Entry Behavior :</p><ul>");

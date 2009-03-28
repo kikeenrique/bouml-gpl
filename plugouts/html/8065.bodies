@@ -27,119 +27,185 @@ class UmlRelation
     super.memo_ref();
   }
 !!!130291.cpp!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  bool extension;
+  
   switch (relationKind()) {
   case aGeneralisation:
   case aRealization:
   case aDependency:
     return;
-  default:
+  case aDirectionalAssociation:
+    extension = (parent()->stereotype() == "stereotype") &&
+      (roleType()->stereotype() == "metaclass");
     break;
+  default:
+    extension = FALSE;
   }
 
   define();
 
-  fw.write("<table><tr><td><div class=\"element\">Relation <b>");
-  writeq(name());
-  fw.write("</b></div></td></tr></table>");
+  if (extension)
+    fw.write("<table><tr><td><div class=\"element\">Extension</div></td></tr></table>");
+  else {
+    fw.write("<table><tr><td><div class=\"element\">Relation <b>");
+    writeq(name());
+    fw.write("</b></div></td></tr></table>");
+  }
 
   QCString s = description();
 
   if (!s.isEmpty()) {
     fw.write("<p>");
-    gen_cpp_decl(s, TRUE);
+    if (! javaDecl().isEmpty())
+      gen_java_decl(s, TRUE);
+    else if (! phpDecl().isEmpty())
+      gen_php_decl(s, TRUE);
+    else if (! pythonDecl().isEmpty())
+      gen_python_decl(s);
+    else
+      gen_cpp_decl(s, TRUE);
     fw.write("<br /></p>");
   }
 
-  fw.write("<p>Declaration :</p><ul>");
-  
-  fw.write("<li>Uml : ");
-  gen_uml_decl();
-  fw.write("</li>");
-  
-  s = cppDecl();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>C++ : ");
-    gen_cpp_decl(s, FALSE);
+  if (extension) {
+    fw.write("<p>Extend ");
+    roleType()->write();
+    fw.write("</p>");
+  }
+  else {
+    fw.write("<p>Declaration :</p><ul>");
+    
+    fw.write("<li>Uml : ");
+    gen_uml_decl();
     fw.write("</li>");
+    
+    s = cppDecl();
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>C++ : ");
+      gen_cpp_decl(s, FALSE);
+      fw.write("</li>");
+    }
+    
+    s = javaDecl();
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>Java : ");
+      gen_java_decl(s, FALSE);
+      fw.write("</li>");
+    }
+    
+    s = phpDecl();
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>Php : ");
+      gen_php_decl(s, FALSE);
+      fw.write("</li>");
+    }
+    
+    s = pythonDecl();
+    
+    if (!s.isEmpty()) {
+      fw.write("<li>Python : ");
+      gen_python_decl(s);
+      fw.write("</li>");
+    }
+    
+    fw.write("</ul>");
   }
 
-  s = javaDecl();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Java : ");
-    gen_java_decl(s);
-    fw.write("</li>");
-  }
-
-  s = phpDecl();
-
-  if (!s.isEmpty()) {
-    fw.write("<li>Php : ");
-    gen_php_decl(s);
-    fw.write("</li>");
-  }
-
-  fw.write("</ul>");
-  
   annotation_constraint();
   write_properties();
  
   unload(FALSE, FALSE);
 !!!130291.java!!!	html(in pfix : string, in rank : uint, in level : uint) : void
+  boolean extension;
+  
   switch (relationKind().value()) {
   case aRelationKind._aGeneralisation:
   case aRelationKind._aRealization:
   case aRelationKind._aDependency:
     return;
+  case aRelationKind._aDirectionalAssociation:
+    extension = (parent().stereotype() == "stereotype") &&
+      (roleType().stereotype() == "metaclass");
+    break;
+  default:
+    extension = false;
   }
 
   define();
 
-  fw.write("<table><tr><td><div class=\"element\">Relation <b>");
-  writeq(name());
-  fw.write("</b></div></td></tr></table>");
+  if (extension)
+    fw.write("<table><tr><td><div class=\"element\">Extension</div></td></tr></table>");
+  else {
+    fw.write("<table><tr><td><div class=\"element\">Relation <b>");
+    writeq(name());
+    fw.write("</b></div></td></tr></table>");
+  }
   
   String s = description();
   
   if (s.length() != 0) {
     fw.write("<p>");
-    gen_cpp_decl(s, true);
+    if (javaDecl().length() != 0)
+      gen_java_decl(s, true);
+    else if (phpDecl().length() != 0)
+      gen_php_decl(s, true);
+    else if (pythonDecl().length() != 0)
+      gen_python_decl(s);
+    else 
+      gen_cpp_decl(s, true);
     fw.write("<br /></p>");
   }
 
-  fw.write("<p>Declaration :</p><ul>");
-  
-  fw.write("<li>Uml : ");
-  gen_uml_decl();
-  fw.write("</li>");
-  
-  s = cppDecl();
-
-  if (s.length() != 0) {
-    fw.write("<li>C++ : ");
-    gen_cpp_decl(s, false);
+  if (extension) {
+    fw.write("<p>Extend ");
+    roleType().write();
+    fw.write("</p>");
+  }
+  else {
+    fw.write("<p>Declaration :</p><ul>");
+    
+    fw.write("<li>Uml : ");
+    gen_uml_decl();
     fw.write("</li>");
+    
+    s = cppDecl();
+    
+    if (s.length() != 0) {
+      fw.write("<li>C++ : ");
+      gen_cpp_decl(s, false);
+      fw.write("</li>");
+    }
+    
+    s = javaDecl();
+    
+    if (s.length() != 0) {
+      fw.write("<li>Java : ");
+      gen_java_decl(s, false);
+      fw.write("</li>");
+    }
+    
+    s = phpDecl();
+    
+    if (s.length() != 0) {
+      fw.write("<li>Php : ");
+      gen_php_decl(s, false);
+      fw.write("</li>");
+    }
+    
+    s = pythonDecl();
+    
+    if (s.length() != 0) {
+      fw.write("<li>Python : ");
+      gen_python_decl(s);
+      fw.write("</li>");
+    }
+    
+    fw.write("</ul>");
   }
 
-  s = javaDecl();
-
-  if (s.length() != 0) {
-    fw.write("<li>Java : ");
-    gen_java_decl(s);
-    fw.write("</li>");
-  }
-
-  s = phpDecl();
-
-  if (s.length() != 0) {
-    fw.write("<li>Php : ");
-    gen_php_decl(s);
-    fw.write("</li>");
-  }
-
-  fw.write("</ul>");
- 
   annotation_constraint();
   write_properties();
 
@@ -229,8 +295,12 @@ class UmlRelation
 	while ((*p != 0) && (*p <= ' '));
       }
     }
-    else if (*p == ';')
-      break;
+    else if (*p == ';') {
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
     else if (*p == '@')
       manage_alias(p);
     else
@@ -327,14 +397,18 @@ class UmlRelation
 	while ((index != n) && Character.isWhitespace(s.charAt(index)));
       }
     }
-    else if (s.charAt(index) == ';')
-      break;
+    else if (s.charAt(index) == ';') {
+      if (descr)
+	fw.write(s.charAt(index++));
+      else
+	break;
+    }
     else if (s.charAt(index) == '@')
       index = manage_alias(s, index);
     else
       writeq(s.charAt(index++));
   }
-!!!130547.cpp!!!	gen_java_decl(in s : string) : void
+!!!130547.cpp!!!	gen_java_decl(in s : string, in descr : bool) : void
   const char * p = bypass_comment(s);
 
   while (*p) {
@@ -422,14 +496,18 @@ class UmlRelation
 	p += 1;
       while ((*p != 0) && (*p <= ' '));
     }
-    else if (*p == ';')
-      break;
+    else if (*p == ';') {
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
     else if (*p == '@')
       manage_alias(p);
     else
       writeq(*p++);
   }
-!!!130547.java!!!	gen_java_decl(in s : string) : void
+!!!130547.java!!!	gen_java_decl(in s : string, in descr : bool) : void
   int n = s.length();
   int index = bypass_comment(s);
 
@@ -514,14 +592,18 @@ class UmlRelation
 	index += 1;
       while ((index != n) && Character.isWhitespace(s.charAt(index)));
     }
-    else if (s.charAt(index) == ';')
-      break;
+    else if (s.charAt(index) == ';') {
+      if (descr)
+	fw.write(s.charAt(index++));
+      else
+	break;
+    }
     else if (s.charAt(index) == '@')
       index = manage_alias(s, index);
     else
       writeq(s.charAt(index++));
   }
-!!!211714.cpp!!!	gen_php_decl(in s : string) : void
+!!!211714.cpp!!!	gen_php_decl(in s : string, in descr : bool) : void
   const char * p = bypass_comment(s);
 
   while (*p) {
@@ -552,6 +634,9 @@ class UmlRelation
 	  (visibility() == PackageVisibility))
 	fw.write("var ");
     }
+    else if (!strncmp(p, "${value}", 8)) {
+      p += 8;
+    }
     else if (!strncmp(p, "${const}", 8)) {
       p += 8;
       if (isReadOnly())
@@ -566,14 +651,18 @@ class UmlRelation
 	p += 1;
       while ((*p != 0) && (*p <= ' '));
     }
-    else if (*p == ';')
-      break;
+    else if (*p == ';') {
+      if (descr)
+	fw.write(*p++);
+      else
+	break;
+    }
     else if (*p == '@')
       manage_alias(p);
     else
       writeq(*p++);
   }
-!!!211714.java!!!	gen_php_decl(in s : string) : void
+!!!211714.java!!!	gen_php_decl(in s : string, in descr : bool) : void
   int n = s.length();
   int index = bypass_comment(s);
 
@@ -605,6 +694,9 @@ class UmlRelation
 	  (visibility() == aVisibility.PackageVisibility))
 	fw.write("var ");
     }
+    else if (s.startsWith("${value}", index)) {
+      index += 8;
+    }
     else if (s.startsWith("${const}")) {
       index += 8;
       if (isReadOnly())
@@ -619,8 +711,87 @@ class UmlRelation
 	index += 1;
       while ((index != n) && Character.isWhitespace(s.charAt(index)));
     }
-    else if (s.charAt(index) == ';')
-      break;
+    else if (s.charAt(index) == ';') {
+      if (descr)
+	fw.write(s.charAt(index++));
+      else
+	break;
+    }
+    else if (s.charAt(index) == '@')
+      index = manage_alias(s, index);
+    else
+      writeq(s.charAt(index++));
+  }
+!!!129539.cpp!!!	gen_python_decl(in s : string) : void
+  QCString st = PythonSettings::classStereotype(stereotype());
+  const char * p = bypass_comment(s);
+
+  while (*p) {
+    if (!strncmp(p, "${comment}", 10))
+      p += 10;
+    else if (!strncmp(p, "${description}", 14))
+      p += 14;
+    else if (!strncmp(p, "${name}", 7)) {
+      p += 7;
+      writeq(roleName());
+    }
+    else if (!strncmp(p, "${value}", 8)) {
+      p += 8;
+      writeq((defaultValue().isEmpty()) ? "None" : defaultValue());
+    }
+    else if (!strncmp(p, "${self}", 7)) {
+      p += 7;
+      if (!isClassMember())
+	fw.write("self.");
+    }
+    else if (!strncmp(p, "${type}", 7)) {
+      p += 7;
+      roleType()->write();
+    }
+    else if (!strncmp(p, "${stereotype}", 13)) {
+      p += 13;
+      writeq(st);
+    }
+    else if (*p == '\r')
+      p += 1;
+    else if (*p == '@')
+      manage_alias(p);
+    else
+      writeq(*p++);
+  }
+!!!129539.java!!!	gen_python_decl(in s : string) : void
+  String st = PythonSettings.classStereotype(stereotype());
+  int n = s.length();
+  int index = bypass_comment(s);
+
+  while (index != n) {
+    if (s.startsWith("${comment}", index))
+      index += 10;
+    else if (s.startsWith("${description}", index))
+      index += 14;
+    else if (s.startsWith("${name}", index)) {
+      index += 7;
+      writeq(roleName());
+    }
+    else if (s.startsWith("${value}", index)) {
+      index += 8;
+      writeq((defaultValue() == "") ? "None" : defaultValue());
+    }
+    else if (s.startsWith("${self}", index)) {
+      index += 7;
+      if (!isClassMember())
+	fw.write("self.");
+    }
+    else if (s.startsWith("${type}", index)) {
+      index += 7;
+      roleType().write();
+    }
+    else if (s.startsWith("${stereotype}")) {
+      index += 13;
+      writeq(st);
+    }
+    else if (s.charAt(index) == '\r')
+      index += 1;
     else if (s.charAt(index) == '@')
       index = manage_alias(s, index);
     else
@@ -634,12 +805,33 @@ class UmlRelation
   fw.write(" : ");
   roleType()->write();
 
-  QCString s = multiplicity();
+  QCString s;
   
+  s = defaultValue();
+  if (!s.isEmpty()) {
+    if (s[0] != '=')
+      fw.write(" = ");
+    writeq(s);
+  }
+
+  s = multiplicity();
   if (!s.isEmpty()) {
     fw.write(", multiplicity : ");
     writeq(s);
   }
+
+  if (isDerived())
+    fw.write((isDerivedUnion()) ? ", derived union" : ", derived");
+    
+  if (isReadOnly())
+    fw.write(", read only");
+    
+  if (isOrdered())
+    fw.write(", ordered");
+    
+  if (isUnique())
+    fw.write(", unique");
+
 !!!204034.java!!!	gen_uml_decl() : void
   if (isClassMember())
     fw.write("static, ");
@@ -648,12 +840,33 @@ class UmlRelation
   fw.write(" : ");
   roleType().write();
 
-  String s = multiplicity();
+  String s;
   
+  s = defaultValue();
+  if (s.length() != 0) {
+    if (s.charAt(0) != '=')
+      fw.write(" = ");
+    writeq(s);
+  }
+  
+  s = multiplicity();
   if (s.length() != 0) {
     fw.write(", multiplicity : ");
     writeq(s);
   }
+
+  if (isDerived())
+    fw.write((isDerivedUnion()) ? ", derived union" : ", derived");
+    
+  if (isReadOnly())
+    fw.write(", read only");
+    
+  if (isOrdered())
+    fw.write(", ordered");
+    
+  if (isUnique())
+    fw.write(", unique");
+
 !!!128267.cpp!!!	pretty_name() : string
   return roleName();
 !!!128267.java!!!	pretty_name() : string

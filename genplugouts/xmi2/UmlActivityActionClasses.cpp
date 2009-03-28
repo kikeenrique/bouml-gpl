@@ -7,6 +7,7 @@
 void UmlSendObjectAction::write(FileOut & out) {
   write_begin(out, "SendObjectAction");
   write_end(out);
+
 }
 
 void UmlUnmarshallAction::write(FileOut & out) {
@@ -82,6 +83,7 @@ void UmlOpaqueAction::write(FileOut & out) {
 
 void UmlAcceptEventAction::write(FileOut & out) {
   write_begin(out, "AcceptEventAction");
+  
   if (isUnmarshall())
     out << " isUnmarshall=\"true\"";
   
@@ -99,9 +101,10 @@ void UmlAcceptEventAction::write(FileOut & out) {
     trig = javaTrigger();
   }
 
-  write_end(out);
-
   if (! trig.isEmpty()) {
+    out.ref(this, "trigger", "TRIGGER_");
+    write_end(out);
+    
     out.indent();
     out << "<trigger xmi:type=\"uml:Trigger\"";
     out.id_prefix(this, "TRIGGER_");
@@ -109,6 +112,9 @@ void UmlAcceptEventAction::write(FileOut & out) {
     out.quote(trig);
     out << "\"/>\n";
   }
+  else
+    write_end(out);
+
 }
 
 void UmlCallOperationAction::write(FileOut & out) {
@@ -177,5 +183,118 @@ void UmlRemoveVariableValueAction::write(FileOut & out) {
     out << " isRemoveDuplicates=\"true\"";
 
   write_var_end(out);
+}
+
+void UmlAcceptCallAction::write(FileOut & out) {
+  write_begin(out, "AcceptCallAction");
+  out << " isUnmarshall=\"true\"";
+
+  QCString trig;
+  
+  switch (_lang) {
+  case Uml:
+    trig = trigger();
+    break;
+  case Cpp:
+    trig = cppTrigger();
+    break;
+  default:
+    // java
+    trig = javaTrigger();
+  }
+
+  if (! trig.isEmpty()) {
+    out.ref(this, "trigger", "TRIGGER_");
+    write_end(out);
+    
+    out.indent();
+    out << "<trigger xmi:type=\"uml:Trigger\"";
+    out.id_prefix(this, "TRIGGER_");
+    out << " name=\"";
+    out.quote(trig);
+    out << "\"/>\n";
+  }
+  else
+    write_end(out);
+
+}
+
+void UmlReplyAction::write(FileOut & out) {
+  write_begin(out, "ReplyAction");
+  
+  QCString trig;
+  
+  switch (_lang) {
+  case Uml:
+    trig = replyToCall();
+    break;
+  case Cpp:
+    trig = cppReplyToCall();
+    break;
+  default:
+    // java
+    trig = javaReplyToCall();
+  }
+
+  if (! trig.isEmpty()) {
+    out.ref(this, "replyToCall", "TRIGGER_");
+    write_end(out);
+    
+    out.indent();
+    out << "<trigger xmi:type=\"uml:Trigger\"";
+    out.id_prefix(this, "TRIGGER_");
+    out << " name=\"";
+    out.quote(trig);
+    out << "\"/>\n";
+  }
+  else
+    write_end(out);
+}
+
+void UmlCreateObjectAction::write(FileOut & out) {
+  write_begin(out, "CreateObjectAction");
+  write_end(out);
+
+}
+
+void UmlDestroyObjectAction::write(FileOut & out) {
+  write_begin(out, "DestroyObjectAction");
+  if (isDestroyLinks())
+    out << " isDestroyLinks=\"true\"";
+  if (isDestroyOwnedObjects())
+    out << " isDestroyOwnedObjects=\"true\"";
+  write_end(out);
+}
+
+void UmlTestIdentityAction::write(FileOut & out) {
+  write_begin(out, "TestIdentityAction");
+  write_end(out);
+
+}
+
+void UmlRaiseExceptionAction::write(FileOut & out) {
+  write_begin(out, "RaiseExceptionAction");
+  write_end(out);
+
+}
+
+void UmlReduceAction::write(FileOut & out) {
+  write_begin(out, "ReduceAction");
+  
+  if (isOrdered())
+    out << " isOrdered=\"true\"";
+  
+  write_end(out, TRUE);
+
+  UmlItem * r = reducer();
+  
+  if (r != 0) {
+    out.indent();
+    out << "<reducer";
+    out.idref(r);
+    out << "/>\n";
+  }
+
+  write_close(out);
 }
 

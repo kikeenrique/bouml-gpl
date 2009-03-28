@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -27,6 +27,8 @@
 #define CONTINUATIONCANVAS_H
 
 #include "DiagramCanvas.h"
+
+class ToolCom;
 
 #define CONTINUATION_CANVAS_MIN_SIZE 30
 
@@ -67,6 +69,8 @@ class SdContinuationCanvas : public QObject, public DiagramCanvas {
     void edit_drawing_settings();
     
     virtual void apply_shortcut(QString s);
+    
+    static void send(ToolCom * com, QCanvasItemList & all);
   
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;
     static SdContinuationCanvas * read(char * &, UmlCanvas *, char *);

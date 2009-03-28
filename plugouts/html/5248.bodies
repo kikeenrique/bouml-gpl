@@ -17,7 +17,7 @@ class UmlCom
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(35);
+    write_unsigned(45);
     flush();
     return TRUE;
   }
@@ -38,7 +38,7 @@ class UmlCom
     p_buffer_out = 4/*bytes for length*/;
 
     // send API version
-    write_unsigned(35);
+    write_unsigned(45);
     flush();
   }
   catch (Exception e) {
@@ -305,6 +305,24 @@ class UmlCom
   write_char((byte) f.value());
   write_char((byte) cmd);
   flush();
+!!!235008.cpp!!!	send_cmd(in f : CmdFamily, in cmd : uint, in s : str, in b : bool) : void
+#ifdef TRACE
+  cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << ((s) ? s : "") << b << ")\n";
+#endif
+  
+  write_char(f);
+  write_char(cmd);
+  write_string(s);
+  write_bool(b);
+  flush();
+!!!235008.java!!!	send_cmd(in f : CmdFamily, in cmd : uint, in s : str, in b : bool) : void
+  //cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << ((s) ? s : "") << b << ")\n";
+  
+  write_char((byte) f.value());
+  write_char((byte) cmd);
+  write_string(s);
+  write_bool(b);
+  flush();
 !!!68608.cpp!!!	send_cmd(in f : CmdFamily, in cmd : uint, in arg : sbyte) : void
 #ifdef TRACE
   cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << arg << ")\n";
@@ -320,6 +338,22 @@ class UmlCom
   write_char((byte) f.value());
   write_char((byte) cmd);
   write_char(arg);
+  flush();
+!!!232576.cpp!!!	send_cmd(in f : CmdFamily, in cmd : uint, in arg : int, in dummy : str) : void
+#ifdef TRACE
+  cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << arg << ", dummy)\n";
+#endif
+  
+  write_char(f);
+  write_char(cmd);
+  write_unsigned(arg);
+  flush();
+!!!232576.java!!!	send_cmd(in f : CmdFamily, in cmd : uint, in arg : int, in dummy : str) : void
+  //cout << "UmlCom.send_cmd((CmdFamily) " << f << ", " << cmd << ", " << arg << ", dummy)\n";
+  
+  write_char((byte) f.value());
+  write_char((byte) cmd);
+  write_unsigned(arg);
   flush();
 !!!68736.cpp!!!	send_cmd(in f : CmdFamily, in cmd : uint, in id : item_id) : void
 #ifdef TRACE

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -51,7 +51,7 @@ extern const char * noteText;
 extern const char * anchorText;
 const char * dependencyText = "Click this button to create a <em>dependency</em>";
 extern const char * associationText;
-const char * directionalassociationText = "Click this button to create an <em>unidirectional association</em>";
+const char * directionalassociationextensionText = "Click this button to create an <em>unidirectional association</em> or an <em>extension</em>";
 const char * aggregationText = "Click this button to create an <em>aggregation</em>";
 const char * aggregationbyvalueText = "Click this button to create a <em>composition</em>";
 const char * directionalaggregationText = "Click this button to create a <em>directional aggregation</em>";
@@ -117,10 +117,10 @@ ClassDiagramWindow::ClassDiagramWindow(const QString & s, BrowserClassDiagram * 
   QWhatsThis::add(association, associationText);
   
   directionalassociation =
-    new QToolButton(*directionalAssociationButton, "Directional Association", QString::null,
+    new QToolButton(*directionalAssociationExtensionButton, "Directional Association / Extension", QString::null,
 		    this, SLOT(hit_directionalassociation()), toolbar, "directional association");
   directionalassociation->setToggleButton(TRUE);
-  QWhatsThis::add(directionalassociation, directionalassociationText);
+  QWhatsThis::add(directionalassociation, directionalassociationextensionText);
   
   aggregation =
     new QToolButton(*aggregationButton, "Aggregation", QString::null,

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -58,6 +58,7 @@ class BrowserOperation : public BrowserNode, public Labeled<BrowserOperation> {
     virtual bool undelete(bool rec, QString & warning, QString & renamed);
     virtual BrowserNode * duplicate(BrowserNode * p,
 				    QString name = QString::null);
+    void post_duplicate();
     
     BrowserNode * get_get_of() { return get_of; };
     BrowserNode * get_set_of() { return set_of; };
@@ -100,6 +101,7 @@ class BrowserOperation : public BrowserNode, public Labeled<BrowserOperation> {
     static BrowserOperation * read_ref(char * &);
     static BrowserOperation * read(char * &, char *, BrowserNode *, bool force = TRUE);
     static BrowserNode * get_it(const char * k, int id);
+    static void post_load();
     
     static BrowserOperation * new_one(QString s, BrowserNode * p);
     
@@ -107,6 +109,7 @@ class BrowserOperation : public BrowserNode, public Labeled<BrowserOperation> {
     static void update_idmax_for_root();
     virtual void renumber(int phase);
     
+    virtual void referenced_by(QList<BrowserNode> &, bool ondelete = FALSE);
     static void compute_referenced_by(QList<BrowserNode> &, BrowserClass *);
     
     static QString python_init_self(BrowserNode * cl);
@@ -116,6 +119,8 @@ class BrowserOperation : public BrowserNode, public Labeled<BrowserOperation> {
     static QString drag_key(BrowserNode * p);
     virtual QString drag_key() const;
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
+    
+    static void instances(BrowserNodeList &);
     
     static const QStringList & default_stereotypes();
     static void read_stereotypes(char * &, char * & k);

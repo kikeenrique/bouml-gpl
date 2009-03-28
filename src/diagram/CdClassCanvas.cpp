@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -211,29 +211,36 @@ void CdClassCanvas::compute_size() {
   bool show_stereotype_properties = (used_settings.show_stereotype_properties == UmlYes);
   bool show_multiplicity = (used_settings.show_members_multiplicity == UmlYes);
   bool show_initialization = (used_settings.show_members_initialization == UmlYes);
+  bool show_modifiers = (used_settings.show_attribute_modifiers == UmlYes);
   bool show_dir = (used_settings.show_parameter_dir == UmlYes);
   bool show_name = (used_settings.show_parameter_name == UmlYes);
   bool hide_attrs = (used_settings.hide_attributes == UmlYes);
   bool hide_opers = (used_settings.hide_operations == UmlYes);
   int max_member_width = used_settings.member_max_width;
   int offset_visi = fbim.width("#_");
+  double zoom = the_canvas()->zoom();
+  const QPixmap * px = 0;
   
   if (max_member_width == UmlUnlimitedMemberWidth)
     max_member_width = 1000000;
 
   if (used_settings.class_drawing_mode == Natural) {
-    const char * st = data->get_short_stereotype();
-    
-    if (!strcmp(st, "control"))
-      used_view_mode = asControl;
-    else if (!strcmp(st, "entity"))
-      used_view_mode = asEntity;
-    else if (!strcmp(st, "boundary"))
-      used_view_mode = asBoundary;
-    else if (!strcmp(st, "actor"))
-      used_view_mode = asActor;
-    else
-      used_view_mode = asClass;
+    if ((px = ProfiledStereotypes::diagramPixmap(data->get_stereotype(), zoom)) != 0)
+      used_view_mode = Natural;
+    else {
+      const char * st = data->get_short_stereotype();
+      
+      if (!strcmp(st, "control"))
+	used_view_mode = asControl;
+      else if (!strcmp(st, "entity"))
+	used_view_mode = asEntity;
+      else if (!strcmp(st, "boundary"))
+	used_view_mode = asBoundary;
+      else if (!strcmp(st, "actor"))
+	used_view_mode = asActor;
+      else
+	used_view_mode = asClass;
+    }
   }
   else
     used_view_mode = used_settings.class_drawing_mode;
@@ -256,8 +263,8 @@ void CdClassCanvas::compute_size() {
 	    continue;
 	  
 	  s = ((AttributeData *) child_data)
-	    ->definition(full_members, show_multiplicity,
-			 show_initialization, used_settings.drawing_language);
+	    ->definition(full_members, show_multiplicity, show_initialization,
+			 show_modifiers, used_settings.drawing_language);
 	  
 	  if (s.isEmpty())
 	    continue;
@@ -387,7 +394,6 @@ void CdClassCanvas::compute_size() {
     }
   }
 
-  double zoom = the_canvas()->zoom();
   const int two = (int) (2 * zoom);
   const int four = (int) (4 * zoom);
   const int six = (int) (6 * zoom);
@@ -433,6 +439,11 @@ void CdClassCanvas::compute_size() {
   case asActor:
     min_w = (int) (ACTOR_SIZE * zoom);
     he += (int) (ACTOR_SIZE * zoom);
+    break;
+  case Natural:
+    // pixmap
+    min_w = px->width();
+    he += px->height();
     break;
   default:	// class
     min_w = (int) (CLASS_CANVAS_MIN_SIZE * zoom);
@@ -684,7 +695,8 @@ bool CdClassCanvas::get_show_stereotype_properties() const {
   case UmlNo:
     return FALSE;
   default:
-    return the_canvas()->browser_diagram()->get_show_stereotype_properties(UmlCodeSup);
+    return ((BrowserClassDiagram *) the_canvas()->browser_diagram())
+      ->get_show_stereotype_properties();
   }
 }
 
@@ -858,6 +870,22 @@ void CdClassCanvas::draw(QPainter & p) {
     }
     r.setTop(r.top() + (int) (ACTOR_SIZE * zoom) + two);
     break;
+  case Natural:
+    {
+      const QPixmap * px = 
+	ProfiledStereotypes::diagramPixmap(data->get_stereotype(), zoom);
+      int lft = (px->width() < width()) ? r.x() + (width() - px->width())/2 : r.x();
+
+      p.drawPixmap(lft, r.y(), *px);
+      if (fp != 0)
+	// pixmap not really exported in SVG
+	fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		svg_color(UmlBlack), lft, r.y(), px->width() - 1, px->height() - 1);
+
+      r.setTop(r.top() + px->height());
+    }
+    break;
   default:	// class
     r.setTop(r.top() + two);
     if (data->get_stereotype()[0]) {
@@ -906,6 +934,7 @@ void CdClassCanvas::draw(QPainter & p) {
   bool show_stereotype_properties = (used_settings.show_stereotype_properties == UmlYes);
   bool show_multiplicity = (used_settings.show_members_multiplicity == UmlYes);
   bool show_initialization = (used_settings.show_members_initialization == UmlYes);
+  bool show_modifiers = (used_settings.show_attribute_modifiers == UmlYes);
   bool show_dir = (used_settings.show_parameter_dir == UmlYes);
   bool show_name = (used_settings.show_parameter_name == UmlYes);
   int max_member_width = used_settings.member_max_width;
@@ -925,8 +954,8 @@ void CdClassCanvas::draw(QPainter & p) {
 	   : (hidden_visible_attributes.findIndex((BrowserNode *) child) == -1))) {
 	AttributeData * data =
 	  ((AttributeData *) ((BrowserNode *) child)->get_data());
-	QString s = data->definition(full_members, show_multiplicity,
-				     show_initialization, used_settings.drawing_language);
+	QString s = data->definition(full_members, show_multiplicity, show_initialization,
+				     show_modifiers, used_settings.drawing_language);
 	
 	if (s.isEmpty())
 	  continue;
@@ -1121,6 +1150,8 @@ void CdClassCanvas::menu(const QPoint&) {
   m.insertItem("Go up", 21);
   m.insertItem("Go down", 22);
   m.insertSeparator();
+  m.insertItem("Add related elements", 5);
+  m.insertSeparator();
   m.insertItem("Edit drawing settings", 2);
   if (attributes.count() != 0)
     m.insertItem("Individual attribute visibility", 3);
@@ -1194,7 +1225,9 @@ void CdClassCanvas::menu(const QPoint&) {
     m.insertItem("Select linked items",17);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("Set associated diagram",11);
+    if (browser_node->get_associated() !=
+	(BrowserNode *) the_canvas()->browser_diagram())
+      m.insertItem("Set associated diagram",11);
     
     if (browser_node->get_associated())
       m.insertItem("Remove diagram association",18);
@@ -1283,6 +1316,10 @@ void CdClassCanvas::menu(const QPoint&) {
       indicate_visible_oper = visible;
     }
     break;
+  case 5:
+    ((UmlCanvas *) canvas())->get_view()
+      ->add_related_elements(this, "class", TRUE, TRUE);
+    return;
   case 6:
     browser_node->open(TRUE);
     return;
@@ -1388,6 +1425,11 @@ void CdClassCanvas::apply_shortcut(QString s) {
     z_down();
   else if (s == "Edit drawing settings") {
     edit_drawing_settings();
+    return;
+  }
+  else if (s == "Add related elements") {
+    ((UmlCanvas *) canvas())->get_view()
+      ->add_related_elements(this, "class", TRUE, TRUE);
     return;
   }
   else {
@@ -1531,6 +1573,11 @@ static void save_hidden_list(BrowserNode * bn, UmlCode c, QTextStream & st,
     
     ++it;
   }
+  
+  if ((s != 0) && (*s == 'v')) {
+    nl_indent(st);
+    st << s;
+  }
 }
 
 void CdClassCanvas::save(QTextStream & st, bool ref, QString & warning) const {
@@ -1607,7 +1654,7 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
 	     (strcmp(k, "xyz"))) {
 	BrowserNode * b = BrowserAttribute::read(st, k, 0, FALSE);
 	
-	if ((b != 0) && (l.find(b) != -1))
+	if ((b != 0) && (l.findRef(b) != -1))
 	  result->hidden_visible_attributes.append(b);
       }
     }
@@ -1622,7 +1669,7 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
       while (strcmp(k = read_keyword(st), "xyz")) {
 	BrowserNode * b = BrowserOperation::read(st, k, 0, FALSE);
 	
-	if ((b != 0) && (l.find(b) != -1))
+	if ((b != 0) && (l.findRef(b) != -1))
 	  result->hidden_visible_operations.append(b);
       }
     }

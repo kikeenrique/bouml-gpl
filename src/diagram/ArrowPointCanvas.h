@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -38,10 +38,12 @@ class ArrowPointCanvas : public DiagramCanvas {
     virtual void delete_it();
 
     ArrowCanvas * get_other(const ArrowCanvas *) const;
+    bool attached_to(const ArrowCanvas *) const;
     
     virtual void draw(QPainter & p);
     
     virtual UmlCode type() const;
+    virtual int rtti() const;
     virtual void change_scale();
     virtual void open();
     virtual void menu(const QPoint&);

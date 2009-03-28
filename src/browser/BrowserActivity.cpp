@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,12 +42,7 @@
 #include "BrowserExpansionRegion.h"
 #include "BrowserInterruptibleActivityRegion.h"
 #include "ActivityActionData.h"
-
-#warning
-
-/*
-#include "BrowserPartition.h"
-*/
+#include "BrowserActivityPartition.h"
 #include "BrowserActivityDiagram.h"
 #include "ReferenceDialog.h"
 #include "UmlDrag.h"
@@ -106,6 +101,7 @@ void BrowserActivity::clear(bool old)
   BrowserInterruptibleActivityRegion::clear(old);
   BrowserExpansionRegion::clear(old);
   BrowserActivityObject::clear(old);
+  BrowserActivityPartition::clear(old);
   BrowserFlow::clear(old);
 }
 
@@ -118,13 +114,30 @@ void BrowserActivity::update_idmax_for_root()
   BrowserInterruptibleActivityRegion::update_idmax_for_root();
   BrowserExpansionRegion::update_idmax_for_root();
   BrowserActivityObject::update_idmax_for_root();
+  BrowserActivityPartition::update_idmax_for_root();
   BrowserFlow::update_idmax_for_root();
 }
     
 void BrowserActivity::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
-  if (! ondelete)
+  if (! ondelete) {
     BrowserActivityAction::compute_referenced_by(l, this);
+    BrowserActivityDiagram::compute_referenced_by(l, this, "activitycanvas", "activity_ref");
+  }
+}
+
+// callers suppose this only take specification into acount
+void BrowserActivity::compute_referenced_by(QList<BrowserNode> & l,
+					    BrowserOperation * op)
+{
+  IdIterator<BrowserActivity> it(all);
+  
+  while (it.current()) {
+    if (!it.current()->deletedp() && 
+	(it.current()->def->get_specification() == op))
+      l.append(it.current());
+    ++it;
+  }
 }
 
 void BrowserActivity::renumber(int phase) {
@@ -133,7 +146,12 @@ void BrowserActivity::renumber(int phase) {
 }
 
 const QPixmap* BrowserActivity::pixmap(int) const {
-  return (deletedp()) ? DeletedActivityIcon : ActivityIcon;
+  if (deletedp()) 
+    return DeletedActivityIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : ActivityIcon;
 }
 
 BrowserActivity * BrowserActivity::add_activity(BrowserNode * future_parent)
@@ -222,10 +240,8 @@ void BrowserActivity::menu() {
 		     "to add an <em>Interruptible Activity Region</em> to the <em>activity</em>");
       m.setWhatsThis(m.insertItem("New expansion region", 3),
 		     "to add a nested <em>expansion region</em>");
-#if 0
       m.setWhatsThis(m.insertItem("New partition", 4),
 		     "to add a <em>Partition</em> to the <em>activity</em>");
-#endif
       m.setWhatsThis(m.insertItem("New activity action", 7),
 		     "to add an <em>activity action</em> to the <em>activity</em>");
       m.setWhatsThis(m.insertItem("New object node", 8),
@@ -295,13 +311,10 @@ void BrowserActivity::exec_menu_choice(int rank) {
     BrowserExpansionRegion::add_expansionregion(this);
     break;
   case 4:
-
-#warning
-
-    //add_partition(this);
+    BrowserActivityPartition::add_activitypartition(this);
     return;
   case 5:
-    open(FALSE);
+    open(TRUE);
     return;
   case 6:
     {
@@ -368,10 +381,8 @@ void BrowserActivity::apply_shortcut(QString s) {
 	choice = 2;
       else if (s == "New expansion region")
 	choice = 3;
-#if 0
       else if (s == "New partition")
 	choice = 4;
-#endif
       else if (s == "New activity action")
 	choice = 7;
       else if (s == "New object node")
@@ -497,6 +508,7 @@ void BrowserActivity::init()
   BrowserActivityNode::init();
   BrowserInterruptibleActivityRegion::init();
   BrowserExpansionRegion::init();
+  BrowserActivityPartition::init();
   BrowserFlow::init();
 }
 
@@ -558,14 +570,9 @@ bool BrowserActivity::tool_cmd(ToolCom * com, const char * args) {
 	case UmlActivityObject:
 	  (new BrowserActivityObject(args, this))->write_id(com);
 	  break;
-
-#warning
-
-	  /*
-	case UmlPartition:
-	  (BrowserRegion::add_partition(this, args))->write_id(com);
+	case UmlActivityPartition:
+	  (BrowserActivityPartition::add_activitypartition(this, args))->write_id(com);
 	  break;
-	  */
 	case UmlSimpleRelations:
 	  {
 	    UmlCode c;
@@ -620,15 +627,13 @@ bool BrowserActivity::may_contains_them(const QList<BrowserNode> & l,
   
   for (; it.current(); ++it) {
     switch (it.current()->get_type()) {
-    case UmlPartition:
-      duplicable = FALSE;
-      // no break !
     case UmlInterruptibleActivityRegion:
     case UmlExpansionRegion:
     case UmlParameter:
     case UmlActivityDiagram:
     case UmlActivityAction:
     case UmlActivityObject:
+    case UmlActivityPartition:
     case InitialAN:
     case FlowFinalAN:
     case ActivityFinalAN:
@@ -672,12 +677,7 @@ void BrowserActivity::DragMoveEvent(QDragMoveEvent * e) {
       UmlDrag::canDecode(e, BrowserInterruptibleActivityRegion::drag_key(this)) ||
       UmlDrag::canDecode(e, BrowserExpansionRegion::drag_key(this)) ||
       UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)) ||
-
-#warning
-
-  /*
-      UmlDrag::canDecode(e, BrowserPartition::drag_key(this)) ||
-      */
+      UmlDrag::canDecode(e, BrowserActivityPartition::drag_key(this)) ||
       UmlDrag::canDecode(e, BrowserActivityDiagram::drag_key(this))) {
     if (!is_read_only)
       e->accept();
@@ -701,12 +701,7 @@ void BrowserActivity::DragMoveInsideEvent(QDragMoveEvent * e) {
        UmlDrag::canDecode(e, BrowserInterruptibleActivityRegion::drag_key(this)) ||
        UmlDrag::canDecode(e, BrowserExpansionRegion::drag_key(this)) ||
        UmlDrag::canDecode(e, BrowserSimpleRelation::drag_key(this)) ||
-
-#warning
-
-  /*
-       UmlDrag::canDecode(e, BrowserPartition::drag_key(this)) ||
-      */
+       UmlDrag::canDecode(e, BrowserActivityPartition::drag_key(this)) ||
        UmlDrag::canDecode(e, BrowserActivityDiagram::drag_key(this))))
     e->accept();
   else
@@ -723,12 +718,7 @@ void BrowserActivity::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
        ((bn = UmlDrag::decode(e, BrowserInterruptibleActivityRegion::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserExpansionRegion::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserSimpleRelation::drag_key(this))) != 0) ||
-
-#warning
-
-  /*
-       ((bn = UmlDrag::decode(e, BrowserPartition::drag_key(this))) != 0) ||
-       */
+       ((bn = UmlDrag::decode(e, BrowserActivityPartition::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserActivityDiagram::drag_key(this))) != 0)) &&
       (bn != after) && (bn != this)) {
     if (may_contains(bn, FALSE)) 
@@ -866,8 +856,8 @@ BrowserActivity * BrowserActivity::read(char * & st, char * k,
     
     result->BrowserNode::read(st, k);
     
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     if (strcmp(k, "end")) {
       while (BrowserParameter::read(st, k, result) ||
@@ -876,12 +866,7 @@ BrowserActivity * BrowserActivity::read(char * & st, char * k,
 	     BrowserActivityObject::read(st, k, result) ||
 	     BrowserInterruptibleActivityRegion::read(st, k, result) ||
 	     BrowserExpansionRegion::read(st, k, result) ||
-
-#warning
-
-	     /*
-	     BrowserPartition::read(st, k, result) ||
-	     */
+	     BrowserActivityPartition::read(st, k, result) ||
 	     BrowserActivityDiagram::read(st, k, result) ||
 	     BrowserSimpleRelation::read(st, k, result))
 	k = read_keyword(st);
@@ -893,6 +878,22 @@ BrowserActivity * BrowserActivity::read(char * & st, char * k,
   }
   else
     return 0;
+}
+
+BrowserNode * BrowserActivity::read_any_ref(char * & st, char * k) {
+  BrowserNode * r;
+  
+  if (((r = BrowserActivity::read(st, k, 0)) == 0) &&
+      ((r = BrowserParameter::read(st, k, 0)) == 0) && 
+      ((r = BrowserActivityNode::read(st, k, 0)) == 0) && 
+      ((r = BrowserActivityAction::read(st, k, 0)) == 0) && 
+      ((r = BrowserActivityObject::read(st, k, 0)) == 0) && 
+      ((r = BrowserInterruptibleActivityRegion::read(st, k, 0)) == 0) && 
+      ((r = BrowserExpansionRegion::read(st, k, 0)) == 0) &&
+      ((r = BrowserFlow::read(st, k, 0)) == 0))
+    r = BrowserActivityPartition::read(st, k, 0);
+  
+  return r;
 }
 
 BrowserNode * BrowserActivity::get_it(const char * k, int id)
@@ -909,13 +910,8 @@ BrowserNode * BrowserActivity::get_it(const char * k, int id)
       ((r = BrowserInterruptibleActivityRegion::get_it(k, id)) == 0) && 
       ((r = BrowserExpansionRegion::get_it(k, id)) == 0) &&
       ((r = BrowserFlow::get_it(k, id)) == 0) &&
-      ((r = BrowserSimpleRelation::get_it(k, id)) == 0)
-
-#warning
-
-  /*
-      ((r = BrowserPartition::get_it(k, id)) == 0) &&
-  */
+      ((r = BrowserSimpleRelation::get_it(k, id)) == 0) &&
+      ((r = BrowserActivityPartition::get_it(k, id)) == 0)
       )
     r = BrowserActivityDiagram::get_it(k, id);
   return r;

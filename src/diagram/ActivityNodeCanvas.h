@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,6 +41,7 @@ class ActivityNodeCanvas : public QObject, public DiagramCanvas {
   protected:
     QPixmap * xpm;
     bool horiz;
+    bool manual_size;
 
     ActivityNodeCanvas(UmlCanvas * canvas, int id);
     void set_xpm();
@@ -64,10 +65,13 @@ class ActivityNodeCanvas : public QObject, public DiagramCanvas {
     virtual const char * may_start(UmlCode &) const;
     virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
+    virtual aCorner on_resize_point(const QPoint & p);
+    virtual void resize(aCorner c, int dx, int dy);
     
     virtual void apply_shortcut(QString s);
   
     virtual void history_load(QBuffer &);
+    virtual void history_save(QBuffer & b) const;
     virtual void history_hide();
     
     virtual void save(QTextStream  & st, bool ref, QString & warning) const;

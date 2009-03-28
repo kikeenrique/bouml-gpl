@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -75,7 +75,7 @@ void DiagramItem::update_show_lines() {
   }
 }
 
-void DiagramItem::remove_line(ArrowCanvas * l) {
+void DiagramItem::remove_line(ArrowCanvas * l, bool) {
   lines.remove(l);
 }
 
@@ -211,6 +211,10 @@ void DiagramItem::unassociate(DiagramItem *) {
   // for Component and Artifact association
 }
 
+bool DiagramItem::represents(BrowserNode * bn) {
+  return ((type() == bn->get_type()) && (get_bn() == bn));
+}
+
 void show_mark(QPainter & p, const QRect & r)
 {
   int h = (SELECT_SQUARE_SIZE < r.height())
@@ -272,13 +276,40 @@ DiagramItem * DiagramItem::dict_get(int id, const char * kind,
 
 // calcule p pour qu il soit sur le bord exterieur de this
 // sur la ligne centre de this - other
-void DiagramItem::shift(QPoint & p, QPoint other) const {
-  p = center();
+static inline int iabs(int v)
+{
+  return (v >= 0) ? v : -v;
+}
+
+void DiagramItem::shift(QPoint & p, QPoint other, bool contains_other) const {
+  QRect r = rect();
+  
+  p = r.center();
+  
   int x = p.x();
   int y = p.y();
   int ox = other.x();
   int oy = other.y();
 
+  if (contains_other) {
+    // move p outside
+    int dx = x - ox;
+    int dy = y - oy;
+    
+    if ((dx == 0) && (dy == 0))
+      dx = 16;
+    else if ((iabs(dx) < 3) && (iabs(dy) < 3)) {
+      dx *= 16;
+      dy *= 16;
+    }
+	
+    do {
+      x -= dx;
+      y -= dy;
+    } while (contains(x, y));
+  }
+  
+  // move p to border
   for (;;) {
     int mx = (x + ox) / 2;
     int my = (y + oy) / 2;
@@ -289,8 +320,8 @@ void DiagramItem::shift(QPoint & p, QPoint other) const {
       p.setY(my);
       return;
     }
-
-    if (! contains(mx, my)) {
+    
+    if (contains(mx, my) == contains_other) {
       ox = mx;
       oy = my;
     }

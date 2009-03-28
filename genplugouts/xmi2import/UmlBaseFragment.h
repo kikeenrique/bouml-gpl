@@ -4,8 +4,11 @@
 
 #include <qcstring.h>
 #include <qvector.h>
+#include <qptrdict.h>
 
 class UmlFragmentCompartment;
+class UmlDiagram;
+class UmlClassInstanceReference;
 class UmlFragment;
 
 // this class manages fragments
@@ -27,6 +30,23 @@ class UmlBaseFragment {
         return _container;
     }
 
+    // return the diagram optionally referenced by the fragment,
+    // generally associated to an interaction use
+    UmlDiagram * refer() const {
+        return _refer;
+    }
+
+    // return the form corresponding to the arguments
+    // and return value of the interaction use
+    QCString arguments() const {
+        return _arguments;
+    }
+
+    // return the the list of covered instances (life lines)
+    const QVector<UmlClassInstanceReference> & covered() const {
+        return _covered;
+    }
+
 
   private:
     UmlFragmentCompartment * _container;
@@ -43,11 +63,25 @@ class UmlBaseFragment {
 
     int _h;
 
+    UmlDiagram * _refer;
+
+    QCString _arguments;
+
+    QVector<UmlClassInstanceReference> _covered;
+
     // internal, don't call it
     void read_();
 
 
   public:
+    //internal, do NOT use it
+    
+    int vcenter_(int rank) const;
+
+    //internal, do NOT use it
+    
+    void read_covered_(QPtrDict<UmlClassInstanceReference> & instances);
+
     // internal
     static UmlFragmentCompartment * get_container_(int x, int y, int w, int h, const QVector<UmlFragment> & fragments);
 

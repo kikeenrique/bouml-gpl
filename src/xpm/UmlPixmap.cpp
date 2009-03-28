@@ -20,6 +20,7 @@ QPixmap * deploymentNodeButton;
 QPixmap * hubButton;
 QPixmap * generalisationButton;
 QPixmap * directionalAssociationButton;
+QPixmap * directionalAssociationExtensionButton;
 QPixmap * associationButton;
 QPixmap * aggregationButton;
 QPixmap * aggregationByValueButton;
@@ -57,6 +58,7 @@ QPixmap * signaloutButton;
 QPixmap * activityButton;
 QPixmap * interruptibleactivityregionButton;
 QPixmap * activityactionButton;
+QPixmap * activitypartitionButton;
 QPixmap * decisionButton;
 QPixmap * mergeButton;
 QPixmap * pinButton;
@@ -189,6 +191,9 @@ QPixmap * DeletedActivityIcon;
 QPixmap * ActivityActionIcon;
 QPixmap * DeletedActivityActionIcon;
 QPixmap * ActivityActionMarkedIcon;
+QPixmap * ActivityPartitionIcon;
+QPixmap * ActivityPartitionMarkedIcon;
+QPixmap * DeletedActivityPartitionIcon;
 QPixmap * ActivityDiagramIcon;
 QPixmap * DeletedActivityDiagramIcon;
 QPixmap * ParameterIcon;
@@ -320,6 +325,7 @@ void init_pixmaps()
 #include "hub_button.xpm"
 #include "generalisation_button.xpm"
 #include "directionalassociation_button.xpm"
+#include "directionalassociationextension_button.xpm"
 #include "association_button.xpm"
 #include "aggregation_button.xpm"
 #include "aggregationbyvalue_button.xpm"
@@ -357,6 +363,7 @@ void init_pixmaps()
 #include "activity_button.xpm"
 #include "interruptibleactivityregion_button.xpm"
 #include "activityaction_button.xpm"
+#include "activitypartition_button.xpm"
 #include "decision_button.xpm"
 #include "merge_button.xpm"
 #include "pin_button.xpm"
@@ -381,6 +388,7 @@ void init_pixmaps()
   hubButton = new QPixmap((const char **) hub_button);
   generalisationButton = new QPixmap((const char **) generalisation_button);
   directionalAssociationButton = new QPixmap((const char **) directionalassociation_button);
+  directionalAssociationExtensionButton = new QPixmap((const char **) directionalassociationextension_button);
   associationButton = new QPixmap((const char **) association_button);
   aggregationButton = new QPixmap((const char **) aggregation_button);
   aggregationByValueButton = new QPixmap((const char **) aggregationbyvalue_button);
@@ -418,6 +426,7 @@ void init_pixmaps()
   activityButton = new QPixmap((const char **) activity_button);
   interruptibleactivityregionButton = new QPixmap((const char **) interruptibleactivityregion_button);
   activityactionButton = new QPixmap((const char **) activityaction_button);
+  activitypartitionButton = new QPixmap((const char **) activitypartition_button);
   decisionButton = new QPixmap((const char **) decision_button);
   mergeButton = new QPixmap((const char **) merge_button);
   pinButton = new QPixmap((const char **) pin_button);
@@ -548,6 +557,9 @@ void init_pixmaps()
 #include "activityaction_xpm.xpm"
 #include "activityactionmarked_xpm.xpm"
 #include "deletedactivityaction_xpm.xpm"
+#include "activitypartition_xpm.xpm"
+#include "activitypartitionmarked_xpm.xpm"
+#include "deletedactivitypartition_xpm.xpm"
 #include "activitydiagram_xpm.xpm"
 #include "deletedactivitydiagram_xpm.xpm"
 #include "parameter_xpm.xpm"
@@ -705,6 +717,9 @@ void init_pixmaps()
   ActivityActionIcon = new QPixmap((const char **) activityaction_xpm);
   ActivityActionMarkedIcon = new QPixmap((const char **) activityactionmarked_xpm);
   DeletedActivityActionIcon = new QPixmap((const char **) deletedactivityaction_xpm);
+  ActivityPartitionIcon = new QPixmap((const char **) activitypartition_xpm);
+  ActivityPartitionMarkedIcon = new QPixmap((const char **) activitypartitionmarked_xpm);
+  DeletedActivityPartitionIcon = new QPixmap((const char **) deletedactivitypartition_xpm);
   ActivityDiagramIcon = new QPixmap((const char **) activitydiagram_xpm);
   DeletedActivityDiagramIcon = new QPixmap((const char **) deletedactivitydiagram_xpm);
   ParameterIcon = new QPixmap((const char **) parameter_xpm);

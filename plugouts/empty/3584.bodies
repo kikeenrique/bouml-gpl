@@ -16,7 +16,7 @@ class UmlBasePackage
   
   return _assoc_diagram;
 !!!33920.cpp!!!	set_AssociatedDiagram(inout d : UmlDiagram) : bool
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -25,7 +25,7 @@ class UmlBasePackage
     return FALSE;
 !!!33920.java!!!	set_AssociatedDiagram(inout d : UmlDiagram) : bool
   UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd,
-		  d.identifier_());
+		  (d == null) ? (long) 0 : d.identifier_());
   UmlCom.check();
   
   _assoc_diagram = d;
@@ -138,6 +138,45 @@ class UmlBasePackage
   UmlCom.check();
 
   _php_dir = s;
+!!!230656.cpp!!!	pythonDir() : string
+  read_if_needed_();
+  
+  return _python_dir;
+!!!230656.java!!!	pythonDir() : string
+  read_if_needed_();
+  
+  return _python_dir;
+!!!230784.cpp!!!	set_PythonDir(in s : string) : bool
+  return set_it_(_python_dir, s, setPythonDirCmd);
+!!!230784.java!!!	set_PythonDir(in s : string) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonDirCmd, s);
+  UmlCom.check();
+
+  _python_dir = s;
+!!!230912.cpp!!!	pythonPackage() : string
+  read_if_needed_();
+  
+  return _python_package;
+!!!230912.java!!!	pythonPackage() : string
+  read_if_needed_();
+  
+  return _python_package;
+!!!231040.cpp!!!	set_PythonPackage(in s : string) : bool
+  return set_it_(_python_package, s, setPythonPackageCmd);
+!!!231040.java!!!	set_PythonPackage(in s : string) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonPackageCmd, s);
+  UmlCom.check();
+
+  _python_package = s;
+!!!231168.cpp!!!	findPythonPackage(in n : string) : UmlPackage
+  UmlCom::send_cmd(packageGlobalCmd, findPythonPackageCmd, _identifier, n);
+  
+  return (UmlPackage *) UmlBaseItem::read_();  
+!!!231168.java!!!	findPythonPackage(in n : string) : UmlPackage
+  UmlCom.send_cmd(CmdFamily.packageGlobalCmd, PackageGlobalCmd._findPythonPackageCmd,
+		  identifier_(), n);
+  
+  return (UmlPackage) UmlBaseItem.read_();  
 !!!35584.cpp!!!	idlDir() : string
   read_if_needed_();
   
@@ -219,6 +258,10 @@ class UmlBasePackage
 #ifdef WITHPHP
   _php_dir = 0;
 #endif
+#ifdef WITHPYTHON
+  _python_dir = 0;
+  _python_package = 0;
+#endif
 #ifdef WITHIDL
   _idl_dir = 0;
   _idl_module = 0;
@@ -232,6 +275,8 @@ class UmlBasePackage
   _java_dir = null;
   _java_package = null;
   _php_dir = null;
+  _python_dir = null;
+  _python_package = null;
   _idl_dir = null;
   _idl_module = null;
   super.unload(rec, del);
@@ -259,6 +304,12 @@ class UmlBasePackage
   _php_dir = UmlCom::read_string();
 !!!205952.java!!!	read_php_() : void
   _php_dir = UmlCom.read_string();
+!!!218112.cpp!!!	read_python_() : void
+  _python_dir = UmlCom::read_string();
+  _python_package = UmlCom::read_string();
+!!!218112.java!!!	read_python_() : void
+  _python_dir = UmlCom.read_string();
+  _python_package = UmlCom.read_string();
 !!!37248.cpp!!!	read_idl_() : void
   _idl_dir = UmlCom::read_string();
   _idl_module = UmlCom::read_string();

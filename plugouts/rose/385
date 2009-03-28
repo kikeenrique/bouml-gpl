@@ -1,63 +1,62 @@
-format 34
+format 62
 "API USER" // API USER
-  revision 1
-  modified_by 2 "bruno"
+  revision 3
+  modified_by 3 "bruno"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
   //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
   //object diagram settings
-   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
   //component diagram settings
   package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
-  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
   //deployment diagram settings
   package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
-  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
   //state diagram settings
   package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-  show_activities default region_horizontally default drawing_language default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
   //activity diagram settings
   package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-  show_infonote default drawing_language default
+  show_infonote default drawing_language default show_stereotype_properties default
   
   comment " 'your' API classes and components, modify them !"
   classview 385 "API USER class view"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
     //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
     //object diagram settings
-     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default drawing_language default draw_all_relations default shadow default
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
     //state diagram settings
     package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-    show_activities default region_horizontally default drawing_language default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
     //class settings
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-    show_infonote default drawing_language default
-    
+    show_infonote default drawing_language default show_stereotype_properties default
     associated_deployment_view deploymentview_ref 385 // API USER Deployment view
     comment "'your' API classes, modify them !"
     classdiagram 129 "Inheritance Diagram of classes for Package and Views"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
     classdiagram 257 "Inheritance Diagram of classes for Diagrams"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
     classdiagram 513 "Inheritance Diagram of classes for Classes"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
@@ -71,6 +70,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -97,6 +98,8 @@ ${members}};
 ${body}}
 "
 	
+	
+	
       end
 
       operation 128575 "import"
@@ -109,6 +112,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -124,6 +129,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -150,6 +157,8 @@ ${members}};
 ${body}}
 "
 	
+	
+	
       end
 
       operation 128447 "import"
@@ -162,6 +171,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -177,6 +188,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -205,6 +218,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 128748 "import"
@@ -216,6 +231,8 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -230,6 +247,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} * ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -249,6 +268,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128459 "cplusplus"
@@ -260,6 +281,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}QDict<${t0}> &${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -275,6 +298,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128203 "corba"
@@ -286,6 +311,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}QDict<${t0}> & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -301,6 +328,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
     end
 
@@ -314,6 +343,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -342,6 +373,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 128191 "language"
@@ -352,6 +385,8 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -369,6 +404,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128079 "replaceType"
@@ -384,6 +421,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128180 "importAttributes"
@@ -395,6 +434,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -410,6 +451,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128401 "importRelations"
@@ -421,6 +464,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -436,6 +481,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128319 "importActuals"
@@ -447,6 +494,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -462,6 +511,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128207 "importClasses"
@@ -473,6 +524,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -492,6 +545,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128043 "cplusplus"
@@ -503,6 +558,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}QDict<${t0}> & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -518,6 +575,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128555 "corba"
@@ -531,6 +590,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128683 "java"
@@ -542,6 +603,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}QDict<${t0}> & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -558,6 +621,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128898 "file"
@@ -572,6 +637,8 @@ ${body}}
 	cpp_name_spec "file"
 	
 	java_name_spec "get_${name}"
+	
+	
 	
 	idl_name_spec "get_${name}"
 	get_of_attribute attribute_ref 129410 // _file
@@ -590,6 +657,8 @@ ${body}}
 	
 	java_name_spec "get_${name}"
 	
+	
+	
 	idl_name_spec "get_${name}"
 	get_of_attribute attribute_ref 129282 // _body_file
       end
@@ -599,6 +668,8 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -607,6 +678,8 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
 	get_oper operation_ref 128898 // file
       end
@@ -616,6 +689,8 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
 	get_oper operation_ref 129026 // bodyFile
       end
@@ -631,6 +706,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -659,6 +736,8 @@ ${members}};
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }"
 	
+	
+	
       end
 
       operation 131585 "import"
@@ -671,6 +750,8 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} * ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -686,6 +767,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
     end
 
@@ -699,6 +782,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -724,6 +809,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
     end
 
@@ -737,6 +824,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -753,6 +842,8 @@ ${members}}
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
+	
+	
 	
       end
 
@@ -776,6 +867,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -804,6 +897,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 131073 "import"
@@ -816,6 +911,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -831,6 +928,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 131329 "readObjects"
@@ -842,6 +941,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -856,11 +957,13 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       classrelation 128129 // ucv (<unidirectional association>)
 	relation 128129 --->
-	  a role_name "ucv" multiplicity "" protected
+	  a role_name "ucv" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 128129 // ucv (<unidirectional association>)
@@ -878,6 +981,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -907,6 +1012,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 128016 "import"
@@ -919,6 +1026,8 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} * ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -934,6 +1043,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -963,6 +1074,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
     end
 
@@ -976,6 +1089,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1003,6 +1118,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
     end
 
@@ -1016,6 +1133,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1043,6 +1162,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
     end
 
@@ -1056,6 +1177,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1081,6 +1204,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
     end
 
@@ -1094,6 +1219,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1123,6 +1250,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 129132 "import"
@@ -1135,6 +1264,8 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} *${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1150,6 +1281,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1177,6 +1310,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 128364 "import"
@@ -1190,6 +1325,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128492 "readObjects"
@@ -1201,6 +1338,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1222,6 +1361,8 @@ ${body}}
 ${body}}
 "
 	
+	
+	
       end
 
       operation 128236 "import"
@@ -1236,6 +1377,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       attribute 129538 "_base_name"
@@ -1243,6 +1386,8 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
 	get_oper operation_ref 131330 // baseName
       end
@@ -1260,6 +1405,8 @@ ${body}}
 	
 	java_name_spec "get_${name}"
 	
+	
+	
 	idl_name_spec "get_${name}"
 	get_of_attribute attribute_ref 129538 // _base_name
       end
@@ -1275,6 +1422,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1303,6 +1452,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
     end
 
@@ -1316,6 +1467,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1346,6 +1499,8 @@ ${members}}
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws} { super(id, n); }
 "
 	
+	
+	
       end
     end
 
@@ -1359,6 +1514,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1385,6 +1542,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 74369 "~UmlItem"
@@ -1395,6 +1554,8 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1409,6 +1570,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128129 "fullName"
@@ -1419,6 +1582,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1432,6 +1597,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}QDict<${t0}> & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1448,6 +1615,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128769 "findItem"
@@ -1462,6 +1631,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128002 "statistic"
@@ -1474,6 +1645,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       attribute 128001 "scanning"
@@ -1481,6 +1654,8 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
 
@@ -1499,6 +1674,8 @@ ${body}}
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[128]${value};
 "
 	java_decl ""
+	php_decl ""
+	python_decl ""
 	idl_decl ""
       end
     end
@@ -1513,6 +1690,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1540,6 +1719,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 129004 "import"
@@ -1555,6 +1736,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
     end
 
@@ -1568,6 +1751,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1596,6 +1781,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 128436 "import"
@@ -1608,6 +1795,8 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} * ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1623,6 +1812,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128064 "importParameters"
@@ -1634,6 +1825,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1649,6 +1842,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 129483 "cplusplus"
@@ -1660,6 +1855,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}QDict<${t0}> &${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1675,6 +1872,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 129227 "corba"
@@ -1686,6 +1885,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}QDict<${t0}> & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1701,6 +1902,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
     end
 
@@ -1714,6 +1917,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1741,6 +1946,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 128195 "roseImport"
@@ -1753,6 +1960,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128257 "fullName"
@@ -1763,6 +1972,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1780,6 +1991,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 129794 "subDeplViews"
@@ -1794,6 +2007,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 130050 "addPackage"
@@ -1805,6 +2020,8 @@ ${body}}
 	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1821,6 +2038,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128323 "import"
@@ -1832,6 +2051,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1847,6 +2068,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128211 "readClassView"
@@ -1858,6 +2081,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -1873,6 +2098,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128467 "readDeploymentView"
@@ -1886,15 +2113,17 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
-      classrelation 128770 // _deplviews (<directional aggregation by value>)
+      classrelation 128770 // _deplviews (<directional composition>)
 	relation 128770 *-->
 	  stereotype "list"
 	  a role_name "_deplviews" multiplicity "*" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
-	    classrelation_ref 128770 // _deplviews (<directional aggregation by value>)
+	    classrelation_ref 128770 // _deplviews (<directional composition>)
 	  b parent class_ref 7169 // UmlDeploymentView
       end
     end
@@ -1909,6 +2138,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -1924,6 +2155,8 @@ ${members}};
 ${inlines}
 "
 	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
 	idl_decl "${comment}struct ${name} {
 ${members}};
 "
@@ -1934,6 +2167,8 @@ ${members}};
 	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}QDict<${type}> ${name}${value};
 "
 	  java_decl ""
+	  php_decl ""
+	  python_decl ""
 	  idl_decl ""
 	end
 
@@ -1942,6 +2177,8 @@ ${members}};
 	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	  java_decl ""
+	  php_decl ""
+	  python_decl ""
 	  idl_decl ""
 	end
 
@@ -1950,6 +2187,8 @@ ${members}};
 	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	  java_decl ""
+	  php_decl ""
+	  python_decl ""
 	  idl_decl ""
 	end
 
@@ -1958,6 +2197,8 @@ ${members}};
 	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	  java_decl ""
+	  php_decl ""
+	  python_decl ""
 	  idl_decl ""
 	end
 
@@ -1966,6 +2207,8 @@ ${members}};
 	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	  java_decl ""
+	  php_decl ""
+	  python_decl ""
 	  idl_decl ""
 	end
 
@@ -1974,6 +2217,8 @@ ${members}};
 	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	  java_decl ""
+	  php_decl ""
+	  python_decl ""
 	  idl_decl ""
 	end
 
@@ -1982,6 +2227,8 @@ ${members}};
 	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	  java_decl ""
+	  php_decl ""
+	  python_decl ""
 	  idl_decl ""
 	end
 
@@ -1990,6 +2237,8 @@ ${members}};
 	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	  java_decl ""
+	  php_decl ""
+	  python_decl ""
 	  idl_decl ""
 	end
 
@@ -1998,6 +2247,8 @@ ${members}};
 	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	  java_decl ""
+	  php_decl ""
+	  python_decl ""
 	  idl_decl ""
 	end
 
@@ -2006,6 +2257,8 @@ ${members}};
 	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	  java_decl ""
+	  php_decl ""
+	  python_decl ""
 	  idl_decl ""
 	end
 
@@ -2014,6 +2267,8 @@ ${members}};
 	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	  java_decl ""
+	  php_decl ""
+	  python_decl ""
 	  idl_decl ""
 	end
 
@@ -2022,6 +2277,8 @@ ${members}};
 	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	  java_decl ""
+	  php_decl ""
+	  python_decl ""
 	  idl_decl ""
 	end
 
@@ -2036,6 +2293,8 @@ ${body}}
 "
 	  
 	  
+	  
+	  
 	end
 
 	operation 128033 "rel_kind"
@@ -2047,6 +2306,8 @@ ${body}}
 	  cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	  
+	  
 	  
 	  
 	end
@@ -2073,6 +2334,8 @@ ${body}}
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 128529 "import"
@@ -2084,6 +2347,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -2099,6 +2364,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128971 "cplusplus"
@@ -2110,6 +2377,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -2125,6 +2394,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 128715 "corba"
@@ -2136,6 +2407,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -2151,6 +2424,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
     end
 
@@ -2164,6 +2439,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2190,6 +2467,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
     end
 
@@ -2203,6 +2482,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2231,6 +2512,8 @@ ${members}};
 "
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }"
 	
+	
+	
       end
 
       operation 128144 "import"
@@ -2243,6 +2526,8 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} * ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -2258,6 +2543,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2293,6 +2580,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 132737 "item"
@@ -2303,6 +2592,8 @@ ${members}};
 	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -2319,6 +2610,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 129281 "import"
@@ -2333,6 +2626,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 131714 "~UmlUseCase"
@@ -2343,6 +2638,8 @@ ${body}}
 	cpp_def "${inline}${class}::${name}${(}${)}${volatile} {
 ${body}}
 "
+	
+	
 	
 	
 	comment "Just to not have warning"
@@ -2359,6 +2656,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2388,6 +2687,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 129793 "import"
@@ -2400,6 +2701,8 @@ ${members}};
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} * ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -2415,6 +2718,8 @@ ${inlines}
       java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
 ${members}};
 "
+      php_decl ""
+      python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
@@ -2450,6 +2755,8 @@ ${members}};
 	java_def "  ${comment}${visibility}${final}${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${throws}{ super(id, n); }
 "
 	
+	
+	
       end
 
       operation 132865 "item"
@@ -2460,6 +2767,8 @@ ${members}};
 	cpp_def "${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
       end
@@ -2476,6 +2785,8 @@ ${body}}
 "
 	
 	
+	
+	
       end
 
       operation 130177 "import"
@@ -2488,6 +2799,8 @@ ${body}}
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
+	
+	
 	
 	
 	comment "read and create a new use case view, its name is the next token
@@ -2504,12 +2817,14 @@ ${body}}
 "
 	
 	
+	
+	
 	comment "Just to not have warning"
       end
     end
 
     classdiagram 128130 "Diagram1"
-      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_parameter_dir default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
   end
@@ -2517,92 +2832,92 @@ ${body}}
   deploymentview 385 "API USER Deployment view"
     //deployment diagram settings
     package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
-    draw_component_as_icon default show_component_req_prov default show_component_rea default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
     comment "'your' API artifacts modify them !
 
 Do not forget to modify Main !"
     artifact 4737 "executable"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 128257 // util
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 4480 // UmlCom
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 5120 // anItemKind
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 4864 // aDirection
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 7937 // UmlUseCase
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 128258 // UmlComponent
 	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 128128 // UmlBaseComponent
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 5248 // CmdFamily
 	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 5633 // UmlClass
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 5249 // UmlFormalParameter
 	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 768 // CppSettings
+	artifact_ref 5889 // UmlClassMember
 	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 5633 // UmlClass
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 128002 // Artifact
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 128257 // util
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 4480 // UmlCom
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 5121 // UmlClassItem
 	artifact_ref 6529 // UmlComponentView
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 128067 // File
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 4864 // aDirection
+	artifact_ref 4865 // Main
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 7169 // UmlItem
+	artifact_ref 768 // CppSettings
+	artifact_ref 128136 // UmlNcRelation
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 128128 // UmlBaseComponent
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 5888 // UmlSettingsCmd
 	artifact_ref 6784 // UmlBaseNcRelation
 	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 7297 // UmlNode
 	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 128002 // Artifact
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 128136 // UmlNcRelation
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 128067 // File
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 7169 // UmlItem
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 128258 // UmlComponent
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 4992 // aVisibility
 	artifact_ref 128129 // Uc
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 4865 // Main
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 4992 // aVisibility
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 1920 // UmlBaseClassMember
 	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 7297 // UmlNode
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 5120 // anItemKind
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 3200 // UmlBaseExtraClassMember
       end
       ncouples 9
       key "genpro path" value "/tmp/import_rose/"
@@ -2640,7 +2955,7 @@ int main(int argc, char ** argv)
   QApplication a(argc, argv);
 
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
-    UmlCom::trace(\"<b>Rose import</b> release 2.1.1 (import model only, without diagram contents)<hr>\");
+    UmlCom::trace(\"<b>Rose import</b> release 2.1.2 (import model only, without diagram contents)<hr>\");
 
     bool cpp_dflt = CppSettings::useDefaults();
     bool java_dflt = JavaSettings::useDefaults();
@@ -2670,26 +2985,6 @@ int main(int argc, char ** argv)
   
   UmlCom::close();
   return 0;
-}
-"
-      java_src "// the program is called with the socket port number in argument
-
-class Main {
-  public static void main(String argv[]) {
-
-    if (argv.length == 1) {
-      UmlCom.connect(Integer.valueOf(argv[0]).intValue());
-
-      try {
-        UmlCom.targetItem().?????();
-      }
-      finally {
-        // must be called to cleanly inform that all is done
-        UmlCom.bye();
-        UmlCom.close();
-      }
-    }
-  }
 }
 "
       associated_classes

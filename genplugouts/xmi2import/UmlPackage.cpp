@@ -116,7 +116,7 @@ void UmlPackage::importHeader(FileIn & in) {
 
     // read all before stereotype use
     QCString prof_st;
-    QCString base_v;
+    QValueList<QCString> base_v;
     
     while ((void) in.read(), !tk.close("xmi:xmi")) {
       if (UmlClass::isAppliedStereotype(tk, prof_st, base_v))
@@ -229,29 +229,41 @@ void UmlPackage::importIt(FileIn & in, Token & token, UmlItem * where)
       pack->set_PropertyValue("metaclassReference", s);
   }
     
-  pack->addItem(token.xmiId(), in);
-
-  if (! token.closed()) {
-    QCString k = token.what();
-    const char * kstr = k;
+  s = token.xmiId();
+  
+  if (!s.isEmpty()) {
+    pack->addItem(s, in);
     
-    if (profile) {
-      while (in.read(), !token.close(kstr)) {
-	if ((token.what() == "packagedelement") &&
-	    (token.xmiType() == "uml:Extension")) {
-	  if (! token.closed())
-	    in.finish(token.what());
+    if (! token.closed()) {
+      QCString k = token.what();
+      const char * kstr = k;
+      
+      if (profile) {
+	while (in.read(), !token.close(kstr)) {
+	  if ((token.what() == "packagedelement") &&
+	      (token.xmiType() == "uml:Extension")) {
+	    if (! token.closed())
+	      in.finish(token.what());
+	  }
+	  else if (token.what() == "packageimport")
+	    pack->packageImport(in, token);
+	  else
+	    pack->UmlItem::import(in, token);
 	}
-	else if (token.what() == "packageimport")
-	  pack->packageImport(in, token);
-	else
-	  pack->UmlItem::import(in, token);
+	updateProfiles();
       }
-      updateProfiles();
+      else
+	while (in.read(), !token.close(kstr))
+	  pack->UmlItem::import(in, token);
     }
-    else
-      while (in.read(), !token.close(kstr))
-	pack->UmlItem::import(in, token);
+  }
+  else if (! token.valueOf("href", s))
+    in.error("xmi:id is missing"); // doesn't return
+  else {
+    in.warning("bypass external package " + s);
+    
+    if (! token.closed())
+      in.finish(token.what());
   }
 
   pack->unload(TRUE, FALSE);
@@ -282,6 +294,7 @@ void UmlPackage::init()
   declareFct("uml:model", "uml:Model", &importIt);
   declareFct("packagedelement", "uml:Package", &importIt);
   declareFct("ownedmember", "uml:Package", &importIt);
+  declareFct("ownedmember", "uml:Model", &importIt); // magic draw
   declareFct("packagedelement", "uml:Profile", &importIt);
   declareFct("ownedmember", "uml:Profile", &importIt);
   
@@ -307,12 +320,26 @@ void UmlPackage::init()
 
 void UmlPackage::applyStereotype(FileIn & in, Token & token) {
   QCString prof_st;
-  QCString base_v;
+  QValueList<QCString> base_v;
   QCString s;
   
   if (UmlClass::isAppliedStereotype(token, prof_st, base_v)) {
-    if (!token.valueOf(base_v, s))
-      in.warning("value of '" + base_v + "' is missing");
+    QCString s;
+    QValueList<QCString>::Iterator it_ext;
+    
+    for (it_ext = base_v.begin(); it_ext != base_v.end(); ++it_ext) {
+      QCString s2;
+      
+      if (token.valueOf(*it_ext, s2)) {
+	if (s.isEmpty())
+	  s = s2;
+	else if (s != s2)
+	  in.warning("doesn't refer to the same element ('" + s + "' != '" + s2 + "')");
+      }
+    }
+     
+    if (s.isEmpty())
+      in.warning("value of 'base_...' is missing");
     else {
       UmlItem * elt = All[s];
       

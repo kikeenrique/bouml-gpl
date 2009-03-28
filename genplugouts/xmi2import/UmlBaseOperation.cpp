@@ -2,6 +2,7 @@
 #include "UmlBaseOperation.h"
 #include "UmlOperation.h"
 #include "UmlClass.h"
+#include "UmlItem.h"
 
 #include "UmlCom.h"
 #include "UmlBaseClass.h"
@@ -138,6 +139,14 @@ bool UmlBaseOperation::replaceException(unsigned rank, const UmlTypeSpec & t) {
   }
   else
     return FALSE;
+}
+
+const QVector<UmlItem> UmlBaseOperation::methods() const {
+  QVector<UmlItem> l;
+
+  UmlCom::send_cmd(_identifier, sideCmd);
+  UmlCom::read_item_list(l);
+  return l;
 }
 
 UmlClassMember * UmlBaseOperation::getOf() {
@@ -459,10 +468,10 @@ bool UmlBaseOperation::set_PhpGetSetFrozen(bool v) {
 }
 #endif
 
-#ifdef WITHIDL
+#ifdef WITHPHP
 bool UmlBaseOperation::phpContextualBodyIndent() {
   read_if_needed_();
-  return _idl_get_set_frozen;
+  return _php_contextual_body_indent;
 }
 
 bool UmlBaseOperation::set_PhpContextualBodyIndent(bool v) {
@@ -474,6 +483,85 @@ bool UmlBaseOperation::set_PhpContextualBodyIndent(bool v) {
   }
   else
     return FALSE;
+}
+#endif
+
+#ifdef WITHPYTHON
+const QCString & UmlBaseOperation::pythonDef() {
+  return pythonDecl();
+}
+
+bool UmlBaseOperation::set_PythonDef(const char * s) {
+  return set_PythonDecl(s);
+}
+
+QCString UmlBaseOperation::pythonBody() {
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, pythonBodyCmd);
+  return UmlCom::read_string();
+}
+
+bool UmlBaseOperation::set_PythonBody(const char * s) {
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, setPythonBodyCmd, s);
+  return UmlCom::read_bool();
+}
+
+const QCString & UmlBaseOperation::pythonNameSpec() {
+  read_if_needed_();
+    
+  return _python_name_spec;
+}
+
+bool UmlBaseOperation::set_PythonNameSpec(const char * s) {
+  return set_it_(_python_name_spec, s, setPythonNameSpecCmd);
+}
+#endif
+
+#ifdef WITHPYTHON
+bool UmlBaseOperation::pythonGetSetFrozen() {
+  read_if_needed_();
+  return _python_get_set_frozen;
+}
+
+bool UmlBaseOperation::set_PythonGetSetFrozen(bool v) {
+  bool vv;
+
+  if (set_it_(vv, v, setPythonFrozenCmd)) {
+    _python_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
+#ifdef WITHPYTHON
+bool UmlBaseOperation::pythonContextualBodyIndent() {
+  read_if_needed_();
+  return _python_contextual_body_indent;
+}
+
+bool UmlBaseOperation::set_PythonContextualBodyIndent(bool v) {
+  bool vv;
+
+  if (set_it_(vv, v, setPythonContextualBodyIndentCmd)) {
+    _python_contextual_body_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
+#ifdef WITHPYTHON
+const QCString & UmlBaseOperation::pythonDecorators() {
+  read_if_needed_();
+  return _python_decorators;
+}
+
+bool UmlBaseOperation::set_PythonDecorators(const char * v) {
+  return set_it_(_python_decorators, v, setPythonDecoratorsCmd);
 }
 #endif
 
@@ -537,6 +625,10 @@ void UmlBaseOperation::unload(bool rec, bool del) {
 #endif
 #ifdef WITHPHP
   _php_name_spec = 0;
+#endif
+#ifdef WITHPYTHON
+  _python_name_spec = 0;
+  _python_decorators = 0;
 #endif
 #ifdef WITHIDL
   _idl_name_spec = 0;
@@ -611,6 +703,16 @@ void UmlBaseOperation::read_php_() {
   _php_name_spec = UmlCom::read_string();
   _php_get_set_frozen = UmlCom::read_bool();
   _php_contextual_body_indent = UmlCom::read_bool();
+}
+#endif
+
+#ifdef WITHPYTHON
+void UmlBaseOperation::read_python_() {
+  UmlBaseClassMember::read_python_();
+  _python_decorators = UmlCom::read_string();
+  _python_name_spec = UmlCom::read_string();
+  _python_get_set_frozen = UmlCom::read_bool();
+  _python_contextual_body_indent = UmlCom::read_bool();
 }
 #endif
 

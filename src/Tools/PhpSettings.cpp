@@ -4,14 +4,12 @@
 #include "PhpSettings.h"
 
 #include "UmlCom.h"
-#include "UmlSettings.h"
 #include "PhpSettingsCmd.h"
-#include "UmlBuiltin.h"
+#include "JavaSettingsCmd.h"
 #include "UmlStereotype.h"
 #ifdef WITHJAVA
 #include "JavaSettings.h"
 #endif
-
 bool PhpSettings::useDefaults()
 {
   UmlCom::send_cmd(phpSettingsCmd, getPhpUseDefaultsCmd);
@@ -35,6 +33,7 @@ QCString PhpSettings::classStereotype(const QCString & s)
 
 bool PhpSettings::set_ClassStereotype(QCString s, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(phpSettingsCmd, setPhpClassStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlStereotype * st = UmlSettings::_map_class_stereotypes.find(s);
@@ -239,7 +238,7 @@ bool PhpSettings::set_EnumItemDecl(QCString v)
 const QCString & PhpSettings::relationDecl()
 {
   read_if_needed_();
-  
+
   return _rel_decl;
 }
 
@@ -417,7 +416,7 @@ QCString PhpSettings::_rel_decl;
 QCString PhpSettings::_oper_def;
 
 #ifndef WITHJAVA
-aVisibility PhpSettings::_get_visibility;
+    aVisibility PhpSettings::_get_visibility;
 #endif
 
 QCString PhpSettings::_get_name;
@@ -425,7 +424,7 @@ QCString PhpSettings::_get_name;
 bool PhpSettings::_is_get_final;
 
 #ifndef WITHJAVA
-aVisibility PhpSettings::_set_visibility;
+    aVisibility PhpSettings::_set_visibility;
 #endif
 
 QCString PhpSettings::_set_name;

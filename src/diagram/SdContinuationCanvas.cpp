@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,6 +41,8 @@
 #include "myio.h"
 #include "MenuTitle.h"
 #include "DialogUtil.h"
+#include "ToolCom.h"
+#include "strutil.h"
 
 SdContinuationCanvas::SdContinuationCanvas(UmlCanvas * canvas, int x, int y, int id)
     : DiagramCanvas(0, canvas, x, y, CONTINUATION_CANVAS_MIN_SIZE,
@@ -377,3 +379,26 @@ void SdContinuationCanvas::history_hide() {
   disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
 
+// for plug-out
+
+void SdContinuationCanvas::send(ToolCom * com, QCanvasItemList & all)
+{
+  if (com->api_format() < 41)
+    return;
+  
+  QCanvasItemList::Iterator cit;
+
+  for (cit = all.begin(); (cit != all.end()); ++cit) {
+    DiagramItem *di = QCanvasItemToDiagramItem(*cit);
+    
+    if ((di != 0) && (*cit)->visible() && (di->type() == UmlContinuation)) {
+      QCString s = fromUnicode(((SdContinuationCanvas *) di)->name);
+
+      com->write_bool(TRUE);	// one more
+      com->write_string((const char *) s);
+      com->write(((SdContinuationCanvas *) di)->rect());
+    }
+  }
+  
+  com->write_bool(FALSE);	// done
+}

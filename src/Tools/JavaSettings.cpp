@@ -31,6 +31,7 @@ QCString JavaSettings::type(const QCString & s)
 
 bool JavaSettings::set_Type(QCString s, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(javaSettingsCmd, setJavaTypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
@@ -63,6 +64,7 @@ QCString JavaSettings::relationAttributeStereotype(const QCString & s)
 
 bool JavaSettings::set_RelationAttributeStereotype(QCString s, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(javaSettingsCmd, setJavaRelationAttributeStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlStereotype * st = UmlSettings::_map_relation_attribute_stereotypes.find(s);
@@ -95,6 +97,7 @@ QCString JavaSettings::classStereotype(const QCString & s)
 
 bool JavaSettings::set_ClassStereotype(QCString s, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(javaSettingsCmd, setJavaClassStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlStereotype * st = UmlSettings::_map_class_stereotypes.find(s);
@@ -127,6 +130,7 @@ QCString JavaSettings::get_import(const QCString & s)
 
 bool JavaSettings::set_Import(QCString s, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(javaSettingsCmd, setJavaImportCmd, s, v);
   if (UmlCom::read_bool()) {
     QCString * r = _map_imports.take(s);
@@ -211,6 +215,31 @@ bool JavaSettings::set_IsGenerateJavadocStyleComment(bool v)
   }
   else
     return FALSE;
+}
+
+// return if the package prefix must be
+// always generated before class's names
+
+bool JavaSettings::isForcePackagePrefixGeneration()
+{
+    read_if_needed_();
+  
+    return _is_force_package_gen;
+}
+
+// set if the package prefix must be always generated before class's names
+//
+// On error : return FALSE in C++, produce a RuntimeException in Java
+
+bool JavaSettings::set_IsForcePackagePrefixGeneration(bool v)
+{
+    UmlCom::send_cmd(javaSettingsCmd, setJavaForcePackageGenCmd, v);
+    if (UmlCom::read_bool()) {
+      _is_force_package_gen = v;
+      return TRUE;
+    }
+    else
+      return FALSE;
 }
 
 const QCString & JavaSettings::classDecl()
@@ -312,6 +341,7 @@ const QCString & JavaSettings::attributeDecl(const char * multiplicity)
 
 bool JavaSettings::set_AttributeDecl(const char * multiplicity, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(javaSettingsCmd, setJavaAttributeDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
     _attr_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
@@ -384,6 +414,7 @@ const QCString & JavaSettings::relationDecl(const char * multiplicity)
 
 bool JavaSettings::set_RelationDecl(const char * multiplicity, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(javaSettingsCmd, setJavaRelationDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
     _rel_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
@@ -583,6 +614,8 @@ QCString JavaSettings::_ext;
 
 bool JavaSettings::_is_generate_javadoc_comment;
 
+bool JavaSettings::_is_force_package_gen;
+
 QDict<QCString> JavaSettings::_map_imports;
 
 void JavaSettings::read_()
@@ -644,6 +677,7 @@ void JavaSettings::read_()
   _is_set_final = UmlCom::read_bool();
   _is_set_param_final = UmlCom::read_bool();
   _is_generate_javadoc_comment = UmlCom::read_bool();
+  _is_force_package_gen = UmlCom::read_bool();
 }
 
 void JavaSettings::read_if_needed_()

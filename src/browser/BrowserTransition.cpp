@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,6 +34,7 @@
 
 #include "BrowserTransition.h"
 #include "TransitionData.h"
+#include "ReferenceDialog.h"
 #include "UmlPixmap.h"
 #include "UmlGlobal.h"
 #include "myio.h"
@@ -44,6 +45,7 @@
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "BrowserStateDiagram.h"
 
 IdDict<BrowserTransition> BrowserTransition::all(1021, __FILE__);
 
@@ -111,6 +113,12 @@ bool BrowserTransition::undelete(bool, QString & warning, QString & renamed) {
   return TRUE;
 }
 
+void BrowserTransition::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
+  if (! ondelete)
+    BrowserStateDiagram::compute_referenced_by(l, this, "transitioncanvas", "transition_ref");
+}
+
 void BrowserTransition::compute_referenced_by(QList<BrowserNode> & l,
 					      BrowserNode * target)
 {
@@ -161,8 +169,12 @@ void BrowserTransition::update_stereotype(bool) {
 }
 
 const QPixmap* BrowserTransition::pixmap(int) const {
-  return (deletedp()) ? DeletedRelationIcon
-		      : SimpleRelationIcon;
+  if (deletedp())
+    return DeletedRelationIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : SimpleRelationIcon;
 }
 
 QString BrowserTransition::str(bool horiz, DrawingLanguage lg) const {
@@ -200,6 +212,8 @@ Note that you can undelete it after");
     
     m.setWhatsThis(m.insertItem("Select " + s, 7),
 		   "to select the destination");
+    m.setWhatsThis(m.insertItem("Referenced by", 4),
+		   "to know who reference the <i>transition</i>");
     mark_menu(m, "transition", 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) 
@@ -223,7 +237,7 @@ Note that you can undelete it after");
 void BrowserTransition::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
-    open(FALSE);
+    open(TRUE);
     break;
   case 2:
     delete_it();
@@ -231,6 +245,9 @@ void BrowserTransition::exec_menu_choice(int rank) {
   case 3:
     BrowserNode::undelete(FALSE);
     break;
+  case 4:
+    ReferenceDialog::show(this);
+    return;
   case 7:
     def->get_end_node()->select_in_browser();
     return;
@@ -259,9 +276,12 @@ void BrowserTransition::apply_shortcut(QString s) {
 	  choice = 2;
       }
     }
-    if (s == "Select target")
+    if (s == "Referenced by")
+      choice = 4;
+    else if (s == "Select target")
       choice = 7;
-    mark_shortcut(s, choice, 90);
+    else
+      mark_shortcut(s, choice, 90);
     if (edition_number == 0)
       Tool::shortcut(s, choice, get_type(), 100);
   }
@@ -389,7 +409,15 @@ BrowserTransition *
   BrowserTransition::read(char * & st, char * k,
 			  BrowserNode * parent)
 {
-  if (!strcmp(k, "transition")) {
+  if (!strcmp(k, "transition_ref")) {
+    int id = read_id(st);
+    BrowserTransition * result = all[id];
+    
+    return (result == 0)
+      ? new BrowserTransition(id)
+      : result;  
+  }
+  else if (!strcmp(k, "transition")) {
     int id = read_id(st);    
     QString s = read_string(st);
     
@@ -419,8 +447,8 @@ BrowserTransition *
     result->is_defined = TRUE;
     result->set_name(s);
     
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     result->BrowserNode::read(st, k);
     d->set_browser_node(result);	// call update_stereotype();

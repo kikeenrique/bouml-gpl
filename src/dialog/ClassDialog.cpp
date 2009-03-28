@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,6 +40,7 @@
 #include <qgroupbox.h> 
 #include <qbuttongroup.h>
 #include <qpushbutton.h> 
+#include <qfiledialog.h>
 
 #include "ClassDialog.h"
 #include "ClassData.h"
@@ -303,7 +304,7 @@ ClassDialog::ClassDialog(ClassData * c)
     cpp_external_cb->setDisabled(TRUE);
   else
     connect(cpp_external_cb, SIGNAL(toggled(bool)),
-	    SLOT(cpp_update_decl()));
+	    SLOT(cpp_default_decl()));
   
   if (bn->nestedp()) {
     bgv = cpp_visibility.init(htab, cl->get_cpp_visibility(),
@@ -381,7 +382,7 @@ ClassDialog::ClassDialog(ClassData * c)
     connect(java_final_cb, SIGNAL(toggled(bool)),
 	    SLOT(java_update_decl()));
     connect(java_external_cb, SIGNAL(toggled(bool)),
-	    SLOT(java_update_decl()));
+	    SLOT(java_default_decl()));
   }
   
   htab = new QHBox(vtab); 
@@ -454,7 +455,7 @@ ClassDialog::ClassDialog(ClassData * c)
     connect(php_final_cb, SIGNAL(toggled(bool)),
 	    SLOT(php_update_decl()));
     connect(php_external_cb, SIGNAL(toggled(bool)),
-	    SLOT(php_update_decl()));
+	    SLOT(php_default_decl()));
   }
   
   htab = new QHBox(vtab); 
@@ -521,7 +522,7 @@ ClassDialog::ClassDialog(ClassData * c)
     connect(python_2_2_cb, SIGNAL(toggled(bool)),
 	    SLOT(python_update_decl()));
     connect(python_external_cb, SIGNAL(toggled(bool)),
-	    SLOT(python_update_decl()));
+	    SLOT(python_default_decl()));
   }
   
   htab = new QHBox(vtab); 
@@ -618,7 +619,7 @@ ClassDialog::ClassDialog(ClassData * c)
     connect(idl_custom_cb, SIGNAL(toggled(bool)),
 	    SLOT(idl_update_decl()));
     connect(idl_external_cb, SIGNAL(toggled(bool)),
-	    SLOT(idl_update_decl()));
+	    SLOT(idl_default_decl()));
   }
   
   htab = new QHBox(vtab); 
@@ -673,10 +674,6 @@ ClassDialog::ClassDialog(ClassData * c)
     QStringList tools = Tool::all_display();
     QString s;
     
-    new QLabel("Extending :", grid);
-    edextending = new LineEdit(bn->get_value("stereotypeExtension"), grid);
-    edextending->setReadOnly(visit);
-    
     new QLabel("Initialization \nplug-out :", grid);
     htab = new QHBox(grid);
     stereo_init_cb = new QComboBox(FALSE, htab);
@@ -709,6 +706,17 @@ ClassDialog::ClassDialog(ClassData * c)
     edcheckparam = new LineEdit(bn->get_value("stereotypeCheckParameters"), htab);
     edcheckparam->setReadOnly(visit);
     
+    new QLabel("Icon path :", grid);
+    htab = new QHBox(grid);
+    ediconpath = new LineEdit(bn->get_value("stereotypeIconPath"), htab);
+    if (visit)
+      ediconpath->setReadOnly(TRUE);
+    else {
+      new QLabel("", htab);
+      QPushButton * button = new QPushButton("Browse", htab);
+      connect(button, SIGNAL(clicked ()), this, SLOT(icon_browse()));
+    }
+
     new QLabel("Apply on : ", grid);
     applicableon_table =
       new ApplicableOnTable(grid, bn->get_value("stereotypeApplyOn"), visit);
@@ -722,12 +730,12 @@ ClassDialog::ClassDialog(ClassData * c)
   
   vtab = new QVBox(this);
   kvtable = new KeyValuesTable(bn, vtab, visit);
-  kvtable->remove("stereotypeExtension");
   kvtable->remove("stereotypeSet");
   kvtable->remove("stereotypeCheck");
   kvtable->remove("stereotypeSetParameters");
   kvtable->remove("stereotypeCheckParameters");
   kvtable->remove("stereotypeApplyOn");
+  kvtable->remove("stereotypeIconPath");
   addTab(vtab, "Properties");
   
   //
@@ -763,7 +771,7 @@ QString ClassDialog::cpp_stereotype(const QString & stereotype)
   QString s = GenerationSettings::cpp_class_stereotype(stereotype);
   
   return ((s == "struct") || (s == "union") || (s == "enum") ||
-	  (s == "typedef") || (s == "ignored"))
+	  (s == "typedef") || (s == "ignored") || (s == "metaclass"))
     ? s : QString("class");
 }
 
@@ -773,7 +781,7 @@ QString ClassDialog::java_stereotype(const QString & stereotype)
   
   return ((s == "interface") || (s == "@interface") ||
 	  (s == "enum") || (s == "enum_pattern") ||
-	  (s == "ignored"))
+	  (s == "ignored") || (s == "metaclass"))
     ? s : QString("class");
 }
 
@@ -781,7 +789,8 @@ QString ClassDialog::php_stereotype(const QString & stereotype)
 {
   QString s = GenerationSettings::php_class_stereotype(stereotype);
   
-  return ((s == "interface") || (s == "enum") || (s == "ignored"))
+  return ((s == "interface") || (s == "enum") ||
+	  (s == "ignored") || (s == "metaclass"))
     ? s : QString("class");
 }
 
@@ -789,7 +798,7 @@ QString ClassDialog::python_stereotype(const QString & stereotype)
 {
   QString s = GenerationSettings::python_class_stereotype(stereotype);
   
-  return ((s == "enum") || (s == "ignored"))
+  return ((s == "enum") || (s == "ignored") || (s == "metaclass"))
     ? s : QString("class");
 }
 
@@ -799,7 +808,7 @@ QString ClassDialog::idl_stereotype(const QString & stereotype)
   
   return ((s == "struct") || (s == "union") || (s == "enum") ||
 	  (s == "typedef") || (s == "exception") ||
-	  (s == "ignored") || (s == "interface"))
+	  (s == "ignored") || (s == "interface") || (s == "metaclass"))
     ? s : QString("valuetype");
 }
 
@@ -830,7 +839,7 @@ void ClassDialog::post_edit_constraint(ClassDialog * d, QString s)
 void ClassDialog::edStereotypeActivated(const QString & s) {
   QString stereotype = s.stripWhiteSpace();
   
-  if (stereotype == "stereotype") {
+  if ((stereotype == "stereotype") || (stereotype == "metaclass")) {
     if (GenerationSettings::cpp_get_default_defs())
       setTabEnabled(cpptab, FALSE);
     if (GenerationSettings::java_get_default_defs())
@@ -841,11 +850,8 @@ void ClassDialog::edStereotypeActivated(const QString & s) {
       setTabEnabled(phptab, FALSE);
     if (GenerationSettings::python_get_default_defs())
       setTabEnabled(pythontab, FALSE);
-    if (stereotypetab != 0) {
-      setTabEnabled(stereotypetab, TRUE);
-      if (edextending->text().stripWhiteSpace().isEmpty())
-	edextending->setText("http://schema.omg.org/spec/UML/2.1/uml.xml#Element");
-    }
+    if (stereotypetab != 0)
+      setTabEnabled(stereotypetab, (stereotype == "stereotype"));
   }
   else {
     if (GenerationSettings::cpp_get_default_defs())
@@ -900,6 +906,15 @@ void ClassDialog::edStereotypeActivated(const QString & s) {
       idl_default_decl();
   }
 }
+
+void ClassDialog::icon_browse() {
+  QString s = ediconpath->text().simplifyWhiteSpace();
+  const QString ns = QFileDialog::getOpenFileName(s, "", this, 0, "Select image");
+
+  if (! ns.isEmpty())
+    ediconpath->setText(ns);
+}
+
 
 void ClassDialog::update_all_tabs(QWidget * w) {
   formals_table->forceUpdateCells();
@@ -1011,7 +1026,7 @@ static void cpp_generate_typedef_type(QString & s, ClassData * cl,
   s += GenerationSettings::cpp_type(type(basetype, node_names, nodes));
 }
 
-static void generate_members(BrowserNode * cl, QString & s,
+static void generate_members(BrowserNode * cl, QString & s, QString indent,
 			     const char * (AttributeData::* att_f)() const,
 			     const char * (OperationData::* oper_f)() const,
 			     const char * (RelationData::* rel_a_f)() const,
@@ -1028,7 +1043,7 @@ static void generate_members(BrowserNode * cl, QString & s,
   QListViewItem * child;
   
   for (child = cl->firstChild(); child; child = child->nextSibling()) {
-    QString pre =  "...";
+    QString pre = indent + "...";
     QString decl;
     QString post;
     
@@ -1045,7 +1060,7 @@ static void generate_members(BrowserNode * cl, QString & s,
 	  if (st.isEmpty())
 	    st = "class";
 	  
-	  s += "...friend " + st + " " +
+	  s += pre + "friend " + st + " " +
 	    true_name(rel->get_end_class()->get_name(), cld->get_cppdecl());
 	  
 	  post = "\n";
@@ -1080,7 +1095,7 @@ static void generate_members(BrowserNode * cl, QString & s,
          decl = (at->*att_f)();
       
          if (idl_union)
-	   pre = QString("...case ") + at->get_idlcase() + " ... ";
+	   pre += QString("case ") + at->get_idlcase() + " ... ";
 	  
          post = "\n";
       }
@@ -1112,7 +1127,7 @@ static void generate_members(BrowserNode * cl, QString & s,
 	 ClassData * cl = (ClassData *) ((BrowserNode *) child)->get_data();
 
          decl = (cl->*class_f)();
-	 pre = "..." + ste_f(cl->get_stereotype()) + ' ';
+	 pre += ste_f(cl->get_stereotype()) + ' ';
          post = (pre.left(11) == "...typedef ") ? "\n" : " {...}\n";
       }
       break;
@@ -1311,7 +1326,9 @@ void ClassDialog::cpp_generate_decl(QString & s, ClassData * cl,
     }
     else if (*p == '\n') {
       s += *p++;
-      if (*p && (*p != '#'))
+      if (*p && (*p != '#') &&
+	  strncmp(p, "${members}", 10) &&
+	  strncmp(p, "${items}", 8))
 	s += indent;
     }
     else if (a_typedef) {
@@ -1325,11 +1342,13 @@ void ClassDialog::cpp_generate_decl(QString & s, ClassData * cl,
     else if (an_enum) {
       if (!strncmp(p, "${items}", 8)) {
 	p += 8;
-	generate_members(cl->browser_node, s,
+	generate_members(cl->browser_node, s, indent,
 			 &AttributeData::get_cppdecl, &OperationData::get_cppdecl, 
 			 &RelationData::get_cppdecl_a, &RelationData::get_cppdecl_b,
 			 &ExtraMemberData::get_cpp_decl, &ClassData::get_cppdecl, 
 			 cpp_stereotype);
+	if (*p == '}')
+	  s += indent;
       }
       else
 	s += *p++;
@@ -1344,11 +1363,13 @@ void ClassDialog::cpp_generate_decl(QString & s, ClassData * cl,
     }
     else if (!strncmp(p, "${members}", 10)) {
       p += 10;
-      generate_members(cl->browser_node, s,
+      generate_members(cl->browser_node, s, indent,
 		       &AttributeData::get_cppdecl, &OperationData::get_cppdecl, 
 		       &RelationData::get_cppdecl_a, &RelationData::get_cppdecl_b,
 		       &ExtraMemberData::get_cpp_decl, &ClassData::get_cppdecl,
 		       cpp_stereotype);
+      if (*p == '}')
+	s += indent;
     }
     else if (!strncmp(p, "${inlines}", 10)) {
       p += 10;
@@ -1372,7 +1393,7 @@ void ClassDialog::cpp_update_decl() {
   else {
     showcppdecl->setEnabled(TRUE);
     
-    cpp_generate_decl(s, cl, edcppdecl->text().stripWhiteSpace(),
+    cpp_generate_decl(s, cl, edcppdecl->text(),
 		      edname->text().stripWhiteSpace(), current_cpp_stereotype,
 		      edbasetype->currentText().stripWhiteSpace(),
 		      comment->text(), (instantiate_vtab != 0) ? actuals_table : 0,
@@ -1397,7 +1418,8 @@ void ClassDialog::cpp_default_decl() {
       edcppdecl->setText(GenerationSettings::cpp_default_enum_decl());
     else if (current_cpp_stereotype == "typedef")
       edcppdecl->setText(GenerationSettings::cpp_default_typedef_decl());
-    else if (current_cpp_stereotype == "ignored")
+    else if ((current_cpp_stereotype == "ignored") || 
+	     (current_cpp_stereotype == "metaclass"))
       edcppdecl->setText(QString::null);
     else
       edcppdecl->setText(GenerationSettings::cpp_default_class_decl());
@@ -1565,7 +1587,8 @@ void ClassDialog::java_generate_decl(QString & s, ClassData * cl, QString def,
     }
     else if (!strncmp(p, "${visibility}", 13)) {
       p += 13;
-      s += stringify(visibility) + QString(" ");
+      if (visibility != UmlPackageVisibility)
+	s += stringify(visibility) + QString(" ");
     }
     else if (!strncmp(p, "${final}", 8)) {
       p += 8;
@@ -1592,23 +1615,27 @@ void ClassDialog::java_generate_decl(QString & s, ClassData * cl, QString def,
     }
     else if (!strncmp(p, "${members}", 10)) {
       p += 10;
-      generate_members(cl->browser_node, s,
+      generate_members(cl->browser_node, s, indent,
 		       &AttributeData::get_javadecl, &OperationData::get_javadef, 
 		       &RelationData::get_javadecl_a, &RelationData::get_javadecl_b,
 		       &ExtraMemberData::get_java_decl, &ClassData::get_javadecl,
 		       java_stereotype, FALSE, FALSE, (stereotype == "enum"));
+      if (*p == '}')
+	s += indent;
     }
     else if (!strncmp(p, "${items}", 8)) {
       p += 8;
-      generate_members(cl->browser_node, s,
+      generate_members(cl->browser_node, s, indent,
 		       &AttributeData::get_javadecl, &OperationData::get_javadef, 
 		       &RelationData::get_javadecl_a, &RelationData::get_javadecl_b,
 		       &ExtraMemberData::get_java_decl, &ClassData::get_javadecl,
 		       java_stereotype, FALSE, TRUE, FALSE);
+      if (*p == '}')
+	s += indent;
     }
     else if (!strncmp(p, "${cases}", 8)) {
       p += 8;
-      generate_members(cl->browser_node, s,
+      generate_members(cl->browser_node, s, indent,
 		       &AttributeData::get_javadecl, &OperationData::get_javadef, 
 		       &RelationData::get_javadecl_a, &RelationData::get_javadecl_b,
 		       &ExtraMemberData::get_java_decl, &ClassData::get_javadecl,
@@ -1625,7 +1652,10 @@ void ClassDialog::java_generate_decl(QString & s, ClassData * cl, QString def,
     }
     else if (*p == '\n') {
       s += *p++;
-      if (*p)
+      if (*p && 
+	  strncmp(p, "${members}", 10) &&
+	  strncmp(p, "${items}", 8) &&
+	  strncmp(p, "${cases}", 8))
 	s += indent;
     }
     else if (*p == '@')
@@ -1643,7 +1673,7 @@ void ClassDialog::java_update_decl() {
   else {
     showjavadecl->setEnabled(TRUE);
     
-    QString def = edjavadecl->text().stripWhiteSpace();
+    QString def = edjavadecl->text();
 
     java_generate_decl(s, cl, def, javaannotation,
 		       edname->text().stripWhiteSpace(),
@@ -1679,7 +1709,8 @@ void ClassDialog::java_default_decl() {
 	s.insert(index, '@');
       edjavadecl->setText(s);
     }
-    else if (current_java_stereotype == "ignored")
+    else if ((current_java_stereotype == "ignored") || 
+	     (current_java_stereotype == "metaclass"))
       edjavadecl->setText(QString::null);
     else
       edjavadecl->setText(GenerationSettings::java_default_class_decl());
@@ -1851,24 +1882,29 @@ void ClassDialog::php_generate_decl(QString & s, ClassData * cl, QString def,
     }
     else if (!strncmp(p, "${members}", 10)) {
       p += 10;
-      if (stereotype != "enum")
-	generate_members(cl->browser_node, s,
+      if (stereotype != "enum") {
+	generate_members(cl->browser_node, s, indent,
 			 &AttributeData::get_phpdecl, &OperationData::get_phpdef, 
 			 &RelationData::get_phpdecl_a, &RelationData::get_phpdecl_b,
 			 &ExtraMemberData::get_php_decl, &ClassData::get_phpdecl,
 			 php_stereotype);
+	if (*p == '}')
+	  s += indent;
+      }
     }
     else if (!strncmp(p, "${items}", 8)) {
       p += 8;
-      generate_members(cl->browser_node, s,
+      generate_members(cl->browser_node, s, indent,
 		       &AttributeData::get_phpdecl, &OperationData::get_phpdef, 
 		       &RelationData::get_phpdecl_a, &RelationData::get_phpdecl_b,
 		       &ExtraMemberData::get_php_decl, &ClassData::get_phpdecl,
 		       php_stereotype);
+      if (*p == '}')
+	s += indent;
     }
     else if (*p == '\n') {
       s += *p++;
-      if (*p)
+      if (*p && strncmp(p, "${members}", 10) && strncmp(p, "${items}", 8))
 	s += indent;
     }
     else if (*p == '@')
@@ -1886,9 +1922,7 @@ void ClassDialog::php_update_decl() {
   else {
     showphpdecl->setEnabled(TRUE);
     
-    QString def = edphpdecl->text().stripWhiteSpace();
-
-    php_generate_decl(s, cl, def, 
+    php_generate_decl(s, cl, edphpdecl->text(), 
 		       edname->text().stripWhiteSpace(),
 		       current_php_stereotype, comment->text(),
 		       uml_visibility.value(), php_final_cb->isChecked(),
@@ -1909,7 +1943,8 @@ void ClassDialog::php_default_decl() {
       edphpdecl->setText(GenerationSettings::php_default_enum_decl());
     else if (current_php_stereotype == "interface")
       edphpdecl->setText(GenerationSettings::php_default_interface_decl());
-    else if (current_php_stereotype == "ignored")
+    else if ((current_php_stereotype == "ignored") || 
+	     (current_php_stereotype == "metaclass"))
       edphpdecl->setText(QString::null);
     else
       edphpdecl->setText(GenerationSettings::php_default_class_decl());
@@ -2004,7 +2039,7 @@ void ClassDialog::python_generate_decl(QString & s, ClassData * cl, QString def,
     }
     else if (!strncmp(p, "${members}", 10)) {
       p += 10;
-      generate_members(cl->browser_node, s,
+      generate_members(cl->browser_node, s, indent,
 		       &AttributeData::get_pythondecl, &OperationData::get_pythondef, 
 		       &RelationData::get_pythondecl_a, &RelationData::get_pythondecl_b,
 		       &ExtraMemberData::get_python_decl, &ClassData::get_pythondecl,
@@ -2020,7 +2055,7 @@ void ClassDialog::python_generate_decl(QString & s, ClassData * cl, QString def,
 	}
       }
       if (! has__init__)
-	s += "...__init__()\n";
+	s += indent + "...__init__()\n";
       indent_needed = TRUE;
     }
     else if (*p == '@')
@@ -2055,9 +2090,7 @@ void ClassDialog::python_update_decl() {
   else {
     showpythondecl->setEnabled(TRUE);
     
-    QString def = edpythondecl->text().stripWhiteSpace();
-
-    python_generate_decl(s, cl, def, 
+    python_generate_decl(s, cl, edpythondecl->text(), 
 		       edname->text().stripWhiteSpace(),
 		       current_python_stereotype, comment->text(),
 		       python_2_2_cb->isChecked(), nodes, node_names,
@@ -2076,7 +2109,8 @@ void ClassDialog::python_default_decl() {
     
     if (current_python_stereotype == "enum")
       edpythondecl->setText(GenerationSettings::python_default_enum_decl());
-    else if (current_python_stereotype == "ignored")
+    else if ((current_python_stereotype == "ignored") || 
+	     (current_python_stereotype == "metaclass"))
       edpythondecl->setText(QString::null);
     else
       edpythondecl->setText(GenerationSettings::python_default_class_decl());
@@ -2094,7 +2128,7 @@ QString ClassDialog::python_instance_att_rel(BrowserNode * cl)
 {
   QString s;
   
-  generate_members(cl, s,
+  generate_members(cl, s, "",
 		   &AttributeData::get_pythondecl, &OperationData::get_pythondef, 
 		   &RelationData::get_pythondecl_a, &RelationData::get_pythondecl_b,
 		   &ExtraMemberData::get_python_decl, &ClassData::get_pythondecl,
@@ -2126,6 +2160,7 @@ static void idl_generate_inherit(QString & s, QString st, ClassData * cl) {
 	ClassDialog::idl_stereotype(mother->get_stereotype());
       
       if ((other_st != "ignored") &&
+	  (other_st != "metaclass") &&
 	  (other_st != "union") &&
 	  (other_st != "struct") &&
 	  (other_st != "enum") &&
@@ -2219,7 +2254,9 @@ void ClassDialog::idl_generate_decl(QString & s, ClassData * cl, QString def,
     }
     else if (*p == '\n') {
       s += *p++;
-      if (*p && (*p != '#'))
+      if (*p && (*p != '#') &&
+	  strncmp(p, "${members}", 10) &&
+	  strncmp(p, "${items}", 8))
 	s += indent;
     }
     else if (stereotype == "typedef") {
@@ -2236,19 +2273,23 @@ void ClassDialog::idl_generate_decl(QString & s, ClassData * cl, QString def,
     }
     else if (!strncmp(p, "${members}", 10)) {
       p += 10;
-      generate_members(cl->browser_node, s,
+      generate_members(cl->browser_node, s, indent,
 		       &AttributeData::get_idldecl, &OperationData::get_idldecl, 
 		       &RelationData::get_idldecl_a, &RelationData::get_idldecl_b,
 		       &ExtraMemberData::get_idl_decl, &ClassData::get_idldecl,
 		       idl_stereotype, stereotype == "union");
+      if (*p == '}')
+	s += indent;
     }
     else if (!strncmp(p, "${items}", 8)) {
       p += 8;
-      generate_members(cl->browser_node, s,
+      generate_members(cl->browser_node, s, indent,
 		       &AttributeData::get_idldecl, &OperationData::get_idldecl, 
 		       &RelationData::get_idldecl_a, &RelationData::get_idldecl_b,
 		       &ExtraMemberData::get_idl_decl, &ClassData::get_idldecl,
 		       idl_stereotype);
+      if (*p == '}')
+	s += indent;
     }
     else if (!strncmp(p, "${switch}", 9)) {
       p += 9;
@@ -2269,7 +2310,7 @@ void ClassDialog::idl_update_decl() {
   else {
     showidldecl->setEnabled(TRUE);
     
-    idl_generate_decl(s, cl, edidldecl->text().stripWhiteSpace(),
+    idl_generate_decl(s, cl, edidldecl->text(),
 		      edname->text().stripWhiteSpace(), current_idl_stereotype, 
 		      type(edbasetype->currentText().stripWhiteSpace(),
 			   node_names, nodes),
@@ -2301,7 +2342,8 @@ void ClassDialog::idl_default_decl() {
       edidldecl->setText(GenerationSettings::idl_default_typedef_decl());
     else if (current_idl_stereotype == "interface")
       edidldecl->setText(GenerationSettings::idl_default_interface_decl());
-    else if (current_idl_stereotype == "ignored")
+    else if ((current_idl_stereotype == "ignored") ||
+	     (current_idl_stereotype == "metaclass"))
       edidldecl->setText(QString::null);
     else
       edidldecl->setText(GenerationSettings::idl_default_valuetype_decl());
@@ -2316,7 +2358,7 @@ void ClassDialog::idl_unmapped_decl() {
 }
 
 void ClassDialog::accept() {
-  if (!check_edits(edits))
+  if (!check_edits(edits) || !kvtable->check_unique())
     return;
     
   BrowserClass * bn = (BrowserClass *) cl->get_browser_node();
@@ -2343,11 +2385,26 @@ void ClassDialog::accept() {
     
     bn->set_name(s);
   }
-  else if ((st == "stereotype") &&
-	   !was_st &&
-	   ((err = ProfiledStereotypes::canAddStereotype(bn, s)) != 0)) {
-    msg_critical("Error", oldname + " " + err);
-    return;
+  else if (st == "stereotype") {
+    if (!was_st &&
+	((err = ProfiledStereotypes::canAddStereotype(bn, s)) != 0)) {
+      msg_critical("Error", oldname + " " + err);
+      return;
+    }
+    else if (stereotypetab != 0) {
+      QCString path = fromUnicode(ediconpath->text().simplifyWhiteSpace());
+      
+      if (! path.isEmpty()) {
+	QString spath = (const char *) path;
+	QPixmap  px(spath);
+	
+	if (px.isNull()) {
+	  msg_critical("Error",
+		       spath + "\ndoesn't exist or is not a know image format");
+	  return;
+	}
+      }
+    }
   }
   
   bool newst = cl->set_stereotype(st);
@@ -2422,11 +2479,11 @@ void ClassDialog::accept() {
   if (stereotypetab != 0) {
     if (st == "stereotype") {
       unsigned n = bn->get_n_keys();
+      QCString oldiconpath = bn->get_value("stereotypeIconPath");
+      QCString newiconpath = fromUnicode(ediconpath->text().simplifyWhiteSpace());
       
       bn->set_n_keys(n + 6);
-      bn->set_key(n, "stereotypeExtension");
-      bn->set_value(n, edextending->text().simplifyWhiteSpace());
-      bn->set_key(++n, "stereotypeSet");
+      bn->set_key(n, "stereotypeSet");
       bn->set_value(n, stereo_init_cb->currentText());
       bn->set_key(++n, "stereotypeCheck");
       bn->set_value(n, stereo_check_cb->currentText());
@@ -2436,11 +2493,13 @@ void ClassDialog::accept() {
       bn->set_value(n, fromUnicode(edcheckparam->text().simplifyWhiteSpace()));
       bn->set_key(++n, "stereotypeApplyOn");
       bn->set_value(n, applicableon_table->targets());
+      bn->set_key(++n, "stereotypeIconPath");
+      bn->set_value(n, newiconpath);
       
       if (newst)
 	ProfiledStereotypes::added(bn);
       else
-	ProfiledStereotypes::changed(bn, oldname);
+	ProfiledStereotypes::changed(bn, oldname, oldiconpath != newiconpath);
     }
     else if (was_st)
       ProfiledStereotypes::deleted(bn);

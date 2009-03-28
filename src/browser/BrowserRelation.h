@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -25,6 +25,8 @@
 
 #ifndef BROWSER_RELATION_H
 #define BROWSER_RELATION_H
+
+template <class K> class QPtrDict;
 
 class QPixmap;
 class BrowserClass;
@@ -114,6 +116,10 @@ class BrowserRelation : public BrowserNode, public Labeled<BrowserRelation> {
     virtual QString drag_key() const;
     virtual QString drag_postfix() const;
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
+    
+    static void get_relating(BrowserNode *, QPtrDict<BrowserNode> & d,
+			     BrowserNodeList & newones,
+			     bool inh, bool dep, bool assoc);
 };
 
 #endif

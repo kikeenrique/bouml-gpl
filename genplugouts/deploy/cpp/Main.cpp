@@ -13,9 +13,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
     try {
-      // does something on the target, here suppose that a virtual
-      // operation exist at UmlItem level (and probably sub_level !)
-      UmlCom::trace("<b>Deploy classes</b> release 1.0 (C++ version)<br>");
+      UmlCom::trace("<b>Deploy classes</b> release 1.1 (C++ version)<br>");
       UmlCom::targetItem()->deploy();
       UmlCom::trace("Done");
     }

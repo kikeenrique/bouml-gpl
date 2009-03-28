@@ -6,10 +6,23 @@
 #include <qstring.h>
 
 #include <qdialog.h>
+#include <qlineedit.h>
 
 class QLineEdit;
 class QRadioButton;
 class QCheckBox;
+
+class LineEdit : public QLineEdit {
+  public:
+    LineEdit(QWidget * parent);
+
+
+  protected:
+    bool focusNextPrevChild(bool next);
+
+    void keyPressEvent(QKeyEvent * e);
+
+};
 
 class Dialog : public QDialog {
 Q_OBJECT
@@ -57,6 +70,8 @@ Q_OBJECT
     QCheckBox * java_cb;
 
     QCheckBox * php_cb;
+
+    QCheckBox * python_cb;
 
     QCheckBox * idl_cb;
 

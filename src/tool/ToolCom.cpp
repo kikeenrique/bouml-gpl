@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -340,6 +340,10 @@ UmlCode ToolCom::get_kind(const char *& p) {
     // adds UmlObjectDiagram & UmlActivityDiagram
     v += 2;
   
+  if ((api_version < 44) && (v >= (umlAcceptCallAction - UmlRelations)))
+    // adds umlAcceptCallAction .. umlReduceAction
+    v += 7;
+  
   return (UmlCode) (v + UmlRelations);
 }
 
@@ -454,6 +458,11 @@ void ToolCom::write_id(BrowserNode * bn, char k, const char * s)
   if ((api_version < 24) && (k >= (UmlObjectDiagram - UmlRelations)))
     // removes UmlObjectDiagram & UmlActivityDiagram
     k -= 2;
+  
+  if ((api_version < 44) && (k >= (umlAcceptCallAction - UmlRelations)))
+    // remove umlAcceptCallAction .. umlReduceAction
+    k -= 7;
+
   p_buffer_out[sizeof(void *) + 1] = k;
   memcpy(p_buffer_out + sizeof(void *) + 2, s, ln);
   
@@ -572,7 +581,7 @@ void ToolCom::data_received(Socket * who) {
 	   close();
 	   return;
 	   }*/
-	else if (api_version > 39) {
+	else if (api_version > 45) {
 	  TraceDialog::add("<font color =\"red\"><b>the plug-out is incompatible with this too old version of BOUML<b></font>");
 	  TraceDialog::show_it();
 	  close();

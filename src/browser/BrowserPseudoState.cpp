@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,6 +46,7 @@
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "BrowserStateDiagram.h"
 
 IdDict<BrowserPseudoState> BrowserPseudoState::all(257, __FILE__);
 QStringList BrowserPseudoState::its_default_stereotypes;	// unicode
@@ -99,6 +100,8 @@ void BrowserPseudoState::update_idmax_for_root()
 void BrowserPseudoState::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
   BrowserTransition::compute_referenced_by(l, this);
+  if (! ondelete)
+    BrowserStateDiagram::compute_referenced_by(l, this, "pseudostatecanvas", "pseudostate_ref");
 }
 
 void BrowserPseudoState::renumber(int phase) {
@@ -107,6 +110,13 @@ void BrowserPseudoState::renumber(int phase) {
 }
 
 const QPixmap* BrowserPseudoState::pixmap(int) const {
+  if (!deletedp()) {
+    const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+    if (px != 0)
+      return px;
+  }
+  
   switch (kind) {
   case InitialPS:
     if (deletedp()) 
@@ -716,8 +726,8 @@ BrowserPseudoState * BrowserPseudoState::read(char * & st, char * k,
     
     result->BrowserNode::read(st, k);
     
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     if (strcmp(k, "end")) {
       while (BrowserTransition::read(st, k, result))

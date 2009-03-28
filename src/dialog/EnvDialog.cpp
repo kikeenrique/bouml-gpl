@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,6 +49,7 @@
 #include "DialogUtil.h"
 #include "strutil.h"
 #include "mu.h"
+#include "myio.h"
 
 void EnvDialog::edit(bool conv, bool noid)
 {
@@ -258,6 +259,16 @@ EnvDialog::EnvDialog(bool conv, bool noid)
   }
 }
 
+static void setCoord(int & v, bool & ok, QLineEdit * ed)
+{
+  if (ed->text().isEmpty()) {
+    v = 0;
+    ok = TRUE;
+  }
+  else
+    v = ed->text().toInt(&ok);
+}
+
 void EnvDialog::accept() {
   int id;
   
@@ -269,10 +280,72 @@ void EnvDialog::accept() {
     return;
   }
   
+  int l, t, r, b;
+  bool ok_l, ok_t, ok_r, ok_b;
+  
+  setCoord(l, ok_l, ed_xmin);
+  setCoord(t, ok_t, ed_ymin);
+  setCoord(r, ok_r, ed_xmax);
+  setCoord(b, ok_b, ed_ymax);
+  
+  if (ok_l && ok_t && ok_r && ok_b) {
+    if ((l < 0) || (t < 0) || (r < 0) || (b < 0)) {
+      QMessageBox::critical(this, "Bouml",
+			    "Invalid DEFAULT SCREEN : coordinates can't be negative");
+      return;
+    }
+    else if ((l != 0) || (t != 0) || (r != 0) || (b != 0)) {
+      if (r <= l) {
+	QMessageBox::critical(this, "Bouml",
+			      "Invalid DEFAULT SCREEN : the right must be greater than the left");
+	return;
+      }
+      
+      if (b <= t) {
+	QMessageBox::critical(this, "Bouml",
+			      "Invalid DEFAULT SCREEN : the bottom must be greater than the top");
+	return;
+      }
+      
+      if ((r - l) < 500)
+	QMessageBox::warning(this, "Bouml",
+			     "small DEFAULT SCREEN, width less than 500 points !");
+      
+      if ((b - t) < 500)
+	QMessageBox::warning(this, "Bouml",
+			     "small DEFAULT SCREEN, height less than 500 points !");
+    }
+  }
+  else {
+    QMessageBox::critical(this, "Bouml",
+			  "Invalid DEFAULT SCREEN"
+			  "To not specify the desktop all values must be empty or null."
+			  "Else the values must be non negative, the right must be greater\n"
+			  "than the left, and the bottom must be greater than the top");
+    return;
+  }
+  
   // note : QFile fp(QDir::home().absFilePath(".boumlrc")) doesn't work
   // if the path contains non latin1 characters, for instance cyrillic !
-  QString s = QDir::home().absFilePath(".boumlrc");
+  QString s = homeDir().absFilePath(".boumlrc");
   FILE * fp = fopen((const char *) s, "w");
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
   if (fp == 0) {
     QMessageBox::critical(this, "Bouml", "cannot write in '" + s + "'");
@@ -303,17 +376,7 @@ void EnvDialog::accept() {
       !ed_xmax->text().isEmpty() &&
       !ed_ymin->text().isEmpty() &&
       !ed_ymax->text().isEmpty()) {
-    bool ok_l;
-    bool ok_t;
-    bool ok_r;
-    bool ok_b;
-    int l = ed_xmin->text().toInt(&ok_l);
-    int t = ed_ymin->text().toInt(&ok_t);
-    int r = ed_xmax->text().toInt(&ok_r);
-    int b = ed_ymax->text().toInt(&ok_b);
-    
-    if (ok_l && ok_t && ok_r && ok_b)
-      fprintf(fp, "DESKTOP %d %d %d %d\n", l, t, r, b);
+    fprintf(fp, "DESKTOP %d %d %d %d\n", l, t, r, b);
   }
   
   fclose(fp);
@@ -380,6 +443,23 @@ int read_boumlrc()
   QString s = QDir::home().absFilePath(".boumlrc");
   FILE * fp = fopen((const char *) s, "r");
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   if (fp == 0) {
     QMessageBox::critical(0, "Bouml", "cannot read '" + s + "'");
     exit(-1);
@@ -390,7 +470,7 @@ int read_boumlrc()
   set_template_project("");
   set_editor("");
   set_codec("");
-  UmlDesktop::set_limits(-1, -1, -1, -1);
+  UmlDesktop::set_limits(0, 0, 0, 0);
         
   int id = -1;
   char line[512];

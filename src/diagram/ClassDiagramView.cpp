@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,6 +35,7 @@
 #include "ClassDiagramView.h"
 #include "BrowserClassDiagram.h"
 #include "BrowserClass.h"
+#include "BrowserRelation.h"
 #include "DiagramCanvas.h"
 #include "CdClassCanvas.h"
 #include "PackageCanvas.h"
@@ -49,6 +50,7 @@
 #include "myio.h"
 #include "MenuTitle.h"
 #include "BrowserView.h"
+#include "RelatedElementsDialog.h"
 
 ClassDiagramView::ClassDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
     : DiagramView(parent, canvas, id) {
@@ -56,19 +58,65 @@ ClassDiagramView::ClassDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
 }
 
 // class view contains class not already drawn ?
-bool not_yet_drawn(BrowserNode * container, QPtrDict<DiagramItem> & drawn)
+static bool not_yet_drawn(BrowserNode * container,
+			  QPtrDict<DiagramItem> & drawn)
 {
   QListViewItem * child;
   
   for (child = container->firstChild(); child != 0; child = child->nextSibling()) {
     if (!((BrowserNode *) child)->deletedp() &&
 	(((BrowserNode *) child)->get_type() == UmlClass))
-      if ((drawn[(BrowserNode *) child] == 0) ||
+      if ((drawn[((BrowserNode *) child)->get_data()] == 0) ||
 	  not_yet_drawn((BrowserNode *) child, drawn))
 	return TRUE;
   }
   
   return FALSE;
+}
+
+// have marked elements not yet drawn ?
+static bool marked_not_yet_drawn(QPtrDict<DiagramItem> & drawn)
+{
+  const QList<BrowserNode> & l = BrowserNode::marked_nodes();
+  QListIterator<BrowserNode> it(l);
+  BrowserNode * bn;
+      
+  for (; (bn = it.current()) != 0; ++it) {
+    UmlCode k = bn->get_type();
+    
+    switch (k) {
+    default:
+      if (!IsaRelation(k) && !IsaSimpleRelation(k))
+	break;
+      // no break
+    case UmlClass:
+    case UmlPackage:
+      if (drawn[bn->get_data()] == 0)
+	return TRUE;
+    }
+  }
+  
+  return FALSE;
+}
+
+static void get_drawn(DiagramItemList & items,
+		      QPtrDict<DiagramItem> & drawn)
+{
+  DiagramItem * di;
+  
+  for (di = items.first(); di != 0; di = items.next()) {
+    UmlCode k = di->type();
+    
+    switch (k) {
+    case UmlClass:
+    case UmlPackage:
+      drawn.replace(di->get_bn()->get_data(), di);
+      break;
+    default:
+      if (IsaRelation(k) || IsaSimpleRelation(k))
+	drawn.replace(((ArrowCanvas *) di)->get_data(), di);
+    }
+  }    
 }
 
 void ClassDiagramView::menu(const QPoint& p) {
@@ -81,19 +129,18 @@ void ClassDiagramView::menu(const QPoint& p) {
     DiagramItemList items(canvas()->allItems());
     QPtrDict<DiagramItem> drawn;
     
-    if ((bn != 0) && (bn->get_type() == UmlClassView)) {
-      // memoryze drawn classes
-      DiagramItem * di;
-      
-      for (di = items.first(); di != 0; di = items.next())
-	if (di->type() == UmlClass)
-	  drawn.insert(di->get_bn(), di);
-      
+    get_drawn(items, drawn);
+    
+    if ((bn != 0) && (bn->get_type() == UmlClassView)) {      
       if (not_yet_drawn(bn, drawn)) {
 	m.insertItem("Add classes of the selected class view", 29);
+	if (marked_not_yet_drawn(drawn))
+	  m.insertItem("Add marked elements", 28);
 	m.insertSeparator();
       }
     }
+    else if (marked_not_yet_drawn(drawn))
+      m.insertItem("Add marked elements", 28);
     
     switch (default_menu(m, 30)) {
     case EDIT_DRAWING_SETTING_CMD:
@@ -106,6 +153,9 @@ void ClassDiagramView::menu(const QPoint& p) {
       load("Class");
       window()->package_modified();
       break;
+    case 28:
+      add_marked_elements(p, drawn);
+      break;
     case 29:
       add_classview_classes(bn, p, drawn);
       break;
@@ -115,53 +165,57 @@ void ClassDiagramView::menu(const QPoint& p) {
     (void) default_menu(m, 30);
 }
 
-const int Add_Classview_Classes_Margin = 20;
+static const int Diagram_Margin = 20;
 
 void ClassDiagramView::add_classview_classes(BrowserNode * container, const QPoint& p,
 					     QPtrDict<DiagramItem> & drawn) {
+  QApplication::setOverrideCursor(Qt::waitCursor);
+  
   history_save();
   history_protected = TRUE;
   
   int x = p.x();
   int y = p.y();
-  int future_y = Add_Classview_Classes_Margin;
+  int future_y = Diagram_Margin;
   
   add_classview_classes(container, drawn, x, y, future_y);
   
   canvas()->update();
   history_protected = FALSE;
   window()->package_modified();
+  
+  QApplication::restoreOverrideCursor();
 }
 
 void ClassDiagramView::add_classview_classes(BrowserNode * container,
 					     QPtrDict<DiagramItem> & drawn,
 					     int & x, int & y, int & future_y) {
   QListViewItem * child;
-  int xmax = canvas()->width() - Add_Classview_Classes_Margin;
-  int ymax = canvas()->height() - Add_Classview_Classes_Margin;
+  int xmax = canvas()->width() - Diagram_Margin;
+  int ymax = canvas()->height() - Diagram_Margin;
   
   for (child = container->firstChild(); child != 0; child = child->nextSibling()) {
     if (!((BrowserNode *) child)->deletedp() &&
 	(((BrowserNode *) child)->get_type() == UmlClass)) {
-      if (drawn[(BrowserNode *) child] == 0) {
+      if (drawn[((BrowserNode *) child)->get_data()] == 0) {
 	CdClassCanvas * cl = 
 	  new CdClassCanvas((BrowserNode *) child, the_canvas(), x, y);
 	
 	if ((x + cl->width()) > xmax)
-	  cl->move(x = Add_Classview_Classes_Margin, y = future_y);
+	  cl->move(x = Diagram_Margin, y = future_y);
 	
 	if (y + cl->height() > ymax) {
-	  cl->move(x = Add_Classview_Classes_Margin, y = Add_Classview_Classes_Margin);
-	  future_y = y + cl->height() + Add_Classview_Classes_Margin;
+	  cl->move(x = Diagram_Margin, y = Diagram_Margin);
+	  future_y = y + cl->height() + Diagram_Margin;
 	}
 	else {
-	  int bot = y + cl->height() + Add_Classview_Classes_Margin;
+	  int bot = y + cl->height() + Diagram_Margin;
 	  
 	  if (bot > future_y)
 	    future_y = bot;
 	}
 	
-	x = x + cl->width() + Add_Classview_Classes_Margin;
+	x = x + cl->width() + Diagram_Margin;
 	
 	cl->show();
 	cl->upper();
@@ -169,6 +223,155 @@ void ClassDiagramView::add_classview_classes(BrowserNode * container,
       
       add_classview_classes((BrowserNode *) child, drawn, x, y, future_y);
     }
+  }
+}
+
+void ClassDiagramView::add_marked_elements(const QPoint& p,
+					   QPtrDict<DiagramItem> & drawn) {
+  QApplication::setOverrideCursor(Qt::waitCursor);
+  
+  history_save();
+  history_protected = TRUE;
+  
+  int xmax = canvas()->width() - Diagram_Margin;
+  int ymax = canvas()->height() - Diagram_Margin;
+  int x = p.x();
+  int y = p.y();
+  int future_y = y;
+  const QList<BrowserNode> & l = BrowserNode::marked_nodes();
+  QListIterator<BrowserNode> it(l);
+  BrowserNode * bn;
+
+  for (; (bn = it.current()) != 0; ++it) {
+    if (drawn[bn->get_data()] == 0) {
+      DiagramCanvas * dc;
+      
+      switch (bn->get_type()) {
+      case UmlClass:
+	dc = new CdClassCanvas(bn, the_canvas(), x, y);
+	break;
+      case UmlPackage:
+	dc = new PackageCanvas(bn, the_canvas(), x, y, 0);
+	break;
+      default:
+	continue;
+      }
+
+      drawn.replace(dc->get_bn()->get_data(), dc);
+      
+      if ((x + dc->width()) > xmax)
+	dc->move(x = Diagram_Margin, y = future_y);
+      
+      if (y + dc->height() > ymax) {
+	dc->move(x = Diagram_Margin, y = Diagram_Margin);
+	future_y = y + dc->height() + Diagram_Margin;
+      }
+      else {
+	int bot = y + dc->height() + Diagram_Margin;
+	
+	if (bot > future_y)
+	  future_y = bot;
+      }
+      
+      x = x + dc->width() + Diagram_Margin;
+      
+      dc->show();
+      dc->upper();
+    }
+  }
+  
+  UmlCanvas * cnv = (UmlCanvas *) canvas();
+  
+  if (! cnv->must_draw_all_relations()) {
+    for (it.toFirst(); (bn = it.current()) != 0; ++it) {
+      if (drawn[bn->get_data()] == 0) {
+	UmlCode k = bn->get_type();
+	
+	if (IsaRelation(k))
+	  RelationCanvas::drop(bn, cnv, drawn);
+	else if (IsaSimpleRelation(k))
+	  SimpleRelationCanvas::drop(bn, cnv, drawn);
+      }
+    }
+  }
+  
+  canvas()->update();
+  history_protected = FALSE;
+  window()->package_modified();
+  
+  QApplication::restoreOverrideCursor();
+}
+
+void ClassDiagramView::add_related_elements(DiagramItem *  di, const char * what,
+					    bool inh, bool assoc) {
+  BrowserNodeList l;
+  RelatedElementsDialog dialog(di->get_bn(), what, inh, assoc, l);
+  
+  dialog.raise();
+  
+  if ((dialog.exec() == QDialog::Accepted) && !l.isEmpty()) {
+    QApplication::setOverrideCursor(Qt::waitCursor);
+  
+    DiagramItemList items(canvas()->allItems());
+    QPtrDict<DiagramItem> drawn;
+    
+    get_drawn(items, drawn);
+
+    history_save();
+    history_protected = TRUE;
+  
+    int xmax = canvas()->width() - Diagram_Margin;
+    int ymax = canvas()->height() - Diagram_Margin;
+    QRect re = di->rect();
+    int x = re.x();
+    int y = re.bottom() + Diagram_Margin;
+    int future_y = y;
+    QListIterator<BrowserNode> it(l);
+    BrowserNode * bn;
+
+    for (; (bn = it.current()) != 0; ++it) {
+      if (drawn[bn->get_data()] == 0) {
+	DiagramCanvas * dc;
+	
+	switch (bn->get_type()) {
+	case UmlClass:
+	  dc = new CdClassCanvas(bn, the_canvas(), x, y);
+	  break;
+	case UmlPackage:
+	  dc = new PackageCanvas(bn, the_canvas(), x, y, 0);
+	  break;
+	default:
+	  continue;
+	}
+	
+	drawn.replace(dc->get_bn()->get_data(), dc);
+	
+	if ((x + dc->width()) > xmax)
+	  dc->move(x = Diagram_Margin, y = future_y);
+	
+	if (y + dc->height() > ymax) {
+	  dc->move(x = Diagram_Margin, y = Diagram_Margin);
+	  future_y = y + dc->height() + Diagram_Margin;
+	}
+	else {
+	  int bot = y + dc->height() + Diagram_Margin;
+	  
+	  if (bot > future_y)
+	    future_y = bot;
+	}
+	
+	x = x + dc->width() + Diagram_Margin;
+	
+	dc->show();
+	dc->upper();
+      }
+    }
+  
+    canvas()->update();
+    history_protected = FALSE;
+    window()->package_modified();
+  
+    QApplication::restoreOverrideCursor();
   }
 }
 

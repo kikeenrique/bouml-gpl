@@ -5,6 +5,7 @@
 #include "UmlCom.h"
 #include "Dialog.h"
 #include "UmlNcRelation.h"
+#include "UmlOperation.h"
 
 #include "UmlPackage.h"
 #include "FileOut.h"
@@ -178,7 +179,7 @@ void UmlPackage::xmi(int argc, char ** argv) {
 	out << ">\n\t";
 	if (comment_exporter)
 	  out << "<!-- ";
-	out << "<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.5.7\"/>";
+	out << "<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.10.1\"/>";
 	if (comment_exporter)
 	  out << " -->";
 	out << "\n\t<uml:Model xmi:type=\"uml:Model\" xmi:id=\"themodel\" name=\""
@@ -197,6 +198,7 @@ void UmlPackage::xmi(int argc, char ** argv) {
 	write(out);
 		
 	out.define_datatypes(_uml_20, _primitive_type, _gen_extension);
+	UmlOperation::write_events(out);
 	
 	out << "\t</uml:Model>\n";
 	

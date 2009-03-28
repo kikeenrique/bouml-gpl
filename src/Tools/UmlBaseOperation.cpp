@@ -262,9 +262,8 @@ bool UmlBaseOperation::cppGetSetFrozen() {
 }
 
 bool UmlBaseOperation::set_CppGetSetFrozen(bool v) {
-  bool vv;
-
-  if (set_it_(vv, v, setCppFrozenCmd)) {
+  UmlCom::send_cmd(_identifier, setCppFrozenCmd, (char) v);
+  if (UmlCom::read_bool()) {
     _cpp_get_set_frozen = v;
     return TRUE;
   }
@@ -281,9 +280,8 @@ bool UmlBaseOperation::cppContextualBodyIndent() {
 }
 
 bool UmlBaseOperation::set_CppContextualBodyIndent(bool v) {
-  bool vv;
-
-  if (set_it_(vv, v, setCppContextualBodyIndentCmd)) {
+  UmlCom::send_cmd(_identifier, setCppContextualBodyIndentCmd, (char) v);
+  if (UmlCom::read_bool()) {
     _cpp_contextual_body_indent = v;
     return TRUE;
   }
@@ -365,9 +363,8 @@ bool UmlBaseOperation::javaGetSetFrozen() {
 }
 
 bool UmlBaseOperation::set_JavaGetSetFrozen(bool v) {
-  bool vv;
-
-  if (set_it_(vv, v, setJavaFrozenCmd)) {
+  UmlCom::send_cmd(_identifier, setJavaFrozenCmd, (char) v);
+  if (UmlCom::read_bool()) {
     _java_get_set_frozen = v;
     return TRUE;
   }
@@ -384,9 +381,8 @@ bool UmlBaseOperation::javaContextualBodyIndent() {
 }
 
 bool UmlBaseOperation::set_JavaContextualBodyIndent(bool v) {
-  bool vv;
-
-  if (set_it_(vv, v, setJavaContextualBodyIndentCmd)) {
+  UmlCom::send_cmd(_identifier, setJavaContextualBodyIndentCmd, (char) v);
+  if (UmlCom::read_bool()) {
     _java_contextual_body_indent = v;
     return TRUE;
   }
@@ -451,9 +447,8 @@ bool UmlBaseOperation::phpGetSetFrozen() {
 }
 
 bool UmlBaseOperation::set_PhpGetSetFrozen(bool v) {
-  bool vv;
-
-  if (set_it_(vv, v, setPhpFrozenCmd)) {
+  UmlCom::send_cmd(_identifier, setPhpFrozenCmd, (char) v);
+  if (UmlCom::read_bool()) {
     _php_get_set_frozen = v;
     return TRUE;
   }
@@ -470,9 +465,8 @@ bool UmlBaseOperation::phpContextualBodyIndent() {
 }
 
 bool UmlBaseOperation::set_PhpContextualBodyIndent(bool v) {
-  bool vv;
-
-  if (set_it_(vv, v, setPhpContextualBodyIndentCmd)) {
+  UmlCom::send_cmd(_identifier, setPhpContextualBodyIndentCmd, (char) v);
+  if (UmlCom::read_bool()) {
     _php_contextual_body_indent = v;
     return TRUE;
   }
@@ -520,9 +514,8 @@ bool UmlBaseOperation::pythonGetSetFrozen() {
 }
 
 bool UmlBaseOperation::set_PythonGetSetFrozen(bool v) {
-  bool vv;
-
-  if (set_it_(vv, v, setPythonFrozenCmd)) {
+  UmlCom::send_cmd(_identifier, setPythonFrozenCmd, (char) v);
+  if (UmlCom::read_bool()) {
     _python_get_set_frozen = v;
     return TRUE;
   }
@@ -539,9 +532,8 @@ bool UmlBaseOperation::pythonContextualBodyIndent() {
 }
 
 bool UmlBaseOperation::set_PythonContextualBodyIndent(bool v) {
-  bool vv;
-
-  if (set_it_(vv, v, setPythonContextualBodyIndentCmd)) {
+  UmlCom::send_cmd(_identifier, setPythonContextualBodyIndentCmd, (char) v);
+  if (UmlCom::read_bool()) {
     _python_contextual_body_indent = v;
     return TRUE;
   }
@@ -598,9 +590,8 @@ bool UmlBaseOperation::idlGetSetFrozen() {
 }
 
 bool UmlBaseOperation::set_IdlGetSetFrozen(bool v) {
-  bool vv;
-
-  if (set_it_(vv, v, setIdlFrozenCmd)) {
+  UmlCom::send_cmd(_identifier, setIdlFrozenCmd, (char) v);
+  if (UmlCom::read_bool()) {
     _idl_get_set_frozen = v;
     return TRUE;
   }

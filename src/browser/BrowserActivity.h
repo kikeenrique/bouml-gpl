@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,6 +33,7 @@ class QPixmap;
 class ActivityData;
 class BrowserActivityDiagram;
 class BrowserParameter;
+class BrowserOperation;
 
 class BrowserActivity : public BrowserNode, public Labeled<BrowserActivity> {
   friend class StereotypesDialog;
@@ -86,6 +87,7 @@ class BrowserActivity : public BrowserNode, public Labeled<BrowserActivity> {
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserActivity * read(char * &, char *, BrowserNode *);
     static BrowserActivity * read_ref(char * & st);
+    static BrowserNode * read_any_ref(char * &, char *);
     static BrowserNode * get_it(const char * k, int id);
 
     static void clear(bool old);
@@ -96,6 +98,7 @@ class BrowserActivity : public BrowserNode, public Labeled<BrowserActivity> {
     virtual bool api_compatible(unsigned v) const;
     
     virtual void referenced_by(QList<BrowserNode> &, bool ondelete = FALSE);
+    static void compute_referenced_by(QList<BrowserNode> &, BrowserOperation *);
     
     static void init();
     static const QStringList & default_stereotypes();

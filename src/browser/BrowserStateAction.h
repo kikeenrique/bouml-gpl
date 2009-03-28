@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -59,6 +59,7 @@ class BrowserStateAction : public BrowserNode, public Labeled<BrowserStateAction
     BrowserTransition * add_transition(BrowserNode * end);
     
     virtual const QPixmap* pixmap (int) const;
+    virtual void iconChanged();
 
     virtual void menu();
     virtual void apply_shortcut(QString s);

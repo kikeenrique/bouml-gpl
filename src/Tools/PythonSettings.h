@@ -185,7 +185,7 @@ class PythonSettings : public UmlSettings {
     // never called !
     PythonSettings() {};
   
-    static unsigned multiplicity_column(const QCString & mult);
+    static unsigned mult_column(const QCString & mult);
 
     static bool _defined;
     
@@ -210,8 +210,6 @@ class PythonSettings : public UmlSettings {
     static QCString _oper_def;
 
     static QCString _get_name;
-
-    static bool _is_get_final;
 
     static QCString _set_name;
 

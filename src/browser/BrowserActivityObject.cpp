@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -99,8 +99,10 @@ void BrowserActivityObject::update_idmax_for_root()
 }
     
 void BrowserActivityObject::referenced_by(QList<BrowserNode> & l, bool ondelete) {
+  BrowserNode::referenced_by(l, ondelete);
   BrowserFlow::compute_referenced_by(l, this);
-  BrowserSimpleRelation::compute_referenced_by(l, this);
+  if (! ondelete)
+    BrowserActivityDiagram::compute_referenced_by(l, this, "activityobjectcanvas", "activityobject_ref");
 }
 
 void BrowserActivityObject::compute_referenced_by(QList<BrowserNode> & l,
@@ -125,10 +127,20 @@ void BrowserActivityObject::renumber(int phase) {
 const QPixmap * BrowserActivityObject::pixmap(int) const {
   if (deletedp()) 
     return DeletedActionIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+  
+  if (px != 0)
+    return px;
   else if (is_marked)
     return ActionMarkedIcon;
   else
     return ActionIcon;
+}
+
+void BrowserActivityObject::iconChanged() {
+  repaint();
+  def->modified();
 }
 
 // add flow or dependency
@@ -741,8 +753,8 @@ BrowserActivityObject * BrowserActivityObject::read(char * & st, char * k,
 	wrong_keyword(k, "end");
     }
 
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     return result;
   }

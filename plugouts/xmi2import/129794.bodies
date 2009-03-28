@@ -17,17 +17,10 @@ class UmlPseudoState
   where = where->container(anInitialPseudoState, token, in);
     
   if (where != 0) {
-    QCString s = token.valueOf("name");
-    
-    if (s.isEmpty()) {
-      static unsigned n = 0;
-      
-      s.sprintf("anonymous_pseudo_state_%u", ++n);
-    }
-    
+    QCString s = token.valueOf("name");    
     UmlPseudoState * ps;
     
-    if (k == "initial")
+    if ((k == "initial") || k.isEmpty())
       ps = UmlInitialPseudoState::create(where);
     else if (k == "entryPoint")
       ps = UmlEntryPointPseudoState::create(where, s);

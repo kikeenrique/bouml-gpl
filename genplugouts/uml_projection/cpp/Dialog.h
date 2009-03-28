@@ -26,6 +26,7 @@ class Dialog : public QDialog {
     void accept_java();
     void accept_idl();
     void accept_php();
+    void accept_python();
     void accept();
 };
 

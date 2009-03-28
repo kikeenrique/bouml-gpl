@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -65,7 +65,7 @@ ArrowCanvas::ArrowCanvas(UmlCanvas * canvas, DiagramItem * b,
   double bz = begin->get_z();
   double ez = end->get_z();
   
-  setZ(((bz < ez) ? bz : ez) - 1);
+  setZ(((bz > ez) ? bz : ez) + 1);
   b->add_line(this);
   e->add_line(this);
   
@@ -74,8 +74,7 @@ ArrowCanvas::ArrowCanvas(UmlCanvas * canvas, DiagramItem * b,
     cut_self();
   
   // the first time the canvas must not have a label nor stereotype  
-  auto_pos = canvas->browser_diagram()
-    ->get_auto_label_position(canvas->browser_diagram()->get_type());
+  auto_pos = canvas->browser_diagram()->get_auto_label_position();
   update_pos();
   
   connect(DrawingSettings::instance(), SIGNAL(changed()),
@@ -98,6 +97,8 @@ void ArrowCanvas::cut_self() {
 }
 
 void ArrowCanvas::delete_it() {
+  unconnect();
+  
   if (begin != 0) {
     begin->remove_line(this);
     if (begin->type() == UmlArrowPoint)
@@ -120,8 +121,11 @@ void ArrowCanvas::delete_it() {
     lines.first()->delete_it();	// will remove the line
   
   the_canvas()->del(this);
-  
-  disconnect();
+}
+
+void ArrowCanvas::unconnect() {
+  disconnect(DrawingSettings::instance(), SIGNAL(changed()),
+	     this, SLOT(drawing_settings_modified()));
 }
 
 UmlCanvas * ArrowCanvas::the_canvas() const {
@@ -138,14 +142,38 @@ void ArrowCanvas::update_pos() {
   
   QPoint old_beginp = beginp;
   QPoint old_endp = endp;
+  QPoint end_computed;
   
   // calcul beginp & endp pour ne plus etre dans b_rct & e_rct
+    
   if (begin->type() == UmlArrowPoint)
     beginp = begin->center();
   else {
-    begin->shift(beginp, end->center());
+    QRect r = begin->rect();
+    
+    if (r.contains(end->rect()))
+      begin->shift(beginp, end->center(), TRUE);
+    else {
+      switch (end->type()) {
+      case UmlArrowPoint:
+      case UmlArrowJunction:
+	begin->shift(beginp, end->center(), FALSE);
+	break;
+      default:
+	{
+	  QRect endr = end->rect();
+	  
+	  if (endr.contains(r)) {
+	    end->shift(end_computed, r.center(), TRUE);
+	    begin->shift(beginp, end_computed, FALSE);
+	  }
+	  else
+	    begin->shift(beginp, endr.center(), FALSE);
+	}
+      }
+    }
+    
     if ((geometry == NoGeometry) && (decenter_begin >= 0)) {
-      QRect r = begin->rect();
       
       if ((iabs(beginp.y() - r.top()) < 2) ||
 	  (iabs(beginp.y() - r.bottom()) < 2)) {
@@ -167,21 +195,26 @@ void ArrowCanvas::update_pos() {
     endp = end->center();
     break;
   default:
-    end->shift(endp, beginp);
-    if ((geometry == NoGeometry) && (decenter_end >= 0)) {
+    {
       QRect r = end->rect();
       
-      if ((iabs(endp.y() - r.top()) < 2) ||
-	  (iabs(endp.y() - r.bottom()) < 2)) {
-	// on top or botton
-	endp.setX((int) (r.left() + r.width()*decenter_end));
+      if (end_computed.isNull())
+	end->shift(endp, beginp, r.contains(begin->rect()));
+      else
+	endp = end_computed;
+      if ((geometry == NoGeometry) && (decenter_end >= 0)) {
+	if ((iabs(endp.y() - r.top()) < 2) ||
+	    (iabs(endp.y() - r.bottom()) < 2)) {
+	  // on top or botton
+	  endp.setX((int) (r.left() + r.width()*decenter_end));
+	}
+	else if ((iabs(endp.x() - r.left()) < 2) ||
+		 (iabs(endp.x() - r.right()) < 2)) {
+	  // on left or right
+	  endp.setY((int) (r.top() + r.height()*decenter_end));
+	}
+	// else start point inside 'end'
       }
-      else if ((iabs(endp.x() - r.left()) < 2) ||
-	       (iabs(endp.x() - r.right()) < 2)) {
-	// on left or right
-	endp.setY((int) (r.top() + r.height()*decenter_end));
-      }
-      // else start point inside 'end'
     }
   }
     
@@ -244,13 +277,25 @@ void ArrowCanvas::update_pos() {
     }
     break;
   default:
-    if (itstype == UmlInner) {
+    switch (itstype) {
+    case UmlInner:
       arrow[0].setX((int) (endp.x() - deltay));
       arrow[0].setY((int) (endp.y() + deltax));
       arrow[1].setX((int) (endp.x() - deltay - deltay));
       arrow[1].setY((int) (endp.y() + deltax + deltax));
-    }
-    else {
+      break;
+    case UmlDirectionalAssociation:
+      if (!strcmp(end->get_bn()->get_stereotype(), "metaclass") &&
+	  !strcmp(get_start()->get_bn()->get_stereotype(), "stereotype")) {
+	// extend polygone
+	poly.resize(3);
+	poly.setPoint(0, (int) (endp.x() - deltax - deltay), (int) (endp.y() - deltay + deltax));
+	poly.setPoint(1, (int) (endp.x() + deltax - deltay), (int) (endp.y() + deltay + deltax));
+	poly.setPoint(2, (int) endp.x(), (int) endp.y());
+	break;
+      }
+      // no break
+    default:
       arrow[0].setX((int) (endp.x() - deltax - deltay));
       arrow[0].setY((int) (endp.y() - deltay + deltax));
       arrow[1].setX((int) (endp.x() + deltax - deltay));
@@ -391,9 +436,43 @@ void ArrowCanvas::drawShape(QPainter & p) {
 	   (get_data() != 0) && // not under construction
 	   ((TransitionData *) get_data())->internal())
 	  ? UmlDependency : itstype) {
+  case UmlDirectionalAssociation:
+    if (end->type() != UmlArrowPoint) {
+      if (!strcmp(end->get_bn()->get_stereotype(), "metaclass") &&
+	  !strcmp(get_start()->get_bn()->get_stereotype(), "stereotype")) {
+	// extend
+	QBrush brsh = p.brush();
+	
+	p.setBrush(::Qt::black);
+	p.drawPolygon(poly/*, TRUE*/);
+	p.setBrush(brsh);
+	
+	if (fp != 0)
+	  draw_poly(fp, poly, UmlBlack);
+      }
+      else {
+	p.drawLine(endp, arrow[0]);
+	p.drawLine(endp, arrow[1]);
+	
+	if (fp != 0) {
+	  fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		  " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		  endp.x(), endp.y(), arrow[0].x(), arrow[0].y());
+	  fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+		  " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		  endp.x(), endp.y(), arrow[1].x(), arrow[1].y());
+	}
+      }
+    }
+    
+    p.drawLine(beginp, endp);
+    if (fp != 0)
+      fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	      beginp.x(), beginp.y(), endp.x(), endp.y());
+    break;
   case UmlDirectionalAggregation:
   case UmlDirectionalAggregationByValue:
-  case UmlDirectionalAssociation:
   case UmlContain:
   case UmlTransition:
   case UmlFlow:
@@ -991,16 +1070,18 @@ ArrowPointCanvas * ArrowCanvas::brk(const QPoint & p) {
   ArrowPointCanvas * ap =
     new ArrowPointCanvas(the_canvas(), p.x(), p.y());
   
-  ap->setZ(z() + 1);	// + 1 else point can't be selected
+  ap->setZ(z());
   
-  ArrowCanvas * other =
-    new ArrowCanvas(the_canvas(), ap, end, itstype, 0, FALSE, 
-		    decenter_begin, decenter_end);
-
+  DiagramItem * e = end;
+  
   ap->add_line(this);
-  end->remove_line(this);
+  end->remove_line(this, TRUE);
   end = ap;
   
+  ArrowCanvas * other =
+    new ArrowCanvas(the_canvas(), ap, e, itstype, 0, FALSE, 
+		    decenter_begin, decenter_end);
+
   if ((p - beginp).manhattanLength() < (p - endp).manhattanLength()) {
     if (label != 0) {
       other->label = label;
@@ -1056,7 +1137,7 @@ ArrowCanvas * ArrowCanvas::join(ArrowCanvas * other, ArrowPointCanvas * ap) {
   if (end == ap) {
     end = other->end;
     end->add_line(this);	// add before remove in case end is
-    end->remove_line(other);	// an arrow junction and not del it
+    end->remove_line(other, TRUE);	// an arrow junction and not del it
     
     QList<ArrowCanvas> olines = other->lines;
     LabelCanvas * olabel = other->label;
@@ -1066,9 +1147,9 @@ ArrowCanvas * ArrowCanvas::join(ArrowCanvas * other, ArrowPointCanvas * ap) {
     other->begin = other->end = 0;
     other->label = 0;
     other->stereotype = 0;
-    ap->remove_line(this);
-    ap->remove_line(other);
-    other->disconnect();
+    ap->remove_line(this, TRUE);
+    ap->remove_line(other, TRUE);
+    other->unconnect();
     the_canvas()->del(other);
     the_canvas()->del(ap);
     hide();
@@ -1156,7 +1237,7 @@ bool ArrowCanvas::is_decenter(QPoint mousePressPos,
       QRect r = end->rect();
       QPoint p = endp;
       
-      end->shift(p, beginp);
+      end->shift(p, beginp, r.contains(begin->rect()));
       horiz = (iabs(endp.y() - r.top()) < 2) ||
 	(iabs(endp.y() - r.bottom()) < 2);
       
@@ -1173,7 +1254,7 @@ bool ArrowCanvas::is_decenter(QPoint mousePressPos,
     QRect r = begin->rect();
     QPoint p = beginp;
     
-    begin->shift(p, end->center());
+    begin->shift(p, end->center(), r.contains(end->rect()));
 
     horiz = (iabs(beginp.y() - r.top()) < 2) ||
       (iabs(beginp.y() - r.bottom()) < 2);
@@ -1547,8 +1628,7 @@ void ArrowCanvas::modified() {
 }
 
 void ArrowCanvas::drawing_settings_modified() {
-  auto_pos = the_canvas()->browser_diagram()
-    ->get_auto_label_position(the_canvas()->browser_diagram()->get_type());
+  auto_pos = the_canvas()->browser_diagram()->get_auto_label_position();
 }
 
 void ArrowCanvas::save(QTextStream & st, bool ref, QString & warning) const {
@@ -1755,7 +1835,10 @@ ArrowCanvas * ArrowCanvas::read(char * & st, UmlCanvas * canvas, char * k)
     
     unread_keyword(k, st);
     
-    return read_list(st, canvas, t, geo, fixed, dbegin, dend, id, &make);
+    ArrowCanvas * result = read_list(st, canvas, t, geo, fixed, dbegin, dend, id, &make);
+    
+    result->update_geometry();
+    return result;
   }
   else
     return 0;
@@ -1829,8 +1912,7 @@ void ArrowCanvas::history_load(QBuffer & b) {
 
 void ArrowCanvas::history_hide() {
   QCanvasPolygon::setVisible(FALSE);
-  disconnect(DrawingSettings::instance(), SIGNAL(changed()),
-	     this, SLOT(drawing_settings_modified()));
+  unconnect();
 }
 
 //

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -109,8 +109,24 @@ void BrowserState::update_idmax_for_root()
 void BrowserState::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
   BrowserTransition::compute_referenced_by(l, this);
-  if (! ondelete)
+  if (! ondelete) {
     BrowserActivityAction::compute_referenced_by(l, this);
+    BrowserStateDiagram::compute_referenced_by(l, this, "statecanvas", "state_ref");
+  }
+}
+
+// callers suppose this only take specification into acount
+void BrowserState::compute_referenced_by(QList<BrowserNode> & l,
+					 BrowserOperation * op)
+{
+  IdIterator<BrowserState> it(all);
+  
+  while (it.current()) {
+    if (!it.current()->deletedp() && 
+	(it.current()->def->get_specification() == op))
+      l.append(it.current());
+    ++it;
+  }
 }
 
 void BrowserState::renumber(int phase) {
@@ -119,7 +135,12 @@ void BrowserState::renumber(int phase) {
 }
 
 const QPixmap* BrowserState::pixmap(int) const {
-  return (deletedp()) ? DeletedStateIcon : StateIcon;
+  if (deletedp()) 
+    return DeletedStateIcon;
+  
+  const QPixmap * px = ProfiledStereotypes::browserPixmap(def->get_stereotype());
+
+  return (px != 0) ? px : StateIcon;
 }
 
 BrowserTransition * BrowserState::add_transition(BrowserNode * end) {
@@ -329,7 +350,7 @@ void BrowserState::exec_menu_choice(int rank,
     add_state(this, (bool) FALSE);
     return;
   case 3:
-    open(FALSE);
+    open(TRUE);
     return;
   case 4:
     {
@@ -844,8 +865,8 @@ BrowserState * BrowserState::read(char * & st, char * k,
     
     result->BrowserNode::read(st, k);
     
-    result->is_read_only = !in_import() && read_only_file() || 
-      (user_id() != 0) && result->is_api_base();
+    result->is_read_only = (!in_import() && read_only_file()) || 
+      ((user_id() != 0) && result->is_api_base());
     
     if (strcmp(k, "end")) {
       while (BrowserState::read(st, k, result) ||
@@ -864,6 +885,18 @@ BrowserState * BrowserState::read(char * & st, char * k,
   }
   else
     return 0;
+}
+
+BrowserNode * BrowserState::read_any_ref(char * & st, char * k) {
+  BrowserNode * r;
+  
+  if (((r = BrowserState::read(st, k, 0)) == 0) &&
+      ((r = BrowserRegion::read(st, k, 0)) == 0) && 
+      ((r = BrowserPseudoState::read(st, k, 0)) == 0) && 
+      ((r = BrowserStateAction::read(st, k, 0)) == 0))
+    r = BrowserTransition::read(st, k, 0);
+  
+  return r;
 }
 
 BrowserNode * BrowserState::get_it(const char * k, int id)

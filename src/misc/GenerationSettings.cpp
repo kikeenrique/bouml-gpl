@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -131,6 +131,7 @@ SharedStr GenerationSettings::python_attr_decl[2/*multiplicity*/];
 SharedStr GenerationSettings::python_enum_item_decl;
 SharedStr GenerationSettings::python_rel_decl[2/*relation kind*/][2/*multiplicity*/];
 SharedStr GenerationSettings::python_oper_def;
+SharedStr GenerationSettings::python_initoper_def;
 IncludesSpec GenerationSettings::python_imports;
 SharedStr GenerationSettings::python_get_name;
 SharedStr GenerationSettings::python_set_name;
@@ -174,6 +175,7 @@ bool GenerationSettings::cpp_relative_path;
 bool GenerationSettings::cpp_root_relative_path;
 
 bool GenerationSettings::cpp_force_namespace_gen;
+bool GenerationSettings::java_force_package_gen;
     
 int GenerationSettings::nrelattrstereotypes;
 Stereotype * GenerationSettings::relattr_stereotypes;
@@ -415,6 +417,7 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   java_set_final = FALSE;
   java_set_param_final = FALSE;
   java_javadoc_comment = TRUE;
+  java_force_package_gen = TRUE;
 
 #define PHP_CLASS "${comment}${final}${visibility}${abstract}class ${name}${extends}${implements} {\n${members}}\n"
   php_class_decl = PHP_CLASS;
@@ -461,6 +464,8 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   python_rel_decl[1][1] = PYTHON_REL2;
 #define PYTHON_OPER "${@}${static}${abstract}def ${name}${(}${)}:\n${docstring}${body}\n"
   python_oper_def = PYTHON_OPER;
+#define PYTHON_INITOPER "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:\n${docstring}super(${class}, ${p0}).__init__()\n${body}\n"
+  python_initoper_def = PYTHON_INITOPER;
   python_get_name = "get${Name}";
   python_set_name = "set${Name}";
 
@@ -1129,8 +1134,11 @@ void GenerationSettings::send_java_def(ToolCom * com)
   com->write_string(java_set_name);
   com->write_bool(java_set_final);
   com->write_bool(java_set_param_final);
-  if (api_version >= 30)
+  if (api_version >= 30) {
     com->write_bool(java_javadoc_comment);
+    if (api_version >= 40)
+      com->write_bool(java_force_package_gen);
+  }
 }
 
 void GenerationSettings::send_php_def(ToolCom * com)
@@ -1218,6 +1226,8 @@ void GenerationSettings::send_python_def(ToolCom * com)
   com->write_string(python_oper_def);
   com->write_string(python_get_name);
   com->write_string(python_set_name);
+  if (com->api_format() > 43)
+    com->write_string(python_initoper_def);
 }
 
 void GenerationSettings::send_idl_def(ToolCom * com)
@@ -1363,7 +1373,7 @@ Builtin & GenerationSettings::get_type(const char * u)
   
   // not find, add it
   
-  Builtin * b = new Builtin[index];
+  Builtin * b = new Builtin[index + 1];
   
   for (index = 0; index != nbuiltins; index += 1)
     b[index] = builtins[index];
@@ -1391,7 +1401,7 @@ Stereotype & GenerationSettings::get_stereotype(int & n, Stereotype * & st,
   
   // not find, add it
   
-  Stereotype * s = new Stereotype[index];
+  Stereotype * s = new Stereotype[index + 1];
   
   for (index = 0; index != n; index += 1)
     s[index] = st[index];
@@ -1518,16 +1528,48 @@ bool GenerationSettings::tool_global_cpp_cmd(ToolCom * com,
 	cpp_enum_return = args;
 	break;
       case setCppInCmd:
-	cpp_in = args;
+	{
+	  const char * s1 = com->get_string(args);
+	  const char * s2 = (api_version < 41) ? "" : args;
+	  
+	  if (*s2)
+	    get_type(s1).cpp_in = s2;
+	  else
+	    cpp_in = s1;
+	}
 	break;
       case setCppOutCmd:
-	cpp_out = args;
+	{
+	  const char * s1 = com->get_string(args);
+	  const char * s2 = (api_version < 41) ? "" : args;
+	  
+	  if (*s2)
+	    get_type(s1).cpp_out = s2;
+	  else
+	    cpp_out = s1;
+	}
 	break;
       case setCppInOutCmd:
-	cpp_inout = args;
+	{
+	  const char * s1 = com->get_string(args);
+	  const char * s2 = (api_version < 41) ? "" : args;
+	  
+	  if (*s2)
+	    get_type(s1).cpp_inout = s2;
+	  else
+	    cpp_inout = s1;
+	}
 	break;
       case setCppReturnCmd:
-	cpp_return = args;
+	{
+	  const char * s1 = com->get_string(args);
+	  const char * s2 = (api_version < 41) ? "" : args;
+	  
+	  if (*s2)
+	    get_type(s1).cpp_return = s2;
+	  else
+	    cpp_return = s1;
+	}
 	break;
       case setCppClassDeclCmd:
 	cpp_class_decl = args;
@@ -1777,6 +1819,9 @@ bool GenerationSettings::tool_global_java_cmd(ToolCom * com,
       case setJavaJavadocStyleCmd:
 	java_javadoc_comment = (*args != 0);
 	break;
+      case setJavaForcePackageGenCmd:
+	java_force_package_gen = (*args != 0);
+	break;
       default:
 	return FALSE;
       }
@@ -1961,6 +2006,9 @@ bool GenerationSettings::tool_global_python_cmd(ToolCom * com,
 	break;
       case setPythonSetNameCmd:
 	python_set_name = args;
+	break;
+      case setPythonInitOperationDefCmd:
+	python_initoper_def = args;
 	break;
       default:
 	return FALSE;
@@ -2464,6 +2512,11 @@ void GenerationSettings::save()
     nl_indent(st);
   }
   
+  if (!java_force_package_gen) {
+    st << "java_no_force_package_gen";
+    nl_indent(st);
+  }
+  
   st << "java_default_src_content ";
   save_string(java_src_content, st);
   nl_indent(st);
@@ -2616,6 +2669,9 @@ void GenerationSettings::save()
   nl_indent(st);
   st << "python_default_operation_definition ";
   save_string(python_oper_def, st);
+  nl_indent(st);
+  st << "python_default_initoperation_definition ";
+  save_string(python_initoper_def, st);
   nl_indent(st);
   st << "python_get ";
   save_string(python_get_name, st);
@@ -3211,6 +3267,13 @@ void GenerationSettings::read(char * & st, char * & k)
     else
       java_javadoc_comment = TRUE;
     
+    if (!strcmp(k, "java_no_force_package_gen")) {
+      java_force_package_gen = FALSE;
+      k = read_keyword(st);
+    }
+    else
+      java_force_package_gen = TRUE;
+    
     if (!strcmp(k, "java_default_src_content")) {
       java_src_content = read_string(st);
       k = read_keyword(st);
@@ -3417,6 +3480,7 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
       python_rel_decl[1][0] = PYTHON_REL_COMP;
       python_rel_decl[1][1] = PYTHON_REL2;
       python_oper_def = PYTHON_OPER;
+      python_initoper_def = PYTHON_INITOPER;
       python_get_name = "get${Name}";
       python_set_name = "set${Name}";
     }
@@ -3451,7 +3515,15 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
       python_rel_decl[1][1] = read_string(st);
       read_keyword(st, "python_default_operation_definition");
       python_oper_def = read_string(st);
-      read_keyword(st, "python_get");
+      k = read_keyword(st);
+      if (!strcmp(k, "python_default_initoperation_definition")) {
+	python_initoper_def = read_string(st);
+	k = read_keyword(st);
+      }
+      else
+	python_initoper_def = PYTHON_INITOPER;
+      if (strcmp(k, "python_get"))
+	wrong_keyword(k, "python_get");
       python_get_name = read_string(st);
       read_keyword(st, "python_set");
       python_set_name = read_string(st);
@@ -3646,6 +3718,34 @@ void GenerationSettings::read()
   }
 }
 
+static bool read_incl(IncludesSpec & sp, const char * filename)
+{
+  char * s = read_file(filename);
+    
+  if (s != 0) {
+    sp.types.clear();
+    sp.includes.clear();
+    
+    PRE_TRY;
+    try {
+      char * st = s;
+      
+      while (! at_end(st)) {
+	sp.types.append(read_string(st));
+	sp.includes.append(read_string(st));
+      }
+    }
+    catch (int) {
+      ;
+    }
+    POST_TRY;
+    delete [] s;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 bool GenerationSettings::import()
 {
   QString fn = QFileDialog::getOpenFileName(last_used_directory(), "generation_settings");
@@ -3673,6 +3773,12 @@ bool GenerationSettings::import()
       }
       POST_TRY;
       delete [] s;
+      
+      read_incl(cpp_includes, fn.replace(fn.findRev("generation_settings"), 19, "cpp_includes"));
+      read_incl(java_imports, fn.replace(fn.findRev("cpp_includes"), 12, "java_imports"));
+      read_incl(python_imports, fn.replace(fn.findRev("java_imports"), 12, "python_imports"));
+      read_incl(idl_includes, fn.replace(fn.findRev("python_imports"), 14, "idl_includes"));
+   
       return TRUE;
     }
   }
@@ -3784,34 +3890,6 @@ bool GenerationSettings::add_class_rel_correspondences(unsigned fileformat)
   }
   
   return result;
-}
-
-static bool read_incl(IncludesSpec & sp, const char * filename)
-{
-  char * s = read_file(filename);
-    
-  if (s != 0) {
-    sp.types.clear();
-    sp.includes.clear();
-    
-    PRE_TRY;
-    try {
-      char * st = s;
-      
-      while (! at_end(st)) {
-	sp.types.append(read_string(st));
-	sp.includes.append(read_string(st));
-      }
-    }
-    catch (int) {
-      ;
-    }
-    POST_TRY;
-    delete [] s;
-    return TRUE;
-  }
-  else
-    return FALSE;
 }
 
 void GenerationSettings::read_includes_imports()

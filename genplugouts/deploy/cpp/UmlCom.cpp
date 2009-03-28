@@ -28,7 +28,7 @@ bool UmlCom::connect(unsigned int port)
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(23);
+    write_unsigned(42);
     flush();
     return TRUE;
   }
@@ -45,6 +45,16 @@ UmlItem * UmlCom::targetItem()
 void UmlCom::trace(const char * s)
 {
   send_cmd(miscGlobalCmd, traceCmd, s);
+}
+
+void UmlCom::showTrace()
+{
+  send_cmd(miscGlobalCmd, showTraceCmd);
+}
+
+void UmlCom::traceAutoRaise(bool y)
+{
+  send_cmd(miscGlobalCmd, traceAutoRaiseCmd, (y == 0) ? 0 : 1);
 }
 
 void UmlCom::message(const char * s)
@@ -215,6 +225,19 @@ void UmlCom::send_cmd(CmdFamily f, unsigned int cmd)
   flush();
 }
 
+void UmlCom::send_cmd(CmdFamily f, unsigned int cmd, const char * s, bool b)
+{
+#ifdef TRACE
+  cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << ((s) ? s : "") << b << ")\n";
+#endif
+  
+  write_char(f);
+  write_char(cmd);
+  write_string(s);
+  write_bool(b);
+  flush();
+}
+
 void UmlCom::send_cmd(CmdFamily f, unsigned int cmd, char arg)
 {
 #ifdef TRACE
@@ -224,6 +247,18 @@ void UmlCom::send_cmd(CmdFamily f, unsigned int cmd, char arg)
   write_char(f);
   write_char(cmd);
   write_char(arg);
+  flush();
+}
+
+void UmlCom::send_cmd(CmdFamily f, unsigned int cmd, int arg, const char *)
+{
+#ifdef TRACE
+  cout << "UmlCom::send_cmd((CmdFamily) " << f << ", " << cmd << ", " << arg << ", dummy)\n";
+#endif
+  
+  write_char(f);
+  write_char(cmd);
+  write_unsigned(arg);
   flush();
 }
 
@@ -507,10 +542,10 @@ void UmlCom::send_cmd(const void * id, OnInstanceCmd cmd, unsigned int arg1, cha
   flush();
 }
 
-void UmlCom::send_cmd(const void * id, OnInstanceCmd cmd, const QVector<UmlClass> & l)
+void UmlCom::send_cmd(const void * id, OnInstanceCmd cmd, const QVector<UmlItem> & l)
 {
 #ifdef TRACE
-  cout << "UmlCom::send_cmd(id, " << cmd << ", const QVector<UmlClass> & l)\n";
+  cout << "UmlCom::send_cmd(id, " << cmd << ", const QVector<UmlItem> & l)\n";
 #endif
   
   write_char(onInstanceCmd);

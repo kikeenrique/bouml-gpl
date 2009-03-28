@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -373,6 +373,9 @@ void ClassInstanceDialog::type_changed(int i) {
 }
 
 void ClassInstanceDialog::accept() {
+  if (!kvtable->check_unique())
+    return;
+  
   atbl->forceUpdateCells();
   
   BrowserClassInstance * bn = (BrowserClassInstance *) inst->get_browser_node();

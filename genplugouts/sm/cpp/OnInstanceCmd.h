@@ -29,8 +29,7 @@ enum OnInstanceCmd {
   relationsCmd,
   getPhpDefCmd,
   phpBodyCmd,
-  firstSetCmd = 50,// just a mark
-
+  firstSetCmd= 50,// just a mark
   createCmd,
   setCoupleValueCmd,
   setDescriptionCmd,

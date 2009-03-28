@@ -77,7 +77,7 @@ class FileIn {
   private:
     const char * read_word(int c, bool any);
 
-    const char * read_string();
+    const char * read_string(int marker);
 
     char read_special_char();
 

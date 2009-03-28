@@ -8,6 +8,7 @@
 
 class UmlUseCaseDiagram;
 class UmlItem;
+class UmlUseCaseDiagramDefinition;
 
 //  Manage the use case diagrams
 class UmlBaseUseCaseDiagram : public UmlDiagram {
@@ -25,7 +26,20 @@ class UmlBaseUseCaseDiagram : public UmlDiagram {
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseUseCaseDiagram(void * id, const QCString & n) : UmlDiagram(id, n) {};
+    UmlBaseUseCaseDiagram(void * id, const QCString & n) : UmlDiagram(id, n), _def(0) {};
+
+
+  public:
+    // return the semantic part of the diagram not present in the model
+    UmlUseCaseDiagramDefinition * definition();
+
+    // to unload the object to free memory, it will be reloaded automatically
+    // if needed. args unused
+    virtual void unload(bool = FALSE, bool = FALSE);
+
+
+  private:
+    UmlUseCaseDiagramDefinition * _def;
 
 };
 

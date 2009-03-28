@@ -39,6 +39,11 @@ class UmlBaseSequenceDiagramDefinition
     _messages.setAutoDelete(TRUE);
   }
 
+  n = _fragments.count();
+  for (rank = 0; rank != n; rank += 1)
+    _fragments.at(rank)->read_covered_(instances);
+
+
   while (UmlCom::read_bool()) {
     QCString s = UmlCom::read_string();
     int x = (int) UmlCom::read_unsigned();
@@ -48,6 +53,17 @@ class UmlBaseSequenceDiagramDefinition
     UmlFragmentCompartment * cp = UmlBaseFragment::get_container_(x, y, w, h, _fragments);
 
     if (cp != 0) cp->add_text_(s);
+  }
+
+  while (UmlCom::read_bool()) {
+    QCString s = UmlCom::read_string();
+    int x = (int) UmlCom::read_unsigned();
+    int y = (int) UmlCom::read_unsigned();
+    int w = (int) UmlCom::read_unsigned();
+    int h = (int) UmlCom::read_unsigned();
+    UmlFragmentCompartment * cp = UmlBaseFragment::get_container_(x, y, w, h, _fragments);
+
+    if (cp != 0) cp->add_cont_(s, y + h/2);
   }
 !!!273024.java!!!	read_() : void
   Hashtable instances;
@@ -85,6 +101,10 @@ class UmlBaseSequenceDiagramDefinition
   }
   Arrays.sort(_messages);
 
+  n = _fragments.length;
+  for (rank = 0; rank != n; rank += 1)
+    _fragments[rank].read_covered_(instances);
+
   while (UmlCom.read_bool()) {
     String s = UmlCom.read_string();
     int x = (int) UmlCom.read_unsigned();
@@ -94,4 +114,15 @@ class UmlBaseSequenceDiagramDefinition
     UmlFragmentCompartment cp = UmlBaseFragment.get_container_(x, y, w, h, _fragments);
 
     if (cp != null) cp.add_text_(s);
+  }
+
+  while (UmlCom.read_bool()) {
+    String s = UmlCom.read_string();
+    int x = (int) UmlCom.read_unsigned();
+    int y = (int) UmlCom.read_unsigned();
+    int w = (int) UmlCom.read_unsigned();
+    int h = (int) UmlCom.read_unsigned();
+    UmlFragmentCompartment cp = UmlBaseFragment.get_container_(x, y, w, h, _fragments);
+
+    if (cp != null) cp.add_cont_(s, y + h/2);
   }

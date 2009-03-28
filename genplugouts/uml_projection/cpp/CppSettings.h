@@ -213,6 +213,57 @@ class CppSettings : public UmlSettings {
     // returns the default operation 'in' parameter specification 
     // in case its type is not an enum or a type specified in the
     // first 'Generation settings' tab
+    static QCString builtinIn(QCString s);
+
+    // set the default operation 'in' parameter specification
+    // in case its type is specified in the first 'Generation
+    // settings' tab
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    
+    static bool set_BuiltinIn(QCString type, QCString form);
+
+    // returns the default operation 'out' parameter specification 
+    // in case its type is not an enum or a type specified in the
+    // first 'Generation settings' tab
+    static QCString builtinOut(QCString s);
+
+    // set the default operation 'out' parameter specification
+    // in case its type is specified in the first 'Generation
+    // settings' tab
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    
+    static bool set_BuiltinOut(QCString type, QCString form);
+
+    // returns the default operation 'inout' parameter specification
+    // in case its type is specified in the first 'Generation
+    // settings' tab, else an empty string/null
+    
+    static QCString builtinInOut(QCString s);
+
+    // set the default operation 'inout' parameter specification
+    // in case its type is specified in the first 'Generation
+    // settings' tab
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    
+    static bool set_BuiltinInOut(QCString type, QCString form);
+
+    // return the default operation value type form
+    static QCString builtinReturn(QCString s);
+
+    // set the default operation 'return' parameter specification
+    // in case its type is specified in the first 'Generation
+    // settings' tab
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    
+    static bool set_BuiltinReturn(QCString type, QCString form);
+
+    // returns the default operation 'in' parameter specification 
+    // in case its type is not an enum or a type specified in the
+    // first 'Generation settings' tab
     static const QCString & in();
 
     // set the default operation 'in' parameter specification 
@@ -561,23 +612,10 @@ class CppSettings : public UmlSettings {
 
 
   public:
-    // returns the default operation 'in' parameter specification 
-    // in case its type is not an enum or a type specified in the
-    // first 'Generation settings' tab
-    static QCString builtinIn(QCString s);
-
-    // returns the default operation 'out' parameter specification 
-    // in case its type is not an enum or a type specified in the
-    // first 'Generation settings' tab
-    static QCString builtinOut(QCString s);
-
     // returns the default operation 'inout' parameter specification 
     // in case its type is not an enum or a type specified in the
     // first 'Generation settings' tab
     static QCString builtinInout(QCString s);
-
-    // return the default operation value type form
-    static QCString builtinReturn(QCString s);
 
 };
 

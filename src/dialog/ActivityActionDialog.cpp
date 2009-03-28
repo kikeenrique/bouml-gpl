@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -132,7 +132,7 @@ ActivityActionDialog::ActivityActionDialog(ActivityActionData * a)
   else {
     int index;
 
-    for (index = UmlOpaqueAction; index <= UmlValueSpecificationAction; index += 1) {
+    for (index = UmlOpaqueAction; index <= UmlReduceAction; index += 1) {
       edtype->insertItem(pretty_kind((UmlActionKind) index));
       if (index == (int) current_type)
 	edtype->setCurrentItem(index);
@@ -163,6 +163,14 @@ ActivityActionDialog::ActivityActionDialog(ActivityActionData * a)
   BrowserActivity::instances(behaviors, TRUE);
   behaviors.full_names(behavior_names);
 
+  BrowserNode * bn = a->browser_node;
+  
+  do {
+    // search for the view containing the activity
+    bn = (BrowserNode *) bn->parent();
+  } while (bn->get_type() != UmlActivity);
+  bn = (BrowserNode *) bn->parent();
+  
 #define K(k) (current_type == Uml##k) ? ((k *) act->action) : 0
 
   opaque.init(this, act, K(OpaqueAction), edits, visit);
@@ -184,17 +192,16 @@ ActivityActionDialog::ActivityActionDialog(ActivityActionData * a)
 			   classes, class_names, visit);
   calloperation.init(this, act, K(CallOperationAction),
 		     classes, class_names, visit);
-  
-  // search for the view containing the activity
-  BrowserNode * bn = a->browser_node;
-  
-  do {
-    bn = (BrowserNode *) bn->parent();
-  } while (bn->get_type() != UmlActivity);
-  bn = (BrowserNode *) bn->parent();
-  
   callbehavior.init(this, act, K(CallBehaviorAction),
 		    behaviors, behavior_names, bn, visit);
+  acceptcall.init(this, act, K(AcceptCallAction), visit);
+  reply.init(this, act, K(ReplyAction), visit);
+  createobject.init(this, act, K(CreateObjectAction), visit);
+  destroyobject.init(this, act, K(DestroyObjectAction), visit);
+  testidentity.init(this, act, K(TestIdentityAction), visit);
+  raiseexception.init(this, act, K(RaiseExceptionAction), visit);  
+  reduce.init(this, act, K(ReduceAction),
+	      behaviors, behavior_names, bn, visit);
 
 #undef K
 
@@ -270,8 +277,22 @@ AnyActionDialog & ActivityActionDialog::get_dialog(int k) {
     return broadcastsignal;
   case UmlUnmarshallAction:
     return unmarshall;
-  default: // UmlValueSpecificationAction
+  case UmlValueSpecificationAction:
     return valuespecification;
+  case UmlAcceptCallAction:
+    return acceptcall;
+  case UmlReplyAction:
+    return reply;
+  case UmlCreateObjectAction:
+    return createobject;
+  case UmlDestroyObjectAction:
+    return destroyobject;
+  case UmlTestIdentityAction:
+    return testidentity;
+  case UmlRaiseExceptionAction:
+    return raiseexception;
+  default: // UmlReduceAction
+    return reduce;
   }
 }
 
@@ -281,7 +302,7 @@ void ActivityActionDialog::edTypeActivated(int k) {
 }
 
 void ActivityActionDialog::accept() {
-  if (!check_edits(edits))
+  if (!check_edits(edits) || !kvtable->check_unique())
     return;
 
   BrowserActivityAction * bn = (BrowserActivityAction *) act->browser_node;
@@ -334,6 +355,13 @@ void ActivityActionDialog::accept() {
     CASE(RemoveVariableValueAction, removevariablevalue);
     CASE(CallOperationAction, calloperation);
     CASE(CallBehaviorAction, callbehavior);
+    CASE(AcceptCallAction, acceptcall);
+    CASE(ReplyAction, reply);
+    CASE(CreateObjectAction, createobject);
+    CASE(DestroyObjectAction, destroyobject);
+    CASE(TestIdentityAction, testidentity);
+    CASE(RaiseExceptionAction, raiseexception);
+    CASE(ReduceAction, reduce);
 
 #undef CASE
 
@@ -1316,33 +1344,8 @@ void CallOperationDialog::menu_oper() {
 
 // call behavior
 
-void CallBehaviorDialog::init(QTabDialog * t, ActivityActionData * act,
-			      CallBehaviorAction * d, BrowserNodeList & beh,
-			      QStringList & behstr, BrowserNode * v, bool ro) {
-  td = t;
-  nodes = &beh;
-  node_names = &behstr;
-  view = v;
-  visit = ro;
-
-  // ocl
-
-  ocl_grid = mkgrid(t, "behavior - Ocl");
-
-  new QLabel("", ocl_grid);
-  QButtonGroup * grp = 
-    new QButtonGroup(2, Qt::Horizontal, QString::null, ocl_grid);
-
-  synchronous_cb = new QCheckBox("synchronous", grp);
-  synchronous_cb->setDisabled(visit);
-  
-  connect(new SmallPushButton("behavior :", ocl_grid), SIGNAL(clicked()),
-	  this, SLOT(menu_beh()));
-  behavior_co = new QComboBox(FALSE, ocl_grid);
-  
-  ocl_cond.init(ocl_grid, act, UmlView, visit);
-
-  if (! visit) {
+void WithBehaviorDialog::init(BrowserNode * beh) {
+  if (!visit) {
     behavior_co->insertItem("");
     behavior_co->setAutoCompletion(TRUE);
 
@@ -1351,50 +1354,17 @@ void CallBehaviorDialog::init(QTabDialog * t, ActivityActionData * act,
     
     for (; iter_node.current(); ++iter_node, ++iter_str)
       behavior_co->insertItem(*(iter_node.current()->pixmap(0)), *iter_str);
+
+    if (beh != 0)
+      behavior_co->setCurrentItem(node_names->findIndex(beh->full_name(TRUE)) + 1);
+  } 
+  else if (beh != 0) {
+    behavior_co->insertItem(*(beh->pixmap(0)), beh->full_name(TRUE));
+    behavior_co->setCurrentItem(0);
   }
-  
-  if ((d != 0) && (d->behavior != 0)) {
-    synchronous_cb->setChecked(d->synchronous);
-    
-    if (visit) {
-      behavior_co->insertItem(*(d->behavior->pixmap(0)), d->behavior->full_name(TRUE));
-      behavior_co->setCurrentItem(0);
-    }
-    else
-      behavior_co->setCurrentItem(node_names->findIndex(d->behavior->full_name(TRUE)) + 1);
-      
-    ocl_cond.set(act->get_precond(UmlView), act->get_postcond(UmlView));
-  }
-
-  if (!visit) {
-    behavior_co->setAutoCompletion(TRUE);
-  }
-
-  // note : must add then remove rather than doing nothing
-  // else some sub widget will be wrong placed
-  t->addTab(ocl_grid, "behavior - Ocl");
-
-  if (d == 0)
-    t->removePage(ocl_grid);
-
-  // cpp & java
-  init_cpp(t, act, d, visit);
-  init_java(t, act, d, visit);
 }
 
-bool CallBehaviorDialog::update(CallBehaviorAction * a) {
-  a->synchronous = synchronous_cb->isChecked();
-
-  int index = node_names->findIndex(behavior_co->currentText());
-
-  BrowserNode * old = a->behavior;
-
-  a->behavior = (index != -1) ? nodes->at(index) : 0;
-
-  return old != a->behavior;
-}
-
-void CallBehaviorDialog::menu_beh() {
+void WithBehaviorDialog::menu_behavior() {
   QPopupMenu m(0);
 
   m.insertItem("Choose", -1);
@@ -1432,7 +1402,7 @@ void CallBehaviorDialog::menu_beh() {
     switch (m.exec(QCursor::pos())) {
     case 0:
       nodes->at(index)->select_in_browser();
-      break;
+      return;
     case 1:
       break;
     case 2:
@@ -1473,4 +1443,408 @@ void CallBehaviorDialog::menu_beh() {
     
     behavior_co->setCurrentItem(index + 1);
   }
+}
+
+//
+
+void CallBehaviorDialog::init(QTabDialog * t, ActivityActionData * act,
+			      CallBehaviorAction * d, BrowserNodeList & beh,
+			      QStringList & behstr, BrowserNode * v, bool ro) {
+  td = t;
+  nodes = &beh;
+  node_names = &behstr;
+  view = v;
+  visit = ro;
+
+  // ocl
+
+  ocl_grid = mkgrid(t, "behavior - Ocl");
+
+  new QLabel("", ocl_grid);
+  QButtonGroup * grp = 
+    new QButtonGroup(2, Qt::Horizontal, QString::null, ocl_grid);
+
+  synchronous_cb = new QCheckBox("synchronous", grp);
+  synchronous_cb->setDisabled(visit);
+  
+  connect(new SmallPushButton("behavior :", ocl_grid), SIGNAL(clicked()),
+	  this, SLOT(menu_beh()));
+  behavior_co = new QComboBox(FALSE, ocl_grid);
+  
+  ocl_cond.init(ocl_grid, act, UmlView, visit);
+
+  WithBehaviorDialog::init((d != 0) ? d->behavior : 0);
+  
+  if (d != 0) {
+    synchronous_cb->setChecked(d->synchronous);
+    ocl_cond.set(act->get_precond(UmlView), act->get_postcond(UmlView));
+  }
+
+  // note : must add then remove rather than doing nothing
+  // else some sub widget will be wrong placed
+  t->addTab(ocl_grid, "behavior - Ocl");
+
+  if (d == 0)
+    t->removePage(ocl_grid);
+
+  // cpp & java
+  init_cpp(t, act, d, visit);
+  init_java(t, act, d, visit);
+}
+
+bool CallBehaviorDialog::update(CallBehaviorAction * a) {
+  a->synchronous = synchronous_cb->isChecked();
+
+  int index = node_names->findIndex(behavior_co->currentText());
+
+  BrowserNode * old = a->behavior;
+
+  a->behavior = (index != -1) ? nodes->at(index) : 0;
+
+  return old != a->behavior;
+}
+
+void CallBehaviorDialog::menu_beh() {
+  WithBehaviorDialog::menu_behavior();
+}
+
+// Accept Call
+
+void AcceptCallDialog::init(QTabDialog * t, ActivityActionData * act,
+			    AcceptCallAction * d, bool visit) {
+  td = t;
+
+  // ocl
+
+  ocl_grid = mkgrid(t, "trigger - Ocl");
+
+  new QLabel("trigger : ", ocl_grid);
+  uml_trigger = new LineEdit(ocl_grid);
+  uml_trigger->setReadOnly(visit);
+
+  ocl_cond.init(ocl_grid, act, UmlView, visit);
+  if (d != 0) {
+    ocl_cond.set(act->get_precond(UmlView), act->get_postcond(UmlView));
+    uml_trigger->setText(d->uml_trigger);
+  }
+
+  t->addTab(ocl_grid, "trigger - Ocl");
+
+  if (d == 0)
+    t->removePage(ocl_grid);
+
+  // cpp
+
+  cpp_grid = mkgrid(t, "trigger - C++");
+
+  new QLabel("trigger : ", cpp_grid);
+  cpp_trigger = new LineEdit(cpp_grid);
+
+  cpp_cond.init(cpp_grid, act, CppView, visit);
+
+  if (d != 0) {
+    cpp_cond.set(act->get_precond(CppView), act->get_postcond(CppView));
+    cpp_trigger->setText(d->cpp_trigger);
+  }
+
+  t->addTab(cpp_grid, "trigger - C++");
+
+  if ((d == 0) || !GenerationSettings::cpp_get_default_defs())
+    t->removePage(cpp_grid);
+
+  // java
+
+  java_grid = mkgrid(t, "trigger - Java");
+
+  new QLabel("trigger : ", java_grid);
+  java_trigger = new LineEdit(java_grid);
+
+  java_cond.init(java_grid, act, JavaView, visit);
+
+  if (d != 0) {
+    java_cond.set(act->get_precond(JavaView), act->get_postcond(JavaView));
+    java_trigger->setText(d->java_trigger);
+  }
+
+  t->addTab(java_grid, "trigger - Java");
+
+  if ((d == 0) || !GenerationSettings::java_get_default_defs())
+    t->removePage(java_grid);
+}
+
+bool AcceptCallDialog::update(AcceptCallAction * a) {
+  a->uml_trigger = uml_trigger->text().stripWhiteSpace();
+  a->cpp_trigger = cpp_trigger->text().stripWhiteSpace();
+  a->java_trigger = java_trigger->text().stripWhiteSpace();
+
+  return FALSE;
+}
+
+// Reply
+
+void ReplyDialog::init(QTabDialog * t, ActivityActionData * act,
+		       ReplyAction * d, bool visit) {
+  td = t;
+
+  // ocl
+
+  ocl_grid = mkgrid(t, "trigger - Ocl");
+
+  new QLabel("trigger : ", ocl_grid);
+  uml_trigger = new LineEdit(ocl_grid);
+  uml_trigger->setReadOnly(visit);
+
+  ocl_cond.init(ocl_grid, act, UmlView, visit);
+  if (d != 0) {
+    ocl_cond.set(act->get_precond(UmlView), act->get_postcond(UmlView));
+    uml_trigger->setText(d->uml_trigger);
+  }
+
+  t->addTab(ocl_grid, "trigger - Ocl");
+
+  if (d == 0)
+    t->removePage(ocl_grid);
+
+  // cpp
+
+  cpp_grid = mkgrid(t, "trigger - C++");
+
+  new QLabel("trigger : ", cpp_grid);
+  cpp_trigger = new LineEdit(cpp_grid);
+
+  cpp_cond.init(cpp_grid, act, CppView, visit);
+
+  if (d != 0) {
+    cpp_cond.set(act->get_precond(CppView), act->get_postcond(CppView));
+    cpp_trigger->setText(d->cpp_trigger);
+  }
+
+  t->addTab(cpp_grid, "trigger - C++");
+
+  if ((d == 0) || !GenerationSettings::cpp_get_default_defs())
+    t->removePage(cpp_grid);
+
+  // java
+
+  java_grid = mkgrid(t, "trigger - Java");
+
+  new QLabel("trigger : ", java_grid);
+  java_trigger = new LineEdit(java_grid);
+
+  java_cond.init(java_grid, act, JavaView, visit);
+
+  if (d != 0) {
+    java_cond.set(act->get_precond(JavaView), act->get_postcond(JavaView));
+    java_trigger->setText(d->java_trigger);
+  }
+
+  t->addTab(java_grid, "trigger - Java");
+
+  if ((d == 0) || !GenerationSettings::java_get_default_defs())
+    t->removePage(java_grid);
+}
+
+bool ReplyDialog::update(ReplyAction * a) {
+  a->uml_trigger = uml_trigger->text().stripWhiteSpace();
+  a->cpp_trigger = cpp_trigger->text().stripWhiteSpace();
+  a->java_trigger = java_trigger->text().stripWhiteSpace();
+
+  return FALSE;
+}
+
+// Create Object
+
+void CreateObjectDialog::init(QTabDialog * t, ActivityActionData * act,
+			      CreateObjectAction * d, bool visit) {
+  td = t;
+
+  // ocl
+
+  ocl_grid = mkgrid(t, "classifier - Ocl");
+
+  new QLabel("classifier : ", ocl_grid);
+  classifier = new LineEdit(ocl_grid);
+  classifier->setReadOnly(visit);
+
+  ocl_cond.init(ocl_grid, act, UmlView, visit);
+  if (d != 0) {
+    ocl_cond.set(act->get_precond(UmlView), act->get_postcond(UmlView));
+    classifier->setText(d->classifier);
+  }
+
+  t->addTab(ocl_grid, "classifier - Ocl");
+
+  if (d == 0)
+    t->removePage(ocl_grid);
+
+  // cpp & java
+  init_cpp(t, act, d, visit);
+  init_java(t, act, d, visit);
+}
+
+bool CreateObjectDialog::update(CreateObjectAction * a) {
+  a->classifier = classifier->text().stripWhiteSpace();
+
+  return FALSE;
+}
+
+// Destroy Object
+
+void DestroyObjectDialog::init(QTabDialog * t, ActivityActionData * act,
+			       DestroyObjectAction * d, bool visit) {
+  td = t;
+
+  // ocl
+
+  ocl_grid = mkgrid(t, "flags - Ocl");
+
+  new QLabel("", ocl_grid);
+  QButtonGroup * grp = 
+    new QButtonGroup(2, Qt::Horizontal, QString::null, ocl_grid);
+
+  is_destroy_links_cb = new QCheckBox("links", grp);
+  is_destroy_links_cb->setDisabled(visit);
+
+  is_destroy_owned_objects_cb = new QCheckBox("owned objects", grp);
+  is_destroy_owned_objects_cb->setDisabled(visit);
+
+  ocl_cond.init(ocl_grid, act, UmlView, visit);
+  if (d != 0) {
+    ocl_cond.set(act->get_precond(UmlView), act->get_postcond(UmlView));
+    is_destroy_links_cb->setChecked(d->is_destroy_links);
+    is_destroy_owned_objects_cb->setChecked(d->is_destroy_owned_objects);
+  }
+
+  t->addTab(ocl_grid, "flags - Ocl");
+
+  if (d == 0)
+    t->removePage(ocl_grid);
+
+  // cpp & java
+  init_cpp(t, act, d, visit);
+  init_java(t, act, d, visit);
+}
+
+bool DestroyObjectDialog::update(DestroyObjectAction * a) {
+  a->is_destroy_links = is_destroy_links_cb->isChecked();
+  a->is_destroy_owned_objects = is_destroy_owned_objects_cb->isChecked();
+
+  return FALSE;
+}
+
+// test identity action
+
+void TestIdentityDialog::init(QTabDialog * t, ActivityActionData * act,
+			      TestIdentityAction * d, bool visit) {
+  td = t;
+
+  // ocl
+
+  ocl_grid = mkgrid(t, "Ocl");
+
+  ocl_cond.init(ocl_grid, act, UmlView, visit);
+
+  // note : must add then remove rather than doing nothing
+  // else some sub widget will be wrong placed
+  t->addTab(ocl_grid, "Ocl");
+
+  if (d == 0)
+    t->removePage(ocl_grid);
+
+  // cpp & java
+  init_cpp(t, act, d, visit);
+  init_java(t, act, d, visit);
+}
+
+bool TestIdentityDialog::update(TestIdentityAction *) {
+  return FALSE;
+}
+
+// raise exception action
+
+void RaiseExceptionDialog::init(QTabDialog * t, ActivityActionData * act,
+				RaiseExceptionAction * d, bool visit) {
+  td = t;
+
+  // ocl
+
+  ocl_grid = mkgrid(t, "Ocl");
+
+  ocl_cond.init(ocl_grid, act, UmlView, visit);
+
+  // note : must add then remove rather than doing nothing
+  // else some sub widget will be wrong placed
+  t->addTab(ocl_grid, "Ocl");
+
+  if (d == 0)
+    t->removePage(ocl_grid);
+
+  // cpp & java
+  init_cpp(t, act, d, visit);
+  init_java(t, act, d, visit);
+}
+
+bool RaiseExceptionDialog::update(RaiseExceptionAction *) {
+  return FALSE;
+}
+
+// reduce action
+
+void ReduceDialog::init(QTabDialog * t, ActivityActionData * act,
+			ReduceAction * d, BrowserNodeList & beh,
+			QStringList & behstr, BrowserNode * v, bool ro) {
+  td = t;
+  nodes = &beh;
+  node_names = &behstr;
+  view = v;
+  visit = ro;
+
+  // ocl
+
+  ocl_grid = mkgrid(t, "reducer - Ocl");
+
+  new QLabel("", ocl_grid);
+  QButtonGroup * grp = 
+    new QButtonGroup(2, Qt::Horizontal, QString::null, ocl_grid);
+
+  is_ordered_cb = new QCheckBox("ordered", grp);
+  is_ordered_cb->setDisabled(visit);
+  
+  connect(new SmallPushButton("reducer :", ocl_grid), SIGNAL(clicked()),
+	  this, SLOT(menu_beh()));
+  behavior_co = new QComboBox(FALSE, ocl_grid);
+  
+  ocl_cond.init(ocl_grid, act, UmlView, visit);
+
+  WithBehaviorDialog::init((d != 0) ? d->reducer : 0);
+  
+  if (d != 0) {
+    is_ordered_cb->setChecked(d->is_ordered);
+    ocl_cond.set(act->get_precond(UmlView), act->get_postcond(UmlView));
+  }
+
+  // note : must add then remove rather than doing nothing
+  // else some sub widget will be wrong placed
+  t->addTab(ocl_grid, "reducer - Ocl");
+
+  if (d == 0)
+    t->removePage(ocl_grid);
+
+  // cpp & java
+  init_cpp(t, act, d, visit);
+  init_java(t, act, d, visit);
+}
+
+bool ReduceDialog::update(ReduceAction * a) {
+  a->is_ordered = is_ordered_cb->isChecked();
+
+  int index = node_names->findIndex(behavior_co->currentText());
+
+  a->reducer = (index != -1) ? nodes->at(index) : 0;
+
+  return FALSE;
+}
+
+void ReduceDialog::menu_beh() {
+  WithBehaviorDialog::menu_behavior();
 }

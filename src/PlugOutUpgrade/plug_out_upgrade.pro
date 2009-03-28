@@ -1,6 +1,8 @@
 TEMPLATE      = app
 CONFIG	      += qt warn_on release
-SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp \
+SOURCES	      = util.cpp activity.cpp state.cpp instance.cpp \
+		insertbase.cpp php.cpp python.cpp diagdef.cpp \
+		UmlClassItem.cpp UmlAttribute.cpp \
 		UmlClass.cpp UmlClassDiagram.cpp UmlClassMember.cpp \
 		UmlExtraClassMember.cpp UmlArtifact.cpp \
 		UmlClassView.cpp UmlCollaborationDiagram.cpp UmlComponent.cpp \
@@ -9,7 +11,6 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp \
 		UmlItem.cpp UmlNode.cpp UmlOperation.cpp UmlPackage.cpp \
 		UmlRelation.cpp UmlNcRelation.cpp UmlSequenceDiagram.cpp UmlUseCase.cpp \
 		UmlUseCaseDiagram.cpp UmlUseCaseView.cpp main.cpp \
-		util.cpp \
 		UmlChoicePseudoState.cpp UmlDeepHistoryPseudoState.cpp \
 		UmlEntryPointPseudoState.cpp UmlExitPointPseudoState.cpp \
 		UmlFinalState.cpp UmlForkPseudoState.cpp \

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -53,7 +53,7 @@ struct AnyAction {
   virtual AnyAction * duplicate() const = 0;
   virtual UmlActionKind kind() const = 0;
   virtual QValueList<PinDescr> pins() const;	// no pins by default
-  virtual bool may_add_pin() const; // false by default
+  virtual bool may_add_pin() const; // true by default
   virtual QString str(DrawingLanguage lang, QString name) const;
   virtual BasicData * depend_on();
   virtual void on_delete();
@@ -77,7 +77,6 @@ struct OpaqueAction : public AnyAction {
   virtual AnyAction * duplicate() const;
   virtual UmlActionKind kind() const;
   virtual QString str(DrawingLanguage lang, QString name) const;
-  virtual bool may_add_pin() const;
   
   void save(QTextStream & st, QString & warning) const;
   void read(char * & st, char * & k);
@@ -218,7 +217,6 @@ struct CallBehaviorAction : public AnyAction {
   virtual UmlActionKind kind() const;
   virtual QValueList<PinDescr> pins() const;
   	// [any]* : depend on activity's parameter
-  virtual bool may_add_pin() const;
   virtual BasicData * depend_on();
   virtual void on_delete();
   virtual BrowserNode * referenced(const char *&) const;
@@ -244,7 +242,6 @@ struct CallOperationAction : public AnyAction {
   virtual QValueList<PinDescr> pins() const;
   	// [in] "target" : instance,
   	// [any]* : other depend on operation's params&result&exception
-  virtual bool may_add_pin() const;
   virtual QString str(DrawingLanguage lang, QString name) const;
   virtual BasicData * depend_on();
   virtual void on_delete();
@@ -269,7 +266,6 @@ struct SendObjectAction : public AnyAction {
   	// [in] "request" : the sent object
   	// [in] "target" : target object,
   	// [in]* : arguments (pin addable et removables)
-  virtual bool may_add_pin() const;
   
   void save(QTextStream & st, QString & warning) const;
   void read(char * & st, char * & k);
@@ -290,7 +286,6 @@ struct SendSignalAction : public AnyAction {
   virtual QValueList<PinDescr> pins() const;
   	// [in] "target"
   	// [*] depend on signal parameters
-  virtual bool may_add_pin() const;
   
   void save(QTextStream & st, QString & warning) const;
   void read(char * & st, char * & k);
@@ -318,7 +313,6 @@ struct UnmarshallAction : public AnyAction {
   virtual QValueList<PinDescr> pins() const;
   	// [in] "object" : the unmashalled object
   	// [out]* : the objects (pin addable et removables)
-  virtual bool may_add_pin() const;
   
   void save(QTextStream & st, QString & warning) const;
   void read(char * & st, char * & k);
@@ -338,6 +332,143 @@ struct ValueSpecificationAction : public AnyAction {
   virtual UmlActionKind kind() const;
   virtual QValueList<PinDescr> pins() const;
   	// [out] : the value
+  virtual bool may_add_pin() const;
+  
+  void save(QTextStream & st, QString & warning) const;
+  void read(char * & st, char * & k);
+  void send_def(ToolCom * com, DrawingLanguage);
+  virtual bool tool_cmd(ToolCom * com, const char * args);
+};
+
+struct AcceptCallAction : public AnyAction {
+  friend class AcceptCallDialog;
+    
+  MyStr uml_trigger;
+  MyStr cpp_trigger;
+  MyStr java_trigger;
+
+  AcceptCallAction();
+  virtual ~AcceptCallAction();
+  virtual AnyAction * duplicate() const;
+  virtual UmlActionKind kind() const;
+  virtual QValueList<PinDescr> pins() const;
+  	// [out] : returnInformation
+  
+  void save(QTextStream & st, QString & warning) const;
+  void read(char * & st, char * & k);
+  void send_def(ToolCom * com, DrawingLanguage);
+  virtual bool tool_cmd(ToolCom * com, const char * args);
+};
+
+struct ReplyAction : public AnyAction {
+  friend class ReplyDialog;
+    
+  MyStr uml_trigger;
+  MyStr cpp_trigger;
+  MyStr java_trigger;
+
+  ReplyAction();
+  virtual ~ReplyAction();
+  virtual AnyAction * duplicate() const;
+  virtual UmlActionKind kind() const;
+  virtual QValueList<PinDescr> pins() const;
+  	// [in] : returnInformation
+  
+  void save(QTextStream & st, QString & warning) const;
+  void read(char * & st, char * & k);
+  void send_def(ToolCom * com, DrawingLanguage);
+  virtual bool tool_cmd(ToolCom * com, const char * args);
+};
+
+struct CreateObjectAction : public AnyAction {
+  friend class CreateObjectDialog;
+    
+  MyStr classifier;
+
+  CreateObjectAction();
+  virtual ~CreateObjectAction();
+  virtual AnyAction * duplicate() const;
+  virtual UmlActionKind kind() const;
+  virtual QValueList<PinDescr> pins() const;
+  	// [out] : result
+  
+  void save(QTextStream & st, QString & warning) const;
+  void read(char * & st, char * & k);
+  void send_def(ToolCom * com, DrawingLanguage);
+  virtual bool tool_cmd(ToolCom * com, const char * args);
+};
+
+struct DestroyObjectAction : public AnyAction {
+  friend class DestroyObjectDialog;
+    
+  bool is_destroy_links;
+  bool is_destroy_owned_objects;
+
+  DestroyObjectAction();
+  virtual ~DestroyObjectAction();
+  virtual AnyAction * duplicate() const;
+  virtual UmlActionKind kind() const;
+  virtual QValueList<PinDescr> pins() const;
+  	// [in] : result
+  virtual bool may_add_pin() const;
+  
+  void save(QTextStream & st, QString & warning) const;
+  void read(char * & st, char * & k);
+  void send_def(ToolCom * com, DrawingLanguage);
+  virtual bool tool_cmd(ToolCom * com, const char * args);
+};
+
+struct TestIdentityAction : public AnyAction {
+  friend class TestIdentityDialog;
+
+  TestIdentityAction();
+  virtual ~TestIdentityAction();
+  virtual AnyAction * duplicate() const;
+  virtual UmlActionKind kind() const;
+  virtual QValueList<PinDescr> pins() const;
+  	// [in] : first
+  	// [in] : second
+  	// [out] : result
+  virtual bool may_add_pin() const;
+  
+  void save(QTextStream & st, QString & warning) const;
+  void read(char * & st, char * & k);
+  void send_def(ToolCom * com, DrawingLanguage);
+};
+
+struct RaiseExceptionAction : public AnyAction {
+  friend class RaiseExceptionDialog;
+
+  RaiseExceptionAction();
+  virtual ~RaiseExceptionAction();
+  virtual AnyAction * duplicate() const;
+  virtual UmlActionKind kind() const;
+  virtual QValueList<PinDescr> pins() const;
+  	// [in] : exception
+  virtual bool may_add_pin() const;
+  
+  void save(QTextStream & st, QString & warning) const;
+  void read(char * & st, char * & k);
+  void send_def(ToolCom * com, DrawingLanguage);
+};
+
+struct ReduceAction : public AnyAction {
+  friend class ReduceDialog;
+  
+  bool is_ordered;
+  BrowserNode * reducer;	// activity or state machine
+
+  ReduceAction();
+  virtual ~ReduceAction();
+  virtual AnyAction * duplicate() const;
+  virtual UmlActionKind kind() const;
+  virtual QValueList<PinDescr> pins() const;
+  	// [in] : collection
+  	// [out] : result
+  virtual bool may_add_pin() const;
+  virtual BasicData * depend_on();
+  virtual void on_delete();
+  virtual BrowserNode * referenced(const char *&) const;
   
   void save(QTextStream & st, QString & warning) const;
   void read(char * & st, char * & k);

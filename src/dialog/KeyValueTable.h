@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -36,7 +36,8 @@ class KeyValuesTable : public StringTable {
     KeyValuesTable(HaveKeyValueData * h, QWidget * parent, bool visit);
   
     virtual void init_row(int index);
-							   
+				
+    bool check_unique();
     void update(HaveKeyValueData * h);
     bool get_value(const char * key, QString & value);
     void remove(const char * key);

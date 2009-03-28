@@ -203,5 +203,26 @@ class Dialog
   QString d = QFileDialog::getExistingDirectory (edobjectsdir->text(), this, 0,
 						 "select objects dir");
   
-  if (! d.isEmpty())
+  if (! d.isEmpty()) {
+#ifdef WIN32
+    QDir dir(d);
+    
+    if (! dir.exists()) {
+      int index = d.length() - 1;
+      
+      if (d.at(index) == QChar('/'))
+	index -= 1;
+      
+      QString d2 = d;
+	
+      d2.remove(index, 1);
+	
+      QDir dir2(d2);
+	
+      if (dir2.exists())
+	d = d2;
+    }
+#endif
+    
     edobjectsdir->setText(d);
+  }

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -54,13 +54,16 @@ class BodyDialog;
 
 struct RoleDialog {
   // Uml
-  bool visit;
   LineEdit * edrole;
   QComboBox * multiplicity;
   LineEdit * edinit;
   VisibilityGroup uml_visibility;
   QCheckBox * classrelation_cb;
   QCheckBox * constrelation_cb;
+  QCheckBox * derived_cb;
+  QCheckBox * derivedunion_cb;
+  QCheckBox * ordered_cb;
+  QCheckBox * unique_cb;
   MultiLineEdit * comment;
   MultiLineEdit * constraint;
   QWidgetList opt;
@@ -117,6 +120,7 @@ struct RoleDialog {
   QPushButton * idl_unmapped_decl_bt;
   
   // User
+  bool ro;
   KeyValuesTable * kvtable;
 };
 
@@ -124,6 +128,7 @@ class RelationDialog : public QTabDialog {
   Q_OBJECT
     
   protected:
+    bool visit;
     bool onstereotype;
     QWidget * umltab;
     QWidget * cpptab;
@@ -207,6 +212,8 @@ class RelationDialog : public QTabDialog {
     void edit_init_b();
     void edTypeActivated(int);
     void menu_assoc();
+    void derived_changed_a(bool);
+    void derived_changed_b(bool);
     void cpp_update_a();
     void cpp_update_b();
     void cpp_default_a();

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,6 +44,7 @@ class BrowserDeploymentDiagram : public BrowserDiagram {
     SimpleData * def;
     DeploymentDiagramWindow * window;
     DeploymentDiagramSettings settings;
+    DeploymentDiagramSettings * used_settings;
     UmlColor deploymentnode_color;
     UmlColor component_color;
     UmlColor artifact_color;
@@ -79,13 +80,14 @@ class BrowserDeploymentDiagram : public BrowserDiagram {
     virtual void set_name(const char * s);
     virtual void package_settings(bool & name_in_tab, ShowContextMode & show_context) const;
     virtual UmlColor get_color(UmlCode) const;
+    virtual void update_drawing_settings();
     virtual void get_deploymentdiagramsettings(DeploymentDiagramSettings & r) const;
-    virtual bool get_auto_label_position(UmlCode who) const ;
+    virtual bool get_auto_label_position() const;
     virtual bool get_shadow() const;
     virtual bool get_draw_all_relations() const;
     virtual void dont_draw_all_relations();
-    virtual bool get_show_stereotype_properties(UmlCode k) const;
-    virtual void get_componentdrawingsettings(bool depl, ComponentDrawingSettings & r) const;
+    virtual bool get_show_stereotype_properties() const;
+    virtual void get_componentdrawingsettings(ComponentDrawingSettings & r) const;
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserDeploymentDiagram * read(char * &, char *, BrowserNode *);
@@ -103,6 +105,9 @@ class BrowserDeploymentDiagram : public BrowserDiagram {
     virtual void renumber(int phase);
     static void open_all();
     static void import();
+    
+    static void compute_referenced_by(QList<BrowserNode> & l, BrowserNode *,
+				      const char * kc, char const * kr);
 };
 
 #endif

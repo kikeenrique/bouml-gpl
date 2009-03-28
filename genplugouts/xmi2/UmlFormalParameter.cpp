@@ -4,19 +4,13 @@
 #include "UmlClass.h"
 
 void UmlFormalParameter::write(FileOut & out, UmlClass * cl, int rank, bool uml20) const {
-  char tp[32];
-  char te[32];
-
-  sprintf(tp, "TEMPLPARAM%d_", rank);
-  sprintf(te, "TEMPLELEM%d_", rank);
-  
   out.indent();
   out << "<parameter";
-  out.idref_prefix(cl, tp);
+  out.idref_prefix(cl, "TEMPLPARAM", rank);
   out << "/>\n";
   out.indent();
   out << "<ownedParameter xmi:type=\"uml:ClassifierTemplateParameter\"";
-  out.id_prefix(cl, tp);
+  out.id_prefix(cl, "TEMPLPARAM", rank);
   out << ">\n";
   out.indent(+1);
 
@@ -25,11 +19,11 @@ void UmlFormalParameter::write(FileOut & out, UmlClass * cl, int rank, bool uml2
     out << "<ownedElement xmi:type=\"uml:Class\"";
   else
     out << "<ownedParameteredElement xmi:type=\"uml:Class\"";
-  out.id_prefix(cl, te);
+  out.id_prefix(cl, "TEMPLELEM", rank);
   out << " name=\"";
   out.quote(name());
   out << '"';
-  out.ref(cl, "templateParameter", tp);
+  out.ref(cl, "templateParameter", "TEMPLPARAM", rank);
   out << "/>\n";
 
   if (defaultValue().type != 0)

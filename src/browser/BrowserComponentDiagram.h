@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,6 +44,7 @@ class BrowserComponentDiagram : public BrowserDiagram {
     SimpleData * def;
     ComponentDiagramWindow * window;
     ComponentDiagramSettings settings;
+    ComponentDiagramSettings * used_settings;
     UmlColor component_color;
     UmlColor note_color;
     UmlColor fragment_color;
@@ -79,10 +80,11 @@ class BrowserComponentDiagram : public BrowserDiagram {
     virtual bool get_shadow() const;
     virtual bool get_draw_all_relations() const;
     virtual void dont_draw_all_relations();
-    virtual bool get_show_stereotype_properties(UmlCode k) const;
+    virtual bool get_show_stereotype_properties() const;
+    virtual void update_drawing_settings();
     virtual void get_componentdiagramsettings(ComponentDiagramSettings & r) const;
-    virtual bool get_auto_label_position(UmlCode who) const ;
-    virtual void get_componentdrawingsettings(bool depl, ComponentDrawingSettings & r) const;
+    virtual bool get_auto_label_position() const;
+    virtual void get_componentdrawingsettings(ComponentDrawingSettings & r) const;
     virtual void package_settings(bool & name_in_tab, ShowContextMode & show_context) const;
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual void save(QTextStream &, bool ref, QString & warning);
@@ -101,6 +103,9 @@ class BrowserComponentDiagram : public BrowserDiagram {
     virtual void renumber(int phase);
     static void open_all();
     static void import();
+    
+    static void compute_referenced_by(QList<BrowserNode> & l, BrowserNode *,
+				      const char * kc, char const * kr);
 };
 
 #endif

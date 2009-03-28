@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -255,13 +255,13 @@ void remove_comments(QCString & s)
       if ((index2 = s.find('\n', index1 + 2)) != -1)
 	s.remove(index1, index2 - index1 + 1);
       else
-	s.remove(index1, ~0);
+	s.truncate(index1);
       break;
     case '*':
       if ((index2 = s.find("*/", index1 + 2)) != -1)
 	s.replace(index1, index2 - index1 + 2, " ");
       else
-	s.remove(index1, ~0);
+	s.truncate(index1);
       break;
     default:
       index1 += 1;
@@ -281,13 +281,13 @@ void remove_comments(QString & s)
       if ((index2 = s.find('\n', index1 + 2)) != -1)
 	s.remove(index1, index2 - index1 + 1);
       else
-	s.remove(index1, ~0);
+	s.truncate(index1);
       break;
     case '*':
       if ((index2 = s.find("*/", index1 + 2)) != -1)
 	s.replace(index1, index2 - index1 + 2, " ");
       else
-	s.remove(index1, ~0);
+	s.truncate(index1);
       break;
     default:
       index1 += 1;
@@ -305,7 +305,7 @@ void remove_python_comments(QCString & s)
     if ((index2 = s.find('\n', index1 + 1)) != -1)
       s.remove(index1, index2 - index1 + 1);
     else
-      s.remove(index1, ~0);
+      s.truncate(index1);
   }
 }
 
@@ -319,7 +319,7 @@ void remove_python_comments(QString & s)
     if ((index2 = s.find('\n', index1 + 2)) != -1)
       s.remove(index1, index2 - index1 + 1);
     else
-      s.remove(index1, ~0);
+      s.truncate(index1);
   }
 }
 
@@ -508,3 +508,62 @@ void remove_crlf(char * s)
   }
 }
 
+//
+
+static void bypass_spaces(const char *& s)
+{
+  for (;;) {
+    switch (*s) {
+    case ' ':
+    case '\t':
+    case '\r':
+    case '\n':
+      s += 1;
+      break;
+    default:
+      return;
+    }
+  }
+}
+
+bool is_referenced(const char * s, int id, const char * kc, const char * kr)
+{
+  if (s != 0) {
+    if (kc != 0) {
+      // search a form kc <n> kr id
+      int lkc = strlen(kc);
+      int lkr = strlen(kr);
+      
+      while ((s = strstr(s, kc)) != 0) {
+	s += lkc;
+	bypass_spaces(s);
+	
+	// bypass canvas id
+	while ((*s >= '0') && (*s <= '9'))
+	  s += 1;
+	
+	bypass_spaces(s);
+	if (strncmp(s, kr, lkr) == 0) {
+	  s += lkr;
+	  bypass_spaces(s);
+	  
+	  if (atoi(s) == id)
+	    return TRUE;
+	}
+      }
+    }
+    else {
+      // search a form  kr id
+      int lkr = strlen(kr);
+      
+      while ((s = strstr(s, kr)) != 0) {
+	s += lkr;
+	bypass_spaces(s);
+	if (atoi(s) == id)
+	  return TRUE;
+      }
+    }
+  }
+  
+  return FALSE;
+}

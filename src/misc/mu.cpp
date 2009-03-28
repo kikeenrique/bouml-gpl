@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -121,7 +121,7 @@ const char * user_name()
   static QCString name;
   
   if (! done) {
-    name = QDir::home().dirName();
+    name = homeDir().dirName();
     done = TRUE;
   }
   

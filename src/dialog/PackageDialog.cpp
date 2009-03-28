@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2008 Bruno PAGES  .
+// Copyleft 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -58,7 +58,7 @@ PackageDialog::PackageDialog(PackageData * da)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), pa(da) {
   da->browser_node->edit_start();
   
-  bool visit = !da->browser_node->saveable();
+  bool visit = !da->browser_node->is_writable();
   
   if (!visit)
     setCancelButton();
@@ -501,7 +501,7 @@ void PackageDialog::post_edit_description(PackageDialog * d, QString s)
 }
 
 void PackageDialog::accept() {
-  if (!check_edits(edits))
+  if (!check_edits(edits) || !kvtable->check_unique())
     return;
     
   BrowserPackage * bn = (BrowserPackage *) pa->browser_node;
