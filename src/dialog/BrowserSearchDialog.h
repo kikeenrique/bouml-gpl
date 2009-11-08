@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -47,6 +47,7 @@ class BrowserSearchDialog : public QDialog {
     QCheckBox * case_sensitive;
     QCheckBox * even_deleted;
     QRadioButton * for_name;
+    QRadioButton * for_stereotype;
     QRadioButton * for_comment;
     QRadioButton * for_decldefbody;
     QPushButton * select_b;
@@ -60,6 +61,7 @@ class BrowserSearchDialog : public QDialog {
     static bool saved_case_sensitive;
     static bool saved_even_deleted;
     static bool saved_name;
+    static bool saved_stereotype;
     static bool saved_comment;
     static bool saved_decldefbody;
     

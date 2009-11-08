@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,6 +44,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "Settings.h"
+#include "translate.h"
 
 #define MIN_FORK_JOIN_LARGESIDE 19
 #define FORK_JOIN_SMALLSIDE 15
@@ -197,7 +198,7 @@ aCorner PseudoStateCanvas::on_resize_point(const QPoint & p) {
   }
 }
 
-void PseudoStateCanvas::resize(aCorner c, int dx, int dy) {
+void PseudoStateCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
   switch (browser_node->get_type()) {
   case ForkPS:
   case JoinPS:
@@ -205,9 +206,9 @@ void PseudoStateCanvas::resize(aCorner c, int dx, int dy) {
     xpm = 0;
     
     if (horiz)
-      DiagramCanvas::resize(c, dx, 0, MIN_FORK_JOIN_LARGESIDE, FORK_JOIN_SMALLSIDE);
+      DiagramCanvas::resize(c, dx, 0, o, MIN_FORK_JOIN_LARGESIDE, FORK_JOIN_SMALLSIDE, TRUE);
     else
-      DiagramCanvas::resize(c, 0, dy, FORK_JOIN_SMALLSIDE, MIN_FORK_JOIN_LARGESIDE);
+      DiagramCanvas::resize(c, 0, dy, o, FORK_JOIN_SMALLSIDE, MIN_FORK_JOIN_LARGESIDE, TRUE);
     break;
   default:
     break;
@@ -519,17 +520,17 @@ void PseudoStateCanvas::menu(const QPoint&) {
       s.replace(index, 1, " ");
   }
   
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(TR(s), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 13);
-  m.insertItem("Go down", 14);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 13);
+  m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
   switch (browser_node->get_type()) {
   case ForkPS:
   case JoinPS:
-    m.insertItem((horiz) ? "draw vertically" : "draw horizontally", 2);
+    m.insertItem((horiz) ? TR("draw vertically") : TR("draw horizontally"), 2);
     m.insertSeparator();
     break;
   default:
@@ -537,23 +538,23 @@ void PseudoStateCanvas::menu(const QPoint&) {
   }
   /*m.insertItem("Edit drawing settings", 2);
   m.insertSeparator();*/
-  m.insertItem("Edit pseudo state", 3);
+  m.insertItem(TR("Edit pseudo state"), 3);
   m.insertSeparator();
-  m.insertItem("Select in browser", 4);
+  m.insertItem(TR("Select in browser"), 4);
   if (linked())
-    m.insertItem("Select linked items", 5);
+    m.insertItem(TR("Select linked items"), 5);
   m.insertSeparator();
   /*if (browser_node->is_writable())
     if (browser_node->get_associated() !=
 	(BrowserNode *) the_canvas()->browser_diagram())
-      m.insertItem("Set associated diagram",6);
+      m.insertItem(TR("Set associated diagram"),6);
   m.insertSeparator();*/
-  m.insertItem("Remove from view", 7);
+  m.insertItem(TR("Remove from view"), 7);
   if (browser_node->is_writable())
-    m.insertItem("Delete from model", 8);
+    m.insertItem(TR("Delete from model"), 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, browser_node->get_type(), 20))
-    m.insertItem("Tool", &toolm);
+    m.insertItem(TR("Tool"), &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -631,18 +632,18 @@ void PseudoStateCanvas::apply_shortcut(QString s) {
   package_modified();
 }
 
-const char * PseudoStateCanvas::may_start(UmlCode & l) const {
+QString PseudoStateCanvas::may_start(UmlCode & l) const {
   switch (l) {
   case UmlAnchor:
     return 0;
   case UmlTransition:
     return ((BrowserPseudoState *) browser_node)->may_start();
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
-const char * PseudoStateCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString PseudoStateCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor)
     return dest->may_start(l);
   
@@ -661,9 +662,9 @@ const char * PseudoStateCanvas::may_connect(UmlCode & l, const DiagramItem * des
   case EntryPointPS:
     return (l == UmlTransition)
       ? ((BrowserPseudoState *) browser_node)->may_connect(dest->get_bn())
-      : "illegal";
+      : TR("illegal");
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 

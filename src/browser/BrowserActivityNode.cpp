@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -50,6 +50,7 @@
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserActivityNode> BrowserActivityNode::all(257, __FILE__);
 QStringList BrowserActivityNode::its_default_stereotypes;	// unicode
@@ -96,6 +97,15 @@ void BrowserActivityNode::clear(bool old)
 void BrowserActivityNode::update_idmax_for_root()
 {
   all.update_idmax_for_root();
+}
+
+void BrowserActivityNode::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
 }
     
 void BrowserActivityNode::referenced_by(QList<BrowserNode> & l, bool ondelete) {
@@ -179,11 +189,11 @@ BasicData * BrowserActivityNode::add_relation(UmlCode, BrowserNode * end) {
 }
 
 // a flow may be added (dependency not allowed) ?
-const char * BrowserActivityNode::may_start() const {
+QString BrowserActivityNode::may_start() const {
   switch (get_type()) {
   case FlowFinalAN:
   case ActivityFinalAN:
-    return "can't have outgoing flow";
+    return TR("can't have outgoing flow");
   case InitialAN:
   case MergeAN:	      // theo all input and output must
   case JoinAN:	      // be control/data exclusively
@@ -194,7 +204,7 @@ const char * BrowserActivityNode::may_start() const {
       for (child = firstChild(); child != 0; child = child->nextSibling())
 	if ((((BrowserNode *) child)->get_type() == UmlFlow) &&
 	    (! ((BrowserNode *) child)->deletedp()))
-	  return "can't have several outgoing flows";
+	  return TR("can't have several outgoing flows");
     }
     // no break
   default:
@@ -203,36 +213,36 @@ const char * BrowserActivityNode::may_start() const {
 }
 
 // connexion by a flow (dependency not allowed)
-const char * BrowserActivityNode::may_connect(const BrowserNode * dest) const {
+QString BrowserActivityNode::may_connect(const BrowserNode * dest) const {
   BrowserNode * bn = dest->get_container(UmlActivity);
   
   if ((bn != 0) && (get_container(UmlActivity) != bn))
-    return "not in the same activity";
+    return TR("not in the same activity");
 
   BasicData * data = dest->get_data();
 
   switch (dest->get_type()) {
   case InitialAN:
-    return "initial node can't have incoming flow";
+    return TR("initial node can't have incoming flow");
   case ForkAN:
     return (((BrowserActivityNode *) dest)->target_of_flow())
-      ? "fork can't have several incoming flow"
+      ? TR("fork can't have several incoming flow")
       : 0;
   case UmlParameter:
     if (((ParameterData *) data)->get_dir() == UmlIn)
-      return "an input parameter can't have incoming flows";
+      return TR("an input parameter can't have incoming flows");
     else if (! ((ParameterData *) data)->get_is_control())
-      return "parameter can't accept control flow (not 'is_control')";
+      return TR("parameter can't accept control flow (not 'is_control')");
     else
       return 0;
   case UmlActivityObject:
   case UmlExpansionNode:
     return (!((ActivityObjectData *) data)->get_is_control())
-      ? "can't accept control flow (not 'is_control')"
+      ? TR("can't accept control flow (not 'is_control')")
       : 0;
   case UmlActivityPin:
     return (!((PinData *) data)->get_is_control())
-      ? "pin can't accept control flow (not 'is_control')"
+      ? TR("pin can't accept control flow (not 'is_control')")
       : 0;
   case UmlActivityAction:
   case FlowFinalAN:
@@ -242,21 +252,21 @@ const char * BrowserActivityNode::may_connect(const BrowserNode * dest) const {
   case JoinAN:	      // be control/data exclusively
     return 0;
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
-const char * BrowserActivityNode::connexion_from(bool control) const {
+QString BrowserActivityNode::connexion_from(bool control) const {
   switch (get_type()) {
   case ForkAN:  // theo all input and output must be control/data exclusively
     if (target_of_flow())
-      return "fork can't have several incoming flow";
+      return TR("fork can't have several incoming flow");
     else
       return 0;
   case FlowFinalAN:
   case ActivityFinalAN:
     if (! control)
-      return "can't have incoming data flow";
+      return TR("can't have incoming data flow");
     else
       return 0;
   case DecisionAN:    // theo all input and
@@ -264,7 +274,7 @@ const char * BrowserActivityNode::connexion_from(bool control) const {
   case JoinAN:	      // control/data exclusively
     return 0;
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
@@ -297,38 +307,38 @@ void BrowserActivityNode::menu() {
   if (index != -1)
     s.replace(index, 1, " ");
   
-  QPopupMenu m(0, "Activity node");
+  QPopupMenu m(0, TR("Activity node"));
   QPopupMenu toolm(0);
   
   m.insertItem(new MenuTitle(s, m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
-    m.setWhatsThis(m.insertItem("Edit", 1),
-		   "to edit the <em>" + s + "</em>, \
-a double click with the left mouse button does the same thing");
+    m.setWhatsThis(m.insertItem(TR("Edit"), 1),
+		   TR("to edit the <i>" + s + "</i>, \
+a double click with the left mouse button does the same thing"));
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("Duplicate", 2),
-		     "to copy the <em>" + s + "</em> in a new one");
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 2),
+		     TR("to copy the <i>" + s + "</i> in a new one"));
       m.insertSeparator();
       if (edition_number == 0)
-	m.setWhatsThis(m.insertItem("Delete", 3),
-		       "to delete the <em>" + s + "</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 3),
+		       TR("to delete the <i>" + s + "</i>. \
+Note that you can undelete it after"));
     }
-    m.setWhatsThis(m.insertItem("Referenced by", 5),
-		   "to know who reference the <i>" + s + "</i> \
-through a flow");
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 5),
+		   TR("to know who reference the <i>" + s + "</i> \
+through a flow"));
     mark_menu(m, s, 90);
     ProfiledStereotypes::menu(m, this, 99990);;
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 4),
-		   "to undelete the <em>" + s + "</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 4),
+		   TR("to undelete the <i>" + s + "</i>"));
   }
   
   exec_menu_choice(m.exec(QCursor::pos()));
@@ -471,7 +481,7 @@ bool BrowserActivityNode::tool_cmd(ToolCom * com, const char * args) {
 	  {
 	    BrowserNode * end = (BrowserNode *) com->get_id(args);
 	    
-	    if (may_connect(end) == 0)
+	    if (may_connect(end).isEmpty())
 	      (new BrowserFlow(this, end))->write_id(com);
 	    else
 	      ok = FALSE;
@@ -526,7 +536,7 @@ void BrowserActivityNode::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     if (may_contains(bn, FALSE)) 
       move(bn, after);
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -607,7 +617,7 @@ void BrowserActivityNode::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -663,7 +673,7 @@ BrowserActivityNode * BrowserActivityNode::read(char * & st, char * k,
     k = read_keyword(st);
     result->def->read(st, k);
     
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     result->is_read_only = (!in_import() && read_only_file()) || 
       ((user_id() != 0) && result->is_api_base());

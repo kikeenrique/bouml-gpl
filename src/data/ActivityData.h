@@ -1,6 +1,6 @@
 // *************************************************************************cr();
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -47,6 +47,7 @@ class ActivityData : public SimpleData {
     InfoData java_condition;
     bool read_only;
     bool single_execution;
+    bool is_active;
     BrowserOperation * specification;
     
     virtual void send_uml_def(ToolCom * com, BrowserNode * bn,
@@ -63,6 +64,7 @@ class ActivityData : public SimpleData {
     QString get_postcond(DrawingLanguage) const;
     bool get_is_read_only() const { return read_only; }
     bool get_is_single_execution() const { return single_execution; }
+    bool get_is_active() const { return is_active; }
     BrowserOperation * get_specification() const { return specification; }
     void set_specification(BrowserOperation *);
     

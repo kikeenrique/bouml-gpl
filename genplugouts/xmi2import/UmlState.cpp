@@ -150,6 +150,9 @@ void UmlState::importIt(FileIn & in, Token & token, UmlItem * where)
 	       + s + "' in '" + where->name() + "'");
     
     st->addItem(token.xmiId(), in);
+
+    if (token.valueOf("isactive") == "true")
+      st->set_isActive(TRUE);
     
     QCString spec = token.valueOf("specification");
     

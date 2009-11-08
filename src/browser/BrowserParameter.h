@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -56,9 +56,9 @@ class BrowserParameter : public BrowserNode, public Labeled<BrowserParameter>, p
 				    QString name = QString::null);
     
     virtual BasicData * add_relation(UmlCode, BrowserNode * end);
-    const char * may_start() const;
-    const char * may_connect(const BrowserNode * dest) const;
-    virtual const char * connexion_from(bool control) const;
+    QString may_start() const;
+    QString may_connect(const BrowserNode * dest) const;
+    virtual QString connexion_from(bool control) const;
 
     virtual const QPixmap* pixmap (int) const;
 
@@ -79,6 +79,7 @@ class BrowserParameter : public BrowserNode, public Labeled<BrowserParameter>, p
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
+    virtual void prepare_update_lib() const;
     
     virtual void referenced_by(QList<BrowserNode> &, bool ondelete = FALSE);
     static void compute_referenced_by(QList<BrowserNode> &, BrowserNode *);

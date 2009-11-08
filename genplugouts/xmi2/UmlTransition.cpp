@@ -35,6 +35,7 @@ void UmlTransition::write_it(FileOut & out) {
     out << " kind=\"" << ((isExternal()) ? "external" : "internal") << '"';
   out << ">\n";
   out.indent(+1);
+  write_description_properties(out);
   
   QCString trig;
   QCString grd;

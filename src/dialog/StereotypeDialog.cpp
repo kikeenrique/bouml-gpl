@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,13 +35,15 @@
 #include "StereotypeDialog.h"
 #include "DialogUtil.h"
 #include "UmlDesktop.h"
+#include "translate.h"
 
 QSize StereotypeDialog::previous_size;
 
 StereotypeDialog::StereotypeDialog(const QStringList &defaults,
-				   QString & st, QString & la)
-    : QDialog(0, "stereotype/label dialog", TRUE), ste(st), lab(la) {
-  setCaption("stereotype/label dialog");
+				   QString & st, QString & la,
+				   QString cap, QString lbl)
+    : QDialog(0, cap, TRUE), ste(st), lab(la) {
+  setCaption(cap);
   
   if (! ste.isEmpty())
     // removes << and >>
@@ -56,18 +58,18 @@ StereotypeDialog::StereotypeDialog(const QStringList &defaults,
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  hbox->addWidget(label1 = new QLabel("label : ", this));
+  hbox->addWidget(label1 = new QLabel(lbl, this));
   ed = new LineEdit(la, this);
   hbox->addWidget(ed);
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  hbox->addWidget(label2 = new QLabel("stereotype : ", this));
+  hbox->addWidget(label2 = new QLabel(TR("stereotype : "), this));
   cb = new QComboBox(TRUE, this);
   cb->insertItem(ste);
   cb->setCurrentItem(0);
   cb->insertStringList(defaults);
-  cb->setAutoCompletion(TRUE);
+  cb->setAutoCompletion(completion());
   hbox->addWidget(cb);
   
   QSizePolicy sp = cb->sizePolicy();
@@ -79,8 +81,8 @@ StereotypeDialog::StereotypeDialog(const QStringList &defaults,
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  QPushButton * accept = new QPushButton("&OK", this);
-  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QPushButton * accept = new QPushButton(TR("&OK"), this);
+  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
   QSize bs(cancel->sizeHint());
   
   accept->setDefault(TRUE);

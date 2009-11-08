@@ -1,7 +1,7 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,12 +48,13 @@
 #include "UmlCanvas.h"
 #include "myio.h"
 #include "UmlPixmap.h"
+#include "translate.h"
 
-static const char * zoomText = "Enter a new scale value or use the arrows to change the <em>scale</em>";
-static const char * fitzoomText = "Click this button to compute the <em>fit scale</em> allowing to try to show all the diagram";
-static const char * optwinsizeText = "Click this button to compute the smallest window size allowing to show all the diagram";
-static const char * editText  = "Click this button to call the diagram menu like on a right mouse click"
-  " done out of any element";
+static QString zoomText() { return TR("Enter a new scale value or use the arrows to change the <i>scale</i>"); }
+static QString fitzoomText() { return TR("Click this button to compute the <i>fit scale</i> allowing to try to show all the diagram"); }
+static QString optwinsizeText() { return TR("Click this button to compute the smallest window size allowing to show all the diagram"); }
+static QString editText() { return TR("Click this button to call the diagram menu like on a right mouse click"
+				      " done out of any element"); }
 
 DiagramWindow::DiagramWindow(BrowserDiagram * br, const QString & s)
     : QMainWindow(UmlWindow::get_workspace(), (const char *) s, WDestructiveClose),
@@ -88,31 +89,31 @@ void DiagramWindow::hit_select() {
 }
 
 void DiagramWindow::add_edit_button(QToolBar *toolbar) {
-  edit = new QToolButton(*editButton, "edit", QString::null,
+  edit = new QToolButton(*editButton, TR("edit"), QString::null,
 			 this, SLOT(call_menu()), toolbar, "edit");
-  QWhatsThis::add(edit, editText);
+  QWhatsThis::add(edit, editText());
   
   edit->setToggleButton(FALSE);
 }
 
 void DiagramWindow::add_scale_cmd(QToolBar * toolbar) {
-  sb_zoom = new QSpinBox(SCALE_MIN, SCALE_MAX, 10, toolbar, "scale");
+  sb_zoom = new QSpinBox(SCALE_MIN, SCALE_MAX, 10, toolbar, TR("scale"));
   //sb_zoom->setPrefix("scale ");
   sb_zoom->setSuffix("%");
   sb_zoom->setValue(100);
   connect(sb_zoom, SIGNAL(valueChanged(int)), this, SLOT(new_scale(int)));
-  QWhatsThis::add(sb_zoom, zoomText);
+  QWhatsThis::add(sb_zoom, zoomText());
   
   QToolButton * fitscale =
-    new QToolButton(*fitscaleButton, "optimal scale", QString::null,
+    new QToolButton(*fitscaleButton, TR("optimal scale"), QString::null,
 		    this, SLOT(fit_scale()), toolbar, "optimal scale");
-  QWhatsThis::add(fitscale, fitzoomText);
+  QWhatsThis::add(fitscale, fitzoomText());
   
   //
   
-  optwinsize = new QToolButton(*optwindowsizeButton, "optimal window size", QString::null,
+  optwinsize = new QToolButton(*optwindowsizeButton, TR("optimal window size"), QString::null,
 			 this, SLOT(optimal_window_size()), toolbar, "optimal window size");
-  QWhatsThis::add(optwinsize, optwinsizeText);
+  QWhatsThis::add(optwinsize, optwinsizeText());
   
   optwinsize->setToggleButton(FALSE);
 }

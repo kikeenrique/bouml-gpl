@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -36,7 +36,7 @@ ShowFileDialog::ShowFileDialog(const QCString & filename)
     : QDialog(0, filename) {
   QVBoxLayout * vbox = new QVBoxLayout(this);
  
-  vbox->addWidget(new QLabel("You can specify the editor through the environment variable BOUML_EDITOR",
+  vbox->addWidget(new QLabel("You can specify the editor through the environment dialog",
                              this));
  
   e = new QMultiLineEdit(this);

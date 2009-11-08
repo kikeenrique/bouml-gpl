@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -155,6 +155,7 @@ class GenerationSettings {
     
     static bool python_default_defs;
     static bool python_2_2;
+    static bool python_3_operation;
     static QString python_indent_step;
     static SharedStr python_src_content;
     static SharedStr python_class_decl;
@@ -200,6 +201,7 @@ class GenerationSettings {
     static bool cpp_relative_path;
     static bool cpp_root_relative_path;
     static bool cpp_force_namespace_gen;
+    static bool cpp_inline_force_incl_in_h;
     static IncludesSpec cpp_includes;
     static QString java_extension;
     static bool java_force_package_gen;
@@ -324,6 +326,7 @@ class GenerationSettings {
     static bool python_get_default_defs() { return python_default_defs; };
     static bool python_set_default_defs(bool y);
     static bool python_default_2_2() { return python_2_2; };
+    static bool python_default_operation3() { return python_3_operation; };
     static const QString & python_get_indent_step() { return python_indent_step; }
     static const char * python_default_source_content() { return python_src_content; };
     static const char * python_default_class_decl() { return python_class_decl; };

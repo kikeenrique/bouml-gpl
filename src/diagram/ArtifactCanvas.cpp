@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,6 +49,7 @@
 #include "strutil.h"
 #include "GenerationSettings.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 ArtifactCanvas::ArtifactCanvas(BrowserNode * bn, UmlCanvas * canvas,
 				 int x, int y)
@@ -529,33 +530,33 @@ void ArtifactCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 15);
-  m.insertItem("Go down", 16);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 15);
+  m.insertItem(TR("Go down"), 16);
   m.insertSeparator();
-  m.insertItem("Add related elements", 17);
+  m.insertItem(TR("Add related elements"), 17);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 2);
+  m.insertItem(TR("Edit drawing settings"), 2);
   m.insertSeparator();
-  m.insertItem("Edit artifact", 3);
+  m.insertItem(TR("Edit artifact"), 3);
   m.insertSeparator();
-  m.insertItem("Select in browser", 4);
+  m.insertItem(TR("Select in browser"), 4);
   if (linked())
-    m.insertItem("Select linked items", 5);
+    m.insertItem(TR("Select linked items"), 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
     if (browser_node->get_associated() !=
 	(BrowserNode *) the_canvas()->browser_diagram())
-      m.insertItem("Set associated diagram",6);
+      m.insertItem(TR("Set associated diagram"),6);
     
     if (browser_node->get_associated())
-      m.insertItem("Remove diagram association",12);
+      m.insertItem(TR("Remove diagram association"),12);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view", 7);
+  m.insertItem(TR("Remove from view"), 7);
   if (browser_node->is_writable())
-    m.insertItem("Delete from model", 8);
+    m.insertItem(TR("Delete from model"), 8);
   m.insertSeparator();
 
   bool cpp = GenerationSettings::cpp_get_default_defs();
@@ -565,10 +566,10 @@ void ArtifactCanvas::menu(const QPoint&) {
   bool idl = GenerationSettings::idl_get_default_defs();
 
   if (cpp || java || php || python || idl)
-    m.insertItem("Generate", &gensubm);
+    m.insertItem(TR("Generate"), &gensubm);
   
   if (Tool::menu_insert(&toolm, UmlArtifact, 20))
-    m.insertItem("Tool", &toolm);
+    m.insertItem(TR("Tool"), &toolm);
   
   if (cpp)
     gensubm.insertItem("C++", 9);
@@ -645,7 +646,7 @@ void ArtifactCanvas::menu(const QPoint&) {
     return;
   case 17:
     ((UmlCanvas *) canvas())->get_view()
-      ->add_related_elements(this, "artifact", TRUE, FALSE);
+      ->add_related_elements(this, TR("artifact"), TRUE, FALSE);
     return;
   default:
     if (index >= 20)
@@ -675,7 +676,7 @@ void ArtifactCanvas::apply_shortcut(QString s) {
   }
   else if (s == "Add related elements") {
     ((UmlCanvas *) canvas())->get_view()
-      ->add_related_elements(this, "artifact", TRUE, FALSE);
+      ->add_related_elements(this, TR("artifact"), TRUE, FALSE);
     return;
   }
   else {
@@ -688,12 +689,12 @@ void ArtifactCanvas::apply_shortcut(QString s) {
 }
 
 void ArtifactCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st;
-  QArray<ColorSpec> co(1);
+  StateSpecVector st;
+  ColorSpecVector co(1);
   
-  co[0].set("artifact color", &itscolor);
+  co[0].set(TR("artifact color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -705,15 +706,15 @@ bool ArtifactCanvas::has_drawing_settings() const {
 }
 
 void ArtifactCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   UmlColor itscolor;
   
-  co[0].set("artifact color", &itscolor);
+  co[0].set(TR("artifact color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
   
   dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
@@ -723,29 +724,29 @@ void ArtifactCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }
 }
 
-const char * ArtifactCanvas::may_start(UmlCode & l) const {
+QString ArtifactCanvas::may_start(UmlCode & l) const {
   switch (l) {
   case UmlContain:
     if (!browser_node->is_writable())
-      return "read only";
+      return TR("read only");
     else if (strcmp(browser_node->get_stereotype(), "source") == 0)
-      return "illegal for a source artifact";
+      return TR("illegal for a source artifact");
     else
       return 0;
   case UmlDependency:
     l = UmlDependOn;
-    return (browser_node->is_writable()) ? 0 : "read only";
+    return (browser_node->is_writable()) ? 0 : TR("read only");
   case UmlGeneralisation:
     l = UmlInherit;
-    return (browser_node->is_writable()) ? 0 : "read only";
+    return (browser_node->is_writable()) ? 0 : TR("read only");
   case UmlAnchor:
     return 0;
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
-const char * ArtifactCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString ArtifactCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor)
     return dest->may_start(l);
   
@@ -754,18 +755,18 @@ const char * ArtifactCanvas::may_connect(UmlCode & l, const DiagramItem * dest) 
     switch (l) {
     case UmlContain:
     case UmlDependOn:
-      return (dest == this) ? "illegal" : 0;
+      return (dest == this) ? TR("illegal") : 0;
     case UmlInherit:
       return browser_node->check_inherit(dest->get_bn());;
     default:
-      return "illegal";
+      return TR("illegal");
     }
   case UmlPackage:
   case UmlComponent:
   case UmlDeploymentNode:
-    return (l == UmlDependOn) ? 0 : "illegal";
+    return (l == UmlDependOn) ? 0 : TR("illegal");
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 

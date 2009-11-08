@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,7 +48,9 @@ class ClassContainer {
 		   QCString & str_actual, QCString s,
 		   UmlClass ** first_actual_class, QCString & def,
 		   QCString & genericname);
-    bool bypass_type(QCString s);
+#ifdef ROUNDTRIP
+    virtual Class * upload_define(UmlClass *) = 0;
+#endif
 
   protected:
     QDict<Class> Defined;

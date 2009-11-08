@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -25,3 +25,45 @@
 
 #include "UmlExtraClassMember.h"
 
+#ifdef ROUNDTRIP
+#include "Class.h"
+#include "UmlClass.h"
+
+// an empty string is != a null string in Qt !
+bool inline neq(const QCString & s1, const QCString & s2)
+{
+  return (s1.isEmpty()) ? !s2.isEmpty() : (s1 != s2);
+}
+
+void UmlExtraClassMember::add_init(UmlClass * cl, QCString def, bool roundtrip,
+				   QList<UmlItem> & expected_order)
+{
+  if (roundtrip) {
+    const QVector<UmlItem> & ch = cl->children();
+    UmlItem ** v = ch.data();
+    UmlItem ** const vsup = v + ch.size();
+    UmlItem * x;
+    
+    for (;v != vsup; v += 1) {
+      if (((x = *v)->kind() == anExtraClassMember) &&
+	  ((UmlExtraClassMember *) x)->is_useless() &&
+	  (x->name() == "initialization")) {
+	expected_order.append(x);
+	if (neq(((UmlExtraClassMember *) x)->javaDecl(), def)) {
+	  ((UmlExtraClassMember *) x)->set_JavaDecl(def);
+	  cl->get_class()->set_updated();
+	}
+	((UmlExtraClassMember *) x)->set_usefull();
+	return;
+      }
+    } 
+  }
+  
+  UmlExtraClassMember * x =
+    UmlExtraClassMember::create(cl, "initialization");
+  
+  x->set_JavaDecl(def);
+  expected_order.append(x);
+}
+
+#endif

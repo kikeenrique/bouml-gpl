@@ -32,6 +32,13 @@ class UmlTypeSpec;
 // parts are declared 'private' rather than 'public' or 'protected'.
 class UmlBaseItem {
   public:
+    // return a constant identifier, it is unique within a given
+    // kind of element (two classes can't have the same identifiers, but
+    // a class and a component may have the same identifier) 
+    // except for the diagrams (a class diagram can't have the identifier
+    // of a component diagram)
+    int getIdentifier();
+
     // returns the kind of the item
     virtual anItemKind kind() = 0;
 
@@ -62,7 +69,8 @@ class UmlBaseItem {
     UmlItem * parent();
 
     // returns (in Java : a copy of) the children list, to go all over the browser tree
-    const QVector<UmlItem> children();
+    // NOTE : RETURN RFE ONLY HERE, too dangerous for user use
+    const QVector<UmlItem> & children();
 
     // return TRUE if the children exist and are visible (independently
     // of the scroll bar) in the browser, else FALSE
@@ -145,7 +153,7 @@ class UmlBaseItem {
     bool isMarked();
 
     //  to mark/unmark the current item. The project cannot marked
-    //  On error return FALSE in C++, produce a RuntimeException in Java
+    // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_isMarked(bool y);
 
     //  Returns the items referencing the current one.
@@ -153,13 +161,6 @@ class UmlBaseItem {
     //  UmlOperation (their bodies are not taken into account) , UmlClass
     //  and UmlComponents.
     const QVector<UmlItem> referencedBy();
-    
-    // return a constant identifier, it is unique within a given
-    // kind of element (two classes can't have the same identifiers, but
-    // a class and a component may have the same identifier) 
-    // except for the diagrams (a class diagram can't have the identifier
-    // of a component diagram)
-    int getIdentifier();
 
     // to unload the object to free memory, it will be reloaded automatically
     // if needed. Recursively done for the sub items if 'rec' is TRUE. 
@@ -175,10 +176,9 @@ class UmlBaseItem {
     //remove the element from the model, use it carefully because\n"
     // after that the element can't be used anymore by the plug-out\n"
     // On error : return FALSE in C++, produce a RuntimeException in Java
-    void deleteIt();
-    
+    bool deleteIt();
+
     // not in plug-outs managed through bouml
-    void delete_it();
     bool moveIn(UmlItem * x);
     void setUser(unsigned uid);
     static UmlItem * from_id(unsigned uid, anItemKind);
@@ -221,7 +221,7 @@ class UmlBaseItem {
     bool _marked;
 
     void * _identifier;
-    
+
     int _modeler_id;
 
     QCString _name;
@@ -365,6 +365,13 @@ class UmlBaseItem {
   friend class UmlBaseWriteVariableValueAction;
   friend class UmlBaseAddVariableValueAction;
   friend class UmlBaseRemoveVariableValueAction;
+  friend class UmlBaseReduceAction;
+  friend class UmlBaseRaiseExceptionAction;
+  friend class UmlBaseTestIdentityAction;
+  friend class UmlBaseDestroyObjectAction;
+  friend class UmlBaseCreateObjectAction;
+  friend class UmlBaseReplyAction;
+  friend class UmlBaseAcceptCallAction;
   friend class UmlBaseActivityControlNode;
   friend class UmlBaseInitialActivityNode;
   friend class UmlBaseFlowFinalActivityNode;
@@ -379,6 +386,7 @@ class UmlBaseItem {
   friend class UmlBaseActivityPin;
   friend class UmlBaseActivityParameter;
   friend class UmlBaseParameterSet;
+  friend class UmlBaseActivityPartition;
 };
 
 #endif

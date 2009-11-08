@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,6 +39,7 @@
 #include "BrowserRelation.h"
 #include "RelationData.h"
 #include "UmlDesktop.h"
+#include "translate.h"
 
 QSize ObjectLinkDialog::previous_size;
 
@@ -47,7 +48,7 @@ ObjectLinkDialog::ObjectLinkDialog(BrowserClassInstance * a, BrowserClassInstanc
 				   int nfirstdir)
     : QDialog(0, "object link dialog", TRUE),
       rels(l), nforward(nfirstdir), clia(a), clib(b), choozen(0), reverse(FALSE) {
-  setCaption("Object link dialog");
+  setCaption(TR("Object link dialog"));
   
   QVBoxLayout * vbox = new QVBoxLayout(this);
   QHBoxLayout * hbox;
@@ -55,9 +56,9 @@ ObjectLinkDialog::ObjectLinkDialog(BrowserClassInstance * a, BrowserClassInstanc
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
   
-  hbox->addWidget(new QLabel("\n"
-			     "To set the association select one clicking on a cellule or on the first column then press 'Ok'\n"
-			     "To unset the association press 'Unset' then press 'Ok'\n",
+  hbox->addWidget(new QLabel(TR("\n"
+				"To set the association select one clicking on a cellule or on the first column then press 'Ok'\n"
+				"To unset the association press 'Unset' then press 'Ok'\n"),
 			     this));
   
   init(current);	// update table
@@ -69,10 +70,10 @@ ObjectLinkDialog::ObjectLinkDialog(BrowserClassInstance * a, BrowserClassInstanc
   QPushButton * newrel = 
     (((ClassInstanceData *) clia->get_data())->get_class()->is_writable() ||
      ((ClassInstanceData *) clib->get_data())->get_class()->is_writable())
-    ? new QPushButton("&New", this) : 0;
-  QPushButton * unset = new QPushButton("&Unset", this);
-  QPushButton * accept = new QPushButton("&OK", this);
-  QPushButton * cancel = new QPushButton("&Cancel", this);
+    ? new QPushButton(TR("&New"), this) : 0;
+  QPushButton * unset = new QPushButton(TR("&Unset"), this);
+  QPushButton * accept = new QPushButton(TR("&OK"), this);
+  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
   QSize bs(cancel->sizeHint());
   
   if (newrel != 0) {
@@ -128,11 +129,11 @@ void ObjectLinkDialog::init(RelationData * current) {
   table->setSelectionMode(QTable::Single);
   table->setSorting(FALSE);
   
-  table->horizontalHeader()->setLabel(0, "Class Inst.");
-  table->horizontalHeader()->setLabel(1, "Role");
-  table->horizontalHeader()->setLabel(2, "kind");
-  table->horizontalHeader()->setLabel(3, "Role");
-  table->horizontalHeader()->setLabel(4, "Class Inst.");
+  table->horizontalHeader()->setLabel(0, TR("Class Inst."));
+  table->horizontalHeader()->setLabel(1, TR("Role"));
+  table->horizontalHeader()->setLabel(2, TR("kind"));
+  table->horizontalHeader()->setLabel(3, TR("Role"));
+  table->horizontalHeader()->setLabel(4, TR("Class Inst."));
   
   ra = clia->get_name() + QString(":") +
     ((ClassInstanceData *) clia->get_data())->get_class()->get_name();

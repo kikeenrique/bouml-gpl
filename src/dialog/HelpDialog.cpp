@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,6 +41,7 @@
 
 #include "HelpDialog.h"
 #include "UmlDesktop.h"
+#include "translate.h"
 
 static QString NavigatorPath;
 static QString ManualDir;
@@ -73,7 +74,7 @@ HelpDialog * HelpDialog::the;
 
 HelpDialog::HelpDialog()
     : QDialog(0, "BOUML Help", FALSE, WDestructiveClose) {
-  setCaption("BOUML Help");
+  setCaption(TR("BOUML Help"));
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
   QHBoxLayout * hbox;
@@ -90,8 +91,8 @@ HelpDialog::HelpDialog()
     
     hbox = new QHBoxLayout(vbox);
     hbox->addWidget(new QLabel(this));
-    hbox->addWidget(new QLabel("To set the navigator by setting the environment through the menu"
-			       " Miscellaneous allows to see all the documentation in better conditions"
+    hbox->addWidget(new QLabel(TR("To set the navigator by setting the environment through the menu"
+				  " Miscellaneous allows to see all the documentation in better conditions")
 			       , this));
     hbox->addWidget(new QLabel(this));
   }
@@ -100,7 +101,7 @@ HelpDialog::HelpDialog()
   
   hbox = new QHBoxLayout(vbox);
   
-  QPushButton * ok = new QPushButton("Close", this);
+  QPushButton * ok = new QPushButton(TR("Close"), this);
   
   hbox->addWidget(new QLabel(this));
   hbox->addWidget(ok);
@@ -179,9 +180,9 @@ void HelpDialog::show(QString topic)
 	
 	if (errno != 0)
 	  QMessageBox::critical(0, "Bouml",
-				"error while executing '" + NavigatorPath +"'\n"
-				"perhaps you must specify its absolute path"
-				"or set the environment variable PATH ?");
+				TR("error while executing '%1'\n"
+				   "perhaps you must specify its absolute path"
+				   "or set the environment variable PATH ?", NavigatorPath));
 
 	return;
       }
@@ -209,13 +210,13 @@ void HelpDialog::show(QString topic)
       }
     }
   
-    the->br->setText(QString((old) ? "The documentation is too old.<br><br>"
-				   : "The documentation isn't installed.<br><br>") +
-		     "The \".tar.gz\" or \".7z\" archives are available here:"
-		     "<ul><li>http://bouml.sourceforge.net/documentation.html</li>"
-		     "<li>http://bouml.free.fr/documentation.html</li></ul>"
-		     "<br>Extract an archive and set the environment through the Miscellaneous"
-		     "menu to indicate where the directory \"doc\" is then close this dialog and redo");
+    the->br->setText(QString((old) ? TR("The documentation is too old.<br><br>")
+				   : TR("The documentation isn't installed.<br><br>")) +
+		     TR("The \".tar.gz\" or \".7z\" archives are available here:"
+			"<ul><li>http://bouml.sourceforge.net/documentation.html</li>"
+			"<li>http://bouml.free.fr/documentation.html</li></ul>"
+			"<br>Extract an archive and set the environment through the Miscellaneous"
+			"menu to indicate where the directory \"doc\" is then close this dialog and redo"));
     the->setMinimumSize(QSize(600, 300));
   }
   

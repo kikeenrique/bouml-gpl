@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -50,10 +50,20 @@ class UmlOperation : public UmlBaseOperation {
 			bool finalp, bool abstractp, bool staticp,
 			bool nativep, bool strictfp, bool synchronizedp,
 			const QCString & array,	QCString comment,
-			QCString description, QCString annotation);
+			QCString description, QCString annotation
+#ifdef ROUNDTRIP
+			, bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			);
 
     static void skip_body(int level = 0);
-    static QCString skip_expr(int level = 0);
+    static char skip_expr(int level = 0);
+
+#ifdef ROUNDTRIP
+    static UmlOperation * already_exist_from_id(Class * container, QCString & body);
+    static UmlOperation * already_exist(Class * container, const QCString & name,
+					QValueList<UmlParameter> & params);
+#endif
 };
 
 #endif

@@ -21,7 +21,65 @@ bool UmlBaseAttribute::isReadOnly() {
 }
 
 bool UmlBaseAttribute::set_isReadOnly(bool y) {
-  return set_it_(_read_only, y, setIsReadOnlyCmd);
+  UmlCom::send_cmd(_identifier, setIsReadOnlyCmd, (char) y);
+  if (UmlCom::read_bool()) {
+    _read_only = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool UmlBaseAttribute::isDerived() {
+  read_if_needed_();
+  return _derived;
+}
+
+bool UmlBaseAttribute::isDerivedUnion() {
+  read_if_needed_();
+  return _derived_union;
+}
+
+bool UmlBaseAttribute::set_isDerived(bool is_derived, bool is_union) {
+  UmlCom::send_cmd(_identifier, setDerivedCmd,
+                   (char) (((is_derived) ? 1 : 0) + ((is_union) ? 2 : 0)));
+  if (UmlCom::read_bool()) {
+    _derived = is_derived;
+    _derived_union = is_union;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool UmlBaseAttribute::isOrdered() {
+  read_if_needed_();
+  return _ordered;
+}
+
+bool UmlBaseAttribute::set_isOrdered(bool v) {
+  UmlCom::send_cmd(_identifier, setOrderingCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _ordered = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool UmlBaseAttribute::isUnique() {
+  read_if_needed_();
+  return _unique;
+}
+
+bool UmlBaseAttribute::set_isUnique(bool v) {
+  UmlCom::send_cmd(_identifier, setUniqueCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _unique = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 const QCString & UmlBaseAttribute::defaultValue() {
@@ -42,6 +100,16 @@ const UmlTypeSpec & UmlBaseAttribute::type() {
 
 bool UmlBaseAttribute::set_Type(const UmlTypeSpec & t) {
   return set_it_(_type, t, setTypeCmd);
+}
+
+const QCString & UmlBaseAttribute::multiplicity() {
+  read_if_needed_();
+  
+  return _multiplicity;
+}
+
+bool UmlBaseAttribute::set_Multiplicity(const char * s) {
+  return set_it_(_multiplicity, s, setMultiplicityCmd);
 }
 
 UmlOperation * UmlBaseAttribute::getOperation() {
@@ -84,7 +152,13 @@ bool UmlBaseAttribute::isCppMutable() {
 }
 
 bool UmlBaseAttribute::set_isCppMutable(bool y) {
-  return set_it_(_cpp_mutable, y, setIsCppMutableCmd);
+  UmlCom::send_cmd(_identifier, setIsCppMutableCmd, (char) y);
+  if (UmlCom::read_bool()) {
+    _cpp_mutable = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 #endif
 
@@ -96,8 +170,13 @@ bool UmlBaseAttribute::isJavaTransient() {
 }
 
 bool UmlBaseAttribute::set_isJavaTransient(bool y) {
-  return set_it_(_java_transient, y, setIsJavaTransientCmd);
-
+  UmlCom::send_cmd(_identifier, setIsJavaTransientCmd, (char) y);
+  if (UmlCom::read_bool()) {
+    _java_transient = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 #endif
 
@@ -138,6 +217,7 @@ void UmlBaseAttribute::unload(bool rec, bool del) {
   _idl_explicit_case = 0;
 #endif
   UmlBaseClassMember::unload(rec, del);
+  _multiplicity = 0;
 }
 
 void UmlBaseAttribute::read_uml_() {
@@ -145,8 +225,13 @@ void UmlBaseAttribute::read_uml_() {
   _type.type = (UmlClass *) UmlBaseItem::read_();
   if (_type.type == 0)
     _type.explicit_type = UmlCom::read_string();
+  _multiplicity = UmlCom::read_string();
   _default_value = UmlCom::read_string();
   _read_only = UmlCom::read_bool();
+  _derived = UmlCom::read_bool();
+  _derived_union = UmlCom::read_bool();
+  _ordered = UmlCom::read_bool();
+  _unique = UmlCom::read_bool();
   _get_oper = (UmlOperation *) UmlBaseItem::read_();
   _set_oper = (UmlOperation *) UmlBaseItem::read_();
 }
@@ -160,8 +245,20 @@ void UmlBaseAttribute::read_cpp_() {
 
 #ifdef WITHJAVA
 void UmlBaseAttribute::read_java_() {
-  UmlBaseClassItem::read_java_();
+  UmlBaseClassMember::read_java_();
   _java_transient = UmlCom::read_bool();
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBaseAttribute::read_php_() {
+  UmlBaseClassMember::read_php_();
+}
+#endif
+
+#ifdef WITHPYTHON
+void UmlBaseAttribute::read_python_() {
+  UmlBaseClassMember::read_python_();
 }
 #endif
 

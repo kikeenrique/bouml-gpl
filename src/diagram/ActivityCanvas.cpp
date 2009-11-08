@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,6 +49,7 @@
 #include "MenuTitle.h"
 #include "Settings.h"
 #include "strutil.h"
+#include "translate.h"
 
 ActivityCanvas::ActivityCanvas(BrowserNode * bn, UmlCanvas * canvas,
 			       int x, int y)
@@ -239,8 +240,8 @@ aCorner ActivityCanvas::on_resize_point(const QPoint & p) {
   return ::on_resize_point(p, rect());
 }
 
-void ActivityCanvas::resize(aCorner c, int dx, int dy) {
-  DiagramCanvas::resize(c, dx, dy, min_width, min_height);
+void ActivityCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
+  DiagramCanvas::resize(c, dx, dy, o, min_width, min_height, TRUE);
   
   force_sub_inside();
 }
@@ -519,36 +520,36 @@ void ActivityCanvas::menu(const QPoint&) {
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("Add parameter", 9);
+    m.insertItem(TR("Add parameter"), 9);
     m.insertSeparator();
   }
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 13);
-  m.insertItem("Go down", 14);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 13);
+  m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 2);
+  m.insertItem(TR("Edit drawing settings"), 2);
   m.insertSeparator();
-  m.insertItem("Edit activity", 3);
+  m.insertItem(TR("Edit activity"), 3);
   m.insertSeparator();
-  m.insertItem("Select in browser", 4);
+  m.insertItem(TR("Select in browser"), 4);
   if (linked())
-    m.insertItem("Select linked items", 5);
+    m.insertItem(TR("Select linked items"), 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
     if (browser_node->get_associated() !=
 	(BrowserNode *) the_canvas()->browser_diagram())
-      m.insertItem("Set associated diagram",6);
+      m.insertItem(TR("Set associated diagram"),6);
     if (browser_node->get_associated())
-      m.insertItem("Remove diagram association",10);
+      m.insertItem(TR("Remove diagram association"),10);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view", 7);
+  m.insertItem(TR("Remove from view"), 7);
   if (browser_node->is_writable())
-    m.insertItem("Delete from model", 8);
+    m.insertItem(TR("Delete from model"), 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlActivity, 20))
-    m.insertItem("Tool", &toolm);
+    m.insertItem(TR("Tool"), &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -636,15 +637,15 @@ void ActivityCanvas::apply_shortcut(QString s) {
 }
 
 void ActivityCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(2);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(2);
+  ColorSpecVector co(1);
   
-  st[0].set("show conditions", &settings.show_infonote);
-  st[1].set("drawing language", &settings.drawing_language);
+  st[0].set(TR("show conditions"), &settings.show_infonote);
+  st[1].set(TR("drawing language"), &settings.drawing_language);
   
-  co[0].set("activity color", &itscolor);
+  co[0].set(TR("activity color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -656,29 +657,29 @@ bool ActivityCanvas::has_drawing_settings() const {
 }
 
 void ActivityCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(2);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(2);
+  ColorSpecVector co(1);
   Uml3States show_infonote;
   DrawingLanguage drawing_language;
   UmlColor itscolor;
   
-  st[0].set("show conditions", &show_infonote);
-  st[1].set("drawing language", &drawing_language);
+  st[0].set(TR("show conditions"), &show_infonote);
+  st[1].set(TR("drawing language"), &drawing_language);
   
-  co[0].set("activity color", &itscolor);
+  co[0].set(TR("activity color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
-      if (st[0].name != 0)
+      if (!st[0].name.isEmpty())
 	((ActivityCanvas *) it.current())->settings.show_infonote = show_infonote;
-      if (st[1].name != 0)
+      if (!st[1].name.isEmpty())
 	((ActivityCanvas *) it.current())->settings.drawing_language = drawing_language;
-      if (co[0].name != 0)
+      if (!co[0].name.isEmpty())
 	((ActivityCanvas *) it.current())->itscolor = itscolor;
       ((ActivityCanvas *) it.current())->modified();	// call package_modified()
     }
@@ -696,15 +697,15 @@ bool ActivityCanvas::get_show_stereotype_properties() const {
   }
 }
 
-const char * ActivityCanvas::may_start(UmlCode & l) const {
-  return (l == UmlFlow) ? "illegal" : 0;
+QString ActivityCanvas::may_start(UmlCode & l) const {
+  return (l == UmlFlow) ? TR("illegal") : 0;
 }
 
-const char * ActivityCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString ActivityCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor)
     return dest->may_start(l);
   else if(dest->get_bn() == 0)
-    return "illegal";
+    return TR("illegal");
   else
     // dependency
     return ((BrowserActivity *) browser_node)->may_connect(dest->get_bn());

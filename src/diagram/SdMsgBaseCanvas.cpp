@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,19 +37,22 @@
 #include "UmlCanvas.h"
 #include "SdLifeLineCanvas.h"
 #include "SdMsgDialog.h"
+#include "StereotypeDialog.h"
 #include "LabelCanvas.h"
 #include "Settings.h"
 #include "BrowserClass.h"
 #include "BrowserOperation.h"
 #include "BrowserDiagram.h"
+#include "BrowserSeqDiagram.h"
 #include "myio.h"
 #include "ToolCom.h"
+#include "translate.h"
 
 SdMsgBaseCanvas::SdMsgBaseCanvas(UmlCanvas * canvas, SdDurationCanvas * d,
 				 UmlCode l, int v, int id)
     : DiagramCanvas(0, canvas, 0, v, 0, 0, id),
-      dest(d), msg(0), itsType(l), already_moved(FALSE),
-      show_full_oper(UmlDefaultState),
+      dest(d), msg(0), stereotype(0), itsType(l),
+      already_moved(FALSE), show_full_oper(UmlDefaultState),
       drawing_language(DefaultDrawingLanguage) {
   browser_node = canvas->browser_diagram();
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
@@ -63,6 +66,8 @@ void SdMsgBaseCanvas::delete_it() {
   disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
   if (msg != 0)
     disconnect(msg, 0, this, 0);
+  if (stereotype != 0)
+    ((UmlCanvas *) canvas())->del(stereotype);
   DiagramCanvas::delete_it();
 }
 
@@ -175,16 +180,40 @@ void SdMsgBaseCanvas::set_synchronous(bool yes) {
   }
 }
 
-const char * SdMsgBaseCanvas::may_start(UmlCode & l) const {
-  return (l == UmlAnchor) ? 0 : "illegal";
+QString SdMsgBaseCanvas::may_start(UmlCode & l) const {
+  return (l == UmlAnchor) ? 0 : TR("illegal");
 }
 
-const char * SdMsgBaseCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
+QString SdMsgBaseCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  return (l == UmlAnchor) ? dest->may_start(l) : TR("illegal");
 }
 
 bool SdMsgBaseCanvas::is_decenter(const QPoint &, bool &) const {
   return FALSE;
+}
+
+void SdMsgBaseCanvas::update_st(QString st) {
+  if (st.isEmpty()) {
+    if (stereotype != 0) {
+      // removes it
+      the_canvas()->del(stereotype);
+      stereotype = 0;
+    }
+  }
+  else {
+    if (stereotype == 0) {
+      // adds stereotype
+      stereotype = new LabelCanvas(st, the_canvas(), 0, 0);
+      default_stereotype_position();	    
+      stereotype->show();
+    }
+    else if ((stereotype != 0) &&
+	     (stereotype->get_name() != st)) {
+      // update st
+      stereotype->set_name(st);
+      default_stereotype_position();
+    }
+  }
 }
 
 void SdMsgBaseCanvas::open() {
@@ -192,22 +221,26 @@ void SdMsgBaseCanvas::open() {
   case UmlReturnMsg:
   case UmlSelfReturnMsg:
     {
-      bool ok = FALSE;
-      QString s =
-	QInputDialog::getText("Return", "value :", QLineEdit::Normal,
-			      (const char *) explicit_msg, &ok);
+      QString val = explicit_msg;
+      QString st;
       
-      s = s.stripWhiteSpace();
+      if (stereotype)
+	st = stereotype->get_name();
       
-      if (ok && (s != (const char *) explicit_msg)) {
-	explicit_msg = s;
+      StereotypeDialog d(BrowserSeqDiagram::msg_default_stereotypes(),
+			 st, val, TR("Return"), TR("value :"));
+      
+      d.raise();
+      if (d.exec() == QDialog::Accepted) {
+	update_st(st);
+	explicit_msg = val.stripWhiteSpace();
 	modified();
       }
     }
     break;
   default:
     {
-      SdMsgDialog d(this);
+      SdMsgDialog d(this, BrowserSeqDiagram::msg_default_stereotypes());
       
       if (d.exec() == QDialog::Accepted)
 	modified();
@@ -256,14 +289,33 @@ void SdMsgBaseCanvas::default_label_position() const {
 	      y() - fm.height());
 }
 
+void SdMsgBaseCanvas::default_stereotype_position() const {
+  QFontMetrics fm(the_canvas()->get_font(UmlNormalFont));
+  QSize sz = fm.size(0, stereotype->get_name());
+      
+  stereotype->move(rect().center().x() - sz.width()/2,
+		   y() + fm.height());
+}
+
+void SdMsgBaseCanvas::setVisible(bool yes) {
+  DiagramCanvas::setVisible(yes);
+  if (stereotype)
+    stereotype->setVisible(yes);
+}
+
 void SdMsgBaseCanvas::moveBy(double dx, double dy) {
-  if (dy > 80000)
+  if (dy > 80000) {
     // horizontal moving due to the life line moving
     DiagramCanvas::moveBy(dx, 0);
+    if ((stereotype != 0) && !stereotype->selected())
+      stereotype->moveBy(dx, 0);
+  }
   else if (!already_moved && ((y() + dy) > min_y())) {
     // vertical moving due to the duration moving or user moving
     already_moved = TRUE;
     DiagramCanvas::moveBy(0, dy);
+    if ((stereotype != 0) && !stereotype->selected())
+      stereotype->moveBy(0, dy);
   }
 }
 
@@ -299,7 +351,14 @@ void SdMsgBaseCanvas::save(QTextStream & st, QString & warning) const {
   st << "to ";
   dest->save(st, TRUE, warning);
   nl_indent(st);
+#ifdef FORCE_INT_COORD
+  // note : << float bugged in Qt 3.3.3
   st << "yz " << (int) y() << ' ' << (int) z();
+#else
+  QString sy, sz;
+  
+  st << "yz " << sy.setNum(y()) << ' ' << sz.setNum(z());
+#endif
   if (msg != 0) {
     if (msg->deletedp()) {
       warning += QString("<b>") + the_canvas()->browser_diagram()->full_name() +
@@ -326,6 +385,13 @@ void SdMsgBaseCanvas::save(QTextStream & st, QString & warning) const {
   }
   else
     st << " unspecifiedmsg";
+  
+  if (stereotype != 0) {
+    nl_indent(st);
+    st << "stereotype ";
+    save_string(stereotype->get_name(), st);
+    save_xyz(st, stereotype, " xyz");
+  }
   
   nl_indent(st);
   st << "show_full_operations_definition " << stringify(show_full_oper)
@@ -364,6 +430,22 @@ void SdMsgBaseCanvas::read(char * & st) {
     
     k = read_keyword(st);
     
+    if (!strcmp(k, "stereotype")) {
+      k = read_string(st);
+      read_keyword(st, "xyz");
+      
+      int x = (int) read_double(st);
+      
+      stereotype =
+	new LabelCanvas(k, the_canvas(), x, (int) read_double(st));
+	
+      stereotype->setZ(read_double(st));
+      stereotype->show();
+      k = read_keyword(st);
+    }
+    else
+      stereotype = 0;
+    
     if (!strcmp(k, "show_full_operations_definition")) {
       show_full_oper = state(read_keyword(st));
       k = read_keyword(st);
@@ -399,7 +481,7 @@ void SdMsgBaseCanvas::read(char * & st) {
 }
 
 void SdMsgBaseCanvas::history_hide() {
-  DiagramCanvas::setVisible(FALSE);
+  setVisible(FALSE);
   disconnect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
   if (msg != 0)
     disconnect(msg, 0, this, 0);
@@ -418,8 +500,8 @@ void SdMsgBaseCanvas::history_load(QBuffer & b) {
 
 void SdMsgBaseCanvas::send(ToolCom * com, int fromid,
 			   unsigned x, unsigned y,
-			   UmlMessageKind k,
-			   const char * m, const char * a)
+			   UmlMessageKind k, const char * m,
+			   const char * s, const char * a)
 {
   com->write_id(0);
   com->write_string(m);
@@ -428,6 +510,8 @@ void SdMsgBaseCanvas::send(ToolCom * com, int fromid,
   
   com->write_char(k);
   com->write_string(a);
+  if (com->api_format() >= 50)
+    com->write_string(s);
   com->write_unsigned(x);
   com->write_unsigned(y);
   com->write_unsigned(y);
@@ -462,6 +546,17 @@ void SdMsgBaseCanvas::send(ToolCom * com, int fromid) const {
   }
 
   com->write_string((const char *) args);
+  if (com->api_format() >= 50) {
+    if (stereotype == 0)
+      com->write_string("");
+    else {
+      QString s = stereotype->get_name();
+      
+      s = s.mid(2, s.length() - 4);
+      com->write_string((const char *) s);
+    }
+  }
+  
   com->write_unsigned((unsigned) x());
   
   unsigned v = (unsigned) y() + height()/2;

@@ -1,6 +1,7 @@
-// *************************************************************************
+// *************************************************************************cr();
+
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -74,6 +75,7 @@
 #include "GenerationSettings.h"
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 IdDict<BrowserClass> BrowserClass::all(257, __FILE__);
 
@@ -81,6 +83,7 @@ QStringList BrowserClass::its_default_stereotypes;	// unicode
 QStringList BrowserClass::relations_default_stereotypes[UmlRelations];	// unicode
 
 static bool NeedPostLoad = FALSE;
+static BrowserClass * TemporaryClass;
   
 BrowserClass::BrowserClass(QString s, BrowserNode * p, ClassData * d, int id)
     : BrowserNode(s, p), Labeled<BrowserClass>(all, id),
@@ -140,7 +143,7 @@ bool BrowserClass::undelete(bool rec, QString & warning, QString & renamed) {
     while (((BrowserNode *) parent())
 	   ->wrong_child_name(s, get_type(),
 			      allow_spaces(), allow_empty()) ||
-	   (ste && (ProfiledStereotypes::canAddStereotype(this, s) != 0))) {
+	   (ste && !ProfiledStereotypes::canAddStereotype(this, s).isEmpty())) {
       s = "_" + s;
       ren = TRUE;
     }
@@ -190,6 +193,31 @@ void BrowserClass::update_idmax_for_root()
   BrowserRelation::update_idmax_for_root();
   BrowserOperation::update_idmax_for_root();
   BrowserExtraMember::update_idmax_for_root();
+}
+
+void BrowserClass::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
+}
+
+void BrowserClass::support_file(QDict<char> & files, bool add) const {
+  QString s;
+  
+  s = s.setNum(get_ident()) + ".bodies";
+  
+  if (add)
+    files.insert(s, (char *) 1);
+  else
+    files.remove(s);
+  
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->support_file(files, add);
 }
     
 void BrowserClass::referenced_by(QList<BrowserNode> & l, bool ondelete) {
@@ -374,14 +402,15 @@ void BrowserClass::menu() {
   QList<BrowserOperation> l = inherited_operations(21);
   QPopupMenu m(0);
   QPopupMenu gensubm(0);
+  QPopupMenu roundtripm(0);
   QPopupMenu inhopersubm(0);
   QPopupMenu compsubm(0);
   QPopupMenu toolm(0);
   bool isstereotype = (strcmp(def->get_stereotype(), "stereotype") == 0);
   bool ismetaclass = (strcmp(def->get_stereotype(), "metaclass") == 0);
-  QString what = (isstereotype) ? "<em>stereotype</em>"
-				: ((ismetaclass) ? "<em>meta class</em>"
-						  : "<em>class</em>");
+  QString what = (isstereotype) ? "<i>stereotype</i>"
+				: ((ismetaclass) ? "<i>meta class</i>"
+						 : "<i>class</i>");
   int index;
   
   m.insertItem(new MenuTitle(name, m.font()), -1);
@@ -393,23 +422,23 @@ void BrowserClass::menu() {
 	const char * stereotype = def->get_stereotype();
 	
 	if (!strcmp(stereotype, "enum") || !strcmp(stereotype, "enum_pattern"))
-	  m.setWhatsThis(m.insertItem("Add item", 8),
-			 "to add an <em>item</em> to the <em>enum</em>");
+	  m.setWhatsThis(m.insertItem(TR("Add item"), 8),
+			 TR("to add an <i>item</i> to the <i>enum</i>"));
 	
 	if (strcmp(stereotype, "typedef") && strcmp(stereotype, "enum_pattern")) {
-	  m.setWhatsThis(m.insertItem("Add attribute", 0),
-			 "to add an <em>attribute</em> to the " + what);
+	  m.setWhatsThis(m.insertItem(TR("Add attribute"), 0),
+			 TR("to add an <i>attribute</i> to the ") + what);
 
-	  m.setWhatsThis(m.insertItem("Add operation", 1),
-			 "to add an <em>operation</em> to the " + what);
+	  m.setWhatsThis(m.insertItem(TR("Add operation"), 1),
+			 TR("to add an <i>operation</i> to the ") + what);
 	  if ((l.count() != 0) && strcmp(stereotype, "union")) {
 	    if (l.count() > 20)
-	      m.setWhatsThis(m.insertItem("Add inherited operation", 9999),
-			     "to redefine an inherited <em>operation</em> in the <em>class</em>");
+	      m.setWhatsThis(m.insertItem(TR("Add inherited operation"), 9999),
+			     TR("to redefine an inherited <i>operation</i> in the <i>class</i>"));
 	    else {
 	      BrowserOperation * oper;
 	      
-	      inhopersubm.insertItem(new MenuTitle("Choose operation to add it", m.font()), -1);
+	      inhopersubm.insertItem(new MenuTitle(TR("Choose operation to add it"), m.font()), -1);
 	      inhopersubm.insertSeparator();
 	      
 	      for (oper = l.first(), index = 10000;
@@ -426,30 +455,30 @@ void BrowserClass::menu() {
 					 index);
 	      }
 	      
-	      m.setWhatsThis(m.insertItem("Add inherited operation", &inhopersubm),
-			     "to redefine an inherited <em>operation</em> in the <em>class</em>");
+	      m.setWhatsThis(m.insertItem(TR("Add inherited operation"), &inhopersubm),
+			     TR("to redefine an inherited <i>operation</i> in the <i>class</i>"));
 	    }
 	  }
 	  if (!isstereotype &&
 	      !ismetaclass &&
 	      strcmp(stereotype, "enum") &&
 	      strcmp(stereotype, "enum_pattern")) {
-	    m.setWhatsThis(m.insertItem("Add nested class", 14),
-			   "to add an <em>nested class</em> to the <em>class</em>");
+	    m.setWhatsThis(m.insertItem(TR("Add nested class"), 14),
+			   TR("to add an <i>nested class</i> to the <i>class</i>"));
 	  }
-	  m.setWhatsThis(m.insertItem("Add extra member", 2),
-			 "to add an <em>extra member</em> to the <em>class</em>");
+	  m.setWhatsThis(m.insertItem(TR("Add extra member"), 2),
+			 TR("to add an <i>extra member</i> to the <i>class</i>"));
 	}
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("Edit", 3),
-		       "to edit the " + what + ", \
-a double click with the left mouse button does the same thing");
-	m.setWhatsThis(m.insertItem("Duplicate", 13),
-		       "to duplicate the " + what);
+	m.setWhatsThis(m.insertItem(TR("Edit"), 3),
+		       TR("to edit the " + what + ", \
+a double click with the left mouse button does the same thing"));
+	m.setWhatsThis(m.insertItem(TR("Duplicate"), 13),
+		       TR("to duplicate the " + what));
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("Delete", 4),
-		       "to delete the " + what + ". \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 4),
+		       TR("to delete the " + what + ". \
+Note that you can undelete it after"));
 	
 	if (!isstereotype &&
 	    !ismetaclass &&
@@ -469,20 +498,20 @@ Note that you can undelete it after");
 	    if (child == 0) {
 	      // no artifact having the same name, propose to create it
 	      m.insertSeparator();
-	      m.setWhatsThis(m.insertItem("Create source artifact", 5),
-			     "to add a <em>&lt;&lt;source&gt;&gt; artifact</em> in the <em>deployment view</em> associated to \
-the <em>class view</em>, this artifact will contain the generated code of the class");
+	      m.setWhatsThis(m.insertItem(TR("Create source artifact"), 5),
+			     TR("to add a <i>&lt;&lt;source&gt;&gt; artifact</i> in the <i>deployment view</i> associated to \
+the <i>class view</i>, this artifact will contain the generated code of the class"));
 	    }
 	  }
 	}
       }
     }
     else {
-      m.setWhatsThis(m.insertItem("Edit", 3),
-		     "to edit the " + what + ", \
-a double click with the left mouse button does the same thing");
-      m.setWhatsThis(m.insertItem("Duplicate", 13),
-		     "to duplicate the " + what);
+      m.setWhatsThis(m.insertItem(TR("Edit"), 3),
+		     TR("to edit the " + what + ", \
+a double click with the left mouse button does the same thing"));
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 13),
+		     TR("to duplicate the " + what));
     }
     
     bool have_sep = FALSE;
@@ -492,8 +521,8 @@ a double click with the left mouse button does the same thing");
 	!associated_artifact->deletedp()) {
       m.insertSeparator();
       have_sep = TRUE;
-      m.setWhatsThis(m.insertItem("Select associated artifact", 5),
-		     "to select the associated <em>&lt;&lt;source&gt;&gt; artifact</em>");
+      m.setWhatsThis(m.insertItem(TR("Select associated artifact"), 5),
+		     TR("to select the associated <i>&lt;&lt;source&gt;&gt; artifact</i>"));
     }
     
     if (!isstereotype &&
@@ -504,14 +533,14 @@ a double click with the left mouse button does the same thing");
       
       if (associated_components.first() == associated_components.last())
 	// only one component
-	m.setWhatsThis(m.insertItem("Select associated component", 100000),
-		       "to select the <em>component</em> providing the <em>class</em>");
+	m.setWhatsThis(m.insertItem(TR("Select associated component"), 100000),
+		       TR("to select the <i>component</i> providing the <i>class</i>"));
       else {
-	compsubm.insertItem(new MenuTitle("Choose component", m.font()), -1);
+	compsubm.insertItem(new MenuTitle(TR("Choose component"), m.font()), -1);
 	compsubm.insertSeparator();
 	
-	m.setWhatsThis(m.insertItem("Select an associated component", &compsubm),
-		       "to select a <em>component</em> providing the <em>class</em>");
+	m.setWhatsThis(m.insertItem(TR("Select an associated component"), &compsubm),
+		       TR("to select a <i>component</i> providing the <i>class</i>"));
 	
 	index = 100000;
 	
@@ -525,9 +554,9 @@ a double click with the left mouse button does the same thing");
     }
     
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("Referenced by", 15),
-		   "to know who reference the " + what);
-    mark_menu(m, "class", 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 15),
+		   TR("to know who reference the " + what));
+    mark_menu(m, TR("class"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
 
     if (!isstereotype && !ismetaclass) {
@@ -539,38 +568,44 @@ a double click with the left mouse button does the same thing");
       
       if (! nestedp() && (cpp || java || php || python || idl)) {
 	m.insertSeparator();
-	m.insertItem("Generate", &gensubm);    
+	m.insertItem(TR("Generate"), &gensubm);    
 	if (cpp)
 	  gensubm.insertItem("C++", 10);
-	if (java)
+	if (java) {
 	  gensubm.insertItem("Java", 11);
+	  if ((edition_number == 0) && !is_read_only)
+	    roundtripm.insertItem("Java", 32);
+	}
 	if (php)
 	  gensubm.insertItem("Php", 22);
 	if (python)
 	  gensubm.insertItem("Python", 25);
 	if (idl)
 	  gensubm.insertItem("Idl", 12);
+
+	if (roundtripm.count() != 0)
+	  m.insertItem(TR("Roundtrip"), &roundtripm);
       }
     }
     if ((edition_number == 0) && 
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 6),
-		   "undelete the " + what + ". \
-Do not undelete its <em>attributes</em>, <em>operations</em> and <em>relations</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 6),
+		   TR("undelete the " + what + ". \
+Do not undelete its <i>attributes</i>, <i>operations</i> and <i>relations</i>"));
  
     QListViewItem * child;
   
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("Undelete recursively", 7),
-		       "undelete the " + what + " and its \
-nested <em>classes</em>, <em>attributes</em>, <em>operations</em> and \
-<em>relations</em> (except if the class at the other side is also deleted)");
+	m.setWhatsThis(m.insertItem(TR("Undelete recursively"), 7),
+		       TR("undelete the " + what + " and its \
+nested <i>classes</i>, <i>attributes</i>, <i>operations</i> and \
+<i>relations</i> (except if the class at the other side is also deleted)"));
 	break;
       }
     }
@@ -689,11 +724,15 @@ void BrowserClass::exec_menu_choice(int rank,
     if (! isstereotypemetaclass) 
       ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
     return;
+  case 32:
+    if (! isstereotypemetaclass) 
+      ToolCom::run("java_roundtrip", this);
+    return;
   case 13:
     {
       QString name;
       
-      if (((BrowserNode *) parent())->enter_child_name(name, "enter class's name : ",
+      if (((BrowserNode *) parent())->enter_child_name(name, TR("enter class's name : "),
 						       UmlClass, FALSE, FALSE))
 	duplicate((BrowserNode *) parent(), name)->select_in_browser();
       else
@@ -725,7 +764,7 @@ void BrowserClass::exec_menu_choice(int rank,
     {
       l = inherited_operations(~0u);
       
-      OperationListDialog dialog("Choose inherited operation", l);
+      OperationListDialog dialog(TR("Choose inherited operation"), l);
       
       dialog.raise();
       if (dialog.exec() != QDialog::Accepted)
@@ -938,8 +977,8 @@ BrowserNode * BrowserClass::add_attribute(BrowserAttribute * attr,
 					  bool enum_item) {
   QString name;
   
-  if (enter_child_name(name, (enum_item) ? "enter item's name : "
-					 : "enter attribute's name : ",
+  if (enter_child_name(name, (enum_item) ? TR("enter item's name : ")
+					 : TR("enter attribute's name : "),
 		       UmlAttribute, FALSE, FALSE)) {
     bool newone = (attr == 0);
     
@@ -988,7 +1027,7 @@ BrowserNode * BrowserClass::add_relation(BrowserRelation * rel) {
 BrowserNode * BrowserClass::add_operation(BrowserOperation * oper) {
   QString name;
   
-  if (enter_child_name(name, "enter operation's name : ",
+  if (enter_child_name(name, TR("enter operation's name : "),
 		       UmlOperation, FALSE, FALSE)) {
     oper = (oper == 0) ? BrowserOperation::new_one(name, this)
 		       : (BrowserOperation *) oper->duplicate(this);
@@ -1017,7 +1056,7 @@ BrowserNode * BrowserClass::add_inherited_operation(BrowserOperation * model) {
   return oper;
 }
 
-const char * BrowserClass::may_start(UmlCode l) const {
+QString BrowserClass::may_start(UmlCode l) const {
   const char * stereotype = def->get_stereotype();
   
   if (!strcmp(stereotype, "typedef")) {
@@ -1025,23 +1064,23 @@ const char * BrowserClass::may_start(UmlCode l) const {
     case UmlGeneralisation:
     case UmlRealize:
       if (is_read_only && !root_permission())
-	return "read only";
+	return TR("read only");
       else {
 	BrowserNodeList inh;
 	
 	children(inh, UmlGeneralisation, UmlRealize);
 	return (inh.count() <= 1)
 	  ? 0
-	  : "typedef can't generalize / realize several times";
+	  : TR("typedef can't generalize / realize several times");
       }
     case UmlDependency:
       if (is_read_only && !root_permission())
-	return "read only";
+	return TR("read only");
       // no break
     case UmlAnchor:
       return 0;
     default:
-      return "a typedef can't have relation";
+      return TR("a typedef can't have relation");
     }
   }
   
@@ -1049,7 +1088,7 @@ const char * BrowserClass::may_start(UmlCode l) const {
   case UmlGeneralisation:
   case UmlRealize:
     if (!strcmp(stereotype, "union"))
-      return "an union can't generalize / realize";
+      return TR("an union can't generalize / realize");
     // no break;
   case UmlAssociation:
   case UmlDirectionalAssociation:
@@ -1058,13 +1097,13 @@ const char * BrowserClass::may_start(UmlCode l) const {
   case UmlDirectionalAggregation:
   case UmlDirectionalAggregationByValue:
   case UmlDependency:
-    return (!is_read_only || root_permission()) ? 0 : "read only";
+    return (!is_read_only || root_permission()) ? 0 : TR("read only");
   default:
     return 0;
   }
 }
 
-const char * BrowserClass::may_connect(UmlCode l, BrowserClass * other) {
+QString BrowserClass::may_connect(UmlCode l, BrowserClass * other) {
   switch (l) {
   case UmlGeneralisation:
   case UmlRealize:
@@ -1072,9 +1111,9 @@ const char * BrowserClass::may_connect(UmlCode l, BrowserClass * other) {
   case UmlAssociation:
   case UmlAggregation:
   case UmlAggregationByValue:
-    return (!other->is_read_only || root_permission()) ? 0 : "read only";
+    return (!other->is_read_only || root_permission()) ? 0 : TR("read only");
   default:
-    return (l != UmlAnchor) ? 0 : "can't have anchor between classes";
+    return (l != UmlAnchor) ? QString() : TR("can't have anchor between classes");
   }
 }
 
@@ -1591,11 +1630,11 @@ void BrowserClass::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	// have choice
 	QPopupMenu m(0);
   
-	m.insertItem(new MenuTitle(bn->get_name() + QString(" moving"),
+	m.insertItem(new MenuTitle(TR("move ") + bn->get_name(),
 				   m.font()), -1);
 	m.insertSeparator();
-	m.insertItem("In " + QString(get_name()), 1);
-	m.insertItem("After " + QString(get_name()), 2);
+	m.insertItem(TR("In ") + QString(get_name()), 1);
+	m.insertItem(TR("After ") + QString(get_name()), 2);
 	
 	switch (m.exec(QCursor::pos())) {
 	case 1:
@@ -1613,7 +1652,7 @@ void BrowserClass::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     else if (after == 0)
       ((BrowserNode *) parent())->DropAfterEvent(e, this);
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -1630,7 +1669,7 @@ BrowserClass * BrowserClass::get_class(BrowserNode * future_parent,
   QString name;
   BrowserNodeList nodes;
   
-  if (!future_parent->enter_child_name(name, "enter class's name : ",
+  if (!future_parent->enter_child_name(name, TR("enter class's name : "),
 				       UmlClass, instances(nodes), &old,
 				       FALSE, FALSE))
     return 0;
@@ -1657,17 +1696,17 @@ BrowserClass * BrowserClass::add_class(bool stereotypep,
 {
   if (name.isEmpty()) {
     if (!future_parent->enter_child_name(name, 
-					 (stereotypep) ? "enter stereotype's name : "
-						       : "enter class's name : ",
+					 (stereotypep) ? TR("enter stereotype's name : ")
+						       : TR("enter class's name : "),
 					 UmlClass, FALSE, FALSE))
       return 0;
     
-    const char * err;
+    QString err;
     
     if (stereotypep && 
-	((err = ProfiledStereotypes::canAddStereotype((BrowserClassView *) future_parent,
-						      name)) != 0)){
-      msg_critical("Error", name + " " + err);
+	(!(err = ProfiledStereotypes::canAddStereotype((BrowserClassView *) future_parent,
+						       name)).isEmpty())) {
+      msg_critical(TR("Error"), name + " " + err);
       return 0;
     }
   }
@@ -1694,7 +1733,7 @@ QList<BrowserNode> BrowserClass::parents() const {
     switch (ch->get_type()) {
     case UmlGeneralisation:
     case UmlRealize:
-      if (! ch->deletedp())
+      if (!ch->deletedp())
 	l.append(((RelationData *) ch->get_data())->get_end_class());
     default:
       break;
@@ -1704,7 +1743,7 @@ QList<BrowserNode> BrowserClass::parents() const {
   return l;
 }
 
-const char * BrowserClass::check_inherit(const BrowserNode * new_parent) const {
+QString BrowserClass::check_inherit(const BrowserNode * new_parent) const {
 #if 0
   // To allows to inherit sereval times on the same template class
   // there are many problems. The only way is probably to memorize
@@ -1723,10 +1762,10 @@ const char * BrowserClass::check_inherit(const BrowserNode * new_parent) const {
   if ((!strcmp(parent_stereotype, "stereotype"))
       ? strcmp(def->get_stereotype(), "stereotype")
       : !strcmp(def->get_stereotype(), "stereotype"))
-    return "one of the two classes is not a stereotype";
+    return TR("one of the two classes is not a stereotype");
     
   return (!strcmp(parent_stereotype, "union"))
-    ? "union can't generalize / realize"
+    ? TR("an union can't generalize / realize")
     : BrowserNode::check_inherit(new_parent);
 }
   
@@ -2058,7 +2097,7 @@ bool BrowserClass::tool_cmd(ToolCom * com, const char * args) {
 	    else {
 	      BrowserClass * end = (BrowserClass *) com->get_id(args);
 
-	      if ((may_start(c) == 0) && (may_connect(c, end) == 0))
+	      if (may_start(c).isEmpty() && may_connect(c, end).isEmpty())
 		((RelationData *) add_relation(c, end))->get_start()->write_id(com);
 	      else
 		ok = FALSE;
@@ -2305,8 +2344,8 @@ void BrowserClass::save(QTextStream & st, bool ref, QString & warning) {
 	if (qf.status() != IO_Ok) {
 	  // error, redo
 	  for (;;) {	    
-	    (void) msg_critical("Error", QString("Error while writting in\n") + bodyfn +
-				"\nmay be your disk is full",
+	    (void) msg_critical(TR("Error"),
+				TR("Error while writting in\n%1\nmay be your disk is full", bodyfn),
 				QMessageBox::Retry);
 	    
 	    QFile qf2;
@@ -2346,7 +2385,7 @@ void BrowserClass::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -3077,6 +3116,8 @@ static void extend(BrowserClass * cl, QCString mclpath,
 
 void BrowserClass::post_load()
 {
+  TemporaryClass = 0;
+  
   BrowserRelation::post_load();
   BrowserAttribute::post_load();
   BrowserOperation::post_load(); // must be done after rel and attr post_load
@@ -3180,7 +3221,8 @@ BrowserClass * BrowserClass::read(char * & st, char * k,
     result->is_defined = TRUE;
 
     result->is_read_only = (!in_import() && read_only_file()) ||
-      ((user_id() != 0) && result->is_api_base());
+      !parent->is_writable() ||
+	((user_id() != 0) && result->is_api_base());
     
     QFileInfo fi(BrowserView::get_dir(), QString::number(id) + ".bodies");
     if (!in_import() && fi.exists() && !fi.isWritable())
@@ -3216,7 +3258,7 @@ BrowserClass * BrowserClass::read(char * & st, char * k,
       k = read_keyword(st);
     }
     
-    result->BrowserNode::read(st, k);	// updates k
+    result->BrowserNode::read(st, k, id);	// updates k
     
     if (strcmp(k, "end")) {
       while (BrowserAttribute::read(st, k, result) ||
@@ -3247,6 +3289,14 @@ BrowserClass * BrowserClass::read(char * & st, char * k,
   }
   else
     return 0;
+}
+
+BrowserClass * BrowserClass::temporary() 
+{
+  if (TemporaryClass == 0)
+    TemporaryClass = new BrowserClass(-1);
+  
+  return TemporaryClass;
 }
 
 BrowserNode * BrowserClass::read_any_ref(char * & st, char * k) {

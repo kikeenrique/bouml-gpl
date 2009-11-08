@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -144,11 +144,14 @@ QCanvasItem * UmlCanvas::collision(const QPoint & p) const {
       if (arrow == 0)
 	arrow = (ArrowCanvas *) *it;
       break;
-    case RTTI_ARROWPOINT:
-      return ((arrow == 0) || ((ArrowPointCanvas *) *it)->attached_to(arrow))
-	? *it : arrow;
-    default:
+    case RTTI_LABEL:
       return (arrow == 0) ? *it : arrow;
+    default:
+      // isa DiagramCanvas
+      return ((arrow == 0) || 
+	      ((((DiagramCanvas *) *it)->type() == UmlArrowPoint) &&
+	       ((DiagramCanvas *) *it)->attached_to(arrow)))
+	? *it : arrow;
     }
   }
   
@@ -173,11 +176,14 @@ QCanvasItem * UmlCanvas::collision(const QPoint & p, int except) const {
 	if (arrow == 0)
 	  arrow = (ArrowCanvas *) *it;
 	break;
-      case RTTI_ARROWPOINT:
-	return ((arrow == 0) || ((ArrowPointCanvas *) *it)->attached_to(arrow))
-	  ? *it : arrow;
-      default:
+      case RTTI_LABEL:
 	return (arrow == 0) ? *it : arrow;
+      default:
+	// isa DiagramCanvas
+	return ((arrow == 0) ||
+		((((DiagramCanvas *) *it)->type() == UmlArrowPoint) &&
+		 ((DiagramCanvas *) *it)->attached_to(arrow)))
+	  ? *it : arrow;
       }
     }
   }

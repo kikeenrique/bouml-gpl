@@ -28,7 +28,7 @@ bool UmlCom::connect(unsigned int port)
   
   if (sock->connect(ha, port)) {
     // send API version
-    write_unsigned(45);
+    write_unsigned(48);
     flush();
     return TRUE;
   }

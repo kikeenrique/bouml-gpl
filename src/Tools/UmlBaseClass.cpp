@@ -379,13 +379,13 @@ QDict<UmlClass> UmlBaseClass::_classes(1001);
 void UmlBaseClass::read_uml_() {
   _assoc_diagram = (UmlClassDiagram *) UmlBaseItem::read_();
   UmlBaseClassMember::read_uml_();
-  _abstract = UmlCom::read_bool();
-  
+  _abstract = UmlCom::read_bool();  
   if (_stereotype == "typedef") {
     _base_type.type = (UmlClass *) UmlBaseItem::read_();
     if (_base_type.type == 0)
       _base_type.explicit_type = UmlCom::read_string();
   }
+  (void) UmlCom::read_bool(); // active
 }
 
 #ifdef WITHCPP

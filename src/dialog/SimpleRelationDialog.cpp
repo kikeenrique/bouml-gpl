@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,6 +44,7 @@
 #include "UmlDesktop.h"
 #include "BodyDialog.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 QSize SimpleRelationDialog::previous_size;
 
@@ -51,11 +52,13 @@ SimpleRelationDialog::SimpleRelationDialog(SimpleRelationData * r)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), rel(r) {  
   r->browser_node->edit_start();
   
-  if (r->browser_node->is_writable())
-    setCancelButton();
+  if (r->browser_node->is_writable()) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
 
   bool visit = !hasOkButton();
@@ -69,22 +72,22 @@ SimpleRelationDialog::SimpleRelationDialog(SimpleRelationData * r)
 
   switch (rel->get_type()) {
   case UmlInherit:
-    setCaption("Generalisation dialog");
+    setCaption(TR("Generalisation dialog"));
     break;
   case UmlDependOn:
-    setCaption("Dependency dialog");
+    setCaption(TR("Dependency dialog"));
     break;
   default:
-    setCaption("unknown relation dialog");
+    setCaption(TR("unknown relation dialog"));
     break;
   }
   
-  new QLabel("from : ", grid);
+  new QLabel(TR("from : "), grid);
   new QLabel(rel->get_start_node()->full_name(TRUE), grid);
-  new QLabel("to : ", grid);
+  new QLabel(TR("to : "), grid);
   new QLabel(rel->get_end_node()->full_name(TRUE), grid);
   
-  new QLabel("stereotype : ", grid);
+  new QLabel(TR("stereotype : "), grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(rel->get_stereotype()));
   if (! visit) {
@@ -92,7 +95,7 @@ SimpleRelationDialog::SimpleRelationDialog(SimpleRelationData * r)
 				   ->default_stereotypes(rel->get_type(),
 							 rel->get_end_node()));
     edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlRelations));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->setAutoCompletion(completion());
   }
   edstereotype->setCurrentItem(0);
   QSizePolicy sp = edstereotype->sizePolicy();
@@ -100,9 +103,9 @@ SimpleRelationDialog::SimpleRelationDialog(SimpleRelationData * r)
   edstereotype->setSizePolicy(sp);
   
   QVBox * vtab = new QVBox(grid);
-  new QLabel("description :", vtab);
+  new QLabel(TR("description :"), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
@@ -122,7 +125,7 @@ SimpleRelationDialog::SimpleRelationDialog(SimpleRelationData * r)
   grid->setSpacing(5);
   
   kvtable = new KeyValuesTable(bn, grid, visit);
-  addTab(grid, "Properties");
+  addTab(grid, TR("Properties"));
 }
 
 void SimpleRelationDialog::polish() {

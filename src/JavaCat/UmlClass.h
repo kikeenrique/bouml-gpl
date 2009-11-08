@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -28,17 +28,41 @@
 
 #include "UmlBaseClass.h"
 
+#ifdef ROUNDTRIP
+class Class;
+class ClassContainer;
+#endif
+
 #ifdef REVERSE
 #include <qstringlist.h>
 #endif
 
 class UmlClass : public UmlBaseClass {
+#ifdef ROUNDTRIP
+  private:
+    bool created;
+    Class * the_class;
+#endif
+  
   public:
     UmlClass(void * id, const QCString & n);
 #ifdef REVERSE
     void need_artifact(const QStringList & imports, bool remove_java_lang,
 		       const QStringList & static_imports,
-		       UmlArtifact *& cp);
+		       const QCString & path, UmlArtifact *& cp);
+    
+# ifdef ROUNDTRIP
+    virtual void upload(ClassContainer * cnt);
+    virtual bool set_roundtrip_expected();
+    virtual void mark_useless(QList<UmlItem> & l);
+    virtual void scan_it(int & n);
+    virtual void send_it(int n);
+    bool is_created() const { return created; }
+    void set_created() { created = TRUE; }
+    Class * get_class() const { return the_class; }
+    UmlItem * search_for_att_rel(const QCString & name);
+    void reorder(QList<UmlItem> & expected_order);
+# endif
 #endif
     static void manage_generic(QCString & form, UmlTypeSpec & typespec,
 			       QCString str_actuals, const char * k);

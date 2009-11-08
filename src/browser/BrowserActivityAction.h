@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -88,9 +88,9 @@ class BrowserActivityAction : public BrowserNode, public Labeled<BrowserActivity
     void update_pins();
     BrowserNode * add_parameter_set(BrowserParameterSet *, const char *);
     BasicData * add_relation(UmlCode l, BrowserNode * end);
-    const char * may_start() const;
-    const char * may_connect(UmlCode & l, const BrowserNode * dest) const;
-    virtual const char * connexion_from(bool control) const;
+    QString may_start() const;
+    QString may_connect(UmlCode & l, const BrowserNode * dest) const;
+    virtual QString connexion_from(bool control) const;
     
     virtual const QPixmap* pixmap (int) const;
 
@@ -117,6 +117,7 @@ class BrowserActivityAction : public BrowserNode, public Labeled<BrowserActivity
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
+    virtual void prepare_update_lib() const;
     
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual void write_id(ToolCom * com);

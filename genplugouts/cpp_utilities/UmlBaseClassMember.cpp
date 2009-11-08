@@ -59,17 +59,46 @@ bool UmlBaseClassMember::set_CppVisibility(aVisibility v) {
 }
 #endif
 
+#ifdef WITHJAVA
+QCString UmlBaseClassMember::javaAnnotations() {
+  read_if_needed_();
+  
+  return _java_annotation;
+}
+
+bool UmlBaseClassMember::set_JavaAnnotations(const char * v) {
+  return set_it_(_java_annotation, v, setJavaAnnotationCmd);
+}
+#endif
+
+const QCString & UmlBaseClassMember::constraint() {
+  read_if_needed_();
+  return _constraint;
+}
+
+bool UmlBaseClassMember::set_Constraint(const char * v) {
+  return set_it_(_constraint, v, setConstraintCmd);
+}
+
 void UmlBaseClassMember::read_uml_() {
   UmlBaseItem::read_uml_();
   _class_member = UmlCom::read_bool();
   _volatile = UmlCom::read_bool();
   _visibility = (aVisibility) UmlCom::read_char();
+  _constraint = UmlCom::read_string();
 }
 
 #ifdef WITHCPP
 void UmlBaseClassMember::read_cpp_() {
   UmlBaseClassItem::read_cpp_();
   _cpp_visibility = (aVisibility) UmlCom::read_char();
+}
+#endif
+
+#ifdef WITHJAVA
+void UmlBaseClassMember::read_java_() {
+  UmlBaseClassItem::read_java_();
+  _java_annotation = UmlCom::read_string();
 }
 #endif
 

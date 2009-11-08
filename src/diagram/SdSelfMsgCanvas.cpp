@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,6 +41,7 @@
 #include "BrowserSeqDiagram.h"
 #include "myio.h"
 #include "MenuTitle.h"
+#include "translate.h"
 
 #define SELF_MSG_WIDTH  20
 #define SELF_MSG_HEIGHT 14
@@ -62,12 +63,15 @@ SdSelfMsgCanvas::~SdSelfMsgCanvas() {
 void SdSelfMsgCanvas::update_hpos() {
   LabelCanvas * lbl = label;
   int cy = center_y_scale100;
+  double dx = dest->rect().right() + 1 - x();
 
   if (the_canvas()->do_zoom())
-    // the label is moved independently
+    // the label and stereotype are moved independently
     label = 0;
-  
-  DiagramCanvas::moveBy(dest->rect().right() + 1 - x(), 0);
+  else if ((stereotype != 0) && !stereotype->selected())
+    stereotype->moveBy(dx, 0);
+    
+  DiagramCanvas::moveBy(dx, 0);
   
   label = lbl;
   center_y_scale100 = cy;	// updated later
@@ -89,8 +93,13 @@ void SdSelfMsgCanvas::check_vpos(const QRect & r) {
       return;
     }
     
-    if (y() != v)
-      DiagramCanvas::moveBy(0, v - y());
+    if (y() != v) {
+      double dy = v - y();
+      
+      DiagramCanvas::moveBy(0, dy);
+      if ((stereotype != 0) && !stereotype->selected())
+	stereotype->moveBy(0, dy);
+    }
   }
 }
 
@@ -196,33 +205,33 @@ int SdSelfMsgCanvas::overlap_dir(SdDurationCanvas *) const {
 void SdSelfMsgCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
   
-  m.insertItem(new MenuTitle("Message", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Message"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 13);
-  m.insertItem("Go down", 14);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 13);
+  m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
-  m.insertItem("Edit", 2);
-  m.insertItem("Edit drawing settings", 3);
+  m.insertItem(TR("Edit"), 2);
+  m.insertItem(TR("Edit drawing settings"), 3);
   m.insertSeparator();
   if (msg != 0)
-    m.insertItem("Select operation in browser", 8);
-  m.insertItem("Select linked items", 4);
-  if (label) {
+    m.insertItem(TR("Select operation in browser"), 8);
+  m.insertItem(TR("Select linked items"), 4);
+  if (label || stereotype) {
     m.insertSeparator();
-    m.insertItem("Select label", 5);
-    m.insertItem("Label default position", 6);
+    m.insertItem(TR("Select stereotype and label"), 5);
+    m.insertItem(TR("Default stereotype and label position"), 6);
   }
   if (((BrowserSeqDiagram *) the_canvas()->browser_diagram())
       ->is_overlapping_bars()) {
     m.insertSeparator();
-    m.insertItem("Go to new overlapping bar", 9);
+    m.insertItem(TR("Go to new overlapping bar"), 9);
     if (dest->isOverlappingDuration())
-      m.insertItem("Go to parent bar", 10);
+      m.insertItem(TR("Go to parent bar"), 10);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view", 7);
+  m.insertItem(TR("Remove from view"), 7);
 
   switch (m.exec(QCursor::pos())) {
   case 0:
@@ -260,10 +269,16 @@ void SdSelfMsgCanvas::menu(const QPoint&) {
     break;
   case 5:
     the_canvas()->unselect_all();
-    the_canvas()->select(label);
+    if (label)
+      the_canvas()->select(label);
+    if (stereotype)
+      the_canvas()->select(stereotype);
     break;
   case 6:
-    default_label_position();
+    if (label)
+      default_label_position();
+    if (stereotype)
+      default_stereotype_position();
     break;
   case 7:
     delete_it();
@@ -310,12 +325,12 @@ void SdSelfMsgCanvas::apply_shortcut(QString s) {
 }
 
 void SdSelfMsgCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(2);
+  StateSpecVector st(2);
   
-  st[0].set("operation drawing language", &drawing_language);
-  st[1].set("show full operation definition", &show_full_oper);
+  st[0].set(TR("operation drawing language"), &drawing_language);
+  st[1].set(TR("show full operation definition"), &show_full_oper);
   
-  SettingsDialog dialog(&st, 0, FALSE, TRUE);
+  SettingsDialog dialog(&st, 0, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -327,24 +342,24 @@ bool SdSelfMsgCanvas::has_drawing_settings() const {
 }
 
 void SdSelfMsgCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(2);
+  StateSpecVector st(2);
   DrawingLanguage drawing_language;
   Uml3States show_full_oper;
   
-  st[0].set("operation drawing language", &drawing_language);
-  st[1].set("show full operation definition", &show_full_oper);
+  st[0].set(TR("operation drawing language"), &drawing_language);
+  st[1].set(TR("show full operation definition"), &show_full_oper);
   
-  SettingsDialog dialog(&st, 0, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(&st, 0, FALSE, TRUE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
-      if (st[0].name != 0)
+      if (!st[0].name.isEmpty())
 	((SdSelfMsgCanvas *) it.current())->drawing_language =
 	  drawing_language;
-      if (st[1].name != 0)
+      if (!st[1].name.isEmpty())
 	((SdSelfMsgCanvas *) it.current())->show_full_oper =
 	  show_full_oper;
       ((SdSelfMsgCanvas *) it.current())->modified();	// call package_modified()

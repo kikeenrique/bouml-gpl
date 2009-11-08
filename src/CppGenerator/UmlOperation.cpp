@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -244,7 +244,9 @@ void UmlOperation::compute_dependency(QList<CppRefType> & dependencies,
     // search for a * or & or < after the typename
     bool incl = (template_level == 0);
     
-    if (!templ && !isCppInline()) {
+    if (incl &&
+	(!CppSettings::isInlineOperationForceIncludesInHeader() ||
+	 (!templ && !isCppInline()))) {
       while ((c = *p) != 0) {
 	if ((c == '*') || (c == '&')) {
 	  incl = FALSE;

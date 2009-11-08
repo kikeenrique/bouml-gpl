@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,13 +40,14 @@
 #include "DialogUtil.h"
 #include "UmlDesktop.h"
 #include "BrowserView.h"
+#include "translate.h"
 
 QSize InstanceDialog::previous_size;
 
 InstanceDialog::InstanceDialog(Instance * i, QString w, UmlCode k)
     : QDialog(0, w + " instance dialog", TRUE),
       inst(i), what(w), kind(k) {
-  setCaption(what + " instance dialog");
+  setCaption(TR(what + " instance dialog"));
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
   
@@ -55,7 +56,7 @@ InstanceDialog::InstanceDialog(Instance * i, QString w, UmlCode k)
   QGrid * grid = new QGrid(2, this);
   
   vbox->addWidget(grid);
-  new QLabel("name : ", grid);
+  new QLabel(TR("name : "), grid);
   edname = new LineEdit(inst->get_name(), grid);
   edname->setFocus();
   
@@ -63,7 +64,7 @@ InstanceDialog::InstanceDialog(Instance * i, QString w, UmlCode k)
   new QLabel("", grid);
   
   SmallPushButton * b =
-    new SmallPushButton(what + " :", grid);
+    new SmallPushButton(TR(what) + " :", grid);
   
   connect(b, SIGNAL(clicked()), this, SLOT(menu_type()));
   
@@ -79,8 +80,8 @@ InstanceDialog::InstanceDialog(Instance * i, QString w, UmlCode k)
   QHBoxLayout * hbox = new QHBoxLayout(vbox); 
   
   hbox->setMargin(5);
-  QPushButton * accept = new QPushButton("&OK", this);
-  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QPushButton * accept = new QPushButton(TR("&OK"), this);
+  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
   QSize bs(cancel->sizeHint());
   
   accept->setDefault(TRUE);
@@ -106,26 +107,26 @@ InstanceDialog::~InstanceDialog() {
 void InstanceDialog::menu_type() {
   QPopupMenu m(0);
 
-  m.insertItem("Choose", -1);
+  m.insertItem(TR("Choose"), -1);
   m.insertSeparator();
   
   int index = list.findIndex(edtype->currentText().stripWhiteSpace());
   
   if (index != -1)
-    m.insertItem("Select in browser", 0);
+    m.insertItem(TR("Select in browser"), 0);
   
   BrowserNode * bn = BrowserView::selected_item();
     
   if ((bn != 0) && 
       (bn->get_type() == kind) && !bn->deletedp())
-    m.insertItem("Choose " + what + " selected in browser", 1);
+    m.insertItem(TR("Choose " + what + " selected in browser"), 1);
   else
     bn = 0;
   
   bool new_available = inst->new_type_available();
   
   if (new_available)
-    m.insertItem("Create " + what + " and choose it", 2);
+    m.insertItem(TR("Create " + what + " and choose it"), 2);
   
   if (new_available || (index != -1) || (bn != 0)) {
     switch (m.exec(QCursor::pos())) {

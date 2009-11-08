@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,6 +40,7 @@ class BrowserSeqDiagram : public BrowserDiagram {
     static QList<BrowserSeqDiagram> imported;
     static QValueList<int> imported_ids;
     static QStringList its_default_stereotypes;
+    static QStringList message_default_stereotypes;
   
     SimpleData * def;
     SeqDiagramWindow * window;
@@ -99,6 +100,7 @@ class BrowserSeqDiagram : public BrowserDiagram {
     static BrowserSeqDiagram * add_sequence_diagram(BrowserNode * future_parent);
     
     static const QStringList & default_stereotypes();
+    static const QStringList & msg_default_stereotypes();
     static void read_stereotypes(char * &, char * & k);
     static void save_stereotypes(QTextStream &);
     

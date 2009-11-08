@@ -51,13 +51,9 @@ class UmlItem
     }
     else if (! ste.isEmpty()) {
       out.indent();
-      out << "<xmi:Extension extender=\"Bouml\">\n";
-      out.indent();
-      out << "\t<stereotype name=\"";
+      out << "<xmi:Extension extender=\"Bouml\"><stereotype name=\"";
       out.quote(ste);
-      out << "\"/>\n";
-      out.indent();
-      out << "</xmi:Extension>\n";
+      out << "\"/></xmi:Extension>\n";
     }
   } 
   
@@ -91,33 +87,35 @@ class UmlItem
     out.id_prefix(who, "MULTIPLICITY_U_");
     out << " value=\"" << max << "\"/>\n";
   }
-!!!202242.cpp!!!	write_type(inout out : FileOut, in t : UmlTypeSpec) : void
+!!!202242.cpp!!!	write_type(inout out : FileOut, in t : UmlTypeSpec, in tk : str) : void
   if (t.type != 0) {
     out.indent();
-    out << "<type xmi:type=\"uml:Class\"";
+    out << '<' << ((tk != 0) ? tk : "type") << " xmi:type=\"uml:Class\"";
     out.idref(t.type);
     out << "/>\n";
   }
   else if (!t.explicit_type.isEmpty()) {
     out.indent();
+    out << '<' << ((tk != 0) ? tk : "type") << " xmi:type=\"uml:";
+    
     if (t.explicit_type == "int")
       out << ((_uml_20)
-	      ? "<type xmi:type=\"uml:PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.0/uml.xml#Integer\"/>\n"
-	      : "<type xmi:type=\"uml:PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.1/uml.xml#Integer\"/>\n");
+	      ? "PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.0/uml.xml#Integer\"/>\n"
+	      : "PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.1/uml.xml#Integer\"/>\n");
     else if (t.explicit_type == "bool")
       out << ((_uml_20)
-	      ? "<type xmi:type=\"uml:PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.0/uml.xml#Boolean\"/>\n"
-	      : "<type xmi:type=\"uml:PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean\"/>\n");
+	      ? "PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.0/uml.xml#Boolean\"/>\n"
+	      : "PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean\"/>\n");
     else if (t.explicit_type == "string")
       out << ((_uml_20)
-	      ? "<type xmi:type=\"uml:PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.0/uml.xml#String\"/>\n"
-	      : "<type xmi:type=\"uml:PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.1/uml.xml#String\"/>\n");
+	      ? "PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.0/uml.xml#String\"/>\n"
+	      : "PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.1/uml.xml#String\"/>\n");
     else if (t.explicit_type == "long")
       out << ((_uml_20)
-	      ? "<type xmi:type=\"uml:PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.0/uml.xml#UnlimitedNatural\"/>\n"
-	      : "<type xmi:type=\"uml:PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.1/uml.xml#UnlimitedNatural\"/>\n");
+	      ? "PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.0/uml.xml#UnlimitedNatural\"/>\n"
+	      : "PrimitiveType\" href=\"http://schema.omg.org/spec/UML/2.1/uml.xml#UnlimitedNatural\"/>\n");
     else {
-      out << "<type xmi:type=\"uml:Class\"";
+      out << "Class\"";
       out.idref_datatype(t.explicit_type);
       out << "/>\n";
     }
@@ -193,3 +191,5 @@ class UmlItem
     }
   }
 
+!!!237698.cpp!!!	gen_extension() : bool
+  return _gen_extension;

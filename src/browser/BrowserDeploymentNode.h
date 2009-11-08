@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -82,7 +82,7 @@ class BrowserDeploymentNode : public BrowserNode, public Labeled<BrowserDeployme
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
-    
+    virtual void prepare_update_lib() const;    
     virtual void referenced_by(QList<BrowserNode> & l, bool ondelete);
     
     virtual const QPixmap* pixmap (int) const;

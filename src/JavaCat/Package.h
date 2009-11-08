@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -43,6 +43,7 @@ class UmlPackage;
 class BrowserView;
 class UmlClass;
 class UmlItem;
+class Class;
 
 class Progress;
 class QApplication;
@@ -53,15 +54,24 @@ class Package : public BrowserNode, public ClassContainer {
     Package(BrowserView * parent, UmlPackage * u);
 #endif
     Package(Package * parent, const char * p, const char * n);
+#ifdef ROUNDTRIP
+    Package(Package * parent, UmlPackage * pk);
+    
+    virtual Class * upload_define(UmlClass *);
+    virtual Class * localy_defined(QString name) const;
+    void own(UmlArtifact *);
+    void reverse(UmlArtifact *);
+    void reverse_file(QCString f, UmlArtifact * art = 0);
+#else
+    void reverse_file(QCString f);    
+#endif
   
     virtual bool isa_package() const;
 
-    void reverse_file(QCString f);
-    
     const QCString & get_path() { return path; }
     UmlPackage * get_uml(bool mandatory = TRUE);
 #ifdef REVERSE
-    void send_dir(bool rec);
+    void send_dir(int n);
     const QStringList get_imports() { return imports; }
     bool is_java_lang_added() { return java_lang_added; }
     const QStringList get_static_imports() { return static_imports; }
@@ -92,7 +102,13 @@ class Package : public BrowserNode, public ClassContainer {
 
     static void init(UmlPackage *, QApplication *);
     static bool scanning() { return scan; };
-    static Package * scan_dir();
+    static void set_step(int s, int n);
+#ifdef ROUNDTRIP
+    static void tic();
+    void scan_dir(int & n);
+#else
+    static Package * scan_dir(int & n);
+#endif
     static Package * get_root() { return root; };
     
     static void push_context();
@@ -105,6 +121,9 @@ class Package : public BrowserNode, public ClassContainer {
     QCString package;		// java package may be with '.'
     QCString path;
     QDict<Class> Undefined;
+#ifdef ROUNDTRIP
+    QDict<UmlArtifact> roundtriped;
+#endif
   
     static bool scan;
     static Package * root;
@@ -138,6 +157,12 @@ class Package : public BrowserNode, public ClassContainer {
     
     Class * declare_if_needed(QCString name, char st);
     Class * new_class(const QCString & name, char st);
+
+#ifdef ROUNDTRIP
+    int count_file_number();
+    void scan_dir();
+    void send_dir();
+#endif
 };
 
 #endif

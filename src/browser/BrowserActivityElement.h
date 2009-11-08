@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,7 +29,7 @@
 class BrowserActivityElement {
   public:
     virtual ~BrowserActivityElement() {}
-    virtual const char * connexion_from(bool control) const = 0;
+  virtual QString connexion_from(bool control) const = 0;
 };
 
 #endif

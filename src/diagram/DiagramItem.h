@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,9 +39,10 @@
 
 class QCanvasItem;
 class QCanvasItemList;
-class DiagramCanvas;
-
 class QBuffer;
+class QPoint;
+
+class DiagramCanvas;
 class LabelCanvas;
 class ArrowCanvas;
 class BrowserNode;
@@ -69,6 +70,7 @@ class DiagramItem : public Labeled<DiagramItem> {
     }
     virtual void remove_line(ArrowCanvas * l, bool onbrkjoin = FALSE);
     virtual void check_line(ArrowCanvas * l);
+    bool attached_to(const ArrowCanvas *) const;
     
     virtual UmlCode type() const = 0;
     virtual void delete_available(bool & in_model, bool & out_model) const;
@@ -80,9 +82,9 @@ class DiagramItem : public Labeled<DiagramItem> {
     virtual bool contains(int, int) const = 0;
     virtual void open() = 0;
     virtual void menu(const QPoint&) = 0;
-    virtual const char * may_start(UmlCode &) const = 0;
+    virtual QString may_start(UmlCode &) const = 0;
     virtual bool may_connect(UmlCode l) const;
-    virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const = 0;
+    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const = 0;
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &) = 0;
     virtual bool connexion(UmlCode, const QPoint &, const QPoint &);
     virtual void post_connexion(UmlCode, DiagramItem *);
@@ -93,7 +95,7 @@ class DiagramItem : public Labeled<DiagramItem> {
     virtual LineDirection allowed_direction(UmlCode);
     virtual bool alignable() const;
     virtual aCorner on_resize_point(const QPoint &);
-    virtual void resize(aCorner c, int dx, int dy);
+    virtual void resize(aCorner c, int dx, int dy, QPoint &);
     virtual void update();
     virtual void change_scale() = 0;
     virtual double get_z() const = 0;

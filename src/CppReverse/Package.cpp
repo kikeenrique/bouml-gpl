@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -657,15 +657,15 @@ void Package::reverse_toplevel_form(QCString f, QCString s) {
 
 void Package::reverse_variable(const QCString & name) {
   // '=' or '(' read
-  QCString init;
-  
   Lex::mark();
   
-  while ((init = Lex::read_word()) != ";")
-    if (init.isEmpty())
+  char c;
+  
+  while ((c = Lex::read_word_bis(TRUE, TRUE)) != ';')
+    if (c == 0)
       return;
 
-  init = Lex::region();
+  QCString init = Lex::region();
   
   if (name.isEmpty()) {
     Lex::syntax_error();

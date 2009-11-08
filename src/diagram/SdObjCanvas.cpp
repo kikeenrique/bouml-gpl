@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -69,11 +69,11 @@ void SdObjCanvas::moveBy(double dx, double dy) {
     life_line->update_pos();
 }
 
-const char * SdObjCanvas::may_start(UmlCode & l) const {
+QString SdObjCanvas::may_start(UmlCode & l) const {
   return (l == UmlAnchor) ? 0 : "illegal";
 }
 
-const char * SdObjCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString SdObjCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
 }
 

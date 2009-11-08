@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,6 +44,7 @@
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserDeploymentNode> BrowserDeploymentNode::all(__FILE__);
 QStringList BrowserDeploymentNode::its_default_stereotypes;	// unicode
@@ -97,6 +98,15 @@ void BrowserDeploymentNode::update_idmax_for_root()
   all.update_idmax_for_root();
 }
 
+void BrowserDeploymentNode::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
+}
+
 void BrowserDeploymentNode::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
   if (! ondelete)
@@ -134,31 +144,31 @@ void BrowserDeploymentNode::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("Edit", 0),
-		     "to edit the <em>node</em>, \
-a double click with the left mouse button does the same thing");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 0),
+		     TR("to edit the <i>node</i>, \
+a double click with the left mouse button does the same thing"));
       if (!is_read_only && (edition_number == 0)) {
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("Delete", 1),
-		       "to delete the <em>node</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 1),
+		       TR("to delete the <i>node</i>. \
+Note that you can undelete it after"));
       }
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("Referenced by", 3),
-		   "to know who reference the <i>node</i> \
-through a relation");
-    mark_menu(m, "node", 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 3),
+		   TR("to know who reference the <i>node</i> \
+through a relation"));
+    mark_menu(m, TR("node"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("Undelete", 2),
-		   "to undelete the <em>node</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 2),
+		   TR("to undelete the <i>node</i>"));
   
   exec_menu_choice(m.exec(QCursor::pos()));
 }
@@ -166,7 +176,7 @@ through a relation");
 void BrowserDeploymentNode::exec_menu_choice(int rank) {
   switch (rank) {
   case 0:
-    edit("Node", its_default_stereotypes);
+    edit(TR("Node"), its_default_stereotypes);
     return;
   case 1:
     delete_it();
@@ -221,7 +231,7 @@ void BrowserDeploymentNode::open(bool force_edit) {
       !associated_diagram->deletedp())
     associated_diagram->open(FALSE);
   else if (!is_edited)
-    edit("Node", its_default_stereotypes);
+    edit(TR("Node"), its_default_stereotypes);
 }
 
 void BrowserDeploymentNode::DragMoveEvent(QDragMoveEvent * e) {
@@ -272,7 +282,7 @@ void BrowserDeploymentNode::DropAfterEvent(QDropEvent * e, BrowserNode * after) 
       package_modified();
     }
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -300,7 +310,7 @@ BrowserDeploymentNode * BrowserDeploymentNode::get_deploymentnode(BrowserNode * 
   QString name;
   BrowserNodeList nodes;
   
-  if (!future_parent->enter_child_name(name, "enter node's name : ",
+  if (!future_parent->enter_child_name(name, TR("enter node's name : "),
 				       UmlDeploymentNode, instances(nodes),
 				       &old, TRUE, FALSE))
     return 0;
@@ -318,7 +328,7 @@ BrowserDeploymentNode * BrowserDeploymentNode::add_deploymentnode(BrowserNode * 
 {
   QString name;
   
-  if (! future_parent->enter_child_name(name, "enter node's name : ",
+  if (! future_parent->enter_child_name(name, TR("enter node's name : "),
 					UmlDeploymentNode, TRUE, FALSE))
     return 0;
   
@@ -506,7 +516,7 @@ void BrowserDeploymentNode::save(QTextStream & st, bool ref, QString & warning) 
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -576,7 +586,7 @@ BrowserDeploymentNode * BrowserDeploymentNode::read(char * & st, char * k,
       k = read_keyword(st);
     }
     
-    result->BrowserNode::read(st, k);	// updates k
+    result->BrowserNode::read(st, k, id);	// updates k
     
     if (strcmp(k, "end")) {
       while (BrowserSimpleRelation::read(st, k, result))

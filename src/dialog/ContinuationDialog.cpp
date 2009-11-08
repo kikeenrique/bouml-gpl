@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,12 +34,13 @@
 #include "ContinuationDialog.h"
 #include "DialogUtil.h"
 #include "UmlDesktop.h"
+#include "translate.h"
 
 QSize ContinuationDialog::previous_size;
 
 ContinuationDialog::ContinuationDialog(QString & s)
     : QDialog(0, "continuation dialog", TRUE), name(s) {
-  setCaption("stereotype/continuation dialog");
+  setCaption(TR("stereotype/continuation dialog"));
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
   QHBoxLayout * hbox;
@@ -49,15 +50,15 @@ ContinuationDialog::ContinuationDialog(QString & s)
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  hbox->addWidget(label = new QLabel("label : ", this));
+  hbox->addWidget(label = new QLabel(TR("label : "), this));
   ed = new LineEdit(name, this);
   hbox->addWidget(ed);
   ed->setFocus();
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  QPushButton * accept = new QPushButton("&OK", this);
-  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QPushButton * accept = new QPushButton(TR("&OK"), this);
+  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
   QSize bs(cancel->sizeHint());
   
   accept->setDefault(TRUE);

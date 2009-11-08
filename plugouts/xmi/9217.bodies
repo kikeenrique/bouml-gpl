@@ -101,7 +101,7 @@ class UmlPackage
 <XMI.header>\n\
 	<XMI.documentation>\n\
 		<XMI.exporter>Bouml</XMI.exporter>\n\
-		<XMI.exporterVersion>1.4.5</XMI.exporterVersion>\n\
+		<XMI.exporterVersion>1.4.6</XMI.exporterVersion>\n\
 	</XMI.documentation>\n\
 	<XMI.metamodel XMI.name=\"UML\" XMI.version=\"1.4\"/>\n\
 </XMI.header>\n\

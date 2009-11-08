@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,15 +46,17 @@
 #include "SdDurationCanvas.h"
 #include "SdLifeLineCanvas.h"
 #include "SdObjCanvas.h"
+#include "LabelCanvas.h"
 #include "DialogUtil.h"
 #include "UmlDesktop.h"
 #include "BrowserView.h"
+#include "translate.h"
 
 QSize SdMsgDialog::previous_size;
 
-SdMsgDialog::SdMsgDialog(SdMsgBaseCanvas * a)
+SdMsgDialog::SdMsgDialog(SdMsgBaseCanvas * a, const QStringList & defaults)
     : QDialog(0, "Message editor", TRUE), mc(a) {
-  setCaption("Message dialog");
+  setCaption(TR("Message dialog"));
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
   QHBoxLayout * hbox;
@@ -64,7 +66,7 @@ SdMsgDialog::SdMsgDialog(SdMsgBaseCanvas * a)
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
   
-  SmallPushButton * b = new SmallPushButton("message :", this);
+  SmallPushButton * b = new SmallPushButton(TR("message :"), this);
   
   hbox->addWidget(b);
   connect(b, SIGNAL(clicked()), this, SLOT(menu_op()));
@@ -74,7 +76,7 @@ SdMsgDialog::SdMsgDialog(SdMsgBaseCanvas * a)
     edoper->insertItem(a->explicit_msg);
   else
     edoper->insertItem(a->msg->definition(TRUE));
-  edoper->setAutoCompletion(TRUE);
+  edoper->setAutoCompletion(completion());
 
   // gets operations
   cl = a->get_dest()->get_line()->get_obj()->get_class();
@@ -95,6 +97,28 @@ SdMsgDialog::SdMsgDialog(SdMsgBaseCanvas * a)
   
   hbox->addWidget(edoper);
   
+  //
+  
+  hbox = new QHBoxLayout(vbox); 
+  hbox->setMargin(5);
+  hbox->addWidget(new QLabel(TR("stereotype : "), this));
+  edst = new QComboBox(TRUE, this);
+  if (a->stereotype != 0) {
+    QString s = a->stereotype->get_name();
+    
+    s = s.mid(2, s.length() - 4);
+    edst->insertItem(s);
+  }
+  else
+    edst->insertItem("");
+  edst->setCurrentItem(0);
+  edst->insertStringList(defaults);
+  edst->setAutoCompletion(completion());
+  hbox->addWidget(edst);
+  edst->setSizePolicy(sp);
+  
+  //
+  
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
   
@@ -102,11 +126,11 @@ SdMsgDialog::SdMsgDialog(SdMsgBaseCanvas * a)
   
   htab->setMargin(5);
   
-  QButtonGroup * bg = new QButtonGroup(2, Qt::Horizontal, "Message type", htab);
+  QButtonGroup * bg = new QButtonGroup(2, Qt::Horizontal, TR("Message type"), htab);
   
   bg->setExclusive(TRUE);
-  synchronous_rb = new QRadioButton("synchronous", bg);
-  asynchronous_rb = new QRadioButton("asynchronous", bg);
+  synchronous_rb = new QRadioButton(TR("synchronous"), bg);
+  asynchronous_rb = new QRadioButton(TR("asynchronous"), bg);
   
   if (a->is_synchronous())
     synchronous_rb->setChecked(TRUE);
@@ -115,13 +139,13 @@ SdMsgDialog::SdMsgDialog(SdMsgBaseCanvas * a)
 
   hbox->addWidget(htab);
   
-  vbox->addWidget(new QLabel("\n\nWhen the arguments are specified they replace the \
-operation's parameter(s) without any check",
+  vbox->addWidget(new QLabel(TR("\n\nWhen the arguments are specified they replace the \
+operation's parameter(s) without any check"),
 			     this));
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  hbox->addWidget(new QLabel("arguments : ", this));
+  hbox->addWidget(new QLabel(TR("arguments : "), this));
   edargs = new MultiLineEdit(this);
   edargs->setText(a->get_args());
   hbox->addWidget(edargs);  
@@ -129,8 +153,8 @@ operation's parameter(s) without any check",
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  QPushButton * ok = new QPushButton("&OK", this);
-  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QPushButton * ok = new QPushButton(TR("&OK"), this);
+  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
   QSize bs(cancel->sizeHint());
   
   ok->setDefault(TRUE);
@@ -156,13 +180,13 @@ SdMsgDialog::~SdMsgDialog() {
 void SdMsgDialog::menu_op() {
   QPopupMenu m(0);
 
-  m.insertItem("Choose", -1);
+  m.insertItem(TR("Choose"), -1);
   m.insertSeparator();
   
   int index = list.findIndex(edoper->currentText().stripWhiteSpace());
   
   if (index != -1)
-    m.insertItem("Select in browser", 0);
+    m.insertItem(TR("Select in browser"), 0);
   
   BrowserNode * bn = BrowserView::selected_item();
   
@@ -170,12 +194,12 @@ void SdMsgDialog::menu_op() {
       (bn->get_type() == UmlOperation) &&
       !bn->deletedp() &&
       (opers.findIndex((OperationData *) bn->get_data()) != -1))
-    m.insertItem("Choose operation selected in browser", 1);
+    m.insertItem(TR("Choose operation selected in browser"), 1);
   else
     bn = 0;
   
   if (cl != 0)
-    m.insertItem("Create operation and choose it", 2);
+    m.insertItem(TR("Create operation and choose it"), 2);
   
   if ((index != -1) || (bn != 0) || (cl != 0)) {
     switch (m.exec(QCursor::pos())) {
@@ -222,6 +246,11 @@ void SdMsgDialog::accept() {
     mc->set_msg(0, QString::null, QString::null);
   
   mc->set_synchronous(synchronous_rb->isChecked());
+  
+  s = edst->currentText().stripWhiteSpace();
+  if (!s.isEmpty())
+    s = "<<" + s + ">>";
+  mc->update_st(s);
 
   QDialog::accept();
 }

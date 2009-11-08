@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@
 #include "BodyDialog.h"
 #include "GenerationSettings.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 QSize TransitionDialog::previous_size;
 
@@ -52,14 +53,16 @@ TransitionDialog::TransitionDialog(TransitionData * r)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), rel(r) {
   r->browser_node->edit_start();
   
-  if (r->browser_node->is_writable())
-    setCancelButton();
+  if (r->browser_node->is_writable()) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
 
-  setCaption("Transition dialog");
+  setCaption(TR("Transition dialog"));
   visit = !hasOkButton();  
 
   BrowserNode * bn = rel->browser_node;
@@ -74,16 +77,16 @@ TransitionDialog::TransitionDialog(TransitionData * r)
   grid->setMargin(5);
   grid->setSpacing(5);
   
-  new QLabel("name : ", grid);
+  new QLabel(TR("name : "), grid);
   edname = new LineEdit(bn->get_name(), grid);
   edname->setReadOnly(visit);
     
-  new QLabel("stereotype : ", grid);
+  new QLabel(TR("stereotype : "), grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(rel->get_stereotype()));
   if (!visit) {
     //edstereotype->insertStringList(rel->get_start()->default_stereotypes(type));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->setAutoCompletion(completion());
     edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlTransition));
   }
   edstereotype->setCurrentItem(0);
@@ -95,14 +98,14 @@ TransitionDialog::TransitionDialog(TransitionData * r)
     internal_cb = 0;
   else {
     new QLabel(grid);
-    internal_cb = new QCheckBox("internal", grid);
+    internal_cb = new QCheckBox(TR("internal"), grid);
     internal_cb->setChecked(r->internal());
   }
     
   QVBox * vtab = new QVBox(grid);
-  new QLabel("description :", vtab);
+  new QLabel(TR("description :"), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
@@ -132,7 +135,7 @@ TransitionDialog::TransitionDialog(TransitionData * r)
   grid->setSpacing(5);
   
   kvtable = new KeyValuesTable(bn, grid, visit);
-  addTab(grid, "Properties");
+  addTab(grid, TR("Properties"));
   
   //
     
@@ -178,9 +181,9 @@ void TransitionDialog::init_tab(QWidget *& tab, TransDialog & d, TransDef & td,
   grid->setSpacing(5);
   
   vtab = new QVBox(grid);
-  new QLabel("trigger : ", vtab);
+  new QLabel(TR("trigger : "), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, sl_trigger);
   d.edtrigger = new MultiLineEdit(grid);
 
@@ -195,9 +198,9 @@ void TransitionDialog::init_tab(QWidget *& tab, TransDialog & d, TransDef & td,
     d.edtrigger->setReadOnly(TRUE);
   
   vtab = new QVBox(grid);
-  new QLabel("guard\nconstraint : ", vtab);
+  new QLabel(TR("guard\nconstraint : "), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, sl_guard);
   d.edguard = new MultiLineEdit(grid);
   d.edguard->setFont(font);
@@ -206,9 +209,9 @@ void TransitionDialog::init_tab(QWidget *& tab, TransDialog & d, TransDef & td,
     d.edguard->setReadOnly(TRUE);
   
   vtab = new QVBox(grid);
-  new QLabel("activity\nexpression : ", vtab);
+  new QLabel(TR("activity\nexpression : "), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, sl_expr);
   d.edexpr = new MultiLineEdit(grid);
   d.edexpr->setFont(font);
@@ -270,7 +273,7 @@ void TransitionDialog::accept() {
       ((BrowserNode *) bn->parent())->wrong_child_name(s, UmlTransition,
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
-    msg_critical("Error", s + "\n\nillegal name or already used");
+    msg_critical(TR("Error"), s + TR("\n\nillegal name or already used"));
   else {  
     bn->set_name(s);
     

@@ -124,10 +124,29 @@ class UmlBaseState
   UmlCom.check();
 
   _java.do_activity = s;
-!!!261120.cpp!!!	specification() : UmlItem
+!!!262016.cpp!!!	isActive() : bool
+  read_if_needed_();
+  return _active;
+!!!262016.java!!!	isActive() : bool
+  read_if_needed_();
+  return _active;
+!!!262144.cpp!!!	set_isActive(in v : bool) : bool
+  UmlCom::send_cmd(_identifier, setActiveCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _active = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!262144.java!!!	set_isActive(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setActiveCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _active = v;
+!!!261120.cpp!!!	specification() : UmlOperation
   read_if_needed_();
   return _specification;
-!!!261120.java!!!	specification() : UmlItem
+!!!261120.java!!!	specification() : UmlOperation
   read_if_needed_();
   return _specification;
 !!!261248.cpp!!!	set_Specification(in v : UmlOperation) : bool
@@ -182,12 +201,14 @@ class UmlBaseState
   UmlBaseItem::read_uml_();
   _uml.read();
   _specification = (UmlOperation *) UmlBaseItem::read_();
+  _active = UmlCom::read_bool();
 !!!132608.java!!!	read_uml_() : void
   _assoc_diagram = (UmlStateDiagram) UmlBaseItem.read_();
   super.read_uml_();
   _uml = new StateBehavior();
   _uml.read();
   _specification = (UmlOperation) UmlBaseItem.read_();
+  _active = UmlCom.read_bool();
 !!!132736.cpp!!!	read_cpp_() : void
   _cpp.read();
 !!!132736.java!!!	read_cpp_() : void

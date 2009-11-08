@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,6 +42,7 @@
 #include "UmlPixmap.h"
 #include "LabelCanvas.h"
 #include "BasicData.h"
+#include "translate.h"
 
 ArrowJunctionCanvas::ArrowJunctionCanvas(UmlCanvas * canvas, int x, int y,
 					 BrowserClass * i, int id) 
@@ -159,9 +160,9 @@ void ArrowJunctionCanvas::menu(const QPoint&) {
   if (lines.at(0)->may_join()) {
     QPopupMenu m;
     
-    m.insertItem(new MenuTitle("Line break", m.font()), -1);
+    m.insertItem(new MenuTitle(TR("Line break"), m.font()), -1);
     m.insertSeparator();
-    m.insertItem("Remove from view", 0);
+    m.insertItem(TR("Remove from view"), 0);
     
     switch (m.exec(QCursor::pos())) {
     case 0:
@@ -177,12 +178,12 @@ void ArrowJunctionCanvas::menu(const QPoint&) {
 #endif
 }
 
-const char * ArrowJunctionCanvas::may_start(UmlCode &) const {
-  return "illegal";
+QString ArrowJunctionCanvas::may_start(UmlCode &) const {
+  return TR("illegal");
 }
 
-const char * ArrowJunctionCanvas::may_connect(UmlCode &, const DiagramItem *) const {
-  return "illegal";
+QString ArrowJunctionCanvas::may_connect(UmlCode &, const DiagramItem *) const {
+  return TR("illegal");
 }
 
 bool ArrowJunctionCanvas::alignable() const {

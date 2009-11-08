@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -58,10 +58,10 @@ class SubjectCanvas : public QObject, public DiagramCanvas {
     virtual bool copyable() const;
     virtual void open();
     virtual void menu(const QPoint&);
-    virtual const char * may_start(UmlCode &) const;
-    virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
+    virtual QString may_start(UmlCode &) const;
+    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual aCorner on_resize_point(const QPoint &);
-    virtual void resize(aCorner c, int dx, int dy);
+    virtual void resize(aCorner c, int dx, int dy, QPoint &);
     virtual void prepare_for_move(bool on_resize);
     virtual void change_scale();
     

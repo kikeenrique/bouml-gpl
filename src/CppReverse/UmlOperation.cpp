@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -85,12 +85,12 @@ bool UmlOperation::pfunc(bool & func, QCString & name, QCString & type,
   Lex::mark();
   
   for (;;) {
-    if ((s = Lex::read_word()).isEmpty()) {
+    switch (Lex::read_word_bis(TRUE, FALSE)) {
+    case 0:
       Lex::come_back();
       Lex::error_near("(");
       return FALSE;
-    }
-    if (s == ")") {
+    case ')':
       // not a function/operation returning a function/operation
       if ((s = Lex::read_word()) != "(") {
 	Lex::error_near(s);
@@ -102,8 +102,7 @@ bool UmlOperation::pfunc(bool & func, QCString & name, QCString & type,
       func = FALSE;
       type += Lex::region();	// complete
       return TRUE;
-    }
-    if (s == "(") {
+    case '(':
       // a function/operation returning a function/operation
       func = TRUE;
       type += Lex::region();	// not complete
@@ -432,21 +431,21 @@ bool UmlOperation::new_one(Class * cl, const QCString & name,
     
     // goto the end of the body
     
-    QCString e;
+    char e;
     
     if (s == ":")
-      while ((e = Lex::read_word(TRUE)) != "{")
-	if (e.isEmpty())
+      while ((e = Lex::read_word_bis(TRUE, TRUE)) != '{')
+	if (e == 0)
 	  return FALSE;
     
     int level = 1;	// '{' already read
     
     for (;;) {
-      if ((e = Lex::read_word(TRUE)).isEmpty())
+      if ((e = Lex::read_word_bis(TRUE, TRUE)) == 0)
 	return FALSE;
-      else if (e == "{")
+      else if (e == '{')
 	level += 1;
-      else if ((e == "}") && (--level == 0))
+      else if ((e == '}') && (--level == 0))
 	break;
     }
     
@@ -593,7 +592,7 @@ bool UmlOperation::read_param(ClassContainer * container, unsigned rank,
   if (s == "...") {
     decl.insert(decl.find("${)}"), 	// cannot be -1
 		(rank == 0) ? "..." : ", ...");
-    if (Lex::read_word() != ")")
+    if (Lex::read_word_bis(TRUE, FALSE) != ')')
       Lex::error_near("...");
     else
       on_error = FALSE;
@@ -799,22 +798,23 @@ bool UmlOperation::read_throw_elt(ClassContainer * container,
 				  UmlTypeSpec & typespec,
 				  const QValueList<FormalParameterList> & tmplts)
 {
-  QCString s;
+  char c;
   
-  while ((s = Lex::read_word()) != ")") {
-    if (s.isEmpty()) {
+  while ((c = Lex::read_word_bis(TRUE, FALSE)) != ')') {
+    if (c == 0) {
       if (! Package::scanning())
 	Lex::premature_eof();
       return FALSE;
     }
       
-    if (s == ",") {
+    if (c == ',') {
       if (! Package::scanning())
 	Lex::error_near(",");
     }
     else {
       Lex::unread_word();
-      s = Lex::normalize(Lex::read_list_elt());
+      
+      QCString s = Lex::normalize(Lex::read_list_elt());
       
       QCString dummy;
       
@@ -822,7 +822,7 @@ bool UmlOperation::read_throw_elt(ClassContainer * container,
       if (typespec.type == 0)
 	typespec.explicit_type = s;
       
-      if ((s = Lex::read_word()) != ",")
+      if (Lex::read_word_bis(TRUE, FALSE) != ',')
 	Lex::unread_word();
       
       return TRUE;
@@ -992,15 +992,17 @@ bool UmlOperation::operations(QList<UmlOperation> & candidates, UmlClass * cl,
 	  // it is a class variable initialisation
 	  Lex::mark();
 	  
-	  QCString e;
+	  char c;
 	  
-	  while ((e = Lex::read_word()) != ";") {
-	    if (e.isEmpty()) {
+	  while ((c = Lex::read_word_bis(TRUE, FALSE)) != ';') {
+	    if (c == 0) {
 	      Lex::premature_eof();
 	      return TRUE;
 	    }
 	  }
-	  e = QCString("(") + Lex::region();
+	  
+	  QCString e = QCString("(") + Lex::region();
+	  
 	  if (it->kind() == anAttribute)
 	    ((UmlAttribute *) it)->set_DefaultValue(e.left(e.length() - 1));
 	  else
@@ -1069,7 +1071,7 @@ void UmlOperation::reverse_definition(Package * pack, QCString name,
 	}
 	else if (!func) {
 	  // not an operation : a variable valuing a function/operation pointer
-	  if (Lex::read_word() == "=")
+	  if (Lex::read_word_bis(TRUE, FALSE) == '=')
 	    pack->reverse_variable(name);
 	  return;
 	}
@@ -1233,7 +1235,7 @@ bool UmlOperation::reverse_if_def(Package * pack,
   const QValueList<UmlTypeSpec> exc = exceptions();
   
   if (s == "throw") {
-    if ((s = Lex::read_word()) != "(") {
+    if (Lex::read_word_bis(TRUE, FALSE) != '(') {
       Lex::error_near("throw");
       on_error = TRUE;
       return FALSE;
@@ -1357,19 +1359,22 @@ bool UmlOperation::reverse_if_def(Package * pack,
     
     if (s == ":") {
       // constructor
-      while ((s = Lex::read_word(TRUE)) != "{") {
-	if (s.isEmpty()) {
+      char c;
+      
+      while ((c = Lex::read_word_bis(TRUE, TRUE)) != '{') {
+	if (c == 0) {
 	  on_error = TRUE;
 	  return FALSE;
 	}
       }
       
-      QCString c = Lex::region();	// including ':'
-      
+      s = Lex::region();	// including ':'
       if (op == this)
 	def0 = def;
-      def.insert(end + 4, c.left(c.length() - 1));	// without {
+      def.insert(end + 4, s.left(s.length() - 1));	// without {
       def_modified = TRUE;
+      
+      s = "{";
     }
     
     if (s == "{") {
@@ -1429,28 +1434,35 @@ bool UmlOperation::reverse_if_def(Package * pack,
 }
 
 void UmlOperation::skip_body(int level) {
-  QCString e;
+  char e;
     
-  while (!((e = Lex::read_word(TRUE)).isEmpty()) &&	// end of file
-	 ((e != "}") || (--level != 0)) &&	// end of body
-	 ((e != ";") || (level != 0)))		// no body, probably a declaration
-    if (e == "{")
+  while ((e = Lex::read_word_bis(TRUE, TRUE)) != 0) {	// not end of file
+    if (e == '}') {
+      if (--level == 0)
+	// end of body
+	break;
+    }
+    else if (e == ';') {
+      if (level == 0)
+	// no body, probably a declaration
+	break;
+    }
+    else if (e == '{')
       level += 1;
+  }
   
   Lex::clear_comments();
 }
 
 void UmlOperation::skip_expr(QCString end, bool allow_templ) {
-  QCString e;
+  char c;
   int level = 0;
     
   for (;;) {
-    e = Lex::read_word(TRUE);
+    c = Lex::read_word_bis(TRUE, TRUE);
     
-    if (e.isEmpty())
+    if (c == 0)
       break;
-    
-    char c = *e;
     
     if ((end.find(c) != -1) && (level <= 0))
       break;
@@ -1463,10 +1475,6 @@ void UmlOperation::skip_expr(QCString end, bool allow_templ) {
     case '(':
     case '{':
       level += 1;
-      break;
-    case '[':
-      if (e.length() == 1)
-	level += 1;
       break;
     case '>':
       if (! allow_templ)

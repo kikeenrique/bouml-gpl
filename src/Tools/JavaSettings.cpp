@@ -22,6 +22,9 @@ bool JavaSettings::set_UseDefaults(bool y)
 
 QCString JavaSettings::type(const QCString & s)
 {
+  if (s.isEmpty())
+    return s;
+  
   read_if_needed_();
   
   UmlBuiltin * b = UmlSettings::_map_builtins.find(s);

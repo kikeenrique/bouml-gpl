@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,6 +33,7 @@
 
 #include "MLEDialog.h"
 #include "DialogUtil.h"
+#include "translate.h"
 
 MLEDialog::MLEDialog(QString t, bool buttons) : QDialog(0, "Uml", TRUE, 0) {
   QVBoxLayout *vbox = new QVBoxLayout(this);
@@ -47,9 +48,9 @@ MLEDialog::MLEDialog(QString t, bool buttons) : QDialog(0, "Uml", TRUE, 0) {
 
   if (buttons) {
     new QLabel(hbox);
-    ok = new QPushButton("OK", hbox);
+    ok = new QPushButton(TR("OK"), hbox);
     new QLabel(hbox);
-    cancel = new QPushButton("Cancel", hbox);
+    cancel = new QPushButton(TR("Cancel"), hbox);
     new QLabel(hbox);
   
     connect(ok, SIGNAL(clicked()), this, SLOT(accept()));

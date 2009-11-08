@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -50,12 +50,12 @@ class FragmentSeparatorCanvas : public DiagramCanvas {
     virtual UmlCode type() const;
     virtual void delete_available(bool & in_model, bool & out_model) const;
     virtual LineDirection allowed_direction(UmlCode);
-    const char * may_connect(UmlCode &, const DiagramItem *) const;
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     virtual void open();
     virtual void menu(const QPoint&);
     virtual void change_scale();
-    virtual const char * may_start(UmlCode &) const;
+    virtual QString may_start(UmlCode &) const;
+    virtual QString may_connect(UmlCode &, const DiagramItem *) const;
     
     virtual void save(QTextStream &, bool ref, QString & warning) const;
     static FragmentSeparatorCanvas * read(char * &, UmlCanvas *,

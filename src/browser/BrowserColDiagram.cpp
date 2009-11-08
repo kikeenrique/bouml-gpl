@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@
 #include "BrowserView.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 QList<BrowserColDiagram> BrowserColDiagram::imported;
 QValueList<int> BrowserColDiagram::imported_ids;
@@ -120,7 +121,7 @@ BrowserColDiagram * BrowserColDiagram::add_collaboration_diagram(BrowserNode * f
 {
   QString name;
   
-  if (future_parent->enter_child_name(name, "enter communication diagram's name : ",
+  if (future_parent->enter_child_name(name, TR("enter communication diagram's name : "),
 				      UmlColDiagram, TRUE, FALSE))
     return new BrowserColDiagram(name, future_parent);
   else
@@ -202,36 +203,36 @@ void BrowserColDiagram::menu() {
   m.insertItem(new MenuTitle(name, m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
-    m.setWhatsThis(m.insertItem("Show", 0),
-		   "to show and edit the <em>communication diagram</em>");
+    m.setWhatsThis(m.insertItem(TR("Show"), 0),
+		   TR("to show and edit the <i>communication diagram</i>"));
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("Edit", 1), 
-		     "to edit the <em>communication diagram</em>");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 1), 
+		     TR("to edit the <i>communication diagram</i>"));
       if (!is_read_only) {
-	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
-		       "to set how the <em>communication diagram</em>'s items must be drawn");
+	m.setWhatsThis(m.insertItem(TR("Edit drawing settings"), 2),
+		       TR("to set how the <i>communication diagram</i>'s items must be drawn"));
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("Duplicate", 3),
-		       "to duplicate the <em>communication diagram</em>");
+	m.setWhatsThis(m.insertItem(TR("Duplicate"), 3),
+		       TR("to duplicate the <i>communication diagram</i>"));
 	if (edition_number == 0) {
 	  m.insertSeparator();
-	  m.setWhatsThis(m.insertItem("Delete", 4),
-			 "to delete the <em>communication diagram</em>. \
-Note that you can undelete it after");
+	  m.setWhatsThis(m.insertItem(TR("Delete"), 4),
+			 TR("to delete the <i>communication diagram</i>. \
+Note that you can undelete it after"));
 	}
       }
     }
-    mark_menu(m, "communication diagram", 90);
+    mark_menu(m, TR("communication diagram"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("Undelete", 5),
-		   "to undelete the <em>communication diagram</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 5),
+		   TR("to undelete the <i>communication diagram</i>"));
   
   exec_menu_choice(m.exec(QCursor::pos()));
 }
@@ -242,7 +243,7 @@ void BrowserColDiagram::exec_menu_choice(int rank) {
     open(FALSE);
     break;
   case 1:
-    edit("Communication diagram", its_default_stereotypes);
+    edit(TR("Communication diagram"), its_default_stereotypes);
     return;
   case 2:
     edit_settings();
@@ -251,7 +252,7 @@ void BrowserColDiagram::exec_menu_choice(int rank) {
     {
       QString name;
       
-      if (((BrowserNode *)parent())->enter_child_name(name, "enter communication diagram's name : ",
+      if (((BrowserNode *)parent())->enter_child_name(name, TR("enter communication diagram's name : "),
 						      UmlColDiagram, TRUE, FALSE))
 	duplicate((BrowserNode *) parent(), name)->select_in_browser();
       else
@@ -318,17 +319,17 @@ void BrowserColDiagram::open(bool) {
 }
 
 void BrowserColDiagram::edit_settings() {
-  QArray<StateSpec> st;
-  QArray<ColorSpec> co(4);
+  StateSpecVector st;
+  ColorSpecVector co(4);
   
   settings.complete(st, TRUE);
   
-  co[0].set("package color", &package_color);
-  co[1].set("fragment color", &fragment_color);
-  co[2].set("note color", &note_color);
-  co[3].set("class instance \ncolor", &class_instance_color);
+  co[0].set(TR("package color"), &package_color);
+  co[1].set(TR("fragment color"), &fragment_color);
+  co[2].set(TR("note color"), &note_color);
+  co[3].set(TR("class instance \ncolor"), &class_instance_color);
   
-  SettingsDialog dialog(&st, &co, FALSE, FALSE);
+  SettingsDialog dialog(&st, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
@@ -546,7 +547,7 @@ void BrowserColDiagram::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -603,7 +604,7 @@ BrowserColDiagram * BrowserColDiagram::read(char * & st, char * k,
     read_color(st, "fragment_color", r->fragment_color, k);	// updates k
     if (read_file_format() >= 25)
       read_color(st, "package_color", r->package_color, k);	// updates k
-    r->BrowserNode::read(st, k);			// updates k
+    r->BrowserNode::read(st, k, id);			// updates k
     
     if (!strcmp(k, "size")) {
       r->set_format(canvas_format(read_keyword(st)));

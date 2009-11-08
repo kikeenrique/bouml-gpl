@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -50,6 +50,7 @@
 #include "strutil.h"
 #include "mu.h"
 #include "myio.h"
+#include "translate.h"
 
 void EnvDialog::edit(bool conv, bool noid)
 {
@@ -62,7 +63,7 @@ void EnvDialog::edit(bool conv, bool noid)
 
 EnvDialog::EnvDialog(bool conv, bool noid)
     : QDialog(0, "Environment dialog", TRUE), conversion(conv) {
-  setCaption("Environment dialog");
+  setCaption(TR("Environment dialog"));
   
   QVBoxLayout * vbox = new QVBoxLayout(this);
   QHBox * htab;
@@ -75,11 +76,11 @@ EnvDialog::EnvDialog(bool conv, bool noid)
   grid->setSpacing(5);
   
   new QLabel(grid);  
-  new QLabel("MANDATORY, choose a value between 2 and 127 not used by an other person working at the same time on a project with you.\n"
-	     "To be safe, if possible choose a value not used by an other person even not working on a given project with you",
+  new QLabel(TR("MANDATORY, choose a value between 2 and 127 not used by an other person working at the same time on a project with you.\n"
+	     "To be safe, if possible choose a value not used by an other person even not working on a given project with you"),
 	     grid);
   
-  new QLabel("Own identifier ", grid);
+  new QLabel(TR("Own identifier "), grid);
   htab = new QHBox(grid);
   if (conv)
     s = getenv("BOUML_ID");	// yes !
@@ -88,17 +89,17 @@ EnvDialog::EnvDialog(bool conv, bool noid)
   ed_id = new QLineEdit(s, htab);
   if (BrowserView::get_project() != 0) {
     ed_id->setEnabled(FALSE);
-    new QLabel("   The identifier can't be modified while a project is load", htab);
+    new QLabel(TR("   The identifier can't be modified while a project is load"), htab);
   }
 
   //
   
   new QLabel(grid);  
-  new QLabel("\nOptional, to indicate where are the HTML pages of the reference manual. Used by the help (called by the F1 key) to show the\n"
-	     "chapter corresponding to the kind of the element selected in the browser",
+  new QLabel(TR("\nOptional, to indicate where are the HTML pages of the reference manual. Used by the help (called by the F1 key) to show the\n"
+	     "chapter corresponding to the kind of the element selected in the browser"),
 	     grid);
 
-  new QLabel("Manual path", grid);
+  new QLabel(TR("Manual path"), grid);
   htab = new QHBox(grid);
   ed_doc = new QLineEdit(htab);
   if (!conv)
@@ -115,27 +116,27 @@ EnvDialog::EnvDialog(bool conv, bool noid)
 
 
   new QLabel(" ", htab);
-  button = new QPushButton("Browse", htab);
+  button = new QPushButton(TR("Browse"), htab);
   connect(button, SIGNAL(clicked ()), this, SLOT(doc_browse()));
 
   //
   
   new QLabel(grid);  
-  new QLabel("\nOptional, to indicate a web navigator program. If it is not defined the reference manual will be shown with an internal simple viewer",
+  new QLabel(TR("\nOptional, to indicate a web navigator program. If it is not defined the reference manual will be shown with an internal simple viewer"),
 	     grid);
-  new QLabel("Navigator", grid);
+  new QLabel(TR("Navigator"), grid);
   htab = new QHBox(grid);
   ed_navigator = new QLineEdit(htab);
   if (!conv)
     ed_navigator->setText(navigator_path());
   new QLabel(" ", htab);
-  button = new QPushButton("Browse", htab);
+  button = new QPushButton(TR("Browse"), htab);
   connect(button, SIGNAL(clicked ()), this, SLOT(navigator_browse()));
 
   //
   
   new QLabel(grid);  
-  new QLabel("\nOptional, to indicate a template project. This allows to create new projects getting all the template project settings",
+  new QLabel(TR("\nOptional, to indicate a template project. This allows to create new projects getting all the template project settings"),
 	     grid);
   new QLabel("Template project", grid);
   htab = new QHBox(grid);
@@ -145,15 +146,15 @@ EnvDialog::EnvDialog(bool conv, bool noid)
     s = template_project();
   ed_template = new QLineEdit(s, htab);
   new QLabel(" ", htab);
-  button = new QPushButton("Browse", htab);
+  button = new QPushButton(TR("Browse"), htab);
   connect(button, SIGNAL(clicked ()), this, SLOT(template_browse()));
 
   //
   
   new QLabel(grid);  
-  new QLabel("\nOptional, to indicate a text editor (it must creates an own window). Else Bouml will use an internal editor",
+  new QLabel(TR("\nOptional, to indicate a text editor (it must creates an own window). Else Bouml will use an internal editor"),
 	     grid);
-  new QLabel("Editor path ", grid);
+  new QLabel(TR("Editor path "), grid);
   htab = new QHBox(grid);
   if (conv)
     s = getenv("BOUML_EDITOR");	// yes !
@@ -161,8 +162,20 @@ EnvDialog::EnvDialog(bool conv, bool noid)
     s = editor();
   ed_editor = new QLineEdit(s, htab);
   new QLabel(" ", htab);
-  button = new QPushButton("Browse", htab);
+  button = new QPushButton(TR("Browse"), htab);
   connect(button, SIGNAL(clicked ()), this, SLOT(editor_browse()));
+
+  //
+  
+  new QLabel(grid);  
+  new QLabel(TR("\nOptional, to choose a language for menus and dialogs (default is English). You may have to select a corresponding character set"),
+	     grid);
+  new QLabel(TR("Translation file path "), grid);
+  htab = new QHBox(grid);
+  ed_lang = new QLineEdit(current_lang(), htab);
+  new QLabel(" ", htab);
+  button = new QPushButton(TR("Browse"), htab);
+  connect(button, SIGNAL(clicked ()), this, SLOT(lang_browse()));
 
   //
   
@@ -171,12 +184,12 @@ EnvDialog::EnvDialog(bool conv, bool noid)
 
 
 
-  new QLabel("\nOptional, to indicate a character set in case you use non ISO_8859-1/latin1 characters. For instance KOI8-R or KOI8-RU for Cyrillic",
+  new QLabel(TR("\nOptional, to indicate a character set in case you use non ISO_8859-1/latin1 characters. For instance KOI8-R or KOI8-RU for Cyrillic"),
 	     grid);
 
-  new QLabel("Character set ", grid);
+  new QLabel(TR("Character set "), grid);
   cb_charset = new QComboBox(FALSE, grid);
-  cb_charset->setAutoCompletion(TRUE);
+  cb_charset->setAutoCompletion(completion());
   
   QStringList l;
   QTextCodec * co;
@@ -207,10 +220,10 @@ EnvDialog::EnvDialog(bool conv, bool noid)
   //
   
   new QLabel(grid);  
-  new QLabel("\nIn case you have a multiple screens configuration the best for you is to ask Bouml to place by default the dialogs in one of these\n"
-	     "screens giving the area, else the dialogs will be shown on the center of the virtual screen.",
+  new QLabel(TR("\nIn case you have a multiple screens configuration the best for you is to ask Bouml to place by default the dialogs in one of these\n"
+	     "screens giving the area, else the dialogs will be shown on the center of the virtual screen."),
 	     grid);
-  new QLabel("Default screen ", grid);
+  new QLabel(TR("Default screen "), grid);
   
   QString x0, y0, x1, y1;
   int top, left, bottom, right;
@@ -237,13 +250,13 @@ EnvDialog::EnvDialog(bool conv, bool noid)
   }
   
   htab = new QHBox(grid);
-  new QLabel("left: ", htab);
+  new QLabel(TR("left: "), htab);
   ed_xmin = new QLineEdit(x0, htab);
-  new QLabel("      top: ", htab);
+  new QLabel(TR("      top: "), htab);
   ed_ymin = new QLineEdit(y0, htab);
-  new QLabel("      right: ", htab);
+  new QLabel(TR("      right: "), htab);
   ed_xmax = new QLineEdit(x1, htab);
-  new QLabel("      bottom: ", htab);
+  new QLabel(TR("      bottom: "), htab);
   ed_ymax = new QLineEdit(y1, htab);
   
   //
@@ -251,10 +264,10 @@ EnvDialog::EnvDialog(bool conv, bool noid)
   new QLabel(grid);
   htab = new QHBox(grid);
   new QLabel(htab);
-  connect(new QPushButton("OK", htab), SIGNAL(clicked()), this, SLOT(accept()));
+  connect(new QPushButton(TR("OK"), htab), SIGNAL(clicked()), this, SLOT(accept()));
   new QLabel(htab);
   if (! conv) {
-    connect(new QPushButton("Cancel", htab), SIGNAL(clicked()), this, SLOT(reject()));
+    connect(new QPushButton(TR("Cancel"), htab), SIGNAL(clicked()), this, SLOT(reject()));
     new QLabel(htab);
   }
 }
@@ -276,7 +289,7 @@ void EnvDialog::accept() {
       (sscanf((const char *) ed_id->text(), "%d", &id) != 1) ||
       (id < 2) ||
       (id > 127)) {
-    QMessageBox::critical(this, "Bouml", "Invalid identifier, must be an integer between 2 and 127");
+    QMessageBox::critical(this, "Bouml", TR("Invalid identifier, must be an integer between 2 and 127"));
     return;
   }
   
@@ -291,37 +304,37 @@ void EnvDialog::accept() {
   if (ok_l && ok_t && ok_r && ok_b) {
     if ((l < 0) || (t < 0) || (r < 0) || (b < 0)) {
       QMessageBox::critical(this, "Bouml",
-			    "Invalid DEFAULT SCREEN : coordinates can't be negative");
+			    TR("Invalid DEFAULT SCREEN : coordinates can't be negative"));
       return;
     }
     else if ((l != 0) || (t != 0) || (r != 0) || (b != 0)) {
       if (r <= l) {
 	QMessageBox::critical(this, "Bouml",
-			      "Invalid DEFAULT SCREEN : the right must be greater than the left");
+			      TR("Invalid DEFAULT SCREEN : the right must be greater than the left"));
 	return;
       }
       
       if (b <= t) {
 	QMessageBox::critical(this, "Bouml",
-			      "Invalid DEFAULT SCREEN : the bottom must be greater than the top");
+			      TR("Invalid DEFAULT SCREEN : the bottom must be greater than the top"));
 	return;
       }
       
       if ((r - l) < 500)
 	QMessageBox::warning(this, "Bouml",
-			     "small DEFAULT SCREEN, width less than 500 points !");
+			     TR("small DEFAULT SCREEN, width less than 500 points !"));
       
       if ((b - t) < 500)
 	QMessageBox::warning(this, "Bouml",
-			     "small DEFAULT SCREEN, height less than 500 points !");
+			     TR("small DEFAULT SCREEN, height less than 500 points !"));
     }
   }
   else {
     QMessageBox::critical(this, "Bouml",
-			  "Invalid DEFAULT SCREEN"
-			  "To not specify the desktop all values must be empty or null."
-			  "Else the values must be non negative, the right must be greater\n"
-			  "than the left, and the bottom must be greater than the top");
+			  TR("Invalid DEFAULT SCREEN"
+			     "To not specify the desktop all values must be empty or null."
+			     "Else the values must be non negative, the right must be greater\n"
+			     "than the left, and the bottom must be greater than the top"));
     return;
   }
   
@@ -369,6 +382,11 @@ void EnvDialog::accept() {
   if (! ed_editor->text().isEmpty())
     fprintf(fp, "EDITOR %s\n", (const char *) ed_editor->text());
   
+  if (! ed_lang->text().isEmpty())
+    fprintf(fp, "LANG %s\n", (const char *) ed_lang->text());
+  else
+    fputs("NOLANG\n", fp);
+  
   if (! cb_charset->currentText().isEmpty())
     fprintf(fp, "CHARSET %s\n", (const char *) cb_charset->currentText());
   
@@ -392,7 +410,7 @@ void EnvDialog::reject() {
 void EnvDialog::doc_browse() {
   QString s =
     QFileDialog::getExistingDirectory(ed_doc->text(), this, 0,
-				      "documentation directory");
+				      TR("documentation directory"));
   
   if (! s.isNull())
     ed_doc->setText(s);
@@ -434,7 +452,107 @@ void EnvDialog::editor_browse() {
     ed_editor->setText(s);
 }
 
+static QString lang_file()
+{
+  QString lang;
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  lang = getenv("LANG");
+  if ((lang.length() > 3) && (lang[2] == '_'))
+    lang = lang.left(2);
+  else {
+    lang = "";
+    
+    FILE * fp = popen("locale", "r");
+    
+    if (fp != 0) {
+      char l[64];
+      
+      while (fgets(l, sizeof(l), fp)) {
+	if (!strncmp(l, "LC_", 3)) {
+	  char * p = strstr(l+3, "=\"");
+	  
+	  if (p != 0)
+	    lang = p + 2;
+	  else if ((p = strchr(l+3, '=')) != 0)
+	    lang = p + 1;
+	}
+	if ((lang.length() > 3) && (lang[2] == '_')) {
+	  lang = lang.mid(2, 2);
+	  break;
+	}
+	lang = "";
+      }
+      
+      pclose(fp);
+    }    
+  }
+
+  
+  if (! lang.isEmpty()) {
+    lang += ".lang";
+
+    QString p = getenv("BOUML_LIB_DIR");
+    
+    if (!p.isEmpty())
+      lang = p + "/" + lang;
+
+  }
+  
+  return lang;
+}
+    
+void EnvDialog::lang_browse() {
+  QString s =
+    QFileDialog::getOpenFileName((ed_lang->text().isEmpty())
+				 ? lang_file() : ed_lang->text(),
+				 "*.lang", this);
+  
+  if (! s.isNull())
+    ed_lang->setText(s);
+}
+
 //
+
+static void propose_lang()
+{
+  // note : QFile fp(QDir::home().absFilePath(".boumlrc")) doesn't work
+  // if the path contains non latin1 characters, for instance cyrillic !
+  QString s = homeDir().absFilePath(".boumlrc");
+  FILE * fp = fopen((const char *) s, "a");
+  
+  if (fp != 0) {
+    QString lang = lang_file();
+
+    if (! lang.isEmpty()) {
+      FILE * fp2 = fopen((const char *) lang, "r");
+      
+      if (fp2 != 0) {
+	fclose(fp2);
+	
+	fprintf(fp, "LANG %s\n", (const char *) lang);
+	fclose(fp);
+	set_lang((const char *) lang);
+	msg_warning(TR("language"),
+		    TR("the used language for menus and dialogs was set automatically,\n"
+		       "you can change it through the environment dialog"));
+      }
+    }
+    else
+      fclose(fp);
+  }
+}
 
 int read_boumlrc()
 {
@@ -461,7 +579,7 @@ int read_boumlrc()
 
   
   if (fp == 0) {
-    QMessageBox::critical(0, "Bouml", "cannot read '" + s + "'");
+    QMessageBox::critical(0, "Bouml", TR("cannot read '%1'", s));
     exit(-1);
   }
 
@@ -474,6 +592,8 @@ int read_boumlrc()
         
   int id = -1;
   char line[512];
+  bool lang_set = FALSE;
+  bool nolang = FALSE;
       
   while (fgets(line, sizeof(line) - 1, fp) != 0) {
     remove_crlf(line);
@@ -496,12 +616,26 @@ int read_boumlrc()
       if (sscanf(line+8, "%d %d %d %d", &l, &t, &r, &b) == 4)
 	UmlDesktop::set_limits(l, t, r, b);
     }
+    else if (!strncmp(line, "LANG ", 5)) {
+      set_lang(line+5);
+      lang_set = TRUE;
+    }
+    else if (!strncmp(line, "NOLANG", 6)) {
+      nolang = TRUE;
+    }
   }
-  
+    
   fclose(fp);
   
+  if (! lang_set) {
+    set_lang("");
+    
+    if (! nolang)
+      propose_lang();
+  }
+  
   if (id == -1) {
-    QMessageBox::critical(0, "Bouml", "Own identifier missing or invalid");
+    QMessageBox::critical(0, "Bouml", TR("Own identifier missing or invalid"));
     EnvDialog::edit(FALSE, TRUE);
     return read_boumlrc();
   }

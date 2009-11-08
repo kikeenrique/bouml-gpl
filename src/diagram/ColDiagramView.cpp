@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -53,6 +53,7 @@
 #include "MenuTitle.h"
 #include "DialogUtil.h"
 #include "CodEditMsgDialog.h"
+#include "translate.h"
 
 ColDiagramView::ColDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
     : DiagramView(parent, canvas, id) {
@@ -92,11 +93,11 @@ void ColDiagramView::update_msg_supports() {
 void ColDiagramView::menu(const QPoint&) {
   QPopupMenu m(0);
   
-  m.insertItem(new MenuTitle("Communication diagram menu", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Communication diagram menu"), m.font()), -1);
   
   if ((((UmlCanvas *) canvas())->browser_diagram())->is_writable()) {
     m.insertSeparator();
-    m.insertItem("Edit all the messages", 29);
+    m.insertItem(TR("Edit all the messages"), 29);
   }
  
   switch (default_menu(m, 30)) {

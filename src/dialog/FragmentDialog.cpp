@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,13 +39,14 @@
 #include "DialogUtil.h"
 #include "UmlDesktop.h"
 #include "BrowserView.h"
+#include "translate.h"
 
 QSize FragmentDialog::previous_size;
 
 FragmentDialog::FragmentDialog(const QStringList &defaults, QString & s,
 			       QString & fo, BrowserNode *& d)
     : QDialog(0, "Fragment dialog", TRUE), name(s), form(fo), refer(d) {
-  setCaption("Fragment dialog");
+  setCaption(TR("Fragment dialog"));
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
   QHBoxLayout * hbox;
@@ -58,12 +59,12 @@ FragmentDialog::FragmentDialog(const QStringList &defaults, QString & s,
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  hbox->addWidget(lbl1 = new QLabel("name : ", this));
+  hbox->addWidget(lbl1 = new QLabel(TR("name : "), this));
   name_cb = new QComboBox(TRUE, this);
   name_cb->insertItem(name);
   name_cb->setCurrentItem(0);
   name_cb->insertStringList(defaults);
-  name_cb->setAutoCompletion(TRUE);
+  name_cb->setAutoCompletion(completion());
   hbox->addWidget(name_cb);
   
   QSizePolicy sp = name_cb->sizePolicy();
@@ -73,7 +74,7 @@ FragmentDialog::FragmentDialog(const QStringList &defaults, QString & s,
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  hbox->addWidget(refer_bt = new SmallPushButton("refer to : ", this));
+  hbox->addWidget(refer_bt = new SmallPushButton(TR("refer to : "), this));
   connect(refer_bt, SIGNAL(clicked()), this, SLOT(menu_refer()));
   diag_cb = new QComboBox(FALSE, this); 
   BrowserDiagram::instances(nodes, TRUE);
@@ -88,7 +89,7 @@ FragmentDialog::FragmentDialog(const QStringList &defaults, QString & s,
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  hbox->addWidget(lbl2 = new QLabel("arguments \n/ value : ", this));
+  hbox->addWidget(lbl2 = new QLabel(TR("arguments \n/ value : "), this));
   hbox->addWidget(ed_form = new LineEdit(this));
   ed_form->setText(form);
   
@@ -96,8 +97,8 @@ FragmentDialog::FragmentDialog(const QStringList &defaults, QString & s,
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  QPushButton * accept = new QPushButton("&OK", this);
-  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QPushButton * accept = new QPushButton(TR("&OK"), this);
+  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
   QSize bs(cancel->sizeHint());
   
   accept->setDefault(TRUE);
@@ -124,12 +125,12 @@ void FragmentDialog::menu_refer() {
   QPopupMenu m(0);
   bool used = FALSE;
 
-  m.insertItem("Choose", -1);
+  m.insertItem(TR("Choose"), -1);
   m.insertSeparator();
   
   if (diag_cb->currentItem() != 0) {
     used = TRUE;
-    m.insertItem("Select in browser", 0);
+    m.insertItem(TR("Select in browser"), 0);
   }
   
   BrowserNode * bn = BrowserView::selected_item();
@@ -137,7 +138,7 @@ void FragmentDialog::menu_refer() {
   if ((bn != 0) && 
       !bn->deletedp() &&
       (dynamic_cast<BrowserDiagram *>(bn) != 0)) {
-      m.insertItem("Choose diagram selected in browser", 1);
+      m.insertItem(TR("Choose diagram selected in browser"), 1);
       used = TRUE;
   }
   else

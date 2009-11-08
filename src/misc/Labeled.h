@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,15 +44,16 @@ template <class X> class Labeled;
 template <class X> class IdIterator;
 template <class X> class IdDict;
 
-extern void set_in_import(bool y);
+extern void set_in_import(bool y, bool as_lib = FALSE);
 extern bool in_import();
+extern bool in_lib_import();
 
 extern int place(IdDict<void> & d, int id, void *);
 extern int new_place(IdDict<void> & d, int user_id, void *);
 extern void will_change_id(IdDict<void> & d, int &, void *);
 extern void do_change_shared_ids();
 
-// to add a margin of 8 on idmax after project loading
+// to add a margin on idmax after project loading
 // to limit the possibility for a deleted element still
 // present in a diagram known through its id to exist
 // for an other element created after
@@ -72,6 +73,7 @@ template <class X> class IdDict {
   public:
 #endif
     QIntDict<X> dict[2];
+    QIntDict<char> dictlib;
     int idmax;
     bool old_diagram;
     
@@ -88,8 +90,10 @@ template <class X> class IdDict {
     }
     
     void clear(bool olds) {
-      if (olds)
+      if (olds) {
 	dict[1].clear();
+	dictlib.clear();
+      }
       else {
 	idmax = FIRST_ID;
 	dict[0].clear();
@@ -111,6 +115,14 @@ template <class X> class IdDict {
     }
     
     void read_old_diagram(bool y) { old_diagram = y; }
+    
+    void memo_id_oid(int id, int oid) { 
+      dict[0].remove(id);
+      dictlib.replace(oid, (char *) id);
+      
+      if ((dictlib.count() / 2) >= dictlib.size())
+	dictlib.resize(dictlib.size() * 2 - 1);
+    }
 };
 
 template <class X> class IdIterator : public QIntDictIterator<X> {

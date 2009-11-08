@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@
 #include "strutil.h"
 #include "MenuTitle.h"
 #include "ToolCom.h"
+#include "translate.h"
 
 SdClassInstCanvas::SdClassInstCanvas(BrowserNode * bn, UmlCanvas * canvas,
 				     int x, int id)
@@ -315,35 +316,35 @@ void SdClassInstCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(full_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 13);
-  m.insertItem("Go down", 14);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 13);
+  m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
-  m.insertItem("Edit", 2);
+  m.insertItem(TR("Edit"), 2);
   if (is_mortal())
-    m.insertItem("Become immortal", 3);
+    m.insertItem(TR("Become immortal"), 3);
   else
-    m.insertItem("Become mortal", 4);
+    m.insertItem(TR("Become mortal"), 4);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 5);
+  m.insertItem(TR("Edit drawing settings"), 5);
   m.insertSeparator();
   if (browser_node->get_type() == UmlClassInstance)
-    m.insertItem("Select in browser", 6);
-  m.insertItem("Select class in browser", 7);
+    m.insertItem(TR("Select in browser"), 6);
+  m.insertItem(TR("Select class in browser"), 7);
   m.insertSeparator();
   if (modelized)
-    m.insertItem("Exit from model", 10);
+    m.insertItem(TR("Exit from model"), 10);
   else {
     if (container(UmlClass)->is_writable())
-      m.insertItem("Insert in model", 11);
-    m.insertItem("Replace it", 12);
+      m.insertItem(TR("Insert in model"), 11);
+    m.insertItem(TR("Replace it"), 12);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view", 8);
+  m.insertItem(TR("Remove from view"), 8);
   if ((browser_node->get_type() == UmlClassInstance) &&
       browser_node->is_writable())
-    m.insertItem("Delete from model", 9);
+    m.insertItem(TR("Delete from model"), 9);
   
   switch (m.exec(QCursor::pos())) {
   case 0:
@@ -471,16 +472,16 @@ void SdClassInstCanvas::apply_shortcut(QString s) {
 }
 
 void SdClassInstCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st((browser_node->get_type() != UmlClass) ? 3: 2);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st((browser_node->get_type() != UmlClass) ? 3: 2);
+  ColorSpecVector co(1);
   
-  st[0].set("drawing mode", &drawing_mode);
-  st[1].set("write name:type \nhorizontally", &write_horizontally);
+  st[0].set(TR("drawing mode"), &drawing_mode);
+  st[1].set(TR("write name:type \nhorizontally"), &write_horizontally);
   if (browser_node->get_type() != UmlClass)
-    st[2].set("show stereotypes \nproperties", &show_stereotype_properties);
-  co[0].set("class instance color", &itscolor);
+    st[2].set(TR("show stereotypes \nproperties"), &show_stereotype_properties);
+  co[0].set(TR("class instance color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -492,25 +493,25 @@ bool SdClassInstCanvas::has_drawing_settings() const {
 }
 
 void SdClassInstCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(1);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(1);
+  ColorSpecVector co(1);
   Uml3States write_horizontally;
   UmlColor itscolor;
   
-  st[0].set("write name:type \nhorizontally", &write_horizontally);
-  co[0].set("class instance color", &itscolor);
+  st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
+  co[0].set(TR("class instance color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
-      if (st[0].name != 0)
+      if (!st[0].name.isEmpty())
 	((SdClassInstCanvas *) it.current())->write_horizontally =
 	  write_horizontally;
-      if (co[0].name != 0)
+      if (!co[0].name.isEmpty())
 	((SdClassInstCanvas *) it.current())->itscolor = itscolor;
       ((SdClassInstCanvas *) it.current())->modified();	// call package_modified()
     }

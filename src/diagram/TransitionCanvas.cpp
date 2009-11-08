@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -336,13 +336,13 @@ void TransitionCanvas::apply_shortcut(QString s) {
 }
 
 void TransitionCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(3);
+  StateSpecVector st(3);
   
   st[0].set("language", &drawing_language);
   st[1].set("write horizontally", &write_horizontally);
   st[2].set("show definition", &show_definition);
   
-  SettingsDialog dialog(&st, 0, FALSE, TRUE);
+  SettingsDialog dialog(&st, 0, FALSE);
   
   dialog.setCaption("Transition Drawing Settings dialog");
   dialog.raise();
@@ -357,7 +357,7 @@ bool TransitionCanvas::has_drawing_settings() const {
 }
 
 void TransitionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(3);
+  StateSpecVector st(3);
   DrawingLanguage drawing_language;
   Uml3States write_horizontally;
   Uml3States show_definition;
@@ -366,7 +366,7 @@ void TransitionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   st[1].set("write horizontally", &write_horizontally);
   st[2].set("show definition", &show_definition);
   
-  SettingsDialog dialog(&st, 0, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(&st, 0, FALSE, TRUE);
   
   dialog.setCaption("Transition Drawing Settings dialog");
   dialog.raise();
@@ -374,13 +374,13 @@ void TransitionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
-      if (st[0].name != 0)
+      if (!st[0].name.isEmpty())
 	((TransitionCanvas *) it.current())->drawing_language =
 	  drawing_language;
-      if (st[1].name != 0)
+      if (!st[1].name.isEmpty())
 	((TransitionCanvas *) it.current())->write_horizontally =
 	  write_horizontally;
-      if (st[2].name != 0)
+      if (!st[2].name.isEmpty())
 	((TransitionCanvas *) it.current())->show_definition =
 	  show_definition;
       ((TransitionCanvas *) it.current())->propagate_drawing_settings();
@@ -862,7 +862,7 @@ TransitionCanvas * TransitionCanvas::read(char * & st, UmlCanvas * canvas, char 
 
     // manage case where the relation is deleted but present in the browser
     if (result->data->get_start()->deletedp())
-      result->delete_it();
+      RelsToDel.append(result);
     else
       result->update_geometry();
     

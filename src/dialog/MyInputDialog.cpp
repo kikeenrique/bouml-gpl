@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -38,6 +38,7 @@
 #include "MyInputDialog.h"
 #include "DialogUtil.h"
 #include "UmlDesktop.h"
+#include "translate.h"
 
 QSize MyInputDialog::previous_size;
 
@@ -64,8 +65,8 @@ MyInputDialog::MyInputDialog(const char * title, const QString & msg,
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  QPushButton * ok = new QPushButton("&OK", this);
-  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QPushButton * ok = new QPushButton(TR("&OK"), this);
+  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
   QSize bs(cancel->sizeHint());
   
   ok->setDefault(TRUE);
@@ -102,7 +103,7 @@ MyInputDialog::MyInputDialog(const char * title, const QString & msg,
   cb->insertStringList(list);
   if (! existing) {
     cb->setCurrentItem(0);
-    cb->setAutoCompletion(TRUE);
+    cb->setAutoCompletion(completion());
   }
   hbox->addWidget(cb);
   
@@ -117,8 +118,8 @@ MyInputDialog::MyInputDialog(const char * title, const QString & msg,
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  QPushButton * ok = new QPushButton("&OK", this);
-  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QPushButton * ok = new QPushButton(TR("&OK"), this);
+  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
   QSize bs(cancel->sizeHint());
   
   ok->setDefault(TRUE);

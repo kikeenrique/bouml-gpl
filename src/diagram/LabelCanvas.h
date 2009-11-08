@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -79,8 +79,8 @@ class LabelCanvas : public QCanvasText, public DiagramItem {
     virtual void change_scale();
     virtual void open();
     void menu(const QPoint&);
-    virtual const char * may_start(UmlCode &) const;
-    virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
+    virtual QString may_start(UmlCode &) const;
+    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     virtual double get_z() const;
     virtual void set_z(double z);	// only called by upper() & lower()

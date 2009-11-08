@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -147,9 +147,14 @@ bool BrowserNode::load(QDir & dir) {
     if (! strcmp(k, "package_ref"))
       sub_packages_id.append(read_token(p));
     else if (! strcmp(k, "simplerelation")) {
+      // may contain a package_ref, bypass
       do 
 	k = read_token(p);
       while ((k != 0) && strcmp(k, "end"));
+    }
+    else if (! strcmp(k, "oid")) {
+      (void) read_token(p);
+      ro = TRUE;
     }
     k = read_token(p);
   }

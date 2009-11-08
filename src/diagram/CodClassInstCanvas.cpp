@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@
 #include "MenuTitle.h"
 #include "ColDiagramView.h"
 #include "ToolCom.h"
+#include "translate.h"
 
 CodClassInstCanvas::CodClassInstCanvas(BrowserNode * bn, UmlCanvas * canvas,
 				       int x, int y, int id)
@@ -202,32 +203,32 @@ void CodClassInstCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(full_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 13);
-  m.insertItem("Go down", 14);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 13);
+  m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 2);
+  m.insertItem(TR("Edit drawing settings"), 2);
   m.insertSeparator();
-  m.insertItem("Edit", 3);
+  m.insertItem(TR("Edit"), 3);
   m.insertSeparator();
   if (modelized)
-    m.insertItem("Select in browser", 4);
-  m.insertItem("Select class in browser", 5);
+    m.insertItem(TR("Select in browser"), 4);
+  m.insertItem(TR("Select class in browser"), 5);
   if (linked())
-    m.insertItem("Select linked items", 6);
+    m.insertItem(TR("Select linked items"), 6);
   m.insertSeparator();
   if (modelized)
-    m.insertItem("Exit from model", 9);
+    m.insertItem(TR("Exit from model"), 9);
   else {
     if (container(UmlClass)->is_writable())
-      m.insertItem("Insert in model", 10);
-    m.insertItem("Replace it", 11);
+      m.insertItem(TR("Insert in model"), 10);
+    m.insertItem(TR("Replace it"), 11);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view", 7);
+  m.insertItem(TR("Remove from view"), 7);
   if (modelized && browser_node->is_writable())
-    m.insertItem("Delete from model", 8);
+    m.insertItem(TR("Delete from model"), 8);
   
   switch (m.exec(QCursor::pos())) {
   case 0:
@@ -354,15 +355,15 @@ void CodClassInstCanvas::apply_shortcut(QString s) {
 }
 
 void CodClassInstCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st((browser_node->get_type() != UmlClass) ? 2 : 1);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st((browser_node->get_type() != UmlClass) ? 2 : 1);
+  ColorSpecVector co(1);
   
-  st[0].set("write name:type \nhorizontally", &write_horizontally);
+  st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
   if (browser_node->get_type() != UmlClass)
-    st[1].set("show stereotypes \nproperties", &show_stereotype_properties);
-  co[0].set("class instance color", &itscolor);
+    st[1].set(TR("show stereotypes \nproperties"), &show_stereotype_properties);
+  co[0].set(TR("class instance color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() != QDialog::Accepted)
@@ -375,25 +376,25 @@ bool CodClassInstCanvas::has_drawing_settings() const {
 }
 
 void CodClassInstCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(1);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(1);
+  ColorSpecVector co(1);
   Uml3States write_horizontally;
   UmlColor itscolor;
   
-  st[0].set("write name:type \nhorizontally", &write_horizontally);
-  co[0].set("class instance color", &itscolor);
+  st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
+  co[0].set(TR("class instance color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
-      if (st[0].name != 0)
+      if (!st[0].name.isEmpty())
 	((CodClassInstCanvas *) it.current())->write_horizontally =
 	  write_horizontally;
-      if (co[0].name != 0)
+      if (!co[0].name.isEmpty())
 	((CodClassInstCanvas *) it.current())->itscolor = itscolor;
       ((CodClassInstCanvas *) it.current())->modified();	// call package_modified()
     }

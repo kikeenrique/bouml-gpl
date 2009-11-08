@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -60,19 +60,21 @@
 #include "strutil.h"
 #include "GenerationSettings.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 CdClassCanvas::CdClassCanvas(BrowserNode * bn, UmlCanvas * canvas,
 			     int x, int y)
     : DiagramCanvas(0, canvas, x, y, CLASS_CANVAS_MIN_SIZE,
 		    CLASS_CANVAS_MIN_SIZE, 0) {
   browser_node = bn;
-  templ = 0;	// may be updated by compute_size()
+  templ = 0;	// may be updated by check_size()
   itscolor = UmlDefaultColor;
   indicate_visible_attr = FALSE;
   indicate_visible_oper = FALSE;
+  manual_size = FALSE;
   constraint = 0;
   
-  compute_size();	// update used_settings
+  check_size();	// update used_settings
   check_constraint();
   check_stereotypeproperties();
   
@@ -92,10 +94,11 @@ CdClassCanvas::CdClassCanvas(UmlCanvas * canvas, int id)
     : DiagramCanvas(canvas, id) {
   // for read operation
   browser_node = 0;
-  templ = 0;	// may be updated by compute_size()
+  templ = 0;	// may be updated by check_size()
   itscolor = UmlDefaultColor;
   indicate_visible_attr = FALSE;
   indicate_visible_oper = FALSE;
+  manual_size = FALSE;
   constraint = 0;
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
@@ -138,8 +141,8 @@ void CdClassCanvas::remove(bool from_model) {
     browser_node->delete_it();	// will remove canvas
 }
 
-void CdClassCanvas::compute_size() {
-  // does not unsubscribe & disconnect signals because compute_size may
+void CdClassCanvas::check_size() {
+  // does not unsubscribe & disconnect signals because check_size may
   // be called during a signal management, and the signal connection list
   // cannot be modified in this case
   used_settings = settings;
@@ -216,6 +219,7 @@ void CdClassCanvas::compute_size() {
   bool show_name = (used_settings.show_parameter_name == UmlYes);
   bool hide_attrs = (used_settings.hide_attributes == UmlYes);
   bool hide_opers = (used_settings.hide_operations == UmlYes);
+  bool hide_getset_opers = (used_settings.hide_getset_operations == UmlYes);
   int max_member_width = used_settings.member_max_width;
   int offset_visi = fbim.width("#_");
   double zoom = the_canvas()->zoom();
@@ -286,6 +290,7 @@ void CdClassCanvas::compute_size() {
 	  break;
 	case UmlOperation:
 	  if (hide_opers ||
+	      (hide_getset_opers && ((OperationData *) child_data)->get_or_set()) ||
 	      ((indicate_visible_oper)
 	       ? (hidden_visible_operations.findIndex((BrowserNode *) child) == -1)
 	       : (hidden_visible_operations.findIndex((BrowserNode *) child) != -1)))
@@ -419,7 +424,7 @@ void CdClassCanvas::compute_size() {
     he += fbm.height() + four;
   }
   
-  wi += eight;
+  wi += (data->get_is_active()) ? eight*3 : eight;
   
   int min_w;
   
@@ -457,16 +462,25 @@ void CdClassCanvas::compute_size() {
     ? the_canvas()->browser_diagram()->get_color(UmlClass)
     : itscolor;
   
-  if ((used_view_mode == asClass) && (used_color != UmlTransparent)) {
+  if (used_view_mode != asClass)
+    manual_size = FALSE;
+  else if (used_color != UmlTransparent) {
     const int shadow = the_canvas()->shadow();
     
     wi += shadow;
     he += shadow;
   }
-  
+ 
   // force odd width and height for line alignment
-  DiagramCanvas::resize(wi | 1, he | 1);
-    
+  width_min = wi | 1;
+  height_min = he | 1;
+      
+  if (manual_size)
+    DiagramCanvas::resize((width() < width_min) ? width_min : width(),
+			  (height() < height_min) ? height_min : height());
+  else
+    DiagramCanvas::resize(width_min, height_min);
+  
   if (tmpl) {
     if (templ == 0) {
       templ = new TemplateCanvas(this);
@@ -486,7 +500,7 @@ void CdClassCanvas::modified() {
     hide();
     
     hide_lines();
-    compute_size();
+    check_size();
     recenter();
     show();
     update_show_lines();
@@ -702,7 +716,12 @@ bool CdClassCanvas::get_show_stereotype_properties() const {
 
 void CdClassCanvas::change_scale() {
   QCanvasRectangle::setVisible(FALSE);
-  compute_size();
+  if (manual_size) {
+    double scale = the_canvas()->zoom();
+    
+    setSize((int) (width_scale100*scale), (int) (height_scale100*scale));
+  }
+  check_size();
   recenter();
   if (templ != 0)
     templ->update();
@@ -789,6 +808,7 @@ void CdClassCanvas::draw(QPainter & p) {
   p.setBackgroundMode((used_color == UmlTransparent) ? ::Qt::TransparentMode : ::Qt::OpaqueMode);
 
   QColor co = color(used_color);
+  const ClassData * data = ((ClassData *) browser_node->get_data());
   
   if (used_view_mode == asClass) {
     if (used_color != UmlTransparent) {
@@ -836,9 +856,27 @@ void CdClassCanvas::draw(QPainter & p) {
 	      r.x(), r.y(), r.width() - 1, r.height() - 1);
 
     p.drawRect(r);
+    
+    if (data->get_is_active()) {
+      const int eight = (int) (8 * zoom);
+      
+      r.setLeft(r.left() + eight);
+      r.setRight(r.right() - eight);
+      
+      p.drawLine(r.topLeft(), r.bottomLeft());
+      p.drawLine(r.topRight(), r.bottomRight());
+
+      if (fp != 0)
+	fprintf(fp,
+		"\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n"
+		"\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		r.left(), r.top(), r.left(), r.bottom(),
+		r.right(), r.top(), r.right(), r.bottom());
+    }
   }
   
-  const ClassData * data = ((ClassData *) browser_node->get_data());
   const int two = (int) (2 * zoom);
   int he = fbm.height() + two;
   
@@ -1034,6 +1072,10 @@ void CdClassCanvas::draw(QPainter & p) {
 	   : (hidden_visible_operations.findIndex((BrowserNode *) child) == -1))) {
 	OperationData * data =
 	  ((OperationData *) ((BrowserNode *) child)->get_data());
+	
+	if ((used_settings.hide_getset_operations == UmlYes) && data->get_or_set())
+	  continue;
+	
 	QString s = data->definition(full_members, used_settings.drawing_language,
 				     show_dir, show_name);
 	
@@ -1145,53 +1187,53 @@ void CdClassCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 21);
-  m.insertItem("Go down", 22);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 21);
+  m.insertItem(TR("Go down"), 22);
   m.insertSeparator();
-  m.insertItem("Add related elements", 5);
+  m.insertItem(TR("Add related elements"), 5);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 2);
+  m.insertItem(TR("Edit drawing settings"), 2);
   if (attributes.count() != 0)
-    m.insertItem("Individual attribute visibility", 3);
+    m.insertItem(TR("Individual attribute visibility"), 3);
   if (operations.count() != 0)
-    m.insertItem("Individual operation visibility", 4);
+    m.insertItem(TR("Individual operation visibility"), 4);
   m.insertSeparator();
-  m.insertItem("Edit class", 6);
+  m.insertItem(TR("Edit class"), 6);
   if (!strcmp(stereotype, "enum")) {
     if (browser_node->is_writable()) {
-      m.insertItem("Add item", 7);
-      m.insertItem("Add attribute", 9);
+      m.insertItem(TR("Add item"), 7);
+      m.insertItem(TR("Add attribute"), 9);
     }
     if (attributes.count() != 0)
-      m.insertItem("Edit item or attribute", &attrsubm);
+      m.insertItem(TR("Edit item or attribute"), &attrsubm);
     if (browser_node->is_writable())
-      m.insertItem("Add operation", 8);
+      m.insertItem(TR("Add operation"), 8);
   }
   else if (!strcmp(stereotype, "enum_pattern")) {
     if (browser_node->is_writable()) {
-      m.insertItem("Add item", 7);
+      m.insertItem(TR("Add item"), 7);
     }
     if (attributes.count() != 0)
-      m.insertItem("Edit item", &attrsubm);
+      m.insertItem(TR("Edit item"), &attrsubm);
   }
   else if (strcmp(stereotype, "typedef")) {
     if (browser_node->is_writable())
-      m.insertItem("Add attribute", 9);
+      m.insertItem(TR("Add attribute"), 9);
     if (attributes.count() != 0)
-      m.insertItem("Edit attribute", &attrsubm);
+      m.insertItem(TR("Edit attribute"), &attrsubm);
     if (browser_node->is_writable())
-      m.insertItem("Add operation", 8);
+      m.insertItem(TR("Add operation"), 8);
     if (browser_node->is_writable() &&
 	strcmp(stereotype, "union") &&
 	(l.count() != 0)) {
       if (l.count() > 20)
-	m.insertItem("Add inherited operation", 2999);
+	m.insertItem(TR("Add inherited operation"), 2999);
       else {
 	BrowserOperation * oper;
 	
-	inhopersubm.insertItem(new MenuTitle("Choose operation", m.font()), -1);
+	inhopersubm.insertItem(new MenuTitle(TR("Choose operation"), m.font()), -1);
 	inhopersubm.insertSeparator();
 	
 	for (oper = l.first(), index = 3000;
@@ -1208,34 +1250,34 @@ void CdClassCanvas::menu(const QPoint&) {
 				   index);
 	}
 	
-	m.insertItem("Add inherited operation", &inhopersubm);
+	m.insertItem(TR("Add inherited operation"), &inhopersubm);
       }
     }
     
     if (operations.count() != 0) {
       if (operations.count() <= 20)
-	m.insertItem("Edit operation", &opersubm);
+	m.insertItem(TR("Edit operation"), &opersubm);
       else
-	m.insertItem("Edit operation", 1999);
+	m.insertItem(TR("Edit operation"), 1999);
     }
   }
   m.insertSeparator();
-  m.insertItem("Select in browser", 10);
+  m.insertItem(TR("Select in browser"), 10);
   if (linked())
-    m.insertItem("Select linked items",17);
+    m.insertItem(TR("Select linked items"),17);
   m.insertSeparator();
   if (browser_node->is_writable()) {
     if (browser_node->get_associated() !=
 	(BrowserNode *) the_canvas()->browser_diagram())
-      m.insertItem("Set associated diagram",11);
+      m.insertItem(TR("Set associated diagram"),11);
     
     if (browser_node->get_associated())
-      m.insertItem("Remove diagram association",18);
+      m.insertItem(TR("Remove diagram association"),18);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view",12);
+  m.insertItem(TR("Remove from view"),12);
   if (browser_node->is_writable())
-    m.insertItem("Delete from model", 13);
+    m.insertItem(TR("Delete from model"), 13);
   m.insertSeparator();
   bool cpp = GenerationSettings::cpp_get_default_defs();
   bool java = GenerationSettings::java_get_default_defs();
@@ -1244,10 +1286,10 @@ void CdClassCanvas::menu(const QPoint&) {
   bool idl = GenerationSettings::idl_get_default_defs();
 
   if (cpp || java || php || python || idl)
-    m.insertItem("Generate", &gensubm);
+    m.insertItem(TR("Generate"), &gensubm);
   
   if (Tool::menu_insert(&toolm, UmlClass, 30))
-    m.insertItem("Tool", &toolm);
+    m.insertItem(TR("Tool"), &toolm);
   
   if (cpp)
     gensubm.insertItem("C++", 14);
@@ -1318,7 +1360,7 @@ void CdClassCanvas::menu(const QPoint&) {
     break;
   case 5:
     ((UmlCanvas *) canvas())->get_view()
-      ->add_related_elements(this, "class", TRUE, TRUE);
+      ->add_related_elements(this, TR("class"), TRUE, TRUE);
     return;
   case 6:
     browser_node->open(TRUE);
@@ -1372,7 +1414,7 @@ void CdClassCanvas::menu(const QPoint&) {
     return;
   case 1999:
     {
-      OperationListDialog dialog("Choose operation to edit", 
+      OperationListDialog dialog(TR("Choose operation to edit"), 
 				 (QList<BrowserOperation> &) operations);
       
       dialog.raise();
@@ -1384,7 +1426,7 @@ void CdClassCanvas::menu(const QPoint&) {
     {
       l = ((BrowserClass *) browser_node)->inherited_operations(~0u);
       
-      OperationListDialog dialog("Choose inherited operation to add it", l);
+      OperationListDialog dialog(TR("Choose inherited operation to add it"), l);
       
       dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
@@ -1429,7 +1471,7 @@ void CdClassCanvas::apply_shortcut(QString s) {
   }
   else if (s == "Add related elements") {
     ((UmlCanvas *) canvas())->get_view()
-      ->add_related_elements(this, "class", TRUE, TRUE);
+      ->add_related_elements(this, TR("class"), TRUE, TRUE);
     return;
   }
   else {
@@ -1442,14 +1484,14 @@ void CdClassCanvas::apply_shortcut(QString s) {
 }
 
 void CdClassCanvas::edit_drawing_settings()  {
-  QArray<StateSpec> st;
-  QArray<ColorSpec> co(1);
+  StateSpecVector st;
+  ColorSpecVector co(1);
   
   settings.complete(st, UmlClass);
   
-  co[0].set("class color", &itscolor);
+  co[0].set(TR("class color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
@@ -1463,23 +1505,23 @@ bool CdClassCanvas::has_drawing_settings() const {
 }
 
 void CdClassCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st;
-  QArray<ColorSpec> co(1);
+  StateSpecVector st;
+  ColorSpecVector co(1);
   UmlColor itscolor;
   ClassDiagramSettings settings;
   
   settings.complete(st, UmlClass);
   
-  co[0].set("class color", &itscolor);
+  co[0].set(TR("class color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
-      if (co[0].name != 0)
+      if (!co[0].name.isEmpty())
 	((CdClassCanvas *) it.current())->itscolor = itscolor;
       ((CdClassCanvas *) it.current())->settings.set(st, 0);
       ((CdClassCanvas *) it.current())->modified();
@@ -1488,11 +1530,11 @@ void CdClassCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }  
 }
 
-const char * CdClassCanvas::may_start(UmlCode & l) const {
+QString CdClassCanvas::may_start(UmlCode & l) const {
   return ((BrowserClass *) browser_node)->may_start(l);
 }
 
-const char * CdClassCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString CdClassCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor)
     return (IsaRelation(dest->type()))
       ? ((RelationCanvas *) dest)->may_connect(l, this)
@@ -1503,14 +1545,14 @@ const char * CdClassCanvas::may_connect(UmlCode & l, const DiagramItem * dest) c
     return ((BrowserClass *) browser_node)
       ->may_connect(l, (BrowserClass *) dest->get_bn());
   case UmlArrowPoint:
-    return "illegal";
+    return TR("illegal");
   case UmlPackage:
     if (l != UmlDependency)
-      return "illegal";
+      return TR("illegal");
     l = UmlDependOn;
     return 0;
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
@@ -1543,6 +1585,27 @@ void CdClassCanvas::connexion(UmlCode action, DiagramItem * dest,
   
   a->show();
   the_canvas()->select(a);
+}
+
+aCorner CdClassCanvas::on_resize_point(const QPoint & p) {
+  return (used_view_mode != asClass)
+    ? NoCorner
+    : ::on_resize_point(p, rect());
+}
+
+void CdClassCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
+  int ow = width();
+  int oh = height();
+  
+  DiagramCanvas::resize(c, dx, dy, o, width_min, height_min, TRUE);
+  
+  int nw = width();
+  int nh = height();
+  
+  if ((nw = width_min) && (nh == height_min))
+    manual_size = FALSE;
+  else
+    manual_size |= ((nw != ow) || (nh != oh));
 }
 
 //
@@ -1604,7 +1667,10 @@ void CdClassCanvas::save(QTextStream & st, bool ref, QString & warning) const {
 					     : "hidden_operations",
 		     hidden_visible_operations);
     nl_indent(st);
-    save_xyz(st, this, "xyz");
+    if (manual_size)
+      save_xyzwh(st, this, "xyzwh");
+    else
+      save_xyz(st, this, "xyz");
     
     if (constraint != 0)
       constraint->save(st, FALSE, warning);
@@ -1649,9 +1715,10 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
     
       br->children(l, UmlAttribute);
       
-      while ((strcmp(k = read_keyword(st), "hidden_operations")) &&
-	     (strcmp(k, "visible_operations")) &&
-	     (strcmp(k, "xyz"))) {
+      while (strcmp(k = read_keyword(st), "hidden_operations") &&
+	     strcmp(k, "visible_operations") &&
+	     strcmp(k, "xyzwh") &&
+	     strcmp(k, "xyz")) {
 	BrowserNode * b = BrowserAttribute::read(st, k, 0, FALSE);
 	
 	if ((b != 0) && (l.findRef(b) != -1))
@@ -1666,7 +1733,7 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
     
       br->children(l, UmlOperation);
       
-      while (strcmp(k = read_keyword(st), "xyz")) {
+      while (strcmp(k = read_keyword(st), "xyzwh") && strcmp(k, "xyz")) {
 	BrowserNode * b = BrowserOperation::read(st, k, 0, FALSE);
 	
 	if ((b != 0) && (l.findRef(b) != -1))
@@ -1674,12 +1741,21 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
       }
     }
     
-    if (strcmp(k, "xyz"))
+    if (!strcmp(k, "xyz"))
+      read_xyz(st, result);
+    else if (!strcmp(k, "xyzwh")) {
+      read_xyzwh(st, result);
+      result->manual_size = TRUE;
+    }
+    else
       wrong_keyword(k, "xyz");
-    read_xyz(st, result);
     
     if (read_file_format() >= 37) {
       k = read_keyword(st);
+      if (! strcmp(k, "manual_size")) {
+	result->manual_size = TRUE;
+	k = read_keyword(st);
+      }
       if (! strcmp(k, "constraint")) {
 	result->constraint = ConstraintCanvas::read(st, canvas, k, result);
 	k = read_keyword(st);
@@ -1689,7 +1765,7 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
 	wrong_keyword(k, "end");
     }
     
-    result->compute_size();
+    result->check_size();
     result->set_center100();
     result->show();
     result->check_constraint();
@@ -1700,12 +1776,41 @@ CdClassCanvas * CdClassCanvas::read(char * & st, UmlCanvas * canvas,
     return 0;
 }
 
+void CdClassCanvas::history_save(QBuffer & b) const {
+  DiagramCanvas::history_save(b);
+  ::save((int) manual_size, b);
+  if (manual_size) {
+    ::save(width_scale100, b);
+    ::save(height_scale100, b);
+    ::save(width(), b);
+    ::save(height(), b);
+  }
+}
+
 void CdClassCanvas::history_load(QBuffer & b) {
   DiagramCanvas::history_load(b);
+  
+  int ms;
+  
+  ::load(ms, b);
+  manual_size = (ms != 0);
+  
+  if (manual_size) {
+    ::load(width_scale100, b);
+    ::load(height_scale100, b);
+    
+    int w, h;
+    
+    ::load(w, b);
+    ::load(h, b);
+    QCanvasRectangle::setSize(w, h);
+  }
+  else
+    check_size();
+  
   connect(browser_node->get_data(), SIGNAL(changed()), this, SLOT(modified()));
   connect(browser_node->get_data(), SIGNAL(deleted()), this, SLOT(deleted()));
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
-  compute_size();
 }
 
 void CdClassCanvas::history_hide() {

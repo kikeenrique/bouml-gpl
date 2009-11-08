@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -51,6 +51,7 @@ class ClassData : public BasicData {
     unsigned char nformals;
     bool is_deleted : 1;
     bool is_abstract : 1;
+    bool is_active : 1;
     bool bodies_read : 1;
     bool bodies_modified : 1;
     bool cpp_external : 1;		// C++
@@ -108,25 +109,28 @@ class ClassData : public BasicData {
     
     void edit();
     
-    const char * get_constraint() const { return constraint; };
+    const char * get_constraint() const { return constraint; }
     
     virtual bool decldefbody_contain(const QString & s, bool cs, BrowserNode *);
     
-    bool get_is_abstract() const { return is_abstract; };
+    bool get_is_abstract() const { return is_abstract; }
     void set_is_abstract(bool yes);
     
-    const AType & get_base_type() const { return base_type; };
+    bool get_is_active() const { return is_active; }
+    void set_is_active(bool yes);
+    
+    const AType & get_base_type() const { return base_type; }
     QString get_full_base_type_def() const;
     void set_base_type(const AType & t);
     
     void inherit_or_instantiate(BrowserClass * other);
     
-    UmlVisibility get_uml_visibility() const { return uml_visibility; };
-    UmlVisibility get_cpp_visibility() const { return cpp_visibility; };
+    UmlVisibility get_uml_visibility() const { return uml_visibility; }
+    UmlVisibility get_cpp_visibility() const { return cpp_visibility; }
     void set_uml_visibility(UmlVisibility v);
     void set_cpp_visibility(UmlVisibility v);
     
-    int get_n_formalparams() const { return nformals; };
+    int get_n_formalparams() const { return nformals; }
     const char * get_formalparam_type(int) const;
     const char * get_formalparam_name(int) const;
     QString get_formalparam_default_value(int, bool) const;
@@ -140,33 +144,33 @@ class ClassData : public BasicData {
     void get_class_spec(QString & templates, QString & names,
 			QString & templates_tmplop, QString & names_tmplop) const;
 
-    int get_n_actualparams() const { return actuals.count(); };
+    int get_n_actualparams() const { return actuals.count(); }
     QString get_actualparam_name(int);	// cannot be const, computed QString
     QString get_actualparam_value(int);	// cannot be const, computed QString
     void set_actualparam_value(int, const AType & t);
     QString get_actuals(BrowserClass * parent);
     
-    const char * get_cppdecl() const { return cpp_decl; };
-    bool cpp_is_external() const { return cpp_external; };
+    const char * get_cppdecl() const { return cpp_decl; }
+    bool cpp_is_external() const { return cpp_external; }
         
-    const char * get_javadecl() const { return java_decl; };
-    bool java_is_external() const { return java_external; };
-    bool java_is_final() const { return java_final; };
+    const char * get_javadecl() const { return java_decl; }
+    bool java_is_external() const { return java_external; }
+    bool java_is_final() const { return java_final; }
         
-    const char * get_phpdecl() const { return php_decl; };
-    bool php_is_external() const { return php_external; };
-    bool php_is_final() const { return php_final; };
+    const char * get_phpdecl() const { return php_decl; }
+    bool php_is_external() const { return php_external; }
+    bool php_is_final() const { return php_final; }
     
-    const char * get_pythondecl() const { return python_decl; };
-    bool python_is_external() const { return python_external; };
-    bool python_is_2_2() const { return python_2_2; };
+    const char * get_pythondecl() const { return python_decl; }
+    bool python_is_external() const { return python_external; }
+    bool python_is_2_2() const { return python_2_2; }
     
-    const char * get_idldecl() const { return idl_decl; };
-    const AType & get_switch_type() const { return switch_type; };
+    const char * get_idldecl() const { return idl_decl; }
+    const AType & get_switch_type() const { return switch_type; }
     void set_switch_type(const AType & t);
-    bool idl_is_external() const { return idl_external; };
-    bool idl_is_local() const { return idl_local; };
-    bool idl_is_custom() const { return idl_custom; };
+    bool idl_is_external() const { return idl_external; }
+    bool idl_is_local() const { return idl_local; }
+    bool idl_is_custom() const { return idl_custom; }
     
     bool reference(BrowserClass *) const;
     
@@ -176,10 +180,10 @@ class ClassData : public BasicData {
     void save(QTextStream &, QString & warning) const;
     void read(char * & st, char * & k);
     
-    bool get_bodies_read() { return bodies_read; };
-    void set_bodies_read(bool y) { bodies_read = y; };
-    bool get_bodies_modified() { return bodies_modified; };
-    void set_bodies_modified(bool y) { bodies_modified = y; };
+    bool get_bodies_read() { return bodies_read; }
+    void set_bodies_read(bool y) { bodies_read = y; }
+    bool get_bodies_modified() { return bodies_modified; }
+    void set_bodies_modified(bool y) { bodies_modified = y; }
     void manage_deleted();
     
   private slots:

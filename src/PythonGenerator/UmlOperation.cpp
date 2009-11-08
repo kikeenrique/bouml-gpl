@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,12 +45,17 @@ const int BodyPrefixLength = 30;
 const int BodyPostfixLength = 28;
 
 static bool generate_type(const QValueList<UmlParameter> & params,
-			  unsigned rank, QTextOStream & f)
+			  unsigned rank, QTextOStream & f, bool in_params)
 {
   if (rank >= params.count())
     return FALSE;
   
-  UmlClass::write(f, params[rank].type);
+  const UmlTypeSpec & t = params[rank].type;
+  
+  if (in_params && ((t.type != 0) || !t.explicit_type.isEmpty()))
+    f << ": ";
+  
+  UmlClass::write(f, t);
   return TRUE;
 }
 
@@ -230,6 +235,7 @@ void UmlOperation::generate(QTextOStream & f, const QCString &,
   const QValueList<UmlParameter> & params = this->params();
   unsigned rank;
   bool isinline = TRUE;
+  bool in_params = FALSE;
     
   for (;;) {
     if (*p == 0) {
@@ -314,18 +320,20 @@ void UmlOperation::generate(QTextOStream & f, const QCString &,
     else if (!strncmp(p, "${(}", 4)) {
       p += 4;
       f << '(';
+      in_params = TRUE;
     }
     else if (!strncmp(p, "${)}", 4)) {
       p += 4;
       f << ')';
       afterparam = p;
+      in_params = FALSE;
     }
     else if (sscanf(p, "${t%u}", &rank) == 1) {
       if (indent_needed) {
 	indent_needed = FALSE;
 	f << indent;
       }
-      if (!generate_type(params, rank, f))
+      if (!generate_type(params, rank, f, in_params))
 	param_error(parent()->name(), name(), rank);
       p = strchr(p, '}') + 1;
     }
@@ -360,6 +368,17 @@ void UmlOperation::generate(QTextOStream & f, const QCString &,
 	  f << indent;
 	}
 	UmlClass::write(f, ((UmlRelation *) m)->association());
+      }
+    }
+    else if (!strncmp(p, "${type}", 7)) {
+      p += 7;
+      
+      const UmlTypeSpec & t = returnType();
+  
+      if ((t.type != 0) || !t.explicit_type.isEmpty()) {
+	f << " -> ";
+  
+	UmlClass::write(f, t);
       }
     }
     else {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@
 
 
 
+#include "translate.h"
 
 bool ExitOnError = FALSE;
 QApplication * theApp;
@@ -100,11 +101,11 @@ int main(int argc, char **argv)
     try {
       if ((argc == 3) &&
 	  !strcmp(argv[2], "-root") &&
-	  (msg_critical("DO NOT CONFIRM",
-			"Root mode protection\n\n"
-			"This mode allows me to develop BOUML\n\n"
-			"do NOT confirm to avoid a disaster !!!\n\n"
-			"confirm ?",
+	  (msg_critical(TR("DO NOT CONFIRM"),
+			TR("Root mode protection\n\n"
+			   "This mode allows me to develop BOUML\n\n"
+			   "do NOT confirm to avoid a disaster !!!\n\n"
+			   "confirm ?"),
 			QMessageBox::Yes, QMessageBox::No)
 	   == QMessageBox::Yes)) {
 	set_user_id(0);
@@ -142,7 +143,7 @@ int main(int argc, char **argv)
 	ToolCom::run((const char *) cmd, BrowserView::get_project(), with_exit);
       }
       else
-	msg_warning("Error", "Bouml was called with wrong parameters, ignore them");
+	msg_warning(TR("Error"), TR("Bouml was called with wrong parameters, ignore them"));
     }
     
 

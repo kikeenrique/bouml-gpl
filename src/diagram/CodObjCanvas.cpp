@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,6 +34,7 @@
 #include "ColMsg.h"
 #include "CodClassInstCanvas.h"
 #include "myio.h"
+#include "translate.h"
 
 CodObjCanvas::CodObjCanvas(BrowserNode * bn, UmlCanvas * canvas,
 			   int x, int y, int we, int he, int id)
@@ -79,20 +80,20 @@ void CodObjCanvas::set_z(double z) {
     self_link->setZ(z - 0.5);
 }
 
-const char * CodObjCanvas::may_start(UmlCode & l) const {
-  return ((l != UmlSelfLink) || (self_link == 0)) ? 0 : "illegal";
+QString CodObjCanvas::may_start(UmlCode & l) const {
+  return ((l != UmlSelfLink) || (self_link == 0)) ? 0 : TR("illegal");
 }
 
-const char * CodObjCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString CodObjCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor)
     return dest->may_start(l);
   
   switch (dest->type()) {
   case UmlClass:
   case UmlClassInstance:
-    return (l == UmlLink) ? 0 : "illegal";
+    return (l == UmlLink) ? 0 : TR("illegal");
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 

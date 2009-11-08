@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -51,6 +51,7 @@
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserPin> BrowserPin::all(257, __FILE__);
 QStringList BrowserPin::its_default_stereotypes;	// unicode
@@ -94,6 +95,15 @@ void BrowserPin::clear(bool old)
 void BrowserPin::update_idmax_for_root()
 {
   all.update_idmax_for_root();
+}
+
+void BrowserPin::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
 }
     
 void BrowserPin::renumber(int phase) {
@@ -160,7 +170,7 @@ BrowserPin * BrowserPin::add_pin(BrowserPin * pin, BrowserNode * future_parent)
 {
   QString name;
   
-  if (!future_parent->enter_child_name(name, "enter pin's \nname (may be empty) : ",
+  if (!future_parent->enter_child_name(name, TR("enter pin's name\n(may be empty) : "),
 				       UmlActivityPin, TRUE, TRUE))
     return 0;
       
@@ -187,42 +197,42 @@ BasicData * BrowserPin::add_relation(UmlCode, BrowserNode * end) {
 }
 
 // a flow may be always added  (dependency not allowed) ?
-const char * BrowserPin::may_start() const {
+QString BrowserPin::may_start() const {
   switch (def->get_dir()) {
   case UmlOut:
   case UmlReturn:
     return 0;
   default:
-    return "can't have outgoing flow";
+    return TR("can't have outgoing flow");
   }
 }
 
 // connexion by a flow (dependency not allowed)
-const char * BrowserPin::may_connect(const BrowserNode * dest) const {
+QString BrowserPin::may_connect(const BrowserNode * dest) const {
   BrowserNode * container = dest->get_container(UmlActivity);
   
   if (container == 0)
-    return "illegal";
+    return TR("illegal");
   
   if (get_container(UmlActivity) != container)
-    return "not in the same activity";
+    return TR("not in the same activity");
   
   const BrowserActivityElement * elt = 
     dynamic_cast<const BrowserActivityElement *>(dest);
   
   return (elt == 0)
-    ? "illegal"
+    ? TR("illegal")
     : elt->connexion_from(def->get_is_control());
 }
 
-const char * BrowserPin::connexion_from(bool control) const {
+QString BrowserPin::connexion_from(bool control) const {
   if (def->get_dir() != UmlIn)
-    return "target pin can't have incoming flow";
+    return TR("target pin can't have incoming flow");
   
   if (def->get_is_control() != control)
     return (control)
-      ? "target pin can't accept control flow (not 'is_control')"
-      : "target pin can't accept data flow (is 'is_control')";
+      ? TR("target pin can't accept control flow (not 'is_control')")
+      : TR("target pin can't accept data flow (is 'is_control')");
   else
     return 0;
 }
@@ -231,38 +241,39 @@ void BrowserPin::menu() {
   QPopupMenu m(0);
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle((name.isEmpty()) ? "pin" : name, m.font()), -1);
+  m.insertItem(new MenuTitle((name.isEmpty()) ? TR("pin") : QString((const char *) name),
+			     m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited)
-      m.setWhatsThis(m.insertItem("Edit", 0),
-		     "to edit the <em>pin</em>, \
-a double click with the left mouse button does the same thing");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 0),
+		     TR("to edit the <i>pin</i>, \
+a double click with the left mouse button does the same thing"));
     if (!is_read_only && (edition_number == 0)) {
       if (((ActivityActionData *) ((BrowserNode *) parent())->get_data())->may_add_pin()) {
-	m.setWhatsThis(m.insertItem("Duplicate", 1),
-		       "to copy the <em>pin</em> in a new one");
+	m.setWhatsThis(m.insertItem(TR("Duplicate"), 1),
+		       TR("to copy the <i>pin</i> in a new one"));
 	m.insertSeparator();
       }
-      m.setWhatsThis(m.insertItem("Delete", 2),
-		     "to delete the <em>pin</em>. \
-Note that you can undelete it after");
+      m.setWhatsThis(m.insertItem(TR("Delete"), 2),
+		     TR("to delete the <i>pin</i>. \
+Note that you can undelete it after"));
     }
-    m.setWhatsThis(m.insertItem("Referenced by", 4),
-		   "to know who reference the <i>pin</i>");
-    mark_menu(m, "pin", 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 4),
+		   TR("to know who reference the <i>pin</i>"));
+    mark_menu(m, TR("the pin"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only &&
 	   (edition_number == 0) &&
 	   ((ActivityActionData *) ((BrowserNode *) parent())->get_data())->may_add_pin())
-    m.setWhatsThis(m.insertItem("Undelete", 3),
-		   "to undelete the <em>pin</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 3),
+		   TR("to undelete the <i>pin</i>"));
   
   exec_menu_choice(m.exec(QCursor::pos()));
 }
@@ -382,7 +393,7 @@ bool BrowserPin::tool_cmd(ToolCom * com, const char * args) {
 	  {
 	    BrowserNode * end = (BrowserNode *) com->get_id(args);
 	    
-	    if (may_connect(end) == 0)
+	    if (may_connect(end).isEmpty())
 	      (new BrowserFlow(this, end))->write_id(com);
 	    else
 	      ok = FALSE;
@@ -490,7 +501,7 @@ void BrowserPin::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -544,7 +555,7 @@ BrowserPin * BrowserPin::read(char * & st, char * k, BrowserNode * parent)
     }
     
     result->is_defined = TRUE;
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     if (strcmp(k, "end")) {
       while (BrowserFlow::read(st, k, result))

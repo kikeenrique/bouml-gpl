@@ -13,6 +13,9 @@ class CppSettings
 		  (y) ? (byte) 1 : (byte) 0);
   UmlCom.check();
 !!!44800.cpp!!!	type(in s : string) : string
+  if (s.isEmpty())
+    return s;
+
   read_if_needed_();
   
   UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
@@ -398,6 +401,28 @@ class CppSettings
 		   (v) ? (byte) 1 : (byte) 0);
   UmlCom.check();
   _is_force_namespace_gen = v;
+!!!243328.cpp!!!	isInlineOperationForceIncludesInHeader() : bool
+  read_if_needed_();
+
+  return _is_inline_force_header_in_h;
+!!!243328.java!!!	isInlineOperationForceIncludesInHeader() : bool
+  read_if_needed_();
+
+  return _is_inline_force_header_in_h;
+!!!243456.cpp!!!	set_IsInlineOperationForceIncludesInHeader(in v : bool) : bool
+  UmlCom::send_cmd(cppSettingsCmd, setCppInlineOperForceInclInHeaderCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_inline_force_header_in_h = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!243456.java!!!	set_IsInlineOperationForceIncludesInHeader(in v : bool) : bool
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppInlineOperForceInclInHeaderCmd,
+		  (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+  
+  _is_inline_force_header_in_h = v;
 !!!192128.cpp!!!	isGenerateJavadocStyleComment() : bool
   read_if_needed_();
 
@@ -1313,6 +1338,7 @@ class CppSettings
   _is_force_namespace_gen = UmlCom::read_bool();
   _is_root_relative_path = UmlCom::read_bool();
   _is_generate_javadoc_comment = UmlCom::read_bool();
+  _is_inline_force_header_in_h = UmlCom::read_bool();
 !!!54784.java!!!	read_() : void
   _root = UmlCom.read_string();
   
@@ -1395,6 +1421,7 @@ class CppSettings
   _is_force_namespace_gen = UmlCom.read_bool();
   _is_root_relative_path = UmlCom.read_bool();
   _is_generate_javadoc_comment = UmlCom.read_bool();
+  _is_inline_force_header_in_h = UmlCom.read_bool();
 !!!54912.cpp!!!	read_if_needed_() : void
   UmlSettings::read_if_needed_();
   if (!_defined) {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,7 +40,7 @@ class UmlActualParameter : public UmlBaseActualParameter {
   public:
     UmlActualParameter() {};
 
-    bool generate(QTextOStream & f_h) const;
+    bool generate(QTextOStream & f_h, bool & need_space) const;
 
 };
 

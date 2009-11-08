@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@
 #include "MenuTitle.h"
 #include "BrowserDiagram.h"
 #include "DiagramView.h"
+#include "translate.h"
 
 ArrowPointCanvas::ArrowPointCanvas(UmlCanvas * canvas, int x, int y) 
     : DiagramCanvas(0, canvas, x, y, ARROW_POINT_SIZE, ARROW_POINT_SIZE, -1) {
@@ -93,10 +94,6 @@ void ArrowPointCanvas::draw(QPainter & p) {
 
 UmlCode ArrowPointCanvas::type() const {
   return UmlArrowPoint;
-}
-
-int ArrowPointCanvas::rtti() const {
-  return RTTI_ARROWPOINT;
 }
 
 void ArrowPointCanvas::connexion(UmlCode action, DiagramItem * dest,
@@ -179,9 +176,9 @@ void ArrowPointCanvas::open() {
 void ArrowPointCanvas::menu(const QPoint&) {
   QPopupMenu m;
   
-  m.insertItem(new MenuTitle("Line break", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Line break"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Remove from view", 0);
+  m.insertItem(TR("Remove from view"), 0);
   m.setItemEnabled(0, lines.at(0)->may_join());
   
   switch (m.exec(QCursor::pos())) {
@@ -196,12 +193,12 @@ void ArrowPointCanvas::menu(const QPoint&) {
   package_modified();
 }
 
-const char * ArrowPointCanvas::may_start(UmlCode &) const {
-  return "illegal";
+QString ArrowPointCanvas::may_start(UmlCode &) const {
+  return TR("illegal");
 }
 
-const char * ArrowPointCanvas::may_connect(UmlCode &, const DiagramItem *) const {
-  return "illegal";
+QString ArrowPointCanvas::may_connect(UmlCode &, const DiagramItem *) const {
+  return TR("illegal");
 }
 
 bool ArrowPointCanvas::alignable() const {
@@ -218,13 +215,8 @@ ArrowCanvas * ArrowPointCanvas::get_other(const ArrowCanvas * l) const {
   return (lines.getFirst() == l) ? lines.getLast() : lines.getFirst();
 }
 
-bool ArrowPointCanvas::attached_to(const ArrowCanvas * l) const {
-  return ((lines.getFirst() == l) || (lines.getLast() == l));
-}
-
 void ArrowPointCanvas::save(QTextStream & st, bool, QString &) const {
-  // note : << float bugged with Qt 3.3.3
-  st << "point " << (int) x() << ' ' << (int) y();
+  save_xy(st, this, "point");
 }
 
 ArrowPointCanvas * ArrowPointCanvas::read(char * & st, UmlCanvas * canvas,

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -279,6 +279,45 @@ QCString Lex::manage_operator(QString & result, int c)
   return QCString(result);
 }
 
+char Lex::bypass_operator(int c)
+{
+  int next = peek();
+  
+  switch (c) {
+  case '!':
+  case '%':
+  case '*':
+  case '/':
+  case '=':
+  case '^':
+    if (next == '=') {
+      get();
+      return '!'; // to not be = when ==
+    }
+    return (char) c;
+  case '<':
+  case '>':
+    if (next == '=')
+      get();
+    else if (next == c) {
+      get();
+      if (peek() == '=')
+	get();
+    }
+    else
+      return (char) c;
+    return '!'; // to not be < or > if << >> <= or >=
+  case '-':
+  case '&':
+  case '+':
+  case '|':
+    if ((next == '=') || (next == c))
+      get();
+  default:
+    return (char) c;
+  }
+}
+
 QCString Lex::read_string()
 {
   QString result = "\"";;
@@ -300,6 +339,27 @@ QCString Lex::read_string()
       return QCString(result += c);
     default:
       result += c;
+    }
+  }
+}
+
+void Lex::bypass_string()
+{
+  for (;;) {
+    int c = get();
+    
+    switch (c) {
+    case EOF:
+      return;
+    case '\\':
+      c = get();
+      if (c == '\n')
+	context.line_number += 1;
+      break;
+    case '"':
+      return;
+    default:
+      break;
     }
   }
 }
@@ -326,26 +386,64 @@ QCString Lex::read_character()
   }
 }
 
-QCString Lex::read_array_dim() 
+void Lex::bypass_character()
 {
-  QCString result = "[";
-	  
   for (;;) {
     int c = get();
     
-    if (c == EOF)
+    switch (c) {
+    case EOF:
+      return;
+    case '\'':
+      return;
+    case '\\':
+      get();
       break;
-    
-    result += c;
-    
-    if (c == ']')
+    default:
       break;
+    }
   }
-  
+}
+
+QCString Lex::read_array_dim() 
+{
+  QCString result = "[";
+  char * pointer = context.pointer;
+	  
+  for (;;) {
+    switch (read_word_bis()) {
+    case 0:
+      result = 0;
+      return result;
+    case ']':
+      {
+	char c = *context.pointer;
+	
+	*context.pointer = 0;
+	result += pointer;
+	*context.pointer = c;
 #ifdef TRACE
-  cout << "retourne '" << result << "'\n";
+	cout << "retourne '" << result << "'\n";
 #endif
-  return result;
+	return result;
+      }
+    default:
+      break;
+    }
+  }
+}
+
+void Lex::bypass_array_dim() 
+{
+  for (;;) {
+    switch (read_word_bis()) {
+    case 0:
+    case ']':
+      return;
+    default:
+      break;
+    }
+  }
 }
 
 QCString Lex::read_word()
@@ -422,6 +520,76 @@ QCString Lex::read_word()
     cout << "retourne '" << result << "'\n";
 #endif
   return QCString(result);
+}
+
+char Lex::read_word_bis()
+{
+  if (!context.reread.isEmpty()) {
+    char result = context.reread[0].latin1();
+    
+    context.reread = QString::null;
+    return result;
+  }
+  else {
+    char result = 0;
+    int c;
+    
+    for (;;) {
+      c = get();
+      
+#ifdef TRACE
+      //cout << "deja \"" << result << "\", '" << ((char) c) << "'\n";
+#endif
+      if (c == EOF)
+	return result;
+      else if (Separators.find(c) == -1) {
+	if (result == 0)
+	  result = (char) c;
+      }
+      else if (result != 0) {	
+	unget();
+	return result;
+      }
+      else {
+	switch (c) {
+	case '#':
+	  bypass_cpp_comment();
+	  break;
+	case '"':
+	  bypass_string();
+	  return (char) c;
+	case '[':
+	  bypass_array_dim();
+	  return '!';	// to not be [
+	case '\'':
+	  bypass_character();
+	  return (char) c;
+	case '/':
+	  switch (peek()) {
+	  case '/':
+	    get();	// second '/'
+	    bypass_cpp_comment();
+	    break;
+	  case '*':
+	    bypass_c_comment();
+	    break;
+	  case '=':
+	    get();
+	    return (char) c;
+	  default:
+	    return (char) c;
+	  }
+	  break;
+	case '\n':
+	  context.line_number += 1;
+	  break;
+	default:
+	  if (c > ' ')
+	    return bypass_operator(c);
+	}
+      }
+    }
+  }
 }
 
 void Lex::finish_line()

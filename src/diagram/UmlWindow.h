@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -73,6 +73,7 @@ class UmlWindow : public QMainWindow {
     int add_operation_profile_id;
     int shortcut_id;
     int show_browser_stereotypes_id;
+    int completion_id;
     QStringList historic;
     CanvasFormat format;
     QSplitter * spl1;
@@ -100,6 +101,7 @@ class UmlWindow : public QMainWindow {
     static bool saveas_it();
     static void close_it();
     static void load_it(QString fn);
+    static void reload_it();
     static CanvasFormat default_format();
     static void set_default_format(CanvasFormat);
     static void abort_line_construction();
@@ -150,6 +152,8 @@ class UmlWindow : public QMainWindow {
     
     void show_stereotypes();
 
+    void do_completion();
+
     void about();
     void aboutQt();
     void help();
@@ -164,12 +168,13 @@ class UmlWindow : public QMainWindow {
     //void doc_generate();
     void cpp_reverse();
     void java_reverse();
+    void java_roundtrip();
     void php_reverse();
     void python_reverse();
-    void cpp_roundtrip();
-    void java_roundtrip();
-    void php_roundtrip();
-    void python_roundtrip();
+    void cpp_roundtripbody();
+    void java_roundtripbody();
+    void php_roundtripbody();
+    void python_roundtripbody();
     void run_tool(int param);
     void tool_settings();
     void import_tool_settings();
@@ -177,6 +182,7 @@ class UmlWindow : public QMainWindow {
     
     void comment_changed();
     void preferred_geometry();
+    void close_all_windows();
 
     void toolMenuAboutToShow();
     void projectMenuAboutToShow();

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -31,6 +31,7 @@
 #include "Tool.h"
 #include "UmlPixmap.h"
 #include "UmlDesktop.h"
+#include "translate.h"
 
 static const ToolColumnDef Classes[] = {
   { UmlClass, &classButton },
@@ -133,12 +134,13 @@ static Tbl Tables[] = {
 QSize ToolDialog::previous_size;
 
 ToolDialog::ToolDialog() : QTabDialog(0, "ToolDialog", TRUE, 0) {
-  setCaption("Tools dialog");
-  setCancelButton();
+  setCaption(TR("Tools dialog"));
+  setOkButton(TR("OK"));
+  setCancelButton(TR("Cancel"));
   
   for (unsigned i = 0; i != sizeof(Tables)/sizeof(Tbl); i += 1) {
     Tables[i].tbl = new ToolTable(this, Tables[i].cd, Tables[i].ncol);
-    addTab(Tables[i].tbl, Tables[i].label);
+    addTab(Tables[i].tbl, TR(Tables[i].label));
   }
 }
 
@@ -190,8 +192,8 @@ ToolTable::ToolTable(QWidget * parent,
   
   setNumRows(nrows);
 
-  horizontalHeader()->setLabel(0, "executable");
-  horizontalHeader()->setLabel(1, "display");
+  horizontalHeader()->setLabel(0, TR("executable"));
+  horizontalHeader()->setLabel(1, TR("display"));
   setColumnStretchable(0, FALSE);
   setColumnStretchable(1, FALSE);
 
@@ -205,7 +207,7 @@ ToolTable::ToolTable(QWidget * parent,
     setColumnStretchable(col, FALSE);
   }
   
-  horizontalHeader()->setLabel(ncols + 2, "do");
+  horizontalHeader()->setLabel(ncols + 2, TR("do"));
   adjustColumn(ncols + 2);
   setColumnStretchable(ncols + 2, FALSE);
   

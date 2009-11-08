@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -47,6 +47,7 @@
 #include "DialogUtil.h"
 #include "UmlDesktop.h"
 #include "BrowserView.h"
+#include "translate.h"
 
 QSize CodAddMsgDialog::previous_size;
 
@@ -54,7 +55,7 @@ CodAddMsgDialog::CodAddMsgDialog(CodObjCanvas * from, CodObjCanvas * to,
 				 CodMsgSupport * i, ColDiagramView * v,
 				 bool fo)
     : QDialog(0, "add msg dialog", TRUE), in(i), view(v), forward(fo) {
-  setCaption("Add message dialog");
+  setCaption(TR("Add message dialog"));
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
   QHBoxLayout * hbox;
@@ -63,14 +64,14 @@ CodAddMsgDialog::CodAddMsgDialog(CodObjCanvas * from, CodObjCanvas * to,
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(10);
-  QLabel * label1 = new QLabel(QString("Add message to ") + to->get_full_name(), this);
+  QLabel * label1 = new QLabel(TR("Add message to %1", to->get_full_name()), this);
   label1->setAlignment(AlignCenter);
   hbox->addWidget(label1);
   
   QGrid * grid = new QGrid(2, this);
   
   vbox->addWidget(grid);
-  new QLabel("rank : ", grid);
+  new QLabel(TR("rank : "), grid);
   cbrank = new QComboBox(FALSE, grid);
   
   ColMsgList all_in;
@@ -120,12 +121,12 @@ CodAddMsgDialog::CodAddMsgDialog(CodObjCanvas * from, CodObjCanvas * to,
   
   // the operations
   
-  SmallPushButton * b = new SmallPushButton("message :", grid);
+  SmallPushButton * b = new SmallPushButton(TR("message :"), grid);
   
   connect(b, SIGNAL(clicked()), this, SLOT(menu_op()));
   
   edoper = new QComboBox(TRUE, grid);
-  edoper->setAutoCompletion(TRUE);
+  edoper->setAutoCompletion(completion());
   
   // gets operations
   cl = to->get_class();
@@ -146,8 +147,8 @@ CodAddMsgDialog::CodAddMsgDialog(CodObjCanvas * from, CodObjCanvas * to,
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  QPushButton * ok = new QPushButton("&OK", this);
-  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QPushButton * ok = new QPushButton(TR("&OK"), this);
+  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
   QSize bs(cancel->sizeHint());
   
   ok->setDefault(TRUE);
@@ -173,13 +174,13 @@ CodAddMsgDialog::~CodAddMsgDialog() {
 void CodAddMsgDialog::menu_op() {
   QPopupMenu m(0);
 
-  m.insertItem("Choose", -1);
+  m.insertItem(TR("Choose"), -1);
   m.insertSeparator();
   
   int index = list.findIndex(edoper->currentText().stripWhiteSpace());
   
   if (index != -1)
-    m.insertItem("Select in browser", 0);
+    m.insertItem(TR("Select in browser"), 0);
   
   BrowserNode * bn = BrowserView::selected_item();
   
@@ -187,12 +188,12 @@ void CodAddMsgDialog::menu_op() {
       (bn->get_type() == UmlOperation) &&
       !bn->deletedp() &&
       (opers.findIndex((OperationData *) bn->get_data()) != -1))
-    m.insertItem("Choose operation selected in browser", 1);
+    m.insertItem(TR("Choose operation selected in browser"), 1);
   else
     bn = 0;
   
   if (cl != 0)
-    m.insertItem("Create operation and choose it", 2);
+    m.insertItem(TR("Create operation and choose it"), 2);
   
   if ((index != -1) || (bn != 0) || (cl != 0)) {
     switch (m.exec(QCursor::pos())) {

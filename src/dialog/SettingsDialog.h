@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,21 +37,32 @@ class ComboColor;
 
 class ColorSpec {
   public:
-    const char * name;
+    QString name;
     UmlColor * color;
     
-    void set(const char * n, UmlColor * c) {
-      name = n;
-      color = c;
-    };
+    void set(QString n, UmlColor * c) { name = n; color = c; }
+};
+
+class ColorSpecVector {
+  public:
+    ColorSpecVector(int s) : _size(s) { _v = new ColorSpec[s]; };
+    ~ColorSpecVector() { if (_v) delete [] _v; }
+    int size() const { return _size; }
+    void resize(int s);
+    ColorSpec & operator[] (int i) const { return _v[i]; }
+    ColorSpec & at (int i) const { return _v[i]; }
+    
+  private:
+    int _size;
+    ColorSpec * _v;
 };
 
 class SettingsDialog : public QTabDialog {
   Q_OBJECT
  
   protected:
-    QArray<StateSpec> * states;
-    QArray<ColorSpec> * colors;
+    StateSpecVector * states;
+  ColorSpecVector * colors;
     QVector<ComboStates> * cbstates;
     QVector<ComboColor> * cbcolors;
     bool several;
@@ -59,9 +70,9 @@ class SettingsDialog : public QTabDialog {
     static QSize previous_size;
   
   public:
-    SettingsDialog(QArray<StateSpec> * st, QArray<ColorSpec> * co,
-		   bool nodefault, bool own, bool unchanged = FALSE,
-		   const char * title = "Diagram Drawing Settings dialog");
+    SettingsDialog(StateSpecVector * st, ColorSpecVector * co,
+		   bool nodefault, bool unchanged = FALSE,
+		   QString title = QString());
     virtual ~SettingsDialog();
     
   protected slots:

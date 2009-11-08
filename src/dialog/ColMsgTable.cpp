@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,6 +39,7 @@
 #include "CodChangeMsgDialog.h"
 #include "MyInputDialog.h"
 #include "DialogUtil.h"
+#include "translate.h"
 
 #define ABS_RANK_COL	0
 #define HI_RANK_COL	1
@@ -123,12 +124,12 @@ ColMsgTable::ColMsgTable(QWidget * parent, ColDiagramView * v, ColMsgList & m)
   setNumCols(6);
   
   verticalHeader()->hide();
-  horizontalHeader()->setLabel(ABS_RANK_COL, "Rank");
-  horizontalHeader()->setLabel(HI_RANK_COL, "Hierarchical rank");
-  horizontalHeader()->setLabel(FROM_COL, "From");
-  horizontalHeader()->setLabel(MSG_COL, "Message");
-  horizontalHeader()->setLabel(TO_COL, "To");
-  horizontalHeader()->setLabel(CMD_COL, "do");
+  horizontalHeader()->setLabel(ABS_RANK_COL, TR("Rank"));
+  horizontalHeader()->setLabel(HI_RANK_COL, TR("Hierarchical rank"));
+  horizontalHeader()->setLabel(FROM_COL, TR("From"));
+  horizontalHeader()->setLabel(MSG_COL, TR("Message"));
+  horizontalHeader()->setLabel(TO_COL, TR("To"));
+  horizontalHeader()->setLabel(CMD_COL, TR("do"));
 
   refresh();
  
@@ -148,17 +149,17 @@ void ColMsgTable::button_pressed(int row, int col, int, const QPoint &) {
   else {
     QPopupMenu m;
 
-    m.insertItem(new MenuTitle(QString("rank ") + text(row, ABS_RANK_COL)
+    m.insertItem(new MenuTitle(QString(TR("rank ")) + text(row, ABS_RANK_COL)
 			       + " : " + text(row, HI_RANK_COL),
 			       m.font()),
 		 -1);
     m.insertSeparator();
-    m.insertItem("Edit message", 1);
-    m.insertItem("Change ranks", 2);
+    m.insertItem(TR("Edit message"), 1);
+    m.insertItem(TR("Change ranks"), 2);
     m.insertSeparator();
-    m.insertItem("Delete it", 3);
+    m.insertItem(TR("Delete it"), 3);
     if (!flat_msg_list[row]->msgs.isEmpty())
-      m.insertItem("Delete recursively", 4);
+      m.insertItem(TR("Delete recursively"), 4);
     
     switch (m.exec(QCursor::pos())) {
     case 1:
@@ -213,7 +214,7 @@ void ColMsgTable::refresh(ColMsgList & m) {
     setItem(r, FROM_COL, new MsgTableItem(this, from->get_full_name()));
     setItem(r, MSG_COL, new MsgTableItem(this, def.mid(def.find(' ') + 1)));
     setItem(r, TO_COL, new MsgTableItem(this, to->get_full_name()));
-    setItem(r, CMD_COL, new MsgTableItem(this, "do", AlignHCenter));
+    setItem(r, CMD_COL, new MsgTableItem(this, TR("do"), AlignHCenter));
     
     flat_msg_list.append(msg);
     
@@ -257,7 +258,7 @@ void ColMsgTable::change_ranks(int row, int col) {
   ColMsg * msg = flat_msg_list[row];
   HierarchicalRankValidator validator(view, msg->hierarchical_rank);
   bool ok;
-  QString new_hr = MyInputDialog::getText("Enter new hierarchical rank", "Hierarchical rank : ",
+  QString new_hr = MyInputDialog::getText(TR("Enter new hierarchical rank"), TR("Hierarchical rank : "),
 					  msg->hierarchical_rank, ok,
 					  &validator);
   
@@ -303,7 +304,7 @@ void ColMsgTable::change_ranks(int row, int col) {
 	}
       }
       if (msg->hierarchical_rank != new_hr) {
-	msg_warning("Warning", "Invalid hierarchical rank");
+	msg_warning(TR("Warning"), TR("Invalid hierarchical rank"));
 	new_hr = old_hr;
       }
       else
@@ -356,7 +357,7 @@ void ColMsgTable::change_ranks(int row, int col) {
     }
     
     if (msg->hierarchical_rank != new_hr) {
-      msg_warning("Warning", "Invalid hierarchical rank");
+      msg_warning(TR("Warning"), TR("Invalid hierarchical rank"));
       
       msg->hierarchical_rank = old_hr;
       

@@ -91,6 +91,9 @@ void UmlClass::gen_html(QCString pfix, unsigned int rank, unsigned int level) {
  
   s = description();
   
+  if (isActive())
+    fw.write("<p>Active class</p>\n");
+    
   if (!s.isEmpty()) {
     fw.write("<p>");
     if (! javaDecl().isEmpty())
@@ -101,10 +104,10 @@ void UmlClass::gen_html(QCString pfix, unsigned int rank, unsigned int level) {
       gen_python_decl(s, TRUE);
     else
       gen_cpp_decl(s, TRUE);
-    fw.write("<br /></p>");
+    fw.write("<br /></p>\n");
   }
   
-  fw.write("<p>Declaration :</p><ul>");
+  fw.write("<p>Declaration :</p><ul>\n");
   
   s = cppDecl();
 
@@ -191,7 +194,7 @@ void UmlClass::gen_html(QCString pfix, unsigned int rank, unsigned int level) {
   }
 
   if (p)
-    fw.write("</p>");
+    fw.write("</p>\n");
   
   if (parent()->kind() == aClass) {
     fw.write("<p>nested in ");
@@ -580,11 +583,17 @@ void UmlClass::gen_java_decl(QCString s, bool descr) {
     else if (*p == '\r')
       p += 1;
     else if (*p == '\n') {
-      fw.write(' ');
-
-      do
+      if (descr) {
+	fw.write("<br />");
 	p += 1;
-      while ((*p != 0) && (*p <= ' '));
+      }
+      else {
+	fw.write(' ');
+	
+	do
+	  p += 1;
+	while ((*p != 0) && (*p <= ' '));
+      }
     }
     else if ((*p == '{') || (*p == ';')) {
       if (descr)
@@ -681,11 +690,17 @@ void UmlClass::gen_php_decl(QCString s, bool descr) {
     else if (*p == '\r')
       p += 1;
     else if (*p == '\n') {
-      fw.write(' ');
-
-      do
+      if (descr) {
+	fw.write("<br />");
 	p += 1;
-      while ((*p != 0) && (*p <= ' '));
+      }
+      else {
+	fw.write(' ');
+	
+	do
+	  p += 1;
+	while ((*p != 0) && (*p <= ' '));
+      }
     }
     else if ((*p == '{') || (*p == ';')) {
       if (descr)

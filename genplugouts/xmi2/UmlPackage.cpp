@@ -179,7 +179,7 @@ void UmlPackage::xmi(int argc, char ** argv) {
 	out << ">\n\t";
 	if (comment_exporter)
 	  out << "<!-- ";
-	out << "<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.10.1\"/>";
+	out << "<xmi:Documentation exporter=\"Bouml\" exporterVersion=\"1.12\"/>";
 	if (comment_exporter)
 	  out << " -->";
 	out << "\n\t<uml:Model xmi:type=\"uml:Model\" xmi:id=\"themodel\" name=\""

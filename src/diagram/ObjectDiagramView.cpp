@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,6 +48,7 @@
 #include "UmlDrag.h"
 #include "myio.h"
 #include "MenuTitle.h"
+#include "translate.h"
 
 ObjectDiagramView::ObjectDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
     : DiagramView(parent, canvas, id) {
@@ -57,7 +58,7 @@ ObjectDiagramView::ObjectDiagramView(QWidget * parent, UmlCanvas * canvas, int i
 void ObjectDiagramView::menu(const QPoint&) {
   QPopupMenu m(0);
   
-  m.insertItem(new MenuTitle("Object diagram menu", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Object diagram menu"), m.font()), -1);
  
   switch (default_menu(m, 20)) {
   case EDIT_DRAWING_SETTING_CMD:

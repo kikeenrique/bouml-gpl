@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,6 +44,7 @@
 #include "BodyDialog.h"
 #include "GenerationSettings.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 QSize FlowDialog::previous_size;
 
@@ -51,14 +52,16 @@ FlowDialog::FlowDialog(FlowData * d)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), flow(d) {
   d->browser_node->edit_start();
   
-  if (d->browser_node->is_writable())
-    setCancelButton();
+  if (d->browser_node->is_writable()) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
 
-  setCaption("Flow dialog");
+  setCaption(TR("Flow dialog"));
   visit = !hasOkButton();  
 
   BrowserNode * bn = flow->browser_node;
@@ -73,17 +76,17 @@ FlowDialog::FlowDialog(FlowData * d)
   grid->setMargin(5);
   grid->setSpacing(5);
   
-  new QLabel("name : ", grid);
+  new QLabel(TR("name : "), grid);
   edname = new LineEdit(bn->get_name(), grid);
   edname->setReadOnly(visit);
     
-  new QLabel("stereotype : ", grid);
+  new QLabel(TR("stereotype : "), grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(flow->get_stereotype()));
   if (!visit) {
     edstereotype->insertStringList(BrowserFlow::default_stereotypes());
     edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlFlow));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->setAutoCompletion(completion());
   }
   edstereotype->setCurrentItem(0);
   QSizePolicy sp = edstereotype->sizePolicy();
@@ -91,9 +94,9 @@ FlowDialog::FlowDialog(FlowData * d)
   edstereotype->setSizePolicy(sp);
   
   QVBox * vtab = new QVBox(grid);
-  new QLabel("description :", vtab);
+  new QLabel(TR("description :"), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
@@ -123,7 +126,7 @@ FlowDialog::FlowDialog(FlowData * d)
   grid->setSpacing(5);
   
   kvtable = new KeyValuesTable(bn, grid, visit);
-  addTab(grid, "Properties");
+  addTab(grid, TR("Properties"));
   
   //
     
@@ -158,7 +161,7 @@ void FlowDialog::init_tab(FlDialog & d, FlowDef & st, const char * lbl,
   grid->setMargin(5);
   grid->setSpacing(5);
   
-  new QLabel("weight : ", grid);
+  new QLabel(TR("weight : "), grid);
   d.edweight = new LineEdit(grid);
 
   QFont font = d.edweight->font();
@@ -172,9 +175,9 @@ void FlowDialog::init_tab(FlDialog & d, FlowDef & st, const char * lbl,
     d.edweight->setReadOnly(TRUE);
   
   vtab = new QVBox(grid);
-  new QLabel("guard : ", vtab);
+  new QLabel(TR("guard : "), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()), this, sl_guard);
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()), this, sl_guard);
   d.edguard = new MultiLineEdit(grid);
   d.edguard->setFont(font);
   d.edguard->setText(st.guard);
@@ -182,9 +185,9 @@ void FlowDialog::init_tab(FlDialog & d, FlowDef & st, const char * lbl,
     d.edguard->setReadOnly(TRUE);
   
   vtab = new QVBox(grid);
-  new QLabel("selection : ", vtab);
+  new QLabel(TR("selection : "), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()), this, sl_selection);
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()), this, sl_selection);
   d.edselection = new MultiLineEdit(grid);
   d.edselection->setFont(font);
   d.edselection->setText(st.sel_trans.first);
@@ -192,9 +195,9 @@ void FlowDialog::init_tab(FlDialog & d, FlowDef & st, const char * lbl,
     d.edselection->setReadOnly(TRUE);
   
   vtab = new QVBox(grid);
-  new QLabel("transformation : ", vtab);
+  new QLabel(TR("transformation : "), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()), this, sl_transformation);
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()), this, sl_transformation);
   d.edtransformation = new MultiLineEdit(grid);
   d.edtransformation->setFont(font);
   d.edtransformation->setText(st.sel_trans.second);
@@ -252,7 +255,7 @@ void FlowDialog::accept() {
       ((BrowserNode *) bn->parent())->wrong_child_name(s, UmlFlow,
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
-    msg_critical("Error", s + "\n\nillegal name or already used");
+    msg_critical(TR("Error"), s + TR("\n\nillegal name or already used"));
   else {  
     bn->set_name(s);
     

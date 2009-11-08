@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -55,6 +55,7 @@
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserSimpleRelation> BrowserSimpleRelation::all(257, __FILE__);
 
@@ -102,20 +103,21 @@ bool BrowserSimpleRelation::undelete(bool, QString & warning, QString & renamed)
   
   if (def->get_start_node()->deletedp() ||
       def->get_end_node()->deletedp()) {
-    warning += QString("<li><b>") + quote(def->definition(FALSE)) + "</b> from <b>" +
+    warning += QString("<li><b>") + quote(def->definition(FALSE)) + "</b> " + TR("from") + " <b>" +
       def->get_start_node()->full_name() +
-	"</b> to <b>" + def->get_end_node()->full_name() + "</b>\n";
+	"</b> " + TR("to") + " <b>" + def->get_end_node()->full_name() + "</b>\n";
     return FALSE;
   }
   else {
     switch (get_type()) {
     case UmlInherit:
       // use case
-      if (def->get_start_node()->check_inherit(def->get_end_node()) != 0) {
-	warning += QString("<li><b>") + quote(def->definition(FALSE)) +
-	  "</b> because <b>" + def->get_start_node()->full_name() +
-	    "</b> cannot (or already) inherit on <b>" +
-	      def->get_end_node()->full_name() + "</b>\n";
+      if (!def->get_start_node()->check_inherit(def->get_end_node()).isEmpty()) {
+	warning += QString("<li><b>") + quote(def->definition(FALSE)) + "</b> "
+	  + TR("because <b>%1</b> cannot (or already) inherit on <b>%2</b>",
+	       def->get_start_node()->full_name(),
+	       def->get_end_node()->full_name())
+	    + "\n";
 	return FALSE;
       }
       break;
@@ -170,6 +172,10 @@ void BrowserSimpleRelation::update_idmax_for_root()
 {
   all.update_idmax_for_root();
 }
+
+void BrowserSimpleRelation::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+}
     
 void BrowserSimpleRelation::renumber(int phase) {
   if (phase != -1)
@@ -212,35 +218,35 @@ void BrowserSimpleRelation::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!in_edition()) {
-      m.setWhatsThis(m.insertItem("Edit", 0),
-		     "to edit the <em>relation</em>, \
-a double click with the left mouse button does the same thing");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 0),
+		     TR("to edit the <i>relation</i>, \
+a double click with the left mouse button does the same thing"));
       if (!is_read_only && (edition_number == 0)) {
-	m.setWhatsThis(m.insertItem("Delete", 2),
-		       "to delete the <em>relation</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 2),
+		       TR("to delete the <i>relation</i>. \
+Note that you can undelete it after"));
       }
       m.insertSeparator();
     }
   
-    m.setWhatsThis(m.insertItem("Referenced by", 8),
-		   "to know who reference the <i>relation</i>");
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 8),
+		   TR("to know who reference the <i>relation</i>"));
     
-    m.setWhatsThis(m.insertItem(QString("select ") + def->get_end_node()->get_name(),
+    m.setWhatsThis(m.insertItem(QString(TR("select ")) + def->get_end_node()->get_name(),
 				7),
-		   "to select the destination");
-    mark_menu(m, "relation", 90);
+		   TR("to select the destination"));
+    mark_menu(m, TR("the relation"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) 
 	&& Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 3),
-		   "undelete the <em>relation</em> \
-(except if the other side is also deleted)");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 3),
+		   TR("undelete the <i>relation</i> \
+(except if the other side is also deleted)"));
     if (def->get_start_node()->deletedp() ||
 	def->get_end_node()->deletedp())
       m.setItemEnabled(3, FALSE);
@@ -388,7 +394,7 @@ void BrowserSimpleRelation::save(QTextStream & st, bool ref,
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -444,12 +450,12 @@ BrowserSimpleRelation *
     
     result->is_defined = TRUE;
 
-    result->is_read_only = (!in_import() && read_only_file()) || 
+    result->is_read_only = !parent->is_writable() || 
       ((user_id() != 0) && result->is_api_base());
     
     k = read_keyword(st);
     
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");

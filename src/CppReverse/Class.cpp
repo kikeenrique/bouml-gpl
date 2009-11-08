@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -171,9 +171,12 @@ Class * Class::reverse(ClassContainer * container, QCString stereotype,
   
   if (s == ":") {
     if (Package::scanning()) {
+      char c;
+      
       do 
-	s = Lex::read_word();
-      while ((s != "{") && ! s.isEmpty());
+	c = Lex::read_word_bis(FALSE, FALSE);
+      while ((c != '{') && (c != 0));
+      s = (c == 0) ? "" : "{";
     }
     else {
       if (! cl_uml->manage_inherit(container, tmplts
@@ -1049,8 +1052,10 @@ bool Class::reverse_typedef(ClassContainer *  container, const QCString & path,
       
       Lex::mark();
       
-      while ((s = Lex::read_word()) != ";") {
-	if (s.isEmpty()) {
+      char c;
+      
+      while ((c = Lex::read_word_bis(TRUE, FALSE)) != ';') {
+	if (c == 0) {
 	  if (!Package::scanning())
 	    Lex::premature_eof();
 	  return FALSE;
@@ -1250,10 +1255,12 @@ bool Class::reverse_typedef(ClassContainer *  container, const QCString & path,
     // normally it is the case
     intermediate.remove(0, 1);
   
+  char c;
+  
   Lex::mark();
   
-  while ((s = Lex::read_word()) != ";") {
-    if (s.isEmpty()) {
+  while ((c = Lex::read_word_bis(TRUE, FALSE)) != ';') {
+    if (c == 0) {
       Lex::premature_eof();
       return FALSE;
     }

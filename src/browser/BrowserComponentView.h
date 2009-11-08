@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -98,6 +98,7 @@ class BrowserComponentView : public BrowserNode, public Labeled<BrowserComponent
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
+    virtual void prepare_update_lib() const;
 };
 
 #endif

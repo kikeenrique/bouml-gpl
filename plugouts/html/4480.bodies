@@ -30,6 +30,13 @@ class UmlBasePackage
   
   _assoc_diagram = d;
 
+!!!261632.cpp!!!	importProject(in fn : string) : UmlPackage
+  UmlCom::send_cmd(_identifier, importProjectCmd, fn);
+
+  return (UmlPackage *) UmlBaseItem::read_();
+!!!261632.java!!!	importProject(in fn : string) : UmlPackage
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.importProjectCmd, fn);
+  return (UmlPackage) UmlBaseItem.read_();
 !!!57728.cpp!!!	cppSrcDir() : string
   read_if_needed_();
   

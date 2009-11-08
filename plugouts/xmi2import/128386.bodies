@@ -129,6 +129,9 @@ class UmlState
 	       + s + "' in '" + where->name() + "'");
     
     st->addItem(token.xmiId(), in);
+
+    if (token.valueOf("isactive") == "true")
+      st->set_isActive(TRUE);
     
     QCString spec = token.valueOf("specification");
     

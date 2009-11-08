@@ -91,6 +91,15 @@ bool UmlBaseActivity::set_isSingleExecution(bool v) {
   return set_it_(_single_execution, v, setSingleExecutionCmd);
 }
 
+bool UmlBaseActivity::isActive() {
+  read_if_needed_();
+  return _active;
+}
+
+bool UmlBaseActivity::set_isActive(bool v) {
+  return set_it_(_active, v, setActiveCmd);
+}
+
 UmlOperation * UmlBaseActivity::specification() {
   read_if_needed_();
   return _specification;
@@ -144,6 +153,7 @@ void UmlBaseActivity::read_uml_() {
   _read_only = UmlCom::read_bool();
   _single_execution = UmlCom::read_bool();
   _specification = (UmlOperation *) UmlBaseItem::read_();
+  _active = UmlCom::read_bool();
 }
 
 #ifdef WITHCPP

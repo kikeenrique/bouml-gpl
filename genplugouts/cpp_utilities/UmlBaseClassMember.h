@@ -54,6 +54,24 @@ class UmlBaseClassMember : public UmlClassItem {
     bool set_CppVisibility(aVisibility v);
 #endif
 
+#ifdef WITHJAVA
+    // returns the Java annotations
+    QCString javaAnnotations();
+
+    // set the Java annotations
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    bool set_JavaAnnotations(const char * v);
+#endif
+
+    // return the constraint
+    const QCString & constraint();
+
+    // set the constraint
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_Constraint(const char * v);
+
 
   private:
     bool _class_member;
@@ -80,10 +98,22 @@ class UmlBaseClassMember : public UmlClassItem {
     virtual void read_cpp_();
 #endif
 
-  friend class UmlBaseOperation;
-  friend class UmlBaseAttribute;
-  friend class UmlBaseRelation;
+#ifdef WITHJAVA
+    virtual void read_java_();
+#endif
+
+
+  private:
+#ifdef WITHJAVA
+    QCString _java_annotation;
+#endif
+
+    QCString _constraint;
+
   friend class UmlBaseClass;
+  friend class UmlBaseRelation;
+  friend class UmlBaseAttribute;
+  friend class UmlBaseOperation;
 };
 
 #endif

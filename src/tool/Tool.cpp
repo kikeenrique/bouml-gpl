@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -441,14 +441,17 @@ void Tool::add()
 	unsigned index2;
 	  
 	for (index2 = 0; index2 != oldn; index2 += 1) {
-	  if (newt[index2].display == t.display) {
+	  ATool & t2 = newt[index2];
+	
+	  if (t2.display == t.display) {
 	    // add cases
 	    unsigned index3;
-	    bool * na = &newt[index2].applicable[0];
-	    bool * a = &t.applicable[0];
 	    
+	    // warning : do NOT use bool * to access inside t2.applicable
+	    // and t.applicable because generated code is wrong under Windows
+	    // (may be bool[128] use 128 nits rather than 128bytes ?)
 	    for (index3 = 0; index3 != UmlCodeSup; index3 += 1)
-	      *na++ |= *a++;
+	      t2.applicable[index3] |= t.applicable[index3];
 		
 	    break;
 	  }

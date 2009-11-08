@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,6 +49,7 @@
 #include "MenuTitle.h"
 #include "Settings.h"
 #include "strutil.h"
+#include "translate.h"
 
 ParameterSetCanvas::ParameterSetCanvas(BrowserNode * bn, UmlCanvas * canvas,
 				       int id, ActivityActionCanvas * a)
@@ -265,27 +266,27 @@ void ParameterSetCanvas::menu(const QPoint &) {
   int index;
   QString s = browser_node->get_name();
     
-  m.insertItem(new MenuTitle((s.isEmpty()) ? "parameter set" : s, m.font()), -1);
+  m.insertItem(new MenuTitle((s.isEmpty()) ? TR("parameter set") : s, m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 13);
-  m.insertItem("Go down", 14);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 13);
+  m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 2);
+  m.insertItem(TR("Edit drawing settings"), 2);
   m.insertSeparator();
-  m.insertItem("Edit parameter set", 3);
+  m.insertItem(TR("Edit parameter set"), 3);
   m.insertSeparator();
-  m.insertItem("Select in browser", 4);
+  m.insertItem(TR("Select in browser"), 4);
   if (linked())
-    m.insertItem("Select linked items", 5);
+    m.insertItem(TR("Select linked items"), 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("Delete from model", 8);
+    m.insertItem(TR("Delete from model"), 8);
     m.insertSeparator();
   }
   if (Tool::menu_insert(&toolm, UmlParameterSet, 20))
-    m.insertItem("Tool", &toolm);
+    m.insertItem(TR("Tool"), &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -357,11 +358,11 @@ void ParameterSetCanvas::apply_shortcut(QString s) {
 }
 
 void ParameterSetCanvas::edit_drawing_settings() {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   
-  co[0].set("parameter set color", &itscolor);
+  co[0].set(TR("parameter set color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -373,15 +374,15 @@ bool ParameterSetCanvas::has_drawing_settings() const {
 }
 
 void ParameterSetCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   UmlColor itscolor;
   
-  co[0].set("parameter set color", &itscolor);
+  co[0].set(TR("parameter set color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
   
   dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
@@ -391,12 +392,12 @@ void ParameterSetCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }
 }
 
-const char * ParameterSetCanvas::may_start(UmlCode &) const {
-  return "illegal";
+QString ParameterSetCanvas::may_start(UmlCode &) const {
+  return TR("illegal");
 }
 
-const char * ParameterSetCanvas::may_connect(UmlCode &, const DiagramItem *) const {
-  return "illegal";
+QString ParameterSetCanvas::may_connect(UmlCode &, const DiagramItem *) const {
+  return TR("illegal");
 }
 
 void ParameterSetCanvas::modified() {

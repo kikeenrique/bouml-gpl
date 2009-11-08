@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,12 +34,13 @@
 #include "ColDiagramView.h"
 #include "ColMsgTable.h"
 #include "UmlDesktop.h"
+#include "translate.h"
 
 void CodEditMsgDialog::exec(ColDiagramView * view, ColMsgList & msgs)
 {
   QDialog d(0, "Communication diagram message dialog", TRUE, 0);
   
-  d.setCaption("Communication diagram message dialog");
+  d.setCaption(TR("Communication diagram message dialog"));
   
   QVBoxLayout vbox(&d);
   

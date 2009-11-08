@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -38,6 +38,7 @@
 #include "SourceDialog.h"
 #include "UmlDesktop.h"
 #include "strutil.h"
+#include "translate.h"
 
 bool NumberedMultiLineEdit::event(QEvent * e) {
   static int old_l = 0;
@@ -101,8 +102,8 @@ SourceDialog::SourceDialog(QString p, bool & flg, unsigned & edn)
    
 #if 0
      if ( fi.isWritable()) {
-       QPushButton * edit = new QPushButton("&Edit", this);
-       QPushButton * roundtrip = new QPushButton("&Roundtrip", this);
+       QPushButton * edit = new QPushButton(TR("&Edit"), this);
+       QPushButton * roundtrip = new QPushButton(TR("&Roundtrip"), this);
        
        hbox->addWidget(new QLabel(this));
        hbox->addWidget(edit);
@@ -115,15 +116,15 @@ SourceDialog::SourceDialog(QString p, bool & flg, unsigned & edn)
 #endif
    }
    else
-     e->setText("cannot read " + p + "!!!!");
+     e->setText(TR("cannot read %1", p));
    delete [] s;
    f.close();
   }
   else
-    e->setText("cannot read " + p + "!!!!");
+    e->setText(TR("cannot read %1", p));
 
 #if 0
-  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
 
   hbox->addWidget(new QLabel(this));
   hbox->addWidget(cancel);

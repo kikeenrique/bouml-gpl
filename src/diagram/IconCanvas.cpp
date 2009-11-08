@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,6 +37,7 @@
 #include "BasicData.h"
 #include "myio.h"
 #include "MenuTitle.h"
+#include "translate.h"
 
 IconCanvas::IconCanvas(BrowserNode * bn, UmlCanvas * canvas,
 		       int x, int y, int id)
@@ -113,21 +114,21 @@ void IconCanvas::open() {
 void IconCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
   
-  m.insertItem(new MenuTitle(browser_node->get_name() + QString("\nshort cut"), m.font()), -1);
+  m.insertItem(new MenuTitle(browser_node->get_name() + TR("\nshort cut"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 6);
-  m.insertItem("Go down", 7);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 6);
+  m.insertItem(TR("Go down"), 7);
   m.insertSeparator();
   if (! browser_node->deletedp()) {
-    m.insertItem("Open", 2);
+    m.insertItem(TR("Open"), 2);
     m.insertSeparator();
   }
-  m.insertItem("Select diagram in browser", 3);
-  m.insertItem("Select linked items", 4);
+  m.insertItem(TR("Select diagram in browser"), 3);
+  m.insertItem(TR("Select linked items"), 4);
   m.insertSeparator();
-  m.insertItem("Remove from view",5);
+  m.insertItem(TR("Remove from view"),5);
 
   switch (m.exec(QCursor::pos())) {
   case 0:
@@ -205,12 +206,12 @@ void IconCanvas::apply_shortcut(QString s) {
   canvas()->update();
 }
 
-const char * IconCanvas::may_start(UmlCode & l) const {
-  return (l == UmlAnchor) ? 0 : "illegal";
+QString IconCanvas::may_start(UmlCode & l) const {
+  return (l == UmlAnchor) ? 0 : TR("illegal");
 }
 
-const char * IconCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
+QString IconCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  return (l == UmlAnchor) ? dest->may_start(l) : TR("illegal");
 }
 
 bool IconCanvas::alignable() const {

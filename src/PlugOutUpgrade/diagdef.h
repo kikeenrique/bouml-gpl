@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,5 +29,7 @@
 extern void add_diagram_def();
 
 extern void upgrade_interaction();
+
+extern void add_stereotype_on_seq_msg(UmlClass * baseseqmsg);
 
 #endif

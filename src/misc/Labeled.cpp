@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,15 +40,22 @@
 // import project
 
 static bool NeedRenumber;
+static bool ImportLib;
 
-void set_in_import(bool y)
+void set_in_import(bool y, bool as_lib)
 {
   NeedRenumber = y;
+  ImportLib = as_lib;
 }
 
 bool in_import()
 {
   return NeedRenumber;
+}
+
+bool in_lib_import()
+{
+  return ImportLib;
 }
 
 //
@@ -82,8 +89,18 @@ int place(IdDict<void> & d, int id, void * x)
       
       if ((d.dict[1].count() / 2) >= d.dict[1].size())
 	d.dict[1].resize(d.dict[1].size() * 2 - 1);
+
+      int nid;
       
-      if ((d.dict[0][id] != 0) || ((id & 127) != user_id())) {
+      if (ImportLib && ((nid = (int) ((long) d.dictlib[id])) != 0)) {
+	// an id was already attributed for it
+	id = nid;
+	
+	if ((((unsigned) (id & ~127)) > ((unsigned) d.idmax)) &&
+	    ((id & 127) == user_id()))
+	  d.idmax = id & ~127;
+      }
+      else if ((d.dict[0][id] != 0) || ((id & 127) != user_id())) {
 	// already used or for an other user, change id to a new one
 	if ((id & 127) < 2) {
 	  // import a plug out in a plug out !!!!!
@@ -190,11 +207,11 @@ void memo_idmax_loc(int & idmaxref, const char * who)
   }
 }
 
-// add a margin of 8
+// add a margin of 50
 void idmax_add_margin()
 {
   for (IntList * cell = FirstCell; cell != 0; cell = cell->next)
-    *(cell->pint) += 128*8;
+    *(cell->pint) += 128*50;
 }
 
 //

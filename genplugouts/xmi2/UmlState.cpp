@@ -26,6 +26,8 @@ void UmlState::write(FileOut & out) {
   out << '"';
   if (specification() != 0)
     out.ref(specification(), "specification");
+  if (isActive())
+    out << " isActive=\"true\"";
   out << ">\n";
   out.indent(+1); 
   

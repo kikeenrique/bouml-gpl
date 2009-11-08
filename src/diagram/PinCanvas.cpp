@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -50,6 +50,7 @@
 #include "MenuTitle.h"
 #include "Settings.h"
 #include "strutil.h"
+#include "translate.h"
 
 PinCanvas::PinCanvas(BrowserNode * bn, UmlCanvas * canvas,
 		     int x, int y, int id, ActivityActionCanvas * a)
@@ -341,29 +342,29 @@ void PinCanvas::menu(const QPoint &) {
   BrowserClass * cl = 
     ((PinData *) browser_node->get_data())->get_type().type;
     
-  m.insertItem(new MenuTitle((s.isEmpty()) ? "pin" : s, m.font()), -1);
+  m.insertItem(new MenuTitle((s.isEmpty()) ? TR("pin") : s, m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 13);
-  m.insertItem("Go down", 14);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 13);
+  m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 2);
+  m.insertItem(TR("Edit drawing settings"), 2);
   m.insertSeparator();
-  m.insertItem("Edit pin", 3);
+  m.insertItem(TR("Edit pin"), 3);
   m.insertSeparator();
-  m.insertItem("Select in browser", 4);
+  m.insertItem(TR("Select in browser"), 4);
   if (cl != 0)
-    m.insertItem("Select class in browser", 9);
+    m.insertItem(TR("Select class in browser"), 9);
   if (linked())
-    m.insertItem("Select linked items", 5);
+    m.insertItem(TR("Select linked items"), 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("Delete from model", 8);
+    m.insertItem(TR("Delete from model"), 8);
     m.insertSeparator();
   }
   if (Tool::menu_insert(&toolm, UmlActivityPin, 20))
-    m.insertItem("Tool", &toolm);
+    m.insertItem(TR("Tool"), &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -438,11 +439,11 @@ void PinCanvas::apply_shortcut(QString s) {
 }
 
 void PinCanvas::edit_drawing_settings() {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   
-  co[0].set("pin color", &itscolor);
+  co[0].set(TR("pin color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -454,15 +455,15 @@ bool PinCanvas::has_drawing_settings() const {
 }
 
 void PinCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   UmlColor itscolor;
   
-  co[0].set("pin color", &itscolor);
+  co[0].set(TR("pin color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
   
   dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
@@ -472,22 +473,22 @@ void PinCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }
 }
 
-const char * PinCanvas::may_start(UmlCode & l) const {
+QString PinCanvas::may_start(UmlCode & l) const {
   switch (l) {
   case UmlFlow:
     return ((BrowserPin *) browser_node)->may_start();
   case UmlDependOn:
-    return "illegal";
+    return TR("illegal");
   default: // anchor
     return 0;
   }
 }
 
-const char * PinCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString PinCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor)
     return dest->may_start(l);
   else if(dest->get_bn() == 0)
-    return "illegal";
+    return TR("illegal");
   else
     return ((BrowserPin *) browser_node)->may_connect(dest->get_bn());
 }

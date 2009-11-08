@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -54,6 +54,7 @@
 #include "MenuTitle.h"
 #include "Settings.h"
 #include "strutil.h"
+#include "translate.h"
 
 ActivityActionCanvas::ActivityActionCanvas(BrowserNode * bn, UmlCanvas * canvas,
 					   int x, int y)
@@ -155,17 +156,25 @@ void ActivityActionCanvas::update() {
   used_settings = settings;
   diagram->get_activitydrawingsettings(used_settings);
   
-  s = data->str(((data->get_action_kind() == UmlOpaqueAction) &&
-		 ((show_opaque_action_definition == UmlDefaultState)
-		  ? diagram->get_show_opaque_action_definition()
-		  : (show_opaque_action_definition == UmlYes)))
-		? used_settings.drawing_language
-		: DefaultDrawingLanguage);
+  bool opaquedef = ((data->get_action_kind() == UmlOpaqueAction) &&
+		    ((show_opaque_action_definition == UmlDefaultState)
+		     ? diagram->get_show_opaque_action_definition()
+		     : (show_opaque_action_definition == UmlYes)));
+  
+  s = data->str((opaquedef) ? used_settings.drawing_language
+			    : DefaultDrawingLanguage);
   s = s.stripWhiteSpace();
   
-  align = (s.find('\n') != -1)
-    ? (int) ::Qt::AlignLeft | ::Qt::AlignVCenter
-    : (int) ::Qt::AlignCenter | ::Qt::WordBreak;
+  QString st = data->get_short_stereotype();
+	
+  if (!st.isEmpty() && !opaquedef) {
+    s += "\n<<" + st + ">>";
+    align = (int) ::Qt::AlignCenter | ::Qt::WordBreak;
+  }
+  else
+    align = (s.find('\n') != -1)
+      ? (int) ::Qt::AlignLeft | ::Qt::AlignVCenter
+      : (int) ::Qt::AlignCenter | ::Qt::WordBreak;
   
   force_pins_arround();
   check_parameter_sets_position();
@@ -271,10 +280,10 @@ aCorner ActivityActionCanvas::on_resize_point(const QPoint & p) {
   return ::on_resize_point(p, rect());
 }
 
-void ActivityActionCanvas::resize(aCorner c, int dx, int dy) {
+void ActivityActionCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
   double zoom = the_canvas()->zoom();
   
-  DiagramCanvas::resize(c, dx, dy,
+  DiagramCanvas::resize(c, dx, dy, o,
 			(int) (ACTIVITYACTION_MIN_SIZE * zoom),
 			(int) (ACTIVITYACTION_MIN_SIZE * zoom));
   
@@ -739,6 +748,8 @@ void ActivityActionCanvas::menu(const QPoint&) {
     
     while ((index = s.find("_")) != -1)
       s.replace(index, 1, " ");
+    
+    s = TR(s);
   }
 
   QPopupMenu m(0);
@@ -747,34 +758,34 @@ void ActivityActionCanvas::menu(const QPoint&) {
   m.insertItem(new MenuTitle(s, m.font()), -1);
   m.insertSeparator();
   if (browser_node->is_writable() && data->may_add_pin()) {
-    m.insertItem("Add pin", 7);
+    m.insertItem(TR("Add pin"), 7);
     m.insertSeparator();
   }
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 13);
-  m.insertItem("Go down", 14);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 13);
+  m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 2);
+  m.insertItem(TR("Edit drawing settings"), 2);
   m.insertSeparator();
-  m.insertItem("Edit activity action", 3);
+  m.insertItem(TR("Edit activity action"), 3);
   m.insertSeparator();
-  m.insertItem("Select in browser", 4);
+  m.insertItem(TR("Select in browser"), 4);
   
   const char * what;
   BrowserNode * who = data->get_action()->referenced(what);
   BrowserNode * diag = 0;
   
   if (who != 0)
-    m.insertItem("Select " + QString(what) + " in browser", 10);
+    m.insertItem(TR("Select %1 in browser", QString(what)), 10);
   
   if (linked())
-    m.insertItem("Select linked items", 5);
+    m.insertItem(TR("Select linked items"), 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
     if (browser_node->get_associated() !=
 	(BrowserNode *) the_canvas()->browser_diagram())
-      m.insertItem("Set associated diagram",6);
+      m.insertItem(TR("Set associated diagram"),6);
 
     if (data->get_action_kind() == UmlCallBehaviorAction) {
       BasicData * d = data->get_action()->depend_on();
@@ -783,20 +794,20 @@ void ActivityActionCanvas::menu(const QPoint&) {
 	diag = d->get_browser_node()->get_associated();
 	if ((diag != 0) &&
 	    (diag != (BrowserNode *) the_canvas()->browser_diagram()))
-	  m.insertItem("Set associated diagram from behavior", 11);
+	  m.insertItem(TR("Set associated diagram from behavior"), 11);
       }
     }
     
     if (browser_node->get_associated())
-      m.insertItem("Remove diagram association",12);
+      m.insertItem(TR("Remove diagram association"),12);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view", 8);
+  m.insertItem(TR("Remove from view"), 8);
   if (browser_node->is_writable())
-    m.insertItem("Delete from model", 9);
+    m.insertItem(TR("Delete from model"), 9);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlActivityAction, 20))
-    m.insertItem("Tool", &toolm);
+    m.insertItem(TR("Tool"), &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -888,15 +899,15 @@ void ActivityActionCanvas::apply_shortcut(QString s) {
 }
 
 void ActivityActionCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(1);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(1);
+  ColorSpecVector co(1);
   
-  st[0].set("show opaque definition", &show_opaque_action_definition);
+  st[0].set(TR("show opaque definition"), &show_opaque_action_definition);
   settings.complete(st, TRUE);
   
-  co[0].set("action color", &itscolor);
+  co[0].set(TR("action color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -908,28 +919,28 @@ bool ActivityActionCanvas::has_drawing_settings() const {
 }
 
 void ActivityActionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(1);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(1);
+  ColorSpecVector co(1);
   Uml3States show_opaque_action_definition;
   UmlColor itscolor;
   ActivityDrawingSettings settings;
   
-  st[0].set("show opaque definition", &show_opaque_action_definition);
+  st[0].set(TR("show opaque definition"), &show_opaque_action_definition);
   settings.complete(st, TRUE);
   
-  co[0].set("action color", &itscolor);
+  co[0].set(TR("action color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
-      if (st[0].name != 0)
+      if (!st[0].name.isEmpty())
 	((ActivityActionCanvas *) it.current())->show_opaque_action_definition =
 	  show_opaque_action_definition;
-      if (co[0].name != 0)
+      if (!co[0].name.isEmpty())
 	((ActivityActionCanvas *) it.current())->itscolor = itscolor;
       ((ActivityActionCanvas *) it.current())->settings.set(st, 1);
       ((ActivityActionCanvas *) it.current())->modified();	// call package_modified()
@@ -948,17 +959,17 @@ bool ActivityActionCanvas::get_show_stereotype_properties() const {
   }
 }
 
-const char * ActivityActionCanvas::may_start(UmlCode & l) const {
+QString ActivityActionCanvas::may_start(UmlCode & l) const {
   return (l == UmlFlow)
     ? ((BrowserActivityAction *) browser_node)->may_start()
     : 0;
 }
 
-const char * ActivityActionCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString ActivityActionCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor)
     return dest->may_start(l);
   else if(dest->get_bn() == 0)
-    return "illegal";
+    return TR("illegal");
   else
     return ((BrowserActivityAction *) browser_node)->may_connect(l, dest->get_bn());
 }

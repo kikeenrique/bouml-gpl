@@ -99,6 +99,14 @@ class UmlBaseActivity : public UmlItem {
     // On error return FALSE in C++, produce a RuntimeException in Java
     bool set_isSingleExecution(bool v);
 
+    // return the  indicate if the class is active
+    bool isActive();
+
+    // set if the class is active
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isActive(bool v);
+
     // return the specification
     UmlOperation * specification();
 
@@ -145,6 +153,10 @@ class UmlBaseActivity : public UmlItem {
 
     bool _single_execution;
 
+    bool _active;
+
+    UmlOperation * _specification;
+
     UmlActivityDiagram * _assoc_diagram;
 
 
@@ -158,10 +170,6 @@ class UmlBaseActivity : public UmlItem {
 #ifdef WITHJAVA
     virtual void read_java_();
 #endif
-
-
-  private:
-    UmlOperation * _specification;
 
 };
 

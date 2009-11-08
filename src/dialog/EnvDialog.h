@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,6 +48,7 @@ class EnvDialog : public QDialog {
     QLineEdit * ed_navigator; 
     QLineEdit * ed_template;
     QLineEdit * ed_editor;
+    QLineEdit * ed_lang;
     QComboBox * cb_charset;
     QLineEdit * ed_xmin;
     QLineEdit * ed_xmax;
@@ -61,6 +62,7 @@ class EnvDialog : public QDialog {
     void navigator_browse();
     void template_browse();
     void editor_browse();
+    void lang_browse();
 };
 
 extern int read_boumlrc();

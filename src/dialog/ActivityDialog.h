@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -66,6 +66,7 @@ class ActivityDialog : public QTabDialog {
     QList<BodyDialog> edits;
     QCheckBox * readonly_cb;
     QCheckBox * singlexec_cb;
+    QCheckBox * active_cb;
     CondDialog uml;
     CondDialog cpp;
     CondDialog java;

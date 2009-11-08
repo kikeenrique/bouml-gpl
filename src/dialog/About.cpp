@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,9 +35,10 @@
 #include "About.h"
 #include "bp_xpm.xpm"
 #include "UmlDesktop.h"
+#include "translate.h"
 
 AboutDialog::AboutDialog() : QDialog(0, "About BOUML", TRUE) {
-  setCaption("About BOUML");
+  setCaption(TR("About BOUML"));
   //move(p);
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
@@ -55,7 +56,7 @@ AboutDialog::AboutDialog() : QDialog(0, "About BOUML", TRUE) {
   hbox->addWidget(lbp);
   hbox->addWidget(new QLabel("  ", this));
 
-  const char * htmltext = ("BOUML release <b>4.12.1</b><br>\n"
+  const char * htmltext = ("BOUML release <b>4.16.2</b><br>\n"
 			   "<br>\n"
 			   "<i>http://bouml.free.fr</i><br>\n"
 			   "<i>http://bouml.sourceforge.net/</i><br>\n"
@@ -82,7 +83,7 @@ AboutDialog::AboutDialog() : QDialog(0, "About BOUML", TRUE) {
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  QPushButton * ok = new QPushButton("&OK", this);
+  QPushButton * ok = new QPushButton(TR("&OK"), this);
   
   ok->setDefault( TRUE );
   

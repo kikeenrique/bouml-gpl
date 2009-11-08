@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -52,6 +52,8 @@ class BrowserRelation : public BrowserNode, public Labeled<BrowserRelation> {
     BrowserRelation(BrowserNode * p, RelationData * d, int id = 0);
     BrowserRelation(const BrowserRelation * model, BrowserNode * p);
     virtual ~BrowserRelation();
+    
+    virtual bool is_undefined() const;
   
     virtual void delete_it();
     virtual bool undelete(bool rec, QString & warning, QString & renamed);
@@ -106,6 +108,7 @@ class BrowserRelation : public BrowserNode, public Labeled<BrowserRelation> {
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
+    virtual void prepare_update_lib() const;
     
     virtual void referenced_by(QList<BrowserNode> &, bool ondelete = FALSE);
     static void compute_referenced_by(QList<BrowserNode> &, BrowserClass *);

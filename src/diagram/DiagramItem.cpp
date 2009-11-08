@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,6 +37,7 @@
 #include "BrowserNode.h"
 #include "DialogUtil.h"
 #include "myio.h"
+#include "translate.h"
 
 QList<DiagramItem> DiagramItem::Undefined;
 
@@ -83,6 +84,16 @@ void DiagramItem::check_line(ArrowCanvas *) {
   // does nothing
 }
 
+bool DiagramItem::attached_to(const ArrowCanvas * l) const {
+  QListIterator<ArrowCanvas> it(lines);
+  
+  for (; it.current(); ++it)
+    if (it.current() == l)
+      return TRUE;
+  
+  return FALSE;
+}
+
 DiagramItem::LineDirection DiagramItem::allowed_direction(UmlCode) {
   return DiagramItem::All;
 }
@@ -99,7 +110,7 @@ aCorner DiagramItem::on_resize_point(const QPoint &) {
   return NoCorner;
 }
 
-void DiagramItem::resize(aCorner, int, int) {
+void DiagramItem::resize(aCorner, int, int, QPoint &) {
   // never called but must be defined
 }
 
@@ -115,6 +126,7 @@ bool DiagramItem::connexion(UmlCode, const QPoint &, const QPoint &) {
   // not allowed
   return FALSE;
 }
+
 bool DiagramItem::may_connect(UmlCode) const {
   // not allowed
   return FALSE;
@@ -134,7 +146,7 @@ void DiagramItem::remove_if_already_present() {
     if ((di->type() == k) && (di->get_bn() == bn) && (di != this)) {
       // already present
       if (Undefined.isEmpty())
-	msg_warning("Bouml", "some elements already present in the diagram are NOT paste");
+	msg_warning("Bouml", TR("some elements already present in the diagram are NOT paste"));
       Undefined.append(this);
       return;
     }

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,6 +44,7 @@
 #include "BodyDialog.h"
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 QSize ClassViewDialog::previous_size;
 
@@ -51,14 +52,16 @@ ClassViewDialog::ClassViewDialog(BasicData * nd)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), data(nd) {
   nd->get_browser_node()->edit_start();
   
-  if (nd->get_browser_node()->is_writable())
-    setCancelButton();
+  if (nd->get_browser_node()->is_writable()) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
 
-  setCaption("class view dialog");
+  setCaption(TR("class view dialog"));
 
   bool visit = !hasOkButton();
   
@@ -71,17 +74,17 @@ ClassViewDialog::ClassViewDialog(BasicData * nd)
   grid->setMargin(5);
   grid->setSpacing(5);
 
-  new QLabel("name : ", grid);
+  new QLabel(TR("name : "), grid);
   edname = new LineEdit(bn->get_name(), grid);
   edname->setReadOnly(visit);
     
-  new QLabel("stereotype : ", grid);
+  new QLabel(TR("stereotype : "), grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(data->get_stereotype()));
   if (!visit) {
     edstereotype->insertStringList(BrowserClassView::default_stereotypes());
     edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlClassView));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->setAutoCompletion(completion());
   }
   edstereotype->setCurrentItem(0);
   QSizePolicy sp = edstereotype->sizePolicy();
@@ -92,7 +95,7 @@ ClassViewDialog::ClassViewDialog(BasicData * nd)
   
   if (visit) {
     if ((bcv != 0) && !bcv->deletedp()) {
-      new QLabel("deployment\nview : ", grid);
+      new QLabel(TR("deployment\nview : "), grid);
       deploymentview = new QComboBox(FALSE, grid);
       
       BrowserNode * bcv = bn->get_associated();
@@ -109,7 +112,7 @@ ClassViewDialog::ClassViewDialog(BasicData * nd)
       QStringList deploymentview_names;
       
       deploymentviews.full_names(deploymentview_names);
-      new QLabel("deployment\nview : ", grid);
+      new QLabel(TR("deployment\nview : "), grid);
       deploymentview = new QComboBox(FALSE, grid);
       deploymentview->insertItem("");
       deploymentview->insertStringList(deploymentview_names);
@@ -133,9 +136,9 @@ ClassViewDialog::ClassViewDialog(BasicData * nd)
   }
     
   QVBox * vtab = new QVBox(grid);
-  new QLabel("description :", vtab);
+  new QLabel(TR("description :"), vtab);
   if (!visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
@@ -155,7 +158,7 @@ ClassViewDialog::ClassViewDialog(BasicData * nd)
   grid->setSpacing(5);
   
   kvtable = new KeyValuesTable(bn, grid, visit);
-  addTab(grid, "Properties");
+  addTab(grid, TR("Properties"));
   
   //
     
@@ -201,7 +204,7 @@ void ClassViewDialog::accept() {
       ((BrowserNode *) bn->parent())->wrong_child_name(s, bn->get_type(),
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
-    msg_critical("Error", edname->text() + "\n\nillegal name or already used");
+    msg_critical(TR("Error"), edname->text() + TR("\n\nillegal name or already used"));
   else {  
     bn->set_name(s);
     

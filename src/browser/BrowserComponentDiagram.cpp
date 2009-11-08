@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,6 +46,7 @@
 #include "BrowserView.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 QList<BrowserComponentDiagram> BrowserComponentDiagram::imported;
 QValueList<int> BrowserComponentDiagram::imported_ids;
@@ -121,7 +122,7 @@ BrowserComponentDiagram * BrowserComponentDiagram::add_component_diagram(Browser
 {
   QString name;
   
-  if (future_parent->enter_child_name(name, "enter component diagram's name : ",
+  if (future_parent->enter_child_name(name, TR("enter component diagram's name : "),
 				      UmlComponentDiagram, TRUE, FALSE))
     return new BrowserComponentDiagram(name, future_parent);
   else
@@ -203,36 +204,36 @@ void BrowserComponentDiagram::menu() {
   m.insertItem(new MenuTitle(name, m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
-    m.setWhatsThis(m.insertItem("Show", 0),
-		   "to show and edit the <em>component diagram</em>");
+    m.setWhatsThis(m.insertItem(TR("Show"), 0),
+		   TR("to show and edit the <i>component diagram</i>"));
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("Edit", 1),
-		     "to edit the <em>component diagram</em>");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 1),
+		     TR("to edit the <i>component diagram</i>"));
       if (!is_read_only) {
-	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
-		       "to set how the <em>component diagram</em>'s items must be drawn");
+	m.setWhatsThis(m.insertItem(TR("Edit drawing settings"), 2),
+		       TR("to set how the <i>component diagram</i>'s items must be drawn"));
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("Duplicate", 3),
-		       "to duplicate the <em>class diagram</em>");
+	m.setWhatsThis(m.insertItem(TR("Duplicate"), 3),
+		       TR("to duplicate the <i>component diagram</i>"));
 	if (edition_number == 0) {
 	  m.insertSeparator();
-	  m.setWhatsThis(m.insertItem("Delete", 4),
-			 "to delete the <em>component diagram</em>. \
-Note that you can undelete it after");
+	  m.setWhatsThis(m.insertItem(TR("Delete"), 4),
+			 TR("to delete the <i>component diagram</i>. \
+Note that you can undelete it after"));
 	}
       }
     }
-    mark_menu(m, "component diagram", 90);
+    mark_menu(m, TR("component diagram"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("Undelete", 5),
-		   "to undelete the <em>component diagram</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 5),
+		   TR("to undelete the <i>component diagram</i>"));
   
   exec_menu_choice(m.exec(QCursor::pos()));
 }
@@ -243,7 +244,7 @@ void BrowserComponentDiagram::exec_menu_choice(int rank) {
     open(FALSE);
     return;
   case 1:
-    edit("Component diagram", its_default_stereotypes);
+    edit(TR("Component diagram"), its_default_stereotypes);
     return;
   case 2:
     edit_settings();
@@ -252,7 +253,7 @@ void BrowserComponentDiagram::exec_menu_choice(int rank) {
     {
       QString name;
       
-      if (((BrowserNode *)parent())->enter_child_name(name, "enter component diagram's name : ",
+      if (((BrowserNode *)parent())->enter_child_name(name, TR("enter component diagram's name : "),
 						      UmlComponentDiagram, TRUE, FALSE))
 	duplicate((BrowserNode *) parent(), name)->select_in_browser();
       else
@@ -318,17 +319,17 @@ void BrowserComponentDiagram::open(bool) {
 }
 
 void BrowserComponentDiagram::edit_settings() {
-  QArray<StateSpec> st;
-  QArray<ColorSpec> co(4);
+  StateSpecVector st;
+  ColorSpecVector co(4);
   
   settings.complete(st, TRUE);
   
-  co[0].set("note color", &note_color);
-  co[1].set("component color", &component_color);
-  co[2].set("package color", &package_color);
-  co[3].set("fragment color", &fragment_color);
+  co[0].set(TR("note color"), &note_color);
+  co[1].set(TR("component color"), &component_color);
+  co[2].set(TR("package color"), &package_color);
+  co[3].set(TR("fragment color"), &fragment_color);
 
-  SettingsDialog dialog(&st, &co, FALSE, FALSE);
+  SettingsDialog dialog(&st, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
@@ -534,7 +535,7 @@ void BrowserComponentDiagram::save(QTextStream & st, bool ref, QString & warning
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -604,7 +605,7 @@ BrowserComponentDiagram *
     read_color(st, "component_color", r->component_color, k);	// updates k
     read_color(st, "package_color", r->package_color, k);	// updates k
     read_color(st, "fragment_color", r->fragment_color, k);	// updates k
-    r->BrowserNode::read(st, k);	// updates k
+    r->BrowserNode::read(st, k, id);	// updates k
     
     if (!strcmp(k, "size")) {
       r->set_format(canvas_format(read_keyword(st)));

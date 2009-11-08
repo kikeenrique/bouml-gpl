@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,7 +29,6 @@
 #define RTTI_ARROW	1000
 #define RTTI_COL_MSG	1001
 #define RTTI_LABEL	1002
-#define RTTI_ARROWPOINT	1003
 
 // warning : enums items order are linked with the ones in api.h
 // and known by ToolCom.cpp

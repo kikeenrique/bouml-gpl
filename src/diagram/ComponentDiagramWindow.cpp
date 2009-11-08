@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,93 +41,94 @@
 #include "BrowserComponentDiagram.h"
 #include "UmlPixmap.h"
 #include "myio.h"
+#include "translate.h"
 
-const char * addcomponentText = "Click this button to add a <em>component</em> in the diagram. <br><br>"
-"You can also drop the component from the <b>browser</b>.";
-extern const char * addpackageText;
-extern const char * addfragmentText;
-extern const char * dependencyText;
-extern const char * inheritText;
-extern const char * noteText;
-extern const char * anchorText;
-extern const char * textText;
-static const char * requiredText = "Click this button to show an interface required by a <em>component</em>.";
-static const char * providedText = "Click this button to show an interface provided by a <em>component</em>.";
+QString addcomponentText() { return TR("Click this button to add a <i>component</i> in the diagram. <br><br>"
+				       "You can also drop the component from the <b>browser</b>."); }
+extern QString addpackageText();
+extern QString addfragmentText();
+extern QString dependencyText();
+extern QString inheritText();
+extern QString noteText();
+extern QString anchorText();
+extern QString textText();
+static QString requiredText() { return TR("Click this button to show an interface required by a <i>component</i>."); }
+static QString providedText() { return TR("Click this button to show an interface provided by a <i>component</i>."); }
 
 // id is an old ident in case of an import
 ComponentDiagramWindow::ComponentDiagramWindow(const QString & s, BrowserComponentDiagram * b, int id)
     : DiagramWindow(b, s), view(0) {
   QToolBar * toolbar = new QToolBar(this, "component operations");
-  addToolBar(toolbar, "Component Operations", Top, TRUE);
+  addToolBar(toolbar, TR("Toolbar"), Top, TRUE);
   
   add_edit_button(toolbar);
   
   select =
-    new QToolButton(*selectButton, "Select", QString::null,
+    new QToolButton(*selectButton, TR("Select"), QString::null,
 		    this, SLOT(hit_select()), toolbar, "select");
   select->setToggleButton(TRUE);
   select->setOn(TRUE);
   current_button = UmlSelect;
   
   addPackage
-    = new QToolButton(*packageButton, "Add Package", QString::null,
+    = new QToolButton(*packageButton, TR("Add Package"), QString::null,
 		      this, SLOT(hit_package()), toolbar, "add package");
   addPackage->setToggleButton(TRUE);
-  QWhatsThis::add(addPackage, addpackageText);
+  QWhatsThis::add(addPackage, addpackageText());
   
   addFragment
-    = new QToolButton(*fragmentButton, "Add Fragment", QString::null,
+    = new QToolButton(*fragmentButton, TR("Add Fragment"), QString::null,
 		      this, SLOT(hit_fragment()), toolbar, "add fragment");
   addFragment->setToggleButton(TRUE);
-  QWhatsThis::add(addFragment, addfragmentText);
+  QWhatsThis::add(addFragment, addfragmentText());
   
   addComponent =
-    new QToolButton(*componentButton, "Add Component", QString::null,
+    new QToolButton(*componentButton, TR("Add Component"), QString::null,
 		    this, SLOT(hit_component()), toolbar, "add component");
   addComponent->setToggleButton(TRUE);
-  QWhatsThis::add(addComponent, addcomponentText);
+  QWhatsThis::add(addComponent, addcomponentText());
   
   inherit =
-    new QToolButton(*generalisationButton, "Inheritance", QString::null,
+    new QToolButton(*generalisationButton, TR("Inheritance"), QString::null,
 		    this, SLOT(hit_inherit()), toolbar, "inheritance");
   inherit->setToggleButton(TRUE);
-  QWhatsThis::add(inherit, inheritText);
+  QWhatsThis::add(inherit, inheritText());
   
   dependency =
-    new QToolButton(*dependencyButton, "Dependency", QString::null,
+    new QToolButton(*dependencyButton, TR("Dependency"), QString::null,
 		    this, SLOT(hit_dependency()), toolbar, "dependency");
   dependency->setToggleButton(TRUE);
-  QWhatsThis::add(dependency, dependencyText);
+  QWhatsThis::add(dependency, dependencyText());
 
   required =
-    new QToolButton(*requiredButton, "Required interface", QString::null,
+    new QToolButton(*requiredButton, TR("Required interface"), QString::null,
 		    this, SLOT(hit_required()), toolbar, "required interface");
   required->setToggleButton(TRUE);
-  QWhatsThis::add(required, requiredText);
+  QWhatsThis::add(required, requiredText());
 
   provided =
-    new QToolButton(*providedButton, "Provided interface", QString::null,
+    new QToolButton(*providedButton, TR("Provided interface"), QString::null,
 		    this, SLOT(hit_provided()), toolbar, "provided interface");
   provided->setToggleButton(TRUE);
-  QWhatsThis::add(provided, providedText);
+  QWhatsThis::add(provided, providedText());
 
   note =
-    new QToolButton(*noteButton, "Note", QString::null,
+    new QToolButton(*noteButton, TR("Note"), QString::null,
 		    this, SLOT(hit_note()), toolbar, "note");
   note->setToggleButton(TRUE);
-  QWhatsThis::add(note, noteText);
+  QWhatsThis::add(note, noteText());
   
   anchor =
-    new QToolButton(*anchorButton, "Anchor", QString::null,
+    new QToolButton(*anchorButton, TR("Anchor"), QString::null,
 		    this, SLOT(hit_anchor()), toolbar, "anchor");
   anchor->setToggleButton(TRUE);
-  QWhatsThis::add(anchor, anchorText);
+  QWhatsThis::add(anchor, anchorText());
   
   text =
-    new QToolButton(*textButton, "Text", QString::null,
+    new QToolButton(*textButton, TR("Text"), QString::null,
 		    this, SLOT(hit_text()), toolbar, "text");
   text->setToggleButton(TRUE);
-  QWhatsThis::add(text, textText);
+  QWhatsThis::add(text, textText());
   
   toolbar->addSeparator();
   

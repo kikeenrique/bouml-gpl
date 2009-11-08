@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@
 #include "DialogUtil.h"
 #include "ToolCom.h"
 #include "strutil.h"
+#include "translate.h"
 
 FragmentCanvas::FragmentCanvas(UmlCanvas * canvas, int x, int y, int id)
     : DiagramCanvas(0, canvas, x, y, FRAGMENT_CANVAS_MIN_SIZE,
@@ -314,26 +315,26 @@ void FragmentCanvas::modified() {
 void FragmentCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
   
-  m.insertItem(new MenuTitle("Fragment", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Fragment"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 7);
-  m.insertItem("Go down", 8);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 7);
+  m.insertItem(TR("Go down"), 8);
   m.insertSeparator();
-  m.insertItem("Edit", 2);
-  m.insertItem("Add separator", 6);
+  m.insertItem(TR("Edit"), 2);
+  m.insertItem(TR("Add separator"), 6);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 3);
+  m.insertItem(TR("Edit drawing settings"), 3);
   if (linked()) {
     m.insertSeparator();
-    m.insertItem("Select linked items", 4);
+    m.insertItem(TR("Select linked items"), 4);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view",5);
+  m.insertItem(TR("Remove from view"),5);
   if ((refer != 0) && !refer->deletedp()) {
     m.insertSeparator();
-    m.insertItem("Show referenced diagram",9);
+    m.insertItem(TR("Show referenced diagram"),9);
   }
 
   int index = m.exec(QCursor::pos());
@@ -414,11 +415,11 @@ void FragmentCanvas::apply_shortcut(QString s) {
 }
 
 void FragmentCanvas::edit_drawing_settings() {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   
-  co[0].set("fragment color", &itscolor);
+  co[0].set(TR("fragment color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -430,15 +431,15 @@ bool FragmentCanvas::has_drawing_settings() const {
 }
 
 void FragmentCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   UmlColor itscolor;
   
-  co[0].set("fragment color", &itscolor);
+  co[0].set(TR("fragment color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
   
   dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
@@ -448,20 +449,20 @@ void FragmentCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }
 }
 
-const char * FragmentCanvas::may_start(UmlCode & l) const {
-  return (l == UmlAnchor) ? 0 : "illegal";
+QString FragmentCanvas::may_start(UmlCode & l) const {
+  return (l == UmlAnchor) ? 0 : TR("illegal");
 }
 
-const char * FragmentCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
+QString FragmentCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  return (l == UmlAnchor) ? dest->may_start(l) : TR("illegal");
 }
 
 aCorner FragmentCanvas::on_resize_point(const QPoint & p) {
   return ::on_resize_point(p, rect());
 }
 
-void FragmentCanvas::resize(aCorner c, int dx, int dy) {
-  DiagramCanvas::resize(c, dx, dy, min_width, min_height);
+void FragmentCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
+  DiagramCanvas::resize(c, dx, dy, o, min_width, min_height);
   
   QListIterator<FragmentSeparatorCanvas> it(separators);
   

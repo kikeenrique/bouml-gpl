@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserParameterSet> BrowserParameterSet::all(257, __FILE__);
 QStringList BrowserParameterSet::its_default_stereotypes;	// unicode
@@ -100,6 +101,10 @@ void BrowserParameterSet::update_idmax_for_root()
 {
   all.update_idmax_for_root();
 }
+
+void BrowserParameterSet::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+}
     
 void BrowserParameterSet::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
@@ -132,36 +137,36 @@ void BrowserParameterSet::menu() {
   QString s = name;
   
   if (s.isEmpty())
-    s = "Parameter Set";
+    s = TR("Parameter Set");
   
   m.insertItem(new MenuTitle(s, m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited)
-    m.setWhatsThis(m.insertItem("Edit", 0),
-		   "to edit the <em>parameter set</em>, \
-a double click with the left mouse button does the same thing");
+    m.setWhatsThis(m.insertItem(TR("Edit"), 0),
+		   TR("to edit the <i>parameter set</i>, \
+a double click with the left mouse button does the same thing"));
     if (!is_read_only && (edition_number == 0)) {
-      m.setWhatsThis(m.insertItem("Duplicate", 1),
-		     "to copy the <em>parameter set</em> in a new one");
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 1),
+		     TR("to copy the <i>parameter set</i> in a new one"));
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("Delete", 2),
-		     "to delete the <em>parameter set</em>. \
-Note that you can undelete it after");
+      m.setWhatsThis(m.insertItem(TR("Delete"), 2),
+		     TR("to delete the <i>parameter set</i>. \
+Note that you can undelete it after"));
     }
-    m.setWhatsThis(m.insertItem("Referenced by", 4),
-		   "to know who reference the <i>parameter set</i>");
-    mark_menu(m, "parameter set", 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 4),
+		   TR("to know who reference the <i>parameter set</i>"));
+    mark_menu(m, TR("the parameter set"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("Undelete", 3),
-		   "to undelete the <em>parameter set</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 3),
+		   TR("to undelete the <i>parameter set</i>"));
   
   exec_menu_choice(m.exec(QCursor::pos()));
 }
@@ -324,7 +329,7 @@ void BrowserParameterSet::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -384,7 +389,7 @@ BrowserParameterSet * BrowserParameterSet::read(char * & st, char * k,
       ((user_id() != 0) && result->is_api_base());
     result->def->set_browser_node(result);
     
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");

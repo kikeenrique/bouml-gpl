@@ -171,7 +171,9 @@ enum OnInstanceCmd {
   setPythonPackageCmd,
   setPythonContextualBodyIndentCmd,
   applyStereotypeCmd,
-  setDerivedCmd
+  setDerivedCmd,
+  importProjectCmd,
+  setActiveCmd
 
 };
 #endif

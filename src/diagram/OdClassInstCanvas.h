@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -68,8 +68,8 @@ class OdClassInstCanvas : public QObject, public DiagramCanvas,
     virtual BrowserClassInstance * get_instance() const;
     virtual void open();
     virtual void menu(const QPoint&);
-    virtual const char * may_start(UmlCode &) const;
-    virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
+    virtual QString may_start(UmlCode &) const;
+    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     virtual bool move_with_its_package() const;
     virtual QString get_full_name() const;

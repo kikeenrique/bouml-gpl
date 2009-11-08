@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -61,8 +61,7 @@ int main(int argc, char ** argv)
   if (UmlCom::connect(QCString(argv[1]).toUInt())) {
     try {
       //UmlCom::with_ack(FALSE);
-      
-      UmlCom::trace("<b>Java reverse</b> release 2.12.5<br><hr>");
+      UmlCom::trace("<b>Java reverse</b> release 2.15<br><hr>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlItem * item = UmlCom::targetItem();
@@ -131,23 +130,29 @@ int main(int argc, char ** argv)
 	}
 	
 	QDir::setCurrent(here);
+	int n;
 	
-	Package * p = Package::scan_dir();
+	Package * p = Package::scan_dir(n);
 	
 	if (p != 0) {
 	  JavaSettings::set_UseDefaults(TRUE);
 	  
-	  p->send_dir(TRUE);
+	  p->send_dir(n);
 	  Statistic::produce();
-	  UmlCom::message("");
 	}
       }
     }
     catch (...) {
     }
-
-    UmlCom::showTrace();
-    UmlCom::bye();	// application must not be deleted
+    
+    try {
+      // socket may be already closed
+      UmlCom::message("");
+      UmlCom::showTrace();
+      UmlCom::bye();	// application must not be deleted
+    }
+    catch (...) {
+    }
   }
   
   UmlCom::close();	// application must not be deleted

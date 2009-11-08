@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,6 +44,7 @@
 #include "BodyDialog.h"
 #include "GenerationSettings.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 QSize StateActionDialog::previous_size;
 
@@ -51,14 +52,16 @@ StateActionDialog::StateActionDialog(StateActionData * d)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), action(d) {
   d->browser_node->edit_start();
   
-  if (d->browser_node->is_writable())
-    setCancelButton();
+  if (d->browser_node->is_writable()) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
 
-  setCaption("State Action dialog");
+  setCaption(TR("State Action dialog"));
   visit = !hasOkButton();  
 
   BrowserNode * bn = action->browser_node;
@@ -72,13 +75,13 @@ StateActionDialog::StateActionDialog(StateActionData * d)
   grid->setMargin(5);
   grid->setSpacing(5);
   
-  new QLabel("stereotype : ", grid);
+  new QLabel(TR("stereotype : "), grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(action->get_stereotype()));
   if (!visit) {
     edstereotype->insertStringList(BrowserStateAction::default_stereotypes());
     edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlStateAction));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->setAutoCompletion(completion());
   }
   edstereotype->setCurrentItem(0);
   QSizePolicy sp = edstereotype->sizePolicy();
@@ -86,9 +89,9 @@ StateActionDialog::StateActionDialog(StateActionData * d)
   edstereotype->setSizePolicy(sp);
   
   QVBox * vtab = new QVBox(grid);
-  new QLabel("description :", vtab);
+  new QLabel(TR("description :"), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
@@ -103,7 +106,7 @@ StateActionDialog::StateActionDialog(StateActionData * d)
   grid->setMargin(5);
   grid->setSpacing(5);
   
-  new QLabel("behavior", grid);
+  new QLabel(TR("behavior"), grid);
   uml = new MultiLineEdit(grid);
   uml->setText(action->uml);
   if (visit)
@@ -117,7 +120,7 @@ StateActionDialog::StateActionDialog(StateActionData * d)
   grid->setMargin(5);
   grid->setSpacing(5);
   
-  new QLabel("behavior", grid);
+  new QLabel(TR("behavior"), grid);
   cpp = new MultiLineEdit(grid);
   cpp->setText(action->cpp);
   if (visit)
@@ -134,7 +137,7 @@ StateActionDialog::StateActionDialog(StateActionData * d)
   grid->setMargin(5);
   grid->setSpacing(5);
   
-  new QLabel("behavior", grid);
+  new QLabel(TR("behavior"), grid);
   java = new MultiLineEdit(grid);
   java->setText(action->java);
   if (visit)
@@ -152,7 +155,7 @@ StateActionDialog::StateActionDialog(StateActionData * d)
   grid->setSpacing(5);
   
   kvtable = new KeyValuesTable(bn, grid, visit);
-  addTab(grid, "Properties");
+  addTab(grid, TR("Properties"));
   
   //
     

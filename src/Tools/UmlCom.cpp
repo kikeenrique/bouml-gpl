@@ -560,11 +560,13 @@ void UmlCom::send_cmd(const void * id, OnInstanceCmd cmd, const QVector<UmlItem>
   write_char(cmd);
   
   unsigned n = l.count();
+  UmlItem ** v = l.data();
+  UmlItem ** vsup = v + n;
   
   write_unsigned(n);
   
-  for (unsigned i = 0; i != n; i += 1)
-    write_id(((UmlBaseItem *) l[i])->_identifier);
+  for (; v != vsup; v += 1)
+    write_id((*v)->_identifier);
   
   flush();
 }
@@ -580,25 +582,32 @@ void UmlCom::send_cmd(const void * id, OnInstanceCmd cmd, const QVector<UmlClass
   write_char(cmd);
   
   unsigned n;
-  unsigned i;
+  UmlClass ** v;
+  UmlClass ** vsup;
   
   n = l1.count();
   write_unsigned(n);
+  v = l1.data();
+  vsup = v + n;
   
-  for (i = 0; i != n; i += 1)
-    write_id(((UmlBaseItem *) l1[i])->_identifier);
+  for (; v != vsup; v += 1)
+    write_id(((UmlBaseItem *) *v)->_identifier);
   
   n = l2.count();
   write_unsigned(n);
+  v = l2.data();
+  vsup = v + n;
   
-  for (i = 0; i != n; i += 1)
-    write_id(((UmlBaseItem *) l2[i])->_identifier);
+  for (; v != vsup; v += 1)
+    write_id(((UmlBaseItem *) *v)->_identifier);
   
   n = l3.count();
   write_unsigned(n);
+  v = l3.data();
+  vsup = v + n;
   
-  for (i = 0; i != n; i += 1)
-    write_id(((UmlBaseItem *) l3[i])->_identifier);
+  for (; v != vsup; v += 1)
+    write_id(((UmlBaseItem *) *v)->_identifier);
   
   flush();
 }
@@ -680,7 +689,9 @@ void UmlCom::read_item_list(QVector<UmlItem> & v)
 #ifdef TRACE
   cout << "UmlCom::read_item_list " << n << " items\n";
 #endif
-  
+
+  // warning : don't use data() to directly store
+  // in UmlItem ** else count() will be false later
   for (unsigned index = 0; index != n; index += 1)
     v.insert(index, UmlBaseItem::read_());
 }

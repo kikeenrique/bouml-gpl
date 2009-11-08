@@ -1,7 +1,7 @@
-format 65
+format 67
 "xmi2import"
-  revision 23
-  modified_by 3 "bruno"
+  revision 25
+  modified_by 2 "bruno"
   cpp_root_dir "/tmp/xmi2import/"
 
 

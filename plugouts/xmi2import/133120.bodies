@@ -111,10 +111,23 @@ class UmlBaseActivity
   UmlCom.check();
 
   _single_execution = v;
-!!!307200.cpp!!!	specification() : UmlItem
+!!!308096.cpp!!!	isActive() : bool
+  read_if_needed_();
+  return _active;
+!!!308096.java!!!	isActive() : bool
+  read_if_needed_();
+  return _active;
+!!!308224.cpp!!!	set_isActive(in v : bool) : bool
+  return set_it_(_active, v, setActiveCmd);
+!!!308224.java!!!	set_isActive(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setActiveCmd, (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _active = v;
+!!!307200.cpp!!!	specification() : UmlOperation
   read_if_needed_();
   return _specification;
-!!!307200.java!!!	specification() : UmlItem
+!!!307200.java!!!	specification() : UmlOperation
   read_if_needed_();
   return _specification;
 !!!307328.cpp!!!	set_Specification(in v : UmlOperation) : bool
@@ -178,6 +191,7 @@ class UmlBaseActivity
   _read_only = UmlCom::read_bool();
   _single_execution = UmlCom::read_bool();
   _specification = (UmlOperation *) UmlBaseItem::read_();
+  _active = UmlCom::read_bool();
 !!!151680.java!!!	read_uml_() : void
   _assoc_diagram = (UmlActivityDiagram) UmlBaseItem.read_();
   super.read_uml_();
@@ -186,6 +200,7 @@ class UmlBaseActivity
   _read_only = UmlCom.read_bool();
   _single_execution = UmlCom.read_bool();
   _specification = (UmlOperation) UmlBaseItem.read_();
+  _active = UmlCom.read_bool();
 !!!151808.cpp!!!	read_cpp_() : void
   _cpp_pre_condition = UmlCom::read_string();
   _cpp_post_condition = UmlCom::read_string();

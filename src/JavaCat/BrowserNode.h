@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -43,6 +43,9 @@ class BrowserNode : public TreeItem {
   
     virtual bool isa_package() const = 0;
     virtual void declare(const QCString &, Class *) = 0;
+#ifdef ROUNDTRIP
+    virtual Class * localy_defined(QString name) const = 0;
+#endif
     
 #ifndef REVERSE
     BrowserNode(BrowserView * parent, const char * n);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,6 +46,7 @@
 #include "ToolCom.h"
 #include "Tool.h"
 #include "MenuTitle.h"
+#include "translate.h"
 
 UcUseCaseCanvas::UcUseCaseCanvas(BrowserNode * bn, UmlCanvas * canvas,
 				 int x, int y, int id)
@@ -351,7 +352,7 @@ void UcUseCaseCanvas::menu(const QPoint&) {
     break;
   case 10:
     ((UmlCanvas *) canvas())->get_view()
-      ->add_related_elements(this, "use case", TRUE, FALSE);
+      ->add_related_elements(this, TR("use case"), TRUE, FALSE);
     return;
   default:
     if (rank >= 20)
@@ -381,7 +382,7 @@ void UcUseCaseCanvas::apply_shortcut(QString s) {
   }
   else if (s == "Add related elements") {
     ((UmlCanvas *) canvas())->get_view()
-      ->add_related_elements(this, "use case", TRUE, FALSE);
+      ->add_related_elements(this, TR("use case"), TRUE, FALSE);
     return;
   }
   else {
@@ -394,11 +395,11 @@ void UcUseCaseCanvas::apply_shortcut(QString s) {
 }
 
 void UcUseCaseCanvas::edit_drawing_settings() {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   
   co[0].set("use case color", &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -410,15 +411,15 @@ bool UcUseCaseCanvas::has_drawing_settings() const {
 }
 
 void UcUseCaseCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   UmlColor itscolor;
   
   co[0].set("use case color", &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
   
   dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
@@ -428,7 +429,7 @@ void UcUseCaseCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }
 }
 
-const char * UcUseCaseCanvas::may_start(UmlCode & l) const {
+QString UcUseCaseCanvas::may_start(UmlCode & l) const {
   switch (l) {
   case UmlDependency:
     l = UmlDependOn;
@@ -445,7 +446,7 @@ const char * UcUseCaseCanvas::may_start(UmlCode & l) const {
   }
 }
 
-const char * UcUseCaseCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString UcUseCaseCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor)
     return dest->may_start(l);
   
@@ -486,10 +487,11 @@ aCorner UcUseCaseCanvas::on_resize_point(const QPoint & p) {
   return ::on_resize_point(p, rect());
 }
 
-void UcUseCaseCanvas::resize(aCorner c, int dx, int dy) {
-  DiagramCanvas::resize(c, dx, dy,
+void UcUseCaseCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
+  DiagramCanvas::resize(c, dx, dy, o,
 			(int) (USECASE_CANVAS_MIN_WIDTH * the_canvas()->zoom()),
-			(int) (USECASE_CANVAS_MIN_HEIGHT * the_canvas()->zoom()));
+			(int) (USECASE_CANVAS_MIN_HEIGHT * the_canvas()->zoom()),
+			TRUE);
 }
 
 void UcUseCaseCanvas::save(QTextStream & st, bool ref, QString & warning) const {

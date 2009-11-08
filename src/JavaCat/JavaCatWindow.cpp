@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -61,11 +61,11 @@ JavaCatWindow * JavaCatWindow::the;
 const char * OpenText = "";
 const char * SaveText = "";
 const char * ScanText =
-  "To add the <em>java classes</em> defined under the choosen directory.";
-const char * SearchText = "To search an item in the <em>browser</em>.";
-const char * UpText = "To select the <em>browser</em> current item's parent.";
-const char * LeftText = "Go to previous selected <em>class</em>";
-const char * RightText = "Go to next selected <em>class</em>";
+  "To add the <i>java classes</i> defined under the choosen directory.";
+const char * SearchText = "To search an item in the <i>browser</i>.";
+const char * UpText = "To select the <i>browser</i> current item's parent.";
+const char * LeftText = "Go to previous selected <i>class</i>";
+const char * RightText = "Go to next selected <i>class</i>";
 
 JavaCatWindow::JavaCatWindow() : QMainWindow(0, "Java Catalog", WDestructiveClose) {
   the = this;
@@ -281,7 +281,9 @@ void JavaCatWindow::save() {
 }
 
 void JavaCatWindow::scan() {
-  Package::scan_dir();
+  int n;
+  
+  Package::scan_dir(n);
   UmlCom::message("");
 }
 
@@ -322,7 +324,7 @@ void JavaCatWindow::windows_style() {
 }
 
 void JavaCatWindow::about() {
-  QMessageBox::about(this, "Java Catalog", "<p>Version <b>2.11.5</b></p>" );
+  QMessageBox::about(this, "Java Catalog", "<p>release <b>2.12</b></p>" );
 }
 
 void JavaCatWindow::aboutQt() {

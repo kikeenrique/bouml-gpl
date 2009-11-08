@@ -51,12 +51,15 @@ class UmlItem : public UmlBaseItem {
 
     static void write_multiplicity(FileOut & out, QCString s, UmlItem * who);
 
-    //if the type is specified write it in a form <type ... />
-    static void write_type(FileOut & out, const UmlTypeSpec & t);
+    //if the type is specified write it in a form "<type xmi:type=... />"
+    //except if tk is given and replace "type"
+    static void write_type(FileOut & out, const UmlTypeSpec & t, const char * tk = 0);
 
     static void write_default_value(FileOut & out, QCString v, UmlItem * who, int rank = -1);
 
     static void write_stereotyped(FileOut & out);
+
+    static bool gen_extension();
 
 
   protected:

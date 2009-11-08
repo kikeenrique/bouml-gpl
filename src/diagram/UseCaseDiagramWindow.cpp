@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,109 +41,110 @@
 #include "BrowserUseCaseDiagram.h"
 #include "UmlPixmap.h"
 #include "myio.h"
+#include "translate.h"
 
-const char * addactorText = "Click this button to add an <em>actor</em> in the diagram. <br><br>"
-  "You can also drop the class from the <b>browser</b>.";
-const char * addusecaseText = "Click this button to add an <em>use case</em> in the diagram. <br><br>"
-  "You can also drop the use case from the <b>browser</b>.";
-extern const char * addpackageText;
-const char * addfragmentText = "Click this button to add a <em>fragment</em>.";
-const char * addsubjectText = "Click this button to add a <em>subject</em>.";
-const char * associationText = "Click this button to create an <em>association</em>";
-extern const char * dependencyText;
-const char * inheritText = "Click this button to create a <em>generalisation</em>";
-const char * noteText = "Click this button to create a <em>note</em>";
-const char * anchorText = "Click this button to create a connection between a "
-  "<em>note</em> and any other item, or between an <em>association</em> "
-  "and a <em>class</em> in case of an <em>association class</em>.";
-extern const char * textText;
+QString addactorText() { return TR("Click this button to add an <i>actor</i> in the diagram. <br><br>"
+				   "You can also drop the class from the <b>browser</b>."); }
+QString addusecaseText() { return TR("Click this button to add an <i>use case</i> in the diagram. <br><br>"
+				     "You can also drop the use case from the <b>browser</b>."); }
+extern QString addpackageText();
+QString addfragmentText() { return TR("Click this button to add a <i>fragment</i>."); }
+QString addsubjectText() { return TR("Click this button to add a <i>subject</i>."); }
+QString associationText() { return TR("Click this button to create an <i>association</i>"); }
+extern QString dependencyText();
+QString inheritText() { return TR("Click this button to create a <i>generalisation</i>"); }
+QString noteText() { return TR("Click this button to create a <i>note</i>"); }
+QString anchorText() { return TR("Click this button to create a connection between a "
+				 "<i>note</i> and any other item, or between an <i>association</i> "
+				 "and a <i>class</i> in case of an <i>association class</i>."); }
+extern QString textText();
 
 // id is an old ident in case of an import
 UseCaseDiagramWindow::UseCaseDiagramWindow(const QString & s, BrowserUseCaseDiagram * b, int id)
     : DiagramWindow(b, s), view(0) {
   QToolBar * toolbar = new QToolBar(this, "use case operations");
-  addToolBar(toolbar, "Use Case Operations", Top, TRUE);
+  addToolBar(toolbar, TR("Toolbar"), Top, TRUE);
   
   add_edit_button(toolbar);
   
   select =
-    new QToolButton(*selectButton, "Select", QString::null,
+    new QToolButton(*selectButton, TR("Select"), QString::null,
 		    this, SLOT(hit_select()), toolbar, "select");
   select->setToggleButton(TRUE);
   select->setOn(TRUE);
   current_button = UmlSelect;
   
   addClass =
-    new QToolButton(*actorButton, "Actor", QString::null,
+    new QToolButton(*actorButton, TR("Actor"), QString::null,
 		    this, SLOT(hit_class()), toolbar, "actor");
   addClass->setToggleButton(TRUE);
-  QWhatsThis::add(addClass, addactorText);
+  QWhatsThis::add(addClass, addactorText());
   
   addUseCase =
-    new QToolButton(*usecaseButton, "Use Case", QString::null,
+    new QToolButton(*usecaseButton, TR("Use Case"), QString::null,
 		    this, SLOT(hit_usecase()), toolbar, "use case");
   addUseCase->setToggleButton(TRUE);
-  QWhatsThis::add(addUseCase, addusecaseText);
+  QWhatsThis::add(addUseCase, addusecaseText());
   
   addSubject
-    = new QToolButton(*subjectButton, "Add Subject", QString::null,
+    = new QToolButton(*subjectButton, TR("Add Subject"), QString::null,
 		      this, SLOT(hit_subject()), toolbar, "add subject");
   addSubject->setToggleButton(TRUE);
-  QWhatsThis::add(addSubject, addsubjectText);
+  QWhatsThis::add(addSubject, addsubjectText());
   
   addPackage
-    = new QToolButton(*packageButton, "Add Package", QString::null,
+    = new QToolButton(*packageButton, TR("Add Package"), QString::null,
 		      this, SLOT(hit_package()), toolbar, "add package");
   addPackage->setToggleButton(TRUE);
-  QWhatsThis::add(addPackage, addpackageText);
+  QWhatsThis::add(addPackage, addpackageText());
   
   addFragment
-    = new QToolButton(*fragmentButton, "Add Fragment", QString::null,
+    = new QToolButton(*fragmentButton, TR("Add Fragment"), QString::null,
 		      this, SLOT(hit_fragment()), toolbar, "add fragment");
   addFragment->setToggleButton(TRUE);
-  QWhatsThis::add(addFragment, addfragmentText);
+  QWhatsThis::add(addFragment, addfragmentText());
   
   association =
-    new QToolButton(*associationButton, "Association", QString::null,
+    new QToolButton(*associationButton, TR("Association"), QString::null,
 		    this, SLOT(hit_association()), toolbar, "association");
   association->setToggleButton(TRUE);
-  QWhatsThis::add(association, associationText);
+  QWhatsThis::add(association, associationText());
   
   directionalassociation =
-    new QToolButton(*directionalAssociationButton, "Association", QString::null,
+    new QToolButton(*directionalAssociationButton, TR("Association"), QString::null,
 		    this, SLOT(hit_directionalassociation()), toolbar, "association");
   directionalassociation->setToggleButton(TRUE);
-  QWhatsThis::add(directionalassociation, associationText);
+  QWhatsThis::add(directionalassociation, associationText());
   
   dependency =
-    new QToolButton(*dependencyButton, "Dependency", QString::null,
+    new QToolButton(*dependencyButton, TR("Dependency"), QString::null,
 		    this, SLOT(hit_dependency()), toolbar, "dependency");
   dependency->setToggleButton(TRUE);
-  QWhatsThis::add(dependency, dependencyText);
+  QWhatsThis::add(dependency, dependencyText());
   
   inherit =
-    new QToolButton(*generalisationButton, "Generalisation", QString::null,
+    new QToolButton(*generalisationButton, TR("Generalisation"), QString::null,
 		    this, SLOT(hit_inherit()), toolbar, "generalisation");
   inherit->setToggleButton(TRUE);
-  QWhatsThis::add(inherit, inheritText);
+  QWhatsThis::add(inherit, inheritText());
   
   note =
-    new QToolButton(*noteButton, "Note", QString::null,
+    new QToolButton(*noteButton, TR("Note"), QString::null,
 		    this, SLOT(hit_note()), toolbar, "note");
   note->setToggleButton(TRUE);
-  QWhatsThis::add(note, noteText);
+  QWhatsThis::add(note, noteText());
   
   anchor =
-    new QToolButton(*anchorButton, "Anchor", QString::null,
+    new QToolButton(*anchorButton, TR("Anchor"), QString::null,
 		    this, SLOT(hit_anchor()), toolbar, "anchor");
   anchor->setToggleButton(TRUE);
-  QWhatsThis::add(anchor, anchorText);
+  QWhatsThis::add(anchor, anchorText());
   
   text =
-    new QToolButton(*textButton, "Text", QString::null,
+    new QToolButton(*textButton, TR("Text"), QString::null,
 		    this, SLOT(hit_text()), toolbar, "text");
   text->setToggleButton(TRUE);
-  QWhatsThis::add(text, textText);
+  QWhatsThis::add(text, textText());
   
   toolbar->addSeparator();
   

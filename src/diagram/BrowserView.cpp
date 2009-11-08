@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,6 +41,7 @@
 #include "Shortcut.h"
 #include "myio.h"
 #include "mu.h"
+#include "translate.h"
 
 BrowserPackage * BrowserView::project;
 BrowserPackage * BrowserView::imported_project;
@@ -55,7 +56,7 @@ BrowserView::BrowserView(QWidget * parent) : QListView(parent) {
   mousePressed = FALSE;
   
   setSorting(-1);		// manual sorting
-  addColumn("browser          ");
+  addColumn(TR("browser          "));
   setTreeStepSize(18);
   //setSelectionMode(Extended);	// multi selection
   header()->setClickEnabled(TRUE);

@@ -1,7 +1,7 @@
-format 65
+format 67
 "Com" // API BASE::Com
-  revision 15
-  modified_by 3 "bruno"
+  revision 17
+  modified_by 2 "bruno"
   // class settings
   //class diagram settings
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
@@ -3343,6 +3343,28 @@ public static final ${class} ${name} = new ${class}(_${name});
 	python_decl ""
 	idl_decl ""
       end
+
+      attribute 176000 "importProjectCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 176512 "setActiveCmd"
+	public type class_ref 5632 // OnInstanceCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
     end
 
     class 5760 "ClassGlobalCmd"
@@ -5071,6 +5093,17 @@ public static final ${class} ${name} = new ${class}(_${name});
       end
 
       attribute 175872 "setPythonInitOperationDefCmd"
+	public type class_ref 155776 // PythonSettingsCmd
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl "  ${comment}public static final int _${name}${value};
+public static final ${class} ${name} = new ${class}(_${name});
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 176768 "setPython3OperationCmd"
 	public type class_ref 155776 // PythonSettingsCmd
 	cpp_decl "  ${name}${value},${comment}"
 	java_decl "  ${comment}public static final int _${name}${value};

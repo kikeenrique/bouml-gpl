@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,6 +48,7 @@
 #include "MenuTitle.h"
 #include "strutil.h"
 #include "DialogUtil.h"
+#include "translate.h"
 
 ConstraintCanvas::ConstraintCanvas(UmlCanvas * canvas, CdClassCanvas * a,
 				   int x, int y, int id)
@@ -123,21 +124,21 @@ void ConstraintCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
   QPopupMenu fontsubm(0);
   
-  m.insertItem(new MenuTitle("Constraint", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Constraint"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 5);
-  m.insertItem("Go down", 6);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 5);
+  m.insertItem(TR("Go down"), 6);
   m.insertSeparator();
-  m.insertItem("Edit", 2);
+  m.insertItem(TR("Edit"), 2);
   m.insertSeparator();
-  m.insertItem("Font", &fontsubm);  
+  m.insertItem(TR("Font"), &fontsubm);  
   init_font_menu(fontsubm, the_canvas(), 10);
-  m.insertItem("Edit drawing settings", 3);
+  m.insertItem(TR("Edit drawing settings"), 3);
   if (linked()) {
     m.insertSeparator();
-    m.insertItem("Select linked items", 4);
+    m.insertItem(TR("Select linked items"), 4);
   }
   m.insertSeparator();
 
@@ -165,11 +166,11 @@ void ConstraintCanvas::menu(const QPoint&) {
     return;
   case 3:
     {
-      QArray<ColorSpec> co(1);
+      ColorSpecVector co(1);
       
-      co[0].set("note color", &itscolor);
+      co[0].set(TR("note color"), &itscolor);
 
-      SettingsDialog dialog(0, &co, FALSE, TRUE);
+      SettingsDialog dialog(0, &co, FALSE);
       
       dialog.raise();
       if (dialog.exec() == QDialog::Accepted)
@@ -213,15 +214,15 @@ bool ConstraintCanvas::has_drawing_settings() const {
 }
 
 void ConstraintCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   UmlColor itscolor;
   
-  co[0].set("note color", &itscolor);
+  co[0].set(TR("note color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
   
   dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {

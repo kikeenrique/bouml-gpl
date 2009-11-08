@@ -64,6 +64,16 @@ enum anItemKind {
   aBroadcastSignalAction,
   anUnmarshallAction,
   aValueSpecificationAction,
+  
+  // api >= 44
+  anAcceptCallAction,
+  aReplyAction,
+  aCreateObjectAction,
+  aDestroyObjectAction,
+  aTestIdentityAction,
+  aRaiseExceptionAction,
+  aReduceAction,
+  
   anActivityObject,
   anExpansionNode,
   anActivityPin,

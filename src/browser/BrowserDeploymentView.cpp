@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,6 +46,7 @@
 #include "mu.h"
 #include "GenerationSettings.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 IdDict<BrowserDeploymentView> BrowserDeploymentView::all(__FILE__);
 QStringList BrowserDeploymentView::its_default_stereotypes;	// unicode
@@ -107,7 +108,7 @@ BrowserDeploymentView * BrowserDeploymentView::add_deployment_view(BrowserNode *
 {
   QString name;
   
-  if (future_parent->enter_child_name(name, "enter deployment view's name : ",
+  if (future_parent->enter_child_name(name, TR("enter deployment view's name : "),
 				      UmlDeploymentView, TRUE, FALSE))
     return new BrowserDeploymentView(name, future_parent);
   else
@@ -126,6 +127,15 @@ void BrowserDeploymentView::update_idmax_for_root()
   all.update_idmax_for_root();
   BrowserArtifact::update_idmax_for_root();
   BrowserDeploymentNode::update_idmax_for_root();
+}
+
+void BrowserDeploymentView::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
 }
     
 void BrowserDeploymentView::renumber(int phase) {
@@ -160,38 +170,39 @@ void BrowserDeploymentView::menu() {
   QPopupMenu m(0);
   QPopupMenu subm(0);
   QPopupMenu roundtripm(0);
+  QPopupMenu roundtripbodym(0);
   QPopupMenu toolm(0);
   
   m.insertItem(new MenuTitle(name, m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
-      m.setWhatsThis(m.insertItem("New deployment diagram", 0),
-		     "to add a <em>deployment diagram</em>");
-      m.setWhatsThis(m.insertItem("New node", 1),
-		     "to add a <em>node</em>");
-      m.setWhatsThis(m.insertItem("New artifact", 2),
-		     "to add an <em>artifact</em>");
+      m.setWhatsThis(m.insertItem(TR("New deployment diagram"), 0),
+		     TR("to add a <i>deployment diagram</i>"));
+      m.setWhatsThis(m.insertItem(TR("New node"), 1),
+		     TR("to add a <i>node</i>"));
+      m.setWhatsThis(m.insertItem(TR("New artifact"), 2),
+		     TR("to add an <i>artifact</i>"));
       m.insertSeparator();
     }
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("Edit", 3),
-		     "to edit the <em>deployment view</em>");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 3),
+		     TR("to edit the <i>deployment view</i>"));
       if (!is_read_only) {
 	m.insertSeparator();
 	//m.setWhatsThis(m.insertItem("Edit node settings", 4),
 	//		   "to set the sub node's settings");
-	m.setWhatsThis(m.insertItem("Edit drawing settings", 5),
-		       "to set how the sub <em>deployment diagrams</em>'s items must be drawn");
+	m.setWhatsThis(m.insertItem(TR("Edit drawing settings"), 5),
+		       TR("to set how the sub <i>deployment diagrams</i>'s items must be drawn"));
 	if (edition_number == 0) {
 	  m.insertSeparator();
-	  m.setWhatsThis(m.insertItem("Delete", 6),
-			 "to delete the <em>deployment view</em> and its sub items. \
-Note that you can undelete them after");
+	  m.setWhatsThis(m.insertItem(TR("Delete"), 6),
+			 TR("to delete the <i>deployment view</i> and its sub items. \
+Note that you can undelete them after"));
 	}
       }
     }
-    mark_menu(m, "deployment view", 90);
+    mark_menu(m, TR("deployment view"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
 
     bool cpp = GenerationSettings::cpp_get_default_defs();
@@ -202,45 +213,51 @@ Note that you can undelete them after");
 
     if (cpp || java || php || python || idl) {
       m.insertSeparator();
-      m.insertItem("Generate", &subm);
+      m.insertItem(TR("Generate"), &subm);
       if (cpp)
 	subm.insertItem("C++", 10);
-      if (java)
+      if (java) {
 	subm.insertItem("Java", 11);
+	if ((edition_number == 0) && !is_read_only)
+	  roundtripm.insertItem("Java", 42);
+      }
       if (php)
 	subm.insertItem("Php", 12);
       if (python)
 	subm.insertItem("Python", 14);
       if (idl)
 	subm.insertItem("Idl", 13);
+
+      if (roundtripm.count() != 0)
+	m.insertItem(TR("Roundtrip"), &roundtripm);
     }
     
     if (edition_number == 0) {
       if (preserve_bodies() && (cpp || java || php || python)) {
-	m.insertItem("Roundtrip body", &roundtripm);
+	m.insertItem(TR("Roundtrip body"), &roundtripbodym);
 	
 	if (cpp)
-	  roundtripm.insertItem("C++", 30);
+	  roundtripbodym.insertItem("C++", 30);
 	if (java)
-	  roundtripm.insertItem("Java", 31);
+	  roundtripbodym.insertItem("Java", 31);
 	if (php)
-	  roundtripm.insertItem("Php", 32);
+	  roundtripbodym.insertItem("Php", 32);
 	if (python)
-	  roundtripm.insertItem("Python", 33);
+	  roundtripbodym.insertItem("Python", 33);
       }
       
       if (Tool::menu_insert(&toolm, get_type(), 100)) {
 	m.insertSeparator();
-	m.insertItem("Tool", &toolm);
+	m.insertItem(TR("Tool"), &toolm);
       }
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 7),
-		   "undelete the <em>deployment view</em>. \
-Do not undelete its sub items");
-    m.setWhatsThis(m.insertItem("Undelete recursively", 8),
-		   "undelete the <em>deployment view</em> and its sub items");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 7),
+		   TR("undelete the <i>deployment view</i>. \
+Do not undelete its sub items"));
+    m.setWhatsThis(m.insertItem(TR("Undelete recursively"), 8),
+		   TR("undelete the <i>deployment view</i> and its sub items"));
   }
   
   exec_menu_choice(m.exec(QCursor::pos()));
@@ -275,7 +292,7 @@ void BrowserDeploymentView::exec_menu_choice(int rank) {
     }
     break;
   case 3:
-    edit("Deployment view", its_default_stereotypes);
+    edit(TR("Deployment view"), its_default_stereotypes);
     return;
   case 4:
     //if (! node_settings.edit(UmlDeploymentView))
@@ -283,19 +300,19 @@ void BrowserDeploymentView::exec_menu_choice(int rank) {
     break;
   case 5:
     {
-      QArray<StateSpec> st;
-      QArray<ColorSpec> co(6);
+      StateSpecVector st;
+      ColorSpecVector co(6);
       
       deploymentdiagram_settings.complete(st, FALSE);
       
-      co[0].set("node color", &deploymentnode_color);
-      co[1].set("artifact color", &artifact_color);
-      co[2].set("component color", &component_color);
-      co[3].set("note color", &note_color);
-      co[4].set("package color", &package_color);
-      co[5].set("fragment color", &fragment_color);
+      co[0].set(TR("node color"), &deploymentnode_color);
+      co[1].set(TR("artifact color"), &artifact_color);
+      co[2].set(TR("component color"), &component_color);
+      co[3].set(TR("note color"), &note_color);
+      co[4].set(TR("package color"), &package_color);
+      co[5].set(TR("fragment color"), &fragment_color);
 
-      SettingsDialog dialog(&st, &co, FALSE, FALSE);
+      SettingsDialog dialog(&st, &co, FALSE);
       
       dialog.raise();
       if (dialog.exec() != QDialog::Accepted)
@@ -366,6 +383,9 @@ void BrowserDeploymentView::exec_menu_choice(int rank) {
     return;
   case 33:
     ToolCom::run((verbose_generation()) ? "roundtrip_body -v python" : "roundtrip_body python", this);
+    return;
+  case 42:
+    ToolCom::run("java_roundtrip", this);
     return;
   default:
     if (rank >= 99990)
@@ -452,7 +472,7 @@ void BrowserDeploymentView::apply_shortcut(QString s) {
 
 void BrowserDeploymentView::open(bool) {
   if (!is_edited)
-    edit("Deployment view", its_default_stereotypes);
+    edit(TR("Deployment view"), its_default_stereotypes);
 }
 
 UmlCode BrowserDeploymentView::get_type() const {
@@ -640,7 +660,7 @@ void BrowserDeploymentView::DropAfterEvent(QDropEvent * e, BrowserNode * after) 
       }
     }
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -722,7 +742,7 @@ void BrowserDeploymentView::save(QTextStream & st, bool ref, QString & warning) 
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -786,7 +806,7 @@ BrowserDeploymentView * BrowserDeploymentView::read(char * & st, char * k,
     read_color(st, "note_color", r->note_color, k);		// updates k
     read_color(st, "package_color", r->package_color, k);	// updates k
     read_color(st, "fragment_color", r->fragment_color, k);	// updates k
-    r->BrowserNode::read(st, k);				// updates k
+    r->BrowserNode::read(st, k, id);				// updates k
     
     if (strcmp(k, "end")) {
       while (BrowserDeploymentDiagram::read(st, k, r) ||

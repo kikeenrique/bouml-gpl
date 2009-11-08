@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -47,6 +47,7 @@
 #include "GenerationSettings.h"
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 QSize ExtraMemberDialog::previous_size;
 
@@ -54,16 +55,18 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), emd(ex) {
   ex->browser_node->edit_start();
   
-  if (ex->browser_node->is_writable())
-    setCancelButton();
+  if (ex->browser_node->is_writable()) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
 
   bool visit = !hasOkButton();
 
-  setCaption("Extra Class Member dialog");
+  setCaption(TR("Extra Class Member dialog"));
   
   QGrid * grid;
     
@@ -73,7 +76,7 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
   grid->setMargin(5);
   grid->setSpacing(5);
   
-  new QLabel("name :", grid);
+  new QLabel(TR("name :"), grid);
   edname = new LineEdit(ex->name(), grid);
   edname->setReadOnly(visit);
 
@@ -82,13 +85,13 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
     font.setFamily("Courier");
   font.setFixedPitch(TRUE);
   
-  new QLabel("stereotype :", grid);
+  new QLabel(TR("stereotype :"), grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(ex->get_stereotype()));
   edstereotype->setCurrentItem(0);
   if (! visit) {
     edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlExtraMember));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->setAutoCompletion(completion());
   }
   
   QSizePolicy sp = edstereotype->sizePolicy();
@@ -96,9 +99,9 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
   edstereotype->setSizePolicy(sp);
   
   QVBox * vtab = new QVBox(grid);
-  new QLabel("description :", vtab);
+  new QLabel(TR("description :"), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
@@ -122,9 +125,9 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
     inline_cb->setChecked(TRUE);
   
   vtab = new QVBox(grid);
-  new QLabel("C++ \ndeclaration :", vtab);
+  new QLabel(TR("C++ \ndeclaration :"), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_cpp_decl()));
   edcpp_decl = new MultiLineEdit(grid);
   edcpp_decl->setReadOnly(visit);
@@ -132,9 +135,9 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
   edcpp_decl->setFont(font);
     
   vtab = new QVBox(grid);
-  new QLabel("C++ \ndefinition :", vtab);
+  new QLabel(TR("C++ \ndefinition :"), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_cpp_def()));
   edcpp_def = new MultiLineEdit(grid);
   edcpp_def->setReadOnly(visit);
@@ -155,7 +158,7 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
   vtab = new QVBox(grid);
   new QLabel("Java :", vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_java_decl()));
   edjava_decl = new MultiLineEdit(grid);
   edjava_decl->setReadOnly(visit);
@@ -176,7 +179,7 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
   vtab = new QVBox(grid);
   new QLabel("Php :", vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_php_decl()));
   edphp_decl = new MultiLineEdit(grid);
   edphp_decl->setReadOnly(visit);
@@ -197,7 +200,7 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
   vtab = new QVBox(grid);
   new QLabel("Python :", vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_python_decl()));
   edpython_decl = new MultiLineEdit(grid);
   edpython_decl->setReadOnly(visit);
@@ -218,7 +221,7 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
   vtab = new QVBox(grid);
   new QLabel("Idl :", vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_idl_decl()));
   edidl_decl = new MultiLineEdit(grid);
   edidl_decl->setReadOnly(visit);
@@ -237,7 +240,7 @@ ExtraMemberDialog::ExtraMemberDialog(ExtraMemberData * ex)
   grid->setSpacing(5);
   
   kvtable = new KeyValuesTable(ex->get_browser_node(), grid, visit);
-  addTab(grid, "Properties");
+  addTab(grid, TR("Properties"));
 }
 
 void ExtraMemberDialog::polish() {

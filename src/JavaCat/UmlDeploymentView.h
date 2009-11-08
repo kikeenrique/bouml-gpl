@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,7 +34,14 @@
 class UmlDeploymentView : public UmlBaseDeploymentView {
   public:
     UmlDeploymentView(void * id, const QCString & n)
-      : UmlBaseDeploymentView(id, n) {};
+      : UmlBaseDeploymentView(id, n) {}
+  
+#ifdef ROUNDTRIP
+    virtual bool set_roundtrip_expected();
+    virtual void mark_useless(QList<UmlItem> & l);
+    virtual void scan_it(int & n);
+    virtual void send_it(int n);
+#endif
 };
 
 #endif

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@
 #include "MenuTitle.h"
 #include "Settings.h"
 #include "strutil.h"
+#include "translate.h"
 
 InterruptibleActivityRegionCanvas::InterruptibleActivityRegionCanvas(BrowserNode * bn, UmlCanvas * canvas,
 								     int x, int y)
@@ -115,10 +116,10 @@ aCorner InterruptibleActivityRegionCanvas::on_resize_point(const QPoint & p) {
   return ::on_resize_point(p, rect());
 }
 
-void InterruptibleActivityRegionCanvas::resize(aCorner c, int dx, int dy) {
+void InterruptibleActivityRegionCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
   double zoom = the_canvas()->zoom();
   
-  DiagramCanvas::resize(c, dx, dy, 
+  DiagramCanvas::resize(c, dx, dy, o,
 			(int) (INTERRUPTIBLE_ACTIVITY_REGION_CANVAS_MIN_SIZE * zoom),
 			(int) (INTERRUPTIBLE_ACTIVITY_REGION_CANVAS_MIN_SIZE * zoom));
   
@@ -233,34 +234,34 @@ void InterruptibleActivityRegionCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 13);
-  m.insertItem("Go down", 14);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 13);
+  m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 2);
+  m.insertItem(TR("Edit drawing settings"), 2);
   m.insertSeparator();
-  m.insertItem("Edit interruptible activity region", 3);
+  m.insertItem(TR("Edit interruptible activity region"), 3);
   m.insertSeparator();
-  m.insertItem("Select in browser", 4);
+  m.insertItem(TR("Select in browser"), 4);
   if (linked())
-    m.insertItem("Select linked items", 5);
+    m.insertItem(TR("Select linked items"), 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
     if (browser_node->get_associated() !=
 	(BrowserNode *) the_canvas()->browser_diagram())
-      m.insertItem("Set associated diagram",6);
+      m.insertItem(TR("Set associated diagram"),6);
     
     if (browser_node->get_associated())
-      m.insertItem("Remove diagram association",9);
+      m.insertItem(TR("Remove diagram association"),9);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view", 7);
+  m.insertItem(TR("Remove from view"), 7);
   if (browser_node->is_writable())
-    m.insertItem("Delete from model", 8);
+    m.insertItem(TR("Delete from model"), 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlInterruptibleActivityRegion, 20))
-    m.insertItem("Tool", &toolm);
+    m.insertItem(TR("Tool"), &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -345,11 +346,11 @@ void InterruptibleActivityRegionCanvas::apply_shortcut(QString s) {
 }
 
 void InterruptibleActivityRegionCanvas::edit_drawing_settings() {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   
-  co[0].set("interruptible activity region color", &itscolor);
+  co[0].set(TR("interruptible activity region color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -361,15 +362,15 @@ bool InterruptibleActivityRegionCanvas::has_drawing_settings() const {
 }
 
 void InterruptibleActivityRegionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   UmlColor itscolor;
   
-  co[0].set("interruptible activity region color", &itscolor);
+  co[0].set(TR("interruptible activity region color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
   
   dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
@@ -379,12 +380,12 @@ void InterruptibleActivityRegionCanvas::edit_drawing_settings(QList<DiagramItem>
   }
 }
 
-const char * InterruptibleActivityRegionCanvas::may_start(UmlCode & l) const {
-  return (l == UmlAnchor) ? 0 : "illegal";
+QString InterruptibleActivityRegionCanvas::may_start(UmlCode & l) const {
+  return (l == UmlAnchor) ? 0 : TR("illegal");
 }
 
-const char * InterruptibleActivityRegionCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
+QString InterruptibleActivityRegionCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  return (l == UmlAnchor) ? dest->may_start(l) : TR("illegal");
 }
 
 void InterruptibleActivityRegionCanvas::connexion(UmlCode action, DiagramItem * dest,

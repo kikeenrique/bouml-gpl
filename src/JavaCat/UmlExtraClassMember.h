@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -28,6 +28,10 @@
 
 #include "UmlBaseExtraClassMember.h"
 
+#ifdef ROUNDTRIP
+class UmlClass;
+#endif
+
 // This class allows to manage extra class member, mainly defined for C++
 // it allows to insert C++ pre-processor directive (even they may be placed
 // in the other member definition/declaration), to declare friend
@@ -38,6 +42,11 @@ class UmlExtraClassMember : public UmlBaseExtraClassMember {
   public:
     UmlExtraClassMember(void * id, const QCString & n)
       : UmlBaseExtraClassMember(id, n) {};
+  
+#ifdef ROUNDTRIP
+    static void add_init(UmlClass * cl, QCString def, bool roundtrip,
+			 QList<UmlItem> & expected_order);
+#endif
 };
 
 #endif

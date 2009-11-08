@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -52,6 +52,7 @@ class StateData : public SimpleData {
   friend class StateDialog;
     
   protected:
+    bool is_active;
     StateBehavior uml;
     StateBehavior cpp;
     StateBehavior java;
@@ -68,6 +69,7 @@ class StateData : public SimpleData {
     virtual ~StateData();
     
     const StateBehavior & get_behavior(DrawingLanguage) const;
+    bool get_is_active() const { return is_active; }
     BrowserOperation * get_specification() const { return specification; }
     void set_specification(BrowserOperation *);
     

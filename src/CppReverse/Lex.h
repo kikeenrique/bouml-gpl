@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -59,18 +59,24 @@ class Lex {
     
     static void goes_to_word_beginning();
     static void complete_template(QString & result);
-    static void bypass_pp();
-    static void bypass_cpp_comment();
-    static void bypass_c_comment();
     static QCString manage_operator(QString  & result, int c, bool oper);  
     static QCString read_string();     
     static QCString read_character();    
-    static QCString read_array_dim();
+    static QCString read_array_dim(); 
+    static void bypass_template();
+    static void bypass_pp();
+    static void bypass_cpp_comment();
+    static void bypass_c_comment();
+    static char bypass_operator(int c, bool oper);  
+    static void bypass_string();     
+    static void bypass_character();    
+    static void bypass_array_dim();  
     static bool start_template(int c);
 
   public:
     static void defines(const QCString & f);
     static QCString read_word(bool in_expr = FALSE);
+    static char read_word_bis(bool set_context, bool in_expr);
     static void unread_word();
     static QCString get_comments(QCString & co);
     static QCString get_comments();

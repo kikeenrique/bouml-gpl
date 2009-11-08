@@ -33,6 +33,7 @@ SRC_DIRS = src \
 	src/CppReverse \
 	src/JavaGenerator \
 	src/JavaReverse \
+	src/JavaRoundtrip \
 	src/JavaCat \
 	src/PhpGenerator \
 	src/PhpReverse \
@@ -64,6 +65,7 @@ PROGS = src/bouml \
 	src/CppReverse/cpp_reverse \
 	src/JavaGenerator/java_generator \
 	src/JavaReverse/java_reverse \
+	src/JavaRoundtrip/java_roundtrip \
 	src/JavaCat/java_catalog \
 	src/PhpGenerator/php_generator \
 	src/PhpReverse/php_reverse \
@@ -118,11 +120,14 @@ install:
 		cp -f projectControl.48.png "$(DESTDIR)$(BOUML_UNIX_PIXMAPS_DIR)/projectControl.png"; \
 		cp -f projectSynchro.48.png "$(DESTDIR)$(BOUML_UNIX_PIXMAPS_DIR)/projectSynchro.png"; \
 	fi
+	cp -p *.lang "$(DESTDIR)$(BOUML_LIB)"
 	for i in $(PROGS); do cp -p $$i "$(DESTDIR)$(BOUML_LIB)" ; done
 	cd plugouts ; tar cf - empty genpro html rose singleton cpp_utilities xmi xmi2 xmi2import sm_generator usecase_wizard sort uml_projection FileControl deploy GlobalChange | (cd $(DESTDIR)$(BOUML_LIB); tar xf -)
 	echo "#!/bin/sh" >$(DESTDIR)$(BOUML_DIR)/bouml
 	echo "PATH=$(BOUML_LIB):$$"PATH >>$(DESTDIR)$(BOUML_DIR)/bouml
+	echo "BOUML_LIB_DIR=$(BOUML_LIB)" >>$(DESTDIR)$(BOUML_DIR)/bouml
 	echo "export PATH" >>$(DESTDIR)$(BOUML_DIR)/bouml
+	echo "export BOUML_LIB_DIR" >>$(DESTDIR)$(BOUML_DIR)/bouml
 	echo "exec $(BOUML_LIB)/bouml \"$$"@"\"" >>$(DESTDIR)$(BOUML_DIR)/bouml
 	chmod +x "$(DESTDIR)$(BOUML_DIR)/bouml"
 	cd $(DESTDIR)$(BOUML_DIR) ; rm -f projectControl ; ln -s $(BOUML_LIB)/projectControl

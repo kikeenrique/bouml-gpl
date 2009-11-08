@@ -29,6 +29,21 @@ bool UmlBaseClass::set_isAbstract(bool y) {
   return set_it_(_abstract, y, setIsAbstractCmd);
 }
 
+bool UmlBaseClass::isActive() {
+  read_if_needed_();
+  return _active;
+}
+
+bool UmlBaseClass::set_isActive(bool v) {
+  UmlCom::send_cmd(_identifier, setActiveCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _active = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 const UmlTypeSpec & UmlBaseClass::baseType() {
   read_if_needed_();
   
@@ -399,6 +414,7 @@ void UmlBaseClass::read_uml_() {
     if (_base_type.type == 0)
       _base_type.explicit_type = UmlCom::read_string();
   }
+  _active = UmlCom::read_bool();
 }
 
 #ifdef WITHCPP

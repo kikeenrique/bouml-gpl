@@ -14,6 +14,9 @@ class IdlSettings
   UmlCom.check();
 
 !!!55296.cpp!!!	type(in s : string) : string
+  if (s.isEmpty())
+    return s;
+
   read_if_needed_();
   
   UmlBuiltin * b = UmlSettings::_map_builtins.find(s);

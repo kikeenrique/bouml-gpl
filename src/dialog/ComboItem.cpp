@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -30,6 +30,7 @@
 #include <qcombobox.h> 
 
 #include "ComboItem.h"
+#include "DialogUtil.h"
 
 ComboItem::ComboItem(QTable * ta, const QString & s,
 		     const QStringList & list, bool edit)
@@ -42,7 +43,7 @@ QWidget * ComboItem::createEditor() const {
   ((ComboItem *) this)->cb = new QComboBox(table()->viewport());
   // setEditable doit etre fait maintenant sinon les items sont perdus !
   cb->setEditable(editable);
-  cb->setAutoCompletion(TRUE);
+  cb->setAutoCompletion(completion());
   cb->insertItem(text());
   cb->insertStringList(types);
 

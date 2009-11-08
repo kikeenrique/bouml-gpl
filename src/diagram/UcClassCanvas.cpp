@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,6 +49,8 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "strutil.h"
+#include "ProfiledStereotypes.h"
+#include "translate.h"
 
 UcClassCanvas::UcClassCanvas(BrowserNode * bn, UmlCanvas * canvas,
 			     int x, int y, int id)
@@ -169,25 +171,30 @@ void UcClassCanvas::compute_size() {
   const ClassData * data = ((ClassData *) browser_node->get_data());
   int wi =
     (data->get_is_abstract()) ? fim.width(full_name) : fm.width(full_name);
+  double zoom = the_canvas()->zoom();
+  const QPixmap * px = 0;
 
   if (used_settings.class_drawing_mode == Natural) {
-    const char * st = data->get_short_stereotype();
-    
-    if (!strcmp(st, "control"))
-      used_view_mode = asControl;
-    else if (!strcmp(st, "entity"))
-      used_view_mode = asEntity;
-    else if (!strcmp(st, "boundary"))
-      used_view_mode = asBoundary;
-    else if (!strcmp(st, "actor"))
-      used_view_mode = asActor;
-    else
-      used_view_mode = asClass;
+    if ((px = ProfiledStereotypes::diagramPixmap(data->get_stereotype(), zoom)) != 0)
+      used_view_mode = Natural;
+    else {
+      const char * st = data->get_short_stereotype();
+      
+      if (!strcmp(st, "control"))
+	used_view_mode = asControl;
+      else if (!strcmp(st, "entity"))
+	used_view_mode = asEntity;
+      else if (!strcmp(st, "boundary"))
+	used_view_mode = asBoundary;
+      else if (!strcmp(st, "actor"))
+	used_view_mode = asActor;
+      else
+	used_view_mode = asClass;
+    }
   }
   else
     used_view_mode = used_settings.class_drawing_mode;
 
-  double zoom = the_canvas()->zoom();
   const int eight = (int) (8 * zoom);
 
   int he = fm.height() + eight;
@@ -230,6 +237,11 @@ void UcClassCanvas::compute_size() {
   case asActor:
     min_w = (int) (ACTOR_SIZE * zoom);
     he += (int) (ACTOR_SIZE * zoom);
+    break;
+  case Natural:
+    // pixmap
+    min_w = px->width();
+    he += px->height();
     break;
   default:	// class
     min_w = (int) (CLASS_CANVAS_MIN_SIZE * zoom);
@@ -363,6 +375,22 @@ void UcClassCanvas::draw(QPainter & p) {
       draw_actor(&p, ra);
     }
     r.setTop(r.top() + (int) (ACTOR_SIZE * zoom) + two);
+    break;
+  case Natural:
+    {
+      const QPixmap * px = 
+	ProfiledStereotypes::diagramPixmap(data->get_stereotype(), zoom);
+      int lft = (px->width() < width()) ? r.x() + (width() - px->width())/2 : r.x();
+
+      p.drawPixmap(lft, r.y(), *px);
+      if (fp != 0)
+	// pixmap not really exported in SVG
+	fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+		" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />\n",
+		svg_color(UmlBlack), lft, r.y(), px->width() - 1, px->height() - 1);
+
+      r.setTop(r.top() + px->height());
+    }
     break;
   default:	// class
     r.setTop(r.top() + two);
@@ -501,29 +529,29 @@ void UcClassCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 8);
-  m.insertItem("Go down", 9);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 8);
+  m.insertItem(TR("Go down"), 9);
   m.insertSeparator();
-  m.insertItem("Add related elements", 10);
+  m.insertItem(TR("Add related elements"), 10);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 4);
+  m.insertItem(TR("Edit drawing settings"), 4);
   m.insertSeparator();
   if (browser_node->is_writable()) {
-    m.insertItem("Edit", 7);
+    m.insertItem(TR("Edit"), 7);
     m.insertSeparator();
   }
-  m.insertItem("Select in browser",2);
+  m.insertItem(TR("Select in browser"),2);
   if (linked())
-    m.insertItem("Select linked items", 3);
+    m.insertItem(TR("Select linked items"), 3);
   m.insertSeparator();
-  m.insertItem("Remove from view",5);
+  m.insertItem(TR("Remove from view"),5);
   if (browser_node->is_writable())
-    m.insertItem("Delete from model", 6);
+    m.insertItem(TR("Delete from model"), 6);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlClass, 20))
-    m.insertItem("Tool", &toolm);
+    m.insertItem(TR("Tool"), &toolm);
 
   int rank = m.exec(QCursor::pos());
   
@@ -571,7 +599,7 @@ void UcClassCanvas::menu(const QPoint&) {
     break;
   case 10:
     ((UmlCanvas *) canvas())->get_view()
-      ->add_related_elements(this, "class/actor", TRUE, FALSE);
+      ->add_related_elements(this, TR("class/actor"), TRUE, FALSE);
     return;
   default:
     if (rank >= 20)
@@ -601,7 +629,7 @@ void UcClassCanvas::apply_shortcut(QString s) {
   }
   else if (s == "Add related elements") {
     ((UmlCanvas *) canvas())->get_view()
-      ->add_related_elements(this, "class/actor", TRUE, FALSE);
+      ->add_related_elements(this, TR("class/actor"), TRUE, FALSE);
     return;
   }
   else {
@@ -614,14 +642,14 @@ void UcClassCanvas::apply_shortcut(QString s) {
 }
 
 void UcClassCanvas::edit_drawing_settings()  {
-  QArray<StateSpec> st;
-  QArray<ColorSpec> co(1);
+  StateSpecVector st;
+  ColorSpecVector co(1);
   
   settings.complete(st);
   
-  co[0].set("class color", &itscolor);
+  co[0].set(TR("class color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
@@ -635,23 +663,23 @@ bool UcClassCanvas::has_drawing_settings() const {
 }
 
 void UcClassCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st;
-  QArray<ColorSpec> co(1);
+  StateSpecVector st;
+  ColorSpecVector co(1);
   UmlColor itscolor;
   SimpleClassDiagramSettings settings;
   
   settings.complete(st);
   
-  co[0].set("class color", &itscolor);
+  co[0].set(TR("class color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
-      if (co[0].name != 0)
+      if (!co[0].name.isEmpty())
 	((UcClassCanvas *) it.current())->itscolor = itscolor;
       ((UcClassCanvas *) it.current())->settings.set(st, 0);
       ((UcClassCanvas *) it.current())->modified();
@@ -660,7 +688,7 @@ void UcClassCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }  
 }
 
-const char * UcClassCanvas::may_start(UmlCode & c) const {
+QString UcClassCanvas::may_start(UmlCode & c) const {
   switch (c) {
   case UmlDirectionalAssociation:
   case UmlAssociation:
@@ -668,27 +696,27 @@ const char * UcClassCanvas::may_start(UmlCode & c) const {
     return 0;
   case UmlGeneralisation:
   case UmlDependency:
-    return (browser_node->is_writable()) ? 0 : "read only";
+    return (browser_node->is_writable()) ? 0 : TR("read only");
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
-const char * UcClassCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString UcClassCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor)
     return dest->may_start(l);
   
   switch (dest->type()) {
   case UmlUseCase:
     return ((l == UmlAssociation) || (l == UmlDirectionalAssociation))
-      ? 0 : "illegal";
+      ? 0 : TR("illegal");
   case UmlClass:
     return ((l == UmlGeneralisation) || (l == UmlDependency))
       ? ((BrowserClass *) browser_node)
 	->may_connect(l, (BrowserClass *) ((const UcClassCanvas *) dest)->browser_node)
-      : "illegal";
+      : TR("illegal");
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 

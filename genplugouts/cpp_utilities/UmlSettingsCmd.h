@@ -4,7 +4,14 @@
 
 // Internal enum
 enum UmlSettingsCmd {
-  getUmlSettingsCmd
+  getUmlSettingsCmd,
+  setDefaultArtifactDescriptionCmd= 50,
+  setDefaultClassDescriptionCmd,
+  setDefaultOperationDescriptionCmd,
+  setDefaultAttributeDescriptionCmd,
+  setDefaultRelationDescriptionCmd,
+  setUmlDefaultGetNameCmd,
+  setUmlDefaultSetNameCmd
 
 };
 #endif

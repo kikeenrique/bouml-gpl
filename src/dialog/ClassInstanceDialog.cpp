@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,6 +49,7 @@
 #include "KeyValueTable.h"
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 RelTable::RelTable(QWidget * parent, ClassInstanceData * inst, bool visit)
     : MyTable(parent) {
@@ -59,12 +60,12 @@ RelTable::RelTable(QWidget * parent, ClassInstanceData * inst, bool visit)
   setSelectionMode(QTable::Single);
   setSorting(FALSE);
   
-  horizontalHeader()->setLabel(0, "Class Inst.");
-  horizontalHeader()->setLabel(1, "Role");
-  horizontalHeader()->setLabel(2, "kind");
-  horizontalHeader()->setLabel(3, "Role");
-  horizontalHeader()->setLabel(4, "Class Inst.");
-  horizontalHeader()->setLabel(5, "Delete");
+  horizontalHeader()->setLabel(0, TR("Class Inst."));
+  horizontalHeader()->setLabel(1, TR("Role"));
+  horizontalHeader()->setLabel(2, TR("kind"));
+  horizontalHeader()->setLabel(3, TR("Role"));
+  horizontalHeader()->setLabel(4, TR("Class Inst."));
+  horizontalHeader()->setLabel(5, TR("Delete"));
   
   QString role = inst->get_browser_node()->get_name() + QString(":") +
     inst->get_class()->get_name();
@@ -113,7 +114,7 @@ void RelTable::init_row(const SlotRel & sr, int row, QString a, bool visit) {
 
 void RelTable::button_pressed(int row, int col, int, const QPoint &) {
   if (col == 5)
-    setText(row, col, text(row, col).isEmpty() ? "   Yes" : "");
+    setText(row, col, text(row, col).isEmpty() ? TR("   Yes") : QString());
 }
 
 //
@@ -123,16 +124,18 @@ QSize ClassInstanceDialog::previous_size;
 ClassInstanceDialog::ClassInstanceDialog(ClassInstanceData * i)
     : QTabDialog(0, "class instance dialog", FALSE, WDestructiveClose),
       inst(i), atbl(0), rtbl(0) {
-  setCaption("Class instance dialog");
+  setCaption(TR("Class instance dialog"));
   
   BrowserNode * bn = inst->get_browser_node();
   
   bn->edit_start();
-  if (bn->is_writable())
-    setCancelButton();
+  if (bn->is_writable()) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
   
   visit = !hasOkButton();
@@ -145,19 +148,19 @@ ClassInstanceDialog::ClassInstanceDialog(ClassInstanceData * i)
   grid->setMargin(5);
   grid->setSpacing(5);
   
-  new QLabel("name : ", grid);
+  new QLabel(TR("name : "), grid);
   edname = new LineEdit(bn->get_name(), grid);
   if (visit)
     edname->setReadOnly(TRUE);
   
-  new QLabel("stereotype :", grid);
+  new QLabel(TR("stereotype :"), grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(bn->get_stereotype()));
   if (! visit) {
-    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlActivityObject));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlClassInstance));
+    edstereotype->setAutoCompletion(completion());
   }
-  SmallPushButton *  b = new SmallPushButton("class :", grid);
+  SmallPushButton *  b = new SmallPushButton(TR("class :"), grid);
   
   connect(b, SIGNAL(clicked()), this, SLOT(menu_class()));
 
@@ -183,9 +186,9 @@ ClassInstanceDialog::ClassInstanceDialog(ClassInstanceData * i)
   
   QVBox * vtab = new QVBox(grid);
   
-  new QLabel("description :", vtab);
+  new QLabel(TR("description :"), vtab);
   if (! visit) {
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   }
   comment = new MultiLineEdit(grid);
@@ -208,17 +211,17 @@ ClassInstanceDialog::ClassInstanceDialog(ClassInstanceData * i)
   atbl->setSorting(FALSE);
   atbl->setSelectionMode(QTable::NoSelection);	// single does not work
   atbl->setRowMovingEnabled(TRUE);
-  atbl->horizontalHeader()->setLabel(0, " Attribute ");
-  atbl->horizontalHeader()->setLabel(1, " Class ");
-  atbl->horizontalHeader()->setLabel(2, " Value ");
+  atbl->horizontalHeader()->setLabel(0, TR(" Attribute "));
+  atbl->horizontalHeader()->setLabel(1, TR(" Class "));
+  atbl->horizontalHeader()->setLabel(2, TR(" Value "));
   
-  addTab(atbl, "Attributes");
+  addTab(atbl, TR("Attributes"));
   
   // relation tab
   
   if (! inst->relations.isEmpty()) {
     rtbl = new RelTable(this, inst, visit);
-    addTab(rtbl, "Relations");
+    addTab(rtbl, TR("Relations"));
   }
   
   // USER : list key - value
@@ -228,7 +231,7 @@ ClassInstanceDialog::ClassInstanceDialog(ClassInstanceData * i)
   grid->setSpacing(5);
   
   kvtable = new KeyValuesTable(bn, grid, visit);
-  addTab(grid, "Properties");
+  addTab(grid, TR("Properties"));
   
   type_changed(edtype->currentItem());
   
@@ -269,13 +272,13 @@ void ClassInstanceDialog::post_edit_description(ClassInstanceDialog * d, QString
 void ClassInstanceDialog::menu_class() {
   QPopupMenu m(0);
 
-  m.insertItem("Choose", -1);
+  m.insertItem(TR("Choose"), -1);
   m.insertSeparator();
   
   int index = list.findIndex(edtype->currentText().stripWhiteSpace());
   
   if (index != -1)
-    m.insertItem("Select in browser", 0);
+    m.insertItem(TR("Select in browser"), 0);
   
   BrowserNode * bn = 0;
   
@@ -283,12 +286,12 @@ void ClassInstanceDialog::menu_class() {
     bn = BrowserView::selected_item();
     
     if ((bn != 0) && (bn->get_type() == UmlClass) && !bn->deletedp())
-      m.insertItem("Choose class selected in browser", 1);
+      m.insertItem(TR("Choose class selected in browser"), 1);
     else
       bn = 0;
     
     if (cl_container != 0)
-      m.insertItem("Create class and choose it", 2);
+      m.insertItem(TR("Create class and choose it"), 2);
   }
   
   if ((index != -1) || (bn != 0) || (cl_container != 0)) {
@@ -391,9 +394,10 @@ void ClassInstanceDialog::accept() {
     QValueList<SlotRel> rels = inst->get_relations(); // copy !
     QValueList<SlotRel>::Iterator it;
     int row = 0;
+    QString yes = TR("Yes");
     
     for (row = 0, it = rels.begin(); it != rels.end(); ++it, row += 1) {
-      if (rtbl->text(row, 5).stripWhiteSpace() == "Yes") {
+      if (rtbl->text(row, 5).stripWhiteSpace() == yes) {
 	SlotRel & sr = *it;
 	
 	inst->replace(sr.value, sr.rel, 0, sr.is_a, FALSE);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -32,6 +32,7 @@
 #include <qcursor.h>
 
 #include "BrowserPseudoState.h"
+#include "BrowserState.h"
 #include "BrowserTransition.h"
 #include "TransitionData.h"
 #include "ReferenceDialog.h"
@@ -47,6 +48,7 @@
 #include "ProfiledStereotypes.h"
 #include "mu.h"
 #include "BrowserStateDiagram.h"
+#include "translate.h"
 
 IdDict<BrowserPseudoState> BrowserPseudoState::all(257, __FILE__);
 QStringList BrowserPseudoState::its_default_stereotypes;	// unicode
@@ -95,6 +97,15 @@ void BrowserPseudoState::clear(bool old)
 void BrowserPseudoState::update_idmax_for_root()
 {
   all.update_idmax_for_root();
+}
+
+void BrowserPseudoState::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
 }
     
 void BrowserPseudoState::referenced_by(QList<BrowserNode> & l, bool ondelete) {
@@ -210,11 +221,11 @@ BasicData * BrowserPseudoState::add_relation(UmlCode, BrowserNode * end) {
 }
 
 // a transition may be added ?
-const char * BrowserPseudoState::may_start() const {
+QString BrowserPseudoState::may_start() const {
   switch (get_type()) {
   case FinalPS:
   case TerminatePS:    
-    return "can't have transition";
+    return TR("can't have transition");
   case InitialPS:
   case DeepHistoryPS:
   case ShallowHistoryPS:
@@ -226,7 +237,7 @@ const char * BrowserPseudoState::may_start() const {
       for (child = firstChild(); child != 0; child = child->nextSibling())
 	if ((((BrowserNode *) child)->get_type() == UmlTransition) &&
 	    (! ((BrowserNode *) child)->deletedp()))
-	  return "can't have several transition";
+	  return TR("can't have several transition");
     }
     return 0;
   default:
@@ -237,11 +248,11 @@ const char * BrowserPseudoState::may_start() const {
 }
 
 // connexion by a transition, dest is a state or a pseudo state  
-const char * BrowserPseudoState::may_connect(const BrowserNode * dest) const {
+QString BrowserPseudoState::may_connect(const BrowserNode * dest) const {
   // note if this is an entry point, dest must be a child of this->parent()
   switch (dest->get_type()) {
   case InitialPS:
-    return "can't have a transition to initial pseudo state";
+    return TR("can't have a transition to initial pseudo state");
   case ForkPS:
     // only one transition is allowed from dest
     {
@@ -250,7 +261,7 @@ const char * BrowserPseudoState::may_connect(const BrowserNode * dest) const {
       for (child = dest->firstChild(); child != 0; child = child->nextSibling())
 	if ((((BrowserNode *) child)->get_type() == UmlTransition) &&
 	    (! ((BrowserNode *) child)->deletedp()))
-	  return "fork can't have several input transitions";
+	  return TR("fork can't have several input transitions");
     }
     return 0;
   default:
@@ -276,8 +287,7 @@ BrowserPseudoState::add_pseudostate(BrowserNode * future_parent,
   QString name;
   
   if (!allow_empty(c) &&
-      !future_parent->enter_child_name(name, QString("enter ") +
-				       stringify(c) + "'s name : ",
+      !future_parent->enter_child_name(name, TR(QString("enter ") + stringify(c) + "'s name : "),
 				       UmlState, TRUE, FALSE))
     
     return 0;
@@ -305,7 +315,7 @@ BrowserPseudoState * BrowserPseudoState::get_pseudostate(BrowserNode * future_pa
   QString name;
   
   if (!allow_empty(c) &&
-      !future_parent->enter_child_name(name, QString("enter ") + stringify(c) + "'s name : ",
+      !future_parent->enter_child_name(name, TR(QString("enter ") + stringify(c) + "'s name : "),
 				       UmlState, l, &old, TRUE, FALSE))
     return 0;
     
@@ -315,13 +325,13 @@ BrowserPseudoState * BrowserPseudoState::get_pseudostate(BrowserNode * future_pa
   switch (c) {
   case DeepHistoryPS:
     if (! l.isEmpty()) {
-      msg_critical("Bouml", "already have a deep history");
+      msg_critical("Bouml", TR("already have a deep history"));
       return 0;
     }
     break;
   case ShallowHistoryPS:
     if (! l.isEmpty()) {
-      msg_critical("Bouml",  "already have a shallow history");
+      msg_critical("Bouml",  TR("already have a shallow history"));
       return 0;
     }
     break;
@@ -346,38 +356,38 @@ void BrowserPseudoState::menu() {
   if (index != -1)
     s.replace(index, 1, " ");
   
-  QPopupMenu m(0, "pseudo state");
+  QPopupMenu m(0, TR("pseudo state"));
   QPopupMenu toolm(0);
   
   m.insertItem(new MenuTitle(s, m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
-    m.setWhatsThis(m.insertItem("Edit", 1),
-		   "to edit the <em>" + s + "</em>, \
-a double click with the left mouse button does the same thing");
+    m.setWhatsThis(m.insertItem(TR("Edit"), 1),
+		   TR("to edit the <i>" + s + "</i>, \
+a double click with the left mouse button does the same thing"));
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("Duplicate", 2),
-		     "to copy the <em>" + s + "</em> in a new one");
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 2),
+		     TR("to copy the <i>" + s + "</i> in a new one"));
       m.insertSeparator();
       if (edition_number == 0)
-	m.setWhatsThis(m.insertItem("Delete", 3),
-		       "to delete the <em>" + s + "</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 3),
+		       TR("to delete the <i>" + s + "</i>. \
+Note that you can undelete it after"));
     }
-    m.setWhatsThis(m.insertItem("Referenced by", 5),
-		   "to know who reference the <i>" + s + "</i> \
-through a transition");
-    mark_menu(m, s, 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 5),
+		   TR("to know who reference the <i>" + s + "</i> \
+through a transition"));
+    mark_menu(m, TR("the " + s), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 4),
-		   "to undelete the <em>" + s + "</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 4),
+		   TR("to undelete the <i>" + s + "</i>"));
   }
   
   exec_menu_choice(m.exec(QCursor::pos()));
@@ -398,7 +408,7 @@ void BrowserPseudoState::exec_menu_choice(int rank) {
 	s.replace(index, 1, " ");
       
       if (allow_empty() ||
-	  ((BrowserNode *) parent())->enter_child_name(name, "enter " + s + "'s name : ",
+	  ((BrowserNode *) parent())->enter_child_name(name, TR("enter " + s + "'s name : "),
 						       get_type(), allow_spaces(),
 						       FALSE))
 	duplicate((BrowserNode *) parent(), name)->select_in_browser();
@@ -583,7 +593,7 @@ void BrowserPseudoState::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     if (may_contains(bn, FALSE)) 
       move(bn, after);
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -595,17 +605,17 @@ void BrowserPseudoState::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 
 QString BrowserPseudoState::drag_key() const {
   return QString::number(UmlPseudoState)
-    + "#" + QString::number((unsigned long) parent());
+    + "#" + QString::number((unsigned long) BrowserState::get_machine(this));
 }
 
 QString BrowserPseudoState::drag_postfix() const {
-  return "#" + QString::number((unsigned long) parent());
+  return "#" + QString::number((unsigned long) BrowserState::get_machine(this));
 }
 
 QString BrowserPseudoState::drag_key(BrowserNode * p)
 {
   return QString::number(UmlPseudoState)
-    + "#" + QString::number((unsigned long) p);
+    + "#" + QString::number((unsigned long) BrowserState::get_machine(p));
 }
 
 void BrowserPseudoState::save_stereotypes(QTextStream & st)
@@ -665,7 +675,7 @@ void BrowserPseudoState::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -724,7 +734,7 @@ BrowserPseudoState * BrowserPseudoState::read(char * & st, char * k,
     k = read_keyword(st);
     result->def->read(st, k);
     
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     result->is_read_only = (!in_import() && read_only_file()) || 
       ((user_id() != 0) && result->is_api_base());

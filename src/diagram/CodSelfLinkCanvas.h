@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -69,8 +69,8 @@ class CodSelfLinkCanvas : public QObject, public DiagramCanvas, public CodMsgSup
     virtual void delete_available(bool & in_model, bool & out_model) const;
     virtual void open();
     virtual void menu(const QPoint&);
-    virtual const char * may_start(UmlCode &) const;
-    virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;    
+    virtual QString may_start(UmlCode &) const;
+    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;    
     virtual bool represents(BrowserNode *);
     virtual void save(QTextStream & st, bool ref, QString & warning) const;
     static CodSelfLinkCanvas * read(char * & st, UmlCanvas * canvas, char * & k);

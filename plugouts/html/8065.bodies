@@ -490,11 +490,17 @@ class UmlRelation
     else if (*p == '\r')
       p += 1;
     else if (*p == '\n') {
-      fw.write(' ');
-
-      do
+      if (descr) {
+	fw.write("<br />");
 	p += 1;
-      while ((*p != 0) && (*p <= ' '));
+      }
+      else {
+	fw.write(' ');
+	
+	do
+	  p += 1;
+	while ((*p != 0) && (*p <= ' '));
+      }
     }
     else if (*p == ';') {
       if (descr)
@@ -586,11 +592,17 @@ class UmlRelation
     else if (s.charAt(index) == '\r')
       index += 1;
     else if (s.charAt(index) == '\n') {
-      fw.write(' ');
-
-      do
+      if (descr) {
+	fw.write("<br />");
 	index += 1;
-      while ((index != n) && Character.isWhitespace(s.charAt(index)));
+      }
+      else {
+	fw.write(' ');
+	
+	do
+	  index += 1;
+	while ((index != n) && Character.isWhitespace(s.charAt(index)));
+      }
     }
     else if (s.charAt(index) == ';') {
       if (descr)
@@ -645,11 +657,17 @@ class UmlRelation
     else if (*p == '\r')
       p += 1;
     else if (*p == '\n') {
-      fw.write(' ');
-
-      do
+      if (descr) {
+	fw.write("<br />");
 	p += 1;
-      while ((*p != 0) && (*p <= ' '));
+      }
+      else {
+	fw.write(' ');
+	
+	do
+	  p += 1;
+	while ((*p != 0) && (*p <= ' '));
+      }
     }
     else if (*p == ';') {
       if (descr)
@@ -705,11 +723,17 @@ class UmlRelation
     else if (s.charAt(index) == '\r')
       index += 1;
     else if (s.charAt(index) == '\n') {
-      fw.write(' ');
-
-      do
+      if (descr) {
+	fw.write("<br />");
 	index += 1;
-      while ((index != n) && Character.isWhitespace(s.charAt(index)));
+      }
+      else {
+	fw.write(' ');
+	
+	do
+	  index += 1;
+	while ((index != n) && Character.isWhitespace(s.charAt(index)));
+      }
     }
     else if (s.charAt(index) == ';') {
       if (descr)

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,6 +33,9 @@
 #include "UmlClassView.h"
 #ifdef REVERSE
 #include "UmlDeploymentView.h"
+# ifdef ROUNDTRIP
+# include "Package.h"
+# endif
 #endif
 
 UmlPackage::UmlPackage(void * id, const QCString & n)
@@ -40,17 +43,25 @@ UmlPackage::UmlPackage(void * id, const QCString & n)
   classview = 0;
 #ifdef REVERSE
   deploymentview = 0;
+# ifdef ROUNDTRIP
+  package = 0;
+# endif
 #endif
 }
 
 UmlClassView * UmlPackage::get_classview() {
   if (classview == 0) {
-    QVector<UmlItem> ch = UmlItem::children();
+    const QVector<UmlItem> & ch = UmlItem::children();
+    UmlItem ** v = ch.data();
+    UmlItem ** const vsup = v + ch.size();
     
-    for (unsigned index = 0; index != ch.size(); index += 1)
+    for (;v != vsup; v += 1) {
       // return the first class view find
-      if (ch[index]->kind() == aClassView)
-	return classview = (UmlClassView *) ch[index];
+      if ((*v)->kind() == aClassView) {
+	classview = (UmlClassView *) *v;
+	return classview;
+      }
+    }
     
     if ((classview = UmlBaseClassView::create(this, name())) == 0) {
 #ifdef REVERSE
@@ -76,12 +87,17 @@ UmlClassView * UmlPackage::get_classview() {
 
 UmlDeploymentView * UmlPackage::get_deploymentview() {
   if (deploymentview == 0) {
-    QVector<UmlItem> ch = UmlItem::children();
+    const QVector<UmlItem> & ch = UmlItem::children();
+    UmlItem ** v = ch.data();
+    UmlItem ** const vsup = v + ch.size();
     
-    for (unsigned index = 0; index != ch.size(); index += 1)
-      // return the first class view find
-      if (ch[index]->kind() == aDeploymentView)
-	return deploymentview = (UmlDeploymentView *) ch[index];
+    for (;v != vsup; v += 1) {
+      // return the first class view found
+      if ((*v)->kind() == aDeploymentView) {
+	deploymentview = (UmlDeploymentView *) *v;
+	return deploymentview;
+      }
+    }
     
     if ((deploymentview = UmlBaseDeploymentView::create(this, name())) == 0) {
 #ifdef REVERSE
@@ -103,4 +119,75 @@ UmlDeploymentView * UmlPackage::get_deploymentview() {
   return deploymentview;
 }
 
+# ifdef ROUNDTRIP
+
+// applied on the project
+void UmlPackage::init(Package * p) {
+  package = p;
+  
+  const QVector<UmlItem> & ch = UmlItem::children();
+  UmlItem ** v = ch.data();
+  UmlItem ** const vsup = v + ch.size();
+    
+  for (;v != vsup; v += 1)
+    (*v)->upload(package);
+}
+
+void UmlPackage::upload(ClassContainer * cnt) {
+  package = new Package((Package *) cnt, this);
+  
+  const QVector<UmlItem> & ch = UmlItem::children();
+  UmlItem ** v = ch.data();
+  UmlItem ** const vsup = v + ch.size();
+    
+  for (;v != vsup; v += 1)
+    (*v)->upload(package);
+}
+
+int UmlPackage::count_roundtriped() {
+  int result = 1;
+  
+  const QVector<UmlItem> & ch = UmlItem::children();
+  UmlItem ** v = ch.data();
+  UmlItem ** const vsup = v + ch.size();
+    
+  for (;v != vsup; v += 1)
+    if ((*v)->kind() == aPackage)
+      result += ((UmlPackage *) *v)->count_roundtriped();
+  
+  return result;
+}
+
+bool UmlPackage::set_roundtrip_expected() {
+  Package::tic();
+  
+  const QVector<UmlItem> & ch = UmlItem::children();
+  UmlItem ** v = ch.data();
+  UmlItem ** const vsup = v + ch.size();
+  bool result = isWritable();
+    
+  for (;v != vsup; v += 1)
+    result &= (*v)->set_roundtrip_expected();
+  
+  return result;
+}
+
+void UmlPackage::mark_useless(QList<UmlItem> & l) {
+  QVector<UmlItem> ch = UmlItem::children();
+  UmlClassItem ** v = (UmlClassItem **) ch.data();
+  UmlClassItem ** const vsup = v + ch.size();
+    
+  for (;v != vsup; v += 1)
+    (*v)->mark_useless(l);
+}
+
+void UmlPackage::scan_it(int & n) {
+  package->scan_dir(n);
+}
+
+void UmlPackage::send_it(int n) {
+  package->send_dir(n);
+}
+
+# endif
 #endif

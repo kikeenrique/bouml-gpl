@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -94,6 +94,17 @@ void UmlItem::manage_docstring(const char *& p, const char *& pp, bool & indent_
   while ((index = the_comment.find("\"\"\"", index)) != -1) {
     the_comment.insert(index, "\\");
     index += 2;
+  }
+  
+  if (!indent.isEmpty()) {
+    int len = indent.length() + 1;
+    
+    index = 0;
+    
+    while ((index = the_comment.find('\n', index)) != -1) {
+      the_comment.insert(index + 1, indent);
+      index += len;
+    }
   }
   
   the_comment = "\"\"\"" + the_comment + "\"\"\"\n";

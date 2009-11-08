@@ -21,7 +21,8 @@ class UmlBaseFormalParameter {
     // returns the default actual value
     const UmlTypeSpec & defaultValue() const { return _default_value; };
 
-  friend class UmlBaseClass;
+  //  return the optional extend (Java)
+  const UmlTypeSpec & extend() { return _extends; };
 
   protected:
     QCString _name;
@@ -31,10 +32,13 @@ class UmlBaseFormalParameter {
 
     UmlTypeSpec _default_value;
 
+    UmlTypeSpec _extends;
+
     //internal, do NOT use it
     
     void read_();
 
+  friend class UmlBaseClass;
 };
 
 #endif

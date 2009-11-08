@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,6 +49,7 @@
 #include "SettingsDialog.h"
 #include "DialogUtil.h"
 #include "strutil.h"
+#include "translate.h"
 
 FlowCanvas::FlowCanvas(UmlCanvas * canvas, DiagramItem * b,
 		       DiagramItem * e, BrowserNode * bb, int id,
@@ -135,7 +136,7 @@ void FlowCanvas::remove(bool from_model) {
 	}
   
 	if (a && !a->end->isSelected() && !a->end->get_bn()->deletedp()) {
-	  msg_warning("Bouml", "<i>Draw all relations</i> forced to <i>no</i>");
+	  msg_warning("Bouml", TR("<i>Draw all relations</i> forced to <i>no</i>"));
 	  the_canvas()->dont_draw_all_relations();
 	}
       }
@@ -218,40 +219,40 @@ void FlowCanvas::menu(const QPoint &) {
     QPopupMenu toolm(0);
     
     m.insertItem(new MenuTitle(((plabel == 0) || plabel->label->get_name().isEmpty())
-			       ? QString("flow")
+			       ? QString(TR("flow"))
 			       : toUnicode(plabel->label->get_name()),
 			       m.font()),
 		 -1);
     m.insertSeparator();
-    m.insertItem("Edit", 0);
+    m.insertItem(TR("Edit"), 0);
     m.insertSeparator();
 
-    m.insertItem("Select in browser", 2);
+    m.insertItem(TR("Select in browser"), 2);
     if (plabel || pstereotype) {
       m.insertSeparator();
-      m.insertItem("Edit drawing settings", 1);
-      m.insertItem("Select labels", 3);
-      m.insertItem("Labels default position", 4);
+      m.insertItem(TR("Edit drawing settings"), 1);
+      m.insertItem(TR("Select labels"), 3);
+      m.insertItem(TR("Labels default position"), 4);
       if (plabel && (label == 0))
-	m.insertItem("Attach flow label to this segment", 5);
+	m.insertItem(TR("Attach flow label to this segment"), 5);
       if (pstereotype && (stereotype == 0))
-	m.insertItem("Attach stereotype to this segment", 6);
+	m.insertItem(TR("Attach stereotype to this segment"), 6);
     }
   
     if (get_start() != get_end()) {
       m.insertSeparator();
       init_geometry_menu(geo, 10);
-      m.insertItem("Geometry (Ctrl+l)", &geo);
+      m.insertItem(TR("Geometry (Ctrl+l)"), &geo);
     }
     
     m.insertSeparator();
-    m.insertItem("Remove from view",7);
+    m.insertItem(TR("Remove from view"),7);
     if (data->get_start()->is_writable())
-      m.insertItem("Delete from model", 8);
+      m.insertItem(TR("Delete from model"), 8);
     
     m.insertSeparator();
     if (Tool::menu_insert(&toolm, itstype, 20))
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     
     int rank = m.exec(QCursor::pos());
     
@@ -345,14 +346,14 @@ void FlowCanvas::apply_shortcut(QString s) {
 }
 
 void FlowCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(1);
+  StateSpecVector st(1);
   
-  st[0].set("write horizontally", &write_horizontally);
+  st[0].set(TR("write horizontally"), &write_horizontally);
   settings.complete(st, TRUE);
   
-  SettingsDialog dialog(&st, 0, FALSE, TRUE);
+  SettingsDialog dialog(&st, 0, FALSE);
   
-  dialog.setCaption("Flow Drawing Settings dialog");
+  dialog.setCaption(TR("Flow Drawing Settings dialog"));
   dialog.raise();
   
   if (dialog.exec() == QDialog::Accepted) {
@@ -370,23 +371,23 @@ bool FlowCanvas::has_drawing_settings() const {
 }
 
 void FlowCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(1);
+  StateSpecVector st(1);
   Uml3States write_horizontally;
   ActivityDrawingSettings settings;
   
-  st[0].set("write horizontally", &write_horizontally);
+  st[0].set(TR("write horizontally"), &write_horizontally);
   settings.complete(st, TRUE);
   
-  SettingsDialog dialog(&st, 0, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(&st, 0, FALSE, TRUE);
   
-  dialog.setCaption("Flow Drawing Settings dialog");
+  dialog.setCaption(TR("Flow Drawing Settings dialog"));
   dialog.raise();
   
   if (dialog.exec() == QDialog::Accepted) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
-      if (st[0].name != 0)
+      if (!st[0].name.isEmpty())
 	((FlowCanvas *) it.current())->write_horizontally =
 	  write_horizontally;
       ((FlowCanvas *) it.current())->settings.set(st, 1);
@@ -684,7 +685,7 @@ void FlowCanvas::drop(BrowserNode * bn, UmlCanvas * canvas)
   
   if ((difrom != 0) && (dito != 0)) {
     if (difrom->has_relation(UmlFlow, def))
-      msg_information("Bouml", "flow already drawn");
+      msg_information("Bouml", TR("flow already drawn"));
     else {
       FlowCanvas * tr = 
 	new FlowCanvas(canvas, difrom, dito, from, 0, -1.0, -1.0, def);
@@ -967,7 +968,7 @@ FlowCanvas * FlowCanvas::read(char * & st, UmlCanvas * canvas, char * k)
 
     // manage case where the relation is deleted but present in the browser
     if (result->data->get_start()->deletedp())
-      result->delete_it();
+      RelsToDel.append(result);
     else
       result->update_geometry();
     

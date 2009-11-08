@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,6 +49,7 @@
 #include "Settings.h"
 #include "UmlGlobal.h"
 #include "strutil.h"
+#include "translate.h"
 
 OdClassInstCanvas::OdClassInstCanvas(BrowserClassInstance * bn, UmlCanvas * canvas,
 				     int x, int y, int id)
@@ -102,6 +103,7 @@ void OdClassInstCanvas::remove(bool from_model) {
 
 void OdClassInstCanvas::compute_size() {
   UmlCanvas * canvas = the_canvas();
+  ClassInstanceData * data = (ClassInstanceData *) browser_node->get_data();
   
   used_color = (itscolor == UmlDefaultColor)
     ? canvas->browser_diagram()->get_color(UmlClass)
@@ -149,14 +151,12 @@ void OdClassInstCanvas::compute_size() {
     
     int w = fm.width(get_name() + ":");
     
-    wi = fm.width(((ClassInstanceData *) browser_node->get_data())
-		  ->get_class()->get_name());
+    wi = fm.width(data->get_class()->get_name());
     if (w > wi)
       wi = w;
   }
   
-  const QValueList<SlotAttr> & attributes = 
-    ((ClassInstanceData *) browser_node->get_data())->get_attributes();
+  const QValueList<SlotAttr> & attributes = data->get_attributes();
 
   if (! attributes.isEmpty()) {
     QValueList<SlotAttr>::ConstIterator it = attributes.begin();
@@ -182,7 +182,10 @@ void OdClassInstCanvas::compute_size() {
     he += shadow;
   }
   
-  wi += (int) (8 * zoom);
+  const int eight = (int) (8 * zoom);
+  
+  wi += (((ClassData *) data->get_class()->get_data())->get_is_active())
+    ? eight*3 : eight;
   
   int minw = (int) (zoom * CLASSINST_CANVAS_MIN_SIZE);
   
@@ -381,6 +384,28 @@ void OdClassInstCanvas::draw(QPainter & p) {
 
     p.drawRect(r);
     
+    BrowserClass * cl = 
+      ((ClassInstanceData *) browser_node->get_data())->get_class();
+	  
+    if (((ClassData *) cl->get_data())->get_is_active()) {
+      const int eight = (int) (8 * zoom);
+      
+      r.setLeft(r.left() + eight);
+      r.setRight(r.right() - eight);
+      
+      p.drawLine(r.topLeft(), r.bottomLeft());
+      p.drawLine(r.topRight(), r.bottomRight());
+
+      if (fp != 0)
+	fprintf(fp,
+		"\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n"
+		"\t<line stroke=\"black\" stroke-opacity=\"1\""
+		" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+		r.left(), r.top(), r.left(), r.bottom(),
+		r.right(), r.top(), r.right(), r.bottom());
+    }
+    
     const int two = (int) (2 * zoom);
     int he = fm.height() + two;
     
@@ -404,9 +429,6 @@ void OdClassInstCanvas::draw(QPainter & p) {
 		  p.font(), fp);
       r.setTop(r.top() + fm.height());
       
-      BrowserClass * cl = 
-	((ClassInstanceData *) browser_node->get_data())->get_class();
-	  
       p.drawText(r, ::Qt::AlignHCenter + ::Qt::AlignTop,
 		 cl->get_name());
       if (fp != 0)
@@ -494,23 +516,23 @@ void OdClassInstCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(full_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 9);
-  m.insertItem("Go down", 10);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 9);
+  m.insertItem(TR("Go down"), 10);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 2);
+  m.insertItem(TR("Edit drawing settings"), 2);
   m.insertSeparator();
-  m.insertItem("Edit", 3);
+  m.insertItem(TR("Edit"), 3);
   m.insertSeparator();
-  m.insertItem("Select in browser", 4);
-  m.insertItem("Select class in browser", 5);
+  m.insertItem(TR("Select in browser"), 4);
+  m.insertItem(TR("Select class in browser"), 5);
   if (linked())
-    m.insertItem("Select linked items", 6);
+    m.insertItem(TR("Select linked items"), 6);
   m.insertSeparator();
-  m.insertItem("Remove from view", 7);
+  m.insertItem(TR("Remove from view"), 7);
   if (browser_node->is_writable())
-    m.insertItem("Delete from model", 8);
+    m.insertItem(TR("Delete from model"), 8);
   
   switch (m.exec(QCursor::pos())) {
   case 0:
@@ -587,15 +609,15 @@ void OdClassInstCanvas::apply_shortcut(QString s) {
 }
 
 void OdClassInstCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st((browser_node->get_type() != UmlClass) ? 2 : 1);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st((browser_node->get_type() != UmlClass) ? 2 : 1);
+  ColorSpecVector co(1);
   
-  st[0].set("write name:type \nhorizontally", &write_horizontally);
+  st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
   if (browser_node->get_type() != UmlClass)
-    st[1].set("show stereotypes \nproperties", &show_stereotype_properties);
-  co[0].set("class instance color", &itscolor);
+    st[1].set(TR("show stereotypes \nproperties"), &show_stereotype_properties);
+  co[0].set(TR("class instance color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  SettingsDialog dialog(&st, &co, TRUE);
   
   dialog.raise();
   if (dialog.exec() != QDialog::Accepted)
@@ -608,25 +630,25 @@ bool OdClassInstCanvas::has_drawing_settings() const {
 }
 
 void OdClassInstCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(1);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(1);
+  ColorSpecVector co(1);
   Uml3States write_horizontally;
   UmlColor itscolor;
   
-  st[0].set("write name:type \nhorizontally", &write_horizontally);
-  co[0].set("class instance color", &itscolor);
+  st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
+  co[0].set(TR("class instance color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
-      if (st[0].name != 0)
+      if (!st[0].name.isEmpty())
 	((OdClassInstCanvas *) it.current())->write_horizontally =
 	  write_horizontally;
-      if (co[0].name != 0)
+      if (!co[0].name.isEmpty())
 	((OdClassInstCanvas *) it.current())->itscolor = itscolor;
       ((OdClassInstCanvas *) it.current())->modified();	// call package_modified()
     }
@@ -659,16 +681,16 @@ bool OdClassInstCanvas::copyable() const {
   return selected();
 }
 
-const char * OdClassInstCanvas::may_start(UmlCode &) const {
+QString OdClassInstCanvas::may_start(UmlCode &) const {
   // all (object link & anchor) allowed
   return 0;
 }
 
-const char * OdClassInstCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString OdClassInstCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   return ((dest->type() == UmlClassInstance)
 	  ? ((l == UmlObjectLink) || (l == UmlAnchor) || IsaRelation(l))
 	  : (l == UmlAnchor))
-    ? 0 : "illegal";
+    ? 0 : TR("illegal");
 }
 
 void OdClassInstCanvas::connexion(UmlCode t, DiagramItem * dest, const QPoint &, const QPoint &) {

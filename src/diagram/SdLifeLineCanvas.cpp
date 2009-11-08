@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,6 +40,7 @@
 #include "MenuTitle.h"
 #include "ToolCom.h"
 #include "myio.h"
+#include "translate.h"
 
 #define LIFE_LINE_WIDTH 7
 #define LIFE_LINE_HEIGHT 10000
@@ -72,10 +73,8 @@ void SdLifeLineCanvas::delete_it() {
 }
 
 void SdLifeLineCanvas::update_pos() {
-  QRect r = obj->rect();
-  
-  move((r.left() + r.right() - width())/2,
-       r.top() + LIFE_LINE_TOPOFFSET * the_canvas()->zoom() + 100000);
+  move(obj->x() + (obj->width() - width())/2,
+       obj->y() + LIFE_LINE_TOPOFFSET * the_canvas()->zoom() + 100000);
 }
 
 bool SdLifeLineCanvas::is_decenter(const QPoint &, bool &) const {
@@ -167,17 +166,17 @@ DiagramItem::LineDirection SdLifeLineCanvas::allowed_direction(UmlCode) {
   return DiagramItem::Vertical;
 }
 
-const char * SdLifeLineCanvas::may_start(UmlCode & l) const {
-  return (l != UmlAnchor) ? 0 : "illegal";
+QString SdLifeLineCanvas::may_start(UmlCode & l) const {
+  return (l != UmlAnchor) ? 0 : TR("illegal");
 }
 
-const char * SdLifeLineCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString SdLifeLineCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   switch (dest->type()) {
   case UmlActivityDuration:
   case UmlLifeLine:
-    return (l != UmlAnchor) ? 0 : "illegal";
+    return (l != UmlAnchor) ? 0 : TR("illegal");
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
@@ -314,12 +313,12 @@ void SdLifeLineCanvas::menu(const QPoint&) {
   // delete must call SdObjCanvas->delete_it() NOT the own delete_it !
   QPopupMenu m(0);
   
-  m.insertItem(new MenuTitle("Life line", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Life line"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 2);
-  m.insertItem("Go down", 3);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 2);
+  m.insertItem(TR("Go down"), 3);
 
   exec_menu(m.exec(QCursor::pos()));
 }
@@ -440,7 +439,7 @@ void SdLifeLineCanvas::send(ToolCom * com, const QCanvasItemList & l,
       int m = ll->width()/2;
       
       SdMsgBaseCanvas::send(com, id, (unsigned) ll->x() + m,
-			    (unsigned) ll->end + m, aDestruction, "", "");
+			    (unsigned) ll->end + m, aDestruction, "", "", "");
     }
   }
   
@@ -454,7 +453,7 @@ void SdLifeLineCanvas::send(ToolCom * com, const QCanvasItemList & l,
       
       SdMsgBaseCanvas::send(com, ll->obj->get_ident(),
 			    (unsigned) ll->x() + m, (unsigned) f->center().y(),
-			    anInteractionUse, "", f->arguments());
+			    anInteractionUse, "", "", f->arguments());
       
       ++itref;
     }

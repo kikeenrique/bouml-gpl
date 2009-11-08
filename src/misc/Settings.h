@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -73,6 +73,7 @@ class ClassDiagramSettings {
   public:
     Uml3States hide_attributes;
     Uml3States hide_operations;
+    Uml3States hide_getset_operations;
     Uml3States show_full_members_definition;
     Uml3States show_members_visibility;
     Uml3States show_members_stereotype;
@@ -89,6 +90,7 @@ class ClassDiagramSettings {
     Uml3States auto_label_position;
     Uml3States draw_all_relations;
     Uml3States show_relation_modifiers;
+    Uml3States show_relation_visibility;
     Uml3States show_infonote;
     Uml3States shadow;
     Uml3States show_stereotype_properties;
@@ -97,8 +99,8 @@ class ClassDiagramSettings {
     
     void assign(const ClassDiagramSettings &);
     bool complete(ClassDiagramSettings & result) const;
-    void complete(QArray<StateSpec> & a, UmlCode who);
-    void set(QArray<StateSpec> & a, int index);
+    void complete(StateSpecVector & a, UmlCode who);
+    void set(StateSpecVector & a, int index);
     void save(QTextStream &) const;
     void read(char * &, char * &);
 };
@@ -112,8 +114,8 @@ class SimpleClassDiagramSettings {
     SimpleClassDiagramSettings();
     
     void assign(const class UseCaseDiagramSettings & from);
-    void complete(QArray<StateSpec> & a/*, UmlCode who*/);
-    void set(QArray<StateSpec> & a, int index);
+    void complete(StateSpecVector & a/*, UmlCode who*/);
+    void set(StateSpecVector & a, int index);
     void save(QTextStream &) const;
     void read(char * &, char * &);
 };
@@ -132,7 +134,7 @@ class SequenceDiagramSettings {
     
     void assign(const SequenceDiagramSettings & from);
     bool complete(SequenceDiagramSettings & result) const;
-    void complete(QArray<StateSpec> & a, bool local);
+    void complete(StateSpecVector & a, bool local);
     void save(QTextStream &) const;
     void read(char * &, char * &);
 };
@@ -153,7 +155,7 @@ class CollaborationDiagramSettings {
     
     void assign(const CollaborationDiagramSettings & from);
     bool complete(CollaborationDiagramSettings & result) const;
-    void complete(QArray<StateSpec> & a, bool local);
+    void complete(StateSpecVector & a, bool local);
     void save(QTextStream &) const;
     void read(char * &, char * &);
 };
@@ -172,7 +174,7 @@ class ObjectDiagramSettings {
     
     void assign(const ObjectDiagramSettings & from);
     bool complete(ObjectDiagramSettings & result) const;
-    void complete(QArray<StateSpec> & a, bool local);
+    void complete(StateSpecVector & a, bool local);
     void save(QTextStream &) const;
     void read(char * &, char * &);
 };
@@ -192,7 +194,7 @@ class UseCaseDiagramSettings {
     void assign(const UseCaseDiagramSettings & from);
     bool complete(UseCaseDiagramSettings & result) const;
     bool complete(SimpleClassDiagramSettings & result) const;
-    void complete(QArray<StateSpec> & a, bool local);
+    void complete(StateSpecVector & a, bool local);
     void save(QTextStream &) const;
     void read(char * &, char * &);
 };
@@ -209,7 +211,7 @@ class ComponentDrawingSettings {
     void assign(const ComponentDrawingSettings & from);
     void assign(const class ComponentDiagramSettings & from);
     bool complete(ComponentDrawingSettings & result) const;
-    void complete(QArray<StateSpec> & a, bool local, bool depl);
+    void complete(StateSpecVector & a, bool local, bool depl);
     void save(QTextStream &) const;
     void read(char * &, char * &);
 };
@@ -227,7 +229,7 @@ class ComponentDiagramSettings {
     
     void assign(const ComponentDiagramSettings & from);
     bool complete(ComponentDiagramSettings & result) const;
-    void complete(QArray<StateSpec> & a, bool local);
+    void complete(StateSpecVector & a, bool local);
     void save(QTextStream &) const;
     void read(char * &, char * &);
 };
@@ -246,7 +248,7 @@ class DeploymentDiagramSettings {
     
     void assign(const DeploymentDiagramSettings & from);
     bool complete(DeploymentDiagramSettings & result) const;
-    void complete(QArray<StateSpec> & a, bool local);
+    void complete(StateSpecVector & a, bool local);
     void save(QTextStream &) const;
     void read(char * &, char * &);
 };
@@ -262,7 +264,7 @@ class StateDrawingSettings {
     
     void assign(const StateDrawingSettings & from);
     bool complete(StateDrawingSettings & result) const;
-    void complete(QArray<StateSpec> & a, bool local);
+    void complete(StateSpecVector & a, bool local);
     void save(QTextStream &) const;
     void read(char * &, char * &);
 };
@@ -282,7 +284,7 @@ class StateDiagramSettings {
     
     void assign(const StateDiagramSettings & from);
     bool complete(StateDiagramSettings & result) const;
-    void complete(QArray<StateSpec> & a, bool local);
+    void complete(StateSpecVector & a, bool local);
     void save(QTextStream &) const;
     void read(char * &, char * &);
 };
@@ -297,8 +299,8 @@ class ActivityDrawingSettings {
     
     void assign(const ActivityDrawingSettings & from);
     bool complete(ActivityDrawingSettings & result) const;
-    void complete(QArray<StateSpec> & a, bool local);
-    void set(QArray<StateSpec> & a, int index);
+    void complete(StateSpecVector & a, bool local);
+    void set(StateSpecVector & a, int index);
     void save(QTextStream &) const;
     void read(char * &, char * &);
 };
@@ -318,7 +320,7 @@ class ActivityDiagramSettings {
     
     void assign(const ActivityDiagramSettings & from);
     bool complete(ActivityDiagramSettings & result) const;
-    void complete(QArray<StateSpec> & a, bool local);
+    void complete(StateSpecVector & a, bool local);
     void save(QTextStream &) const;
     void read(char * &, char * &);
 };

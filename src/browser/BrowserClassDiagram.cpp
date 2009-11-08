@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -195,20 +195,20 @@ void BrowserClassDiagram::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     m.setWhatsThis(m.insertItem("Show", 0),
-		   "to show and edit the <em>class diagram</em>");
+		   "to show and edit the <i>class diagram</i>");
     if (!is_edited) {
       m.setWhatsThis(m.insertItem("Edit", 1),
-		     "to edit the <em>class diagram</em>");
+		     "to edit the <i>class diagram</i>");
       if (!is_read_only) {
 	m.setWhatsThis(m.insertItem("Edit drawing settings", 2),
-		       "to set how the <em>class diagram</em>'s items must be drawn");
+		       "to set how the <i>class diagram</i>'s items must be drawn");
 	m.insertSeparator();
 	m.setWhatsThis(m.insertItem("Duplicate", 3),
-		       "to duplicate the <em>class diagram</em>");
+		       "to duplicate the <i>class diagram</i>");
 	if (edition_number == 0) {
 	  m.insertSeparator();
 	  m.setWhatsThis(m.insertItem("Delete", 4),
-			 "to delete the <em>class diagram</em>. \
+			 "to delete the <i>class diagram</i>. \
 Note that you can undelete it after");
 	}
       }
@@ -223,7 +223,7 @@ Note that you can undelete it after");
   }
   else if (!is_read_only && (edition_number == 0))
     m.setWhatsThis(m.insertItem("Undelete", 5),
-		   "to undelete the <em>class diagram</em>");
+		   "to undelete the <i>class diagram</i>");
   
   exec_menu_choice(m.exec(QCursor::pos()));
 }
@@ -309,8 +309,8 @@ void BrowserClassDiagram::open(bool) {
 }
 
 void BrowserClassDiagram::edit_settings() {
-  QArray<StateSpec> st;
-  QArray<ColorSpec> co(4);
+  StateSpecVector st;
+  ColorSpecVector co(4);
   
   settings.complete(st, UmlClassDiagram);
   
@@ -319,7 +319,7 @@ void BrowserClassDiagram::edit_settings() {
   co[2].set("package color", &package_color);
   co[3].set("fragment color", &fragment_color);
   
-  SettingsDialog dialog(&st, &co, FALSE, FALSE);
+  SettingsDialog dialog(&st, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
@@ -522,7 +522,7 @@ void BrowserClassDiagram::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -588,7 +588,7 @@ BrowserClassDiagram * BrowserClassDiagram::read(char * & st, char * k,
     read_color(st, "note_color", r->note_color, k);		// updates k
     read_color(st, "package_color", r->package_color, k);	// updates k
     read_color(st, "fragment_color", r->fragment_color, k);	// updates k
-    r->BrowserNode::read(st, k);				// updates k
+    r->BrowserNode::read(st, k, id);				// updates k
     
     if (!strcmp(k, "size")) {
       r->set_format(canvas_format(read_keyword(st)));

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -53,6 +53,7 @@
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserUseCase> BrowserUseCase::all(257, __FILE__);
 QStringList BrowserUseCase::its_default_stereotypes;	// unicode
@@ -147,6 +148,15 @@ void BrowserUseCase::update_idmax_for_root()
   all.update_idmax_for_root();
   BrowserSimpleRelation::update_idmax_for_root();
 }
+
+void BrowserUseCase::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
+}
     
 void BrowserUseCase::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
@@ -181,62 +191,62 @@ void BrowserUseCase::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
-      m.setWhatsThis(m.insertItem("New use case diagram", 0),
-		     "to add a <em>use case diagram</em>");
-      m.setWhatsThis(m.insertItem("New sequence diagram", 1),
-		     "to add a <em>sequence diagram</em>");
-      m.setWhatsThis(m.insertItem("New communication diagram", 2),
-		     "to add a <em>communication diagram</em>");
-      m.setWhatsThis(m.insertItem("New object diagram", 13),
-		     "to add a <em>object diagram</em>");
+      m.setWhatsThis(m.insertItem(TR("New use case diagram"), 0),
+		     TR("to add a <i>use case diagram</i>"));
+      m.setWhatsThis(m.insertItem(TR("New sequence diagram"), 1),
+		     TR("to add a <i>sequence diagram</i>"));
+      m.setWhatsThis(m.insertItem(TR("New communication diagram"), 2),
+		     TR("to add a <i>communication diagram</i>"));
+      m.setWhatsThis(m.insertItem(TR("New object diagram"), 13),
+		     TR("to add a <i>object diagram</i>"));
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("New use case", 3),
-		     "to add a <em>use case</em>");
-      m.setWhatsThis(m.insertItem("New actor", 4),
-		     "to add an <em>actor</em>");
-      m.setWhatsThis(m.insertItem("New class", 5),
-		     "to add a <em>class</em>");
-      m.setWhatsThis(m.insertItem("New class instance", 14),
-		     "to add a <em>class instance</em>");
-      m.setWhatsThis(m.insertItem("New state machine", 15),
-		     "to add a <em>state machine</em>");
-      m.setWhatsThis(m.insertItem("New activity", 16),
-		     "to add an <em>activity</em>");
+      m.setWhatsThis(m.insertItem(TR("New use case"), 3),
+		     TR("to add a <i>use case</i>"));
+      m.setWhatsThis(m.insertItem(TR("New actor"), 4),
+		     TR("to add an <i>actor</i>"));
+      m.setWhatsThis(m.insertItem(TR("New class"), 5),
+		     TR("to add a <i>class</i>"));
+      m.setWhatsThis(m.insertItem(TR("New class instance"), 14),
+		     TR("to add a <i>class instance</i>"));
+      m.setWhatsThis(m.insertItem(TR("New state machine"), 15),
+		     TR("to add a <i>state machine</i>"));
+      m.setWhatsThis(m.insertItem(TR("New activity"), 16),
+		     TR("to add an <i>activity</i>"));
       m.insertSeparator();
     }
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("Edit", 6),
-		     "to edit the <em>use case</em>");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 6),
+		     TR("to edit the <i>use case</i>"));
       if (!is_read_only) {
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("Edit drawing settings", 7),
-		       "to set how the sub <em>diagrams</em>'s items must be drawn");
+	m.setWhatsThis(m.insertItem(TR("Edit drawing settings"), 7),
+		       TR("to set how the sub <i>diagrams</i>'s items must be drawn"));
 	if (edition_number == 0) {
 	  m.insertSeparator();
-	  m.setWhatsThis(m.insertItem("Delete", 8),
-			 "to delete the <em>use case and its sub items</em>. \
-Note that you can undelete them after");
+	  m.setWhatsThis(m.insertItem(TR("Delete"), 8),
+			 TR("to delete the <i>use case and its sub items</i>. \
+Note that you can undelete them after"));
 	}
       }
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("Referenced by", 12),
-		   "to know who reference the <i>use case</i> \
-through a relation");
-    mark_menu(m, "use case", 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 12),
+		   TR("to know who reference the <i>use case</i> \
+through a relation"));
+    mark_menu(m, TR("the use case"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 9),
-		   "undelete the <em>use case</em>. \
-Do not undelete its sub items");
-    m.setWhatsThis(m.insertItem("Undelete recursively", 10),
-		   "undelete the <em>use case</em> and its sub items");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 9),
+		   TR("undelete the <i>use case</i>. \
+Do not undelete its sub items"));
+    m.setWhatsThis(m.insertItem(TR("Undelete recursively"), 10),
+		   TR("undelete the <i>use case</i> and its sub items"));
   }
   
   exec_menu_choice(m.exec(QCursor::pos()));
@@ -306,8 +316,8 @@ void BrowserUseCase::exec_menu_choice(int rank) {
     return;
   case 7:
     {
-      QArray<StateSpec> st;
-      QArray<ColorSpec> co(15);
+      StateSpecVector st;
+      ColorSpecVector co(15);
       
       usecasediagram_settings.complete(st, FALSE);
       sequencediagram_settings.complete(st, FALSE);
@@ -316,23 +326,23 @@ void BrowserUseCase::exec_menu_choice(int rank) {
       statediagram_settings.complete(st, FALSE);
       activitydiagram_settings.complete(st, FALSE);
       
-      co[0].set("note color", &note_color);
-      co[1].set("use case color", &usecase_color);
-      co[2].set("package color", &package_color);
-      co[3].set("fragment color", &fragment_color);
-      co[4].set("subject color", &subject_color);
-      co[5].set("duration color", &duration_color);
-      co[6].set("continuation color", &continuation_color);
-      co[7].set("state color", &state_color);
-      co[8].set("state action color", &stateaction_color);
-      co[9].set("activity color", &activity_color);
-      co[10].set("activity region color", &activityregion_color);
-      co[11].set("activity partition color", &activitypartition_color);
-      co[12].set("activity action color", &activityaction_color);
-      co[13].set("parameter and pin color", &parameterpin_color);
-      co[14].set("class color", &class_color);
+      co[0].set(TR("note color"), &note_color);
+      co[1].set(TR("use case color"), &usecase_color);
+      co[2].set(TR("package color"), &package_color);
+      co[3].set(TR("fragment color"), &fragment_color);
+      co[4].set(TR("subject color"), &subject_color);
+      co[5].set(TR("duration color"), &duration_color);
+      co[6].set(TR("continuation color"), &continuation_color);
+      co[7].set(TR("state color"), &state_color);
+      co[8].set(TR("state action color"), &stateaction_color);
+      co[9].set(TR("activity color"), &activity_color);
+      co[10].set(TR("activity region color"), &activityregion_color);
+      co[11].set(TR("activity partition color"), &activitypartition_color);
+      co[12].set(TR("activity action color"), &activityaction_color);
+      co[13].set(TR("parameter and pin color"), &parameterpin_color);
+      co[14].set(TR("class color"), &class_color);
 
-      SettingsDialog dialog(&st, &co, FALSE, FALSE);
+      SettingsDialog dialog(&st, &co, FALSE);
       
       dialog.raise();
       if (dialog.exec() != QDialog::Accepted)
@@ -472,7 +482,7 @@ BrowserNodeList & BrowserUseCase::instances(BrowserNodeList & result) {
 BrowserUseCase * BrowserUseCase::add_use_case(BrowserNode * future_parent) {
   QString name;
   
-  if (!future_parent->enter_child_name(name, "enter use case's name : ",
+  if (!future_parent->enter_child_name(name, TR("enter use case's name : "),
 				       UmlUseCase, TRUE, FALSE))
     return 0;
   
@@ -487,7 +497,7 @@ BrowserNode * BrowserUseCase::get_use_case(BrowserNode * future_parent) {
   QString name;
   BrowserNodeList nodes;
   
-  if (!future_parent->enter_child_name(name, "enter use case's name : ",
+  if (!future_parent->enter_child_name(name, TR("enter use case's name : "),
 				       UmlUseCase, instances(nodes),
 				       &old, TRUE, FALSE))
     return 0;
@@ -857,11 +867,11 @@ void BrowserUseCase::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	// have choice
 	QPopupMenu m(0);
   
-	m.insertItem(new MenuTitle(bn->get_name() + QString(" moving"),
+	m.insertItem(new MenuTitle(TR("move ") + bn->get_name(),
 				   m.font()), -1);
 	m.insertSeparator();
-	m.insertItem("In " + QString(get_name()), 1);
-	m.insertItem("After " + QString(get_name()), 2);
+	m.insertItem(TR("In ") + QString(get_name()), 1);
+	m.insertItem(TR("After ") + QString(get_name()), 2);
 	
 	switch (m.exec(QCursor::pos())) {
 	case 1:
@@ -892,7 +902,7 @@ void BrowserUseCase::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     else if (after == 0)
       ((BrowserNode *) parent())->DropAfterEvent(e, this);
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -1050,7 +1060,7 @@ void BrowserUseCase::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -1149,7 +1159,7 @@ BrowserUseCase * BrowserUseCase::read(char * & st, char * k,
       k = read_keyword(st);
     }
     
-    result->BrowserNode::read(st, k);			// updates k
+    result->BrowserNode::read(st, k, id);			// updates k
     
     if (strcmp(k, "end")) {
       while (BrowserUseCase::read(st, k, result) ||

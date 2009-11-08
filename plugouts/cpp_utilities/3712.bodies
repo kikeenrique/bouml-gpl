@@ -65,6 +65,15 @@ class UmlBaseRelation
   read_if_needed_();
   
   return _rel_kind;
+!!!149376.cpp!!!	side(in first : bool) : UmlRelation
+  UmlCom::send_cmd(_identifier, sideCmd, (char) first);
+  
+  return (UmlRelation *) UmlBaseItem::read_();
+!!!149376.java!!!	side(in first : bool) : UmlRelation
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.sideCmd,
+		  (first) ? (byte) 1 : (byte) 0);
+  
+  return (UmlRelation) UmlBaseItem.read_();
 !!!37888.cpp!!!	isReadOnly() : bool
   read_if_needed_();
   
@@ -74,12 +83,85 @@ class UmlBaseRelation
   
   return _read_only;
 !!!38016.cpp!!!	set_isReadOnly(in y : bool) : bool
-  return set_it_(_read_only, y, setIsReadOnlyCmd);
+  UmlCom::send_cmd(_identifier, setIsReadOnlyCmd, (char) y);
+  if (UmlCom::read_bool()) {
+    _read_only = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
 !!!38016.java!!!	set_isReadOnly(in y : bool) : bool
   UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsReadOnlyCmd, (y) ? (byte) 1 : (byte) 0);
   UmlCom.check();
 
   _read_only = y;
+!!!222848.cpp!!!	isDerived() : bool
+  read_if_needed_();
+  return _derived;
+!!!222848.java!!!	isDerived() : bool
+  read_if_needed_();
+  return _derived;
+!!!222976.cpp!!!	isDerivedUnion() : bool
+  read_if_needed_();
+  return _derived_union;
+!!!222976.java!!!	isDerivedUnion() : bool
+  read_if_needed_();
+  return _derived_union;
+!!!223104.cpp!!!	set_isDerived(in is_derived : bool, in is_union : bool) : bool
+  UmlCom::send_cmd(_identifier, setDerivedCmd,
+                   (char) (((is_derived) ? 1 : 0) + ((is_union) ? 2 : 0)));
+  if (UmlCom::read_bool()) {
+    _derived = is_derived;
+    _derived_union = is_union;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!223104.java!!!	set_isDerived(in is_derived : bool, in is_union : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setDerivedCmd,
+                  (byte) (((is_derived) ? 1 : 0) + ((is_union) ? 2 : 0)));
+  UmlCom.check();
+
+  _derived = is_derived;
+  _derived_union = is_union;
+!!!223232.cpp!!!	isOrdered() : bool
+  read_if_needed_();
+  return _ordered;
+!!!223232.java!!!	isOrdered() : bool
+  read_if_needed_();
+  return _ordered;
+!!!223360.cpp!!!	set_isOrdered(in v : bool) : bool
+  UmlCom::send_cmd(_identifier, setOrderingCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _ordered = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!223360.java!!!	set_isOrdered(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setOrderingCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _ordered = v;
+!!!223488.cpp!!!	isUnique() : bool
+  read_if_needed_();
+  return _unique;
+!!!223488.java!!!	isUnique() : bool
+  read_if_needed_();
+  return _unique;
+!!!223616.cpp!!!	set_isUnique(in v : bool) : bool
+  UmlCom::send_cmd(_identifier, setUniqueCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _unique = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!223616.java!!!	set_isUnique(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setUniqueCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _unique = v;
 !!!38144.cpp!!!	defaultValue() : string
   read_if_needed_();
   
@@ -121,6 +203,33 @@ class UmlBaseRelation
   read_if_needed_();
   
   return _role_type;
+!!!149120.cpp!!!	association() : UmlTypeSpec
+  read_if_needed_();
+  
+  return _association;
+!!!149120.java!!!	association() : UmlTypeSpec
+  read_if_needed_();
+  
+  return _association;
+!!!149248.cpp!!!	set_Association(in t : UmlTypeSpec) : bool
+  if (set_it_(_association, t, setRelationAssocClassCmd)) {
+    UmlBaseRelation * other = (UmlBaseRelation *) UmlBaseItem::read_();
+    
+    if (other != 0)
+      other->_association = t;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!149248.java!!!	set_Association(in t : UmlTypeSpec) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setRelationAssocClassCmd, t);
+  UmlCom.check();
+  
+  _association = t;
+  UmlBaseRelation other = (UmlBaseRelation) UmlBaseItem.read_();
+  
+  if (other != null)
+    other._association = t;
 !!!38656.cpp!!!	roleName() : string
   read_if_needed_();
   
@@ -226,9 +335,8 @@ class UmlBaseRelation
   
   return _cpp_mutable;
 !!!40064.cpp!!!	set_isCppMutable(in y : bool) : bool
-  bool b;
-  
-  if (set_it_(b, y, setIsCppMutableCmd)) {
+  UmlCom::send_cmd(_identifier, setIsCppMutableCmd, (char) y);
+  if (UmlCom::read_bool()) {
     _cpp_mutable = y;
     return TRUE;
   }
@@ -342,20 +450,35 @@ class UmlBaseRelation
   UmlBaseClassMember::read_uml_();
   _rel_kind = (aRelationKind) UmlCom::read_char();
   _role_type = (UmlClass *) UmlBaseItem::read_();
+  _association.type = (UmlClass *) UmlBaseItem::read_();
+  if (_association.type == 0)
+    _association.explicit_type = UmlCom::read_string();
   _role_name = UmlCom::read_string();
   _multiplicity = UmlCom::read_string();
   _default_value = UmlCom::read_string();
   _read_only = UmlCom::read_bool();
+  _derived = UmlCom::read_bool();
+  _derived_union = UmlCom::read_bool();
+  _ordered = UmlCom::read_bool();
+  _unique = UmlCom::read_bool();
   _get_oper = (UmlOperation *) UmlBaseItem::read_();
   _set_oper = (UmlOperation *) UmlBaseItem::read_();
 !!!41216.java!!!	read_uml_() : void
   super.read_uml_();
   _rel_kind = aRelationKind.fromInt(UmlCom.read_char());
   _role_type = (UmlClass) UmlBaseItem.read_();
+  _association = new UmlTypeSpec();
+  _association.type = (UmlClass) UmlBaseItem.read_();
+  if (_association.type == null)
+    _association.explicit_type = UmlCom.read_string();
   _role_name = UmlCom.read_string();
   _multiplicity = UmlCom.read_string();
   _default_value = UmlCom.read_string();
   _read_only = UmlCom.read_bool();
+  _derived = UmlCom.read_bool();
+  _derived_union = UmlCom.read_bool();
+  _ordered = UmlCom.read_bool();
+  _unique = UmlCom.read_bool();
   _get_oper = (UmlOperation) UmlBaseItem.read_();
   _set_oper = (UmlOperation) UmlBaseItem.read_();
 !!!41344.cpp!!!	read_cpp_() : void
@@ -367,11 +490,19 @@ class UmlBaseRelation
   _cpp_mutable = UmlCom.read_bool();
   _cpp_virtual_inheritance = UmlCom.read_bool();
 !!!41472.cpp!!!	read_java_() : void
-  UmlBaseClassItem::read_java_();
+  UmlBaseClassMember::read_java_();
   _java_transient = UmlCom::read_bool();
 !!!41472.java!!!	read_java_() : void
   super.read_java_();
   _java_transient = UmlCom.read_bool();
+!!!206976.cpp!!!	read_php_() : void
+  UmlBaseClassMember::read_php_();
+!!!206976.java!!!	read_php_() : void
+  super.read_php_();
+!!!219264.cpp!!!	read_python_() : void
+  UmlBaseClassMember::read_python_();
+!!!219264.java!!!	read_python_() : void
+  super.read_python_();
 !!!41600.cpp!!!	read_idl_() : void
   UmlBaseClassItem::read_idl_();
   _idl_truncatable = UmlCom::read_bool();

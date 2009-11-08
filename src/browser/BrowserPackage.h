@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -122,8 +122,8 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     virtual UmlColor get_color(UmlCode) const;
     virtual UmlVisibility get_visibility(UmlCode) const;
     virtual void on_delete();
-    virtual const char * check_inherit(const BrowserNode * parent) const;
-    const char * may_connect(UmlCode & l, const BrowserNode * dest) const;
+    virtual QString check_inherit(const BrowserNode * parent) const;
+    QString may_connect(UmlCode & l, const BrowserNode * dest) const;
     
     virtual void referenced_by(QList<BrowserNode> & l, bool ondelete);
     
@@ -152,7 +152,7 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     
     void add_package(bool profile);
     unsigned load(bool recursive, int id = -1);
-    void import_project();
+    BrowserPackage * import_project(QString fn, bool aslib = FALSE, int id = 0);
     
     static BrowserNodeList & instances(BrowserNodeList &);
     static BrowserPackage * get_package();
@@ -174,6 +174,9 @@ class BrowserPackage : public BrowserNode, public Labeled<BrowserPackage> {
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
+    virtual void prepare_update_lib() const;
+    virtual void support_file(QDict<char> & files, bool add) const;
+    void update_lib();
     
     static void prepare_for_sort();
 };

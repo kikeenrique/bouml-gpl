@@ -9,6 +9,7 @@ void UmlBaseSequenceMessage::read_(const QPtrDict<UmlClassInstanceReference> & i
   UmlBaseMessage::read_(instances);
   _kind = (aMessageKind) UmlCom::read_char();
   _args = UmlCom::read_string();
+  _stereotype = UmlCom::read_string();
   _x = (int) UmlCom::read_unsigned();
   _send_at = (int) UmlCom::read_unsigned();
   _received_at = (int) UmlCom::read_unsigned();

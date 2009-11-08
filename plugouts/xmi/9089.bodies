@@ -198,8 +198,6 @@ if ((t.type != 0) ||
       out << "/>\n";
       out.indent();
       out << "\t</UML:Parameter.type>\n";
-      out.indent();
-      out << "</UML:Parameter>\n";
     }
     else if (!pt.explicit_type.isEmpty()) {
       out.indent();
@@ -210,9 +208,10 @@ if ((t.type != 0) ||
       out << "/>\n";
       out.indent();
       out << "\t</UML:Parameter.type>\n";
-      out.indent();
-      out << "</UML:Parameter>\n";
     }
+    
+    out.indent();
+    out << "</UML:Parameter>\n";
   }
 !!!150146.cpp!!!	write_cpp_java_params(inout out : FileOut, in decl : string) : void
   int index1 = decl.find("${(}");
@@ -266,9 +265,10 @@ if ((t.type != 0) ||
 	out << "/>\n";
 	out.indent();
 	out << "\t</UML:Parameter.type>\n";
-	out.indent();
-	out << "</UML:Parameter>\n";
       }
+      
+      out.indent();
+      out << "</UML:Parameter>\n";
     }
   }
 !!!149762.cpp!!!	get_param(in s : string, inout index : int, out r : string, inout kname : string, inout ktype : string, inout rank : int) : bool

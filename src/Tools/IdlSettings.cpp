@@ -22,6 +22,9 @@ bool IdlSettings::set_UseDefaults(bool y)
 
 QCString IdlSettings::type(QCString s)
 {
+  if (s.isEmpty())
+    return s;
+  
   read_if_needed_();
   
   UmlBuiltin * b = UmlSettings::_map_builtins.find(s);

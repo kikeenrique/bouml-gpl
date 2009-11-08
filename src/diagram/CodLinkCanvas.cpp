@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -43,6 +43,7 @@
 #include "CodEditMsgDialog.h"
 #include "Tool.h"
 #include "MenuTitle.h"
+#include "translate.h"
 
 CodLinkCanvas::CodLinkCanvas(UmlCanvas * canvas, DiagramItem * b,
 			     DiagramItem * e, int id,
@@ -106,26 +107,26 @@ void CodLinkCanvas::menu(const QPoint&) {
   QPopupMenu m;
   QPopupMenu geo;
   
-  m.insertItem(new MenuTitle("Link", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Link"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem(QString("add messages to ") + from->get_full_name(), 1);
-  m.insertItem(QString("add messages to ") + to->get_full_name(), 2);
+  m.insertItem(TR("add messages to ") + from->get_full_name(), 1);
+  m.insertItem(TR("add messages to ") + to->get_full_name(), 2);
   m.insertSeparator();
-  m.insertItem("Edit its messages", 3);
-  m.insertItem("Edit all the messages", 4);
+  m.insertItem(TR("Edit its messages"), 3);
+  m.insertItem(TR("Edit all the messages"), 4);
   m.insertSeparator();
-  m.insertItem("Select linked items", 7);
+  m.insertItem(TR("Select linked items"), 7);
   m.insertSeparator();
   if (!new_dirs) {
-    m.insertItem("Edit drawing settings", 5);
+    m.insertItem(TR("Edit drawing settings"), 5);
     m.insertSeparator();
   }
   if (get_start() != get_end()) {
     init_geometry_menu(geo, 10);
-    m.insertItem("Geometry (Ctrl+l)", &geo);
+    m.insertItem(TR("Geometry (Ctrl+l)"), &geo);
     m.insertSeparator();
   }
-  m.insertItem("Remove from view", 6);
+  m.insertItem(TR("Remove from view"), 6);
   
   int rank = m.exec(QCursor::pos());
   

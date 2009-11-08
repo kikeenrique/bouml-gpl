@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -54,7 +54,7 @@ DiagramCanvas::DiagramCanvas(BrowserNode * bn, UmlCanvas * canvas,
   
   if (wi >= 0) {
     width_scale100 = wi;
-    wi  = (int) (wi * zoom);
+    wi  = (int) (wi * zoom + 0.5);
   }
   else {
     wi = -wi;
@@ -63,7 +63,7 @@ DiagramCanvas::DiagramCanvas(BrowserNode * bn, UmlCanvas * canvas,
   
   if (he >= 0) {
     height_scale100 = he;
-    he = (int) (he * zoom);
+    he = (int) (he * zoom + 0.5);
   }
   else {
     he = -he;
@@ -76,8 +76,8 @@ DiagramCanvas::DiagramCanvas(BrowserNode * bn, UmlCanvas * canvas,
     
   QPoint c = center();
   
-  center_x_scale100 = (int) (c.x() / zoom);
-  center_y_scale100 = (int) (c.y() / zoom);
+  center_x_scale100 = (int) (c.x() / zoom + 0.5);
+  center_y_scale100 = (int) (c.y() / zoom + 0.5);
   
   if (bn != 0) {
     // must be created after setX/Y whose call moveBy
@@ -138,7 +138,7 @@ void DiagramCanvas::change_scale() {
   double scale = the_canvas()->zoom();
   
   QCanvasRectangle::setVisible(FALSE);
-  setSize((int) (width_scale100*scale), (int) (height_scale100*scale));
+  setSize((int) (width_scale100*scale + 0.5), (int) (height_scale100*scale + 0.5));
   recenter();
   QCanvasRectangle::setVisible(TRUE);
 }
@@ -147,16 +147,16 @@ void DiagramCanvas::recenter() {
   double scale = the_canvas()->zoom();
   QPoint c = center();
   
-  QCanvasRectangle::moveBy(((int) (center_x_scale100 * scale + 0.5)) - c.x(),
-			   ((int) (center_y_scale100 * scale + 0.5)) - c.y());
+  QCanvasRectangle::moveBy(center_x_scale100 * scale - c.x(),
+			   center_y_scale100 * scale - c.y());
 }
 
 void DiagramCanvas::set_center100() {
   QPoint c = center();
   double scale = the_canvas()->zoom();
     
-  center_x_scale100  = (int) (c.x()/scale);
-  center_y_scale100  = (int) (c.y()/scale);
+  center_x_scale100  = (int) (c.x()/scale + 0.5);
+  center_y_scale100  = (int) (c.y()/scale + 0.5);
 }
 
 void DiagramCanvas::moveBy(double dx, double dy) {
@@ -198,7 +198,8 @@ void DiagramCanvas::select_associated() {
 }
 
 QPoint DiagramCanvas::center() const {
-  return rect().center();
+  return QPoint((int) (x() + (width() - 1)/2.0),
+		(int) (y() + (height() - 1)/2.0));
 }
 
 QRect DiagramCanvas::rect() const {
@@ -228,18 +229,19 @@ void DiagramCanvas::resize(int wi, int he) {
   if (! ((UmlCanvas *) canvas())->do_zoom()) {
     double zoom = the_canvas()->zoom();
     
-    width_scale100 = (int) (wi / zoom);
-    height_scale100 = (int) (he / zoom);
+    width_scale100 = (int) (wi / zoom + 0.5);
+    height_scale100 = (int) (he / zoom + 0.5);
     
     QPoint c = center();
     
-    center_x_scale100  = (int) (c.x() / zoom);
-    center_y_scale100  = (int) (c.y() / zoom);
+    center_x_scale100  = (int) (c.x() / zoom + 0.5);
+    center_y_scale100  = (int) (c.y() / zoom + 0.5);
   }
 }
 
 // min_width and min_height must take into account the current zoom
-void DiagramCanvas::resize(aCorner c, int dx, int dy,
+// some element like parameter stay centered to their old position
+void DiagramCanvas::resize(aCorner c, int dx, int dy, QPoint & o,
 			   int min_width, int min_height,
 			   bool odd, bool stay_centered) {
   hide_lines();
@@ -251,14 +253,22 @@ void DiagramCanvas::resize(aCorner c, int dx, int dy,
     dy = -dy;
     break;
   case UmlTopRight:
-    QCanvasRectangle::moveBy(0, dy);
+    if (stay_centered)
+      QCanvasRectangle::moveBy(-dx, dy);
+    else
+      QCanvasRectangle::moveBy(0, dy);
     dy = -dy;
     break;
   case UmlBottomLeft:
-    QCanvasRectangle::moveBy(dx, 0);
+    if (stay_centered)
+      QCanvasRectangle::moveBy(dx, -dy);
+    else
+      QCanvasRectangle::moveBy(dx, 0);
     dx = -dx;
     break;
   default:
+    if (stay_centered)
+      QCanvasRectangle::moveBy(-dx, -dy);
     break;
   }
   
@@ -275,10 +285,29 @@ void DiagramCanvas::resize(aCorner c, int dx, int dy,
 
   if (he < min_height)
     he = min_height;
-  
+
   if (odd) {
-    wi |= 1;
-    he |= 1;
+    if (! (wi & 1)) {
+      if (o.x() != 0) {
+	wi -= 1;
+	o.setX(0);
+      }
+      else {
+	wi += 1;
+	o.setX(1);
+      }
+    }
+    
+    if (! (he & 1)) {
+      if (o.y() != 0) {
+	he -= 1;
+	o.setY(0);
+      }
+      else {
+	he += 1;
+	o.setY(1);
+      }
+    }
   }
 	    
   resize(wi, he);

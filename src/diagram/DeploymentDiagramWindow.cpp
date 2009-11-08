@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,115 +41,115 @@
 #include "BrowserDeploymentDiagram.h"
 #include "UmlPixmap.h"
 #include "myio.h"
+#include "translate.h"
 
-const char * adddeploymentnodeText = "Click this button to add a <em>node</em> in the diagram. <br><br>"
-"You can also drop the node from the <b>browser</b>.";
-extern const char * addpackageText;
-extern const char * addfragmentText;
-const char * networkText = "Click this button to add a <em>network</em> in the diagram.";
-const char * hubText = "Click this button to add a <em>network connexion/ending</em> in the diagram.";
-const char * addartifactText = "Click this button to add an <em>artifact</em> in the diagram.";
-extern const char * addcomponentText;
-extern const char * dependencyText;
-static const char * associationText = "Click this button to add an <em>association</em>"
-"between <em>artifacts</em>";
-extern const char * inheritText;
-extern const char * noteText;
-extern const char * anchorText;
-extern const char * textText;
+QString adddeploymentnodeText() { return TR("Click this button to add a <i>node</i> in the diagram. <br><br>"
+					    "You can also drop the node from the <b>browser</b>."); }
+extern QString addpackageText();
+extern QString addfragmentText();
+QString networkText() { return TR("Click this button to add a <i>network</i> in the diagram."); }
+QString hubText() { return TR("Click this button to add a <i>network connexion/ending</i> in the diagram."); }
+QString addartifactText() { return TR("Click this button to add an <i>artifact</i> in the diagram."); }
+extern QString addcomponentText();
+extern QString dependencyText();
+extern QString associationText();
+extern QString inheritText();
+extern QString noteText();
+extern QString anchorText();
+extern QString textText();
 
 // id is an old ident in case of an import
 DeploymentDiagramWindow::DeploymentDiagramWindow(const QString & s, BrowserDeploymentDiagram * b, int id)
     : DiagramWindow(b, s), view(0) {
   QToolBar * toolbar = new QToolBar(this, "deployment operations");
-  addToolBar(toolbar, "Deployment Operations", Top, TRUE);
+  addToolBar(toolbar, TR("Toolbar"), Top, TRUE);
   
   add_edit_button(toolbar);
   
   select =
-    new QToolButton(*selectButton, "Select", QString::null,
+    new QToolButton(*selectButton, TR("Select"), QString::null,
 		    this, SLOT(hit_select()), toolbar, "select");
   select->setToggleButton(TRUE);
   select->setOn(TRUE);
   current_button = UmlSelect;
   
   addPackage
-    = new QToolButton(*packageButton, "Add Package", QString::null,
+    = new QToolButton(*packageButton, TR("Add Package"), QString::null,
 		      this, SLOT(hit_package()), toolbar, "add package");
   addPackage->setToggleButton(TRUE);
-  QWhatsThis::add(addPackage, addpackageText);
+  QWhatsThis::add(addPackage, addpackageText());
   
   addFragment
-    = new QToolButton(*fragmentButton, "Add Fragment", QString::null,
+    = new QToolButton(*fragmentButton, TR("Add Fragment"), QString::null,
 		      this, SLOT(hit_fragment()), toolbar, "add fragment");
   addFragment->setToggleButton(TRUE);
-  QWhatsThis::add(addFragment, addfragmentText);
+  QWhatsThis::add(addFragment, addfragmentText());
   
   addDeploymentNode =
-    new QToolButton(*deploymentNodeButton, "Add Deployment Node", QString::null,
+    new QToolButton(*deploymentNodeButton, TR("Add Deployment Node"), QString::null,
 		    this, SLOT(hit_deploymentnode()), toolbar, "add deployment node");
   addDeploymentNode->setToggleButton(TRUE);
-  QWhatsThis::add(addDeploymentNode, adddeploymentnodeText);
+  QWhatsThis::add(addDeploymentNode, adddeploymentnodeText());
   
   addArtifact =
-    new QToolButton(*artifactButton, "Add Artifact", QString::null,
+    new QToolButton(*artifactButton, TR("Add Artifact"), QString::null,
 		    this, SLOT(hit_artifact()), toolbar, "add artifact");
   addArtifact->setToggleButton(TRUE);
-  QWhatsThis::add(addArtifact, addartifactText);
+  QWhatsThis::add(addArtifact, addartifactText());
   
   addComponent =
-    new QToolButton(*componentButton, "Add Component", QString::null,
+    new QToolButton(*componentButton, TR("Add Component"), QString::null,
 		    this, SLOT(hit_component()), toolbar, "add component");
   addComponent->setToggleButton(TRUE);
-  QWhatsThis::add(addComponent, addcomponentText);
+  QWhatsThis::add(addComponent, addcomponentText());
   
   hub =
-    new QToolButton(*hubButton, "Network connexion/ending", QString::null,
+    new QToolButton(*hubButton, TR("Network connexion/ending"), QString::null,
 		    this, SLOT(hit_hub()), toolbar, "network connexion/ending");
   hub->setToggleButton(TRUE);
-  QWhatsThis::add(hub, hubText);
+  QWhatsThis::add(hub, hubText());
   
   network =
-    new QToolButton(*associationButton, "Network", QString::null,
+    new QToolButton(*associationButton, TR("Network"), QString::null,
 		    this, SLOT(hit_network()), toolbar, "network");
   network->setToggleButton(TRUE);
-  QWhatsThis::add(network, networkText);
+  QWhatsThis::add(network, networkText());
   
   inherit =
-    new QToolButton(*generalisationButton, "Inheritance", QString::null,
+    new QToolButton(*generalisationButton, TR("Inheritance"), QString::null,
 		    this, SLOT(hit_inherit()), toolbar, "inheritance");
   inherit->setToggleButton(TRUE);
-  QWhatsThis::add(inherit, inheritText);
+  QWhatsThis::add(inherit, inheritText());
   
   association =
-    new QToolButton(*directionalAssociationButton, "Association", QString::null,
+    new QToolButton(*directionalAssociationButton, TR("Association"), QString::null,
 		    this, SLOT(hit_association()), toolbar, "association");
   association->setToggleButton(TRUE);
-  QWhatsThis::add(association, associationText);
+  QWhatsThis::add(association, associationText());
   
   dependency =
-    new QToolButton(*dependencyButton, "Dependency", QString::null,
+    new QToolButton(*dependencyButton, TR("Dependency"), QString::null,
 		    this, SLOT(hit_dependency()), toolbar, "dependency");
   dependency->setToggleButton(TRUE);
-  QWhatsThis::add(dependency, dependencyText);
+  QWhatsThis::add(dependency, dependencyText());
   
   note =
-    new QToolButton(*noteButton, "Note", QString::null,
+    new QToolButton(*noteButton, TR("Note"), QString::null,
 		    this, SLOT(hit_note()), toolbar, "note");
   note->setToggleButton(TRUE);
-  QWhatsThis::add(note, noteText);
+  QWhatsThis::add(note, noteText());
   
   anchor =
-    new QToolButton(*anchorButton, "Anchor", QString::null,
+    new QToolButton(*anchorButton, TR("Anchor"), QString::null,
 		    this, SLOT(hit_anchor()), toolbar, "anchor");
   anchor->setToggleButton(TRUE);
-  QWhatsThis::add(anchor, anchorText);
+  QWhatsThis::add(anchor, anchorText());
   
   text =
-    new QToolButton(*textButton, "Text", QString::null,
+    new QToolButton(*textButton, TR("Text"), QString::null,
 		    this, SLOT(hit_text()), toolbar, "text");
   text->setToggleButton(TRUE);
-  QWhatsThis::add(text, textText);  
+  QWhatsThis::add(text, textText());  
   
   toolbar->addSeparator();
   

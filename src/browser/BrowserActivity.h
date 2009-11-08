@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -66,7 +66,7 @@ class BrowserActivity : public BrowserNode, public Labeled<BrowserActivity> {
     QValueList<BrowserParameter *> get_params() const;
     void add_activity_diagram();
     BrowserNode * add_parameter(BrowserParameter * p);
-    const char * may_connect(const BrowserNode * dest) const;
+    QString may_connect(const BrowserNode * dest) const;
     
     virtual const QPixmap* pixmap (int) const;
 
@@ -93,6 +93,7 @@ class BrowserActivity : public BrowserNode, public Labeled<BrowserActivity> {
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
+    virtual void prepare_update_lib() const;
     
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual bool api_compatible(unsigned v) const;

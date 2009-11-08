@@ -55,7 +55,14 @@
 #include "UmlExpansionNode.h"
 #include "UmlActivityPin.h"
 #include "UmlActivityControlNodeClasses.h"
+#include "UmlActivityPartition.h"
 #include "MiscGlobalCmd.h"
+
+int UmlBaseItem::getIdentifier() {
+  read_if_needed_();
+
+  return _modeler_id;
+}
 
 bool UmlBaseItem::set_Name(const QCString & s) {
   // don't use _set_it else the name is not
@@ -99,7 +106,8 @@ UmlItem * UmlBaseItem::parent() {
   return _parent;
 }
 
-const QVector<UmlItem> UmlBaseItem::children() {
+// & ONLY HERE, TOO GANGEROUS FUR USER USE
+const QVector<UmlItem> & UmlBaseItem::children() {
   if (_children == 0)
     read_children_();
   
@@ -155,12 +163,6 @@ const QDict<QCString> UmlBaseItem::properties() {
   return _dict;
 }
 
-int UmlBaseItem::getIdentifier() {
-  read_if_needed_();
-
-  return _modeler_id;
-}
-
 bool UmlBaseItem::moveAfter(const UmlItem * x) {
   UmlCom::send_cmd(_identifier, moveAfterCmd, (x != 0) ? ((UmlBaseItem *)x)->_identifier : 0);
   if (UmlCom::read_bool()) {
@@ -188,12 +190,11 @@ int UmlBaseItem::apply(QCString cmd) {
 
 bool UmlBaseItem::isMarked() {
   read_if_needed_();
-
   return _marked;
 }
 
-bool UmlBaseItem::set_isMarked(bool y) {
-  return set_it_(_marked, y, setMarkedCmd);
+bool UmlBaseItem::set_isMarked(bool v) {
+  return set_it_(_marked, v, setMarkedCmd);
 }
 
 const QVector<UmlItem> UmlBaseItem::referencedBy() {
@@ -223,6 +224,13 @@ void UmlBaseItem::unload(bool rec, bool del) {
     delete _children;
     _children = 0;
   }
+}
+
+bool UmlBaseItem::deleteIt() {
+  UmlCom::send_cmd(_identifier, deleteCmd);
+  if (UmlCom::read_bool() == 0) return FALSE;
+  parent()->unload(TRUE);
+  return TRUE;
 }
 
 bool UmlBaseItem::isToolRunning(int id)
@@ -364,16 +372,24 @@ void UmlBaseItem::read_children_() {
   
   UmlCom::read_item_list(*_children);
   
-  unsigned n = _children->size();
+  UmlBaseItem ** v = (UmlBaseItem **) _children->data();
+  UmlBaseItem ** vsup = v + _children->size();
   
-  while (n--)
-    ((UmlBaseItem *) _children->at(n))->_parent = (UmlItem *) this;
+  while (v != vsup)
+    (*v++)->_parent = (UmlItem *) this;
 }
 
 void UmlBaseItem::reread_children_if_needed_() {
   if (_children != 0) {
-    delete _children;
-    read_children_();
+    UmlCom::send_cmd(_identifier, childrenCmd);
+    
+    UmlCom::read_item_list(*_children);
+    
+    UmlBaseItem ** v = (UmlBaseItem **) _children->data();
+    UmlBaseItem ** vsup = v + _children->size();
+    
+    while (v != vsup)
+      (*v++)->_parent = (UmlItem *) this;
   }
 }
 
@@ -584,9 +600,23 @@ UmlItem * UmlBaseItem::read_()
     case aJoinActivityNode:
       return new UmlJoinActivityNode(id, name);
     case aPartition:
-      //return new UmlPartition(id, name);
+      return new UmlActivityPartition(id, name);
     case aClassInstance:
       return new UmlClassInstance(id, name);
+    case anAcceptCallAction:
+      return new UmlAcceptCallAction(id, name);
+    case aReplyAction:
+      return new UmlReplyAction(id, name);
+    case aCreateObjectAction:
+      return new UmlCreateObjectAction(id, name);
+    case aDestroyObjectAction:
+      return new UmlDestroyObjectAction(id, name);
+    case aTestIdentityAction:
+      return new UmlTestIdentityAction(id, name);
+    case aRaiseExceptionAction:
+      return new UmlRaiseExceptionAction(id, name);
+    case aReduceAction:
+      return new UmlReduceAction(id, name);
     default:
       UmlCom::bye();
       UmlCom::fatal_error(QCString("unknown item type ") + QCString().setNum(kind));
@@ -603,12 +633,6 @@ UmlItem * UmlBaseItem::read_()
     _all.resize(_all.size() * 2 - 1);
 }
 
-void UmlBaseItem::deleteIt() {
-  UmlCom::send_cmd(_identifier, old_deleteCmd);
-  UmlCom::read_bool();
-  parent()->unload(TRUE);
-}
-
 UmlBaseItem::~UmlBaseItem() {
   if (_children != 0)
     delete _children;
@@ -617,12 +641,6 @@ UmlBaseItem::~UmlBaseItem() {
 
 
 // not in plug-outs managed through bouml
-
-void UmlBaseItem::delete_it() {
-  UmlCom::send_cmd(_identifier, old_deleteCmd);
-  UmlCom::read_bool();
-  parent()->unload(TRUE);
-}
 
 // warning : operation bodies are lost
 bool UmlBaseItem::moveIn(UmlItem * x) {

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -25,4 +25,96 @@
 
 #include "UmlArtifact.h"
 
+#ifdef ROUNDTRIP
+#include "UmlPackage.h"
+#include "Package.h"
 
+bool UmlArtifact::has_roundtrip_expected;
+
+bool UmlArtifact::set_roundtrip_expected() {
+  if ((stereotype() != "source") || javaSource().isEmpty())
+    return TRUE;
+  
+  const QVector<UmlClass> & cls = associatedClasses();
+  
+  if (cls.isEmpty())
+    return TRUE;
+  
+  has_roundtrip_expected = TRUE;
+  roundtrip_expected = TRUE;
+  useless = TRUE;
+  fully_updated = TRUE;
+  ((UmlPackage *) parent()->parent())->get_package()->own(this);
+  
+  UmlClass ** v = cls.data();
+  UmlClass ** vsup = v + cls.size();
+  bool result = isWritable();
+    
+  for (; v!= vsup; v += 1)
+    result &= (*v)->set_roundtrip_expected();
+  
+  return result;
+}
+
+bool UmlArtifact::set_roundtrip_expected_for_class() {
+  if (roundtrip_expected)
+    return TRUE;
+  
+  if ((stereotype() != "source") || javaSource().isEmpty())
+    return FALSE;
+  
+  has_roundtrip_expected = TRUE;
+  roundtrip_expected = TRUE;
+  useless = TRUE;
+  ((UmlPackage *) parent()->parent())->get_package()->own(this);
+
+  return TRUE;
+}
+
+bool UmlArtifact::is_roundtrip_usefull()
+{
+  return has_roundtrip_expected;
+}
+
+void UmlArtifact::mark_useless(QList<UmlItem> & l) {
+  if (useless) {
+    set_isMarked(TRUE);
+    parent()->set_childrenVisible(TRUE);
+    l.append(this);
+  }
+}
+
+bool UmlArtifact::considered(bool scan) {
+  if (scan) {
+    if (scanned)
+      return TRUE;
+    scanned = TRUE;
+  }
+  else {
+    if (reversed)
+      return TRUE;
+    else
+      reversed = TRUE;
+  }
+
+  return FALSE;
+}
+
+
+void UmlArtifact::scan_it(int &) {
+  if (roundtrip_expected) {
+    Package::set_step(1, 1);
+    ((UmlPackage *) parent()->parent())->get_package()->reverse(this);
+    Package::set_step(1, -1);
+  }
+}
+
+void UmlArtifact::send_it(int n) {
+  if (roundtrip_expected) {
+    Package::set_step(2, n);
+    ((UmlPackage *) parent()->parent())->get_package()->reverse(this);
+    Package::set_step(2, -1);
+  }
+}
+
+#endif

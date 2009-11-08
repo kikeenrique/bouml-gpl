@@ -8,6 +8,7 @@
 
 class UmlSequenceDiagram;
 class UmlItem;
+class UmlSequenceDiagramDefinition;
 
 // Manage the sequence diagrams
 class UmlBaseSequenceDiagram : public UmlDiagram {
@@ -25,7 +26,20 @@ class UmlBaseSequenceDiagram : public UmlDiagram {
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseSequenceDiagram(void * id, const QCString & n) : UmlDiagram(id, n) {};
+    UmlBaseSequenceDiagram(void * id, const QCString & n) : UmlDiagram(id, n), _def(0) {};
+
+
+  public:
+    // return the semantic part of the diagram not present in the model
+    UmlSequenceDiagramDefinition * definition();
+
+    // to unload the object to free memory, it will be reloaded automatically
+    // if needed. args unused
+    virtual void unload(bool = FALSE, bool = FALSE);
+
+
+  private:
+    UmlSequenceDiagramDefinition * _def;
 
 };
 

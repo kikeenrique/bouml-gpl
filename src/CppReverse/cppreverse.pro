@@ -72,6 +72,7 @@ SOURCES	      = UmlClassItem.cpp UmlAttribute.cpp UmlArtifact.cpp \
 		../Tools/UmlBaseActivityAction.cpp \
 		../Tools/UmlBaseActivityPin.cpp \
 		../Tools/UmlBaseActivityRegion.cpp \
+		../Tools/UmlBaseActivityPartition.cpp \
 		../Tools/UmlBaseActivityControlNodeClasses.cpp \
 		../Tools/UmlBaseActivityActionClasses.cpp \
 		../Tools/UmlBaseExpansionNode.cpp \

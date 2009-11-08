@@ -54,7 +54,11 @@ void UmlClass::write(FileOut & out) {
   out << '"';
   out.id(this);
   write_visibility(out);
-  out << " isAbstract=\"" << ((isAbstract()) ? "true" : "false") << "\" >\n";
+  if (isAbstract())
+    out << " isAbstract=\"true\"";
+  if (isActive())
+    out << " isActive=\"true\"";
+  out << ">\n";
   
   if (is_assoc_class)
     _assoc->write_ends(out);
@@ -64,6 +68,24 @@ void UmlClass::write(FileOut & out) {
   write_constraint(out);
   write_annotation(out);
   write_description_properties(out);
+  
+  if (_gen_extension && (st == "typedef")) {
+    const UmlTypeSpec & base = baseType();
+    
+    if ((base.type != 0) || !base.explicit_type.isEmpty()) {
+      out.indent();
+      out << "<xmi:Extension extender=\"Bouml\">\n";
+      out.indent();
+      out << "\t<typedef>\n";
+      out.indent(+2);
+      UmlItem::write_type(out, base, "base");
+      out.indent(-2);
+      out.indent();
+      out << "\t</typedef>\n";
+      out.indent();
+      out << "</xmi:Extension>\n";
+    }
+  }
   
   write_formals(out);
   write_actuals(out);

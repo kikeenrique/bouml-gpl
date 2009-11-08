@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,6 +49,9 @@ class Class : public BrowserNode, public ClassContainer {
     bool reversedp;
 #ifdef REVERSE
     bool from_lib;
+# ifdef ROUNDTRIP
+    bool updated;
+# endif
 
     static UmlArtifact * CurrentArtifact;
 #else
@@ -62,24 +65,50 @@ class Class : public BrowserNode, public ClassContainer {
     bool get_formals(FormalParameterList & tmplt, bool name_only,
 		     QValueList<FormalParameterList> & tmplts);
     bool manage_extends(ClassContainer * container,
-			const QValueList<FormalParameterList> & tmplts);
+			const QValueList<FormalParameterList> & tmplts
+#ifdef ROUNDTRIP
+			, bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			);
     bool manage_implements(ClassContainer * container, aRelationKind k,
-			   const QValueList<FormalParameterList> & tmplts);
+			   const QValueList<FormalParameterList> & tmplts
+#ifdef ROUNDTRIP
+			   , bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			   );
     bool add_inherit(aRelationKind k, UmlTypeSpec & typespec,
-		     QValueList<UmlTypeSpec> & actuals, QCString & str_actual);
+		     QValueList<UmlTypeSpec> & actuals, QCString & str_actual
+#ifdef ROUNDTRIP
+		     , bool roundtrip, QList<UmlItem> & expected_order
+#endif
+		     );
     void inherit(Class * cl);
     void inherit(UmlClass * uml_cl, QCString header = 0);
-    bool manage_member(QCString s, QCString & path);
-    bool manage_enum_items();
+    bool manage_member(QCString s, QCString & path
+#ifdef ROUNDTRIP
+		       , bool roundtrip, QList<UmlItem> & expected_order
+#endif
+		       );
+    bool manage_enum_items(
+#ifdef ROUNDTRIP
+			   bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			);
     void set_description(const char * p);
     
 #ifndef REVERSE
     virtual void activate();
     void manage_historic();
 #endif
+#ifndef ROUNDTRIP
+    bool already_in_bouml();
+#endif
     
   public:
     Class(BrowserNode * parent, const char * n, char st);
+#ifdef ROUNDTRIP
+    Class(BrowserNode * parent, UmlClass * ucl);
+#endif
   
     virtual void compute_type(QCString type, UmlTypeSpec & typespec,
 			      const QValueList<FormalParameterList> & tmplts,
@@ -89,10 +118,16 @@ class Class : public BrowserNode, public ClassContainer {
     virtual bool isa_package() const;
     UmlClass * get_uml();
     bool reversed() const { return reversedp; };
-    bool already_in_bouml();
     virtual QString get_path() const;
+
+#ifdef ROUNDTRIP
+    virtual Class * upload_define(UmlClass *);
+    virtual Class * localy_defined(QString name) const;
+    void set_updated() { updated = TRUE; }
+#endif
+
 #ifdef REVERSE
-    static void new_artifact() { CurrentArtifact = 0; }
+    static void new_artifact(UmlArtifact * a = 0) { CurrentArtifact = a; }
     static UmlArtifact * current_artifact() { return CurrentArtifact; }
     bool from_libp() const { return from_lib; };
 #else
@@ -117,7 +152,11 @@ class Class : public BrowserNode, public ClassContainer {
     static bool reverse(ClassContainer * container, QCString stereotype,
 			QCString annotation, bool abstractp, bool finalp,
 			aVisibility visibility,	QCString & f, 
-			QValueList<FormalParameterList> tmplts);
+			QValueList<FormalParameterList> tmplts
+#ifdef ROUNDTRIP
+			, bool rndtrp, QList<UmlItem> & expectedorder
+#endif
+			);
     
 #ifndef REVERSE
     static void historic_back();

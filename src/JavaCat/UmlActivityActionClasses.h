@@ -117,4 +117,60 @@ class UmlRemoveVariableValueAction : public UmlBaseRemoveVariableValueAction {
 
 };
 
+class UmlAcceptCallAction : public UmlBaseAcceptCallAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlAcceptCallAction(void * id, const QCString & s) : UmlBaseAcceptCallAction(id, s) {
+    }
+
+};
+
+class UmlReplyAction : public UmlBaseReplyAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlReplyAction(void * id, const QCString & s) : UmlBaseReplyAction(id, s) {
+    }
+
+};
+
+class UmlCreateObjectAction : public UmlBaseCreateObjectAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlCreateObjectAction(void * id, const QCString & s) : UmlBaseCreateObjectAction(id, s) {
+    }
+
+};
+
+class UmlDestroyObjectAction : public UmlBaseDestroyObjectAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlDestroyObjectAction(void * id, const QCString & s) : UmlBaseDestroyObjectAction(id, s) {
+    }
+
+};
+
+class UmlTestIdentityAction : public UmlBaseTestIdentityAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlTestIdentityAction(void * id, const QCString & s) : UmlBaseTestIdentityAction(id, s) {
+    }
+
+};
+
+class UmlRaiseExceptionAction : public UmlBaseRaiseExceptionAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlRaiseExceptionAction(void * id, const QCString & s) : UmlBaseRaiseExceptionAction(id, s) {
+    }
+
+};
+
+class UmlReduceAction : public UmlBaseReduceAction {
+  public:
+    //  the constructor, do not call it yourself !!!!!!!!!!
+     UmlReduceAction(void * id, const QCString & s) : UmlBaseReduceAction(id, s) {
+    }
+
+};
+
 #endif

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -69,9 +69,9 @@ class BrowserExpansionNode : public BrowserNode, public Labeled<BrowserExpansion
     
     BrowserExpansionNode * get_expansionnode(BrowserNode * future_parent);
     virtual BasicData * add_relation(UmlCode, BrowserNode * end);
-    const char * may_start() const;
-    const char * may_connect(const BrowserNode * dest) const;
-    virtual const char * connexion_from(bool control) const;
+    QString may_start() const;
+    QString may_connect(const BrowserNode * dest) const;
+    virtual QString connexion_from(bool control) const;
 
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserExpansionNode * read_ref(char * &);
@@ -83,6 +83,7 @@ class BrowserExpansionNode : public BrowserNode, public Labeled<BrowserExpansion
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
+    virtual void prepare_update_lib() const;
     
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual bool api_compatible(unsigned v) const;

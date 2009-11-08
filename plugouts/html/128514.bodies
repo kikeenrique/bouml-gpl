@@ -19,6 +19,9 @@ class UmlState
     writeq(description());
     fw.write("<br /></p>");
   }
+  
+  if (isActive())
+    fw.write("<p>Active state</p>\n");
 
   UmlOperation * beh = specification();
   
@@ -139,6 +142,9 @@ class UmlState
     writeq(description());
     fw.write("<br /></p>");
   }
+  
+  if (isActive())
+    fw.write("<p>Active state</p>\n");
 
   UmlOperation beh = specification();
   

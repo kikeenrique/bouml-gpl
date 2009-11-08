@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -66,6 +66,7 @@ class DiagramView : public QCanvasView {
     bool on_arrow_decenter;
     bool decenter_start;
     bool decenter_horiz;
+    QValueList<QPoint> previousResizeCorrection;
     QList<QByteArray> history;
     unsigned history_index;
 
@@ -92,7 +93,7 @@ class DiagramView : public QCanvasView {
     void multiple_selection_menu(bool in_model, bool out_model, bool alignable,
 				 QList<DiagramItem> &);
     bool is_present(BrowserNode * bn);
-    virtual void add_related_elements(DiagramItem *, const char * what,
+    virtual void add_related_elements(DiagramItem *, QString what,
 				      bool inh, bool assoc);
     
     virtual UmlCanvas * the_canvas() const;
@@ -144,6 +145,7 @@ class DiagramView : public QCanvasView {
     virtual void contentsMouseReleaseEvent(QMouseEvent *);
     virtual void contentsMouseMoveEvent(QMouseEvent *);
     void moveSelected(int dx, int dy, bool first);
+    void resizeSelected(int dx, int dy);
     void add_point(QMouseEvent * e);
     
     void set_format(int);

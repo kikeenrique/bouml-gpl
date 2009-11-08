@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -57,7 +57,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QCString(argv[port_index]).toUInt())) {
     try {
-      UmlCom::trace("<b>Roundtrip body</b> release 1.7.3<br>");
+      UmlCom::trace("<b>Roundtrip body</b> release 1.10<br>");
       UmlCom::traceAutoRaise(FALSE);
       if (cpp) 
 	UmlCom::targetItem()->roundtrip_cpp();  
@@ -73,13 +73,14 @@ int main(int argc, char ** argv)
       s.sprintf("<hr><font face=helvetica>Roundtrip done : %d errors</font><br>",
 		n_errors());
       UmlCom::trace(s);
+    
+      UmlCom::showTrace();
+      UmlCom::message("");
+    
+      UmlCom::bye();
     }
     catch (...) {
     }
-    
-    UmlCom::showTrace();
-    UmlCom::message("");
-    UmlCom::bye();
   }
   
   UmlCom::close();

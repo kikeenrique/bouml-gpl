@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -68,6 +68,7 @@ RelationData::RelationData(UmlCode e, int id)
   name = default_name(e);
   start = end = 0;
   end_removed_from = 0;
+  original_id = 0;
 }
 
 
@@ -82,6 +83,7 @@ RelationData::RelationData(const BrowserRelation * model,
   a = md->a;
   b = md->b;
   set_association(md->association);
+  original_id = 0;
   
   if (md->start == model) {
     start = r;
@@ -155,6 +157,10 @@ void RelationData::clear(bool old)
 void RelationData::update_idmax_for_root()
 {
   all.update_idmax_for_root();
+}
+
+void RelationData::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
 }
     
 void RelationData::renumber(int phase, BrowserRelation * br) {
@@ -935,6 +941,27 @@ bool RelationData::tool_cmd(ToolCom * com, BrowserRelation * rel,
       case setUniqueCmd:
 	r.is_unique = (*args != 0);
 	break;
+      case setTypeCmd:
+	// only inside associations
+	{
+	  UmlCode c;
+	  
+	  if (!com->get_relation_kind(c, args)) {
+	    com->write_ack(FALSE);
+	    return TRUE;
+	  }
+	  else {
+	    type = c;
+	    if (end) 
+	      end->package_modified();
+	    if (check_end_visibility())
+	      end->modified();
+	    start->modified();
+	    start->package_modified();
+	    modified();
+	  }
+	}
+	break;
       default:
 	return FALSE;
       }
@@ -1130,6 +1157,11 @@ void RelationData::save(QTextStream & st, bool ref, QString & warning) const {
     indent(+1);
     
     BasicData::save(st, warning);
+  
+    if (original_id != 0) {
+      nl_indent(st);
+      st << "oid " << original_id;
+    }
     
     bool assoc = isa_association(type);
     
@@ -1409,6 +1441,20 @@ RelationData * RelationData::read(char * & st, char * & k,
     }
     
     result->BasicData::read(st, k);	// updates k
+    
+    if (in_lib_import()) {
+      result->original_id = id;
+      
+      if (! strcmp(k, "oid")) {
+	// a sub lib is imported as a part of the imported lib
+	(void) read_id(st);
+	k = read_keyword(st);
+      }
+    }
+    else if (! strcmp(k, "oid")) {
+      result->original_id = read_id(st);
+      k = read_keyword(st);
+    }
     
     bool assoc = isa_association(result->type);
     

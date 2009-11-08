@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,6 +33,7 @@
 
 #include "TraceDialog.h"
 #include "UmlDesktop.h"
+#include "translate.h"
 
 TraceDialog * TraceDialog::the;
 QTextView * TraceDialog::txt;
@@ -42,7 +43,7 @@ QString TraceDialog::content;
 QSize TraceDialog::previous_size;
 
 TraceDialog::TraceDialog() : QDialog(0, "", FALSE, WDestructiveClose) {
-  setCaption("Trace");
+  setCaption(TR("Trace"));
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
 
@@ -52,8 +53,8 @@ TraceDialog::TraceDialog() : QDialog(0, "", FALSE, WDestructiveClose) {
   
   QHBoxLayout * hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  QPushButton * cl = new QPushButton("Clear", this);
-  QPushButton * close = new QPushButton("Close", this);
+  QPushButton * cl = new QPushButton(TR("Clear"), this);
+  QPushButton * close = new QPushButton(TR("Close"), this);
   QSize bs(cl->sizeHint());
   
   close->setDefault(TRUE);

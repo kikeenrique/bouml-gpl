@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -31,6 +31,7 @@
 #include <qcursor.h>
 
 #include "StringTable.h"
+#include "translate.h"
 
 StringTable::StringTable(int numRows, int numCols, QWidget * parent, bool visit)
     : MyTable(numRows, numCols, parent) {
@@ -77,21 +78,20 @@ void StringTable::value_changed(int row, int col) {
 
 void StringTable::button_pressed(int row, int col, int, const QPoint &) {
   if (col == numCols() - 1) {
-    QString line;
-    
-    line.sprintf("row %d", row + 1);
-    
+    QString s;
     QPopupMenu m;
-    m.insertItem(line, -1);
+    
+    s.sprintf("%d", row + 1);
+    m.insertItem(TR("row %1", s), -1);
     m.insertSeparator();
-    m.insertItem("Insert row before", 0);
-    m.insertItem("Insert row after", 1);
+    m.insertItem(TR("Insert row before"), 0);
+    m.insertItem(TR("Insert row after"), 1);
     m.insertSeparator();
-    m.insertItem("Delete row", 2);
+    m.insertItem(TR("Delete row"), 2);
     m.insertSeparator();
-    m.insertItem("Copy row", 3);
-    m.insertItem("Cut row", 4);
-    m.insertItem("Paste row", 5);
+    m.insertItem(TR("Copy row"), 3);
+    m.insertItem(TR("Cut row"), 4);
+    m.insertItem(TR("Paste row"), 5);
     m.insertSeparator();
 
     QPopupMenu mv;
@@ -101,7 +101,7 @@ void StringTable::button_pressed(int row, int col, int, const QPoint &) {
       if (rank != row)
 	mv.insertItem(QString::number(rank + 1), 10 + rank);
     
-    m.insertItem("Move row", &mv);
+    m.insertItem(TR("Move row"), &mv);
     
     switch (rank = m.exec(QCursor::pos())) {
     case 0:

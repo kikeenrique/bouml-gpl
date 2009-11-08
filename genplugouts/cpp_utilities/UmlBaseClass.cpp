@@ -9,6 +9,7 @@
 
 #include "UmlCom.h"
 #include "ClassGlobalCmd.h"
+#include "PackageGlobalCmd.h"
 UmlClass * UmlBaseClass::create(UmlItem * parent, const char * s)
 {
   return (UmlClass *) parent->create_(aClass, s);
@@ -59,14 +60,14 @@ bool UmlBaseClass::removeFormal(unsigned int rank) {
 }
 
 bool UmlBaseClass::addFormal(unsigned int rank, const UmlFormalParameter & formal) {
-  UmlCom::send_cmd(_identifier, addFormalCmd, rank, formal._name, 
-		   formal._type, formal._default_value);
+  UmlCom::send_cmd(_identifier, addFormalCmd, rank, formal._name,
+		   formal._type, formal._default_value, formal._extends);
   return UmlCom::read_bool();
 }
 
 bool UmlBaseClass::replaceFormal(unsigned int rank, const UmlFormalParameter & formal) {
-  UmlCom::send_cmd(_identifier, replaceFormalCmd, rank, formal._name, 
-		   formal._type, formal._default_value);
+  UmlCom::send_cmd(_identifier, replaceFormalCmd, rank, formal._name,
+		   formal._type, formal._default_value, formal._extends);
   return UmlCom::read_bool();
 }
 
@@ -97,7 +98,7 @@ UmlClassDiagram * UmlBaseClass::associatedDiagram() {
 }
 
 bool UmlBaseClass::set_AssociatedDiagram(UmlClassDiagram * d) {
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -113,10 +114,18 @@ UmlArtifact * UmlBaseClass::associatedArtifact() {
   return (UmlArtifact *) UmlBaseItem::read_();
 }
 
-UmlComponent * UmlBaseClass::associatedComponent() {
+const QVector<UmlComponent> UmlBaseClass::associatedComponents() {
   UmlCom::send_cmd(_identifier, assocComponentCmd);
-  
-  return (UmlComponent *) UmlBaseItem::read_();
+
+  QVector<UmlComponent> result;
+  unsigned n = UmlCom::read_unsigned();
+
+  result.resize(n);
+
+  for (unsigned index = 0; index != n; index += 1)
+    result.insert(index, (UmlComponent *) UmlBaseItem::read_());
+
+  return result;
 }
 
 #ifdef WITHCPP
@@ -157,21 +166,11 @@ bool UmlBaseClass::set_isJavaExternal(bool y) {
 }
 
 bool UmlBaseClass::isJavaPublic() {
-  read_if_needed_();
-  
-  return _java_public;
+  return visibility() == PublicVisibility;
 }
 
 bool UmlBaseClass::set_isJavaPublic(bool y) {
-  bool r;
-  
-  if (set_it_(r, y, setIsJavaPublicCmd)) {
-    _java_public = y;
-    return TRUE;
-  }
-  else
-    return FALSE;
-
+  return set_Visibility((y) ? PublicVisibility : PackageVisibility);
 }
 
 bool UmlBaseClass::isJavaFinal() {
@@ -190,6 +189,77 @@ bool UmlBaseClass::set_isJavaFinal(bool y) {
   else
     return FALSE;
 
+}
+#endif
+
+#ifdef WITHPHP
+bool UmlBaseClass::isPhpExternal() {
+  read_if_needed_();
+  
+  return _php_external;
+}
+
+bool UmlBaseClass::set_isPhpExternal(bool y) {
+  bool r;
+  
+  if (set_it_(r, y, setIsPhpExternalCmd)) {
+    _php_external = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool UmlBaseClass::isPhpFinal() {
+  read_if_needed_();
+  
+  return _php_final;
+}
+
+bool UmlBaseClass::set_isPhpFinal(bool y) {
+  bool r;
+  
+  if (set_it_(r, y, setIsPhpFinalCmd)) {
+    _php_final = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+
+}
+#endif
+
+#ifdef WITHPYTHON
+bool UmlBaseClass::isPythonExternal() {
+  read_if_needed_();
+  
+  return _python_external;
+}
+
+bool UmlBaseClass::set_isPythonExternal(bool y) {
+  bool r;
+  
+  if (set_it_(r, y, setIsPythonExternalCmd)) {
+    _python_external = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool UmlBaseClass::isPython_2_2() {
+  read_if_needed_();
+  return _python_2_2;
+}
+
+bool UmlBaseClass::set_isPython_2_2(bool v) {
+  UmlCom::send_cmd(_identifier, setIsPython2_2Cmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _python_2_2 = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 #endif
 
@@ -271,6 +341,13 @@ UmlClass * UmlBaseClass::get(const QCString & n, const UmlPackage * p)
   return (UmlClass *) UmlBaseItem::read_();
 }
 
+UmlClass * UmlBaseClass::findStereotype(QCString s, bool caseSensitive)
+{
+  UmlCom::send_cmd(packageGlobalCmd, findStereotypeCmd,
+                   (caseSensitive) ? "y" : "n", (const char *) s);
+  return (UmlClass *) UmlBaseItem::read_();
+}
+
 void UmlBaseClass::unload(bool rec, bool del) {
   _base_type.explicit_type = 0;
   
@@ -333,10 +410,27 @@ void UmlBaseClass::read_cpp_() {
 
 #ifdef WITHJAVA
 void UmlBaseClass::read_java_() {
-  UmlBaseClassItem::read_java_();  
-  _java_public = UmlCom::read_bool();
+  UmlBaseClassMember::read_java_();
+  ;
   _java_final = UmlCom::read_bool();
   _java_external = UmlCom::read_bool();
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBaseClass::read_php_() {
+  UmlBaseClassMember::read_php_();
+  ;
+  _php_final = UmlCom::read_bool();
+  _php_external = UmlCom::read_bool();
+}
+#endif
+
+#ifdef WITHPYTHON
+void UmlBaseClass::read_python_() {
+  UmlBaseClassMember::read_python_();
+  _python_2_2 = UmlCom::read_bool();
+  _python_external = UmlCom::read_bool();
 }
 #endif
 

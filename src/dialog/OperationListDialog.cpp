@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -36,6 +36,7 @@
 #include "BrowserOperation.h"
 #include "OperationData.h"
 #include "UmlDesktop.h"
+#include "translate.h"
 
 QSize OperationListDialog::previous_size;
 
@@ -65,8 +66,8 @@ OperationListDialog::OperationListDialog(const char * m,
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  QPushButton * ok = new QPushButton("&OK", this);
-  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QPushButton * ok = new QPushButton(TR("&OK"), this);
+  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
   QSize bs(cancel->sizeHint());
   
   ok->setDefault(TRUE);

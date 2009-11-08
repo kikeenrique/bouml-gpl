@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -289,12 +289,13 @@ void Package::reverse_file(QCString path, QCString name) {
     // go after <?[php]
     Lex::mark();
     
-    QCString s = Lex::read_word();
+    QCString s;
+    char c = Lex::read_word_bis();
     
-    while (!s.isEmpty()) {
-      if (s == "<") {
-	s = Lex::read_word();
-	if (s == "?") {
+    while (c != 0) {
+      if (c == '<') {
+	c = Lex::read_word_bis();
+	if (c == '?') {
 	  if (art != 0) file_start = Lex::region();
 	  s = Lex::read_word();
 	  if (s.lower() == "php") {
@@ -305,7 +306,7 @@ void Package::reverse_file(QCString path, QCString name) {
 	}
       }
       else
-	s = Lex::read_word();
+	c = Lex::read_word_bis();
     }
     
     aVisibility visibility = PackageVisibility;
@@ -343,7 +344,7 @@ void Package::reverse_file(QCString path, QCString name) {
 	}
 	else if (art != 0) {
 	  // go to end of file
-	  while (!Lex::read_word().isEmpty())
+	  while (Lex::read_word_bis() != 0)
 	    ;
 	  file_end = Lex::region();
 	  break;

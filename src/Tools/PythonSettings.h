@@ -24,6 +24,14 @@ class PythonSettings : public UmlSettings {
     //
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_IsPython_2_2(bool y);
+    
+    // return if operations follow Python 3
+    static bool isPython_3_operation();
+
+    // set if operations follow Python 3
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsPython_3_operation(bool y);
 
     // return indent step
     static QCString indentStep();
@@ -190,6 +198,8 @@ class PythonSettings : public UmlSettings {
     static bool _defined;
     
     static bool _2_2;
+    
+    static bool _operation_3;
     
     static QCString _indent_step;
 

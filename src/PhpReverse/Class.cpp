@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -198,8 +198,10 @@ bool Class::reverse(Package * container, QCString stereotype,
   }
   
   if (Package::scanning()) {
-    while (s != "{") {
-      if ((s = Lex::read_word()).isEmpty())
+    char c = s.at(0);
+
+    while (c != '{') {
+      if ((c = Lex::read_word_bis()) == 0)
 	return FALSE;
     }
   }

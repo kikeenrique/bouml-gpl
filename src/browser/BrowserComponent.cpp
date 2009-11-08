@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -52,6 +52,7 @@
 #include "ComponentDialog.h"
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 IdDict<BrowserComponent> BrowserComponent::all(257, __FILE__);
 QStringList BrowserComponent::its_default_stereotypes;	// unicode
@@ -106,6 +107,15 @@ void BrowserComponent::update_idmax_for_root()
   all.update_idmax_for_root();
 }
 
+void BrowserComponent::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
+}
+
 void BrowserComponent::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
   if (! ondelete) {
@@ -153,7 +163,7 @@ QString BrowserComponent::full_name(bool rev, bool) const {
 }
 
 // just check if the inheritance already exist
-const char * BrowserComponent::check_inherit(const BrowserNode * new_parent) const {
+QString BrowserComponent::check_inherit(const BrowserNode * new_parent) const {
   QListViewItem * child;
     
   for (child = firstChild(); child != 0; child = child->nextSibling()) {
@@ -162,10 +172,10 @@ const char * BrowserComponent::check_inherit(const BrowserNode * new_parent) con
     if ((ch->get_type() == UmlInherit) && 
 	((((SimpleRelationData *) ch->get_data())->get_end_node())
 	 == new_parent))
-      return "already exist";
+      return TR("already exist");
   }
   
-  return (new_parent != this) ? 0 : "circular inheritance";
+  return (new_parent != this) ? QString() : TR("circular inheritance");
 }
 
 static void make_clsubm(QPopupMenu & m, QPopupMenu & sm,
@@ -184,31 +194,31 @@ static void make_clsubm(QPopupMenu & m, QPopupMenu & sm,
       m.insertSeparator();
       need_sep = FALSE;
     }
-    m.setWhatsThis(m.insertItem("Select the " + s + " class", bias+1),
-		   "to select the " + s + " <em>class</em>");
+    m.setWhatsThis(m.insertItem(TR("Select the " + s + " class"), bias+1),
+		   TR("to select the " + s + " <i>class</i>"));
   }
   else if (n > 20) {
     if (need_sep) {
       m.insertSeparator();
       need_sep = FALSE;
     }
-    m.setWhatsThis(m.insertItem("Select a " + s + " class", bias),
-		   "to select a " + s + " <em>class</em>");
+    m.setWhatsThis(m.insertItem(TR("Select a " + s + " class"), bias),
+		   TR("to select a " + s + " <i>class</i>"));
   }
   else if (n != 0) {
     if (need_sep) {
       m.insertSeparator();
       need_sep = FALSE;
     }
-    sm.insertItem(new MenuTitle("Choose class", m.font()), -1);
+    sm.insertItem(new MenuTitle(TR("Choose class"), m.font()), -1);
     sm.insertSeparator();
 
     for (it = l.begin(), n = bias+1; it != l.end(); ++it)
       if (!(*it)->deletedp())
 	sm.insertItem((*it)->full_name(TRUE), n++);
 	    
-    m.setWhatsThis(m.insertItem("Select a " + s + " class", &sm),
-		   "to select a " + s + " <em>class</em>");
+    m.setWhatsThis(m.insertItem(TR("Select a " + s + " class"), &sm),
+		   TR("to select a " + s + " <i>class</i>"));
   }
 }
 
@@ -219,7 +229,7 @@ static bool select_associated(int rank, int bias,
     return FALSE;
   
   if (rank == bias) {
-    ClassListDialog dialog("Choose class", l);
+    ClassListDialog dialog(TR("Choose class"), l);
     
     dialog.raise();
     if (dialog.exec() != QDialog::Accepted)
@@ -252,44 +262,44 @@ void BrowserComponent::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("New nested component", 4),
-		     "to add an <em>nested component</em> to the <em>component</em>");
+      m.setWhatsThis(m.insertItem(TR("New nested component"), 4),
+		     TR("to add an <i>nested component</i> to the <i>component</i>"));
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("Edit", 0),
-		     "to edit the <em>component</em>, \
-a double click with the left mouse button does the same thing");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 0),
+		     TR("to edit the <i>component</i>, \
+a double click with the left mouse button does the same thing"));
       
       if (!is_read_only && (edition_number == 0)) {
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("Delete", 1),
-		       "to delete the <em>component</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 1),
+		       TR("to delete the <i>component</i>. \
+Note that you can undelete it after"));
       }
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("Referenced by", 3),
-		   "to know who reference the <i>component</i> \
-through a relation");
-    mark_menu(m, "component", 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 3),
+		   TR("to know who reference the <i>component</i> \
+through a relation"));
+    mark_menu(m, TR("component"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 2),
-		   "to undelete the <em>component</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 2),
+		   TR("to undelete the <i>component</i>"));
    
     QListViewItem * child;
     
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("Undelete recursively", 22),
-		       "undelete the <em>component</em> and its \
-nexted <em>components</em> and <em>relations</em> \
-(except if the component at the other side is also deleted)");
+	m.setWhatsThis(m.insertItem(TR("Undelete recursively"), 22),
+		       TR("undelete the <i>component</i> and its \
+nested <i>components</i> and <i>relations</i> \
+(except if the component at the other side is also deleted)"));
 	break;
       }
     }
@@ -457,11 +467,11 @@ void BrowserComponent::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	// have choice
 	QPopupMenu m(0);
   
-	m.insertItem(new MenuTitle(bn->get_name() + QString(" moving"),
+	m.insertItem(new MenuTitle(TR("move ") + bn->get_name(),
 				   m.font()), -1);
 	m.insertSeparator();
-	m.insertItem("In " + QString(get_name()), 1);
-	m.insertItem("After " + QString(get_name()), 2);
+	m.insertItem(TR("In ") + QString(get_name()), 1);
+	m.insertItem(TR("After ") + QString(get_name()), 2);
 	
 	switch (m.exec(QCursor::pos())) {
 	case 1:
@@ -491,7 +501,7 @@ void BrowserComponent::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
       package_modified();
     }
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -509,8 +519,8 @@ BrowserComponent * BrowserComponent::get_component(BrowserNode * future_parent,
   BrowserNodeList nodes;
   
   if (!future_parent->enter_child_name(name, 
-				       (existing) ? "choose existing component"
-						  : "enter component's name : ",
+				       (existing) ? TR("choose existing component")
+						  : TR("enter component's name : "),
 				       UmlComponent, instances(nodes), &old,
 				       TRUE, FALSE, existing))
     return 0;
@@ -528,7 +538,7 @@ BrowserComponent * BrowserComponent::add_component(BrowserNode * future_parent)
 {
   QString name;
   
-  if (!future_parent->enter_child_name(name, "enter component's name : ",
+  if (!future_parent->enter_child_name(name, TR("enter component's name : "),
 				       UmlComponent, TRUE, FALSE))
     return 0;
   
@@ -911,7 +921,7 @@ bool BrowserComponent::tool_cmd(ToolCom * com, const char * args) {
 		    break;
 		  case UmlGeneralisation:
 		    if ((end->get_type() == UmlComponent) &&
-			(check_inherit(end) == 0))
+			check_inherit(end).isEmpty())
 		      add_relation(UmlInherit, end)->get_browser_node()->write_id(com);
 		    else
 		      ok = FALSE;
@@ -1117,7 +1127,7 @@ void BrowserComponent::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -1210,7 +1220,7 @@ BrowserComponent * BrowserComponent::read(char * & st, char * k,
     
     result->set_associated_classes(rz, pr, rq, TRUE);
     
-    result->BrowserNode::read(st, k);	// updates k
+    result->BrowserNode::read(st, k, id);	// updates k
     
     if (strcmp(k, "end")) {
       while (BrowserComponent::read(st, k, result) ||

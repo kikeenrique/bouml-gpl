@@ -16,7 +16,7 @@ class UmlBaseComponent
   
   return _assoc_diagram;
 !!!77184.cpp!!!	set_AssociatedDiagram(inout d : UmlComponentDiagram) : bool
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -24,19 +24,19 @@ class UmlBaseComponent
   else
     return FALSE;
 !!!77184.java!!!	set_AssociatedDiagram(inout d : UmlComponentDiagram) : bool
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, d.identifier_());
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, (d == null) ? (long) 0 : d.identifier_());
   UmlCom.check();
   
   _assoc_diagram = d;
 
-!!!78080.cpp!!!	realizedClasses() : UmlClass
+!!!78080.cpp!!!	realizingClasses() : UmlClass
   read_if_needed_();
   
-  return _realized;
-!!!78080.java!!!	realizedClasses() : UmlClass
+  return _realizing;
+!!!78080.java!!!	realizingClasses() : UmlClass
   read_if_needed_();
   
-  return (UmlClass[]) _realized.clone();
+  return (UmlClass[]) _realizing.clone();
 !!!78208.cpp!!!	providedClasses() : UmlClass
   read_if_needed_();
   
@@ -53,36 +53,36 @@ class UmlBaseComponent
   read_if_needed_();
   
   return (UmlClass[]) _required.clone();
-!!!77824.cpp!!!	set_AssociatedClasses(inout realized : UmlClass, inout provided : UmlClass, inout required : UmlClass) : bool
+!!!77824.cpp!!!	set_AssociatedClasses(inout realizing : UmlClass, inout provided : UmlClass, inout required : UmlClass) : bool
   UmlCom::send_cmd(_identifier, setAssocClassesCmd,
-		   realized, provided, required);
+		   realizing, provided, required);
   if (UmlCom::read_bool()) {
     if (_defined) {
-      _realized = realized;
-      _provided = provided;
-      _required = required;
+      // tests != to bypass Qt 2.3 bug
+      if (&_realizing != &realizing) _realizing = realizing;
+      if (&_provided != &provided) _provided = provided;
+      if (&_required != &required) _required = required;
     }
     return TRUE;
   }
   else
     return FALSE;
-!!!77824.java!!!	set_AssociatedClasses(inout realized : UmlClass, inout provided : UmlClass, inout required : UmlClass) : bool
+!!!77824.java!!!	set_AssociatedClasses(inout realizing : UmlClass, inout provided : UmlClass, inout required : UmlClass) : bool
   UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocClassesCmd,
-		  realized, provided, required);
+		  realizing, provided, required);
   UmlCom.check();
   
-  _realized = (UmlClass[]) realized.clone();
+  _realizing = (UmlClass[]) realizing.clone();
   _provided = (UmlClass[]) provided.clone();
   _required = (UmlClass[]) required.clone();
 !!!77696.cpp!!!	unload(in rec : bool, in del : bool) : void
-  _realized.clear();
+  _realizing.clear();
   _provided.clear();
   _required.clear();
 
   UmlBaseItem::unload(rec, del);
-
 !!!77696.java!!!	unload(in rec : bool, in del : bool) : void
-  _realized = null;
+  _realizing = null;
   _provided = null;
   _required = null;
   super.unload(rec, del);
@@ -94,10 +94,10 @@ class UmlBaseComponent
   unsigned index;
   
   n = UmlCom::read_unsigned();
-  _realized.resize(n);
+  _realizing.resize(n);
     
   for (index = 0; index != n; index += 1)
-    _realized.insert(index, (UmlClass *) UmlBaseItem::read_());
+    _realizing.insert(index, (UmlClass *) UmlBaseItem::read_());
 
   n = UmlCom::read_unsigned();
   _provided.resize(n);
@@ -118,10 +118,10 @@ class UmlBaseComponent
   int index;
   
   n = UmlCom.read_unsigned();
-  _realized = new UmlClass[n];
+  _realizing = new UmlClass[n];
   
   for (index = 0; index != n; index += 1)
-    _realized[index] = (UmlClass) UmlBaseItem.read_();
+    _realizing[index] = (UmlClass) UmlBaseItem.read_();
   
   n = UmlCom.read_unsigned();
   _provided = new UmlClass[n];

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -62,6 +62,7 @@ class GenerationSettingsDialog : public QTabDialog {
     QComboBox * edcpp_src_extension;
     QComboBox * cpp_include_with_path_cb;
     QCheckBox * cpp_force_namespace_gen_cb;
+    QCheckBox * cpp_inline_force_incl_in_h_cb;
     QCheckBox * cpp_javadoc_cb;
     LineEdit * cpp_enum_in;
     LineEdit * cpp_enum_out;
@@ -150,6 +151,7 @@ class GenerationSettingsDialog : public QTabDialog {
     MultiLineEdit * edpython_src_content;
     QComboBox * edpython_extension;
     QCheckBox * python_2_2_cb;
+    QCheckBox * python_3_operation_cb;
     MultiLineEdit * edpython_class_decl;
     MultiLineEdit * edpython_enum_decl;
     MultiLineEdit * edpython_external_class_decl;

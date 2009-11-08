@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,12 +44,13 @@
 #include "UmlDesktop.h"
 #include "DialogUtil.h"
 #include "BrowserView.h"
+#include "translate.h"
 
 QSize CodChangeMsgDialog::previous_size;
 
 CodChangeMsgDialog::CodChangeMsgDialog(QWidget * parent, ColMsg * m)
     : QDialog(parent, "Communication message dialog", TRUE), msg(m) {
-  setCaption("Communicationg message dialog");
+  setCaption(TR("Communicationg message dialog"));
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
   QHBoxLayout * hbox;
@@ -59,13 +60,13 @@ CodChangeMsgDialog::CodChangeMsgDialog(QWidget * parent, ColMsg * m)
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
   
-  SmallPushButton * b = new SmallPushButton("message :", this);
+  SmallPushButton * b = new SmallPushButton(TR("message :"), this);
   
   hbox->addWidget(b);
   connect(b, SIGNAL(clicked()), this, SLOT(menu_op()));
 
   edoper = new QComboBox(TRUE, this);
-  edoper->setAutoCompletion(TRUE);
+  edoper->setAutoCompletion(completion());
   if (msg->operation == 0)
     edoper->insertItem(msg->explicit_operation);
   else
@@ -98,8 +99,8 @@ CodChangeMsgDialog::CodChangeMsgDialog(QWidget * parent, ColMsg * m)
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  QPushButton * ok = new QPushButton("&OK", this);
-  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QPushButton * ok = new QPushButton(TR("&OK"), this);
+  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
   QSize bs(cancel->sizeHint());
   
   ok->setDefault(TRUE);
@@ -125,13 +126,13 @@ CodChangeMsgDialog::~CodChangeMsgDialog() {
 void CodChangeMsgDialog::menu_op() {
   QPopupMenu m(0);
 
-  m.insertItem("Choose", -1);
+  m.insertItem(TR("Choose"), -1);
   m.insertSeparator();
   
   int index = list.findIndex(edoper->currentText().stripWhiteSpace());
   
   if (index != -1)
-    m.insertItem("Select in browser", 0);
+    m.insertItem(TR("Select in browser"), 0);
   
   BrowserNode * bn = BrowserView::selected_item();
   
@@ -139,12 +140,12 @@ void CodChangeMsgDialog::menu_op() {
       (bn->get_type() == UmlOperation) &&
       !bn->deletedp() &&
       (opers.findIndex((OperationData *) bn->get_data()) != -1))
-    m.insertItem("Choose operation selected in browser", 1);
+    m.insertItem(TR("Choose operation selected in browser"), 1);
   else
     bn = 0;
   
   if (cl != 0)
-    m.insertItem("Create operation and choose it", 2);
+    m.insertItem(TR("Create operation and choose it"), 2);
   
   if ((index != -1) || (bn != 0) || (cl != 0)) {
     switch (m.exec(QCursor::pos())) {

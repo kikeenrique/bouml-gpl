@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -39,11 +39,12 @@
 
 #include "CharSetDialog.h"
 #include "UmlDesktop.h"
+#include "translate.h"
 
 QSize CharSetDialog::previous_size;
 
 CharSetDialog::CharSetDialog(QString cs) : QDialog(0, "charset dialog", TRUE) {
-  setCaption("Character set dialog");
+  setCaption(TR("Character set dialog"));
   move(QCursor::pos());
  
   QVBoxLayout * vbox = new QVBoxLayout(this);
@@ -51,17 +52,17 @@ CharSetDialog::CharSetDialog(QString cs) : QDialog(0, "charset dialog", TRUE) {
  
   vbox->setMargin(5);
   
-  QLabel * lbl = new QLabel("ERROR : No codec for '" + cs + "'\n", this);
+  QLabel * lbl = new QLabel(TR("ERROR : No codec for '%1'\n", cs), this);
   
   lbl->setAlignment(::Qt::AlignCenter);
   vbox->addWidget(lbl);
   
-  vbox->addWidget(new QLabel("\nBOUML_CHARSET environment variable MUST be changed\n\n"
-			     "For this session, choose one of the following else 'ISO_8859-1' will be used",
+  vbox->addWidget(new QLabel(TR("\nCharset MUST be changed\n\n"
+				"For this session, choose one of the following else 'ISO_8859-1' will be used"),
 			     this));
   
   cb = new QComboBox(FALSE, this);
-  cb->setAutoCompletion(TRUE);
+  cb->setAutoCompletion(completion());
   vbox->addWidget(cb);
   
   QStringList l;
@@ -84,8 +85,8 @@ CharSetDialog::CharSetDialog(QString cs) : QDialog(0, "charset dialog", TRUE) {
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  QPushButton * ok = new QPushButton("&OK", this);
-  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QPushButton * ok = new QPushButton(TR("&OK"), this);
+  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
   QSize bs(cancel->sizeHint());
   
   ok->setDefault(TRUE);

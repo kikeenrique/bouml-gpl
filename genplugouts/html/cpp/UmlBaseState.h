@@ -107,6 +107,14 @@ class UmlBaseState : public UmlItem {
     bool set_JavaDoActivity(const char * s);
 #endif
 
+    // return the  indicate if the class is active
+    bool isActive();
+
+    // set if the class is active
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isActive(bool v);
+
     // return the specification
     UmlOperation * specification();
 
@@ -143,6 +151,10 @@ class UmlBaseState : public UmlItem {
     StateBehavior _java;
 #endif
 
+    bool _active;
+
+    UmlOperation * _specification;
+
     UmlStateDiagram * _assoc_diagram;
 
 
@@ -156,10 +168,6 @@ class UmlBaseState : public UmlItem {
 #ifdef WITHJAVA
     virtual void read_java_();
 #endif
-
-
-  private:
-    UmlOperation * _specification;
 
 };
 

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -53,6 +53,7 @@
 #include "BrowserView.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserArtifact> BrowserArtifact::all(257, __FILE__);
 QStringList BrowserArtifact::its_default_stereotypes;	// unicode
@@ -125,6 +126,15 @@ void BrowserArtifact::clear(bool old)
 void BrowserArtifact::update_idmax_for_root()
 {
   all.update_idmax_for_root();
+}
+
+void BrowserArtifact::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
 }
     
 void BrowserArtifact::referenced_by(QList<BrowserNode> & l, bool ondelete) {
@@ -250,7 +260,7 @@ void BrowserArtifact::get_paths(QString & cpp_h_path, QString & cpp_src_path,
 }
 
 // just check if the inheritance already exist
-const char * BrowserArtifact::check_inherit(const BrowserNode * new_parent) const {
+QString BrowserArtifact::check_inherit(const BrowserNode * new_parent) const {
   QListViewItem * child;
     
   for (child = firstChild(); child != 0; child = child->nextSibling()) {
@@ -259,10 +269,10 @@ const char * BrowserArtifact::check_inherit(const BrowserNode * new_parent) cons
     if ((ch->get_type() == UmlInherit) && 
 	((((SimpleRelationData *) ch->get_data())->get_end_node())
 	 == new_parent))
-      return "already exist";
+      return TR("already exist");
   }
   
-  return (new_parent != this) ? 0 : "circular inheritance";
+  return (new_parent != this) ? 0 : TR("circular inheritance");
 }
 
 void BrowserArtifact::menu() {
@@ -271,7 +281,7 @@ void BrowserArtifact::menu() {
   QPopupMenu gensubm(0);
   QPopupMenu editsubm(0);
   QPopupMenu roundtripbodysubm(0);
-  //QPopupMenu roundtripsubm(0);
+  QPopupMenu roundtripsubm(0);
   QPopupMenu toolm(0);
   QString cpp_h_path;
   QString cpp_src_path;
@@ -284,14 +294,14 @@ void BrowserArtifact::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("Edit", 0),
-		     "to edit the <em>artifact</em>, \
-a double click with the left mouse button does the same thing");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 0),
+		     TR("to edit the <i>artifact</i>, \
+a double click with the left mouse button does the same thing"));
       if (!is_read_only && (edition_number == 0)) {
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("Delete", 1),
-		       "to delete the <em>artifact</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 1),
+		       TR("to delete the <i>artifact</i>. \
+Note that you can undelete it after"));
       }
     }
     
@@ -305,7 +315,7 @@ Note that you can undelete it after");
     if ((a_text || !strcmp(def->get_stereotype(), "source")) &&
 	(cpp || java || php || python || idl)) {
       m.insertSeparator();
-      m.insertItem("Generate", &gensubm);
+      m.insertItem(TR("Generate"), &gensubm);
       if (cpp)
 	gensubm.insertItem("C++", 10);
       if (java)
@@ -318,7 +328,7 @@ Note that you can undelete it after");
 	gensubm.insertItem("Idl", 12);
       
       if (!a_text && preserve_bodies() && (cpp || java || php || python)) {
-	m.insertItem("Roundtrip body", &roundtripbodysubm);
+	m.insertItem(TR("Roundtrip body"), &roundtripbodysubm);
 	
 	if (cpp)
 	  roundtripbodysubm.insertItem("C++", 30);
@@ -331,52 +341,54 @@ Note that you can undelete it after");
       }
       
       get_paths(cpp_h_path, cpp_src_path, java_path, php_path, python_path, idl_path);
+
       if (cpp && !a_text && !cpp_h_edited && !cpp_h_path.isEmpty()) {
 	//if (! cpp_src_path.isEmpty())
 	  //roundtripsubm.insertItem("C++ header & source files", 13);
-	editsubm.insertItem("C++ header file", 14);
+	editsubm.insertItem(TR("C++ header file"), 14);
 	//roundtripsubm.insertItem("C++ header file", 15);
       }
       if (cpp && !cpp_src_edited && !cpp_src_path.isEmpty()) {
-	editsubm.insertItem("C++ source file", 16);
+	editsubm.insertItem(TR("C++ source file"), 16);
 	//roundtripsubm.insertItem("C++ source file", 17);
       }
       if (java && !java_edited && !java_path.isEmpty()) {
-	editsubm.insertItem("Java source file", 18);
-	//roundtripsubm.insertItem("Java source file", 19);
+	editsubm.insertItem(TR("Java source file"), 18);
+	if (! is_read_only)
+	  roundtripsubm.insertItem("Java", 19);
       }
       if (php && !php_edited && !php_path.isEmpty()) {
-	editsubm.insertItem("Php source file", 23);
+	editsubm.insertItem(TR("Php source file"), 23);
 	//roundtripsubm.insertItem("Php source file", 24);
       }
       if (python && !python_edited && !python_path.isEmpty()) {
-	editsubm.insertItem("Python source file", 26);
+	editsubm.insertItem(TR("Python source file"), 26);
 	//roundtripsubm.insertItem("Python source file", 27);
       }
       if (idl && !idl_edited && !idl_path.isEmpty()) {
-	editsubm.insertItem("Idl source file", 20);
+	editsubm.insertItem(TR("Idl source file"), 20);
 	//roundtripsubm.insertItem("Idl source file", 21);
       }
+      if (roundtripsubm.count() != 0)
+	m.insertItem(TR("Roundtrip"), &roundtripsubm);
       if (editsubm.count() != 0)
-	m.insertItem("See file", &editsubm);
-      //if (roundtripsubm.count() != 0)
-	//m.insertItem("Roundtrip", &roundtripsubm);
+	m.insertItem(TR("See file"), &editsubm);
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("Referenced by", 3),
-		   "to know who reference the <i>artifact</i> \
-through a relation");
-    mark_menu(m, "artifact", 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 3),
+		   TR("to know who reference the <i>artifact</i> \
+through a relation"));
+    mark_menu(m, TR("artifact"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("Undelete", 2),
-		   "to undelete the <em>artifact</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 2),
+		   TR("to undelete the <i>artifact</i>"));
   
   int n = 0;
   QValueList<BrowserClass *>::ConstIterator end = associated_classes.end();
@@ -388,25 +400,25 @@ through a relation");
   
   if (n == 1) {
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("Select the associated class", 10000),
-		   "to select the associated <em>class</em>");
+    m.setWhatsThis(m.insertItem(TR("Select the associated class"), 10000),
+		   TR("to select the associated <i>class</i>"));
   }
   else if (n > 20) {
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("Select an associated class", 9999),
-		   "to select an associated <em>class</em>");
+    m.setWhatsThis(m.insertItem(TR("Select an associated class"), 9999),
+		   TR("to select an associated <i>class</i>"));
   }
   else if (n != 0) {
     m.insertSeparator();    
-    clsubm.insertItem(new MenuTitle("Choose class", m.font()), -1);
+    clsubm.insertItem(new MenuTitle(TR("Choose class"), m.font()), -1);
     clsubm.insertSeparator();
 	    
     for (it = associated_classes.begin(), n = 10000; it != end; ++it)
       if (!(*it)->deletedp())
 	clsubm.insertItem((*it)->full_name(TRUE), n++);
 	    
-    m.setWhatsThis(m.insertItem("Select an associated class", &clsubm),
-		   "to select an associated <em>class</em>");
+    m.setWhatsThis(m.insertItem(TR("Select an associated class"), &clsubm),
+		   TR("to select an associated <i>class</i>"));
   }
   
   exec_menu_choice(m.exec(QCursor::pos()),
@@ -496,7 +508,7 @@ void BrowserArtifact::exec_menu_choice(int rank,
     (new SourceDialog(java_path, java_edited, edition_number))->show();
     return;
   case 19:
-    //roundtrip Java source files
+    ToolCom::run("java_roundtrip", this);
     return;
   case 23:
     (new SourceDialog(php_path, php_edited, edition_number))->show();
@@ -530,7 +542,7 @@ void BrowserArtifact::exec_menu_choice(int rank,
     return;
   case 9999:
     {
-      ClassListDialog dialog("Choose class", associated_classes);
+      ClassListDialog dialog(TR("Choose class"), associated_classes);
       
       dialog.raise();
       if (dialog.exec() != QDialog::Accepted)
@@ -622,7 +634,7 @@ void BrowserArtifact::apply_shortcut(QString s) {
 	  if (!java_edited && !java_path.isEmpty()) {
 	    if (s == "Java source file")
 	      choice = 18;
-	    //roundtripsubm.insertItem("Java source file", 19);
+	    //roundtripsubm.insertItem("Java source file", 17);
 	  }
 	  if (!php_edited && !php_path.isEmpty()) {
 	    if (s == "Php source file")
@@ -737,7 +749,7 @@ void BrowserArtifact::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
       package_modified();
     }
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -755,8 +767,8 @@ BrowserArtifact * BrowserArtifact::get_artifact(BrowserNode * future_parent,
   BrowserNodeList nodes;
   
   if (!future_parent->enter_child_name(name, 
-				       (existing) ? "choose existing artifact"
-						  : "enter artifact's name : ",
+				       (existing) ? TR("choose existing artifact")
+						  : TR("enter artifact's name : "),
 				       UmlArtifact, instances(nodes), &old,
 				       TRUE, FALSE, existing))
     return 0;
@@ -774,7 +786,7 @@ BrowserArtifact * BrowserArtifact::add_artifact(BrowserNode * future_parent)
 {
   QString name;
   
-  if (!future_parent->enter_child_name(name, "enter artifact's name : ",
+  if (!future_parent->enter_child_name(name, TR("enter artifact's name : "),
 				       UmlArtifact, TRUE, FALSE))
     return 0;
   
@@ -1067,7 +1079,7 @@ bool BrowserArtifact::tool_cmd(ToolCom * com, const char * args) {
 		case UmlGeneralisation:
 		  end = (BrowserNode *) com->get_id(args);
 		  if ((end->get_type() == UmlArtifact) &&
-		      (check_inherit(end) == 0))
+		      (check_inherit(end).isEmpty()))
 		    add_relation(UmlInherit, end)->get_browser_node()->write_id(com);
 		  else
 		    ok = FALSE;
@@ -1192,7 +1204,7 @@ void BrowserArtifact::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -1290,7 +1302,7 @@ BrowserArtifact * BrowserArtifact::read(char * & st, char * k,
       k = read_keyword(st);
     }
     
-    result->BrowserNode::read(st, k);	// updates k
+    result->BrowserNode::read(st, k, id);	// updates k
     
     if (strcmp(k, "end")) {
       while (BrowserSimpleRelation::read(st, k, result))

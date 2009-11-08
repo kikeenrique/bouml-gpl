@@ -159,7 +159,9 @@ class UmlBaseRelation : public UmlClassMember {
     // automatically if needed. args unused
     virtual void unload(bool = FALSE, bool = FALSE);
 
-
+    // ! not for user plug-outs !
+    bool set_rel_kind(aRelationKind);
+    
   private:
     bool _read_only : 1;
 

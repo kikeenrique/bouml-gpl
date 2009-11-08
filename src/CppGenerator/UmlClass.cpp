@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -213,14 +213,18 @@ void UmlClass::generate_decl(QTextOStream & f_h, QCString indent) {
 	
 	if ((cl != 0) && !actuals.isEmpty()) {
 	  QValueList<UmlActualParameter>::ConstIterator ita;
+	  bool need_space = FALSE;
     
 	  for (ita = actuals.begin(); ita != actuals.end(); ++ita)
 	    if ((*ita).superClass() == cl)
-	      if (! (*ita).generate(f_h))
+	      if (! (*ita).generate(f_h, need_space))
 		// no specified value
 		break;
 	  
-	  f_h << '>';
+	  if (need_space)
+	    f_h << " >";
+	  else
+	    f_h << '>';
 	}
       }
       else
@@ -267,13 +271,14 @@ void UmlClass::generate_decl(QTextOStream & f_h, QCString indent) {
       if (!formals.isEmpty()) {
 	sep = "template<";
 	const char * sep2 = "<";
+	bool need_space = FALSE;
 	
 	QValueList<UmlFormalParameter>::ConstIterator itf;
 	
 	for (itf = formals.begin(); itf != formals.end(); ++itf)
-	  (*itf).generate(f_h, sep, sep2);
+	  (*itf).generate(f_h, sep, sep2, need_space);
 	
-	f_h << ">\n";
+	f_h << ((need_space) ? " >\n" : ">\n");
 	if (nestedp)
 	  f_h << indent;
       }
@@ -561,7 +566,7 @@ void UmlClass::write(QTextOStream & f, bool with_formals,
 	sep = ", ";
       }
       
-      f << ">";
+      f << '>';
     }
   }
   else if (!actuals.isEmpty()) {
@@ -572,16 +577,7 @@ void UmlClass::write(QTextOStream & f, bool with_formals,
     for (ita = actuals.begin(); ita != actuals.end(); ++ita) {
       if ((*ita).superClass() == this) {
 	used = TRUE;
-	UmlClass * cl = (*ita).value().type;
-	
-	if (cl != 0)
-	  need_space = !cl->formals().isEmpty();
-	else {
-	  QCString s = (*ita).value().explicit_type;
-	  
-	  need_space = (!s.isEmpty() && (s.at(s.length() - 1) == '>'));
-	}
-	(*ita).generate(f);
+	(*ita).generate(f, need_space);
       }
     }
     
@@ -589,7 +585,7 @@ void UmlClass::write(QTextOStream & f, bool with_formals,
       if (need_space)
 	f << " >";
       else
-	f << ">";
+	f << '>';
     }
   }
 }

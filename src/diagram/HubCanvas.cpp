@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -37,6 +37,7 @@
 #include "myio.h"
 #include "BrowserDiagram.h"
 #include "MenuTitle.h"
+#include "translate.h"
 
 HubCanvas::HubCanvas(UmlCanvas * canvas, int x, int y, int id) 
     : DiagramCanvas(0, canvas, x, y, -HUB_SIZE, -HUB_SIZE, id) {
@@ -95,9 +96,9 @@ void HubCanvas::open() {
 void HubCanvas::menu(const QPoint&) {
   QPopupMenu m;
   
-  m.insertItem(new MenuTitle("Network connexion", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Network connexion"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Remove from view", 0);
+  m.insertItem(TR("Remove from view"), 0);
   
   switch (m.exec(QCursor::pos())) {
   case 0:
@@ -110,27 +111,27 @@ void HubCanvas::menu(const QPoint&) {
   package_modified();
 }
 
-const char * HubCanvas::may_start(UmlCode & l) const {
+QString HubCanvas::may_start(UmlCode & l) const {
   switch (l) {
   case UmlAssociation:
   case UmlAnchor:
     return 0;
   default:
-    return "illegal";
+    return TR("illegal");
   }
-  return (l == UmlAssociation) ? 0 : "illegal";
+  return (l == UmlAssociation) ? 0 : TR("illegal");
 }
 
-const char * HubCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString HubCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor)
     return dest->may_start(l);
   
   switch (dest->type()) {
   case UmlDeploymentNode:
   case UmlHub:
-    return (l == UmlAssociation) ? 0 : "illegal";
+    return (l == UmlAssociation) ? 0 : TR("illegal");
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 

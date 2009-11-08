@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,15 +40,18 @@ class UmlAttribute : public UmlBaseAttribute {
 			bool staticp, bool finalp, bool transientp,
 			bool volatilep, const QCString & array,
 			const QCString & value, QCString comment,
-			QCString description, QCString annotation);
-    
-    static bool manage_enum_item(QCString s, UmlClass * cl);
-
-			  
-#ifdef REVERSE
-    static bool new_initialization(Class * container, QCString comment,
-				   QCString description);
+			QCString description, QCString annotation
+#ifdef ROUNDTRIP
+			, bool roundtrip, QList<UmlItem> & expected_order
 #endif
+			);
+    
+    static bool manage_enum_item(QCString s, UmlClass * cl
+#ifdef ROUNDTRIP
+				 , bool roundtrip,
+				 QList<UmlItem> & expected_order
+#endif
+				 );
 };
 
 #endif

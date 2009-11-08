@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -60,11 +60,11 @@ class DeploymentNodeCanvas
     virtual bool copyable() const;
     virtual void open();
     virtual void menu(const QPoint&);
-    virtual const char * may_start(UmlCode &) const;
-    virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
+    virtual QString may_start(UmlCode &) const;
+    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     virtual aCorner on_resize_point(const QPoint & p);
-    virtual void resize(aCorner c, int dx, int dy);
+    virtual void resize(aCorner c, int dx, int dy, QPoint &);
     virtual bool move_with_its_package() const;
     virtual void change_scale();
     virtual void history_save(QBuffer &) const;

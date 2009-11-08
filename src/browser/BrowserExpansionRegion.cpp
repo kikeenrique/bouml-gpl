@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -51,6 +51,7 @@
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserExpansionRegion> BrowserExpansionRegion::all(__FILE__);
 QStringList BrowserExpansionRegion::its_default_stereotypes;	// unicode
@@ -102,6 +103,15 @@ void BrowserExpansionRegion::update_idmax_for_root()
   BrowserExpansionNode::update_idmax_for_root();
 }
 
+void BrowserExpansionRegion::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
+}
+
 void BrowserExpansionRegion::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
   if (! ondelete)
@@ -132,7 +142,7 @@ BrowserExpansionRegion *
 {
   QString name;
   
-  return (!future_parent->enter_child_name(name, "enter expansion region's \nname (may be empty) : ",
+  return (!future_parent->enter_child_name(name, TR("enter expansion region's \nname (may be empty) : "),
 					   UmlExpansionRegion, TRUE, TRUE))
     
     ? 0
@@ -165,7 +175,7 @@ BrowserExpansionRegion *
   BrowserNode * old;
   QString name;
   
-  if (!parent->enter_child_name(name, "enter expansion region's \nname (may be empty) : ",
+  if (!parent->enter_child_name(name, TR("enter expansion region's \nname (may be empty) : "),
 				UmlExpansionRegion, l, &old,
 				TRUE, TRUE))
     return 0;
@@ -179,7 +189,7 @@ void BrowserExpansionRegion::menu() {
   QString s = name;
   
   if (s.isEmpty())
-    s = "expansion region";
+    s = TR("expansion region");
   
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
@@ -188,57 +198,52 @@ void BrowserExpansionRegion::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("New expansion node", 0),
-		     "to add an <em>expansion node</em> to the <em>expansion region</em>");
-      m.setWhatsThis(m.insertItem("New nested expansion region", 1),
-		     "to add a nested <em>expansion region</em>");
-      m.setWhatsThis(m.insertItem("New interruptible activity region", 2),
-		     "to add an <em>interruptible expansion region Region</em>");
-      m.setWhatsThis(m.insertItem("Add activity action", 6),
-		     "to add an <em>activity action</em> to the <em>region</em>");
-      m.setWhatsThis(m.insertItem("Add object node", 7),
-		     "to add an <em>activity object node</em> to the <em>region</em>");
+      m.setWhatsThis(m.insertItem(TR("New expansion node"), 0),
+		     TR("to add an <i>expansion node</i> to the <i>expansion region</i>"));
+      m.setWhatsThis(m.insertItem(TR("New nested expansion region"), 1),
+		     TR("to add a nested <i>expansion region</i>"));
+      m.setWhatsThis(m.insertItem(TR("New interruptible activity region"), 2),
+		     TR("to add an <i>interruptible activity region</i>"));
+      m.setWhatsThis(m.insertItem(TR("Add activity action"), 6),
+		     TR("to add an <i>activity action</i> to the <i>region</i>"));
+      m.setWhatsThis(m.insertItem(TR("Add object node"), 7),
+		     TR("to add an <i>activity object node</i> to the <i>region</i>"));
       m.insertSeparator();
     }
   
-    m.setWhatsThis(m.insertItem("Edit", 4),
-		   "to edit the <em>expansion region</em>, \
-a double click with the left mouse button does the same thing");
+    m.setWhatsThis(m.insertItem(TR("Edit"), 4),
+		   TR("to edit the <i>expansion region</i>, \
+a double click with the left mouse button does the same thing"));
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("Duplicate", 5),
-		     "to copy the <em>expansion region</em> in a new one");
-      
-      if ((((BrowserNode *) parent())->get_type() == UmlInterruptibleActivityRegion) ||
-	  (((BrowserNode *) parent())->get_type() == UmlExpansionRegion))
-	m.setWhatsThis(m.insertItem("Extract it from current parent region", 13),
-		       "to stop to be nested in current parent region");
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 5),
+		     TR("to copy the <i>expansion region</i> in a new one"));
       m.insertSeparator();
 
       if (edition_number == 0)
-	m.setWhatsThis(m.insertItem("Delete", 8),
-		       "to delete the <em>expansion region</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 8),
+		       TR("to delete the <i>expansion region</i>. \
+Note that you can undelete it after"));
     }
-    m.setWhatsThis(m.insertItem("Referenced by", 3),
-		   "to know who reference the <i>region</i>");
-    mark_menu(m, "expansion region", 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 3),
+		   TR("to know who reference the <i>region</i>"));
+    mark_menu(m, TR("expansion region"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 10),
-		   "to undelete the <em>expansion region</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 10),
+		   TR("to undelete the <i>expansion region</i>"));
  
     QListViewItem * child;
   
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("Undelete recursively", 11),
-		       "undelete the expansion region and its children");
+	m.setWhatsThis(m.insertItem(TR("Undelete recursively"), 11),
+		       TR("undelete the expansion region and its children"));
 	break;
       }
     }
@@ -268,7 +273,7 @@ void BrowserExpansionRegion::exec_menu_choice(int rank) {
     {
       QString name;
       
-      if (((BrowserNode *) parent())->enter_child_name(name, "enter expansion region's \nname (may be empty) : ",
+      if (((BrowserNode *) parent())->enter_child_name(name, TR("enter expansion region's \nname (may be empty) : "),
 						       UmlExpansionRegion, TRUE, TRUE))
 	duplicate((BrowserNode *) parent(), name)->select_in_browser();
     }
@@ -304,14 +309,6 @@ void BrowserExpansionRegion::exec_menu_choice(int rank) {
     break;
   case 11:
     BrowserNode::undelete(TRUE);
-    break;
-  case 13:
-    {
-      QListViewItem * p = parent();
-      
-      p->takeItem(this);
-      moveItem(p);
-    }
     break;
   default:
     if (rank >= 99990)
@@ -381,7 +378,7 @@ BrowserNode *
   BrowserExpansionRegion::add_expansionnode() {
   QString name;
   
-  if (enter_child_name(name, "enter expansion node's \nname (may be empty) : ",
+  if (enter_child_name(name, TR("enter expansion node's \nname (may be empty) : "),
 		       UmlExpansionNode, TRUE, TRUE)) {
     BrowserExpansionNode * node = new BrowserExpansionNode(name, this);
     
@@ -565,6 +562,9 @@ bool BrowserExpansionRegion::may_contains_them(const QList<BrowserNode> & l,
     switch (it.current()->get_type()) {
     case UmlInterruptibleActivityRegion:
     case UmlExpansionRegion:
+      if (((const BrowserNode *) it.current()->get_container(UmlActivity)) != activity)
+	return FALSE;
+      break;
     case UmlExpansionNode:
     case UmlActivityAction:
     case UmlActivityObject:
@@ -575,12 +575,14 @@ bool BrowserExpansionRegion::may_contains_them(const QList<BrowserNode> & l,
     case MergeAN:
     case ForkAN:
     case JoinAN:
-      return (((const BrowserNode *) it.current()->get_container(UmlActivity)) == activity);
+      if (((const BrowserNode *) it.current()->get_container(UmlActivity)) != activity)
+	return FALSE;
+      break;
     default:
       return FALSE;
     }
     
-    if (! may_contains(it.current(), FALSE))
+    if (! may_contains(it.current(), TRUE))
       return FALSE;
     
     duplicable = may_contains_it(it.current());
@@ -629,10 +631,33 @@ void BrowserExpansionRegion::DropAfterEvent(QDropEvent * e, BrowserNode * after)
        ((bn = UmlDrag::decode(e, BrowserInterruptibleActivityRegion::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserExpansionRegion::drag_key(this))) != 0)) &&
       (bn != after) && (bn != this)) {
-    if (may_contains(bn, FALSE)) 
+    if (may_contains(bn, TRUE)) {
+      if ((after == 0) &&
+	  ((BrowserNode *) parent())->may_contains(bn, TRUE)) {
+	// have choice
+	QPopupMenu m(0);
+  
+	m.insertItem(new MenuTitle(TR("move ") + bn->get_name(),
+				   m.font()), -1);
+	m.insertSeparator();
+	m.insertItem(TR("In ") + QString(get_name()), 1);
+	m.insertItem(TR("After ") + QString(get_name()), 2);
+	
+	switch (m.exec(QCursor::pos())) {
+	case 1:
+	  break;
+	case 2:
+	  ((BrowserNode *) parent())->DropAfterEvent(e, this);
+	  return;
+	default:
+	  e->ignore();
+	  return;
+	}
+      }
       move(bn, after);
+    }
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -717,7 +742,7 @@ void BrowserExpansionRegion::save(QTextStream & st, bool ref, QString & warning)
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -777,7 +802,7 @@ BrowserExpansionRegion * BrowserExpansionRegion::read(char * & st, char * k,
       k = read_keyword(st);
     }
     
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     result->is_read_only = (!in_import() && read_only_file()) || 
       ((user_id() != 0) && result->is_api_base());

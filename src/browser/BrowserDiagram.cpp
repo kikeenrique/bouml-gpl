@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -138,6 +138,26 @@ void BrowserDiagram::clear(bool old)
 void BrowserDiagram::update_idmax_for_root()
 {
   all.update_idmax_for_root();
+}
+
+void BrowserDiagram::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+}
+
+void BrowserDiagram::support_file(QDict<char> & files, bool add) const {
+  QString s;
+  
+  s = s.setNum(get_ident()) + ".diagram";
+  
+  if (add)
+    files.insert(s, (char *) 1);
+  else
+    files.remove(s);
+  
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->support_file(files, add);
 }
     
 void BrowserDiagram::import()

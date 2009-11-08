@@ -13,6 +13,9 @@ class JavaSettings
 		  (y) ? (byte) 1 : (byte) 0);
   UmlCom.check();
 !!!63232.cpp!!!	type(in s : string) : string
+  if (s.isEmpty())
+    return s;
+
   read_if_needed_();
   
   UmlBuiltin * b = UmlSettings::_map_builtins.find(s);

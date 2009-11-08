@@ -31,6 +31,12 @@ bool UmlBasePackage::set_AssociatedDiagram(UmlDiagram * d) {
     return FALSE;
 }
 
+UmlPackage * UmlBasePackage::importProject(const QCString & fn) {
+  UmlCom::send_cmd(_identifier, importProjectCmd, fn);
+
+  return (UmlPackage *) UmlBaseItem::read_();
+}
+
 #ifdef WITHCPP
 const QCString & UmlBasePackage::cppSrcDir() {
   read_if_needed_();

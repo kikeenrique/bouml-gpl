@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,12 +48,14 @@
 #include "Settings.h"
 #include "ArrowPointCanvas.h"
 #include "strutil.h"
+#include "translate.h"
 
 StateCanvas::StateCanvas(BrowserNode * bn, UmlCanvas * canvas,
 			 int x, int y)
     : DiagramCanvas(0, canvas, x, y, STATE_CANVAS_MIN_SIZE, 1, 0) {
   browser_node = bn;
   itscolor = UmlDefaultColor;
+  show_decomp_icon = FALSE;
   
   compute_size();
   check_stereotypeproperties();
@@ -73,6 +75,7 @@ StateCanvas::StateCanvas(UmlCanvas * canvas, int id)
   // for read operation
   browser_node = 0;
   itscolor = UmlDefaultColor;
+  show_decomp_icon = FALSE;
   connect(DrawingSettings::instance(), SIGNAL(changed()), this, SLOT(modified()));
 }
 
@@ -106,7 +109,7 @@ void StateCanvas::compute_size() {
   StateDrawingSettings st = settings;
   
   ((BrowserStateDiagram *) the_canvas()->browser_diagram())->get_statedrawingsettings(st);
-  region_horizontally = st.region_horizontally == UmlYes;
+  region_horizontally = (st.region_horizontally == UmlYes);
   
   min_height = 2*fm.height();
   min_width = fm.width(browser_node->get_name());
@@ -165,6 +168,13 @@ void StateCanvas::compute_size() {
     
     min_width += shadow;
     min_height += shadow;
+  }
+  
+  if (show_decomp_icon) {
+    int mw = ((int) (12 * the_canvas()->zoom())) * 5;
+    
+    if (min_width < mw)
+      min_width = mw;
   }
 
   // force odd width and height for line alignment
@@ -319,8 +329,8 @@ aCorner StateCanvas::on_resize_point(const QPoint & p) {
   return ::on_resize_point(p, rect());
 }
 
-void StateCanvas::resize(aCorner c, int dx, int dy) {
-  DiagramCanvas::resize(c, dx, dy, min_width, min_height);
+void StateCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
+  DiagramCanvas::resize(c, dx, dy, o, min_width, min_height, TRUE);
   
   force_sub_inside();
 }
@@ -449,12 +459,40 @@ void StateCanvas::draw(QPainter & p) {
   
   p.drawRoundRect(r);
   
-  if (fp != 0)
+  if (fp != 0) {
     fprintf(fp, "\t<rect fill=\"%s\" stroke=\"black\" stroke-opacity=\"1\""
 	    " x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"10\" />\n",
 	    svg_color(used_color),
 	    r.left(), r.top(), r.width() - 1, r.height() - 1);
+  }
   
+  if (show_decomp_icon) {
+    int ln = (int) (12 * the_canvas()->zoom());
+    int to = r.bottom() - 2*ln;
+    int mi = to + ln/2;
+    int le = r.right() - 4*ln;
+    
+    p.drawEllipse(le, to, ln, ln);
+    p.drawEllipse(le+2*ln, to, ln, ln);
+    p.drawLine(le+ln, mi, le+2*ln, mi);
+    
+    if (fp != 0) {
+      int radius = (int) (6 * the_canvas()->zoom());
+      
+      fprintf(fp, "\t<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+	      le+radius, to+radius, radius, radius);
+      
+      fprintf(fp, "\t<ellipse fill=\"none\" stroke=\"black\" stroke-width=\"1\" stroke-opacity=\"1\""
+	      " cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />\n",
+	      le+radius+2*ln, to+radius, radius, radius);
+      
+      fprintf(fp, "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	      le+ln, mi, le+2*ln, mi);
+    }
+  }
+
   p.setFont(the_canvas()->get_font(UmlNormalBoldFont));
   r.setTop(r.top() + fm.height() / 2);
   p.drawText(r, ::Qt::AlignHCenter, browser_node->get_name());  
@@ -647,34 +685,38 @@ void StateCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 13);
-  m.insertItem("Go down", 14);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 13);
+  m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 2);
+  if (show_decomp_icon)
+    m.insertItem(TR("Hide decomposition indicator"), 15);
+  else
+    m.insertItem(TR("Show decomposition indicator"), 15);
+  m.insertItem(TR("Edit drawing settings"), 2);
   m.insertSeparator();
-  m.insertItem("Edit state", 3);
+  m.insertItem(TR("Edit state"), 3);
   m.insertSeparator();
-  m.insertItem("Select in browser", 4);
+  m.insertItem(TR("Select in browser"), 4);
   if (linked())
-    m.insertItem("Select linked items", 5);
+    m.insertItem(TR("Select linked items"), 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
     if (browser_node->get_associated() !=
 	(BrowserNode *) the_canvas()->browser_diagram())
-      m.insertItem("Set associated diagram",6);
+      m.insertItem(TR("Set associated diagram"),6);
     
     if (browser_node->get_associated())
-      m.insertItem("Remove diagram association",9);
+      m.insertItem(TR("Remove diagram association"),9);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view", 7);
+  m.insertItem(TR("Remove from view"), 7);
   if (browser_node->is_writable())
-    m.insertItem("Delete from model", 8);
+    m.insertItem(TR("Delete from model"), 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlState, 20))
-    m.insertItem("Tool", &toolm);
+    m.insertItem(TR("Tool"), &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -723,6 +765,9 @@ void StateCanvas::menu(const QPoint&) {
     //delete from model
     browser_node->delete_it();	// will delete the canvas
     break;
+  case 15:
+    show_decomp_icon = !show_decomp_icon;
+    modified();	// call package_modified()
   default:
     if (index >= 20)
       ToolCom::run(Tool::command(index - 20), browser_node);
@@ -759,16 +804,16 @@ void StateCanvas::apply_shortcut(QString s) {
 }
 
 void StateCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(3);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(3);
+  ColorSpecVector co(1);
   
-  st[0].set("show activities", &settings.show_activities);
-  st[1].set("draw regions horizontally", &settings.region_horizontally);
-  st[2].set("drawing language", &settings.drawing_language);
+  st[0].set(TR("show activities"), &settings.show_activities);
+  st[1].set(TR("draw regions horizontally"), &settings.region_horizontally);
+  st[2].set(TR("drawing language"), &settings.drawing_language);
   
-  co[0].set("state color", &itscolor);
+  co[0].set(TR("state color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -780,36 +825,36 @@ bool StateCanvas::has_drawing_settings() const {
 }
 
 void StateCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(3);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(3);
+  ColorSpecVector co(1);
   Uml3States show_activities;
   Uml3States region_horizontally;
   UmlColor itscolor;
   DrawingLanguage language;
   
-  st[0].set("show activities", &show_activities);
-  st[1].set("draw regions horizontally", &region_horizontally);
-  st[2].set("drawing language", &language);
+  st[0].set(TR("show activities"), &show_activities);
+  st[1].set(TR("draw regions horizontally"), &region_horizontally);
+  st[2].set(TR("drawing language"), &language);
   
-  co[0].set("state color", &itscolor);
+  co[0].set(TR("state color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
-      if (st[0].name != 0)
+      if (!st[0].name.isEmpty())
 	((StateCanvas *) it.current())->settings.show_activities =
 	  show_activities;
-      if (st[1].name != 0)
+      if (!st[1].name.isEmpty())
 	((StateCanvas *) it.current())->settings.region_horizontally =
 	  region_horizontally;
-      if (st[2].name != 0)
+      if (!st[2].name.isEmpty())
 	((StateCanvas *) it.current())->settings.drawing_language =
 	  language;
-      if (co[0].name != 0)
+      if (!co[0].name.isEmpty())
 	((StateCanvas *) it.current())->itscolor = itscolor;
       ((StateCanvas *) it.current())->modified();	// call package_modified()
     }
@@ -827,17 +872,17 @@ bool StateCanvas::get_show_stereotype_properties() const {
   }
 }
 
-const char * StateCanvas::may_start(UmlCode & l) const {
+QString StateCanvas::may_start(UmlCode & l) const {
   switch (l) {
   case UmlAnchor:
   case UmlTransition:
     return 0;
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
-const char * StateCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString StateCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor)
     return dest->may_start(l);
   
@@ -854,9 +899,9 @@ const char * StateCanvas::may_connect(UmlCode & l, const DiagramItem * dest) con
   case ChoicePS:
   case ForkPS:
   case JoinPS:
-    return (l == UmlTransition) ? 0 : "illegal";
+    return (l == UmlTransition) ? 0 : TR("illegal");
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
@@ -874,6 +919,8 @@ void StateCanvas::save(QTextStream & st, bool ref, QString & warning) const {
     nl_indent(st);
     if (itscolor != UmlDefaultColor)
       st << "color " << stringify(itscolor) << ' ' ;
+    if (show_decomp_icon)
+      st << "show_decomp_icon ";
     save_xyzwh(st, this, "xyzwh");
     save_stereotype_property(st, warning);
     indent(-1);
@@ -883,7 +930,7 @@ void StateCanvas::save(QTextStream & st, bool ref, QString & warning) const {
 }
 
 StateCanvas * StateCanvas::read(char * & st, UmlCanvas * canvas,
-					char * k)
+				char * k)
 {
   if (!strcmp(k, "statecanvas_ref"))
     return ((StateCanvas *) dict_get(read_id(st), "statecanvas", canvas));
@@ -900,6 +947,11 @@ StateCanvas * StateCanvas::read(char * & st, UmlCanvas * canvas,
     
     result->settings.read(st, k);	// updates k
     read_color(st, "color", result->itscolor, k);	// updates k
+    
+    if (!strcmp(k, "show_decomp_icon")) {
+      result->show_decomp_icon = TRUE;
+      k = read_keyword(st);
+    }
     
     if (!strcmp(k, "xyz"))
       read_xyz(st, result);

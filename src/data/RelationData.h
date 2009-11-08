@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -97,6 +97,7 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     BrowserRelation * end;
     BrowserNode * end_removed_from;
     AType association;		// class association
+    int original_id;	// from project library
     
     virtual void send_uml_def(ToolCom * com, BrowserRelation * rel);
     virtual void send_cpp_def(ToolCom * com, BrowserRelation * rel);
@@ -226,6 +227,7 @@ class RelationData : public ClassMemberData, public Labeled<RelationData> {
     
     static void clear(bool old);
     static void update_idmax_for_root();
+    void prepare_update_lib() const;
     void renumber(int phase, BrowserRelation * br);
     bool is_writable(const BrowserRelation * br) const;
 

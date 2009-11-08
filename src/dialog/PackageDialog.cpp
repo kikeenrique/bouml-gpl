@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,26 +48,32 @@
 #include "BodyDialog.h"
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
-static const char * Relative = "Set it relative";
-static const char * Absolute = "Set it absolute";
+static QString Relative;
+static QString Absolute;
 
 QSize PackageDialog::previous_size;
 
 PackageDialog::PackageDialog(PackageData * da)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), pa(da) {
+  Relative = TR("Set it relative");
+  Absolute = TR("Set it absolute");
+
   da->browser_node->edit_start();
   
   bool visit = !da->browser_node->is_writable();
   
-  if (!visit)
-    setCancelButton();
+  if (!visit) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
 
-  setCaption("Package dialog");
+  setCaption(TR("Package dialog"));
     
   QGrid * grid;
   QVBox * vtab;
@@ -81,18 +87,18 @@ PackageDialog::PackageDialog(PackageData * da)
   grid->setSpacing(5);
   grid->setMargin(5);
   
-  new QLabel("name : ", grid);
+  new QLabel(TR("name : "), grid);
   edname = new LineEdit(pa->name(), grid);
   edname->setReadOnly(!da->browser_node->is_writable() ||
 		      (da->browser_node == BrowserView::get_project()));
   
-  new QLabel("stereotype : ", grid);
+  new QLabel(TR("stereotype : "), grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(pa->stereotype));
   if (! visit) {
     edstereotype->insertStringList(BrowserPackage::default_stereotypes());
     edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlPackage));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->setAutoCompletion(completion());
     connect(edstereotype, SIGNAL(activated(const QString &)),
 	    this, SLOT(edStereotypeActivated(const QString &)));
   }
@@ -102,9 +108,9 @@ PackageDialog::PackageDialog(PackageData * da)
   edstereotype->setSizePolicy(sp);
   
   vtab = new QVBox(grid);
-  new QLabel("description :", vtab);
+  new QLabel(TR("description :"), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
@@ -125,19 +131,19 @@ PackageDialog::PackageDialog(PackageData * da)
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
-  new QLabel("The generation directories may be relative in case the root directory\n\
-is specified (through the project menu entry 'edit generation settings')\n\n", htab);
+  new QLabel(TR("The generation directories may be relative in case the root directory\n\
+is specified (through the project menu entry 'edit generation settings')\n\n"), htab);
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
-  QLabel * lbl1 = new QLabel("headers directory : ", htab);
+  QLabel * lbl1 = new QLabel(TR("headers directory : "), htab);
   edcpphdir = new LineEdit(pa->cpp_h_dir, htab);
   if (visit)
     edcpphdir->setReadOnly(TRUE);
   else {
     htab = new QHBox(vtab);
     new QLabel("", htab);
-    button = new QPushButton("Browse", htab);
+    button = new QPushButton(TR("Browse"), htab);
     connect(button, SIGNAL(clicked ()), this, SLOT(cpph_browse()));
     new QLabel("", htab);
     cpphbutton = new QPushButton((pa->cpp_h_dir.isEmpty() || 
@@ -155,14 +161,14 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
-  QLabel * lbl2 = new QLabel("sources directory : ", htab);
+  QLabel * lbl2 = new QLabel(TR("sources directory : "), htab);
   edcppsrcdir = new LineEdit(pa->cpp_src_dir, htab);
   if (visit)
     edcppsrcdir->setReadOnly(TRUE);
   else {
     htab = new QHBox(vtab);
     new QLabel("", htab);
-    button = new QPushButton("Browse", htab);
+    button = new QPushButton(TR("Browse"), htab);
     connect(button, SIGNAL(clicked ()), this, SLOT(cppsrc_browse()));
     new QLabel("", htab);
     cppsrcbutton =
@@ -202,19 +208,19 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
-  new QLabel("The generation directory may be relative in case the root directory\n\
-is specified (through the project menu entry 'edit generation settings')\n\n", htab);
+  new QLabel(TR("The generation directory may be relative in case the root directory\n\
+is specified (through the project menu entry 'edit generation settings')\n\n"), htab);
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
-  lbl1 = new QLabel("directory : ", htab);
+  lbl1 = new QLabel(TR("directory : "), htab);
   edjavadir = new LineEdit(pa->java_dir, htab);
   if (visit) 
     edjavadir->setReadOnly(TRUE);
   else {
     htab = new QHBox(vtab);
     new QLabel("", htab);
-    button = new QPushButton("Browse", htab);
+    button = new QPushButton(TR("Browse"), htab);
     connect(button, SIGNAL(clicked ()), this, SLOT(java_browse()));
     new QLabel("", htab);
     javabutton = new QPushButton((pa->java_dir.isEmpty() || 
@@ -253,19 +259,19 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
-  new QLabel("The generation directory may be relative in case the root directory\n\
-is specified (through the project menu entry 'edit generation settings')\n\n", htab);
+  new QLabel(TR("The generation directory may be relative in case the root directory\n\
+is specified (through the project menu entry 'edit generation settings')\n\n"), htab);
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
-  lbl1 = new QLabel("directory : ", htab);
+  lbl1 = new QLabel(TR("directory : "), htab);
   edphpdir = new LineEdit(pa->php_dir, htab);
   if (visit) 
     edphpdir->setReadOnly(TRUE);
   else {
     htab = new QHBox(vtab);
     new QLabel("", htab);
-    button = new QPushButton("Browse", htab);
+    button = new QPushButton(TR("Browse"), htab);
     connect(button, SIGNAL(clicked ()), this, SLOT(php_browse()));
     new QLabel("", htab);
     phpbutton = new QPushButton((pa->php_dir.isEmpty() || 
@@ -296,19 +302,19 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
-  new QLabel("The generation directory may be relative in case the root directory\n\
-is specified (through the project menu entry 'edit generation settings')\n\n", htab);
+  new QLabel(TR("The generation directory may be relative in case the root directory\n\
+is specified (through the project menu entry 'edit generation settings')\n\n"), htab);
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
-  lbl1 = new QLabel("directory : ", htab);
+  lbl1 = new QLabel(TR("directory : "), htab);
   edpythondir = new LineEdit(pa->python_dir, htab);
   if (visit) 
     edpythondir->setReadOnly(TRUE);
   else {
     htab = new QHBox(vtab);
     new QLabel("", htab);
-    button = new QPushButton("Browse", htab);
+    button = new QPushButton(TR("Browse"), htab);
     connect(button, SIGNAL(clicked ()), this, SLOT(python_browse()));
     new QLabel("", htab);
     pythonbutton = new QPushButton((pa->python_dir.isEmpty() || 
@@ -347,19 +353,19 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
-  new QLabel("The generation directory may be relative in case the root directory\n\
-is specified (through the project menu entry 'edit generation settings')\n\n", htab);
+  new QLabel(TR("The generation directory may be relative in case the root directory\n\
+is specified (through the project menu entry 'edit generation settings')\n\n"), htab);
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
-  lbl1 = new QLabel("directory : ", htab);
+  lbl1 = new QLabel(TR("directory : "), htab);
   edidldir = new LineEdit(pa->idl_dir, htab);
   if (visit)
     edidldir->setReadOnly(TRUE);
   else {
     htab = new QHBox(vtab);
     new QLabel("", htab);
-    button = new QPushButton("Browse", htab);
+    button = new QPushButton(TR("Browse"), htab);
     connect(button, SIGNAL(clicked ()), this, SLOT(idl_browse()));
     new QLabel("", htab);
     idlbutton = new QPushButton((pa->idl_dir.isEmpty() || 
@@ -402,7 +408,7 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
-  lbl1 = new QLabel("meta model : \nreference", htab);
+  lbl1 = new QLabel(TR("meta model : \nreference"), htab);
   edmetamodelReference =
     new LineEdit(pa->browser_node->get_value("metamodelReference"), htab);
   edmetamodelReference->setReadOnly(visit);
@@ -413,7 +419,7 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   
   htab = new QHBox(vtab);
   htab->setMargin(5);
-  lbl2 = new QLabel("meta class : \nreference", htab);
+  lbl2 = new QLabel(TR("meta class : \nreference"), htab);
   edmetaclassreference =
     new LineEdit(pa->browser_node->get_value("metaclassreference"), htab);
   edidlmodule->setReadOnly(visit);
@@ -422,7 +428,7 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   
   vtab->setStretchFactor(new QHBox(vtab), 1000);
   
-  addTab(vtab, "Profile");
+  addTab(vtab, TR("Profile"));
 
   // USER : list key - value
   
@@ -430,7 +436,7 @@ is specified (through the project menu entry 'edit generation settings')\n\n", h
   kvtable = new KeyValuesTable(da->browser_node, vtab, visit);
   kvtable->remove("metamodelReference");
   kvtable->remove("metaclassreference");
-  addTab(vtab, "Properties");
+  addTab(vtab, TR("Properties"));
   
   //
     
@@ -515,12 +521,12 @@ void PackageDialog::accept() {
     if (((BrowserNode *) bn->parent())->wrong_child_name(s, UmlPackage,
 							 bn->allow_spaces(),
 							 bn->allow_empty())) {
-      msg_critical("Error", s + "\n\nillegal name or already used");
+      msg_critical(TR("Error"), s + TR("\n\nillegal name or already used"));
       return;
     }
     
     if ((st == "profile") && !ProfiledStereotypes::canAddPackage(bn, s)) {
-      msg_critical("Error", "conflict on stereotypes");
+      msg_critical(TR("Error"), TR("conflict on stereotypes"));
       return;
     }
   
@@ -529,7 +535,7 @@ void PackageDialog::accept() {
   else if ((st == "profile") &&
 	   !was_pr &&
 	   !ProfiledStereotypes::canAddPackage(bn, s)) {
-    msg_critical("Error", "conflict on stereotypes");
+    msg_critical(TR("Error"), TR("conflict on stereotypes"));
     return;
   }
   
@@ -564,8 +570,8 @@ void PackageDialog::accept() {
       ProfiledStereotypes::renamed(bn, oldname);
   }
   else if (was_pr) {
-    bool propag = (msg_warning("Question",
-			       "Propagate the removal of the profile ?",
+    bool propag = (msg_warning(TR("Question"),
+			       TR("Propagate the removal of the profile ?"),
 			       1, 2)
 		   == 1);
     
@@ -610,32 +616,32 @@ void PackageDialog::browse(LineEdit * ed, QPushButton * button,
 }
 
 void PackageDialog::cpph_browse() {
-  browse(edcpphdir, cpphbutton, "C++ header directory",
+  browse(edcpphdir, cpphbutton, TR("C++ header directory"),
 	 GenerationSettings::get_cpp_root_dir());
 }
 
 void PackageDialog::cppsrc_browse() {
-  browse(edcppsrcdir, cppsrcbutton, "C++ source directory",
+  browse(edcppsrcdir, cppsrcbutton, TR("C++ source directory"),
 	 GenerationSettings::get_cpp_root_dir());
 }
 
 void PackageDialog::java_browse() {
-  browse(edjavadir, javabutton, "Java directory",
+  browse(edjavadir, javabutton, TR("Java directory"),
 	 GenerationSettings::get_java_root_dir());
 }
 
 void PackageDialog::php_browse() {
-  browse(edphpdir, phpbutton, "Php directory",
+  browse(edphpdir, phpbutton, TR("Php directory"),
 	 GenerationSettings::get_php_root_dir());
 }
 
 void PackageDialog::python_browse() {
-  browse(edpythondir, pythonbutton, "Python directory",
+  browse(edpythondir, pythonbutton, TR("Python directory"),
 	 GenerationSettings::get_python_root_dir());
 }
 
 void PackageDialog::idl_browse() {
-  browse(edidldir, idlbutton, "Idl directory",
+  browse(edidldir, idlbutton, TR("Idl directory"),
 	 GenerationSettings::get_idl_root_dir());
 }
 

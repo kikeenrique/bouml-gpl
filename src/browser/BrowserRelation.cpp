@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -51,6 +51,7 @@
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserRelation> BrowserRelation::all(1021, __FILE__);
 static QList<BrowserRelation> Unconsistent;
@@ -78,6 +79,11 @@ BrowserRelation::~BrowserRelation() {
   all.remove(get_ident());
   if (def)
     def->garbage(this);
+}
+
+bool BrowserRelation::is_undefined() const {
+  // defined under a class even when undefined
+  return ((BrowserNode *) parent())->is_undefined();
 }
 
 BrowserNode * BrowserRelation::duplicate(BrowserNode * p, QString) {
@@ -123,24 +129,25 @@ bool BrowserRelation::undelete(bool, QString & warning, QString & renamed) {
   if (def->get_start_class()->deletedp() ||
       def->get_end_class()->deletedp()) {
     if (def->is_a(this))
-      warning += QString("<li><b>") + quote(def->get_name(this)) + "</b> from <b>" +
+      warning += QString("<li><b>") + quote(def->get_name(this)) + "</b> " + TR("from") + " <b>" +
 	def->get_start_class()->full_name() +
-	  "</b> to <b>" + def->get_end_class()->full_name() + "</b>\n";
+	  "</b> " + TR("to") + " <b>" + def->get_end_class()->full_name() + "</b>\n";
     else
-      warning += QString("<li><b>") + def->get_name(this) + "</b> from <b>" +
+      warning += QString("<li><b>") + def->get_name(this) + "</b> " + TR("from") + " <b>" +
 	def->get_end_class()->full_name() +
-	  "</b> to <b>" + quote(def->get_start_class()->full_name()) + "</b>\n";
+	  "</b> " + TR("to") + " <b>" + quote(def->get_start_class()->full_name()) + "</b>\n";
     return FALSE;
   }
   else {
     switch (get_type()) {
     case UmlGeneralisation:
     case UmlRealize:
-      if (def->get_start_class()->check_inherit(def->get_end_class()) != 0) {
-	warning += QString("<li><b>") + quote(def->get_name(this)) +
-	  "</b> because <b>" + def->get_start_class()->full_name() +
-	  "</b> cannot (or already) inherit on <b>" + def->get_end_class()->full_name()
-	    + "</b>\n";
+      if (!def->get_start_class()->check_inherit(def->get_end_class()).isEmpty()) {
+	warning += QString("<li><b>") + quote(def->get_name(this)) + "</b> "
+	  + TR("because <b>%1</b> cannot (or already) inherit on <b>%2</b>",
+	       def->get_start_class()->full_name(),
+	       def->get_end_class()->full_name())
+	    + "\n";
 	return FALSE;
       }
       break;
@@ -208,6 +215,9 @@ void BrowserRelation::referenced_by(QList<BrowserNode> & l, bool ondelete) {
 BrowserRelation * BrowserRelation::temporary(RelationData * d) {
   BrowserRelation * result = new BrowserRelation(-1);
   
+  result->parent()->takeItem(result);
+  BrowserClass::temporary()->insertItem(result);
+  
   result->def = d;
   return result;
 }
@@ -222,6 +232,13 @@ void BrowserRelation::update_idmax_for_root()
 {
   all.update_idmax_for_root();
   RelationData::update_idmax_for_root();
+}
+
+void BrowserRelation::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+  
+  if (def->is_a(this))
+    def->prepare_update_lib();
 }
     
 void BrowserRelation::renumber(int phase) {
@@ -430,55 +447,55 @@ void BrowserRelation::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!in_edition()) {
-      m.setWhatsThis(m.insertItem("Edit", 0),
-		     "to edit the <em>relation</em>, \
-a double click with the left mouse button does the same thing");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 0),
+		     TR("to edit the <i>relation</i>, \
+a double click with the left mouse button does the same thing"));
       if (!is_read_only && (edition_number == 0)) {
 	if (RelationData::isa_association(def->get_type())) {
-	  m.setWhatsThis(m.insertItem("Duplicate", 1),
-			 "to copy the <em>relation</em> in a new one");
+	  m.setWhatsThis(m.insertItem(TR("Duplicate"), 1),
+			 TR("to copy the <i>relation</i> in a new one"));
 	  if (get_oper == 0)
-	    m.setWhatsThis(m.insertItem("New get operation", 4),
-			   "to auto define the <em>get operation</em>");
+	    m.setWhatsThis(m.insertItem(TR("New get operation"), 4),
+			   TR("to auto define the <i>get operation</i>"));
 	  if (set_oper == 0)
-	    m.setWhatsThis(m.insertItem("New set operation", 5),
-			   "to auto define the <em>set operation</em>");
+	    m.setWhatsThis(m.insertItem(TR("New set operation"), 5),
+			   TR("to auto define the <i>set operation</i>"));
 	  if ((get_oper == 0) && (set_oper == 0))
-	    m.setWhatsThis(m.insertItem("New get and set operation", 6),
-			   "to auto define the <em>get</em> and <em>set operation</em>s");
+	    m.setWhatsThis(m.insertItem(TR("New get and set operation"), 6),
+			   TR("to auto define the <i>get</i> and <i>set operation</i>s"));
 	  m.insertSeparator();
 	}
       }
   
-      m.setWhatsThis(m.insertItem("Referenced by", 8),
-		     "to know who reference the <i>relation</i>");
+      m.setWhatsThis(m.insertItem(TR("Referenced by"), 8),
+		     TR("to know who reference the <i>relation</i>"));
       m.insertSeparator();
       
       if (!is_read_only && (edition_number == 0)) {
-	m.setWhatsThis(m.insertItem("Delete", 2),
-		       "to delete the <em>relation</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 2),
+		       TR("to delete the <i>relation</i>. \
+Note that you can undelete it after"));
       }
       m.insertSeparator();
     }
-    m.setWhatsThis(m.insertItem(QString("select ") +
+    m.setWhatsThis(m.insertItem(QString(TR("select ")) +
 				((def->is_a(this)) 
 				 ? def->get_end_class()
 				 : def->get_start_class())->get_name(),
 				7),
-		   "to select the destination class");
-    mark_menu(m, "relation", 90);
+		   TR("to select the destination class"));
+    mark_menu(m, TR("the relation"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) 
 	&& Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 3),
-		   "undelete the <em>relation</em> \
-(except if the class at the other side is also deleted)");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 3),
+		   TR("undelete the <i>relation</i> \
+(except if the class at the other side is also deleted)"));
     if (def->get_start_class()->deletedp() ||
 	def->get_end_class()->deletedp())
       m.setItemEnabled(3, FALSE);
@@ -782,7 +799,7 @@ void BrowserRelation::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -928,7 +945,7 @@ BrowserRelation * BrowserRelation::read(char * & st, char * k,
       result->unconsistent_removed("relation", unconsistent);
 
     result->is_defined = TRUE;
-    result->is_read_only = (!in_import() && read_only_file()) || 
+    result->is_read_only = !parent->is_writable() || 
       ((user_id() != 0) && result->is_api_base());
     
     if (!strcmp(k, "get_oper")) {
@@ -948,7 +965,7 @@ BrowserRelation * BrowserRelation::read(char * & st, char * k,
       k = read_keyword(st);
     }
     
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");

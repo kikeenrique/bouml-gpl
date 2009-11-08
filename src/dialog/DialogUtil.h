@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -138,5 +138,8 @@ extern int msg_information(QString caption, QString text,
 
 extern QString editor();
 extern void set_editor(QString);
+
+extern void set_completion(bool y);
+extern bool completion();
 
 #endif

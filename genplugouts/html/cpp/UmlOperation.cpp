@@ -446,11 +446,17 @@ void UmlOperation::gen_java_decl(QCString s, bool descr) {
     else if (*p == '\r')
       p += 1;
     else if (*p == '\n') {
-      fw.write(' ');
-
-      do
+      if (descr) {
+	fw.write("<br />");
 	p += 1;
-      while ((*p != 0) && (*p <= ' '));
+      }
+      else {
+	fw.write(' ');
+	
+	do
+	  p += 1;
+	while ((*p != 0) && (*p <= ' '));
+      }
     }
     else if ((*p == '{') || (*p == ';')) {
       if (descr)
@@ -543,11 +549,17 @@ void UmlOperation::gen_php_decl(QCString s, bool descr) {
     else if (*p == '\r')
       p += 1;
     else if (*p == '\n') {
-      fw.write(' ');
-
-      do
+      if (descr) {
+	fw.write("<br />");
 	p += 1;
-      while ((*p != 0) && (*p <= ' '));
+      }
+      else {
+	fw.write(' ');
+	
+	do
+	  p += 1;
+	while ((*p != 0) && (*p <= ' '));
+      }
     }
     else if ((*p == '{') || (*p == ';')) {
       if (descr)
@@ -568,6 +580,7 @@ void UmlOperation::gen_python_decl(QCString s, bool descr) {
   const char * p = bypass_comment(s);
   const QValueList<UmlParameter> & pa = params();
   unsigned npa = pa.count();
+  bool in_params = FALSE;
   unsigned rank;
 
   while (*p) {
@@ -602,16 +615,25 @@ void UmlOperation::gen_python_decl(QCString s, bool descr) {
     else if (!strncmp(p, "${(}", 4)) {
       p += 4;
       fw.write('(');
+      in_params = TRUE;
     }
     else if (!strncmp(p, "${)}", 4)) {
       p += 4;
       fw.write(')');
+      in_params = FALSE;
     }
     else if (sscanf(p, "${t%u}", &rank) == 1) {
       p = strchr(p, '}') + 1;
 
-      if (rank < npa)
-	write(pa[rank].type, pythonLanguage);
+      if (rank < npa) {
+	const UmlTypeSpec & t = pa[rank].type;
+	
+	if (! t.toString().isEmpty()) {
+	  if (in_params)
+	    fw.write(": ");
+	  write(t, pythonLanguage);
+	}
+      }
       else
 	fw.write("???");
     }
@@ -633,6 +655,16 @@ void UmlOperation::gen_python_decl(QCString s, bool descr) {
       else if (! pa[rank].default_value.isEmpty()) {
 	fw.write(" = ");
 	writeq(pa[rank].default_value);
+      }
+    }
+    else if (!strncmp(p, "${type}", 7)) {
+      p += 7;
+      
+      const UmlTypeSpec & t = returnType();
+	
+      if (! t.toString().isEmpty()) {
+	fw.write(" -> ");
+	write(t, pythonLanguage);
       }
     }
     else if (*p == ':') {

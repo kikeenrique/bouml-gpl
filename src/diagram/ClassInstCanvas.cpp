@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -124,7 +124,8 @@ void ClassInstCanvas::compute_size(int & w, int & h, UmlCanvas * canvas) {
       w = wi;
   }
   
-  w += delta;
+  w += (((ClassData *) cl->get_data())->get_is_active()) ? 3*delta : delta;
+  
   if (w < minw) 
     w = minw;
 }
@@ -188,6 +189,25 @@ void ClassInstCanvas::draw(QPainter & p, UmlCanvas * canvas, QRect r) {
 	    r.x(), r.y(), r.width() - 1, r.height() - 1);
   
   p.drawRect(r);
+	  
+  if (((ClassData *) cl->get_data())->get_is_active()) {
+    const int eight = (int) (8 * canvas->zoom());
+    
+    r.setLeft(r.left() + eight);
+    r.setRight(r.right() - eight);
+    
+    p.drawLine(r.topLeft(), r.bottomLeft());
+    p.drawLine(r.topRight(), r.bottomRight());
+    
+    if (fp != 0)
+      fprintf(fp,
+	      "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n"
+	      "\t<line stroke=\"black\" stroke-opacity=\"1\""
+	      " x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" />\n",
+	      r.left(), r.top(), r.left(), r.bottom(),
+	      r.right(), r.top(), r.right(), r.bottom());
+  }
   
   p.setBackgroundMode(::Qt::TransparentMode);
   p.setFont(canvas->get_font(UmlNormalUnderlinedFont));

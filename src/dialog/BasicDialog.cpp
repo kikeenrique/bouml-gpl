@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -43,6 +43,7 @@
 #include "BodyDialog.h"
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 BasicDialog::BasicDialog(BasicData * nd, QString s,
 			 const QStringList & default_stereotypes,
@@ -50,14 +51,16 @@ BasicDialog::BasicDialog(BasicData * nd, QString s,
     : QTabDialog(0, 0, FALSE, WDestructiveClose), data(nd), previous_size(sz) {
   nd->get_browser_node()->edit_start();
   
-  if (nd->get_browser_node()->is_writable())
-    setCancelButton();
+  if (nd->get_browser_node()->is_writable()) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
 
-  setCaption(s + " dialog");
+  setCaption(TR(s + " dialog"));
   
   bool visit = !hasOkButton();
   
@@ -71,17 +74,17 @@ BasicDialog::BasicDialog(BasicData * nd, QString s,
   if (unnamed)
     edname = 0;
   else {
-    new QLabel("name : ", grid);
+    new QLabel(TR("name : "), grid);
     edname = new LineEdit(bn->get_name(), grid);
     edname->setReadOnly(visit);
   }    
-  new QLabel("stereotype : ", grid);
+  new QLabel(TR("stereotype : "), grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(data->get_stereotype()));
   if (! visit) {
     edstereotype->insertStringList(default_stereotypes);
     edstereotype->insertStringList(ProfiledStereotypes::defaults(bn->get_type()));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->setAutoCompletion(completion());
   }
   edstereotype->setCurrentItem(0);
   QSizePolicy sp = edstereotype->sizePolicy();
@@ -89,9 +92,9 @@ BasicDialog::BasicDialog(BasicData * nd, QString s,
   edstereotype->setSizePolicy(sp);
   
   QVBox * vtab = new QVBox(grid);
-  new QLabel("description :", vtab);
+  new QLabel(TR("description :"), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
@@ -111,7 +114,7 @@ BasicDialog::BasicDialog(BasicData * nd, QString s,
   grid->setSpacing(5);
   
   kvtable = new KeyValuesTable(bn, grid, visit);
-  addTab(grid, "Properties");
+  addTab(grid, TR("Properties"));
 }
 
 void BasicDialog::polish() {
@@ -152,7 +155,7 @@ void BasicDialog::accept() {
 	((BrowserNode *) bn->parent())->wrong_child_name(s, bn->get_type(),
 							 bn->allow_spaces(),
 							 bn->allow_empty())) {
-      msg_critical("Error", edname->text() + "\n\nillegal name or already used");
+      msg_critical(TR("Error"), edname->text() + TR("\n\nillegal name or already used"));
       return;
     }
     else

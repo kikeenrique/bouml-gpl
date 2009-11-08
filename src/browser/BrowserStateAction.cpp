@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,6 +48,7 @@
 #include "ProfiledStereotypes.h"
 #include "mu.h"
 #include "BrowserStateDiagram.h"
+#include "translate.h"
 
 IdDict<BrowserStateAction> BrowserStateAction::all(257, __FILE__);
 QStringList BrowserStateAction::its_default_stereotypes;	// unicode
@@ -93,6 +94,15 @@ void BrowserStateAction::clear(bool old)
 void BrowserStateAction::update_idmax_for_root()
 {
   all.update_idmax_for_root();
+}
+
+void BrowserStateAction::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
 }
     
 void BrowserStateAction::referenced_by(QList<BrowserNode> & l, bool ondelete) {
@@ -184,35 +194,35 @@ void BrowserStateAction::menu() {
   QPopupMenu m(0, "action");
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle(TR(s), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
-    m.setWhatsThis(m.insertItem("Edit", 1),
-		   "to edit the <em>" + s + "</em>, \
-a double click with the left mouse button does the same thing");
+    m.setWhatsThis(m.insertItem(TR("Edit"), 1),
+		   TR("to edit the <i>" + s + "</i>, \
+a double click with the left mouse button does the same thing"));
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("Duplicate", 2),
-		     "to copy the <em>" + s + "</em> in a new one");
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 2),
+		     TR("to copy the <i>" + s + "</i> in a new one"));
       m.insertSeparator();
       if (edition_number == 0)
-	m.setWhatsThis(m.insertItem("Delete", 3),
-		       "to delete the <em>" + s + "</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 3),
+		       TR("to delete the <i>" + s + "</i>. \
+Note that you can undelete it after"));
     }
-    m.setWhatsThis(m.insertItem("Referenced by", 5),
-		   "to know who reference the <i>" + s + "</i> \
-through a transition");
-    mark_menu(m, s, 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 5),
+		   TR("to know who reference the <i>" + s + "</i> \
+through a transition"));
+    mark_menu(m, TR("the " + s), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 4),
-		   "to undelete the <em>" + s + "</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 4),
+		   TR("to undelete the <i>" + s + "</i>"));
   }
   
   exec_menu_choice(m.exec(QCursor::pos()));
@@ -410,7 +420,7 @@ void BrowserStateAction::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     if (may_contains(bn, FALSE)) 
       move(bn, after);
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -487,7 +497,7 @@ void BrowserStateAction::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -542,7 +552,7 @@ BrowserStateAction * BrowserStateAction::read(char * & st, char * k,
     }
 
     result->is_defined = TRUE;
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     result->is_read_only = (!in_import() && read_only_file()) || 
       ((user_id() != 0) && result->is_api_base());

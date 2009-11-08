@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -52,6 +52,7 @@
 #include "ToolCom.h"
 #include "Tool.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 ActivityObjectCanvas::ActivityObjectCanvas(BrowserNode * bn, UmlCanvas * canvas, int x, int y)
     : DiagramCanvas(0, canvas, x, y, ACTIVITYOBJECT_MIN_SIZE,
@@ -458,43 +459,43 @@ void ActivityObjectCanvas::menu(const QPoint&) {
     ((ActivityObjectData *) browser_node->get_data())->get_type().type;
 
   if (s.isEmpty())
-    s = "activity object";
+    s = TR("activity object");
 
   QPopupMenu m(0);
   QPopupMenu toolm(0);
   
   m.insertItem(new MenuTitle(s, m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 13);
-  m.insertItem("Go down", 14);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 13);
+  m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 2);
+  m.insertItem(TR("Edit drawing settings"), 2);
   m.insertSeparator();
-  m.insertItem("Edit activity object", 3);
+  m.insertItem(TR("Edit activity object"), 3);
   m.insertSeparator();
-  m.insertItem("Select in browser", 4);
+  m.insertItem(TR("Select in browser"), 4);
   if (cl != 0)
-    m.insertItem("Select class in browser", 9);
+    m.insertItem(TR("Select class in browser"), 9);
   if (linked())
-    m.insertItem("Select linked items", 5);
+    m.insertItem(TR("Select linked items"), 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
     if (browser_node->get_associated() !=
 	(BrowserNode *) the_canvas()->browser_diagram())
-      m.insertItem("Set associated diagram",6);
+      m.insertItem(TR("Set associated diagram"),6);
     
     if (browser_node->get_associated())
-      m.insertItem("Remove diagram association",10);
+      m.insertItem(TR("Remove diagram association"),10);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view", 7);
+  m.insertItem(TR("Remove from view"), 7);
   if (browser_node->is_writable())
-    m.insertItem("Delete from model", 8);
+    m.insertItem(TR("Delete from model"), 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlActivityObject, 20))
-    m.insertItem("Tool", &toolm);
+    m.insertItem(TR("Tool"), &toolm);
   
   int index;
 
@@ -582,15 +583,15 @@ void ActivityObjectCanvas::apply_shortcut(QString s) {
 }
 
 void ActivityObjectCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(1);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(1);
+  ColorSpecVector co(1);
   
-  st[0].set("write name:type \nhorizontally", &write_horizontally);
+  st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
   settings.complete(st, TRUE);
   
-  co[0].set("class instance color", &itscolor);
+  co[0].set(TR("class instance color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() != QDialog::Accepted)
@@ -603,28 +604,28 @@ bool ActivityObjectCanvas::has_drawing_settings() const {
 }
 
 void ActivityObjectCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(1);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(1);
+  ColorSpecVector co(1);
   Uml3States write_horizontally;
   UmlColor itscolor;
   ActivityDrawingSettings settings;
   
-  st[0].set("write name:type \nhorizontally", &write_horizontally);
+  st[0].set(TR("write name:type \nhorizontally"), &write_horizontally);
   settings.complete(st, TRUE);
   
-  co[0].set("class instance color", &itscolor);
+  co[0].set(TR("class instance color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
-      if (st[0].name != 0)
+      if (!st[0].name.isEmpty())
 	((ActivityObjectCanvas *) it.current())->write_horizontally =
 	  write_horizontally;
-      if (co[0].name != 0)
+      if (!co[0].name.isEmpty())
 	((ActivityObjectCanvas *) it.current())->itscolor = itscolor;
       ((ActivityObjectCanvas *) it.current())->settings.set(st, 1);
       ((ActivityObjectCanvas *) it.current())->modified();	// call package_modified()
@@ -656,17 +657,17 @@ bool ActivityObjectCanvas::copyable() const {
   return selected();
 }
 
-const char * ActivityObjectCanvas::may_start(UmlCode & l) const {
+QString ActivityObjectCanvas::may_start(UmlCode & l) const {
   return (l == UmlFlow)
     ? ((BrowserActivityObject *) browser_node)->may_start()
     : 0;
 }
 
-const char * ActivityObjectCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString ActivityObjectCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor)
     return dest->may_start(l);
   else if(dest->get_bn() == 0)
-    return "illegal";
+    return TR("illegal");
   else
     return ((BrowserActivityObject *) browser_node)->may_connect(l, dest->get_bn());
 }

@@ -214,8 +214,6 @@ void UmlOperation::write_uml_params(FileOut & out) {
       out << "/>\n";
       out.indent();
       out << "\t</UML:Parameter.type>\n";
-      out.indent();
-      out << "</UML:Parameter>\n";
     }
     else if (!pt.explicit_type.isEmpty()) {
       out.indent();
@@ -226,9 +224,10 @@ void UmlOperation::write_uml_params(FileOut & out) {
       out << "/>\n";
       out.indent();
       out << "\t</UML:Parameter.type>\n";
-      out.indent();
-      out << "</UML:Parameter>\n";
     }
+    
+    out.indent();
+    out << "</UML:Parameter>\n";
   }
 }
 
@@ -284,9 +283,10 @@ void UmlOperation::write_cpp_java_params(FileOut & out, QCString decl) {
 	out << "/>\n";
 	out.indent();
 	out << "\t</UML:Parameter.type>\n";
-	out.indent();
-	out << "</UML:Parameter>\n";
       }
+      
+      out.indent();
+      out << "</UML:Parameter>\n";
     }
   }
 }

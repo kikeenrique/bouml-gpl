@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,6 +41,7 @@
 #include "Tool.h"
 #include "MenuTitle.h"
 #include "DialogUtil.h"
+#include "translate.h"
 
 AssocContainCanvas::AssocContainCanvas(UmlCanvas * canvas, DiagramItem * b,
 				   DiagramItem * e, int id, float d_start, float d_end)
@@ -75,29 +76,29 @@ void AssocContainCanvas::menu(const QPoint&) {
   AssocContainCanvas * plabel = (AssocContainCanvas *) aplabel;
   AssocContainCanvas * pstereotype = (AssocContainCanvas *) apstereotype;
   
-  m.insertItem(new MenuTitle("Association", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Association"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Edit",1);
+  m.insertItem(TR("Edit"),1);
   
   if (pstereotype || plabel) {
     m.insertSeparator();
-    m.insertItem("Select stereotype and label", 2);
-    m.insertItem("Default stereotype and label position", 3);
+    m.insertItem(TR("Select stereotype and label"), 2);
+    m.insertItem(TR("Default stereotype and label position"), 3);
     if (plabel && (label == 0))
-      m.insertItem("Attach label to this segment", 4);
+      m.insertItem(TR("Attach label to this segment"), 4);
     if (pstereotype && (stereotype == 0))
-      m.insertItem("Attach stereotype to this segment", 5);
+      m.insertItem(TR("Attach stereotype to this segment"), 5);
   }
   
   if (get_start() != get_end()) {
     m.insertSeparator();
     init_geometry_menu(geo, 10);
-    m.insertItem("Geometry (Ctrl+l)", &geo);
+    m.insertItem(TR("Geometry (Ctrl+l)"), &geo);
   }
   
   m.insertSeparator();
-  m.insertItem("Remove from view", 6);
-  m.insertItem("Delete from model", 7);
+  m.insertItem(TR("Remove from view"), 6);
+  m.insertItem(TR("Delete from model"), 7);
 
   int rank = m.exec(QCursor::pos());
   
@@ -175,7 +176,7 @@ void AssocContainCanvas::remove(bool from_model) {
 	}
   
 	if (a && !a->end->isSelected() && !a->end->get_bn()->deletedp()) {
-	  msg_warning("Bouml", "<i>Draw all relations</i> forced to <i>no</i>");
+	  msg_warning("Bouml", TR("<i>Draw all relations</i> forced to <i>no</i>"));
 	  the_canvas()->dont_draw_all_relations();
 	}
       }

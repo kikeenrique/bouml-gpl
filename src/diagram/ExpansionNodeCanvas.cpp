@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -50,6 +50,7 @@
 #include "MenuTitle.h"
 #include "Settings.h"
 #include "strutil.h"
+#include "translate.h"
 
 ExpansionNodeCanvas::ExpansionNodeCanvas(BrowserNode * bn, UmlCanvas * canvas,
 					 int x, int y, int id, ExpansionRegionCanvas * r)
@@ -281,28 +282,28 @@ void ExpansionNodeCanvas::menu(const QPoint &) {
   QString s = browser_node->get_name();
   
   if (s.isEmpty())
-    s = "expansion node";
+    s = TR("expansion node");
   
   m.insertItem(new MenuTitle(s, m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 13);
-  m.insertItem("Go down", 14);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 13);
+  m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 2);
+  m.insertItem(TR("Edit drawing settings"), 2);
   m.insertSeparator();
-  m.insertItem("Edit expansion node", 3);
+  m.insertItem(TR("Edit expansion node"), 3);
   m.insertSeparator();
-  m.insertItem("Select in browser", 4);
+  m.insertItem(TR("Select in browser"), 4);
   if (linked())
-    m.insertItem("Select linked items", 5);
+    m.insertItem(TR("Select linked items"), 5);
   m.insertSeparator();
   if (browser_node->is_writable())
-    m.insertItem("Delete from model", 8);
+    m.insertItem(TR("Delete from model"), 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlExpansionNode, 20))
-    m.insertItem("Tool", &toolm);
+    m.insertItem(TR("Tool"), &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -374,11 +375,11 @@ void ExpansionNodeCanvas::apply_shortcut(QString s) {
 }
 
 void ExpansionNodeCanvas::edit_drawing_settings() {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   
-  co[0].set("expansion node color", &itscolor);
+  co[0].set(TR("expansion node color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -390,15 +391,15 @@ bool ExpansionNodeCanvas::has_drawing_settings() const {
 }
 
 void ExpansionNodeCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   UmlColor itscolor;
   
-  co[0].set("expansion node color", &itscolor);
+  co[0].set(TR("expansion node color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
   
   dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
@@ -408,7 +409,7 @@ void ExpansionNodeCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }
 }
 
-const char * ExpansionNodeCanvas::may_start(UmlCode & l) const {
+QString ExpansionNodeCanvas::may_start(UmlCode & l) const {
   switch (l) {
   case UmlAnchor:
     return 0;
@@ -416,15 +417,15 @@ const char * ExpansionNodeCanvas::may_start(UmlCode & l) const {
     return ((BrowserExpansionNode *) browser_node)->may_start();
   default:
     // dependency
-    return "illegal";
+    return TR("illegal");
   }
 }
 
-const char * ExpansionNodeCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString ExpansionNodeCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor)
     return dest->may_start(l);
   else if(dest->get_bn() == 0)
-    return "illegal";
+    return TR("illegal");
   else
     return ((BrowserExpansionNode *) browser_node)->may_connect(dest->get_bn());
 }

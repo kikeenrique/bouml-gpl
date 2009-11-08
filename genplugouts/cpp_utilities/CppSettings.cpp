@@ -31,6 +31,7 @@ QCString CppSettings::type(QCString s)
 
 bool CppSettings::set_Type(QCString s, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(cppSettingsCmd, setCppTypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
@@ -52,23 +53,24 @@ QCString CppSettings::umlType(QCString s)
   return UmlSettings::uml_type(s, &UmlBuiltin::cpp);
 }
 
-QCString CppSettings::relationStereotype(QCString s)
+QCString CppSettings::relationAttributeStereotype(QCString s)
 {
   read_if_needed_();
   
-  UmlStereotype * b = UmlSettings::_map_relation_stereotypes.find(s);
+  UmlStereotype * b = UmlSettings::_map_relation_attribute_stereotypes.find(s);
   
   return (b) ? b->cpp : s;
 }
 
-bool CppSettings::set_RelationStereotype(QCString s, QCString v)
+bool CppSettings::set_RelationAttributeStereotype(QCString s, QCString v)
 {
-  UmlCom::send_cmd(cppSettingsCmd, setCppRelationStereotypeCmd, s, v);
+  read_if_needed_();
+  UmlCom::send_cmd(cppSettingsCmd, setCppRelationAttributeStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
-    UmlStereotype * st = UmlSettings::_map_relation_stereotypes.find(s);
+    UmlStereotype * st = UmlSettings::_map_relation_attribute_stereotypes.find(s);
 
     if (st == 0)
-      st = UmlSettings::add_rel_stereotype(s);
+      st = UmlSettings::add_rel_attr_stereotype(s);
     st->cpp = v;
     
     return TRUE;
@@ -77,11 +79,11 @@ bool CppSettings::set_RelationStereotype(QCString s, QCString v)
     return FALSE;
 }
 
-QCString CppSettings::relationUmlStereotype(QCString s)
+QCString CppSettings::relationAttributeUmlStereotype(QCString s)
 {
   read_if_needed_();
   
-  return UmlSettings::uml_rel_stereotype(s, &UmlStereotype::cpp);
+  return UmlSettings::uml_rel_attr_stereotype(s, &UmlStereotype::cpp);
 }
 
 QCString CppSettings::classStereotype(QCString s)
@@ -95,6 +97,7 @@ QCString CppSettings::classStereotype(QCString s)
 
 bool CppSettings::set_ClassStereotype(QCString s, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(cppSettingsCmd, setCppClassStereotypeCmd, s, v);
   if (UmlCom::read_bool()) {
     UmlStereotype * st = UmlSettings::_map_class_stereotypes.find(s);
@@ -127,6 +130,7 @@ QCString CppSettings::include(QCString s)
 
 bool CppSettings::set_Include(QCString s, QCString v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(cppSettingsCmd, setCppIncludeCmd, s, v);
   if (UmlCom::read_bool()) {
     QCString * r = _map_includes.take(s);
@@ -249,6 +253,80 @@ bool CppSettings::set_IncludeWithPath(bool v)
     return FALSE;
 }
 
+bool CppSettings::isRelativePath()
+{
+  read_if_needed_();
+
+  return _is_relative_path;
+}
+
+bool CppSettings::set_IsRelativePath(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppRelativePathCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_relative_path = v;
+    if (v) _is_root_relative_path = FALSE;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool CppSettings::isRootRelativePath()
+{
+  read_if_needed_();
+
+  return _is_root_relative_path;
+}
+
+bool CppSettings::set_IsRootRelativePath(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppRootRelativePathCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_root_relative_path = v;
+    if (v) _is_relative_path = FALSE;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool CppSettings::isForceNamespacePrefixGeneration()
+{
+  read_if_needed_();
+
+  return _is_force_namespace_gen;
+}
+
+bool CppSettings::set_IsForceNamespacePrefixGeneration(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppForceNamespaceGenCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_force_namespace_gen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool CppSettings::isGenerateJavadocStyleComment()
+{
+  read_if_needed_();
+
+  return _is_generate_javadoc_comment;
+}
+
+bool CppSettings::set_IsGenerateJavadocStyleComment(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppJavadocStyleCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_generate_javadoc_comment = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 const QCString & CppSettings::enumIn()
 {
   read_if_needed_();
@@ -303,6 +381,128 @@ bool CppSettings::set_EnumInout(QCString v)
     return FALSE;
 }
 
+QCString CppSettings::enumReturn()
+{
+  read_if_needed_();
+
+  return _enum_return;
+}
+
+bool CppSettings::set_EnumReturn(QCString v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppEnumReturnCmd, v);
+  if (UmlCom::read_bool()) {
+    _enum_return = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString CppSettings::builtinIn(QCString s)
+{
+  read_if_needed_();
+
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
+
+  return (b) ? b->cpp_in : QCString();
+}
+
+bool CppSettings::set_BuiltinIn(QCString type, QCString form)
+{
+  read_if_needed_();
+  UmlCom::send_cmd(cppSettingsCmd, setCppInCmd, type, form);
+  if (UmlCom::read_bool()) {
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
+
+    if (b == 0)
+      b = UmlSettings::add_type(type);
+    b->cpp_in = form;
+    
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString CppSettings::builtinOut(QCString s)
+{
+  read_if_needed_();
+
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
+
+  return (b) ? b->cpp_out : QCString();
+}
+
+bool CppSettings::set_BuiltinOut(QCString type, QCString form)
+{
+  read_if_needed_();
+  UmlCom::send_cmd(cppSettingsCmd, setCppOutCmd, type, form);
+  if (UmlCom::read_bool()) {
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
+
+    if (b == 0)
+      b = UmlSettings::add_type(type);
+    b->cpp_out = form;
+    
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString CppSettings::builtinInOut(QCString s)
+{
+  read_if_needed_();
+
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
+
+  return (b) ? b->cpp_inout : QCString();
+}
+
+bool CppSettings::set_BuiltinInOut(QCString type, QCString form)
+{
+  read_if_needed_();
+  UmlCom::send_cmd(cppSettingsCmd, setCppInOutCmd, type, form);
+  if (UmlCom::read_bool()) {
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
+
+    if (b == 0)
+      b = UmlSettings::add_type(type);
+    b->cpp_inout = form;
+    
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString CppSettings::builtinReturn(QCString s)
+{
+  read_if_needed_();
+
+  UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
+
+  return (b) ? b->cpp_return : QCString();
+}
+
+bool CppSettings::set_BuiltinReturn(QCString type, QCString form)
+{
+  read_if_needed_();
+  UmlCom::send_cmd(cppSettingsCmd, setCppReturnCmd, type, form);
+  if (UmlCom::read_bool()) {
+    UmlBuiltin * b = UmlSettings::_map_builtins.find(type);
+
+    if (b == 0)
+      b = UmlSettings::add_type(type);
+    b->cpp_return = form;
+    
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 const QCString & CppSettings::in()
 {
   read_if_needed_();
@@ -312,7 +512,7 @@ const QCString & CppSettings::in()
 
 bool CppSettings::set_In(QCString v)
 {
-  UmlCom::send_cmd(cppSettingsCmd, setCppInCmd, v);
+  UmlCom::send_cmd(cppSettingsCmd, setCppInCmd, v, "");
   if (UmlCom::read_bool()) {
     _in = v;
     return TRUE;
@@ -330,7 +530,7 @@ const QCString & CppSettings::out()
 
 bool CppSettings::set_Out(QCString v)
 {
-  UmlCom::send_cmd(cppSettingsCmd, setCppOutCmd, v);
+  UmlCom::send_cmd(cppSettingsCmd, setCppOutCmd, v, "");
   if (UmlCom::read_bool()) {
     _out = v;
     return TRUE;
@@ -348,9 +548,27 @@ const QCString & CppSettings::inout()
 
 bool CppSettings::set_Inout(QCString v)
 {
-  UmlCom::send_cmd(cppSettingsCmd, setCppInOutCmd, v);
+  UmlCom::send_cmd(cppSettingsCmd, setCppInOutCmd, v, "");
   if (UmlCom::read_bool()) {
     _inout = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+QCString CppSettings::Return()
+{
+  read_if_needed_();
+
+  return _return;
+}
+
+bool CppSettings::set_Return(QCString v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppReturnCmd, v, "");
+  if (UmlCom::read_bool()) {
+    _return = v;
     return TRUE;
   }
   else
@@ -465,18 +683,19 @@ bool CppSettings::set_TypedefDecl(QCString v)
     return FALSE;
 }
 
-const QCString & CppSettings::attributeDecl()
+const QCString & CppSettings::attributeDecl(const char * multiplicity)
 {
   read_if_needed_();
-  
-  return _attr_decl;
+
+  return _attr_decl[UmlSettings::multiplicity_column(multiplicity)];
 }
 
-bool CppSettings::set_AttributeDecl(QCString v)
+bool CppSettings::set_AttributeDecl(const char * multiplicity, QCString v)
 {
-  UmlCom::send_cmd(cppSettingsCmd, setCppAttributeDeclCmd, v);
+  read_if_needed_();
+  UmlCom::send_cmd(cppSettingsCmd, setCppAttributeDeclCmd, multiplicity, v);
   if (UmlCom::read_bool()) {
-    _attr_decl = v;
+    _attr_decl[UmlSettings::multiplicity_column(multiplicity)] = v;
     return TRUE;
   }
   else
@@ -510,6 +729,7 @@ const QCString & CppSettings::relationDecl(bool by_value, const char * multiplic
 
 bool CppSettings::set_RelationDecl(bool by_value, const char * multiplicity, const char * v)
 {
+  read_if_needed_();
   UmlCom::send_cmd(cppSettingsCmd, setCppRelationDeclCmd, by_value, multiplicity, v);
   if (UmlCom::read_bool()) {
     _rel_decl[(by_value) ? 1 : 0][UmlSettings::multiplicity_column(multiplicity)] = v;
@@ -735,6 +955,24 @@ bool CppSettings::set_IsSetParamConst(bool v)
     return FALSE;
 }
 
+bool CppSettings::isSetParamRef()
+{
+  read_if_needed_();
+
+  return _is_set_param_ref;
+}
+
+bool CppSettings::set_IsSetParamRef(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppIsSetParamRefCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_set_param_ref = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 bool CppSettings::_defined;
 
 QCString CppSettings::_root;
@@ -745,11 +983,15 @@ QCString CppSettings::_out;
 
 QCString CppSettings::_inout;
 
+QCString CppSettings::_return;
+
 QCString CppSettings::_enum_in;
 
 QCString CppSettings::_enum_out;
 
 QCString CppSettings::_enum_inout;
+
+QCString CppSettings::_enum_return;
 
 QCString CppSettings::_class_decl;
 
@@ -763,7 +1005,7 @@ QCString CppSettings::_enum_decl;
 
 QCString CppSettings::_typedef_decl;
 
-QCString CppSettings::_attr_decl;
+QCString CppSettings::_attr_decl[3/*multiplicity*/];
 
 QCString CppSettings::_enum_item_decl;
 
@@ -793,6 +1035,8 @@ bool CppSettings::_is_set_inline;
 
 bool CppSettings::_is_set_param_const;
 
+bool CppSettings::_is_set_param_ref;
+
 QCString CppSettings::_h_content;
 
 QCString CppSettings::_src_content;
@@ -802,6 +1046,14 @@ QCString CppSettings::_h_ext;
 QCString CppSettings::_src_ext;
 
 bool CppSettings::_incl_with_path;
+
+bool CppSettings::_is_relative_path;
+
+bool CppSettings::_is_root_relative_path;
+
+bool CppSettings::_is_force_namespace_gen;
+
+bool CppSettings::_is_generate_javadoc_comment;
 
 QDict<QCString> CppSettings::_map_includes;
 
@@ -819,12 +1071,13 @@ void CppSettings::read_()
     UmlSettings::_builtins[index].cpp_in = UmlCom::read_string();
     UmlSettings::_builtins[index].cpp_out = UmlCom::read_string();
     UmlSettings::_builtins[index].cpp_inout = UmlCom::read_string();
+    UmlSettings::_builtins[index].cpp_return = UmlCom::read_string();
   }
   
   n = UmlCom::read_unsigned();
   
   for (index = 0; index != n; index += 1)
-    UmlSettings::_relation_stereotypes[index].cpp = UmlCom::read_string();
+    UmlSettings::_relation_attribute_stereotypes[index].cpp = UmlCom::read_string();
   
   n = UmlCom::read_unsigned();
   
@@ -852,16 +1105,19 @@ void CppSettings::read_()
   _in = UmlCom::read_string();
   _out = UmlCom::read_string();
   _inout = UmlCom::read_string();
+  _return = UmlCom::read_string();
   _enum_in = UmlCom::read_string();
   _enum_out = UmlCom::read_string();
   _enum_inout = UmlCom::read_string();
+  _enum_return = UmlCom::read_string();
   _class_decl = UmlCom::read_string();
   _external_class_decl = UmlCom::read_string();
   _struct_decl = UmlCom::read_string();
   _union_decl = UmlCom::read_string();
   _enum_decl = UmlCom::read_string();
   _typedef_decl = UmlCom::read_string();
-  _attr_decl = UmlCom::read_string();
+  for (index = 0; index != 3; index += 1)
+    _attr_decl[index] = UmlCom::read_string();
   _enum_item_decl = UmlCom::read_string();
   for (index = 0; index != 3; index += 1) {
     _rel_decl[0][index] = UmlCom::read_string();
@@ -880,6 +1136,11 @@ void CppSettings::read_()
   _is_set_inline = UmlCom::read_bool();
   _is_set_param_const = UmlCom::read_bool();
 
+  _is_set_param_ref = UmlCom::read_bool();
+  _is_relative_path = UmlCom::read_bool();
+  _is_force_namespace_gen = UmlCom::read_bool();
+  _is_root_relative_path = UmlCom::read_bool();
+  _is_generate_javadoc_comment = UmlCom::read_bool();
 }
 
 void CppSettings::read_if_needed_()

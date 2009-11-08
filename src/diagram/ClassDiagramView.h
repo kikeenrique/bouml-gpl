@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,7 +40,7 @@ class ClassDiagramView : public DiagramView {
     ClassDiagramView(QWidget * parent, UmlCanvas * canvas, int id);
 
     virtual void menu(const QPoint&);
-    virtual void add_related_elements(DiagramItem *, const char * what,
+    virtual void add_related_elements(DiagramItem *, QString what,
 				      bool inh, bool assoc);
     virtual void read(char *, char * k);
     virtual void save(QTextStream & st, QString & warning, bool copy) const;

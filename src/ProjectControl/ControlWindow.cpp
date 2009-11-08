@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -56,7 +56,7 @@
 ControlWindow * ControlWindow::the;
 
 const char * OpenText = "To load a project";
-const char * SearchText = "To search a <em>package</em> in the <em>browser</em>.";
+const char * SearchText = "To search a <i>package</i> in the <i>browser</i>.";
 const char * ChangeUserText = "To be an other user.";
 
 ControlWindow::ControlWindow(QDir & homeDir) : QMainWindow(0, "Project control", WDestructiveClose) {
@@ -296,7 +296,7 @@ void ControlWindow::windows_style() {
 }
 
 void ControlWindow::about() {
-  QMessageBox::about(this, "Project control", "<p>Version <b>1.2.2</b></p>" );
+  QMessageBox::about(this, "Project control", "<p>Version <b>1.2.3</b></p>" );
 }
 
 void ControlWindow::aboutQt() {

@@ -221,6 +221,9 @@ class UmlBaseClass : public UmlClassMember {
     //the returned class will be defined in a sub-level of the package.
     
     static UmlClass * get(const QCString & n, const UmlPackage * p);
+    
+    //returns all the classes
+    static void getAll(QVector<UmlClass> & v);
 
     // to unload the object to free memory, it will be reloaded automatically
     // if needed. Recursively done for the sub items if 'rec' is TRUE. 

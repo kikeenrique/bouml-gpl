@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,6 +48,7 @@
 #include "UmlPixmap.h"
 #include "BodyDialog.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 QSize ParameterSetDialog::previous_size;
 
@@ -55,14 +56,16 @@ ParameterSetDialog::ParameterSetDialog(ParameterSetData * nd)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), data(nd) {
   nd->browser_node->edit_start();
   
-  if (nd->browser_node->is_writable())
-    setCancelButton();
+  if (nd->browser_node->is_writable()) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
 
-  setCaption("ParameterSet dialog");
+  setCaption(TR("ParameterSet dialog"));
   
   init_uml_tab();
   init_pins_tab();
@@ -76,7 +79,7 @@ ParameterSetDialog::ParameterSetDialog(ParameterSetData * nd)
   
   kvtable = new KeyValuesTable((BrowserParameterSet *) data->get_browser_node(),
 			       grid, !hasOkButton());
-  addTab(grid, "Properties");
+  addTab(grid, TR("Properties"));
   
   //
     
@@ -114,17 +117,17 @@ void ParameterSetDialog::init_uml_tab() {
   grid->setMargin(5);
   grid->setSpacing(5);
 
-  new QLabel("name : ", grid);
+  new QLabel(TR("name : "), grid);
   edname = new LineEdit(bn->get_name(), grid);
   edname->setReadOnly(visit);
     
-  new QLabel("stereotype : ", grid);
+  new QLabel(TR("stereotype : "), grid);
   edstereotype = new QComboBox(TRUE, grid);
   edstereotype->insertItem(toUnicode(data->get_stereotype()));
   if (! visit) {
     edstereotype->insertStringList(BrowserParameterSet::default_stereotypes());
     edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlParameterSet));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->setAutoCompletion(completion());
   }
   edstereotype->setCurrentItem(0);
   QSizePolicy sp = edstereotype->sizePolicy();
@@ -132,9 +135,9 @@ void ParameterSetDialog::init_uml_tab() {
   edstereotype->setSizePolicy(sp);
     
   vbox = new QVBox(grid);
-  new QLabel("description :", vbox);
+  new QLabel(TR("description :"), vbox);
   if (! visit) {
-    connect(new SmallPushButton("Editor", vbox), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vbox), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   }
   comment = new MultiLineEdit(grid);
@@ -162,7 +165,7 @@ void ParameterSetDialog::init_pins_tab() {
     hbox = new QHBox(vbox);
     vbox = new QVBox(hbox);
     vbox->setMargin(5);
-    (new QLabel("Parameters out of Parameter Set", vbox))->setAlignment(AlignCenter);
+    (new QLabel(TR("Parameters out of Parameter Set"), vbox))->setAlignment(AlignCenter);
     lb_available = new QListBox(vbox);
     lb_available->setSelectionMode(QListBox::Multi);
     
@@ -192,14 +195,14 @@ void ParameterSetDialog::init_pins_tab() {
   }
   
   vbox->setMargin(5);
-  (new QLabel("Parameters in Parameter Set", vbox))->setAlignment(AlignCenter);
+  (new QLabel(TR("Parameters in Parameter Set"), vbox))->setAlignment(AlignCenter);
   lb_member = new QListBox(vbox);
   lb_member->setSelectionMode((visit) ? QListBox::NoSelection
 					     : QListBox::Multi);
   for (it = inpins.begin(); it != inpins.end(); ++it)
     lb_member->insertItem(new ListBoxBrowserNode(*it, (*it)->full_name(TRUE)));
   
-  addTab(page, "Parameters");
+  addTab(page, TR("Parameters"));
 }
 
 void ParameterSetDialog::edit_description() {
@@ -257,7 +260,7 @@ void ParameterSetDialog::accept() {
       ((BrowserNode *) bn->parent())->wrong_child_name(s, bn->get_type(),
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
-    msg_critical("Error", edname->text() + "\n\nillegal name or already used");
+    msg_critical(TR("Error"), edname->text() + TR("\n\nillegal name or already used"));
   else {  
     bn->set_name(s);
     bn->set_comment(comment->text());

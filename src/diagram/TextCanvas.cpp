@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,6 +42,7 @@
 #include "DialogUtil.h"
 #include "SettingsDialog.h"
 #include "ToolCom.h"
+#include "translate.h"
 
 TextCanvas::TextCanvas(UmlCanvas * canvas, int x, int y, int id)
     : DiagramCanvas(0, canvas, x, y, TEXT_CANVAS_MIN_SIZE,
@@ -130,24 +131,24 @@ void TextCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
   QPopupMenu fontsubm(0);
   
-  m.insertItem(new MenuTitle("Text", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Text"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 6);
-  m.insertItem("Go down", 7);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 6);
+  m.insertItem(TR("Go down"), 7);
   m.insertSeparator();
-  m.insertItem("Edit", 2);
+  m.insertItem(TR("Edit"), 2);
   m.insertSeparator();
-  m.insertItem("Color", 5);
-  m.insertItem("Font", &fontsubm);  
+  m.insertItem(TR("Color"), 5);
+  m.insertItem(TR("Font"), &fontsubm);  
   init_font_menu(fontsubm, the_canvas(), 10);
   if (linked()) {
     m.insertSeparator();
-    m.insertItem("Select linked items", 3);
+    m.insertItem(TR("Select linked items"), 3);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view",4);
+  m.insertItem(TR("Remove from view"),4);
 
   int index = m.exec(QCursor::pos());
   
@@ -193,13 +194,13 @@ void TextCanvas::menu(const QPoint&) {
     break;
   case 5:
     {
-      QArray<ColorSpec> co(2);
+      ColorSpecVector co(2);
       
-      co[0].set("foreground", &fg_c);
-      co[1].set("background", &bg_c);
+      co[0].set(TR("foreground"), &fg_c);
+      co[1].set(TR("background"), &bg_c);
       
-      SettingsDialog dialog(0, &co, TRUE, TRUE, FALSE,
-			    "Text color dialog");
+      SettingsDialog dialog(0, &co, TRUE, FALSE,
+			    TR("Text color dialog"));
       
       dialog.raise();
       if (dialog.exec() != QDialog::Accepted)
@@ -251,12 +252,12 @@ void TextCanvas::apply_shortcut(QString s) {
   package_modified();
 }
 
-const char * TextCanvas::may_start(UmlCode & l) const {
-  return (l == UmlAnchor) ? 0 : "illegal";
+QString TextCanvas::may_start(UmlCode & l) const {
+  return (l == UmlAnchor) ? 0 : TR("illegal");
 }
 
-const char * TextCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
+QString TextCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  return (l == UmlAnchor) ? dest->may_start(l) : TR("illegal");
 }
 
 bool TextCanvas::alignable() const {
@@ -275,10 +276,10 @@ aCorner TextCanvas::on_resize_point(const QPoint & p) {
   return ::on_resize_point(p, rect());
 }
 
-void TextCanvas::resize(aCorner c, int dx, int dy) {
+void TextCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
   int min = (int) (TEXT_CANVAS_MIN_SIZE * the_canvas()->zoom());
   
-  DiagramCanvas::resize(c, dx, dy, min, min);
+  DiagramCanvas::resize(c, dx, dy, o, min, min);
 }
 
 void TextCanvas::save(QTextStream & st, bool ref, QString &) const {

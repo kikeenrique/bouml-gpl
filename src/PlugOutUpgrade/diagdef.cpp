@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -1639,6 +1639,7 @@ void add_diagram_def()
   add_coldiagdef(cv_base, cv_user, dv_base, dv_user,
 		 user_instanceref, user_colmessage);
 }
+
 //
 //
 //
@@ -1877,6 +1878,58 @@ void upgrade_interaction()
 \n\
     if (cp != null) cp.add_cont_(s, y + h/2);\n\
   }\n";
+  op->set_JavaBody(s);
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
+void add_stereotype_on_seq_msg(UmlClass * baseseqmsg)
+{
+  UmlCom::trace("<b>Add stereotype on sequence messages</b><br>");
+    
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  //
+  
+  UmlOperation * op;
+  
+  op = baseseqmsg->add_op("stereotype", PublicVisibility, "string");
+  
+  op->set_isCppConst(TRUE);
+  op->set_Description(" return the stereotype of the message");
+  op->set_cpp("${type}", "", "  return _stereotype;\n", TRUE, 0, 0);
+  op->set_java("${type}", "", "  return _stereotype;\n", TRUE);
+  op->moveAfter(baseseqmsg->get_operation("kind"));
+  
+  //
+  
+  baseseqmsg->add_attribute("_stereotype", PrivateVisibility, "string",
+			    0, 0)
+    ->moveAfter(baseseqmsg->get_attribute("_args"));
+  
+  //
+  
+  QString s;
+  int index;
+  
+  op = baseseqmsg->get_operation("read_");
+  s = op->cppBody();
+  index = s.find("_x = ");
+  if (index != -1)
+    s.insert(index, "_stereotype = UmlCom::read_string();\n  ");
+  op->set_CppBody(s);
+  s = op->javaBody();
+  index = s.find("_x = ");
+  if (index != -1)
+    s.insert(index, "_stereotype = UmlCom.read_string();\n  ");
   op->set_JavaBody(s);
   
   //

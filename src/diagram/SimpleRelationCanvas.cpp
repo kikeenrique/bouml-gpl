@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -701,7 +701,7 @@ SimpleRelationCanvas * SimpleRelationCanvas::read(char * & st, UmlCanvas * canva
 
     // manage case where the relation is deleted but present in the browser
     if (result->data->get_start()->deletedp())
-      result->delete_it();
+      RelsToDel.append(result);
     else
       result->update_geometry();
     

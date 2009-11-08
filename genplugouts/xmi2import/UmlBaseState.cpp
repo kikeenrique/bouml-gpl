@@ -99,6 +99,21 @@ bool UmlBaseState::set_JavaDoActivity(const char * s) {
 }
 #endif
 
+bool UmlBaseState::isActive() {
+  read_if_needed_();
+  return _active;
+}
+
+bool UmlBaseState::set_isActive(bool v) {
+  UmlCom::send_cmd(_identifier, setActiveCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _active = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 UmlOperation * UmlBaseState::specification() {
   read_if_needed_();
   return _specification;
@@ -147,6 +162,7 @@ void UmlBaseState::read_uml_() {
   UmlBaseItem::read_uml_();
   _uml.read();
   _specification = (UmlOperation *) UmlBaseItem::read_();
+  _active = UmlCom::read_bool();
 }
 
 #ifdef WITHCPP

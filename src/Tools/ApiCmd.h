@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -268,6 +268,12 @@ enum OnInstanceCmd {
   
   // api 42
   setDerivedCmd,
+  
+  // api 46
+  importProjectCmd,
+  
+  // api 48
+  setActiveCmd,
     
   setUserCmd = 252, // not in plug-outs managed through bouml
   moveInCmd = 253,  // not in plug-outs managed through bouml
@@ -364,7 +370,9 @@ enum CppSettingsCmd {
   // api 29
   setCppRootRelativePathCmd,
   // api 30
-  setCppJavadocStyleCmd
+  setCppJavadocStyleCmd,
+  // api 49
+  setCppInlineOperForceInclInHeaderCmd
 };
 
 enum JavaSettingsCmd {
@@ -461,6 +469,9 @@ enum PythonSettingsCmd {
   
   // api 44
   setPythonInitOperationDefCmd,
+  
+  // api 48
+  setPython3OperationCmd,
 };
 
 enum IdlSettingsCmd {

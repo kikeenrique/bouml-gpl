@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,6 +35,7 @@
 #include "FragmentCanvas.h"
 #include "MenuTitle.h"
 #include "myio.h"
+#include "translate.h"
 
 #define LIFE_LINE_HEIGHT 7
 
@@ -144,12 +145,12 @@ DiagramItem::LineDirection FragmentSeparatorCanvas::allowed_direction(UmlCode) {
   return DiagramItem::Horizontal;
 }
 
-const char * FragmentSeparatorCanvas::may_start(UmlCode &) const {
-  return "illegal";
+QString FragmentSeparatorCanvas::may_start(UmlCode &) const {
+  return TR("illegal");
 }
 
-const char * FragmentSeparatorCanvas::may_connect(UmlCode &, const DiagramItem *) const {
-  return "illegal";
+QString FragmentSeparatorCanvas::may_connect(UmlCode &, const DiagramItem *) const {
+  return TR("illegal");
 }
 
 void FragmentSeparatorCanvas::connexion(UmlCode, DiagramItem *,
@@ -163,9 +164,9 @@ void FragmentSeparatorCanvas::open() {
 void FragmentSeparatorCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
   
-  m.insertItem(new MenuTitle("Separator", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Separator"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Remove from view", 1);
+  m.insertItem(TR("Remove from view"), 1);
   
   if (m.exec(QCursor::pos()) == 1) {
     delete_it();

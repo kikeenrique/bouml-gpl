@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -47,6 +47,7 @@
 #include "Settings.h"
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 StateActionCanvas::StateActionCanvas(BrowserNode * bn, UmlCanvas * canvas,
 			 int x, int y)
@@ -234,8 +235,8 @@ aCorner StateActionCanvas::on_resize_point(const QPoint & p) {
     : ::on_resize_point(p, rect());
 }
 
-void StateActionCanvas::resize(aCorner c, int dx, int dy) {
-  DiagramCanvas::resize(c, dx, dy, min_width, min_height);
+void StateActionCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
+  DiagramCanvas::resize(c, dx, dy, o, min_width, min_height, TRUE);
   compute_size();
 }
 
@@ -473,36 +474,36 @@ void StateActionCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
   QPopupMenu toolm(0);
   int index;
-  const char * s = browser_node->get_name();
+  QString s = browser_node->get_name();
   
-  if (*s == 0) {
+  if (s.isEmpty()) {
     const BasicData * data = browser_node->get_data();
-    const char * st = data->get_stereotype();
+    QString st = data->get_stereotype();
     
-    s = (*st != 0) ? st : "action";
+    s = (!st.isEmpty()) ? st : TR("action");
   }
   
   m.insertItem(new MenuTitle(s, m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 13);
-  m.insertItem("Go down", 14);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 13);
+  m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 2);
+  m.insertItem(TR("Edit drawing settings"), 2);
   m.insertSeparator();
-  m.insertItem("Edit state action", 3);
+  m.insertItem(TR("Edit state action"), 3);
   m.insertSeparator();
-  m.insertItem("Select in browser", 4);
+  m.insertItem(TR("Select in browser"), 4);
   if (linked())
-    m.insertItem("Select linked items", 5);
+    m.insertItem(TR("Select linked items"), 5);
   m.insertSeparator();
-  m.insertItem("Remove from view", 7);
+  m.insertItem(TR("Remove from view"), 7);
   if (browser_node->is_writable())
-    m.insertItem("Delete from model", 8);
+    m.insertItem(TR("Delete from model"), 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlStateAction, 20))
-    m.insertItem("Tool", &toolm);
+    m.insertItem(TR("Tool"), &toolm);
   
   switch (index = m.exec(QCursor::pos())) {
   case 0:
@@ -578,15 +579,15 @@ void StateActionCanvas::apply_shortcut(QString s) {
 }
 
 void StateActionCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(2);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(2);
+  ColorSpecVector co(1);
   
-  st[0].set("drawing language", &language);
-  st[1].set("show stereotype \nproperties", &show_stereotype_properties);
+  st[0].set(TR("drawing language"), &language);
+  st[1].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
   
-  co[0].set("state action color", &itscolor);
+  co[0].set(TR("state action color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -598,28 +599,28 @@ bool StateActionCanvas::has_drawing_settings() const {
 }
 
 void StateActionCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(2);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(2);
+  ColorSpecVector co(1);
   DrawingLanguage language;
   UmlColor itscolor;
   
-  st[0].set("drawing language", &language);
-  st[1].set("show stereotype \nproperties", &show_stereotype_properties);
+  st[0].set(TR("drawing language"), &language);
+  st[1].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
   
-  co[0].set("state action color", &itscolor);
+  co[0].set(TR("state action color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
-      if (st[0].name != 0)
+      if (!st[0].name.isEmpty())
 	((StateActionCanvas *) it.current())->language = language;
-      if (st[1].name != 0)
+      if (!st[1].name.isEmpty())
 	((StateActionCanvas *) it.current())->show_stereotype_properties = show_stereotype_properties;
-      if (co[0].name != 0)
+      if (!co[0].name.isEmpty())
 	((StateActionCanvas *) it.current())->itscolor = itscolor;
       ((StateActionCanvas *) it.current())->modified();	// call package_modified()
     }
@@ -637,17 +638,17 @@ bool StateActionCanvas::get_show_stereotype_properties() const {
   }
 }
 
-const char * StateActionCanvas::may_start(UmlCode & l) const {
+QString StateActionCanvas::may_start(UmlCode & l) const {
   switch (l) {
   case UmlAnchor:
   case UmlTransition:
     return 0;
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
-const char * StateActionCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString StateActionCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor)
     return dest->may_start(l);
   
@@ -664,9 +665,9 @@ const char * StateActionCanvas::may_connect(UmlCode & l, const DiagramItem * des
   case ChoicePS:
   case ForkPS:
   case JoinPS:
-    return (l == UmlTransition) ? 0 : "illegal";
+    return (l == UmlTransition) ? 0 : TR("illegal");
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 

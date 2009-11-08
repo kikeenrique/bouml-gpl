@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -22,7 +22,6 @@
 // home   : http://bouml.free.fr
 //
 // *************************************************************************
-
 #include <qapplication.h>
 
 #include "UmlCom.h"
@@ -41,7 +40,7 @@ int main(int argc, char ** argv)
   if (UmlCom::connect(QCString(argv[1]).toUInt())) {
     try {
       //UmlCom::with_ack(FALSE);
-      UmlCom::trace("<b>C++ reverse</b> release 2.9.3<br>");
+      UmlCom::trace("<b>C++ reverse</b> release 2.12<br>");
       UmlCom::traceAutoRaise(FALSE);
       
       UmlItem * item = UmlCom::targetItem();
@@ -66,16 +65,20 @@ int main(int argc, char ** argv)
 	  CppSettings::set_UseDefaults(TRUE);
 	  Package::send_dirs(TRUE);
 	  Statistic::produce();
-	  
-	  UmlCom::message("");
 	}
       }
     }
     catch (...) {
     }
-
-    UmlCom::showTrace();
-    UmlCom::bye();
+    
+    try {
+      // socket may be already closed
+      UmlCom::message("");
+      UmlCom::showTrace();
+      UmlCom::bye();	// application must not be deleted
+    }
+    catch (...) {
+    }
   }
   
   UmlCom::close();

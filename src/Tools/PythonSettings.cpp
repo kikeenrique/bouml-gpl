@@ -375,6 +375,8 @@ bool PythonSettings::_defined;
 
 bool PythonSettings::_2_2;
 
+bool PythonSettings::_operation_3;
+
 QCString PythonSettings::_indent_step;
 
 QCString PythonSettings::_root;
@@ -452,6 +454,9 @@ void PythonSettings::read_()
     _oper_def = UmlCom::read_string();
     _get_name = UmlCom::read_string();
     _set_name = UmlCom::read_string();
+    (void) UmlCom::read_string(); // python_initoper_def
+    
+    _operation_3 = UmlCom::read_bool();
 }
 
 void PythonSettings::read_if_needed_()

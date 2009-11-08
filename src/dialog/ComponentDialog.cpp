@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -47,6 +47,7 @@
 #include "UmlPixmap.h"
 #include "BodyDialog.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 QSize ComponentDialog::previous_size;
 
@@ -54,14 +55,16 @@ ComponentDialog::ComponentDialog(SimpleData * nd)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), data(nd) {
   nd->get_browser_node()->edit_start();
   
-  if (nd->get_browser_node()->is_writable())
-    setCancelButton();
+  if (nd->get_browser_node()->is_writable()) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
 
-  setCaption("component dialog");
+  setCaption(TR("component dialog"));
     
   BrowserComponent * bn = (BrowserComponent *) nd->get_browser_node();
     
@@ -70,17 +73,17 @@ ComponentDialog::ComponentDialog(SimpleData * nd)
   init_l_tab(rq_page, rq_stereotypefilter, &ComponentDialog::rq_stereotypeFilterActivated,
 	     SLOT(rq_stereotypeFilterActivated(const QString &)),
 	     SLOT(require_cls()), SLOT(unrequire_cls()), 
-	     lb_rq_available, lb_rq, rqs, "Required classes");
+	     lb_rq_available, lb_rq, rqs, TR("Required classes"));
   prs = bn->get_provided_classes();
   init_l_tab(pr_page, pr_stereotypefilter, &ComponentDialog::pr_stereotypeFilterActivated,
 	     SLOT(pr_stereotypeFilterActivated(const QString &)),
 	     SLOT(provide_cls()), SLOT(unprovide_cls()), 
-	     lb_pr_available, lb_pr, prs, "Provided classes");
+	     lb_pr_available, lb_pr, prs, TR("Provided classes"));
   rzs = bn->get_realizing_classes();
   init_l_tab(rz_page, rz_stereotypefilter, &ComponentDialog::rz_stereotypeFilterActivated,
 	     SLOT(rz_stereotypeFilterActivated(const QString &)),
 	     SLOT(realize_cls()), SLOT(unrealize_cls()), 
-	     lb_rz_available, lb_rz, rzs, "Realizing classes");
+	     lb_rz_available, lb_rz, rzs, TR("Realizing classes"));
 
   // USER : list key - value
   
@@ -90,7 +93,7 @@ ComponentDialog::ComponentDialog(SimpleData * nd)
   
   kvtable = new KeyValuesTable((BrowserComponent *) data->get_browser_node(),
 			       grid, !hasOkButton());
-  addTab(grid, "Properties");
+  addTab(grid, TR("Properties"));
   
   //
     
@@ -127,17 +130,17 @@ void ComponentDialog::init_uml_tab() {
   grid->setMargin(5);
   grid->setSpacing(5);
 
-  new QLabel("name : ", grid);
+  new QLabel(TR("name : "), grid);
   edname = new LineEdit(bn->get_name(), grid);
   edname->setReadOnly(visit);
     
-  new QLabel("stereotype : ", grid);
+  new QLabel(TR("stereotype : "), grid);
   edstereotype = new QComboBox(TRUE, grid);
   edstereotype->insertItem(toUnicode(data->get_stereotype()));
   if (! visit) {
     edstereotype->insertStringList(BrowserComponent::default_stereotypes());
     edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlComponent));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->setAutoCompletion(completion());
   }
   edstereotype->setCurrentItem(0);
   QSizePolicy sp = edstereotype->sizePolicy();
@@ -145,9 +148,9 @@ void ComponentDialog::init_uml_tab() {
   edstereotype->setSizePolicy(sp);
     
   vbox = new QVBox(grid);
-  new QLabel("description :", vbox);
+  new QLabel(TR("description :"), vbox);
   if (! visit)
-    connect(new SmallPushButton("Editor", vbox), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vbox), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
@@ -178,9 +181,9 @@ void ComponentDialog::init_l_tab(QVBox *& page, QComboBox *& stereotypefilter,
   if (!visit) {
     hbox = new QHBox(page);
     hbox->setMargin(5);
-    new QLabel("Stereotype filtering  ", hbox);
+    new QLabel(TR("Stereotype filtering  "), hbox);
     stereotypefilter = new QComboBox(TRUE, hbox);
-    stereotypefilter->setAutoCompletion(TRUE);
+    stereotypefilter->setAutoCompletion(completion());
     stereotypefilter->insertItem("");
     stereotypefilter->insertStringList(BrowserClass::default_stereotypes());
     stereotypefilter->insertStringList(ProfiledStereotypes::defaults(UmlComponent));
@@ -194,7 +197,7 @@ void ComponentDialog::init_l_tab(QVBox *& page, QComboBox *& stereotypefilter,
     hbox = new QHBox(page);
     vbox = new QVBox(hbox);
     vbox->setMargin(5);
-    (new QLabel("Available classes", vbox))->setAlignment(AlignCenter);
+    (new QLabel(TR("Available classes"), vbox))->setAlignment(AlignCenter);
     lb_available = new QListBox(vbox);
     lb_available->setSelectionMode(QListBox::Multi);
     
@@ -425,7 +428,7 @@ void ComponentDialog::accept() {
       ((BrowserNode *) bn->parent())->wrong_child_name(s, bn->get_type(),
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
-    msg_critical("Error", edname->text() + "\n\nillegal name or already used");
+    msg_critical(TR("Error"), edname->text() + TR("\n\nillegal name or already used"));
   else {  
     bn->set_name(s);
     bn->set_comment(comment->text());

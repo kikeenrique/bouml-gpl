@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -56,6 +56,7 @@
 #include "ReferenceDialog.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserOperation> BrowserOperation::all(1021, __FILE__);
 QStringList BrowserOperation::its_default_stereotypes;	// unicode
@@ -179,6 +180,10 @@ void BrowserOperation::update_idmax_for_root()
 {
   all.update_idmax_for_root();
   OperationData::update_idmax_for_root();
+}
+
+void BrowserOperation::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
 }
     
 bool BrowserOperation::delete_internal(QString &) {
@@ -492,48 +497,48 @@ void BrowserOperation::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("Edit", 0),
-		     "to edit the <em>operation</em>, \
-a double click with the left mouse button does the same thing");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 0),
+		     TR("to edit the <i>operation</i>, \
+a double click with the left mouse button does the same thing"));
       if (GenerationSettings::cpp_get_default_defs() &&
 	  (strstr(def->get_cppdef(), "${body}") != 0))
-	m.setWhatsThis(m.insertItem("Edit C++ body", 4),
-		       "to edit the <em>operation</em> and its C++ body");
+	m.setWhatsThis(m.insertItem(TR("Edit C++ body"), 4),
+		       TR("to edit the <i>operation</i> and its C++ body"));
       if (GenerationSettings::java_get_default_defs() &&
 	  (strstr(def->get_javadef(), "${body}") != 0))
-	m.setWhatsThis(m.insertItem("Edit Java body", 5),
-		       "to edit the <em>operation</em> and its Java body");
+	m.setWhatsThis(m.insertItem(TR("Edit Java body"), 5),
+		       TR("to edit the <i>operation</i> and its Java body"));
       if (GenerationSettings::php_get_default_defs() &&
 	  (strstr(def->get_phpdef(), "${body}") != 0))
-	m.setWhatsThis(m.insertItem("Edit Php body", 6),
-		       "to edit the <em>operation</em> and its Php body");
+	m.setWhatsThis(m.insertItem(TR("Edit Php body"), 6),
+		       TR("to edit the <i>operation</i> and its Php body"));
       if (GenerationSettings::python_get_default_defs() &&
 	  (strstr(def->get_pythondef(), "${body}") != 0))
-	m.setWhatsThis(m.insertItem("Edit Python body", 7),
-		       "to edit the <em>operation</em> and its Python body");
+	m.setWhatsThis(m.insertItem(TR("Edit Python body"), 7),
+		       TR("to edit the <i>operation</i> and its Python body"));
       if (((BrowserClass *) parent())->is_writable()) {
 	if ((get_of == 0) && (set_of == 0))
-	  m.setWhatsThis(m.insertItem("Duplicate", 1),
-			 "to copy the <em>operation</em> in a new one");
+	  m.setWhatsThis(m.insertItem(TR("Duplicate"), 1),
+			 TR("to copy the <i>operation</i> in a new one"));
 
-	m.setWhatsThis(m.insertItem("Add implementing activity", 9),
-		       "to add a new <em>activity</i> simplementing the <em>operation</em>");
-	m.setWhatsThis(m.insertItem("Add implementing state", 10),
-		       "to add a new <em>state</i> simplementing the <em>operation</em>");
+	m.setWhatsThis(m.insertItem(TR("Add implementing activity"), 9),
+		       TR("to add a new <i>activity</i> implementing the <i>operation</i>"));
+	m.setWhatsThis(m.insertItem(TR("Add implementing state"), 10),
+		       TR("to add a new <i>state</i> implementing the <i>operation</i>"));
       }
   
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("Referenced by", 8),
-		     "to know who reference the <i>operation</i>");
+      m.setWhatsThis(m.insertItem(TR("Referenced by"), 8),
+		     TR("to know who reference the <i>operation</i>"));
 
       ImplBy.clear();
       BrowserActivity::compute_referenced_by(ImplBy, this);
       BrowserState::compute_referenced_by(ImplBy, this);
       if (! ImplBy.isEmpty()) {
-	m.setWhatsThis(m.insertItem("Select implementing behavior", &implbym),
-		       "to select a <em>state</em> or <em>activity</em> implementing the <em>operation</em>");
+	m.setWhatsThis(m.insertItem(TR("Select implementing behavior"), &implbym),
+		       TR("to select a <i>state</i> or <i>activity</i> implementing the <i>operation</i>"));
 	
-	implbym.insertItem(new MenuTitle("Choose behavior", m.font()), -1);
+	implbym.insertItem(new MenuTitle(TR("Choose behavior"), m.font()), -1);
 	implbym.insertSeparator();
 	
 	BrowserNode * beh;
@@ -545,24 +550,24 @@ a double click with the left mouse button does the same thing");
       
       if (!is_read_only && (edition_number == 0)) {
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("Delete", 2),
-		       "to delete the <em>operation</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 2),
+		       TR("to delete the <i>operation</i>. \
+Note that you can undelete it after"));
       }
     }
-    mark_menu(m, "operation", 90);
+    mark_menu(m, TR("the operation"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0) && 
 	   ((get_of == 0) || !get_of->deletedp()) &&
 	   ((set_of == 0) || !set_of->deletedp()))
-    m.setWhatsThis(m.insertItem("Undelete", 3),
-		   "to undelete the <em>operation</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 3),
+		   TR("to undelete the <i>operation</i>"));
   
   exec_menu_choice(m.exec(QCursor::pos()));
 }
@@ -921,7 +926,7 @@ void BrowserOperation::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -973,7 +978,7 @@ BrowserOperation * BrowserOperation::read(char * & st, char * k,
     result->is_defined = TRUE;
     result->def->read(st, k);	// updates k
     
-    result->is_read_only = (!in_import() && read_only_file()) || 
+    result->is_read_only = !parent->is_writable() || 
       ((user_id() != 0) && result->is_api_base());
     
     result->def->set_browser_node(result, FALSE);
@@ -1013,7 +1018,7 @@ BrowserOperation * BrowserOperation::read(char * & st, char * k,
       k = read_keyword(st);
     }
     
-    result->BrowserNode::read(st, k);	// updates k
+    result->BrowserNode::read(st, k, id);	// updates k
     
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");

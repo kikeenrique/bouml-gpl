@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,6 +42,7 @@
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserExtraMember> BrowserExtraMember::all(__FILE__);
 
@@ -95,6 +96,10 @@ void BrowserExtraMember::update_idmax_for_root()
 {
   all.update_idmax_for_root();
 }
+
+void BrowserExtraMember::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+}
     
 void BrowserExtraMember::renumber(int phase) {
   if (phase != -1)
@@ -123,30 +128,30 @@ void BrowserExtraMember::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("Edit", 0),
-		     "to edit the <em>extra member</em>, \
-a double click with the left mouse button does the same thing");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 0),
+		     TR("to edit the <i>extra member</i>, \
+a double click with the left mouse button does the same thing"));
       if (!is_read_only) {
-	m.setWhatsThis(m.insertItem("Duplicate", 3),
-		       "to copy the <em>extra member</em> in a new one");
+	m.setWhatsThis(m.insertItem(TR("Duplicate"), 3),
+		       TR("to copy the <i>extra member</i> in a new one"));
 	m.insertSeparator();
 	if (edition_number == 0)
-	  m.setWhatsThis(m.insertItem("Delete", 1),
-			 "to delete the <em>extra member</em>. \
-Note that you can undelete it after");
+	  m.setWhatsThis(m.insertItem(TR("Delete"), 1),
+			 TR("to delete the <i>extra member</i>. \
+Note that you can undelete it after"));
       }
     }
-    mark_menu(m, "extra member", 90);
+    mark_menu(m, TR("extra member"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("Undelete", 2),
-		   "to undelete the <em>extra member</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 2),
+		   TR("to undelete the <i>extra member</i>"));
   
   exec_menu_choice(m.exec(QCursor::pos()));
 }
@@ -291,7 +296,7 @@ void BrowserExtraMember::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -321,12 +326,12 @@ BrowserExtraMember * BrowserExtraMember::read(char * & st, char * k,
 
     result->is_defined = TRUE;
     
-    result->is_read_only = (!in_import() && read_only_file()) || 
+    result->is_read_only = !parent->is_writable() || 
       ((user_id() != 0) && result->is_api_base());
     
     result->def->set_browser_node(result);
     
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");

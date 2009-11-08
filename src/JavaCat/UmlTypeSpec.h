@@ -10,6 +10,10 @@
 //
 // - an explicit type
 class UmlTypeSpec : public UmlBaseTypeSpec {
+#ifdef ROUNDTRIP
+  public:
+    bool equal(const UmlTypeSpec &) const;
+#endif
 };
 
 #endif

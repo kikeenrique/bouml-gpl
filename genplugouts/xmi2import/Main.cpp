@@ -22,7 +22,7 @@ int main(int argc, char ** argv)
 
   if (UmlCom::connect(QString(argv[argc - 1]).toUInt())) {
     try {
-      UmlCom::trace("<b>Xmi 2.1 import</b> release 1.6<br>");
+      UmlCom::trace("<b>Xmi 2.1 import</b> release 1.7<br>");
       UmlCom::targetItem()->import(file);
     }
     catch (...) {

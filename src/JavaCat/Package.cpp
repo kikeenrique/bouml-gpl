@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -73,11 +73,11 @@ QDict<UmlClass> Package::user_classes(1001);
 
 // packages known through a .cat or reversed, the key is the
 // Java package spec
-QDict<Package> Package::known_packages;
+QDict<Package> Package::known_packages(101);
 
 // all the packages defined in bouml, not known through a .cat
-// nor reversed, the key is the java package spec
-QDict<UmlPackage> Package::user_packages;
+// nor reversed (except roundtrip), the key is the java package spec
+QDict<UmlPackage> Package::user_packages(101);
 
 // package which does not exist even in bouml
 QStringList Package::unknown_packages;
@@ -101,6 +101,11 @@ QValueList<FormalParameterList> Package::Formals;
 Progress * Package::progress;
 QApplication * Package::app;
 
+#ifdef ROUNDTRIP
+static QString RootDir;
+QDict<bool> managed;
+#endif
+
 #ifndef REVERSE
 Package::Package(BrowserView * parent, UmlPackage * u)
     : BrowserNode(parent, u->name()) {
@@ -114,6 +119,33 @@ Package::Package(Package * parent, const char * p, const char * n)
   uml = 0;
 }
 
+#ifdef ROUNDTRIP
+Package::Package(Package * parent, UmlPackage * pk)
+    : BrowserNode(parent, pk->name()) {
+  if (text(0) == "unknown")
+    unknown = this;
+  
+  uml = pk;
+  path = pk->javaDir();
+
+  QDir d_root(RootDir);
+  
+  if (path.isEmpty())
+    path = RootDir;
+  else if (QDir::isRelativePath(path))
+    path = d_root.filePath(path);
+  
+  package = pk->javaPackage();
+  
+  if (!package.isEmpty()) {
+    QString full = QString(package);
+    
+    user_packages.insert(full, pk);
+    known_packages.insert(full, this);
+  }
+}
+#endif
+
 bool Package::isa_package() const {
   return TRUE;
 }
@@ -126,28 +158,125 @@ QString Package::get_path() const {
 
 void Package::init(UmlPackage * r, QApplication * a)
 {
-#ifdef REVERSE
+  app = a;
+#ifdef ROUNDTRIP
+  RootDir = JavaSettings::rootDir();
+  
+  if (RootDir.isEmpty()) {
+    UmlCom::trace("<font face=helvetica><b>root path not set in <i>generation settings</i></b><br><br>"
+		  "probably you want to do a <i>reverse</i> rather than a <i>roundtrip</i></font><br>");
+    throw 0;
+  }
+  else if (QDir::isRelativePath(RootDir)) {
+    // r is project
+    QFileInfo f(r->supportFile());
+    QDir d(f.dirPath());
+    
+    RootDir = d.filePath(RootDir);
+  }
+  
+  root = new Package(0, r);
+  r->init(root);
+#elif defined(REVERSE)
   root = new Package(0, 0, r->name());
   root->uml = r;
 #else
   root = new Package(BrowserView::instance(), r);
 #endif
-  app = a;
 }
 
 void Package::new_class(Class * cl) {
-  int index;
-  
-  if (((index = package.find('.')) == -1)
-      ? (package == "java")
-      : (package.left(index) == "java"))
+  if ((package == "java") || (package == "java.lang"))
     java_classes.insert(cl->text(0), cl);
 }
 
-Package * Package::scan_dir()
+void Package::set_step(int s, int n)
 {
-  // get input java source dir
+  if (n == -1) {
+    scan = FALSE;
+    if (progress != 0)
+      delete progress;
+  }
+  else {
+    switch (s) {
+#ifdef ROUNDTRIP
+    case 0:
+      scan = FALSE;
+      if (n > 1)
+	progress = new Progress(n, "Preparation, please wait ...");
+      break;
+#endif
+    case 1:
+      scan = TRUE;
+      if (n > 1)
+	progress = new Progress(n, "Scanning in progress, please wait ...");
+      break;
+    default:
+      // 2
+      scan = FALSE;
+      if (n > 1)
+#ifdef ROUNDTRIP
+	progress = new Progress(n, "Roundtrip in progress, please wait ...");
+#else
+	progress = new Progress(n, "Reverse in progress, please wait ...");
+#endif
+    }
+  }
+}
+
+#ifdef ROUNDTRIP
+void Package::own(UmlArtifact * art) {
+  roundtriped.insert(art->name(), art);
+}
+
+void Package::tic()
+{
+  if (progress) {
+    progress->tic();
+    app->processEvents();
+  }
+}
+
+int Package::count_file_number()
+{
+  QDir d(path);
+  int result = file_number(d, TRUE);
+  TreeItem * child;
+    
+  for (child = firstChild(); child != 0; child = child->nextSibling())
+    if (((BrowserNode *) child)->isa_package())
+      result += ((Package *) child)->count_file_number();
   
+  return result;
+}
+
+void Package::scan_dir(int & n) {
+  n = count_file_number();
+  managed.clear();
+
+  set_step(1, n);
+  scan_dir();
+  managed.clear();
+  set_step(1, -1);
+}
+
+void Package::scan_dir() {
+  QDir d(path);
+
+  reverse_directory(d, TRUE);
+  
+  TreeItem * child;
+  
+  for (child = firstChild(); child != 0; child = child->nextSibling())
+    if (((BrowserNode *) child)->isa_package())
+      ((Package *) child)->scan_dir();
+}
+#else
+Package * Package::scan_dir(int & n)
+{
+  n = 0;
+  
+  // get input java source dir
   QString path = QFileDialog::getExistingDirectory(QDir::currentDirPath(), 0, 0,
 						   "select the base directory to reverse");
 
@@ -161,12 +290,10 @@ Package * Package::scan_dir()
     JavaCatWindow::clear_trace();
 #endif
     UmlCom::message("count files ...");
-    progress = new Progress(file_number(d, TRUE), "Scanning in progress, please wait ...");
-    scan = TRUE;
+    n = file_number(d, TRUE);
+    set_step(1, n);
     p->reverse_directory(d, TRUE);
-    scan = FALSE;
-    if (progress != 0)
-      delete progress;
+    set_step(1, -1);
 #ifndef REVERSE
     QApplication::restoreOverrideCursor();
     
@@ -178,6 +305,7 @@ Package * Package::scan_dir()
   else
     return 0;
 }
+#endif
 
 void Package::progress_closed()
 {
@@ -186,14 +314,27 @@ void Package::progress_closed()
 
 int Package::file_number(QDir & d, bool rec)
 {
+#ifdef ROUNDTRIP
+  if (managed[d.path()] != 0)
+    return 0;
+  managed.insert(d.path(), (bool *) 1);
+#endif
+
   int result = 0;
   const QFileInfoList * list = d.entryInfoList(QDir::Files | QDir::Readable);
+  
+#ifdef ROUNDTRIP
+  if (list == 0)
+    return 0;
+#endif
+
   QFileInfoListIterator it(*list);
   QFileInfo * fi;
   
   while ((fi = it.current()) != 0) {
     if (fi->extension(FALSE) == "java")
       result += 1;
+
     ++it;
   }
 
@@ -216,40 +357,73 @@ int Package::file_number(QDir & d, bool rec)
   return result;
 }
 
-#ifdef REVERSE
-void Package::send_dir(bool rec) {
+#ifdef ROUNDTRIP
+void Package::send_dir(int n) {
   // reverse phase
-  UmlPackage * prj = root->uml;
-  
-  while (prj->parent() != 0)
-    prj = (UmlPackage *) prj->parent();
-  
-  prj->set_childrenVisible(FALSE);
+  UmlPackage::getProject()->set_childrenVisible(FALSE);
   
   QDir d(path);
   
-  progress = new Progress(file_number(d, TRUE),
-			  (scan) ? "Scanning in progress, please wait ..."
-				 : "Reverse in progress, please wait ...");
+  set_step(2, n);
+  send_dir();
+  managed.clear();
+  set_step(2, -1);
   
-  reverse_directory(d, rec);
+  ((uml) ? uml : root->uml)->set_childrenVisible(TRUE);
+}
+
+void Package::send_dir() {
+  QDir d(path);
   
-  if (progress != 0)
-    delete progress;
+  reverse_directory(d, TRUE);
+  
+  TreeItem * child;
+  
+  for (child = firstChild(); child != 0; child = child->nextSibling())
+    if (((BrowserNode *) child)->isa_package())
+      ((Package *) child)->send_dir();
+}
+#elif defined(REVERSE)
+void Package::send_dir(int n) {
+  // reverse phase
+  UmlPackage::getProject()->set_childrenVisible(FALSE);
+  
+  QDir d(path);
+  
+  set_step(2, n);
+  reverse_directory(d, TRUE);
+  set_step(2, -1);
   
   ((uml) ? uml : root->uml)->set_childrenVisible(TRUE);
 }
 #endif
 
 void Package::reverse_directory(QDir & d, bool rec) {
+#ifdef ROUNDTRIP
+  if (managed.find(d.path()) != 0)
+    return;
+  
+  managed.insert(d.path(), (bool *) 1);
+#endif
+
   // reads files
   const QFileInfoList * list = d.entryInfoList(QDir::Files | QDir::Readable);
+
+#ifdef ROUNDTRIP
+  if (list == 0)
+    return;
+#endif
+
   QFileInfoListIterator it(*list);
   QFileInfo * fi;
   
   while ((fi = it.current()) != 0) {
     if (fi->extension() == "java") {
-      reverse_file(QCString(fi->filePath()));
+      reverse_file(QCString(fi->filePath())
+#ifdef ROUNDTRIP
+		   , roundtriped.find(fi->baseName())
+#endif
+		   );
       if (progress)
 	progress->tic();
       app->processEvents();
@@ -276,16 +450,52 @@ void Package::reverse_directory(QDir & d, bool rec) {
   }
 }
 
-void Package::reverse_file(QCString f) {
+#ifdef ROUNDTRIP
+void Package::reverse(UmlArtifact * art) {
+  reverse_file(path + "/" + art->name() + ".java", art);
+}
+#endif
+
+void Package::reverse_file(QCString f
+#ifdef ROUNDTRIP
+			   , UmlArtifact * art
+#endif
+			   ) {
+#ifdef ROUNDTRIP
+  if ((art != 0) && art->considered(scan))
+    return;
+#endif
+
   if (! Lex::open(f)) {
+#ifdef ROUNDTRIP
+    if (art != 0) {
+      UmlCom::trace(QCString("<font face=helvetica><b>cannot open <i>")
+		    + f + "</i></b></font><br>");
+      throw 0;
+    }
+    else
+#endif
     // very strange !
-    if (! scan)
+    if (!scan)
       UmlCom::trace(QCString("<font face=helvetica><b>cannot open <i>")
 		    + f + "</i></b></font><br>");
   }
   else {
-#ifdef REVERSE
-    Class::new_artifact();
+#ifdef ROUNDTRIP
+    if (!scan) {
+      if ((art != 0) && art->is_fully_updated()) {
+	art->set_usefull();
+	art->set_JavaSource(JavaSettings::sourceContent());
+	art->set_Description("");
+	
+	QVector<UmlClass> empty;
+	
+	art->set_AssociatedClasses(empty);
+      }
+      Class::new_artifact(art);
+    }
+#elif defined(REVERSE)
+    Class::new_artifact(0);
 #endif
     for (;;) {		// not a true loop, to use break on error
       UmlCom::message(((scan) ? "scan " : "reverse ") + f);
@@ -310,7 +520,7 @@ void Package::reverse_file(QCString f) {
 	}
 	
 	if (Lex::read_word() != ";") {
-	  Lex::error_near(s);
+	  Lex::error_near(s, " ';' expected");
 	  break;
 	}
 	
@@ -349,10 +559,18 @@ void Package::reverse_file(QCString f) {
       QCString annotation;
       
       while (!s.isEmpty()) {
+#ifdef ROUNDTRIP
+	QList<UmlItem> dummy;
+	
+#endif
 	if ((s == "class") || (s == "enum") ||
 	    (s == "interface") || (s == "@interface")) {
 	  if (!Class::reverse(this, s, annotation, abstractp, 
-			      finalp, visibility, f, Formals))
+			      finalp, visibility, f, Formals
+#ifdef ROUNDTRIP
+			      , FALSE, dummy
+#endif
+			      ))
 	    break;
 	  visibility = PackageVisibility;
 	  abstractp = FALSE;
@@ -386,7 +604,11 @@ void Package::reverse_file(QCString f) {
       if (! scan) {
 	UmlArtifact * art = Class::current_artifact();
 	
-	if ((art != 0) && !art_comment.isEmpty())
+	if ((art != 0) && 
+# ifdef ROUNDTRIP
+	    art->is_fully_updated() &&
+# endif
+	    !art_comment.isEmpty())
 	  art->set_Description((art->javaSource().find("${description}") != -1)
 			       ? art_description : Lex::simplify_comment(art_comment));
       }
@@ -410,8 +632,11 @@ void Package::manage_import()
   }
   else if (s == "static") {
     Lex::mark();
-    while ((s = Lex::read_word()) != ";") {
-      if (s.isEmpty()) {
+    
+    char c;
+    
+    while ((c = Lex::read_word_bis()) != ';') {
+      if (c == 0) {
 	if (! scan) 
 	  Lex::premature_eof();
 	return;
@@ -501,9 +726,12 @@ void Package::update_package_list(QCString name)
 void Package::update_class_list(QCString pack, UmlItem * container)
 {
   const QVector<UmlItem> & ch = container->children();
+  UmlItem ** v = ch.data();
+  UmlItem ** const vsup = v + ch.size();
+  UmlItem * it;
   
-  for (unsigned i = 0; i != ch.size(); i += 1) {
-    UmlItem * it = ch[i];
+  for (;v != vsup; v += 1) {
+    it = *v;
     
     switch (it->kind()) {
     case aClass:
@@ -541,6 +769,22 @@ Class * Package::define(const QCString & name, char st) {
   
   return cl;
 }
+
+#ifdef ROUNDTRIP
+Class * Package::upload_define(UmlClass * ucl) {
+  Class * cl = new Class(this, ucl);
+  QCString s = ucl->name();	// not defined inside an other class
+  
+  classes.insert(package + "." + s, cl);
+  Defined.insert(s, cl);
+  
+  return cl;
+}
+
+Class * Package::localy_defined(QString name) const {
+  return Defined[name];
+}
+#endif
 
 void Package::compute_type(QCString name, UmlTypeSpec & typespec,
 			   const QValueList<FormalParameterList> & tmplts,
@@ -582,12 +826,9 @@ void Package::compute_type(QCString name, UmlTypeSpec & typespec,
 	((cl = Undefined[name]) != 0) ||
 	((cl = classes[name]) != 0) ||
 	((cl = classes[package + '.' + name]) != 0)) {
-      if (need_object != 0) {
+      if (need_object != 0)
 	*need_object = cl;
-	typespec.type = cl->get_uml();
-      }
-      else if ((typespec.explicit_type = JavaSettings::umlType(name)).isEmpty())
-	typespec.type = cl->get_uml();
+      typespec.type = cl->get_uml();
       
       return;
     }
@@ -595,9 +836,7 @@ void Package::compute_type(QCString name, UmlTypeSpec & typespec,
     UmlClass * uml_cl;
     
     if ((uml_cl = user_classes[name]) != 0) {
-      if ((need_object != 0) ||
-	  (typespec.explicit_type = JavaSettings::umlType(name)).isEmpty())
-	typespec.type = uml_cl;
+      typespec.type = uml_cl;
       return;
     }
     
@@ -624,16 +863,14 @@ void Package::compute_type(QCString name, UmlTypeSpec & typespec,
 	  *need_object = cl;
 	  typespec.type = cl->get_uml();
 	}
-	else if ((typespec.explicit_type = JavaSettings::umlType(name)).isEmpty())
+	else 
 	  typespec.type = cl->get_uml();
 	
 	return;
       }
       
       if ((uml_cl = user_classes[s]) != 0) {
-	if ((need_object != 0) ||
-	    (typespec.explicit_type = JavaSettings::umlType(name)).isEmpty())
-	  typespec.type = uml_cl;
+        typespec.type = uml_cl;
 	return;
       }
     }
@@ -642,13 +879,9 @@ void Package::compute_type(QCString name, UmlTypeSpec & typespec,
     
     if ((index == -1) && ((cl = java_classes[name]) != 0)) {
       // a java class
-      if (need_object != 0) {
+      if (need_object != 0)
 	*need_object = cl;
-	typespec.type = cl->get_uml();
-      }
-      else if ((typespec.explicit_type = JavaSettings::umlType(name)).isEmpty())
-	typespec.type = cl->get_uml();
-      
+      typespec.type = cl->get_uml();    
       return;
     }
 
@@ -814,13 +1047,18 @@ UmlPackage * Package::get_uml(bool mandatory) {
     Package * pa = (Package *) parent();
     UmlPackage * uml_pa = pa->get_uml();	// will end on project
 	
-    QVector<UmlItem> ch = uml_pa->children();
+    const QVector<UmlItem> & ch = uml_pa->children();
+    UmlItem ** v = ch.data();
+    UmlItem ** const vsup = v + ch.size();
+    UmlItem * it;
     
-    for (unsigned index = 0; index != ch.size(); index += 1) {
-      UmlItem * it = ch[index];
+    for (;v != vsup; v += 1) {
+      it = *v;
       
-      if ((it->kind() == aPackage) && (it->name() == name))
-	return uml = (UmlPackage *) it;
+      if ((it->kind() == aPackage) && (it->name() == name)) {
+	uml = (UmlPackage *) it;
+	return uml;
+      }
     }
     
     if ((uml = UmlBasePackage::create(uml_pa, name)) == 0) {
@@ -1022,13 +1260,24 @@ void Package::restore(QDataStream  & dt, Package * parent)
     package[len] = 0;
   }
   
-  Package * pack = new Package(parent, path, name);
+  Package * pack;
+  
+#ifdef ROUNDTRIP
+  if ((package != 0) && 
+      ((pack = known_packages[package]) != 0))
+    delete [] package;
+  else {
+#endif
+  pack = new Package(parent, path, name);
 
   if (package != 0) {
     known_packages.replace(package, pack);
     pack->package = package;
     delete [] package;
   }
+#ifdef ROUNDTRIP
+  }
+#endif
   
   delete [] name;
   delete [] path;

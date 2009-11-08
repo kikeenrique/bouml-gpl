@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -28,10 +28,20 @@
 
 #include "UmlBaseClassView.h"
 
+class ClassContainer;
+
 class UmlClassView : public UmlBaseClassView {
   public:
     UmlClassView(void * id, const QCString & n)
       : UmlBaseClassView(id, n) {};
+    
+#ifdef ROUNDTRIP
+    virtual void upload(ClassContainer *);
+    virtual bool set_roundtrip_expected();
+    virtual void mark_useless(QList<UmlItem> & l);
+    virtual void scan_it(int & n);
+    virtual void send_it(int n);
+#endif
 };
 
 #endif

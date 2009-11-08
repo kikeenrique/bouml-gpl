@@ -1,6 +1,7 @@
 
 #include "UmlBaseUseCaseView.h"
 #include "UmlUseCaseView.h"
+#include "UmlItem.h"
 
 UmlUseCaseView * UmlBaseUseCaseView::create(UmlItem * parent, const char * s)
 {

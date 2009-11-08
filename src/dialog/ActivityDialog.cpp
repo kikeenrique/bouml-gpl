@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -50,6 +50,7 @@
 #include "BodyDialog.h"
 #include "GenerationSettings.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 QSize ActivityDialog::previous_size;
 
@@ -57,14 +58,16 @@ ActivityDialog::ActivityDialog(ActivityData * d)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), activity(d) {
   d->browser_node->edit_start();
   
-  if (d->browser_node->is_writable())
-    setCancelButton();
+  if (d->browser_node->is_writable()) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
 
-  setCaption("Activity dialog");
+  setCaption(TR("Activity dialog"));
   visit = !hasOkButton();  
 
   BrowserNode * bn = activity->browser_node;
@@ -78,24 +81,24 @@ ActivityDialog::ActivityDialog(ActivityData * d)
   grid->setMargin(5);
   grid->setSpacing(5);
   
-  new QLabel("name : ", grid);
+  new QLabel(TR("name : "), grid);
   edname = new LineEdit(bn->get_name(), grid);
   edname->setReadOnly(visit);
     
-  new QLabel("stereotype : ", grid);
+  new QLabel(TR("stereotype : "), grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(activity->get_stereotype()));
   if (!visit) {
     edstereotype->insertStringList(BrowserActivity::default_stereotypes());
     edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlActivity));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->setAutoCompletion(completion());
   }
   edstereotype->setCurrentItem(0);
   QSizePolicy sp = edstereotype->sizePolicy();
   sp.setHorData(QSizePolicy::Expanding);
   edstereotype->setSizePolicy(sp);
     
-  connect(new SmallPushButton("specification :", grid), SIGNAL(clicked()),
+  connect(new SmallPushButton(TR("specification :"), grid), SIGNAL(clicked()),
 	  this, SLOT(menu_specification()));    
   edspecification = new QComboBox(FALSE, grid);
   edspecification->setSizePolicy(sp);
@@ -107,7 +110,7 @@ ActivityDialog::ActivityDialog(ActivityData * d)
   }
   else {
     edspecification->insertItem("");
-    edspecification->setAutoCompletion(TRUE);
+    edspecification->setAutoCompletion(completion());
     BrowserOperation::instances(opers);
     opers.full_names(list);
     edspecification->insertStringList(list);
@@ -118,22 +121,27 @@ ActivityDialog::ActivityDialog(ActivityData * d)
   
   new QLabel(grid);
   QButtonGroup * bg = 
-    new QButtonGroup(2, Qt::Horizontal, QString::null, grid);
+    new QButtonGroup(3, Qt::Horizontal, QString::null, grid);
   
-  readonly_cb = new QCheckBox("read only", bg);
+  readonly_cb = new QCheckBox(TR("read only"), bg);
   if (activity->read_only)
     readonly_cb->setChecked(TRUE);
   readonly_cb->setDisabled(visit);
   
-  singlexec_cb = new QCheckBox("single execution", bg);
+  singlexec_cb = new QCheckBox(TR("single execution"), bg);
   if (activity->single_execution)
     singlexec_cb->setChecked(TRUE);
   singlexec_cb->setDisabled(visit);
   
+  active_cb = new QCheckBox(TR("active"), bg);
+  if (activity->is_active)
+    active_cb->setChecked(TRUE);
+  active_cb->setDisabled(visit);
+  
   QVBox * vtab = new QVBox(grid);
-  new QLabel("description :", vtab);
+  new QLabel(TR("description :"), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
@@ -160,7 +168,7 @@ ActivityDialog::ActivityDialog(ActivityData * d)
   grid->setSpacing(5);
   
   kvtable = new KeyValuesTable(bn, grid, visit);
-  addTab(grid, "Properties");
+  addTab(grid, TR("Properties"));
   
   //
     
@@ -176,13 +184,13 @@ void ActivityDialog::polish() {
 void ActivityDialog::menu_specification() {
   QPopupMenu m(0);
 
-  m.insertItem("Choose", -1);
+  m.insertItem(TR("Choose"), -1);
   m.insertSeparator();
   
   int index = list.findIndex(edspecification->currentText().stripWhiteSpace());
   
   if (index != -1)
-    m.insertItem("Select in browser", 0);
+    m.insertItem(TR("Select in browser"), 0);
   
   BrowserNode * bn = 0;
   
@@ -190,7 +198,7 @@ void ActivityDialog::menu_specification() {
     bn = BrowserView::selected_item();
     
     if ((bn != 0) && (bn->get_type() == UmlOperation) && !bn->deletedp())
-      m.insertItem("Choose operation selected in browser", 1);
+      m.insertItem(TR("Choose operation selected in browser"), 1);
     else
       bn = 0;
   }
@@ -246,13 +254,13 @@ void ActivityDialog::init_tab(CondDialog & d, InfoData & cd,
   grid->setMargin(5);
   grid->setSpacing(5);
   
-  new QLabel("Pre\ncondition : ", grid);
+  new QLabel(TR("Pre\ncondition : "), grid);
   d.edpre = new MultiLineEdit(grid);
   d.edpre->setText(cd.first);
   if (visit)
     d.edpre->setReadOnly(TRUE);
   
-  new QLabel("Post\ncondition : ", grid);
+  new QLabel(TR("Post\ncondition : "), grid);
   d.edpost = new MultiLineEdit(grid);
   d.edpost->setText(cd.second);
   if (visit)
@@ -286,7 +294,7 @@ void ActivityDialog::accept() {
       ((BrowserNode *) bn->parent())->wrong_child_name(s, UmlActivity,
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
-    msg_critical("Error", s + "\n\nillegal name or already used");
+    msg_critical(TR("Error"), s + TR("\n\nillegal name or already used"));
   else {  
     bn->set_name(s);
 
@@ -299,6 +307,7 @@ void ActivityDialog::accept() {
     
     activity->read_only = readonly_cb->isChecked();
     activity->single_execution = singlexec_cb->isChecked();
+    activity->is_active = active_cb->isChecked();
     
     uml.accept(activity->uml_condition);  
     cpp.accept(activity->cpp_condition);  

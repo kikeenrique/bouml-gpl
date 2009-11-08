@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,7 +45,8 @@ class StereotypeDialog : public QDialog {
     static QSize previous_size;
   
   public:
-    StereotypeDialog(const QStringList &defaults, QString & st, QString & la);
+    StereotypeDialog(const QStringList &defaults, QString & st,
+		     QString & la, QString cap, QString lbl);
     virtual ~StereotypeDialog();
   
   protected slots:

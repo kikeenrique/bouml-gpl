@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,7 +46,11 @@ class UmlRelation : public UmlBaseRelation {
 			bool constp, bool transientp, bool volatilep,
 			const QCString & array,	const QCString & value,
 			QCString comment, QCString description,
-			QCString annotation);
+			QCString annotation
+#ifdef ROUNDTRIP
+			, bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			);
     static bool new_one(Class * container, const QCString & name,
 			UmlClass * type, QCString type_def,
 			QCString genericname,
@@ -54,7 +58,14 @@ class UmlRelation : public UmlBaseRelation {
 			bool constp, bool transientp, bool volatilep,
 			const QCString & array, const QCString & value,
 			QCString comment, QCString description,
-			QCString annotation);
+			QCString annotation
+#ifdef ROUNDTRIP
+			, bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			);
+#ifdef ROUNDTRIP
+    void set_unidir();
+#endif
 };
 
 #endif

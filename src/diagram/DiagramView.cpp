@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -69,6 +69,7 @@
 #include "DialogUtil.h"
 #include "myio.h"
 #include "err.h"
+#include "translate.h"
 
 #include "align_top.xpm"
 #include "align_bottom.xpm"
@@ -363,8 +364,10 @@ void DiagramView::contentsMousePressEvent(QMouseEvent * e) {
 
 void DiagramView::contentsMouseReleaseEvent(QMouseEvent * e) {
   if (!window()->frozen()) {
-    if (do_resize != NoCorner)
+    if (do_resize != NoCorner) {
       do_resize = NoCorner;
+      previousResizeCorrection.clear();
+    }
     else if (on_arrow_decenter)
       on_arrow_decenter = FALSE;
     else if (line != 0) {
@@ -380,9 +383,9 @@ void DiagramView::contentsMouseReleaseEvent(QMouseEvent * e) {
 	
 	if (i != 0) {
 	  UmlCode theo = action;
-	  const char * err = arrowBeginning->may_connect(action, i);
+	  QString err = arrowBeginning->may_connect(action, i);
 	  
-	  if (err == 0) {
+	  if (err.isEmpty()) {
 	    if ((theo != action) && (start != arrowBeginning))
 	      relation_to_simplerelation(action);
 	    start->connexion(action, i, mousePressPos, e->pos());
@@ -403,7 +406,7 @@ void DiagramView::contentsMouseReleaseEvent(QMouseEvent * e) {
 	    else
 	      abort_line_construction();
 	  }
-	  else if (strcmp(err, "illegal")) {
+	  else if (err != TR("illegal")) {
 	    msg_critical("Bouml", err);
 	    abort_line_construction();
 	  }
@@ -576,6 +579,8 @@ void DiagramView::contentsMouseMoveEvent(QMouseEvent * e) {
 	    first_move = FALSE;
 	    moveSelected(dx, dy, TRUE);
 	  }
+	  else if (do_resize)
+	    resizeSelected(dx, dy);
 	  else
 	    moveSelected(dx, dy, FALSE);
 	}
@@ -823,11 +828,11 @@ void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
   QCanvasItemList::ConstIterator it;
   QPopupMenu m(0);
   
-  m.insertItem(new MenuTitle("Multiple selection menu", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Multiple selection menu"), m.font()), -1);
   m.insertSeparator();
   for (it = selected.begin(); it != selected.end(); ++it) {
     if (QCanvasItemToDiagramItem(*it)->linked()) {
-      m.insertItem("Select linked items", 1);
+      m.insertItem(TR("Select linked items"), 1);
       m.insertSeparator();
       break;
     }
@@ -844,30 +849,30 @@ void DiagramView::multiple_selection_menu(bool in_model, bool out_model,
     QPixmap vcenter((const char **) align_vcenter);
     QPixmap hcenter((const char **) align_hcenter);
     
-    al.insertItem(top, "align top", 4);
-    al.insertItem(bottom, "align bottom", 5);
-    al.insertItem(left, "align left", 6);
-    al.insertItem(right, "align right", 7);
-    al.insertItem(center, "align center", 8);
-    al.insertItem(vcenter, "align center verticaly", 9);
-    al.insertItem(hcenter, "align center horizontaly", 10);
+    al.insertItem(top, TR("align top"), 4);
+    al.insertItem(bottom, TR("align bottom"), 5);
+    al.insertItem(left, TR("align left"), 6);
+    al.insertItem(right, TR("align right"), 7);
+    al.insertItem(center, TR("align center"), 8);
+    al.insertItem(vcenter, TR("align center verticaly"), 9);
+    al.insertItem(hcenter, TR("align center horizontaly"), 10);
 
-    m.insertItem("Align", &al);
+    m.insertItem(TR("Align"), &al);
     m.insertSeparator();
   }
   
-  m.insertItem("Copy selected (Ctrl+c)", 11);
+  m.insertItem(TR("Copy selected (Ctrl+c)"), 11);
   
   if (out_model) {
-    m.insertItem("Cut selected (Ctrl+x, remove from view)", 12);
-    m.insertItem("Remove selected from view (Suppr)", 2);
+    m.insertItem(TR("Cut selected (Ctrl+x, remove from view)"), 12);
+    m.insertItem(TR("Remove selected from view (Suppr)"), 2);
   }
   if (in_model)
-    m.insertItem("Delete selected (Control+d)", 3);
+    m.insertItem(TR("Delete selected (Ctrl+d)"), 3);
 
   if (l.count() > 1) {
     m.insertSeparator();
-    m.insertItem("Edit drawing settings", 13);
+    m.insertItem(TR("Edit drawing settings"), 13);
   }
   
   history_protected = TRUE;
@@ -944,14 +949,29 @@ void DiagramView::moveSelected(int dx, int dy, bool first) {
     selected = selection();    
   }
   
-  for (it = selected.begin(); it != selected.end(); ++it) {
-    DiagramItem * di = QCanvasItemToDiagramItem(*it);
+  for (it = selected.begin(); it != selected.end(); ++it)
+    (*it)->moveBy(dx, dy);
+  
+  window()->package_modified();
+}
+
+void DiagramView::resizeSelected(int dx, int dy) {
+  QCanvasItemList selected = selection();
+  QCanvasItemList::ConstIterator it;
+  
+  if (previousResizeCorrection.isEmpty()) {
+    QPoint p(0, 0);
     
-    if (do_resize)
-      di->resize(do_resize, dx, dy);
-    else
-      (*it)->moveBy(dx, dy);
+    for (it = selected.begin(); it != selected.end(); ++it)
+      previousResizeCorrection.append(p);
   }
+  
+  QValueList<QPoint>::Iterator it2;
+  
+  for (it = selected.begin(), it2 = previousResizeCorrection.begin();
+       it != selected.end();
+       ++it, ++it2)
+    QCanvasItemToDiagramItem(*it)->resize(do_resize, dx, dy, *it2);
   
   window()->package_modified();
 }
@@ -1420,48 +1440,48 @@ int DiagramView::default_menu(QPopupMenu & m, int f) {
   QCanvasItemList l;
   
   if (wr) {
-    m.insertItem("Edit drawing settings", EDIT_DRAWING_SETTING_CMD);
+    m.insertItem(TR("Edit drawing settings"), EDIT_DRAWING_SETTING_CMD);
     m.insertSeparator();
   }
-  m.insertItem("Select diagram in browser", 1);
+  m.insertItem(TR("Select diagram in browser"), 1);
   if (wr)
-    m.insertItem("Select all (Ctrl+a)", 2);
+    m.insertItem(TR("Select all (Ctrl+a)"), 2);
   if (find_browser_element(canvas(), l))
-    m.insertItem("Find selected browser element", 19);
+    m.insertItem(TR("Find selected browser element"), 19);
   m.insertSeparator();
-  m.insertItem("Copy optimal picture part", 13);
-  m.insertItem("Copy visible picture part", 3);
-  m.insertItem("Save optimal picture part (png)", 14);
-  m.insertItem("Save visible picture part (png)", 10);
-  m.insertItem("Save optimal picture part (svg)", 15);
-  m.insertItem("Save visible picture part (svg)", 16);
+  m.insertItem(TR("Copy optimal picture part"), 13);
+  m.insertItem(TR("Copy visible picture part"), 3);
+  m.insertItem(TR("Save optimal picture part (png)"), 14);
+  m.insertItem(TR("Save visible picture part (png)"), 10);
+  m.insertItem(TR("Save optimal picture part (svg)"), 15);
+  m.insertItem(TR("Save visible picture part (svg)"), 16);
   if (wr && !clipboard.isEmpty() &&
       (copied_from == window()->browser_diagram()->get_type()))
-    m.insertItem("Paste copied items (Ctrl+v)", 9);
+    m.insertItem(TR("Paste copied items (Ctrl+v)"), 9);
   m.insertSeparator();
-  m.insertItem("Optimal scale", 7);
-  m.insertItem("Optimal window size", 8);
+  m.insertItem(TR("Optimal scale"), 7);
+  m.insertItem(TR("Optimal window size"), 8);
   if (wr) {
-    m.insertItem("Set preferred size and scale", 4);
-    m.insertItem("Set preferred scale (size unset)", 17);
+    m.insertItem(TR("Set preferred size and scale"), 4);
+    m.insertItem(TR("Set preferred scale (size unset)"), 17);
     if (preferred_zoom != 0) {
       if (preferred_size.width() != 0) {
-	m.insertItem("Restore preferred size and scale", 5);
-	m.insertItem("Unset preferred size and scale", 18);
+	m.insertItem(TR("Restore preferred size and scale"), 5);
+	m.insertItem(TR("Unset preferred size and scale"), 18);
       }
       else {
-	m.insertItem("Restore preferred scale", 5);
-	m.insertItem("Unset preferred scale", 18);
+	m.insertItem(TR("Restore preferred scale"), 5);
+	m.insertItem(TR("Unset preferred scale"), 18);
       }
     }
     init_format_menu(formatm, formatlandscapem, f);
-    m.insertItem("Format", &formatm);
+    m.insertItem(TR("Format"), &formatm);
     m.insertSeparator();
-    m.insertItem("Undo all changes", RELOAD_CMD);
+    m.insertItem(TR("Undo all changes"), RELOAD_CMD);
     if (available_undo())
-      m.insertItem("Undo (Ctrl+z or Ctrl+u)", 11);
+      m.insertItem(TR("Undo (Ctrl+z or Ctrl+u)"), 11);
     if (available_redo())
-      m.insertItem("Redo (Ctrl+y or Ctrl+r)", 12);
+      m.insertItem(TR("Redo (Ctrl+y or Ctrl+r)"), 12);
   }
 
   int choice = m.exec(QCursor::pos());
@@ -1578,7 +1598,7 @@ void DiagramView::init_format_menu(QPopupMenu & m, QPopupMenu & lm,
     m.insertItem(stringify((CanvasFormat) i), f + i);
   
   m.insertSeparator();
-  m.insertItem("Landscape formats", &lm);
+  m.insertItem(TR("Landscape formats"), &lm);
     
   for (; i <= IsoA5Landscape; i += 1)
     lm.insertItem(QString("Iso ") + stringify((CanvasFormat) i), f + i);
@@ -1632,6 +1652,7 @@ void DiagramView::load(const char * pfix) {
   }
   POST_TRY;
   
+  ArrowCanvas::post_load();
   BrowserNode::post_load(TRUE);
   DiagramItem::post_load();
   
@@ -1826,7 +1847,7 @@ bool DiagramView::is_present(BrowserNode * bn) {
   return FALSE;
 }
 
-void DiagramView::add_related_elements(DiagramItem *, const char *, bool, bool) {
+void DiagramView::add_related_elements(DiagramItem *, QString, bool, bool) {
   // do nothing
 }
 
@@ -2045,7 +2066,7 @@ void DiagramView::restore_window_size() {
 void DiagramView::save_picture(bool optimal, bool svg) {
   QString filename =
     QFileDialog::getSaveFileName(last_used_directory(), 
-				 (svg) ? "SVG file (*.svg)" : "PNG file (*.png)",
+				 (svg) ? TR("SVG file (*.svg)") : TR("PNG file (*.png)"),
 				 this);
 
   if (!filename.isNull()) {

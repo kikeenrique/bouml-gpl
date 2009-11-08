@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -282,13 +282,13 @@ bool UmlClass::get_actuals(UmlClass * mother, ClassContainer * container,
     if (it == actuals.end())
       break;
   
-  QCString s;
+  char c;
       
-  while (!(s = Lex::read_word()).isEmpty()) {
-    if (s == ">")
+  while ((c = Lex::read_word_bis(TRUE, FALSE)) != 0) {
+    if (c == '>')
       return TRUE;
     
-    if (s == ",") {
+    if (c == ',') {
       // value not given
       ++it;
       rank += 1;
@@ -301,7 +301,8 @@ bool UmlClass::get_actuals(UmlClass * mother, ClassContainer * container,
       }
       
       Lex::unread_word();
-      s = Lex::read_list_elt();
+      
+      QCString s = Lex::read_list_elt();
       
       UmlTypeSpec typespec;
       QCString typeform = "${type}";
@@ -313,7 +314,10 @@ bool UmlClass::get_actuals(UmlClass * mother, ClassContainer * container,
       ++it;
       rank += 1;
       
-      if ((s = Lex::read_word()) != ",")
+      c = Lex::read_word_bis(TRUE, FALSE);
+      if (c == 0)
+	break;
+      else if (c != ',')
 	Lex::unread_word();
     }
   }

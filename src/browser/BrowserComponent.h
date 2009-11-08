@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -93,7 +93,7 @@ class BrowserComponent : public BrowserNode, public Labeled<BrowserComponent> {
     virtual const char * help_topic() const;
     virtual BasicData * get_data() const;
     virtual void on_delete();
-    virtual const char * check_inherit(const BrowserNode * parent) const;
+    virtual QString check_inherit(const BrowserNode * parent) const;
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserComponent * read_ref(char * &, const char *);
     static BrowserComponent * read(char * &, char *, BrowserNode *);
@@ -109,6 +109,7 @@ class BrowserComponent : public BrowserNode, public Labeled<BrowserComponent> {
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
+    virtual void prepare_update_lib() const;
     
     virtual const QPixmap* pixmap (int) const;
     virtual void iconChanged();

@@ -164,6 +164,16 @@ class CppSettings : public UmlSettings {
     // On error : return FALSE in C++, produce a RuntimeException in Java
     static bool set_IsForceNamespacePrefixGeneration(bool v);
 
+    // return if the fact an operation is inline force the header of the
+    // types referenced in the profile to be included in the header
+    static bool isInlineOperationForceIncludesInHeader();
+
+    // set if the fact an operation is inline force the header of the
+    // types referenced in the profile to be included in the header
+    //
+    // On error : return FALSE in C++, produce a RuntimeException in Java
+    static bool set_IsInlineOperationForceIncludesInHeader(bool v);
+
     // return if  generate Javadoc style comment
     static bool isGenerateJavadocStyleComment();
 
@@ -602,6 +612,8 @@ class CppSettings : public UmlSettings {
     static bool _is_force_namespace_gen;
 
     static bool _is_generate_javadoc_comment;
+
+    static bool _is_inline_force_header_in_h;
 
     static QDict<QCString> _map_includes;
 

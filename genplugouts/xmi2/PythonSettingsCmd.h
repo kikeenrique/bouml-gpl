@@ -24,7 +24,8 @@ enum PythonSettingsCmd {
   setPythonOperationDefCmd,
   setPythonGetNameCmd,
   setPythonSetNameCmd,
-  setPythonInitOperationDefCmd
+  setPythonInitOperationDefCmd,
+  setPython3OperationCmd
 
 };
 #endif

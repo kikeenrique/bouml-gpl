@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -71,12 +71,12 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
     BrowserNode * add_inherited_operation(BrowserOperation * model);
     BrowserNode * add_extra_member(BrowserExtraMember * em = 0);
     QList<BrowserOperation> inherited_operations(unsigned limit) const;
-    const char * may_start(UmlCode l) const;
-    const char * may_connect(UmlCode l, BrowserClass * other);
+    QString may_start(UmlCode l) const;
+    QString may_connect(UmlCode l, BrowserClass * other);
     virtual BasicData * add_relation(UmlCode, BrowserNode *);
     virtual QList<BrowserNode> parents() const;
     void get_all_parents(QList<BrowserClass> &) const;
-    virtual const char * check_inherit(const BrowserNode * parent) const;
+    virtual QString check_inherit(const BrowserNode * parent) const;
     bool have_abstract_operation();
     void get_opers(QValueList<const OperationData *> & opers,
 		   QStringList & list) const;
@@ -144,6 +144,9 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
+    virtual void prepare_update_lib() const;
+    virtual void support_file(QDict<char> & files, bool add) const;
+    
     static const QStringList & default_stereotypes();
     static void read_stereotypes(char * &, char * &);
     static void save_stereotypes(QTextStream &);
@@ -162,6 +165,8 @@ class BrowserClass : public BrowserNode, public Labeled<BrowserClass> {
     virtual void DropEvent(QDropEvent * e);
     virtual void DragMoveInsideEvent(QDragMoveEvent * e);
     virtual void DropAfterEvent(QDropEvent * e, BrowserNode * after);
+    
+    static BrowserClass * temporary();
 };
 
 #endif

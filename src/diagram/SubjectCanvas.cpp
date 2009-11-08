@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,6 +42,7 @@
 #include "MenuTitle.h"
 #include "strutil.h"
 #include "ToolCom.h"
+#include "translate.h"
 
 SubjectCanvas::SubjectCanvas(UmlCanvas * canvas, int x, int y, int id)
     : DiagramCanvas(0, canvas, x, y, SUBJECT_CANVAS_MIN_SIZE,
@@ -121,7 +122,7 @@ bool SubjectCanvas::copyable() const {
 
 void SubjectCanvas::open() {
   bool ok;
-  QString s = MyInputDialog::getText("Subject dialog", "subject : ",
+  QString s = MyInputDialog::getText(TR("Subject dialog"), TR("subject : "),
 				     fromUnicode(name), ok);
   
   if (ok) {
@@ -180,22 +181,22 @@ void SubjectCanvas::modified() {
 void SubjectCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
   
-  m.insertItem(new MenuTitle("Subject", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Subject"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 6);
-  m.insertItem("Go down", 7);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 6);
+  m.insertItem(TR("Go down"), 7);
   m.insertSeparator();
-  m.insertItem("Edit", 2);
+  m.insertItem(TR("Edit"), 2);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 3);
+  m.insertItem(TR("Edit drawing settings"), 3);
   if (linked()) {
     m.insertSeparator();
-    m.insertItem("Select linked items", 4);
+    m.insertItem(TR("Select linked items"), 4);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view",5);
+  m.insertItem(TR("Remove from view"),5);
 
   int index = m.exec(QCursor::pos());
   
@@ -262,11 +263,11 @@ void SubjectCanvas::apply_shortcut(QString s) {
 }
 
 void SubjectCanvas::edit_drawing_settings() {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   
-  co[0].set("subject color", &itscolor);
+  co[0].set(TR("subject color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -278,15 +279,15 @@ bool SubjectCanvas::has_drawing_settings() const {
 }
 
 void SubjectCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   UmlColor itscolor;
   
-  co[0].set("subject color", &itscolor);
+  co[0].set(TR("subject color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
   
   dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
@@ -296,20 +297,20 @@ void SubjectCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }
 }
 
-const char * SubjectCanvas::may_start(UmlCode & l) const {
-  return (l == UmlAnchor) ? 0 : "illegal";
+QString SubjectCanvas::may_start(UmlCode & l) const {
+  return (l == UmlAnchor) ? 0 : TR("illegal");
 }
 
-const char * SubjectCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
+QString SubjectCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  return (l == UmlAnchor) ? dest->may_start(l) : TR("illegal");
 }
 
 aCorner SubjectCanvas::on_resize_point(const QPoint & p) {
   return ::on_resize_point(p, rect());
 }
 
-void SubjectCanvas::resize(aCorner c, int dx, int dy) {
-  DiagramCanvas::resize(c, dx, dy, min_width, min_height);
+void SubjectCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
+  DiagramCanvas::resize(c, dx, dy, o, min_width, min_height);
 }
 
 void SubjectCanvas::prepare_for_move(bool on_resize) {

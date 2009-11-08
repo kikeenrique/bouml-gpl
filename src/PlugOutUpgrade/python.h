@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,6 +29,7 @@
 extern void add_bypass_python();
 extern void add_python();
 extern void add_default_initoper(UmlClass * pythonsettings);
+extern void add_operation3(UmlClass * pythonsettings);
 
 
 #endif

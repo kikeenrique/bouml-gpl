@@ -23,6 +23,24 @@ bool PythonSettings::set_IsPython_2_2(bool y)
     return FALSE;
 }
 
+bool PythonSettings::isPython_3_operation()
+{
+  read_if_needed_();
+
+  return _operation_3;
+}
+
+bool PythonSettings::set_IsPython_3_operation(bool y)
+{
+  UmlCom::send_cmd(pythonSettingsCmd, setPython3OperationCmd, y);
+  if (UmlCom::read_bool()) {
+    _operation_3 = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 const QCString & PythonSettings::indentStep()
 {
   read_if_needed_();
@@ -389,6 +407,8 @@ bool PythonSettings::_defined;
 
 bool PythonSettings::_2_2;
 
+bool PythonSettings::_operation_3;
+
 QCString PythonSettings::_indent_step;
 
 QCString PythonSettings::_root;
@@ -469,6 +489,7 @@ void PythonSettings::read_()
   _get_name = UmlCom::read_string();
   _set_name = UmlCom::read_string();
   _initoper_def = UmlCom::read_string();
+  _operation_3 = UmlCom::read_bool();
 }
 
 void PythonSettings::read_if_needed_()

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,7 +42,7 @@ int main(int argc, char ** argv)
   
   if (UmlCom::connect(QCString(argv[port_index]).toUInt())) {
     try {
-      UmlCom::trace("<b>IDL generator</b> release 2.9.5<br>");
+      UmlCom::trace("<b>IDL generator</b> release 2.12<br>");
       
       UmlCom::targetItem()->generate();
       
@@ -51,12 +51,13 @@ int main(int argc, char ** argv)
       s.sprintf("<hr><font face=helvetica>Generation done : %d warnings, %d errors</font><br>",
 		n_warnings(), n_errors());
       UmlCom::trace(s);
+      
+      UmlCom::message("");
+    
+      UmlCom::bye();
     }
     catch (...) {
     }
-    
-    UmlCom::message("");
-    UmlCom::bye();
   }
   
   UmlCom::close();

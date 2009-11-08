@@ -170,6 +170,9 @@ class UmlBasePackage : public UmlItem {
     //current one are closed.
     
     static void loadProject(QCString p);
+    
+    //returns all the Java packages
+    static void getAll(QVector<UmlPackage> & v);
 
     // to unload the object to free memory, it will be reloaded automatically
     // if needed. Recursively done for the sub items if 'rec' is TRUE. 

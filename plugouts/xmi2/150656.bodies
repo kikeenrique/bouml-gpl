@@ -18,6 +18,27 @@ class PythonSettings
 		   (y) ? (byte) 1 : (byte) 0);
   UmlCom.check();
   _2_2 = y;
+!!!275072.cpp!!!	isPython_3_operation() : bool
+  read_if_needed_();
+
+  return _operation_3;
+!!!275072.java!!!	isPython_3_operation() : bool
+  read_if_needed_();
+
+  return _operation_3;
+!!!275200.cpp!!!	set_IsPython_3_operation(in y : bool) : bool
+  UmlCom::send_cmd(pythonSettingsCmd, setPython3OperationCmd, y);
+  if (UmlCom::read_bool()) {
+    _operation_3 = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!275200.java!!!	set_IsPython_3_operation(in y : bool) : bool
+  UmlCom.send_cmd(CmdFamily.pythonSettingsCmd, PythonSettingsCmd._setPython3OperationCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+  
+  _operation_3 = y;
 !!!251904.cpp!!!	indentStep() : string
   read_if_needed_();
   return _indent_step;
@@ -520,6 +541,7 @@ class PythonSettings
   _get_name = UmlCom::read_string();
   _set_name = UmlCom::read_string();
   _initoper_def = UmlCom::read_string();
+  _operation_3 = UmlCom::read_bool();
 !!!256768.java!!!	read_() : void
   _2_2 = UmlCom.read_bool();
   
@@ -569,6 +591,7 @@ class PythonSettings
   _get_name = UmlCom.read_string();
   _set_name = UmlCom.read_string();
   _initoper_def = UmlCom.read_string();
+  _operation_3 = UmlCom.read_bool();
 !!!256896.cpp!!!	read_if_needed_() : void
   UmlSettings::read_if_needed_();
   if (!_defined) {

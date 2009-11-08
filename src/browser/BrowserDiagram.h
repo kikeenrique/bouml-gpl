@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -70,6 +70,9 @@ class BrowserDiagram : public BrowserNode, public Labeled<BrowserDiagram> {
     static void clear(bool old);
     static void update_idmax_for_root();
     static void import();
+    virtual void prepare_update_lib() const;
+    virtual void support_file(QDict<char> & files, bool add) const;
+    
     static BrowserNode * read_diagram_ref(char * & st);
     static BrowserNode * read_any_ref(char * & st, char * k);
 };

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,6 +44,7 @@
 #include "myio.h"
 #include "MenuTitle.h"
 #include "ToolCom.h"
+#include "translate.h"
 
 #define DURATION_MIN_HEIGHT 25
 #define DURATION_START_HEIGHT 40
@@ -282,11 +283,11 @@ void SdDurationCanvas::update_self() {
     it.current()->check_vpos(r);
 }
 
-const char * SdDurationCanvas::may_start(UmlCode &) const {
+QString SdDurationCanvas::may_start(UmlCode &) const {
   return 0;
 }
 
-const char * SdDurationCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString SdDurationCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor) 
     return dest->may_start(l);
   else {
@@ -295,7 +296,7 @@ const char * SdDurationCanvas::may_connect(UmlCode & l, const DiagramItem * dest
     case UmlLifeLine:
       return 0;
     default:
-      return "illegal";
+      return TR("illegal");
     }
   }
 }
@@ -641,25 +642,25 @@ void SdDurationCanvas::menu(const QPoint & p) {
     }
   }
   
-  m.insertItem(new MenuTitle("Activity bar", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Activity bar"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 9);
-  m.insertItem("Go down", 10);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 9);
+  m.insertItem(TR("Go down"), 10);
   m.insertSeparator();
-  m.insertItem((coregion) ? "Draw as activity bar" :  "Draw as a coregion", 7);
-  m.insertItem("Edit drawing settings", 2);
+  m.insertItem((coregion) ? TR("Draw as activity bar") :  TR("Draw as a coregion"), 7);
+  m.insertItem(TR("Edit drawing settings"), 2);
   m.insertSeparator();
-  m.insertItem("Select linked items", 3);
+  m.insertItem(TR("Select linked items"), 3);
   m.insertSeparator();
-  m.insertItem("Remove from view", 4);
+  m.insertItem(TR("Remove from view"), 4);
   m.insertSeparator();
-  m.insertItem("Cut here", 5);
+  m.insertItem(TR("Cut here"), 5);
   if (!l.isEmpty())
-    m.insertItem("Merge juxtaposed activity bars", 6);
+    m.insertItem(TR("Merge juxtaposed activity bars"), 6);
   if (support->isaDuration())
-    m.insertItem("Collapse in parent bar", 8);
+    m.insertItem(TR("Collapse in parent bar"), 8);
 
   switch (m.exec(QCursor::pos())) {
   case 0:
@@ -737,11 +738,11 @@ void SdDurationCanvas::apply_shortcut(QString s) {
 }
 
 void SdDurationCanvas::edit_drawing_settings() {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   
-  co[0].set("duration color", &itscolor);
+  co[0].set(TR("duration color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -753,15 +754,15 @@ bool SdDurationCanvas::has_drawing_settings() const {
 }
 
 void SdDurationCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   UmlColor itscolor;
   
-  co[0].set("duration color", &itscolor);
+  co[0].set(TR("duration color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
   
   dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
@@ -782,28 +783,28 @@ void SdDurationCanvas::resize(int wi, int he) {
   if (! ((UmlCanvas *) canvas())->do_zoom()) {
     double zoom = the_canvas()->zoom();
     
-    height_scale100 = (int) (he / zoom);
+    height_scale100 = (int) (he / zoom + 0.5);
     
     QPoint c = center();
     
-    center_y_scale100  = (int) (c.y() / zoom);
+    center_y_scale100  = (int) (c.y() / zoom + 0.5);
   }
 }
 
 // note : don't consider the messages
 // size will be rectified if needed by the messages calling
 // update_v_to_contain()
-void SdDurationCanvas::resize(aCorner c, int, int dy) {
+void SdDurationCanvas::resize(aCorner c, int, int dy, QPoint & o) {
   if ((dy < 0) && ((c == UmlTopLeft) || (c == UmlTopRight))) {
     double my = min_y();
     
     if ((y() + dy) < my)
-      dy = (int) (my - y());
+      dy = (int) (my - y() + 0.5);
   }
   
   double zoom = the_canvas()->zoom();
   
-  DiagramCanvas::resize(c, 0, dy,
+  DiagramCanvas::resize(c, 0, dy, o,
 			(int) (DURATION_WIDTH * zoom),
 			(int) (DURATION_MIN_HEIGHT * zoom));
   
@@ -1143,7 +1144,7 @@ void SdDurationCanvas::send(ToolCom * com, int id) const {
   if (!isreturn)
     SdMsgBaseCanvas::send(com, id, (unsigned) x() + width(),
 			  (unsigned) y() + height(),
-			  anImplicitReturn, "", "");
+			  anImplicitReturn, "", "", "");
   
   QListIterator<SdDurationCanvas> itd(durations);
   

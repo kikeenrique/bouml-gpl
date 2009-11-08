@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,7 +45,7 @@
 
 ClassData::ClassData()
     : formals(0), nformals(0), 
-      is_deleted(FALSE), is_abstract(FALSE), 
+      is_deleted(FALSE), is_abstract(FALSE), is_active(FALSE),
       bodies_read(FALSE), bodies_modified(FALSE),
       cpp_external(FALSE), 
       java_external(FALSE), java_final(FALSE),
@@ -108,6 +108,7 @@ ClassData::ClassData(const ClassData * model, BrowserNode * bn)
   bodies_read = FALSE;
   bodies_modified = FALSE;
   is_abstract = model->is_abstract;
+  is_active = model->is_active;
   cpp_external = model->cpp_external;
   java_external = model->java_external;
   java_final = model->java_final;
@@ -151,6 +152,10 @@ void ClassData::set_deletedp(bool y) {
 
 void ClassData::set_is_abstract(bool yes) {
   is_abstract = yes;
+}
+
+void ClassData::set_is_active(bool yes) {
+  is_active = yes;
 }
 
 void ClassData::inherit_or_instantiate(BrowserClass *) {
@@ -505,6 +510,9 @@ bool ClassData::tool_cmd(ToolCom * com, const char * args,
 	else
 	  is_abstract = (*args != 0);
 	break;
+      case setActiveCmd:
+	is_active = (*args != 0);
+	break;
       case setVisibilityCmd:
 	{
 	  UmlVisibility v;
@@ -794,6 +802,9 @@ void ClassData::send_uml_def(ToolCom * com, BrowserNode * bn,
       }
     }
   }
+  
+  if (api >= 48)
+    com->write_bool(is_active);
 }
 
 void ClassData::send_cpp_def(ToolCom * com) {
@@ -860,6 +871,9 @@ void ClassData::save(QTextStream & st, QString & warning) const {
   
   if (is_abstract)
     st << "abstract ";
+  
+  if (is_active)
+    st << "active ";
   
   st << "visibility " << stringify(uml_visibility) << ' ';
   
@@ -950,6 +964,13 @@ void ClassData::read(char * & st, char * & k) {
   }
   else
     is_abstract = FALSE;
+  
+  if (!strcmp(k, "active")) {
+    is_active = TRUE;
+    k = read_keyword(st);
+  }
+  else
+    is_active = FALSE;
   
   if (!strcmp(k, "visibility")) {
     uml_visibility = ::visibility(read_keyword(st));  

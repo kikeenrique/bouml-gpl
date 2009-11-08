@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -52,6 +52,7 @@
 #include "myio.h"
 #include "MenuTitle.h"
 #include "DialogUtil.h"
+#include "translate.h"
 
 SeqDiagramView::SeqDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
     : DiagramView(parent, canvas, id) {
@@ -61,14 +62,14 @@ SeqDiagramView::SeqDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
 void SeqDiagramView::menu(const QPoint&) {
   QPopupMenu m(0);
   
-  m.insertItem(new MenuTitle("Sequence diagram menu", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Sequence diagram menu"), m.font()), -1);
   
   if ((((UmlCanvas *) canvas())->browser_diagram())->is_writable()) {
     BrowserSeqDiagram * sd = (BrowserSeqDiagram *) window()->browser_diagram();
     bool overlapping = sd->is_overlapping_bars();
     
-    m.insertItem((overlapping) ? "Transform to flat activity bars"
-			       : "Transform to overlapping activity bars",
+    m.insertItem((overlapping) ? TR("Transform to flat activity bars")
+			       : TR("Transform to overlapping activity bars"),
 		 29);
     m.insertSeparator();
     

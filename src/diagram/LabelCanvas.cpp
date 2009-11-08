@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,6 +33,7 @@
 #include "LabelCanvas.h"
 #include "DiagramCanvas.h"
 #include "myio.h"
+#include "translate.h"
 
 const char * LabelCanvas::Triangle = "^^^";
 const char * LabelCanvas::Zigzag = "~~~";
@@ -127,8 +128,8 @@ void LabelCanvas::set_center100() {
   QPoint c = center();
   double scale = the_canvas()->zoom();
     
-  center_x_scale100  = (int) (c.x()/scale);
-  center_y_scale100  = (int) (c.y()/scale);
+  center_x_scale100  = (int) (c.x()/scale + 0.5);
+  center_y_scale100  = (int) (c.y()/scale + 0.5);
 }
 
 void LabelCanvas::moveBy(double dx, double dy) {
@@ -285,12 +286,12 @@ bool LabelCanvas::contains(int, int) const {
   return FALSE;
 }
 
-const char * LabelCanvas::may_start(UmlCode &) const {
-  return "illegal";
+QString LabelCanvas::may_start(UmlCode &) const {
+  return TR("illegal");
 }
 
-const char * LabelCanvas::may_connect(UmlCode &, const DiagramItem *) const {
-  return "illegal";
+QString LabelCanvas::may_connect(UmlCode &, const DiagramItem *) const {
+  return TR("illegal");
 }
 
 void LabelCanvas::connexion(UmlCode, DiagramItem *,

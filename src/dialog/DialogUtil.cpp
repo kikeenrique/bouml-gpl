@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -54,6 +54,7 @@
 #include "GenerationSettings.h"
 #include "strutil.h"
 #include "UmlDesktop.h"
+#include "translate.h"
 
 static QString BoumlEditor;
 
@@ -242,7 +243,7 @@ void edit(const QString & s, QString name, void * id, EditType k,
       return;
     }
     else
-      msg_critical("Error", QString("Cannot open ") + path);
+      msg_critical("Error", TR("Cannot open '%1'", path));
   }
   else if (d->isModal()) {
     BodyDialog * bd = new BodyDialog(s, d, pf, k, name, edits);
@@ -259,9 +260,9 @@ bool check_edits(QList<BodyDialog> & edits)
     return TRUE;
   
   return (msg_critical("Bouml",
-		       "Sub dialog(s) still opened\n"
-		       "If you choose 'Ok' the dialog will be closed\n"
-		       "without taking into account it content",
+		       TR("Sub dialog(s) still opened\n"
+			  "If you choose 'Ok' the dialog will be closed\n"
+			  "without taking into account it content"),
 		       QMessageBox::Ok, QMessageBox::Abort)
 	  == QMessageBox::Ok);
 }
@@ -551,4 +552,18 @@ QString editor()
 void set_editor(QString s)
 {
   BoumlEditor = s;
+}
+
+//
+
+static bool Completion = TRUE;
+
+void set_completion(bool y)
+{
+  Completion = y;
+}
+
+bool completion()
+{
+  return Completion;
 }

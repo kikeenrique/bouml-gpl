@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -38,6 +38,18 @@
 #include "SettingsDialog.h"
 #include "UmlPixmap.h"
 #include "UmlDesktop.h"
+#include "translate.h"
+
+void ColorSpecVector::resize(int s) {
+  ColorSpec * v = new ColorSpec[s];
+  
+  for (int i = 0; i != _size; i += 1)
+    v[i] = _v[i];
+  
+  delete [] _v;
+  _v = v;
+  _size = s;
+}
 
 class ComboStates : public QComboBox {
   public:
@@ -53,13 +65,13 @@ class ComboStates : public QComboBox {
 ComboStates::ComboStates(QWidget * parent, Uml3States v,
 			 bool nodefault, bool unchanged) 
     : QComboBox(FALSE, parent) {
-  insertItem(stringify((Uml3States) 0));
-  insertItem(stringify((Uml3States) 1));
+  insertItem(TR(stringify((Uml3States) 0)));
+  insertItem(TR(stringify((Uml3States) 1)));
   // the last value MUST be default
   if (!nodefault)
-    insertItem(stringify((Uml3States) 2));
+    insertItem(TR(stringify((Uml3States) 2)));
   if (unchanged) {
-    insertItem("<unchanged>");
+    insertItem(TR("<unchanged>"));
     setCurrentItem(count() - 1); 
   }
   else
@@ -72,12 +84,12 @@ ComboStates::ComboStates(QWidget * parent, ClassDrawingMode v,
   int i;
   
   for (i = 0; i != (int) DefaultClassDrawingMode; i += 1)
-    insertItem(stringify((ClassDrawingMode) i));
+    insertItem(TR(stringify((ClassDrawingMode) i)));
   // the last value MUST be default
   if (!nodefault)
-    insertItem(stringify((ClassDrawingMode) i));
+    insertItem(TR(stringify((ClassDrawingMode) i)));
   if (unchanged) {
-    insertItem("<unchanged>");
+    insertItem(TR("<unchanged>"));
     setCurrentItem(count() - 1); 
   }
   else
@@ -93,9 +105,9 @@ ComboStates::ComboStates(QWidget * parent, DrawingLanguage v,
     insertItem(stringify((DrawingLanguage) i));
   // the last value MUST be default
   if (!nodefault)
-    insertItem(stringify((DrawingLanguage) i));
+    insertItem(TR(stringify((DrawingLanguage) i)));
   if (unchanged) {
-    insertItem("<unchanged>");
+    insertItem(TR("<unchanged>"));
     setCurrentItem(count() - 1); 
   }
   else
@@ -115,12 +127,12 @@ ComboStates::ComboStates(QWidget * parent, ShowContextMode v,
   int i;
   
    for (i = 0; i != (int) DefaultShowContextMode; i += 1)
-    insertItem(_2space(stringify((ShowContextMode) i)));
+    insertItem(_2space(TR(stringify((ShowContextMode) i))));
   // the last value MUST be default
   if (!nodefault)
-    insertItem(_2space(stringify((ShowContextMode) i)));
+    insertItem(_2space(TR(stringify((ShowContextMode) i))));
   if (unchanged) {
-    insertItem("<unchanged>");
+    insertItem(TR("<unchanged>"));
     setCurrentItem(count() - 1); 
   }
   else
@@ -139,11 +151,11 @@ ComboStates::ComboStates(QWidget * parent, char v,
     sprintf(s, "%d", i);
     insertItem(s);
   }
-  insertItem("unlimited");
+  insertItem(TR("unlimited"));
   if (!nodefault)
-    insertItem("default");
+    insertItem(TR("default"));
   if (unchanged) {
-    insertItem("<unchanged>");
+    insertItem(TR("<unchanged>"));
     setCurrentItem(count() - 1); 
   }
   else {
@@ -178,12 +190,15 @@ class ComboColor : public QComboBox {
 ComboColor::ComboColor(QWidget * parent, UmlColor v,
 		       bool nodefault, bool unchanged) 
     : QComboBox(FALSE, parent) {
+  QString s_transparent = TR("Transparent");
+  QString s_unknown_color = TR("Unknown color");
+  
   // the last value MUST be default
   for (int i = 0; i != (int) UmlDefaultColor; i += 1) {
     // use switch to not be dependant on the colors items order and number
     switch (i) {
     case UmlTransparent:
-      insertItem("Transparent");
+      insertItem(s_transparent);
       break;
     case UmlWhite:
       insertItem(* WhitePixmap);
@@ -279,13 +294,13 @@ ComboColor::ComboColor(QWidget * parent, UmlColor v,
       insertItem(* BlackPixmap);
       break;
     default:
-      insertItem("Unknown color");
+      insertItem(s_unknown_color);
     }
   }
   if (!nodefault)
-    insertItem(stringify(UmlDefaultColor));
+    insertItem(TR(stringify(UmlDefaultColor)));
   if (unchanged) {
-    insertItem("<unchanged>");
+    insertItem(TR("<unchanged>"));
     setCurrentItem(count() - 1); 
   }
   else
@@ -300,20 +315,20 @@ ComboColor::ComboColor(QWidget * parent, UmlColor v,
 
 QSize SettingsDialog::previous_size;
 
-SettingsDialog::SettingsDialog(QArray<StateSpec> * st, QArray<ColorSpec> * co,
-			       bool nodefault, bool own, bool unchanged,
-			       const char * title)
+SettingsDialog::SettingsDialog(StateSpecVector * st, ColorSpecVector * co,
+			       bool nodefault, bool unchanged, QString title)
     : QTabDialog(0, title, TRUE),
       states(st), colors(co), several(unchanged) {
-  setCaption(title);
+  setCaption((title.isEmpty()) ? TR("Diagram Drawing Settings dialog") : title);
   
+  QString s_diagram = TR("diagram");
   QGrid * grid = 0;
   QString tabname;
   unsigned i;
   unsigned n;
   
   if (states != 0) {
-    n = states->count();
+    n = states->size();
     cbstates = new QVector<ComboStates>(n);
     
     for (i = 0; i != n; i += 1) {
@@ -327,7 +342,7 @@ SettingsDialog::SettingsDialog(QArray<StateSpec> * st, QArray<ColorSpec> * co,
 	s = s.mid(index + 1);
       }
       else
-	tbn = "diagram";
+	tbn = s_diagram;
       
       if ((grid == 0) || (tabname != tbn)) {
 	if (grid != 0)
@@ -372,9 +387,10 @@ SettingsDialog::SettingsDialog(QArray<StateSpec> * st, QArray<ColorSpec> * co,
   }
   
   if (colors != 0) {
-    const char * lbl = "color";
+    QString lbl = TR("color");
+    QString s_default = TR("default ");
     
-    n = colors->count();
+    n = colors->size();
     cbcolors = new QVector<ComboColor>(n);
     grid = new QGrid(5, this);
     grid->setMargin(2);
@@ -382,15 +398,16 @@ SettingsDialog::SettingsDialog(QArray<StateSpec> * st, QArray<ColorSpec> * co,
     
     for (i = 0; i != n; i += 1) {
       if (i == 11) {
-	addTab(grid, "color [1]");
-	lbl = "color [2]";
+	addTab(grid, TR("color [1]"));
+	lbl = TR("color [2]");
 	grid = new QGrid(5, this);
 	grid->setMargin(2);
 	grid->setSpacing(2);
       }
       new QLabel("", grid);
-      QString s = (own) ? "" : "default ";
-      s += colors->at(i).name;
+      
+      QString s = colors->at(i).name;
+      
       s += " : ";
       new QLabel(s, grid);
       cbcolors->insert(i, new ComboColor(grid, *(colors->at(i).color),
@@ -402,7 +419,8 @@ SettingsDialog::SettingsDialog(QArray<StateSpec> * st, QArray<ColorSpec> * co,
     addTab(grid, lbl);
   }
   
-  setCancelButton();
+  setOkButton(TR("OK"));
+  setCancelButton(TR("Cancel"));
 }
 
 void SettingsDialog::polish() {
@@ -419,21 +437,24 @@ SettingsDialog::~SettingsDialog() {
 }
 
 void SettingsDialog::accept() {
+  QString s_unchanged = TR("<unchanged>");
+  QString s_default = TR("default");
+  QString s_unlimited = TR("unlimited");
   unsigned i, n;
   
   if (states != 0) {
-    n = states->count();
+    n = states->size();
     
     for (i = 0; i != n; i += 1) {
       StateSpec & st = states->at(i);
       QString s = cbstates->at(i)->currentText();
       
-      if (s == "<unchanged>")
-	st.name = 0;
+      if (s == s_unchanged)
+	st.name = QString();
       else if (st.who == StateSpec::isMemberWidth) {
-	if (s == "default")
+	if (s == s_default)
 	  st.set_state(UmlDefaultMaxMemberWidth);
-	else if (s == "unlimited")
+	else if (s == s_unlimited)
 	  st.set_state(UmlUnlimitedMemberWidth);
 	else
 	  st.set_state(cbstates->at(i)->currentItem() + MinMemberWidthValue);
@@ -444,11 +465,11 @@ void SettingsDialog::accept() {
   }
   
   if (colors != 0) {
-    n = colors->count();
+    n = colors->size();
     
     for (i = 0; i != n; i += 1) {
-      if (cbcolors->at(i)->currentText() == "<unchanged>")
-	colors->at(i).name = 0;
+      if (cbcolors->at(i)->currentText() == s_unchanged)
+	colors->at(i).name = QString();
       else
 	*(colors->at(i).color) = (UmlColor) cbcolors->at(i)->currentItem();
     }

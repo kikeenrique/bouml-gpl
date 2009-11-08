@@ -16,7 +16,7 @@ class UmlBaseArtifact
   
   return _assoc_diagram;
 !!!14720.cpp!!!	set_AssociatedDiagram(inout d : UmlDeploymentDiagram) : bool
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -24,7 +24,7 @@ class UmlBaseArtifact
   else
     return FALSE;
 !!!14720.java!!!	set_AssociatedDiagram(inout d : UmlDeploymentDiagram) : bool
-  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, d.identifier_());
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd, (d == null) ? (long) 0 : d.identifier_());
   UmlCom.check();
   
   _assoc_diagram = d;
@@ -106,9 +106,10 @@ class UmlBaseArtifact
     _assoc_classes = a;
   }
 !!!15232.cpp!!!	set_AssociatedClasses(inout l : UmlClass) : bool
-  UmlCom::send_cmd(_identifier, setAssocClassesCmd, l);
+  UmlCom::send_cmd(_identifier, setAssocClassesCmd, (const QVector<UmlItem> &) l);
   if (UmlCom::read_bool()) {
-    if (_defined)
+      // tests != to bypass Qt 2.3 bug
+    if (_defined && (&_assoc_classes != &l))
       _assoc_classes = l;
     return TRUE;
   }
@@ -254,6 +255,36 @@ class UmlBaseArtifact
   UmlCom.check();
 
   _java_src = s;
+!!!203520.cpp!!!	phpSource() : string
+  read_if_needed_();
+  
+  return _php_src;
+!!!203520.java!!!	phpSource() : string
+  read_if_needed_();
+  
+  return _php_src;
+!!!203648.cpp!!!	set_PhpSource(in s : string) : bool
+  return set_it_(_php_src, s, setPhpSrcCmd);
+!!!203648.java!!!	set_PhpSource(in s : string) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpSrcCmd, s);
+  UmlCom.check();
+
+  _php_src = s;
+!!!229120.cpp!!!	pythonSource() : string
+  read_if_needed_();
+  
+  return _python_src;
+!!!229120.java!!!	pythonSource() : string
+  read_if_needed_();
+  
+  return _python_src;
+!!!229248.cpp!!!	set_PythonSource(in s : string) : bool
+  return set_it_(_python_src, s, setPythonSrcCmd);
+!!!229248.java!!!	set_PythonSource(in s : string) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonSrcCmd, s);
+  UmlCom.check();
+
+  _python_src = s;
 !!!16640.cpp!!!	idlSource() : string
   read_if_needed_();
   
@@ -279,6 +310,12 @@ class UmlBaseArtifact
 #ifdef WITHJAVA
   _java_src = 0;
 #endif
+#ifdef WITHPHP
+  _php_src = 0;
+#endif
+#ifdef WITHPYTHON
+  _python_src = 0;
+#endif
 #ifdef WITHIDL
   _idl_src = 0;
 #endif
@@ -289,6 +326,8 @@ class UmlBaseArtifact
   _cpp_h = null;
   _cpp_src = null;
   _java_src = null;
+  _php_src = null;
+  _python_src = null;
   _idl_src = null;
   super.unload(rec, del);
 !!!17024.cpp!!!	read_uml_() : void
@@ -337,6 +376,14 @@ class UmlBaseArtifact
   _java_src = UmlCom::read_string();
 !!!17280.java!!!	read_java_() : void
   _java_src = UmlCom.read_string();
+!!!203776.cpp!!!	read_php_() : void
+  _php_src = UmlCom::read_string();
+!!!203776.java!!!	read_php_() : void
+  _php_src = UmlCom.read_string();
+!!!218496.cpp!!!	read_python_() : void
+  _python_src = UmlCom::read_string();
+!!!218496.java!!!	read_python_() : void
+  _python_src = UmlCom.read_string();
 !!!17408.cpp!!!	read_idl_() : void
   _idl_src = UmlCom::read_string();
 !!!17408.java!!!	read_idl_() : void

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -51,6 +51,7 @@
 #include "MenuTitle.h"
 #include "strutil.h"
 #include "DialogUtil.h"
+#include "translate.h"
 
 ObjectLinkCanvas::ObjectLinkCanvas(UmlCanvas * canvas, DiagramItem * b,
 				   DiagramItem * e, UmlCode t, int id,
@@ -286,7 +287,7 @@ void ObjectLinkCanvas::open() {
 	((OdClassInstCanvas *) first->begin)
 	->is_duplicated(first, (OdClassInstCanvas *) last->end)) {
       // already drawn
-      msg_warning("Bouml", "Relation already drawn");
+      msg_warning("Bouml", TR("Relation already drawn"));
       set_relation(0);
     }
     
@@ -345,7 +346,7 @@ void ObjectLinkCanvas::remove(bool from_model) {
 	  }
 	  
 	  if (a && !a->end->isSelected() && !a->end->get_bn()->deletedp()) {
-	    msg_warning("Bouml", "<i>Draw all relations</i> forced to <i>no</i>");
+	    msg_warning("Bouml", TR("<i>Draw all relations</i> forced to <i>no</i>"));
 	    the_canvas()->dont_draw_all_relations();
 	  }
 	}
@@ -407,36 +408,36 @@ void ObjectLinkCanvas::menu(const QPoint & lpos) {
   QPopupMenu geo(0);
   //QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle("Object link", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Object link"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Edit", 0);
+  m.insertItem(TR("Edit"), 0);
   m.insertSeparator();
   
   if (data != 0)
-    m.insertItem("Select relation in browser", 2);
+    m.insertItem(TR("Select relation in browser"), 2);
   if (plabel || pstereotype || first->role_b || last->role_a) {
-    m.insertItem("Select labels", 3);
-    m.insertItem("Labels default position", 4);
+    m.insertItem(TR("Select labels"), 3);
+    m.insertItem(TR("Labels default position"), 4);
     if (plabel && (label == 0))
-      m.insertItem("Attach relation's name to this segment", 5);
+      m.insertItem(TR("Attach relation's name to this segment"), 5);
     if (pstereotype && (stereotype == 0))
-      m.insertItem("Attach relation's stereotype to this segment", 6);
+      m.insertItem(TR("Attach relation's stereotype to this segment"), 6);
   }
   
   if (get_start() != get_end()) {
     init_geometry_menu(geo, 10);
-    m.insertItem("Geometry (Ctrl+l)", &geo);
+    m.insertItem(TR("Geometry (Ctrl+l)"), &geo);
   }
   
   m.insertSeparator();
-  m.insertItem("Remove from view",7);
+  m.insertItem(TR("Remove from view"),7);
   
   bool in_model = FALSE;
   bool out_model = FALSE;
   
   delete_available(in_model, out_model);
   if (in_model)
-    m.insertItem("Delete from model", 8);
+    m.insertItem(TR("Delete from model"), 8);
   m.insertSeparator();
   /*
   if (Tool::menu_insert(&toolm, itstype, 20))

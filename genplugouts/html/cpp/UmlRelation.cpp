@@ -299,11 +299,17 @@ void UmlRelation::gen_java_decl(QCString s, bool descr) {
     else if (*p == '\r')
       p += 1;
     else if (*p == '\n') {
-      fw.write(' ');
-
-      do
+      if (descr) {
+	fw.write("<br />");
 	p += 1;
-      while ((*p != 0) && (*p <= ' '));
+      }
+      else {
+	fw.write(' ');
+	
+	do
+	  p += 1;
+	while ((*p != 0) && (*p <= ' '));
+      }
     }
     else if (*p == ';') {
       if (descr)
@@ -360,11 +366,17 @@ void UmlRelation::gen_php_decl(QCString s, bool descr) {
     else if (*p == '\r')
       p += 1;
     else if (*p == '\n') {
-      fw.write(' ');
-
-      do
+      if (descr) {
+	fw.write("<br />");
 	p += 1;
-      while ((*p != 0) && (*p <= ' '));
+      }
+      else {
+	fw.write(' ');
+	
+	do
+	  p += 1;
+	while ((*p != 0) && (*p <= ' '));
+      }
     }
     else if (*p == ';') {
       if (descr)

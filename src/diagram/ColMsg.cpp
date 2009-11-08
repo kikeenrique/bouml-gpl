@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -40,7 +40,6 @@
 #include "CodDirsCanvas.h"
 #include "myio.h"
 #include "ToolCom.h"
-
 
 int ColMsgList::compareItems(QCollection::Item item1,
 			     QCollection::Item item2) {

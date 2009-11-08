@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -64,8 +64,8 @@ class CodDirsCanvas : public QObject, public DiagramCanvas, public CodMsgSupport
     virtual int rtti() const;
     virtual void open();
     virtual void menu(const QPoint &);
-    virtual const char * may_start(UmlCode &) const;
-    virtual const char * may_connect(UmlCode &, const DiagramItem *) const;
+    virtual QString may_start(UmlCode &) const;
+    virtual QString may_connect(UmlCode &, const DiagramItem *) const;
     virtual bool copyable() const;
   
     void set_link(CodLinkCanvas * l) { link = l; };

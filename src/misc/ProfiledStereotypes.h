@@ -27,8 +27,8 @@ class ProfiledStereotypes {
     static bool canAddPackage(BrowserPackage *, QString name);
     static void renamed(BrowserPackage *, QString oldname);
     static void deleted(BrowserPackage *, bool propag);
-    static const char * canAddStereotype(BrowserClass *, QString name);
-    static const char * canAddStereotype(BrowserClassView *, QString name);
+    static QString canAddStereotype(BrowserClass *, QString name);
+    static QString canAddStereotype(BrowserClassView *, QString name);
     static void added(BrowserClass *);
     static void changed(BrowserClass *, QString oldname, bool newicon);
     static void deleted(BrowserClass *);

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,6 +44,7 @@
 #include "BodyDialog.h"
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 QSize ExpansionRegionDialog::previous_size;
 
@@ -51,14 +52,16 @@ ExpansionRegionDialog::ExpansionRegionDialog(ExpansionRegionData * nd)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), data(nd) {
   nd->browser_node->edit_start();
   
-  if (nd->browser_node->is_writable())
-    setCancelButton();
+  if (nd->browser_node->is_writable()) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
 
-  setCaption("Expansion Region dialog");
+  setCaption(TR("Expansion Region dialog"));
   
   bool visit = !hasOkButton();
   
@@ -71,17 +74,17 @@ ExpansionRegionDialog::ExpansionRegionDialog(ExpansionRegionData * nd)
   grid->setMargin(5);
   grid->setSpacing(5);
 
-  new QLabel("name : ", grid);
+  new QLabel(TR("name : "), grid);
   edname = new LineEdit(bn->get_name(), grid);
   edname->setReadOnly(visit);
     
-  new QLabel("stereotype : ", grid);
+  new QLabel(TR("stereotype : "), grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(data->get_stereotype()));
   if (! visit) {
     edstereotype->insertStringList(BrowserExpansionRegion::default_stereotypes());
     edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlExpansionRegion));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->setAutoCompletion(completion());
   }
   edstereotype->setCurrentItem(0);
   QSizePolicy sp = edstereotype->sizePolicy();
@@ -90,7 +93,7 @@ ExpansionRegionDialog::ExpansionRegionDialog(ExpansionRegionData * nd)
 
   QHBox * htab;
 
-  new QLabel("mode :", grid);
+  new QLabel(TR("mode :"), grid);
   htab = new QHBox(grid);
   edmode = new QComboBox(FALSE, htab);
   
@@ -107,16 +110,16 @@ ExpansionRegionDialog::ExpansionRegionDialog(ExpansionRegionData * nd)
   }
   
   new QLabel("  ", htab);
-  must_isolate_cb = new QCheckBox("must isolate", htab);
+  must_isolate_cb = new QCheckBox(TR("must isolate"), htab);
   if (data->must_isolate)
     must_isolate_cb->setChecked(TRUE);
   must_isolate_cb->setDisabled(visit);
   new QLabel("", htab);
 
   QVBox * vtab = new QVBox(grid);
-  new QLabel("description :", vtab);
+  new QLabel(TR("description :"), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
@@ -136,7 +139,7 @@ ExpansionRegionDialog::ExpansionRegionDialog(ExpansionRegionData * nd)
   grid->setSpacing(5);
   
   kvtable = new KeyValuesTable(bn, grid, visit);
-  addTab(grid, "Properties");
+  addTab(grid, TR("Properties"));
   
   //
     
@@ -164,7 +167,7 @@ void ExpansionRegionDialog::change_tabs(QWidget * w) {
 
 void ExpansionRegionDialog::edit_description() {
   edit(comment->text(), 
-       (edname == 0) ? QString("description")
+       (edname == 0) ? QString(TR("description"))
 		     : edname->text().stripWhiteSpace() + "_description",
        data, TxtEdit, this, (post_edit) post_edit_description, edits);
 }
@@ -187,7 +190,7 @@ void ExpansionRegionDialog::accept() {
 	((BrowserNode *) bn->parent())->wrong_child_name(s, bn->get_type(),
 							 bn->allow_spaces(),
 							 bn->allow_empty())) {
-      msg_critical("Error", edname->text() + "\n\nillegal name or already used");
+      msg_critical(TR("Error"), edname->text() + TR("\n\nillegal name or already used"));
       return;
     }
     else

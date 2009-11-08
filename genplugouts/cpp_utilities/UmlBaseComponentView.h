@@ -2,7 +2,7 @@
 #define _UMLBASECOMPONENTVIEW_H
 
 
-#include "UmlItem.h"
+#include "UmlView.h"
 #include "anItemKind.h"
 #include <qcstring.h>
 
@@ -10,7 +10,7 @@ class UmlComponentView;
 class UmlPackage;
 
 //  Manage the component views
-class UmlBaseComponentView : public UmlItem {
+class UmlBaseComponentView : public UmlView {
   public:
     // returns a new component view named 's' created under 'parent'
     //
@@ -25,7 +25,7 @@ class UmlBaseComponentView : public UmlItem {
 
   protected:
     // the constructor, do not call it yourself !!!!!!!!!!
-    UmlBaseComponentView(void * id, const QCString & n) : UmlItem(id, n) {};
+    UmlBaseComponentView(void * id, const QCString & n) : UmlView(id, n) {};
 
 };
 

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -43,6 +43,7 @@
 #include "DialogUtil.h"
 #include "ToolCom.h"
 #include "strutil.h"
+#include "translate.h"
 
 SdContinuationCanvas::SdContinuationCanvas(UmlCanvas * canvas, int x, int y, int id)
     : DiagramCanvas(0, canvas, x, y, CONTINUATION_CANVAS_MIN_SIZE,
@@ -173,22 +174,22 @@ void SdContinuationCanvas::modified() {
 void SdContinuationCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
   
-  m.insertItem(new MenuTitle("Continuation", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Continuation"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 6);
-  m.insertItem("Go down", 7);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 6);
+  m.insertItem(TR("Go down"), 7);
   m.insertSeparator();
-  m.insertItem("Edit", 2);
+  m.insertItem(TR("Edit"), 2);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 3);
+  m.insertItem(TR("Edit drawing settings"), 3);
   if (linked()) {
     m.insertSeparator();
-    m.insertItem("Select linked items", 4);
+    m.insertItem(TR("Select linked items"), 4);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view",5);
+  m.insertItem(TR("Remove from view"),5);
 
   int index = m.exec(QCursor::pos());
   
@@ -254,11 +255,11 @@ void SdContinuationCanvas::apply_shortcut(QString s) {
 }
 
 void SdContinuationCanvas::edit_drawing_settings() {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   
-  co[0].set("continuation color", &itscolor);
+  co[0].set(TR("continuation color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -270,15 +271,15 @@ bool SdContinuationCanvas::has_drawing_settings() const {
 }
 
 void SdContinuationCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   UmlColor itscolor;
   
-  co[0].set("continuation color", &itscolor);
+  co[0].set(TR("continuation color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
   
   dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
@@ -288,20 +289,20 @@ void SdContinuationCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }
 }
 
-const char * SdContinuationCanvas::may_start(UmlCode & l) const {
-  return (l == UmlAnchor) ? 0 : "illegal";
+QString SdContinuationCanvas::may_start(UmlCode & l) const {
+  return (l == UmlAnchor) ? 0 : TR("illegal");
 }
 
-const char * SdContinuationCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
+QString SdContinuationCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  return (l == UmlAnchor) ? dest->may_start(l) : TR("illegal");
 }
 
 aCorner SdContinuationCanvas::on_resize_point(const QPoint & p) {
   return ::on_resize_point(p, rect());
 }
 
-void SdContinuationCanvas::resize(aCorner c, int dx, int dy) {
-  DiagramCanvas::resize(c, dx, dy, min_width, min_height);
+void SdContinuationCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
+  DiagramCanvas::resize(c, dx, dy, o, min_width, min_height);
 }
 
 void SdContinuationCanvas::save(QTextStream & st, bool ref, QString &) const {

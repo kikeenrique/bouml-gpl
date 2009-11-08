@@ -22,6 +22,9 @@ bool CppSettings::set_UseDefaults(bool y)
 
 QCString CppSettings::type(QCString s)
 {
+  if (s.isEmpty())
+    return s;
+  
   read_if_needed_();
   
   UmlBuiltin * b = UmlSettings::_map_builtins.find(s);
@@ -303,6 +306,24 @@ bool CppSettings::set_IsForceNamespacePrefixGeneration(bool v)
   UmlCom::send_cmd(cppSettingsCmd, setCppForceNamespaceGenCmd, v);
   if (UmlCom::read_bool()) {
     _is_force_namespace_gen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+bool CppSettings::isInlineOperationForceIncludesInHeader()
+{
+  read_if_needed_();
+
+  return _is_inline_force_header_in_h;
+}
+
+bool CppSettings::set_IsInlineOperationForceIncludesInHeader(bool v)
+{
+  UmlCom::send_cmd(cppSettingsCmd, setCppInlineOperForceInclInHeaderCmd, v);
+  if (UmlCom::read_bool()) {
+    _is_inline_force_header_in_h = v;
     return TRUE;
   }
   else
@@ -1095,6 +1116,8 @@ bool CppSettings::_is_force_namespace_gen;
 
 bool CppSettings::_is_generate_javadoc_comment;
 
+bool CppSettings::_is_inline_force_header_in_h;
+
 QDict<QCString> CppSettings::_map_includes;
 
 void CppSettings::read_()
@@ -1181,6 +1204,7 @@ void CppSettings::read_()
   _is_force_namespace_gen = UmlCom::read_bool();
   _is_root_relative_path = UmlCom::read_bool();
   _is_generate_javadoc_comment = UmlCom::read_bool();
+  _is_inline_force_header_in_h = UmlCom::read_bool();
 }
 
 void CppSettings::read_if_needed_()

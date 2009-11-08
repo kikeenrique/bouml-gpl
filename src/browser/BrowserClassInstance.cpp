@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -51,6 +51,7 @@
 #include "ProfiledStereotypes.h"
 #include "mu.h"
 #include "strutil.h"
+#include "translate.h"
 
 IdDict<BrowserClassInstance> BrowserClassInstance::all(__FILE__);
 
@@ -140,6 +141,10 @@ void BrowserClassInstance::clear(bool old)
 void BrowserClassInstance::update_idmax_for_root()
 {
   all.update_idmax_for_root();
+}
+
+void BrowserClassInstance::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
 }
     
 void BrowserClassInstance::renumber(int phase) {
@@ -249,7 +254,7 @@ void BrowserClassInstance::menu() {
   QString t = name;
   
   if (t.isEmpty())
-    t = "Class instance";
+    t = TR("Class instance");
   
   QPopupMenu m(0, t);
   QPopupMenu toolm(0);
@@ -258,33 +263,33 @@ void BrowserClassInstance::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("Edit", 0),
-		     "to edit the <em>class instance</em>, \
-a double click with the left mouse button does the same thing");
-      m.setWhatsThis(m.insertItem("Duplicate", 4),
-		     "to duplicate the <em>class instance</em>");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 0),
+		     TR("to edit the <i>class instance</i>, \
+a double click with the left mouse button does the same thing"));
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 4),
+		     TR("to duplicate the <i>class instance</i>"));
       if (!is_read_only && (edition_number == 0)) {
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("Delete", 1),
-		       "to delete the <em>class instance</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 1),
+		       TR("to delete the <i>class instance</i>. \
+Note that you can undelete it after"));
       }
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("Referenced by", 3),
-		   "to know who reference the <i>class instance</i> \
-through a relation");
-    mark_menu(m, "class instance", 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 3),
+		   TR("to know who reference the <i>class instance</i> \
+through a relation"));
+    mark_menu(m, TR("class instance"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 2),
-		   "to undelete the <em>class instance</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 2),
+		   TR("to undelete the <i>class instance</i>"));
     if (def->get_class()->deletedp())
       m.setItemEnabled(2, FALSE);
   }
@@ -376,7 +381,7 @@ BrowserClassInstance * BrowserClassInstance::get_classinstance(BrowserNode * fut
   QString name;
   BrowserNodeList nodes;
   
-  if (!future_parent->enter_child_name(name, "enter class instance's name (may be empty) : ",
+  if (!future_parent->enter_child_name(name, TR("enter class instance's name (may be empty) : "),
 				       UmlClassInstance, instances(nodes),
 				       &old, TRUE, TRUE))
     return 0;
@@ -415,7 +420,7 @@ BrowserClassInstance * BrowserClassInstance::get_classinstance(BrowserClass * cl
   nodes.sort_it();
   
   // use cl here but any element is good for
-  return (! cl->enter_child_name(dummy, "choose existing instance : ",
+  return (! cl->enter_child_name(dummy, TR("choose existing instance : "),
 				 UmlClassInstance, nodes, &old,
 				 TRUE, TRUE, TRUE))
     ? 0 : ((BrowserClassInstance *) old);
@@ -425,7 +430,7 @@ BrowserClassInstance * BrowserClassInstance::add_classinstance(BrowserNode * fut
 {
   QString name;
   
-  if (! future_parent->enter_child_name(name, "enter class instance's name (may be empty) : ",
+  if (! future_parent->enter_child_name(name, TR("enter class instance's name (may be empty) : "),
 					UmlClassInstance, TRUE, TRUE))
     return 0;
   
@@ -569,7 +574,7 @@ void BrowserClassInstance::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -638,7 +643,7 @@ BrowserClassInstance * BrowserClassInstance::read(char * & st, char * k,
       k = read_keyword(st);
     }
     
-    result->BrowserNode::read(st, k);	// updates k
+    result->BrowserNode::read(st, k, id);	// updates k
     
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");

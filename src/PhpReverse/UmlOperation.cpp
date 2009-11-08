@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -186,21 +186,22 @@ bool UmlOperation::new_one(Class * container, aVisibility visibility,
     
     // goto the end of the body
     
-    QCString e;
+    char c;
     int level = 1;	// '{' already read
     
     for (;;) {
-      if ((e = Lex::read_word()).isEmpty())
+      if ((c = Lex::read_word_bis()) == 0)
 	return FALSE;
-      else if (e == "{")
+      else if (c == '{')
 	level += 1;
-      else if ((e == "}") && (--level == 0))
+      else if ((c == '}') && (--level == 0))
 	break;
     }
     
 #ifdef REVERSE
     if (op != 0) {
-      e = Lex::region();
+      QCString e = Lex::region();
+      
       e.truncate(e.length() - 1);	// remove }
 
       // remove fist \n
@@ -395,26 +396,35 @@ bool UmlOperation::read_param(Class * container, unsigned rank,
 }
 	 
 void UmlOperation::skip_body(int level) {
-  QCString e;
+  char c;
     
-  while (!((e = Lex::read_word()).isEmpty()) &&	// end of file
-	 ((e != "}") || (--level != 0)) &&	// end of body
-	 ((e != ";") || (level != 0)))		// no body
-    if (e == "{")
+  while ((c = Lex::read_word_bis()) != 0) {	// not end of file
+    if (c == '}') {
+      if (--level == 0)
+	// end of body
+	break;
+    }
+    else if (c == ';') {
+      if (level == 0)
+	// no body
+	break;
+    }
+    else if (c == '{')
       level += 1;
+  }
   
   Lex::clear_comments();
 }
 	 
 QCString UmlOperation::skip_expr(int level) {
-  QCString e;
+  char c;
     
-  while (!((e = Lex::read_word()).isEmpty()) &&
-	 ((e != ";") || (level != 0)) &&
-	 ((e != ",") || (level != 0))) {
-    if ((e == "{") || (e == "(") || (e == "["))
+  while (((c = Lex::read_word_bis()) != 0) &&
+	 ((c != ';') || (level != 0)) &&
+	 ((c != ',') || (level != 0))) {
+    if ((c == '{') || (c == '(') || (c == '['))
       level += 1;
-    else if ((e == "}") || (e == ")") || (e == "]")) {
+    else if ((c == '}') || (c == ')') || (c == ']')) {
       if (level == 0)
 	break;
       
@@ -423,5 +433,11 @@ QCString UmlOperation::skip_expr(int level) {
   }
   
   Lex::clear_comments();
+  
+  QCString e;
+  
+  if (c != 0)
+    e += c;
+  
   return e;
 }

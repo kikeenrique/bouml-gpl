@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -51,19 +51,26 @@ class Lex {
     static void unget();
     
     static void complete_template(QString & result);
-    static void bypass_cpp_comment();
-    static void bypass_c_comment();
     static QCString manage_operator(QString  & result, int c);  
     static QCString read_string();     
     static QCString read_character();    
     static QCString read_array_dim();  
     static QCString read_annotation();
+    static void bypass_template();
+    static void bypass_cpp_comment();
+    static void bypass_c_comment();
+    static char bypass_operator(int c);  
+    static void bypass_string();     
+    static void bypass_character();    
+    static void bypass_annotation();  
+    static void bypass_array_dim();  
     
     static Context context;
     static QStack<Context> stack;
     
   public:
     static QCString read_word(bool in_templ = FALSE);
+    static char read_word_bis(bool in_templ = FALSE);
     static void unread_word(const char * s);
     static QCString get_comments();
     static QCString get_comments(QCString & co);
@@ -80,11 +87,25 @@ class Lex {
     static QCString region();
     static void syntax_error(QCString = 0);
     static void premature_eof();
-    static void error_near(QCString);
+    static void error_near(QCString, const char * m = "");
     static QCString quote(QCString);
     static void push_context();
     static void pop_context();
     static QCString simplify_comment(QCString &);
+    static bool bypass_type(QCString s);
 };
+
+// an empty string is != a null string in Qt !
+bool inline neq(const QCString & s1, const QCString & s2)
+{
+  return (s1.isEmpty()) ? !s2.isEmpty() : (s1 != s2);
+}
+
+bool inline nequal(QCString s1, QCString s2)
+{
+  return (s1.isEmpty())
+    ? !s2.isEmpty() 
+    : (s1.stripWhiteSpace() != s2.stripWhiteSpace());
+}
 
 #endif

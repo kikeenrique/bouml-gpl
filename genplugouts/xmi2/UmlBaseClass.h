@@ -44,6 +44,14 @@ class UmlBaseClass : public UmlClassMember {
     // abstract operations
     bool set_isAbstract(bool y);
 
+    // return the  indicate if the class is active
+    bool isActive();
+
+    // set if the class is active
+    //
+    // On error return FALSE in C++, produce a RuntimeException in Java
+    bool set_isActive(bool v);
+
     // returns the type on which the class (in fact a typedef) is based
     const UmlTypeSpec & baseType();
 
@@ -247,6 +255,8 @@ class UmlBaseClass : public UmlClassMember {
     static QDict<UmlClass> _classes;
 
     bool _abstract;
+
+    bool _active : 1;
 
 #ifdef WITHCPP
     bool _cpp_external : 1;

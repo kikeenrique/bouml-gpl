@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -51,6 +51,7 @@
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserUseCaseView> BrowserUseCaseView::all(__FILE__);
 QStringList BrowserUseCaseView::its_default_stereotypes;	// unicode
@@ -122,7 +123,7 @@ BrowserUseCaseView* BrowserUseCaseView::add_use_case_view(BrowserNode * future_p
 {
   QString name;
   
-  if (future_parent->enter_child_name(name, "enter use case view's name : ",
+  if (future_parent->enter_child_name(name, TR("enter use case view's name : "),
 				      UmlUseCaseView, TRUE, FALSE))
     return new BrowserUseCaseView(name, future_parent);
   else
@@ -139,6 +140,15 @@ void BrowserUseCaseView::update_idmax_for_root()
 {
   all.update_idmax_for_root();
   BrowserUseCase::update_idmax_for_root();
+}
+
+void BrowserUseCaseView::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
 }
     
 void BrowserUseCaseView::renumber(int phase) {
@@ -164,60 +174,60 @@ void BrowserUseCaseView::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
-      m.setWhatsThis(m.insertItem("New use case diagram", 0),
-		     "to add a <em>use case diagram</em>");
-      m.setWhatsThis(m.insertItem("New sequence diagram", 1),
-		     "to add a <em>sequence diagram</em>");
-      m.setWhatsThis(m.insertItem("New communication diagram", 2),
-		     "to add a <em>communication diagram</em>");
-      m.setWhatsThis(m.insertItem("New object diagram", 13),
-		     "to add a <em>object diagram</em>");
-      m.setWhatsThis(m.insertItem("New use case", 3),
-		     "to add a <em>use case</em>");
-      m.setWhatsThis(m.insertItem("New actor", 4),
-		     "to add an <em>actor</em>");
-      m.setWhatsThis(m.insertItem("New class", 5),
-		     "to add a <em>class</em>");
-      m.setWhatsThis(m.insertItem("New class instance", 14),
-		     "to add a <em>class instance</em>");
-      m.setWhatsThis(m.insertItem("New state machine", 15),
-		     "to add a <em>state machine</em>");
-      m.setWhatsThis(m.insertItem("New activity", 16),
-		     "to add an <em>activity</em>");
+      m.setWhatsThis(m.insertItem(TR("New use case diagram"), 0),
+		     TR("to add a <i>use case diagram</i>"));
+      m.setWhatsThis(m.insertItem(TR("New sequence diagram"), 1),
+		     TR("to add a <i>sequence diagram</i>"));
+      m.setWhatsThis(m.insertItem(TR("New communication diagram"), 2),
+		     TR("to add a <i>communication diagram</i>"));
+      m.setWhatsThis(m.insertItem(TR("New object diagram"), 13),
+		     TR("to add a <i>object diagram</i>"));
+      m.setWhatsThis(m.insertItem(TR("New use case"), 3),
+		     TR("to add a <i>use case</i>"));
+      m.setWhatsThis(m.insertItem(TR("New actor"), 4),
+		     TR("to add an <i>actor</i>"));
+      m.setWhatsThis(m.insertItem(TR("New class"), 5),
+		     TR("to add a <i>class</i>"));
+      m.setWhatsThis(m.insertItem(TR("New class instance"), 14),
+		     TR("to add a <i>class instance</i>"));
+      m.setWhatsThis(m.insertItem(TR("New state machine"), 15),
+		     TR("to add a <i>state machine</i>"));
+      m.setWhatsThis(m.insertItem(TR("New activity"), 16),
+		     TR("to add an <i>activity</i>"));
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("New sub use case view", 6),
-		     "to add a sub <em>use case view</em>");
+      m.setWhatsThis(m.insertItem(TR("New sub use case view"), 6),
+		     TR("to add a sub <i>use case view</i>"));
       m.insertSeparator();
     }
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("Edit", 8),
-		     "to edit the <em>use case view</em>");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 8),
+		     TR("to edit the <i>use case view</i>"));
       if (!is_read_only) {
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("Edit drawing settings", 9),
-		       "to set how the sub <em>diagrams</em>'s items must be drawn");
+	m.setWhatsThis(m.insertItem(TR("Edit drawing settings"), 9),
+		       TR("to set how the sub <i>diagrams</i>'s items must be drawn"));
 	if (edition_number == 0) {
 	  m.insertSeparator();
-	  m.setWhatsThis(m.insertItem("Delete", 10),
-			 "to delete the <em>use case view</em> and its sub items. \
-Note that you can undelete them after");
+	  m.setWhatsThis(m.insertItem(TR("Delete"), 10),
+			 TR("to delete the <i>use case view</i> and its sub items. \
+Note that you can undelete them after"));
 	}
       }
     }
-    mark_menu(m, "use case view", 90);
+    mark_menu(m, TR("the use case view"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 11),
-		   "undelete the <em>use case view</em>. \
-Do not undelete its sub items");
-    m.setWhatsThis(m.insertItem("Undelete recursively", 12),
-		   "undelete the <em>use case view</em> and its sub items");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 11),
+		   TR("undelete the <i>use case view</i>. \
+Do not undelete its sub items"));
+    m.setWhatsThis(m.insertItem(TR("Undelete recursively"), 12),
+		   TR("undelete the <i>use case view</i> and its sub items"));
   }
   
   exec_menu_choice(m.exec(QCursor::pos()));
@@ -294,12 +304,12 @@ void BrowserUseCaseView::exec_menu_choice(int rank) {
     }
     break;
   case 8:
-    edit("Use case view", its_default_stereotypes);
+    edit(TR("Use case view"), its_default_stereotypes);
     return;
   case 9:
     {
-      QArray<StateSpec> st;
-      QArray<ColorSpec> co(15);
+      StateSpecVector st;
+      ColorSpecVector co(15);
       
       usecasediagram_settings.complete(st, FALSE);
       objectdiagram_settings.complete(st, FALSE);
@@ -308,23 +318,23 @@ void BrowserUseCaseView::exec_menu_choice(int rank) {
       statediagram_settings.complete(st, FALSE);
       activitydiagram_settings.complete(st, FALSE);
       
-      co[0].set("note color", &note_color);
-      co[1].set("use case color", &usecase_color);
-      co[2].set("package color", &package_color);
-      co[3].set("fragment color", &fragment_color);
-      co[4].set("subject color", &subject_color);
-      co[5].set("duration color", &duration_color);
-      co[6].set("continuation color", &continuation_color);
-      co[7].set("class color", &class_color);
-      co[8].set("state color", &state_color);
-      co[9].set("state action color", &stateaction_color);
-      co[10].set("activity color", &activity_color);
-      co[11].set("activity region color", &activityregion_color);
-      co[12].set("activity partition color", &activitypartition_color);
-      co[13].set("activity action color", &activityaction_color);
-      co[14].set("parameter and pin color", &parameterpin_color);
+      co[0].set(TR("note color"), &note_color);
+      co[1].set(TR("use case color"), &usecase_color);
+      co[2].set(TR("package color"), &package_color);
+      co[3].set(TR("fragment color"), &fragment_color);
+      co[4].set(TR("subject color"), &subject_color);
+      co[5].set(TR("duration color"), &duration_color);
+      co[6].set(TR("continuation color"), &continuation_color);
+      co[7].set(TR("class color"), &class_color);
+      co[8].set(TR("state color"), &state_color);
+      co[9].set(TR("state action color"), &stateaction_color);
+      co[10].set(TR("activity color"), &activity_color);
+      co[11].set(TR("activity region color"), &activityregion_color);
+      co[12].set(TR("activity partition color"), &activitypartition_color);
+      co[13].set(TR("activity action color"), &activityaction_color);
+      co[14].set(TR("parameter and pin color"), &parameterpin_color);
 
-      SettingsDialog dialog(&st, &co, FALSE, FALSE);
+      SettingsDialog dialog(&st, &co, FALSE);
       
       dialog.raise();
       if (dialog.exec() != QDialog::Accepted)
@@ -446,7 +456,7 @@ void BrowserUseCaseView::apply_shortcut(QString s) {
 
 void BrowserUseCaseView::open(bool) {
   if (!is_edited)
-    edit("Use Case view", its_default_stereotypes);
+    edit(TR("Use case view"), its_default_stereotypes);
 }
 
 UmlCode BrowserUseCaseView::get_type() const {
@@ -748,11 +758,11 @@ void BrowserUseCaseView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 	// have choice
 	QPopupMenu m(0);
   
-	m.insertItem(new MenuTitle(bn->get_name() + QString(" moving"),
+	m.insertItem(new MenuTitle(QString("move ") + bn->get_name(),
 				   m.font()), -1);
 	m.insertSeparator();
-	m.insertItem("In " + QString(get_name()), 1);
-	m.insertItem("After " + QString(get_name()), 2);
+	m.insertItem(TR("In ") + QString(get_name()), 1);
+	m.insertItem(TR("After ") + QString(get_name()), 2);
 	
 	switch (m.exec(QCursor::pos())) {
 	case 1:
@@ -783,7 +793,7 @@ void BrowserUseCaseView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     else if (after == 0)
       ((BrowserNode *) parent())->DropAfterEvent(e, this);
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -886,7 +896,7 @@ void BrowserUseCaseView::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -941,7 +951,7 @@ BrowserUseCaseView * BrowserUseCaseView::read(char * & st, char * k,
       read_color(st, "activityaction_color", result->activityaction_color, k);		// updates k
       read_color(st, "parameterpin_color", result->parameterpin_color, k);		// updates k
     }    
-    result->BrowserNode::read(st, k);	// updates k
+    result->BrowserNode::read(st, k, id);	// updates k
       
     if (strcmp(k, "end")) {
       while (BrowserUseCaseDiagram::read(st, k, result) ||

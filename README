@@ -17,8 +17,8 @@ it to define new plug-outs.
 To compile BOUML and the plug-outs under Unix/Linux/Solaris :
 -------------------------------------------------------------
 
-You must have QT correctly installed, and 'qmake' because all
-the Makefiles except the top one are produced from .pro files
+You must have QT 2.3 or 3.x correctly installed, and 'qmake' because
+all the Makefiles except the top one are produced from .pro files
 
 The environment variable QTDIR must be set to the toplevel
 directory where Qt is installed.

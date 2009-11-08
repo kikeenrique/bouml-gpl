@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -38,7 +38,7 @@
 #include "mu.h"
 
 ActivityData::ActivityData()
-    : read_only(FALSE), single_execution(FALSE), specification(0) {
+    : read_only(FALSE), single_execution(FALSE), is_active(FALSE), specification(0) {
 }
 
 ActivityData::ActivityData(ActivityData * model, BrowserNode * bn)
@@ -49,6 +49,7 @@ ActivityData::ActivityData(ActivityData * model, BrowserNode * bn)
   java_condition = model->java_condition;
   read_only = model->read_only;
   single_execution = model->single_execution;
+  is_active = model->is_active;
   set_specification(model->specification);
 }
 
@@ -107,15 +108,20 @@ void ActivityData::edit() {
   
 void ActivityData::send_uml_def(ToolCom * com, BrowserNode * bn,
 				const QString & comment) {
+  int api = com->api_format();
+  
   SimpleData::send_uml_def(com, bn, comment);
   uml_condition.send_def(com);
   com->write_bool(read_only);
   com->write_bool(single_execution);
-  if (com->api_format() >= 45) {
+  if (api >= 45) {
     if (specification == 0)
       com->write_id(0);
     else
       specification->write_id(com);
+  
+    if (api >= 48)
+      com->write_bool(is_active);
   }
 }
 
@@ -162,6 +168,9 @@ bool ActivityData::tool_cmd(ToolCom * com, const char * args,
       case setDefCmd:
 	set_specification((BrowserOperation *) com->get_id(args));
         break;
+      case setActiveCmd:
+	is_active = (*args != 0);
+	break;
       default:
 	return BasicData::tool_cmd(com, args, bn, comment);
       }
@@ -197,9 +206,21 @@ void ActivityData::save(QTextStream & st, QString & warning) const {
   if (single_execution) {
     if (nl)
       st << " ";
-    else
+    else {
       nl_indent(st);
+      nl = TRUE;
+    }
     st << "single_execution";
+  }
+
+  if (is_active) {
+    if (nl)
+      st << " ";
+    else {
+      nl_indent(st);
+      nl = TRUE;
+    }
+    st << "active";
   }
   
   if (specification != 0) {
@@ -223,6 +244,10 @@ void ActivityData::read(char * & st, char * & k) {
   }
   if (! strcmp(k, "single_execution")) {
     single_execution = TRUE;
+    k = read_keyword(st);
+  }
+  if (!strcmp(k, "active")) {
+    is_active = TRUE;
     k = read_keyword(st);
   }
   if (! strcmp(k, "specification")) {

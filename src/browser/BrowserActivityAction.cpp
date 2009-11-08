@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -54,6 +54,7 @@
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserActivityAction> BrowserActivityAction::all(257, __FILE__);
 QStringList BrowserActivityAction::its_default_stereotypes;	// unicode
@@ -110,6 +111,15 @@ void BrowserActivityAction::update_idmax_for_root()
   all.update_idmax_for_root();
   BrowserParameterSet::update_idmax_for_root();
   BrowserPin::update_idmax_for_root();
+}
+
+void BrowserActivityAction::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
 }
     
 void BrowserActivityAction::referenced_by(QList<BrowserNode> & l, bool ondelete) {
@@ -213,28 +223,28 @@ BasicData * BrowserActivityAction::add_relation(UmlCode l, BrowserNode * end) {
 }
 
 // a flow/dependency may be added in all the cases
-const char * BrowserActivityAction::may_start() const {
+QString BrowserActivityAction::may_start() const {
   return 0;
 }
 
 // connexion by a flow or a dependency
-const char * BrowserActivityAction::may_connect(UmlCode & l, const BrowserNode * dest) const {
+QString BrowserActivityAction::may_connect(UmlCode & l, const BrowserNode * dest) const {
   switch (l) {
   case UmlFlow:
     {
       BrowserNode * container = dest->get_container(UmlActivity);
       
       if (container == 0)
-	return "illegal";
+	return TR("illegal");
       
       if (get_container(UmlActivity) != container)
-	return "not in the same activity";
+	return TR("not in the same activity");
       
       const BrowserActivityElement * elt =
 	dynamic_cast<const BrowserActivityElement *>(dest);
       
       return (elt == 0)
-	? "illegal"
+	? TR("illegal")
 	: elt->connexion_from(TRUE);  
     }
   case UmlDependency:
@@ -248,14 +258,14 @@ const char * BrowserActivityAction::may_connect(UmlCode & l, const BrowserNode *
     case UmlActivityObject:
       return 0;
     default:
-      return "illegal";
+      return TR("illegal");
     }
   default:
-      return "illegal";
+      return TR("illegal");
   }
 }
 
-const char * BrowserActivityAction::connexion_from(bool) const {
+QString BrowserActivityAction::connexion_from(bool) const {
   // theo all input and output must be control/data exclusively
   return 0;
 }
@@ -268,7 +278,7 @@ BrowserActivityAction::add_activityaction(BrowserNode * future_parent,
   
   if (s != 0)
     name = s;
-  else if (!future_parent->enter_child_name(name, "enter activity action's \nname (may be empty) : ",
+  else if (!future_parent->enter_child_name(name, TR("enter activity action's \nname (may be empty) : "),
 					    UmlActivityAction, TRUE, TRUE))
     return 0;
   
@@ -295,7 +305,7 @@ BrowserActivityAction * BrowserActivityAction::get_activityaction(BrowserNode * 
   BrowserNode * old = 0;
   QString name;
   
-  if (!future_parent->enter_child_name(name, "enter activity action's \nname (may be empty) : ",
+  if (!future_parent->enter_child_name(name, TR("enter activity action's \nname (may be empty) : "),
 				       UmlActivityAction, l, &old, TRUE, TRUE))
     return 0;
     
@@ -317,7 +327,7 @@ BrowserActivityAction::add_call_behavior(BrowserNode * future_parent,
 {
   QString name;
   
-  if (!future_parent->enter_child_name(name, "enter activity action's \nname (may be empty) : ",
+  if (!future_parent->enter_child_name(name, TR("enter activity action's \nname (may be empty) : "),
 				       UmlActivityAction, TRUE, TRUE))
     return 0;
   
@@ -339,7 +349,7 @@ BrowserActivityAction::add_call_operation(BrowserNode * future_parent,
 {
   QString name;
   
-  if (!future_parent->enter_child_name(name, "enter activity action's \nname (may be empty) : ",
+  if (!future_parent->enter_child_name(name, TR("enter activity action's \nname (may be empty) : "),
 				       UmlActivityAction, TRUE, TRUE))
     return 0;
   
@@ -362,7 +372,7 @@ BrowserActivityAction::add_read_variable_value(BrowserNode * future_parent,
 {
   QString name;
   
-  if (!future_parent->enter_child_name(name, "enter activity action's \nname (may be empty) : ",
+  if (!future_parent->enter_child_name(name, TR("enter activity action's \nname (may be empty) : "),
 				       UmlActivityAction, TRUE, TRUE))
     return 0;
   
@@ -385,7 +395,7 @@ BrowserActivityAction::add_clear_variable_value(BrowserNode * future_parent,
 {
   QString name;
   
-  if (!future_parent->enter_child_name(name, "enter activity action's \nname (may be empty) : ",
+  if (!future_parent->enter_child_name(name, TR("enter activity action's \nname (may be empty) : "),
 				       UmlActivityAction, TRUE, TRUE))
     return 0;
   
@@ -408,7 +418,7 @@ BrowserActivityAction::add_write_variable_value(BrowserNode * future_parent,
 {
   QString name;
   
-  if (!future_parent->enter_child_name(name, "enter activity action's \nname (may be empty) : ",
+  if (!future_parent->enter_child_name(name, TR("enter activity action's \nname (may be empty) : "),
 				       UmlActivityAction, TRUE, TRUE))
     return 0;
   
@@ -431,7 +441,7 @@ BrowserActivityAction::add_add_variable_value(BrowserNode * future_parent,
 {
   QString name;
   
-  if (!future_parent->enter_child_name(name, "enter activity action's \nname (may be empty) : ",
+  if (!future_parent->enter_child_name(name, TR("enter activity action's \nname (may be empty) : "),
 				       UmlActivityAction, TRUE, TRUE))
     return 0;
   
@@ -454,7 +464,7 @@ BrowserActivityAction::add_remove_variable_value(BrowserNode * future_parent,
 {
   QString name;
   
-  if (!future_parent->enter_child_name(name, "enter activity action's \nname (may be empty) : ",
+  if (!future_parent->enter_child_name(name, TR("enter activity action's \nname (may be empty) : "),
 				       UmlActivityAction, TRUE, TRUE))
     return 0;
   
@@ -472,75 +482,71 @@ BrowserActivityAction::add_remove_variable_value(BrowserNode * future_parent,
 
 void BrowserActivityAction::menu() {
   QString s = name;
-  int index;
   BrowserNode * who = 0;
+  QString kind = stringify(def->get_action_kind());
+  int index = 0;  
   
-  if (s.isEmpty()) {
-    s = stringify(def->get_action_kind());
-    index = 0;
-    
-    while ((index = s.find("_")) != -1)
-      s.replace(index, 1, " ");
-  }
+  while ((index = kind.find("_")) != -1)
+    kind.replace(index, 1, " ");
 
-  QPopupMenu m(0, "Activity action");
+  QPopupMenu m(0, TR("Activity action"));
   QPopupMenu toolm(0);
   
-  m.insertItem(new MenuTitle(s, m.font()), -1);
+  m.insertItem(new MenuTitle((s.isEmpty()) ? TR(kind) : s, m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
       if (def->may_add_pin())
-	m.setWhatsThis(m.insertItem("New pin", 0),
-		       "to add a <em>pin</em>");
-      m.setWhatsThis(m.insertItem("New parameter set", 7),
-		     "to add a <em>Parameter Set</em>");
+	m.setWhatsThis(m.insertItem(TR("New pin"), 0),
+		       TR("to add a <i>pin</i>"));
+      m.setWhatsThis(m.insertItem(TR("New parameter set"), 7),
+		     TR("to add a <i>Parameter Set</i>"));
       m.insertSeparator();
     }
-    m.setWhatsThis(m.insertItem("Edit", 1),
-		   "to edit the <em>" + s + "</em>, \
-a double click with the left mouse button does the same thing");
+    m.setWhatsThis(m.insertItem(TR("Edit"), 1),
+		   TR("to edit the <i>" + kind + "</i>, \
+a double click with the left mouse button does the same thing"));
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("Duplicate", 2),
-		     "to copy the <em>" + s + "</em> in a new one");
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 2),
+		     TR("to copy the <i>" + kind + "</i> in a new one"));
     }
   
     const char * what;
     
     if ((who = def->get_action()->referenced(what)) != 0) {
       m.insertSeparator();
-      m.insertItem("Select " + QString(what), 8);
+      m.insertItem(TR(QString("Select ") + what), 8);
     }
   
     if (!is_read_only) {
       m.insertSeparator();
       if (edition_number == 0)
-	m.setWhatsThis(m.insertItem("Delete", 3),
-		       "to delete the <em>" + s + "</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 3),
+		       TR("to delete the <i>" + kind + "</i>. \
+Note that you can undelete it after"));
     }
-    m.setWhatsThis(m.insertItem("Referenced by", 4),
-		   "to know who reference the <i>" + s + "</i> \
-through a flow or dependency");
-    mark_menu(m, s, 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 4),
+		   TR("to know who reference the <i>" + kind + "</i> \
+through a flow or dependency"));
+    mark_menu(m, TR("the " + kind), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 5),
-		   "to undelete the <em>" + s + "</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 5),
+		   TR("to undelete the <i>" + kind + "</i>"));
    
     QListViewItem * child;
   
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("Undelete recursively", 6),
-		       "undelete the <em>s</em> and its pins and \
-<em>flows</em> or <em>dependencies</em> (except if the class at the other side is also deleted)");
+	m.setWhatsThis(m.insertItem(TR("Undelete recursively"), 6),
+		       TR("to undelete the <i>" + kind + "</i> and its <i>pins</i> and \
+<i>flows</i> or <i>dependencies</i> (except if the element at the other side is also deleted)"));
 	break;
       }
     }
@@ -566,7 +572,7 @@ void BrowserActivityAction::exec_menu_choice(int rank,
     {
       QString name;
       
-      if (((BrowserNode *) parent())->enter_child_name(name, "enter activity action's \nname (may be empty) : ",
+      if (((BrowserNode *) parent())->enter_child_name(name, TR("enter activity action's \nname (may be empty) : "),
 						       get_type(), TRUE, TRUE))
 	duplicate((BrowserNode *) parent(), name)->select_in_browser();
     }
@@ -812,7 +818,7 @@ bool BrowserActivityAction::tool_cmd(ToolCom * com, const char * args) {
 	  {
 	    BrowserNode * end = (BrowserNode *) com->get_id(args);
 
-	    if (may_connect(k, end) == 0)
+	    if (may_connect(k, end).isEmpty())
 	      (new BrowserFlow(this, end))->write_id(com);
 	    else
 	      ok = FALSE;
@@ -827,7 +833,7 @@ bool BrowserActivityAction::tool_cmd(ToolCom * com, const char * args) {
 	    else {
 	      BrowserNode * end = (BrowserNode *) com->get_id(args);
 	      
-	      if (may_connect(c, end) == 0)
+	      if (may_connect(c, end).isEmpty())
 		add_relation(c, end)->get_browser_node()->write_id(com);
 	      else
 		ok = FALSE;
@@ -873,7 +879,9 @@ bool BrowserActivityAction::may_contains_them(const QList<BrowserNode> & l,
     case UmlActivityPin:
     case UmlFlow:
     case UmlDependOn:
-      return (((const BrowserNode *) it.current()->parent()) == this);
+      if (((const BrowserNode *) it.current()->parent()) != this)
+	return FALSE;
+      break;
     default:
       return FALSE;
     }
@@ -927,7 +935,7 @@ void BrowserActivityAction::DropAfterEvent(QDropEvent * e, BrowserNode * after) 
     if (may_contains(bn, FALSE)) 
       move(bn, after);
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -1014,7 +1022,7 @@ void BrowserActivityAction::save(QTextStream & st, bool ref, QString & warning) 
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -1081,7 +1089,7 @@ BrowserActivityAction * BrowserActivityAction::read(char * & st, char * k,
       k = read_keyword(st);
     }
     
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
 
     // was not done because of internal action not read soon
     result->update_stereotype(FALSE);

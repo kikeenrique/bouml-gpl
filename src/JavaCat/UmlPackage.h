@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -31,6 +31,12 @@
 class UmlClassView;
 class UmlDeploymentView;
 
+#ifdef ROUNDTRIP
+class Package;
+class artifact;
+class ClassContainer;
+#endif
+
 class UmlPackage : public UmlBasePackage {
   public:
     UmlPackage(void * id, const QCString & n);
@@ -38,12 +44,25 @@ class UmlPackage : public UmlBasePackage {
     UmlClassView * get_classview();
 #ifdef REVERSE
     UmlDeploymentView * get_deploymentview();
+# ifdef ROUNDTRIP
+    void init(Package *);
+    virtual void upload(ClassContainer *);
+    virtual bool set_roundtrip_expected();
+    virtual void mark_useless(QList<UmlItem> & l);
+    virtual void scan_it(int & n);
+    virtual void send_it(int n);
+    Package * get_package() const { return package; }
+    int count_roundtriped();
+# endif
 #endif
   
   private:
     UmlClassView * classview;
 #ifdef REVERSE
     UmlDeploymentView * deploymentview;
+# ifdef ROUNDTRIP
+    Package * package;
+# endif
 #endif
 };
 

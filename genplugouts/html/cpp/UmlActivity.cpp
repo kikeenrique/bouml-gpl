@@ -19,6 +19,9 @@ void UmlActivity::html(QCString pfix, unsigned int rank, unsigned int level) {
     writeq(description());
     fw.write("<br /></p>");
   }
+  
+  if (isActive())
+    fw.write("<p>Active activity</p>\n");
 
   UmlOperation * beh = specification();
   

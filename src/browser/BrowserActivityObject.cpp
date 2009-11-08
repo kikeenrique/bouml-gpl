@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -51,6 +51,7 @@
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserActivityObject> BrowserActivityObject::all(257, __FILE__);
 QStringList BrowserActivityObject::its_default_stereotypes;	// unicode
@@ -96,6 +97,15 @@ void BrowserActivityObject::clear(bool old)
 void BrowserActivityObject::update_idmax_for_root()
 {
   all.update_idmax_for_root();
+}
+
+void BrowserActivityObject::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
 }
     
 void BrowserActivityObject::referenced_by(QList<BrowserNode> & l, bool ondelete) {
@@ -152,28 +162,28 @@ BasicData * BrowserActivityObject::add_relation(UmlCode l, BrowserNode * end) {
 }
 
 // a flow/dependency may be added in all the cases
-const char * BrowserActivityObject::may_start() const {
+QString BrowserActivityObject::may_start() const {
   return 0;
 }
 
 // connexion by a flow or dependency
-const char * BrowserActivityObject::may_connect(UmlCode & l, const BrowserNode * dest) const {
+QString BrowserActivityObject::may_connect(UmlCode & l, const BrowserNode * dest) const {
   switch (l) {
   case UmlFlow:
     {
       BrowserNode * container = dest->get_container(UmlActivity);
       
       if (container == 0)
-	return "illegal";
+	return TR("illegal");
       
       if (get_container(UmlActivity) != container)
-	return "not in the same activity";
+	return TR("not in the same activity");
       
       const BrowserActivityElement * elt =
 	dynamic_cast<const BrowserActivityElement *>(dest);
       
       return (elt == 0)
-	? "illegal"
+	? TR("illegal")
 	: elt->connexion_from(def->get_is_control());  
     }
   case UmlDependency:
@@ -187,18 +197,18 @@ const char * BrowserActivityObject::may_connect(UmlCode & l, const BrowserNode *
     case UmlActivityObject:
       return 0;
     default:
-      return "illegal";
+      return TR("illegal");
     }
   default:
-      return "illegal";
+      return TR("illegal");
   }
 }
 
-const char * BrowserActivityObject::connexion_from(bool control) const {
+QString BrowserActivityObject::connexion_from(bool control) const {
   if (control != def->get_is_control())
     return (control)
-      ? "activity object can't accept control flow (not 'is_control')"
-      : "activity object can't accept data flow (is 'is_control')";
+      ? TR("activity object can't accept control flow (not 'is_control')")
+      : TR("activity object can't accept data flow (is 'is_control')");
   else
     return 0;
 }
@@ -211,7 +221,7 @@ BrowserActivityObject::add_activityobject(BrowserNode * future_parent,
   
   if (s != 0)
     name = s;
-  else if (!future_parent->enter_child_name(name, "enter activity object's \nname (may be empty) : ",
+  else if (!future_parent->enter_child_name(name, TR("enter activity object's \nname (may be empty) : "),
 					    UmlActivityObject, TRUE, TRUE))
     return 0;
   
@@ -243,7 +253,7 @@ BrowserActivityObject * BrowserActivityObject::get_activityobject(BrowserNode * 
   BrowserNode * old = 0;
   QString name;
   
-  if (!future_parent->enter_child_name(name, "enter activity object's \nname (may be empty) : ",
+  if (!future_parent->enter_child_name(name, TR("enter activity object's \nname (may be empty) : "),
 				       UmlActivityObject, l, &old, TRUE, TRUE))
     return 0;
     
@@ -260,50 +270,50 @@ BrowserActivityObject * BrowserActivityObject::get_activityobject(BrowserNode * 
 }
 
 void BrowserActivityObject::menu() {
-  QPopupMenu m(0, "Activity object");
+  QPopupMenu m(0, TR("Activity object"));
   QPopupMenu toolm(0);
   QString s = name;
 
   if (s.isEmpty())
-    s = "activity object";
+    s = TR("activity object");
   
   m.insertItem(new MenuTitle(s, m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
-    m.setWhatsThis(m.insertItem("Edit", 1),
-		   "to edit the <em>" + s + "</em>, \
-a double click with the left mouse button does the same thing");
+    m.setWhatsThis(m.insertItem(TR("Edit"), 1),
+		   TR("to edit the <i>activity object</i>, \
+a double click with the left mouse button does the same thing"));
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("Duplicate", 2),
-		     "to copy the <em>activity object</em> in a new one");
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 2),
+		     TR("to copy the <i>activity object</i> in a new one"));
       m.insertSeparator();
       if (edition_number == 0)
-	m.setWhatsThis(m.insertItem("Delete", 3),
-		       "to delete the <em>activity object</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 3),
+		       TR("to delete the <i>activity object</i>. \
+Note that you can undelete it after"));
     }
-    m.setWhatsThis(m.insertItem("Referenced by", 4),
-		   "to know who reference the <i>activity object</i> \
-through a flow or dependency");
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 4),
+		   TR("to know who reference the <i>activity object</i> \
+through a flow or dependency"));
     mark_menu(m, s, 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 5),
-		   "to undelete the <em>activity object</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 5),
+		   TR("to undelete the <i>activity object</i>"));
    
     QListViewItem * child;
   
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("Undelete recursively", 6),
-		       "undelete the <em>activity object</em> and its expansion nodes and \
-<em>flows</em> or <em>dependencies</em>(except if the class at the other side is also deleted)");
+	m.setWhatsThis(m.insertItem(TR("Undelete recursively"), 6),
+		       TR("undelete the <i>activity object</i> and its <i>expansion nodes</i> and \
+<i>flows</i> or <i>dependencies</i>(except if the element at the other side is also deleted)"));
 	break;
       }
     }
@@ -321,7 +331,7 @@ void BrowserActivityObject::exec_menu_choice(int rank) {
     {
       QString name;
       
-      if (((BrowserNode *) parent())->enter_child_name(name, "enter activity object's \nname (may be empty) : ",
+      if (((BrowserNode *) parent())->enter_child_name(name, TR("enter activity object's \nname (may be empty) : "),
 						       get_type(), TRUE, TRUE))
 	duplicate((BrowserNode *) parent(), name)->select_in_browser();
     }
@@ -492,7 +502,7 @@ bool BrowserActivityObject::tool_cmd(ToolCom * com, const char * args) {
 	  {
 	    BrowserNode * end = (BrowserNode *) com->get_id(args);
 	    
-	    if (may_connect(k, end) == 0)
+	    if (may_connect(k, end).isEmpty())
 	      (new BrowserFlow(this, end))->write_id(com);
 	    else
 	      ok = FALSE;
@@ -507,7 +517,7 @@ bool BrowserActivityObject::tool_cmd(ToolCom * com, const char * args) {
 	    else {
 	      BrowserNode * end = (BrowserNode *) com->get_id(args);
 	      
-	      if (may_connect(c, end) == 0)
+	      if (may_connect(c, end).isEmpty())
 		add_relation(c, end)->get_browser_node()->write_id(com);
 	      else
 		ok = FALSE;
@@ -596,7 +606,7 @@ void BrowserActivityObject::DropAfterEvent(QDropEvent * e, BrowserNode * after) 
     if (may_contains(bn, FALSE)) 
       move(bn, after);
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -683,7 +693,7 @@ void BrowserActivityObject::save(QTextStream & st, bool ref, QString & warning) 
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -743,7 +753,7 @@ BrowserActivityObject * BrowserActivityObject::read(char * & st, char * k,
       k = read_keyword(st);
     }
     
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     if (strcmp(k, "end")) {
       while (BrowserFlow::read(st, k, result) ||

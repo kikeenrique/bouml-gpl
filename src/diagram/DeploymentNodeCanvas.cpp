@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -47,6 +47,7 @@
 #include "MenuTitle.h"
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 DeploymentNodeCanvas::DeploymentNodeCanvas(BrowserNode * bn, UmlCanvas * canvas,
 					   int x, int y, int id)
@@ -423,27 +424,27 @@ void DeploymentNodeCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 13);
-  m.insertItem("Go down", 14);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 13);
+  m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
-  m.insertItem("Add related elements", 10);
+  m.insertItem(TR("Add related elements"), 10);
   m.insertSeparator();
-  m.insertItem("Edit", 2);
+  m.insertItem(TR("Edit"), 2);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 3);
+  m.insertItem(TR("Edit drawing settings"), 3);
   m.insertSeparator();
-  m.insertItem("Select node in browser", 4);
+  m.insertItem(TR("Select node in browser"), 4);
   if (linked())
-    m.insertItem("Select linked items", 5);
+    m.insertItem(TR("Select linked items"), 5);
   m.insertSeparator();
-  m.insertItem("Set node associated diagram", 6);
+  m.insertItem(TR("Set node associated diagram"), 6);
   m.insertSeparator();
-  m.insertItem("Remove from view", 7);
+  m.insertItem(TR("Remove from view"), 7);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlDeploymentNode, 20))
-    m.insertItem("Tool", &toolm);
+    m.insertItem(TR("Tool"), &toolm);
 
   int rank = m.exec(QCursor::pos());
   
@@ -488,7 +489,7 @@ void DeploymentNodeCanvas::menu(const QPoint&) {
     break;
   case 10:
     ((UmlCanvas *) canvas())->get_view()
-      ->add_related_elements(this, "node", FALSE, FALSE);
+      ->add_related_elements(this, TR("node"), FALSE, FALSE);
     return;
   default:
     if (rank >= 20)
@@ -518,7 +519,7 @@ void DeploymentNodeCanvas::apply_shortcut(QString s) {
   }
   else if (s == "Add related elements") {
     ((UmlCanvas *) canvas())->get_view()
-      ->add_related_elements(this, "node", FALSE, FALSE);
+      ->add_related_elements(this, TR("node"), FALSE, FALSE);
     return;
   }
   else {
@@ -530,14 +531,14 @@ void DeploymentNodeCanvas::apply_shortcut(QString s) {
 }
 
 void DeploymentNodeCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(2);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(2);
+  ColorSpecVector co(1);
   
-  st[0].set("write node instance \nhorizontally", &write_horizontally);
-  st[1].set("show stereotype \nproperties", &show_stereotype_properties);
-  co[0].set("Node color", &itscolor);
+  st[0].set(TR("write node instance \nhorizontally"), &write_horizontally);
+  st[1].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
+  co[0].set(TR("Node color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -549,30 +550,30 @@ bool DeploymentNodeCanvas::has_drawing_settings() const {
 }
 
 void DeploymentNodeCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(2);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(2);
+  ColorSpecVector co(1);
   Uml3States write_horizontally;
   Uml3States show_stereotype_properties;
   UmlColor itscolor;
   
-  st[0].set("write node instance \nhorizontally", &write_horizontally);
-  st[1].set("show stereotype \nproperties", &show_stereotype_properties);
-  co[0].set("Node color", &itscolor);
+  st[0].set(TR("write node instance \nhorizontally"), &write_horizontally);
+  st[1].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
+  co[0].set(TR("Node color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
-      if (st[0].name != 0)
+      if (!st[0].name.isEmpty())
 	((DeploymentNodeCanvas *) it.current())->write_horizontally =
 	  write_horizontally;
-      if (st[1].name != 0)
+      if (!st[1].name.isEmpty())
 	((DeploymentNodeCanvas *) it.current())->show_stereotype_properties =
 	  show_stereotype_properties;
-      if (co[0].name != 0)
+      if (!co[0].name.isEmpty())
 	((DeploymentNodeCanvas *) it.current())->itscolor = itscolor;
       ((DeploymentNodeCanvas *) it.current())->modified();	// call package_modified()
     }
@@ -590,20 +591,20 @@ bool DeploymentNodeCanvas::get_show_stereotype_properties() const {
   }
 }
 
-const char * DeploymentNodeCanvas::may_start(UmlCode & l) const {
+QString DeploymentNodeCanvas::may_start(UmlCode & l) const {
   switch (l) {
   case UmlDependency:
     l = UmlDependOn;
-    return (browser_node->is_writable()) ? 0 : "read only";
+    return (browser_node->is_writable()) ? 0 : TR("read only");
   case UmlAssociation:
   case UmlAnchor:
     return 0;
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
-const char * DeploymentNodeCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString DeploymentNodeCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor)
     return dest->may_start(l);
   
@@ -611,9 +612,9 @@ const char * DeploymentNodeCanvas::may_connect(UmlCode & l, const DiagramItem * 
   case UmlDeploymentNode:
     return 0;
   case UmlHub:
-    return (l == UmlAssociation) ? 0 : "illegal";
+    return (l == UmlAssociation) ? 0 : TR("illegal");
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
@@ -638,8 +639,8 @@ aCorner DeploymentNodeCanvas::on_resize_point(const QPoint & p) {
     : ::on_resize_point(p, rect());
 }
 
-void DeploymentNodeCanvas::resize(aCorner c, int dx, int dy) {
-  DiagramCanvas::resize(c, dx, dy, min_width(), min_height());
+void DeploymentNodeCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
+  DiagramCanvas::resize(c, dx, dy, o, min_width(), min_height(), TRUE);
 }
 
 bool DeploymentNodeCanvas::move_with_its_package() const {

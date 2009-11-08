@@ -2,6 +2,7 @@
 #include "UmlBaseOperation.h"
 #include "UmlOperation.h"
 #include "UmlClass.h"
+#include "UmlItem.h"
 
 #include "UmlCom.h"
 #include "UmlBaseClass.h"
@@ -13,6 +14,21 @@ UmlOperation * UmlBaseOperation::create(UmlClass * parent, const char * s)
 
 anItemKind UmlBaseOperation::kind() {
   return anOperation;
+}
+
+bool UmlBaseOperation::isBodyGenerationForced() {
+  read_if_needed_();
+  return _force_body_generation;
+}
+
+bool UmlBaseOperation::set_isBodyGenerationForced(bool v) {
+  UmlCom::send_cmd(_identifier, setIsForceBodyGenCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _force_body_generation = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
 }
 
 bool UmlBaseOperation::isAbstract() {
@@ -122,6 +138,14 @@ bool UmlBaseOperation::replaceException(unsigned rank, const UmlTypeSpec & t) {
   }
   else
     return FALSE;
+}
+
+const QVector<UmlItem> UmlBaseOperation::methods() const {
+  QVector<UmlItem> l;
+
+  UmlCom::send_cmd(_identifier, sideCmd);
+  UmlCom::read_item_list(l);
+  return l;
 }
 
 UmlClassMember * UmlBaseOperation::getOf() {
@@ -238,6 +262,40 @@ bool UmlBaseOperation::set_CppNameSpec(const char * s) {
 }
 #endif
 
+#ifdef WITHCPP
+bool UmlBaseOperation::cppGetSetFrozen() {
+  read_if_needed_();
+  return _cpp_get_set_frozen;
+}
+
+bool UmlBaseOperation::set_CppGetSetFrozen(bool v) {
+  UmlCom::send_cmd(_identifier, setCppFrozenCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _cpp_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
+#ifdef WITHCPP
+bool UmlBaseOperation::cppContextualBodyIndent() {
+  read_if_needed_();
+  return _cpp_contextual_body_indent;
+}
+
+bool UmlBaseOperation::set_CppContextualBodyIndent(bool v) {
+  UmlCom::send_cmd(_identifier, setCppContextualBodyIndentCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _cpp_contextual_body_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
 #ifdef WITHJAVA
 bool UmlBaseOperation::isJavaFinal() {
   read_if_needed_();
@@ -304,6 +362,200 @@ bool UmlBaseOperation::set_JavaNameSpec(const char * s) {
 }
 #endif
 
+#ifdef WITHJAVA
+bool UmlBaseOperation::javaGetSetFrozen() {
+  read_if_needed_();
+  return _java_get_set_frozen;
+}
+
+bool UmlBaseOperation::set_JavaGetSetFrozen(bool v) {
+  UmlCom::send_cmd(_identifier, setJavaFrozenCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _java_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
+#ifdef WITHJAVA
+bool UmlBaseOperation::javaContextualBodyIndent() {
+  read_if_needed_();
+  return _java_contextual_body_indent;
+}
+
+bool UmlBaseOperation::set_JavaContextualBodyIndent(bool v) {
+  UmlCom::send_cmd(_identifier, setJavaContextualBodyIndentCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _java_contextual_body_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
+#ifdef WITHPHP
+bool UmlBaseOperation::isPhpFinal() {
+  read_if_needed_();
+    
+  return _php_final;
+}
+
+bool UmlBaseOperation::set_isPhpFinal(bool y) {
+  bool b;
+  
+  if (set_it_(b, y, setPhpFinalCmd)) {
+    _php_final = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+const QCString & UmlBaseOperation::phpDef() {
+  return phpDecl();
+}
+
+bool UmlBaseOperation::set_PhpDef(const char * s) {
+  return set_PhpDecl(s);
+}
+
+QCString UmlBaseOperation::phpBody() {
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, phpBodyCmd);
+  return UmlCom::read_string();
+}
+
+bool UmlBaseOperation::set_PhpBody(const char * s) {
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, setPhpBodyCmd, s);
+  return UmlCom::read_bool();
+}
+
+const QCString & UmlBaseOperation::phpNameSpec() {
+  read_if_needed_();
+    
+  return _php_name_spec;
+}
+
+bool UmlBaseOperation::set_PhpNameSpec(const char * s) {
+  return set_it_(_php_name_spec, s, setPhpNameSpecCmd);
+}
+#endif
+
+#ifdef WITHPHP
+bool UmlBaseOperation::phpGetSetFrozen() {
+  read_if_needed_();
+  return _php_get_set_frozen;
+}
+
+bool UmlBaseOperation::set_PhpGetSetFrozen(bool v) {
+  UmlCom::send_cmd(_identifier, setPhpFrozenCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _php_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
+#ifdef WITHPHP
+bool UmlBaseOperation::phpContextualBodyIndent() {
+  read_if_needed_();
+  return _php_contextual_body_indent;
+}
+
+bool UmlBaseOperation::set_PhpContextualBodyIndent(bool v) {
+  UmlCom::send_cmd(_identifier, setPhpContextualBodyIndentCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _php_contextual_body_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
+#ifdef WITHPYTHON
+const QCString & UmlBaseOperation::pythonDef() {
+  return pythonDecl();
+}
+
+bool UmlBaseOperation::set_PythonDef(const char * s) {
+  return set_PythonDecl(s);
+}
+
+QCString UmlBaseOperation::pythonBody() {
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, pythonBodyCmd);
+  return UmlCom::read_string();
+}
+
+bool UmlBaseOperation::set_PythonBody(const char * s) {
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, setPythonBodyCmd, s);
+  return UmlCom::read_bool();
+}
+
+const QCString & UmlBaseOperation::pythonNameSpec() {
+  read_if_needed_();
+    
+  return _python_name_spec;
+}
+
+bool UmlBaseOperation::set_PythonNameSpec(const char * s) {
+  return set_it_(_python_name_spec, s, setPythonNameSpecCmd);
+}
+#endif
+
+#ifdef WITHPYTHON
+bool UmlBaseOperation::pythonGetSetFrozen() {
+  read_if_needed_();
+  return _python_get_set_frozen;
+}
+
+bool UmlBaseOperation::set_PythonGetSetFrozen(bool v) {
+  UmlCom::send_cmd(_identifier, setPythonFrozenCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _python_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
+#ifdef WITHPYTHON
+bool UmlBaseOperation::pythonContextualBodyIndent() {
+  read_if_needed_();
+  return _python_contextual_body_indent;
+}
+
+bool UmlBaseOperation::set_PythonContextualBodyIndent(bool v) {
+  UmlCom::send_cmd(_identifier, setPythonContextualBodyIndentCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _python_contextual_body_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
+#ifdef WITHPYTHON
+const QCString & UmlBaseOperation::pythonDecorators() {
+  read_if_needed_();
+  return _python_decorators;
+}
+
+bool UmlBaseOperation::set_PythonDecorators(const char * v) {
+  return set_it_(_python_decorators, v, setPythonDecoratorsCmd);
+}
+#endif
+
 #ifdef WITHIDL
 bool UmlBaseOperation::isIdlOneway() {
   read_if_needed_();
@@ -333,6 +585,23 @@ bool UmlBaseOperation::set_IdlNameSpec(const char * s) {
 }
 #endif
 
+#ifdef WITHIDL
+bool UmlBaseOperation::idlGetSetFrozen() {
+  read_if_needed_();
+  return _idl_get_set_frozen;
+}
+
+bool UmlBaseOperation::set_IdlGetSetFrozen(bool v) {
+  UmlCom::send_cmd(_identifier, setIdlFrozenCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _idl_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+#endif
+
 void UmlBaseOperation::unload(bool rec, bool del) {
   _return_type.explicit_type = 0;
   _params.clear();
@@ -343,6 +612,13 @@ void UmlBaseOperation::unload(bool rec, bool del) {
 #endif
 #ifdef WITHJAVA
   _java_name_spec = 0;
+#endif
+#ifdef WITHPHP
+  _php_name_spec = 0;
+#endif
+#ifdef WITHPYTHON
+  _python_name_spec = 0;
+  _python_decorators = 0;
 #endif
 #ifdef WITHIDL
   _idl_name_spec = 0;
@@ -356,6 +632,8 @@ void UmlBaseOperation::read_uml_() {
   if (_return_type.type == 0)
     _return_type.explicit_type = UmlCom::read_string();
   _abstract = UmlCom::read_bool();
+  
+  _force_body_generation = UmlCom::read_bool();
   
   unsigned n;
   
@@ -392,6 +670,8 @@ void UmlBaseOperation::read_cpp_() {
   _cpp_inline = UmlCom::read_bool();
   _cpp_def = UmlCom::read_string();
   _cpp_name_spec = UmlCom::read_string();
+  _cpp_get_set_frozen = UmlCom::read_bool();
+  _cpp_contextual_body_indent = UmlCom::read_bool();
 }
 #endif
 
@@ -401,6 +681,28 @@ void UmlBaseOperation::read_java_() {
   _java_final = UmlCom::read_bool();
   _java_synchronized = UmlCom::read_bool();
   _java_name_spec = UmlCom::read_string();
+  _java_get_set_frozen = UmlCom::read_bool();
+  _java_contextual_body_indent = UmlCom::read_bool();
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBaseOperation::read_php_() {
+  UmlBaseClassMember::read_php_();
+  _php_final = UmlCom::read_bool();
+  _php_name_spec = UmlCom::read_string();
+  _php_get_set_frozen = UmlCom::read_bool();
+  _php_contextual_body_indent = UmlCom::read_bool();
+}
+#endif
+
+#ifdef WITHPYTHON
+void UmlBaseOperation::read_python_() {
+  UmlBaseClassMember::read_python_();
+  _python_decorators = UmlCom::read_string();
+  _python_name_spec = UmlCom::read_string();
+  _python_get_set_frozen = UmlCom::read_bool();
+  _python_contextual_body_indent = UmlCom::read_bool();
 }
 #endif
 
@@ -409,6 +711,7 @@ void UmlBaseOperation::read_idl_() {
   UmlBaseClassMember::read_idl_();
   _idl_oneway = UmlCom::read_bool();
   _idl_name_spec = UmlCom::read_string();
+  _idl_get_set_frozen = UmlCom::read_bool();
 }
 #endif
 

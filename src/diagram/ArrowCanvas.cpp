@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,6 +48,7 @@
 #include "UmlPixmap.h"
 #include "ToolCom.h"
 #include "strutil.h"
+#include "translate.h"
 
 #include "geometry_hv.xpm"
 #include "geometry_vh.xpm"
@@ -710,7 +711,7 @@ void ArrowCanvas::remove(bool) {
 	}
   
 	if (a && !a->end->isSelected() && !a->end->get_bn()->deletedp()) {
-	  msg_warning("Bouml", "<i>Draw all relations</i> forced to <i>no</i>");
+	  msg_warning("Bouml", TR("<i>Draw all relations</i> forced to <i>no</i>"));
 	  the_canvas()->dont_draw_all_relations();
 	}
       }
@@ -739,12 +740,12 @@ bool ArrowCanvas::contains(int, int) const {
   return FALSE;
 }
 
-const char * ArrowCanvas::may_start(UmlCode & l) const {
-  return (l == UmlAnchor) ? 0 : "a relation can't have a relation";
+QString ArrowCanvas::may_start(UmlCode & l) const {
+  return (l == UmlAnchor) ? 0 : TR("a relation can't have a relation");
 }
 
-const char * ArrowCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
+QString ArrowCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  return (l == UmlAnchor) ? dest->may_start(l) : TR("illegal");
 }
 
 void ArrowCanvas::connexion(UmlCode action, DiagramItem * dest,
@@ -767,7 +768,9 @@ bool ArrowCanvas::edit(const QStringList & defaults,
   if (pstereotype)
     st = pstereotype->stereotype->get_name();
   
-  StereotypeDialog d(defaults, st, la);
+  StereotypeDialog d(defaults, st, la,
+		     TR("stereotype/label dialog"),
+		     TR("label : "));
   
   d.raise();
   if (d.exec() == QDialog::Accepted) {
@@ -871,31 +874,31 @@ void ArrowCanvas::menu(const QPoint&) {
     
   m.insertItem(new MenuTitle(((plabel == 0) ||
 			      plabel->label->get_name().isEmpty())
-			     ? QString("line") : plabel->label->get_name(),
+			     ? QString(TR("line")) : plabel->label->get_name(),
 			     m.font()), -1);
   if (IsaRelation(itstype)) {
     m.insertSeparator();
-    m.insertItem("Edit",1);
+    m.insertItem(TR("Edit"),1);
   }
   
   if (pstereotype || plabel) {
     m.insertSeparator();
-    m.insertItem("Select stereotype and label", 2);
-    m.insertItem("Default stereotype and label position", 3);
+    m.insertItem(TR("Select stereotype and label"), 2);
+    m.insertItem(TR("Default stereotype and label position"), 3);
     if (plabel && (label == 0))
-      m.insertItem("Attach label to this segment", 4);
+      m.insertItem(TR("Attach label to this segment"), 4);
     if (pstereotype && (stereotype == 0))
-      m.insertItem("Attach stereotype to this segment", 5);
+      m.insertItem(TR("Attach stereotype to this segment"), 5);
   }
   
   if (get_start() != get_end()) {
     m.insertSeparator();
     init_geometry_menu(geo, 10);
-    m.insertItem("Geometry (Ctrl+l)", &geo);
+    m.insertItem(TR("Geometry (Ctrl+l)"), &geo);
   }
   
   m.insertSeparator();
-  m.insertItem("Remove from view", 6);
+  m.insertItem(TR("Remove from view"), 6);
   
   int choice = m.exec(QCursor::pos());
   
@@ -957,7 +960,7 @@ void ArrowCanvas::init_geometry_menu(QPopupMenu & m, int first) {
 
   m.setCheckable(TRUE);
   
-  m.insertItem("None", first);
+  m.insertItem(TR("None"), first);
   m.insertItem(hv, first + HVGeometry);
   m.insertItem(vh, first + VHGeometry);
   m.insertItem(hvh, first + HVHGeometry);
@@ -984,9 +987,9 @@ void ArrowCanvas::init_geometry_menu(QPopupMenu & m, int first) {
   }
   
   if (decenter_begin >= 0)
-    m.insertItem("Recenter begin", first + RecenterBegin);
+    m.insertItem(TR("Recenter begin"), first + RecenterBegin);
   if (decenter_end >= 0)
-    m.insertItem("Recenter end", first + RecenterEnd);
+    m.insertItem(TR("Recenter end"), first + RecenterEnd);
 }
 
 DiagramItem * ArrowCanvas::get_start() const {
@@ -1664,9 +1667,10 @@ const ArrowCanvas * ArrowCanvas::save_lines(QTextStream & st, bool with_label,
   st << "from ref " << begin->get_ident();
   
   const ArrowCanvas * ar = this;
+  QString zs;
   
   while (ar->end->type() == UmlArrowPoint) {
-    st << " z " << z();
+    st << " z " << zs.setNum(z());
     if (with_label && ar->label) {
       st << ' ';
       ar->label->save(st, FALSE, warning);
@@ -1683,7 +1687,7 @@ const ArrowCanvas * ArrowCanvas::save_lines(QTextStream & st, bool with_label,
     st << "line " << ar->get_ident();
   }
   
-  st << " z " << z();
+  st << " z " << zs.setNum(z());
   if (with_label && ar->label) {
     st << ' ';
     ar->label->save(st, FALSE, warning);
@@ -1916,6 +1920,18 @@ void ArrowCanvas::history_hide() {
 }
 
 //
+
+QList<ArrowCanvas> ArrowCanvas::RelsToDel;
+
+void ArrowCanvas::post_load()
+{
+  while (! RelsToDel.isEmpty()) {
+    ArrowCanvas * ar = RelsToDel.take(0);
+    
+    if (ar->visible())
+      ar->delete_it();
+  }
+}
 
 // to remove redondant relation made by release 2.22
 QList<ArrowCanvas> ArrowCanvas::RelsToCheck;

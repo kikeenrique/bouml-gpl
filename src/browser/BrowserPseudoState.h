@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -61,8 +61,8 @@ class BrowserPseudoState : public BrowserNode, public Labeled<BrowserPseudoState
     static BrowserPseudoState * get_pseudostate(BrowserNode * future_parent, UmlCode c);
     virtual BasicData * add_relation(UmlCode, BrowserNode * end);
     BrowserTransition * add_transition(BrowserNode * end);
-    const char *may_start() const;
-    const char * may_connect(const BrowserNode * dest) const;
+    QString may_start() const;
+    QString may_connect(const BrowserNode * dest) const;
     
     virtual const QPixmap* pixmap (int) const;
 
@@ -83,6 +83,7 @@ class BrowserPseudoState : public BrowserNode, public Labeled<BrowserPseudoState
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
+    virtual void prepare_update_lib() const;
     
     virtual bool tool_cmd(ToolCom * com, const char * args);
     

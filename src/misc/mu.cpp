@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -36,6 +36,7 @@
 #include "BrowserView.h"
 #include "DialogUtil.h"
 #include "EnvDialog.h"
+#include "translate.h"
 
 static int Uid = -1;
 static int RootPermission;	// old Uid or 0
@@ -58,10 +59,10 @@ int user_id()
     
     if (dir.exists("all.lock")) {
       msg_critical("Bouml", 
-			    "\
+		   TR("\
 The project is open in read-only mode because it is\n\
 under the control of 'Project control' or 'Project merge'\n\
-(the directory '" + dir.absFilePath("all.lock") + "' exists)");
+(the directory '%1' exists", dir.absFilePath("all.lock")));
       force_read_only(TRUE);
     }
     else
@@ -78,20 +79,19 @@ under the control of 'Project control' or 'Project merge'\n\
       
       if (! dir.mkdir(fn)) {
 	if (!dir.exists(fn)) {
-	  msg_critical("User Own Identifier", "Can't create directory "
-		       + dir.absFilePath(fn) +
-		       ",\nthe project is open in read-only mode");
+	  msg_critical(TR("User Own Identifier"),
+		       TR("Can't create directory '%1',\nthe project is open in read-only mode",
+			  dir.absFilePath(fn)));
 	  force_read_only(TRUE);
 	}
 	else {
-	  msg_critical("User Own Identifier", 
-		       "\
+	  msg_critical(TR("User Own Identifier"), 
+		       TR("\
 It seems that you are already editing the project.\n\n\
 If you're SURE that this is not the case and\n\
 another user does not have an identifier equal\n\
-to yours, remove the directory\n"
-		       + dir.absFilePath(fn) + "\n\
-an restart BOUML");
+to yours, remove the directory\n%1\nan restart BOUML",
+			  dir.absFilePath(fn)));
 	  exit(1);
 	}
       }

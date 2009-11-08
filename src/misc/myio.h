@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include "UmlEnum.h"
 
-#define FILEFORMAT 66
+#define FILEFORMAT 70
 
 class QDir;
 class QFile;
@@ -118,6 +118,8 @@ extern void unknown_keyword(const char * k);
 extern void wrong_keyword(const char * k, const char * expected);
 extern void unknown_ref(const char * kind, int id);
 
+// ifdef save as int to bypass bug in << float in qt 3.3.3
+#undef FORCE_INT_COORD
 extern void save_xy(QTextStream & st, const QCanvasItem * c, const char * s);
 extern void save_xyz(QTextStream & st, const QCanvasItem * c, const char * s);
 extern void save_xyzwh(QTextStream & st, const QCanvasRectangle * c, const char * s);

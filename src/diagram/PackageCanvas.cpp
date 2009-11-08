@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@
 #include "MenuTitle.h"
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 PackageCanvas::PackageCanvas(BrowserNode * bn, UmlCanvas * canvas,
 			     int x, int y, int id)
@@ -426,36 +427,36 @@ void PackageCanvas::menu(const QPoint&) {
   
   m.insertItem(new MenuTitle(browser_node->get_name(), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 13);
-  m.insertItem("Go down", 14);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 13);
+  m.insertItem(TR("Go down"), 14);
   m.insertSeparator();
-  m.insertItem("Add related elements", 10);
+  m.insertItem(TR("Add related elements"), 10);
   m.insertSeparator();
-  m.insertItem("Edit", 2);
+  m.insertItem(TR("Edit"), 2);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 3);
+  m.insertItem(TR("Edit drawing settings"), 3);
   m.insertSeparator();
-  m.insertItem("Select in browser", 4);
+  m.insertItem(TR("Select in browser"), 4);
   if (linked())
-    m.insertItem("Select linked items", 5);
+    m.insertItem(TR("Select linked items"), 5);
   m.insertSeparator();
   if (browser_node->is_writable()) {
     if (browser_node->get_associated() !=
 	(BrowserNode *) the_canvas()->browser_diagram())
-      m.insertItem("Set associated diagram", 6);
+      m.insertItem(TR("Set associated diagram"), 6);
     
     if (browser_node->get_associated())
-      m.insertItem("Remove diagram association",9);
+      m.insertItem(TR("Remove diagram association"),9);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view", 7);
+  m.insertItem(TR("Remove from view"), 7);
   if (browser_node->is_writable())
-    m.insertItem("Delete from model", 8);
+    m.insertItem(TR("Delete from model"), 8);
   m.insertSeparator();
   if (Tool::menu_insert(&toolm, UmlPackage, 20))
-    m.insertItem("Tool", &toolm);
+    m.insertItem(TR("Tool"), &toolm);
 
   int rank = m.exec(QCursor::pos());
   
@@ -508,7 +509,7 @@ void PackageCanvas::menu(const QPoint&) {
     return;
   case 10:
     ((UmlCanvas *) canvas())->get_view()
-      ->add_related_elements(this, "package", TRUE, FALSE);
+      ->add_related_elements(this, TR("package"), TRUE, FALSE);
     return;
   default:
     if (rank >= 20)
@@ -538,7 +539,7 @@ void PackageCanvas::apply_shortcut(QString s) {
   }
   else if (s == "Add related elements") {
     ((UmlCanvas *) canvas())->get_view()
-      ->add_related_elements(this, "package", TRUE, FALSE);
+      ->add_related_elements(this, TR("package"), TRUE, FALSE);
     return;
   }
   else {
@@ -551,15 +552,15 @@ void PackageCanvas::apply_shortcut(QString s) {
 }
 
 void PackageCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st(3);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(3);
+  ColorSpecVector co(1);
   
-  st[0].set("name in tab", &name_in_tab);
-  st[1].set("show context", &show_context_mode);
-  st[2].set("show stereotype \nproperties", &show_stereotype_properties);
-  co[0].set("Package color", &itscolor);
+  st[0].set(TR("name in tab"), &name_in_tab);
+  st[1].set(TR("show context"), &show_context_mode);
+  st[2].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
+  co[0].set(TR("Package color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -571,32 +572,32 @@ bool PackageCanvas::has_drawing_settings() const {
 }
 
 void PackageCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<StateSpec> st(3);
-  QArray<ColorSpec> co(1);
+  StateSpecVector st(3);
+  ColorSpecVector co(1);
   Uml3States name_in_tab;
   Uml3States show_stereotype_properties;
   ShowContextMode show_context_mode;
   UmlColor itscolor;
   
-  st[0].set("name in tab", &name_in_tab);
-  st[1].set("show context", &show_context_mode);
-  st[2].set("show stereotype \nproperties", &show_stereotype_properties);
-  co[0].set("Package color", &itscolor);
+  st[0].set(TR("name in tab"), &name_in_tab);
+  st[1].set(TR("show context"), &show_context_mode);
+  st[2].set(TR("show stereotype \nproperties"), &show_stereotype_properties);
+  co[0].set(TR("Package color"), &itscolor);
   
-  SettingsDialog dialog(&st, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(&st, &co, FALSE, TRUE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
-      if (st[0].name != 0)
+      if (!st[0].name.isEmpty())
 	((PackageCanvas *) it.current())->name_in_tab = name_in_tab;
-      if (st[1].name != 0)
+      if (!st[1].name.isEmpty())
 	((PackageCanvas *) it.current())->show_context_mode = show_context_mode;
-      if (st[2].name != 0)
+      if (!st[2].name.isEmpty())
 	((PackageCanvas *) it.current())->show_stereotype_properties = show_stereotype_properties;
-      if (co[0].name != 0)
+      if (!co[0].name.isEmpty())
 	((PackageCanvas *) it.current())->itscolor = itscolor;
       ((PackageCanvas *) it.current())->modified();	// call package_modified()
     }
@@ -614,27 +615,27 @@ bool PackageCanvas::get_show_stereotype_properties() const {
   }
 }
 
-const char * PackageCanvas::may_start(UmlCode & l) const {
+QString PackageCanvas::may_start(UmlCode & l) const {
   switch (l) {
   case UmlDependency:
     l = UmlDependOn;
   case UmlDependOn:
-    return (browser_node->is_writable()) ? 0 : "read only";
+    return (browser_node->is_writable()) ? 0 : TR("read only");
   case UmlGeneralisation:
     l = UmlInherit;
-    return (browser_node->is_writable()) ? 0 : "read only";
+    return (browser_node->is_writable()) ? 0 : TR("read only");
   case UmlAnchor:
     return 0;
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
-const char * PackageCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+QString PackageCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
   if (l == UmlAnchor) 
     return dest->may_start(l);
   else if(dest->get_bn() == 0)
-    return "illegal";
+    return TR("illegal");
   else
     return ((BrowserPackage *) browser_node)->may_connect(l, dest->get_bn());
 }
@@ -660,8 +661,8 @@ aCorner PackageCanvas::on_resize_point(const QPoint & p) {
     : ::on_resize_point(p, rect());
 }
 
-void PackageCanvas::resize(aCorner c, int dx, int dy) {
-  DiagramCanvas::resize(c, dx, dy, min_width(), min_height());
+void PackageCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
+  DiagramCanvas::resize(c, dx, dy, o, min_width(), min_height(), TRUE);
 }
 
 void PackageCanvas::prepare_for_move(bool on_resize) {

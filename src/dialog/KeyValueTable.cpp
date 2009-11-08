@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -38,14 +38,15 @@
 #include "ProfiledStereotypes.h"
 #include "strutil.h"
 #include "DialogUtil.h"
+#include "translate.h"
 
 KeyValuesTable::KeyValuesTable(HaveKeyValueData * hv, QWidget * parent, bool visit)
     : StringTable(((hv == 0) ? 0 : hv->get_n_keys()) + ((visit) ? 0 : 1),
 		  (visit) ? 2 : 3, parent, visit) {
-  horizontalHeader()->setLabel(0, "Key");
-  horizontalHeader()->setLabel(1, "Value");
+  horizontalHeader()->setLabel(0, TR("Key"));
+  horizontalHeader()->setLabel(1, TR("Value"));
   if (! visit)
-    horizontalHeader()->setLabel(2, "do");
+    horizontalHeader()->setLabel(2, TR("do"));
   
   int index;
   int sup = (hv == 0) ? 0 : hv->get_n_keys();
@@ -136,7 +137,7 @@ bool KeyValuesTable::check_unique() {
       const QString & s = text(index, 0);
       
       if (l.findIndex(s) != -1) {
-	msg_critical("Error", "key '" + s + "' used several times");
+	msg_critical(TR("Error"), TR("key '%1' used several times", s));
 	return FALSE;
       }
       else

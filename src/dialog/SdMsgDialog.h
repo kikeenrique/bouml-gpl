@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,6 +46,7 @@ class SdMsgDialog : public QDialog {
     QStringList list;
     QValueList<const OperationData *> opers;
     QComboBox * edoper;
+    QComboBox * edst;
     MultiLineEdit * edargs;
     QRadioButton * synchronous_rb;
     QRadioButton * asynchronous_rb;
@@ -53,7 +54,7 @@ class SdMsgDialog : public QDialog {
     static QSize previous_size;
   
   public:
-    SdMsgDialog(SdMsgBaseCanvas * m);
+    SdMsgDialog(SdMsgBaseCanvas * m, const QStringList &);
     virtual ~SdMsgDialog();
   
   protected slots:

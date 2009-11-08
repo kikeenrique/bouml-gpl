@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -31,7 +31,9 @@
 #include <qvbox.h>
 #include <qlabel.h>
 #include <qcombobox.h> 
+#include <qcheckbox.h>
 #include <qpushbutton.h> 
+#include <qbuttongroup.h>
 #include <qpopupmenu.h> 
 #include <qcursor.h> 
 
@@ -48,6 +50,7 @@
 #include "BodyDialog.h"
 #include "GenerationSettings.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 QSize StateDialog::previous_size;
 
@@ -55,14 +58,16 @@ StateDialog::StateDialog(StateData * d)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), state(d) {
   d->browser_node->edit_start();
   
-  if (d->browser_node->is_writable())
-    setCancelButton();
+  if (d->browser_node->is_writable()) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
 
-  setCaption("State dialog");
+  setCaption(TR("State dialog"));
   visit = !hasOkButton();  
 
   BrowserNode * bn = state->browser_node;
@@ -77,24 +82,24 @@ StateDialog::StateDialog(StateData * d)
   grid->setMargin(5);
   grid->setSpacing(5);
   
-  new QLabel("name : ", grid);
+  new QLabel(TR("name : "), grid);
   edname = new LineEdit(bn->get_name(), grid);
   edname->setReadOnly(visit);
     
-  new QLabel("stereotype : ", grid);
+  new QLabel(TR("stereotype : "), grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(state->get_stereotype()));
   if (!visit) {
     edstereotype->insertStringList(BrowserState::default_stereotypes());
     edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlState));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->setAutoCompletion(completion());
   }
   edstereotype->setCurrentItem(0);
   QSizePolicy sp = edstereotype->sizePolicy();
   sp.setHorData(QSizePolicy::Expanding);
   edstereotype->setSizePolicy(sp);
     
-  connect(new SmallPushButton("specification :", grid), SIGNAL(clicked()),
+  connect(new SmallPushButton(TR("specification :"), grid), SIGNAL(clicked()),
 	  this, SLOT(menu_specification()));    
   edspecification = new QComboBox(FALSE, grid);
   edspecification->setSizePolicy(sp);
@@ -106,7 +111,7 @@ StateDialog::StateDialog(StateData * d)
   }
   else {
     edspecification->insertItem("");
-    edspecification->setAutoCompletion(TRUE);
+    edspecification->setAutoCompletion(completion());
     BrowserOperation::instances(opers);
     opers.full_names(list);
     edspecification->insertStringList(list);
@@ -115,10 +120,19 @@ StateDialog::StateDialog(StateData * d)
 				    : opers.findRef(state->get_specification()) + 1);
   }
   
+  new QLabel(grid);
+  QButtonGroup * bg = 
+    new QButtonGroup(1, Qt::Horizontal, QString::null, grid);
+  
+  active_cb = new QCheckBox(TR("active"), bg);
+  if (state->is_active)
+    active_cb->setChecked(TRUE);
+  active_cb->setDisabled(visit);
+  
   QVBox * vtab = new QVBox(grid);
-  new QLabel("description :", vtab);
+  new QLabel(TR("description :"), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
@@ -147,7 +161,7 @@ StateDialog::StateDialog(StateData * d)
   grid->setSpacing(5);
   
   kvtable = new KeyValuesTable(bn, grid, visit);
-  addTab(grid, "Properties");
+  addTab(grid, TR("Properties"));
   
   //
     
@@ -184,13 +198,13 @@ void StateDialog::polish() {
 void StateDialog::menu_specification() {
   QPopupMenu m(0);
 
-  m.insertItem("Choose", -1);
+  m.insertItem(TR("Choose"), -1);
   m.insertSeparator();
   
   int index = list.findIndex(edspecification->currentText().stripWhiteSpace());
   
   if (index != -1)
-    m.insertItem("Select in browser", 0);
+    m.insertItem(TR("Select in browser"), 0);
   
   BrowserNode * bn = 0;
   
@@ -198,7 +212,7 @@ void StateDialog::menu_specification() {
     bn = BrowserView::selected_item();
     
     if ((bn != 0) && (bn->get_type() == UmlOperation) && !bn->deletedp())
-      m.insertItem("Choose operation selected in browser", 1);
+      m.insertItem(TR("Choose operation selected in browser"), 1);
     else
       bn = 0;
   }
@@ -247,9 +261,9 @@ void StateDialog::init_tab(QWidget *& tab, StDialog & d, StateBehavior & st,
   grid->setSpacing(5);
   
   vtab = new QVBox(grid);
-  new QLabel("Entry\nbehavior : ", vtab);
+  new QLabel(TR("Entry\nbehavior : "), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()), this, sl_enbeh);
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()), this, sl_enbeh);
   d.edentry = new MultiLineEdit(grid);
 
   QFont font = d.edentry->font();
@@ -263,9 +277,9 @@ void StateDialog::init_tab(QWidget *& tab, StDialog & d, StateBehavior & st,
     d.edentry->setReadOnly(TRUE);
   
   vtab = new QVBox(grid);
-  new QLabel("Exit\nbehavior : ", vtab);
+  new QLabel(TR("Exit\nbehavior : "), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()), this, sl_exbeh);
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()), this, sl_exbeh);
   d.edexit = new MultiLineEdit(grid);
   d.edexit->setFont(font);
   d.edexit->setText(st.on_exit);
@@ -273,9 +287,9 @@ void StateDialog::init_tab(QWidget *& tab, StDialog & d, StateBehavior & st,
     d.edexit->setReadOnly(TRUE);
   
   vtab = new QVBox(grid);
-  new QLabel("Do\nbehavior : ", vtab);
+  new QLabel(TR("Do\nbehavior : "), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()), this, sl_beh);
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()), this, sl_beh);
   d.edactivity = new MultiLineEdit(grid);
   d.edactivity->setFont(font);
   d.edactivity->setText(st.do_activity);
@@ -333,7 +347,7 @@ void StateDialog::accept() {
       ((BrowserNode *) bn->parent())->wrong_child_name(s, UmlState,
 						       bn->allow_spaces(),
 						       bn->allow_empty()))
-    msg_critical("Error", s + "\n\nillegal name or already used");
+    msg_critical(TR("Error"), s + TR("\n\nillegal name or already used"));
   else {  
     bn->set_name(s);
     
@@ -343,6 +357,7 @@ void StateDialog::accept() {
     state->set_specification((index != -1)
 			     ? (BrowserOperation *) opers.at(index)
 			     : 0);
+    state->is_active = active_cb->isChecked();
       
     uml.accept(state->uml);  
     cpp.accept(state->cpp);  

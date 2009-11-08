@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -1128,6 +1128,99 @@ void add_default_initoper(UmlClass * pythonsettings)
 
   UmlClass::get("PythonSettingsCmd", 0)
     ->add_enum_item("setPythonInitOperationDefCmd");
+  
+  //
+
+  UmlCom::set_user_id(uid);
+}
+
+//
+
+void add_operation3(UmlClass * pythonsettings)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+
+  //
+
+  UmlCom::trace("<b>add Python 3 operation management</b><br>");
+  
+  UmlOperation * op = pythonsettings->get_operation("isPython_2_2");
+  UmlOperation * op3
+    = UmlOperation::create(pythonsettings, "isPython_3_operation");
+  
+  op3->set_isClassMember(TRUE);
+  op3->set_ReturnType(op->returnType());
+  op3->set_CppDecl(op->cppDecl());
+  op3->set_CppDef(op->cppDef());
+  op3->set_JavaDef(op->javaDef());
+  op3->set_CppBody("  read_if_needed_();\n"
+		   "\n"
+		   "  return _operation_3;\n");
+  
+  op3->set_JavaBody("  read_if_needed_();\n"
+		    "\n"
+		    "  return _operation_3;\n");
+  op3->set_Description(" returns if operations follow Python 3 (pep-3107)");
+
+  op = pythonsettings->get_operation("set_IsPython_2_2");
+  op3->moveAfter(op);
+    
+  UmlOperation * setop3
+    = UmlOperation::create(pythonsettings, "set_IsPython_3_operation");
+  
+  setop3->addParameter(0, op->params()[0]);
+  setop3->set_isClassMember(TRUE);
+  setop3->set_ReturnType(op->returnType());
+  setop3->set_CppDecl(op->cppDecl());
+  setop3->set_CppDef(op->cppDef());
+  setop3->set_JavaDef(op->javaDef());
+  setop3->set_CppBody("  UmlCom::send_cmd(pythonSettingsCmd, setPython3OperationCmd, y);\n"
+		      "  if (UmlCom::read_bool()) {\n"
+		      "    _operation_3 = y;\n"
+		      "    return TRUE;\n"
+		      "  }\n"
+		      "  else\n"
+		      "    return FALSE;\n");
+  setop3->set_JavaBody("  UmlCom.send_cmd(CmdFamily.pythonSettingsCmd, PythonSettingsCmd._setPython3OperationCmd, (y) ? (byte) 1 : (byte) 0);\n"
+		       "  UmlCom.check();\n"
+		       "  \n"
+		       "  _operation_3 = y;\n");
+  setop3->set_Description(" set if operations follow Python 3 (pep-3107)\n"
+			  "\n"
+			  " On error : return FALSE in C++, produce a RuntimeException in Java");
+  setop3->moveAfter(op3);
+  
+  //
+  
+  UmlAttribute * opdef = pythonsettings->get_attribute("_2_2");
+  UmlAttribute * op3def = UmlAttribute::create(pythonsettings, "_operation_3");
+
+  op3def->set_isClassMember(TRUE);
+  op3def->moveAfter(opdef);
+  op3def->set_CppDecl(opdef->cppDecl());
+  op3def->set_JavaDecl(opdef->javaDecl());
+  op3def->set_Type(opdef->type());
+  
+  //
+  
+  QString s;
+  
+  op = pythonsettings->get_operation("read_");
+  
+  s = op->cppBody();
+  s += "  _operation_3 = UmlCom::read_bool();\n";
+  op->set_CppBody(s);
+  
+  s = op->javaBody();
+  s += "  _operation_3 = UmlCom.read_bool();\n";
+  op->set_JavaBody(s);
+
+  //
+
+  UmlClass::get("PythonSettingsCmd", 0)
+    ->add_enum_item("setPython3OperationCmd");
   
   //
 

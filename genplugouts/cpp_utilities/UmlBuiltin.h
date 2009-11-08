@@ -19,6 +19,8 @@ struct UmlBuiltin {
     QCString cpp_inout;
 #endif
 
+    QCString cpp_return;
+
 #ifdef WITHJAVA
     QCString java;
 #endif

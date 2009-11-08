@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,6 +44,7 @@
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserComponentView> BrowserComponentView::all(__FILE__);
 QStringList BrowserComponentView::its_default_stereotypes;	// unicode
@@ -102,7 +103,7 @@ BrowserComponentView* BrowserComponentView::add_component_view(BrowserNode * fut
 {
   QString name;
   
-  if (future_parent->enter_child_name(name, "enter component view's name : ",
+  if (future_parent->enter_child_name(name, TR("enter component view's name : "),
 				      UmlComponentView, TRUE, FALSE))
     return new BrowserComponentView(name, future_parent);
   else
@@ -119,6 +120,15 @@ void BrowserComponentView::update_idmax_for_root()
 {
   all.update_idmax_for_root();
   BrowserComponent::update_idmax_for_root();
+}
+
+void BrowserComponentView::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
 }
 
 void BrowserComponentView::renumber(int phase) {
@@ -158,44 +168,44 @@ void BrowserComponentView::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
-      m.setWhatsThis(m.insertItem("New component diagram", 0),
-		     "to add a <em>component diagram</em>");
-      m.setWhatsThis(m.insertItem("New component", 1),
-		     "to add a <em>component</em>");
+      m.setWhatsThis(m.insertItem(TR("New component diagram"), 0),
+		     TR("to add a <i>component diagram</i>"));
+      m.setWhatsThis(m.insertItem(TR("New component"), 1),
+		     TR("to add a <i>component</i>"));
       m.insertSeparator();
     }
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("Edit", 3),
-		     "to edit the <em>component view</em>");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 3),
+		     TR("to edit the <i>component view</i>"));
       m.insertSeparator();
       if (!is_read_only) {
 	/*m.setWhatsThis(m.insertItem("Edit component settings", 4),
 		       "to set the sub components's settings");*/
-	m.setWhatsThis(m.insertItem("Edit drawing settings", 5),
-		       "to set how the sub <em>component diagrams</em>'s items must be drawn");
+	m.setWhatsThis(m.insertItem(TR("Edit drawing settings"), 5),
+		       TR("to set how the sub <i>component diagrams</i>'s items must be drawn"));
 	if (edition_number == 0) {
 	  m.insertSeparator();
-	  m.setWhatsThis(m.insertItem("Delete", 6),
-			 "to delete the <em>component view</em> and its sub items. \
-Note that you can undelete them after");
+	  m.setWhatsThis(m.insertItem(TR("Delete"), 6),
+			 TR("to delete the <i>component view</i> and its sub items. \
+Note that you can undelete them after"));
 	}
       }
     }
-    mark_menu(m, "component view", 90);
+    mark_menu(m, TR("component view"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 7),
-		   "undelete the <em>component view</em>. \
-Do not undelete its sub items");
-    m.setWhatsThis(m.insertItem("Undelete recursively", 8),
-		   "undelete the <em>component view</em> and its sub items");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 7),
+		   TR("undelete the <i>component view</i>. \
+Do not undelete its sub items"));
+    m.setWhatsThis(m.insertItem(TR("Undelete recursively"), 8),
+		   TR("undelete the <i>component view</i> and its sub items"));
   }
   
   exec_menu_choice(m.exec(QCursor::pos()));
@@ -221,7 +231,7 @@ void BrowserComponentView::exec_menu_choice(int rank) {
     }
     break;
   case 3:
-    edit("Component view", its_default_stereotypes);
+    edit(TR("Component view"), its_default_stereotypes);
     return;
   /*case 4:
     if (! component_settings.edit(UmlComponentView))
@@ -229,17 +239,17 @@ void BrowserComponentView::exec_menu_choice(int rank) {
     break;*/
   case 5:
     {
-      QArray<StateSpec> st;
-      QArray<ColorSpec> co(4);
+      StateSpecVector st;
+      ColorSpecVector co(4);
       
       componentdiagram_settings.complete(st, FALSE);
       
-      co[0].set("component color", &component_color);
-      co[1].set("note color", &note_color);
-      co[2].set("package color", &package_color);
-      co[3].set("fragment color", &fragment_color);
+      co[0].set(TR("component color"), &component_color);
+      co[1].set(TR("note color"), &note_color);
+      co[2].set(TR("package color"), &package_color);
+      co[3].set(TR("fragment color"), &fragment_color);
 
-      SettingsDialog dialog(&st, &co, FALSE, FALSE);
+      SettingsDialog dialog(&st, &co, FALSE);
       
       dialog.raise();
       if (dialog.exec() != QDialog::Accepted)
@@ -309,7 +319,7 @@ void BrowserComponentView::apply_shortcut(QString s) {
 
 void BrowserComponentView::open(bool) {
   if (!is_edited)
-    edit("Component view", its_default_stereotypes);
+    edit(TR("Component view"), its_default_stereotypes);
 }
 
 UmlCode BrowserComponentView::get_type() const {
@@ -481,7 +491,7 @@ void BrowserComponentView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
       }
     }
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -561,7 +571,7 @@ void BrowserComponentView::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -617,7 +627,7 @@ BrowserComponentView * BrowserComponentView::read(char * & st, char * k,
     read_color(st, "note_color", r->note_color, k);		// updates k
     read_color(st, "package_color", r->package_color, k);	// updates k
     read_color(st, "fragment_color", r->fragment_color, k);	// updates k
-    r->BrowserNode::read(st, k);				// updates k
+    r->BrowserNode::read(st, k, id);				// updates k
     
     if (strcmp(k, "end")) {
       while (BrowserComponentDiagram::read(st, k, r) ||

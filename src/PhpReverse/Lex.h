@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -56,12 +56,17 @@ class Lex {
     static QCString read_string();     
     static QCString read_character();    
     static QCString read_array_dim();  
+    static char bypass_operator(int c);  
+    static void bypass_string();     
+    static void bypass_character();    
+    static void bypass_array_dim();  
     
     static Context context;
     static QStack<Context> stack;
     
   public:
     static QCString read_word();
+    static char read_word_bis();
     static void unread_word(const char * s);
     static QCString get_comments();
     static QCString get_comments(QCString & co);

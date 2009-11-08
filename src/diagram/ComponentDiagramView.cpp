@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -49,6 +49,7 @@
 #include "myio.h"
 #include "BrowserView.h"
 #include "RelatedElementsDialog.h"
+#include "translate.h"
 
 ComponentDiagramView::ComponentDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
     : DiagramView(parent, canvas, id) {
@@ -103,7 +104,7 @@ static void get_drawn(DiagramItemList & items,
 void ComponentDiagramView::menu(const QPoint& p) {
   QPopupMenu m(0);
   
-  m.insertItem(new MenuTitle("Component diagram menu", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Component diagram menu"), m.font()), -1);
  
   if ((((UmlCanvas *) canvas())->browser_diagram())->is_writable()) {
     DiagramItemList items(canvas()->allItems());
@@ -112,7 +113,7 @@ void ComponentDiagramView::menu(const QPoint& p) {
     get_drawn(items, drawn);
     
     if (marked_not_yet_drawn(drawn))
-      m.insertItem("Add marked elements", 28);
+      m.insertItem(TR("Add marked elements"), 28);
     
     switch (default_menu(m, 30)) {
     case EDIT_DRAWING_SETTING_CMD:
@@ -207,7 +208,7 @@ void ComponentDiagramView::add_marked_elements(const QPoint& p,
   QApplication::restoreOverrideCursor();
 }
 
-void ComponentDiagramView::add_related_elements(DiagramItem *  di, const char * what,
+void ComponentDiagramView::add_related_elements(DiagramItem *  di, QString what,
 						bool inh, bool assoc) {
   BrowserNodeList l;
   RelatedElementsDialog dialog(di->get_bn(), what, inh, assoc, l);

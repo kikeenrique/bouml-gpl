@@ -21,9 +21,9 @@ class UmlBaseFormalParameter {
     // returns the default actual value
     const UmlTypeSpec & defaultValue() const { return _default_value; };
 
-  //  return the optional extend (Java)
-  const UmlTypeSpec & extend() { return _extends; };
-  friend class UmlBaseClass;
+    //  return the optional extend (Java)
+    const UmlTypeSpec & extend() const { return _extends; };
+    friend class UmlBaseClass;
 
   protected:
     QCString _name;

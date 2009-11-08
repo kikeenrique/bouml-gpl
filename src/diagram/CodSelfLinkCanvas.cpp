@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@
 #include "OperationData.h"
 #include "myio.h"
 #include "MenuTitle.h"
+#include "translate.h"
 
 CodSelfLinkCanvas::CodSelfLinkCanvas(UmlCanvas * canvas, CodObjCanvas * o,
 				     const QPoint & p, int id) 
@@ -240,16 +241,16 @@ void CodSelfLinkCanvas::open() {
 void CodSelfLinkCanvas::menu(const QPoint&) {
   QPopupMenu m;
   
-  m.insertItem(new MenuTitle("Self link", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Self link"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Add messages", 1);
+  m.insertItem(TR("Add messages"), 1);
   m.insertSeparator();
-  m.insertItem("Edit its messages", 2);
-  m.insertItem("Edit all the messages", 3);
+  m.insertItem(TR("Edit its messages"), 2);
+  m.insertItem(TR("Edit all the messages"), 3);
   m.insertSeparator();
-  m.insertItem("Edit drawing settings", 4);
+  m.insertItem(TR("Edit drawing settings"), 4);
   m.insertSeparator();
-  m.insertItem("Remove from view",5);
+  m.insertItem(TR("Remove from view"),5);
   
   switch (m.exec(QCursor::pos())) {
   case 1:
@@ -269,11 +270,11 @@ void CodSelfLinkCanvas::menu(const QPoint&) {
     return;
   case 4:
     {
-      QArray<StateSpec> st;
+      StateSpecVector st;
       
       settings.complete(st, TRUE);
 
-      SettingsDialog dialog(&st, 0, FALSE, TRUE);
+      SettingsDialog dialog(&st, 0, FALSE);
       
       if (dialog.exec() == QDialog::Accepted)
 	modified();
@@ -291,12 +292,12 @@ void CodSelfLinkCanvas::menu(const QPoint&) {
   package_modified();
 }
 
-const char * CodSelfLinkCanvas::may_start(UmlCode & l) const {
-  return (l == UmlAnchor) ? 0 : "illegal";
+QString CodSelfLinkCanvas::may_start(UmlCode & l) const {
+  return (l == UmlAnchor) ? 0 : TR("illegal");
 }
 
-const char * CodSelfLinkCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
+QString CodSelfLinkCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  return (l == UmlAnchor) ? dest->may_start(l) : TR("illegal");
 }
     
 bool CodSelfLinkCanvas::copyable() const {
@@ -320,9 +321,16 @@ void CodSelfLinkCanvas::save(QTextStream & st, bool ref, QString & warning) cons
     
     QPoint obj_center = obj->center();
     
+#ifdef FORCE_INT_COORD
     // note : << float bugged in Qt 3.3.3
     st << "xy " << (int) (delta_x + obj_center.x())
        << ' ' << (int) (delta_y + obj_center.y());
+#else
+    QString sx, sy;
+    
+    st << "xy " << sx.setNum(delta_x + obj_center.x())
+       << ' ' << sy.setNum(delta_y + obj_center.y());
+#endif
     
     settings.save(st);
     

@@ -123,6 +123,9 @@ void UmlClass::importIt(FileIn & in, Token & token, UmlItem * where)
   if (token.valueOf("isabstract") == "true")
     cl->set_isAbstract(TRUE);
 
+  if (token.valueOf("isactive") == "true")
+    cl->set_isActive(TRUE);
+
   if (! token.closed()) {
     QCString k = token.what();
     const char * kstr = k;

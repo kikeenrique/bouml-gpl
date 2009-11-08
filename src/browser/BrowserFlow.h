@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -81,6 +81,7 @@ class BrowserFlow : public BrowserNode, public Labeled<BrowserFlow> {
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
+    virtual void prepare_update_lib() const;
     
     virtual void referenced_by(QList<BrowserNode> & l, bool ondelete);
     static void compute_referenced_by(QList<BrowserNode> &, const BrowserNode *);

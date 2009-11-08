@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -186,7 +186,7 @@ class OperationDialog : public QTabDialog {
     void manage_java_type(unsigned rank, QString & s);
     void manage_java_exceptions(QString & s);
     void manage_php_type(unsigned rank, QString & s);
-    void manage_python_type(unsigned rank, QString & s);
+    void manage_python_type(unsigned rank, QString & s, bool in_params);
     void manage_idl_type(unsigned rank, QString & s);
     void manage_dir(unsigned rank, QString & s);
     void manage_idl_exceptions(QString & s);
@@ -458,7 +458,7 @@ class PythonParamsTable : public MyTable {
     ParamsTable * params;
     MultiLineEdit * edform;
   
-    static QString copied[5];		// copy/cut/paste
+    static QString copied[6];		// copy/cut/paste
   
   public:
     PythonParamsTable(QWidget * parent, ParamsTable * p, MultiLineEdit * f);

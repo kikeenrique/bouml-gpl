@@ -8,7 +8,7 @@ enum JavaSettingsCmd {
   getJavaUseDefaultsCmd,
   setJavaUseDefaultsCmd,
   setJavaTypeCmd,
-  setJavaRelationStereotypeCmd,
+  setJavaRelationAttributeStereotypeCmd,
   setJavaClassStereotypeCmd,
   setJavaImportCmd,
   setJavaRootdirCmd,
@@ -16,11 +16,11 @@ enum JavaSettingsCmd {
   setJavaSourceExtensionCmd,
   setJavaClassDeclCmd,
   setJavaExternalClassDeclCmd,
-  setJavaEnumDeclCmd,
+  setJavaEnumPatternDeclCmd,
   setJavaInterfaceDeclCmd,
   setJavaAttributeDeclCmd,
-  setJavaEnumItemDeclCmd,
-  setJavaEnumItemCaseCmd,
+  setJavaEnumPatternItemDeclCmd,
+  setJavaEnumPatternItemCaseCmd,
   setJavaRelationDeclCmd,
   setJavaOperationDefCmd,
   setJavaGetvisibilityCmd,
@@ -29,7 +29,11 @@ enum JavaSettingsCmd {
   setJavaIsGetFinalCmd,
   setJavaIsSetFinalCmd,
   setJavaSetVisibilityCmd,
-  setJavaIsSetParamFinalCmd
+  setJavaIsSetParamFinalCmd,
+  setJavaEnumDeclCmd,
+  setJavaEnumItemDeclCmd,
+  setJavaJavadocStyleCmd,
+  setJavaForcePackageGenCmd
 
 };
 #endif

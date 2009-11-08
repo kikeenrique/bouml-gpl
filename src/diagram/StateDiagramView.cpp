@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -52,6 +52,7 @@
 #include "MenuTitle.h"
 #include "DialogUtil.h"
 #include "myio.h"
+#include "translate.h"
 
 StateDiagramView::StateDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
     : DiagramView(parent, canvas, id) {
@@ -61,7 +62,7 @@ StateDiagramView::StateDiagramView(QWidget * parent, UmlCanvas * canvas, int id)
 void StateDiagramView::menu(const QPoint&) {
   QPopupMenu m(0);
   
-  m.insertItem(new MenuTitle("State diagram menu", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("State diagram menu"), m.font()), -1);
  
   switch (default_menu(m, 20)) {
   case EDIT_DRAWING_SETTING_CMD:
@@ -107,7 +108,7 @@ void StateDiagramView::contentsMousePressEvent(QMouseEvent * e) {
 	
 	if (b != 0) {
 	  if (the_canvas()->already_drawn(b)) {
-	    msg_information("Bouml", "already drawn");
+	    msg_information("Bouml", TR("already drawn"));
 	    history_protected = FALSE;
 	    return;
 	  }
@@ -267,7 +268,7 @@ void StateDiagramView::dropEvent(QDropEvent * e) {
   
   if ((bn = UmlDrag::decode(e, UmlState, TRUE)) != 0) {
     if (the_canvas()->already_drawn(bn))
-      msg_information("Bouml", "already drawn");
+      msg_information("Bouml", TR("already drawn"));
     else {
       history_save();
       
@@ -298,7 +299,7 @@ void StateDiagramView::dropEvent(QDropEvent * e) {
   }
   else if ((bn = UmlDrag::decode(e, UmlPseudoState, TRUE)) != 0) {
     if (the_canvas()->already_drawn(bn))
-      msg_information("Bouml", "already drawn");
+      msg_information("Bouml", TR("already drawn"));
     else {
       history_save();
       
@@ -317,7 +318,7 @@ void StateDiagramView::dropEvent(QDropEvent * e) {
   }
   else if ((bn = UmlDrag::decode(e, UmlStateAction, TRUE)) != 0) {
     if (the_canvas()->already_drawn(bn))
-      msg_information("Bouml", "already drawn");
+      msg_information("Bouml", TR("already drawn"));
     else {
       history_save();
       

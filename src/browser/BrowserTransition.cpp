@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,6 +46,7 @@
 #include "ProfiledStereotypes.h"
 #include "mu.h"
 #include "BrowserStateDiagram.h"
+#include "translate.h"
 
 IdDict<BrowserTransition> BrowserTransition::all(1021, __FILE__);
 
@@ -98,9 +99,9 @@ bool BrowserTransition::undelete(bool, QString & warning, QString & renamed) {
   
   if (def->get_start_node()->deletedp() ||
       def->get_end_node()->deletedp()) {
-    warning += QString("<li><b>") + quote(name) + "</b> from <b>" +
+    warning += QString("<li><b>") + quote(name) + "</b> " + TR("from") + " <b>" +
       def->get_start_node()->full_name() +
-	"</b> to <b>" + def->get_end_node()->full_name() + "</b>\n";
+	"</b> " + TR("to") + " <b>" + def->get_end_node()->full_name() + "</b>\n";
     return FALSE;
   }
 
@@ -140,6 +141,10 @@ void BrowserTransition::clear(bool old)
 void BrowserTransition::update_idmax_for_root()
 {
   all.update_idmax_for_root();
+}
+
+void BrowserTransition::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
 }
     
 void BrowserTransition::renumber(int phase) {
@@ -185,7 +190,7 @@ void BrowserTransition::menu() {
   QString s = name;
   
   if (s.isEmpty())
-    s = "transition";
+    s = TR("transition");
   
   QPopupMenu m(0, s);
   QPopupMenu toolm(0);
@@ -194,13 +199,13 @@ void BrowserTransition::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!in_edition()) {
-      m.setWhatsThis(m.insertItem("Edit", 0),
-		     "to edit the <em>transition</em>, \
-a double click with the left mouse button does the same thing");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 0),
+		     TR("to edit the <i>transition</i>, \
+a double click with the left mouse button does the same thing"));
       if (!is_read_only && (edition_number == 0)) {
-	m.setWhatsThis(m.insertItem("Delete", 2),
-		       "to delete the <em>transition</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 2),
+		       TR("to delete the <i>transition</i>. \
+Note that you can undelete it after"));
       }
       m.insertSeparator();
     }
@@ -210,22 +215,22 @@ Note that you can undelete it after");
     if (s.isEmpty())
       s = stringify(def->get_end_node()->get_type());
     
-    m.setWhatsThis(m.insertItem("Select " + s, 7),
-		   "to select the destination");
-    m.setWhatsThis(m.insertItem("Referenced by", 4),
-		   "to know who reference the <i>transition</i>");
-    mark_menu(m, "transition", 90);
+    m.setWhatsThis(m.insertItem(TR("Select ") + s, 7),
+		   TR("to select the destination"));
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 4),
+		   TR("to know who reference the <i>transition</i>"));
+    mark_menu(m, TR("the transition"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) 
 	&& Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 3),
-		   "undelete the <em>transition</em> \
-(except if the other side is also deleted)");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 3),
+		   TR("undelete the <i>transition</i> \
+(except if the other side is also deleted)"));
     if (def->get_start_node()->deletedp() ||
 	def->get_end_node()->deletedp())
       m.setItemEnabled(3, FALSE);
@@ -388,7 +393,7 @@ void BrowserTransition::save(QTextStream & st, bool ref,
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -450,7 +455,7 @@ BrowserTransition *
     result->is_read_only = (!in_import() && read_only_file()) || 
       ((user_id() != 0) && result->is_api_base());
     
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     d->set_browser_node(result);	// call update_stereotype();
         
     if (strcmp(k, "external") == 0) {

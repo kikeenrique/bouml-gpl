@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,6 +46,7 @@
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserRegion> BrowserRegion::all(__FILE__);
 QStringList BrowserRegion::its_default_stereotypes;	// unicode
@@ -100,6 +101,15 @@ void BrowserRegion::update_idmax_for_root()
 {
   all.update_idmax_for_root();
 }
+
+void BrowserRegion::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
+}
     
 void BrowserRegion::renumber(int phase) {
   if (phase != -1)
@@ -137,37 +147,37 @@ void BrowserRegion::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("New state", 1),
-		     "to add a <em>state</em> to the <em>region</em>");
+      m.setWhatsThis(m.insertItem(TR("New state"), 1),
+		     TR("to add a <i>state</i> to the <i>region</i>"));
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("Edit", 3),
-		   "to edit the <em>region</em>, \
-a double click with the left mouse button does the same thing");
+    m.setWhatsThis(m.insertItem(TR("Edit"), 3),
+		   TR("to edit the <i>region</i>, \
+a double click with the left mouse button does the same thing"));
     if (!is_read_only && (edition_number == 0)) {
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("Delete", 7),
-		     "to delete the <em>region</em>. \
-Note that you can undelete it after");
+      m.setWhatsThis(m.insertItem(TR("Delete"), 7),
+		     TR("to delete the <i>region</i>. \
+Note that you can undelete it after"));
     }
-    mark_menu(m, "region", 90);
+    mark_menu(m, TR("the region"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 8),
-		   "to undelete the <em>region</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 8),
+		   TR("to undelete the <i>region</i>"));
  
     QListViewItem * child;
   
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("Undelete recursively", 9),
-		       "undelete the region and its children");
+	m.setWhatsThis(m.insertItem(TR("Undelete recursively"), 9),
+		       TR("undelete the region and its children"));
 	break;
       }
     }
@@ -245,7 +255,7 @@ void BrowserRegion::apply_shortcut(QString s) {
 
 void BrowserRegion::open(bool) {
   if (!is_edited)
-    edit("Region", its_default_stereotypes);
+    edit(TR("Region"), its_default_stereotypes);
 }
 
 void BrowserRegion::modified() {
@@ -414,10 +424,33 @@ void BrowserRegion::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
        ((bn = UmlDrag::decode(e, BrowserStateAction::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserState::drag_key(this))) != 0)) &&
       (bn != after) && (bn != this)) {
-    if (may_contains(bn, FALSE)) 
+    if (may_contains(bn, FALSE)) {
+      if ((after == 0) &&
+	  ((BrowserNode *) parent())->may_contains(bn, TRUE)) {
+	// have choice
+	QPopupMenu m(0);
+  
+	m.insertItem(new MenuTitle(TR("move ") + bn->get_name(),
+				   m.font()), -1);
+	m.insertSeparator();
+	m.insertItem(TR("In ") + QString(get_name()), 1);
+	m.insertItem(TR("After ") + QString(get_name()), 2);
+	
+	switch (m.exec(QCursor::pos())) {
+	case 1:
+	  break;
+	case 2:
+	  ((BrowserNode *) parent())->DropAfterEvent(e, this);
+	  return;
+	default:
+	  e->ignore();
+	  return;
+	}
+      }
       move(bn, after);
+    }
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -429,17 +462,17 @@ void BrowserRegion::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 
 QString BrowserRegion::drag_key() const {
   return QString::number(UmlRegion)
-    + "#" + QString::number((unsigned long) parent());
+    + "#" + QString::number((unsigned long) BrowserState::get_machine(this));
 }
 
 QString BrowserRegion::drag_postfix() const {
-  return "#" + QString::number((unsigned long) parent());
+  return "#" + QString::number((unsigned long) BrowserState::get_machine(this));
 }
 
 QString BrowserRegion::drag_key(BrowserNode * p)
 {
   return QString::number(UmlRegion)
-    + "#" + QString::number((unsigned long) p);
+    + "#" + QString::number((unsigned long) BrowserState::get_machine(p));
 }
 
 void BrowserRegion::save_stereotypes(QTextStream & st)
@@ -496,7 +529,7 @@ void BrowserRegion::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -550,7 +583,7 @@ BrowserRegion * BrowserRegion::read(char * & st, char * k,
     k = read_keyword(st);
     result->def->read(st, k);
 
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     result->is_read_only = (!in_import() && read_only_file()) || 
       ((user_id() != 0) && result->is_api_base());

@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -44,13 +44,14 @@
 #include "BrowserSimpleRelation.h"
 #include "RelationData.h"
 #include "SimpleRelationData.h"
+#include "translate.h"
 
 QSize RelatedElementsDialog::previous_size;
 
 RelatedElementsDialog::RelatedElementsDialog(BrowserNode * e, const char * what,
 					     bool inh, bool assoc, BrowserNodeList & l)
     : QDialog(0, "Related elements dialog", TRUE), elt(e), elts(l) {
-  setCaption("Related elements dialog");
+  setCaption(TR("Related elements dialog"));
   
   QVBoxLayout * vbox = new QVBoxLayout(this);  
   QHBoxLayout * hbox;
@@ -59,28 +60,28 @@ RelatedElementsDialog::RelatedElementsDialog(BrowserNode * e, const char * what,
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);  
-  hbox->addWidget(new QLabel("Search for : ", this));
-  referenced_rb = new QCheckBox("referenced elements  ", this);
+  hbox->addWidget(new QLabel(TR("Search for : "), this));
+  referenced_rb = new QCheckBox(TR("referenced elements  "), this);
   referenced_rb->setChecked(TRUE);
   hbox->addWidget(referenced_rb);
-  referencing_rb = new QCheckBox("referencing elements  ", this);
+  referencing_rb = new QCheckBox(TR("referencing elements  "), this);
   hbox->addWidget(referencing_rb);
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);  
-  hbox->addWidget(new QLabel("Through relations : ", this));
+  hbox->addWidget(new QLabel(TR("Through relations : "), this));
   if (inh) {
-    inh_rb = new QCheckBox("generalization  ", this);
+    inh_rb = new QCheckBox(TR("generalization  "), this);
     inh_rb->setChecked(TRUE);
     hbox->addWidget(inh_rb);
   }
   else
     inh_rb = 0;
-  dep_rb = new QCheckBox("dependency  ", this);
+  dep_rb = new QCheckBox(TR("dependency  "), this);
   dep_rb->setChecked(TRUE);
   hbox->addWidget(dep_rb);
   if (assoc) {
-    assoc_rb = new QCheckBox("other", this);
+    assoc_rb = new QCheckBox(TR("other"), this);
     assoc_rb->setChecked(TRUE);
     hbox->addWidget(assoc_rb);
   }
@@ -90,20 +91,20 @@ RelatedElementsDialog::RelatedElementsDialog(BrowserNode * e, const char * what,
   
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);  
-  sametype_rb = new QCheckBox(QString("Search only for ") + what, this);
+  sametype_rb = new QCheckBox(TR("Search only for %1", what), this);
   sametype_rb->setChecked(TRUE);
   hbox->addWidget(sametype_rb);
   hbox->addWidget(new QLabel(this), 1000);
-  hbox->addWidget(new QLabel("     Search on ", this));
-  sb_level = new QSpinBox(1, 10, 1, this, "levels");
+  hbox->addWidget(new QLabel(TR("     Search on "), this));
+  sb_level = new QSpinBox(1, 10, 1, this, TR("levels"));
   sb_level->setValue(1);
   hbox->addWidget(sb_level);
-  hbox->addWidget(new QLabel("levels", this));
+  hbox->addWidget(new QLabel(TR("levels"), this));
 
   hbox = new QHBoxLayout(vbox); 
   hbox->setMargin(5);
-  QPushButton * accept = new QPushButton("&OK", this);
-  QPushButton * cancel = new QPushButton("&Cancel", this);
+  QPushButton * accept = new QPushButton(TR("&OK"), this);
+  QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
   QSize bs(cancel->sizeHint());
   
   accept->setDefault(TRUE);

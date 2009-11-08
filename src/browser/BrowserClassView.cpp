@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -55,6 +55,7 @@
 #include "mu.h"
 #include "GenerationSettings.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 IdDict<BrowserClassView> BrowserClassView::all(__FILE__);
 QStringList BrowserClassView::its_default_stereotypes;	// unicode
@@ -126,7 +127,7 @@ BrowserClassView* BrowserClassView::add_class_view(BrowserNode * future_parent)
 {
   QString name;
   
-  if (future_parent->enter_child_name(name, "enter class view's name : ",
+  if (future_parent->enter_child_name(name, TR("enter class view's name : "),
 				      UmlClassView, TRUE, FALSE))
     return new BrowserClassView(name, future_parent);
   else
@@ -149,6 +150,15 @@ void BrowserClassView::update_idmax_for_root()
   BrowserState::update_idmax_for_root();
   BrowserActivity::update_idmax_for_root();
   BrowserClassInstance::update_idmax_for_root();
+}
+
+void BrowserClassView::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
 }
     
 void BrowserClassView::renumber(int phase) {
@@ -182,6 +192,7 @@ QString BrowserClassView::full_name(bool rev, bool itself) const {
 void BrowserClassView::menu() {
   QPopupMenu m(0);
   QPopupMenu subm(0);
+  QPopupMenu roundtripm(0);
   QPopupMenu toolm(0);
   bool isprofile = (strcmp(((BrowserNode *) parent())->get_data()->get_stereotype(),
 			   "profile")
@@ -192,44 +203,44 @@ void BrowserClassView::menu() {
   if (!deletedp()) {
     if (!is_read_only && (edition_number == 0)) {
       if (isprofile)
-	m.setWhatsThis(m.insertItem("New stereotype", 18),
-		       "to add a <em>stereotype</em>");
-      m.setWhatsThis(m.insertItem("New class diagram", 0),
-		     "to add a <em>class diagram</em>");
-      m.setWhatsThis(m.insertItem("New sequence diagram", 1),
-		     "to add a <em>sequence diagram</em>");
-      m.setWhatsThis(m.insertItem("New communication diagram", 2),
-		     "to add a <em>communication diagram</em>");
-      m.setWhatsThis(m.insertItem("New object diagram", 15),
-		     "to add a <em>object diagram</em>");
-      m.setWhatsThis(m.insertItem("New class", 3),
-		     "to add a <em>class</em>");
-      m.setWhatsThis(m.insertItem("New class instance", 17),
-		     "to add a <em>class instance</em>");
-      m.setWhatsThis(m.insertItem("New state machine", 4),
-		     "to add a <em>state machine</em>");
-      m.setWhatsThis(m.insertItem("New activity", 16),
-		     "to add an <em>activity</em>");
+	m.setWhatsThis(m.insertItem(TR("New stereotype"), 18),
+		       TR("to add a <i>stereotype</i>"));
+      m.setWhatsThis(m.insertItem(TR("New class diagram"), 0),
+		     TR("to add a <i>class diagram</i>"));
+      m.setWhatsThis(m.insertItem(TR("New sequence diagram"), 1),
+		     TR("to add a <i>sequence diagram</i>"));
+      m.setWhatsThis(m.insertItem(TR("New communication diagram"), 2),
+		     TR("to add a <i>communication diagram</i>"));
+      m.setWhatsThis(m.insertItem(TR("New object diagram"), 15),
+		     TR("to add a <i>object diagram</i>"));
+      m.setWhatsThis(m.insertItem(TR("New class"), 3),
+		     TR("to add a <i>class</i>"));
+      m.setWhatsThis(m.insertItem(TR("New class instance"), 17),
+		     TR("to add a <i>class instance</i>"));
+      m.setWhatsThis(m.insertItem(TR("New state machine"), 4),
+		     TR("to add a <i>state machine</i>"));
+      m.setWhatsThis(m.insertItem(TR("New activity"), 16),
+		     TR("to add an <i>activity</i>"));
       m.insertSeparator();
     }
     if (!is_edited) {
-      m.setWhatsThis(m.insertItem("Edit", 5),
-		     "to edit the <em>class view</em>");
+      m.setWhatsThis(m.insertItem(TR("Edit"), 5),
+		     TR("to edit the <i>class view</i>"));
       if (!is_read_only) {
 	m.insertSeparator();
-	m.setWhatsThis(m.insertItem("Edit class settings", 6),
-		       "to set the sub classes's settings");
-	m.setWhatsThis(m.insertItem("Edit drawing settings", 7),
-		       "to set how the sub <em>class diagrams</em>'s items must be drawn");
+	m.setWhatsThis(m.insertItem(TR("Edit class settings"), 6),
+		       TR("to set the sub classes's settings"));
+	m.setWhatsThis(m.insertItem(TR("Edit drawing settings"), 7),
+		       TR("to set how the sub <i>class diagrams</i>'s items must be drawn"));
 	if (edition_number == 0) {
 	  m.insertSeparator();
-	  m.setWhatsThis(m.insertItem("Delete", 8),
-			 "to delete the <em>class view</em> and its sub items. \
-Note that you can undelete them after");
+	  m.setWhatsThis(m.insertItem(TR("Delete"), 8),
+			 TR("to delete the <i>class view</i> and its sub items. \
+Note that you can undelete them after"));
 	}
       }
     }
-    mark_menu(m, "class view", 90);
+    mark_menu(m, TR("class view"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
 
     if (! isprofile) {
@@ -241,38 +252,44 @@ Note that you can undelete them after");
       
       if (cpp || java || php || python || idl) {
 	m.insertSeparator();
-	m.insertItem("Generate", &subm);
+	m.insertItem(TR("Generate"), &subm);
 	if (cpp)
 	  subm.insertItem("C++", 11);
-	if (java)
+	if (java) {
 	  subm.insertItem("Java", 12);
+	  if ((edition_number == 0) && !is_read_only)
+	    roundtripm.insertItem("Java", 32);
+	}
 	if (php)
 	  subm.insertItem("Php", 22);
 	if (python)
 	  subm.insertItem("Python", 25);
 	if (idl)
 	  subm.insertItem("Idl", 13);
+
+	if (roundtripm.count() != 0)
+	  m.insertItem(TR("Roundtrip"), &roundtripm);
       }
     }
     
     if ((edition_number == 0) &&
 	(Tool::menu_insert(&toolm, get_type(), 100))) {
 	m.insertSeparator();
-	m.insertItem("Tool", &toolm);
+	m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 9),
-		   "undelete the <em>class view</em>. \
-Do not undelete its sub items");
-    m.setWhatsThis(m.insertItem("Undelete recursively", 10),
-		   "undelete the <em>class view</em> and its sub items");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 9),
+		   TR("undelete the <i>class view</i>. \
+Do not undelete its sub items"));
+    m.setWhatsThis(m.insertItem(TR("Undelete recursively"), 10),
+		   TR("undelete the <i>class view</i> and its sub items"));
   }
   
   if (!isprofile && (associated_deployment_view != 0)) {
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("Select associated deployment view", 14),
-		   "to select the associated <em>deployment view</em>");
+    m.setWhatsThis(m.insertItem(TR("Select associated deployment view"), 14),
+		   TR("to select the associated <i>deployment view</i>"));
   }
   
   exec_menu_choice(m.exec(QCursor::pos()));
@@ -342,8 +359,8 @@ void BrowserClassView::exec_menu_choice(int rank) {
     break;
   case 7:
     {
-      QArray<StateSpec> st;
-      QArray<ColorSpec> co(13);
+      StateSpecVector st;
+      ColorSpecVector co(13);
       
       classdiagram_settings.complete(st, UmlClassView);
       sequencediagram_settings.complete(st, FALSE);
@@ -352,21 +369,21 @@ void BrowserClassView::exec_menu_choice(int rank) {
       statediagram_settings.complete(st, FALSE);
       activitydiagram_settings.complete(st, FALSE);
       
-      co[0].set("class color", &class_color);
-      co[1].set("note color", &note_color);
-      co[2].set("package color", &package_color);
-      co[3].set("fragment color", &fragment_color);
-      co[4].set("duration color", &duration_color);
-      co[5].set("continuation color", &continuation_color);
-      co[6].set("state color", &state_color);
-      co[7].set("state action color", &stateaction_color);
-      co[8].set("activity color", &activity_color);
-      co[9].set("activity region color", &activityregion_color);
-      co[10].set("activity partition color", &activitypartition_color);
-      co[11].set("activity action color", &activityaction_color);
-      co[12].set("parameter and pin color", &parameterpin_color);
+      co[0].set(TR("class color"), &class_color);
+      co[1].set(TR("note color"), &note_color);
+      co[2].set(TR("package color"), &package_color);
+      co[3].set(TR("fragment color"), &fragment_color);
+      co[4].set(TR("duration color"), &duration_color);
+      co[5].set(TR("continuation color"), &continuation_color);
+      co[6].set(TR("state color"), &state_color);
+      co[7].set(TR("state action color"), &stateaction_color);
+      co[8].set(TR("activity color"), &activity_color);
+      co[9].set(TR("activity region color"), &activityregion_color);
+      co[10].set(TR("activity partition color"), &activitypartition_color);
+      co[11].set(TR("activity action color"), &activityaction_color);
+      co[12].set(TR("parameter and pin color"), &parameterpin_color);
 
-      SettingsDialog dialog(&st, &co, FALSE, FALSE);
+      SettingsDialog dialog(&st, &co, FALSE);
       
       dialog.raise();
       if (dialog.exec() != QDialog::Accepted)
@@ -430,6 +447,10 @@ void BrowserClassView::exec_menu_choice(int rank) {
   case 13:
     if (! isprofile) 
       ToolCom::run((verbose_generation()) ? "idl_generator -v" : "idl_generator", this);
+    return;
+  case 32:
+    if (! isprofile)
+      ToolCom::run("java_roundtrip", this);
     return;
   case 14:
     if (! isprofile) 
@@ -892,7 +913,7 @@ void BrowserClassView::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
       package_modified();
     }
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -1039,7 +1060,7 @@ void BrowserClassView::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -1103,7 +1124,7 @@ BrowserClassView * BrowserClassView::read(char * & st, char * k,
       k = read_keyword(st);
     }
     
-    r->BrowserNode::read(st, k);				// updates k
+    r->BrowserNode::read(st, k, id);				// updates k
     
     if (strcmp(k, "end")) {
       while (BrowserClassDiagram::read(st, k, r) ||

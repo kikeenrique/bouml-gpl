@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,85 +41,86 @@
 #include "BrowserColDiagram.h"
 #include "UmlPixmap.h"
 #include "myio.h"
+#include "translate.h"
 
-extern const char * addmodeledclassinstanceText;
-extern const char * addclassinstanceText;
-extern const char * addpackageText;
-extern const char * addfragmentText;
-extern const char * noteText;
-extern const char * anchorText;
-static const char * linkText = "Click this button to add a <em>link</em>";
-static const char * selflinkText = "Click this button to add a <em>self link</em>";
-extern const char * textText;
+extern QString addmodeledclassinstanceText();
+extern QString addclassinstanceText();
+extern QString addpackageText();
+extern QString addfragmentText();
+extern QString noteText();
+extern QString anchorText();
+static QString linkText() { return TR("Click this button to add a <i>link</i>"); }
+static QString selflinkText() { return TR("Click this button to add a <i>self link</i>"); }
+extern QString textText();
 
 // id is an old ident in case of an import
 ColDiagramWindow::ColDiagramWindow(const QString & s, BrowserColDiagram * b, int id)
     : DiagramWindow(b, s), view(0) {
   QToolBar * toolbar = new QToolBar(this, "communication diagram operations");
-  addToolBar(toolbar, "Communication Diagram Operations", Top, TRUE);
+  addToolBar(toolbar, TR("Toolbar"), Top, TRUE);
   
   add_edit_button(toolbar);
   
   select =
-    new QToolButton(*selectButton, "Select", QString::null,
+    new QToolButton(*selectButton, TR("Select"), QString::null,
 		    this, SLOT(hit_select()), toolbar, "select");
   select->setToggleButton(TRUE);
   select->setOn(TRUE);
   current_button = UmlSelect;
   
   addPackage
-    = new QToolButton(*packageButton, "Add Package", QString::null,
+    = new QToolButton(*packageButton, TR("Add Package"), QString::null,
 		      this, SLOT(hit_package()), toolbar, "add package");
   addPackage->setToggleButton(TRUE);
-  QWhatsThis::add(addPackage, addpackageText);
+  QWhatsThis::add(addPackage, addpackageText());
   
   addFragment
-    = new QToolButton(*fragmentButton, "Add Fragment", QString::null,
+    = new QToolButton(*fragmentButton, TR("Add Fragment"), QString::null,
 		      this, SLOT(hit_fragment()), toolbar, "add fragment");
   addFragment->setToggleButton(TRUE);
-  QWhatsThis::add(addFragment, addfragmentText);
+  QWhatsThis::add(addFragment, addfragmentText());
   
   addClassInstance
-    = new QToolButton(*classinstanceButton, "Add modeled Class instance", QString::null,
+    = new QToolButton(*classinstanceButton, TR("Add modeled Class instance"), QString::null,
 		      this, SLOT(hit_classinstance()), toolbar, "add modeled class instance");
   addClassInstance->setToggleButton(TRUE);
-  QWhatsThis::add(addClassInstance, addmodeledclassinstanceText);
+  QWhatsThis::add(addClassInstance, addmodeledclassinstanceText());
   
   addClass
-    = new QToolButton(*classButton, "Add Class instance", QString::null,
+    = new QToolButton(*classButton, TR("Add Class instance"), QString::null,
 		      this, SLOT(hit_class()), toolbar, "add class instance");
   addClass->setToggleButton(TRUE);
-  QWhatsThis::add(addClass, addclassinstanceText);
+  QWhatsThis::add(addClass, addclassinstanceText());
   
   addLink =
-    new QToolButton(*associationButton, "Add Link", QString::null,
+    new QToolButton(*associationButton, TR("Add Link"), QString::null,
 		    this, SLOT(hit_link()), toolbar, "add link");
   addLink->setToggleButton(TRUE);
-  QWhatsThis::add(addLink, linkText);
+  QWhatsThis::add(addLink, linkText());
   
   addSelfLink =
-    new QToolButton(*selflinkButton, "Add Self Link", QString::null,
+    new QToolButton(*selflinkButton, TR("Add Self Link"), QString::null,
 		    this, SLOT(hit_selflink()), toolbar, "add self link");
   addSelfLink->setToggleButton(TRUE);
-  QWhatsThis::add(addSelfLink, selflinkText);
+  QWhatsThis::add(addSelfLink, selflinkText());
   
   note =
-    new QToolButton(*noteButton, "Note", QString::null,
+    new QToolButton(*noteButton, TR("Note"), QString::null,
 		    this, SLOT(hit_note()), toolbar, "note");
   note->setToggleButton(TRUE);
-  QWhatsThis::add(note, noteText);
+  QWhatsThis::add(note, noteText());
   
   anchor =
-    new QToolButton(*anchorButton, "Anchor", QString::null,
+    new QToolButton(*anchorButton, TR("Anchor"), QString::null,
 		    this, SLOT(hit_anchor()), toolbar, "anchor");
   anchor->setToggleButton(TRUE);
-  QWhatsThis::add(anchor, anchorText);
+  QWhatsThis::add(anchor, anchorText());
   
   text =
-    new QToolButton(*textButton, "Text", QString::null,
+    new QToolButton(*textButton, TR("Text"), QString::null,
 		    this, SLOT(hit_text()), toolbar, "text");
   text->setToggleButton(TRUE);
-  QWhatsThis::add(text, textText);
+  QWhatsThis::add(text, textText());
   
   toolbar->addSeparator();
   

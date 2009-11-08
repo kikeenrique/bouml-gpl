@@ -19,6 +19,8 @@ void UmlActivity::write(FileOut & out) {
     out << " isReadOnly=\"true\"";
   if (isSingleExecution())
     out << " isSingleExecution=\"true\"";
+  if (isActive())
+    out << " isActive=\"true\"";
   if (specification() != 0)
     out.ref(specification(), "specification");
   out << ">\n";

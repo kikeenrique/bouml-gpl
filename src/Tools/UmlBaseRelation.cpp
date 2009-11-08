@@ -336,3 +336,49 @@ void UmlBaseRelation::read_idl_() {
 }
 #endif
 
+// not in plug-out managed through bouml
+// applied on first role
+bool UmlBaseRelation::set_rel_kind(aRelationKind k) {
+  UmlRelation * other = side(FALSE);
+  
+  UmlCom::send_cmd(_identifier, setTypeCmd, (char) k);
+  
+  if (UmlCom::read_bool()) {
+    bool old_bi;
+    bool new_bi;
+    
+    switch (_rel_kind) {
+    case anAssociation:
+    case anAggregation:
+    case anAggregationByValue:
+      old_bi = TRUE;
+      break;
+    default:
+      old_bi = FALSE;
+    }
+    
+    switch (k) {
+    case anAssociation:
+    case anAggregation:
+    case anAggregationByValue:
+      new_bi = TRUE;
+      break;
+    default:
+      new_bi = FALSE;
+    }
+    
+    if (new_bi != old_bi) {
+      if (other != 0) {
+	other->unload();
+	delete other;
+      }
+      
+      _role_type->reread_children_if_needed_();
+    }
+    
+    _rel_kind = k;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}

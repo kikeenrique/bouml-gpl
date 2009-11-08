@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -43,6 +43,7 @@
 #include "BodyDialog.h"
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
+#include "translate.h"
 
 QSize UseCaseDialog::previous_size;
 
@@ -52,14 +53,16 @@ UseCaseDialog::UseCaseDialog(UseCaseData * u)
   
   bn->edit_start();
   
-  if (bn->is_writable())
-    setCancelButton();
+  if (bn->is_writable()) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
 
-  setCaption("Use Case dialog");
+  setCaption(TR("Use Case dialog"));
   
   bool visit = !hasOkButton();
   
@@ -69,24 +72,24 @@ UseCaseDialog::UseCaseDialog(UseCaseData * u)
   grid->setMargin(5);
   grid->setSpacing(5);
 
-  new QLabel("name : ", grid);
+  new QLabel(TR("name : "), grid);
   edname = new LineEdit(bn->get_name(), grid);
   edname->setReadOnly(visit);
 
-  new QLabel("stereotype : ", grid);
+  new QLabel(TR("stereotype : "), grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(uc->get_stereotype()));
   if (! visit) {
     edstereotype->insertStringList(BrowserUseCase::default_stereotypes());
     edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlUseCase));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->setAutoCompletion(completion());
   }
   edstereotype->setCurrentItem(0);
   QSizePolicy sp = edstereotype->sizePolicy();
   sp.setHorData(QSizePolicy::Expanding);
   edstereotype->setSizePolicy(sp);
   
-  new QLabel("extension \npoints : ", grid);
+  new QLabel(TR("extension \npoints : "), grid);
   extension_points = new MultiLineEdit(grid);
   extension_points->setReadOnly(visit);
   extension_points->setText(uc->get_extension_points());
@@ -97,9 +100,9 @@ UseCaseDialog::UseCaseDialog(UseCaseData * u)
   extension_points->setFont(font);
 
   QVBox * vtab = new QVBox(grid);
-  new QLabel("description :", vtab);
+  new QLabel(TR("description :"), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
@@ -115,7 +118,7 @@ UseCaseDialog::UseCaseDialog(UseCaseData * u)
   grid->setSpacing(5);
   
   kvtable = new KeyValuesTable(bn, grid, visit);
-  addTab(grid, "Properties");
+  addTab(grid, TR("Properties"));
 }
 
 void UseCaseDialog::polish() {
@@ -153,7 +156,7 @@ void UseCaseDialog::accept() {
       ((BrowserNode *) bn->parent())->wrong_child_name(s, UmlUseCase,
 						       bn->allow_spaces(),
 						       bn->allow_empty())) {
-    msg_critical("Error", edname->text() + "\n\nillegal name or already used");
+    msg_critical(TR("Error"), edname->text() + TR("\n\nillegal name or already used"));
     return;
   }
   else

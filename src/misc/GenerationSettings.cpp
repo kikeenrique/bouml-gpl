@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -122,6 +122,7 @@ bool GenerationSettings::php_set_final;
 
 bool GenerationSettings::python_default_defs;
 bool GenerationSettings::python_2_2;
+bool GenerationSettings::python_3_operation;
 QString GenerationSettings::python_indent_step;
 SharedStr GenerationSettings::python_src_content;
 SharedStr GenerationSettings::python_class_decl;
@@ -175,6 +176,7 @@ bool GenerationSettings::cpp_relative_path;
 bool GenerationSettings::cpp_root_relative_path;
 
 bool GenerationSettings::cpp_force_namespace_gen;
+bool GenerationSettings::cpp_inline_force_incl_in_h;
 bool GenerationSettings::java_force_package_gen;
     
 int GenerationSettings::nrelattrstereotypes;
@@ -377,6 +379,7 @@ ${module_end}\n\
   cpp_relative_path = FALSE;
   cpp_root_relative_path = FALSE;
   cpp_force_namespace_gen = FALSE;
+  cpp_inline_force_incl_in_h = FALSE;
   cpp_javadoc_comment = FALSE;
   
   java_class_decl = "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {\n${members}}\n";
@@ -442,6 +445,7 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
   php_javadoc_comment = FALSE;
 
   python_2_2 = TRUE;
+  python_3_operation = FALSE;
 #define PYTHON_INDENT_STEP "    "
   python_indent_step = PYTHON_INDENT_STEP;
 #define PYTHON_CLASS "class ${name}${inherit}:\n${docstring}${members}\n"
@@ -1039,8 +1043,11 @@ void GenerationSettings::send_cpp_def(ToolCom * com)
       com->write_bool(cpp_force_namespace_gen);
       if (api_version >= 29) {
 	com->write_bool(cpp_root_relative_path);
-	if (api_version >= 30)
+	if (api_version >= 30) {
 	  com->write_bool(cpp_javadoc_comment);
+	  if (api_version >= 49)
+	    com->write_bool(cpp_inline_force_incl_in_h);
+	}
       }
     }
   }
@@ -1226,8 +1233,14 @@ void GenerationSettings::send_python_def(ToolCom * com)
   com->write_string(python_oper_def);
   com->write_string(python_get_name);
   com->write_string(python_set_name);
-  if (com->api_format() > 43)
+  
+  int api = com->api_format();
+  
+  if (api > 43) {
     com->write_string(python_initoper_def);
+    if (api > 47)
+      com->write_bool((python_3_operation) ? 1 : 0);
+  }
 }
 
 void GenerationSettings::send_idl_def(ToolCom * com)
@@ -1515,6 +1528,9 @@ bool GenerationSettings::tool_global_cpp_cmd(ToolCom * com,
       case setCppForceNamespaceGenCmd:
 	cpp_force_namespace_gen = (*args != 0);
 	break;
+      case setCppInlineOperForceInclInHeaderCmd:
+	cpp_inline_force_incl_in_h = (*args != 0);
+        break;
       case setCppEnumInCmd:
 	cpp_enum_in = args;
 	break;
@@ -2010,6 +2026,9 @@ bool GenerationSettings::tool_global_python_cmd(ToolCom * com,
       case setPythonInitOperationDefCmd:
 	python_initoper_def = args;
 	break;
+      case setPython3OperationCmd:
+	python_3_operation = *args != 0;
+	break;
       default:
 	return FALSE;
       }
@@ -2316,6 +2335,10 @@ void GenerationSettings::save()
   if (cpp_force_namespace_gen) {
     nl_indent(st);
     st << "cpp_force_namespace_gen";
+  }
+  if (!cpp_inline_force_incl_in_h) {
+    nl_indent(st);
+    st << "cpp_inline_dont_force_incl_in_h";
   }
   
   if (cpp_javadoc_comment) {
@@ -2626,6 +2649,10 @@ void GenerationSettings::save()
   
   if (python_2_2) {
     st << "python_2_2";
+    nl_indent(st);
+  }
+  if (python_3_operation) {
+    st << "python_3_operation";
     nl_indent(st);
   }
   st << "python_indent_step ";
@@ -3034,6 +3061,12 @@ void GenerationSettings::read(char * & st, char * & k)
   }
   else
     cpp_force_namespace_gen = FALSE;
+  if (!strcmp(k, "cpp_inline_dont_force_incl_in_h")) {
+    cpp_inline_force_incl_in_h = FALSE;
+    k = read_keyword(st);
+  }
+  else
+    cpp_inline_force_incl_in_h = TRUE;
   if (!strcmp(k, "cpp_javadoc_comment")) {
     cpp_javadoc_comment = TRUE;
     k = read_keyword(st);
@@ -3466,6 +3499,7 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
     
     if (fileformat < 51) {
       python_2_2 = TRUE;
+      python_3_operation = FALSE;
       python_indent_step = PYTHON_INDENT_STEP;
       python_src_content = PYTHON_SRC_CONTENT;
       python_extension = "py";
@@ -3491,6 +3525,12 @@ public static final ${class} ${name} = new ${class}(_${name});\n";
       }
       else
 	python_2_2 = FALSE;
+      if (! strcmp(k, "python_3_operation")) {
+	python_3_operation = TRUE;
+	k = read_keyword(st);
+      }
+      else
+	python_3_operation = FALSE;
       if (strcmp(k, "python_indent_step"))
 	wrong_keyword(k, "python_indent_step");
       python_indent_step = read_string(st);

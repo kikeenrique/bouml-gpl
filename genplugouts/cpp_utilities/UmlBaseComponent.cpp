@@ -22,7 +22,7 @@ UmlComponentDiagram * UmlBaseComponent::associatedDiagram() {
 }
 
 bool UmlBaseComponent::set_AssociatedDiagram(UmlComponentDiagram * d) {
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -31,10 +31,10 @@ bool UmlBaseComponent::set_AssociatedDiagram(UmlComponentDiagram * d) {
     return FALSE;
 }
 
-const QVector<UmlClass> & UmlBaseComponent::realizedClasses() {
+const QVector<UmlClass> & UmlBaseComponent::realizingClasses() {
   read_if_needed_();
   
-  return _realized;
+  return _realizing;
 }
 
 const QVector<UmlClass> & UmlBaseComponent::providedClasses() {
@@ -49,14 +49,15 @@ const QVector<UmlClass> & UmlBaseComponent::requiredClasses() {
   return _required;
 }
 
-bool UmlBaseComponent::set_AssociatedClasses(const QVector<UmlClass> & realized, const QVector<UmlClass> & provided, const QVector<UmlClass> & required) {
+bool UmlBaseComponent::set_AssociatedClasses(const QVector<UmlClass> & realizing, const QVector<UmlClass> & provided, const QVector<UmlClass> & required) {
   UmlCom::send_cmd(_identifier, setAssocClassesCmd,
-		   realized, provided, required);
+		   realizing, provided, required);
   if (UmlCom::read_bool()) {
     if (_defined) {
-      _realized = realized;
-      _provided = provided;
-      _required = required;
+      // tests != to bypass Qt 2.3 bug
+      if (&_realizing != &realizing) _realizing = realizing;
+      if (&_provided != &provided) _provided = provided;
+      if (&_required != &required) _required = required;
     }
     return TRUE;
   }
@@ -65,12 +66,11 @@ bool UmlBaseComponent::set_AssociatedClasses(const QVector<UmlClass> & realized,
 }
 
 void UmlBaseComponent::unload(bool rec, bool del) {
-  _realized.clear();
+  _realizing.clear();
   _provided.clear();
   _required.clear();
 
   UmlBaseItem::unload(rec, del);
-
 }
 
 void UmlBaseComponent::read_uml_() {
@@ -81,10 +81,10 @@ void UmlBaseComponent::read_uml_() {
   unsigned index;
   
   n = UmlCom::read_unsigned();
-  _realized.resize(n);
+  _realizing.resize(n);
     
   for (index = 0; index != n; index += 1)
-    _realized.insert(index, (UmlClass *) UmlBaseItem::read_());
+    _realizing.insert(index, (UmlClass *) UmlBaseItem::read_());
 
   n = UmlCom::read_unsigned();
   _provided.resize(n);

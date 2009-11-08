@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -42,6 +42,7 @@
 #include "MenuTitle.h"
 #include "strutil.h"
 #include "DialogUtil.h"
+#include "translate.h"
 
 NoteCanvas::NoteCanvas(UmlCanvas * canvas, int x, int y, int id)
     : DiagramCanvas(0, canvas, x, y, NOTE_CANVAS_MIN_SIZE,
@@ -183,25 +184,25 @@ void NoteCanvas::menu(const QPoint&) {
   QPopupMenu m(0);
   QPopupMenu fontsubm(0);
   
-  m.insertItem(new MenuTitle("Note", m.font()), -1);
+  m.insertItem(new MenuTitle(TR("Note"), m.font()), -1);
   m.insertSeparator();
-  m.insertItem("Upper", 0);
-  m.insertItem("Lower", 1);
-  m.insertItem("Go up", 7);
-  m.insertItem("Go down", 8);
+  m.insertItem(TR("Upper"), 0);
+  m.insertItem(TR("Lower"), 1);
+  m.insertItem(TR("Go up"), 7);
+  m.insertItem(TR("Go down"), 8);
   m.insertSeparator();
-  m.insertItem("Edit", 2);
+  m.insertItem(TR("Edit"), 2);
   m.insertSeparator();
-  m.insertItem("Color of text", 6);
-  m.insertItem("Font", &fontsubm);  
+  m.insertItem(TR("Color of text"), 6);
+  m.insertItem(TR("Font"), &fontsubm);  
   init_font_menu(fontsubm, the_canvas(), 10);
-  m.insertItem("Edit drawing settings", 3);
+  m.insertItem(TR("Edit drawing settings"), 3);
   if (linked()) {
     m.insertSeparator();
-    m.insertItem("Select linked items", 4);
+    m.insertItem(TR("Select linked items"), 4);
   }
   m.insertSeparator();
-  m.insertItem("Remove from view",5);
+  m.insertItem(TR("Remove from view"),5);
 
   int index = m.exec(QCursor::pos());
   
@@ -238,12 +239,12 @@ void NoteCanvas::menu(const QPoint&) {
     break;
   case 6:
     {
-      QArray<ColorSpec> co(1);
+      ColorSpecVector co(1);
       
-      co[0].set("color", &fg_c);
+      co[0].set(TR("color"), &fg_c);
       
-      SettingsDialog dialog(0, &co, TRUE, TRUE, FALSE,
-			    "Text color dialog");
+      SettingsDialog dialog(0, &co, TRUE, FALSE,
+			    TR("Text color dialog"));
       
       dialog.raise();
       if (dialog.exec() != QDialog::Accepted)
@@ -291,11 +292,11 @@ void NoteCanvas::apply_shortcut(QString s) {
 }
 
 void NoteCanvas::edit_drawing_settings() {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   
-  co[0].set("note color", &itscolor);
+  co[0].set(TR("note color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE);
   
   dialog.raise();
   if (dialog.exec() == QDialog::Accepted)
@@ -307,15 +308,15 @@ bool NoteCanvas::has_drawing_settings() const {
 }
 
 void NoteCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
-  QArray<ColorSpec> co(1);
+  ColorSpecVector co(1);
   UmlColor itscolor;
   
-  co[0].set("note color", &itscolor);
+  co[0].set(TR("note color"), &itscolor);
   
-  SettingsDialog dialog(0, &co, FALSE, TRUE, TRUE);
+  SettingsDialog dialog(0, &co, FALSE, TRUE);
   
   dialog.raise();
-  if ((dialog.exec() == QDialog::Accepted) && (co[0].name != 0)) {
+  if ((dialog.exec() == QDialog::Accepted) && !co[0].name.isEmpty()) {
     QListIterator<DiagramItem> it(l);
     
     for (; it.current(); ++it) {
@@ -325,22 +326,22 @@ void NoteCanvas::edit_drawing_settings(QList<DiagramItem> & l) {
   }
 }
 
-const char * NoteCanvas::may_start(UmlCode & l) const {
-  return (l == UmlAnchor) ? 0 : "illegal";
+QString NoteCanvas::may_start(UmlCode & l) const {
+  return (l == UmlAnchor) ? 0 : TR("illegal");
 }
 
-const char * NoteCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
-  return (l == UmlAnchor) ? dest->may_start(l) : "illegal";
+QString NoteCanvas::may_connect(UmlCode & l, const DiagramItem * dest) const {
+  return (l == UmlAnchor) ? dest->may_start(l) : TR("illegal");
 }
 
 aCorner NoteCanvas::on_resize_point(const QPoint & p) {
   return ::on_resize_point(p, rect());
 }
 
-void NoteCanvas::resize(aCorner c, int dx, int dy) {
+void NoteCanvas::resize(aCorner c, int dx, int dy, QPoint & o) {
   int min = (int) (NOTE_CANVAS_MIN_SIZE * the_canvas()->zoom());
   
-  DiagramCanvas::resize(c, dx, dy, min, min);
+  DiagramCanvas::resize(c, dx, dy, o, min, min, TRUE);
 }
 
 void NoteCanvas::save_internal(QTextStream & st) const {

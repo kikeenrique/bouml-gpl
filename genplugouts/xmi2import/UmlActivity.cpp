@@ -124,6 +124,9 @@ void UmlActivity::importIt(FileIn & in, Token & token, UmlItem * where)
     
     if (token.valueOf("issingleexecution") == "true")
       a->set_isSingleExecution(TRUE);
+
+    if (token.valueOf("isactive") == "true")
+      a->set_isActive(TRUE);
     
     QCString spec = token.valueOf("specification");
     

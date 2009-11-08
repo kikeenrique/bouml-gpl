@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -77,13 +77,14 @@ class BrowserPin : public BrowserNode, public Labeled<BrowserPin>, public Browse
     static BrowserPin * new_one(BrowserNode * future_parent, const char * name);
     static BrowserPin * add_pin(BrowserPin * pin, BrowserNode * future_parent);
     virtual BasicData * add_relation(UmlCode, BrowserNode * end);
-    const char * may_start() const;
-    const char * may_connect(const BrowserNode * dest) const;
-    virtual const char * connexion_from(bool control) const;
+    QString may_start() const;
+    QString may_connect(const BrowserNode * dest) const;
+    virtual QString connexion_from(bool control) const;
     
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
+    virtual void prepare_update_lib() const;
     
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual bool api_compatible(unsigned v) const;

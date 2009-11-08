@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,6 +41,7 @@
 #include "SettingsDialog.h"
 #include "ColDiagramView.h"
 #include "myio.h"
+#include "translate.h"
 
 CodDirsCanvas::CodDirsCanvas(UmlCanvas * canvas, CodLinkCanvas * l, int id)
     : DiagramCanvas(0, canvas, 0, 0, COL_DIRS_SIZE, COL_DIRS_SIZE, id),
@@ -286,11 +287,11 @@ void CodDirsCanvas::draw(QPainter & p) {
 }
 
 bool CodDirsCanvas::edit_drawing_settings() {
-  QArray<StateSpec> st;
+  StateSpecVector st;
   
   settings.complete(st, TRUE);
   
-  SettingsDialog dialog(&st, 0, FALSE, TRUE);
+  SettingsDialog dialog(&st, 0, FALSE);
       
   dialog.raise();
   if (dialog.exec() != QDialog::Accepted)
@@ -317,14 +318,14 @@ void CodDirsCanvas::menu(const QPoint&) {
   // cannot be called
 }
 
-const char * CodDirsCanvas::may_start(UmlCode &) const {
+QString CodDirsCanvas::may_start(UmlCode &) const {
   // cannot be called
-  return "illegal";
+  return TR("illegal");
 }
 
-const char * CodDirsCanvas::may_connect(UmlCode &, const DiagramItem *) const {
+QString CodDirsCanvas::may_connect(UmlCode &, const DiagramItem *) const {
   // cannot be called
-  return "illegal";
+  return TR("illegal");
 }
     
 bool CodDirsCanvas::copyable() const {

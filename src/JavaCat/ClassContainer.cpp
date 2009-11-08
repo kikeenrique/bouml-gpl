@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -165,48 +165,3 @@ bool ClassContainer::read_type(UmlTypeSpec & typespec, Class ** cl,
   return TRUE;
 }
 
-// don't produce error
-
-bool ClassContainer::bypass_type(QCString s) {
-  if (s.isEmpty() && (s = Lex::read_word()).isEmpty())
-    return FALSE;
-    
-  for (;;) {
-    s = Lex::read_word();
-  
-    if (s != "<")
-      break;
-    
-    do {
-      int level = 0;
-      
-      for (;;) {
-	s = Lex::read_word(TRUE);
-	
-	if (s == ",") {
-	  if (level == 0)
-	    break;
-	}
-	else if (s == ">") {
-	  if (level-- == 0)
-	    break;
-	}
-	else if (s == "]")
-	  level -= 1;
-	else if ((s == "<") || (s == "["))
-	  level += 1;
-	else if (s.isEmpty())
-	  return FALSE;
-      }
-    } while (s == ",");
-    
-    s = Lex::read_word();
-    if (s.isEmpty() || (*s != '.'))
-      break;
-  }
-  
-  if (! s.isEmpty())
-    Lex::unread_word(s);
-  
-  return TRUE;
-}

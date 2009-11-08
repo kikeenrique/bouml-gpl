@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,6 +48,7 @@
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserAttribute> BrowserAttribute::all(1021, __FILE__);
 QStringList BrowserAttribute::its_default_stereotypes;	// unicode
@@ -109,6 +110,10 @@ void BrowserAttribute::clear(bool old)
 void BrowserAttribute::update_idmax_for_root()
 {
   all.update_idmax_for_root();
+}
+
+void BrowserAttribute::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
 }
     
 void BrowserAttribute::renumber(int phase) {
@@ -237,50 +242,50 @@ void BrowserAttribute::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited)
-      m.setWhatsThis(m.insertItem("Edit", 0),
+      m.setWhatsThis(m.insertItem(TR("Edit"), 0),
 		     (item)
-		     ? "to edit the <em>item</em>, \
-a double click with the left mouse button does the same thing"
-		     : "to edit the <em>attribute</em>, \
-a double click with the left mouse button does the same thing");
+		     ? TR("to edit the <i>item</i>, \
+a double click with the left mouse button does the same thing")
+		     : TR("to edit the <i>attribute</i>, \
+a double click with the left mouse button does the same thing"));
     if (!is_read_only && (edition_number == 0)) {
       if (!item && (get_oper == 0))
-	m.setWhatsThis(m.insertItem("New get operation", 3),
-		       "to auto define the <em>get operation</em>");
+	m.setWhatsThis(m.insertItem(TR("New get operation"), 3),
+		       TR("to auto define the <i>get operation</i>"));
       if (!item && (set_oper == 0))
-	m.setWhatsThis(m.insertItem("New set operation", 4),
-		       "to auto define the <em>set operation</em>");
+	m.setWhatsThis(m.insertItem(TR("New set operation"), 4),
+		       TR("to auto define the <i>set operation</i>"));
       if (!item && (get_oper == 0) && (set_oper == 0))
-	m.setWhatsThis(m.insertItem("New get and set operation", 5),
-		       "to auto define the <em>get</em> and <em>set operation</em>s");
-      m.setWhatsThis(m.insertItem("Duplicate", 6),
-		     "to copy the <em>attribute</em> in a new one");
+	m.setWhatsThis(m.insertItem(TR("New get and set operation"), 5),
+		       TR("to auto define the <i>get</i> and <i>set operation</i>s"));
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 6),
+		     TR("to copy the <i>attribute</i> in a new one"));
     }
   
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("Referenced by", 7),
-		   "to know who reference the <i>class</i>");
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 7),
+		   TR("to know who reference the <i>class</i>"));
 
     if (!is_read_only && (edition_number == 0)) {
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("Delete", 1),
-		     (item) ? "to delete the <em>item</em>. \
-Note that you can undelete it after"
-			       : "to delete the <em>attribute</em>. \
-Note that you can undelete it after");
+      m.setWhatsThis(m.insertItem(TR("Delete"), 1),
+		     (item) ? TR("to delete the <i>item</i>. \
+Note that you can undelete it after")
+			       : TR("to delete the <i>attribute</i>. \
+Note that you can undelete it after"));
     }
-    mark_menu(m, "attribute", 90);
+    mark_menu(m, TR("attribute"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("Undelete", 2),
-		   (item) ? "to undelete the <em>item</em>"
-				     : "to undelete the <em>attribute</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 2),
+		   (item) ? TR("to undelete the <i>item</i>")
+			  : TR("to undelete the <i>attribute</i>"));
   exec_menu_choice(m.exec(QCursor::pos()));
 }
 
@@ -532,7 +537,7 @@ void BrowserAttribute::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -589,7 +594,7 @@ BrowserAttribute * BrowserAttribute::read(char * & st, char * k,
     
     result->is_defined = TRUE;
 
-    result->is_read_only = (!in_import() && read_only_file()) || 
+    result->is_read_only = !parent->is_writable() || 
       ((user_id() != 0) && result->is_api_base());
     result->def->set_browser_node(result, FALSE, FALSE);
     
@@ -610,7 +615,7 @@ BrowserAttribute * BrowserAttribute::read(char * & st, char * k,
       k = read_keyword(st);
     }
     
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     if (strcmp(k, "end"))
       wrong_keyword(k, "end");

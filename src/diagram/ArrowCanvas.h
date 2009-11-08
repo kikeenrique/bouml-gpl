@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -72,6 +72,9 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     float decenter_begin;	// not taken into account if
     float decenter_end;		// fixed geometry. < 0 means don't care
     
+    // to remove temporary arrows
+    static QList<ArrowCanvas> RelsToDel;
+
     // to remove redondant relation made by release 2.22
     static QList<ArrowCanvas> RelsToCheck;
     
@@ -119,8 +122,8 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     bool edit(const QStringList &defaults, ArrowCanvas * plabel,
 	      ArrowCanvas * pstereotype);
     virtual void menu(const QPoint&);
-    virtual const char * may_start(UmlCode &) const;
-    virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
+    virtual QString may_start(UmlCode &) const;
+    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     virtual double get_z() const;
     virtual void set_z(double z);	// only called by upper() & lower()
@@ -145,6 +148,7 @@ class ArrowCanvas : public QObject, public QCanvasPolygon, public DiagramItem {
     virtual void history_hide();
 
     static void remove_redondant_rels();
+    static void post_load();
     
     void write_uc_rel(ToolCom * com) const;
     

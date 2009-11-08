@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -41,198 +41,198 @@
 #include "BrowserStateDiagram.h"
 #include "UmlPixmap.h"
 #include "myio.h"
+#include "translate.h"
 
-const char * addstateText = "Click this button to add a <em>state</em> in the diagram. <br><br>"
-"You can also drop the state from the <b>browser</b>.";
-extern const char * addpackageText;
-extern const char * addfragmentText;
-extern const char * noteText;
-extern const char * anchorText;
-//extern const char * dependencyText;
-extern const char * textText;
-const char * addentrypointText = "Click this button to add a <em>entry point</em> in the diagram. <br><br>"
-"You can also drop the <em>entry point</em> from the <b>browser</b>.";
-const char * addexitpointText = "Click this button to add a <em>exit point</em> in the diagram. <br><br>"
-"You can also drop the <em>exit point</em> from the <b>browser</b>.";
-const char * addinitialText = "Click this button to add a <em>initial pseudo state</em> in the diagram. <br><br>"
-"You can also drop the <em>initial pseudo state</em> from the <b>browser</b>.";
-const char * addfinalText = "Click this button to add a <em>final state</em> in the diagram. <br><br>"
-"You can also drop the <em>final state</em> from the <b>browser</b>.";
-const char * addterminateText = "Click this button to add a <em>terminate node</em> in the diagram. <br><br>"
-"You can also drop the <em>terminate node</em> from the <b>browser</b>.";
-const char * adddeephistoryText = "Click this button to add a <em>deep history</em> in the diagram. <br><br>"
-"You can also drop the <em>deep history</em> from the <b>browser</b>.";
-const char * addshallowhistoryText = "Click this button to add a <em>shallow history</em> in the diagram. <br><br>"
-"You can also drop the <em></em> from the <b>browser</b>."; 
-const char * addjunctionText = "Click this button to add a <em>junction</em> in the diagram. <br><br>"
-"You can also drop the <em>junction</em> from the <b>browser</b>.";
-const char * addchoiceText = "Click this button to add a <em>choice</em> in the diagram. <br><br>"
-"You can also drop the <em>choice</em> from the <b>browser</b>.";
-const char * addforkText = "Click this button to add a <em>fork</em> in the diagram. <br><br>"
-"You can also drop the <em>foek</em> from the <b>browser</b>.";
-const char * addjoinText = "Click this button to add a <em>join</em> in the diagram. <br><br>"
-"You can also drop the <em>join</em> from the <b>browser</b>.";
-const char * addtransitionText = "Click this button to add a <em>transition</em> in the diagram. <br><br>"
-"You can also drop the <em>transition</em> from the <b>browser</b>.";
-const char * addregionText = "Click this button to add a <em>region</em> in a <em>state</em>.";
-const char * addactionText = "Click this button to add an <em>action</em> in a <em>state</em>.";
-const char * addsignalinText = "Click this button to add a <em>receive signal action</em> in a <em>state</em>.";
-const char * addsignaloutText = "Click this button to add a <em>send signal action</em> in a <em>state</em>.";
+QString addstateText() { return TR("Click this button to add a <i>state</i> in the diagram. <br><br>"
+				   "You can also drop the state from the <b>browser</b>."); }
+extern QString addpackageText();
+extern QString addfragmentText();
+extern QString noteText();
+extern QString anchorText();
+extern QString textText();
+QString addentrypointText() { return TR("Click this button to add a <i>entry point</i> in the diagram. <br><br>"
+					"You can also drop the <i>entry point</i> from the <b>browser</b>."); }
+QString addexitpointText() { return TR("Click this button to add a <i>exit point</i> in the diagram. <br><br>"
+				       "You can also drop the <i>exit point</i> from the <b>browser</b>."); }
+QString addinitialText() { return TR("Click this button to add a <i>initial pseudo state</i> in the diagram. <br><br>"
+				     "You can also drop the <i>initial pseudo state</i> from the <b>browser</b>."); }
+QString addfinalText() { return TR("Click this button to add a <i>final state</i> in the diagram. <br><br>"
+				   "You can also drop the <i>final state</i> from the <b>browser</b>."); }
+QString addterminateText() { return TR("Click this button to add a <i>terminate node</i> in the diagram. <br><br>"
+				       "You can also drop the <i>terminate node</i> from the <b>browser</b>."); }
+QString adddeephistoryText() { return TR("Click this button to add a <i>deep history</i> in the diagram. <br><br>"
+					 "You can also drop the <i>deep history</i> from the <b>browser</b>."); }
+QString addshallowhistoryText() { return TR("Click this button to add a <i>shallow history</i> in the diagram. <br><br>"
+					    "You can also drop the <i></i> from the <b>browser</b>."); }
+QString addjunctionText() { return TR("Click this button to add a <i>junction</i> in the diagram. <br><br>"
+				      "You can also drop the <i>junction</i> from the <b>browser</b>."); }
+QString addchoiceText() { return TR("Click this button to add a <i>choice</i> in the diagram. <br><br>"
+				    "You can also drop the <i>choice</i> from the <b>browser</b>."); }
+QString addforkText() { return TR("Click this button to add a <i>fork</i> in the diagram. <br><br>"
+				  "You can also drop the <i>foek</i> from the <b>browser</b>."); }
+QString addjoinText() { return TR("Click this button to add a <i>join</i> in the diagram. <br><br>"
+				  "You can also drop the <i>join</i> from the <b>browser</b>."); }
+QString addtransitionText() { return TR("Click this button to add a <i>transition</i> in the diagram. <br><br>"
+					"You can also drop the <i>transition</i> from the <b>browser</b>."); }
+QString addregionText() { return TR("Click this button to add a <i>region</i> in a <i>state</i>."); }
+QString addactionText() { return TR("Click this button to add an <i>action</i> in a <i>state</i>."); }
+QString addsignalinText() { return TR("Click this button to add a <i>receive signal action</i> in a <i>state</i>."); }
+QString addsignaloutText() { return TR("Click this button to add a <i>send signal action</i> in a <i>state</i>."); }
 
 // id is an old ident in case of an import
 StateDiagramWindow::StateDiagramWindow(const QString & s, BrowserStateDiagram * b, int id)
     : DiagramWindow(b, s), view(0) {
   QToolBar * toolbar = new QToolBar(this, "state operations");
-  addToolBar(toolbar, "State Operations", Top, TRUE);
+  addToolBar(toolbar, TR("Toolbar"), Top, TRUE);
   
   add_edit_button(toolbar);
   
   select =
-    new QToolButton(*selectButton, "Select", QString::null,
+    new QToolButton(*selectButton, TR("Select"), QString::null,
 		    this, SLOT(hit_select()), toolbar, "select");
   select->setToggleButton(TRUE);
   select->setOn(TRUE);
   current_button = UmlSelect;
   
   addPackage
-    = new QToolButton(*packageButton, "Add Package", QString::null,
+    = new QToolButton(*packageButton, TR("Add Package"), QString::null,
 		      this, SLOT(hit_package()), toolbar, "add package");
   addPackage->setToggleButton(TRUE);
-  QWhatsThis::add(addPackage, addpackageText);
+  QWhatsThis::add(addPackage, addpackageText());
   
   addFragment
-    = new QToolButton(*fragmentButton, "Add Fragment", QString::null,
+    = new QToolButton(*fragmentButton, TR("Add Fragment"), QString::null,
 		      this, SLOT(hit_fragment()), toolbar, "add fragment");
   addFragment->setToggleButton(TRUE);
-  QWhatsThis::add(addFragment, addfragmentText);
+  QWhatsThis::add(addFragment, addfragmentText());
   
   addState =
-    new QToolButton(*stateButton, "Add State", QString::null,
+    new QToolButton(*stateButton, TR("Add State"), QString::null,
 		    this, SLOT(hit_state()), toolbar, "add state");
   addState->setToggleButton(TRUE);
-  QWhatsThis::add(addState, addstateText);
+  QWhatsThis::add(addState, addstateText());
   
   addRegion =
-    new QToolButton(*regionButton, "Add Region", QString::null,
+    new QToolButton(*regionButton, TR("Add Region"), QString::null,
 		    this, SLOT(hit_region()), toolbar, "add region");
   addRegion->setToggleButton(TRUE);
-  QWhatsThis::add(addRegion, addregionText);
+  QWhatsThis::add(addRegion, addregionText());
   
   addInitial =
-    new QToolButton(*initialButton, "Add Initial pseudo state", QString::null,
+    new QToolButton(*initialButton, TR("Add Initial pseudo state"), QString::null,
 		    this, SLOT(hit_initial()), toolbar, "add initial");
   addInitial->setToggleButton(TRUE);
-  QWhatsThis::add(addInitial, addinitialText);
+  QWhatsThis::add(addInitial, addinitialText());
 
   addEntryPoint =
-    new QToolButton(*entrypointButton, "Add Entry Point", QString::null,
+    new QToolButton(*entrypointButton, TR("Add Entry Point"), QString::null,
 		    this, SLOT(hit_entryPoint()), toolbar, "add entry point");
   addEntryPoint->setToggleButton(TRUE);
-  QWhatsThis::add(addEntryPoint, addentrypointText);
+  QWhatsThis::add(addEntryPoint, addentrypointText());
 
   addFinal =
-    new QToolButton(*finalButton, "Add Final state", QString::null,
+    new QToolButton(*finalButton, TR("Add Final state"), QString::null,
 		    this, SLOT(hit_final()), toolbar, "add final");
   addFinal->setToggleButton(TRUE);
-  QWhatsThis::add(addFinal, addfinalText);
+  QWhatsThis::add(addFinal, addfinalText());
 
   addExitPoint =
-    new QToolButton(*exitpointButton, "Add Exit Point", QString::null,
+    new QToolButton(*exitpointButton, TR("Add Exit Point"), QString::null,
 		    this, SLOT(hit_exitPoint()), toolbar, "add exit point");
   addExitPoint->setToggleButton(TRUE);
-  QWhatsThis::add(addExitPoint, addexitpointText);
+  QWhatsThis::add(addExitPoint, addexitpointText());
 
   addTerminate =
-    new QToolButton(*terminateButton, "Add Terminate node", QString::null,
+    new QToolButton(*terminateButton, TR("Add Terminate node"), QString::null,
 		    this, SLOT(hit_terminate()), toolbar, "add terminate");
   addTerminate->setToggleButton(TRUE);
-  QWhatsThis::add(addTerminate, addterminateText);
+  QWhatsThis::add(addTerminate, addterminateText());
 
   addDeepHistory =
-    new QToolButton(*deephistoryButton, "Add Deep History", QString::null,
+    new QToolButton(*deephistoryButton, TR("Add Deep History"), QString::null,
 		    this, SLOT(hit_deepHistory()), toolbar, "add deep history");
   addDeepHistory->setToggleButton(TRUE);
-  QWhatsThis::add(addDeepHistory, adddeephistoryText);
+  QWhatsThis::add(addDeepHistory, adddeephistoryText());
 
   addShallowHistory =
-    new QToolButton(*shallowhistoryButton, "Add Shallow History", QString::null,
+    new QToolButton(*shallowhistoryButton, TR("Add Shallow History"), QString::null,
 		    this, SLOT(hit_shallowHistory()), toolbar, "add shallow history");
   addShallowHistory->setToggleButton(TRUE);
-  QWhatsThis::add(addShallowHistory, addshallowhistoryText);
+  QWhatsThis::add(addShallowHistory, addshallowhistoryText());
 
   addJunction =
-    new QToolButton(*junctionButton, "Add Junction", QString::null,
+    new QToolButton(*junctionButton, TR("Add Junction"), QString::null,
 		    this, SLOT(hit_junction()), toolbar, "add junction");
   addJunction->setToggleButton(TRUE);
-  QWhatsThis::add(addJunction, addjunctionText);
+  QWhatsThis::add(addJunction, addjunctionText());
 
   addChoice =
-    new QToolButton(*choiceButton, "Add Choice", QString::null,
+    new QToolButton(*choiceButton, TR("Add Choice"), QString::null,
 		    this, SLOT(hit_choice()), toolbar, "add choice");
   addChoice->setToggleButton(TRUE);
-  QWhatsThis::add(addChoice, addchoiceText);
+  QWhatsThis::add(addChoice, addchoiceText());
 
   addFork =
-    new QToolButton(*forkButton, "Add Fork", QString::null,
+    new QToolButton(*forkButton, TR("Add Fork"), QString::null,
 		    this, SLOT(hit_fork()), toolbar, "add fork");
   addFork->setToggleButton(TRUE);
-  QWhatsThis::add(addFork, addforkText);
+  QWhatsThis::add(addFork, addforkText());
 
   addJoin =
-    new QToolButton(*joinButton, "Add Join", QString::null,
+    new QToolButton(*joinButton, TR("Add Join"), QString::null,
 		    this, SLOT(hit_join()), toolbar, "add join");
   addJoin->setToggleButton(TRUE);
-  QWhatsThis::add(addJoin, addjoinText);
+  QWhatsThis::add(addJoin, addjoinText());
 
   addAction =
-    new QToolButton(*actionButton, "Add Action", QString::null,
+    new QToolButton(*actionButton, TR("Add Action"), QString::null,
 		    this, SLOT(hit_action()), toolbar, "add action");
   addAction->setToggleButton(TRUE);
-  QWhatsThis::add(addAction, addactionText);
+  QWhatsThis::add(addAction, addactionText());
 
   addSignalIn =
-    new QToolButton(*signalinButton, "Add receive signal action", QString::null,
+    new QToolButton(*signalinButton, TR("Add receive signal action"), QString::null,
 		    this, SLOT(hit_signalin()), toolbar, "add receive signal action");
   addSignalIn->setToggleButton(TRUE);
-  QWhatsThis::add(addSignalIn, addsignalinText);
+  QWhatsThis::add(addSignalIn, addsignalinText());
 
   addSignalOut =
-    new QToolButton(*signaloutButton, "Add send signal action", QString::null,
+    new QToolButton(*signaloutButton, TR("Add send signal action"), QString::null,
 		    this, SLOT(hit_signalout()), toolbar, "add send signal action");
   addSignalOut->setToggleButton(TRUE);
-  QWhatsThis::add(addSignalOut, addsignaloutText);
+  QWhatsThis::add(addSignalOut, addsignaloutText());
 
   addTransition =
-    new QToolButton(*directionalAssociationButton, "Add Transition", QString::null,
+    new QToolButton(*directionalAssociationButton, TR("Add Transition"), QString::null,
 		    this, SLOT(hit_transition()), toolbar, "add transition");
   addTransition->setToggleButton(TRUE);
-  QWhatsThis::add(addTransition, addtransitionText);
+  QWhatsThis::add(addTransition, addtransitionText());
   
   /*
   dependency =
     new QToolButton(*dependencyButton, "Dependency", QString::null,
 		    this, SLOT(hit_dependency()), toolbar, "dependency");
   dependency->setToggleButton(TRUE);
-  QWhatsThis::add(dependency, dependencyText);
+  QWhatsThis::add(dependency, dependencyText());
   */
   
   note =
-    new QToolButton(*noteButton, "Note", QString::null,
+    new QToolButton(*noteButton, TR("Note"), QString::null,
 		    this, SLOT(hit_note()), toolbar, "note");
   note->setToggleButton(TRUE);
-  QWhatsThis::add(note, noteText);
+  QWhatsThis::add(note, noteText());
   
   anchor =
-    new QToolButton(*anchorButton, "Anchor", QString::null,
+    new QToolButton(*anchorButton, TR("Anchor"), QString::null,
 		    this, SLOT(hit_anchor()), toolbar, "anchor");
   anchor->setToggleButton(TRUE);
-  QWhatsThis::add(anchor, anchorText);
+  QWhatsThis::add(anchor, anchorText());
   
   text =
-    new QToolButton(*textButton, "Text", QString::null,
+    new QToolButton(*textButton, TR("Text"), QString::null,
 		    this, SLOT(hit_text()), toolbar, "text");
   text->setToggleButton(TRUE);
-  QWhatsThis::add(text, textText);
+  QWhatsThis::add(text, textText());
   
   toolbar->addSeparator();
   

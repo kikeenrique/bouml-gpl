@@ -8,7 +8,7 @@ enum CppSettingsCmd {
   getCppUseDefaultsCmd,
   setCppUseDefaultsCmd,
   setCppTypeCmd,
-  setCppRelationStereotypeCmd,
+  setCppRelationAttributeStereotypeCmd,
   setCppClassStereotypeCmd,
   setCppIncludeCmd,
   setCppHeaderContentCmd,
@@ -43,7 +43,14 @@ enum CppSettingsCmd {
   setCppSetVisibilityCmd,
   setCppSetNameCmd,
   setCppIsSetInlineCmd,
-  setCppIsSetParamConstCmd
+  setCppIsSetParamConstCmd,
+  setCppEnumReturnCmd,
+  setCppReturnCmd,
+  setCppIsSetParamRefCmd,
+  setCppRelativePathCmd,
+  setCppForceNamespaceGenCmd,
+  setCppRootRelativePathCmd,
+  setCppJavadocStyleCmd
 
 };
 #endif

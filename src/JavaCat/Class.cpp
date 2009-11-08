@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -45,6 +45,7 @@
 #include "JavaSettings.h"
 #include "JavaCatWindow.h"
 #ifdef REVERSE
+#include "UmlArtifact.h"
 #include "Statistic.h"
 #include "UmlExtraClassMember.h"
 
@@ -62,6 +63,9 @@ Class::Class(BrowserNode * p, const char * n, char st)
       uml(0), stereotype(st), abstractp(FALSE), reversedp(FALSE),
 #ifdef REVERSE
       from_lib(FALSE)
+# ifdef ROUNDTRIP
+      , updated(FALSE)
+# endif
 #else
       description_updatedp(FALSE)
 #endif
@@ -73,50 +77,99 @@ Class::Class(BrowserNode * p, const char * n, char st)
   ((Package *) p)->new_class(this);
 }
 
+#ifdef ROUNDTRIP
+Class::Class(BrowserNode * p, UmlClass * ucl)
+    : BrowserNode(p, ucl->name()),
+      uml(ucl), abstractp(FALSE), reversedp(FALSE), from_lib(FALSE), updated(FALSE) {
+  QCString st = ucl->stereotype();
+  
+  if (!st.isEmpty())
+    st = JavaSettings::classStereotype(st);
+    
+  stereotype = *((const char *) st);
+  
+  // in case the package is java[.*] the (sub)class is exported
+  while (!p->isa_package())
+    p = (BrowserNode *) p->parent();
+  
+  ((Package *) p)->new_class(this);
+}
+#endif
+
 UmlClass * Class::get_uml() {
+#ifndef ROUNDTRIP
   if (uml != 0)
     return uml;
-
-  UmlItem * p = (((BrowserNode *) parent())->isa_package())
-    ? (UmlItem *) ((Package *) parent())->get_uml()->get_classview()
-    : (UmlItem *) ((Class *) parent())->get_uml();
-  QCString str = QCString(text(0));
-			  
-  uml = UmlBaseClass::create(p, str);
+#else
+  bool roundtrip;
+  bool abstract_relevant = TRUE;
+  
+  if (uml != 0) {
+    if (!uml->is_roundtrip_expected() ||
+	!uml->is_useless())
+      return uml;
     
-  if (uml == 0) {
-    // probably already exist
-    QVector<UmlItem> ch = p->children();
-    UmlItem * x;
+    uml->set_usefull();
+    roundtrip = TRUE;
+  }
+  else {
+    roundtrip = FALSE;    
+#endif
+  
+    UmlItem * p = (((BrowserNode *) parent())->isa_package())
+      ? (UmlItem *) ((Package *) parent())->get_uml()->get_classview()
+      : (UmlItem *) ((Class *) parent())->get_uml();
+    QCString str = QCString(text(0));
     
-    for (unsigned chindex = 0; chindex != ch.size(); chindex += 1) {
-      if (((x = ch[chindex])->kind() == aClass) && (x->name() == str)) {
-	uml = (UmlClass *) x;
-	break;
-      }
-    }
+    uml = UmlBaseClass::create(p, str);
     
     if (uml == 0) {
+      // probably already exist
+      const QVector<UmlItem> & ch = p->children();
+      UmlItem ** v = ch.data();
+      UmlItem ** const vsup = v + ch.size();
+      UmlItem * x;
+      
+      for (;v != vsup; v += 1) {
+	if (((x = *v)->kind() == aClass) && (x->name() == str)) {
+	  uml = (UmlClass *) x;
+	  break;
+	}
+      }
+      
+      if (uml == 0) {
 #ifdef REVERSE
-      UmlCom::message("");
-      UmlCom::trace(QString("<font face=helvetica><b>cannot create class <i>")
-		    + text(0) + "</i> under <i>"
-		    + parent()->text(0) + "</b></font><br>");
-      throw 0;
+	UmlCom::message("");
+	UmlCom::trace(QString("<font face=helvetica><b>cannot create class <i>")
+		      + text(0) + "</i> under <i>"
+		      + parent()->text(0) + "</b></font><br>");
+	throw 0;
 #else
-      QMessageBox::critical(0, "Fatal Error", 
-			    QString("<font face=helvetica><b>cannot create class <i>")
-			    + text(0) + "</i> under <i>"
-			    + parent()->text(0) + "</b></font><br>");
-      QApplication::exit(1);
+	QMessageBox::critical(0, "Fatal Error", 
+			      QString("<font face=helvetica><b>cannot create class <i>")
+			      + text(0) + "</i> under <i>"
+			      + parent()->text(0) + "</b></font><br>");
+	QApplication::exit(1);
 #endif
+      }
     }
+#ifdef ROUNDTRIP
+    uml->set_created();
   }
+#endif
   
   switch (stereotype) {
   case 'i':
-    uml->set_Stereotype("interface");
-    uml->set_JavaDecl(JavaSettings::interfaceDecl());
+#ifdef ROUNDTRIP
+    abstract_relevant = FALSE;
+    
+    if (!roundtrip || (uml->stereotype() != "interface"))
+#endif
+      uml->set_Stereotype("interface");
+#ifdef ROUNDTRIP
+    if (!roundtrip || (uml->javaDecl() != JavaSettings::interfaceDecl()))
+#endif
+      uml->set_JavaDecl(JavaSettings::interfaceDecl());
     break;
   case '@':
     {
@@ -126,25 +179,117 @@ UmlClass * Class::get_uml() {
       if (index != -1)
 	s.insert(index, '@');
       
-      uml->set_Stereotype("@interface");
-      uml->set_JavaDecl(s);
+#ifdef ROUNDTRIP
+      if (roundtrip) {
+	if (uml->stereotype() != "@interface") {
+	  uml->set_Stereotype("@interface");
+	  set_updated();
+	}
+	if (neq(uml->javaDecl(), s)) {
+	  uml->set_JavaDecl(s);
+	  set_updated();
+	}
+	abstract_relevant = FALSE;
+      }
+      else {
+#endif
+	uml->set_Stereotype("@interface");
+	uml->set_JavaDecl(s);
+#ifdef ROUNDTRIP
+      }
+#endif
     }
     break;
   case 'e':
-    uml->set_Stereotype("enum");
-    uml->set_JavaDecl(JavaSettings::enumDecl());
+#ifdef ROUNDTRIP
+    if (roundtrip) {
+      if (uml->stereotype() != "enum") {
+	uml->set_Stereotype("enum");
+	set_updated();
+      }
+      if (neq(uml->javaDecl(), JavaSettings::enumDecl())) {
+	uml->set_JavaDecl(JavaSettings::enumDecl());
+	set_updated();
+      }
+    }
+    else {
+#endif
+      uml->set_Stereotype("enum");
+      uml->set_JavaDecl(JavaSettings::enumDecl());
+#ifdef ROUNDTRIP
+    }
+#endif
     break;
   default:
     // class
+#ifdef ROUNDTRIP
+    if (roundtrip) {
+      if (!uml->stereotype().isEmpty()) {
+	uml->set_Stereotype("");
+	set_updated();
+      }
+      if (neq(uml->javaDecl(), JavaSettings::classDecl())) {
+	uml->set_JavaDecl(JavaSettings::classDecl());
+	set_updated();
+      }
+    }
+#endif
     break;
   }
   
+#ifdef ROUNDTRIP
+  if (roundtrip) {
+    if (abstract_relevant && (uml->isAbstract() != abstractp)) {
+      uml->set_isAbstract(abstractp);
+      set_updated();
+    }
+  }
+  else
+#endif
   if (abstractp)
-    uml->set_isAbstract(TRUE);
+    uml->set_isAbstract(abstractp);
   
   unsigned rank;
   FormalParameterList::ConstIterator it;
   
+#ifdef ROUNDTRIP
+  if (roundtrip) {
+    QValueList<UmlFormalParameter> fs = uml->formals();
+    QValueList<UmlFormalParameter>::ConstIterator it2;
+    
+    for (rank = 0, it = formals.begin(), it2 = fs.begin();
+	 (it != formals.end()) && (it2 != fs.end());
+	 it++, it2++, rank += 1) {
+      const UmlFormalParameter & p1 = *it;
+      const UmlFormalParameter & p2 = *it2;
+      
+      if (neq(p1.name(), p2.name()) || !p1.extend().equal(p2.extend())) {
+	uml->replaceFormal(rank, p1);
+	set_updated();
+      }
+    }
+    
+    if (it != formals.end()) {
+      // have missing formals
+      set_updated();
+      do {
+	uml->addFormal(rank, *it);
+	it++;
+	rank += 1;
+      } while (it != formals.end());
+    }
+    else if (it2 != fs.end()) {
+      // have extra formals
+      set_updated();
+      do {
+	uml->removeFormal(rank);
+	it2++;
+	rank += 1;
+      } while (it2 != fs.end());
+    }
+  }
+  else
+#endif
   for (rank = 0, it = formals.begin(); it != formals.end(); it++, rank += 1)
     uml->addFormal(rank, *it);
   
@@ -153,15 +298,19 @@ UmlClass * Class::get_uml() {
   return uml;
 }
 
+#ifndef ROUNDTRIP
 bool Class::already_in_bouml() {
-  QVector<UmlItem> ch = get_uml()->children();
+  const QVector<UmlItem> & ch = get_uml()->children();
+  UmlItem ** v = ch.data();
+  UmlItem ** const vsup = v + ch.size();
   
-  for (unsigned index = 0; index != ch.size(); index += 1)
-    if (ch[index]->kind() != aClass)
+  for (;v != vsup; v += 1)
+    if ((*v)->kind() != aClass)
       return TRUE;
 
   return FALSE;
 }
+#endif
 
 // note : 'tmplts' must be given by value to not have to
 // remove the may be added formals in all the return cases
@@ -169,7 +318,11 @@ bool Class::already_in_bouml() {
 bool Class::reverse(ClassContainer * container, QCString stereotype,
 		    QCString annotation, bool abstractp, bool finalp,
 		    aVisibility visibility, QCString & path, 
-		    QValueList<FormalParameterList> tmplts)
+		    QValueList<FormalParameterList> tmplts
+#ifdef ROUNDTRIP
+		    , bool rndtrp, QList<UmlItem> & expectedorder
+#endif
+)
 {
   QCString comment = Lex::get_comments();
   QCString description = Lex::get_description();
@@ -179,11 +332,36 @@ bool Class::reverse(ClassContainer * container, QCString stereotype,
     return FALSE;
   
   Class * cl = container->define(name, *((const char *) stereotype));
-  UmlClass * cl_uml = 0;
-    
+  
   if ((cl == 0) || cl->reversedp)
     return FALSE;
   
+#ifdef ROUNDTRIP
+  UmlClass * cl_uml = cl->uml;
+  
+  if ((cl_uml != 0) &&
+      !cl_uml->is_roundtrip_expected() &&
+      !cl_uml->is_created()) {
+    // bypass all the class
+    // note : user can't ask for update a nested class
+    char c;
+    
+    while ((c = Lex::read_word_bis()) != '{') {
+      if (c == 0) {
+	Lex::premature_eof();
+	throw 0;
+      }
+    }
+    UmlOperation::skip_body(1);
+    return TRUE;
+  }
+  
+  bool roundtrip = FALSE;
+  QList<UmlItem> expected_order;
+#else
+  UmlClass * cl_uml = 0;
+#endif
+    
   if (Package::scanning()) {
     cl->abstractp = abstractp;
     cl->filename = path;
@@ -192,18 +370,66 @@ bool Class::reverse(ClassContainer * container, QCString stereotype,
 #endif
   }
   else {
-#ifdef REVERSE
-    Statistic::one_class_more();
-#endif
-    cl->reversedp = TRUE;
-    
+    cl->reversedp = TRUE;    
     cl_uml = cl->get_uml();
     
+#ifdef ROUNDTRIP
+    if (cl_uml->is_created())
+      Statistic::one_class_created_more();
+    else
+      roundtrip = TRUE;
+#else
     if (cl->already_in_bouml()) {
       cl_uml->unload();
       return FALSE;
     }
+# ifdef REVERSE
+    Statistic::one_class_more();
+# endif
+#endif
     
+#ifdef ROUNDTRIP
+    if (roundtrip) {
+      if (cl_uml->javaDecl().find("${description}") != -1) {
+	if (nequal(cl_uml->description(), description)) {
+	  cl_uml->set_Description(description);
+	  cl->set_updated();
+	}
+      }
+      else if (nequal(cl_uml->description(), Lex::simplify_comment(comment))) {
+	// comment simplified
+	cl_uml->set_Description(comment);
+	cl->set_updated();
+      }
+      
+      if (cl_uml->visibility() != visibility) {
+	cl_uml->set_Visibility(visibility);
+	cl->set_updated();
+      }
+      
+      if (nequal(cl_uml->javaAnnotations(), annotation)) {
+	cl_uml->set_JavaAnnotations(annotation);
+	cl->set_updated();
+      }
+      
+      if (cl_uml->isAbstract() != abstractp) {
+	switch (cl->stereotype) {
+	case 'i':
+	case '@':
+	  break;
+	default:
+	  cl_uml->set_isAbstract(abstractp);
+	  cl->set_updated();
+	}
+      }
+      
+      if (cl_uml->isJavaFinal() != finalp) {
+	cl_uml->set_isJavaFinal(finalp);
+	cl->set_updated();
+      }
+    }
+    else {
+#endif
     if (! comment.isEmpty())
       cl_uml->set_Description((cl_uml->javaDecl().find("${description}") != -1)
 			      ? description : Lex::simplify_comment(comment));
@@ -218,6 +444,9 @@ bool Class::reverse(ClassContainer * container, QCString stereotype,
     
     if (finalp)
       cl_uml->set_isJavaFinal(finalp);
+#ifdef ROUNDTRIP
+    }
+#endif
   }
   
   QCString s = Lex::read_word();
@@ -242,9 +471,12 @@ bool Class::reverse(ClassContainer * container, QCString stereotype,
   }
   
   if (Package::scanning()) {
-    while (s != "{") {
-      if ((s = Lex::read_word()).isEmpty())
-	return FALSE;
+    if (s != "{") {
+      char c;
+      
+      while ((c = Lex::read_word_bis()) != '{')
+	if (c == 0)
+	  return FALSE;
     }
   }
   else {
@@ -256,14 +488,26 @@ bool Class::reverse(ClassContainer * container, QCString stereotype,
 	return FALSE;
       }
       else if ((cl->stereotype != 'i')
-	       ? !cl->manage_extends(container, tmplts)
-	       : !cl->manage_implements(container, aGeneralisation, tmplts))
+	       ? !cl->manage_extends(container, tmplts
+#ifdef ROUNDTRIP
+				     , roundtrip, expected_order
+#endif
+				     )
+	       : !cl->manage_implements(container, aGeneralisation, tmplts
+#ifdef ROUNDTRIP
+					, roundtrip, expected_order
+#endif
+					))
 	return FALSE;
       s = Lex::read_word();
     }
     
     if (s == "implements") {
-      if (! cl->manage_implements(container, aRealization, tmplts))
+      if (! cl->manage_implements(container, aRealization, tmplts
+#ifdef ROUNDTRIP
+				  , roundtrip, expected_order
+#endif
+				  ))
 	return FALSE;
       s = Lex::read_word();
     }
@@ -277,7 +521,12 @@ bool Class::reverse(ClassContainer * container, QCString stereotype,
     }
   }
   
-  if ((cl->stereotype == 'e') && !cl->manage_enum_items()) {
+  if ((cl->stereotype == 'e') &&
+      !cl->manage_enum_items(
+#ifdef ROUNDTRIP
+			     roundtrip, expected_order
+#endif
+			     )) {
     if (! Package::scanning())
       cl_uml->unload();
     return FALSE;
@@ -296,7 +545,11 @@ bool Class::reverse(ClassContainer * container, QCString stereotype,
 #endif
     if (s == ";")
       ;
-    else if (! cl->manage_member(s, path)) {
+    else if (! cl->manage_member(s, path
+#ifdef ROUNDTRIP
+				 , roundtrip, expected_order
+#endif
+				 )) {
       if (! Package::scanning())
 	cl_uml->unload();
       return FALSE;
@@ -304,27 +557,82 @@ bool Class::reverse(ClassContainer * container, QCString stereotype,
   }
   
   if (! Package::scanning()) {
-    if (cl->stereotype == 'e')
+    if (cl->stereotype == 'e') {
       // may be not abstract even an oper is abstract
-      cl_uml->set_isAbstract(abstractp);
+#ifdef ROUNDTRIP
+      if (roundtrip) {
+	if (cl_uml->isAbstract() != abstractp) {
+	  cl_uml->set_isAbstract(abstractp);
+	  cl->set_updated();
+	}
+      }
+      else
+#endif
+	cl_uml->set_isAbstract(abstractp);
+    }
     
 #ifdef REVERSE
-    if (!cl->from_libp() && ((BrowserNode *) cl->parent())->isa_package()) {
-      Package * pack = (Package *) cl->parent();
+# ifdef ROUNDTRIP
+    if (roundtrip) {
+      if (!cl->from_libp() && ((BrowserNode *) cl->parent())->isa_package()) {
+	if (CurrentArtifact == 0) {
+	  // roundtriped class was moved in an other file
+	  Package * pack = (Package *) cl->parent();
+	  
+	  cl_uml->need_artifact(pack->get_imports(), pack->is_java_lang_added(),
+				pack->get_static_imports(), path, CurrentArtifact);
+	}
+	else if (CurrentArtifact->is_fully_updated()) {
+	  if (CurrentArtifact->associatedClasses().isEmpty()) {
+	    // first association, to set artifact def
+	    Package * pack = (Package *) cl->parent();
+	    UmlArtifact * nullptr = 0;
+	    
+	    CurrentArtifact->addAssociatedClass(cl_uml);
+	    cl_uml->need_artifact(pack->get_imports(), pack->is_java_lang_added(),
+				  pack->get_static_imports(), path, nullptr);
+	  }
+	  else
+	    CurrentArtifact->addAssociatedClass(cl_uml);
+	}
+      }
       
-      cl_uml->need_artifact(pack->get_imports(), pack->is_java_lang_added(),
-			    pack->get_static_imports(), CurrentArtifact);
+      cl_uml->reorder(expected_order);
+      if (cl->updated) {
+	Statistic::one_class_updated_more();
+	
+	UmlCom::trace(QString("<font face=helvetica>class <i>")
+		      + cl->text(0) + "</i> updated from <i>"
+		      + Lex::filename() + "</i></font><br>");
+      }
     }
+    else {
+# endif
+      if (!cl->from_libp() && ((BrowserNode *) cl->parent())->isa_package()) {
+	Package * pack = (Package *) cl->parent();
+	
+	cl_uml->need_artifact(pack->get_imports(), pack->is_java_lang_added(),
+			      pack->get_static_imports(), path, CurrentArtifact);
+      }
 #endif
-    
-    cl_uml->unload();
+      
+      cl_uml->unload();
+    }
+#ifdef ROUNDTRIP
+    if (rndtrp)
+      expectedorder.append(cl_uml);
   }
+#endif
   
   return TRUE;
 }
 
 bool Class::manage_extends(ClassContainer * container, 
-			   const QValueList<FormalParameterList> & tmplts) {
+			   const QValueList<FormalParameterList> & tmplts
+#ifdef ROUNDTRIP
+			   , bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			   ) {
   // out of scanning
 #ifdef TRACE
   cout << name() << "->manage_extends()\n";
@@ -352,11 +660,19 @@ bool Class::manage_extends(ClassContainer * container,
   else
     inherit(typespec.type);
   
-  return add_inherit(aGeneralisation, typespec, actuals, str_actuals);
+  return add_inherit(aGeneralisation, typespec, actuals, str_actuals
+#ifdef ROUNDTRIP
+		     , roundtrip, expected_order
+#endif
+		     );
 }
 
 bool Class::manage_implements(ClassContainer * container, aRelationKind k,
-			      const QValueList<FormalParameterList> & tmplts) {
+			      const QValueList<FormalParameterList> & tmplts
+#ifdef ROUNDTRIP
+			      , bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			      ) {
   // out of scanning
 #ifdef TRACE
   cout << name() << "->manage_implements()\n";
@@ -385,7 +701,11 @@ bool Class::manage_implements(ClassContainer * container, aRelationKind k,
     else
       inherit(typespec.type);
   
-    if (!add_inherit(k, typespec, actuals, str_actuals))
+    if (!add_inherit(k, typespec, actuals, str_actuals
+#ifdef ROUNDTRIP
+		     , roundtrip, expected_order
+#endif
+		     ))
       return FALSE;
     
     QCString s = Lex::read_word();
@@ -396,7 +716,7 @@ bool Class::manage_implements(ClassContainer * container, aRelationKind k,
     }
     
     if (s != ",") {
-      Lex::error_near(s);
+      Lex::error_near(s, " ',' expected");
       return FALSE;
     }
   }
@@ -404,15 +724,95 @@ bool Class::manage_implements(ClassContainer * container, aRelationKind k,
 
 bool Class::add_inherit(aRelationKind k, UmlTypeSpec & typespec,
 			QValueList<UmlTypeSpec> & actuals, 
-			QCString & str_actuals) {
-  unsigned actual_rank = 
-    (typespec.explicit_type.isEmpty() && !actuals.isEmpty())
-      ? uml->actuals().count()
-      : 0;
+			QCString & str_actuals
+#ifdef ROUNDTRIP
+			, bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			) {
+  if (!actuals.isEmpty())
+    k = aRealization;  
+  
+  UmlRelation * rel;
+
+#ifdef ROUNDTRIP
+  if (roundtrip) {
+    const QVector<UmlItem> & ch = uml->children();
+    UmlItem ** v = ch.data();
+    UmlItem ** const vsup = v + ch.size();
+    UmlItem * x;
     
-  UmlRelation * rel =
-    UmlRelation::create((actuals.isEmpty()) ? k : aRealization,
-			uml, typespec.type);
+    rel = 0;
+    
+    for (;v != vsup; v += 1) {
+      if (((x = *v)->kind() == aRelation) &&
+	  (((UmlRelation *) x)->roleType() == typespec.type)) {
+	aRelationKind rk = ((UmlRelation *) x)->relationKind();
+	
+	if ((rk == aRealization) || (rk == aGeneralisation)) {
+	  rel = (UmlRelation *) x;
+	  rel->set_usefull();
+	  
+	  if (rk != k)
+	    rel->set_rel_kind(k);
+	  
+	  QCString expected_decl;
+	  
+	  if (!typespec.explicit_type.isEmpty())
+	    expected_decl = typespec.explicit_type;
+	  else if (actuals.isEmpty())
+	    expected_decl = "${type}";
+	  else {
+	    if (rel->stereotype() != "bind") {
+	      rel->set_Stereotype("bind");
+	      set_updated();
+	    }
+	    
+	    QValueList<UmlActualParameter> current_actuals = uml->actuals();
+	    QValueList<UmlActualParameter>::ConstIterator iter_current;
+	    
+	    // search for first corresponding actual
+	    for (iter_current = current_actuals.begin(); 
+		 iter_current != current_actuals.end();
+		 iter_current++)
+	      if ((*iter_current).superClass() == typespec.type)
+		break;
+	    
+	    if (iter_current == current_actuals.end())
+	      // something wrong
+	      expected_decl = "${type}" + str_actuals;
+	    else  {
+	      expected_decl = "${type}";
+	      
+	      QValueList<UmlTypeSpec>::ConstIterator iter = actuals.begin();
+	      
+	      do {
+		if (!(*iter).equal((*iter_current).value())) {
+		  uml->replaceActual((*iter_current).rank(), *iter);
+		  set_updated();
+		}
+		iter++;
+		iter_current++;
+	      } while ((iter != actuals.end()) &&
+		       (iter_current != current_actuals.end()) &&
+		       ((*iter_current).superClass() == typespec.type));
+	    }
+	  }
+	  
+	  if (neq(rel->javaDecl(), expected_decl)) {
+	    rel->set_JavaDecl(expected_decl);
+	    set_updated();
+	  }
+	  
+	  expected_order.append(rel);
+	  
+	  return TRUE;
+	}
+      }
+    }
+  }
+#endif
+  
+  rel = UmlRelation::create(k, uml, typespec.type);
   
   if (rel == 0) {
 #ifdef TRACE
@@ -421,23 +821,32 @@ bool Class::add_inherit(aRelationKind k, UmlTypeSpec & typespec,
     return FALSE;
   }
   
-#ifdef REVERSE
+#ifdef ROUNDTRIP
+  set_updated();
+  expected_order.append(rel);
+#elif defined(REVERSE)
   Statistic::one_relation_more();
 #endif
 
   if (!typespec.explicit_type.isEmpty())
     rel->set_JavaDecl(typespec.explicit_type);
   else if (actuals.count() > typespec.type->formals().count())
+    // something wrong
     rel->set_JavaDecl("${type}" + str_actuals);
   else {
-    QValueList<UmlTypeSpec>::ConstIterator iter;
-    
-    for (iter = actuals.begin(); iter != actuals.end(); iter++)
-      uml->replaceActual(actual_rank++, *iter);
-    
     rel->set_JavaDecl("${type}");
-    if (! actuals.isEmpty())
+    
+    if (! actuals.isEmpty()) {
+      QValueList<UmlTypeSpec>::ConstIterator iter;
+      unsigned actual_rank = (typespec.explicit_type.isEmpty())
+	? uml->actuals().count()
+	: 0;
+    
+      for (iter = actuals.begin(); iter != actuals.end(); iter++)
+	uml->replaceActual(actual_rank++, *iter);
+    
       rel->set_Stereotype("bind");
+    }
   }
   
   return TRUE;
@@ -458,6 +867,14 @@ void Class::inherit(Class * cl) {
       
       Lex::push_context();
       Package::push_context();
+#ifdef ROUNDTRIP
+      if ((cl->uml != 0) && !cl->uml->is_created()) {
+	if (cl->uml->is_roundtrip_expected())
+	  ((Package *) cl->parent())->reverse_file(QCString(f),
+						   cl->uml->associatedArtifact());
+      }
+      else
+#endif
       ((Package *) cl->parent())->reverse_file(QCString(f));
       Lex::pop_context();
       Package::pop_context();
@@ -485,10 +902,12 @@ void Class::inherit(Class * cl) {
 // this inherits uml_cl => it knowns uml_cl's sub-classes
 void Class::inherit(UmlClass * uml_cl, QCString header) {
   QVector<UmlItem> ch = uml_cl->children();
+  UmlItem ** v = ch.data();
+  UmlItem ** const vsup = v + ch.size();
   UmlItem * x;
   
-  for (unsigned chindex = 0; chindex != ch.size(); chindex += 1) {
-    if ((x = ch[chindex])->kind() == aClass) {
+  for (;v != vsup; v += 1) {
+    if ((x = *v)->kind() == aClass) {
       QCString s = (header.isEmpty()) ? x->name() : header + x->name();
       
       user_defined.replace(s, (UmlClass *) x);
@@ -513,7 +932,7 @@ bool Class::get_formals(FormalParameterList & tmplt, bool name_only,
     
     if (!Lex::identifierp(n)) {
       if (! Package::scanning())
-	Lex::error_near(n);
+	Lex::error_near(n, " identifier expected");
       return FALSE;
     }
     
@@ -543,9 +962,7 @@ bool Class::get_formals(FormalParameterList & tmplt, bool name_only,
 	  if (level-- == 0)
 	    break;
 	}
-	else if (s == "]")
-	  level -= 1;
-	else if ((s == "<") || (s == "["))
+	else if (s == "<")
 	  level += 1;
 	else if (s.isEmpty()) {
 	  if (! Package::scanning())
@@ -574,7 +991,11 @@ bool Class::get_formals(FormalParameterList & tmplt, bool name_only,
   return TRUE;
 }
 
-bool Class::manage_member(QCString s, QCString & path) {
+bool Class::manage_member(QCString s, QCString & path
+#ifdef ROUNDTRIP
+			  , bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			  ) {
   aVisibility visibility;
   
   switch (stereotype) {
@@ -597,7 +1018,7 @@ bool Class::manage_member(QCString s, QCString & path) {
   bool m_transientp = FALSE;
   bool m_volatilep = FALSE;
   bool first_var = TRUE;
-  QCString array_before_name;	// type [] var, ...;
+  QCString array_before_name;
   QCString array;
   UmlTypeSpec type;
   bool type_read = FALSE;
@@ -631,8 +1052,14 @@ bool Class::manage_member(QCString s, QCString & path) {
 	else {
 	  Lex::mark();
 	  UmlOperation::skip_body(1);
+	  
+#ifdef ROUNDTRIP
+	  UmlExtraClassMember::add_init(get_uml(), "  static {" + Lex::region(),
+					roundtrip, expected_order);
+#else
 	  UmlExtraClassMember::create(get_uml(), "initialization")->
 	    set_JavaDecl("  static {" + Lex::region());
+#endif
 	}
 #else
 	UmlOperation::skip_body(1);
@@ -670,8 +1097,13 @@ bool Class::manage_member(QCString s, QCString & path) {
       else {
 	Lex::mark();
 	UmlOperation::skip_body(1);
+#ifdef ROUNDTRIP
+	UmlExtraClassMember::add_init(get_uml(), "  {" + Lex::region(),
+				      roundtrip, expected_order);
+#else
 	UmlExtraClassMember::create(get_uml(), "initialization")->
 	  set_JavaDecl("  {" + Lex::region());
+#endif
       }
 #else
       UmlOperation::skip_body(1);
@@ -698,7 +1130,7 @@ bool Class::manage_member(QCString s, QCString & path) {
       }
       
       if (!type_read) {
-	  Lex::error_near("(");
+	  Lex::error_near("(", " type missing");
 #ifdef TRACE
 	  cout << "ERROR '(' and type not yet read\n";
 #endif
@@ -723,7 +1155,11 @@ bool Class::manage_member(QCString s, QCString & path) {
 				   type, str_actuals, first_actual_class, type_def,
 				   visibility, m_finalp, m_abstractp,
 				   m_staticp, m_nativep, m_strictfp, m_synchronizedp,
-				   array, comment, description, annotation);
+				   array, comment, description, annotation
+#ifdef ROUNDTRIP
+				   , roundtrip, expected_order
+#endif
+				   );
     }
     else if (s == "=") {
       // initialized variable, by pass value
@@ -733,6 +1169,8 @@ bool Class::manage_member(QCString s, QCString & path) {
 	return TRUE;
       
       value = Lex::region();
+      if (value.isEmpty())
+	Lex::error_near("=", " value is missing");
       
       char c = ((const char *) value)[value.length() - 1];
       
@@ -741,8 +1179,7 @@ bool Class::manage_member(QCString s, QCString & path) {
 	s = (c == ';') ? ";" : ",";
       }
       else if (((s = Lex::read_word()) != ";") && (s != ","))
-	Lex::error_near(s);
-      value.insert(0, "= ");
+	Lex::error_near(s, " ';' or ',' expected");
       continue;
     }
     else if ((s == ";") || (s == ",")) {
@@ -765,20 +1202,32 @@ bool Class::manage_member(QCString s, QCString & path) {
 	   JavaSettings::umlType(genericname).isEmpty())) {
 	if (!UmlRelation::new_one(this, name, type, str_actuals, visibility,
 				  m_staticp, m_finalp, m_transientp, m_volatilep,
-				  array, value, comment, description, annotation))
+				  array, value, comment, description, annotation
+#ifdef ROUNDTRIP
+				  , roundtrip, expected_order
+#endif
+				  ))
 	  return FALSE;
       }
       else if (first_actual_class != 0) {
 	if (!UmlRelation::new_one(this, name, first_actual_class,
 				  type_def, genericname, visibility,
 				  m_staticp, m_finalp, m_transientp, m_volatilep,
-				  array, value, comment, description, annotation))
+				  array, value, comment, description, annotation
+#ifdef ROUNDTRIP
+				  , roundtrip, expected_order
+#endif
+				  ))
 	  return FALSE;
       }
       else if (!UmlAttribute::new_one(this, name, type, visibility,
 				      m_staticp, m_finalp, m_transientp,
 				      m_volatilep, array, value, 
-				      comment, description, annotation))
+				      comment, description, annotation
+#ifdef ROUNDTRIP
+				      , roundtrip, expected_order
+#endif
+				      ))
 	return FALSE;
       
       if (s == ";")
@@ -793,11 +1242,15 @@ bool Class::manage_member(QCString s, QCString & path) {
       if ((s == "class") || (s == "enum") ||
 	  (s == "interface") || (s == "@interface"))
 	return reverse(this, s, annotation, m_abstractp, m_finalp,
-		       visibility, path, tmplts);
+		       visibility, path, tmplts
+#ifdef ROUNDTRIP
+		       , roundtrip, expected_order
+#endif
+		       );
       
       if (!type_read) {
 	if (! ((Package::scanning()) 
-	       ? bypass_type(s)
+	       ? Lex::bypass_type(s)
 	       : read_type(type, 0, tmplts, 0, str_actuals, s, 
 			   &first_actual_class, type_def, genericname)))
 	  return FALSE;
@@ -852,7 +1305,11 @@ bool Class::manage_member(QCString s, QCString & path) {
   }
 }
 
-bool Class::manage_enum_items() {
+bool Class::manage_enum_items(
+#ifdef ROUNDTRIP
+			      bool roundtrip, QList<UmlItem> & expected_order
+#endif
+			      ) {
   UmlClass * cl_uml = (Package::scanning()) ? 0 : get_uml();
   QCString s;
   
@@ -870,10 +1327,14 @@ bool Class::manage_enum_items() {
     }
     else if (! Lex::identifierp(s)) {
       if (! Package::scanning())
-	Lex::error_near(s);
+	Lex::error_near(s, " identifier expected");
       return FALSE;
     }
-    else if (! UmlAttribute::manage_enum_item(s, cl_uml))
+    else if (! UmlAttribute::manage_enum_item(s, cl_uml
+#ifdef ROUNDTRIP
+					      , roundtrip, expected_order
+#endif
+					      ))
       return FALSE;
   }
 }
@@ -890,6 +1351,20 @@ Class * Class::define(const QCString & name, char st) {
   
   return cl;
 }
+
+#ifdef ROUNDTRIP
+Class * Class::upload_define(UmlClass * ucl) {
+  Class * cl = new Class(this, ucl);
+  
+  declare(ucl->name(), cl);
+  
+  return cl;
+}
+
+Class * Class::localy_defined(QString name) const {
+  return Defined[name];
+}
+#endif
 
 void Class::compute_type(QCString name, UmlTypeSpec & typespec,
 			 const QValueList<FormalParameterList> & tmplts,
@@ -978,7 +1453,6 @@ QString Class::get_path() const {
 }
 
 #ifndef REVERSE
-
 const QPixmap* Class::pixmap(int) const {
   return ((stereotype == 'i') || (stereotype == '@'))
     ? InterfaceIcon : ClassIcon;
@@ -1224,7 +1698,7 @@ void Class::backup(QDataStream  & dt) const {
   dt << ((Q_INT8) '@');
 }
 
-#endif // REVERSE
+#endif
 
 void Class::restore(QDataStream  & dt, char c, BrowserNode * parent)
 {
@@ -1251,22 +1725,33 @@ void Class::restore(QDataStream  & dt, char c, BrowserNode * parent)
     d[len] = 0;
   }
 
-  Class * cl = new Class(parent, n, ((c == 'c') || (c == 'i')) ? c : (c - 'A' + 'a'));
+  Class * cl;
+  
+#ifdef ROUNDTRIP
+  if ((cl = parent->localy_defined(n)) != 0)
+    cl->from_lib = TRUE;
+  else {
+#endif
+    cl = new Class(parent, n, ((c == 'c') || (c == 'i')) ? c : (c - 'A' + 'a'));
   
 #ifdef REVERSE
-  cl->from_lib = TRUE;
+    cl->from_lib = TRUE;
 #endif
   
-  QCString name(n);
-  
-  parent->declare(n, cl);
-  
-  if ((c == 'i') || (c == 'c'))
-    cl->abstractp = TRUE;
-  
-  cl->filename = fn;
+    QCString name(n);
+    
+    parent->declare(n, cl);
+    
+    if ((c == 'i') || (c == 'c'))
+      cl->abstractp = TRUE;
+    
+    cl->filename = fn;
 #ifndef REVERSE
-  cl->description = d;
+    cl->description = d;
+#endif
+  
+#ifdef ROUNDTRIP
+  }
 #endif
   
   delete [] n;

@@ -20,6 +20,11 @@ class UmlBaseSequenceMessage : public UmlMessage {
         return _kind;
     }
 
+    // return the stereotype of the message
+    QCString stereotype() const {
+        return _stereotype;
+    }
+
     // return the fragment compartment containing the message
     UmlFragmentCompartment * fragment() const {
         return _fragment;
@@ -53,6 +58,8 @@ class UmlBaseSequenceMessage : public UmlMessage {
     int _received_at;
 
     QCString _args;
+
+    QCString _stereotype;
 
     // internal, don't call it
     void read_(const QPtrDict<UmlClassInstanceReference> & instances, const QVector<UmlFragment> & fragments);

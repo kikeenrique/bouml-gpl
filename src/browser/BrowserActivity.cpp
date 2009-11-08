@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -55,6 +55,7 @@
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserActivity> BrowserActivity::all(__FILE__);
 QStringList BrowserActivity::its_default_stereotypes;	// unicode
@@ -117,6 +118,15 @@ void BrowserActivity::update_idmax_for_root()
   BrowserActivityPartition::update_idmax_for_root();
   BrowserFlow::update_idmax_for_root();
 }
+
+void BrowserActivity::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
+}
     
 void BrowserActivity::referenced_by(QList<BrowserNode> & l, bool ondelete) {
   BrowserNode::referenced_by(l, ondelete);
@@ -158,7 +168,7 @@ BrowserActivity * BrowserActivity::add_activity(BrowserNode * future_parent)
 {
   QString name;
   
-  return (!future_parent->enter_child_name(name, "enter activity's name : ",
+  return (!future_parent->enter_child_name(name, TR("enter activity's name : "),
 					   UmlActivity, TRUE, FALSE))
     
     ? 0
@@ -189,7 +199,7 @@ BrowserActivity * BrowserActivity::get_activity(BrowserNode * parent)
   BrowserNode * old;
   QString name;
   
-  if (!parent->enter_child_name(name, "enter activity's name : ",
+  if (!parent->enter_child_name(name, TR("enter activity's name : "),
 				UmlActivity, l, &old,
 				TRUE, FALSE))
     return 0;
@@ -208,7 +218,7 @@ BrowserActivity * BrowserActivity::get_activity(BrowserNode * parent)
 BrowserNode * BrowserActivity::add_parameter(BrowserParameter * param) {
   QString name;
   
-  if (enter_child_name(name, "enter parameter's name : ",
+  if (enter_child_name(name, TR("enter parameter's name : "),
 		       UmlParameter, TRUE, FALSE)) {
     param = (param == 0) ? new BrowserParameter(name, this)
 			 : (BrowserParameter *) param->duplicate(this, name);
@@ -232,55 +242,55 @@ void BrowserActivity::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("New activity diagram", 0),
-		     "to add a <em>activity diagram</em>");
-      m.setWhatsThis(m.insertItem("New parameter", 1),
-		     "to add a <em>Parameter</em> to the <em>activity</em>");
-      m.setWhatsThis(m.insertItem("New interruptible activity region", 2),
-		     "to add an <em>Interruptible Activity Region</em> to the <em>activity</em>");
-      m.setWhatsThis(m.insertItem("New expansion region", 3),
-		     "to add a nested <em>expansion region</em>");
-      m.setWhatsThis(m.insertItem("New partition", 4),
-		     "to add a <em>Partition</em> to the <em>activity</em>");
-      m.setWhatsThis(m.insertItem("New activity action", 7),
-		     "to add an <em>activity action</em> to the <em>activity</em>");
-      m.setWhatsThis(m.insertItem("New object node", 8),
-		     "to add an <em>activity object node</em> to the <em>activity</em>");
+      m.setWhatsThis(m.insertItem(TR("New activity diagram"), 0),
+		     TR("to add a <i>activity diagram</i>"));
+      m.setWhatsThis(m.insertItem(TR("New parameter"), 1),
+		     TR("to add a <i>Parameter</i> to the <i>activity</i>"));
+      m.setWhatsThis(m.insertItem(TR("New interruptible activity region"), 2),
+		     TR("to add an <i>Interruptible Activity Region</i> to the <i>activity</i>"));
+      m.setWhatsThis(m.insertItem(TR("New expansion region"), 3),
+		     TR("to add a nested <i>expansion region</i>"));
+      m.setWhatsThis(m.insertItem(TR("New partition"), 4),
+		     TR("to add a <i>Partition</i> to the <i>activity</i>"));
+      m.setWhatsThis(m.insertItem(TR("New activity action"), 7),
+		     TR("to add an <i>activity action</i> to the <i>activity</i>"));
+      m.setWhatsThis(m.insertItem(TR("New object node"), 8),
+		     TR("to add an <i>activity object node</i> to the <i>activity</i>"));
       m.insertSeparator();
     }
-    m.setWhatsThis(m.insertItem("Edit", 5),
-		   "to edit the <em>artivity</em>, \
-a double click with the left mouse button does the same thing");
+    m.setWhatsThis(m.insertItem(TR("Edit"), 5),
+		   TR("to edit the <i>artivity</i>, \
+a double click with the left mouse button does the same thing"));
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("Duplicate", 6),
-		     "to copy the <em>activity</em> in a new one");
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 6),
+		     TR("to copy the <i>activity</i> in a new one"));
       m.insertSeparator();
       if (edition_number == 0)
-	m.setWhatsThis(m.insertItem("Delete", 9),
-		       "to delete the <em>activity</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 9),
+		       TR("to delete the <i>activity</i>. \
+Note that you can undelete it after"));
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("Referenced by", 12),
-		   "to know who reference the <i>activity</i>");
-    mark_menu(m, "activity", 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 12),
+		   TR("to know who reference the <i>activity</i>"));
+    mark_menu(m, TR("activity"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 10),
-		   "to undelete the <em>activity</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 10),
+		   TR("to undelete the <i>activity</i>"));
  
     QListViewItem * child;
   
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("Undelete recursively", 11),
-		       "undelete the activity and its children");
+	m.setWhatsThis(m.insertItem(TR("Undelete recursively"), 11),
+		       TR("undelete the activity and its children"));
 	break;
       }
     }
@@ -320,7 +330,7 @@ void BrowserActivity::exec_menu_choice(int rank) {
     {
       QString name;
       
-      if (((BrowserNode *) parent())->enter_child_name(name, "enter activity's name : ",
+      if (((BrowserNode *) parent())->enter_child_name(name, TR("enter activity's name : "),
 						       UmlActivity, TRUE, FALSE))
 	duplicate((BrowserNode *) parent(), name)->select_in_browser();
     }
@@ -582,7 +592,7 @@ bool BrowserActivity::tool_cmd(ToolCom * com, const char * args) {
 	    else {
 	      BrowserNode * end = (BrowserNode *) com->get_id(args);
 	      
-	      if (may_connect(end) == 0)
+	      if (may_connect(end).isEmpty())
 		add_relation(c, end)->get_browser_node()->write_id(com);
 	      else
 		ok = FALSE;
@@ -657,7 +667,7 @@ bool BrowserActivity::may_contains_them(const QList<BrowserNode> & l,
 }
 
 // connexion by a dependency
-const char * BrowserActivity::may_connect(const BrowserNode * dest) const {
+QString BrowserActivity::may_connect(const BrowserNode * dest) const {
   switch (dest->get_type()) {
   case UmlPackage:
   case UmlActivity:
@@ -665,7 +675,7 @@ const char * BrowserActivity::may_connect(const BrowserNode * dest) const {
   case UmlActivityObject:
     return 0;
   default:
-    return "illegal";
+    return TR("illegal");
   }
 }
 
@@ -724,7 +734,7 @@ void BrowserActivity::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     if (may_contains(bn, FALSE)) 
       move(bn, after);
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -794,7 +804,7 @@ void BrowserActivity::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -854,7 +864,7 @@ BrowserActivity * BrowserActivity::read(char * & st, char * k,
       k = read_keyword(st);
     }
     
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     result->is_read_only = (!in_import() && read_only_file()) || 
       ((user_id() != 0) && result->is_api_base());

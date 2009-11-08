@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -34,54 +34,52 @@ class StateSpec {
       is3states, isClassDrawingMode, isDrawingLanguage, isShowContextMode, isMemberWidth
     };
   
-    const char * name;
+    QString name;
     void * state;
     kind who;
     
-    void set(const char * n, Uml3States * s) {
+    void set(QString n, Uml3States * s) {
       name = n;
       state = s;
       who = is3states;
     };
-    void set(const char * n, ClassDrawingMode * s) {
+    void set(QString n, ClassDrawingMode * s) {
       name = n;
       state = s;
       who = isClassDrawingMode;
     };
-    void set(const char * n, DrawingLanguage * s) {
+    void set(QString n, DrawingLanguage * s) {
       name = n;
       state = s;
       who = isDrawingLanguage;
     };
-    void set(const char * n, ShowContextMode * s) {
+    void set(QString n, ShowContextMode * s) {
       name = n;
       state = s;
       who = isShowContextMode;
     };
-    void set(const char * n, char * s) {
+    void set(QString n, char * s) {
       name = n;
       state = s;
       who = isMemberWidth;
     };
     
-    void set_state(int v) {
-      switch (who) {
-      case is3states:
-	*((Uml3States *) state) = (Uml3States) v;
-	break;
-      case isClassDrawingMode:
-	*((ClassDrawingMode *) state) = (ClassDrawingMode) v;
-	break;
-      case isDrawingLanguage:
-	*((DrawingLanguage *) state) = (DrawingLanguage) v;
-	break;
-      case isShowContextMode:
-	*((ShowContextMode *) state) = (ShowContextMode) v;
-	break;
-      default:
-	*((char *) state) = v;
-      };
-    };
+    void set_state(int v);
+};
+
+class StateSpecVector {
+  public:
+    StateSpecVector() : _size(0), _v(0) {}
+    StateSpecVector(int s) : _size(s) { _v = new StateSpec[s]; }
+    ~StateSpecVector() { if (_v) delete [] _v; }
+    int size() const { return _size; }
+    void resize(int s);
+    StateSpec & operator[] (int i) const { return _v[i]; }
+    StateSpec & at (int i) const { return _v[i]; }
+    
+  private:
+    int _size;
+    StateSpec * _v;
 };
 
 #endif

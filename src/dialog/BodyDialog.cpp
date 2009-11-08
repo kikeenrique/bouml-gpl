@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,6 +35,7 @@
 #include "UmlDesktop.h"
 #include "strutil.h"
 #include "Tool.h"
+#include "translate.h"
 
 QSize BodyDialog::previous_size;
 
@@ -62,8 +63,8 @@ BodyDialog::BodyDialog(QString t, QTabDialog * d, post_edit pf,
   
   QVBoxLayout * vbox = new QVBoxLayout(this);
 
-  vbox->addWidget(new QLabel((f == 0) ? "Note : operation bodies preserved"
-				      : "You can specify the editor through the environment variable BOUML_EDITOR",
+  vbox->addWidget(new QLabel((f == 0) ? TR("Note : operation bodies preserved")
+				      : TR("You can specify the editor through the environment dialog"),
 			     this));
   
   e = new MultiLineEdit(this);

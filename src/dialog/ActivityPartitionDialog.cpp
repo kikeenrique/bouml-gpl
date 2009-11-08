@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -48,6 +48,7 @@
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
 #include "BrowserView.h"
+#include "translate.h"
 
 QSize ActivityPartitionDialog::previous_size;
 
@@ -55,14 +56,16 @@ ActivityPartitionDialog::ActivityPartitionDialog(ActivityPartitionData * d)
     : QTabDialog(0, 0, FALSE, WDestructiveClose), data(d) {
   d->browser_node->edit_start();
   
-  if (d->browser_node->is_writable())
-    setCancelButton();
+  if (d->browser_node->is_writable()) {
+    setOkButton(TR("OK"));
+    setCancelButton(TR("Cancel"));
+  }
   else {
     setOkButton(QString::null);
-    setCancelButton("Close");
+    setCancelButton(TR("Close"));
   }
 
-  setCaption("Activity Partition dialog");
+  setCaption(TR("Activity Partition dialog"));
   
   bool visit = !hasOkButton();
   
@@ -75,24 +78,24 @@ ActivityPartitionDialog::ActivityPartitionDialog(ActivityPartitionData * d)
   grid->setMargin(5);
   grid->setSpacing(5);
 
-  new QLabel("name : ", grid);
+  new QLabel(TR("name : "), grid);
   edname = new LineEdit(bn->get_name(), grid);
   edname->setReadOnly(visit);
     
-  new QLabel("stereotype : ", grid);
+  new QLabel(TR("stereotype : "), grid);
   edstereotype = new QComboBox(!visit, grid);
   edstereotype->insertItem(toUnicode(data->get_stereotype()));
   if (! visit) {
     edstereotype->insertStringList(BrowserActivityPartition::default_stereotypes());
     edstereotype->insertStringList(ProfiledStereotypes::defaults(UmlActivityPartition));
-    edstereotype->setAutoCompletion(TRUE);
+    edstereotype->setAutoCompletion(completion());
   }
   edstereotype->setCurrentItem(0);
   QSizePolicy sp = edstereotype->sizePolicy();
   sp.setHorData(QSizePolicy::Expanding);
   edstereotype->setSizePolicy(sp);
   
-  connect(new SmallPushButton("represents :", grid), SIGNAL(clicked()),
+  connect(new SmallPushButton(TR("represents :"), grid), SIGNAL(clicked()),
 	  this, SLOT(menu_represents()));
   edrepresents = new QComboBox(FALSE, grid);
   if ((data->represents != 0) && !data->represents->deletedp()) {
@@ -114,21 +117,21 @@ ActivityPartitionDialog::ActivityPartitionDialog(ActivityPartitionData * d)
   new QLabel(grid);
   htab = new QHBox(grid);
   new QLabel("  ", htab);
-  dimension_cb = new QCheckBox("is dimension", htab);
+  dimension_cb = new QCheckBox(TR("is dimension"), htab);
   if (data->is_dimension)
     dimension_cb->setChecked(TRUE);
   dimension_cb->setDisabled(visit);
   new QLabel("", htab);
-  external_cb = new QCheckBox("is external", htab);
+  external_cb = new QCheckBox(TR("is external"), htab);
   if (data->is_external)
     external_cb->setChecked(TRUE);
   external_cb->setDisabled(visit);
   new QLabel("", htab);
   
   QVBox * vtab = new QVBox(grid);
-  new QLabel("description :", vtab);
+  new QLabel(TR("description :"), vtab);
   if (! visit)
-    connect(new SmallPushButton("Editor", vtab), SIGNAL(clicked()),
+    connect(new SmallPushButton(TR("Editor"), vtab), SIGNAL(clicked()),
 	    this, SLOT(edit_description()));
   comment = new MultiLineEdit(grid);
   comment->setReadOnly(visit);
@@ -148,7 +151,7 @@ ActivityPartitionDialog::ActivityPartitionDialog(ActivityPartitionData * d)
   grid->setSpacing(5);
   
   kvtable = new KeyValuesTable(bn, grid, visit);
-  addTab(grid, "Properties");
+  addTab(grid, TR("Properties"));
   
   //
     
@@ -214,20 +217,20 @@ void ActivityPartitionDialog::menu_represents() {
   
   QPopupMenu m(0);
 
-  m.insertItem("Choose", -1);
+  m.insertItem(TR("Choose"), -1);
   m.insertSeparator();
   if (represented != 0)
-    m.insertItem("Select in browser", 0);
+    m.insertItem(TR("Select in browser"), 0);
 
   BrowserNode * bn = BrowserView::selected_item();
     
   if ((bn != 0) && allowed(bn))
-    m.insertItem("Choose element selected in browser", 1);
+    m.insertItem(TR("Choose element selected in browser"), 1);
   
   const QList<BrowserNode> & l = BrowserNode::marked_nodes();
   
   if ((l.count() == 1) && allowed(l.getFirst()))
-    m.insertItem("Choose element marked in browser", 2);
+    m.insertItem(TR("Choose element marked in browser"), 2);
   
   switch (m.exec(QCursor::pos())) {
   case 0:
@@ -261,7 +264,7 @@ void ActivityPartitionDialog::accept() {
 	((BrowserNode *) bn->parent())->wrong_child_name(s, bn->get_type(),
 							 bn->allow_spaces(),
 							 bn->allow_empty())) {
-      msg_critical("Error", edname->text() + "\n\nillegal name or already used");
+      msg_critical(TR("Error"), edname->text() + TR("\n\nillegal name or already used"));
       return;
     }
     else

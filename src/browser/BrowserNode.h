@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -30,6 +30,7 @@
 #include <qlist.h> 
 #include <qlistview.h> 
 #include <qstringlist.h>
+#include <qdict.h>
 
 #include "UmlEnum.h"
 #include "HaveKeyValueData.h"
@@ -66,9 +67,10 @@ class BrowserNode : public QListViewItem,
   protected:
     MyStr name;
     MyStr comment;
-    bool is_deleted;
-    bool is_modified;
+    int original_id;	// from project library
     bool is_new;	// backup file useless
+    bool is_deleted;
+    bool is_modified : 1;
     bool is_read_only : 1;
     bool is_edited : 1;
     bool is_marked : 1;
@@ -98,7 +100,7 @@ class BrowserNode : public QListViewItem,
     BrowserNode(QString s, BrowserNode * parent);
     virtual ~BrowserNode();
     
-    bool is_undefined() const;
+    virtual bool is_undefined() const;
     
     const char * get_name() const { return name; };
     virtual void set_name(const char * s);
@@ -116,6 +118,10 @@ class BrowserNode : public QListViewItem,
     bool markedp() const { return is_marked; }
     static const QList<BrowserNode> & marked_nodes() { return marked_list; }
     static void unmark_all();
+    
+    bool is_from_lib() const { return original_id != 0; }
+    virtual void prepare_update_lib() const = 0;
+    virtual void support_file(QDict<char> & files, bool add) const;
     
     virtual bool is_writable() const;	// file writable & not api base
     virtual void delete_it();
@@ -190,7 +196,7 @@ class BrowserNode : public QListViewItem,
     virtual QList<BrowserNode> parents() const;
     BrowserNode * get_container(UmlCode) const;
     virtual BrowserNode * container(UmlCode) const; // container for class, state machine and activity
-    virtual const char * check_inherit(const BrowserNode * parent) const;
+    virtual QString check_inherit(const BrowserNode * parent) const;
     virtual void write_id(ToolCom * com);
     virtual bool tool_cmd(ToolCom * com, const char * args);
     virtual bool api_compatible(unsigned v) const;
@@ -205,7 +211,7 @@ class BrowserNode : public QListViewItem,
     void save(QTextStream &) const;
     static void save_progress_closed();
     virtual void init_save_counter();
-    void read(char * &, char * & k);
+    void read(char * &, char * & k, int id);
     static BrowserNode * read_any_ref(char * &, char *);
     static void save_stereotypes(QTextStream & st, 
 				 QStringList relations_stereotypes[]);
@@ -266,7 +272,8 @@ class BrowserNodeList : public QList<BrowserNode> {
   
   public:
     void search(BrowserNode * bn, UmlCode k, const QString & s,
-		bool cs, bool even_deleted, bool for_name);
+		bool cs, bool even_deleted, bool for_name,
+		bool for_stereotype);
     void search_ddb(BrowserNode * bn, UmlCode k, const QString & s,
 		    bool cs, bool even_deleted);
   

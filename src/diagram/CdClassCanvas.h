@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -53,6 +53,9 @@ class CdClassCanvas : public QObject, public DiagramCanvas,
     ClassDrawingMode used_view_mode;
     bool indicate_visible_attr : 2;
     bool indicate_visible_oper : 2;
+    bool manual_size : 2;
+    int width_min;
+    int height_min;
     QString full_name;
     QValueList<BrowserNode *> hidden_visible_attributes;
     QValueList<BrowserNode *> hidden_visible_operations;
@@ -67,7 +70,7 @@ class CdClassCanvas : public QObject, public DiagramCanvas,
     
     virtual void delete_it();
     
-    void compute_size();
+    void check_size();
     virtual bool has_relation(BasicData *) const;
     bool has_inner(DiagramItem * end) const;
     void draw_all_relations(CdClassCanvas * end = 0);
@@ -86,13 +89,16 @@ class CdClassCanvas : public QObject, public DiagramCanvas,
     virtual void remove(bool from_model);
     virtual void open();
     virtual void menu(const QPoint&);
-    virtual const char * may_start(UmlCode &) const;
-    virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
+    virtual QString may_start(UmlCode &) const;
+    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual void post_connexion(UmlCode, DiagramItem *);
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
+    virtual aCorner on_resize_point(const QPoint & p);
+    virtual void resize(aCorner c, int dx, int dy, QPoint &);
     virtual bool move_with_its_package() const;
     virtual void moveBy(double dx, double dy);
     virtual void set_z(double z);	// only called by upper() & lower()
+    virtual void history_save(QBuffer &) const;
     virtual void history_load(QBuffer &);
     virtual void history_hide();
     

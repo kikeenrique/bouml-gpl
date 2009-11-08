@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -169,7 +169,7 @@ void UmlRelation::generate_decl(aVisibility & current_visibility, QTextOStream &
 	QValueList<UmlFormalParameter>::ConstIterator it;
 	
 	for (it = formals.begin(); it != formals.end(); ++it) {
-	  f_h << sep << (*it).name();
+	  f_h << sep << (*it).type() << ' ' << (*it).name();
 	  sep = ", ";
 	}
 	
@@ -179,7 +179,7 @@ void UmlRelation::generate_decl(aVisibility & current_visibility, QTextOStream &
 	f_h << "  ";
       
       f_h << "friend " << roleType()->cpp_stereotype() << " ";
-      roleType()->write(f_h);
+      roleType()->write(f_h, FALSE);
       f_h << ";\n";
       first = FALSE;
     }

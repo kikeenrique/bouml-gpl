@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -50,6 +50,7 @@
 #include "strutil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserExpansionNode> BrowserExpansionNode::all(257, __FILE__);
 QStringList BrowserExpansionNode::its_default_stereotypes;	// unicode
@@ -79,7 +80,7 @@ BrowserExpansionNode *
   BrowserNode * old = 0;
   QString name;
   
-  if (!future_parent->enter_child_name(name, "enter expansion node's \nname (may be empty) : ",
+  if (!future_parent->enter_child_name(name, TR("enter expansion node's \nname (may be empty) : "),
 				       UmlExpansionNode, TRUE, TRUE))
     return 0;
     
@@ -117,6 +118,15 @@ void BrowserExpansionNode::update_idmax_for_root()
 {
   all.update_idmax_for_root();
 }
+
+void BrowserExpansionNode::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
+}
     
 void BrowserExpansionNode::renumber(int phase) {
   if (phase != -1)
@@ -143,33 +153,33 @@ BasicData * BrowserExpansionNode::add_relation(UmlCode, BrowserNode * end) {
 }
 
 // a flow may be added in all the cases
-const char * BrowserExpansionNode::may_start() const {
+QString BrowserExpansionNode::may_start() const {
   return 0;
 }
 
 // connexion by a flow
-const char * BrowserExpansionNode::may_connect(const BrowserNode * dest) const {
+QString BrowserExpansionNode::may_connect(const BrowserNode * dest) const {
   BrowserNode * container = dest->get_container(UmlActivity);
   
   if (container == 0)
-    return "illegal";
+    return TR("illegal");
   
   if (get_container(UmlActivity) != container)
-    return "not in the same activity";
+    return TR("not in the same activity");
   
   const BrowserActivityElement * elt =
     dynamic_cast<const BrowserActivityElement *>(dest);
   
   return (elt == 0)
-    ? "illegal"
+    ? TR("illegal")
     : elt->connexion_from(def->get_is_control());
 }
 
-const char * BrowserExpansionNode::connexion_from(bool control) const {
+QString BrowserExpansionNode::connexion_from(bool control) const {
   if (control != def->get_is_control())
     return (control)
-      ? "expansion node can't accept control flow (not 'is_control')"
-      : "expansion node can't accept data flow (is 'is_control')";
+      ? TR("expansion node can't accept control flow (not 'is_control')")
+      : TR("expansion node can't accept data flow (is 'is_control')");
   else
     return 0;
 }
@@ -178,7 +188,7 @@ void BrowserExpansionNode::menu() {
   QString s = name;
   
   if (s.isEmpty())
-    s = "expansion node";
+    s = TR("expansion node");
   
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
@@ -187,31 +197,31 @@ void BrowserExpansionNode::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited)
-    m.setWhatsThis(m.insertItem("Edit", 0),
-		   "to edit the <em>expansion node</em>, \
-a double click with the left mouse button does the same thing");
+    m.setWhatsThis(m.insertItem(TR("Edit"), 0),
+		   TR("to edit the <i>expansion node</i>, \
+a double click with the left mouse button does the same thing"));
     if (!is_read_only && (edition_number == 0)) {
-      m.setWhatsThis(m.insertItem("Duplicate", 1),
-		     "to copy the <em>expansion node</em> in a new one");
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 1),
+		     TR("to copy the <i>expansion node</i> in a new one"));
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("Delete", 2),
-		     "to delete the <em>expansion node</em>. \
-Note that you can undelete it after");
+      m.setWhatsThis(m.insertItem(TR("Delete"), 2),
+		     TR("to delete the <i>expansion node</i>. \
+Note that you can undelete it after"));
     }
-    m.setWhatsThis(m.insertItem("Referenced by", 4),
-		   "to know who reference the <i>expansion node</i> \
-through a flow");
-    mark_menu(m, "expansion node", 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 4),
+		   TR("to know who reference the <i>expansion node</i> \
+through a flow"));
+    mark_menu(m, TR("expansion node"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("Undelete", 3),
-		   "to undelete the <em>expansion node</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 3),
+		   TR("to undelete the <i>expansion node</i>"));
   
   exec_menu_choice(m.exec(QCursor::pos()));
 }
@@ -225,7 +235,7 @@ void BrowserExpansionNode::exec_menu_choice(int rank) {
     {
       QString name;
       
-      if (((BrowserNode *) parent())->enter_child_name(name, "enter expansion node's \nname (may be empty) : ",
+      if (((BrowserNode *) parent())->enter_child_name(name, TR("enter expansion node's \nname (may be empty) : "),
 						       UmlExpansionNode, TRUE, TRUE))
 	duplicate((BrowserNode *) parent(), name)->select_in_browser();
     }
@@ -280,7 +290,7 @@ void BrowserExpansionNode::apply_shortcut(QString s) {
 
 void BrowserExpansionNode::open(bool) {
   if (!is_edited)
-    def->edit("Expansion Node", its_default_stereotypes);
+    def->edit(TR("Expansion Node"), its_default_stereotypes);
 }
 
 void BrowserExpansionNode::modified() {
@@ -356,7 +366,7 @@ bool BrowserExpansionNode::tool_cmd(ToolCom * com, const char * args) {
 	  {
 	    BrowserNode * end = (BrowserNode *) com->get_id(args);
 	    
-	    if (may_connect(end) == 0)
+	    if (may_connect(end).isEmpty())
 	      (new BrowserFlow(this, end))->write_id(com);
 	    else
 	      ok = FALSE;
@@ -464,7 +474,7 @@ void BrowserExpansionNode::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -520,7 +530,7 @@ BrowserExpansionNode *
     }
     
     result->is_defined = TRUE;
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     if (strcmp(k, "end")) {
       while (BrowserFlow::read(st, k, result))

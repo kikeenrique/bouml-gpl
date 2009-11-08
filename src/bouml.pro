@@ -382,6 +382,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  dialog/DialogUtil.cpp \
 		  dialog/GenerationSettingsDialog.cpp \
 		  dialog/SettingsDialog.cpp \
+		  dialog/StateSpec.cpp \
 		  dialog/KeyValueTable.cpp \
 		  dialog/MLEDialog.cpp \
 		  dialog/SourceDialog.cpp \
@@ -449,6 +450,7 @@ SOURCES		= browser/BrowserAttribute.cpp \
 		  misc/strutil.cpp \
 		  misc/Shortcut.cpp \
 		  misc/ProfiledStereotypes.cpp \
+		  misc/translate.cpp \
 		  tool/Tool.cpp \
 		  tool/ToolCom.cpp \
 		  xpm/UmlPixmap.cpp

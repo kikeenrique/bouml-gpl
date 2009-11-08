@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -33,6 +33,7 @@
 
 class SdDurationCanvas;
 class OperationData;
+class LabelCanvas;
 class ToolCom;
 
 class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
@@ -45,6 +46,7 @@ class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
     MyStr explicit_msg;
     const OperationData * msg;
     MyStr args;
+    LabelCanvas * stereotype;
     UmlCode itsType;
     bool already_moved;
     Uml3States show_full_oper;
@@ -55,6 +57,7 @@ class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
 		    UmlCode l, int v, int id);
   
     void update_label();
+    void update_st(QString st);
     
   public:
     virtual ~SdMsgBaseCanvas();
@@ -69,6 +72,7 @@ class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
     void set_synchronous(bool yes);
     void update_after_move(SdDurationCanvas * p);
     void default_label_position() const;
+    void default_stereotype_position() const;
     virtual void update_hpos() = 0;
     virtual void check_vpos(const QRect &) = 0;
     virtual double min_y() const = 0;
@@ -77,10 +81,11 @@ class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
     virtual int overlap_dir(SdDurationCanvas *) const = 0;
     
     virtual bool is_decenter(const QPoint &, bool &) const;
+    virtual void setVisible(bool yes);
 
     virtual UmlCode type() const;
-    virtual const char * may_start(UmlCode &) const;
-    virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
+    virtual QString may_start(UmlCode &) const;
+    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual void delete_available(bool & in_model, bool & out_model) const;
     virtual void open();
     virtual void select_associated() = 0;
@@ -98,7 +103,8 @@ class SdMsgBaseCanvas : public QObject, public DiagramCanvas {
     
     void send(ToolCom * com, int fromid) const;
     static void send(ToolCom * com, int fromid, unsigned x, unsigned y,
-		     UmlMessageKind k, const char * m, const char * a);
+		     UmlMessageKind k, const char * m,
+		     const char * s, const char * a);
   
   protected slots:
     void modified();	// canvas must be updated

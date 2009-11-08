@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -52,6 +52,7 @@
 #include "mu.h"
 #include "UmlGlobal.h"
 #include "err.h"
+#include "translate.h"
 
 // QFile::baseName() return string before the first '.' rather than the last
 
@@ -673,8 +674,8 @@ UmlVisibility visibility(const char * s)
   else if (!strcmp(s, "default"))
     return UmlDefaultVisibility;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not a visibility");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not a visibility"));
   THROW_ERROR 0;
 }
 
@@ -689,8 +690,8 @@ UmlParamDirection direction(const char * s)
   if (!strcmp(s, "return"))
     return UmlReturn;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not a direction");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not a direction"));
   THROW_ERROR 0;
 }
 
@@ -707,8 +708,8 @@ UmlParamEffect effect(const char * s)
   if (!strcmp(s, "delete"))
     return UmlDelete;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not a parameter effect");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not a parameter effect"));
   THROW_ERROR 0;
 }
 
@@ -757,8 +758,8 @@ UmlActionKind activity_action_kind(const char * s)
   if (!strcmp(s, "reduce_action"))
     return UmlReduceAction;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not an activity action kind");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not an activity action kind"));
   THROW_ERROR 0;
 }
 
@@ -771,8 +772,8 @@ UmlExpansionKind expansion_mode_kind(const char * s)
   if (! strcmp(s, "stream"))
     return UmlStream;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not an expansion node kind");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not an expansion node kind"));
   THROW_ERROR 0;
 }
 
@@ -787,8 +788,8 @@ UmlOrderingKind ordering(const char * s)
   if (! strcmp(s, "fifo"))
     return UmlFifo;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not an ordering");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not an ordering"));
   THROW_ERROR 0;
 }
 
@@ -801,8 +802,8 @@ Uml3States state(const char * s)
   if (!strcmp(s, "default"))
     return UmlDefaultState;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not a state");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not a state"));
   THROW_ERROR 0;
 }
 
@@ -823,8 +824,8 @@ ClassDrawingMode drawing_mode(const char * s)
   if (!strcmp(s, "default"))
     return DefaultClassDrawingMode;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not a class drawing mode");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not a class drawing mode"));
   THROW_ERROR 0;
 }
 
@@ -845,8 +846,8 @@ DrawingLanguage drawing_language(const char * s)
   if (!strcmp(s, "default"))
     return DefaultDrawingLanguage;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not a drawing language");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not a drawing language"));
   THROW_ERROR 0;
 }
 
@@ -867,8 +868,8 @@ ShowContextMode context_mode(const char * s)
   if (!strcmp(s, "default"))
     return DefaultShowContextMode;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not a context mode");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not a context mode"));
   THROW_ERROR 0;
 }
 
@@ -940,8 +941,8 @@ UmlColor color(const char * s)
   if (! strcmp(s, "darkmagenta"))
     return UmlDarkMagenta;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not a color");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not a color"));
   THROW_ERROR 0;
 }
 
@@ -976,8 +977,8 @@ UmlFont font(const char * s)
   if (!strcmp(s, "strikeout"))
     return UmlNormalStrikeOutFont;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not a font");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not a font"));
   THROW_ERROR 0;
 }
 
@@ -1041,8 +1042,8 @@ CanvasFormat canvas_format(const char * s)
   if (! strcmp(s, "Ledger"))
     return UsLedger;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not a canvas format");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not a canvas format"));
   THROW_ERROR 0;
 }
 
@@ -1071,8 +1072,8 @@ UmlCode pseudo_state_kind(const char * s)
   if (! strcmp(s, "join"))
     return JoinPS;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not a pseudo state kind");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not a pseudo state kind"));
   THROW_ERROR 0;
 }
 
@@ -1093,8 +1094,8 @@ UmlCode activity_node_kind(const char * s)
   if (! strcmp(s, "join"))
     return JoinAN;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not an activity node kind");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not an activity node kind"));
   THROW_ERROR 0;
 }
 
@@ -1113,8 +1114,8 @@ LineGeometry line_geometry(const char * s)
   if (! strcmp(s, "VHV"))
     return VHVGeometry;
   
-  msg_critical("Error",
-	       Context.filename + " : " + s + " is not a line geometry");
+  msg_critical(TR("Error"),
+	       Context.filename + " : " + s + TR(" is not a line geometry"));
   THROW_ERROR 0;
 }
 
@@ -1155,8 +1156,8 @@ void backup(QDir & d, QString fn)
 	 !d.rename(fn, fn + s) &&
 	 (msg_warning("Uml",
 		      d.absFilePath(fn) + 
-		      "\ncannot be renamed " + fn + s + 
-		      ", retry ?\n",
+		      TR("\ncannot be renamed ") + fn + s + 
+		      TR(", retry ?\n"),
 		      QMessageBox::Yes, QMessageBox::No)
 	  == QMessageBox::Yes))
     ;
@@ -1190,8 +1191,8 @@ int open_file(QFile & fp, int mode, bool silent)
 	(msg_critical("Uml",
 		      Context.filename +
 		      ((mode != IO_ReadOnly)
-		       ? "\ncannot be opened for write, retry ?\n"
-		       : "\ncannot be opened for read, retry ?\n"),
+		       ? TR("\ncannot be opened for write, retry ?\n")
+		       : TR("\ncannot be opened for read, retry ?\n")),
 		      QMessageBox::Yes, QMessageBox::No)
 	 != QMessageBox::Yes))
       return -1;
@@ -1215,11 +1216,7 @@ bool copy_file(QFileInfo * src, const QDir & dest)
   FILE * fp_src;
   
   if ((fp_src = fopen((const char *) src_path, "rb")) == 0) {
-    QString err;
-    
-    err.sprintf("cannot open %s to read it", (const char *) src_path);
-    
-    msg_critical("Error", err);
+    msg_critical("Error", TR("cannot open %1 to read it", src_path));
     return FALSE;
   }
 
@@ -1227,11 +1224,7 @@ bool copy_file(QFileInfo * src, const QDir & dest)
   FILE * fp_dest;
     
   if ((fp_dest = fopen((const char *) dest_path, "wb")) == 0) {
-    QString err;
-    
-    err.sprintf("cannot create %s", (const char *) dest_path);
-    
-    msg_critical("Error", err);
+    msg_critical("Error", TR("cannot create %1", dest_path));
     fclose(fp_src);
     return FALSE;
   }
@@ -1241,11 +1234,7 @@ bool copy_file(QFileInfo * src, const QDir & dest)
 
   while ((n = fread(b, 1, sizeof(b) - 1, fp_src)) > 0) {
     if (fwrite(b, 1, n, fp_dest) != n) {
-      QString err;
-      
-      err.sprintf("error when writing %s", (const char *) dest_path);
-      
-      msg_critical("Error", err);
+      msg_critical("Error", TR("error when writing %1", dest_path));
       fclose(fp_src);
       fclose(fp_dest);
       return FALSE;
@@ -1253,11 +1242,7 @@ bool copy_file(QFileInfo * src, const QDir & dest)
   }
   
   if (! feof(fp_src)) {
-    QString err;
-    
-    err.sprintf("error when reading %s", (const char *) src_path);
-    
-    msg_critical("Error", err);
+    msg_critical("Error", TR("error when reading %1", src_path));
     fclose(fp_src);
     fclose(fp_dest);
     return FALSE;
@@ -1300,14 +1285,14 @@ void save_if_needed(const char * filename, const char * newdef)
     
     for (;;) {
       while ((fp = fopen((const char *) path, "wb")) == 0)
-	(void) msg_critical("Error", QString("Cannot create file\n") + path,
+	(void) msg_critical("Error", TR("Cannot create file\n") + path,
 			    QMessageBox::Retry);
       
       if ((newdef != 0) && *newdef) {
 	if (fputs(newdef, fp) < 0) {
 	  fclose(fp);
-	  (void) msg_critical("Error", QString("Error while writting in\n") + path +
-			      "\nmay be your disk is full",
+	  (void) msg_critical(TR("Error"),
+			      TR("Error while writting in\n%1\nmay be your disk is full", path),
 			      QMessageBox::Retry);
 	}
 	else
@@ -1336,7 +1321,7 @@ char * read_file(QString filename)
     char * s = new char[size + 1];
     
     if (fp.readBlock(s, size) == -1) {
-      msg_critical("Error", filename + "cannot be read");
+      msg_critical(TR("Error"), TR("%1 cannot be read", filename));
       delete [] s;
       return 0;
     }
@@ -1398,7 +1383,7 @@ char * read_file(QString filename, int offset, int len)
     
     fp.at(offset);
     if (fp.readBlock(s, len) == -1) {
-      msg_critical("Error", filename + "cannot be read");
+      msg_critical(TR("Error"), TR("%1 cannot be read", filename));
       delete [] s;
       return 0;
     }
@@ -1463,14 +1448,16 @@ void save_definition(int id, const char * ext, const char * def,
   
   for (;;) {
     while ((fp = fopen((const char *) s, "wb")) == 0)
-      (void) msg_critical("Error", QString("Cannot create file\n") + s,
+      (void) msg_critical(TR("Error"),
+			  TR("Cannot create file\n") + s,
 			  QMessageBox::Retry);
     
     if ((def != 0) && *def) {
       if (fputs(def, fp) < 0) {
 	fclose(fp);
-	(void) msg_critical("Error", QString("Cannot save definition in\n") + s +
-			    "\nmay be your disk is full",
+	(void) msg_critical(TR("Error"),
+			    TR("Cannot save definition in\n%1\nmay be your disk is full",
+			       s),
 			    QMessageBox::Retry);
       }
       else
@@ -1512,7 +1499,7 @@ void read_in(const QString & s)
 
 static QString where()
 {
-  return Context.filename + " line " + QString::number(Context.linenum) + "\n";
+  return Context.filename + TR(" line ") + QString::number(Context.linenum) + "\n";
 }
 
 //
@@ -1644,61 +1631,53 @@ char * read_string(char * & st)
   skip_whitespace_comment(st);
 
   if (*st == 0) {
-    msg_critical("Error", 
-		 where() + "premature end of file, string expected");
+    msg_critical(TR("Error"), 
+		 where() + TR("premature end of file, string expected"));
     THROW_ERROR 0;
   }
     
   if (*st != '"') {
-    msg_critical("Error", 
-			  where() + "string expected after '"
-			  + QString(Context.previous_word) + "'");
+    msg_critical(TR("Error"), 
+		 where() + TR("string expected after '%1'",
+			      Context.previous_word));
     THROW_ERROR 0;
   }
   
   char * r = st + 1;
+  char * p = r;
   
   for (;;) {
     switch (*++st) {
     case 0:
-      msg_critical("Error",
-			    where() + "premature end of file reading a string");
+      msg_critical(TR("Error"),
+		   where() + TR("premature end of file reading a string"));
       THROW_ERROR 0;
     case '"':
       Context.removed_char = ' ';
       *st++ = 0;
+      *p = 0;
       if (Context.previous_word_allocated)
 	delete [] Context.previous_word;
       else
 	Context.previous_word_allocated = TRUE;
-      {
-	char * p = r;
-	char * p2;
-	
-	while ((p2 = strchr(p, '\\')) != 0) {
-	  strcpy(p2, p2 + 1);
-	  p = p2 + 1;
-	}
-	
-	p = r;
-	
-	while ((p2 = strchr(p, '\r')) != 0) {
-	  strcpy(p2, p2 + 1);
-	  p = p2 + 1;
-	}
-      }
-      Context.previous_word = new char[st - r + 1];
-      memcpy(Context.previous_word, r, st - r + 1);
+      Context.previous_word = new char[p - r + 1];
+      memcpy(Context.previous_word, r, p - r + 1);
       return r;
     case '\\':
       if (*++st  == 0) {
-	msg_critical("Error",
-			      where() + "premature end of file reading a string");
+	msg_critical(TR("Error"),
+		     where() + TR("premature end of file reading a string"));
 	THROW_ERROR 0;
       }
+      *p++ = *st;
+      break;
+    case '\r':
       break;
     case '\n':
       Context.linenum += 1;
+      // no break
+    default:
+      *p++ = *st;
     }
   }
 }
@@ -1708,15 +1687,16 @@ char * read_keyword(char * & st)
   skip_whitespace_comment(st);
 
   if (*st == 0) {
-    msg_critical("Error",
-			  where() + "premature end of file, keyword expected");
+    msg_critical(TR("Error"),
+		 where() + TR("premature end of file, keyword expected"));
     THROW_ERROR 0;
   }
   
   if (*st == '"') {
-    msg_critical("Error",
-		 where() + "keyword expected after '"
-		 + QString(Context.previous_word) + "'");
+    msg_critical(TR("Error"),
+		 where() +
+		 TR("keyword expected after '%1'",
+		    Context.previous_word));
     THROW_ERROR 0;
   }
   
@@ -1738,17 +1718,18 @@ char * read_keyword(char * & st, const char * expected)
   skip_whitespace_comment(st);
 
   if (*st == 0) {
-    msg_critical("Error",
-		 where() + "premature end of file, '" 
-		 + QString(expected) + "' expected");
+    msg_critical(TR("Error"),
+		 where() +
+		 TR("premature end of file, '%1' expected",
+		    expected));
     THROW_ERROR 0;
   }
   
   if (*st == '"') {
     msg_critical("Error",
-		 where() + "'" + QString(expected) + 
-		 "' expected rather than a string after '"
-		 + QString(Context.previous_word) + "'");
+		 where() + 
+		 TR("'%1' expected rather than a string after '%2'",
+		    expected, Context.previous_word));
     THROW_ERROR 0;
   }
   
@@ -1763,8 +1744,9 @@ char * read_keyword(char * & st, const char * expected)
 
   if (strcmp(r, expected)) {
     msg_critical("Error",
-		 where() + "'" + QString(expected) + "' expected rather than '"
-		 + QString(r) + "' after '" + QString(Context.previous_word) + "'");
+		 where() +
+		 TR("'%1' expected rather than '%2' after '%3'",
+		    expected, r, + Context.previous_word));
     THROW_ERROR 0;
   }
 
@@ -1782,16 +1764,17 @@ char * read_keyword(char * & st, const char * expected1,
 
   if (*st == 0) {
     msg_critical("Error",
-		 where() + "premature end of file, '" 
-		 + QString(expected1) + "' expected");
+		 where() +
+		 TR("premature end of file, '%1' expected" ,
+		    expected1));
     THROW_ERROR 0;
   }
   
   if (*st == '"') {
     msg_critical("Error",
-		 where() + "'" + QString(expected1) + 
-		 "' expected rather than a string after '"
-		 + QString(Context.previous_word) + "'");
+		 where() +
+		 TR("'%1' expected rather than a string after '%2'",
+		    expected1, Context.previous_word));
     THROW_ERROR 0;
   }
   
@@ -1806,8 +1789,9 @@ char * read_keyword(char * & st, const char * expected1,
 
   if (strcmp(r, expected1) && strcmp(r, expected2)) {
     msg_critical("Error",
-		 where() + "'" + QString(expected1) + "' expected rather than '"
-		 + QString(r) + "' after '" + QString(Context.previous_word) + "'");
+		 where() +
+		 TR("'%1' expected rather than '%2' after '%3'",
+		    expected1, r, Context.previous_word));
     THROW_ERROR 0;
   }
 
@@ -1834,32 +1818,28 @@ int read_id(char * & st)
 
   if (*st == 0) {
     msg_critical("Error",
-		 where() + "premature end of file, id expected");
+		 where() + TR("premature end of file, id expected"));
     THROW_ERROR 0;
   }
   
   if (*st == '"') {
     msg_critical("Error",
-		 where() + "id expected after '" + QString(Context.previous_word) + "'");
+		 where() + TR("id expected after '%1'", Context.previous_word));
     THROW_ERROR 0;
   }
   
-  int result = 0;
   char * r = st;
-  char c;
-  
-  while (((c = *st++) >= '0') && (c <= '9'))
-    result = result*10 + c - '0';
-  
-  if (st == r+1) {
-    msg_critical("Error", 
-		 where() + "id expected after '" + QString(Context.previous_word) + "'");
+  int result = (int) strtol(r, &st, 10);
+
+  if (st == r) {
+    msg_critical(TR("Error"), 
+		 where() + TR("id expected after '%1'", Context.previous_word));
     THROW_ERROR 0;
   }
   
-  st[-1] = 0;
+  Context.removed_char = *st;
+  *st++ = 0;
   set_previous_word(r);
-  Context.removed_char = c;
   
   return result;
 }
@@ -1869,14 +1849,14 @@ unsigned read_unsigned(char * & st)
   skip_whitespace_comment(st);
 
   if (*st == 0) {
-    msg_critical("Error",
-		 where() + "premature end of file, unsigned expected");
+    msg_critical(TR("Error"),
+		 where() + TR("premature end of file, unsigned expected"));
     THROW_ERROR 0;
   }
   
   if (*st == '"') {
-    msg_critical("Error",
-		 where() + "unsigned expected after '" + QString(Context.previous_word) + "'");
+    msg_critical(TR("Error"),
+		 where() + TR("unsigned expected after '%1'", Context.previous_word));
     THROW_ERROR 0;
   }
   
@@ -1888,8 +1868,8 @@ unsigned read_unsigned(char * & st)
     result = result*10 + c - '0';
   
   if (st == r+1) {
-    msg_critical("Error", 
-		 where() + "unsigned expected after '" + QString(Context.previous_word) + "'");
+    msg_critical(TR("Error"), 
+		 where() + TR("unsigned expected after '%1'", Context.previous_word));
     THROW_ERROR 0;
   }
   
@@ -1905,14 +1885,14 @@ double read_double(char * & st)
   skip_whitespace_comment(st);
 
   if (*st == 0) {
-    msg_critical("Error",
-		 where() + "premature end of file, float expected");
+    msg_critical(TR("Error"),
+		 where() + TR("premature end of file, float expected"));
     THROW_ERROR 0;
   }
   
   if (*st == '"') {
-    msg_critical("Error",
-		 where() + "float expected after '" + QString(Context.previous_word) + "'");
+    msg_critical(TR("Error"),
+		 where() + TR("float expected after '%1'", Context.previous_word));
     THROW_ERROR 0;
   }
   
@@ -1940,10 +1920,10 @@ double read_double(char * & st)
     }
     
     if (!ok) {
-      // '.' or ',' problem ?
-      msg_critical("Error", 
-		   where() + "float expected rather than '"
-		   + s + "' after '" + QString(Context.previous_word) + "'");
+      msg_critical(TR("Error"), 
+		   where() + 
+		   TR("float expected rather than '%1' after '%2'",
+		      s, Context.previous_word));
       THROW_ERROR 0;
     }
   }
@@ -1983,8 +1963,8 @@ char * skip_until(char * & st, const char * expected)
     skip_whitespace_comment(st);
     
     if (*st == 0) {
-      msg_critical("Error",
-		   where() + "premature end of file");
+      msg_critical(TR("Error"),
+		   where() + TR("premature end of file"));
       THROW_ERROR 0;
     }
   
@@ -1997,41 +1977,59 @@ char * skip_until(char * & st, const char * expected)
 
 void wrong_keyword(const char * k, const char * expected)
 {
-  msg_critical("Error",
-	       where() + "'" + QString(expected)
-	       + "' expected rather than '" + QString(k) + "'");
+  msg_critical(TR("Error"),
+	       where() + TR("'%1' expected rather than '%2'", expected, k));
   THROW_ERROR 0;
 }
 
 void unknown_keyword(const char * k)
 {
-  msg_critical("Error",
-	       where() + "unknown or unexpected keyword '" + QString(k) + "'");
+  msg_critical(TR("Error"),
+	       where() + TR("unknown or unexpected keyword '%1'", k));
   THROW_ERROR 0;
 }
 
 void unknown_ref(const char * kind, int id)
 {
-  msg_critical("Error", 
-	       where() + QString::number(id) +
-	       " unknown " + QString(kind) + " identifier");
+  msg_critical(TR("Error"), 
+	       where() + 
+	       TR("%1 unknown %2 identifier", 
+		  QString::number(id), QString(kind)));
   THROW_ERROR 0;
 }
 
 //
 
 void save_xy(QTextStream & st, const QCanvasItem * c, const char * s) {
-  // save an int because there is a bug in << float in qt 3.3.3
+#ifdef FORCE_INT_COORD
   st << s << ' ' << (int) c->x() << ' ' << (int) c->y();
+#else
+  QString xs, ys;
+  
+  st << s << ' ' << xs.setNum(c->x()) << ' ' << ys.setNum(c->y());
+#endif
 }
 
 void save_xyz(QTextStream & st, const QCanvasItem * c, const char * s) {
+#ifdef FORCE_INT_COORD
   st << s << ' ' << (int) c->x() << ' ' << (int) c->y() << ' ' << (int) c->z();
+#else
+  QString xs, ys, zs;
+  
+  st << s << ' ' << xs.setNum(c->x()) << ' ' << ys.setNum(c->y()) << ' ' << zs.setNum(c->z());
+#endif
 }
 
 void save_xyzwh(QTextStream & st, const QCanvasRectangle * c, const char * s) {
+#ifdef FORCE_INT_COORD
   st << s << ' ' << (int) c->x() << ' ' << (int) c->y() << ' ' << (int) c->z()
     << ' ' << (int) c->width() << ' ' << (int) c->height();
+#else
+  QString xs, ys, zs;
+  
+  st << s << ' ' << xs.setNum(c->x()) << ' ' << ys.setNum(c->y()) << ' ' << zs.setNum(c->z())
+    << ' ' << (int) c->width() << ' ' << (int) c->height();
+#endif
 }
 
 void read_xy(char * & st, QCanvasItem * c)

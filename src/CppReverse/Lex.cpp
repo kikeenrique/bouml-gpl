@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -185,22 +185,50 @@ void Lex::complete_template(QString & result)
 {
   // template
   unsigned level = 1;
-	  
+  char * pointer = _context.pointer;
+  	  
   result += '<';
   
   for (;;) {
-    // a comment at this place is not correctly managed !
-    int c = get();
-    
-    if (c == EOF)
+    switch (read_word_bis(FALSE, FALSE)) {
+    case 0:
       return;
-    
-    result += c;
-    
-    if (c == '<')
+    case '<':
       level += 1;
-    else if ((c == '>') && (--level == 0))
       break;
+    case '>':
+      if (--level == 0) {
+	char c = *_context.pointer;
+	
+	*_context.pointer = 0;
+	result += pointer;
+	*_context.pointer = c;
+	return;
+      }
+    default:
+      break;
+    }
+  }
+}
+
+void Lex::bypass_template()
+{
+  // template
+  unsigned level = 1;
+	  
+  for (;;) {
+    switch (read_word_bis(FALSE, FALSE)) {
+    case 0:
+      return;
+    case '<':
+      level += 1;
+      break;
+    case '>':
+      if (--level == 0)
+	return;
+    default:
+      break;
+    }
   }
 }
 
@@ -412,6 +440,72 @@ QCString Lex::manage_operator(QString & result, int c, bool oper)
   return QCString(result);
 }
 
+char Lex::bypass_operator(int c, bool oper)
+{
+  // a comment is not correctly managed !
+  int next = peek();
+  
+  switch (c) {
+  case '!':
+  case '%':
+  case '*':
+  case '/':
+  case '=':
+  case '^':
+    if (next == '=') {
+      get();
+      return '!'; // to not be = when ==
+    }
+    return (char) c;
+  case '.':
+    if (next == '*')
+      get();
+    else if (next == '.') {
+      get();
+      get();	// must be .
+    }
+    return (char) c;
+  case ':':
+    if (next == ':')
+      get();
+    return (char) c;
+  case '<':
+  case '>':
+    if (next == '=')
+      get();
+    else if (next == c) {
+      get();
+      if (peek() == '=')
+	get();
+    }
+    else
+      return (char) c;
+    return '!'; // to not be < or > if << >> <= or >=
+  case '-':
+    if (next == '>') {
+      get();
+      if (peek() == '*')
+	get();
+    }
+    // no break;
+  case '&':
+  case '+':
+  case '|':
+    if ((next == '=') || (next == c))
+      get();
+    return (char) c;
+  case '(':
+  case '[':
+    if (oper) {
+      // operator
+      get();
+      return '!'; // to not be ( or [
+    }
+  default:
+    return (char) c;
+  }
+}
+
 QCString Lex::read_string()
 {
   QString result = "\"";;
@@ -431,6 +525,23 @@ QCString Lex::read_string()
       return QCString(result += c);
     default:
       result += c;
+    }
+  }
+}
+
+void Lex::bypass_string()
+{
+  for (;;) {
+    switch (get()) {
+    case EOF:
+      return;
+    case '\\':
+      get();
+      break;
+    case '"':
+      return;
+    default:
+      break;
     }
   }
 }
@@ -457,42 +568,61 @@ QCString Lex::read_character()
   }
 }
 
+void Lex::bypass_character()
+{
+  for (;;) {
+    switch (get()) {
+    case EOF:
+      return;
+    case '\'':
+      return;
+    case '\\':
+      get();
+      break;
+    default:
+      break;
+    }
+  }
+}
+
 QCString Lex::read_array_dim() 
 {
   QCString result = "[";
+  char * pointer = _context.pointer;
 	  
   for (;;) {
-    int c = get();
-    
-    switch (c) {
-    case EOF:
-#ifdef DEBUG_BOUML
-      cout << "retourne '" << result << "'\n";
-#endif
+    switch (read_word_bis(FALSE, TRUE)) {
+    case 0:
+      result = 0;
       return result;
-    case '#':
-      bypass_pp();
-      break;
-    case '/':
-      switch (peek()) {
-      case '/':
-	bypass_cpp_comment();
-	break;
-      case '*':
-	bypass_c_comment();
-	break;
-      default:
-	result += c;
-      }
-      break;
     case ']':
-      result += c;
+      {
+	char c = *_context.pointer;
+	
+	*_context.pointer = 0;
+	result += pointer;
+	*_context.pointer = c;
+	
 #ifdef DEBUG_BOUML
-      cout << "retourne '" << result << "'\n";
+	cout << "retourne '" << result << "'\n";
 #endif
-      return result;
+	return result;
+      }
     default:
-      result += c;
+      break;
+    }
+  }
+}
+
+void Lex::bypass_array_dim() 
+{
+  for (;;) {
+    switch (read_word_bis(FALSE, TRUE)) {
+    case 0:
+    case ']':
+      return;
+    default:
+      break;
     }
   }
 }
@@ -667,6 +797,123 @@ QCString Lex::read_word(bool in_expr)
 #endif
   
   return QCString(result);
+}
+
+char Lex::read_word_bis(bool set_context, bool in_expr)
+{
+  goes_to_word_beginning();
+
+  if (set_context) {
+    _context.read_word_pointer = _context.pointer;
+    _context.read_word_comments = _context.comments;
+    _context.read_word_description = _context.description;
+    _context.read_word_line_number = _context.line_number;
+  }
+    
+  static QCString spaces = " \t\n\r";
+
+  char result = 0;
+  bool is_template = FALSE;
+  bool is_operator = FALSE;
+  
+  for (;;) {
+    int c = get();
+    
+    if (c == EOF)
+      break;
+    else if (Separators.find(c) == -1) {
+      if (result == 0) {
+	result = (char) c;
+	
+	const char * p = _context.pointer;
+	
+	while (*p && (Separators.find(*p) == -1))
+	  p += 1;
+	
+	int n = p - _context.pointer;
+	
+	if (n == 8) {
+	  if (!strncmp(_context.pointer, "template", 8))
+	    is_template = TRUE;
+	  else if (!strncmp(_context.pointer, "operator", 8))
+	    is_operator = TRUE;
+	}
+	else 
+	  is_operator = ((n > 8 ) && !strncmp(_context.pointer + n - 9, ":operator", 9));
+      }
+    }
+    else if ((c == ':') && (peek() == ':')) {
+      if (result == 0)
+	result = (char) c;
+      get();	// second ':'
+      do c = get(); while (spaces.find(c) != -1);
+      if (c == EOF)
+	break;
+      if (c == '*')
+	break;
+    }
+    else if (result != 0) {
+      if (!in_expr  && !is_template && !is_operator && start_template(c))
+	bypass_template();
+      else if (!in_expr && is_operator) {
+	// a comment at this place is not correctly managed !
+	while (spaces.find(c) != -1)
+	  c = get();
+	if (Separators.find(c) != -1)
+	  return bypass_operator(c, TRUE);
+	else {
+	  // operator new/delete, conversions
+	  unget();
+	  
+	  while ((c = read_word_bis(set_context, FALSE)) != 0) {
+	    if (c == '(') {
+	      unget();
+	      break;
+	    }
+	  }
+	}
+      }
+      else
+	unget();
+      break;
+    }
+    else {
+      switch (c) {
+      case '#':
+	bypass_pp();
+	break;
+      case '"':
+	bypass_string();
+	return (char) c;
+      case '[':
+	bypass_array_dim();
+	return '!';	// to not be [
+      case '\'':
+	bypass_character();
+	return (char) c;
+      case '/':
+	switch (peek()) {
+	case '/':
+	  bypass_cpp_comment();
+	  break;
+	case '*':
+	  bypass_c_comment();
+	  break;
+	case '=':
+	  get();
+	  return (char) c;
+	default:
+	  return (char) c;
+	}
+	break;
+      default:
+	if (c > ' ')
+	  return bypass_operator(c, FALSE);
+      }
+    }
+  }
+  
+  return result;
 }
 
 void Lex::finish_line()

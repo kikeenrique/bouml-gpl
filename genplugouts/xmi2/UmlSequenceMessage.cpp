@@ -164,7 +164,17 @@ void UmlSequenceMessage::write_them(FileOut & out, UmlItem * diagram, const QVec
 	out.ref(diagram, "sendEvent", SEND);
 	out.ref(diagram, "receiveEvent", REC);
 	out.ref(diagram, "connector", msg->from()->connector(msg->to()));
-	out << "/>\n";
+	if (!msg->stereotype().isEmpty() && UmlItem::gen_extension()) {
+	  out << ">\n";
+	  out.indent();
+	  out << "\t<xmi:Extension extender=\"Bouml\"><stereotype name=\"";
+	  out.quote(msg->stereotype());
+	  out << "\"/></xmi:Extension>\n";
+	  out.indent();
+	  out << "</message>\n";
+	}
+	else
+	  out << "/>\n";
 	break;
       case anExplicitReturn:
 	out.indent();
@@ -176,7 +186,17 @@ void UmlSequenceMessage::write_them(FileOut & out, UmlItem * diagram, const QVec
 	out.ref(diagram, "sendEvent", SEND);
 	out.ref(diagram, "receiveEvent", REC);
 	out.ref(diagram, "connector", msg->from()->connector(msg->to()));
-	out << "/>\n";
+	if (!msg->stereotype().isEmpty() && UmlItem::gen_extension()) {
+	  out << ">\n";
+	  out.indent();
+	  out << "\t<xmi:Extension extender=\"Bouml\"><stereotype name=\"";
+	  out.quote(msg->stereotype());
+	  out << "\"/></xmi:Extension>\n";
+	  out.indent();
+	  out << "</message>\n";
+	}
+	else
+	  out << "/>\n";
 	break;
       default:
 	break;

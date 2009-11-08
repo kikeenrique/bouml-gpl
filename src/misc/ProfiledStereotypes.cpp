@@ -16,6 +16,7 @@
 #include "Tool.h"
 #include "ToolCom.h"
 #include "DialogUtil.h"
+#include "translate.h"
 
 struct ProfiledStereotype {
   ProfiledStereotype() : cl(0), properties_set(FALSE),browser_icon(0) {}
@@ -244,8 +245,8 @@ void ProfiledStereotype::setIcon() {
   DiagramPixmap.insert(path, px);
     
   if (px->isNull()) {
-    msg_critical("Error",
-		 QString(path) + "\ndoesn't exist or is not a know image format");
+    msg_critical(TR("Error"),
+		 QString(path) + TR("\ndoesn't exist or is not a know image format"));
     return;
   }
     
@@ -445,14 +446,14 @@ QString ProfiledStereotypes::pretty(QString s)
 {
   QString * p = Pretty[s];
   
-  return (p == 0) ? QString("") : *p;
+  return (p == 0) ? QString() : *p;
 }
 
 QString ProfiledStereotypes::unpretty(QString s)
 {
   QString * p = UnPretty[s];
   
-  return (p == 0) ? QString("") : *p;
+  return (p == 0) ? QString() : *p;
 }
 
 static void setDefault(QString st, QString sl)
@@ -629,37 +630,37 @@ void ProfiledStereotypes::deleted(BrowserPackage * pk, bool propag)
 }
 
 // indicate if a stereotype can be added
-const char * ProfiledStereotypes::canAddStereotype(BrowserClass * cl, QString name)
+QString ProfiledStereotypes::canAddStereotype(BrowserClass * cl, QString name)
 {
   BrowserNode * pf = (BrowserNode *) cl->parent()->parent();
   
   if ((pf->get_type() != UmlPackage) ||
       (strcmp(pf->get_data()->get_stereotype(), "profile") != 0))
-    return "isn't in a profile";
+    return TR("isn't in a profile");
   else {
     ProfiledStereotype * st = 
       All[pf->get_name() + QString(":") + name];
     
     return ((st != 0) && (st->cl != cl))
-      ? "is already a stereotype"
-      : (const char *) 0;
+      ? TR("is already a stereotype")
+      : QString();
   }
 }
 
 // indicate if a stereotype can be added
-const char * ProfiledStereotypes::canAddStereotype(BrowserClassView * v, QString name)
+QString ProfiledStereotypes::canAddStereotype(BrowserClassView * v, QString name)
 {
   BrowserNode * pf = (BrowserNode *) v->parent();
   
   if (strcmp(pf->get_data()->get_stereotype(), "profile") != 0)
-    return "isn't in a profile";
+    return TR("isn't in a profile");
   else {
     ProfiledStereotype * st = 
       All[pf->get_name() + QString(":") + name];
     
     return (st != 0)
-      ? "is already a stereotype"
-      : (const char *) 0;
+      ? TR("is already a stereotype")
+      : QString();
   }
 }
 
@@ -674,9 +675,10 @@ void ProfiledStereotypes::added(BrowserClass * cl)
     
     if (All[s] != 0) {
       // only possible during a load / import
-      msg_critical("Unconsistency",
-		   "stereotype " + s + " defined several times,\n"
-		   "redondant definition is not managed as a stereotype");
+      msg_critical(TR("Unconsistency"),
+		   TR("stereotype '%1' defined several times,\n"
+		      "redondant definition is not managed as a stereotype",
+		      s));
       cl->get_data()->set_stereotype("redondantProfiledStereotype");
     }
     else {
@@ -944,9 +946,10 @@ static void recompute_st_list()
       QString s = pf->get_name() + QString(":") + cl->get_name();
       
       if (All[s] != 0) {
-	msg_critical("Unconsistency",
-		     "stereotype " + s + " defined several times,\n"
-		     "redondant definition is not managed as a stereotype");
+	msg_critical(TR("Unconsistency"),
+		     TR("stereotype '%1' defined several times,\n"
+			"redondant definition is not managed as a stereotype",
+			s));
 	cl->get_data()->set_stereotype("redondantProfiledStereotype");
       }
       else {
@@ -1121,8 +1124,8 @@ void ProfiledStereotypes::menu(QPopupMenu & m, BrowserNode * bn, int bias)
     if ((s != 0) && (Tool::command(s) != 0)) {
       separatorinserted = TRUE;
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("Check", bias),
-		   "to call the <em>check plug-out</em> associated to the stereotype");
+      m.setWhatsThis(m.insertItem(TR("Check"), bias),
+		   TR("to call the <i>check plug-out</i> associated to the stereotype"));
     }
   }
 
@@ -1139,12 +1142,12 @@ void ProfiledStereotypes::menu(QPopupMenu & m, BrowserNode * bn, int bias)
     if (! separatorinserted)
       m.insertSeparator();
 
-    m.setWhatsThis(m.insertItem("Force stereotype consistency", bias+2),
-		   "to recompute all concerning the profiles");
+    m.setWhatsThis(m.insertItem(TR("Force stereotype consistency"), bias+2),
+		   TR("to recompute all concerning the profiles"));
     if (!ProfiledStereotyped.isEmpty() && haveCheck(bn))
-      m.setWhatsThis(m.insertItem("Check recursively", bias+1),
-		     "to call the <em>check plug-out</em> associated to the stereotypes,"
-		     "doing down recursively");
+      m.setWhatsThis(m.insertItem(TR("Check recursively"), bias+1),
+		     TR("to call the <i>check plug-out</i> associated to the stereotypes,"
+			"doing down recursively"));
   }
 }
 

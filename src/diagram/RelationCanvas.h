@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,6 +46,7 @@ class RelationCanvas : public ArrowCanvas {
     LabelCanvas * multiplicity_b;
     StereotypePropertiesCanvas * stereotypeproperties; // in the first segment
     bool show_modifier;
+    bool show_visibility;
     
   public:
     RelationCanvas(UmlCanvas * canvas, DiagramItem * b, DiagramItem * e,
@@ -58,7 +59,7 @@ class RelationCanvas : public ArrowCanvas {
     virtual void remove(bool from_model);
     virtual void unconnect();
     
-    virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
+    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual void post_connexion(UmlCode, DiagramItem *);
 
     virtual void history_save(QBuffer & b) const;

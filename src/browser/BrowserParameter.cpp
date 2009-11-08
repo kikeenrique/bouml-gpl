@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -52,6 +52,7 @@
 #include "ProfiledStereotypes.h"
 #include "mu.h"
 #include "BrowserActivityDiagram.h"
+#include "translate.h"
 
 IdDict<BrowserParameter> BrowserParameter::all(257, __FILE__);
 QStringList BrowserParameter::its_default_stereotypes;	// unicode
@@ -98,6 +99,15 @@ void BrowserParameter::update_idmax_for_root()
 {
   all.update_idmax_for_root();
 }
+
+void BrowserParameter::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
+}
     
 void BrowserParameter::renumber(int phase) {
   if (phase != -1)
@@ -119,41 +129,41 @@ BasicData * BrowserParameter::add_relation(UmlCode, BrowserNode * end) {
 }
 
 // a flow may be added  (dependency not allowed) ?
-const char * BrowserParameter::may_start() const {
+QString BrowserParameter::may_start() const {
   switch (def->get_dir()) {
   case UmlIn:
   case UmlInOut:
     return 0;
   default:
-    return "can't have outgoing flow";
+    return TR("can't have outgoing flow");
   }
 }
 
 // connexion by a flow (dependency not allowed)
-const char * BrowserParameter::may_connect(const BrowserNode * dest) const {
+QString BrowserParameter::may_connect(const BrowserNode * dest) const {
   BrowserNode * container = dest->get_container(UmlActivity);
   
   if (container == 0)
-    return "illegal";
+    return TR("illegal");
   
   if (get_container(UmlActivity) != container)
-    return "not in the same activity";
+    return TR("not in the same activity");
   
   const BrowserActivityElement * elt =
     dynamic_cast<const BrowserActivityElement *>(dest);
   
   return (elt == 0)
-    ? "illegal"
+    ? TR("illegal")
     : elt->connexion_from(def->get_is_control());  
 }
 
-const char * BrowserParameter::connexion_from(bool control) const {
+QString BrowserParameter::connexion_from(bool control) const {
   if (def->get_dir() == UmlIn)
-    return "an input parameter can't have incoming flows";
+    return TR("an input parameter can't have incoming flows");
   else if (def->get_is_control() != control)
     return (control)
-      ? "parameter can't accept control flow (not 'is_control')"
-      : "parameter can't accept data flow (is 'is_control')";
+      ? TR("parameter can't accept control flow (not 'is_control')")
+      : TR("parameter can't accept data flow (is 'is_control')");
   else
     return 0;
 }
@@ -162,7 +172,7 @@ void BrowserParameter::menu() {
   QString s = name;
   
   if (s.isEmpty())
-    s = "interruptible activity region";
+    s = TR("interruptible activity region");
   
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
@@ -171,31 +181,31 @@ void BrowserParameter::menu() {
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_edited)
-    m.setWhatsThis(m.insertItem("Edit", 0),
-		   "to edit the <em>parameter</em>, \
-a double click with the left mouse button does the same thing");
+    m.setWhatsThis(m.insertItem(TR("Edit"), 0),
+		   TR("to edit the <i>parameter</i>, \
+a double click with the left mouse button does the same thing"));
     if (!is_read_only && (edition_number == 0)) {
-      m.setWhatsThis(m.insertItem("Duplicate", 1),
-		     "to copy the <em>parameter</em> in a new one");
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 1),
+		     TR("to copy the <i>parameter</i> in a new one"));
       m.insertSeparator();
-      m.setWhatsThis(m.insertItem("Delete", 2),
-		     "to delete the <em>parameter</em>. \
-Note that you can undelete it after");
+      m.setWhatsThis(m.insertItem(TR("Delete"), 2),
+		     TR("to delete the <i>parameter</i>. \
+Note that you can undelete it after"));
     }
-    m.setWhatsThis(m.insertItem("Referenced by", 4),
-		   "to know who reference the <i>parameter</i> \
-through a flow");
-    mark_menu(m, "parameter", 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 4),
+		   TR("to know who reference the <i>parameter</i> \
+through a flow"));
+    mark_menu(m, TR("the parameter"), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0))
-    m.setWhatsThis(m.insertItem("Undelete", 3),
-		   "to undelete the <em>parameter</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 3),
+		   TR("to undelete the <i>parameter</i>"));
   
   exec_menu_choice(m.exec(QCursor::pos()));
 }
@@ -326,7 +336,7 @@ bool BrowserParameter::tool_cmd(ToolCom * com, const char * args) {
 	  {
 	    BrowserNode * end = (BrowserNode *) com->get_id(args);
 	    
-	    if (may_connect(end) == 0)
+	    if (may_connect(end).isEmpty())
 	      (new BrowserFlow(this, end))->write_id(com);
 	    else
 	      ok = FALSE;
@@ -381,7 +391,7 @@ void BrowserParameter::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
     if (may_contains(bn, FALSE)) 
       move(bn, after);
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -468,7 +478,7 @@ void BrowserParameter::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -523,7 +533,7 @@ BrowserParameter * BrowserParameter::read(char * & st, char * k,
     }
     
     result->is_defined = TRUE;
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     if (strcmp(k, "end")) {
       while (BrowserFlow::read(st, k, result))

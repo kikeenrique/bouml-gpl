@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -35,6 +35,7 @@
 #include "AnnotationDialog.h"
 #include "UmlDesktop.h"
 #include "BrowserClass.h"
+#include "translate.h"
 
 QSize AnnotationDialog::previous_size;
 
@@ -61,8 +62,8 @@ AnnotationDialog::AnnotationDialog(QWidget * parent, QString & s, bool visit)
     // to choose and add an annotation
     
     QLabel * label =
-      new QLabel("\nTo add an annotation at the cursor position\n"
-		 "you may select it in the list and press 'add'\n",
+      new QLabel(TR("\nTo add an annotation at the cursor position\n"
+		    "you may select it in the list and press 'add'\n"),
 		 this);
     label->setAlignment(Qt::AlignCenter);
     vbox->addWidget(label);
@@ -71,7 +72,7 @@ AnnotationDialog::AnnotationDialog(QWidget * parent, QString & s, bool visit)
     QPushButton * add_button;
     
     hbox->setMargin(5);
-    add_button = new QPushButton("Add ", this);
+    add_button = new QPushButton(TR("Add "), this);
     hbox->addWidget(add_button);  
     connect(add_button, SIGNAL(clicked()), this, SLOT(add_annotation()));
     
@@ -81,7 +82,7 @@ AnnotationDialog::AnnotationDialog(QWidget * parent, QString & s, bool visit)
     
     sp.setHorData(QSizePolicy::Expanding);
     cb->setSizePolicy(sp);
-    cb->setAutoCompletion(TRUE);
+    cb->setAutoCompletion(completion());
     
     for (int i = 0;
 	 i != sizeof(DefaultAnnotations)/sizeof(*DefaultAnnotations);
@@ -104,8 +105,8 @@ AnnotationDialog::AnnotationDialog(QWidget * parent, QString & s, bool visit)
     
     hbox = new QHBoxLayout(vbox);
     hbox->setMargin(5);
-    QPushButton * accept = new QPushButton("&OK", this);
-    QPushButton * cancel = new QPushButton("&Cancel", this);
+    QPushButton * accept = new QPushButton(TR("&OK"), this);
+    QPushButton * cancel = new QPushButton(TR("&Cancel"), this);
     QSize bs(cancel->sizeHint());
     
     accept->setDefault( TRUE );
@@ -128,7 +129,7 @@ AnnotationDialog::AnnotationDialog(QWidget * parent, QString & s, bool visit)
     QHBoxLayout * hbox = new QHBoxLayout(vbox);
     
     hbox->setMargin(5);
-    QPushButton * close = new QPushButton("&Close", this);
+    QPushButton * close = new QPushButton(TR("&Close"), this);
 
     hbox->addWidget(close);
     

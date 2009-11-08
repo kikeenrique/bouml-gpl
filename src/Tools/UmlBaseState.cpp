@@ -2,6 +2,7 @@
 #include "UmlCom.h"
 #include "UmlBaseState.h"
 #include "UmlState.h"
+#include "UmlOperation.h"
 #include "UmlStateDiagram.h"
 
 UmlState * UmlBaseState::create(UmlItem * parent, const char * s)
@@ -98,6 +99,21 @@ bool UmlBaseState::set_JavaDoActivity(const char * s) {
 }
 #endif
 
+UmlOperation * UmlBaseState::specification() {
+  read_if_needed_();
+  return _specification;
+}
+
+bool UmlBaseState::set_Specification(UmlOperation * v) {
+  UmlCom::send_cmd(_identifier, setDefCmd, (v == 0) ? (void *) v : ((UmlBaseItem *) v)->_identifier);
+  if (UmlCom::read_bool()) {
+    _specification = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
 UmlStateDiagram * UmlBaseState::associatedDiagram() {
   read_if_needed_();
 
@@ -105,14 +121,13 @@ UmlStateDiagram * UmlBaseState::associatedDiagram() {
 }
 
 bool UmlBaseState::set_AssociatedDiagram(UmlStateDiagram * d) {
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
   }
   else
     return FALSE;
-
 }
 
 void UmlBaseState::unload(bool rec, bool del) {
@@ -130,6 +145,8 @@ void UmlBaseState::read_uml_() {
   _assoc_diagram = (UmlStateDiagram *) UmlBaseItem::read_();
   UmlBaseItem::read_uml_();
   _uml.read();
+  _specification = (UmlOperation *) UmlBaseItem::read_();
+  (void) UmlCom::read_bool(); // active
 }
 
 #ifdef WITHCPP

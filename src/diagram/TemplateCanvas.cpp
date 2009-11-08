@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -150,11 +150,11 @@ void TemplateCanvas::menu(const QPoint & p) {
   cl->menu(p);
 }
 
-const char * TemplateCanvas::may_start(UmlCode &) const {
+QString TemplateCanvas::may_start(UmlCode &) const {
   return "illegal";
 }
 
-const char * TemplateCanvas::may_connect(UmlCode &, const DiagramItem *) const {
+QString TemplateCanvas::may_connect(UmlCode &, const DiagramItem *) const {
   return "illegal";
 }
 

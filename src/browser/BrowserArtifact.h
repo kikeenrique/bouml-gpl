@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -89,7 +89,7 @@ class BrowserArtifact : public BrowserNode, public Labeled<BrowserArtifact> {
     virtual BasicData * get_data() const;
     virtual const QStringList & default_stereotypes(UmlCode, const BrowserNode *) const; // non class rel
     virtual void on_delete();
-    virtual const char * check_inherit(const BrowserNode * parent) const;
+    virtual QString check_inherit(const BrowserNode * parent) const;
     virtual void save(QTextStream &, bool ref, QString & warning);
     static BrowserArtifact * read_ref(char * &, const char *);
     static BrowserArtifact * read(char * &, char *, BrowserNode *);
@@ -106,6 +106,7 @@ class BrowserArtifact : public BrowserNode, public Labeled<BrowserArtifact> {
     static void clear(bool old);
     static void update_idmax_for_root();
     virtual void renumber(int phase);
+    virtual void prepare_update_lib() const;
     
     virtual const QPixmap* pixmap (int) const;
     virtual void iconChanged();

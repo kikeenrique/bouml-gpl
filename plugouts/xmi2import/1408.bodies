@@ -22,6 +22,25 @@ class UmlBaseClass
   UmlCom.check();
 
   _abstract = y;
+!!!307584.cpp!!!	isActive() : bool
+  read_if_needed_();
+  return _active;
+!!!307584.java!!!	isActive() : bool
+  read_if_needed_();
+  return _active;
+!!!307712.cpp!!!	set_isActive(in v : bool) : bool
+  UmlCom::send_cmd(_identifier, setActiveCmd, (char) v);
+  if (UmlCom::read_bool()) {
+    _active = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!307712.java!!!	set_isActive(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setActiveCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _active = v;
 !!!5888.cpp!!!	baseType() : UmlTypeSpec
   read_if_needed_();
   
@@ -505,6 +524,7 @@ class UmlBaseClass
     if (_base_type.type == 0)
       _base_type.explicit_type = UmlCom::read_string();
   }
+  _active = UmlCom::read_bool();
 !!!9728.java!!!	read_uml_() : void
   _assoc_diagram = (UmlClassDiagram) UmlBaseItem.read_();
   super.read_uml_();
@@ -516,6 +536,7 @@ class UmlBaseClass
     if (_base_type.type == null)
       _base_type.explicit_type = UmlCom.read_string();
   }
+  _active = UmlCom.read_bool();
 !!!9856.cpp!!!	read_cpp_() : void
   UmlBaseClassMember::read_cpp_();  
   _cpp_external = UmlCom::read_bool();

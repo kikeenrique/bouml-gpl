@@ -20,7 +20,7 @@ UmlUseCaseDiagram * UmlBaseUseCase::associatedDiagram() {
 }
 
 bool UmlBaseUseCase::set_AssociatedDiagram(UmlUseCaseDiagram * d) {
-  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, ((UmlBaseItem *) d)->_identifier);
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
   if (UmlCom::read_bool()) {
     _assoc_diagram = d;
     return TRUE;
@@ -29,8 +29,18 @@ bool UmlBaseUseCase::set_AssociatedDiagram(UmlUseCaseDiagram * d) {
     return FALSE;
 }
 
+const QCString & UmlBaseUseCase::extensionPoints() {
+  read_if_needed_();
+  return _extension_points;
+}
+
+bool UmlBaseUseCase::set_ExtensionPoints(const char * v) {
+  return set_it_(_extension_points, v, replaceExceptionCmd);
+}
+
 void UmlBaseUseCase::read_uml_() {
   _assoc_diagram = (UmlUseCaseDiagram *) UmlBaseItem::read_();
   UmlBaseItem::read_uml_();
+  _extension_points = UmlCom::read_string();
 }
 

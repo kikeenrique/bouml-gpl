@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -32,9 +32,39 @@
 // You can modify it as you want (except the constructor)
 
 class UmlArtifact : public UmlBaseArtifact {
+#ifdef ROUNDTRIP
+  private:
+    bool scanned;
+    bool reversed;
+    bool roundtrip_expected;
+    bool useless;
+    bool fully_updated;
+    
+    static bool has_roundtrip_expected;
+#endif
   public:
     UmlArtifact(void * id, const QCString & n)
-      : UmlBaseArtifact(id, n) {};
+      : UmlBaseArtifact(id, n)
+#ifdef ROUNDTRIP
+	, scanned(FALSE), reversed(FALSE), roundtrip_expected(FALSE),
+	useless(FALSE), fully_updated(FALSE)
+#endif
+      {}
+  
+#ifdef ROUNDTRIP
+    virtual bool set_roundtrip_expected();
+    virtual void scan_it(int & n);
+    virtual void send_it(int n);
+    virtual void mark_useless(QList<UmlItem> & l);
+    bool set_roundtrip_expected_for_class();
+    bool is_roundtrip_expected() const { return roundtrip_expected; }
+    bool is_fully_updated() const { return fully_updated; }
+    void set_usefull() { useless = FALSE; }
+    bool considered(bool scan);
+    
+    static bool is_roundtrip_usefull();
+#endif
+
 };
 
 #endif

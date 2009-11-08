@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -51,6 +51,7 @@
 #include "DialogUtil.h"
 #include "ProfiledStereotypes.h"
 #include "mu.h"
+#include "translate.h"
 
 IdDict<BrowserState> BrowserState::all(257, __FILE__);
 QStringList BrowserState::its_default_stereotypes;	// unicode
@@ -104,6 +105,15 @@ void BrowserState::update_idmax_for_root()
   BrowserRegion::update_idmax_for_root();
   BrowserPseudoState::update_idmax_for_root();
   BrowserStateAction::update_idmax_for_root();
+}
+
+void BrowserState::prepare_update_lib() const {
+  all.memo_id_oid(get_ident(), original_id);
+	      
+  for (QListViewItem * child = firstChild();
+       child != 0;
+       child = child->nextSibling())
+    ((BrowserNode *) child)->prepare_update_lib();
 }
     
 void BrowserState::referenced_by(QList<BrowserNode> & l, bool ondelete) {
@@ -159,7 +169,7 @@ BrowserState * BrowserState::add_state(BrowserNode * future_parent,
 {
   QString name;
   
-  if (!future_parent->enter_child_name(name, "enter state's name : ",
+  if (!future_parent->enter_child_name(name, TR("enter state's name : "),
 				       UmlState, TRUE, FALSE))
     
     return 0;
@@ -192,7 +202,7 @@ BrowserState * BrowserState::get_state(BrowserNode * parent)
   BrowserNode * old;
   QString name;
   
-  if (!parent->enter_child_name(name, "enter state's name : ",
+  if (!parent->enter_child_name(name, TR("enter state's name : "),
 				UmlState, l, &old,
 				TRUE, FALSE))
     return 0;
@@ -226,111 +236,78 @@ void BrowserState::menu() {
   QPopupMenu m(0, name);
   QPopupMenu toolm(0);
   QString what;
-  BrowserNode * item_above = 0;
   bool mach = is_machine(this);
   
   if (mach)
     what = "state machine";
   else
     what = (!strcmp(get_stereotype(), "submachine"))
-      ? "state submachine"
-      : "state";
+      ? "state submachine" : "state";
   
   m.insertItem(new MenuTitle(def->definition(FALSE), m.font()), -1);
   m.insertSeparator();
   if (!deletedp()) {
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("New state diagram", 0),
-		     "to add a <em>state diagram</em>");
+      m.setWhatsThis(m.insertItem(TR("New state diagram"), 0),
+		     TR("to add a <i>state diagram</i>"));
       if (mach) {
-	m.setWhatsThis(m.insertItem("New submachine", 1),
-		       "to add a <em>submachine</em> to the <em>machine</em>");
-	m.setWhatsThis(m.insertItem("New state", 2),
-		       "to add a <em>state</em> to the <em>machine</em>");
+	m.setWhatsThis(m.insertItem(TR("New submachine"), 1),
+		       TR("to add a <i>submachine</i> to the <i>machine</i>"));
+	m.setWhatsThis(m.insertItem(TR("New state"), 2),
+		       TR("to add a <i>state</i> to the <i>machine</i>"));
       }
       else if (what == "state")
-	m.setWhatsThis(m.insertItem("New nested state", 2),
-		       "to add a <em>nested state</em> to the <em>state</em>");
+	m.setWhatsThis(m.insertItem(TR("New nested state"), 2),
+		       TR("to add a <i>nested state</i> to the <i>state</i>"));
       else
-	m.setWhatsThis(m.insertItem("New state", 2),
-		       "to add a <em>state</em> to the <em>submachine</em>");
-      m.setWhatsThis(m.insertItem("New region", 11),
-		     "to add a <em>region</em>");
+	m.setWhatsThis(m.insertItem(TR("New state"), 2),
+		       TR("to add a <i>state</i> to the <i>submachine</i>"));
+      m.setWhatsThis(m.insertItem(TR("New region"), 11),
+		     TR("to add a <i>region</i>"));
     }
     m.insertSeparator();
-    m.setWhatsThis(m.insertItem("Edit", 3),
-		   "to edit the <em>" + what + "</em>, \
-a double click with the left mouse button does the same thing");
+    m.setWhatsThis(m.insertItem(TR("Edit"), 3),
+		   TR("to edit the <i>" + what + "</i>, \
+a double click with the left mouse button does the same thing"));
     if (!is_read_only) {
-      m.setWhatsThis(m.insertItem("Duplicate", 4),
-		     "to copy the <em>" + what + "</em> in a new one");
-      
-      item_above = (BrowserNode *) parent()->firstChild();
-      if (item_above == this)
-	item_above = 0;
-      else {
-	for (;;) {
-	  BrowserNode * next = (BrowserNode *) item_above->nextSibling();
-	  
-	  if (next == this)
-	    break;
-	  item_above = (BrowserNode *) next;
-	}
-      }
-      
-      if ((item_above != 0) &&
-	  ((item_above->get_type() == UmlState) ||
-	   (item_above->get_type() == UmlRegion)) &&
-	  !((BrowserNode *) item_above)->wrong_child_name(get_name(), UmlState, TRUE, FALSE))
-	m.setWhatsThis(m.insertItem(QString("set it nested in ")
-				    + item_above->get_name(),
-				    5),
-		       "to set it a <em>sub state</em> of the <em>item</em> above");
-      
-      if ((nestedp() || (((BrowserNode *) parent())->get_type() == UmlRegion)) &&
-	  !((BrowserNode *) parent()->parent())->wrong_child_name(get_name(), UmlState, TRUE, FALSE))
-	m.setWhatsThis(m.insertItem(QString("Extract it from ")
-				    + ((BrowserNode *) parent())->get_name(),
-				    6),
-		       QString("to stop to be nested in ") +
-		       ((BrowserNode *) parent())->get_name());
+      m.setWhatsThis(m.insertItem(TR("Duplicate"), 4),
+		     TR("to copy the <i>" + what + "</i> in a new one"));      
       m.insertSeparator();
       if (edition_number == 0)
-	m.setWhatsThis(m.insertItem("Delete", 7),
-		       "to delete the <em>" + what + "</em>. \
-Note that you can undelete it after");
+	m.setWhatsThis(m.insertItem(TR("Delete"), 7),
+		       TR("to delete the <i>" + what + "</i>. \
+Note that you can undelete it after"));
     }
-    m.setWhatsThis(m.insertItem("Referenced by", 10),
-		   "to know who reference the <i>state</i> \
-through a transition");
-    mark_menu(m, what, 90);
+    m.setWhatsThis(m.insertItem(TR("Referenced by"), 10),
+		   TR("to know who reference the <i>state</i> \
+through a transition"));
+    mark_menu(m, TR("the " + what), 90);
     ProfiledStereotypes::menu(m, this, 99990);
     if ((edition_number == 0) &&
 	Tool::menu_insert(&toolm, get_type(), 100)) {
       m.insertSeparator();
-      m.insertItem("Tool", &toolm);
+      m.insertItem(TR("Tool"), &toolm);
     }
   }
   else if (!is_read_only && (edition_number == 0)) {
-    m.setWhatsThis(m.insertItem("Undelete", 8),
-		   "to undelete the <em>" + what + "</em>");
+    m.setWhatsThis(m.insertItem(TR("Undelete"), 8),
+		   TR("to undelete the <i>" + what + "</i>"));
  
     QListViewItem * child;
   
     for (child = firstChild(); child != 0; child = child->nextSibling()) {
       if (((BrowserNode *) child)->deletedp()) {
-	m.setWhatsThis(m.insertItem("Undelete recursively", 9),
-		       "undelete the " + what + " and its children");
+	m.setWhatsThis(m.insertItem(TR("Undelete recursively"), 9),
+		       TR("undelete the " + what + " and its children"));
 	break;
       }
     }
   }
   
-  exec_menu_choice(m.exec(QCursor::pos()), item_above, mach);
+  exec_menu_choice(m.exec(QCursor::pos()), mach);
 }
 
 void BrowserState::exec_menu_choice(int rank,
-				    BrowserNode * item_above,
 				    bool mach) {
   switch (rank) {
   case 0:
@@ -358,28 +335,15 @@ void BrowserState::exec_menu_choice(int rank,
       QString what;
       
       if (mach)
-	what = "state machine";
+	what = TR("state machine");
       else
 	what = (!strcmp(get_stereotype(), "submachine"))
-	  ? "state submachine"
-	  : "state";
+	  ? TR("state submachine")
+	  : TR("state");
       
-      if (((BrowserNode *) parent())->enter_child_name(name, "enter " + what + "'s name : ",
+      if (((BrowserNode *) parent())->enter_child_name(name, TR("enter " + what + "'s name : "),
 						       UmlState, TRUE, FALSE))
 	duplicate((BrowserNode *) parent(), name)->select_in_browser();
-    }
-    break;
-  case 5:
-    parent()->takeItem(this);
-    item_above->insertItem(this);
-    item_above->setOpen(TRUE);
-    break;
-  case 6:
-    {
-      QListViewItem * p = parent();
-      
-      p->takeItem(this);
-      moveItem(p);
     }
     break;
   case 7:
@@ -458,7 +422,7 @@ void BrowserState::apply_shortcut(QString s) {
     }
   }
   
-  exec_menu_choice(choice, 0, mach);
+  exec_menu_choice(choice, mach);
 }
 
 void BrowserState::open(bool force_edit) {
@@ -628,13 +592,41 @@ bool BrowserState::tool_cmd(ToolCom * com, const char * args) {
   }
 }
 
+BrowserState * BrowserState::get_machine(const BrowserNode * bn)
+{
+  for (;;) {
+    switch (((BrowserNode *) bn->parent())->get_type()) {
+    case UmlState:
+    case UmlRegion:
+    case InitialPS:
+    case EntryPointPS:
+    case FinalPS:
+    case TerminatePS:
+    case ExitPointPS:
+    case DeepHistoryPS:
+    case ShallowHistoryPS:
+    case JunctionPS:
+    case ChoicePS:
+    case ForkPS:
+    case JoinPS:
+      bn = (BrowserNode *) bn->parent();
+      break;
+    default:
+      return (BrowserState *) bn;
+    }
+  }
+}
+
 bool BrowserState::may_contains_them(const QList<BrowserNode> & l,
 				     bool & duplicable) const {
+  BrowserNode * machine = get_machine(this);
   QListIterator<BrowserNode> it(l);
   
   for (; it.current(); ++it) {
     switch (it.current()->get_type()) {
     case UmlState:
+      if (get_machine(it.current()) != machine)
+	return FALSE;
       break;
     case UmlTransition:
       // no break !
@@ -653,12 +645,14 @@ bool BrowserState::may_contains_them(const QList<BrowserNode> & l,
     case ChoicePS:
     case ForkPS:
     case JoinPS:
-      return (((const BrowserNode *) it.current()->parent()) == this);
+      if (get_machine(it.current()) != machine)
+	return FALSE;
+      break;
     default:
       return FALSE;
     }
     
-    if (! may_contains(it.current(), FALSE))
+    if (! may_contains(it.current(), TRUE))
       return FALSE;
     
     duplicable = may_contains_it(it.current());
@@ -710,10 +704,34 @@ void BrowserState::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
        ((bn = UmlDrag::decode(e, BrowserStateDiagram::drag_key(this))) != 0) ||
        ((bn = UmlDrag::decode(e, BrowserTransition::drag_key(this))) != 0)) &&
       (bn != after) && (bn != this)) {
-    if (may_contains(bn, FALSE)) 
+    if (may_contains(bn, TRUE))  {
+      if ((after == 0) &&
+	  (get_machine(this) != this) &&
+	  ((BrowserNode *) parent())->may_contains(bn, TRUE)) {
+	// have choice
+	QPopupMenu m(0);
+  
+	m.insertItem(new MenuTitle(TR("move ") + bn->get_name(),
+				   m.font()), -1);
+	m.insertSeparator();
+	m.insertItem(TR("In ") + QString(get_name()), 1);
+	m.insertItem(TR("After ") + QString(get_name()), 2);
+	
+	switch (m.exec(QCursor::pos())) {
+	case 1:
+	  break;
+	case 2:
+	  ((BrowserNode *) parent())->DropAfterEvent(e, this);
+	  return;
+	default:
+	  e->ignore();
+	  return;
+	}
+      }
       move(bn, after);
+    }
     else {
-      msg_critical("Error", "Forbidden");
+      msg_critical(TR("Error"), TR("Forbidden"));
       e->ignore();
     }
   }
@@ -724,22 +742,26 @@ void BrowserState::DropAfterEvent(QDropEvent * e, BrowserNode * after) {
 }
 
 QString BrowserState::drag_key() const {
-  return (is_machine(this))
+  BrowserState * machine = get_machine(this);
+  
+  return (machine == this)
     ? QString::number(UmlState)
     : QString::number(UmlState)
-      + "#" + QString::number((unsigned long) parent());
+      + "#" + QString::number((unsigned long) machine);
 }
 
 QString BrowserState::drag_postfix() const {
-  return (is_machine(this))
+  BrowserState * machine = get_machine(this);
+  
+  return (machine == this)
     ? QString::null
-    : "#" + QString::number((unsigned long) parent());
+    : "#" + QString::number((unsigned long) machine);
 }
 
 QString BrowserState::drag_key(BrowserNode * p)
 {
   return QString::number(UmlState)
-    + "#" + QString::number((unsigned long) p);
+    + "#" + QString::number((unsigned long) get_machine(p));
 }
 
 void BrowserState::save_stereotypes(QTextStream & st)
@@ -802,7 +824,7 @@ void BrowserState::save(QTextStream & st, bool ref, QString & warning) {
     st << "end";
     
     // for saveAs
-    if (! is_api_base())
+    if (!is_from_lib() && !is_api_base())
       is_read_only = FALSE;
   }
 }
@@ -863,7 +885,7 @@ BrowserState * BrowserState::read(char * & st, char * k,
     }
     
     
-    result->BrowserNode::read(st, k);
+    result->BrowserNode::read(st, k, id);
     
     result->is_read_only = (!in_import() && read_only_file()) || 
       ((user_id() != 0) && result->is_api_base());

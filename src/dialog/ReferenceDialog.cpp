@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -36,6 +36,7 @@
 #include "ReferenceDialog.h"
 #include "BrowserView.h"
 #include "UmlDesktop.h"
+#include "translate.h"
 
 ReferenceDialog * ReferenceDialog::the;
 QSize ReferenceDialog::previous_size;
@@ -45,7 +46,7 @@ ReferenceDialog::ReferenceDialog(BrowserNode * bn)
   the = this;
   target = bn;
   
-  setCaption("Referenced By dialog");
+  setCaption(TR("Referenced By dialog"));
     
   QVBoxLayout * vbox = new QVBoxLayout(this);
  
@@ -53,7 +54,7 @@ ReferenceDialog::ReferenceDialog(BrowserNode * bn)
  
   QString s = target->get_name();
   
-  s += " is referenced by :";
+  s += TR(" is referenced by :");
   
   vbox->addWidget(new QLabel(s, this));
   
@@ -61,15 +62,15 @@ ReferenceDialog::ReferenceDialog(BrowserNode * bn)
   vbox->addWidget(results);
   
   QHBoxLayout * hbox = new QHBoxLayout(vbox); 
-  QPushButton * search_b = new QPushButton("Recompute", this);
-  QPushButton * close_b = new QPushButton("Close", this);
+  QPushButton * search_b = new QPushButton(TR("Recompute"), this);
+  QPushButton * close_b = new QPushButton(TR("Close"), this);
   
   hbox->setMargin(5);
   hbox->addWidget(search_b);
-  hbox->addWidget(select_b = new QPushButton("Select", this));
-  hbox->addWidget(mark_unmark_b = new QPushButton("Unmark", this));
-  hbox->addWidget(mark_them_b = new QPushButton("Mark them", this));
-  hbox->addWidget(unmark_all_b = new QPushButton("Unmark all", this));
+  hbox->addWidget(select_b = new QPushButton(TR("Select"), this));
+  hbox->addWidget(mark_unmark_b = new QPushButton(TR("Unmark"), this));
+  hbox->addWidget(mark_them_b = new QPushButton(TR("Mark them"), this));
+  hbox->addWidget(unmark_all_b = new QPushButton(TR("Unmark all"), this));
   hbox->addWidget(close_b);
     
   search_b->setDefault(TRUE);
@@ -141,7 +142,7 @@ void ReferenceDialog::selected(int index) {
     select_b->setEnabled(TRUE);
     mark_unmark_b->setEnabled(TRUE);
     mark_unmark_b->setText((nodes.at(index)->markedp())
-			   ? "Unmark" : "Mark");
+			   ? TR("Unmark") : TR("Mark"));
     mark_them_b->setEnabled(TRUE);
   }
   

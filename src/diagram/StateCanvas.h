@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -46,7 +46,8 @@ class StateCanvas : public QObject, public DiagramCanvas {
     StateDrawingSettings settings;
     UmlColor itscolor;
     UmlColor used_color;
-    bool region_horizontally;
+    bool region_horizontally : 2;
+    bool show_decomp_icon : 2;
     QString activities;
     int min_width;
     int min_height;
@@ -76,11 +77,11 @@ class StateCanvas : public QObject, public DiagramCanvas {
     virtual void remove(bool from_model);
     virtual void open();
     virtual void menu(const QPoint&);
-    virtual const char * may_start(UmlCode &) const;
-    virtual const char * may_connect(UmlCode & l, const DiagramItem * dest) const;
+    virtual QString may_start(UmlCode &) const;
+    virtual QString may_connect(UmlCode & l, const DiagramItem * dest) const;
     virtual void connexion(UmlCode, DiagramItem *, const QPoint &, const QPoint &);
     virtual aCorner on_resize_point(const QPoint & p);
-    virtual void resize(aCorner c, int dx, int dy);
+    virtual void resize(aCorner c, int dx, int dy, QPoint &);
     virtual void prepare_for_move(bool on_resize);
     void force_sub_inside();
     

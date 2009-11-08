@@ -305,12 +305,20 @@ void UmlAttribute::gen_java_decl(QCString s, bool descr) {
     }
     else if (!strncmp(p, "${@}", 4))
       p += 4;
-    else if ((*p == '\n') || (*p == '\r')) {
-      fw.write(' ');
-
-      do
+    else if (*p == '\r')
+      p += 1;
+    else if (*p == '\n') {
+      if (descr) {
+	fw.write("<br />");
 	p += 1;
-      while ((*p != 0) && (*p <= ' '));
+      }
+      else {
+	fw.write(' ');
+	
+	do
+	  p += 1;
+	while ((*p != 0) && (*p <= ' '));
+      }
     }
     else if ((*p == '{') || (*p == ';')) {
       if (descr)
@@ -370,12 +378,20 @@ void UmlAttribute::gen_php_decl(QCString s, bool descr) {
       if (isReadOnly())
 	fw.write("const ");
     }
-    else if ((*p == '\n') || (*p == '\r')) {
-      fw.write(' ');
-
-      do
+    else if (*p == '\r')
+      p += 1;
+    else if (*p == '\n') {
+      if (descr) {
+	fw.write("<br />");
 	p += 1;
-      while ((*p != 0) && (*p <= ' '));
+      }
+      else {
+	fw.write(' ');
+	
+	do
+	  p += 1;
+	while ((*p != 0) && (*p <= ' '));
+      }
     }
     else if ((*p == '{') || (*p == ';')){
       if (descr)

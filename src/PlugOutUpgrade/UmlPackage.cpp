@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -1170,7 +1170,7 @@ void fixe_package_diagram()
 	rel->set_JavaDecl(old->javaDecl());
 	rel->set_Visibility(old->visibility());
         rel->moveAfter(old);
-	old->delete_it();
+	old->deleteIt();
 	rel->set_RoleName("_assoc_diagram");
 	break;
       }
@@ -2117,7 +2117,7 @@ void remove_java_public(UmlClass * uml_base_class)
   
   //
 
-  uml_base_class->get_attribute("_java_public")->delete_it();
+  uml_base_class->get_attribute("_java_public")->deleteIt();
   
   UmlOperation * op;
   
@@ -4772,6 +4772,225 @@ void add_methods(UmlClass * opercl, UmlClass * uml_item)
 }
 
 //
+//
+//
+
+void add_import_project(UmlClass * uml_base_package)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  //
+    
+  UmlOperation * op = 
+    uml_base_package->add_op("importProject", PublicVisibility, 
+			     UmlClass::get("UmlPackage", 0));
+  
+  op->add_param(0, InputDirection, "fn", "string");
+  op->set_Description(" Import a project in the current package\n"
+		      " fn is the pathname of the .prj file of the project to import\n"
+		      " or an empty string (the project will be set through a dialog)\n"
+		      " Return the new UmlPackage containing the imported project, or\n"
+		      " 0/null on error");
+  op->set_cpp("${type} *", "const ${t0} & ${p0}",
+	      "  UmlCom::send_cmd(_identifier, importProjectCmd, fn);\n"
+	      "\n"
+	      "  return (UmlPackage *) UmlBaseItem::read_();\n"
+	      , FALSE, 0, 0);
+  op->set_java("${type}", "${t0} ${p0}",
+	       "  UmlCom.send_cmd(identifier_(), OnInstanceCmd.importProjectCmd, fn);\n"
+	       "  return (UmlPackage) UmlBaseItem.read_();\n"
+	       , FALSE);
+  op->moveAfter(uml_base_package->get_operation("set_AssociatedDiagram"));
+  
+  //
+
+  UmlClass::get("OnInstanceCmd", 0)->add_enum_item("importProjectCmd");
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
+void add_is_active(UmlClass * uml_base_class)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  //
+    
+  UmlOperation * op;
+  UmlOperation * pos;
+  QCString body;
+  
+  uml_base_class->add_attribute("_active", PrivateVisibility, "bool", 0, 0, " : 1")
+    ->moveAfter(uml_base_class->get_attribute("_abstract"));
+  
+  defGetBool(uml_base_class, _active, isActive, 0, 0,
+	     " indicate if the class is active");
+  op->moveAfter(uml_base_class->get_operation("set_isAbstract"));
+  pos = op;
+  
+  defSetBoolBitField(uml_base_class, _active, set_isActive, setActiveCmd, 0, 0,
+		     " set if the class is active");
+  op->moveAfter(pos);
+  
+  op = uml_base_class->get_operation("read_uml_");
+  body = op->cppBody() + "  _active = UmlCom::read_bool();\n";
+  op->set_CppBody(body);
+  body = op->javaBody() + "  _active = UmlCom.read_bool();\n";
+  op->set_JavaBody(body);
+  
+  //
+  
+  UmlClass * uml_base_state = UmlClass::get("UmlBaseState", 0);
+  UmlAttribute * at;
+  
+  at = uml_base_state->add_attribute("_active", PrivateVisibility, "bool", 0, 0);
+  at->moveAfter(uml_base_state->get_relation("_java"));
+  uml_base_state->get_relation("_specification")->moveAfter(at);
+  
+  defGetBool(uml_base_state, _active, isActive, 0, 0,
+	     " indicate if the class is active");
+  op->moveAfter(uml_base_state->get_operation("set_JavaDoActivity"));
+  pos = op;
+  
+  defSetBoolBitField(uml_base_state, _active, set_isActive, setActiveCmd, 0, 0,
+		     " set if the class is active");
+  op->moveAfter(pos);
+  
+  op = uml_base_state->get_operation("read_uml_");
+  body = op->cppBody() + "  _active = UmlCom::read_bool();\n";
+  op->set_CppBody(body);
+  body = op->javaBody() + "  _active = UmlCom.read_bool();\n";
+  op->set_JavaBody(body);
+  
+  //
+  
+  UmlClass * uml_base_activity = UmlClass::get("UmlBaseActivity", 0);
+  
+  at = uml_base_activity->add_attribute("_active", PrivateVisibility, "bool", 0, 0);
+  at->moveAfter(uml_base_activity->get_attribute("_single_execution"));
+  uml_base_activity->get_relation("_specification")->moveAfter(at);
+  
+  defGetBool(uml_base_activity, _active, isActive, 0, 0,
+	     " indicate if the class is active");
+  op->moveAfter(uml_base_activity->get_operation("set_isSingleExecution"));
+  pos = op;
+  
+  defSetBool(uml_base_activity, _active, set_isActive, setActiveCmd, 0, 0,
+	     " set if the class is active");
+  op->moveAfter(pos);
+  
+  op = uml_base_activity->get_operation("read_uml_");
+  body = op->cppBody() + "  _active = UmlCom::read_bool();\n";
+  op->set_CppBody(body);
+  body = op->javaBody() + "  _active = UmlCom.read_bool();\n";
+  op->set_JavaBody(body);
+  
+  //
+
+  UmlClass::get("OnInstanceCmd", 0)->add_enum_item("setActiveCmd");
+  
+  //
+  
+  UmlCom::set_user_id(uid);
+}
+
+//
+//
+//
+
+void add_cpp_inline_oper_force_incl_in_h(UmlClass * cppsetting)
+{
+  unsigned uid = UmlCom::user_id();
+  
+  UmlCom::set_user_id(0);
+  
+  UmlCom::trace("<b>update CppSettings</b><br>\n");
+
+  UmlAttribute * att = 
+    cppsetting->add_attribute("_is_inline_force_header_in_h", PrivateVisibility, "bool", 0, 0);
+
+  att->set_isClassMember(TRUE);
+  att->moveAfter(cppsetting->get_attribute("_is_generate_javadoc_comment"));
+
+  //
+
+  UmlOperation * op = cppsetting->get_operation("read_");
+
+  op->set_CppBody(op->cppBody() + "  _is_inline_force_header_in_h = UmlCom::read_bool();\n");
+  op->set_JavaBody(op->javaBody() + "  _is_inline_force_header_in_h = UmlCom.read_bool();\n");
+  
+  // get
+
+  UmlOperation * op2 = cppsetting->get_operation("set_IsForceNamespacePrefixGeneration");
+
+  op = cppsetting->add_op("isInlineOperationForceIncludesInHeader", PublicVisibility, "bool", TRUE);
+  op->set_isClassMember(TRUE);
+  op->set_Description(" return if the fact an operation is inline force the header of the\n"
+		      " types referenced in the profile to be included in the header\n");
+  op->set_cpp("${type}", "",
+	      "  read_if_needed_();\n"
+	      "\n"
+	      "  return _is_inline_force_header_in_h;\n",
+	      FALSE, 0, 0);
+  op->set_java("${type}", "",
+	       "  read_if_needed_();\n"
+	       "\n"
+	       "  return _is_inline_force_header_in_h;\n",
+	       FALSE);
+  op->moveAfter(cppsetting->get_operation("set_IsForceNamespacePrefixGeneration"));
+  
+  // set
+  
+  UmlOperation * op3 = cppsetting->add_op("set_IsInlineOperationForceIncludesInHeader", PublicVisibility, "bool", TRUE);
+  
+  op3->set_isClassMember(TRUE);
+  op3->add_param(0, InputDirection, "v", "bool");
+  op3->set_Description(" set if the fact an operation is inline force the header of the\n"
+		      " types referenced in the profile to be included in the header\n"
+		      "\n"
+		      " On error : return FALSE in C++, produce a RuntimeException in Java");
+  
+  op3->set_CppDecl(op2->cppDecl());
+  op3->set_CppDef(op2->cppDef());
+  op3->set_CppBody("\
+  UmlCom::send_cmd(cppSettingsCmd, setCppInlineOperForceInclInHeaderCmd, v);\n\
+  if (UmlCom::read_bool()) {\n\
+    _is_inline_force_header_in_h = v;\n\
+    return TRUE;\n\
+  }\n\
+  else\n\
+    return FALSE;\n");
+
+  op3->set_JavaDecl(op2->javaDecl());
+  op3->set_JavaBody("\
+  UmlCom.send_cmd(CmdFamily.cppSettingsCmd, CppSettingsCmd._setCppInlineOperForceInclInHeaderCmd,\n\
+		  (v) ? (byte) 1 : (byte) 0);\n\
+  UmlCom.check();\n\
+  \n\
+  _is_inline_force_header_in_h = v;\n");
+  
+  op3->moveAfter(op);
+
+  //
+
+  UmlClass::get("CppSettingsCmd", 0)->add_enum_item("setCppInlineOperForceInclInHeaderCmd");
+
+  //
+
+  UmlCom::set_user_id(uid);
+}
+
+
+//
 
 bool ask_for_upgrade()
 {
@@ -5218,6 +5437,7 @@ bool UmlPackage::upgrade() {
 	return FALSE;
       
       add_python();
+      pythonsettings = UmlClass::get("PythonSettings", 0);
 
       work = TRUE;
     }
@@ -5260,12 +5480,53 @@ bool UmlPackage::upgrade() {
       work = TRUE;
     }
     
+    if (uml_base_package->get_operation("importProject") == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+    
+      add_import_project(uml_base_package);
+      work = TRUE;
+    }
+    
+    if (uml_base_class->get_operation("isActive") == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+    
+      add_is_active(uml_base_class);
+      work = TRUE;
+    }
+
+    if (pythonsettings->get_operation("isPython_3_operation") == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      add_operation3(pythonsettings);
+      work = TRUE;
+    }
+
+    if (cppsettings->get_operation("isInlineOperationForceIncludesInHeader") == 0)  {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      add_cpp_inline_oper_force_incl_in_h(cppsettings);
+
+      work = TRUE;
+    }
+    
+    UmlClass * baseseqmsg = UmlClass::get("UmlBaseSequenceMessage", 0);
+    
+    if (baseseqmsg->get_operation("stereotype") == 0) {
+      if (!work && !ask_for_upgrade())
+	return FALSE;
+      add_stereotype_on_seq_msg(baseseqmsg);
+
+      work = TRUE;
+    }
+      
     if (work) {
       CppSettings::set_UseDefaults(cpp_default);
       JavaSettings::set_UseDefaults(java_default);
 
       UmlCom::trace("update api version<br>\n");
-      update_api_version("45");
+      update_api_version("50");
       UmlCom::message("ask for save-as");
       QMessageBox::information(0, "Upgrade", 
 			       "Upgrade done\n\n"

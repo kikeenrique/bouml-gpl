@@ -1,6 +1,6 @@
 // *************************************************************************
 //
-// Copyleft 2004-2009 Bruno PAGES  .
+// Copyright 2004-2009 Bruno PAGES  .
 //
 // This file is part of the BOUML Uml Toolkit.
 //
@@ -79,7 +79,7 @@ void Lex::unget()
   context.pointer -= 1;
 }
 
-static QCString Separators = " \r\t\f\n&~\"#{'(-|`)[]=}%*<>?,;/:!@";
+static QCString Separators = " \t\f\n&~\"#{'(-|`)[]=}%*<>?,;/:!@";
 
 const QString & Lex::filename()
 {
@@ -115,9 +115,23 @@ bool Lex::open(const QString & f)
   
   do offset += in.readBlock(context.buffer + offset, sz - offset);
   while (offset != sz);
-
-  context.buffer[sz] = 0;
+  
   context.pointer = context.buffer;
+  context.buffer[sz] = 0;
+  
+  // remove \r
+  char * p1 = strchr(context.buffer, '\r');
+  
+  if (p1 != 0) {
+    char * p2 = p1 + 1;
+    char c;
+    
+    while ((c = *p2++) != 0) {
+      if (c != '\r')
+	*p1++ = c;
+    }
+    *p1 = 0;
+  }
   
   return TRUE;
 }
@@ -139,21 +153,50 @@ void Lex::complete_template(QString & result)
 {
   // template
   unsigned level = 1;
-	  
+  char * pointer = context.pointer;
+  	  
   result += '<';
   
   for (;;) {
-    int c = get();
-    
-    if (c == EOF)
+    switch (read_word_bis(TRUE)) {
+    case 0:
       return;
-    
-    result += c;
-    
-    if (c == '<')
+    case '<':
       level += 1;
-    else if ((c == '>') && (--level == 0))
       break;
+    case '>':
+      if (--level == 0) {
+	char c = *context.pointer;
+	
+	*context.pointer = 0;
+	result += pointer;
+	*context.pointer = c;
+	return;
+      }
+    default:
+      break;
+    }
+  }
+}
+
+void Lex::bypass_template()
+{
+  // template
+  unsigned level = 1;
+  
+  for (;;) {
+    switch (read_word_bis(TRUE)) {
+    case 0:
+      return;
+    case '<':
+      level += 1;
+      break;
+    case '>':
+      if (--level == 0)
+	return;
+    default:
+      break;
+    }
   }
 }
 
@@ -302,6 +345,46 @@ QCString Lex::manage_operator(QString & result, int c)
   return QCString(result);
 }
 
+char Lex::bypass_operator(int c)
+{
+  int next = peek();
+  
+  switch (c) {
+  case '!':
+  case '%':
+  case '*':
+  case '/':
+  case '=':
+  case '^':
+    if (next == '=') {
+      get();
+      return '!'; // to not be = when ==
+    }
+    return (char) c;
+  case '<':
+  case '>':
+    if (next == '=')
+      get();
+    else if (next == c) {
+      get();
+      if (peek() == '=')
+	get();
+    }
+    else
+      return (char) c;
+    return '!'; // to not be < or > if << >> <= or >=
+  case '-':
+  case '&':
+  case '+':
+  case '|':
+    if ((next == '=') || (next == c))
+      get();
+    return (char) c;
+  default:
+    return (char) c;
+  }
+}
+
 QCString Lex::read_string()
 {
   QString result = "\"";;
@@ -323,6 +406,27 @@ QCString Lex::read_string()
       return QCString(result += c);
     default:
       result += c;
+    }
+  }
+}
+
+void Lex::bypass_string()
+{
+  for (;;) {
+    int c = get();
+    
+    switch (c) {
+    case EOF:
+      return;
+    case '\\':
+      c = get();
+      if (c == '\n')
+	context.line_number += 1;
+      break;
+    case '"':
+      return;
+    default:
+      break;
     }
   }
 }
@@ -349,26 +453,64 @@ QCString Lex::read_character()
   }
 }
 
+void Lex::bypass_character()
+{
+  for (;;) {
+    switch (get()) {
+    case EOF:
+      return;
+    case '\'':
+      return;
+    case '\\':
+      get();
+      break;
+    default:
+      break;
+    }
+  }
+}
+
 QCString Lex::read_array_dim() 
 {
   QCString result = "[";
+  char * pointer = context.pointer;
 	  
   for (;;) {
-    int c = get();
-    
-    if (c == EOF)
-      break;
-    
-    result += c;
-    
-    if (c == ']')
-      break;
-  }
-  
+    switch (read_word_bis()) {
+    case 0:
+      result = 0;
+      return result;
+    case ']':
+      {
+	char c = *context.pointer;
+	
+	*context.pointer = 0;
+	result += pointer;
+	*context.pointer = c;
+	
 #ifdef TRACE
-  cout << "retourne '" << result << "'\n";
+	cout << "retourne '" << result << "'\n";
 #endif
-  return result;
+	return result;
+      }
+    default:
+      break;
+    }
+  }
+}
+
+void Lex::bypass_array_dim() 
+{
+  for (;;) {
+    switch (read_word_bis()) {
+    case 0:
+      return;
+    case ']':
+      return;
+    default:
+      break;
+    }
+  }
 }
 
 // read all sequential annotations
@@ -378,37 +520,36 @@ QCString Lex::read_annotation()
   char * p1 = context.pointer - 1;	// '@' was read
 
   for (;;) {
-    if (read_word().isEmpty())
+    if (read_word_bis() == 0)
       // eof
       return p1;
   
     char * p2 = context.pointer;
-    QCString s = read_word();
+    char c = read_word_bis();
     
-    if (s == "(") {
+    if (c == '(') {
       int level = 1;
       
       for (;;) {
-	s = read_word();
+	c = read_word_bis();
 	
-	if (s.isEmpty())
+	if (c == 0)
 	  // eof
 	  return p1;
-	else if (s == "(")
+	else if (c == '(')
 	  level += 1;
-	else if ((s == ")") && (--level == 0))
+	else if ((c == ')') && (--level == 0))
 	  break;
       }
       
       p2 = context.pointer;
-      s = read_word();
+      c = read_word_bis();
     }
     
-    if (s.isEmpty())
+    if (c == 0)
       return p1;
-    else if (*s == '@') {
-      int c = *context.pointer;
-      
+    else if (c == '@') {
+      c = *context.pointer;
       *context.pointer = 0;
       
       QCString result = p1;
@@ -418,9 +559,7 @@ QCString Lex::read_annotation()
     }
     else  {
       context.pointer = p2;
-      
-      int c = *p2;
-      
+      c = *p2;
       *p2 = 0;
       
       QCString result = p1;
@@ -431,6 +570,42 @@ QCString Lex::read_annotation()
   }
 }
 
+void Lex::bypass_annotation()
+{
+  // '@' was read
+
+  for (;;) {
+    if (read_word_bis() == 0)
+      // eof
+      return;
+  
+    char * p2 = context.pointer;
+    char c = read_word_bis();
+    
+    if (c == '(') {
+      int level = 1;
+      
+      for (;;) {
+	c = read_word_bis();
+	
+	if (c == 0)
+	  // eof
+	  return;
+	else if (c == '(')
+	  level += 1;
+	else if ((c == ')') && (--level == 0))
+	  break;
+      }
+      
+      p2 = context.pointer;
+      c = read_word_bis();
+    }
+    
+    if ((c != 0) && (c != '@'))
+      context.pointer = p2;
+    return;
+  }
+}
 
 QCString Lex::read_word(bool in_templ)
 {
@@ -439,8 +614,8 @@ QCString Lex::read_word(bool in_templ)
   if (!context.reread.isEmpty()) {
     result = context.reread;
     
-    if (in_templ && (*result == '>')) {
-      // >> and >>= read as >
+    if (in_templ && (result == ">>")) {
+      // >> read as > because unlike C++ not have to write "T<..X<..> >"
       context.reread = result.mid(1);
       result = result.left(1);
     }
@@ -497,8 +672,18 @@ QCString Lex::read_word(bool in_templ)
 	case '@':
 	  return read_annotation();
 	case '>':
-	  if (in_templ)
-	    return ">";
+	  if (in_templ && (peek() == '>')) {
+	    // >> read as > because unlike C++ not have to write "T<..X<..> >"
+	    get();
+	    if (peek() != '=') {
+	      unget();
+#ifdef TRACE
+	      cout << "retourne '>'\n";
+#endif
+	      return ">";
+	    }
+	    unget();
+	  }
 	  // no break
 	default:
 	  if (c > ' ')
@@ -512,6 +697,116 @@ QCString Lex::read_word(bool in_templ)
   cout << "retourne '" << result << "'\n";
 #endif
   return QCString(result);
+}
+
+char Lex::read_word_bis(bool in_templ)
+{
+  char result = 0;
+  
+  if (!context.reread.isEmpty()) {
+    if (in_templ && (context.reread == ">>")) {
+      // >> read as > because unlike C++ not have to write "T<..X<..> >"
+      context.reread = context.reread.mid(1);
+      result = '>';
+    }
+    else {
+      result = context.reread.latin1()[0];
+      context.reread = QString::null;
+    }
+  }
+  else {
+    for (;;) {
+      int c = get();
+      
+#ifdef TRACE
+      //cout << "deja \"" << result << "\", '" << ((char) c) << "'\n";
+#endif
+      if (c == EOF)
+	break;
+      else if (Separators.find(c) == -1) {
+	if (result == 0)
+	  result = c;
+      }
+      else if (result != 0) {	
+	unget();
+	break;
+      }
+      else {
+	switch (c) {
+	case '"':
+	  bypass_string();
+#ifdef TRACE
+	  cout << "retourne '" << (char) c << "'\n";
+#endif
+	  return (char) c;
+	case '[':
+	  bypass_array_dim();
+#ifdef TRACE
+	  cout << "retourne '!' (array dim)\n";
+#endif
+	  return '!';	// to not be [
+	case '\'':
+	  bypass_character();
+#ifdef TRACE
+	  cout << "retourne ' (char)\n";
+#endif
+	  return (char) c;
+	case '/':
+	  switch (peek()) {
+	  case '/':
+	    bypass_cpp_comment();
+	    break;
+	  case '*':
+	    bypass_c_comment();
+	    break;
+	  case '=':
+	    get();
+#ifdef TRACE
+	    cout << "retourne '/' (/=)\n";
+#endif
+	    return (char) c;
+	  default:
+#ifdef TRACE
+	    cout << "retourne '/'\n";
+#endif
+	    return (char) c;
+	  }
+	  break;
+	case '\n':
+	  context.line_number += 1;
+	  break;
+	case '@':
+	  bypass_annotation();
+#ifdef TRACE
+	  cout << "retourne '@' (annotation)\n";
+#endif
+	  return (char) c;
+	case '>':
+	  if (in_templ && (peek() == '>')) {
+	    // >> read as > because unlike C++ not have to write "T<..X<..> >"
+	    get();
+	    if (peek() != '=') {
+	      unget();
+#ifdef TRACE
+	      cout << "retourne '>'\n";
+#endif
+	      return '>';
+	    }
+	    unget();
+	  }
+	  // no break
+	default:
+	  if (c > ' ')
+	    return bypass_operator(c);
+	  break;
+	}
+      }
+    }
+  }
+#ifdef TRACE
+  cout << "retourne '" << result << "'\n";
+#endif
+  return result;
 }
 
 void Lex::finish_line()
@@ -622,6 +917,9 @@ void Lex::syntax_error(QCString s)
   cout << "ERROR IN " << context.filename
     << " LINE " << context.line_number << " : " << s << '\n';
 #endif
+#ifdef ROUNDTRIP
+  throw 0;
+#endif
 }
 
 void Lex::premature_eof()
@@ -635,18 +933,24 @@ void Lex::premature_eof()
   cout << "SYNTAX ERROR IN " << context.filename 
     << " LINE " << context.line_number << " : premature eof\n";
 #endif
+#ifdef ROUNDTRIP
+  throw 0;
+#endif
 }
 
-void Lex::error_near(QCString s)
+void Lex::error_near(QCString s, const char * m)
 {
   JavaCatWindow::trace(QCString("<font face=helvetica>syntax error in <i> ")
 		       + QCString(context.filename) + "</i> line " +
 		       QCString().setNum(context.line_number) + " <b>near <font color =\"red\">"
-		       + quote(s) + "</font></b></font><br>"); 
+		       + quote(s) + "</font></b>" + m + "</font><br>"); 
   
 #ifdef TRACE
   cout << "SYNTAX ERROR IN " << context.filename
     << " LINE " << context.line_number << " : near '" << s << "'\n";
+#endif
+#ifdef ROUNDTRIP
+  throw 0;
 #endif
 }
 
@@ -681,6 +985,9 @@ QCString Lex::quote(QCString s)
 // remove first and last line in comment if non significant
 QCString Lex::simplify_comment(QCString & comment)
 {
+  if (comment.isEmpty())
+    return comment;
+  
   const char * s = comment;
   const char * p = s;
   
@@ -690,7 +997,6 @@ QCString Lex::simplify_comment(QCString & comment)
       return comment;
     case ' ':
     case '\t':
-    case '\r':
       p += 1;
       break;
     case '\n':
@@ -711,10 +1017,7 @@ QCString Lex::simplify_comment(QCString & comment)
 	  p -= 1;
 	  break;
 	case '\n':
-	  if (*(p - 1) == '\r') 
-	    comment.resize(p - s);
-	  else
-	    comment.resize(p - s + 1);
+	  comment.resize(p - s + 1);
 	  // no break
 	default:
 	  return comment;
@@ -726,4 +1029,50 @@ QCString Lex::simplify_comment(QCString & comment)
       return comment;
     }
   }
+}
+
+// don't produce error
+
+bool Lex::bypass_type(QCString s) {
+  if (s.isEmpty() && (read_word_bis() == 0))
+    return FALSE;
+    
+  for (;;) {
+    s = read_word();
+  
+    if (s != "<")
+      break;
+    
+    char c;
+    
+    do {
+      int level = 0;
+      
+      for (;;) {
+	c = read_word_bis(TRUE);
+	
+	if (c == ',') {
+	  if (level == 0)
+	    break;
+	}
+	else if (c == '>') {
+	  if (level-- == 0)
+	    break;
+	}
+	else if (c == '<')
+	  level += 1;
+	else if (c == 0)
+	  return FALSE;
+      }
+    } while (c == ',');
+    
+    s = read_word();
+    if (s.isEmpty() || (*s != '.'))
+      break;
+  }
+  
+  if (! s.isEmpty())
+    unread_word(s);
+  
+  return TRUE;
 }
